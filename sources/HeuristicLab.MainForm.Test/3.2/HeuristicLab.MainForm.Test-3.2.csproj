@@ -86,6 +86,12 @@
     <Compile Include="ButtonItems\NewFormToolStripButtonItem.cs" />
     <Compile Include="ButtonItems\SaveToolStripButtonItem.cs" />
     <Compile Include="ButtonItems\OpenToolStripButtonItem.cs" />
+    <Compile Include="FormView2.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FormView2.Designer.cs">
+      <DependentUpon>FormView2.cs</DependentUpon>
+    </Compile>
     <Compile Include="HeuristicLabSingleDocumentMainFormTestApplication.cs" />
     <Compile Include="HeuristicLabMultipleDocumentMainFormTestApplication.cs" />
     <Compile Include="EditorView.cs">
@@ -103,8 +109,6 @@
     <Compile Include="MenuItems\ExitToolStripMenuItem.cs" />
     <Compile Include="MenuItems\NewFormToolStripMenuItem.cs" />
     <Compile Include="MenuItems\NewEditorToolStripMenuItem.cs" />
-    <Compile Include="MenuItems\FileToolStripMenuItem.cs" />
-    <Compile Include="MenuItems\NewToolStripMenuItem.cs" />
     <Compile Include="Actions\NewFormAction.cs" />
     <Compile Include="Actions\OpenAction.cs" />
     <Compile Include="MenuItems\OpenToolStripMenuItem.cs" />
@@ -124,6 +128,10 @@
       <Project>{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}</Project>
       <Name>HeuristicLab.Common.Resources-3.2</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.MainForm.WindowsForms\3.2\HeuristicLab.MainForm.WindowsForms.csproj">
+      <Project>{AB687BBE-1BFE-476B-906D-44237135431D}</Project>
+      <Name>HeuristicLab.MainForm.WindowsForms</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.MainForm\3.2\HeuristicLab.MainForm-3.2.csproj">
       <Project>{3BD61258-31DA-4B09-89C0-4F71FEF5F05A}</Project>
       <Name>HeuristicLab.MainForm-3.2</Name>
@@ -137,6 +145,9 @@
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="FormView2.resx">
+      <DependentUpon>FormView2.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="EditorView.resx">
       <DependentUpon>EditorView.cs</DependentUpon>
     </EmbeddedResource>

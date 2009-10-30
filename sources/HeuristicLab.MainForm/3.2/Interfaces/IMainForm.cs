@@ -24,23 +24,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
-using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm {
   public interface IMainForm {
     string Title { get; set; }
-    string StatusStripText { get; set; }
-    bool StatusStripProgressBarVisible { get; set; }
-
-    Cursor Cursor { get; set; }
 
     IView ActiveView { get; }
     event EventHandler ActiveViewChanged;
-    event EventHandler MainFormChanged;
+    event EventHandler Changed;
     IEnumerable<IView> Views { get; }
 
     Type UserInterfaceItemType { get; }
-    void ShowView(IView view);
+    bool ShowView(IView view);  //return value indicates if a new form for the view is created
+    void HideView(IView view);
     void CloseView(IView view);
     void CloseAllViews();
     void Close();

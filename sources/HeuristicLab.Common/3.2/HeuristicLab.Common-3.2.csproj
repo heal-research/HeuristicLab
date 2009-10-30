@@ -77,8 +77,12 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ObservableList.cs" />
     <Compile Include="DoubleExtensions.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -23,16 +23,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm {
-  public abstract class ToolStripMenuItemBase : ToolStripItemBase, IToolStripMenuItem {
-    public virtual Keys ShortCutKeys {
-      get { return Keys.None; }
-    }
-
-    public override ToolStripItemDisplayStyle DisplayStyle {
-      get { return ToolStripItemDisplayStyle.Text; }
-    }
+  public interface IToolBarItem : IUserInterfaceItem {
+    IEnumerable<string> Structure { get; }
   }
 }

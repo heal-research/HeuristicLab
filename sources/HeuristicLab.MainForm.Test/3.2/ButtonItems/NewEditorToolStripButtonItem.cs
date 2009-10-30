@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.MainForm.Test {
-  public class NewEditorToolStripButtonItem : ToolStripButtonItemBase, ITestUserInterfaceItemProvider {
+  public class NewEditorToolStripButtonItem : HeuristicLab.MainForm.WindowsForms.ToolBarItemBase, ITestUserInterfaceItemProvider {
     public override int Position {
       get { return 12; }
     }
@@ -13,12 +14,16 @@ namespace HeuristicLab.MainForm.Test {
       get { return "Editor"; }
     }
 
-    public override string Structure {
-      get { return "New"; }
+    public override IEnumerable<string> Structure {
+      get { return new string []{"New"}; }
     }
 
-    public override void Execute(IMainForm mainform) {
-      new NewEditorAction().Execute(mainform);
+    public override System.Windows.Forms.ToolStripItemDisplayStyle ToolStripItemDisplayStyle {
+      get { return System.Windows.Forms.ToolStripItemDisplayStyle.ImageAndText; }
+    }
+
+    public override void Execute() {
+      NewEditorAction.Execute(MainFormManager.MainForm);
     }
   }
 }

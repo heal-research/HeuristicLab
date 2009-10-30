@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Common.Resources;
 
 namespace HeuristicLab.MainForm.Test {
-  public class OpenToolStripMenuItem : ToolStripMenuItemBase, ITestUserInterfaceItemProvider {
+  public class OpenToolStripMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItemBase, ITestUserInterfaceItemProvider {
     public override string Name {
       get { return "Open"; }
-    }   
+    }
 
-    public override string Structure {
-      get { return "File"; }
+    public override IEnumerable<string> Structure {
+      get { return new string[] { "File" }; }
     }
 
     public override int Position {
@@ -28,8 +28,8 @@ namespace HeuristicLab.MainForm.Test {
       get { return Resources.OpenIcon; }
     }
 
-    public override void Execute(IMainForm mainform) {
-      new OpenAction().Execute(mainform);
+    public override void Execute() {
+      new OpenAction().Execute(MainFormManager.MainForm);
     }
   }
 }

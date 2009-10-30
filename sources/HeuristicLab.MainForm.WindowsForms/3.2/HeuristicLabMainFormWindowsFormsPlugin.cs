@@ -1,4 +1,4 @@
-﻿#region License Information
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -21,24 +21,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Drawing;
-using System.Windows.Forms;
+using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.MainForm {
-  public interface IToolStripItem : IUserInterfaceItem {
-    int Position { get; }
-    Image Image { get; }
-    ToolStripItemDisplayStyle DisplayStyle { get; }
-
-    string Structure { get; }
-    char StructureSeparator { get; }
-
-    ToolStripItem ToolStripItem { get; set; }
-
-    void ActiveViewChanged(object sender, EventArgs e);
-    void ViewChanged(object sender, EventArgs e);
-    void MainFormChanged(object sender, EventArgs e);
+namespace HeuristicLab.MainForm.WindowsForms {
+  [ClassInfo(Name = "HeuristicLab.MainForm.WindowsForms-3.2")]
+  [PluginFile(Filename = "HeuristicLab.MainForm.WindowsForms-3.2.dll", Filetype = PluginFileType.Assembly)]  
+  [Dependency(Dependency = "HeuristicLab.MainForm-3.2")]
+  public class HeuristicLabMainFormTestPlugin : PluginBase {
   }
 }

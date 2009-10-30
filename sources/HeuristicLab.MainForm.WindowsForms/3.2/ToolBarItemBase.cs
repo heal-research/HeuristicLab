@@ -18,51 +18,26 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Resources;
-using System.Reflection;
 using System.Windows.Forms;
-using System.Drawing;
-
-namespace HeuristicLab.MainForm {
-  public abstract class ToolStripItemBase : UserInterfaceItemBase, IToolStripItem {
-    #region IToolStripItem Members
-    public abstract int Position { get; }
-    public virtual ToolStripItemDisplayStyle DisplayStyle {
-      get { return ToolStripItemDisplayStyle.ImageAndText; }
-    }
-
-    public virtual System.Drawing.Image Image {
-      get { return null; }
-    }
-
+                                                            
+namespace HeuristicLab.MainForm.WindowsForms {
+  public abstract class ToolBarItemBase : HeuristicLab.MainForm.ToolBarItemBase {
     private ToolStripItem toolStripItem;
-    public ToolStripItem ToolStripItem {
+    public virtual ToolStripItem ToolStripItem {
       get { return this.toolStripItem; }
-      set { this.toolStripItem = value; }
+      internal set { this.toolStripItem = value; }
     }
 
-    public virtual string Structure {
-      get { return string.Empty; }
+    public virtual bool IsDropDownButton {
+      get { return false; }
     }
 
-    private static readonly char structureSeparator = '/';
-    public virtual char StructureSeparator {
-      get { return ToolStripMenuItemBase.structureSeparator; }
+    public virtual ToolStripItemDisplayStyle ToolStripItemDisplayStyle {
+      get { return ToolStripItemDisplayStyle.Image; }
     }
-
-    public virtual void ActiveViewChanged(object sender, EventArgs e) {
-    }
-
-    public virtual void ViewChanged(object sender, EventArgs e) {
-    }
-
-    public virtual void MainFormChanged(object sender, EventArgs e) {
-    }
-    #endregion
   }
 }

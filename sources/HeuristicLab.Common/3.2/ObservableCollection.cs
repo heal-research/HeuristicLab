@@ -22,53 +22,52 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Collections.Specialized;
 
 namespace HeuristicLab.Common {
-  public class ObservableCollection<T> : ICollection<T> {
-    private List<T> list;
+  public class ObservableCollection<T> : ICollection<T>, INotifyCollectionChanged {
+    protected List<T> list;
 
     public ObservableCollection() {
       list = new List<T>();
     }
 
     #region Events
-    public event EventHandler CollectionCleared;
-    protected void FireCollectionCleared() {
-      OnCollectionCleared();
-    } 
-    protected virtual void OnCollectionCleared() {
-      if (CollectionCleared != null)
-        CollectionCleared(this, new EventArgs());
+    public event NotifyCollectionChangedEventHandler CollectionChanged;
+
+    protected void FireCollectionChanged(NotifyCollectionChangedEventArgs e) {
+      if (CollectionChanged != null) {
+        CollectionChanged(this, e);
+      }
     }
 
-    public event EventHandler<EnumerableEventArgs<T>> ItemsAdded;
-    protected void FireItemsAdded(IEnumerable<T> addedItems) {
-      OnItemsAdded(addedItems);
-    }
-    protected virtual void OnItemsAdded(IEnumerable<T> addedItems) {
-      if (ItemsAdded != null)
-        ItemsAdded(this, new EnumerableEventArgs<T>(addedItems));
+    protected virtual void FireCollectionCleared() {
+        NotifyCollectionChangedEventArgs e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
+        FireCollectionChanged( e);
     }
 
-    public event EventHandler<EnumerableEventArgs<T>> ItemsRemoved;
-    protected void FireItemsRemoved(IEnumerable<T> removedItems) {
-      OnItemsRemoved(removedItems);
+    protected virtual void FireItemsAdded(IEnumerable<T> addedItems, int index) {
+        NotifyCollectionChangedEventArgs e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, addedItems.ToList(), index);
+        FireCollectionChanged(e);
     }
-    protected virtual void OnItemsRemoved(IEnumerable<T> removedItems) {
-      if (ItemsRemoved != null)
-        ItemsRemoved(this, new EnumerableEventArgs<T>(removedItems));
+
+    protected virtual void FireItemsRemoved(IEnumerable<T> removedItems) {
+        NotifyCollectionChangedEventArgs e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, removedItems.ToList());
+        FireCollectionChanged(e);
     }
     #endregion
 
     #region ICollection<T> Members
     public void Add(T item) {
+      int index = this.list.Count - 1;
       this.list.Add(item);
-      FireItemsAdded(new List<T> { item });
+      FireItemsAdded(new List<T> { item }, index);
     }
 
     public void AddRange(IEnumerable<T> items) {
+      int index = this.list.Count - 1;
       this.list.AddRange(items);
-      FireItemsAdded(items);
+      FireItemsAdded(items, index);
     }
 
     public void Clear() {
@@ -124,5 +123,7 @@ namespace HeuristicLab.Common {
     }
 
     #endregion
+
+
   }
 }

@@ -18,15 +18,20 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm {
-  public interface IToolStripMenuItem : IToolStripItem {
-    Keys ShortCutKeys { get; }
+  [AttributeUsage(AttributeTargets.Class)]
+  public class DefaultViewAttribute : Attribute {
+    public DefaultViewAttribute() {
+    }
+
+    public static bool IsDefaultView(Type t) {
+      object[] attributes = t.GetCustomAttributes(typeof(DefaultViewAttribute), false);
+      return attributes != null && attributes.Length > 0;
+    }
   }
 }

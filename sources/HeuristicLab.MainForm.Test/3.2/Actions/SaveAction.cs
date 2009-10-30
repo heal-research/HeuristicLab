@@ -5,11 +5,9 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm.Test {
-  public class SaveAction : IAction{
-    #region IAction Members
+  public class SaveAction {
     public void Execute(IMainForm mainform) {
-      mainform.StatusStripText = "Save action called";
+      MessageBox.Show("Save action called");
     }
-    #endregion
   }
 }

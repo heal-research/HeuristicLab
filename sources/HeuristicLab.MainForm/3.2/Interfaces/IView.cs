@@ -22,14 +22,19 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace HeuristicLab.MainForm {
   public interface IView {
     string Caption { get; set; }
     event EventHandler CaptionChanged;
-    event EventHandler StateChanged;
-    IMainForm MainForm { get; set; }
-    void FormClosing(object sender, FormClosingEventArgs e);
+    event EventHandler Changed;
+    void OnClosing(object sender, CancelEventArgs e);
+    void OnClosed(object sender, EventArgs e);
+  }
+
+  public interface IView<T> : IView {
+    void View(T item);
+    T Item { get; }
   }
 }

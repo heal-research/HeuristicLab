@@ -4,25 +4,25 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Common.Resources;
 
 namespace HeuristicLab.MainForm.Test {
-  public class CloseToolStripMenuItem : ToolStripMenuItemBase, ITestUserInterfaceItemProvider {
+  public class CloseToolStripMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItemBase, ITestUserInterfaceItemProvider {
     public override string Name {
       get { return "Exit"; }
     }
 
-    public override string Structure {
-      get { return "File"; }
+    public override IEnumerable<string> Structure {
+      get { return new string[] { "File" }; }
     }
 
     public override int Position {
       get { return 1400; }
     }
 
-    public override void Execute(IMainForm mainform) {
-      mainform.Close();
+    public override void Execute() {
+      MainFormManager.MainForm.Close();
     }
   }
 }

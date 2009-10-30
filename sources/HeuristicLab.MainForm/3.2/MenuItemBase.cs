@@ -23,21 +23,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm {
-  public abstract class ToolStripButtonItemBase : ToolStripItemBase, IToolStripButtonItem {
-    public override ToolStripItemDisplayStyle DisplayStyle {
-      get {
-        if (Image != null)
-          return ToolStripItemDisplayStyle.Image;
-        else
-          return ToolStripItemDisplayStyle.Text;
-      }
-    }
-
-    public virtual bool IsDropDownButton {
-      get { return false; }
-    }
+  public abstract class MenuItemBase : UserInterfaceItemBase, IMenuItem{
+    public virtual IEnumerable<string> Structure {
+      get { return Enumerable.Empty<string>(); }
+    }   
   }
 }

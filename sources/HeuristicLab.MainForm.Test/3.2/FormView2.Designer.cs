@@ -1,5 +1,5 @@
 ﻿namespace HeuristicLab.MainForm.Test {
-  partial class FormView1 {
+  partial class FormView2 {
     /// <summary> 
     /// Required designer variable.
     /// </summary>

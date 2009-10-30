@@ -19,10 +19,8 @@
  */
 #endregion
 
-using System;
-
-namespace HeuristicLab.MainForm {
-  partial class ViewBase {
+namespace HeuristicLab.MainForm.WindowsForms {
+  partial class ViewBase<T> {
     /// <summary> 
     /// Required designer variable.
     /// </summary>

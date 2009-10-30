@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.MainForm.Test {
   [ClassInfo(Name = "MultipleDocumentMainForm Test", Description="Test application for new mainform development.")]

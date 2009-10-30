@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.MainForm {
+namespace HeuristicLab.MainForm.WindowsForms {
   partial class DocumentForm {
     /// <summary>
     /// Required designer variable.

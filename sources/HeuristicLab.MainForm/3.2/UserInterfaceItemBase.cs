@@ -26,10 +26,29 @@ using System.Text;
 
 namespace HeuristicLab.MainForm {
   public abstract class UserInterfaceItemBase : IUserInterfaceItem{
-    public abstract string Name { get; }
+    protected UserInterfaceItemBase() {
+    }
 
-    #region IAction Members
-    public abstract void Execute(IMainForm mainform);
-    #endregion
+    public abstract string Name { get; }
+    public abstract int Position { get; }
+
+    public virtual System.Drawing.Image Image {
+      get { return null; }
+    }
+
+    public virtual string ToolTipText {
+      get { return string.Empty; }
+    }
+
+    public abstract void Execute();
+
+    public virtual void ActiveViewChanged(object sender, EventArgs e) {
+    }
+
+    public virtual void ViewChanged(object sender, EventArgs e) {
+    }
+
+    public virtual void MainFormChanged(object sender, EventArgs e) {
+    }
   }
 }

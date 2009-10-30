@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -18,21 +18,26 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
-
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.MainForm.WindowsForms;
 
-namespace HeuristicLab.MainForm.Test {
-  [ClassInfo(Name = "SingleDocumentMainForm Test", Description="Test application for new mainform development.")]
-  public class HeuristicLabSingleDocumentMainFormTestApplication : ApplicationBase {
-    public override void Run() {
-      SingleDocumentMainForm mainForm = new SingleDocumentMainForm(typeof(ITestUserInterfaceItemProvider));
-      mainForm.Title = "Test new MAINFORM concept";
-      Application.Run(mainForm);
+namespace HeuristicLab.MainForm.WindowsForms {
+  public abstract class MenuItemBase : HeuristicLab.MainForm.MenuItemBase{
+    public virtual Keys ShortCutKeys {
+      get { return Keys.None; }
+    }
+
+    private ToolStripItem toolStripItem;
+    public virtual ToolStripItem ToolStripItem {
+      get { return this.toolStripItem; }
+      internal set { this.toolStripItem = value; }
+    }
+
+    public virtual ToolStripItemDisplayStyle ToolStripItemDisplayStyle {
+      get { return ToolStripItemDisplayStyle.ImageAndText; }
     }
   }
 }

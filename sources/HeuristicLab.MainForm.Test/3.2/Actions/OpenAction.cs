@@ -5,13 +5,9 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm.Test {
-  public class OpenAction : IAction {
-    #region IAction Members
-
+  public class OpenAction  {
     public void Execute(IMainForm mainform) {
-      mainform.StatusStripText = "Open action called";
+      MessageBox.Show("Open action called");
     }
-
-    #endregion
   }
 }

@@ -5,17 +5,12 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm.Test {
-  public class NewFormAction : IAction{
-    #region IAction Members
-
+  public class NewFormAction {
     public void Execute(IMainForm mainform) {
-      mainform.StatusStripText = "New form called";
-      FormView x = new FormView();
+      FormView1 x = new FormView1();
       x.Caption = "FormView";
       mainform.ShowView(x);
     }
-
-    #endregion
   }
 
 }

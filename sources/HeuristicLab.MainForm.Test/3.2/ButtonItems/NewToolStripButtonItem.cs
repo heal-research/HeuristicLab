@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.MainForm.Test {
-  public class NewToolStripButtonItem : ToolStripButtonItemBase, ITestUserInterfaceItemProvider {
+  public class NewToolStripButtonItem : HeuristicLab.MainForm.WindowsForms.ToolBarItemBase, ITestUserInterfaceItemProvider {
     public override int Position {
       get { return 10; }
     }
@@ -21,7 +22,7 @@ namespace HeuristicLab.MainForm.Test {
       get { return HeuristicLab.Common.Resources.Resources.NewIcon; }
     }
 
-    public override void Execute(IMainForm mainform) {
+    public override void Execute() {
     }
   }
 }

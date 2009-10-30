@@ -28,7 +28,7 @@ using System.Text;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace HeuristicLab.MainForm {
+namespace HeuristicLab.MainForm.WindowsForms {
   /// <summary>
   /// Displays the used view.
   /// </summary>
@@ -54,6 +54,7 @@ namespace HeuristicLab.MainForm {
           }
           Control control = (Control)View;
           control.Dock = DockStyle.Fill;
+          this.Size = control.Size;
           viewPanel.Controls.Add(control);
           View.CaptionChanged += new EventHandler(View_CaptionChanged);
           UpdateText();
