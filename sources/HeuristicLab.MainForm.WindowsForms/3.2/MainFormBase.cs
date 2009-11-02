@@ -37,7 +37,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
       InitializeComponent();
       this.views = new Dictionary<IView, Form>();
       this.userInterfaceItems = new List<IUserInterfaceItem>();
-      MainFormManager.RegisterMainForm(this);
+      if (Site != null && !Site.DesignMode)
+        MainFormManager.RegisterMainForm(this);
     }
 
     protected MainFormBase(Type userInterfaceItemType)
@@ -145,7 +146,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
           foreach (IUserInterfaceItem item in UserInterfaceItems)
             view.Changed += new EventHandler(item.ViewChanged);
           return true;
-        } else 
+        } else
           return false;
       }
     }
