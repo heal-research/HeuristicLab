@@ -45,8 +45,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
       : this() {
       this.userInterfaceItemType = userInterfaceItemType;
       CreateGUI();
-      OnActiveViewChanged();
-      FireMainFormChanged();
     }
 
     #region IMainForm Members

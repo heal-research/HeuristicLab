@@ -66,7 +66,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
 
   public class ViewBase<T> : ViewBase, IView<T> {
     private T item;
-    public virtual T Item {
+    public T Item {
       get { return this.item; }
       protected set { this.item = value; }
     }
