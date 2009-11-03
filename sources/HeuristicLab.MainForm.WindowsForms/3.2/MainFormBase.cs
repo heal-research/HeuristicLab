@@ -37,7 +37,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       InitializeComponent();
       this.views = new Dictionary<IView, Form>();
       this.userInterfaceItems = new List<IUserInterfaceItem>();
-      if (Site != null && !Site.DesignMode)
+      if (!DesignMode)
         MainFormManager.RegisterMainForm(this);
     }
 
