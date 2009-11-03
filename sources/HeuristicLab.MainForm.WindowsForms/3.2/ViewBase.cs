@@ -29,20 +29,9 @@ using System.Xml;
 using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm.WindowsForms {
-  public partial class ViewBase<T> : UserControl, IView<T> {
-   
+  public partial class ViewBase : UserControl, IView {   
     public ViewBase() {
       InitializeComponent();
-      item = default(T);
-    }
-
-    private T item;
-    public virtual T Item {
-      get { return this.item; }
-      protected set { this.item = value; }
-    }
-
-    public virtual void View(T item) {
     }
 
     private string myCaption;
@@ -59,19 +48,30 @@ namespace HeuristicLab.MainForm.WindowsForms {
     public event EventHandler CaptionChanged;
     protected virtual void OnCaptionChanged() {
       if (CaptionChanged != null)
-        CaptionChanged(this, new EventArgs());
+        CaptionChanged(this, new EventArgs());      
     }
 
     public event EventHandler Changed;
     protected virtual void OnChanged() {
       if (Changed != null)
-        Changed(this, new EventArgs());
+        Changed(this, new EventArgs());    
     }
 
     public virtual void OnClosing(object sender, CancelEventArgs e) {
     }
 
     public virtual void OnClosed(object sender, EventArgs e) {
+    }
+  }
+
+  public class ViewBase<T> : ViewBase, IView<T> {
+    private T item;
+    public virtual T Item {
+      get { return this.item; }
+      protected set { this.item = value; }
+    }
+
+    public virtual void View(T item) {
     }
   }
 }
