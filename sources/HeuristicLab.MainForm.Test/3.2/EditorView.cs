@@ -11,7 +11,7 @@ using System.Collections;
 
 namespace HeuristicLab.MainForm.Test {
   [DefaultViewAttribute]
-  public partial class EditorView : ViewBase<ArrayList> {
+  public partial class EditorView : ViewBase, IView<ArrayList> {
     public EditorView() {
       InitializeComponent();
     }
@@ -44,5 +44,17 @@ namespace HeuristicLab.MainForm.Test {
 
       }
     }
+
+    #region IView<ArrayList> Members
+
+    public void View(ArrayList item) {
+      throw new NotImplementedException();
+    }
+
+    public ArrayList Item {
+      get { throw new NotImplementedException(); }
+    }
+
+    #endregion
   }
 }

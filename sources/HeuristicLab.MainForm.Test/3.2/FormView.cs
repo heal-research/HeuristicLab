@@ -11,10 +11,22 @@ using System.Collections;
 
 namespace HeuristicLab.MainForm.Test {
   [DefaultViewAttribute]
-  public partial class FormView1 : ViewBase<ICollection> {
+  public partial class FormView1 : ViewBase,IView<ICollection> {
     private int[] array;
     public FormView1() {
       InitializeComponent();
     }
+
+    #region IView<ICollection> Members
+
+    public void View(ICollection item) {
+      throw new NotImplementedException();
+    }
+
+    public ICollection Item {
+      get { throw new NotImplementedException(); }
+    }
+
+    #endregion
   }
 }

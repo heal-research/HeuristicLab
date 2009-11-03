@@ -63,15 +63,4 @@ namespace HeuristicLab.MainForm.WindowsForms {
     public virtual void OnClosed(object sender, EventArgs e) {
     }
   }
-
-  public class ViewBase<T> : ViewBase, IView<T> {
-    private T item;
-    public T Item {
-      get { return this.item; }
-      protected set { this.item = value; }
-    }
-
-    public virtual void View(T item) {
-    }
-  }
 }
