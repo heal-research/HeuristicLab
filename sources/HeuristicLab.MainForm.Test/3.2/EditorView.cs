@@ -10,10 +10,15 @@ using HeuristicLab.MainForm.WindowsForms;
 using System.Collections;
 
 namespace HeuristicLab.MainForm.Test {
-  [DefaultViewAttribute]
-  public partial class EditorView : ViewBase, IView<ArrayList> {
-    public EditorView() {
+  [Content(typeof(ArrayList),IsDefaultView=true)]
+  public partial class EditorView : ViewBase {
+    public EditorView()
+      : base() {
       InitializeComponent();
+    }
+
+    public EditorView(ArrayList list)
+      : this() {
     }
 
     private void ChangeStateButton_Click(object sender, EventArgs e) {
@@ -21,16 +26,12 @@ namespace HeuristicLab.MainForm.Test {
       views.ToString();
       IEnumerable<Type> views1 = MainFormManager.GetViewTypes(typeof(IList));
       views1.ToString();
-      //IEnumerable<Type> views2 = MainFormManager.GetViewTypes(typeof(object));
-      //views2.ToString();
-      Type def2 = MainFormManager.GetDefaultViewType(typeof(IList));
-      def2.ToString();
-      Type def1 = MainFormManager.GetDefaultViewType(typeof(ArrayList));
-      def1.ToString();
-      //Type def3 = MainFormManager.GetDefaultViewType(typeof(object));
-      //def3.ToString();
+      IEnumerable<Type> views2 = MainFormManager.GetViewTypes(typeof(IEnumerable));
+      views2.ToString();
 
-      MainFormManager.MainForm.HideView(this);
+      ArrayList list = new ArrayList();
+      IView defaultView = MainFormManager.CreateDefaultView(list);
+      MainFormManager.MainForm.ShowView(defaultView);
       this.OnChanged();
     }
 
@@ -44,17 +45,5 @@ namespace HeuristicLab.MainForm.Test {
 
       }
     }
-
-    #region IView<ArrayList> Members
-
-    public void View(ArrayList item) {
-      throw new NotImplementedException();
-    }
-
-    public ArrayList Item {
-      get { throw new NotImplementedException(); }
-    }
-
-    #endregion
   }
 }

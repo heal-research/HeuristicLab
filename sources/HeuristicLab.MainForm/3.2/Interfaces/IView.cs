@@ -32,9 +32,4 @@ namespace HeuristicLab.MainForm {
     void OnClosing(object sender, CancelEventArgs e);
     void OnClosed(object sender, EventArgs e);
   }
-
-  public interface IView<T> : IView {
-    void View(T item);
-    T Item { get; }
-  }
 }

@@ -28,12 +28,12 @@ namespace HeuristicLab.MainForm {
   public static class MainFormManager {
     private static object locker;
     private static IMainForm mainform;
-    private static Dictionary<Type, List<Type>> views;
+    private static HashSet<Type> views;
     private static Dictionary<Type, Type> defaultViews;
 
     static MainFormManager() {
       locker = new object();
-      views = new Dictionary<Type, List<Type>>();
+      views = new HashSet<Type>();
       defaultViews = new Dictionary<Type, Type>();
     }
 
@@ -45,39 +45,20 @@ namespace HeuristicLab.MainForm {
           DiscoveryService ds = new DiscoveryService();
           IEnumerable<Type> types =
             from t in ds.GetTypes(typeof(IView))
-            where !t.IsAbstract && !t.IsInterface && !t.IsGenericType
+            where !t.IsAbstract && !t.IsInterface && !t.IsGenericType && ContentAttribute.HasContentAttribute(t)
             select t;
 
-          foreach (Type t in types) {
-            foreach (Type viewableType in GetViewableType(t)) {
-              if (viewableType != null) {
-                if (!views.ContainsKey(viewableType))
-                  views[viewableType] = new List<Type>();
-                views[viewableType].Add(t);
-
-                if (DefaultViewAttribute.IsDefaultView(t)) {
-                  if (defaultViews.ContainsKey(viewableType))
-                    throw new ArgumentException("DefaultView for type " + viewableType + " is " + defaultViews[viewableType] +
-                      ". Can't register additional DefaultView " + t + ".");
-                  defaultViews[viewableType] = t;
-                }
-              }
+          foreach (Type viewType in types) {
+            views.Add(viewType);
+            foreach (Type contentType in ContentAttribute.GetTypesWhereViewTypeIsDefaultView(viewType)) {
+              if (defaultViews.ContainsKey(contentType))
+                throw new ArgumentException("DefaultView for type " + contentType + " is " + defaultViews[contentType] +
+                  ". Can't register additional DefaultView " + viewType + ".");
+              defaultViews[contentType] = viewType;
             }
           }
         } else
           throw new ArgumentException("A mainform was already associated with the mainform manager.");
-      }
-    }
-
-    private static IEnumerable<Type> GetViewableType(Type t) {
-      IEnumerable<Type> interfaceTypes =
-       from type in t.GetInterfaces()
-       where type.Namespace == "HeuristicLab.MainForm" && type.Name.StartsWith("IView") &&
-             type.IsGenericType && !type.IsGenericTypeDefinition
-       select type;
-
-      foreach (Type interfaceType in interfaceTypes) {
-        yield return interfaceType.GetGenericArguments()[0];
       }
     }
 
@@ -89,26 +70,23 @@ namespace HeuristicLab.MainForm {
       return (T)mainform;
     }
 
-    public static IEnumerable<Type> GetViewTypes(Type viewableType) {
-      List<Type> viewsForType = new List<Type>();
-      foreach (KeyValuePair<Type, List<Type>> v in views) {
-        if (v.Key.IsAssignableFrom(viewableType))
-          viewsForType.AddRange(v.Value);
-      }
-      return viewsForType.Distinct();
+    public static IEnumerable<Type> GetViewTypes(Type contentType) {
+      return from v in views
+             where ContentAttribute.CanViewType(v, contentType)
+             select v;
     }
 
     public static bool ViewCanViewObject(IView view, object o) {
-      return GetViewTypes(o.GetType()).Contains(view.GetType());
+      return ContentAttribute.CanViewType(view.GetType(), o.GetType());
     }
 
-    public static Type GetDefaultViewType(Type viewableType) {
+    public static Type GetDefaultViewType(Type contentType) {
       //check if viewableType has a default view
-      if (defaultViews.ContainsKey(viewableType))
-        return defaultViews[viewableType];
+      if (defaultViews.ContainsKey(contentType))
+        return defaultViews[contentType];
 
       //check base classes for default view
-      Type type = viewableType;
+      Type type = contentType;
       while (type.BaseType != null && !defaultViews.ContainsKey(type)) {
         type = type.BaseType;
       }
@@ -117,22 +95,22 @@ namespace HeuristicLab.MainForm {
 
       //check if exact one implemented interface has a default view
       List<Type> temp = (from t in defaultViews.Keys
-                         where t.IsAssignableFrom(viewableType) && t.IsInterface
+                         where t.IsAssignableFrom(contentType) && t.IsInterface
                          select t).ToList();
       if (temp.Count == 1)
         return defaultViews[temp[0]];
       //more than one default view for implemented interfaces are found
       if (temp.Count > 1)
-        throw new Exception("Could not determine which is the default view for type " + viewableType.ToString() + ". Because more than one implemented interfaces have a default view.");
+        throw new Exception("Could not determine which is the default view for type " + contentType.ToString() + ". Because more than one implemented interfaces have a default view.");
       return null;
     }
 
-    public static IView<T> CreateDefaultView<T>(T objectToView) {
+    public static IView CreateDefaultView(object objectToView) {
       Type t = GetDefaultViewType(objectToView.GetType());
       if (t == null)
         return null;
       else
-        return (IView<T>)Activator.CreateInstance(t);
+        return (IView)Activator.CreateInstance(t, objectToView);
     }
   }
 }

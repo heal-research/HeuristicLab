@@ -91,7 +91,7 @@
     <Compile Include="Interfaces\IView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserInterfaceItemBase.cs" />
-    <Compile Include="DefaultViewAttribute.cs" />
+    <Compile Include="ContentAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
