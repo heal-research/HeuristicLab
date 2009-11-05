@@ -112,5 +112,17 @@ namespace HeuristicLab.MainForm {
       else
         return (IView)Activator.CreateInstance(t, objectToView);
     }
+
+    public static IView CreateView(Type viewType) {
+      if (!typeof(IView).IsAssignableFrom(viewType))
+        throw new ArgumentException("View can not be created becaues given type " + viewType.ToString() + " is not of type IView.");
+      return (IView)Activator.CreateInstance(viewType);
+    }
+
+    public static IView CreateView(Type viewType, object objectToView) {
+      if (!typeof(IView).IsAssignableFrom(viewType))
+        throw new ArgumentException("View can not be created becaues given type " + viewType.ToString() + " is not of type IView.");
+      return (IView)Activator.CreateInstance(viewType,objectToView);
+    }
   }
 }
