@@ -57,7 +57,7 @@ namespace HeuristicLab.MainForm {
       return attributes.Any(a => a.isDefaultView && a.type == content);
     }
 
-    public static IEnumerable<Type> GetTypesWhereViewTypeIsDefaultView(Type viewType) {
+    public static IEnumerable<Type> GetDefaultViewableTypes(Type viewType) {
       ContentAttribute[] attributes = (ContentAttribute[])viewType.GetCustomAttributes(typeof(ContentAttribute), true);
       return from a in attributes
              where a.isDefaultView

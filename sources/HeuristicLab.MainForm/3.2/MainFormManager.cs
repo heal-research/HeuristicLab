@@ -50,7 +50,7 @@ namespace HeuristicLab.MainForm {
 
           foreach (Type viewType in types) {
             views.Add(viewType);
-            foreach (Type contentType in ContentAttribute.GetTypesWhereViewTypeIsDefaultView(viewType)) {
+            foreach (Type contentType in ContentAttribute.GetDefaultViewableTypes(viewType)) {
               if (defaultViews.ContainsKey(contentType))
                 throw new ArgumentException("DefaultView for type " + contentType + " is " + defaultViews[contentType] +
                   ". Can't register additional DefaultView " + viewType + ".");
