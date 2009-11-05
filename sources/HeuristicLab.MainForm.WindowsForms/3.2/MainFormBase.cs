@@ -37,14 +37,17 @@ namespace HeuristicLab.MainForm.WindowsForms {
       InitializeComponent();
       this.views = new Dictionary<IView, Form>();
       this.userInterfaceItems = new List<IUserInterfaceItem>();
-      if (!DesignMode)
-        MainFormManager.RegisterMainForm(this);
     }
 
     protected MainFormBase(Type userInterfaceItemType)
       : this() {
       this.userInterfaceItemType = userInterfaceItemType;
       CreateGUI();
+    }
+
+    private void MainFormBase_Load(object sender, EventArgs e) {
+      if (!DesignMode)
+        MainFormManager.RegisterMainForm(this);
     }
 
     #region IMainForm Members

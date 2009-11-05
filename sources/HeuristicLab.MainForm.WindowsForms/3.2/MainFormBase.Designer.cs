@@ -47,7 +47,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.menuStrip = new System.Windows.Forms.MenuStrip();
       this.toolStrip = new System.Windows.Forms.ToolStrip();
       this.statusStrip = new System.Windows.Forms.StatusStrip();
-      this.statusStrip.SuspendLayout();
       this.SuspendLayout();
       // 
       // menuStrip
@@ -84,8 +83,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.MainMenuStrip = this.menuStrip;
       this.Name = "MainFormBase";
-      this.statusStrip.ResumeLayout(false);
-      this.statusStrip.PerformLayout();
+      this.Load += new System.EventHandler(this.MainFormBase_Load);
       this.ResumeLayout(false);
       this.PerformLayout();
 
