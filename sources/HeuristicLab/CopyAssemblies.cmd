@@ -10,8 +10,6 @@ copy "%SolutionDir%\ALGLIB\%Outdir%\ALGLIB.dll" .\plugins
 copy "%SolutionDir%\ALGLIB\%Outdir%\ALGLIB License.txt" .\plugins
 copy "%SolutionDir%\HeuristicLab.AdvancedOptimizationFrontend\3.2\%Outdir%\HeuristicLab.AdvancedOptimizationFrontend-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.AdvancedOptimizationFrontend\3.3\%Outdir%\HeuristicLab.AdvancedOptimizationFrontend-3.3.dll" .\plugins
-copy "%SolutionDir%\WinFormsUI\%Outdir%\WeifenLuo.WinFormsUI.Docking.dll" .\plugins
-copy "%SolutionDir%\WinFormsUI\%Outdir%\WeifenLuo.WinFormsUI.Docking License.txt" .\plugins
 copy "%SolutionDir%\HeuristicLab.Assignment.QAP\3.2\%Outdir%\HeuristicLab.Assignment.QAP-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.BitVector\3.2\%Outdir%\HeuristicLab.BitVector-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.BackgroundProcessing\3.2\%Outdir%\HeuristicLab.BackgroundProcessing-3.2.dll" .\plugins
@@ -77,6 +75,8 @@ copy "%SolutionDir%\HeuristicLab.Logging\3.3\%Outdir%\HeuristicLab.Logging-3.3.d
 copy "%SolutionDir%\HeuristicLab.MainForm\3.2\%Outdir%\HeuristicLab.MainForm-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.MainForm.Test\3.2\%Outdir%\HeuristicLab.MainForm.Test-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.MainForm.WindowsForms\3.2\%Outdir%\HeuristicLab.MainForm.WindowsForms-3.2.dll" .\plugins
+copy "%SolutionDir%\WinFormsUI\%Outdir%\WeifenLuo.WinFormsUI.Docking.dll" .\plugins
+copy "%SolutionDir%\WinFormsUI\%Outdir%\WeifenLuo.WinFormsUI.Docking License.txt" .\plugins
 copy "%SolutionDir%\HeuristicLab.Modeling\3.2\%Outdir%\HeuristicLab.Modeling-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Modeling\3.3\%Outdir%\HeuristicLab.Modeling-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Modeling.Database\3.2\%Outdir%\HeuristicLab.Modeling.Database-3.2.dll" .\plugins
