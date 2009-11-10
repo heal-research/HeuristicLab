@@ -92,6 +92,7 @@
     <Compile Include="HeuristicLabCommonPlugin.cs" />
     <Compile Include="NotificationDictionary.cs" />
     <Compile Include="ObservableCollection.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
