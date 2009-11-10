@@ -5,6 +5,7 @@ using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Data {
   /// <summary>
@@ -230,7 +231,7 @@ namespace HeuristicLab.Data {
     /// <summary>
     /// Occurs when a new item is added to the dictionary.
     /// </summary>
-    public event EventHandler<KeyValueEventArgs> ItemAdded;
+    public event EventHandler<EventArgs<IItem, IItem>> ItemAdded;
     /// <summary>
     /// Fires a new <c>ItemAdded</c> event.
     /// </summary>
@@ -239,14 +240,14 @@ namespace HeuristicLab.Data {
     /// <param name="value">The value that was added.</param>
     protected virtual void OnItemAdded(K key, V value) {
       if (ItemAdded != null)
-        ItemAdded(this, new KeyValueEventArgs(key, value));
+        ItemAdded(this, new EventArgs<IItem, IItem>(key, value));
       OnChanged();
     }
 
     /// <summary>
     /// Occurs when an item is removed from the dictionary.
     /// </summary>
-    public event EventHandler<KeyValueEventArgs> ItemRemoved;
+    public event EventHandler<EventArgs<IItem, IItem>> ItemRemoved;
     /// <summary>
     /// Fires a new <c>ItemRemoved</c> event.
     /// </summary>
@@ -255,7 +256,7 @@ namespace HeuristicLab.Data {
     /// <param name="value">The value that was removed</param>
     protected virtual void OnItemRemoved(K key, V value) {
       if (ItemRemoved != null)
-        ItemRemoved(this, new KeyValueEventArgs(key, value));
+        ItemRemoved(this, new EventArgs<IItem, IItem>(key, value));
       OnChanged();
     }
 

@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   /// <summary>
@@ -148,27 +149,27 @@ namespace HeuristicLab.Core {
     /// <summary>
     /// Occurs when a variable has been added to the current instance.
     /// </summary>
-    event EventHandler<VariableEventArgs> VariableAdded;
+    event EventHandler<EventArgs<IVariable>> VariableAdded;
     /// <summary>
     /// Occurs when a variable has been deleted from the current instance.
     /// </summary>
-    event EventHandler<VariableEventArgs> VariableRemoved;
+    event EventHandler<EventArgs<IVariable>> VariableRemoved;
     /// <summary>
     /// Occurs when an alias has been added to the current instance.
     /// </summary>
-    event EventHandler<AliasEventArgs> AliasAdded;
+    event EventHandler<EventArgs<string>> AliasAdded;
     /// <summary>
     /// Occurs when an alias has been removed from the current instance.
     /// </summary>
-    event EventHandler<AliasEventArgs> AliasRemoved;
+    event EventHandler<EventArgs<string>> AliasRemoved;
     /// <summary>
     /// Occurs when a sub scope has been added to the current instance.
     /// </summary>
-    event EventHandler<ScopeIndexEventArgs> SubScopeAdded;
+    event EventHandler<EventArgs<IScope, int>> SubScopeAdded;
     /// <summary>
     /// Occurs when a sub scope has been deleted from the current instance.
     /// </summary>
-    event EventHandler<ScopeIndexEventArgs> SubScopeRemoved;
+    event EventHandler<EventArgs<IScope, int>> SubScopeRemoved;
     /// <summary>
     /// Occurs when the sub scopes have been reordered.
     /// </summary>

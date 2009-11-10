@@ -24,14 +24,15 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
 using System.Threading;
+using System.IO;
+using System.Xml;
+using System.IO.Compression;
+using HeuristicLab.Common;
 using HeuristicLab.Hive.JobBase;
 using HeuristicLab.Hive.Contracts.Interfaces;
 using HeuristicLab.Hive.Contracts;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
-using System.IO;
-using System.Xml;
-using System.IO.Compression;
 using HeuristicLab.Tracing;
 
 namespace HeuristicLab.Hive.Engine {
@@ -255,17 +256,17 @@ namespace HeuristicLab.Hive.Engine {
         Initialized(this, new EventArgs());
     }
 
-    public event EventHandler<OperationEventArgs> OperationExecuted;
+    public event EventHandler<EventArgs<IOperation>> OperationExecuted;
     /// <summary>
     /// Fires a new <c>OperationExecuted</c> event.
     /// </summary>
     /// <param name="operation">The operation that has been executed.</param>
     protected virtual void OnOperationExecuted(IOperation operation) {
       if (OperationExecuted != null)
-        OperationExecuted(this, new OperationEventArgs(operation));
+        OperationExecuted(this, new EventArgs<IOperation>(operation));
     }
 
-    public event EventHandler<ExceptionEventArgs> ExceptionOccurred;
+    public event EventHandler<EventArgs<Exception>> ExceptionOccurred;
     /// <summary>
     /// Aborts the execution and fires a new <c>ExceptionOccurred</c> event.
     /// </summary>
@@ -273,7 +274,7 @@ namespace HeuristicLab.Hive.Engine {
     protected virtual void OnExceptionOccurred(Exception exception) {
       Abort();
       if (ExceptionOccurred != null)
-        ExceptionOccurred(this, new ExceptionEventArgs(exception));
+        ExceptionOccurred(this, new EventArgs<Exception>(exception));
     }
 
     public event EventHandler ExecutionTimeChanged;

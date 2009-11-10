@@ -27,6 +27,7 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   /// <summary>
@@ -102,8 +103,8 @@ namespace HeuristicLab.Core {
       scopeNodeTable.Add(scope, node);
       scopeExpandedTable.Add(scope, false);
       if (myAutomaticUpdating) {
-        scope.SubScopeAdded += new EventHandler<ScopeIndexEventArgs>(Scope_SubScopeAdded);
-        scope.SubScopeRemoved += new EventHandler<ScopeIndexEventArgs>(Scope_SubScopeRemoved);
+        scope.SubScopeAdded += new EventHandler<EventArgs<IScope, int>>(Scope_SubScopeAdded);
+        scope.SubScopeRemoved += new EventHandler<EventArgs<IScope, int>>(Scope_SubScopeRemoved);
         scope.SubScopesReordered += new EventHandler(Scope_SubScopesReordered);
       }
       if (scope.SubScopes.Count > 0)
@@ -118,8 +119,8 @@ namespace HeuristicLab.Core {
       if ((scope != null) && (scopeNodeTable.ContainsKey(scope))) {
         scopeNodeTable.Remove(scope);
         scopeExpandedTable.Remove(scope);
-        scope.SubScopeAdded -= new EventHandler<ScopeIndexEventArgs>(Scope_SubScopeAdded);
-        scope.SubScopeRemoved -= new EventHandler<ScopeIndexEventArgs>(Scope_SubScopeRemoved);
+        scope.SubScopeAdded -= new EventHandler<EventArgs<IScope, int>>(Scope_SubScopeAdded);
+        scope.SubScopeRemoved -= new EventHandler<EventArgs<IScope, int>>(Scope_SubScopeRemoved);
         scope.SubScopesReordered -= new EventHandler(Scope_SubScopesReordered);
       }
     }
@@ -208,11 +209,11 @@ namespace HeuristicLab.Core {
     #region Scope Events
     private delegate void ScopeDelegate(IScope scope);
     private delegate void ScopeScopeIndexDelegate(IScope scope, IScope subScope, int index);
-    private void Scope_SubScopeAdded(object sender, ScopeIndexEventArgs e) {
+    private void Scope_SubScopeAdded(object sender, EventArgs<IScope, int> e) {
       IScope scope = (IScope)sender;
       TreeNode node = scopeNodeTable[scope];
       if (scopeExpandedTable[scope] || (scope.SubScopes.Count == 1))
-        AddSubScope(scope, e.Scope, e.Index);
+        AddSubScope(scope, e.Value, e.Value2);
     }
     private void AddSubScope(IScope scope, IScope subScope, int index) {
       if (InvokeRequired) {
@@ -227,11 +228,11 @@ namespace HeuristicLab.Core {
         parent.Nodes.Insert(index, child);
       }
     }
-    private void Scope_SubScopeRemoved(object sender, ScopeIndexEventArgs e) {
+    private void Scope_SubScopeRemoved(object sender, EventArgs<IScope, int> e) {
       IScope scope = (IScope)sender;
       TreeNode node = scopeNodeTable[scope];
       if (scopeExpandedTable[scope] || (scope.SubScopes.Count == 0))
-        RemoveSubScope(scope, e.Scope, e.Index);
+        RemoveSubScope(scope, e.Value, e.Value2);
     }
     private void RemoveSubScope(IScope scope, IScope subScope, int index) {
       if (InvokeRequired) {

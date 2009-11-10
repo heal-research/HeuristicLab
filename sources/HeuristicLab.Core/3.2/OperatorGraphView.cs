@@ -27,6 +27,7 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   /// <summary>
@@ -71,8 +72,8 @@ namespace HeuristicLab.Core {
     /// </summary>
     /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RemoveItemEvents() {
-      OperatorGraph.OperatorAdded -= new EventHandler<OperatorEventArgs>(OperatorGraph_OperatorAdded);
-      OperatorGraph.OperatorRemoved -= new EventHandler<OperatorEventArgs>(OperatorGraph_OperatorRemoved);
+      OperatorGraph.OperatorAdded -= new EventHandler<EventArgs<IOperator>>(OperatorGraph_OperatorAdded);
+      OperatorGraph.OperatorRemoved -= new EventHandler<EventArgs<IOperator>>(OperatorGraph_OperatorRemoved);
       OperatorGraph.InitialOperatorChanged -= new EventHandler(OperatorGraph_InitialOperatorChanged);
       base.RemoveItemEvents();
     }
@@ -82,8 +83,8 @@ namespace HeuristicLab.Core {
     /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
-      OperatorGraph.OperatorAdded += new EventHandler<OperatorEventArgs>(OperatorGraph_OperatorAdded);
-      OperatorGraph.OperatorRemoved += new EventHandler<OperatorEventArgs>(OperatorGraph_OperatorRemoved);
+      OperatorGraph.OperatorAdded += new EventHandler<EventArgs<IOperator>>(OperatorGraph_OperatorAdded);
+      OperatorGraph.OperatorRemoved += new EventHandler<EventArgs<IOperator>>(OperatorGraph_OperatorRemoved);
       OperatorGraph.InitialOperatorChanged += new EventHandler(OperatorGraph_InitialOperatorChanged);
     }
 
@@ -143,8 +144,8 @@ namespace HeuristicLab.Core {
         operatorNodeTable.Add(op, new List<TreeNode>());
         op.NameChanged += new EventHandler(Operator_NameChanged);
         op.BreakpointChanged += new EventHandler(Operator_BreakpointChanged);
-        op.SubOperatorAdded += new EventHandler<OperatorIndexEventArgs>(Operator_SubOperatorAdded);
-        op.SubOperatorRemoved += new EventHandler<OperatorIndexEventArgs>(Operator_SubOperatorRemoved);
+        op.SubOperatorAdded += new EventHandler<EventArgs<IOperator, int>>(Operator_SubOperatorAdded);
+        op.SubOperatorRemoved += new EventHandler<EventArgs<IOperator, int>>(Operator_SubOperatorRemoved);
       }
       operatorNodeTable[op].Add(node);
 
@@ -163,8 +164,8 @@ namespace HeuristicLab.Core {
         if (operatorNodeTable[op].Count == 0) {
           op.NameChanged -= new EventHandler(Operator_NameChanged);
           op.BreakpointChanged -= new EventHandler(Operator_BreakpointChanged);
-          op.SubOperatorAdded -= new EventHandler<OperatorIndexEventArgs>(Operator_SubOperatorAdded);
-          op.SubOperatorRemoved -= new EventHandler<OperatorIndexEventArgs>(Operator_SubOperatorRemoved);
+          op.SubOperatorAdded -= new EventHandler<EventArgs<IOperator, int>>(Operator_SubOperatorAdded);
+          op.SubOperatorRemoved -= new EventHandler<EventArgs<IOperator, int>>(Operator_SubOperatorRemoved);
           operatorNodeTable.Remove(op);
         }
       }
@@ -446,13 +447,13 @@ namespace HeuristicLab.Core {
     #endregion
 
     #region OperatorGraph Events
-    private void OperatorGraph_OperatorAdded(object sender, OperatorEventArgs e) {
-      operatorsListView.Items.Add(CreateListViewItem(e.Operator));
+    private void OperatorGraph_OperatorAdded(object sender, EventArgs<IOperator> e) {
+      operatorsListView.Items.Add(CreateListViewItem(e.Value));
     }
-    private void OperatorGraph_OperatorRemoved(object sender, OperatorEventArgs e) {
+    private void OperatorGraph_OperatorRemoved(object sender, EventArgs<IOperator> e) {
       ListViewItem itemToDelete = null;
       foreach (ListViewItem item in operatorsListView.Items) {
-        if (item.Tag == e.Operator)
+        if (item.Tag == e.Value)
           itemToDelete = item;
       }
       itemToDelete.Remove();
@@ -477,23 +478,23 @@ namespace HeuristicLab.Core {
           node.ForeColor = graphTreeView.ForeColor;
       }
     }
-    private void Operator_SubOperatorAdded(object sender, OperatorIndexEventArgs e) {
+    private void Operator_SubOperatorAdded(object sender, EventArgs<IOperator, int> e) {
       IOperator op = (IOperator)sender;
       if (operatorNodeTable.ContainsKey(op)) {
         TreeNode[] nodes = new TreeNode[operatorNodeTable[op].Count];
         operatorNodeTable[op].CopyTo(nodes, 0);
         foreach (TreeNode node in nodes)
-          node.Nodes.Insert(e.Index, CreateTreeNode(e.Operator));
+          node.Nodes.Insert(e.Value2, CreateTreeNode(e.Value));
       }
     }
-    private void Operator_SubOperatorRemoved(object sender, OperatorIndexEventArgs e) {
+    private void Operator_SubOperatorRemoved(object sender, EventArgs<IOperator, int> e) {
       IOperator op = (IOperator)sender;
       if (operatorNodeTable.ContainsKey(op)) {
         TreeNode[] nodes = new TreeNode[operatorNodeTable[op].Count];
         operatorNodeTable[op].CopyTo(nodes, 0);
         foreach (TreeNode node in nodes) {
-          RemoveTreeNode(node.Nodes[e.Index]);
-          node.Nodes.RemoveAt(e.Index);
+          RemoveTreeNode(node.Nodes[e.Value2]);
+          node.Nodes.RemoveAt(e.Value2);
         }
       }
     }

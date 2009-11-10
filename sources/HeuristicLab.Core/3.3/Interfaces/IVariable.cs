@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   /// <summary>
@@ -48,7 +49,7 @@ namespace HeuristicLab.Core {
     /// <summary>
     /// Occurs when the name of the variable is currently changing.
     /// </summary>
-    event EventHandler<NameChangingEventArgs> NameChanging;
+    event EventHandler<CancelEventArgs<string>> NameChanging;
     /// <summary>
     /// Occurs when the name of the current instance has been changed.
     /// </summary>

@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   /// <summary>
@@ -136,24 +137,24 @@ namespace HeuristicLab.Core {
     }
 
     /// <inheritdoc/>
-    public event EventHandler<OperatorEventArgs> OperatorAdded;
+    public event EventHandler<EventArgs<IOperator>> OperatorAdded;
     /// <summary>
     /// Fires a new <c>OperatorAdded</c> event.
     /// </summary>
     /// <param name="op">The operator that has been added.</param>
     protected virtual void OnOperatorAdded(IOperator op) {
       if (OperatorAdded != null)
-        OperatorAdded(this, new OperatorEventArgs(op));
+        OperatorAdded(this, new EventArgs<IOperator>(op));
     }
     /// <inheritdoc/>
-    public event EventHandler<OperatorEventArgs> OperatorRemoved;
+    public event EventHandler<EventArgs<IOperator>> OperatorRemoved;
     /// <summary>
     /// Fires a new <c>OperatorRemoved</c> event.
     /// </summary>
     /// <param name="op">The operator that has been removed.</param>
     protected virtual void OnOperatorRemoved(IOperator op) {
       if (OperatorRemoved != null)
-        OperatorRemoved(this, new OperatorEventArgs(op));
+        OperatorRemoved(this, new EventArgs<IOperator>(op));
     }
     /// <inheritdoc/>
     public event EventHandler InitialOperatorChanged;

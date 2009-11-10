@@ -31,6 +31,7 @@ namespace HeuristicLab.Core {
   /// </summary>
   [ClassInfo(Name = "HeuristicLab.Core-3.2")]
   [PluginFile(Filename = "HeuristicLab.Core-3.2.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.Common-3.2")]
   public class HeuristicLabCorePlugin : PluginBase {
   }
 }

@@ -26,6 +26,7 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   /// <summary>
@@ -67,8 +68,8 @@ namespace HeuristicLab.Core {
     /// </summary>
     /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RemoveItemEvents() {
-      Scope.VariableAdded -= new EventHandler<VariableEventArgs>(Scope_VariableAdded);
-      Scope.VariableRemoved -= new EventHandler<VariableEventArgs>(Scope_VariableRemoved);
+      Scope.VariableAdded -= new EventHandler<EventArgs<IVariable>>(Scope_VariableAdded);
+      Scope.VariableRemoved -= new EventHandler<EventArgs<IVariable>>(Scope_VariableRemoved);
       base.RemoveItemEvents();
     }
     /// <summary>
@@ -77,8 +78,8 @@ namespace HeuristicLab.Core {
     /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
-      Scope.VariableAdded += new EventHandler<VariableEventArgs>(Scope_VariableAdded);
-      Scope.VariableRemoved += new EventHandler<VariableEventArgs>(Scope_VariableRemoved);
+      Scope.VariableAdded += new EventHandler<EventArgs<IVariable>>(Scope_VariableAdded);
+      Scope.VariableRemoved += new EventHandler<EventArgs<IVariable>>(Scope_VariableRemoved);
     }
 
     /// <summary>
@@ -180,28 +181,28 @@ namespace HeuristicLab.Core {
     #endregion
 
     #region Scope Events
-    private delegate void OnVariableEventDelegate(object sender, VariableEventArgs e);
-    private void Scope_VariableAdded(object sender, VariableEventArgs e) {
+    private delegate void OnVariableEventDelegate(object sender, EventArgs<IVariable> e);
+    private void Scope_VariableAdded(object sender, EventArgs<IVariable> e) {
       if (InvokeRequired)
         Invoke(new OnVariableEventDelegate(Scope_VariableAdded), sender, e);
       else {
         ListViewItem item = new ListViewItem();
-        item.Text = e.Variable.Name;
-        item.Tag = e.Variable;
+        item.Text = e.Value.Name;
+        item.Tag = e.Value;
         variablesListView.Items.Add(item);
-        e.Variable.NameChanged += new EventHandler(Variable_NameChanged);
+        e.Value.NameChanged += new EventHandler(Variable_NameChanged);
       }
     }
-    private void Scope_VariableRemoved(object sender, VariableEventArgs e) {
+    private void Scope_VariableRemoved(object sender, EventArgs<IVariable> e) {
       if (InvokeRequired)
         Invoke(new OnVariableEventDelegate(Scope_VariableRemoved), sender, e);
       else {
         ListViewItem itemToDelete = null;
         foreach (ListViewItem item in variablesListView.Items) {
-          if (item.Tag == e.Variable)
+          if (item.Tag == e.Value)
             itemToDelete = item;
         }
-        e.Variable.NameChanged -= new EventHandler(Variable_NameChanged);
+        e.Value.NameChanged -= new EventHandler(Variable_NameChanged);
         variablesListView.Items.Remove(itemToDelete);
       }
     }

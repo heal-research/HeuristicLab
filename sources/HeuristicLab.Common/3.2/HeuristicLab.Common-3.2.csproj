@@ -82,6 +82,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CancelEventArgs.cs" />
     <Compile Include="ObservableList.cs" />
     <Compile Include="DoubleExtensions.cs">
       <SubType>Code</SubType>

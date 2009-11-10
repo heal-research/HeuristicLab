@@ -21,6 +21,7 @@
 
 using System;
 using System.Windows.Forms;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.PluginInfrastructure;
 
@@ -42,14 +43,14 @@ namespace HeuristicLab.GP.Algorithms {
     }
 
     protected override void RemoveItemEvents() {
-      StandardGP.Engine.ExceptionOccurred -= new EventHandler<ExceptionEventArgs>(Engine_ExceptionOccurred);
+      StandardGP.Engine.ExceptionOccurred -= new EventHandler<EventArgs<Exception>>(Engine_ExceptionOccurred);
       StandardGP.Engine.Finished -= new EventHandler(Engine_Finished);
       scopeView.Scope = null;
       base.RemoveItemEvents();
     }
     protected override void AddItemEvents() {
       base.AddItemEvents();
-      StandardGP.Engine.ExceptionOccurred += new EventHandler<ExceptionEventArgs>(Engine_ExceptionOccurred);
+      StandardGP.Engine.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(Engine_ExceptionOccurred);
       StandardGP.Engine.Finished += new EventHandler(Engine_Finished);
       SetDataBinding();
       scopeView.Scope = StandardGP.Engine.GlobalScope;
@@ -108,12 +109,12 @@ namespace HeuristicLab.GP.Algorithms {
     #endregion
 
     #region Engine Events
-    private delegate void OnExceptionEventDelegate(object sender, ExceptionEventArgs e);
-    private void Engine_ExceptionOccurred(object sender, ExceptionEventArgs e) {
+    private delegate void OnExceptionEventDelegate(object sender, EventArgs<Exception> e);
+    private void Engine_ExceptionOccurred(object sender, EventArgs<Exception> e) {
       if (InvokeRequired)
         Invoke(new OnExceptionEventDelegate(Engine_ExceptionOccurred), sender, e);
       else
-        Auxiliary.ShowErrorMessageBox(e.Exception);
+        Auxiliary.ShowErrorMessageBox(e.Value);
     }
     private void Engine_Finished(object sender, EventArgs e) {
       if(InvokeRequired)

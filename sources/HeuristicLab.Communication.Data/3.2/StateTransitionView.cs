@@ -26,6 +26,7 @@ using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 
@@ -83,11 +84,11 @@ namespace HeuristicLab.Communication.Data {
     void Parameter_Changed(object sender, EventArgs e) {
       BuildVariablesListBox();
     }
-    void Parameter_Added(object sender, ItemIndexEventArgs e) {
-      ((IItem)e.Item).Changed += new EventHandler(Parameter_Changed);
+    void Parameter_Added(object sender, EventArgs<IItem, int> e) {
+      e.Value.Changed += new EventHandler(Parameter_Changed);
     }
-    void Parameter_Removed(object sender, ItemIndexEventArgs e) {
-      ((IItem)e.Item).Changed -= new EventHandler(Parameter_Changed);
+    void Parameter_Removed(object sender, EventArgs<IItem, int> e) {
+      e.Value.Changed -= new EventHandler(Parameter_Changed);
     }
     #endregion
 

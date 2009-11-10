@@ -26,6 +26,7 @@ using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   /// <summary>
@@ -68,8 +69,8 @@ namespace HeuristicLab.Core {
     /// </summary>
     /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RemoveItemEvents() {
-      Operator.VariableAdded -= new EventHandler<VariableEventArgs>(OperatorBase_VariableAdded);
-      Operator.VariableRemoved -= new EventHandler<VariableEventArgs>(OperatorBase_VariableRemoved);
+      Operator.VariableAdded -= new EventHandler<EventArgs<IVariable>>(OperatorBase_VariableAdded);
+      Operator.VariableRemoved -= new EventHandler<EventArgs<IVariable>>(OperatorBase_VariableRemoved);
       base.RemoveItemEvents();
     }
     /// <summary>
@@ -78,8 +79,8 @@ namespace HeuristicLab.Core {
     /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
-      Operator.VariableAdded += new EventHandler<VariableEventArgs>(OperatorBase_VariableAdded);
-      Operator.VariableRemoved += new EventHandler<VariableEventArgs>(OperatorBase_VariableRemoved);
+      Operator.VariableAdded += new EventHandler<EventArgs<IVariable>>(OperatorBase_VariableAdded);
+      Operator.VariableRemoved += new EventHandler<EventArgs<IVariable>>(OperatorBase_VariableRemoved);
     }
 
     /// <summary>
@@ -193,25 +194,25 @@ namespace HeuristicLab.Core {
     #endregion
 
     #region OperatorBase Events
-    private void OperatorBase_VariableAdded(object sender, VariableEventArgs e) {
+    private void OperatorBase_VariableAdded(object sender, EventArgs<IVariable> e) {
       ListViewItem item = new ListViewItem();
-      item.Text = e.Variable.Name;
-      item.Tag = e.Variable;
+      item.Text = e.Value.Name;
+      item.Tag = e.Value;
       variablesListView.Items.Add(item);
       // select the new item
       foreach(ListViewItem oldSelected in variablesListView.SelectedItems) {
         oldSelected.Selected = false;
       }
       item.Selected = true;
-      e.Variable.NameChanged += new EventHandler(Variable_NameChanged);
+      e.Value.NameChanged += new EventHandler(Variable_NameChanged);
     }
-    private void OperatorBase_VariableRemoved(object sender, VariableEventArgs e) {
+    private void OperatorBase_VariableRemoved(object sender, EventArgs<IVariable> e) {
       ListViewItem itemToDelete = null;
       foreach (ListViewItem item in variablesListView.Items) {
-        if (item.Tag == e.Variable)
+        if (item.Tag == e.Value)
           itemToDelete = item;
       }
-      e.Variable.NameChanged -= new EventHandler(Variable_NameChanged);
+      e.Value.NameChanged -= new EventHandler(Variable_NameChanged);
       variablesListView.Items.Remove(itemToDelete);
     }
     #endregion

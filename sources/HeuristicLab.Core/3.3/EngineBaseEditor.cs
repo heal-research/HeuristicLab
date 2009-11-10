@@ -27,6 +27,7 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   /// <summary>
@@ -57,7 +58,7 @@ namespace HeuristicLab.Core {
     /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RemoveItemEvents() {
       Engine.Initialized -= new EventHandler(Engine_Initialized);
-      Engine.ExceptionOccurred -= new EventHandler<ExceptionEventArgs>(Engine_ExceptionOccurred);
+      Engine.ExceptionOccurred -= new EventHandler<EventArgs<Exception>>(Engine_ExceptionOccurred);
       Engine.ExecutionTimeChanged -= new EventHandler(Engine_ExecutionTimeChanged);
       Engine.Finished -= new EventHandler(Engine_Finished);
       operatorGraphView.OperatorGraph = null;
@@ -71,7 +72,7 @@ namespace HeuristicLab.Core {
     protected override void AddItemEvents() {
       base.AddItemEvents();
       Engine.Initialized += new EventHandler(Engine_Initialized);
-      Engine.ExceptionOccurred += new EventHandler<ExceptionEventArgs>(Engine_ExceptionOccurred);
+      Engine.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(Engine_ExceptionOccurred);
       Engine.ExecutionTimeChanged += new EventHandler(Engine_ExecutionTimeChanged);
       Engine.Finished += new EventHandler(Engine_Finished);
       operatorGraphView.OperatorGraph = Engine.OperatorGraph;
@@ -102,12 +103,12 @@ namespace HeuristicLab.Core {
     private void Engine_Initialized(object sender, EventArgs e) {
       Refresh();
     }
-    private delegate void OnExceptionEventDelegate(object sender, ExceptionEventArgs e);
-    private void Engine_ExceptionOccurred(object sender, ExceptionEventArgs e) {
+    private delegate void OnExceptionEventDelegate(object sender, EventArgs<Exception> e);
+    private void Engine_ExceptionOccurred(object sender, EventArgs<Exception> e) {
       if (InvokeRequired)
         Invoke(new OnExceptionEventDelegate(Engine_ExceptionOccurred), sender, e);
       else
-        Auxiliary.ShowErrorMessageBox(e.Exception);
+        Auxiliary.ShowErrorMessageBox(e.Value);
     }
     private void Engine_ExecutionTimeChanged(object sender, EventArgs e) {
       executionTimeCounter++;

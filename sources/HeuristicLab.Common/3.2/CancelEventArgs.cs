@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -21,27 +21,40 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.ComponentModel;
 
-namespace HeuristicLab.Core {
-  /// <summary>
-  /// Event arguments to be able to specify the affected item.
-  /// </summary>
-  public class ItemEventArgs : EventArgs {
-    private IItem myItem;
-    /// <summary>
-    /// Gets the affected item.
-    /// </summary>
-    public IItem Item {
-      get { return myItem; }
+namespace HeuristicLab.Common {
+  public class CancelEventArgs<T> : CancelEventArgs {
+    private T myValue;
+    public T Value {
+      get { return myValue; }
     }
 
-    /// <summary>
-    /// Initializes a new instance of <see cref="ItemEventArgs"/> with the given <paramref name="item"/>.
-    /// </summary>
-    /// <param name="item">The affected item.</param>
-    public ItemEventArgs(IItem item) {
-      myItem = item;
+    public CancelEventArgs(T value)
+      : base() {
+      myValue = value;
+    }
+    public CancelEventArgs(T value, bool cancel)
+      : base(cancel) {
+      myValue = value;
+    }
+  }
+
+  public class CancelEventArgs<T, U> : CancelEventArgs<T> {
+    private U myValue2;
+    public U Value2 {
+      get { return myValue2; }
+    }
+
+    public CancelEventArgs(T value, U value2)
+      : base(value) {
+      myValue2 = value2;
+    }
+    public CancelEventArgs(T value, U value2, bool cancel)
+      : base(value, cancel) {
+      myValue2 = value2;
     }
   }
 }

@@ -224,6 +224,10 @@ call PreBuildEvent.cmd</PreBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Common\3.2\HeuristicLab.Common-3.2.csproj">
+      <Project>{1FC004FC-59AF-4249-B1B6-FF25873A20E4}</Project>
+      <Name>HeuristicLab.Common-3.2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Constraints\3.2\HeuristicLab.Constraints-3.2.csproj">
       <Project>{FCD62C6F-4793-4593-AE9A-0BDCA256EE99}</Project>
       <Name>HeuristicLab.Constraints-3.2</Name>

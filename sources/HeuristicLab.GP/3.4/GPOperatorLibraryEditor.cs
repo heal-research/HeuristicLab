@@ -32,6 +32,7 @@ using System.Diagnostics;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Random;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.GP {
   public partial class GPOperatorLibraryEditor : EditorBase {
@@ -46,8 +47,8 @@ namespace HeuristicLab.GP {
       OperatorLibrary = library;
       operatorLibraryEditor.OperatorLibrary = library;
 
-      library.GPOperatorGroup.OperatorAdded += new EventHandler(GPOperatorLibraryView_OperatorAdded);
-      library.GPOperatorGroup.OperatorRemoved += new EventHandler(GPOperatorGroup_OperatorRemoved);
+      library.GPOperatorGroup.OperatorAdded += new EventHandler<EventArgs<IOperator>>(GPOperatorLibraryView_OperatorAdded);
+      library.GPOperatorGroup.OperatorRemoved += new EventHandler<EventArgs<IOperator>>(GPOperatorGroup_OperatorRemoved);
 
       mutationVariableView.Enabled = false;
       initVariableView.Enabled = false;
@@ -71,8 +72,8 @@ namespace HeuristicLab.GP {
     }
 
 
-    private void GPOperatorLibraryView_OperatorAdded(object sender, EventArgs e) {
-      IOperator op = ((OperatorEventArgs)e).op;
+    private void GPOperatorLibraryView_OperatorAdded(object sender, EventArgs<IOperator> e) {
+      IOperator op = e.Value;
       if(op.GetVariable(FunctionBase.MANIPULATION) != null) {
         ListViewItem operatorMutationItem = new ListViewItem();
         operatorMutationItem.Name = op.Name;
@@ -112,8 +113,8 @@ namespace HeuristicLab.GP {
     }
 
 
-    private void GPOperatorGroup_OperatorRemoved(object sender, EventArgs e) {
-      IOperator op = ((OperatorEventArgs)e).op;
+    private void GPOperatorGroup_OperatorRemoved(object sender, EventArgs<IOperator> e) {
+      IOperator op = e.Value;
 
       foreach(ListViewItem item in mutationListView.Items) {
         if(item.Tag == op) {

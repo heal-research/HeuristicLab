@@ -25,6 +25,7 @@ using System.Text;
 using System.Xml;
 using System.Threading;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   /// <summary>
@@ -236,19 +237,19 @@ namespace HeuristicLab.Core {
     /// <summary>
     /// Occurs when an operation is executed.
     /// </summary>
-    public event EventHandler<OperationEventArgs> OperationExecuted;
+    public event EventHandler<EventArgs<IOperation>> OperationExecuted;
     /// <summary>
     /// Fires a new <c>OperationExecuted</c> event.
     /// </summary>
     /// <param name="operation">The operation that has been executed.</param>
     protected virtual void OnOperationExecuted(IOperation operation) {
       if (OperationExecuted != null)
-        OperationExecuted(this, new OperationEventArgs(operation));
+        OperationExecuted(this, new EventArgs<IOperation>(operation));
     }
     /// <summary>
     /// Occurs when an exception occured during the execution.
     /// </summary>
-    public event EventHandler<ExceptionEventArgs> ExceptionOccurred;
+    public event EventHandler<EventArgs<Exception>> ExceptionOccurred;
     /// <summary>
     /// Aborts the execution and fires a new <c>ExceptionOccurred</c> event.
     /// </summary>
@@ -256,7 +257,7 @@ namespace HeuristicLab.Core {
     protected virtual void OnExceptionOccurred(Exception exception) {
       Abort();
       if (ExceptionOccurred != null)
-        ExceptionOccurred(this, new ExceptionEventArgs(exception));
+        ExceptionOccurred(this, new EventArgs<Exception>(exception));
     }
     /// <summary>
     /// Occurs when the execution time changed.

@@ -27,6 +27,7 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Data {
   /// <summary>
@@ -70,8 +71,8 @@ namespace HeuristicLab.Data {
     /// <remarks>Calls <see cref="HeuristicLab.Core.ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.
     /// </remarks>
     protected override void RemoveItemEvents() {
-      ItemList.ItemAdded -= new EventHandler<ItemIndexEventArgs>(ItemList_ItemInserted);
-      ItemList.ItemRemoved -= new EventHandler<ItemIndexEventArgs>(ItemList_ItemRemoved);
+      ItemList.ItemAdded -= new EventHandler<EventArgs<IItem, int>>(ItemList_ItemInserted);
+      ItemList.ItemRemoved -= new EventHandler<EventArgs<IItem, int>>(ItemList_ItemRemoved);
       ItemList.Cleared -= new EventHandler(ItemList_Cleared);
       base.RemoveItemEvents();
     }
@@ -82,8 +83,8 @@ namespace HeuristicLab.Data {
     /// </remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
-      ItemList.ItemAdded += new EventHandler<ItemIndexEventArgs>(ItemList_ItemInserted);
-      ItemList.ItemRemoved += new EventHandler<ItemIndexEventArgs>(ItemList_ItemRemoved);
+      ItemList.ItemAdded += new EventHandler<EventArgs<IItem, int>>(ItemList_ItemInserted);
+      ItemList.ItemRemoved += new EventHandler<EventArgs<IItem, int>>(ItemList_ItemRemoved);
       ItemList.Cleared += new EventHandler(ItemList_Cleared);
     }
 
@@ -225,23 +226,23 @@ namespace HeuristicLab.Data {
     #endregion
 
     #region Item and Item List Events
-    private void ItemList_ItemInserted(object sender, ItemIndexEventArgs e) {
+    private void ItemList_ItemInserted(object sender, EventArgs<IItem, int> e) {
       if(InvokeRequired)
-        Invoke(new EventHandler<ItemIndexEventArgs>(ItemList_ItemInserted), sender, e);
+        Invoke(new EventHandler<EventArgs<IItem, int>>(ItemList_ItemInserted), sender, e);
       else {
         ListViewItem item = new ListViewItem();
-        item.Text = e.Item.ToString();
-        item.Tag = e.Item;
-        itemsListView.Items.Insert(e.Index, item);
-        e.Item.Changed += new EventHandler(Item_Changed);
+        item.Text = e.Value.ToString();
+        item.Tag = e.Value;
+        itemsListView.Items.Insert(e.Value2, item);
+        e.Value.Changed += new EventHandler(Item_Changed);
       }
     }
-    private void ItemList_ItemRemoved(object sender, ItemIndexEventArgs e) {
+    private void ItemList_ItemRemoved(object sender, EventArgs<IItem, int> e) {
       if(InvokeRequired)
-        Invoke(new EventHandler<ItemIndexEventArgs>(ItemList_ItemRemoved), sender, e);
+        Invoke(new EventHandler<EventArgs<IItem, int>>(ItemList_ItemRemoved), sender, e);
       else {
-        itemsListView.Items.RemoveAt(e.Index);
-        e.Item.Changed -= new EventHandler(Item_Changed);
+        itemsListView.Items.RemoveAt(e.Value2);
+        e.Value.Changed -= new EventHandler(Item_Changed);
       }
     }
     private void ItemList_Cleared(object sender, EventArgs e) {

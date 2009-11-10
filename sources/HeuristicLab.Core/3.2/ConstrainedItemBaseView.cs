@@ -26,6 +26,7 @@ using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   /// <summary>
@@ -66,8 +67,8 @@ namespace HeuristicLab.Core {
     /// </summary>
     /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RemoveItemEvents() {
-      ConstrainedItem.ConstraintAdded -= new EventHandler<ConstraintEventArgs>(ConstrainedItemBase_ConstraintAdded);
-      ConstrainedItem.ConstraintRemoved -= new EventHandler<ConstraintEventArgs>(ConstrainedItemBase_ConstraintRemoved);
+      ConstrainedItem.ConstraintAdded -= new EventHandler<EventArgs<IConstraint>>(ConstrainedItemBase_ConstraintAdded);
+      ConstrainedItem.ConstraintRemoved -= new EventHandler<EventArgs<IConstraint>>(ConstrainedItemBase_ConstraintRemoved);
       base.RemoveItemEvents();
     }
     /// <summary>
@@ -76,8 +77,8 @@ namespace HeuristicLab.Core {
     /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
-      ConstrainedItem.ConstraintAdded += new EventHandler<ConstraintEventArgs>(ConstrainedItemBase_ConstraintAdded);
-      ConstrainedItem.ConstraintRemoved += new EventHandler<ConstraintEventArgs>(ConstrainedItemBase_ConstraintRemoved);
+      ConstrainedItem.ConstraintAdded += new EventHandler<EventArgs<IConstraint>>(ConstrainedItemBase_ConstraintAdded);
+      ConstrainedItem.ConstraintRemoved += new EventHandler<EventArgs<IConstraint>>(ConstrainedItemBase_ConstraintRemoved);
     }
 
     /// <summary>
@@ -163,16 +164,16 @@ namespace HeuristicLab.Core {
     #endregion
 
     #region ConstrainedItemBase Events
-    private void ConstrainedItemBase_ConstraintAdded(object sender, ConstraintEventArgs e) {
+    private void ConstrainedItemBase_ConstraintAdded(object sender, EventArgs<IConstraint> e) {
       ListViewItem item = new ListViewItem();
-      item.Text = e.Constraint.GetType().Name;
-      item.Tag = e.Constraint;
+      item.Text = e.Value.GetType().Name;
+      item.Tag = e.Value;
       constraintsListView.Items.Add(item);
     }
-    private void ConstrainedItemBase_ConstraintRemoved(object sender, ConstraintEventArgs e) {
+    private void ConstrainedItemBase_ConstraintRemoved(object sender, EventArgs<IConstraint> e) {
       ListViewItem itemToDelete = null;
       foreach (ListViewItem item in constraintsListView.Items) {
-        if (item.Tag == e.Constraint)
+        if (item.Tag == e.Value)
           itemToDelete = item;
       }
       constraintsListView.Items.Remove(itemToDelete);

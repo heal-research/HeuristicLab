@@ -26,6 +26,7 @@ using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Data {
   /// <summary>
@@ -272,7 +273,7 @@ namespace HeuristicLab.Data {
     /// <summary>
     /// Occurs when a new item is added.
     /// </summary>
-    public event EventHandler<ItemIndexEventArgs> ItemAdded;
+    public event EventHandler<EventArgs<IItem, int>> ItemAdded;
     /// <summary>
     /// Fires a new <c>ItemAdded</c> event.
     /// </summary>         
@@ -281,13 +282,13 @@ namespace HeuristicLab.Data {
     /// <param name="index">The position where the element was added.</param>
     protected virtual void OnItemAdded(IItem item, int index) {
       if (ItemAdded != null)
-        ItemAdded(this, new ItemIndexEventArgs(item, index));
+        ItemAdded(this, new EventArgs<IItem, int>(item, index));
       OnChanged();
     }
     /// <summary>
     /// Occurs when an element is removed from the current instance.
     /// </summary>
-    public event EventHandler<ItemIndexEventArgs> ItemRemoved;
+    public event EventHandler<EventArgs<IItem, int>> ItemRemoved;
     /// <summary>
     /// Fires a new <c>ItemRemoved</c> event.
     /// </summary>
@@ -296,7 +297,7 @@ namespace HeuristicLab.Data {
     /// <param name="index">The position from where it has been removed.</param>
     protected virtual void OnItemRemoved(IItem item, int index) {
       if (ItemRemoved != null)
-        ItemRemoved(this, new ItemIndexEventArgs(item, index));
+        ItemRemoved(this, new EventArgs<IItem, int>(item, index));
       OnChanged();
     }
     /// <summary>

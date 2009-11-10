@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Data {
@@ -74,8 +75,8 @@ namespace HeuristicLab.Data {
     /// <remarks>Calls <see cref="HeuristicLab.Core.ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.
     /// </remarks>
     protected override void RemoveItemEvents() {
-      ItemDictionary.ItemAdded -= new EventHandler<KeyValueEventArgs>(ItemDictionary_ItemInserted);
-      ItemDictionary.ItemRemoved -= new EventHandler<KeyValueEventArgs>(ItemDictionary_ItemRemoved);
+      ItemDictionary.ItemAdded -= new EventHandler<EventArgs<IItem, IItem>>(ItemDictionary_ItemInserted);
+      ItemDictionary.ItemRemoved -= new EventHandler<EventArgs<IItem, IItem>>(ItemDictionary_ItemRemoved);
       ItemDictionary.Cleared -= new EventHandler(ItemDictionary_Cleared);
       base.RemoveItemEvents();
     }
@@ -87,8 +88,8 @@ namespace HeuristicLab.Data {
     /// </remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
-      ItemDictionary.ItemAdded += new EventHandler<KeyValueEventArgs>(ItemDictionary_ItemInserted);
-      ItemDictionary.ItemRemoved += new EventHandler<KeyValueEventArgs>(ItemDictionary_ItemRemoved);
+      ItemDictionary.ItemAdded += new EventHandler<EventArgs<IItem, IItem>>(ItemDictionary_ItemInserted);
+      ItemDictionary.ItemRemoved += new EventHandler<EventArgs<IItem, IItem>>(ItemDictionary_ItemRemoved);
       ItemDictionary.Cleared += new EventHandler(ItemDictionary_Cleared);
     }
 
@@ -118,26 +119,26 @@ namespace HeuristicLab.Data {
     }
 
     #region Item and ItemDictionary Events
-    private void ItemDictionary_ItemInserted(object sender, KeyValueEventArgs e) {
+    private void ItemDictionary_ItemInserted(object sender, EventArgs<IItem, IItem> e) {
       if (InvokeRequired)
-        Invoke(new EventHandler<KeyValueEventArgs>(ItemDictionary_ItemInserted), sender, e);
+        Invoke(new EventHandler<EventArgs<IItem, IItem>>(ItemDictionary_ItemInserted), sender, e);
       else {
-        ListViewItem item = CreateListViewItem((K) e.Key, (V) e.Value);
+        ListViewItem item = CreateListViewItem((K) e.Value, (V) e.Value2);
         listView.Items.Insert(listView.Items.Count, item);
-        item.Name = e.Key.ToString();
+        item.Name = e.Value.ToString();
+        e.Value2.Changed += new EventHandler(Item_Changed);
         e.Value.Changed += new EventHandler(Item_Changed);
-        e.Key.Changed += new EventHandler(Item_Changed);
       }
     }
 
-    private void ItemDictionary_ItemRemoved(object sender, KeyValueEventArgs e) {
+    private void ItemDictionary_ItemRemoved(object sender, EventArgs<IItem, IItem> e) {
       if (InvokeRequired)
-        Invoke(new EventHandler<KeyValueEventArgs>(ItemDictionary_ItemRemoved), sender, e);
+        Invoke(new EventHandler<EventArgs<IItem, IItem>>(ItemDictionary_ItemRemoved), sender, e);
       else {
-        int index = listView.Items.IndexOfKey(e.Key.ToString());
+        int index = listView.Items.IndexOfKey(e.Value.ToString());
         listView.Items.RemoveAt(index);
-        e.Key.Changed -= new EventHandler(Item_Changed);
-        e.Value.Changed += new EventHandler(Item_Changed);
+        e.Value.Changed -= new EventHandler(Item_Changed);
+        e.Value2.Changed += new EventHandler(Item_Changed);
       }
     }
 

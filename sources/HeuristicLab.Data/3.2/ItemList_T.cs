@@ -24,6 +24,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Data {
@@ -356,7 +357,7 @@ namespace HeuristicLab.Data {
     /// <summary>
     /// Occurs where a new item is added to the list.
     /// </summary>
-    public event EventHandler<ItemIndexEventArgs> ItemAdded;
+    public event EventHandler<EventArgs<IItem, int>> ItemAdded;
     /// <summary>
     /// Fires a new <c>ItemAdded</c> event.
     /// </summary>
@@ -365,13 +366,13 @@ namespace HeuristicLab.Data {
     /// <param name="index">The position where the new element was added.</param>
     protected virtual void OnItemAdded(IItem item, int index) {
       if (ItemAdded != null)
-        ItemAdded(this, new ItemIndexEventArgs(item, index));
+        ItemAdded(this, new EventArgs<IItem, int>(item, index));
       OnChanged();
     }
     /// <summary>
     /// Occurs when an element is deleted from the list.
     /// </summary>
-    public event EventHandler<ItemIndexEventArgs> ItemRemoved;
+    public event EventHandler<EventArgs<IItem, int>> ItemRemoved;
     /// <summary>
     /// Fires a new <c>ItemRemoved</c> event.
     /// </summary>
@@ -380,7 +381,7 @@ namespace HeuristicLab.Data {
     /// <param name="index">The position from where the element was removed.</param>
     protected virtual void OnItemRemoved(IItem item, int index) {
       if (ItemRemoved != null)
-        ItemRemoved(this, new ItemIndexEventArgs(item, index));
+        ItemRemoved(this, new EventArgs<IItem, int>(item, index));
       OnChanged();
     }
     /// <summary>

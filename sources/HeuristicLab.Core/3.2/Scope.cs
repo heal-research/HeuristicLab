@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   /// <summary>
@@ -100,7 +101,7 @@ namespace HeuristicLab.Core {
     /// <inheritdoc/>
     public void AddVariable(IVariable variable) {
       myVariables.Add(variable.Name, variable);
-      variable.NameChanging += new EventHandler<NameChangingEventArgs>(Variable_NameChanging);
+      variable.NameChanging += new EventHandler<CancelEventArgs<string>>(Variable_NameChanging);
       variable.NameChanged += new EventHandler(Variable_NameChanged);
       OnVariableAdded(variable);
     }
@@ -109,14 +110,14 @@ namespace HeuristicLab.Core {
     public void RemoveVariable(string name) {
       IVariable variable;
       if (myVariables.TryGetValue(name, out variable)) {
-        variable.NameChanging -= new EventHandler<NameChangingEventArgs>(Variable_NameChanging);
+        variable.NameChanging -= new EventHandler<CancelEventArgs<string>>(Variable_NameChanging);
         variable.NameChanged -= new EventHandler(Variable_NameChanged);
         myVariables.Remove(name);
         OnVariableRemoved(variable);
       }
     }
-    private void Variable_NameChanging(object sender, NameChangingEventArgs e) {
-      e.Cancel = myVariables.ContainsKey(e.Name);
+    private void Variable_NameChanging(object sender, CancelEventArgs<string> e) {
+      e.Cancel = myVariables.ContainsKey(e.Value);
     }
     private void Variable_NameChanged(object sender, EventArgs e) {
       IVariable variable = (IVariable)sender;
@@ -262,47 +263,47 @@ namespace HeuristicLab.Core {
     }
 
     /// <inheritdoc />
-    public event EventHandler<VariableEventArgs> VariableAdded;
+    public event EventHandler<EventArgs<IVariable>> VariableAdded;
     /// <summary>
     /// Fires a new <c>VariableAdded</c> event.
     /// </summary>
     /// <param name="variable">The variable that has been added.</param>
     protected virtual void OnVariableAdded(IVariable variable) {
       if (VariableAdded != null)
-        VariableAdded(this, new VariableEventArgs(variable));
+        VariableAdded(this, new EventArgs<IVariable>(variable));
     }
     /// <inheritdoc />
-    public event EventHandler<VariableEventArgs> VariableRemoved;
+    public event EventHandler<EventArgs<IVariable>> VariableRemoved;
     /// <summary>
     /// Fires a new <c>VariableRemoved</c>.
     /// </summary>
     /// <param name="variable">The variable that has been deleted.</param>
     protected virtual void OnVariableRemoved(IVariable variable) {
       if (VariableRemoved != null)
-        VariableRemoved(this, new VariableEventArgs(variable));
+        VariableRemoved(this, new EventArgs<IVariable>(variable));
     }
     /// <inheritdoc /> 
-    public event EventHandler<AliasEventArgs> AliasAdded;
+    public event EventHandler<EventArgs<string>> AliasAdded;
     /// <summary>
     /// Fires a new <c>AliasAdded</c> event.
     /// </summary>
     /// <param name="alias">The alias that has been added.</param>
     protected virtual void OnAliasAdded(string alias) {
       if (AliasAdded != null)
-        AliasAdded(this, new AliasEventArgs(alias));
+        AliasAdded(this, new EventArgs<string>(alias));
     }
     /// <inheritdoc/>
-    public event EventHandler<AliasEventArgs> AliasRemoved;
+    public event EventHandler<EventArgs<string>> AliasRemoved;
     /// <summary>
     /// Fires a new <c>AliasRemoved</c> event.
     /// </summary>
     /// <param name="alias">The alias that has been deleted.</param>
     protected virtual void OnAliasRemoved(string alias) {
       if (AliasRemoved != null)
-        AliasRemoved(this, new AliasEventArgs(alias));
+        AliasRemoved(this, new EventArgs<string>(alias));
     }
     /// <inheritdoc/>
-    public event EventHandler<ScopeIndexEventArgs> SubScopeAdded;
+    public event EventHandler<EventArgs<IScope, int>> SubScopeAdded;
     /// <summary>
     /// Fires a new <c>SubScopeAdded</c> event.
     /// </summary>
@@ -310,10 +311,10 @@ namespace HeuristicLab.Core {
     /// <param name="index">The index where the scope has been added.</param>
     protected virtual void OnSubScopeAdded(IScope scope, int index) {
       if (SubScopeAdded != null)
-        SubScopeAdded(this, new ScopeIndexEventArgs(scope, index));
+        SubScopeAdded(this, new EventArgs<IScope, int>(scope, index));
     }
     /// <inheritdoc/>
-    public event EventHandler<ScopeIndexEventArgs> SubScopeRemoved;
+    public event EventHandler<EventArgs<IScope, int>> SubScopeRemoved;
     /// <summary>
     /// Fires a new <c>SubScopeRemoved</c> event.
     /// </summary>
@@ -321,7 +322,7 @@ namespace HeuristicLab.Core {
     /// <param name="index">The position of the sub scope.</param>
     protected virtual void OnSubScopeRemoved(IScope scope, int index) {
       if (SubScopeRemoved != null)
-        SubScopeRemoved(this, new ScopeIndexEventArgs(scope, index));
+        SubScopeRemoved(this, new EventArgs<IScope, int>(scope, index));
     }
     /// <inheritdoc />
     public event EventHandler SubScopesReordered;

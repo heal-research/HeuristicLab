@@ -26,6 +26,7 @@ using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Charting;
@@ -84,8 +85,8 @@ namespace HeuristicLab.Logging {
     /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RemoveItemEvents() {
       if (PointXYChart != null) {
-        PointXYChart.Values.ItemAdded -= new EventHandler<ItemIndexEventArgs>(Values_ItemAdded);
-        PointXYChart.Values.ItemRemoved -= new EventHandler<ItemIndexEventArgs>(Values_ItemRemoved);
+        PointXYChart.Values.ItemAdded -= new EventHandler<EventArgs<IItem, int>>(Values_ItemAdded);
+        PointXYChart.Values.ItemRemoved -= new EventHandler<EventArgs<IItem, int>>(Values_ItemRemoved);
       }
       base.RemoveItemEvents();
     }
@@ -96,8 +97,8 @@ namespace HeuristicLab.Logging {
     protected override void AddItemEvents() {
       base.AddItemEvents();
       if (PointXYChart != null) {
-        PointXYChart.Values.ItemAdded += new EventHandler<ItemIndexEventArgs>(Values_ItemAdded);
-        PointXYChart.Values.ItemRemoved += new EventHandler<ItemIndexEventArgs>(Values_ItemRemoved);
+        PointXYChart.Values.ItemAdded += new EventHandler<EventArgs<IItem, int>>(Values_ItemAdded);
+        PointXYChart.Values.ItemRemoved += new EventHandler<EventArgs<IItem, int>>(Values_ItemRemoved);
       }
     }
 
@@ -148,15 +149,15 @@ namespace HeuristicLab.Logging {
     }
 
     #region Values Events
-    private delegate void ItemIndexDelegate(object sender, ItemIndexEventArgs e);
-    private void Values_ItemRemoved(object sender, ItemIndexEventArgs e) {
+    private delegate void ItemIndexDelegate(object sender, EventArgs<IItem, int> e);
+    private void Values_ItemRemoved(object sender, EventArgs<IItem, int> e) {
       if (InvokeRequired) {
         Invoke(new ItemIndexDelegate(Values_ItemRemoved), sender, e);
       } else {
         Datachart datachart = dataChartControl.Chart;
       }
     }
-    private void Values_ItemAdded(object sender, ItemIndexEventArgs e) {
+    private void Values_ItemAdded(object sender, EventArgs<IItem, int> e) {
       if (InvokeRequired) {
         Invoke(new ItemIndexDelegate(Values_ItemAdded), sender, e);
       } else {

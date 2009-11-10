@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   /// <summary>
@@ -334,7 +335,7 @@ namespace HeuristicLab.Core {
     /// event handlers.</remarks>
     public virtual void AddVariable(IVariable variable) {
       myVariables.Add(variable.Name, variable);
-      variable.NameChanging += new EventHandler<NameChangingEventArgs>(Variable_NameChanging);
+      variable.NameChanging += new EventHandler<CancelEventArgs<string>>(Variable_NameChanging);
       variable.NameChanged += new EventHandler(Variable_NameChanged);
       OnVariableAdded(variable);
     }
@@ -344,7 +345,7 @@ namespace HeuristicLab.Core {
     public virtual bool TryAddVariable(IVariable variable) {
       myVariables.Add(variable.Name, variable);
       if (IsValid()) {
-        variable.NameChanging += new EventHandler<NameChangingEventArgs>(Variable_NameChanging);
+        variable.NameChanging += new EventHandler<CancelEventArgs<string>>(Variable_NameChanging);
         variable.NameChanged += new EventHandler(Variable_NameChanged);
         OnVariableAdded(variable);
         return true;
@@ -359,7 +360,7 @@ namespace HeuristicLab.Core {
     public virtual bool TryAddVariable(IVariable variable, out ICollection<IConstraint> violatedConstraints) {
       myVariables.Add(variable.Name, variable);
       if (IsValid(out violatedConstraints)) {
-        variable.NameChanging += new EventHandler<NameChangingEventArgs>(Variable_NameChanging);
+        variable.NameChanging += new EventHandler<CancelEventArgs<string>>(Variable_NameChanging);
         variable.NameChanged += new EventHandler(Variable_NameChanged);
         OnVariableAdded(variable);
         return true;
@@ -374,7 +375,7 @@ namespace HeuristicLab.Core {
     public virtual void RemoveVariable(string name) {
       IVariable variable;
       if (myVariables.TryGetValue(name, out variable)) {
-        variable.NameChanging -= new EventHandler<NameChangingEventArgs>(Variable_NameChanging);
+        variable.NameChanging -= new EventHandler<CancelEventArgs<string>>(Variable_NameChanging);
         variable.NameChanged -= new EventHandler(Variable_NameChanged);
         myVariables.Remove(name);
         OnVariableRemoved(variable);
@@ -388,7 +389,7 @@ namespace HeuristicLab.Core {
       if (myVariables.TryGetValue(name, out variable)) {
         myVariables.Remove(name);
         if (IsValid()) {
-          variable.NameChanging -= new EventHandler<NameChangingEventArgs>(Variable_NameChanging);
+          variable.NameChanging -= new EventHandler<CancelEventArgs<string>>(Variable_NameChanging);
           variable.NameChanged -= new EventHandler(Variable_NameChanged);
           OnVariableRemoved(variable);
           return true;
@@ -407,7 +408,7 @@ namespace HeuristicLab.Core {
       if (myVariables.TryGetValue(name, out variable)) {
         myVariables.Remove(name);
         if (IsValid(out violatedConstraints)) {
-          variable.NameChanging -= new EventHandler<NameChangingEventArgs>(Variable_NameChanging);
+          variable.NameChanging -= new EventHandler<CancelEventArgs<string>>(Variable_NameChanging);
           variable.NameChanged -= new EventHandler(Variable_NameChanged);
           OnVariableRemoved(variable);
           return true;
@@ -419,8 +420,8 @@ namespace HeuristicLab.Core {
       violatedConstraints = new List<IConstraint>();
       return true;
     }
-    private void Variable_NameChanging(object sender, NameChangingEventArgs e) {
-      e.Cancel = myVariables.ContainsKey(e.Name);
+    private void Variable_NameChanging(object sender, CancelEventArgs<string> e) {
+      e.Cancel = myVariables.ContainsKey(e.Value);
     }
     private void Variable_NameChanged(object sender, EventArgs e) {
       IVariable variable = (IVariable)sender;
@@ -517,7 +518,7 @@ namespace HeuristicLab.Core {
       }
     }
     /// <inheritdoc/>
-    public event EventHandler<OperatorIndexEventArgs> SubOperatorAdded;
+    public event EventHandler<EventArgs<IOperator, int>> SubOperatorAdded;
     /// <summary>
     /// Fires a new <c>SubOperatorAdded</c> event.
     /// </summary>
@@ -525,10 +526,10 @@ namespace HeuristicLab.Core {
     /// <param name="index">The position where the operator has been added.</param>
     protected virtual void OnSubOperatorAdded(IOperator subOperator, int index) {
       if (SubOperatorAdded != null)
-        SubOperatorAdded(this, new OperatorIndexEventArgs(subOperator, index));
+        SubOperatorAdded(this, new EventArgs<IOperator, int>(subOperator, index));
     }
     /// <inheritdoc/>
-    public event EventHandler<OperatorIndexEventArgs> SubOperatorRemoved;
+    public event EventHandler<EventArgs<IOperator, int>> SubOperatorRemoved;
     /// <summary>
     /// Fires a new <c>SubOperatorRemoved</c> event.
     /// </summary>
@@ -536,47 +537,47 @@ namespace HeuristicLab.Core {
     /// <param name="index">The position where the operator has been removed.</param>
     protected virtual void OnSubOperatorRemoved(IOperator subOperator, int index) {
       if (SubOperatorRemoved != null)
-        SubOperatorRemoved(this, new OperatorIndexEventArgs(subOperator, index));
+        SubOperatorRemoved(this, new EventArgs<IOperator, int>(subOperator, index));
     }
     /// <inheritdoc/>
-    public event EventHandler<VariableInfoEventArgs> VariableInfoAdded;
+    public event EventHandler<EventArgs<IVariableInfo>> VariableInfoAdded;
     /// <summary>
     /// Fires a new <c>VariableInfoAdded</c> event.
     /// </summary>
     /// <param name="variableInfo">The variable info that has been added.</param>
     protected virtual void OnVariableInfoAdded(IVariableInfo variableInfo) {
       if (VariableInfoAdded != null)
-        VariableInfoAdded(this, new VariableInfoEventArgs(variableInfo));
+        VariableInfoAdded(this, new EventArgs<IVariableInfo>(variableInfo));
     }
     /// <inheritdoc/>
-    public event EventHandler<VariableInfoEventArgs> VariableInfoRemoved;
+    public event EventHandler<EventArgs<IVariableInfo>> VariableInfoRemoved;
     /// <summary>
     /// Fires a new <c>VariableInfoRemoved</c> event.
     /// </summary>
     /// <param name="variableInfo">The variable info that has been removed.</param>
     protected virtual void OnVariableInfoRemoved(IVariableInfo variableInfo) {
       if (VariableInfoRemoved != null)
-        VariableInfoRemoved(this, new VariableInfoEventArgs(variableInfo));
+        VariableInfoRemoved(this, new EventArgs<IVariableInfo>(variableInfo));
     }
     /// <inheritdoc/>
-    public event EventHandler<VariableEventArgs> VariableAdded;
+    public event EventHandler<EventArgs<IVariable>> VariableAdded;
     /// <summary>
     /// Fires a new <c>VariableAdded</c> event.
     /// </summary>
     /// <param name="variable">The variable that has been added.</param>
     protected virtual void OnVariableAdded(IVariable variable) {
       if (VariableAdded != null)
-        VariableAdded(this, new VariableEventArgs(variable));
+        VariableAdded(this, new EventArgs<IVariable>(variable));
     }
     /// <inheritdoc/>
-    public event EventHandler<VariableEventArgs> VariableRemoved;
+    public event EventHandler<EventArgs<IVariable>> VariableRemoved;
     /// <summary>
     /// Fires a new <c>VariableRemoved</c> event.
     /// </summary>
     /// <param name="variable">The variable that has been removed</param>
     protected virtual void OnVariableRemoved(IVariable variable) {
       if (VariableRemoved != null)
-        VariableRemoved(this, new VariableEventArgs(variable));
+        VariableRemoved(this, new EventArgs<IVariable>(variable));
     }
     /// <inheritdoc/>
     public event EventHandler Executed;

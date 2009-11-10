@@ -26,17 +26,25 @@ using System.Text;
 
 namespace HeuristicLab.Common {
   public class EventArgs<T> : EventArgs {
-    public EventArgs() {
+    private T myValue;
+    public T Value {
+      get { return myValue; }
     }
 
-    public EventArgs(T data) {
-      this.data = data;
+    public EventArgs(T value) {
+      myValue = value;
+    }
+  }
+
+  public class EventArgs<T, U> : EventArgs<T> {
+    private U myValue2;
+    public U Value2 {
+      get { return myValue2; }
     }
 
-    private T data;
-    public T Data {
-      get { return data; }
-      set { this.data = value; }
+    public EventArgs(T value, U value2)
+      : base(value) {
+      myValue2 = value2;
     }
   }
 }

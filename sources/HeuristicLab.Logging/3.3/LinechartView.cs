@@ -30,6 +30,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Charting;
 using HeuristicLab.Charting.Data;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Logging {
   /// <summary>
@@ -84,8 +85,8 @@ namespace HeuristicLab.Logging {
     /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RemoveItemEvents() {
       if(Linechart != null) {
-        Linechart.Values.ItemAdded -= new EventHandler<ItemIndexEventArgs>(Values_ItemAdded);
-        Linechart.Values.ItemRemoved -= new EventHandler<ItemIndexEventArgs>(Values_ItemRemoved);
+        Linechart.Values.ItemAdded -= new EventHandler<EventArgs<IItem, int>>(Values_ItemAdded);
+        Linechart.Values.ItemRemoved -= new EventHandler<EventArgs<IItem, int>>(Values_ItemRemoved);
       }
       base.RemoveItemEvents();
     }
@@ -96,8 +97,8 @@ namespace HeuristicLab.Logging {
     protected override void AddItemEvents() {
       base.AddItemEvents();
       if(Linechart != null) {
-        Linechart.Values.ItemAdded += new EventHandler<ItemIndexEventArgs>(Values_ItemAdded);
-        Linechart.Values.ItemRemoved += new EventHandler<ItemIndexEventArgs>(Values_ItemRemoved);
+        Linechart.Values.ItemAdded += new EventHandler<EventArgs<IItem, int>>(Values_ItemAdded);
+        Linechart.Values.ItemRemoved += new EventHandler<EventArgs<IItem, int>>(Values_ItemRemoved);
       }
     }
 
@@ -143,26 +144,26 @@ namespace HeuristicLab.Logging {
     }
 
     #region Values Events
-    private delegate void ItemIndexDelegate(object sender, ItemIndexEventArgs e);
-    private void Values_ItemRemoved(object sender, ItemIndexEventArgs e) {
+    private delegate void ItemIndexDelegate(object sender, EventArgs<IItem, int> e);
+    private void Values_ItemRemoved(object sender, EventArgs<IItem, int> e) {
       if(InvokeRequired) {
         Invoke(new ItemIndexDelegate(Values_ItemRemoved), sender, e);
       } else {
         Datachart datachart = dataChartControl.Chart;
       }
     }
-    private void Values_ItemAdded(object sender, ItemIndexEventArgs e) {
+    private void Values_ItemAdded(object sender, EventArgs<IItem, int> e) {
       if(InvokeRequired) {
         Invoke(new ItemIndexDelegate(Values_ItemAdded), sender, e);
       } else {
         Datachart datachart = dataChartControl.Chart;
-        ItemList list = (ItemList)e.Item;
+        ItemList list = (ItemList)e.Value;
         datachart.UpdateEnabled = false;
         for (int i = 0; i < list.Count; i++) {
           double value = 0.0;
           if (list[i] is IntData) value = (double)((IntData)list[i]).Data;
           else value = ((DoubleData)list[i]).Data;
-          datachart.AddDataPoint(i, e.Index, value);
+          datachart.AddDataPoint(i, e.Value2, value);
           if (value < minY) minY = value;
           if (value > maxY) maxY = value;
         }

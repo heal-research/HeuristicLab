@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   /// <summary>
@@ -40,7 +41,7 @@ namespace HeuristicLab.Core {
       get { return myName; }
       set {
         if (!myName.Equals(value)) {
-          NameChangingEventArgs e = new NameChangingEventArgs(value);
+          CancelEventArgs<string> e = new CancelEventArgs<string>(value);
           OnNameChanging(e);
           if (!e.Cancel) {
             myName = value;
@@ -119,12 +120,12 @@ namespace HeuristicLab.Core {
     }
 
     /// <inheritdoc/>
-    public event EventHandler<NameChangingEventArgs> NameChanging;
+    public event EventHandler<CancelEventArgs<string>> NameChanging;
     /// <summary>
     /// Fires a new <c>NameChanging</c> event.
     /// </summary>
     /// <param name="e">The event arguments of the changing.</param>
-    protected virtual void OnNameChanging(NameChangingEventArgs e) {
+    protected virtual void OnNameChanging(CancelEventArgs<string> e) {
       if (NameChanging != null)
         NameChanging(this, e);
     }

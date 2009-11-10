@@ -29,6 +29,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Random;
 using HeuristicLab.Constraints;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.GP {
 
@@ -206,26 +207,18 @@ namespace HeuristicLab.GP {
       throw new NotSupportedException();
     }
 
-    public event EventHandler OperatorAdded;
-    public event EventHandler OperatorRemoved;
+    public event EventHandler<EventArgs<IOperator>> OperatorAdded;
+    public event EventHandler<EventArgs<IOperator>> OperatorRemoved;
 
     protected virtual void OnOperatorAdded(IOperator op) {
       if(OperatorAdded != null) {
-        OperatorAdded(this, new OperatorEventArgs(op));
+        OperatorAdded(this, new EventArgs<IOperator>(op));
       }
     }
     protected virtual void OnOperatorRemoved(IOperator op) {
       if(OperatorRemoved != null) {
-        OperatorRemoved(this, new OperatorEventArgs(op));
+        OperatorRemoved(this, new EventArgs<IOperator>(op));
       }
-    }
-  }
-
-  internal class OperatorEventArgs : EventArgs {
-    public IOperator op;
-
-    public OperatorEventArgs(IOperator op) {
-      this.op = op;
     }
   }
 }

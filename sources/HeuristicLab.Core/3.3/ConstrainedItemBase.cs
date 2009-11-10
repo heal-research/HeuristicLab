@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   /// <summary>
@@ -125,26 +126,26 @@ namespace HeuristicLab.Core {
     /// <summary>
     /// Occurs when a constraint is added.
     /// </summary>
-    public event EventHandler<ConstraintEventArgs> ConstraintAdded;
+    public event EventHandler<EventArgs<IConstraint>> ConstraintAdded;
     /// <summary>
     /// Fires a new <c>ConstraintAdded</c> event.
     /// </summary>
     /// <param name="constraint">The constraint that was added.</param>
     protected virtual void OnConstraintAdded(IConstraint constraint) {
       if (ConstraintAdded != null)
-        ConstraintAdded(this, new ConstraintEventArgs(constraint));
+        ConstraintAdded(this, new EventArgs<IConstraint>(constraint));
     }
     /// <summary>
     /// Occurs when a constraint is removed.
     /// </summary>
-    public event EventHandler<ConstraintEventArgs> ConstraintRemoved;
+    public event EventHandler<EventArgs<IConstraint>> ConstraintRemoved;
     /// <summary>
     /// Fires a new <c>ConstraintRemoved</c> event.
     /// </summary>
     /// <param name="constraint">The constraint that was removed.</param>
     protected virtual void OnConstraintRemoved(IConstraint constraint) {
       if (ConstraintRemoved != null)
-        ConstraintRemoved(this, new ConstraintEventArgs(constraint));
+        ConstraintRemoved(this, new EventArgs<IConstraint>(constraint));
     }
   }
 }

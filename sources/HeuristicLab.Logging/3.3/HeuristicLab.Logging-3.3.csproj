@@ -126,6 +126,10 @@
       <Project>{B462D3CC-8866-42F0-9832-AD0967613B72}</Project>
       <Name>HeuristicLab.Charting-3.2</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Common\3.2\HeuristicLab.Common-3.2.csproj">
+      <Project>{1FC004FC-59AF-4249-B1B6-FF25873A20E4}</Project>
+      <Name>HeuristicLab.Common-3.2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
       <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
       <Name>HeuristicLab.Core-3.3</Name>

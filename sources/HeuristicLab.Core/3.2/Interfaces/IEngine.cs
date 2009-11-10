@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   /// <summary>
@@ -91,11 +92,11 @@ namespace HeuristicLab.Core {
     /// <summary>
     /// Occurs when an operation is executed.
     /// </summary>
-    event EventHandler<OperationEventArgs> OperationExecuted;
+    event EventHandler<EventArgs<IOperation>> OperationExecuted;
     /// <summary>
     /// Occurs when an exception was thrown.
     /// </summary>
-    event EventHandler<ExceptionEventArgs> ExceptionOccurred;
+    event EventHandler<EventArgs<Exception>> ExceptionOccurred;
     /// <summary>
     /// Occurs when the execution time was changed.
     /// </summary>

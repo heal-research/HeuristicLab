@@ -119,7 +119,6 @@
     <Compile Include="ConstrainedItemBaseView.Designer.cs">
       <DependentUpon>ConstrainedItemBaseView.cs</DependentUpon>
     </Compile>
-    <Compile Include="ConstraintEventArgs.cs" />
     <Compile Include="AtomicOperation.cs" />
     <Compile Include="CompositeOperation.cs" />
     <Compile Include="ChooseTypeDialog.cs">
@@ -128,8 +127,6 @@
     <Compile Include="ChooseTypeDialog.Designer.cs">
       <DependentUpon>ChooseTypeDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="AliasEventArgs.cs" />
-    <Compile Include="KeyValueEventArgs.cs" />
     <Compile Include="OperatorBaseDescriptionView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -139,8 +136,6 @@
     <Compile Include="Interfaces\IOperation.cs" />
     <Compile Include="Interfaces\IOperatorLibrary.cs" />
     <Compile Include="Interfaces\IVisualizationItem.cs" />
-    <Compile Include="NameChangingEventArgs.cs" />
-    <Compile Include="OperationEventArgs.cs" />
     <Compile Include="OperatorBaseVariablesView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -153,7 +148,6 @@
     <Compile Include="OperatorBaseVariableInfosView.Designer.cs">
       <DependentUpon>OperatorBaseVariableInfosView.cs</DependentUpon>
     </Compile>
-    <Compile Include="ExceptionEventArgs.cs" />
     <Compile Include="Interfaces\IConstrainedItem.cs" />
     <Compile Include="Interfaces\IConstraint.cs" />
     <Compile Include="Interfaces\IItem.cs" />
@@ -164,8 +158,6 @@
     <Compile Include="ItemBaseView.Designer.cs">
       <DependentUpon>ItemBaseView.cs</DependentUpon>
     </Compile>
-    <Compile Include="ItemEventArgs.cs" />
-    <Compile Include="ItemIndexEventArgs.cs" />
     <Compile Include="OperatorLibrary.cs" />
     <Compile Include="OperatorLibraryEditor.cs">
       <SubType>UserControl</SubType>
@@ -178,26 +170,20 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="ScopeIndexEventArgs.cs" />
     <Compile Include="EngineBaseEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="EngineBaseEditor.Designer.cs">
       <DependentUpon>EngineBaseEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="VariableInfoEventArgs.cs" />
-    <Compile Include="VariableEventArgs.cs" />
     <Compile Include="Interfaces\IOperatorGroup.cs" />
     <Compile Include="Interfaces\IOperatorGraph.cs" />
     <Compile Include="Interfaces\IScope.cs" />
     <Compile Include="Interfaces\IVariable.cs" />
     <Compile Include="Interfaces\IVariableInfo.cs" />
-    <Compile Include="OperatorEventArgs.cs" />
     <Compile Include="OperatorGroup.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="OperatorIndexEventArgs.cs" />
-    <Compile Include="ScopeEventArgs.cs" />
     <Compile Include="OperatorBaseView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -271,6 +257,10 @@
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Common\3.2\HeuristicLab.Common-3.2.csproj">
+      <Project>{1FC004FC-59AF-4249-B1B6-FF25873A20E4}</Project>
+      <Name>HeuristicLab.Common-3.2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>

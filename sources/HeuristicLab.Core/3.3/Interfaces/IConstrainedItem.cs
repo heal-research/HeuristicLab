@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   /// <summary>
@@ -59,10 +60,10 @@ namespace HeuristicLab.Core {
     /// <summary>
     /// An <see cref="EventHandler"/> for events when a new constraint is added.
     /// </summary>
-    event EventHandler<ConstraintEventArgs> ConstraintAdded;
+    event EventHandler<EventArgs<IConstraint>> ConstraintAdded;
     /// <summary>
     /// An <see cref="EventHandler"/> for events when a constraint is deleted.
     /// </summary>
-    event EventHandler<ConstraintEventArgs> ConstraintRemoved;
+    event EventHandler<EventArgs<IConstraint>> ConstraintRemoved;
   }
 }

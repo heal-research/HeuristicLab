@@ -26,6 +26,7 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 
@@ -66,8 +67,8 @@ namespace HeuristicLab.Logging {
     /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RemoveItemEvents() {
       if (Log != null) {
-        Log.Items.ItemAdded -= new EventHandler<ItemIndexEventArgs>(Items_ItemAdded);
-        Log.Items.ItemRemoved -= new EventHandler<ItemIndexEventArgs>(Items_ItemRemoved);
+        Log.Items.ItemAdded -= new EventHandler<EventArgs<IItem, int>>(Items_ItemAdded);
+        Log.Items.ItemRemoved -= new EventHandler<EventArgs<IItem, int>>(Items_ItemRemoved);
       }
       base.RemoveItemEvents();
     }
@@ -78,8 +79,8 @@ namespace HeuristicLab.Logging {
     protected override void AddItemEvents() {
       base.AddItemEvents();
       if (Log != null) {
-        Log.Items.ItemAdded += new EventHandler<ItemIndexEventArgs>(Items_ItemAdded);
-        Log.Items.ItemRemoved += new EventHandler<ItemIndexEventArgs>(Items_ItemRemoved);
+        Log.Items.ItemAdded += new EventHandler<EventArgs<IItem, int>>(Items_ItemAdded);
+        Log.Items.ItemRemoved += new EventHandler<EventArgs<IItem, int>>(Items_ItemRemoved);
       }
     }
 
@@ -105,8 +106,8 @@ namespace HeuristicLab.Logging {
 
     #region ItemList Events
     private delegate void IndexDelegate(int index);
-    private void Items_ItemRemoved(object sender, ItemIndexEventArgs e) {
-      RemoveItem(e.Index);
+    private void Items_ItemRemoved(object sender, EventArgs<IItem, int> e) {
+      RemoveItem(e.Value2);
     }
     private void RemoveItem(int index) {
       if (InvokeRequired)
@@ -118,8 +119,8 @@ namespace HeuristicLab.Logging {
         qualityLogTextBox.Lines = lines;
       }
     }
-    private void Items_ItemAdded(object sender, ItemIndexEventArgs e) {
-      AddItem(e.Index);
+    private void Items_ItemAdded(object sender, EventArgs<IItem, int> e) {
+      AddItem(e.Value2);
     }
     private void AddItem(int index) {
       if (InvokeRequired)

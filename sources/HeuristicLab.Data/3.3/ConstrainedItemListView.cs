@@ -27,6 +27,7 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Data {
   /// <summary>
@@ -70,8 +71,8 @@ namespace HeuristicLab.Data {
     /// <remarks>Calls <see cref="HeuristicLab.Core.ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.
     /// </remarks>
     protected override void RemoveItemEvents() {
-      ConstrainedItemList.ItemAdded -= new EventHandler<ItemIndexEventArgs>(ConstrainedItemList_ItemAdded);
-      ConstrainedItemList.ItemRemoved -= new EventHandler<ItemIndexEventArgs>(ConstrainedItemList_ItemRemoved);
+      ConstrainedItemList.ItemAdded -= new EventHandler<EventArgs<IItem, int>>(ConstrainedItemList_ItemAdded);
+      ConstrainedItemList.ItemRemoved -= new EventHandler<EventArgs<IItem, int>>(ConstrainedItemList_ItemRemoved);
       ConstrainedItemList.Cleared -= new EventHandler(ConstrainedItemList_Cleared);
       base.RemoveItemEvents();
     }
@@ -83,8 +84,8 @@ namespace HeuristicLab.Data {
     /// </remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
-      ConstrainedItemList.ItemAdded += new EventHandler<ItemIndexEventArgs>(ConstrainedItemList_ItemAdded);
-      ConstrainedItemList.ItemRemoved += new EventHandler<ItemIndexEventArgs>(ConstrainedItemList_ItemRemoved);
+      ConstrainedItemList.ItemAdded += new EventHandler<EventArgs<IItem, int>>(ConstrainedItemList_ItemAdded);
+      ConstrainedItemList.ItemRemoved += new EventHandler<EventArgs<IItem, int>>(ConstrainedItemList_ItemRemoved);
       ConstrainedItemList.Cleared += new EventHandler(ConstrainedItemList_Cleared);
     }
 
@@ -134,24 +135,24 @@ namespace HeuristicLab.Data {
     }
 
     #region ConstrainedItemList changes
-    void ConstrainedItemList_ItemAdded(object sender, ItemIndexEventArgs e) {
+    void ConstrainedItemList_ItemAdded(object sender, EventArgs<IItem, int> e) {
       if (InvokeRequired)
-        Invoke(new EventHandler<ItemIndexEventArgs>(ConstrainedItemList_ItemAdded), sender, e);
+        Invoke(new EventHandler<EventArgs<IItem, int>>(ConstrainedItemList_ItemAdded), sender, e);
       else {
         ListViewItem item = new ListViewItem();
-        item.Text = e.Item.ToString();
-        item.Tag = e.Item;
-        itemsListView.Items.Insert(e.Index, item);
-        e.Item.Changed += new EventHandler(Item_Changed);
+        item.Text = e.Value.ToString();
+        item.Tag = e.Value;
+        itemsListView.Items.Insert(e.Value2, item);
+        e.Value.Changed += new EventHandler(Item_Changed);
       }
     }
 
-    void ConstrainedItemList_ItemRemoved(object sender, ItemIndexEventArgs e) {
+    void ConstrainedItemList_ItemRemoved(object sender, EventArgs<IItem, int> e) {
       if (InvokeRequired)
-        Invoke(new EventHandler<ItemIndexEventArgs>(ConstrainedItemList_ItemRemoved), sender, e);
+        Invoke(new EventHandler<EventArgs<IItem, int>>(ConstrainedItemList_ItemRemoved), sender, e);
       else {
-        itemsListView.Items.RemoveAt(e.Index);
-        e.Item.Changed -= new EventHandler(Item_Changed);
+        itemsListView.Items.RemoveAt(e.Value2);
+        e.Value.Changed -= new EventHandler(Item_Changed);
       }
     }
 

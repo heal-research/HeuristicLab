@@ -27,6 +27,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.GP.Algorithms {
   [ClassInfo(Name = "HeuristicLab.GP.Algorithms-3.2")]
   [PluginFile(Filename = "HeuristicLab.GP.Algorithms-3.2.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.Common-3.2")]
   public class HeuristicLabGpAlgorithmsPlugin : PluginBase {
   }
 }

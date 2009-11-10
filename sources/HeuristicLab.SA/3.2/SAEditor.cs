@@ -27,6 +27,7 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.SA {
@@ -66,7 +67,7 @@ namespace HeuristicLab.SA {
     /// </summary>
     /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="EditorBase"/>.</remarks>
     protected override void RemoveItemEvents() {
-      SA.Engine.ExceptionOccurred -= new EventHandler<ExceptionEventArgs>(Engine_ExceptionOccurred);
+      SA.Engine.ExceptionOccurred -= new EventHandler<EventArgs<Exception>>(Engine_ExceptionOccurred);
       SA.Engine.Finished -= new EventHandler(Engine_Finished);
       scopeView.Scope = null;
       base.RemoveItemEvents();
@@ -77,7 +78,7 @@ namespace HeuristicLab.SA {
     /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="EditorBase"/>.</remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
-      SA.Engine.ExceptionOccurred += new EventHandler<ExceptionEventArgs>(Engine_ExceptionOccurred);
+      SA.Engine.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(Engine_ExceptionOccurred);
       SA.Engine.Finished += new EventHandler(Engine_Finished);
       SetDataBinding();
       scopeView.Scope = SA.Engine.GlobalScope;
@@ -191,12 +192,12 @@ namespace HeuristicLab.SA {
     #endregion
 
     #region Engine Events
-    private delegate void OnExceptionEventDelegate(object sender, ExceptionEventArgs e);
-    private void Engine_ExceptionOccurred(object sender, ExceptionEventArgs e) {
+    private delegate void OnExceptionEventDelegate(object sender, EventArgs<Exception> e);
+    private void Engine_ExceptionOccurred(object sender, EventArgs<Exception> e) {
       if (InvokeRequired)
         Invoke(new OnExceptionEventDelegate(Engine_ExceptionOccurred), sender, e);
       else
-        Auxiliary.ShowErrorMessageBox(e.Exception);
+        Auxiliary.ShowErrorMessageBox(e.Value);
     }
     private void Engine_Finished(object sender, EventArgs e) {
       scopeView.Refresh();

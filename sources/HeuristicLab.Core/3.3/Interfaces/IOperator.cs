@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   /// <summary>
@@ -284,27 +285,27 @@ namespace HeuristicLab.Core {
     /// <summary>
     /// Occurs when a sub operator has been added.
     /// </summary>
-    event EventHandler<OperatorIndexEventArgs> SubOperatorAdded;
+    event EventHandler<EventArgs<IOperator, int>> SubOperatorAdded;
     /// <summary>
     /// Occurs when a sub operator has been deleted.
     /// </summary>
-    event EventHandler<OperatorIndexEventArgs> SubOperatorRemoved;
+    event EventHandler<EventArgs<IOperator, int>> SubOperatorRemoved;
     /// <summary>
     /// Occurs when a variable info has been added.
     /// </summary>
-    event EventHandler<VariableInfoEventArgs> VariableInfoAdded;
+    event EventHandler<EventArgs<IVariableInfo>> VariableInfoAdded;
     /// <summary>
     /// Occurs when a variable info has been deleted.
     /// </summary>
-    event EventHandler<VariableInfoEventArgs> VariableInfoRemoved;
+    event EventHandler<EventArgs<IVariableInfo>> VariableInfoRemoved;
     /// <summary>
     /// Occurs when a variable has been added.
     /// </summary>
-    event EventHandler<VariableEventArgs> VariableAdded;
+    event EventHandler<EventArgs<IVariable>> VariableAdded;
     /// <summary>
     /// Occurs when a variable has been deleted.
     /// </summary>
-    event EventHandler<VariableEventArgs> VariableRemoved;
+    event EventHandler<EventArgs<IVariable>> VariableRemoved;
     /// <summary>
     /// Occurs when the current instance is executed.
     /// </summary>

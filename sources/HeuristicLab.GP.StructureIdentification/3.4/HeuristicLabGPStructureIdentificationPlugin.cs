@@ -27,6 +27,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.GP.StructureIdentification {
   [ClassInfo(Name = "HeuristicLab.GP.StructureIdentification-3.4")]
   [PluginFile(Filename = "HeuristicLab.GP.StructureIdentification-3.4.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.Common-3.2")]
   [Dependency(Dependency = "HeuristicLab.Constraints-3.3")]
   [Dependency(Dependency = "HeuristicLab.Core-3.3")]
   [Dependency(Dependency = "HeuristicLab.Data-3.3")]

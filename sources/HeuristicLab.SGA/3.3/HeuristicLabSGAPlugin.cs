@@ -30,6 +30,7 @@ namespace HeuristicLab.SGA {
   /// </summary>
   [ClassInfo(Name = "HeuristicLab.SGA-3.3")]
   [PluginFile(Filename = "HeuristicLab.SGA-3.3.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.Common-3.2")]
   [Dependency(Dependency = "HeuristicLab.Core-3.3")]
   [Dependency(Dependency = "HeuristicLab.Data-3.3")]
   [Dependency(Dependency = "HeuristicLab.Evolutionary-3.3")]

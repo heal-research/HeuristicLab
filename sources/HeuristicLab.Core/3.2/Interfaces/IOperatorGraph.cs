@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   /// <summary>
@@ -62,11 +63,11 @@ namespace HeuristicLab.Core {
     /// <summary>
     /// Occurs when a new operator has been added to the current instance.
     /// </summary>
-    event EventHandler<OperatorEventArgs> OperatorAdded;
+    event EventHandler<EventArgs<IOperator>> OperatorAdded;
     /// <summary>
     /// Occurs when an operator has been deleted from the current instance.
     /// </summary>
-    event EventHandler<OperatorEventArgs> OperatorRemoved;
+    event EventHandler<EventArgs<IOperator>> OperatorRemoved;
     /// <summary>
     /// Occurs when the initial operator (the starting one) has been changed.
     /// </summary>
