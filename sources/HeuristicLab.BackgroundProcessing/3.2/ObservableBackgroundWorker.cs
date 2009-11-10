@@ -12,7 +12,20 @@ namespace HeuristicLab.BackgroundProcessing {
   /// registers with the WorkerMonitor.
   /// </summary>
   public class ObservableBackgroundWorker : BackgroundWorker, INotifyPropertyChanged {
-    public string Name { get; private set; }
+
+    private string name;
+    public string Name {
+      get {
+        return name;
+      }
+      set {
+        if (value == name)
+          return;
+        name = value;
+        OnPropertyChanged("Name");
+      }    
+    }
+
     public int Progress { get; private set; }
 
     /// <summary>
