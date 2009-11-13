@@ -21,7 +21,7 @@
 
 
 namespace HeuristicLab.GP.StructureIdentification {
-  public sealed class Division : BinaryFunction {
+  public sealed class Division : FunctionBase {
     public override string Description {
       get {
         return @"Protected division
@@ -35,7 +35,11 @@ In case one of the divisors is 0 returns 0.
       }
     }
 
-    public Division() : base() { }
+    public Division()
+      : base() {
+      MinSubTrees = 1;
+      MaxSubTrees = 3;
+    }
 
     public override HeuristicLab.GP.Interfaces.IFunctionTree GetTreeNode() {
       return new FunctionTreeBase(this);

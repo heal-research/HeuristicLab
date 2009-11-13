@@ -34,7 +34,7 @@ namespace HeuristicLab.GP.StructureIdentification {
     public Addition()
       : base() {
       // 2 - 3 seems like an reasonable defaut (used for +,-,*,/) (discussion with swinkler and maffenze)
-      MinSubTrees = 2;
+      MinSubTrees = 1;
       MaxSubTrees = 3;
     }
 

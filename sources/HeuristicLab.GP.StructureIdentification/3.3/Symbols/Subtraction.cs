@@ -21,7 +21,7 @@
 
 
 namespace HeuristicLab.GP.StructureIdentification {
-  public sealed class Subtraction : BinaryFunction {
+  public sealed class Subtraction : FunctionBase {
     public override string Description {
       get {
         return @"Subtracts the results of sub-tree 2..n from the result of the first sub-tree.
@@ -33,6 +33,8 @@ namespace HeuristicLab.GP.StructureIdentification {
 
     public Subtraction()
       : base() {
+      MinSubTrees = 1;
+      MaxSubTrees = 3;
     }
 
     public override HeuristicLab.GP.Interfaces.IFunctionTree GetTreeNode() {
