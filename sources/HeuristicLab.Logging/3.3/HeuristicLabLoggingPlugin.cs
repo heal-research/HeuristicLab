@@ -34,8 +34,8 @@ namespace HeuristicLab.Logging {
   [Dependency(Dependency = "HeuristicLab.Core-3.3")]
   [Dependency(Dependency = "HeuristicLab.Data-3.3")]
   [Dependency(Dependency = "HeuristicLab.Operators-3.3")]
-  [Dependency(Dependency = "HeuristicLab.Charting-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Charting.Data-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Charting-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Charting.Data-3.3")]
   [Dependency(Dependency = "HeuristicLab.Persistence-3.3")]
   public class HeuristicLabLoggingPlugin : PluginBase {
   }

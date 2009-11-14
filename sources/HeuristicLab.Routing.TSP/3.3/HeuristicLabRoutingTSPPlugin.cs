@@ -34,7 +34,7 @@ namespace HeuristicLab.Routing.TSP {
   [Dependency(Dependency = "HeuristicLab.Data-3.3")]
   [Dependency(Dependency = "HeuristicLab.Operators-3.3")]
   [Dependency(Dependency = "HeuristicLab.Permutation-3.3")]
-  [Dependency(Dependency = "HeuristicLab.Charting-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Charting-3.3")]
   [Dependency(Dependency = "HeuristicLab.Persistence-3.3")]
   public class HeuristicLabRoutingTSPPlugin : PluginBase {
   }

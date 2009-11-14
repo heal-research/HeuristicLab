@@ -109,9 +109,9 @@
     <Compile Include="TSPParser.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HeuristicLab.Charting\3.2\HeuristicLab.Charting-3.2.csproj">
-      <Project>{B462D3CC-8866-42F0-9832-AD0967613B72}</Project>
-      <Name>HeuristicLab.Charting-3.2</Name>
+    <ProjectReference Include="..\..\HeuristicLab.Charting\3.3\HeuristicLab.Charting-3.3.csproj">
+      <Project>{A8265018-D687-4907-8A36-63B25967A038}</Project>
+      <Name>HeuristicLab.Charting-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
       <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
