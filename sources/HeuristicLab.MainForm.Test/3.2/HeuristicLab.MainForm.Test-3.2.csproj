@@ -128,9 +128,9 @@
       <Project>{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}</Project>
       <Name>HeuristicLab.Common.Resources-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.MainForm.WindowsForms\3.2\HeuristicLab.MainForm.WindowsForms.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.MainForm.WindowsForms\3.2\HeuristicLab.MainForm.WindowsForms-3.2.csproj">
       <Project>{AB687BBE-1BFE-476B-906D-44237135431D}</Project>
-      <Name>HeuristicLab.MainForm.WindowsForms</Name>
+      <Name>HeuristicLab.MainForm.WindowsForms-3.2</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.MainForm\3.2\HeuristicLab.MainForm-3.2.csproj">
       <Project>{3BD61258-31DA-4B09-89C0-4F71FEF5F05A}</Project>

@@ -119,9 +119,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.MainForm-3.2",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.MainForm.Test-3.2", "HeuristicLab.MainForm.Test\3.2\HeuristicLab.MainForm.Test-3.2.csproj", "{569E430B-B4CE-4B94-A44E-6246B6E4E3BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.MainForm.WindowsForms", "HeuristicLab.MainForm.WindowsForms\3.2\HeuristicLab.MainForm.WindowsForms.csproj", "{AB687BBE-1BFE-476B-906D-44237135431D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Optimizer-3.3", "HeuristicLab.Optimizer\3.3\HeuristicLab.Optimizer-3.3.csproj", "{C664305E-497C-4533-A140-967DEDB05C19}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.MainForm.WindowsForms-3.2", "HeuristicLab.MainForm.WindowsForms\3.2\HeuristicLab.MainForm.WindowsForms-3.2.csproj", "{AB687BBE-1BFE-476B-906D-44237135431D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -567,6 +567,14 @@ Global
 		{569E430B-B4CE-4B94-A44E-6246B6E4E3BC}.Release|x64.Build.0 = Release|x64
 		{569E430B-B4CE-4B94-A44E-6246B6E4E3BC}.Release|x86.ActiveCfg = Release|x86
 		{569E430B-B4CE-4B94-A44E-6246B6E4E3BC}.Release|x86.Build.0 = Release|x86
+		{C664305E-497C-4533-A140-967DEDB05C19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C664305E-497C-4533-A140-967DEDB05C19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C664305E-497C-4533-A140-967DEDB05C19}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C664305E-497C-4533-A140-967DEDB05C19}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C664305E-497C-4533-A140-967DEDB05C19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C664305E-497C-4533-A140-967DEDB05C19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C664305E-497C-4533-A140-967DEDB05C19}.Release|x64.ActiveCfg = Release|Any CPU
+		{C664305E-497C-4533-A140-967DEDB05C19}.Release|x86.ActiveCfg = Release|Any CPU
 		{AB687BBE-1BFE-476B-906D-44237135431D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AB687BBE-1BFE-476B-906D-44237135431D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB687BBE-1BFE-476B-906D-44237135431D}.Debug|x64.ActiveCfg = Debug|x64
@@ -579,14 +587,6 @@ Global
 		{AB687BBE-1BFE-476B-906D-44237135431D}.Release|x64.Build.0 = Release|x64
 		{AB687BBE-1BFE-476B-906D-44237135431D}.Release|x86.ActiveCfg = Release|x86
 		{AB687BBE-1BFE-476B-906D-44237135431D}.Release|x86.Build.0 = Release|x86
-		{C664305E-497C-4533-A140-967DEDB05C19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C664305E-497C-4533-A140-967DEDB05C19}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C664305E-497C-4533-A140-967DEDB05C19}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{C664305E-497C-4533-A140-967DEDB05C19}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{C664305E-497C-4533-A140-967DEDB05C19}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C664305E-497C-4533-A140-967DEDB05C19}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C664305E-497C-4533-A140-967DEDB05C19}.Release|x64.ActiveCfg = Release|Any CPU
-		{C664305E-497C-4533-A140-967DEDB05C19}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
