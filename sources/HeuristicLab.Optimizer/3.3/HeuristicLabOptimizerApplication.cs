@@ -22,16 +22,20 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Reflection;
 using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Common.Resources;
+using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Optimizer {
   [ClassInfo(Name = "Optimizer 3.3", Description="Next generation heuristic optimization environment.")]
   class HeuristicLabOptimizerApplication : ApplicationBase {
     public override void Run() {
-      //Form mainForm = new MainForm();
-      //PluginManager.ControlManager = (IControlManager)mainForm;
-      //Application.Run(mainForm);
+      DockingMainForm mainForm = new DockingMainForm(typeof(IOptimizerUserInterfaceItemProvider));
+      mainForm.Title = "HeuristicLab Optimizer " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
+      mainForm.Icon = Resources.HeuristicLabIcon;
+      Application.Run(mainForm);
     }
   }
 }
