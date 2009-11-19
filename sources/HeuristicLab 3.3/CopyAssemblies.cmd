@@ -12,6 +12,7 @@ copy "%SolutionDir%\HeuristicLab.Charting.Data\3.3\%Outdir%\HeuristicLab.Chartin
 copy "%SolutionDir%\HeuristicLab.Common\3.2\%Outdir%\HeuristicLab.Common-3.2.dll" .\plugins 
 copy "%SolutionDir%\HeuristicLab.Common.Resources\3.2\%Outdir%\HeuristicLab.Common.Resources-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Core\3.3\%Outdir%\HeuristicLab.Core-3.3.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Core.Views\3.3\%Outdir%\HeuristicLab.Core.Views-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Constraints\3.3\%Outdir%\HeuristicLab.Constraints-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Data\3.3\%Outdir%\HeuristicLab.Data-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.DataAnalysis\3.3\%Outdir%\HeuristicLab.DataAnalysis-3.3.dll" .\plugins
