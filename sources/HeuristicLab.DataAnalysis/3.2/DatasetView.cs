@@ -56,7 +56,7 @@ namespace HeuristicLab.DataAnalysis {
           manipulator.Execute(Dataset);
           Refresh();
         }));
-      }      
+      }
     }
 
     protected override void UpdateControls() {
@@ -125,7 +125,10 @@ namespace HeuristicLab.DataAnalysis {
     }
 
     private void dataGridView_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e) {
-      e.Value = Dataset.GetValue(e.RowIndex, e.ColumnIndex);
+      if (this.Dataset == null)
+        e.Value = null;
+      else
+        e.Value = Dataset.GetValue(e.RowIndex, e.ColumnIndex);
     }
 
     private void SetArrayElement(int row, int column, string element) {
@@ -142,7 +145,7 @@ namespace HeuristicLab.DataAnalysis {
     }
 
     private void scaleValuesToolStripMenuItem_Click(object sender, EventArgs e) {
-      foreach(DataGridViewColumn column in dataGridView.SelectedColumns) {
+      foreach (DataGridViewColumn column in dataGridView.SelectedColumns) {
         Dataset.ScaleVariable(column.Index);
         column.Name = GetColumnName(column.Index) + " [scaled]";
       }
@@ -150,15 +153,15 @@ namespace HeuristicLab.DataAnalysis {
     }
 
     private void originalValuesToolStripMenuItem_Click(object sender, EventArgs e) {
-      foreach(DataGridViewColumn column in dataGridView.SelectedColumns) {
+      foreach (DataGridViewColumn column in dataGridView.SelectedColumns) {
         Dataset.UnscaleVariable(column.Index);
         column.Name = GetColumnName(column.Index);
       }
-      Refresh();      
+      Refresh();
     }
 
     private string GetColumnName(int index) {
-      if(Dataset.Columns == dataGridView.Columns.Count) {
+      if (Dataset.Columns == dataGridView.Columns.Count) {
         return Dataset.GetVariableName(index);
       } else {
         return "Var " + index;
@@ -168,7 +171,7 @@ namespace HeuristicLab.DataAnalysis {
     private void showScalingToolStripMenuItem_Click(object sender, EventArgs e) {
       ManualScalingControl scalingControl = new ManualScalingControl(false);
       double[,] scalingParameters = new double[2, Dataset.Columns];
-      for(int i = 0; i < Dataset.Columns; i++) {
+      for (int i = 0; i < Dataset.Columns; i++) {
         scalingParameters[0, i] = Dataset.ScalingFactor[i];
         scalingParameters[1, i] = Dataset.ScalingOffset[i];
       }
@@ -179,19 +182,19 @@ namespace HeuristicLab.DataAnalysis {
     private void scaleValuesmanuallyToolStripMenuItem_Click(object sender, EventArgs e) {
       ManualScalingControl scalingControl = new ManualScalingControl(true);
       double[,] scalingParameters = new double[2, Dataset.Columns];
-      for(int i = 0; i < Dataset.Columns; i++) {
+      for (int i = 0; i < Dataset.Columns; i++) {
         scalingParameters[0, i] = Dataset.ScalingFactor[i];
         scalingParameters[1, i] = Dataset.ScalingOffset[i];
       }
       scalingControl.Data = scalingParameters;
-      if(scalingControl.ShowDialog() == DialogResult.OK) {
-        for(int i = 0; i < Dataset.Columns; i++) {
+      if (scalingControl.ShowDialog() == DialogResult.OK) {
+        for (int i = 0; i < Dataset.Columns; i++) {
           Dataset.ScaleVariable(i, scalingControl.Data[0, i], scalingControl.Data[1, i]);
         }
       }
       Refresh();
     }
 
-  
+
   }
 }
