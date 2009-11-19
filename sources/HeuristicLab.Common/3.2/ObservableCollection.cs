@@ -71,7 +71,7 @@ namespace HeuristicLab.Common {
     }
 
     public void Clear() {
-      IEnumerable<T> temp = this.list.AsEnumerable();
+      IEnumerable<T> temp = this.list.ToArray<T>();
       this.list.Clear();
       FireItemsRemoved(temp);
       FireCollectionCleared();
