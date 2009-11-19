@@ -29,9 +29,11 @@ using System.Xml;
 using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm.WindowsForms {
-  public partial class ViewBase : UserControl, IView {   
+  public partial class ViewBase : UserControl, IView {
+    private bool initialized;
     public ViewBase() {
       InitializeComponent();
+      this.initialized = false;
     }
 
     private string myCaption;
@@ -61,6 +63,16 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     public virtual void OnClosed(object sender, EventArgs e) {
+    }
+
+    protected event EventHandler Initialized;
+
+    private void ViewBase_Load(object sender, EventArgs e) {
+      if (!this.initialized && !this.DesignMode) {
+        if (this.Initialized != null)
+          this.Initialized(this, new EventArgs());
+        this.initialized = true;
+      }
     }
   }
 }
