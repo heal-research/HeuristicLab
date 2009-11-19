@@ -206,43 +206,52 @@ namespace HeuristicLab.MainForm.WindowsForms {
       DiscoveryService ds = new DiscoveryService();
 
       object[] items = ds.GetInstances(userInterfaceItemType);
-      IEnumerable<MenuItemBase> toolStripMenuItems =
+      IEnumerable<IMenuItem> toolStripMenuItems =
         from mi in items
-        where mi is MenuItemBase
-        orderby ((MenuItemBase)mi).Position
-        select (MenuItemBase)mi;
-      foreach (MenuItemBase menuItem in toolStripMenuItems)
+        where mi is IMenuItem
+        orderby ((IMenuItem)mi).Position
+        select (IMenuItem)mi;
+      foreach (IMenuItem menuItem in toolStripMenuItems)
         AddToolStripMenuItem(menuItem);
 
       items = ds.GetInstances(userInterfaceItemType);
-      IEnumerable<ToolBarItemBase> toolStripButtonItems =
+      IEnumerable<IToolBarItem> toolStripButtonItems =
         from bi in items
-        where bi is ToolBarItemBase
-        orderby ((ToolBarItemBase)bi).Position
-        select (ToolBarItemBase)bi;
-      foreach (ToolBarItemBase toolStripButtonItem in toolStripButtonItems)
+        where bi is IToolBarItem
+        orderby ((IToolBarItem)bi).Position
+        select (IToolBarItem)bi;
+      foreach (IToolBarItem toolStripButtonItem in toolStripButtonItems)
         AddToolStripButtonItem(toolStripButtonItem);
     }
 
-    private void AddToolStripMenuItem(MenuItemBase menuItem) {
-      ToolStripMenuItem item = new ToolStripMenuItem();
-      SetToolStripItemProperties(item, menuItem);
-      menuItem.ToolStripItem = item;
-      item.ShortcutKeys = menuItem.ShortCutKeys;
-      item.DisplayStyle = menuItem.ToolStripItemDisplayStyle;
-      this.InsertItem(menuItem.Structure, typeof(ToolStripMenuItem), item, menuStrip.Items);
-    }
+    private void AddToolStripMenuItem(IMenuItem menuItem) {
+      if (menuItem is MenuItemBase) {
+        ToolStripMenuItem item = new ToolStripMenuItem();
+        SetToolStripItemProperties(item, menuItem);
+        ((MenuItemBase)menuItem).ToolStripItem = item;
+        item.ShortcutKeys = ((MenuItemBase)menuItem).ShortCutKeys;
+        item.DisplayStyle = ((MenuItemBase)menuItem).ToolStripItemDisplayStyle;
+        this.InsertItem(menuItem.Structure, typeof(ToolStripMenuItem), item, menuStrip.Items);
+      } else if (menuItem is MenuSeparatorItemBase) {
+        this.InsertItem(menuItem.Structure, typeof(ToolStripMenuItem), new ToolStripSeparator(), menuStrip.Items);
+      }
+     }
 
-    private void AddToolStripButtonItem(ToolBarItemBase buttonItem) {
-      ToolStripItem item;
-      if (buttonItem.IsDropDownButton)
-        item = new ToolStripDropDownButton();
-      else
-        item = new ToolStripButton();
+    private void AddToolStripButtonItem(IToolBarItem buttonItem) {
+      ToolStripItem item = null;
 
-      SetToolStripItemProperties(item, buttonItem);
-      item.DisplayStyle = buttonItem.ToolStripItemDisplayStyle;
-      buttonItem.ToolStripItem = item;
+      if (buttonItem is ToolBarItemBase) {
+        if (((ToolBarItemBase)buttonItem).IsDropDownButton)
+          item = new ToolStripDropDownButton();
+        else
+          item = new ToolStripButton();
+
+        SetToolStripItemProperties(item, buttonItem);
+        item.DisplayStyle = ((ToolBarItemBase)buttonItem).ToolStripItemDisplayStyle;
+        ((ToolBarItemBase)buttonItem).ToolStripItem = item;
+      } else if (buttonItem is IToolBarSeparatorItem) 
+        item = new ToolStripSeparator();
+      
       this.InsertItem(buttonItem.Structure, typeof(ToolStripDropDownButton), item, toolStrip.Items);
     }
 

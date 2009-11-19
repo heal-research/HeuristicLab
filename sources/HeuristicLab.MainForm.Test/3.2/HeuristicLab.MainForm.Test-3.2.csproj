@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actions\NewEditorAction.cs" />
+    <Compile Include="ButtonItems\SeparatorToolStripButtonItem.cs" />
     <Compile Include="ButtonItems\NewEditorToolStripButtonItem.cs" />
     <Compile Include="ButtonItems\NewFormToolStripButtonItem.cs" />
     <Compile Include="ButtonItems\SaveToolStripButtonItem.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="FormView.Designer.cs">
       <DependentUpon>FormView.cs</DependentUpon>
     </Compile>
+    <Compile Include="MenuItems\SeparatorMenuItem.cs" />
     <Compile Include="MenuItems\ExitToolStripMenuItem.cs" />
     <Compile Include="MenuItems\NewFormToolStripMenuItem.cs" />
     <Compile Include="MenuItems\NewEditorToolStripMenuItem.cs" />

@@ -80,10 +80,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ToolBarSeparatorItemBase.cs" />
+    <Compile Include="Interfaces\IToolBarSeparatorItem.cs" />
     <Compile Include="Interfaces\IMenuItem.cs" />
+    <Compile Include="Interfaces\IMenuSeparatorItem.cs" />
     <Compile Include="Interfaces\IToolBarItem.cs" />
     <Compile Include="MainFormManager.cs" />
     <Compile Include="MenuItemBase.cs" />
+    <Compile Include="MenuSeparatorItemBase.cs" />
     <Compile Include="ToolBarItemBase.cs" />
     <Compile Include="HeuristicLabMainFormPlugin.cs" />
     <Compile Include="Interfaces\IMainForm.cs" />
