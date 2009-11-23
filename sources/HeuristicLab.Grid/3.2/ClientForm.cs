@@ -36,44 +36,70 @@ using System.Net;
 using System.Diagnostics;
 
 namespace HeuristicLab.Grid {
+
+
   public partial class ClientForm : Form {
-    private GridClient client;
+
+    private List<ClientController> clientControllers;
+
     public ClientForm() {
       InitializeComponent();
-
-      client = new GridClient();
+      clientControllers = new List<ClientController>();
+      nClientsControl.Value = Environment.ProcessorCount;
+      clientControllerBindingSource.DataSource = clientControllers;
       UpdateControl();
     }
 
     private void startButton_Click(object sender, EventArgs e) {
-      client.Start(addressTextBox.Text);
+      foreach (var client in clientControllers) {
+        client.Client.Start(addressTextBox.Text);
+      }
       UpdateControl();
     }
 
     private void stopButton_Click(object sender, EventArgs e) {
-      client.Stop();
+      foreach (var client in clientControllers) {
+        client.Client.Stop();
+      }
       UpdateControl();
     }
 
     private void UpdateControl() {
-      if(client.Waiting) {
-        startButton.Enabled = false;
-        stopButton.Enabled = true;
-        statusTextBox.Text = "Waiting for engine";
-      } else if(client.Executing) {
-        startButton.Enabled = false;
-        stopButton.Enabled = true;
-        statusTextBox.Text = "Executing engine";
-      } else if(client.Stopped) {
-        startButton.Enabled = true;
-        stopButton.Enabled = false;
-        statusTextBox.Text = "Stopped";
+      foreach (var client in clientControllers) {
+        if (client.Client.Waiting) {
+          startButton.Enabled = false;
+          stopButton.Enabled = true;
+          client.Status = "Waiting for engine";
+        } else if (client.Client.Executing) {
+          startButton.Enabled = false;
+          stopButton.Enabled = true;
+          client.Status = "Executing engine";
+        } else if (client.Client.Stopped) {
+          startButton.Enabled = true;
+          stopButton.Enabled = false;
+          client.Status = "Stopped";
+        }
+        client.Message = client.Client.StatusMessage;
       }
-      statusStrip.Text = client.StatusMessage;
+      clientGrid.Invalidate();
     }
 
     private void timer_Tick(object sender, EventArgs e) {
       UpdateControl();
+    }
+
+    private void nClientsControl_ValueChanged(object sender, EventArgs e) {
+      if (nClientsControl.Value < 0)
+        nClientsControl.Value = 0;
+      while (clientControllers.Count < nClientsControl.Value)
+        clientControllers.Add(new ClientController() { Client = new GridClient() });
+      while (clientControllers.Count > nClientsControl.Value) {
+        try {
+          clientControllers[clientControllers.Count - 1].Client.Stop();
+          clientControllers.RemoveAt(clientControllers.Count - 1);
+        } catch { }
+      }
+      clientGrid.Invalidate();
     }
   }
 }
