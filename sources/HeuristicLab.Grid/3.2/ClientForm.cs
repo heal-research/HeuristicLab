@@ -45,43 +45,51 @@ namespace HeuristicLab.Grid {
     public ClientForm() {
       InitializeComponent();
       clientControllers = new List<ClientController>();
-      nClientsControl.Value = Environment.ProcessorCount;
-      clientControllerBindingSource.DataSource = clientControllers;
-      UpdateControl();
+      lock (clientControllers) {
+        nClientsControl.Value = Environment.ProcessorCount;
+        clientControllerBindingSource.DataSource = clientControllers;
+        UpdateControl();
+      }
     }
 
     private void startButton_Click(object sender, EventArgs e) {
-      foreach (var client in clientControllers) {
-        client.Client.Start(addressTextBox.Text);
+      lock (clientControllers) {
+        foreach (var client in clientControllers) {
+          client.Client.Start(addressTextBox.Text);
+        }
+        UpdateControl();
       }
-      UpdateControl();
     }
 
     private void stopButton_Click(object sender, EventArgs e) {
-      foreach (var client in clientControllers) {
-        client.Client.Stop();
+      lock (clientControllers) {
+        foreach (var client in clientControllers) {
+          client.Client.Stop();
+        }
+        UpdateControl();
       }
-      UpdateControl();
     }
 
     private void UpdateControl() {
-      foreach (var client in clientControllers) {
-        if (client.Client.Waiting) {
-          startButton.Enabled = false;
-          stopButton.Enabled = true;
-          client.Status = "Waiting for engine";
-        } else if (client.Client.Executing) {
-          startButton.Enabled = false;
-          stopButton.Enabled = true;
-          client.Status = "Executing engine";
-        } else if (client.Client.Stopped) {
-          startButton.Enabled = true;
-          stopButton.Enabled = false;
-          client.Status = "Stopped";
+      lock (clientControllers) {
+        foreach (var client in clientControllers) {
+          if (client.Client.Waiting) {
+            startButton.Enabled = false;
+            stopButton.Enabled = true;
+            client.Status = "Waiting for engine";
+          } else if (client.Client.Executing) {
+            startButton.Enabled = false;
+            stopButton.Enabled = true;
+            client.Status = "Executing engine";
+          } else if (client.Client.Stopped) {
+            startButton.Enabled = true;
+            stopButton.Enabled = false;
+            client.Status = "Stopped";
+          }
+          client.Message = client.Client.StatusMessage;
         }
-        client.Message = client.Client.StatusMessage;
+        clientControllerBindingSource.ResetBindings(false);
       }
-      clientGrid.Invalidate();
     }
 
     private void timer_Tick(object sender, EventArgs e) {
@@ -89,17 +97,20 @@ namespace HeuristicLab.Grid {
     }
 
     private void nClientsControl_ValueChanged(object sender, EventArgs e) {
-      if (nClientsControl.Value < 0)
-        nClientsControl.Value = 0;
-      while (clientControllers.Count < nClientsControl.Value)
-        clientControllers.Add(new ClientController() { Client = new GridClient() });
-      while (clientControllers.Count > nClientsControl.Value) {
-        try {
-          clientControllers[clientControllers.Count - 1].Client.Stop();
-          clientControllers.RemoveAt(clientControllers.Count - 1);
-        } catch { }
+      lock (clientControllers) {
+        if (nClientsControl.Value < 0)
+          nClientsControl.Value = 0;
+        while (clientControllers.Count < nClientsControl.Value) {
+          clientControllers.Add(new ClientController() { Client = new GridClient() });
+        }
+        while (clientControllerBindingSource.Count > nClientsControl.Value) {
+          GridClient client = clientControllers.Last().Client;
+          if (!client.Stopped)
+            client.Stop();
+          clientControllers.RemoveAt(clientControllerBindingSource.Count - 1);
+        }
       }
-      clientGrid.Invalidate();
+      clientControllerBindingSource.ResetBindings(false);
     }
   }
 }
