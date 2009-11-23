@@ -26,12 +26,14 @@ using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Data {
   /// <summary>
   /// The visual representation of the class <see cref="DoubleMatrixData"/>, symbolizing a two-dimensional
   /// matrix of double values.
   /// </summary>
+  [Content(typeof(DoubleMatrixData), true)]
   public partial class DoubleMatrixDataView : MatrixDataBaseView {
     /// <summary>
     /// Gets or sets the double matrix to represent visually.

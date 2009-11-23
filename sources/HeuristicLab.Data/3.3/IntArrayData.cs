@@ -59,14 +59,6 @@ namespace HeuristicLab.Data {
     }
 
     /// <summary>
-    /// Creates a enw instance of <see cref="IntArrayDataView"/>.
-    /// </summary>
-    /// <returns>The created instance as <see cref="IntArrayDataView"/>.</returns>
-    public override IView CreateView() {
-      return new IntArrayDataView(this);
-    }
-
-    /// <summary>
     /// The string representation of the array, formatted according to the given <paramref name="format"/>.
     /// </summary>
     /// <param name="format">The <see cref="NumberFormatInfo"></see> the single int values 

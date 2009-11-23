@@ -97,14 +97,6 @@ namespace HeuristicLab.Logging {
     }
 
     /// <summary>
-    /// Creates a new instance of <see cref="PointXYChartView"/> to represent the current instance visually.
-    /// </summary>
-    /// <returns>The created view as <see cref="PointXYChartView"/>.</returns>
-    public override IView CreateView() {
-      return new PointXYChartView(this);
-    }
-
-    /// <summary>
     /// Occurs when the values of the current instance have been changed.
     /// </summary>
     public event EventHandler ValuesChanged;

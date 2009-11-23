@@ -29,11 +29,14 @@ using System.Windows.Forms;
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.TestFunctions {
   /// <summary>
   /// Visual representation of a <see cref="TestFunctionInjector"/>.
   /// </summary>
+  [Content(typeof(TestFunctionInjector), true)]
   public partial class TestFunctionInjectorView : ViewBase {
     /// <summary>
     /// Gets or sets the TestFunctionInjector to represent visually.

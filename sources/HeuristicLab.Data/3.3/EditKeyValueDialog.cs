@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
-using HeuristicLab.Core; 
+using HeuristicLab.Core;
+using HeuristicLab.MainForm; 
 
 namespace HeuristicLab.Data {
   /// <summary>
@@ -36,8 +37,8 @@ namespace HeuristicLab.Data {
       InitializeComponent();
       key = (IItem) Activator.CreateInstance(keyType);
       value = (IItem) Activator.CreateInstance(valueType); 
-      keyPanel.Controls.Add((Control) key.CreateView());
-      valuePanel.Controls.Add((Control) value.CreateView()); 
+      keyPanel.Controls.Add((Control)MainFormManager.CreateDefaultView(key));
+      valuePanel.Controls.Add((Control)MainFormManager.CreateDefaultView(value)); 
     }
 
     private void okButton_Click(object sender, EventArgs e) {

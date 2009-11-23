@@ -6,7 +6,9 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
+using HeuristicLab.Core.Views;
 using HeuristicLab.Common;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Data {
   /// <summary>
@@ -14,6 +16,7 @@ namespace HeuristicLab.Data {
   /// </summary>
   /// <typeparam name="K">The type of the keys of the dictionary.</typeparam>
   /// <typeparam name="V">The type of the values of the dictionary.</typeparam>
+  [Content(typeof(ItemDictionary<IItem, IItem>), true)]
   public partial class ItemDictionaryView<K, V> : ViewBase
     where K : IItem
     where V : IItem {
@@ -109,8 +112,8 @@ namespace HeuristicLab.Data {
       if (listView.SelectedItems.Count == 1) {
         K key = (K) listView.SelectedItems[0].SubItems[0].Tag;
         V data = (V) listView.SelectedItems[0].SubItems[1].Tag;
-        Control keyView = (Control) key.CreateView();
-        Control dataView = (Control) data.CreateView();
+        Control keyView = (Control) MainFormManager.CreateDefaultView(key);
+        Control dataView = (Control) MainFormManager.CreateDefaultView(data);
         keyPanel.Controls.Add(keyView);
         detailsPanel.Controls.Add(dataView);
         detailsPanel.Enabled = true;
@@ -202,7 +205,7 @@ namespace HeuristicLab.Data {
             ItemDictionary.Add((K) editKeyValueDialog.Key, (V) editKeyValueDialog.Value);
           }
         } catch (Exception ex) {
-          Auxiliary.ShowErrorMessageBox(ex);
+          HeuristicLab.Core.Views.Auxiliary.ShowErrorMessageBox(ex);
         }
       }
     }

@@ -27,12 +27,15 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Data {
   /// <summary>
   /// The visual representation of the class <see cref="ConstrainedIntDataView"/>, 
   /// symbolizing an int value with some constraints.
   /// </summary>
+  [Content(typeof(ConstrainedIntData), true)]
   public partial class ConstrainedIntDataView : ViewBase {
     /// <summary>
     /// Gets or sets the int value to represent visually.
@@ -103,7 +106,7 @@ namespace HeuristicLab.Data {
         value = int.Parse(dataTextBox.Text);
         ICollection<IConstraint> violatedConstraints;
         if (!ConstrainedIntData.TrySetData(value, out violatedConstraints)) {
-          if (Auxiliary.ShowIgnoreConstraintViolationMessageBox(violatedConstraints) == DialogResult.Yes)
+          if (HeuristicLab.Core.Views.Auxiliary.ShowIgnoreConstraintViolationMessageBox(violatedConstraints) == DialogResult.Yes)
             ConstrainedIntData.Data = value;
           else
             e.Cancel = true;

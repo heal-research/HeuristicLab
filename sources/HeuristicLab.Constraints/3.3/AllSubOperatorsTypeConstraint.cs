@@ -118,14 +118,5 @@ namespace HeuristicLab.Constraints {
       clone.groupConstraint = (SubOperatorTypeConstraint)Auxiliary.Clone(groupConstraint, clonedObjects);
       return clone;
     }
-
-    /// <summary>
-    /// Creates a new instance of <see cref="AllSubOperatorsTypeConstraintView"/> to represent the current 
-    /// instance visually.
-    /// </summary>
-    /// <returns>The created view as <see cref="AllSubOperatorsTypeConstraintView"/>.</returns>
-    public override IView CreateView() {
-      return new AllSubOperatorsTypeConstraintView(groupConstraint);
-    }
   }
 }

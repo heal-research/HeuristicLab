@@ -27,11 +27,14 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Operators {
   /// <summary>
   /// The visual representation of a <see cref="CombinedOperator"/>.
   /// </summary>
+  [Content(typeof(CombinedOperator), true)]
   public partial class CombinedOperatorView : ViewBase {
     /// <summary>
     /// Gets or sets the combined operator to display.
@@ -115,7 +118,7 @@ namespace HeuristicLab.Operators {
       AddVariableInfoDialog dialog = new AddVariableInfoDialog();
       if (dialog.ShowDialog(this) == DialogResult.OK) {
         if (CombinedOperator.GetVariableInfo(dialog.VariableInfo.FormalName) != null)
-          Auxiliary.ShowErrorMessageBox("A variable info with the same formal name already exists.");
+          HeuristicLab.Core.Views.Auxiliary.ShowErrorMessageBox("A variable info with the same formal name already exists.");
         else
           CombinedOperator.AddVariableInfo(dialog.VariableInfo);
       }

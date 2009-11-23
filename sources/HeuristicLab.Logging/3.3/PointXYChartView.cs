@@ -31,11 +31,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Charting;
 using HeuristicLab.Charting.Data;
 using HeuristicLab.Common;
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Logging {
   /// <summary>
   /// Visual representation of a <see cref="PointXYChart"/>.
   /// </summary>
+  [Content(typeof(PointXYChart), true)]
   public partial class PointXYChartView : ViewBase {
     private static int[] colors = new int[] {
       182,182,255, 

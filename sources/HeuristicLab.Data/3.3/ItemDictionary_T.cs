@@ -39,14 +39,6 @@ namespace HeuristicLab.Data {
 
     #region ItemBase Members
     /// <summary>
-    /// Creates a new instance of <see cref="ItemDictionaryView&lt;K,V&gt;"/>.
-    /// </summary>
-    /// <returns>The created instance as <see cref="ItemDictionaryView&lt;K,V&gt;"/>.</returns>
-    public override IView CreateView() {
-      return new ItemDictionaryView<K,V>(this);
-    }
-
-    /// <summary>
     /// Clones the current instance and adds it to the dictionary <paramref name="clonedObjects"/>.
     /// </summary>
     /// <remarks>Also the keys and values in the dictionary are cloned and saved to the dictionary <paramref name="clonedObjects"/>,

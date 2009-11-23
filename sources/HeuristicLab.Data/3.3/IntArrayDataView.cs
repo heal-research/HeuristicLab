@@ -26,12 +26,14 @@ using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Data {
   /// <summary>
   /// The visual representation of the class <see cref="IntArrayData"/>, 
   /// symbolizing an array of int values.
   /// </summary>
+  [Content(typeof(IntArrayData), true)]
   public partial class IntArrayDataView : ArrayDataBaseView {
     /// <summary>
     /// Gets or set the int array to represent visually.

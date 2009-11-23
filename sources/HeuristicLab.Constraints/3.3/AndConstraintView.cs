@@ -28,11 +28,14 @@ using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Constraints {
   /// <summary>
   /// The visual representation of an <see cref="AndConstraint"/>.
   /// </summary>
+  [Content(typeof(AndConstraint), true)]
   public partial class AndConstraintView : ViewBase {
     /// <summary>
     /// Gets or sets the AndConstraint to represent visually.

@@ -45,7 +45,7 @@ namespace HeuristicLab.Data {
     /// </summary>
     private void InitializeComponent() {
       this.dataTextBox = new System.Windows.Forms.TextBox();
-      this.constrainedDataBaseView = new HeuristicLab.Core.ConstrainedItemBaseView();
+      this.constrainedDataBaseView = new HeuristicLab.Core.Views.ConstrainedItemBaseView();
       this.SuspendLayout();
       // 
       // dataTextBox
@@ -86,6 +86,6 @@ namespace HeuristicLab.Data {
     #endregion
 
     private System.Windows.Forms.TextBox dataTextBox;
-    private HeuristicLab.Core.ConstrainedItemBaseView constrainedDataBaseView;
+    private HeuristicLab.Core.Views.ConstrainedItemBaseView constrainedDataBaseView;
   }
 }

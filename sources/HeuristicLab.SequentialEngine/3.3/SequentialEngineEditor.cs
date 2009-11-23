@@ -27,11 +27,14 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.SequentialEngine {
   /// <summary>
   /// Visual representation of a <see cref="SequentialEngine"/>.
   /// </summary>
+  [Content(typeof(SequentialEngine), true)]
   public partial class SequentialEngineEditor : EngineBaseEditor {
     /// <summary>
     /// Gets or set the engine to represent visually.

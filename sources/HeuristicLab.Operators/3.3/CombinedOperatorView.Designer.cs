@@ -46,13 +46,13 @@ namespace HeuristicLab.Operators {
     private void InitializeComponent() {
       this.tabControl = new System.Windows.Forms.TabControl();
       this.operatorGraphTabPage = new System.Windows.Forms.TabPage();
-      this.operatorGraphView = new HeuristicLab.Core.OperatorGraphView();
+      this.operatorGraphView = new HeuristicLab.Core.Views.OperatorGraphView();
       this.variableInfosTabPage = new System.Windows.Forms.TabPage();
-      this.operatorBaseVariableInfosView = new HeuristicLab.Core.OperatorBaseVariableInfosView();
+      this.operatorBaseVariableInfosView = new HeuristicLab.Core.Views.OperatorBaseVariableInfosView();
       this.variablesTabPage = new System.Windows.Forms.TabPage();
-      this.operatorBaseVariablesView = new HeuristicLab.Core.OperatorBaseVariablesView();
+      this.operatorBaseVariablesView = new HeuristicLab.Core.Views.OperatorBaseVariablesView();
       this.constraintsTabPage = new System.Windows.Forms.TabPage();
-      this.constrainedItemBaseView = new HeuristicLab.Core.ConstrainedItemBaseView();
+      this.constrainedItemBaseView = new HeuristicLab.Core.Views.ConstrainedItemBaseView();
       this.descriptionTabPage = new System.Windows.Forms.TabPage();
       this.descriptionTextBox = new System.Windows.Forms.TextBox();
       this.removeVariableInfoButton = new System.Windows.Forms.Button();
@@ -241,10 +241,10 @@ namespace HeuristicLab.Operators {
     private System.Windows.Forms.TabPage constraintsTabPage;
     private System.Windows.Forms.TabPage descriptionTabPage;
     private System.Windows.Forms.TextBox descriptionTextBox;
-    private HeuristicLab.Core.OperatorGraphView operatorGraphView;
-    private HeuristicLab.Core.OperatorBaseVariableInfosView operatorBaseVariableInfosView;
-    private HeuristicLab.Core.OperatorBaseVariablesView operatorBaseVariablesView;
-    private HeuristicLab.Core.ConstrainedItemBaseView constrainedItemBaseView;
+    private HeuristicLab.Core.Views.OperatorGraphView operatorGraphView;
+    private HeuristicLab.Core.Views.OperatorBaseVariableInfosView operatorBaseVariableInfosView;
+    private HeuristicLab.Core.Views.OperatorBaseVariablesView operatorBaseVariablesView;
+    private HeuristicLab.Core.Views.ConstrainedItemBaseView constrainedItemBaseView;
     private System.Windows.Forms.Button removeVariableInfoButton;
     private System.Windows.Forms.Button addVariableInfoButton;
 

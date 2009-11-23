@@ -56,13 +56,5 @@ namespace HeuristicLab.Data {
     public BoolArrayData(bool[] data) {
       Data = data;
     }
-
-    /// <summary>
-    /// Creates a new instance of the <see cref="BoolArrayDataView"/> class.
-    /// </summary>
-    /// <returns>The created instance of the <see cref="BoolArrayDataView"/>.</returns>
-    public override IView CreateView() {
-      return new BoolArrayDataView(this);
-    }
   }
 }

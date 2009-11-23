@@ -27,11 +27,14 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Data {
   /// <summary>
   /// The visual representation of the class <see cref="DoubleData"/>, symbolizing a double value.
   /// </summary>
+  [Content(typeof(DoubleData), true)]
   public partial class DoubleDataView : ViewBase {
     /// <summary>
     /// Gets or sets the double value to represent visually.

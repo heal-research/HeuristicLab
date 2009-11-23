@@ -31,6 +31,8 @@ using WeifenLuo.WinFormsUI.Docking;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Core;
 using System.IO;
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.AdvancedOptimizationFrontend {
   /// <summary>
@@ -103,8 +105,8 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
       DockContent content;
       if (control is IEditor)
         content = new EditorForm((IEditor)control);
-      else if (control is IView)
-        content = new ViewForm((IView)control);
+      else if (control is HeuristicLab.Core.Views.IView)
+        content = new ViewForm((HeuristicLab.Core.Views.IView)control);
       else
         throw new InvalidOperationException("Control is neither a view nor an editor.");
 
@@ -177,7 +179,7 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
         if (task.storable != null) {
           IEditable editable = task.storable as IEditable;
           if (editable != null)
-            editor = editable.CreateEditor();
+            editor = (IEditor)MainFormManager.CreateDefaultView(editable);
         }
         if (editor == null)
           MessageBox.Show("Could not open item. The selected item doesn't provide an editor.", "Editor Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -242,7 +244,7 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
       if (editable == null) {
         MessageBox.Show("The selected item is not editable.", "Editable Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
       } else {
-        IEditor editor = editable.CreateEditor();
+        IEditor editor = (IEditor)MainFormManager.CreateDefaultView(editable);
         if (editor == null) {
           MessageBox.Show("The selected item doesn't provide an editor.", "Editor Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         } else {

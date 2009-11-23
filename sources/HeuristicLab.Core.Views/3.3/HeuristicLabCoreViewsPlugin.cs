@@ -24,14 +24,17 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Core {
+namespace HeuristicLab.Core.Views {
   /// <summary>
   /// Plugin class for HeuristicLab.Core.Views plugin.
   /// </summary>
   [ClassInfo(Name = "HeuristicLab.Core.Views-3.3")]
   [PluginFile(Filename = "HeuristicLab.Core.Views-3.3.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.Common-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Persistence-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Common.Resources-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Core-3.3")]
+  [Dependency(Dependency = "HeuristicLab.MainForm-3.2")]
+  [Dependency(Dependency = "HeuristicLab.MainForm.WindowsForms-3.2")]
   public class HeuristicLabCoreViewsPlugin : PluginBase {
   }
 }

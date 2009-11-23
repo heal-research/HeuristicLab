@@ -29,11 +29,14 @@ using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Constraints {
   /// <summary>
   /// Visual representation of a <see cref="NotConstraint"/>.
   /// </summary>
+  [Content(typeof(NotConstraint), true)]
   public partial class NotConstraintView : ViewBase {
     private Type[] itemTypes;
 
@@ -112,7 +115,7 @@ namespace HeuristicLab.Constraints {
           Controls.Remove(subConstraintViewBase);
           subConstraintViewBase.Dispose();
         }
-        subConstraintViewBase = (ViewBase)NotConstraint.SubConstraint.CreateView();
+        subConstraintViewBase = (ViewBase)MainFormManager.CreateDefaultView(NotConstraint.SubConstraint);
         if (subConstraintViewBase != null) {
           subConstraintViewBase.Anchor = (AnchorStyles)(AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right);
           subConstraintViewBase.Location = new Point(0, 30);

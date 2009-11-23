@@ -44,7 +44,7 @@ namespace HeuristicLab.Constraints {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.subConstraintViewBase = new HeuristicLab.Core.ViewBase();
+      this.subConstraintViewBase = new HeuristicLab.Core.Views.ViewBase();
       this.subConstraintComboBox = new System.Windows.Forms.ComboBox();
       this.SuspendLayout();
       // 
@@ -83,7 +83,7 @@ namespace HeuristicLab.Constraints {
 
     #endregion
 
-    private HeuristicLab.Core.ViewBase subConstraintViewBase;
+    private HeuristicLab.Core.Views.ViewBase subConstraintViewBase;
     private System.Windows.Forms.ComboBox subConstraintComboBox;
   }
 }

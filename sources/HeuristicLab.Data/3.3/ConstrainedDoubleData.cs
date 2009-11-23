@@ -69,14 +69,6 @@ namespace HeuristicLab.Data {
     }
 
     /// <summary>
-    /// Creates a new instance of <see cref="ConstrainedDoubleDataView"/>.
-    /// </summary>
-    /// <returns>The created instance as <see cref="ConstrainedDoubleDataView"/>.</returns>
-    public override IView CreateView() {
-      return new ConstrainedDoubleDataView(this);
-    }
-
-    /// <summary>
     /// Clones the current instance.
     /// </summary>
     /// <remarks>Uses the <see cref="ConstrainedObjectData.Clone"/> implementation of base class <see cref="ConstrainedObjectData"/>.</remarks>

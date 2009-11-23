@@ -69,14 +69,6 @@ namespace HeuristicLab.Logging {
     }
 
     /// <summary>
-    /// Creates an instance of <see cref="LogView"/> to represent the current instance visually.
-    /// </summary>
-    /// <returns>The created view as <see cref="LogView"/>.</returns>
-    public override IView CreateView() {
-      return new LogView(this);
-    }
-
-    /// <summary>
     /// Occurs when the items have been changed.
     /// </summary>
     public event EventHandler ItemsChanged;

@@ -31,7 +31,10 @@ namespace HeuristicLab.TestFunctions {
   [ClassInfo(Name = "HeuristicLab.TestFunctions-3.3")]
   [PluginFile(Filename = "HeuristicLab.TestFunctions-3.3.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.Core-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Core.Views-3.3")]
   [Dependency(Dependency = "HeuristicLab.Data-3.3")]
+  [Dependency(Dependency = "HeuristicLab.MainForm-3.2")]
+  [Dependency(Dependency = "HeuristicLab.MainForm.WindowsForms-3.2")]
   [Dependency(Dependency = "HeuristicLab.Operators-3.3")]
   public class HeuristicLabTestFunctionsPlugin : PluginBase {
   }

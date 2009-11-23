@@ -141,14 +141,5 @@ namespace HeuristicLab.Constraints {
       }
       return clone;
     }
-
-    /// <summary>
-    /// Creates a new instance of <see cref="SubOperatorsTypeConstraintView"/> to represent the current 
-    /// instance visually.
-    /// </summary>
-    /// <returns>The created view as <see cref="SubOperatorsTypeConstraintView"/>.</returns>
-    public override IView CreateView() {
-      return new SubOperatorsTypeConstraintView(this);
-    }
   }
 }

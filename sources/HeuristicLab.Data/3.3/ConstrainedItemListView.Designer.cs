@@ -53,7 +53,7 @@ namespace HeuristicLab.Data {
       this.tabControl = new System.Windows.Forms.TabControl();
       this.itemsTabPage = new System.Windows.Forms.TabPage();
       this.constraintsTabPage = new System.Windows.Forms.TabPage();
-      this.constraintsConstrainedItemBaseView = new HeuristicLab.Core.ConstrainedItemBaseView();
+      this.constraintsConstrainedItemBaseView = new HeuristicLab.Core.Views.ConstrainedItemBaseView();
       this.itemsSplitContainer.Panel1.SuspendLayout();
       this.itemsSplitContainer.Panel2.SuspendLayout();
       this.itemsSplitContainer.SuspendLayout();
@@ -212,7 +212,7 @@ namespace HeuristicLab.Data {
     private System.Windows.Forms.TabPage constraintsTabPage;
     private System.Windows.Forms.GroupBox itemsGroupBox;
     private System.Windows.Forms.GroupBox detailsGroupBox;
-    private HeuristicLab.Core.ConstrainedItemBaseView constraintsConstrainedItemBaseView;
+    private HeuristicLab.Core.Views.ConstrainedItemBaseView constraintsConstrainedItemBaseView;
     private System.Windows.Forms.ListView itemsListView;
   }
 }

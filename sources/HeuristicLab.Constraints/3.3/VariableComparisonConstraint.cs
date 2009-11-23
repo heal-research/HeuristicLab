@@ -121,15 +121,6 @@ namespace HeuristicLab.Constraints {
     }
 
     /// <summary>
-    /// Creates a new instance of <see cref="VariableComparisonConstraintView"/> to represent the current 
-    /// instance visually.
-    /// </summary>
-    /// <returns>The created view as <see cref="VariableComparisonConstraintView"/>.</returns>
-    public override IView CreateView() {
-      return new VariableComparisonConstraintView(this);
-    }
-
-    /// <summary>
     /// Clones the current instance (deep clone).
     /// </summary>
     /// <remarks>Deep clone through <see cref="Auxiliary.Clone"/> method of helper class 

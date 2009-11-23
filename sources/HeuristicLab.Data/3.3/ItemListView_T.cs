@@ -27,7 +27,9 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
+using HeuristicLab.Core.Views;
 using HeuristicLab.Common;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Data {
   /// <summary>
@@ -127,7 +129,7 @@ namespace HeuristicLab.Data {
       }
       if(itemsListView.SelectedItems.Count == 1) {
         IItem data = (IItem)itemsListView.SelectedItems[0].Tag;
-        Control view = (Control)data.CreateView();
+        Control view = (Control)MainFormManager.CreateDefaultView(data);
         detailsGroupBox.Controls.Add(view);
         view.Dock = DockStyle.Fill;
         detailsGroupBox.Enabled = true;
@@ -170,7 +172,7 @@ namespace HeuristicLab.Data {
         try {
           ItemList.Add((T)chooseItemDialog.Item);
         } catch(Exception ex) {
-          Auxiliary.ShowErrorMessageBox(ex);
+          HeuristicLab.Core.Views.Auxiliary.ShowErrorMessageBox(ex);
         }
       }
     }

@@ -59,14 +59,6 @@ namespace HeuristicLab.Data {
     }
 
     /// <summary>
-    /// Creates a new instance of the <see cref="DoubleMatrixDataView"/> class.
-    /// </summary>
-    /// <returns>The created instance as <see cref="DoubleMatrixDataView"/>.</returns>
-    public override IView CreateView() {
-      return new DoubleMatrixDataView(this);
-    }
-
-    /// <summary>
     /// The string representation of the matrix.
     /// </summary>
     /// <returns>The elements of the matrix as a string, line by line, each element separated by a 

@@ -28,6 +28,7 @@ using System.Text;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 using HeuristicLab.Core;
+using HeuristicLab.Core.Views;
 
 namespace HeuristicLab.AdvancedOptimizationFrontend {
   /// <summary>

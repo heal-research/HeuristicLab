@@ -28,6 +28,7 @@ using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Core.Views;
 
 namespace HeuristicLab.Operators {
   /// <summary>

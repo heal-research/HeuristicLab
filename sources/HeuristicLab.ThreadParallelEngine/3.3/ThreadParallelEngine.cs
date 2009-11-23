@@ -31,7 +31,7 @@ namespace HeuristicLab.ThreadParallelEngine {
   /// <summary>
   /// Implementation of an engine being able to run in parallel with threads.
   /// </summary>
-  public class ThreadParallelEngine : EngineBase, IEditable {
+  public class ThreadParallelEngine : EngineBase {
     #region Inner Class Task
     private class TaskList {
       public Stack<IOperation>[] tasks;
@@ -76,22 +76,6 @@ namespace HeuristicLab.ThreadParallelEngine {
       ThreadParallelEngine clone = (ThreadParallelEngine)base.Clone(clonedObjects);
       clone.myWorkers = Workers;
       return clone;
-    }
-
-    /// <summary>
-    /// Creates a new instance of <see cref="ThreadParallelEngineEditor"/> to display the current 
-    /// instance.
-    /// </summary>
-    /// <returns>The created instance as <see cref="ThreadParallelEngineEditor"/>.</returns>
-    public override IView CreateView() {
-      return new ThreadParallelEngineEditor(this);
-    }
-    /// <summary>
-    /// Creates a new instance of <see cref="ThreadParallelEngineEditor"/>.
-    /// </summary>
-    /// <returns>The created instance as <see cref="ThreadParallelEngineEditor"/>.</returns>
-    public virtual IEditor CreateEditor() {
-      return new ThreadParallelEngineEditor(this);
     }
 
     /// <summary>

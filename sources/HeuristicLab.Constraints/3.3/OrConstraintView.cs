@@ -28,11 +28,14 @@ using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Constraints {
   /// <summary>
   /// Visual representation of an <see cref="OrConstraint"/>.
   /// </summary>
+  [Content(typeof(OrConstraint), true)]
   public partial class OrConstraintView : ViewBase {
     private OrConstraint OrConstraint {
       get { return (OrConstraint)Item; }

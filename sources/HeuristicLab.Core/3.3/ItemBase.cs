@@ -32,15 +32,6 @@ namespace HeuristicLab.Core {
   [EmptyStorableClass]
   public abstract class ItemBase : StorableBase, IItem {
     /// <summary>
-    /// Creates a new instance of <see cref="ItemBaseView"/> for 
-    /// visual representation of the current instance.
-    /// </summary>
-    /// <returns>The created instance as <see cref="ItemBaseView"/>.</returns>
-    public virtual IView CreateView() {
-      return new ItemBaseView(this);
-    }
-
-    /// <summary>
     /// Gets the string representation of the current instance.
     /// </summary>
     /// <returns>The type name of the current instance.</returns>

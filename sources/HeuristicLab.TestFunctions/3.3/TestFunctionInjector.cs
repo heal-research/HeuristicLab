@@ -93,14 +93,5 @@ namespace HeuristicLab.TestFunctions {
       scope.AddVariable((IVariable)GetVariable("Dimension").Clone());
       return null;
     }
-
-    /// <summary>
-    /// Creates a new instance of <see cref="TestFunctionInjectorView"/> to represent the current 
-    /// instance visually.
-    /// </summary>
-    /// <returns>The newly created view as <see cref="TestFunctionInjectorView"/>.</returns>
-    public override IView CreateView() {
-      return new TestFunctionInjectorView(this);
-    }
   }
 }

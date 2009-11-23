@@ -36,22 +36,6 @@ namespace HeuristicLab.SequentialEngine {
     private IOperator currentOperator;
 
     /// <summary>
-    /// Creates a new instance of <see cref="SequentialEngineEditor"/>.
-    /// </summary>
-    /// <returns>The created view as <see cref="SequentialEngineEditor"/>.</returns>
-    public override IView CreateView() {
-      return new SequentialEngineEditor(this);
-    }
-
-    /// <summary>
-    /// Creates a new instance of <see cref="SequentialEngineEditor"/>.
-    /// </summary>
-    /// <returns>The created editor as <see cref="SequentialEngineEditor"/>.</returns>
-    public virtual IEditor CreateEditor() {
-      return new SequentialEngineEditor(this);
-    }
-
-    /// <summary>
     /// Aborts the engine execution.
     /// </summary>
     /// <remarks>Calls <see cref="EngineBase.Abort"/> of base class <see cref="EngineBase"/> and

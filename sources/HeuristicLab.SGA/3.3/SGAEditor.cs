@@ -29,11 +29,14 @@ using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Core;
 using HeuristicLab.Common;
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.SGA {
   /// <summary>
   /// Visual representation of the <see cref="SGA"/> class.
   /// </summary>
+  [Content(typeof(SGA), true)]
   public partial class SGAEditor : EditorBase {
     private ChooseOperatorDialog chooseOperatorDialog;
 
@@ -114,32 +117,32 @@ namespace HeuristicLab.SGA {
 
     #region Button Events
     private void viewProblemInitializationButton_Click(object sender, EventArgs e) {
-      IView view = SGA.ProblemInjector.CreateView();
+      HeuristicLab.Core.Views.IView view = (HeuristicLab.Core.Views.IView)MainFormManager.CreateDefaultView(SGA.ProblemInjector);
       if (view != null)
         PluginManager.ControlManager.ShowControl(view);
     }
     private void viewSolutionGenerationButton_Click(object sender, EventArgs e) {
-      IView view = SGA.SolutionGenerator.CreateView();
+      HeuristicLab.Core.Views.IView view = (HeuristicLab.Core.Views.IView)MainFormManager.CreateDefaultView(SGA.SolutionGenerator);
       if (view != null)
         PluginManager.ControlManager.ShowControl(view);
     }
     private void viewSelectionButton_Click(object sender, EventArgs e) {
-      IView view = SGA.Selector.CreateView();
+      HeuristicLab.Core.Views.IView view = (HeuristicLab.Core.Views.IView)MainFormManager.CreateDefaultView(SGA.Selector);
       if (view != null)
         PluginManager.ControlManager.ShowControl(view);
     }
     private void viewCrossoverButton_Click(object sender, EventArgs e) {
-      IView view = SGA.Crossover.CreateView();
+      HeuristicLab.Core.Views.IView view = (HeuristicLab.Core.Views.IView)MainFormManager.CreateDefaultView(SGA.Crossover);
       if (view != null)
         PluginManager.ControlManager.ShowControl(view);
     }
     private void viewMutationButton_Click(object sender, EventArgs e) {
-      IView view = SGA.Mutator.CreateView();
+      HeuristicLab.Core.Views.IView view = (HeuristicLab.Core.Views.IView)MainFormManager.CreateDefaultView(SGA.Mutator);
       if (view != null)
         PluginManager.ControlManager.ShowControl(view);
     }
     private void viewEvaluationButton_Click(object sender, EventArgs e) {
-      IView view = SGA.Evaluator.CreateView();
+      HeuristicLab.Core.Views.IView view = (HeuristicLab.Core.Views.IView)MainFormManager.CreateDefaultView(SGA.Evaluator);
       if (view != null)
         PluginManager.ControlManager.ShowControl(view);
     }
@@ -198,7 +201,7 @@ namespace HeuristicLab.SGA {
     }
     private void cloneEngineButton_Click(object sender, EventArgs e) {
       IEngine clone = (IEngine)SGA.Engine.Clone();
-      IEditor editor = ((IEditable)clone).CreateEditor();
+      IEditor editor = (IEditor)MainFormManager.CreateDefaultView(clone);
       PluginManager.ControlManager.ShowControl(editor);
     }
     #endregion
@@ -209,7 +212,7 @@ namespace HeuristicLab.SGA {
       if (InvokeRequired)
         Invoke(new OnExceptionEventDelegate(Engine_ExceptionOccurred), sender, e);
       else
-        Auxiliary.ShowErrorMessageBox(e.Value);
+        HeuristicLab.Core.Views.Auxiliary.ShowErrorMessageBox(e.Value);
     }
     private void Engine_Finished(object sender, EventArgs e) {
       scopeView.Refresh();

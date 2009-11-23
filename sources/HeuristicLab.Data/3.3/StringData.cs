@@ -56,14 +56,6 @@ namespace HeuristicLab.Data {
     public StringData(string data) {
       Data = data;
     }
-    
-    /// <summary>
-    /// Creates a new instance of <see cref="StringDataView"/>.
-    /// </summary>
-    /// <returns>The created instance as <see cref="StringDataView"/>.</returns>
-    public override IView CreateView() {
-      return new StringDataView(this);
-    }
 
     /// <summary>
     /// Clones the current instance.

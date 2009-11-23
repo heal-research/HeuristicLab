@@ -55,13 +55,6 @@ namespace HeuristicLab.Data {
     public BoolData(bool data) {
       Data = data;
     }
-    /// <summary>
-    /// Creates a new instance of the <see cref="BoolDataView"/> class.
-    /// </summary>
-    /// <returns>The created instance of the <see cref="BoolDataView"/>.</returns>
-    public override IView CreateView() {
-      return new BoolDataView(this);
-    }
 
     /// <summary>
     /// Clones the current instance.

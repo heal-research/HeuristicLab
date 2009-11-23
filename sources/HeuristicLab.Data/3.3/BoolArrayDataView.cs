@@ -26,12 +26,14 @@ using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Data {
   /// <summary>
   /// The visual representation of the class <see cref="BoolArrayData"/>, 
   /// symbolizing an array of boolean values.
   /// </summary>
+  [Content(typeof(BoolArrayData), true)]
   public partial class BoolArrayDataView : ArrayDataBaseView {
     /// <summary>
     /// Gets or sets the instance of the boolean array to represent visually.

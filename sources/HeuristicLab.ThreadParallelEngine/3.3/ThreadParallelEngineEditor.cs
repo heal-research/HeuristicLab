@@ -27,11 +27,14 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.ThreadParallelEngine {
   /// <summary>
   /// Visual representation of a <see cref="ThreadParallelEngine"/>.
   /// </summary>
+  [Content(typeof(ThreadParallelEngine), true)]
   public partial class ThreadParallelEngineEditor : EngineBaseEditor {
     /// <summary>
     /// Gets or sets the ThreadParallelEngine to display.

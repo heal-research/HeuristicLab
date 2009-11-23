@@ -27,11 +27,14 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Data {
   /// <summary>
   /// The visual representation of the class <see cref="IntData"/>, symbolizing an int value.
   /// </summary>
+  [Content(typeof(IntData), true)]
   public partial class IntDataView : ViewBase {
     /// <summary>
     /// Gets or set the int value to represent visually.

@@ -31,7 +31,7 @@ namespace HeuristicLab.Constraints {
   /// <summary>
   /// Constraint where at least one sub-constraint must be true.
   /// </summary>
-  public class OrConstraint : ConstraintBase, IViewable {
+  public class OrConstraint : ConstraintBase {
 
     [Storable]
     private ItemList<IConstraint> clauses;
@@ -74,15 +74,6 @@ namespace HeuristicLab.Constraints {
         if (result) return true;
       }
       return result;
-    }
-
-    /// <summary>
-    /// Creates a new instance of <see cref="OrConstraintView"/> to represent the current 
-    /// instance visually.
-    /// </summary>
-    /// <returns>The created view as <see cref="OrConstraintView"/>.</returns>
-    public override IView CreateView() {
-      return new OrConstraintView(this);
     }
 
     /// <summary>

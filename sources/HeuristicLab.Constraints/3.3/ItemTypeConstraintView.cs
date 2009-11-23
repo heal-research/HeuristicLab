@@ -28,11 +28,14 @@ using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Constraints {
   /// <summary>
   /// The visual representation of an <see cref="ItemTypeConstraint"/>.
   /// </summary>
+  [Content(typeof(ItemTypeConstraint), true)]
   public partial class ItemTypeConstraintView : ViewBase {
     /// <summary>
     /// Gets or sets the ItemTypeConstraint to represent visually.

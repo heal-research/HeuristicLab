@@ -27,11 +27,13 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Data {
   /// <summary>
   /// The visual representation of the class <see cref="ItemList"/>.
   /// </summary>
+  [Content(typeof(ItemList<IItem>), true)]
   public class ItemListView : ItemListView<IItem> {
     /// <summary>
     /// Initializes a new instance of the class <see cref="ItemListView"/>.

@@ -28,8 +28,11 @@ using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Operators.Programmable {
+  [Content(typeof(ProgrammableOperator), true)]
   public partial class ProgrammableOperatorView : ViewBase {
     public ProgrammableOperator ProgrammableOperator {
       get { return (ProgrammableOperator)Item; }
@@ -101,14 +104,14 @@ namespace HeuristicLab.Operators.Programmable {
         MessageBox.Show("Compilation successful", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
       }
       catch (Exception ex) {
-        Auxiliary.ShowErrorMessageBox(ex);
+        HeuristicLab.Core.Views.Auxiliary.ShowErrorMessageBox(ex);
       }
     }
     private void addVariableInfoButton_Click(object sender, EventArgs e) {
       AddVariableInfoDialog dialog = new AddVariableInfoDialog();
       if (dialog.ShowDialog(this) == DialogResult.OK) {
         if (ProgrammableOperator.GetVariableInfo(dialog.VariableInfo.FormalName) != null)
-          Auxiliary.ShowErrorMessageBox("A variable info with the same formal name already exists.");
+          HeuristicLab.Core.Views.Auxiliary.ShowErrorMessageBox("A variable info with the same formal name already exists.");
         else
           ProgrammableOperator.AddVariableInfo(dialog.VariableInfo);
       }

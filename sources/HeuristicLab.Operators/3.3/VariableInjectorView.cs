@@ -27,11 +27,14 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Operators {
   /// <summary>
   /// Visual representation of <see cref="VariableInjector"/>.
   /// </summary>
+  [Content(typeof(VariableInjector), true)]
   public partial class VariableInjectorView : OperatorBaseView {
     /// <summary>
     /// Gets or sets the <see cref="HeuristicLab.Operators.VariableInjector"/> to display.

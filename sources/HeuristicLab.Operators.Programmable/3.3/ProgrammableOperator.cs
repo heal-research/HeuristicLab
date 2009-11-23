@@ -188,10 +188,6 @@ namespace HeuristicLab.Operators.Programmable {
       return (IOperation)executeMethod.Invoke(null, parameters);
     }
 
-    public override IView CreateView() {
-      return new ProgrammableOperatorView(this);
-    }
-
     public event EventHandler DescriptionChanged;
     protected virtual void OnDescriptionChanged() {
       if (DescriptionChanged != null)

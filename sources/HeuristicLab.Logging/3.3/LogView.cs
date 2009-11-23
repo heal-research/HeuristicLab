@@ -29,11 +29,14 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Common;
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Logging {
   /// <summary>
   /// Visual representation of the <see cref="Log"/> class.
   /// </summary>
+  [Content(typeof(Log), true)]
   public partial class LogView : ViewBase {
     /// <summary>
     /// Gets or sets the Log item to represent visually.

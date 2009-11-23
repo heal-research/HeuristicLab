@@ -31,7 +31,7 @@ namespace HeuristicLab.Constraints {
   /// <summary>
   /// Constraint where all sub-constraints must be <c>true</c>.
   /// </summary>
-  public class AndConstraint : ConstraintBase, IViewable {
+  public class AndConstraint : ConstraintBase {
 
     [Storable]
     private ItemList<IConstraint> clauses;
@@ -74,15 +74,6 @@ namespace HeuristicLab.Constraints {
         if (!result) return false;
       }
       return result;
-    }
-
-    /// <summary>
-    /// Creates a new instance of <see cref="AndConstraintView"/> to represent the current 
-    /// instance visually.
-    /// </summary>
-    /// <returns>The created view as <see cref="AndConstraintView"/>.</returns>
-    public override IView CreateView() {
-      return new AndConstraintView(this);
     }
 
     /// <summary>

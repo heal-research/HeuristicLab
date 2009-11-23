@@ -55,9 +55,9 @@ namespace HeuristicLab.Routing.TSP {
       this.tabControl = new System.Windows.Forms.TabControl();
       this.dataTabPage = new System.Windows.Forms.TabPage();
       this.variableInfosTabPage = new System.Windows.Forms.TabPage();
-      this.operatorBaseVariableInfosView = new HeuristicLab.Core.OperatorBaseVariableInfosView();
+      this.operatorBaseVariableInfosView = new HeuristicLab.Core.Views.OperatorBaseVariableInfosView();
       this.descriptionTabPage = new System.Windows.Forms.TabPage();
-      this.operatorBaseDescriptionView = new HeuristicLab.Core.OperatorBaseDescriptionView();
+      this.operatorBaseDescriptionView = new HeuristicLab.Core.Views.OperatorBaseDescriptionView();
       this.tabControl.SuspendLayout();
       this.dataTabPage.SuspendLayout();
       this.variableInfosTabPage.SuspendLayout();
@@ -241,8 +241,8 @@ namespace HeuristicLab.Routing.TSP {
     private System.Windows.Forms.TabControl tabControl;
     private System.Windows.Forms.TabPage dataTabPage;
     private System.Windows.Forms.TabPage variableInfosTabPage;
-    private HeuristicLab.Core.OperatorBaseVariableInfosView operatorBaseVariableInfosView;
+    private HeuristicLab.Core.Views.OperatorBaseVariableInfosView operatorBaseVariableInfosView;
     private System.Windows.Forms.TabPage descriptionTabPage;
-    private HeuristicLab.Core.OperatorBaseDescriptionView operatorBaseDescriptionView;
+    private HeuristicLab.Core.Views.OperatorBaseDescriptionView operatorBaseDescriptionView;
   }
 }

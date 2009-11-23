@@ -101,14 +101,6 @@ namespace HeuristicLab.Core {
       parent = scope;
     }
 
-    /// <summary>
-    /// Creates a new instance of <see cref="ScopeView"/> to represent the current instance visually.
-    /// </summary>
-    /// <returns>The created view as <see cref="ScopeView"/>.</returns>
-    public override IView CreateView() {
-      return new ScopeView(this);
-    }
-
     /// <inheritdoc/>
     public IVariable GetVariable(string name) {
       IVariable variable;

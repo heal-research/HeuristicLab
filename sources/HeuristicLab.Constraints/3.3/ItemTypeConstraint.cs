@@ -90,15 +90,6 @@ If the item is a ConstrainedItemList, any containing elements are limited to the
     }
 
     /// <summary>
-    /// Creates a new instance of <see cref="ItemTypeConstraintView"/> to represent the current 
-    /// instance visually.
-    /// </summary>
-    /// <returns>The created view as <see cref="ItemTypeConstraintView"/>.</returns>
-    public override IView CreateView() {
-      return new ItemTypeConstraintView(this);
-    }
-
-    /// <summary>
     /// Clones the current instance (deep clone).
     /// </summary>
     /// <param name="clonedObjects">Dictionary of all already clone objects. (Needed to avoid cycles.)</param>

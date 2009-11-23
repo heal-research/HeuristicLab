@@ -96,14 +96,6 @@ namespace HeuristicLab.Logging {
     }
 
     /// <summary>
-    /// Creates an instance of <see cref="LinechartView"/> to represent the current instance visually.
-    /// </summary>
-    /// <returns>The created view as <see cref="LinechartView"/>.</returns>
-    public override IView CreateView() {
-      return new LinechartView(this);
-    }
-
-    /// <summary>
     /// Occurs when the number of lines has been changed.
     /// </summary>
     public event EventHandler NumberOfLinesChanged;

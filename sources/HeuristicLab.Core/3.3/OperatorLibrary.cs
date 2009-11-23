@@ -29,7 +29,7 @@ namespace HeuristicLab.Core {
   /// <summary>
   /// Represents a library of operators consisting of one <see cref="IOperatorGroup"/>.
   /// </summary>
-  public class OperatorLibrary : ItemBase, IOperatorLibrary, IEditable {
+  public class OperatorLibrary : ItemBase, IOperatorLibrary {
 
     [Storable]
     private IOperatorGroup myGroup;
@@ -45,21 +45,6 @@ namespace HeuristicLab.Core {
     /// </summary>
     public OperatorLibrary() {
       myGroup = new OperatorGroup();
-    }
-
-    /// <summary>
-    /// Creates a new instance of <see cref="OperatorLibraryEditor"/> to display the current instance.
-    /// </summary>
-    /// <returns>The created view as <see cref="OperatorLibraryEditor"/>.</returns>
-    public override IView CreateView() {
-      return new OperatorLibraryEditor(this);
-    }
-    /// <summary>
-    /// Creates a new instance of <see cref="OperatorLibraryEditor"/> to display the current instance.
-    /// </summary>
-    /// <returns>The created editor as <see cref="OperatorLibraryEditor"/>.</returns>
-    public virtual IEditor CreateEditor() {
-      return new OperatorLibraryEditor(this);
     }
 
     /// <summary>

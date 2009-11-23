@@ -117,14 +117,6 @@ A combined operator automatically inject its sub-operators into the scope it is 
     }
 
     /// <summary>
-    /// Creates a new instance of <see cref="CombinedOperatorView"/> to display the current instance.
-    /// </summary>
-    /// <returns>The created view as <see cref="CombinedOperatorView"/>.</returns>
-    public override IView CreateView() {
-      return new CombinedOperatorView(this);
-    }
-
-    /// <summary>
     /// Occurs when the description of the current instance has been changed.
     /// </summary>
     public event EventHandler DescriptionChanged;

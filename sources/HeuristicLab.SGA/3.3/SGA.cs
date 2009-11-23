@@ -37,7 +37,7 @@ namespace HeuristicLab.SGA {
   /// <summary>
   /// Class for the heuristic optimization technique "simple genetic algorithm".
   /// </summary>
-  public class SGA : ItemBase, IEditable {
+  public class SGA : ItemBase {
     #region Create Operators
     /// <summary>
     /// Creates operators for the current instance.
@@ -546,21 +546,6 @@ namespace HeuristicLab.SGA {
       myEngine = new SequentialEngine.SequentialEngine();
       Create(myEngine);
       SetReferences();
-    }
-
-    /// <summary>
-    /// Creates a new instance of the <see cref="SGAEditor"/> class.
-    /// </summary>
-    /// <returns>The created instance of the <see cref="SGAEditor"/>.</returns>
-    public override IView CreateView() {
-      return new SGAEditor(this);
-    }
-    /// <summary>
-    /// Creates a new instance of the <see cref="SGAEditor"/> class.
-    /// </summary>
-    /// <returns>The created instance of the <see cref="SGAEditor"/>.</returns>
-    public virtual IEditor CreateEditor() {
-      return new SGAEditor(this);
     }
 
     /// <summary>

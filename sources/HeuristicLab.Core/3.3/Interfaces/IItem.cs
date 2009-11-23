@@ -27,7 +27,7 @@ namespace HeuristicLab.Core {
   /// <summary>
   /// Interface to represent (almost) every HeuristicLab object (an object, an operator,...).
   /// </summary>
-  public interface IItem : IStorable, IViewable {
+  public interface IItem : IStorable {
     /// <summary>
     /// Fires a new <c>Changed</c> event.
     /// </summary>

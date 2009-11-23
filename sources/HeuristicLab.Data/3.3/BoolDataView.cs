@@ -27,11 +27,14 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Data {
   /// <summary>
   /// The visual representation of the class <see cref="BoolData"/>, symbolizing a boolean value. 
   /// </summary>
+  [Content(typeof(BoolData), true)]
   public partial class BoolDataView : ViewBase {
     /// <summary>
     /// Gets or sets the boolean value to represent visually.

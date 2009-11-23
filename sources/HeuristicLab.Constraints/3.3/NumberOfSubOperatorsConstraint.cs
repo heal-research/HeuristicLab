@@ -102,14 +102,5 @@ namespace HeuristicLab.Constraints {
       clone.minOperators.Data = minOperators.Data;
       return clone;
     }
-
-    /// <summary>
-    /// Creates a new instance of <see cref="NumberOfSubOperatorsConstraintView"/> to represent the current 
-    /// instance visually.
-    /// </summary>
-    /// <returns>The created view as <see cref="NumberOfSubOperatorsConstraintView"/>.</returns>
-    public override IView CreateView() {
-      return new NumberOfSubOperatorsConstraintView(this);
-    }
   }
 }

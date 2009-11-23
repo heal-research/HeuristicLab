@@ -26,12 +26,14 @@ using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Data {
   /// <summary>
   /// The visual representation of the class <see cref="IntMatrixData"/>, symbolizing a two-dimensional
   /// matrix of int values.
   /// </summary>
+  [Content(typeof(IntMatrixData), true)]
   public partial class IntMatrixDataView : MatrixDataBaseView {
     /// <summary>
     /// Gets or set the int matrix to represent visually.

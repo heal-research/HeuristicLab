@@ -27,12 +27,15 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Data {
   /// <summary>
   /// The visual representation of the class <see cref="ConstrainedDoubleData"/>, 
   /// symbolizing a double value being restricted to some constraints.
   /// </summary>
+  [Content(typeof(ConstrainedDoubleData), true)]
   public partial class ConstrainedDoubleDataView : ViewBase {
     /// <summary>
     /// Gets or sets the double value to represent visually.
@@ -103,7 +106,7 @@ namespace HeuristicLab.Data {
         value = double.Parse(dataTextBox.Text);
         ICollection<IConstraint> violatedConstraints;
         if (!ConstrainedDoubleData.TrySetData(value, out violatedConstraints)) {
-          if (Auxiliary.ShowIgnoreConstraintViolationMessageBox(violatedConstraints) == DialogResult.Yes)
+          if (HeuristicLab.Core.Views.Auxiliary.ShowIgnoreConstraintViolationMessageBox(violatedConstraints) == DialogResult.Yes)
             ConstrainedDoubleData.Data = value;
           else
             e.Cancel = true;

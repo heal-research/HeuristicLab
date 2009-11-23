@@ -115,15 +115,6 @@ namespace HeuristicLab.Core {
     }
 
     /// <summary>
-    /// Creates an instance of <see cref="ConstrainedItemBaseView"/> 
-    /// to represent the current instance visually.
-    /// </summary>
-    /// <returns>The created view as <see cref="ConstrainedItemBaseView"/>.</returns>
-    public override IView CreateView() {
-      return new ConstrainedItemBaseView(this);
-    }
-
-    /// <summary>
     /// Occurs when a constraint is added.
     /// </summary>
     public event EventHandler<EventArgs<IConstraint>> ConstraintAdded;

@@ -79,7 +79,7 @@ namespace HeuristicLab.SGA {
       this.randomSeedLabel = new System.Windows.Forms.Label();
       this.populationSizeLabel = new System.Windows.Forms.Label();
       this.scopesTabPage = new System.Windows.Forms.TabPage();
-      this.scopeView = new HeuristicLab.Core.ScopeView();
+      this.scopeView = new HeuristicLab.Core.Views.ScopeView();
       this.abortButton = new System.Windows.Forms.Button();
       this.resetButton = new System.Windows.Forms.Button();
       this.cloneEngineButton = new System.Windows.Forms.Button();
@@ -633,7 +633,7 @@ namespace HeuristicLab.SGA {
     private System.Windows.Forms.Button setCrossoverButton;
     private System.Windows.Forms.Button setSelectionButton;
     private System.Windows.Forms.Button setSolutionGenerationButton;
-    private HeuristicLab.Core.ScopeView scopeView;
+    private HeuristicLab.Core.Views.ScopeView scopeView;
     private System.Windows.Forms.Button viewEvaluationButton;
     private System.Windows.Forms.Button viewMutationButton;
     private System.Windows.Forms.Button viewCrossoverButton;

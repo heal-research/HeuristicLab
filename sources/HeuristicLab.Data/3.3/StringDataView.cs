@@ -27,11 +27,14 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Data {
   /// <summary>
   /// The visual representation of the class <see cref="StringData"/>, symbolizing a string value.
   /// </summary>
+  [Content(typeof(StringData), true)]
   public partial class StringDataView : ViewBase {
     /// <summary>
     /// Gets or sets the string value to represent visually.

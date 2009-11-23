@@ -145,15 +145,6 @@ namespace HeuristicLab.Core {
       return clone;
     }
 
-    /// <summary>
-    /// Creates a new instance of <see cref="OperatorBaseView"/> to represent the current operator
-    /// visually.
-    /// </summary>
-    /// <returns>The created view as <see cref="OperatorBaseView"/>.</returns>
-    public override IView CreateView() {
-      return new OperatorBaseView(this);
-    }
-
     #region SubOperator Methods
     /// <inheritdoc cref="HeuristicLab.Core.IOperator.AddSubOperator(HeuristicLab.Core.IOperator)"/>
     /// <param name="subOperator">The sub operator to add.</param>

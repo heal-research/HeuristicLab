@@ -30,11 +30,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Permutation;
 using HeuristicLab.Charting;
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Routing.TSP {
   /// <summary>
   /// Class for the visual representation of a <see cref="TSPTour"/>.
   /// </summary>
+  [Content(typeof(TSPTour), true)]
   public partial class TSPTourView : ViewBase {
     /// <summary>
     /// Gets or sets the <see cref="TSPTour"/> to represent visually.

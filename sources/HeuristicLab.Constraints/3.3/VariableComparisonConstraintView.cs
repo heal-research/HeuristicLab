@@ -28,11 +28,14 @@ using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Constraints {
   /// <summary>
   /// Visual representation of a <see cref="VariableComparisonConstraint"/>.
   /// </summary>
+  [Content(typeof(VariableComparisonConstraint), true)]
   public partial class VariableComparisonConstraintView : ViewBase {
     /// <summary>
     /// Gets or sets the VariableComparisonConstraint to represent visually.
@@ -137,7 +140,7 @@ namespace HeuristicLab.Constraints {
         } else if (((RadioButton)sender).Checked && ((RadioButton)sender).Name.StartsWith("equal")) {
           VariableComparisonConstraint.Comparer.Data = 2;
         } else if (((RadioButton)sender).Checked) {
-          Auxiliary.ShowErrorMessageBox("Unknown radio button selected: " + ((RadioButton)sender).Name.ToString());
+          HeuristicLab.Core.Views.Auxiliary.ShowErrorMessageBox("Unknown radio button selected: " + ((RadioButton)sender).Name.ToString());
         }
       }
     }

@@ -35,6 +35,8 @@ namespace HeuristicLab.Optimizer {
       DockingMainForm mainForm = new DockingMainForm(typeof(IOptimizerUserInterfaceItemProvider));
       mainForm.Title = "HeuristicLab Optimizer " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
       mainForm.Icon = Resources.HeuristicLabIcon;
+      mainForm.Width = 800;
+      mainForm.Height = 600;
       Application.Run(mainForm);
     }
   }

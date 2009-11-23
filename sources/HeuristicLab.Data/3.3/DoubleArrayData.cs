@@ -59,14 +59,6 @@ namespace HeuristicLab.Data {
     }
 
     /// <summary>
-    /// Creates a new instance of the <see cref="DoubleArrayDataView"/> class.
-    /// </summary>
-    /// <returns>The created instance of the <see cref="DoubleArrayDataView"/>.</returns>
-    public override IView CreateView() {
-      return new DoubleArrayDataView(this);
-    }
-    
-    /// <summary>
     /// The string representation of the array, formatted according to the given <paramref name="format"/>.
     /// </summary>
     /// <param name="format">The <see cref="NumberFormatInfo"></see> the single double 

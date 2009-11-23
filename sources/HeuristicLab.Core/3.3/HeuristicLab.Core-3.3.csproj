@@ -94,88 +94,22 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Auxiliary.cs" />
-    <Compile Include="ChooseItemDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ChooseItemDialog.Designer.cs">
-      <DependentUpon>ChooseItemDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ChooseOperatorDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ChooseOperatorDialog.Designer.cs">
-      <DependentUpon>ChooseOperatorDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="ConstrainedItemBase.cs" />
-    <Compile Include="ConstrainedItemBaseView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ConstrainedItemBaseView.Designer.cs">
-      <DependentUpon>ConstrainedItemBaseView.cs</DependentUpon>
-    </Compile>
     <Compile Include="AtomicOperation.cs" />
     <Compile Include="CompositeOperation.cs" />
-    <Compile Include="ChooseTypeDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ChooseTypeDialog.Designer.cs">
-      <DependentUpon>ChooseTypeDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OperatorBaseDescriptionView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OperatorBaseDescriptionView.Designer.cs">
-      <DependentUpon>OperatorBaseDescriptionView.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Interfaces\IEditable.cs" />
     <Compile Include="Interfaces\IOperation.cs" />
     <Compile Include="Interfaces\IOperatorLibrary.cs" />
     <Compile Include="Interfaces\IVisualizationItem.cs" />
-    <Compile Include="OperatorBaseVariablesView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OperatorBaseVariablesView.Designer.cs">
-      <DependentUpon>OperatorBaseVariablesView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OperatorBaseVariableInfosView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OperatorBaseVariableInfosView.Designer.cs">
-      <DependentUpon>OperatorBaseVariableInfosView.cs</DependentUpon>
-    </Compile>
     <Compile Include="Interfaces\IConstrainedItem.cs" />
     <Compile Include="Interfaces\IConstraint.cs" />
     <Compile Include="Interfaces\IItem.cs" />
     <Compile Include="ItemBase.cs" />
-    <Compile Include="ItemBaseView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ItemBaseView.Designer.cs">
-      <DependentUpon>ItemBaseView.cs</DependentUpon>
-    </Compile>
     <Compile Include="OperatorLibrary.cs" />
-    <Compile Include="OperatorLibraryEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OperatorLibraryEditor.Designer.cs">
-      <DependentUpon>OperatorLibraryEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="EngineBaseEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="EngineBaseEditor.Designer.cs">
-      <DependentUpon>EngineBaseEditor.cs</DependentUpon>
-    </Compile>
     <Compile Include="Interfaces\IOperatorGroup.cs" />
     <Compile Include="Interfaces\IOperatorGraph.cs" />
     <Compile Include="Interfaces\IScope.cs" />
@@ -184,52 +118,6 @@
     <Compile Include="OperatorGroup.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="OperatorBaseView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OperatorBaseView.Designer.cs">
-      <DependentUpon>OperatorBaseView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OperatorGraphView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OperatorGraphView.Designer.cs">
-      <DependentUpon>OperatorGraphView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ScopeView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ScopeView.Designer.cs">
-      <DependentUpon>ScopeView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="VariableInfoView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="VariableInfoView.Designer.cs">
-      <DependentUpon>VariableInfoView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="VariableView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="VariableView.Designer.cs">
-      <DependentUpon>VariableView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ViewBase.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ViewBase.Designer.cs">
-      <DependentUpon>ViewBase.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Interfaces\IViewable.cs" />
-    <Compile Include="Interfaces\IView.cs" />
-    <Compile Include="EditorBase.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="EditorBase.Designer.cs">
-      <DependentUpon>EditorBase.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Interfaces\IEditable.cs" />
-    <Compile Include="Interfaces\IEditor.cs" />
     <Compile Include="OperatorBase.cs" />
     <Compile Include="Interfaces\IRandom.cs" />
     <Compile Include="OperatorGraph.cs" />
@@ -245,12 +133,6 @@
     <Compile Include="Variable.cs" />
     <Compile Include="VariableInfo.cs" />
     <Compile Include="VariableKind.cs" />
-    <Compile Include="VariablesScopeView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="VariablesScopeView.Designer.cs">
-      <DependentUpon>VariablesScopeView.cs</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
@@ -269,87 +151,6 @@
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ChooseItemDialog.resx">
-      <DependentUpon>ChooseItemDialog.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ChooseOperatorDialog.resx">
-      <DependentUpon>ChooseOperatorDialog.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ConstrainedItemBaseView.resx">
-      <DependentUpon>ConstrainedItemBaseView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ChooseTypeDialog.resx">
-      <DependentUpon>ChooseTypeDialog.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OperatorBaseDescriptionView.resx">
-      <DependentUpon>OperatorBaseDescriptionView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OperatorBaseVariablesView.resx">
-      <DependentUpon>OperatorBaseVariablesView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OperatorBaseVariableInfosView.resx">
-      <DependentUpon>OperatorBaseVariableInfosView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="EditorBase.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>EditorBase.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ItemBaseView.resx">
-      <DependentUpon>ItemBaseView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OperatorBaseView.resx">
-      <DependentUpon>OperatorBaseView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OperatorGraphView.resx">
-      <DependentUpon>OperatorGraphView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OperatorLibraryEditor.resx">
-      <DependentUpon>OperatorLibraryEditor.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ScopeView.resx">
-      <DependentUpon>ScopeView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="EngineBaseEditor.resx">
-      <DependentUpon>EngineBaseEditor.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="VariableInfoView.resx">
-      <DependentUpon>VariableInfoView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="VariablesScopeView.resx">
-      <DependentUpon>VariablesScopeView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="VariableView.resx">
-      <DependentUpon>VariableView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Resources\CombinedOperator.bmp" />
-    <Content Include="Resources\HeuristicLab.ico" />
-    <Content Include="Resources\Operator.bmp" />
-    <Content Include="Resources\ProgrammableOperator.bmp" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">

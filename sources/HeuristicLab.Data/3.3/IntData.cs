@@ -58,14 +58,6 @@ namespace HeuristicLab.Data {
     }
 
     /// <summary>
-    /// Creates a new instance of the class <see cref="IntDataView"/>.
-    /// </summary>
-    /// <returns>The created instance as <see cref="IntDataView"/>.</returns>
-    public override IView CreateView() {
-      return new IntDataView(this);
-    }
-
-    /// <summary>
     /// Clones the current instance. 
     /// </summary>
     /// <remarks>Adds the cloned instance to the dictionary <paramref name="clonedObjects"/>.</remarks>

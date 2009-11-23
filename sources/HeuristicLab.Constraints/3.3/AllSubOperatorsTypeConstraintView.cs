@@ -27,11 +27,14 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Constraints {
   /// <summary>
   /// The visual representation of the <see cref="AllSubOperatorsTypeConstraint"/>.
   /// </summary>
+  [Content(typeof(AllSubOperatorsTypeConstraint), true)]
   public partial class AllSubOperatorsTypeConstraintView : ViewBase {
     private SubOperatorTypeConstraint constraint = new SubOperatorTypeConstraint();
 

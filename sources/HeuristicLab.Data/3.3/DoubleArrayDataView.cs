@@ -26,12 +26,14 @@ using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Data {
   /// <summary>
   /// The visual representation of the class <see cref="DoubleArrayData"/>, 
   /// symbolizing an array of double values.
   /// </summary>
+  [Content(typeof(DoubleArrayData), true)]
   public partial class DoubleArrayDataView : ArrayDataBaseView {
     /// <summary>
     /// Gets or sets the double array to represent as <see cref="DoubleArrayData"/>.

@@ -102,14 +102,6 @@ namespace HeuristicLab.Operators {
       return null;
     }
 
-    /// <summary>
-    /// Creates a new instance of <see cref="VariableInjectorView"/> to display the current instance.
-    /// </summary>
-    /// <returns>The created view as <see cref="VariableInjectorView"/>.</returns>
-    public override IView CreateView() {
-      return new VariableInjectorView(this);
-    }
-
     [Storable]
     private KeyValuePair<Dictionary<IVariableInfo, IVariable>, Dictionary<IVariable, IVariableInfo>> VariableMappingPersistence {
       get {

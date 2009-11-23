@@ -58,13 +58,6 @@ namespace HeuristicLab.Data {
     }
 
     /// <summary>
-    /// Creates a new instance of <see cref="ConstrainedItemListView"/>.
-    /// </summary>
-    /// <returns>The created instance as <see cref="ConstrainedItemListView"/>.</returns>
-    public override IView CreateView() {
-      return new ConstrainedItemListView(this);
-    }
-    /// <summary>
     /// Clones the current instance.
     /// </summary>
     /// <remarks>The elements of the current instance are cloned with the 

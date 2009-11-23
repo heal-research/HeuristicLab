@@ -70,15 +70,6 @@ namespace HeuristicLab.Constraints {
     }
 
     /// <summary>
-    /// Creates a new instance of <see cref="NotConstraintView"/> to represent the current 
-    /// instance visually.
-    /// </summary>
-    /// <returns>The created view as <see cref="NotConstraintView"/>.</returns>
-    public override IView CreateView() {
-      return new NotConstraintView(this);
-    }
-
-    /// <summary>
     /// Clones the current instance (deep clone).
     /// </summary>
     /// <param name="clonedObjects">Dictionary of all already clone objects. (Needed to avoid cycles.)</param>

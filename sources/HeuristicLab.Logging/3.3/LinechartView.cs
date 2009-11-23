@@ -31,11 +31,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Charting;
 using HeuristicLab.Charting.Data;
 using HeuristicLab.Common;
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Logging {
   /// <summary>
   /// The visual representation of a <see cref="Linechart"/>.
   /// </summary>
+  [Content(typeof(Linechart), true)]
   public partial class LinechartView : ViewBase {
     private double maxY = double.MinValue, minY = double.MaxValue;
     private static int[] colors = new int[] {

@@ -59,14 +59,6 @@ namespace HeuristicLab.Data {
     }
 
     /// <summary>
-    /// Creates a new instance of the <see cref="BoolMatrixDataView"/> class.
-    /// </summary>
-    /// <returns>The created instance of the <see cref="BoolMatrixDataView"/>.</returns>
-    public override IView CreateView() {
-      return new BoolMatrixDataView(this);
-    }
-
-    /// <summary>
     /// The string representation of the matrix.
     /// </summary>
     /// <returns>The elements of the matrix as a string seperated by semicolons, line by line.</returns>

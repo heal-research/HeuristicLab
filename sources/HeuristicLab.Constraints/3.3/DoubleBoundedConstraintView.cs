@@ -28,11 +28,14 @@ using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Constraints {
   /// <summary>
   /// The visual representation of a <see cref="DoubleBoundedConstraint"/>.
   /// </summary>
+  [Content(typeof(DoubleBoundedConstraint), true)]
   public partial class DoubleBoundedConstraintView : ViewBase {
     /// <summary>
     /// Gets or sets the DoubleBoundedConstraint to represent visually.

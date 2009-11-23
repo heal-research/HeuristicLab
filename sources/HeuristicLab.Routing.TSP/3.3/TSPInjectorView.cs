@@ -29,11 +29,14 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Routing.TSP {
   /// <summary>
   /// Class to represent a <see cref="TSPInjector"/> visually.
   /// </summary>
+  [Content(typeof(TSPInjector), true)]
   public partial class TSPInjectorView : ViewBase {
     /// <summary>
     /// Gets or set the <see cref="TSPInjector"/> to represent visually.

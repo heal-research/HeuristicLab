@@ -26,12 +26,14 @@ using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Data {
   /// <summary>
   /// The visual representation of the class <see cref="BoolMatrixData"/>, symbolizing a two-dimensional
   /// matrix of boolean values.
   /// </summary>
+  [Content(typeof(BoolMatrixData), true)]
   public partial class BoolMatrixDataView : MatrixDataBaseView {
     /// <summary>
     /// Gets or sets the instance of the boolean matrix to represent visually.

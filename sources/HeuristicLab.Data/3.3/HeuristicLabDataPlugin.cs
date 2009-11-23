@@ -32,6 +32,9 @@ namespace HeuristicLab.Data {
   [PluginFile(Filename = "HeuristicLab.Data-3.3.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.Common-3.2")]
   [Dependency(Dependency = "HeuristicLab.Core-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Core.Views-3.3")]
+  [Dependency(Dependency = "HeuristicLab.MainForm-3.2")]
+  [Dependency(Dependency = "HeuristicLab.MainForm.WindowsForms-3.2")]
   [Dependency(Dependency = "HeuristicLab.Persistence-3.3")]
   public class HeuristicLabDataPlugin : PluginBase {
   }

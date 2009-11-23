@@ -65,15 +65,6 @@ namespace HeuristicLab.Core {
     }
 
     /// <summary>
-    /// Creates a new instance of <see cref="OperatorGraphView"/> to represent the current instance
-    /// visually.
-    /// </summary>
-    /// <returns>The created view as <see cref="OperatorGraphView"/>.</returns>
-    public override IView CreateView() {
-      return new OperatorGraphView(this);
-    }
-
-    /// <summary>
     /// Clones the current instance (deep clone).
     /// </summary>
     /// <remarks>Deep clone through <see cref="Auxiliary.Clone"/> method of helper class 

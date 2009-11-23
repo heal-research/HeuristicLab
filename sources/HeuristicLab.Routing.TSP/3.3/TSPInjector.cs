@@ -54,14 +54,6 @@ namespace HeuristicLab.Routing.TSP {
     }
 
     /// <summary>
-    /// Creates a new instance of <see cref="TSPInjectorView"/> to display the current instance.
-    /// </summary>
-    /// <returns>The created view as <see cref="TSPInjectorView"/>.</returns>
-    public override IView CreateView() {
-      return new TSPInjectorView(this);
-    }
-
-    /// <summary>
     /// Adds a new TSP to the given <paramref name="scope"/>, through adding the needed variables.
     /// </summary>
     /// <param name="scope">The current scope where to inject the variables.</param>

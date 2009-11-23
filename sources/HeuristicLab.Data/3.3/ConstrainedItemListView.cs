@@ -27,12 +27,15 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
+using HeuristicLab.Core.Views;
 using HeuristicLab.Common;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Data {
   /// <summary>
   /// The visual representation of the class <see cref="ConstrainedItemList"/>.
   /// </summary>
+  [Content(typeof(ConstrainedItemList), true)]
   public partial class ConstrainedItemListView : ViewBase {
     private ChooseItemDialog chooseItemDialog;
 
@@ -126,7 +129,7 @@ namespace HeuristicLab.Data {
       detailsGroupBox.Controls.Clear();
       if (itemsListView.SelectedItems.Count == 1) {
         IItem data = (IItem)itemsListView.SelectedItems[0].Tag;
-        Control view = (Control)data.CreateView();
+        Control view = (Control)MainFormManager.CreateDefaultView(data);
         detailsGroupBox.Controls.Add(view);
         view.Dock = DockStyle.Fill;
         detailsGroupBox.Enabled = true;
@@ -182,7 +185,7 @@ namespace HeuristicLab.Data {
       if (chooseItemDialog.ShowDialog(this) == DialogResult.OK) {
         ICollection<IConstraint> violatedConstraints;
         if (!ConstrainedItemList.TryAdd(chooseItemDialog.Item, out violatedConstraints)) {
-          Auxiliary.ShowConstraintViolationMessageBox(violatedConstraints);
+          HeuristicLab.Core.Views.Auxiliary.ShowConstraintViolationMessageBox(violatedConstraints);
         }
       }
     }
@@ -190,7 +193,7 @@ namespace HeuristicLab.Data {
     private void removeItemButton_Click(object sender, EventArgs e) {
       ICollection<IConstraint> violatedConstraints;
       if (!ConstrainedItemList.TryRemoveAt(itemsListView.SelectedIndices[0], out violatedConstraints)) {
-        Auxiliary.ShowConstraintViolationMessageBox(violatedConstraints);
+        HeuristicLab.Core.Views.Auxiliary.ShowConstraintViolationMessageBox(violatedConstraints);
       }
     }
     #endregion
@@ -200,7 +203,7 @@ namespace HeuristicLab.Data {
       if (e.KeyCode == Keys.Delete) {
         ICollection<IConstraint> violatedConstraints;
         if (!ConstrainedItemList.TryRemoveAt(itemsListView.SelectedIndices[0], out violatedConstraints)) {
-          Auxiliary.ShowConstraintViolationMessageBox(violatedConstraints);
+          HeuristicLab.Core.Views.Auxiliary.ShowConstraintViolationMessageBox(violatedConstraints);
         }
       }
     }

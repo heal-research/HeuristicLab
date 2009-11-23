@@ -85,14 +85,6 @@ namespace HeuristicLab.Routing.TSP {
     }
 
     /// <summary>
-    /// Creates a new instance of <see cref="TSPTourView"/> to display the current instance.
-    /// </summary>
-    /// <returns>The created view as <see cref="TSPTourView"/>.</returns>
-    public override IView CreateView() {
-      return new TSPTourView(this);
-    }
-
-    /// <summary>
     /// Occurs when the coordinates of the current instance have been changed.
     /// </summary>
     public event EventHandler CoordinatesChanged;
