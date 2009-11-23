@@ -48,13 +48,7 @@ namespace HeuristicLab.Core {
     /// Removes an operator with the specified <paramref name="guid"/> from the current instance.
     /// </summary>
     /// <param name="guid">The unique id of the operator to remove.</param>
-    void RemoveOperator(Guid guid);
-    /// <summary>
-    /// Gets the operator with the specified <paramref name="guid"/>.
-    /// </summary>
-    /// <param name="guid">The unique id of the operator.</param>
-    /// <returns>The searched operator.</returns>
-    IOperator GetOperator(Guid guid);
+    void RemoveOperator(IOperator op);
     /// <summary>
     /// Clears the current instance.
     /// </summary>

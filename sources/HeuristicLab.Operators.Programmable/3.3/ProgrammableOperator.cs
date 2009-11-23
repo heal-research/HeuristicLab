@@ -148,8 +148,8 @@ namespace HeuristicLab.Operators.Programmable {
       }
     }
 
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      ProgrammableOperator clone = (ProgrammableOperator)base.Clone(clonedObjects);
+    public override IItem Clone(ICloner cloner) {
+      ProgrammableOperator clone = (ProgrammableOperator)base.Clone(cloner);
       clone.myDescription = Description;
       clone.myCode = Code;
       clone.executeMethod = executeMethod;

@@ -29,7 +29,7 @@ namespace HeuristicLab.Core {
   /// <summary>
   /// Representation of a group of operators (can also include subgroups).
   /// </summary>
-  public class OperatorGroup : StorableBase, IOperatorGroup {
+  public class OperatorGroup : ItemBase, IOperatorGroup {
 
     [Storable]
     private string myName;
@@ -79,17 +79,17 @@ namespace HeuristicLab.Core {
     /// <summary>
     /// Clones the current instance (deep clone).
     /// </summary>
-    /// <remarks>Deep clone with <see cref="Auxiliary.Clone"/> method of helper class 
+    /// <remarks>Deep clone with <see cref="cloner.Clone"/> method of helper class 
     /// <see cref="Auxiliary"/>.</remarks>
     /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
     /// <returns>The cloned object as <see cref="OperatorGroup"/>.</returns>
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      OperatorGroup clone = (OperatorGroup)base.Clone(clonedObjects);
+    public override IItem Clone(ICloner cloner) {
+      OperatorGroup clone = (OperatorGroup)base.Clone(cloner);
       clone.myName = Name;
       foreach (IOperatorGroup group in SubGroups)
-        clone.AddSubGroup((IOperatorGroup)Auxiliary.Clone(group, clonedObjects));
+        clone.AddSubGroup((IOperatorGroup)cloner.Clone(group));
       foreach (IOperator op in Operators)
-        clone.AddOperator((IOperator)Auxiliary.Clone(op, clonedObjects));
+        clone.AddOperator((IOperator)cloner.Clone(op));
       return clone;
     }
 

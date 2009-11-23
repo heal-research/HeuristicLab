@@ -129,12 +129,6 @@ namespace HeuristicLab.Core {
     /// <param name="sequence">The chronology how to order the sub scopes.</param>
     void ReorderSubScopes(int[] sequence);
     /// <summary>
-    /// Gets the sub scope with the given <paramref name="guid"/>.
-    /// </summary>
-    /// <param name="guid">The unique identifier of the sub scope.</param>
-    /// <returns>The sub scope with the given <paramref name="guid"/>.</returns>
-    IScope GetScope(Guid guid);
-    /// <summary>
     /// Gets the sub scope with the given <paramref name="name"/>.
     /// </summary>
     /// <param name="name">The name of the sub scope.</param>

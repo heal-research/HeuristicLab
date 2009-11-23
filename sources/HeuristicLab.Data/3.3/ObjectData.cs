@@ -51,16 +51,16 @@ namespace HeuristicLab.Data {
     /// <summary>
     /// Clones the current instance.
     /// </summary>
-    /// <remarks>HeuristicLab data items are cloned with the <see cref="HeuristicLab.Core.Auxiliary.Clone"/> method of 
+    /// <remarks>HeuristicLab data items are cloned with the <see cref="HeuristicLab.Core.cloner.Clone"/> method of 
     /// class <see cref="Auxiliary"/> (deep copy), all other items (like basic data types) 
     /// are cloned with their own <c>Clone</c> methods (shadow copy).</remarks>
     /// <exception cref="InvalidOperationException">Thrown when the current instance is not cloneable.</exception>
     /// <param name="clonedObjects">A dictionary of all already cloned objects.</param>
     /// <returns>The clone instance.</returns>
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      ObjectData clone = (ObjectData)base.Clone(clonedObjects);
-      if (Data is IStorable)
-        clone.myData = Auxiliary.Clone((IStorable)Data, clonedObjects);
+    public override IItem Clone(ICloner cloner) {
+      ObjectData clone = (ObjectData)base.Clone(cloner);
+      if (Data is IItem)
+        clone.myData = cloner.Clone((IItem)Data);
       else if (Data is ICloneable)
         clone.myData = ((ICloneable)Data).Clone();
       else

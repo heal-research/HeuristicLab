@@ -33,7 +33,7 @@ namespace HeuristicLab.Core {
   public class OperatorGraph : ItemBase, IOperatorGraph {
 
     [Storable]
-    private IDictionary<Guid, IOperator> myOperators;
+    private IDictionary<IOperator, IOperator> myOperators;
     /// <summary>
     /// Gets all operators of the current instance.
     /// </summary>
@@ -61,31 +61,31 @@ namespace HeuristicLab.Core {
     /// Initializes a new instance of <see cref="OperatorGraph"/>.
     /// </summary>
     public OperatorGraph() {
-      myOperators = new Dictionary<Guid, IOperator>();
+      myOperators = new Dictionary<IOperator, IOperator>();
     }
 
     /// <summary>
     /// Clones the current instance (deep clone).
     /// </summary>
-    /// <remarks>Deep clone through <see cref="Auxiliary.Clone"/> method of helper class 
+    /// <remarks>Deep clone through <see cref="cloner.Clone"/> method of helper class 
     /// <see cref="Auxiliary"/>.</remarks>
     /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
     /// <returns>The cloned object as <see cref="OperatorGraph"/>.</returns>
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
+    public override IItem Clone(ICloner cloner) {
       OperatorGraph clone = new OperatorGraph();
-      clonedObjects.Add(Guid, clone);
+      cloner.RegisterClonedObject(this, clone);
       foreach (IOperator op in Operators)
-        clone.AddOperator((IOperator)Auxiliary.Clone(op, clonedObjects));
+        clone.AddOperator((IOperator)cloner.Clone(op));
       if (InitialOperator != null)
-        clone.myInitialOperator = (IOperator)Auxiliary.Clone(InitialOperator, clonedObjects);
+        clone.myInitialOperator = (IOperator)cloner.Clone(InitialOperator);
       return clone;
     }
 
     /// <inheritdoc/>
     /// <remarks>Calls <see cref="OnOperatorAdded"/>.</remarks>
     public void AddOperator(IOperator op) {
-      if (!myOperators.ContainsKey(op.Guid)) {
-        myOperators.Add(op.Guid, op);
+      if (!myOperators.ContainsKey(op)) {
+        myOperators.Add(op, op);
         OnOperatorAdded(op);
 
         foreach (IOperator subOperator in op.SubOperators)
@@ -94,9 +94,8 @@ namespace HeuristicLab.Core {
     }
     /// <inheritdoc/>
     /// <remarks>Calls <see cref="OnOperatorRemoved"/>.</remarks>
-    public void RemoveOperator(Guid guid) {
-      IOperator op = GetOperator(guid);
-      if (op != null) {
+    public void RemoveOperator(IOperator op) {
+      if (myOperators.ContainsKey(op)) {
         foreach (IOperator o in Operators) {
           int i = 0;
           while (i < o.SubOperators.Count) {
@@ -108,28 +107,20 @@ namespace HeuristicLab.Core {
         }
         if (InitialOperator == op)
           InitialOperator = null;
-        myOperators.Remove(op.Guid);
+        myOperators.Remove(op);
         OnOperatorRemoved(op);
       }
     }
     /// <inheritdoc/>
-    public IOperator GetOperator(Guid guid) {
-      IOperator op;
-      if (myOperators.TryGetValue(guid, out op))
-        return op;
-      else
-        return null;
-    }
-    /// <inheritdoc/>
     public void Clear() {
-      Guid[] guids = new Guid[Operators.Count];
+      IOperator[] ops = new IOperator[Operators.Count];
       int i = 0;
       foreach (IOperator op in Operators) {
-        guids[i] = op.Guid;
+        ops[i] = op;
         i++;
       }
-      for (int j = 0; j < guids.Length; j++)
-        RemoveOperator(guids[j]);
+      for (int j = 0; j < ops.Length; j++)
+        RemoveOperator(ops[j]);
     }
 
     /// <inheritdoc/>

@@ -556,13 +556,13 @@ namespace HeuristicLab.Random {
     /// <summary>
     /// Clones the current instance (deep clone).
     /// </summary>
-    /// <remarks>Deep clone through <see cref="Auxiliary.Clone"/> method of helper class 
+    /// <remarks>Deep clone through <see cref="cloner.Clone"/> method of helper class 
     /// <see cref="Auxiliary"/>.</remarks>
     /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
     /// <returns>The cloned object as <see cref="NormalDistributedRandom"/>.</returns>
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      NormalDistributedRandom clone = new NormalDistributedRandom((IRandom)Auxiliary.Clone(uniform, clonedObjects), mu, sigma);
-      clonedObjects.Add(Guid, clone);
+    public override IItem Clone(ICloner cloner) {
+      NormalDistributedRandom clone = new NormalDistributedRandom((IRandom)cloner.Clone(uniform), mu, sigma);
+      cloner.RegisterClonedObject(this, clone);
       return clone;
     }
   }

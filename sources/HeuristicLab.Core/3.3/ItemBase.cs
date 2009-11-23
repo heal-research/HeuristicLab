@@ -30,7 +30,32 @@ namespace HeuristicLab.Core {
   /// Represents the base class for all basic item types.
   /// </summary>
   [EmptyStorableClass]
-  public abstract class ItemBase : StorableBase, IItem {
+  public abstract class ItemBase : IItem {
+    /// <summary>
+    /// Creates a deep clone of this instance.
+    /// </summary>
+    /// <remarks>
+    /// This method is the entry point for creating a deep clone of a whole object graph.
+    /// </remarks>
+    /// <returns>A clone of this instance.</returns>
+    public object Clone() {
+      return Clone(new Cloner());
+    }
+
+    /// <summary>
+    /// Creates a deep clone of this instance.
+    /// </summary>
+    /// <remarks>This method should not be called directly. It is used for creating clones of
+    /// objects which are contained in the object that is currently cloned.</remarks>
+    /// <param name="cloner">The cloner which is responsible for keeping track of all already
+    /// cloned objects.</param>
+    /// <returns>A clone of this instance.</returns>
+    public virtual IItem Clone(ICloner cloner) {
+      ItemBase clone = (ItemBase)Activator.CreateInstance(this.GetType());
+      cloner.RegisterClonedObject(this, clone);
+      return clone;
+    }
+
     /// <summary>
     /// Gets the string representation of the current instance.
     /// </summary>

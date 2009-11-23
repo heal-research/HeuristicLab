@@ -220,7 +220,7 @@ namespace HeuristicLab.Core.Views {
       if (e.KeyCode == Keys.Delete) {
         if (operatorsListView.SelectedItems.Count > 0) {
           foreach (ListViewItem item in operatorsListView.SelectedItems)
-            OperatorGraph.RemoveOperator(((IOperator)item.Tag).Guid);
+            OperatorGraph.RemoveOperator((IOperator)item.Tag);
         }
       }
       if (e.KeyCode == Keys.F2) {
@@ -260,7 +260,7 @@ namespace HeuristicLab.Core.Views {
     private void removeButton_Click(object sender, EventArgs e) {
       if (operatorsListView.SelectedItems.Count > 0) {
         foreach (ListViewItem item in operatorsListView.SelectedItems)
-          OperatorGraph.RemoveOperator(((IOperator)item.Tag).Guid);
+          OperatorGraph.RemoveOperator((IOperator)item.Tag);
       }
     }
     #endregion

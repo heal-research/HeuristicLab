@@ -86,14 +86,14 @@ A combined operator automatically inject its sub-operators into the scope it is 
     /// <remarks>Calls <see cref="OperatorBase.Clone
     /// (System.Collections.Generic.IDictionary&lt;System.Guid, object&gt;)"/> 
     /// of base class <see cref="DelegatingOperator"/>.<br/>
-    /// Deep clone through <see cref="Auxiliary.Clone"/> method of helper class 
+    /// Deep clone through <see cref="cloner.Clone"/> method of helper class 
     /// <see cref="Auxiliary"/>.</remarks>
     /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
     /// <returns>The cloned object as <see cref="CombinedOperator"/>.</returns>
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      CombinedOperator clone = (CombinedOperator)base.Clone(clonedObjects);
+    public override IItem Clone(ICloner cloner) {
+      CombinedOperator clone = (CombinedOperator)base.Clone(cloner);
       clone.myDescription = Description;
-      clone.myOperatorGraph = (IOperatorGraph)Auxiliary.Clone(OperatorGraph, clonedObjects);
+      clone.myOperatorGraph = (IOperatorGraph)cloner.Clone(OperatorGraph);
       return clone;
     }
 

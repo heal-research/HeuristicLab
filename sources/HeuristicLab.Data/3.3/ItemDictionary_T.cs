@@ -45,11 +45,11 @@ namespace HeuristicLab.Data {
     /// when they are not already contained (deep copy).</remarks>
     /// <param name="clonedObjects">A dictionary of all already cloned objects.</param>
     /// <returns>The cloned instance as <see cref="ItemDictionary&lt;K,V&gt;"/>.</returns>
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
+    public override IItem Clone(ICloner cloner) {
       ItemDictionary<K,V> clone = new ItemDictionary<K,V>();
-      clonedObjects.Add(Guid, clone);
+      cloner.RegisterClonedObject(this, clone);
       foreach (KeyValuePair<K, V> item in dict) {
-        clone.dict.Add((K) Auxiliary.Clone(item.Key, clonedObjects), (V) Auxiliary.Clone(item.Value, clonedObjects));
+        clone.dict.Add((K) cloner.Clone(item.Key), (V) cloner.Clone(item.Value));
       }
       return clone;
     }
@@ -299,7 +299,7 @@ namespace HeuristicLab.Data {
         if (obj is IObjectData) {
           return ((IObjectData) obj).Data.GetHashCode(); 
         }
-        return obj.Guid.GetHashCode(); 
+        return obj.GetHashCode(); 
       }
     }
     #endregion

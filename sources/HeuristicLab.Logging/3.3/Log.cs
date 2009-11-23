@@ -58,13 +58,13 @@ namespace HeuristicLab.Logging {
     /// <summary>
     /// Clones the current instance (deep clone).
     /// </summary>
-    /// <remarks>Deep clone through <see cref="Auxiliary.Clone"/> method of helper class 
+    /// <remarks>Deep clone through <see cref="cloner.Clone"/> method of helper class 
     /// <see cref="Auxiliary"/>.</remarks>
     /// <param name="clonedObjects">Dictionary of all already clone objects. (Needed to avoid cycles.)</param>
     /// <returns>The cloned object as <see cref="Log"/>.</returns>
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      Log clone = (Log)base.Clone(clonedObjects);
-      clone.myItems = (ItemList)Auxiliary.Clone(Items, clonedObjects);
+    public override IItem Clone(ICloner cloner) {
+      Log clone = (Log)base.Clone(cloner);
+      clone.myItems = (ItemList)cloner.Clone(Items);
       return clone;
     }
 

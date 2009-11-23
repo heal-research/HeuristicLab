@@ -40,11 +40,11 @@ namespace HeuristicLab.Core {
     /// </summary>
     /// <param name="instance">The object that should be saved.</param>
     /// <param name="filename">The name of the file where the <paramref name="object"/> should be saved.</param>
-    public static void Save(IStorable instance, string filename) {
+    public static void Save(IItem instance, string filename) {
       XmlGenerator.Serialize(instance, filename, 0);
     }
 
-    public static void SaveCompressed(IStorable instance, string filename) {
+    public static void SaveCompressed(IItem instance, string filename) {
       XmlGenerator.Serialize(instance, filename, 9);
     }
 
@@ -54,7 +54,7 @@ namespace HeuristicLab.Core {
     /// </summary>
     /// <param name="instance">The object that should be saved.</param>
     /// <param name="stream">The (file) stream where the object should be saved.</param>
-    public static void Save(IStorable instance, Stream stream) {
+    public static void Save(IItem instance, Stream stream) {
       XmlGenerator.Serialize(instance, stream, ConfigurationService.Instance.GetConfiguration(new XmlFormat()));      
     }
     /// <summary>
@@ -64,8 +64,8 @@ namespace HeuristicLab.Core {
     /// Calls <see cref="Restore"/>.</remarks>
     /// <param name="filename">The filename of the file where the data is saved.</param>
     /// <returns>The loaded object.</returns>
-    public static IStorable Load(string filename) {
-      return (IStorable)XmlParser.Deserialize(filename);
+    public static IItem Load(string filename) {
+      return (IItem)XmlParser.Deserialize(filename);
     }
     /// <summary>
     /// Loads an object from the specified <paramref name="stream"/>.
@@ -74,8 +74,8 @@ namespace HeuristicLab.Core {
     /// Calls <see cref="Restore"/>.</remarks>
     /// <param name="stream">The stream from where to load the data.</param>
     /// <returns>The loaded object.</returns>
-    public static IStorable Load(Stream stream) {
-      return (IStorable)XmlParser.Deserialize(stream);
+    public static IItem Load(Stream stream) {
+      return (IItem)XmlParser.Deserialize(stream);
     }
 
     /// <summary>

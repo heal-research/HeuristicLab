@@ -135,9 +135,9 @@ namespace HeuristicLab.Core {
     /// </summary>
     /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
     /// <returns>The cloned object as <see cref="VariableInfo"/>.</returns>
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
+    public override IItem Clone(ICloner cloner) {
       VariableInfo clone = new VariableInfo();
-      clonedObjects.Add(Guid, clone);
+      cloner.RegisterClonedObject(this, clone);
       clone.myActualName = ActualName;
       clone.myFormalName = FormalName;
       clone.myDescription = Description;

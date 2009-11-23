@@ -97,9 +97,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Auxiliary.cs" />
     <Compile Include="AtomicOperation.cs" />
     <Compile Include="CompositeOperation.cs" />
+    <Compile Include="Cloner.cs" />
+    <Compile Include="Interfaces\ICloner.cs" />
     <Compile Include="Interfaces\IEditable.cs" />
     <Compile Include="Interfaces\IOperation.cs" />
     <Compile Include="Interfaces\IOperatorLibrary.cs" />
@@ -118,12 +119,10 @@
     <Compile Include="OperatorBase.cs" />
     <Compile Include="Interfaces\IRandom.cs" />
     <Compile Include="OperatorGraph.cs" />
-    <Compile Include="StorableBase.cs" />
     <Compile Include="Scope.cs" />
     <Compile Include="EngineBase.cs" />
     <Compile Include="Interfaces\IEngine.cs" />
     <Compile Include="Interfaces\IOperator.cs" />
-    <Compile Include="Interfaces\IStorable.cs" />
     <Compile Include="PersistenceManager.cs" />
     <Compile Include="HeuristicLabCorePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

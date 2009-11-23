@@ -461,7 +461,7 @@ namespace HeuristicLab.SGA {
       get { return myVariableInjection.SubOperators[0]; }
       set {
         value.Name = "ProblemInjector";
-        mySGA.OperatorGraph.RemoveOperator(ProblemInjector.Guid);
+        mySGA.OperatorGraph.RemoveOperator(ProblemInjector);
         mySGA.OperatorGraph.AddOperator(value);
         myVariableInjection.AddSubOperator(value, 0);
       }
@@ -476,7 +476,7 @@ namespace HeuristicLab.SGA {
       get { return myPopulationInitialization.SubOperators[0]; }
       set {
         value.Name = "SolutionGenerator";
-        mySGA.OperatorGraph.RemoveOperator(SolutionGenerator.Guid);
+        mySGA.OperatorGraph.RemoveOperator(SolutionGenerator);
         mySGA.OperatorGraph.AddOperator(value);
         myPopulationInitialization.AddSubOperator(value, 0);
       }
@@ -489,7 +489,7 @@ namespace HeuristicLab.SGA {
       get { return myPopulationInitialization.SubOperators[1]; }
       set {
         value.Name = "Evaluator";
-        mySGA.OperatorGraph.RemoveOperator(Evaluator.Guid);
+        mySGA.OperatorGraph.RemoveOperator(Evaluator);
         mySGA.OperatorGraph.AddOperator(value);
         myPopulationInitialization.AddSubOperator(value, 1);
         mySGAMain.AddSubOperator(value, 3);
@@ -506,7 +506,7 @@ namespace HeuristicLab.SGA {
       get { return mySGAMain.SubOperators[0]; }
       set {
         value.Name = "Selector";
-        mySGA.OperatorGraph.RemoveOperator(Selector.Guid);
+        mySGA.OperatorGraph.RemoveOperator(Selector);
         mySGA.OperatorGraph.AddOperator(value);
         mySGAMain.AddSubOperator(value, 0);
       }
@@ -519,7 +519,7 @@ namespace HeuristicLab.SGA {
       get { return mySGAMain.SubOperators[1]; }
       set {
         value.Name = "Crossover";
-        mySGA.OperatorGraph.RemoveOperator(Crossover.Guid);
+        mySGA.OperatorGraph.RemoveOperator(Crossover);
         mySGA.OperatorGraph.AddOperator(value);
         mySGAMain.AddSubOperator(value, 1);
       }
@@ -532,7 +532,7 @@ namespace HeuristicLab.SGA {
       get { return mySGAMain.SubOperators[2]; }
       set {
         value.Name = "Mutator";
-        mySGA.OperatorGraph.RemoveOperator(Mutator.Guid);
+        mySGA.OperatorGraph.RemoveOperator(Mutator);
         mySGA.OperatorGraph.AddOperator(value);
         mySGAMain.AddSubOperator(value, 2);
       }
@@ -551,14 +551,14 @@ namespace HeuristicLab.SGA {
     /// <summary>
     /// Clones the current instance (deep clone).
     /// </summary>
-    /// <remarks>Deep clone through <see cref="Auxiliary.Clone"/> method of helper class 
+    /// <remarks>Deep clone through <see cref="cloner.Clone"/> method of helper class 
     /// <see cref="Auxiliary"/>.</remarks>
     /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
     /// <returns>The cloned object as <see cref="SGA"/>.</returns>
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
+    public override IItem Clone(ICloner cloner) {
       SGA clone = new SGA();
-      clonedObjects.Add(Guid, clone);
-      clone.myEngine = (IEngine)Auxiliary.Clone(Engine, clonedObjects);
+      cloner.RegisterClonedObject(this, clone);
+      clone.myEngine = (IEngine)cloner.Clone(Engine);
       return clone;
     }
     

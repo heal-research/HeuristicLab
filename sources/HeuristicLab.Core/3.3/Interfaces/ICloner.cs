@@ -22,31 +22,24 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Xml;
 
 namespace HeuristicLab.Core {
-
   /// <summary>
-  /// Interface to represent objects that are de- and serializeable.
+  /// An interface describing the signature of helper classes required for creating deep
+  /// clones of object graphs.
   /// </summary>
-  public interface IStorable {
-
+  public interface ICloner {
     /// <summary>
-    /// Gets the objects unique identifier.
+    /// Creates a deep clone of a given item.
     /// </summary>
-    Guid Guid { get; }
-
+    /// <param name="item">The item which should be cloned.</param>
+    /// <returns>A clone of the given item.</returns>
+    IItem Clone(IItem item);
     /// <summary>
-    /// Clones the current instance (deep clone).
+    /// Registers a new clone for a given item.
     /// </summary>
-    /// <returns>The cloned object.</returns>
-    object Clone();
-
-    /// <summary>
-    /// Clones the current instance, considering already cloned objects.
-    /// </summary>
-    /// <param name="clonedObjects">All already cloned objects. (Needed to avoid cycles.)</param>
-    /// <returns>The cloned object.</returns>
-    object Clone(IDictionary<Guid, object> clonedObjects);
+    /// <param name="item">The original item.</param>
+    /// <param name="clone">The clone of the original item.</param>
+    void RegisterClonedObject(IItem item, IItem clone);
   }
 }

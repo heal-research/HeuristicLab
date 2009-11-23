@@ -42,13 +42,13 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
     #region Inner Types
     private class Task {
       public string filename;
-      public IStorable storable;
+      public IItem item;
       public IEditor editor;
 
       private Task() { }
-      public Task(string filename, IStorable storable, IEditor editor) {
+      public Task(string filename, IItem item, IEditor editor) {
         this.filename = filename;
-        this.storable = storable;
+        this.item = item;
         this.editor = editor;
       }
     }
@@ -155,7 +155,7 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
     private void AsynchronousLoad(object state) {
       Task task = (Task)state;
       try {
-        task.storable = PersistenceManager.Load(task.filename);
+        task.item = PersistenceManager.Load(task.filename);
       } catch (FileNotFoundException fileNotFoundEx) {
         MessageBox.Show("Sorry couldn't open file \"" + task.filename + "\".\nThe file or plugin \"" + fileNotFoundEx.FileName + "\" is not available.\nPlease make sure you have all necessary plugins installed.",
           "Reader Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -176,8 +176,8 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
         Invoke(new TaskFinishedDelegate(LoadFinished), task);
       else {
         IEditor editor = null;
-        if (task.storable != null) {
-          IEditable editable = task.storable as IEditable;
+        if (task.item != null) {
+          IEditable editable = task.item as IEditable;
           if (editable != null)
             editor = (IEditor)MainFormManager.CreateDefaultView(editable);
         }

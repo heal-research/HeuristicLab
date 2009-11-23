@@ -130,18 +130,18 @@ namespace HeuristicLab.Core {
     /// <remarks>Clones also sub operators, variables and variable infos.</remarks>
     /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
     /// <returns>The cloned object as <see cref="OperatorBase"/>.</returns>
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      OperatorBase clone = (OperatorBase)base.Clone(clonedObjects);
+    public override IItem Clone(ICloner cloner) {
+      OperatorBase clone = (OperatorBase)base.Clone(cloner);
       clone.myName = Name;
       clone.mySubOperators.Clear();
       for (int i = 0; i < SubOperators.Count; i++)
-        clone.AddSubOperator((IOperator)Auxiliary.Clone(SubOperators[i], clonedObjects));
+        clone.AddSubOperator((IOperator)cloner.Clone(SubOperators[i]));
       clone.myVariableInfos.Clear();
       foreach (IVariableInfo variableInfo in myVariableInfos.Values)
-        clone.AddVariableInfo((IVariableInfo)Auxiliary.Clone(variableInfo, clonedObjects));
+        clone.AddVariableInfo((IVariableInfo)cloner.Clone(variableInfo));
       clone.myVariables.Clear();
       foreach (IVariable variable in myVariables.Values)
-        clone.AddVariable((IVariable)Auxiliary.Clone(variable, clonedObjects));
+        clone.AddVariable((IVariable)cloner.Clone(variable));
       return clone;
     }
 

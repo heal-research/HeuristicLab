@@ -72,8 +72,8 @@ namespace HeuristicLab.ThreadParallelEngine {
 
     /// <inheritdoc/>
     /// <returns>The cloned object as <see cref="ThreadParallelEngine"/>.</returns>
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      ThreadParallelEngine clone = (ThreadParallelEngine)base.Clone(clonedObjects);
+    public override IItem Clone(ICloner cloner) {
+      ThreadParallelEngine clone = (ThreadParallelEngine)base.Clone(cloner);
       clone.myWorkers = Workers;
       return clone;
     }

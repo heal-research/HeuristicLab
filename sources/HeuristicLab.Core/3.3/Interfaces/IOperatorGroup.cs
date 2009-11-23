@@ -28,7 +28,7 @@ namespace HeuristicLab.Core {
   /// <summary>
   /// Interface to represent a group of operators.
   /// </summary>
-  public interface IOperatorGroup : IStorable {
+  public interface IOperatorGroup : IItem {
     /// <summary>
     /// Gets or sets the name of the current instance.
     /// </summary>

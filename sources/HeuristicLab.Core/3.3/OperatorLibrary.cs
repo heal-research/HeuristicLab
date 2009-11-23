@@ -50,14 +50,14 @@ namespace HeuristicLab.Core {
     /// <summary>
     /// Clones the current instance (deep clone).
     /// </summary>
-    /// <remarks>Deep clone through <see cref="Auxiliary.Clone"/> method of helper class 
+    /// <remarks>Deep clone through <see cref="cloner.Clone"/> method of helper class 
     /// <see cref="Auxiliary"/>.</remarks>
     /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
     /// <returns>The cloned object as <see cref="OperatorLibrary"/>.</returns>
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
+    public override IItem Clone(ICloner cloner) {
       OperatorLibrary clone = new OperatorLibrary();
-      clonedObjects.Add(Guid, clone);
-      clone.myGroup = (IOperatorGroup)Auxiliary.Clone(Group, clonedObjects);
+      cloner.RegisterClonedObject(this, clone);
+      clone.myGroup = (IOperatorGroup)cloner.Clone(Group);
       return clone;
     }
   }

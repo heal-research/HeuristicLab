@@ -52,16 +52,16 @@ namespace HeuristicLab.Operators {
     /// <summary>
     /// Clones the current instance (deep clone).
     /// </summary>
-    /// <remarks>Deep clone performed with <see cref="Auxiliary.Clone"/> of helper class
+    /// <remarks>Deep clone performed with <see cref="cloner.Clone"/> of helper class
     /// <see cref="Auxiliary"/>.</remarks>
     /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
     /// <returns>The cloned object as <see cref="VariableInjector"/>.</returns>
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
+    public override IItem Clone(ICloner cloner) {
       VariableInjector clone = new VariableInjector();
-      clonedObjects.Add(Guid, clone);
+      cloner.RegisterClonedObject(this, clone);
       clone.Name = Name;
       foreach (IVariable variable in Variables)
-        clone.AddVariable((IVariable)Auxiliary.Clone(variable, clonedObjects));
+        clone.AddVariable((IVariable)cloner.Clone(variable));
       return clone;
     }
 

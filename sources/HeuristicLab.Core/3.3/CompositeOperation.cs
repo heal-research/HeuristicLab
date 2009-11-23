@@ -80,15 +80,15 @@ namespace HeuristicLab.Core {
     /// Clones the current instance of <see cref="CompositeOperation"/> (deep clone).
     /// </summary>
     /// <remarks>All operations of the current instance are cloned, too (deep clone), with the 
-    /// <see cref="HeuristicLab.Core.Auxiliary.Clone"/> method of the class <see cref="Auxiliary"/>.</remarks>
+    /// <see cref="HeuristicLab.Core.cloner.Clone"/> method of the class <see cref="Auxiliary"/>.</remarks>
     /// <param name="clonedObjects">A dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
     /// <returns>The cloned operation as <see cref="CompositeOperation"/>.</returns>
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
+    public override IItem Clone(ICloner cloner) {
       CompositeOperation clone = new CompositeOperation();
-      clonedObjects.Add(Guid, clone);
+      cloner.RegisterClonedObject(this, clone);
       clone.myExecuteInParallel = ExecuteInParallel;
       for (int i = 0; i < Operations.Count; i++)
-        clone.AddOperation((IOperation)Auxiliary.Clone(Operations[i], clonedObjects));
+        clone.AddOperation((IOperation)cloner.Clone(Operations[i]));
       return clone;
     }
   }

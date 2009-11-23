@@ -68,14 +68,14 @@ namespace HeuristicLab.Core {
     /// Clones the current instance.
     /// </summary>
     /// <remarks>The operator and the scope objects are cloned with the 
-    /// <see cref="HeuristicLab.Core.Auxiliary.Clone"/> method of the <see cref="Auxiliary"/> class.</remarks>
+    /// <see cref="HeuristicLab.Core.cloner.Clone"/> method of the <see cref="Auxiliary"/> class.</remarks>
     /// <param name="clonedObjects">All already cloned objects. (Needed to avoid cycles.)</param>
     /// <returns>The cloned object as <see cref="AtomicOperation"/>.</returns>
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
+    public override IItem Clone(ICloner cloner) {
       AtomicOperation clone = new AtomicOperation();
-      clonedObjects.Add(Guid, clone);
-      clone.myOperator = (IOperator)Auxiliary.Clone(Operator, clonedObjects);
-      clone.myScope = (IScope)Auxiliary.Clone(Scope, clonedObjects);
+      cloner.RegisterClonedObject(this, clone);
+      clone.myOperator = (IOperator)cloner.Clone(Operator);
+      clone.myScope = (IScope)cloner.Clone(Scope);
       return clone;
     }
   }

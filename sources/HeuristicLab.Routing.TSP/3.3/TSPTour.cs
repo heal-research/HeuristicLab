@@ -73,13 +73,13 @@ namespace HeuristicLab.Routing.TSP {
     /// <summary>
     /// Clones the current instance (deep clone).
     /// </summary>
-    /// <remarks>Uses <see cref="Auxiliary.Clone"/> method of class <see cref="Auxiliary"/> to clone
+    /// <remarks>Uses <see cref="cloner.Clone"/> method of class <see cref="Auxiliary"/> to clone
     /// the coordinates.</remarks>
     /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
     /// <returns>The cloned object as <see cref="TSPTour"/>.</returns>
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      TSPTour clone = (TSPTour)base.Clone(clonedObjects);
-      clone.myCoordinates = (DoubleMatrixData)Auxiliary.Clone(Coordinates, clonedObjects);
+    public override IItem Clone(ICloner cloner) {
+      TSPTour clone = (TSPTour)base.Clone(cloner);
+      clone.myCoordinates = (DoubleMatrixData)cloner.Clone(Coordinates);
       clone.myTour = Tour;
       return clone;
     }

@@ -84,14 +84,14 @@ namespace HeuristicLab.Logging {
     /// <summary>
     /// Clones the current instance (deep clone).
     /// </summary>
-    /// <remarks>Deep clone through <see cref="Auxiliary.Clone"/> method of helper class 
+    /// <remarks>Deep clone through <see cref="cloner.Clone"/> method of helper class 
     /// <see cref="Auxiliary"/>.</remarks>
     /// <param name="clonedObjects">Dictionary of all already clone objects. (Needed to avoid cycles.)</param>
     /// <returns>The cloned object as <see cref="Linechart"/>.</returns>
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      Linechart clone = (Linechart)base.Clone(clonedObjects);
-      clone.myNumberOfLines = (IntData)Auxiliary.Clone(myNumberOfLines, clonedObjects);
-      clone.myValues = (ItemList)Auxiliary.Clone(Values, clonedObjects);
+    public override IItem Clone(ICloner cloner) {
+      Linechart clone = (Linechart)base.Clone(cloner);
+      clone.myNumberOfLines = (IntData)cloner.Clone(myNumberOfLines);
+      clone.myValues = (ItemList)cloner.Clone(Values);
       return clone;
     }
 

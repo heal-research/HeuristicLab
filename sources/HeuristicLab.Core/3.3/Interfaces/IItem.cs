@@ -27,7 +27,15 @@ namespace HeuristicLab.Core {
   /// <summary>
   /// Interface to represent (almost) every HeuristicLab object (an object, an operator,...).
   /// </summary>
-  public interface IItem : IStorable {
+  public interface IItem : ICloneable {
+    /// <summary>
+    /// Creates a deep clone of this item.
+    /// </summary>
+    /// <param name="cloner">The cloner which is responsible for keeping track of all already
+    /// cloned objects.</param>
+    /// <returns>A clone of this instance.</returns>
+    IItem Clone(ICloner cloner);
+
     /// <summary>
     /// Fires a new <c>Changed</c> event.
     /// </summary>

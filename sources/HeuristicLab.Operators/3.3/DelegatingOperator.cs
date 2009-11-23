@@ -30,6 +30,22 @@ namespace HeuristicLab.Operators {
   /// Base class for operators that call other operators.
   /// </summary>
   public abstract class DelegatingOperator : OperatorBase {
+    private Guid myGuid;
+    protected Guid Guid {
+      get { return myGuid; }
+    }
+
+    protected DelegatingOperator()
+      : base() {
+      myGuid = Guid.NewGuid();
+    }
+
+    public override IItem Clone(ICloner cloner) {
+      DelegatingOperator clone = (DelegatingOperator)base.Clone(cloner);
+      clone.myGuid = Guid;
+      return clone;
+    }
+
     /// <summary>
     /// Executes the specified operator in the given <paramref name="scope"/>.
     /// </summary>

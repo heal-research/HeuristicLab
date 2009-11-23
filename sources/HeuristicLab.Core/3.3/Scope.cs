@@ -216,17 +216,6 @@ namespace HeuristicLab.Core {
       OnSubScopesReordered();
     }
     /// <inheritdoc/>
-    public IScope GetScope(Guid guid) {
-      if (Guid == guid) return this;
-      else {
-        for (int i = 0; i < mySubScopes.Count; i++) {
-          IScope s = mySubScopes[i].GetScope(guid);
-          if (s != null) return s;
-        }
-      }
-      return null;
-    }
-    /// <inheritdoc/>
     public IScope GetScope(string name) {
       if (Name == name) return this;
       else {
@@ -259,16 +248,16 @@ namespace HeuristicLab.Core {
     }
 
     /// <inheritdoc/>
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      Scope clone = (Scope)base.Clone(clonedObjects);
+    public override IItem Clone(ICloner cloner) {
+      Scope clone = (Scope)base.Clone(cloner);
       clone.myName = Name;
 
       foreach (IVariable variable in myVariables.Values)
-        clone.AddVariable((IVariable)Auxiliary.Clone(variable, clonedObjects));
+        clone.AddVariable((IVariable)cloner.Clone(variable));
       foreach (KeyValuePair<string, string> alias in myAliases)
         clone.AddAlias(alias.Key, alias.Value);
       for (int i = 0; i < SubScopes.Count; i++)
-        clone.AddSubScope((IScope)Auxiliary.Clone(SubScopes[i], clonedObjects));
+        clone.AddSubScope((IScope)cloner.Clone(SubScopes[i]));
 
       return clone;
     }

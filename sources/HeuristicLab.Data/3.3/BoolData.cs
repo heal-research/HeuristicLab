@@ -62,9 +62,9 @@ namespace HeuristicLab.Data {
     /// <remarks>The cloned instance is added to the <paramref name="dictionary"/>.</remarks>
     /// <param name="clonedObjects">Dictionary of all already cloned objects.</param>
     /// <returns>The cloned instance as <see cref="BoolData"/>.</returns>
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
+    public override IItem Clone(ICloner cloner) {
       BoolData clone = new BoolData();
-      clonedObjects.Add(Guid, clone);
+      cloner.RegisterClonedObject(this, clone);
       clone.Data = Data;
       return clone;
     }

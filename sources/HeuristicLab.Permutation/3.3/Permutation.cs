@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Permutation {
@@ -51,9 +52,9 @@ namespace HeuristicLab.Permutation {
     /// <param name="clonedObjects">A dictionary of all already cloned objects. (Needed to 
     /// avoid cycles.)</param>
     /// <returns>The cloned object as <see cref="Permutation"/>.</returns>
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
+    public override IItem Clone(ICloner cloner) {
       Permutation clone = new Permutation((int[])Data.Clone());
-      clonedObjects.Add(Guid, clone);
+      cloner.RegisterClonedObject(this, clone);
       return clone;
     }
   }

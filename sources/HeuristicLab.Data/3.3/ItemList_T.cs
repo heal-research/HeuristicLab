@@ -51,10 +51,10 @@ namespace HeuristicLab.Data {
     /// <remarks>Saves the cloned instance in the dictionary <paramref name="clonedObjects"/>.</remarks>
     /// <param name="clonedObjects">A dictionary of all already cloned objects.</param>
     /// <returns>The cloned instance as <see cref="ItemList&lt;T&gt;"/>.</returns>
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
+    public override IItem Clone(ICloner cloner) {
       ItemList<T> clone = new ItemList<T>();
-      clonedObjects.Add(Guid, clone);
-      CloneElements(clone, clonedObjects);
+      cloner.RegisterClonedObject(this, clone);
+      CloneElements(cloner, clone);
       return clone;
     }
 
@@ -65,9 +65,9 @@ namespace HeuristicLab.Data {
     /// (and therefore exist in the dictionary <paramref name="clonedObjects"/>).</remarks>
     /// <param name="destination">The <see cref="ItemList&lt;T&gt;"/> where to save the cloned objects.</param>
     /// <param name="clonedObjects">A dictionary of all already cloned objects.</param>
-    protected void CloneElements(ItemList<T> destination, IDictionary<Guid, object> clonedObjects) {
+    protected void CloneElements(ICloner cloner, ItemList<T> destination) {
       for (int i = 0; i < list.Count; i++)
-        destination.list.Add((T) Auxiliary.Clone(list[i], clonedObjects));
+        destination.list.Add((T)cloner.Clone(list[i]));
     }
 
     /// <summary>
