@@ -24,7 +24,7 @@ using System.Linq;
 using System.Text;
 
 namespace HeuristicLab.MainForm {
-  [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+  [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
   public class ContentAttribute : Attribute {
     private Type type;
     public ContentAttribute(Type type) {
