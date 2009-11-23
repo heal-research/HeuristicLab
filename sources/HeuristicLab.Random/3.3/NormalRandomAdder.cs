@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Constraints;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Random {
@@ -105,10 +104,6 @@ the smallest allowed value then 'Value' is set to the lower bound and vice versa
       // dispatch manually based on dynamic type
       if (value is IntData)
         AddNormal((IntData)value, normal);
-      else if (value is ConstrainedIntData)
-        AddNormal((ConstrainedIntData)value, normal);
-      else if (value is ConstrainedDoubleData)
-        AddNormal((ConstrainedDoubleData)value, normal);
       else if (value is DoubleData)
         AddNormal((DoubleData)value, normal);
       else throw new InvalidOperationException("Can't handle type " + value.GetType().Name);
@@ -124,59 +119,12 @@ the smallest allowed value then 'Value' is set to the lower bound and vice versa
     }
 
     /// <summary>
-    /// Generates a new double random number and adds it to the value of the given <paramref name="data"/>
-    /// checking its constraints.
-    /// </summary>
-    /// <exception cref="InvalidProgramException">Thrown when with the current settings no valid value
-    /// could be found.</exception>
-    /// <param name="data">The double object where to add the random number and whose constraints
-    /// to fulfill.</param>
-    /// <param name="normal">The continuous, normally distributed random variable.</param>
-    public void AddNormal(ConstrainedDoubleData data, NormalDistributedRandom normal) {
-      for (int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
-        double newValue = data.Data + normal.NextDouble();
-        if (IsIntegerConstrained(data)) {
-          newValue = Math.Round(newValue);
-        }
-        if (data.TrySetData(newValue)) {
-          return;
-        }
-      }
-      throw new InvalidProgramException("Coudn't find a valid value");
-    }
-
-    /// <summary>
     /// Generates a new int random number and adds it to value of the given <paramref name="data"/>.
     /// </summary>
     /// <param name="data">The int object where to add the random number.</param>
     /// <param name="normal">The continuous, normally distributed random variable.</param>
     public void AddNormal(IntData data, NormalDistributedRandom normal) {
       data.Data = (int)Math.Round(data.Data + normal.NextDouble());
-    }
-
-    /// <summary>
-    /// Generates a new int random number and adds it to the value of the given <paramref name="data"/>
-    /// checking its constraints.
-    /// </summary>
-    /// <exception cref="InvalidProgramException">Thrown when with the current settings no valid value 
-    /// could be found.</exception>
-    /// <param name="data">The int object where to add the generated value and whose contraints to check.</param>
-    /// <param name="normal">The continuous, normally distributed random variable.</param>
-    public void AddNormal(ConstrainedIntData data, NormalDistributedRandom normal) {
-      for (int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
-        if (data.TrySetData((int)Math.Round(data.Data + normal.NextDouble())))
-          return;
-      }
-      throw new InvalidProgramException("Couldn't find a valid value.");
-    }
-
-    private bool IsIntegerConstrained(ConstrainedDoubleData data) {
-      foreach (IConstraint constraint in data.Constraints) {
-        if (constraint is IsIntegerConstraint) {
-          return true;
-        }
-      }
-      return false;
     }
   }
 }

@@ -50,7 +50,6 @@ namespace HeuristicLab.Operators.Programmable {
     protected override void RemoveItemEvents() {
       operatorBaseVariableInfosView.Operator = null;
       operatorBaseVariablesView.Operator = null;
-      constrainedItemBaseView.ConstrainedItem = null;
       ProgrammableOperator.CodeChanged -= new EventHandler(ProgrammableOperator_CodeChanged);
       ProgrammableOperator.DescriptionChanged -= new EventHandler(ProgrammableOperator_DescriptionChanged);
       base.RemoveItemEvents();
@@ -60,7 +59,6 @@ namespace HeuristicLab.Operators.Programmable {
       base.AddItemEvents();
       operatorBaseVariableInfosView.Operator = ProgrammableOperator;
       operatorBaseVariablesView.Operator = ProgrammableOperator;
-      constrainedItemBaseView.ConstrainedItem = ProgrammableOperator;
       ProgrammableOperator.CodeChanged += new EventHandler(ProgrammableOperator_CodeChanged);
       ProgrammableOperator.DescriptionChanged += new EventHandler(ProgrammableOperator_DescriptionChanged);
     }

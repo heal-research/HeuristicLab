@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Constraints;
 
 namespace HeuristicLab.Random {
   /// <summary>
@@ -90,56 +89,9 @@ the smallest allowed value then 'Value' is set to the lower bound and vice versa
       // dispatch manually on dynamic type
       if (value is IntData)
         AddUniform((IntData)value, mt, min, max);
-      else if (value is ConstrainedIntData)
-        AddUniform((ConstrainedIntData)value, mt, min, max);
       else if (value is DoubleData)
         AddUniform((DoubleData)value, mt, min, max);
-      else if (value is ConstrainedDoubleData)
-        AddUniform((ConstrainedDoubleData)value, mt, min, max);
       else throw new InvalidOperationException("Can't handle type " + value.GetType().Name);
-    }
-
-    /// <summary>
-    /// Adds a new double random variable being restricted to some constraints to the value of the given 
-    /// <paramref name="data"/>.
-    /// </summary>
-    /// <exception cref="InvalidProgramException">Thrown when no valid value can be found.</exception>
-    /// <param name="data">The data where to add the new variable and where to assign the new value to.</param>
-    /// <param name="mt">The random number generator.</param>
-    /// <param name="min">The left border of the interval in which the next random number has to lie.</param>
-    /// <param name="max">The right border (exclusive) of the interval in which the next random number
-    /// has to lie.</param>
-    public void AddUniform(ConstrainedDoubleData data, MersenneTwister mt, double min, double max) {
-      for (int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
-        double newValue = data.Data + mt.NextDouble() * (max - min) + min;
-        if (IsIntegerConstrained(data)) {
-          newValue = Math.Floor(newValue);
-        }
-        if (data.TrySetData(newValue)) {
-          return;
-        }
-      }
-      throw new InvalidProgramException("Couldn't find a valid value");
-    }
-
-    /// <summary>
-    /// Adds a new int random variable being restricted to some constraints to the value of the given
-    /// <paramref name="data"/>.
-    /// </summary>
-    /// <exception cref="InvalidProgramException">Thrown when no valid value could be found.</exception>
-    /// <param name="data">The data where to add the random value and where to assign the new value to.</param>
-    /// <param name="mt">The random number generator.</param>
-    /// <param name="min">The left border of the interval in which the next random number has to lie.</param>
-    /// <param name="max">The right border (exclusive) of the interval in which the next random number
-    /// has to lie.</param>
-    public void AddUniform(ConstrainedIntData data, MersenneTwister mt, double min, double max) {
-      for (int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
-        int newValue = (int)Math.Floor(data.Data + mt.NextDouble() * (max - min) + min);
-        if (data.TrySetData(newValue)) {
-          return;
-        }
-      }
-      throw new InvalidProgramException("Couldn't find a valid value");
     }
 
     /// <summary>
@@ -166,14 +118,6 @@ the smallest allowed value then 'Value' is set to the lower bound and vice versa
     /// has to lie.</param>
     public void AddUniform(IntData data, MersenneTwister mt, double min, double max) {
       data.Data = (int)Math.Floor(data.Data + mt.NextDouble() * (max - min) + min);
-    }
-    private bool IsIntegerConstrained(ConstrainedDoubleData data) {
-      foreach (IConstraint constraint in data.Constraints) {
-        if (constraint is IsIntegerConstraint) {
-          return true;
-        }
-      }
-      return false;
     }
   }
 }

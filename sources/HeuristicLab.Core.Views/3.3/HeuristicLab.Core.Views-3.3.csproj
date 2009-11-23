@@ -69,12 +69,6 @@
     <Compile Include="ChooseTypeDialog.Designer.cs">
       <DependentUpon>ChooseTypeDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="ConstrainedItemBaseView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ConstrainedItemBaseView.Designer.cs">
-      <DependentUpon>ConstrainedItemBaseView.cs</DependentUpon>
-    </Compile>
     <Compile Include="EditorBase.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -209,9 +203,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ChooseTypeDialog.resx">
       <DependentUpon>ChooseTypeDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ConstrainedItemBaseView.resx">
-      <DependentUpon>ConstrainedItemBaseView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="EditorBase.resx">
       <DependentUpon>EditorBase.cs</DependentUpon>

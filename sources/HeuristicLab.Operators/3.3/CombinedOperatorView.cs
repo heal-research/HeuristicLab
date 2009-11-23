@@ -54,7 +54,6 @@ namespace HeuristicLab.Operators {
       operatorGraphView.OperatorGraph = null;
       operatorBaseVariableInfosView.Operator = null;
       operatorBaseVariablesView.Operator = null;
-      constrainedItemBaseView.ConstrainedItem = null;
       CombinedOperator.DescriptionChanged -= new EventHandler(CombinedOperator_DescriptionChanged);
       base.RemoveItemEvents();
     }
@@ -68,7 +67,6 @@ namespace HeuristicLab.Operators {
       operatorGraphView.OperatorGraph = CombinedOperator.OperatorGraph;
       operatorBaseVariableInfosView.Operator = CombinedOperator;
       operatorBaseVariablesView.Operator = CombinedOperator;
-      constrainedItemBaseView.ConstrainedItem = CombinedOperator;
       CombinedOperator.DescriptionChanged += new EventHandler(CombinedOperator_DescriptionChanged);
     }
 

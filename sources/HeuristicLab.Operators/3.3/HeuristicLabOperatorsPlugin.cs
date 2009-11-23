@@ -30,7 +30,6 @@ namespace HeuristicLab.Operators {
   /// </summary>
   [ClassInfo(Name = "HeuristicLab.Operators-3.3")]
   [PluginFile(Filename = "HeuristicLab.Operators-3.3.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Constraints-3.3")]
   [Dependency(Dependency = "HeuristicLab.Core-3.3")]
   [Dependency(Dependency = "HeuristicLab.Core.Views-3.3")]
   [Dependency(Dependency = "HeuristicLab.Data-3.3")]

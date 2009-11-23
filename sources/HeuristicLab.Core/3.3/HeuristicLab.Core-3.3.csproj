@@ -98,15 +98,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Auxiliary.cs" />
-    <Compile Include="ConstrainedItemBase.cs" />
     <Compile Include="AtomicOperation.cs" />
     <Compile Include="CompositeOperation.cs" />
     <Compile Include="Interfaces\IEditable.cs" />
     <Compile Include="Interfaces\IOperation.cs" />
     <Compile Include="Interfaces\IOperatorLibrary.cs" />
     <Compile Include="Interfaces\IVisualizationItem.cs" />
-    <Compile Include="Interfaces\IConstrainedItem.cs" />
-    <Compile Include="Interfaces\IConstraint.cs" />
     <Compile Include="Interfaces\IItem.cs" />
     <Compile Include="ItemBase.cs" />
     <Compile Include="OperatorLibrary.cs" />

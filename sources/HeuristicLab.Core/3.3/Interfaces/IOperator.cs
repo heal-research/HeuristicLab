@@ -29,7 +29,7 @@ namespace HeuristicLab.Core {
   /// Interface to represent an operator (e.g. GreaterThanComparator,...), 
   /// a basic instruction of an algorithm.
   /// </summary>
-  public interface IOperator : IConstrainedItem {
+  public interface IOperator : IItem {
     /// <summary>
     /// Gets or sets the name of the current instance.
     /// </summary>
@@ -67,69 +67,16 @@ namespace HeuristicLab.Core {
     /// <param name="op">The operator to add.</param>
     void AddSubOperator(IOperator op);
     /// <summary>
-    /// Adds the given sub operator to the current instance if all constraints can be fulfilled.
-    /// </summary>
-    /// <param name="op">The operator to add.</param>
-    /// <returns><c>true</c> if the operator could be added without violating constraints,
-    /// <c>false</c> otherwise.</returns>
-    bool TryAddSubOperator(IOperator op);
-    /// <summary>
-    /// Adds the given sub operator to the current instance if all constraints can be fulfilled.
-    /// </summary>
-    /// <param name="op">The operator to add.</param>
-    /// <param name="violatedConstraints">Output parameter; contains all constraints that could not be
-    /// fulfilled.</param>
-    /// <returns><c>true</c> if the operator could be added without violating constraints,
-    /// <c>false</c> otherwise.</returns>
-    bool TryAddSubOperator(IOperator op, out ICollection<IConstraint> violatedConstraints);
-    /// <summary>
     /// Adds the given sub operator at a the specified <paramref name="index"/>.
     /// </summary>
     /// <param name="op">The operator to add.</param>
     /// <param name="index">The position where to add the operator.</param>
     void AddSubOperator(IOperator op, int index);
     /// <summary>
-    /// Adds the given operator at the specified <paramref name="index"/> to the current instance 
-    /// if all constraints can be fulfilled.
-    /// </summary>
-    /// <param name="op">The operator to add.</param>
-    /// <param name="index">The position where to add the operator.</param>
-    /// <returns><c>true</c> if the operator could be added without violating constraints,
-    /// <c>false</c> otherwise.</returns>
-    bool TryAddSubOperator(IOperator op, int index);
-    /// <summary>
-    /// Adds the given operator at the specified <paramref name="index"/> to the current instance 
-    /// if all constraints can be fulfilled.
-    /// </summary>
-    /// <param name="op">The operator to add.</param>
-    /// <param name="index">The position where to add the operator.</param>
-    /// <param name="violatedConstraints">Output parameter; contains all constraints that could not be
-    /// fulfilled.</param>
-    /// <returns><c>true</c> if the operator could be added without violating constraints,
-    /// <c>false</c> otherwise.</returns>
-    bool TryAddSubOperator(IOperator op, int index, out ICollection<IConstraint> violatedConstraints);
-    /// <summary>
     /// Removes a sub operator at the specified <paramref name="index"/>.
     /// </summary>
     /// <param name="index">The position where to delete the operator.</param>
     void RemoveSubOperator(int index);
-    /// <summary>
-    /// Removes a sub operator at the specified <paramref name="index"/> if all constraint can be fulfilled.
-    /// </summary>
-    /// <param name="index">The position where to delete the operator.</param>
-    /// <returns><c>true</c> if the operator could be deleted without violating constraints,
-    /// <c>false</c> otherwise.</returns>
-    bool TryRemoveSubOperator(int index);
-    /// <summary>
-    /// Deletes the operator at the specified <paramref name="index"/>  
-    /// if all constraints can be fulfilled.
-    /// </summary>
-    /// <param name="index">The position where to delete the operator.</param>
-    /// <param name="violatedConstraints">Output parameter; contains all constraints that could not be
-    /// fulfilled.</param>
-    /// <returns><c>true</c> if the operator could be deleted without violating constraints,
-    /// <c>false</c> otherwise.</returns>
-    bool TryRemoveSubOperator(int index, out ICollection<IConstraint> violatedConstraints);
 
     /// <summary>
     /// Gets the variable info with the given <paramref name="formalName"/>.
@@ -143,44 +90,10 @@ namespace HeuristicLab.Core {
     /// <param name="variableInfo">The variable info to add.</param>
     void AddVariableInfo(IVariableInfo variableInfo);
     /// <summary>
-    /// Adds the specified variable info to the current instance, if all constraints can be fulfilled.
-    /// </summary>
-    /// <param name="variableInfo">The variable info to add.</param>
-    /// <returns><c>true</c> if the variable info could be added without violating constraints,
-    /// <c>false</c> otherwise.</returns>
-    bool TryAddVariableInfo(IVariableInfo variableInfo);
-    /// <summary>
-    /// Adds the specified variable info to the current instance, if all constraints can be fulfilled.
-    /// </summary>
-    /// <param name="variableInfo">The variable info to add.</param>
-    /// <param name="violatedConstraints">Output parameter; contains all constraints that could not be
-    /// fulfilled.</param>
-    /// <returns><c>true</c> if the variable info could be added without violating constraints,
-    /// <c>false</c> otherwise.</returns>
-    bool TryAddVariableInfo(IVariableInfo variableInfo, out ICollection<IConstraint> violatedConstraints);
-    /// <summary>
     /// Removes the variable info with the given formal name.
     /// </summary>
     /// <param name="formalName">The formal name of the variable info to remove.</param>
     void RemoveVariableInfo(string formalName);
-    /// <summary>
-    /// Deletes the variable info with the given formal name, 
-    /// if all constraints can be fulfilled.
-    /// </summary>
-    /// <param name="formalName">The formal name of the variable info to remove.</param>
-    /// <returns><c>true</c> if the variable info could be deleted without violating constraints,
-    /// <c>false</c> otherwise.</returns>
-    bool TryRemoveVariableInfo(string formalName);
-    /// <summary>
-    /// Deletes the variable info with the given formal name, 
-    /// if all constraints can be fulfilled.
-    /// </summary>
-    /// <param name="formalName">The formal name of the variable info to remove.</param>
-    /// <param name="violatedConstraints">Output parameter; contains all constraints that could not be
-    /// fulfilled.</param>
-    /// <returns><c>true</c> if the variable info could be deleted without violating constraints,
-    /// <c>false</c> otherwise.</returns>
-    bool TryRemoveVariableInfo(string formalName, out ICollection<IConstraint> violatedConstraints);
 
     /// <summary>
     /// Gets a variable with the given <paramref name="name"/>.
@@ -194,47 +107,11 @@ namespace HeuristicLab.Core {
     /// <param name="variable">The variable to add.</param>
     void AddVariable(IVariable variable);
     /// <summary>
-    /// Adds the specified <paramref name="variable"/> to the current instance if all constraints can
-    /// be fulfilled.
-    /// </summary>
-    /// <param name="variable">The variable to add.</param>
-    /// <returns><c>true</c> if the variable could be added without violating constraints,
-    /// <c>false</c> otherwise.</returns>
-    bool TryAddVariable(IVariable variable);
-    /// <summary>
-    /// Adds the specified <paramref name="variable"/> to the current instance if all constraints can
-    /// be fulfilled.
-    /// </summary>
-    /// <param name="variable">The variable to add.</param>
-    /// <param name="violatedConstraints">Output parameter; contains all constraints that could 
-    /// not be fulfillled.</param>
-    /// <returns><c>true</c> if the variable could be added without violating constraints,
-    /// <c>false</c> otherwise.</returns>
-    bool TryAddVariable(IVariable variable, out ICollection<IConstraint> violatedConstraints);
-    /// <summary>
     /// Deletes the variable with the specified <paramref name="name"/>.
     /// </summary>
     /// <param name="name">The name of the variable to delete.</param>
     void RemoveVariable(string name);
-    /// <summary>
-    /// Deletes the variable with the specified <paramref name="name"/> if all constraints can be 
-    /// fulfilled.
-    /// </summary>
-    /// <param name="name">The name of the variable to remove.</param>
-    /// <returns><c>true</c> if the variable could be deleted without violating constraints,
-    /// <c>false</c> otherwise.</returns>
-    bool TryRemoveVariable(string name);
-    /// <summary>
-    /// Deletes the variable with the specified <paramref name="name"/> if all constraints can be 
-    /// fulfilled.
-    /// </summary>
-    /// <param name="name">The name of the variable to remove.</param>
-    /// <param name="violatedConstraints">Output parameter; contains all constraints that could 
-    /// not be fulfilled.</param>
-    /// <returns><c>true</c> if the variable could be deleted without violating constraints,
-    /// <c>false</c> otherwise.</returns>
-    bool TryRemoveVariable(string name, out ICollection<IConstraint> violatedConstraints);
-    
+
     /// <inheritdoc cref="GetVariableValue(string, HeuristicLab.Core.IScope, bool)"/>
     /// <typeparam name="T">The type of the value that is searched.</typeparam>       
     T GetVariableValue<T>(string formalName, IScope scope, bool recursiveLookup) where T : class, IItem;

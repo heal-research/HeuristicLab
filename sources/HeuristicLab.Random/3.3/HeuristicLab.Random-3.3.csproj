@@ -95,10 +95,6 @@
     <Compile Include="UniformRandomizer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HeuristicLab.Constraints\3.3\HeuristicLab.Constraints-3.3.csproj">
-      <Project>{19C1E42A-4B48-4EFD-B697-899016F1C198}</Project>
-      <Name>HeuristicLab.Constraints-3.3</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
       <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
       <Name>HeuristicLab.Core-3.3</Name>

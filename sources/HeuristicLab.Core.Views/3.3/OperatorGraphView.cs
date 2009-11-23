@@ -352,39 +352,15 @@ namespace HeuristicLab.Core.Views {
               int oldIndex = (int)e.Data.GetData("Index");
               IOperator newParent = (IOperator)node.Parent.Tag;
               int newIndex = node.Index;
-              ICollection<IConstraint> violatedConstraints;
-              ICollection<IConstraint> violatedConstraints2;
-              oldParent.TryRemoveSubOperator(oldIndex, out violatedConstraints);
-              newParent.TryAddSubOperator(op, newIndex, out violatedConstraints2);
-              if ((violatedConstraints.Count == 0) && (violatedConstraints2.Count == 0)) {
-                graphTreeView.SelectedNode = parentNode.Nodes[newIndex];
-              } else {
-                List<IConstraint> allViolatedConstraints = new List<IConstraint>(violatedConstraints);
-                allViolatedConstraints.AddRange(violatedConstraints2);
-                if (Auxiliary.ShowIgnoreConstraintViolationMessageBox(allViolatedConstraints) == DialogResult.Yes) {
-                  if (violatedConstraints.Count > 0)
-                    oldParent.RemoveSubOperator(oldIndex);
-                  if (violatedConstraints2.Count > 0)
-                    newParent.AddSubOperator(op, newIndex);
-                  graphTreeView.SelectedNode = parentNode.Nodes[newIndex];
-                } else {
-                  if (violatedConstraints.Count == 0)
-                    oldParent.AddSubOperator(op, oldIndex);
-                  if (violatedConstraints2.Count == 0)
-                    newParent.RemoveSubOperator(newIndex);
-                }
-              }
+              oldParent.RemoveSubOperator(oldIndex);
+              newParent.AddSubOperator(op, newIndex);
+              graphTreeView.SelectedNode = parentNode.Nodes[newIndex];
             }
           } else {
             if (node != null) {
               IOperator parent = (IOperator)node.Tag;
-              ICollection<IConstraint> violatedConstraints;
-              if (parent.TryAddSubOperator(op, out violatedConstraints)) {
-                graphTreeView.SelectedNode = node.Nodes[node.Nodes.Count - 1];
-              } else if (Auxiliary.ShowIgnoreConstraintViolationMessageBox(violatedConstraints) == DialogResult.Yes) {
-                parent.AddSubOperator(op);
-                graphTreeView.SelectedNode = node.Nodes[node.Nodes.Count - 1];
-              }
+              parent.AddSubOperator(op);
+              graphTreeView.SelectedNode = node.Nodes[node.Nodes.Count - 1];
             }
           }
         }

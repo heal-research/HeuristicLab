@@ -13,7 +13,6 @@ copy "%SolutionDir%\HeuristicLab.Common\3.2\%Outdir%\HeuristicLab.Common-3.2.dll
 copy "%SolutionDir%\HeuristicLab.Common.Resources\3.2\%Outdir%\HeuristicLab.Common.Resources-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Core\3.3\%Outdir%\HeuristicLab.Core-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Core.Views\3.3\%Outdir%\HeuristicLab.Core.Views-3.3.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.Constraints\3.3\%Outdir%\HeuristicLab.Constraints-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Data\3.3\%Outdir%\HeuristicLab.Data-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Evolutionary\3.3\%Outdir%\HeuristicLab.Evolutionary-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Logging\3.3\%Outdir%\HeuristicLab.Logging-3.3.dll" .\plugins
@@ -24,7 +23,6 @@ copy "%SolutionDir%\WinFormsUI\%Outdir%\WeifenLuo.WinFormsUI.Docking.dll" .\plug
 copy "%SolutionDir%\WinFormsUI\%Outdir%\WeifenLuo.WinFormsUI.Docking License.txt" .\plugins
 copy "%SolutionDir%\HeuristicLab.Operators\3.3\%Outdir%\HeuristicLab.Operators-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Operators.Programmable\3.3\%Outdir%\HeuristicLab.Operators.Programmable-3.3.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.OptimizationFrontend\3.3\%Outdir%\HeuristicLab.OptimizationFrontend-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Optimizer\3.3\%Outdir%\HeuristicLab.Optimizer-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Permutation\3.3\%Outdir%\HeuristicLab.Permutation-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Persistence\3.3\%Outdir%\HeuristicLab.Persistence-3.3.dll" .\plugins

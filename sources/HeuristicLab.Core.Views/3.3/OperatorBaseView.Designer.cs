@@ -52,14 +52,11 @@ namespace HeuristicLab.Core.Views {
       this.operatorBaseVariableInfosView = new HeuristicLab.Core.Views.OperatorBaseVariableInfosView();
       this.variablesTabPage = new System.Windows.Forms.TabPage();
       this.operatorBaseVariablesView = new HeuristicLab.Core.Views.OperatorBaseVariablesView();
-      this.constraintsTabPage = new System.Windows.Forms.TabPage();
-      this.constrainedItemBaseView = new HeuristicLab.Core.Views.ConstrainedItemBaseView();
       this.descriptionTabPage = new System.Windows.Forms.TabPage();
       this.operatorBaseDescriptionView = new HeuristicLab.Core.Views.OperatorBaseDescriptionView();
       this.tabControl.SuspendLayout();
       this.variableInfosTabPage.SuspendLayout();
       this.variablesTabPage.SuspendLayout();
-      this.constraintsTabPage.SuspendLayout();
       this.descriptionTabPage.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -67,7 +64,6 @@ namespace HeuristicLab.Core.Views {
       // 
       this.tabControl.Controls.Add(this.variableInfosTabPage);
       this.tabControl.Controls.Add(this.variablesTabPage);
-      this.tabControl.Controls.Add(this.constraintsTabPage);
       this.tabControl.Controls.Add(this.descriptionTabPage);
       this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tabControl.Location = new System.Drawing.Point(0, 0);
@@ -118,27 +114,6 @@ namespace HeuristicLab.Core.Views {
       this.operatorBaseVariablesView.Size = new System.Drawing.Size(409, 301);
       this.operatorBaseVariablesView.TabIndex = 0;
       // 
-      // constraintsTabPage
-      // 
-      this.constraintsTabPage.Controls.Add(this.constrainedItemBaseView);
-      this.constraintsTabPage.Location = new System.Drawing.Point(4, 22);
-      this.constraintsTabPage.Name = "constraintsTabPage";
-      this.constraintsTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.constraintsTabPage.Size = new System.Drawing.Size(415, 307);
-      this.constraintsTabPage.TabIndex = 2;
-      this.constraintsTabPage.Text = "Constraints";
-      this.constraintsTabPage.UseVisualStyleBackColor = true;
-      // 
-      // constrainedItemBaseView
-      // 
-      this.constrainedItemBaseView.Caption = "Constrained Data";
-      this.constrainedItemBaseView.ConstrainedItem = null;
-      this.constrainedItemBaseView.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.constrainedItemBaseView.Location = new System.Drawing.Point(3, 3);
-      this.constrainedItemBaseView.Name = "constrainedItemBaseView";
-      this.constrainedItemBaseView.Size = new System.Drawing.Size(409, 301);
-      this.constrainedItemBaseView.TabIndex = 0;
-      // 
       // descriptionTabPage
       // 
       this.descriptionTabPage.Controls.Add(this.operatorBaseDescriptionView);
@@ -171,7 +146,6 @@ namespace HeuristicLab.Core.Views {
       this.tabControl.ResumeLayout(false);
       this.variableInfosTabPage.ResumeLayout(false);
       this.variablesTabPage.ResumeLayout(false);
-      this.constraintsTabPage.ResumeLayout(false);
       this.descriptionTabPage.ResumeLayout(false);
       this.ResumeLayout(false);
 
@@ -182,8 +156,6 @@ namespace HeuristicLab.Core.Views {
     protected TabControl tabControl;
     protected TabPage variableInfosTabPage;
     protected TabPage variablesTabPage;
-    private TabPage constraintsTabPage;
-    protected ConstrainedItemBaseView constrainedItemBaseView;
     protected OperatorBaseVariableInfosView operatorBaseVariableInfosView;
     protected OperatorBaseVariablesView operatorBaseVariablesView;
     private TabPage descriptionTabPage;

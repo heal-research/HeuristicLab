@@ -69,7 +69,6 @@ namespace HeuristicLab.Core.Views {
     protected override void RemoveItemEvents() {
       operatorBaseVariableInfosView.Operator = null;
       operatorBaseVariablesView.Operator = null;
-      constrainedItemBaseView.ConstrainedItem = null;
       operatorBaseDescriptionView.Operator = null;
       base.RemoveItemEvents();
     }
@@ -80,7 +79,6 @@ namespace HeuristicLab.Core.Views {
       base.AddItemEvents();
       operatorBaseVariableInfosView.Operator = Operator;
       operatorBaseVariablesView.Operator = Operator;
-      constrainedItemBaseView.ConstrainedItem = Operator;
       operatorBaseDescriptionView.Operator = Operator;
     }
 

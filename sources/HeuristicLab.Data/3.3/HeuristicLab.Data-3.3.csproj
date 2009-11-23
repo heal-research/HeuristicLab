@@ -127,28 +127,6 @@
     <Compile Include="BoolMatrixDataView.Designer.cs">
       <DependentUpon>BoolMatrixDataView.cs</DependentUpon>
     </Compile>
-    <Compile Include="ConstrainedItemList.cs" />
-    <Compile Include="ConstrainedItemListView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ConstrainedItemListView.Designer.cs">
-      <DependentUpon>ConstrainedItemListView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ConstrainedObjectData.cs" />
-    <Compile Include="ConstrainedIntData.cs" />
-    <Compile Include="ConstrainedIntDataView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ConstrainedIntDataView.Designer.cs">
-      <DependentUpon>ConstrainedIntDataView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ConstrainedDoubleData.cs" />
-    <Compile Include="ConstrainedDoubleDataView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ConstrainedDoubleDataView.Designer.cs">
-      <DependentUpon>ConstrainedDoubleDataView.cs</DependentUpon>
-    </Compile>
     <Compile Include="EditKeyValueDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -276,18 +254,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="BoolDataView.resx">
       <DependentUpon>BoolDataView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ConstrainedIntDataView.resx">
-      <DependentUpon>ConstrainedIntDataView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ConstrainedDoubleDataView.resx">
-      <DependentUpon>ConstrainedDoubleDataView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ConstrainedItemListView.resx">
-      <DependentUpon>ConstrainedItemListView.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="DoubleDataView.resx">

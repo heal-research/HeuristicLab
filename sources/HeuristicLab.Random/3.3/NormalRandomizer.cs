@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Constraints;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Random {
@@ -97,54 +96,9 @@ namespace HeuristicLab.Random {
       // dispatch manually based on dynamic type
       if (value is IntData)
         RandomizeNormal((IntData)value, n);
-      else if (value is ConstrainedIntData)
-        RandomizeNormal((ConstrainedIntData)value, n);
       else if (value is DoubleData)
         RandomizeNormal((DoubleData)value, n);
-      else if (value is ConstrainedDoubleData)
-        RandomizeNormal((ConstrainedDoubleData)value, n);
       else throw new InvalidOperationException("Can't handle type " + value.GetType().Name);
-    }
-
-    /// <summary>
-    /// Generates a new double random variable based on a continuous, normally distributed random number generator
-    /// <paramref name="normal"/> and checks some contraints.
-    /// </summary>
-    /// <exception cref="InvalidOperationException">Thrown when with the given settings no valid value in
-    /// 100 tries could be found.
-    /// </exception>
-    /// <param name="data">The double object where to assign the new number to and whose constraints
-    /// must be fulfilled.</param>
-    /// <param name="normal">The continuous, normally distributed random variable.</param>
-    public void RandomizeNormal(ConstrainedDoubleData data, NormalDistributedRandom normal) {
-      for (int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
-        double r = normal.NextDouble();
-        if (IsIntegerConstrained(data)) {
-          r = Math.Round(r);
-        }
-        if (data.TrySetData(r)) {
-          return;
-        }
-      }
-      throw new InvalidOperationException("Couldn't find a valid value in 100 tries with mu=" + normal.Mu + " sigma=" + normal.Sigma);
-    }
-
-    /// <summary>
-    /// Generates a new int random variable based on a continuous, normally distributed random number 
-    /// generator <paramref name="normal"/> and checks some constraints.
-    /// </summary>
-    /// <exception cref="InvalidOperationException">Thrown when with the given settings no valid
-    /// value could be found.</exception>
-    /// <param name="data">The int object where to assign the new value to and whose constraints must
-    /// be fulfilled.</param>
-    /// <param name="normal">The continuous, normally distributed random variable.</param>
-    public void RandomizeNormal(ConstrainedIntData data, NormalDistributedRandom normal) {
-      for (int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
-        double r = normal.NextDouble();
-        if (data.TrySetData((int)Math.Round(r))) // since r is a continuous, normally distributed random variable rounding should be OK
-          return;
-      }
-      throw new InvalidOperationException("Couldn't find a valid value");
     }
 
     /// <summary>
@@ -165,16 +119,6 @@ namespace HeuristicLab.Random {
     /// <param name="normal">The continuous, normally distributed random variable.</param>
     public void RandomizeNormal(IntData data, NormalDistributedRandom normal) {
       data.Data = (int)Math.Round(normal.NextDouble());
-    }
-
-
-    private bool IsIntegerConstrained(ConstrainedDoubleData data) {
-      foreach (IConstraint constraint in data.Constraints) {
-        if (constraint is IsIntegerConstraint) {
-          return true;
-        }
-      }
-      return false;
     }
   }
 }

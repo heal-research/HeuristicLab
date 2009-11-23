@@ -30,7 +30,7 @@ namespace HeuristicLab.Core {
   /// <summary>
   /// The base class for all operators.
   /// </summary>
-  public abstract class OperatorBase : ConstrainedItemBase, IOperator {
+  public abstract class OperatorBase : ItemBase, IOperator {
 
     [Storable]
     private string myName;
@@ -153,33 +153,6 @@ namespace HeuristicLab.Core {
       mySubOperators.Add(subOperator);
       OnSubOperatorAdded(subOperator, mySubOperators.Count - 1);
     }
-    /// <inheritdoc cref="IOperator.TryAddSubOperator(HeuristicLab.Core.IOperator)"/>
-    /// <param name="subOperator">The sub operator to add.</param>
-    /// <remarks>Calls <see cref="OnSubOperatorAdded"/>.</remarks>
-    public virtual bool TryAddSubOperator(IOperator subOperator) {
-      mySubOperators.Add(subOperator);
-      if (IsValid()) {
-        OnSubOperatorAdded(subOperator, mySubOperators.Count - 1);
-        return true;
-      } else {
-        mySubOperators.RemoveAt(mySubOperators.Count - 1);
-        return false;
-      }
-    }
-    /// <inheritdoc cref="HeuristicLab.Core.IOperator.TryAddSubOperator(HeuristicLab.Core.IOperator, 
-    /// out System.Collections.Generic.ICollection&lt;HeuristicLab.Core.IConstraint&gt;)"/>
-    /// <param name="subOperator">The sub operator to add.</param>
-    /// <remarks>Calls <see cref="OnSubOperatorAdded"/>.</remarks>
-    public virtual bool TryAddSubOperator(IOperator subOperator, out ICollection<IConstraint> violatedConstraints) {
-      mySubOperators.Add(subOperator);
-      if (IsValid(out violatedConstraints)) {
-        OnSubOperatorAdded(subOperator, mySubOperators.Count - 1);
-        return true;
-      } else {
-        mySubOperators.RemoveAt(mySubOperators.Count - 1);
-        return false;
-      }
-    }
     /// <inheritdoc cref="HeuristicLab.Core.IOperator.AddSubOperator(HeuristicLab.Core.IOperator, int)"/>
     /// <param name="subOperator">The sub operator to add.</param>
     /// <remarks>Calls <see cref="OnSubOperatorAdded"/>.</remarks>
@@ -187,65 +160,12 @@ namespace HeuristicLab.Core {
       mySubOperators.Insert(index, subOperator);
       OnSubOperatorAdded(subOperator, index);
     }
-    /// <inheritdoc cref="IOperator.TryAddSubOperator(HeuristicLab.Core.IOperator, int)"/>
-    /// <param name="subOperator">The sub operator to add.</param>
-    /// <remarks>Calls <see cref="OnSubOperatorAdded"/>.</remarks>
-    public virtual bool TryAddSubOperator(IOperator subOperator, int index) {
-      mySubOperators.Insert(index, subOperator);
-      if (IsValid()) {
-        OnSubOperatorAdded(subOperator, index);
-        return true;
-      } else {
-        mySubOperators.RemoveAt(index);
-        return false;
-      }
-    }
-    /// <inheritdoc cref="IOperator.TryAddSubOperator(HeuristicLab.Core.IOperator, int, out
-    /// System.Collections.Generic.ICollection&lt;HeuristicLab.Core.IConstraint&gt;)"/>
-    /// <param name="subOperator">The sub operator to add.</param>
-    /// <remarks>Calls <see cref="OnSubOperatorAdded"/>.</remarks>
-    public virtual bool TryAddSubOperator(IOperator subOperator, int index, out ICollection<IConstraint> violatedConstraints) {
-      mySubOperators.Insert(index, subOperator);
-      if (IsValid(out violatedConstraints)) {
-        OnSubOperatorAdded(subOperator, index);
-        return true;
-      } else {
-        mySubOperators.RemoveAt(index);
-        return false;
-      }
-    }
     /// <inheritdoc/>
     /// <remarks>Calls <see cref="OnSubOperatorRemoved"/>.</remarks>
     public virtual void RemoveSubOperator(int index) {
       IOperator op = mySubOperators[index];
       mySubOperators.RemoveAt(index);
       OnSubOperatorRemoved(op, index);
-    }
-    /// <inheritdoc/>
-    /// <remarks>Calls <see cref="OnSubOperatorRemoved"/>.</remarks>
-    public virtual bool TryRemoveSubOperator(int index) {
-      IOperator op = mySubOperators[index];
-      mySubOperators.RemoveAt(index);
-      if (IsValid()) {
-        OnSubOperatorRemoved(op, index);
-        return true;
-      } else {
-        mySubOperators.Insert(index, op);
-        return false;
-      }
-    }
-    /// <inheritdoc/>
-    /// <remarks>Calls <see cref="OnSubOperatorRemoved"/>.</remarks>
-    public virtual bool TryRemoveSubOperator(int index, out ICollection<IConstraint> violatedConstraints) {
-      IOperator op = mySubOperators[index];
-      mySubOperators.RemoveAt(index);
-      if (IsValid(out violatedConstraints)) {
-        OnSubOperatorRemoved(op, index);
-        return true;
-      } else {
-        mySubOperators.Insert(index, op);
-        return false;
-      }
     }
     #endregion
 
@@ -265,30 +185,6 @@ namespace HeuristicLab.Core {
       OnVariableInfoAdded(variableInfo);
     }
     /// <inheritdoc/>
-    /// <remarks>Calls <see cref="OnVariableInfoAdded"/>.</remarks>
-    public virtual bool TryAddVariableInfo(IVariableInfo variableInfo) {
-      myVariableInfos.Add(variableInfo.FormalName, variableInfo);
-      if (IsValid()) {
-        OnVariableInfoAdded(variableInfo);
-        return true;
-      } else {
-        myVariableInfos.Remove(variableInfo.FormalName);
-        return false;
-      }
-    }
-    /// <inheritdoc/>
-    /// <remarks>Calls <see cref="OnVariableInfoAdded"/>.</remarks>
-    public virtual bool TryAddVariableInfo(IVariableInfo variableInfo, out ICollection<IConstraint> violatedConstraints) {
-      myVariableInfos.Add(variableInfo.FormalName, variableInfo);
-      if (IsValid(out violatedConstraints)) {
-        OnVariableInfoAdded(variableInfo);
-        return true;
-      } else {
-        myVariableInfos.Remove(variableInfo.FormalName);
-        return false;
-      }
-    }
-    /// <inheritdoc/>
     /// <remarks>Calls <see cref="OnVariableInfoRemoved"/>.</remarks>
     public virtual void RemoveVariableInfo(string formalName) {
       IVariableInfo variableInfo;
@@ -296,39 +192,6 @@ namespace HeuristicLab.Core {
         myVariableInfos.Remove(formalName);
         OnVariableInfoRemoved(variableInfo);
       }
-    }
-    /// <inheritdoc/>
-    /// <remarks>Calls <see cref="OnVariableInfoRemoved"/>.</remarks>
-    public virtual bool TryRemoveVariableInfo(string formalName) {
-      IVariableInfo variableInfo;
-      if (myVariableInfos.TryGetValue(formalName, out variableInfo)) {
-        myVariableInfos.Remove(formalName);
-        if (IsValid()) {
-          OnVariableInfoRemoved(variableInfo);
-          return true;
-        } else {
-          myVariableInfos.Add(formalName, variableInfo);
-          return false;
-        }
-      }
-      return true;
-    }
-    /// <inheritdoc/>
-    /// <remarks>Calls <see cref="OnVariableInfoRemoved"/>.</remarks>
-    public virtual bool TryRemoveVariableInfo(string formalName, out ICollection<IConstraint> violatedConstraints) {
-      IVariableInfo variableInfo;
-      if (myVariableInfos.TryGetValue(formalName, out variableInfo)) {
-        myVariableInfos.Remove(formalName);
-        if (IsValid(out violatedConstraints)) {
-          OnVariableInfoRemoved(variableInfo);
-          return true;
-        } else {
-          myVariableInfos.Add(formalName, variableInfo);
-          return false;
-        }
-      }
-      violatedConstraints = new List<IConstraint>();
-      return true;
     }
     #endregion
 
@@ -351,36 +214,6 @@ namespace HeuristicLab.Core {
       OnVariableAdded(variable);
     }
     /// <inheritdoc/>
-    /// <remarks>Calls <see cref="OnVariableAdded"/> and adds <c>NameChanging</c> and <c>NameChanged</c>
-    /// event handlers.</remarks>
-    public virtual bool TryAddVariable(IVariable variable) {
-      myVariables.Add(variable.Name, variable);
-      if (IsValid()) {
-        variable.NameChanging += new EventHandler<CancelEventArgs<string>>(Variable_NameChanging);
-        variable.NameChanged += new EventHandler(Variable_NameChanged);
-        OnVariableAdded(variable);
-        return true;
-      } else {
-        myVariableInfos.Remove(variable.Name);
-        return false;
-      }
-    }
-    /// <inheritdoc/>
-    /// <remarks>Calls <see cref="OnVariableAdded"/> and adds <c>NameChanging</c> and <c>NameChanged</c>
-    /// event handlers.</remarks>
-    public virtual bool TryAddVariable(IVariable variable, out ICollection<IConstraint> violatedConstraints) {
-      myVariables.Add(variable.Name, variable);
-      if (IsValid(out violatedConstraints)) {
-        variable.NameChanging += new EventHandler<CancelEventArgs<string>>(Variable_NameChanging);
-        variable.NameChanged += new EventHandler(Variable_NameChanged);
-        OnVariableAdded(variable);
-        return true;
-      } else {
-        myVariableInfos.Remove(variable.Name);
-        return false;
-      }
-    }
-    /// <inheritdoc/>
     /// <remarks>Calls <see cref="OnVariableRemoved"/> and removes <c>NameChanging</c> and <c>NameChanged</c>
     /// event handlers.</remarks>
     public virtual void RemoveVariable(string name) {
@@ -391,45 +224,6 @@ namespace HeuristicLab.Core {
         myVariables.Remove(name);
         OnVariableRemoved(variable);
       }
-    }
-    /// <inheritdoc/>
-    /// <remarks>Calls <see cref="OnVariableRemoved"/> and removes <c>NameChanging</c> and <c>NameChanged</c>
-    /// event handlers.</remarks>
-    public virtual bool TryRemoveVariable(string name) {
-      IVariable variable;
-      if (myVariables.TryGetValue(name, out variable)) {
-        myVariables.Remove(name);
-        if (IsValid()) {
-          variable.NameChanging -= new EventHandler<CancelEventArgs<string>>(Variable_NameChanging);
-          variable.NameChanged -= new EventHandler(Variable_NameChanged);
-          OnVariableRemoved(variable);
-          return true;
-        } else {
-          myVariables.Add(name, variable);
-          return false;
-        }
-      }
-      return true;
-    }
-    /// <inheritdoc/>
-    /// <remarks>Calls <see cref="OnVariableRemoved"/> and removes <c>NameChanging</c> and <c>NameChanged</c>
-    /// event handlers.</remarks>
-    public virtual bool TryRemoveVariable(string name, out ICollection<IConstraint> violatedConstraints) {
-      IVariable variable;
-      if (myVariables.TryGetValue(name, out variable)) {
-        myVariables.Remove(name);
-        if (IsValid(out violatedConstraints)) {
-          variable.NameChanging -= new EventHandler<CancelEventArgs<string>>(Variable_NameChanging);
-          variable.NameChanged -= new EventHandler(Variable_NameChanged);
-          OnVariableRemoved(variable);
-          return true;
-        } else {
-          myVariables.Add(name, variable);
-          return false;
-        }
-      }
-      violatedConstraints = new List<IConstraint>();
-      return true;
     }
     private void Variable_NameChanging(object sender, CancelEventArgs<string> e) {
       e.Cancel = myVariables.ContainsKey(e.Value);

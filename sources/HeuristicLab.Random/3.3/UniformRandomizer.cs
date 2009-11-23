@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Constraints;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Random {
@@ -104,12 +103,8 @@ namespace HeuristicLab.Random {
       // a bit awkward but necessary until we create a better type hierarchy for numeric types (gkronber 15.11.2008).
       if (value is DoubleData)
         RandomizeUniform((DoubleData)value, mt, min, max);
-      else if (value is ConstrainedDoubleData)
-        RandomizeUniform((ConstrainedDoubleData)value, mt, min, max);
       else if (value is IntData)
         RandomizeUniform((IntData)value, mt, min, max);
-      else if (value is ConstrainedIntData)
-        RandomizeUniform((ConstrainedIntData)value, mt, min, max);
       else throw new ArgumentException("Can't handle type " + value.GetType().Name);
     }
 
@@ -135,57 +130,6 @@ namespace HeuristicLab.Random {
       /// has to lie.</param>
       public void RandomizeUniform(IntData data, MersenneTwister mt, double min, double max) {
         data.Data = (int)Math.Floor(mt.NextDouble() * (max - min) + min);
-      }
-
-      /// <summary>
-      /// Generates a new double random number, being restricted to some constraints.
-      /// </summary>
-      /// <exception cref="InvalidOperationException">Thrown when no valid value could be found.</exception>
-      /// <param name="data">The double object which the new value is assigned to and whose constraints
-      /// must be fulfilled.</param>
-      /// <param name="mt">The random number generator.</param>
-      /// <param name="min">The left border of the interval in which the next random number has to lie.</param>
-      /// <param name="max">The right border (exclusive) of the interval in which the next random number
-      /// has to lie.</param>
-      public void RandomizeUniform(ConstrainedDoubleData data, MersenneTwister mt, double min, double max) {
-        for(int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
-          double r = mt.NextDouble() * (max - min) + min;
-          if(IsIntegerConstrained(data)) {
-            r = Math.Floor(r);
-          }
-          if(data.TrySetData(r)) {
-            return;
-          }
-        }
-        throw new InvalidOperationException("Couldn't find a valid value");
-      }
-      /// <summary>
-      /// Generates a new int random number, being restricted to some constraints.
-      /// </summary>
-      /// <exception cref="InvalidOperationException">Thrown when no valid value could be found.</exception>
-      /// <param name="data">The int object which the new value is assigned to and whose constraints
-      /// must be fulfilled.</param>
-      /// <param name="mt">The random number generator.</param>
-      /// <param name="min">The left border of the interval in which the next random number has to lie.</param>
-      /// <param name="max">The right border (exclusive) of the interval in which the next random number
-      /// has to lie.</param>
-      public void RandomizeUniform(ConstrainedIntData data, MersenneTwister mt, double min, double max) {
-        for(int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
-          int r = (int)Math.Floor(mt.NextDouble() * (max - min) + min);
-          if(data.TrySetData(r)) {
-            return;
-          }
-        }
-        throw new InvalidOperationException("Couldn't find a valid value");
-      }
-
-      private bool IsIntegerConstrained(ConstrainedDoubleData data) {
-        foreach(IConstraint constraint in data.Constraints) {
-          if(constraint is IsIntegerConstraint) {
-            return true;
-          }
-        }
-        return false;
       }
     }
 }
