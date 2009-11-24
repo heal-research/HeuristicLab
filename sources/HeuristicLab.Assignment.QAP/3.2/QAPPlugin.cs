@@ -30,6 +30,8 @@ namespace HeuristicLab.Assignment.QAP {
   [Dependency(Dependency = "HeuristicLab.Core-3.2")]
   [Dependency(Dependency = "HeuristicLab.Data-3.2")]
   [Dependency(Dependency = "HeuristicLab.Operators-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Charting-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Permutation-3.2")]
   public class QAPPlugin : PluginBase {
   }
 }
