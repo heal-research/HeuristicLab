@@ -96,7 +96,14 @@ namespace HeuristicLab.CEDMA.Server {
     protected void StoreResults(HeuristicLab.Modeling.IAlgorithm finishedAlgorithm) {
       CalculatedJobs++;
       databaseService.Connect();
-      databaseService.Persist(finishedAlgorithm);
+      if (databaseService.GetDataset() == null) {
+        databaseService.PersistProblem(finishedAlgorithm.Dataset);
+        databaseService.Commit();
+        databaseService.Disconnect();
+        databaseService.Connect();
+      }
+      databaseService.Persist(finishedAlgorithm.Model,finishedAlgorithm.Name, finishedAlgorithm.Description);
+      databaseService.Commit();
       databaseService.Disconnect();
       StoredJobs++;
       OnChanged();

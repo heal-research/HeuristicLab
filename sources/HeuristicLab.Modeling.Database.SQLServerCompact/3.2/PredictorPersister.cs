@@ -37,12 +37,15 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
       DatabaseService db = new DatabaseService(database);
       db.Connect();
       Dataset temp = db.GetDataset();
-      if(temp == null)      
-        db.PersistProblem(ds);      
+      if (temp == null) {
+        db.PersistProblem(ds);
+        db.Commit();
+      }
 
       IAnalyzerModel model = new AnalyzerModel();                 
       DefaultModelAnalyzerOperators.PopulateAnalyzerModel(scope, model, modelType);
       db.Persist(model, algorithm, algorithm);
+      db.Commit();
       db.Disconnect();
       
 

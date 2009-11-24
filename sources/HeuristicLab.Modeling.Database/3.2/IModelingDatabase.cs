@@ -29,6 +29,7 @@ namespace HeuristicLab.Modeling.Database {
   public interface IModelingDatabase {
     bool ReadOnly { get; set; }
     void Connect();
+    void Commit();
     void EmptyDatabase();
     void Disconnect();
 
@@ -40,12 +41,11 @@ namespace HeuristicLab.Modeling.Database {
     IEnumerable<IMetaData> GetAllMetaData();
     IEnumerable<IAlgorithm> GetAllAlgorithms();
 
-    IModel Persist(HeuristicLab.Modeling.IAlgorithm algorithm);
-    IModel Persist(HeuristicLab.Modeling.IAnalyzerModel model, string algorithmName, string algorithmDescription);
+    void Persist(HeuristicLab.Modeling.IAnalyzerModel model, string algorithmName, string algorithmDescription);
 
     IModel CreateModel(string modelName, ModelType modelType, IAlgorithm algorithm, IVariable targetVariable,
       int trainingSamplesStart, int trainingSamplesEnd, int validationSamplesStart, int validationSamplesEnd, int testSamplesStart, int testSamplesEnd);
-    IModel CreateModel(int id,string modelName, ModelType modelType, IAlgorithm algorithm, IVariable targetVariable,
+    IModel CreateModel(int id, string modelName, ModelType modelType, IAlgorithm algorithm, IVariable targetVariable,
     int trainingSamplesStart, int trainingSamplesEnd, int validationSamplesStart, int validationSamplesEnd, int testSamplesStart, int testSamplesEnd);
     void PersistModel(IModel model);
     void DeleteModel(IModel model);

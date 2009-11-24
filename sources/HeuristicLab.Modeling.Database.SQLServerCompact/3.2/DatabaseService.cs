@@ -86,8 +86,9 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
       dlo.LoadWith<Model>(m => m.TargetVariable);
       dlo.LoadWith<Model>(m => m.Algorithm);
       ctx.LoadOptions = dlo;
+      //ctx.Log = System.Console.Out;
 
-      if (!ctx.DatabaseExists())
+      if (!ctx.DatabaseExists() && !this.ReadOnly)
         ctx.CreateDatabase();
     }
 
@@ -99,32 +100,55 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
       ctx = null;
     }
 
+    public void Commit() {
+      if (ctx != null)
+        ctx.SubmitChanges();
+    }
+
+    private void CheckConnection() {
+      CheckConnection(false);
+    }
+
+    private void CheckConnection(bool writeEnabled) {
+      if (ctx == null)
+        throw new InvalidOperationException("Could not perform operation, when not connected to the database.");
+      if (writeEnabled && this.ReadOnly)
+        throw new InvalidOperationException("Could not perform update operation, when database is in readonly mode.");
+    }
+
     public IEnumerable<IModel> GetAllModels() {
+      this.CheckConnection();
       return ctx.Models.ToList().Cast<IModel>();
     }
 
     public IEnumerable<int> GetAllModelIds() {
+      this.CheckConnection();
       return from m in ctx.Models
              select m.Id;
     }
 
     public IEnumerable<IVariable> GetAllVariables() {
+      this.CheckConnection();
       return ctx.Variables.ToList().Cast<IVariable>();
     }
 
     public IEnumerable<IResult> GetAllResults() {
+      this.CheckConnection();
       return ctx.Results.ToList().Cast<IResult>();
     }
 
     public IEnumerable<IResult> GetAllResultsForInputVariables() {
+      this.CheckConnection();
       return (from ir in ctx.InputVariableResults select ir.Result).Distinct().ToList().Cast<IResult>();
     }
 
     public IEnumerable<IMetaData> GetAllMetaData() {
+      this.CheckConnection();
       return ctx.MetaData.ToList().Cast<IMetaData>();
     }
 
     public IEnumerable<IAlgorithm> GetAllAlgorithms() {
+      this.CheckConnection();
       return ctx.Algorithms.ToList().Cast<IAlgorithm>();
     }
 
@@ -152,6 +176,7 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
     }
 
     public IModel GetModel(int id) {
+      this.CheckConnection();
       var model = ctx.Models.Where(m => m.Id == id);
       if (model.Count() == 1)
         return model.Single();
@@ -159,6 +184,7 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
     }
 
     public void PersistModel(IModel model) {
+      this.CheckConnection(true);
       Model m = (Model)model;
       //check if model has to be updated or inserted
       if (ctx.Models.Any(x => x.Id == model.Id)) {
@@ -168,10 +194,10 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
         ctx.Refresh(RefreshMode.KeepCurrentValues, m);
       } else
         ctx.Models.InsertOnSubmit(m);
-      ctx.SubmitChanges();
     }
 
     public void DeleteModel(IModel model) {
+      this.CheckConnection(true);
       Model m = (Model)model;
       ctx.ModelData.DeleteAllOnSubmit(ctx.ModelData.Where(x => x.Model == m));
       ctx.ModelMetaData.DeleteAllOnSubmit(ctx.ModelMetaData.Where(x => x.Model == m));
@@ -186,6 +212,7 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
     }
 
     public Dataset GetDataset() {
+      this.CheckConnection();
       if (ctx.Problems.Count() > 1)
         throw new InvalidOperationException("Could not get dataset. More than one problems are persisted in the database.");
       if (ctx.Problems.Count() == 1)
@@ -194,6 +221,7 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
     }
 
     public void PersistProblem(Dataset dataset) {
+      this.CheckConnection(true);
       Problem problem;
       if (ctx.Problems.Count() != 0)
         throw new InvalidOperationException("Could not persist dataset. A dataset is already saved in the database.");
@@ -202,10 +230,10 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
       foreach (string variable in dataset.VariableNames) {
         ctx.Variables.InsertOnSubmit(new Variable(variable));
       }
-      ctx.SubmitChanges();
     }
 
     public IVariable GetVariable(string variableName) {
+      this.CheckConnection();
       var variables = ctx.Variables.Where(v => v.Name == variableName);
       if (variables.Count() != 1)
         throw new ArgumentException("Zero or more than one variable with the name " + variableName + " are persisted in the database.");
@@ -213,6 +241,7 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
     }
 
     public IPredictor GetModelPredictor(IModel model) {
+      this.CheckConnection();
       var data = (from md in ctx.ModelData
                   where md.Model == model
                   select md);
@@ -222,6 +251,7 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
     }
 
     public void PersistPredictor(IModel model, IPredictor predictor) {
+      this.CheckConnection(true);
       Model m = (Model)model;
       ctx.ModelData.DeleteAllOnSubmit(ctx.ModelData.Where(x => x.Model == m));
       ctx.ModelResults.DeleteAllOnSubmit(ctx.ModelResults.Where(x => x.Model == m));
@@ -231,11 +261,10 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
       ctx.ModelData.InsertOnSubmit(new ModelData(m, PersistenceManager.SaveToGZip(predictor)));
       foreach (string variableName in predictor.GetInputVariables())
         ctx.InputVariables.InsertOnSubmit(new InputVariable(m, (Variable)GetVariable(variableName)));
-
-      ctx.SubmitChanges();
     }
 
     public IInputVariable GetInputVariable(IModel model, string inputVariableName) {
+      this.CheckConnection();
       var inputVariables = ctx.InputVariables.Where(i => i.Model == model && i.Variable.Name == inputVariableName);
       if (inputVariables.Count() == 1)
         return inputVariables.Single();
@@ -247,10 +276,12 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
     }
 
     public IAlgorithm GetOrPersistAlgorithm(string algorithmName) {
+      this.CheckConnection();
       Algorithm algorithm;
       var algorithms = ctx.Algorithms.Where(algo => algo.Name == algorithmName);
       if (algorithms.Count() == 0) {
         algorithm = new Algorithm(algorithmName, "");
+        this.CheckConnection(true);
         ctx.Algorithms.InsertOnSubmit(algorithm);
         ctx.SubmitChanges();
       } else if (algorithms.Count() == 1)
@@ -261,9 +292,11 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
     }
 
     public IResult GetOrPersistResult(string resultName) {
+      this.CheckConnection();
       Result result;
       var results = ctx.Results.Where(r => r.Name == resultName);
       if (results.Count() == 0) {
+        this.CheckConnection(true);
         result = new Result(resultName);
         ctx.Results.InsertOnSubmit(result);
         ctx.SubmitChanges();
@@ -275,9 +308,11 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
     }
 
     public IMetaData GetOrPersistMetaData(string metaDataName) {
+      this.CheckConnection();
       MetaData metadata;
       var md = ctx.MetaData.Where(r => r.Name == metaDataName);
       if (md.Count() == 0) {
+        this.CheckConnection(true);
         metadata = new MetaData(metaDataName);
         ctx.MetaData.InsertOnSubmit(metadata);
         ctx.SubmitChanges();
@@ -289,12 +324,15 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
     }
 
     public IEnumerable<IModelResult> GetModelResults(IModel model) {
+      this.CheckConnection();
       return ctx.ModelResults.Where(mr => mr.Model == model).Cast<IModelResult>();
     }
     public IEnumerable<IInputVariableResult> GetInputVariableResults(IModel model) {
+      this.CheckConnection();
       return ctx.InputVariableResults.Where(ivr => ivr.Model == model).Cast<IInputVariableResult>();
     }
     public IEnumerable<IModelMetaData> GetModelMetaData(IModel model) {
+      this.CheckConnection();
       return ctx.ModelMetaData.Where(md => md.Model == model).Cast<IModelMetaData>();
     }
 
@@ -305,9 +343,9 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
     }
 
     public void PersistModelResults(IModel model, IEnumerable<IModelResult> modelResults) {
+      this.CheckConnection(true);
       ctx.ModelResults.DeleteAllOnSubmit(GetModelResults(model).Cast<ModelResult>());
       ctx.ModelResults.InsertAllOnSubmit(modelResults.Cast<ModelResult>());
-      ctx.SubmitChanges();
     }
 
     public IInputVariable CreateInputVariable(IModel model, IVariable variable) {
@@ -322,9 +360,9 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
     }
 
     public void PersistInputVariableResults(IModel model, IEnumerable<IInputVariableResult> inputVariableResults) {
+      this.CheckConnection(true);
       ctx.InputVariableResults.DeleteAllOnSubmit(GetInputVariableResults(model).Cast<InputVariableResult>());
       ctx.InputVariableResults.InsertAllOnSubmit(inputVariableResults.Cast<InputVariableResult>());
-      ctx.SubmitChanges();
     }
 
     public IModelMetaData CreateModelMetaData(IModel model, IMetaData metadata, double value) {
@@ -334,25 +372,20 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
     }
 
     public void PersistModelMetaData(IModel model, IEnumerable<IModelMetaData> modelMetaData) {
+      this.CheckConnection(true);
       ctx.ModelMetaData.DeleteAllOnSubmit(GetModelMetaData(model).Cast<ModelMetaData>());
       ctx.ModelMetaData.InsertAllOnSubmit(modelMetaData.Cast<ModelMetaData>());
-      ctx.SubmitChanges();
     }
 
-    public IModel Persist(HeuristicLab.Modeling.IAlgorithm algorithm) {
-      if (ctx.Problems.Count() == 0)
-        PersistProblem(algorithm.Dataset);
-      return Persist(algorithm.Model, algorithm.Name, algorithm.Description);
-    }
-
-    public IModel Persist(HeuristicLab.Modeling.IAnalyzerModel model, string algorithmName, string algorithmDescription) {
+    public void Persist(HeuristicLab.Modeling.IAnalyzerModel model, string algorithmName, string algorithmDescription) {
+      this.CheckConnection(true);
       Algorithm algorithm = (Algorithm)GetOrPersistAlgorithm(algorithmName);
-      Variable targetVariable = (Variable) GetVariable(model.TargetVariable);
+      Variable targetVariable = (Variable)GetVariable(model.TargetVariable);
       Model m = (Model)CreateModel(null, model.Type, algorithm, targetVariable, model.TrainingSamplesStart, model.TrainingSamplesEnd,
         model.ValidationSamplesStart, model.ValidationSamplesEnd, model.TestSamplesStart, model.TestSamplesEnd);
       ctx.Models.InsertOnSubmit(m);
       ctx.SubmitChanges();
-      ctx.ModelData.InsertOnSubmit(new ModelData(m, PersistenceManager.SaveToGZip(model.Predictor)));
+      ctx.ModelData.InsertOnSubmit(new ModelData(m, PersistenceManager.SaveToGZip(model.Predictor)));      
 
       foreach (string variableName in model.Predictor.GetInputVariables())
         ctx.InputVariables.InsertOnSubmit(new InputVariable(m, (Variable)GetVariable(variableName)));
@@ -373,12 +406,7 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
           ctx.InputVariableResults.InsertOnSubmit(new InputVariableResult(variable, result, variableResult.Value));
         }
       }
-      ctx.SubmitChanges();
-
-      //if connected to database return inserted model
-      if (this.ctx != null)
-        return this.ctx.Models.Where(x => x.Id == m.Id).Single();
-      return null;
+     ctx.SubmitChanges();
     }
   }
 }
