@@ -50,16 +50,19 @@ namespace HeuristicLab.MainForm.WindowsForms {
     public event EventHandler CaptionChanged;
     protected virtual void OnCaptionChanged() {
       if (CaptionChanged != null)
-        CaptionChanged(this, new EventArgs());      
+        CaptionChanged(this, new EventArgs());
     }
 
     public event EventHandler Changed;
     protected virtual void OnChanged() {
       if (Changed != null)
-        Changed(this, new EventArgs());    
+        Changed(this, new EventArgs());
     }
 
-    public virtual void OnClosing(object sender, CancelEventArgs e) {
+    public virtual void OnClosing(object sender, CancelEventArgs e) {     
+    }
+
+    public virtual void OnClosing(object sender, FormClosingEventArgs e) {
     }
 
     public virtual void OnClosed(object sender, EventArgs e) {

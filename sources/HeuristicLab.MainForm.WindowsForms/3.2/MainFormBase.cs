@@ -142,10 +142,11 @@ namespace HeuristicLab.MainForm.WindowsForms {
           form.Activated += new EventHandler(FormActivated);
           form.GotFocus += new EventHandler(FormActivated);
           form.FormClosing += new FormClosingEventHandler(view.OnClosing);
+          form.FormClosing += new FormClosingEventHandler(((ViewBase)view).OnClosing);
           form.FormClosed += new FormClosedEventHandler(view.OnClosed);
           form.FormClosed += new FormClosedEventHandler(ChildFormClosed);
           foreach (IUserInterfaceItem item in UserInterfaceItems)
-            view.Changed += new EventHandler(item.ViewChanged);
+            view.Changed += new EventHandler(item.ViewChanged);          
           return true;
         } else
           return false;
@@ -182,6 +183,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       form.Activated -= new EventHandler(FormActivated);
       form.GotFocus -= new EventHandler(FormActivated);
       form.FormClosing -= new FormClosingEventHandler(view.OnClosing);
+      form.FormClosing -= new FormClosingEventHandler(((ViewBase)view).OnClosing);
       form.FormClosed -= new FormClosedEventHandler(view.OnClosed);
       form.FormClosed -= new FormClosedEventHandler(ChildFormClosed);
       foreach (IUserInterfaceItem item in UserInterfaceItems)
