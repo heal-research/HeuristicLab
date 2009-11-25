@@ -108,8 +108,15 @@ namespace HeuristicLab.Operators.Programmable {
       parameters.GenerateInMemory = true;
       parameters.IncludeDebugInformation = false;
       Assembly[] loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
-      foreach (Assembly loadedAssembly in loadedAssemblies)
-        parameters.ReferencedAssemblies.Add(loadedAssembly.Location);
+      foreach (Assembly loadedAssembly in loadedAssemblies) {
+        try {
+          parameters.ReferencedAssemblies.Add(loadedAssembly.Location);
+        }
+        catch (NotSupportedException) {
+          //NotSupportedException is thrown while accessing the Location property of the anonymously hosted dynamic methods assembly,
+          //which is related to LINQ queries
+        }
+      }
       parameters.ReferencedAssemblies.Add(typeof(Enumerable).Assembly.Location); // add reference to version 3.5 of System.dll
       parameters.ReferencedAssemblies.Add(typeof(DataContext).Assembly.Location); // add reference System.Data.Linq.Dll
       CodeDomProvider provider = new CSharpCodeProvider(new Dictionary<string, string>() { { "CompilerVersion", "v3.5" } });  // support C# 3.0 syntax
