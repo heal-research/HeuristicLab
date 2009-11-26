@@ -162,9 +162,6 @@ namespace HeuristicLab.DataAnalysis {
     public static double Median(double[] values) {
       if (values.Length == 0) throw new InvalidOperationException();
       int n = values.Length;
-      if (n == 0)
-        return 0;
-
       double[] sortedValues = new double[n];
 
       Array.Copy(values, sortedValues, n);
@@ -174,7 +171,7 @@ namespace HeuristicLab.DataAnalysis {
       if (n % 2 == 1) {
         return sortedValues[n / 2];
       } else {
-        return (sortedValues[n / 2] + sortedValues[n / 2 + 1]) / 2.0;
+        return (sortedValues[(n / 2)-1] + sortedValues[n / 2 ]) / 2.0;
       }
     }
 
