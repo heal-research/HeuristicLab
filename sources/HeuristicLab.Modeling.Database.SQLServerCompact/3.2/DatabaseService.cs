@@ -389,6 +389,7 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
 
       foreach (string variableName in model.Predictor.GetInputVariables())
         ctx.InputVariables.InsertOnSubmit(new InputVariable(m, (Variable)GetVariable(variableName)));
+      ctx.SubmitChanges();
 
       foreach (KeyValuePair<string, double> pair in model.MetaData) {
         MetaData metaData = (MetaData)GetOrPersistMetaData(pair.Key);
