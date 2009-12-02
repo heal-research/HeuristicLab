@@ -31,19 +31,22 @@ using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public class Predictor : PredictorBase {
-    private ITreeEvaluator treeEvaluator;
-
-    private IGeneticProgrammingModel functionTree;
-    public IGeneticProgrammingModel FunctionTree {
-      get { return functionTree; }
-      set { this.functionTree = value; }
-    }
-
     public Predictor() : base() { } // for persistence
     public Predictor(ITreeEvaluator evaluator, IGeneticProgrammingModel tree, double lowerPredictionLimit, double upperPredictionLimit)
       : base(lowerPredictionLimit, upperPredictionLimit) {
       this.treeEvaluator = evaluator;
       this.functionTree = tree;
+    }
+
+    private ITreeEvaluator treeEvaluator;
+    public ITreeEvaluator TreeEvaluator {
+      get { return (ITreeEvaluator) this.treeEvaluator.Clone(); }
+    }
+
+    private IGeneticProgrammingModel functionTree;
+    public IGeneticProgrammingModel FunctionTree {
+      get { return functionTree; }
+      set { this.functionTree = value; }
     }
 
     public override double[] Predict(Dataset input, int start, int end) {
