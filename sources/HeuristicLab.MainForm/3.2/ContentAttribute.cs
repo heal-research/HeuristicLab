@@ -43,7 +43,7 @@ namespace HeuristicLab.MainForm {
     }
 
     public static bool HasContentAttribute(Type viewType) {
-      ContentAttribute[] attributes = (ContentAttribute[])viewType.GetCustomAttributes(typeof(ContentAttribute), true);
+      ContentAttribute[] attributes = (ContentAttribute[])viewType.GetCustomAttributes(typeof(ContentAttribute), false);
       return attributes.Length != 0;
     }
 
@@ -52,13 +52,19 @@ namespace HeuristicLab.MainForm {
       return attributes.Any(a => a.type.IsAssignableFrom(content));
     }
 
+    public static IEnumerable<Type> GetViewableTypes(Type viewType) {
+      ContentAttribute[] attributes = (ContentAttribute[])viewType.GetCustomAttributes(typeof(ContentAttribute), false);
+      return from a in attributes
+             select a.type;
+    }
+
     public static bool IsDefaultViewForType(Type viewType, Type content) {
       ContentAttribute[] attributes = (ContentAttribute[])viewType.GetCustomAttributes(typeof(ContentAttribute), false);
       return attributes.Any(a => a.isDefaultView && a.type == content);
     }
 
     public static IEnumerable<Type> GetDefaultViewableTypes(Type viewType) {
-      ContentAttribute[] attributes = (ContentAttribute[])viewType.GetCustomAttributes(typeof(ContentAttribute), true);
+      ContentAttribute[] attributes = (ContentAttribute[])viewType.GetCustomAttributes(typeof(ContentAttribute), false);
       return from a in attributes
              where a.isDefaultView
              select a.type;
