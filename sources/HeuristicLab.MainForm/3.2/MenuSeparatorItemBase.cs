@@ -36,5 +36,9 @@ namespace HeuristicLab.MainForm {
     public void MainFormChanged(object sender, EventArgs e) {
       throw new NotImplementedException();
     }
+
+    public void MainFormInitialized(object sender, EventArgs e) {
+      throw new NotImplementedException();
+    }
   }
 }

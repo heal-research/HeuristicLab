@@ -68,12 +68,12 @@ namespace HeuristicLab.MainForm.WindowsForms {
     public virtual void OnClosed(object sender, EventArgs e) {
     }
 
-    public event EventHandler Initialize;
+    public event EventHandler Initialized;
 
     private void ViewBase_Load(object sender, EventArgs e) {
       if (!this.initialized && !this.DesignMode) {
-        if (this.Initialize != null)
-          this.Initialize(this, new EventArgs());
+        if (this.Initialized != null)
+          this.Initialized(this, new EventArgs());
         this.initialized = true;
       }
     }

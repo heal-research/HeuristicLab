@@ -32,24 +32,34 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.MainForm.WindowsForms {
   public partial class MainFormBase : Form, IMainForm {
+
+    private bool initialized;
     protected MainFormBase()
       : base() {
       InitializeComponent();
       this.views = new Dictionary<IView, Form>();
       this.userInterfaceItems = new List<IUserInterfaceItem>();
+      this.initialized = false;
     }
 
     protected MainFormBase(Type userInterfaceItemType)
       : this() {
       this.userInterfaceItemType = userInterfaceItemType;
       CreateGUI();
-      OnMainFormChanged();
     }
 
     private void MainFormBase_Load(object sender, EventArgs e) {
-      if (!DesignMode)
+      if (!DesignMode) {
         MainFormManager.RegisterMainForm(this);
+        if (!this.initialized) {
+          this.initialized = true;
+          if (this.Initialized != null)
+            this.Initialized(this,new EventArgs());
+        }
+      }
     }
+
+    public event EventHandler Initialized;
 
     #region IMainForm Members
     public string Title {
@@ -238,7 +248,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       } else if (menuItem is MenuSeparatorItemBase) {
         this.InsertItem(menuItem.Structure, typeof(ToolStripMenuItem), new ToolStripSeparator(), menuStrip.Items);
       }
-     }
+    }
 
     private void AddToolStripButtonItem(IToolBarItem buttonItem) {
       ToolStripItem item = null;
@@ -252,9 +262,9 @@ namespace HeuristicLab.MainForm.WindowsForms {
         SetToolStripItemProperties(item, buttonItem);
         item.DisplayStyle = ((ToolBarItemBase)buttonItem).ToolStripItemDisplayStyle;
         ((ToolBarItemBase)buttonItem).ToolStripItem = item;
-      } else if (buttonItem is IToolBarSeparatorItem) 
+      } else if (buttonItem is IToolBarSeparatorItem)
         item = new ToolStripSeparator();
-      
+
       this.InsertItem(buttonItem.Structure, typeof(ToolStripDropDownButton), item, toolStrip.Items);
     }
 
@@ -280,6 +290,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       toolStripItem.Image = userInterfaceItem.Image;
       this.ActiveViewChanged += new EventHandler(userInterfaceItem.ActiveViewChanged);
       this.Changed += new EventHandler(userInterfaceItem.MainFormChanged);
+      this.Initialized += new EventHandler(userInterfaceItem.MainFormInitialized);
       toolStripItem.Click += new EventHandler(ToolStripItemClicked);
       this.userInterfaceItems.Add(userInterfaceItem);
     }

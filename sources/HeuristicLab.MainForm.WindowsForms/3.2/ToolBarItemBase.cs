@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-                                                            
+
 namespace HeuristicLab.MainForm.WindowsForms {
   public abstract class ToolBarItemBase : HeuristicLab.MainForm.ToolBarItemBase {
     private ToolStripItem toolStripItem;
