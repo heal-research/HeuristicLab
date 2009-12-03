@@ -70,33 +70,23 @@ namespace HeuristicLab.LinearRegression {
 
     private IFunctionTree CreateModel(double[] coefficients, List<string> allowedVariables, int minTimeOffset, int maxTimeOffset) {
       IFunctionTree root = new Addition().GetTreeNode();
-      IFunctionTree actNode = root;
+
       int timeOffsetRange = (maxTimeOffset - minTimeOffset + 1);
 
-      Queue<IFunctionTree> nodes = new Queue<IFunctionTree>();
       for (int i = 0; i < allowedVariables.Count; i++) {
         for (int timeOffset = minTimeOffset; timeOffset <= maxTimeOffset; timeOffset++) {
           var vNode = (VariableFunctionTree)new GP.StructureIdentification.Variable().GetTreeNode();
           vNode.VariableName = allowedVariables[i];
           vNode.Weight = coefficients[(i * timeOffsetRange) + (timeOffset - minTimeOffset)];
           vNode.SampleOffset = timeOffset;
-          nodes.Enqueue(vNode);
+          root.AddSubTree(vNode);
         }
       }
       var cNode = (ConstantFunctionTree)new Constant().GetTreeNode();
 
       cNode.Value = coefficients[coefficients.Length - 1];
-      nodes.Enqueue(cNode);
-
-      IFunctionTree newTree;
-      while (nodes.Count != 1) {
-        newTree = new Addition().GetTreeNode();
-        newTree.AddSubTree(nodes.Dequeue());
-        newTree.AddSubTree(nodes.Dequeue());
-        nodes.Enqueue(newTree);
-      }
-
-      return nodes.Dequeue();
+      root.AddSubTree(cNode);
+      return root;
     }
 
     private double[] CalculateCoefficients(double[,] inputMatrix, double[] targetVector) {
@@ -107,18 +97,18 @@ namespace HeuristicLab.LinearRegression {
       int p = inputMatrix.GetLength(1);
       double[,] dataset = new double[n, p];
       for (int row = 0; row < n; row++) {
-        for (int column = 0; column < p-1; column++) {
+        for (int column = 0; column < p - 1; column++) {
           dataset[row, column] = inputMatrix[row, column];
         }
-        dataset[row, p-1] = targetVector[row];
+        dataset[row, p - 1] = targetVector[row];
       }
-      alglib.linreg.lrbuild(ref dataset, n, p-1, ref retVal, ref lm, ref ar);
+      alglib.linreg.lrbuild(ref dataset, n, p - 1, ref retVal, ref lm, ref ar);
       if (retVal != 1) throw new ArgumentException("Error in calculation of linear regression model");
       Console.Out.WriteLine("ALGLIB Linear Regression: Estimated generalization RMS = {0}", ar.cvrmserror);
 
       double[] coefficients = new double[p];
       for (int i = 0; i < p; i++) {
-        coefficients[i] = lm.w[i+4];
+        coefficients[i] = lm.w[i + 4];
       }
       return coefficients;
     }
