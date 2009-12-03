@@ -43,6 +43,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       : this() {
       this.userInterfaceItemType = userInterfaceItemType;
       CreateGUI();
+      OnMainFormChanged();
     }
 
     private void MainFormBase_Load(object sender, EventArgs e) {
@@ -146,7 +147,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
           form.FormClosed += new FormClosedEventHandler(view.OnClosed);
           form.FormClosed += new FormClosedEventHandler(ChildFormClosed);
           foreach (IUserInterfaceItem item in UserInterfaceItems)
-            view.Changed += new EventHandler(item.ViewChanged);          
+            view.Changed += new EventHandler(item.ViewChanged);
           return true;
         } else
           return false;
