@@ -54,7 +54,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
         if (!this.initialized) {
           this.initialized = true;
           if (this.Initialized != null)
-            this.Initialized(this,new EventArgs());
+            this.Initialized(this, new EventArgs());
         }
       }
     }
@@ -153,7 +153,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
           form.Activated += new EventHandler(FormActivated);
           form.GotFocus += new EventHandler(FormActivated);
           form.FormClosing += new FormClosingEventHandler(view.OnClosing);
-          form.FormClosing += new FormClosingEventHandler(((ViewBase)view).OnClosing);
+          form.FormClosing += new FormClosingEventHandler(((ViewBase)view).OnClosingHelper);
           form.FormClosed += new FormClosedEventHandler(view.OnClosed);
           form.FormClosed += new FormClosedEventHandler(ChildFormClosed);
           foreach (IUserInterfaceItem item in UserInterfaceItems)
@@ -175,8 +175,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
     public void CloseView(IView view) {
       if (InvokeRequired) Invoke((Action<IView>)CloseView, view);
       else {
-        if (views.ContainsKey(view))
+        if (views.ContainsKey(view)) {
+          ((ViewBase)view).closeReason = CloseReason.FormOwnerClosing;
           views[view].Close();
+        }
       }
     }
 
@@ -194,7 +196,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       form.Activated -= new EventHandler(FormActivated);
       form.GotFocus -= new EventHandler(FormActivated);
       form.FormClosing -= new FormClosingEventHandler(view.OnClosing);
-      form.FormClosing -= new FormClosingEventHandler(((ViewBase)view).OnClosing);
+      form.FormClosing -= new FormClosingEventHandler(((ViewBase)view).OnClosingHelper);
       form.FormClosed -= new FormClosedEventHandler(view.OnClosed);
       form.FormClosed -= new FormClosedEventHandler(ChildFormClosed);
       foreach (IUserInterfaceItem item in UserInterfaceItems)

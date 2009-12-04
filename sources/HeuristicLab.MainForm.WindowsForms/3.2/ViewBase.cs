@@ -34,6 +34,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     public ViewBase() {
       InitializeComponent();
       this.initialized = false;
+      this.closeReason = CloseReason.None;
     }
 
     private string myCaption;
@@ -62,7 +63,17 @@ namespace HeuristicLab.MainForm.WindowsForms {
     public virtual void OnClosing(object sender, CancelEventArgs e) {     
     }
 
-    public virtual void OnClosing(object sender, FormClosingEventArgs e) {
+    internal CloseReason closeReason;
+    internal void OnClosingHelper(object sender, FormClosingEventArgs e) {
+      if (this.closeReason != CloseReason.None)
+        this.OnClosing(sender, new FormClosingEventArgs(this.closeReason,e.Cancel));
+      else
+        this.OnClosing(sender, e);
+      
+      this.closeReason = CloseReason.None;
+    }
+
+    public virtual void OnClosing(object sender, FormClosingEventArgs e) {      
     }
 
     public virtual void OnClosed(object sender, EventArgs e) {
