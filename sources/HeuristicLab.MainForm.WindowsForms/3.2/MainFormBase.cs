@@ -175,8 +175,16 @@ namespace HeuristicLab.MainForm.WindowsForms {
     public void CloseView(IView view) {
       if (InvokeRequired) Invoke((Action<IView>)CloseView, view);
       else {
+        if (views.ContainsKey(view))
+          views[view].Close();
+      }
+    }
+
+    public void CloseView(IView view, CloseReason closeReason) {
+      if (InvokeRequired) Invoke((Action<IView>)CloseView, view);
+      else {
         if (views.ContainsKey(view)) {
-          ((ViewBase)view).closeReason = CloseReason.FormOwnerClosing;
+          ((ViewBase)view).closeReason = closeReason;
           views[view].Close();
         }
       }
@@ -185,6 +193,11 @@ namespace HeuristicLab.MainForm.WindowsForms {
     public virtual void CloseAllViews() {
       foreach (IView view in views.Keys.ToArray())
         CloseView(view);
+    }
+
+    public virtual void CloseAllViews(CloseReason closeReason) {
+      foreach (IView view in views.Keys.ToArray())
+        CloseView(view,closeReason);
     }
     #endregion
 
