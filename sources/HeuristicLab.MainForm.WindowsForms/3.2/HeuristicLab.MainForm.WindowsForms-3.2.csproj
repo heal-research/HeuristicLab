@@ -127,6 +127,12 @@
     <Compile Include="ViewBase.Designer.cs">
       <DependentUpon>ViewBase.cs</DependentUpon>
     </Compile>
+    <Compile Include="ViewContextMenuStrip.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ViewContextMenuStrip.Designer.cs">
+      <DependentUpon>ViewContextMenuStrip.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
@@ -166,6 +172,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SingleDocumentMainForm.resx">
       <DependentUpon>SingleDocumentMainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewContextMenuStrip.resx">
+      <DependentUpon>ViewContextMenuStrip.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
