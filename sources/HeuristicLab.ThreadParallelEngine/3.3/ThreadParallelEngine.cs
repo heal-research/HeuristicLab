@@ -31,6 +31,8 @@ namespace HeuristicLab.ThreadParallelEngine {
   /// <summary>
   /// Implementation of an engine being able to run in parallel with threads.
   /// </summary>
+  [Creatable("Engines")]
+  [Item("Parallel Engine", "Engine for parallel execution of algorithms using multiple threads.")]
   public class ThreadParallelEngine : EngineBase {
     #region Inner Class Task
     private class TaskList {

@@ -35,7 +35,7 @@ namespace HeuristicLab.Operators {
   /// The visual representation of a <see cref="CombinedOperator"/>.
   /// </summary>
   [Content(typeof(CombinedOperator), true)]
-  public partial class CombinedOperatorView : ViewBase {
+  public partial class CombinedOperatorView : ItemViewBase {
     /// <summary>
     /// Gets or sets the combined operator to display.
     /// </summary>

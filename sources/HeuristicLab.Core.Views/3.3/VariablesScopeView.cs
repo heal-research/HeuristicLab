@@ -34,7 +34,7 @@ namespace HeuristicLab.Core.Views {
   /// The visual representation of all variables in a specified scope.
   /// </summary>
   [Content(typeof(Scope))]
-  public partial class VariablesScopeView : ViewBase {
+  public partial class VariablesScopeView : ItemViewBase {
     private ChooseItemDialog chooseItemDialog;
 
     /// <summary>

@@ -35,7 +35,7 @@ namespace HeuristicLab.Data {
   /// The visual representation of the class <see cref="StringData"/>, symbolizing a string value.
   /// </summary>
   [Content(typeof(StringData), true)]
-  public partial class StringDataView : ViewBase {
+  public partial class StringDataView : ItemViewBase {
     /// <summary>
     /// Gets or sets the string value to represent visually.
     /// </summary>

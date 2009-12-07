@@ -4,33 +4,40 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
+using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Common.Resources;
+using HeuristicLab.Core;
+using HeuristicLab.Core.Views;
 
 namespace HeuristicLab.Optimizer.MenuItems {
-  public class SaveAsMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItemBase, IOptimizerUserInterfaceItemProvider {
+  internal class SaveAsMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItemBase, IOptimizerUserInterfaceItemProvider {
     public override string Name {
       get { return "Save &As..."; }
     }
-
     public override IEnumerable<string> Structure {
       get { return new string[] { "&File" }; }
     }
-
     public override int Position {
       get { return 1400; }
     }
-
     public override ToolStripItemDisplayStyle ToolStripItemDisplayStyle {
       get { return ToolStripItemDisplayStyle.ImageAndText; }
     }
-
     public override Keys ShortCutKeys {
       get { return Keys.Control | Keys.Shift | Keys.S; }
     }
 
+    public override void MainFormInitialized(object sender, EventArgs e) {
+      ToolStripItem.Enabled = false;
+    }
+    public override void ActiveViewChanged(object sender, EventArgs e) {
+      IItemView activeView = MainFormManager.MainForm.ActiveView as IItemView;
+      ToolStripItem.Enabled = ((activeView != null) && (CreatableAttribute.IsCreatable(activeView.Item.GetType())));
+    }
+
     public override void Execute() {
-      Actions.SaveAsAction.Execute();
+      FileManager.SaveAs();
     }
   }
 }

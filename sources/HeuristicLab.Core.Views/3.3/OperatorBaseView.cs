@@ -34,7 +34,7 @@ namespace HeuristicLab.Core.Views {
   /// variable info view,...).
   /// </summary>
   [Content(typeof(OperatorBase), true)]
-  public partial class OperatorBaseView : ViewBase {
+  public partial class OperatorBaseView : ItemViewBase {
     /// <summary>
     /// Gets or sets the operator to represent visually. 
     /// </summary>

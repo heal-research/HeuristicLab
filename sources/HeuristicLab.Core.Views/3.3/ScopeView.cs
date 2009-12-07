@@ -35,7 +35,7 @@ namespace HeuristicLab.Core.Views {
   /// The visual represenation of <see cref="IScope"/>.
   /// </summary>
   [Content(typeof(Scope), true)]
-  public partial class ScopeView : ViewBase {
+  public partial class ScopeView : ItemViewBase {
     private Dictionary<IScope, TreeNode> scopeNodeTable;
     private Dictionary<IScope, bool> scopeExpandedTable;
 
@@ -132,7 +132,7 @@ namespace HeuristicLab.Core.Views {
       // make sure that we can't get NullPointerExceptions
       if(scopesTreeView.SelectedNode != null && scopesTreeView.SelectedNode.Tag != null) {
         IScope scope = (IScope)scopesTreeView.SelectedNode.Tag;
-        PluginManager.ControlManager.ShowControl(new VariablesScopeView(scope));
+        MainFormManager.MainForm.ShowView(new VariablesScopeView(scope));
       }
     }
     private void scopesTreeView_BeforeExpand(object sender, TreeViewCancelEventArgs e) {
@@ -200,11 +200,12 @@ namespace HeuristicLab.Core.Views {
     }
     private void variablesToolStripMenuItem_Click(object sender, EventArgs e) {
       IScope scope = (IScope)scopesTreeView.SelectedNode.Tag;
-      PluginManager.ControlManager.ShowControl(new VariablesScopeView(scope));
+      MainFormManager.MainForm.ShowView(new VariablesScopeView(scope));
     }
     private void showViewToolStripMenuItem_Click(object sender, EventArgs e) {
       IItem item = (IItem)((ToolStripMenuItem)sender).Tag;
-      PluginManager.ControlManager.ShowControl((IControl)MainFormManager.CreateDefaultView(item));
+      IView view = MainFormManager.CreateDefaultView(item);
+      if (view != null) MainFormManager.MainForm.ShowView(view);
     }
     #endregion
 

@@ -35,7 +35,7 @@ namespace HeuristicLab.Data {
   /// The visual representation of the class <see cref="DoubleData"/>, symbolizing a double value.
   /// </summary>
   [Content(typeof(DoubleData), true)]
-  public partial class DoubleDataView : ViewBase {
+  public partial class DoubleDataView : ItemViewBase {
     /// <summary>
     /// Gets or sets the double value to represent visually.
     /// </summary>

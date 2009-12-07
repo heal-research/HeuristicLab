@@ -145,6 +145,9 @@
   <data name="FunctionIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\FunctionIcon.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="HeuristicLab" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\HeuristicLab.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="HeuristicLabIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\HeuristicLab.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -177,6 +180,15 @@
   </data>
   <data name="SaveIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\SaveIcon.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ShowDetails" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\ShowDetails.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ShowLargeIcons" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\ShowLargeIcons.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ShowSmallIcons" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\ShowSmallIcons.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="UndoIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\UndoIcon.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

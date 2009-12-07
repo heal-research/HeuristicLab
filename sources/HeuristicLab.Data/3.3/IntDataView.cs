@@ -35,7 +35,7 @@ namespace HeuristicLab.Data {
   /// The visual representation of the class <see cref="IntData"/>, symbolizing an int value.
   /// </summary>
   [Content(typeof(IntData), true)]
-  public partial class IntDataView : ViewBase {
+  public partial class IntDataView : ItemViewBase {
     /// <summary>
     /// Gets or set the int value to represent visually.
     /// </summary>

@@ -29,7 +29,7 @@ namespace HeuristicLab.Common.Resources {
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        public Resources() {
+        internal Resources() {
         }
         
         /// <summary>
@@ -123,6 +123,13 @@ namespace HeuristicLab.Common.Resources {
             }
         }
         
+        public static System.Drawing.Bitmap HeuristicLab {
+            get {
+                object obj = ResourceManager.GetObject("HeuristicLab", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         public static System.Drawing.Icon HeuristicLabIcon {
             get {
                 object obj = ResourceManager.GetObject("HeuristicLabIcon", resourceCulture);
@@ -196,6 +203,27 @@ namespace HeuristicLab.Common.Resources {
         public static System.Drawing.Bitmap SaveIcon {
             get {
                 object obj = ResourceManager.GetObject("SaveIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        public static System.Drawing.Bitmap ShowDetails {
+            get {
+                object obj = ResourceManager.GetObject("ShowDetails", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        public static System.Drawing.Bitmap ShowLargeIcons {
+            get {
+                object obj = ResourceManager.GetObject("ShowLargeIcons", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        public static System.Drawing.Bitmap ShowSmallIcons {
+            get {
+                object obj = ResourceManager.GetObject("ShowSmallIcons", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

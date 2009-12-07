@@ -35,7 +35,7 @@ namespace HeuristicLab.Data {
   /// The visual representation of the class <see cref="BoolData"/>, symbolizing a boolean value. 
   /// </summary>
   [Content(typeof(BoolData), true)]
-  public partial class BoolDataView : ViewBase {
+  public partial class BoolDataView : ItemViewBase {
     /// <summary>
     /// Gets or sets the boolean value to represent visually.
     /// </summary>

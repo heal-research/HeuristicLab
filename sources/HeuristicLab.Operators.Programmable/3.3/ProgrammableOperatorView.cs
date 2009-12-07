@@ -33,7 +33,7 @@ using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Operators.Programmable {
   [Content(typeof(ProgrammableOperator), true)]
-  public partial class ProgrammableOperatorView : ViewBase {
+  public partial class ProgrammableOperatorView : ItemViewBase {
     public ProgrammableOperator ProgrammableOperator {
       get { return (ProgrammableOperator)Item; }
       set { base.Item = value; }

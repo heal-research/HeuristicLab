@@ -33,7 +33,7 @@ namespace HeuristicLab.Data {
   /// <summary>
   /// The basic visual representation of a two-dimensional matrix.
   /// </summary>
-  public partial class MatrixDataBaseView : ViewBase {
+  public partial class MatrixDataBaseView : ItemViewBase {
 
     /// <summary>
     /// Gets or sets the matrix to represent visually.

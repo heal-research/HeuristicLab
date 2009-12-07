@@ -38,7 +38,7 @@ namespace HeuristicLab.Routing.TSP {
   /// Class for the visual representation of a <see cref="TSPTour"/>.
   /// </summary>
   [Content(typeof(TSPTour), true)]
-  public partial class TSPTourView : ViewBase {
+  public partial class TSPTourView : ItemViewBase {
     /// <summary>
     /// Gets or sets the <see cref="TSPTour"/> to represent visually.
     /// </summary>

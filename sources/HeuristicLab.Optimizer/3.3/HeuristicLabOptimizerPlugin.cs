@@ -27,7 +27,10 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Optimizer {
   [ClassInfo(Name = "HeuristicLab.Optimizer-3.3")]
   [PluginFile(Filename = "HeuristicLab.Optimizer-3.3.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.Persistence-3.3")]
   [Dependency(Dependency = "HeuristicLab.Common.Resources-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Core-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Core.Views-3.3")]
   [Dependency(Dependency = "HeuristicLab.MainForm-3.2")]
   [Dependency(Dependency = "HeuristicLab.MainForm.WindowsForms-3.2")]
   public class HeuristicLabOptimizerPlugin : PluginBase {

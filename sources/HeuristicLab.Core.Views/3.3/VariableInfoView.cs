@@ -33,7 +33,7 @@ namespace HeuristicLab.Core.Views {
   /// The visual representation of <see cref="IVariableInfo"/>.
   /// </summary>
   [Content(typeof(VariableInfo), true)]
-  public partial class VariableInfoView : ViewBase {
+  public partial class VariableInfoView : ItemViewBase {
     /// <summary>
     /// Gets or sets the variable information to represent visually.
     /// </summary>

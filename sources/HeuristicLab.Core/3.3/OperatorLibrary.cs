@@ -29,6 +29,8 @@ namespace HeuristicLab.Core {
   /// <summary>
   /// Represents a library of operators consisting of one <see cref="IOperatorGroup"/>.
   /// </summary>
+  [Creatable("Libraries")]
+  [Item("Operator Library", "A library that contains multiple operators.")]
   public class OperatorLibrary : ItemBase, IOperatorLibrary {
 
     [Storable]

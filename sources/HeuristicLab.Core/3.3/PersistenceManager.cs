@@ -35,7 +35,7 @@ namespace HeuristicLab.Core {
   /// </summary>
   public static class PersistenceManager {
     /// <summary>
-    /// Saves the specified <paramref name="instance"/> in the specified file through creating an 
+    /// Saves the specified <paramref name="instance"/> in th specified file through creating an 
     /// <see cref="XmlDocument"/>.
     /// </summary>
     /// <param name="instance">The object that should be saved.</param>
@@ -76,37 +76,6 @@ namespace HeuristicLab.Core {
     /// <returns>The loaded object.</returns>
     public static IItem Load(Stream stream) {
       return (IItem)XmlParser.Deserialize(stream);
-    }
-
-    /// <summary>
-    /// Builds a meaningful string for the given <paramref name="type"/> with the namespace information, 
-    /// all its arguments, the assembly name...
-    /// </summary>
-    /// <param name="type">The type for which a string should be created.</param>
-    /// <returns>A string value of this type containing different additional information.</returns>
-    public static string BuildTypeString(Type type) {
-      string assembly = type.Assembly.FullName;
-      assembly = assembly.Substring(0, assembly.IndexOf(", "));
-
-      StringBuilder builder = new StringBuilder();
-      builder.Append(type.Namespace);
-      builder.Append(".");
-      builder.Append(type.Name);
-      Type[] args = type.GetGenericArguments();
-      if (args.Length > 0) {
-        builder.Append("[[");
-        builder.Append(BuildTypeString(args[0]));
-        builder.Append("]");
-        for (int i = 1; i < args.Length; i++) {
-          builder.Append(",[");
-          builder.Append(BuildTypeString(args[i]));
-          builder.Append("]");
-        }
-        builder.Append("]");
-      }
-      builder.Append(", ");
-      builder.Append(assembly);
-      return builder.ToString();
     }
   }
 }

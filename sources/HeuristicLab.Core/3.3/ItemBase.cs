@@ -23,14 +23,38 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using System.Drawing;
+using System.Resources;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Common.Resources;
 
 namespace HeuristicLab.Core {
   /// <summary>
   /// Represents the base class for all basic item types.
   /// </summary>
+  [Item("ItemBase", "Base class for all HeuristicLab items.")]
   [EmptyStorableClass]
   public abstract class ItemBase : IItem {
+    public virtual string Name {
+      get {
+        if (ItemAttribute.GetName(this.GetType()) != null)
+          return ItemAttribute.GetName(this.GetType());
+        else
+          return this.GetType().Name;
+      }
+    }
+    public virtual string Description {
+      get {
+        if (ItemAttribute.GetDescription(this.GetType()) != null)
+          return ItemAttribute.GetDescription(this.GetType());
+        else
+          return "No description available.";
+      }
+    }
+    public virtual Image Image {
+      get { return Resources.HeuristicLab; }
+    }
+
     /// <summary>
     /// Creates a deep clone of this instance.
     /// </summary>

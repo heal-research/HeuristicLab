@@ -33,7 +33,7 @@ namespace HeuristicLab.Core.Views {
   /// The visual representation of an <see cref="IVariable"/>.
   /// </summary>
   [Content(typeof(Variable), true)]
-  public partial class VariableView : ViewBase {
+  public partial class VariableView : ItemViewBase {
     private ChooseItemDialog chooseItemDialog;
 
     /// <summary>

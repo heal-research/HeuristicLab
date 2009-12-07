@@ -22,12 +22,17 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Drawing;
 
 namespace HeuristicLab.Core {
   /// <summary>
   /// Interface to represent (almost) every HeuristicLab object (an object, an operator,...).
   /// </summary>
   public interface IItem : ICloneable {
+    string Name { get; }
+    string Description { get; }
+    Image Image { get; }
+
     /// <summary>
     /// Creates a deep clone of this item.
     /// </summary>

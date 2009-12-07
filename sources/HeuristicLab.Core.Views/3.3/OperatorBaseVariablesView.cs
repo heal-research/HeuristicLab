@@ -33,7 +33,7 @@ namespace HeuristicLab.Core.Views {
   /// <summary>
   /// The visual representation of the variables of an operator.
   /// </summary>
-  public partial class OperatorBaseVariablesView : ViewBase {
+  public partial class OperatorBaseVariablesView : ItemViewBase {
     private ChooseItemDialog chooseItemDialog;
 
     /// <summary>

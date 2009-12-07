@@ -100,7 +100,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -170,6 +170,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\RefreshDocument.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ShowDetails.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ShowLargeIcons.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ShowSmallIcons.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\HeuristicLab.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

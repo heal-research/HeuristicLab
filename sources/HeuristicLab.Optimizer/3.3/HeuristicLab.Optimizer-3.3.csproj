@@ -50,11 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Actions\SaveAsAction.cs" />
-    <Compile Include="Actions\SaveAllAction.cs" />
-    <Compile Include="Actions\SaveAction.cs" />
-    <Compile Include="Actions\OpenAction.cs" />
-    <Compile Include="Actions\NewAction.cs" />
+    <Compile Include="FileManager.cs" />
     <Compile Include="MenuItems\CloseMenuItem.cs" />
     <Compile Include="MenuItems\CloseAllMenuItem.cs" />
     <Compile Include="MenuItems\SaveAllMenuItem.cs" />
@@ -67,13 +63,18 @@
     <Compile Include="IOptimizerUserInterfaceItemProvider.cs" />
     <Compile Include="MenuItems\NewMenuItem.cs" />
     <Compile Include="MenuItems\Separators.cs" />
-    <Compile Include="NewDialog.cs">
+    <Compile Include="NewItemDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="NewDialog.Designer.cs">
-      <DependentUpon>NewDialog.cs</DependentUpon>
+    <Compile Include="NewItemDialog.Designer.cs">
+      <DependentUpon>NewItemDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="ToolBarItems\SaveAllToolBarItem.cs" />
     <Compile Include="ToolBarItems\SaveToolBarItem.cs" />
     <Compile Include="ToolBarItems\OpenToolBarItem.cs" />
@@ -88,6 +89,14 @@
       <Project>{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}</Project>
       <Name>HeuristicLab.Common.Resources-3.2</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Core.Views\3.3\HeuristicLab.Core.Views-3.3.csproj">
+      <Project>{E226881D-315F-423D-B419-A766FE0D8685}</Project>
+      <Name>HeuristicLab.Core.Views-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
+      <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
+      <Name>HeuristicLab.Core-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.MainForm.WindowsForms\3.2\HeuristicLab.MainForm.WindowsForms-3.2.csproj">
       <Project>{AB687BBE-1BFE-476B-906D-44237135431D}</Project>
       <Name>HeuristicLab.MainForm.WindowsForms-3.2</Name>
@@ -96,14 +105,22 @@
       <Project>{3BD61258-31DA-4B09-89C0-4F71FEF5F05A}</Project>
       <Name>HeuristicLab.MainForm-3.2</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
+      <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
+      <Name>HeuristicLab.Persistence-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="NewDialog.resx">
-      <DependentUpon>NewDialog.cs</DependentUpon>
+    <EmbeddedResource Include="NewItemDialog.resx">
+      <DependentUpon>NewItemDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

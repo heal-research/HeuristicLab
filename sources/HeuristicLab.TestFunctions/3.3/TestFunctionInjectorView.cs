@@ -37,7 +37,7 @@ namespace HeuristicLab.TestFunctions {
   /// Visual representation of a <see cref="TestFunctionInjector"/>.
   /// </summary>
   [Content(typeof(TestFunctionInjector), true)]
-  public partial class TestFunctionInjectorView : ViewBase {
+  public partial class TestFunctionInjectorView : ItemViewBase {
     /// <summary>
     /// Gets or sets the TestFunctionInjector to represent visually.
     /// </summary>

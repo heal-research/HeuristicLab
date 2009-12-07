@@ -37,7 +37,7 @@ namespace HeuristicLab.Logging {
   /// Visual representation of the <see cref="Log"/> class.
   /// </summary>
   [Content(typeof(Log), true)]
-  public partial class LogView : ViewBase {
+  public partial class LogView : ItemViewBase {
     /// <summary>
     /// Gets or sets the Log item to represent visually.
     /// </summary>

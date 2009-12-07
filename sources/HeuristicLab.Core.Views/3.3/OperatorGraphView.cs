@@ -35,7 +35,7 @@ namespace HeuristicLab.Core.Views {
   /// The visual representation of an <see cref="IOperatorGraph"/>.
   /// </summary>
   [Content(typeof(OperatorGraph), true)]
-  public partial class OperatorGraphView : ViewBase {
+  public partial class OperatorGraphView : ItemViewBase {
     private ChooseOperatorDialog chooseOperatorDialog;
     private Dictionary<IOperator, IList<TreeNode>> operatorNodeTable;
 
@@ -183,9 +183,8 @@ namespace HeuristicLab.Core.Views {
     private void operatorsListView_DoubleClick(object sender, EventArgs e) {
       if (operatorsListView.SelectedItems.Count == 1) {
         IOperator op = (IOperator)operatorsListView.SelectedItems[0].Tag;
-        IView view = (IView)MainFormManager.CreateDefaultView(op);
-        if (view != null)
-          PluginManager.ControlManager.ShowControl(view);
+        IView view = MainFormManager.CreateDefaultView(op);
+        if (view != null) MainFormManager.MainForm.ShowView(view);
       }
     }
     #endregion
@@ -375,7 +374,7 @@ namespace HeuristicLab.Core.Views {
       initialOperatorToolStripMenuItem.Checked = false;
       if (operatorsListView.SelectedItems.Count == 1) {
         IOperator op = (IOperator)operatorsListView.SelectedItems[0].Tag;
-        IView view = (IView)MainFormManager.CreateDefaultView(op);
+        IView view = MainFormManager.CreateDefaultView(op);
         if (view != null) {
           viewToolStripMenuItem.Enabled = true;
           viewToolStripMenuItem.Tag = view;
@@ -387,8 +386,8 @@ namespace HeuristicLab.Core.Views {
       }
     }
     private void viewToolStripMenuItem_Click(object sender, EventArgs e) {
-      IView view = (IView)((ToolStripMenuItem)sender).Tag;
-      PluginManager.ControlManager.ShowControl(view);
+      IView view = ((ToolStripMenuItem)sender).Tag as IView;
+      if (view != null) MainFormManager.MainForm.ShowView(view);
     }
     private void initialOperatorToolStripMenuItem_Click(object sender, EventArgs e) {
       if (initialOperatorToolStripMenuItem.Checked) {
@@ -407,7 +406,7 @@ namespace HeuristicLab.Core.Views {
       breakpointToolStripMenuItem.Checked = false;
       if (graphTreeView.SelectedNode != null) {
         IOperator op = (IOperator)graphTreeView.SelectedNode.Tag;
-        IView view = (IView)MainFormManager.CreateDefaultView(op);
+        IView view = MainFormManager.CreateDefaultView(op);
         if (view != null) {
           viewToolStripMenuItem1.Enabled = true;
           viewToolStripMenuItem1.Tag = view;

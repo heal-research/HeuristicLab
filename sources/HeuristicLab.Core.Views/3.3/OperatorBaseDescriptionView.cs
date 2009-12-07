@@ -31,7 +31,7 @@ namespace HeuristicLab.Core.Views {
   /// <summary>
   /// The visual representation of the description of operators.
   /// </summary>
-  public partial class OperatorBaseDescriptionView : ViewBase {
+  public partial class OperatorBaseDescriptionView : ItemViewBase {
     /// <summary>
     /// Gets or sets the operator whose description should be displayed.
     /// </summary>

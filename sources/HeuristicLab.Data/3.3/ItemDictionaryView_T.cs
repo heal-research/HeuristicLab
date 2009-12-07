@@ -17,7 +17,7 @@ namespace HeuristicLab.Data {
   /// <typeparam name="K">The type of the keys of the dictionary.</typeparam>
   /// <typeparam name="V">The type of the values of the dictionary.</typeparam>
   [Content(typeof(ItemDictionary<IItem, IItem>), true)]
-  public partial class ItemDictionaryView<K, V> : ViewBase
+  public partial class ItemDictionaryView<K, V> : ItemViewBase
     where K : IItem
     where V : IItem {
 

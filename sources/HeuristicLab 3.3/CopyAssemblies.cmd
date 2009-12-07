@@ -6,7 +6,6 @@ mkdir plugins\cache
 mkdir plugins\temp
 mkdir plugins\backup
 
-copy "%SolutionDir%\HeuristicLab.AdvancedOptimizationFrontend\3.3\%Outdir%\HeuristicLab.AdvancedOptimizationFrontend-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Charting\3.3\%Outdir%\HeuristicLab.Charting-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Charting.Data\3.3\%Outdir%\HeuristicLab.Charting.Data-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Common\3.2\%Outdir%\HeuristicLab.Common-3.2.dll" .\plugins 

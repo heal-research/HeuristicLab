@@ -8,33 +8,28 @@ using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Common.Resources;
 
 namespace HeuristicLab.Optimizer.MenuItems {
-  public class OpenMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItemBase, IOptimizerUserInterfaceItemProvider {
+  internal class OpenMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItemBase, IOptimizerUserInterfaceItemProvider {
     public override string Name {
       get { return "&Open..."; }
     }
-
     public override IEnumerable<string> Structure {
       get { return new string[] { "&File" }; }
     }
-
     public override int Position {
       get { return 1200; }
     }
-
     public override ToolStripItemDisplayStyle ToolStripItemDisplayStyle {
       get { return ToolStripItemDisplayStyle.ImageAndText; }
     }
-
     public override Image Image {
       get { return Resources.OpenIcon; }
     }
-
     public override Keys ShortCutKeys {
       get { return Keys.Control | Keys.O; }
     }
 
     public override void Execute() {
-      Actions.OpenAction.Execute();
+      FileManager.Open();
     }
   }
 }

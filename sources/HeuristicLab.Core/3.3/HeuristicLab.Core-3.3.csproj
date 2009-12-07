@@ -94,14 +94,16 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AtomicOperation.cs" />
+    <Compile Include="Attributes\ItemAttribute.cs" />
     <Compile Include="CompositeOperation.cs" />
     <Compile Include="Cloner.cs" />
+    <Compile Include="Attributes\CreatableAttribute.cs" />
     <Compile Include="Interfaces\ICloner.cs" />
-    <Compile Include="Interfaces\IEditable.cs" />
     <Compile Include="Interfaces\IOperation.cs" />
     <Compile Include="Interfaces\IOperatorLibrary.cs" />
     <Compile Include="Interfaces\IVisualizationItem.cs" />
@@ -135,6 +137,10 @@
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.2\HeuristicLab.Common.Resources-3.2.csproj">
+      <Project>{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}</Project>
+      <Name>HeuristicLab.Common.Resources-3.2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Common\3.2\HeuristicLab.Common-3.2.csproj">
       <Project>{1FC004FC-59AF-4249-B1B6-FF25873A20E4}</Project>
       <Name>HeuristicLab.Common-3.2</Name>

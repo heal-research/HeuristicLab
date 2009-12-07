@@ -37,7 +37,7 @@ namespace HeuristicLab.Routing.TSP {
   /// Class to represent a <see cref="TSPInjector"/> visually.
   /// </summary>
   [Content(typeof(TSPInjector), true)]
-  public partial class TSPInjectorView : ViewBase {
+  public partial class TSPInjectorView : ItemViewBase {
     /// <summary>
     /// Gets or set the <see cref="TSPInjector"/> to represent visually.
     /// </summary>        

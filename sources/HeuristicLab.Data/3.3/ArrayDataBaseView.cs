@@ -33,7 +33,7 @@ namespace HeuristicLab.Data {
   /// <summary>
   /// The visual representation of the class <see cref="ArrayDataBase"/>.
   /// </summary>
-  public partial class ArrayDataBaseView : ViewBase {
+  public partial class ArrayDataBaseView : ItemViewBase {
     /// <summary>
     /// Gets or sets the instance of the array to represent.
     /// </summary>

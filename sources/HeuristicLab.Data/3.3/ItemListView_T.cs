@@ -36,7 +36,7 @@ namespace HeuristicLab.Data {
   /// The visual representation of the class <see cref="HeuristicLab.Data.ItemList&lt;T&gt;"/>.
   /// </summary>
   /// <typeparam name="T">The type of the items in the list.</typeparam>
-  public partial class ItemListView<T> : ViewBase where T : IItem {
+  public partial class ItemListView<T> : ItemViewBase where T : IItem {
     private ChooseItemDialog chooseItemDialog;
 
     /// <summary>

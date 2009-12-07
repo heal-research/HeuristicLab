@@ -30,7 +30,7 @@ using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Optimizer {
   [ClassInfo(Name = "Optimizer 3.3", Description="Next generation heuristic optimization environment.")]
-  class HeuristicLabOptimizerApplication : ApplicationBase {
+  internal class HeuristicLabOptimizerApplication : ApplicationBase {
     public override void Run() {
       DockingMainForm mainForm = new DockingMainForm(typeof(IOptimizerUserInterfaceItemProvider));
       mainForm.Title = "HeuristicLab Optimizer " + Assembly.GetExecutingAssembly().GetName().Version.ToString();

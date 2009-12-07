@@ -33,7 +33,7 @@ namespace HeuristicLab.Core.Views {
   /// The base class for visual representations of items.
   /// </summary>
   [Content(typeof(ItemBase), true)]
-  public partial class ItemBaseView : ViewBase {
+  public partial class ItemBaseView : ItemViewBase {
     /// <summary>
     /// Initializes a new instance of <see cref="ItemBaseView"/>.
     /// </summary>

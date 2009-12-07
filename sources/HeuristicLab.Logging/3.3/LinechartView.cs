@@ -39,7 +39,7 @@ namespace HeuristicLab.Logging {
   /// The visual representation of a <see cref="Linechart"/>.
   /// </summary>
   [Content(typeof(Linechart), true)]
-  public partial class LinechartView : ViewBase {
+  public partial class LinechartView : ItemViewBase {
     private double maxY = double.MinValue, minY = double.MaxValue;
     private static int[] colors = new int[] {
       182,182,255, 

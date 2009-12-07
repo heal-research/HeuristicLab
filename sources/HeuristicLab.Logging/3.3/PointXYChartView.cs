@@ -39,7 +39,7 @@ namespace HeuristicLab.Logging {
   /// Visual representation of a <see cref="PointXYChart"/>.
   /// </summary>
   [Content(typeof(PointXYChart), true)]
-  public partial class PointXYChartView : ViewBase {
+  public partial class PointXYChartView : ItemViewBase {
     private static int[] colors = new int[] {
       182,182,255, 
       218,255,182,
