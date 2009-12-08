@@ -55,20 +55,6 @@ namespace HeuristicLab.Core.Views {
         }
       }
     }
-    private string myCaption;
-    /// <summary>
-    /// Gets or sets the caption of the current instance.
-    /// </summary>
-    /// <remarks>Call <see cref="OnCaptionChanged"/> in the setter if a new item is set.</remarks>
-    public string Caption {
-      get { return myCaption; }
-      set {
-        if (value != myCaption) {
-          myCaption = value;
-          OnCaptionChanged();
-        }
-      }
-    }
 
     /// <summary>
     /// Initializes a new instance of <see cref="ViewBase"/> with the caption "View".
@@ -96,7 +82,7 @@ namespace HeuristicLab.Core.Views {
     /// <see cref="System.Windows.Forms.UserControl"/>.</remarks>
     public override void Refresh() {
       if (InvokeRequired) {
-        Invoke(new MethodInvoker(Refresh));
+        Invoke(new Action(Refresh));
       } else {
         UpdateControls();
         base.Refresh();
@@ -109,7 +95,7 @@ namespace HeuristicLab.Core.Views {
       if (Item == null)
         Caption = "View";
       else
-        Caption = "View (" + Item.GetType().Name + ")";
+        Caption = Item.Name;
       
     }
 
@@ -124,16 +110,12 @@ namespace HeuristicLab.Core.Views {
       if (ItemChanged != null)
         ItemChanged(this, new EventArgs());
     }
-    /// <summary>
-    /// Occurs when the current caption was changed.
-    /// </summary>
-    public event EventHandler CaptionChanged;
-    /// <summary>
-    /// Fires a new <c>CaptionChanged</c> event.
-    /// </summary>
-    protected virtual void OnCaptionChanged() {
-      if (CaptionChanged != null)
-        CaptionChanged(this, new EventArgs());
+
+    public event EventHandler Closed;
+    public override void OnClosed(object sender, EventArgs e) {
+      base.OnClosed(sender, e);
+      if (Closed != null)
+        Closed(this, e);
     }
 
     /// <summary>

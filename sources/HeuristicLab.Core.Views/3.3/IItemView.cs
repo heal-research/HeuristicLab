@@ -39,5 +39,7 @@ namespace HeuristicLab.Core.Views {
     /// Occurs when the item was changed.
     /// </summary>
     event EventHandler ItemChanged;
+
+    event EventHandler Closed;
   }
 }

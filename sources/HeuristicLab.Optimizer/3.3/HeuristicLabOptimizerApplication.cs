@@ -32,11 +32,7 @@ namespace HeuristicLab.Optimizer {
   [ClassInfo(Name = "Optimizer 3.3", Description="Next generation heuristic optimization environment.")]
   internal class HeuristicLabOptimizerApplication : ApplicationBase {
     public override void Run() {
-      DockingMainForm mainForm = new DockingMainForm(typeof(IOptimizerUserInterfaceItemProvider));
-      mainForm.Title = "HeuristicLab Optimizer " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
-      mainForm.Icon = Resources.HeuristicLabIcon;
-      mainForm.Width = 800;
-      mainForm.Height = 600;
+      OptimizerMainForm mainForm = new OptimizerMainForm(typeof(IOptimizerUserInterfaceItemProvider));
       Application.Run(mainForm);
     }
   }

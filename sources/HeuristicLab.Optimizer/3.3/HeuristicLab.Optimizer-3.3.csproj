@@ -69,6 +69,12 @@
     <Compile Include="NewItemDialog.Designer.cs">
       <DependentUpon>NewItemDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="OptimizerMainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OptimizerMainForm.Designer.cs">
+      <DependentUpon>OptimizerMainForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -117,6 +123,9 @@
   <ItemGroup>
     <EmbeddedResource Include="NewItemDialog.resx">
       <DependentUpon>NewItemDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OptimizerMainForm.resx">
+      <DependentUpon>OptimizerMainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
