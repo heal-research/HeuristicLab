@@ -60,19 +60,24 @@ namespace HeuristicLab.SupportVectorMachines {
       int minTimeOffset = minTimeOffsetData == null ? 0 : minTimeOffsetData.Data;
       double punishmentFactor = GetVariableValue<DoubleData>("PunishmentFactor", scope, true).Data;
 
-      
+
       ItemList inputVariables = GetVariableValue<ItemList>("InputVariables", scope, true);
       var inputVariableNames = from x in inputVariables
                                select ((StringData)x).Data;
 
-      double mean = ds.GetMean(targetVariable, start, end);
-      double range = ds.GetRange(targetVariable, start, end);
-
-      Predictor predictor = new Predictor(model, targetVariable, inputVariableNames, minTimeOffset, maxTimeOffset);
-      predictor.LowerPredictionLimit = mean - punishmentFactor * range;
-      predictor.UpperPredictionLimit = mean + punishmentFactor * range;
+      var predictor = CreatePredictor(model, ds, targetVariable, inputVariableNames, punishmentFactor, start, end, minTimeOffset, maxTimeOffset);
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("Predictor"), predictor));
       return null;
+    }
+
+    public static Predictor CreatePredictor(SVMModel model, Dataset ds, string targetVariable, IEnumerable<string> inputVariables, double punishmentFactor,
+      int start, int end, int minTimeOffset, int maxTimeOffset) {
+      Predictor predictor = new Predictor(model, targetVariable, inputVariables, minTimeOffset, maxTimeOffset);
+      double mean = ds.GetMean(targetVariable, start, end);
+      double range = ds.GetRange(targetVariable, start, end);
+      predictor.LowerPredictionLimit = mean - punishmentFactor * range;
+      predictor.UpperPredictionLimit = mean + punishmentFactor * range;
+      return predictor;
     }
   }
 }

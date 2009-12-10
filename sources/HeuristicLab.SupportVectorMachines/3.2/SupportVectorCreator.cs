@@ -70,7 +70,6 @@ namespace HeuristicLab.SupportVectorMachines {
       abortRequested = false;
       Dataset dataset = GetVariableValue<Dataset>("Dataset", scope, true);
       string targetVariable = GetVariableValue<StringData>("TargetVariable", scope, true).Data;
-      int targetVariableIndex = dataset.GetVariableIndex(targetVariable);
       ItemList inputVariables = GetVariableValue<ItemList>("InputVariables", scope, true);
       var inputVariableNames = from x in inputVariables
                                select ((StringData)x).Data;
@@ -83,39 +82,18 @@ namespace HeuristicLab.SupportVectorMachines {
       string svmType = GetVariableValue<StringData>("SVMType", scope, true).Data;
       string svmKernelType = GetVariableValue<StringData>("SVMKernelType", scope, true).Data;
 
-      //extract SVM parameters from scope and set them
-      SVM.Parameter parameter = new SVM.Parameter();
-      parameter.SvmType = (SVM.SvmType)Enum.Parse(typeof(SVM.SvmType), svmType, true);
-      parameter.KernelType = (SVM.KernelType)Enum.Parse(typeof(SVM.KernelType), svmKernelType, true);
-      parameter.C = GetVariableValue<DoubleData>("SVMCost", scope, true).Data;
-      parameter.Nu = GetVariableValue<DoubleData>("SVMNu", scope, true).Data;
-      parameter.Gamma = GetVariableValue<DoubleData>("SVMGamma", scope, true).Data;
-      parameter.CacheSize = 500;
-      parameter.Probability = false;
+      double cost = GetVariableValue<DoubleData>("SVMCost", scope, true).Data;
+      double nu = GetVariableValue<DoubleData>("SVMNu", scope, true).Data;
+      double gamma = GetVariableValue<DoubleData>("SVMGamma", scope, true).Data;
 
-      SVM.Problem problem = SVMHelper.CreateSVMProblem(dataset, targetVariableIndex, inputVariableNames, start, end, minTimeOffset, maxTimeOffset);
-      SVM.RangeTransform rangeTransform = SVM.RangeTransform.Compute(problem);
-      SVM.Problem scaledProblem = rangeTransform.Scale(problem);
-
-      SVM.Model model = StartTraining(scaledProblem, parameter);
-      if (!abortRequested) {
-        //persist variables in scope
-        SVMModel modelData = new SVMModel();
-        modelData.Model = model;
-        modelData.RangeTransform = rangeTransform;
-        scope.AddVariable(new Variable(scope.TranslateName("SVMModel"), modelData));
-        return null;
-      } else {
-        return new AtomicOperation(this, scope);
-      }
-    }
-
-    private SVM.Model StartTraining(SVM.Problem scaledProblem, SVM.Parameter parameter) {
-      SVM.Model model = null;
+      SVMModel modelData = null;
       lock (locker) {
         if (!abortRequested) {
           trainingThread = new Thread(() => {
-            model = SVM.Training.Train(scaledProblem, parameter);
+            modelData = TrainModel(dataset, targetVariable, inputVariableNames,
+                                   start, end, minTimeOffset, maxTimeOffset,
+                                   svmType, svmKernelType,
+                                   cost, nu, gamma);
           });
           trainingThread.Start();
         }
@@ -124,6 +102,51 @@ namespace HeuristicLab.SupportVectorMachines {
         trainingThread.Join();
         trainingThread = null;
       }
+
+
+      if (!abortRequested) {
+        //persist variables in scope
+        scope.AddVariable(new Variable(scope.TranslateName("SVMModel"), modelData));
+        return null;
+      } else {
+        return new AtomicOperation(this, scope);
+      }
+    }
+
+    public static SVMModel TrainRegressionModel(
+      Dataset dataset, string targetVariable, IEnumerable<string> inputVariables,
+      int start, int end,
+      double cost, double nu, double gamma) {
+      return TrainModel(dataset, targetVariable, inputVariables, start, end, 0, 0, "NU_SVR", "RBF", cost, nu, gamma);
+    }
+
+    public static SVMModel TrainModel(
+      Dataset dataset, string targetVariable, IEnumerable<string> inputVariables,
+      int start, int end,
+      int minTimeOffset, int maxTimeOffset,
+      string svmType, string kernelType,
+      double cost, double nu, double gamma) {
+      int targetVariableIndex = dataset.GetVariableIndex(targetVariable);
+
+      //extract SVM parameters from scope and set them
+      SVM.Parameter parameter = new SVM.Parameter();
+      parameter.SvmType = (SVM.SvmType)Enum.Parse(typeof(SVM.SvmType), svmType, true);
+      parameter.KernelType = (SVM.KernelType)Enum.Parse(typeof(SVM.KernelType), kernelType, true);
+      parameter.C = cost;
+      parameter.Nu = nu;
+      parameter.Gamma = gamma;
+      parameter.CacheSize = 500;
+      parameter.Probability = false;
+
+
+      SVM.Problem problem = SVMHelper.CreateSVMProblem(dataset, targetVariableIndex, inputVariables, start, end, minTimeOffset, maxTimeOffset);
+      SVM.RangeTransform rangeTransform = SVM.RangeTransform.Compute(problem);
+      SVM.Problem scaledProblem = rangeTransform.Scale(problem);
+      var model = new SVMModel();
+
+      model.Model = SVM.Training.Train(scaledProblem, parameter);
+      model.RangeTransform = rangeTransform;
+
       return model;
     }
   }
