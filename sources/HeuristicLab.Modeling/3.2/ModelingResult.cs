@@ -42,11 +42,13 @@ namespace HeuristicLab.Modeling {
     ValidationCoefficientOfDetermination,
     TestCoefficientOfDetermination,
 
-    TrainingPearsonsCorrelationCoefficient,
+    TrainingPearsonsCorrelationCoefficient,   //MK 10.12.09 should be removed as soon as actual ModelAnalyzer files are not needed anymore
+    TrainingPearsonCorrelationCoefficient,
     ValidationPearsonCorrelationCoefficient,
     TestPearsonCorrelationCoefficient,
 
-    TrainingStablePearsonsCorrelationCoefficient,
+    TrainingStablePearsonsCorrelationCoefficient, //MK 10.12.09 should be removed as soon as actual ModelAnalyzer files are not needed anymore
+    TrainingStablePearsonCorrelationCoefficient,
     ValidationStablePearsonCorrelationCoefficient,
     TestStablePearsonCorrelationCoefficient,
 

@@ -60,14 +60,14 @@ namespace HeuristicLab.Modeling {
         },
         { typeof(SimplePearsonCorrelationCoefficientEvaluator),
           new ModelingResult[] {
-            ModelingResult.TrainingPearsonsCorrelationCoefficient,
+            ModelingResult.TrainingPearsonCorrelationCoefficient,
             ModelingResult.ValidationPearsonCorrelationCoefficient,
             ModelingResult.TestPearsonCorrelationCoefficient
           }
         },
         { typeof(SimpleStableCorrelationCoefficientEvaluator),
           new ModelingResult[] {
-            ModelingResult.TrainingStablePearsonsCorrelationCoefficient,
+            ModelingResult.TrainingStablePearsonCorrelationCoefficient,
             ModelingResult.ValidationStablePearsonCorrelationCoefficient,
             ModelingResult.TestStablePearsonCorrelationCoefficient
           }
@@ -170,12 +170,12 @@ namespace HeuristicLab.Modeling {
       RegressionModelingResults[ModelingResult.TestCoefficientOfDetermination] = SimpleR2Evaluator.Calculate;
 
       //Pearson Correlation Coefficient
-      RegressionModelingResults[ModelingResult.TrainingPearsonsCorrelationCoefficient] = SimplePearsonCorrelationCoefficientEvaluator.Calculate;
+      RegressionModelingResults[ModelingResult.TrainingPearsonCorrelationCoefficient] = SimplePearsonCorrelationCoefficientEvaluator.Calculate;
       RegressionModelingResults[ModelingResult.ValidationPearsonCorrelationCoefficient] = SimplePearsonCorrelationCoefficientEvaluator.Calculate;
       RegressionModelingResults[ModelingResult.TestPearsonCorrelationCoefficient] = SimplePearsonCorrelationCoefficientEvaluator.Calculate;
 
       //Stable Pearson Correlation Coefficient
-      RegressionModelingResults[ModelingResult.TrainingStablePearsonsCorrelationCoefficient] = SimpleStableCorrelationCoefficientEvaluator.Calculate;
+      RegressionModelingResults[ModelingResult.TrainingStablePearsonCorrelationCoefficient] = SimpleStableCorrelationCoefficientEvaluator.Calculate;
       RegressionModelingResults[ModelingResult.ValidationStablePearsonCorrelationCoefficient] = SimpleStableCorrelationCoefficientEvaluator.Calculate;
       RegressionModelingResults[ModelingResult.TestStablePearsonCorrelationCoefficient] = SimpleStableCorrelationCoefficientEvaluator.Calculate;
 
