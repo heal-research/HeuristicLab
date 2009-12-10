@@ -129,6 +129,30 @@ namespace HeuristicLab.MainForm.WindowsForms {
         ActiveViewChanged(this, new EventArgs());
     }
 
+    public event EventHandler<ViewEventArgs> ViewClosed;
+    protected virtual void OnViewClosed(IView view) {
+      if (InvokeRequired) Invoke((Action<IView>)OnViewClosed, view);
+      else if (this.ViewClosed != null) {
+        this.ViewClosed(this, new ViewEventArgs(view));
+      }
+    }
+
+    public event EventHandler<ViewShownEventArgs> ViewShown;
+    protected virtual void OnViewShown(IView view, bool firstTimeShown) {
+      if (InvokeRequired) Invoke((Action<IView, bool>)OnViewShown, view, firstTimeShown);
+      else if (this.ViewShown != null) {
+        this.ViewShown(this, new ViewShownEventArgs(view, firstTimeShown));
+      }
+    }
+
+    public event EventHandler<ViewEventArgs> ViewHidden;
+    protected virtual void OnViewHidden(IView view) {
+      if (InvokeRequired) Invoke((Action<IView>)OnViewHidden, view);
+      else if (this.ViewHidden != null) {
+        this.ViewHidden(this, new ViewEventArgs(view));
+      }
+    }
+
     public event EventHandler Changed;
     public void FireMainFormChanged() {
       OnMainFormChanged();
@@ -144,8 +168,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
       throw new NotImplementedException("CreateForm must be implemented in subclasses of MainFormBase.");
     }
 
-    public virtual bool ShowView(IView view) {
-      if (InvokeRequired) return (bool)Invoke((Func<IView, bool>)ShowView, view);
+    public void ShowView(IView view) {
+      if (InvokeRequired) Invoke((Action<IView>)ShowView, view);
       else {
         if (!views.Keys.Contains(view)) {
           Form form = CreateForm(view);
@@ -158,34 +182,47 @@ namespace HeuristicLab.MainForm.WindowsForms {
           form.FormClosed += new FormClosedEventHandler(ChildFormClosed);
           foreach (IUserInterfaceItem item in UserInterfaceItems)
             view.Changed += new EventHandler(item.ViewChanged);
-          return true;
-        } else
-          return false;
+          this.Show(view, true);
+          this.OnViewShown(view, true);
+        } else {
+          this.Show(view, false);
+          this.OnViewShown(view, false);
+        }
       }
     }
 
-    public virtual void HideView(IView view) {
+    protected virtual void Show(IView view, bool firstTimeShown) {      
+    }
+
+    public void HideView(IView view) {
       if (InvokeRequired) Invoke((Action<IView>)HideView, view);
       else {
-        if (views.ContainsKey(view))
-          views[view].Hide();
+        if (this.views.ContainsKey(view)) {
+          this.Hide(view);
+          this.OnViewHidden(view);
+        }
       }
+    }
+
+    protected virtual void Hide(IView view) {
     }
 
     public void CloseView(IView view) {
       if (InvokeRequired) Invoke((Action<IView>)CloseView, view);
       else {
-        if (views.ContainsKey(view))
-          views[view].Close();
+        if (this.views.ContainsKey(view)) {
+          this.views[view].Close();
+          this.OnViewClosed(view);
+        }
       }
     }
 
     public void CloseView(IView view, CloseReason closeReason) {
       if (InvokeRequired) Invoke((Action<IView>)CloseView, view);
       else {
-        if (views.ContainsKey(view)) {
+        if (this.views.ContainsKey(view)) {
           ((ViewBase)view).closeReason = closeReason;
-          views[view].Close();
+          this.CloseView(view);
         }
       }
     }
@@ -197,7 +234,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
 
     public virtual void CloseAllViews(CloseReason closeReason) {
       foreach (IView view in views.Keys.ToArray())
-        CloseView(view,closeReason);
+        CloseView(view, closeReason);
     }
     #endregion
 
@@ -216,6 +253,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
         view.Changed -= new EventHandler(item.ViewChanged);
 
       views.Remove(view);
+      this.OnViewClosed(view);
       if (ActiveView == view)
         ActiveView = null;
     }

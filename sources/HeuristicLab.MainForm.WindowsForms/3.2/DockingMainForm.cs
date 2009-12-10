@@ -41,23 +41,24 @@ namespace HeuristicLab.MainForm.WindowsForms {
       InitializeComponent();
     }
 
-    public override bool ShowView(IView view) {
-      if (InvokeRequired) return (bool)Invoke((Func<IView, bool>)ShowView, view);
+    protected override void Show(IView view, bool firstTimeShown) {
+      if (InvokeRequired) Invoke((Action<IView, bool>)Show, view, firstTimeShown);
       else {
-        bool ret = base.ShowView(view);
-        if (ret)
+        base.Show(view, firstTimeShown);
+        if (firstTimeShown)
           ((DockForm)GetForm(view)).Show(dockPanel);
         else
           ((DockForm)GetForm(view)).Activate();
-        return ret;
       }
     }
-    public override void HideView(IView view) {
+
+    protected override void Hide(IView view) {
       if (InvokeRequired) Invoke((Action<IView>)HideView, view);
       else {
         Form form = base.GetForm(view);
-        if (form != null)
+        if (form != null) {
           ((DockForm)form).Hide();
+        }
       }
     }
 

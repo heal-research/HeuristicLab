@@ -41,9 +41,14 @@ namespace HeuristicLab.MainForm.WindowsForms {
     public string Caption {
       get { return myCaption; }
       set {
-        if (value != myCaption) {
-          myCaption = value;
-          OnCaptionChanged();
+        if (InvokeRequired) {
+          Action<string> action = delegate(string s) { this.Caption = s; };
+          Invoke(action, value);
+        } else {
+          if (value != myCaption) {
+            myCaption = value;
+            OnCaptionChanged();
+          }
         }
       }
     }
@@ -56,24 +61,26 @@ namespace HeuristicLab.MainForm.WindowsForms {
 
     public event EventHandler Changed;
     protected virtual void OnChanged() {
-      if (Changed != null)
+      if (InvokeRequired)
+        Invoke((MethodInvoker)OnChanged);
+      else if (Changed != null)
         Changed(this, new EventArgs());
     }
 
-    public virtual void OnClosing(object sender, CancelEventArgs e) {     
+    public virtual void OnClosing(object sender, CancelEventArgs e) {
     }
 
     internal CloseReason closeReason;
     internal void OnClosingHelper(object sender, FormClosingEventArgs e) {
       if (this.closeReason != CloseReason.None)
-        this.OnClosing(sender, new FormClosingEventArgs(this.closeReason,e.Cancel));
+        this.OnClosing(sender, new FormClosingEventArgs(this.closeReason, e.Cancel));
       else
         this.OnClosing(sender, e);
-      
+
       this.closeReason = CloseReason.None;
     }
 
-    public virtual void OnClosing(object sender, FormClosingEventArgs e) {      
+    public virtual void OnClosing(object sender, FormClosingEventArgs e) {
     }
 
     public virtual void OnClosed(object sender, EventArgs e) {

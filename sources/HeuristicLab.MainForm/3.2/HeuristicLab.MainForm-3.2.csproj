@@ -80,6 +80,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ViewShownEventArgs.cs" />
+    <Compile Include="ViewEventArgs.cs" />
     <Compile Include="ToolBarSeparatorItemBase.cs" />
     <Compile Include="Interfaces\IToolBarSeparatorItem.cs" />
     <Compile Include="Interfaces\IMenuItem.cs" />

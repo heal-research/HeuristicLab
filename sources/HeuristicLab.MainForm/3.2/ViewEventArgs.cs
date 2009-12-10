@@ -23,27 +23,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Drawing;
 
 namespace HeuristicLab.MainForm {
-  public interface IMainForm {
-    string Title { get; set; }
+  public class ViewEventArgs : EventArgs {
+    public ViewEventArgs(IView view)
+      : base() {
+      this.view = view;
+    }
 
-    IView ActiveView { get; }
-    IEnumerable<IView> Views { get; }
-
-    event EventHandler ActiveViewChanged;
-    event EventHandler Changed;
-    
-    event EventHandler<ViewEventArgs> ViewClosed;
-    event EventHandler<ViewShownEventArgs> ViewShown;
-    event EventHandler<ViewEventArgs> ViewHidden;
-
-    Type UserInterfaceItemType { get; }
-    void ShowView(IView view); 
-    void HideView(IView view);
-    void CloseView(IView view);
-    void CloseAllViews();
-    void Close();
+    private IView view;
+    public IView View {
+      get { return this.view; }
+    }
   }
 }
