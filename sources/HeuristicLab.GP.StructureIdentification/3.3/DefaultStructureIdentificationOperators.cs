@@ -41,6 +41,43 @@ namespace HeuristicLab.GP.StructureIdentification {
       return op;
     }
 
+    public static IOperator CreateSimpleFunctionLibraryInjector() {
+      CombinedOperator op = new CombinedOperator();
+      op.Name = "FunctionLibraryInjector";
+      SequentialProcessor seq = new SequentialProcessor();
+      var funLibInjector = new FunctionLibraryInjector();
+      funLibInjector.GetVariableValue<BoolData>(FunctionLibraryInjector.CONSTANTS_ALLOWED, null, false).Data = true;
+      funLibInjector.GetVariableValue<BoolData>(FunctionLibraryInjector.VARIABLES_ALLOWED, null, false).Data = true;
+      funLibInjector.GetVariableValue<BoolData>(FunctionLibraryInjector.ADDITION_ALLOWED, null, false).Data = true;
+      funLibInjector.GetVariableValue<BoolData>(FunctionLibraryInjector.SUBTRACTION_ALLOWED, null, false).Data = true;
+      funLibInjector.GetVariableValue<BoolData>(FunctionLibraryInjector.MULTIPLICATION_ALLOWED, null, false).Data = true;
+
+      funLibInjector.GetVariableValue<BoolData>(FunctionLibraryInjector.AND_ALLOWED, null, false).Data = false;
+      funLibInjector.GetVariableValue<BoolData>(FunctionLibraryInjector.AVERAGE_ALLOWED, null, false).Data = false;
+      funLibInjector.GetVariableValue<BoolData>(FunctionLibraryInjector.COSINUS_ALLOWED, null, false).Data = false;
+      funLibInjector.GetVariableValue<BoolData>(FunctionLibraryInjector.DIFFERENTIALS_ALLOWED, null, false).Data = false;
+      funLibInjector.GetVariableValue<BoolData>(FunctionLibraryInjector.DIVISION_ALLOWED, null, false).Data = false;
+      funLibInjector.GetVariableValue<BoolData>(FunctionLibraryInjector.EQUAL_ALLOWED, null, false).Data = false;
+      funLibInjector.GetVariableValue<BoolData>(FunctionLibraryInjector.EXPONENTIAL_ALLOWED, null, false).Data = false;
+      funLibInjector.GetVariableValue<BoolData>(FunctionLibraryInjector.GREATERTHAN_ALLOWED, null, false).Data = false;
+      funLibInjector.GetVariableValue<BoolData>(FunctionLibraryInjector.IFTHENELSE_ALLOWED, null, false).Data = false;
+      funLibInjector.GetVariableValue<BoolData>(FunctionLibraryInjector.LESSTHAN_ALLOWED, null, false).Data = false;
+      funLibInjector.GetVariableValue<BoolData>(FunctionLibraryInjector.LOGARTIHM_ALLOWED, null, false).Data = false;
+      funLibInjector.GetVariableValue<BoolData>(FunctionLibraryInjector.NOT_ALLOWED, null, false).Data = false;
+      funLibInjector.GetVariableValue<BoolData>(FunctionLibraryInjector.OR_ALLOWED, null, false).Data = false;
+      funLibInjector.GetVariableValue<BoolData>(FunctionLibraryInjector.POWER_ALLOWED, null, false).Data = false;
+      funLibInjector.GetVariableValue<BoolData>(FunctionLibraryInjector.SIGNUM_ALLOWED, null, false).Data = false;
+      funLibInjector.GetVariableValue<BoolData>(FunctionLibraryInjector.SINUS_ALLOWED, null, false).Data = false;
+      funLibInjector.GetVariableValue<BoolData>(FunctionLibraryInjector.SQRT_ALLOWED, null, false).Data = false;
+      funLibInjector.GetVariableValue<BoolData>(FunctionLibraryInjector.TANGENS_ALLOWED, null, false).Data = false;
+      funLibInjector.GetVariableValue<BoolData>(FunctionLibraryInjector.XOR_ALLOWED, null, false).Data = false;
+      seq.AddSubOperator(funLibInjector);
+      seq.AddSubOperator(new HL3TreeEvaluatorInjector());
+      op.OperatorGraph.AddOperator(seq);
+      op.OperatorGraph.InitialOperator = seq;
+      return op;
+    }
+
     public static IOperator CreateInitialPopulationEvaluator() {
       MeanSquaredErrorEvaluator eval = new MeanSquaredErrorEvaluator();
       eval.Name = "Evaluator";
