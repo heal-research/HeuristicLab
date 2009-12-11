@@ -479,6 +479,7 @@ Value.Data = ValueList.Data[ValueIndex.Data];
       AnalyzerModel model = new AnalyzerModel();
       model.SetMetaData("Cost", bestModelScope.GetVariableValue<DoubleData>("Cost", false).Data);
       model.SetMetaData("Nu", bestModelScope.GetVariableValue<DoubleData>("Nu", false).Data);
+      model.SetMetaData("Gamma", bestModelScope.GetVariableValue<DoubleData>("Gamma", false).Data);
       #region variable impacts
       ItemList qualityImpacts = bestModelScope.GetVariableValue<ItemList>(ModelingResult.VariableQualityImpact.ToString(), false);
       foreach (ItemList row in qualityImpacts) {
