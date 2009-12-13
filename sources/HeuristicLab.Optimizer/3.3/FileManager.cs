@@ -83,7 +83,7 @@ namespace HeuristicLab.Optimizer {
       }
     }
     private static void Save(IItemView view) {
-      if (!files.ContainsKey(view)) {
+      if ((!files.ContainsKey(view)) || (!File.Exists(files[view].Filename))) {
         SaveAs(view);
       } else {
         if (files[view].Compressed)
