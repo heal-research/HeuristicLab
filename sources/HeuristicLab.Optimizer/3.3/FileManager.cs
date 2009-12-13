@@ -159,6 +159,7 @@ namespace HeuristicLab.Optimizer {
         new WaitCallback(
           delegate(object arg) {
             try {
+              DisableView(view);
               SetWaitingCursor();
               XmlGenerator.Serialize(view.Item, filename, compression);
               Invoke(delegate() {
@@ -171,6 +172,7 @@ namespace HeuristicLab.Optimizer {
               Auxiliary.ShowErrorMessageBox(ex);
             } finally {
               ResetWaitingCursor();
+              EnableView(view);
             }
           }
         )
@@ -211,6 +213,16 @@ namespace HeuristicLab.Optimizer {
       Invoke(delegate() {
         waitingCursors--;
         if (waitingCursors == 0) ((Form)MainFormManager.MainForm).Cursor = Cursors.Default;
+      });
+    }
+    private static void DisableView(IView view) {
+      Invoke(delegate() {
+        ((UserControl)view).Enabled = false;
+      });
+    }
+    private static void EnableView(IView view) {
+      Invoke(delegate() {
+        ((UserControl)view).Enabled = true;
       });
     }
     #endregion
