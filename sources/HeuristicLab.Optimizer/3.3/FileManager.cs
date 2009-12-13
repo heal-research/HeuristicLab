@@ -45,18 +45,18 @@ namespace HeuristicLab.Optimizer {
       saveFileDialog = null;
       waitingCursors = 0;
       newDocumentsCounter = 1;
+      // NOTE: Events fired by the main form are registered in HeuristicLabOptimizerApplication.
     }
 
     public static void New() {
       if (newItemDialog == null) newItemDialog = new NewItemDialog();
       if (newItemDialog.ShowDialog() == DialogResult.OK) {
-        IItemView view = MainFormManager.CreateDefaultView(newItemDialog.Item) as IItemView;
-        if (view != null) {
-          view.Closed += new EventHandler(ViewClosed);
+        IView view = MainFormManager.CreateDefaultView(newItemDialog.Item);
+        if (view is IItemView) {
           view.Caption = "Item" + newDocumentsCounter.ToString() + ".hl";
           newDocumentsCounter++;
-          MainFormManager.MainForm.ShowView(view);
         }
+        MainFormManager.MainForm.ShowView(view);
       }
     }
 
@@ -139,9 +139,9 @@ namespace HeuristicLab.Optimizer {
       }
     }
 
-    private static void ViewClosed(object sender, EventArgs e) {
-      IItemView view = (IItemView)sender;
-      view.Closed -= new EventHandler(ViewClosed);
+    // NOTE: This event is fired by the main form. It is registered in HeuristicLabOptimizerApplication.
+    internal static void ViewClosed(object sender, ViewEventArgs e) {
+      IItemView view = e.View as IItemView;
       files.Remove(view);
     }
 
@@ -186,7 +186,6 @@ namespace HeuristicLab.Optimizer {
               Invoke(delegate() {
                 IItemView view = MainFormManager.CreateDefaultView(item) as IItemView;
                 if (view != null) {
-                  view.Closed += new EventHandler(ViewClosed);
                   view.Caption = Path.GetFileName(filename);
                   files.Add(view, new FileInfo(filename));
                   MainFormManager.MainForm.ShowView(view);

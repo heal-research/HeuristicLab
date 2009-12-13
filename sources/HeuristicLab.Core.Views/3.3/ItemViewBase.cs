@@ -111,13 +111,6 @@ namespace HeuristicLab.Core.Views {
         ItemChanged(this, new EventArgs());
     }
 
-    public event EventHandler Closed;
-    public override void OnClosed(object sender, EventArgs e) {
-      base.OnClosed(sender, e);
-      if (Closed != null)
-        Closed(this, e);
-    }
-
     /// <summary>
     /// Asynchron call of GUI updating.
     /// </summary>

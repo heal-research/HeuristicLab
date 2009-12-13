@@ -7,6 +7,8 @@ using System.Drawing;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Common.Resources;
+using HeuristicLab.Core;
+using HeuristicLab.Core.Views;
 
 namespace HeuristicLab.Optimizer.MenuItems {
   internal class SaveAllMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItemBase, IOptimizerUserInterfaceItemProvider {
@@ -30,7 +32,11 @@ namespace HeuristicLab.Optimizer.MenuItems {
       ToolStripItem.Enabled = false;
     }
     public override void ActiveViewChanged(object sender, EventArgs e) {
-      ToolStripItem.Enabled = MainFormManager.MainForm.Views.FirstOrDefault() != null;
+      var views = from v in MainFormManager.MainForm.Views
+                  where v is IItemView
+                  where CreatableAttribute.IsCreatable(((IItemView)v).Item.GetType())
+                  select v;
+      ToolStripItem.Enabled = views.FirstOrDefault() != null;
     }
 
     public override void Execute() {

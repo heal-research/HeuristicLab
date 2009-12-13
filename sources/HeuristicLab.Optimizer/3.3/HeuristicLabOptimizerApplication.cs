@@ -26,6 +26,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Common.Resources;
+using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Optimizer {
@@ -33,6 +34,7 @@ namespace HeuristicLab.Optimizer {
   internal class HeuristicLabOptimizerApplication : ApplicationBase {
     public override void Run() {
       OptimizerMainForm mainForm = new OptimizerMainForm(typeof(IOptimizerUserInterfaceItemProvider));
+      mainForm.ViewClosed += new EventHandler<ViewEventArgs>(FileManager.ViewClosed);
       Application.Run(mainForm);
     }
   }
