@@ -123,9 +123,10 @@ namespace HeuristicLab.Data {
         detailsGroupBox.Controls[0].Dispose();
       detailsGroupBox.Controls.Clear();
       detailsGroupBox.Enabled = false;
-      removeButton.Enabled = false;
-      if(itemsListView.SelectedItems.Count > 0) {
+      if (itemsListView.SelectedItems.Count > 0) {
         removeButton.Enabled = true;
+      } else {
+        removeButton.Enabled = false;
       }
       if(itemsListView.SelectedItems.Count == 1) {
         IItem data = (IItem)itemsListView.SelectedItems[0].Tag;
