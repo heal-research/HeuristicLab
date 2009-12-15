@@ -82,6 +82,7 @@ namespace HeuristicLab.Modeling {
     public static Dictionary<string, double> Calculate(Dataset dataset, IPredictor predictor, string targetVariableName, IEnumerable<string> inputVariableNames, int start, int end) {
       Dictionary<string, double> evaluationImpacts = new Dictionary<string, double>();
       Dataset dirtyDataset = (Dataset)dataset.Clone();
+      IPredictor dirtyPredictor = (IPredictor)predictor.Clone();
 
       double[] predictedValues = predictor.Predict(dataset, start, end);
       double[] targetValues = dataset.GetVariableValues(targetVariableName, start, end);
@@ -103,7 +104,7 @@ namespace HeuristicLab.Modeling {
           variableName != targetVariableName) {
           mean = dataset.GetMean(variableName, start, end);
           oldValues = dirtyDataset.ReplaceVariableValues(variableName, Enumerable.Repeat(mean, end - start), start, end);
-          predictedValues = predictor.Predict(dirtyDataset, start, end);
+          predictedValues = dirtyPredictor.Predict(dirtyDataset, start, end);
           newMSE = CalculateMSE(predictedValues, targetValues);
           evaluationImpacts[variableName] = newMSE / oldMSE;
           dirtyDataset.ReplaceVariableValues(variableName, oldValues, start, end);

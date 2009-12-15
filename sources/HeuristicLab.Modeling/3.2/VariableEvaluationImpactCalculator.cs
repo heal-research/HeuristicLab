@@ -83,6 +83,7 @@ namespace HeuristicLab.Modeling {
     public static Dictionary<string, double> Calculate(Dataset dataset, IPredictor predictor, string targetVariableName, IEnumerable<string> inputVariableNames, int start, int end) {
       Dictionary<string, double> evaluationImpacts = new Dictionary<string, double>();
       Dataset dirtyDataset = (Dataset)dataset.Clone();
+      IPredictor dirtyPredictor = (IPredictor)predictor.Clone();
       double[] referenceValues = predictor.Predict(dataset, start, end);
 
       double mean;
@@ -99,7 +100,7 @@ namespace HeuristicLab.Modeling {
           if (dataset.CountMissingValues(variableName, start, end) < (end - start) && dataset.GetRange(variableName, start, end) > 0.0) {
             mean = dataset.GetMean(variableName, start, end);
             oldValues = dirtyDataset.ReplaceVariableValues(variableName, Enumerable.Repeat(mean, end - start), start, end);
-            newValues = predictor.Predict(dirtyDataset, start, end);
+            newValues = dirtyPredictor.Predict(dirtyDataset, start, end);
             evaluationImpacts[variableName] = 1 - CalculateVAF(referenceValues, newValues);
             dirtyDataset.ReplaceVariableValues(variableName, oldValues, start, end);
           } else {
