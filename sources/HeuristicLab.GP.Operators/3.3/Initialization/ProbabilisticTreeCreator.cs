@@ -67,7 +67,7 @@ namespace HeuristicLab.GP.Operators {
           treeSize = random.Next(minSize, maxSize + 1);
           tries = 0;
         }
-      } while (root.GetSize() > maxHeight || root.GetHeight() > maxHeight);
+      } while (root.GetSize() > maxSize || root.GetHeight() > maxHeight);
       return root;
     }
   }
