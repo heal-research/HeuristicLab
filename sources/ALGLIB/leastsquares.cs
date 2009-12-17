@@ -189,11 +189,11 @@ namespace alglib
             //
             // B2 := (d^(-1) * B2')'
             //
-            if( d[1]!=0 )
+            if( (double)(d[1])!=(double)(0) )
             {
                 for(i=1; i<=ni; i++)
                 {
-                    if( d[i]>AP.Math.MachineEpsilon*10*Math.Sqrt(ni)*d[1] )
+                    if( (double)(d[i])>(double)(AP.Math.MachineEpsilon*10*Math.Sqrt(ni)*d[1]) )
                     {
                         b2[1,i] = b2[1,i]/d[i];
                     }
@@ -285,7 +285,7 @@ namespace alglib
             s = Math.Sin(phi);
             d1 = AP.Math.Sqr(c)*pp+AP.Math.Sqr(s)*qq-2*s*c*pq;
             d2 = AP.Math.Sqr(s)*pp+AP.Math.Sqr(c)*qq+2*s*c*pq;
-            if( Math.Abs(d1)>Math.Abs(d2) )
+            if( (double)(Math.Abs(d1))>(double)(Math.Abs(d2)) )
             {
                 m = Math.Abs(d1);
             }
@@ -295,7 +295,7 @@ namespace alglib
             }
             t1 = c*b1-s*b2;
             t2 = s*b1+c*b2;
-            if( Math.Abs(d1)>m*AP.Math.MachineEpsilon*1000 )
+            if( (double)(Math.Abs(d1))>(double)(m*AP.Math.MachineEpsilon*1000) )
             {
                 t1 = t1/d1;
             }
@@ -303,7 +303,7 @@ namespace alglib
             {
                 t1 = 0;
             }
-            if( Math.Abs(d2)>m*AP.Math.MachineEpsilon*1000 )
+            if( (double)(Math.Abs(d2))>(double)(m*AP.Math.MachineEpsilon*1000) )
             {
                 t2 = t2/d2;
             }
@@ -492,7 +492,7 @@ namespace alglib
             //
             for(i=1; i<=ni; i++)
             {
-                if( d[i]>AP.Math.MachineEpsilon*10*Math.Sqrt(ni)*d[1] )
+                if( (double)(d[i])>(double)(AP.Math.MachineEpsilon*10*Math.Sqrt(ni)*d[1]) )
                 {
                     b2[1,i] = b2[1,i]/d[i];
                 }
@@ -584,16 +584,16 @@ namespace alglib
             minx = x[0];
             for(i=1; i<=n-1; i++)
             {
-                if( x[i]>maxx )
+                if( (double)(x[i])>(double)(maxx) )
                 {
                     maxx = x[i];
                 }
-                if( x[i]<minx )
+                if( (double)(x[i])<(double)(minx) )
                 {
                     minx = x[i];
                 }
             }
-            if( minx==maxx )
+            if( (double)(minx)==(double)(maxx) )
             {
                 minx = minx-0.5;
                 maxx = maxx+0.5;
@@ -868,7 +868,7 @@ namespace alglib
             //
             for(i=1; i<=ni; i++)
             {
-                if( d[i]>AP.Math.MachineEpsilon*10*Math.Sqrt(ni)*d[1] )
+                if( (double)(d[i])>(double)(AP.Math.MachineEpsilon*10*Math.Sqrt(ni)*d[1]) )
                 {
                     b2[1,i] = b2[1,i]/d[i];
                 }
@@ -1132,7 +1132,7 @@ namespace alglib
                     result = false;
                     return result;
                 }
-                if( ws[1]==0 | ws[nc]<=AP.Math.MachineEpsilon*10*Math.Sqrt(nc)*ws[1] )
+                if( (double)(ws[1])==(double)(0) | (double)(ws[nc])<=(double)(AP.Math.MachineEpsilon*10*Math.Sqrt(nc)*ws[1]) )
                 {
                     result = false;
                     return result;
@@ -1214,7 +1214,7 @@ namespace alglib
             }
             for(i=1; i<=reducedsize; i++)
             {
-                if( ws[i]!=0 & ws[i]>AP.Math.MachineEpsilon*10*Math.Sqrt(nc)*ws[1] )
+                if( (double)(ws[i])!=(double)(0) & (double)(ws[i])>(double)(AP.Math.MachineEpsilon*10*Math.Sqrt(nc)*ws[1]) )
                 {
                     tmp[i] = tmp[i]/ws[i];
                 }

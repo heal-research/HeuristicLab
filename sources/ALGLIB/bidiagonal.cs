@@ -774,10 +774,6 @@ namespace alglib
         }
 
 
-        /*************************************************************************
-        Obsolete 1-based subroutine.
-        See RMatrixBD for 0-based replacement.
-        *************************************************************************/
         public static void tobidiagonal(ref double[,] a,
             int m,
             int n,
@@ -937,10 +933,6 @@ namespace alglib
         }
 
 
-        /*************************************************************************
-        Obsolete 1-based subroutine.
-        See RMatrixBDUnpackQ for 0-based replacement.
-        *************************************************************************/
         public static void unpackqfrombidiagonal(ref double[,] qp,
             int m,
             int n,
@@ -1019,10 +1011,6 @@ namespace alglib
         }
 
 
-        /*************************************************************************
-        Obsolete 1-based subroutine.
-        See RMatrixBDMultiplyByQ for 0-based replacement.
-        *************************************************************************/
         public static void multiplybyqfrombidiagonal(ref double[,] qp,
             int m,
             int n,
@@ -1168,10 +1156,6 @@ namespace alglib
         }
 
 
-        /*************************************************************************
-        Obsolete 1-based subroutine.
-        See RMatrixBDUnpackPT for 0-based replacement.
-        *************************************************************************/
         public static void unpackptfrombidiagonal(ref double[,] qp,
             int m,
             int n,
@@ -1250,10 +1234,6 @@ namespace alglib
         }
 
 
-        /*************************************************************************
-        Obsolete 1-based subroutine.
-        See RMatrixBDMultiplyByP for 0-based replacement.
-        *************************************************************************/
         public static void multiplybypfrombidiagonal(ref double[,] qp,
             int m,
             int n,
@@ -1401,10 +1381,6 @@ namespace alglib
         }
 
 
-        /*************************************************************************
-        Obsolete 1-based subroutine.
-        See RMatrixBDUnpackDiagonals for 0-based replacement.
-        *************************************************************************/
         public static void unpackdiagonalsfrombidiagonal(ref double[,] b,
             int m,
             int n,

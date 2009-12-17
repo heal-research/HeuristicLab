@@ -29,7 +29,7 @@ using System;
 
 namespace alglib
 {
-    public class gammaf
+    public class gammafunc
     {
         /*************************************************************************
         Gamma function
@@ -64,9 +64,9 @@ namespace alglib
 
             sgngam = 1;
             q = Math.Abs(x);
-            if( q>33.0 )
+            if( (double)(q)>(double)(33.0) )
             {
-                if( x<0.0 )
+                if( (double)(x)<(double)(0.0) )
                 {
                     p = (int)Math.Floor(q);
                     i = (int)Math.Round(p);
@@ -75,7 +75,7 @@ namespace alglib
                         sgngam = -1;
                     }
                     z = q-p;
-                    if( z>0.5 )
+                    if( (double)(z)>(double)(0.5) )
                     {
                         p = p+1;
                         z = q-p;
@@ -92,14 +92,14 @@ namespace alglib
                 return result;
             }
             z = 1;
-            while( x>=3 )
+            while( (double)(x)>=(double)(3) )
             {
                 x = x-1;
                 z = z*x;
             }
-            while( x<0 )
+            while( (double)(x)<(double)(0) )
             {
-                if( x>-0.000000001 )
+                if( (double)(x)>(double)(-0.000000001) )
                 {
                     result = z/((1+0.5772156649015329*x)*x);
                     return result;
@@ -107,9 +107,9 @@ namespace alglib
                 z = z/x;
                 x = x+1;
             }
-            while( x<2 )
+            while( (double)(x)<(double)(2) )
             {
-                if( x<0.000000001 )
+                if( (double)(x)<(double)(0.000000001) )
                 {
                     result = z/((1+0.5772156649015329*x)*x);
                     return result;
@@ -117,7 +117,7 @@ namespace alglib
                 z = z/x;
                 x = x+1.0;
             }
-            if( x==2 )
+            if( (double)(x)==(double)(2) )
             {
                 result = z;
                 return result;
@@ -196,7 +196,7 @@ namespace alglib
             sgngam = 1;
             logpi = 1.14472988584940017414;
             ls2pi = 0.91893853320467274178;
-            if( x<-34.0 )
+            if( (double)(x)<(double)(-34.0) )
             {
                 q = -x;
                 w = lngamma(q, ref tmp);
@@ -211,7 +211,7 @@ namespace alglib
                     sgngam = 1;
                 }
                 z = q-p;
-                if( z>0.5 )
+                if( (double)(z)>(double)(0.5) )
                 {
                     p = p+1;
                     z = p-q;
@@ -220,24 +220,24 @@ namespace alglib
                 result = logpi-Math.Log(z)-w;
                 return result;
             }
-            if( x<13 )
+            if( (double)(x)<(double)(13) )
             {
                 z = 1;
                 p = 0;
                 u = x;
-                while( u>=3 )
+                while( (double)(u)>=(double)(3) )
                 {
                     p = p-1;
                     u = x+p;
                     z = z*u;
                 }
-                while( u<2 )
+                while( (double)(u)<(double)(2) )
                 {
                     z = z/u;
                     p = p+1;
                     u = x+p;
                 }
-                if( z<0 )
+                if( (double)(z)<(double)(0) )
                 {
                     sgngam = -1;
                     z = -z;
@@ -246,7 +246,7 @@ namespace alglib
                 {
                     sgngam = 1;
                 }
-                if( u==2 )
+                if( (double)(u)==(double)(2) )
                 {
                     result = Math.Log(z);
                     return result;
@@ -271,13 +271,13 @@ namespace alglib
                 return result;
             }
             q = (x-0.5)*Math.Log(x)-x+ls2pi;
-            if( x>100000000 )
+            if( (double)(x)>(double)(100000000) )
             {
                 result = q;
                 return result;
             }
             p = 1/(x*x);
-            if( x>=1000.0 )
+            if( (double)(x)>=(double)(1000.0) )
             {
                 q = q+((7.9365079365079365079365*0.0001*p-2.7777777777777777777778*0.001)*p+0.0833333333333333333333)/x;
             }
@@ -311,7 +311,7 @@ namespace alglib
             stir = 8.33333333333482257126E-2+w*stir;
             w = 1+w*stir;
             y = Math.Exp(x);
-            if( x>143.01608 )
+            if( (double)(x)>(double)(143.01608) )
             {
                 v = Math.Pow(x, 0.5*x-0.25);
                 y = v*(v/y);

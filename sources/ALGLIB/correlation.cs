@@ -87,7 +87,7 @@ namespace alglib
                 yv = yv+AP.Math.Sqr(t2);
                 s = s+t1*t2;
             }
-            if( xv==0 | yv==0 )
+            if( (double)(xv)==(double)(0) | (double)(yv)==(double)(0) )
             {
                 result = 0;
             }
@@ -173,7 +173,7 @@ namespace alglib
                     while( t!=1 )
                     {
                         k = t/2;
-                        if( r[k-1]>=r[t-1] )
+                        if( (double)(r[k-1])>=(double)(r[t-1]) )
                         {
                             t = 1;
                         }
@@ -212,12 +212,12 @@ namespace alglib
                         {
                             if( k<i )
                             {
-                                if( r[k]>r[k-1] )
+                                if( (double)(r[k])>(double)(r[k-1]) )
                                 {
                                     k = k+1;
                                 }
                             }
-                            if( r[t-1]>=r[k-1] )
+                            if( (double)(r[t-1])>=(double)(r[k-1]) )
                             {
                                 t = 0;
                             }
@@ -247,7 +247,7 @@ namespace alglib
                 j = i+1;
                 while( j<=n-1 )
                 {
-                    if( r[j]!=r[i] )
+                    if( (double)(r[j])!=(double)(r[i]) )
                     {
                         break;
                     }

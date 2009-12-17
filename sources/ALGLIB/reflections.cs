@@ -97,9 +97,9 @@ namespace alglib
                 mx = Math.Max(Math.Abs(x[j]), mx);
             }
             s = 1;
-            if( mx!=0 )
+            if( (double)(mx)!=(double)(0) )
             {
-                if( mx<=AP.Math.MinRealNumber/AP.Math.MachineEpsilon )
+                if( (double)(mx)<=(double)(AP.Math.MinRealNumber/AP.Math.MachineEpsilon) )
                 {
                     s = AP.Math.MinRealNumber/AP.Math.MachineEpsilon;
                     v = 1/s;
@@ -111,7 +111,7 @@ namespace alglib
                 }
                 else
                 {
-                    if( mx>=AP.Math.MaxRealNumber*AP.Math.MachineEpsilon )
+                    if( (double)(mx)>=(double)(AP.Math.MaxRealNumber*AP.Math.MachineEpsilon) )
                     {
                         s = AP.Math.MaxRealNumber*AP.Math.MachineEpsilon;
                         v = 1/s;
@@ -129,7 +129,7 @@ namespace alglib
             //
             alpha = x[1];
             xnorm = 0;
-            if( mx!=0 )
+            if( (double)(mx)!=(double)(0) )
             {
                 for(j=2; j<=n; j++)
                 {
@@ -137,7 +137,7 @@ namespace alglib
                 }
                 xnorm = Math.Sqrt(xnorm)*mx;
             }
-            if( xnorm==0 )
+            if( (double)(xnorm)==(double)(0) )
             {
                 
                 //
@@ -153,7 +153,7 @@ namespace alglib
             //
             mx = Math.Max(Math.Abs(alpha), Math.Abs(xnorm));
             beta = -(mx*Math.Sqrt(AP.Math.Sqr(alpha/mx)+AP.Math.Sqr(xnorm/mx)));
-            if( alpha<0 )
+            if( (double)(alpha)<(double)(0) )
             {
                 beta = -beta;
             }
@@ -214,7 +214,7 @@ namespace alglib
             int vm = 0;
             int i_ = 0;
 
-            if( tau==0 | n1>n2 | m1>m2 )
+            if( (double)(tau)==(double)(0) | n1>n2 | m1>m2 )
             {
                 return;
             }
@@ -293,7 +293,7 @@ namespace alglib
             int i_ = 0;
             int i1_ = 0;
 
-            if( tau==0 | n1>n2 | m1>m2 )
+            if( (double)(tau)==(double)(0) | n1>n2 | m1>m2 )
             {
                 return;
             }

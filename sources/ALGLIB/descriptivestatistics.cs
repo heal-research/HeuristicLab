@@ -89,7 +89,7 @@ namespace alglib
                 }
                 v2 = AP.Math.Sqr(v2)/n;
                 variance = (v1-v2)/(n-1);
-                if( variance<0 )
+                if( (double)(variance)<(double)(0) )
                 {
                     variance = 0;
                 }
@@ -99,7 +99,7 @@ namespace alglib
             //
             // Skewness and kurtosis
             //
-            if( stddev!=0 )
+            if( (double)(stddev)!=(double)(0) )
             {
                 for(i=0; i<=n-1; i++)
                 {
@@ -225,7 +225,7 @@ namespace alglib
                     //
                     // 1 or 2 elements in partition
                     //
-                    if( ir==l+1 & x[ir]<x[l] )
+                    if( ir==l+1 & (double)(x[ir])<(double)(x[l]) )
                     {
                         tval = x[l];
                         x[l] = x[ir];
@@ -239,19 +239,19 @@ namespace alglib
                     tval = x[midp];
                     x[midp] = x[l+1];
                     x[l+1] = tval;
-                    if( x[l]>x[ir] )
+                    if( (double)(x[l])>(double)(x[ir]) )
                     {
                         tval = x[l];
                         x[l] = x[ir];
                         x[ir] = tval;
                     }
-                    if( x[l+1]>x[ir] )
+                    if( (double)(x[l+1])>(double)(x[ir]) )
                     {
                         tval = x[l+1];
                         x[l+1] = x[ir];
                         x[ir] = tval;
                     }
-                    if( x[l]>x[l+1] )
+                    if( (double)(x[l])>(double)(x[l+1]) )
                     {
                         tval = x[l];
                         x[l] = x[l+1];
@@ -266,12 +266,12 @@ namespace alglib
                         {
                             i = i+1;
                         }
-                        while( x[i]<a );
+                        while( (double)(x[i])<(double)(a) );
                         do
                         {
                             j = j-1;
                         }
-                        while( x[j]>a );
+                        while( (double)(x[j])>(double)(a) );
                         if( j<i )
                         {
                             break;
@@ -304,7 +304,7 @@ namespace alglib
             a = x[n-1];
             for(i=k+1; i<=n-1; i++)
             {
-                if( x[i]<a )
+                if( (double)(x[i])<(double)(a) )
                 {
                     a = x[i];
                 }
@@ -338,14 +338,14 @@ namespace alglib
             x = (double[])x.Clone();
 
             System.Diagnostics.Debug.Assert(n>1, "CalculatePercentile: N<=1!");
-            System.Diagnostics.Debug.Assert(p>=0 & p<=1, "CalculatePercentile: incorrect P!");
+            System.Diagnostics.Debug.Assert((double)(p)>=(double)(0) & (double)(p)<=(double)(1), "CalculatePercentile: incorrect P!");
             internalstatheapsort(ref x, n);
-            if( p==0 )
+            if( (double)(p)==(double)(0) )
             {
                 v = x[0];
                 return;
             }
-            if( p==1 )
+            if( (double)(p)==(double)(1) )
             {
                 v = x[n-1];
                 return;
@@ -377,7 +377,7 @@ namespace alglib
                 while( t!=1 )
                 {
                     k = t/2;
-                    if( arr[k-1]>=arr[t-1] )
+                    if( (double)(arr[k-1])>=(double)(arr[t-1]) )
                     {
                         t = 1;
                     }
@@ -410,12 +410,12 @@ namespace alglib
                     {
                         if( k<i )
                         {
-                            if( arr[k]>arr[k-1] )
+                            if( (double)(arr[k])>(double)(arr[k-1]) )
                             {
                                 k = k+1;
                             }
                         }
-                        if( arr[t-1]>=arr[k-1] )
+                        if( (double)(arr[t-1])>=(double)(arr[k-1]) )
                         {
                             t = 0;
                         }

@@ -231,7 +231,7 @@ namespace alglib
                 descriptivestatistics.calculatemoments(ref x, npoints, ref mean, ref variance, ref skewness, ref kurtosis);
                 means[j] = mean;
                 sigmas[j] = Math.Sqrt(variance);
-                if( sigmas[j]==0 )
+                if( (double)(sigmas[j])==(double)(0) )
                 {
                     sigmas[j] = 1;
                 }
@@ -356,7 +356,7 @@ namespace alglib
                     x[i_] = xy[i_,j];
                 }
                 descriptivestatistics.calculatemoments(ref x, npoints, ref mean, ref variance, ref skewness, ref kurtosis);
-                if( Math.Abs(mean)>Math.Sqrt(variance) )
+                if( (double)(Math.Abs(mean))>(double)(Math.Sqrt(variance)) )
                 {
                     
                     //
@@ -371,7 +371,7 @@ namespace alglib
                     //
                     // variation is large, it is better to bring variance to 1
                     //
-                    if( variance==0 )
+                    if( (double)(variance)==(double)(0) )
                     {
                         variance = 1;
                     }
@@ -697,7 +697,7 @@ namespace alglib
             k = 0;
             for(i=0; i<=npoints-1; i++)
             {
-                if( xy[i,nvars]!=0 )
+                if( (double)(xy[i,nvars])!=(double)(0) )
                 {
                     i1_ = (offs)-(0);
                     v = 0.0;
@@ -805,15 +805,6 @@ namespace alglib
         }
 
 
-        /*************************************************************************
-        Obsolete subroutine, use LRBuildS
-
-          -- ALGLIB --
-             Copyright 26.04.2008 by Bochkanov Sergey
-
-        References:
-        1. Numerical Recipes in C, "15.2 Fitting Data to a Straight Line"
-        *************************************************************************/
         public static void lrlines(ref double[,] xy,
             ref double[] s,
             int n,
@@ -844,7 +835,7 @@ namespace alglib
             }
             for(i=0; i<=n-1; i++)
             {
-                if( s[i]<=0 )
+                if( (double)(s[i])<=(double)(0) )
                 {
                     info = -2;
                     return;
@@ -874,7 +865,7 @@ namespace alglib
             t = Math.Sqrt(4*AP.Math.Sqr(sx)+AP.Math.Sqr(ss-sxx));
             e1 = 0.5*(ss+sxx+t);
             e2 = 0.5*(ss+sxx-t);
-            if( Math.Min(e1, e2)<=1000*AP.Math.MachineEpsilon*Math.Max(e1, e2) )
+            if( (double)(Math.Min(e1, e2))<=(double)(1000*AP.Math.MachineEpsilon*Math.Max(e1, e2)) )
             {
                 info = -3;
                 return;
@@ -922,12 +913,6 @@ namespace alglib
         }
 
 
-        /*************************************************************************
-        Obsolete subroutine, use LRBuild
-
-          -- ALGLIB --
-             Copyright 02.08.2008 by Bochkanov Sergey
-        *************************************************************************/
         public static void lrline(ref double[,] xy,
             int n,
             ref int info,
@@ -1004,7 +989,7 @@ namespace alglib
             }
             for(i=0; i<=npoints-1; i++)
             {
-                if( s[i]<=0 )
+                if( (double)(s[i])<=(double)(0) )
                 {
                     info = -2;
                     return;
@@ -1061,7 +1046,7 @@ namespace alglib
                 info = -4;
                 return;
             }
-            if( sv[0]<=0 )
+            if( (double)(sv[0])<=(double)(0) )
             {
                 
                 //
@@ -1089,7 +1074,7 @@ namespace alglib
                 }
                 return;
             }
-            if( sv[nvars-1]<=epstol*AP.Math.MachineEpsilon*sv[0] )
+            if( (double)(sv[nvars-1])<=(double)(epstol*AP.Math.MachineEpsilon*sv[0]) )
             {
                 
                 //
@@ -1102,7 +1087,7 @@ namespace alglib
                 //
                 for(k=nvars; k>=1; k--)
                 {
-                    if( sv[k-1]>epstol*AP.Math.MachineEpsilon*sv[0] )
+                    if( (double)(sv[k-1])>(double)(epstol*AP.Math.MachineEpsilon*sv[0]) )
                     {
                         
                         //
@@ -1172,7 +1157,7 @@ namespace alglib
             }
             for(i=0; i<=nvars-1; i++)
             {
-                if( sv[i]>epstol*AP.Math.MachineEpsilon*sv[0] )
+                if( (double)(sv[i])>(double)(epstol*AP.Math.MachineEpsilon*sv[0]) )
                 {
                     svi[i] = 1/sv[i];
                 }
@@ -1291,7 +1276,7 @@ namespace alglib
                 }
                 ar.rmserror = ar.rmserror+AP.Math.Sqr(r-xy[i,nvars]);
                 ar.avgerror = ar.avgerror+Math.Abs(r-xy[i,nvars]);
-                if( xy[i,nvars]!=0 )
+                if( (double)(xy[i,nvars])!=(double)(0) )
                 {
                     ar.avgrelerror = ar.avgrelerror+Math.Abs((r-xy[i,nvars])/xy[i,nvars]);
                     na = na+1;
@@ -1305,7 +1290,7 @@ namespace alglib
                 {
                     p += u[i,i_]*u[i,i_];
                 }
-                if( p>1-epstol*AP.Math.MachineEpsilon )
+                if( (double)(p)>(double)(1-epstol*AP.Math.MachineEpsilon) )
                 {
                     ar.cvdefects[ar.ncvdefects] = i;
                     ar.ncvdefects = ar.ncvdefects+1;
@@ -1314,7 +1299,7 @@ namespace alglib
                 r = s[i]*(r/s[i]-b[i]*p)/(1-p);
                 ar.cvrmserror = ar.cvrmserror+AP.Math.Sqr(r-xy[i,nvars]);
                 ar.cvavgerror = ar.cvavgerror+Math.Abs(r-xy[i,nvars]);
-                if( xy[i,nvars]!=0 )
+                if( (double)(xy[i,nvars])!=(double)(0) )
                 {
                     ar.cvavgrelerror = ar.cvavgrelerror+Math.Abs((r-xy[i,nvars])/xy[i,nvars]);
                     nacv = nacv+1;

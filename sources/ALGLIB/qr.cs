@@ -262,9 +262,6 @@ namespace alglib
         }
 
 
-        /*************************************************************************
-        Obsolete 1-based subroutine. See RMatrixQR for 0-based replacement.
-        *************************************************************************/
         public static void qrdecomposition(ref double[,] a,
             int m,
             int n,
@@ -321,9 +318,6 @@ namespace alglib
         }
 
 
-        /*************************************************************************
-        Obsolete 1-based subroutine. See RMatrixQRUnpackQ for 0-based replacement.
-        *************************************************************************/
         public static void unpackqfromqr(ref double[,] a,
             int m,
             int n,
@@ -391,9 +385,6 @@ namespace alglib
         }
 
 
-        /*************************************************************************
-        Obsolete 1-based subroutine. See RMatrixQR for 0-based replacement.
-        *************************************************************************/
         public static void qrdecompositionunpacked(double[,] a,
             int m,
             int n,

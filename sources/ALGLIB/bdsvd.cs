@@ -153,18 +153,6 @@ namespace alglib
         }
 
 
-        /*************************************************************************
-        Obsolete 1-based subroutine. See RMatrixBDSVD for 0-based replacement.
-
-        History:
-            * 31 March, 2007.
-                changed MAXITR from 6 to 12.
-
-          -- LAPACK routine (version 3.0) --
-             Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-             Courant Institute, Argonne National Lab, and Rice University
-             October 31, 1999.
-        *************************************************************************/
         public static bool bidiagonalsvddecomposition(ref double[] d,
             double[] e,
             int n,
@@ -276,7 +264,7 @@ namespace alglib
             }
             if( n==1 )
             {
-                if( d[1]<0 )
+                if( (double)(d[1])<(double)(0) )
                 {
                     d[1] = -d[1];
                     if( ncvt>0 )
@@ -383,21 +371,21 @@ namespace alglib
                 smax = Math.Max(smax, Math.Abs(e[i]));
             }
             sminl = 0;
-            if( tol>=0 )
+            if( (double)(tol)>=(double)(0) )
             {
                 
                 //
                 // Relative accuracy desired
                 //
                 sminoa = Math.Abs(d[1]);
-                if( sminoa!=0 )
+                if( (double)(sminoa)!=(double)(0) )
                 {
                     mu = sminoa;
                     for(i=2; i<=n; i++)
                     {
                         mu = Math.Abs(d[i])*(mu/(mu+Math.Abs(e[i-1])));
                         sminoa = Math.Min(sminoa, mu);
-                        if( sminoa==0 )
+                        if( (double)(sminoa)==(double)(0) )
                         {
                             break;
                         }
@@ -452,7 +440,7 @@ namespace alglib
                 //
                 // Find diagonal block of matrix to work on
                 //
-                if( tol<0 & Math.Abs(d[m])<=thresh )
+                if( (double)(tol)<(double)(0) & (double)(Math.Abs(d[m]))<=(double)(thresh) )
                 {
                     d[m] = 0;
                 }
@@ -464,11 +452,11 @@ namespace alglib
                     ll = m-lll;
                     abss = Math.Abs(d[ll]);
                     abse = Math.Abs(e[ll]);
-                    if( tol<0 & abss<=thresh )
+                    if( (double)(tol)<(double)(0) & (double)(abss)<=(double)(thresh) )
                     {
                         d[ll] = 0;
                     }
-                    if( abse<=thresh )
+                    if( (double)(abse)<=(double)(thresh) )
                     {
                         matrixsplitflag = true;
                         break;
@@ -605,17 +593,17 @@ namespace alglib
                 // Very strange that LAPACK still contains it.
                 //
                 bchangedir = false;
-                if( idir==1 & Math.Abs(d[ll])<1.0E-3*Math.Abs(d[m]) )
+                if( idir==1 & (double)(Math.Abs(d[ll]))<(double)(1.0E-3*Math.Abs(d[m])) )
                 {
                     bchangedir = true;
                 }
-                if( idir==2 & Math.Abs(d[m])<1.0E-3*Math.Abs(d[ll]) )
+                if( idir==2 & (double)(Math.Abs(d[m]))<(double)(1.0E-3*Math.Abs(d[ll])) )
                 {
                     bchangedir = true;
                 }
                 if( ll!=oldll | m!=oldm | bchangedir )
                 {
-                    if( Math.Abs(d[ll])>=Math.Abs(d[m]) )
+                    if( (double)(Math.Abs(d[ll]))>=(double)(Math.Abs(d[m])) )
                     {
                         
                         //
@@ -643,12 +631,12 @@ namespace alglib
                     // Run convergence test in forward direction
                     // First apply standard test to bottom of matrix
                     //
-                    if( Math.Abs(e[m-1])<=Math.Abs(tol)*Math.Abs(d[m]) | tol<0 & Math.Abs(e[m-1])<=thresh )
+                    if( (double)(Math.Abs(e[m-1]))<=(double)(Math.Abs(tol)*Math.Abs(d[m])) | (double)(tol)<(double)(0) & (double)(Math.Abs(e[m-1]))<=(double)(thresh) )
                     {
                         e[m-1] = 0;
                         continue;
                     }
-                    if( tol>=0 )
+                    if( (double)(tol)>=(double)(0) )
                     {
                         
                         //
@@ -660,7 +648,7 @@ namespace alglib
                         iterflag = false;
                         for(lll=ll; lll<=m-1; lll++)
                         {
-                            if( Math.Abs(e[lll])<=tol*mu )
+                            if( (double)(Math.Abs(e[lll]))<=(double)(tol*mu) )
                             {
                                 e[lll] = 0;
                                 iterflag = true;
@@ -683,12 +671,12 @@ namespace alglib
                     // Run convergence test in backward direction
                     // First apply standard test to top of matrix
                     //
-                    if( Math.Abs(e[ll])<=Math.Abs(tol)*Math.Abs(d[ll]) | tol<0 & Math.Abs(e[ll])<=thresh )
+                    if( (double)(Math.Abs(e[ll]))<=(double)(Math.Abs(tol)*Math.Abs(d[ll])) | (double)(tol)<(double)(0) & (double)(Math.Abs(e[ll]))<=(double)(thresh) )
                     {
                         e[ll] = 0;
                         continue;
                     }
-                    if( tol>=0 )
+                    if( (double)(tol)>=(double)(0) )
                     {
                         
                         //
@@ -700,7 +688,7 @@ namespace alglib
                         iterflag = false;
                         for(lll=m-1; lll>=ll; lll--)
                         {
-                            if( Math.Abs(e[lll])<=tol*mu )
+                            if( (double)(Math.Abs(e[lll]))<=(double)(tol*mu) )
                             {
                                 e[lll] = 0;
                                 iterflag = true;
@@ -723,7 +711,7 @@ namespace alglib
                 // Compute shift.  First, test if shifting would ruin relative
                 // accuracy, and if so set the shift to zero.
                 //
-                if( tol>=0 & n*tol*(sminl/smax)<=Math.Max(eps, 0.01*tol) )
+                if( (double)(tol)>=(double)(0) & (double)(n*tol*(sminl/smax))<=(double)(Math.Max(eps, 0.01*tol)) )
                 {
                     
                     //
@@ -751,9 +739,9 @@ namespace alglib
                     //
                     // Test if shift negligible, and if so set to zero
                     //
-                    if( sll>0 )
+                    if( (double)(sll)>(double)(0) )
                     {
-                        if( AP.Math.Sqr(shift/sll)<eps )
+                        if( (double)(AP.Math.Sqr(shift/sll))<(double)(eps) )
                         {
                             shift = 0;
                         }
@@ -768,7 +756,7 @@ namespace alglib
                 //
                 // If SHIFT = 0, do simplified QR iteration
                 //
-                if( shift==0 )
+                if( (double)(shift)==(double)(0) )
                 {
                     if( idir==1 )
                     {
@@ -816,7 +804,7 @@ namespace alglib
                         //
                         // Test convergence
                         //
-                        if( Math.Abs(e[m-1])<=thresh )
+                        if( (double)(Math.Abs(e[m-1]))<=(double)(thresh) )
                         {
                             e[m-1] = 0;
                         }
@@ -867,7 +855,7 @@ namespace alglib
                         //
                         // Test convergence
                         //
-                        if( Math.Abs(e[ll])<=thresh )
+                        if( (double)(Math.Abs(e[ll]))<=(double)(thresh) )
                         {
                             e[ll] = 0;
                         }
@@ -934,7 +922,7 @@ namespace alglib
                         //
                         // Test convergence
                         //
-                        if( Math.Abs(e[m-1])<=thresh )
+                        if( (double)(Math.Abs(e[m-1]))<=(double)(thresh) )
                         {
                             e[m-1] = 0;
                         }
@@ -978,7 +966,7 @@ namespace alglib
                         //
                         // Test convergence
                         //
-                        if( Math.Abs(e[ll])<=thresh )
+                        if( (double)(Math.Abs(e[ll]))<=(double)(thresh) )
                         {
                             e[ll] = 0;
                         }
@@ -1012,7 +1000,7 @@ namespace alglib
             //
             for(i=1; i<=n; i++)
             {
-                if( d[i]<0 )
+                if( (double)(d[i])<(double)(0) )
                 {
                     d[i] = -d[i];
                     
@@ -1043,7 +1031,7 @@ namespace alglib
                 smin = d[1];
                 for(j=2; j<=n+1-i; j++)
                 {
-                    if( d[j]<=smin )
+                    if( (double)(d[j])<=(double)(smin) )
                     {
                         isub = j;
                         smin = d[j];
@@ -1116,7 +1104,7 @@ namespace alglib
         {
             double result = 0;
 
-            if( b>=0 )
+            if( (double)(b)>=(double)(0) )
             {
                 result = Math.Abs(a);
             }
@@ -1149,10 +1137,10 @@ namespace alglib
             ha = Math.Abs(h);
             fhmn = Math.Min(fa, ha);
             fhmx = Math.Max(fa, ha);
-            if( fhmn==0 )
+            if( (double)(fhmn)==(double)(0) )
             {
                 ssmin = 0;
-                if( fhmx==0 )
+                if( (double)(fhmx)==(double)(0) )
                 {
                     ssmax = ga;
                 }
@@ -1163,7 +1151,7 @@ namespace alglib
             }
             else
             {
-                if( ga<fhmx )
+                if( (double)(ga)<(double)(fhmx) )
                 {
                     aas = 1+fhmn/fhmx;
                     at = (fhmx-fhmn)/fhmx;
@@ -1175,7 +1163,7 @@ namespace alglib
                 else
                 {
                     au = fhmx/ga;
-                    if( au==0 )
+                    if( (double)(au)==(double)(0) )
                     {
                         
                         //
@@ -1248,7 +1236,7 @@ namespace alglib
             //  PMAX = 3 if H largest in absolute values
             //
             pmax = 1;
-            swp = ha>fa;
+            swp = (double)(ha)>(double)(fa);
             if( swp )
             {
                 
@@ -1265,7 +1253,7 @@ namespace alglib
             }
             gt = g;
             ga = Math.Abs(gt);
-            if( ga==0 )
+            if( (double)(ga)==(double)(0) )
             {
                 
                 //
@@ -1281,10 +1269,10 @@ namespace alglib
             else
             {
                 gasmal = true;
-                if( ga>fa )
+                if( (double)(ga)>(double)(fa) )
                 {
                     pmax = 2;
-                    if( fa/ga<AP.Math.MachineEpsilon )
+                    if( (double)(fa/ga)<(double)(AP.Math.MachineEpsilon) )
                     {
                         
                         //
@@ -1292,7 +1280,7 @@ namespace alglib
                         //
                         gasmal = false;
                         ssmax = ga;
-                        if( ha>1 )
+                        if( (double)(ha)>(double)(1) )
                         {
                             v = ga/ha;
                             ssmin = fa/v;
@@ -1315,7 +1303,7 @@ namespace alglib
                     // Normal case
                     //
                     d = fa-ha;
-                    if( d==fa )
+                    if( (double)(d)==(double)(fa) )
                     {
                         l = 1;
                     }
@@ -1328,7 +1316,7 @@ namespace alglib
                     mm = m*m;
                     tt = t*t;
                     s = Math.Sqrt(tt+mm);
-                    if( l==0 )
+                    if( (double)(l)==(double)(0) )
                     {
                         r = Math.Abs(m);
                     }
@@ -1339,13 +1327,13 @@ namespace alglib
                     a = 0.5*(s+r);
                     ssmin = ha/a;
                     ssmax = fa*a;
-                    if( mm==0 )
+                    if( (double)(mm)==(double)(0) )
                     {
                         
                         //
                         // Note that M is very tiny
                         //
-                        if( l==0 )
+                        if( (double)(l)==(double)(0) )
                         {
                             t = extsignbdsqr(2, ft)*extsignbdsqr(1, gt);
                         }

@@ -153,7 +153,7 @@ namespace alglib
             // M much larger than N
             // Use bidiagonal reduction with QR-decomposition
             //
-            if( m>1.6*n )
+            if( (double)(m)>(double)(1.6*n) )
             {
                 if( uneeded==0 )
                 {
@@ -223,7 +223,7 @@ namespace alglib
             // N much larger than M
             // Use bidiagonal reduction with LQ-decomposition
             //
-            if( n>1.6*m )
+            if( (double)(n)>(double)(1.6*m) )
             {
                 if( vtneeded==0 )
                 {
@@ -340,10 +340,6 @@ namespace alglib
         }
 
 
-        /*************************************************************************
-        Obsolete 1-based subroutine.
-        See RMatrixSVD for 0-based replacement.
-        *************************************************************************/
         public static bool svddecomposition(double[,] a,
             int m,
             int n,
@@ -421,7 +417,7 @@ namespace alglib
             // M much larger than N
             // Use bidiagonal reduction with QR-decomposition
             //
-            if( m>1.6*n )
+            if( (double)(m)>(double)(1.6*n) )
             {
                 if( uneeded==0 )
                 {
@@ -491,7 +487,7 @@ namespace alglib
             // N much larger than M
             // Use bidiagonal reduction with LQ-decomposition
             //
-            if( n>1.6*m )
+            if( (double)(n)>(double)(1.6*m) )
             {
                 if( vtneeded==0 )
                 {

@@ -246,10 +246,6 @@ namespace alglib
         }
 
 
-        /*************************************************************************
-        Obsolete 1-based subroutine
-        See RMatrixLQ for 0-based replacement.
-        *************************************************************************/
         public static void lqdecomposition(ref double[,] a,
             int m,
             int n,
@@ -308,10 +304,6 @@ namespace alglib
         }
 
 
-        /*************************************************************************
-        Obsolete 1-based subroutine
-        See RMatrixLQUnpackQ for 0-based replacement.
-        *************************************************************************/
         public static void unpackqfromlq(ref double[,] a,
             int m,
             int n,
@@ -379,9 +371,6 @@ namespace alglib
         }
 
 
-        /*************************************************************************
-        Obsolete 1-based subroutine
-        *************************************************************************/
         public static void lqdecompositionunpacked(double[,] a,
             int m,
             int n,

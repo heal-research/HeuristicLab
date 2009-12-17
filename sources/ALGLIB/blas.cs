@@ -50,10 +50,10 @@ namespace alglib
             ssq = 1;
             for(ix=i1; ix<=i2; ix++)
             {
-                if( x[ix]!=0 )
+                if( (double)(x[ix])!=(double)(0) )
                 {
                     absxi = Math.Abs(x[ix]);
-                    if( scl<absxi )
+                    if( (double)(scl)<(double)(absxi) )
                     {
                         ssq = 1+ssq*AP.Math.Sqr(scl/absxi);
                         scl = absxi;
@@ -81,7 +81,7 @@ namespace alglib
             a = Math.Abs(x[result]);
             for(i=i1+1; i<=i2; i++)
             {
-                if( Math.Abs(x[i])>Math.Abs(x[result]) )
+                if( (double)(Math.Abs(x[i]))>(double)(Math.Abs(x[result])) )
                 {
                     result = i;
                 }
@@ -103,7 +103,7 @@ namespace alglib
             a = Math.Abs(x[result,j]);
             for(i=i1+1; i<=i2; i++)
             {
-                if( Math.Abs(x[i,j])>Math.Abs(x[result,j]) )
+                if( (double)(Math.Abs(x[i,j]))>(double)(Math.Abs(x[result,j])) )
                 {
                     result = i;
                 }
@@ -125,7 +125,7 @@ namespace alglib
             a = Math.Abs(x[i,result]);
             for(j=j1+1; j<=j2; j++)
             {
-                if( Math.Abs(x[i,j])>Math.Abs(x[i,result]) )
+                if( (double)(Math.Abs(x[i,j]))>(double)(Math.Abs(x[i,result])) )
                 {
                     result = j;
                 }
@@ -315,7 +315,7 @@ namespace alglib
                 //
                 // beta*y
                 //
-                if( beta==0 )
+                if( (double)(beta)==(double)(0) )
                 {
                     for(i=iy1; i<=iy2; i++)
                     {
@@ -360,7 +360,7 @@ namespace alglib
                 //
                 // beta*y
                 //
-                if( beta==0 )
+                if( (double)(beta)==(double)(0) )
                 {
                     for(i=iy1; i<=iy2; i++)
                     {
@@ -404,7 +404,7 @@ namespace alglib
             yabs = Math.Abs(y);
             w = Math.Max(xabs, yabs);
             z = Math.Min(xabs, yabs);
-            if( z==0 )
+            if( (double)(z)==(double)(0) )
             {
                 result = w;
             }
@@ -496,7 +496,7 @@ namespace alglib
             //
             // Prepare C
             //
-            if( beta==0 )
+            if( (double)(beta)==(double)(0) )
             {
                 for(i=ci1; i<=ci2; i++)
                 {

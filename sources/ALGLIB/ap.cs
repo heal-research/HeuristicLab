@@ -44,11 +44,11 @@ namespace AP
         }
         public static bool operator==(Complex lhs, Complex rhs)
         {
-            return (lhs.x==rhs.x) & (lhs.y==rhs.y);
+            return ((double)lhs.x==(double)rhs.x) & ((double)lhs.y==(double)rhs.y);
         }
         public static bool operator!=(Complex lhs, Complex rhs)
         {
-            return (lhs.x!=rhs.x) | (lhs.y!=rhs.y);
+            return ((double)lhs.x!=(double)rhs.x) | ((double)lhs.y!=(double)rhs.y);
         }
         public static Complex operator+(Complex lhs)
         {
@@ -91,7 +91,37 @@ namespace AP
             }
             return result;
         }
-    }    
+		public override int GetHashCode() 
+		{ 
+			return x.GetHashCode() ^ y.GetHashCode(); 
+		}
+		public override bool Equals(object obj) 
+		{ 
+			if( obj is byte)
+				return Equals(new Complex((byte)obj));
+			if( obj is sbyte)
+				return Equals(new Complex((sbyte)obj));
+			if( obj is short)
+				return Equals(new Complex((short)obj));
+			if( obj is ushort)
+				return Equals(new Complex((ushort)obj));
+			if( obj is int)
+				return Equals(new Complex((int)obj));
+			if( obj is uint)
+				return Equals(new Complex((uint)obj));
+			if( obj is long)
+				return Equals(new Complex((long)obj));
+			if( obj is ulong)
+				return Equals(new Complex((ulong)obj));
+			if( obj is float)
+				return Equals(new Complex((float)obj));
+			if( obj is double)
+				return Equals(new Complex((double)obj));
+			if( obj is decimal)
+				return Equals(new Complex((double)(decimal)obj));
+			return base.Equals(obj); 
+		}	
+	}    
     
 	/********************************************************************
 	AP math namespace

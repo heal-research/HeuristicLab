@@ -24,21 +24,6 @@ namespace alglib
 {
     public class spline3
     {
-        /*************************************************************************
-        This subroutine builds linear spline coefficients table.
-
-        Input parameters:
-            X   -   spline nodes, array[0..N-1]
-            Y   -   function values, array[0..N-1]
-            N   -   points count, N>=2
-            
-        Output parameters:
-            C   -   coefficients table.  Used  by  SplineInterpolation  and  other
-                    subroutines from this file.
-
-          -- ALGLIB PROJECT --
-             Copyright 24.06.2007 by Bochkanov Sergey
-        *************************************************************************/
         public static void buildlinearspline(double[] x,
             double[] y,
             int n,
@@ -85,33 +70,6 @@ namespace alglib
         }
 
 
-        /*************************************************************************
-        This subroutine builds cubic spline coefficients table.
-
-        Input parameters:
-            X           -   spline nodes, array[0..N-1]
-            Y           -   function values, array[0..N-1]
-            N           -   points count, N>=2
-            BoundLType  -   boundary condition type for the left boundary
-            BoundL      -   left boundary condition (first or second derivative,
-                            depending on the BoundLType)
-            BoundRType  -   boundary condition type for the right boundary
-            BoundR      -   right boundary condition (first or second derivative,
-                            depending on the BoundRType)
-
-        Output parameters:
-            C           -   coefficients table.  Used  by  SplineInterpolation and
-                            other subroutines from this file.
-                            
-        The BoundLType/BoundRType parameters can have the following values:
-            * 0,   which  corresponds  to  the  parabolically   terminated  spline
-              (BoundL/BoundR are ignored).
-            * 1, which corresponds to the first derivative boundary condition
-            * 2, which corresponds to the second derivative boundary condition
-
-          -- ALGLIB PROJECT --
-             Copyright 23.06.2007 by Bochkanov Sergey
-        *************************************************************************/
         public static void buildcubicspline(double[] x,
             double[] y,
             int n,
@@ -239,22 +197,6 @@ namespace alglib
         }
 
 
-        /*************************************************************************
-        This subroutine builds cubic Hermite spline coefficients table.
-
-        Input parameters:
-            X           -   spline nodes, array[0..N-1]
-            Y           -   function values, array[0..N-1]
-            D           -   derivatives, array[0..N-1]
-            N           -   points count, N>=2
-
-        Output parameters:
-            C           -   coefficients table.  Used  by  SplineInterpolation and
-                            other subroutines from this file.
-
-          -- ALGLIB PROJECT --
-             Copyright 23.06.2007 by Bochkanov Sergey
-        *************************************************************************/
         public static void buildhermitespline(double[] x,
             double[] y,
             double[] d,
@@ -309,21 +251,6 @@ namespace alglib
         }
 
 
-        /*************************************************************************
-        This subroutine builds Akima spline coefficients table.
-
-        Input parameters:
-            X           -   spline nodes, array[0..N-1]
-            Y           -   function values, array[0..N-1]
-            N           -   points count, N>=5
-
-        Output parameters:
-            C           -   coefficients table.  Used  by  SplineInterpolation and
-                            other subroutines from this file.
-
-          -- ALGLIB PROJECT --
-             Copyright 24.06.2007 by Bochkanov Sergey
-        *************************************************************************/
         public static void buildakimaspline(double[] x,
             double[] y,
             int n,
@@ -364,7 +291,7 @@ namespace alglib
             d = new double[n-1+1];
             for(i=2; i<=n-3; i++)
             {
-                if( Math.Abs(w[i-1])+Math.Abs(w[i+1])!=0 )
+                if( (double)(Math.Abs(w[i-1])+Math.Abs(w[i+1]))!=(double)(0) )
                 {
                     d[i] = (w[i+1]*diff[i-1]+w[i-1]*diff[i])/(w[i+1]+w[i-1]);
                 }
@@ -385,20 +312,6 @@ namespace alglib
         }
 
 
-        /*************************************************************************
-        This subroutine calculates the value of the spline at the given point X.
-
-        Input parameters:
-            C           -   coefficients table. Built by BuildLinearSpline,
-                            BuildHermiteSpline, BuildCubicSpline, BuildAkimaSpline.
-            X           -   point
-
-        Result:
-            S(x)
-
-          -- ALGLIB PROJECT --
-             Copyright 23.06.2007 by Bochkanov Sergey
-        *************************************************************************/
         public static double splineinterpolation(ref double[] c,
             double x)
         {
@@ -419,7 +332,7 @@ namespace alglib
             while( l!=r-1 )
             {
                 m = (l+r)/2;
-                if( c[m]>=x )
+                if( (double)(c[m])>=(double)(x) )
                 {
                     r = m;
                 }
@@ -439,22 +352,6 @@ namespace alglib
         }
 
 
-        /*************************************************************************
-        This subroutine differentiates the spline.
-
-        Input parameters:
-            C   -   coefficients table. Built by BuildLinearSpline,
-                    BuildHermiteSpline, BuildCubicSpline, BuildAkimaSpline.
-            X   -   point
-
-        Result:
-            S   -   S(x)
-            DS  -   S'(x)
-            D2S -   S''(x)
-
-          -- ALGLIB PROJECT --
-             Copyright 24.06.2007 by Bochkanov Sergey
-        *************************************************************************/
         public static void splinedifferentiation(ref double[] c,
             double x,
             ref double s,
@@ -477,7 +374,7 @@ namespace alglib
             while( l!=r-1 )
             {
                 m = (l+r)/2;
-                if( c[m]>=x )
+                if( (double)(c[m])>=(double)(x) )
                 {
                     r = m;
                 }
@@ -498,19 +395,6 @@ namespace alglib
         }
 
 
-        /*************************************************************************
-        This subroutine makes the copy of the spline.
-
-        Input parameters:
-            C   -   coefficients table. Built by BuildLinearSpline,
-                    BuildHermiteSpline, BuildCubicSpline, BuildAkimaSpline.
-
-        Result:
-            CC  -   spline copy
-
-          -- ALGLIB PROJECT --
-             Copyright 29.06.2007 by Bochkanov Sergey
-        *************************************************************************/
         public static void splinecopy(ref double[] c,
             ref double[] cc)
         {
@@ -526,30 +410,6 @@ namespace alglib
         }
 
 
-        /*************************************************************************
-        This subroutine unpacks the spline into the coefficients table.
-
-        Input parameters:
-            C   -   coefficients table. Built by BuildLinearSpline,
-                    BuildHermiteSpline, BuildCubicSpline, BuildAkimaSpline.
-            X   -   point
-
-        Result:
-            Tbl -   coefficients table, unpacked format, array[0..N-2, 0..5].
-                    For I = 0...N-2:
-                        Tbl[I,0] = X[i]
-                        Tbl[I,1] = X[i+1]
-                        Tbl[I,2] = C0
-                        Tbl[I,3] = C1
-                        Tbl[I,4] = C2
-                        Tbl[I,5] = C3
-                    On [x[i], x[i+1]] spline is equals to:
-                        S(x) = C0 + C1*t + C2*t^2 + C3*t^3
-                        t = x-x[i]
-
-          -- ALGLIB PROJECT --
-             Copyright 29.06.2007 by Bochkanov Sergey
-        *************************************************************************/
         public static void splineunpack(ref double[] c,
             ref int n,
             ref double[,] tbl)
@@ -575,19 +435,6 @@ namespace alglib
         }
 
 
-        /*************************************************************************
-        This subroutine performs linear transformation of the spline argument.
-
-        Input parameters:
-            C   -   coefficients table. Built by BuildLinearSpline,
-                    BuildHermiteSpline, BuildCubicSpline, BuildAkimaSpline.
-            A, B-   transformation coefficients: x = A*t + B
-        Result:
-            C   -   transformed spline
-
-          -- ALGLIB PROJECT --
-             Copyright 30.06.2007 by Bochkanov Sergey
-        *************************************************************************/
         public static void splinelintransx(ref double[] c,
             double a,
             double b)
@@ -607,7 +454,7 @@ namespace alglib
             //
             // Special case: A=0
             //
-            if( a==0 )
+            if( (double)(a)==(double)(0) )
             {
                 v = splineinterpolation(ref c, b);
                 for(i=0; i<=n-2; i++)
@@ -640,19 +487,6 @@ namespace alglib
         }
 
 
-        /*************************************************************************
-        This subroutine performs linear transformation of the spline.
-
-        Input parameters:
-            C   -   coefficients table. Built by BuildLinearSpline,
-                    BuildHermiteSpline, BuildCubicSpline, BuildAkimaSpline.
-            A, B-   transformation coefficients: S2(x) = A*S(x) + B
-        Result:
-            C   -   transformed spline
-
-          -- ALGLIB PROJECT --
-             Copyright 30.06.2007 by Bochkanov Sergey
-        *************************************************************************/
         public static void splinelintransy(ref double[] c,
             double a,
             double b)
@@ -682,19 +516,6 @@ namespace alglib
         }
 
 
-        /*************************************************************************
-        This subroutine integrates the spline.
-
-        Input parameters:
-            C   -   coefficients table. Built by BuildLinearSpline,
-                    BuildHermiteSpline, BuildCubicSpline, BuildAkimaSpline.
-            X   -   right bound of the integration interval [a, x]
-        Result:
-            integral(S(t)dt,a,x)
-
-          -- ALGLIB PROJECT --
-             Copyright 23.06.2007 by Bochkanov Sergey
-        *************************************************************************/
         public static double splineintegration(ref double[] c,
             double x)
         {
@@ -717,7 +538,7 @@ namespace alglib
             while( l!=r-1 )
             {
                 m = (l+r)/2;
-                if( c[m]>=x )
+                if( (double)(c[m])>=(double)(x) )
                 {
                     r = m;
                 }
@@ -750,9 +571,6 @@ namespace alglib
         }
 
 
-        /*************************************************************************
-        Obsolete subroutine, left for backward compatibility.
-        *************************************************************************/
         public static void spline3buildtable(int n,
             int diffn,
             double[] x,
@@ -797,7 +615,7 @@ namespace alglib
                     c = true;
                     do
                     {
-                        if( x[j]<=x[j+g] )
+                        if( (double)(x[j])<=(double)(x[j+g]) )
                         {
                             c = false;
                         }
@@ -891,9 +709,6 @@ namespace alglib
         }
 
 
-        /*************************************************************************
-        Obsolete subroutine, left for backward compatibility.
-        *************************************************************************/
         public static double spline3interpolate(int n,
             ref double[,] c,
             double x)
@@ -912,7 +727,7 @@ namespace alglib
             {
                 half = l/2;
                 middle = first+half;
-                if( c[4,middle]<x )
+                if( (double)(c[4,middle])<(double)(x) )
                 {
                     first = middle+1;
                     l = l-half-1;
@@ -932,9 +747,6 @@ namespace alglib
         }
 
 
-        /*************************************************************************
-        Internal subroutine. Heap sort.
-        *************************************************************************/
         private static void heapsortpoints(ref double[] x,
             ref double[] y,
             int n)
@@ -955,8 +767,8 @@ namespace alglib
             isdescending = true;
             for(i=1; i<=n-1; i++)
             {
-                isascending = isascending & x[i]>x[i-1];
-                isdescending = isdescending & x[i]<x[i-1];
+                isascending = isascending & (double)(x[i])>(double)(x[i-1]);
+                isdescending = isdescending & (double)(x[i])<(double)(x[i-1]);
             }
             if( isascending )
             {
@@ -999,7 +811,7 @@ namespace alglib
                 while( t!=1 )
                 {
                     k = t/2;
-                    if( x[k-1]>=x[t-1] )
+                    if( (double)(x[k-1])>=(double)(x[t-1]) )
                     {
                         t = 1;
                     }
@@ -1038,12 +850,12 @@ namespace alglib
                     {
                         if( k<i )
                         {
-                            if( x[k]>x[k-1] )
+                            if( (double)(x[k])>(double)(x[k-1]) )
                             {
                                 k = k+1;
                             }
                         }
-                        if( x[t-1]>=x[k-1] )
+                        if( (double)(x[t-1])>=(double)(x[k-1]) )
                         {
                             t = 0;
                         }
@@ -1065,9 +877,6 @@ namespace alglib
         }
 
 
-        /*************************************************************************
-        Internal subroutine. Heap sort.
-        *************************************************************************/
         private static void heapsortdpoints(ref double[] x,
             ref double[] y,
             ref double[] d,
@@ -1089,8 +898,8 @@ namespace alglib
             isdescending = true;
             for(i=1; i<=n-1; i++)
             {
-                isascending = isascending & x[i]>x[i-1];
-                isdescending = isdescending & x[i]<x[i-1];
+                isascending = isascending & (double)(x[i])>(double)(x[i-1]);
+                isdescending = isdescending & (double)(x[i])<(double)(x[i-1]);
             }
             if( isascending )
             {
@@ -1136,7 +945,7 @@ namespace alglib
                 while( t!=1 )
                 {
                     k = t/2;
-                    if( x[k-1]>=x[t-1] )
+                    if( (double)(x[k-1])>=(double)(x[t-1]) )
                     {
                         t = 1;
                     }
@@ -1181,12 +990,12 @@ namespace alglib
                     {
                         if( k<i )
                         {
-                            if( x[k]>x[k-1] )
+                            if( (double)(x[k])>(double)(x[k-1]) )
                             {
                                 k = k+1;
                             }
                         }
-                        if( x[t-1]>=x[k-1] )
+                        if( (double)(x[t-1])>=(double)(x[k-1]) )
                         {
                             t = 0;
                         }
@@ -1211,9 +1020,6 @@ namespace alglib
         }
 
 
-        /*************************************************************************
-        Internal subroutine. Tridiagonal solver.
-        *************************************************************************/
         private static void solvetridiagonal(double[] a,
             double[] b,
             double[] c,
@@ -1246,9 +1052,6 @@ namespace alglib
         }
 
 
-        /*************************************************************************
-        Internal subroutine. Three-point differentiation
-        *************************************************************************/
         private static double diffthreepoint(double t,
             double x0,
             double f0,

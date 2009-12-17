@@ -72,18 +72,18 @@ namespace alglib
             double tmp = 0;
 
             igammaepsilon = 0.000000000000001;
-            if( x<=0 | a<=0 )
+            if( (double)(x)<=(double)(0) | (double)(a)<=(double)(0) )
             {
                 result = 0;
                 return result;
             }
-            if( x>1 & x>a )
+            if( (double)(x)>(double)(1) & (double)(x)>(double)(a) )
             {
                 result = 1-incompletegammac(a, x);
                 return result;
             }
-            ax = a*Math.Log(x)-x-gammaf.lngamma(a, ref tmp);
-            if( ax<-709.78271289338399 )
+            ax = a*Math.Log(x)-x-gammafunc.lngamma(a, ref tmp);
+            if( (double)(ax)<(double)(-709.78271289338399) )
             {
                 result = 0;
                 return result;
@@ -98,7 +98,7 @@ namespace alglib
                 c = c*x/r;
                 ans = ans+c;
             }
-            while( c/ans>igammaepsilon );
+            while( (double)(c/ans)>(double)(igammaepsilon) );
             result = ans*ax/a;
             return result;
         }
@@ -163,18 +163,18 @@ namespace alglib
             igammaepsilon = 0.000000000000001;
             igammabignumber = 4503599627370496.0;
             igammabignumberinv = 2.22044604925031308085*0.0000000000000001;
-            if( x<=0 | a<=0 )
+            if( (double)(x)<=(double)(0) | (double)(a)<=(double)(0) )
             {
                 result = 1;
                 return result;
             }
-            if( x<1 | x<a )
+            if( (double)(x)<(double)(1) | (double)(x)<(double)(a) )
             {
                 result = 1-incompletegamma(a, x);
                 return result;
             }
-            ax = a*Math.Log(x)-x-gammaf.lngamma(a, ref tmp);
-            if( ax<-709.78271289338399 )
+            ax = a*Math.Log(x)-x-gammafunc.lngamma(a, ref tmp);
+            if( (double)(ax)<(double)(-709.78271289338399) )
             {
                 result = 0;
                 return result;
@@ -196,7 +196,7 @@ namespace alglib
                 yc = y*c;
                 pk = pkm1*z-pkm2*yc;
                 qk = qkm1*z-qkm2*yc;
-                if( qk!=0 )
+                if( (double)(qk)!=(double)(0) )
                 {
                     r = pk/qk;
                     t = Math.Abs((ans-r)/r);
@@ -210,7 +210,7 @@ namespace alglib
                 pkm1 = pk;
                 qkm2 = qkm1;
                 qkm1 = qk;
-                if( Math.Abs(pk)>igammabignumber )
+                if( (double)(Math.Abs(pk))>(double)(igammabignumber) )
                 {
                     pkm2 = pkm2*igammabignumberinv;
                     pkm1 = pkm1*igammabignumberinv;
@@ -218,7 +218,7 @@ namespace alglib
                     qkm1 = qkm1*igammabignumberinv;
                 }
             }
-            while( t>igammaepsilon );
+            while( (double)(t)>(double)(igammaepsilon) );
             result = ans*ax;
             return result;
         }
@@ -289,22 +289,22 @@ namespace alglib
             d = 1/(9*a);
             y = 1-d-normaldistr.invnormaldistribution(y0)*Math.Sqrt(d);
             x = a*y*y*y;
-            lgm = gammaf.lngamma(a, ref tmp);
+            lgm = gammafunc.lngamma(a, ref tmp);
             i = 0;
             while( i<10 )
             {
-                if( x>x0 | x<x1 )
+                if( (double)(x)>(double)(x0) | (double)(x)<(double)(x1) )
                 {
                     d = 0.0625;
                     break;
                 }
                 y = incompletegammac(a, x);
-                if( y<yl | y>yh )
+                if( (double)(y)<(double)(yl) | (double)(y)>(double)(yh) )
                 {
                     d = 0.0625;
                     break;
                 }
-                if( y<y0 )
+                if( (double)(y)<(double)(y0) )
                 {
                     x0 = x;
                     yl = y;
@@ -315,14 +315,14 @@ namespace alglib
                     yh = y;
                 }
                 d = (a-1)*Math.Log(x)-x-lgm;
-                if( d<-709.78271289338399 )
+                if( (double)(d)<(double)(-709.78271289338399) )
                 {
                     d = 0.0625;
                     break;
                 }
                 d = -Math.Exp(d);
                 d = (y-y0)/d;
-                if( Math.Abs(d/x)<igammaepsilon )
+                if( (double)(Math.Abs(d/x))<(double)(igammaepsilon) )
                 {
                     result = x;
                     return result;
@@ -330,17 +330,17 @@ namespace alglib
                 x = x-d;
                 i = i+1;
             }
-            if( x0==iinvgammabignumber )
+            if( (double)(x0)==(double)(iinvgammabignumber) )
             {
-                if( x<=0 )
+                if( (double)(x)<=(double)(0) )
                 {
                     x = 1;
                 }
-                while( x0==iinvgammabignumber )
+                while( (double)(x0)==(double)(iinvgammabignumber) )
                 {
                     x = (1+d)*x;
                     y = incompletegammac(a, x);
-                    if( y<y0 )
+                    if( (double)(y)<(double)(y0) )
                     {
                         x0 = x;
                         yl = y;
@@ -357,20 +357,20 @@ namespace alglib
                 x = x1+d*(x0-x1);
                 y = incompletegammac(a, x);
                 lgm = (x0-x1)/(x1+x0);
-                if( Math.Abs(lgm)<dithresh )
+                if( (double)(Math.Abs(lgm))<(double)(dithresh) )
                 {
                     break;
                 }
                 lgm = (y-y0)/y0;
-                if( Math.Abs(lgm)<dithresh )
+                if( (double)(Math.Abs(lgm))<(double)(dithresh) )
                 {
                     break;
                 }
-                if( x<=0.0 )
+                if( (double)(x)<=(double)(0.0) )
                 {
                     break;
                 }
-                if( y>=y0 )
+                if( (double)(y)>=(double)(y0) )
                 {
                     x1 = x;
                     yh = y;

@@ -67,7 +67,7 @@ namespace alglib
 
             s = Math.Sign(x);
             x = Math.Abs(x);
-            if( x<0.5 )
+            if( (double)(x)<(double)(0.5) )
             {
                 xsq = x*x;
                 p = 0.007547728033418631287834;
@@ -87,7 +87,7 @@ namespace alglib
                 result = s*1.1283791670955125738961589031*x*p/q;
                 return result;
             }
-            if( x>=10 )
+            if( (double)(x)>=(double)(10) )
             {
                 result = s;
                 return result;
@@ -130,17 +130,17 @@ namespace alglib
             double p = 0;
             double q = 0;
 
-            if( x<0 )
+            if( (double)(x)<(double)(0) )
             {
                 result = 2-erfc(-x);
                 return result;
             }
-            if( x<0.5 )
+            if( (double)(x)<(double)(0.5) )
             {
                 result = 1.0-erf(x);
                 return result;
             }
-            if( x>=10 )
+            if( (double)(x)>=(double)(10) )
             {
                 result = 0;
                 return result;
@@ -268,24 +268,24 @@ namespace alglib
 
             expm2 = 0.13533528323661269189;
             s2pi = 2.50662827463100050242;
-            if( y0<=0 )
+            if( (double)(y0)<=(double)(0) )
             {
                 result = -AP.Math.MaxRealNumber;
                 return result;
             }
-            if( y0>=1 )
+            if( (double)(y0)>=(double)(1) )
             {
                 result = AP.Math.MaxRealNumber;
                 return result;
             }
             code = 1;
             y = y0;
-            if( y>1.0-expm2 )
+            if( (double)(y)>(double)(1.0-expm2) )
             {
                 y = 1.0-y;
                 code = 0;
             }
-            if( y>expm2 )
+            if( (double)(y)>(double)(expm2) )
             {
                 y = y-0.5;
                 y2 = y*y;
@@ -311,7 +311,7 @@ namespace alglib
             x = Math.Sqrt(-(2.0*Math.Log(y)));
             x0 = x-Math.Log(x)/x;
             z = 1.0/x;
-            if( x<8.0 )
+            if( (double)(x)<(double)(8.0) )
             {
                 p1 = 4.05544892305962419923;
                 p1 = 31.5251094599893866154+z*p1;

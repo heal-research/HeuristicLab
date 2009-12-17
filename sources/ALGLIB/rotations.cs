@@ -92,7 +92,7 @@ namespace alglib
                     {
                         ctemp = c[j-m1+1];
                         stemp = s[j-m1+1];
-                        if( ctemp!=1 | stemp!=0 )
+                        if( (double)(ctemp)!=(double)(1) | (double)(stemp)!=(double)(0) )
                         {
                             jp1 = j+1;
                             for(i_=n1; i_<=n2;i_++)
@@ -128,7 +128,7 @@ namespace alglib
                     {
                         ctemp = c[j-m1+1];
                         stemp = s[j-m1+1];
-                        if( ctemp!=1 | stemp!=0 )
+                        if( (double)(ctemp)!=(double)(1) | (double)(stemp)!=(double)(0) )
                         {
                             temp = a[j+1,n1];
                             a[j+1,n1] = ctemp*temp-stemp*a[j,n1];
@@ -149,7 +149,7 @@ namespace alglib
                     {
                         ctemp = c[j-m1+1];
                         stemp = s[j-m1+1];
-                        if( ctemp!=1 | stemp!=0 )
+                        if( (double)(ctemp)!=(double)(1) | (double)(stemp)!=(double)(0) )
                         {
                             jp1 = j+1;
                             for(i_=n1; i_<=n2;i_++)
@@ -185,7 +185,7 @@ namespace alglib
                     {
                         ctemp = c[j-m1+1];
                         stemp = s[j-m1+1];
-                        if( ctemp!=1 | stemp!=0 )
+                        if( (double)(ctemp)!=(double)(1) | (double)(stemp)!=(double)(0) )
                         {
                             temp = a[j+1,n1];
                             a[j+1,n1] = ctemp*temp-stemp*a[j,n1];
@@ -255,7 +255,7 @@ namespace alglib
                     {
                         ctemp = c[j-n1+1];
                         stemp = s[j-n1+1];
-                        if( ctemp!=1 | stemp!=0 )
+                        if( (double)(ctemp)!=(double)(1) | (double)(stemp)!=(double)(0) )
                         {
                             jp1 = j+1;
                             for(i_=m1; i_<=m2;i_++)
@@ -291,7 +291,7 @@ namespace alglib
                     {
                         ctemp = c[j-n1+1];
                         stemp = s[j-n1+1];
-                        if( ctemp!=1 | stemp!=0 )
+                        if( (double)(ctemp)!=(double)(1) | (double)(stemp)!=(double)(0) )
                         {
                             temp = a[m1,j+1];
                             a[m1,j+1] = ctemp*temp-stemp*a[m1,j];
@@ -312,7 +312,7 @@ namespace alglib
                     {
                         ctemp = c[j-n1+1];
                         stemp = s[j-n1+1];
-                        if( ctemp!=1 | stemp!=0 )
+                        if( (double)(ctemp)!=(double)(1) | (double)(stemp)!=(double)(0) )
                         {
                             jp1 = j+1;
                             for(i_=m1; i_<=m2;i_++)
@@ -348,7 +348,7 @@ namespace alglib
                     {
                         ctemp = c[j-n1+1];
                         stemp = s[j-n1+1];
-                        if( ctemp!=1 | stemp!=0 )
+                        if( (double)(ctemp)!=(double)(1) | (double)(stemp)!=(double)(0) )
                         {
                             temp = a[m1,j+1];
                             a[m1,j+1] = ctemp*temp-stemp*a[m1,j];
@@ -377,7 +377,7 @@ namespace alglib
             double f1 = 0;
             double g1 = 0;
 
-            if( g==0 )
+            if( (double)(g)==(double)(0) )
             {
                 cs = 1;
                 sn = 0;
@@ -385,7 +385,7 @@ namespace alglib
             }
             else
             {
-                if( f==0 )
+                if( (double)(f)==(double)(0) )
                 {
                     cs = 0;
                     sn = 1;
@@ -398,7 +398,7 @@ namespace alglib
                     r = Math.Sqrt(AP.Math.Sqr(f1)+AP.Math.Sqr(g1));
                     cs = f1/r;
                     sn = g1/r;
-                    if( Math.Abs(f)>Math.Abs(g) & cs<0 )
+                    if( (double)(Math.Abs(f))>(double)(Math.Abs(g)) & (double)(cs)<(double)(0) )
                     {
                         cs = -cs;
                         sn = -sn;
@@ -406,124 +406,6 @@ namespace alglib
                     }
                 }
             }
-        }
-
-
-        private static void testrotations()
-        {
-            double[,] al1 = new double[0,0];
-            double[,] al2 = new double[0,0];
-            double[,] ar1 = new double[0,0];
-            double[,] ar2 = new double[0,0];
-            double[] cl = new double[0];
-            double[] sl = new double[0];
-            double[] cr = new double[0];
-            double[] sr = new double[0];
-            double[] w = new double[0];
-            int m = 0;
-            int n = 0;
-            int maxmn = 0;
-            double t = 0;
-            int pass = 0;
-            int passcount = 0;
-            int i = 0;
-            int j = 0;
-            double err = 0;
-            double maxerr = 0;
-            bool isforward = new bool();
-
-            passcount = 1000;
-            maxerr = 0;
-            for(pass=1; pass<=passcount; pass++)
-            {
-                
-                //
-                // settings
-                //
-                m = 2+AP.Math.RandomInteger(50);
-                n = 2+AP.Math.RandomInteger(50);
-                isforward = AP.Math.RandomReal()>0.5;
-                maxmn = Math.Max(m, n);
-                al1 = new double[m+1, n+1];
-                al2 = new double[m+1, n+1];
-                ar1 = new double[m+1, n+1];
-                ar2 = new double[m+1, n+1];
-                cl = new double[m-1+1];
-                sl = new double[m-1+1];
-                cr = new double[n-1+1];
-                sr = new double[n-1+1];
-                w = new double[maxmn+1];
-                
-                //
-                // matrices and rotaions
-                //
-                for(i=1; i<=m; i++)
-                {
-                    for(j=1; j<=n; j++)
-                    {
-                        al1[i,j] = 2*AP.Math.RandomReal()-1;
-                        al2[i,j] = al1[i,j];
-                        ar1[i,j] = al1[i,j];
-                        ar2[i,j] = al1[i,j];
-                    }
-                }
-                for(i=1; i<=m-1; i++)
-                {
-                    t = 2*Math.PI*AP.Math.RandomReal();
-                    cl[i] = Math.Cos(t);
-                    sl[i] = Math.Sin(t);
-                }
-                for(j=1; j<=n-1; j++)
-                {
-                    t = 2*Math.PI*AP.Math.RandomReal();
-                    cr[j] = Math.Cos(t);
-                    sr[j] = Math.Sin(t);
-                }
-                
-                //
-                // Test left
-                //
-                applyrotationsfromtheleft(isforward, 1, m, 1, n, ref cl, ref sl, ref al1, ref w);
-                for(j=1; j<=n; j++)
-                {
-                    applyrotationsfromtheleft(isforward, 1, m, j, j, ref cl, ref sl, ref al2, ref w);
-                }
-                err = 0;
-                for(i=1; i<=m; i++)
-                {
-                    for(j=1; j<=n; j++)
-                    {
-                        err = Math.Max(err, Math.Abs(al1[i,j]-al2[i,j]));
-                    }
-                }
-                maxerr = Math.Max(err, maxerr);
-                
-                //
-                // Test right
-                //
-                applyrotationsfromtheright(isforward, 1, m, 1, n, ref cr, ref sr, ref ar1, ref w);
-                for(i=1; i<=m; i++)
-                {
-                    applyrotationsfromtheright(isforward, i, i, 1, n, ref cr, ref sr, ref ar2, ref w);
-                }
-                err = 0;
-                for(i=1; i<=m; i++)
-                {
-                    for(j=1; j<=n; j++)
-                    {
-                        err = Math.Max(err, Math.Abs(ar1[i,j]-ar2[i,j]));
-                    }
-                }
-                maxerr = Math.Max(err, maxerr);
-            }
-            System.Console.Write("TESTING ROTATIONS");
-            System.Console.WriteLine();
-            System.Console.Write("Pass count ");
-            System.Console.Write("{0,0:d}",passcount);
-            System.Console.WriteLine();
-            System.Console.Write("Error is ");
-            System.Console.Write("{0,5:E3}",maxerr);
-            System.Console.WriteLine();
         }
     }
 }
