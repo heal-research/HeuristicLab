@@ -237,6 +237,9 @@ namespace HeuristicLab.LinearRegression {
 
     protected virtual IAnalyzerModel CreateLRModel(IScope bestModelScope) {
       var model = new AnalyzerModel();
+      IGeneticProgrammingModel gpModel = bestModelScope.GetVariableValue<IGeneticProgrammingModel>("LinearRegressionModel", false);
+      model.SetMetaData("TreeSize", gpModel.Size);
+      model.SetMetaData("TreeHeight", gpModel.Height);
       CreateSpecificLRModel(bestModelScope, model);
       #region variable impacts
       ItemList qualityImpacts = bestModelScope.GetVariableValue<ItemList>(ModelingResult.VariableQualityImpact.ToString(), false);
