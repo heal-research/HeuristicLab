@@ -25,7 +25,7 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.ArtificialNeuralNetworks {
   [ClassInfo(Name = "HeuristicLab.ArtificialNeuralNetworks-3.2")]
-  [PluginFile(Filename = "HeuristicLab.ArtificialNeuralNetworks.dll", Filetype = PluginFileType.Assembly)]
+  [PluginFile(Filename = "HeuristicLab.ArtificialNeuralNetworks-3.2.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "ALGLIB")]
   [Dependency(Dependency = "HeuristicLab.Core-3.2")]
   [Dependency(Dependency = "HeuristicLab.Data-3.2")]

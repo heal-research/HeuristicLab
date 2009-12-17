@@ -9,6 +9,7 @@ mkdir plugins\backup
 copy "%SolutionDir%\ALGLIB\%Outdir%\ALGLIB.dll" .\plugins
 copy "%SolutionDir%\ALGLIB\%Outdir%\ALGLIB License.txt" .\plugins
 copy "%SolutionDir%\HeuristicLab.AdvancedOptimizationFrontend\3.2\%Outdir%\HeuristicLab.AdvancedOptimizationFrontend-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.ArtificialNeuralNetworks\3.2\%Outdir%\HeuristicLab.ArtificialNeuralNetworks-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Assignment.QAP\3.2\%Outdir%\HeuristicLab.Assignment.QAP-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.BitVector\3.2\%Outdir%\HeuristicLab.BitVector-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.BackgroundProcessing\3.2\%Outdir%\HeuristicLab.BackgroundProcessing-3.2.dll" .\plugins
