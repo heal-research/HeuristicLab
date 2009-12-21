@@ -24,6 +24,7 @@ using HeuristicLab.DataAnalysis;
 using HeuristicLab.Operators;
 using HeuristicLab.Modeling;
 using HeuristicLab.Data;
+using System.Linq;
 
 namespace HeuristicLab.Modeling {
   public static class DefaultModelAnalyzerOperators {
@@ -58,6 +59,8 @@ namespace HeuristicLab.Modeling {
       foreach (var r in modelingResults.Keys) {
         model.ExtractResult(modelScope, r);
       }
+      
+      model.SetMetaData("NumberOfInputVariables", model.Predictor.GetInputVariables().Count());
 
       return model;
     }

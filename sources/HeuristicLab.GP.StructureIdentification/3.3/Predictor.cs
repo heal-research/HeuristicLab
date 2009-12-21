@@ -40,7 +40,7 @@ namespace HeuristicLab.GP.StructureIdentification {
 
     private ITreeEvaluator treeEvaluator;
     public ITreeEvaluator TreeEvaluator {
-      get { return (ITreeEvaluator) this.treeEvaluator.Clone(); }
+      get { return (ITreeEvaluator)this.treeEvaluator.Clone(); }
     }
 
     private IGeneticProgrammingModel functionTree;
@@ -71,9 +71,9 @@ namespace HeuristicLab.GP.StructureIdentification {
     public override IEnumerable<string> GetInputVariables() {
       HashSet<string> inputVariables = new HashSet<string>();
       foreach (IFunctionTree ft in FunctionTreeIterator.IteratePrefix(functionTree.FunctionTree)) {
-        if (ft is VariableFunctionTree) {
-          VariableFunctionTree variable = (VariableFunctionTree)ft;
-          inputVariables.Add(variable.VariableName);
+        VariableFunctionTree varFunTree = ft as VariableFunctionTree;
+        if (varFunTree != null) {
+          inputVariables.Add(varFunTree.VariableName);
         }
       }
       return inputVariables;
