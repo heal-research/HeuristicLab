@@ -240,6 +240,10 @@ namespace HeuristicLab.LinearRegression {
       IGeneticProgrammingModel gpModel = bestModelScope.GetVariableValue<IGeneticProgrammingModel>("LinearRegressionModel", false);
       model.SetMetaData("TreeSize", gpModel.Size);
       model.SetMetaData("TreeHeight", gpModel.Height);
+      double treeComplexity = TreeComplexityEvaluator.Calculate(gpModel.FunctionTree);
+      model.SetMetaData("TreeComplexity", treeComplexity);
+      model.SetMetaData("AverageNodeComplexity", treeComplexity / gpModel.Size);
+
       CreateSpecificLRModel(bestModelScope, model);
       #region variable impacts
       ItemList qualityImpacts = bestModelScope.GetVariableValue<ItemList>(ModelingResult.VariableQualityImpact.ToString(), false);
