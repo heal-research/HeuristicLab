@@ -27,6 +27,8 @@ using HeuristicLab.Modeling;
 using HeuristicLab.Logging;
 using HeuristicLab.Selection;
 using HeuristicLab.Data;
+using System.Collections.Generic;
+using System;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public static class DefaultStructureIdentificationOperators {
@@ -176,6 +178,9 @@ namespace HeuristicLab.GP.StructureIdentification {
       IGeneticProgrammingModel gpModel = bestModelScope.GetVariableValue<IGeneticProgrammingModel>("FunctionTree", false);
       model.SetMetaData("TreeSize", gpModel.Size);
       model.SetMetaData("TreeHeight", gpModel.Height);
+      double treeComplexity = TreeComplexityEvaluator.Calculate(gpModel.FunctionTree);
+      model.SetMetaData("TreeComplexity", treeComplexity);
+      model.SetMetaData("AverageNodeComplexity", treeComplexity / gpModel.Size);
       #region variable impacts
       ItemList qualityImpacts = bestModelScope.GetVariableValue<ItemList>(ModelingResult.VariableQualityImpact.ToString(), false);
       foreach (ItemList row in qualityImpacts) {
@@ -194,5 +199,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       #endregion
 
     }
+
   }
 }
