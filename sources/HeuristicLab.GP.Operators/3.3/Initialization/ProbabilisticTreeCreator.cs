@@ -56,7 +56,7 @@ namespace HeuristicLab.GP.Operators {
 
 
     public static IFunctionTree Create(IRandom random, FunctionLibrary funLib, int minSize, int maxSize, int maxHeight) {
-      int treeSize = random.Next(minSize, maxSize + 1);
+      int treeSize = random.Next(minSize, maxSize);
       IFunctionTree root;
       int tries = 0;
       TreeGardener gardener = new TreeGardener(random, funLib);
@@ -64,7 +64,7 @@ namespace HeuristicLab.GP.Operators {
         root = gardener.PTC2(treeSize, maxHeight);
         if (tries++ >= MAX_TRIES) {
           // try a different size
-          treeSize = random.Next(minSize, maxSize + 1);
+          treeSize = random.Next(minSize, maxSize);
           tries = 0;
         }
       } while (root.GetSize() > maxSize || root.GetHeight() > maxHeight);

@@ -1,4 +1,4 @@
-﻿#region License Information
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -19,31 +19,18 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Operators;
-using HeuristicLab.Selection;
-using HeuristicLab.Logging;
-using HeuristicLab.Data;
-using HeuristicLab.GP.Operators;
-using HeuristicLab.Modeling;
 using System.Collections.Generic;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.GP.Interfaces;
+using HeuristicLab.GP;
 using System;
-using System.Linq;
-using HeuristicLab.DataAnalysis;
-using HeuristicLab.Operators.Programmable;
-using HeuristicLab.GP.Algorithms;
 
 namespace HeuristicLab.GP.StructureIdentification {
-  public class StandardGPSimpleRegression : HeuristicLab.GP.StructureIdentification.StandardGPRegression, IStochasticAlgorithm {
-
-    public override string Name { get { return "StandardGP - SimpleStructureIdentification"; } }
-
-    public StandardGPSimpleRegression()
+  [global::System.AttributeUsage(System.AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+  public sealed class SymbolicRegressionFunctionLibraryInjectorAttribute : Attribute {
+    public SymbolicRegressionFunctionLibraryInjectorAttribute()
       : base() {
-    }
-
-    protected override IOperator CreateFunctionLibraryInjector() {
-      return DefaultStructureIdentificationOperators.CreateSimpleFunctionLibraryInjector();
     }
   }
 }

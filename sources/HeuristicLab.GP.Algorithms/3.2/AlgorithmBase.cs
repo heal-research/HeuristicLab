@@ -30,9 +30,10 @@ using HeuristicLab.Operators;
 using HeuristicLab.Random;
 using HeuristicLab.Selection;
 using HeuristicLab.GP.Operators;
+using HeuristicLab.GP.Interfaces;
 
 namespace HeuristicLab.GP.Algorithms {
-  public abstract class AlgorithmBase : ItemBase {
+  public abstract class AlgorithmBase : ItemBase, IGeneticProgrammingAlgorithm {
     public virtual string Name { get { return "GP"; } }
     public virtual string Description { get { return "TODO"; } }
 

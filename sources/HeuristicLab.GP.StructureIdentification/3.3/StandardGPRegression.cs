@@ -119,6 +119,19 @@ namespace HeuristicLab.GP.StructureIdentification {
       }
     }
 
+    public override IOperator FunctionLibraryInjector {
+      get {
+        CombinedOperator funLibInjector = (CombinedOperator)GetInitializationOperator().SubOperators[1];
+        return funLibInjector.OperatorGraph.InitialOperator.SubOperators[0];
+      }
+      set {
+        CombinedOperator funLibInjector = (CombinedOperator)GetInitializationOperator().SubOperators[1];
+        IOperator seq = funLibInjector.OperatorGraph.InitialOperator;
+        seq.RemoveSubOperator(0);
+        seq.AddSubOperator(value, 0);
+      }
+    }
+
     public StandardGPRegression()
       : base() {
       PunishmentFactor = 10.0;

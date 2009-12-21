@@ -28,6 +28,18 @@ namespace HeuristicLab.GP.Algorithms {
   [ClassInfo(Name = "HeuristicLab.GP.Algorithms-3.2")]
   [PluginFile(Filename = "HeuristicLab.GP.Algorithms-3.2.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.Common-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Evolutionary-3.2")]
+  [Dependency(Dependency = "HeuristicLab.GP-3.3")]
+  [Dependency(Dependency = "HeuristicLab.GP.Interfaces-3.3")]
+  [Dependency(Dependency = "HeuristicLab.GP.Operators-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Logging-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Operators-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Random-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Selection-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Selection.OffspringSelection-3.2")]
+  [Dependency(Dependency = "HeuristicLab.SequentialEngine-3.2")]
   public class HeuristicLabGpAlgorithmsPlugin : PluginBase {
   }
 }

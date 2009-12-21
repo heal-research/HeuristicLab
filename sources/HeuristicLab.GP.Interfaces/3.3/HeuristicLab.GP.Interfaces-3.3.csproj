@@ -87,6 +87,7 @@
     <Compile Include="HeuristicLabGPInterfacesPlugin.cs" />
     <Compile Include="IFunction.cs" />
     <Compile Include="IFunctionTree.cs" />
+    <Compile Include="IGeneticProgrammingAlgorithm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

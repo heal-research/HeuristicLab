@@ -33,6 +33,9 @@ using HeuristicLab.Core;
 using HeuristicLab.Modeling;
 using HeuristicLab.Modeling.Database;
 using HeuristicLab.DataAnalysis;
+using HeuristicLab.GP.Interfaces;
+using HeuristicLab.GP;
+using HeuristicLab.GP.StructureIdentification;
 
 namespace HeuristicLab.CEDMA.Server {
   public class SimpleDispatcher : IDispatcher, IViewable {
@@ -195,6 +198,21 @@ namespace HeuristicLab.CEDMA.Server {
         }
       }
       algo.AllowedVariables = allowedFeatures;
+
+      IGeneticProgrammingAlgorithm structIdAlgo = algo as IGeneticProgrammingAlgorithm;
+      if (structIdAlgo != null) {
+        var funLib = SelectRandomFunctionLibrary();
+        structIdAlgo.FunctionLibraryInjector = funLib;
+      }
+    }
+
+    private IOperator SelectRandomFunctionLibrary() {
+      DiscoveryService ds = new DiscoveryService();
+      var injectors = from injector in ds.GetInstances<FunctionLibraryInjectorBase>()
+                      where injector.GetType().GetCustomAttributes(typeof(SymbolicRegressionFunctionLibraryInjectorAttribute), true).Count() > 0
+                      select injector;
+
+      return injectors.ElementAt(random.Next(injectors.Count()));
     }
 
 

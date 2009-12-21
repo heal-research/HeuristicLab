@@ -118,6 +118,10 @@
       <Project>{F5614C53-153C-4A37-A608-121E1C087F07}</Project>
       <Name>HeuristicLab.Evolutionary-3.2</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.GP.Interfaces\3.3\HeuristicLab.GP.Interfaces-3.3.csproj">
+      <Project>{924B6BEA-9A99-40FE-9334-5C01E8D540EC}</Project>
+      <Name>HeuristicLab.GP.Interfaces-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.GP.Operators\3.3\HeuristicLab.GP.Operators-3.3.csproj">
       <Project>{45D11FBD-A71B-48D3-8A94-8EB0DFE8E06A}</Project>
       <Name>HeuristicLab.GP.Operators-3.3</Name>

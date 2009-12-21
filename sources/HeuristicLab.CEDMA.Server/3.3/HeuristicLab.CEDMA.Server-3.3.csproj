@@ -139,6 +139,18 @@
       <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
       <Name>HeuristicLab.Data-3.2</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.GP.Interfaces\3.3\HeuristicLab.GP.Interfaces-3.3.csproj">
+      <Project>{924B6BEA-9A99-40FE-9334-5C01E8D540EC}</Project>
+      <Name>HeuristicLab.GP.Interfaces-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.GP.StructureIdentification\3.3\HeuristicLab.GP.StructureIdentification-3.3.csproj">
+      <Project>{74223A32-C726-4978-BE78-37113A18373C}</Project>
+      <Name>HeuristicLab.GP.StructureIdentification-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.GP\3.3\HeuristicLab.GP-3.3.csproj">
+      <Project>{1F1CF3ED-374C-4288-995B-93F6B872F571}</Project>
+      <Name>HeuristicLab.GP-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Grid.HiveBridge\3.2\HeuristicLab.Grid.HiveBridge-3.2.csproj">
       <Project>{DFAC1BEA-6D9D-477F-AC7B-E64977644DDB}</Project>
       <Name>HeuristicLab.Grid.HiveBridge-3.2</Name>

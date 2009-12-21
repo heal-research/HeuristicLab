@@ -84,8 +84,11 @@
   <ItemGroup>
     <Compile Include="BaseClasses\FunctionTreeBase.cs" />
     <Compile Include="BaseClasses\TreeEvaluatorBase.cs" />
-    <Compile Include="OffspringSelectionGPSimpleRegression.cs" />
-    <Compile Include="StandardGPSimpleRegression.cs" />
+    <Compile Include="FunctionLibraryInjectors\ArithmeticFunctionLibraryInjector.cs" />
+    <Compile Include="FunctionLibraryInjectors\SymbolicRegressionFunctionLibraryInjectorAttribute.cs" />
+    <Compile Include="FunctionLibraryInjectors\UnconstrainedFunctionLibraryInjector.cs" />
+    <Compile Include="FunctionLibraryInjectors\DefaultFunctionLibraryInjector.cs" />
+    <Compile Include="FunctionLibraryInjectors\SimpleFunctionLibraryInjector.cs" />
     <Compile Include="DefaultStructureIdentificationOperators.cs" />
     <Compile Include="Evaluators\NodeBasedVariableImpactCalculator.cs" />
     <Compile Include="HL3TreeEvaluatorInjector.cs" />
@@ -132,7 +135,6 @@
     <Compile Include="HL2TreeEvaluator.cs" />
     <Compile Include="ITreeEvaluator.cs" />
     <Compile Include="Evaluators\MeanAbsolutePercentageOfRangeErrorEvaluator.cs" />
-    <Compile Include="FunctionLibraryInjector.cs" />
     <Compile Include="Evaluators\CoefficientOfDeterminationEvaluator.cs" />
     <Compile Include="Evaluators\UncertainMeanSquaredErrorEvaluator.cs" />
     <Compile Include="Evaluators\EarlyStoppingMeanSquaredErrorEvaluator.cs" />

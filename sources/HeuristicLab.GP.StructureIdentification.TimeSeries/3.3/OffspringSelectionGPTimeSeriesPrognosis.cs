@@ -57,7 +57,7 @@ namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
       CombinedOperator op = new CombinedOperator();
       op.Name = "FunctionLibraryInjector";
       SequentialProcessor seq = new SequentialProcessor();
-      FunctionLibraryInjector funLibInjector = new FunctionLibraryInjector();
+      DefaultFunctionLibraryInjector funLibInjector = new DefaultFunctionLibraryInjector();
       funLibInjector.GetVariable("Differentials").Value = new BoolData(true);
       seq.AddSubOperator(funLibInjector);
       seq.AddSubOperator(new HL3TreeEvaluatorInjector());

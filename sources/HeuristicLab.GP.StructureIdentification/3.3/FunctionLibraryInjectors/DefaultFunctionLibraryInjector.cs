@@ -26,7 +26,8 @@ using HeuristicLab.GP.Interfaces;
 using HeuristicLab.GP;
 
 namespace HeuristicLab.GP.StructureIdentification {
-  public class FunctionLibraryInjector : FunctionLibraryInjectorBase {
+  [SymbolicRegressionFunctionLibraryInjector]
+  public class DefaultFunctionLibraryInjector : FunctionLibraryInjectorBase {
     public const string MINTIMEOFFSET = "MinTimeOffset";
     public const string MAXTIMEOFFSET = "MaxTimeOffset";
 
@@ -62,7 +63,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       get { return @"Injects a configurable function library for regression and classification problems."; }
     }
 
-    public FunctionLibraryInjector()
+    public DefaultFunctionLibraryInjector()
       : base() {
       AddVariableInfo(new VariableInfo(MINTIMEOFFSET, "Minimal time offset for all features", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo(MAXTIMEOFFSET, "Maximal time offset for all feature", typeof(IntData), VariableKind.In));
