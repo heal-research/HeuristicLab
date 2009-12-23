@@ -123,7 +123,7 @@ namespace HeuristicLab.ArtificialNeuralNetworks {
       get {
         if (!engine.Terminated) throw new InvalidOperationException("The algorithm is still running. Wait until the algorithm is terminated to retrieve the result.");
         IScope bestModelScope = engine.GlobalScope;
-        return CreateLRModel(bestModelScope);
+        return CreateMlpModel(bestModelScope);
       }
     }
 
@@ -334,9 +334,7 @@ Value.Data = ValueList.Data[ValueIndex.Data];
       op.Name = "Model Analyzer";
 
       SequentialSubScopesProcessor seqSubScopesProc = new SequentialSubScopesProcessor();
-
       SequentialProcessor seq = new SequentialProcessor();
-
       seqSubScopesProc.AddSubOperator(seq);
 
       #region simple evaluators
@@ -368,10 +366,6 @@ Value.Data = ValueList.Data[ValueIndex.Data];
       #endregion
 
       seq.AddSubOperator(CreateModelAnalyzerOperator());
-
-
-
-
       op.OperatorGraph.AddOperator(seqSubScopesProc);
       op.OperatorGraph.InitialOperator = seqSubScopesProc;
       return op;
@@ -381,9 +375,9 @@ Value.Data = ValueList.Data[ValueIndex.Data];
       return DefaultRegressionOperators.CreatePostProcessingOperator();
     }
 
-    protected virtual IAnalyzerModel CreateLRModel(IScope bestModelScope) {
+    protected virtual IAnalyzerModel CreateMlpModel(IScope bestModelScope) {
       var model = new AnalyzerModel();
-      CreateSpecificLRModel(bestModelScope, model);
+      CreateSpecificMlpModel(bestModelScope, model);
       #region variable impacts
       ItemList qualityImpacts = bestModelScope.GetVariableValue<ItemList>(ModelingResult.VariableQualityImpact.ToString(), false);
       foreach (ItemList row in qualityImpacts) {
@@ -396,7 +390,7 @@ Value.Data = ValueList.Data[ValueIndex.Data];
       return model;
     }
 
-    protected virtual void CreateSpecificLRModel(IScope bestModelScope, IAnalyzerModel model) {
+    protected virtual void CreateSpecificMlpModel(IScope bestModelScope, IAnalyzerModel model) {
       DefaultRegressionOperators.PopulateAnalyzerModel(bestModelScope, model);
     }
 
