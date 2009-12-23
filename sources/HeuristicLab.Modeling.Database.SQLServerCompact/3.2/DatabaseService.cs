@@ -90,11 +90,14 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
 
       if (!ctx.DatabaseExists() && !this.ReadOnly)
         ctx.CreateDatabase();
+      else
+        ctx.Connection.Open();
     }
 
     public void Disconnect() {
       if (ctx == null)
         return;
+      ctx.Connection.Close();
       ctx.Connection.Dispose();
       ctx.Dispose();
       ctx = null;
@@ -385,7 +388,7 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
         model.ValidationSamplesStart, model.ValidationSamplesEnd, model.TestSamplesStart, model.TestSamplesEnd);
       ctx.Models.InsertOnSubmit(m);
       ctx.SubmitChanges();
-      ctx.ModelData.InsertOnSubmit(new ModelData(m, PersistenceManager.SaveToGZip(model.Predictor)));      
+      ctx.ModelData.InsertOnSubmit(new ModelData(m, PersistenceManager.SaveToGZip(model.Predictor)));
 
       foreach (string variableName in model.Predictor.GetInputVariables())
         ctx.InputVariables.InsertOnSubmit(new InputVariable(m, (Variable)GetVariable(variableName)));
@@ -407,7 +410,7 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
           ctx.InputVariableResults.InsertOnSubmit(new InputVariableResult(variable, result, variableResult.Value));
         }
       }
-     ctx.SubmitChanges();
+      ctx.SubmitChanges();
     }
   }
 }
