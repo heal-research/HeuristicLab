@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ObservableKeyedCollectionBase.cs" />
     <Compile Include="IndexedCollectionChangedEventsBase.cs" />
     <Compile Include="ObservableCollection.cs" />
     <Compile Include="IIndexedCollectionChangedEvents.cs" />

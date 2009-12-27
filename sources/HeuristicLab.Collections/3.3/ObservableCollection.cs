@@ -96,6 +96,7 @@ namespace HeuristicLab.Collections {
       return false;
     }
     public void RemoveRange(IEnumerable<T> collection) {
+      if (collection == null) throw new ArgumentNullException();
       List<T> items = new List<T>();
       foreach (T item in collection) {
         if (list.Remove(item))

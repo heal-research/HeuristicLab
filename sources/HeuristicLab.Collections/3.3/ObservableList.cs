@@ -183,6 +183,7 @@ namespace HeuristicLab.Collections {
       return false;
     }
     public int RemoveAll(Predicate<T> match) {
+      if (match == null) throw new ArgumentNullException();
       List<IndexedItem<T>> items = new List<IndexedItem<T>>();
       for (int i = 0; i < list.Count; i++) {
         if (match(list[i]))

@@ -55,9 +55,14 @@ namespace HeuristicLab.Collections {
         return dict[key];
       }
       set {
-        KeyValuePair<TKey, TValue> item = new KeyValuePair<TKey, TValue>(key, dict[key]);
-        dict[key] = value;
-        OnItemsReplaced(new KeyValuePair<TKey, TValue>[] { new KeyValuePair<TKey, TValue>(key, value) }, new KeyValuePair<TKey, TValue>[] { item });
+        if (dict.ContainsKey(key)) {
+          KeyValuePair<TKey, TValue> item = new KeyValuePair<TKey, TValue>(key, dict[key]);
+          dict[key] = value;
+          OnItemsReplaced(new KeyValuePair<TKey, TValue>[] { new KeyValuePair<TKey, TValue>(key, value) }, new KeyValuePair<TKey, TValue>[] { item });
+        } else {
+          dict[key] = value;
+          OnItemsAdded(new KeyValuePair<TKey, TValue>[] { new KeyValuePair<TKey, TValue>(key, value) });
+        }
       }
     }
     #endregion
@@ -93,6 +98,7 @@ namespace HeuristicLab.Collections {
     bool ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> item) {
       return dict.Contains(item);
     }
+
     public bool TryGetValue(TKey key, out TValue value) {
       return dict.TryGetValue(key, out value);
     }
