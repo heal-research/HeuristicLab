@@ -48,16 +48,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IObservableKeyedCollection.cs" />
+    <Compile Include="IObservableList.cs" />
+    <Compile Include="IObservableCollection.cs" />
+    <Compile Include="IObservableDictionary.cs" />
     <Compile Include="ObservableKeyedCollectionBase.cs" />
-    <Compile Include="IndexedCollectionChangedEventsBase.cs" />
     <Compile Include="ObservableCollection.cs" />
-    <Compile Include="IIndexedCollectionChangedEvents.cs" />
     <Compile Include="IndexedItem.cs" />
-    <Compile Include="CollectionChangedEventsBase.cs" />
     <Compile Include="ObservableList.cs" />
     <Compile Include="CollectionItemsChangedEventArgs.cs" />
     <Compile Include="CollectionItemsChangedEventHandler.cs" />
-    <Compile Include="ICollectionChangedEvents.cs" />
     <Compile Include="HeuristicLabCollectionsPlugin.cs" />
     <Compile Include="ObservableDictionary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

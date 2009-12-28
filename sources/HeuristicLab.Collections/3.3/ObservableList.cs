@@ -29,7 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Collections {
   [Serializable]
-  public class ObservableList<T> : IndexedCollectionChangedEventsBase<IndexedItem<T>>, IList<T> {
+  public class ObservableList<T> : IObservableList<T> {
     [Storable]
     private List<T> list;
 
@@ -42,6 +42,9 @@ namespace HeuristicLab.Collections {
       get { return list.Count; }
     }
     bool ICollection<T>.IsReadOnly {
+      get { return ((ICollection<T>)list).IsReadOnly; }
+    }
+    bool ICollection<IndexedItem<T>>.IsReadOnly {
       get { return ((ICollection<T>)list).IsReadOnly; }
     }
 
@@ -76,6 +79,9 @@ namespace HeuristicLab.Collections {
 
     public bool Contains(T item) {
       return list.Contains(item);
+    }
+    public bool Contains(IndexedItem<T> item) {
+      return list[item.Index].Equals(item.Value);
     }
 
     public int IndexOf(T item) {
@@ -148,6 +154,10 @@ namespace HeuristicLab.Collections {
       list.Add(item);
       OnItemsAdded(new IndexedItem<T>[] { new IndexedItem<T>(list.Count - 1, item) });
     }
+    public void Add(IndexedItem<T> item) {
+      list.Insert(item.Index, item.Value);
+      OnItemsAdded(new IndexedItem<T>[] { item });
+    }
     public void AddRange(IEnumerable<T> collection) {
       int index = list.Count;
       list.AddRange(collection);
@@ -178,6 +188,14 @@ namespace HeuristicLab.Collections {
       if (index != -1) {
         list.RemoveAt(index);
         OnItemsRemoved(new IndexedItem<T>[] { new IndexedItem<T>(index, item) });
+        return true;
+      }
+      return false;
+    }
+    public bool Remove(IndexedItem<T> item) {
+      if (list[item.Index].Equals(item.Value)) {
+        list.RemoveAt(item.Index);
+        OnItemsRemoved(new IndexedItem<T>[] { item });
         return true;
       }
       return false;
@@ -253,6 +271,10 @@ namespace HeuristicLab.Collections {
     void ICollection<T>.CopyTo(T[] array, int arrayIndex) {
       list.CopyTo(array, arrayIndex);
     }
+    void ICollection<IndexedItem<T>>.CopyTo(IndexedItem<T>[] array, int arrayIndex) {
+      IndexedItem<T>[] items = GetIndexedItems();
+      items.CopyTo(array, arrayIndex);
+    }
     public List<TOutput> ConvertAll<TOutput>(Converter<T, TOutput> converter) {
       return list.ConvertAll<TOutput>(converter);
     }
@@ -274,6 +296,13 @@ namespace HeuristicLab.Collections {
     IEnumerator<T> IEnumerable<T>.GetEnumerator() {
       return ((IEnumerable<T>)list).GetEnumerator();
     }
+    IEnumerator<IndexedItem<T>> IEnumerable<IndexedItem<T>>.GetEnumerator() {
+      int index = -1;
+      foreach (T item in list) {
+        index++;
+        yield return new IndexedItem<T>(index, item);
+      }
+    }
     IEnumerator IEnumerable.GetEnumerator() {
       return ((IEnumerable)list).GetEnumerator();
     }
@@ -282,6 +311,43 @@ namespace HeuristicLab.Collections {
     #region Helpers
     public void TrimExcess() {
       list.TrimExcess();
+    }
+    #endregion
+
+    #region Events
+    [field: NonSerialized]
+    public event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsAdded;
+    protected virtual void OnItemsAdded(IEnumerable<IndexedItem<T>> items) {
+      if (ItemsAdded != null)
+        ItemsAdded(this, new CollectionItemsChangedEventArgs<IndexedItem<T>>(items));
+    }
+
+    [field: NonSerialized]
+    public event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsRemoved;
+    protected virtual void OnItemsRemoved(IEnumerable<IndexedItem<T>> items) {
+      if (ItemsRemoved != null)
+        ItemsRemoved(this, new CollectionItemsChangedEventArgs<IndexedItem<T>>(items));
+    }
+
+    [field: NonSerialized]
+    public event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsReplaced;
+    protected virtual void OnItemsReplaced(IEnumerable<IndexedItem<T>> items, IEnumerable<IndexedItem<T>> oldItems) {
+      if (ItemsReplaced != null)
+        ItemsReplaced(this, new CollectionItemsChangedEventArgs<IndexedItem<T>>(items, oldItems));
+    }
+
+    [field: NonSerialized]
+    public event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsMoved;
+    protected virtual void OnItemsMoved(IEnumerable<IndexedItem<T>> items, IEnumerable<IndexedItem<T>> oldItems) {
+      if (ItemsMoved != null)
+        ItemsMoved(this, new CollectionItemsChangedEventArgs<IndexedItem<T>>(items, oldItems));
+    }
+
+    [field: NonSerialized]
+    public event CollectionItemsChangedEventHandler<IndexedItem<T>> CollectionReset;
+    protected virtual void OnCollectionReset(IEnumerable<IndexedItem<T>> items, IEnumerable<IndexedItem<T>> oldItems) {
+      if (CollectionReset != null)
+        CollectionReset(this, new CollectionItemsChangedEventArgs<IndexedItem<T>>(items, oldItems));
     }
     #endregion
 

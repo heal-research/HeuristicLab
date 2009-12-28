@@ -25,10 +25,7 @@ using System.Linq;
 using System.Text;
 
 namespace HeuristicLab.Collections {
-  public interface ICollectionChangedEvents<T> {
-    event CollectionItemsChangedEventHandler<T> ItemsAdded;
-    event CollectionItemsChangedEventHandler<T> ItemsRemoved;
-    event CollectionItemsChangedEventHandler<T> ItemsReplaced;
-    event CollectionItemsChangedEventHandler<T> CollectionReset;
+  public interface IObservableKeyedCollection<TKey, TItem> : IObservableCollection<TItem>, IDisposable {
+    event CollectionItemsChangedEventHandler<TItem> ItemsReplaced;
   }
 }

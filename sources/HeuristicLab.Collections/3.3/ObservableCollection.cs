@@ -29,7 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Collections {
   [Serializable]
-  public class ObservableCollection<T> : CollectionChangedEventsBase<T>, ICollection<T> {
+  public class ObservableCollection<T> : IObservableCollection<T> {
     [Storable]
     private List<T> list;
 
@@ -155,6 +155,29 @@ namespace HeuristicLab.Collections {
     #region Helpers
     public void TrimExcess() {
       list.TrimExcess();
+    }
+    #endregion
+
+    #region Events
+    [field: NonSerialized]
+    public event CollectionItemsChangedEventHandler<T> ItemsAdded;
+    protected virtual void OnItemsAdded(IEnumerable<T> items) {
+      if (ItemsAdded != null)
+        ItemsAdded(this, new CollectionItemsChangedEventArgs<T>(items));
+    }
+
+    [field: NonSerialized]
+    public event CollectionItemsChangedEventHandler<T> ItemsRemoved;
+    protected virtual void OnItemsRemoved(IEnumerable<T> items) {
+      if (ItemsRemoved != null)
+        ItemsRemoved(this, new CollectionItemsChangedEventArgs<T>(items));
+    }
+
+    [field: NonSerialized]
+    public event CollectionItemsChangedEventHandler<T> CollectionReset;
+    protected virtual void OnCollectionReset(IEnumerable<T> items, IEnumerable<T> oldItems) {
+      if (CollectionReset != null)
+        CollectionReset(this, new CollectionItemsChangedEventArgs<T>(items, oldItems));
     }
     #endregion
   }

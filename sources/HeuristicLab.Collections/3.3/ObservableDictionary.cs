@@ -29,7 +29,7 @@ using System.Runtime.Serialization;
 
 namespace HeuristicLab.Collections {
   [Serializable]
-  public class ObservableDictionary<TKey, TValue> : CollectionChangedEventsBase<KeyValuePair<TKey, TValue>>, IDictionary<TKey, TValue> {
+  public class ObservableDictionary<TKey, TValue> : IObservableDictionary<TKey, TValue> {
     [Storable]
     private Dictionary<TKey, TValue> dict;
 
@@ -153,6 +153,36 @@ namespace HeuristicLab.Collections {
     }
     IEnumerator IEnumerable.GetEnumerator() {
       return ((IEnumerable)dict).GetEnumerator();
+    }
+    #endregion
+
+    #region Events
+    [field: NonSerialized]
+    public event CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>> ItemsAdded;
+    protected virtual void OnItemsAdded(IEnumerable<KeyValuePair<TKey, TValue>> items) {
+      if (ItemsAdded != null)
+        ItemsAdded(this, new CollectionItemsChangedEventArgs<KeyValuePair<TKey, TValue>>(items));
+    }
+
+    [field: NonSerialized]
+    public event CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>> ItemsRemoved;
+    protected virtual void OnItemsRemoved(IEnumerable<KeyValuePair<TKey, TValue>> items) {
+      if (ItemsRemoved != null)
+        ItemsRemoved(this, new CollectionItemsChangedEventArgs<KeyValuePair<TKey, TValue>>(items));
+    }
+
+    [field: NonSerialized]
+    public event CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>> ItemsReplaced;
+    protected virtual void OnItemsReplaced(IEnumerable<KeyValuePair<TKey, TValue>> items, IEnumerable<KeyValuePair<TKey, TValue>> oldItems) {
+      if (ItemsReplaced != null)
+        ItemsReplaced(this, new CollectionItemsChangedEventArgs<KeyValuePair<TKey, TValue>>(items, oldItems));
+    }
+
+    [field: NonSerialized]
+    public event CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>> CollectionReset;
+    protected virtual void OnCollectionReset(IEnumerable<KeyValuePair<TKey, TValue>> items, IEnumerable<KeyValuePair<TKey, TValue>> oldItems) {
+      if (CollectionReset != null)
+        CollectionReset(this, new CollectionItemsChangedEventArgs<KeyValuePair<TKey, TValue>>(items, oldItems));
     }
     #endregion
   }

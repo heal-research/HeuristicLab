@@ -23,18 +23,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Runtime.Serialization;
 
 namespace HeuristicLab.Collections {
-  [Serializable]
-  [EmptyStorableClass]
-  public abstract class IndexedCollectionChangedEventsBase<T> : CollectionChangedEventsBase<T>, IIndexedCollectionChangedEvents<T> {
-    [field: NonSerialized]
-    public event CollectionItemsChangedEventHandler<T> ItemsMoved;
-    protected virtual void OnItemsMoved(IEnumerable<T> items, IEnumerable<T> oldItems) {
-      if (ItemsMoved != null)
-        ItemsMoved(this, new CollectionItemsChangedEventArgs<T>(items, oldItems));
-    }
+  public interface IObservableList<T> : IList<T>, IObservableCollection<IndexedItem<T>> {
+    event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsReplaced;
+    event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsMoved;
   }
 }

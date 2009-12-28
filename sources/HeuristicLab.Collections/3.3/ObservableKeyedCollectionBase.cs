@@ -29,7 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Collections {
   [Serializable]
-  public abstract class ObservableKeyedCollectionBase<TKey, TItem> : CollectionChangedEventsBase<TItem>, ICollection<TItem> {
+  public abstract class ObservableKeyedCollectionBase<TKey, TItem> : IObservableKeyedCollection<TKey, TItem> {
     [Storable]
     private Dictionary<TKey, TItem> dict;
 
@@ -75,6 +75,21 @@ namespace HeuristicLab.Collections {
       dict = new Dictionary<TKey, TItem>(comparer);
       foreach (TItem item in collection)
         AddItem(item);
+    }
+    #endregion
+
+    #region Destructors
+    ~ObservableKeyedCollectionBase() {
+      Dispose(false);
+    }
+    protected virtual void Dispose(bool disposing) {
+      if (disposing) {
+        Clear();
+      }
+    }
+    public void Dispose() {
+      Dispose(true);
+      GC.SuppressFinalize(this);
     }
     #endregion
 
@@ -229,6 +244,36 @@ namespace HeuristicLab.Collections {
     }
     IEnumerator IEnumerable.GetEnumerator() {
       return dict.Values.GetEnumerator();
+    }
+    #endregion
+
+    #region Events
+    [field: NonSerialized]
+    public event CollectionItemsChangedEventHandler<TItem> ItemsAdded;
+    protected virtual void OnItemsAdded(IEnumerable<TItem> items) {
+      if (ItemsAdded != null)
+        ItemsAdded(this, new CollectionItemsChangedEventArgs<TItem>(items));
+    }
+
+    [field: NonSerialized]
+    public event CollectionItemsChangedEventHandler<TItem> ItemsRemoved;
+    protected virtual void OnItemsRemoved(IEnumerable<TItem> items) {
+      if (ItemsRemoved != null)
+        ItemsRemoved(this, new CollectionItemsChangedEventArgs<TItem>(items));
+    }
+
+    [field: NonSerialized]
+    public event CollectionItemsChangedEventHandler<TItem> ItemsReplaced;
+    protected virtual void OnItemsReplaced(IEnumerable<TItem> items, IEnumerable<TItem> oldItems) {
+      if (ItemsReplaced != null)
+        ItemsReplaced(this, new CollectionItemsChangedEventArgs<TItem>(items, oldItems));
+    }
+
+    [field: NonSerialized]
+    public event CollectionItemsChangedEventHandler<TItem> CollectionReset;
+    protected virtual void OnCollectionReset(IEnumerable<TItem> items, IEnumerable<TItem> oldItems) {
+      if (CollectionReset != null)
+        CollectionReset(this, new CollectionItemsChangedEventArgs<TItem>(items, oldItems));
     }
     #endregion
   }
