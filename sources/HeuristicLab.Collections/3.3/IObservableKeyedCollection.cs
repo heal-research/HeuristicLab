@@ -25,7 +25,7 @@ using System.Linq;
 using System.Text;
 
 namespace HeuristicLab.Collections {
-  public interface IObservableKeyedCollection<TKey, TItem> : IObservableCollection<TItem>, IDisposable {
+  public interface IObservableKeyedCollection<TKey, TItem> : IObservableCollection<TItem> {
     event CollectionItemsChangedEventHandler<TItem> ItemsReplaced;
   }
 }

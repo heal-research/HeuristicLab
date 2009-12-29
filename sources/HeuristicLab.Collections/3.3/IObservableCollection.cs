@@ -25,7 +25,7 @@ using System.Linq;
 using System.Text;
 
 namespace HeuristicLab.Collections {
-  public interface IObservableCollection<T> : ICollection<T> {
+  public interface IObservableCollection<T> : ICollection<T>, IDisposable {
     event CollectionItemsChangedEventHandler<T> ItemsAdded;
     event CollectionItemsChangedEventHandler<T> ItemsRemoved;
     event CollectionItemsChangedEventHandler<T> CollectionReset;

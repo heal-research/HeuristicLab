@@ -79,12 +79,29 @@ namespace HeuristicLab.Collections {
     }
     public ObservableDictionary(IDictionary<TKey, TValue> dictionary) {
       dict = new Dictionary<TKey, TValue>(dictionary);
+      OnItemsAdded(dictionary);
     }
     public ObservableDictionary(int capacity, IEqualityComparer<TKey> comparer) {
       dict = new Dictionary<TKey, TValue>(capacity, comparer);
     }
     public ObservableDictionary(IDictionary<TKey, TValue> dictionary, IEqualityComparer<TKey> comparer) {
       dict = new Dictionary<TKey, TValue>(dictionary, comparer);
+      OnItemsAdded(dictionary);
+    }
+    #endregion
+
+    #region Destructors
+    ~ObservableDictionary() {
+      Dispose(false);
+    }
+    protected virtual void Dispose(bool disposing) {
+      if (disposing) {
+        Clear();
+      }
+    }
+    public void Dispose() {
+      Dispose(true);
+      GC.SuppressFinalize(this);
     }
     #endregion
 

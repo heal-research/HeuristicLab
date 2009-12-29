@@ -69,6 +69,22 @@ namespace HeuristicLab.Collections {
     }
     public ObservableList(IEnumerable<T> collection) {
       list = new List<T>(collection);
+      OnItemsAdded(GetIndexedItems());
+    }
+    #endregion
+
+    #region Destructors
+    ~ObservableList() {
+      Dispose(false);
+    }
+    protected virtual void Dispose(bool disposing) {
+      if (disposing) {
+        Clear();
+      }
+    }
+    public void Dispose() {
+      Dispose(true);
+      GC.SuppressFinalize(this);
     }
     #endregion
 

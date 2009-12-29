@@ -65,7 +65,8 @@ namespace HeuristicLab.Collections {
       if (collection == null) throw new ArgumentNullException();
       dict = new Dictionary<TKey, TItem>();
       foreach (TItem item in collection)
-        AddItem(item);
+        dict.Add(GetKeyForItem(item), item);
+      OnItemsAdded(collection);
     }
     protected ObservableKeyedCollectionBase(int capacity, IEqualityComparer<TKey> comparer) {
       dict = new Dictionary<TKey, TItem>(capacity, comparer);
@@ -74,7 +75,8 @@ namespace HeuristicLab.Collections {
       if (collection == null) throw new ArgumentNullException();
       dict = new Dictionary<TKey, TItem>(comparer);
       foreach (TItem item in collection)
-        AddItem(item);
+        dict.Add(GetKeyForItem(item), item);
+      OnItemsAdded(collection);
     }
     #endregion
 
@@ -149,34 +151,28 @@ namespace HeuristicLab.Collections {
     #endregion
 
     #region Manipulation
-    protected virtual void AddItem(TItem item) {
-      dict.Add(GetKeyForItem(item), item);
-    }
     public void Add(TItem item) {
-      AddItem(item);
+      dict.Add(GetKeyForItem(item), item);
       OnItemsAdded(new TItem[] { item });
     }
     public void AddRange(IEnumerable<TItem> collection) {
       if (collection == null) throw new ArgumentNullException();
       foreach (TItem item in collection)
-        AddItem(item);
+        dict.Add(GetKeyForItem(item), item);
       OnItemsAdded(collection);
     }
 
-    protected virtual bool RemoveItem(TItem item) {
-      return dict.Remove(GetKeyForItem(item));
-    }
     public bool Remove(TKey key) {
       TItem item;
       if (TryGetValue(key, out item)) {
-        RemoveItem(item);
+        dict.Remove(key);
         OnItemsRemoved(new TItem[] { item });
         return true;
       }
       return false;
     }
     public bool Remove(TItem item) {
-      if (RemoveItem(item)) {
+      if (dict.Remove(GetKeyForItem(item))) {
         OnItemsRemoved(new TItem[] { item });
         return true;
       }
@@ -186,7 +182,7 @@ namespace HeuristicLab.Collections {
       if (collection == null) throw new ArgumentNullException();
       List<TItem> items = new List<TItem>();
       foreach (TItem item in collection) {
-        if (RemoveItem(item))
+        if (dict.Remove(GetKeyForItem(item)))
           items.Add(item);
       }
       if (items.Count > 0)
@@ -198,12 +194,9 @@ namespace HeuristicLab.Collections {
       return items.Count;
     }
 
-    protected virtual void ClearItems() {
-      dict.Clear();
-    }
     public void Clear() {
       TItem[] items = dict.Values.ToArray();
-      ClearItems();
+      dict.Clear();
       OnCollectionReset(new TItem[0], items);
     }
     #endregion
