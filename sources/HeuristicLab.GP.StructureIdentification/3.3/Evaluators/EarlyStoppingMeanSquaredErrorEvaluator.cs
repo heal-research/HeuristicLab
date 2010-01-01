@@ -38,7 +38,7 @@ This operator stops the computation as soon as an upper limit for the mean-squar
     }
 
     // evaluates the function-tree for the given target-variable and the whole dataset and returns the MSE
-    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
+    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable, int start, int end) {
       double qualityLimit = GetVariableValue<DoubleData>("QualityLimit", scope, true).Data;
       DoubleData mse = GetVariableValue<DoubleData>("MSE", scope, false, false);
       if (mse == null) {
@@ -52,9 +52,7 @@ This operator stops the computation as soon as an upper limit for the mean-squar
       for (int sample = start; sample < end; sample++) {
         double estimated = evaluator.Evaluate(sample);
         double original = dataset.GetValue(sample, targetVariable);
-        if (updateTargetValues) {
-          dataset.SetValue(sample, targetVariable, estimated);
-        }
+        
         if (!double.IsNaN(original) && !double.IsInfinity(original)) {
           double error = estimated - original;
           errorsSquaredSum += error * error;

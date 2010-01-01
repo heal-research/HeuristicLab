@@ -44,11 +44,6 @@ namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
       set { GetVariableInjector().GetVariable("MaxTimeOffset").GetValue<IntData>().Data = value; }
     }
 
-    public bool UseEstimatedTargetValue {
-      get { return GetVariableInjector().GetVariable("UseEstimatedTargetValue").GetValue<BoolData>().Data; }
-      set { GetVariableInjector().GetVariable("UseEstimatedTargetValue").GetValue<BoolData>().Data = value; }
-    }
-
     protected override IOperator CreateProblemInjector() {
       return DefaultTimeSeriesOperators.CreateProblemInjector();
     }
@@ -70,7 +65,6 @@ namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
       VariableInjector injector = base.CreateGlobalInjector();
       injector.AddVariable(new HeuristicLab.Core.Variable("MinTimeOffset", new IntData()));
       injector.AddVariable(new HeuristicLab.Core.Variable("MaxTimeOffset", new IntData()));
-      injector.AddVariable(new HeuristicLab.Core.Variable("UseEstimatedTargetValue", new BoolData()));
       return injector;
     }
 

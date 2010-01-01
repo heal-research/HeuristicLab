@@ -30,7 +30,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       AddVariableInfo(new VariableInfo("Values", "Target vs. predicted values", typeof(DoubleMatrixData), VariableKind.New | VariableKind.Out));
     }
 
-    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
+    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end) {
       DoubleMatrixData values = GetVariableValue<DoubleMatrixData>("Values", scope, false, false);
       if (values == null) {
         values = new DoubleMatrixData();
@@ -46,9 +46,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       for (int sample = start; sample < end; sample++) {
         double estimated = evaluator.Evaluate(sample);
         double original = dataset.GetValue(sample, targetVariable);
-        if (updateTargetValues) {
-          dataset.SetValue(sample, targetVariable, estimated);
-        }
+        
         v[sample - start, 0] = original;
         v[sample - start, 1] = estimated;
       }

@@ -37,7 +37,7 @@ namespace HeuristicLab.GP.StructureIdentification.ConditionalEvaluation {
       AddVariableInfo(new VariableInfo("Values", "The values of the target variable as predicted by the model and the original value of the target variable", typeof(ItemList), VariableKind.New | VariableKind.Out));
     }
 
-    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
+    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end) {
       ItemList values = GetVariableValue<ItemList>("Values", scope, false, false);
       if (values == null) {
         values = new ItemList();
@@ -67,9 +67,7 @@ namespace HeuristicLab.GP.StructureIdentification.ConditionalEvaluation {
           ItemList row = new ItemList();
           double estimated = evaluator.Evaluate(sample);
           double original = dataset.GetValue(sample, targetVariable);
-          if (updateTargetValues) {
-            dataset.SetValue(sample, targetVariable, estimated);
-          }
+         
           row.Add(new DoubleData(estimated));
           row.Add(new DoubleData(original));
           values.Add(row);

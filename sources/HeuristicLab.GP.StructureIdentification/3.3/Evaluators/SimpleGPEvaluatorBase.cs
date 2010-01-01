@@ -32,15 +32,13 @@ namespace HeuristicLab.GP.StructureIdentification {
       AddVariableInfo(new VariableInfo(OutputVariableName, OutputVariableName, typeof(DoubleData), VariableKind.New | VariableKind.Out));
     }
 
-    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
+    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end) {
       // store original and estimated values in a double array
       double[,] values = new double[end - start, 2];
       for (int sample = start; sample < end; sample++) {
         double original = dataset.GetValue(sample, targetVariable);
         double estimated = evaluator.Evaluate(sample);
-        if (updateTargetValues) {
-          dataset.SetValue(sample, targetVariable, estimated);
-        }
+        
         values[sample - start, 0] = estimated;
         values[sample - start, 1] = original;
       }

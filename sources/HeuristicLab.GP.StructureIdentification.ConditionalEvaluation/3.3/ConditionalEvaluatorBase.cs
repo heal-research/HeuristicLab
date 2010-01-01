@@ -39,7 +39,7 @@ namespace HeuristicLab.GP.StructureIdentification.ConditionalEvaluation {
       AddVariableInfo(new VariableInfo(OutputVariableName, OutputVariableName, typeof(DoubleData), VariableKind.New | VariableKind.Out));
     }
 
-    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
+    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end) {
       int maxTimeOffset = GetVariableValue<IntData>("MaxTimeOffset", scope, true).Data;
       int minTimeOffset = GetVariableValue<IntData>("MinTimeOffset", scope, true).Data;
       int conditionVariable = GetVariableValue<IntData>("ConditionVariable", scope, true).Data;
@@ -59,14 +59,12 @@ namespace HeuristicLab.GP.StructureIdentification.ConditionalEvaluation {
         if (!skip) {
           double original = dataset.GetValue(sample, targetVariable);
           double estimated = evaluator.Evaluate(sample);
-          if (updateTargetValues) {
-            dataset.SetValue(sample, targetVariable, estimated);
-          }
+          
           values[sample - start - skippedSampels, 0] = estimated;
           values[sample - start - skippedSampels, 1] = original;
         }
       }
-      //needed because otherwise the array is too larged dimension and therefore the sample count is false during calculation
+      //needed because otherwise the array is too large and therefore the sample count is incorrect during calculation
       ResizeArray(ref values, 2, end - start - skippedSampels);
 
 
