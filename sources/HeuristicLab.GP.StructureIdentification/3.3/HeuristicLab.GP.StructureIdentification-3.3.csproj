@@ -84,6 +84,8 @@
   <ItemGroup>
     <Compile Include="BaseClasses\FunctionTreeBase.cs" />
     <Compile Include="BaseClasses\TreeEvaluatorBase.cs" />
+    <Compile Include="ScalingTreeEvaluator.cs" />
+    <Compile Include="ScalingTreeEvaluatorInjector.cs" />
     <Compile Include="Evaluators\TreeComplexityEvaluator.cs" />
     <Compile Include="FunctionLibraryInjectors\ArithmeticFunctionLibraryInjector.cs" />
     <Compile Include="FunctionLibraryInjectors\SymbolicRegressionFunctionLibraryInjectorAttribute.cs" />
