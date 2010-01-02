@@ -23,6 +23,7 @@ using System;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
+using HeuristicLab.GP.Interfaces;
 
 namespace HeuristicLab.GP.StructureIdentification.Classification {
   public abstract class GPClassificationEvaluatorBase : GPEvaluatorBase {
@@ -32,20 +33,20 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
       AddVariableInfo(new VariableInfo("TargetClassValues", "The original class values of target variable (for instance negative=0 and positive=1).", typeof(ItemList<DoubleData>), VariableKind.In));
     }
 
-    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end) {
+    public override void Evaluate(IScope scope, IFunctionTree tree, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end) {
 
       ItemList<DoubleData> classes = GetVariableValue<ItemList<DoubleData>>("TargetClassValues", scope, true);
       double[] classesArr = new double[classes.Count];
-      for(int i = 0; i < classesArr.Length; i++) classesArr[i] = classes[i].Data;
+      for (int i = 0; i < classesArr.Length; i++) classesArr[i] = classes[i].Data;
       Array.Sort(classesArr);
       double[] thresholds = new double[classes.Count - 1];
-      for(int i = 0; i < classesArr.Length - 1; i++) {
+      for (int i = 0; i < classesArr.Length - 1; i++) {
         thresholds[i] = (classesArr[i] + classesArr[i + 1]) / 2.0;
       }
 
-      Evaluate(scope, evaluator, dataset, targetVariable, classesArr, thresholds, start, end);
+      Evaluate(scope, tree, evaluator, dataset, targetVariable, classesArr, thresholds, start, end);
     }
 
-    public abstract void Evaluate(IScope scope, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, double[] classes, double[] thresholds, int start, int end);
+    public abstract void Evaluate(IScope scope, IFunctionTree tree, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, double[] classes, double[] thresholds, int start, int end);
   }
 }

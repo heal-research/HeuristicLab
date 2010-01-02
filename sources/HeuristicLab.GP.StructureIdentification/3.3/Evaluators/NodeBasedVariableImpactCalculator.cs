@@ -137,12 +137,10 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
     private static double CalculateMSE(Dataset dataset, ITreeEvaluator evaluator, IFunctionTree tree, int targetVariable, int start, int end) {
-      double[,] values = new double[end - start, 2];
-      evaluator.PrepareForEvaluation(dataset, tree);
-      for (int i = start; i < end; i++) {
-        values[i - start, 0] = dataset.GetValue(i, targetVariable);
-        values[i - start, 1] = evaluator.Evaluate(i);
-      }
+
+      double[,] values = Matrix<double>.Create(
+        dataset.GetVariableValues(targetVariable, start, end),
+        evaluator.Evaluate(dataset, tree, Enumerable.Range(start, end - start)).ToArray());
       return SimpleMSEEvaluator.Calculate(values);
     }
 
@@ -154,12 +152,7 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
     private static double CalculateReplacementValue(Dataset dataset, ITreeEvaluator evaluator, IFunctionTree tree, int targetVariable, int start, int end) {
-      double[] values = new double[end - start];
-      evaluator.PrepareForEvaluation(dataset, tree);
-      for (int i = start; i < end; i++) {
-        values[i - start] = evaluator.Evaluate(i);
-      }
-      return Statistics.Median(values);
+      return Statistics.Median(evaluator.Evaluate(dataset, tree, Enumerable.Range(start, end - start)).ToArray());
     }
 
     private static IFunctionTree ReplaceBranchInTree(IFunctionTree tree, IFunctionTree node, double p) {

@@ -59,7 +59,8 @@ namespace HeuristicLab.GP.StructureIdentification {
       LowerEvaluationLimit = minEstimatedValue;
     }
 
-    public void PrepareForEvaluation(Dataset dataset, IFunctionTree functionTree) {
+    [Obsolete]
+    public virtual void PrepareForEvaluation(Dataset dataset, IFunctionTree functionTree) {
       this.dataset = dataset;
       codeArr = new Instr[functionTree.GetSize()];
       int i = 0;
@@ -93,13 +94,20 @@ namespace HeuristicLab.GP.StructureIdentification {
       return instr;
     }
 
-    public double Evaluate(int sampleIndex) {
+    [Obsolete]
+    public virtual double Evaluate(int sampleIndex) {
       PC = 0;
       this.sampleIndex = sampleIndex;
 
       double estimated = Math.Min(Math.Max(EvaluateBakedCode(), LowerEvaluationLimit), UpperEvaluationLimit);
       if (double.IsNaN(estimated)) estimated = UpperEvaluationLimit;
       return estimated;
+    }
+
+    public virtual IEnumerable<double> Evaluate(Dataset dataset, IFunctionTree tree, IEnumerable<int> rows) {
+      PrepareForEvaluation(dataset, tree);
+      foreach (int row in rows)
+        yield return Evaluate(row);
     }
 
     // skips a whole branch

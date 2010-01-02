@@ -23,6 +23,9 @@ using System;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Common;
+using HeuristicLab.GP.Interfaces;
+using System.Linq;
+using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.GP.StructureIdentification.Classification {
   public class ClassificationMeanSquaredErrorEvaluator : GPClassificationEvaluatorBase {
@@ -39,13 +42,13 @@ for the estimated values vs. the real values of 'TargetVariable'.";
       AddVariableInfo(new VariableInfo("MSE", "The mean squared error of the model", typeof(DoubleData), VariableKind.New));
     }
 
-    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable, double[] classes, double[] thresholds, int start, int end) {
+    public override void Evaluate(IScope scope, IFunctionTree tree, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, double[] classes, double[] thresholds, int start, int end) {
       double errorsSquaredSum = 0;
+      double[] estimatedValues = evaluator.Evaluate(dataset, tree, Enumerable.Range(start, end - start)).ToArray();
       for (int sample = start; sample < end; sample++) {
-        double estimated = evaluator.Evaluate(sample);
         double original = dataset.GetValue(sample, targetVariable);
         if (!double.IsNaN(original) && !double.IsInfinity(original)) {
-          double error = estimated - original;
+          double error = estimatedValues[sample - start] - original;
           // between classes use squared error
           // on the lower end and upper end only add linear error if the absolute error is larger than 1
           // the error>1.0 constraint is needed for balance because in the interval ]-1, 1[ the squared error is smaller than the absolute error
@@ -56,6 +59,7 @@ for the estimated values vs. the real values of 'TargetVariable'.";
             errorsSquaredSum += error * error;
           }
         }
+
       }
 
       errorsSquaredSum /= (end - start);

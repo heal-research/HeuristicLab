@@ -22,6 +22,9 @@
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
+using HeuristicLab.Modeling;
+using HeuristicLab.GP.Interfaces;
+using System.Linq;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public abstract class SimpleGPEvaluatorBase : GPEvaluatorBase {
@@ -32,16 +35,11 @@ namespace HeuristicLab.GP.StructureIdentification {
       AddVariableInfo(new VariableInfo(OutputVariableName, OutputVariableName, typeof(DoubleData), VariableKind.New | VariableKind.Out));
     }
 
-    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end) {
+    public override void Evaluate(IScope scope, IFunctionTree tree, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end) {
       // store original and estimated values in a double array
-      double[,] values = new double[end - start, 2];
-      for (int sample = start; sample < end; sample++) {
-        double original = dataset.GetValue(sample, targetVariable);
-        double estimated = evaluator.Evaluate(sample);
-        
-        values[sample - start, 0] = estimated;
-        values[sample - start, 1] = original;
-      }
+      double[,] values = Matrix<double>.Create(
+        dataset.GetVariableValues(targetVariable, start, end),
+        evaluator.Evaluate(dataset, tree, Enumerable.Range(start, end - start)).ToArray());
 
       double quality = Evaluate(values);
 

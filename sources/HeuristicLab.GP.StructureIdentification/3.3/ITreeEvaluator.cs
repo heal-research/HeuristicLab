@@ -22,12 +22,17 @@
 using HeuristicLab.Core;
 using HeuristicLab.DataAnalysis;
 using HeuristicLab.GP.Interfaces;
+using System;
+using System.Collections.Generic;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public interface ITreeEvaluator : IItem {
     double LowerEvaluationLimit { get; set; }
     double UpperEvaluationLimit { get; set; }
+    [Obsolete]
     void PrepareForEvaluation(Dataset dataset, IFunctionTree functionTree);
+    [Obsolete]
     double Evaluate(int sampleIndex);
+    IEnumerable<double> Evaluate(Dataset dataset, IFunctionTree functionTree, IEnumerable<int> rows);
   }
 }

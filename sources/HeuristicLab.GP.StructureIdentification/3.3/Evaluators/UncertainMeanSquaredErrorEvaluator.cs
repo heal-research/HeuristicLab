@@ -23,6 +23,9 @@ using System;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Random;
+using HeuristicLab.GP.Interfaces;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public class UncertainMeanSquaredErrorEvaluator : MeanSquaredErrorEvaluator {
@@ -44,7 +47,7 @@ This operator stops the computation as soon as an upper limit for the mean-squar
     }
 
     // evaluates the function-tree for the given target-variable and the whole dataset and returns the MSE
-    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable, int start, int end) {
+    public override void Evaluate(IScope scope, IFunctionTree tree, ITreeEvaluator evaluator, HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable, int start, int end) {
       double qualityLimit = GetVariableValue<DoubleData>("QualityLimit", scope, true).Data;
       int minSamples = GetVariableValue<IntData>("MinEvaluatedSamples", scope, true).Data;
       MersenneTwister mt = GetVariableValue<MersenneTwister>("Random", scope, true);
@@ -71,8 +74,8 @@ This operator stops the computation as soon as an upper limit for the mean-squar
       double m2 = 0;
       int[] indexes = InitIndexes(mt, start, end);
       int n = 0;
-      for (int sample = 0; sample < rows; sample++) {
-        double estimated = evaluator.Evaluate(indexes[sample]);
+      int sample = 0;
+      foreach (double estimated in evaluator.Evaluate(dataset, tree, indexes)) {
         double original = dataset.GetValue(indexes[sample], targetVariable);
         if (!double.IsNaN(original) && !double.IsInfinity(original)) {
           n++;
@@ -90,6 +93,7 @@ This operator stops the computation as soon as an upper limit for the mean-squar
             }
           }
         }
+        sample++;
       }
 
       evaluatedSamples.Data = n;

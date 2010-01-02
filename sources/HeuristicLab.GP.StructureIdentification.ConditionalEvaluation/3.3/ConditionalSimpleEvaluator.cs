@@ -26,6 +26,7 @@ using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
+using HeuristicLab.GP.Interfaces;
 
 namespace HeuristicLab.GP.StructureIdentification.ConditionalEvaluation {
   public class ConditionalSimpleEvaluator : GPEvaluatorBase {
@@ -37,7 +38,7 @@ namespace HeuristicLab.GP.StructureIdentification.ConditionalEvaluation {
       AddVariableInfo(new VariableInfo("Values", "The values of the target variable as predicted by the model and the original value of the target variable", typeof(ItemList), VariableKind.New | VariableKind.Out));
     }
 
-    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end) {
+    public override void Evaluate(IScope scope, IFunctionTree tree, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end) {
       ItemList values = GetVariableValue<ItemList>("Values", scope, false, false);
       if (values == null) {
         values = new ItemList();
@@ -52,28 +53,27 @@ namespace HeuristicLab.GP.StructureIdentification.ConditionalEvaluation {
       int maxTimeOffset = GetVariableValue<IntData>("MaxTimeOffset", scope, true).Data;
       int minTimeOffset = GetVariableValue<IntData>("MinTimeOffset", scope, true).Data;
       int conditionVariable = GetVariableValue<IntData>("ConditionVariable", scope, true).Data;
-      int skippedSampels = 0;
 
-      for (int sample = start; sample < end; sample++) {
-        // check if condition variable is true between sample - minTimeOffset and sample - maxTimeOffset
-        bool skip = false;
-        for (int checkIndex = sample + minTimeOffset; checkIndex <= sample + maxTimeOffset && !skip ; checkIndex++) {
-          if (dataset.GetValue(checkIndex, conditionVariable) == 0) {
-            skip = true;
-            skippedSampels++;
-          }
-        }
-        if (!skip) {
-          ItemList row = new ItemList();
-          double estimated = evaluator.Evaluate(sample);
-          double original = dataset.GetValue(sample, targetVariable);
-         
-          row.Add(new DoubleData(estimated));
-          row.Add(new DoubleData(original));
-          values.Add(row);
-        }
+      var rows = from row in Enumerable.Range(start, end - start)
+                 // check if condition variable is true between sample - minTimeOffset and sample - maxTimeOffset
+                 // => select rows where the value of the condition variable is different from zero in the whole range
+                 where (from neighbour in Enumerable.Range(row + minTimeOffset, maxTimeOffset - minTimeOffset)
+                        let value = dataset.GetValue(neighbour, conditionVariable)
+                        where value == 0
+                        select neighbour).Any() == false
+                 select row;
+
+
+      double[] estimatedValues = evaluator.Evaluate(dataset, tree, rows).ToArray();
+      double[] originalValues = (from row in rows select dataset.GetValue(row, targetVariable)).ToArray();
+      for (int i = 0; i < rows.Count(); i++) {
+        ItemList row = new ItemList();
+        row.Add(new DoubleData(estimatedValues[i]));
+        row.Add(new DoubleData(originalValues[i]));
+        values.Add(row);
       }
-      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data -= skippedSampels; 
+
+      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data -= (end - start) - rows.Count();
     }
   }
 }

@@ -30,6 +30,7 @@ namespace HeuristicLab.GP.StructureIdentification {
     public HL2TreeEvaluator() : base() { } // for persistence
     public HL2TreeEvaluator(double minValue, double maxValue) : base(minValue, maxValue) { }
 
+    [Obsolete]
     protected override double EvaluateBakedCode() {
       Instr currInstr = codeArr[PC++];
       switch (currInstr.symbol) {

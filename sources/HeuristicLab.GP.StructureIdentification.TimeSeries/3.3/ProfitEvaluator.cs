@@ -21,6 +21,9 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.GP.Interfaces;
+using HeuristicLab.DataAnalysis;
+using System.Linq;
 
 namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
   public class ProfitEvaluator : GPEvaluatorBase {
@@ -37,7 +40,7 @@ namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
       AddVariableInfo(new VariableInfo("TransactionCost", "Cost of a trade in percent of the transaction volume (0..1)", typeof(DoubleData), VariableKind.In));
     }
 
-    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable, int start, int end) {
+    public override void Evaluate(IScope scope, IFunctionTree tree, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end) {
       int exchangeRateVarIndex = GetVariableValue<IntData>("ExchangeRate", scope, true).Data;
       double transactionCost = GetVariableValue<DoubleData>("TransactionCost", scope, true).Data;
       DoubleData profit = GetVariableValue<DoubleData>("Profit", scope, false, false);
@@ -49,11 +52,14 @@ namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
       double cA = 1.0; // start with a capital of one entity of A
       double cB = 0;
       double exchangeRate = double.MaxValue;
-      for (int sample = start; sample < end; sample++) {
-        exchangeRate = dataset.GetValue(sample, exchangeRateVarIndex);
-        double originalPercentageChange = dataset.GetValue(sample, targetVariable);
-        double estimatedPercentageChange = evaluator.Evaluate(sample);
-        
+      double[] estimatedValues = evaluator.Evaluate(dataset, tree, Enumerable.Range(start, end - start)).ToArray();
+      double[] originalValues = dataset.GetVariableValues(targetVariable, start, end);
+      double[] exchangeRateValues = dataset.GetVariableValues(exchangeRateVarIndex, start, end);
+      for (int i = 0; i < estimatedValues.Length; i++) {
+        exchangeRate = exchangeRateValues[i];
+        double originalPercentageChange = originalValues[i];
+        double estimatedPercentageChange = estimatedValues[i];
+
         if (!double.IsNaN(originalPercentageChange) && !double.IsInfinity(originalPercentageChange)) {
           if (estimatedPercentageChange > 0) {
             // prediction is the rate of B/A will increase (= get more B for one A) => exchange all B to A

@@ -26,6 +26,8 @@ using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
+using HeuristicLab.GP.Interfaces;
+using HeuristicLab.Modeling;
 
 namespace HeuristicLab.GP.StructureIdentification.ConditionalEvaluation {
   public abstract class ConditionalEvaluatorBase : GPEvaluatorBase {
@@ -39,34 +41,24 @@ namespace HeuristicLab.GP.StructureIdentification.ConditionalEvaluation {
       AddVariableInfo(new VariableInfo(OutputVariableName, OutputVariableName, typeof(DoubleData), VariableKind.New | VariableKind.Out));
     }
 
-    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end) {
+    public override void Evaluate(IScope scope, IFunctionTree tree, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end) {
       int maxTimeOffset = GetVariableValue<IntData>("MaxTimeOffset", scope, true).Data;
       int minTimeOffset = GetVariableValue<IntData>("MinTimeOffset", scope, true).Data;
       int conditionVariable = GetVariableValue<IntData>("ConditionVariable", scope, true).Data;
 
-      int skippedSampels = 0;
-      // store original and estimated values in a double array
-      double[,] values = new double[end - start, 2];
-      for (int sample = start; sample < end; sample++) {
-        // check if condition variable is true between sample - minTimeOffset and sample - maxTimeOffset
-        bool skip = false;
-        for (int checkIndex = sample + minTimeOffset; checkIndex <= sample + maxTimeOffset && !skip; checkIndex++) {
-          if (dataset.GetValue(checkIndex, conditionVariable) == 0) {
-            skip = true;
-            skippedSampels++;
-          }
-        }
-        if (!skip) {
-          double original = dataset.GetValue(sample, targetVariable);
-          double estimated = evaluator.Evaluate(sample);
-          
-          values[sample - start - skippedSampels, 0] = estimated;
-          values[sample - start - skippedSampels, 1] = original;
-        }
-      }
-      //needed because otherwise the array is too large and therefore the sample count is incorrect during calculation
-      ResizeArray(ref values, 2, end - start - skippedSampels);
+      var rows = from row in Enumerable.Range(start, end - start)
+                 // check if condition variable is true between sample - minTimeOffset and sample - maxTimeOffset
+                 // => select rows where the value of the condition variable is different from zero in the whole range
+                 where (from neighbour in Enumerable.Range(row + minTimeOffset, maxTimeOffset - minTimeOffset)
+                        let value = dataset.GetValue(neighbour, conditionVariable)
+                        where value == 0
+                        select neighbour).Any() == false
+                 select row;
 
+      // store original and estimated values in a double array
+      double[,] values = Matrix<double>.Create(
+        evaluator.Evaluate(dataset, tree, rows).ToArray(),
+        (from row in rows select dataset.GetValue(row, targetVariable)).ToArray());
 
       // calculate quality value
       double quality = Evaluate(values);
@@ -77,14 +69,7 @@ namespace HeuristicLab.GP.StructureIdentification.ConditionalEvaluation {
         scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(OutputVariableName), qualityData));
       }
       qualityData.Data = quality;
-      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data -= skippedSampels;
-    }
-
-
-    private void ResizeArray(ref double[,] original, int cols, int rows) {
-      double[,] newArray = new double[rows, cols];
-      Array.Copy(original, newArray, cols * rows);
-      original = newArray;
+      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data -= (end - start) - rows.Count();
     }
 
     public abstract double Evaluate(double[,] values);

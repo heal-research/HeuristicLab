@@ -21,6 +21,12 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using System;
+using HeuristicLab.GP.Interfaces;
+using HeuristicLab.DataAnalysis;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public class EarlyStoppingMeanSquaredErrorEvaluator : MeanSquaredErrorEvaluator {
@@ -38,31 +44,31 @@ This operator stops the computation as soon as an upper limit for the mean-squar
     }
 
     // evaluates the function-tree for the given target-variable and the whole dataset and returns the MSE
-    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable, int start, int end) {
+    public override void Evaluate(IScope scope, IFunctionTree tree, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end) {
       double qualityLimit = GetVariableValue<DoubleData>("QualityLimit", scope, true).Data;
       DoubleData mse = GetVariableValue<DoubleData>("MSE", scope, false, false);
       if (mse == null) {
         mse = new DoubleData();
         scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("MSE"), mse));
       }
-
       double errorsSquaredSum = 0;
       int rows = end - start;
       int n = 0;
-      for (int sample = start; sample < end; sample++) {
-        double estimated = evaluator.Evaluate(sample);
+      int sample = start;
+      foreach (var estimatedValue in evaluator.Evaluate(dataset, tree, Enumerable.Range(start, end - start))) {
         double original = dataset.GetValue(sample, targetVariable);
-        
+
         if (!double.IsNaN(original) && !double.IsInfinity(original)) {
-          double error = estimated - original;
+          double error = estimatedValue - original;
           errorsSquaredSum += error * error;
           n++;
         }
-        // check the limit and stop as soon as we hit the limit
-        if (errorsSquaredSum / rows >= qualityLimit) {
+        // check the limit every 30 samples and stop as soon as we hit the limit
+        if (n % 30 == 29 && errorsSquaredSum / rows >= qualityLimit) {
           mse.Data = errorsSquaredSum / (n + 1); // return estimated MSE (when the remaining errors are on average the same)
           return;
         }
+        sample++;
       }
       errorsSquaredSum /= n;
       if (double.IsNaN(errorsSquaredSum) || double.IsInfinity(errorsSquaredSum)) {

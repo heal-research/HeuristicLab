@@ -22,6 +22,9 @@
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
+using HeuristicLab.GP.Interfaces;
+using HeuristicLab.Modeling;
+using System.Linq;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public class SimpleEvaluator : GPEvaluatorBase {
@@ -30,7 +33,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       AddVariableInfo(new VariableInfo("Values", "Target vs. predicted values", typeof(DoubleMatrixData), VariableKind.New | VariableKind.Out));
     }
 
-    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end) {
+    public override void Evaluate(IScope scope, IFunctionTree tree, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end) {
       DoubleMatrixData values = GetVariableValue<DoubleMatrixData>("Values", scope, false, false);
       if (values == null) {
         values = new DoubleMatrixData();
@@ -41,15 +44,9 @@ namespace HeuristicLab.GP.StructureIdentification {
           scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(info.FormalName), values));
       }
 
-      double[,] v = new double[end - start, 2];
-
-      for (int sample = start; sample < end; sample++) {
-        double estimated = evaluator.Evaluate(sample);
-        double original = dataset.GetValue(sample, targetVariable);
-        
-        v[sample - start, 0] = original;
-        v[sample - start, 1] = estimated;
-      }
+      double[,] v = Matrix<double>.Create(
+        dataset.GetVariableValues(targetVariable, start, end),
+        evaluator.Evaluate(dataset, tree, Enumerable.Range(start, end - start)).ToArray());
       values.Data = v;
     }
   }

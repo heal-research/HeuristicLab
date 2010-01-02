@@ -45,16 +45,15 @@ namespace HeuristicLab.GP.StructureIdentification {
       double totalEvaluatedNodes = scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data;
       int start = GetVariableValue<IntData>("SamplesStart", scope, true).Data;
       int end = GetVariableValue<IntData>("SamplesEnd", scope, true).Data;
+
       ITreeEvaluator evaluator = GetVariableValue<ITreeEvaluator>("TreeEvaluator", scope, true);
-      
-      evaluator.PrepareForEvaluation(dataset, gpModel.FunctionTree);
-      Evaluate(scope, evaluator, dataset, targetVariable, start, end);
+      Evaluate(scope, gpModel.FunctionTree, evaluator, dataset, targetVariable, start, end);
 
       // update the value of total evaluated nodes
       scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + gpModel.Size * (end - start);
       return null;
     }
 
-    public abstract void Evaluate(IScope scope, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end);
+    public abstract void Evaluate(IScope scope, IFunctionTree tree, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end);
   }
 }
