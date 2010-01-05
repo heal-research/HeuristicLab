@@ -113,17 +113,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Files.x86.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Files.x64.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Files.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="HeuristicLab.ico" />
     <Content Include="Resources\HeuristicLab.ico" />
     <None Include="app.config" />
+    <None Include="CreateConsoleApplication.cmd" />
     <None Include="CustomPostBuild.cmd" />
     <None Include="CopyAssemblies.cmd" />
     <None Include="CustomPostBuildTemplate_UpdateLocalInstallation.cmd" />
@@ -143,13 +141,14 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+    <PostBuildEvent>set Path=%25Path%25;$(ProjectDir);$(SolutionDir);
 set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 set Platform=$(PlatformName)
 set Configuration=$(ConfigurationName)
 
+call CreateConsoleApplication.cmd
 call MergeConfigs.cmd
 call CopyAssemblies.cmd
 if exist "%25ProjectDir%25CustomPostBuild.cmd" call CustomPostBuild.cmd</PostBuildEvent>
