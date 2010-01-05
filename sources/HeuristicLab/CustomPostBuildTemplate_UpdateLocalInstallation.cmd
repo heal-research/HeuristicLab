@@ -1,6 +1,7 @@
 set target=C:\Program Files\HeuristicLab 3.0
 
 copy HeuristicLab.exe "%target%"
+copy HeuristicLab.Console.exe "%target%"
 copy HeuristicLab.exe.config "%target%"
 copy HeuristicLab.PluginInfrastructure.dll "%target%"
 
