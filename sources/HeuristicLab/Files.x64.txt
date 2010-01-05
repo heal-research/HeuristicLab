@@ -1,0 +1,12 @@
+﻿; This line is skipped. DO NOT TOUCH THIS line!
+; This file contains a list of all x86 specific files
+
+HeuristicLab.SQLServerCompact\3.2\x64\sqlceca35.dll
+HeuristicLab.SQLServerCompact\3.2\x64\sqlcecompact35.dll
+HeuristicLab.SQLServerCompact\3.2\x64\sqlceer35EN.dll
+HeuristicLab.SQLServerCompact\3.2\x64\sqlceme35.dll
+HeuristicLab.SQLServerCompact\3.2\x64\sqlceoledb35.dll
+HeuristicLab.SQLServerCompact\3.2\x64\sqlceqp35.dll
+HeuristicLab.SQLServerCompact\3.2\x64\sqlcese35.dll
+
+HeuristicLab.SQLite\3.2\x64\System.Data.SQLite.dll
