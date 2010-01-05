@@ -3,10 +3,10 @@
   <Profiles />
   <Settings>
     <Setting Name="User" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">Gabriel Kronberger</Value>
+      <Value Profile="(Default)">-</Value>
     </Setting>
     <Setting Name="Organization" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">HEAL</Value>
+      <Value Profile="(Default)">-</Value>
     </Setting>
     <Setting Name="UpdateLocations" Type="System.Collections.Specialized.StringCollection" Scope="Application">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;

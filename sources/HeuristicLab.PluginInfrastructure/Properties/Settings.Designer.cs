@@ -25,7 +25,7 @@ namespace HeuristicLab.PluginInfrastructure.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Gabriel Kronberger")]
+        [global::System.Configuration.DefaultSettingValueAttribute("-")]
         public string User {
             get {
                 return ((string)(this["User"]));
@@ -34,7 +34,7 @@ namespace HeuristicLab.PluginInfrastructure.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("HEAL")]
+        [global::System.Configuration.DefaultSettingValueAttribute("-")]
         public string Organization {
             get {
                 return ((string)(this["Organization"]));
