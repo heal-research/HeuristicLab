@@ -32,7 +32,7 @@ namespace HeuristicLab.Tools.ConfigMerger {
         Merge(args[0], args[1]);
       }
       catch (Exception ex) {
-        Console.Out.WriteLine(ex.Message);
+        Console.Out.WriteLine(BuildErrorMessage(ex));
       }
     }
 
@@ -85,20 +85,27 @@ namespace HeuristicLab.Tools.ConfigMerger {
     }
 
     private static void Merge(XmlNode source, XmlNode destination, XmlDocument document, string root) {
-      if (source != null) {
-        if (destination == null) {
-          XmlNode newNode = document.ImportNode(source, true);
-          document.SelectSingleNode(root).AppendChild(newNode);
-        } else {
-          foreach (XmlNode node in source.ChildNodes) {
-            XmlNode newNode = document.ImportNode(node, true);
-            XmlNode oldNode = destination.SelectSingleNode(BuildXPathString(newNode));
-            if (oldNode != null)
-              destination.ReplaceChild(newNode, oldNode);
-            else
-              destination.AppendChild(newNode);
+      try {
+        if (source != null) {
+          if (destination == null) {
+            XmlNode newNode = document.ImportNode(source, true);
+            document.SelectSingleNode(root).AppendChild(newNode);
+          } else {
+            foreach (XmlNode node in source.ChildNodes) {
+              XmlNode newNode = document.ImportNode(node, true);
+              XmlNode oldNode = destination.SelectSingleNode(BuildXPathString(newNode));
+              if (oldNode != null)
+                destination.ReplaceChild(newNode, oldNode);
+              else
+                destination.AppendChild(newNode);
+            }
           }
         }
+      }
+      catch (Exception ex) {
+        StringBuilder sb = new StringBuilder();
+        sb.Append("Error while merging node \"").Append(source.Name).Append("\"");
+        throw new Exception(sb.ToString(), ex);
       }
     }
 
@@ -116,6 +123,18 @@ namespace HeuristicLab.Tools.ConfigMerger {
         builder.Append("]");
       }
       return builder.ToString();
+    }
+
+    private static string BuildErrorMessage(Exception ex) {
+      StringBuilder sb = new StringBuilder();
+      sb.Append("\n\n");
+      sb.Append("### ConfigMerger ERROR ###########################################\n" + ex.Message + "\n" + ex.StackTrace + "\n");
+      while (ex.InnerException != null) {
+        ex = ex.InnerException;
+        sb.Append("-----\n" + ex.Message + "\n" + ex.StackTrace + "\n");
+      }
+      sb.Append("##################################################################\n\n");
+      return sb.ToString();
     }
   }
 }
