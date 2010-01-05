@@ -1,4 +1,3 @@
-copy "%SolutionDir%\HeuristicLab.PluginInfrastructure.GUI\ICSharpCode.SharpZipLib License.txt" .\
 
 copy "%SolutionDir%\ALGLIB\%Outdir%\ALGLIB.dll" .\
 copy "%SolutionDir%\ALGLIB\%Outdir%\ALGLIB License.txt" .\
