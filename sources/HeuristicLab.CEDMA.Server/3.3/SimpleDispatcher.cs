@@ -116,8 +116,8 @@ namespace HeuristicLab.CEDMA.Server {
       algorithms = new Dictionary<string, List<HeuristicLab.Modeling.IAlgorithm>>();
       finishedAndDispatchedRuns = new Dictionary<string, List<AlgorithmConfiguration>>();
 
-      DiscoveryService ds = new DiscoveryService();
-      defaultAlgorithms = ds.GetInstances<HeuristicLab.Modeling.IAlgorithm>();
+      
+      defaultAlgorithms = ApplicationManager.Manager.GetInstances<HeuristicLab.Modeling.IAlgorithm>().ToArray();
 
       // PopulateFinishedRuns();
     }
@@ -207,8 +207,7 @@ namespace HeuristicLab.CEDMA.Server {
     }
 
     private IOperator SelectRandomFunctionLibrary() {
-      DiscoveryService ds = new DiscoveryService();
-      var injectors = from injector in ds.GetInstances<FunctionLibraryInjectorBase>()
+      var injectors = from injector in ApplicationManager.Manager.GetInstances<FunctionLibraryInjectorBase>()
                       where injector.GetType().GetCustomAttributes(typeof(SymbolicRegressionFunctionLibraryInjectorAttribute), true).Count() > 0
                       select injector;
 

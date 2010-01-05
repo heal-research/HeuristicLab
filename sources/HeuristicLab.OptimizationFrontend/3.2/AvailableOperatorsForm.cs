@@ -55,15 +55,12 @@ namespace HeuristicLab.OptimizationFrontend {
       operatorLibraryOperatorsTreeView.TreeViewNodeSorter = nodeSorter;
       builtinOperatorsTreeView.TreeViewNodeSorter = nodeSorter;
 
-      DiscoveryService discoveryService = new DiscoveryService();
-      PluginInfo[] plugins = discoveryService.Plugins;
-      foreach(PluginInfo plugin in plugins) {
+      foreach(IPluginDescription plugin in ApplicationManager.Manager.Plugins) {
         TreeNode pluginItem = new TreeNode();
         pluginItem.Text = plugin.Name;
         pluginItem.Tag = plugin;
 
-        Type[] operators = discoveryService.GetTypes(typeof(IOperator), plugin);
-        foreach(Type type in operators) {
+        foreach(Type type in ApplicationManager.Manager.GetTypes(typeof(IOperator), plugin)) {
           if(!type.IsAbstract) {
             TreeNode operatorItem = new TreeNode();
             operatorItem.Text = type.Name;

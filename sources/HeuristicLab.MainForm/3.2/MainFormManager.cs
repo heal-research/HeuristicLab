@@ -42,9 +42,8 @@ namespace HeuristicLab.MainForm {
         if (MainFormManager.mainform == null) {
           MainFormManager.mainform = mainform;
 
-          DiscoveryService ds = new DiscoveryService();
           IEnumerable<Type> types =
-            from t in ds.GetTypes(typeof(IView))
+            from t in ApplicationManager.Manager.GetTypes(typeof(IView))
             where !t.IsAbstract && !t.IsInterface && !t.IsGenericType && ContentAttribute.HasContentAttribute(t)
             select t;
 
@@ -122,7 +121,7 @@ namespace HeuristicLab.MainForm {
     public static IView CreateView(Type viewType, object objectToView) {
       if (!typeof(IView).IsAssignableFrom(viewType))
         throw new ArgumentException("View can not be created becaues given type " + viewType.ToString() + " is not of type IView.");
-      return (IView)Activator.CreateInstance(viewType,objectToView);
+      return (IView)Activator.CreateInstance(viewType, objectToView);
     }
   }
 }

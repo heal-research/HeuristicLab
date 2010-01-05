@@ -28,11 +28,11 @@ namespace HeuristicLab.Operators {
   /// <summary>
   /// Plugin class for HeuristicLab.Operators plugin.
   /// </summary>
-  [ClassInfo(Name = "HeuristicLab.Operators-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Operators-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Constraints-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
+  [Plugin("HeuristicLab.Operators-3.2")]
+  [PluginFile("HeuristicLab.Operators-3.2.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Constraints-3.2")]
+  [PluginDependency("HeuristicLab.Core-3.2")]
+  [PluginDependency("HeuristicLab.Data-3.2")]
   public class HeuristicLabOperatorsPlugin : PluginBase {
   }
 }

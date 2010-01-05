@@ -26,10 +26,10 @@ using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Grid {
-  [ClassInfo(Name = "HeuristicLab.Hive.Client.Console-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Hive.Client.Console-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Hive.Contracts-3.2")]
+  [Plugin("HeuristicLab.Hive.Client.Console-3.2")]
+  [PluginFile("HeuristicLab.Hive.Client.Console-3.2.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Core-3.2")]
+  [PluginDependency("HeuristicLab.Hive.Contracts-3.2")]
   public class HeuristicLabHiveClientConsolePlugin : PluginBase {
   }
 }

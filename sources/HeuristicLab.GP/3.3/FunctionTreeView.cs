@@ -46,9 +46,7 @@ namespace HeuristicLab.GP {
       rootNode.Text = functionTree.ToString();
       rootNode.Tag = functionTree;
       treeNodeContextMenu.MenuItems.Clear();
-      DiscoveryService discoveryService = new DiscoveryService();
-      IFunctionTreeSerializer[] exporters = discoveryService.GetInstances<IFunctionTreeSerializer>();
-      foreach (IFunctionTreeSerializer exporter in exporters) {
+      foreach (IFunctionTreeSerializer exporter in ApplicationManager.Manager.GetInstances<IFunctionTreeSerializer>()) {
         string result;
         // register a menu item for the exporter
         MenuItem item = new MenuItem("Copy to clip-board (" + exporter.Name + ")",

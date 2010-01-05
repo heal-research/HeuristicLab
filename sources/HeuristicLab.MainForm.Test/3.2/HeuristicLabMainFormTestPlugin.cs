@@ -25,10 +25,10 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.MainForm.Test {
-  [ClassInfo(Name = "HeuristicLab.MainForm.Test-3.2")]
-  [PluginFile(Filename = "HeuristicLab.MainForm.Test-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.MainForm.WindowsForms-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Common.Resources-3.2")]
+  [Plugin("HeuristicLab.MainForm.Test-3.2")]
+  [PluginFile("HeuristicLab.MainForm.Test-3.2.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.MainForm.WindowsForms-3.2")]
+  [PluginDependency("HeuristicLab.Common.Resources-3.2")]
   public class HeuristicLabMainFormTestPlugin : PluginBase {
   }
 }

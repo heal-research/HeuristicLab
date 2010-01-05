@@ -29,14 +29,14 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
   /// <summary>
   /// The HeuristicLab Advanced Optimization Frontend Application.
   /// </summary>
-  [ClassInfo(Name = "HeuristicLab 3.2 (dockable)", Description="Next generation heuristic optimization environment.")]
+  [Application("HeuristicLab 3.2 (dockable)", "Next generation heuristic optimization environment.")]
   class HeuristicLabAdvancedOptimizationFrontendApplication : ApplicationBase {
     /// <summary>
     /// Runs the application and displays the main window.
     /// </summary>
     public override void Run() {
       Form mainForm = new MainForm();
-      PluginManager.ControlManager = (IControlManager)mainForm;
+      ControlManager.RegisterManager((IControlManager)mainForm);
       Application.Run(mainForm);
     }
   }

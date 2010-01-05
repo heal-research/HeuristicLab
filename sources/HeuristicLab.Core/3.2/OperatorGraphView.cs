@@ -183,7 +183,7 @@ namespace HeuristicLab.Core {
         IOperator op = (IOperator)operatorsListView.SelectedItems[0].Tag;
         IView view = op.CreateView();
         if (view != null)
-          PluginManager.ControlManager.ShowControl(view);
+          ControlManager.Manager.ShowControl(view);
       }
     }
     #endregion
@@ -410,7 +410,7 @@ namespace HeuristicLab.Core {
     }
     private void viewToolStripMenuItem_Click(object sender, EventArgs e) {
       IView view = (IView)((ToolStripMenuItem)sender).Tag;
-      PluginManager.ControlManager.ShowControl(view);
+      ControlManager.Manager.ShowControl(view);
     }
     private void initialOperatorToolStripMenuItem_Click(object sender, EventArgs e) {
       if (initialOperatorToolStripMenuItem.Checked) {

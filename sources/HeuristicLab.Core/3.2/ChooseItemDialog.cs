@@ -88,13 +88,11 @@ namespace HeuristicLab.Core {
         itemType = typeof(IItem);
       }
 
-      DiscoveryService discoveryService = new DiscoveryService();
-      foreach (PluginInfo plugin in discoveryService.Plugins) {
+      foreach (IPluginDescription plugin in ApplicationManager.Manager.Plugins) {
         TreeNode pluginNode = new TreeNode(plugin.Name);
         pluginNode.Tag = null;
 
-        Type[] types = discoveryService.GetTypes(itemType, plugin);
-        foreach (Type type in types) {
+        foreach (Type type in ApplicationManager.Manager.GetTypes(itemType, plugin)) {
           if (!type.IsAbstract) {
             TreeNode itemNode = new TreeNode();
             itemNode.Text = type.Name;

@@ -27,7 +27,7 @@ using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.MainForm.Test {
-  [ClassInfo(Name = "MultipleDocumentMainForm Test", Description="Test application for new mainform development.")]
+  [Application("MultipleDocumentMainForm Test", "Test application for new mainform development.")]
   public class HeuristicLabMultipleDocumentMainFormTestApplication : ApplicationBase {
     public override void Run() {
       MultipleDocumentMainForm mainForm = new MultipleDocumentMainForm(typeof(ITestUserInterfaceItemProvider));

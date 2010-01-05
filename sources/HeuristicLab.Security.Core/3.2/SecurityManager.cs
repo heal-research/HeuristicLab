@@ -12,7 +12,15 @@ using System.ServiceModel;
 namespace HeuristicLab.Security.Core {
   public class SecurityManager : ISecurityManager {
 
-    private static ISessionFactory factory = ServiceLocator.GetSessionFactory();
+    private static ISessionFactory factory;
+    private static ISessionFactory Factory {
+      get {
+        // lazy initialization
+        if(factory==null)
+          factory = ServiceLocator.GetSessionFactory();
+        return factory;
+      }
+    }
 
     private ISession session;
 
@@ -23,7 +31,7 @@ namespace HeuristicLab.Security.Core {
     /// <returns></returns>
     public User AddNewUser(User user) {
       try {
-        session = factory.GetSessionForCurrentThread();
+        session = Factory.GetSessionForCurrentThread();
 
         IUserAdapter userAdapter = session.GetDataAdapter<User, IUserAdapter>();
         if (user != null)
@@ -45,7 +53,7 @@ namespace HeuristicLab.Security.Core {
     /// <returns></returns>
     public User UpdateUser(User user) {
       try {
-        session = factory.GetSessionForCurrentThread();
+        session = Factory.GetSessionForCurrentThread();
         IUserAdapter userAdapter = session.GetDataAdapter<User, IUserAdapter>();
 
         if (user != null)
@@ -66,7 +74,7 @@ namespace HeuristicLab.Security.Core {
    /// <returns></returns>
     public bool RemoveUser(Guid userId) {
       try {
-        session = factory.GetSessionForCurrentThread();
+        session = Factory.GetSessionForCurrentThread();
         IUserAdapter userAdapter = session.GetDataAdapter<User, IUserAdapter>();
         User user = userAdapter.GetById(userId);
 
@@ -87,7 +95,7 @@ namespace HeuristicLab.Security.Core {
     /// <returns></returns>
     public ICollection<User> GetAllUsers() {
       try {
-        session = factory.GetSessionForCurrentThread();
+        session = Factory.GetSessionForCurrentThread();
         IUserAdapter userAdapter = session.GetDataAdapter<User, IUserAdapter>();
 
         return userAdapter.GetAll();
@@ -106,7 +114,7 @@ namespace HeuristicLab.Security.Core {
     /// <returns></returns>
     public User GetUserByName(string name) {
       try {
-        session = factory.GetSessionForCurrentThread();
+        session = Factory.GetSessionForCurrentThread();
         IUserAdapter userAdapter = session.GetDataAdapter<User, IUserAdapter>();
 
         return userAdapter.GetByName(name);
@@ -125,7 +133,7 @@ namespace HeuristicLab.Security.Core {
     /// <returns></returns>
     public User GetUserByLogin(string login) {
       try {
-        session = factory.GetSessionForCurrentThread();
+        session = Factory.GetSessionForCurrentThread();
         IUserAdapter userAdapter = session.GetDataAdapter<User, IUserAdapter>();
 
         return userAdapter.GetByLogin(login);
@@ -144,7 +152,7 @@ namespace HeuristicLab.Security.Core {
     /// <returns></returns>
     public UserGroup AddNewUserGroup(UserGroup userGroup) {
       try {
-        session = factory.GetSessionForCurrentThread();
+        session = Factory.GetSessionForCurrentThread();
 
         IUserGroupAdapter userGroupAdapter = session.GetDataAdapter<UserGroup, IUserGroupAdapter>();
         if (userGroup != null)
@@ -166,7 +174,7 @@ namespace HeuristicLab.Security.Core {
     /// <returns></returns>
     public UserGroup UpdateUserGroup(UserGroup userGroup) {
       try {
-        session = factory.GetSessionForCurrentThread();
+        session = Factory.GetSessionForCurrentThread();
 
         IUserGroupAdapter userGroupAdapter = session.GetDataAdapter<UserGroup, IUserGroupAdapter>();
         if (userGroup != null)
@@ -188,7 +196,7 @@ namespace HeuristicLab.Security.Core {
     /// <returns></returns>
     public bool RemoveUserGroup(Guid userGroupId) {
       try {
-        session = factory.GetSessionForCurrentThread();
+        session = Factory.GetSessionForCurrentThread();
 
         IUserGroupAdapter userGroupAdapter = session.GetDataAdapter<UserGroup, IUserGroupAdapter>();
         UserGroup userGroup = userGroupAdapter.GetById(userGroupId);   
@@ -210,7 +218,7 @@ namespace HeuristicLab.Security.Core {
     /// <returns></returns>
     public ICollection<UserGroup> GetAllUserGroups() {
       try {
-        session = factory.GetSessionForCurrentThread();
+        session = Factory.GetSessionForCurrentThread();
         IUserGroupAdapter userGroupAdapter = session.GetDataAdapter<UserGroup, IUserGroupAdapter>();
 
         return userGroupAdapter.GetAll();
@@ -229,7 +237,7 @@ namespace HeuristicLab.Security.Core {
     /// <returns></returns>
     public UserGroup GetUserGroupByName(string name) {
       try {
-        session = factory.GetSessionForCurrentThread();
+        session = Factory.GetSessionForCurrentThread();
         IUserGroupAdapter userGroupAdapter = session.GetDataAdapter<UserGroup, IUserGroupAdapter>();
 
         return userGroupAdapter.GetByName(name);
@@ -248,7 +256,7 @@ namespace HeuristicLab.Security.Core {
     /// <returns></returns>
     public PermissionOwner UpdatePermissionOwner(PermissionOwner permissionOwner) {
       try {
-        session = factory.GetSessionForCurrentThread();
+        session = Factory.GetSessionForCurrentThread();
 
         IPermissionOwnerAdapter permOwnerAdapter = session.GetDataAdapter<PermissionOwner, IPermissionOwnerAdapter>();
         if (permissionOwner != null)
@@ -271,7 +279,7 @@ namespace HeuristicLab.Security.Core {
     /// <returns></returns>
     public bool AddPermissionOwnerToGroup(Guid userGroupId, Guid permissionOwnerId) {
       try {
-        session = factory.GetSessionForCurrentThread();
+        session = Factory.GetSessionForCurrentThread();
         ITransaction transaction = session.BeginTransaction();
 
         IUserGroupAdapter userGroupAdapter = session.GetDataAdapter<UserGroup, IUserGroupAdapter>();
@@ -304,7 +312,7 @@ namespace HeuristicLab.Security.Core {
     /// <returns></returns>
     public bool RemovePermissionOwnerFromGroup(Guid userGroupId, Guid permissionOwnerId) {
       try {
-        session = factory.GetSessionForCurrentThread();
+        session = Factory.GetSessionForCurrentThread();
         ITransaction transaction = session.BeginTransaction();
 
         IUserGroupAdapter userGroupAdapter = session.GetDataAdapter<UserGroup, IUserGroupAdapter>();
@@ -337,7 +345,7 @@ namespace HeuristicLab.Security.Core {
     /// <returns></returns>
     public bool GrantPermission(Guid permissionOwnerId, Guid permissionId, Guid entityId) {
       try {
-        session = factory.GetSessionForCurrentThread();                         
+        session = Factory.GetSessionForCurrentThread();                         
         IPermissionAdapter permissionAdapter = session.GetDataAdapter<Permission, IPermissionAdapter>();
 
         return permissionAdapter.grantPermission(permissionOwnerId, permissionId, entityId);
@@ -356,7 +364,7 @@ namespace HeuristicLab.Security.Core {
     /// <returns></returns>
     public Permission GetPermissionById(Guid permissionId) {
       try {
-        session = factory.GetSessionForCurrentThread();
+        session = Factory.GetSessionForCurrentThread();
 
         IPermissionAdapter permissionAdapter = session.GetDataAdapter<Permission, IPermissionAdapter>();
         return permissionAdapter.GetById(permissionId);
@@ -377,7 +385,7 @@ namespace HeuristicLab.Security.Core {
     /// <returns></returns>
     public bool RevokePermission(Guid permissionOwnerId, Guid permissionId, Guid entityId) {
       try {
-        session = factory.GetSessionForCurrentThread();     
+        session = Factory.GetSessionForCurrentThread();     
         IPermissionAdapter permissionAdapter = session.GetDataAdapter<Permission, IPermissionAdapter>();
  
         return permissionAdapter.revokePermission(permissionOwnerId, permissionId, entityId);
@@ -391,7 +399,7 @@ namespace HeuristicLab.Security.Core {
 
     public Permission AddPermission(Permission permission) {
       try {
-        session = factory.GetSessionForCurrentThread();
+        session = Factory.GetSessionForCurrentThread();
         IPermissionAdapter permissionAdapter = session.GetDataAdapter<Permission, IPermissionAdapter>();
 
         if (permission != null) {
@@ -410,7 +418,7 @@ namespace HeuristicLab.Security.Core {
 
     public bool RemovePermission(Guid permissionId) {
       try {
-        session = factory.GetSessionForCurrentThread();
+        session = Factory.GetSessionForCurrentThread();
         IPermissionAdapter permissionAdapter = session.GetDataAdapter<Permission, IPermissionAdapter>();
 
         Permission permission = permissionAdapter.GetById(permissionId);
@@ -428,7 +436,7 @@ namespace HeuristicLab.Security.Core {
 
     public Permission UpdatePermission(Permission permission) {
       try {
-        session = factory.GetSessionForCurrentThread();
+        session = Factory.GetSessionForCurrentThread();
         IPermissionAdapter permissionAdapter = session.GetDataAdapter<Permission, IPermissionAdapter>();
 
         if(permission != null) {

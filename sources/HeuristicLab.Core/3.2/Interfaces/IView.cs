@@ -28,7 +28,7 @@ namespace HeuristicLab.Core {
   /// <summary>
   /// An interface for all kinds visual representations of items (objects, operators...).
   /// </summary>
-  public interface IView : IControl {
+  public interface IView {
     /// <summary>
     /// Gets the current item instance.
     /// </summary>

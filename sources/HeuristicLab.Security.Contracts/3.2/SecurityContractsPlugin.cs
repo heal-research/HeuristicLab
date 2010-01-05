@@ -25,9 +25,9 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Security.Contracts {
-  [ClassInfo(Name = "HeuristicLab.Security.Contracts-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Security.Contracts-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
+  [Plugin("HeuristicLab.Security.Contracts-3.2")]
+  [PluginFile("HeuristicLab.Security.Contracts-3.2.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Core-3.2")]
   public class SecurityContractsPlugin : PluginBase {
   }
 }

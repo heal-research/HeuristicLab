@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Linq;
 using HeuristicLab.Hive.Server.DataAccess;
 using HeuristicLab.PluginInfrastructure;
 using System.Runtime.CompilerServices;
@@ -33,9 +34,6 @@ using HeuristicLab.Security.Contracts.Interfaces;
 /// The service locator for the server core
 /// </summary>
 public class ServiceLocator {
-  private static DiscoveryService discoveryService =
-    new DiscoveryService();
-
   private static IClientManager clientManager = null;
 
   private static IJobManager jobManager = null;
@@ -108,7 +106,7 @@ public class ServiceLocator {
   public static ISessionFactory GetSessionFactory() {
     if (sessionFactory == null) {
       sessionFactory = 
-        discoveryService.GetInstances<ISessionFactory>()[0];
+        ApplicationManager.Manager.GetInstances<ISessionFactory>().First();
 
       sessionFactory.DbConnectionType =
         typeof(SqlConnection);
@@ -127,7 +125,7 @@ public class ServiceLocator {
   [MethodImpl(MethodImplOptions.Synchronized)]
   public static IScheduler GetScheduler() {
     if (scheduler == null) {
-      scheduler = discoveryService.GetInstances<IScheduler>()[0];
+      scheduler = ApplicationManager.Manager.GetInstances<IScheduler>().First();
     }
 
     return scheduler;
@@ -140,7 +138,7 @@ public class ServiceLocator {
   [MethodImpl(MethodImplOptions.Synchronized)]  
   public static IPermissionManager GetPermissionManager() {
     if (permManager == null)
-      permManager = discoveryService.GetInstances<IPermissionManager>()[0];
+      permManager = ApplicationManager.Manager.GetInstances<IPermissionManager>().First();
     return permManager;
     
   }
@@ -152,7 +150,7 @@ public class ServiceLocator {
   [MethodImpl(MethodImplOptions.Synchronized)]
   public static IHivePermissionManager GetHivePermissionManager() {
     if (hivePermManager == null)
-      hivePermManager = discoveryService.GetInstances<IHivePermissionManager>()[0];
+      hivePermManager = ApplicationManager.Manager.GetInstances<IHivePermissionManager>().First();
     return hivePermManager;
 
   }

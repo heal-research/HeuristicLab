@@ -48,10 +48,8 @@ namespace HeuristicLab.DataAnalysis {
     public DatasetView(Dataset dataset)
       : this() {
       this.Dataset = dataset;
-      DiscoveryService discovery = new DiscoveryService();
-      IDatasetManipulator[] manipuators = discovery.GetInstances<IDatasetManipulator>();
       contextMenuStrip.Items.Add(new ToolStripSeparator());
-      foreach (IDatasetManipulator manipulator in manipuators) {
+      foreach (IDatasetManipulator manipulator in ApplicationManager.Manager.GetInstances<IDatasetManipulator>()) {
         contextMenuStrip.Items.Add(new ToolStripButton(manipulator.Action, null, delegate(object source, EventArgs args) {
           manipulator.Execute(Dataset);
           Refresh();

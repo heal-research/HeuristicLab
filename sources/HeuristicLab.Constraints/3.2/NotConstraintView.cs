@@ -57,10 +57,8 @@ namespace HeuristicLab.Constraints {
     /// </summary>
     public NotConstraintView() {
       InitializeComponent();
-      DiscoveryService discoveryService = new DiscoveryService();
-      itemTypes = discoveryService.GetTypes(typeof(ConstraintBase));
-      for (int i = 0; i < itemTypes.Length; i++) {
-        subConstraintComboBox.Items.Add(itemTypes[i].Name);
+      foreach (Type itemType in ApplicationManager.Manager.GetTypes(typeof(ConstraintBase))) {
+        subConstraintComboBox.Items.Add(itemType.Name);
       }
       subConstraintComboBox.SelectedIndex = 0;
       subConstraintComboBox.Enabled = false;
@@ -129,7 +127,8 @@ namespace HeuristicLab.Constraints {
       if (NotConstraint != null) {
         try {
           NotConstraint.SubConstraint = (ConstraintBase)Activator.CreateInstance(itemTypes[subConstraintComboBox.SelectedIndex]);
-        } catch (Exception) {
+        }
+        catch (Exception) {
           NotConstraint.SubConstraint = null;
         }
       }
@@ -143,7 +142,7 @@ namespace HeuristicLab.Constraints {
 
     private void UpdateSubConstraintComboBox() {
       subConstraintComboBox.SelectedIndexChanged -= new EventHandler(subConstraintComboBox_SelectedIndexChanged);
-      for (int i = 0 ; i < itemTypes.Length ; i++)
+      for (int i = 0; i < itemTypes.Length; i++)
         if (itemTypes[i].Name.Equals(NotConstraint.SubConstraint.GetType().Name))
           subConstraintComboBox.SelectedIndex = i;
       subConstraintComboBox.SelectedIndexChanged += new EventHandler(subConstraintComboBox_SelectedIndexChanged);

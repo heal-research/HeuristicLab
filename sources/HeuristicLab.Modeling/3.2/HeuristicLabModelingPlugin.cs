@@ -25,13 +25,13 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Modeling {
-  [ClassInfo(Name = "HeuristicLab.Modeling-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Modeling-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "ALGLIB")]
-  [Dependency(Dependency = "HeuristicLab.Common-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
-  [Dependency(Dependency = "HeuristicLab.DataAnalysis-3.2")]
+  [Plugin("HeuristicLab.Modeling-3.2")]
+  [PluginFile("HeuristicLab.Modeling-3.2.dll", PluginFileType.Assembly)]
+  [PluginDependency("ALGLIB")]
+  [PluginDependency("HeuristicLab.Common-3.2")]
+  [PluginDependency("HeuristicLab.Core-3.2")]
+  [PluginDependency("HeuristicLab.Data-3.2")]
+  [PluginDependency("HeuristicLab.DataAnalysis-3.2")]
   public class HeuristicLabModelingPlugin : PluginBase {
   }
 }

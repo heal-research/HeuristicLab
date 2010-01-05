@@ -26,18 +26,18 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.SupportVectorMachines {
-  [ClassInfo(Name = "HeuristicLab.SupportVectorMachines-3.2")]
-  [PluginFile(Filename = "HeuristicLab.SupportVectorMachines-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [PluginFile(Filename = "LibSVM.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
-  [Dependency(Dependency = "HeuristicLab.DataAnalysis-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Modeling-3.2")]
-  [Dependency(Dependency = "HeuristicLab.SequentialEngine-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Logging-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Operators.Programmable-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Random-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Selection-3.2")]
+  [Plugin("HeuristicLab.SupportVectorMachines-3.2")]
+  [PluginFile("HeuristicLab.SupportVectorMachines-3.2.dll", PluginFileType.Assembly)]
+  [PluginFile("LibSVM.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Core-3.2")]
+  [PluginDependency("HeuristicLab.Data-3.2")]
+  [PluginDependency("HeuristicLab.DataAnalysis-3.2")]
+  [PluginDependency("HeuristicLab.Modeling-3.2")]
+  [PluginDependency("HeuristicLab.SequentialEngine-3.2")]
+  [PluginDependency("HeuristicLab.Logging-3.2")]
+  [PluginDependency("HeuristicLab.Operators.Programmable-3.2")]
+  [PluginDependency("HeuristicLab.Random-3.2")]
+  [PluginDependency("HeuristicLab.Selection-3.2")]
   public class HeuristicLabSupportVectorMachinesPlugin : PluginBase {
   }
 }

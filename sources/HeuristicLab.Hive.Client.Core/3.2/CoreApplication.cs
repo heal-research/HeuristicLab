@@ -30,8 +30,8 @@ using System.Timers;
 using System.Threading;
 
 namespace HeuristicLab.Hive.Client.Core {
-  [ClassInfo(Name = "Hive Client", Description = "Hive Client Core baseclass", AutoRestart = false)]
-  public class CoreApplication: ApplicationBase {
+  [Application("Hive Client", "Hive Client Core baseclass")]
+  public class CoreApplication : ApplicationBase {
     public override void Run() {
       Core core = new Core();
       core.Start();

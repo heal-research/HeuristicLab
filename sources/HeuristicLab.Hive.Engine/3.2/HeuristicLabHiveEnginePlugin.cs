@@ -28,16 +28,16 @@ namespace HeuristicLab.Hive.Engine {
   /// <summary>
   /// Plugin class for HeuristicLab.Hive.Engine plugin.
   /// </summary>
-  [ClassInfo(Name = "HeuristicLab.Hive.Engine-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Hive.Engine-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Common-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
-  [Dependency(Dependency = "HeuristicLab.DataAccess-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Hive.Contracts-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Hive.JobBase-3.2")]
-  [Dependency(Dependency = "HeuristicLab.SequentialEngine-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Tracing-3.2")]
+  [Plugin("HeuristicLab.Hive.Engine-3.2")]
+  [PluginFile("HeuristicLab.Hive.Engine-3.2.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Common-3.2")]
+  [PluginDependency("HeuristicLab.Core-3.2")]
+  [PluginDependency("HeuristicLab.Data-3.2")]
+  [PluginDependency("HeuristicLab.DataAccess-3.2")]
+  [PluginDependency("HeuristicLab.Hive.Contracts-3.2")]
+  [PluginDependency("HeuristicLab.Hive.JobBase-3.2")]
+  [PluginDependency("HeuristicLab.SequentialEngine-3.2")]
+  [PluginDependency("HeuristicLab.Tracing-3.2")]
   public class HeuristicLabHiveEnginePlugin : PluginBase {
   }
 }

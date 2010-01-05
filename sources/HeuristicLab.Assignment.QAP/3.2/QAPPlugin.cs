@@ -25,13 +25,13 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Assignment.QAP {
-  [ClassInfo(Name = "HeuristicLab.Assignment.QAP-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Assignment.QAP-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Operators-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Charting-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Permutation-3.2")]
+  [Plugin("HeuristicLab.Assignment.QAP-3.2")]
+  [PluginFile("HeuristicLab.Assignment.QAP-3.2.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Core-3.2")]
+  [PluginDependency("HeuristicLab.Data-3.2")]
+  [PluginDependency("HeuristicLab.Operators-3.2")]
+  [PluginDependency("HeuristicLab.Charting-3.2")]
+  [PluginDependency("HeuristicLab.Permutation-3.2")]
   public class QAPPlugin : PluginBase {
   }
 }

@@ -116,32 +116,32 @@ namespace HeuristicLab.SGA {
     private void viewProblemInitializationButton_Click(object sender, EventArgs e) {
       IView view = SGA.ProblemInjector.CreateView();
       if (view != null)
-        PluginManager.ControlManager.ShowControl(view);
+        ControlManager.Manager.ShowControl(view);
     }
     private void viewSolutionGenerationButton_Click(object sender, EventArgs e) {
       IView view = SGA.SolutionGenerator.CreateView();
       if (view != null)
-        PluginManager.ControlManager.ShowControl(view);
+        ControlManager.Manager.ShowControl(view);
     }
     private void viewSelectionButton_Click(object sender, EventArgs e) {
       IView view = SGA.Selector.CreateView();
       if (view != null)
-        PluginManager.ControlManager.ShowControl(view);
+        ControlManager.Manager.ShowControl(view);
     }
     private void viewCrossoverButton_Click(object sender, EventArgs e) {
       IView view = SGA.Crossover.CreateView();
       if (view != null)
-        PluginManager.ControlManager.ShowControl(view);
+        ControlManager.Manager.ShowControl(view);
     }
     private void viewMutationButton_Click(object sender, EventArgs e) {
       IView view = SGA.Mutator.CreateView();
       if (view != null)
-        PluginManager.ControlManager.ShowControl(view);
+        ControlManager.Manager.ShowControl(view);
     }
     private void viewEvaluationButton_Click(object sender, EventArgs e) {
       IView view = SGA.Evaluator.CreateView();
       if (view != null)
-        PluginManager.ControlManager.ShowControl(view);
+        ControlManager.Manager.ShowControl(view);
     }
     private void setProblemInitializationButton_Click(object sender, EventArgs e) {
       if (chooseOperatorDialog == null) chooseOperatorDialog = new ChooseOperatorDialog();
@@ -199,7 +199,7 @@ namespace HeuristicLab.SGA {
     private void cloneEngineButton_Click(object sender, EventArgs e) {
       IEngine clone = (IEngine)SGA.Engine.Clone();
       IEditor editor = ((IEditable)clone).CreateEditor();
-      PluginManager.ControlManager.ShowControl(editor);
+      ControlManager.Manager.ShowControl(editor);
     }
     #endregion
 

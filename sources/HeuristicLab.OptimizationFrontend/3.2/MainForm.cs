@@ -25,6 +25,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Text;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
@@ -57,14 +58,10 @@ namespace HeuristicLab.OptimizationFrontend {
       locker = new object();
       runningTasks = 0;
 
-      DiscoveryService discoveryService = new DiscoveryService();
-
       // discover creatable items
-      Type[] creatables = discoveryService.GetTypes(typeof(IEditable));
-      string[] names = new string[creatables.Length];
-      for (int i = 0; i < creatables.Length; i++)
-        names[i] = creatables[i].Name;
-      Array.Sort(names, creatables);
+      IEnumerable<Type> creatables = from x in ApplicationManager.Manager.GetTypes(typeof(IEditable))
+                                     orderby x.Name
+                                     select x;
       foreach (Type type in creatables) {
         if (!type.IsAbstract) {
           ToolStripMenuItem item = new ToolStripMenuItem();
@@ -83,8 +80,8 @@ namespace HeuristicLab.OptimizationFrontend {
     }
 
     #region IControlManager Members
-    public void ShowControl(IControl control) {
-      if (InvokeRequired) Invoke((Action<IControl>)ShowControl, control);
+    public void ShowControl(object control) {
+      if (InvokeRequired) Invoke((Action<object>)ShowControl, control);
       else {
         if (control is IEditor) {
           EditorForm form = new EditorForm((IEditor)control);
@@ -175,7 +172,7 @@ namespace HeuristicLab.OptimizationFrontend {
           MessageBox.Show("Could not open item. The selected item doesn't provide an editor.", "Editor Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         else {
           editor.Filename = task.filename;
-          PluginManager.ControlManager.ShowControl(editor);
+          ControlManager.Manager.ShowControl(editor);
         }
         lock (locker) {
           runningTasks--;
@@ -238,7 +235,7 @@ namespace HeuristicLab.OptimizationFrontend {
         if (editor == null) {
           MessageBox.Show("The selected item doesn't provide an editor.", "Editor Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         } else {
-          PluginManager.ControlManager.ShowControl(editor);
+          ControlManager.Manager.ShowControl(editor);
           EnableDisableItems();
         }
       }

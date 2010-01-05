@@ -26,9 +26,9 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace ALGLIB {
-  [ClassInfo(Name = "ALGLIB")]
-  [PluginFile(Filename = "ALGLIB.dll", Filetype = PluginFileType.Assembly)]
-  [PluginFile(Filename = "ALGLIB License.txt", Filetype = PluginFileType.License)]
+  [Plugin("ALGLIB")]
+  [PluginFile("ALGLIB.dll", PluginFileType.Assembly)]
+  [PluginFile("ALGLIB License.txt", PluginFileType.License)]
   public class AlgLibPlugin : PluginBase {
   }
 }

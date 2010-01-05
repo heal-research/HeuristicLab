@@ -25,10 +25,10 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.GP {
-  [ClassInfo(Name = "HeuristicLab.GP-3.3")]
-  [PluginFile(Filename = "HeuristicLab.GP-3.3.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.GP.Interfaces-3.3")]
-  [Dependency(Dependency = "HeuristicLab.Random-3.2")]
+  [Plugin("HeuristicLab.GP-3.3")]
+  [PluginFile("HeuristicLab.GP-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.GP.Interfaces-3.3")]
+  [PluginDependency("HeuristicLab.Random-3.2")]
   public class HeuristicLabGPPlugin : PluginBase {
   }
 }

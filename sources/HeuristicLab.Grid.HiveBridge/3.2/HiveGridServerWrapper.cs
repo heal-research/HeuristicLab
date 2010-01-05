@@ -130,11 +130,10 @@ namespace HeuristicLab.Grid.HiveBridge {
       IEngine engine = (IEngine)PersistenceManager.Restore(rootNode, dictionary);
       stream.Close();
 
-      DiscoveryService service = new DiscoveryService();
-      List<PluginInfo> plugins = new List<PluginInfo>();
+      List<IPluginDescription> plugins = new List<IPluginDescription>();
 
       foreach (IStorable storeable in dictionary.Values) {
-        PluginInfo pluginInfo = service.GetDeclaringPlugin(storeable.GetType());
+        IPluginDescription pluginInfo = ApplicationManager.Manager.GetDeclaringPlugin(storeable.GetType());
         if (!plugins.Contains(pluginInfo)) {
           plugins.Add(pluginInfo);
           foreach (var dependency in pluginInfo.Dependencies) {
@@ -143,7 +142,7 @@ namespace HeuristicLab.Grid.HiveBridge {
         }
       }
 
-      foreach (PluginInfo uniquePlugin in plugins) {
+      foreach (IPluginDescription uniquePlugin in plugins) {
         HivePluginInfo pluginInfo =
           new HivePluginInfo();
         pluginInfo.Name = uniquePlugin.Name;

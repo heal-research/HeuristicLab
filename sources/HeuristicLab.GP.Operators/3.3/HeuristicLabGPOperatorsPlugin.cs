@@ -25,16 +25,16 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.GP.Operators {
-  [ClassInfo(Name = "HeuristicLab.GP.Operators-3.3")]
-  [PluginFile(Filename = "HeuristicLab.GP.Operators-3.3.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Evolutionary-3.2")]
-  [Dependency(Dependency = "HeuristicLab.GP-3.3")]
-  [Dependency(Dependency = "HeuristicLab.GP.Interfaces-3.3")]
-  [Dependency(Dependency = "HeuristicLab.Operators-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Random-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Selection-3.2")]
+  [Plugin("HeuristicLab.GP.Operators-3.3")]
+  [PluginFile("HeuristicLab.GP.Operators-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Core-3.2")]
+  [PluginDependency("HeuristicLab.Data-3.2")]
+  [PluginDependency("HeuristicLab.Evolutionary-3.2")]
+  [PluginDependency("HeuristicLab.GP-3.3")]
+  [PluginDependency("HeuristicLab.GP.Interfaces-3.3")]
+  [PluginDependency("HeuristicLab.Operators-3.2")]
+  [PluginDependency("HeuristicLab.Random-3.2")]
+  [PluginDependency("HeuristicLab.Selection-3.2")]
   public class HeuristicLabGPOperatorsPlugin : PluginBase {
   }
 }

@@ -25,8 +25,8 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Charting {
-  [ClassInfo(Name = "HeuristicLab.Charting-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Charting-3.2.dll", Filetype = PluginFileType.Assembly)]
+  [Plugin("HeuristicLab.Charting-3.2")]
+  [PluginFile("HeuristicLab.Charting-3.2.dll", PluginFileType.Assembly)]
   public class HeuristicLabChartingPlugin : PluginBase {
   }
 }

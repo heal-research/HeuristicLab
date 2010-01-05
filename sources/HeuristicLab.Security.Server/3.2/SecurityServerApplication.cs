@@ -5,22 +5,20 @@ using System.Text;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.Net;
+using System.Linq;
 using HeuristicLab.Security.Contracts.Interfaces;
 using System.Windows.Forms;
 
 namespace HeuristicLab.Security.Server {
 
-  [ClassInfo(Name = "Security Server",
-  Description = "Server application for the security.",
-  AutoRestart = true)]
+  [Application("Security Server", "Server application for the security.", true)]
   public class SecurityServerApplication : ApplicationBase {
     public const string STR_PermissionManager = "PermissionManager";
-    public const string STR_SecurityManager = "SecurityManager";   
+    public const string STR_SecurityManager = "SecurityManager";
 
     int DEFAULT_PORT_SM = 9111;
     int DEFAULT_PORT_PM = 9112;
 
-    private DiscoveryService discService = new DiscoveryService();
     private Dictionary<string, ServiceHost> runningServices = new Dictionary<string, ServiceHost>();
     private NetTcpBinding binding = (NetTcpBinding)HeuristicLab.Hive.Contracts.WcfSettings.GetBinding();
 
@@ -29,7 +27,7 @@ namespace HeuristicLab.Security.Server {
       PermissionManager,
       All
     }
-    
+
     private bool AddMexEndpoint(ServiceHost serviceHost) {
       if (serviceHost != null) {
         ServiceMetadataBehavior behavior = new ServiceMetadataBehavior();
@@ -47,23 +45,23 @@ namespace HeuristicLab.Security.Server {
       string curServiceHost = "";
       Uri uriTcp;
       String result = "";
-      ISecurityManager[] securityManagerInstances = discService.GetInstances<ISecurityManager>();
-      IPermissionManager[] permissionManagerInstances = discService.GetInstances<IPermissionManager>();
+      IEnumerable<ISecurityManager> securityManagerInstances = ApplicationManager.Manager.GetInstances<ISecurityManager>();
+      IEnumerable<IPermissionManager> permissionManagerInstances = ApplicationManager.Manager.GetInstances<IPermissionManager>();
       ServiceHost serviceHost = null;
       switch (svc) {
         case Services.PermissionManager:
-          if (permissionManagerInstances.Length > 0) {
-            uriTcp = new Uri("net.tcp://" + ipAddress + ":" + port + "/SecurityServer/"); 
-            serviceHost = new ServiceHost(permissionManagerInstances[0].GetType(), uriTcp);
+          if (permissionManagerInstances.Count() > 0) {
+            uriTcp = new Uri("net.tcp://" + ipAddress + ":" + port + "/SecurityServer/");
+            serviceHost = new ServiceHost(permissionManagerInstances.First().GetType(), uriTcp);
             serviceHost.AddServiceEndpoint(typeof(IPermissionManager), binding, STR_PermissionManager);
             curServiceHost = STR_PermissionManager;
             result = uriTcp.ToString() + STR_PermissionManager;
           }
           break;
         case Services.SecurityManager:
-          if (securityManagerInstances.Length > 0) {
+          if (securityManagerInstances.Count() > 0) {
             uriTcp = new Uri("net.tcp://" + ipAddress + ":" + port + "/SecurityServer/");
-            serviceHost = new ServiceHost(securityManagerInstances[0].GetType(), uriTcp);
+            serviceHost = new ServiceHost(securityManagerInstances.First().GetType(), uriTcp);
             serviceHost.AddServiceEndpoint(typeof(ISecurityManager), binding, STR_SecurityManager);
             curServiceHost = STR_SecurityManager;
             result = uriTcp.ToString() + STR_SecurityManager;
@@ -76,7 +74,7 @@ namespace HeuristicLab.Security.Server {
       }
       if ((serviceHost != null) && (!String.IsNullOrEmpty(curServiceHost))) {
         AddMexEndpoint(serviceHost);
-    //    WcfSettings.SetServiceCertificate(serviceHost);
+        //    WcfSettings.SetServiceCertificate(serviceHost);
         serviceHost.Open();
         runningServices.Add(curServiceHost, serviceHost);
         return result;
@@ -111,7 +109,7 @@ namespace HeuristicLab.Security.Server {
           if (addresses[index].AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
             break;
       }
-      
+
       //Start services and record their base address
       Dictionary<string, String> baseAddrDict = new Dictionary<string, String>();
       baseAddrDict.Add(STR_PermissionManager,
@@ -125,5 +123,5 @@ namespace HeuristicLab.Security.Server {
 
       StopService(Services.All);
     }
-  }                                                                                      
+  }
 }

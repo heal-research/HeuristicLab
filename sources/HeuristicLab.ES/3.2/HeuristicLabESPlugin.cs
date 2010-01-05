@@ -28,17 +28,17 @@ namespace HeuristicLab.ES {
   /// <summary>
   /// Plugin class for HeuristicLab.ES plugin.
   /// </summary>
-  [ClassInfo(Name = "HeuristicLab.ES-3.2")]
-  [PluginFile(Filename = "HeuristicLab.ES-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Common-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Logging-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Operators-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Random-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Selection-3.2")]
-  [Dependency(Dependency = "HeuristicLab.SequentialEngine-3.2")]
-  [Dependency(Dependency = "HeuristicLab.RealVector-3.2")]
+  [Plugin("HeuristicLab.ES-3.2")]
+  [PluginFile("HeuristicLab.ES-3.2.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Common-3.2")]
+  [PluginDependency("HeuristicLab.Core-3.2")]
+  [PluginDependency("HeuristicLab.Data-3.2")]
+  [PluginDependency("HeuristicLab.Logging-3.2")]
+  [PluginDependency("HeuristicLab.Operators-3.2")]
+  [PluginDependency("HeuristicLab.Random-3.2")]
+  [PluginDependency("HeuristicLab.Selection-3.2")]
+  [PluginDependency("HeuristicLab.SequentialEngine-3.2")]
+  [PluginDependency("HeuristicLab.RealVector-3.2")]
   public class HeuristicLabESPlugin : PluginBase {
   }
 }

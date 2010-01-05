@@ -11,8 +11,6 @@ using HeuristicLab.Hive.Contracts;
 namespace HeuristicLab.Hive.Client.Core.ClientConsoleService {
   public class ClientConsoleServer {
 
-    DiscoveryService discService = new DiscoveryService();
-   
     private bool AddMexEndpoint(ServiceHost serviceHost) {
       if (serviceHost != null) {
         ServiceMetadataBehavior behavior =
@@ -28,12 +26,12 @@ namespace HeuristicLab.Hive.Client.Core.ClientConsoleService {
     }
     
     public ServiceHost StartClientConsoleServer(Uri uriTcp) {
-      IClientConsoleCommunicator[] clientConsoleServerInstances =
-        discService.GetInstances<IClientConsoleCommunicator>();
+      IEnumerable<IClientConsoleCommunicator> clientConsoleServerInstances =
+        ApplicationManager.Manager.GetInstances<IClientConsoleCommunicator>();
 
-      if (clientConsoleServerInstances.Length > 0) {
+      if (clientConsoleServerInstances.Count() > 0) {
         ServiceHost serviceHost =
-                new ServiceHost(clientConsoleServerInstances[0].GetType(),
+                new ServiceHost(clientConsoleServerInstances.First().GetType(),
                   uriTcp);
 
         serviceHost.AddServiceEndpoint(

@@ -26,7 +26,7 @@ using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Grid {
-  [ClassInfo(Name = "Grid Server", Description = "Server application for the distributed engine grid.", AutoRestart=true)]
+  [Application("Grid Server", "Server application for the distributed engine grid.", true)]
   class GridServerApplication : ApplicationBase {
     public override void Run() {
       Form mainForm = new ServerForm();

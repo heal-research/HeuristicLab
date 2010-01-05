@@ -268,21 +268,18 @@ namespace HeuristicLab.MainForm.WindowsForms {
     #endregion
 
     #region create menu and toolbar
-    protected virtual void CreateGUI() {
-      DiscoveryService ds = new DiscoveryService();
+    protected virtual void CreateGUI() {      
 
-      object[] items = ds.GetInstances(userInterfaceItemType);
       IEnumerable<IMenuItem> toolStripMenuItems =
-        from mi in items
+        from mi in ApplicationManager.Manager.GetInstances(userInterfaceItemType)
         where mi is IMenuItem
         orderby ((IMenuItem)mi).Position
         select (IMenuItem)mi;
       foreach (IMenuItem menuItem in toolStripMenuItems)
         AddToolStripMenuItem(menuItem);
 
-      items = ds.GetInstances(userInterfaceItemType);
       IEnumerable<IToolBarItem> toolStripButtonItems =
-        from bi in items
+        from bi in ApplicationManager.Manager.GetInstances(userInterfaceItemType)
         where bi is IToolBarItem
         orderby ((IToolBarItem)bi).Position
         select (IToolBarItem)bi;

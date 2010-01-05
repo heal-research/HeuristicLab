@@ -14,8 +14,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab", "HeuristicLa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.PluginInfrastructure", "HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj", "{94186A6A-5176-4402-AE83-886557B53CCA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.PluginInfrastructure.GUI", "HeuristicLab.PluginInfrastructure.GUI\HeuristicLab.PluginInfrastructure.GUI.csproj", "{D3F92C1F-42B4-4EFB-9E73-B64FD3428ADE}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.AdvancedOptimizationFrontend-3.2", "HeuristicLab.AdvancedOptimizationFrontend\3.2\HeuristicLab.AdvancedOptimizationFrontend-3.2.csproj", "{74752FCD-9E10-48DB-9AF2-AF5518B62807}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Assignment.QAP-3.2", "HeuristicLab.Assignment.QAP\3.2\HeuristicLab.Assignment.QAP-3.2.csproj", "{0AFC3DEE-0CA4-4CE6-BDE2-E06DDBB8BD21}"
@@ -267,30 +265,6 @@ Global
 		{94186A6A-5176-4402-AE83-886557B53CCA}.Release|x64.Build.0 = Release|x64
 		{94186A6A-5176-4402-AE83-886557B53CCA}.Release|x86.ActiveCfg = Release|x86
 		{94186A6A-5176-4402-AE83-886557B53CCA}.Release|x86.Build.0 = Release|x86
-		{D3F92C1F-42B4-4EFB-9E73-B64FD3428ADE}.CEDMA Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D3F92C1F-42B4-4EFB-9E73-B64FD3428ADE}.CEDMA Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D3F92C1F-42B4-4EFB-9E73-B64FD3428ADE}.CEDMA Debug|x64.ActiveCfg = Debug|x64
-		{D3F92C1F-42B4-4EFB-9E73-B64FD3428ADE}.CEDMA Debug|x64.Build.0 = Debug|x64
-		{D3F92C1F-42B4-4EFB-9E73-B64FD3428ADE}.CEDMA Debug|x86.ActiveCfg = Debug|x86
-		{D3F92C1F-42B4-4EFB-9E73-B64FD3428ADE}.CEDMA Debug|x86.Build.0 = Debug|x86
-		{D3F92C1F-42B4-4EFB-9E73-B64FD3428ADE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D3F92C1F-42B4-4EFB-9E73-B64FD3428ADE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D3F92C1F-42B4-4EFB-9E73-B64FD3428ADE}.Debug|x64.ActiveCfg = Debug|x64
-		{D3F92C1F-42B4-4EFB-9E73-B64FD3428ADE}.Debug|x64.Build.0 = Debug|x64
-		{D3F92C1F-42B4-4EFB-9E73-B64FD3428ADE}.Debug|x86.ActiveCfg = Debug|x86
-		{D3F92C1F-42B4-4EFB-9E73-B64FD3428ADE}.Debug|x86.Build.0 = Debug|x86
-		{D3F92C1F-42B4-4EFB-9E73-B64FD3428ADE}.Modeling Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D3F92C1F-42B4-4EFB-9E73-B64FD3428ADE}.Modeling Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D3F92C1F-42B4-4EFB-9E73-B64FD3428ADE}.Modeling Debug|x64.ActiveCfg = Debug|x64
-		{D3F92C1F-42B4-4EFB-9E73-B64FD3428ADE}.Modeling Debug|x64.Build.0 = Debug|x64
-		{D3F92C1F-42B4-4EFB-9E73-B64FD3428ADE}.Modeling Debug|x86.ActiveCfg = Debug|x86
-		{D3F92C1F-42B4-4EFB-9E73-B64FD3428ADE}.Modeling Debug|x86.Build.0 = Debug|x86
-		{D3F92C1F-42B4-4EFB-9E73-B64FD3428ADE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D3F92C1F-42B4-4EFB-9E73-B64FD3428ADE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D3F92C1F-42B4-4EFB-9E73-B64FD3428ADE}.Release|x64.ActiveCfg = Release|x64
-		{D3F92C1F-42B4-4EFB-9E73-B64FD3428ADE}.Release|x64.Build.0 = Release|x64
-		{D3F92C1F-42B4-4EFB-9E73-B64FD3428ADE}.Release|x86.ActiveCfg = Release|x86
-		{D3F92C1F-42B4-4EFB-9E73-B64FD3428ADE}.Release|x86.Build.0 = Release|x86
 		{74752FCD-9E10-48DB-9AF2-AF5518B62807}.CEDMA Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{74752FCD-9E10-48DB-9AF2-AF5518B62807}.CEDMA Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74752FCD-9E10-48DB-9AF2-AF5518B62807}.CEDMA Debug|x64.ActiveCfg = Debug|x64

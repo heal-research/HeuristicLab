@@ -25,9 +25,9 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.GP.Interfaces {
-  [ClassInfo(Name = "HeuristicLab.GP.Interfaces-3.3")]
-  [PluginFile(Filename = "HeuristicLab.GP.Interfaces-3.3.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
+  [Plugin("HeuristicLab.GP.Interfaces-3.3")]
+  [PluginFile("HeuristicLab.GP.Interfaces-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Core-3.2")]
   public class HeuristicLabGPInterfacesPlugin : PluginBase {
   }
 }

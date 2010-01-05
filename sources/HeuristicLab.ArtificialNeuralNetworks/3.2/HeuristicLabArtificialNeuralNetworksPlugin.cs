@@ -24,18 +24,18 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.ArtificialNeuralNetworks {
-  [ClassInfo(Name = "HeuristicLab.ArtificialNeuralNetworks-3.2")]
-  [PluginFile(Filename = "HeuristicLab.ArtificialNeuralNetworks-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "ALGLIB")]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
-  [Dependency(Dependency = "HeuristicLab.DataAnalysis-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Modeling-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Operators-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Operators.Programmable-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Random-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Selection-3.2")]
-  [Dependency(Dependency = "HeuristicLab.SequentialEngine-3.2")]
+  [Plugin("HeuristicLab.ArtificialNeuralNetworks-3.2")]
+  [PluginFile("HeuristicLab.ArtificialNeuralNetworks-3.2.dll", PluginFileType.Assembly)]
+  [PluginDependency("ALGLIB")]
+  [PluginDependency("HeuristicLab.Core-3.2")]
+  [PluginDependency("HeuristicLab.Data-3.2")]
+  [PluginDependency("HeuristicLab.DataAnalysis-3.2")]
+  [PluginDependency("HeuristicLab.Modeling-3.2")]
+  [PluginDependency("HeuristicLab.Operators-3.2")]
+  [PluginDependency("HeuristicLab.Operators.Programmable-3.2")]
+  [PluginDependency("HeuristicLab.Random-3.2")]
+  [PluginDependency("HeuristicLab.Selection-3.2")]
+  [PluginDependency("HeuristicLab.SequentialEngine-3.2")]
   public class HeuristicLabArtificialNeuralNetworks : PluginBase {
   }
 }

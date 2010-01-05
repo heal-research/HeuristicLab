@@ -9,9 +9,6 @@ using System.Data.SqlClient;
 
 namespace HeuristicLab.Security.Core {
   class ServiceLocator {
-    private static DiscoveryService discoveryService =
-      new DiscoveryService();
-
     private static ISessionFactory sessionFactory = null;
 
     /// <summary>
@@ -22,7 +19,7 @@ namespace HeuristicLab.Security.Core {
     public static ISessionFactory GetSessionFactory() {
       if (sessionFactory == null) {
         sessionFactory =
-          discoveryService.GetInstances<ISessionFactory>()[0];
+          ApplicationManager.Manager.GetInstances<ISessionFactory>().First();
 
         sessionFactory.DbConnectionType =
           typeof(SqlConnection);

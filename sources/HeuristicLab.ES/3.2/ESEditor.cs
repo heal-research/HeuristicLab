@@ -198,27 +198,27 @@ namespace HeuristicLab.ES {
     private void viewProblemInitializationButton_Click(object sender, EventArgs e) {
       IView view = ES.ProblemInjector.CreateView();
       if (view != null)
-        PluginManager.ControlManager.ShowControl(view);
+        ControlManager.Manager.ShowControl(view);
     }
     private void viewSolutionGenerationButton_Click(object sender, EventArgs e) {
       IView view = ES.SolutionGenerator.CreateView();
       if (view != null)
-        PluginManager.ControlManager.ShowControl(view);
+        ControlManager.Manager.ShowControl(view);
     }
     private void viewMutationButton_Click(object sender, EventArgs e) {
       IView view = ES.Mutator.CreateView();
       if (view != null)
-        PluginManager.ControlManager.ShowControl(view);
+        ControlManager.Manager.ShowControl(view);
     }
     private void viewEvaluationButton_Click(object sender, EventArgs e) {
       IView view = ES.Evaluator.CreateView();
       if (view != null)
-        PluginManager.ControlManager.ShowControl(view);
+        ControlManager.Manager.ShowControl(view);
     }
     private void viewRecombinationButton_Click(object sender, EventArgs e) {
       IView view = ES.Recombinator.CreateView();
       if (view != null)
-        PluginManager.ControlManager.ShowControl(view);
+        ControlManager.Manager.ShowControl(view);
     }
     private void setProblemInitializationButton_Click(object sender, EventArgs e) {
       
@@ -237,7 +237,7 @@ namespace HeuristicLab.ES {
     private void cloneEngineButton_Click(object sender, EventArgs e) {
       IEngine clone = (IEngine)ES.Engine.Clone();
       IEditor editor = ((IEditable)clone).CreateEditor();
-      PluginManager.ControlManager.ShowControl(editor);
+      ControlManager.Manager.ShowControl(editor);
     }
     #endregion
 

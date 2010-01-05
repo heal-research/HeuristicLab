@@ -26,14 +26,14 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Selection.Uncertainty {
-  [ClassInfo(Name = "HeuristicLab.Selection.Uncertainty-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Selection.Uncertainty-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Selection-3.2")]
-  [Dependency(Dependency = "HeuristicLab.StatisticalAnalysis-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Random-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Tracing-3.2")]
+  [Plugin("HeuristicLab.Selection.Uncertainty-3.2")]
+  [PluginFile("HeuristicLab.Selection.Uncertainty-3.2.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Core-3.2")]
+  [PluginDependency("HeuristicLab.Data-3.2")]
+  [PluginDependency("HeuristicLab.Selection-3.2")]
+  [PluginDependency("HeuristicLab.StatisticalAnalysis-3.2")]
+  [PluginDependency("HeuristicLab.Random-3.2")]
+  [PluginDependency("HeuristicLab.Tracing-3.2")]
   public class UncertaintyPlugin : PluginBase {
   }
 }

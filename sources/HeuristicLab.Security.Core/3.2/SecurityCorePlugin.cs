@@ -25,9 +25,9 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Security.Core {
-  [ClassInfo(Name = "HeuristicLab.Security.Core-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Security.Core-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
+  [Plugin("HeuristicLab.Security.Core-3.2")]
+  [PluginFile("HeuristicLab.Security.Core-3.2.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Core-3.2")]
   public class SecurityCorePlugin : PluginBase {
   }
 }

@@ -26,15 +26,15 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.SimOpt {
-  [ClassInfo(Name = "HeuristicLab.SimOpt-3.2")]
-  [PluginFile(Filename = "HeuristicLab.SimOpt-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Operators-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Constraints-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Evolutionary-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Selection-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Random-3.2")]
+  [Plugin("HeuristicLab.SimOpt-3.2")]
+  [PluginFile("HeuristicLab.SimOpt-3.2.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Core-3.2")]
+  [PluginDependency("HeuristicLab.Data-3.2")]
+  [PluginDependency("HeuristicLab.Operators-3.2")]
+  [PluginDependency("HeuristicLab.Constraints-3.2")]
+  [PluginDependency("HeuristicLab.Evolutionary-3.2")]
+  [PluginDependency("HeuristicLab.Selection-3.2")]
+  [PluginDependency("HeuristicLab.Random-3.2")]
   public class HeuristicLabSimOptPlugin : PluginBase {
   }
 }

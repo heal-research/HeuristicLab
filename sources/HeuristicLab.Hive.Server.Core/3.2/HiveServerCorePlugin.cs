@@ -25,10 +25,10 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Hive.Server {
-  [ClassInfo(Name = "HeuristicLab.Hive.Server.Core-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Hive.Server.Core-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Hive.Contracts-3.2")]
+  [Plugin("HeuristicLab.Hive.Server.Core-3.2")]
+  [PluginFile("HeuristicLab.Hive.Server.Core-3.2.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Core-3.2")]
+  [PluginDependency("HeuristicLab.Hive.Contracts-3.2")]
   public class HiveServerCorePlugin : PluginBase {
   }
 }

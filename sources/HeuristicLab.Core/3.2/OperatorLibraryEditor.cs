@@ -203,7 +203,7 @@ namespace HeuristicLab.Core {
         if (op != null) {
           IView view = op.CreateView();
           if (view != null)
-            PluginManager.ControlManager.ShowControl(view);
+            ControlManager.Manager.ShowControl(view);
         }
       }
     }
@@ -286,7 +286,7 @@ namespace HeuristicLab.Core {
     }
     private void viewToolStripMenuItem_Click(object sender, EventArgs e) {
       IView view = (IView)viewToolStripMenuItem.Tag;
-      PluginManager.ControlManager.ShowControl(view);
+      ControlManager.Manager.ShowControl(view);
     }
     #endregion
 

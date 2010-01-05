@@ -25,9 +25,9 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Visualization.Test {
-  [ClassInfo(Name = "HeuristicLab.Visualization.Test-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Visualization.Test-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Visualization-3.2")]
+  [Plugin("HeuristicLab.Visualization.Test-3.2")]
+  [PluginFile("HeuristicLab.Visualization.Test-3.2.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Visualization-3.2")]
   public class HeuristicLabVisualizationTestPlugin : PluginBase {
   }
 }

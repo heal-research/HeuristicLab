@@ -25,9 +25,9 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Security.Server {
-  [ClassInfo(Name = "HeuristicLab.Security.Server-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Security.Server-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
+  [Plugin("HeuristicLab.Security.Server-3.2")]
+  [PluginFile("HeuristicLab.Security.Server-3.2.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Core-3.2")]
   public class SecurityServerPlugin : PluginBase {
   }
 }

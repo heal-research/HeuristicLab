@@ -24,21 +24,21 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.LinearRegression {
-  [ClassInfo(Name = "HeuristicLab.LinearRegression-3.2")]
-  [PluginFile(Filename = "HeuristicLab.LinearRegression-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "ALGLIB")]
-  [Dependency(Dependency = "HeuristicLab.Common-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
-  [Dependency(Dependency = "HeuristicLab.DataAnalysis-3.2")]
-  [Dependency(Dependency = "HeuristicLab.GP-3.3")]
-  [Dependency(Dependency = "HeuristicLab.GP.Interfaces-3.3")]
-  [Dependency(Dependency = "HeuristicLab.GP.StructureIdentification-3.3")]
-  [Dependency(Dependency = "HeuristicLab.GP.StructureIdentification.Classification-3.3")]
-  [Dependency(Dependency = "HeuristicLab.GP.StructureIdentification.TimeSeries-3.3")]
-  [Dependency(Dependency = "HeuristicLab.Modeling-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Random-3.2")]
-  [Dependency(Dependency = "HeuristicLab.SequentialEngine-3.2")]
+  [Plugin("HeuristicLab.LinearRegression-3.2")]
+  [PluginFile("HeuristicLab.LinearRegression-3.2.dll", PluginFileType.Assembly)]
+  [PluginDependency("ALGLIB")]
+  [PluginDependency("HeuristicLab.Common-3.2")]
+  [PluginDependency("HeuristicLab.Core-3.2")]
+  [PluginDependency("HeuristicLab.Data-3.2")]
+  [PluginDependency("HeuristicLab.DataAnalysis-3.2")]
+  [PluginDependency("HeuristicLab.GP-3.3")]
+  [PluginDependency("HeuristicLab.GP.Interfaces-3.3")]
+  [PluginDependency("HeuristicLab.GP.StructureIdentification-3.3")]
+  [PluginDependency("HeuristicLab.GP.StructureIdentification.Classification-3.3")]
+  [PluginDependency("HeuristicLab.GP.StructureIdentification.TimeSeries-3.3")]
+  [PluginDependency("HeuristicLab.Modeling-3.2")]
+  [PluginDependency("HeuristicLab.Random-3.2")]
+  [PluginDependency("HeuristicLab.SequentialEngine-3.2")]
   public class HeuristicLabLinearRegression : PluginBase {
   }
 }

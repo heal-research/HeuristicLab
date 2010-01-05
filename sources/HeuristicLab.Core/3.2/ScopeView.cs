@@ -130,7 +130,7 @@ namespace HeuristicLab.Core {
       // make sure that we can't get NullPointerExceptions
       if(scopesTreeView.SelectedNode != null && scopesTreeView.SelectedNode.Tag != null) {
         IScope scope = (IScope)scopesTreeView.SelectedNode.Tag;
-        PluginManager.ControlManager.ShowControl(new VariablesScopeView(scope));
+        ControlManager.Manager.ShowControl(new VariablesScopeView(scope));
       }
     }
     private void scopesTreeView_BeforeExpand(object sender, TreeViewCancelEventArgs e) {
@@ -198,11 +198,11 @@ namespace HeuristicLab.Core {
     }
     private void variablesToolStripMenuItem_Click(object sender, EventArgs e) {
       IScope scope = (IScope)scopesTreeView.SelectedNode.Tag;
-      PluginManager.ControlManager.ShowControl(new VariablesScopeView(scope));
+      ControlManager.Manager.ShowControl(new VariablesScopeView(scope));
     }
     private void showViewToolStripMenuItem_Click(object sender, EventArgs e) {
       IItem item = (IItem)((ToolStripMenuItem)sender).Tag;
-      PluginManager.ControlManager.ShowControl(item.CreateView());
+      ControlManager.Manager.ShowControl(item.CreateView());
     }
     #endregion
 

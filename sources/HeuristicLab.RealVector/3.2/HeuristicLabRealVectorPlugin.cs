@@ -28,12 +28,12 @@ namespace HeuristicLab.RealVector {
   /// <summary>
   /// Plugin class for HeuristicLab.RealVector plugin.
   /// </summary>
-  [ClassInfo(Name = "HeuristicLab.RealVector-3.2")]
-  [PluginFile(Filename = "HeuristicLab.RealVector-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Random-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Evolutionary-3.2")]
+  [Plugin("HeuristicLab.RealVector-3.2")]
+  [PluginFile("HeuristicLab.RealVector-3.2.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Core-3.2")]
+  [PluginDependency("HeuristicLab.Data-3.2")]
+  [PluginDependency("HeuristicLab.Random-3.2")]
+  [PluginDependency("HeuristicLab.Evolutionary-3.2")]
   public class HeuristicLabRealVectorPlugin : PluginBase {
   }
 }

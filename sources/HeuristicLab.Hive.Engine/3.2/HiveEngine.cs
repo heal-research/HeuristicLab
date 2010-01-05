@@ -124,7 +124,7 @@ namespace HeuristicLab.Hive.Engine {
         } while (restoredJob == null || (restoredJob.Progress < 1.0));
 
         job = restoredJob;
-        PluginManager.ControlManager.ShowControl(job.Engine.CreateView());
+        ControlManager.Manager.ShowControl(job.Engine.CreateView());
         OnChanged();
         OnFinished();
       });
@@ -167,7 +167,7 @@ namespace HeuristicLab.Hive.Engine {
       if (jobResult != null) {
         HiveLogger.Debug("HiveEngine: Results-polling - Got result!");
         job = (Job)PersistenceManager.RestoreFromGZip(jobResult.SerializedJobResultData);
-        PluginManager.ControlManager.ShowControl(job.Engine.CreateView());
+        ControlManager.Manager.ShowControl(job.Engine.CreateView());
       }
       //HiveLogger.Debug("HiveEngine: Results-polling - Exception!");
       //Exception ex = new Exception(response.Obj.Exception.Message);
@@ -217,11 +217,10 @@ namespace HeuristicLab.Hive.Engine {
       executableJobObj.JobInfo = jobObj;
       executableJobObj.SerializedJobData = memStream.ToArray();
 
-      DiscoveryService service = new DiscoveryService();
-      List<PluginInfo> plugins = new List<PluginInfo>();
+      List<IPluginDescription> plugins = new List<IPluginDescription>();
 
       foreach (IStorable storeable in dictionary.Values) {
-        PluginInfo pluginInfo = service.GetDeclaringPlugin(storeable.GetType());
+        IPluginDescription pluginInfo = ApplicationManager.Manager.GetDeclaringPlugin(storeable.GetType());
         if (!plugins.Contains(pluginInfo)) {
           plugins.Add(pluginInfo);
           foreach (var dependency in pluginInfo.Dependencies) {
@@ -232,7 +231,7 @@ namespace HeuristicLab.Hive.Engine {
 
       List<HivePluginInfo> pluginsNeeded =
         new List<HivePluginInfo>();
-      foreach (PluginInfo uniquePlugin in plugins) {
+      foreach (IPluginDescription uniquePlugin in plugins) {
         HivePluginInfo pluginInfo =
           new HivePluginInfo();
         pluginInfo.Name = uniquePlugin.Name;

@@ -116,27 +116,27 @@ namespace HeuristicLab.SA {
     private void viewProblemInitializationButton_Click(object sender, EventArgs e) {
       IView view = SA.ProblemInjector.CreateView();
       if (view != null)
-        PluginManager.ControlManager.ShowControl(view);
+        ControlManager.Manager.ShowControl(view);
     }
     private void viewSolutionGenerationButton_Click(object sender, EventArgs e) {
       IView view = SA.SolutionGenerator.CreateView();
       if (view != null)
-        PluginManager.ControlManager.ShowControl(view);
+        ControlManager.Manager.ShowControl(view);
     }
     private void viewAnnealingSchemeButton_Click(object sender, EventArgs e) {
       IView view = SA.AnnealingScheme.CreateView();
       if (view != null)
-        PluginManager.ControlManager.ShowControl(view);
+        ControlManager.Manager.ShowControl(view);
     }
     private void viewMutationButton_Click(object sender, EventArgs e) {
       IView view = SA.Mutator.CreateView();
       if (view != null)
-        PluginManager.ControlManager.ShowControl(view);
+        ControlManager.Manager.ShowControl(view);
     }
     private void viewEvaluationButton_Click(object sender, EventArgs e) {
       IView view = SA.Evaluator.CreateView();
       if (view != null)
-        PluginManager.ControlManager.ShowControl(view);
+        ControlManager.Manager.ShowControl(view);
     }
     private void setProblemInitializationButton_Click(object sender, EventArgs e) {
       if (chooseOperatorDialog == null) chooseOperatorDialog = new ChooseOperatorDialog();
@@ -187,7 +187,7 @@ namespace HeuristicLab.SA {
     private void cloneEngineButton_Click(object sender, EventArgs e) {
       IEngine clone = (IEngine)SA.Engine.Clone();
       IEditor editor = ((IEditable)clone).CreateEditor();
-      PluginManager.ControlManager.ShowControl(editor);
+      ControlManager.Manager.ShowControl(editor);
     }
     #endregion
 

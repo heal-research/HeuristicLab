@@ -25,8 +25,8 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Communication.Data {
-  [ClassInfo(Name = "HeuristicLab.Common.Resources-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Common.Resources-3.2.dll", Filetype = PluginFileType.Assembly)]
+  [Plugin("HeuristicLab.Common.Resources-3.2")]
+  [PluginFile("HeuristicLab.Common.Resources-3.2.dll", PluginFileType.Assembly)]
   public class HeuristicLabCommonResourcesPlugin : PluginBase {
   }
 }

@@ -25,10 +25,10 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
-  [ClassInfo(Name = "HeuristicLab.Hive.Server.ADODataAccess-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Hive.Server.ADODataAccess-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Hive.Server.Core-3.2")]
+  [Plugin("HeuristicLab.Hive.Server.ADODataAccess-3.2")]
+  [PluginFile("HeuristicLab.Hive.Server.ADODataAccess-3.2.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Core-3.2")]
+  [PluginDependency("HeuristicLab.Hive.Server.Core-3.2")]
   public class HiveServerADODataAccessPlugin : PluginBase {
 
     static HiveServerADODataAccessPlugin() {

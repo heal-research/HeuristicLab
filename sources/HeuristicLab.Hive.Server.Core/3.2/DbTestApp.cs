@@ -35,9 +35,7 @@ using HeuristicLab.Hive.Server.Core;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Hive.Server {
-  [ClassInfo(Name = "Hive DB Test App",
-      Description = "Test Application for the Hive DataAccess Layer",
-      AutoRestart = true)]
+  [Application("Hive DB Test App", "Test Application for the Hive DataAccess Layer")]
   class HiveDbTestApplication : ApplicationBase {
     /*  private void TestClientAdapter() {
         IClientAdapter clientAdapter =
@@ -310,8 +308,7 @@ namespace HeuristicLab.Hive.Server {
         new FileStream(@"W:\\result.gz", FileMode.Create);
 
       byte[] buffer = new byte[1024];
-      while((length = s.Read(buffer, 0, buffer.Length)) > 0)
-      {
+      while ((length = s.Read(buffer, 0, buffer.Length)) > 0) {
         fs.Write(buffer, 0, length);
       }
 
@@ -354,12 +351,12 @@ namespace HeuristicLab.Hive.Server {
       ExecutionEngineFacade executionEngineFacade =
         new ExecutionEngineFacade();
 
-     ResponseObject<SerializedJobResult> response =
-       executionEngineFacade.GetLastSerializedResult(
-       new Guid("56ce20bc-067b-424d-a7df-67aaace7c850"), false);
+      ResponseObject<SerializedJobResult> response =
+        executionEngineFacade.GetLastSerializedResult(
+        new Guid("56ce20bc-067b-424d-a7df-67aaace7c850"), false);
 
-       IStorable restoredJob =
-         PersistenceManager.RestoreFromGZip(response.Obj.SerializedJobResultData);
+      IStorable restoredJob =
+        PersistenceManager.RestoreFromGZip(response.Obj.SerializedJobResultData);
     }
 
     public override void Run() {
@@ -368,6 +365,6 @@ namespace HeuristicLab.Hive.Server {
       //TestJobStreaming();
       //TestJobResultStreaming();
       TestJobResultDeserialization();
-    }      
+    }
   }
 }

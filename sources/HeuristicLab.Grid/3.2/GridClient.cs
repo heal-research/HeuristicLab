@@ -133,7 +133,7 @@ namespace HeuristicLab.Grid {
         // got engine from server and user didn't press stop -> execute the engine
         if(gotEngine && !stopped) {
           executing = true;
-          AppDomain engineDomain = PluginManager.Manager.CreateAndInitAppDomain("Engine domain");
+          AppDomain engineDomain = HeuristicLab.PluginInfrastructure.Sandboxing.SandboxManager.CreateAndInitSandbox("Engine domain");
           Type engineRunnerType = typeof(EngineRunner);
           
           EngineRunner runner = (EngineRunner)engineDomain.CreateInstanceAndUnwrap(engineRunnerType.Assembly.GetName().Name, engineRunnerType.FullName);

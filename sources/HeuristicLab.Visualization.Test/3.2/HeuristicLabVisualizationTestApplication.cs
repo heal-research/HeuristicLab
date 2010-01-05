@@ -26,7 +26,7 @@ using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Visualization.Test {
-  [ClassInfo(Name = "HeuristicLab Data Visualization", Description="Test application for the HeuristicLab data visualization framework.")]
+  [Application("HeuristicLab Data Visualization", "Test application for the HeuristicLab data visualization framework.")]
   class HeuristicLabVisualizationTestApplication : ApplicationBase {
     public override void Run() {
       Form mainForm = new MainForm();

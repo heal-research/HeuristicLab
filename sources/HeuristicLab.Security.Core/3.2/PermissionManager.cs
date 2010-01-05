@@ -13,7 +13,15 @@ using System.ServiceModel;
 namespace HeuristicLab.Security.Core {
   public class PermissionManager : IPermissionManager{
 
-    private static ISessionFactory factory = ServiceLocator.GetSessionFactory();
+    private static ISessionFactory factory;
+    private static ISessionFactory Factory {
+      get {
+        // lazy initialization
+        if(factory==null) 
+          factory = ServiceLocator.GetSessionFactory();
+        return factory;
+      }      
+    }
 
     private static ISession session;
     
@@ -50,7 +58,7 @@ namespace HeuristicLab.Security.Core {
    /// <returns></returns>
     public Guid Authenticate(String userName, String password) {
       try {
-        session = factory.GetSessionForCurrentThread();
+        session = Factory.GetSessionForCurrentThread();
 
         password = getMd5Hash(password);
 
@@ -95,7 +103,7 @@ namespace HeuristicLab.Security.Core {
         existsSession = currentSessions.TryGetValue(sessionId, out userName);
       if (existsSession) {
         try {
-          session = factory.GetSessionForCurrentThread();
+          session = Factory.GetSessionForCurrentThread();
           
           IPermissionOwnerAdapter permOwnerAdapter = session.GetDataAdapter<PermissionOwner, IPermissionOwnerAdapter>();
           PermissionOwner permOwner = permOwnerAdapter.GetByName(userName);

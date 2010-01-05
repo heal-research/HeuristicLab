@@ -27,7 +27,7 @@ using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.MainForm.Test {
-  [ClassInfo(Name = "DockingMainForm  Test", Description = "Test application for new mainform development.")]
+  [Application("DockingMainForm  Test", "Test application for new mainform development.")]
   public class HeuristicLabDockingMainFormTestApplication : ApplicationBase {
     public override void Run() {
       DockingMainForm mainForm = new DockingMainForm(typeof(ITestUserInterfaceItemProvider));

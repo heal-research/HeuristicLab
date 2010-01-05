@@ -22,9 +22,9 @@
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Visualization {
-  [ClassInfo(Name = "HeuristicLab.Visualization-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Visualization-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
+  [Plugin("HeuristicLab.Visualization-3.2")]
+  [PluginFile("HeuristicLab.Visualization-3.2.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Core-3.2")]
   public class HeuristicLabVisualizationPlugin : PluginBase {
   }
 }

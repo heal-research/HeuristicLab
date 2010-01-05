@@ -12,13 +12,11 @@ namespace HeuristicLab.Tracing {
     protected static bool IsConfigured = false;
 
     protected static void Configure() {
-      if ( IsConfigured ) return;
+      if (IsConfigured) return;
       IsConfigured = true;
       if (string.IsNullOrEmpty(Settings.Default.TracingLog4netConfigFile)) {
-        Settings.Default.TracingLog4netConfigFile = 
-          Path.Combine(
-            PluginInfrastructure.Properties.Settings.Default.PluginDir,
-            "HeuristicLab.log4net.xml");
+        Settings.Default.TracingLog4netConfigFile =
+            "HeuristicLab.log4net.xml";
       }
       XmlConfigurator.ConfigureAndWatch(
         new FileInfo(Settings.Default.TracingLog4netConfigFile));
@@ -28,7 +26,7 @@ namespace HeuristicLab.Tracing {
     public static ILog GetDefaultLogger(int nParents) {
       Configure();
       StackFrame frame = new StackFrame(nParents + 1);
-      return LogManager.GetLogger(frame.GetMethod().DeclaringType);      
+      return LogManager.GetLogger(frame.GetMethod().DeclaringType);
     }
 
     public static ILog GetDefaultLogger() {
@@ -49,7 +47,7 @@ namespace HeuristicLab.Tracing {
       GetDefaultLogger(1).Warn(message);
     }
 
-    public static void Error(object message) {      
+    public static void Error(object message) {
       GetDefaultLogger(1).Error(message);
     }
 
@@ -64,12 +62,12 @@ namespace HeuristicLab.Tracing {
 
     public static void Info(Type type, object message) {
       Configure();
-      LogManager.GetLogger(type).Info(message);      
+      LogManager.GetLogger(type).Info(message);
     }
 
     public static void Warn(Type type, object message) {
       Configure();
-      LogManager.GetLogger(type).Warn(message);      
+      LogManager.GetLogger(type).Warn(message);
     }
 
     public static void Error(Type type, object message) {

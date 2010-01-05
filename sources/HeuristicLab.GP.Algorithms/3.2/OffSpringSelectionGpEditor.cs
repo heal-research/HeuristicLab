@@ -81,7 +81,7 @@ namespace HeuristicLab.GP.Algorithms {
     private void viewProblemInjectorButton_Click(object sender, EventArgs e) {
       IView view = OffspringSelectionGP.ProblemInjector.CreateView();
       if(view != null)
-        PluginManager.ControlManager.ShowControl(view);
+        ControlManager.Manager.ShowControl(view);
     }
 
     private void setProblemInitializationButton_Click(object sender, EventArgs e) {
@@ -106,7 +106,7 @@ namespace HeuristicLab.GP.Algorithms {
     private void cloneEngineButton_Click(object sender, EventArgs e) {
       IEngine clone = (IEngine)OffspringSelectionGP.Engine.Clone();
       IEditor editor = ((IEditable)clone).CreateEditor();
-      PluginManager.ControlManager.ShowControl(editor);
+      ControlManager.Manager.ShowControl(editor);
     }
     #endregion
 

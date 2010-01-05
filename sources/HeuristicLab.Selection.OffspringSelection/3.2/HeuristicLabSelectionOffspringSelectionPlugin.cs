@@ -28,10 +28,10 @@ namespace HeuristicLab.Selection.OffspringSelection {
   /// <summary>
   /// Plugin class for HeuristicLab.Selection.OffspringSelection plugin.
   /// </summary>
-  [ClassInfo(Name = "HeuristicLab.Selection.OffspringSelection-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Selection.OffspringSelection-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
+  [Plugin("HeuristicLab.Selection.OffspringSelection-3.2")]
+  [PluginFile("HeuristicLab.Selection.OffspringSelection-3.2.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Core-3.2")]
+  [PluginDependency("HeuristicLab.Data-3.2")]
   public class HeuristicLabSelectionOffspringSelectionPlugin : PluginBase {
   }
 }

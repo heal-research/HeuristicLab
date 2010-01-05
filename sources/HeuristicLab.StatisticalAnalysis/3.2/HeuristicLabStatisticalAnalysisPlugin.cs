@@ -26,11 +26,11 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.StatisticalAnalysis {
-  [ClassInfo(Name = "HeuristicLab.StatisticalAnalysis-3.2")]
-  [PluginFile(Filename = "HeuristicLab.StatisticalAnalysis-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Random-3.2")]
+  [Plugin("HeuristicLab.StatisticalAnalysis-3.2")]
+  [PluginFile("HeuristicLab.StatisticalAnalysis-3.2.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Core-3.2")]
+  [PluginDependency("HeuristicLab.Data-3.2")]
+  [PluginDependency("HeuristicLab.Random-3.2")]
   public class HeuristicLabStatisticalAnalysisPlugin : PluginBase {
   }
 }

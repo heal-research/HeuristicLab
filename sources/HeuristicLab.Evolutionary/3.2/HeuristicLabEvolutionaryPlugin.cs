@@ -28,11 +28,11 @@ namespace HeuristicLab.Evolutionary {
   /// <summary>
   /// Plugin class for HeuristicLab.Evolutionary plugin.
   /// </summary>
-  [ClassInfo(Name = "HeuristicLab.Evolutionary-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Evolutionary-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Operators-3.2")]
+  [Plugin("HeuristicLab.Evolutionary-3.2")]
+  [PluginFile("HeuristicLab.Evolutionary-3.2.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Core-3.2")]
+  [PluginDependency("HeuristicLab.Data-3.2")]
+  [PluginDependency("HeuristicLab.Operators-3.2")]
   public class HeuristicLabEvolutionaryPlugin : PluginBase {
   }
 }

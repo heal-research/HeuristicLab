@@ -48,7 +48,7 @@ namespace HeuristicLab.Hive.Client.Core {
   /// <summary>
   /// The core component of the Hive Client
   /// </summary>
-  public class Core: MarshalByRefObject {       
+  public class Core : MarshalByRefObject {
     public static bool abortRequested { get; set; }
     private bool currentlyFetching = false;
 
@@ -58,13 +58,12 @@ namespace HeuristicLab.Hive.Client.Core {
 
     private WcfService wcfService;
     private Heartbeat beat;
-    
+
     /// <summary>
     /// Main Method for the client
     /// </summary>
-    public void Start() {      
+    public void Start() {
       abortRequested = false;
-      PluginManager.Manager.Initialize();
       Logging.Instance.Info(this.ToString(), "Hive Client started");
       ClientConsoleServer server = new ClientConsoleServer();
       server.StartClientConsoleServer(new Uri("net.tcp://127.0.0.1:8000/ClientConsole/"));
@@ -73,7 +72,7 @@ namespace HeuristicLab.Hive.Client.Core {
       manager.Core = this;
 
 
-      
+
       //Register all Wcf Service references
       wcfService = WcfService.Instance;
       wcfService.LoginCompleted += new EventHandler<LoginCompletedEventArgs>(wcfService_LoginCompleted);
@@ -84,19 +83,19 @@ namespace HeuristicLab.Hive.Client.Core {
       wcfService.ServerChanged += new EventHandler(wcfService_ServerChanged);
       wcfService.Connected += new EventHandler(wcfService_Connected);
       //Recover Server IP and Port from the Settings Framework
-      ConnectionContainer cc = ConfigManager.Instance.GetServerIPAndPort();     
+      ConnectionContainer cc = ConfigManager.Instance.GetServerIPAndPort();
       if (cc.IPAdress != String.Empty && cc.Port != 0)
         wcfService.SetIPAndPort(cc.IPAdress, cc.Port);
 
       if (UptimeManager.Instance.isOnline())
         wcfService.Connect();
-         
+
       //Initialize the heartbeat
       beat = new Heartbeat { Interval = 10000 };
-      beat.StartHeartbeat();     
+      beat.StartHeartbeat();
 
       MessageQueue queue = MessageQueue.GetInstance();
-      
+
       //Main processing loop     
       //Todo: own thread for message handling
       //Rly?!
@@ -105,7 +104,7 @@ namespace HeuristicLab.Hive.Client.Core {
         DetermineAction(container);
       }
       Console.WriteLine("ended!");
-    }    
+    }
 
     /// <summary>
     /// Reads and analyzes the Messages from the MessageQueue and starts corresponding actions
@@ -116,7 +115,7 @@ namespace HeuristicLab.Hive.Client.Core {
       switch (container.Message) {
         //Server requests to abort a job
         case MessageContainer.MessageType.AbortJob:          
-          if(engines.ContainsKey(container.JobId))
+          if (engines.ContainsKey(container.JobId))
             engines[container.JobId].Abort();
           else
             Logging.Instance.Error(this.ToString(), "AbortJob: Engine doesn't exist");
@@ -126,9 +125,9 @@ namespace HeuristicLab.Hive.Client.Core {
 
         case MessageContainer.MessageType.JobAborted:          
         //todo: thread this          
-          lock (engines) {            
+          lock (engines) {
             Guid jobId = new Guid(container.JobId.ToString());
-            if(engines.ContainsKey(jobId)) {
+            if (engines.ContainsKey(jobId)) {
               appDomains[jobId].UnhandledException -= new UnhandledExceptionEventHandler(appDomain_UnhandledException);
               AppDomain.Unload(appDomains[jobId]);
               appDomains.Remove(jobId);
@@ -139,23 +138,23 @@ namespace HeuristicLab.Hive.Client.Core {
               Logging.Instance.Error(this.ToString(), "JobAbort: Engine doesn't exist");
           }
           break;
-        
-        
+
+
         //Request a Snapshot from the Execution Engine
         case MessageContainer.MessageType.RequestSnapshot:          
-          if (engines.ContainsKey(container.JobId)) 
+          if (engines.ContainsKey(container.JobId))
             engines[container.JobId].RequestSnapshot();
           else
             Logging.Instance.Error(this.ToString(), "RequestSnapshot: Engine doesn't exist");
           break;
-        
-        
+
+
         //Snapshot is ready and can be sent back to the Server
         case MessageContainer.MessageType.SnapshotReady:          
-          ThreadPool.QueueUserWorkItem(new WaitCallback(GetSnapshot), container.JobId);          
+          ThreadPool.QueueUserWorkItem(new WaitCallback(GetSnapshot), container.JobId);
           break;
-        
-        
+
+
         //Pull a Job from the Server
         case MessageContainer.MessageType.FetchJob:          
           if (!currentlyFetching) {
@@ -168,9 +167,9 @@ namespace HeuristicLab.Hive.Client.Core {
         
         //A Job has finished and can be sent back to the server
         case MessageContainer.MessageType.FinishedJob:          
-          ThreadPool.QueueUserWorkItem(new WaitCallback(GetFinishedJob), container.JobId);          
-          break;     
-        
+          ThreadPool.QueueUserWorkItem(new WaitCallback(GetFinishedJob), container.JobId);
+          break;
+
 
         //When the timeslice is up
         case MessageContainer.MessageType.UptimeLimitDisconnect:
@@ -184,14 +183,14 @@ namespace HeuristicLab.Hive.Client.Core {
             foreach (KeyValuePair<Guid, Executor> kvp in engines) {
               kvp.Value.RequestSnapshot();
             }
-            
+
           } else {
             //Disconnect afterwards
             WcfService.Instance.Disconnect();
           }
           break;
-        
-        
+
+
         //Hard shutdown of the client
         case MessageContainer.MessageType.Shutdown:
           lock (engines) {
@@ -209,7 +208,7 @@ namespace HeuristicLab.Hive.Client.Core {
 
     //Asynchronous Threads for interaction with the Execution Engine
     #region Async Threads for the EE
-    
+
     /// <summary>
     /// serializes the finished job and submits it to the server. If, at the time, a network connection is unavailable, the Job gets stored on the disk. 
     /// once the connection gets reestablished, the job gets submitted
@@ -223,7 +222,7 @@ namespace HeuristicLab.Hive.Client.Core {
           Logging.Instance.Error(this.ToString(), "GetFinishedJob: Engine doesn't exist");
           return;
         }
-        
+
         byte[] sJob = engines[jId].GetFinishedJob();
 
         if (WcfService.Instance.ConnState == NetworkEnum.WcfConnState.Loggedin) {
@@ -264,11 +263,11 @@ namespace HeuristicLab.Hive.Client.Core {
       Logging.Instance.Info(this.ToString(), "END: Sended snapshot sync");
       //Uptime Limit reached, now is a good time to destroy this jobs.
       if (!UptimeManager.Instance.isOnline()) {
-        KillAppDomain(jId);        
+        KillAppDomain(jId);
         //Still anything running?
         if (engines.Count == 0)
           WcfService.Instance.Disconnect();
-      
+
       } else {
         Logging.Instance.Info(this.ToString(), "Restarting the job" + jobId);
         engines[jId].StartOnlyJob();
@@ -287,10 +286,10 @@ namespace HeuristicLab.Hive.Client.Core {
     void wcfService_LoginCompleted(object sender, LoginCompletedEventArgs e) {
       if (e.Result.Success) {
         currentlyFetching = false;
-        Logging.Instance.Info(this.ToString(), "Login completed to Hive Server @ " + DateTime.Now);        
+        Logging.Instance.Info(this.ToString(), "Login completed to Hive Server @ " + DateTime.Now);
       } else
         Logging.Instance.Error(this.ToString(), e.Result.StatusMessage);
-    }    
+    }
 
     /// <summary>
     /// A new Job from the wcfService has been received and will be started within a AppDomain.
@@ -306,7 +305,7 @@ namespace HeuristicLab.Hive.Client.Core {
         foreach (CachedHivePluginInfo plugininfo in PluginCache.Instance.GetPlugins(e.Result.Job.PluginsNeeded))
           files.AddRange(plugininfo.PluginFiles);
         Logging.Instance.Info(this.ToString(), "Plugins fetched for job " + e.Result.Job.Id);
-        AppDomain appDomain = PluginManager.Manager.CreateAndInitAppDomainWithSandbox(e.Result.Job.Id.ToString(), sandboxed, null, files);
+        AppDomain appDomain = HeuristicLab.PluginInfrastructure.Sandboxing.SandboxManager.CreateAndInitSandbox(e.Result.Job.Id.ToString(), files);
         appDomain.UnhandledException += new UnhandledExceptionEventHandler(appDomain_UnhandledException);
         lock (engines) {
           if (!jobs.ContainsKey(e.Result.Job.Id)) {
@@ -325,7 +324,7 @@ namespace HeuristicLab.Hive.Client.Core {
 
             Debug.WriteLine("Increment FetchedJobs to:" + ClientStatusInfo.JobsFetched);
           }
-        }        
+        }
       } else
         Logging.Instance.Info(this.ToString(), "No more jobs left!");
       currentlyFetching = false;
@@ -339,10 +338,10 @@ namespace HeuristicLab.Hive.Client.Core {
     void wcfService_StoreFinishedJobResultCompleted(object sender, StoreFinishedJobResultCompletedEventArgs e) {
       Logging.Instance.Info(this.ToString(), "Job submitted with id " + e.Result.JobId);
       KillAppDomain(e.Result.JobId);
-      if (e.Result.Success) {            
+      if (e.Result.Success) {
         ClientStatusInfo.JobsProcessed++;
-        Debug.WriteLine("ProcessedJobs to:" + ClientStatusInfo.JobsProcessed);                
-      } else {        
+        Debug.WriteLine("ProcessedJobs to:" + ClientStatusInfo.JobsProcessed);
+      } else {
         Logging.Instance.Error(this.ToString(), "Sending of job " + e.Result.JobId + " failed, job has been wasted. Message: " + e.Result.StatusMessage);
       }
     }
@@ -381,14 +380,14 @@ namespace HeuristicLab.Hive.Client.Core {
     /// <param name="sender"></param>
     /// <param name="e"></param>
     void wcfService_Connected(object sender, EventArgs e) {
-      wcfService.LoginSync(ConfigManager.Instance.GetClientInfo());      
+      wcfService.LoginSync(ConfigManager.Instance.GetClientInfo());
       JobStorageManager.CheckAndSubmitJobsFromDisc();
       currentlyFetching = false;
     }
 
     //this is a little bit tricky - 
     void wcfService_ConnectionRestored(object sender, EventArgs e) {
-      Logging.Instance.Info(this.ToString(), "Reconnected to old server - checking currently running appdomains");                 
+      Logging.Instance.Info(this.ToString(), "Reconnected to old server - checking currently running appdomains");
 
       foreach (KeyValuePair<Guid, Executor> execKVP in engines) {
         if (!execKVP.Value.Running && execKVP.Value.CurrentMessage == MessageContainer.MessageType.NoMessage) {
@@ -406,10 +405,10 @@ namespace HeuristicLab.Hive.Client.Core {
     }
 
     void appDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e) {
-      Logging.Instance.Error(this.ToString(), "Exception in AppDomain: " + e.ExceptionObject.ToString());      
+      Logging.Instance.Error(this.ToString(), "Exception in AppDomain: " + e.ExceptionObject.ToString());
     }
 
-    internal Dictionary<Guid, Job> GetJobs() {           
+    internal Dictionary<Guid, Job> GetJobs() {
       return jobs;
     }
 
@@ -426,7 +425,7 @@ namespace HeuristicLab.Hive.Client.Core {
           appDomains.Remove(id);
           engines.Remove(id);
           jobs.Remove(id);
-        }        
+        }
         catch (Exception ex) {
           Logging.Instance.Error(this.ToString(), "Exception when unloading the appdomain: ", ex);
         }

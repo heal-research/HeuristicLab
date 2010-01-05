@@ -26,10 +26,10 @@ using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Grid {
-  [ClassInfo(Name = "HeuristicLab.Grid-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Grid-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Tracing-3.2")]
+  [Plugin("HeuristicLab.Grid-3.2")]
+  [PluginFile("HeuristicLab.Grid-3.2.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Core-3.2")]
+  [PluginDependency("HeuristicLab.Tracing-3.2")]
   public class HeuristicLabGridPlugin : PluginBase {
   }
 }

@@ -25,11 +25,11 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.SQLite {
-  [ClassInfo(Name = "HeuristicLab.SQLite-3.2")]
-  [PluginFile(Filename = "HeuristicLab.SQLite-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [PluginFile(Filename = "System.Data.SQLite.dll", Filetype = PluginFileType.Assembly)]
-  [PluginFile(Filename = "SQLite License.txt", Filetype = PluginFileType.License)]
-  [PluginFile(Filename = "SQLite.NET.chm")]
+  [Plugin("HeuristicLab.SQLite-3.2")]
+  [PluginFile("HeuristicLab.SQLite-3.2.dll", PluginFileType.Assembly)]
+  [PluginFile("System.Data.SQLite.dll", PluginFileType.Assembly)]
+  [PluginFile("SQLite License.txt", PluginFileType.License)]
+  [PluginFile("SQLite.NET.chm", PluginFileType.Data)]
   public class HeuristicLabSQLitePlugin : PluginBase {
   }
 }

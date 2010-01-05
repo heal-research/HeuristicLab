@@ -42,10 +42,10 @@ namespace HeuristicLab.Hive.Server.Core {
   /// <summary>
   /// The ClientCommunicator manages the whole communication with the client
   /// </summary>
-  public class ClientCommunicator: IClientCommunicator, 
-    IInternalClientCommunicator{
-    private static Dictionary<Guid, DateTime> lastHeartbeats = 
-      new Dictionary<Guid,DateTime>();
+  public class ClientCommunicator : IClientCommunicator,
+    IInternalClientCommunicator {
+    private static Dictionary<Guid, DateTime> lastHeartbeats =
+      new Dictionary<Guid, DateTime>();
     private static Dictionary<Guid, int> newAssignedJobs =
       new Dictionary<Guid, int>();
     private static Dictionary<Guid, int> pendingJobs =
@@ -68,13 +68,13 @@ namespace HeuristicLab.Hive.Server.Core {
     /// </summary>
     public ClientCommunicator() {
       factory = ServiceLocator.GetSessionFactory();
-      
+
       lifecycleManager = ServiceLocator.GetLifecycleManager();
-      jobManager = ServiceLocator.GetJobManager() as 
+      jobManager = ServiceLocator.GetJobManager() as
         IInternalJobManager;
       scheduler = ServiceLocator.GetScheduler();
 
-      lifecycleManager.RegisterHeartbeat( 
+      lifecycleManager.RegisterHeartbeat(
         new EventHandler(lifecycleManager_OnServerHeartbeat));
     }
 
@@ -149,7 +149,7 @@ namespace HeuristicLab.Hive.Server.Core {
         tx.Commit();
       }
       catch (Exception ex) {
-        if (tx != null) 
+        if (tx != null)
           tx.Rollback();
         throw ex;
       }
@@ -171,7 +171,7 @@ namespace HeuristicLab.Hive.Server.Core {
             } else {
               pendingJobs[currJob.Id]--;
             }
-          } 
+          }
         }
       }
     }
@@ -364,7 +364,7 @@ namespace HeuristicLab.Hive.Server.Core {
         }
       }
     }
-   
+
     /// <summary>
     /// if the client was told to pull a job he calls this method
     /// the server selects a job and sends it to the client
@@ -488,7 +488,7 @@ namespace HeuristicLab.Hive.Server.Core {
           ProcessJobResult(
           result.ClientId,
           result.JobId,
-          new byte[] {},
+          new byte[] { },
           result.Percentage,
           result.Exception,
           finished);
@@ -569,7 +569,7 @@ namespace HeuristicLab.Hive.Server.Core {
           job.JobInfo =
             jobAdapter.GetById(jobId);
         }
-        
+
         if (job == null && job.JobInfo != null) {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOB_WITH_THIS_ID;
@@ -607,7 +607,7 @@ namespace HeuristicLab.Hive.Server.Core {
         if (job.JobInfo.State == State.requestSnapshotSent) {
           job.JobInfo.State = State.calculating;
         }
-        if (job.JobInfo.State != State.calculating && 
+        if (job.JobInfo.State != State.calculating &&
           job.JobInfo.State != State.pending) {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_WRONG_JOB_STATE;
@@ -618,7 +618,7 @@ namespace HeuristicLab.Hive.Server.Core {
         job.JobInfo.Percentage = percentage;
 
         if (finished) {
-          job.JobInfo.State = State.finished; 
+          job.JobInfo.State = State.finished;
         }
 
         job.SerializedJobData = result;
@@ -675,9 +675,9 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="exception"></param>
     /// <param name="finished"></param>
     /// <returns></returns>
-    public ResponseResultReceived StoreFinishedJobResult(Guid clientId, 
-      Guid jobId, 
-      byte[] result, 
+    public ResponseResultReceived StoreFinishedJobResult(Guid clientId,
+      Guid jobId,
+      byte[] result,
       double percentage,
       Exception exception) {
 
@@ -801,21 +801,19 @@ namespace HeuristicLab.Hive.Server.Core {
 
     public ResponsePlugin SendPlugins(List<HivePluginInfo> pluginList) {
       ResponsePlugin response = new ResponsePlugin();
-      PluginManager.Manager.Initialize();
-      ICollection<PluginInfo> allActivePlugins = PluginManager.Manager.ActivePlugins;
-
       foreach (HivePluginInfo pluginInfo in pluginList) {
         // TODO: BuildDate deleted, not needed???
         // TODO: Split version to major, minor and revision number
-        foreach (PluginInfo currPlugin in allActivePlugins) {
+        foreach (IPluginDescription currPlugin in ApplicationManager.Manager.Plugins) {
           if (currPlugin.Name == pluginInfo.Name) {
 
-            CachedHivePluginInfo currCachedPlugin = new CachedHivePluginInfo { 
-                Name = currPlugin.Name,
-                Version = currPlugin.Version.ToString(),
-                BuildDate = currPlugin.BuildDate };
+            CachedHivePluginInfo currCachedPlugin = new CachedHivePluginInfo {
+              Name = currPlugin.Name,
+              Version = currPlugin.Version.ToString(),
+              BuildDate = currPlugin.BuildDate
+            };
 
-            foreach (String assemblyPath in currPlugin.Assemblies) {
+            foreach (String assemblyPath in currPlugin.Files) {
               currCachedPlugin.PluginFiles.Add(File.ReadAllBytes(assemblyPath));
             }
             response.Plugins.Add(currCachedPlugin);

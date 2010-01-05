@@ -30,9 +30,6 @@ using System.Threading;
 
 namespace HeuristicLab.DataAccess.ADOHelper {
   public class Session: ISession {
-    private static DiscoveryService discoveryService =
-      new DiscoveryService();
-
     private SessionFactory factory;
 
     private Transaction transaction;
@@ -114,7 +111,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
 
       if (!adapters.ContainsKey(adapterId)) {
         IDataAdapter<ObjT> adapter =
-          discoveryService.GetInstances<IDataAdapter<ObjT>>()[0];
+          ApplicationManager.Manager.GetInstances<IDataAdapter<ObjT>>().First();
 
         adapter.Session = this;
 
@@ -134,7 +131,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
 
       if (!adapters.ContainsKey(adapterId)) {
         T adapter =
-          discoveryService.GetInstances<T>()[0];
+          ApplicationManager.Manager.GetInstances<T>().First();
 
         adapter.Session = this;
 

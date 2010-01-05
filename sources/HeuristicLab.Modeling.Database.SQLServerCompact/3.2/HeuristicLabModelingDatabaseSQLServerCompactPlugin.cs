@@ -25,14 +25,14 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Modeling.Database.SQLServerCompact {
-  [ClassInfo(Name = "HeuristicLab.Modeling.Database.SQLServerCompact-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Modeling.Database.SQLServerCompact-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
-  [Dependency(Dependency = "HeuristicLab.DataAnalysis-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Modeling-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Modeling.Database-3.2")]
-  [Dependency(Dependency = "HeuristicLab.SQLServerCompact-3.2")]  
+  [Plugin("HeuristicLab.Modeling.Database.SQLServerCompact-3.2")]
+  [PluginFile("HeuristicLab.Modeling.Database.SQLServerCompact-3.2.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Core-3.2")]
+  [PluginDependency("HeuristicLab.Data-3.2")]
+  [PluginDependency("HeuristicLab.DataAnalysis-3.2")]
+  [PluginDependency("HeuristicLab.Modeling-3.2")]
+  [PluginDependency("HeuristicLab.Modeling.Database-3.2")]
+  [PluginDependency("HeuristicLab.SQLServerCompact-3.2")]  
   public class HeuristicLabModelingDatabaseSQLServerCompactPlugin : PluginBase {
   }
 }

@@ -26,9 +26,9 @@ using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Grid {
-  [ClassInfo(Name = "HeuristicLab.Hive.Server.Console-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Hive.Server.Console-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
+  [Plugin("HeuristicLab.Hive.Server.Console-3.2")]
+  [PluginFile("HeuristicLab.Hive.Server.Console-3.2.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Core-3.2")]
   public class HeuristicLabHiveClientConsolePlugin : PluginBase {
   }
 }

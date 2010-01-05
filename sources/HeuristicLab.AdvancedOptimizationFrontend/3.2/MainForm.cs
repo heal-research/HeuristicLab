@@ -25,6 +25,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Text;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
@@ -67,14 +68,10 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
       AvailableOperatorsForm form = new AvailableOperatorsForm();
       form.Show(dockPanel);
 
-      DiscoveryService discoveryService = new DiscoveryService();
-
       // discover creatable items
-      Type[] creatables = discoveryService.GetTypes(typeof(IEditable));
-      string[] names = new string[creatables.Length];
-      for (int i = 0; i < creatables.Length; i++)
-        names[i] = creatables[i].Name;
-      Array.Sort(names, creatables);
+      var creatables = from x in ApplicationManager.Manager.GetTypes(typeof(IEditable))
+                       orderby x.Name
+                       select x;      
       foreach (Type type in creatables) {
         if (!type.IsAbstract) {
           ToolStripMenuItem item = new ToolStripMenuItem();
@@ -99,8 +96,8 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
     /// <exception cref="InvalidOperationException">Thrown when the given <paramref name="control"/>
     /// is neither a view nor an editor.</exception>
     /// <param name="control">The control to display.</param>
-    public void ShowControl(IControl control) {
-      if (InvokeRequired) Invoke((Action<IControl>)ShowControl,control);
+    public void ShowControl(object control) {
+      if (InvokeRequired) Invoke((Action<object>)ShowControl, control);
       else {
         DockContent content;
         if (control is IEditor)
@@ -131,7 +128,7 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
         saveAllToolStripMenuItem.Enabled = true;
         saveAllToolStripButton.Enabled = true;
         EditorForm form = ActiveMdiChild as EditorForm;
-        if (form != null){
+        if (form != null) {
           if (((Control)form.Editor).Enabled) {
             saveToolStripMenuItem.Enabled = true;
             saveToolStripButton.Enabled = true;
@@ -157,14 +154,18 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
       Task task = (Task)state;
       try {
         task.storable = PersistenceManager.Load(task.filename);
-      } catch(FileNotFoundException fileNotFoundEx) {
+      }
+      catch (FileNotFoundException fileNotFoundEx) {
         MessageBox.Show("Sorry couldn't open file \"" + task.filename + "\".\nThe file or plugin \"" + fileNotFoundEx.FileName + "\" is not available.\nPlease make sure you have all necessary plugins installed.",
           "Reader Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-      } catch(TypeLoadException typeLoadEx) {
-        MessageBox.Show("Sorry couldn't open file \"" + task.filename + "\".\nThe type \"" + typeLoadEx.TypeName+ "\" is not available.\nPlease make sure that you have the correct version the plugin installed.",
+      }
+      catch (TypeLoadException typeLoadEx) {
+        MessageBox.Show("Sorry couldn't open file \"" + task.filename + "\".\nThe type \"" + typeLoadEx.TypeName + "\" is not available.\nPlease make sure that you have the correct version the plugin installed.",
           "Reader Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
-      LoadFinished(task);
+      finally {
+        LoadFinished(task);
+      }
     }
     private delegate void TaskFinishedDelegate(Task task);
     private void LoadFinished(Task task) {
@@ -182,7 +183,7 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
         else {
           editor.Filename = task.filename;
           editor.SaveFinished += new EventHandler(SaveFinished);
-          PluginManager.ControlManager.ShowControl(editor);
+          ControlManager.Manager.ShowControl(editor);
         }
         lock (locker) {
           runningTasks--;
@@ -238,7 +239,7 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
           MessageBox.Show("The selected item doesn't provide an editor.", "Editor Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         } else {
           editor.SaveFinished += new EventHandler(SaveFinished);
-          PluginManager.ControlManager.ShowControl(editor);
+          ControlManager.Manager.ShowControl(editor);
           EnableDisableItems();
         }
       }
@@ -297,7 +298,7 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
     private void saveAllToolStripButton_Click(object sender, EventArgs e) {
       for (int i = 0; i < MdiChildren.Length; i++) {
         EditorForm form = MdiChildren[i] as EditorForm;
-        if (form!=null && ((Control)form.Editor).Enabled) Save(form);
+        if (form != null && ((Control)form.Editor).Enabled) Save(form);
       }
     }
     #endregion

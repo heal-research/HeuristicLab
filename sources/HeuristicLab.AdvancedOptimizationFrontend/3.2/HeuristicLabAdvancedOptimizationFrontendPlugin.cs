@@ -29,10 +29,10 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
   /// <summary>
   /// Plugin class for HeuristicLab.AdvancedOptimizationFrontend plugin.
   /// </summary>
-  [ClassInfo(Name = "HeuristicLab.AdvancedOptimizationFrontend-3.2")]
-  [PluginFile(Filename = "HeuristicLab.AdvancedOptimizationFrontend-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.MainForm.WindowsForms-3.2")]
+  [Plugin("HeuristicLab.AdvancedOptimizationFrontend-3.2")]
+  [PluginFile("HeuristicLab.AdvancedOptimizationFrontend-3.2.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Core-3.2")]
+  [PluginDependency("HeuristicLab.MainForm.WindowsForms-3.2")]
   public class HeuristicLabAdvancedOptimizationFrontendPlugin : PluginBase {
   }
 }

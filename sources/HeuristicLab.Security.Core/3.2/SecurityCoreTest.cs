@@ -8,9 +8,7 @@ using HeuristicLab.Hive.Server.Core;
 using System.Diagnostics;
 
 namespace HeuristicLab.Security.Core {
-    [ClassInfo(Name = "Security Test App",
-        Description = "Test Application for the Security Service",
-        AutoRestart = false)]
+    [Application("Security Test App", "Test Application for the Security Service")]
   class SecurityCoreTest : ApplicationBase {
 
       SecurityManager manager = new SecurityManager();

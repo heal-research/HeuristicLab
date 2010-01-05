@@ -25,11 +25,11 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Operators.Programmable {
-  [ClassInfo(Name = "HeuristicLab.Operators.Programmable-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Operators.Programmable-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Operators-3.2")]
+  [Plugin("HeuristicLab.Operators.Programmable-3.2")]
+  [PluginFile("HeuristicLab.Operators.Programmable-3.2.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Core-3.2")]
+  [PluginDependency("HeuristicLab.Data-3.2")]
+  [PluginDependency("HeuristicLab.Operators-3.2")]
   public class HeuristicLabOperatorsProgrammablePlugin : PluginBase {
   }
 }

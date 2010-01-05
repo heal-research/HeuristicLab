@@ -25,9 +25,9 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.DataAccess.ADOHelper {
-  [ClassInfo(Name = "HeuristicLab.DataAccess.ADOHelper-3.2")]
-  [PluginFile(Filename = "HeuristicLab.DataAccess.ADOHelper-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
+  [Plugin("HeuristicLab.DataAccess.ADOHelper-3.2")]
+  [PluginFile("HeuristicLab.DataAccess.ADOHelper-3.2.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Core-3.2")]
   public class DataAccessADOHelperPlugin : PluginBase {
   }
 }
