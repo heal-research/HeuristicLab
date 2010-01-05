@@ -137,7 +137,7 @@ namespace HeuristicLab.PluginInfrastructure {
     /// Loads assemblies dynamically from a byte array
     /// </summary>
     /// <param name="plugins">bytearray of all assemblies that should be loaded</param>
-    public void LoadAssemblies(IEnumerable<byte[]> assemblies) {
+    internal void LoadAssemblies(IEnumerable<byte[]> assemblies) {
       foreach (byte[] asm in assemblies) {
         Assembly loadedAsm = Assembly.Load(asm);
         RegisterLoadedAssembly(loadedAsm);
@@ -155,7 +155,7 @@ namespace HeuristicLab.PluginInfrastructure {
     /// </summary>
     /// <typeparam name="T">Most general type.</typeparam>
     /// <returns>Enumerable of the created instances.</returns>
-    public static IEnumerable<T> GetInstances<T>(IPluginDescription plugin) where T : class {
+    internal static IEnumerable<T> GetInstances<T>(IPluginDescription plugin) where T : class {
       return from t in GetTypes(typeof(T), plugin)
              select (T)Activator.CreateInstance(t);
     }
@@ -174,7 +174,7 @@ namespace HeuristicLab.PluginInfrastructure {
     /// </summary>
     /// <typeparam name="T">Most general type.</typeparam>
     /// <returns>Enumerable of the created instances.</returns>
-    public static IEnumerable<T> GetInstances<T>() where T : class {
+    internal static IEnumerable<T> GetInstances<T>() where T : class {
       return from i in GetInstances(typeof(T))
              select (T)i;
     }
@@ -184,7 +184,7 @@ namespace HeuristicLab.PluginInfrastructure {
     /// </summary>
     /// <typeparam name="type">Most general type.</typeparam>
     /// <returns>Enumerable of the created instances.</returns>
-    public static IEnumerable<object> GetInstances(Type type) {
+    internal static IEnumerable<object> GetInstances(Type type) {
       return from t in GetTypes(type)
              select Activator.CreateInstance(t);
     }
@@ -194,7 +194,7 @@ namespace HeuristicLab.PluginInfrastructure {
     /// </summary>
     /// <param name="type">Most general type for which to find matching types.</param>
     /// <returns>Enumerable of the discovered types.</returns>
-    public static IEnumerable<Type> GetTypes(Type type) {
+    internal static IEnumerable<Type> GetTypes(Type type) {
       return from asm in AppDomain.CurrentDomain.GetAssemblies()
              from t in GetTypes(type, asm)
              select t;
@@ -207,7 +207,7 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <param name="type">Most general type for which to find matching types.</param>
     /// <param name="plugin">The plugin the subtypes must be part of.</param>
     /// <returns>Enumerable of the discovered types.</returns>
-    public static IEnumerable<Type> GetTypes(Type type, IPluginDescription pluginDescription) {
+    internal static IEnumerable<Type> GetTypes(Type type, IPluginDescription pluginDescription) {
       PluginDescription pluginDesc = (PluginDescription)pluginDescription;
       return from asm in AppDomain.CurrentDomain.GetAssemblies()
              where pluginDesc.Assemblies.Any(asmPath => Path.GetFullPath(asmPath) == Path.GetFullPath(asm.Location))
@@ -251,13 +251,16 @@ namespace HeuristicLab.PluginInfrastructure {
 
     #region IApplicationManager Members
 
-
     IEnumerable<T> IApplicationManager.GetInstances<T>(IPluginDescription plugin) {
       return GetInstances<T>(plugin);
     }
 
     IEnumerable<T> IApplicationManager.GetInstances<T>() {
       return GetInstances<T>();
+    }
+
+    IEnumerable<object> IApplicationManager.GetInstances(Type type) {
+      return GetInstances(type);
     }
 
     IEnumerable<Type> IApplicationManager.GetTypes(Type type) {
@@ -268,6 +271,17 @@ namespace HeuristicLab.PluginInfrastructure {
       return GetTypes(type, plugin);
     }
 
+    /// <summary>
+    /// Finds the plugin that declares the <paramref name="type">type</paramref>.
+    /// </summary>
+    /// <param name="type">The type of interest.</param>
+    /// <returns>The description of the plugin that declares the given type or null if the type has not been declared by a known plugin.</returns>
+    public IPluginDescription GetDeclaringPlugin(Type type) {
+      foreach (PluginDescription info in Plugins) {
+        if (info.Assemblies.Contains(Path.GetFullPath(type.Assembly.Location))) return info;
+      }
+      return null;
+    }
     #endregion
   }
 }

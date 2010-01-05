@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace HeuristicLab.PluginInfrastructure.Manager {
   /// <summary>
@@ -34,7 +35,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
 
     private string name;
     /// <summary>
-    /// Gets or sets the name of the plugin.
+    /// Gets the name of the plugin.
     /// </summary>
     public string Name {
       get { return name; }
@@ -51,19 +52,19 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     }
     private Version version;
     /// <summary>
-    /// Gets or sets the version of the plugin.
+    /// Gets the version of the plugin.
     /// </summary>
-    internal Version Version {
+    public Version Version {
       get { return version; }
-      set { version = value; }
+      internal set { version = value; }
     }
     private DateTime buildDate;
     /// <summary>
-    /// Gets or sets the build date of the plugin.
+    /// Gets the build date of the plugin.
     /// </summary>
-    internal DateTime BuildDate {
+    public DateTime BuildDate {
       get { return buildDate; }
-      set { buildDate = value; }
+      internal set { buildDate = value; }
     }
 
     private PluginState pluginState;
@@ -80,7 +81,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     /// Gets the names of all files that belong to this plugin.
     /// These files are deleted when the plugin is removed or updated.
     /// </summary>
-    internal IEnumerable<string> Files {
+    public IEnumerable<string> Files {
       get { return files; }
     }
 
@@ -89,17 +90,19 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     }
 
     private List<PluginDescription> dependencies = new List<PluginDescription>();
+    internal IEnumerable<PluginDescription> Dependencies {
+      get { return dependencies; }
+    }
     /// <summary>
     /// Gets all dependencies of the plugin.
     /// </summary>
-    internal IEnumerable<PluginDescription> Dependencies {
-      get { return dependencies; }
+    IEnumerable<IPluginDescription> IPluginDescription.Dependencies {
+      get { return dependencies.Cast<IPluginDescription>(); }
     }
 
     internal void AddDependency(PluginDescription dependency) {
       dependencies.Add(dependency);
     }
-
 
     private List<string> assemblies = new List<string>();
     /// <summary>

@@ -40,12 +40,6 @@ namespace HeuristicLab.PluginInfrastructure {
     IEnumerable<IApplicationDescription> Applications { get; }
 
     /// <summary>
-    /// Dynamically loads assemblies given in binary form.
-    /// </summary>
-    /// <param name="assemblies">Assemblies that should be loaded in binary form.</param>
-    void LoadAssemblies(IEnumerable<byte[]> assemblies);
-
-    /// <summary>
     /// Discovers and creates instances of <typeparamref name="T"/> and all types implementing or inheriting <typeparamref name="T"/> (directly and indirectly) declared in any assembly of <paramref name="plugin"/>.
     /// </summary>
     /// <typeparam name="T">The type or super-type to discover.</typeparam>
@@ -60,6 +54,13 @@ namespace HeuristicLab.PluginInfrastructure {
     IEnumerable<T> GetInstances<T>() where T : class;
 
     /// <summary>
+    /// Discovers and creates instances of <paramref name="type"/> and all types implementing or inheriting <paramref name="type"/> (directly and indirectly).
+    /// </summary>
+    /// <param name="type">The type or super-type to discover.</typeparam>
+    /// <returns>An enumerable of instances of the discovered types.</returns>
+    IEnumerable<object> GetInstances(Type type);
+
+    /// <summary>
     /// Discovers all types implementing or inheriting <paramref name="type"/> (directly and indirectly).
     /// </summary>
     /// <param name="type">The type to discover.</param>
@@ -72,5 +73,11 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <param name="plugin">The declaring plugin.</param>
     /// <returns>An enumerable of discovered types.</returns>
     IEnumerable<Type> GetTypes(Type type, IPluginDescription plugin);
+    /// <summary>
+    /// Finds the plugin that declares the <paramref name="type">type</paramref>.
+    /// </summary>
+    /// <param name="type">The type of interest.</param>
+    /// <returns>The description of the plugin that declares the given type or null if the type has not been declared by a known plugin.</returns>
+    IPluginDescription GetDeclaringPlugin(Type type);
   }
 }

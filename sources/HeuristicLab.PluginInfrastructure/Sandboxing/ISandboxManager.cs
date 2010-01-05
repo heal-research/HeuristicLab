@@ -21,31 +21,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
+using System.Windows.Forms;
+using System.Reflection;
 
-namespace HeuristicLab.PluginInfrastructure {
+namespace HeuristicLab.PluginInfrastructure.Sandboxing {
   /// <summary>
-  /// Represents meta-data of a plugin.
+  /// Interface for sandbox managers.
   /// </summary>
-  public interface IPluginDescription {
-    /// <summary>
-    /// Gets the name of the plugin.
-    /// </summary>
-    string Name { get; }
-    /// <summary>
-    /// Gets the version of the plugin.
-    /// </summary>
-    Version Version { get; }
-    /// <summary>
-    /// Gets the build date of the plugin.
-    /// </summary>
-    DateTime BuildDate { get; }
-    /// <summary>
-    /// Gets the dependencies of the plugin.
-    /// </summary>
-    IEnumerable<IPluginDescription> Dependencies { get; }
-    /// <summary>
-    /// Gets the file names of files that are part of the plugin.
-    /// </summary>
-    IEnumerable<string> Files { get; }
+  public interface ISandboxManager {
+    AppDomain CreateAndInitSandbox(string name);
+    AppDomain CreateAndInitSandbox(string name, IEnumerable<byte[]> files);
   }
 }

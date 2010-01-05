@@ -34,7 +34,7 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <summary>
     /// Initializes a new instance of <see cref="PluginBase"/>.
     /// </summary>
-    protected PluginBase() { }
+    public PluginBase() { }
 
     private PluginAttribute PluginAttribute {
       get {

@@ -148,6 +148,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Sandboxing\ISandboxManager.cs" />
+    <Compile Include="Sandboxing\SandboxManager.cs" />
     <Compile Include="Service References\UpdateLocationReference\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

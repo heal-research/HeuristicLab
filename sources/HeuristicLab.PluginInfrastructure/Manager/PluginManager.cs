@@ -111,8 +111,8 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
 
 
     /// <summary>
-    /// Starts and application in a separate AppDomain.
-    /// Loads all enabled plugins and starts the application via a PluginRunner instance activated in the new AppDomain.
+    /// Starts an application in a separate AppDomain.
+    /// Loads all enabled plugins and starts the application via an ApplicationManager instance activated in the new AppDomain.
     /// </summary>
     /// <param name="appInfo">application to run</param>
     internal void Run(ApplicationDescription appInfo) {

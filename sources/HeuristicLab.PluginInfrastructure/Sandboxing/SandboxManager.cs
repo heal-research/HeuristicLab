@@ -1,0 +1,82 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using HeuristicLab.PluginInfrastructure.Manager;
+using System.IO;
+using System.ComponentModel;
+using HeuristicLab.PluginInfrastructure.UpdateLocationReference;
+using System.Security;
+using System.Security.Permissions;
+using System.Security.Policy;
+using System.Reflection;
+using System.Diagnostics;
+
+namespace HeuristicLab.PluginInfrastructure.Sandboxing {
+  public class SandboxManager {
+
+    private static StrongName CreateStrongName(Assembly assembly) {
+      if (assembly == null)
+        throw new ArgumentNullException("assembly");
+
+      AssemblyName assemblyName = assembly.GetName();
+      Trace.Assert(assemblyName != null, "Could not get assembly name");
+
+      // get the public key blob
+      byte[] publicKey = assemblyName.GetPublicKey();
+      if (publicKey == null || publicKey.Length == 0)
+        throw new InvalidOperationException("Assembly is not strongly named");
+
+      StrongNamePublicKeyBlob keyBlob = new StrongNamePublicKeyBlob(publicKey);
+
+      // and create the StrongName
+      return new StrongName(keyBlob, assemblyName.Name, assemblyName.Version);
+    }
+
+    #region ISandboxManager Members
+
+    public static AppDomain CreateAndInitSandbox(string name) {
+      return CreateAndInitSandbox(name, Enumerable.Empty<byte[]>());
+    }
+
+
+    public static AppDomain CreateAndInitSandbox(string name, IEnumerable<byte[]> files) {
+      PermissionSet pset;
+
+      #region permission set for sandbox
+      // Uncomment code for sandboxed appdomain
+      //pset = new PermissionSet(PermissionState.None);
+      //pset.AddPermission(new SecurityPermission(SecurityPermissionFlag.Execution));
+      //pset.AddPermission(new ReflectionPermission(ReflectionPermissionFlag.MemberAccess));
+      //FileIOPermission fPerm = new FileIOPermission(PermissionState.None);
+
+      //foreach (IPluginDescription plugin in ApplicationManager.Manager.Plugins) {
+      //  fPerm.AddPathList(FileIOPermissionAccess.Read | FileIOPermissionAccess.PathDiscovery, plugin.Files.ToArray());
+      //}
+
+      //pset.AddPermission(fPerm);
+      #endregion
+
+      #region permission set of unrestricted appdomain
+      // unrestricted appdomain 
+      pset = new PermissionSet(PermissionState.Unrestricted);
+      #endregion 
+
+      AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
+      //setup.PrivateBinPath = pluginDir;
+      setup.ApplicationBase = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
+      AppDomain applicationDomain = AppDomain.CreateDomain(name, AppDomain.CurrentDomain.Evidence, setup, pset, CreateStrongName(Assembly.GetExecutingAssembly()));
+      Type applicationManagerType = typeof(ApplicationManager);
+      ApplicationManager applicationManager =
+        (ApplicationManager)applicationDomain.CreateInstanceAndUnwrap(applicationManagerType.Assembly.FullName, applicationManagerType.FullName, true, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null, null, null);
+      ApplicationDescription[] apps = ApplicationManager.Manager.Applications.Cast<ApplicationDescription>().ToArray();
+      PluginDescription[] plugins = ApplicationManager.Manager.Plugins.Cast<PluginDescription>().ToArray();
+      applicationManager.PrepareApplicationDomain(apps, plugins);
+      if (files != null && files.Count() > 0)
+        applicationManager.LoadAssemblies(files);
+      return applicationDomain;
+    }
+
+    #endregion
+  }
+}
