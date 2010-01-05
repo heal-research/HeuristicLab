@@ -210,7 +210,8 @@ namespace HeuristicLab.PluginInfrastructure {
     internal static IEnumerable<Type> GetTypes(Type type, IPluginDescription pluginDescription) {
       PluginDescription pluginDesc = (PluginDescription)pluginDescription;
       return from asm in AppDomain.CurrentDomain.GetAssemblies()
-             where pluginDesc.Assemblies.Any(asmPath => Path.GetFullPath(asmPath) == Path.GetFullPath(asm.Location))
+             where !string.IsNullOrEmpty(asm.Location ) && 
+                   pluginDesc.Assemblies.Any(asmPath => Path.GetFullPath(asmPath) == Path.GetFullPath(asm.Location))
              from t in GetTypes(type, asm)
              select t;
     }
