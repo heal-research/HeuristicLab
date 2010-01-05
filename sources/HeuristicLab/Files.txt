@@ -1,6 +1,9 @@
 ﻿; This line is skipped. DO NOT TOUCH THIS line!
 ; List of project directories and file names separated by ':' that are part of the installation
 
+HeuristicLab.PluginInfrastructure:ICSharpCode.SharpZipLib License.txt
+HeuristicLab.PluginInfrastructure:ICSharpCode.SharpZipLib.dll
+
 ALGLIB:ALGLIB.dll
 ALGLIB:ALGLIB License.txt
 

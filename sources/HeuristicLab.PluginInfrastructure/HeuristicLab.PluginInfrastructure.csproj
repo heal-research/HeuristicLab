@@ -169,6 +169,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ICSharpCode.SharpZipLib License.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ICSharpCode.SharpZipLib.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\Details.gif" />
     <Content Include="Resources\HeuristicLab.ico" />
     <Content Include="Resources\LargeIcons.gif" />
