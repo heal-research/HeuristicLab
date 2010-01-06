@@ -116,6 +116,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="ClassDiagram1.cd" />
     <None Include="HeuristicLab.snk" />
     <EmbeddedResource Include="Authorization\HivePermissionSet.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -154,6 +155,10 @@
     <ProjectReference Include="..\..\HeuristicLab.Security.Contracts\3.2\HeuristicLab.Security.Contracts-3.2.csproj">
       <Project>{D59E852C-F205-4647-8C05-EB9ED1CF44E9}</Project>
       <Name>HeuristicLab.Security.Contracts-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Tracing\3.2\HeuristicLab.Tracing-3.2.csproj">
+      <Project>{EE2034D9-6E27-48A1-B855-42D45F69A4FC}</Project>
+      <Name>HeuristicLab.Tracing-3.2</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

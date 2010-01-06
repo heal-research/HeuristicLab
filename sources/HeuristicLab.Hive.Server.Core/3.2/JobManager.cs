@@ -31,6 +31,7 @@ using HeuristicLab.Hive.Server.Core.InternalInterfaces;
 using HeuristicLab.DataAccess.Interfaces;
 using System.Data;
 using System.IO;
+using HeuristicLab.Tracing;
 
 namespace HeuristicLab.Hive.Server.Core {
   class JobManager: IJobManager, IInternalJobManager {
@@ -64,6 +65,9 @@ namespace HeuristicLab.Hive.Server.Core {
     }
 
     public void ResetJobsDependingOnResults(Job job) {
+
+      HiveLogger.Info(this.ToString() + ": Setting job " + job.Id + " offline");
+
       ISession session = factory.GetSessionForCurrentThread();
       ITransaction tx = null;
 
@@ -121,6 +125,7 @@ namespace HeuristicLab.Hive.Server.Core {
     }
 
     void checkForDeadJobs() {
+      HiveLogger.Info(this.ToString() + " Searching for dead Jobs");
        ISession session = factory.GetSessionForCurrentThread();
 
        try {

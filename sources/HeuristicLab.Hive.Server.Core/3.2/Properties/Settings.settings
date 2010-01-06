@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="HiveServerConnectionString" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">Data Source=10.20.71.10;Initial Catalog=HeuristicLab.Hive;Persist Security Info=True;User ID=hive;Password=hive;Pooling=true;MultipleActiveResultSets=true</Value>
+      <Value Profile="(Default)">Data Source=127.0.0.1;Initial Catalog=HeuristicLab.Hive;Persist Security Info=True;User ID=hive;Password=hive;Pooling=true;MultipleActiveResultSets=true</Value>
     </Setting>
   </Settings>
 </SettingsFile>
