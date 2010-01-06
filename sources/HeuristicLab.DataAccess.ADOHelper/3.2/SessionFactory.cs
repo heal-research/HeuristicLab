@@ -34,7 +34,16 @@ namespace HeuristicLab.DataAccess.ADOHelper {
       new Dictionary<Thread, Session>();
 
     public Type DbConnectionType { get;  set; }
-    public String DbConnectionString { get;  set; }
+    private String dbConnectionString;
+    public String DbConnectionString { 
+        get {
+            return dbConnectionString;
+        }
+        set {
+            this.dbConnectionString = value;
+            Console.WriteLine("connection set! "+ value);
+        }
+    }
 
     public SessionFactory() {
       System.Timers.Timer timer =

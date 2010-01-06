@@ -40,6 +40,10 @@ namespace HeuristicLab.DataAccess {
         return base.Equals(obj);
     }
 
+    public override string ToString() {
+      return Id.ToString();
+    }
+
     public override int GetHashCode() {
       return this.Id.GetHashCode();
     }
