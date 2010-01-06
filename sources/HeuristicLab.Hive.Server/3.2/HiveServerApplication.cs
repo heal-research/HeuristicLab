@@ -76,6 +76,16 @@ namespace HeuristicLab.Hive.Server {
             uriTcp = new Uri("net.tcp://" + ipAddress + ":" + port + "/HiveServer/");
             serviceHost = new ServiceHost(clientCommunicatorInstances.First().GetType(), uriTcp);
             serviceHost.AddServiceEndpoint(typeof(IClientFacade), streamedBinding, STR_ClientCommunicator);
+            
+            ServiceDebugBehavior sdb = serviceHost.Description.Behaviors.Find<ServiceDebugBehavior>();
+            if (sdb == null) {
+              sdb = new ServiceDebugBehavior();
+              serviceHost.Description.Behaviors.Add(sdb);
+            }
+            sdb.IncludeExceptionDetailInFaults = true;
+
+            
+
             curServiceHost = STR_ClientCommunicator;
           }
           break;
@@ -102,7 +112,7 @@ namespace HeuristicLab.Hive.Server {
       }
       if ((serviceHost != null) && (!String.IsNullOrEmpty(curServiceHost))) {
         AddMexEndpoint(serviceHost);
-        WcfSettings.SetServiceCertificate(serviceHost);
+        //WcfSettings.SetServiceCertificate(serviceHost);
         serviceHost.Open();
         runningServices.Add(curServiceHost, serviceHost);
         return serviceHost.BaseAddresses[0];
