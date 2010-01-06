@@ -47,6 +47,9 @@ namespace HeuristicLab.Hive.Contracts {
       binding.CloseTimeout = new TimeSpan(0, 5, 0);
       binding.ReceiveTimeout = new TimeSpan(0, 5, 0);
       binding.SendTimeout = new TimeSpan(0, 5, 0);
+      //Disabling security mode, for the moment
+      binding.Security.Mode = SecurityMode.None;
+      
       return binding;
     }
 
@@ -90,6 +93,7 @@ namespace HeuristicLab.Hive.Contracts {
   /// WARNUNG: Dieser Code wird nur für Testzertifikate benötigt, wie sie beispielsweise von makecert erstellt werden.
   /// Sie sollten diesen Code nicht in einer Produktionsumgebung verwenden.
   /// </remarks>
+  /*
   public class PermissiveCertificatePolicy {
     string subjectName;
     static PermissiveCertificatePolicy currentPolicy;
@@ -109,5 +113,5 @@ namespace HeuristicLab.Hive.Contracts {
       }
       return false;
     }
-  }
+  }             */
 }

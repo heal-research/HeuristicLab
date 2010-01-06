@@ -59,6 +59,11 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
     [DataMember]
     public Project Project { get; set; }
 
+    public override string ToString() {
+      return base.ToString() + "State: " + State + ", [Ressource : " + Client + " ] , DateCreated: " + DateCreated + ", DateCalculated: " + DateCalculated +
+        "Priority: " + Priority + ", CoresNeeded: " + CoresNeeded + "AssignedResources: " + AssignedResourceIds;
+    }
+
     public Job() {
       PluginsNeeded = new List<HivePluginInfo>();
       AssignedResourceIds = new List<Guid>();

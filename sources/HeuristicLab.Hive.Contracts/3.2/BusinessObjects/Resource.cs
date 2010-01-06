@@ -33,5 +33,9 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
   public class Resource : PersistableObject {
     [DataMember]
     public string Name { get; set; }
+
+    public override string ToString() {
+      return Id + " " + Name;
+    }
   }
 }

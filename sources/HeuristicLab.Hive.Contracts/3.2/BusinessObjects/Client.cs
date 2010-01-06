@@ -48,5 +48,9 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
     public State State { get; set; }
     [DataMember]
     public ClientConfig Config { get; set; }
+
+    public override string ToString() {
+      return base.ToString() + ", NrOfCores: " + NrOfCores + ", NrOfFreeCores " + NrOfFreeCores + ", Login: " + Login + ", State: " + State;
+    }
   }
 }

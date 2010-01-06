@@ -37,5 +37,13 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
     public int FreeCores { get; set; }
     [DataMember]
     public Dictionary<Guid, double> JobProgress { get; set; } // TODO: define Type 
+
+    public override string ToString() {
+      String val = "ClientId: " + ClientId + ", FreeCores: " + FreeCores;
+      foreach (KeyValuePair<Guid, double> kvp in JobProgress) {
+        val += "\nId" + kvp.Key + " Progress " + kvp.Value;
+      }
+      return val;
+    }
   }
 }
