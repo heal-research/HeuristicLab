@@ -33,23 +33,23 @@ namespace HeuristicLab.Tracing {
     }
 
     public static void Debug(object message) {
-      GetDefaultLogger(1).Debug(message);
+      GetDefaultLogger(1).Debug(DateTime.Now + ":" + DateTime.Now.Millisecond + " - " + message);
     }
 
     public static void Info(object message) {
-      GetDefaultLogger(1).Info(message);
+      GetDefaultLogger(1).Info(DateTime.Now + ":" + DateTime.Now.Millisecond + " - " + message);
     }
 
     public static void Warn(object message) {
-      GetDefaultLogger(1).Warn(message);
+      GetDefaultLogger(1).Warn(DateTime.Now + ":" + DateTime.Now.Millisecond + " - " + message);
     }
 
     public static void Error(object message) {
-      GetDefaultLogger(1).Error(message);
+      GetDefaultLogger(1).Error(DateTime.Now + ":" + DateTime.Now.Millisecond + " - " + message);
     }
 
     public static void Fatal(object message) {
-      GetDefaultLogger(1).Fatal(message);
+      GetDefaultLogger(1).Fatal(DateTime.Now + ":" + DateTime.Now.Millisecond + " - " + message);
     }
 
     public static void Debug(Type type, object message) {
