@@ -170,5 +170,14 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
         Action(this, e);
       }
     }
+
+    // infinite lease time
+    /// <summary>
+    /// Initializes the life time service with infinite lease time.
+    /// </summary>
+    /// <returns><c>null</c>.</returns>
+    public override object InitializeLifetimeService() {
+      return null;
+    }
   }
 }
