@@ -1,5 +1,5 @@
 ﻿; This line is skipped. DO NOT TOUCH THIS line!
-; This file contains a list of all x86 specific files
+; This file contains a list of all x64 specific files
 
 HeuristicLab.SQLServerCompact\3.2\x64\sqlceca35.dll
 HeuristicLab.SQLServerCompact\3.2\x64\sqlcecompact35.dll
