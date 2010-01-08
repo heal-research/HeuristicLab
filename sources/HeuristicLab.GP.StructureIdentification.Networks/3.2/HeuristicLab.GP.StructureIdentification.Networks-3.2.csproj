@@ -172,6 +172,6 @@ set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
-REM call PreBuildEvent.cmd</PreBuildEvent>
+call PreBuildEvent.cmd</PreBuildEvent>
   </PropertyGroup>
 </Project>
