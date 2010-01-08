@@ -292,6 +292,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Selection.Unce
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.ArtificialNeuralNetworks-3.2", "HeuristicLab.ArtificialNeuralNetworks\3.2\HeuristicLab.ArtificialNeuralNetworks-3.2.csproj", "{4744FB81-7F42-4BBA-813E-68CAB6FE07E2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.GP.StructureIdentification.Networks-3.2", "HeuristicLab.GP.StructureIdentification.Networks\3.2\HeuristicLab.GP.StructureIdentification.Networks-3.2.csproj", "{5DBC2F13-EC32-4DCA-9D5F-E60B5EA8459A}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = HeuristicLab 3.2.vsmdi
@@ -2563,6 +2565,30 @@ Global
 		{4744FB81-7F42-4BBA-813E-68CAB6FE07E2}.Release|x64.Build.0 = Release|x64
 		{4744FB81-7F42-4BBA-813E-68CAB6FE07E2}.Release|x86.ActiveCfg = Release|x86
 		{4744FB81-7F42-4BBA-813E-68CAB6FE07E2}.Release|x86.Build.0 = Release|x86
+		{5DBC2F13-EC32-4DCA-9D5F-E60B5EA8459A}.CEDMA Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DBC2F13-EC32-4DCA-9D5F-E60B5EA8459A}.CEDMA Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DBC2F13-EC32-4DCA-9D5F-E60B5EA8459A}.CEDMA Debug|x64.ActiveCfg = Debug|x64
+		{5DBC2F13-EC32-4DCA-9D5F-E60B5EA8459A}.CEDMA Debug|x64.Build.0 = Debug|x64
+		{5DBC2F13-EC32-4DCA-9D5F-E60B5EA8459A}.CEDMA Debug|x86.ActiveCfg = Debug|x86
+		{5DBC2F13-EC32-4DCA-9D5F-E60B5EA8459A}.CEDMA Debug|x86.Build.0 = Debug|x86
+		{5DBC2F13-EC32-4DCA-9D5F-E60B5EA8459A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DBC2F13-EC32-4DCA-9D5F-E60B5EA8459A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DBC2F13-EC32-4DCA-9D5F-E60B5EA8459A}.Debug|x64.ActiveCfg = Debug|x64
+		{5DBC2F13-EC32-4DCA-9D5F-E60B5EA8459A}.Debug|x64.Build.0 = Debug|x64
+		{5DBC2F13-EC32-4DCA-9D5F-E60B5EA8459A}.Debug|x86.ActiveCfg = Debug|x86
+		{5DBC2F13-EC32-4DCA-9D5F-E60B5EA8459A}.Debug|x86.Build.0 = Debug|x86
+		{5DBC2F13-EC32-4DCA-9D5F-E60B5EA8459A}.Modeling Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DBC2F13-EC32-4DCA-9D5F-E60B5EA8459A}.Modeling Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DBC2F13-EC32-4DCA-9D5F-E60B5EA8459A}.Modeling Debug|x64.ActiveCfg = Debug|x64
+		{5DBC2F13-EC32-4DCA-9D5F-E60B5EA8459A}.Modeling Debug|x64.Build.0 = Debug|x64
+		{5DBC2F13-EC32-4DCA-9D5F-E60B5EA8459A}.Modeling Debug|x86.ActiveCfg = Debug|x86
+		{5DBC2F13-EC32-4DCA-9D5F-E60B5EA8459A}.Modeling Debug|x86.Build.0 = Debug|x86
+		{5DBC2F13-EC32-4DCA-9D5F-E60B5EA8459A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DBC2F13-EC32-4DCA-9D5F-E60B5EA8459A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DBC2F13-EC32-4DCA-9D5F-E60B5EA8459A}.Release|x64.ActiveCfg = Release|x64
+		{5DBC2F13-EC32-4DCA-9D5F-E60B5EA8459A}.Release|x64.Build.0 = Release|x64
+		{5DBC2F13-EC32-4DCA-9D5F-E60B5EA8459A}.Release|x86.ActiveCfg = Release|x86
+		{5DBC2F13-EC32-4DCA-9D5F-E60B5EA8459A}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

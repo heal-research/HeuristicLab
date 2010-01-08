@@ -171,13 +171,20 @@ namespace HeuristicLab.GP.Test {
       }
     }
 
+    public static IFunctionTree[] CreateRandomTrees(MersenneTwister twister, Dataset dataset, FunctionLibrary funLib, int popSize) {
+      return CreateRandomTrees(twister, dataset, funLib, popSize, 1, 200);
+    }
+
     public static IFunctionTree[] CreateRandomTrees(MersenneTwister twister, Dataset dataset, int popSize) {
       return CreateRandomTrees(twister, dataset, popSize, 1, 200);
     }
 
     public static IFunctionTree[] CreateRandomTrees(MersenneTwister twister, Dataset dataset, int popSize, int minSize, int maxSize) {
+      return CreateRandomTrees(twister, dataset, Util.CreateFunctionLibrary(), popSize, minSize, maxSize);
+    }
+
+    public static IFunctionTree[] CreateRandomTrees(MersenneTwister twister, Dataset dataset, FunctionLibrary funLib, int popSize, int minSize, int maxSize) {
       IFunctionTree[] randomTrees = new IFunctionTree[popSize];
-      FunctionLibrary funLib = Util.CreateFunctionLibrary();
       for (int i = 0; i < randomTrees.Length; i++) {
         randomTrees[i] = ProbabilisticTreeCreator.Create(twister, funLib, minSize, maxSize, maxSize + 1);
       }

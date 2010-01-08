@@ -47,13 +47,13 @@ namespace HeuristicLab.GP {
 
     protected abstract FunctionLibrary CreateFunctionLibrary();
 
-    protected void SetAllowedSubOperators(IFunction f, IEnumerable<IFunction> gs) {
+    protected static void SetAllowedSubOperators(IFunction f, IEnumerable<IFunction> gs) {
       for (int i = 0; i < f.MaxSubTrees; i++) {
         SetAllowedSubOperators(f, i, gs);
       }
     }
 
-    protected void SetAllowedSubOperators(IFunction f, int i, IEnumerable<IFunction> gs) {
+    protected static void SetAllowedSubOperators(IFunction f, int i, IEnumerable<IFunction> gs) {
       foreach (var g in gs) {
         f.AddAllowedSubFunction(g, i);
       }
