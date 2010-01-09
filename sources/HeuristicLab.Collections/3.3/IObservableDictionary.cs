@@ -25,7 +25,10 @@ using System.Linq;
 using System.Text;
 
 namespace HeuristicLab.Collections {
-  public interface IObservableDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IObservableCollection<KeyValuePair<TKey, TValue>> {
+  public interface IObservableDictionary<TKey, TValue> : IDictionary<TKey, TValue> {
+    event CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>> ItemsAdded;
+    event CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>> ItemsRemoved;
     event CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>> ItemsReplaced;
+    event CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>> CollectionReset;
   }
 }

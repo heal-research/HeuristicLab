@@ -25,7 +25,15 @@ using System.Linq;
 using System.Text;
 
 namespace HeuristicLab.Collections {
-  public interface IObservableKeyedCollection<TKey, TItem> : IObservableCollection<TItem> {
+  public interface IObservableKeyedCollection<TKey, TItem> : ICollection<TItem> {
+    TItem this[TKey key] { get; }
+
+    bool ContainsKey(TKey key);
+    bool TryGetValue(TKey key, out TItem item);
+
+    event CollectionItemsChangedEventHandler<TItem> ItemsAdded;
+    event CollectionItemsChangedEventHandler<TItem> ItemsRemoved;
     event CollectionItemsChangedEventHandler<TItem> ItemsReplaced;
+    event CollectionItemsChangedEventHandler<TItem> CollectionReset;
   }
 }

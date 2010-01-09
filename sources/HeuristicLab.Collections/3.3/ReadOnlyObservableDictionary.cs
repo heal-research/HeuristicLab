@@ -29,9 +29,9 @@ using System.Runtime.Serialization;
 
 namespace HeuristicLab.Collections {
   [Serializable]
-  public class ObservableDictionary<TKey, TValue> : IObservableDictionary<TKey, TValue> {
+  public class ReadOnlyObservableDictionary<TKey, TValue> : IObservableDictionary<TKey, TValue> {
     [Storable]
-    private Dictionary<TKey, TValue> dict;
+    private IObservableDictionary<TKey, TValue> dict;
 
     #region Properties
     public ICollection<TKey> Keys {
@@ -43,59 +43,33 @@ namespace HeuristicLab.Collections {
     public int Count {
       get { return dict.Count; }
     }
-    public IEqualityComparer<TKey> Comparer {
-      get { return dict.Comparer; }
-    }
     bool ICollection<KeyValuePair<TKey, TValue>>.IsReadOnly {
-      get { return ((ICollection<KeyValuePair<TKey, TValue>>)dict).IsReadOnly; }
+      get { return true; }
     }
 
     public TValue this[TKey key] {
-      get {
-        return dict[key];
-      }
-      set {
-        if (dict.ContainsKey(key)) {
-          KeyValuePair<TKey, TValue> item = new KeyValuePair<TKey, TValue>(key, dict[key]);
-          dict[key] = value;
-          OnItemsReplaced(new KeyValuePair<TKey, TValue>[] { new KeyValuePair<TKey, TValue>(key, value) }, new KeyValuePair<TKey, TValue>[] { item });
-        } else {
-          dict[key] = value;
-          OnItemsAdded(new KeyValuePair<TKey, TValue>[] { new KeyValuePair<TKey, TValue>(key, value) });
-        }
-      }
+      get { return dict[key]; }
+    }
+    TValue IDictionary<TKey, TValue>.this[TKey key] {
+      get { return dict[key]; }
+      set { throw new NotSupportedException(); }
     }
     #endregion
 
     #region Constructors
-    public ObservableDictionary() {
-      dict = new Dictionary<TKey, TValue>();
-    }
-    public ObservableDictionary(int capacity) {
-      dict = new Dictionary<TKey, TValue>(capacity);
-    }
-    public ObservableDictionary(IEqualityComparer<TKey> comparer) {
-      dict = new Dictionary<TKey, TValue>(comparer);
-    }
-    public ObservableDictionary(IDictionary<TKey, TValue> dictionary) {
-      dict = new Dictionary<TKey, TValue>(dictionary);
-      OnItemsAdded(dictionary);
-    }
-    public ObservableDictionary(int capacity, IEqualityComparer<TKey> comparer) {
-      dict = new Dictionary<TKey, TValue>(capacity, comparer);
-    }
-    public ObservableDictionary(IDictionary<TKey, TValue> dictionary, IEqualityComparer<TKey> comparer) {
-      dict = new Dictionary<TKey, TValue>(dictionary, comparer);
-      OnItemsAdded(dictionary);
+    public ReadOnlyObservableDictionary(IObservableDictionary<TKey, TValue> dictionary) {
+      if (dictionary == null) throw new ArgumentNullException();
+      dict = dictionary;
+      dict.ItemsAdded += new CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>>(dict_ItemsAdded);
+      dict.ItemsRemoved += new CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>>(dict_ItemsRemoved);
+      dict.ItemsReplaced += new CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>>(dict_ItemsReplaced);
+      dict.CollectionReset += new CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>>(dict_CollectionReset);
     }
     #endregion
 
     #region Access
     public bool ContainsKey(TKey key) {
       return dict.ContainsKey(key);
-    }
-    public bool ContainsValue(TValue value) {
-      return dict.ContainsValue(value);
     }
     bool ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> item) {
       return dict.Contains(item);
@@ -107,54 +81,34 @@ namespace HeuristicLab.Collections {
     #endregion
 
     #region Manipulation
-    public void Add(TKey key, TValue value) {
-      dict.Add(key, value);
-      OnItemsAdded(new KeyValuePair<TKey, TValue>[] { new KeyValuePair<TKey, TValue>(key, value) });
+    void IDictionary<TKey, TValue>.Add(TKey key, TValue value) {
+      throw new NotSupportedException();
     }
     void ICollection<KeyValuePair<TKey, TValue>>.Add(KeyValuePair<TKey, TValue> item) {
-      ((ICollection<KeyValuePair<TKey, TValue>>)dict).Add(item);
-      OnItemsAdded(new KeyValuePair<TKey, TValue>[] { item });
+      throw new NotSupportedException();
     }
 
-    public bool Remove(TKey key) {
-      TValue value;
-      if (dict.TryGetValue(key, out value)) {
-        dict.Remove(key);
-        OnItemsRemoved(new KeyValuePair<TKey, TValue>[] { new KeyValuePair<TKey, TValue>(key, value) });
-        return true;
-      }
-      return false;
+    bool IDictionary<TKey, TValue>.Remove(TKey key) {
+      throw new NotSupportedException();
     }
     bool ICollection<KeyValuePair<TKey, TValue>>.Remove(KeyValuePair<TKey, TValue> item) {
-      if (((ICollection<KeyValuePair<TKey, TValue>>)dict).Remove(item)) {
-        OnItemsRemoved(new KeyValuePair<TKey, TValue>[] { item });
-        return true;
-      }
-      return false;
+      throw new NotSupportedException();
     }
 
-    public void Clear() {
-      KeyValuePair<TKey, TValue>[] items = dict.ToArray();
-      dict.Clear();
-      OnCollectionReset(new KeyValuePair<TKey, TValue>[0], items);
+    void ICollection<KeyValuePair<TKey, TValue>>.Clear() {
+      throw new NotSupportedException();
     }
     #endregion
 
     #region Conversion
-    public ReadOnlyObservableDictionary<TKey, TValue> AsReadOnly() {
-      return new ReadOnlyObservableDictionary<TKey, TValue>(this);
-    }
     void ICollection<KeyValuePair<TKey, TValue>>.CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex) {
       ((ICollection<KeyValuePair<TKey, TValue>>)dict).CopyTo(array, arrayIndex);
     }
     #endregion
 
     #region Enumeration
-    public Dictionary<TKey, TValue>.Enumerator GetEnumerator() {
+    public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() {
       return dict.GetEnumerator();
-    }
-    IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator() {
-      return ((IEnumerable<KeyValuePair<TKey, TValue>>)dict).GetEnumerator();
     }
     IEnumerator IEnumerable.GetEnumerator() {
       return ((IEnumerable)dict).GetEnumerator();
@@ -188,6 +142,19 @@ namespace HeuristicLab.Collections {
     protected virtual void OnCollectionReset(IEnumerable<KeyValuePair<TKey, TValue>> items, IEnumerable<KeyValuePair<TKey, TValue>> oldItems) {
       if (CollectionReset != null)
         CollectionReset(this, new CollectionItemsChangedEventArgs<KeyValuePair<TKey, TValue>>(items, oldItems));
+    }
+
+    private void dict_ItemsAdded(object sender, CollectionItemsChangedEventArgs<KeyValuePair<TKey, TValue>> e) {
+      OnItemsAdded(e.Items);
+    }
+    private void dict_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<KeyValuePair<TKey, TValue>> e) {
+      OnItemsRemoved(e.Items);
+    }
+    private void dict_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<KeyValuePair<TKey, TValue>> e) {
+      OnItemsReplaced(e.Items, e.OldItems);
+    }
+    private void dict_CollectionReset(object sender, CollectionItemsChangedEventArgs<KeyValuePair<TKey, TValue>> e) {
+      OnCollectionReset(e.Items, e.OldItems);
     }
     #endregion
   }

@@ -44,9 +44,6 @@ namespace HeuristicLab.Collections {
     bool ICollection<T>.IsReadOnly {
       get { return ((ICollection<T>)list).IsReadOnly; }
     }
-    bool ICollection<IndexedItem<T>>.IsReadOnly {
-      get { return ((ICollection<T>)list).IsReadOnly; }
-    }
 
     public T this[int index] {
       get {
@@ -73,21 +70,6 @@ namespace HeuristicLab.Collections {
     }
     #endregion
 
-    #region Destructors
-    ~ObservableList() {
-      Dispose(false);
-    }
-    protected virtual void Dispose(bool disposing) {
-      if (disposing) {
-        Clear();
-      }
-    }
-    public void Dispose() {
-      Dispose(true);
-      GC.SuppressFinalize(this);
-    }
-    #endregion
-
     #region Access
     public List<T> GetRange(int index, int count) {
       return list.GetRange(index, count);
@@ -95,9 +77,6 @@ namespace HeuristicLab.Collections {
 
     public bool Contains(T item) {
       return list.Contains(item);
-    }
-    public bool Contains(IndexedItem<T> item) {
-      return list[item.Index].Equals(item.Value);
     }
 
     public int IndexOf(T item) {
@@ -170,10 +149,6 @@ namespace HeuristicLab.Collections {
       list.Add(item);
       OnItemsAdded(new IndexedItem<T>[] { new IndexedItem<T>(list.Count - 1, item) });
     }
-    public void Add(IndexedItem<T> item) {
-      list.Insert(item.Index, item.Value);
-      OnItemsAdded(new IndexedItem<T>[] { item });
-    }
     public void AddRange(IEnumerable<T> collection) {
       int index = list.Count;
       list.AddRange(collection);
@@ -204,14 +179,6 @@ namespace HeuristicLab.Collections {
       if (index != -1) {
         list.RemoveAt(index);
         OnItemsRemoved(new IndexedItem<T>[] { new IndexedItem<T>(index, item) });
-        return true;
-      }
-      return false;
-    }
-    public bool Remove(IndexedItem<T> item) {
-      if (list[item.Index].Equals(item.Value)) {
-        list.RemoveAt(item.Index);
-        OnItemsRemoved(new IndexedItem<T>[] { item });
         return true;
       }
       return false;
@@ -278,18 +245,14 @@ namespace HeuristicLab.Collections {
     #endregion
 
     #region Conversion
-    public ReadOnlyCollection<T> AsReadOnly() {
-      return list.AsReadOnly();
+    public ReadOnlyObservableList<T> AsReadOnly() {
+      return new ReadOnlyObservableList<T>(this);
     }
     public T[] ToArray() {
       return list.ToArray();
     }
     void ICollection<T>.CopyTo(T[] array, int arrayIndex) {
       list.CopyTo(array, arrayIndex);
-    }
-    void ICollection<IndexedItem<T>>.CopyTo(IndexedItem<T>[] array, int arrayIndex) {
-      IndexedItem<T>[] items = GetIndexedItems();
-      items.CopyTo(array, arrayIndex);
     }
     public List<TOutput> ConvertAll<TOutput>(Converter<T, TOutput> converter) {
       return list.ConvertAll<TOutput>(converter);
@@ -311,13 +274,6 @@ namespace HeuristicLab.Collections {
     }
     IEnumerator<T> IEnumerable<T>.GetEnumerator() {
       return ((IEnumerable<T>)list).GetEnumerator();
-    }
-    IEnumerator<IndexedItem<T>> IEnumerable<IndexedItem<T>>.GetEnumerator() {
-      int index = -1;
-      foreach (T item in list) {
-        index++;
-        yield return new IndexedItem<T>(index, item);
-      }
     }
     IEnumerator IEnumerable.GetEnumerator() {
       return ((IEnumerable)list).GetEnumerator();

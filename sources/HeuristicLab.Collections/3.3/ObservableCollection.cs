@@ -41,7 +41,7 @@ namespace HeuristicLab.Collections {
     public int Count {
       get { return list.Count; }
     }
-    public bool IsReadOnly {
+    bool ICollection<T>.IsReadOnly {
       get { return ((ICollection<T>)list).IsReadOnly; }
     }
     #endregion
@@ -56,21 +56,6 @@ namespace HeuristicLab.Collections {
     public ObservableCollection(IEnumerable<T> collection) {
       list = new List<T>(collection);
       OnItemsAdded(collection);
-    }
-    #endregion
-
-    #region Destructors
-    ~ObservableCollection() {
-      Dispose(false);
-    }
-    protected virtual void Dispose(bool disposing) {
-      if (disposing) {
-        Clear();
-      }
-    }
-    public void Dispose() {
-      Dispose(true);
-      GC.SuppressFinalize(this);
     }
     #endregion
 
@@ -136,8 +121,8 @@ namespace HeuristicLab.Collections {
     #endregion
 
     #region Conversion
-    public ReadOnlyCollection<T> AsReadOnly() {
-      return list.AsReadOnly();
+    public ReadOnlyObservableCollection<T> AsReadOnly() {
+      return new ReadOnlyObservableCollection<T>(this);
     }
     public T[] ToArray() {
       return list.ToArray();

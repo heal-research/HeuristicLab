@@ -28,9 +28,9 @@ namespace HeuristicLab.Collections {
   /// <summary>
   /// Plugin class for HeuristicLab.Collections plugin.
   /// </summary>
-  [ClassInfo(Name = "HeuristicLab.Collections-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Collections-3.3.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Persistence-3.3")]
+  [Plugin("HeuristicLab.Collections-3.3")]
+  [PluginFile("HeuristicLab.Collections-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Persistence-3.3")]
   public class HeuristicLabCollectionsPlugin : PluginBase {
   }
 }

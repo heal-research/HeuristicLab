@@ -40,7 +40,7 @@ namespace HeuristicLab.Collections {
     public IEqualityComparer<TKey> Comparer {
       get { return dict.Comparer; }
     }
-    public bool IsReadOnly {
+    bool ICollection<TItem>.IsReadOnly {
       get { return ((ICollection<KeyValuePair<TKey, TItem>>)dict).IsReadOnly; }
     }
 
@@ -80,21 +80,6 @@ namespace HeuristicLab.Collections {
     }
     #endregion
 
-    #region Destructors
-    ~ObservableKeyedCollectionBase() {
-      Dispose(false);
-    }
-    protected virtual void Dispose(bool disposing) {
-      if (disposing) {
-        Clear();
-      }
-    }
-    public void Dispose() {
-      Dispose(true);
-      GC.SuppressFinalize(this);
-    }
-    #endregion
-
     protected abstract TKey GetKeyForItem(TItem item);
     protected void UpdateItemKey(TItem item) {
       if (item == null) throw new ArgumentNullException();
@@ -114,7 +99,7 @@ namespace HeuristicLab.Collections {
     }
 
     #region Access
-    public bool Contains(TKey key) {
+    public bool ContainsKey(TKey key) {
       return dict.ContainsKey(key);
     }
     public bool Contains(TItem item) {
@@ -202,6 +187,9 @@ namespace HeuristicLab.Collections {
     #endregion
 
     #region Conversion
+    public ReadOnlyObservableKeyedCollection<TKey, TItem> AsReadOnly() {
+      return new ReadOnlyObservableKeyedCollection<TKey, TItem>(this);
+    }
     public TItem[] ToArray() {
       return dict.Values.ToArray();
     }
