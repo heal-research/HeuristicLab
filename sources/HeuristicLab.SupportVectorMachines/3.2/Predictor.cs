@@ -65,7 +65,7 @@ namespace HeuristicLab.SupportVectorMachines {
       this.variableNames = new List<string>(variableNames);
     }
 
-    public override double[] Predict(Dataset input, int start, int end) {
+    public override IEnumerable<double> Predict(Dataset input, int start, int end) {
       if (start < 0 || end <= start) throw new ArgumentException("start must be larger than zero and strictly smaller than end");
       if (end > input.Rows) throw new ArgumentOutOfRangeException("number of rows in input is smaller then end");
       RangeTransform transform = svmModel.RangeTransform;
@@ -77,19 +77,18 @@ namespace HeuristicLab.SupportVectorMachines {
 
       int targetVariableIndex = input.GetVariableIndex(targetVariable);
       int rows = end - start;
-      double[] result = new double[rows];
+      //double[] result = new double[rows];
       int problemRow = 0;
       for (int resultRow = 0; resultRow < rows; resultRow++) {
         if (double.IsNaN(input.GetValue(resultRow, targetVariableIndex)))
-          result[resultRow] = UpperPredictionLimit;
+          yield return UpperPredictionLimit;
         else if (resultRow + maxTimeOffset < 0) {
-          result[resultRow] = UpperPredictionLimit;
           problemRow++;
+          yield return UpperPredictionLimit;
         } else {
-          result[resultRow] = Math.Max(Math.Min(SVM.Prediction.Predict(model, scaledProblem.X[problemRow++]), UpperPredictionLimit), LowerPredictionLimit);
+          yield return Math.Max(Math.Min(SVM.Prediction.Predict(model, scaledProblem.X[problemRow++]), UpperPredictionLimit), LowerPredictionLimit);
         }
       }
-      return result;
     }
 
     public override IEnumerable<string> GetInputVariables() {

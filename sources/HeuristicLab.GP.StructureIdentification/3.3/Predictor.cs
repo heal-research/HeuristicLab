@@ -28,6 +28,7 @@ using HeuristicLab.Modeling;
 using System;
 using System.Xml;
 using HeuristicLab.DataAnalysis;
+using System.Linq;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public class Predictor : PredictorBase {
@@ -49,23 +50,13 @@ namespace HeuristicLab.GP.StructureIdentification {
       set { this.functionTree = value; }
     }
 
-    public override double[] Predict(Dataset input, int start, int end) {
+    public override IEnumerable<double> Predict(Dataset input, int start, int end) {
       treeEvaluator.UpperEvaluationLimit = UpperPredictionLimit;
       treeEvaluator.LowerEvaluationLimit = LowerPredictionLimit;
 
       if (start < 0 || end <= start) throw new ArgumentException("start must be larger than zero and strictly smaller than end");
       if (end > input.Rows) throw new ArgumentOutOfRangeException("number of rows in input is smaller then end");
-      treeEvaluator.PrepareForEvaluation(input, functionTree.FunctionTree);
-      double[] result = new double[end - start];
-      for (int i = 0; i < result.Length; i++) {
-        try {
-          result[i] = treeEvaluator.Evaluate(i + start);
-        }
-        catch (ArgumentException) {
-          result[i] = double.NaN;
-        }
-      }
-      return result;
+      return treeEvaluator.Evaluate(input, functionTree.FunctionTree, Enumerable.Range(start, end - start));
     }
 
     public override IEnumerable<string> GetInputVariables() {

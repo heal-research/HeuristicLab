@@ -29,7 +29,7 @@ namespace HeuristicLab.Modeling {
   public interface IPredictor : IItem {
     double UpperPredictionLimit { get; set; }
     double LowerPredictionLimit { get; set; }
-    double[] Predict(Dataset dataset, int start, int end);
+    IEnumerable<double> Predict(Dataset dataset, int start, int end);
     IEnumerable<string> GetInputVariables();
   } 
 }

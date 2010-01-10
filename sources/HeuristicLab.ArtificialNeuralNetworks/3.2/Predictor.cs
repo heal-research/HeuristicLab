@@ -36,28 +36,22 @@ namespace HeuristicLab.ArtificialNeuralNetworks {
       this.perceptron = perceptron;
     }
 
-    public override double[] Predict(Dataset input, int start, int end) {
+    public override IEnumerable<double> Predict(Dataset input, int start, int end) {
 
       if (start < 0 || end <= start) throw new ArgumentException("start must be larger than zero and strictly smaller than end");
       if (end > input.Rows) throw new ArgumentOutOfRangeException("number of rows in input is smaller then end");
-      double[] result = new double[end - start];
-      for (int i = 0; i < result.Length; i++) {
-        try {
-          double[] output = new double[1];
-          double[] inputRow = new double[input.Columns - 1];
-          for (int c = 1; c < inputRow.Length; c++) {
-            inputRow[c - 1] = input.GetValue(i + start, c);
-          }
-          alglib.mlpbase.multilayerperceptron p = perceptron.Perceptron;
-          alglib.mlpbase.mlpprocess(ref p, ref inputRow, ref output);
-          perceptron.Perceptron = p;
-          result[i] = Math.Max(Math.Min(output[0], UpperPredictionLimit), LowerPredictionLimit);
+
+      for (int i = 0; i < end - start; i++) {
+        double[] output = new double[1];
+        double[] inputRow = new double[input.Columns - 1];
+        for (int c = 1; c < inputRow.Length; c++) {
+          inputRow[c - 1] = input.GetValue(i + start, c);
         }
-        catch (ArgumentException) {
-          result[i] = double.NaN;
-        }
+        alglib.mlpbase.multilayerperceptron p = perceptron.Perceptron;
+        alglib.mlpbase.mlpprocess(ref p, ref inputRow, ref output);
+        perceptron.Perceptron = p;
+        yield return Math.Max(Math.Min(output[0], UpperPredictionLimit), LowerPredictionLimit);
       }
-      return result;
     }
 
     public override IEnumerable<string> GetInputVariables() {

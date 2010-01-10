@@ -30,7 +30,7 @@ namespace HeuristicLab.Modeling {
   public abstract class PredictorBase : ItemBase, IPredictor {
     public double UpperPredictionLimit { get; set; }
     public double LowerPredictionLimit { get; set; }
-    public abstract double[] Predict(Dataset dataset, int start, int end);
+    public abstract IEnumerable<double> Predict(Dataset dataset, int start, int end);
     public abstract IEnumerable<string> GetInputVariables();
 
     public PredictorBase() : this(double.MinValue, double.MaxValue) { } // for persistence
