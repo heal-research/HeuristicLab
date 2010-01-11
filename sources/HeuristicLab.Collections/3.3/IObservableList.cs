@@ -23,9 +23,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.ComponentModel;
 
 namespace HeuristicLab.Collections {
-  public interface IObservableList<T> : IList<T> {
+  public interface IObservableList<T> : IList<T>, INotifyPropertyChanged {
     event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsAdded;
     event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsRemoved;
     event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsReplaced;

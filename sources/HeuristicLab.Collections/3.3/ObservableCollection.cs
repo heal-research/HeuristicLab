@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -36,7 +37,12 @@ namespace HeuristicLab.Collections {
     #region Properties
     public int Capacity {
       get { return list.Capacity; }
-      set { list.Capacity = value; }
+      set {
+        if (list.Capacity != value) {
+          list.Capacity = value;
+          OnPropertyChanged("Capacity");
+        }
+      }
     }
     public int Count {
       get { return list.Count; }
@@ -81,16 +87,28 @@ namespace HeuristicLab.Collections {
 
     #region Manipulation
     public void Add(T item) {
+      int capacity = list.Capacity;
       list.Add(item);
+      if (list.Capacity != capacity)
+        OnPropertyChanged("Capacity");
+      OnPropertyChanged("Count");
       OnItemsAdded(new T[] { item });
     }
     public void AddRange(IEnumerable<T> collection) {
+      int capacity = list.Capacity;
+      int count = list.Count;
       list.AddRange(collection);
-      OnItemsAdded(collection);
+      if (list.Count != count) {
+        if (list.Capacity != capacity)
+          OnPropertyChanged("Capacity");
+        OnPropertyChanged("Count");
+        OnItemsAdded(collection);
+      }
     }
 
     public bool Remove(T item) {
       if (list.Remove(item)) {
+        OnPropertyChanged("Count");
         OnItemsRemoved(new T[] { item });
         return true;
       }
@@ -103,20 +121,29 @@ namespace HeuristicLab.Collections {
         if (list.Remove(item))
           items.Add(item);
       }
-      if (items.Count > 0)
+      if (items.Count > 0) {
+        OnPropertyChanged("Count");
         OnItemsRemoved(items);
+      }
     }
     public int RemoveAll(Predicate<T> match) {
       List<T> items = list.FindAll(match);
-      int result = list.RemoveAll(match);
-      OnItemsRemoved(items);
+      int result = 0;
+      if (items.Count > 0) {
+        result = list.RemoveAll(match);
+        OnPropertyChanged("Count");
+        OnItemsRemoved(items);
+      }
       return result;
     }
 
     public void Clear() {
-      T[] items = list.ToArray();
-      list.Clear();
-      OnCollectionReset(new T[0], items);
+      if (list.Count > 0) {
+        T[] items = list.ToArray();
+        list.Clear();
+        OnPropertyChanged("Count");
+        OnCollectionReset(new T[0], items);
+      }
     }
     #endregion
 
@@ -155,7 +182,10 @@ namespace HeuristicLab.Collections {
 
     #region Helpers
     public void TrimExcess() {
+      int capacity = list.Capacity;
       list.TrimExcess();
+      if (list.Capacity != capacity)
+        OnPropertyChanged("Capacity");
     }
     #endregion
 
@@ -179,6 +209,13 @@ namespace HeuristicLab.Collections {
     protected virtual void OnCollectionReset(IEnumerable<T> items, IEnumerable<T> oldItems) {
       if (CollectionReset != null)
         CollectionReset(this, new CollectionItemsChangedEventArgs<T>(items, oldItems));
+    }
+
+    [field: NonSerialized]
+    public event PropertyChangedEventHandler PropertyChanged;
+    protected virtual void OnPropertyChanged(string propertyName) {
+      if (PropertyChanged != null)
+        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
     }
     #endregion
   }

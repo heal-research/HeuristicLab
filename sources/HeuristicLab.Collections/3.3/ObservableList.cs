@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -36,7 +37,12 @@ namespace HeuristicLab.Collections {
     #region Properties
     public int Capacity {
       get { return list.Capacity; }
-      set { list.Capacity = value; }
+      set {
+        if (list.Capacity != value) {
+          list.Capacity = value;
+          OnPropertyChanged("Capacity");
+        }
+      }
     }
     public int Count {
       get { return list.Count; }
@@ -51,8 +57,11 @@ namespace HeuristicLab.Collections {
       }
       set {
         T item = list[index];
-        list[index] = value;
-        OnItemsReplaced(new IndexedItem<T>[] { new IndexedItem<T>(index, value) }, new IndexedItem<T>[] { new IndexedItem<T>(index, item) });
+        if (!item.Equals(value)) {
+          list[index] = value;
+          OnItemsReplaced(new IndexedItem<T>[] { new IndexedItem<T>(index, value) }, new IndexedItem<T>[] { new IndexedItem<T>(index, item) });
+          OnPropertyChanged("Item[]");
+        }
       }
     }
     #endregion
@@ -146,10 +155,16 @@ namespace HeuristicLab.Collections {
 
     #region Manipulation
     public void Add(T item) {
+      int capacity = list.Capacity;
       list.Add(item);
+      if (list.Capacity != capacity)
+        OnPropertyChanged("Capacity");
+      OnPropertyChanged("Item[]");
+      OnPropertyChanged("Count");
       OnItemsAdded(new IndexedItem<T>[] { new IndexedItem<T>(list.Count - 1, item) });
     }
     public void AddRange(IEnumerable<T> collection) {
+      int capacity = list.Capacity;
       int index = list.Count;
       list.AddRange(collection);
       List<IndexedItem<T>> items = new List<IndexedItem<T>>();
@@ -157,27 +172,47 @@ namespace HeuristicLab.Collections {
         items.Add(new IndexedItem<T>(index, item));
         index++;
       }
-      OnItemsAdded(items);
+      if (items.Count > 0) {
+        if (list.Capacity != capacity)
+          OnPropertyChanged("Capacity");
+        OnPropertyChanged("Item[]");
+        OnPropertyChanged("Count");
+        OnItemsAdded(items);
+      }
     }
 
     public void Insert(int index, T item) {
+      int capacity = list.Capacity;
       list.Insert(index, item);
+      if (list.Capacity != capacity)
+        OnPropertyChanged("Capacity");
+      OnPropertyChanged("Item[]");
+      OnPropertyChanged("Count");
       OnItemsAdded(new IndexedItem<T>[] { new IndexedItem<T>(index, item) });
     }
     public void InsertRange(int index, IEnumerable<T> collection) {
+      int capacity = list.Capacity;
       list.InsertRange(index, collection);
       List<IndexedItem<T>> items = new List<IndexedItem<T>>();
       foreach (T item in collection) {
         items.Add(new IndexedItem<T>(index, item));
         index++;
       }
-      OnItemsAdded(items);
+      if (items.Count > 0) {
+        if (list.Capacity != capacity)
+          OnPropertyChanged("Capacity");
+        OnPropertyChanged("Item[]");
+        OnPropertyChanged("Count");
+        OnItemsAdded(items);
+      }
     }
 
     public bool Remove(T item) {
       int index = list.IndexOf(item);
       if (index != -1) {
         list.RemoveAt(index);
+        OnPropertyChanged("Item[]");
+        OnPropertyChanged("Count");
         OnItemsRemoved(new IndexedItem<T>[] { new IndexedItem<T>(index, item) });
         return true;
       }
@@ -190,57 +225,90 @@ namespace HeuristicLab.Collections {
         if (match(list[i]))
           items.Add(new IndexedItem<T>(i, list[i]));
       }
-      int result = list.RemoveAll(match);
-      OnItemsRemoved(items);
+      int result = 0;
+      if (items.Count > 0) {
+        result = list.RemoveAll(match);
+        OnPropertyChanged("Item[]");
+        OnPropertyChanged("Count");
+        OnItemsRemoved(items);
+      }
       return result;
     }
     public void RemoveAt(int index) {
       T item = list[index];
       list.RemoveAt(index);
+      OnPropertyChanged("Item[]");
+      OnPropertyChanged("Count");
       OnItemsRemoved(new IndexedItem<T>[] { new IndexedItem<T>(index, item) });
     }
     public void RemoveRange(int index, int count) {
-      IndexedItem<T>[] items = GetIndexedItems(index, count);
-      list.RemoveRange(index, count);
-      OnItemsRemoved(items);
+      if (count > 0) {
+        IndexedItem<T>[] items = GetIndexedItems(index, count);
+        list.RemoveRange(index, count);
+        OnPropertyChanged("Item[]");
+        OnPropertyChanged("Count");
+        OnItemsRemoved(items);
+      }
     }
 
     public void Clear() {
-      IndexedItem<T>[] items = GetIndexedItems();
-      list.Clear();
-      OnCollectionReset(new IndexedItem<T>[0], items);
+      if (list.Count > 0) {
+        IndexedItem<T>[] items = GetIndexedItems();
+        list.Clear();
+        OnPropertyChanged("Item[]");
+        OnPropertyChanged("Count");
+        OnCollectionReset(new IndexedItem<T>[0], items);
+      }
     }
 
     public void Reverse() {
-      IndexedItem<T>[] oldItems = GetIndexedItems();
-      list.Reverse();
-      OnItemsMoved(GetIndexedItems(), oldItems);
+      if (list.Count > 1) {
+        IndexedItem<T>[] oldItems = GetIndexedItems();
+        list.Reverse();
+        OnPropertyChanged("Item[]");
+        OnItemsMoved(GetIndexedItems(), oldItems);
+      }
     }
     public void Reverse(int index, int count) {
-      IndexedItem<T>[] oldItems = GetIndexedItems(index, count);
-      list.Reverse(index, count);
-      OnItemsMoved(GetIndexedItems(index, count), oldItems);
+      if (count > 1) {
+        IndexedItem<T>[] oldItems = GetIndexedItems(index, count);
+        list.Reverse(index, count);
+        OnPropertyChanged("Item[]");
+        OnItemsMoved(GetIndexedItems(index, count), oldItems);
+      }
     }
 
     public void Sort() {
-      IndexedItem<T>[] oldItems = GetIndexedItems();
-      list.Sort();
-      OnItemsMoved(GetIndexedItems(), oldItems);
+      if (list.Count > 1) {
+        IndexedItem<T>[] oldItems = GetIndexedItems();
+        list.Sort();
+        OnPropertyChanged("Item[]");
+        OnItemsMoved(GetIndexedItems(), oldItems);
+      }
     }
     public void Sort(Comparison<T> comparison) {
-      IndexedItem<T>[] oldItems = GetIndexedItems();
-      list.Sort(comparison);
-      OnItemsMoved(GetIndexedItems(), oldItems);
+      if (list.Count > 1) {
+        IndexedItem<T>[] oldItems = GetIndexedItems();
+        list.Sort(comparison);
+        OnPropertyChanged("Item[]");
+        OnItemsMoved(GetIndexedItems(), oldItems);
+      }
     }
     public void Sort(IComparer<T> comparer) {
-      IndexedItem<T>[] oldItems = GetIndexedItems();
-      list.Sort(comparer);
-      OnItemsMoved(GetIndexedItems(), oldItems);
+      if (list.Count > 1) {
+        IndexedItem<T>[] oldItems = GetIndexedItems();
+        list.Sort(comparer);
+        OnPropertyChanged("Item[]");
+        OnItemsMoved(GetIndexedItems(), oldItems);
+      }
     }
     public void Sort(int index, int count, IComparer<T> comparer) {
-      IndexedItem<T>[] oldItems = GetIndexedItems(index, count);
-      list.Sort(index, count, comparer);
-      OnItemsMoved(GetIndexedItems(index, count), oldItems);
+      if (list.Count > 1) {
+        IndexedItem<T>[] oldItems = GetIndexedItems(index, count);
+        list.Sort(index, count, comparer);
+        OnPropertyChanged("Item[]");
+        OnItemsMoved(GetIndexedItems(index, count), oldItems);
+      }
     }
     #endregion
 
@@ -282,7 +350,10 @@ namespace HeuristicLab.Collections {
 
     #region Helpers
     public void TrimExcess() {
+      int capacity = list.Capacity;
       list.TrimExcess();
+      if (list.Capacity != capacity)
+        OnPropertyChanged("Capacity");
     }
     #endregion
 
@@ -320,6 +391,13 @@ namespace HeuristicLab.Collections {
     protected virtual void OnCollectionReset(IEnumerable<IndexedItem<T>> items, IEnumerable<IndexedItem<T>> oldItems) {
       if (CollectionReset != null)
         CollectionReset(this, new CollectionItemsChangedEventArgs<IndexedItem<T>>(items, oldItems));
+    }
+
+    [field: NonSerialized]
+    public event PropertyChangedEventHandler PropertyChanged;
+    protected virtual void OnPropertyChanged(string propertyName) {
+      if (PropertyChanged != null)
+        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
     }
     #endregion
 

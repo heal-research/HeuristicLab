@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -56,6 +57,7 @@ namespace HeuristicLab.Collections {
       collection.ItemsRemoved += new CollectionItemsChangedEventHandler<TItem>(collection_ItemsRemoved);
       collection.ItemsReplaced += new CollectionItemsChangedEventHandler<TItem>(collection_ItemsReplaced);
       collection.CollectionReset += new CollectionItemsChangedEventHandler<TItem>(collection_CollectionReset);
+      collection.PropertyChanged += new PropertyChangedEventHandler(collection_PropertyChanged);
     }
     #endregion
 
@@ -130,6 +132,13 @@ namespace HeuristicLab.Collections {
         CollectionReset(this, new CollectionItemsChangedEventArgs<TItem>(items, oldItems));
     }
 
+    [field: NonSerialized]
+    public event PropertyChangedEventHandler PropertyChanged;
+    protected virtual void OnPropertyChanged(string propertyName) {
+      if (PropertyChanged != null)
+        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+    }
+
     private void collection_ItemsAdded(object sender, CollectionItemsChangedEventArgs<TItem> e) {
       OnItemsAdded(e.Items);
     }
@@ -141,6 +150,10 @@ namespace HeuristicLab.Collections {
     }
     private void collection_CollectionReset(object sender, CollectionItemsChangedEventArgs<TItem> e) {
       OnCollectionReset(e.Items, e.OldItems);
+    }
+    private void collection_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+      if (e.PropertyName.Equals("Item[]") || e.PropertyName.Equals("Count"))
+        OnPropertyChanged(e.PropertyName);
     }
     #endregion
   }

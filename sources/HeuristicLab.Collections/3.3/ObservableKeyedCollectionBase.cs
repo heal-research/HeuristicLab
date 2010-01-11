@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -92,9 +93,10 @@ namespace HeuristicLab.Collections {
           break;
         }
       }
-      if (!oldKeyFound) throw new ArgumentException("item not found");
+      if (!oldKeyFound) throw new ArgumentException("Item not found");
       dict.Remove(oldKey);
       dict.Add(GetKeyForItem(item), item);
+      OnPropertyChanged("Item[]");
       OnItemsReplaced(new TItem[] { item }, new TItem[] { item });
     }
 
@@ -138,19 +140,30 @@ namespace HeuristicLab.Collections {
     #region Manipulation
     public void Add(TItem item) {
       dict.Add(GetKeyForItem(item), item);
+      OnPropertyChanged("Item[]");
+      OnPropertyChanged("Count");
       OnItemsAdded(new TItem[] { item });
     }
     public void AddRange(IEnumerable<TItem> collection) {
       if (collection == null) throw new ArgumentNullException();
-      foreach (TItem item in collection)
+      bool empty = true;
+      foreach (TItem item in collection) {
         dict.Add(GetKeyForItem(item), item);
-      OnItemsAdded(collection);
+        empty = false;
+      }
+      if (!empty) {
+        OnPropertyChanged("Item[]");
+        OnPropertyChanged("Count");
+        OnItemsAdded(collection);
+      }
     }
 
     public bool Remove(TKey key) {
       TItem item;
       if (TryGetValue(key, out item)) {
         dict.Remove(key);
+        OnPropertyChanged("Item[]");
+        OnPropertyChanged("Count");
         OnItemsRemoved(new TItem[] { item });
         return true;
       }
@@ -158,6 +171,8 @@ namespace HeuristicLab.Collections {
     }
     public bool Remove(TItem item) {
       if (dict.Remove(GetKeyForItem(item))) {
+        OnPropertyChanged("Item[]");
+        OnPropertyChanged("Count");
         OnItemsRemoved(new TItem[] { item });
         return true;
       }
@@ -170,8 +185,11 @@ namespace HeuristicLab.Collections {
         if (dict.Remove(GetKeyForItem(item)))
           items.Add(item);
       }
-      if (items.Count > 0)
+      if (items.Count > 0) {
+        OnPropertyChanged("Item[]");
+        OnPropertyChanged("Count");
         OnItemsRemoved(items);
+      }
     }
     public int RemoveAll(Predicate<TItem> match) {
       ICollection<TItem> items = FindAll(match);
@@ -180,9 +198,13 @@ namespace HeuristicLab.Collections {
     }
 
     public void Clear() {
-      TItem[] items = dict.Values.ToArray();
-      dict.Clear();
-      OnCollectionReset(new TItem[0], items);
+      if (dict.Count > 0) {
+        TItem[] items = dict.Values.ToArray();
+        dict.Clear();
+        OnPropertyChanged("Item[]");
+        OnPropertyChanged("Count");
+        OnCollectionReset(new TItem[0], items);
+      }
     }
     #endregion
 
@@ -255,6 +277,13 @@ namespace HeuristicLab.Collections {
     protected virtual void OnCollectionReset(IEnumerable<TItem> items, IEnumerable<TItem> oldItems) {
       if (CollectionReset != null)
         CollectionReset(this, new CollectionItemsChangedEventArgs<TItem>(items, oldItems));
+    }
+
+    [field: NonSerialized]
+    public event PropertyChangedEventHandler PropertyChanged;
+    protected virtual void OnPropertyChanged(string propertyName) {
+      if (PropertyChanged != null)
+        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
     }
     #endregion
   }

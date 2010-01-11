@@ -23,9 +23,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.ComponentModel;
 
 namespace HeuristicLab.Collections {
-  public interface IObservableKeyedCollection<TKey, TItem> : ICollection<TItem> {
+  public interface IObservableKeyedCollection<TKey, TItem> : ICollection<TItem>, INotifyPropertyChanged {
     TItem this[TKey key] { get; }
 
     bool ContainsKey(TKey key);

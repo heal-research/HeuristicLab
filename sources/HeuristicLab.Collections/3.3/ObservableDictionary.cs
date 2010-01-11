@@ -22,10 +22,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Runtime.Serialization;
 
 namespace HeuristicLab.Collections {
   [Serializable]
@@ -109,10 +109,18 @@ namespace HeuristicLab.Collections {
     #region Manipulation
     public void Add(TKey key, TValue value) {
       dict.Add(key, value);
+      OnPropertyChanged("Item[]");
+      OnPropertyChanged("Keys");
+      OnPropertyChanged("Values");
+      OnPropertyChanged("Count");
       OnItemsAdded(new KeyValuePair<TKey, TValue>[] { new KeyValuePair<TKey, TValue>(key, value) });
     }
     void ICollection<KeyValuePair<TKey, TValue>>.Add(KeyValuePair<TKey, TValue> item) {
       ((ICollection<KeyValuePair<TKey, TValue>>)dict).Add(item);
+      OnPropertyChanged("Item[]");
+      OnPropertyChanged("Keys");
+      OnPropertyChanged("Values");
+      OnPropertyChanged("Count");
       OnItemsAdded(new KeyValuePair<TKey, TValue>[] { item });
     }
 
@@ -120,6 +128,10 @@ namespace HeuristicLab.Collections {
       TValue value;
       if (dict.TryGetValue(key, out value)) {
         dict.Remove(key);
+        OnPropertyChanged("Item[]");
+        OnPropertyChanged("Keys");
+        OnPropertyChanged("Values");
+        OnPropertyChanged("Count");
         OnItemsRemoved(new KeyValuePair<TKey, TValue>[] { new KeyValuePair<TKey, TValue>(key, value) });
         return true;
       }
@@ -127,6 +139,10 @@ namespace HeuristicLab.Collections {
     }
     bool ICollection<KeyValuePair<TKey, TValue>>.Remove(KeyValuePair<TKey, TValue> item) {
       if (((ICollection<KeyValuePair<TKey, TValue>>)dict).Remove(item)) {
+        OnPropertyChanged("Item[]");
+        OnPropertyChanged("Keys");
+        OnPropertyChanged("Values");
+        OnPropertyChanged("Count");
         OnItemsRemoved(new KeyValuePair<TKey, TValue>[] { item });
         return true;
       }
@@ -134,9 +150,15 @@ namespace HeuristicLab.Collections {
     }
 
     public void Clear() {
-      KeyValuePair<TKey, TValue>[] items = dict.ToArray();
-      dict.Clear();
-      OnCollectionReset(new KeyValuePair<TKey, TValue>[0], items);
+      if (dict.Count > 0) {
+        KeyValuePair<TKey, TValue>[] items = dict.ToArray();
+        dict.Clear();
+        OnPropertyChanged("Item[]");
+        OnPropertyChanged("Keys");
+        OnPropertyChanged("Values");
+        OnPropertyChanged("Count");
+        OnCollectionReset(new KeyValuePair<TKey, TValue>[0], items);
+      }
     }
     #endregion
 
@@ -188,6 +210,13 @@ namespace HeuristicLab.Collections {
     protected virtual void OnCollectionReset(IEnumerable<KeyValuePair<TKey, TValue>> items, IEnumerable<KeyValuePair<TKey, TValue>> oldItems) {
       if (CollectionReset != null)
         CollectionReset(this, new CollectionItemsChangedEventArgs<KeyValuePair<TKey, TValue>>(items, oldItems));
+    }
+
+    [field: NonSerialized]
+    public event PropertyChangedEventHandler PropertyChanged;
+    protected virtual void OnPropertyChanged(string propertyName) {
+      if (PropertyChanged != null)
+        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
     }
     #endregion
   }

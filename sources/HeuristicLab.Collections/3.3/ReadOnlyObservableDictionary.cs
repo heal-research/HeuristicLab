@@ -22,10 +22,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Runtime.Serialization;
 
 namespace HeuristicLab.Collections {
   [Serializable]
@@ -64,6 +64,7 @@ namespace HeuristicLab.Collections {
       dict.ItemsRemoved += new CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>>(dict_ItemsRemoved);
       dict.ItemsReplaced += new CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>>(dict_ItemsReplaced);
       dict.CollectionReset += new CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>>(dict_CollectionReset);
+      dict.PropertyChanged += new PropertyChangedEventHandler(dict_PropertyChanged);
     }
     #endregion
 
@@ -144,6 +145,13 @@ namespace HeuristicLab.Collections {
         CollectionReset(this, new CollectionItemsChangedEventArgs<KeyValuePair<TKey, TValue>>(items, oldItems));
     }
 
+    [field: NonSerialized]
+    public event PropertyChangedEventHandler PropertyChanged;
+    protected virtual void OnPropertyChanged(string propertyName) {
+      if (PropertyChanged != null)
+        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+    }
+
     private void dict_ItemsAdded(object sender, CollectionItemsChangedEventArgs<KeyValuePair<TKey, TValue>> e) {
       OnItemsAdded(e.Items);
     }
@@ -155,6 +163,10 @@ namespace HeuristicLab.Collections {
     }
     private void dict_CollectionReset(object sender, CollectionItemsChangedEventArgs<KeyValuePair<TKey, TValue>> e) {
       OnCollectionReset(e.Items, e.OldItems);
+    }
+    private void dict_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+      if (e.PropertyName.Equals("Item[]") || e.PropertyName.Equals("Keys") || e.PropertyName.Equals("Values") || e.PropertyName.Equals("Count"))
+        OnPropertyChanged(e.PropertyName);
     }
     #endregion
   }
