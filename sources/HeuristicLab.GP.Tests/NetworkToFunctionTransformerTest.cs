@@ -6,7 +6,7 @@ using HeuristicLab.GP.StructureIdentification;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace HeuristicLab.GP.Tests {
+namespace HeuristicLab.GP.Test {
 
 
   /// <summary>
@@ -64,21 +64,6 @@ namespace HeuristicLab.GP.Tests {
 
 
     /// <summary>
-    ///A test for TransformExpression
-    ///</summary>
-    [TestMethod()]
-    [DeploymentItem("HeuristicLab.GP.StructureIdentification.Networks-3.2.dll")]
-    public void TransformExpressionTest() {
-      IFunctionTree tree = null; // TODO: Initialize to an appropriate value
-      string targetVariable = string.Empty; // TODO: Initialize to an appropriate value
-      IFunctionTree expected = null; // TODO: Initialize to an appropriate value
-      IFunctionTree actual;
-      actual = NetworkToFunctionTransformer_Accessor.TransformExpression(tree, targetVariable);
-      Assert.AreEqual(expected, actual);
-      Assert.Inconclusive("Verify the correctness of this test method.");
-    }
-
-    /// <summary>
     ///A test for InvertFunction
     ///</summary>
     [TestMethod()]
@@ -114,49 +99,98 @@ namespace HeuristicLab.GP.Tests {
     [TestMethod()]
     [DeploymentItem("HeuristicLab.GP.StructureIdentification.Networks-3.2.dll")]
     public void TransformTest() {
-      var log = new OpenLog();
-      var exp = new OpenExp();
-      var openAdd = new AdditionF1();
-      var openSub = new SubtractionF1();
-      var openMul = new MultiplicationF1();
-      var openDiv = new DivisionF1();
-      var param = new OpenParameter();
-      var rootAdd = new OpenAddition();
-      var rootSub = new OpenSubtraction();
-      var rootMul = new OpenMultiplication();
-      var rootDiv = new OpenDivision();
-      var closedAdd = new Addition();
-      var closedSub = new Subtraction();
-      var closedMul = new Multiplication();
-      var closedDiv = new Division();
-      var closedVar = new HeuristicLab.GP.StructureIdentification.Variable();
+      SymbolicExpressionImporter importer = new SymbolicExpressionImporter();
 
-      IFunctionTree tree = rootAdd.GetTreeNode();
-      tree.AddSubTree(param.GetTreeNode());
-      tree.AddSubTree(param.GetTreeNode());
-      tree.AddSubTree(param.GetTreeNode());
+      {
+        IFunctionTree tree = importer.Import("(open-+ (open-param - 0) (open-param - 0) (open-param - 0))");
 
-      IEnumerable<IFunctionTree> actualTrees = NetworkToFunctionTransformer_Accessor.Transform(tree, new List<string>() { "1", "2", "3" });
-      IFunctionTree t0 = closedAdd.GetTreeNode(); t0.AddSubTree(param.GetTreeNode()); t0.AddSubTree(param.GetTreeNode());
-      IFunctionTree t1 = closedSub.GetTreeNode(); t1.AddSubTree(param.GetTreeNode()); t1.AddSubTree(param.GetTreeNode());
-      IFunctionTree t2 = closedSub.GetTreeNode(); t2.AddSubTree(param.GetTreeNode()); t2.AddSubTree(param.GetTreeNode());
+        IEnumerable<IFunctionTree> actualTrees = NetworkToFunctionTransformer_Accessor.Transform(tree, new List<string>() { "a", "b", "c" });
 
-      var expectedTrees = (new List<IFunctionTree>() {
+        IFunctionTree t0 = importer.Import("(+ (variable 1.0 b 0) (variable 1.0 c 0))");
+        IFunctionTree t1 = importer.Import("(- (variable 1.0 a 0) (variable 1.0 c 0))");
+        IFunctionTree t2 = importer.Import("(- (variable 1.0 a 0) (variable 1.0 b 0))");
+
+        CompareTrees(actualTrees, new List<IFunctionTree>() {
         t0, t1, t2
-      }).GetEnumerator();
-      foreach (var actualTree in actualTrees) {
-        if (!expectedTrees.MoveNext()) Assert.Fail();
-        IFunctionTree expectedTree = expectedTrees.Current;
+      });
+      }
+
+      {
+        IFunctionTree tree = importer.Import("(open-- (open-param - 0) (f1-+ (open-param - 0) 1.0) (f1-* (open-param - 0) 1.0))");
+
+        IEnumerable<IFunctionTree> actualTrees = NetworkToFunctionTransformer_Accessor.Transform(tree, new List<string>() { "a", "b", "c" });
+
+        IFunctionTree t0 = importer.Import("(- (+ 1.0 (variable 1.0 b 0)) (* 1.0 (variable 1.0 c 0)))");
+        IFunctionTree t1 = importer.Import("(- (+ (variable 1.0 a 0) (* 1.0 (variable 1.0 c 0) 1.0)))");
+        IFunctionTree t2 = importer.Import("(/ (+ (variable 1.0 a 0) (+ 1.0 (variable 1.0 b 0) 1.0)))");
+
+        CompareTrees(actualTrees, new List<IFunctionTree>() {
+        t0, t1, t2
+      });
+      }
+
+      {
+        IFunctionTree tree = importer.Import("(cycle (open-* (open-param - 0) (open-param - 0) (open-param - 0)))");
+
+        IEnumerable<IFunctionTree> actualTrees = NetworkToFunctionTransformer_Accessor.Transform(tree, new List<string>() { "a", "b", "c" });
+
+        IFunctionTree t0 = importer.Import("(* (variable 1.0 b 0) (variable 1.0 c 0))");
+        IFunctionTree t1 = importer.Import("(/ (variable 1.0 a 0) (variable 1.0 c 0))");
+        IFunctionTree t2 = importer.Import("(/ (variable 1.0 a 0) (variable 1.0 b 0))");
+
+
+        CompareTrees(actualTrees, new List<IFunctionTree>() {
+        t0, t1, t2
+      });
+      }
+
+
+      {
+        IFunctionTree tree = importer.Import("(open-- (open-log (open-param - 0)) (open-exp (open-param - 0)) (open-param - 0))");
+
+        IEnumerable<IFunctionTree> actualTrees = NetworkToFunctionTransformer_Accessor.Transform(tree, new List<string>() { "a", "b", "c" });
+
+        IFunctionTree t0 = importer.Import(@"(exp (- (exp (variable 1.0 b 0))
+                                                     (variable 1.0 c 0))))");
+        IFunctionTree t1 = importer.Import(@"(log (+ (log (variable 1.0 a 0))
+                                                     (variable 1.0 c 0))))");
+        IFunctionTree t2 = importer.Import(@"(+ (log (variable 1.0 a 0))
+                                                (exp (variable 1.0 b 0)))");
+
+        CompareTrees(actualTrees, new List<IFunctionTree>() {
+        t0, t1, t2
+      });
+      }
+
+
+
+    }
+
+    private void CompareTrees(IEnumerable<IFunctionTree> actual, IEnumerable<IFunctionTree> expected) {
+      var expectedEnumerator = expected.GetEnumerator();
+      foreach (var actualTree in actual) {
+        if (!expectedEnumerator.MoveNext()) Assert.Fail();
+        IFunctionTree expectedTree = expectedEnumerator.Current;
         var e = (from x in FunctionTreeIterator.IteratePostfix(expectedTree)
-                 select x.Function.GetType()).GetEnumerator();
+                 select x).GetEnumerator();
         var a = (from x in FunctionTreeIterator.IteratePostfix(actualTree)
-                 select x.Function.GetType()).GetEnumerator();
+                 select x).GetEnumerator();
         Assert.AreEqual(expectedTree.GetSize(), actualTree.GetSize());
         while (e.MoveNext() && a.MoveNext()) {
-          Assert.AreEqual(e.Current, a.Current);
+          Assert.AreEqual(e.Current.GetType(), a.Current.GetType());
+          if (e.Current.Function is HeuristicLab.GP.StructureIdentification.Variable) {
+            var expectedVar = (VariableFunctionTree)e.Current;
+            var actualVar = (VariableFunctionTree)a.Current;
+            Assert.AreEqual(expectedVar.VariableName, actualVar.VariableName);
+            Assert.AreEqual(expectedVar.Weight, actualVar.Weight);
+            Assert.AreEqual(expectedVar.SampleOffset, actualVar.SampleOffset);
+          } else if (e.Current.Function is Constant) {
+            var expectedConst = (ConstantFunctionTree)e.Current;
+            var actualConst = (ConstantFunctionTree)a.Current;
+            Assert.AreEqual(expectedConst.Value, actualConst.Value);
+          }
         }
       }
     }
-
   }
 }

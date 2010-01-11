@@ -63,7 +63,7 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
       // bind open parameters of network to target variables
       //IFunctionTree openExpression = RemoveOpenParameters(networkDescription);
       IFunctionTree paritallyEvaluatedOpenExpression = ApplyMetaFunctions((IFunctionTree)networkDescription.Clone());
-      IFunctionTree boundExpression = BindVariables(paritallyEvaluatedOpenExpression, targetVariables);
+      IFunctionTree boundExpression = BindVariables(paritallyEvaluatedOpenExpression, targetVariables.GetEnumerator());
 
       // create a new sub-scope for each target variable with the transformed expression
       foreach (var targetVariable in targetVariables) {
@@ -74,7 +74,7 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
     private static IFunctionTree ApplyMetaFunctions(IFunctionTree tree) {
       IFunctionTree root = ApplyCycles(tree);
       List<IFunctionTree> subTrees = new List<IFunctionTree>(root.SubTrees);
-      while (tree.SubTrees.Count > 0) tree.RemoveSubTree(0);
+      while (root.SubTrees.Count > 0) root.RemoveSubTree(0);
 
       foreach (IFunctionTree subTree in subTrees) {
         root.AddSubTree(ApplyFlips(subTree));
@@ -118,7 +118,7 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
 
     private static IFunctionTree InvertFunction(IFunctionTree tree) {
       IFunctionTree invertedNode = null;
-      if (tree.Function is OpenParameter) {
+      if (tree.Function is OpenParameter || tree.Function is Variable) {
         return tree;
       } else if (tree.Function is AdditionF1) {
         invertedNode = (new SubtractionF1()).GetTreeNode();
@@ -142,7 +142,7 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
         throw new ArgumentException();
       }
       IFunctionTree invertedTail = ApplyFlips(tree.SubTrees[0]);
-      if (invertedTail.Function is OpenParameter) {
+      if (invertedTail.Function is OpenParameter || invertedTail.Function is Variable) {
         invertedNode.InsertSubTree(0, invertedTail);
         return invertedNode;
       } else {
@@ -177,18 +177,67 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
         }
         // not found
         if (targetIndex == -1) throw new InvalidOperationException();
-        IFunctionTree targetChain = InvertFunction(subTrees[targetIndex]);
+        IFunctionTree targetChain = TransformToFunction(InvertFunction(subTrees[targetIndex]));
         for (int i = 0; i < subTrees.Count; i++) {
           if (i != targetIndex)
-            combinator.AddSubTree(subTrees[i]);
+            combinator.AddSubTree(TransformToFunction(subTrees[i]));
         }
-        if (targetChain.Function is OpenParameter) return combinator;
+        if (targetChain.Function is Variable) return combinator;
         else {
           AppendLeft(targetChain, combinator);
           return targetChain;
         }
       }
       throw new NotImplementedException();
+    }
+
+    private static IFunctionTree TransformToFunction(IFunctionTree tree) {
+      if (tree.SubTrees.Count == 0) return tree;
+      else if (tree.Function is AdditionF1) {
+        var addTree = (new Addition()).GetTreeNode();
+        foreach (var subTree in tree.SubTrees) {
+          addTree.AddSubTree(TransformToFunction(subTree));
+        }
+        return addTree;
+      } else if (tree.Function is SubtractionF1) {
+        var sTree = (new Subtraction()).GetTreeNode();
+        foreach (var subTree in tree.SubTrees) {
+          sTree.AddSubTree(TransformToFunction(subTree));
+        }
+        return sTree;
+      } else if (tree.Function is MultiplicationF1) {
+        var mulTree = (new Multiplication()).GetTreeNode();
+        foreach (var subTree in tree.SubTrees) {
+          mulTree.AddSubTree(TransformToFunction(subTree));
+        }
+        return mulTree;
+      } else if (tree.Function is DivisionF1) {
+        var divTree = (new Division()).GetTreeNode();
+        foreach (var subTree in tree.SubTrees) {
+          divTree.AddSubTree(TransformToFunction(subTree));
+        }
+        return divTree;
+      } else if (tree.Function is OpenExp) {
+        var expTree = (new Exponential()).GetTreeNode();
+        expTree.AddSubTree(TransformToFunction(tree.SubTrees[0]));
+        return expTree;
+      } else if (tree.Function is OpenLog) {
+        var logTree = (new Logarithm()).GetTreeNode();
+        logTree.AddSubTree(TransformToFunction(tree.SubTrees[0]));
+        return logTree;
+      } else if (tree.Function is OpenSqr) {
+        var powTree = (new Power()).GetTreeNode();
+        powTree.AddSubTree(TransformToFunction(tree.SubTrees[0]));
+        var const2 = (ConstantFunctionTree)(new Constant()).GetTreeNode();
+        const2.Value = 2.0;
+        powTree.AddSubTree(const2);
+        return powTree;
+      } else if (tree.Function is OpenSqrt) {
+        var sqrtTree = (new Sqrt()).GetTreeNode();
+        sqrtTree.AddSubTree(TransformToFunction(tree.SubTrees[0]));
+        return sqrtTree;
+      }
+      throw new ArgumentException();
     }
 
     private static IFunctionTree InvertCombinator(IFunctionTree tree) {
@@ -217,19 +266,29 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
 
     private static bool HasTargetVariable(IFunctionTree tree, string targetVariable) {
       if (tree.SubTrees.Count == 0) {
-        return ((OpenParameterFunctionTree)tree).VariableName == targetVariable;
-      } else return HasTargetVariable(tree.SubTrees[0], targetVariable);
+        var varTree = tree as VariableFunctionTree;
+        if (varTree != null) return varTree.VariableName == targetVariable;
+        else return false;
+      } else return (from x in tree.SubTrees
+                     where HasTargetVariable(x, targetVariable)
+                     select true).Any();
     }
 
-    private static IFunctionTree BindVariables(IFunctionTree tree, IEnumerable<string> targetVariables) {
-      IEnumerator<string> targetVariablesEnumerator = targetVariables.GetEnumerator();
-      foreach (IFunctionTree node in FunctionTreeIterator.IteratePrefix(tree)) {
-        if (node.Function is OpenParameter && targetVariablesEnumerator.MoveNext()) {
-          var varTreeNode = node as OpenParameterFunctionTree;
-          varTreeNode.VariableName = targetVariablesEnumerator.Current;
+    private static IFunctionTree BindVariables(IFunctionTree tree, IEnumerator<string> targetVariables) {
+      if (tree.Function is OpenParameter && targetVariables.MoveNext()) {
+        var varTreeNode = (VariableFunctionTree)(new Variable()).GetTreeNode();
+        varTreeNode.VariableName = targetVariables.Current;
+        varTreeNode.SampleOffset = ((OpenParameterFunctionTree)tree).SampleOffset;
+        varTreeNode.Weight = 1.0;
+        return varTreeNode;
+      } else {
+        IList<IFunctionTree> subTrees = new List<IFunctionTree>(tree.SubTrees);
+        while (tree.SubTrees.Count > 0) tree.RemoveSubTree(0);
+        foreach (IFunctionTree subTree in subTrees) {
+          tree.AddSubTree(BindVariables(subTree, targetVariables));
         }
+        return tree;
       }
-      return tree;
     }
   }
 }

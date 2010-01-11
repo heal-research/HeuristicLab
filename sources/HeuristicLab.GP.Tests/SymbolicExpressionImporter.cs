@@ -32,6 +32,7 @@ namespace HeuristicLab.GP.Test {
   class SymbolicExpressionImporter {
     private const string DIFFSTART = "dif";
     private const string VARSTART = "var";
+    private const string OPENPARAMSTART = "open-param";
     private Dictionary<string, IFunction> knownFunctions = new Dictionary<string, IFunction>() 
       {
         {"+", new Addition()},
@@ -54,12 +55,28 @@ namespace HeuristicLab.GP.Test {
         {"sqrt", new Sqrt()},
         {"-", new Subtraction()},
         {"tan", new Tangens()},
-        {"xor", new Xor()}
+        {"xor", new Xor()},
+        {"open-param", new HeuristicLab.GP.StructureIdentification.Networks.OpenParameter()},
+        {"open-+", new HeuristicLab.GP.StructureIdentification.Networks.OpenAddition()},
+        {"open--", new HeuristicLab.GP.StructureIdentification.Networks.OpenSubtraction()},
+        {"open-*", new HeuristicLab.GP.StructureIdentification.Networks.OpenMultiplication()},
+        {"open-/", new HeuristicLab.GP.StructureIdentification.Networks.OpenDivision()},
+        {"open-log", new HeuristicLab.GP.StructureIdentification.Networks.OpenExp()},
+        {"open-exp", new HeuristicLab.GP.StructureIdentification.Networks.OpenLog()},
+        {"open-sqr", new HeuristicLab.GP.StructureIdentification.Networks.OpenSqr()},
+        {"open-sqrt", new HeuristicLab.GP.StructureIdentification.Networks.OpenSqrt()},
+        {"f1-+", new HeuristicLab.GP.StructureIdentification.Networks.AdditionF1()},
+        {"f1--", new HeuristicLab.GP.StructureIdentification.Networks.SubtractionF1()},
+        {"f1-/", new HeuristicLab.GP.StructureIdentification.Networks.DivisionF1()},
+        {"f1-*", new HeuristicLab.GP.StructureIdentification.Networks.MultiplicationF1()},
+        {"cycle", new HeuristicLab.GP.StructureIdentification.Networks.Cycle()},
+        {"flip", new HeuristicLab.GP.StructureIdentification.Networks.Flip()},
+
       };
     Constant constant = new Constant();
     HeuristicLab.GP.StructureIdentification.Variable variable = new HeuristicLab.GP.StructureIdentification.Variable();
     Differential differential = new Differential();
-
+    HeuristicLab.GP.StructureIdentification.Networks.OpenParameter openParam = new HeuristicLab.GP.StructureIdentification.Networks.OpenParameter();
     public SymbolicExpressionImporter() {
     }
 
@@ -84,6 +101,8 @@ namespace HeuristicLab.GP.Test {
           tree = ParseVariable(tokens);
         } else if (tokens.Peek().StringValue.StartsWith(DIFFSTART)) {
           tree = ParseDifferential(tokens);
+        } else if(tokens.Peek().StringValue.StartsWith(OPENPARAMSTART)) {
+          tree = ParseOpenParameter(tokens);
         } else {
           Token curToken = tokens.Dequeue();
           tree = CreateTree(curToken);
@@ -98,6 +117,15 @@ namespace HeuristicLab.GP.Test {
         t.Value = tokens.Dequeue().DoubleValue;
         return t;
       } else throw new FormatException("Expected function or constant symbol");
+    }
+
+    private IFunctionTree ParseOpenParameter(Queue<Token> tokens) {
+      Token tok = tokens.Dequeue();
+      Debug.Assert(tok.StringValue == "open-param");
+      HeuristicLab.GP.StructureIdentification.Networks.OpenParameterFunctionTree t = (HeuristicLab.GP.StructureIdentification.Networks.OpenParameterFunctionTree)openParam.GetTreeNode();      
+      t.VariableName = tokens.Dequeue().StringValue;
+      t.SampleOffset = (int)tokens.Dequeue().DoubleValue;
+      return t;
     }
 
     private IFunctionTree ParseDifferential(Queue<Token> tokens) {
