@@ -31,6 +31,7 @@ namespace HeuristicLab.CEDMA.Server {
     public override void Run() {
       Server server = new Server();
       Form mainForm = new Form();
+      mainForm.Size = new System.Drawing.Size(800, 600);
       UserControl serverControl = (UserControl)server.CreateView();
       serverControl.Dock = DockStyle.Fill;
       mainForm.Controls.Add(serverControl);
