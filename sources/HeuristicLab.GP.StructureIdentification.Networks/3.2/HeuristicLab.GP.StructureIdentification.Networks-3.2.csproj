@@ -85,10 +85,6 @@
     <Compile Include="NetworkToFunctionTransformer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Symbols\AdditionF1.cs" />
-    <Compile Include="Symbols\BindF1.cs" />
-    <Compile Include="Symbols\BindF2.cs" />
-    <Compile Include="Symbols\Id.cs" />
-    <Compile Include="Symbols\OpenSqr.cs" />
     <Compile Include="Symbols\OpenParameter.cs" />
     <Compile Include="Symbols\Cycle.cs" />
     <Compile Include="Symbols\DivisionF1.cs" />
@@ -98,7 +94,6 @@
     <Compile Include="Symbols\OpenSubtraction.cs" />
     <Compile Include="Symbols\OpenAddition.cs" />
     <Compile Include="Symbols\Flip.cs" />
-    <Compile Include="Symbols\OpenSqrt.cs" />
     <Compile Include="Symbols\OpenExp.cs" />
     <Compile Include="Symbols\OpenLog.cs" />
     <Compile Include="Symbols\SubtractionF1.cs" />

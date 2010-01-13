@@ -93,8 +93,8 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
       OpenParameter openPar = new OpenParameter();
       OpenExp openExp = new OpenExp();
       OpenLog openLog = new OpenLog();
-      OpenSqrt openSqrt = new OpenSqrt();
-      OpenSqr openSqr = new OpenSqr();
+      //OpenSqrt openSqrt = new OpenSqrt();
+      //OpenSqr openSqr = new OpenSqr();
       Flip flip = new Flip();
       AdditionF1 addF1 = new AdditionF1();
       SubtractionF1 subF1 = new SubtractionF1();
@@ -103,7 +103,7 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
 
       List<IFunction> f1Functions = new List<IFunction>() { 
         openPar,
-        openExp, openLog, openSqrt, openSqr, flip, 
+        openExp, openLog, flip, // openSqrt, openSqr, 
         addF1, subF1, mulF1, divF1
       };
       #endregion
@@ -125,7 +125,8 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
 
       SetAllowedSubOperators(openExp, f1Functions);
       SetAllowedSubOperators(openLog, f1Functions);
-      SetAllowedSubOperators(openSqrt, f1Functions);
+      //SetAllowedSubOperators(openSqrt, f1Functions);
+      //SetAllowedSubOperators(openSqr, f1Functions);
       SetAllowedSubOperators(flip, f1Functions);
       SetAllowedSubOperators(addF1, 0, f1Functions);
       SetAllowedSubOperators(addF1, 1, f0Functions);
@@ -140,7 +141,6 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
       SetAllowedSubOperators(openAdd, f1Functions);
       SetAllowedSubOperators(openDivision, f1Functions);
       SetAllowedSubOperators(openMul, f1Functions);
-      SetAllowedSubOperators(openSqrt, f1Functions);
 
       if (includeDifferential)
         functionLibrary.AddFunction(differential);

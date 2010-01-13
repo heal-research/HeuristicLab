@@ -84,7 +84,7 @@ namespace HeuristicLab.GP.Test {
       IFunctionTree tree = exp.GetTreeNode(); tree.AddSubTree(param.GetTreeNode());
       IFunctionTree expected = log.GetTreeNode(); expected.AddSubTree(param.GetTreeNode());
       IFunctionTree actual;
-      actual = NetworkToFunctionTransformer_Accessor.InvertFunction(tree);
+      actual = NetworkToFunctionTransformer_Accessor.InvertChain(tree);
       var e = (from x in FunctionTreeIterator.IteratePostfix(expected)
                select x.Function.GetType()).GetEnumerator();
       var a = (from x in FunctionTreeIterator.IteratePostfix(actual)
@@ -120,9 +120,9 @@ namespace HeuristicLab.GP.Test {
 
         IEnumerable<IFunctionTree> actualTrees = NetworkToFunctionTransformer_Accessor.Transform(tree, new List<string>() { "a", "b", "c" });
 
-        IFunctionTree t0 = importer.Import("(- (+ 1.0 (variable 1.0 b 0)) (* 1.0 (variable 1.0 c 0)))");
-        IFunctionTree t1 = importer.Import("(- (+ (variable 1.0 a 0) (* 1.0 (variable 1.0 c 0) 1.0)))");
-        IFunctionTree t2 = importer.Import("(/ (+ (variable 1.0 a 0) (+ 1.0 (variable 1.0 b 0) 1.0)))");
+        IFunctionTree t0 = importer.Import("(- (+ (variable 1.0 b 0) 1.0) (* (variable 1.0 c 0) 1.0 ))");
+        IFunctionTree t1 = importer.Import("(- (+ (variable 1.0 a 0) (* (variable 1.0 c 0) 1.0)) 1.0 )");
+        IFunctionTree t2 = importer.Import("(/ (+ (variable 1.0 a 0) (+ (variable 1.0 b 0) 1.0)) 1.0 )");
 
         CompareTrees(actualTrees, new List<IFunctionTree>() {
         t0, t1, t2

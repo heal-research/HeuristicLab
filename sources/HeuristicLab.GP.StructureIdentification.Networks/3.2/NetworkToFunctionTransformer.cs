@@ -71,6 +71,13 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
       }
     }
 
+    /// <summary>
+    /// applies all tree-transforming meta functions (= cycle and flip)
+    /// precondition: root is a F2 function (possibly cycle) and the tree contains 0 or n flip functions, each branch has an openparameter symbol in the bottom left
+    /// postconditon: root is any F2 function (but cycle) and the tree doesn't contains any flips, each branch has an openparameter symbol in the bottom left
+    /// </summary>
+    /// <param name="tree"></param>
+    /// <returns></returns>
     private static IFunctionTree ApplyMetaFunctions(IFunctionTree tree) {
       IFunctionTree root = ApplyCycles(tree);
       List<IFunctionTree> subTrees = new List<IFunctionTree>(root.SubTrees);
@@ -86,12 +93,78 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
       if (tree.SubTrees.Count == 0) {
         return tree;
       } else if (tree.Function is Flip) {
-        return InvertFunction(tree.SubTrees[0]);
+        return InvertChain(tree.SubTrees[0]);
       } else {
         IFunctionTree tmp = ApplyFlips(tree.SubTrees[0]);
-        tree.RemoveSubTree(0); tree.AddSubTree(tmp);
+        tree.RemoveSubTree(0); tree.InsertSubTree(0, tmp);
         return tree;
       }
+    }
+
+    /// <summary>
+    ///  inverts and reverses chain of functions.
+    ///  precondition: tree is any F1 non-terminal that ends with an openParameter
+    ///  postcondition: tree is inverted and reversed chain of F1 non-terminals and ends with an openparameter.
+    /// </summary>
+    /// <param name="tree"></param>
+    /// <returns></returns>
+    private static IFunctionTree InvertChain(IFunctionTree tree) {
+      List<IFunctionTree> currentChain = new List<IFunctionTree>(IterateChain(tree));
+      // get a list of function trees from bottom to top
+      List<IFunctionTree> reversedChain = new List<IFunctionTree>(currentChain.Reverse<IFunctionTree>().Skip(1));
+      IFunctionTree openParam = currentChain.Last();
+
+      // build new tree by inverting every function in the reversed chain and keeping f0 branches untouched.
+      IFunctionTree parent = reversedChain[0];
+      IFunctionTree invParent = GetInvertedFunction(parent.Function).GetTreeNode();
+      for (int j = 1; j < parent.SubTrees.Count; j++) {
+        invParent.AddSubTree(parent.SubTrees[j]);
+      }
+      IFunctionTree root = invParent;
+      for (int i = 1; i < reversedChain.Count(); i++) {
+        IFunctionTree child = reversedChain[i];
+        IFunctionTree invChild = GetInvertedFunction(child.Function).GetTreeNode();
+        invParent.InsertSubTree(0, invChild);
+
+        parent = child;
+        invParent = invChild;
+        for (int j = 1; j < parent.SubTrees.Count; j++) {
+          invParent.AddSubTree(parent.SubTrees[j]);
+        }
+      }
+      // append open param at the end
+      invParent.AddSubTree(openParam);
+      return root;
+    }
+
+    private static IEnumerable<IFunctionTree> IterateChain(IFunctionTree tree) {
+      while (tree.SubTrees.Count > 0) {
+        yield return tree;
+        tree = tree.SubTrees[0];
+      }
+      yield return tree;
+    }
+
+
+    private static Dictionary<Type, IFunction> invertedFunction = new Dictionary<Type, IFunction>() {
+      { typeof(AdditionF1), new SubtractionF1() },
+      { typeof(SubtractionF1), new AdditionF1() },
+      { typeof(MultiplicationF1), new DivisionF1() },
+      { typeof(DivisionF1), new MultiplicationF1() },
+      { typeof(OpenLog), new OpenExp() },
+      { typeof(OpenExp), new OpenLog() },
+      //{ typeof(OpenSqr), new OpenSqrt() },
+      //{ typeof(OpenSqrt), new OpenSqr() },
+      { typeof(Flip), new Flip()},
+      { typeof(Addition), new Subtraction()},
+      { typeof(Subtraction), new Addition()},
+      { typeof(Multiplication), new Division()},
+      { typeof(Division), new Multiplication()},
+      { typeof(Exponential), new Logarithm()},
+      { typeof(Logarithm), new Exponential()}
+    };
+    private static IFunction GetInvertedFunction(IFunction function) {
+      return invertedFunction[function.GetType()];
     }
 
     private static IFunctionTree ApplyCycles(IFunctionTree tree) {
@@ -116,39 +189,7 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
       return tree;
     }
 
-    private static IFunctionTree InvertFunction(IFunctionTree tree) {
-      IFunctionTree invertedNode = null;
-      if (tree.Function is OpenParameter || tree.Function is Variable) {
-        return tree;
-      } else if (tree.Function is AdditionF1) {
-        invertedNode = (new SubtractionF1()).GetTreeNode();
-        invertedNode.AddSubTree(tree.SubTrees[1]);
-      } else if (tree.Function is DivisionF1) {
-        invertedNode = (new MultiplicationF1()).GetTreeNode();
-        invertedNode.AddSubTree(tree.SubTrees[1]);
-      } else if (tree.Function is MultiplicationF1) {
-        invertedNode = (new DivisionF1()).GetTreeNode();
-        invertedNode.AddSubTree(tree.SubTrees[1]);
-      } else if (tree.Function is SubtractionF1) {
-        invertedNode = (new AdditionF1()).GetTreeNode();
-        invertedNode.AddSubTree(tree.SubTrees[1]);
-      } else if (tree.Function is OpenExp) {
-        invertedNode = (new OpenLog()).GetTreeNode();
-      } else if (tree.Function is OpenLog) {
-        invertedNode = (new OpenLog()).GetTreeNode();
-      } else if (tree.Function is OpenSqrt) {
-        invertedNode = (new OpenSqr()).GetTreeNode();
-      } else {
-        throw new ArgumentException();
-      }
-      IFunctionTree invertedTail = ApplyFlips(tree.SubTrees[0]);
-      if (invertedTail.Function is OpenParameter || invertedTail.Function is Variable) {
-        invertedNode.InsertSubTree(0, invertedTail);
-        return invertedNode;
-      } else {
-        return AppendLeft(invertedTail, invertedNode);
-      }
-    }
+  
 
     private static IFunctionTree AppendLeft(IFunctionTree tree, IFunctionTree node) {
       IFunctionTree originalTree = tree;
@@ -157,89 +198,73 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
       return originalTree;
     }
 
+    /// <summary>
+    /// recieves a function tree with an F2 root and branches containing only F0 functions and transforms it into a function-tree for the given target variable
+    /// </summary>
+    /// <param name="tree"></param>
+    /// <param name="targetVariable"></param>
+    /// <returns></returns>
     private static IFunctionTree TransformExpression(IFunctionTree tree, string targetVariable) {
-      if (tree.SubTrees.Count >= 3) {
-        int targetIndex = -1;
-        IFunctionTree combinator;
-        List<IFunctionTree> subTrees = new List<IFunctionTree>(tree.SubTrees);
-        //while (tree.SubTrees.Count > 0) tree.RemoveSubTree(0);
-        if (HasTargetVariable(subTrees[0], targetVariable)) {
-          targetIndex = 0;
-          combinator = FunctionFromCombinator(tree);
-        } else {
-          for (int i = 1; i < subTrees.Count; i++) {
-            if (HasTargetVariable(subTrees[i], targetVariable)) {
-              targetIndex = i;
-              break;
-            }
+      int targetIndex = -1;
+      IFunctionTree combinator;
+      List<IFunctionTree> subTrees = new List<IFunctionTree>(tree.SubTrees);
+      //while (tree.SubTrees.Count > 0) tree.RemoveSubTree(0);
+      if (HasTargetVariable(subTrees[0], targetVariable)) {
+        targetIndex = 0;
+        combinator = FunctionFromCombinator(tree);
+      } else {
+        for (int i = 1; i < subTrees.Count; i++) {
+          if (HasTargetVariable(subTrees[i], targetVariable)) {
+            targetIndex = i;
+            break;
           }
-          combinator = FunctionFromCombinator(InvertCombinator(tree));
         }
-        // not found
-        if (targetIndex == -1) throw new InvalidOperationException();
-        IFunctionTree targetChain = TransformToFunction(InvertFunction(subTrees[targetIndex]));
-        for (int i = 0; i < subTrees.Count; i++) {
-          if (i != targetIndex)
-            combinator.AddSubTree(TransformToFunction(subTrees[i]));
-        }
-        if (targetChain.Function is Variable) return combinator;
-        else {
-          AppendLeft(targetChain, combinator);
-          return targetChain;
-        }
+        combinator = FunctionFromCombinator(InvertCombinator(tree));
       }
-      throw new NotImplementedException();
+      // not found
+      if (targetIndex == -1) throw new InvalidOperationException();
+
+      for (int i = 0; i < subTrees.Count; i++) {
+        if (i != targetIndex)
+          combinator.AddSubTree(subTrees[i]);
+      }
+      if (subTrees[targetIndex].Function is Variable) return combinator;
+      else {
+        IFunctionTree targetChain = InvertF0Chain(subTrees[targetIndex]);
+        AppendLeft(targetChain, combinator);
+        return targetChain;
+      }
     }
 
-    private static IFunctionTree TransformToFunction(IFunctionTree tree) {
-      if (tree.SubTrees.Count == 0) return tree;
-      else if (tree.Function is AdditionF1) {
-        var addTree = (new Addition()).GetTreeNode();
-        foreach (var subTree in tree.SubTrees) {
-          addTree.AddSubTree(TransformToFunction(subTree));
-        }
-        return addTree;
-      } else if (tree.Function is SubtractionF1) {
-        var sTree = (new Subtraction()).GetTreeNode();
-        foreach (var subTree in tree.SubTrees) {
-          sTree.AddSubTree(TransformToFunction(subTree));
-        }
-        return sTree;
-      } else if (tree.Function is MultiplicationF1) {
-        var mulTree = (new Multiplication()).GetTreeNode();
-        foreach (var subTree in tree.SubTrees) {
-          mulTree.AddSubTree(TransformToFunction(subTree));
-        }
-        return mulTree;
-      } else if (tree.Function is DivisionF1) {
-        var divTree = (new Division()).GetTreeNode();
-        foreach (var subTree in tree.SubTrees) {
-          divTree.AddSubTree(TransformToFunction(subTree));
-        }
-        return divTree;
-      } else if (tree.Function is OpenExp) {
-        var expTree = (new Exponential()).GetTreeNode();
-        expTree.AddSubTree(TransformToFunction(tree.SubTrees[0]));
-        return expTree;
-      } else if (tree.Function is OpenLog) {
-        var logTree = (new Logarithm()).GetTreeNode();
-        logTree.AddSubTree(TransformToFunction(tree.SubTrees[0]));
-        return logTree;
-      } else if (tree.Function is OpenSqr) {
-        var powTree = (new Power()).GetTreeNode();
-        powTree.AddSubTree(TransformToFunction(tree.SubTrees[0]));
-        var const2 = (ConstantFunctionTree)(new Constant()).GetTreeNode();
-        const2.Value = 2.0;
-        powTree.AddSubTree(const2);
-        return powTree;
-      } else if (tree.Function is OpenSqrt) {
-        var sqrtTree = (new Sqrt()).GetTreeNode();
-        sqrtTree.AddSubTree(TransformToFunction(tree.SubTrees[0]));
-        return sqrtTree;
+    // inverts a chain of F0 functions 
+    // precondition: left bottom is a variable (the selected target variable)
+    // postcondition: the chain is inverted. the target variable is removed
+    private static IFunctionTree InvertF0Chain(IFunctionTree tree) {
+      List<IFunctionTree> currentChain = IterateChain(tree).ToList();
+
+      List<IFunctionTree> reversedChain = currentChain.Reverse<IFunctionTree>().Skip(1).ToList();
+
+      // build new tree by inverting every function in the reversed chain and keeping f0 branches untouched.
+      IFunctionTree parent = reversedChain[0];
+      IFunctionTree invParent = GetInvertedFunction(parent.Function).GetTreeNode();
+      for (int j = 1; j < parent.SubTrees.Count; j++) {
+        invParent.AddSubTree(parent.SubTrees[j]);
       }
-      throw new ArgumentException();
+      IFunctionTree root = invParent;
+      for (int i = 1; i < reversedChain.Count(); i++) {
+        IFunctionTree child = reversedChain[i];
+        IFunctionTree invChild = GetInvertedFunction(child.Function).GetTreeNode();
+        invParent.InsertSubTree(0, invChild);
+        parent = child;
+        invParent = invChild;
+        for (int j = 1; j < parent.SubTrees.Count; j++) {
+          invParent.AddSubTree(parent.SubTrees[j]);
+        }
+      }
+      return root;
     }
 
+  
     private static IFunctionTree InvertCombinator(IFunctionTree tree) {
       if (tree.Function is OpenAddition) {
         return (new OpenSubtraction()).GetTreeNode();
@@ -274,21 +299,53 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
                      select true).Any();
     }
 
+    private static Dictionary<Type, IFunction> closedForm = new Dictionary<Type, IFunction>() {
+      {typeof(OpenAddition), new OpenAddition()},
+      {typeof(OpenSubtraction), new OpenSubtraction()},
+      {typeof(OpenMultiplication), new OpenMultiplication()},
+      {typeof(OpenDivision), new OpenDivision()},
+      {typeof(AdditionF1), new Addition()},
+      {typeof(SubtractionF1), new Subtraction()},
+      {typeof(MultiplicationF1), new Multiplication()},
+      {typeof(DivisionF1), new Division()},
+      {typeof(OpenExp), new Exponential()},
+      {typeof(OpenLog), new OpenLog()},
+      //{typeof(OpenSqr), new Power()},
+      //{typeof(OpenSqrt), new Sqrt()},
+      {typeof(OpenParameter), new Variable()},
+    };
+
+    /// <summary>
+    /// transforms a tree that contains F2 and F1 functions into a tree composed of F2 and F0 functions.
+    /// precondition: the tree doesn't contains cycle or flip symbols. the tree has openparameters in the bottom left
+    /// postcondition: all F1 and functions are replaced by matching F0 functions
+    /// </summary>
+    /// <param name="tree"></param>
+    /// <param name="targetVariables"></param>
+    /// <returns></returns>
     private static IFunctionTree BindVariables(IFunctionTree tree, IEnumerator<string> targetVariables) {
-      if (tree.Function is OpenParameter && targetVariables.MoveNext()) {
-        var varTreeNode = (VariableFunctionTree)(new Variable()).GetTreeNode();
+      if (!closedForm.ContainsKey(tree.Function.GetType())) return tree;
+      IFunction matchingFunction = closedForm[tree.Function.GetType()];
+      IFunctionTree matchingTree = matchingFunction.GetTreeNode();
+      if (matchingFunction is Variable) {
+        targetVariables.MoveNext();
+        var varTreeNode = (VariableFunctionTree)matchingTree;
         varTreeNode.VariableName = targetVariables.Current;
         varTreeNode.SampleOffset = ((OpenParameterFunctionTree)tree).SampleOffset;
         varTreeNode.Weight = 1.0;
         return varTreeNode;
+        //} else if (matchingFunction is Power) {
+        //  matchingTree.AddSubTree(BindVariables(tree.SubTrees[0], targetVariables));
+        //  var const2 = (ConstantFunctionTree)(new Constant()).GetTreeNode();
+        //  const2.Value = 2.0;
+        //  matchingTree.AddSubTree(const2);
       } else {
-        IList<IFunctionTree> subTrees = new List<IFunctionTree>(tree.SubTrees);
-        while (tree.SubTrees.Count > 0) tree.RemoveSubTree(0);
-        foreach (IFunctionTree subTree in subTrees) {
-          tree.AddSubTree(BindVariables(subTree, targetVariables));
+        foreach (IFunctionTree subTree in tree.SubTrees) {
+          matchingTree.AddSubTree(BindVariables(subTree, targetVariables));
         }
-        return tree;
       }
+
+      return matchingTree;
     }
   }
 }
