@@ -79,6 +79,9 @@ namespace HeuristicLab.Collections {
       throw new NotSupportedException();
     }
 
+    bool IObservableKeyedCollection<TKey, TItem>.Remove(TKey key) {
+      throw new NotSupportedException();
+    }
     bool ICollection<TItem>.Remove(TItem item) {
       throw new NotSupportedException();
     }

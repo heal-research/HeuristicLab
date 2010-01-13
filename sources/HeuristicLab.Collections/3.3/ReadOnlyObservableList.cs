@@ -56,10 +56,13 @@ namespace HeuristicLab.Collections {
       if (list == null) throw new ArgumentNullException();
       this.list = list;
       list.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<T>>(list_ItemsAdded);
+      ((IObservableCollection<T>)list).ItemsAdded += new CollectionItemsChangedEventHandler<T>(list_ItemsAdded);
       list.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<T>>(list_ItemsRemoved);
+      ((IObservableCollection<T>)list).ItemsRemoved += new CollectionItemsChangedEventHandler<T>(list_ItemsRemoved);
       list.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<T>>(list_ItemsReplaced);
       list.ItemsMoved += new CollectionItemsChangedEventHandler<IndexedItem<T>>(list_ItemsMoved);
       list.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<T>>(list_CollectionReset);
+      ((IObservableCollection<T>)list).CollectionReset += new CollectionItemsChangedEventHandler<T>(list_CollectionReset);
       list.PropertyChanged += new PropertyChangedEventHandler(list_PropertyChanged);
     }
     #endregion
@@ -96,7 +99,7 @@ namespace HeuristicLab.Collections {
     #endregion
 
     #region Conversion
-    void ICollection<T>.CopyTo(T[] array, int arrayIndex) {
+    public void CopyTo(T[] array, int arrayIndex) {
       list.CopyTo(array, arrayIndex);
     }
     #endregion
@@ -119,10 +122,32 @@ namespace HeuristicLab.Collections {
     }
 
     [field: NonSerialized]
+    private event CollectionItemsChangedEventHandler<T> itemsAdded;
+    event CollectionItemsChangedEventHandler<T> IObservableCollection<T>.ItemsAdded {
+      add { itemsAdded += value; }
+      remove { itemsAdded -= value; }
+    }
+    private void OnItemsAdded(IEnumerable<T> items) {
+      if (itemsAdded != null)
+        itemsAdded(this, new CollectionItemsChangedEventArgs<T>(items));
+    }
+
+    [field: NonSerialized]
     public event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsRemoved;
     protected virtual void OnItemsRemoved(IEnumerable<IndexedItem<T>> items) {
       if (ItemsRemoved != null)
         ItemsRemoved(this, new CollectionItemsChangedEventArgs<IndexedItem<T>>(items));
+    }
+
+    [field: NonSerialized]
+    private event CollectionItemsChangedEventHandler<T> itemsRemoved;
+    event CollectionItemsChangedEventHandler<T> IObservableCollection<T>.ItemsRemoved {
+      add { itemsRemoved += value; }
+      remove { itemsRemoved -= value; }
+    }
+    private void OnItemsRemoved(IEnumerable<T> items) {
+      if (itemsRemoved != null)
+        itemsRemoved(this, new CollectionItemsChangedEventArgs<T>(items));
     }
 
     [field: NonSerialized]
@@ -147,6 +172,17 @@ namespace HeuristicLab.Collections {
     }
 
     [field: NonSerialized]
+    private event CollectionItemsChangedEventHandler<T> collectionReset;
+    event CollectionItemsChangedEventHandler<T> IObservableCollection<T>.CollectionReset {
+      add { collectionReset += value; }
+      remove { collectionReset -= value; }
+    }
+    private void OnCollectionReset(IEnumerable<T> items, IEnumerable<T> oldItems) {
+      if (collectionReset != null)
+        collectionReset(this, new CollectionItemsChangedEventArgs<T>(items, oldItems));
+    }
+
+    [field: NonSerialized]
     public event PropertyChangedEventHandler PropertyChanged;
     protected virtual void OnPropertyChanged(string propertyName) {
       if (PropertyChanged != null)
@@ -156,7 +192,13 @@ namespace HeuristicLab.Collections {
     private void list_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
       OnItemsAdded(e.Items);
     }
+    private void list_ItemsAdded(object sender, CollectionItemsChangedEventArgs<T> e) {
+      OnItemsAdded(e.Items);
+    }
     private void list_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
+      OnItemsRemoved(e.Items);
+    }
+    private void list_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<T> e) {
       OnItemsRemoved(e.Items);
     }
     private void list_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
@@ -166,6 +208,9 @@ namespace HeuristicLab.Collections {
       OnItemsMoved(e.Items, e.OldItems);
     }
     private void list_CollectionReset(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
+      OnCollectionReset(e.Items, e.OldItems);
+    }
+    private void list_CollectionReset(object sender, CollectionItemsChangedEventArgs<T> e) {
       OnCollectionReset(e.Items, e.OldItems);
     }
     private void list_PropertyChanged(object sender, PropertyChangedEventArgs e) {

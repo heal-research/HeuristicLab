@@ -26,11 +26,11 @@ using System.Text;
 using System.ComponentModel;
 
 namespace HeuristicLab.Collections {
-  public interface IObservableList<T> : IList<T>, INotifyPropertyChanged {
-    event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsAdded;
-    event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsRemoved;
+  public interface IObservableList<T> : IList<T>, IObservableCollection<T> {
+    new event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsAdded;
+    new event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsRemoved;
     event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsReplaced;
     event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsMoved;
-    event CollectionItemsChangedEventHandler<IndexedItem<T>> CollectionReset;
+    new event CollectionItemsChangedEventHandler<IndexedItem<T>> CollectionReset;
   }
 }

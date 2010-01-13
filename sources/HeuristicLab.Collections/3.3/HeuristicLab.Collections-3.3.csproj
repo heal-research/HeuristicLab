@@ -48,6 +48,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ReadOnlyObservableSet.cs" />
+    <Compile Include="IObservableSet.cs" />
+    <Compile Include="ObservableSet.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ReadOnlyObservableKeyedCollection.cs">
       <SubType>Code</SubType>
     </Compile>

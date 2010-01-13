@@ -23,30 +23,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.ComponentModel;
 
 namespace HeuristicLab.Collections {
-  [Serializable]
-  public struct IndexedItem<T> {
-    private int index;
-    public int Index {
-      get { return index; }
-    }
-    private T value;
-    public T Value {
-      get { return value; }
-    }
+  public interface IObservableSet<T> : IObservableCollection<T> {
+    bool IsProperSubsetOf(IEnumerable<T> other);
+    bool IsProperSupersetOf(IEnumerable<T> other);
 
-    public IndexedItem(int index, T value) {
-      this.index = index;
-      this.value = value;
-    }
+    bool IsSubsetOf(IEnumerable<T> other);
+    bool IsSupersetOf(IEnumerable<T> other);
 
-    public override string ToString() {
-      StringBuilder sb = new StringBuilder();
-      sb.Append("[").Append(index).Append(", ");
-      if (value != null) sb.Append(value.ToString());
-      sb.Append("]");
-      return sb.ToString();
-    }
+    bool Overlaps(IEnumerable<T> other);
+
+    bool SetEquals(IEnumerable<T> other);
+
+    new bool Add(T item);
+
+    void ExceptWith(IEnumerable<T> other);
+    void IntersectWith(IEnumerable<T> other);
+    void SymmetricExceptWith(IEnumerable<T> other);
+    void UnionWith(IEnumerable<T> other);
   }
 }

@@ -172,14 +172,11 @@ namespace HeuristicLab.Collections {
     #endregion
 
     #region Enumeration
-    public Dictionary<TKey, TValue>.Enumerator GetEnumerator() {
+    public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() {
       return dict.GetEnumerator();
     }
-    IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator() {
-      return ((IEnumerable<KeyValuePair<TKey, TValue>>)dict).GetEnumerator();
-    }
     IEnumerator IEnumerable.GetEnumerator() {
-      return ((IEnumerable)dict).GetEnumerator();
+      return dict.GetEnumerator();
     }
     #endregion
 

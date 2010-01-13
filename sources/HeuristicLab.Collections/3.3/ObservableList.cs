@@ -76,6 +76,7 @@ namespace HeuristicLab.Collections {
     public ObservableList(IEnumerable<T> collection) {
       list = new List<T>(collection);
       OnItemsAdded(GetIndexedItems());
+      OnItemsAdded(collection);
     }
     #endregion
 
@@ -162,6 +163,7 @@ namespace HeuristicLab.Collections {
       OnPropertyChanged("Item[]");
       OnPropertyChanged("Count");
       OnItemsAdded(new IndexedItem<T>[] { new IndexedItem<T>(list.Count - 1, item) });
+      OnItemsAdded(new T[] { item });
     }
     public void AddRange(IEnumerable<T> collection) {
       int capacity = list.Capacity;
@@ -178,6 +180,7 @@ namespace HeuristicLab.Collections {
         OnPropertyChanged("Item[]");
         OnPropertyChanged("Count");
         OnItemsAdded(items);
+        OnItemsAdded(collection);
       }
     }
 
@@ -189,6 +192,7 @@ namespace HeuristicLab.Collections {
       OnPropertyChanged("Item[]");
       OnPropertyChanged("Count");
       OnItemsAdded(new IndexedItem<T>[] { new IndexedItem<T>(index, item) });
+      OnItemsAdded(new T[] { item });
     }
     public void InsertRange(int index, IEnumerable<T> collection) {
       int capacity = list.Capacity;
@@ -204,6 +208,7 @@ namespace HeuristicLab.Collections {
         OnPropertyChanged("Item[]");
         OnPropertyChanged("Count");
         OnItemsAdded(items);
+        OnItemsAdded(collection);
       }
     }
 
@@ -214,22 +219,27 @@ namespace HeuristicLab.Collections {
         OnPropertyChanged("Item[]");
         OnPropertyChanged("Count");
         OnItemsRemoved(new IndexedItem<T>[] { new IndexedItem<T>(index, item) });
+        OnItemsRemoved(new T[] { item });
         return true;
       }
       return false;
     }
     public int RemoveAll(Predicate<T> match) {
       if (match == null) throw new ArgumentNullException();
-      List<IndexedItem<T>> items = new List<IndexedItem<T>>();
+      List<IndexedItem<T>> indexedItems = new List<IndexedItem<T>>();
+      List<T> items = new List<T>();
       for (int i = 0; i < list.Count; i++) {
-        if (match(list[i]))
-          items.Add(new IndexedItem<T>(i, list[i]));
+        if (match(list[i])) {
+          indexedItems.Add(new IndexedItem<T>(i, list[i]));
+          items.Add(list[i]);
+        }
       }
       int result = 0;
-      if (items.Count > 0) {
+      if (indexedItems.Count > 0) {
         result = list.RemoveAll(match);
         OnPropertyChanged("Item[]");
         OnPropertyChanged("Count");
+        OnItemsRemoved(indexedItems);
         OnItemsRemoved(items);
       }
       return result;
@@ -240,24 +250,30 @@ namespace HeuristicLab.Collections {
       OnPropertyChanged("Item[]");
       OnPropertyChanged("Count");
       OnItemsRemoved(new IndexedItem<T>[] { new IndexedItem<T>(index, item) });
+      OnItemsRemoved(new T[] { item });
     }
     public void RemoveRange(int index, int count) {
       if (count > 0) {
-        IndexedItem<T>[] items = GetIndexedItems(index, count);
+        IndexedItem<T>[] indexedItems = GetIndexedItems(index, count);
+        T[] items = new T[count];
+        list.CopyTo(index, items, 0, count);
         list.RemoveRange(index, count);
         OnPropertyChanged("Item[]");
         OnPropertyChanged("Count");
+        OnItemsRemoved(indexedItems);
         OnItemsRemoved(items);
       }
     }
 
     public void Clear() {
       if (list.Count > 0) {
-        IndexedItem<T>[] items = GetIndexedItems();
+        IndexedItem<T>[] indexedItems = GetIndexedItems();
+        T[] items = list.ToArray();
         list.Clear();
         OnPropertyChanged("Item[]");
         OnPropertyChanged("Count");
-        OnCollectionReset(new IndexedItem<T>[0], items);
+        OnCollectionReset(new IndexedItem<T>[0], indexedItems);
+        OnCollectionReset(new T[0], items);
       }
     }
 
@@ -319,8 +335,14 @@ namespace HeuristicLab.Collections {
     public T[] ToArray() {
       return list.ToArray();
     }
-    void ICollection<T>.CopyTo(T[] array, int arrayIndex) {
+    public void CopyTo(T[] array) {
+      list.CopyTo(array);
+    }
+    public void CopyTo(T[] array, int arrayIndex) {
       list.CopyTo(array, arrayIndex);
+    }
+    public void CopyTo(int index, T[] array, int arrayIndex, int count) {
+      list.CopyTo(index, array, arrayIndex, count);
     }
     public List<TOutput> ConvertAll<TOutput>(Converter<T, TOutput> converter) {
       return list.ConvertAll<TOutput>(converter);
@@ -337,14 +359,11 @@ namespace HeuristicLab.Collections {
     #endregion
 
     #region Enumeration
-    public List<T>.Enumerator GetEnumerator() {
+    public IEnumerator<T> GetEnumerator() {
       return list.GetEnumerator();
     }
-    IEnumerator<T> IEnumerable<T>.GetEnumerator() {
-      return ((IEnumerable<T>)list).GetEnumerator();
-    }
     IEnumerator IEnumerable.GetEnumerator() {
-      return ((IEnumerable)list).GetEnumerator();
+      return list.GetEnumerator();
     }
     #endregion
 
@@ -366,10 +385,32 @@ namespace HeuristicLab.Collections {
     }
 
     [field: NonSerialized]
+    private event CollectionItemsChangedEventHandler<T> itemsAdded;
+    event CollectionItemsChangedEventHandler<T> IObservableCollection<T>.ItemsAdded {
+      add { itemsAdded += value; }
+      remove { itemsAdded -= value; }
+    }
+    private void OnItemsAdded(IEnumerable<T> items) {
+      if (itemsAdded != null)
+        itemsAdded(this, new CollectionItemsChangedEventArgs<T>(items));
+    }
+
+    [field: NonSerialized]
     public event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsRemoved;
     protected virtual void OnItemsRemoved(IEnumerable<IndexedItem<T>> items) {
       if (ItemsRemoved != null)
         ItemsRemoved(this, new CollectionItemsChangedEventArgs<IndexedItem<T>>(items));
+    }
+
+    [field: NonSerialized]
+    private event CollectionItemsChangedEventHandler<T> itemsRemoved;
+    event CollectionItemsChangedEventHandler<T> IObservableCollection<T>.ItemsRemoved {
+      add { itemsRemoved += value; }
+      remove { itemsRemoved -= value; }
+    }
+    private void OnItemsRemoved(IEnumerable<T> items) {
+      if (itemsRemoved != null)
+        itemsRemoved(this, new CollectionItemsChangedEventArgs<T>(items));
     }
 
     [field: NonSerialized]
@@ -391,6 +432,17 @@ namespace HeuristicLab.Collections {
     protected virtual void OnCollectionReset(IEnumerable<IndexedItem<T>> items, IEnumerable<IndexedItem<T>> oldItems) {
       if (CollectionReset != null)
         CollectionReset(this, new CollectionItemsChangedEventArgs<IndexedItem<T>>(items, oldItems));
+    }
+
+    [field: NonSerialized]
+    private event CollectionItemsChangedEventHandler<T> collectionReset;
+    event CollectionItemsChangedEventHandler<T> IObservableCollection<T>.CollectionReset {
+      add { collectionReset += value; }
+      remove { collectionReset -= value; }
+    }
+    private void OnCollectionReset(IEnumerable<T> items, IEnumerable<T> oldItems) {
+      if (collectionReset != null)
+        collectionReset(this, new CollectionItemsChangedEventArgs<T>(items, oldItems));
     }
 
     [field: NonSerialized]
