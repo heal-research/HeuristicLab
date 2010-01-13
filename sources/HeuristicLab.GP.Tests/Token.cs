@@ -28,6 +28,7 @@ using HeuristicLab.GP;
 using HeuristicLab.GP.Interfaces;
 using HeuristicLab.GP.StructureIdentification;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace HeuristicLab.GP.Test {
   public enum TokenSymbol { LPAR, RPAR, SYMB, NUMBER };
@@ -58,9 +59,9 @@ namespace HeuristicLab.GP.Test {
         t.Symbol = TokenSymbol.LPAR;
       } else if (strToken == ")") {
         t.Symbol = TokenSymbol.RPAR;
-      } else if (double.TryParse(strToken, out temp)) {
+      } else if (double.TryParse(strToken, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out temp)) {
         t.Symbol = TokenSymbol.NUMBER;
-        t.DoubleValue = double.Parse(strToken);
+        t.DoubleValue = double.Parse(strToken, CultureInfo.InvariantCulture.NumberFormat);
       } else {
         t.Symbol = TokenSymbol.SYMB;
       }

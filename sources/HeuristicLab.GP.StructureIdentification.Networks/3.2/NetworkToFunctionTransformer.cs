@@ -93,7 +93,8 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
       if (tree.SubTrees.Count == 0) {
         return tree;
       } else if (tree.Function is Flip) {
-        return InvertChain(tree.SubTrees[0]);
+        if (tree.SubTrees[0].Function is OpenParameter) return tree.SubTrees[0];
+        else return ApplyFlips(InvertChain(tree.SubTrees[0]));
       } else {
         IFunctionTree tmp = ApplyFlips(tree.SubTrees[0]);
         tree.RemoveSubTree(0); tree.InsertSubTree(0, tmp);
@@ -133,7 +134,7 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
         }
       }
       // append open param at the end
-      invParent.AddSubTree(openParam);
+      invParent.InsertSubTree(0, openParam);
       return root;
     }
 
@@ -193,9 +194,16 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
 
     private static IFunctionTree AppendLeft(IFunctionTree tree, IFunctionTree node) {
       IFunctionTree originalTree = tree;
-      while (tree.SubTrees[0].SubTrees.Count > 0) tree = tree.SubTrees[0];
+      while (!IsBottomLeft(tree)) tree = tree.SubTrees[0];
       tree.InsertSubTree(0, node);
       return originalTree;
+    }
+
+    private static bool IsBottomLeft(IFunctionTree tree) {
+      if(tree.SubTrees.Count==0) return true;
+      else if(tree.SubTrees[0].Function is Variable) return true;
+      else if(tree.SubTrees[0].Function is Constant) return true;
+      else return false;
     }
 
     /// <summary>

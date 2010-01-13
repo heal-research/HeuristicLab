@@ -161,8 +161,60 @@ namespace HeuristicLab.GP.Test {
         t0, t1, t2
       });
       }
+      {
+        IFunctionTree tree = importer.Import("(open-- (open-log (open-log (open-param - 0))) (open-exp (open-exp (open-param - 0))) (f1-* (open-param - 0) 2.0))");
+
+        IEnumerable<IFunctionTree> actualTrees = NetworkToFunctionTransformer_Accessor.Transform(tree, new List<string>() { "a", "b", "c" });
+
+        IFunctionTree t0 = importer.Import(@"(exp (exp (- (exp (exp (variable 1.0 b 0)))
+                                                          (* (variable 1.0 c 0) 2.0)))))");
+        IFunctionTree t1 = importer.Import(@"(log (log (+ (log (log (variable 1.0 a 0)))
+                                                          (* (variable 1.0 c 0) 2.0))))");
+        IFunctionTree t2 = importer.Import(@"(/ (+ (log (log (variable 1.0 a 0)))
+                                                   (exp (exp (variable 1.0 b 0)))) 2.0)");
+
+        CompareTrees(actualTrees, new List<IFunctionTree>() {
+        t0, t1, t2
+      });
+      }
+      {
+        IFunctionTree tree = importer.Import(@"(open-- (flip (open-log (open-param - 0))) 
+                                                       (flip (f1-* (open-param - 0) 2.0)) 
+                                                       (flip (flip (f1-* (open-param - 0) 2.0))))");
+
+        IEnumerable<IFunctionTree> actualTrees = NetworkToFunctionTransformer_Accessor.Transform(tree, new List<string>() { "a", "b", "c" });
+
+        IFunctionTree t0 = importer.Import(@"(log (- (/ (variable 1.0 b 0) 2.0)
+                                                     (* (variable 1.0 c 0) 2.0)))");
+        IFunctionTree t1 = importer.Import(@"(* (+ (exp (variable 1.0 a 0))
+                                                   (* (variable 1.0 c 0) 2.0)) 2.0)");
+        IFunctionTree t2 = importer.Import(@"(/ (+ (exp (variable 1.0 a 0))
+                                                   (/ (variable 1.0 b 0) 2.0)) 2.0)");
+
+        CompareTrees(actualTrees, new List<IFunctionTree>() {
+        t0, t1, t2
+      });
+      }
+      {
+        IFunctionTree tree = importer.Import(@"(cycle (open-+
+                                                         (flip (f1-+ 
+                                                           (flip (f1-- 
+                                                             (flip (f1-/ 
+                                                               (open-param - 0) 4.0)) 3.0)) 2.0))
+                                                         (open-param - 0) 
+                                                         (open-param - 0)))");
+        // -3*4-2 x
+        IEnumerable<IFunctionTree> actualTrees = NetworkToFunctionTransformer_Accessor.Transform(tree, new List<string>() { "a", "b", "c" });
+
+        IFunctionTree t0 = importer.Import("(+ (/ (- (+ (variable 1.0 b 0) (variable 1.0 c 0)) 3.0) 4.0) 2.0)");
+        IFunctionTree t1 = importer.Import("(- (- (* (- (variable 1.0 a 0) 2.0) 4.0) 3.0) (variable 1.0 c 0))");
+        IFunctionTree t2 = importer.Import("(- (- (* (- (variable 1.0 a 0) 2.0) 4.0) 3.0) (variable 1.0 b 0))");
 
 
+        CompareTrees(actualTrees, new List<IFunctionTree>() {
+        t0, t1, t2
+      });
+      }
 
     }
 
@@ -171,13 +223,13 @@ namespace HeuristicLab.GP.Test {
       foreach (var actualTree in actual) {
         if (!expectedEnumerator.MoveNext()) Assert.Fail();
         IFunctionTree expectedTree = expectedEnumerator.Current;
-        var e = (from x in FunctionTreeIterator.IteratePostfix(expectedTree)
+        var e = (from x in FunctionTreeIterator.IteratePrefix(expectedTree)
                  select x).GetEnumerator();
-        var a = (from x in FunctionTreeIterator.IteratePostfix(actualTree)
+        var a = (from x in FunctionTreeIterator.IteratePrefix(actualTree)
                  select x).GetEnumerator();
         Assert.AreEqual(expectedTree.GetSize(), actualTree.GetSize());
         while (e.MoveNext() && a.MoveNext()) {
-          Assert.AreEqual(e.Current.GetType(), a.Current.GetType());
+          Assert.AreEqual(e.Current.Function.GetType(), a.Current.Function.GetType());
           if (e.Current.Function is HeuristicLab.GP.StructureIdentification.Variable) {
             var expectedVar = (VariableFunctionTree)e.Current;
             var actualVar = (VariableFunctionTree)a.Current;
