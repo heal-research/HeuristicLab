@@ -87,10 +87,41 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="VS2008ImageLibrary.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>VS2008ImageLibrary.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.frame" />
+    <None Include="Resources\CopyIcon.png" />
+    <None Include="Resources\CutIcon.png" />
+    <None Include="Resources\DeleteFolderIcon.png" />
+    <None Include="Resources\DeleteIcon.png" />
+    <None Include="Resources\FlagBlueIcon.png" />
+    <None Include="Resources\FlagGreenIcon.png" />
+    <None Include="Resources\FlagRedIcon.png" />
+    <None Include="Resources\FormulaEvaluatorIcon.png" />
+    <None Include="Resources\FunctionIcon.png" />
+    <None Include="Resources\HeuristicLab.ico" />
+    <None Include="Resources\HeuristicLab.png" />
+    <None Include="Resources\NewFolderIcon.png" />
+    <None Include="Resources\NewIcon.png" />
+    <None Include="Resources\OpenIcon.png" />
+    <None Include="Resources\PasteIcon.png" />
+    <None Include="Resources\PrintIcon.png" />
+    <None Include="Resources\PrintPreviewIcon.png" />
+    <None Include="Resources\RedoIcon.png" />
+    <None Include="Resources\RefreshDocument.png" />
+    <None Include="Resources\SaveAllIcon.png" />
+    <None Include="Resources\SaveIcon.png" />
+    <None Include="Resources\ShowDetails.png" />
+    <None Include="Resources\ShowLargeIcons.png" />
+    <None Include="Resources\ShowSmallIcons.png" />
+    <None Include="Resources\UndoIcon.png" />
+    <None Include="Resources\WarningIcon.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
@@ -104,84 +135,22 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="VS2008ImageLibrary.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>VS2008ImageLibrary.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\OpenIcon.png" />
+    <None Include="Resources\VS2008ImageLibrary_CommonElements_Actions_Add.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\NewIcon.png" />
+    <None Include="Resources\VS2008ImageLibrary_CommonElements_Actions_Remove.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SaveIcon.png" />
+    <None Include="Resources\VS2008ImageLibrary_CommonElements_Objects_Arrow_Down.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SaveAllIcon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\PrintIcon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\PrintPreviewIcon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\CopyIcon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\CutIcon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\PasteIcon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\DeleteIcon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\DeleteFolderIcon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\RedoIcon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\UndoIcon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\NewFolderIcon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\HeuristicLab.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\WarningIcon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\FlagBlueIcon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\FlagGreenIcon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\FlagRedIcon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\FormulaEvaluatorIcon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\FunctionIcon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\RefreshDocument.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ShowDetails.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ShowLargeIcons.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ShowSmallIcons.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\HeuristicLab.png" />
+    <None Include="Resources\VS2008ImageLibrary_CommonElements_Objects_Arrow_Up.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
