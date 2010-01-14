@@ -119,15 +119,138 @@
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="Add" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\VS2008ImageLibrary_CommonElements_Actions_Add.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_CommonElements_Actions_Add.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ArrowDown" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\VS2008ImageLibrary_CommonElements_Objects_Arrow_Down.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_CommonElements_Objects_Arrow_Down.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ArrowUp" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\VS2008ImageLibrary_CommonElements_Objects_Arrow_Up.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_CommonElements_Objects_Arrow_Up.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Assembly" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Assembly.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Class" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Class.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Component" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Component.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Constant" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Constant.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Control" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Control.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Database" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Database.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Delegate" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Delegate.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Document" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Document.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Drive" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Drive.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Enum" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Enum.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="EnumItem" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_EnumItem.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Error" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Error.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Event" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Event.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Exception" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Exception.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Field" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Field.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="File" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_File.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Install" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Insall.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Interface" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Interface.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Internet" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Internet.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Library" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Library.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Macro" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Macro.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Map" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Map.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MapItem" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_MapItem.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Method" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Method.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MethodOverload" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_MethodOverload.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Module" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Module.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Namespace" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Namespace.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="NetworkConnections" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_NetworkConnections.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Object" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Object.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Operator" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Operator.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Properties" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Properties.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Remove" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\VS2008ImageLibrary_CommonElements_Actions_Remove.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_CommonElements_Actions_Remove.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Script" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Script.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Structure" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Structure.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Template" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Template.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Timer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Timer.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Type" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Type.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TypeDef" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_TypeDef.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Union" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Union.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="User" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_User.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="UserAccounts" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_UserAccounts.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ValueType" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_ValueType.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

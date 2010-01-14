@@ -141,16 +141,139 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\VS2008ImageLibrary_CommonElements_Actions_Add.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Method.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\VS2008ImageLibrary_CommonElements_Actions_Remove.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Module.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\VS2008ImageLibrary_CommonElements_Objects_Arrow_Down.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Script.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\VS2008ImageLibrary_CommonElements_Objects_Arrow_Up.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Assembly.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Class.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Component.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Constant.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Control.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Database.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Delegate.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Document.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Drive.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Enum.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_EnumItem.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Error.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Event.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Exception.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Field.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_File.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Insall.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Interface.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Internet.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Library.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Macro.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Map.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_MapItem.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_MethodOverload.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Namespace.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_NetworkConnections.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Object.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Operator.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Properties.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Structure.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Template.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Timer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Type.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_TypeDef.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Union.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_User.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_UserAccounts.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_ValueType.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_CommonElements_Actions_Add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_CommonElements_Actions_Remove.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_CommonElements_Objects_Arrow_Down.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_CommonElements_Objects_Arrow_Up.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
