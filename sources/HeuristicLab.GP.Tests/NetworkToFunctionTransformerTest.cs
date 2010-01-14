@@ -5,6 +5,8 @@ using HeuristicLab.Core;
 using HeuristicLab.GP.StructureIdentification;
 using System.Linq;
 using System.Collections.Generic;
+using HeuristicLab.Random;
+using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.GP.Test {
 
@@ -196,17 +198,17 @@ namespace HeuristicLab.GP.Test {
       });
       }
       {
-        IFunctionTree tree = importer.Import(@"(cycle (open-+
-                                                         (flip (f1-+ 
-                                                           (flip (f1-- 
-                                                             (flip (f1-/ 
-                                                               (open-param - 0) 4.0)) 3.0)) 2.0))
-                                                         (open-param - 0) 
-                                                         (open-param - 0)))");
+        IFunctionTree tree = importer.Import(@"(open-+
+                                                 (flip (f1-+ 
+                                                   (flip (f1-- 
+                                                     (flip (f1-/ 
+                                                       (open-param - 0) 4.0)) 3.0)) 2.0))
+                                                 (open-param - 0) 
+                                                 (open-param - 0)))");
         // -3*4-2 x
         IEnumerable<IFunctionTree> actualTrees = NetworkToFunctionTransformer_Accessor.Transform(tree, new List<string>() { "a", "b", "c" });
 
-        IFunctionTree t0 = importer.Import("(+ (/ (- (+ (variable 1.0 b 0) (variable 1.0 c 0)) 3.0) 4.0) 2.0)");
+        IFunctionTree t0 = importer.Import("(+ (/ (+ (+ (variable 1.0 b 0) (variable 1.0 c 0)) 3.0) 4.0) 2.0)");
         IFunctionTree t1 = importer.Import("(- (- (* (- (variable 1.0 a 0) 2.0) 4.0) 3.0) (variable 1.0 c 0))");
         IFunctionTree t2 = importer.Import("(- (- (* (- (variable 1.0 a 0) 2.0) 4.0) 3.0) (variable 1.0 b 0))");
 
@@ -215,7 +217,66 @@ namespace HeuristicLab.GP.Test {
         t0, t1, t2
       });
       }
+      {
+        // constant expression
+        IFunctionTree tree = importer.Import(@"(* (variable 1.0 d 0) (variable 1.0 d 0))");
 
+        IEnumerable<IFunctionTree> actualTrees = NetworkToFunctionTransformer_Accessor.Transform(tree, new List<string>() { "a", "b", "c" });
+
+        IFunctionTree t0 = importer.Import("(* (variable 1.0 d 0) (variable 1.0 d 0))");
+        IFunctionTree t1 = importer.Import("(* (variable 1.0 d 0) (variable 1.0 d 0))");
+        IFunctionTree t2 = importer.Import("(* (variable 1.0 d 0) (variable 1.0 d 0))");
+
+
+        CompareTrees(actualTrees, new List<IFunctionTree>() {
+        t0, t1, t2
+        });
+      }
+      {
+        // expression with one parameter
+        IFunctionTree tree = importer.Import(@"(f1-* (variable 1.0 a 0) (variable 1.0 d 0))");
+
+        IEnumerable<IFunctionTree> actualTrees = NetworkToFunctionTransformer_Accessor.Transform(tree, new List<string>() { "a", "b", "c" });
+
+        IFunctionTree t0 = importer.Import("(/ (variable 1.0 b 0) (variable 1.0 d 0))");
+        IFunctionTree t1 = importer.Import("(* (variable 1.0 a 0) (variable 1.0 d 0))");
+        IFunctionTree t2 = importer.Import("(* (variable 1.0 a 0) (variable 1.0 d 0))");
+
+
+        CompareTrees(actualTrees, new List<IFunctionTree>() {
+        t0, t1, t2
+        });
+      }
+      {
+        // expression with one parameter
+        IFunctionTree tree = importer.Import(@"(open-log (variable 1.0 a 0))");
+
+        IEnumerable<IFunctionTree> actualTrees = NetworkToFunctionTransformer_Accessor.Transform(tree, new List<string>() { "a", "b", "c" });
+
+        IFunctionTree t0 = importer.Import("(exp (variable 1.0 b 0))");
+        IFunctionTree t1 = importer.Import("(log (variable 1.0 a 0))");
+        IFunctionTree t2 = importer.Import("(log (variable 1.0 a 0))");
+
+
+        CompareTrees(actualTrees, new List<IFunctionTree>() {
+        t0, t1, t2
+        });
+      }
+      {
+        // expression with flip and one parameter
+        IFunctionTree tree = importer.Import(@"(flip (open-log (variable 1.0 a 0)))");
+
+        IEnumerable<IFunctionTree> actualTrees = NetworkToFunctionTransformer_Accessor.Transform(tree, new List<string>() { "a", "b", "c" });
+
+        IFunctionTree t0 = importer.Import("(log (variable 1.0 b 0))");
+        IFunctionTree t1 = importer.Import("(exp (variable 1.0 a 0))");
+        IFunctionTree t2 = importer.Import("(exp (variable 1.0 a 0))");
+
+
+        CompareTrees(actualTrees, new List<IFunctionTree>() {
+        t0, t1, t2
+        });
+      }
     }
 
     private void CompareTrees(IEnumerable<IFunctionTree> actual, IEnumerable<IFunctionTree> expected) {
@@ -242,6 +303,19 @@ namespace HeuristicLab.GP.Test {
             Assert.AreEqual(expectedConst.Value, actualConst.Value);
           }
         }
+      }
+    }
+
+    [TestMethod()]
+    [DeploymentItem("HeuristicLab.GP.StructureIdentification.Networks-3.2.dll")]
+    public void TransformRandomTreesTest() {
+
+      MersenneTwister twister = new MersenneTwister();
+      Dataset ds = Util.CreateRandomDataset(twister, 1, 20);
+      IFunctionTree[] randomTrees = Util.CreateRandomTrees(twister, ds, FunctionLibraryInjector.Create(false, 0, 0), 1000, 1, 100);
+      foreach (var tree in randomTrees) {
+        IEnumerable<IFunctionTree> actualTrees = NetworkToFunctionTransformer_Accessor.Transform(tree, new List<string>() { "a", "b", "c" });
+        actualTrees.ToList();
       }
     }
   }

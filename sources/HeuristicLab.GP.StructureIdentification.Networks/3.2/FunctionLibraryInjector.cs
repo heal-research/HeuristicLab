@@ -141,6 +141,7 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
       SetAllowedSubOperators(openAdd, f1Functions);
       SetAllowedSubOperators(openDivision, f1Functions);
       SetAllowedSubOperators(openMul, f1Functions);
+      SetAllowedSubOperators(openSub, f1Functions);
 
       if (includeDifferential)
         functionLibrary.AddFunction(differential);
@@ -151,6 +152,7 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
       variable.SetConstraints(minTimeOffset, maxTimeOffset);
       differential.SetConstraints(minTimeOffset, maxTimeOffset);
       openPar.SetConstraints(minTimeOffset, maxTimeOffset);
+
 
       return functionLibrary;
     }

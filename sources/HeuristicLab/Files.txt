@@ -45,6 +45,7 @@ HeuristicLab.GP.StructureIdentification\3.3:HeuristicLab.GP.StructureIdentificat
 HeuristicLab.GP.StructureIdentification.Classification\3.3:HeuristicLab.GP.StructureIdentification.Classification-3.3.dll 
 HeuristicLab.GP.StructureIdentification.ConditionalEvaluation\3.3:HeuristicLab.GP.StructureIdentification.ConditionalEvaluation-3.3.dll 
 HeuristicLab.GP.StructureIdentification.TimeSeries\3.3:HeuristicLab.GP.StructureIdentification.TimeSeries-3.3.dll 
+HeuristicLab.GP.StructureIdentification.Networks\3.2:HeuristicLab.GP.StructureIdentification.Networks-3.2.dll 
 
 HeuristicLab.Grid\3.2:HeuristicLab.Grid-3.2.dll 
 HeuristicLab.Grid.HiveBridge\3.2:HeuristicLab.Grid.HiveBridge-3.2.dll 

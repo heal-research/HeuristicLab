@@ -67,7 +67,7 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
 
       // create a new sub-scope for each target variable with the transformed expression
       foreach (var targetVariable in targetVariables) {
-        yield return TransformExpression(boundExpression, targetVariable);
+        yield return TransformExpression(boundExpression, targetVariable, targetVariables.Except(new string[] { targetVariable }));
       }
     }
 
@@ -79,14 +79,7 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
     /// <param name="tree"></param>
     /// <returns></returns>
     private static IFunctionTree ApplyMetaFunctions(IFunctionTree tree) {
-      IFunctionTree root = ApplyCycles(tree);
-      List<IFunctionTree> subTrees = new List<IFunctionTree>(root.SubTrees);
-      while (root.SubTrees.Count > 0) root.RemoveSubTree(0);
-
-      foreach (IFunctionTree subTree in subTrees) {
-        root.AddSubTree(ApplyFlips(subTree));
-      }
-      return root;
+      return ApplyFlips(ApplyCycles(tree));
     }
 
     private static IFunctionTree ApplyFlips(IFunctionTree tree) {
@@ -94,10 +87,13 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
         return tree;
       } else if (tree.Function is Flip) {
         if (tree.SubTrees[0].Function is OpenParameter) return tree.SubTrees[0];
-        else return ApplyFlips(InvertChain(tree.SubTrees[0]));
+        else return InvertChain(ApplyFlips(tree.SubTrees[0]));
       } else {
-        IFunctionTree tmp = ApplyFlips(tree.SubTrees[0]);
-        tree.RemoveSubTree(0); tree.InsertSubTree(0, tmp);
+        List<IFunctionTree> subTrees = new List<IFunctionTree>(tree.SubTrees);
+        while (tree.SubTrees.Count > 0) tree.RemoveSubTree(0);
+        foreach (var subTree in subTrees) {
+          tree.AddSubTree(ApplyFlips(subTree));
+        }
         return tree;
       }
     }
@@ -190,7 +186,7 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
       return tree;
     }
 
-  
+
 
     private static IFunctionTree AppendLeft(IFunctionTree tree, IFunctionTree node) {
       IFunctionTree originalTree = tree;
@@ -200,47 +196,67 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
     }
 
     private static bool IsBottomLeft(IFunctionTree tree) {
-      if(tree.SubTrees.Count==0) return true;
-      else if(tree.SubTrees[0].Function is Variable) return true;
-      else if(tree.SubTrees[0].Function is Constant) return true;
+      if (tree.SubTrees.Count == 0) return true;
+      else if (tree.SubTrees[0].Function is Variable) return true;
+      else if (tree.SubTrees[0].Function is Constant) return true;
       else return false;
     }
 
     /// <summary>
-    /// recieves a function tree with an F2 root and branches containing only F0 functions and transforms it into a function-tree for the given target variable
+    /// recieves a function tree transforms it into a function-tree for the given target variable
     /// </summary>
     /// <param name="tree"></param>
     /// <param name="targetVariable"></param>
     /// <returns></returns>
-    private static IFunctionTree TransformExpression(IFunctionTree tree, string targetVariable) {
+    private static IFunctionTree TransformExpression(IFunctionTree tree, string targetVariable, IEnumerable<string> parameters) {
+      if (tree.Function is Addition || tree.Function is Subtraction ||
+          tree.Function is Multiplication || tree.Function is Division ||
+          tree.Function is Exponential || tree.Function is Logarithm) {
+        var occuringVariables = from x in FunctionTreeIterator.IteratePrefix(tree)
+                                where x is VariableFunctionTree
+                                let name = ((VariableFunctionTree)x).VariableName
+                                select name;
+        var openParameters = (new string[] { targetVariable }).Concat(parameters);
+        var missingVariables = openParameters.Except(occuringVariables);
+        if (missingVariables.Count() > 0) {
+          VariableFunctionTree varTree = (VariableFunctionTree)(new Variable()).GetTreeNode();
+          varTree.VariableName = missingVariables.First();
+          varTree.SampleOffset = 0;
+          varTree.Weight = 1.0;
+          tree = (IFunctionTree)tree.Clone();
+          tree.InsertSubTree(0, varTree);
+        }
+      }
       int targetIndex = -1;
-      IFunctionTree combinator;
+      IFunctionTree combinator = null;
       List<IFunctionTree> subTrees = new List<IFunctionTree>(tree.SubTrees);
-      //while (tree.SubTrees.Count > 0) tree.RemoveSubTree(0);
       if (HasTargetVariable(subTrees[0], targetVariable)) {
         targetIndex = 0;
-        combinator = FunctionFromCombinator(tree);
+        combinator = FunctionFromCombinator(tree).GetTreeNode();
       } else {
         for (int i = 1; i < subTrees.Count; i++) {
           if (HasTargetVariable(subTrees[i], targetVariable)) {
             targetIndex = i;
+            combinator = GetInvertedFunction(FunctionFromCombinator(tree)).GetTreeNode();
             break;
           }
         }
-        combinator = FunctionFromCombinator(InvertCombinator(tree));
       }
-      // not found
-      if (targetIndex == -1) throw new InvalidOperationException();
-
-      for (int i = 0; i < subTrees.Count; i++) {
-        if (i != targetIndex)
-          combinator.AddSubTree(subTrees[i]);
-      }
-      if (subTrees[targetIndex].Function is Variable) return combinator;
-      else {
-        IFunctionTree targetChain = InvertF0Chain(subTrees[targetIndex]);
-        AppendLeft(targetChain, combinator);
-        return targetChain;
+      if (targetIndex == -1) {
+        // target variable was not found
+        return tree;
+      } else {
+        // target variable was found
+        for (int i = 0; i < subTrees.Count; i++) {
+          if (i != targetIndex)
+            combinator.AddSubTree(subTrees[i]);
+        }
+        if (subTrees[targetIndex].Function is Variable || subTrees[targetIndex].Function is Constant) return combinator;
+        else {
+          IFunctionTree targetChain = InvertF0Chain(subTrees[targetIndex]);
+          AppendLeft(targetChain, combinator);
+          return targetChain;
+        }
       }
     }
 
@@ -272,29 +288,34 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
       return root;
     }
 
-  
-    private static IFunctionTree InvertCombinator(IFunctionTree tree) {
-      if (tree.Function is OpenAddition) {
-        return (new OpenSubtraction()).GetTreeNode();
-      } else if (tree.Function is OpenSubtraction) {
-        return (new OpenAddition()).GetTreeNode();
-      } else if (tree.Function is OpenMultiplication) {
-        return (new OpenDivision()).GetTreeNode();
-      } else if (tree.Function is OpenDivision) {
-        return (new OpenMultiplication()).GetTreeNode();
-      } else throw new InvalidOperationException();
-    }
 
-    private static IFunctionTree FunctionFromCombinator(IFunctionTree tree) {
-      if (tree.Function is OpenAddition) {
-        return (new Addition()).GetTreeNode();
-      } else if (tree.Function is OpenSubtraction) {
-        return (new Subtraction()).GetTreeNode();
-      } else if (tree.Function is OpenMultiplication) {
-        return (new Multiplication()).GetTreeNode();
-      } else if (tree.Function is OpenDivision) {
-        return (new Division()).GetTreeNode();
-      } else throw new InvalidOperationException();
+
+    //private static IFunctionTree InvertCombinator(IFunctionTree tree) {
+    //  if (tree.Function is OpenAddition) {
+    //    return (new OpenSubtraction()).GetTreeNode();
+    //  } else if (tree.Function is OpenSubtraction) {
+    //    return (new OpenAddition()).GetTreeNode();
+    //  } else if (tree.Function is OpenMultiplication) {
+    //    return (new OpenDivision()).GetTreeNode();
+    //  } else if (tree.Function is OpenDivision) {
+    //    return (new OpenMultiplication()).GetTreeNode();
+    //  } else throw new InvalidOperationException();
+    //}
+
+    private static Dictionary<Type, IFunction> combinatorFunction = new Dictionary<Type, IFunction>() {
+      { typeof(OpenAddition), new Addition()},
+      { typeof(OpenSubtraction), new Subtraction()},
+      { typeof(OpenDivision), new Division()},
+      { typeof(OpenMultiplication), new Multiplication()},
+      { typeof(Addition), new Addition()},
+      { typeof(Subtraction), new Subtraction()},
+      { typeof(Division), new Division()},
+      { typeof(Multiplication), new Multiplication()},
+      { typeof(Logarithm), new Logarithm()},
+      { typeof(Exponential), new Exponential()},
+    };
+    private static IFunction FunctionFromCombinator(IFunctionTree tree) {
+      return combinatorFunction[tree.Function.GetType()];
     }
 
     private static bool HasTargetVariable(IFunctionTree tree, string targetVariable) {
@@ -317,7 +338,7 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
       {typeof(MultiplicationF1), new Multiplication()},
       {typeof(DivisionF1), new Division()},
       {typeof(OpenExp), new Exponential()},
-      {typeof(OpenLog), new OpenLog()},
+      {typeof(OpenLog), new Logarithm()},
       //{typeof(OpenSqr), new Power()},
       //{typeof(OpenSqrt), new Sqrt()},
       {typeof(OpenParameter), new Variable()},
