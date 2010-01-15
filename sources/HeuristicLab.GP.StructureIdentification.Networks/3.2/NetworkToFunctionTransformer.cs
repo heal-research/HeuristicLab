@@ -86,8 +86,9 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
       if (tree.SubTrees.Count == 0) {
         return tree;
       } else if (tree.Function is Flip) {
-        if (tree.SubTrees[0].Function is OpenParameter) return tree.SubTrees[0];
-        else return InvertChain(ApplyFlips(tree.SubTrees[0]));
+        var partiallyAppliedBranch = ApplyFlips(tree.SubTrees[0]);
+        if (partiallyAppliedBranch.Function is OpenParameter) return partiallyAppliedBranch;
+        else return InvertChain(partiallyAppliedBranch);
       } else {
         List<IFunctionTree> subTrees = new List<IFunctionTree>(tree.SubTrees);
         while (tree.SubTrees.Count > 0) tree.RemoveSubTree(0);
@@ -209,6 +210,7 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
     /// <param name="targetVariable"></param>
     /// <returns></returns>
     private static IFunctionTree TransformExpression(IFunctionTree tree, string targetVariable, IEnumerable<string> parameters) {
+      if (tree.Function is Variable || tree.Function is Constant || tree.Function is Differential) return tree;
       if (tree.Function is Addition || tree.Function is Subtraction ||
           tree.Function is Multiplication || tree.Function is Division ||
           tree.Function is Exponential || tree.Function is Logarithm) {
@@ -251,10 +253,11 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
           if (i != targetIndex)
             combinator.AddSubTree(subTrees[i]);
         }
-        if (subTrees[targetIndex].Function is Variable || subTrees[targetIndex].Function is Constant) return combinator;
+        if (subTrees[targetIndex].Function is Variable) return combinator;
         else {
-          IFunctionTree targetChain = InvertF0Chain(subTrees[targetIndex]);
-          AppendLeft(targetChain, combinator);
+          IFunctionTree bottomLeft;
+          IFunctionTree targetChain = InvertF0Chain(subTrees[targetIndex], out bottomLeft);
+          bottomLeft.InsertSubTree(0, combinator);
           return targetChain;
         }
       }
@@ -263,7 +266,7 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
     // inverts a chain of F0 functions 
     // precondition: left bottom is a variable (the selected target variable)
     // postcondition: the chain is inverted. the target variable is removed
-    private static IFunctionTree InvertF0Chain(IFunctionTree tree) {
+    private static IFunctionTree InvertF0Chain(IFunctionTree tree, out IFunctionTree bottomLeft) {
       List<IFunctionTree> currentChain = IterateChain(tree).ToList();
 
       List<IFunctionTree> reversedChain = currentChain.Reverse<IFunctionTree>().Skip(1).ToList();
@@ -285,6 +288,7 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
           invParent.AddSubTree(parent.SubTrees[j]);
         }
       }
+      bottomLeft = invParent;
       return root;
     }
 
