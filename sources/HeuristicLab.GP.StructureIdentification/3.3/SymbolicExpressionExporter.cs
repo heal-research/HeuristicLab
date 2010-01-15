@@ -45,14 +45,13 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
     public bool TryExport(IFunctionTree tree, out string exported) {
-      try {
-        exported = Export(tree);
-        return true;
-      }
-      catch (UnknownFunctionException) {
-        exported = "";
-        return false;
-      }
+      foreach (IFunctionTree t in FunctionTreeIterator.IteratePrefix(tree))
+        if (!functionExporter.ContainsKey(t.Function.GetType())) {
+          exported = null;
+          return false;
+        }
+      exported = Export(tree);
+      return true;
     }
 
     private void BuildExportString(IFunctionTree tree) {
@@ -67,48 +66,44 @@ namespace HeuristicLab.GP.StructureIdentification {
       currentIndent = currentIndent.Remove(0, 2);
     }
 
+    // try-export checks the keys of this dictionary
+    private static Dictionary<Type, Func<IFunction, IFunctionTree, string>> functionExporter = new Dictionary<Type, Func<IFunction, IFunctionTree, string>>() {
+      { typeof(Addition), (function, tree) => ((Addition)function).ExportToScheme()},
+      { typeof(And), (function, tree) => ((And)function).ExportToScheme()},
+      { typeof(Average), (function, tree) => ((Average)function).ExportToScheme()},
+      { typeof(Constant), (function, tree) => ((Constant)function).ExportToScheme(tree)},
+      { typeof(Cosinus), (function, tree) => ((Cosinus)function).ExportToScheme()},
+      { typeof(Differential), (function, tree) => ((Differential)function).ExportToScheme(tree)},
+      { typeof(Division), (function, tree) => ((Division)function).ExportToScheme()},
+      { typeof(Equal), (function, tree) => ((Equal)function).ExportToScheme()},
+      { typeof(Exponential), (function, tree) => ((Exponential)function).ExportToScheme()},
+      { typeof(GreaterThan), (function, tree) => ((GreaterThan)function).ExportToScheme()},
+      { typeof(IfThenElse), (function, tree) => ((IfThenElse)function).ExportToScheme()},
+      { typeof(LessThan), (function, tree) => ((LessThan)function).ExportToScheme()},
+      { typeof(Logarithm), (function, tree) => ((Logarithm)function).ExportToScheme()},
+      { typeof(Multiplication), (function, tree) => ((Multiplication)function).ExportToScheme()},
+      { typeof(Not), (function, tree) => ((Not)function).ExportToScheme()},
+      { typeof(Or), (function, tree) => ((Or)function).ExportToScheme()},
+      { typeof(Power), (function, tree) => ((Power)function).ExportToScheme()},
+      { typeof(Signum), (function, tree) => ((Signum)function).ExportToScheme()},
+      { typeof(Sinus), (function, tree) => ((Sinus)function).ExportToScheme()},
+      { typeof(Sqrt), (function, tree) => ((Sqrt)function).ExportToScheme()},
+      { typeof(Subtraction), (function, tree) => ((Subtraction)function).ExportToScheme()},
+      { typeof(Tangens), (function, tree) => ((Tangens)function).ExportToScheme()},
+      { typeof(Variable), (function, tree) => ((Variable)function).ExportToScheme(tree)},
+      { typeof(Xor), (function, tree) => ((Xor)function).ExportToScheme()},
+    };
     private static string ExportFunction(IFunction function, IFunctionTree tree) {
       // this is smelly, if there is a cleaner way to have a 'dynamic' visitor 
       // please let me know! (gkronber 14.10.2008)
-      if (function is Addition) return ((Addition)function).ExportToScheme();
-      if (function is And) return ((And)function).ExportToScheme();
-      if (function is Average) return ((Average)function).ExportToScheme();
-      if (function is Constant) return ((Constant)function).ExportToScheme(tree);
-      if (function is Cosinus) return ((Cosinus)function).ExportToScheme();
-      if (function is Differential) return ((Differential)function).ExportToScheme(tree);
-      if (function is Division) return ((Division)function).ExportToScheme();
-      if (function is Equal) return ((Equal)function).ExportToScheme();
-      if (function is Exponential) return ((Exponential)function).ExportToScheme();
-      if (function is GreaterThan) return ((GreaterThan)function).ExportToScheme();
-      if (function is IfThenElse) return ((IfThenElse)function).ExportToScheme();
-      if (function is LessThan) return ((LessThan)function).ExportToScheme();
-      if (function is Logarithm) return ((Logarithm)function).ExportToScheme();
-      if (function is Multiplication) return ((Multiplication)function).ExportToScheme();
-      if (function is Not) return ((Not)function).ExportToScheme();
-      if (function is Or) return ((Or)function).ExportToScheme();
-      if (function is Power) return ((Power)function).ExportToScheme();
-      if (function is Signum) return ((Signum)function).ExportToScheme();
-      if (function is Sinus) return ((Sinus)function).ExportToScheme();
-      if (function is Sqrt) return ((Sqrt)function).ExportToScheme();
-      if (function is Subtraction) return ((Subtraction)function).ExportToScheme();
-      if (function is Tangens) return ((Tangens)function).ExportToScheme();
-      if (function is Variable) return ((Variable)function).ExportToScheme(tree);
-      if (function is Xor) return ((Xor)function).ExportToScheme();
-      throw new UnknownFunctionException(function.Name);
+      if (functionExporter.ContainsKey(function.GetType())) return functionExporter[function.GetType()](function, tree);
+      else return function.Name;
     }
-
 
     #endregion
 
     public static string GetName(IFunctionTree tree) {
-      string name = "";
-      try {
-        name = ExportFunction(tree.Function, tree);
-      }
-      catch (UnknownFunctionException) {
-        name = "N/A";
-      }
-      return name;
+      return ExportFunction(tree.Function, tree);
     }
   }
 

@@ -108,7 +108,6 @@
       <DependentUpon>FunctionTreeView.cs</DependentUpon>
     </Compile>
     <Compile Include="GeneticProgrammingModel.cs" />
-    <Compile Include="UnknownFunctionException.cs" />
     <Compile Include="HeuristicLabGPPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TreeGardener.cs" />

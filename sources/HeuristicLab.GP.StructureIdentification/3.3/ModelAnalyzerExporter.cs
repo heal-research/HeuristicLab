@@ -21,6 +21,7 @@
 
 using HeuristicLab.GP.Interfaces;
 using System;
+using System.Collections.Generic;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public class ModelAnalyzerExporter : IFunctionTreeSerializer {
@@ -33,89 +34,71 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
     public bool TryExport(IFunctionTree tree, out string exported) {
-      try {
-        exported = Export(tree);
-        return true;
-      } catch(UnknownFunctionException) {
-        exported = "";
-        return false;
-      }
+      foreach (IFunctionTree t in FunctionTreeIterator.IteratePrefix(tree))
+        if (!functionExporter.ContainsKey(t.Function.GetType())) {
+          exported = null;
+          return false;
+        }
+      exported = Export(tree);
+      return true;
     }
 
     public string Export(IFunctionTree tree) {
       string result = ExportFunction(tree.Function, tree);
-      if(tree.SubTrees.Count>0) 
+      if (tree.SubTrees.Count > 0)
         result += "(\n";
-      foreach(IFunctionTree subTree in tree.SubTrees) {
+      foreach (IFunctionTree subTree in tree.SubTrees) {
         result += Export(subTree);
         result += ";\n";
       }
       result = result.TrimEnd(';', '\n');
-      if(tree.SubTrees.Count > 0) result += ")";
+      if (tree.SubTrees.Count > 0) result += ")";
       return result;
     }
-
-    public IFunctionTree Import(string tree) {
-      throw new UnknownFunctionException(tree);
-    }
-
-    public bool TryImport(string tree, out IFunctionTree importedTree) {
-      try {
-        importedTree = Import(tree);
-        return true;
-      }
-      catch (UnknownFunctionException) {
-        importedTree = null;
-        return false;
-      }
-    }
-
     #endregion
 
+    // try-export checks the keys of this dictionary
+    private static Dictionary<Type, Func<IFunction, IFunctionTree, string>> functionExporter = new Dictionary<Type, Func<IFunction, IFunctionTree, string>>() {
+      { typeof(Addition), (function, tree) => ((Addition)function).ExportToHL2(tree)},
+      { typeof(And), (function, tree) => ((And)function).ExportToHL2(tree)},
+      { typeof(Average), (function, tree) => ((Average)function).ExportToHL2(tree)},
+      { typeof(Constant), (function, tree) => ((Constant)function).ExportToHL2(tree)},
+      { typeof(Cosinus), (function, tree) => ((Cosinus)function).ExportToHL2(tree)},
+      { typeof(Differential), (function, tree) => ((Differential)function).ExportToHL2(tree)},
+      { typeof(Division), (function, tree) => ((Division)function).ExportToHL2(tree)},
+      { typeof(Equal), (function, tree) => ((Equal)function).ExportToHL2(tree)},
+      { typeof(Exponential), (function, tree) => ((Exponential)function).ExportToHL2(tree)},
+      { typeof(GreaterThan), (function, tree) => ((GreaterThan)function).ExportToHL2(tree)},
+      { typeof(IfThenElse), (function, tree) => ((IfThenElse)function).ExportToHL2(tree)},
+      { typeof(LessThan), (function, tree) => ((LessThan)function).ExportToHL2(tree)},
+      { typeof(Logarithm), (function, tree) => ((Logarithm)function).ExportToHL2(tree)},
+      { typeof(Multiplication), (function, tree) => ((Multiplication)function).ExportToHL2(tree)},
+      { typeof(Not), (function, tree) => ((Not)function).ExportToHL2(tree)},
+      { typeof(Or), (function, tree) => ((Or)function).ExportToHL2(tree)},
+      { typeof(Power), (function, tree) => ((Power)function).ExportToHL2(tree)},
+      { typeof(Signum), (function, tree) => ((Signum)function).ExportToHL2(tree)},
+      { typeof(Sinus), (function, tree) => ((Sinus)function).ExportToHL2(tree)},
+      { typeof(Sqrt), (function, tree) => ((Sqrt)function).ExportToHL2(tree)},
+      { typeof(Subtraction), (function, tree) => ((Subtraction)function).ExportToHL2(tree)},
+      { typeof(Tangens), (function, tree) => ((Tangens)function).ExportToHL2(tree)},
+      { typeof(Variable), (function, tree) => ((Variable)function).ExportToHL2(tree)},
+      { typeof(Xor), (function, tree) => ((Xor)function).ExportToHL2(tree)},
+    };
     private static string ExportFunction(IFunction function, IFunctionTree tree) {
       // this is smelly, if there is a cleaner way to have a 'dynamic' visitor 
       // please let me know! (gkronber 14.10.2008)
-      if(function is Addition) return ((Addition)function).ExportToHL2(tree);
-      if(function is And) return ((And)function).ExportToHL2(tree);
-      if(function is Average) return ((Average)function).ExportToHL2(tree);
-      if(function is Constant) return ((Constant)function).ExportToHL2(tree);
-      if(function is Cosinus) return ((Cosinus)function).ExportToHL2(tree);
-      if(function is Differential) return ((Differential)function).ExportToHL2(tree);
-      if(function is Division) return ((Division)function).ExportToHL2(tree);
-      if(function is Equal) return ((Equal)function).ExportToHL2(tree);
-      if(function is Exponential) return ((Exponential)function).ExportToHL2(tree);
-      if(function is GreaterThan) return ((GreaterThan)function).ExportToHL2(tree);
-      if(function is IfThenElse) return ((IfThenElse)function).ExportToHL2(tree);
-      if(function is LessThan) return ((LessThan)function).ExportToHL2(tree);
-      if(function is Logarithm) return ((Logarithm)function).ExportToHL2(tree);
-      if(function is Multiplication) return ((Multiplication)function).ExportToHL2(tree);
-      if(function is Not) return ((Not)function).ExportToHL2(tree);
-      if(function is Or) return ((Or)function).ExportToHL2(tree);
-      if(function is Power) return ((Power)function).ExportToHL2(tree);
-      if(function is Signum) return ((Signum)function).ExportToHL2(tree);
-      if(function is Sinus) return ((Sinus)function).ExportToHL2(tree);
-      if(function is Sqrt) return ((Sqrt)function).ExportToHL2(tree);
-      if(function is Subtraction) return ((Subtraction)function).ExportToHL2(tree);
-      if(function is Tangens) return ((Tangens)function).ExportToHL2(tree);
-      if(function is Variable) return ((Variable)function).ExportToHL2(tree);
-      if(function is Xor) return ((Xor)function).ExportToHL2(tree);
-      throw new UnknownFunctionException(function.Name);
+      if (functionExporter.ContainsKey(function.GetType())) return functionExporter[function.GetType()](function, tree);
+      else return function.Name;
     }
 
     public static string GetName(IFunctionTree tree) {
-      string name = "";
-      try {
-        name = ExportFunction(tree.Function, tree);
-      } catch(UnknownFunctionException) {
-        name = "N/A";
-      }
-      return name;
+      return ExportFunction(tree.Function, tree);
     }
   }
 
   internal static class HL2ExporterExtensions {
     private static string GetHL2FunctionName(string name) {
-      return "[F]" + name ;
+      return "[F]" + name;
     }
 
     public static string ExportToHL2(this Addition addition, IFunctionTree tree) {

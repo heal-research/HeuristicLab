@@ -71,7 +71,7 @@ namespace HeuristicLab.GP.Boolean {
           }
         case SymbolTable.UNKNOWN:
         default:
-          throw new UnknownFunctionException(t.Function.Name);
+          throw new NotImplementedException(t.Function.Name);
       }
     }
   }
