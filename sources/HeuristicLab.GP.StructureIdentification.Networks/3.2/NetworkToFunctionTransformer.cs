@@ -49,11 +49,14 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
       // clear old sub-scopes
       while (scope.SubScopes.Count > 0) scope.RemoveSubScope(scope.SubScopes[0]);
 
+      var targetVariableEnumerator = targetVariables.Select(x => x.Data).GetEnumerator();
       // create a new sub-scope for each target variable with the transformed expression
       foreach (IFunctionTree transformedTree in Transform(model.FunctionTree, targetVariables.Select(x => x.Data))) {
+        targetVariableEnumerator.MoveNext();
         Scope exprScope = new Scope();
         scope.AddSubScope(exprScope);
         exprScope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("FunctionTree"), new GeneticProgrammingModel(transformedTree)));
+        exprScope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TargetVariable"), new StringData(targetVariableEnumerator.Current)));
       }
 
       return null;
