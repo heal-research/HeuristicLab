@@ -163,6 +163,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       solutionProc.AddSubOperator(qualityImpactCalculator);
 
       NodeBasedVariableImpactCalculator nodeImpactCalculator = new NodeBasedVariableImpactCalculator();
+      nodeImpactCalculator.GetVariableInfo("TreeEvaluator").ActualName = "ModelAnalysisTreeEvaluator";
       nodeImpactCalculator.GetVariableInfo("SamplesStart").ActualName = "ValidationSamplesStart";
       nodeImpactCalculator.GetVariableInfo("SamplesEnd").ActualName = "ValidationSamplesEnd";
 
