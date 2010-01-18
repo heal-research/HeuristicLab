@@ -35,12 +35,25 @@ namespace HeuristicLab.GP.StructureIdentification {
   /// </summary>
   public class ScalingTreeEvaluator : HL3TreeEvaluator, ITreeEvaluator {
     public ScalingTreeEvaluator() : base() { } // for persistence
-    public ScalingTreeEvaluator(double minValue, double maxValue) : base(minValue, maxValue) { }
+    public ScalingTreeEvaluator(double minValue, double maxValue)
+      : base(minValue, maxValue) {
+    }
 
     private string targetVariable;
     public string TargetVariable {
       get { return targetVariable; }
       set { targetVariable = value; }
+    }
+
+
+    public override double Evaluate(int sampleIndex) {
+      PC = 0;
+      this.sampleIndex = sampleIndex;
+      double estimation = EvaluateBakedCode();
+      if (double.IsPositiveInfinity(estimation)) estimation = UpperEvaluationLimit;
+      else if (double.IsNegativeInfinity(estimation)) estimation = LowerEvaluationLimit;
+      else if (double.IsNaN(estimation)) estimation = UpperEvaluationLimit;
+      return estimation;
     }
 
     public override IEnumerable<double> Evaluate(Dataset dataset, IFunctionTree tree, IEnumerable<int> rows) {
