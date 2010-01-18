@@ -112,7 +112,7 @@ namespace HeuristicLab.GP.Test {
         IFunctionTree t1 = importer.Import("(- (variable 1.0 a 0) (variable 1.0 c 0))");
         IFunctionTree t2 = importer.Import("(- (variable 1.0 a 0) (variable 1.0 b 0))");
 
-        CompareTrees(actualTrees, new List<IFunctionTree>() {
+        CompareTrees(actualTrees.ToList(), new List<IFunctionTree>() {
         t0, t1, t2
       });
       }
@@ -126,7 +126,7 @@ namespace HeuristicLab.GP.Test {
         IFunctionTree t1 = importer.Import("(- (+ (variable 1.0 a 0) (* (variable 1.0 c 0) 1.0)) 1.0 )");
         IFunctionTree t2 = importer.Import("(/ (+ (variable 1.0 a 0) (+ (variable 1.0 b 0) 1.0)) 1.0 )");
 
-        CompareTrees(actualTrees, new List<IFunctionTree>() {
+        CompareTrees(actualTrees.ToList(), new List<IFunctionTree>() {
         t0, t1, t2
       });
       }
@@ -141,7 +141,7 @@ namespace HeuristicLab.GP.Test {
         IFunctionTree t2 = importer.Import("(/ (variable 1.0 a 0) (variable 1.0 b 0))");
 
 
-        CompareTrees(actualTrees, new List<IFunctionTree>() {
+        CompareTrees(actualTrees.ToList(), new List<IFunctionTree>() {
         t0, t1, t2
       });
       }
@@ -159,7 +159,7 @@ namespace HeuristicLab.GP.Test {
         IFunctionTree t2 = importer.Import(@"(+ (log (variable 1.0 a 0))
                                                 (exp (variable 1.0 b 0)))");
 
-        CompareTrees(actualTrees, new List<IFunctionTree>() {
+        CompareTrees(actualTrees.ToList(), new List<IFunctionTree>() {
         t0, t1, t2
       });
       }
@@ -175,7 +175,7 @@ namespace HeuristicLab.GP.Test {
         IFunctionTree t2 = importer.Import(@"(/ (+ (log (log (variable 1.0 a 0)))
                                                    (exp (exp (variable 1.0 b 0)))) 2.0)");
 
-        CompareTrees(actualTrees, new List<IFunctionTree>() {
+        CompareTrees(actualTrees.ToList(), new List<IFunctionTree>() {
         t0, t1, t2
       });
       }
@@ -193,7 +193,7 @@ namespace HeuristicLab.GP.Test {
         IFunctionTree t2 = importer.Import(@"(/ (+ (exp (variable 1.0 a 0))
                                                    (/ (variable 1.0 b 0) 2.0)) 2.0)");
 
-        CompareTrees(actualTrees, new List<IFunctionTree>() {
+        CompareTrees(actualTrees.ToList(), new List<IFunctionTree>() {
         t0, t1, t2
       });
       }
@@ -213,7 +213,7 @@ namespace HeuristicLab.GP.Test {
         IFunctionTree t2 = importer.Import("(- (- (* (- (variable 1.0 a 0) 2.0) 4.0) 3.0) (variable 1.0 b 0))");
 
 
-        CompareTrees(actualTrees, new List<IFunctionTree>() {
+        CompareTrees(actualTrees.ToList(), new List<IFunctionTree>() {
         t0, t1, t2
       });
       }
@@ -228,7 +228,7 @@ namespace HeuristicLab.GP.Test {
         IFunctionTree t2 = importer.Import("(* (variable 1.0 d 0) (variable 1.0 d 0))");
 
 
-        CompareTrees(actualTrees, new List<IFunctionTree>() {
+        CompareTrees(actualTrees.ToList(), new List<IFunctionTree>() {
         t0, t1, t2
         });
       }
@@ -243,7 +243,7 @@ namespace HeuristicLab.GP.Test {
         IFunctionTree t2 = importer.Import("(* (variable 1.0 a 0) (variable 1.0 d 0))");
 
 
-        CompareTrees(actualTrees, new List<IFunctionTree>() {
+        CompareTrees(actualTrees.ToList(), new List<IFunctionTree>() {
         t0, t1, t2
         });
       }
@@ -258,7 +258,7 @@ namespace HeuristicLab.GP.Test {
         IFunctionTree t2 = importer.Import("(log (variable 1.0 a 0))");
 
 
-        CompareTrees(actualTrees, new List<IFunctionTree>() {
+        CompareTrees(actualTrees.ToList(), new List<IFunctionTree>() {
         t0, t1, t2
         });
       }
@@ -273,7 +273,7 @@ namespace HeuristicLab.GP.Test {
         IFunctionTree t2 = importer.Import("(exp (variable 1.0 a 0))");
 
 
-        CompareTrees(actualTrees, new List<IFunctionTree>() {
+        CompareTrees(actualTrees.ToList(), new List<IFunctionTree>() {
         t0, t1, t2
         });
       }
@@ -289,14 +289,14 @@ namespace HeuristicLab.GP.Test {
         IFunctionTree t2 = importer.Import("(variable 1.0 a 0)");
 
 
-        CompareTrees(actualTrees, new List<IFunctionTree>() {
+        CompareTrees(actualTrees.ToList(), new List<IFunctionTree>() {
         t0, t1, t2
         });
       }
     }
 
-    private void CompareTrees(IEnumerable<IFunctionTree> actual, IEnumerable<IFunctionTree> expected) {
-      var expectedEnumerator = expected.GetEnumerator();
+    private void CompareTrees(List<IFunctionTree> actual, List<IFunctionTree> expected) {
+      var expectedEnumerator = expected.GetEnumerator();      
       foreach (var actualTree in actual) {
         if (!expectedEnumerator.MoveNext()) Assert.Fail();
         IFunctionTree expectedTree = expectedEnumerator.Current;

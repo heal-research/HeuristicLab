@@ -50,8 +50,9 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
       while (scope.SubScopes.Count > 0) scope.RemoveSubScope(scope.SubScopes[0]);
 
       var targetVariableEnumerator = targetVariables.Select(x => x.Data).GetEnumerator();
+      List<IFunctionTree> transformedTrees = new List<IFunctionTree>(Transform(model.FunctionTree, targetVariables.Select(x => x.Data)));
       // create a new sub-scope for each target variable with the transformed expression
-      foreach (IFunctionTree transformedTree in Transform(model.FunctionTree, targetVariables.Select(x => x.Data))) {
+      foreach (IFunctionTree transformedTree in transformedTrees) {
         targetVariableEnumerator.MoveNext();
         Scope exprScope = new Scope();
         scope.AddSubScope(exprScope);
@@ -71,7 +72,7 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
 
       // create a new sub-scope for each target variable with the transformed expression
       foreach (var targetVariable in targetVariables) {
-        yield return TransformExpression(boundExpression, targetVariable, targetVariables.Except(new string[] { targetVariable }));
+        yield return TransformExpression((IFunctionTree)boundExpression.Clone(), targetVariable, targetVariables.Except(new string[] { targetVariable }));
       }
     }
 
