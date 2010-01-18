@@ -21,5 +21,11 @@ namespace HeuristicLab.MainForm.Test {
     public override void Execute() {
       new OpenAction().Execute(MainFormManager.MainForm);
     }
+
+    public override void ActiveViewChanged(object sender, EventArgs e) {
+      this.ToolStripItem.Enabled = !this.ToolStripItem.Enabled;
+      MainFormManager.MainForm.Title = 
+        MainFormManager.MainForm.ActiveView == null ? "null" : MainFormManager.MainForm.ActiveView.Caption;
+    }
   }
 }

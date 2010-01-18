@@ -175,7 +175,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
           Form form = CreateForm(view);
           views[view] = form;
           form.Activated += new EventHandler(FormActivated);
-          form.GotFocus += new EventHandler(FormActivated);
           form.FormClosing += new FormClosingEventHandler(view.OnClosing);
           form.FormClosing += new FormClosingEventHandler(((ViewBase)view).OnClosingHelper);
           form.FormClosed += new FormClosedEventHandler(view.OnClosed);
@@ -191,7 +190,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       }
     }
 
-    protected virtual void Show(IView view, bool firstTimeShown) {      
+    protected virtual void Show(IView view, bool firstTimeShown) {
     }
 
     public void HideView(IView view) {
@@ -244,7 +243,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
       IView view = GetViewForForm(form);
 
       form.Activated -= new EventHandler(FormActivated);
-      form.GotFocus -= new EventHandler(FormActivated);
       form.FormClosing -= new FormClosingEventHandler(view.OnClosing);
       form.FormClosing -= new FormClosingEventHandler(((ViewBase)view).OnClosingHelper);
       form.FormClosed -= new FormClosedEventHandler(view.OnClosed);
@@ -268,8 +266,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     #endregion
 
     #region create menu and toolbar
-    protected virtual void CreateGUI() {      
-
+    protected virtual void CreateGUI() {
       IEnumerable<IMenuItem> toolStripMenuItems =
         from mi in ApplicationManager.Manager.GetInstances(userInterfaceItemType)
         where mi is IMenuItem

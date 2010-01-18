@@ -114,6 +114,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       dockPanelSkin1.DockPaneStripSkin = dockPaneStripSkin1;
       this.dockPanel.Skin = dockPanelSkin1;
       this.dockPanel.TabIndex = 3;
+      this.dockPanel.ActiveContentChanged += new System.EventHandler(this.dockPanel_ActiveContentChanged);
       // 
       // DockingMainForm
       // 
