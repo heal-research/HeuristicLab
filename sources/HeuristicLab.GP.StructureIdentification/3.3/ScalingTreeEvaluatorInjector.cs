@@ -56,6 +56,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       double minEstimatedValue = mean - punishmentFactor * range;
       double maxEstimatedValue = mean + punishmentFactor * range;
       ScalingTreeEvaluator evaluator = new ScalingTreeEvaluator(minEstimatedValue, maxEstimatedValue);
+      evaluator.TargetVariable = targetVariable;
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TreeEvaluator"), evaluator));
       return null;
     }

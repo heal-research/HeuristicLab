@@ -26,6 +26,7 @@ using HeuristicLab.DataAnalysis;
 using HeuristicLab.GP.Interfaces;
 using System.Collections.Generic; // double.IsAlmost extension
 using System.Linq;
+using System.Xml;
 namespace HeuristicLab.GP.StructureIdentification {
   /// <summary>
   /// Evaluates FunctionTrees recursively by interpretation of the function symbols in each node.
@@ -36,15 +37,22 @@ namespace HeuristicLab.GP.StructureIdentification {
     public ScalingTreeEvaluator() : base() { } // for persistence
     public ScalingTreeEvaluator(double minValue, double maxValue) : base(minValue, maxValue) { }
 
+    private string targetVariable;
+    public string TargetVariable {
+      get { return targetVariable; }
+      set { targetVariable = value; }
+    }
+
     public override IEnumerable<double> Evaluate(Dataset dataset, IFunctionTree tree, IEnumerable<int> rows) {
       double[] result = base.Evaluate(dataset, tree, rows).ToArray();
-      double tMean = dataset.GetMean(0);
+      int targetVariableIndex = dataset.GetVariableIndex(targetVariable);
+      double tMean = dataset.GetMean(targetVariableIndex);
       double xMean = Statistics.Mean(result);
       double sumXT = 0;
       double sumXX = 0;
       for (int i = 0; i < result.Length; i++) {
         double x = result[i];
-        double t = dataset.GetValue(rows.ElementAt(i), 0);
+        double t = dataset.GetValue(rows.ElementAt(i), targetVariableIndex);
         sumXT += (x - xMean) * (t - tMean);
         sumXX += (x - xMean) * (x - xMean);
       }
@@ -57,6 +65,25 @@ namespace HeuristicLab.GP.StructureIdentification {
         result[i] = scaledResult;
       }
       return result;
+    }
+
+    public override object Clone(IDictionary<Guid, object> clonedObjects) {
+      ScalingTreeEvaluator clone = (ScalingTreeEvaluator)base.Clone(clonedObjects);
+      clone.targetVariable = targetVariable;
+      return clone;
+    }
+
+    public override System.Xml.XmlNode GetXmlNode(string name, System.Xml.XmlDocument document, IDictionary<Guid, HeuristicLab.Core.IStorable> persistedObjects) {
+      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
+      XmlAttribute targetVariableAttribute = document.CreateAttribute("TargetVariable");
+      targetVariableAttribute.Value = targetVariable;
+      node.Attributes.Append(targetVariableAttribute);
+      return node;
+    }
+
+    public override void Populate(XmlNode node, IDictionary<Guid, HeuristicLab.Core.IStorable> restoredObjects) {
+      base.Populate(node, restoredObjects);
+      targetVariable = node.Attributes["TargetVariable"].Value;
     }
   }
 }
