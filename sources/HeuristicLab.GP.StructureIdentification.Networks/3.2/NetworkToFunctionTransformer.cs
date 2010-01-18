@@ -57,6 +57,7 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
         scope.AddSubScope(exprScope);
         exprScope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("FunctionTree"), new GeneticProgrammingModel(transformedTree)));
         exprScope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TargetVariable"), new StringData(targetVariableEnumerator.Current)));
+        Debug.Assert(!(transformedTree is VariableFunctionTree) || ((VariableFunctionTree)transformedTree).VariableName != targetVariableEnumerator.Current);
       }
 
       return null;
@@ -213,7 +214,13 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
     /// <param name="targetVariable"></param>
     /// <returns></returns>
     private static IFunctionTree TransformExpression(IFunctionTree tree, string targetVariable, IEnumerable<string> parameters) {
-      if (tree.Function is Variable || tree.Function is Constant || tree.Function is Differential) return tree;
+      if (tree.Function is Constant) return tree;
+      if (tree.Function is Variable || tree.Function is Differential) {
+        VariableFunctionTree varTree = (VariableFunctionTree)tree;
+        varTree.Weight = 1.0;
+        if (varTree.VariableName == targetVariable) varTree.VariableName = parameters.First();
+        return varTree;
+      }
       if (tree.Function is Addition || tree.Function is Subtraction ||
           tree.Function is Multiplication || tree.Function is Division ||
           tree.Function is Exponential || tree.Function is Logarithm) {

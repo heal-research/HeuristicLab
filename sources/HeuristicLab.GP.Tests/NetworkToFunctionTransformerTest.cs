@@ -234,7 +234,7 @@ namespace HeuristicLab.GP.Test {
       }
       {
         // expression with one parameter
-        IFunctionTree tree = importer.Import(@"(f1-* (variable 1.0 a 0) (variable 1.0 d 0))");
+        IFunctionTree tree = importer.Import(@"(f1-* (open-param - 0) (variable 1.0 d 0))");
 
         IEnumerable<IFunctionTree> actualTrees = NetworkToFunctionTransformer_Accessor.Transform(tree, new List<string>() { "a", "b", "c" });
 
@@ -249,7 +249,7 @@ namespace HeuristicLab.GP.Test {
       }
       {
         // expression with one parameter
-        IFunctionTree tree = importer.Import(@"(open-log (variable 1.0 a 0))");
+        IFunctionTree tree = importer.Import(@"(open-log (open-param - 0))");
 
         IEnumerable<IFunctionTree> actualTrees = NetworkToFunctionTransformer_Accessor.Transform(tree, new List<string>() { "a", "b", "c" });
 
@@ -264,13 +264,29 @@ namespace HeuristicLab.GP.Test {
       }
       {
         // expression with flip and one parameter
-        IFunctionTree tree = importer.Import(@"(flip (open-log (variable 1.0 a 0)))");
+        IFunctionTree tree = importer.Import(@"(flip (open-log (open-param - 0)))");
 
         IEnumerable<IFunctionTree> actualTrees = NetworkToFunctionTransformer_Accessor.Transform(tree, new List<string>() { "a", "b", "c" });
 
         IFunctionTree t0 = importer.Import("(log (variable 1.0 b 0))");
         IFunctionTree t1 = importer.Import("(exp (variable 1.0 a 0))");
         IFunctionTree t2 = importer.Import("(exp (variable 1.0 a 0))");
+
+
+        CompareTrees(actualTrees, new List<IFunctionTree>() {
+        t0, t1, t2
+        });
+      }
+
+      {
+        // expression with flip and one parameter
+        IFunctionTree tree = importer.Import(@"(open-param - 0)");
+
+        IEnumerable<IFunctionTree> actualTrees = NetworkToFunctionTransformer_Accessor.Transform(tree, new List<string>() { "a", "b", "c" });
+
+        IFunctionTree t0 = importer.Import("(variable 1.0 b 0)");
+        IFunctionTree t1 = importer.Import("(variable 1.0 a 0)");
+        IFunctionTree t2 = importer.Import("(variable 1.0 a 0)");
 
 
         CompareTrees(actualTrees, new List<IFunctionTree>() {
