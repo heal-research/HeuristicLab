@@ -1,0 +1,38 @@
+﻿; This line is skipped. DO NOT TOUCH THIS line!
+; List of project directories and file names separated by ':' that are part of the installation
+
+HeuristicLab.PluginInfrastructure:ICSharpCode.SharpZipLib.dll
+HeuristicLab.PluginInfrastructure:ICSharpCode.SharpZipLib License.txt
+HeuristicLab.Charting\3.3:HeuristicLab.Charting-3.3.dll 
+HeuristicLab.Charting.Data\3.3:HeuristicLab.Charting.Data-3.3.dll 
+HeuristicLab.Collections\3.3:HeuristicLab.Collections-3.3.dll 
+HeuristicLab.Common\3.2:HeuristicLab.Common-3.2.dll  
+HeuristicLab.Common.Resources\3.2:HeuristicLab.Common.Resources-3.2.dll 
+HeuristicLab.Core\3.3:HeuristicLab.Core-3.3.dll 
+HeuristicLab.Core.Views\3.3:HeuristicLab.Core.Views-3.3.dll 
+HeuristicLab.Data\3.3:HeuristicLab.Data-3.3.dll 
+HeuristicLab.Evolutionary\3.3:HeuristicLab.Evolutionary-3.3.dll 
+HeuristicLab.Logging\3.3:HeuristicLab.Logging-3.3.dll 
+HeuristicLab.MainForm\3.2:HeuristicLab.MainForm-3.2.dll 
+HeuristicLab.MainForm.Test\3.2:HeuristicLab.MainForm.Test-3.2.dll 
+HeuristicLab.MainForm.WindowsForms\3.2:HeuristicLab.MainForm.WindowsForms-3.2.dll 
+HeuristicLab.Operators\3.3:HeuristicLab.Operators-3.3.dll 
+HeuristicLab.Operators.Programmable\3.3:HeuristicLab.Operators.Programmable-3.3.dll 
+HeuristicLab.Optimizer\3.3:HeuristicLab.Optimizer-3.3.dll 
+HeuristicLab.Permutation\3.3:HeuristicLab.Permutation-3.3.dll 
+HeuristicLab.Persistence\3.3:HeuristicLab.Persistence-3.3.dll 
+HeuristicLab.Persistence.GUI\3.3:HeuristicLab.Persistence.GUI-3.3.dll 
+HeuristicLab.Random\3.3:HeuristicLab.Random-3.3.dll 
+HeuristicLab.Routing.TSP\3.3:HeuristicLab.Routing.TSP-3.3.dll 
+HeuristicLab.Selection\3.3:HeuristicLab.Selection-3.3.dll 
+HeuristicLab.Selection.OffspringSelection\3.3:HeuristicLab.Selection.OffspringSelection-3.3.dll 
+HeuristicLab.SequentialEngine\3.3:HeuristicLab.SequentialEngine-3.3.dll 
+HeuristicLab.SGA\3.3:HeuristicLab.SGA-3.3.dll 
+HeuristicLab.TestFunctions\3.3:HeuristicLab.TestFunctions-3.3.dll 
+HeuristicLab.ThreadParallelEngine\3.3:HeuristicLab.ThreadParallelEngine-3.3.dll 
+HeuristicLab.Tracing\3.2:HeuristicLab.Tracing-3.2.dll 
+HeuristicLab.Tracing\3.2:log4net.dll 
+HeuristicLab.Tracing\3.2:log4net licence.txt 
+HeuristicLab.Tracing\3.2:HeuristicLab.log4net.xml 
+WinFormsUI:WeifenLuo.WinFormsUI.Docking.dll 
+WinFormsUI:WeifenLuo.WinFormsUI.Docking License.txt 

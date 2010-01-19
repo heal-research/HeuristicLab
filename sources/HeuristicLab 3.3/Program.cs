@@ -25,37 +25,13 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Text;
 using HeuristicLab;
+using HeuristicLab.PluginInfrastructure.Starter;
 
-namespace HeuristicLab33 {
+namespace HeuristicLab {
   static class Program {
     [STAThread]
     static void Main(string[] args) {
-      try {
-        Application.EnableVisualStyles();
-        Application.SetCompatibleTextRenderingDefault(false);
-        Application.Run(new MainForm());
-      }
-      catch (Exception ex) {
-        ShowErrorMessageBox(ex);
-      }
-    }
-
-    public static void ShowErrorMessageBox(Exception ex) {
-      MessageBox.Show(BuildErrorMessage(ex),
-                      "Error - " + ex.GetType().Name,
-                      MessageBoxButtons.OK,
-                      MessageBoxIcon.Error);
-    }
-
-    private static string BuildErrorMessage(Exception ex) {
-      StringBuilder sb = new StringBuilder();
-      sb.Append("Sorry, but something went wrong!\n\n" + ex.Message + "\n\n" + ex.StackTrace);
-
-      while (ex.InnerException != null) {
-        ex = ex.InnerException;
-        sb.Append("\n\n-----\n\n" + ex.Message + "\n\n" + ex.StackTrace);
-      }
-      return sb.ToString();
+      HeuristicLab.PluginInfrastructure.Main.Run(args);
     }
   }
 }

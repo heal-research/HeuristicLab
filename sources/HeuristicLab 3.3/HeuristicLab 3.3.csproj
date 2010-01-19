@@ -8,13 +8,13 @@
     <ProjectGuid>{B1DCDECA-B56E-41D5-9850-EF0D3A77DEAF}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab33</RootNamespace>
-    <AssemblyName>HeuristicLab 3.3</AssemblyName>
+    <RootNamespace>HeuristicLab</RootNamespace>
+    <AssemblyName>HeuristicLab</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
-    <StartupObject>HeuristicLab33.Program</StartupObject>
+    <StartupObject>HeuristicLab.Program</StartupObject>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
     <ApplicationIcon>HeuristicLab.ico</ApplicationIcon>
   </PropertyGroup>
@@ -67,6 +67,7 @@
     </Compile>
     <None Include="app.config" />
     <None Include="CopyAssemblies.cmd" />
+    <None Include="CreateConsoleApplication.cmd" />
     <None Include="CustomPostBuild.cmd" />
     <None Include="CustomPostBuildTemplate_UpdateLocalInstallation.cmd" />
     <None Include="HeuristicLab.snk" />
@@ -83,12 +84,18 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HeuristicLab\HeuristicLab.csproj">
-      <Project>{623FB817-8371-4A9A-A491-4DECC87B2BBB}</Project>
-      <Name>HeuristicLab</Name>
+    <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
+      <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
+      <Name>HeuristicLab.PluginInfrastructure</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Files.txt">
+    </Content>
+    <Content Include="Files.x64.txt">
+    </Content>
+    <Content Include="Files.x86.txt">
+    </Content>
     <Content Include="HeuristicLab.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -114,6 +121,7 @@ set Outdir=$(Outdir)
 set Platform=$(PlatformName)
 set Configuration=$(ConfigurationName)
 
+call CreateConsoleApplication.cmd
 call MergeConfigs.cmd
 call CopyAssemblies.cmd
 if exist "%25ProjectDir%25CustomPostBuild.cmd" call CustomPostBuild.cmd</PostBuildEvent>
