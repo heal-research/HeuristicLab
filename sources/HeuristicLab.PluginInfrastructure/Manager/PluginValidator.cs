@@ -300,7 +300,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
             desc.AddDependency(matchingDescriptions.Single());
           } else {
             // no plugin description that matches the dependency name is available => plugin is disabled
-            desc.Disable();
+            desc.Disable(); break;
           }
         }
       }
