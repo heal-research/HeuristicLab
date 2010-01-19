@@ -127,6 +127,10 @@
       <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
       <Name>HeuristicLab.Data-3.2</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.LibSVM\1.6.3\LibSVM-1.6.3\LibSVM-1.6.3.csproj">
+      <Project>{A16F23B5-FB62-499E-A831-26953AA56FE2}</Project>
+      <Name>LibSVM-1.6.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Logging\3.2\HeuristicLab.Logging-3.2.csproj">
       <Project>{4095C92C-5A4C-44BC-9963-5F384CF5CC3F}</Project>
       <Name>HeuristicLab.Logging-3.2</Name>
@@ -158,10 +162,6 @@
     <ProjectReference Include="..\..\HeuristicLab.SequentialEngine\3.2\HeuristicLab.SequentialEngine-3.2.csproj">
       <Project>{B4BE8E53-BA06-4237-9A01-24255F880201}</Project>
       <Name>HeuristicLab.SequentialEngine-3.2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\LibSVM\LibSVM.csproj">
-      <Project>{A16F23B5-FB62-499E-A831-26953AA56FE2}</Project>
-      <Name>LibSVM</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

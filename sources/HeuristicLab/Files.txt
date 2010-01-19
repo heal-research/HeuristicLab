@@ -4,9 +4,6 @@
 HeuristicLab.PluginInfrastructure:ICSharpCode.SharpZipLib License.txt
 HeuristicLab.PluginInfrastructure:ICSharpCode.SharpZipLib.dll
 
-ALGLIB:ALGLIB.dll
-ALGLIB:ALGLIB License.txt
-
 HeuristicLab.AdvancedOptimizationFrontend\3.2:HeuristicLab.AdvancedOptimizationFrontend-3.2.dll 
 HeuristicLab.ArtificialNeuralNetworks\3.2:HeuristicLab.ArtificialNeuralNetworks-3.2.dll 
 HeuristicLab.Assignment.QAP\3.2:HeuristicLab.Assignment.QAP-3.2.dll 
@@ -73,16 +70,12 @@ HeuristicLab.Hive.Server.Scheduler\3.2:HeuristicLab.Hive.Server.Scheduler-3.2.dl
 HeuristicLab.IntVector\3.2:HeuristicLab.IntVector-3.2.dll 
 
 HeuristicLab.LinearRegression\3.2:HeuristicLab.LinearRegression-3.2.dll 
-HeuristicLab.LinearRegression\3.2:ALGLIB License.txt 
 
 HeuristicLab.Logging\3.2:HeuristicLab.Logging-3.2.dll 
 
 HeuristicLab.MainForm\3.2:HeuristicLab.MainForm-3.2.dll 
 HeuristicLab.MainForm.Test\3.2:HeuristicLab.MainForm.Test-3.2.dll 
 HeuristicLab.MainForm.WindowsForms\3.2:HeuristicLab.MainForm.WindowsForms-3.2.dll 
-
-WinFormsUI:WeifenLuo.WinFormsUI.Docking.dll 
-WinFormsUI:WeifenLuo.WinFormsUI.Docking License.txt 
 
 HeuristicLab.Modeling\3.2:HeuristicLab.Modeling-3.2.dll 
 HeuristicLab.Modeling.Database\3.2:HeuristicLab.Modeling.Database-3.2.dll 
@@ -110,24 +103,14 @@ HeuristicLab.SGA\3.2:HeuristicLab.SGA-3.2.dll
 HeuristicLab.FixedOperators\3.2:HeuristicLab.FixedOperators-3.2.dll 
 HeuristicLab.SimOpt\3.2:HeuristicLab.SimOpt-3.2.dll 
 
-HeuristicLab.SQLite\3.2:HeuristicLab.SQLite-3.2.dll 
-HeuristicLab.SQLite\3.2:SQLite License.txt 
-HeuristicLab.SQLite\3.2:SQLite.NET.chm 
-
-HeuristicLab.SQLServerCompact\3.2:HeuristicLab.SQLServerCompact-3.2.dll 
-HeuristicLab.SQLServerCompact\3.2:System.Data.SqlServerCe.dll 
-
 HeuristicLab.StatisticalAnalysis\3.2:HeuristicLab.StatisticalAnalysis-3.2.dll 
 
 HeuristicLab.SupportVectorMachines\3.2:HeuristicLab.SupportVectorMachines-3.2.dll 
-LibSVM:LibSVM.dll 
 
 HeuristicLab.TestFunctions\3.2:HeuristicLab.TestFunctions-3.2.dll 
 HeuristicLab.ThreadParallelEngine\3.2:HeuristicLab.ThreadParallelEngine-3.2.dll 
 
 HeuristicLab.Tracing\3.2:HeuristicLab.Tracing-3.2.dll 
-HeuristicLab.Tracing\3.2:log4net.dll 
-HeuristicLab.Tracing\3.2:log4net licence.txt 
 HeuristicLab.Tracing\3.2:HeuristicLab.log4net.xml 
 HeuristicLab.Tracing\3.2:HeuristicLab.Hive.log4net.xml 
 
@@ -139,3 +122,28 @@ HeuristicLab.Security.Core\3.2:HeuristicLab.Security.Core-3.2.dll
 HeuristicLab.Security.DataAccess\3.2:HeuristicLab.Security.DataAccess-3.2.dll 
 HeuristicLab.Security.ADODataAccess\3.2:HeuristicLab.Security.ADODataAccess-3.2.dll 
 HeuristicLab.Security.Server\3.2:HeuristicLab.Security.Server-3.2.dll 
+
+;External Libraries
+HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\2.1.2.2591\ALGLIB-2.1.2.2591:ALGLIB-2.1.2.2591.dll
+HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\2.1.2.2591\HeuristicLab.ALGLIB-2.1.2.2591:ALGLIB License.txt
+HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\2.1.2.2591\HeuristicLab.ALGLIB-2.1.2.2591:HeuristicLab.ALGLIB-2.1.2.2591.dll
+
+HeuristicLab.ExtLibs\HeuristicLab.LibSVM\1.6.3\LibSVM-1.6.3:LibSVM-1.6.3.dll 
+HeuristicLab.ExtLibs\HeuristicLab.LibSVM\1.6.3\HeuristicLab.LibSVM-1.6.3:HeuristicLab.LibSVM-1.6.3.dll
+HeuristicLab.ExtLibs\HeuristicLab.LibSVM\1.6.3\HeuristicLab.LibSVM-1.6.3:LibSVM License.txt
+
+HeuristicLab.ExtLibs\HeuristicLab.log4net\1.2.10.0:HeuristicLab.log4net-1.2.10.0.dll
+HeuristicLab.ExtLibs\HeuristicLab.log4net\1.2.10.0:log4net.dll 
+HeuristicLab.ExtLibs\HeuristicLab.log4net\1.2.10.0:log4net License.txt 
+
+HeuristicLab.ExtLibs\HeuristicLab.SQLite\1.0.65.0:HeuristicLab.SQLite-1.0.65.0.dll 
+HeuristicLab.ExtLibs\HeuristicLab.SQLite\1.0.65.0:SQLite License.txt 
+HeuristicLab.ExtLibs\HeuristicLab.SQLite\1.0.65.0:SQLite.NET.chm 
+
+HeuristicLab.ExtLibs\HeuristicLab.SQLServerCompact\3.5:HeuristicLab.SQLServerCompact-3.5.dll 
+HeuristicLab.ExtLibs\HeuristicLab.SQLServerCompact\3.5:System.Data.SqlServerCe-3.5.dll 
+HeuristicLab.ExtLibs\HeuristicLab.SQLServerCompact\3.5:SQLServer Compact license.txt
+
+HeuristicLab.ExtLibs\HeuristicLab.WinFormsUI\2.3.1\HeuristicLab.WinFormsUI-2.3.1:HeuristicLab.WinFormsUI-2.3.1.dll
+HeuristicLab.ExtLibs\HeuristicLab.WinFormsUI\2.3.1\WinFormsUI-2.3.1:WeifenLuo.WinFormsUI.Docking-2.3.1.dll 
+HeuristicLab.ExtLibs\HeuristicLab.WinFormsUI\2.3.1\WinFormsUI-2.3.1::WeifenLuo.WinFormsUI.Docking License.txt 

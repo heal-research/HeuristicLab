@@ -110,10 +110,6 @@
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.SQLServerCompact\3.2\HeuristicLab.SQLServerCompact-3.2.csproj">
-      <Project>{31DD6385-7276-49ED-9533-823D4CDF3D2A}</Project>
-      <Name>HeuristicLab.SQLServerCompact-3.2</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DatabaseService.cs" />

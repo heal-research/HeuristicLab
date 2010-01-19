@@ -30,6 +30,7 @@ namespace HeuristicLab.Grid {
   [PluginFile("HeuristicLab.Grid-3.2.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Core-3.2")]
   [PluginDependency("HeuristicLab.Tracing-3.2")]
+  [PluginDependency("HeuristicLab.SQLite-1.0.65.0")]
   public class HeuristicLabGridPlugin : PluginBase {
   }
 }

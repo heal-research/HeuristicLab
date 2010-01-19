@@ -30,7 +30,7 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
   /// The HeuristicLab Advanced Optimization Frontend Application.
   /// </summary>
   [Application("HeuristicLab 3.2 (dockable)", "Next generation heuristic optimization environment.")]
-  class HeuristicLabAdvancedOptimizationFrontendApplication : ApplicationBase {
+  public class HeuristicLabAdvancedOptimizationFrontendApplication : ApplicationBase {
     /// <summary>
     /// Runs the application and displays the main window.
     /// </summary>

@@ -26,9 +26,9 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.MainForm.WindowsForms {
   [Plugin("HeuristicLab.MainForm.WindowsForms-3.2")]
-  [PluginFile("HeuristicLab.MainForm.WindowsForms-3.2.dll", PluginFileType.Assembly)]
-  [PluginFile("WeifenLuo.WinFormsUI.Docking.dll", PluginFileType.Assembly)]
+  [PluginFile("HeuristicLab.MainForm.WindowsForms-3.2.dll", PluginFileType.Assembly)]  
   [PluginDependency("HeuristicLab.MainForm-3.2")]
+  [PluginDependency("HeuristicLab.WinFormsUI-2.3.1")]
   public class HeuristicLabMainFormTestPlugin : PluginBase {
   }
 }

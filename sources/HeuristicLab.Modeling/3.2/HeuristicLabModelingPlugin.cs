@@ -27,7 +27,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Modeling {
   [Plugin("HeuristicLab.Modeling-3.2")]
   [PluginFile("HeuristicLab.Modeling-3.2.dll", PluginFileType.Assembly)]
-  [PluginDependency("ALGLIB")]
+  [PluginDependency("HeuristicLab.ALGLIB-2.1.2.2591")]
   [PluginDependency("HeuristicLab.Common-3.2")]
   [PluginDependency("HeuristicLab.Core-3.2")]
   [PluginDependency("HeuristicLab.Data-3.2")]

@@ -28,10 +28,10 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.SupportVectorMachines {
   [Plugin("HeuristicLab.SupportVectorMachines-3.2")]
   [PluginFile("HeuristicLab.SupportVectorMachines-3.2.dll", PluginFileType.Assembly)]
-  [PluginFile("LibSVM.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Core-3.2")]
   [PluginDependency("HeuristicLab.Data-3.2")]
   [PluginDependency("HeuristicLab.DataAnalysis-3.2")]
+  [PluginDependency("HeuristicLab.LibSVM-1.6.3")]
   [PluginDependency("HeuristicLab.Modeling-3.2")]
   [PluginDependency("HeuristicLab.SequentialEngine-3.2")]
   [PluginDependency("HeuristicLab.Logging-3.2")]

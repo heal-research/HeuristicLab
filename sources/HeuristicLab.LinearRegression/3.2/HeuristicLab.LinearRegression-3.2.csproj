@@ -91,10 +91,6 @@
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ALGLIB\ALGLIB.csproj">
-      <Project>{44456535-5DB5-454A-BE2B-7426DA6700B6}</Project>
-      <Name>ALGLIB</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Common\3.2\HeuristicLab.Common-3.2.csproj">
       <Project>{1FC004FC-59AF-4249-B1B6-FF25873A20E4}</Project>
       <Name>HeuristicLab.Common-3.2</Name>
@@ -110,6 +106,10 @@
     <ProjectReference Include="..\..\HeuristicLab.Data\3.2\HeuristicLab.Data-3.2.csproj">
       <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
       <Name>HeuristicLab.Data-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\2.1.2.2591\ALGLIB-2.1.2.2591\ALGLIB-2.1.2.2591.csproj">
+      <Project>{44456535-5DB5-454A-BE2B-7426DA6700B6}</Project>
+      <Name>ALGLIB-2.1.2.2591</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.GP.Interfaces\3.3\HeuristicLab.GP.Interfaces-3.3.csproj">
       <Project>{924B6BEA-9A99-40FE-9334-5C01E8D540EC}</Project>

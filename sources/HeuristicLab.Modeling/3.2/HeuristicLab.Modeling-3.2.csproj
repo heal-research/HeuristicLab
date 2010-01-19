@@ -129,10 +129,6 @@
     <Compile Include="VariableQualityImpactCalculator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ALGLIB\ALGLIB.csproj">
-      <Project>{44456535-5DB5-454A-BE2B-7426DA6700B6}</Project>
-      <Name>ALGLIB</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Common\3.2\HeuristicLab.Common-3.2.csproj">
       <Project>{1FC004FC-59AF-4249-B1B6-FF25873A20E4}</Project>
       <Name>HeuristicLab.Common-3.2</Name>
@@ -148,6 +144,10 @@
     <ProjectReference Include="..\..\HeuristicLab.Data\3.2\HeuristicLab.Data-3.2.csproj">
       <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
       <Name>HeuristicLab.Data-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\2.1.2.2591\ALGLIB-2.1.2.2591\ALGLIB-2.1.2.2591.csproj">
+      <Project>{44456535-5DB5-454A-BE2B-7426DA6700B6}</Project>
+      <Name>ALGLIB-2.1.2.2591</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.2\HeuristicLab.Operators-3.2.csproj">
       <Project>{A9983BA2-B3B2-475E-8E2C-62050B71D1C5}</Project>
