@@ -213,7 +213,9 @@ namespace HeuristicLab.PluginInfrastructure {
       PluginDescription pluginDesc = (PluginDescription)pluginDescription;
       return from asm in AppDomain.CurrentDomain.GetAssemblies()
              where !string.IsNullOrEmpty(asm.Location) &&
-                   pluginDesc.Assemblies.Any(asmPath => Path.GetFullPath(asmPath) == Path.GetFullPath(asm.Location))
+                   pluginDesc.Assemblies.Any(asmPath => 
+                     Path.GetFullPath(asmPath).Equals(Path.GetFullPath(asm.Location), 
+                                                      StringComparison.CurrentCultureIgnoreCase))
              from t in GetTypes(type, asm, onlyInstantiable)
              select t;
     }
