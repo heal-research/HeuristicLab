@@ -140,7 +140,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.WinFormsUI\2.3.1\WinFormsUI-2.3.1\WinFormsUI-2.3.1.csproj">
-      <Project>{C75532C4-765B-418E-B09B-46D36B2ABDB1}</Project>
+      <Project>{1849A92E-DCFC-4E05-BB0A-D7B7A3DAFCFB}</Project>
       <Name>WinFormsUI-2.3.1</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.MainForm\3.2\HeuristicLab.MainForm-3.2.csproj">
