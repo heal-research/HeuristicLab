@@ -28,12 +28,10 @@ namespace HeuristicLab.SequentialEngine {
   /// <summary>
   /// Plugin class for HeuristicLab.SequentialEngine plugin.
   /// </summary>
-  [ClassInfo(Name = "HeuristicLab.SequentialEngine-3.3")]
-  [PluginFile(Filename = "HeuristicLab.SequentialEngine-3.3.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.3")]
-  [Dependency(Dependency = "HeuristicLab.Core.Views-3.3")]
-  [Dependency(Dependency = "HeuristicLab.MainForm-3.2")]
-  [Dependency(Dependency = "HeuristicLab.MainForm.WindowsForms-3.2")]
+  [Plugin("HeuristicLab.SequentialEngine-3.3")]
+  [PluginFile("HeuristicLab.SequentialEngine-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Persistence-3.3")]
+  [PluginDependency("HeuristicLab.Core-3.3")]
   public class HeuristicLabSequentialEnginePlugin : PluginBase {
   }
 }

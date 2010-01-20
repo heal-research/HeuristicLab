@@ -3,13 +3,13 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Persistence.GUI {
 
-  [ClassInfo(Name = "HeuristicLab.Persistence.GUI-3.3")]
-  [PluginFile(Filename = "HeuristicLab.Persistence.GUI-3.3.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Persistence-3.3")]
+  [Plugin("HeuristicLab.Persistence.GUI-3.3")]
+  [PluginFile("HeuristicLab.Persistence.GUI-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Persistence-3.3")]
   public class HeuristicLabPersistencePlugin : PluginBase { }
 
 
-  [ClassInfo(Name = "Persistence Configuration")]
+  [Application("Persistence Configuration")]
   public class HeuristicLabPersistenceApplication : ApplicationBase {
     public override void Run() {
       Application.EnableVisualStyles();

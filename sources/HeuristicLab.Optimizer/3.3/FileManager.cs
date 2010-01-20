@@ -31,7 +31,7 @@ namespace HeuristicLab.Optimizer {
     }
     #endregion
 
-    private static Dictionary<IItemView, FileInfo> files;
+    private static Dictionary<IObjectView, FileInfo> files;
     private static NewItemDialog newItemDialog;
     private static OpenFileDialog openFileDialog;
     private static SaveFileDialog saveFileDialog;
@@ -39,7 +39,7 @@ namespace HeuristicLab.Optimizer {
     private static int newDocumentsCounter;
 
     static FileManager() {
-      files = new Dictionary<IItemView, FileInfo>();
+      files = new Dictionary<IObjectView, FileInfo>();
       newItemDialog = null;
       openFileDialog = null;
       saveFileDialog = null;
@@ -52,7 +52,7 @@ namespace HeuristicLab.Optimizer {
       if (newItemDialog == null) newItemDialog = new NewItemDialog();
       if (newItemDialog.ShowDialog() == DialogResult.OK) {
         IView view = MainFormManager.CreateDefaultView(newItemDialog.Item);
-        if (view is IItemView) {
+        if (view is IObjectView) {
           view.Caption = "Item" + newDocumentsCounter.ToString() + ".hl";
           newDocumentsCounter++;
         }
@@ -77,12 +77,12 @@ namespace HeuristicLab.Optimizer {
     }
 
     public static void Save() {
-      IItemView activeView = MainFormManager.MainForm.ActiveView as IItemView;
-      if ((activeView != null) && (CreatableAttribute.IsCreatable(activeView.Item.GetType()))) {
+      IObjectView activeView = MainFormManager.MainForm.ActiveView as IObjectView;
+      if ((activeView != null) && (CreatableAttribute.IsCreatable(activeView.Object.GetType()))) {
         Save(activeView);
       }
     }
-    private static void Save(IItemView view) {
+    private static void Save(IObjectView view) {
       if ((!files.ContainsKey(view)) || (!File.Exists(files[view].Filename))) {
         SaveAs(view);
       } else {
@@ -94,12 +94,12 @@ namespace HeuristicLab.Optimizer {
     }
 
     public static void SaveAs() {
-      IItemView activeView = MainFormManager.MainForm.ActiveView as IItemView;
-      if ((activeView != null) && (CreatableAttribute.IsCreatable(activeView.Item.GetType()))) {
+      IObjectView activeView = MainFormManager.MainForm.ActiveView as IObjectView;
+      if ((activeView != null) && (CreatableAttribute.IsCreatable(activeView.Object.GetType()))) {
         SaveAs(activeView);
       }
     }
-    public static void SaveAs(IItemView view) {
+    public static void SaveAs(IObjectView view) {
       if (saveFileDialog == null) {
         saveFileDialog = new SaveFileDialog();
         saveFileDialog.Title = "Save Item";
@@ -130,19 +130,19 @@ namespace HeuristicLab.Optimizer {
 
     public static void SaveAll() {
       var views = from v in MainFormManager.MainForm.Views
-                  where v is IItemView
-                  where CreatableAttribute.IsCreatable(((IItemView)v).Item.GetType())
-                  select v as IItemView;
+                  where v is IObjectView
+                  where CreatableAttribute.IsCreatable(((IObjectView)v).Object.GetType())
+                  select v as IObjectView;
 
-      foreach (IItemView view in views) {
+      foreach (IObjectView view in views) {
         Save(view);
       }
     }
 
     // NOTE: This event is fired by the main form. It is registered in HeuristicLabOptimizerApplication.
     internal static void ViewClosed(object sender, ViewEventArgs e) {
-      IItemView view = e.View as IItemView;
-      files.Remove(view);
+      IObjectView view = e.View as IObjectView;
+      if (view != null) files.Remove(view);
     }
 
     #region Asynchronous Save/Load Operations
@@ -154,14 +154,14 @@ namespace HeuristicLab.Optimizer {
         a.Invoke();
     }
 
-    private static void SaveItemAsync(IItemView view, string filename, int compression) {
+    private static void SaveItemAsync(IObjectView view, string filename, int compression) {
       ThreadPool.QueueUserWorkItem(
         new WaitCallback(
           delegate(object arg) {
             try {
               DisableView(view);
               SetWaitingCursor();
-              XmlGenerator.Serialize(view.Item, filename, compression);
+              XmlGenerator.Serialize(view.Object, filename, compression);
               Invoke(delegate() {
                 view.Caption = Path.GetFileName(filename);
                 files[view].Filename = filename;
@@ -186,7 +186,7 @@ namespace HeuristicLab.Optimizer {
               SetWaitingCursor();
               IItem item = (IItem)XmlParser.Deserialize(filename);
               Invoke(delegate() {
-                IItemView view = MainFormManager.CreateDefaultView(item) as IItemView;
+                IObjectView view = MainFormManager.CreateDefaultView(item) as IObjectView;
                 if (view != null) {
                   view.Caption = Path.GetFileName(filename);
                   files.Add(view, new FileInfo(filename));

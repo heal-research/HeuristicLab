@@ -27,6 +27,7 @@ using System.Xml;
 using System.Collections;
 
 namespace HeuristicLab.Common {
+  [Obsolete("Use collections of the HeuristicLab.Collections plugin instead", false)]
   public class NotificationDictionary<TKey, TValue> : IDictionary<TKey, TValue> {
     
     public NotificationDictionary() {

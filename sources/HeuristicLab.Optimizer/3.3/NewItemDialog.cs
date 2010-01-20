@@ -31,8 +31,7 @@ namespace HeuristicLab.Optimizer {
       if (!initialized) {
         SetListViewDisplayStyleCheckBoxes();
 
-        DiscoveryService ds = new DiscoveryService();
-        var categories = from t in ds.GetTypes(typeof(IItem))
+        var categories = from t in ApplicationManager.Manager.GetTypes(typeof(IItem))
                          where CreatableAttribute.IsCreatable(t)
                          orderby CreatableAttribute.GetCategory(t), ItemAttribute.GetName(t) ascending
                          group t by CreatableAttribute.GetCategory(t) into c
@@ -45,8 +44,8 @@ namespace HeuristicLab.Optimizer {
           foreach (var creatable in category) {
             IItem i = (IItem)Activator.CreateInstance(creatable);
             items.Add(i);
-            ListViewItem item = new ListViewItem(new string[] { i.Name, i.Description}, group);
-            itemsListView.SmallImageList.Images.Add(i.Image);
+            ListViewItem item = new ListViewItem(new string[] { i.ItemName, i.ItemDescription}, group);
+            itemsListView.SmallImageList.Images.Add(i.ItemImage);
             item.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
             item.Tag = i;
             itemsListView.Items.Add(item);

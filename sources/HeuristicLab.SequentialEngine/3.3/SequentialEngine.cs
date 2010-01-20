@@ -23,7 +23,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
-using System.Threading;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.SequentialEngine {
@@ -42,8 +41,8 @@ namespace HeuristicLab.SequentialEngine {
     /// </summary>
     /// <remarks>Calls <see cref="EngineBase.Abort"/> of base class <see cref="EngineBase"/> and
     /// <see cref="IOperator.Abort"/> of the current <see cref="IOperator"/>.</remarks>
-    public override void Abort() {
-      base.Abort();
+    public override void Stop() {
+      base.Stop();
       if (currentOperator != null)
         currentOperator.Abort();
     }
@@ -55,30 +54,26 @@ namespace HeuristicLab.SequentialEngine {
     /// <remarks>If an error occurs during the execution the operation is aborted and the operation
     /// is pushed on the stack again.<br/>
     /// If the execution was successful <see cref="EngineBase.OnOperationExecuted"/> is called.</remarks>
-    protected override void ProcessNextOperation() {
-      IOperation operation = myExecutionStack.Pop();
-      if (operation is AtomicOperation) {
-        AtomicOperation atomicOperation = (AtomicOperation)operation;
-        IOperation next = null;
-        try {
-          currentOperator = atomicOperation.Operator;
-          next = atomicOperation.Operator.Execute(atomicOperation.Scope);
-        }
-        catch (Exception ex) {
-          // push operation on stack again
-          myExecutionStack.Push(atomicOperation);
-          Abort();
-          ThreadPool.QueueUserWorkItem(delegate(object state) { OnExceptionOccurred(ex);});
-        }
-        if (next != null)
-          myExecutionStack.Push(next);
-        OnOperationExecuted(atomicOperation);
-        if (atomicOperation.Operator.Breakpoint) Abort();
-      } else if (operation is CompositeOperation) {
-        CompositeOperation compositeOperation = (CompositeOperation)operation;
-        for (int i = compositeOperation.Operations.Count - 1; i >= 0; i--)
-          myExecutionStack.Push(compositeOperation.Operations[i]);
+    protected override void ProcessNextOperator() {
+      currentOperator = null;
+      ExecutionContext context = ExecutionStack.Pop();
+      ExecutionContextCollection next = null;
+      try {
+        currentOperator = context.Operator;
+        next = context.Operator.Execute(context);
+        currentOperator = null;
       }
+      catch (Exception ex) {
+        ExecutionStack.Push(context);
+        Stop();
+        OnExceptionOccurred(ex);
+      }
+      if (next != null) {
+        for (int i = next.Count - 1; i >= 0; i--)
+          ExecutionStack.Push(next[i]);
+      }
+      if (context.Operator.Breakpoint)
+        Stop();
     }
   }
 }

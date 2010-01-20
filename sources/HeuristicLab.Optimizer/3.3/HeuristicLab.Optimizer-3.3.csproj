@@ -53,6 +53,7 @@
     <Compile Include="FileManager.cs" />
     <Compile Include="MenuItems\CloseMenuItem.cs" />
     <Compile Include="MenuItems\CloseAllMenuItem.cs" />
+    <Compile Include="MenuItems\OperatorsMenuItem.cs" />
     <Compile Include="MenuItems\SaveAllMenuItem.cs" />
     <Compile Include="MenuItems\SaveAsMenuItem.cs" />
     <Compile Include="MenuItems\SaveMenuItem.cs" />

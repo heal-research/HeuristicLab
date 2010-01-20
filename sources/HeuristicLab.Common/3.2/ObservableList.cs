@@ -25,6 +25,7 @@ using System.Text;
 using System.Collections.Specialized;
 
 namespace HeuristicLab.Common {
+  [Obsolete("Use collections of the HeuristicLab.Collections plugin instead", false)]
   public class ObservableList<T> : ObservableCollection<T>, IList<T> {
 
     public ObservableList()

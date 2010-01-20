@@ -30,8 +30,8 @@ namespace HeuristicLab.Optimizer {
     }
     public override void ActiveViewChanged(object sender, EventArgs e) {
       var views = from v in MainFormManager.MainForm.Views
-                  where v is IItemView
-                  where CreatableAttribute.IsCreatable(((IItemView)v).Item.GetType())
+                  where v is IObjectView
+                  where CreatableAttribute.IsCreatable(((IObjectView)v).Object.GetType())
                   select v;
       ToolStripItem.Enabled = views.FirstOrDefault() != null;
     }

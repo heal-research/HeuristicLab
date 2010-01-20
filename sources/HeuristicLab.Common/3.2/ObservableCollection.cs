@@ -25,6 +25,7 @@ using System.Text;
 using System.Collections.Specialized;
 
 namespace HeuristicLab.Common {
+  [Obsolete("Use collections of the HeuristicLab.Collections plugin instead", false)]
   public class ObservableCollection<T> : ICollection<T>, INotifyCollectionChanged {
     protected List<T> list;
 

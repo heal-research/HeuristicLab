@@ -24,6 +24,7 @@ using System.Linq;
 using System.Text;
 
 namespace HeuristicLab.Common {
+  [Obsolete("Use generic event args EventArgs<T> instead of EnumberableEventArgs<T>", false)]
   public class EnumerableEventArgs<T> : EventArgs {
     public EnumerableEventArgs(IEnumerable<T> data) {
       this.data = data;

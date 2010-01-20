@@ -32,8 +32,8 @@ namespace HeuristicLab.Optimizer.MenuItems {
       ToolStripItem.Enabled = false;
     }
     public override void ActiveViewChanged(object sender, EventArgs e) {
-      IItemView activeView = MainFormManager.MainForm.ActiveView as IItemView;
-      ToolStripItem.Enabled = ((activeView != null) && (CreatableAttribute.IsCreatable(activeView.Item.GetType())));
+      IObjectView activeView = MainFormManager.MainForm.ActiveView as IObjectView;
+      ToolStripItem.Enabled = ((activeView != null) && (CreatableAttribute.IsCreatable(activeView.Object.GetType())));
     }
 
     public override void Execute() {
