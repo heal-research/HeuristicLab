@@ -11,6 +11,7 @@ HeuristicLab.BitVector\3.2:HeuristicLab.BitVector-3.2.dll
 HeuristicLab.BackgroundProcessing\3.2:HeuristicLab.BackgroundProcessing-3.2.dll 
 HeuristicLab.CEDMA.Server\3.3:HeuristicLab.CEDMA.Server-3.3.dll 
 
+HeuristicLab.CodeEditor\3.2:HeuristicLab.CodeEditor-3.2.dll 
 HeuristicLab.Charting\3.2:HeuristicLab.Charting-3.2.dll 
 HeuristicLab.Charting.Data\3.2:HeuristicLab.Charting.Data-3.2.dll 
 
@@ -147,3 +148,11 @@ HeuristicLab.ExtLibs\HeuristicLab.SQLServerCompact\3.5.5692.0:SQLServer Compact 
 HeuristicLab.ExtLibs\HeuristicLab.WinFormsUI\2.3.1\WinFormsUI-2.3.1:WeifenLuo.WinFormsUI.Docking-2.3.1.dll 
 HeuristicLab.ExtLibs\HeuristicLab.WinFormsUI\2.3.1\HeuristicLab.WinFormsUI-2.3.1:HeuristicLab.WinFormsUI-2.3.1.dll
 HeuristicLab.ExtLibs\HeuristicLab.WinFormsUI\2.3.1\HeuristicLab.WinFormsUI-2.3.1:WeifenLuo.WinFormsUI.Docking License.txt 
+
+HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327:ICSharpCode.NRefactory.dll
+HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327:ICSharpCode.SharpDevelop.Dom.dll
+HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327:ICSharpCode.TextEditor.dll
+HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327:Mono.Cecil.dll
+HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327:SharpDevelop License.txt
+HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327:Mono License.txt
+

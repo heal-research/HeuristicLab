@@ -30,6 +30,7 @@ namespace HeuristicLab.Operators.Programmable {
   [PluginDependency("HeuristicLab.Core-3.2")]
   [PluginDependency("HeuristicLab.Data-3.2")]
   [PluginDependency("HeuristicLab.Operators-3.2")]
+  [PluginDependency("HeuristicLab.CodeEditor-3.2")]
   public class HeuristicLabOperatorsProgrammablePlugin : PluginBase {
   }
 }
