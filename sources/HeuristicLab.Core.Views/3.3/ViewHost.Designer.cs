@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Core.Views {
-  partial class OperatorBaseView {
+  partial class ViewHost {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -44,44 +44,51 @@ namespace HeuristicLab.Core.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.parameterCollectionView = new HeuristicLab.Core.Views.ParameterCollectionView();
+      this.viewPanel = new System.Windows.Forms.Panel();
+      this.viewLabel = new System.Windows.Forms.Label();
+      this.viewComboBox = new System.Windows.Forms.ComboBox();
       this.SuspendLayout();
       // 
-      // nameTextBox
+      // viewPanel
       // 
-      this.nameTextBox.Size = new System.Drawing.Size(418, 20);
-      // 
-      // descriptionTextBox
-      // 
-      this.descriptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.descriptionTextBox.Size = new System.Drawing.Size(418, 90);
-      // 
-      // parameterCollectionView
-      // 
-      this.parameterCollectionView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+      this.viewPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.parameterCollectionView.Caption = "ParameterCollection";
-      this.parameterCollectionView.ItemCollection = null;
-      this.parameterCollectionView.Location = new System.Drawing.Point(0, 122);
-      this.parameterCollectionView.Name = "parameterCollectionView";
-      this.parameterCollectionView.NamedItemCollection = null;
-      this.parameterCollectionView.Size = new System.Drawing.Size(490, 231);
-      this.parameterCollectionView.TabIndex = 4;
+      this.viewPanel.Location = new System.Drawing.Point(0, 27);
+      this.viewPanel.Name = "viewPanel";
+      this.viewPanel.Size = new System.Drawing.Size(227, 157);
+      this.viewPanel.TabIndex = 2;
       // 
-      // OperatorBaseView
+      // viewLabel
+      // 
+      this.viewLabel.AutoSize = true;
+      this.viewLabel.Location = new System.Drawing.Point(3, 3);
+      this.viewLabel.Name = "viewLabel";
+      this.viewLabel.Size = new System.Drawing.Size(33, 13);
+      this.viewLabel.TabIndex = 0;
+      this.viewLabel.Text = "&View:";
+      // 
+      // viewComboBox
+      // 
+      this.viewComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.viewComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.viewComboBox.FormattingEnabled = true;
+      this.viewComboBox.Location = new System.Drawing.Point(44, 0);
+      this.viewComboBox.Name = "viewComboBox";
+      this.viewComboBox.Size = new System.Drawing.Size(183, 21);
+      this.viewComboBox.TabIndex = 1;
+      this.viewComboBox.SelectedIndexChanged += new System.EventHandler(this.viewComboBox_SelectedIndexChanged);
+      // 
+      // ViewHost
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.parameterCollectionView);
-      this.Name = "OperatorBaseView";
-      this.Size = new System.Drawing.Size(490, 353);
-      this.Controls.SetChildIndex(this.parameterCollectionView, 0);
-      this.Controls.SetChildIndex(this.nameLabel, 0);
-      this.Controls.SetChildIndex(this.descriptionLabel, 0);
-      this.Controls.SetChildIndex(this.nameTextBox, 0);
-      this.Controls.SetChildIndex(this.descriptionTextBox, 0);
+      this.Controls.Add(this.viewComboBox);
+      this.Controls.Add(this.viewLabel);
+      this.Controls.Add(this.viewPanel);
+      this.Name = "ViewHost";
+      this.Size = new System.Drawing.Size(227, 184);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -89,8 +96,9 @@ namespace HeuristicLab.Core.Views {
 
     #endregion
 
-    protected ParameterCollectionView parameterCollectionView;
-
+    private System.Windows.Forms.Panel viewPanel;
+    private System.Windows.Forms.Label viewLabel;
+    private System.Windows.Forms.ComboBox viewComboBox;
 
   }
 }

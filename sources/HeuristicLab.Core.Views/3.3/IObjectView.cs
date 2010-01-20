@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2009 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,20 +23,21 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Core.Views {
   /// <summary>
-  /// Plugin class for HeuristicLab.Core.Views plugin.
+  /// An interface for all kinds visual representations of items (objects, operators...).
   /// </summary>
-  [Plugin("HeuristicLab.Core.Views-3.3")]
-  [PluginFile("HeuristicLab.Core.Views-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Collections-3.3")]
-  [PluginDependency("HeuristicLab.Common-3.2")]
-  [PluginDependency("HeuristicLab.Common.Resources-3.2")]
-  [PluginDependency("HeuristicLab.Persistence-3.3")]
-  [PluginDependency("HeuristicLab.Core-3.3")]
-  [PluginDependency("HeuristicLab.MainForm-3.2")]
-  [PluginDependency("HeuristicLab.MainForm.WindowsForms-3.2")]
-  public class HeuristicLabCoreViewsPlugin : PluginBase {
+  public interface IObjectView : IView {
+    /// <summary>
+    /// Gets the current item instance.
+    /// </summary>
+    object Object { get; }
+
+    /// <summary>
+    /// Occurs when the current item was changed.
+    /// </summary>
+    event EventHandler ObjectChanged;
   }
 }

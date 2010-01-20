@@ -31,8 +31,8 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
     protected override void Dispose(bool disposing) {
-      if (disposing && (components != null)) {
-        components.Dispose();
+      if (disposing) {
+        if (components != null) components.Dispose();
       }
       base.Dispose(disposing);
     }
@@ -44,154 +44,133 @@ namespace HeuristicLab.Core.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
       this.executionTimeTextBox = new System.Windows.Forms.TextBox();
       this.executionTimeLabel = new System.Windows.Forms.Label();
-      this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-      this.operatorGraphGroupBox = new System.Windows.Forms.GroupBox();
+      this.splitContainer = new System.Windows.Forms.SplitContainer();
       this.operatorGraphView = new HeuristicLab.Core.Views.OperatorGraphView();
-      this.globalScopeGroupBox = new System.Windows.Forms.GroupBox();
       this.scopeView = new HeuristicLab.Core.Views.ScopeView();
       this.resetButton = new System.Windows.Forms.Button();
-      this.abortButton = new System.Windows.Forms.Button();
-      this.executeButton = new System.Windows.Forms.Button();
-      this.splitContainer1.Panel1.SuspendLayout();
-      this.splitContainer1.Panel2.SuspendLayout();
-      this.splitContainer1.SuspendLayout();
-      this.operatorGraphGroupBox.SuspendLayout();
-      this.globalScopeGroupBox.SuspendLayout();
+      this.stopButton = new System.Windows.Forms.Button();
+      this.startButton = new System.Windows.Forms.Button();
+      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this.splitContainer.Panel1.SuspendLayout();
+      this.splitContainer.Panel2.SuspendLayout();
+      this.splitContainer.SuspendLayout();
       this.SuspendLayout();
       // 
       // executionTimeTextBox
       // 
       this.executionTimeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.executionTimeTextBox.Location = new System.Drawing.Point(499, 460);
+      this.executionTimeTextBox.Location = new System.Drawing.Point(661, 620);
       this.executionTimeTextBox.Name = "executionTimeTextBox";
       this.executionTimeTextBox.ReadOnly = true;
       this.executionTimeTextBox.Size = new System.Drawing.Size(141, 20);
-      this.executionTimeTextBox.TabIndex = 5;
+      this.executionTimeTextBox.TabIndex = 4;
       // 
       // executionTimeLabel
       // 
       this.executionTimeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.executionTimeLabel.AutoSize = true;
-      this.executionTimeLabel.Location = new System.Drawing.Point(496, 444);
+      this.executionTimeLabel.Location = new System.Drawing.Point(572, 623);
       this.executionTimeLabel.Name = "executionTimeLabel";
       this.executionTimeLabel.Size = new System.Drawing.Size(83, 13);
-      this.executionTimeLabel.TabIndex = 4;
+      this.executionTimeLabel.TabIndex = 3;
       this.executionTimeLabel.Text = "&Execution Time:";
       // 
-      // splitContainer1
+      // splitContainer
       // 
-      this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+      this.splitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.splitContainer1.Location = new System.Drawing.Point(0, 0);
-      this.splitContainer1.Name = "splitContainer1";
+      this.splitContainer.Location = new System.Drawing.Point(0, 0);
+      this.splitContainer.Name = "splitContainer";
       // 
-      // splitContainer1.Panel1
+      // splitContainer.Panel1
       // 
-      this.splitContainer1.Panel1.Controls.Add(this.operatorGraphGroupBox);
+      this.splitContainer.Panel1.Controls.Add(this.operatorGraphView);
       // 
-      // splitContainer1.Panel2
+      // splitContainer.Panel2
       // 
-      this.splitContainer1.Panel2.Controls.Add(this.globalScopeGroupBox);
-      this.splitContainer1.Size = new System.Drawing.Size(640, 441);
-      this.splitContainer1.SplitterDistance = 320;
-      this.splitContainer1.TabIndex = 0;
-      // 
-      // operatorGraphGroupBox
-      // 
-      this.operatorGraphGroupBox.Controls.Add(this.operatorGraphView);
-      this.operatorGraphGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.operatorGraphGroupBox.Location = new System.Drawing.Point(0, 0);
-      this.operatorGraphGroupBox.Name = "operatorGraphGroupBox";
-      this.operatorGraphGroupBox.Size = new System.Drawing.Size(320, 441);
-      this.operatorGraphGroupBox.TabIndex = 0;
-      this.operatorGraphGroupBox.TabStop = false;
-      this.operatorGraphGroupBox.Text = "Operator &Graph";
+      this.splitContainer.Panel2.Controls.Add(this.scopeView);
+      this.splitContainer.Size = new System.Drawing.Size(802, 611);
+      this.splitContainer.SplitterDistance = 401;
+      this.splitContainer.TabIndex = 0;
       // 
       // operatorGraphView
       // 
       this.operatorGraphView.Caption = "Operator Graph";
       this.operatorGraphView.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.operatorGraphView.Location = new System.Drawing.Point(3, 16);
+      this.operatorGraphView.Item = null;
+      this.operatorGraphView.Location = new System.Drawing.Point(0, 0);
       this.operatorGraphView.Name = "operatorGraphView";
       this.operatorGraphView.OperatorGraph = null;
-      this.operatorGraphView.Size = new System.Drawing.Size(314, 422);
+      this.operatorGraphView.Size = new System.Drawing.Size(401, 611);
       this.operatorGraphView.TabIndex = 0;
-      // 
-      // globalScopeGroupBox
-      // 
-      this.globalScopeGroupBox.Controls.Add(this.scopeView);
-      this.globalScopeGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.globalScopeGroupBox.Location = new System.Drawing.Point(0, 0);
-      this.globalScopeGroupBox.Name = "globalScopeGroupBox";
-      this.globalScopeGroupBox.Size = new System.Drawing.Size(316, 441);
-      this.globalScopeGroupBox.TabIndex = 0;
-      this.globalScopeGroupBox.TabStop = false;
-      this.globalScopeGroupBox.Text = "Global &Scope";
       // 
       // scopeView
       // 
       this.scopeView.Caption = "Scope";
       this.scopeView.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.scopeView.Location = new System.Drawing.Point(3, 16);
+      this.scopeView.Item = null;
+      this.scopeView.Location = new System.Drawing.Point(0, 0);
       this.scopeView.Name = "scopeView";
       this.scopeView.Scope = null;
-      this.scopeView.Size = new System.Drawing.Size(310, 422);
+      this.scopeView.Size = new System.Drawing.Size(397, 611);
       this.scopeView.TabIndex = 0;
       // 
       // resetButton
       // 
       this.resetButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.resetButton.Location = new System.Drawing.Point(196, 457);
+      this.resetButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Restart;
+      this.resetButton.Location = new System.Drawing.Point(58, 617);
       this.resetButton.Name = "resetButton";
-      this.resetButton.Size = new System.Drawing.Size(92, 23);
-      this.resetButton.TabIndex = 3;
-      this.resetButton.Text = "&Reset";
+      this.resetButton.Size = new System.Drawing.Size(23, 23);
+      this.resetButton.TabIndex = 2;
+      this.toolTip.SetToolTip(this.resetButton, "Reset Engine");
       this.resetButton.UseVisualStyleBackColor = true;
       this.resetButton.Click += new System.EventHandler(this.resetButton_Click);
       // 
-      // abortButton
+      // stopButton
       // 
-      this.abortButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.abortButton.Enabled = false;
-      this.abortButton.Location = new System.Drawing.Point(98, 457);
-      this.abortButton.Name = "abortButton";
-      this.abortButton.Size = new System.Drawing.Size(92, 23);
-      this.abortButton.TabIndex = 2;
-      this.abortButton.Text = "&Abort";
-      this.abortButton.UseVisualStyleBackColor = true;
-      this.abortButton.Click += new System.EventHandler(this.abortButton_Click);
+      this.stopButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.stopButton.Enabled = false;
+      this.stopButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Stop;
+      this.stopButton.Location = new System.Drawing.Point(29, 617);
+      this.stopButton.Name = "stopButton";
+      this.stopButton.Size = new System.Drawing.Size(23, 23);
+      this.stopButton.TabIndex = 1;
+      this.toolTip.SetToolTip(this.stopButton, "Stop Engine");
+      this.stopButton.UseVisualStyleBackColor = true;
+      this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
       // 
-      // executeButton
+      // startButton
       // 
-      this.executeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.executeButton.Location = new System.Drawing.Point(0, 457);
-      this.executeButton.Name = "executeButton";
-      this.executeButton.Size = new System.Drawing.Size(92, 23);
-      this.executeButton.TabIndex = 1;
-      this.executeButton.Text = "&Execute";
-      this.executeButton.UseVisualStyleBackColor = true;
-      this.executeButton.Click += new System.EventHandler(this.executeButton_Click);
+      this.startButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.startButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Play;
+      this.startButton.Location = new System.Drawing.Point(0, 617);
+      this.startButton.Name = "startButton";
+      this.startButton.Size = new System.Drawing.Size(23, 23);
+      this.startButton.TabIndex = 0;
+      this.toolTip.SetToolTip(this.startButton, "Start Engine");
+      this.startButton.UseVisualStyleBackColor = true;
+      this.startButton.Click += new System.EventHandler(this.startButton_Click);
       // 
-      // EngineBaseEditor
+      // EngineBaseView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.executionTimeTextBox);
       this.Controls.Add(this.executionTimeLabel);
-      this.Controls.Add(this.splitContainer1);
+      this.Controls.Add(this.splitContainer);
       this.Controls.Add(this.resetButton);
-      this.Controls.Add(this.abortButton);
-      this.Controls.Add(this.executeButton);
-      this.Name = "EngineBaseEditor";
-      this.Size = new System.Drawing.Size(640, 480);
-      this.splitContainer1.Panel1.ResumeLayout(false);
-      this.splitContainer1.Panel2.ResumeLayout(false);
-      this.splitContainer1.ResumeLayout(false);
-      this.operatorGraphGroupBox.ResumeLayout(false);
-      this.globalScopeGroupBox.ResumeLayout(false);
+      this.Controls.Add(this.stopButton);
+      this.Controls.Add(this.startButton);
+      this.Name = "EngineBaseView";
+      this.Size = new System.Drawing.Size(802, 640);
+      this.splitContainer.Panel1.ResumeLayout(false);
+      this.splitContainer.Panel2.ResumeLayout(false);
+      this.splitContainer.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -201,14 +180,13 @@ namespace HeuristicLab.Core.Views {
 
     protected System.Windows.Forms.TextBox executionTimeTextBox;
     protected System.Windows.Forms.Label executionTimeLabel;
-    protected System.Windows.Forms.SplitContainer splitContainer1;
-    protected System.Windows.Forms.GroupBox operatorGraphGroupBox;
-    protected System.Windows.Forms.GroupBox globalScopeGroupBox;
+    protected System.Windows.Forms.SplitContainer splitContainer;
     protected System.Windows.Forms.Button resetButton;
-    protected System.Windows.Forms.Button abortButton;
-    protected System.Windows.Forms.Button executeButton;
+    protected System.Windows.Forms.Button stopButton;
+    protected System.Windows.Forms.Button startButton;
     protected HeuristicLab.Core.Views.OperatorGraphView operatorGraphView;
     protected HeuristicLab.Core.Views.ScopeView scopeView;
+    private System.Windows.Forms.ToolTip toolTip;
 
   }
 }

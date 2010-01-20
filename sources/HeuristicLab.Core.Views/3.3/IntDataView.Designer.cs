@@ -19,10 +19,8 @@
  */
 #endregion
 
-using System;
-
 namespace HeuristicLab.Core.Views {
-  partial class ItemViewBase {
+  partial class IntDataView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -46,10 +44,46 @@ namespace HeuristicLab.Core.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      components = new System.ComponentModel.Container();
+      this.valueLabel = new System.Windows.Forms.Label();
+      this.valueTextBox = new System.Windows.Forms.TextBox();
+      this.SuspendLayout();
+      // 
+      // valueLabel
+      // 
+      this.valueLabel.AutoSize = true;
+      this.valueLabel.Location = new System.Drawing.Point(3, 3);
+      this.valueLabel.Name = "valueLabel";
+      this.valueLabel.Size = new System.Drawing.Size(37, 13);
+      this.valueLabel.TabIndex = 0;
+      this.valueLabel.Text = "&Value:";
+      // 
+      // valueTextBox
+      // 
+      this.valueTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.valueTextBox.Location = new System.Drawing.Point(46, 0);
+      this.valueTextBox.Name = "valueTextBox";
+      this.valueTextBox.Size = new System.Drawing.Size(204, 20);
+      this.valueTextBox.TabIndex = 1;
+      this.valueTextBox.Validated += new System.EventHandler(this.valueTextBox_Validated);
+      this.valueTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.valueTextBox_Validating);
+      // 
+      // IntDataView
+      // 
+      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.valueTextBox);
+      this.Controls.Add(this.valueLabel);
+      this.Name = "IntDataView";
+      this.Size = new System.Drawing.Size(250, 50);
+      this.ResumeLayout(false);
+      this.PerformLayout();
+
     }
 
     #endregion
+
+    private System.Windows.Forms.Label valueLabel;
+    private System.Windows.Forms.TextBox valueTextBox;
   }
 }

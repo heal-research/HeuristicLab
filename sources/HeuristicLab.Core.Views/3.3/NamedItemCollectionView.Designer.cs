@@ -20,15 +20,17 @@
 #endregion
 
 using System;
+using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace HeuristicLab.Core.Views {
-  partial class ItemViewBase {
-    /// <summary> 
+  partial class NamedItemCollectionView<T> {
+    /// <summary>
     /// Required designer variable.
     /// </summary>
     private System.ComponentModel.IContainer components = null;
 
-    /// <summary> 
+    /// <summary>
     /// Clean up any resources being used.
     /// </summary>
     /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
@@ -39,17 +41,25 @@ namespace HeuristicLab.Core.Views {
       base.Dispose(disposing);
     }
 
-    #region Component Designer generated code
+    #region Windows Form Designer generated code
 
-    /// <summary> 
-    /// Required method for Designer support - do not modify 
+    /// <summary>
+    /// Required method for Designer support - do not modify
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      components = new System.ComponentModel.Container();
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.SuspendLayout();
+      // 
+      // NamedItemCollectionView
+      // 
+      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      this.Name = "NamedItemCollectionView";
+      this.Size = new System.Drawing.Size(532, 383);
+      this.ResumeLayout(false);
+
     }
 
     #endregion
+
   }
 }

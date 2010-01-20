@@ -20,38 +20,52 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Data;
+using System.Drawing;
 using System.Text;
-using System.Xml;
 using System.Windows.Forms;
-using HeuristicLab.MainForm.WindowsForms;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Core.Views {
   /// <summary>
-  /// Base class for all visual representations.
+  /// A dialog to select a specific type.
   /// </summary>
-  public partial class ItemViewBase : ObjectViewBase {
-    public IItem Item {
-      get { return (IItem)base.Object; }
-      set { base.Object = value; }
+  public partial class TypeSelectorDialog : Form {
+    /// <summary>
+    /// Gets or sets the caption of the dialog.
+    /// </summary>
+    /// <remarks>Uses property <see cref="Form.Text"/> of base class <see cref="Form"/>.
+    /// No own data storage present.</remarks>
+    public string Caption {
+      get { return Text; }
+      set {
+        if (InvokeRequired)
+          Invoke(new Action<string>(delegate(string s) { Caption = s; }), value);
+        else
+          Text = value;
+      }
+    }
+    public TypeSelector TypeSelector {
+      get { return typeSelector; }
     }
 
     /// <summary>
-    /// Initializes a new instance of <see cref="ViewBase"/> with the caption "View".
+    /// Initializes a new instance of <see cref="ChooseTypeDialog"/>.
     /// </summary>
-    public ItemViewBase() {
+    public TypeSelectorDialog() {
       InitializeComponent();
-      Caption = "View";
     }
 
-    protected override void OnObjectChanged() {
-      if (Item == null) {
-        Caption = "View";
-      } else {
-        Caption = Item.ItemName;
+    private void typeSelector_SelectedTypeChanged(object sender, EventArgs e) {
+      okButton.Enabled = typeSelector.SelectedType != null;
+    }
+    private void TypesTreeView_DoubleClick(object sender, System.EventArgs e) {
+      if (typeSelector.SelectedType != null) {
+        DialogResult = DialogResult.OK;
+        Close();
       }
     }
   }

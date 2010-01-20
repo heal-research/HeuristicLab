@@ -1,0 +1,239 @@
+#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
+using System.Windows.Forms;
+using System.ComponentModel;
+
+namespace HeuristicLab.Core.Views {
+  partial class ItemCollectionView<T> {
+    /// <summary>
+    /// Required designer variable.
+    /// </summary>
+    private System.ComponentModel.IContainer components = null;
+
+    /// <summary>
+    /// Clean up any resources being used.
+    /// </summary>
+    /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+    protected override void Dispose(bool disposing) {
+      if (disposing) {
+        foreach (ListViewItem item in itemsListView.Items)
+          ((T)item.Tag).Changed -= new ChangedEventHandler(Item_Changed);
+        if (components != null) components.Dispose();
+      }
+      base.Dispose(disposing);
+    }
+
+    #region Windows Form Designer generated code
+
+    /// <summary>
+    /// Required method for Designer support - do not modify
+    /// the contents of this method with the code editor.
+    /// </summary>
+    private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
+      this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+      this.itemsListView = new System.Windows.Forms.ListView();
+      this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
+      this.imageList = new System.Windows.Forms.ImageList(this.components);
+      this.sortDescendingButton = new System.Windows.Forms.Button();
+      this.sortAscendingButton = new System.Windows.Forms.Button();
+      this.removeButton = new System.Windows.Forms.Button();
+      this.addButton = new System.Windows.Forms.Button();
+      this.detailsGroupBox = new System.Windows.Forms.GroupBox();
+      this.viewHost = new HeuristicLab.Core.Views.ViewHost();
+      this.itemsGroupBox = new System.Windows.Forms.GroupBox();
+      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this.splitContainer1.Panel1.SuspendLayout();
+      this.splitContainer1.Panel2.SuspendLayout();
+      this.splitContainer1.SuspendLayout();
+      this.detailsGroupBox.SuspendLayout();
+      this.itemsGroupBox.SuspendLayout();
+      this.SuspendLayout();
+      // 
+      // splitContainer1
+      // 
+      this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+      this.splitContainer1.Location = new System.Drawing.Point(3, 16);
+      this.splitContainer1.Name = "splitContainer1";
+      // 
+      // splitContainer1.Panel1
+      // 
+      this.splitContainer1.Panel1.Controls.Add(this.itemsListView);
+      this.splitContainer1.Panel1.Controls.Add(this.sortDescendingButton);
+      this.splitContainer1.Panel1.Controls.Add(this.sortAscendingButton);
+      this.splitContainer1.Panel1.Controls.Add(this.removeButton);
+      this.splitContainer1.Panel1.Controls.Add(this.addButton);
+      this.splitContainer1.Panel1MinSize = 100;
+      // 
+      // splitContainer1.Panel2
+      // 
+      this.splitContainer1.Panel2.Controls.Add(this.detailsGroupBox);
+      this.splitContainer1.Size = new System.Drawing.Size(526, 364);
+      this.splitContainer1.SplitterDistance = 250;
+      this.splitContainer1.TabIndex = 0;
+      // 
+      // itemsListView
+      // 
+      this.itemsListView.AllowDrop = true;
+      this.itemsListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.itemsListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1});
+      this.itemsListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+      this.itemsListView.HideSelection = false;
+      this.itemsListView.Location = new System.Drawing.Point(3, 32);
+      this.itemsListView.Name = "itemsListView";
+      this.itemsListView.ShowItemToolTips = true;
+      this.itemsListView.Size = new System.Drawing.Size(244, 329);
+      this.itemsListView.SmallImageList = this.imageList;
+      this.itemsListView.TabIndex = 4;
+      this.itemsListView.UseCompatibleStateImageBehavior = false;
+      this.itemsListView.View = System.Windows.Forms.View.Details;
+      this.itemsListView.SelectedIndexChanged += new System.EventHandler(this.itemsListView_SelectedIndexChanged);
+      this.itemsListView.SizeChanged += new System.EventHandler(this.itemsListView_SizeChanged);
+      this.itemsListView.DoubleClick += new System.EventHandler(this.itemsListView_DoubleClick);
+      this.itemsListView.DragDrop += new System.Windows.Forms.DragEventHandler(this.itemsListView_DragDrop);
+      this.itemsListView.DragEnter += new System.Windows.Forms.DragEventHandler(this.itemsListView_DragEnterOver);
+      this.itemsListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.itemsListView_KeyDown);
+      this.itemsListView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.itemsListView_ItemDrag);
+      this.itemsListView.DragOver += new System.Windows.Forms.DragEventHandler(this.itemsListView_DragEnterOver);
+      // 
+      // imageList
+      // 
+      this.imageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+      this.imageList.ImageSize = new System.Drawing.Size(16, 16);
+      this.imageList.TransparentColor = System.Drawing.Color.Transparent;
+      // 
+      // sortDescendingButton
+      // 
+      this.sortDescendingButton.Enabled = false;
+      this.sortDescendingButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.SortUp;
+      this.sortDescendingButton.Location = new System.Drawing.Point(32, 3);
+      this.sortDescendingButton.Name = "sortDescendingButton";
+      this.sortDescendingButton.Size = new System.Drawing.Size(23, 23);
+      this.sortDescendingButton.TabIndex = 1;
+      this.toolTip.SetToolTip(this.sortDescendingButton, "Sort Descending");
+      this.sortDescendingButton.UseVisualStyleBackColor = true;
+      this.sortDescendingButton.Click += new System.EventHandler(this.sortDescendingButton_Click);
+      // 
+      // sortAscendingButton
+      // 
+      this.sortAscendingButton.Enabled = false;
+      this.sortAscendingButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Sort;
+      this.sortAscendingButton.Location = new System.Drawing.Point(61, 3);
+      this.sortAscendingButton.Name = "sortAscendingButton";
+      this.sortAscendingButton.Size = new System.Drawing.Size(23, 23);
+      this.sortAscendingButton.TabIndex = 2;
+      this.toolTip.SetToolTip(this.sortAscendingButton, "Sort Ascending");
+      this.sortAscendingButton.UseVisualStyleBackColor = true;
+      this.sortAscendingButton.Click += new System.EventHandler(this.sortAscendingButton_Click);
+      // 
+      // removeButton
+      // 
+      this.removeButton.Enabled = false;
+      this.removeButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Remove;
+      this.removeButton.Location = new System.Drawing.Point(90, 3);
+      this.removeButton.Name = "removeButton";
+      this.removeButton.Size = new System.Drawing.Size(23, 23);
+      this.removeButton.TabIndex = 3;
+      this.toolTip.SetToolTip(this.removeButton, "Remove");
+      this.removeButton.UseVisualStyleBackColor = true;
+      this.removeButton.Click += new System.EventHandler(this.removeButton_Click);
+      // 
+      // addButton
+      // 
+      this.addButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Add;
+      this.addButton.Location = new System.Drawing.Point(3, 3);
+      this.addButton.Name = "addButton";
+      this.addButton.Size = new System.Drawing.Size(23, 23);
+      this.addButton.TabIndex = 0;
+      this.toolTip.SetToolTip(this.addButton, "Add");
+      this.addButton.UseVisualStyleBackColor = true;
+      this.addButton.Click += new System.EventHandler(this.addButton_Click);
+      // 
+      // detailsGroupBox
+      // 
+      this.detailsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.detailsGroupBox.Controls.Add(this.viewHost);
+      this.detailsGroupBox.Location = new System.Drawing.Point(3, 26);
+      this.detailsGroupBox.Name = "detailsGroupBox";
+      this.detailsGroupBox.Size = new System.Drawing.Size(266, 335);
+      this.detailsGroupBox.TabIndex = 0;
+      this.detailsGroupBox.TabStop = false;
+      this.detailsGroupBox.Text = "&Details";
+      // 
+      // viewHost
+      // 
+      this.viewHost.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.viewHost.Location = new System.Drawing.Point(3, 16);
+      this.viewHost.Name = "viewHost";
+      this.viewHost.Object = null;
+      this.viewHost.Size = new System.Drawing.Size(260, 316);
+      this.viewHost.TabIndex = 0;
+      // 
+      // itemsGroupBox
+      // 
+      this.itemsGroupBox.Controls.Add(this.splitContainer1);
+      this.itemsGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.itemsGroupBox.Location = new System.Drawing.Point(0, 0);
+      this.itemsGroupBox.Name = "itemsGroupBox";
+      this.itemsGroupBox.Size = new System.Drawing.Size(532, 383);
+      this.itemsGroupBox.TabIndex = 0;
+      this.itemsGroupBox.TabStop = false;
+      this.itemsGroupBox.Text = "&Items";
+      // 
+      // ItemCollectionView
+      // 
+      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      this.Controls.Add(this.itemsGroupBox);
+      this.Name = "ItemCollectionView";
+      this.Size = new System.Drawing.Size(532, 383);
+      this.splitContainer1.Panel1.ResumeLayout(false);
+      this.splitContainer1.Panel2.ResumeLayout(false);
+      this.splitContainer1.ResumeLayout(false);
+      this.detailsGroupBox.ResumeLayout(false);
+      this.itemsGroupBox.ResumeLayout(false);
+      this.ResumeLayout(false);
+
+    }
+
+    #endregion
+
+    protected System.Windows.Forms.SplitContainer splitContainer1;
+    protected System.Windows.Forms.ColumnHeader columnHeader1;
+    protected GroupBox itemsGroupBox;
+    protected ListView itemsListView;
+    protected GroupBox detailsGroupBox;
+    protected Button addButton;
+    protected Button removeButton;
+    protected ToolTip toolTip;
+    protected ImageList imageList;
+    private ViewHost viewHost;
+    protected Button sortAscendingButton;
+    protected Button sortDescendingButton;
+  }
+}

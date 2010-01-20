@@ -42,8 +42,8 @@ namespace HeuristicLab.Core.Views {
     /// Gets or sets the current engine.
     /// </summary>
     /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="EditorBase"/>.</remarks>
-    public IEngine Engine {
-      get { return (IEngine)Item; }
+    public EngineBase Engine {
+      get { return (EngineBase)Item; }
       set { base.Item = value; }
     }
 
@@ -53,120 +53,133 @@ namespace HeuristicLab.Core.Views {
     public EngineBaseView() {
       InitializeComponent();
     }
+    public EngineBaseView(EngineBase engine)
+      : this() {
+      Engine = engine;
+    }
 
     /// <summary>
     /// Removes the event handlers from the underlying <see cref="IEngine"/>.
     /// </summary>
     /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
-    protected override void RemoveItemEvents() {
+    protected override void DeregisterObjectEvents() {
+      Engine.OperatorGraphChanged -= new EventHandler(Engine_OperatorGraphChanged);
       Engine.Initialized -= new EventHandler(Engine_Initialized);
-      Engine.ExceptionOccurred -= new EventHandler<EventArgs<Exception>>(Engine_ExceptionOccurred);
+      Engine.Started -= new EventHandler(Engine_Started);
+      Engine.Stopped -= new EventHandler(Engine_Stopped);
       Engine.ExecutionTimeChanged -= new EventHandler(Engine_ExecutionTimeChanged);
-      Engine.Finished -= new EventHandler(Engine_Finished);
-      operatorGraphView.OperatorGraph = null;
-      scopeView.Scope = null;
-      base.RemoveItemEvents();
+      Engine.ExceptionOccurred -= new EventHandler<EventArgs<Exception>>(Engine_ExceptionOccurred);
+      base.DeregisterObjectEvents();
     }
+
     /// <summary>
     /// Adds event handlers to the underlying <see cref="IEngine"/>.
     /// </summary>
     /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
-    protected override void AddItemEvents() {
-      base.AddItemEvents();
+    protected override void RegisterObjectEvents() {
+      base.RegisterObjectEvents();
+      Engine.OperatorGraphChanged += new EventHandler(Engine_OperatorGraphChanged);
       Engine.Initialized += new EventHandler(Engine_Initialized);
-      Engine.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(Engine_ExceptionOccurred);
+      Engine.Started += new EventHandler(Engine_Started);
+      Engine.Stopped += new EventHandler(Engine_Stopped);
       Engine.ExecutionTimeChanged += new EventHandler(Engine_ExecutionTimeChanged);
-      Engine.Finished += new EventHandler(Engine_Finished);
-      operatorGraphView.OperatorGraph = Engine.OperatorGraph;
-      scopeView.Scope = Engine.GlobalScope;
+      Engine.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(Engine_ExceptionOccurred);
     }
 
     /// <summary>
     /// Updates all controls with the latest data of the model.
     /// </summary>
     /// <remarks>Calls <see cref="EditorBase.UpdateControls"/> of base class <see cref="EditorBase"/>.</remarks>
-    protected override void UpdateControls() {
-      base.UpdateControls();
-      abortButton.Enabled = false;
+    protected override void OnObjectChanged() {
+      base.OnObjectChanged();
+      stopButton.Enabled = false;
       if (Engine == null) {
-        executeButton.Enabled = false;
+        operatorGraphView.Enabled = false;
+        scopeView.Enabled = false;
+        startButton.Enabled = false;
         resetButton.Enabled = false;
         executionTimeTextBox.Enabled = false;
       } else {
-        executeButton.Enabled = true;
+        operatorGraphView.OperatorGraph = Engine.OperatorGraph;
+        scopeView.Scope = Engine.GlobalScope;
+        startButton.Enabled = !Engine.Finished;
         resetButton.Enabled = true;
-        executionTimeCounter = 0;
         executionTimeTextBox.Text = Engine.ExecutionTime.ToString();
         executionTimeTextBox.Enabled = true;
       }
     }
 
     #region Engine Events
-    private void Engine_Initialized(object sender, EventArgs e) {
-      Refresh();
-    }
-    private delegate void OnExceptionEventDelegate(object sender, EventArgs<Exception> e);
-    private void Engine_ExceptionOccurred(object sender, EventArgs<Exception> e) {
+    private void Engine_OperatorGraphChanged(object sender, EventArgs e) {
       if (InvokeRequired)
-        Invoke(new OnExceptionEventDelegate(Engine_ExceptionOccurred), sender, e);
+        Invoke(new EventHandler(Engine_OperatorGraphChanged), sender, e);
       else
-        Auxiliary.ShowErrorMessageBox(e.Value);
+        operatorGraphView.OperatorGraph = Engine.OperatorGraph;
     }
-    private void Engine_ExecutionTimeChanged(object sender, EventArgs e) {
-      executionTimeCounter++;
-      if (executionTimeCounter == 1000)
-        UpdateExecutionTimeTextBox();
-    }
-    private void Engine_Finished(object sender, EventArgs e) {
-      UpdateExecutionTimeTextBox();
-      if (globalScopeGroupBox.Controls.Count > 0) {
-        ScopeView scopeEditor = (ScopeView)globalScopeGroupBox.Controls[0];
-        if (!scopeEditor.AutomaticUpdating)
-          scopeEditor.Refresh();
-      }
-      EnableDisableControls();
-    }
-    private void UpdateExecutionTimeTextBox() {
+    private void Engine_Initialized(object sender, EventArgs e) {
       if (InvokeRequired)
-        Invoke(new MethodInvoker(UpdateExecutionTimeTextBox));
+        Invoke(new EventHandler(Engine_Initialized), sender, e);
       else {
-        executionTimeCounter = 0;
+        operatorGraphView.Enabled = true;
+        scopeView.Enabled = true;
+        startButton.Enabled = !Engine.Finished;
+        stopButton.Enabled = false;
+        resetButton.Enabled = true;
         executionTimeTextBox.Text = Engine.ExecutionTime.ToString();
       }
     }
-    private void EnableDisableControls() {
+    private void Engine_Started(object sender, EventArgs e) {
+      executionTimeCounter = 0;
       if (InvokeRequired)
-        Invoke(new MethodInvoker(EnableDisableControls));
+        Invoke(new EventHandler(Engine_Started), sender, e);
       else {
-        executeButton.Enabled = true;
-        abortButton.Enabled = false;
-        resetButton.Enabled = true;
-        operatorGraphGroupBox.Enabled = true;
-        globalScopeGroupBox.Enabled = true;
+        operatorGraphView.Enabled = false;
+        scopeView.Enabled = false;
+        startButton.Enabled = false;
+        stopButton.Enabled = true;
+        resetButton.Enabled = false;
+        executionTimeTextBox.Text = Engine.ExecutionTime.ToString();
       }
+    }
+    private void Engine_Stopped(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Engine_Stopped), sender, e);
+      else {
+        operatorGraphView.Enabled = true;
+        scopeView.Enabled = true;
+        startButton.Enabled = !Engine.Finished;
+        stopButton.Enabled = false;
+        resetButton.Enabled = true;
+        executionTimeTextBox.Text = Engine.ExecutionTime.ToString();
+      }
+    }
+    private void Engine_ExecutionTimeChanged(object sender, EventArgs e) {
+      executionTimeCounter++;
+      if ((executionTimeCounter == 1000) || !Engine.Running) {
+        executionTimeCounter = 0;
+        if (InvokeRequired)
+          Invoke(new EventHandler(Engine_ExecutionTimeChanged), sender, e);
+        else
+          executionTimeTextBox.Text = Engine.ExecutionTime.ToString();
+      }
+    }
+    private void Engine_ExceptionOccurred(object sender, EventArgs<Exception> e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler<EventArgs<Exception>>(Engine_ExceptionOccurred), sender, e);
+      else
+        Auxiliary.ShowErrorMessageBox(e.Value);
     }
     #endregion
 
     #region Button events
-    private void executeButton_Click(object sender, EventArgs e) {
-      executeButton.Enabled = false;
-      abortButton.Enabled = true;
-      resetButton.Enabled = false;
-      operatorGraphGroupBox.Enabled = false;
-      globalScopeGroupBox.Enabled = false;
-      Engine.Execute();
+    private void startButton_Click(object sender, EventArgs e) {
+      Engine.Start();
     }
-    private void abortButton_Click(object sender, EventArgs e) {
-      Engine.Abort();
+    private void stopButton_Click(object sender, EventArgs e) {
+      Engine.Stop();
     }
     private void resetButton_Click(object sender, EventArgs e) {
-      Engine.Reset();
-      UpdateExecutionTimeTextBox();
-      if (globalScopeGroupBox.Controls.Count > 0) {
-        ScopeView scopeEditor = (ScopeView)globalScopeGroupBox.Controls[0];
-        if (!scopeEditor.AutomaticUpdating)
-          scopeEditor.Refresh();
-      }
+      Engine.Initialize();
     }
     #endregion
   }

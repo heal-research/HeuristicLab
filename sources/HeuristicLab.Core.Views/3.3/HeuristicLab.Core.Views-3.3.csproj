@@ -38,6 +38,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq">
@@ -50,33 +51,159 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CreateParameterDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CreateParameterDialog.Designer.cs">
+      <DependentUpon>CreateParameterDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Auxiliary.cs" />
-    <Compile Include="ChooseItemDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ChooseItemDialog.Designer.cs">
-      <DependentUpon>ChooseItemDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ChooseOperatorDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ChooseOperatorDialog.Designer.cs">
-      <DependentUpon>ChooseOperatorDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ChooseTypeDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ChooseTypeDialog.Designer.cs">
-      <DependentUpon>ChooseTypeDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="EngineBaseView.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="EngineBaseView.Designer.cs">
       <DependentUpon>EngineBaseView.cs</DependentUpon>
     </Compile>
+    <Compile Include="OperatorGraphView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OperatorGraphView.Designer.cs">
+      <DependentUpon>OperatorGraphView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OperatorsSidebar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OperatorsSidebar.Designer.cs">
+      <DependentUpon>OperatorsSidebar.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OperatorTreeView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OperatorTreeView.Designer.cs">
+      <DependentUpon>OperatorTreeView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TypeSelectorDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TypeSelectorDialog.Designer.cs">
+      <DependentUpon>TypeSelectorDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TypeSelector.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TypeSelector.Designer.cs">
+      <DependentUpon>TypeSelector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewHost.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ViewHost.Designer.cs">
+      <DependentUpon>ViewHost.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ParameterBaseView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ParameterBaseView.Designer.cs">
+      <DependentUpon>ParameterBaseView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OperatorCollectionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OperatorCollectionView.Designer.cs">
+      <DependentUpon>OperatorCollectionView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OperatorSetView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OperatorSetView.Designer.cs">
+      <DependentUpon>OperatorSetView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ItemSetView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ItemSetView.Designer.cs">
+      <DependentUpon>ItemSetView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ItemCollectionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ItemCollectionView.Designer.cs">
+      <DependentUpon>ItemCollectionView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ScopeListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ScopeListView.Designer.cs">
+      <DependentUpon>ScopeListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OperatorListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OperatorListView.Designer.cs">
+      <DependentUpon>OperatorListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ItemListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ItemListView.Designer.cs">
+      <DependentUpon>ItemListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IObjectView.cs" />
+    <Compile Include="ObjectViewBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ObjectViewBase.Designer.cs">
+      <DependentUpon>ObjectViewBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OperatorBaseView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OperatorBaseView.Designer.cs">
+      <DependentUpon>OperatorBaseView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NamedItemBaseView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NamedItemBaseView.Designer.cs">
+      <DependentUpon>NamedItemBaseView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IntDataView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="IntDataView.Designer.cs">
+      <DependentUpon>IntDataView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ParameterView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ParameterView.Designer.cs">
+      <DependentUpon>ParameterView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ScopeView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ScopeView.Designer.cs">
+      <DependentUpon>ScopeView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="VariableCollectionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VariableCollectionView.Designer.cs">
+      <DependentUpon>VariableCollectionView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ParameterCollectionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ParameterCollectionView.Designer.cs">
+      <DependentUpon>ParameterCollectionView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NamedItemCollectionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NamedItemCollectionView.Designer.cs">
+      <DependentUpon>NamedItemCollectionView.cs</DependentUpon>
+    </Compile>
     <Compile Include="HeuristicLabCoreViewsPlugin.cs" />
-    <Compile Include="IItemView.cs" />
     <Compile Include="ItemBaseView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -89,61 +216,7 @@
     <Compile Include="ItemViewBase.Designer.cs">
       <DependentUpon>ItemViewBase.cs</DependentUpon>
     </Compile>
-    <Compile Include="OperatorBaseDescriptionView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OperatorBaseDescriptionView.Designer.cs">
-      <DependentUpon>OperatorBaseDescriptionView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OperatorBaseVariableInfosView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OperatorBaseVariableInfosView.Designer.cs">
-      <DependentUpon>OperatorBaseVariableInfosView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OperatorBaseVariablesView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OperatorBaseVariablesView.Designer.cs">
-      <DependentUpon>OperatorBaseVariablesView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OperatorBaseView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OperatorBaseView.Designer.cs">
-      <DependentUpon>OperatorBaseView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OperatorGraphView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OperatorGraphView.Designer.cs">
-      <DependentUpon>OperatorGraphView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OperatorLibraryView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OperatorLibraryView.Designer.cs">
-      <DependentUpon>OperatorLibraryView.cs</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ScopeView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ScopeView.Designer.cs">
-      <DependentUpon>ScopeView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="VariableInfoView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="VariableInfoView.Designer.cs">
-      <DependentUpon>VariableInfoView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="VariablesScopeView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="VariablesScopeView.Designer.cs">
-      <DependentUpon>VariablesScopeView.cs</DependentUpon>
-    </Compile>
     <Compile Include="VariableView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -156,6 +229,10 @@
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
+      <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
+      <Name>HeuristicLab.Collections-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.2\HeuristicLab.Common.Resources-3.2.csproj">
       <Project>{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}</Project>
       <Name>HeuristicLab.Common.Resources-3.2</Name>
@@ -176,63 +253,14 @@
       <Project>{3BD61258-31DA-4B09-89C0-4F71FEF5F05A}</Project>
       <Name>HeuristicLab.MainForm-3.2</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
+      <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
+      <Name>HeuristicLab.Persistence-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Resources\CombinedOperator.bmp" />
-    <Content Include="Resources\HeuristicLab.ico" />
-    <Content Include="Resources\Operator.bmp" />
-    <Content Include="Resources\ProgrammableOperator.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ChooseItemDialog.resx">
-      <DependentUpon>ChooseItemDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ChooseOperatorDialog.resx">
-      <DependentUpon>ChooseOperatorDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ChooseTypeDialog.resx">
-      <DependentUpon>ChooseTypeDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="EngineBaseView.resx">
-      <DependentUpon>EngineBaseView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ItemBaseView.resx">
-      <DependentUpon>ItemBaseView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OperatorBaseDescriptionView.resx">
-      <DependentUpon>OperatorBaseDescriptionView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OperatorBaseVariableInfosView.resx">
-      <DependentUpon>OperatorBaseVariableInfosView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OperatorBaseVariablesView.resx">
-      <DependentUpon>OperatorBaseVariablesView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OperatorBaseView.resx">
-      <DependentUpon>OperatorBaseView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OperatorGraphView.resx">
-      <DependentUpon>OperatorGraphView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OperatorLibraryView.resx">
-      <DependentUpon>OperatorLibraryView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ScopeView.resx">
-      <DependentUpon>ScopeView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="VariableInfoView.resx">
-      <DependentUpon>VariableInfoView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="VariablesScopeView.resx">
-      <DependentUpon>VariablesScopeView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="VariableView.resx">
-      <DependentUpon>VariableView.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

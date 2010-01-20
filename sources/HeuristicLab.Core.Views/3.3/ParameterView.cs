@@ -30,10 +30,10 @@ using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Core.Views {
   /// <summary>
-  /// The visual representation of a <see cref="Variable"/>.
+  /// The visual representation of a <see cref="Parameter"/>.
   /// </summary>
-  [Content(typeof(Variable), true)]
-  public partial class VariableView : NamedItemBaseView {
+  [Content(typeof(Parameter), true)]
+  public partial class ParameterView : ParameterBaseView {
     private TypeSelectorDialog typeSelectorDialog;
 
     /// <summary>
@@ -41,26 +41,26 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
     /// No own data storage present.</remarks>
-    public Variable Variable {
-      get { return (Variable)Item; }
+    public new Parameter Parameter {
+      get { return (Parameter)Item; }
       set { base.Item = value; }
     }
 
     /// <summary>
     /// Initializes a new instance of <see cref="VariableView"/> with caption "Variable".
     /// </summary>
-    public VariableView() {
+    public ParameterView() {
       InitializeComponent();
-      Caption = "Variable";
+      Caption = "Parameter";
     }
     /// <summary>
     /// Initializes a new instance of <see cref="VariableView"/> with the given <paramref name="variable"/>.
     /// </summary>
     /// <remarks>Calls <see cref="VariableView()"/>.</remarks>
     /// <param name="variable">The variable to represent visually.</param>
-    public VariableView(Variable variable)
+    public ParameterView(Parameter parameter)
       : this() {
-      Variable = variable;
+      Parameter = parameter;
     }
 
     /// <summary>
@@ -68,7 +68,8 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void DeregisterObjectEvents() {
-      Variable.ValueChanged -= new EventHandler(Variable_ValueChanged);
+      Parameter.ActualNameChanged -= new EventHandler(Parameter_ActualNameChanged);
+      Parameter.ValueChanged -= new EventHandler(Parameter_ValueChanged);
       base.DeregisterObjectEvents();
     }
 
@@ -78,59 +79,67 @@ namespace HeuristicLab.Core.Views {
     /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RegisterObjectEvents() {
       base.RegisterObjectEvents();
-      Variable.ValueChanged += new EventHandler(Variable_ValueChanged);
+      Parameter.ActualNameChanged += new EventHandler(Parameter_ActualNameChanged);
+      Parameter.ValueChanged += new EventHandler(Parameter_ValueChanged);
     }
 
     protected override void OnObjectChanged() {
       base.OnObjectChanged();
-      if (Variable == null) {
-        Caption = "Variable";
-        dataTypeTextBox.Text = "-";
-        dataTypeTextBox.Enabled = false;
+      if (Parameter == null) {
+        Caption = "Parameter";
+        actualNameTextBox.Text = "-";
+        actualNameTextBox.Enabled = false;
         setValueButton.Enabled = false;
         clearValueButton.Enabled = false;
         valueGroupBox.Enabled = false;
         viewHost.Object = null;
       } else {
-        Caption = Variable.Name + " (" + Variable.GetType().Name + ")";
-        dataTypeTextBox.Text = Variable.Value == null ? "-" : Variable.Value.GetType().FullName;
-        dataTypeTextBox.Enabled = Variable.Value != null;
-        setValueButton.Enabled = Variable.Value == null;
-        clearValueButton.Enabled = Variable.Value != null;
+        Caption = Parameter.Name + " (" + Parameter.GetType().Name + ")";
+        actualNameTextBox.Text = Parameter.ActualName;
+        actualNameTextBox.Enabled = Parameter.Value == null;
+        setValueButton.Enabled = Parameter.Value == null;
+        clearValueButton.Enabled = Parameter.Value != null;
         valueGroupBox.Enabled = true;
-        viewHost.Object = Variable.Value;
+        viewHost.Object = Parameter.Value;
       }
     }
 
-    private void Variable_ValueChanged(object sender, EventArgs e) {
+    private void Parameter_ActualNameChanged(object sender, EventArgs e) {
       if (InvokeRequired)
-        Invoke(new EventHandler(Variable_ValueChanged), sender, e);
+        Invoke(new EventHandler(Parameter_ActualNameChanged), sender, e);
+      else
+        actualNameTextBox.Text = Parameter.ActualName;
+    }
+    private void Parameter_ValueChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Parameter_ValueChanged), sender, e);
       else {
-        dataTypeTextBox.Text = Variable.Value == null ? "-" : Variable.Value.GetType().FullName;
-        dataTypeTextBox.Enabled = Variable.Value != null;
-        setValueButton.Enabled = Variable.Value == null;
-        clearValueButton.Enabled = Variable.Value != null;
-        viewHost.Object = Variable.Value;
+        actualNameTextBox.Enabled = Parameter.Value == null;
+        setValueButton.Enabled = Parameter.Value == null;
+        clearValueButton.Enabled = Parameter.Value != null;
+        viewHost.Object = Parameter.Value;
       }
     }
 
+    private void actualNameTextBox_Validated(object sender, EventArgs e) {
+      Parameter.ActualName = actualNameTextBox.Text;
+    }
     private void setValueButton_Click(object sender, EventArgs e) {
       if (typeSelectorDialog == null) {
         typeSelectorDialog = new TypeSelectorDialog();
         typeSelectorDialog.Caption = "Select Value Type";
-        typeSelectorDialog.TypeSelector.Configure(typeof(IItem), false, false);
       }
-      if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
-        Variable.Value = (IItem)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
-      }
+      typeSelectorDialog.TypeSelector.Configure(Parameter.DataType, false, false);
+      if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK)
+        Parameter.Value = (IItem)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
     }
     private void clearValueButton_Click(object sender, EventArgs e) {
-      Variable.Value = null;
+      Parameter.Value = null;
     }
     private void valuePanel_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
       Type type = e.Data.GetData("Type") as Type;
-      if ((type != null) && (typeof(IItem).IsAssignableFrom(type))) {
+      if ((type != null) && (Parameter.DataType.IsAssignableFrom(type))) {
         if ((e.KeyState & 8) == 8) e.Effect = DragDropEffects.Copy;  // CTRL key
         else if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Move;  // ALT key
         else e.Effect = DragDropEffects.Link;
@@ -140,7 +149,7 @@ namespace HeuristicLab.Core.Views {
       if (e.Effect != DragDropEffects.None) {
         IItem item = e.Data.GetData("Value") as IItem;
         if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) item = (IItem)item.Clone();
-        Variable.Value = item;
+        Parameter.Value = item;
       }
     }
   }

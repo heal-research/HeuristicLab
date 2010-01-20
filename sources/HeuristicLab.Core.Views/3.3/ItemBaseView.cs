@@ -44,7 +44,7 @@ namespace HeuristicLab.Core.Views {
     /// Intializes a new instance of <see cref="ItemBaseView"/> with the given <paramref name="item"/>.
     /// </summary>
     /// <param name="item">The item that should be displayed.</param>
-    public ItemBaseView(IItem item)
+    public ItemBaseView(ItemBase item)
       : this() {
       Item = item;
     }

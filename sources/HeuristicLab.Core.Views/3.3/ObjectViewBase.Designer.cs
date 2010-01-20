@@ -22,7 +22,7 @@
 using System;
 
 namespace HeuristicLab.Core.Views {
-  partial class ItemViewBase {
+  partial class ObjectViewBase {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -34,6 +34,7 @@ namespace HeuristicLab.Core.Views {
     /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
     protected override void Dispose(bool disposing) {
       if (disposing) {
+        if (Object != null) DeregisterObjectEvents();
         if (components != null) components.Dispose();
       }
       base.Dispose(disposing);

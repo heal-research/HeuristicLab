@@ -1,0 +1,270 @@
+#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Text;
+using System.Windows.Forms;
+using HeuristicLab.Collections;
+using HeuristicLab.Common;
+using HeuristicLab.MainForm;
+
+namespace HeuristicLab.Core.Views {
+  public partial class ItemCollectionView<T> : ObjectViewBase where T : class, IItem {
+    public IObservableCollection<T> ItemCollection {
+      get { return (IObservableCollection<T>)Object; }
+      set { base.Object = value; }
+    }
+
+    public ListView ItemsListView {
+      get { return itemsListView; }
+    }
+
+    public ItemCollectionView() {
+      InitializeComponent();
+      Caption = "Item Collection";
+    }
+
+    protected override void DeregisterObjectEvents() {
+      ItemCollection.ItemsAdded -= new CollectionItemsChangedEventHandler<T>(ItemCollection_ItemsAdded);
+      ItemCollection.ItemsRemoved -= new CollectionItemsChangedEventHandler<T>(ItemCollection_ItemsRemoved);
+      ItemCollection.CollectionReset -= new CollectionItemsChangedEventHandler<T>(ItemCollection_CollectionReset);
+      base.DeregisterObjectEvents();
+    }
+    protected override void RegisterObjectEvents() {
+      base.RegisterObjectEvents();
+      ItemCollection.ItemsAdded += new CollectionItemsChangedEventHandler<T>(ItemCollection_ItemsAdded);
+      ItemCollection.ItemsRemoved += new CollectionItemsChangedEventHandler<T>(ItemCollection_ItemsRemoved);
+      ItemCollection.CollectionReset += new CollectionItemsChangedEventHandler<T>(ItemCollection_CollectionReset);
+    }
+
+    protected override void OnObjectChanged() {
+      base.OnObjectChanged();
+      Caption = "Item Collection";
+      while (itemsListView.Items.Count > 0) RemoveListViewItem(itemsListView.Items[0]);
+      itemsListView.Enabled = false;
+      detailsGroupBox.Enabled = false;
+      viewHost.Object = null;
+      addButton.Enabled = false;
+      sortAscendingButton.Enabled = false;
+      sortDescendingButton.Enabled = false;
+      removeButton.Enabled = false;
+
+      if (ItemCollection != null) {
+        Caption += " (" + ItemCollection.GetType().Name + ")";
+        itemsListView.Enabled = true;
+        addButton.Enabled = !ItemCollection.IsReadOnly;
+        foreach (T item in ItemCollection)
+          AddListViewItem(CreateListViewItem(item));
+        sortAscendingButton.Enabled = itemsListView.Items.Count > 0;
+        sortDescendingButton.Enabled = itemsListView.Items.Count > 0;
+        SortItemsListView(SortOrder.Ascending);
+      }
+    }
+
+    protected virtual T CreateItem() {
+      try {
+        return (T)Activator.CreateInstance(typeof(T));
+      } catch(Exception ex) {
+        Auxiliary.ShowErrorMessageBox(ex);
+        return null;
+      }
+    }
+    protected virtual ListViewItem CreateListViewItem(T item) {
+      if (!itemsListView.SmallImageList.Images.ContainsKey(item.GetType().FullName))
+        itemsListView.SmallImageList.Images.Add(item.GetType().FullName, item.ItemImage);
+
+      ListViewItem listViewItem = new ListViewItem();
+      listViewItem.Text = item.ToString();
+      listViewItem.ToolTipText = item.ItemName + ": " + item.ItemDescription;
+      listViewItem.ImageIndex = itemsListView.SmallImageList.Images.IndexOfKey(item.GetType().FullName);
+      listViewItem.Tag = item;
+      return listViewItem;
+    }
+    protected virtual void AddListViewItem(ListViewItem listViewItem) {
+      itemsListView.Items.Add(listViewItem);
+      ((T)listViewItem.Tag).Changed += new ChangedEventHandler(Item_Changed);
+      sortAscendingButton.Enabled = itemsListView.Items.Count > 0;
+      sortDescendingButton.Enabled = itemsListView.Items.Count > 0;
+    }
+    protected virtual void RemoveListViewItem(ListViewItem listViewItem) {
+      ((T)listViewItem.Tag).Changed -= new ChangedEventHandler(Item_Changed);
+      listViewItem.Remove();
+      sortAscendingButton.Enabled = itemsListView.Items.Count > 0;
+      sortDescendingButton.Enabled = itemsListView.Items.Count > 0;
+    }
+    protected virtual void UpdateListViewItem(ListViewItem listViewItem) {
+      if (!listViewItem.Text.Equals(listViewItem.Tag.ToString())) {
+        listViewItem.Text = listViewItem.Tag.ToString();
+        itemsListView.Sort();
+      }
+    }
+    protected virtual IEnumerable<ListViewItem> GetListViewItemsForItem(T item) {
+      foreach (ListViewItem listViewItem in itemsListView.Items) {
+        if (((T)listViewItem.Tag) == item)
+          yield return listViewItem;
+      }
+    }
+
+    #region ListView Events
+    protected virtual void itemsListView_SelectedIndexChanged(object sender, EventArgs e) {
+      removeButton.Enabled = itemsListView.SelectedItems.Count > 0 && !ItemCollection.IsReadOnly;
+      if (itemsListView.SelectedItems.Count == 1) {
+        T item = (T)itemsListView.SelectedItems[0].Tag;
+        viewHost.Object = item;
+        detailsGroupBox.Enabled = true;
+      } else {
+        viewHost.Object = null;
+        detailsGroupBox.Enabled = false;
+      }
+    }
+    private void itemsListView_SizeChanged(object sender, EventArgs e) {
+      if (itemsListView.Columns.Count > 0)
+        itemsListView.Columns[0].Width = Math.Max(0, itemsListView.Width - 25);
+    }
+    protected virtual void itemsListView_KeyDown(object sender, KeyEventArgs e) {
+      if (e.KeyCode == Keys.Delete) {
+        if ((itemsListView.SelectedItems.Count > 0) && !ItemCollection.IsReadOnly) {
+          foreach (ListViewItem item in itemsListView.SelectedItems)
+            ItemCollection.Remove((T)item.Tag);
+        }
+      }
+    }
+    protected virtual void itemsListView_DoubleClick(object sender, EventArgs e) {
+      if (itemsListView.SelectedItems.Count == 1) {
+        T item = (T)itemsListView.SelectedItems[0].Tag;
+        IView view = MainFormManager.CreateDefaultView(item);
+        if (view != null) MainFormManager.MainForm.ShowView(view);
+      }
+    }
+    protected virtual void itemsListView_ItemDrag(object sender, ItemDragEventArgs e) {
+      ListViewItem listViewItem = (ListViewItem)e.Item;
+      T item = (T)listViewItem.Tag;
+      DataObject data = new DataObject();
+      data.SetData("Type", item.GetType());
+      data.SetData("Value", item);
+      if (ItemCollection.IsReadOnly) {
+        DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
+      } else {
+        DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move);
+        if ((result & DragDropEffects.Move) == DragDropEffects.Move)
+          ItemCollection.Remove(item);
+      }
+    }
+    protected virtual void itemsListView_DragEnterOver(object sender, DragEventArgs e) {
+      e.Effect = DragDropEffects.None;
+      Type type = e.Data.GetData("Type") as Type;
+      if ((!ItemCollection.IsReadOnly) && (type != null) && (typeof(T).IsAssignableFrom(type))) {
+        if ((e.KeyState & 8) == 8) e.Effect = DragDropEffects.Copy;  // CTRL key
+        else if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Move;  // ALT key
+        else e.Effect = DragDropEffects.Link;
+      }
+    }
+    protected virtual void itemsListView_DragDrop(object sender, DragEventArgs e) {
+      if (e.Effect != DragDropEffects.None) {
+        T item = e.Data.GetData("Value") as T;
+        if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) item = (T)item.Clone();
+        ItemCollection.Add(item);
+      }
+    }
+    #endregion
+
+    #region Button Events
+    protected virtual void addButton_Click(object sender, EventArgs e) {
+      T item = CreateItem();
+      if (item != null)
+        ItemCollection.Add(item);
+    }
+    protected void sortAscendingButton_Click(object sender, EventArgs e) {
+      SortItemsListView(SortOrder.Ascending);
+    }
+    protected void sortDescendingButton_Click(object sender, EventArgs e) {
+      SortItemsListView(SortOrder.Descending);
+    }
+    protected virtual void removeButton_Click(object sender, EventArgs e) {
+      if (itemsListView.SelectedItems.Count > 0) {
+        foreach (ListViewItem item in itemsListView.SelectedItems)
+          ItemCollection.Remove((T)item.Tag);
+        itemsListView.SelectedItems.Clear();
+      }
+    }
+    #endregion
+
+    #region ItemCollection Events
+    private void ItemCollection_ItemsAdded(object sender, CollectionItemsChangedEventArgs<T> e) {
+      if (InvokeRequired)
+        Invoke(new CollectionItemsChangedEventHandler<T>(ItemCollection_ItemsAdded), sender, e);
+      else
+        foreach (T item in e.Items)
+          AddListViewItem(CreateListViewItem(item));
+    }
+    private void ItemCollection_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<T> e) {
+      if (InvokeRequired)
+        Invoke(new CollectionItemsChangedEventHandler<T>(ItemCollection_ItemsRemoved), sender, e);
+      else {
+        foreach (T item in e.Items) {
+          foreach (ListViewItem listViewItem in GetListViewItemsForItem(item)) {
+            RemoveListViewItem(listViewItem);
+            break;
+          }
+        }
+      }
+    }
+    private void ItemCollection_CollectionReset(object sender, CollectionItemsChangedEventArgs<T> e) {
+      if (InvokeRequired)
+        Invoke(new CollectionItemsChangedEventHandler<T>(ItemCollection_CollectionReset), sender, e);
+      else {
+        foreach (T item in e.OldItems) {
+          foreach (ListViewItem listViewItem in GetListViewItemsForItem(item)) {
+            RemoveListViewItem(listViewItem);
+            break;
+          }
+        }
+        foreach (T item in e.Items)
+          AddListViewItem(CreateListViewItem(item));
+      }
+    }
+    #endregion
+
+    #region Item Events
+    private void Item_Changed(object sender, ChangedEventArgs e) {
+      if (InvokeRequired)
+        Invoke(new ChangedEventHandler(Item_Changed), sender, e);
+      else {
+        T item = (T)sender;
+        foreach (ListViewItem listViewItem in GetListViewItemsForItem(item))
+          UpdateListViewItem(listViewItem);
+      }
+    }
+    #endregion
+
+    #region Helpers
+    private void SortItemsListView(SortOrder sortOrder) {
+      itemsListView.Sorting = sortOrder;
+      itemsListView.Sort();
+      itemsListView.Sorting = SortOrder.None;
+    }
+    #endregion
+  }
+}

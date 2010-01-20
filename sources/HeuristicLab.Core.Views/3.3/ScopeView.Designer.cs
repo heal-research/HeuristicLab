@@ -31,12 +31,12 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
     protected override void Dispose(bool disposing) {
-      if (scopesTreeView.Nodes.Count > 0) {
-        RemoveTreeNode(scopesTreeView.Nodes[0]);
-        scopesTreeView.Nodes.Clear();
-      }
-      if (disposing && (components != null)) {
-        components.Dispose();
+      if (disposing) {
+        if (scopesTreeView.Nodes.Count > 0) {
+          RemoveTreeNode(scopesTreeView.Nodes[0]);
+          scopesTreeView.Nodes.Clear();
+        }
+        if (components != null) components.Dispose();
       }
       base.Dispose(disposing);
     }
@@ -48,87 +48,81 @@ namespace HeuristicLab.Core.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.components = new System.ComponentModel.Container();
       this.scopesTreeView = new System.Windows.Forms.TreeView();
-      this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-      this.automaticUpdatingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
-      this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.variablesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.contextMenuStrip.SuspendLayout();
+      this.splitContainer = new System.Windows.Forms.SplitContainer();
+      this.scopesGroupBox = new System.Windows.Forms.GroupBox();
+      this.variableCollectionView = new HeuristicLab.Core.Views.VariableCollectionView();
+      this.splitContainer.Panel1.SuspendLayout();
+      this.splitContainer.Panel2.SuspendLayout();
+      this.splitContainer.SuspendLayout();
+      this.scopesGroupBox.SuspendLayout();
       this.SuspendLayout();
       // 
       // scopesTreeView
       // 
-      this.scopesTreeView.ContextMenuStrip = this.contextMenuStrip;
       this.scopesTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
       this.scopesTreeView.HideSelection = false;
-      this.scopesTreeView.Location = new System.Drawing.Point(0, 0);
+      this.scopesTreeView.Location = new System.Drawing.Point(3, 16);
       this.scopesTreeView.Name = "scopesTreeView";
       this.scopesTreeView.ShowNodeToolTips = true;
-      this.scopesTreeView.Size = new System.Drawing.Size(400, 400);
+      this.scopesTreeView.Size = new System.Drawing.Size(394, 181);
       this.scopesTreeView.TabIndex = 0;
       this.scopesTreeView.AfterCollapse += new System.Windows.Forms.TreeViewEventHandler(this.scopesTreeView_AfterCollapse);
       this.scopesTreeView.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.scopesTreeView_BeforeExpand);
-      this.scopesTreeView.DoubleClick += new System.EventHandler(this.scopesTreeView_DoubleClick);
       this.scopesTreeView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.scopesTreeView_MouseDown);
       this.scopesTreeView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.scopesTreeView_ItemDrag);
       // 
-      // contextMenuStrip
+      // splitContainer
       // 
-      this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.automaticUpdatingToolStripMenuItem,
-            this.refreshToolStripMenuItem,
-            this.toolStripMenuItem1,
-            this.variablesToolStripMenuItem,
-            this.viewToolStripMenuItem});
-      this.contextMenuStrip.Name = "contextMenuStrip";
-      this.contextMenuStrip.Size = new System.Drawing.Size(180, 98);
-      this.contextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip_Opening);
+      this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.splitContainer.Location = new System.Drawing.Point(0, 0);
+      this.splitContainer.Name = "splitContainer";
+      this.splitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
       // 
-      // automaticUpdatingToolStripMenuItem
+      // splitContainer.Panel1
       // 
-      this.automaticUpdatingToolStripMenuItem.CheckOnClick = true;
-      this.automaticUpdatingToolStripMenuItem.Name = "automaticUpdatingToolStripMenuItem";
-      this.automaticUpdatingToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
-      this.automaticUpdatingToolStripMenuItem.Text = "Automatic &Updating";
-      this.automaticUpdatingToolStripMenuItem.ToolTipText = "Automatically update scope editor during execution";
-      this.automaticUpdatingToolStripMenuItem.Click += new System.EventHandler(this.automaticUpdatingToolStripMenuItem_Click);
+      this.splitContainer.Panel1.Controls.Add(this.scopesGroupBox);
       // 
-      // refreshToolStripMenuItem
+      // splitContainer.Panel2
       // 
-      this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
-      this.refreshToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
-      this.refreshToolStripMenuItem.Text = "&Refresh";
-      this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
+      this.splitContainer.Panel2.Controls.Add(this.variableCollectionView);
+      this.splitContainer.Size = new System.Drawing.Size(400, 400);
+      this.splitContainer.SplitterDistance = 200;
+      this.splitContainer.TabIndex = 1;
       // 
-      // toolStripMenuItem1
+      // scopesGroupBox
       // 
-      this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-      this.toolStripMenuItem1.Size = new System.Drawing.Size(176, 6);
+      this.scopesGroupBox.Controls.Add(this.scopesTreeView);
+      this.scopesGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.scopesGroupBox.Location = new System.Drawing.Point(0, 0);
+      this.scopesGroupBox.Name = "scopesGroupBox";
+      this.scopesGroupBox.Size = new System.Drawing.Size(400, 200);
+      this.scopesGroupBox.TabIndex = 0;
+      this.scopesGroupBox.TabStop = false;
+      this.scopesGroupBox.Text = "&Scopes";
       // 
-      // viewToolStripMenuItem
+      // variableCollectionView
       // 
-      this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-      this.viewToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
-      this.viewToolStripMenuItem.Text = "&View";
-      // 
-      // variablesToolStripMenuItem
-      // 
-      this.variablesToolStripMenuItem.Name = "variablesToolStripMenuItem";
-      this.variablesToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
-      this.variablesToolStripMenuItem.Text = "&Variables...";
-      this.variablesToolStripMenuItem.Click += new System.EventHandler(this.variablesToolStripMenuItem_Click);
+      this.variableCollectionView.Caption = "VariableCollection";
+      this.variableCollectionView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.variableCollectionView.ItemCollection = null;
+      this.variableCollectionView.Location = new System.Drawing.Point(0, 0);
+      this.variableCollectionView.Name = "variableCollectionView";
+      this.variableCollectionView.NamedItemCollection = null;
+      this.variableCollectionView.Size = new System.Drawing.Size(400, 196);
+      this.variableCollectionView.TabIndex = 0;
       // 
       // ScopeView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.scopesTreeView);
+      this.Controls.Add(this.splitContainer);
       this.Name = "ScopeView";
       this.Size = new System.Drawing.Size(400, 400);
-      this.contextMenuStrip.ResumeLayout(false);
+      this.splitContainer.Panel1.ResumeLayout(false);
+      this.splitContainer.Panel2.ResumeLayout(false);
+      this.splitContainer.ResumeLayout(false);
+      this.scopesGroupBox.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
@@ -136,11 +130,8 @@ namespace HeuristicLab.Core.Views {
     #endregion
 
     private System.Windows.Forms.TreeView scopesTreeView;
-    private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
-    private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem automaticUpdatingToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem;
-    private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
-    private System.Windows.Forms.ToolStripMenuItem variablesToolStripMenuItem;
+    private System.Windows.Forms.SplitContainer splitContainer;
+    private System.Windows.Forms.GroupBox scopesGroupBox;
+    private VariableCollectionView variableCollectionView;
   }
 }

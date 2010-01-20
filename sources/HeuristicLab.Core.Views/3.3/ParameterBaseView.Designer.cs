@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Core.Views {
-  partial class OperatorBaseView {
+  partial class ParameterBaseView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -44,44 +44,55 @@ namespace HeuristicLab.Core.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.parameterCollectionView = new HeuristicLab.Core.Views.ParameterCollectionView();
+      this.dataTypeLabel = new System.Windows.Forms.Label();
+      this.dataTypeTextBox = new System.Windows.Forms.TextBox();
       this.SuspendLayout();
       // 
       // nameTextBox
       // 
-      this.nameTextBox.Size = new System.Drawing.Size(418, 20);
+      this.nameTextBox.Location = new System.Drawing.Point(80, 0);
+      this.nameTextBox.Size = new System.Drawing.Size(313, 20);
       // 
       // descriptionTextBox
       // 
       this.descriptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.descriptionTextBox.Size = new System.Drawing.Size(418, 90);
+      this.descriptionTextBox.Location = new System.Drawing.Point(80, 26);
+      this.descriptionTextBox.Size = new System.Drawing.Size(313, 62);
       // 
-      // parameterCollectionView
+      // dataTypeLabel
       // 
-      this.parameterCollectionView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
+      this.dataTypeLabel.AutoSize = true;
+      this.dataTypeLabel.Location = new System.Drawing.Point(3, 97);
+      this.dataTypeLabel.Name = "dataTypeLabel";
+      this.dataTypeLabel.Size = new System.Drawing.Size(60, 13);
+      this.dataTypeLabel.TabIndex = 4;
+      this.dataTypeLabel.Text = "Data &Type:";
+      // 
+      // dataTypeTextBox
+      // 
+      this.dataTypeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.parameterCollectionView.Caption = "ParameterCollection";
-      this.parameterCollectionView.ItemCollection = null;
-      this.parameterCollectionView.Location = new System.Drawing.Point(0, 122);
-      this.parameterCollectionView.Name = "parameterCollectionView";
-      this.parameterCollectionView.NamedItemCollection = null;
-      this.parameterCollectionView.Size = new System.Drawing.Size(490, 231);
-      this.parameterCollectionView.TabIndex = 4;
+      this.dataTypeTextBox.Location = new System.Drawing.Point(80, 94);
+      this.dataTypeTextBox.Name = "dataTypeTextBox";
+      this.dataTypeTextBox.ReadOnly = true;
+      this.dataTypeTextBox.Size = new System.Drawing.Size(313, 20);
+      this.dataTypeTextBox.TabIndex = 5;
       // 
-      // OperatorBaseView
+      // ParameterBaseView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.parameterCollectionView);
-      this.Name = "OperatorBaseView";
-      this.Size = new System.Drawing.Size(490, 353);
-      this.Controls.SetChildIndex(this.parameterCollectionView, 0);
-      this.Controls.SetChildIndex(this.nameLabel, 0);
-      this.Controls.SetChildIndex(this.descriptionLabel, 0);
-      this.Controls.SetChildIndex(this.nameTextBox, 0);
+      this.Controls.Add(this.dataTypeTextBox);
+      this.Controls.Add(this.dataTypeLabel);
+      this.Name = "ParameterBaseView";
+      this.Size = new System.Drawing.Size(393, 117);
       this.Controls.SetChildIndex(this.descriptionTextBox, 0);
+      this.Controls.SetChildIndex(this.dataTypeLabel, 0);
+      this.Controls.SetChildIndex(this.dataTypeTextBox, 0);
+      this.Controls.SetChildIndex(this.descriptionLabel, 0);
+      this.Controls.SetChildIndex(this.nameLabel, 0);
+      this.Controls.SetChildIndex(this.nameTextBox, 0);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -89,8 +100,8 @@ namespace HeuristicLab.Core.Views {
 
     #endregion
 
-    protected ParameterCollectionView parameterCollectionView;
-
+    protected System.Windows.Forms.Label dataTypeLabel;
+    protected System.Windows.Forms.TextBox dataTypeTextBox;
 
   }
 }

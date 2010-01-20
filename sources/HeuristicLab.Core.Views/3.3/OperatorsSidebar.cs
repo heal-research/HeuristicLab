@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2009 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,22 +21,29 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.Data;
 using System.Text;
-using HeuristicLab.PluginInfrastructure;
+using System.Windows.Forms;
+using System.Linq;
+using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 
-namespace HeuristicLab.Core.Views {
-  /// <summary>
-  /// Plugin class for HeuristicLab.Core.Views plugin.
-  /// </summary>
-  [Plugin("HeuristicLab.Core.Views-3.3")]
-  [PluginFile("HeuristicLab.Core.Views-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Collections-3.3")]
-  [PluginDependency("HeuristicLab.Common-3.2")]
-  [PluginDependency("HeuristicLab.Common.Resources-3.2")]
-  [PluginDependency("HeuristicLab.Persistence-3.3")]
-  [PluginDependency("HeuristicLab.Core-3.3")]
-  [PluginDependency("HeuristicLab.MainForm-3.2")]
-  [PluginDependency("HeuristicLab.MainForm.WindowsForms-3.2")]
-  public class HeuristicLabCoreViewsPlugin : PluginBase {
+namespace HeuristicLab.Core.Views { 
+  public partial class OperatorsSidebar : ViewBase {
+    public OperatorsSidebar() {
+      InitializeComponent();
+    }
+
+    private void OperatorsSidebar_Load(object sender, EventArgs e) {
+      typeSelector.Configure(typeof(IOperator), false, false);
+    }
+
+    public override void OnClosing(object sender, CancelEventArgs e) {
+      base.OnClosing(sender, e);
+      e.Cancel = true;
+      MainFormManager.MainForm.HideView(this);
+    }
   }
 }

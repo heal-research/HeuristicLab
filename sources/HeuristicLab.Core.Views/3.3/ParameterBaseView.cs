@@ -28,38 +28,49 @@ using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
 
-namespace HeuristicLab.Core.Views { 
+namespace HeuristicLab.Core.Views {
   /// <summary>
-  /// The base class for visual representations of items.
+  /// The visual representation of a <see cref="Parameter"/>.
   /// </summary>
-  [Content(typeof(OperatorBase), true)]
-  public partial class OperatorBaseView : NamedItemBaseView {
-    public OperatorBase OperatorBase {
-      get { return (OperatorBase)base.Item; }
+  [Content(typeof(IParameter), true)]
+  public partial class ParameterBaseView : NamedItemBaseView {
+    /// <summary>
+    /// Gets or sets the variable to represent visually.
+    /// </summary>
+    /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
+    /// No own data storage present.</remarks>
+    public IParameter Parameter {
+      get { return (IParameter)Item; }
       set { base.Item = value; }
     }
 
     /// <summary>
-    /// Initializes a new instance of <see cref="ItemBaseView"/>.
+    /// Initializes a new instance of <see cref="VariableView"/> with caption "Variable".
     /// </summary>
-    public OperatorBaseView() {
+    public ParameterBaseView() {
       InitializeComponent();
+      Caption = "Parameter";
     }
     /// <summary>
-    /// Intializes a new instance of <see cref="ItemBaseView"/> with the given <paramref name="item"/>.
+    /// Initializes a new instance of <see cref="VariableView"/> with the given <paramref name="variable"/>.
     /// </summary>
-    /// <param name="item">The item that should be displayed.</param>
-    public OperatorBaseView(OperatorBase operatorBase)
+    /// <remarks>Calls <see cref="VariableView()"/>.</remarks>
+    /// <param name="variable">The variable to represent visually.</param>
+    public ParameterBaseView(IParameter parameter)
       : this() {
-      OperatorBase = operatorBase;
+      Parameter = parameter;
     }
 
     protected override void OnObjectChanged() {
       base.OnObjectChanged();
-      if (OperatorBase == null) {
-        parameterCollectionView.NamedItemCollection = null;
+      if (Parameter == null) {
+        Caption = "Parameter";
+        dataTypeTextBox.Text = "-";
+        dataTypeTextBox.Enabled = false;
       } else {
-        parameterCollectionView.NamedItemCollection = ((IOperator)OperatorBase).Parameters;
+        Caption = Parameter.Name + " (" + Parameter.GetType().Name + ")";
+        dataTypeTextBox.Text = Parameter.DataType.Name;
+        dataTypeTextBox.Enabled = true;
       }
     }
   }

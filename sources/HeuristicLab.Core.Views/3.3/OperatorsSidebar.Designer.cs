@@ -19,10 +19,8 @@
  */
 #endregion
 
-using System;
-
 namespace HeuristicLab.Core.Views {
-  partial class ItemViewBase {
+  partial class OperatorsSidebar {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -46,10 +44,35 @@ namespace HeuristicLab.Core.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      components = new System.ComponentModel.Container();
+      this.typeSelector = new HeuristicLab.Core.Views.TypeSelector();
+      this.SuspendLayout();
+      // 
+      // typeSelector
+      // 
+      this.typeSelector.Caption = "&Available Operators";
+      this.typeSelector.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.typeSelector.Location = new System.Drawing.Point(0, 0);
+      this.typeSelector.Name = "typeSelector";
+      this.typeSelector.Size = new System.Drawing.Size(316, 296);
+      this.typeSelector.TabIndex = 0;
+      // 
+      // OperatorsSidebar
+      // 
+      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Caption = "Operators";
+      this.Controls.Add(this.typeSelector);
+      this.Name = "OperatorsSidebar";
+      this.Size = new System.Drawing.Size(316, 296);
+      this.Load += new System.EventHandler(this.OperatorsSidebar_Load);
+      this.ResumeLayout(false);
+
     }
 
     #endregion
+
+    private TypeSelector typeSelector;
+
+
   }
 }
