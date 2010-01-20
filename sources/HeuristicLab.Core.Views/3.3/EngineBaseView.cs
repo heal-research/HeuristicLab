@@ -104,7 +104,7 @@ namespace HeuristicLab.Core.Views {
         scopeView.Scope = Engine.GlobalScope;
         startButton.Enabled = !Engine.Finished;
         resetButton.Enabled = true;
-        executionTimeTextBox.Text = Engine.ExecutionTime.ToString();
+        UpdateExecutionTimeTextBox();
         executionTimeTextBox.Enabled = true;
       }
     }
@@ -125,7 +125,7 @@ namespace HeuristicLab.Core.Views {
         startButton.Enabled = !Engine.Finished;
         stopButton.Enabled = false;
         resetButton.Enabled = true;
-        executionTimeTextBox.Text = Engine.ExecutionTime.ToString();
+        UpdateExecutionTimeTextBox();
       }
     }
     private void Engine_Started(object sender, EventArgs e) {
@@ -138,7 +138,7 @@ namespace HeuristicLab.Core.Views {
         startButton.Enabled = false;
         stopButton.Enabled = true;
         resetButton.Enabled = false;
-        executionTimeTextBox.Text = Engine.ExecutionTime.ToString();
+        UpdateExecutionTimeTextBox();
       }
     }
     private void Engine_Stopped(object sender, EventArgs e) {
@@ -150,17 +150,14 @@ namespace HeuristicLab.Core.Views {
         startButton.Enabled = !Engine.Finished;
         stopButton.Enabled = false;
         resetButton.Enabled = true;
-        executionTimeTextBox.Text = Engine.ExecutionTime.ToString();
+        UpdateExecutionTimeTextBox();
       }
     }
     private void Engine_ExecutionTimeChanged(object sender, EventArgs e) {
       executionTimeCounter++;
-      if ((executionTimeCounter == 1000) || !Engine.Running) {
+      if ((executionTimeCounter == 100) || !Engine.Running) {
         executionTimeCounter = 0;
-        if (InvokeRequired)
-          Invoke(new EventHandler(Engine_ExecutionTimeChanged), sender, e);
-        else
-          executionTimeTextBox.Text = Engine.ExecutionTime.ToString();
+        UpdateExecutionTimeTextBox();
       }
     }
     private void Engine_ExceptionOccurred(object sender, EventArgs<Exception> e) {
@@ -180,6 +177,15 @@ namespace HeuristicLab.Core.Views {
     }
     private void resetButton_Click(object sender, EventArgs e) {
       Engine.Initialize();
+    }
+    #endregion
+
+    #region Helpers
+    private void UpdateExecutionTimeTextBox() {
+      if (InvokeRequired)
+        Invoke(new Action(UpdateExecutionTimeTextBox));
+      else
+        executionTimeTextBox.Text = Engine.ExecutionTime.ToString();
     }
     #endregion
   }
