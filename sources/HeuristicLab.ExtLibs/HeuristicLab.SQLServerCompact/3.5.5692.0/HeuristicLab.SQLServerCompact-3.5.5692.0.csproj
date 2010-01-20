@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.SQLServerCompact</RootNamespace>
-    <AssemblyName>HeuristicLab.SQLServerCompact-3.5</AssemblyName>
+    <AssemblyName>HeuristicLab.SQLServerCompact-3.5.5692.0</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>

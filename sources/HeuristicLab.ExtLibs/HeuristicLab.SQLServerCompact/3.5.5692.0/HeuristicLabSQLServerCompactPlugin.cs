@@ -27,8 +27,8 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.SQLServerCompact {
-  [Plugin("HeuristicLab.SQLServerCompact-3.5")]
-  [PluginFile("HeuristicLab.SQLServerCompact-3.5.dll", PluginFileType.Assembly)]
+  [Plugin("HeuristicLab.SQLServerCompact-3.5.5692.0")]
+  [PluginFile("HeuristicLab.SQLServerCompact-3.5.5692.0.dll", PluginFileType.Assembly)]
   [PluginFile("System.Data.SqlServerCe-3.5.dll", PluginFileType.Assembly)]
   [PluginFile("SQLServer Compact license.txt",PluginFileType.License)]
   [PluginFile("sqlceca35.dll", PluginFileType.NativeDll)]
