@@ -98,45 +98,63 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AtomicOperation.cs" />
     <Compile Include="Attributes\ItemAttribute.cs" />
-    <Compile Include="CompositeOperation.cs" />
     <Compile Include="Cloner.cs" />
     <Compile Include="Attributes\CreatableAttribute.cs" />
-    <Compile Include="Interfaces\ICloner.cs" />
-    <Compile Include="Interfaces\IOperation.cs" />
-    <Compile Include="Interfaces\IOperatorLibrary.cs" />
-    <Compile Include="Interfaces\IVisualizationItem.cs" />
-    <Compile Include="Interfaces\IItem.cs" />
-    <Compile Include="ItemBase.cs" />
-    <Compile Include="OperatorLibrary.cs" />
-    <Compile Include="Interfaces\IOperatorGroup.cs" />
-    <Compile Include="Interfaces\IOperatorGraph.cs" />
-    <Compile Include="Interfaces\IScope.cs" />
-    <Compile Include="Interfaces\IVariable.cs" />
-    <Compile Include="Interfaces\IVariableInfo.cs" />
-    <Compile Include="OperatorGroup.cs">
+    <Compile Include="CombinedOperator.cs" />
+    <Compile Include="ChangedEventArgs.cs" />
+    <Compile Include="Interfaces\IOperatorParameter.cs" />
+    <Compile Include="OperatorGraph.cs" />
+    <Compile Include="OperatorParameter.cs" />
+    <Compile Include="ParameterBase.cs" />
+    <Compile Include="Interfaces\IParameter.cs" />
+    <Compile Include="OperatorCollection.cs" />
+    <Compile Include="ItemCollection.cs" />
+    <Compile Include="OperatorSet.cs" />
+    <Compile Include="ItemSet.cs" />
+    <Compile Include="StandardOperatorBase.cs" />
+    <Compile Include="ItemList.cs" />
+    <Compile Include="SequentialProcessor.cs" />
+    <Compile Include="CounterOperator.cs" />
+    <Compile Include="IntData.cs" />
+    <Compile Include="EmptyOperator.cs" />
+    <Compile Include="EngineBase.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Interfaces\IEngine.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionContextCollection.cs" />
+    <Compile Include="ExecutionContext.cs" />
+    <Compile Include="OperatorList.cs" />
+    <Compile Include="ParameterCollection.cs" />
+    <Compile Include="VariableCollection.cs" />
+    <Compile Include="Parameter.cs" />
+    <Compile Include="ScopeList.cs" />
+    <Compile Include="DeepCloneableBase.cs" />
+    <Compile Include="Interfaces\IDeepCloneable.cs" />
+    <Compile Include="NamedItemCollection.cs" />
+    <Compile Include="Interfaces\INamedItem.cs" />
+    <Compile Include="NamedItemBase.cs" />
+    <Compile Include="Interfaces\IItem.cs" />
+    <Compile Include="ItemBase.cs" />
     <Compile Include="OperatorBase.cs" />
     <Compile Include="Interfaces\IRandom.cs" />
-    <Compile Include="OperatorGraph.cs" />
     <Compile Include="Scope.cs" />
-    <Compile Include="EngineBase.cs" />
-    <Compile Include="Interfaces\IEngine.cs" />
     <Compile Include="Interfaces\IOperator.cs" />
-    <Compile Include="PersistenceManager.cs" />
     <Compile Include="HeuristicLabCorePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Variable.cs" />
-    <Compile Include="VariableInfo.cs" />
-    <Compile Include="VariableKind.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
+      <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
+      <Name>HeuristicLab.Collections-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.2\HeuristicLab.Common.Resources-3.2.csproj">
       <Project>{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}</Project>
       <Name>HeuristicLab.Common.Resources-3.2</Name>

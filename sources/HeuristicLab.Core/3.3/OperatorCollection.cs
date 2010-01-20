@@ -20,20 +20,19 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Collections.ObjectModel;
 using System.Text;
 using System.Drawing;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
-  /// <summary>
-  /// Interface to represent (almost) every HeuristicLab object (an object, an operator,...).
-  /// </summary>
-  public interface IItem : IDeepCloneable {
-    string ItemName { get; }
-    string ItemDescription { get; }
-    Image ItemImage { get; }
-
-    event ChangedEventHandler Changed;
+  [EmptyStorableClass]
+  [Item("OperatorCollection", "Represents a collection of operators.")]
+  [Creatable("Test")]
+  public class OperatorCollection : ItemCollection<IOperator> {
+    public OperatorCollection() : base() { }
+    public OperatorCollection(IEnumerable<IOperator> collection) : base(collection) { }
   }
 }

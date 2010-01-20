@@ -27,46 +27,46 @@ namespace HeuristicLab.Core {
   /// <summary>
   /// A helper class which is used to create deep clones of object graphs.
   /// </summary>
-  public class Cloner : ICloner {
-    private class ReferenceEqualityComparer : IEqualityComparer<IItem> {
-      public bool Equals(IItem x, IItem y) {
+  public sealed class Cloner {
+    private class ReferenceEqualityComparer : IEqualityComparer<IDeepCloneable> {
+      bool IEqualityComparer<IDeepCloneable>.Equals(IDeepCloneable x, IDeepCloneable y) {
         return object.ReferenceEquals(x, y);
       }
 
-      public int GetHashCode(IItem item) {
-        if (item == null) return 0;
-        return item.GetHashCode();
+      int IEqualityComparer<IDeepCloneable>.GetHashCode(IDeepCloneable obj) {
+        if (obj == null) return 0;
+        return obj.GetHashCode();
       }
     }
 
-    private Dictionary<IItem, IItem> mapping;
+    private Dictionary<IDeepCloneable, IDeepCloneable> mapping;
 
     /// <summary>
     /// Creates a new Cloner instance.
     /// </summary>
     public Cloner() {
-      mapping = new Dictionary<IItem, IItem>(new ReferenceEqualityComparer());
+      mapping = new Dictionary<IDeepCloneable, IDeepCloneable>(new ReferenceEqualityComparer());
     }
 
     /// <summary>
-    /// Creates a deep clone of a given item.
+    /// Creates a deep clone of a given deeply cloneable object.
     /// </summary>
-    /// <param name="item">The item which should be cloned.</param>
-    /// <returns>A clone of the given item.</returns>
-    public IItem Clone(IItem item) {
-      if (item == null) return null;
-      IItem clone;
-      if (mapping.TryGetValue(item, out clone))
+    /// <param name="item">The object which should be cloned.</param>
+    /// <returns>A clone of the given object.</returns>
+    public IDeepCloneable Clone(IDeepCloneable obj) {
+      if (obj == null) return null;
+      IDeepCloneable clone;
+      if (mapping.TryGetValue(obj, out clone))
         return clone;
       else
-        return item.Clone(this);
+        return obj.Clone(this);
     }
     /// <summary>
-    /// Registers a new clone for a given item.
+    /// Registers a new clone for a given deeply cloneable object.
     /// </summary>
-    /// <param name="item">The original item.</param>
-    /// <param name="clone">The clone of the original item.</param>
-    public void RegisterClonedObject(IItem item, IItem clone) {
+    /// <param name="item">The original object.</param>
+    /// <param name="clone">The clone of the original object.</param>
+    public void RegisterClonedObject(IDeepCloneable item, IDeepCloneable clone) {
       mapping.Add(item, clone);
     }
   }

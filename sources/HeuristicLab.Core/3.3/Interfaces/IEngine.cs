@@ -34,11 +34,11 @@ namespace HeuristicLab.Core {
     /// <summary>
     /// Gets the operator graph of the current instance.
     /// </summary>
-    IOperatorGraph OperatorGraph { get; }
+    OperatorGraph OperatorGraph { get; set; }
     /// <summary>
     /// Gets the global scope of the current instance.
     /// </summary>
-    IScope GlobalScope { get; }
+    Scope GlobalScope { get; }
 
     /// <summary>
     /// Gets the execution time of the current instance.
@@ -50,55 +50,47 @@ namespace HeuristicLab.Core {
     /// </summary>
     bool Running { get; }
     /// <summary>
-    /// Gets information whether the engine is canceled.
-    /// </summary>
-    bool Canceled { get; }
-    /// <summary>
     /// Gets information whether the engine has already terminated.
     /// </summary>
-    bool Terminated { get; }
+    bool Finished { get; }
 
-    /// <summary>
-    /// Executes the whole run.
-    /// </summary>
-    void Execute();
-    /// <summary>
-    /// Executes one step (one operation).
-    /// </summary>
-    void ExecuteStep();
-    /// <summary>
-    /// Executes the given number of steps.
-    /// </summary>
-    /// <param name="steps">The number of steps to execute.</param>
-    void ExecuteSteps(int steps);
-    /// <summary>
-    /// Aborts the engine run.
-    /// </summary>
-    void Abort();
     /// <summary>
     /// Resets the current instance.
     /// </summary>
-    void Reset();
+    void Initialize();
+    /// <summary>
+    /// Executes the whole run.
+    /// </summary>
+    void Start();
+    /// <summary>
+    /// Executes one step (one operation).
+    /// </summary>
+    void Step();
+    /// <summary>
+    /// Aborts the engine run.
+    /// </summary>
+    void Stop();
 
-    /// <summary>
-    /// Occurs when the current instance is initialized.
-    /// </summary>
-    event EventHandler Initialized;
-    /// <summary>
-    /// Occurs when an operation is executed.
-    /// </summary>
-    event EventHandler<EventArgs<IOperation>> OperationExecuted;
-    /// <summary>
-    /// Occurs when an exception was thrown.
-    /// </summary>
-    event EventHandler<EventArgs<Exception>> ExceptionOccurred;
+    event EventHandler OperatorGraphChanged;
     /// <summary>
     /// Occurs when the execution time was changed.
     /// </summary>
     event EventHandler ExecutionTimeChanged;
     /// <summary>
+    /// Occurs when the engine is initialized.
+    /// </summary>
+    event EventHandler Initialized;
+    /// <summary>
+    /// Occurs when the engine is executed.
+    /// </summary>
+    event EventHandler Started;
+    /// <summary>
     /// Occurs when the engine is finished.
     /// </summary>
-    event EventHandler Finished;
+    event EventHandler Stopped;
+    /// <summary>
+    /// Occurs when an exception was thrown.
+    /// </summary>
+    event EventHandler<EventArgs<Exception>> ExceptionOccurred;
   }
 }

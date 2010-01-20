@@ -22,10 +22,13 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
-  /// <summary>
-  /// Marker interface for items that can be visualized.
-  /// </summary>
-  public interface IVisualizationItem : IItem { }
+  public interface IParameter : INamedItem {
+    Type DataType { get; }
+
+    IItem GetValue(ExecutionContext context);
+  }
 }

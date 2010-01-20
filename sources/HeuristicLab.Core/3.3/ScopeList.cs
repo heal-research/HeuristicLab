@@ -20,26 +20,22 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
+using System.Drawing;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Common.Resources;
+using HeuristicLab.Collections;
 
 namespace HeuristicLab.Core {
-  /// <summary>
-  /// An interface describing the signature of helper classes required for creating deep
-  /// clones of object graphs.
-  /// </summary>
-  public interface ICloner {
-    /// <summary>
-    /// Creates a deep clone of a given item.
-    /// </summary>
-    /// <param name="item">The item which should be cloned.</param>
-    /// <returns>A clone of the given item.</returns>
-    IItem Clone(IItem item);
-    /// <summary>
-    /// Registers a new clone for a given item.
-    /// </summary>
-    /// <param name="item">The original item.</param>
-    /// <param name="clone">The clone of the original item.</param>
-    void RegisterClonedObject(IItem item, IItem clone);
+  [EmptyStorableClass]
+  [Item("ScopeList", "Represents a list of scopes.")]
+  [Creatable("Test")]
+  public class ScopeList : ItemList<Scope> {
+    public ScopeList() : base() { }
+    public ScopeList(int capacity) : base(capacity) { }
+    public ScopeList(IEnumerable<Scope> collection) : base(collection) { }
   }
 }

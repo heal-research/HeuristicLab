@@ -28,11 +28,12 @@ namespace HeuristicLab.Core {
   /// <summary>
   /// Plugin class for HeuristicLab.Core plugin.
   /// </summary>
-  [ClassInfo(Name = "HeuristicLab.Core-3.3")]
-  [PluginFile(Filename = "HeuristicLab.Core-3.3.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Common-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Common.Resources-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Persistence-3.3")]
+  [Plugin("HeuristicLab.Core-3.3")]
+  [PluginFile("HeuristicLab.Core-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Collections-3.3")]
+  [PluginDependency("HeuristicLab.Common-3.2")]
+  [PluginDependency("HeuristicLab.Common.Resources-3.2")]
+  [PluginDependency("HeuristicLab.Persistence-3.3")]
   public class HeuristicLabCorePlugin : PluginBase {
   }
 }

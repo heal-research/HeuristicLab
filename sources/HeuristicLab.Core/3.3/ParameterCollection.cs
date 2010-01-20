@@ -20,22 +20,19 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Collections.ObjectModel;
 using System.Text;
-using System.Xml;
 using System.Drawing;
-using System.Resources;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Common.Resources;
 
 namespace HeuristicLab.Core {
-  /// <summary>
-  /// Represents the base class for all basic item types.
-  /// </summary>
   [EmptyStorableClass]
-  [Item("ItemBase", "Base class for all HeuristicLab items.")]
-  public abstract class ItemBase : DeepCloneableBase, IItem {
+  [Item("ParameterCollection", "Represents a collection of parameters.")]
+  [Creatable("Test")]
+  public class ParameterCollection : NamedItemCollection<IParameter>, IItem {
     public virtual string ItemName {
       get { return ItemAttribute.GetName(this.GetType()); }
     }
@@ -46,21 +43,12 @@ namespace HeuristicLab.Core {
       get { return VS2008ImageLibrary.Class; }
     }
 
-    /// <summary>
-    /// Gets the string representation of the current instance.
-    /// </summary>
-    /// <returns>The type name of the current instance.</returns>
+    public ParameterCollection() : base() { }
+    public ParameterCollection(int capacity) : base(capacity) { }
+    public ParameterCollection(IEnumerable<IParameter> collection) : base(collection) { }
+
     public override string ToString() {
       return ItemName;
-    }
-
-    public event ChangedEventHandler Changed;
-    protected void OnChanged() {
-      OnChanged(new ChangedEventArgs());
-    }
-    protected virtual void OnChanged(ChangedEventArgs e) {
-      if ((e.RegisterChangedObject(this)) && (Changed != null))
-          Changed(this, e);
     }
   }
 }

@@ -23,35 +23,44 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using System.Linq;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Common;
+using HeuristicLab.Collections;
 
 namespace HeuristicLab.Core {
   /// <summary>
   /// Represents a graph of operators.
   /// </summary>
-  public class OperatorGraph : ItemBase, IOperatorGraph {
-
-    [Storable]
-    private IDictionary<IOperator, IOperator> myOperators;
+  [Item("OperatorGraph", "Represents a graph of operators.")]
+  [Creatable("Test")]
+  public class OperatorGraph : ItemBase {
+    private OperatorSet operators;
     /// <summary>
     /// Gets all operators of the current instance.
     /// </summary>
-    public ICollection<IOperator> Operators {
-      get { return myOperators.Values; }
+    [Storable]
+    public OperatorSet Operators {
+      get { return operators; }
+      private set {
+        DeregisterOperatorsEvents();
+        operators = value;
+        RegisterOperatorsEvents();
+      }
     }
 
     [Storable]
-    private IOperator myInitialOperator;
+    private IOperator initialOperator;
     /// <summary>
     /// Gets or sets the initial operator (the starting one).
     /// </summary>
     /// <remarks>Calls <see cref="OnInitialOperatorChanged"/> in the setter.</remarks>
     public IOperator InitialOperator {
-      get { return myInitialOperator; }
+      get { return initialOperator; }
       set {
-        if (myInitialOperator != value) {
-          myInitialOperator = value;
+        if (initialOperator != value) {
+          if (value != null) Operators.Add(value);
+          initialOperator = value;
           OnInitialOperatorChanged();
         }
       }
@@ -61,7 +70,8 @@ namespace HeuristicLab.Core {
     /// Initializes a new instance of <see cref="OperatorGraph"/>.
     /// </summary>
     public OperatorGraph() {
-      myOperators = new Dictionary<IOperator, IOperator>();
+      Operators = new OperatorSet();
+      initialOperator = null;
     }
 
     /// <summary>
@@ -71,78 +81,14 @@ namespace HeuristicLab.Core {
     /// <see cref="Auxiliary"/>.</remarks>
     /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
     /// <returns>The cloned object as <see cref="OperatorGraph"/>.</returns>
-    public override IItem Clone(ICloner cloner) {
+    public override IDeepCloneable Clone(Cloner cloner) {
       OperatorGraph clone = new OperatorGraph();
       cloner.RegisterClonedObject(this, clone);
-      foreach (IOperator op in Operators)
-        clone.AddOperator((IOperator)cloner.Clone(op));
-      if (InitialOperator != null)
-        clone.myInitialOperator = (IOperator)cloner.Clone(InitialOperator);
+      clone.Operators = (OperatorSet)cloner.Clone(operators);
+      clone.initialOperator = (IOperator)cloner.Clone(initialOperator);
       return clone;
     }
 
-    /// <inheritdoc/>
-    /// <remarks>Calls <see cref="OnOperatorAdded"/>.</remarks>
-    public void AddOperator(IOperator op) {
-      if (!myOperators.ContainsKey(op)) {
-        myOperators.Add(op, op);
-        OnOperatorAdded(op);
-
-        foreach (IOperator subOperator in op.SubOperators)
-          AddOperator(subOperator);
-      }
-    }
-    /// <inheritdoc/>
-    /// <remarks>Calls <see cref="OnOperatorRemoved"/>.</remarks>
-    public void RemoveOperator(IOperator op) {
-      if (myOperators.ContainsKey(op)) {
-        foreach (IOperator o in Operators) {
-          int i = 0;
-          while (i < o.SubOperators.Count) {
-            if (o.SubOperators[i] == op)
-              o.RemoveSubOperator(i);
-            else
-              i++;
-          }
-        }
-        if (InitialOperator == op)
-          InitialOperator = null;
-        myOperators.Remove(op);
-        OnOperatorRemoved(op);
-      }
-    }
-    /// <inheritdoc/>
-    public void Clear() {
-      IOperator[] ops = new IOperator[Operators.Count];
-      int i = 0;
-      foreach (IOperator op in Operators) {
-        ops[i] = op;
-        i++;
-      }
-      for (int j = 0; j < ops.Length; j++)
-        RemoveOperator(ops[j]);
-    }
-
-    /// <inheritdoc/>
-    public event EventHandler<EventArgs<IOperator>> OperatorAdded;
-    /// <summary>
-    /// Fires a new <c>OperatorAdded</c> event.
-    /// </summary>
-    /// <param name="op">The operator that has been added.</param>
-    protected virtual void OnOperatorAdded(IOperator op) {
-      if (OperatorAdded != null)
-        OperatorAdded(this, new EventArgs<IOperator>(op));
-    }
-    /// <inheritdoc/>
-    public event EventHandler<EventArgs<IOperator>> OperatorRemoved;
-    /// <summary>
-    /// Fires a new <c>OperatorRemoved</c> event.
-    /// </summary>
-    /// <param name="op">The operator that has been removed.</param>
-    protected virtual void OnOperatorRemoved(IOperator op) {
-      if (OperatorRemoved != null)
-        OperatorRemoved(this, new EventArgs<IOperator>(op));
-    }
     /// <inheritdoc/>
     public event EventHandler InitialOperatorChanged;
     /// <summary>
@@ -151,6 +97,121 @@ namespace HeuristicLab.Core {
     protected virtual void OnInitialOperatorChanged() {
       if (InitialOperatorChanged != null)
         InitialOperatorChanged(this, new EventArgs());
+      OnChanged();
     }
+
+    #region Operators Events
+    private void AddOperator(IOperator op) {
+      RegisterOperatorEvents(op);
+      foreach (IParameter param in op.Parameters)
+        AddParameter(param);
+    }
+    private void RemoveOperator(IOperator op) {
+      foreach (IParameter param in op.Parameters)
+        RemoveParameter(param);
+      DeregisterOperatorEvents(op);
+
+      // remove edges to removed operator
+      var opParams = from o in Operators
+                     from p in o.Parameters
+                     where p is IOperatorParameter
+                     where (((IOperatorParameter)p).Value != null) && (((IOperatorParameter)p).Value == op)
+                     select (IOperatorParameter)p;
+      foreach (IOperatorParameter opParam in opParams)
+        opParam.Value = null;
+    }
+    private void AddParameter(IParameter param) {
+      IOperatorParameter opParam = param as IOperatorParameter;
+      if (opParam != null) {
+        RegisterOperatorParameterEvents(opParam);
+        if (opParam.Value != null) Operators.Add(opParam.Value);
+      }
+    }
+    private void RemoveParameter(IParameter param) {
+      IOperatorParameter opParam = param as IOperatorParameter;
+      if (opParam != null) {
+        DeregisterOperatorParameterEvents(opParam);
+      }
+    }
+
+    private void RegisterOperatorsEvents() {
+      if (operators != null) {
+        operators.Changed += new ChangedEventHandler(Operators_Changed);
+        operators.ItemsAdded += new CollectionItemsChangedEventHandler<IOperator>(Operators_ItemsAdded);
+        operators.ItemsRemoved += new CollectionItemsChangedEventHandler<IOperator>(Operators_ItemsRemoved);
+        operators.CollectionReset += new CollectionItemsChangedEventHandler<IOperator>(Operators_CollectionReset);
+      }
+    }
+    private void DeregisterOperatorsEvents() {
+      if (operators != null) {
+        operators.Changed -= new ChangedEventHandler(Operators_Changed);
+        operators.ItemsAdded -= new CollectionItemsChangedEventHandler<IOperator>(Operators_ItemsAdded);
+        operators.ItemsRemoved -= new CollectionItemsChangedEventHandler<IOperator>(Operators_ItemsRemoved);
+        operators.CollectionReset -= new CollectionItemsChangedEventHandler<IOperator>(Operators_CollectionReset);
+      }
+    }
+    private void RegisterOperatorEvents(IOperator op) {
+      op.Parameters.ItemsAdded += new CollectionItemsChangedEventHandler<IParameter>(Parameters_ItemsAdded);
+      op.Parameters.ItemsRemoved += new CollectionItemsChangedEventHandler<IParameter>(Parameters_ItemsRemoved);
+      op.Parameters.ItemsReplaced += new CollectionItemsChangedEventHandler<IParameter>(Parameters_ItemsReplaced);
+      op.Parameters.CollectionReset += new CollectionItemsChangedEventHandler<IParameter>(Parameters_CollectionReset);
+    }
+    private void DeregisterOperatorEvents(IOperator op) {
+      op.Parameters.ItemsAdded -= new CollectionItemsChangedEventHandler<IParameter>(Parameters_ItemsAdded);
+      op.Parameters.ItemsRemoved -= new CollectionItemsChangedEventHandler<IParameter>(Parameters_ItemsRemoved);
+      op.Parameters.ItemsReplaced -= new CollectionItemsChangedEventHandler<IParameter>(Parameters_ItemsReplaced);
+      op.Parameters.CollectionReset -= new CollectionItemsChangedEventHandler<IParameter>(Parameters_CollectionReset);
+    }
+    private void RegisterOperatorParameterEvents(IOperatorParameter opParam) {
+      opParam.ValueChanged += new EventHandler(opParam_ValueChanged);
+    }
+    private void DeregisterOperatorParameterEvents(IOperatorParameter opParam) {
+      opParam.ValueChanged -= new EventHandler(opParam_ValueChanged);
+    }
+
+    private void Operators_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IOperator> e) {
+      foreach (IOperator op in e.Items)
+        AddOperator(op);
+    }
+    private void Operators_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IOperator> e) {
+      foreach (IOperator op in e.Items)
+        RemoveOperator(op);
+      if (!Operators.Contains(InitialOperator)) InitialOperator = null;
+    }
+    private void Operators_CollectionReset(object sender, CollectionItemsChangedEventArgs<IOperator> e) {
+      foreach (IOperator op in e.OldItems)
+        RemoveOperator(op);
+      foreach (IOperator op in e.Items)
+        AddOperator(op);
+      if (!Operators.Contains(InitialOperator)) InitialOperator = null;
+    }
+    private void Parameters_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IParameter> e) {
+      foreach (IParameter param in e.Items)
+        AddParameter(param);
+    }
+    private void Parameters_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IParameter> e) {
+      foreach (IParameter param in e.Items)
+        RemoveParameter(param);
+    }
+    private void Parameters_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IParameter> e) {
+      foreach (IParameter param in e.OldItems)
+        RemoveParameter(param);
+      foreach (IParameter param in e.Items)
+        AddParameter(param);
+    }
+    private void Parameters_CollectionReset(object sender, CollectionItemsChangedEventArgs<IParameter> e) {
+      foreach (IParameter param in e.OldItems)
+        RemoveParameter(param);
+      foreach (IParameter param in e.Items)
+        AddParameter(param);
+    }
+    private void opParam_ValueChanged(object sender, EventArgs e) {
+      IOperatorParameter opParam = (IOperatorParameter)sender;
+      if (opParam.Value != null) Operators.Add(opParam.Value);
+    }
+    private void Operators_Changed(object sender, ChangedEventArgs e) {
+      OnChanged(e);
+    }
+    #endregion
   }
 }

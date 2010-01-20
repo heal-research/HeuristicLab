@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using System.Threading;
+using System.Drawing;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Common;
 
@@ -33,41 +34,56 @@ namespace HeuristicLab.Core {
   /// the actual state, which is the runtime stack and a pointer onto the next operation. It represents
   /// one execution and can handle parallel executions.
   /// </summary>
+  [Item("EngineBase", "A base class for engines.")]
   public abstract class EngineBase : ItemBase, IEngine {
+    public override Image ItemImage {
+      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Event; }
+    }
 
     /// <summary>
     /// Field of the current instance that represent the operator graph.
     /// </summary>
-    [Storable]
-    protected IOperatorGraph myOperatorGraph;
+    private OperatorGraph operatorGraph;
     /// <summary>
     /// Gets the current operator graph.
     /// </summary>
-    public IOperatorGraph OperatorGraph {
-      get { return myOperatorGraph; }
+    [Storable]
+    public OperatorGraph OperatorGraph {
+      get { return operatorGraph; }
+      set {
+        if (value == null) throw new ArgumentNullException();
+        if (value != operatorGraph) {
+          if (operatorGraph != null) operatorGraph.InitialOperatorChanged -= new EventHandler(operatorGraph_InitialOperatorChanged);
+          operatorGraph = value;
+          if (operatorGraph != null) operatorGraph.InitialOperatorChanged += new EventHandler(operatorGraph_InitialOperatorChanged);
+          OnOperatorGraphChanged();
+          Initialize();
+        }
+      }
     }
+
     /// <summary>
     /// Field of the current instance that represent the global scope.
     /// </summary>
     [Storable]
-    protected IScope myGlobalScope;
+    private Scope globalScope;
     /// <summary>
     /// Gets the current global scope.
     /// </summary>
-    public IScope GlobalScope {
-      get { return myGlobalScope; }
+    public Scope GlobalScope {
+      get { return globalScope; }
     }
 
     [Storable]
-    private TimeSpan myExecutionTime;
+    private TimeSpan executionTime;
     /// <summary>
     /// Gets or sets the execution time.
     /// </summary>
     /// <remarks>Calls <see cref="OnExecutionTimeChanged"/> in the setter.</remarks>
     public TimeSpan ExecutionTime {
-      get { return myExecutionTime; }
+      get { return executionTime; }
       protected set {
-        myExecutionTime = value;
+        executionTime = value;
         OnExecutionTimeChanged();
       }
     }
@@ -76,40 +92,40 @@ namespace HeuristicLab.Core {
     /// Field of the current instance that represent the execution stack.
     /// </summary>
     [Storable]
-    protected Stack<IOperation> myExecutionStack;
+    private Stack<ExecutionContext> executionStack;
     /// <summary>
     /// Gets the current execution stack.
     /// </summary>
-    public Stack<IOperation> ExecutionStack {
-      get { return myExecutionStack; }
+    protected Stack<ExecutionContext> ExecutionStack {
+      get { return executionStack; }
     }
 
     /// <summary>
     /// Flag of the current instance whether it is currently running.
     /// </summary>
-    protected bool myRunning;
+    private bool running;
     /// <summary>
     /// Gets information whether the instance is currently running.
     /// </summary>
     public bool Running {
-      get { return myRunning; }
+      get { return running; }
     }
 
     /// <summary>
     /// Flag of the current instance whether it is canceled.
     /// </summary>
-    protected bool myCanceled;
+    private bool canceled;
     /// <summary>
     /// Gets information whether the instance is currently canceled.
     /// </summary>
-    public bool Canceled {
-      get { return myCanceled; }
+    protected bool Canceled {
+      get { return canceled; }
     }
     /// <summary>
     /// Gets information whether the instance has already terminated.
     /// </summary>
-    public virtual bool Terminated {
-      get { return ExecutionStack.Count == 0; }
+    public bool Finished {
+      get { return executionStack.Count == 0; }
     }
 
     /// <summary>
@@ -117,10 +133,9 @@ namespace HeuristicLab.Core {
     /// </summary>
     /// <remarks>Calls <see cref="Reset"/>.</remarks>
     protected EngineBase() {
-      myOperatorGraph = new OperatorGraph();
-      myGlobalScope = new Scope("Global");
-      myExecutionStack = new Stack<IOperation>();
-      Reset();
+      globalScope = new Scope("Global");
+      executionStack = new Stack<ExecutionContext>();
+      OperatorGraph = new OperatorGraph();
     }
 
     /// <summary>
@@ -130,134 +145,93 @@ namespace HeuristicLab.Core {
     /// <see cref="Auxiliary"/>.</remarks>
     /// <param name="clonedObjects">Dictionary of all already clone objects. (Needed to avoid cycles.)</param>
     /// <returns>The cloned object as <see cref="EngineBase"/>.</returns>
-    public override IItem Clone(ICloner cloner) {
+    public override IDeepCloneable Clone(Cloner cloner) {
       EngineBase clone = (EngineBase)base.Clone(cloner);
-      clone.myOperatorGraph = (IOperatorGraph)cloner.Clone(OperatorGraph);
-      clone.myGlobalScope = (IScope)cloner.Clone(GlobalScope);
-      clone.myExecutionTime = ExecutionTime;
-      IOperation[] operations = new IOperation[ExecutionStack.Count];
-      ExecutionStack.CopyTo(operations, 0);
-      for (int i = operations.Length - 1; i >= 0; i--)
-        clone.myExecutionStack.Push((IOperation)cloner.Clone(operations[i]));
-      clone.myRunning = Running;
-      clone.myCanceled = Canceled;
+      clone.OperatorGraph = (OperatorGraph)cloner.Clone(operatorGraph);
+      clone.globalScope = (Scope)cloner.Clone(globalScope);
+      clone.executionTime = executionTime;
+      ExecutionContext[] contexts = executionStack.ToArray();
+      for (int i = contexts.Length - 1; i >= 0; i--)
+        clone.executionStack.Push((ExecutionContext)cloner.Clone(contexts[i]));
+      clone.running = running;
+      clone.canceled = canceled;
       return clone;
     }
 
-    /// <inheritdoc/>
-    /// <remarks>Calls <see cref="ThreadPool.QueueUserWorkItem(System.Threading.WaitCallback, object)"/> 
-    /// of class <see cref="ThreadPool"/>.</remarks>
-    public virtual void Execute() {
-      myRunning = true;
-      myCanceled = false;
-      ThreadPool.QueueUserWorkItem(new WaitCallback(Run), null);
-    }
-    /// <inheritdoc/>
-    /// <remarks>Calls <see cref="ThreadPool.QueueUserWorkItem(System.Threading.WaitCallback, object)"/> 
-    /// of class <see cref="ThreadPool"/>.</remarks>
-    public virtual void ExecuteSteps(int steps) {
-      myRunning = true;
-      myCanceled = false;
-      ThreadPool.QueueUserWorkItem(new WaitCallback(Run), steps);
-    }
-    /// <inheritdoc/>
-    /// <remarks>Calls <see cref="ThreadPool.QueueUserWorkItem(System.Threading.WaitCallback, object)"/> 
-    /// of class <see cref="ThreadPool"/>.</remarks>
-    public void ExecuteStep() {
-      ExecuteSteps(1);
-    }
-    /// <inheritdoc/>
-    /// <remarks>Sets the protected flag <c>myCanceled</c> to <c>true</c>.</remarks>
-    public virtual void Abort() {
-      myCanceled = true;
-    }
     /// <inheritdoc/>
     /// <remarks>Sets <c>myCanceled</c> and <c>myRunning</c> to <c>false</c>. The global scope is cleared,
     /// the execution time is reseted, the execution stack is cleared and a new <see cref="AtomicOperation"/>
     /// with the initial operator is added. <br/>
     /// Calls <see cref="OnInitialized"/>.</remarks>
-    public virtual void Reset() {
-      myCanceled = false;
-      myRunning = false;
+    public void Initialize() {
+      canceled = false;
+      running = false;
       GlobalScope.Clear();
       ExecutionTime = new TimeSpan();
-      myExecutionStack.Clear();
+      executionStack.Clear();
       if (OperatorGraph.InitialOperator != null)
-        myExecutionStack.Push(new AtomicOperation(OperatorGraph.InitialOperator, GlobalScope));
+        executionStack.Push(new ExecutionContext(null, OperatorGraph.InitialOperator, GlobalScope));
       OnInitialized();
+    }
+    /// <inheritdoc/>
+    /// <remarks>Calls <see cref="ThreadPool.QueueUserWorkItem(System.Threading.WaitCallback, object)"/> 
+    /// of class <see cref="ThreadPool"/>.</remarks>
+    public void Start() {
+      running = true;
+      canceled = false;
+      ThreadPool.QueueUserWorkItem(new WaitCallback(Run), null);
+    }
+    /// <inheritdoc/>
+    /// <remarks>Calls <see cref="ThreadPool.QueueUserWorkItem(System.Threading.WaitCallback, object)"/> 
+    /// of class <see cref="ThreadPool"/>.</remarks>
+    public void Step() {
+      running = true;
+      canceled = false;
+      ThreadPool.QueueUserWorkItem(new WaitCallback(RunStep), null);
+    }
+    /// <inheritdoc/>
+    /// <remarks>Sets the protected flag <c>myCanceled</c> to <c>true</c>.</remarks>
+    public virtual void Stop() {
+      canceled = true;
     }
 
     private void Run(object state) {
-      if (state == null) Run();
-      else RunSteps((int)state);
-      myRunning = false;
-      OnFinished();
-    }
-    private void Run() {
+      OnStarted();
       DateTime start = DateTime.Now;
       DateTime end;
-      while ((!Canceled) && (!Terminated)) {
-        ProcessNextOperation();
+      while ((!Canceled) && (!Finished)) {
+        ProcessNextOperator();
         end = DateTime.Now;
         ExecutionTime += end - start;
         start = end;
       }
       ExecutionTime += DateTime.Now - start;
+      running = false;
+      OnStopped();
     }
-    private void RunSteps(int steps) {
+    private void RunStep(object state) {
+      OnStarted();
       DateTime start = DateTime.Now;
-      DateTime end;
-      int step = 0;
-      while ((!Canceled) && (!Terminated) && (step < steps)) {
-        ProcessNextOperation();
-        step++;
-        end = DateTime.Now;
-        ExecutionTime += end - start;
-        start = end;
-      }
+      if ((!Canceled) && (!Finished))
+        ProcessNextOperator();
       ExecutionTime += DateTime.Now - start;
+      running = false;
+      OnStopped();
     }
 
     /// <summary>
     /// Performs the next operation.
     /// </summary>
-    protected abstract void ProcessNextOperation();
+    protected abstract void ProcessNextOperator();
 
-    /// <summary>
-    /// Occurs when the current instance is initialized.
-    /// </summary>
-    public event EventHandler Initialized;
-    /// <summary>
-    /// Fires a new <c>Initialized</c> event.
-    /// </summary>
-    protected virtual void OnInitialized() {
-      if (Initialized != null)
-        Initialized(this, new EventArgs());
+    private void operatorGraph_InitialOperatorChanged(object sender, EventArgs e) {
+      Initialize();
     }
-    /// <summary>
-    /// Occurs when an operation is executed.
-    /// </summary>
-    public event EventHandler<EventArgs<IOperation>> OperationExecuted;
-    /// <summary>
-    /// Fires a new <c>OperationExecuted</c> event.
-    /// </summary>
-    /// <param name="operation">The operation that has been executed.</param>
-    protected virtual void OnOperationExecuted(IOperation operation) {
-      if (OperationExecuted != null)
-        OperationExecuted(this, new EventArgs<IOperation>(operation));
-    }
-    /// <summary>
-    /// Occurs when an exception occured during the execution.
-    /// </summary>
-    public event EventHandler<EventArgs<Exception>> ExceptionOccurred;
-    /// <summary>
-    /// Aborts the execution and fires a new <c>ExceptionOccurred</c> event.
-    /// </summary>
-    /// <param name="exception">The exception that was thrown.</param>
-    protected virtual void OnExceptionOccurred(Exception exception) {
-      Abort();
-      if (ExceptionOccurred != null)
-        ExceptionOccurred(this, new EventArgs<Exception>(exception));
+
+    public event EventHandler OperatorGraphChanged;
+    protected virtual void OnOperatorGraphChanged() {
+      if (OperatorGraphChanged != null)
+        OperatorGraphChanged(this, EventArgs.Empty);
     }
     /// <summary>
     /// Occurs when the execution time changed.
@@ -271,15 +245,49 @@ namespace HeuristicLab.Core {
         ExecutionTimeChanged(this, new EventArgs());
     }
     /// <summary>
+    /// Occurs when the execution is initialized.
+    /// </summary>
+    public event EventHandler Initialized;
+    /// <summary>
+    /// Fires a new <c>Initialized</c> event.
+    /// </summary>
+    protected virtual void OnInitialized() {
+      if (Initialized != null)
+        Initialized(this, new EventArgs());
+    }
+    /// <summary>
+    /// Occurs when the execution is executed.
+    /// </summary>
+    public event EventHandler Started;
+    /// <summary>
+    /// Fires a new <c>Started</c> event.
+    /// </summary>
+    protected virtual void OnStarted() {
+      if (Started != null)
+        Started(this, new EventArgs());
+    }
+    /// <summary>
     /// Occurs when the execution is finished.
     /// </summary>
-    public event EventHandler Finished;
+    public event EventHandler Stopped;
     /// <summary>
-    /// Fires a new <c>Finished</c> event.
+    /// Fires a new <c>Stopped</c> event.
     /// </summary>
-    protected virtual void OnFinished() {
-      if (Finished != null)
-        Finished(this, new EventArgs());
+    protected virtual void OnStopped() {
+      if (Stopped != null)
+        Stopped(this, new EventArgs());
+    }
+    /// <summary>
+    /// Occurs when an exception occured during the execution.
+    /// </summary>
+    public event EventHandler<EventArgs<Exception>> ExceptionOccurred;
+    /// <summary>
+    /// Aborts the execution and fires a new <c>ExceptionOccurred</c> event.
+    /// </summary>
+    /// <param name="exception">The exception that was thrown.</param>
+    protected virtual void OnExceptionOccurred(Exception exception) {
+      if (ExceptionOccurred != null)
+        ExceptionOccurred(this, new EventArgs<Exception>(exception));
     }
   }
 }

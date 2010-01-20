@@ -21,19 +21,27 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Text;
-using System.Drawing;
+using System.Xml;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   /// <summary>
-  /// Interface to represent (almost) every HeuristicLab object (an object, an operator,...).
+  /// Represents a parameter.
   /// </summary>
-  public interface IItem : IDeepCloneable {
-    string ItemName { get; }
-    string ItemDescription { get; }
-    Image ItemImage { get; }
-
-    event ChangedEventHandler Changed;
+  [Item("OperatorParameter", "A parameter which represents an operator.")]
+  [EmptyStorableClass]
+  [Creatable("Test")]
+  public class OperatorParameter : Parameter<IOperator>, IOperatorParameter {
+    public OperatorParameter()
+      : base("Anonymous", null) {
+    }
+    public OperatorParameter(string name, string description)
+      : base(name, description) {
+    }
+    public OperatorParameter(string name, string description, IOperator value)
+      : base(name, description, value) {
+    }
   }
 }

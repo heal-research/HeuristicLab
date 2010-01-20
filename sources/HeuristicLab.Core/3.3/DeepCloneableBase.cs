@@ -27,39 +27,32 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
   /// <summary>
-  /// Represents a library of operators consisting of one <see cref="IOperatorGroup"/>.
+  /// Represents a base class for all deeply cloneable objects.
   /// </summary>
-  [Creatable("Libraries")]
-  [Item("Operator Library", "A library that contains multiple operators.")]
-  public class OperatorLibrary : ItemBase, IOperatorLibrary {
-
-    [Storable]
-    private IOperatorGroup myGroup;
+  [EmptyStorableClass]
+  public abstract class DeepCloneableBase : IDeepCloneable {
     /// <summary>
-    /// Gets the operator group of the current instance.
+    /// Creates a deep clone of this instance.
     /// </summary>
-    public IOperatorGroup Group {
-      get { return myGroup; }
+    /// <remarks>
+    /// This method is the entry point for creating a deep clone of a whole object graph.
+    /// </remarks>
+    /// <returns>A clone of this instance.</returns>
+    public object Clone() {
+      return Clone(new Cloner());
     }
 
     /// <summary>
-    /// Initializes a new instance of <see cref="OperatorLibrary"/>.
+    /// Creates a deep clone of this instance.
     /// </summary>
-    public OperatorLibrary() {
-      myGroup = new OperatorGroup();
-    }
-
-    /// <summary>
-    /// Clones the current instance (deep clone).
-    /// </summary>
-    /// <remarks>Deep clone through <see cref="cloner.Clone"/> method of helper class 
-    /// <see cref="Auxiliary"/>.</remarks>
-    /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
-    /// <returns>The cloned object as <see cref="OperatorLibrary"/>.</returns>
-    public override IItem Clone(ICloner cloner) {
-      OperatorLibrary clone = new OperatorLibrary();
+    /// <remarks>This method should not be called directly. It is used for creating clones of
+    /// objects which are contained in the object that is currently cloned.</remarks>
+    /// <param name="cloner">The cloner which is responsible for keeping track of all already
+    /// cloned objects.</param>
+    /// <returns>A clone of this instance.</returns>
+    public virtual IDeepCloneable Clone(Cloner cloner) {
+      DeepCloneableBase clone = (DeepCloneableBase)Activator.CreateInstance(this.GetType());
       cloner.RegisterClonedObject(this, clone);
-      clone.myGroup = (IOperatorGroup)cloner.Clone(Group);
       return clone;
     }
   }

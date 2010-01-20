@@ -21,46 +21,51 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Text;
 using System.Xml;
-using System.Drawing;
-using System.Resources;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common.Resources;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
-  /// <summary>
-  /// Represents the base class for all basic item types.
-  /// </summary>
-  [EmptyStorableClass]
-  [Item("ItemBase", "Base class for all HeuristicLab items.")]
-  public abstract class ItemBase : DeepCloneableBase, IItem {
-    public virtual string ItemName {
-      get { return ItemAttribute.GetName(this.GetType()); }
-    }
-    public virtual string ItemDescription {
-      get { return ItemAttribute.GetDescription(this.GetType()); }
-    }
-    public virtual Image ItemImage {
-      get { return VS2008ImageLibrary.Class; }
+  [Item("IntData", "A data item which represents an integer value.")]
+  [Creatable("Test")]
+  public sealed class IntData : ItemBase {
+    [Storable]
+    private int value;
+    public int Value {
+      get { return value; }
+      set {
+        if (this.value != value) {
+          this.value = value;
+          OnValueChanged();
+        }
+      }
     }
 
-    /// <summary>
-    /// Gets the string representation of the current instance.
-    /// </summary>
-    /// <returns>The type name of the current instance.</returns>
+    public IntData()
+      : base() {
+      value = 0;
+    }
+    public IntData(int value)
+      : base() {
+      this.value = value;
+    }
+
     public override string ToString() {
-      return ItemName;
+      return value.ToString();
     }
 
-    public event ChangedEventHandler Changed;
-    protected void OnChanged() {
-      OnChanged(new ChangedEventArgs());
+    public override IDeepCloneable Clone(Cloner cloner) {
+      IntData clone = new IntData(value);
+      cloner.RegisterClonedObject(this, clone);
+      return clone;
     }
-    protected virtual void OnChanged(ChangedEventArgs e) {
-      if ((e.RegisterChangedObject(this)) && (Changed != null))
-          Changed(this, e);
+
+    public event EventHandler ValueChanged;
+    private void OnValueChanged() {
+      if (ValueChanged != null)
+        ValueChanged(this, new EventArgs());
+      OnChanged();
     }
   }
 }

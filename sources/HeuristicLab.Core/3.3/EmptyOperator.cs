@@ -22,11 +22,20 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   /// <summary>
-  /// Interface to represent an operation (Executes a defined number of operators on a defined scope). 
+  /// An operator which represents an empty statement.
   /// </summary>
-  public interface IOperation : IItem {
+  [Item("EmptyOperator", "An operator which represents an empty statement.")]
+//  [Creatable("Test")]
+  [EmptyStorableClass]
+  public sealed class EmptyOperator : StandardOperatorBase {
+    public EmptyOperator()
+      : base() {
+    }
   }
 }

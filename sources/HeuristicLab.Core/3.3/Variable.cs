@@ -28,38 +28,22 @@ using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   /// <summary>
-  /// Represents a variable of an operator having a name and a value.
+  /// Represents a variable which has a name and holds an IItem.
   /// </summary>
-  public class Variable : ItemBase, IVariable {
-
-    [Storable]
-    private string myName;
-    /// <inheritdoc/>
-    /// <remarks>Calls <see cref="OnNameChanging"/> and also <see cref="OnNameChanged"/> 
-    /// eventually in the setter.</remarks>
-    public string Name {
-      get { return myName; }
-      set {
-        if (!myName.Equals(value)) {
-          CancelEventArgs<string> e = new CancelEventArgs<string>(value);
-          OnNameChanging(e);
-          if (!e.Cancel) {
-            myName = value;
-            OnNameChanged();
-          }
-        }
-      }
-    }
-
-    [Storable]
-    private IItem myValue;
+  [Item("Variable", "A variable which has a name and holds an IItem.")]
+  [Creatable("Test")]
+  public sealed class Variable : NamedItemBase {
+    private IItem value;
     /// <inheritdoc/>
     /// <remarks>Calls <see cref="OnValueChanged"/> in the setter.</remarks>
+    [Storable]
     public IItem Value {
-      get { return myValue; }
+      get { return value; }
       set {
-        if (myValue != value) {
-          myValue = value;
+        if (this.value != value) {
+          if (this.value != null) this.value.Changed -= new ChangedEventHandler(Value_Changed);
+          this.value = value;
+          if (this.value != null) this.value.Changed += new ChangedEventHandler(Value_Changed);
           OnValueChanged();
         }
       }
@@ -69,9 +53,9 @@ namespace HeuristicLab.Core {
     /// Initializes a new instance of <see cref="Variable"/> with name <c>Anonymous</c> 
     /// and value <c>null</c>.
     /// </summary>
-    public Variable() {
-      myName = "Anonymous";
-      myValue = null;
+    public Variable()
+      : base("Anonymous") {
+      Value = null;
     }
     /// <summary>
     /// Initializes a new instance of <see cref="Variable"/> with the specified <paramref name="name"/>
@@ -79,9 +63,9 @@ namespace HeuristicLab.Core {
     /// </summary>
     /// <param name="name">The name of the current instance.</param>
     /// <param name="value">The value of the current instance.</param>
-    public Variable(string name, IItem value) {
-      myName = name;
-      myValue = value;
+    public Variable(string name, IItem value)
+      : base(name) {
+      Value = value;
     }
 
     /// <inheritdoc cref="IVariable.GetValue&lt;T&gt;"/>
@@ -94,12 +78,12 @@ namespace HeuristicLab.Core {
     /// </summary>
     /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
     /// <returns>The cloned object as <see cref="Variable"/>.</returns>
-    public override IItem Clone(ICloner cloner) {
+    public override IDeepCloneable Clone(Cloner cloner) {
       Variable clone = new Variable();
       cloner.RegisterClonedObject(this, clone);
-      clone.myName = Name;
-      if (Value != null)
-        clone.myValue = (IItem)cloner.Clone(Value);
+      clone.name = name;
+      clone.description = description;
+      clone.Value = (IItem)cloner.Clone(value);
       return clone;
     }
 
@@ -108,39 +92,25 @@ namespace HeuristicLab.Core {
     /// </summary>
     /// <returns>The current instance as a string.</returns>
     public override string ToString() {
-      return Name + ": " + ((Value == null) ? ("null") : (Value.ToString()));
+      if (Value == null)
+        return string.Format("{0}: null", Name);
+      else
+        return string.Format("{0}: {1} ({2})", Name, Value.ToString(), Value.GetType().Name);
     }
 
-    /// <inheritdoc/>
-    public event EventHandler<CancelEventArgs<string>> NameChanging;
-    /// <summary>
-    /// Fires a new <c>NameChanging</c> event.
-    /// </summary>
-    /// <param name="e">The event arguments of the changing.</param>
-    protected virtual void OnNameChanging(CancelEventArgs<string> e) {
-      if (NameChanging != null)
-        NameChanging(this, e);
-    }
-    /// <inheritdoc/>
-    public event EventHandler NameChanged;
-    /// <summary>
-    /// Fires a new <c>NameChanged</c> event.
-    /// </summary>
-    /// <remarks>Calls <see cref="ItemBase.OnChanged"/>.</remarks>
-    protected virtual void OnNameChanged() {
-      if (NameChanged != null)
-        NameChanged(this, new EventArgs());
-      OnChanged();
-    }
     /// <inheritdoc/>
     public event EventHandler ValueChanged;
     /// <summary>
     /// Fires a new <c>ValueChanged</c> even.
     /// </summary>
-    protected virtual void OnValueChanged() {
+    private void OnValueChanged() {
       if (ValueChanged != null)
         ValueChanged(this, new EventArgs());
       OnChanged();
+    }
+
+    private void Value_Changed(object sender, ChangedEventArgs e) {
+      OnChanged(e);
     }
   }
 }

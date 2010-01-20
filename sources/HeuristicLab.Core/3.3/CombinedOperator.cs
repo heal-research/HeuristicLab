@@ -23,15 +23,38 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using System.Drawing;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Common;
+using HeuristicLab.Collections;
 
 namespace HeuristicLab.Core {
   /// <summary>
-  /// Interface to represent a library of operators.
+  /// The base class for all operators.
   /// </summary>
-  public interface IOperatorLibrary : IItem {
-    /// <summary>
-    /// Gets the operator group of the current instance.
-    /// </summary>
-    IOperatorGroup Group { get; }
+  [Item("CombinedOperator", "An operator which contains an operator graph.")]
+  [Creatable("Test")]
+  [EmptyStorableClass]
+  public sealed class CombinedOperator : StandardOperatorBase, IOperator {
+    public override Image ItemImage {
+      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Module; }
+    }
+
+    public new ParameterCollection Parameters {
+      get {
+        return base.Parameters;
+      }
+    }
+    IObservableKeyedCollection<string, IParameter> IOperator.Parameters {
+      get { return Parameters; }
+    }
+
+    public CombinedOperator()
+      : base() {
+    }
+
+    public override ExecutionContextCollection Apply(ExecutionContext context) {
+      return base.Apply(context);
+    }
   }
 }

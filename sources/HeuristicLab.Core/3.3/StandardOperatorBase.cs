@@ -21,46 +21,34 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Text;
 using System.Xml;
-using System.Drawing;
-using System.Resources;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common.Resources;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   /// <summary>
-  /// Represents the base class for all basic item types.
+  /// A base class for operators which have only one successor.
   /// </summary>
+  [Item("StandardOperatorBase", "A base class for operators which have only one successor.")]
+  [Creatable("Test")]
   [EmptyStorableClass]
-  [Item("ItemBase", "Base class for all HeuristicLab items.")]
-  public abstract class ItemBase : DeepCloneableBase, IItem {
-    public virtual string ItemName {
-      get { return ItemAttribute.GetName(this.GetType()); }
-    }
-    public virtual string ItemDescription {
-      get { return ItemAttribute.GetDescription(this.GetType()); }
-    }
-    public virtual Image ItemImage {
-      get { return VS2008ImageLibrary.Class; }
+  public abstract class StandardOperatorBase : OperatorBase {
+    public OperatorParameter Successor {
+      get { return (OperatorParameter)Parameters["Successor"]; }
     }
 
-    /// <summary>
-    /// Gets the string representation of the current instance.
-    /// </summary>
-    /// <returns>The type name of the current instance.</returns>
-    public override string ToString() {
-      return ItemName;
+    public StandardOperatorBase()
+      : base() {
+      Parameters.Add(new OperatorParameter("Successor", "Operator which is executed next"));
     }
 
-    public event ChangedEventHandler Changed;
-    protected void OnChanged() {
-      OnChanged(new ChangedEventArgs());
-    }
-    protected virtual void OnChanged(ChangedEventArgs e) {
-      if ((e.RegisterChangedObject(this)) && (Changed != null))
-          Changed(this, e);
+    public override ExecutionContextCollection Apply(ExecutionContext context) {
+      IOperator successor = Successor.GetValue(context);
+      if (successor != null)
+        return new ExecutionContextCollection(new ExecutionContext(context.Parent, successor, context.Scope));
+      else
+        return new ExecutionContextCollection();
     }
   }
 }

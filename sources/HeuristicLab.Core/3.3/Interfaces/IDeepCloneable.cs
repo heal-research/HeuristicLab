@@ -24,30 +24,13 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeuristicLab.Core {
-  /// <summary>
-  /// Represents the type of a variable (input, output,...).
-  /// </summary>
-  [FlagsAttribute]
-  public enum VariableKind {
+  public interface IDeepCloneable : ICloneable {
     /// <summary>
-    /// Flag for doing nothing with the variable.
+    /// Creates a deep clone of this instance.
     /// </summary>
-    None = 0,
-    /// <summary>
-    /// Flag for creating a new variable.
-    /// </summary>
-    New = 1,
-    /// <summary>
-    /// Flag for changing value of a variable.
-    /// </summary>
-    Out = 2,
-    /// <summary>
-    /// Flag for reading value of a variable.
-    /// </summary>
-    In = 4,
-    /// <summary>
-    /// Flag for deleting a variable.
-    /// </summary>
-    Deleted = 8
+    /// <param name="cloner">The cloner which is responsible for keeping track of all already
+    /// cloned objects.</param>
+    /// <returns>A clone of this instance.</returns>
+    IDeepCloneable Clone(Cloner cloner);
   }
 }

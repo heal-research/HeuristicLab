@@ -21,19 +21,17 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Text;
-using System.Drawing;
+using System.Xml;
 
 namespace HeuristicLab.Core {
-  /// <summary>
-  /// Interface to represent (almost) every HeuristicLab object (an object, an operator,...).
-  /// </summary>
-  public interface IItem : IDeepCloneable {
-    string ItemName { get; }
-    string ItemDescription { get; }
-    Image ItemImage { get; }
+  public interface IOperatorParameter : IParameter {
+    string ActualName { get; set; }
+    IOperator Value { get; set; }
 
-    event ChangedEventHandler Changed;
+    new IOperator GetValue(ExecutionContext context);
+
+    event EventHandler ActualNameChanged;
+    event EventHandler ValueChanged;
   }
 }

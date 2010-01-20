@@ -21,19 +21,31 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Text;
-using System.Drawing;
 
 namespace HeuristicLab.Core {
-  /// <summary>
-  /// Interface to represent (almost) every HeuristicLab object (an object, an operator,...).
-  /// </summary>
-  public interface IItem : IDeepCloneable {
-    string ItemName { get; }
-    string ItemDescription { get; }
-    Image ItemImage { get; }
+  public delegate void ChangedEventHandler(object sender, ChangedEventArgs e);
 
-    event ChangedEventHandler Changed;
+  public class ChangedEventArgs : EventArgs {
+    private class ReferenceEqualityComparer : IEqualityComparer<object> {
+      bool IEqualityComparer<object>.Equals(object x, object y) {
+        return object.ReferenceEquals(x, y);
+      }
+
+      int IEqualityComparer<object>.GetHashCode(object obj) {
+        if (obj == null) return 0;
+        return obj.GetHashCode();
+      }
+    }
+
+    private HashSet<object> changedObjects;
+
+    public ChangedEventArgs() {
+      changedObjects = new HashSet<object>(new ReferenceEqualityComparer());
+    }
+
+    public bool RegisterChangedObject(object obj) {
+      return changedObjects.Add(obj);
+    }
   }
 }
