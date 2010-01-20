@@ -287,6 +287,27 @@
   <ItemGroup>
     <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Restart.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_EditTable.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_OrgChart.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_ProtectForm.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Redo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Sort.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_SortUp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Undo.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

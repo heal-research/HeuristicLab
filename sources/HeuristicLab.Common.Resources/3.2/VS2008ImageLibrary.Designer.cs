@@ -144,6 +144,13 @@ namespace HeuristicLab.Common.Resources {
             }
         }
         
+        public static System.Drawing.Bitmap EditTable {
+            get {
+                object obj = ResourceManager.GetObject("EditTable", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         public static System.Drawing.Bitmap Enum {
             get {
                 object obj = ResourceManager.GetObject("Enum", resourceCulture);
@@ -291,6 +298,13 @@ namespace HeuristicLab.Common.Resources {
             }
         }
         
+        public static System.Drawing.Bitmap OrgChart {
+            get {
+                object obj = ResourceManager.GetObject("OrgChart", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         public static System.Drawing.Bitmap Pause {
             get {
                 object obj = ResourceManager.GetObject("Pause", resourceCulture);
@@ -312,6 +326,20 @@ namespace HeuristicLab.Common.Resources {
             }
         }
         
+        public static System.Drawing.Bitmap ProtectForm {
+            get {
+                object obj = ResourceManager.GetObject("ProtectForm", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        public static System.Drawing.Bitmap Redo {
+            get {
+                object obj = ResourceManager.GetObject("Redo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         public static System.Drawing.Bitmap Remove {
             get {
                 object obj = ResourceManager.GetObject("Remove", resourceCulture);
@@ -329,6 +357,20 @@ namespace HeuristicLab.Common.Resources {
         public static System.Drawing.Bitmap Script {
             get {
                 object obj = ResourceManager.GetObject("Script", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        public static System.Drawing.Bitmap Sort {
+            get {
+                object obj = ResourceManager.GetObject("Sort", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        public static System.Drawing.Bitmap SortUp {
+            get {
+                object obj = ResourceManager.GetObject("SortUp", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -371,6 +413,13 @@ namespace HeuristicLab.Common.Resources {
         public static System.Drawing.Bitmap TypeDef {
             get {
                 object obj = ResourceManager.GetObject("TypeDef", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        public static System.Drawing.Bitmap Undo {
+            get {
+                object obj = ResourceManager.GetObject("Undo", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -154,6 +154,9 @@
   <data name="Drive" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Drive.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="EditTable" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_EditTable.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Enum" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Enum.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -217,6 +220,9 @@
   <data name="Operator" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Operator.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="OrgChart" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_OrgChart.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Pause" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Pause.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -226,6 +232,12 @@
   <data name="Properties" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Properties.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="ProtectForm" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_ProtectForm.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Redo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Redo.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Remove" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_CommonElements_Actions_Remove.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -234,6 +246,12 @@
   </data>
   <data name="Script" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Script.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Sort" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Sort.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SortUp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_SortUp.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Stop" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Stop.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -252,6 +270,9 @@
   </data>
   <data name="TypeDef" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_TypeDef.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Undo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Undo.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Union" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Union.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
