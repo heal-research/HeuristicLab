@@ -47,5 +47,10 @@ namespace HeuristicLab.PluginInfrastructure {
     /// Gets the file names of files that are part of the plugin.
     /// </summary>
     IEnumerable<string> Files { get; }
+
+    /// <summary>
+    /// Get a list of assembly names associated with the plugin.
+    /// </summary>
+    IEnumerable<string> Assemblies { get; }
   }
 }

@@ -108,7 +108,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     /// <summary>
     /// Gets the names of the assemblies that belong to this plugin.
     /// </summary>
-    internal IEnumerable<string> Assemblies {
+    public IEnumerable<string> Assemblies {
       get { return assemblies; }
       // set { assemblies = value; }
     }
