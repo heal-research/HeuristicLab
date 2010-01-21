@@ -295,8 +295,10 @@ namespace HeuristicLab.CodeEditor {
       if (!assemblies.Contains(a))
         return;
       var content = projectContentRegistry.GetExistingProjectContent(a.Location);
-      projectContent.ReferencedContents.Remove(content);
-      projectContentRegistry.UnloadProjectContent(content);
+      if (content != null) {
+        projectContent.ReferencedContents.Remove(content);
+        projectContentRegistry.UnloadProjectContent(content);
+      }
       ShowMessage("Ready");
     }
 
@@ -305,10 +307,12 @@ namespace HeuristicLab.CodeEditor {
       projectContent.AddReferencedContent(projectContentRegistry.Mscorlib);
       ParseStep();
       BeginInvoke(new MethodInvoker(delegate { parserThreadLabel.Text = "Ready"; }));
-      while (!IsDisposed) {
-        ParseStep();
-        Thread.Sleep(2000);
-      }
+      try {
+        while (!IsDisposed) {
+          ParseStep();
+          Thread.Sleep(2000);
+        }
+      } catch { }
     }
 
     private void ParseStep() {
@@ -347,6 +351,27 @@ namespace HeuristicLab.CodeEditor {
       var proc = new Process();
       proc.StartInfo.FileName = sharpDevelopLabel.Tag.ToString();
       proc.Start();
+    }
+
+    private void CodeEditor_Resize(object sender, EventArgs e) {
+      var textArea = textEditor.ActiveTextAreaControl.TextArea;
+      var vScrollBar = textEditor.ActiveTextAreaControl.VScrollBar;
+      var hScrollBar = textEditor.ActiveTextAreaControl.HScrollBar;
+
+      textArea.SuspendLayout();
+      textArea.Width = textEditor.Width - vScrollBar.Width;
+      textArea.Height = textEditor.Height - hScrollBar.Height;
+      textArea.ResumeLayout();
+
+      vScrollBar.SuspendLayout();
+      vScrollBar.Location = new Point(textArea.Width, 0);
+      vScrollBar.Height = textArea.Height;
+      vScrollBar.ResumeLayout();
+
+      hScrollBar.SuspendLayout();
+      hScrollBar.Location = new Point(0, textArea.Height);
+      hScrollBar.Width = textArea.Width;
+      hScrollBar.ResumeLayout();
     }
   }
 }

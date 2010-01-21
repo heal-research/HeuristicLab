@@ -39,7 +39,7 @@
       // toolStripFiller
       // 
       toolStripFiller.Name = "toolStripFiller";
-      toolStripFiller.Size = new System.Drawing.Size(364, 17);
+      toolStripFiller.Size = new System.Drawing.Size(395, 17);
       toolStripFiller.Spring = true;
       // 
       // textEditor
@@ -57,7 +57,7 @@
       this.textEditor.ShowSpaces = true;
       this.textEditor.ShowTabs = true;
       this.textEditor.ShowVRuler = false;
-      this.textEditor.Size = new System.Drawing.Size(556, 248);
+      this.textEditor.Size = new System.Drawing.Size(556, 245);
       this.textEditor.TabIndent = 2;
       this.textEditor.TabIndex = 0;
       // 
@@ -112,6 +112,7 @@
       this.Controls.Add(this.statusStrip1);
       this.Name = "CodeEditor";
       this.Size = new System.Drawing.Size(556, 270);
+      this.Resize += new System.EventHandler(this.CodeEditor_Resize);
       this.statusStrip1.ResumeLayout(false);
       this.statusStrip1.PerformLayout();
       this.ResumeLayout(false);
