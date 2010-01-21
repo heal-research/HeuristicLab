@@ -34,6 +34,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using System.Data.Linq;
 using System.Xml.XPath;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Operators.Programmable {
 
@@ -64,6 +65,8 @@ namespace HeuristicLab.Operators.Programmable {
 
     private object syncRoot = new object();
 
+    public readonly Dictionary<string, List<Assembly>> Plugins;
+
     protected Dictionary<Assembly, bool> Assemblies;
     public IEnumerable<Assembly> AvailableAssemblies {
       get { return Assemblies.Keys; }
@@ -83,11 +86,13 @@ namespace HeuristicLab.Operators.Programmable {
     #region Extended Accessors
 
     public void SelectAssembly(Assembly a) {
-      Assemblies[a] = true;
+      if (a != null && Assemblies.ContainsKey(a))
+        Assemblies[a] = true;
     }
 
     public void UnselectAssembly(Assembly a) {
-      Assemblies[a] = false;
+      if (a != null && Assemblies.ContainsKey(a))
+        Assemblies[a] = false;
     }
 
     public void SelectNamespace(string ns) {
@@ -131,6 +136,26 @@ namespace HeuristicLab.Operators.Programmable {
       executeMethod = null;
       Assemblies = DiscoverAssemblies();
       namespaces = new HashSet<string>(DiscoverNamespaces());
+      Plugins = GroupAssemblies();
+    }
+
+    private Dictionary<string, List<Assembly>> GroupAssemblies() {
+      var plugins = new Dictionary<string, List<Assembly>>();
+      var assemblyNames = Assemblies.ToDictionary(a => a.Key.Location, a => a.Key);
+      foreach (var plugin in ApplicationManager.Manager.Plugins) {
+        var aList = new List<Assembly>();
+        foreach (var aName in plugin.Assemblies) {
+          Assembly a;
+          assemblyNames.TryGetValue(aName, out a);
+          if (a != null) {
+            aList.Add(a);
+            assemblyNames.Remove(aName);
+          }
+        }
+        plugins[plugin.Name] = aList;
+      }
+      plugins["other"] = assemblyNames.Values.ToList();
+      return plugins;
     }
 
     protected static List<Assembly> defaultAssemblies = new List<Assembly>() {      
@@ -247,7 +272,7 @@ namespace HeuristicLab.Operators.Programmable {
       var possibleNamespaces = new HashSet<string>(GetAllNamespaces(true));
       foreach (var ns in Namespaces)
         if (possibleNamespaces.Contains(ns))
-          yield return ns;      
+          yield return ns;
     }
 
     public static readonly Regex SafeTypeNameCharRegex = new Regex("[_a-zA-Z0-9]+");

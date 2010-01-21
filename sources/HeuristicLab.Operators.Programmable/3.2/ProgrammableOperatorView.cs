@@ -50,7 +50,7 @@ namespace HeuristicLab.Operators.Programmable {
       : this() {
       ProgrammableOperator = programmableOperator;
     }
-    
+
     protected override void RemoveItemEvents() {
       operatorBaseVariableInfosView.Operator = null;
       operatorBaseVariablesView.Operator = null;
@@ -81,13 +81,14 @@ namespace HeuristicLab.Operators.Programmable {
         codeEditor.Prefix = @"using System
 
 public class Operator {
-  public static IOperation Execute(IOperator op, IScope scope, parameters ...) {";
+  public static IOperation Execute(IOperator op, IScope scope, parameters ...) {
+";
         codeEditor.Suffix = @"
     return null;
   }
-}";   
-        assembliesListBox.DataSource = null;
-      } else {        
+}";
+        assembliesTreeView.Nodes.Clear();
+      } else {
         codeEditor.Enabled = true;
         addVariableInfoButton.Enabled = true;
         removeVariableInfoButton.Enabled = operatorBaseVariableInfosView.SelectedVariableInfos.Count > 0;
@@ -107,10 +108,10 @@ public class Operator {
           codeEditor.AddAssembly(a);
         }
         codeEditor.ScrollAfterPrefix();
-      }      
+      }
     }
 
-    
+
     private string GetGeneratedPrefix() {
       StringBuilder prefix = new StringBuilder();
       foreach (var ns in ProgrammableOperator.GetSelectedAndValidNamespaces()) {
@@ -118,7 +119,7 @@ public class Operator {
       }
       prefix.AppendLine();
       prefix.Append("public class ").Append(ProgrammableOperator.CompiledTypeName).AppendLine(" {");
-      prefix.Append("  ").Append(ProgrammableOperator.Signature).Append(" {");
+      prefix.Append("  ").Append(ProgrammableOperator.Signature).AppendLine(" {");
       return prefix.ToString();
     }
 
@@ -139,7 +140,7 @@ public class Operator {
           Auxiliary.ShowErrorMessageBox("A variable info with the same formal name already exists.");
         } else {
           ProgrammableOperator.AddVariableInfo(dialog.VariableInfo);
-          Recompile();          
+          Recompile();
         }
       }
       dialog.Dispose();
@@ -150,22 +151,23 @@ public class Operator {
       operatorBaseVariableInfosView.SelectedVariableInfos.CopyTo(selected, 0);
       for (int i = 0; i < selected.Length; i++)
         ProgrammableOperator.RemoveVariableInfo(selected[i].FormalName);
+      Recompile();
     }
 
     private void Recompile() {
       try {
-        ProgrammableOperator.Compile();        
+        ProgrammableOperator.Compile();
         MessageBox.Show("Compilation successful", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
       } catch (Exception ex) {
         Auxiliary.ShowErrorMessageBox(ex);
       }
       UpdateControls();
-      codeEditor.ShowCompileErrors(ProgrammableOperator.CompileErrors, "ProgrammableOperator");      
+      codeEditor.ShowCompileErrors(ProgrammableOperator.CompileErrors, "ProgrammableOperator");
     }
 
     private void compileButton_Click(object sender, EventArgs e) {
       Recompile();
-    }    
+    }
 
     #region ProgrammableOperator Events
     private void ProgrammableOperator_CodeChanged(object sender, EventArgs e) {
@@ -176,58 +178,89 @@ public class Operator {
     }
     #endregion
 
-    public static Assembly GetAssembly(CheckedListBox box, int index) {
-      return (Assembly)(((CheckedListBoxItem)box.Items[index]).Tag);
-    }
-
-    private void assembliesListBox_ItemCheck(object sender, ItemCheckEventArgs e) {
+    private void assembliesTreeView_AfterCheck(object sender, TreeViewEventArgs e) {
       if (initializing)
         return;
-      Assembly a = GetAssembly(assembliesListBox, e.Index);
-      if (e.NewValue == CheckState.Checked) {                
-        ProgrammableOperator.SelectAssembly(a);
-        codeEditor.AddAssembly(a);
-      } else if (e.NewValue == CheckState.Unchecked) {
-        ProgrammableOperator.UnselectAssembly(a);
-        codeEditor.RemoveAssembly(a);
-      } else {
+      Assembly a = e.Node.Tag as Assembly;
+      if (a == null && e.Node.Nodes.Count > 0) {
+        foreach (TreeNode n in e.Node.Nodes)
+          n.Checked = e.Node.Checked;
         return;
+      } else {
+        if (e.Node.Checked) {
+          ProgrammableOperator.SelectAssembly(a);
+          codeEditor.AddAssembly(a);
+        } else {
+          ProgrammableOperator.UnselectAssembly(a);
+          codeEditor.RemoveAssembly(a);
+        }
       }
-      InitializeNamespacesList();      
+      InitializeNamespacesList();
       codeEditor.Prefix = GetGeneratedPrefix();
     }
 
     private bool initializing = false;
     private void InitializeAssemblyList() {
-      assembliesListBox.Items.Clear();
-      var selectedAssemblies = new HashSet<Assembly>(ProgrammableOperator.SelectedAssemblies);
       initializing = true;
-      foreach (var a in ProgrammableOperator.AvailableAssemblies.ToList()) {
-        assembliesListBox.Items.Add(
-          new CheckedListBoxItem(a.GetName().Name, a),
-          selectedAssemblies.Contains(a));
+      assembliesTreeView.BeginUpdate();
+      assembliesTreeView.Nodes.Clear();
+      var selectedAssemblies = new HashSet<Assembly>(ProgrammableOperator.SelectedAssemblies);
+      foreach (var p in ProgrammableOperator.Plugins) {
+        var node = assembliesTreeView.Nodes.Add(p.Key);
+        node.Tag = p;
+        foreach (var a in p.Value) {
+          var aNode = node.Nodes.Add(a.GetName().Name);
+          aNode.Tag = a;
+          if (selectedAssemblies.Contains(a))
+            aNode.Checked = true;
+        }
+        if (node.Nodes.Count == 1 && node.Nodes[0].Name == node.Nodes[0].Name) {
+          node.Tag = node.Nodes[0].Tag;
+          node.Nodes.Clear();
+        } else if (node.Nodes.Count > 0 && node.Nodes.Cast<TreeNode>().All(n => n.Checked)) {
+          node.Checked = true;
+        }
       }
+      assembliesTreeView.EndUpdate();
       initializing = false;
     }
 
     private void InitializeNamespacesList() {
       initializing = true;
-      namespacesListBox.Items.Clear();
+      namespacesTreeView.Nodes.Clear();
       var selectedNamespaces = new HashSet<string>(ProgrammableOperator.Namespaces);
-      foreach (var ns in ProgrammableOperator.GetAllNamespaces(true)) {
-        namespacesListBox.Items.Add(ns, selectedNamespaces.Contains(ns));
-      }
+      foreach (var ns in ProgrammableOperator.GetAllNamespaces(true))
+        AddNamespace(namespacesTreeView.Nodes, ns, selectedNamespaces.Contains(ns));
       codeEditor.Prefix = GetGeneratedPrefix();
       initializing = false;
     }
 
-    private void namespacesListBox_ItemCheck(object sender, ItemCheckEventArgs e) {
+    private void AddNamespace(TreeNodeCollection parentNodes, string ns, bool isSelected) {
+      int dotIndex = ns.IndexOf('.');
+      string prefix = ns;
+      if (dotIndex != -1)
+        prefix = ns.Substring(0, dotIndex);
+      TreeNode node = null;
+      if (parentNodes.ContainsKey(prefix)) {
+        node = parentNodes[prefix];
+      } else {
+        node = parentNodes.Add(prefix, prefix);
+      }
+      if (dotIndex != -1 && dotIndex + 1 < ns.Length) {
+        AddNamespace(node.Nodes, ns.Substring(dotIndex + 1, ns.Length - (dotIndex + 1)), isSelected);
+        if (isSelected)
+          node.Expand();
+      }  else
+        node.Checked = isSelected;
+    }
+
+    private void namespacesTreeView_AfterCheck(object sender, TreeViewEventArgs e) {
       if (initializing)
         return;
-      if (e.NewValue == CheckState.Checked) {
-        ProgrammableOperator.SelectNamespace((string)namespacesListBox.Items[e.Index]);
-      } else if (e.NewValue == CheckState.Unchecked) {
-        ProgrammableOperator.UnselectNamespace((string)namespacesListBox.Items[e.Index]);
+      if (e.Node.Checked) {
+        ProgrammableOperator.SelectNamespace(e.Node.FullPath);
+      } else {
+        ProgrammableOperator.UnselectNamespace(e.Node.FullPath);
       }
       codeEditor.Prefix = GetGeneratedPrefix();
     }
@@ -236,30 +269,6 @@ public class Operator {
       new CodeViewer(ProgrammableOperator.CompilationUnitCode).ShowDialog(this);
     }
 
-  }
 
-  public class CheckedListBoxItem : IComparable {
-
-    public object Tag { get; private set; }
-    public string Text { get; private set; }
-
-    public CheckedListBoxItem(string text, object tag) {
-      Text = text;
-      Tag = tag;
-    }
-
-    public override string ToString() {
-      return Text;
-    }
-
-    public int CompareTo(object obj) {
-      if (obj == null)
-        throw new ArgumentException("cannot compare to null");
-      if (!(obj is CheckedListBoxItem))
-        throw new ArgumentException(string.Format(
-          "cannot compare CheckedListBoxItem to {0}",
-          obj.GetType().Name));
-      return Text.CompareTo(((CheckedListBoxItem)obj).Text);
-    }
   }
 }

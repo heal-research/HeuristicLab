@@ -48,10 +48,10 @@ namespace HeuristicLab.Operators.Programmable {
       System.Windows.Forms.SplitContainer splitContainer2;
       System.Windows.Forms.GroupBox groupBox1;
       System.Windows.Forms.GroupBox groupBox2;
-      this.assembliesListBox = new System.Windows.Forms.CheckedListBox();
-      this.namespacesListBox = new System.Windows.Forms.CheckedListBox();
+      this.assembliesTreeView = new System.Windows.Forms.TreeView();
       this.groupBox3 = new System.Windows.Forms.GroupBox();
       this.showCodeButton = new System.Windows.Forms.Button();
+      this.codeEditor = new HeuristicLab.CodeEditor.CodeEditor();
       this.compileButton = new System.Windows.Forms.Button();
       this.tabControl = new System.Windows.Forms.TabControl();
       this.codeTabPage = new System.Windows.Forms.TabPage();
@@ -65,7 +65,7 @@ namespace HeuristicLab.Operators.Programmable {
       this.constrainedItemBaseView = new HeuristicLab.Core.ConstrainedItemBaseView();
       this.descriptionTabPage = new System.Windows.Forms.TabPage();
       this.descriptionTextBox = new System.Windows.Forms.TextBox();
-      this.codeEditor = new HeuristicLab.CodeEditor.CodeEditor();
+      this.namespacesTreeView = new System.Windows.Forms.TreeView();
       splitContainer1 = new System.Windows.Forms.SplitContainer();
       splitContainer2 = new System.Windows.Forms.SplitContainer();
       groupBox1 = new System.Windows.Forms.GroupBox();
@@ -124,7 +124,7 @@ namespace HeuristicLab.Operators.Programmable {
       // 
       // groupBox1
       // 
-      groupBox1.Controls.Add(this.assembliesListBox);
+      groupBox1.Controls.Add(this.assembliesTreeView);
       groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
       groupBox1.Location = new System.Drawing.Point(0, 0);
       groupBox1.Name = "groupBox1";
@@ -133,21 +133,19 @@ namespace HeuristicLab.Operators.Programmable {
       groupBox1.TabStop = false;
       groupBox1.Text = "Assemblies";
       // 
-      // assembliesListBox
+      // assembliesTreeView
       // 
-      this.assembliesListBox.CheckOnClick = true;
-      this.assembliesListBox.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.assembliesListBox.FormattingEnabled = true;
-      this.assembliesListBox.Location = new System.Drawing.Point(3, 16);
-      this.assembliesListBox.Name = "assembliesListBox";
-      this.assembliesListBox.Size = new System.Drawing.Size(334, 64);
-      this.assembliesListBox.Sorted = true;
-      this.assembliesListBox.TabIndex = 0;
-      this.assembliesListBox.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.assembliesListBox_ItemCheck);
+      this.assembliesTreeView.CheckBoxes = true;
+      this.assembliesTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.assembliesTreeView.Location = new System.Drawing.Point(3, 16);
+      this.assembliesTreeView.Name = "assembliesTreeView";
+      this.assembliesTreeView.Size = new System.Drawing.Size(334, 66);
+      this.assembliesTreeView.TabIndex = 1;
+      this.assembliesTreeView.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.assembliesTreeView_AfterCheck);
       // 
       // groupBox2
       // 
-      groupBox2.Controls.Add(this.namespacesListBox);
+      groupBox2.Controls.Add(this.namespacesTreeView);
       groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
       groupBox2.Location = new System.Drawing.Point(0, 0);
       groupBox2.Name = "groupBox2";
@@ -156,17 +154,16 @@ namespace HeuristicLab.Operators.Programmable {
       groupBox2.TabStop = false;
       groupBox2.Text = "Namespaces";
       // 
-      // namespacesListBox
+      // namespacesTreeView
       // 
-      this.namespacesListBox.CheckOnClick = true;
-      this.namespacesListBox.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.namespacesListBox.FormattingEnabled = true;
-      this.namespacesListBox.Location = new System.Drawing.Point(3, 16);
-      this.namespacesListBox.Name = "namespacesListBox";
-      this.namespacesListBox.Size = new System.Drawing.Size(343, 64);
-      this.namespacesListBox.Sorted = true;
-      this.namespacesListBox.TabIndex = 1;
-      this.namespacesListBox.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.namespacesListBox_ItemCheck);
+      this.namespacesTreeView.CheckBoxes = true;
+      this.namespacesTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.namespacesTreeView.Location = new System.Drawing.Point(3, 16);
+      this.namespacesTreeView.Name = "namespacesTreeView";
+      this.namespacesTreeView.PathSeparator = ".";
+      this.namespacesTreeView.Size = new System.Drawing.Size(343, 66);
+      this.namespacesTreeView.TabIndex = 2;
+      this.namespacesTreeView.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.namespacesTreeView_AfterCheck);
       // 
       // groupBox3
       // 
@@ -193,7 +190,7 @@ namespace HeuristicLab.Operators.Programmable {
       this.showCodeButton.Location = new System.Drawing.Point(467, 333);
       this.showCodeButton.Name = "showCodeButton";
       this.showCodeButton.Size = new System.Drawing.Size(133, 23);
-      this.showCodeButton.TabIndex = 7;
+      this.showCodeButton.TabIndex = 4;
       this.showCodeButton.Text = "Show Generated Code";
       this.showCodeButton.UseVisualStyleBackColor = true;
       this.showCodeButton.Click += new System.EventHandler(this.showCodeButton_Click);
@@ -359,7 +356,7 @@ namespace HeuristicLab.Operators.Programmable {
           " public static void Apply(int arg) {";
       this.codeEditor.Size = new System.Drawing.Size(675, 309);
       this.codeEditor.Suffix = "\n    return null;\n  }\n}";
-      this.codeEditor.TabIndex = 6;
+      this.codeEditor.TabIndex = 0;
       this.codeEditor.UserCode = "\n\n\n";
       this.codeEditor.TextEditorValidated += new System.EventHandler(this.codeEditor_Validated);
       // 
@@ -404,12 +401,13 @@ namespace HeuristicLab.Operators.Programmable {
     private System.Windows.Forms.TextBox descriptionTextBox;
     private System.Windows.Forms.Button removeVariableInfoButton;
     private System.Windows.Forms.Button addVariableInfoButton;
-    private System.Windows.Forms.CheckedListBox assembliesListBox;
-    private System.Windows.Forms.CheckedListBox namespacesListBox;
+    private System.Windows.Forms.TreeView assembliesTreeView;
+    private System.Windows.Forms.TreeView namespacesTreeView;
     private System.Windows.Forms.GroupBox groupBox3;
     private HeuristicLab.CodeEditor.CodeEditor codeEditor;
     private System.Windows.Forms.Button compileButton;
     private System.Windows.Forms.Button showCodeButton;
+
 
   }
 }
