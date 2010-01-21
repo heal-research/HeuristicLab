@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Core.Views {
-  partial class EngineBaseView {
+  partial class EngineView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>

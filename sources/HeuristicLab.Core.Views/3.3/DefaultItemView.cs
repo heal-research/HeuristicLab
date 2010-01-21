@@ -25,34 +25,28 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Data;
 using System.Text;
-using System.Xml;
 using System.Windows.Forms;
-using HeuristicLab.MainForm.WindowsForms;
+using HeuristicLab.MainForm;
 
-namespace HeuristicLab.Core.Views {
+namespace HeuristicLab.Core.Views { 
   /// <summary>
-  /// Base class for all visual representations.
+  /// The base class for visual representations of items.
   /// </summary>
-  public partial class ItemViewBase : ObjectViewBase {
-    public IItem Item {
-      get { return (IItem)base.Object; }
-      set { base.Object = value; }
-    }
-
+  [Content(typeof(Item), true)]
+  public partial class DefaultItemView : ItemView {
     /// <summary>
-    /// Initializes a new instance of <see cref="ViewBase"/> with the caption "View".
+    /// Initializes a new instance of <see cref="ItemBaseView"/>.
     /// </summary>
-    public ItemViewBase() {
+    public DefaultItemView() {
       InitializeComponent();
-      Caption = "View";
     }
-
-    protected override void OnObjectChanged() {
-      if (Item == null) {
-        Caption = "View";
-      } else {
-        Caption = Item.ItemName;
-      }
+    /// <summary>
+    /// Intializes a new instance of <see cref="ItemBaseView"/> with the given <paramref name="item"/>.
+    /// </summary>
+    /// <param name="item">The item that should be displayed.</param>
+    public DefaultItemView(Item item)
+      : this() {
+      Item = item;
     }
   }
 }

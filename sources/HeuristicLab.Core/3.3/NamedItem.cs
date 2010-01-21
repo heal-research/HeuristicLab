@@ -27,8 +27,8 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
-  [Item("NamedItemBase", "Base class for items which have a name and an optional description.")]
-  public abstract class NamedItemBase : ItemBase, INamedItem {
+  [Item("NamedItem", "Base class for items which have a name and an optional description.")]
+  public abstract class NamedItem : Item, INamedItem {
     [Storable]
     protected string name;
     /// <inheritdoc/>
@@ -72,7 +72,7 @@ namespace HeuristicLab.Core {
     /// Initializes a new instance of <see cref="Variable"/> with name <c>Anonymous</c> 
     /// and value <c>null</c>.
     /// </summary>
-    protected NamedItemBase() {
+    protected NamedItem() {
       name = ItemName;
       description = ItemDescription;
     }
@@ -82,12 +82,12 @@ namespace HeuristicLab.Core {
     /// </summary>
     /// <param name="name">The name of the current instance.</param>
     /// <param name="value">The value of the current instance.</param>
-    protected NamedItemBase(string name)
+    protected NamedItem(string name)
       : this() {
       if (name == null) throw new ArgumentNullException();
       this.name = name;
     }
-    protected NamedItemBase(string name, string description)
+    protected NamedItem(string name, string description)
       : this(name) {
       this.description = description;
     }
@@ -98,7 +98,7 @@ namespace HeuristicLab.Core {
     /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
     /// <returns>The cloned object as <see cref="Variable"/>.</returns>
     public override IDeepCloneable Clone(Cloner cloner) {
-      NamedItemBase clone = (NamedItemBase)base.Clone(cloner);
+      NamedItem clone = (NamedItem)base.Clone(cloner);
       clone.name = name;
       clone.description = description;
       return clone;

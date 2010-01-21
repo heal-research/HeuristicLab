@@ -102,19 +102,20 @@
     <Compile Include="Cloner.cs" />
     <Compile Include="Attributes\CreatableAttribute.cs" />
     <Compile Include="ChangedEventArgs.cs" />
+    <Compile Include="DeepCloneable.cs" />
+    <Compile Include="Engine.cs" />
     <Compile Include="Interfaces\IOperatorParameter.cs" />
+    <Compile Include="Item.cs" />
+    <Compile Include="ItemParameter.cs" />
+    <Compile Include="NamedItem.cs" />
     <Compile Include="OperatorGraph.cs" />
     <Compile Include="OperatorParameter.cs" />
-    <Compile Include="ParameterBase.cs" />
     <Compile Include="Interfaces\IParameter.cs" />
     <Compile Include="OperatorCollection.cs" />
     <Compile Include="ItemCollection.cs" />
     <Compile Include="OperatorSet.cs" />
     <Compile Include="ItemSet.cs" />
     <Compile Include="ItemList.cs" />
-    <Compile Include="EngineBase.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Interfaces\IEngine.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -125,13 +126,10 @@
     <Compile Include="VariableCollection.cs" />
     <Compile Include="Parameter.cs" />
     <Compile Include="ScopeList.cs" />
-    <Compile Include="DeepCloneableBase.cs" />
     <Compile Include="Interfaces\IDeepCloneable.cs" />
     <Compile Include="NamedItemCollection.cs" />
     <Compile Include="Interfaces\INamedItem.cs" />
-    <Compile Include="NamedItemBase.cs" />
     <Compile Include="Interfaces\IItem.cs" />
-    <Compile Include="ItemBase.cs" />
     <Compile Include="Interfaces\IRandom.cs" />
     <Compile Include="Scope.cs" />
     <Compile Include="Interfaces\IOperator.cs" />

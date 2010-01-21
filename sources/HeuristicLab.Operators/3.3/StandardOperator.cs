@@ -24,43 +24,31 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
+using HeuristicLab.Core;
 
-namespace HeuristicLab.Core {
+namespace HeuristicLab.Operators {
   /// <summary>
-  /// Represents a parameter.
+  /// A base class for operators which have only one successor.
   /// </summary>
-  [Item("ParameterBase", "A base class for parameters.")]
-  public abstract class ParameterBase : NamedItemBase, IParameter {
-    public override bool CanChangeName {
-      get { return false; }
-    }
-    public override bool CanChangeDescription {
-      get { return false; }
-    }
-
-    [Storable]
-    private Type dataType;
-    public Type DataType {
-      get { return dataType; }
+  [Item("Standard Operator", "A base class for operators which have only one successor.")]
+  [Creatable("Test")]
+  [EmptyStorableClass]
+  public abstract class StandardOperator : Operator {
+    public OperatorParameter Successor {
+      get { return (OperatorParameter)Parameters["Successor"]; }
     }
 
-    protected ParameterBase()
-      : base("Anonymous") {
-      dataType = typeof(IItem);
-    }
-    protected ParameterBase(string name, string description, Type dataType)
-      : base(name, description) {
-      if (dataType == null) throw new ArgumentNullException();
-      this.dataType = dataType;
+    public StandardOperator()
+      : base() {
+      Parameters.Add(new OperatorParameter("Successor", "Operator which is executed next"));
     }
 
-    public abstract IItem GetValue(ExecutionContext context);
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      ParameterBase clone = (ParameterBase)base.Clone(cloner);
-      clone.dataType = dataType;
-      return clone;
+    public override ExecutionContextCollection Apply(ExecutionContext context) {
+      IOperator successor = Successor.GetValue(context);
+      if (successor != null)
+        return new ExecutionContextCollection(new ExecutionContext(context.Parent, successor, context.Scope));
+      else
+        return new ExecutionContextCollection();
     }
   }
 }

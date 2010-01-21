@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Core.Views {
-  partial class NamedItemBaseView {
+  partial class NamedItemView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>

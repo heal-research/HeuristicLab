@@ -29,7 +29,7 @@ using HeuristicLab.Collections;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
-  public class NamedItemCollection<T> : ObservableKeyedCollectionBase<string, T>, IDeepCloneable where T : class, INamedItem {
+  public class NamedItemCollection<T> : ObservableKeyedCollection<string, T>, IDeepCloneable where T : class, INamedItem {
     [Storable(Name = "RestoreEvents")]
     private object RestoreEvents {
       get { return null; }

@@ -32,17 +32,15 @@ namespace HeuristicLab.Core.Views {
   /// <summary>
   /// The visual representation of a <see cref="Parameter"/>.
   /// </summary>
-  [Content(typeof(Parameter), true)]
-  public partial class ParameterView : ParameterBaseView {
-    private TypeSelectorDialog typeSelectorDialog;
-
+  [Content(typeof(IParameter), true)]
+  public partial class ParameterView : NamedItemView {
     /// <summary>
     /// Gets or sets the variable to represent visually.
     /// </summary>
     /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
     /// No own data storage present.</remarks>
-    public new Parameter Parameter {
-      get { return (Parameter)Item; }
+    public IParameter Parameter {
+      get { return (IParameter)Item; }
       set { base.Item = value; }
     }
 
@@ -58,98 +56,21 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     /// <remarks>Calls <see cref="VariableView()"/>.</remarks>
     /// <param name="variable">The variable to represent visually.</param>
-    public ParameterView(Parameter parameter)
+    public ParameterView(IParameter parameter)
       : this() {
       Parameter = parameter;
-    }
-
-    /// <summary>
-    /// Removes the eventhandlers from the underlying <see cref="IVariable"/>.
-    /// </summary>
-    /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
-    protected override void DeregisterObjectEvents() {
-      Parameter.ActualNameChanged -= new EventHandler(Parameter_ActualNameChanged);
-      Parameter.ValueChanged -= new EventHandler(Parameter_ValueChanged);
-      base.DeregisterObjectEvents();
-    }
-
-    /// <summary>
-    /// Adds eventhandlers to the underlying <see cref="IVariable"/>.
-    /// </summary>
-    /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
-    protected override void RegisterObjectEvents() {
-      base.RegisterObjectEvents();
-      Parameter.ActualNameChanged += new EventHandler(Parameter_ActualNameChanged);
-      Parameter.ValueChanged += new EventHandler(Parameter_ValueChanged);
     }
 
     protected override void OnObjectChanged() {
       base.OnObjectChanged();
       if (Parameter == null) {
         Caption = "Parameter";
-        actualNameTextBox.Text = "-";
-        actualNameTextBox.Enabled = false;
-        setValueButton.Enabled = false;
-        clearValueButton.Enabled = false;
-        valueGroupBox.Enabled = false;
-        viewHost.Object = null;
+        dataTypeTextBox.Text = "-";
+        dataTypeTextBox.Enabled = false;
       } else {
         Caption = Parameter.Name + " (" + Parameter.GetType().Name + ")";
-        actualNameTextBox.Text = Parameter.ActualName;
-        actualNameTextBox.Enabled = Parameter.Value == null;
-        setValueButton.Enabled = Parameter.Value == null;
-        clearValueButton.Enabled = Parameter.Value != null;
-        valueGroupBox.Enabled = true;
-        viewHost.Object = Parameter.Value;
-      }
-    }
-
-    private void Parameter_ActualNameChanged(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Parameter_ActualNameChanged), sender, e);
-      else
-        actualNameTextBox.Text = Parameter.ActualName;
-    }
-    private void Parameter_ValueChanged(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Parameter_ValueChanged), sender, e);
-      else {
-        actualNameTextBox.Enabled = Parameter.Value == null;
-        setValueButton.Enabled = Parameter.Value == null;
-        clearValueButton.Enabled = Parameter.Value != null;
-        viewHost.Object = Parameter.Value;
-      }
-    }
-
-    private void actualNameTextBox_Validated(object sender, EventArgs e) {
-      Parameter.ActualName = actualNameTextBox.Text;
-    }
-    private void setValueButton_Click(object sender, EventArgs e) {
-      if (typeSelectorDialog == null) {
-        typeSelectorDialog = new TypeSelectorDialog();
-        typeSelectorDialog.Caption = "Select Value Type";
-      }
-      typeSelectorDialog.TypeSelector.Configure(Parameter.DataType, false, false);
-      if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK)
-        Parameter.Value = (IItem)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
-    }
-    private void clearValueButton_Click(object sender, EventArgs e) {
-      Parameter.Value = null;
-    }
-    private void valuePanel_DragEnterOver(object sender, DragEventArgs e) {
-      e.Effect = DragDropEffects.None;
-      Type type = e.Data.GetData("Type") as Type;
-      if ((type != null) && (Parameter.DataType.IsAssignableFrom(type))) {
-        if ((e.KeyState & 8) == 8) e.Effect = DragDropEffects.Copy;  // CTRL key
-        else if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Move;  // ALT key
-        else e.Effect = DragDropEffects.Link;
-      }
-    }
-    private void valuePanel_DragDrop(object sender, DragEventArgs e) {
-      if (e.Effect != DragDropEffects.None) {
-        IItem item = e.Data.GetData("Value") as IItem;
-        if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) item = (IItem)item.Clone();
-        Parameter.Value = item;
+        dataTypeTextBox.Text = Parameter.DataType.Name;
+        dataTypeTextBox.Enabled = true;
       }
     }
   }

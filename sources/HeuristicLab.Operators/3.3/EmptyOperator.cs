@@ -33,7 +33,7 @@ namespace HeuristicLab.Operators {
   [Item("Empty Operator", "An operator which represents an empty statement.")]
   [Creatable("Test")]
   [EmptyStorableClass]
-  public sealed class EmptyOperator : StandardOperatorBase {
+  public sealed class EmptyOperator : StandardOperator {
     public EmptyOperator()
       : base() {
     }

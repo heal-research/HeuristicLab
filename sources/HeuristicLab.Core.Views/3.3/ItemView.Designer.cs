@@ -19,8 +19,10 @@
  */
 #endregion
 
+using System;
+
 namespace HeuristicLab.Core.Views {
-  partial class ItemBaseView {
+  partial class ItemView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -44,33 +46,10 @@ namespace HeuristicLab.Core.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.messageLabel = new System.Windows.Forms.Label();
-      this.SuspendLayout();
-      // 
-      // messageLabel
-      // 
-      this.messageLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
-      this.messageLabel.AutoSize = true;
-      this.messageLabel.Location = new System.Drawing.Point(55, 0);
-      this.messageLabel.Name = "messageLabel";
-      this.messageLabel.Size = new System.Drawing.Size(91, 13);
-      this.messageLabel.TabIndex = 0;
-      this.messageLabel.Text = "No view available";
-      // 
-      // DataBaseView
-      // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      components = new System.ComponentModel.Container();
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.messageLabel);
-      this.Name = "DataBaseView";
-      this.Size = new System.Drawing.Size(201, 46);
-      this.ResumeLayout(false);
-      this.PerformLayout();
-
     }
 
     #endregion
-
-    private System.Windows.Forms.Label messageLabel;
   }
 }

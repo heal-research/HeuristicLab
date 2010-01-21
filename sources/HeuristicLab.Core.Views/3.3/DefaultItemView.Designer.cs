@@ -19,10 +19,8 @@
  */
 #endregion
 
-using System;
-
 namespace HeuristicLab.Core.Views {
-  partial class ObjectViewBase {
+  partial class DefaultItemView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -34,7 +32,6 @@ namespace HeuristicLab.Core.Views {
     /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
     protected override void Dispose(bool disposing) {
       if (disposing) {
-        if (Object != null) DeregisterObjectEvents();
         if (components != null) components.Dispose();
       }
       base.Dispose(disposing);
@@ -47,10 +44,33 @@ namespace HeuristicLab.Core.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      components = new System.ComponentModel.Container();
+      this.messageLabel = new System.Windows.Forms.Label();
+      this.SuspendLayout();
+      // 
+      // messageLabel
+      // 
+      this.messageLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
+      this.messageLabel.AutoSize = true;
+      this.messageLabel.Location = new System.Drawing.Point(55, 0);
+      this.messageLabel.Name = "messageLabel";
+      this.messageLabel.Size = new System.Drawing.Size(91, 13);
+      this.messageLabel.TabIndex = 0;
+      this.messageLabel.Text = "No view available";
+      // 
+      // DataBaseView
+      // 
+      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.messageLabel);
+      this.Name = "DataBaseView";
+      this.Size = new System.Drawing.Size(201, 46);
+      this.ResumeLayout(false);
+      this.PerformLayout();
+
     }
 
     #endregion
+
+    private System.Windows.Forms.Label messageLabel;
   }
 }

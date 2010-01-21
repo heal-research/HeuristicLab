@@ -58,11 +58,41 @@
       <DependentUpon>CreateParameterDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Auxiliary.cs" />
-    <Compile Include="EngineBaseView.cs">
+    <Compile Include="DefaultItemView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="EngineBaseView.Designer.cs">
-      <DependentUpon>EngineBaseView.cs</DependentUpon>
+    <Compile Include="DefaultItemView.Designer.cs">
+      <DependentUpon>DefaultItemView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EngineView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="EngineView.Designer.cs">
+      <DependentUpon>EngineView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ItemParameterView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ItemParameterView.Designer.cs">
+      <DependentUpon>ItemParameterView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ItemView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ItemView.Designer.cs">
+      <DependentUpon>ItemView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NamedItemView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NamedItemView.Designer.cs">
+      <DependentUpon>NamedItemView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ObjectView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ObjectView.Designer.cs">
+      <DependentUpon>ObjectView.cs</DependentUpon>
     </Compile>
     <Compile Include="OperatorGraphView.cs">
       <SubType>UserControl</SubType>
@@ -99,12 +129,6 @@
     </Compile>
     <Compile Include="ViewHost.Designer.cs">
       <DependentUpon>ViewHost.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ParameterBaseView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ParameterBaseView.Designer.cs">
-      <DependentUpon>ParameterBaseView.cs</DependentUpon>
     </Compile>
     <Compile Include="OperatorCollectionView.cs">
       <SubType>UserControl</SubType>
@@ -149,18 +173,6 @@
       <DependentUpon>ItemListView.cs</DependentUpon>
     </Compile>
     <Compile Include="IObjectView.cs" />
-    <Compile Include="ObjectViewBase.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ObjectViewBase.Designer.cs">
-      <DependentUpon>ObjectViewBase.cs</DependentUpon>
-    </Compile>
-    <Compile Include="NamedItemBaseView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="NamedItemBaseView.Designer.cs">
-      <DependentUpon>NamedItemBaseView.cs</DependentUpon>
-    </Compile>
     <Compile Include="ParameterView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -192,18 +204,6 @@
       <DependentUpon>NamedItemCollectionView.cs</DependentUpon>
     </Compile>
     <Compile Include="HeuristicLabCoreViewsPlugin.cs" />
-    <Compile Include="ItemBaseView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ItemBaseView.Designer.cs">
-      <DependentUpon>ItemBaseView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ItemViewBase.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ItemViewBase.Designer.cs">
-      <DependentUpon>ItemViewBase.cs</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VariableView.cs">
       <SubType>UserControl</SubType>

@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ObservableKeyedCollection.cs" />
     <Compile Include="ReadOnlyObservableSet.cs" />
     <Compile Include="IObservableSet.cs" />
     <Compile Include="ObservableSet.cs">
@@ -63,7 +64,6 @@
     <Compile Include="IObservableList.cs" />
     <Compile Include="IObservableCollection.cs" />
     <Compile Include="IObservableDictionary.cs" />
-    <Compile Include="ObservableKeyedCollectionBase.cs" />
     <Compile Include="ObservableCollection.cs" />
     <Compile Include="IndexedItem.cs" />
     <Compile Include="ObservableList.cs" />

@@ -26,27 +26,43 @@ using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
+using HeuristicLab.Core;
+using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
-namespace HeuristicLab.Core.Views { 
+namespace HeuristicLab.Operators.Views { 
   /// <summary>
   /// The base class for visual representations of items.
   /// </summary>
-  [Content(typeof(ItemBase), true)]
-  public partial class ItemBaseView : ItemViewBase {
+  [Content(typeof(Operator), true)]
+  public partial class OperatorView : NamedItemView {
+    public Operator OperatorBase {
+      get { return (Operator)base.Item; }
+      set { base.Item = value; }
+    }
+
     /// <summary>
     /// Initializes a new instance of <see cref="ItemBaseView"/>.
     /// </summary>
-    public ItemBaseView() {
+    public OperatorView() {
       InitializeComponent();
     }
     /// <summary>
     /// Intializes a new instance of <see cref="ItemBaseView"/> with the given <paramref name="item"/>.
     /// </summary>
     /// <param name="item">The item that should be displayed.</param>
-    public ItemBaseView(ItemBase item)
+    public OperatorView(Operator operatorBase)
       : this() {
-      Item = item;
+      OperatorBase = operatorBase;
+    }
+
+    protected override void OnObjectChanged() {
+      base.OnObjectChanged();
+      if (OperatorBase == null) {
+        parameterCollectionView.NamedItemCollection = null;
+      } else {
+        parameterCollectionView.NamedItemCollection = ((IOperator)OperatorBase).Parameters;
+      }
     }
   }
 }

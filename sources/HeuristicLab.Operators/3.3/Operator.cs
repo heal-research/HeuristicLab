@@ -32,8 +32,8 @@ namespace HeuristicLab.Operators {
   /// <summary>
   /// The base class for all operators.
   /// </summary>
-  [Item("OperatorBase", "Base class for operators.")]
-  public abstract class OperatorBase : NamedItemBase, IOperator {
+  [Item("Operator", "Base class for operators.")]
+  public abstract class Operator : NamedItem, IOperator {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Method; }
     }
@@ -84,7 +84,7 @@ namespace HeuristicLab.Operators {
     /// Initializes a new instance of <see cref="OperatorBase"/> setting the breakpoint flag and 
     /// the canceled flag to <c>false</c> and the name of the operator to the type name. 
     /// </summary>
-    protected OperatorBase() {
+    protected Operator() {
       name = ItemName;
       Parameters = new ParameterCollection();
       readOnlyParameters = null;
@@ -99,7 +99,7 @@ namespace HeuristicLab.Operators {
     /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
     /// <returns>The cloned object as <see cref="OperatorBase"/>.</returns>
     public override IDeepCloneable Clone(Cloner cloner) {
-      OperatorBase clone = (OperatorBase)base.Clone(cloner);
+      Operator clone = (Operator)base.Clone(cloner);
       clone.Parameters = (ParameterCollection)cloner.Clone(parameters);
       clone.canceled = canceled;
       clone.breakpoint = breakpoint;

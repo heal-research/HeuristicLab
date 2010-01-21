@@ -34,7 +34,7 @@ namespace HeuristicLab.Data.Views {
   /// The visual representation of a <see cref="Variable"/>.
   /// </summary>
   [Content(typeof(IntData), true)]
-  public partial class IntDataView : ItemViewBase {
+  public partial class IntDataView : ItemView {
     public IntData IntData {
       get { return (IntData)Item; }
       set { base.Item = value; }

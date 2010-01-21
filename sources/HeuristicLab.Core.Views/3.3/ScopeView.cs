@@ -36,7 +36,7 @@ namespace HeuristicLab.Core.Views {
   /// The visual represenation of <see cref="Scope"/>.
   /// </summary>
   [Content(typeof(Scope), true)]
-  public partial class ScopeView : ItemViewBase {
+  public partial class ScopeView : ItemView {
     private Dictionary<Scope, TreeNode> scopeNodeTable;
     private Dictionary<ScopeList, Scope> subScopesScopeTable;
 

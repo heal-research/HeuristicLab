@@ -32,7 +32,7 @@ namespace HeuristicLab.Core {
   /// </summary>
   [Item("Scope", "A scope which contains variables and sub-scopes.")]
   [Creatable("Test")]
-  public class Scope : NamedItemBase {
+  public class Scope : NamedItem {
     [Storable]
     private Scope parent;
 

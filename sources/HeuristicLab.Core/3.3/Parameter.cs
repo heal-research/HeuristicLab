@@ -30,124 +30,37 @@ namespace HeuristicLab.Core {
   /// <summary>
   /// Represents a parameter.
   /// </summary>
-  [Item("Parameter", "A parameter which represents an IItem.")]
-  [Creatable("Test")]
-  public class Parameter : ParameterBase {
-    [Storable]
-    private string actualName;
-    public string ActualName {
-      get { return actualName; }
-      set {
-        if (value == null) throw new ArgumentNullException();
-        if (!actualName.Equals(value)) {
-          actualName = value;
-          OnActualNameChanged();
-        }
-      }
+  [Item("Parameter", "A base class for parameters.")]
+  public abstract class Parameter : NamedItem, IParameter {
+    public override bool CanChangeName {
+      get { return false; }
+    }
+    public override bool CanChangeDescription {
+      get { return false; }
     }
 
-    private IItem value;
     [Storable]
-    public IItem Value {
-      get { return this.value; }
-      set {
-        if (value != this.value) {
-          if ((value != null) && (!DataType.IsInstanceOfType(value))) throw new ArgumentException("Static value does not match data type of parameter");
-          if (this.value != null) this.value.Changed -= new ChangedEventHandler(Value_Changed);
-          this.value = value;
-          if (this.value != null) this.value.Changed += new ChangedEventHandler(Value_Changed);
-          OnValueChanged();
-        }
-      }
+    private Type dataType;
+    public Type DataType {
+      get { return dataType; }
     }
 
-    public Parameter()
-      : base("Anonymous", null, typeof(IItem)) {
-      actualName = Name;
-      Value = null;
+    protected Parameter()
+      : base("Anonymous") {
+      dataType = typeof(IItem);
     }
     protected Parameter(string name, string description, Type dataType)
-      : base(name, description, dataType) {
-      this.actualName = Name;
-      this.Value = null;
-    }
-    public Parameter(string name, string description)
-      : base(name, description, typeof(IItem)) {
-      this.actualName = Name;
-      this.Value = null;
-    }
-    public Parameter(string name, string description, IItem value)
-      : base(name, description, typeof(IItem)) {
-      this.actualName = Name;
-      this.Value = value;
+      : base(name, description) {
+      if (dataType == null) throw new ArgumentNullException();
+      this.dataType = dataType;
     }
 
-    public override IItem GetValue(ExecutionContext context) {
-      if (Value != null) return Value;
-      ExecutionContext parent = context.Parent;
-      IParameter parameter = null;
-
-      while ((parent != null) && (parameter == null)) {
-        parent.Operator.Parameters.TryGetValue(ActualName, out parameter);
-        parent = parent.Parent;
-      }
-
-      if (parameter != null) return parameter.GetValue(context);
-      else return context.Scope.Lookup(ActualName, true).Value;
-    }
+    public abstract IItem GetValue(ExecutionContext context);
 
     public override IDeepCloneable Clone(Cloner cloner) {
       Parameter clone = (Parameter)base.Clone(cloner);
-      clone.actualName = actualName;
-      clone.Value = (IItem)cloner.Clone(value);
+      clone.dataType = dataType;
       return clone;
-    }
-
-    public override string ToString() {
-      return string.Format("{0}: {1} ({2})", Name, Value != null ? Value.ToString() : ActualName, DataType.Name);
-    }
-
-    public event EventHandler ActualNameChanged;
-    private void OnActualNameChanged() {
-      if (ActualNameChanged != null)
-        ActualNameChanged(this, new EventArgs());
-      OnChanged();
-    }
-    public event EventHandler ValueChanged;
-    private void OnValueChanged() {
-      if (ValueChanged != null)
-        ValueChanged(this, new EventArgs());
-      OnChanged();
-    }
-
-    private void Value_Changed(object sender, ChangedEventArgs e) {
-      OnChanged(e);
-    }
-  }
-
-  [Item("Parameter<T>", "A generic parameter which represents an instance of type T.")]
-  [EmptyStorableClass]
-  public class Parameter<T> : Parameter where T : class, IItem {
-    public new T Value {
-      get { return (T)base.Value; }
-      set { base.Value = value; }
-    }
-
-    public Parameter()
-      : base("Anonymous", null, typeof(T)) {
-      Value = null;
-    }
-    public Parameter(string name, string description)
-      : base(name, description, typeof(T)) {
-      this.Value = null;
-    }
-    public Parameter(string name, string description, T value)
-      : base(name, description, typeof(T)) {
-      this.Value = value;
-    }
-
-    public new T GetValue(ExecutionContext context) {
-      return (T)base.GetValue(context);
     }
   }
 }

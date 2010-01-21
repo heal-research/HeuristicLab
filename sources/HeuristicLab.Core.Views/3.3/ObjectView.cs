@@ -33,7 +33,7 @@ namespace HeuristicLab.Core.Views {
   /// <summary>
   /// Base class for all visual representations.
   /// </summary>
-  public partial class ObjectViewBase : ViewBase, IObjectView {
+  public partial class ObjectView : ViewBase, IObjectView {
     private object obj;
     /// <summary>
     /// Gets or sets the item to represent visually.
@@ -62,7 +62,7 @@ namespace HeuristicLab.Core.Views {
     /// <summary>
     /// Initializes a new instance of <see cref="ViewBase"/> with the caption "View".
     /// </summary>
-    public ObjectViewBase() {
+    public ObjectView() {
       InitializeComponent();
       Caption = "View";
     }

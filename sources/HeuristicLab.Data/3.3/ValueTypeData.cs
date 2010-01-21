@@ -28,7 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
   [Item("ValueTypeData<T>", "A base class for representing value types.")]
-  public class ValueTypeData<T> : ItemBase where T : struct {
+  public class ValueTypeData<T> : Item where T : struct {
     [Storable]
     protected T value;
     public T Value {

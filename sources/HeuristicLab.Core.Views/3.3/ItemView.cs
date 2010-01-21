@@ -25,43 +25,33 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Data;
 using System.Text;
+using System.Xml;
 using System.Windows.Forms;
-using HeuristicLab.Core;
-using HeuristicLab.Core.Views;
-using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 
-namespace HeuristicLab.Operators.Views { 
+namespace HeuristicLab.Core.Views {
   /// <summary>
-  /// The base class for visual representations of items.
+  /// Base class for all visual representations.
   /// </summary>
-  [Content(typeof(OperatorBase), true)]
-  public partial class OperatorBaseView : NamedItemBaseView {
-    public OperatorBase OperatorBase {
-      get { return (OperatorBase)base.Item; }
-      set { base.Item = value; }
+  public partial class ItemView : ObjectView {
+    public IItem Item {
+      get { return (IItem)base.Object; }
+      set { base.Object = value; }
     }
 
     /// <summary>
-    /// Initializes a new instance of <see cref="ItemBaseView"/>.
+    /// Initializes a new instance of <see cref="ViewBase"/> with the caption "View".
     /// </summary>
-    public OperatorBaseView() {
+    public ItemView() {
       InitializeComponent();
-    }
-    /// <summary>
-    /// Intializes a new instance of <see cref="ItemBaseView"/> with the given <paramref name="item"/>.
-    /// </summary>
-    /// <param name="item">The item that should be displayed.</param>
-    public OperatorBaseView(OperatorBase operatorBase)
-      : this() {
-      OperatorBase = operatorBase;
+      Caption = "View";
     }
 
     protected override void OnObjectChanged() {
-      base.OnObjectChanged();
-      if (OperatorBase == null) {
-        parameterCollectionView.NamedItemCollection = null;
+      if (Item == null) {
+        Caption = "View";
       } else {
-        parameterCollectionView.NamedItemCollection = ((IOperator)OperatorBase).Parameters;
+        Caption = Item.ItemName;
       }
     }
   }

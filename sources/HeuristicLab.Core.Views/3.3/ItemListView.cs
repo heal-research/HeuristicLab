@@ -34,7 +34,7 @@ namespace HeuristicLab.Core.Views {
   /// <summary>
   /// The visual representation of all variables in a specified scope.
   /// </summary>
-  public partial class ItemListView<T> : ObjectViewBase where T : class, IItem {
+  public partial class ItemListView<T> : ObjectView where T : class, IItem {
     /// <summary>
     /// Gets or sets the scope whose variables to represent visually.
     /// </summary>

@@ -30,7 +30,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Collections {
   [Serializable]
-  public abstract class ObservableKeyedCollectionBase<TKey, TItem> : IObservableKeyedCollection<TKey, TItem> {
+  public abstract class ObservableKeyedCollection<TKey, TItem> : IObservableKeyedCollection<TKey, TItem> {
     [Storable]
     private Dictionary<TKey, TItem> dict;
 
@@ -53,26 +53,26 @@ namespace HeuristicLab.Collections {
     #endregion
 
     #region Constructors
-    protected ObservableKeyedCollectionBase() {
+    protected ObservableKeyedCollection() {
       dict = new Dictionary<TKey, TItem>();
     }
-    protected ObservableKeyedCollectionBase(int capacity) {
+    protected ObservableKeyedCollection(int capacity) {
       dict = new Dictionary<TKey, TItem>(capacity);
     }
-    protected ObservableKeyedCollectionBase(IEqualityComparer<TKey> comparer) {
+    protected ObservableKeyedCollection(IEqualityComparer<TKey> comparer) {
       dict = new Dictionary<TKey, TItem>(comparer);
     }
-    protected ObservableKeyedCollectionBase(IEnumerable<TItem> collection) {
+    protected ObservableKeyedCollection(IEnumerable<TItem> collection) {
       if (collection == null) throw new ArgumentNullException();
       dict = new Dictionary<TKey, TItem>();
       foreach (TItem item in collection)
         dict.Add(GetKeyForItem(item), item);
       OnItemsAdded(collection);
     }
-    protected ObservableKeyedCollectionBase(int capacity, IEqualityComparer<TKey> comparer) {
+    protected ObservableKeyedCollection(int capacity, IEqualityComparer<TKey> comparer) {
       dict = new Dictionary<TKey, TItem>(capacity, comparer);
     }
-    protected ObservableKeyedCollectionBase(IEnumerable<TItem> collection, IEqualityComparer<TKey> comparer) {
+    protected ObservableKeyedCollection(IEnumerable<TItem> collection, IEqualityComparer<TKey> comparer) {
       if (collection == null) throw new ArgumentNullException();
       dict = new Dictionary<TKey, TItem>(comparer);
       foreach (TItem item in collection)

@@ -31,7 +31,7 @@ using HeuristicLab.Common;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Core.Views {
-  public partial class ItemCollectionView<T> : ObjectViewBase where T : class, IItem {
+  public partial class ItemCollectionView<T> : ObjectView where T : class, IItem {
     public IObservableCollection<T> ItemCollection {
       get { return (IObservableCollection<T>)Object; }
       set { base.Object = value; }

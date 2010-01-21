@@ -32,18 +32,18 @@ namespace HeuristicLab.Core.Views {
   /// <summary>
   /// The visual representation of a <see cref="Variable"/>.
   /// </summary>
-  [Content(typeof(NamedItemBase), true)]
-  public partial class NamedItemBaseView : ItemViewBase {
-    public NamedItemBase NamedItemBase {
-      get { return (NamedItemBase)Item; }
+  [Content(typeof(NamedItem), true)]
+  public partial class NamedItemView : ItemView {
+    public NamedItem NamedItemBase {
+      get { return (NamedItem)Item; }
       set { base.Item = value; }
     }
 
-    public NamedItemBaseView() {
+    public NamedItemView() {
       InitializeComponent();
       Caption = "NamedItem";
     }
-    public NamedItemBaseView(NamedItemBase namedItemBase)
+    public NamedItemView(NamedItem namedItemBase)
       : this() {
       NamedItemBase = namedItemBase;
     }

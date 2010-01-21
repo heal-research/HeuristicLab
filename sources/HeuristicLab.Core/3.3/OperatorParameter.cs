@@ -33,7 +33,7 @@ namespace HeuristicLab.Core {
   [Item("OperatorParameter", "A parameter which represents an operator.")]
   [EmptyStorableClass]
   [Creatable("Test")]
-  public class OperatorParameter : Parameter<IOperator>, IOperatorParameter {
+  public class OperatorParameter : ItemParameter<IOperator>, IOperatorParameter {
     public OperatorParameter()
       : base("Anonymous", null) {
     }

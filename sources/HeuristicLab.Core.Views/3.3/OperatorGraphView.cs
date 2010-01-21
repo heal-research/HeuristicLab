@@ -36,7 +36,7 @@ namespace HeuristicLab.Core.Views {
   /// The visual representation of an <see cref="OperatorGraph"/>.
   /// </summary>
   [Content(typeof(OperatorGraph), true)]
-  public partial class OperatorGraphView : ItemViewBase {
+  public partial class OperatorGraphView : ItemView {
     /// <summary>
     /// Gets or sets the operator graph to represent visually.
     /// </summary>

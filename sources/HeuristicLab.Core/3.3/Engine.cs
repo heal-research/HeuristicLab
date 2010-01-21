@@ -34,8 +34,8 @@ namespace HeuristicLab.Core {
   /// the actual state, which is the runtime stack and a pointer onto the next operation. It represents
   /// one execution and can handle parallel executions.
   /// </summary>
-  [Item("EngineBase", "A base class for engines.")]
-  public abstract class EngineBase : ItemBase, IEngine {
+  [Item("Engine", "A base class for engines.")]
+  public abstract class Engine : Item, IEngine {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Event; }
     }
@@ -132,7 +132,7 @@ namespace HeuristicLab.Core {
     /// Initializes a new instance of <see cref="EngineBase"/> with a new global scope.
     /// </summary>
     /// <remarks>Calls <see cref="Reset"/>.</remarks>
-    protected EngineBase() {
+    protected Engine() {
       globalScope = new Scope("Global");
       executionStack = new Stack<ExecutionContext>();
       OperatorGraph = new OperatorGraph();
@@ -146,7 +146,7 @@ namespace HeuristicLab.Core {
     /// <param name="clonedObjects">Dictionary of all already clone objects. (Needed to avoid cycles.)</param>
     /// <returns>The cloned object as <see cref="EngineBase"/>.</returns>
     public override IDeepCloneable Clone(Cloner cloner) {
-      EngineBase clone = (EngineBase)base.Clone(cloner);
+      Engine clone = (Engine)base.Clone(cloner);
       clone.OperatorGraph = (OperatorGraph)cloner.Clone(operatorGraph);
       clone.globalScope = (Scope)cloner.Clone(globalScope);
       clone.executionTime = executionTime;

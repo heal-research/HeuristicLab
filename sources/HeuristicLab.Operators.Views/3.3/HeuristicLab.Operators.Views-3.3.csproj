@@ -51,11 +51,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HeuristicLabOperatorsViewsPlugin.cs" />
-    <Compile Include="OperatorBaseView.cs">
+    <Compile Include="OperatorView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="OperatorBaseView.Designer.cs">
-      <DependentUpon>OperatorBaseView.cs</DependentUpon>
+    <Compile Include="OperatorView.Designer.cs">
+      <DependentUpon>OperatorView.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
