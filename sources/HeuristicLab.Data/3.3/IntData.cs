@@ -28,9 +28,9 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
   [EmptyStorableClass]
-  [Item("Int Data", "Represents an integer value.")]
+  [Item("Integer", "Represents an integer value.")]
   [Creatable("Test")]
-  public sealed class IntData : ValueTypeData<int> {
+  public sealed class IntData : ValueTypeData<int>, IStringConvertibleData {
     public IntData() : base() { }
     public IntData(int value)
       : base() {
@@ -41,6 +41,19 @@ namespace HeuristicLab.Data {
       IntData clone = new IntData(Value);
       cloner.RegisterClonedObject(this, clone);
       return clone;
+    }
+
+    string IStringConvertibleData.GetValue() {
+      return Value.ToString();
+    }
+    bool IStringConvertibleData.SetValue(string value) {
+      int i;
+      if (int.TryParse(value, out i)) {
+        Value = i;
+        return true;
+      } else {
+        return false;
+      }
     }
   }
 }

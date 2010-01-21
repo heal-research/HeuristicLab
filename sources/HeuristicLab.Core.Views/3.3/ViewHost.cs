@@ -52,6 +52,7 @@ namespace HeuristicLab.Core.Views {
       viewComboBox.Items.Clear();
       viewComboBox.Enabled = false;
       viewComboBox.Visible = false;
+      messageLabel.Visible = false;
       if (viewPanel.Controls.Count > 0) viewPanel.Controls[0].Dispose();
       viewPanel.Controls.Clear();
       viewPanel.Enabled = false;
@@ -62,10 +63,13 @@ namespace HeuristicLab.Core.Views {
                         select t;
         foreach (Type viewType in viewTypes)
           viewComboBox.Items.Add(viewType);
-        if (viewComboBox.Items.Count > 0) {
+        if (viewComboBox.Items.Count == 0) {
+          messageLabel.Visible = true;
+        } else {
           viewLabel.Visible = true;
           viewComboBox.Enabled = true;
           viewComboBox.Visible = true;
+          messageLabel.Visible = false;
         }
 
         Control view = (Control)MainFormManager.CreateDefaultView(Object);

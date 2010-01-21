@@ -50,13 +50,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HeuristicLabDataViewsPlugin.cs" />
-    <Compile Include="IntDataView.cs">
+    <Compile Include="BoolDataView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="IntDataView.Designer.cs">
-      <DependentUpon>IntDataView.cs</DependentUpon>
+    <Compile Include="BoolDataView.Designer.cs">
+      <DependentUpon>BoolDataView.cs</DependentUpon>
     </Compile>
+    <Compile Include="StringConvertibleDataView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StringConvertibleDataView.Designer.cs">
+      <DependentUpon>StringConvertibleDataView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HeuristicLabDataViewsPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -99,6 +99,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BoolData.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ReferenceTypeData.cs" />
+    <Compile Include="StringData.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TimeSpanData.cs" />
+    <Compile Include="DateTimeData.cs" />
+    <Compile Include="DoubleData.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IStringConvertibleData.cs" />
     <Compile Include="ValueTypeData.cs">
       <SubType>Code</SubType>
     </Compile>

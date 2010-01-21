@@ -27,46 +27,33 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
-  /// <summary>
-  /// Class to represent boolean values.
-  /// </summary>
   [EmptyStorableClass]
-  public class BoolData : ObjectData {
-    /// <summary>
-    /// Gets or sets the boolean value.
-    /// </summary>
-    /// <remarks>Uses property <see cref="ObjectData.Data"/>
-    /// of base class <see cref="ObjectData"/>. No own data storage present.</remarks>
-    public new bool Data {
-      get { return (bool)base.Data; }
-      set { base.Data = value; }
+  [Item("Boolean", "Represents a boolean value.")]
+  [Creatable("Test")]
+  public sealed class BoolData : ValueTypeData<bool>, IStringConvertibleData {
+    public BoolData() : base() { }
+    public BoolData(bool value)
+      : base() {
+      Value = value;
     }
 
-    /// <summary>
-    /// Initializes a new instance of <see cref="BoolData"/> with default value <c>false</c>.
-    /// </summary>
-    public BoolData() {
-      Data = false;
-    }
-    /// <summary>
-    /// Initializes a new instance of <see cref="BoolData"/> with the boolean value <paramref name="data"/>.
-    /// </summary>
-    /// <param name="data">The boolean value to assign.</param>
-    public BoolData(bool data) {
-      Data = data;
-    }
-
-    /// <summary>
-    /// Clones the current instance.
-    /// </summary>
-    /// <remarks>The cloned instance is added to the <paramref name="dictionary"/>.</remarks>
-    /// <param name="clonedObjects">Dictionary of all already cloned objects.</param>
-    /// <returns>The cloned instance as <see cref="BoolData"/>.</returns>
-    public override IItem Clone(ICloner cloner) {
-      BoolData clone = new BoolData();
+    public override IDeepCloneable Clone(Cloner cloner) {
+      BoolData clone = new BoolData(Value);
       cloner.RegisterClonedObject(this, clone);
-      clone.Data = Data;
       return clone;
+    }
+
+    string IStringConvertibleData.GetValue() {
+      return Value.ToString();
+    }
+    bool IStringConvertibleData.SetValue(string value) {
+      bool b;
+      if (bool.TryParse(value, out b)) {
+        Value = b;
+        return true;
+      } else {
+        return false;
+      }
     }
   }
 }

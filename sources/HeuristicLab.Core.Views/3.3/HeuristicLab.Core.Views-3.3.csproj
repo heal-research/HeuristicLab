@@ -58,12 +58,6 @@
       <DependentUpon>CreateParameterDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Auxiliary.cs" />
-    <Compile Include="DefaultItemView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="DefaultItemView.Designer.cs">
-      <DependentUpon>DefaultItemView.cs</DependentUpon>
-    </Compile>
     <Compile Include="EngineView.cs">
       <SubType>UserControl</SubType>
     </Compile>

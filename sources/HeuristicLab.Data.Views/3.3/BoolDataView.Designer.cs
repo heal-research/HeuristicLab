@@ -19,8 +19,8 @@
  */
 #endregion
 
-namespace HeuristicLab.Data {
-  partial class StringDataView {
+namespace HeuristicLab.Data.Views {
+  partial class BoolDataView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -31,8 +31,8 @@ namespace HeuristicLab.Data {
     /// </summary>
     /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
     protected override void Dispose(bool disposing) {
-      if (disposing && (components != null)) {
-        components.Dispose();
+      if (disposing) {
+        if (components != null) components.Dispose();
       }
       base.Dispose(disposing);
     }
@@ -44,26 +44,26 @@ namespace HeuristicLab.Data {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.dataTextBox = new System.Windows.Forms.TextBox();
+      this.valueCheckBox = new System.Windows.Forms.CheckBox();
       this.SuspendLayout();
       // 
-      // dataTextBox
+      // valueCheckBox
       // 
-      this.dataTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.dataTextBox.Location = new System.Drawing.Point(0, 0);
-      this.dataTextBox.Name = "dataTextBox";
-      this.dataTextBox.Size = new System.Drawing.Size(200, 20);
-      this.dataTextBox.TabIndex = 1;
-      this.dataTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.dataTextBox_Validating);
+      this.valueCheckBox.AutoSize = true;
+      this.valueCheckBox.Location = new System.Drawing.Point(3, 3);
+      this.valueCheckBox.Name = "valueCheckBox";
+      this.valueCheckBox.Size = new System.Drawing.Size(15, 14);
+      this.valueCheckBox.TabIndex = 0;
+      this.valueCheckBox.UseVisualStyleBackColor = true;
+      this.valueCheckBox.CheckedChanged += new System.EventHandler(this.valueCheckBox_CheckedChanged);
       // 
-      // StringDataView
+      // BoolDataView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.dataTextBox);
-      this.Name = "StringDataView";
-      this.Size = new System.Drawing.Size(200, 25);
+      this.Controls.Add(this.valueCheckBox);
+      this.Name = "BoolDataView";
+      this.Size = new System.Drawing.Size(30, 32);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -71,6 +71,7 @@ namespace HeuristicLab.Data {
 
     #endregion
 
-    private System.Windows.Forms.TextBox dataTextBox;
+    private System.Windows.Forms.CheckBox valueCheckBox;
+
   }
 }

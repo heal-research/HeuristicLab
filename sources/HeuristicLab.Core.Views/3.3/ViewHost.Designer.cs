@@ -45,6 +45,7 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     private void InitializeComponent() {
       this.viewPanel = new System.Windows.Forms.Panel();
+      this.messageLabel = new System.Windows.Forms.Label();
       this.viewLabel = new System.Windows.Forms.Label();
       this.viewComboBox = new System.Windows.Forms.ComboBox();
       this.SuspendLayout();
@@ -58,6 +59,17 @@ namespace HeuristicLab.Core.Views {
       this.viewPanel.Name = "viewPanel";
       this.viewPanel.Size = new System.Drawing.Size(227, 157);
       this.viewPanel.TabIndex = 2;
+      // 
+      // messageLabel
+      // 
+      this.messageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.messageLabel.Location = new System.Drawing.Point(3, 24);
+      this.messageLabel.Name = "messageLabel";
+      this.messageLabel.Size = new System.Drawing.Size(221, 20);
+      this.messageLabel.TabIndex = 0;
+      this.messageLabel.Text = "No view available.";
+      this.messageLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
       // 
       // viewLabel
       // 
@@ -84,6 +96,7 @@ namespace HeuristicLab.Core.Views {
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.messageLabel);
       this.Controls.Add(this.viewComboBox);
       this.Controls.Add(this.viewLabel);
       this.Controls.Add(this.viewPanel);
@@ -99,6 +112,7 @@ namespace HeuristicLab.Core.Views {
     private System.Windows.Forms.Panel viewPanel;
     private System.Windows.Forms.Label viewLabel;
     private System.Windows.Forms.ComboBox viewComboBox;
+    private System.Windows.Forms.Label messageLabel;
 
   }
 }

@@ -32,15 +32,15 @@ namespace HeuristicLab.Core.Views {
   /// <summary>
   /// The visual representation of a <see cref="Parameter"/>.
   /// </summary>
-  [Content(typeof(IParameter), true)]
+  [Content(typeof(Parameter), true)]
   public partial class ParameterView : NamedItemView {
     /// <summary>
     /// Gets or sets the variable to represent visually.
     /// </summary>
     /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
     /// No own data storage present.</remarks>
-    public IParameter Parameter {
-      get { return (IParameter)Item; }
+    public Parameter Parameter {
+      get { return (Parameter)Item; }
       set { base.Item = value; }
     }
 
@@ -56,7 +56,7 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     /// <remarks>Calls <see cref="VariableView()"/>.</remarks>
     /// <param name="variable">The variable to represent visually.</param>
-    public ParameterView(IParameter parameter)
+    public ParameterView(Parameter parameter)
       : this() {
       Parameter = parameter;
     }

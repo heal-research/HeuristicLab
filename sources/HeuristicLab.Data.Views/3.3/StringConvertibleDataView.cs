@@ -30,68 +30,62 @@ using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Data.Views {
-  /// <summary>
-  /// The visual representation of a <see cref="Variable"/>.
-  /// </summary>
-  [Content(typeof(IntData), true)]
-  public partial class IntDataView : ItemView {
-    public IntData IntData {
-      get { return (IntData)Item; }
-      set { base.Item = value; }
+  [Content(typeof(IStringConvertibleData), true)]
+  public partial class StringConvertibleDataView : ObjectView {
+    public IStringConvertibleData StringConvertibleData {
+      get { return (IStringConvertibleData)Object; }
+      set { base.Object = value; }
     }
 
-    public IntDataView() {
+    public StringConvertibleDataView() {
       InitializeComponent();
-      Caption = "IntData";
+      Caption = "StringConvertibleData View";
     }
-    public IntDataView(IntData intData)
+    public StringConvertibleDataView(IStringConvertibleData stringConvertibleData)
       : this() {
-      IntData = intData;
+      StringConvertibleData = stringConvertibleData;
     }
 
     protected override void DeregisterObjectEvents() {
-      IntData.ValueChanged -= new EventHandler(IntData_ValueChanged);
+      StringConvertibleData.ValueChanged -= new EventHandler(StringConvertibleData_ValueChanged);
       base.DeregisterObjectEvents();
     }
 
     protected override void RegisterObjectEvents() {
       base.RegisterObjectEvents();
-      IntData.ValueChanged += new EventHandler(IntData_ValueChanged);
+      StringConvertibleData.ValueChanged += new EventHandler(StringConvertibleData_ValueChanged);
     }
 
     protected override void OnObjectChanged() {
       base.OnObjectChanged();
-      if (IntData == null) {
-        Caption = "IntData";
+      if (StringConvertibleData == null) {
+        Caption = "StringConvertibleData View";
         valueTextBox.Text = "-";
         valueTextBox.Enabled = false;
       } else {
-        Caption = IntData.Value.ToString() + " (" + IntData.GetType().Name + ")";
-        valueTextBox.Text = IntData.Value.ToString();
+        Caption = StringConvertibleData.GetValue() + " (" + StringConvertibleData.GetType().Name + ")";
+        valueTextBox.Text = StringConvertibleData.GetValue();
         valueTextBox.Enabled = true;
       }
     }
 
-    private void IntData_ValueChanged(object sender, EventArgs e) {
+    private void StringConvertibleData_ValueChanged(object sender, EventArgs e) {
       if (InvokeRequired)
-        Invoke(new EventHandler(IntData_ValueChanged), sender, e);
+        Invoke(new EventHandler(StringConvertibleData_ValueChanged), sender, e);
       else
-        valueTextBox.Text = IntData.Value.ToString();
+        valueTextBox.Text = StringConvertibleData.GetValue();
     }
 
     private void valueTextBox_Validating(object sender, CancelEventArgs e) {
-      int oldValue = IntData.Value;
-      int value;
-      e.Cancel = !int.TryParse(valueTextBox.Text, out value);
+      e.Cancel = !StringConvertibleData.SetValue(valueTextBox.Text);
       if (e.Cancel) {
-        MessageBox.Show(this, "\"" + valueTextBox.Text + "\" is not a valid integer value.", "Invalid Value", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        valueTextBox.Text = oldValue.ToString();
+        MessageBox.Show(this, "\"" + valueTextBox.Text + "\" is not a valid value.", "Invalid Value", MessageBoxButtons.OK, MessageBoxIcon.Error);
         valueTextBox.SelectAll();
         valueTextBox.Focus();
       }
     }
     private void valueTextBox_Validated(object sender, EventArgs e) {
-      IntData.Value = int.Parse(valueTextBox.Text);
+      valueTextBox.Text = StringConvertibleData.GetValue();
     }
   }
 }

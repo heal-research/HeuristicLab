@@ -52,11 +52,15 @@ namespace HeuristicLab.Optimizer {
       if (newItemDialog == null) newItemDialog = new NewItemDialog();
       if (newItemDialog.ShowDialog() == DialogResult.OK) {
         IView view = MainFormManager.CreateDefaultView(newItemDialog.Item);
-        if (view is IObjectView) {
-          view.Caption = "Item" + newDocumentsCounter.ToString() + ".hl";
-          newDocumentsCounter++;
+        if (view == null) {
+          MessageBox.Show("There is no view for the new item. It cannot be displayed. ", "No View Available", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        } else {
+          if (view is IObjectView) {
+            view.Caption = "Item" + newDocumentsCounter.ToString() + ".hl";
+            newDocumentsCounter++;
+          }
+          MainFormManager.MainForm.ShowView(view);
         }
-        MainFormManager.MainForm.ShowView(view);
       }
     }
 
@@ -187,7 +191,9 @@ namespace HeuristicLab.Optimizer {
               IItem item = (IItem)XmlParser.Deserialize(filename);
               Invoke(delegate() {
                 IObjectView view = MainFormManager.CreateDefaultView(item) as IObjectView;
-                if (view != null) {
+                if (view == null) {
+                  MessageBox.Show("There is no view for the loaded item. It cannot be displayed. ", "No View Available", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                } else {
                   view.Caption = Path.GetFileName(filename);
                   files.Add(view, new FileInfo(filename));
                   MainFormManager.MainForm.ShowView(view);

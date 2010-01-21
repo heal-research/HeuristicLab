@@ -21,32 +21,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Text;
-using System.Windows.Forms;
-using HeuristicLab.MainForm;
+using System.Xml;
 
-namespace HeuristicLab.Core.Views { 
-  /// <summary>
-  /// The base class for visual representations of items.
-  /// </summary>
-  [Content(typeof(Item), true)]
-  public partial class DefaultItemView : ItemView {
-    /// <summary>
-    /// Initializes a new instance of <see cref="ItemBaseView"/>.
-    /// </summary>
-    public DefaultItemView() {
-      InitializeComponent();
-    }
-    /// <summary>
-    /// Intializes a new instance of <see cref="ItemBaseView"/> with the given <paramref name="item"/>.
-    /// </summary>
-    /// <param name="item">The item that should be displayed.</param>
-    public DefaultItemView(Item item)
-      : this() {
-      Item = item;
-    }
+namespace HeuristicLab.Data {
+  public interface IStringConvertibleData {
+    string GetValue();
+    bool SetValue(string value);
+
+    event EventHandler ValueChanged;
   }
 }

@@ -28,29 +28,32 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
   [EmptyStorableClass]
-  [Item("String", "Represents a string.")]
+  [Item("TimeSpan", "Represents a duration of time.")]
   [Creatable("Test")]
-  public sealed class StringData : ReferenceTypeData<string>, IStringConvertibleData {
-    public StringData() : base() {
-      Value = string.Empty;
-    }
-    public StringData(string value)
+  public sealed class TimeSpanData : ValueTypeData<TimeSpan>, IStringConvertibleData {
+    public TimeSpanData() : base() { }
+    public TimeSpanData(TimeSpan value)
       : base() {
       Value = value;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      StringData clone = new StringData(Value);
+      TimeSpanData clone = new TimeSpanData(Value);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
 
     string IStringConvertibleData.GetValue() {
-      return Value;
+      return Value.ToString();
     }
     bool IStringConvertibleData.SetValue(string value) {
-      Value = value != null ? value : string.Empty;
-      return true;
+      TimeSpan t;
+      if (TimeSpan.TryParse(value, out t)) {
+        Value = t;
+        return true;
+      } else {
+        return false;
+      }
     }
   }
 }
