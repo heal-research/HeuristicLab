@@ -23,32 +23,43 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
 
-namespace HeuristicLab.Core {
-  /// <summary>
-  /// A base class for operators which have only one successor.
-  /// </summary>
-  [Item("StandardOperatorBase", "A base class for operators which have only one successor.")]
-  [Creatable("Test")]
-  [EmptyStorableClass]
-  public abstract class StandardOperatorBase : OperatorBase {
-    public OperatorParameter Successor {
-      get { return (OperatorParameter)Parameters["Successor"]; }
+namespace HeuristicLab.Data {
+  [Item("ValueTypeData<T>", "A base class for representing value types.")]
+  public class ValueTypeData<T> : ItemBase where T : struct {
+    [Storable]
+    protected T value;
+    public T Value {
+      get { return value; }
+      set {
+        if (!value.Equals(this.value)) {
+          this.value = value;
+          OnValueChanged();
+        }
+      }
     }
 
-    public StandardOperatorBase()
-      : base() {
-      Parameters.Add(new OperatorParameter("Successor", "Operator which is executed next"));
+    public ValueTypeData() {
+      value = default(T);
     }
 
-    public override ExecutionContextCollection Apply(ExecutionContext context) {
-      IOperator successor = Successor.GetValue(context);
-      if (successor != null)
-        return new ExecutionContextCollection(new ExecutionContext(context.Parent, successor, context.Scope));
-      else
-        return new ExecutionContextCollection();
+    public override IDeepCloneable Clone(Cloner cloner) {
+      ValueTypeData<T> clone = (ValueTypeData<T>)base.Clone(cloner);
+      clone.value = value;
+      return clone;
+    }
+
+    public override string ToString() {
+      return value.ToString();
+    }
+
+    public event EventHandler ValueChanged;
+    protected virtual void OnValueChanged() {
+      if (ValueChanged != null)
+        ValueChanged(this, EventArgs.Empty);
+      OnChanged();
     }
   }
 }

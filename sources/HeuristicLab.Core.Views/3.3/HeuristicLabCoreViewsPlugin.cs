@@ -33,7 +33,6 @@ namespace HeuristicLab.Core.Views {
   [PluginDependency("HeuristicLab.Collections-3.3")]
   [PluginDependency("HeuristicLab.Common-3.2")]
   [PluginDependency("HeuristicLab.Common.Resources-3.2")]
-  [PluginDependency("HeuristicLab.Persistence-3.3")]
   [PluginDependency("HeuristicLab.Core-3.3")]
   [PluginDependency("HeuristicLab.MainForm-3.2")]
   [PluginDependency("HeuristicLab.MainForm.WindowsForms-3.2")]

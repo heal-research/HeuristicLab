@@ -26,9 +26,10 @@ using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
+using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
-namespace HeuristicLab.Core.Views {
+namespace HeuristicLab.Data.Views {
   /// <summary>
   /// The visual representation of a <see cref="Variable"/>.
   /// </summary>

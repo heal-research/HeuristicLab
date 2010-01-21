@@ -22,20 +22,19 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Xml;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
+using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Core {
+namespace HeuristicLab.Data.Views {
   /// <summary>
-  /// An operator which represents an empty statement.
+  /// Plugin class for HeuristicLab.Data.Views plugin.
   /// </summary>
-  [Item("EmptyOperator", "An operator which represents an empty statement.")]
-//  [Creatable("Test")]
-  [EmptyStorableClass]
-  public sealed class EmptyOperator : StandardOperatorBase {
-    public EmptyOperator()
-      : base() {
-    }
+  [Plugin("HeuristicLab.Data.Views-3.3", "")]
+  [PluginFile("HeuristicLab.Data.Views-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Core-3.3")]
+  [PluginDependency("HeuristicLab.Core.Views-3.3")]
+  [PluginDependency("HeuristicLab.Data-3.3")]
+  [PluginDependency("HeuristicLab.MainForm-3.2")]
+  [PluginDependency("HeuristicLab.MainForm.WindowsForms-3.2")]
+  public class HeuristicLabDataViewsPlugin : PluginBase {
   }
 }

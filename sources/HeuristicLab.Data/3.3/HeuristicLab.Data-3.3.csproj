@@ -99,140 +99,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ArrayDataBaseView.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="ValueTypeData.cs">
+      <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ArrayDataBaseView.Designer.cs">
-      <DependentUpon>ArrayDataBaseView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="BoolArrayData.cs" />
-    <Compile Include="BoolArrayDataView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="BoolArrayDataView.Designer.cs">
-      <DependentUpon>BoolArrayDataView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="BoolData.cs" />
-    <Compile Include="BoolDataView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="BoolDataView.Designer.cs">
-      <DependentUpon>BoolDataView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="BoolMatrixData.cs" />
-    <Compile Include="ArrayDataBase.cs" />
-    <Compile Include="BoolMatrixDataView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="BoolMatrixDataView.Designer.cs">
-      <DependentUpon>BoolMatrixDataView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="EditKeyValueDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="EditKeyValueDialog.designer.cs">
-      <DependentUpon>EditKeyValueDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ItemDictionaryView_T.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ItemDictionaryView_T.designer.cs">
-      <DependentUpon>ItemDictionaryView_T.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ItemDictionary_T.cs" />
-    <Compile Include="NullData.cs" />
-    <Compile Include="IntMatrixDataView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="IntMatrixDataView.Designer.cs">
-      <DependentUpon>IntMatrixDataView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="DoubleMatrixDataView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="DoubleMatrixDataView.Designer.cs">
-      <DependentUpon>DoubleMatrixDataView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="IntArrayDataView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="IntArrayDataView.Designer.cs">
-      <DependentUpon>IntArrayDataView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="DoubleArrayDataView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="DoubleArrayDataView.Designer.cs">
-      <DependentUpon>DoubleArrayDataView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="DoubleDataView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="DoubleDataView.Designer.cs">
-      <DependentUpon>DoubleDataView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="IntDataView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="IntDataView.Designer.cs">
-      <DependentUpon>IntDataView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="IObjectData.cs" />
-    <Compile Include="ItemList.cs" />
-    <Compile Include="ItemListView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ItemListView_T.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ItemListView_T.Designer.cs">
-      <DependentUpon>ItemListView_T.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ItemList_T.cs">
-    </Compile>
-    <Compile Include="MatrixDataBaseView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="MatrixDataBaseView.Designer.cs">
-      <DependentUpon>MatrixDataBaseView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ObjectData.cs" />
-    <Compile Include="StringDataView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="StringDataView.Designer.cs">
-      <DependentUpon>StringDataView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="DoubleArrayData.cs" />
-    <Compile Include="DoubleData.cs" />
-    <Compile Include="DoubleMatrixData.cs" />
     <Compile Include="HeuristicLabDataPlugin.cs" />
-    <Compile Include="IntArrayData.cs" />
-    <Compile Include="IntData.cs" />
-    <Compile Include="IntMatrixData.cs" />
+    <Compile Include="IntData.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StringData.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HeuristicLab.Common\3.2\HeuristicLab.Common-3.2.csproj">
-      <Project>{1FC004FC-59AF-4249-B1B6-FF25873A20E4}</Project>
-      <Name>HeuristicLab.Common-3.2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Core.Views\3.3\HeuristicLab.Core.Views-3.3.csproj">
-      <Project>{E226881D-315F-423D-B419-A766FE0D8685}</Project>
-      <Name>HeuristicLab.Core.Views-3.3</Name>
+    <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.2\HeuristicLab.Common.Resources-3.2.csproj">
+      <Project>{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}</Project>
+      <Name>HeuristicLab.Common.Resources-3.2</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
       <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
       <Name>HeuristicLab.Core-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.MainForm.WindowsForms\3.2\HeuristicLab.MainForm.WindowsForms-3.2.csproj">
-      <Project>{AB687BBE-1BFE-476B-906D-44237135431D}</Project>
-      <Name>HeuristicLab.MainForm.WindowsForms-3.2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.MainForm\3.2\HeuristicLab.MainForm-3.2.csproj">
-      <Project>{3BD61258-31DA-4B09-89C0-4F71FEF5F05A}</Project>
-      <Name>HeuristicLab.MainForm-3.2</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
       <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
@@ -246,44 +129,6 @@
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.frame" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ArrayDataBaseView.resx">
-      <DependentUpon>ArrayDataBaseView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="BoolDataView.resx">
-      <DependentUpon>BoolDataView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="DoubleDataView.resx">
-      <DependentUpon>DoubleDataView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="EditKeyValueDialog.resx">
-      <DependentUpon>EditKeyValueDialog.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="IntDataView.resx">
-      <DependentUpon>IntDataView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ItemDictionaryView_T.resx">
-      <DependentUpon>ItemDictionaryView_T.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ItemListView_T.resx">
-      <DependentUpon>ItemListView_T.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MatrixDataBaseView.resx">
-      <DependentUpon>MatrixDataBaseView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="StringDataView.resx">
-      <DependentUpon>StringDataView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">

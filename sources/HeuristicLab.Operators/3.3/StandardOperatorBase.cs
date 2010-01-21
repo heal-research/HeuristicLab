@@ -24,48 +24,31 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
+using HeuristicLab.Core;
 
-namespace HeuristicLab.Core {
-  [Item("IntData", "A data item which represents an integer value.")]
+namespace HeuristicLab.Operators {
+  /// <summary>
+  /// A base class for operators which have only one successor.
+  /// </summary>
+  [Item("StandardOperatorBase", "A base class for operators which have only one successor.")]
   [Creatable("Test")]
-  public sealed class IntData : ItemBase {
-    [Storable]
-    private int value;
-    public int Value {
-      get { return value; }
-      set {
-        if (this.value != value) {
-          this.value = value;
-          OnValueChanged();
-        }
-      }
+  [EmptyStorableClass]
+  public abstract class StandardOperatorBase : OperatorBase {
+    public OperatorParameter Successor {
+      get { return (OperatorParameter)Parameters["Successor"]; }
     }
 
-    public IntData()
+    public StandardOperatorBase()
       : base() {
-      value = 0;
-    }
-    public IntData(int value)
-      : base() {
-      this.value = value;
+      Parameters.Add(new OperatorParameter("Successor", "Operator which is executed next"));
     }
 
-    public override string ToString() {
-      return value.ToString();
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      IntData clone = new IntData(value);
-      cloner.RegisterClonedObject(this, clone);
-      return clone;
-    }
-
-    public event EventHandler ValueChanged;
-    private void OnValueChanged() {
-      if (ValueChanged != null)
-        ValueChanged(this, new EventArgs());
-      OnChanged();
+    public override ExecutionContextCollection Apply(ExecutionContext context) {
+      IOperator successor = Successor.GetValue(context);
+      if (successor != null)
+        return new ExecutionContextCollection(new ExecutionContext(context.Parent, successor, context.Scope));
+      else
+        return new ExecutionContextCollection();
     }
   }
 }

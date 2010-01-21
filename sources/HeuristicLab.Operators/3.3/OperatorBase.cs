@@ -25,10 +25,10 @@ using System.Text;
 using System.Xml;
 using System.Drawing;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
+using HeuristicLab.Core;
 using HeuristicLab.Collections;
 
-namespace HeuristicLab.Core {
+namespace HeuristicLab.Operators {
   /// <summary>
   /// The base class for all operators.
   /// </summary>

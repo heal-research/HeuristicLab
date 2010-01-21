@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.Core.Views {
+namespace HeuristicLab.Data.Views {
   partial class IntDataView {
     /// <summary> 
     /// Required designer variable.

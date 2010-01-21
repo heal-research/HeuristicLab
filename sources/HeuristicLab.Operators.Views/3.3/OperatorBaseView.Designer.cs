@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.Core.Views {
+namespace HeuristicLab.Operators.Views {
   partial class OperatorBaseView {
     /// <summary> 
     /// Required designer variable.
@@ -89,7 +89,7 @@ namespace HeuristicLab.Core.Views {
 
     #endregion
 
-    protected ParameterCollectionView parameterCollectionView;
+    protected HeuristicLab.Core.Views.ParameterCollectionView parameterCollectionView;
 
 
   }

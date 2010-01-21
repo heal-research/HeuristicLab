@@ -101,7 +101,6 @@
     <Compile Include="Attributes\ItemAttribute.cs" />
     <Compile Include="Cloner.cs" />
     <Compile Include="Attributes\CreatableAttribute.cs" />
-    <Compile Include="CombinedOperator.cs" />
     <Compile Include="ChangedEventArgs.cs" />
     <Compile Include="Interfaces\IOperatorParameter.cs" />
     <Compile Include="OperatorGraph.cs" />
@@ -112,12 +111,7 @@
     <Compile Include="ItemCollection.cs" />
     <Compile Include="OperatorSet.cs" />
     <Compile Include="ItemSet.cs" />
-    <Compile Include="StandardOperatorBase.cs" />
     <Compile Include="ItemList.cs" />
-    <Compile Include="SequentialProcessor.cs" />
-    <Compile Include="CounterOperator.cs" />
-    <Compile Include="IntData.cs" />
-    <Compile Include="EmptyOperator.cs" />
     <Compile Include="EngineBase.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -138,7 +132,6 @@
     <Compile Include="NamedItemBase.cs" />
     <Compile Include="Interfaces\IItem.cs" />
     <Compile Include="ItemBase.cs" />
-    <Compile Include="OperatorBase.cs" />
     <Compile Include="Interfaces\IRandom.cs" />
     <Compile Include="Scope.cs" />
     <Compile Include="Interfaces\IOperator.cs" />
