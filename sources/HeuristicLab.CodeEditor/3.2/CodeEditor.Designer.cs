@@ -1,4 +1,5 @@
-﻿namespace HeuristicLab.CodeEditor {
+﻿using System;
+namespace HeuristicLab.CodeEditor {
   public partial class CodeEditor : System.Windows.Forms.UserControl {
     /// <summary>
     /// Designer variable used to keep track of non-visual components.
@@ -10,12 +11,16 @@
     /// </summary>
     /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
     protected override void Dispose(bool disposing) {
-      if (disposing) {
-        if (components != null) {
-          components.Dispose();
+      if (InvokeRequired) {
+        Invoke(new Action(() => this.Dispose(disposing)));
+      } else {
+        if (disposing) {
+          if (components != null) {
+            components.Dispose();
+          }
         }
+        base.Dispose(disposing);
       }
-      base.Dispose(disposing);
     }
 
     /// <summary>
