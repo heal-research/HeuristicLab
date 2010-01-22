@@ -29,6 +29,7 @@ using HeuristicLab.GP.Interfaces;
 using HeuristicLab.Modeling;
 using HeuristicLab.DataAnalysis;
 using System.Diagnostics;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.GP.StructureIdentification.Networks {
   public class NetworkToFunctionTransformer : OperatorBase {
@@ -92,8 +93,11 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
         return tree;
       } else if (tree.Function is Flip) {
         var partiallyAppliedBranch = ApplyFlips(tree.SubTrees[0]);
-        if (partiallyAppliedBranch.Function is OpenParameter) return partiallyAppliedBranch;
-        else return InvertChain(partiallyAppliedBranch);
+        if (partiallyAppliedBranch.Function is OpenParameter) {
+          var openParFunTree = (OpenParameterFunctionTree)partiallyAppliedBranch;
+          openParFunTree.Weight = 1.0 / openParFunTree.Weight;
+          return partiallyAppliedBranch;
+        } else return InvertChain(partiallyAppliedBranch);
       } else {
         List<IFunctionTree> subTrees = new List<IFunctionTree>(tree.SubTrees);
         while (tree.SubTrees.Count > 0) tree.RemoveSubTree(0);
@@ -115,7 +119,7 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
       List<IFunctionTree> currentChain = new List<IFunctionTree>(IterateChain(tree));
       // get a list of function trees from bottom to top
       List<IFunctionTree> reversedChain = new List<IFunctionTree>(currentChain.Reverse<IFunctionTree>().Skip(1));
-      IFunctionTree openParam = currentChain.Last();
+      OpenParameterFunctionTree openParam = (OpenParameterFunctionTree)currentChain.Last();
 
       // build new tree by inverting every function in the reversed chain and keeping f0 branches untouched.
       IFunctionTree parent = reversedChain[0];
@@ -135,6 +139,8 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
           invParent.AddSubTree(parent.SubTrees[j]);
         }
       }
+      // invert factor of openParam
+      openParam.Weight = 1.0 / openParam.Weight;
       // append open param at the end
       invParent.InsertSubTree(0, openParam);
       return root;
@@ -194,12 +200,12 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
 
 
 
-    private static IFunctionTree AppendLeft(IFunctionTree tree, IFunctionTree node) {
-      IFunctionTree originalTree = tree;
-      while (!IsBottomLeft(tree)) tree = tree.SubTrees[0];
-      tree.InsertSubTree(0, node);
-      return originalTree;
-    }
+    //private static IFunctionTree AppendLeft(IFunctionTree tree, IFunctionTree node) {
+    //  IFunctionTree originalTree = tree;
+    //  while (!IsBottomLeft(tree)) tree = tree.SubTrees[0];
+    //  tree.InsertSubTree(0, node);
+    //  return originalTree;
+    //}
 
     private static bool IsBottomLeft(IFunctionTree tree) {
       if (tree.SubTrees.Count == 0) return true;
@@ -264,14 +270,31 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
           if (i != targetIndex)
             combinator.AddSubTree(subTrees[i]);
         }
-        if (subTrees[targetIndex].Function is Variable) return combinator;
+        if (subTrees[targetIndex].Function is Variable) return MakeMultiplication(combinator, 1.0 / GetTargetVariableWeight(subTrees[targetIndex]));
         else {
           IFunctionTree bottomLeft;
           IFunctionTree targetChain = InvertF0Chain(subTrees[targetIndex], out bottomLeft);
           bottomLeft.InsertSubTree(0, combinator);
-          return targetChain;
+          return MakeMultiplication(targetChain, 1.0 / GetTargetVariableWeight(subTrees[targetIndex]));
         }
       }
+    }
+
+    private static IFunctionTree MakeMultiplication(IFunctionTree tree, double p) {
+      if (p.IsAlmost(1.0)) return tree;
+      var mul = (new Multiplication()).GetTreeNode();
+      var constP = (ConstantFunctionTree)(new Constant()).GetTreeNode();
+      constP.Value = p;
+      mul.AddSubTree(tree);
+      mul.AddSubTree(constP);
+      return mul;
+    }
+
+    private static double GetTargetVariableWeight(IFunctionTree tree) {
+      while (tree.SubTrees.Count > 0) {
+        tree = tree.SubTrees[0];
+      }
+      return ((VariableFunctionTree)tree).Weight;
     }
 
     // inverts a chain of F0 functions 
@@ -376,7 +399,7 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
         var varTreeNode = (VariableFunctionTree)matchingTree;
         varTreeNode.VariableName = targetVariables.Current;
         varTreeNode.SampleOffset = ((OpenParameterFunctionTree)tree).SampleOffset;
-        varTreeNode.Weight = 1.0;
+        varTreeNode.Weight = ((OpenParameterFunctionTree)tree).Weight;
         return varTreeNode;
         //} else if (matchingFunction is Power) {
         //  matchingTree.AddSubTree(BindVariables(tree.SubTrees[0], targetVariables));

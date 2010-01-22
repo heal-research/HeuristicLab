@@ -29,15 +29,18 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
   public class OpenParameterFunctionTree : TerminalTreeNode {
     public string VariableName { get; set; }
     public int SampleOffset { get; set; }
+    public double Weight { get; set; }
 
     public OpenParameterFunctionTree(OpenParameter openParameter)
       : base(openParameter) {
+      this.Weight = 1.0;
     }
 
     protected OpenParameterFunctionTree(OpenParameterFunctionTree original)
       : base(original) {
       VariableName = original.VariableName;
       SampleOffset = original.SampleOffset;
+      Weight = original.Weight;
     }
 
     public override bool HasLocalParameters {
@@ -50,6 +53,7 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
       Scope myVariableScope = new Scope();
       scope.AddSubScope(myVariableScope);
       myVariableScope.AddVariable(CreateSampleOffsetVariable());
+      myVariableScope.AddVariable(CreateWeightVariable());
       return new AtomicOperation(Function.Manipulator, myVariableScope);
     }
 
@@ -57,6 +61,7 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
       Scope myVariableScope = new Scope();
       scope.AddSubScope(myVariableScope);
       myVariableScope.AddVariable(CreateSampleOffsetVariable());
+      myVariableScope.AddVariable(CreateWeightVariable());
       return new AtomicOperation(Function.Initializer, myVariableScope);
     }
 
@@ -71,10 +76,13 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
 
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<System.Guid, IStorable> persistedObjects) {
       XmlNode node = document.CreateElement(name);
+      XmlAttribute weightAttr = document.CreateAttribute("Weight");
+      weightAttr.Value = XmlConvert.ToString(Weight);
       XmlAttribute variableAttr = document.CreateAttribute("Variable");
       variableAttr.Value = VariableName;
       XmlAttribute sampleOffsetAttr = document.CreateAttribute("SampleOffset");
       sampleOffsetAttr.Value = XmlConvert.ToString(SampleOffset);
+      node.Attributes.Append(weightAttr);
       node.Attributes.Append(sampleOffsetAttr);
       node.Attributes.Append(variableAttr);
       return node;
@@ -82,6 +90,7 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
 
     public override void Populate(XmlNode node, IDictionary<System.Guid, IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
+      Weight = XmlConvert.ToDouble(node.Attributes["Weight"].Value);
       SampleOffset = XmlConvert.ToInt32(node.Attributes["SampleOffset"].Value);
       VariableName = node.Attributes["Variable"].Value;
     }
@@ -100,6 +109,14 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
       data.Changed += (sender, args) => VariableName = data.Data;
       var variable = new HeuristicLab.Core.Variable(Variable.VARIABLENAME, data);
       variable.ValueChanged += (sender, args) => VariableName = ((StringData)variable.Value).Data;
+      return variable;
+    }
+
+    private IVariable CreateWeightVariable() {
+      DoubleData data = new DoubleData(Weight);
+      data.Changed += (sender, args) => Weight = data.Data;
+      var variable = new HeuristicLab.Core.Variable(Variable.WEIGHT, data);
+      variable.ValueChanged += (sender, args) => Weight = ((DoubleData)variable.Value).Data;
       return variable;
     }
   }

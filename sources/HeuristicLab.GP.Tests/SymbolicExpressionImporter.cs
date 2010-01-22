@@ -101,7 +101,7 @@ namespace HeuristicLab.GP.Test {
           tree = ParseVariable(tokens);
         } else if (tokens.Peek().StringValue.StartsWith(DIFFSTART)) {
           tree = ParseDifferential(tokens);
-        } else if(tokens.Peek().StringValue.StartsWith(OPENPARAMSTART)) {
+        } else if (tokens.Peek().StringValue.StartsWith(OPENPARAMSTART)) {
           tree = ParseOpenParameter(tokens);
         } else {
           Token curToken = tokens.Dequeue();
@@ -122,7 +122,8 @@ namespace HeuristicLab.GP.Test {
     private IFunctionTree ParseOpenParameter(Queue<Token> tokens) {
       Token tok = tokens.Dequeue();
       Debug.Assert(tok.StringValue == "open-param");
-      HeuristicLab.GP.StructureIdentification.Networks.OpenParameterFunctionTree t = (HeuristicLab.GP.StructureIdentification.Networks.OpenParameterFunctionTree)openParam.GetTreeNode();      
+      HeuristicLab.GP.StructureIdentification.Networks.OpenParameterFunctionTree t = (HeuristicLab.GP.StructureIdentification.Networks.OpenParameterFunctionTree)openParam.GetTreeNode();
+      t.Weight = tokens.Dequeue().DoubleValue;
       t.VariableName = tokens.Dequeue().StringValue;
       t.SampleOffset = (int)tokens.Dequeue().DoubleValue;
       return t;
