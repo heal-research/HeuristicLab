@@ -26,6 +26,7 @@ using HeuristicLab.Core;
 using System.Xml;
 using System.Diagnostics;
 using HeuristicLab.GP.Interfaces;
+using System.Linq;
 
 namespace HeuristicLab.GP {
   public abstract class FunctionBase : ItemBase, IFunction {
@@ -71,6 +72,7 @@ namespace HeuristicLab.GP {
     public int MinTreeSize {
       get {
         if (minTreeSize <= 0) RecalculateMinimalTreeSize();
+        Debug.Assert(minTreeSize > 0);
         return minTreeSize;
       }
     }
@@ -78,6 +80,7 @@ namespace HeuristicLab.GP {
     public int MinTreeHeight {
       get {
         if (minTreeHeight <= 0) RecalculateMinimalTreeHeight();
+        Debug.Assert(minTreeHeight > 0);
         return minTreeHeight;
       }
     }
@@ -129,29 +132,27 @@ namespace HeuristicLab.GP {
     }
 
     private void RecalculateMinimalTreeSize() {
-      minTreeSize = int.MaxValue;
-      int sum = 1;
-      int minSize = int.MaxValue;
-      for (int i = 0; i < MinSubTrees; i++) {
-        foreach (IFunction subFun in GetAllowedSubFunctions(i)) {
-          minSize = Math.Min(minSize, subFun.MinTreeSize);
-        }
-        sum += minSize;
+      if (MinSubTrees == 0) minTreeSize = 1;
+      else {
+        minTreeSize = int.MaxValue; // prevent infinite recursion
+        minTreeSize = 1 + (from slot in Enumerable.Range(0, MinSubTrees)
+                           let minForSlot = (from function in GetAllowedSubFunctions(slot)
+                                             where function != this
+                                             select function.MinTreeSize).Min()
+                           select minForSlot).Sum();
       }
-      minTreeSize = sum;
     }
 
     private void RecalculateMinimalTreeHeight() {
-      minTreeHeight = int.MaxValue;
-      int height = 0;
-      int minHeight = int.MaxValue;
-      for (int i = 0; i < MinSubTrees; i++) {
-        foreach (IFunction subFun in GetAllowedSubFunctions(i)) {
-          minHeight = Math.Min(minHeight, subFun.MinTreeHeight);
-        }
-        height = Math.Max(height, minHeight);
+      if (MinSubTrees == 0) minTreeHeight = 1;
+      else {
+        minTreeHeight = int.MaxValue;
+        minTreeHeight = 1 + (from slot in Enumerable.Range(0, MinSubTrees)
+                             let minForSlot = (from function in GetAllowedSubFunctions(slot)
+                                               where function != this
+                                               select function.MinTreeHeight).Min()
+                             select minForSlot).Max();
       }
-      minTreeHeight = height + 1;
     }
 
     public override object Clone(IDictionary<Guid, object> clonedObjects) {

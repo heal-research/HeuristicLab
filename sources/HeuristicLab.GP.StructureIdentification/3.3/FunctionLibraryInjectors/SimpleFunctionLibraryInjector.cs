@@ -66,6 +66,13 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
     protected override FunctionLibrary CreateFunctionLibrary() {
+      return Create(
+        GetVariableValue<BoolData>(DIFFERENTIALS_ALLOWED, null, false).Data,
+        minTimeOffset,
+        maxTimeOffset);
+    }
+
+    public static FunctionLibrary Create(bool differentialAllowed, int minTimeOffset, int maxTimeOffset) {
       FunctionLibrary functionLibrary = new FunctionLibrary();
 
       Variable variable = new Variable();
@@ -84,7 +91,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       Tangens tangens = new Tangens();
 
       List<IFunction> valueNodes = new List<IFunction>();
-      ConditionalAddFunction(DIFFERENTIALS_ALLOWED, differential, valueNodes);
+      if (differentialAllowed) valueNodes.Add(differential);
       valueNodes.Add(variable);
       valueNodes.Add(constant);
 
@@ -121,7 +128,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       SetAllowedSubOperators(sqrt, valueNodes);
       SetAllowedSubOperators(tangens, valueNodes);
 
-      ConditionalAddOperator(DIFFERENTIALS_ALLOWED, functionLibrary, differential);
+      if (differentialAllowed) functionLibrary.AddFunction(differential);
 
       allFunctions.ForEach(x => functionLibrary.AddFunction(x));
 
@@ -129,14 +136,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       differential.SetConstraints(minTimeOffset, maxTimeOffset);
 
       return functionLibrary;
-    }
-
-    private void ConditionalAddFunction(string condName, IFunction fun, List<IFunction> list) {
-      if (GetVariableValue<BoolData>(condName, null, false).Data) list.Add(fun);
-    }
-
-    private void ConditionalAddOperator(string condName, FunctionLibrary functionLib, IFunction op) {
-      if (GetVariableValue<BoolData>(condName, null, false).Data) functionLib.AddFunction(op);
     }
   }
 }

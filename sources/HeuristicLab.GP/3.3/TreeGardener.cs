@@ -119,15 +119,20 @@ namespace HeuristicLab.GP {
           IFunctionTree parent = (IFunctionTree)nextExtension[0];
           int a = (int)nextExtension[1];
           int d = (int)nextExtension[2];
-          if (d == maxDepth) {
+          if (d + parent.Function.MinTreeHeight >= maxDepth) {
             parent.RemoveSubTree(a);
             IFunctionTree branch = CreateRandomTree(GetAllowedSubFunctions(parent.Function, a), 1, 1);
             parent.InsertSubTree(a, branch); // insert a smallest possible tree
             currentSize += branch.GetSize();
             totalListMinSize -= branch.GetSize();
           } else {
-            IFunction selectedFunction = TreeGardener.RandomSelect(random, GetAllowedSubFunctions(parent.Function, a).Where(
-              f => IsRecursiveExpansionPossible(f) && f.MinTreeHeight + (d - 1) <= maxDepth).ToArray());
+            var allowedSubFunctions = from f in GetAllowedSubFunctions(parent.Function, a)
+                                      where f.MinTreeHeight + (d - 1) < maxDepth
+                                      where IsRecursiveExpansionPossible(f) ||
+                                            totalListMinSize + currentSize >= size * 0.9 // if the necessary size is almost reached then also allow
+                                                                                         // terminals or terminal-branches
+                                      select f;
+            IFunction selectedFunction = TreeGardener.RandomSelect(random, allowedSubFunctions.ToList());
             IFunctionTree newTree = selectedFunction.GetTreeNode();
             parent.RemoveSubTree(a);
             parent.InsertSubTree(a, newTree);
@@ -145,7 +150,7 @@ namespace HeuristicLab.GP {
               newTree.AddSubTree(null);
               list.Add(new object[] { newTree, i, d + 1 });
             }
-            totalListMinSize += newTree.Function.MinTreeSize - 1;
+            totalListMinSize += newTree.Function.MinTreeSize;
           }
         }
       }
@@ -163,32 +168,32 @@ namespace HeuristicLab.GP {
       return root;
     }
 
-    private bool IsRecursiveExpansionPossible(IFunction parent) {
-      return FindCycle(parent, new Stack<IFunction>());
+    private bool IsRecursiveExpansionPossible(IFunction function) {
+      return FindCycle(function, new Stack<IFunction>());
     }
 
     private Dictionary<IFunction, bool> inCycle = new Dictionary<IFunction, bool>();
-    private bool FindCycle(IFunction parent, Stack<IFunction> parentChain) {
-      if (inCycle.ContainsKey(parent)) {
-        return inCycle[parent];
-      } else if (IsTerminal(parent)) {
-        inCycle[parent] = false;
+    private bool FindCycle(IFunction function, Stack<IFunction> functionChain) {
+      if (inCycle.ContainsKey(function)) {
+        return inCycle[function];
+      } else if (IsTerminal(function)) {
+        inCycle[function] = false;
         return false;
-      } else if (parentChain.Contains(parent)) {
-        inCycle[parent] = true;
+      } else if (functionChain.Contains(function)) {
+        inCycle[function] = true;
         return true;
       } else {
-        parentChain.Push(parent);
+        functionChain.Push(function);
         bool result = false;
         // all slot indexes
-        for (int i = 0; i < parent.MaxSubTrees; i++) {
-          foreach (IFunction subFunction in GetAllowedSubFunctions(parent, i)) {
-            result |= FindCycle(subFunction, parentChain);
+        for (int i = 0; i < function.MaxSubTrees; i++) {
+          foreach (IFunction subFunction in GetAllowedSubFunctions(function, i)) {
+            result |= FindCycle(subFunction, functionChain);
           }
         }
 
-        parentChain.Pop();
-        inCycle[parent] = result;
+        functionChain.Pop();
+        inCycle[function] = result;
         return result;
       }
     }
