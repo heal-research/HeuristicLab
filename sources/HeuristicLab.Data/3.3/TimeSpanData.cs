@@ -32,10 +32,7 @@ namespace HeuristicLab.Data {
   [Creatable("Test")]
   public sealed class TimeSpanData : ValueTypeData<TimeSpan>, IStringConvertibleData {
     public TimeSpanData() : base() { }
-    public TimeSpanData(TimeSpan value)
-      : base() {
-      Value = value;
-    }
+    public TimeSpanData(TimeSpan value) : base(value) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       TimeSpanData clone = new TimeSpanData(Value);

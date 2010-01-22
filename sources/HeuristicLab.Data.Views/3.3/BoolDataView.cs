@@ -26,6 +26,7 @@ using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
+using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
@@ -47,13 +48,13 @@ namespace HeuristicLab.Data.Views {
     }
 
     protected override void DeregisterObjectEvents() {
-      BoolData.ValueChanged -= new EventHandler(BoolData_ValueChanged);
+      BoolData.Changed -= new ChangedEventHandler(BoolData_Changed);
       base.DeregisterObjectEvents();
     }
 
     protected override void RegisterObjectEvents() {
       base.RegisterObjectEvents();
-      BoolData.ValueChanged += new EventHandler(BoolData_ValueChanged);
+      BoolData.Changed += new ChangedEventHandler(BoolData_Changed);
     }
 
     protected override void OnObjectChanged() {
@@ -69,9 +70,9 @@ namespace HeuristicLab.Data.Views {
       }
     }
 
-    private void BoolData_ValueChanged(object sender, EventArgs e) {
+    private void BoolData_Changed(object sender, ChangedEventArgs e) {
       if (InvokeRequired)
-        Invoke(new EventHandler(BoolData_ValueChanged), sender, e);
+        Invoke(new ChangedEventHandler(BoolData_Changed), sender, e);
       else
         valueCheckBox.Checked = BoolData.Value;
     }

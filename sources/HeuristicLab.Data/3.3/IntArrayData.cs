@@ -24,55 +24,39 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
-using System.Globalization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
-  /// <summary>
-  /// The representation of an array of integer values.
-  /// </summary>
   [EmptyStorableClass]
-  public class IntArrayData : ArrayDataBase {
-    /// <summary>
-    /// Gets or sets the int elements of the array.
-    /// </summary>
-    /// <remarks>Uses property <see cref="ArrayDataBase.Data"/> of base class <see cref="ArrayDataBase"/>. 
-    /// No own data storage present.</remarks>
-    public new int[] Data {
-      get { return (int[])base.Data; }
-      set { base.Data = value; }
+  [Item("IntArrayData", "Represents an array of integer values.")]
+  [Creatable("Test")]
+  public sealed class IntArrayData : ValueTypeArrayData<int>, IStringConvertibleArrayData {
+    public IntArrayData() : base() { }
+    public IntArrayData(int length) : base(length) { }
+    public IntArrayData(IntArrayData elements) : base(elements) { }
+    public IntArrayData(int[] elements) : base(elements) { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      IntArrayData clone = new IntArrayData(this);
+      cloner.RegisterClonedObject(this, clone);
+      return clone;
     }
 
-    /// <summary>
-    /// Initializes a new instance of <see cref="IntArrayData"/>.
-    /// </summary>
-    public IntArrayData() {
-      Data = new int[0];
+    int IStringConvertibleArrayData.Length {
+      get { return Length; }
+      set { Length = value; }
     }
-    /// <summary>
-    /// Initializes a new instance of <see cref="IntArrayData"/>.
-    /// <note type="caution"> No CopyConstructor! <paramref name="data"/> is not copied!</note>
-    /// </summary>
-    /// <param name="data">The array of integers to represent.</param>
-    public IntArrayData(int[] data) {
-      Data = data;
+    string IStringConvertibleArrayData.GetValue(int index) {
+      return this[index].ToString();
     }
-
-    /// <summary>
-    /// The string representation of the array, formatted according to the given <paramref name="format"/>.
-    /// </summary>
-    /// <param name="format">The <see cref="NumberFormatInfo"></see> the single int values 
-    /// should be formatted accordingly.</param>
-    /// <returns>The elements of the array as string, each element separated by a semicolon 
-    /// and formatted according to the parameter <paramref name="format"/>.</returns>
-    private string ToString(NumberFormatInfo format) {
-      StringBuilder builder = new StringBuilder();
-      for (int i = 0; i < Data.Length; i++) {
-        builder.Append(";");
-        builder.Append(Data[i].ToString(format));
+    bool IStringConvertibleArrayData.SetValue(string value, int index) {
+      int i;
+      if (int.TryParse(value, out i)) {
+        this[index] = i;
+        return true;
+      } else {
+        return false;
       }
-      if (builder.Length > 0) builder.Remove(0, 1);
-      return builder.ToString();
     }
   }
 }

@@ -32,10 +32,7 @@ namespace HeuristicLab.Data {
   [Creatable("Test")]
   public sealed class BoolData : ValueTypeData<bool>, IStringConvertibleData {
     public BoolData() : base() { }
-    public BoolData(bool value)
-      : base() {
-      Value = value;
-    }
+    public BoolData(bool value) : base(value) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       BoolData clone = new BoolData(Value);

@@ -32,10 +32,7 @@ namespace HeuristicLab.Data {
   [Creatable("Test")]
   public sealed class DateTimeData : ValueTypeData<DateTime>, IStringConvertibleData {
     public DateTimeData() : base() { }
-    public DateTimeData(DateTime value)
-      : base() {
-      Value = value;
-    }
+    public DateTimeData(DateTime value) : base(value) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       DateTimeData clone = new DateTimeData(Value);
@@ -43,8 +40,12 @@ namespace HeuristicLab.Data {
       return clone;
     }
 
+    public override string ToString() {
+      return Value.ToString("o");  // round-trip format
+    }
+
     string IStringConvertibleData.GetValue() {
-      return Value.ToString();
+      return Value.ToString("o");  // round-trip format
     }
     bool IStringConvertibleData.SetValue(string value) {
       DateTime d;

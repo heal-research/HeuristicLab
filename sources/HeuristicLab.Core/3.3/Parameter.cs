@@ -62,5 +62,9 @@ namespace HeuristicLab.Core {
       clone.dataType = dataType;
       return clone;
     }
+
+    public override string ToString() {
+      return string.Format("{0} ({1})", Name, DataType.Name);
+    }
   }
 }

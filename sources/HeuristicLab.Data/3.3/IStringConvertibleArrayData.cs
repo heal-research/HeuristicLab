@@ -1,4 +1,4 @@
-﻿#region License Information
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -21,32 +21,19 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
+using System.Xml;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
 
-namespace HeuristicLab.Collections {
-  [Serializable]
-  public struct IndexedItem<T> {
-    private int index;
-    public int Index {
-      get { return index; }
-    }
-    private T value;
-    public T Value {
-      get { return value; }
-    }
+namespace HeuristicLab.Data {
+  public interface IStringConvertibleArrayData {
+    int Length { get; set; }
 
-    public IndexedItem(int index, T value) {
-      this.index = index;
-      this.value = value;
-    }
+    string GetValue(int index);
+    bool SetValue(string value, int index);
 
-    public override string ToString() {
-      StringBuilder sb = new StringBuilder();
-      sb.Append("[").Append(index).Append(": ");
-      if (value != null) sb.Append(value.ToString());
-      sb.Append("]");
-      return sb.ToString();
-    }
+    event ChangedEventHandler Changed;
+    event EventHandler<EventArgs<int>> ItemChanged;
   }
 }

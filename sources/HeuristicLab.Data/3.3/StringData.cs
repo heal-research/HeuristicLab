@@ -30,19 +30,36 @@ namespace HeuristicLab.Data {
   [EmptyStorableClass]
   [Item("String", "Represents a string.")]
   [Creatable("Test")]
-  public sealed class StringData : ReferenceTypeData<string>, IStringConvertibleData {
-    public StringData() : base() {
-      Value = string.Empty;
+  public sealed class StringData : Item, IStringConvertibleData {
+    [Storable]
+    private string value;
+    public string Value {
+      get { return value; }
+      set {
+        if (value != this.value) {
+          if ((value != null) || (this.value != string.Empty)) {
+            this.value = value != null ? value : string.Empty;
+            OnChanged();
+          }
+        }
+      }
     }
-    public StringData(string value)
-      : base() {
-      Value = value;
+
+    public StringData() {
+      this.value = string.Empty;
+    }
+    public StringData(string value) {
+      this.value = value != null ? value : string.Empty;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       StringData clone = new StringData(Value);
       cloner.RegisterClonedObject(this, clone);
       return clone;
+    }
+
+    public override string ToString() {
+      return value;
     }
 
     string IStringConvertibleData.GetValue() {

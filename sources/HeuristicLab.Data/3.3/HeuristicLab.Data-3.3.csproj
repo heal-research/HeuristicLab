@@ -102,7 +102,9 @@
     <Compile Include="BoolData.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ReferenceTypeData.cs" />
+    <Compile Include="IStringConvertibleArrayData.cs" />
+    <Compile Include="ValueTypeArrayData.cs" />
+    <Compile Include="IntArrayData.cs" />
     <Compile Include="StringData.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -125,6 +127,10 @@
     <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.2\HeuristicLab.Common.Resources-3.2.csproj">
       <Project>{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}</Project>
       <Name>HeuristicLab.Common.Resources-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Common\3.2\HeuristicLab.Common-3.2.csproj">
+      <Project>{1FC004FC-59AF-4249-B1B6-FF25873A20E4}</Project>
+      <Name>HeuristicLab.Common-3.2</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
       <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>

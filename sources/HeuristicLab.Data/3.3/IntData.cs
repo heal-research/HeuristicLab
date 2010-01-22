@@ -32,10 +32,7 @@ namespace HeuristicLab.Data {
   [Creatable("Test")]
   public sealed class IntData : ValueTypeData<int>, IStringConvertibleData {
     public IntData() : base() { }
-    public IntData(int value)
-      : base() {
-      Value = value;
-    }
+    public IntData(int value) : base(value) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       IntData clone = new IntData(Value);

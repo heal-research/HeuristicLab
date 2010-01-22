@@ -36,13 +36,16 @@ namespace HeuristicLab.Data {
       set {
         if (!value.Equals(this.value)) {
           this.value = value;
-          OnValueChanged();
+          OnChanged();
         }
       }
     }
 
     public ValueTypeData() {
-      value = default(T);
+      this.value = default(T);
+    }
+    public ValueTypeData(T value) {
+      this.value = value;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -53,13 +56,6 @@ namespace HeuristicLab.Data {
 
     public override string ToString() {
       return value.ToString();
-    }
-
-    public event EventHandler ValueChanged;
-    protected virtual void OnValueChanged() {
-      if (ValueChanged != null)
-        ValueChanged(this, EventArgs.Empty);
-      OnChanged();
     }
   }
 }

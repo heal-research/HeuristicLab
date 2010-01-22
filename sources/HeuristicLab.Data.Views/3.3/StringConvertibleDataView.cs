@@ -26,6 +26,7 @@ using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
+using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
@@ -47,20 +48,20 @@ namespace HeuristicLab.Data.Views {
     }
 
     protected override void DeregisterObjectEvents() {
-      StringConvertibleData.ValueChanged -= new EventHandler(StringConvertibleData_ValueChanged);
+      StringConvertibleData.Changed -= new ChangedEventHandler(StringConvertibleData_Changed);
       base.DeregisterObjectEvents();
     }
 
     protected override void RegisterObjectEvents() {
       base.RegisterObjectEvents();
-      StringConvertibleData.ValueChanged += new EventHandler(StringConvertibleData_ValueChanged);
+      StringConvertibleData.Changed += new ChangedEventHandler(StringConvertibleData_Changed);
     }
 
     protected override void OnObjectChanged() {
       base.OnObjectChanged();
       if (StringConvertibleData == null) {
         Caption = "StringConvertibleData View";
-        valueTextBox.Text = "-";
+        valueTextBox.Text = string.Empty;
         valueTextBox.Enabled = false;
       } else {
         Caption = StringConvertibleData.GetValue() + " (" + StringConvertibleData.GetType().Name + ")";
@@ -69,15 +70,15 @@ namespace HeuristicLab.Data.Views {
       }
     }
 
-    private void StringConvertibleData_ValueChanged(object sender, EventArgs e) {
+    private void StringConvertibleData_Changed(object sender, ChangedEventArgs e) {
       if (InvokeRequired)
-        Invoke(new EventHandler(StringConvertibleData_ValueChanged), sender, e);
+        Invoke(new ChangedEventHandler(StringConvertibleData_Changed), sender, e);
       else
         valueTextBox.Text = StringConvertibleData.GetValue();
     }
 
     private void valueTextBox_Validating(object sender, CancelEventArgs e) {
-      e.Cancel = !StringConvertibleData.SetValue(valueTextBox.Text);
+      e.Cancel = e.Cancel || !StringConvertibleData.SetValue(valueTextBox.Text);
       if (e.Cancel) {
         MessageBox.Show(this, "\"" + valueTextBox.Text + "\" is not a valid value.", "Invalid Value", MessageBoxButtons.OK, MessageBoxIcon.Error);
         valueTextBox.SelectAll();

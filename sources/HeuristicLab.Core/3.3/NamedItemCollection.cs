@@ -113,7 +113,7 @@ namespace HeuristicLab.Core {
     }
 
     private void Item_NameChanging(object sender, CancelEventArgs<string> e) {
-      e.Cancel = this.ContainsKey(e.Value);
+      e.Cancel = e.Cancel || this.ContainsKey(e.Value);
     }
     private void Item_NameChanged(object sender, EventArgs e) {
       T item = (T)sender;

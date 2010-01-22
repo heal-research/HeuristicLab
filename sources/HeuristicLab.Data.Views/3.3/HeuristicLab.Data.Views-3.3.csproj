@@ -56,6 +56,12 @@
     <Compile Include="BoolDataView.Designer.cs">
       <DependentUpon>BoolDataView.cs</DependentUpon>
     </Compile>
+    <Compile Include="StringConvertibleArrayDataView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StringConvertibleArrayDataView.Designer.cs">
+      <DependentUpon>StringConvertibleArrayDataView.cs</DependentUpon>
+    </Compile>
     <Compile Include="StringConvertibleDataView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -70,6 +76,10 @@
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Common\3.2\HeuristicLab.Common-3.2.csproj">
+      <Project>{1FC004FC-59AF-4249-B1B6-FF25873A20E4}</Project>
+      <Name>HeuristicLab.Common-3.2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Core.Views\3.3\HeuristicLab.Core.Views-3.3.csproj">
       <Project>{E226881D-315F-423D-B419-A766FE0D8685}</Project>
       <Name>HeuristicLab.Core.Views-3.3</Name>

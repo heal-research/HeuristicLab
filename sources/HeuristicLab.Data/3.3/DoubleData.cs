@@ -32,10 +32,7 @@ namespace HeuristicLab.Data {
   [Creatable("Test")]
   public sealed class DoubleData : ValueTypeData<double>, IStringConvertibleData {
     public DoubleData() : base() { }
-    public DoubleData(double value)
-      : base() {
-      Value = value;
-    }
+    public DoubleData(double value) : base(value) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       DoubleData clone = new DoubleData(Value);
@@ -43,8 +40,12 @@ namespace HeuristicLab.Data {
       return clone;
     }
 
+    public override string ToString() {
+      return Value.ToString("r");  // round-trip format
+    }
+
     string IStringConvertibleData.GetValue() {
-      return Value.ToString();
+      return Value.ToString("r");  // round-trip format
     }
     bool IStringConvertibleData.SetValue(string value) {
       double d;

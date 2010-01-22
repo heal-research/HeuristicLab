@@ -99,7 +99,7 @@ namespace HeuristicLab.Core.Views {
         NamedItemBase.Name = nameTextBox.Text;
 
         // check if variable name was set successfully
-        e.Cancel = !NamedItemBase.Name.Equals(nameTextBox.Text);
+        e.Cancel = e.Cancel || !NamedItemBase.Name.Equals(nameTextBox.Text);
         if (e.Cancel) {
           MessageBox.Show(this, "\"" + nameTextBox.Text + "\" is not a valid name.", "Invalid Value", MessageBoxButtons.OK, MessageBoxIcon.Error);
           nameTextBox.Text = oldName;
