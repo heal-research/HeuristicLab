@@ -168,7 +168,7 @@ namespace HeuristicLab.CodeEditor {
       if (DesignMode)
         return;
 
-      textEditor.ActiveTextAreaControl.TextArea.KeyDown += new System.Windows.Forms.KeyEventHandler(TextArea_KeyDown);
+      textEditor.ActiveTextAreaControl.TextArea.KeyEventHandler += new ICSharpCode.TextEditor.KeyEventHandler(TextArea_KeyEventHandler);
       textEditor.ActiveTextAreaControl.TextArea.DoProcessDialogKey += new DialogKeyProcessor(TextArea_DoProcessDialogKey);
 
       parserThread = new Thread(ParserThread);
@@ -190,10 +190,11 @@ namespace HeuristicLab.CodeEditor {
       imageList1.Images.Add("Icons.16x16.Event.png", VS2008ImageLibrary.Event);
     }
 
-    void TextArea_KeyDown(object sender, KeyEventArgs e) {
-      int caretOffset = textEditor.ActiveTextAreaControl.Caret.Offset;
-      if (caretOffset == 0 || caretOffset == Doc.TextLength)
-        e.Handled = true;
+    #region keyboard handlers: filter input in read-only areas
+
+    bool TextArea_KeyEventHandler(char ch) {
+      int caret = textEditor.ActiveTextAreaControl.Caret.Offset;
+      return caret < prefix.Length || caret > Doc.TextLength - suffix.Length;
     }
 
     bool TextArea_DoProcessDialogKey(Keys keyData) {
@@ -206,6 +207,8 @@ namespace HeuristicLab.CodeEditor {
       }
       return false;
     }
+
+    #endregion
 
     public void ScrollAfterPrefix() {
       int lineNr = prefix != null ? Doc.OffsetToPosition(prefix.Length).Line : 0;
