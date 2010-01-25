@@ -65,6 +65,10 @@ namespace HeuristicLab.Operators.Programmable {
 
     private object syncRoot = new object();
 
+    private static object initLock = new object();
+    private static Dictionary<string, List<Assembly>> defaultPluginDict;
+    private static Dictionary<Assembly, bool> defaultAssemblyDict;
+
     public readonly Dictionary<string, List<Assembly>> Plugins;
 
     protected Dictionary<Assembly, bool> Assemblies;
@@ -129,32 +133,41 @@ namespace HeuristicLab.Operators.Programmable {
     #endregion
 
     #region Construction & Initialization
-
+    
     public ProgrammableOperator() {
       code = "";
       description = "An operator that can be programmed for arbitrary needs.";
       executeMethod = null;
-      Assemblies = DiscoverAssemblies();
+      ProgrammableOperator.StaticInitialize();
+      Assemblies = defaultAssemblyDict;
+      Plugins = defaultPluginDict;
       namespaces = new HashSet<string>(DiscoverNamespaces());
-      Plugins = GroupAssemblies();
     }
 
-    private Dictionary<string, List<Assembly>> GroupAssemblies() {
+    private static void StaticInitialize() {
+      lock (initLock) {
+        if (defaultPluginDict != null || defaultAssemblyDict != null) return;
+        defaultAssemblyDict = DiscoverAssemblies();
+        defaultPluginDict = GroupAssemblies(defaultAssemblyDict.Keys);
+      }
+    }
+
+    private static Dictionary<string, List<Assembly>> GroupAssemblies(IEnumerable<Assembly> assemblies) {
       var plugins = new Dictionary<string, List<Assembly>>();
-      var assemblyNames = Assemblies.ToDictionary(a => a.Key.Location, a => a.Key);
+      var locationTable = assemblies.ToDictionary(a => a.Location, a => a);
       foreach (var plugin in ApplicationManager.Manager.Plugins) {
         var aList = new List<Assembly>();
         foreach (var aName in plugin.Assemblies) {
           Assembly a;
-          assemblyNames.TryGetValue(aName, out a);
+          locationTable.TryGetValue(aName, out a);
           if (a != null) {
             aList.Add(a);
-            assemblyNames.Remove(aName);
+            locationTable.Remove(aName);
           }
         }
         plugins[plugin.Name] = aList;
       }
-      plugins["other"] = assemblyNames.Values.ToList();
+      plugins["other"] = locationTable.Values.ToList();
       return plugins;
     }
 
