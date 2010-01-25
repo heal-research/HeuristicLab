@@ -123,17 +123,26 @@ namespace HeuristicLab.Operators.Programmable {
         if (!selectedAssembliesOnly || a.Value) {
           foreach (var t in a.Key.GetTypes()) {
             if (t.IsPublic) {
-              namespaces.Add(t.Namespace);
+              foreach (string ns in GetNamespaceHierachy(t.Namespace)) {
+                namespaces.Add(ns);
+              }
             }
           }
         }
       }
       return namespaces;
     }
+
+    private IEnumerable<string> GetNamespaceHierachy(string ns) {
+      for (int i = ns.Length; i != -1; i = ns.LastIndexOf('.', i - 1)) {
+        yield return ns.Substring(0, i);
+      }
+    }
+
     #endregion
 
     #region Construction & Initialization
-    
+
     public ProgrammableOperator() {
       code = "";
       description = "An operator that can be programmed for arbitrary needs.";
