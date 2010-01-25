@@ -172,8 +172,9 @@ namespace HeuristicLab.Operators.Programmable {
       var assemblies = new Dictionary<Assembly, bool>();
       foreach (var a in AppDomain.CurrentDomain.GetAssemblies()) {
         try {
-          string location = a.Location;
-          assemblies.Add(a, false);
+          if (File.Exists(a.Location)) {
+            assemblies.Add(a, false);
+          }
         } catch (NotSupportedException) {
           // NotSupportedException is thrown while accessing 
           // the Location property of the anonymously hosted
