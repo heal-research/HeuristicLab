@@ -78,6 +78,7 @@ namespace HeuristicLab.Modeling {
 
     VariableQualityImpact,
     VariableEvaluationImpact,
-    VariableNodeImpact
+    VariableNodeImpact,
+    RelativeFrequencyVariableImpact,
   }
 }

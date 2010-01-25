@@ -29,6 +29,7 @@ using HeuristicLab.Selection;
 using HeuristicLab.Data;
 using System.Collections.Generic;
 using System;
+using HeuristicLab.GP.Operators;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public static class DefaultStructureIdentificationOperators {
@@ -59,6 +60,13 @@ namespace HeuristicLab.GP.StructureIdentification {
     public static IOperator CreateGenerationStepHook() {
       CombinedOperator op = new CombinedOperator();
       SequentialProcessor seq = new SequentialProcessor();
+
+      SymbolFrequencyAnalyser symbolFrequencyAnalyser = new SymbolFrequencyAnalyser();
+      seq.AddSubOperator(symbolFrequencyAnalyser);
+
+      VariableFrequencyAnalyser varFrequencyAnalyser = new VariableFrequencyAnalyser();
+      seq.AddSubOperator(varFrequencyAnalyser);
+
       UniformSequentialSubScopesProcessor subScopesProc = new UniformSequentialSubScopesProcessor();
       SequentialProcessor individualProc = new SequentialProcessor();
       MeanSquaredErrorEvaluator validationEvaluator = new MeanSquaredErrorEvaluator();
@@ -169,6 +177,9 @@ namespace HeuristicLab.GP.StructureIdentification {
 
       solutionProc.AddSubOperator(nodeImpactCalculator);
 
+      VariableFrequencyBasedImpactCalculator frequencyImpactCalculator = new VariableFrequencyBasedImpactCalculator();
+      solutionProc.AddSubOperator(frequencyImpactCalculator);
+
       #endregion
 
       return seq;
@@ -197,6 +208,14 @@ namespace HeuristicLab.GP.StructureIdentification {
         model.SetVariableResult(ModelingResult.VariableNodeImpact, variableName, impact);
         model.AddInputVariable(variableName);
       }
+      ItemList frequencyImpacts = bestModelScope.GetVariableValue<ItemList>(ModelingResult.RelativeFrequencyVariableImpact.ToString(), false);
+      foreach (ItemList row in frequencyImpacts) {
+        string variableName = ((StringData)row[0]).Data;
+        double impact = ((DoubleData)row[1]).Data;
+        model.SetVariableResult(ModelingResult.RelativeFrequencyVariableImpact, variableName, impact);
+        model.AddInputVariable(variableName);
+      }
+
       #endregion
 
     }

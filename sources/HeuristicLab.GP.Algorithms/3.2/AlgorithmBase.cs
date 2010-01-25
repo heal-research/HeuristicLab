@@ -286,12 +286,12 @@ namespace HeuristicLab.GP.Algorithms {
       loop.AddSubOperator(new EmptyOperator());
       loop.AddSubOperator(seq);
 
-      seq.AddSubOperator(childCreater);
-      seq.AddSubOperator(replacement);
-      seq.AddSubOperator(qualityCalculator);
       seq.AddSubOperator(CreateGenerationStepHook());
+      seq.AddSubOperator(qualityCalculator);
       seq.AddSubOperator(loggingOperator);
       seq.AddSubOperator(counter);
+      seq.AddSubOperator(childCreater);
+      seq.AddSubOperator(replacement);
       seq.AddSubOperator(terminationCriterionExtractor);
       seq.AddSubOperator(loop);
 

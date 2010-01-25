@@ -69,6 +69,7 @@ namespace HeuristicLab.GP.Algorithms {
       injector.AddVariable(new HeuristicLab.Core.Variable("MaxEvaluatedSolutions", new IntData()));
       injector.AddVariable(new HeuristicLab.Core.Variable("ComparisonFactor", new DoubleData()));
       injector.AddVariable(new HeuristicLab.Core.Variable("SelectionPressureLimit", new DoubleData()));
+      injector.AddVariable(new HeuristicLab.Core.Variable("SelectionPressure", new DoubleData(1)));
       injector.AddVariable(new HeuristicLab.Core.Variable("SuccessRatioLimit", new DoubleData()));
       return injector;
     }
