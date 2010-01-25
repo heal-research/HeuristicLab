@@ -79,6 +79,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Logging\SymbolFrequencyAnalyser.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="EqualiserController.cs" />
     <Compile Include="HeuristicLabGPOperatorsPlugin.cs" />
