@@ -139,7 +139,7 @@ namespace HeuristicLab.Core.Views {
         detailsGroupBox.Enabled = false;
       }
     }
-    private void itemsListView_SizeChanged(object sender, EventArgs e) {
+    protected virtual void itemsListView_SizeChanged(object sender, EventArgs e) {
       if (itemsListView.Columns.Count > 0)
         itemsListView.Columns[0].Width = Math.Max(0, itemsListView.Width - 25);
     }
@@ -196,10 +196,10 @@ namespace HeuristicLab.Core.Views {
       if (item != null)
         ItemCollection.Add(item);
     }
-    protected void sortAscendingButton_Click(object sender, EventArgs e) {
+    protected virtual void sortAscendingButton_Click(object sender, EventArgs e) {
       SortItemsListView(SortOrder.Ascending);
     }
-    protected void sortDescendingButton_Click(object sender, EventArgs e) {
+    protected virtual void sortDescendingButton_Click(object sender, EventArgs e) {
       SortItemsListView(SortOrder.Descending);
     }
     protected virtual void removeButton_Click(object sender, EventArgs e) {
@@ -212,14 +212,14 @@ namespace HeuristicLab.Core.Views {
     #endregion
 
     #region ItemCollection Events
-    private void ItemCollection_ItemsAdded(object sender, CollectionItemsChangedEventArgs<T> e) {
+    protected virtual void ItemCollection_ItemsAdded(object sender, CollectionItemsChangedEventArgs<T> e) {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<T>(ItemCollection_ItemsAdded), sender, e);
       else
         foreach (T item in e.Items)
           AddListViewItem(CreateListViewItem(item));
     }
-    private void ItemCollection_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<T> e) {
+    protected virtual void ItemCollection_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<T> e) {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<T>(ItemCollection_ItemsRemoved), sender, e);
       else {
@@ -231,7 +231,7 @@ namespace HeuristicLab.Core.Views {
         }
       }
     }
-    private void ItemCollection_CollectionReset(object sender, CollectionItemsChangedEventArgs<T> e) {
+    protected virtual void ItemCollection_CollectionReset(object sender, CollectionItemsChangedEventArgs<T> e) {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<T>(ItemCollection_CollectionReset), sender, e);
       else {
@@ -248,7 +248,7 @@ namespace HeuristicLab.Core.Views {
     #endregion
 
     #region Item Events
-    private void Item_Changed(object sender, ChangedEventArgs e) {
+    protected virtual void Item_Changed(object sender, ChangedEventArgs e) {
       if (InvokeRequired)
         Invoke(new ChangedEventHandler(Item_Changed), sender, e);
       else {
@@ -260,7 +260,7 @@ namespace HeuristicLab.Core.Views {
     #endregion
 
     #region Helpers
-    private void SortItemsListView(SortOrder sortOrder) {
+    protected virtual void SortItemsListView(SortOrder sortOrder) {
       itemsListView.Sorting = sortOrder;
       itemsListView.Sort();
       itemsListView.Sorting = SortOrder.None;

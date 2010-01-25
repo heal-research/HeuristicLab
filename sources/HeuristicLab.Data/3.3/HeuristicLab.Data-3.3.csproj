@@ -102,6 +102,7 @@
     <Compile Include="BoolData.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="BoolArrayData.cs" />
     <Compile Include="IStringConvertibleArrayData.cs" />
     <Compile Include="ValueTypeArrayData.cs" />
     <Compile Include="IntArrayData.cs" />

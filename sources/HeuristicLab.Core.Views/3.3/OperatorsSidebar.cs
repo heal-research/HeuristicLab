@@ -36,7 +36,7 @@ namespace HeuristicLab.Core.Views {
       InitializeComponent();
     }
 
-    private void OperatorsSidebar_Load(object sender, EventArgs e) {
+    protected virtual void OperatorsSidebar_Load(object sender, EventArgs e) {
       typeSelector.Configure(typeof(IOperator), false, false);
     }
 

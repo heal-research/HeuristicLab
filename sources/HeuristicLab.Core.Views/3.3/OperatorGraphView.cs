@@ -109,7 +109,7 @@ namespace HeuristicLab.Core.Views {
       }
     }
 
-    private void MarkInitialOperator() {
+    protected virtual void MarkInitialOperator() {
       foreach (ListViewItem item in operatorsView.ItemsListView.Items) {
         if ((OperatorGraph.InitialOperator != null) && (((IOperator)item.Tag) == OperatorGraph.InitialOperator))
           item.Font = new Font(operatorsView.ItemsListView.Font, FontStyle.Bold);
@@ -119,7 +119,10 @@ namespace HeuristicLab.Core.Views {
     }
 
     #region Context Menu Events
-    private void operatorsContextMenuStrip_Opening(object sender, CancelEventArgs e) {
+    protected virtual void operatorsView_Load(object sender, EventArgs e) {
+      operatorsView.ItemsListView.ContextMenuStrip = operatorsContextMenuStrip;
+    }
+    protected virtual void operatorsContextMenuStrip_Opening(object sender, CancelEventArgs e) {
       initialOperatorToolStripMenuItem.Enabled = false;
       initialOperatorToolStripMenuItem.Checked = false;
       if (operatorsView.ItemsListView.SelectedItems.Count == 1) {
@@ -130,7 +133,7 @@ namespace HeuristicLab.Core.Views {
           initialOperatorToolStripMenuItem.Checked = true;
       }
     }
-    private void initialOperatorToolStripMenuItem_Click(object sender, EventArgs e) {
+    protected virtual void initialOperatorToolStripMenuItem_Click(object sender, EventArgs e) {
       if (initialOperatorToolStripMenuItem.Checked)
         OperatorGraph.InitialOperator = (IOperator)initialOperatorToolStripMenuItem.Tag;
       else
@@ -139,7 +142,7 @@ namespace HeuristicLab.Core.Views {
     #endregion
 
     #region OperatorGraph Events
-    private void OperatorGraph_InitialOperatorChanged(object sender, EventArgs e) {
+    protected virtual void OperatorGraph_InitialOperatorChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(OperatorGraph_InitialOperatorChanged), sender, e);
       else {
@@ -148,9 +151,5 @@ namespace HeuristicLab.Core.Views {
       }
     }
     #endregion
-
-    private void operatorsView_Load(object sender, EventArgs e) {
-      operatorsView.ItemsListView.ContextMenuStrip = operatorsContextMenuStrip;
-    }
   }
 }

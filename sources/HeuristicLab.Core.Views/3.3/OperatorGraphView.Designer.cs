@@ -77,25 +77,31 @@ namespace HeuristicLab.Core.Views {
       // 
       // operatorsView
       // 
+      this.operatorsView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.operatorsView.Caption = "Operator Set";
-      this.operatorsView.Dock = System.Windows.Forms.DockStyle.Fill;
       this.operatorsView.ItemCollection = null;
       this.operatorsView.ItemSet = null;
-      this.operatorsView.Location = new System.Drawing.Point(0, 0);
+      this.operatorsView.Location = new System.Drawing.Point(3, 3);
       this.operatorsView.Name = "operatorsView";
-      this.operatorsView.Size = new System.Drawing.Size(608, 316);
+      this.operatorsView.Object = null;
+      this.operatorsView.Size = new System.Drawing.Size(602, 309);
       this.operatorsView.TabIndex = 0;
       this.operatorsView.Load += new System.EventHandler(this.operatorsView_Load);
       // 
       // graphView
       // 
+      this.graphView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.graphView.Caption = "Operator";
-      this.graphView.Dock = System.Windows.Forms.DockStyle.Fill;
       this.graphView.Item = null;
-      this.graphView.Location = new System.Drawing.Point(3, 16);
+      this.graphView.Location = new System.Drawing.Point(6, 19);
       this.graphView.Name = "graphView";
+      this.graphView.Object = null;
       this.graphView.Operator = null;
-      this.graphView.Size = new System.Drawing.Size(602, 194);
+      this.graphView.Size = new System.Drawing.Size(590, 183);
       this.graphView.TabIndex = 0;
       // 
       // splitContainer
@@ -113,16 +119,18 @@ namespace HeuristicLab.Core.Views {
       // 
       this.splitContainer.Panel2.Controls.Add(this.graphGroupBox);
       this.splitContainer.Size = new System.Drawing.Size(608, 533);
-      this.splitContainer.SplitterDistance = 316;
+      this.splitContainer.SplitterDistance = 315;
       this.splitContainer.TabIndex = 3;
       // 
       // graphGroupBox
       // 
+      this.graphGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.graphGroupBox.Controls.Add(this.graphView);
-      this.graphGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.graphGroupBox.Location = new System.Drawing.Point(0, 0);
+      this.graphGroupBox.Location = new System.Drawing.Point(3, 3);
       this.graphGroupBox.Name = "graphGroupBox";
-      this.graphGroupBox.Size = new System.Drawing.Size(608, 213);
+      this.graphGroupBox.Size = new System.Drawing.Size(602, 208);
       this.graphGroupBox.TabIndex = 0;
       this.graphGroupBox.TabStop = false;
       this.graphGroupBox.Text = "Operator &Graph";
@@ -145,11 +153,11 @@ namespace HeuristicLab.Core.Views {
 
     #endregion
 
-    private System.Windows.Forms.ContextMenuStrip operatorsContextMenuStrip;
-    private System.Windows.Forms.ToolStripMenuItem initialOperatorToolStripMenuItem;
-    private OperatorSetView operatorsView;
-    private OperatorTreeView graphView;
-    private System.Windows.Forms.SplitContainer splitContainer;
-    private System.Windows.Forms.GroupBox graphGroupBox;
+    protected System.Windows.Forms.ContextMenuStrip operatorsContextMenuStrip;
+    protected System.Windows.Forms.ToolStripMenuItem initialOperatorToolStripMenuItem;
+    protected OperatorSetView operatorsView;
+    protected OperatorTreeView graphView;
+    protected System.Windows.Forms.SplitContainer splitContainer;
+    protected System.Windows.Forms.GroupBox graphGroupBox;
   }
 }

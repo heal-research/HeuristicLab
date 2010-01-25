@@ -88,7 +88,7 @@ namespace HeuristicLab.Core.Views {
     #endregion
 
     #region NamedItemCollection Events
-    private void NamedItemCollection_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<T> e) {
+    protected virtual void NamedItemCollection_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<T> e) {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<T>(NamedItemCollection_ItemsReplaced), sender, e);
       else {
@@ -101,7 +101,7 @@ namespace HeuristicLab.Core.Views {
     #endregion
 
     #region Helpers
-    protected string GetUniqueName(string originalName) {
+    protected virtual string GetUniqueName(string originalName) {
       if (!NamedItemCollection.ContainsKey(originalName))
         return originalName;
       else {

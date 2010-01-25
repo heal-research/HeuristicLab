@@ -30,10 +30,11 @@ namespace HeuristicLab.Data {
   public interface IStringConvertibleArrayData {
     int Length { get; set; }
 
+    bool Validate(string value);
     string GetValue(int index);
     bool SetValue(string value, int index);
 
-    event ChangedEventHandler Changed;
     event EventHandler<EventArgs<int>> ItemChanged;
+    event EventHandler Reset;
   }
 }

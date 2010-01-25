@@ -42,6 +42,8 @@ namespace HeuristicLab.Data.Views {
     public StringConvertibleArrayDataView() {
       InitializeComponent();
       Caption = "StringConvertibleArrayDataView View";
+      errorProvider.SetIconAlignment(sizeTextBox, ErrorIconAlignment.MiddleLeft);
+      errorProvider.SetIconPadding(sizeTextBox, 2);
     }
     public StringConvertibleArrayDataView(IStringConvertibleArrayData stringConvertibleArrayData)
       : this() {
@@ -50,7 +52,7 @@ namespace HeuristicLab.Data.Views {
 
     protected override void DeregisterObjectEvents() {
       StringConvertibleArrayData.ItemChanged -= new EventHandler<EventArgs<int>>(StringConvertibleArrayData_ItemChanged);
-      StringConvertibleArrayData.Changed -= new ChangedEventHandler(StringConvertibleArrayData_Changed);
+      StringConvertibleArrayData.Reset -= new EventHandler(StringConvertibleArrayData_Reset);
       base.DeregisterObjectEvents();
     }
 
@@ -58,7 +60,7 @@ namespace HeuristicLab.Data.Views {
     protected override void RegisterObjectEvents() {
       base.RegisterObjectEvents();
       StringConvertibleArrayData.ItemChanged += new EventHandler<EventArgs<int>>(StringConvertibleArrayData_ItemChanged);
-      StringConvertibleArrayData.Changed += new ChangedEventHandler(StringConvertibleArrayData_Changed);
+      StringConvertibleArrayData.Reset += new EventHandler(StringConvertibleArrayData_Reset);
     }
 
     protected override void OnObjectChanged() {
@@ -79,10 +81,8 @@ namespace HeuristicLab.Data.Views {
       sizeTextBox.Text = StringConvertibleArrayData.Length.ToString();
       sizeTextBox.Enabled = true;
       dataGridView.Rows.Clear();
-      if (StringConvertibleArrayData.Length > 0) {
-        dataGridView.ColumnCount = 1;
-        dataGridView.Rows.Add(StringConvertibleArrayData.Length);
-      }
+      dataGridView.ColumnCount = 1;
+      dataGridView.RowCount = StringConvertibleArrayData.Length;
       for (int i = 0; i < StringConvertibleArrayData.Length; i++)
         dataGridView.Rows[i].Cells[0].Value = StringConvertibleArrayData.GetValue(i);
       dataGridView.Enabled = true;
@@ -94,37 +94,46 @@ namespace HeuristicLab.Data.Views {
       else
         dataGridView.Rows[e.Value].Cells[0].Value = StringConvertibleArrayData.GetValue(e.Value);
     }
-    private void StringConvertibleArrayData_Changed(object sender, ChangedEventArgs e) {
+    private void StringConvertibleArrayData_Reset(object sender, EventArgs e) {
       if (InvokeRequired)
-        Invoke(new ChangedEventHandler(StringConvertibleArrayData_Changed), sender, e);
+        Invoke(new EventHandler(StringConvertibleArrayData_Reset), sender, e);
       else
         UpdateContent();
     }
 
     private void sizeTextBox_Validating(object sender, CancelEventArgs e) {
       int i = 0;
-      e.Cancel = e.Cancel || !int.TryParse(sizeTextBox.Text, out i);
-      e.Cancel = e.Cancel || (i < 0);
-      if (e.Cancel) {
-        MessageBox.Show(this, "\"" + sizeTextBox.Text + "\" is not a valid array length.", "Invalid Array Length", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      if (!int.TryParse(sizeTextBox.Text, out i) || (i < 0)) {
+        e.Cancel = true;
+        errorProvider.SetError(sizeTextBox, "Invalid Array Length");
         sizeTextBox.SelectAll();
-        sizeTextBox.Focus();
       }
     }
     private void sizeTextBox_Validated(object sender, EventArgs e) {
       StringConvertibleArrayData.Length = int.Parse(sizeTextBox.Text);
+      errorProvider.SetError(sizeTextBox, string.Empty);
     }
     private void sizeTextBox_KeyDown(object sender, KeyEventArgs e) {
       if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return)
-        sizeLabel.Focus();
+        sizeLabel.Focus();  // set focus on label to validate data
+      if (e.KeyCode == Keys.Escape) {
+        sizeTextBox.Text = StringConvertibleArrayData.Length.ToString();
+        sizeLabel.Focus();  // set focus on label to validate data
+      }
     }
     private void dataGridView_CellValidating(object sender, DataGridViewCellValidatingEventArgs e) {
-      e.Cancel = e.Cancel || !StringConvertibleArrayData.SetValue(e.FormattedValue.ToString(), e.RowIndex);
-      if (e.Cancel)
-        MessageBox.Show(this, "\"" + e.FormattedValue.ToString() + "\" is not a valid value.", "Invalid Value", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      if (!StringConvertibleArrayData.Validate(e.FormattedValue.ToString())) {
+        e.Cancel = true;
+        dataGridView.Rows[e.RowIndex].ErrorText = "Invalid Value";
+      }
     }
-    private void dataGridView_CellValidated(object sender, DataGridViewCellEventArgs e) {
-      dataGridView.Rows[e.RowIndex].Cells[0].Value = StringConvertibleArrayData.GetValue(e.RowIndex);
+    private void dataGridView_CellParsing(object sender, DataGridViewCellParsingEventArgs e) {
+      string value = e.Value.ToString();
+      e.ParsingApplied = StringConvertibleArrayData.SetValue(value, e.RowIndex);
+      if (e.ParsingApplied) e.Value = StringConvertibleArrayData.GetValue(e.RowIndex);
+    }
+    private void dataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e) {
+      dataGridView.Rows[e.RowIndex].ErrorText = string.Empty;
     }
   }
 }

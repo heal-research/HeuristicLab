@@ -45,17 +45,20 @@ namespace HeuristicLab.Operators.Views {
     /// </summary>
     private void InitializeComponent() {
       this.parameterCollectionView = new HeuristicLab.Core.Views.ParameterCollectionView();
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
       // 
       // nameTextBox
       // 
+      this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
+      this.errorProvider.SetIconPadding(this.nameTextBox, 2);
       this.nameTextBox.Size = new System.Drawing.Size(418, 20);
       // 
       // descriptionTextBox
       // 
       this.descriptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.descriptionTextBox.Size = new System.Drawing.Size(418, 90);
+      this.descriptionTextBox.Size = new System.Drawing.Size(418, 87);
       // 
       // parameterCollectionView
       // 
@@ -64,24 +67,26 @@ namespace HeuristicLab.Operators.Views {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.parameterCollectionView.Caption = "ParameterCollection";
       this.parameterCollectionView.ItemCollection = null;
-      this.parameterCollectionView.Location = new System.Drawing.Point(0, 122);
+      this.parameterCollectionView.Location = new System.Drawing.Point(0, 119);
       this.parameterCollectionView.Name = "parameterCollectionView";
       this.parameterCollectionView.NamedItemCollection = null;
-      this.parameterCollectionView.Size = new System.Drawing.Size(490, 231);
+      this.parameterCollectionView.Object = null;
+      this.parameterCollectionView.Size = new System.Drawing.Size(490, 234);
       this.parameterCollectionView.TabIndex = 4;
       // 
-      // OperatorBaseView
+      // OperatorView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.parameterCollectionView);
-      this.Name = "OperatorBaseView";
+      this.Name = "OperatorView";
       this.Size = new System.Drawing.Size(490, 353);
-      this.Controls.SetChildIndex(this.parameterCollectionView, 0);
+      this.Controls.SetChildIndex(this.nameTextBox, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
       this.Controls.SetChildIndex(this.descriptionLabel, 0);
-      this.Controls.SetChildIndex(this.nameTextBox, 0);
       this.Controls.SetChildIndex(this.descriptionTextBox, 0);
+      this.Controls.SetChildIndex(this.parameterCollectionView, 0);
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 

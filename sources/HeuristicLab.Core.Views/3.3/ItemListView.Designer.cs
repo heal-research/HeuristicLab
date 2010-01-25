@@ -50,46 +50,46 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+      this.splitContainer = new System.Windows.Forms.SplitContainer();
       this.removeButton = new System.Windows.Forms.Button();
       this.moveUpButton = new System.Windows.Forms.Button();
       this.moveDownButton = new System.Windows.Forms.Button();
       this.itemsListView = new System.Windows.Forms.ListView();
-      this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
+      this.listViewColumnHeader = new System.Windows.Forms.ColumnHeader();
       this.imageList = new System.Windows.Forms.ImageList(this.components);
       this.addButton = new System.Windows.Forms.Button();
       this.detailsGroupBox = new System.Windows.Forms.GroupBox();
       this.viewHost = new HeuristicLab.Core.Views.ViewHost();
       this.itemsGroupBox = new System.Windows.Forms.GroupBox();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-      this.splitContainer1.Panel1.SuspendLayout();
-      this.splitContainer1.Panel2.SuspendLayout();
-      this.splitContainer1.SuspendLayout();
+      this.splitContainer.Panel1.SuspendLayout();
+      this.splitContainer.Panel2.SuspendLayout();
+      this.splitContainer.SuspendLayout();
       this.detailsGroupBox.SuspendLayout();
       this.itemsGroupBox.SuspendLayout();
       this.SuspendLayout();
       // 
-      // splitContainer1
+      // splitContainer
       // 
-      this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-      this.splitContainer1.Location = new System.Drawing.Point(3, 16);
-      this.splitContainer1.Name = "splitContainer1";
+      this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.splitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+      this.splitContainer.Location = new System.Drawing.Point(3, 16);
+      this.splitContainer.Name = "splitContainer";
       // 
-      // splitContainer1.Panel1
+      // splitContainer.Panel1
       // 
-      this.splitContainer1.Panel1.Controls.Add(this.removeButton);
-      this.splitContainer1.Panel1.Controls.Add(this.moveUpButton);
-      this.splitContainer1.Panel1.Controls.Add(this.moveDownButton);
-      this.splitContainer1.Panel1.Controls.Add(this.itemsListView);
-      this.splitContainer1.Panel1.Controls.Add(this.addButton);
+      this.splitContainer.Panel1.Controls.Add(this.removeButton);
+      this.splitContainer.Panel1.Controls.Add(this.moveUpButton);
+      this.splitContainer.Panel1.Controls.Add(this.moveDownButton);
+      this.splitContainer.Panel1.Controls.Add(this.itemsListView);
+      this.splitContainer.Panel1.Controls.Add(this.addButton);
       // 
-      // splitContainer1.Panel2
+      // splitContainer.Panel2
       // 
-      this.splitContainer1.Panel2.Controls.Add(this.detailsGroupBox);
-      this.splitContainer1.Size = new System.Drawing.Size(493, 323);
-      this.splitContainer1.SplitterDistance = 200;
-      this.splitContainer1.TabIndex = 0;
+      this.splitContainer.Panel2.Controls.Add(this.detailsGroupBox);
+      this.splitContainer.Size = new System.Drawing.Size(493, 323);
+      this.splitContainer.SplitterDistance = 200;
+      this.splitContainer.TabIndex = 0;
       // 
       // removeButton
       // 
@@ -134,13 +134,13 @@ namespace HeuristicLab.Core.Views {
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.itemsListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1});
+            this.listViewColumnHeader});
       this.itemsListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
       this.itemsListView.HideSelection = false;
       this.itemsListView.Location = new System.Drawing.Point(3, 32);
       this.itemsListView.Name = "itemsListView";
       this.itemsListView.ShowItemToolTips = true;
-      this.itemsListView.Size = new System.Drawing.Size(194, 288);
+      this.itemsListView.Size = new System.Drawing.Size(194, 287);
       this.itemsListView.SmallImageList = this.imageList;
       this.itemsListView.TabIndex = 4;
       this.itemsListView.UseCompatibleStateImageBehavior = false;
@@ -186,16 +186,18 @@ namespace HeuristicLab.Core.Views {
       // 
       // viewHost
       // 
-      this.viewHost.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.viewHost.Location = new System.Drawing.Point(3, 16);
+      this.viewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.viewHost.Location = new System.Drawing.Point(6, 19);
       this.viewHost.Name = "viewHost";
       this.viewHost.Object = null;
-      this.viewHost.Size = new System.Drawing.Size(277, 275);
+      this.viewHost.Size = new System.Drawing.Size(271, 269);
       this.viewHost.TabIndex = 0;
       // 
       // itemsGroupBox
       // 
-      this.itemsGroupBox.Controls.Add(this.splitContainer1);
+      this.itemsGroupBox.Controls.Add(this.splitContainer);
       this.itemsGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
       this.itemsGroupBox.Location = new System.Drawing.Point(0, 0);
       this.itemsGroupBox.Name = "itemsGroupBox";
@@ -210,9 +212,9 @@ namespace HeuristicLab.Core.Views {
       this.Controls.Add(this.itemsGroupBox);
       this.Name = "ItemListView";
       this.Size = new System.Drawing.Size(499, 342);
-      this.splitContainer1.Panel1.ResumeLayout(false);
-      this.splitContainer1.Panel2.ResumeLayout(false);
-      this.splitContainer1.ResumeLayout(false);
+      this.splitContainer.Panel1.ResumeLayout(false);
+      this.splitContainer.Panel2.ResumeLayout(false);
+      this.splitContainer.ResumeLayout(false);
       this.detailsGroupBox.ResumeLayout(false);
       this.itemsGroupBox.ResumeLayout(false);
       this.ResumeLayout(false);
@@ -221,8 +223,8 @@ namespace HeuristicLab.Core.Views {
 
     #endregion
 
-    private System.Windows.Forms.SplitContainer splitContainer1;
-    private System.Windows.Forms.ColumnHeader columnHeader1;
+    protected System.Windows.Forms.SplitContainer splitContainer;
+    protected System.Windows.Forms.ColumnHeader listViewColumnHeader;
     protected GroupBox itemsGroupBox;
     protected ListView itemsListView;
     protected GroupBox detailsGroupBox;
@@ -230,8 +232,8 @@ namespace HeuristicLab.Core.Views {
     protected Button removeButton;
     protected Button moveUpButton;
     protected Button moveDownButton;
-    private ToolTip toolTip;
-    private ImageList imageList;
+    protected ToolTip toolTip;
+    protected ImageList imageList;
     protected ViewHost viewHost;
   }
 }

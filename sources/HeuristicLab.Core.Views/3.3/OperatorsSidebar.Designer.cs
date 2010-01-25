@@ -71,8 +71,6 @@ namespace HeuristicLab.Core.Views {
 
     #endregion
 
-    private TypeSelector typeSelector;
-
-
+    protected TypeSelector typeSelector;
   }
 }

@@ -34,7 +34,7 @@ namespace HeuristicLab.Core.Views {
   /// </summary>
   [Content(typeof(NamedItem), true)]
   public partial class NamedItemView : ItemView {
-    public NamedItem NamedItemBase {
+    public NamedItem NamedItem {
       get { return (NamedItem)Item; }
       set { base.Item = value; }
     }
@@ -42,26 +42,28 @@ namespace HeuristicLab.Core.Views {
     public NamedItemView() {
       InitializeComponent();
       Caption = "NamedItem";
+      errorProvider.SetIconAlignment(nameTextBox, ErrorIconAlignment.MiddleLeft);
+      errorProvider.SetIconPadding(nameTextBox, 2);
     }
-    public NamedItemView(NamedItem namedItemBase)
+    public NamedItemView(NamedItem namedItem)
       : this() {
-      NamedItemBase = namedItemBase;
+      NamedItem = namedItem;
     }
 
     protected override void DeregisterObjectEvents() {
-      NamedItemBase.NameChanged -= new EventHandler(NamedItemBase_NameChanged);
-      NamedItemBase.DescriptionChanged -= new EventHandler(NamedItemBase_DescriptionChanged);
+      NamedItem.NameChanged -= new EventHandler(NamedItem_NameChanged);
+      NamedItem.DescriptionChanged -= new EventHandler(NamedItem_DescriptionChanged);
       base.DeregisterObjectEvents();
     }
     protected override void RegisterObjectEvents() {
       base.RegisterObjectEvents();
-      NamedItemBase.NameChanged += new EventHandler(NamedItemBase_NameChanged);
-      NamedItemBase.DescriptionChanged += new EventHandler(NamedItemBase_DescriptionChanged);
+      NamedItem.NameChanged += new EventHandler(NamedItem_NameChanged);
+      NamedItem.DescriptionChanged += new EventHandler(NamedItem_DescriptionChanged);
     }
 
     protected override void OnObjectChanged() {
       base.OnObjectChanged();
-      if (NamedItemBase == null) {
+      if (NamedItem == null) {
         Caption = "NamedItem";
         nameTextBox.Text = "-";
         nameTextBox.ReadOnly = false;
@@ -70,47 +72,55 @@ namespace HeuristicLab.Core.Views {
         nameTextBox.ReadOnly = false;
         descriptionTextBox.Enabled = false;
       } else {
-        Caption = NamedItemBase.Name + " (" + NamedItemBase.GetType().Name + ")";
-        nameTextBox.Text = NamedItemBase.Name;
-        nameTextBox.ReadOnly = !NamedItemBase.CanChangeName;
+        Caption = NamedItem.Name + " (" + NamedItem.GetType().Name + ")";
+        nameTextBox.Text = NamedItem.Name;
+        nameTextBox.ReadOnly = !NamedItem.CanChangeName;
         nameTextBox.Enabled = true;
-        descriptionTextBox.Text = NamedItemBase.Description;
-        descriptionTextBox.ReadOnly = !NamedItemBase.CanChangeDescription;
+        descriptionTextBox.Text = NamedItem.Description;
+        descriptionTextBox.ReadOnly = !NamedItem.CanChangeDescription;
         descriptionTextBox.Enabled = true;
       }
     }
 
-    protected virtual void NamedItemBase_NameChanged(object sender, EventArgs e) {
+    protected virtual void NamedItem_NameChanged(object sender, EventArgs e) {
       if (InvokeRequired)
-        Invoke(new EventHandler(NamedItemBase_NameChanged), sender, e);
+        Invoke(new EventHandler(NamedItem_NameChanged), sender, e);
       else
-        nameTextBox.Text = NamedItemBase.Name;
+        nameTextBox.Text = NamedItem.Name;
     }
-    protected virtual void NamedItemBase_DescriptionChanged(object sender, EventArgs e) {
+    protected virtual void NamedItem_DescriptionChanged(object sender, EventArgs e) {
       if (InvokeRequired)
-        Invoke(new EventHandler(NamedItemBase_DescriptionChanged), sender, e);
+        Invoke(new EventHandler(NamedItem_DescriptionChanged), sender, e);
       else
-        descriptionTextBox.Text = NamedItemBase.Description;
+        descriptionTextBox.Text = NamedItem.Description;
     }
 
     protected virtual void nameTextBox_Validating(object sender, CancelEventArgs e) {
-      if (NamedItemBase.CanChangeName) {
-        string oldName = NamedItemBase.Name;
-        NamedItemBase.Name = nameTextBox.Text;
+      if (NamedItem.CanChangeName) {
+        NamedItem.Name = nameTextBox.Text;
 
         // check if variable name was set successfully
-        e.Cancel = e.Cancel || !NamedItemBase.Name.Equals(nameTextBox.Text);
-        if (e.Cancel) {
-          MessageBox.Show(this, "\"" + nameTextBox.Text + "\" is not a valid name.", "Invalid Value", MessageBoxButtons.OK, MessageBoxIcon.Error);
-          nameTextBox.Text = oldName;
+        if (!NamedItem.Name.Equals(nameTextBox.Text)) {
+          e.Cancel = true;
+          errorProvider.SetError(nameTextBox, "Invalid Name");
           nameTextBox.SelectAll();
-          nameTextBox.Focus();
         }
       }
     }
+    protected virtual void nameTextBox_Validated(object sender, EventArgs e) {
+      errorProvider.SetError(nameTextBox, string.Empty);
+    }
+    protected virtual void nameTextBox_KeyDown(object sender, KeyEventArgs e) {
+      if ((e.KeyCode == Keys.Enter) || (e.KeyCode == Keys.Return))
+        nameLabel.Focus();  // set focus on label to validate data
+      if (e.KeyCode == Keys.Escape) {
+        nameTextBox.Text = NamedItem.Name;
+        nameLabel.Focus();  // set focus on label to validate data
+      }
+    }
     protected virtual void descriptionTextBox_Validated(object sender, EventArgs e) {
-      if (NamedItemBase.CanChangeDescription)
-        NamedItemBase.Description = descriptionTextBox.Text;
+      if (NamedItem.CanChangeDescription)
+        NamedItem.Description = descriptionTextBox.Text;
     }
   }
 }

@@ -40,7 +40,7 @@ namespace HeuristicLab.Data {
         T[] newArray = new T[value];
         Array.Copy(array, newArray, Math.Min(value, array.Length));
         array = newArray;
-        OnChanged();
+        OnReset();
       }
     }
     public T this[int index] {
@@ -59,13 +59,13 @@ namespace HeuristicLab.Data {
     public ValueTypeArrayData(int length) {
       array = new T[length];
     }
-    public ValueTypeArrayData(ValueTypeArrayData<T> elements) {
-      if (elements == null) throw new ArgumentNullException();
-      array = (T[])elements.array.Clone();
-    }
     public ValueTypeArrayData(T[] elements) {
       if (elements == null) throw new ArgumentNullException();
       array = (T[])elements.Clone();
+    }
+    protected ValueTypeArrayData(ValueTypeArrayData<T> elements) {
+      if (elements == null) throw new ArgumentNullException();
+      array = (T[])elements.array.Clone();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -90,10 +90,16 @@ namespace HeuristicLab.Data {
       return array.GetEnumerator();
     }
 
-    public event EventHandler<EventArgs<int>> ItemChanged;
-    protected virtual void OnItemChanged(int index) {
+    protected event EventHandler<EventArgs<int>> ItemChanged;
+    private void OnItemChanged(int index) {
       if (ItemChanged != null)
         ItemChanged(this, new EventArgs<int>(index));
+      OnChanged();
+    }
+    protected event EventHandler Reset;
+    private void OnReset() {
+      if (Reset != null)
+        Reset(this, EventArgs.Empty);
       OnChanged();
     }
   }

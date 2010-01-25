@@ -13,7 +13,7 @@ namespace HeuristicLab.Core.Views {
   [Content(typeof(ParameterCollection), true)]
   [Content(typeof(IObservableKeyedCollection<string, IParameter>), true)]
   public partial class ParameterCollectionView : NamedItemCollectionView<IParameter> {
-    CreateParameterDialog createParameterDialog;
+    protected CreateParameterDialog createParameterDialog;
     /// <summary>
     /// Initializes a new instance of <see cref="VariablesScopeView"/> with caption "Variables Scope View".
     /// </summary>

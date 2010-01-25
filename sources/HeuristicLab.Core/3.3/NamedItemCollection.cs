@@ -90,7 +90,7 @@ namespace HeuristicLab.Core {
     }
     #region NOTE
     // NOTE: OnItemsReplaced is not overridden as ItemsReplaced is only fired
-    // by ObservableKeyedCollectionBase when the key of an item has changed. The items stays
+    // by ObservableKeyedCollection when the key of an item has changed. The items stays
     // in the collection and therefore the NameChanging, NameChanged and Changed event handler
     // do not have to be removed and added again.
     #endregion

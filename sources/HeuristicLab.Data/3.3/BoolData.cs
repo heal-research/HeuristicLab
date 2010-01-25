@@ -40,6 +40,11 @@ namespace HeuristicLab.Data {
       return clone;
     }
 
+    #region IStringConvertibleData Members
+    bool IStringConvertibleData.Validate(string value) {
+      bool b;
+      return bool.TryParse(value, out b);
+    }
     string IStringConvertibleData.GetValue() {
       return Value.ToString();
     }
@@ -52,5 +57,6 @@ namespace HeuristicLab.Data {
         return false;
       }
     }
+    #endregion
   }
 }

@@ -34,7 +34,7 @@ namespace HeuristicLab.Core.Views {
   /// </summary>
   [Content(typeof(ItemParameter), true)]
   public partial class ItemParameterView : ParameterView {
-    private TypeSelectorDialog typeSelectorDialog;
+    protected TypeSelectorDialog typeSelectorDialog;
 
     /// <summary>
     /// Gets or sets the variable to represent visually.
@@ -104,13 +104,13 @@ namespace HeuristicLab.Core.Views {
       }
     }
 
-    private void Parameter_ActualNameChanged(object sender, EventArgs e) {
+    protected virtual void Parameter_ActualNameChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Parameter_ActualNameChanged), sender, e);
       else
         actualNameTextBox.Text = Parameter.ActualName;
     }
-    private void Parameter_ValueChanged(object sender, EventArgs e) {
+    protected virtual void Parameter_ValueChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Parameter_ValueChanged), sender, e);
       else {
@@ -121,10 +121,10 @@ namespace HeuristicLab.Core.Views {
       }
     }
 
-    private void actualNameTextBox_Validated(object sender, EventArgs e) {
+    protected virtual void actualNameTextBox_Validated(object sender, EventArgs e) {
       Parameter.ActualName = actualNameTextBox.Text;
     }
-    private void setValueButton_Click(object sender, EventArgs e) {
+    protected virtual void setValueButton_Click(object sender, EventArgs e) {
       if (typeSelectorDialog == null) {
         typeSelectorDialog = new TypeSelectorDialog();
         typeSelectorDialog.Caption = "Select Value Type";
@@ -133,10 +133,10 @@ namespace HeuristicLab.Core.Views {
       if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK)
         Parameter.Value = (IItem)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
     }
-    private void clearValueButton_Click(object sender, EventArgs e) {
+    protected virtual void clearValueButton_Click(object sender, EventArgs e) {
       Parameter.Value = null;
     }
-    private void valuePanel_DragEnterOver(object sender, DragEventArgs e) {
+    protected virtual void valuePanel_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
       Type type = e.Data.GetData("Type") as Type;
       if ((type != null) && (Parameter.DataType.IsAssignableFrom(type))) {
@@ -145,7 +145,7 @@ namespace HeuristicLab.Core.Views {
         else e.Effect = DragDropEffects.Link;
       }
     }
-    private void valuePanel_DragDrop(object sender, DragEventArgs e) {
+    protected virtual void valuePanel_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
         IItem item = e.Data.GetData("Value") as IItem;
         if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) item = (IItem)item.Clone();

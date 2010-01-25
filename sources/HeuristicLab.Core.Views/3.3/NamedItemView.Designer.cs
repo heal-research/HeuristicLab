@@ -44,10 +44,13 @@ namespace HeuristicLab.Core.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
       this.nameLabel = new System.Windows.Forms.Label();
       this.nameTextBox = new System.Windows.Forms.TextBox();
       this.descriptionLabel = new System.Windows.Forms.Label();
       this.descriptionTextBox = new System.Windows.Forms.TextBox();
+      this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
       // 
       // nameLabel
@@ -67,6 +70,8 @@ namespace HeuristicLab.Core.Views {
       this.nameTextBox.Name = "nameTextBox";
       this.nameTextBox.Size = new System.Drawing.Size(279, 20);
       this.nameTextBox.TabIndex = 1;
+      this.nameTextBox.Validated += new System.EventHandler(this.nameTextBox_Validated);
+      this.nameTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.nameTextBox_KeyDown);
       this.nameTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.nameTextBox_Validating);
       // 
       // descriptionLabel
@@ -87,11 +92,16 @@ namespace HeuristicLab.Core.Views {
       this.descriptionTextBox.Multiline = true;
       this.descriptionTextBox.Name = "descriptionTextBox";
       this.descriptionTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-      this.descriptionTextBox.Size = new System.Drawing.Size(279, 62);
+      this.descriptionTextBox.Size = new System.Drawing.Size(279, 86);
       this.descriptionTextBox.TabIndex = 3;
       this.descriptionTextBox.Validated += new System.EventHandler(this.descriptionTextBox_Validated);
       // 
-      // NamedItemBaseView
+      // errorProvider
+      // 
+      this.errorProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
+      this.errorProvider.ContainerControl = this;
+      // 
+      // NamedItemView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -99,8 +109,9 @@ namespace HeuristicLab.Core.Views {
       this.Controls.Add(this.nameTextBox);
       this.Controls.Add(this.descriptionLabel);
       this.Controls.Add(this.nameLabel);
-      this.Name = "NamedItemBaseView";
-      this.Size = new System.Drawing.Size(351, 88);
+      this.Name = "NamedItemView";
+      this.Size = new System.Drawing.Size(351, 112);
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -112,5 +123,6 @@ namespace HeuristicLab.Core.Views {
     protected System.Windows.Forms.Label nameLabel;
     protected System.Windows.Forms.Label descriptionLabel;
     protected System.Windows.Forms.TextBox descriptionTextBox;
+    protected System.Windows.Forms.ErrorProvider errorProvider;
   }
 }

@@ -32,7 +32,7 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.Core.Views {
   public partial class CreateParameterDialog : Form {
-    TypeSelectorDialog typeSelectorDialog;
+    protected TypeSelectorDialog typeSelectorDialog;
 
     public IParameter Parameter {
       get {
@@ -57,7 +57,7 @@ namespace HeuristicLab.Core.Views {
       InitializeComponent();
     }
 
-    private void setDataTypeButton_Click(object sender, EventArgs e) {
+    protected virtual void setDataTypeButton_Click(object sender, EventArgs e) {
       if (typeSelectorDialog == null) {
         typeSelectorDialog = new TypeSelectorDialog();
         typeSelectorDialog.Caption = "Select Data Type";
@@ -71,11 +71,11 @@ namespace HeuristicLab.Core.Views {
       okButton.Enabled = dataTypeTextBox.Tag != null;
     }
 
-    private void CreateParameterDialog_Load(object sender, EventArgs e) {
+    protected virtual void CreateParameterDialog_Load(object sender, EventArgs e) {
       parameterTypeSelector.Configure(typeof(IParameter), false, true);
     }
 
-    private void parameterTypeSelector_SelectedTypeChanged(object sender, EventArgs e) {
+    protected virtual void parameterTypeSelector_SelectedTypeChanged(object sender, EventArgs e) {
       dataTypeTextBox.Text = "-";
       dataTypeTextBox.Tag = null;
       dataTypeTextBox.Enabled = false;

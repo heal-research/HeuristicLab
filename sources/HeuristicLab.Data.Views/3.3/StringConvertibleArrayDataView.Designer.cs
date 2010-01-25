@@ -44,16 +44,19 @@ namespace HeuristicLab.Data.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
       this.sizeLabel = new System.Windows.Forms.Label();
       this.sizeTextBox = new System.Windows.Forms.TextBox();
       this.dataGridView = new System.Windows.Forms.DataGridView();
+      this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
       // 
       // sizeLabel
       // 
       this.sizeLabel.AutoSize = true;
-      this.sizeLabel.Location = new System.Drawing.Point(3, 6);
+      this.sizeLabel.Location = new System.Drawing.Point(3, 3);
       this.sizeLabel.Name = "sizeLabel";
       this.sizeLabel.Size = new System.Drawing.Size(30, 13);
       this.sizeLabel.TabIndex = 0;
@@ -63,9 +66,9 @@ namespace HeuristicLab.Data.Views {
       // 
       this.sizeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.sizeTextBox.Location = new System.Drawing.Point(39, 3);
+      this.sizeTextBox.Location = new System.Drawing.Point(50, 0);
       this.sizeTextBox.Name = "sizeTextBox";
-      this.sizeTextBox.Size = new System.Drawing.Size(382, 20);
+      this.sizeTextBox.Size = new System.Drawing.Size(374, 20);
       this.sizeTextBox.TabIndex = 1;
       this.sizeTextBox.Validated += new System.EventHandler(this.sizeTextBox_Validated);
       this.sizeTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.sizeTextBox_KeyDown);
@@ -81,12 +84,18 @@ namespace HeuristicLab.Data.Views {
       this.dataGridView.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
       this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
       this.dataGridView.ColumnHeadersVisible = false;
-      this.dataGridView.Location = new System.Drawing.Point(3, 29);
+      this.dataGridView.Location = new System.Drawing.Point(0, 26);
       this.dataGridView.Name = "dataGridView";
-      this.dataGridView.Size = new System.Drawing.Size(418, 372);
+      this.dataGridView.Size = new System.Drawing.Size(424, 378);
       this.dataGridView.TabIndex = 2;
-      this.dataGridView.CellValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellValidated);
+      this.dataGridView.CellParsing += new System.Windows.Forms.DataGridViewCellParsingEventHandler(this.dataGridView_CellParsing);
       this.dataGridView.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dataGridView_CellValidating);
+      this.dataGridView.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellEndEdit);
+      // 
+      // errorProvider
+      // 
+      this.errorProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
+      this.errorProvider.ContainerControl = this;
       // 
       // StringConvertibleArrayDataView
       // 
@@ -98,6 +107,7 @@ namespace HeuristicLab.Data.Views {
       this.Name = "StringConvertibleArrayDataView";
       this.Size = new System.Drawing.Size(424, 404);
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -108,6 +118,7 @@ namespace HeuristicLab.Data.Views {
     private System.Windows.Forms.Label sizeLabel;
     private System.Windows.Forms.TextBox sizeTextBox;
     private System.Windows.Forms.DataGridView dataGridView;
+    private System.Windows.Forms.ErrorProvider errorProvider;
 
   }
 }

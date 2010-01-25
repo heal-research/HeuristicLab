@@ -13,7 +13,7 @@ namespace HeuristicLab.Core.Views {
   [Content(typeof(OperatorList), true)]
   [Content(typeof(IObservableList<IOperator>), true)]
   public partial class OperatorListView : ItemListView<IOperator> {
-    TypeSelectorDialog typeSelectorDialog;
+    protected TypeSelectorDialog typeSelectorDialog;
 
     /// <summary>
     /// Initializes a new instance of <see cref="VariablesScopeView"/> with caption "Variables Scope View".

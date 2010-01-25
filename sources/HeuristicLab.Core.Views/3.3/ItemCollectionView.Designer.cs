@@ -51,7 +51,7 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+      this.splitContainer = new System.Windows.Forms.SplitContainer();
       this.itemsListView = new System.Windows.Forms.ListView();
       this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
       this.imageList = new System.Windows.Forms.ImageList(this.components);
@@ -63,35 +63,35 @@ namespace HeuristicLab.Core.Views {
       this.viewHost = new HeuristicLab.Core.Views.ViewHost();
       this.itemsGroupBox = new System.Windows.Forms.GroupBox();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-      this.splitContainer1.Panel1.SuspendLayout();
-      this.splitContainer1.Panel2.SuspendLayout();
-      this.splitContainer1.SuspendLayout();
+      this.splitContainer.Panel1.SuspendLayout();
+      this.splitContainer.Panel2.SuspendLayout();
+      this.splitContainer.SuspendLayout();
       this.detailsGroupBox.SuspendLayout();
       this.itemsGroupBox.SuspendLayout();
       this.SuspendLayout();
       // 
-      // splitContainer1
+      // splitContainer
       // 
-      this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-      this.splitContainer1.Location = new System.Drawing.Point(3, 16);
-      this.splitContainer1.Name = "splitContainer1";
+      this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.splitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+      this.splitContainer.Location = new System.Drawing.Point(3, 16);
+      this.splitContainer.Name = "splitContainer";
       // 
-      // splitContainer1.Panel1
+      // splitContainer.Panel1
       // 
-      this.splitContainer1.Panel1.Controls.Add(this.itemsListView);
-      this.splitContainer1.Panel1.Controls.Add(this.sortDescendingButton);
-      this.splitContainer1.Panel1.Controls.Add(this.sortAscendingButton);
-      this.splitContainer1.Panel1.Controls.Add(this.removeButton);
-      this.splitContainer1.Panel1.Controls.Add(this.addButton);
-      this.splitContainer1.Panel1MinSize = 100;
+      this.splitContainer.Panel1.Controls.Add(this.itemsListView);
+      this.splitContainer.Panel1.Controls.Add(this.sortDescendingButton);
+      this.splitContainer.Panel1.Controls.Add(this.sortAscendingButton);
+      this.splitContainer.Panel1.Controls.Add(this.removeButton);
+      this.splitContainer.Panel1.Controls.Add(this.addButton);
+      this.splitContainer.Panel1MinSize = 100;
       // 
-      // splitContainer1.Panel2
+      // splitContainer.Panel2
       // 
-      this.splitContainer1.Panel2.Controls.Add(this.detailsGroupBox);
-      this.splitContainer1.Size = new System.Drawing.Size(526, 364);
-      this.splitContainer1.SplitterDistance = 250;
-      this.splitContainer1.TabIndex = 0;
+      this.splitContainer.Panel2.Controls.Add(this.detailsGroupBox);
+      this.splitContainer.Size = new System.Drawing.Size(526, 364);
+      this.splitContainer.SplitterDistance = 250;
+      this.splitContainer.TabIndex = 0;
       // 
       // itemsListView
       // 
@@ -106,7 +106,7 @@ namespace HeuristicLab.Core.Views {
       this.itemsListView.Location = new System.Drawing.Point(3, 32);
       this.itemsListView.Name = "itemsListView";
       this.itemsListView.ShowItemToolTips = true;
-      this.itemsListView.Size = new System.Drawing.Size(244, 329);
+      this.itemsListView.Size = new System.Drawing.Size(244, 328);
       this.itemsListView.SmallImageList = this.imageList;
       this.itemsListView.TabIndex = 4;
       this.itemsListView.UseCompatibleStateImageBehavior = false;
@@ -188,16 +188,18 @@ namespace HeuristicLab.Core.Views {
       // 
       // viewHost
       // 
-      this.viewHost.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.viewHost.Location = new System.Drawing.Point(3, 16);
+      this.viewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.viewHost.Location = new System.Drawing.Point(6, 19);
       this.viewHost.Name = "viewHost";
       this.viewHost.Object = null;
-      this.viewHost.Size = new System.Drawing.Size(260, 316);
+      this.viewHost.Size = new System.Drawing.Size(254, 310);
       this.viewHost.TabIndex = 0;
       // 
       // itemsGroupBox
       // 
-      this.itemsGroupBox.Controls.Add(this.splitContainer1);
+      this.itemsGroupBox.Controls.Add(this.splitContainer);
       this.itemsGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
       this.itemsGroupBox.Location = new System.Drawing.Point(0, 0);
       this.itemsGroupBox.Name = "itemsGroupBox";
@@ -212,9 +214,9 @@ namespace HeuristicLab.Core.Views {
       this.Controls.Add(this.itemsGroupBox);
       this.Name = "ItemCollectionView";
       this.Size = new System.Drawing.Size(532, 383);
-      this.splitContainer1.Panel1.ResumeLayout(false);
-      this.splitContainer1.Panel2.ResumeLayout(false);
-      this.splitContainer1.ResumeLayout(false);
+      this.splitContainer.Panel1.ResumeLayout(false);
+      this.splitContainer.Panel2.ResumeLayout(false);
+      this.splitContainer.ResumeLayout(false);
       this.detailsGroupBox.ResumeLayout(false);
       this.itemsGroupBox.ResumeLayout(false);
       this.ResumeLayout(false);
@@ -223,7 +225,7 @@ namespace HeuristicLab.Core.Views {
 
     #endregion
 
-    protected System.Windows.Forms.SplitContainer splitContainer1;
+    protected System.Windows.Forms.SplitContainer splitContainer;
     protected System.Windows.Forms.ColumnHeader columnHeader1;
     protected GroupBox itemsGroupBox;
     protected ListView itemsListView;
@@ -232,7 +234,7 @@ namespace HeuristicLab.Core.Views {
     protected Button removeButton;
     protected ToolTip toolTip;
     protected ImageList imageList;
-    private ViewHost viewHost;
+    protected ViewHost viewHost;
     protected Button sortAscendingButton;
     protected Button sortDescendingButton;
   }

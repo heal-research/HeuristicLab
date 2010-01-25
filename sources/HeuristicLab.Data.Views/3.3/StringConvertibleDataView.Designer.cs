@@ -44,27 +44,48 @@ namespace HeuristicLab.Data.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
       this.valueTextBox = new System.Windows.Forms.TextBox();
+      this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
+      this.valueLabel = new System.Windows.Forms.Label();
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
       // 
       // valueTextBox
       // 
       this.valueTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.valueTextBox.Location = new System.Drawing.Point(3, 0);
+      this.valueTextBox.Location = new System.Drawing.Point(56, 0);
       this.valueTextBox.Name = "valueTextBox";
-      this.valueTextBox.Size = new System.Drawing.Size(244, 20);
-      this.valueTextBox.TabIndex = 0;
+      this.valueTextBox.Size = new System.Drawing.Size(194, 20);
+      this.valueTextBox.TabIndex = 1;
       this.valueTextBox.Validated += new System.EventHandler(this.valueTextBox_Validated);
+      this.valueTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.valueTextBox_KeyDown);
       this.valueTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.valueTextBox_Validating);
+      // 
+      // errorProvider
+      // 
+      this.errorProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
+      this.errorProvider.ContainerControl = this;
+      // 
+      // valueLabel
+      // 
+      this.valueLabel.AutoSize = true;
+      this.valueLabel.Location = new System.Drawing.Point(3, 3);
+      this.valueLabel.Name = "valueLabel";
+      this.valueLabel.Size = new System.Drawing.Size(37, 13);
+      this.valueLabel.TabIndex = 0;
+      this.valueLabel.Text = "&Value:";
       // 
       // StringConvertibleDataView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.valueLabel);
       this.Controls.Add(this.valueTextBox);
       this.Name = "StringConvertibleDataView";
-      this.Size = new System.Drawing.Size(250, 34);
+      this.Size = new System.Drawing.Size(250, 38);
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -73,5 +94,7 @@ namespace HeuristicLab.Data.Views {
     #endregion
 
     private System.Windows.Forms.TextBox valueTextBox;
+    private System.Windows.Forms.ErrorProvider errorProvider;
+    private System.Windows.Forms.Label valueLabel;
   }
 }

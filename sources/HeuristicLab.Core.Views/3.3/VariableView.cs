@@ -34,7 +34,7 @@ namespace HeuristicLab.Core.Views {
   /// </summary>
   [Content(typeof(Variable), true)]
   public partial class VariableView : NamedItemView {
-    private TypeSelectorDialog typeSelectorDialog;
+    protected TypeSelectorDialog typeSelectorDialog;
 
     /// <summary>
     /// Gets or sets the variable to represent visually.
@@ -102,7 +102,7 @@ namespace HeuristicLab.Core.Views {
       }
     }
 
-    private void Variable_ValueChanged(object sender, EventArgs e) {
+    protected virtual void Variable_ValueChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Variable_ValueChanged), sender, e);
       else {
@@ -114,7 +114,7 @@ namespace HeuristicLab.Core.Views {
       }
     }
 
-    private void setValueButton_Click(object sender, EventArgs e) {
+    protected virtual void setValueButton_Click(object sender, EventArgs e) {
       if (typeSelectorDialog == null) {
         typeSelectorDialog = new TypeSelectorDialog();
         typeSelectorDialog.Caption = "Select Value Type";
@@ -124,10 +124,10 @@ namespace HeuristicLab.Core.Views {
         Variable.Value = (IItem)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
       }
     }
-    private void clearValueButton_Click(object sender, EventArgs e) {
+    protected virtual void clearValueButton_Click(object sender, EventArgs e) {
       Variable.Value = null;
     }
-    private void valuePanel_DragEnterOver(object sender, DragEventArgs e) {
+    protected virtual void valuePanel_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
       Type type = e.Data.GetData("Type") as Type;
       if ((type != null) && (typeof(IItem).IsAssignableFrom(type))) {
@@ -136,7 +136,7 @@ namespace HeuristicLab.Core.Views {
         else e.Effect = DragDropEffects.Link;
       }
     }
-    private void valuePanel_DragDrop(object sender, DragEventArgs e) {
+    protected virtual void valuePanel_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
         IItem item = e.Data.GetData("Value") as IItem;
         if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) item = (IItem)item.Clone();

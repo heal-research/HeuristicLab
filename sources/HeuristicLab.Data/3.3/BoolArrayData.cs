@@ -23,39 +23,54 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
   [EmptyStorableClass]
-  [Item("TimeSpan", "Represents a duration of time.")]
+  [Item("BoolArrayData", "Represents an array of boolean values.")]
   [Creatable("Test")]
-  public sealed class TimeSpanData : ValueTypeData<TimeSpan>, IStringConvertibleData {
-    public TimeSpanData() : base() { }
-    public TimeSpanData(TimeSpan value) : base(value) { }
+  public sealed class BoolArrayData : ValueTypeArrayData<bool>, IStringConvertibleArrayData {
+    public BoolArrayData() : base() { }
+    public BoolArrayData(int length) : base(length) { }
+    public BoolArrayData(bool[] elements) : base(elements) { }
+    protected BoolArrayData(BoolArrayData elements) : base(elements) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      TimeSpanData clone = new TimeSpanData(Value);
+      BoolArrayData clone = new BoolArrayData(this);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
 
-    #region IStringConvertibleData Members
-    bool IStringConvertibleData.Validate(string value) {
-      TimeSpan t;
-      return TimeSpan.TryParse(value, out t);
+    #region IStringConvertibleArrayData Members
+    int IStringConvertibleArrayData.Length {
+      get { return Length; }
+      set { Length = value; }
     }
-    string IStringConvertibleData.GetValue() {
-      return Value.ToString();
+    bool IStringConvertibleArrayData.Validate(string value) {
+      bool b;
+      return bool.TryParse(value, out b);
     }
-    bool IStringConvertibleData.SetValue(string value) {
-      TimeSpan t;
-      if (TimeSpan.TryParse(value, out t)) {
-        Value = t;
+    string IStringConvertibleArrayData.GetValue(int index) {
+      return this[index].ToString();
+    }
+    bool IStringConvertibleArrayData.SetValue(string value, int index) {
+      bool b;
+      if (bool.TryParse(value, out b)) {
+        this[index] = b;
         return true;
       } else {
         return false;
       }
+    }
+    event EventHandler<EventArgs<int>> IStringConvertibleArrayData.ItemChanged {
+      add { base.ItemChanged += value; }
+      remove { base.ItemChanged -= value; }
+    }
+    event EventHandler IStringConvertibleArrayData.Reset {
+      add { base.Reset += value; }
+      remove { base.Reset -= value; }
     }
     #endregion
   }

@@ -32,31 +32,31 @@ using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Core.Views { 
   public partial class TypeSelector : UserControl {
-    private Type baseType;
+    protected Type baseType;
     public Type BaseType {
       get { return baseType; }
     }
-    private bool showNotInstantiableTypes;
+    protected bool showNotInstantiableTypes;
     public bool ShowNotInstantiableTypes {
       get { return showNotInstantiableTypes; }
     }
-    private bool showGenericTypes;
+    protected bool showGenericTypes;
     public bool ShowGenericTypes {
       get { return showGenericTypes; }
     }
     public string Caption {
-      get { return groupBox.Text; }
+      get { return typesGroupBox.Text; }
       set {
         if (InvokeRequired)
           Invoke(new Action<string>(delegate(string s) { Caption = s; }), value);
         else
-          groupBox.Text = value;
+          typesGroupBox.Text = value;
       }
     }
     public TreeView TypesTreeView {
       get { return typesTreeView; }
     }
-    private Type selectedType;
+    protected Type selectedType;
     public Type SelectedType {
       get { return selectedType; }
       private set {
@@ -72,7 +72,7 @@ namespace HeuristicLab.Core.Views {
       selectedType = null;
     }
 
-    public void Configure(Type baseType, bool showNotInstantiableTypes, bool showGenericTypes) {
+    public virtual void Configure(Type baseType, bool showNotInstantiableTypes, bool showGenericTypes) {
       if (baseType == null) throw new ArgumentNullException();
       if (InvokeRequired)
         Invoke(new Action<Type, bool, bool>(Configure), baseType, showNotInstantiableTypes, showGenericTypes);
@@ -149,7 +149,7 @@ namespace HeuristicLab.Core.Views {
       }
     }
 
-    public object CreateInstanceOfSelectedType(params object[] args) {
+    public virtual object CreateInstanceOfSelectedType(params object[] args) {
       if (SelectedType != null) {
       try {
         return Activator.CreateInstance(SelectedType, args);
@@ -164,7 +164,7 @@ namespace HeuristicLab.Core.Views {
         SelectedTypeChanged(this, EventArgs.Empty);
     }
 
-    private void UpdateDescription() {
+    protected virtual void UpdateDescription() {
       descriptionTextBox.Text = string.Empty;
 
       if (typesTreeView.SelectedNode != null) {
@@ -185,14 +185,14 @@ namespace HeuristicLab.Core.Views {
       }
     }
 
-    private void typesTreeView_AfterSelect(object sender, TreeViewEventArgs e) {
+    protected virtual void typesTreeView_AfterSelect(object sender, TreeViewEventArgs e) {
       if (typesTreeView.SelectedNode != null) {
         SelectedType = typesTreeView.SelectedNode.Tag as Type;
       }
       UpdateDescription();
     }
 
-    private void typesTreeView_ItemDrag(object sender, ItemDragEventArgs e) {
+    protected virtual void typesTreeView_ItemDrag(object sender, ItemDragEventArgs e) {
       TreeNode node = (TreeNode)e.Item;
       Type type = node.Tag as Type;
       if (type != null) {

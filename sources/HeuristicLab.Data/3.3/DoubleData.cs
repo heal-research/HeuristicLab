@@ -44,6 +44,11 @@ namespace HeuristicLab.Data {
       return Value.ToString("r");  // round-trip format
     }
 
+    #region IStringConvertibleData Members
+    bool IStringConvertibleData.Validate(string value) {
+      double d;
+      return double.TryParse(value, out d);
+    }
     string IStringConvertibleData.GetValue() {
       return Value.ToString("r");  // round-trip format
     }
@@ -56,5 +61,6 @@ namespace HeuristicLab.Data {
         return false;
       }
     }
+    #endregion
   }
 }

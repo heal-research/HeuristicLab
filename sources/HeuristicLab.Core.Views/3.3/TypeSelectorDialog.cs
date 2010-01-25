@@ -59,10 +59,14 @@ namespace HeuristicLab.Core.Views {
       InitializeComponent();
     }
 
-    private void typeSelector_SelectedTypeChanged(object sender, EventArgs e) {
+
+    protected virtual void TypeSelectorDialog_Load(object sender, EventArgs e) {
+      this.typeSelector.TypesTreeView.DoubleClick += new System.EventHandler(TypesTreeView_DoubleClick);
+    }
+    protected virtual void typeSelector_SelectedTypeChanged(object sender, EventArgs e) {
       okButton.Enabled = typeSelector.SelectedType != null;
     }
-    private void TypesTreeView_DoubleClick(object sender, System.EventArgs e) {
+    protected virtual void TypesTreeView_DoubleClick(object sender, System.EventArgs e) {
       if (typeSelector.SelectedType != null) {
         DialogResult = DialogResult.OK;
         Close();

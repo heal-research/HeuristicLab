@@ -91,14 +91,14 @@ namespace HeuristicLab.Core.Views {
             this.breakpointToolStripMenuItem,
             this.viewToolStripMenuItem});
       this.graphContextMenuStrip.Name = "graphContextMenuStrip";
-      this.graphContextMenuStrip.Size = new System.Drawing.Size(153, 70);
+      this.graphContextMenuStrip.Size = new System.Drawing.Size(132, 48);
       this.graphContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.graphContextMenuStrip_Opening);
       // 
       // breakpointToolStripMenuItem
       // 
       this.breakpointToolStripMenuItem.CheckOnClick = true;
       this.breakpointToolStripMenuItem.Name = "breakpointToolStripMenuItem";
-      this.breakpointToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.breakpointToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
       this.breakpointToolStripMenuItem.Text = "&Breakpoint";
       this.breakpointToolStripMenuItem.ToolTipText = "Halt engine execution after executing the operator";
       this.breakpointToolStripMenuItem.Click += new System.EventHandler(this.breakpointToolStripMenuItem_Click);
@@ -106,7 +106,7 @@ namespace HeuristicLab.Core.Views {
       // viewToolStripMenuItem
       // 
       this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-      this.viewToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.viewToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
       this.viewToolStripMenuItem.Text = "&View...";
       this.viewToolStripMenuItem.ToolTipText = "View operator";
       this.viewToolStripMenuItem.Click += new System.EventHandler(this.viewToolStripMenuItem_Click);

@@ -47,10 +47,10 @@ namespace HeuristicLab.Core.Views {
       this.components = new System.ComponentModel.Container();
       this.typesTreeView = new System.Windows.Forms.TreeView();
       this.imageList = new System.Windows.Forms.ImageList(this.components);
-      this.groupBox = new System.Windows.Forms.GroupBox();
+      this.typesGroupBox = new System.Windows.Forms.GroupBox();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
       this.descriptionTextBox = new System.Windows.Forms.TextBox();
-      this.groupBox.SuspendLayout();
+      this.typesGroupBox.SuspendLayout();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
@@ -58,15 +58,17 @@ namespace HeuristicLab.Core.Views {
       // 
       // typesTreeView
       // 
-      this.typesTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.typesTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.typesTreeView.HideSelection = false;
       this.typesTreeView.ImageIndex = 0;
       this.typesTreeView.ImageList = this.imageList;
-      this.typesTreeView.Location = new System.Drawing.Point(0, 0);
+      this.typesTreeView.Location = new System.Drawing.Point(3, 3);
       this.typesTreeView.Name = "typesTreeView";
       this.typesTreeView.SelectedImageIndex = 0;
       this.typesTreeView.ShowNodeToolTips = true;
-      this.typesTreeView.Size = new System.Drawing.Size(297, 199);
+      this.typesTreeView.Size = new System.Drawing.Size(291, 192);
       this.typesTreeView.TabIndex = 0;
       this.typesTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.typesTreeView_AfterSelect);
       this.typesTreeView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.typesTreeView_ItemDrag);
@@ -77,16 +79,16 @@ namespace HeuristicLab.Core.Views {
       this.imageList.ImageSize = new System.Drawing.Size(16, 16);
       this.imageList.TransparentColor = System.Drawing.Color.Transparent;
       // 
-      // groupBox
+      // typesGroupBox
       // 
-      this.groupBox.Controls.Add(this.splitContainer);
-      this.groupBox.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.groupBox.Location = new System.Drawing.Point(0, 0);
-      this.groupBox.Name = "groupBox";
-      this.groupBox.Size = new System.Drawing.Size(303, 306);
-      this.groupBox.TabIndex = 0;
-      this.groupBox.TabStop = false;
-      this.groupBox.Text = "&Available Types";
+      this.typesGroupBox.Controls.Add(this.splitContainer);
+      this.typesGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.typesGroupBox.Location = new System.Drawing.Point(0, 0);
+      this.typesGroupBox.Name = "typesGroupBox";
+      this.typesGroupBox.Size = new System.Drawing.Size(303, 306);
+      this.typesGroupBox.TabIndex = 0;
+      this.typesGroupBox.TabStop = false;
+      this.typesGroupBox.Text = "&Available Types";
       // 
       // splitContainer
       // 
@@ -103,29 +105,31 @@ namespace HeuristicLab.Core.Views {
       // 
       this.splitContainer.Panel2.Controls.Add(this.descriptionTextBox);
       this.splitContainer.Size = new System.Drawing.Size(297, 287);
-      this.splitContainer.SplitterDistance = 199;
+      this.splitContainer.SplitterDistance = 198;
       this.splitContainer.TabIndex = 2;
       // 
       // descriptionTextBox
       // 
-      this.descriptionTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.descriptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.descriptionTextBox.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.descriptionTextBox.Location = new System.Drawing.Point(0, 0);
+      this.descriptionTextBox.Location = new System.Drawing.Point(3, 3);
       this.descriptionTextBox.Multiline = true;
       this.descriptionTextBox.Name = "descriptionTextBox";
       this.descriptionTextBox.ReadOnly = true;
       this.descriptionTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-      this.descriptionTextBox.Size = new System.Drawing.Size(297, 84);
+      this.descriptionTextBox.Size = new System.Drawing.Size(291, 79);
       this.descriptionTextBox.TabIndex = 0;
       // 
       // TypeSelector
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.groupBox);
+      this.Controls.Add(this.typesGroupBox);
       this.Name = "TypeSelector";
       this.Size = new System.Drawing.Size(303, 306);
-      this.groupBox.ResumeLayout(false);
+      this.typesGroupBox.ResumeLayout(false);
       this.splitContainer.Panel1.ResumeLayout(false);
       this.splitContainer.Panel2.ResumeLayout(false);
       this.splitContainer.Panel2.PerformLayout();
@@ -136,13 +140,11 @@ namespace HeuristicLab.Core.Views {
 
     #endregion
 
-    private System.Windows.Forms.GroupBox groupBox;
-    private System.Windows.Forms.TextBox descriptionTextBox;
-    private System.Windows.Forms.ImageList imageList;
-    private System.Windows.Forms.TreeView typesTreeView;
-    private System.Windows.Forms.SplitContainer splitContainer;
-
-
+    protected System.Windows.Forms.GroupBox typesGroupBox;
+    protected System.Windows.Forms.TextBox descriptionTextBox;
+    protected System.Windows.Forms.ImageList imageList;
+    protected System.Windows.Forms.TreeView typesTreeView;
+    protected System.Windows.Forms.SplitContainer splitContainer;
 
   }
 }

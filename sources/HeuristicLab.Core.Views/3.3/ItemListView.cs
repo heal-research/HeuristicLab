@@ -167,7 +167,7 @@ namespace HeuristicLab.Core.Views {
     }
 
     #region ListView Events
-    private void itemsListView_SizeChanged(object sender, EventArgs e) {
+    protected virtual void itemsListView_SizeChanged(object sender, EventArgs e) {
       if (itemsListView.Columns.Count > 0)
         itemsListView.Columns[0].Width = Math.Max(0, itemsListView.Width - 25);
     }
@@ -260,14 +260,14 @@ namespace HeuristicLab.Core.Views {
     #endregion
 
     #region NamedItemCollection Events
-    private void ItemList_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
+    protected virtual void ItemList_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<IndexedItem<T>>(ItemList_ItemsAdded), sender, e);
       else
         foreach (IndexedItem<T> item in e.Items)
           InsertListViewItem(item.Index, CreateListViewItem(item.Value));
     }
-    private void ItemList_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
+    protected virtual void ItemList_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<IndexedItem<T>>(ItemList_ItemsRemoved), sender, e);
       else {
@@ -278,7 +278,7 @@ namespace HeuristicLab.Core.Views {
           RemoveListViewItem(listViewItem);
       }
     }
-    private void ItemList_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
+    protected virtual void ItemList_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<IndexedItem<T>>(ItemList_ItemsReplaced), sender, e);
       else {
@@ -298,7 +298,7 @@ namespace HeuristicLab.Core.Views {
           itemsListView.Items[selected[i]].Selected = true;
       }
     }
-    private void ItemList_ItemsMoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
+    protected virtual void ItemList_ItemsMoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<IndexedItem<T>>(ItemList_ItemsMoved), sender, e);
       else {
@@ -309,7 +309,7 @@ namespace HeuristicLab.Core.Views {
         }
       }
     }
-    private void ItemList_CollectionReset(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
+    protected virtual void ItemList_CollectionReset(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<IndexedItem<T>>(ItemList_CollectionReset), sender, e);
       else {
@@ -326,7 +326,7 @@ namespace HeuristicLab.Core.Views {
     #endregion
 
     #region Item Events
-    private void Item_Changed(object sender, ChangedEventArgs e) {
+    protected virtual void Item_Changed(object sender, ChangedEventArgs e) {
       if (InvokeRequired)
         Invoke(new ChangedEventHandler(Item_Changed), sender, e);
       else {

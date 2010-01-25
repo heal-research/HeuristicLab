@@ -60,12 +60,14 @@ namespace HeuristicLab.Core.Views {
       // 
       // scopesTreeView
       // 
-      this.scopesTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.scopesTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.scopesTreeView.HideSelection = false;
-      this.scopesTreeView.Location = new System.Drawing.Point(3, 16);
+      this.scopesTreeView.Location = new System.Drawing.Point(6, 19);
       this.scopesTreeView.Name = "scopesTreeView";
       this.scopesTreeView.ShowNodeToolTips = true;
-      this.scopesTreeView.Size = new System.Drawing.Size(394, 181);
+      this.scopesTreeView.Size = new System.Drawing.Size(382, 169);
       this.scopesTreeView.TabIndex = 0;
       this.scopesTreeView.AfterCollapse += new System.Windows.Forms.TreeViewEventHandler(this.scopesTreeView_AfterCollapse);
       this.scopesTreeView.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.scopesTreeView_BeforeExpand);
@@ -92,24 +94,29 @@ namespace HeuristicLab.Core.Views {
       // 
       // scopesGroupBox
       // 
+      this.scopesGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.scopesGroupBox.Controls.Add(this.scopesTreeView);
-      this.scopesGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.scopesGroupBox.Location = new System.Drawing.Point(0, 0);
+      this.scopesGroupBox.Location = new System.Drawing.Point(3, 3);
       this.scopesGroupBox.Name = "scopesGroupBox";
-      this.scopesGroupBox.Size = new System.Drawing.Size(400, 200);
+      this.scopesGroupBox.Size = new System.Drawing.Size(394, 194);
       this.scopesGroupBox.TabIndex = 0;
       this.scopesGroupBox.TabStop = false;
       this.scopesGroupBox.Text = "&Scopes";
       // 
       // variableCollectionView
       // 
+      this.variableCollectionView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.variableCollectionView.Caption = "VariableCollection";
-      this.variableCollectionView.Dock = System.Windows.Forms.DockStyle.Fill;
       this.variableCollectionView.ItemCollection = null;
-      this.variableCollectionView.Location = new System.Drawing.Point(0, 0);
+      this.variableCollectionView.Location = new System.Drawing.Point(3, 3);
       this.variableCollectionView.Name = "variableCollectionView";
       this.variableCollectionView.NamedItemCollection = null;
-      this.variableCollectionView.Size = new System.Drawing.Size(400, 196);
+      this.variableCollectionView.Object = null;
+      this.variableCollectionView.Size = new System.Drawing.Size(394, 190);
       this.variableCollectionView.TabIndex = 0;
       // 
       // ScopeView

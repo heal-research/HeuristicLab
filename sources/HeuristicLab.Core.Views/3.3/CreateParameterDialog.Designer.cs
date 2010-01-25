@@ -86,7 +86,7 @@ namespace HeuristicLab.Core.Views {
       // 
       this.nameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.nameLabel.AutoSize = true;
-      this.nameLabel.Location = new System.Drawing.Point(12, 289);
+      this.nameLabel.Location = new System.Drawing.Point(9, 289);
       this.nameLabel.Name = "nameLabel";
       this.nameLabel.Size = new System.Drawing.Size(38, 13);
       this.nameLabel.TabIndex = 1;
@@ -96,16 +96,16 @@ namespace HeuristicLab.Core.Views {
       // 
       this.nameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.nameTextBox.Location = new System.Drawing.Point(81, 286);
+      this.nameTextBox.Location = new System.Drawing.Point(78, 286);
       this.nameTextBox.Name = "nameTextBox";
-      this.nameTextBox.Size = new System.Drawing.Size(449, 20);
+      this.nameTextBox.Size = new System.Drawing.Size(452, 20);
       this.nameTextBox.TabIndex = 2;
       // 
       // descriptionLabel
       // 
       this.descriptionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.descriptionLabel.AutoSize = true;
-      this.descriptionLabel.Location = new System.Drawing.Point(12, 315);
+      this.descriptionLabel.Location = new System.Drawing.Point(9, 315);
       this.descriptionLabel.Name = "descriptionLabel";
       this.descriptionLabel.Size = new System.Drawing.Size(63, 13);
       this.descriptionLabel.TabIndex = 3;
@@ -115,18 +115,18 @@ namespace HeuristicLab.Core.Views {
       // 
       this.descriptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.descriptionTextBox.Location = new System.Drawing.Point(81, 312);
+      this.descriptionTextBox.Location = new System.Drawing.Point(78, 312);
       this.descriptionTextBox.Multiline = true;
       this.descriptionTextBox.Name = "descriptionTextBox";
       this.descriptionTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-      this.descriptionTextBox.Size = new System.Drawing.Size(449, 103);
+      this.descriptionTextBox.Size = new System.Drawing.Size(452, 103);
       this.descriptionTextBox.TabIndex = 4;
       // 
       // dataTypeLabel
       // 
       this.dataTypeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.dataTypeLabel.AutoSize = true;
-      this.dataTypeLabel.Location = new System.Drawing.Point(12, 426);
+      this.dataTypeLabel.Location = new System.Drawing.Point(9, 426);
       this.dataTypeLabel.Name = "dataTypeLabel";
       this.dataTypeLabel.Size = new System.Drawing.Size(60, 13);
       this.dataTypeLabel.TabIndex = 5;
@@ -137,23 +137,23 @@ namespace HeuristicLab.Core.Views {
       this.dataTypeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.dataTypeTextBox.Enabled = false;
-      this.dataTypeTextBox.Location = new System.Drawing.Point(81, 423);
+      this.dataTypeTextBox.Location = new System.Drawing.Point(78, 423);
       this.dataTypeTextBox.Name = "dataTypeTextBox";
       this.dataTypeTextBox.ReadOnly = true;
-      this.dataTypeTextBox.Size = new System.Drawing.Size(420, 20);
+      this.dataTypeTextBox.Size = new System.Drawing.Size(423, 20);
       this.dataTypeTextBox.TabIndex = 6;
       // 
       // setDataTypeButton
       // 
       this.setDataTypeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.setDataTypeButton.Enabled = false;
+      this.setDataTypeButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Add;
       this.setDataTypeButton.Location = new System.Drawing.Point(507, 421);
       this.setDataTypeButton.Name = "setDataTypeButton";
       this.setDataTypeButton.Size = new System.Drawing.Size(23, 23);
       this.setDataTypeButton.TabIndex = 7;
       this.toolTip.SetToolTip(this.setDataTypeButton, "Set Data Type");
       this.setDataTypeButton.UseVisualStyleBackColor = true;
-      this.setDataTypeButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Add;
       this.setDataTypeButton.Click += new System.EventHandler(this.setDataTypeButton_Click);
       // 
       // parameterTypeSelector
@@ -200,16 +200,16 @@ namespace HeuristicLab.Core.Views {
 
     #endregion
 
-    private System.Windows.Forms.Button cancelButton;
-    private System.Windows.Forms.Button okButton;
-    private System.Windows.Forms.Label nameLabel;
-    private System.Windows.Forms.TextBox nameTextBox;
-    private System.Windows.Forms.Label descriptionLabel;
-    private System.Windows.Forms.TextBox descriptionTextBox;
-    private TypeSelector parameterTypeSelector;
-    private System.Windows.Forms.Label dataTypeLabel;
-    private System.Windows.Forms.TextBox dataTypeTextBox;
-    private System.Windows.Forms.Button setDataTypeButton;
-    private System.Windows.Forms.ToolTip toolTip;
+    protected System.Windows.Forms.Button cancelButton;
+    protected System.Windows.Forms.Button okButton;
+    protected System.Windows.Forms.Label nameLabel;
+    protected System.Windows.Forms.TextBox nameTextBox;
+    protected System.Windows.Forms.Label descriptionLabel;
+    protected System.Windows.Forms.TextBox descriptionTextBox;
+    protected TypeSelector parameterTypeSelector;
+    protected System.Windows.Forms.Label dataTypeLabel;
+    protected System.Windows.Forms.TextBox dataTypeTextBox;
+    protected System.Windows.Forms.Button setDataTypeButton;
+    protected System.Windows.Forms.ToolTip toolTip;
   }
 }

@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -33,8 +34,8 @@ namespace HeuristicLab.Data {
   public sealed class IntArrayData : ValueTypeArrayData<int>, IStringConvertibleArrayData {
     public IntArrayData() : base() { }
     public IntArrayData(int length) : base(length) { }
-    public IntArrayData(IntArrayData elements) : base(elements) { }
     public IntArrayData(int[] elements) : base(elements) { }
+    protected IntArrayData(IntArrayData elements) : base(elements) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       IntArrayData clone = new IntArrayData(this);
@@ -42,9 +43,14 @@ namespace HeuristicLab.Data {
       return clone;
     }
 
+    #region IStringConvertibleArrayData Members
     int IStringConvertibleArrayData.Length {
       get { return Length; }
       set { Length = value; }
+    }
+    bool IStringConvertibleArrayData.Validate(string value) {
+      int i;
+      return int.TryParse(value, out i);
     }
     string IStringConvertibleArrayData.GetValue(int index) {
       return this[index].ToString();
@@ -58,5 +64,14 @@ namespace HeuristicLab.Data {
         return false;
       }
     }
+    event EventHandler<EventArgs<int>> IStringConvertibleArrayData.ItemChanged {
+      add { base.ItemChanged += value; }
+      remove { base.ItemChanged -= value; }
+    }
+    event EventHandler IStringConvertibleArrayData.Reset {
+      add { base.Reset += value; }
+      remove { base.Reset -= value; }
+    }
+    #endregion
   }
 }

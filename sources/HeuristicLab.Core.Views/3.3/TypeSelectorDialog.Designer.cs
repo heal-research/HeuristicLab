@@ -74,12 +74,12 @@ namespace HeuristicLab.Core.Views {
       this.typeSelector.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.typeSelector.Caption = "&Available Types";
       this.typeSelector.Location = new System.Drawing.Point(12, 12);
       this.typeSelector.Name = "typeSelector";
       this.typeSelector.Size = new System.Drawing.Size(449, 350);
       this.typeSelector.TabIndex = 3;
       this.typeSelector.SelectedTypeChanged += new System.EventHandler(this.typeSelector_SelectedTypeChanged);
-      this.typeSelector.TypesTreeView.DoubleClick += new System.EventHandler(TypesTreeView_DoubleClick);
       // 
       // TypeSelectorDialog
       // 
@@ -98,14 +98,15 @@ namespace HeuristicLab.Core.Views {
       this.ShowInTaskbar = false;
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
       this.Text = "Select Type";
+      this.Load += new System.EventHandler(this.TypeSelectorDialog_Load);
       this.ResumeLayout(false);
 
     }
 
     #endregion
 
-    private System.Windows.Forms.Button okButton;
-    private System.Windows.Forms.Button cancelButton;
-    private TypeSelector typeSelector;
+    protected System.Windows.Forms.Button okButton;
+    protected System.Windows.Forms.Button cancelButton;
+    protected TypeSelector typeSelector;
   }
 }

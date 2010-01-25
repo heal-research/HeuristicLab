@@ -27,6 +27,7 @@ using System.Data;
 using System.Text;
 using System.Xml;
 using System.Windows.Forms;
+using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Core.Views {
@@ -43,7 +44,9 @@ namespace HeuristicLab.Core.Views {
     /// <see cref="AddItemEvents"/> (if the new item is not null) in the setter.</remarks>
     public object Object {
       get { return obj; }
-      protected set {
+      set {
+        if ((value != null) && (!MainFormManager.ViewCanViewObject(this, value)))
+          throw new ArgumentException(string.Format("View \"{0}\" cannot view object \"{1}\".", this.GetType().Name, value.GetType().Name));
         if (InvokeRequired) {
           Invoke(new Action<object>(delegate(object o) { Object = o; }), value);
         } else {

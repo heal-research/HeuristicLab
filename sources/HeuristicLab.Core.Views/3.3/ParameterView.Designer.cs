@@ -46,19 +46,30 @@ namespace HeuristicLab.Core.Views {
     private void InitializeComponent() {
       this.dataTypeLabel = new System.Windows.Forms.Label();
       this.dataTypeTextBox = new System.Windows.Forms.TextBox();
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
       // 
       // nameTextBox
       // 
-      this.nameTextBox.Location = new System.Drawing.Point(80, 0);
-      this.nameTextBox.Size = new System.Drawing.Size(313, 20);
+      this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
+      this.errorProvider.SetIconPadding(this.nameTextBox, 2);
+      this.nameTextBox.Location = new System.Drawing.Point(72, 0);
+      this.nameTextBox.Size = new System.Drawing.Size(321, 20);
+      // 
+      // nameLabel
+      // 
+      this.nameLabel.Location = new System.Drawing.Point(3, 3);
+      // 
+      // descriptionLabel
+      // 
+      this.descriptionLabel.Location = new System.Drawing.Point(3, 29);
       // 
       // descriptionTextBox
       // 
       this.descriptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.descriptionTextBox.Location = new System.Drawing.Point(80, 26);
-      this.descriptionTextBox.Size = new System.Drawing.Size(313, 62);
+      this.descriptionTextBox.Location = new System.Drawing.Point(72, 26);
+      this.descriptionTextBox.Size = new System.Drawing.Size(321, 62);
       // 
       // dataTypeLabel
       // 
@@ -73,26 +84,27 @@ namespace HeuristicLab.Core.Views {
       // 
       this.dataTypeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.dataTypeTextBox.Location = new System.Drawing.Point(80, 94);
+      this.dataTypeTextBox.Location = new System.Drawing.Point(72, 94);
       this.dataTypeTextBox.Name = "dataTypeTextBox";
       this.dataTypeTextBox.ReadOnly = true;
-      this.dataTypeTextBox.Size = new System.Drawing.Size(313, 20);
+      this.dataTypeTextBox.Size = new System.Drawing.Size(321, 20);
       this.dataTypeTextBox.TabIndex = 5;
       // 
-      // ParameterBaseView
+      // ParameterView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.dataTypeTextBox);
       this.Controls.Add(this.dataTypeLabel);
-      this.Name = "ParameterBaseView";
-      this.Size = new System.Drawing.Size(393, 117);
-      this.Controls.SetChildIndex(this.descriptionTextBox, 0);
-      this.Controls.SetChildIndex(this.dataTypeLabel, 0);
+      this.Controls.Add(this.dataTypeTextBox);
+      this.Name = "ParameterView";
+      this.Size = new System.Drawing.Size(393, 124);
       this.Controls.SetChildIndex(this.dataTypeTextBox, 0);
+      this.Controls.SetChildIndex(this.descriptionTextBox, 0);
       this.Controls.SetChildIndex(this.descriptionLabel, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
+      this.Controls.SetChildIndex(this.dataTypeLabel, 0);
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 

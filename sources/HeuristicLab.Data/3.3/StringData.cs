@@ -62,6 +62,10 @@ namespace HeuristicLab.Data {
       return value;
     }
 
+    #region IStringConvertibleData Members
+    bool IStringConvertibleData.Validate(string value) {
+      return true;
+    }
     string IStringConvertibleData.GetValue() {
       return Value;
     }
@@ -69,5 +73,6 @@ namespace HeuristicLab.Data {
       Value = value != null ? value : string.Empty;
       return true;
     }
+    #endregion
   }
 }

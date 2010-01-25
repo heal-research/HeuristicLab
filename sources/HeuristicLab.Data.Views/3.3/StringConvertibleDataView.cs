@@ -41,6 +41,8 @@ namespace HeuristicLab.Data.Views {
     public StringConvertibleDataView() {
       InitializeComponent();
       Caption = "StringConvertibleData View";
+      errorProvider.SetIconAlignment(valueTextBox, ErrorIconAlignment.MiddleLeft);
+      errorProvider.SetIconPadding(valueTextBox, 2);
     }
     public StringConvertibleDataView(IStringConvertibleData stringConvertibleData)
       : this() {
@@ -77,16 +79,24 @@ namespace HeuristicLab.Data.Views {
         valueTextBox.Text = StringConvertibleData.GetValue();
     }
 
+    private void valueTextBox_KeyDown(object sender, KeyEventArgs e) {
+      if ((e.KeyCode == Keys.Enter) || (e.KeyCode == Keys.Return))
+        valueLabel.Focus();  // set focus on label to validate data
+      if (e.KeyCode == Keys.Escape) {
+        valueTextBox.Text = StringConvertibleData.GetValue();
+        valueLabel.Focus();  // set focus on label to validate data
+      }
+    }
     private void valueTextBox_Validating(object sender, CancelEventArgs e) {
-      e.Cancel = e.Cancel || !StringConvertibleData.SetValue(valueTextBox.Text);
-      if (e.Cancel) {
-        MessageBox.Show(this, "\"" + valueTextBox.Text + "\" is not a valid value.", "Invalid Value", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      if (!StringConvertibleData.Validate(valueTextBox.Text)) {
+        e.Cancel = true;
+        errorProvider.SetError(valueTextBox, "Invalid Value");
         valueTextBox.SelectAll();
-        valueTextBox.Focus();
       }
     }
     private void valueTextBox_Validated(object sender, EventArgs e) {
-      valueTextBox.Text = StringConvertibleData.GetValue();
+      StringConvertibleData.SetValue(valueTextBox.Text);
+      errorProvider.SetError(valueTextBox, string.Empty);
     }
   }
 }

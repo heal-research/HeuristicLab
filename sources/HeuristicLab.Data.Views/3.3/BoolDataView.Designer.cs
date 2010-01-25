@@ -50,10 +50,12 @@ namespace HeuristicLab.Data.Views {
       // valueCheckBox
       // 
       this.valueCheckBox.AutoSize = true;
-      this.valueCheckBox.Location = new System.Drawing.Point(3, 3);
+      this.valueCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+      this.valueCheckBox.Location = new System.Drawing.Point(3, 0);
       this.valueCheckBox.Name = "valueCheckBox";
-      this.valueCheckBox.Size = new System.Drawing.Size(15, 14);
+      this.valueCheckBox.Size = new System.Drawing.Size(56, 17);
       this.valueCheckBox.TabIndex = 0;
+      this.valueCheckBox.Text = "&Value:";
       this.valueCheckBox.UseVisualStyleBackColor = true;
       this.valueCheckBox.CheckedChanged += new System.EventHandler(this.valueCheckBox_CheckedChanged);
       // 
@@ -63,7 +65,7 @@ namespace HeuristicLab.Data.Views {
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.valueCheckBox);
       this.Name = "BoolDataView";
-      this.Size = new System.Drawing.Size(30, 32);
+      this.Size = new System.Drawing.Size(71, 27);
       this.ResumeLayout(false);
       this.PerformLayout();
 

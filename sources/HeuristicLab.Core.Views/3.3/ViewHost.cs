@@ -47,7 +47,7 @@ namespace HeuristicLab.Core.Views {
       Initialize();
     }
 
-    private void Initialize() {
+    protected virtual void Initialize() {
       viewLabel.Visible = false;
       viewComboBox.Items.Clear();
       viewComboBox.Enabled = false;
@@ -83,7 +83,7 @@ namespace HeuristicLab.Core.Views {
       }
     }
 
-    private void viewComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+    protected virtual void viewComboBox_SelectedIndexChanged(object sender, EventArgs e) {
       if (viewComboBox.SelectedItem != viewPanel.Tag) {
         if (viewPanel.Controls.Count > 0) viewPanel.Controls[0].Dispose();
         viewPanel.Controls.Clear();

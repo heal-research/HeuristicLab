@@ -62,14 +62,13 @@ namespace HeuristicLab.Core.Views {
       // 
       // messageLabel
       // 
-      this.messageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.messageLabel.Location = new System.Drawing.Point(3, 24);
+      this.messageLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.messageLabel.Location = new System.Drawing.Point(0, 0);
       this.messageLabel.Name = "messageLabel";
-      this.messageLabel.Size = new System.Drawing.Size(221, 20);
+      this.messageLabel.Size = new System.Drawing.Size(227, 184);
       this.messageLabel.TabIndex = 0;
       this.messageLabel.Text = "No view available.";
-      this.messageLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+      this.messageLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
       // 
       // viewLabel
       // 
@@ -86,9 +85,9 @@ namespace HeuristicLab.Core.Views {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.viewComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.viewComboBox.FormattingEnabled = true;
-      this.viewComboBox.Location = new System.Drawing.Point(44, 0);
+      this.viewComboBox.Location = new System.Drawing.Point(42, 0);
       this.viewComboBox.Name = "viewComboBox";
-      this.viewComboBox.Size = new System.Drawing.Size(183, 21);
+      this.viewComboBox.Size = new System.Drawing.Size(185, 21);
       this.viewComboBox.TabIndex = 1;
       this.viewComboBox.SelectedIndexChanged += new System.EventHandler(this.viewComboBox_SelectedIndexChanged);
       // 
@@ -96,10 +95,10 @@ namespace HeuristicLab.Core.Views {
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.messageLabel);
       this.Controls.Add(this.viewComboBox);
       this.Controls.Add(this.viewLabel);
       this.Controls.Add(this.viewPanel);
+      this.Controls.Add(this.messageLabel);
       this.Name = "ViewHost";
       this.Size = new System.Drawing.Size(227, 184);
       this.ResumeLayout(false);
@@ -109,10 +108,10 @@ namespace HeuristicLab.Core.Views {
 
     #endregion
 
-    private System.Windows.Forms.Panel viewPanel;
-    private System.Windows.Forms.Label viewLabel;
-    private System.Windows.Forms.ComboBox viewComboBox;
-    private System.Windows.Forms.Label messageLabel;
+    protected System.Windows.Forms.Panel viewPanel;
+    protected System.Windows.Forms.Label viewLabel;
+    protected System.Windows.Forms.ComboBox viewComboBox;
+    protected System.Windows.Forms.Label messageLabel;
 
   }
 }

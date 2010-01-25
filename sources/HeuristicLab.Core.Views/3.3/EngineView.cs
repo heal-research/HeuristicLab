@@ -110,13 +110,13 @@ namespace HeuristicLab.Core.Views {
     }
 
     #region Engine Events
-    private void Engine_OperatorGraphChanged(object sender, EventArgs e) {
+    protected virtual void Engine_OperatorGraphChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Engine_OperatorGraphChanged), sender, e);
       else
         operatorGraphView.OperatorGraph = Engine.OperatorGraph;
     }
-    private void Engine_Initialized(object sender, EventArgs e) {
+    protected virtual void Engine_Initialized(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Engine_Initialized), sender, e);
       else {
@@ -128,7 +128,7 @@ namespace HeuristicLab.Core.Views {
         UpdateExecutionTimeTextBox();
       }
     }
-    private void Engine_Started(object sender, EventArgs e) {
+    protected virtual void Engine_Started(object sender, EventArgs e) {
       executionTimeCounter = 0;
       if (InvokeRequired)
         Invoke(new EventHandler(Engine_Started), sender, e);
@@ -141,7 +141,7 @@ namespace HeuristicLab.Core.Views {
         UpdateExecutionTimeTextBox();
       }
     }
-    private void Engine_Stopped(object sender, EventArgs e) {
+    protected virtual void Engine_Stopped(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Engine_Stopped), sender, e);
       else {
@@ -153,14 +153,14 @@ namespace HeuristicLab.Core.Views {
         UpdateExecutionTimeTextBox();
       }
     }
-    private void Engine_ExecutionTimeChanged(object sender, EventArgs e) {
+    protected virtual void Engine_ExecutionTimeChanged(object sender, EventArgs e) {
       executionTimeCounter++;
       if ((executionTimeCounter == 100) || !Engine.Running) {
         executionTimeCounter = 0;
         UpdateExecutionTimeTextBox();
       }
     }
-    private void Engine_ExceptionOccurred(object sender, EventArgs<Exception> e) {
+    protected virtual void Engine_ExceptionOccurred(object sender, EventArgs<Exception> e) {
       if (InvokeRequired)
         Invoke(new EventHandler<EventArgs<Exception>>(Engine_ExceptionOccurred), sender, e);
       else
@@ -169,19 +169,19 @@ namespace HeuristicLab.Core.Views {
     #endregion
 
     #region Button events
-    private void startButton_Click(object sender, EventArgs e) {
+    protected virtual void startButton_Click(object sender, EventArgs e) {
       Engine.Start();
     }
-    private void stopButton_Click(object sender, EventArgs e) {
+    protected virtual void stopButton_Click(object sender, EventArgs e) {
       Engine.Stop();
     }
-    private void resetButton_Click(object sender, EventArgs e) {
+    protected virtual void resetButton_Click(object sender, EventArgs e) {
       Engine.Initialize();
     }
     #endregion
 
     #region Helpers
-    private void UpdateExecutionTimeTextBox() {
+    protected virtual void UpdateExecutionTimeTextBox() {
       if (InvokeRequired)
         Invoke(new Action(UpdateExecutionTimeTextBox));
       else
