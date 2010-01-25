@@ -103,7 +103,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="BoolArrayData.cs" />
-    <Compile Include="IStringConvertibleArrayData.cs" />
+    <Compile Include="IntMatrixData.cs" />
+    <Compile Include="ValueTypeMatrixData.cs" />
+    <Compile Include="StringConvertibleMatrixDataDimensions.cs" />
+    <Compile Include="IStringConvertibleMatrixData.cs" />
     <Compile Include="ValueTypeArrayData.cs" />
     <Compile Include="IntArrayData.cs" />
     <Compile Include="StringData.cs">

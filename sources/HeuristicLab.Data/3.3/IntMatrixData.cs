@@ -23,66 +23,63 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using System.Globalization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
-  /// <summary>
-  /// A two-dimensional matrix of integer values.
-  /// </summary>
   [EmptyStorableClass]
-  public class IntMatrixData : ArrayDataBase {
-    /// <summary>
-    /// Gets or sets the int values of the matrix.
-    /// </summary>
-    /// <remarks>Uses property <see cref="ArrayDataBase.Data"/> of base class <see cref="ArrayDataBase"/>. 
-    /// No own data storage present.</remarks>
-    public new int[,] Data {
-      get { return (int[,])base.Data; }
-      set { base.Data = value; }
+  [Item("IntMatrixData", "Represents a matrix of integer values.")]
+  [Creatable("Test")]
+  public sealed class IntMatrixData : ValueTypeMatrixData<int>, IStringConvertibleMatrixData {
+    public IntMatrixData() : base() { }
+    public IntMatrixData(int rows, int columns) : base(rows, columns) { }
+    public IntMatrixData(int[,] elements) : base(elements) { }
+    private IntMatrixData(IntMatrixData elements) : base(elements) { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      IntMatrixData clone = new IntMatrixData(this);
+      cloner.RegisterClonedObject(this, clone);
+      return clone;
     }
 
-    /// <summary>
-    /// Initializes a new instance of <see cref="IntMatrixData"/>.
-    /// </summary>
-    public IntMatrixData() {
-      Data = new int[1, 1];
+    #region IStringConvertibleMatrixData Members
+    StringConvertibleArrayDataDimensions IStringConvertibleMatrixData.Dimensions {
+      get { return StringConvertibleArrayDataDimensions.Both; }
     }
-    /// <summary>
-    /// Initializes a new instance of <see cref="IntMatrixData"/>.
-    /// <note type="caution"> No CopyConstructor! <paramref name="data"/> is not copied!</note>
-    /// </summary>
-    /// <param name="data">The two-dimensional int matrix the instance should represent.</param>
-    public IntMatrixData(int[,] data) {
-      Data = data;
+    int IStringConvertibleMatrixData.Rows {
+      get { return Rows; }
+      set { Rows = value; }
+    }
+    int IStringConvertibleMatrixData.Columns {
+      get { return Columns; }
+      set { Columns = value; }
     }
 
-    /// <summary>
-    /// The string representation of the matrix.
-    /// </summary> 
-    /// <returns>The elements of the matrix as a string, line by line, each element separated by a 
-    /// semicolon and formatted according to the local number format.</returns>
-    public override string ToString() {
-      return ToString(CultureInfo.CurrentCulture.NumberFormat);
+    bool IStringConvertibleMatrixData.Validate(string value) {
+      int i;
+      return int.TryParse(value, out i);
     }
-
-    /// <summary>
-    /// The string representation of the matrix, considering a specified <paramref name="format"/>.
-    /// </summary>
-    /// <param name="format">The <see cref="NumberFormatInfo"/> the int values are formatted accordingly.</param>
-    /// <returns>The elements of the matrix as a string, line by line, each element separated by a 
-    /// semicolon and formatted according to the specified <paramref name="format"/>.</returns>
-    private string ToString(NumberFormatInfo format) {
-      StringBuilder builder = new StringBuilder();
-      for (int i = 0; i < Data.GetLength(0); i++) {
-        for (int j = 0; j < Data.GetLength(1); j++) {
-          builder.Append(";");
-          builder.Append(Data[i, j].ToString(format));
-        }
+    string IStringConvertibleMatrixData.GetValue(int rowIndex, int columIndex) {
+      return this[rowIndex, columIndex].ToString();
+    }
+    bool IStringConvertibleMatrixData.SetValue(string value, int rowIndex, int columnIndex) {
+      int i;
+      if (int.TryParse(value, out i)) {
+        this[rowIndex, columnIndex] = i;
+        return true;
+      } else {
+        return false;
       }
-      if (builder.Length > 0) builder.Remove(0, 1);
-      return builder.ToString();
     }
+    event EventHandler<EventArgs<int, int>> IStringConvertibleMatrixData.ItemChanged {
+      add { base.ItemChanged += value; }
+      remove { base.ItemChanged -= value; }
+    }
+    event EventHandler IStringConvertibleMatrixData.Reset {
+      add { base.Reset += value; }
+      remove { base.Reset -= value; }
+    }
+    #endregion
   }
 }

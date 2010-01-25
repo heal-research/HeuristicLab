@@ -22,16 +22,16 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Data {
-  /// <summary>
-  /// Public interface to represent basic data types
-  /// </summary>
-  public interface IObjectData : IItem, IComparable {
-    /// <summary>
-    /// Gets or sets the value of the object.
-    /// </summary>
-    object Data { get; set; }
+  [Flags]
+  public enum StringConvertibleArrayDataDimensions {
+    None    = 0,
+    Rows    = 1,
+    Columns = 2,
+    Both    = 3
   }
 }

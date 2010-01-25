@@ -29,47 +29,61 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
-  [Item("ValueTypeArrayData<T>", "A base class for representing arrays of value types.")]
-  public class ValueTypeArrayData<T> : Item, IEnumerable where T : struct {
-    private T[] array;
+  [Item("ValueTypeMatrixData<T>", "A base class for representing matrices of value types.")]
+  public class ValueTypeMatrixData<T> : Item, IEnumerable where T : struct {
+    private T[,] array;
 
-    public int Length {
-      get { return array.Length; }
+    public int Rows {
+      get { return array.GetLength(0); }
       protected set {
-        if (value != Length) {
-          Array.Resize<T>(ref array, value);
+        if (value != Rows) {
+          T[,] newArray = new T[value, Columns];
+          Array.Copy(array, newArray, Math.Min(value * Columns, array.Length));
+          array = newArray;
           OnReset();
         }
       }
     }
-    public T this[int index] {
-      get { return array[index]; }
+    public int Columns {
+      get { return array.GetLength(1); }
+      protected set {
+        if (value != Columns) {
+          T[,] newArray = new T[Rows, value];
+          for (int i = 0; i < Rows; i++)
+            Array.Copy(array, i * Columns, newArray, i * value, Math.Min(value, Columns));
+          array = newArray;
+          OnReset();
+        }
+      }
+    }
+    public T this[int rowIndex, int columnIndex] {
+      get { return array[rowIndex, columnIndex]; }
       set {
-        if (!value.Equals(array[index])) {
-          array[index] = value;
-          OnItemChanged(index);
+        if (!value.Equals(array[rowIndex, columnIndex])) {
+          array[rowIndex, columnIndex] = value;
+          OnItemChanged(rowIndex, columnIndex);
         }
       }
     }
 
-    public ValueTypeArrayData() {
-      array = new T[0];
+    public ValueTypeMatrixData() {
+      array = new T[0, 0];
     }
-    public ValueTypeArrayData(int length) {
-      array = new T[length];
+    public ValueTypeMatrixData(int rows, int columns) {
+      array = new T[rows, columns];
     }
-    public ValueTypeArrayData(T[] elements) {
+    public ValueTypeMatrixData(T[,] elements) {
       if (elements == null) throw new ArgumentNullException();
-      array = (T[])elements.Clone();
+      array = (T[,])elements.Clone();
     }
-    protected ValueTypeArrayData(ValueTypeArrayData<T> elements) {
+    protected ValueTypeMatrixData(ValueTypeMatrixData<T> elements) {
       if (elements == null) throw new ArgumentNullException();
-      array = (T[])elements.array.Clone();
+      array = (T[,])elements.array.Clone();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      ValueTypeArrayData<T> clone = (ValueTypeArrayData<T>)base.Clone(cloner);
-      clone.array = (T[])array.Clone();
+      ValueTypeMatrixData<T> clone = (ValueTypeMatrixData<T>)base.Clone(cloner);
+      clone.array = (T[,])array.Clone();
       return clone;
     }
 
@@ -77,9 +91,12 @@ namespace HeuristicLab.Data {
       StringBuilder sb = new StringBuilder();
       sb.Append("[");
       if (array.Length > 0) {
-        sb.Append(array[0].ToString());
-        for (int i = 1; i < array.Length; i++)
-          sb.Append(";").Append(array[i].ToString());
+        for (int i = 0; i < Rows; i++) {
+          sb.Append("[").Append(array[i, 0].ToString());
+          for (int j = 1; j < Columns; j++)
+            sb.Append(";").Append(array[i, j].ToString());
+          sb.Append("]");
+        }
       }
       sb.Append("]");
       return sb.ToString();
@@ -90,9 +107,9 @@ namespace HeuristicLab.Data {
     }
 
     protected event EventHandler<EventArgs<int, int>> ItemChanged;
-    private void OnItemChanged(int index) {
+    private void OnItemChanged(int rowIndex, int columnIndex) {
       if (ItemChanged != null)
-        ItemChanged(this, new EventArgs<int, int>(index, 0));
+        ItemChanged(this, new EventArgs<int, int>(rowIndex, columnIndex));
       OnChanged();
     }
     protected event EventHandler Reset;

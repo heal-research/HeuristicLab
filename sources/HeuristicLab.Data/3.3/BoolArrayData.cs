@@ -31,11 +31,11 @@ namespace HeuristicLab.Data {
   [EmptyStorableClass]
   [Item("BoolArrayData", "Represents an array of boolean values.")]
   [Creatable("Test")]
-  public sealed class BoolArrayData : ValueTypeArrayData<bool>, IStringConvertibleArrayData {
+  public sealed class BoolArrayData : ValueTypeArrayData<bool>, IStringConvertibleMatrixData {
     public BoolArrayData() : base() { }
     public BoolArrayData(int length) : base(length) { }
     public BoolArrayData(bool[] elements) : base(elements) { }
-    protected BoolArrayData(BoolArrayData elements) : base(elements) { }
+    private BoolArrayData(BoolArrayData elements) : base(elements) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       BoolArrayData clone = new BoolArrayData(this);
@@ -43,32 +43,40 @@ namespace HeuristicLab.Data {
       return clone;
     }
 
-    #region IStringConvertibleArrayData Members
-    int IStringConvertibleArrayData.Length {
+    #region IStringConvertibleMatrixData Members
+    StringConvertibleArrayDataDimensions IStringConvertibleMatrixData.Dimensions {
+      get { return StringConvertibleArrayDataDimensions.Rows; }
+    }
+    int IStringConvertibleMatrixData.Rows {
       get { return Length; }
       set { Length = value; }
     }
-    bool IStringConvertibleArrayData.Validate(string value) {
-      bool b;
-      return bool.TryParse(value, out b);
+    int IStringConvertibleMatrixData.Columns {
+      get { return 1; }
+      set { throw new NotSupportedException("Columns cannot be changed."); }
     }
-    string IStringConvertibleArrayData.GetValue(int index) {
-      return this[index].ToString();
+
+    bool IStringConvertibleMatrixData.Validate(string value) {
+      int i;
+      return int.TryParse(value, out i);
     }
-    bool IStringConvertibleArrayData.SetValue(string value, int index) {
+    string IStringConvertibleMatrixData.GetValue(int rowIndex, int columIndex) {
+      return this[rowIndex].ToString();
+    }
+    bool IStringConvertibleMatrixData.SetValue(string value, int rowIndex, int columnIndex) {
       bool b;
       if (bool.TryParse(value, out b)) {
-        this[index] = b;
+        this[rowIndex] = b;
         return true;
       } else {
         return false;
       }
     }
-    event EventHandler<EventArgs<int>> IStringConvertibleArrayData.ItemChanged {
+    event EventHandler<EventArgs<int, int>> IStringConvertibleMatrixData.ItemChanged {
       add { base.ItemChanged += value; }
       remove { base.ItemChanged -= value; }
     }
-    event EventHandler IStringConvertibleArrayData.Reset {
+    event EventHandler IStringConvertibleMatrixData.Reset {
       add { base.Reset += value; }
       remove { base.Reset -= value; }
     }

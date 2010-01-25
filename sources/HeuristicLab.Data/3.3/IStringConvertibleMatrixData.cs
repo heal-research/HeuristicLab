@@ -27,14 +27,16 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Data {
-  public interface IStringConvertibleArrayData {
-    int Length { get; set; }
+  public interface IStringConvertibleMatrixData {
+    StringConvertibleArrayDataDimensions Dimensions { get; }
+    int Rows { get; set; }
+    int Columns { get; set; }
 
     bool Validate(string value);
-    string GetValue(int index);
-    bool SetValue(string value, int index);
+    string GetValue(int rowIndex, int columnIndex);
+    bool SetValue(string value, int rowIndex, int columnIndex);
 
-    event EventHandler<EventArgs<int>> ItemChanged;
+    event EventHandler<EventArgs<int, int>> ItemChanged;
     event EventHandler Reset;
   }
 }

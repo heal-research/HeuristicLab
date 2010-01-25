@@ -31,11 +31,11 @@ namespace HeuristicLab.Data {
   [EmptyStorableClass]
   [Item("IntArrayData", "Represents an array of integer values.")]
   [Creatable("Test")]
-  public sealed class IntArrayData : ValueTypeArrayData<int>, IStringConvertibleArrayData {
+  public sealed class IntArrayData : ValueTypeArrayData<int>, IStringConvertibleMatrixData {
     public IntArrayData() : base() { }
     public IntArrayData(int length) : base(length) { }
     public IntArrayData(int[] elements) : base(elements) { }
-    protected IntArrayData(IntArrayData elements) : base(elements) { }
+    private IntArrayData(IntArrayData elements) : base(elements) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       IntArrayData clone = new IntArrayData(this);
@@ -43,32 +43,40 @@ namespace HeuristicLab.Data {
       return clone;
     }
 
-    #region IStringConvertibleArrayData Members
-    int IStringConvertibleArrayData.Length {
+    #region IStringConvertibleMatrixData Members
+    StringConvertibleArrayDataDimensions IStringConvertibleMatrixData.Dimensions {
+      get { return StringConvertibleArrayDataDimensions.Rows; }
+    }
+    int IStringConvertibleMatrixData.Rows {
       get { return Length; }
       set { Length = value; }
     }
-    bool IStringConvertibleArrayData.Validate(string value) {
+    int IStringConvertibleMatrixData.Columns {
+      get { return 1; }
+      set { throw new NotSupportedException("Columns cannot be changed."); }
+    }
+
+    bool IStringConvertibleMatrixData.Validate(string value) {
       int i;
       return int.TryParse(value, out i);
     }
-    string IStringConvertibleArrayData.GetValue(int index) {
-      return this[index].ToString();
+    string IStringConvertibleMatrixData.GetValue(int rowIndex, int columIndex) {
+      return this[rowIndex].ToString();
     }
-    bool IStringConvertibleArrayData.SetValue(string value, int index) {
+    bool IStringConvertibleMatrixData.SetValue(string value, int rowIndex, int columnIndex) {
       int i;
       if (int.TryParse(value, out i)) {
-        this[index] = i;
+        this[rowIndex] = i;
         return true;
       } else {
         return false;
       }
     }
-    event EventHandler<EventArgs<int>> IStringConvertibleArrayData.ItemChanged {
+    event EventHandler<EventArgs<int, int>> IStringConvertibleMatrixData.ItemChanged {
       add { base.ItemChanged += value; }
       remove { base.ItemChanged -= value; }
     }
-    event EventHandler IStringConvertibleArrayData.Reset {
+    event EventHandler IStringConvertibleMatrixData.Reset {
       add { base.Reset += value; }
       remove { base.Reset -= value; }
     }
