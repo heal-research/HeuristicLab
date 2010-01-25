@@ -227,31 +227,62 @@ public class Operator {
 
     private void InitializeNamespacesList() {
       initializing = true;
+      TreeNode oldTree = new TreeNode("root");
+      CloneTreeNodeCollection(oldTree, namespacesTreeView.Nodes);
       namespacesTreeView.Nodes.Clear();
       var selectedNamespaces = new HashSet<string>(ProgrammableOperator.Namespaces);
       foreach (var ns in ProgrammableOperator.GetAllNamespaces(true))
-        AddNamespace(namespacesTreeView.Nodes, ns, selectedNamespaces.Contains(ns));
+        AddNamespace(namespacesTreeView.Nodes, ns, selectedNamespaces.Contains(ns), oldTree);
       codeEditor.Prefix = GetGeneratedPrefix();
       initializing = false;
     }
 
-    private void AddNamespace(TreeNodeCollection parentNodes, string ns, bool isSelected) {
+    private void CloneTreeNodeCollection(TreeNode root, TreeNodeCollection nodes) {
+      foreach (TreeNode n in nodes) {
+        TreeNode newNode = root.Nodes.Add(n.Text, n.Text);
+        newNode.Checked = n.Checked;
+        CloneTreeNodeCollection(newNode, n.Nodes);
+        if (n.IsExpanded)
+          newNode.Expand();
+      }
+    }
+
+    private bool AddNamespace(TreeNodeCollection parentNodes, string ns, bool isSelected, TreeNode oldTree) {
       int dotIndex = ns.IndexOf('.');
       string prefix = ns;
       if (dotIndex != -1)
         prefix = ns.Substring(0, dotIndex);
-      TreeNode node = null;
-      if (parentNodes.ContainsKey(prefix)) {
-        node = parentNodes[prefix];
-      } else {
-        node = parentNodes.Add(prefix, prefix);
-      }
+      TreeNode node = GetOrCreateNode(parentNodes, prefix);
+      TreeNode oldNode = MaybeGetNode(oldTree, prefix);
+      bool isNew = oldNode == null;
       if (dotIndex != -1 && dotIndex + 1 < ns.Length) {
-        AddNamespace(node.Nodes, ns.Substring(dotIndex + 1, ns.Length - (dotIndex + 1)), isSelected);
-        if (isSelected)
-          node.Expand();
-      }  else
+        isNew = AddNamespace(node.Nodes, ns.Substring(dotIndex + 1, ns.Length - (dotIndex + 1)), isSelected, oldNode);
+      } else {
         node.Checked = isSelected;
+      }
+      if (isNew || oldNode != null && oldNode.IsExpanded)
+        node.Expand();
+      if (isNew)
+        namespacesTreeView.SelectedNode = node;
+      return isNew;
+    }
+
+    private static TreeNode MaybeGetNode(TreeNode parentNode, string key) {
+      if (parentNode == null)
+        return null;
+      if (parentNode.Nodes.ContainsKey(key))
+        return parentNode.Nodes[key];
+      return null;
+    }
+
+    private static TreeNode GetOrCreateNode(TreeNodeCollection parentNodes, string key) {
+      TreeNode node = null;
+      if (parentNodes.ContainsKey(key)) {
+        node = parentNodes[key];
+      } else {
+        node = parentNodes.Add(key, key);
+      }
+      return node;
     }
 
     private void namespacesTreeView_AfterCheck(object sender, TreeViewEventArgs e) {
