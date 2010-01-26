@@ -185,8 +185,8 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <typeparam name="type">Most general type.</typeparam>
     /// <returns>Enumerable of the created instances.</returns>
     internal static IEnumerable<object> GetInstances(Type type) {
-      return from t in GetTypes(type, true)
-             select Activator.CreateInstance(t);
+      return (from t in GetTypes(type, true)
+              select Activator.CreateInstance(t)).ToList();
     }
 
     /// <summary>
@@ -213,8 +213,8 @@ namespace HeuristicLab.PluginInfrastructure {
       PluginDescription pluginDesc = (PluginDescription)pluginDescription;
       return from asm in AppDomain.CurrentDomain.GetAssemblies()
              where !string.IsNullOrEmpty(asm.Location) &&
-                   pluginDesc.Assemblies.Any(asmPath => 
-                     Path.GetFullPath(asmPath).Equals(Path.GetFullPath(asm.Location), 
+                   pluginDesc.Assemblies.Any(asmPath =>
+                     Path.GetFullPath(asmPath).Equals(Path.GetFullPath(asm.Location),
                                                       StringComparison.CurrentCultureIgnoreCase))
              from t in GetTypes(type, asm, onlyInstantiable)
              select t;
