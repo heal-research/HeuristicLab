@@ -56,6 +56,7 @@ namespace HeuristicLab.Core {
     }
 
     public abstract IItem GetValue(ExecutionContext context);
+    public abstract IItem GetValue(ExecutionContext context, bool throwOnError);
 
     public override IDeepCloneable Clone(Cloner cloner) {
       Parameter clone = (Parameter)base.Clone(cloner);

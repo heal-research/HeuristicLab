@@ -56,6 +56,7 @@ namespace HeuristicLab.Core.Views {
       if (viewPanel.Controls.Count > 0) viewPanel.Controls[0].Dispose();
       viewPanel.Controls.Clear();
       viewPanel.Enabled = false;
+      viewPanel.Visible = false;
 
       if (Object != null) {
         var viewTypes = from t in MainFormManager.GetViewTypes(Object.GetType())
@@ -78,6 +79,7 @@ namespace HeuristicLab.Core.Views {
           viewPanel.Tag = view;
           view.Dock = DockStyle.Fill;
           viewPanel.Enabled = true;
+          viewPanel.Visible = true;
           viewComboBox.SelectedItem = view.GetType();
         }
       }

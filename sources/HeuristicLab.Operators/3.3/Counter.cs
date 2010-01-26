@@ -24,36 +24,34 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
   /// <summary>
-  /// Class to increment an int variable by 1.
+  /// Operator which increments an integer variable.
   /// </summary>
-  public class Counter : OperatorBase {
-    /// <summary>
-    /// Gets the description of the current instance.
-    /// </summary>
-    public override string Description {
-      get { return @"TODO\r\nOperator description still missing ..."; }
+  [Item("Counter", "An operator which increments an integer variable.")]
+  [EmptyStorableClass]
+  [Creatable("Test")]
+  public sealed class Counter : StandardOperator {
+    public ItemParameter<IntData> Value {
+      get { return (ItemParameter<IntData>)Parameters["Value"]; }
+    }
+    public ItemParameter<IntData> Increment {
+      get { return (ItemParameter<IntData>)Parameters["Increment"]; }
     }
 
-    /// <summary>
-    /// Initializes a new instance of <see cref="Counter"/> with one variable info (<c>Value</c>).
-    /// </summary>
     public Counter()
       : base() {
-      AddVariableInfo(new VariableInfo("Value", "Counter value", typeof(IntData), VariableKind.In | VariableKind.Out));
+      Parameters.Add(new ItemParameter<IntData>("Value", "The value which should be incremented."));
+      Parameters.Add(new ItemParameter<IntData>("Increment", "The increment which is added to the value.", new IntData(1)));
     }
 
-    /// <summary>
-    /// Increments an int value of the specified <paramref name="scope"/> by one.
-    /// </summary>
-    /// <param name="scope">The scope whose variable should be incremented.</param>
-    /// <returns><c>null</c>.</returns>
-    public override IOperation Apply(IScope scope) {
-      IntData value = GetVariableValue<IntData>("Value", scope, true);
-      value.Data++;
-      return null;
+    public override ExecutionContextCollection Apply(ExecutionContext context) {
+      IntData value = Value.GetValue(context);
+      IntData increment = Increment.GetValue(context);
+      value.Value += increment.Value;
+      return base.Apply(context);
     }
   }
 }

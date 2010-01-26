@@ -30,5 +30,6 @@ namespace HeuristicLab.Core {
     Type DataType { get; }
 
     IItem GetValue(ExecutionContext context);
+    IItem GetValue(ExecutionContext context, bool throwOnError);
   }
 }

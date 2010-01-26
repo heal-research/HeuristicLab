@@ -21,111 +21,57 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 using System.Xml;
+using HeuristicLab.Collections;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
   /// <summary>
-  /// Contains an operator graph and automatically injects its sub-operators into the scope it is 
-  /// applied on (useful for modularization to assemble complex operators out of simpler ones).
+  /// Operator which contains an operator graph.
   /// </summary>
-  public class CombinedOperator : DelegatingOperator {
-
+  [Item("CombinedOperator", "An operator which contains an operator graph.")]
+  [Creatable("Test")]
+  public sealed class CombinedOperator : StandardOperator, IOperator {
+    public override Image ItemImage {
+      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Module; }
+    }
     [Storable]
-    private string myDescription;
-    /// <summary>
-    /// Gets the description of the current instance.
-    /// </summary>
-    public override string Description {
-      get { return myDescription; }
+    private OperatorGraph operatorGraph;
+    public OperatorGraph OperatorGraph {
+      get { return operatorGraph; }
+    }
+    public new ParameterCollection Parameters {
+      get {
+        return base.Parameters;
+      }
+    }
+    IObservableKeyedCollection<string, IParameter> IOperator.Parameters {
+      get { return Parameters; }
+    }
+    public override bool CanChangeDescription {
+      get { return true; }
     }
 
-    [Storable]
-    private IOperatorGraph myOperatorGraph;
-    /// <summary>
-    /// Gets the operator graph of the current instance.
-    /// </summary>
-    public IOperatorGraph OperatorGraph {
-      get { return myOperatorGraph; }
-    }
-
-    /// <summary>
-    /// Initializes a new instance of <see cref="CombinedOperator"/>.
-    /// </summary>
     public CombinedOperator()
       : base() {
-      myDescription =
-        @"A combined operator contains a whole operator graph. It is useful for modularization to assemble complex operators out of simpler ones.
-
-A combined operator automatically inject its sub-operators into the scope it is applied on. Thereby the names of the sub-operators are used as variable names. Those operators can be extracted again in the contained operator graph by using an OperatorExtractor. So it is possible to parameterize a combined operator with custom operators.";
-      myOperatorGraph = new OperatorGraph();
+      operatorGraph = new OperatorGraph();
     }
 
-    /// <summary>
-    /// Sets the description of the current instance.
-    /// </summary>
-    /// <remarks>Calls <see cref="OnDescriptionChanged"/>.</remarks>
-    /// <exception cref="NullReferenceException">Thrown when <paramref name="description"/> is <c>null</c>.</exception>
-    /// <param name="description">The description to set.</param>
-    public void SetDescription(string description) {
-      if (description == null)
-        throw new NullReferenceException("description must not be null");
-
-      if (description != myDescription) {
-        myDescription = description;
-        OnDescriptionChanged();
-      }
-    }
-
-    /// <summary>
-    /// Clones the current instance (deep clone).
-    /// </summary>
-    /// <remarks>Calls <see cref="OperatorBase.Clone
-    /// (System.Collections.Generic.IDictionary&lt;System.Guid, object&gt;)"/> 
-    /// of base class <see cref="DelegatingOperator"/>.<br/>
-    /// Deep clone through <see cref="cloner.Clone"/> method of helper class 
-    /// <see cref="Auxiliary"/>.</remarks>
-    /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
-    /// <returns>The cloned object as <see cref="CombinedOperator"/>.</returns>
-    public override IItem Clone(ICloner cloner) {
+    public override IDeepCloneable Clone(Cloner cloner) {
       CombinedOperator clone = (CombinedOperator)base.Clone(cloner);
-      clone.myDescription = Description;
-      clone.myOperatorGraph = (IOperatorGraph)cloner.Clone(OperatorGraph);
-      return clone;
+      clone.operatorGraph = (OperatorGraph)cloner.Clone(operatorGraph);
+      return base.Clone(cloner);
     }
 
-    /// <summary>
-    /// Adds all sub operators to the specified <paramref name="scope"/>.
-    /// </summary>
-    /// <param name="scope">The scope where to inject the sub operators.</param>
-    /// <returns><c>null</c> if the initial operator is <c>nulll</c>, else a new 
-    /// <see cref="AtomicOperation"/> with the initial operator and the given <paramref name="scope"/>.</returns>
-    public override IOperation Apply(IScope scope) {
-      if (OperatorGraph.InitialOperator != null) {
-        for (int i = 0; i < SubOperators.Count; i++) {
-          if (scope.GetVariable(SubOperators[i].Name) != null)
-            scope.RemoveVariable(SubOperators[i].Name);
-          scope.AddVariable(new Variable(SubOperators[i].Name, SubOperators[i]));
-        }
-        return new AtomicOperation(OperatorGraph.InitialOperator, scope);
-      } else {
-        return null;
-      }
-    }
-
-    /// <summary>
-    /// Occurs when the description of the current instance has been changed.
-    /// </summary>
-    public event EventHandler DescriptionChanged;
-    /// <summary>
-    /// Fires a new <c>DescriptionChanged</c> event.
-    /// </summary>
-    protected virtual void OnDescriptionChanged() {
-      if (DescriptionChanged != null)
-        DescriptionChanged(this, new EventArgs());
+    public override ExecutionContextCollection Apply(ExecutionContext context) {
+      ExecutionContextCollection next = base.Apply(context);
+      if (operatorGraph.InitialOperator != null)
+        next.Insert(0, new ExecutionContext(context, operatorGraph.InitialOperator, context.Scope));
+      return next;
     }
   }
 }

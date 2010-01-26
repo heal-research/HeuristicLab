@@ -28,7 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
   [EmptyStorableClass]
-  [Item("Double", "Represents a double value.")]
+  [Item("DoubleData", "Represents a double value.")]
   [Creatable("Test")]
   public sealed class DoubleData : ValueTypeData<double>, IStringConvertibleData {
     public DoubleData() : base() { }

@@ -37,6 +37,9 @@ namespace HeuristicLab.Operators {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Method; }
     }
+    public override bool CanChangeDescription {
+      get { return false; }
+    }
 
     private ParameterCollection parameters;
     [Storable]

@@ -86,6 +86,7 @@ namespace HeuristicLab.Core {
     protected override void OnItemsAdded(IEnumerable<T> items) {
       foreach (T item in items)
         if (item != null) item.Changed += new ChangedEventHandler(Item_Changed);
+      IEnumerable<IEngine> i = (IEnumerable<IEngine>)items;
       base.OnItemsAdded(items);
     }
     protected override void OnItemsRemoved(IEnumerable<T> items) {

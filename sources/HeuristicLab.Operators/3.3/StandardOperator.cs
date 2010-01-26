@@ -30,7 +30,7 @@ namespace HeuristicLab.Operators {
   /// <summary>
   /// A base class for operators which have only one successor.
   /// </summary>
-  [Item("Standard Operator", "A base class for operators which have only one successor.")]
+  [Item("StandardOperator", "A base class for operators which have only one successor.")]
   [Creatable("Test")]
   [EmptyStorableClass]
   public abstract class StandardOperator : Operator {
@@ -44,7 +44,7 @@ namespace HeuristicLab.Operators {
     }
 
     public override ExecutionContextCollection Apply(ExecutionContext context) {
-      IOperator successor = Successor.GetValue(context);
+      IOperator successor = Successor.GetValue(context, false);
       if (successor != null)
         return new ExecutionContextCollection(new ExecutionContext(context.Parent, successor, context.Scope));
       else

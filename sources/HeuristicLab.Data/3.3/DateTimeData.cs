@@ -28,7 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
   [EmptyStorableClass]
-  [Item("DateTime", "Represents a date and time value.")]
+  [Item("DateTimeData", "Represents a date and time value.")]
   [Creatable("Test")]
   public sealed class DateTimeData : ValueTypeData<DateTime>, IStringConvertibleData {
     public DateTimeData() : base() { }

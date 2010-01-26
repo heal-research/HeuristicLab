@@ -22,29 +22,42 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml;
+using HeuristicLab.Collections;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
   /// <summary>
-  /// Performs <c>n</c> operators on the given scope sequentially.
+  /// Operator which executes multiple operators sequentially.
   /// </summary>
-  public class SequentialProcessor : OperatorBase {
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get { return @"TODO\r\nOperator description still missing ..."; }
+  [Item("SequentialProcessor", "An operator which executes multiple operators sequentially.")]
+  [Creatable("Test")]
+  [EmptyStorableClass]
+  public sealed class SequentialProcessor : Operator, IOperator {
+    public new ParameterCollection Parameters {
+      get {
+        return base.Parameters;
+      }
+    }
+    IObservableKeyedCollection<string, IParameter> IOperator.Parameters {
+      get { return Parameters; }
     }
 
-    /// <summary>
-    /// Applies <c>n</c> operators on the given <paramref name="scope"/>.
-    /// </summary>
-    /// <param name="scope">The scope to apply the operators on.</param>
-    /// <returns>A new <see cref="CompositeOperation"/> with the <c>n</c> operators applied 
-    /// to the given <paramref name="scope"/>.</returns>
-    public override IOperation Apply(IScope scope) {
-      CompositeOperation next = new CompositeOperation();
-      for (int i = 0; i < SubOperators.Count; i++)
-        next.AddOperation(new AtomicOperation(SubOperators[i], scope));
+    public SequentialProcessor()
+      : base() {
+    }
+
+    public override ExecutionContextCollection Apply(ExecutionContext context) {
+      ExecutionContextCollection next = new ExecutionContextCollection();
+      foreach (IParameter param in Parameters) {
+        IOperatorParameter opParam = param as IOperatorParameter;
+        if (opParam != null) {
+          IOperator op = (IOperator)opParam.GetValue(context);
+          if (op != null) next.Add(new ExecutionContext(context.Parent, op, context.Scope));
+        }
+      }
       return next;
     }
   }

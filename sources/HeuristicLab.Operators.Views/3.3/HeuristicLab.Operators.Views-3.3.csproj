@@ -50,6 +50,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CombinedOperatorView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CombinedOperatorView.Designer.cs">
+      <DependentUpon>CombinedOperatorView.cs</DependentUpon>
+    </Compile>
     <Compile Include="HeuristicLabOperatorsViewsPlugin.cs" />
     <Compile Include="OperatorView.cs">
       <SubType>UserControl</SubType>

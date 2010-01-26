@@ -28,7 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
   [EmptyStorableClass]
-  [Item("Integer", "Represents an integer value.")]
+  [Item("IntData", "Represents an integer value.")]
   [Creatable("Test")]
   public sealed class IntData : ValueTypeData<int>, IStringConvertibleData {
     public IntData() : base() { }

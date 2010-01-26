@@ -30,7 +30,7 @@ namespace HeuristicLab.Core {
   /// <summary>
   /// Represents a parameter.
   /// </summary>
-  [Item("Item Parameter", "A parameter which represents an IItem.")]
+  [Item("ItemParameter", "A parameter which represents an IItem.")]
   [Creatable("Test")]
   public class ItemParameter : Parameter {
     [Storable]
@@ -83,6 +83,9 @@ namespace HeuristicLab.Core {
     }
 
     public override IItem GetValue(ExecutionContext context) {
+      return GetValue(context, true);
+    }
+    public override IItem GetValue(ExecutionContext context, bool throwOnError) {
       if (Value != null) return Value;
       ExecutionContext parent = context.Parent;
       IParameter parameter = null;
@@ -93,7 +96,10 @@ namespace HeuristicLab.Core {
       }
 
       if (parameter != null) return parameter.GetValue(context);
-      else return context.Scope.Lookup(ActualName, true).Value;
+      else {
+        Variable variable = context.Scope.Lookup(ActualName, true, throwOnError);
+        return variable == null ? null : variable.Value;
+      }
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -125,7 +131,7 @@ namespace HeuristicLab.Core {
     }
   }
 
-  [Item("Parameter<T>", "A generic parameter which represents an instance of type T.")]
+  [Item("ItemParameter<T>", "A generic parameter which represents an instance of type T.")]
   [EmptyStorableClass]
   public class ItemParameter<T> : ItemParameter where T : class, IItem {
     public new T Value {
@@ -147,7 +153,10 @@ namespace HeuristicLab.Core {
     }
 
     public new T GetValue(ExecutionContext context) {
-      return (T)base.GetValue(context);
+      return GetValue(context, true);
+    }
+    public new T GetValue(ExecutionContext context, bool throwOnError) {
+      return (T)base.GetValue(context, throwOnError);
     }
   }
 }
