@@ -87,15 +87,18 @@ namespace HeuristicLab.Core {
     }
     public override IItem GetValue(ExecutionContext context, bool throwOnError) {
       if (Value != null) return Value;
-      ExecutionContext parent = context.Parent;
-      IParameter parameter = null;
 
-      while ((parent != null) && (parameter == null)) {
-        parent.Operator.Parameters.TryGetValue(ActualName, out parameter);
-        parent = parent.Parent;
+      ExecutionContext current, child;
+      IParameter parameter = null;
+      child = context;
+      current = context.Parent;
+      while ((current != null) && (parameter == null)) {
+        current.Operator.Parameters.TryGetValue(ActualName, out parameter);
+        child = current;
+        current = current.Parent;
       }
 
-      if (parameter != null) return parameter.GetValue(context);
+      if (parameter != null) return parameter.GetValue(child, throwOnError);
       else {
         Variable variable = context.Scope.Lookup(ActualName, true, throwOnError);
         return variable == null ? null : variable.Value;
