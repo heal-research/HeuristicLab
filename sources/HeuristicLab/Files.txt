@@ -149,9 +149,9 @@ HeuristicLab.ExtLibs\HeuristicLab.SQLite\1.0.65.0:HeuristicLab.SQLite-1.0.65.0.d
 HeuristicLab.ExtLibs\HeuristicLab.SQLite\1.0.65.0:SQLite License.txt 
 HeuristicLab.ExtLibs\HeuristicLab.SQLite\1.0.65.0:SQLite.NET.chm 
 
-HeuristicLab.ExtLibs\HeuristicLab.SQLServerCompact\3.5.5692.0:HeuristicLab.SQLServerCompact-3.5.5692.0.dll 
-HeuristicLab.ExtLibs\HeuristicLab.SQLServerCompact\3.5.5692.0:System.Data.SqlServerCe-3.5.dll 
-HeuristicLab.ExtLibs\HeuristicLab.SQLServerCompact\3.5.5692.0:SQLServer Compact license.txt
+HeuristicLab.ExtLibs\HeuristicLab.SQLServerCompact\3.5.1.0:HeuristicLab.SQLServerCompact-3.5.1.0.dll 
+HeuristicLab.ExtLibs\HeuristicLab.SQLServerCompact\3.5.1.0:System.Data.SqlServerCe-3.5.dll 
+HeuristicLab.ExtLibs\HeuristicLab.SQLServerCompact\3.5.1.0:SQLServer Compact license.txt
 
 HeuristicLab.ExtLibs\HeuristicLab.WinFormsUI\2.3.1\WinFormsUI-2.3.1:WeifenLuo.WinFormsUI.Docking-2.3.1.dll 
 HeuristicLab.ExtLibs\HeuristicLab.WinFormsUI\2.3.1\HeuristicLab.WinFormsUI-2.3.1:HeuristicLab.WinFormsUI-2.3.1.dll
