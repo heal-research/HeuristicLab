@@ -27,6 +27,7 @@ using HeuristicLab.PluginInfrastructure.Manager;
 using System.IO;
 using System.ComponentModel;
 using HeuristicLab.PluginInfrastructure.UpdateLocationReference;
+using System.Reflection;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
   internal class InstallationManager {
@@ -66,7 +67,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       builder.AppendLine("Description:").AppendLine(desc.Description);
       builder.Append("Build date: ").AppendLine(desc.BuildDate.ToString());
       builder.AppendLine("Files: ");
-      foreach (string fileName in desc.Files) {
+      foreach (string fileName in from file in desc.Files select file.Name) {
         builder.AppendLine(fileName);
       }
       builder.AppendLine("Directly depends on:");
@@ -94,10 +95,10 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // either any file is missing
       StringBuilder builder = new StringBuilder();
       var missingFiles = from x in desc.Files
-                         where !File.Exists(x)
-                         select x;
+                         where !File.Exists(x.Name)
+                         select x.Name;
       if (missingFiles.Count() > 0) {
-        foreach (string fileName in desc.Files) {
+        foreach (string fileName in from file in desc.Files select file.Name) {
           if (!File.Exists(fileName)) builder.Append("Missing file: ").AppendLine(fileName);
         }
         return builder.ToString();
@@ -125,8 +126,8 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
           } else {
             // or there was a problem loading the assemblies
             builder.AppendLine("There was a problem while loading assemblies: ");
-            foreach (string assembly in desc.Assemblies) {
-              builder.AppendLine(assembly);
+            foreach (AssemblyName assembly in desc.AssemblyNames) {
+              builder.AppendLine(assembly.FullName);
             }
             return builder.ToString();
           }
@@ -195,8 +196,8 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
     public void Remove(IEnumerable<string> pluginNames) {
       var fileNames = from pluginToDelete in PluginDescriptionIterator.IterateDependentsTopDown(GetPluginDescriptions(pluginNames), pluginManager.Plugins)
-                      from fileName in pluginToDelete.Files
-                      select Path.Combine(pluginDir, fileName);
+                      from file in pluginToDelete.Files
+                      select Path.Combine(pluginDir, file.Name);
       var args = new PluginInfrastructureCancelEventArgs("Deleting", fileNames);
       OnPreDelete(args);
       if (!args.Cancel) {

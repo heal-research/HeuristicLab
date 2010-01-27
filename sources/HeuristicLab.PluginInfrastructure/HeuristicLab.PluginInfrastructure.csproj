@@ -100,6 +100,7 @@
     <Compile Include="Attributes\PluginFileAttribute.cs" />
     <Compile Include="BaseClasses\ApplicationBase.cs" />
     <Compile Include="BaseClasses\PluginBase.cs" />
+    <Compile Include="Interfaces\IPluginFile.cs" />
     <Compile Include="Interfaces\IApplicationManager.cs" />
     <Compile Include="Interfaces\IApplicationDescription.cs" />
     <Compile Include="Interfaces\IApplication.cs" />
@@ -109,6 +110,7 @@
     <Compile Include="Interfaces\IPluginDescription.cs" />
     <Compile Include="InvalidPluginException.cs" />
     <Compile Include="Manager\ApplicationDescription.cs" />
+    <Compile Include="Manager\PluginFile.cs" />
     <Compile Include="Manager\PluginInfrastructureCancelEventArgs.cs" />
     <Compile Include="Manager\PluginDescription.cs" />
     <Compile Include="Manager\PluginInfrastructureEventArgs.cs" />

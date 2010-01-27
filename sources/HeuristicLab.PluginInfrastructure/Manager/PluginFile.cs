@@ -21,31 +21,30 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
+using System.Linq;
+using System.Reflection;
 
-namespace HeuristicLab.PluginInfrastructure {
-  /// <summary>
-  /// Represents meta-data of a plugin.
-  /// </summary>
-  public interface IPluginDescription {
-    /// <summary>
-    /// Gets the name of the plugin.
-    /// </summary>
-    string Name { get; }
-    /// <summary>
-    /// Gets the version of the plugin.
-    /// </summary>
-    Version Version { get; }
-    /// <summary>
-    /// Gets the build date of the plugin.
-    /// </summary>
-    DateTime BuildDate { get; }
-    /// <summary>
-    /// Gets the dependencies of the plugin.
-    /// </summary>
-    IEnumerable<IPluginDescription> Dependencies { get; }
-    /// <summary>
-    /// Gets the file names of files that are part of the plugin.
-    /// </summary>
-    IEnumerable<IPluginFile> Files { get; }
+namespace HeuristicLab.PluginInfrastructure.Manager {
+  [Serializable]
+  public sealed class PluginFile : IPluginFile {
+    #region IPluginFile Members
+
+    private string name;
+    public string Name {
+      get { return name; }
+    }
+
+    private PluginFileType type;
+    public PluginFileType Type {
+      get { return type; }
+    }
+
+    #endregion
+
+    public PluginFile(string name, PluginFileType type) {
+      this.name = name;
+      this.type = type;
+    }
   }
 }

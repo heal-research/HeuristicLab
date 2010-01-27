@@ -110,7 +110,7 @@ namespace HeuristicLab.Hive.Server.Core {
               client.State = State.offline;
               clientAdapter.Update(client);
               HiveLogger.Info(this.ToString() + ": Client " + client.Id + " wasn't offline but hasn't sent heartbeats - Resetting all his jobs");
-              foreach (Job job in jobAdapter.GetActiveJobsOf(client)) {                
+              foreach (Job job in jobAdapter.GetActiveJobsOf(client)) {
                 jobManager.ResetJobsDependingOnResults(job);
               }
             } else {
@@ -240,7 +240,7 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="hbData"></param>
     /// <returns></returns>
     public ResponseHB ProcessHeartBeat(HeartBeatData hbData) {
-      
+
       ISession session = factory.GetSessionForCurrentThread();
       ITransaction tx = null;
 
@@ -251,7 +251,7 @@ namespace HeuristicLab.Hive.Server.Core {
         IClientAdapter clientAdapter =
           session.GetDataAdapter<ClientInfo, IClientAdapter>();
 
-        IJobAdapter jobAdapter =        
+        IJobAdapter jobAdapter =
           session.GetDataAdapter<Job, IJobAdapter>();
         HiveLogger.Info(this.ToString() + ": END Fetched Adapters");
         HiveLogger.Info(this.ToString() + ": BEGIN Starting Transaction");
@@ -267,7 +267,7 @@ namespace HeuristicLab.Hive.Server.Core {
         // check if the client is logged in
         if (client.State == State.offline || client.State == State.nullState) {
           response.Success = false;
-          response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_USER_NOT_LOGGED_IN;          
+          response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_USER_NOT_LOGGED_IN;
           response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.NoMessage));
 
           HiveLogger.Error(this.ToString() + " ProcessHeartBeat: Client state null or offline: " + client);
@@ -304,7 +304,7 @@ namespace HeuristicLab.Hive.Server.Core {
         HiveLogger.Info(this.ToString() + ": BEGIN Processing Heartbeat Jobs");
         processJobProcess(hbData, jobAdapter, clientAdapter, response);
         HiveLogger.Info(this.ToString() + ": END Processed Heartbeat Jobs");
-        
+
         clientAdapter.Update(client);
 
         tx.Commit();
@@ -330,14 +330,14 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="clientAdapter"></param>
     /// <param name="response"></param>
     private void processJobProcess(HeartBeatData hbData, IJobAdapter jobAdapter, IClientAdapter clientAdapter, ResponseHB response) {
-      HiveLogger.Info(this.ToString() + " processJobProcess: Started for Client " + hbData.ClientId);      
-      
+      HiveLogger.Info(this.ToString() + " processJobProcess: Started for Client " + hbData.ClientId);
+
       if (hbData.JobProgress != null && hbData.JobProgress.Count > 0) {
         List<Job> jobsOfClient = new List<Job>(jobAdapter.GetActiveJobsOf(clientAdapter.GetById(hbData.ClientId)));
         if (jobsOfClient == null || jobsOfClient.Count == 0) {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_IS_NOT_BEEING_CALCULATED;
-          HiveLogger.Error(this.ToString() + " processJobProcess: There is no job calculated by this user " + hbData.ClientId);      
+          HiveLogger.Error(this.ToString() + " processJobProcess: There is no job calculated by this user " + hbData.ClientId);
           return;
         }
 
@@ -346,7 +346,7 @@ namespace HeuristicLab.Hive.Server.Core {
           if (curJob.Client == null || curJob.Client.Id != hbData.ClientId) {
             response.Success = false;
             response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_IS_NOT_BEEING_CALCULATED;
-            HiveLogger.Error(this.ToString() + " processJobProcess: There is no job calculated by this user " + hbData.ClientId + " Job: " + curJob);      
+            HiveLogger.Error(this.ToString() + " processJobProcess: There is no job calculated by this user " + hbData.ClientId + " Job: " + curJob);
           } else if (curJob.State == State.abort) {
             // a request to abort the job has been set
             response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.AbortJob, curJob.Id));
@@ -375,9 +375,9 @@ namespace HeuristicLab.Hive.Server.Core {
             lock (newAssignedJobs) {
               if (newAssignedJobs.ContainsKey(currJob.Id)) {
                 newAssignedJobs[currJob.Id]--;
-                HiveLogger.Error(this.ToString() + " processJobProcess: Job TTL Reduced by one for job: " + currJob + "and is now: " + newAssignedJobs[currJob.Id] + ". User that sucks: " + currJob.Client);                      
+                HiveLogger.Error(this.ToString() + " processJobProcess: Job TTL Reduced by one for job: " + currJob + "and is now: " + newAssignedJobs[currJob.Id] + ". User that sucks: " + currJob.Client);
                 if (newAssignedJobs[currJob.Id] <= 0) {
-                  HiveLogger.Error(this.ToString() + " processJobProcess: Job TTL reached Zero, Job gets removed: " + currJob + " and set back to offline. User that sucks: " + currJob.Client);                  
+                  HiveLogger.Error(this.ToString() + " processJobProcess: Job TTL reached Zero, Job gets removed: " + currJob + " and set back to offline. User that sucks: " + currJob.Client);
 
                   currJob.State = State.offline;
                   jobAdapter.Update(currJob);
@@ -387,7 +387,7 @@ namespace HeuristicLab.Hive.Server.Core {
                   newAssignedJobs.Remove(currJob.Id);
                 }
               } else {
-                HiveLogger.Error(this.ToString() + " processJobProcess: Job ID wasn't with the heartbeats:  " + currJob);                      
+                HiveLogger.Error(this.ToString() + " processJobProcess: Job ID wasn't with the heartbeats:  " + currJob);
                 currJob.State = State.offline;
                 jobAdapter.Update(currJob);
               }
@@ -396,7 +396,7 @@ namespace HeuristicLab.Hive.Server.Core {
             lock (newAssignedJobs) {
 
               if (newAssignedJobs.ContainsKey(currJob.Id)) {
-                HiveLogger.Info(this.ToString() + " processJobProcess: Job is sending a heart beat, removing it from the newAssignedJobList: " + currJob);                      
+                HiveLogger.Info(this.ToString() + " processJobProcess: Job is sending a heart beat, removing it from the newAssignedJobList: " + currJob);
                 newAssignedJobs.Remove(currJob.Id);
               }
             }
@@ -430,14 +430,14 @@ namespace HeuristicLab.Hive.Server.Core {
 
           response.Job = computableJob;
           response.Success = true;
-          HiveLogger.Info(this.ToString() + " SendSerializedJob: Job pulled: " + computableJob.JobInfo + " for user " + clientId);                      
+          HiveLogger.Info(this.ToString() + " SendSerializedJob: Job pulled: " + computableJob.JobInfo + " for user " + clientId);
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_PULLED;
           lock (newAssignedJobs) {
             if (!newAssignedJobs.ContainsKey(job2Calculate.Id))
               newAssignedJobs.Add(job2Calculate.Id, ApplicationConstants.JOB_TIME_TO_LIVE);
           }
         } else {
-          HiveLogger.Info(this.ToString() + " SendSerializedJob: No more Jobs left for " + clientId);                      
+          HiveLogger.Info(this.ToString() + " SendSerializedJob: No more Jobs left for " + clientId);
           response.Success = false;
           response.Job = null;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOBS_LEFT;
@@ -480,7 +480,7 @@ namespace HeuristicLab.Hive.Server.Core {
         if (job2Calculate != null) {
           response.Job = job2Calculate;
           response.Success = true;
-          HiveLogger.Info(this.ToString() + " SendSerializedJob: Job pulled: " + job2Calculate + " for user " + clientId);                      
+          HiveLogger.Info(this.ToString() + " SendSerializedJob: Job pulled: " + job2Calculate + " for user " + clientId);
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_PULLED;
           lock (newAssignedJobs) {
             if (!newAssignedJobs.ContainsKey(job2Calculate.Id))
@@ -490,7 +490,7 @@ namespace HeuristicLab.Hive.Server.Core {
           response.Success = false;
           response.Job = null;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOBS_LEFT;
-          HiveLogger.Info(this.ToString() + " SendSerializedJob: No more Jobs left for " + clientId);                      
+          HiveLogger.Info(this.ToString() + " SendSerializedJob: No more Jobs left for " + clientId);
         }
 
         tx.Commit();
@@ -513,7 +513,7 @@ namespace HeuristicLab.Hive.Server.Core {
       bool finished) {
 
       HiveLogger.Info(this.ToString() + " ProcessJobResult: BEGIN Job received for Storage - main method:");
-      
+
       ISession session = factory.GetSessionForCurrentThread();
       ITransaction tx = null;
       Stream jobResultStream = null;
@@ -593,11 +593,11 @@ namespace HeuristicLab.Hive.Server.Core {
       double percentage,
       Exception exception,
       bool finished) {
-      
+
       HiveLogger.Info(this.ToString() + " ProcessJobResult: BEGIN Job received for Storage - SUB method: " + jobId);
 
       ISession session = factory.GetSessionForCurrentThread();
-            
+
       ITransaction tx = null;
 
       try {
@@ -607,7 +607,7 @@ namespace HeuristicLab.Hive.Server.Core {
           session.GetDataAdapter<Job, IJobAdapter>();
         IJobResultsAdapter jobResultAdapter =
           session.GetDataAdapter<JobResult, IJobResultsAdapter>();
-        
+
         //should fetch the existing transaction        
         tx = session.BeginTransaction();
 
@@ -627,18 +627,18 @@ namespace HeuristicLab.Hive.Server.Core {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOB_WITH_THIS_ID;
           response.JobId = jobId;
-          
-          HiveLogger.Error(this.ToString() + " ProcessJobResult: No job with Id " + jobId);                      
-          
+
+          HiveLogger.Error(this.ToString() + " ProcessJobResult: No job with Id " + jobId);
+
           tx.Rollback();
           return response;
         }
         if (job.JobInfo.State == State.abort) {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_WAS_ABORTED;
-          
-          HiveLogger.Error(this.ToString() + " ProcessJobResult: Job was aborted! " + job.JobInfo);                      
-          
+
+          HiveLogger.Error(this.ToString() + " ProcessJobResult: Job was aborted! " + job.JobInfo);
+
           tx.Rollback();
           return response;
         }
@@ -647,7 +647,7 @@ namespace HeuristicLab.Hive.Server.Core {
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_IS_NOT_BEEING_CALCULATED;
           response.JobId = jobId;
 
-          HiveLogger.Error(this.ToString() + " ProcessJobResult: Job is not being calculated (client = null)! " + job.JobInfo);                      
+          HiveLogger.Error(this.ToString() + " ProcessJobResult: Job is not being calculated (client = null)! " + job.JobInfo);
 
           tx.Rollback();
           return response;
@@ -657,7 +657,7 @@ namespace HeuristicLab.Hive.Server.Core {
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_WRONG_CLIENT_FOR_JOB;
           response.JobId = jobId;
 
-          HiveLogger.Error(this.ToString() + " ProcessJobResult: Wrong Client for this Job! " + job.JobInfo + ", Sending Client is: " + clientId);                      
+          HiveLogger.Error(this.ToString() + " ProcessJobResult: Wrong Client for this Job! " + job.JobInfo + ", Sending Client is: " + clientId);
 
           tx.Rollback();
           return response;
@@ -667,7 +667,7 @@ namespace HeuristicLab.Hive.Server.Core {
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOBRESULT_RECEIVED;
           response.JobId = jobId;
 
-          HiveLogger.Error(this.ToString() + " ProcessJobResult: Job already finished! " + job.JobInfo + ", Sending Client is: " + clientId);                      
+          HiveLogger.Error(this.ToString() + " ProcessJobResult: Job already finished! " + job.JobInfo + ", Sending Client is: " + clientId);
 
           tx.Rollback();
           return response;
@@ -681,7 +681,7 @@ namespace HeuristicLab.Hive.Server.Core {
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_WRONG_JOB_STATE;
           response.JobId = jobId;
 
-          HiveLogger.Error(this.ToString() + " ProcessJobResult: Wrong Job State, job is: " + job.JobInfo);                      
+          HiveLogger.Error(this.ToString() + " ProcessJobResult: Wrong Job State, job is: " + job.JobInfo);
 
           tx.Rollback();
           return response;
@@ -719,10 +719,10 @@ namespace HeuristicLab.Hive.Server.Core {
         response.JobId = jobId;
         response.finished = finished;
         response.JobResultId = jobResult.Id;
-        
+
         //Removed for Testing
         //tx.Commit();
-        HiveLogger.Info(this.ToString() + " ProcessJobResult: END Job received for Storage - SUB method: " + jobId);        
+        HiveLogger.Info(this.ToString() + " ProcessJobResult: END Job received for Storage - SUB method: " + jobId);
         return response;
       }
       catch (Exception ex) {
@@ -771,7 +771,7 @@ namespace HeuristicLab.Hive.Server.Core {
     public Response Logout(Guid clientId) {
 
       HiveLogger.Info("Client logged out " + clientId);
-      
+
       ISession session = factory.GetSessionForCurrentThread();
       ITransaction tx = null;
 
@@ -891,8 +891,8 @@ namespace HeuristicLab.Hive.Server.Core {
               BuildDate = currPlugin.BuildDate
             };
 
-            foreach (String assemblyPath in currPlugin.Files) {
-              currCachedPlugin.PluginFiles.Add(File.ReadAllBytes(assemblyPath));
+            foreach (string fileName in from file in currPlugin.Files select file.Name) {
+              currCachedPlugin.PluginFiles.Add(File.ReadAllBytes(fileName));
             }
             response.Plugins.Add(currCachedPlugin);
           }

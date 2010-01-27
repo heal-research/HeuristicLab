@@ -102,8 +102,8 @@ namespace HeuristicLab.PluginInfrastructure {
     private void LoadPlugins(IEnumerable<PluginDescription> plugins) {
       // load all loadable plugins (all dependencies available) into the execution context
       foreach (var desc in PluginDescriptionIterator.IterateDependenciesBottomUp(plugins.Where(x => x.PluginState != PluginState.Disabled))) {
-        foreach (string assembly in desc.Assemblies) {
-          var asm = Assembly.LoadFrom(assembly);
+        foreach (AssemblyName assemblyName in desc.AssemblyNames) {
+          var asm = Assembly.Load(assemblyName);
 
           // instantiate and load all plugins in this assembly
           foreach (var plugin in GetInstances<IPlugin>(asm)) {
@@ -212,10 +212,7 @@ namespace HeuristicLab.PluginInfrastructure {
     internal static IEnumerable<Type> GetTypes(Type type, IPluginDescription pluginDescription, bool onlyInstantiable) {
       PluginDescription pluginDesc = (PluginDescription)pluginDescription;
       return from asm in AppDomain.CurrentDomain.GetAssemblies()
-             where !string.IsNullOrEmpty(asm.Location) &&
-                   pluginDesc.Assemblies.Any(asmPath =>
-                     Path.GetFullPath(asmPath).Equals(Path.GetFullPath(asm.Location),
-                                                      StringComparison.CurrentCultureIgnoreCase))
+             where pluginDesc.AssemblyNames.Any(asmName => asmName.FullName.Equals(asm.GetName().FullName))
              from t in GetTypes(type, asm, onlyInstantiable)
              select t;
     }
@@ -285,7 +282,7 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <returns>The description of the plugin that declares the given type or null if the type has not been declared by a known plugin.</returns>
     public IPluginDescription GetDeclaringPlugin(Type type) {
       foreach (PluginDescription info in Plugins) {
-        if (info.Assemblies.Contains(Path.GetFullPath(type.Assembly.Location))) return info;
+        if (info.AssemblyNames.Contains(type.Assembly.GetName())) return info;
       }
       return null;
     }

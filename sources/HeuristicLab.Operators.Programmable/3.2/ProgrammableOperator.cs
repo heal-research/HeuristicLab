@@ -166,7 +166,9 @@ namespace HeuristicLab.Operators.Programmable {
       var locationTable = assemblies.ToDictionary(a => a.Location, a => a);
       foreach (var plugin in ApplicationManager.Manager.Plugins) {
         var aList = new List<Assembly>();
-        foreach (var aName in plugin.Assemblies) {
+        foreach (var aName in from file in plugin.Files
+                              where file.Type == PluginFileType.Assembly
+                              select file.Name) {
           Assembly a;
           locationTable.TryGetValue(aName, out a);
           if (a != null) {
@@ -197,7 +199,8 @@ namespace HeuristicLab.Operators.Programmable {
           if (File.Exists(a.Location)) {
             assemblies.Add(a, false);
           }
-        } catch (NotSupportedException) {
+        }
+        catch (NotSupportedException) {
           // NotSupportedException is thrown while accessing 
           // the Location property of the anonymously hosted
           // dynamic methods assembly, which is related to

@@ -171,8 +171,8 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     private void CheckPluginAssemblies(IEnumerable<PluginDescription> pluginDescriptions) {
       foreach (var desc in pluginDescriptions.Where(x => x.PluginState != PluginState.Disabled)) {
         try {
-          foreach (var asm in desc.Assemblies) {
-            Assembly.ReflectionOnlyLoadFrom(asm);
+          foreach (var asmName in desc.AssemblyNames) {
+            Assembly.ReflectionOnlyLoad(asmName.FullName);
           }
         }
         catch (BadImageFormatException) {
@@ -236,9 +236,9 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     private PluginDescription GetPluginDescription(Type pluginType) {
       // get all attributes of that type
       IList<CustomAttributeData> attributes = CustomAttributeData.GetCustomAttributes(pluginType);
-      List<string> pluginAssemblies = new List<string>();
+      List<AssemblyName> pluginAssemblyNames = new List<AssemblyName>();
       List<string> pluginDependencies = new List<string>();
-      List<string> pluginFiles = new List<string>();
+      List<PluginFile> pluginFiles = new List<PluginFile>();
       string pluginName = null;
       string pluginDescription = null;
       // iterate through all custom attributes and search for attributed that we are interested in 
@@ -253,9 +253,9 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
         } else if (IsAttributeDataForType(attributeData, typeof(PluginFileAttribute))) {
           string pluginFileName = (string)attributeData.ConstructorArguments[0].Value;
           PluginFileType fileType = (PluginFileType)attributeData.ConstructorArguments[1].Value;
-          pluginFiles.Add(Path.GetFullPath(Path.Combine(PluginDir, pluginFileName)));
+          pluginFiles.Add(new PluginFile(Path.GetFullPath(Path.Combine(PluginDir, pluginFileName)), fileType));
           if (fileType == PluginFileType.Assembly) {
-            pluginAssemblies.Add(Path.GetFullPath(Path.Combine(PluginDir, pluginFileName)));
+            pluginAssemblyNames.Add(AssemblyName.GetAssemblyName(Path.GetFullPath(Path.Combine(PluginDir, pluginFileName))));
           }
         }
       }
@@ -267,7 +267,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       // minimal sanity check of the attribute values
       if (!string.IsNullOrEmpty(pluginName) &&
           pluginFiles.Count > 0 &&
-          pluginAssemblies.Count > 0 &&
+          pluginAssemblyNames.Count > 0 &&
           buildDates.Count() == 1) {
         // create a temporary PluginDescription that contains the attribute values
         PluginDescription info = new PluginDescription();
@@ -275,7 +275,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
         info.Description = pluginDescription;
         info.Version = pluginType.Assembly.GetName().Version;
         info.BuildDate = DateTime.Parse(buildDates.Single(), System.Globalization.CultureInfo.InvariantCulture);
-        info.AddAssemblies(pluginAssemblies);
+        info.AddAssemblyNames(pluginAssemblyNames);
         info.AddFiles(pluginFiles);
 
         this.pluginDependencies[info] = pluginDependencies;
@@ -348,8 +348,8 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       foreach (var desc in PluginDescriptionIterator.IterateDependenciesBottomUp(pluginDescriptions
                                                                                 .Where(x => x.PluginState != PluginState.Disabled))) {
         List<Type> types = new List<Type>();
-        foreach (string assembly in desc.Assemblies) {
-          var asm = Assembly.LoadFrom(assembly);
+        foreach (AssemblyName assemblyName in desc.AssemblyNames) {
+          var asm = Assembly.Load(assemblyName);
           foreach (Type t in asm.GetTypes()) {
             if (typeof(IPlugin).IsAssignableFrom(t)) {
               types.Add(t);
@@ -378,7 +378,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     }
 
     private bool CheckPluginFiles(PluginDescription pluginDescription) {
-      foreach (string filename in pluginDescription.Files) {
+      foreach (string filename in pluginDescription.Files.Select(x => x.Name)) {
         if (!FileLiesInDirectory(PluginDir, filename) ||
           !File.Exists(filename)) {
           return false;

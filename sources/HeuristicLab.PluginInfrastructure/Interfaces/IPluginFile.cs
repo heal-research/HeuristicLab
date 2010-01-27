@@ -24,28 +24,16 @@ using System.Collections.Generic;
 
 namespace HeuristicLab.PluginInfrastructure {
   /// <summary>
-  /// Represents meta-data of a plugin.
+  /// Represents a file of a plugin (name and type).
   /// </summary>
-  public interface IPluginDescription {
+  public interface IPluginFile {
     /// <summary>
-    /// Gets the name of the plugin.
+    /// Gets the name of the file.
     /// </summary>
     string Name { get; }
     /// <summary>
-    /// Gets the version of the plugin.
+    /// Gets the type of the file.
     /// </summary>
-    Version Version { get; }
-    /// <summary>
-    /// Gets the build date of the plugin.
-    /// </summary>
-    DateTime BuildDate { get; }
-    /// <summary>
-    /// Gets the dependencies of the plugin.
-    /// </summary>
-    IEnumerable<IPluginDescription> Dependencies { get; }
-    /// <summary>
-    /// Gets the file names of files that are part of the plugin.
-    /// </summary>
-    IEnumerable<IPluginFile> Files { get; }
+    PluginFileType Type { get; }
   }
 }

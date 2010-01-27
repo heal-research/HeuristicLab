@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using System.Reflection;
 
 namespace HeuristicLab.PluginInfrastructure.Manager {
   /// <summary>
@@ -76,16 +77,16 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     }
 
 
-    private List<string> files = new List<string>();
+    private List<PluginFile> files = new List<PluginFile>();
     /// <summary>
     /// Gets the names of all files that belong to this plugin.
     /// These files are deleted when the plugin is removed or updated.
     /// </summary>
-    public IEnumerable<string> Files {
-      get { return files; }
+    public IEnumerable<IPluginFile> Files {
+      get { return files.Cast<IPluginFile>(); }
     }
 
-    internal void AddFiles(IEnumerable<string> fileNames) {
+    internal void AddFiles(IEnumerable<PluginFile> fileNames) {
       files.AddRange(fileNames);
     }
 
@@ -104,17 +105,16 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       dependencies.Add(dependency);
     }
 
-    private List<string> assemblies = new List<string>();
+    private List<AssemblyName> assemblyNames = new List<AssemblyName>();
     /// <summary>
     /// Gets the names of the assemblies that belong to this plugin.
     /// </summary>
-    public IEnumerable<string> Assemblies {
-      get { return assemblies; }
-      // set { assemblies = value; }
+    public IEnumerable<AssemblyName> AssemblyNames {
+      get { return assemblyNames; }
     }
 
-    internal void AddAssemblies(IEnumerable<string> assemblyNames) {
-      assemblies.AddRange(assemblyNames);
+    internal void AddAssemblyNames(IEnumerable<AssemblyName> assemblyNames) {
+      this.assemblyNames.AddRange(assemblyNames);
     }
 
     internal PluginDescription() {
