@@ -32,7 +32,7 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
   [PluginDependency("HeuristicLab.DataAnalysis-3.2")]
   [PluginDependency("HeuristicLab.Modeling-3.2")]
   [PluginDependency("HeuristicLab.Modeling.Database-3.2")]
-  [PluginDependency("HeuristicLab.SQLServerCompact-3.5.5692.0")]  
+  [PluginDependency("HeuristicLab.SQLServerCompact-3.5.1.0")]  
   public class HeuristicLabModelingDatabaseSQLServerCompactPlugin : PluginBase {
   }
 }
