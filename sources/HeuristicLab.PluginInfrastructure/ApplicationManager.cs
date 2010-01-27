@@ -74,7 +74,6 @@ namespace HeuristicLab.PluginInfrastructure {
       : base() {
       loadedAssemblies = new Dictionary<string, Assembly>();
       loadedPlugins = new List<IPlugin>();
-      // needed for the special case when assemblies are loaded dynamically via LoadAssemblies()
       AppDomain.CurrentDomain.AssemblyResolve += (sender, args) => {
         if (loadedAssemblies.ContainsKey(args.Name)) {
           return loadedAssemblies[args.Name];
@@ -102,9 +101,9 @@ namespace HeuristicLab.PluginInfrastructure {
     private void LoadPlugins(IEnumerable<PluginDescription> plugins) {
       // load all loadable plugins (all dependencies available) into the execution context
       foreach (var desc in PluginDescriptionIterator.IterateDependenciesBottomUp(plugins.Where(x => x.PluginState != PluginState.Disabled))) {
-        foreach (AssemblyName assemblyName in desc.AssemblyNames) {
-          var asm = Assembly.Load(assemblyName);
-
+        foreach (string fileName in desc.AssemblyLocations) {
+          var asm = Assembly.LoadFrom(fileName);
+          RegisterLoadedAssembly(asm);
           // instantiate and load all plugins in this assembly
           foreach (var plugin in GetInstances<IPlugin>(asm)) {
             plugin.OnLoad();
@@ -212,7 +211,7 @@ namespace HeuristicLab.PluginInfrastructure {
     internal static IEnumerable<Type> GetTypes(Type type, IPluginDescription pluginDescription, bool onlyInstantiable) {
       PluginDescription pluginDesc = (PluginDescription)pluginDescription;
       return from asm in AppDomain.CurrentDomain.GetAssemblies()
-             where pluginDesc.AssemblyNames.Any(asmName => asmName.FullName.Equals(asm.GetName().FullName))
+             where pluginDesc.AssemblyLocations.Any(location => location.Equals(Path.GetFullPath(asm.Location), StringComparison.CurrentCultureIgnoreCase))
              from t in GetTypes(type, asm, onlyInstantiable)
              select t;
     }
@@ -282,7 +281,7 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <returns>The description of the plugin that declares the given type or null if the type has not been declared by a known plugin.</returns>
     public IPluginDescription GetDeclaringPlugin(Type type) {
       foreach (PluginDescription info in Plugins) {
-        if (info.AssemblyNames.Contains(type.Assembly.GetName())) return info;
+        if (info.AssemblyLocations.Contains(Path.GetFullPath(type.Assembly.Location))) return info;
       }
       return null;
     }

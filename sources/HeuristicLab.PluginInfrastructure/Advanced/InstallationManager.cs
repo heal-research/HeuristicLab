@@ -126,8 +126,8 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
           } else {
             // or there was a problem loading the assemblies
             builder.AppendLine("There was a problem while loading assemblies: ");
-            foreach (AssemblyName assembly in desc.AssemblyNames) {
-              builder.AppendLine(assembly.FullName);
+            foreach (string assemblyLocation in desc.AssemblyLocations) {
+              builder.AppendLine(assemblyLocation + ": " + AssemblyName.GetAssemblyName(assemblyLocation).FullName);
             }
             return builder.ToString();
           }

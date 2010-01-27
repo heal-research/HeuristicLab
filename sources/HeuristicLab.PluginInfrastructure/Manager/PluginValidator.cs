@@ -67,8 +67,12 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += ReflectionOnlyAssemblyResolveEventHandler;
     }
 
+    private Dictionary<string, Assembly> reflectionOnlyAssemblies = new Dictionary<string, Assembly>();
     private Assembly ReflectionOnlyAssemblyResolveEventHandler(object sender, ResolveEventArgs args) {
-      return Assembly.ReflectionOnlyLoad(args.Name);
+      if (reflectionOnlyAssemblies.ContainsKey(args.Name))
+        return reflectionOnlyAssemblies[args.Name];
+      else
+        return Assembly.ReflectionOnlyLoad(args.Name);
     }
 
 
@@ -146,7 +150,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
              select (IApplication)Activator.CreateInstance(t);
     }
 
-    private static IEnumerable<Assembly> ReflectionOnlyLoadDlls(string baseDir) {
+    private IEnumerable<Assembly> ReflectionOnlyLoadDlls(string baseDir) {
       List<Assembly> assemblies = new List<Assembly>();
       // recursively load .dll files in subdirectories
       foreach (string dirName in Directory.GetDirectories(baseDir)) {
@@ -155,7 +159,9 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       // try to load each .dll file in the plugin directory into the reflection only context
       foreach (string filename in Directory.GetFiles(baseDir, "*.dll")) {
         try {
-          assemblies.Add(Assembly.ReflectionOnlyLoadFrom(filename));
+          Assembly asm = Assembly.ReflectionOnlyLoadFrom(filename);
+          RegisterLoadedAssembly(asm);
+          assemblies.Add(asm);
         }
         catch (BadImageFormatException) { } // just ignore the case that the .dll file is not a CLR assembly (e.g. a native dll)
         catch (FileLoadException) { }
@@ -171,8 +177,15 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     private void CheckPluginAssemblies(IEnumerable<PluginDescription> pluginDescriptions) {
       foreach (var desc in pluginDescriptions.Where(x => x.PluginState != PluginState.Disabled)) {
         try {
-          foreach (var asmName in desc.AssemblyNames) {
-            Assembly.ReflectionOnlyLoad(asmName.FullName);
+          foreach (var asmLocation in desc.AssemblyLocations) {
+            // the assembly must have been loaded in ReflectionOnlyDlls
+            // so we simply determine the name of the assembly and try to find it in the cache of loaded assemblies
+            var asmName = AssemblyName.GetAssemblyName(asmLocation);
+
+            if (!reflectionOnlyAssemblies.ContainsKey(asmName.FullName)) {
+              desc.Disable();
+              break; // as soon as one assembly is not available disable the plugin and check the next plugin description
+            }
           }
         }
         catch (BadImageFormatException) {
@@ -236,7 +249,6 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     private PluginDescription GetPluginDescription(Type pluginType) {
       // get all attributes of that type
       IList<CustomAttributeData> attributes = CustomAttributeData.GetCustomAttributes(pluginType);
-      List<AssemblyName> pluginAssemblyNames = new List<AssemblyName>();
       List<string> pluginDependencies = new List<string>();
       List<PluginFile> pluginFiles = new List<PluginFile>();
       string pluginName = null;
@@ -254,9 +266,6 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
           string pluginFileName = (string)attributeData.ConstructorArguments[0].Value;
           PluginFileType fileType = (PluginFileType)attributeData.ConstructorArguments[1].Value;
           pluginFiles.Add(new PluginFile(Path.GetFullPath(Path.Combine(PluginDir, pluginFileName)), fileType));
-          if (fileType == PluginFileType.Assembly) {
-            pluginAssemblyNames.Add(AssemblyName.GetAssemblyName(Path.GetFullPath(Path.Combine(PluginDir, pluginFileName))));
-          }
         }
       }
 
@@ -266,16 +275,15 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
 
       // minimal sanity check of the attribute values
       if (!string.IsNullOrEmpty(pluginName) &&
-          pluginFiles.Count > 0 &&
-          pluginAssemblyNames.Count > 0 &&
-          buildDates.Count() == 1) {
+          pluginFiles.Count > 0 &&                                   // at least on file
+          pluginFiles.Any(f => f.Type == PluginFileType.Assembly) && // at least on assembly
+          buildDates.Count() == 1) {                                 // build date must be declared
         // create a temporary PluginDescription that contains the attribute values
         PluginDescription info = new PluginDescription();
         info.Name = pluginName;
         info.Description = pluginDescription;
         info.Version = pluginType.Assembly.GetName().Version;
         info.BuildDate = DateTime.Parse(buildDates.Single(), System.Globalization.CultureInfo.InvariantCulture);
-        info.AddAssemblyNames(pluginAssemblyNames);
         info.AddFiles(pluginFiles);
 
         this.pluginDependencies[info] = pluginDependencies;
@@ -348,8 +356,9 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       foreach (var desc in PluginDescriptionIterator.IterateDependenciesBottomUp(pluginDescriptions
                                                                                 .Where(x => x.PluginState != PluginState.Disabled))) {
         List<Type> types = new List<Type>();
-        foreach (AssemblyName assemblyName in desc.AssemblyNames) {
-          var asm = Assembly.Load(assemblyName);
+        foreach (string assemblyLocation in desc.AssemblyLocations) {
+          // now load the assemblies into the execution context
+          var asm = Assembly.LoadFrom(assemblyLocation);
           foreach (Type t in asm.GetTypes()) {
             if (typeof(IPlugin).IsAssignableFrom(t)) {
               types.Add(t);
@@ -390,6 +399,12 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     private static bool FileLiesInDirectory(string dir, string fileName) {
       var basePath = Path.GetFullPath(dir);
       return Path.GetFullPath(fileName).StartsWith(basePath);
+    }
+
+    // register assembly in the assembly cache for the ReflectionOnlyAssemblyResolveEvent
+    private void RegisterLoadedAssembly(Assembly asm) {
+      reflectionOnlyAssemblies.Add(asm.FullName, asm);
+      reflectionOnlyAssemblies.Add(asm.GetName().Name, asm); // add short name
     }
 
     internal void OnPluginLoaded(PluginInfrastructureEventArgs e) {

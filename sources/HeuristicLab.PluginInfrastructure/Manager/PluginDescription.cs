@@ -105,16 +105,12 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       dependencies.Add(dependency);
     }
 
-    private List<AssemblyName> assemblyNames = new List<AssemblyName>();
+    
     /// <summary>
-    /// Gets the names of the assemblies that belong to this plugin.
+    /// Gets the locations (file names) of the assemblies that belong to this plugin.
     /// </summary>
-    public IEnumerable<AssemblyName> AssemblyNames {
-      get { return assemblyNames; }
-    }
-
-    internal void AddAssemblyNames(IEnumerable<AssemblyName> assemblyNames) {
-      this.assemblyNames.AddRange(assemblyNames);
+    public IEnumerable<string> AssemblyLocations {
+      get { return Files.Where(f => f.Type == PluginFileType.Assembly).Select(f => f.Name); }
     }
 
     internal PluginDescription() {
