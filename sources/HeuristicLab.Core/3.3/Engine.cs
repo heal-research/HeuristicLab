@@ -70,7 +70,7 @@ namespace HeuristicLab.Core {
     /// <summary>
     /// Gets the current global scope.
     /// </summary>
-    public Scope GlobalScope {
+    public IScope GlobalScope {
       get { return globalScope; }
     }
 
@@ -166,7 +166,7 @@ namespace HeuristicLab.Core {
     public void Initialize() {
       canceled = false;
       running = false;
-      GlobalScope.Clear();
+      globalScope.Clear();
       ExecutionTime = new TimeSpan();
       executionStack.Clear();
       if (OperatorGraph.InitialOperator != null)

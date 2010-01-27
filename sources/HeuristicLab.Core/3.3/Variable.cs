@@ -32,7 +32,7 @@ namespace HeuristicLab.Core {
   /// </summary>
   [Item("Variable", "A variable which has a name and holds an IItem.")]
   [Creatable("Test")]
-  public sealed class Variable : NamedItem {
+  public sealed class Variable : NamedItem, IVariable {
     private IItem value;
     /// <inheritdoc/>
     /// <remarks>Calls <see cref="OnValueChanged"/> in the setter.</remarks>
@@ -66,11 +66,6 @@ namespace HeuristicLab.Core {
     public Variable(string name, IItem value)
       : base(name) {
       Value = value;
-    }
-
-    /// <inheritdoc cref="IVariable.GetValue&lt;T&gt;"/>
-    public T GetValue<T>() where T : class, IItem {
-      return (T)Value;
     }
 
     /// <summary>

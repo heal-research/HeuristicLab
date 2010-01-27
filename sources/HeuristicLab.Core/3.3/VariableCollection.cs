@@ -32,7 +32,7 @@ namespace HeuristicLab.Core {
   [EmptyStorableClass]
   [Item("VariableCollection", "Represents a collection of variables.")]
   [Creatable("Test")]
-  public class VariableCollection : NamedItemCollection<Variable>, IItem {
+  public class VariableCollection : NamedItemCollection<IVariable>, IItem {
     public virtual string ItemName {
       get { return ItemAttribute.GetName(this.GetType()); }
     }
@@ -45,7 +45,7 @@ namespace HeuristicLab.Core {
 
     public VariableCollection() : base() { }
     public VariableCollection(int capacity) : base(capacity) { }
-    public VariableCollection(IEnumerable<Variable> collection) : base(collection) { }
+    public VariableCollection(IEnumerable<IVariable> collection) : base(collection) { }
 
     public override string ToString() {
       return ItemName;

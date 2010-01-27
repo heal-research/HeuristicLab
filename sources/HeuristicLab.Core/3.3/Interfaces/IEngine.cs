@@ -38,7 +38,7 @@ namespace HeuristicLab.Core {
     /// <summary>
     /// Gets the global scope of the current instance.
     /// </summary>
-    Scope GlobalScope { get; }
+    IScope GlobalScope { get; }
 
     /// <summary>
     /// Gets the execution time of the current instance.

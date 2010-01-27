@@ -64,7 +64,7 @@ namespace HeuristicLab.Core.Views {
     }
 
     /// <summary>
-    /// Removes the eventhandlers from the underlying <see cref="IVariable"/>.
+    /// Removes the eventhandlers from the underlying <see cref="Variable"/>.
     /// </summary>
     /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void DeregisterObjectEvents() {
@@ -73,7 +73,7 @@ namespace HeuristicLab.Core.Views {
     }
 
     /// <summary>
-    /// Adds eventhandlers to the underlying <see cref="IVariable"/>.
+    /// Adds eventhandlers to the underlying <see cref="Variable"/>.
     /// </summary>
     /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RegisterObjectEvents() {

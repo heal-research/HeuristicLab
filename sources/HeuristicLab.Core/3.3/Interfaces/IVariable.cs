@@ -28,43 +28,12 @@ using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   /// <summary>
-  /// Represents a parameter.
+  /// Represents a variable which has a name and holds an IItem.
   /// </summary>
-  [Item("Parameter", "A base class for parameters.")]
-  public abstract class Parameter : NamedItem, IParameter {
-    public override bool CanChangeName {
-      get { return false; }
-    }
-    public override bool CanChangeDescription {
-      get { return false; }
-    }
+  public interface IVariable : INamedItem {
+    IItem Value { get; set; }
 
-    [Storable]
-    private Type dataType;
-    public Type DataType {
-      get { return dataType; }
-    }
-
-    protected Parameter()
-      : base("Anonymous") {
-      dataType = typeof(IItem);
-    }
-    protected Parameter(string name, string description, Type dataType)
-      : base(name, description) {
-      if (dataType == null) throw new ArgumentNullException();
-      this.dataType = dataType;
-    }
-
-    public abstract IItem GetValue(ExecutionContext context);
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      Parameter clone = (Parameter)base.Clone(cloner);
-      clone.dataType = dataType;
-      return clone;
-    }
-
-    public override string ToString() {
-      return string.Format("{0} ({1})", Name, DataType.Name);
-    }
+    /// <inheritdoc/>
+    event EventHandler ValueChanged;
   }
 }

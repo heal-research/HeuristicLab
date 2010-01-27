@@ -44,10 +44,11 @@ namespace HeuristicLab.Core.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
       this.viewPanel = new System.Windows.Forms.Panel();
       this.messageLabel = new System.Windows.Forms.Label();
-      this.viewLabel = new System.Windows.Forms.Label();
-      this.viewComboBox = new System.Windows.Forms.ComboBox();
+      this.viewsLabel = new System.Windows.Forms.Label();
+      this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.SuspendLayout();
       // 
       // viewPanel
@@ -55,9 +56,9 @@ namespace HeuristicLab.Core.Views {
       this.viewPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.viewPanel.Location = new System.Drawing.Point(0, 27);
+      this.viewPanel.Location = new System.Drawing.Point(0, 0);
       this.viewPanel.Name = "viewPanel";
-      this.viewPanel.Size = new System.Drawing.Size(227, 157);
+      this.viewPanel.Size = new System.Drawing.Size(205, 184);
       this.viewPanel.TabIndex = 2;
       // 
       // messageLabel
@@ -70,48 +71,43 @@ namespace HeuristicLab.Core.Views {
       this.messageLabel.Text = "No view available.";
       this.messageLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
       // 
-      // viewLabel
+      // viewsLabel
       // 
-      this.viewLabel.AutoSize = true;
-      this.viewLabel.Location = new System.Drawing.Point(3, 3);
-      this.viewLabel.Name = "viewLabel";
-      this.viewLabel.Size = new System.Drawing.Size(33, 13);
-      this.viewLabel.TabIndex = 0;
-      this.viewLabel.Text = "&View:";
+      this.viewsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.viewsLabel.ContextMenuStrip = this.contextMenuStrip;
+      this.viewsLabel.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Windows;
+      this.viewsLabel.Location = new System.Drawing.Point(211, 0);
+      this.viewsLabel.Name = "viewsLabel";
+      this.viewsLabel.Size = new System.Drawing.Size(16, 16);
+      this.viewsLabel.TabIndex = 0;
       // 
-      // viewComboBox
+      // contextMenuStrip
       // 
-      this.viewComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.viewComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.viewComboBox.FormattingEnabled = true;
-      this.viewComboBox.Location = new System.Drawing.Point(42, 0);
-      this.viewComboBox.Name = "viewComboBox";
-      this.viewComboBox.Size = new System.Drawing.Size(185, 21);
-      this.viewComboBox.TabIndex = 1;
-      this.viewComboBox.SelectedIndexChanged += new System.EventHandler(this.viewComboBox_SelectedIndexChanged);
+      this.contextMenuStrip.Name = "contextMenuStrip";
+      this.contextMenuStrip.ShowCheckMargin = true;
+      this.contextMenuStrip.ShowImageMargin = false;
+      this.contextMenuStrip.Size = new System.Drawing.Size(61, 4);
+      this.contextMenuStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.contextMenuStrip_ItemClicked);
       // 
       // ViewHost
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.viewComboBox);
-      this.Controls.Add(this.viewLabel);
       this.Controls.Add(this.viewPanel);
+      this.Controls.Add(this.viewsLabel);
       this.Controls.Add(this.messageLabel);
       this.Name = "ViewHost";
       this.Size = new System.Drawing.Size(227, 184);
       this.ResumeLayout(false);
-      this.PerformLayout();
 
     }
 
     #endregion
 
     protected System.Windows.Forms.Panel viewPanel;
-    protected System.Windows.Forms.Label viewLabel;
-    protected System.Windows.Forms.ComboBox viewComboBox;
+    protected System.Windows.Forms.Label viewsLabel;
     protected System.Windows.Forms.Label messageLabel;
+    protected System.Windows.Forms.ContextMenuStrip contextMenuStrip;
 
   }
 }

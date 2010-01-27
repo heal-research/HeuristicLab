@@ -39,8 +39,8 @@ namespace HeuristicLab.Core {
     }
 
     [Storable]
-    private Scope scope;
-    public Scope Scope {
+    private IScope scope;
+    public IScope Scope {
       get { return scope; }
     }
 
@@ -49,7 +49,7 @@ namespace HeuristicLab.Core {
       op = null;
       scope = null;
     }
-    public ExecutionContext(ExecutionContext parent, IOperator op, Scope scope) {
+    public ExecutionContext(ExecutionContext parent, IOperator op, IScope scope) {
       if ((op == null) || (scope == null)) throw new ArgumentNullException();
       this.parent = parent;
       this.op = op;
@@ -61,7 +61,7 @@ namespace HeuristicLab.Core {
       cloner.RegisterClonedObject(this, clone);
       clone.parent = (ExecutionContext)cloner.Clone(parent);
       clone.op = (IOperator)cloner.Clone(op);
-      clone.scope = (Scope)cloner.Clone(scope);
+      clone.scope = (IScope)cloner.Clone(scope);
       return clone;
     }
   }

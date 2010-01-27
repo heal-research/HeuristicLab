@@ -83,26 +83,25 @@ namespace HeuristicLab.Core {
     }
 
     public override IItem GetValue(ExecutionContext context) {
-      return GetValue(context, true);
-    }
-    public override IItem GetValue(ExecutionContext context, bool throwOnError) {
-      if (Value != null) return Value;
-
-      ExecutionContext current, child;
-      IParameter parameter = null;
-      child = context;
-      current = context.Parent;
-      while ((current != null) && (parameter == null)) {
-        current.Operator.Parameters.TryGetValue(ActualName, out parameter);
-        child = current;
+      ItemParameter param = this;
+      ExecutionContext current = context;
+      string actualName = null;
+      while (param != null) {
+        if (param.Value != null) return param.Value;
+        actualName = param.ActualName;
         current = current.Parent;
+        while ((current != null) && !current.Operator.Parameters.ContainsKey(actualName))
+          current = current.Parent;
+        if (current != null)
+          param = (ItemParameter)current.Operator.Parameters[actualName];
+        else
+          param = null;
       }
 
-      if (parameter != null) return parameter.GetValue(child, throwOnError);
-      else {
-        Variable variable = context.Scope.Lookup(ActualName, true, throwOnError);
-        return variable == null ? null : variable.Value;
-      }
+      IScope scope = context.Scope;
+      while ((scope != null) && !scope.Variables.ContainsKey(actualName))
+        scope = scope.Parent;
+      return scope != null ? scope.Variables[actualName].Value : null;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -156,10 +155,7 @@ namespace HeuristicLab.Core {
     }
 
     public new T GetValue(ExecutionContext context) {
-      return GetValue(context, true);
-    }
-    public new T GetValue(ExecutionContext context, bool throwOnError) {
-      return (T)base.GetValue(context, throwOnError);
+      return (T)base.GetValue(context);
     }
   }
 }

@@ -33,9 +33,9 @@ namespace HeuristicLab.Core {
   [EmptyStorableClass]
   [Item("ScopeList", "Represents a list of scopes.")]
   [Creatable("Test")]
-  public class ScopeList : ItemList<Scope> {
+  public class ScopeList : ItemList<IScope> {
     public ScopeList() : base() { }
     public ScopeList(int capacity) : base(capacity) { }
-    public ScopeList(IEnumerable<Scope> collection) : base(collection) { }
+    public ScopeList(IEnumerable<IScope> collection) : base(collection) { }
   }
 }

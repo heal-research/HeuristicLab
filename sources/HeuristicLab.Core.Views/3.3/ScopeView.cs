@@ -37,16 +37,16 @@ namespace HeuristicLab.Core.Views {
   /// </summary>
   [Content(typeof(Scope), true)]
   public sealed partial class ScopeView : ItemView {
-    private Dictionary<Scope, TreeNode> scopeNodeTable;
-    private Dictionary<ScopeList, Scope> subScopesScopeTable;
+    private Dictionary<IScope, TreeNode> scopeNodeTable;
+    private Dictionary<ScopeList, IScope> subScopesScopeTable;
 
     /// <summary>
     /// Gets or sets the scope to represent visually.
     /// </summary>
     /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
     /// No own data storage present.</remarks>
-    public Scope Scope {
-      get { return (Scope)Item; }
+    public IScope Scope {
+      get { return (IScope)Item; }
       set { base.Item = value; }
     }
 
@@ -57,8 +57,8 @@ namespace HeuristicLab.Core.Views {
     public ScopeView() {
       InitializeComponent();
       Caption = "Scope";
-      scopeNodeTable = new Dictionary<Scope, TreeNode>();
-      subScopesScopeTable = new Dictionary<ScopeList, Scope>();
+      scopeNodeTable = new Dictionary<IScope, TreeNode>();
+      subScopesScopeTable = new Dictionary<ScopeList, IScope>();
 
     }
     /// <summary>
@@ -66,7 +66,7 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     /// <remarks>Calls <see cref="ScopeView()"/>.</remarks>
     /// <param name="scope">The scope to represent visually.</param>
-    public ScopeView(Scope scope)
+    public ScopeView(IScope scope)
       : this() {
       Scope = scope;
     }
@@ -93,18 +93,18 @@ namespace HeuristicLab.Core.Views {
       }
     }
 
-    private TreeNode CreateTreeNode(Scope scope) {
+    private TreeNode CreateTreeNode(IScope scope) {
       TreeNode node = new TreeNode();
       node.Text = scope.Name;
       node.Tag = scope;
 
       scopeNodeTable.Add(scope, node);
       scope.NameChanged += new EventHandler(Scope_NameChanged);
-      scope.SubScopes.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<Scope>>(SubScopes_ItemsAdded);
-      scope.SubScopes.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<Scope>>(SubScopes_ItemsRemoved);
-      scope.SubScopes.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<Scope>>(SubScopes_ItemsReplaced);
-      scope.SubScopes.ItemsMoved += new CollectionItemsChangedEventHandler<IndexedItem<Scope>>(SubScopes_ItemsMoved);
-      scope.SubScopes.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<Scope>>(SubScopes_CollectionReset);
+      scope.SubScopes.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_ItemsAdded);
+      scope.SubScopes.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_ItemsRemoved);
+      scope.SubScopes.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_ItemsReplaced);
+      scope.SubScopes.ItemsMoved += new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_ItemsMoved);
+      scope.SubScopes.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_CollectionReset);
       subScopesScopeTable.Add(scope.SubScopes, scope);
       if (scope.SubScopes.Count > 0)
         node.Nodes.Add(new TreeNode());
@@ -115,15 +115,15 @@ namespace HeuristicLab.Core.Views {
       foreach (TreeNode child in node.Nodes)
         RemoveTreeNode(child);
 
-      Scope scope = node.Tag as Scope;
+      IScope scope = node.Tag as IScope;
       if (scope != null) {
         scopeNodeTable.Remove(scope);
         scope.NameChanged -= new EventHandler(Scope_NameChanged);
-        scope.SubScopes.ItemsAdded -= new CollectionItemsChangedEventHandler<IndexedItem<Scope>>(SubScopes_ItemsAdded);
-        scope.SubScopes.ItemsRemoved -= new CollectionItemsChangedEventHandler<IndexedItem<Scope>>(SubScopes_ItemsRemoved);
-        scope.SubScopes.ItemsReplaced -= new CollectionItemsChangedEventHandler<IndexedItem<Scope>>(SubScopes_ItemsReplaced);
-        scope.SubScopes.ItemsMoved -= new CollectionItemsChangedEventHandler<IndexedItem<Scope>>(SubScopes_ItemsMoved);
-        scope.SubScopes.CollectionReset -= new CollectionItemsChangedEventHandler<IndexedItem<Scope>>(SubScopes_CollectionReset);
+        scope.SubScopes.ItemsAdded -= new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_ItemsAdded);
+        scope.SubScopes.ItemsRemoved -= new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_ItemsRemoved);
+        scope.SubScopes.ItemsReplaced -= new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_ItemsReplaced);
+        scope.SubScopes.ItemsMoved -= new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_ItemsMoved);
+        scope.SubScopes.CollectionReset -= new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_CollectionReset);
         subScopesScopeTable.Remove(scope.SubScopes);
       }
     }
@@ -131,8 +131,8 @@ namespace HeuristicLab.Core.Views {
     #region TreeView Events
     private void scopesTreeView_MouseDown(object sender, MouseEventArgs e) {
       TreeNode node = scopesTreeView.GetNodeAt(e.X, e.Y);
-      if ((node != null) && (node.Tag is Scope)) {
-        variableCollectionView.NamedItemCollection = ((Scope)node.Tag).Variables;
+      if ((node != null) && (node.Tag is IScope)) {
+        variableCollectionView.NamedItemCollection = ((IScope)node.Tag).Variables;
         variableCollectionView.Enabled = true;
       } else {
         variableCollectionView.NamedItemCollection = null;
@@ -142,7 +142,7 @@ namespace HeuristicLab.Core.Views {
     }
     private void scopesTreeView_BeforeExpand(object sender, TreeViewCancelEventArgs e) {
       TreeNode node = e.Node;
-      Scope scope = (Scope)node.Tag;
+      IScope scope = (IScope)node.Tag;
 
       node.Nodes.Clear();
       for (int i = 0; i < scope.SubScopes.Count; i++)
@@ -150,7 +150,7 @@ namespace HeuristicLab.Core.Views {
     }
     private void scopesTreeView_AfterCollapse(object sender, System.Windows.Forms.TreeViewEventArgs e) {
       TreeNode node = e.Node;
-      Scope scope = (Scope)node.Tag;
+      IScope scope = (IScope)node.Tag;
 
       if (node.Nodes.Count > 0) {
         for (int i = 0; i < node.Nodes.Count; i++)
@@ -161,7 +161,7 @@ namespace HeuristicLab.Core.Views {
     }
     private void scopesTreeView_ItemDrag(object sender, ItemDragEventArgs e) {
       TreeNode node = (TreeNode)e.Item;
-      Scope scope = node.Tag as Scope;
+      IScope scope = node.Tag as IScope;
       if (scope != null) {
         DataObject data = new DataObject();
         data.SetData("Scope", scope);
@@ -176,21 +176,21 @@ namespace HeuristicLab.Core.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Scope_NameChanged), sender, e);
       else {
-        Scope scope = (Scope)sender;
+        IScope scope = (IScope)sender;
         scopeNodeTable[scope].Text = scope.Name;
       }
     }
     #endregion
 
     #region SubScopes Events
-    private void SubScopes_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<Scope>> e) {
+    private void SubScopes_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<IScope>> e) {
       if (InvokeRequired)
-        Invoke(new CollectionItemsChangedEventHandler<IndexedItem<Scope>>(SubScopes_ItemsAdded), sender, e);
+        Invoke(new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_ItemsAdded), sender, e);
       else {
-        Scope parentScope = subScopesScopeTable[(ScopeList)sender];
+        IScope parentScope = subScopesScopeTable[(ScopeList)sender];
         TreeNode parentNode = scopeNodeTable[parentScope];
         if (parentNode.IsExpanded) {
-          foreach (IndexedItem<Scope> item in e.Items) {
+          foreach (IndexedItem<IScope> item in e.Items) {
             TreeNode node = CreateTreeNode(item.Value);
             parentNode.Nodes.Insert(item.Index, node);
           }
@@ -199,14 +199,14 @@ namespace HeuristicLab.Core.Views {
         }
       }
     }
-    private void SubScopes_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<Scope>> e) {
+    private void SubScopes_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<IScope>> e) {
       if (InvokeRequired)
-        Invoke(new CollectionItemsChangedEventHandler<IndexedItem<Scope>>(SubScopes_ItemsRemoved), sender, e);
+        Invoke(new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_ItemsRemoved), sender, e);
       else {
-        Scope parentScope = subScopesScopeTable[(ScopeList)sender];
+        IScope parentScope = subScopesScopeTable[(ScopeList)sender];
         TreeNode parentNode = scopeNodeTable[parentScope];
         if (parentNode.IsExpanded) {
-          foreach (IndexedItem<Scope> item in e.Items) {
+          foreach (IndexedItem<IScope> item in e.Items) {
             TreeNode node = scopeNodeTable[item.Value];
             RemoveTreeNode(node);
             node.Remove();
@@ -216,14 +216,14 @@ namespace HeuristicLab.Core.Views {
         }
       }
     }
-    private void SubScopes_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<Scope>> e) {
+    private void SubScopes_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IScope>> e) {
       if (InvokeRequired)
-        Invoke(new CollectionItemsChangedEventHandler<IndexedItem<Scope>>(SubScopes_ItemsReplaced), sender, e);
+        Invoke(new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_ItemsReplaced), sender, e);
       else {
-        Scope parentScope = subScopesScopeTable[(ScopeList)sender];
+        IScope parentScope = subScopesScopeTable[(ScopeList)sender];
         TreeNode parentNode = scopeNodeTable[parentScope];
         if (parentNode.IsExpanded) {
-          foreach (IndexedItem<Scope> item in e.Items) {
+          foreach (IndexedItem<IScope> item in e.Items) {
             TreeNode node = parentNode.Nodes[item.Index];
             RemoveTreeNode(node);
             node.Remove();
@@ -233,30 +233,30 @@ namespace HeuristicLab.Core.Views {
         }
       }
     }
-    private void SubScopes_ItemsMoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<Scope>> e) {
+    private void SubScopes_ItemsMoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<IScope>> e) {
       if (InvokeRequired)
-        Invoke(new CollectionItemsChangedEventHandler<IndexedItem<Scope>>(SubScopes_ItemsMoved), sender, e);
+        Invoke(new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_ItemsMoved), sender, e);
       else {
-        Scope parentScope = subScopesScopeTable[(ScopeList)sender];
+        IScope parentScope = subScopesScopeTable[(ScopeList)sender];
         TreeNode parentNode = scopeNodeTable[parentScope];
         if (parentNode.IsExpanded) {
           parentNode.Nodes.Clear();
-          foreach (IndexedItem<Scope> item in e.Items)
+          foreach (IndexedItem<IScope> item in e.Items)
             parentNode.Nodes.Insert(item.Index, scopeNodeTable[item.Value]);
         }
       }
     }
-    private void SubScopes_CollectionReset(object sender, CollectionItemsChangedEventArgs<IndexedItem<Scope>> e) {
+    private void SubScopes_CollectionReset(object sender, CollectionItemsChangedEventArgs<IndexedItem<IScope>> e) {
       if (InvokeRequired)
-        Invoke(new CollectionItemsChangedEventHandler<IndexedItem<Scope>>(SubScopes_CollectionReset), sender, e);
+        Invoke(new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_CollectionReset), sender, e);
       else {
-        Scope parentScope = subScopesScopeTable[(ScopeList)sender];
+        IScope parentScope = subScopesScopeTable[(ScopeList)sender];
         TreeNode parentNode = scopeNodeTable[parentScope];
         if (parentNode.IsExpanded) {
           foreach (TreeNode node in parentNode.Nodes)
             RemoveTreeNode(node);
           parentNode.Nodes.Clear();
-          foreach (IndexedItem<Scope> item in e.Items) {
+          foreach (IndexedItem<IScope> item in e.Items) {
             TreeNode node = CreateTreeNode(item.Value);
             parentNode.Nodes.Insert(item.Index, node);
           }

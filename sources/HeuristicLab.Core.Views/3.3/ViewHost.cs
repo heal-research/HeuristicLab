@@ -31,6 +31,8 @@ using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Core.Views { 
   public partial class ViewHost : UserControl {
+    private Dictionary<Type, ToolStripMenuItem> typeMenuItemTable;
+
     private object obj;
     public object Object {
       get { return obj; }
@@ -43,15 +45,17 @@ namespace HeuristicLab.Core.Views {
     }
 
     public ViewHost() {
+      typeMenuItemTable = new Dictionary<Type, ToolStripMenuItem>();
       InitializeComponent();
       Initialize();
     }
 
     protected virtual void Initialize() {
-      viewLabel.Visible = false;
-      viewComboBox.Items.Clear();
-      viewComboBox.Enabled = false;
-      viewComboBox.Visible = false;
+      viewsLabel.Enabled = false;
+      viewsLabel.Visible = false;
+      typeMenuItemTable.Clear();
+      contextMenuStrip.Items.Clear();
+      contextMenuStrip.Enabled = false;
       messageLabel.Visible = false;
       if (viewPanel.Controls.Count > 0) viewPanel.Controls[0].Dispose();
       viewPanel.Controls.Clear();
@@ -62,14 +66,20 @@ namespace HeuristicLab.Core.Views {
         var viewTypes = from t in MainFormManager.GetViewTypes(Object.GetType())
                         orderby t.Name ascending
                         select t;
-        foreach (Type viewType in viewTypes)
-          viewComboBox.Items.Add(viewType);
-        if (viewComboBox.Items.Count == 0) {
+        foreach (Type viewType in viewTypes) {
+          ToolStripMenuItem item = new ToolStripMenuItem(viewType.Name);
+          item.Name = viewType.FullName;
+          item.ToolTipText = viewType.FullName;
+          item.Tag = viewType;
+          contextMenuStrip.Items.Add(item);
+          typeMenuItemTable.Add(viewType, item);
+        }
+        if (contextMenuStrip.Items.Count == 0) {
           messageLabel.Visible = true;
         } else {
-          viewLabel.Visible = true;
-          viewComboBox.Enabled = true;
-          viewComboBox.Visible = true;
+          viewsLabel.Enabled = true;
+          viewsLabel.Visible = true;
+          contextMenuStrip.Enabled = true;
           messageLabel.Visible = false;
         }
 
@@ -80,20 +90,27 @@ namespace HeuristicLab.Core.Views {
           view.Dock = DockStyle.Fill;
           viewPanel.Enabled = true;
           viewPanel.Visible = true;
-          viewComboBox.SelectedItem = view.GetType();
+          typeMenuItemTable[view.GetType()].Checked = true;
+          typeMenuItemTable[view.GetType()].Enabled = false;
         }
       }
     }
 
-    protected virtual void viewComboBox_SelectedIndexChanged(object sender, EventArgs e) {
-      if (viewComboBox.SelectedItem != viewPanel.Tag) {
-        if (viewPanel.Controls.Count > 0) viewPanel.Controls[0].Dispose();
-        viewPanel.Controls.Clear();
-        Control view = (Control)MainFormManager.CreateView((Type)viewComboBox.SelectedItem, Object);
-        viewPanel.Controls.Add(view);
-        viewPanel.Tag = view;
-        view.Dock = DockStyle.Fill;
+    protected void contextMenuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e) {
+      Type viewType = (Type)e.ClickedItem.Tag;
+      foreach (ToolStripMenuItem item in typeMenuItemTable.Values) {
+        item.Checked = false;
+        item.Enabled = true;
       }
+      typeMenuItemTable[viewType].Checked = true;
+      typeMenuItemTable[viewType].Enabled = false;
+
+      if (viewPanel.Controls.Count > 0) viewPanel.Controls[0].Dispose();
+      viewPanel.Controls.Clear();
+      Control view = (Control)MainFormManager.CreateView(viewType, Object);
+      viewPanel.Controls.Add(view);
+      viewPanel.Tag = view;
+      view.Dock = DockStyle.Fill;
     }
   }
 }

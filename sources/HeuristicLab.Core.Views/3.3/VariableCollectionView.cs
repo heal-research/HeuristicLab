@@ -11,8 +11,8 @@ using HeuristicLab.Collections;
 
 namespace HeuristicLab.Core.Views {
   [Content(typeof(VariableCollection), true)]
-  [Content(typeof(IObservableKeyedCollection<string, Variable>), true)]
-  public partial class VariableCollectionView : NamedItemCollectionView<Variable> {
+  [Content(typeof(IObservableKeyedCollection<string, IVariable>), true)]
+  public partial class VariableCollectionView : NamedItemCollectionView<IVariable> {
     /// <summary>
     /// Initializes a new instance of <see cref="VariablesScopeView"/> with caption "Variables Scope View".
     /// </summary>
@@ -27,9 +27,15 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     /// <remarks>Calls <see cref="VariablesScopeView()"/>.</remarks>
     /// <param name="scope">The scope whose variables should be represented visually.</param>
-    public VariableCollectionView(IObservableKeyedCollection<string, Variable> variableCollection)
+    public VariableCollectionView(IObservableKeyedCollection<string, IVariable> variableCollection)
       : this() {
       NamedItemCollection = variableCollection;
+    }
+
+    protected override IVariable CreateItem() {
+      IVariable item = new Variable();
+      item.Name = GetUniqueName(item.Name);
+      return item;
     }
   }
 }

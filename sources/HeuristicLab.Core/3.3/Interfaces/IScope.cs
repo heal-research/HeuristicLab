@@ -24,31 +24,15 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Core;
+using HeuristicLab.Collections;
 
-namespace HeuristicLab.Operators {
+namespace HeuristicLab.Core {
   /// <summary>
-  /// A base class for operators which have only one successor.
+  /// Hierarchical container of variables (and of subscopes).
   /// </summary>
-  [Item("StandardOperator", "A base class for operators which have only one successor.")]
-  [Creatable("Test")]
-  [EmptyStorableClass]
-  public abstract class StandardOperator : Operator {
-    public OperatorParameter Successor {
-      get { return (OperatorParameter)Parameters["Successor"]; }
-    }
-
-    public StandardOperator()
-      : base() {
-      Parameters.Add(new OperatorParameter("Successor", "Operator which is executed next"));
-    }
-
-    public override ExecutionContextCollection Apply(ExecutionContext context) {
-      IOperator successor = Successor.GetValue(context);
-      if (successor != null)
-        return new ExecutionContextCollection(new ExecutionContext(context.Parent, successor, context.Scope));
-      else
-        return new ExecutionContextCollection();
-    }
+  public interface IScope : INamedItem {
+    IScope Parent { get; set; }
+    VariableCollection Variables { get; }
+    ScopeList SubScopes { get; }
   }
 }
