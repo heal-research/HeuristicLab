@@ -137,7 +137,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     public event EventHandler Changed;
-    protected void FireMainFormChanged() {
+    public void FireMainFormChanged() {
       if (InvokeRequired)
         Invoke((MethodInvoker)FireMainFormChanged);
       else if (Changed != null)
