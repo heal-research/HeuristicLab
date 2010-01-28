@@ -27,6 +27,7 @@ using System.ComponentModel;
 namespace HeuristicLab.MainForm {
   public interface IView {
 
+    bool IsShown { get; }
     string Caption { get; set; }
     event EventHandler CaptionChanged;
     event EventHandler Changed;

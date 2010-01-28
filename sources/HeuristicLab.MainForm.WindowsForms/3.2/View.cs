@@ -34,6 +34,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     public View() {
       InitializeComponent();
       this.initialized = false;
+      this.isShown = false;
       this.closeReason = CloseReason.None;
     }
 
@@ -51,6 +52,11 @@ namespace HeuristicLab.MainForm.WindowsForms {
           }
         }
       }
+    }
+
+    private bool isShown;
+    public bool IsShown {
+      get { return this.isShown; }
     }
 
     public new void Show() {
@@ -100,9 +106,11 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     protected virtual void OnShown(ViewShownEventArgs e) {
+      this.isShown = true;
     }
 
     protected virtual void OnHidden(EventArgs e) {
+      this.isShown = false;
     }
 
     internal CloseReason closeReason;
@@ -131,6 +139,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     protected virtual void OnClosed(FormClosedEventArgs e) {
+      this.isShown = false;
     }
 
     private void ViewBase_Load(object sender, EventArgs e) {
