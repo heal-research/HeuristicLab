@@ -88,9 +88,10 @@ namespace HeuristicLab.Data.Views {
       }
     }
     private void valueTextBox_Validating(object sender, CancelEventArgs e) {
-      if (!StringConvertibleData.Validate(valueTextBox.Text)) {
+      string errorMessage;
+      if (!StringConvertibleData.Validate(valueTextBox.Text, out errorMessage)) {
         e.Cancel = true;
-        errorProvider.SetError(valueTextBox, "Invalid Value");
+        errorProvider.SetError(valueTextBox, errorMessage);
         valueTextBox.SelectAll();
       }
     }

@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
@@ -45,17 +46,19 @@ namespace HeuristicLab.Data {
     }
 
     #region IStringConvertibleData Members
-    bool IStringConvertibleData.Validate(string value) {
-      DateTime d;
-      return DateTime.TryParse(value, out d);
+    bool IStringConvertibleData.Validate(string value, out string errorMessage) {
+      DateTime val;
+      bool valid = DateTime.TryParse(value, out val);
+      errorMessage = valid ? string.Empty : "Invalid Value (values must be formatted according to the current culture settings)";
+      return valid;
     }
     string IStringConvertibleData.GetValue() {
       return Value.ToString("o");  // round-trip format
     }
     bool IStringConvertibleData.SetValue(string value) {
-      DateTime d;
-      if (DateTime.TryParse(value, out d)) {
-        Value = d;
+      DateTime val;
+      if (DateTime.TryParse(value, out val)) {
+        Value = val;
         return true;
       } else {
         return false;

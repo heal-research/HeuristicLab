@@ -29,16 +29,16 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
   [EmptyStorableClass]
-  [Item("IntMatrixData", "Represents a matrix of integer values.")]
+  [Item("DoubleMatrixData", "Represents a matrix of double values.")]
   [Creatable("Test")]
-  public sealed class IntMatrixData : ValueTypeMatrixData<int>, IStringConvertibleMatrixData {
-    public IntMatrixData() : base() { }
-    public IntMatrixData(int rows, int columns) : base(rows, columns) { }
-    public IntMatrixData(int[,] elements) : base(elements) { }
-    private IntMatrixData(IntMatrixData elements) : base(elements) { }
+  public sealed class DoubleMatrixData : ValueTypeMatrixData<double>, IStringConvertibleMatrixData {
+    public DoubleMatrixData() : base() { }
+    public DoubleMatrixData(int rows, int columns) : base(rows, columns) { }
+    public DoubleMatrixData(double[,] elements) : base(elements) { }
+    private DoubleMatrixData(DoubleMatrixData elements) : base(elements) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      IntMatrixData clone = new IntMatrixData(this);
+      DoubleMatrixData clone = new DoubleMatrixData(this);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
@@ -57,13 +57,13 @@ namespace HeuristicLab.Data {
     }
 
     bool IStringConvertibleMatrixData.Validate(string value, out string errorMessage) {
-      int val;
-      bool valid = int.TryParse(value, out val);
+      double val;
+      bool valid = double.TryParse(value, out val);
       errorMessage = string.Empty;
       if (!valid) {
         StringBuilder sb = new StringBuilder();
         sb.Append("Invalid Value (Valid Value Format: \"");
-        sb.Append(FormatPatterns.GetIntFormatPattern());
+        sb.Append(FormatPatterns.GetDoubleFormatPattern());
         sb.Append("\")");
         errorMessage = sb.ToString();
       }
@@ -73,8 +73,8 @@ namespace HeuristicLab.Data {
       return this[rowIndex, columIndex].ToString();
     }
     bool IStringConvertibleMatrixData.SetValue(string value, int rowIndex, int columnIndex) {
-      int val;
-      if (int.TryParse(value, out val)) {
+      double val;
+      if (double.TryParse(value, out val)) {
         this[rowIndex, columnIndex] = val;
         return true;
       } else {

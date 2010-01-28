@@ -30,7 +30,7 @@ namespace HeuristicLab.Data {
   [Item("ValueTypeData<T>", "A base class for representing value types.")]
   public class ValueTypeData<T> : Item where T : struct {
     [Storable]
-    protected T value;
+    private T value;
     public T Value {
       get { return value; }
       set {

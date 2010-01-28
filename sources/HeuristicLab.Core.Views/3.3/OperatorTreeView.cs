@@ -100,14 +100,13 @@ namespace HeuristicLab.Core.Views {
 
       if (!operatorParameterNodeTable.ContainsKey(operatorParameter)) {
         operatorParameterNodeTable.Add(operatorParameter, new List<TreeNode>());
-        operatorParameter.ActualNameChanged += new EventHandler(operatorParameter_ActualNameChanged);
         operatorParameter.ValueChanged += new EventHandler(operatorParameter_ValueChanged);
       }
       operatorParameterNodeTable[operatorParameter].Add(node);
 
       IOperator op = operatorParameter.Value;
       if (op == null)
-        node.Text += operatorParameter.ActualName;
+        node.Text += "-";
       else
         FillTreeNode(node, op);
 
@@ -171,7 +170,6 @@ namespace HeuristicLab.Core.Views {
       if (opParam != null) {
         operatorParameterNodeTable[opParam].Remove(node);
         if (operatorParameterNodeTable[opParam].Count == 0) {
-          opParam.ActualNameChanged -= new EventHandler(operatorParameter_ActualNameChanged);
           opParam.ValueChanged -= new EventHandler(operatorParameter_ValueChanged);
           operatorParameterNodeTable.Remove(opParam);
         }
@@ -200,17 +198,6 @@ namespace HeuristicLab.Core.Views {
     #endregion
 
     #region Parameter and Operator Events
-    private void operatorParameter_ActualNameChanged(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(operatorParameter_ActualNameChanged), sender, e);
-      else {
-        IOperatorParameter opParam = (IOperatorParameter)sender;
-        if (opParam.Value == null) {
-          foreach (TreeNode node in operatorParameterNodeTable[opParam])
-            node.Text = opParam.Name + ": " + opParam.ActualName;
-        }
-      }
-    }
     private void operatorParameter_ValueChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(operatorParameter_ValueChanged), sender, e);
@@ -221,7 +208,7 @@ namespace HeuristicLab.Core.Views {
         foreach (TreeNode node in operatorParameterNodeTable[opParam]) {
           node.Text = opParam.Name + ": ";
           if (opParam.Value == null)
-            node.Text += opParam.ActualName;
+            node.Text += "-";
           else
             FillTreeNode(node, opParam.Value);
         }
@@ -354,10 +341,13 @@ namespace HeuristicLab.Core.Views {
       Type type = e.Data.GetData("Type") as Type;
       if ((type != null) && (typeof(IOperator).IsAssignableFrom(type))) {
         TreeNode node = graphTreeView.GetNodeAt(graphTreeView.PointToClient(new Point(e.X, e.Y)));
+        if ((node != null) && !node.IsExpanded) node.Expand();
         if ((node != null) && (GetOperatorParameterTag(node) != null)) {
           if ((e.KeyState & 8) == 8) e.Effect = DragDropEffects.Copy;  // CTRL key
-          else if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Move;  // ALT key
-          else e.Effect = DragDropEffects.Link;
+          else if ((e.KeyState & 4) == 4) e.Effect = DragDropEffects.Move;  // SHIFT key
+          else if ((e.AllowedEffect & DragDropEffects.Link) == DragDropEffects.Link) e.Effect = DragDropEffects.Link;
+          else if ((e.AllowedEffect & DragDropEffects.Copy) == DragDropEffects.Copy) e.Effect = DragDropEffects.Copy;
+          else if ((e.AllowedEffect & DragDropEffects.Move) == DragDropEffects.Move) e.Effect = DragDropEffects.Move;
         }
       }
     }

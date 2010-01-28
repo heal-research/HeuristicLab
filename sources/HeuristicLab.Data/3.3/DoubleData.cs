@@ -45,17 +45,26 @@ namespace HeuristicLab.Data {
     }
 
     #region IStringConvertibleData Members
-    bool IStringConvertibleData.Validate(string value) {
-      double d;
-      return double.TryParse(value, out d);
+    bool IStringConvertibleData.Validate(string value, out string errorMessage) {
+      double val;
+      bool valid = double.TryParse(value, out val);
+      errorMessage = string.Empty;
+      if (!valid) {
+        StringBuilder sb = new StringBuilder();
+        sb.Append("Invalid Value (Valid Value Format: \"");
+        sb.Append(FormatPatterns.GetDoubleFormatPattern());
+        sb.Append("\")");
+        errorMessage = sb.ToString();
+      }
+      return valid;
     }
     string IStringConvertibleData.GetValue() {
       return Value.ToString("r");  // round-trip format
     }
     bool IStringConvertibleData.SetValue(string value) {
-      double d;
-      if (double.TryParse(value, out d)) {
-        Value = d;
+      double val;
+      if (double.TryParse(value, out val)) {
+        Value = val;
         return true;
       } else {
         return false;

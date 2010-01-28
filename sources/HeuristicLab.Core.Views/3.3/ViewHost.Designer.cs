@@ -49,6 +49,7 @@ namespace HeuristicLab.Core.Views {
       this.messageLabel = new System.Windows.Forms.Label();
       this.viewsLabel = new System.Windows.Forms.Label();
       this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.SuspendLayout();
       // 
       // viewPanel
@@ -59,7 +60,7 @@ namespace HeuristicLab.Core.Views {
       this.viewPanel.Location = new System.Drawing.Point(0, 0);
       this.viewPanel.Name = "viewPanel";
       this.viewPanel.Size = new System.Drawing.Size(205, 184);
-      this.viewPanel.TabIndex = 2;
+      this.viewPanel.TabIndex = 1;
       // 
       // messageLabel
       // 
@@ -67,7 +68,7 @@ namespace HeuristicLab.Core.Views {
       this.messageLabel.Location = new System.Drawing.Point(0, 0);
       this.messageLabel.Name = "messageLabel";
       this.messageLabel.Size = new System.Drawing.Size(227, 184);
-      this.messageLabel.TabIndex = 0;
+      this.messageLabel.TabIndex = 2;
       this.messageLabel.Text = "No view available.";
       this.messageLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
       // 
@@ -80,6 +81,9 @@ namespace HeuristicLab.Core.Views {
       this.viewsLabel.Name = "viewsLabel";
       this.viewsLabel.Size = new System.Drawing.Size(16, 16);
       this.viewsLabel.TabIndex = 0;
+      this.toolTip.SetToolTip(this.viewsLabel, "Double-click to open a new window of the current view.\r\nRight-click to change cur" +
+              "rent view.");
+      this.viewsLabel.DoubleClick += new System.EventHandler(this.viewsLabel_DoubleClick);
       // 
       // contextMenuStrip
       // 
@@ -108,6 +112,7 @@ namespace HeuristicLab.Core.Views {
     protected System.Windows.Forms.Label viewsLabel;
     protected System.Windows.Forms.Label messageLabel;
     protected System.Windows.Forms.ContextMenuStrip contextMenuStrip;
+    protected System.Windows.Forms.ToolTip toolTip;
 
   }
 }

@@ -27,7 +27,7 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.Data {
   public interface IStringConvertibleData {
-    bool Validate(string value);
+    bool Validate(string value, out string errorMessage);
     string GetValue();
     bool SetValue(string value);
 

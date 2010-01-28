@@ -201,7 +201,7 @@ namespace HeuristicLab.Core.Views {
           DataObject data = new DataObject();
           data.SetData("Type", type);
           data.SetData("Value", o);
-          DoDragDrop(data, DragDropEffects.Link);
+          DoDragDrop(data, DragDropEffects.Copy);
         } catch (Exception) {
         }
       }

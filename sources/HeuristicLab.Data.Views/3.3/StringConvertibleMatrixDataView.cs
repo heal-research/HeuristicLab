@@ -126,7 +126,7 @@ namespace HeuristicLab.Data.Views {
       int i = 0;
       if (!int.TryParse(rowsTextBox.Text, out i) || (i < 0)) {
         e.Cancel = true;
-        errorProvider.SetError(rowsTextBox, "Invalid Number of Rows");
+        errorProvider.SetError(rowsTextBox, "Invalid Number of Rows (Valid Values: Positive Integers Larger or Equal to 0)");
         rowsTextBox.SelectAll();
       }
     }
@@ -146,7 +146,7 @@ namespace HeuristicLab.Data.Views {
       int i = 0;
       if (!int.TryParse(columnsTextBox.Text, out i) || (i < 0)) {
         e.Cancel = true;
-        errorProvider.SetError(columnsTextBox, "Invalid Number of Columns");
+        errorProvider.SetError(columnsTextBox, "Invalid Number of Columns (Valid Values: Positive Integers Larger or Equal to 0)");
         columnsTextBox.SelectAll();
       }
     }
@@ -166,9 +166,10 @@ namespace HeuristicLab.Data.Views {
 
     #region DataGridView Events
     private void dataGridView_CellValidating(object sender, DataGridViewCellValidatingEventArgs e) {
-      if (!StringConvertibleMatrixData.Validate(e.FormattedValue.ToString())) {
+      string errorMessage;
+      if (!StringConvertibleMatrixData.Validate(e.FormattedValue.ToString(), out errorMessage)) {
         e.Cancel = true;
-        dataGridView.Rows[e.RowIndex].ErrorText = "Invalid Value";
+        dataGridView.Rows[e.RowIndex].ErrorText = errorMessage;
       }
     }
     private void dataGridView_CellParsing(object sender, DataGridViewCellParsingEventArgs e) {

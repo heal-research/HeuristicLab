@@ -32,7 +32,7 @@ namespace HeuristicLab.Data {
     int Rows { get; set; }
     int Columns { get; set; }
 
-    bool Validate(string value);
+    bool Validate(string value, out string errorMessage);
     string GetValue(int rowIndex, int columnIndex);
     bool SetValue(string value, int rowIndex, int columnIndex);
 

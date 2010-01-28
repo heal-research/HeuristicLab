@@ -29,53 +29,53 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
   [EmptyStorableClass]
-  [Item("IntMatrixData", "Represents a matrix of integer values.")]
+  [Item("DoubleArrayData", "Represents an array of double values.")]
   [Creatable("Test")]
-  public sealed class IntMatrixData : ValueTypeMatrixData<int>, IStringConvertibleMatrixData {
-    public IntMatrixData() : base() { }
-    public IntMatrixData(int rows, int columns) : base(rows, columns) { }
-    public IntMatrixData(int[,] elements) : base(elements) { }
-    private IntMatrixData(IntMatrixData elements) : base(elements) { }
+  public sealed class DoubleArrayData : ValueTypeArrayData<double>, IStringConvertibleMatrixData {
+    public DoubleArrayData() : base() { }
+    public DoubleArrayData(int length) : base(length) { }
+    public DoubleArrayData(double[] elements) : base(elements) { }
+    private DoubleArrayData(DoubleArrayData elements) : base(elements) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      IntMatrixData clone = new IntMatrixData(this);
+      DoubleArrayData clone = new DoubleArrayData(this);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
 
     #region IStringConvertibleMatrixData Members
     StringConvertibleArrayDataDimensions IStringConvertibleMatrixData.Dimensions {
-      get { return StringConvertibleArrayDataDimensions.Both; }
+      get { return StringConvertibleArrayDataDimensions.Rows; }
     }
     int IStringConvertibleMatrixData.Rows {
-      get { return Rows; }
-      set { Rows = value; }
+      get { return Length; }
+      set { Length = value; }
     }
     int IStringConvertibleMatrixData.Columns {
-      get { return Columns; }
-      set { Columns = value; }
+      get { return 1; }
+      set { throw new NotSupportedException("Columns cannot be changed."); }
     }
 
     bool IStringConvertibleMatrixData.Validate(string value, out string errorMessage) {
-      int val;
-      bool valid = int.TryParse(value, out val);
+      double val;
+      bool valid = double.TryParse(value, out val);
       errorMessage = string.Empty;
       if (!valid) {
         StringBuilder sb = new StringBuilder();
         sb.Append("Invalid Value (Valid Value Format: \"");
-        sb.Append(FormatPatterns.GetIntFormatPattern());
+        sb.Append(FormatPatterns.GetDoubleFormatPattern());
         sb.Append("\")");
         errorMessage = sb.ToString();
       }
       return valid;
     }
     string IStringConvertibleMatrixData.GetValue(int rowIndex, int columIndex) {
-      return this[rowIndex, columIndex].ToString();
+      return this[rowIndex].ToString();
     }
     bool IStringConvertibleMatrixData.SetValue(string value, int rowIndex, int columnIndex) {
-      int val;
-      if (int.TryParse(value, out val)) {
-        this[rowIndex, columnIndex] = val;
+      double val;
+      if (double.TryParse(value, out val)) {
+        this[rowIndex] = val;
         return true;
       } else {
         return false;

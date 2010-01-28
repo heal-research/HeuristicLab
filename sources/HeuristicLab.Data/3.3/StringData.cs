@@ -63,15 +63,25 @@ namespace HeuristicLab.Data {
     }
 
     #region IStringConvertibleData Members
-    bool IStringConvertibleData.Validate(string value) {
-      return true;
+    bool IStringConvertibleData.Validate(string value, out string errorMessage) {
+      if (value == null) {
+        errorMessage = "Invalid Value (string must not be null)";
+        return false;
+      } else {
+        errorMessage = string.Empty;
+        return true;
+      }
     }
     string IStringConvertibleData.GetValue() {
       return Value;
     }
     bool IStringConvertibleData.SetValue(string value) {
-      Value = value != null ? value : string.Empty;
-      return true;
+      if (value != null) {
+        Value = value;
+        return true;
+      } else {
+        return false;
+      }
     }
     #endregion
   }

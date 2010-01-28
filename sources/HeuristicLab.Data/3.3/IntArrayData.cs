@@ -56,17 +56,26 @@ namespace HeuristicLab.Data {
       set { throw new NotSupportedException("Columns cannot be changed."); }
     }
 
-    bool IStringConvertibleMatrixData.Validate(string value) {
-      int i;
-      return int.TryParse(value, out i);
+    bool IStringConvertibleMatrixData.Validate(string value, out string errorMessage) {
+      int val;
+      bool valid = int.TryParse(value, out val);
+      errorMessage = string.Empty;
+      if (!valid) {
+        StringBuilder sb = new StringBuilder();
+        sb.Append("Invalid Value (Valid Value Format: \"");
+        sb.Append(FormatPatterns.GetIntFormatPattern());
+        sb.Append("\")");
+        errorMessage = sb.ToString();
+      }
+      return valid;
     }
     string IStringConvertibleMatrixData.GetValue(int rowIndex, int columIndex) {
       return this[rowIndex].ToString();
     }
     bool IStringConvertibleMatrixData.SetValue(string value, int rowIndex, int columnIndex) {
-      int i;
-      if (int.TryParse(value, out i)) {
-        this[rowIndex] = i;
+      int val;
+      if (int.TryParse(value, out val)) {
+        this[rowIndex] = val;
         return true;
       } else {
         return false;

@@ -29,16 +29,16 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
   [EmptyStorableClass]
-  [Item("IntMatrixData", "Represents a matrix of integer values.")]
+  [Item("BoolMatrixData", "Represents a matrix of boolean values.")]
   [Creatable("Test")]
-  public sealed class IntMatrixData : ValueTypeMatrixData<int>, IStringConvertibleMatrixData {
-    public IntMatrixData() : base() { }
-    public IntMatrixData(int rows, int columns) : base(rows, columns) { }
-    public IntMatrixData(int[,] elements) : base(elements) { }
-    private IntMatrixData(IntMatrixData elements) : base(elements) { }
+  public sealed class BoolMatrixData : ValueTypeMatrixData<bool>, IStringConvertibleMatrixData {
+    public BoolMatrixData() : base() { }
+    public BoolMatrixData(int rows, int columns) : base(rows, columns) { }
+    public BoolMatrixData(bool[,] elements) : base(elements) { }
+    private BoolMatrixData(BoolMatrixData elements) : base(elements) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      IntMatrixData clone = new IntMatrixData(this);
+      BoolMatrixData clone = new BoolMatrixData(this);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
@@ -57,13 +57,13 @@ namespace HeuristicLab.Data {
     }
 
     bool IStringConvertibleMatrixData.Validate(string value, out string errorMessage) {
-      int val;
-      bool valid = int.TryParse(value, out val);
+      bool val;
+      bool valid = bool.TryParse(value, out val);
       errorMessage = string.Empty;
       if (!valid) {
         StringBuilder sb = new StringBuilder();
         sb.Append("Invalid Value (Valid Value Format: \"");
-        sb.Append(FormatPatterns.GetIntFormatPattern());
+        sb.Append(FormatPatterns.GetBoolFormatPattern());
         sb.Append("\")");
         errorMessage = sb.ToString();
       }
@@ -73,8 +73,8 @@ namespace HeuristicLab.Data {
       return this[rowIndex, columIndex].ToString();
     }
     bool IStringConvertibleMatrixData.SetValue(string value, int rowIndex, int columnIndex) {
-      int val;
-      if (int.TryParse(value, out val)) {
+      bool val;
+      if (bool.TryParse(value, out val)) {
         this[rowIndex, columnIndex] = val;
         return true;
       } else {
