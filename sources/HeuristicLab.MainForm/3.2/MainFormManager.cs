@@ -39,46 +39,6 @@ namespace HeuristicLab.MainForm {
       locker = new object();
       views = new HashSet<Type>();
       defaultViews = new Dictionary<Type, Type>();
-
-      Type listString = typeof(List<string>);
-      Type list = typeof(List<>);
-      Type ilist = typeof(IList<>);
-      Type stringStringDict = typeof(Dictionary<string, string>);
-      Type dict = typeof(Dictionary<,>);
-      Type stringDict = typeof(StringDict<>);
-      Type stringIntDict = typeof(StringDict<int>);
-      Type stringStringDict2 = typeof(StringDict<string>);
-
-      bool result;
-      result = listString.IsAssignableTo(list);
-      Debug.Assert(result);
-
-      Debug.Assert(stringStringDict2.IsAssignableTo(stringDict));
-      Debug.Assert(stringStringDict2.IsAssignableTo(stringStringDict));
-      Debug.Assert(stringStringDict2.IsAssignableTo(dict));
-      Debug.Assert(!stringStringDict2.IsAssignableTo(stringIntDict));
-      Debug.Assert(!stringIntDict.IsAssignableTo(stringStringDict));
-
-      result = list.IsAssignableTo(ilist);
-      Debug.Assert(result);
-      result = listString.IsAssignableTo(ilist);
-      Debug.Assert(result);
-      result = list.IsAssignableTo(listString);
-      Debug.Assert(!result);
-      result = ilist.IsAssignableTo(listString);
-      Debug.Assert(!result);
-      result = ilist.IsAssignableTo(list);
-      Debug.Assert(!result);
-
-      Type stackedListList = list.MakeGenericType(typeof(List<>));
-      Type stackedListListint = typeof(List<List<int>>);
-      Type istackedListListint = typeof(IList<List<int>>);
-      Type stackedListIListint = typeof(List<IList<int>>);
-      Debug.Assert(stackedListListint.IsAssignableTo(list));
-      Debug.Assert(stackedListListint.IsAssignableTo(ilist));
-      Debug.Assert(!stackedListListint.IsAssignableTo(listString));
-      Debug.Assert(stackedListListint.IsAssignableTo(istackedListListint));
-      Debug.Assert(!stackedListListint.IsAssignableTo(stackedListIListint));
     }
 
     public static void RegisterMainForm(IMainForm mainform) {
