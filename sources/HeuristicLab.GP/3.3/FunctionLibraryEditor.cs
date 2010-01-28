@@ -47,7 +47,11 @@ namespace HeuristicLab.GP {
 
     protected override void UpdateControls() {
       base.UpdateControls();
+      functionsListView.Clear();
+      functionsComboBox.Items.Clear();
       foreach (IFunction fun in FunctionLibrary.Functions) {
+        functionsListView.Items.Add(CreateListViewItem(fun));
+        functionsComboBox.Items.Add(fun);
         if (fun.Manipulator != null) {
           mutationListView.Items.Add(CreateListViewItem(fun));
         }
@@ -81,22 +85,23 @@ namespace HeuristicLab.GP {
       if (chooseFunctionDialog == null) chooseFunctionDialog = new ChooseItemDialog(typeof(IFunction));
       if (chooseFunctionDialog.ShowDialog(this) == DialogResult.OK) {
         FunctionLibrary.AddFunction((IFunction)chooseFunctionDialog.Item);
-        functionsListView.Items.Add(CreateListViewItem((IFunction)chooseFunctionDialog.Item));
-        functionsListView.Sort();
       }
     }
 
     private void removeButton_Click(object sender, EventArgs e) {
       // delete from the end of the list
-      IEnumerable<int> removeIndices = functionsListView.SelectedIndices.OfType<int>().OrderBy(x => 1.0 / x);
+      List<int> removeIndices = functionsListView.SelectedIndices.OfType<int>().OrderBy(x => 1.0 / x).ToList();
       foreach (int selectedIndex in removeIndices) {
-        FunctionLibrary.RemoveFunction((IFunction)functionsListView.Items[selectedIndex].Tag);
-        functionsListView.Items.RemoveAt(selectedIndex);
+        FunctionLibrary.RemoveFunction((IFunction)functionsListView.Items[selectedIndex].Tag);        
       }
     }
 
     private void functionsListView_SelectedIndexChanged(object sender, EventArgs e) {
-      removeButton.Enabled = functionsListView.SelectedIndices.Count > 0;
+      if (functionsListView.SelectedIndices.Count > 0) {
+        removeButton.Enabled = true;
+      } else {
+        removeButton.Enabled = false;
+      }
     }
 
     private ListViewItem CreateListViewItem(IFunction function) {
@@ -105,6 +110,25 @@ namespace HeuristicLab.GP {
       item.Text = function.Name;
       item.Tag = function;
       return item;
+    }
+
+    private void functionsListView_ItemDrag(object sender, ItemDragEventArgs e) {
+      ListViewItem item = (ListViewItem)e.Item;
+      IFunction fun = (IFunction)item.Tag;
+      DataObject data = new DataObject();
+      data.SetData("IFunction", fun);
+      data.SetData("DragSource", functionsListView);
+      DoDragDrop(data, DragDropEffects.Link);
+    }
+
+    private void functionsComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+      if (functionsComboBox.SelectedItem != null) {
+        IFunction selectedFun = (IFunction)functionsComboBox.SelectedItem;
+        Control funView = (Control)selectedFun.CreateView();
+        funView.Dock = DockStyle.Fill;
+        functionDetailsPanel.Controls.Clear();
+        functionDetailsPanel.Controls.Add(funView);
+      }
     }
   }
 }

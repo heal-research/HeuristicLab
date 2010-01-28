@@ -41,12 +41,14 @@ namespace HeuristicLab.GP {
     public void AddFunction(IFunction fun) {
       if (!functions.Contains(fun)) {
         functions.Add(fun);
+        fun.Changed += new EventHandler(fun_Changed);
         OnChanged();
       }
     }
 
     public void RemoveFunction(IFunction fun) {
       functions.Remove(fun);
+      fun.Changed -= new EventHandler(fun_Changed);
 
       // remove the operator from the allowed sub-functions of all functions
       foreach (IFunction f in Functions) {
@@ -54,6 +56,10 @@ namespace HeuristicLab.GP {
           f.RemoveAllowedSubFunction(fun, i);
         }
       }
+      OnChanged();
+    }
+
+    void fun_Changed(object sender, EventArgs e) {
       OnChanged();
     }
 

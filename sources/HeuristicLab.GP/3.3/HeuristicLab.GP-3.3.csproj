@@ -82,12 +82,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseClasses\BinaryFunction.cs" />
+    <Compile Include="BaseClasses\Function.cs" />
     <Compile Include="BaseClasses\FunctionLibraryInjectorBase.cs" />
+    <Compile Include="BaseClasses\FunctionTree.cs" />
     <Compile Include="BaseClasses\TerminalTreeNode.cs" />
-    <Compile Include="BaseClasses\FunctionBase.cs" />
-    <Compile Include="BaseClasses\FunctionTreeBase.cs" />
     <Compile Include="BaseClasses\Terminal.cs" />
     <Compile Include="BaseClasses\UnaryFunction.cs" />
+    <Compile Include="FunctionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FunctionView.Designer.cs">
+      <DependentUpon>FunctionView.cs</DependentUpon>
+    </Compile>
     <Compile Include="GeneticProgrammingModelView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -131,6 +137,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="FunctionView.resx">
+      <DependentUpon>FunctionView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GeneticProgrammingModelView.resx">
       <DependentUpon>GeneticProgrammingModelView.cs</DependentUpon>
     </EmbeddedResource>
