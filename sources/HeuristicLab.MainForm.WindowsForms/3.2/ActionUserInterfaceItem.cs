@@ -23,8 +23,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
-namespace HeuristicLab.MainForm {
-  public abstract class ToolBarItem : ActionUserInterfaceItem, IToolBarItem {
+namespace HeuristicLab.MainForm.WindowsForms {
+  public abstract class ActionUserInterfaceItem : HeuristicLab.MainForm.ActionUserInterfaceItem {
+    private ToolStripItem toolStripItem;
+    public virtual ToolStripItem ToolStripItem {
+      get { return this.toolStripItem; }
+      internal set { this.toolStripItem = value; }
+    }
+
+    public virtual ToolStripItemDisplayStyle ToolStripItemDisplayStyle {
+      get { return ToolStripItemDisplayStyle.Image; }
+    }
+
+    protected internal virtual void OnToolStripItemSet(EventArgs e) {
+    }
   }
 }

@@ -53,7 +53,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       }
     }
 
-    public void Show() {
+    public new void Show() {
       MainForm mainform = MainFormManager.GetMainForm<MainForm>();
       bool firstTimeShown = mainform.GetForm(this) == null;
 
@@ -80,7 +80,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
         mainform.CloseView(this,closeReason);
     }
 
-    public void Hide() {
+    public new void Hide() {
       MainFormManager.GetMainForm<MainForm>().HideView(this);
       this.OnHidden(new EventArgs());
     }

@@ -25,19 +25,9 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm.WindowsForms {
-  public abstract class MenuItem : HeuristicLab.MainForm.MenuItem{
+  public abstract class MenuItem : ActionUserInterfaceItem,IMenuItem{
     public virtual Keys ShortCutKeys {
       get { return Keys.None; }
-    }
-
-    private ToolStripItem toolStripItem;
-    public virtual ToolStripItem ToolStripItem {
-      get { return this.toolStripItem; }
-      internal set { this.toolStripItem = value; }
-    }
-
-    public virtual ToolStripItemDisplayStyle ToolStripItemDisplayStyle {
-      get { return ToolStripItemDisplayStyle.ImageAndText; }
     }
   }
 }

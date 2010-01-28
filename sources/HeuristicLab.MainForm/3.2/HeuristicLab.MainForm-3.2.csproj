@@ -92,9 +92,7 @@
     <Compile Include="Interfaces\IMenuSeparatorItem.cs" />
     <Compile Include="Interfaces\IToolBarItem.cs" />
     <Compile Include="MainFormManager.cs" />
-    <Compile Include="MenuItem.cs" />
     <Compile Include="MenuSeparatorItem.cs" />
-    <Compile Include="ToolBarItem.cs" />
     <Compile Include="HeuristicLabMainFormPlugin.cs" />
     <Compile Include="Interfaces\IMainForm.cs" />
     <Compile Include="Interfaces\IUserInterfaceItem.cs" />

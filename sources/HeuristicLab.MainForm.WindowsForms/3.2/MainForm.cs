@@ -191,8 +191,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
       return views.Where(x => x.Value == form).Single().Key;
     }
 
-    internal void ShowView(IView view,bool firstTimeShown) {
-      if (InvokeRequired) Invoke((Action<IView, bool>)ShowView, view,firstTimeShown);
+    internal void ShowView(IView view, bool firstTimeShown) {
+      if (InvokeRequired) Invoke((Action<IView, bool>)ShowView, view, firstTimeShown);
       else {
         if (firstTimeShown) {
           Form form = CreateForm(view);
@@ -346,6 +346,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
       toolStripItem.Tag = userInterfaceItem;
       toolStripItem.Image = userInterfaceItem.Image;
       toolStripItem.Click += new EventHandler(ToolStripItemClicked);
+      if (userInterfaceItem is ActionUserInterfaceItem)
+        ((ActionUserInterfaceItem)userInterfaceItem).OnToolStripItemSet(new EventArgs());
       this.userInterfaceItems.Add(userInterfaceItem);
     }
 

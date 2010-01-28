@@ -81,6 +81,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionUserInterfaceItem.cs" />
     <Compile Include="ContentView.cs">
       <SubType>UserControl</SubType>
     </Compile>
