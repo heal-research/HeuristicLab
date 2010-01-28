@@ -59,7 +59,7 @@ namespace HeuristicLab.Optimizer {
             view.Caption = "Item" + newDocumentsCounter.ToString() + ".hl";
             newDocumentsCounter++;
           }
-          MainFormManager.MainForm.ShowView(view);
+          view.Show();
         }
       }
     }
@@ -196,7 +196,7 @@ namespace HeuristicLab.Optimizer {
                 } else {
                   view.Caption = Path.GetFileName(filename);
                   files.Add(view, new FileInfo(filename));
-                  MainFormManager.MainForm.ShowView(view);
+                  view.Show();
                 }
               });
             } catch (Exception ex) {

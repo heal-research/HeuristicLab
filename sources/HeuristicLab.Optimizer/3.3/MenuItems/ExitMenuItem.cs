@@ -9,7 +9,7 @@ using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Common.Resources;
 
 namespace HeuristicLab.Optimizer.MenuItems {
-  internal class ExitMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItemBase, IOptimizerUserInterfaceItemProvider {
+  internal class ExitMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, IOptimizerUserInterfaceItemProvider {
     public override IEnumerable<string> Structure {
       get { return new string[] { "&File" }; }
     }
@@ -18,6 +18,9 @@ namespace HeuristicLab.Optimizer.MenuItems {
     }
     public override int Position {
       get { return 1999; }
+    }
+    public override ToolStripItemDisplayStyle ToolStripItemDisplayStyle {
+      get { return ToolStripItemDisplayStyle.Text; }
     }
     public override Keys ShortCutKeys {
       get { return Keys.Control | Keys.X; }

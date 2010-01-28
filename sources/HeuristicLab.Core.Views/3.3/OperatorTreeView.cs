@@ -365,7 +365,7 @@ namespace HeuristicLab.Core.Views {
     #region Context Menu Events
     private void viewToolStripMenuItem_Click(object sender, EventArgs e) {
       IView view = ((ToolStripMenuItem)sender).Tag as IView;
-      if (view != null) MainFormManager.MainForm.ShowView(view);
+      if (view != null) view.Show();
     }
     private void breakpointToolStripMenuItem_Click(object sender, EventArgs e) {
       IOperator op = (IOperator)breakpointToolStripMenuItem.Tag;

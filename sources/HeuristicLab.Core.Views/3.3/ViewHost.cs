@@ -97,7 +97,7 @@ namespace HeuristicLab.Core.Views {
     }
 
     private void viewsLabel_DoubleClick(object sender, EventArgs e) {
-      MainFormManager.MainForm.ShowView(MainFormManager.CreateView(viewPanel.Tag.GetType(), Object));
+      MainFormManager.CreateView(viewPanel.Tag.GetType(), Object).Show();
     }
     protected void contextMenuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e) {
       Type viewType = (Type)e.ClickedItem.Tag;

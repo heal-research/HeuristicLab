@@ -30,8 +30,8 @@ using System.Linq;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
-namespace HeuristicLab.Core.Views { 
-  public partial class OperatorsSidebar : ViewBase {
+namespace HeuristicLab.Core.Views {
+  public partial class OperatorsSidebar : HeuristicLab.MainForm.WindowsForms.View {
     public OperatorsSidebar() {
       InitializeComponent();
     }
@@ -40,10 +40,10 @@ namespace HeuristicLab.Core.Views {
       typeSelector.Configure(typeof(IOperator), false, false);
     }
 
-    public override void OnClosing(object sender, CancelEventArgs e) {
-      base.OnClosing(sender, e);
+    protected override void OnClosing(FormClosingEventArgs e) {
+      base.OnClosing(e);
       e.Cancel = true;
-      MainFormManager.MainForm.HideView(this);
+      this.Hide();
     }
   }
 }

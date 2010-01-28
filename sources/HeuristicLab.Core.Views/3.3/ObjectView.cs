@@ -34,7 +34,7 @@ namespace HeuristicLab.Core.Views {
   /// <summary>
   /// Base class for all visual representations.
   /// </summary>
-  public partial class ObjectView : ViewBase, IObjectView {
+  public partial class ObjectView : HeuristicLab.MainForm.WindowsForms.View, IObjectView {
     private object obj;
     /// <summary>
     /// Gets or sets the item to represent visually.

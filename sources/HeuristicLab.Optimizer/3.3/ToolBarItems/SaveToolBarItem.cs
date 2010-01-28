@@ -11,7 +11,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 
 namespace HeuristicLab.Optimizer {
-  internal class SaveToolBarItem : HeuristicLab.MainForm.WindowsForms.ToolBarItemBase, IOptimizerUserInterfaceItemProvider {
+  internal class SaveToolBarItem : HeuristicLab.MainForm.WindowsForms.ToolBarItem, IOptimizerUserInterfaceItemProvider {
     public override string Name {
       get { return "Save"; }
     }
@@ -25,10 +25,10 @@ namespace HeuristicLab.Optimizer {
       get { return Resources.SaveIcon; }
     }
 
-    public override void MainFormInitialized(object sender, EventArgs e) {
+    protected override void OnToolStripItemSet(EventArgs e) {
       ToolStripItem.Enabled = false;
     }
-    public override void ActiveViewChanged(object sender, EventArgs e) {
+    protected override void OnActiveViewChanged(object sender, EventArgs e) {
       IObjectView activeView = MainFormManager.MainForm.ActiveView as IObjectView;
       ToolStripItem.Enabled = ((activeView != null) && (CreatableAttribute.IsCreatable(activeView.Object.GetType())));
     }

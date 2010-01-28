@@ -11,7 +11,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 
 namespace HeuristicLab.Optimizer.MenuItems {
-  internal class SaveAllMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItemBase, IOptimizerUserInterfaceItemProvider {
+  internal class SaveAllMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, IOptimizerUserInterfaceItemProvider {
     public override string Name {
       get { return "Save Al&l"; }
     }
@@ -28,10 +28,10 @@ namespace HeuristicLab.Optimizer.MenuItems {
       get { return Resources.SaveAllIcon; }
     }
 
-    public override void MainFormInitialized(object sender, EventArgs e) {
+    protected override void OnToolStripItemSet(EventArgs e) {
       ToolStripItem.Enabled = false;
     }
-    public override void ActiveViewChanged(object sender, EventArgs e) {
+    protected override void OnActiveViewChanged(object sender, EventArgs e) {
       var views = from v in MainFormManager.MainForm.Views
                   where v is IObjectView
                   where CreatableAttribute.IsCreatable(((IObjectView)v).Object.GetType())

@@ -155,7 +155,7 @@ namespace HeuristicLab.Core.Views {
       if (itemsListView.SelectedItems.Count == 1) {
         T item = (T)itemsListView.SelectedItems[0].Tag;
         IView view = MainFormManager.CreateDefaultView(item);
-        if (view != null) MainFormManager.MainForm.ShowView(view);
+        if (view != null) view.Show();
       }
     }
     protected virtual void itemsListView_ItemDrag(object sender, ItemDragEventArgs e) {

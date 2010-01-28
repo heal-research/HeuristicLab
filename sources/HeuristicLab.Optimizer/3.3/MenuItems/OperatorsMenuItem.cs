@@ -11,7 +11,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 
 namespace HeuristicLab.Optimizer.MenuItems {
-  internal class OperatorsMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItemBase, IOptimizerUserInterfaceItemProvider {
+  internal class OperatorsMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, IOptimizerUserInterfaceItemProvider {
     private OperatorsSidebar view;
     private ToolStripMenuItem menuItem;
 
@@ -28,7 +28,7 @@ namespace HeuristicLab.Optimizer.MenuItems {
       get { return ToolStripItemDisplayStyle.Text; }
     }
 
-    public override void MainFormInitialized(object sender, EventArgs e) {
+    protected override void OnToolStripItemSet(EventArgs e) {
       view = new OperatorsSidebar();
       view.Dock = DockStyle.Left;
       MainFormManager.MainForm.ViewHidden += new EventHandler<ViewEventArgs>(MainForm_ViewHidden);
@@ -38,7 +38,7 @@ namespace HeuristicLab.Optimizer.MenuItems {
         menuItem.Checked = true;
         menuItem.CheckOnClick = true;
       }
-      MainFormManager.MainForm.ShowView(view);
+      view.Show();
     }
 
     private void MainForm_ViewHidden(object sender, ViewEventArgs e) {
@@ -49,11 +49,11 @@ namespace HeuristicLab.Optimizer.MenuItems {
     public override void Execute() {
       if (menuItem != null) {
         if (menuItem.Checked)
-          MainFormManager.MainForm.ShowView(view);
+          view.Show();
         else
-          MainFormManager.MainForm.HideView(view);
+          view.Hide();
       } else {
-        MainFormManager.MainForm.ShowView(view);
+        view.Show();
       }
     }
   }

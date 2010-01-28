@@ -9,7 +9,7 @@ using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Common.Resources;
 
 namespace HeuristicLab.Optimizer.MenuItems {
-  internal class SeparatorMenuItem : MenuSeparatorItemBase, IOptimizerUserInterfaceItemProvider {
+  internal class SeparatorMenuItem : MenuSeparatorItem, IOptimizerUserInterfaceItemProvider {
     public override IEnumerable<string> Structure {
       get { return new string[] { "&File" }; }
     }
