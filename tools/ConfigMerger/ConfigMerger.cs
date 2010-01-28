@@ -52,10 +52,88 @@ namespace HeuristicLab.Tools.ConfigMerger {
       sourceNode = source.SelectSingleNode("/configuration/system.serviceModel/services");
       destinationNode = destination.SelectSingleNode("/configuration/system.serviceModel/services");
       Merge(sourceNode, destinationNode, destination, "/configuration/system.serviceModel");
+      
+      #region Merge 'system.serviceModel/bindings/*'
+      sourceNode = source.SelectSingleNode("/configuration/system.serviceModel/bindings/basicHttpBinding");
+      destinationNode = destination.SelectSingleNode("/configuration/system.serviceModel/bindings/basicHttpBinding");
+      Merge(sourceNode, destinationNode, destination, "/configuration/system.serviceModel/bindings");
 
-      sourceNode = source.SelectSingleNode("/configuration/system.serviceModel/bindings");
-      destinationNode = destination.SelectSingleNode("/configuration/system.serviceModel/bindings");
-      Merge(sourceNode, destinationNode, destination, "/configuration/system.serviceModel");
+      sourceNode = source.SelectSingleNode("/configuration/system.serviceModel/bindings/basicHttpContextBinding");
+      destinationNode = destination.SelectSingleNode("/configuration/system.serviceModel/bindings/basicHttpContextBinding");
+      Merge(sourceNode, destinationNode, destination, "/configuration/system.serviceModel/bindings");
+
+      sourceNode = source.SelectSingleNode("/configuration/system.serviceModel/bindings/customBinding");
+      destinationNode = destination.SelectSingleNode("/configuration/system.serviceModel/bindings/customBinding");
+      Merge(sourceNode, destinationNode, destination, "/configuration/system.serviceModel/bindings");
+
+      sourceNode = source.SelectSingleNode("/configuration/system.serviceModel/bindings/mexHttpBinding");
+      destinationNode = destination.SelectSingleNode("/configuration/system.serviceModel/bindings/mexHttpBinding");
+      Merge(sourceNode, destinationNode, destination, "/configuration/system.serviceModel/bindings");
+
+      sourceNode = source.SelectSingleNode("/configuration/system.serviceModel/bindings/mexHttpsBinding");
+      destinationNode = destination.SelectSingleNode("/configuration/system.serviceModel/bindings/mexHttpsBinding");
+      Merge(sourceNode, destinationNode, destination, "/configuration/system.serviceModel/bindings");
+
+      sourceNode = source.SelectSingleNode("/configuration/system.serviceModel/bindings/mexNamedPipeBinding");
+      destinationNode = destination.SelectSingleNode("/configuration/system.serviceModel/bindings/mexNamedPipeBinding");
+      Merge(sourceNode, destinationNode, destination, "/configuration/system.serviceModel/bindings");
+
+      sourceNode = source.SelectSingleNode("/configuration/system.serviceModel/bindings/mexTcpBinding");
+      destinationNode = destination.SelectSingleNode("/configuration/system.serviceModel/bindings/mexTcpBinding");
+      Merge(sourceNode, destinationNode, destination, "/configuration/system.serviceModel/bindings");
+
+      sourceNode = source.SelectSingleNode("/configuration/system.serviceModel/bindings/msmqIntegrationBinding");
+      destinationNode = destination.SelectSingleNode("/configuration/system.serviceModel/bindings/msmqIntegrationBinding");
+      Merge(sourceNode, destinationNode, destination, "/configuration/system.serviceModel/bindings");
+
+      sourceNode = source.SelectSingleNode("/configuration/system.serviceModel/bindings/netMsmqBinding");
+      destinationNode = destination.SelectSingleNode("/configuration/system.serviceModel/bindings/netMsmqBinding");
+      Merge(sourceNode, destinationNode, destination, "/configuration/system.serviceModel/bindings");
+
+      sourceNode = source.SelectSingleNode("/configuration/system.serviceModel/bindings/netNamedPipeBinding");
+      destinationNode = destination.SelectSingleNode("/configuration/system.serviceModel/bindings/netNamedPipeBinding");
+      Merge(sourceNode, destinationNode, destination, "/configuration/system.serviceModel/bindings");
+
+      sourceNode = source.SelectSingleNode("/configuration/system.serviceModel/bindings/netPeerTcpBinding");
+      destinationNode = destination.SelectSingleNode("/configuration/system.serviceModel/bindings/netPeerTcpBinding");
+      Merge(sourceNode, destinationNode, destination, "/configuration/system.serviceModel/bindings");
+
+      sourceNode = source.SelectSingleNode("/configuration/system.serviceModel/bindings/netTcpBinding");
+      destinationNode = destination.SelectSingleNode("/configuration/system.serviceModel/bindings/netTcpBinding");
+      Merge(sourceNode, destinationNode, destination, "/configuration/system.serviceModel/bindings");
+
+      sourceNode = source.SelectSingleNode("/configuration/system.serviceModel/bindings/netTcpContextBinding");
+      destinationNode = destination.SelectSingleNode("/configuration/system.serviceModel/bindings/netTcpContextBinding");
+      Merge(sourceNode, destinationNode, destination, "/configuration/system.serviceModel/bindings");
+
+      sourceNode = source.SelectSingleNode("/configuration/system.serviceModel/bindings/webHttpBinding");
+      destinationNode = destination.SelectSingleNode("/configuration/system.serviceModel/bindings/webHttpBinding");
+      Merge(sourceNode, destinationNode, destination, "/configuration/system.serviceModel/bindings");
+
+      sourceNode = source.SelectSingleNode("/configuration/system.serviceModel/bindings/ws2007FederationHttpBinding");
+      destinationNode = destination.SelectSingleNode("/configuration/system.serviceModel/bindings/ws2007FederationHttpBinding");
+      Merge(sourceNode, destinationNode, destination, "/configuration/system.serviceModel/bindings");
+
+      sourceNode = source.SelectSingleNode("/configuration/system.serviceModel/bindings/ws2007HttpBinding");
+      destinationNode = destination.SelectSingleNode("/configuration/system.serviceModel/bindings/ws2007HttpBinding");
+      Merge(sourceNode, destinationNode, destination, "/configuration/system.serviceModel/bindings");
+
+      sourceNode = source.SelectSingleNode("/configuration/system.serviceModel/bindings/wsDualHttpBinding");
+      destinationNode = destination.SelectSingleNode("/configuration/system.serviceModel/bindings/wsDualHttpBinding");
+      Merge(sourceNode, destinationNode, destination, "/configuration/system.serviceModel/bindings");
+
+      sourceNode = source.SelectSingleNode("/configuration/system.serviceModel/bindings/wsFederationHttpBinding");
+      destinationNode = destination.SelectSingleNode("/configuration/system.serviceModel/bindings/wsFederationHttpBinding");
+      Merge(sourceNode, destinationNode, destination, "/configuration/system.serviceModel/bindings");
+
+      sourceNode = source.SelectSingleNode("/configuration/system.serviceModel/bindings/wsHttpBinding");
+      destinationNode = destination.SelectSingleNode("/configuration/system.serviceModel/bindings/wsHttpBinding");
+      Merge(sourceNode, destinationNode, destination, "/configuration/system.serviceModel/bindings");
+
+      sourceNode = source.SelectSingleNode("/configuration/system.serviceModel/bindings/wsHttpContextBinding");
+      destinationNode = destination.SelectSingleNode("/configuration/system.serviceModel/bindings/wsHttpContextBinding");
+      Merge(sourceNode, destinationNode, destination, "/configuration/system.serviceModel/bindings");
+      #endregion
 
       sourceNode = source.SelectSingleNode("/configuration/system.serviceModel/client");
       destinationNode = destination.SelectSingleNode("/configuration/system.serviceModel/client");
