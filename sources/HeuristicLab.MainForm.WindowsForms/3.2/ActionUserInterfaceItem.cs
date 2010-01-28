@@ -32,8 +32,9 @@ namespace HeuristicLab.MainForm.WindowsForms {
       get { return this.toolStripItem; }
       internal set {
         if (this.toolStripItem != value) {
+          bool firstTimeSet = this.toolStripItem == null;
           this.toolStripItem = value;
-          if (this.toolStripItem == null)
+          if (firstTimeSet)
             this.OnToolStripItemSet(new EventArgs());
         }
       }
