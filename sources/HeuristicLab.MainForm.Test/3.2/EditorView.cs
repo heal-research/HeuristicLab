@@ -31,7 +31,7 @@ namespace HeuristicLab.MainForm.Test {
       IEnumerable<Type> views3 = MainFormManager.GetViewTypes(typeof(ICollection<>));
       views3.ToString();
 
-      List<MenuItem> ilist = new List<MenuItem>();
+      List<HeuristicLab.MainForm.WindowsForms.MenuItem> ilist = new List<HeuristicLab.MainForm.WindowsForms.MenuItem>();
       IView defaultView = MainFormManager.CreateDefaultView(ilist);
       defaultView.Show();
 

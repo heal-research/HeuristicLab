@@ -11,7 +11,7 @@ using System.Collections;
 
 namespace HeuristicLab.MainForm.Test {
   [Content(typeof(List<string>), true)]
-  public partial class FormView1 : FormView2<MenuItem> {
+  public partial class FormView1 : FormView2<HeuristicLab.MainForm.WindowsForms.MenuItem> {
     public FormView1() {
       InitializeComponent();
     }
