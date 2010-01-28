@@ -346,8 +346,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
       toolStripItem.Tag = userInterfaceItem;
       toolStripItem.Image = userInterfaceItem.Image;
       toolStripItem.Click += new EventHandler(ToolStripItemClicked);
-      if (userInterfaceItem is ActionUserInterfaceItem)
-        ((ActionUserInterfaceItem)userInterfaceItem).OnToolStripItemSet(new EventArgs());
       this.userInterfaceItems.Add(userInterfaceItem);
     }
 

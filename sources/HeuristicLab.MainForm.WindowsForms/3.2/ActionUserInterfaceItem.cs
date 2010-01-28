@@ -28,16 +28,22 @@ using System.Windows.Forms;
 namespace HeuristicLab.MainForm.WindowsForms {
   public abstract class ActionUserInterfaceItem : HeuristicLab.MainForm.ActionUserInterfaceItem {
     private ToolStripItem toolStripItem;
-    public virtual ToolStripItem ToolStripItem {
+    public ToolStripItem ToolStripItem {
       get { return this.toolStripItem; }
-      internal set { this.toolStripItem = value; }
+      internal set {
+        if (this.toolStripItem != value) {
+          this.toolStripItem = value;
+          if (this.toolStripItem == null)
+            this.OnToolStripItemSet(new EventArgs());
+        }
+      }
     }
 
     public virtual ToolStripItemDisplayStyle ToolStripItemDisplayStyle {
       get { return ToolStripItemDisplayStyle.Image; }
     }
 
-    protected internal virtual void OnToolStripItemSet(EventArgs e) {
+    protected virtual void OnToolStripItemSet(EventArgs e) {
     }
   }
 }
