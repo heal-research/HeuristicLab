@@ -30,7 +30,7 @@ using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace HeuristicLab.MainForm.WindowsForms {
-  public partial class DockingMainForm : MainFormBase {
+  public partial class DockingMainForm : MainForm {
     public DockingMainForm()
       : base() {
       InitializeComponent();

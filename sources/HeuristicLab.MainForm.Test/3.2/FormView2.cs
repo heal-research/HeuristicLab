@@ -1,17 +1,19 @@
 ﻿using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.MainForm.Test {
-  [Content(typeof(IEnumerable))]
-  public partial class FormView2 : ViewBase {
+  [Content(typeof(ICollection<>),true)]
+  public partial class FormView2<T> : View where T: IMenuItem {
     public FormView2() {
+      InitializeComponent();
+    }
+    public FormView2(ICollection<T> x) {
       InitializeComponent();
     }
   }

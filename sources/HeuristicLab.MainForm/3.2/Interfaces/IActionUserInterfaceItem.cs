@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -21,18 +21,17 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using System.ComponentModel;
+using System.Drawing;
 
 namespace HeuristicLab.MainForm {
-  public interface IView {
+  public interface IActionUserInterfaceItem : IPositionableUserInterfaceItem {
+    string Name { get; }
 
-    string Caption { get; set; }
-    event EventHandler CaptionChanged;
-    event EventHandler Changed;
+    Image Image { get; }
+    string ToolTipText { get; }
 
-    void Show();
-    void Hide();
-    void Close();
+    void Execute();
   }
 }

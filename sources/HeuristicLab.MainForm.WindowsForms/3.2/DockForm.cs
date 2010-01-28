@@ -32,7 +32,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
   /// <summary>
   /// Displays the used view.
   /// </summary>
-  public partial class DockForm : DockContent {
+  internal partial class DockForm : DockContent {
     public DockForm(IView view) {
       InitializeComponent();
       this.view = view;

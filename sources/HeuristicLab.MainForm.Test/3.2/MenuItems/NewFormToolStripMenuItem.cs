@@ -8,7 +8,7 @@ using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Common.Resources;
 
 namespace HeuristicLab.MainForm.Test {
-  public class NewFormToolStripMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItemBase, ITestUserInterfaceItemProvider {
+  public class NewFormToolStripMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, ITestUserInterfaceItemProvider {
     public override string Name {
       get { return "Form"; }
     }

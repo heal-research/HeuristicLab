@@ -55,6 +55,7 @@
       this.Controls.Add(this.label1);
       this.ForeColor = System.Drawing.SystemColors.ControlText;
       this.Name = "EditorView";
+      this.VisibleChanged += new System.EventHandler(this.EditorView_VisibleChanged);
       this.ResumeLayout(false);
       this.PerformLayout();
 

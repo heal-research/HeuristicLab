@@ -5,7 +5,12 @@ using System.Text;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.MainForm.Test {
-  public class OpenToolStripButtonItem : HeuristicLab.MainForm.WindowsForms.ToolBarItemBase, ITestUserInterfaceItemProvider {
+  public class OpenToolStripButtonItem : HeuristicLab.MainForm.WindowsForms.ToolBarItem, ITestUserInterfaceItemProvider {
+
+    public OpenToolStripButtonItem()
+      : base() {
+      System.Console.Out.Write("test");
+    }
     public override int Position {
       get { return 20; }
     }
@@ -22,10 +27,10 @@ namespace HeuristicLab.MainForm.Test {
       new OpenAction().Execute(MainFormManager.MainForm);
     }
 
-    public override void ActiveViewChanged(object sender, EventArgs e) {
+    protected override void OnActiveViewChanged(object sender, EventArgs e) {
       this.ToolStripItem.Enabled = !this.ToolStripItem.Enabled;
-      MainFormManager.MainForm.Title = 
-        MainFormManager.MainForm.ActiveView == null ? "null" : MainFormManager.MainForm.ActiveView.Caption;
+      //MainFormManager.MainForm.Title = 
+      //  MainFormManager.MainForm.ActiveView == null ? "null" : MainFormManager.MainForm.ActiveView.Caption;
     }
   }
 }

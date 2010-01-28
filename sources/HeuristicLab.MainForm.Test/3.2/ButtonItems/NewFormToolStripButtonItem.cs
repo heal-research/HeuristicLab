@@ -5,7 +5,7 @@ using System.Text;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.MainForm.Test {
-  public class NewFormToolStripButtonItem : HeuristicLab.MainForm.WindowsForms.ToolBarItemBase, ITestUserInterfaceItemProvider {
+  public class NewFormToolStripButtonItem : HeuristicLab.MainForm.WindowsForms.ToolBarItem, ITestUserInterfaceItemProvider {
     public override int Position {
       get { return 11; }
     }

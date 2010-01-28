@@ -7,7 +7,7 @@ using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Common.Resources;
 
 namespace HeuristicLab.MainForm.Test {
-  public class OpenToolStripMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItemBase, ITestUserInterfaceItemProvider {
+  public class OpenToolStripMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, ITestUserInterfaceItemProvider {
     public override string Name {
       get { return "Open"; }
     }

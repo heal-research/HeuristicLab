@@ -26,7 +26,6 @@ using System.Text;
 using System.Drawing;
 
 namespace HeuristicLab.MainForm {
-  public interface IMenuItem : IUserInterfaceItem {
-    IEnumerable<string> Structure { get; }
+  public interface IMenuItem : IActionUserInterfaceItem {
   }
 }

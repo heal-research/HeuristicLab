@@ -5,7 +5,7 @@ using System.Text;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.MainForm.Test {
-  public class SaveToolStripButtonItem : HeuristicLab.MainForm.WindowsForms.ToolBarItemBase, ITestUserInterfaceItemProvider {
+  public class SaveToolStripButtonItem : HeuristicLab.MainForm.WindowsForms.ToolBarItem, ITestUserInterfaceItemProvider {
     public override int Position {
       get { return 30; }
     }
@@ -22,7 +22,7 @@ namespace HeuristicLab.MainForm.Test {
       new SaveAction().Execute(MainFormManager.MainForm);
     }
 
-    public override void ActiveViewChanged(object sender, EventArgs e) {
+    protected override void OnActiveViewChanged(object sender, EventArgs e) {
       IMainForm mainform = MainFormManager.MainForm;
       if (mainform.ActiveView == null)
         this.ToolStripItem.Enabled = false;
@@ -30,7 +30,7 @@ namespace HeuristicLab.MainForm.Test {
         this.ToolStripItem.Enabled = !(mainform.ActiveView is FormView1);
     }
 
-    public override void ViewChanged(object sender, EventArgs e) {
+    protected override void OnViewChanged(object sender, EventArgs e) {
       this.ToolStripItem.Enabled = !this.ToolStripItem.Enabled;
     }
   }

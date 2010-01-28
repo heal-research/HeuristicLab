@@ -33,7 +33,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       if (item != null) {
         Type viewType = e.ClickedItem.Tag as Type;
         IView view = MainFormManager.CreateView(viewType, this.item);
-        MainFormManager.MainForm.ShowView(view);
+        view.Show();
       }
     }
 

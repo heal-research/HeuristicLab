@@ -80,23 +80,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\IActionUserInterfaceItem.cs" />
+    <Compile Include="Interfaces\IPositionableUserInterfaceItem.cs" />
+    <Compile Include="PositionableUserInterfaceItem.cs" />
+    <Compile Include="TypeExtension.cs" />
     <Compile Include="ViewShownEventArgs.cs" />
     <Compile Include="ViewEventArgs.cs" />
-    <Compile Include="ToolBarSeparatorItemBase.cs" />
+    <Compile Include="ToolBarSeparatorItem.cs" />
     <Compile Include="Interfaces\IToolBarSeparatorItem.cs" />
     <Compile Include="Interfaces\IMenuItem.cs" />
     <Compile Include="Interfaces\IMenuSeparatorItem.cs" />
     <Compile Include="Interfaces\IToolBarItem.cs" />
     <Compile Include="MainFormManager.cs" />
-    <Compile Include="MenuItemBase.cs" />
-    <Compile Include="MenuSeparatorItemBase.cs" />
-    <Compile Include="ToolBarItemBase.cs" />
+    <Compile Include="MenuItem.cs" />
+    <Compile Include="MenuSeparatorItem.cs" />
+    <Compile Include="ToolBarItem.cs" />
     <Compile Include="HeuristicLabMainFormPlugin.cs" />
     <Compile Include="Interfaces\IMainForm.cs" />
     <Compile Include="Interfaces\IUserInterfaceItem.cs" />
     <Compile Include="Interfaces\IView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UserInterfaceItemBase.cs" />
+    <Compile Include="ActionUserInterfaceItem.cs" />
     <Compile Include="ContentAttribute.cs" />
   </ItemGroup>
   <ItemGroup>

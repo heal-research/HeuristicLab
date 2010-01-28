@@ -8,7 +8,7 @@ using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Common.Resources;
 
 namespace HeuristicLab.MainForm.Test {
-  public class CloseToolStripMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItemBase, ITestUserInterfaceItemProvider {
+  public class CloseToolStripMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, ITestUserInterfaceItemProvider {
     public override string Name {
       get { return "Exit"; }
     }

@@ -25,7 +25,6 @@ using System.Linq;
 using System.Text;
 
 namespace HeuristicLab.MainForm {
-  public interface IToolBarItem : IUserInterfaceItem {
-    IEnumerable<string> Structure { get; }
+  public interface IToolBarItem : IActionUserInterfaceItem {
   }
 }

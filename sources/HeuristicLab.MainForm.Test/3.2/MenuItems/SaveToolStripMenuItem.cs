@@ -8,7 +8,7 @@ using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Common.Resources;
 
 namespace HeuristicLab.MainForm.Test {
-  public class SaveToolStripMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItemBase, ITestUserInterfaceItemProvider {
+  public class SaveToolStripMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, ITestUserInterfaceItemProvider {
     public override string Name {
       get { return "Save"; }
     }

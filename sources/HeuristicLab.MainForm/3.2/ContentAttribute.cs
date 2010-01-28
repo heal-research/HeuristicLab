@@ -18,6 +18,7 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,21 +50,10 @@ namespace HeuristicLab.MainForm {
 
     public static bool CanViewType(Type viewType, Type content) {
       ContentAttribute[] attributes = (ContentAttribute[])viewType.GetCustomAttributes(typeof(ContentAttribute), false);
-      return attributes.Any(a => a.type.IsAssignableFrom(content));
+      return attributes.Any(a => content.IsAssignableTo(a.type));
     }
 
-    public static IEnumerable<Type> GetViewableTypes(Type viewType) {
-      ContentAttribute[] attributes = (ContentAttribute[])viewType.GetCustomAttributes(typeof(ContentAttribute), false);
-      return from a in attributes
-             select a.type;
-    }
-
-    public static bool IsDefaultViewForType(Type viewType, Type content) {
-      ContentAttribute[] attributes = (ContentAttribute[])viewType.GetCustomAttributes(typeof(ContentAttribute), false);
-      return attributes.Any(a => a.isDefaultView && a.type == content);
-    }
-
-    public static IEnumerable<Type> GetDefaultViewableTypes(Type viewType) {
+    internal static IEnumerable<Type> GetDefaultViewableTypes(Type viewType) {
       ContentAttribute[] attributes = (ContentAttribute[])viewType.GetCustomAttributes(typeof(ContentAttribute), false);
       return from a in attributes
              where a.isDefaultView

@@ -8,7 +8,7 @@ using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Common.Resources;
 
 namespace HeuristicLab.MainForm.Test {
-  public class SeparatorMenuItem : MenuSeparatorItemBase, ITestUserInterfaceItemProvider {
+  public class SeparatorMenuItem : MenuSeparatorItem, ITestUserInterfaceItemProvider {
     public override IEnumerable<string> Structure {
       get { return new string[] { "File" }; }
     }

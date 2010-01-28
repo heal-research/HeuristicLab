@@ -27,16 +27,5 @@ using System.Drawing;
 
 namespace HeuristicLab.MainForm {
   public interface IUserInterfaceItem {
-    string Name { get; }
-    int Position { get; }
-    Image Image { get; }
-    string ToolTipText { get; }
-
-    void Execute();
-
-    void ActiveViewChanged(object sender, EventArgs e);
-    void ViewChanged(object sender, EventArgs e);
-    void MainFormChanged(object sender, EventArgs e);
-    void MainFormInitialized(object sender, EventArgs e);
   }
 }

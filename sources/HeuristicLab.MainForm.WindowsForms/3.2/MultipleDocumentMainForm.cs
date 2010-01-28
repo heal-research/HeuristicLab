@@ -29,7 +29,7 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm.WindowsForms {
-  public partial class MultipleDocumentMainForm : MainFormBase {
+  public partial class MultipleDocumentMainForm : MainForm {
     public MultipleDocumentMainForm()
       : base() {
       InitializeComponent();
@@ -40,11 +40,11 @@ namespace HeuristicLab.MainForm.WindowsForms {
       InitializeComponent();
     }
 
-    protected override void CreateGUI() {
-      base.CreateGUI();
+    protected override void AdditionalCreationOfGUIElements() {
+      base.AdditionalCreationOfGUIElements();
       ToolStripMenuItem window = new ToolStripMenuItem("Windows");
-      base.menuStrip.MdiWindowListItem = window;
-      base.menuStrip.Items.Add(window);
+      this.menuStrip.MdiWindowListItem = window;
+      this.menuStrip.Items.Add(window);
     }
 
     protected override void Show(IView view, bool firstTimeShown) {
@@ -52,10 +52,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
       else {
         base.Show(view, firstTimeShown);
         if (firstTimeShown)
-          GetForm(view).Show(this);
+          this.GetForm(view).Show();
         else {
-          GetForm(view).Visible = true;
-          GetForm(view).Activate();
+          this.GetForm(view).Visible = true;
+          this.GetForm(view).Activate();
         }
       }
     }

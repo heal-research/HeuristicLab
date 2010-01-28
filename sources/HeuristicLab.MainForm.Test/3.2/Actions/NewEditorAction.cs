@@ -10,7 +10,7 @@ namespace HeuristicLab.MainForm.Test {
     public static void Execute(IMainForm mainform) {
       EditorView view = new EditorView();
       view.Caption = "Editor View " + mainform.Views.Count();
-      mainform.ShowView(view);
+      view.Show();
     }
   }
 

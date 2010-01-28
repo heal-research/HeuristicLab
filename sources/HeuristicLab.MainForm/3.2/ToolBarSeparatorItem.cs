@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -21,18 +21,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using System.ComponentModel;
 
 namespace HeuristicLab.MainForm {
-  public interface IView {
-
-    string Caption { get; set; }
-    event EventHandler CaptionChanged;
-    event EventHandler Changed;
-
-    void Show();
-    void Hide();
-    void Close();
+  public abstract class ToolBarSeparatorItem : PositionableUserInterfaceItem,IToolBarSeparatorItem {
   }
 }

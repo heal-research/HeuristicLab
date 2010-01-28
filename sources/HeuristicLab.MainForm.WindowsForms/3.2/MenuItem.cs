@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -18,21 +18,26 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
-
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using System.ComponentModel;
+using System.Windows.Forms;
 
-namespace HeuristicLab.MainForm {
-  public interface IView {
+namespace HeuristicLab.MainForm.WindowsForms {
+  public abstract class MenuItem : HeuristicLab.MainForm.MenuItem{
+    public virtual Keys ShortCutKeys {
+      get { return Keys.None; }
+    }
 
-    string Caption { get; set; }
-    event EventHandler CaptionChanged;
-    event EventHandler Changed;
+    private ToolStripItem toolStripItem;
+    public virtual ToolStripItem ToolStripItem {
+      get { return this.toolStripItem; }
+      internal set { this.toolStripItem = value; }
+    }
 
-    void Show();
-    void Hide();
-    void Close();
+    public virtual ToolStripItemDisplayStyle ToolStripItemDisplayStyle {
+      get { return ToolStripItemDisplayStyle.ImageAndText; }
+    }
   }
 }

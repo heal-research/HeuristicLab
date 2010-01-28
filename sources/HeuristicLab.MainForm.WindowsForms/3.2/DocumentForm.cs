@@ -28,7 +28,7 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm.WindowsForms {
-  public partial class DocumentForm : Form {
+  internal partial class DocumentForm : Form {
     private IView myView;
     public IView View {
       get { return myView; }

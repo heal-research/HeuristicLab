@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using System.ComponentModel;
 
 namespace HeuristicLab.MainForm {
   public interface IMainForm {
@@ -34,15 +35,12 @@ namespace HeuristicLab.MainForm {
 
     event EventHandler ActiveViewChanged;
     event EventHandler Changed;
-    
+
     event EventHandler<ViewEventArgs> ViewClosed;
     event EventHandler<ViewShownEventArgs> ViewShown;
     event EventHandler<ViewEventArgs> ViewHidden;
 
     Type UserInterfaceItemType { get; }
-    void ShowView(IView view); 
-    void HideView(IView view);
-    void CloseView(IView view);
     void CloseAllViews();
     void Close();
   }

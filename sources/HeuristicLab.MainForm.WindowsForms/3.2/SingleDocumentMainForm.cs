@@ -30,7 +30,7 @@ using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace HeuristicLab.MainForm.WindowsForms {
-  public partial class SingleDocumentMainForm : MainFormBase {
+  public partial class SingleDocumentMainForm : MainForm {
     public SingleDocumentMainForm()
       : base() {
       InitializeComponent();
@@ -46,10 +46,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
       else {
         base.Show(view, firstTimeShown);
         if (firstTimeShown)
-          GetForm(view).Show(this);
+          this.GetForm(view).Show(this);
         else {
-          GetForm(view).Visible = true;
-          GetForm(view).Activate();
+          this.GetForm(view).Visible = true;
+          this.GetForm(view).Activate();
         }
       }
     }

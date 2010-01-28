@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -21,18 +21,24 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using System.ComponentModel;
+using System.Windows.Forms;
 
-namespace HeuristicLab.MainForm {
-  public interface IView {
+namespace HeuristicLab.MainForm.WindowsForms {
+  public abstract class ToolBarItem : HeuristicLab.MainForm.ToolBarItem {
+    private ToolStripItem toolStripItem;
+    public virtual ToolStripItem ToolStripItem {
+      get { return this.toolStripItem; }
+      internal set { this.toolStripItem = value; }
+    }
 
-    string Caption { get; set; }
-    event EventHandler CaptionChanged;
-    event EventHandler Changed;
+    public virtual bool IsDropDownButton {
+      get { return false; }
+    }
 
-    void Show();
-    void Hide();
-    void Close();
+    public virtual ToolStripItemDisplayStyle ToolStripItemDisplayStyle {
+      get { return ToolStripItemDisplayStyle.Image; }
+    }
   }
 }

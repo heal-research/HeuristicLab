@@ -9,7 +9,7 @@ namespace HeuristicLab.MainForm.Test {
     public void Execute(IMainForm mainform) {
       FormView1 x = new FormView1();
       x.Caption = "FormView";
-      mainform.ShowView(x);
+      x.Show();
     }
   }
 
