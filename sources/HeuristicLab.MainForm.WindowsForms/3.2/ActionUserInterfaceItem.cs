@@ -41,7 +41,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     public virtual ToolStripItemDisplayStyle ToolStripItemDisplayStyle {
-      get { return ToolStripItemDisplayStyle.Image; }
+      get { return ToolStripItemDisplayStyle.ImageAndText; }
     }
 
     protected virtual void OnToolStripItemSet(EventArgs e) {

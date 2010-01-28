@@ -26,9 +26,13 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm.WindowsForms {
-  public abstract class ToolBarItem : ActionUserInterfaceItem,IToolBarItem {
+  public abstract class ToolBarItem : ActionUserInterfaceItem, IToolBarItem {
     public virtual bool IsDropDownButton {
       get { return false; }
+    }
+
+    public override ToolStripItemDisplayStyle ToolStripItemDisplayStyle {
+      get { return ToolStripItemDisplayStyle.Image; }
     }
   }
 }
