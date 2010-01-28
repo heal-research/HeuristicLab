@@ -25,7 +25,7 @@ using System.Linq;
 using System.Text;
 
 namespace HeuristicLab.GP {
-  public abstract class Terminal : FunctionBase {
+  public abstract class Terminal : Function {
     public Terminal()
       : base() {
       MinSubTrees = 0; MaxSubTrees = 0;

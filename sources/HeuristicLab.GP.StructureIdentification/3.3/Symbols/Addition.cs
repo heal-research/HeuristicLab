@@ -21,7 +21,7 @@
 
 
 namespace HeuristicLab.GP.StructureIdentification {
-  public sealed class Addition : FunctionBase {
+  public sealed class Addition : Function {
     public override string Description {
       get {
         return @"Returns the sum of all sub-tree results.

@@ -29,7 +29,7 @@ using HeuristicLab.GP.Interfaces;
 using System.Linq;
 
 namespace HeuristicLab.GP {
-  public abstract class FunctionBase : ItemBase, IFunction {
+  public abstract class Function : ItemBase, IFunction {
     private List<List<IFunction>> allowedSubFunctions = new List<List<IFunction>>();
     private int minArity = -1;
     private int maxArity = -1;
@@ -39,8 +39,20 @@ namespace HeuristicLab.GP {
     private int minTreeHeight = -1;
     private int minTreeSize = -1;
 
+    private string name;
     public virtual string Name {
-      get { return this.GetType().Name; }
+      get { return name; }
+      set {
+        if (string.IsNullOrEmpty(value)) throw new ArgumentException();
+        if (value != name) {
+          name = value;
+          FireChanged();
+        }
+      }
+    }
+
+    protected Function() {
+      name = this.GetType().Name;
     }
 
     public virtual string Description {
@@ -51,9 +63,14 @@ namespace HeuristicLab.GP {
       get {
         return minArity;
       }
-      protected set {
-        minArity = value;
-        while (minArity > allowedSubFunctions.Count) allowedSubFunctions.Add(new List<IFunction>());
+      protected internal set {
+        if (value < 0) throw new ArgumentException();
+        if (minArity != value) {
+          minArity = value;
+          while (minArity > allowedSubFunctions.Count) allowedSubFunctions.Add(new List<IFunction>());
+          ResetCachedValues();
+          FireChanged();
+        }
       }
     }
 
@@ -61,17 +78,34 @@ namespace HeuristicLab.GP {
       get {
         return maxArity;
       }
-      protected set {
-        maxArity = value;
-        while (allowedSubFunctions.Count > maxArity) allowedSubFunctions.RemoveAt(allowedSubFunctions.Count - 1);
-        while (maxArity > allowedSubFunctions.Count) allowedSubFunctions.Add(new List<IFunction>());
+      protected internal set {
+        if (value < 0) throw new ArgumentException();
+        if (value < minArity) throw new ArgumentException();
+        if (value != maxArity) {
+          maxArity = value;
+          while (allowedSubFunctions.Count > maxArity) allowedSubFunctions.RemoveAt(allowedSubFunctions.Count - 1);
+          while (maxArity > allowedSubFunctions.Count) {
+            if (allowedSubFunctions.Count > 0) {
+              // copy the list of allowed sub-functions from the previous slot
+              allowedSubFunctions.Add(new List<IFunction>(allowedSubFunctions[allowedSubFunctions.Count - 1]));
+            } else {
+              // add empty list
+              allowedSubFunctions.Add(new List<IFunction>());
+            }
+          }
+          ResetCachedValues();
+          FireChanged();
+        }
       }
     }
 
 
     public int MinTreeSize {
       get {
-        if (minTreeSize <= 0) RecalculateMinimalTreeSize();
+        if (minTreeSize <= 0) {
+          RecalculateMinimalTreeSize();
+          FireChanged();
+        }
         Debug.Assert(minTreeSize > 0);
         return minTreeSize;
       }
@@ -79,7 +113,10 @@ namespace HeuristicLab.GP {
 
     public int MinTreeHeight {
       get {
-        if (minTreeHeight <= 0) RecalculateMinimalTreeHeight();
+        if (minTreeHeight <= 0) {
+          RecalculateMinimalTreeHeight();
+          FireChanged();
+        }
         Debug.Assert(minTreeHeight > 0);
         return minTreeHeight;
       }
@@ -89,22 +126,35 @@ namespace HeuristicLab.GP {
       get { return tickets; }
       set {
         if (value < 0.0) throw new ArgumentException("Number of tickets must be positive");
-        else tickets = value;
+        if (value != tickets) {
+          tickets = value;
+          FireChanged();
+        }
       }
     }
 
     public IOperator Initializer {
       get { return initializer; }
-      set { initializer = value; }
+      set {
+        if (initializer != value) {
+          initializer = value;
+          FireChanged();
+        }
+      }
     }
 
     public IOperator Manipulator {
       get { return manipulator; }
-      set { manipulator = value; }
+      set {
+        if (manipulator != value) {
+          manipulator = value;
+          FireChanged();
+        }
+      }
     }
 
     public virtual IFunctionTree GetTreeNode() {
-      return new FunctionTreeBase(this);
+      return new FunctionTree(this);
     }
 
     public ICollection<IFunction> GetAllowedSubFunctions(int index) {
@@ -120,11 +170,21 @@ namespace HeuristicLab.GP {
       if (!allowedSubFunctions[index].Contains(function)) {
         allowedSubFunctions[index].Add(function);
       }
+      ResetCachedValues();
+      FireChanged();
     }
-
     public void RemoveAllowedSubFunction(IFunction function, int index) {
       if (index < 0 || index > MaxSubTrees) throw new ArgumentException("Index outside of allowed range. index = " + index);
-      allowedSubFunctions[index].Add(function);
+      if (allowedSubFunctions[index].Contains(function)) {
+        allowedSubFunctions[index].Remove(function);
+        ResetCachedValues();
+        FireChanged();
+      }
+    }
+
+    private void ResetCachedValues() {
+      minTreeHeight = -1;
+      minTreeSize = -1;
     }
 
     public bool IsAllowedSubFunction(IFunction function, int index) {
@@ -134,11 +194,11 @@ namespace HeuristicLab.GP {
     private void RecalculateMinimalTreeSize() {
       if (MinSubTrees == 0) minTreeSize = 1;
       else {
-        minTreeSize = int.MaxValue; // prevent infinite recursion
+        minTreeSize = int.MaxValue; // prevent infinite recursion        
         minTreeSize = 1 + (from slot in Enumerable.Range(0, MinSubTrees)
                            let minForSlot = (from function in GetAllowedSubFunctions(slot)
                                              where function != this
-                                             select function.MinTreeSize).Min()
+                                             select function.MinTreeSize).DefaultIfEmpty(0).Min()
                            select minForSlot).Sum();
       }
     }
@@ -150,13 +210,22 @@ namespace HeuristicLab.GP {
         minTreeHeight = 1 + (from slot in Enumerable.Range(0, MinSubTrees)
                              let minForSlot = (from function in GetAllowedSubFunctions(slot)
                                                where function != this
-                                               select function.MinTreeHeight).Min()
+                                               select function.MinTreeHeight).DefaultIfEmpty(0).Min()
                              select minForSlot).Max();
       }
     }
 
+    public override IView CreateView() {
+      return new FunctionView(this);
+    }
+
+    public override string ToString() {
+      return name;
+    }
+
+    #region persistence
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      FunctionBase clone = (FunctionBase)base.Clone(clonedObjects);
+      Function clone = (Function)base.Clone(clonedObjects);
       clone.initializer = (IOperator)Auxiliary.Clone(initializer, clonedObjects);
       clone.manipulator = (IOperator)Auxiliary.Clone(manipulator, clonedObjects);
       clone.maxArity = maxArity;
@@ -206,5 +275,6 @@ namespace HeuristicLab.GP {
         }
       }
     }
+    #endregion
   }
 }

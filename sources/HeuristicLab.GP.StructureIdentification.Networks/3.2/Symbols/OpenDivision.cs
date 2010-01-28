@@ -21,7 +21,7 @@
 
 
 namespace HeuristicLab.GP.StructureIdentification.Networks {
-  public sealed class OpenDivision : FunctionBase {
+  public sealed class OpenDivision : Function {
     public override string Description {
       get { return "Unbound /."; }
     }

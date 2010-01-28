@@ -21,7 +21,7 @@
 
 
 namespace HeuristicLab.GP.StructureIdentification {
-  public sealed class Division : FunctionBase {
+  public sealed class Division : Function {
     public override string Description {
       get {
         return @"Protected division

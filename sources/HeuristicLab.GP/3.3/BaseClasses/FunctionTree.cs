@@ -27,19 +27,19 @@ using HeuristicLab.GP.Interfaces;
 using System.Xml;
 
 namespace HeuristicLab.GP {
-  public class FunctionTreeBase : IFunctionTree {
+  public class FunctionTree : IFunctionTree {
     private List<IFunctionTree> subTrees;
     private IFunction function;
 
-    public FunctionTreeBase() {
+    public FunctionTree() {
     }
 
-    public FunctionTreeBase(IFunction function) {
+    public FunctionTree(IFunction function) {
       subTrees = new List<IFunctionTree>();
       this.function = function;
     }
 
-    protected FunctionTreeBase(FunctionTreeBase original) {
+    protected FunctionTree(FunctionTree original) {
       this.function = original.Function;
       this.subTrees = new List<IFunctionTree>(original.SubTrees.Count);
       foreach (IFunctionTree originalSubTree in original.SubTrees) {
@@ -106,7 +106,7 @@ namespace HeuristicLab.GP {
     }
 
     public virtual object Clone() {
-      return new FunctionTreeBase(this);
+      return new FunctionTree(this);
     }
 
     public object Clone(IDictionary<Guid, object> clonedObjects) {

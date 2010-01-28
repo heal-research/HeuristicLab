@@ -21,7 +21,7 @@
 
 
 namespace HeuristicLab.GP.StructureIdentification.Networks {
-  public sealed class OpenMultiplication : FunctionBase {
+  public sealed class OpenMultiplication : Function {
     public override string Description {
       get { return "Unbound *."; }
     }

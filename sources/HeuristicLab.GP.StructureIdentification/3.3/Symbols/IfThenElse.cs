@@ -21,7 +21,7 @@
 
 
 namespace HeuristicLab.GP.StructureIdentification {
-  public sealed class IfThenElse : FunctionBase {
+  public sealed class IfThenElse : Function {
     public override string Description {
       get {
         return @"Returns the result of the second sub-tree if the first sub-tree evaluates to a value < 0.5 and the result

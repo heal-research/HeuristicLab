@@ -21,7 +21,7 @@
 
 
 namespace HeuristicLab.GP.StructureIdentification {
-  public sealed class Average : FunctionBase {
+  public sealed class Average : Function {
     public override string Description {
       get {
         return @"Returns the average (arithmetic mean) of all sub-tree results.";

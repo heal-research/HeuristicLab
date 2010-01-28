@@ -26,7 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.GP.Interfaces;
 
 namespace HeuristicLab.GP {
-  public class TerminalTreeNode : FunctionTreeBase {
+  public class TerminalTreeNode : FunctionTree {
     private static readonly IList<IFunctionTree> subTrees = new List<IFunctionTree>().AsReadOnly();
     public TerminalTreeNode(IFunction function) {
       Function = function;

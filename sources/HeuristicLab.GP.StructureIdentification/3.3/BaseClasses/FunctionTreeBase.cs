@@ -26,7 +26,7 @@ using HeuristicLab.GP.Interfaces;
 using System.Xml;
 
 namespace HeuristicLab.GP.StructureIdentification {
-  public class FunctionTreeBase : HeuristicLab.GP.FunctionTreeBase {
+  public class FunctionTreeBase : HeuristicLab.GP.FunctionTree {
     public FunctionTreeBase(IFunction function) : base(function) { }
     public FunctionTreeBase(FunctionTreeBase original) : base(original) { }
 

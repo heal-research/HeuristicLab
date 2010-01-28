@@ -21,7 +21,7 @@
 
 
 namespace HeuristicLab.GP.StructureIdentification.Networks {
-  public sealed class OpenSubtraction : FunctionBase {
+  public sealed class OpenSubtraction : Function {
     public override string Description {
       get { return "Unbound -."; }
     }

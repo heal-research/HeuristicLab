@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.GP.SantaFe {
-  public sealed class Prog3 : FunctionBase {
+  public sealed class Prog3 : Function {
 
     public Prog3()
       : base() {

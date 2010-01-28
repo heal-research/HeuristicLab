@@ -25,7 +25,7 @@ using System.Linq;
 using System.Text;
 
 namespace HeuristicLab.GP {
-  public abstract class BinaryFunction : FunctionBase {
+  public abstract class BinaryFunction : Function {
     public BinaryFunction()
       : base() {
       MinSubTrees = 2; MaxSubTrees = 2;

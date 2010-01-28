@@ -21,7 +21,7 @@
 
 
 namespace HeuristicLab.GP.StructureIdentification {
-  public sealed class Multiplication : FunctionBase {
+  public sealed class Multiplication : Function {
     public override string Description {
       get {
         return @"Returns the product of the results of all sub-tree.

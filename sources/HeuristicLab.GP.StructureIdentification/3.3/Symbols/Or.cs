@@ -21,7 +21,7 @@
 
 
 namespace HeuristicLab.GP.StructureIdentification {
-  public sealed class Or : FunctionBase {
+  public sealed class Or : Function {
     public override string Description {
       get {
         return @"Logical OR operation. Only defined for sub-tree-results 0.0 and 1.0.";
