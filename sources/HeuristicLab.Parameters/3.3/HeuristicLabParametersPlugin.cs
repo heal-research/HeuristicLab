@@ -24,18 +24,15 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Operators {
+namespace HeuristicLab.Parameters {
   /// <summary>
-  /// Plugin class for HeuristicLab.Operators plugin.
+  /// Plugin class for HeuristicLab.Parameters plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Operators-3.3")]
-  [PluginFile("HeuristicLab.Operators-3.3.dll", PluginFileType.Assembly)]
+  [Plugin("HeuristicLab.Parameters-3.3")]
+  [PluginFile("HeuristicLab.Parameters-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Collections-3.3")]
-  [PluginDependency("HeuristicLab.Common.Resources-3.2")]
   [PluginDependency("HeuristicLab.Core-3.3")]
-  [PluginDependency("HeuristicLab.Data-3.3")]
-  [PluginDependency("HeuristicLab.Parameters-3.3")]
   [PluginDependency("HeuristicLab.Persistence-3.3")]
-  public class HeuristicLabOperatorsPlugin : PluginBase {
+  public class HeuristicLabParametersPlugin : PluginBase {
   }
 }

@@ -108,10 +108,8 @@
     <Compile Include="Interfaces\IScope.cs" />
     <Compile Include="Interfaces\IVariable.cs" />
     <Compile Include="Item.cs" />
-    <Compile Include="ItemParameter.cs" />
     <Compile Include="NamedItem.cs" />
     <Compile Include="OperatorGraph.cs" />
-    <Compile Include="OperatorParameter.cs" />
     <Compile Include="Interfaces\IParameter.cs" />
     <Compile Include="OperatorCollection.cs" />
     <Compile Include="ItemCollection.cs" />
@@ -126,7 +124,6 @@
     <Compile Include="OperatorList.cs" />
     <Compile Include="ParameterCollection.cs" />
     <Compile Include="VariableCollection.cs" />
-    <Compile Include="Parameter.cs" />
     <Compile Include="ScopeList.cs" />
     <Compile Include="Interfaces\IDeepCloneable.cs" />
     <Compile Include="NamedItemCollection.cs" />

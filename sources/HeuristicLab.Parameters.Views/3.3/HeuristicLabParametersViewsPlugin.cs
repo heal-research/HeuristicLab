@@ -22,26 +22,20 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Xml;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
+using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Core {
+namespace HeuristicLab.Parameters.Views {
   /// <summary>
-  /// Represents a parameter.
+  /// Plugin class for HeuristicLab.Parameters.Views plugin.
   /// </summary>
-  [Item("OperatorParameter", "A parameter which represents an operator.")]
-  [EmptyStorableClass]
-  [Creatable("Test")]
-  public class OperatorParameter : ItemParameter<IOperator>, IOperatorParameter {
-    public OperatorParameter()
-      : base("Anonymous", null) {
-    }
-    public OperatorParameter(string name, string description)
-      : base(name, description) {
-    }
-    public OperatorParameter(string name, string description, IOperator value)
-      : base(name, description, value) {
-    }
+  [Plugin("HeuristicLab.Parameters.Views-3.3")]
+  [PluginFile("HeuristicLab.Parameters.Views-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Common.Resources-3.2")]
+  [PluginDependency("HeuristicLab.Core-3.3")]
+  [PluginDependency("HeuristicLab.Core.Views-3.3")]
+  [PluginDependency("HeuristicLab.MainForm-3.2")]
+  [PluginDependency("HeuristicLab.MainForm.WindowsForms-3.2")]
+  [PluginDependency("HeuristicLab.Parameters-3.3")]
+  public class HeuristicLabParametersViewsPlugin : PluginBase {
   }
 }

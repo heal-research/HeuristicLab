@@ -64,12 +64,6 @@
     <Compile Include="EngineView.Designer.cs">
       <DependentUpon>EngineView.cs</DependentUpon>
     </Compile>
-    <Compile Include="ItemParameterView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ItemParameterView.Designer.cs">
-      <DependentUpon>ItemParameterView.cs</DependentUpon>
-    </Compile>
     <Compile Include="ItemView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -159,12 +153,6 @@
     </Compile>
     <Compile Include="ItemListView.Designer.cs">
       <DependentUpon>ItemListView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ParameterView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ParameterView.Designer.cs">
-      <DependentUpon>ParameterView.cs</DependentUpon>
     </Compile>
     <Compile Include="ScopeView.cs">
       <SubType>UserControl</SubType>

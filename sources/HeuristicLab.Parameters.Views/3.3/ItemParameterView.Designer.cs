@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.Core.Views {
+namespace HeuristicLab.Parameters.Views {
   partial class ItemParameterView {
     /// <summary> 
     /// Required designer variable.
@@ -201,7 +201,7 @@ namespace HeuristicLab.Core.Views {
     protected System.Windows.Forms.TextBox actualNameTextBox;
     protected System.Windows.Forms.Label actualNameLabel;
     protected System.Windows.Forms.Panel valuePanel;
-    protected ViewHost viewHost;
+    protected HeuristicLab.Core.Views.ViewHost viewHost;
     protected System.Windows.Forms.Button setValueButton;
     protected System.Windows.Forms.ToolTip toolTip;
     protected System.Windows.Forms.Button clearValueButton;

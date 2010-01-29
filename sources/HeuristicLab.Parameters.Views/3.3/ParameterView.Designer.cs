@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.Core.Views {
+namespace HeuristicLab.Parameters.Views {
   partial class ParameterView {
     /// <summary> 
     /// Required designer variable.
