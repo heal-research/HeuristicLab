@@ -57,36 +57,43 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private bool isShown;
     public bool IsShown {
       get { return this.isShown; }
+      private set { this.isShown = value; }
     }
 
     public new void Show() {
       MainForm mainform = MainFormManager.GetMainForm<MainForm>();
       bool firstTimeShown = mainform.GetForm(this) == null;
 
-      MainFormManager.GetMainForm<MainForm>().ShowView(this,firstTimeShown);
+      this.IsShown = true;
+      mainform.ShowView(this, firstTimeShown);
       if (firstTimeShown) {
         Form form = mainform.GetForm(this);
         form.FormClosed += new FormClosedEventHandler(OnClosedHelper);
         form.FormClosing += new FormClosingEventHandler(OnClosingHelper);
       }
-      this.OnShown(new ViewShownEventArgs(this,firstTimeShown));
+      this.OnShown(new ViewShownEventArgs(this, firstTimeShown));
     }
 
     public void Close() {
       MainForm mainform = MainFormManager.GetMainForm<MainForm>();
       Form form = mainform.GetForm(this);
-      if (form != null)
+      if (form != null) {
+        this.IsShown = false;
         mainform.CloseView(this);
+      }
     }
 
     public void Close(CloseReason closeReason) {
       MainForm mainform = MainFormManager.GetMainForm<MainForm>();
       Form form = mainform.GetForm(this);
-      if (form != null) 
-        mainform.CloseView(this,closeReason);
+      if (form != null) {
+        this.IsShown = false;
+        mainform.CloseView(this, closeReason);
+      }
     }
 
     public new void Hide() {
+      this.IsShown = false;
       MainFormManager.GetMainForm<MainForm>().HideView(this);
       this.OnHidden(new EventArgs());
     }
@@ -106,11 +113,9 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     protected virtual void OnShown(ViewShownEventArgs e) {
-      this.isShown = true;
     }
 
     protected virtual void OnHidden(EventArgs e) {
-      this.isShown = false;
     }
 
     internal CloseReason closeReason;
@@ -139,7 +144,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     protected virtual void OnClosed(FormClosedEventArgs e) {
-      this.isShown = false;
     }
 
     private void ViewBase_Load(object sender, EventArgs e) {

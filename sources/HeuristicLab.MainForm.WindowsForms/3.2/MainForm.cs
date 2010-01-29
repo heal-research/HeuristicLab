@@ -85,7 +85,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     public IView ActiveView {
       get { return this.activeView; }
       protected set {
-        if (this.activeView != value) {
+        if (this.activeView != value && (value != null || this.views.Keys.All(v => !v.IsShown))) {
           if (InvokeRequired) {
             Action<IView> action = delegate(IView activeView) { this.ActiveView = activeView; };
             Invoke(action, value);
@@ -213,6 +213,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
       else {
         if (this.views.ContainsKey(view)) {
           this.Hide(view);
+          if (this.activeView == view && views.All(v => !view.IsShown))
+            this.ActiveView = null;
           this.OnViewHidden(view);
         }
       }
