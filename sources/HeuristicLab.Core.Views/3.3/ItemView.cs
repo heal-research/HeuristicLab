@@ -33,10 +33,10 @@ namespace HeuristicLab.Core.Views {
   /// <summary>
   /// Base class for all visual representations.
   /// </summary>
-  public partial class ItemView : ObjectView {
-    public IItem Item {
-      get { return (IItem)base.Object; }
-      set { base.Object = value; }
+  public partial class ItemView : ContentView {
+    public new IItem Content {
+      get { return (IItem)base.Content; }
+      set { base.Content = value; }
     }
 
     /// <summary>
@@ -47,12 +47,41 @@ namespace HeuristicLab.Core.Views {
       Caption = "View";
     }
 
-    protected override void OnObjectChanged() {
-      if (Item == null) {
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      if (Content == null) {
         Caption = "View";
       } else {
-        Caption = Item.ItemName;
+        Caption = Content.ItemName;
       }
+    }
+
+    /// <summary>
+    /// Asynchron call of GUI updating.
+    /// </summary>
+    /// <param name="method">The delegate to invoke.</param>
+    protected new void Invoke(Delegate method) {
+      // enforce context switch to improve GUI response time
+      System.Threading.Thread.Sleep(0);
+
+      // prevent blocking of worker thread in Invoke, if the control is disposed
+      IAsyncResult result = BeginInvoke(method);
+      while ((!result.AsyncWaitHandle.WaitOne(100, false)) && (!IsDisposed)) { }
+      if (!IsDisposed) EndInvoke(result);
+    }
+    /// <summary>
+    /// Asynchron call of GUI updating.
+    /// </summary>
+    /// <param name="method">The delegate to invoke.</param>
+    /// <param name="args">The invoke arguments.</param>
+    protected new void Invoke(Delegate method, params object[] args) {
+      // enforce context switch to improve GUI response time
+      System.Threading.Thread.Sleep(0);
+
+      // prevent blocking of worker thread in Invoke, if the control is disposed
+      IAsyncResult result = BeginInvoke(method, args);
+      while ((!result.AsyncWaitHandle.WaitOne(100, false)) && (!IsDisposed)) { }
+      if (!IsDisposed) EndInvoke(result);
     }
   }
 }

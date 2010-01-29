@@ -18,9 +18,6 @@ namespace HeuristicLab.Optimizer.MenuItems {
     public override int Position {
       get { return 1200; }
     }
-    public override ToolStripItemDisplayStyle ToolStripItemDisplayStyle {
-      get { return ToolStripItemDisplayStyle.ImageAndText; }
-    }
     public override Image Image {
       get { return Resources.OpenIcon; }
     }

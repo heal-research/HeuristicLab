@@ -66,11 +66,8 @@ namespace HeuristicLab.Operators.Views {
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.parameterCollectionView.Caption = "ParameterCollection";
-      this.parameterCollectionView.ItemCollection = null;
       this.parameterCollectionView.Location = new System.Drawing.Point(0, 119);
       this.parameterCollectionView.Name = "parameterCollectionView";
-      this.parameterCollectionView.NamedItemCollection = null;
-      this.parameterCollectionView.Object = null;
       this.parameterCollectionView.Size = new System.Drawing.Size(490, 234);
       this.parameterCollectionView.TabIndex = 4;
       // 

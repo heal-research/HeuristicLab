@@ -32,9 +32,9 @@ using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Core.Views {
   public partial class ItemSetView<T> : ItemCollectionView<T> where T : class, IItem {
-    public IObservableSet<T> ItemSet {
-      get { return (IObservableSet<T>)Object; }
-      set { base.Object = value; }
+    public new IObservableSet<T> Content {
+      get { return (IObservableSet<T>)base.Content; }
+      set { base.Content = value; }
     }
 
     private Dictionary<T, ListViewItem> listViewItemDictionary;
@@ -48,11 +48,11 @@ namespace HeuristicLab.Core.Views {
       Caption = "Item Set";
     }
 
-    protected override void OnObjectChanged() {
-      base.OnObjectChanged();
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
       Caption = "Item Set";
-      if (ItemSet != null)
-        Caption += " (" + ItemCollection.GetType().Name + ")";
+      if (Content != null)
+        Caption += " (" + Content.GetType().Name + ")";
     }
 
     protected override void AddListViewItem(ListViewItem listViewItem) {

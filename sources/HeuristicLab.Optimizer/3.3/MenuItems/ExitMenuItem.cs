@@ -19,9 +19,6 @@ namespace HeuristicLab.Optimizer.MenuItems {
     public override int Position {
       get { return 1999; }
     }
-    public override ToolStripItemDisplayStyle ToolStripItemDisplayStyle {
-      get { return ToolStripItemDisplayStyle.Text; }
-    }
     public override Keys ShortCutKeys {
       get { return Keys.Control | Keys.X; }
    }

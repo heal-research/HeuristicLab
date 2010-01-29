@@ -24,9 +24,6 @@ namespace HeuristicLab.Optimizer.MenuItems {
     public override int Position {
       get { return 2100; }
     }
-    public override ToolStripItemDisplayStyle ToolStripItemDisplayStyle {
-      get { return ToolStripItemDisplayStyle.Text; }
-    }
 
     protected override void OnToolStripItemSet(EventArgs e) {
       view = new OperatorsSidebar();

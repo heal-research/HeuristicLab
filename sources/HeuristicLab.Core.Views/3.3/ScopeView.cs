@@ -45,9 +45,9 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
     /// No own data storage present.</remarks>
-    public IScope Scope {
-      get { return (IScope)Item; }
-      set { base.Item = value; }
+    public new IScope Content {
+      get { return (IScope)base.Content; }
+      set { base.Content = value; }
     }
 
     /// <summary>
@@ -68,28 +68,28 @@ namespace HeuristicLab.Core.Views {
     /// <param name="scope">The scope to represent visually.</param>
     public ScopeView(IScope scope)
       : this() {
-      Scope = scope;
+      Content = scope;
     }
 
     /// <summary>
     /// Updates all controls with the latest data of the model.
     /// </summary>
     /// <remarks>Calls <see cref="ViewBase.UpdateControls"/> of base class <see cref="ViewBase"/>.</remarks>
-    protected override void OnObjectChanged() {
-      base.OnObjectChanged();
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
       if (scopesTreeView.Nodes.Count > 0) {
         RemoveTreeNode(scopesTreeView.Nodes[0]);
         scopesTreeView.Nodes.Clear();
       }
-      variableCollectionView.NamedItemCollection = null;
+      variableCollectionView.Content = null;
       variableCollectionView.Enabled = false;
-      if (Scope == null) {
+      if (Content == null) {
         Caption = "Scope";
         scopesTreeView.Enabled = false;
       } else {
-        Caption = Scope.Name + " (" + Scope.GetType().Name + ")";
+        Caption = Content.Name + " (" + Content.GetType().Name + ")";
         scopesTreeView.Enabled = true;
-        scopesTreeView.Nodes.Add(CreateTreeNode(Scope));
+        scopesTreeView.Nodes.Add(CreateTreeNode(Content));
       }
     }
 
@@ -132,10 +132,10 @@ namespace HeuristicLab.Core.Views {
     private void scopesTreeView_MouseDown(object sender, MouseEventArgs e) {
       TreeNode node = scopesTreeView.GetNodeAt(e.X, e.Y);
       if ((node != null) && (node.Tag is IScope)) {
-        variableCollectionView.NamedItemCollection = ((IScope)node.Tag).Variables;
+        variableCollectionView.Content = ((IScope)node.Tag).Variables;
         variableCollectionView.Enabled = true;
       } else {
-        variableCollectionView.NamedItemCollection = null;
+        variableCollectionView.Content = null;
         variableCollectionView.Enabled = false;
         if (node == null) scopesTreeView.SelectedNode = null;
       }

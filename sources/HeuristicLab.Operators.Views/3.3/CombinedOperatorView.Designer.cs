@@ -108,11 +108,8 @@ namespace HeuristicLab.Operators.Views {
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.parameterCollectionView.Caption = "ParameterCollection";
-      this.parameterCollectionView.ItemCollection = null;
       this.parameterCollectionView.Location = new System.Drawing.Point(6, 6);
       this.parameterCollectionView.Name = "parameterCollectionView";
-      this.parameterCollectionView.NamedItemCollection = null;
-      this.parameterCollectionView.Object = null;
       this.parameterCollectionView.Size = new System.Drawing.Size(466, 326);
       this.parameterCollectionView.TabIndex = 0;
       // 
@@ -122,11 +119,8 @@ namespace HeuristicLab.Operators.Views {
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.operatorGraphView.Caption = "Operator Graph";
-      this.operatorGraphView.Item = null;
       this.operatorGraphView.Location = new System.Drawing.Point(6, 6);
       this.operatorGraphView.Name = "operatorGraphView";
-      this.operatorGraphView.Object = null;
-      this.operatorGraphView.OperatorGraph = null;
       this.operatorGraphView.Size = new System.Drawing.Size(466, 326);
       this.operatorGraphView.TabIndex = 0;
       // 

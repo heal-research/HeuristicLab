@@ -59,7 +59,6 @@ namespace HeuristicLab.Core.Views {
       InitializeComponent();
     }
 
-
     protected virtual void TypeSelectorDialog_Load(object sender, EventArgs e) {
       this.typeSelector.TypesTreeView.DoubleClick += new System.EventHandler(TypesTreeView_DoubleClick);
     }

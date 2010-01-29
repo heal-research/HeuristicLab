@@ -33,9 +33,9 @@ using HeuristicLab.MainForm;
 namespace HeuristicLab.Data.Views {
   [Content(typeof(BoolData), true)]
   public partial class BoolDataView : ItemView {
-    public BoolData BoolData {
-      get { return (BoolData)Item; }
-      set { base.Item = value; }
+    public new BoolData Content {
+      get { return (BoolData)base.Content; }
+      set { base.Content = value; }
     }
 
     public BoolDataView() {
@@ -44,41 +44,41 @@ namespace HeuristicLab.Data.Views {
     }
     public BoolDataView(BoolData boolData)
       : this() {
-      BoolData = boolData;
+      Content = boolData;
     }
 
-    protected override void DeregisterObjectEvents() {
-      BoolData.Changed -= new ChangedEventHandler(BoolData_Changed);
-      base.DeregisterObjectEvents();
+    protected override void DeregisterContentEvents() {
+      Content.Changed -= new ChangedEventHandler(Content_Changed);
+      base.DeregisterContentEvents();
     }
 
-    protected override void RegisterObjectEvents() {
-      base.RegisterObjectEvents();
-      BoolData.Changed += new ChangedEventHandler(BoolData_Changed);
+    protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
+      Content.Changed += new ChangedEventHandler(Content_Changed);
     }
 
-    protected override void OnObjectChanged() {
-      base.OnObjectChanged();
-      if (BoolData == null) {
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      if (Content == null) {
         Caption = "BoolData View";
         valueCheckBox.Checked = false;
         valueCheckBox.Enabled = false;
       } else {
-        Caption = BoolData.ToString() + " (" + BoolData.GetType().Name + ")";
-        valueCheckBox.Checked = BoolData.Value;
+        Caption = Content.ToString() + " (" + Content.GetType().Name + ")";
+        valueCheckBox.Checked = Content.Value;
         valueCheckBox.Enabled = true;
       }
     }
 
-    private void BoolData_Changed(object sender, ChangedEventArgs e) {
+    private void Content_Changed(object sender, ChangedEventArgs e) {
       if (InvokeRequired)
-        Invoke(new ChangedEventHandler(BoolData_Changed), sender, e);
+        Invoke(new ChangedEventHandler(Content_Changed), sender, e);
       else
-        valueCheckBox.Checked = BoolData.Value;
+        valueCheckBox.Checked = Content.Value;
     }
 
     private void valueCheckBox_CheckedChanged(object sender, EventArgs e) {
-      BoolData.Value = valueCheckBox.Checked;
+      Content.Value = valueCheckBox.Checked;
     }
   }
 }

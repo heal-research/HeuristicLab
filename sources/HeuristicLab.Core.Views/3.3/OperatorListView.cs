@@ -31,7 +31,7 @@ namespace HeuristicLab.Core.Views {
     /// <param name="scope">The scope whose variables should be represented visually.</param>
     public OperatorListView(IObservableList<IOperator> operatorList)
       : this() {
-      ItemList = operatorList;
+      Content = operatorList;
     }
 
     protected override IOperator CreateItem() {

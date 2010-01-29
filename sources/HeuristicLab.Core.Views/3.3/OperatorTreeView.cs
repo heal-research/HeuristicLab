@@ -46,9 +46,9 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
     /// No own data storage present.</remarks>
-    public IOperator Operator {
-      get { return (IOperator)Item; }
-      set { base.Item = value; }
+    public new IOperator Content {
+      get { return (IOperator)base.Content; }
+      set { base.Content = value; }
     }
 
     /// <summary>
@@ -70,23 +70,23 @@ namespace HeuristicLab.Core.Views {
     /// <param name="operatorGraph">The operator graph to represent visually.</param>
     public OperatorTreeView(IOperator op)
       : this() {
-      Operator = op;
+      Content = op;
     }
 
     /// <summary>
     /// Updates all controls with the latest data of the model.
     /// </summary>
     /// <remarks>Calls <see cref="ViewBase.UpdateControls"/> of base class <see cref="ViewBase"/>.</remarks>
-    protected override void OnObjectChanged() {
-      base.OnObjectChanged();
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
       if (graphTreeView.Nodes.Count > 0)
         RemoveTreeNode(graphTreeView.Nodes[0]);
       graphTreeView.Enabled = false;
       Caption = "Operator";
-      if (Operator != null) {
-        Caption = Operator.Name + " (" + Operator.GetType().Name + ")";
+      if (Content != null) {
+        Caption = Content.Name + " (" + Content.GetType().Name + ")";
         TreeNode root = new TreeNode();
-        FillTreeNode(root, Operator);
+        FillTreeNode(root, Content);
         graphTreeView.Nodes.Add(root);
         graphTreeView.Enabled = true;
       }

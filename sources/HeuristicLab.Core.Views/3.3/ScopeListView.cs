@@ -29,7 +29,7 @@ namespace HeuristicLab.Core.Views {
     /// <param name="scope">The scope whose variables should be represented visually.</param>
     public ScopeListView(IObservableList<IScope> scopeList)
       : this() {
-      ItemList = scopeList;
+      Content = scopeList;
     }
   }
 }

@@ -32,9 +32,9 @@ using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Core.Views {
   public partial class NamedItemCollectionView<T> : ItemCollectionView<T> where T : class, INamedItem {
-    public IObservableKeyedCollection<string, T> NamedItemCollection {
-      get { return (IObservableKeyedCollection<string, T>)Object; }
-      set { base.Object = value; }
+    public new IObservableKeyedCollection<string, T> Content {
+      get { return (IObservableKeyedCollection<string, T>)base.Content; }
+      set { base.Content = value; }
     }
 
     private Dictionary<T, ListViewItem> listViewItemDictionary;
@@ -48,13 +48,13 @@ namespace HeuristicLab.Core.Views {
       Caption = "Named Item Collection";
     }
 
-    protected override void DeregisterObjectEvents() {
-      NamedItemCollection.ItemsReplaced -= new CollectionItemsChangedEventHandler<T>(NamedItemCollection_ItemsReplaced);
-      base.DeregisterObjectEvents();
+    protected override void DeregisterContentEvents() {
+      Content.ItemsReplaced -= new CollectionItemsChangedEventHandler<T>(Content_ItemsReplaced);
+      base.DeregisterContentEvents();
     }
-    protected override void RegisterObjectEvents() {
-      base.RegisterObjectEvents();
-      NamedItemCollection.ItemsReplaced += new CollectionItemsChangedEventHandler<T>(NamedItemCollection_ItemsReplaced);
+    protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
+      Content.ItemsReplaced += new CollectionItemsChangedEventHandler<T>(Content_ItemsReplaced);
     }
 
     protected override T CreateItem() {
@@ -81,16 +81,16 @@ namespace HeuristicLab.Core.Views {
       base.itemsListView_DragEnterOver(sender, e);
       if (e.Effect != DragDropEffects.None) {
         T item = e.Data.GetData("Value") as T;
-        if ((item == null) || (NamedItemCollection.ContainsKey(item.Name)))
+        if ((item == null) || (Content.ContainsKey(item.Name)))
           e.Effect = DragDropEffects.None;
       }
     }
     #endregion
 
-    #region NamedItemCollection Events
-    protected virtual void NamedItemCollection_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<T> e) {
+    #region Content Events
+    protected virtual void Content_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<T> e) {
       if (InvokeRequired)
-        Invoke(new CollectionItemsChangedEventHandler<T>(NamedItemCollection_ItemsReplaced), sender, e);
+        Invoke(new CollectionItemsChangedEventHandler<T>(Content_ItemsReplaced), sender, e);
       else {
         foreach (T item in e.Items) {
           foreach (ListViewItem listViewItem in GetListViewItemsForItem(item))
@@ -102,7 +102,7 @@ namespace HeuristicLab.Core.Views {
 
     #region Helpers
     protected virtual string GetUniqueName(string originalName) {
-      if (!NamedItemCollection.ContainsKey(originalName))
+      if (!Content.ContainsKey(originalName))
         return originalName;
       else {
         string name = null;
@@ -110,7 +110,7 @@ namespace HeuristicLab.Core.Views {
         do {
           index++;
           name = originalName + index.ToString();
-        } while (NamedItemCollection.ContainsKey(name));
+        } while (Content.ContainsKey(name));
         return name;
       }
     }

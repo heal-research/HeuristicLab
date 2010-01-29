@@ -34,9 +34,9 @@ namespace HeuristicLab.Core.Views {
   /// </summary>
   [Content(typeof(NamedItem), true)]
   public partial class NamedItemView : ItemView {
-    public NamedItem NamedItem {
-      get { return (NamedItem)Item; }
-      set { base.Item = value; }
+    public new NamedItem Content {
+      get { return (NamedItem)base.Content; }
+      set { base.Content = value; }
     }
 
     public NamedItemView() {
@@ -47,23 +47,23 @@ namespace HeuristicLab.Core.Views {
     }
     public NamedItemView(NamedItem namedItem)
       : this() {
-      NamedItem = namedItem;
+      Content = namedItem;
     }
 
-    protected override void DeregisterObjectEvents() {
-      NamedItem.NameChanged -= new EventHandler(NamedItem_NameChanged);
-      NamedItem.DescriptionChanged -= new EventHandler(NamedItem_DescriptionChanged);
-      base.DeregisterObjectEvents();
+    protected override void DeregisterContentEvents() {
+      Content.NameChanged -= new EventHandler(Content_NameChanged);
+      Content.DescriptionChanged -= new EventHandler(Content_DescriptionChanged);
+      base.DeregisterContentEvents();
     }
-    protected override void RegisterObjectEvents() {
-      base.RegisterObjectEvents();
-      NamedItem.NameChanged += new EventHandler(NamedItem_NameChanged);
-      NamedItem.DescriptionChanged += new EventHandler(NamedItem_DescriptionChanged);
+    protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
+      Content.NameChanged += new EventHandler(Content_NameChanged);
+      Content.DescriptionChanged += new EventHandler(Content_DescriptionChanged);
     }
 
-    protected override void OnObjectChanged() {
-      base.OnObjectChanged();
-      if (NamedItem == null) {
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      if (Content == null) {
         Caption = "NamedItem";
         nameTextBox.Text = "-";
         nameTextBox.ReadOnly = false;
@@ -72,35 +72,35 @@ namespace HeuristicLab.Core.Views {
         nameTextBox.ReadOnly = false;
         descriptionTextBox.Enabled = false;
       } else {
-        Caption = NamedItem.Name + " (" + NamedItem.GetType().Name + ")";
-        nameTextBox.Text = NamedItem.Name;
-        nameTextBox.ReadOnly = !NamedItem.CanChangeName;
+        Caption = Content.Name + " (" + Content.GetType().Name + ")";
+        nameTextBox.Text = Content.Name;
+        nameTextBox.ReadOnly = !Content.CanChangeName;
         nameTextBox.Enabled = true;
-        descriptionTextBox.Text = NamedItem.Description;
-        descriptionTextBox.ReadOnly = !NamedItem.CanChangeDescription;
+        descriptionTextBox.Text = Content.Description;
+        descriptionTextBox.ReadOnly = !Content.CanChangeDescription;
         descriptionTextBox.Enabled = true;
       }
     }
 
-    protected virtual void NamedItem_NameChanged(object sender, EventArgs e) {
+    protected virtual void Content_NameChanged(object sender, EventArgs e) {
       if (InvokeRequired)
-        Invoke(new EventHandler(NamedItem_NameChanged), sender, e);
+        Invoke(new EventHandler(Content_NameChanged), sender, e);
       else
-        nameTextBox.Text = NamedItem.Name;
+        nameTextBox.Text = Content.Name;
     }
-    protected virtual void NamedItem_DescriptionChanged(object sender, EventArgs e) {
+    protected virtual void Content_DescriptionChanged(object sender, EventArgs e) {
       if (InvokeRequired)
-        Invoke(new EventHandler(NamedItem_DescriptionChanged), sender, e);
+        Invoke(new EventHandler(Content_DescriptionChanged), sender, e);
       else
-        descriptionTextBox.Text = NamedItem.Description;
+        descriptionTextBox.Text = Content.Description;
     }
 
     protected virtual void nameTextBox_Validating(object sender, CancelEventArgs e) {
-      if (NamedItem.CanChangeName) {
-        NamedItem.Name = nameTextBox.Text;
+      if (Content.CanChangeName) {
+        Content.Name = nameTextBox.Text;
 
         // check if variable name was set successfully
-        if (!NamedItem.Name.Equals(nameTextBox.Text)) {
+        if (!Content.Name.Equals(nameTextBox.Text)) {
           e.Cancel = true;
           errorProvider.SetError(nameTextBox, "Invalid Name");
           nameTextBox.SelectAll();
@@ -114,13 +114,13 @@ namespace HeuristicLab.Core.Views {
       if ((e.KeyCode == Keys.Enter) || (e.KeyCode == Keys.Return))
         nameLabel.Focus();  // set focus on label to validate data
       if (e.KeyCode == Keys.Escape) {
-        nameTextBox.Text = NamedItem.Name;
+        nameTextBox.Text = Content.Name;
         nameLabel.Focus();  // set focus on label to validate data
       }
     }
     protected virtual void descriptionTextBox_Validated(object sender, EventArgs e) {
-      if (NamedItem.CanChangeDescription)
-        NamedItem.Description = descriptionTextBox.Text;
+      if (Content.CanChangeDescription)
+        Content.Description = descriptionTextBox.Text;
     }
   }
 }

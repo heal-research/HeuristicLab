@@ -81,11 +81,8 @@ namespace HeuristicLab.Core.Views {
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.operatorsView.Caption = "Operator Set";
-      this.operatorsView.ItemCollection = null;
-      this.operatorsView.ItemSet = null;
       this.operatorsView.Location = new System.Drawing.Point(3, 3);
       this.operatorsView.Name = "operatorsView";
-      this.operatorsView.Object = null;
       this.operatorsView.Size = new System.Drawing.Size(602, 309);
       this.operatorsView.TabIndex = 0;
       this.operatorsView.Load += new System.EventHandler(this.operatorsView_Load);
@@ -96,11 +93,8 @@ namespace HeuristicLab.Core.Views {
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.graphView.Caption = "Operator";
-      this.graphView.Item = null;
       this.graphView.Location = new System.Drawing.Point(6, 19);
       this.graphView.Name = "graphView";
-      this.graphView.Object = null;
-      this.graphView.Operator = null;
       this.graphView.Size = new System.Drawing.Size(590, 183);
       this.graphView.TabIndex = 0;
       // 

@@ -86,11 +86,8 @@ namespace HeuristicLab.Core.Views {
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.operatorGraphView.Caption = "Operator Graph";
-      this.operatorGraphView.Item = null;
       this.operatorGraphView.Location = new System.Drawing.Point(6, 6);
       this.operatorGraphView.Name = "operatorGraphView";
-      this.operatorGraphView.Object = null;
-      this.operatorGraphView.OperatorGraph = null;
       this.operatorGraphView.Size = new System.Drawing.Size(782, 573);
       this.operatorGraphView.TabIndex = 0;
       // 
@@ -100,11 +97,8 @@ namespace HeuristicLab.Core.Views {
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.scopeView.Caption = "Scope";
-      this.scopeView.Item = null;
       this.scopeView.Location = new System.Drawing.Point(6, 6);
       this.scopeView.Name = "scopeView";
-      this.scopeView.Object = null;
-      this.scopeView.Scope = null;
       this.scopeView.Size = new System.Drawing.Size(782, 573);
       this.scopeView.TabIndex = 0;
       // 

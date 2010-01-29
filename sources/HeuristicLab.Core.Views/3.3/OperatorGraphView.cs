@@ -42,9 +42,9 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
     /// No own data storage present.</remarks>
-    public OperatorGraph OperatorGraph {
-      get { return (OperatorGraph)Item; }
-      set { base.Item = value; }
+    public new OperatorGraph Content {
+      get { return (OperatorGraph)base.Content; }
+      set { base.Content = value; }
     }
 
     /// <summary>
@@ -62,56 +62,56 @@ namespace HeuristicLab.Core.Views {
     /// <param name="operatorGraph">The operator graph to represent visually.</param>
     public OperatorGraphView(OperatorGraph operatorGraph)
       : this() {
-      OperatorGraph = operatorGraph;
+      Content = operatorGraph;
     }
 
     /// <summary>
     /// Removes the eventhandlers from the underlying <see cref="IOperatorGraph"/>.
     /// </summary>
     /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
-    protected override void DeregisterObjectEvents() {
-      OperatorGraph.InitialOperatorChanged -= new EventHandler(OperatorGraph_InitialOperatorChanged);
-      base.DeregisterObjectEvents();
+    protected override void DeregisterContentEvents() {
+      Content.InitialOperatorChanged -= new EventHandler(Content_InitialOperatorChanged);
+      base.DeregisterContentEvents();
     }
 
     /// <summary>
     /// Adds eventhandlers to the underlying <see cref="IOperatorGraph"/>.
     /// </summary>
     /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
-    protected override void RegisterObjectEvents() {
-      base.RegisterObjectEvents();
-      OperatorGraph.InitialOperatorChanged += new EventHandler(OperatorGraph_InitialOperatorChanged);
+    protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
+      Content.InitialOperatorChanged += new EventHandler(Content_InitialOperatorChanged);
     }
 
     /// <summary>
     /// Updates all controls with the latest data of the model.
     /// </summary>
     /// <remarks>Calls <see cref="ViewBase.UpdateControls"/> of base class <see cref="ViewBase"/>.</remarks>
-    protected override void OnObjectChanged() {
-      base.OnObjectChanged();
-      operatorsView.ItemSet = null;
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      operatorsView.Content = null;
       operatorsView.Enabled = false;
-      graphView.Operator = null;
+      graphView.Content = null;
       graphView.Enabled = false;
-      if (OperatorGraph == null) {
+      if (Content == null) {
         Caption = "Operator Graph";
-        operatorsView.ItemSet = null;
+        operatorsView.Content = null;
         operatorsView.Enabled = false;
-        graphView.Operator = null;
+        graphView.Content = null;
         graphView.Enabled = false;
       } else {
-        Caption = OperatorGraph.ItemName + " (" + OperatorGraph.GetType().Name + ")";
-        operatorsView.ItemSet = OperatorGraph.Operators;
+        Caption = Content.ItemName + " (" + Content.GetType().Name + ")";
+        operatorsView.Content = Content.Operators;
         operatorsView.Enabled = true;
         MarkInitialOperator();
-        graphView.Operator = OperatorGraph.InitialOperator;
+        graphView.Content = Content.InitialOperator;
         graphView.Enabled = true;
       }
     }
 
     protected virtual void MarkInitialOperator() {
       foreach (ListViewItem item in operatorsView.ItemsListView.Items) {
-        if ((OperatorGraph.InitialOperator != null) && (((IOperator)item.Tag) == OperatorGraph.InitialOperator))
+        if ((Content.InitialOperator != null) && (((IOperator)item.Tag) == Content.InitialOperator))
           item.Font = new Font(operatorsView.ItemsListView.Font, FontStyle.Bold);
         else
           item.Font = operatorsView.ItemsListView.Font;
@@ -129,25 +129,25 @@ namespace HeuristicLab.Core.Views {
         IOperator op = (IOperator)operatorsView.ItemsListView.SelectedItems[0].Tag;
         initialOperatorToolStripMenuItem.Enabled = true;
         initialOperatorToolStripMenuItem.Tag = op;
-        if (op == OperatorGraph.InitialOperator)
+        if (op == Content.InitialOperator)
           initialOperatorToolStripMenuItem.Checked = true;
       }
     }
     protected virtual void initialOperatorToolStripMenuItem_Click(object sender, EventArgs e) {
       if (initialOperatorToolStripMenuItem.Checked)
-        OperatorGraph.InitialOperator = (IOperator)initialOperatorToolStripMenuItem.Tag;
+        Content.InitialOperator = (IOperator)initialOperatorToolStripMenuItem.Tag;
       else
-        OperatorGraph.InitialOperator = null;
+        Content.InitialOperator = null;
     }
     #endregion
 
-    #region OperatorGraph Events
-    protected virtual void OperatorGraph_InitialOperatorChanged(object sender, EventArgs e) {
+    #region Content Events
+    protected virtual void Content_InitialOperatorChanged(object sender, EventArgs e) {
       if (InvokeRequired)
-        Invoke(new EventHandler(OperatorGraph_InitialOperatorChanged), sender, e);
+        Invoke(new EventHandler(Content_InitialOperatorChanged), sender, e);
       else {
         MarkInitialOperator();
-        graphView.Operator = OperatorGraph.InitialOperator;
+        graphView.Content = Content.InitialOperator;
       }
     }
     #endregion

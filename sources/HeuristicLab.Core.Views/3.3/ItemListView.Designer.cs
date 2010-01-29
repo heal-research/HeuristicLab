@@ -191,7 +191,7 @@ namespace HeuristicLab.Core.Views {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.viewHost.Location = new System.Drawing.Point(6, 19);
       this.viewHost.Name = "viewHost";
-      this.viewHost.Object = null;
+      this.viewHost.Content = null;
       this.viewHost.Size = new System.Drawing.Size(271, 269);
       this.viewHost.TabIndex = 0;
       // 

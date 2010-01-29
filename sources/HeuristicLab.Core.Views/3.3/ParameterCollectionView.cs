@@ -30,7 +30,7 @@ namespace HeuristicLab.Core.Views {
     /// <param name="scope">The scope whose variables should be represented visually.</param>
     public ParameterCollectionView(IObservableKeyedCollection<string, IParameter> parameterCollection)
       : this() {
-      NamedItemCollection = parameterCollection;
+      Content = parameterCollection;
     }
 
     protected override IParameter CreateItem() {
@@ -38,7 +38,7 @@ namespace HeuristicLab.Core.Views {
 
       if (createParameterDialog.ShowDialog(this) == DialogResult.OK) {
         IParameter param = createParameterDialog.Parameter;
-        if (NamedItemCollection.ContainsKey(param.Name))
+        if (Content.ContainsKey(param.Name))
           param = (IParameter)Activator.CreateInstance(param.GetType(), GetUniqueName(param.Name), param.Description);
         return param;
       } else

@@ -21,9 +21,6 @@ namespace HeuristicLab.Optimizer.MenuItems {
     public override int Position {
       get { return 1300; }
     }
-    public override ToolStripItemDisplayStyle ToolStripItemDisplayStyle {
-      get { return ToolStripItemDisplayStyle.ImageAndText; }
-    }
     public override Image Image {
       get { return Resources.SaveIcon; }
     }
@@ -35,8 +32,8 @@ namespace HeuristicLab.Optimizer.MenuItems {
       ToolStripItem.Enabled = false;
     }
     protected override void OnActiveViewChanged(object sender, EventArgs e) {
-      IObjectView activeView = MainFormManager.MainForm.ActiveView as IObjectView;
-      ToolStripItem.Enabled = ((activeView != null) && (CreatableAttribute.IsCreatable(activeView.Object.GetType())));
+      IContentView activeView = MainFormManager.MainForm.ActiveView as IContentView;
+      ToolStripItem.Enabled = ((activeView != null) && (CreatableAttribute.IsCreatable(activeView.Content.GetType())));
     }
 
     public override void Execute() {

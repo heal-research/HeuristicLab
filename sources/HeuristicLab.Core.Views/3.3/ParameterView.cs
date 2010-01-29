@@ -39,9 +39,9 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
     /// No own data storage present.</remarks>
-    public Parameter Parameter {
-      get { return (Parameter)Item; }
-      set { base.Item = value; }
+    public new Parameter Content {
+      get { return (Parameter)base.Content; }
+      set { base.Content = value; }
     }
 
     /// <summary>
@@ -58,18 +58,18 @@ namespace HeuristicLab.Core.Views {
     /// <param name="variable">The variable to represent visually.</param>
     public ParameterView(Parameter parameter)
       : this() {
-      Parameter = parameter;
+      Content = parameter;
     }
 
-    protected override void OnObjectChanged() {
-      base.OnObjectChanged();
-      if (Parameter == null) {
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      if (Content == null) {
         Caption = "Parameter";
         dataTypeTextBox.Text = "-";
         dataTypeTextBox.Enabled = false;
       } else {
-        Caption = Parameter.Name + " (" + Parameter.GetType().Name + ")";
-        dataTypeTextBox.Text = Parameter.DataType.Name;
+        Caption = Content.Name + " (" + Content.GetType().Name + ")";
+        dataTypeTextBox.Text = Content.DataType.Name;
         dataTypeTextBox.Enabled = true;
       }
     }

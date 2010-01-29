@@ -19,15 +19,12 @@ namespace HeuristicLab.Optimizer.MenuItems {
     public override int Position {
       get { return 1700; }
     }
-    public override ToolStripItemDisplayStyle ToolStripItemDisplayStyle {
-      get { return ToolStripItemDisplayStyle.Text; }
-    }
 
     protected override void OnToolStripItemSet(EventArgs e) {
       ToolStripItem.Enabled = false;
     }
     protected override void OnActiveViewChanged(object sender, EventArgs e) {
-      ToolStripItem.Enabled = MainFormManager.MainForm.Views.FirstOrDefault() != null;
+      ToolStripItem.Enabled = MainFormManager.MainForm.Views.Any<IView>(v => v.IsShown);
     }
 
     public override void Execute() {

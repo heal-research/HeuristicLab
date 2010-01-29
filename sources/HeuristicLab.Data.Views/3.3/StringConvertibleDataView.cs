@@ -29,13 +29,14 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Data.Views {
   [Content(typeof(IStringConvertibleData), true)]
-  public partial class StringConvertibleDataView : ObjectView {
-    public IStringConvertibleData StringConvertibleData {
-      get { return (IStringConvertibleData)Object; }
-      set { base.Object = value; }
+  public partial class StringConvertibleDataView : ContentView {
+    public new IStringConvertibleData Content {
+      get { return (IStringConvertibleData)base.Content; }
+      set { base.Content = value; }
     }
 
     public StringConvertibleDataView() {
@@ -46,57 +47,57 @@ namespace HeuristicLab.Data.Views {
     }
     public StringConvertibleDataView(IStringConvertibleData stringConvertibleData)
       : this() {
-      StringConvertibleData = stringConvertibleData;
+      Content = stringConvertibleData;
     }
 
-    protected override void DeregisterObjectEvents() {
-      StringConvertibleData.Changed -= new ChangedEventHandler(StringConvertibleData_Changed);
-      base.DeregisterObjectEvents();
+    protected override void DeregisterContentEvents() {
+      Content.Changed -= new ChangedEventHandler(Content_Changed);
+      base.DeregisterContentEvents();
     }
 
-    protected override void RegisterObjectEvents() {
-      base.RegisterObjectEvents();
-      StringConvertibleData.Changed += new ChangedEventHandler(StringConvertibleData_Changed);
+    protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
+      Content.Changed += new ChangedEventHandler(Content_Changed);
     }
 
-    protected override void OnObjectChanged() {
-      base.OnObjectChanged();
-      if (StringConvertibleData == null) {
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      if (Content == null) {
         Caption = "StringConvertibleData View";
         valueTextBox.Text = string.Empty;
         valueTextBox.Enabled = false;
       } else {
-        Caption = StringConvertibleData.GetValue() + " (" + StringConvertibleData.GetType().Name + ")";
-        valueTextBox.Text = StringConvertibleData.GetValue();
+        Caption = Content.GetValue() + " (" + Content.GetType().Name + ")";
+        valueTextBox.Text = Content.GetValue();
         valueTextBox.Enabled = true;
       }
     }
 
-    private void StringConvertibleData_Changed(object sender, ChangedEventArgs e) {
+    private void Content_Changed(object sender, ChangedEventArgs e) {
       if (InvokeRequired)
-        Invoke(new ChangedEventHandler(StringConvertibleData_Changed), sender, e);
+        Invoke(new ChangedEventHandler(Content_Changed), sender, e);
       else
-        valueTextBox.Text = StringConvertibleData.GetValue();
+        valueTextBox.Text = Content.GetValue();
     }
 
     private void valueTextBox_KeyDown(object sender, KeyEventArgs e) {
       if ((e.KeyCode == Keys.Enter) || (e.KeyCode == Keys.Return))
         valueLabel.Focus();  // set focus on label to validate data
       if (e.KeyCode == Keys.Escape) {
-        valueTextBox.Text = StringConvertibleData.GetValue();
+        valueTextBox.Text = Content.GetValue();
         valueLabel.Focus();  // set focus on label to validate data
       }
     }
     private void valueTextBox_Validating(object sender, CancelEventArgs e) {
       string errorMessage;
-      if (!StringConvertibleData.Validate(valueTextBox.Text, out errorMessage)) {
+      if (!Content.Validate(valueTextBox.Text, out errorMessage)) {
         e.Cancel = true;
         errorProvider.SetError(valueTextBox, errorMessage);
         valueTextBox.SelectAll();
       }
     }
     private void valueTextBox_Validated(object sender, EventArgs e) {
-      StringConvertibleData.SetValue(valueTextBox.Text);
+      Content.SetValue(valueTextBox.Text);
       errorProvider.SetError(valueTextBox, string.Empty);
     }
   }

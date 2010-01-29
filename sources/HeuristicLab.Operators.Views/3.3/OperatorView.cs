@@ -36,9 +36,9 @@ namespace HeuristicLab.Operators.Views {
   /// </summary>
   [Content(typeof(Operator), true)]
   public partial class OperatorView : NamedItemView {
-    public Operator Operator {
-      get { return (Operator)base.Item; }
-      set { base.Item = value; }
+    public new Operator Content {
+      get { return (Operator)base.Content; }
+      set { base.Content = value; }
     }
 
     /// <summary>
@@ -53,15 +53,15 @@ namespace HeuristicLab.Operators.Views {
     /// <param name="item">The item that should be displayed.</param>
     public OperatorView(Operator op)
       : this() {
-      Operator = op;
+      Content = op;
     }
 
-    protected override void OnObjectChanged() {
-      base.OnObjectChanged();
-      if (Operator == null) {
-        parameterCollectionView.NamedItemCollection = null;
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      if (Content == null) {
+        parameterCollectionView.Content = null;
       } else {
-        parameterCollectionView.NamedItemCollection = ((IOperator)Operator).Parameters;
+        parameterCollectionView.Content = ((IOperator)Content).Parameters;
       }
     }
   }

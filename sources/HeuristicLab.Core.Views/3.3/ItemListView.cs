@@ -29,20 +29,21 @@ using System.Windows.Forms;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Core.Views {
   /// <summary>
   /// The visual representation of all variables in a specified scope.
   /// </summary>
-  public partial class ItemListView<T> : ObjectView where T : class, IItem {
+  public partial class ItemListView<T> : ContentView where T : class, IItem {
     /// <summary>
     /// Gets or sets the scope whose variables to represent visually.
     /// </summary>
     /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
     /// No won data storage present.</remarks>
-    public IObservableList<T> ItemList {
-      get { return (IObservableList<T>)Object; }
-      set { base.Object = value; }
+    public new IObservableList<T> Content {
+      get { return (IObservableList<T>)base.Content; }
+      set { base.Content = value; }
     }
 
     public ListView ItemsListView {
@@ -61,45 +62,45 @@ namespace HeuristicLab.Core.Views {
     /// Removes the eventhandlers from the underlying <see cref="IScope"/>.
     /// </summary>
     /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
-    protected override void DeregisterObjectEvents() {
-      ItemList.ItemsAdded -= new CollectionItemsChangedEventHandler<IndexedItem<T>>(ItemList_ItemsAdded);
-      ItemList.ItemsRemoved -= new CollectionItemsChangedEventHandler<IndexedItem<T>>(ItemList_ItemsRemoved);
-      ItemList.ItemsReplaced -= new CollectionItemsChangedEventHandler<IndexedItem<T>>(ItemList_ItemsReplaced);
-      ItemList.ItemsMoved -= new CollectionItemsChangedEventHandler<IndexedItem<T>>(ItemList_ItemsMoved);
-      ItemList.CollectionReset -= new CollectionItemsChangedEventHandler<IndexedItem<T>>(ItemList_CollectionReset);
-      base.DeregisterObjectEvents();
+    protected override void DeregisterContentEvents() {
+      Content.ItemsAdded -= new CollectionItemsChangedEventHandler<IndexedItem<T>>(Content_ItemsAdded);
+      Content.ItemsRemoved -= new CollectionItemsChangedEventHandler<IndexedItem<T>>(Content_ItemsRemoved);
+      Content.ItemsReplaced -= new CollectionItemsChangedEventHandler<IndexedItem<T>>(Content_ItemsReplaced);
+      Content.ItemsMoved -= new CollectionItemsChangedEventHandler<IndexedItem<T>>(Content_ItemsMoved);
+      Content.CollectionReset -= new CollectionItemsChangedEventHandler<IndexedItem<T>>(Content_CollectionReset);
+      base.DeregisterContentEvents();
     }
 
     /// <summary>
     /// Adds eventhandlers to the underlying <see cref="IScope"/>.
     /// </summary>
     /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
-    protected override void RegisterObjectEvents() {
-      base.RegisterObjectEvents();
-      ItemList.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<T>>(ItemList_ItemsAdded);
-      ItemList.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<T>>(ItemList_ItemsRemoved);
-      ItemList.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<T>>(ItemList_ItemsReplaced);
-      ItemList.ItemsMoved += new CollectionItemsChangedEventHandler<IndexedItem<T>>(ItemList_ItemsMoved);
-      ItemList.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<T>>(ItemList_CollectionReset);
+    protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
+      Content.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<T>>(Content_ItemsAdded);
+      Content.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<T>>(Content_ItemsRemoved);
+      Content.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<T>>(Content_ItemsReplaced);
+      Content.ItemsMoved += new CollectionItemsChangedEventHandler<IndexedItem<T>>(Content_ItemsMoved);
+      Content.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<T>>(Content_CollectionReset);
     }
 
-    protected override void OnObjectChanged() {
-      base.OnObjectChanged();
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
       Caption = "Item List";
       while (itemsListView.Items.Count > 0) RemoveListViewItem(itemsListView.Items[0]);
       itemsListView.Enabled = false;
       detailsGroupBox.Enabled = false;
-      viewHost.Object = null;
+      viewHost.Content = null;
       addButton.Enabled = false;
       moveUpButton.Enabled = false;
       moveDownButton.Enabled = false;
       removeButton.Enabled = false;
 
-      if (ItemList != null) {
-        Caption += " (" + ItemList.GetType().Name + ")";
+      if (Content != null) {
+        Caption += " (" + Content.GetType().Name + ")";
         itemsListView.Enabled = true;
-        addButton.Enabled = !ItemList.IsReadOnly;
-        foreach (T item in ItemList)
+        addButton.Enabled = !Content.IsReadOnly;
+        foreach (T item in Content)
           AddListViewItem(CreateListViewItem(item));
       }
     }
@@ -149,19 +150,19 @@ namespace HeuristicLab.Core.Views {
     protected virtual void itemsListView_SelectedIndexChanged(object sender, EventArgs e) {
       moveUpButton.Enabled = itemsListView.SelectedItems.Count == 1 &&
                              itemsListView.SelectedIndices[0] != 0 &&
-                             !ItemList.IsReadOnly;
+                             !Content.IsReadOnly;
       moveDownButton.Enabled = itemsListView.SelectedItems.Count == 1 &&
                                itemsListView.SelectedIndices[0] != itemsListView.Items.Count - 1 &&
-                               !ItemList.IsReadOnly;
+                               !Content.IsReadOnly;
       removeButton.Enabled = itemsListView.SelectedItems.Count > 0 &&
-                             !ItemList.IsReadOnly;
+                             !Content.IsReadOnly;
 
       if (itemsListView.SelectedItems.Count == 1) {
         T item = (T)itemsListView.SelectedItems[0].Tag;
-        viewHost.Object = item;
+        viewHost.Content = item;
         detailsGroupBox.Enabled = true;
       } else {
-        viewHost.Object = null;
+        viewHost.Content = null;
         detailsGroupBox.Enabled = false;
       }
     }
@@ -174,9 +175,9 @@ namespace HeuristicLab.Core.Views {
 
     protected virtual void itemsListView_KeyDown(object sender, KeyEventArgs e) {
       if (e.KeyCode == Keys.Delete) {
-        if ((itemsListView.SelectedItems.Count > 0) && !ItemList.IsReadOnly) {
+        if ((itemsListView.SelectedItems.Count > 0) && !Content.IsReadOnly) {
           foreach (ListViewItem item in itemsListView.SelectedItems)
-            ItemList.RemoveAt(item.Index);
+            Content.RemoveAt(item.Index);
         }
       }
     }
@@ -195,18 +196,18 @@ namespace HeuristicLab.Core.Views {
       DataObject data = new DataObject();
       data.SetData("Type", item.GetType());
       data.SetData("Value", item);
-      if (ItemList.IsReadOnly) {
+      if (Content.IsReadOnly) {
         DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
       } else {
         DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move);
         if ((result & DragDropEffects.Move) == DragDropEffects.Move)
-          ItemList.RemoveAt(listViewItem.Index);
+          Content.RemoveAt(listViewItem.Index);
       }
     }
     protected virtual void itemsListView_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
       Type type = e.Data.GetData("Type") as Type;
-      if ((!ItemList.IsReadOnly) && (type != null) && (typeof(T).IsAssignableFrom(type))) {
+      if ((!Content.IsReadOnly) && (type != null) && (typeof(T).IsAssignableFrom(type))) {
         if ((e.KeyState & 8) == 8) e.Effect = DragDropEffects.Copy;  // CTRL key
         else if ((e.KeyState & 4) == 4) e.Effect = DragDropEffects.Move;  // SHIFT key
         else if ((e.AllowedEffect & DragDropEffects.Link) == DragDropEffects.Link) e.Effect = DragDropEffects.Link;
@@ -221,8 +222,8 @@ namespace HeuristicLab.Core.Views {
 
         Point p = itemsListView.PointToClient(new Point(e.X, e.Y));
         ListViewItem listViewItem = itemsListView.GetItemAt(p.X, p.Y);
-        if (listViewItem != null) ItemList.Insert(listViewItem.Index, item);
-        else ItemList.Add(item);
+        if (listViewItem != null) Content.Insert(listViewItem.Index, item);
+        else Content.Add(item);
       }
     }
     #endregion
@@ -231,47 +232,47 @@ namespace HeuristicLab.Core.Views {
     protected virtual void addButton_Click(object sender, EventArgs e) {
       T item = CreateItem();
       if (item != null)
-        ItemList.Add(item);
+        Content.Add(item);
     }
     protected virtual void moveUpButton_Click(object sender, EventArgs e) {
       if (itemsListView.SelectedItems.Count == 1) {
         int index = itemsListView.SelectedIndices[0];
-        T item = ItemList[index - 1];
-        ItemList[index - 1] = ItemList[index];
+        T item = Content[index - 1];
+        Content[index - 1] = Content[index];
         itemsListView.Items[index].Selected = false;
         itemsListView.Items[index - 1].Selected = true;
-        ItemList[index] = item;
+        Content[index] = item;
       }
     }
     protected virtual void moveDownButton_Click(object sender, EventArgs e) {
       if (itemsListView.SelectedItems.Count == 1) {
         int index = itemsListView.SelectedIndices[0];
-        T item = ItemList[index + 1];
-        ItemList[index + 1] = ItemList[index];
+        T item = Content[index + 1];
+        Content[index + 1] = Content[index];
         itemsListView.Items[index].Selected = false;
         itemsListView.Items[index + 1].Selected = true;
-        ItemList[index] = item;
+        Content[index] = item;
       }
     }
     protected virtual void removeButton_Click(object sender, EventArgs e) {
       if (itemsListView.SelectedItems.Count > 0) {
         foreach (ListViewItem item in itemsListView.SelectedItems)
-          ItemList.RemoveAt(item.Index);
+          Content.RemoveAt(item.Index);
       }
     }
     #endregion
 
-    #region NamedItemCollection Events
-    protected virtual void ItemList_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
+    #region Content Events
+    protected virtual void Content_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
       if (InvokeRequired)
-        Invoke(new CollectionItemsChangedEventHandler<IndexedItem<T>>(ItemList_ItemsAdded), sender, e);
+        Invoke(new CollectionItemsChangedEventHandler<IndexedItem<T>>(Content_ItemsAdded), sender, e);
       else
         foreach (IndexedItem<T> item in e.Items)
           InsertListViewItem(item.Index, CreateListViewItem(item.Value));
     }
-    protected virtual void ItemList_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
+    protected virtual void Content_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
       if (InvokeRequired)
-        Invoke(new CollectionItemsChangedEventHandler<IndexedItem<T>>(ItemList_ItemsRemoved), sender, e);
+        Invoke(new CollectionItemsChangedEventHandler<IndexedItem<T>>(Content_ItemsRemoved), sender, e);
       else {
         List<ListViewItem> listViewItems = new List<ListViewItem>();
         foreach (IndexedItem<T> item in e.Items)
@@ -280,9 +281,9 @@ namespace HeuristicLab.Core.Views {
           RemoveListViewItem(listViewItem);
       }
     }
-    protected virtual void ItemList_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
+    protected virtual void Content_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
       if (InvokeRequired)
-        Invoke(new CollectionItemsChangedEventHandler<IndexedItem<T>>(ItemList_ItemsReplaced), sender, e);
+        Invoke(new CollectionItemsChangedEventHandler<IndexedItem<T>>(Content_ItemsReplaced), sender, e);
       else {
         int[] selected = new int[itemsListView.SelectedIndices.Count];
         itemsListView.SelectedIndices.CopyTo(selected, 0);
@@ -300,9 +301,9 @@ namespace HeuristicLab.Core.Views {
           itemsListView.Items[selected[i]].Selected = true;
       }
     }
-    protected virtual void ItemList_ItemsMoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
+    protected virtual void Content_ItemsMoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
       if (InvokeRequired)
-        Invoke(new CollectionItemsChangedEventHandler<IndexedItem<T>>(ItemList_ItemsMoved), sender, e);
+        Invoke(new CollectionItemsChangedEventHandler<IndexedItem<T>>(Content_ItemsMoved), sender, e);
       else {
         foreach (IndexedItem<T> item in e.Items) {
           ListViewItem listViewItem = itemsListView.Items[item.Index];
@@ -311,9 +312,9 @@ namespace HeuristicLab.Core.Views {
         }
       }
     }
-    protected virtual void ItemList_CollectionReset(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
+    protected virtual void Content_CollectionReset(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
       if (InvokeRequired)
-        Invoke(new CollectionItemsChangedEventHandler<IndexedItem<T>>(ItemList_CollectionReset), sender, e);
+        Invoke(new CollectionItemsChangedEventHandler<IndexedItem<T>>(Content_CollectionReset), sender, e);
       else {
         List<ListViewItem> listViewItems = new List<ListViewItem>();
         foreach (IndexedItem<T> item in e.OldItems)

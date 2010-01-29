@@ -82,12 +82,6 @@
     <Compile Include="NamedItemView.Designer.cs">
       <DependentUpon>NamedItemView.cs</DependentUpon>
     </Compile>
-    <Compile Include="ObjectView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ObjectView.Designer.cs">
-      <DependentUpon>ObjectView.cs</DependentUpon>
-    </Compile>
     <Compile Include="OperatorGraphView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -166,7 +160,6 @@
     <Compile Include="ItemListView.Designer.cs">
       <DependentUpon>ItemListView.cs</DependentUpon>
     </Compile>
-    <Compile Include="IObjectView.cs" />
     <Compile Include="ParameterView.cs">
       <SubType>UserControl</SubType>
     </Compile>

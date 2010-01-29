@@ -111,11 +111,8 @@ namespace HeuristicLab.Core.Views {
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.variableCollectionView.Caption = "VariableCollection";
-      this.variableCollectionView.ItemCollection = null;
       this.variableCollectionView.Location = new System.Drawing.Point(3, 3);
       this.variableCollectionView.Name = "variableCollectionView";
-      this.variableCollectionView.NamedItemCollection = null;
-      this.variableCollectionView.Object = null;
       this.variableCollectionView.Size = new System.Drawing.Size(394, 190);
       this.variableCollectionView.TabIndex = 0;
       // 

@@ -36,9 +36,9 @@ namespace HeuristicLab.Operators.Views {
   /// </summary>
   [Content(typeof(CombinedOperator), true)]
   public partial class CombinedOperatorView : NamedItemView {
-    public CombinedOperator CombinedOperator {
-      get { return (CombinedOperator)base.Item; }
-      set { base.Item = value; }
+    public new CombinedOperator Content {
+      get { return (CombinedOperator)base.Content; }
+      set { base.Content = value; }
     }
 
     /// <summary>
@@ -53,18 +53,18 @@ namespace HeuristicLab.Operators.Views {
     /// <param name="item">The item that should be displayed.</param>
     public CombinedOperatorView(CombinedOperator combinedOperator)
       : this() {
-      CombinedOperator = combinedOperator;
+      Content = combinedOperator;
     }
 
-    protected override void OnObjectChanged() {
-      base.OnObjectChanged();
-      if (CombinedOperator == null) {
-        parameterCollectionView.NamedItemCollection = null;
-        operatorGraphView.OperatorGraph = null;
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      if (Content == null) {
+        parameterCollectionView.Content = null;
+        operatorGraphView.Content = null;
         tabControl.Enabled = false;
       } else {
-        parameterCollectionView.NamedItemCollection = ((IOperator)CombinedOperator).Parameters;
-        operatorGraphView.OperatorGraph = CombinedOperator.OperatorGraph;
+        parameterCollectionView.Content = ((IOperator)Content).Parameters;
+        operatorGraphView.Content = Content.OperatorGraph;
         tabControl.Enabled = true;
       }
     }

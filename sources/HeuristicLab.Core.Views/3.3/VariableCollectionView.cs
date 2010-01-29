@@ -29,7 +29,7 @@ namespace HeuristicLab.Core.Views {
     /// <param name="scope">The scope whose variables should be represented visually.</param>
     public VariableCollectionView(IObservableKeyedCollection<string, IVariable> variableCollection)
       : this() {
-      NamedItemCollection = variableCollection;
+      Content = variableCollection;
     }
 
     protected override IVariable CreateItem() {

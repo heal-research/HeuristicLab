@@ -29,8 +29,8 @@ namespace HeuristicLab.Optimizer {
       ToolStripItem.Enabled = false;
     }
     protected override void OnActiveViewChanged(object sender, EventArgs e) {
-      IObjectView activeView = MainFormManager.MainForm.ActiveView as IObjectView;
-      ToolStripItem.Enabled = ((activeView != null) && (CreatableAttribute.IsCreatable(activeView.Object.GetType())));
+      IContentView activeView = MainFormManager.MainForm.ActiveView as IContentView;
+      ToolStripItem.Enabled = ((activeView != null) && (CreatableAttribute.IsCreatable(activeView.Content.GetType())));
     }
 
     public override void Execute() {

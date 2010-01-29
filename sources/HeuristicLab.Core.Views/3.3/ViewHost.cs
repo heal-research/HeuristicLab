@@ -33,12 +33,12 @@ namespace HeuristicLab.Core.Views {
   public partial class ViewHost : UserControl {
     private Dictionary<Type, ToolStripMenuItem> typeMenuItemTable;
 
-    private object obj;
-    public object Object {
-      get { return obj; }
+    private object content;
+    public object Content {
+      get { return content; }
       set {
-        if (value != obj) {
-          obj = value;
+        if (value != content) {
+          content = value;
           Initialize();
         }
       }
@@ -62,8 +62,8 @@ namespace HeuristicLab.Core.Views {
       viewPanel.Enabled = false;
       viewPanel.Visible = false;
 
-      if (Object != null) {
-        var viewTypes = from t in MainFormManager.GetViewTypes(Object.GetType())
+      if (Content != null) {
+        var viewTypes = from t in MainFormManager.GetViewTypes(Content.GetType())
                         orderby t.Name ascending
                         select t;
         foreach (Type viewType in viewTypes) {
@@ -83,7 +83,7 @@ namespace HeuristicLab.Core.Views {
           messageLabel.Visible = false;
         }
 
-        Control view = (Control)MainFormManager.CreateDefaultView(Object);
+        Control view = (Control)MainFormManager.CreateDefaultView(Content);
         if (view != null) {
           viewPanel.Controls.Add(view);
           viewPanel.Tag = view;
@@ -97,7 +97,7 @@ namespace HeuristicLab.Core.Views {
     }
 
     private void viewsLabel_DoubleClick(object sender, EventArgs e) {
-      MainFormManager.CreateView(viewPanel.Tag.GetType(), Object).Show();
+      MainFormManager.CreateView(viewPanel.Tag.GetType(), Content).Show();
     }
     protected void contextMenuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e) {
       Type viewType = (Type)e.ClickedItem.Tag;
@@ -110,7 +110,7 @@ namespace HeuristicLab.Core.Views {
 
       if (viewPanel.Controls.Count > 0) viewPanel.Controls[0].Dispose();
       viewPanel.Controls.Clear();
-      Control view = (Control)MainFormManager.CreateView(viewType, Object);
+      Control view = (Control)MainFormManager.CreateView(viewType, Content);
       viewPanel.Controls.Add(view);
       viewPanel.Tag = view;
       view.Dock = DockStyle.Fill;
