@@ -84,6 +84,7 @@
   <ItemGroup>
     <Compile Include="BaseClasses\FunctionTreeBase.cs" />
     <Compile Include="BaseClasses\TreeEvaluatorBase.cs" />
+    <Compile Include="LinearScalingPredictorBuilder.cs" />
     <Compile Include="Evaluators\VariableFrequencyBasedImpactCalculator.cs" />
     <Compile Include="ScalingTreeEvaluator.cs" />
     <Compile Include="ScalingTreeEvaluatorInjector.cs" />

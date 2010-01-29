@@ -38,7 +38,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       op.Name = "FunctionLibraryInjector";
       SequentialProcessor seq = new SequentialProcessor();
       seq.AddSubOperator(new DefaultFunctionLibraryInjector());
-      seq.AddSubOperator(new HL3TreeEvaluatorInjector());
+      seq.AddSubOperator(new ScalingTreeEvaluatorInjector());
       op.OperatorGraph.AddOperator(seq);
       op.OperatorGraph.InitialOperator = seq;
       return op;
@@ -126,7 +126,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       seq.AddSubOperator(seqSubScopeProc);
       seqSubScopeProc.AddSubOperator(solutionProc);
 
-      HL3TreeEvaluatorInjector evaluatorInjector = new HL3TreeEvaluatorInjector();
+      ScalingTreeEvaluatorInjector evaluatorInjector = new ScalingTreeEvaluatorInjector();
       evaluatorInjector.AddVariable(new HeuristicLab.Core.Variable("PunishmentFactor", new DoubleData(1000.0)));
       evaluatorInjector.GetVariableInfo("TreeEvaluator").ActualName = "ModelAnalysisTreeEvaluator";
 
@@ -159,8 +159,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       // calculate and set variable impacts
       VariableNamesExtractor namesExtractor = new VariableNamesExtractor();
       namesExtractor.GetVariableInfo("VariableNames").ActualName = "InputVariableNames";
-      PredictorBuilder predictorBuilder = new PredictorBuilder();
-      predictorBuilder.GetVariableInfo("TreeEvaluator").ActualName = "ModelAnalysisTreeEvaluator";
+      LinearScalingPredictorBuilder predictorBuilder = new LinearScalingPredictorBuilder();
 
       solutionProc.AddSubOperator(namesExtractor);
       solutionProc.AddSubOperator(predictorBuilder);

@@ -50,34 +50,51 @@ namespace HeuristicLab.GP.StructureIdentification {
       PC = 0;
       this.sampleIndex = sampleIndex;
       double estimation = EvaluateBakedCode();
-      if (double.IsPositiveInfinity(estimation)) estimation = UpperEvaluationLimit;
-      else if (double.IsNegativeInfinity(estimation)) estimation = LowerEvaluationLimit;
-      else if (double.IsNaN(estimation)) estimation = UpperEvaluationLimit;
+      //if (double.IsPositiveInfinity(estimation)) estimation = UpperEvaluationLimit;
+      //else if (double.IsNegativeInfinity(estimation)) estimation = LowerEvaluationLimit;
+      //else if (double.IsNaN(estimation)) estimation = UpperEvaluationLimit;
       return estimation;
     }
 
     public override IEnumerable<double> Evaluate(Dataset dataset, IFunctionTree tree, IEnumerable<int> rows) {
-      double[] result = base.Evaluate(dataset, tree, rows).ToArray();
       int targetVariableIndex = dataset.GetVariableIndex(targetVariable);
-      double tMean = dataset.GetMean(targetVariableIndex);
-      double xMean = Statistics.Mean(result);
-      double sumXT = 0;
-      double sumXX = 0;
-      for (int i = 0; i < result.Length; i++) {
-        double x = result[i];
-        double t = dataset.GetValue(rows.ElementAt(i), targetVariableIndex);
-        sumXT += (x - xMean) * (t - tMean);
-        sumXX += (x - xMean) * (x - xMean);
+      // evaluate for all rows
+      PrepareForEvaluation(dataset, tree);
+      var result = (from row in rows
+                    let y = Evaluate(row)
+                    let y_ = dataset.GetValue(row, targetVariableIndex)
+                    select new { Row = row, Estimation = y, Target = y_ }).ToArray();
+
+      // calculate alpha and beta on the subset of rows with valid values 
+      var filteredResult = result.Where(x => IsValidValue(x.Target) && IsValidValue(x.Estimation));
+      var target = filteredResult.Select(x => x.Target);
+      var estimation = filteredResult.Select(x => x.Estimation);
+      double a, b;
+      if (filteredResult.Count() > 2) {
+        double tMean = target.Sum() / target.Count();
+        double xMean = estimation.Sum() / estimation.Count();
+        double sumXT = 0;
+        double sumXX = 0;
+        foreach (var r in result) {
+          double x = r.Estimation;
+          double t = r.Target;
+          sumXT += (x - xMean) * (t - tMean);
+          sumXX += (x - xMean) * (x - xMean);
+        }
+        b = sumXT / sumXX;
+        a = tMean - b * xMean;
+      } else {
+        b = 1.0;
+        a = 0.0;
       }
-      double b = sumXT / sumXX;
-      double a = tMean - b * xMean;
-      for (int i = 0; i < result.Length; i++) {
-        double scaledResult = result[i] * b + a;
-        scaledResult = Math.Min(Math.Max(scaledResult, LowerEvaluationLimit), UpperEvaluationLimit);
-        if (double.IsNaN(scaledResult)) scaledResult = UpperEvaluationLimit;
-        result[i] = scaledResult;
-      }
-      return result;
+      // return scaled results
+      return from r in result
+             let scaledR = Math.Min(Math.Max(r.Estimation * b + a, LowerEvaluationLimit), UpperEvaluationLimit)
+             select double.IsNaN(scaledR) ? UpperEvaluationLimit : scaledR;
+    }
+
+    private bool IsValidValue(double d) {
+      return !double.IsInfinity(d) && !double.IsNaN(d);
     }
 
     public override object Clone(IDictionary<Guid, object> clonedObjects) {

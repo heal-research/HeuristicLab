@@ -51,11 +51,12 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
     public override IEnumerable<double> Predict(Dataset input, int start, int end) {
+      if (input == null) throw new ArgumentNullException();
+      if (start < 0 || end <= start) throw new ArgumentException("start must be larger than zero and strictly smaller than end");
+      if (end > input.Rows) throw new ArgumentOutOfRangeException("number of rows in input is smaller then end");
       treeEvaluator.UpperEvaluationLimit = UpperPredictionLimit;
       treeEvaluator.LowerEvaluationLimit = LowerPredictionLimit;
 
-      if (start < 0 || end <= start) throw new ArgumentException("start must be larger than zero and strictly smaller than end");
-      if (end > input.Rows) throw new ArgumentOutOfRangeException("number of rows in input is smaller then end");
       return treeEvaluator.Evaluate(input, functionTree.FunctionTree, Enumerable.Range(start, end - start));
     }
 
