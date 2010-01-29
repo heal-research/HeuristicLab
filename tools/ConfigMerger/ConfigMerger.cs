@@ -54,6 +54,11 @@ namespace HeuristicLab.Tools.ConfigMerger {
       Merge(sourceNode, destinationNode, destination, "/configuration/system.serviceModel");
       
       #region Merge 'system.serviceModel/bindings/*'
+      destinationNode = destination.SelectSingleNode("/configuration/system.serviceModel/bindings");
+      if (destinationNode == null) {
+        destinationNode = destination.CreateElement("bindings");
+        destination.SelectSingleNode("/configuration/system.serviceModel").AppendChild(destinationNode);
+      }
       sourceNode = source.SelectSingleNode("/configuration/system.serviceModel/bindings/basicHttpBinding");
       destinationNode = destination.SelectSingleNode("/configuration/system.serviceModel/bindings/basicHttpBinding");
       Merge(sourceNode, destinationNode, destination, "/configuration/system.serviceModel/bindings");
