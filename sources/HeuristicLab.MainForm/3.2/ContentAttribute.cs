@@ -59,5 +59,11 @@ namespace HeuristicLab.MainForm {
              where a.isDefaultView
              select a.type;
     }
+
+    internal static IEnumerable<Type> GetViewableTypes(Type viewType) {
+      ContentAttribute[] attributes = (ContentAttribute[])viewType.GetCustomAttributes(typeof(ContentAttribute), false);
+      return from a in attributes
+             select a.type;
+    }
   }
 }

@@ -31,16 +31,15 @@ namespace HeuristicLab.MainForm {
       if (other.IsAssignableFrom(type))
         return true;
 
-      if (type.IsGenericType && other.IsGenericType) {
-        if (recursiveCheckGenericTypes(type, other))
-          return true;
+      if (recursiveCheckGenericTypes(type, other))
+        return true;
 
-        IEnumerable<Type> implementedInterfaces = type.GetInterfaces().Where(t => t.IsGenericType);
-        foreach (Type implementedInterface in implementedInterfaces) {
-          if (implementedInterface.CheckGenericTypes(other))
-            return true;
-        }
+      IEnumerable<Type> implementedInterfaces = type.GetInterfaces().Where(t => t.IsGenericType);
+      foreach (Type implementedInterface in implementedInterfaces) {
+        if (implementedInterface.CheckGenericTypes(other))
+          return true;
       }
+
       return false;
     }
 
@@ -77,6 +76,11 @@ namespace HeuristicLab.MainForm {
           return false;
       }
       return true;
+    }
+
+    internal static Type[] ExtractGenericTypeArguments(this Type type, Type other) {
+      Type[] types = new Type[0];
+      return types;
     }
   }
 }

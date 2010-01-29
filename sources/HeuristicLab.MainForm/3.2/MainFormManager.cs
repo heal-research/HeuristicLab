@@ -75,9 +75,14 @@ namespace HeuristicLab.MainForm {
     }
 
     public static IEnumerable<Type> GetViewTypes(Type contentType) {
-      return from v in views
-             where ContentAttribute.CanViewType(v, contentType)
-             select v;
+      List<Type> viewTypes = (from v in views
+                              where ContentAttribute.CanViewType(v, contentType)
+                              select v).ToList();
+      //transform generic type definitions to generic types
+      for (int i = 0; i < viewTypes.Count; i++) {
+        viewTypes[i] = TransformGenericTypeDefinition(viewTypes[i], contentType);
+      }
+      return viewTypes;
     }
 
     public static bool ViewCanViewObject(IView view, object o) {
@@ -92,9 +97,9 @@ namespace HeuristicLab.MainForm {
       //check base classes for default view
       Type type = contentType;
       while (type != null) {
-        foreach (Type defaultViewType in defaultViews.Keys) {
-          if (type == defaultViewType || type.CheckGenericTypes(defaultViewType))
-            return defaultViews[defaultViewType];
+        foreach (Type defaultContentType in defaultViews.Keys) {
+          if (type == defaultContentType || type.CheckGenericTypes(defaultContentType))
+            return TransformGenericTypeDefinition(defaultViews[defaultContentType], contentType);
         }
         type = type.BaseType;
       }
@@ -104,7 +109,7 @@ namespace HeuristicLab.MainForm {
                          where t.IsInterface && contentType.IsAssignableTo(t)
                          select t).ToList();
       if (temp.Count == 1)
-        return defaultViews[temp[0]];
+        return TransformGenericTypeDefinition(defaultViews[temp[0]], contentType);
       //more than one default view for implemented interfaces are found
       if (temp.Count > 1)
         throw new Exception("Could not determine which is the default view for type " + contentType.ToString() + ". Because more than one implemented interfaces have a default view.");
@@ -116,11 +121,7 @@ namespace HeuristicLab.MainForm {
       if (t == null)
         return null;
 
-      Type viewType = TransformGenericTypeDefinition(t, objectToView);
-      if (viewType == null)
-        return null;
-
-      return (IView)Activator.CreateInstance(viewType, objectToView);
+      return (IView)Activator.CreateInstance(t, objectToView);
     }
 
     public static IView CreateView(Type viewType) {
@@ -135,30 +136,54 @@ namespace HeuristicLab.MainForm {
     public static IView CreateView(Type viewType, object objectToView) {
       if (!typeof(IView).IsAssignableFrom(viewType))
         throw new ArgumentException("View can not be created becaues given type " + viewType.ToString() + " is not of type IView.");
+      if (viewType.IsGenericTypeDefinition)
+        throw new ArgumentException("View can not be created becaues given type " + viewType.ToString() + " is a generic type definition.");
 
-      Type t = TransformGenericTypeDefinition(viewType, objectToView);
-      if (t == null)
-        return null;
-
-      return (IView)Activator.CreateInstance(t, objectToView);
+      return (IView)Activator.CreateInstance(viewType, objectToView);
     }
 
-    private static Type TransformGenericTypeDefinition(Type type, object objectToView) {
-      if (!type.IsGenericTypeDefinition)
-        return type;
+    private static Type TransformGenericTypeDefinition(Type viewType, Type contentType) {
+      if (contentType.IsGenericTypeDefinition)
+        throw new ArgumentException("The content type " + contentType.ToString() + " must not be a generic type definition.");
 
-      Type[] typeGenericArguments = type.GetGenericArguments();
-      Type[] objectGenericArguments = objectToView.GetType().GetGenericArguments();
+      if (!viewType.IsGenericTypeDefinition)
+        return viewType;
 
-      for (int i = 0; i < typeGenericArguments.Length; i++) {
-        foreach (Type typeConstraint in typeGenericArguments[i].GetGenericParameterConstraints()) {
-          if (!typeConstraint.IsAssignableFrom(objectGenericArguments[i]))
+      Type contentTypeBaseType = contentType;
+      foreach (Type type in ContentAttribute.GetViewableTypes(viewType)) {
+        while (contentTypeBaseType != null && (!contentTypeBaseType.IsGenericType ||
+              type.GetGenericTypeDefinition() != contentTypeBaseType.GetGenericTypeDefinition()))
+          contentTypeBaseType = contentTypeBaseType.BaseType;
+
+        //check interfaces for generic type arguments
+        if (contentTypeBaseType == null) {
+          IEnumerable<Type> implementedInterfaces = contentType.GetInterfaces().Where(t => t.IsGenericType);
+          foreach (Type implementedInterface in implementedInterfaces) {
+            if (implementedInterface.CheckGenericTypes(viewType))
+              contentTypeBaseType = implementedInterface;
+          }
+        }
+      }
+
+      if (!contentTypeBaseType.IsGenericType)
+        throw new ArgumentException("Neither content type itself nor any of its base classes is a generic type. Could not determine generic type argument for the view.");
+
+      Type[] viewTypeGenericArguments = viewType.GetGenericArguments();
+      Type[] contentTypeGenericArguments = contentTypeBaseType.GetGenericArguments();
+
+      if (contentTypeGenericArguments.Length != viewTypeGenericArguments.Length)
+        throw new ArgumentException("Neiter the type (" + contentType.ToString() + ") nor any of its base types specifies " +
+          viewTypeGenericArguments.Length + " generic type arguments.");
+
+      for (int i = 0; i < viewTypeGenericArguments.Length; i++) {
+        foreach (Type typeConstraint in viewTypeGenericArguments[i].GetGenericParameterConstraints()) {
+          if (!typeConstraint.IsAssignableFrom(contentTypeGenericArguments[i]))
             return null;
         }
       }
 
-      Type t = type.MakeGenericType(objectToView.GetType().GetGenericArguments());
-      return t;
+      Type returnType = viewType.MakeGenericType(contentTypeGenericArguments);
+      return returnType;
     }
   }
 }
