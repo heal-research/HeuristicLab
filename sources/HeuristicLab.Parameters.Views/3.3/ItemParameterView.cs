@@ -34,8 +34,8 @@ namespace HeuristicLab.Parameters.Views {
   /// <summary>
   /// The visual representation of a <see cref="Parameter"/>.
   /// </summary>
-  [Content(typeof(ItemParameter), true)]
-  public partial class ItemParameterView : ParameterView {
+  [Content(typeof(ItemParameter<>), true)]
+  public partial class ItemParameterView<T> : ParameterView where T : class, IItem {
     protected TypeSelectorDialog typeSelectorDialog;
 
     /// <summary>
@@ -43,8 +43,8 @@ namespace HeuristicLab.Parameters.Views {
     /// </summary>
     /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
     /// No own data storage present.</remarks>
-    public new ItemParameter Content {
-      get { return (ItemParameter)base.Content; }
+    public new ItemParameter<T> Content {
+      get { return (ItemParameter<T>)base.Content; }
       set { base.Content = value; }
     }
 
@@ -60,7 +60,7 @@ namespace HeuristicLab.Parameters.Views {
     /// </summary>
     /// <remarks>Calls <see cref="VariableView()"/>.</remarks>
     /// <param name="variable">The variable to represent visually.</param>
-    public ItemParameterView(ItemParameter parameter)
+    public ItemParameterView(ItemParameter<T> parameter)
       : this() {
       Content = parameter;
     }
@@ -133,7 +133,7 @@ namespace HeuristicLab.Parameters.Views {
       }
       typeSelectorDialog.TypeSelector.Configure(Content.DataType, false, false);
       if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK)
-        Content.Value = (IItem)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
+        Content.Value = (T)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
     }
     protected virtual void clearValueButton_Click(object sender, EventArgs e) {
       Content.Value = null;
@@ -151,8 +151,8 @@ namespace HeuristicLab.Parameters.Views {
     }
     protected virtual void valuePanel_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
-        IItem item = e.Data.GetData("Value") as IItem;
-        if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) item = (IItem)item.Clone();
+        T item = e.Data.GetData("Value") as T;
+        if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) item = (T)item.Clone();
         Content.Value = item;
       }
     }

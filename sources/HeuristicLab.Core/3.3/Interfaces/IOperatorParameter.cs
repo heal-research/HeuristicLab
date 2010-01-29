@@ -29,8 +29,6 @@ namespace HeuristicLab.Core {
     string ActualName { get; set; }
     IOperator Value { get; set; }
 
-    new IOperator GetValue(ExecutionContext context);
-
     event EventHandler ActualNameChanged;
     event EventHandler ValueChanged;
   }

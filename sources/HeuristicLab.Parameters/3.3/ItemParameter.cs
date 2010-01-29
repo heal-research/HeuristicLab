@@ -30,9 +30,8 @@ namespace HeuristicLab.Parameters {
   /// <summary>
   /// Represents a parameter.
   /// </summary>
-  [Item("ItemParameter", "A parameter which represents an IItem.")]
-  [Creatable("Test")]
-  public class ItemParameter : Parameter {
+  [Item("ItemParameter<T>", "A generic parameter which represents an instance of type T.")]
+  public class ItemParameter<T> : Parameter where T : class, IItem {
     [Storable]
     private string actualName;
     public string ActualName {
@@ -46,9 +45,9 @@ namespace HeuristicLab.Parameters {
       }
     }
 
-    private IItem value;
+    private T value;
     [Storable]
-    public IItem Value {
+    public T Value {
       get { return this.value; }
       set {
         if (value != this.value) {
@@ -62,28 +61,23 @@ namespace HeuristicLab.Parameters {
     }
 
     public ItemParameter()
-      : base("Anonymous", null, typeof(IItem)) {
+      : base("Anonymous", null, typeof(T)) {
       actualName = Name;
       Value = null;
     }
-    protected ItemParameter(string name, string description, Type dataType)
-      : base(name, description, dataType) {
-      this.actualName = Name;
-      this.Value = null;
-    }
     public ItemParameter(string name, string description)
-      : base(name, description, typeof(IItem)) {
+      : base(name, description, typeof(T)) {
       this.actualName = Name;
       this.Value = null;
     }
-    public ItemParameter(string name, string description, IItem value)
-      : base(name, description, typeof(IItem)) {
+    public ItemParameter(string name, string description, T value)
+      : base(name, description, typeof(T)) {
       this.actualName = Name;
       this.Value = value;
     }
 
     public override IItem GetValue(ExecutionContext context) {
-      ItemParameter param = this;
+      ItemParameter<T> param = this;
       ExecutionContext current = context;
       string actualName = null;
       while (param != null) {
@@ -93,7 +87,7 @@ namespace HeuristicLab.Parameters {
         while ((current != null) && !current.Operator.Parameters.ContainsKey(actualName))
           current = current.Parent;
         if (current != null)
-          param = (ItemParameter)current.Operator.Parameters[actualName];
+          param = (ItemParameter<T>)current.Operator.Parameters[actualName];
         else
           param = null;
       }
@@ -105,9 +99,9 @@ namespace HeuristicLab.Parameters {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      ItemParameter clone = (ItemParameter)base.Clone(cloner);
+      ItemParameter<T> clone = (ItemParameter<T>)base.Clone(cloner);
       clone.actualName = actualName;
-      clone.Value = (IItem)cloner.Clone(value);
+      clone.Value = (T)cloner.Clone(value);
       return clone;
     }
 
@@ -130,32 +124,6 @@ namespace HeuristicLab.Parameters {
 
     private void Value_Changed(object sender, ChangedEventArgs e) {
       OnChanged(e);
-    }
-  }
-
-  [Item("ItemParameter<T>", "A generic parameter which represents an instance of type T.")]
-  [EmptyStorableClass]
-  public class ItemParameter<T> : ItemParameter where T : class, IItem {
-    public new T Value {
-      get { return (T)base.Value; }
-      set { base.Value = value; }
-    }
-
-    public ItemParameter()
-      : base("Anonymous", null, typeof(T)) {
-      Value = null;
-    }
-    public ItemParameter(string name, string description)
-      : base(name, description, typeof(T)) {
-      this.Value = null;
-    }
-    public ItemParameter(string name, string description, T value)
-      : base(name, description, typeof(T)) {
-      this.Value = value;
-    }
-
-    public new T GetValue(ExecutionContext context) {
-      return (T)base.GetValue(context);
     }
   }
 }

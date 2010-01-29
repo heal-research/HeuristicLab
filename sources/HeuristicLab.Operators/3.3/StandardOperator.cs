@@ -45,7 +45,7 @@ namespace HeuristicLab.Operators {
     }
 
     public override ExecutionContextCollection Apply(ExecutionContext context) {
-      IOperator successor = Successor.GetValue(context);
+      IOperator successor = (IOperator)Successor.GetValue(context);
       if (successor != null)
         return new ExecutionContextCollection(new ExecutionContext(context.Parent, successor, context.Scope));
       else

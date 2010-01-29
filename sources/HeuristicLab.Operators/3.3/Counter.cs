@@ -49,8 +49,8 @@ namespace HeuristicLab.Operators {
     }
 
     public override ExecutionContextCollection Apply(ExecutionContext context) {
-      IntData value = Value.GetValue(context);
-      IntData increment = Increment.GetValue(context);
+      IntData value = (IntData)Value.GetValue(context);
+      IntData increment = (IntData)Increment.GetValue(context);
       value.Value += increment.Value;
       return base.Apply(context);
     }
