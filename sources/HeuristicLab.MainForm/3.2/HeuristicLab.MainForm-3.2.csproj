@@ -80,6 +80,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\IContentView.cs" />
     <Compile Include="Interfaces\IActionUserInterfaceItem.cs" />
     <Compile Include="Interfaces\IPositionableUserInterfaceItem.cs" />
     <Compile Include="PositionableUserInterfaceItem.cs" />

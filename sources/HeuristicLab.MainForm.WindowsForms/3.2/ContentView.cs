@@ -29,7 +29,7 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm.WindowsForms {
-  public partial class ContentView : View {
+  public partial class ContentView : View, IContentView {
     public ContentView()
       : base() {
       InitializeComponent();
@@ -50,12 +50,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
           Invoke(new Action<object>(delegate(object o) { this.Content = o; }), value);
         } else {
           if (this.content != value) {
-            if (this.content != null)
-              this.DeregisterObjectEvents();
+            if (this.content != null) this.DeregisterContentEvents();
             this.content = value;
-            this.OnContentChanged(new EventArgs());
-            if (this.content != null)
-              this.RegisterObjectEvents();
+            this.OnContentChanged();
+            if (this.content != null) this.RegisterContentEvents();
           }
         }
       }
@@ -64,20 +62,19 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// <summary>
     /// Adds eventhandlers to the current instance.
     /// </summary>
-    protected virtual void RegisterObjectEvents() {
+    protected virtual void RegisterContentEvents() {
     }
 
     /// <summary>
     /// Removes the eventhandlers from the current instance.
     /// </summary>
-    protected virtual void DeregisterObjectEvents() {
+    protected virtual void DeregisterContentEvents() {
     }
 
     /// <summary>
     /// Is called when the content property changes.
     /// </summary>
-    protected virtual void OnContentChanged(EventArgs e) {
+    protected virtual void OnContentChanged() {
     }
-
   }
 }
