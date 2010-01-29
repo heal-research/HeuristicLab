@@ -305,36 +305,35 @@ namespace HeuristicLab.CodeEditor {
       ShowMessage("Ready");
     }
 
+    private bool runParser = true;
     private void ParserThread() {
       BeginInvoke(new MethodInvoker(delegate { parserThreadLabel.Text = "Loading mscorlib..."; }));
       projectContent.AddReferencedContent(projectContentRegistry.Mscorlib);
       ParseStep();
       BeginInvoke(new MethodInvoker(delegate { parserThreadLabel.Text = "Ready"; }));
-      try {
-        while (!IsDisposed) {
-          ParseStep();
-          Thread.Sleep(2000);
-        }
-      } catch { }
+      while (runParser && !IsDisposed) {
+        ParseStep();
+        Thread.Sleep(2000);
+      }
     }
 
     private void ParseStep() {
-      string code = null;
-      Invoke(new MethodInvoker(delegate {
-        code = textEditor.Text;
-      }));
-      TextReader textReader = new StringReader(code);
-      Dom.ICompilationUnit newCompilationUnit;
-      NRefactory.SupportedLanguage supportedLanguage;
-      supportedLanguage = NRefactory.SupportedLanguage.CSharp;
-      using (NRefactory.IParser p = NRefactory.ParserFactory.CreateParser(supportedLanguage, textReader)) {
-        p.ParseMethodBodies = false;
-        p.Parse();
-        newCompilationUnit = ConvertCompilationUnit(p.CompilationUnit);
-      }
-      projectContent.UpdateCompilationUnit(lastCompilationUnit, newCompilationUnit, DummyFileName);
-      lastCompilationUnit = newCompilationUnit;
-      parseInformation.SetCompilationUnit(newCompilationUnit);
+      try {
+        string code = null;
+        Invoke(new MethodInvoker(delegate { code = textEditor.Text; }));
+        TextReader textReader = new StringReader(code);
+        Dom.ICompilationUnit newCompilationUnit;
+        NRefactory.SupportedLanguage supportedLanguage;
+        supportedLanguage = NRefactory.SupportedLanguage.CSharp;
+        using (NRefactory.IParser p = NRefactory.ParserFactory.CreateParser(supportedLanguage, textReader)) {
+          p.ParseMethodBodies = false;
+          p.Parse();
+          newCompilationUnit = ConvertCompilationUnit(p.CompilationUnit);
+        }
+        projectContent.UpdateCompilationUnit(lastCompilationUnit, newCompilationUnit, DummyFileName);
+        lastCompilationUnit = newCompilationUnit;
+        parseInformation.SetCompilationUnit(newCompilationUnit);
+      } catch { }
     }
 
     Dom.ICompilationUnit ConvertCompilationUnit(NRefactory.Ast.CompilationUnit cu) {

@@ -11,16 +11,13 @@ namespace HeuristicLab.CodeEditor {
     /// </summary>
     /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
     protected override void Dispose(bool disposing) {
-      if (InvokeRequired) {
-        Invoke(new Action(() => this.Dispose(disposing)));
-      } else {
-        if (disposing) {
-          if (components != null) {
-            components.Dispose();
-          }
+      runParser = false;
+      if (disposing) {
+        if (components != null) {
+          components.Dispose();
         }
-        base.Dispose(disposing);
       }
+      base.Dispose(disposing);
     }
 
     /// <summary>
