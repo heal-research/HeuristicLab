@@ -155,6 +155,7 @@ public class Operator {
     }
 
     private void Recompile() {
+      this.Enabled = false;
       try {
         ProgrammableOperator.Compile();
         MessageBox.Show("Compilation successful", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -163,6 +164,7 @@ public class Operator {
       }
       UpdateControls();
       codeEditor.ShowCompileErrors(ProgrammableOperator.CompileErrors, "ProgrammableOperator");
+      this.Enabled = true;
     }
 
     private void compileButton_Click(object sender, EventArgs e) {
@@ -202,6 +204,8 @@ public class Operator {
     private bool initializing = false;
     private void InitializeAssemblyList() {
       initializing = true;
+      assembliesTreeView.Enabled = false;
+      namespacesTreeView.Enabled = false;
       assembliesTreeView.BeginUpdate();
       assembliesTreeView.Nodes.Clear();
       var selectedAssemblies = new HashSet<Assembly>(ProgrammableOperator.SelectedAssemblies);
@@ -222,11 +226,15 @@ public class Operator {
         }
       }
       assembliesTreeView.EndUpdate();
+      assembliesTreeView.Enabled = true;
+      namespacesTreeView.Enabled = true;
       initializing = false;
     }
 
     private void InitializeNamespacesList() {
       initializing = true;
+      namespacesTreeView.Enabled = false;
+      namespacesTreeView.BeginUpdate();
       TreeNode oldTree = new TreeNode("root");
       CloneTreeNodeCollection(oldTree, namespacesTreeView.Nodes);
       namespacesTreeView.Nodes.Clear();
@@ -234,6 +242,8 @@ public class Operator {
       foreach (var ns in ProgrammableOperator.GetAllNamespaces(true))
         AddNamespace(namespacesTreeView.Nodes, ns, selectedNamespaces.Contains(ns), oldTree);
       codeEditor.Prefix = GetGeneratedPrefix();
+      namespacesTreeView.EndUpdate();
+      namespacesTreeView.Enabled = true;
       initializing = false;
     }
 
