@@ -11,7 +11,7 @@ using HeuristicLab.Collections;
 
 namespace HeuristicLab.Core.Views {
   [Content(typeof(ParameterCollection), true)]
-  [Content(typeof(IObservableKeyedCollection<string, IParameter>), true)]
+  [Content(typeof(IObservableKeyedCollection<string, IParameter>), false)]
   public partial class ParameterCollectionView : NamedItemCollectionView<IParameter> {
     protected CreateParameterDialog createParameterDialog;
     /// <summary>
@@ -28,9 +28,9 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     /// <remarks>Calls <see cref="VariablesScopeView()"/>.</remarks>
     /// <param name="scope">The scope whose variables should be represented visually.</param>
-    public ParameterCollectionView(IObservableKeyedCollection<string, IParameter> parameterCollection)
+    public ParameterCollectionView(IObservableKeyedCollection<string, IParameter> content)
       : this() {
-      Content = parameterCollection;
+      Content = content;
     }
 
     protected override IParameter CreateItem() {

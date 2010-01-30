@@ -35,6 +35,8 @@ namespace HeuristicLab.Core.Views {
   /// <summary>
   /// The visual representation of all variables in a specified scope.
   /// </summary>
+  [Content(typeof(ItemList<>), true)]
+  [Content(typeof(IObservableList<>), false)]
   public partial class ItemListView<T> : ContentView where T : class, IItem {
     /// <summary>
     /// Gets or sets the scope whose variables to represent visually.
@@ -56,6 +58,10 @@ namespace HeuristicLab.Core.Views {
     public ItemListView() {
       InitializeComponent();
       Caption = "Item List";
+    }
+    public ItemListView(IObservableList<T> content)
+      : this() {
+      Content = content;
     }
 
     /// <summary>

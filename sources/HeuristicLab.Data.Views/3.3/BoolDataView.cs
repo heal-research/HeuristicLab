@@ -42,9 +42,9 @@ namespace HeuristicLab.Data.Views {
       InitializeComponent();
       Caption = "BoolData View";
     }
-    public BoolDataView(BoolData boolData)
+    public BoolDataView(BoolData content)
       : this() {
-      Content = boolData;
+      Content = content;
     }
 
     protected override void DeregisterContentEvents() {

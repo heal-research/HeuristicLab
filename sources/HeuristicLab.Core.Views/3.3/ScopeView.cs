@@ -36,6 +36,7 @@ namespace HeuristicLab.Core.Views {
   /// The visual represenation of <see cref="Scope"/>.
   /// </summary>
   [Content(typeof(Scope), true)]
+  [Content(typeof(IScope), false)]
   public sealed partial class ScopeView : ItemView {
     private Dictionary<IScope, TreeNode> scopeNodeTable;
     private Dictionary<ScopeList, IScope> subScopesScopeTable;
@@ -66,9 +67,9 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     /// <remarks>Calls <see cref="ScopeView()"/>.</remarks>
     /// <param name="scope">The scope to represent visually.</param>
-    public ScopeView(IScope scope)
+    public ScopeView(IScope content)
       : this() {
-      Content = scope;
+      Content = content;
     }
 
     /// <summary>

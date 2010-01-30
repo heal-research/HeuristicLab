@@ -31,6 +31,8 @@ using HeuristicLab.Common;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Core.Views {
+  [Content(typeof(ItemSet<>), true)]
+  [Content(typeof(IObservableSet<>), false)]
   public partial class ItemSetView<T> : ItemCollectionView<T> where T : class, IItem {
     public new IObservableSet<T> Content {
       get { return (IObservableSet<T>)base.Content; }
@@ -46,6 +48,10 @@ namespace HeuristicLab.Core.Views {
       listViewItemDictionary = new Dictionary<T, ListViewItem>();
       InitializeComponent();
       Caption = "Item Set";
+    }
+    public ItemSetView(IObservableSet<T> content)
+      : this() {
+      Content = content;
     }
 
     protected override void OnContentChanged() {

@@ -26,6 +26,7 @@ using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
+using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
@@ -34,14 +35,15 @@ namespace HeuristicLab.Parameters.Views {
   /// The visual representation of a <see cref="Parameter"/>.
   /// </summary>
   [Content(typeof(Parameter), true)]
+  [Content(typeof(IParameter), false)]
   public partial class ParameterView : NamedItemView {
     /// <summary>
     /// Gets or sets the variable to represent visually.
     /// </summary>
     /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
     /// No own data storage present.</remarks>
-    public new Parameter Content {
-      get { return (Parameter)base.Content; }
+    public new IParameter Content {
+      get { return (IParameter)base.Content; }
       set { base.Content = value; }
     }
 
@@ -57,9 +59,9 @@ namespace HeuristicLab.Parameters.Views {
     /// </summary>
     /// <remarks>Calls <see cref="VariableView()"/>.</remarks>
     /// <param name="variable">The variable to represent visually.</param>
-    public ParameterView(Parameter parameter)
+    public ParameterView(IParameter content)
       : this() {
-      Content = parameter;
+      Content = content;
     }
 
     protected override void OnContentChanged() {

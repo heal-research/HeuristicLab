@@ -33,9 +33,10 @@ namespace HeuristicLab.Core.Views {
   /// The visual representation of a <see cref="Variable"/>.
   /// </summary>
   [Content(typeof(NamedItem), true)]
+  [Content(typeof(INamedItem), false)]
   public partial class NamedItemView : ItemView {
-    public new NamedItem Content {
-      get { return (NamedItem)base.Content; }
+    public new INamedItem Content {
+      get { return (INamedItem)base.Content; }
       set { base.Content = value; }
     }
 
@@ -45,9 +46,9 @@ namespace HeuristicLab.Core.Views {
       errorProvider.SetIconAlignment(nameTextBox, ErrorIconAlignment.MiddleLeft);
       errorProvider.SetIconPadding(nameTextBox, 2);
     }
-    public NamedItemView(NamedItem namedItem)
+    public NamedItemView(INamedItem content)
       : this() {
-      Content = namedItem;
+      Content = content;
     }
 
     protected override void DeregisterContentEvents() {

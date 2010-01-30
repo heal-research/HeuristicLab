@@ -11,7 +11,7 @@ using HeuristicLab.Collections;
 
 namespace HeuristicLab.Core.Views {
   [Content(typeof(ScopeList), true)]
-  [Content(typeof(IObservableList<IScope>), true)]
+  [Content(typeof(IObservableList<IScope>), false)]
   public partial class ScopeListView : ItemListView<IScope> {
     /// <summary>
     /// Initializes a new instance of <see cref="VariablesScopeView"/> with caption "Variables Scope View".
@@ -27,9 +27,9 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     /// <remarks>Calls <see cref="VariablesScopeView()"/>.</remarks>
     /// <param name="scope">The scope whose variables should be represented visually.</param>
-    public ScopeListView(IObservableList<IScope> scopeList)
+    public ScopeListView(IObservableList<IScope> content)
       : this() {
-      Content = scopeList;
+      Content = content;
     }
   }
 }

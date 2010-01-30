@@ -84,6 +84,8 @@ namespace HeuristicLab.Core.Views {
         }
 
         Control view = (Control)MainFormManager.CreateDefaultView(Content);
+        if ((view == null) && (contextMenuStrip.Items.Count > 0))  // create first available view if default view is not available
+          view = (Control)MainFormManager.CreateView((Type)contextMenuStrip.Items[0].Tag, Content);
         if (view != null) {
           viewPanel.Controls.Add(view);
           viewPanel.Tag = view;

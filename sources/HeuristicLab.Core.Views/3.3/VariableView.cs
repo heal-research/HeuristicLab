@@ -33,6 +33,7 @@ namespace HeuristicLab.Core.Views {
   /// The visual representation of a <see cref="Variable"/>.
   /// </summary>
   [Content(typeof(Variable), true)]
+  [Content(typeof(IVariable), false)]
   public partial class VariableView : NamedItemView {
     protected TypeSelectorDialog typeSelectorDialog;
 
@@ -41,8 +42,8 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
     /// No own data storage present.</remarks>
-    public new Variable Content {
-      get { return (Variable)base.Content; }
+    public new IVariable Content {
+      get { return (IVariable)base.Content; }
       set { base.Content = value; }
     }
 
@@ -58,9 +59,9 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     /// <remarks>Calls <see cref="VariableView()"/>.</remarks>
     /// <param name="variable">The variable to represent visually.</param>
-    public VariableView(Variable variable)
+    public VariableView(IVariable content)
       : this() {
-      Content = variable;
+      Content = content;
     }
 
     /// <summary>

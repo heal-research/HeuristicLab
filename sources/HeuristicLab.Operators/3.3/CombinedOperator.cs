@@ -64,7 +64,7 @@ namespace HeuristicLab.Operators {
     public override IDeepCloneable Clone(Cloner cloner) {
       CombinedOperator clone = (CombinedOperator)base.Clone(cloner);
       clone.operatorGraph = (OperatorGraph)cloner.Clone(operatorGraph);
-      return base.Clone(cloner);
+      return clone;
     }
 
     public override ExecutionContextCollection Apply(ExecutionContext context) {

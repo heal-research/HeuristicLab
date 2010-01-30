@@ -60,9 +60,9 @@ namespace HeuristicLab.Parameters.Views {
     /// </summary>
     /// <remarks>Calls <see cref="VariableView()"/>.</remarks>
     /// <param name="variable">The variable to represent visually.</param>
-    public ItemParameterView(ItemParameter<T> parameter)
+    public ItemParameterView(ItemParameter<T> content)
       : this() {
-      Content = parameter;
+      Content = content;
     }
 
     /// <summary>

@@ -35,6 +35,7 @@ namespace HeuristicLab.Core.Views {
   /// Base class for editors of engines.
   /// </summary>
   [Content(typeof(Engine), true)]
+  [Content(typeof(IEngine), false)]
   public partial class EngineView : ItemView {
     private int executionTimeCounter;
 
@@ -42,8 +43,8 @@ namespace HeuristicLab.Core.Views {
     /// Gets or sets the current engine.
     /// </summary>
     /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="EditorBase"/>.</remarks>
-    public new Engine Content {
-      get { return (Engine)base.Content; }
+    public new IEngine Content {
+      get { return (IEngine)base.Content; }
       set { base.Content = value; }
     }
 
@@ -53,9 +54,9 @@ namespace HeuristicLab.Core.Views {
     public EngineView() {
       InitializeComponent();
     }
-    public EngineView(Engine engine)
+    public EngineView(IEngine content)
       : this() {
-      Content = engine;
+      Content = content;
     }
 
     /// <summary>

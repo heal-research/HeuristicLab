@@ -32,6 +32,8 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Core.Views {
+  [Content(typeof(ItemCollection<>), true)]
+  [Content(typeof(IObservableCollection<>), false)]
   public partial class ItemCollectionView<T> : ContentView where T : class, IItem {
     public new IObservableCollection<T> Content {
       get { return (IObservableCollection<T>)base.Content; }
@@ -45,6 +47,10 @@ namespace HeuristicLab.Core.Views {
     public ItemCollectionView() {
       InitializeComponent();
       Caption = "Item Collection";
+    }
+    public ItemCollectionView(IObservableCollection<T> content)
+      : this() {
+      Content = content;
     }
 
     protected override void DeregisterContentEvents() {

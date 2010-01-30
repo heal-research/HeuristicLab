@@ -35,9 +35,10 @@ namespace HeuristicLab.Operators.Views {
   /// The base class for visual representations of items.
   /// </summary>
   [Content(typeof(Operator), true)]
+  [Content(typeof(IOperator), false)]
   public partial class OperatorView : NamedItemView {
-    public new Operator Content {
-      get { return (Operator)base.Content; }
+    public new IOperator Content {
+      get { return (IOperator)base.Content; }
       set { base.Content = value; }
     }
 
@@ -51,9 +52,9 @@ namespace HeuristicLab.Operators.Views {
     /// Intializes a new instance of <see cref="ItemBaseView"/> with the given <paramref name="item"/>.
     /// </summary>
     /// <param name="item">The item that should be displayed.</param>
-    public OperatorView(Operator op)
+    public OperatorView(IOperator content)
       : this() {
-      Content = op;
+      Content = content;
     }
 
     protected override void OnContentChanged() {

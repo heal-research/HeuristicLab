@@ -51,9 +51,9 @@ namespace HeuristicLab.Operators.Views {
     /// Intializes a new instance of <see cref="ItemBaseView"/> with the given <paramref name="item"/>.
     /// </summary>
     /// <param name="item">The item that should be displayed.</param>
-    public CombinedOperatorView(CombinedOperator combinedOperator)
+    public CombinedOperatorView(CombinedOperator content)
       : this() {
-      Content = combinedOperator;
+      Content = content;
     }
 
     protected override void OnContentChanged() {

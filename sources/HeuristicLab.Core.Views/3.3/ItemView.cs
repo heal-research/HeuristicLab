@@ -27,12 +27,15 @@ using System.Data;
 using System.Text;
 using System.Xml;
 using System.Windows.Forms;
+using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Core.Views {
   /// <summary>
   /// Base class for all visual representations.
   /// </summary>
+  [Content(typeof(Item), false)]
+  [Content(typeof(IItem), false)]
   public partial class ItemView : ContentView {
     public new IItem Content {
       get { return (IItem)base.Content; }
@@ -45,6 +48,10 @@ namespace HeuristicLab.Core.Views {
     public ItemView() {
       InitializeComponent();
       Caption = "View";
+    }
+    public ItemView(IItem content)
+      : this() {
+      Content = content;
     }
 
     protected override void OnContentChanged() {

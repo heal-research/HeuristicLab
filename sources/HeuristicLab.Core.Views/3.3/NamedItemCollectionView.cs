@@ -31,6 +31,7 @@ using HeuristicLab.Common;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Core.Views {
+  [Content(typeof(NamedItemCollection<>), true)]
   public partial class NamedItemCollectionView<T> : ItemCollectionView<T> where T : class, INamedItem {
     public new IObservableKeyedCollection<string, T> Content {
       get { return (IObservableKeyedCollection<string, T>)base.Content; }
@@ -46,6 +47,10 @@ namespace HeuristicLab.Core.Views {
       listViewItemDictionary = new Dictionary<T, ListViewItem>();
       InitializeComponent();
       Caption = "Named Item Collection";
+    }
+    public NamedItemCollectionView(IObservableKeyedCollection<string, T> content)
+      : this() {
+      Content = content;
     }
 
     protected override void DeregisterContentEvents() {

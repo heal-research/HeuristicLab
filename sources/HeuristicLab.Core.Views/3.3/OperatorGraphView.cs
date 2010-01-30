@@ -60,9 +60,9 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     /// <remarks>Calls <see cref="OperatorGraphView()"/>.</remarks>
     /// <param name="operatorGraph">The operator graph to represent visually.</param>
-    public OperatorGraphView(OperatorGraph operatorGraph)
+    public OperatorGraphView(OperatorGraph content)
       : this() {
-      Content = operatorGraph;
+      Content = content;
     }
 
     /// <summary>

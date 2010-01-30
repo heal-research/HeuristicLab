@@ -11,7 +11,7 @@ using HeuristicLab.Collections;
 
 namespace HeuristicLab.Core.Views {
   [Content(typeof(OperatorSet), true)]
-  [Content(typeof(IObservableSet<IOperator>), true)]
+  [Content(typeof(IObservableSet<IOperator>), false)]
   public partial class OperatorSetView : ItemSetView<IOperator> {
     protected TypeSelectorDialog typeSelectorDialog;
 
@@ -29,9 +29,9 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     /// <remarks>Calls <see cref="VariablesScopeView()"/>.</remarks>
     /// <param name="scope">The scope whose variables should be represented visually.</param>
-    public OperatorSetView(IObservableSet<IOperator> operatorSet)
+    public OperatorSetView(IObservableSet<IOperator> content)
       : this() {
-      Content = operatorSet;
+      Content = content;
     }
 
     protected override IOperator CreateItem() {

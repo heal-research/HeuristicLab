@@ -48,9 +48,9 @@ namespace HeuristicLab.Data.Views {
       errorProvider.SetIconAlignment(columnsTextBox, ErrorIconAlignment.MiddleLeft);
       errorProvider.SetIconPadding(columnsTextBox, 2);
     }
-    public StringConvertibleMatrixDataView(IStringConvertibleMatrixData stringConvertibleArrayData)
+    public StringConvertibleMatrixDataView(IStringConvertibleMatrixData content)
       : this() {
-      Content = stringConvertibleArrayData;
+      Content = content;
     }
 
     protected override void DeregisterContentEvents() {
