@@ -82,7 +82,7 @@ namespace HeuristicLab.MainForm {
       for (int i = 0; i < viewTypes.Count; i++) {
         viewTypes[i] = TransformGenericTypeDefinition(viewTypes[i], contentType);
       }
-      return viewTypes;
+      return viewTypes.Where(t => t != null);
     }
 
     public static bool ViewCanViewObject(IView view, object o) {
@@ -149,8 +149,9 @@ namespace HeuristicLab.MainForm {
       if (!viewType.IsGenericTypeDefinition)
         return viewType;
 
-      Type contentTypeBaseType = contentType;
+      Type contentTypeBaseType = null;
       foreach (Type type in ContentAttribute.GetViewableTypes(viewType)) {
+        contentTypeBaseType = contentType;
         while (contentTypeBaseType != null && (!contentTypeBaseType.IsGenericType ||
               type.GetGenericTypeDefinition() != contentTypeBaseType.GetGenericTypeDefinition()))
           contentTypeBaseType = contentTypeBaseType.BaseType;
@@ -159,10 +160,11 @@ namespace HeuristicLab.MainForm {
         if (contentTypeBaseType == null) {
           IEnumerable<Type> implementedInterfaces = contentType.GetInterfaces().Where(t => t.IsGenericType);
           foreach (Type implementedInterface in implementedInterfaces) {
-            if (implementedInterface.CheckGenericTypes(viewType))
+            if (implementedInterface.CheckGenericTypes(type))
               contentTypeBaseType = implementedInterface;
           }
         }
+        if (contentTypeBaseType != null) break;
       }
 
       if (!contentTypeBaseType.IsGenericType)
