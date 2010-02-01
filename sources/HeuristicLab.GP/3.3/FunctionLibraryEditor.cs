@@ -25,6 +25,8 @@ using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.GP.Interfaces;
+using System.Text;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.GP {
   public partial class FunctionLibraryEditor : EditorBase {
@@ -34,9 +36,13 @@ namespace HeuristicLab.GP {
       set { base.Item = value; }
     }
 
-    public FunctionLibraryEditor(FunctionLibrary library)
+    public FunctionLibraryEditor()
       : base() {
       InitializeComponent();
+    }
+
+    public FunctionLibraryEditor(FunctionLibrary library)
+      : this() {
       FunctionLibrary = library;
     }
 
@@ -47,6 +53,8 @@ namespace HeuristicLab.GP {
 
     protected override void UpdateControls() {
       base.UpdateControls();
+      mutationListView.Items.Clear();
+      initListView.Items.Clear();
       functionsListView.Clear();
       functionsComboBox.Items.Clear();
       foreach (IFunction fun in FunctionLibrary.Functions) {
@@ -91,8 +99,14 @@ namespace HeuristicLab.GP {
     private void removeButton_Click(object sender, EventArgs e) {
       // delete from the end of the list
       List<int> removeIndices = functionsListView.SelectedIndices.OfType<int>().OrderBy(x => 1.0 / x).ToList();
-      foreach (int selectedIndex in removeIndices) {
-        FunctionLibrary.RemoveFunction((IFunction)functionsListView.Items[selectedIndex].Tag);        
+      try {
+        Cursor = Cursors.WaitCursor;
+        foreach (int selectedIndex in removeIndices) {
+          FunctionLibrary.RemoveFunction((IFunction)functionsListView.Items[selectedIndex].Tag);
+        }
+      }
+      finally {
+        Cursor = Cursors.Default;
       }
     }
 
@@ -130,5 +144,82 @@ namespace HeuristicLab.GP {
         functionDetailsPanel.Controls.Add(funView);
       }
     }
+
+    private void functionsListView_KeyUp(object sender, KeyEventArgs e) {
+      if (e.KeyCode == Keys.Delete && functionsListView.SelectedItems.Count > 0) {
+        List<IFunction> removedFunctions = new List<IFunction>(from x in functionsListView.SelectedItems.OfType<ListViewItem>()
+                                                               select (IFunction)x.Tag);
+        try {
+          Cursor = Cursors.WaitCursor;
+          foreach (var fun in removedFunctions) {
+            FunctionLibrary.RemoveFunction(fun);
+          }
+        }
+        finally {
+          Cursor = Cursors.Default;
+        }
+      }
+    }
+
+    private void tabControl_Selected(object sender, TabControlEventArgs e) {
+      if (e.TabPage == testTabPage) {
+        outputTextBox.Text = TestFunctionLibrary();
+      }
+    }
+
+    private string TestFunctionLibrary() {
+      int n = 1000;
+      IFunctionTree[] randomTrees = CreateRandomTrees(n, 1, 100);
+
+      StringBuilder builder = new StringBuilder();
+      builder.AppendLine(CalculateFunctionFrequencies(randomTrees));
+      return builder.ToString();
+    }
+
+    private string CalculateFunctionFrequencies(IFunctionTree[] randomTrees) {
+      Dictionary<IFunction, int> occurances = new Dictionary<IFunction, int>();
+      double n = 0.0;
+      for (int i = 0; i < randomTrees.Length; i++) {
+        foreach (var node in FunctionTreeIterator.IteratePrefix(randomTrees[i])) {
+          if (node.SubTrees.Count > 0) {
+            if (!occurances.ContainsKey(node.Function))
+              occurances[node.Function] = 0;
+            occurances[node.Function]++;
+            n++;
+          }
+        }
+      }
+      StringBuilder strBuilder = new StringBuilder();
+      foreach (var function in occurances.Keys) {
+        strBuilder.Append(Environment.NewLine);
+        strBuilder.Append(function.Name); strBuilder.Append(": ");
+        strBuilder.AppendFormat("{0:#0.00%}", occurances[function] / n);
+      }
+      return strBuilder.ToString();
+    }
+
+    private IFunctionTree[] CreateRandomTrees(int popSize, int minSize, int maxSize) {
+      int maxHeight = 10;
+      int maxTries = 100;
+      IFunctionTree[] randomTrees = new IFunctionTree[popSize];
+      MersenneTwister twister = new MersenneTwister();
+      for (int i = 0; i < randomTrees.Length; i++) {
+        int treeSize = twister.Next(minSize, maxSize);
+        IFunctionTree root;
+        int tries = 0;
+        TreeGardener gardener = new TreeGardener(twister, FunctionLibrary);
+        do {
+          root = gardener.PTC2(treeSize, maxSize);
+          if (tries++ >= maxTries) {
+            // try a different size
+            treeSize = twister.Next(minSize, maxSize);
+            tries = 0;
+          }
+        } while (root.GetSize() > maxSize || root.GetHeight() > maxHeight);
+        randomTrees[i] = root;
+      }
+      return randomTrees;
+    }
+
   }
 }

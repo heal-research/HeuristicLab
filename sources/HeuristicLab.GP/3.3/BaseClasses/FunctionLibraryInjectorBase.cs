@@ -35,13 +35,26 @@ namespace HeuristicLab.GP {
       get { return @"Descrption is missing."; }
     }
 
+    private FunctionLibrary functionLibrary;
+    public FunctionLibrary FunctionLibrary {
+      get {
+        return functionLibrary;
+      }
+      set {
+        this.functionLibrary = value;
+        FireChanged();
+      }
+    }
+
     public FunctionLibraryInjectorBase()
       : base() {
       AddVariableInfo(new VariableInfo(FUNCTIONLIBRARY, "Preconfigured default function library", typeof(FunctionLibrary), VariableKind.New));
+      // create the default function library
+      functionLibrary = CreateFunctionLibrary();
     }
 
     public override IOperation Apply(IScope scope) {
-      scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(FUNCTIONLIBRARY), CreateFunctionLibrary()));
+      scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(FUNCTIONLIBRARY), functionLibrary));
       return null;
     }
 
@@ -57,6 +70,10 @@ namespace HeuristicLab.GP {
       foreach (var g in gs) {
         f.AddAllowedSubFunction(g, i);
       }
+    }
+
+    public override IView CreateView() {
+      return new FunctionLibraryInjectorView(this);
     }
   }
 }

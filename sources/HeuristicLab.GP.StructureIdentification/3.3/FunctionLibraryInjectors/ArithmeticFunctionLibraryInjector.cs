@@ -31,8 +31,6 @@ namespace HeuristicLab.GP.StructureIdentification {
     public const string MINTIMEOFFSET = "MinTimeOffset";
     public const string MAXTIMEOFFSET = "MaxTimeOffset";
 
-    public const string DIFFERENTIALS_ALLOWED = "Differentials";
-
     private int minTimeOffset;
     private int maxTimeOffset;
 
@@ -44,14 +42,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       : base() {
       AddVariableInfo(new VariableInfo(MINTIMEOFFSET, "Minimal time offset for all features", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo(MAXTIMEOFFSET, "Maximal time offset for all feature", typeof(IntData), VariableKind.In));
-
-      AddVariable(DIFFERENTIALS_ALLOWED, false);
-    }
-
-    private void AddVariable(string name, bool allowed) {
-      AddVariableInfo(new VariableInfo(name, name + " allowed", typeof(BoolData), Core.VariableKind.New));
-      GetVariableInfo(name).Local = true;
-      AddVariable(new Core.Variable(name, new BoolData(allowed)));
     }
 
     public override IOperation Apply(IScope scope) {
@@ -76,29 +66,16 @@ namespace HeuristicLab.GP.StructureIdentification {
       Multiplication multiplication = new Multiplication();
       Subtraction subtraction = new Subtraction();
 
-      List<IFunction> doubleFunctions = new List<IFunction>();
-      if (GetVariableValue<BoolData>(DIFFERENTIALS_ALLOWED, null, false).Data)
-        doubleFunctions.Add(differential);
-      doubleFunctions.Add(variable);
-      doubleFunctions.Add(constant);
-      doubleFunctions.Add(addition);
-      doubleFunctions.Add(division);
-      doubleFunctions.Add(multiplication);
-      doubleFunctions.Add(subtraction);
+      List<IFunction> doubleFunctions = new List<IFunction>() {
+      differential, variable, constant, addition, division, multiplication, subtraction
+      };
 
       SetAllowedSubOperators(addition, doubleFunctions);
       SetAllowedSubOperators(division, doubleFunctions);
       SetAllowedSubOperators(multiplication, doubleFunctions);
       SetAllowedSubOperators(subtraction, doubleFunctions);
 
-      if (GetVariableValue<BoolData>(DIFFERENTIALS_ALLOWED, null, false).Data)
-        functionLibrary.AddFunction(differential);
-      functionLibrary.AddFunction(variable);
-      functionLibrary.AddFunction(constant);
-      functionLibrary.AddFunction(addition);
-      functionLibrary.AddFunction(division);
-      functionLibrary.AddFunction(multiplication);
-      functionLibrary.AddFunction(subtraction);
+      doubleFunctions.ForEach(fun => functionLibrary.AddFunction(fun));
 
       variable.SetConstraints(minTimeOffset, maxTimeOffset);
       differential.SetConstraints(minTimeOffset, maxTimeOffset);

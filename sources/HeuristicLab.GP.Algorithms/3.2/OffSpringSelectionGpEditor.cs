@@ -63,7 +63,8 @@ namespace HeuristicLab.GP.Algorithms {
         tabControl.Enabled = false;
       } else {
         tabControl.Enabled = true;
-        problemInitializationTextBox.Text = OffspringSelectionGP.ProblemInjector.GetType().Name;
+        problemInitializationTextBox.Text = OffspringSelectionGP.ProblemInjector.Name;
+        functionLibraryInjectorTextBox.Text = OffspringSelectionGP.FunctionLibraryInjector.Name;
       }
     }
 
@@ -75,12 +76,14 @@ namespace HeuristicLab.GP.Algorithms {
       selectionPressureTextBox.DataBindings.Add("Text", OffspringSelectionGP, "SelectionPressureLimit");
       mutationRateTextBox.DataBindings.Add("Text", OffspringSelectionGP, "MutationRate");
       elitesTextBox.DataBindings.Add("Text", OffspringSelectionGP, "Elites");
+      comparisonFactorTextBox.DataBindings.Add("Text", OffspringSelectionGP, "ComparisonFactor");
+      successRatioLimitTextBox.DataBindings.Add("Text", OffspringSelectionGP, "SuccessRatioLimit");
     }
 
     #region Button Events
     private void viewProblemInjectorButton_Click(object sender, EventArgs e) {
       IView view = OffspringSelectionGP.ProblemInjector.CreateView();
-      if(view != null)
+      if (view != null)
         ControlManager.Manager.ShowControl(view);
     }
 
@@ -88,9 +91,24 @@ namespace HeuristicLab.GP.Algorithms {
       if (chooseOperatorDialog == null) chooseOperatorDialog = new ChooseOperatorDialog();
       if (chooseOperatorDialog.ShowDialog(this) == DialogResult.OK) {
         OffspringSelectionGP.ProblemInjector = chooseOperatorDialog.Operator;
-        problemInitializationTextBox.Text = OffspringSelectionGP.ProblemInjector.GetType().Name;
+        problemInitializationTextBox.Text = OffspringSelectionGP.ProblemInjector.Name;
       }
     }
+
+    private void functionLibraryInjectorViewButton_Click(object sender, EventArgs e) {
+      IView view = OffspringSelectionGP.FunctionLibraryInjector.CreateView();
+      if (view != null)
+        ControlManager.Manager.ShowControl(view);
+    }
+
+    private void functionLibraryInjectorSetButton_Click(object sender, EventArgs e) {
+      if (chooseOperatorDialog == null) chooseOperatorDialog = new ChooseOperatorDialog();
+      if (chooseOperatorDialog.ShowDialog(this) == DialogResult.OK) {
+        OffspringSelectionGP.FunctionLibraryInjector = chooseOperatorDialog.Operator;
+        functionLibraryInjectorTextBox.Text = OffspringSelectionGP.FunctionLibraryInjector.Name;
+      }
+    }
+
     private void executeButton_Click(object sender, EventArgs e) {
       executeButton.Enabled = false;
       abortButton.Enabled = true;
@@ -119,7 +137,7 @@ namespace HeuristicLab.GP.Algorithms {
         Auxiliary.ShowErrorMessageBox(e.Value);
     }
     private void Engine_Finished(object sender, EventArgs e) {
-      if(InvokeRequired)
+      if (InvokeRequired)
         Invoke((EventHandler)Engine_Finished, sender, e);
       else {
         scopeView.Refresh();
@@ -133,6 +151,86 @@ namespace HeuristicLab.GP.Algorithms {
     private void setRandomSeedRandomlyCheckBox_CheckedChanged(object sender, EventArgs e) {
       randomSeedTextBox.Enabled = !setRandomSeedRandomlyCheckBox.Checked;
       randomSeedLabel.Enabled = !setRandomSeedRandomlyCheckBox.Checked;
+    }
+
+    private void randomSeedTextBox_TextChanged(object sender, EventArgs e) {
+      int randomSeed;
+      if (int.TryParse(randomSeedTextBox.Text, out randomSeed)) {
+        //OffspringSelectionGP.RandomSeed = randomSeed;
+        errorProvider.SetError(randomSeedTextBox, string.Empty);
+      } else {
+        errorProvider.SetError(randomSeedTextBox, "Invalid value.");
+      }
+    }
+
+    private void populationSizeTextBox_TextChanged(object sender, EventArgs e) {
+      int popSize;
+      if (int.TryParse(populationSizeTextBox.Text, out popSize) && popSize > 1) {
+        //OffspringSelectionGP.PopulationSize = popSize;
+        errorProvider.SetError(populationSizeTextBox, string.Empty);
+      } else {
+        errorProvider.SetError(populationSizeTextBox, "Population size must be a positive integer > 0.");
+      }
+    }
+
+    private void elitesTextBox_TextChanged(object sender, EventArgs e) {
+      int elites;
+      if (int.TryParse(elitesTextBox.Text, out elites) && elites >= 0 && elites < OffspringSelectionGP.PopulationSize) {
+        //OffspringSelectionGP.Elites = elites;
+        errorProvider.SetError(elitesTextBox, string.Empty);
+      } else {
+        errorProvider.SetError(elitesTextBox, "Invalid value for number of elites. Allowed range [0.." + OffspringSelectionGP.PopulationSize + "[.");
+      }
+    }
+
+    private void mutationRateTextBox_TextChanged(object sender, EventArgs e) {
+      double mutationRate;
+      if (double.TryParse(mutationRateTextBox.Text, out mutationRate) && mutationRate >= 0.0 && mutationRate <= 1.0) {
+        //OffspringSelectionGP.MutationRate = mutationRate;
+        errorProvider.SetError(mutationRateTextBox, string.Empty);
+      } else {
+        errorProvider.SetError(mutationRateTextBox, "Invalid value for mutation rate. Allowed range = [0..1].");
+      }
+    }
+
+    private void comparisonFactorTextBox_TextChanged(object sender, EventArgs e) {
+      double comparisonFactor;
+      if (double.TryParse(comparisonFactorTextBox.Text, out comparisonFactor) && comparisonFactor >= 0.0 && comparisonFactor <= 1.0) {
+        //OffspringSelectionGP.ComparisonFactor = comparisonFactor;
+        errorProvider.SetError(comparisonFactorTextBox, string.Empty);
+      } else {
+        errorProvider.SetError(comparisonFactorTextBox, "Invalid value for comparison factor. Allowed range = [0..1].");
+      }
+    }
+
+    private void successRatioLimitTextBox_TextChanged(object sender, EventArgs e) {
+      double successRatioLimit;
+      if (double.TryParse(successRatioLimitTextBox.Text, out successRatioLimit) && successRatioLimit >= 0.0 && successRatioLimit <= 1.0) {
+        //OffspringSelectionGP.SuccessRatioLimit = successRatioLimit;
+        errorProvider.SetError(successRatioLimitTextBox, string.Empty);
+      } else {
+        errorProvider.SetError(successRatioLimitTextBox, "Invalid value for success ratio limit. Allowed range = [0..1].");
+      }
+    }
+
+    private void maximumEvaluatedSolutionsTextBox_TextChanged(object sender, EventArgs e) {
+      int maxEvaluatedSolutions;
+      if (int.TryParse(maximumEvaluatedSolutionsTextBox.Text, out maxEvaluatedSolutions) && maxEvaluatedSolutions > 0) {
+        //OffspringSelectionGP.MaxEvaluatedSolutions = maxEvaluatedSolutions;
+        errorProvider.SetError(maximumEvaluatedSolutionsTextBox, string.Empty);
+      } else {
+        errorProvider.SetError(maximumEvaluatedSolutionsTextBox, "Max. evaluated solutions must be a positive integer > 0.");
+      }
+    }
+
+    private void selectionPressureTextBox_TextChanged(object sender, EventArgs e) {
+      double maxSelPres;
+      if (double.TryParse(selectionPressureTextBox.Text, out maxSelPres) && maxSelPres > 1.0) {
+        //OffspringSelectionGP.SelectionPressureLimit = maxSelPres;
+        errorProvider.SetError(selectionPressureTextBox, string.Empty);
+      } else {
+        errorProvider.SetError(selectionPressureTextBox, "Selection pressure limit must be > 1.0.");
+      }
     }
   }
 }

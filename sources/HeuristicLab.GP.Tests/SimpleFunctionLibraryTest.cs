@@ -55,7 +55,7 @@ namespace HeuristicLab.GP.Test {
     public static void CreateRandomNetworks(TestContext testContext) {
       MersenneTwister twister = new MersenneTwister();
       Dataset ds = Util.CreateRandomDataset(twister, 1, 20);
-      randomTrees = Util.CreateRandomTrees(twister, ds, SimpleFunctionLibraryInjector.Create(true, -3, 0), N, 1, 100);
+      randomTrees = Util.CreateRandomTrees(twister, ds, SimpleFunctionLibraryInjector.Create(-3, 0), N, 1, 100);
     }
 
     [TestMethod()]

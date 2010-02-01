@@ -45,6 +45,7 @@ namespace HeuristicLab.GP.Algorithms {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
       this.executeButton = new System.Windows.Forms.Button();
       this.tabControl = new System.Windows.Forms.TabControl();
       this.parametersTabPage = new System.Windows.Forms.TabPage();
@@ -71,9 +72,19 @@ namespace HeuristicLab.GP.Algorithms {
       this.abortButton = new System.Windows.Forms.Button();
       this.resetButton = new System.Windows.Forms.Button();
       this.cloneEngineButton = new System.Windows.Forms.Button();
+      this.functionLibraryInjectorViewButton = new System.Windows.Forms.Button();
+      this.functionLibraryInjectorSetButton = new System.Windows.Forms.Button();
+      this.functionLibraryInjectorTextBox = new System.Windows.Forms.TextBox();
+      this.label1 = new System.Windows.Forms.Label();
+      this.comparisonFactorTextBox = new System.Windows.Forms.TextBox();
+      this.label2 = new System.Windows.Forms.Label();
+      this.successRatioLimitTextBox = new System.Windows.Forms.TextBox();
+      this.label3 = new System.Windows.Forms.Label();
+      this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
       this.tabControl.SuspendLayout();
       this.parametersTabPage.SuspendLayout();
       this.scopesTabPage.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
       // 
       // executeButton
@@ -102,6 +113,14 @@ namespace HeuristicLab.GP.Algorithms {
       // 
       // parametersTabPage
       // 
+      this.parametersTabPage.Controls.Add(this.successRatioLimitTextBox);
+      this.parametersTabPage.Controls.Add(this.label3);
+      this.parametersTabPage.Controls.Add(this.comparisonFactorTextBox);
+      this.parametersTabPage.Controls.Add(this.label2);
+      this.parametersTabPage.Controls.Add(this.functionLibraryInjectorViewButton);
+      this.parametersTabPage.Controls.Add(this.functionLibraryInjectorSetButton);
+      this.parametersTabPage.Controls.Add(this.functionLibraryInjectorTextBox);
+      this.parametersTabPage.Controls.Add(this.label1);
       this.parametersTabPage.Controls.Add(this.selectionPressureTextBox);
       this.parametersTabPage.Controls.Add(this.selectionPressureLabel);
       this.parametersTabPage.Controls.Add(this.viewProblemInitializationButton);
@@ -131,16 +150,17 @@ namespace HeuristicLab.GP.Algorithms {
       // selectionPressureTextBox
       // 
       this.selectionPressureTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.selectionPressureTextBox.Location = new System.Drawing.Point(218, 130);
+      this.selectionPressureTextBox.Location = new System.Drawing.Point(218, 234);
       this.selectionPressureTextBox.Name = "selectionPressureTextBox";
       this.selectionPressureTextBox.Size = new System.Drawing.Size(186, 20);
       this.selectionPressureTextBox.TabIndex = 17;
+      this.selectionPressureTextBox.TextChanged += new System.EventHandler(this.selectionPressureTextBox_TextChanged);
       // 
       // selectionPressureLabel
       // 
       this.selectionPressureLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.selectionPressureLabel.AutoSize = true;
-      this.selectionPressureLabel.Location = new System.Drawing.Point(65, 133);
+      this.selectionPressureLabel.Location = new System.Drawing.Point(65, 237);
       this.selectionPressureLabel.Name = "selectionPressureLabel";
       this.selectionPressureLabel.Size = new System.Drawing.Size(145, 13);
       this.selectionPressureLabel.TabIndex = 16;
@@ -149,7 +169,7 @@ namespace HeuristicLab.GP.Algorithms {
       // viewProblemInitializationButton
       // 
       this.viewProblemInitializationButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.viewProblemInitializationButton.Location = new System.Drawing.Point(410, 241);
+      this.viewProblemInitializationButton.Location = new System.Drawing.Point(410, 281);
       this.viewProblemInitializationButton.Name = "viewProblemInitializationButton";
       this.viewProblemInitializationButton.Size = new System.Drawing.Size(53, 20);
       this.viewProblemInitializationButton.TabIndex = 14;
@@ -160,7 +180,7 @@ namespace HeuristicLab.GP.Algorithms {
       // setProblemInitializationButton
       // 
       this.setProblemInitializationButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.setProblemInitializationButton.Location = new System.Drawing.Point(469, 241);
+      this.setProblemInitializationButton.Location = new System.Drawing.Point(469, 281);
       this.setProblemInitializationButton.Name = "setProblemInitializationButton";
       this.setProblemInitializationButton.Size = new System.Drawing.Size(43, 20);
       this.setProblemInitializationButton.TabIndex = 15;
@@ -171,7 +191,7 @@ namespace HeuristicLab.GP.Algorithms {
       // problemInitializationTextBox
       // 
       this.problemInitializationTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.problemInitializationTextBox.Location = new System.Drawing.Point(218, 241);
+      this.problemInitializationTextBox.Location = new System.Drawing.Point(218, 281);
       this.problemInitializationTextBox.Name = "problemInitializationTextBox";
       this.problemInitializationTextBox.ReadOnly = true;
       this.problemInitializationTextBox.Size = new System.Drawing.Size(186, 20);
@@ -191,16 +211,17 @@ namespace HeuristicLab.GP.Algorithms {
       // elitesTextBox
       // 
       this.elitesTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.elitesTextBox.Location = new System.Drawing.Point(218, 182);
+      this.elitesTextBox.Location = new System.Drawing.Point(218, 104);
       this.elitesTextBox.Name = "elitesTextBox";
       this.elitesTextBox.Size = new System.Drawing.Size(186, 20);
       this.elitesTextBox.TabIndex = 11;
+      this.elitesTextBox.TextChanged += new System.EventHandler(this.elitesTextBox_TextChanged);
       // 
       // problemInitializationLabel
       // 
       this.problemInitializationLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.problemInitializationLabel.AutoSize = true;
-      this.problemInitializationLabel.Location = new System.Drawing.Point(65, 244);
+      this.problemInitializationLabel.Location = new System.Drawing.Point(65, 284);
       this.problemInitializationLabel.Name = "problemInitializationLabel";
       this.problemInitializationLabel.Size = new System.Drawing.Size(105, 13);
       this.problemInitializationLabel.TabIndex = 12;
@@ -210,7 +231,7 @@ namespace HeuristicLab.GP.Algorithms {
       // 
       this.elitesLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.elitesLabel.AutoSize = true;
-      this.elitesLabel.Location = new System.Drawing.Point(66, 185);
+      this.elitesLabel.Location = new System.Drawing.Point(66, 107);
       this.elitesLabel.Name = "elitesLabel";
       this.elitesLabel.Size = new System.Drawing.Size(35, 13);
       this.elitesLabel.TabIndex = 10;
@@ -219,16 +240,17 @@ namespace HeuristicLab.GP.Algorithms {
       // mutationRateTextBox
       // 
       this.mutationRateTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.mutationRateTextBox.Location = new System.Drawing.Point(218, 156);
+      this.mutationRateTextBox.Location = new System.Drawing.Point(218, 130);
       this.mutationRateTextBox.Name = "mutationRateTextBox";
       this.mutationRateTextBox.Size = new System.Drawing.Size(186, 20);
       this.mutationRateTextBox.TabIndex = 9;
+      this.mutationRateTextBox.TextChanged += new System.EventHandler(this.mutationRateTextBox_TextChanged);
       // 
       // mutationRateLabel
       // 
       this.mutationRateLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.mutationRateLabel.AutoSize = true;
-      this.mutationRateLabel.Location = new System.Drawing.Point(66, 159);
+      this.mutationRateLabel.Location = new System.Drawing.Point(66, 133);
       this.mutationRateLabel.Name = "mutationRateLabel";
       this.mutationRateLabel.Size = new System.Drawing.Size(77, 13);
       this.mutationRateLabel.TabIndex = 8;
@@ -237,16 +259,17 @@ namespace HeuristicLab.GP.Algorithms {
       // maximumEvaluatedSolutionsTextBox
       // 
       this.maximumEvaluatedSolutionsTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.maximumEvaluatedSolutionsTextBox.Location = new System.Drawing.Point(218, 104);
+      this.maximumEvaluatedSolutionsTextBox.Location = new System.Drawing.Point(218, 208);
       this.maximumEvaluatedSolutionsTextBox.Name = "maximumEvaluatedSolutionsTextBox";
       this.maximumEvaluatedSolutionsTextBox.Size = new System.Drawing.Size(186, 20);
       this.maximumEvaluatedSolutionsTextBox.TabIndex = 7;
+      this.maximumEvaluatedSolutionsTextBox.TextChanged += new System.EventHandler(this.maximumEvaluatedSolutionsTextBox_TextChanged);
       // 
       // maxEvaluatedSolutionsLabel
       // 
       this.maxEvaluatedSolutionsLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.maxEvaluatedSolutionsLabel.AutoSize = true;
-      this.maxEvaluatedSolutionsLabel.Location = new System.Drawing.Point(65, 107);
+      this.maxEvaluatedSolutionsLabel.Location = new System.Drawing.Point(65, 211);
       this.maxEvaluatedSolutionsLabel.Name = "maxEvaluatedSolutionsLabel";
       this.maxEvaluatedSolutionsLabel.Size = new System.Drawing.Size(130, 13);
       this.maxEvaluatedSolutionsLabel.TabIndex = 6;
@@ -259,6 +282,7 @@ namespace HeuristicLab.GP.Algorithms {
       this.randomSeedTextBox.Name = "randomSeedTextBox";
       this.randomSeedTextBox.Size = new System.Drawing.Size(186, 20);
       this.randomSeedTextBox.TabIndex = 3;
+      this.randomSeedTextBox.TextChanged += new System.EventHandler(this.randomSeedTextBox_TextChanged);
       // 
       // populationSizeTextBox
       // 
@@ -267,6 +291,7 @@ namespace HeuristicLab.GP.Algorithms {
       this.populationSizeTextBox.Name = "populationSizeTextBox";
       this.populationSizeTextBox.Size = new System.Drawing.Size(186, 20);
       this.populationSizeTextBox.TabIndex = 5;
+      this.populationSizeTextBox.TextChanged += new System.EventHandler(this.populationSizeTextBox_TextChanged);
       // 
       // setRandomSeedRandomlyLabel
       // 
@@ -353,6 +378,89 @@ namespace HeuristicLab.GP.Algorithms {
       this.cloneEngineButton.UseVisualStyleBackColor = true;
       this.cloneEngineButton.Click += new System.EventHandler(this.cloneEngineButton_Click);
       // 
+      // functionLibraryInjectorViewButton
+      // 
+      this.functionLibraryInjectorViewButton.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.functionLibraryInjectorViewButton.Location = new System.Drawing.Point(410, 307);
+      this.functionLibraryInjectorViewButton.Name = "functionLibraryInjectorViewButton";
+      this.functionLibraryInjectorViewButton.Size = new System.Drawing.Size(53, 20);
+      this.functionLibraryInjectorViewButton.TabIndex = 20;
+      this.functionLibraryInjectorViewButton.Text = "View...";
+      this.functionLibraryInjectorViewButton.UseVisualStyleBackColor = true;
+      this.functionLibraryInjectorViewButton.Click += new System.EventHandler(this.functionLibraryInjectorViewButton_Click);
+      // 
+      // functionLibraryInjectorSetButton
+      // 
+      this.functionLibraryInjectorSetButton.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.functionLibraryInjectorSetButton.Location = new System.Drawing.Point(469, 307);
+      this.functionLibraryInjectorSetButton.Name = "functionLibraryInjectorSetButton";
+      this.functionLibraryInjectorSetButton.Size = new System.Drawing.Size(43, 20);
+      this.functionLibraryInjectorSetButton.TabIndex = 21;
+      this.functionLibraryInjectorSetButton.Text = "Set...";
+      this.functionLibraryInjectorSetButton.UseVisualStyleBackColor = true;
+      this.functionLibraryInjectorSetButton.Click += new System.EventHandler(this.functionLibraryInjectorSetButton_Click);
+      // 
+      // functionLibraryInjectorTextBox
+      // 
+      this.functionLibraryInjectorTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.functionLibraryInjectorTextBox.Location = new System.Drawing.Point(218, 307);
+      this.functionLibraryInjectorTextBox.Name = "functionLibraryInjectorTextBox";
+      this.functionLibraryInjectorTextBox.ReadOnly = true;
+      this.functionLibraryInjectorTextBox.Size = new System.Drawing.Size(186, 20);
+      this.functionLibraryInjectorTextBox.TabIndex = 19;
+      // 
+      // label1
+      // 
+      this.label1.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.label1.AutoSize = true;
+      this.label1.Location = new System.Drawing.Point(65, 310);
+      this.label1.Name = "label1";
+      this.label1.Size = new System.Drawing.Size(81, 13);
+      this.label1.TabIndex = 18;
+      this.label1.Text = "&Function library:";
+      // 
+      // comparisonFactorTextBox
+      // 
+      this.comparisonFactorTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.comparisonFactorTextBox.Location = new System.Drawing.Point(218, 156);
+      this.comparisonFactorTextBox.Name = "comparisonFactorTextBox";
+      this.comparisonFactorTextBox.Size = new System.Drawing.Size(186, 20);
+      this.comparisonFactorTextBox.TabIndex = 23;
+      this.comparisonFactorTextBox.TextChanged += new System.EventHandler(this.comparisonFactorTextBox_TextChanged);
+      // 
+      // label2
+      // 
+      this.label2.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.label2.AutoSize = true;
+      this.label2.Location = new System.Drawing.Point(66, 159);
+      this.label2.Name = "label2";
+      this.label2.Size = new System.Drawing.Size(95, 13);
+      this.label2.TabIndex = 22;
+      this.label2.Text = "Comparison factor:";
+      // 
+      // successRatioLimitTextBox
+      // 
+      this.successRatioLimitTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.successRatioLimitTextBox.Location = new System.Drawing.Point(218, 182);
+      this.successRatioLimitTextBox.Name = "successRatioLimitTextBox";
+      this.successRatioLimitTextBox.Size = new System.Drawing.Size(186, 20);
+      this.successRatioLimitTextBox.TabIndex = 25;
+      this.successRatioLimitTextBox.TextChanged += new System.EventHandler(this.successRatioLimitTextBox_TextChanged);
+      // 
+      // label3
+      // 
+      this.label3.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.label3.AutoSize = true;
+      this.label3.Location = new System.Drawing.Point(66, 185);
+      this.label3.Name = "label3";
+      this.label3.Size = new System.Drawing.Size(94, 13);
+      this.label3.TabIndex = 24;
+      this.label3.Text = "Success ratio limit:";
+      // 
+      // errorProvider
+      // 
+      this.errorProvider.ContainerControl = this;
+      // 
       // OffspringSelectionGpEditor
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -368,6 +476,7 @@ namespace HeuristicLab.GP.Algorithms {
       this.parametersTabPage.ResumeLayout(false);
       this.parametersTabPage.PerformLayout();
       this.scopesTabPage.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);
 
     }
@@ -379,26 +488,35 @@ namespace HeuristicLab.GP.Algorithms {
     protected System.Windows.Forms.TabPage parametersTabPage;
     private System.Windows.Forms.Button abortButton;
     private System.Windows.Forms.Button resetButton;
-    private System.Windows.Forms.TextBox mutationRateTextBox;
-    private System.Windows.Forms.Label mutationRateLabel;
-    private System.Windows.Forms.TextBox populationSizeTextBox;
-    private System.Windows.Forms.Label populationSizeLabel;
     private System.Windows.Forms.TabPage scopesTabPage;
-    private System.Windows.Forms.TextBox maximumEvaluatedSolutionsTextBox;
-    private System.Windows.Forms.Label maxEvaluatedSolutionsLabel;
-    private System.Windows.Forms.TextBox elitesTextBox;
-    private System.Windows.Forms.Label elitesLabel;
-    private System.Windows.Forms.TextBox randomSeedTextBox;
-    private System.Windows.Forms.Label setRandomSeedRandomlyLabel;
-    private System.Windows.Forms.Label randomSeedLabel;
-    private System.Windows.Forms.CheckBox setRandomSeedRandomlyCheckBox;
-    private System.Windows.Forms.Label problemInitializationLabel;
     private System.Windows.Forms.Button cloneEngineButton;
-    private System.Windows.Forms.TextBox problemInitializationTextBox;
-    private System.Windows.Forms.Button setProblemInitializationButton;
     private HeuristicLab.Core.ScopeView scopeView;
-    private System.Windows.Forms.Button viewProblemInitializationButton;
-    private System.Windows.Forms.TextBox selectionPressureTextBox;
-    private System.Windows.Forms.Label selectionPressureLabel;
+    protected System.Windows.Forms.Button functionLibraryInjectorViewButton;
+    protected System.Windows.Forms.Button functionLibraryInjectorSetButton;
+    protected System.Windows.Forms.TextBox functionLibraryInjectorTextBox;
+    protected System.Windows.Forms.Label label1;
+    protected System.Windows.Forms.TextBox comparisonFactorTextBox;
+    protected System.Windows.Forms.Label label2;
+    protected System.Windows.Forms.TextBox mutationRateTextBox;
+    protected System.Windows.Forms.Label mutationRateLabel;
+    protected System.Windows.Forms.TextBox populationSizeTextBox;
+    protected System.Windows.Forms.Label populationSizeLabel;
+    protected System.Windows.Forms.TextBox maximumEvaluatedSolutionsTextBox;
+    protected System.Windows.Forms.Label maxEvaluatedSolutionsLabel;
+    protected System.Windows.Forms.TextBox elitesTextBox;
+    protected System.Windows.Forms.Label elitesLabel;
+    protected System.Windows.Forms.TextBox randomSeedTextBox;
+    protected System.Windows.Forms.Label setRandomSeedRandomlyLabel;
+    protected System.Windows.Forms.Label randomSeedLabel;
+    protected System.Windows.Forms.CheckBox setRandomSeedRandomlyCheckBox;
+    protected System.Windows.Forms.Label problemInitializationLabel;
+    protected System.Windows.Forms.TextBox problemInitializationTextBox;
+    protected System.Windows.Forms.Button setProblemInitializationButton;
+    protected System.Windows.Forms.Button viewProblemInitializationButton;
+    protected System.Windows.Forms.TextBox selectionPressureTextBox;
+    protected System.Windows.Forms.Label selectionPressureLabel;
+    protected System.Windows.Forms.TextBox successRatioLimitTextBox;
+    protected System.Windows.Forms.Label label3;
+    private System.Windows.Forms.ErrorProvider errorProvider;
   }
 }

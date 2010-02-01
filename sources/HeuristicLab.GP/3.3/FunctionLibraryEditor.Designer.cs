@@ -62,6 +62,8 @@ namespace HeuristicLab.GP {
       this.mutationSplitContainer = new System.Windows.Forms.SplitContainer();
       this.mutationListView = new System.Windows.Forms.ListView();
       this.mutationVariableView = new HeuristicLab.Core.VariableView();
+      this.testTabPage = new System.Windows.Forms.TabPage();
+      this.outputTextBox = new System.Windows.Forms.TextBox();
       this.tabControl.SuspendLayout();
       this.functionsTabPage.SuspendLayout();
       this.splitContainer.Panel1.SuspendLayout();
@@ -77,6 +79,7 @@ namespace HeuristicLab.GP {
       this.mutationSplitContainer.Panel1.SuspendLayout();
       this.mutationSplitContainer.Panel2.SuspendLayout();
       this.mutationSplitContainer.SuspendLayout();
+      this.testTabPage.SuspendLayout();
       this.SuspendLayout();
       // 
       // tabControl
@@ -84,12 +87,14 @@ namespace HeuristicLab.GP {
       this.tabControl.Controls.Add(this.functionsTabPage);
       this.tabControl.Controls.Add(this.initializationTabPage);
       this.tabControl.Controls.Add(this.mutationTabPage);
+      this.tabControl.Controls.Add(this.testTabPage);
       this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tabControl.Location = new System.Drawing.Point(0, 0);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
       this.tabControl.Size = new System.Drawing.Size(677, 561);
       this.tabControl.TabIndex = 1;
+      this.tabControl.Selected += new System.Windows.Forms.TabControlEventHandler(this.tabControl_Selected);
       // 
       // functionsTabPage
       // 
@@ -145,6 +150,7 @@ namespace HeuristicLab.GP {
       this.functionsListView.UseCompatibleStateImageBehavior = false;
       this.functionsListView.View = System.Windows.Forms.View.List;
       this.functionsListView.SelectedIndexChanged += new System.EventHandler(this.functionsListView_SelectedIndexChanged);
+      this.functionsListView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.functionsListView_KeyUp);
       this.functionsListView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.functionsListView_ItemDrag);
       // 
       // removeButton
@@ -299,6 +305,26 @@ namespace HeuristicLab.GP {
       this.mutationVariableView.TabIndex = 0;
       this.mutationVariableView.Variable = null;
       // 
+      // testTabPage
+      // 
+      this.testTabPage.Controls.Add(this.outputTextBox);
+      this.testTabPage.Location = new System.Drawing.Point(4, 22);
+      this.testTabPage.Name = "testTabPage";
+      this.testTabPage.Padding = new System.Windows.Forms.Padding(3);
+      this.testTabPage.Size = new System.Drawing.Size(669, 535);
+      this.testTabPage.TabIndex = 3;
+      this.testTabPage.Text = "Test function library";
+      this.testTabPage.UseVisualStyleBackColor = true;
+      // 
+      // outputTextBox
+      // 
+      this.outputTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.outputTextBox.Location = new System.Drawing.Point(3, 3);
+      this.outputTextBox.Multiline = true;
+      this.outputTextBox.Name = "outputTextBox";
+      this.outputTextBox.Size = new System.Drawing.Size(663, 529);
+      this.outputTextBox.TabIndex = 0;
+      // 
       // FunctionLibraryEditor
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -321,6 +347,8 @@ namespace HeuristicLab.GP {
       this.mutationSplitContainer.Panel1.ResumeLayout(false);
       this.mutationSplitContainer.Panel2.ResumeLayout(false);
       this.mutationSplitContainer.ResumeLayout(false);
+      this.testTabPage.ResumeLayout(false);
+      this.testTabPage.PerformLayout();
       this.ResumeLayout(false);
 
     }
@@ -345,5 +373,7 @@ namespace HeuristicLab.GP {
     private System.Windows.Forms.ComboBox functionsComboBox;
     private System.Windows.Forms.GroupBox availableFunctionsGroupBox;
     private System.Windows.Forms.GroupBox functionDetailsGroupBox;
+    private System.Windows.Forms.TabPage testTabPage;
+    private System.Windows.Forms.TextBox outputTextBox;
   }
 }

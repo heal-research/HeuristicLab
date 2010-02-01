@@ -164,33 +164,44 @@ namespace HeuristicLab.GP {
       if (e.Effect != DragDropEffects.None) {
         if (e.Data.GetDataPresent("IFunction")) {
           IFunction fun = (IFunction)e.Data.GetData("IFunction");
-          if (selectedSlot == ALL_SLOTS) {
-            for (int slot = 0; slot < function.MaxSubTrees; slot++)
+          try {
+            Cursor = Cursors.WaitCursor;
+            if (selectedSlot == ALL_SLOTS) {
+              for (int slot = 0; slot < function.MaxSubTrees; slot++)
+                function.AddAllowedSubFunction(fun, slot);
+            } else {
+              int slot = int.Parse(selectedSlot);
               function.AddAllowedSubFunction(fun, slot);
-          } else {
-            int slot = int.Parse(selectedSlot);
-            function.AddAllowedSubFunction(fun, slot);
+            }
+          }
+          finally {
+            Cursor = Cursors.Default;
           }
         }
       }
     }
 
     private void subFunctionsListBox_KeyUp(object sender, KeyEventArgs e) {
-      if (subFunctionsListBox.SelectedItems.Count > 0 && e.KeyCode == Keys.Delete) {
-
-        if (selectedSlot == ALL_SLOTS) {
-          for (int slot = 0; slot < function.MaxSubTrees; slot++) {
+      try {
+        Cursor = Cursors.WaitCursor;
+        if (subFunctionsListBox.SelectedItems.Count > 0 && e.KeyCode == Keys.Delete) {
+          if (selectedSlot == ALL_SLOTS) {
+            for (int slot = 0; slot < function.MaxSubTrees; slot++) {
+              foreach (var subFun in subFunctionsListBox.SelectedItems) {
+                function.RemoveAllowedSubFunction((IFunction)subFun, slot);
+              }
+            }
+          } else {
+            int slot = int.Parse(selectedSlot);
             foreach (var subFun in subFunctionsListBox.SelectedItems) {
               function.RemoveAllowedSubFunction((IFunction)subFun, slot);
             }
           }
-        } else {
-          int slot = int.Parse(selectedSlot);
-          foreach (var subFun in subFunctionsListBox.SelectedItems) {
-            function.RemoveAllowedSubFunction((IFunction)subFun, slot);
-          }
-        }
 
+        }
+      }
+      finally {
+        Cursor = Cursors.Default;
       }
     }
   }

@@ -31,8 +31,6 @@ namespace HeuristicLab.GP.StructureIdentification {
     public const string MINTIMEOFFSET = "MinTimeOffset";
     public const string MAXTIMEOFFSET = "MaxTimeOffset";
 
-    public const string DIFFERENTIALS_ALLOWED = "Differentials";
-
     private int minTimeOffset;
     private int maxTimeOffset;
 
@@ -44,14 +42,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       : base() {
       AddVariableInfo(new VariableInfo(MINTIMEOFFSET, "Minimal time offset for all features", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo(MAXTIMEOFFSET, "Maximal time offset for all feature", typeof(IntData), VariableKind.In));
-
-      AddVariable(DIFFERENTIALS_ALLOWED, false);
-    }
-
-    private void AddVariable(string name, bool allowed) {
-      AddVariableInfo(new VariableInfo(name, name + " allowed", typeof(BoolData), Core.VariableKind.New));
-      GetVariableInfo(name).Local = true;
-      AddVariable(new Core.Variable(name, new BoolData(allowed)));
     }
 
     public override IOperation Apply(IScope scope) {
@@ -67,12 +57,11 @@ namespace HeuristicLab.GP.StructureIdentification {
 
     protected override FunctionLibrary CreateFunctionLibrary() {
       return Create(
-        GetVariableValue<BoolData>(DIFFERENTIALS_ALLOWED, null, false).Data,
         minTimeOffset,
         maxTimeOffset);
     }
 
-    public static FunctionLibrary Create(bool differentialAllowed, int minTimeOffset, int maxTimeOffset) {
+    public static FunctionLibrary Create(int minTimeOffset, int maxTimeOffset) {
       FunctionLibrary functionLibrary = new FunctionLibrary();
 
       Variable variable = new Variable();
@@ -90,25 +79,16 @@ namespace HeuristicLab.GP.StructureIdentification {
       Subtraction subtraction = new Subtraction();
       Tangens tangens = new Tangens();
 
-      List<IFunction> valueNodes = new List<IFunction>();
-      if (differentialAllowed) valueNodes.Add(differential);
-      valueNodes.Add(variable);
-      valueNodes.Add(constant);
+      List<IFunction> valueNodes = new List<IFunction>() {
+        differential, variable, constant
+      };
+      List<IFunction> arithmeticFunctions = new List<IFunction>() {
+      addition, division, multiplication, subtraction,
+      };
 
-      List<IFunction> arithmeticFunctions = new List<IFunction>();
-      arithmeticFunctions.Add(addition);
-      arithmeticFunctions.Add(division);
-      arithmeticFunctions.Add(multiplication);
-      arithmeticFunctions.Add(subtraction);
-
-      List<IFunction> complexFunctions = new List<IFunction>();
-      complexFunctions.Add(cosinus);
-      complexFunctions.Add(exponential);
-      complexFunctions.Add(logarithm);
-      complexFunctions.Add(power);
-      complexFunctions.Add(sinus);
-      complexFunctions.Add(sqrt);
-      complexFunctions.Add(tangens);
+      List<IFunction> complexFunctions = new List<IFunction>() {
+        cosinus, exponential, logarithm, power, sinus, sqrt, tangens
+      };
 
       List<IFunction> allFunctions = new List<IFunction>();
       allFunctions.AddRange(arithmeticFunctions);
@@ -127,8 +107,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       SetAllowedSubOperators(sinus, valueNodes);
       SetAllowedSubOperators(sqrt, valueNodes);
       SetAllowedSubOperators(tangens, valueNodes);
-
-      if (differentialAllowed) functionLibrary.AddFunction(differential);
 
       allFunctions.ForEach(x => functionLibrary.AddFunction(x));
 

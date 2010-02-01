@@ -88,6 +88,12 @@
     <Compile Include="BaseClasses\TerminalTreeNode.cs" />
     <Compile Include="BaseClasses\Terminal.cs" />
     <Compile Include="BaseClasses\UnaryFunction.cs" />
+    <Compile Include="FunctionLibraryInjectorView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FunctionLibraryInjectorView.Designer.cs">
+      <DependentUpon>FunctionLibraryInjectorView.cs</DependentUpon>
+    </Compile>
     <Compile Include="FunctionView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -137,6 +143,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="FunctionLibraryInjectorView.resx">
+      <DependentUpon>FunctionLibraryInjectorView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FunctionView.resx">
       <DependentUpon>FunctionView.cs</DependentUpon>
     </EmbeddedResource>
