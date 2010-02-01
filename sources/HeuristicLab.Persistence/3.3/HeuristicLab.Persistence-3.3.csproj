@@ -77,11 +77,11 @@
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\HeuristicLab.PluginInfrastructure.GUI\ICSharpCode.SharpZipLib.dll</HintPath>
+      <HintPath>..\..\HeuristicLab.PluginInfrastructure\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\HeuristicLab.Tracing\3.2\libs\release\log4net.dll</HintPath>
+      <HintPath>..\..\HeuristicLab.ExtLibs\HeuristicLab.log4net\1.2.10.0\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
