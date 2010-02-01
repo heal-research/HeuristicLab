@@ -63,6 +63,7 @@ namespace HeuristicLab.GP {
       OnChanged();
     }
 
+    #region persistence
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
       foreach (IFunction f in functions) {
@@ -77,6 +78,15 @@ namespace HeuristicLab.GP {
         AddFunction((IFunction)PersistenceManager.Restore(fNode, restoredObjects));
       }
     }
+
+    public override object Clone(IDictionary<Guid, object> clonedObjects) {
+      FunctionLibrary clone = (FunctionLibrary)base.Clone(clonedObjects);
+      foreach (var function in functions) {
+        clone.AddFunction((Function)Auxiliary.Clone(function, clonedObjects));
+      }
+      return clone;
+    }
+    #endregion
 
     public override IView CreateView() {
       return new FunctionLibraryEditor(this);

@@ -36,23 +36,31 @@ namespace HeuristicLab.GP {
     private OpenFileDialog openFileDialog;
     private SaveFileDialog saveFileDialog;
 
-    public FunctionLibraryInjectorView() {
+    public FunctionLibraryInjectorView()
+      : base() {
       InitializeComponent();
+      CreateFileDialogs();
+    }
+
+    public FunctionLibraryInjectorView(FunctionLibraryInjectorBase functionLibraryInjector)
+      : base(functionLibraryInjector) {
+      InitializeComponent();
+      this.functionLibraryInjector = functionLibraryInjector;
+      functionLibraryEditor.FunctionLibrary = functionLibraryInjector.FunctionLibrary;
+
+      CreateFileDialogs();
+    }
+
+    private void CreateFileDialogs() {
       openFileDialog = new OpenFileDialog();
       openFileDialog.AddExtension = true;
       openFileDialog.DefaultExt = ".hl";
-      openFileDialog.Filter = "HeuristicLab Dateien (*.hl) | *.hl | Alle Dateien (*.*) | *.*";
+      openFileDialog.Filter = "HeuristicLab Dateien (*.hl) |*.hl| Alle Dateien (*.*) |*.*";
       openFileDialog.Multiselect = false;
       saveFileDialog = new SaveFileDialog();
       saveFileDialog.AddExtension = true;
       saveFileDialog.DefaultExt = ".hl";
-      saveFileDialog.Filter = "HeuristicLab Dateien (*.hl) | *.hl | Alle Dateien (*.*) | *.*";
-    }
-
-    public FunctionLibraryInjectorView(FunctionLibraryInjectorBase functionLibraryInjector)
-      : this() {
-      this.functionLibraryInjector = functionLibraryInjector;
-      functionLibraryEditor.FunctionLibrary = functionLibraryInjector.FunctionLibrary;
+      saveFileDialog.Filter = "HeuristicLab Dateien (*.hl) |*.hl| Alle Dateien (*.*) |*.*";
     }
 
     private void loadButton_Click(object sender, EventArgs e) {

@@ -186,15 +186,17 @@ namespace HeuristicLab.GP {
         Cursor = Cursors.WaitCursor;
         if (subFunctionsListBox.SelectedItems.Count > 0 && e.KeyCode == Keys.Delete) {
           if (selectedSlot == ALL_SLOTS) {
+            List<IFunction> removedSubFunctions = new List<IFunction>(subFunctionsListBox.SelectedItems.Cast<IFunction>());
             for (int slot = 0; slot < function.MaxSubTrees; slot++) {
-              foreach (var subFun in subFunctionsListBox.SelectedItems) {
+              foreach (var subFun in removedSubFunctions) {
                 function.RemoveAllowedSubFunction((IFunction)subFun, slot);
               }
             }
           } else {
             int slot = int.Parse(selectedSlot);
-            foreach (var subFun in subFunctionsListBox.SelectedItems) {
-              function.RemoveAllowedSubFunction((IFunction)subFun, slot);
+            List<IFunction> removedSubFunctions = new List<IFunction>(subFunctionsListBox.SelectedItems.Cast<IFunction>());
+            foreach (var subFun in removedSubFunctions) {
+              function.RemoveAllowedSubFunction(subFun, slot);
             }
           }
 

@@ -45,21 +45,9 @@
       // 
       this.variableInfosTabPage.Size = new System.Drawing.Size(470, 411);
       // 
-      // variablesTabPage
-      // 
-      this.variablesTabPage.Size = new System.Drawing.Size(470, 411);
-      // 
-      // constrainedItemBaseView
-      // 
-      this.constrainedItemBaseView.Size = new System.Drawing.Size(464, 405);
-      // 
       // operatorBaseVariableInfosView
       // 
       this.operatorBaseVariableInfosView.Size = new System.Drawing.Size(464, 405);
-      // 
-      // operatorBaseVariablesView
-      // 
-      this.operatorBaseVariablesView.Size = new System.Drawing.Size(464, 405);
       // 
       // loadButton
       // 
@@ -68,7 +56,7 @@
       this.loadButton.Name = "loadButton";
       this.loadButton.Size = new System.Drawing.Size(75, 23);
       this.loadButton.TabIndex = 0;
-      this.loadButton.Text = "Load...";
+      this.loadButton.Text = "Import...";
       this.loadButton.UseVisualStyleBackColor = true;
       this.loadButton.Click += new System.EventHandler(this.loadButton_Click);
       // 
@@ -79,7 +67,7 @@
       this.saveButton.Name = "saveButton";
       this.saveButton.Size = new System.Drawing.Size(75, 23);
       this.saveButton.TabIndex = 2;
-      this.saveButton.Text = "Save...";
+      this.saveButton.Text = "Export...";
       this.saveButton.UseVisualStyleBackColor = true;
       this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
       // 

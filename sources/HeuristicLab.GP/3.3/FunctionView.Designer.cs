@@ -148,6 +148,7 @@ namespace HeuristicLab.GP {
       this.subFunctionsListBox.FormattingEnabled = true;
       this.subFunctionsListBox.Location = new System.Drawing.Point(6, 46);
       this.subFunctionsListBox.Name = "subFunctionsListBox";
+      this.subFunctionsListBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
       this.subFunctionsListBox.Size = new System.Drawing.Size(405, 225);
       this.subFunctionsListBox.TabIndex = 12;
       this.subFunctionsListBox.DragOver += new System.Windows.Forms.DragEventHandler(this.subFunctionsListBox_DragOver);

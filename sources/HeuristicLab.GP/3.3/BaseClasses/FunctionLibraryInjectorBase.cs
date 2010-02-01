@@ -75,5 +75,22 @@ namespace HeuristicLab.GP {
     public override IView CreateView() {
       return new FunctionLibraryInjectorView(this);
     }
+
+    #region persistence
+    public override object Clone(IDictionary<Guid, object> clonedObjects) {
+      FunctionLibraryInjectorBase clone = (FunctionLibraryInjectorBase)base.Clone(clonedObjects);
+      clone.functionLibrary = (FunctionLibrary)Auxiliary.Clone(functionLibrary, clonedObjects);
+      return clone;
+    }
+    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
+      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
+      node.AppendChild(PersistenceManager.Persist("FunctionLibrary", FunctionLibrary, document, persistedObjects));
+      return node;
+    }
+    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
+      base.Populate(node, restoredObjects);
+      functionLibrary = (FunctionLibrary)PersistenceManager.Restore(node.SelectSingleNode("FunctionLibrary"), restoredObjects);
+    }
+    #endregion
   }
 }

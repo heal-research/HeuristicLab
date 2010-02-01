@@ -226,13 +226,14 @@ namespace HeuristicLab.GP {
     #region persistence
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       Function clone = (Function)base.Clone(clonedObjects);
-      clone.initializer = (IOperator)Auxiliary.Clone(initializer, clonedObjects);
-      clone.manipulator = (IOperator)Auxiliary.Clone(manipulator, clonedObjects);
-      clone.maxArity = maxArity;
-      clone.minArity = minArity;
-      clone.minTreeHeight = minTreeHeight;
-      clone.minTreeSize = minTreeSize;
-      clone.tickets = tickets;
+      if (initializer != null) clone.initializer = (IOperator)Auxiliary.Clone(initializer, clonedObjects);
+      else clone.initializer = null;
+      if (manipulator != null) clone.manipulator = (IOperator)Auxiliary.Clone(manipulator, clonedObjects);
+      else clone.manipulator = null;
+      clone.MaxSubTrees = maxArity;
+      clone.MinSubTrees = minArity;
+      clone.Tickets = tickets;
+      clone.allowedSubFunctions.Clear();
       for (int i = 0; i < MaxSubTrees; i++) {
         var allowedSubFunctionsForSlot = new List<IFunction>();
         foreach (IFunction f in GetAllowedSubFunctions(i)) {
@@ -251,6 +252,10 @@ namespace HeuristicLab.GP {
       maxSubTreesAttr.Value = XmlConvert.ToString(MaxSubTrees);
       node.Attributes.Append(minSubTreesAttr);
       node.Attributes.Append(maxSubTreesAttr);
+      if (initializer != null)
+        node.AppendChild(PersistenceManager.Persist("Initializer", initializer, document, persistedObjects));
+      if (manipulator != null)
+        node.AppendChild(PersistenceManager.Persist("Manipulator", manipulator, document, persistedObjects));
       for (int i = 0; i < MaxSubTrees; i++) {
         XmlNode slotNode = document.CreateElement("AllowedSubFunctions");
         XmlAttribute slotAttr = document.CreateAttribute("Slot");
@@ -268,6 +273,13 @@ namespace HeuristicLab.GP {
       base.Populate(node, restoredObjects);
       MinSubTrees = XmlConvert.ToInt32(node.Attributes["MinSubTrees"].Value);
       MaxSubTrees = XmlConvert.ToInt32(node.Attributes["MaxSubTrees"].Value);
+      if (node.SelectSingleNode("Initializer") != null) {
+        initializer = (IOperator)PersistenceManager.Restore(node.SelectSingleNode("Initializer"), restoredObjects);
+      }
+      if (node.SelectSingleNode("Manipulator") != null) {
+        manipulator = (IOperator)PersistenceManager.Restore(node.SelectSingleNode("Manipulator"), restoredObjects);
+      }
+      foreach (var subFunctionsList in allowedSubFunctions) subFunctionsList.Clear();
       foreach (XmlNode allowedSubFunctionsNode in node.SelectNodes("AllowedSubFunctions")) {
         int slot = XmlConvert.ToInt32(allowedSubFunctionsNode.Attributes["Slot"].Value);
         foreach (XmlNode fNode in allowedSubFunctionsNode.ChildNodes) {

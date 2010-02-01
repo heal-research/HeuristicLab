@@ -160,20 +160,31 @@ namespace HeuristicLab.GP {
         }
       }
     }
-
-    private void tabControl_Selected(object sender, TabControlEventArgs e) {
-      if (e.TabPage == testTabPage) {
-        outputTextBox.Text = TestFunctionLibrary();
-      }
-    }
-
+    #region fun lib test
     private string TestFunctionLibrary() {
       int n = 1000;
-      IFunctionTree[] randomTrees = CreateRandomTrees(n, 1, 100);
-
-      StringBuilder builder = new StringBuilder();
-      builder.AppendLine(CalculateFunctionFrequencies(randomTrees));
-      return builder.ToString();
+      try {
+        IFunctionTree[] randomTrees = CreateRandomTrees(n, 1, 100);
+        StringBuilder builder = new StringBuilder();
+        builder.AppendLine("Function symbol frequencies:");
+        builder.AppendLine(CalculateFunctionFrequencies(randomTrees));
+        builder.AppendLine("-----------------------------------------");
+        builder.AppendLine("Terminal symbol frequencies:");
+        builder.AppendLine(CalculateTerminalFrequencies(randomTrees));
+        builder.AppendLine("-----------------------------------------");
+        builder.AppendLine("Function arity frequencies:");
+        builder.AppendLine(CalculateFunctionArityFrequencies(randomTrees));
+        builder.AppendLine("-----------------------------------------");
+        builder.AppendLine("Tree size frequencies:");
+        builder.AppendLine(CalculateTreeSizeFrequencies(randomTrees));
+        builder.AppendLine("-----------------------------------------");
+        builder.AppendLine("Tree height frequencies:");
+        builder.AppendLine(CalculateTreeHeightFrequencies(randomTrees));
+        return builder.ToString();
+      }
+      catch (ArgumentException ex) {
+        return "Could not create random trees:" + Environment.NewLine + ex.Message + Environment.NewLine + ex.StackTrace;
+      }
     }
 
     private string CalculateFunctionFrequencies(IFunctionTree[] randomTrees) {
@@ -198,6 +209,76 @@ namespace HeuristicLab.GP {
       return strBuilder.ToString();
     }
 
+    public string CalculateTreeSizeFrequencies(IFunctionTree[] randomTrees) {
+      int[] histogram = new int[105 / 5];
+      for (int i = 0; i < randomTrees.Length; i++) {
+        histogram[randomTrees[i].GetSize() / 5]++;
+      }
+      StringBuilder strBuilder = new StringBuilder();
+      for (int i = 0; i < histogram.Length; i++) {
+        strBuilder.Append(Environment.NewLine);
+        strBuilder.Append("< "); strBuilder.Append((i + 1) * 5);
+        strBuilder.Append(": "); strBuilder.AppendFormat("{0:#0.00%}", histogram[i] / (double)randomTrees.Length);
+      }
+      return strBuilder.ToString();
+    }
+
+    public string CalculateTreeHeightFrequencies(IFunctionTree[] randomTrees) {
+      int[] histogram = new int[100];
+      for (int i = 0; i < randomTrees.Length; i++) {
+        histogram[randomTrees[i].GetHeight()]++;
+      }
+      StringBuilder strBuilder = new StringBuilder();
+      for (int i = 0; i < histogram.Length; i++) {
+        strBuilder.Append(Environment.NewLine);
+        strBuilder.Append("< "); strBuilder.Append((i + 1));
+        strBuilder.Append(": "); strBuilder.AppendFormat("{0:#0.00%}", histogram[i] / (double)randomTrees.Length);
+      }
+      return strBuilder.ToString();
+    }
+
+    public string CalculateFunctionArityFrequencies(IFunctionTree[] randomTrees) {
+      Dictionary<int, int> occurances = new Dictionary<int, int>();
+      double n = 0.0;
+      for (int i = 0; i < randomTrees.Length; i++) {
+        foreach (var node in FunctionTreeIterator.IteratePrefix(randomTrees[i])) {
+          if (!occurances.ContainsKey(node.SubTrees.Count))
+            occurances[node.SubTrees.Count] = 0;
+          occurances[node.SubTrees.Count]++;
+          n++;
+        }
+      }
+      StringBuilder strBuilder = new StringBuilder();
+      foreach (var arity in occurances.Keys) {
+        strBuilder.Append(Environment.NewLine);
+        strBuilder.Append(arity); strBuilder.Append(": ");
+        strBuilder.AppendFormat("{0:#0.00%}", occurances[arity] / n);
+      }
+      return strBuilder.ToString();
+    }
+
+    public string CalculateTerminalFrequencies(IFunctionTree[] randomTrees) {
+      Dictionary<IFunction, int> occurances = new Dictionary<IFunction, int>();
+      double n = 0.0;
+      for (int i = 0; i < randomTrees.Length; i++) {
+        foreach (var node in FunctionTreeIterator.IteratePrefix(randomTrees[i])) {
+          if (node.SubTrees.Count == 0) {
+            if (!occurances.ContainsKey(node.Function))
+              occurances[node.Function] = 0;
+            occurances[node.Function]++;
+            n++;
+          }
+        }
+      }
+      StringBuilder strBuilder = new StringBuilder();
+      foreach (var function in occurances.Keys) {
+        strBuilder.Append(Environment.NewLine);
+        strBuilder.Append(function.Name); strBuilder.Append(": ");
+        strBuilder.AppendFormat("{0:#0.00%}", occurances[function] / n);
+      }
+      return strBuilder.ToString();
+    }
+
     private IFunctionTree[] CreateRandomTrees(int popSize, int minSize, int maxSize) {
       int maxHeight = 10;
       int maxTries = 100;
@@ -205,21 +286,38 @@ namespace HeuristicLab.GP {
       MersenneTwister twister = new MersenneTwister();
       for (int i = 0; i < randomTrees.Length; i++) {
         int treeSize = twister.Next(minSize, maxSize);
-        IFunctionTree root;
+        IFunctionTree root = null;
         int tries = 0;
         TreeGardener gardener = new TreeGardener(twister, FunctionLibrary);
         do {
-          root = gardener.PTC2(treeSize, maxSize);
+          try {
+            root = gardener.PTC2(treeSize, maxSize);
+          }
+          catch (ArgumentException) {
+            // try a different size
+            treeSize = twister.Next(minSize, maxSize);
+            tries = 0;
+          }
           if (tries++ >= maxTries) {
             // try a different size
             treeSize = twister.Next(minSize, maxSize);
             tries = 0;
           }
-        } while (root.GetSize() > maxSize || root.GetHeight() > maxHeight);
+        } while (root == null || root.GetSize() > maxSize || root.GetHeight() > maxHeight);
         randomTrees[i] = root;
       }
       return randomTrees;
     }
 
+    private void testButton_Click(object sender, EventArgs e) {
+      try {
+        Cursor = Cursors.WaitCursor;
+        outputTextBox.Text = TestFunctionLibrary();
+      }
+      finally {
+        Cursor = Cursors.Default;
+      }
+    }
+    #endregion
   }
 }

@@ -63,6 +63,7 @@ namespace HeuristicLab.GP {
       this.mutationListView = new System.Windows.Forms.ListView();
       this.mutationVariableView = new HeuristicLab.Core.VariableView();
       this.testTabPage = new System.Windows.Forms.TabPage();
+      this.testButton = new System.Windows.Forms.Button();
       this.outputTextBox = new System.Windows.Forms.TextBox();
       this.tabControl.SuspendLayout();
       this.functionsTabPage.SuspendLayout();
@@ -94,7 +95,6 @@ namespace HeuristicLab.GP {
       this.tabControl.SelectedIndex = 0;
       this.tabControl.Size = new System.Drawing.Size(677, 561);
       this.tabControl.TabIndex = 1;
-      this.tabControl.Selected += new System.Windows.Forms.TabControlEventHandler(this.tabControl_Selected);
       // 
       // functionsTabPage
       // 
@@ -143,7 +143,6 @@ namespace HeuristicLab.GP {
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.functionsListView.Location = new System.Drawing.Point(6, 19);
-      this.functionsListView.MultiSelect = false;
       this.functionsListView.Name = "functionsListView";
       this.functionsListView.Size = new System.Drawing.Size(218, 475);
       this.functionsListView.TabIndex = 3;
@@ -307,6 +306,7 @@ namespace HeuristicLab.GP {
       // 
       // testTabPage
       // 
+      this.testTabPage.Controls.Add(this.testButton);
       this.testTabPage.Controls.Add(this.outputTextBox);
       this.testTabPage.Location = new System.Drawing.Point(4, 22);
       this.testTabPage.Name = "testTabPage";
@@ -316,13 +316,27 @@ namespace HeuristicLab.GP {
       this.testTabPage.Text = "Test function library";
       this.testTabPage.UseVisualStyleBackColor = true;
       // 
+      // testButton
+      // 
+      this.testButton.Location = new System.Drawing.Point(6, 6);
+      this.testButton.Name = "testButton";
+      this.testButton.Size = new System.Drawing.Size(75, 23);
+      this.testButton.TabIndex = 1;
+      this.testButton.Text = "Run test";
+      this.testButton.UseVisualStyleBackColor = true;
+      this.testButton.Click += new System.EventHandler(this.testButton_Click);
+      // 
       // outputTextBox
       // 
-      this.outputTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.outputTextBox.Location = new System.Drawing.Point(3, 3);
+      this.outputTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.outputTextBox.Location = new System.Drawing.Point(3, 35);
       this.outputTextBox.Multiline = true;
       this.outputTextBox.Name = "outputTextBox";
-      this.outputTextBox.Size = new System.Drawing.Size(663, 529);
+      this.outputTextBox.ReadOnly = true;
+      this.outputTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+      this.outputTextBox.Size = new System.Drawing.Size(663, 497);
       this.outputTextBox.TabIndex = 0;
       // 
       // FunctionLibraryEditor
@@ -375,5 +389,6 @@ namespace HeuristicLab.GP {
     private System.Windows.Forms.GroupBox functionDetailsGroupBox;
     private System.Windows.Forms.TabPage testTabPage;
     private System.Windows.Forms.TextBox outputTextBox;
+    private System.Windows.Forms.Button testButton;
   }
 }
