@@ -482,6 +482,9 @@ namespace HeuristicLab.GP {
     }
 
     public static IFunction RandomSelect(IRandom random, IList<IFunction> functionSet) {
+      if (random == null || functionSet == null) throw new ArgumentNullException();
+      if (functionSet.Count == 0) throw new ArgumentException("Empty function set");
+      if (functionSet.Select(x => x.Tickets).Sum() <= 0) throw new ArgumentException("All functions in set have 0 tickets");
       double[] accumulatedTickets = new double[functionSet.Count];
       double ticketAccumulator = 0;
       int i = 0;
@@ -497,8 +500,7 @@ namespace HeuristicLab.GP {
       for (i = 0; i < accumulatedTickets.Length; i++) {
         if (r < accumulatedTickets[i]) return functionSet[i];
       }
-      // sanity check
-      throw new InvalidProgramException(); // should never happen
+      throw new ArgumentException();
     }
 
     #endregion

@@ -23,6 +23,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Random;
 using HeuristicLab.GP.Interfaces;
+using System;
 
 namespace HeuristicLab.GP.Operators {
   public class ProbabilisticTreeCreator : OperatorBase {
@@ -57,17 +58,24 @@ namespace HeuristicLab.GP.Operators {
 
     public static IFunctionTree Create(IRandom random, FunctionLibrary funLib, int minSize, int maxSize, int maxHeight) {
       int treeSize = random.Next(minSize, maxSize);
-      IFunctionTree root;
+      IFunctionTree root = null;
       int tries = 0;
       TreeGardener gardener = new TreeGardener(random, funLib);
       do {
-        root = gardener.PTC2(treeSize, maxHeight);
+        try {
+          root = gardener.PTC2(treeSize, maxHeight);
+        }
+        catch (ArgumentException) {
+          // try a different size
+          treeSize = random.Next(minSize, maxSize);
+          tries = 0;
+        }
         if (tries++ >= MAX_TRIES) {
           // try a different size
           treeSize = random.Next(minSize, maxSize);
           tries = 0;
         }
-      } while (root.GetSize() > maxSize || root.GetHeight() > maxHeight);
+      } while (root == null || root.GetSize() > maxSize || root.GetHeight() > maxHeight);
       return root;
     }
   }
