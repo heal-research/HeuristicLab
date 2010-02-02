@@ -27,6 +27,7 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Core.Views { 
@@ -67,9 +68,9 @@ namespace HeuristicLab.Core.Views {
                         orderby t.Name ascending
                         select t;
         foreach (Type viewType in viewTypes) {
-          ToolStripMenuItem item = new ToolStripMenuItem(viewType.Name);
+          ToolStripMenuItem item = new ToolStripMenuItem(viewType.GetPrettyName());
           item.Name = viewType.FullName;
-          item.ToolTipText = viewType.FullName;
+          item.ToolTipText = viewType.GetPrettyName(true);
           item.Tag = viewType;
           contextMenuStrip.Items.Add(item);
           typeMenuItemTable.Add(viewType, item);

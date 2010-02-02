@@ -27,6 +27,7 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.MainForm;
 
@@ -112,7 +113,7 @@ namespace HeuristicLab.Core.Views {
             if (valid) {
               TreeNode typeNode = new TreeNode();
               string name = ItemAttribute.GetName(type);
-              typeNode.Text = name != null ? name : type.Name;
+              typeNode.Text = name != null ? name : type.GetPrettyName();
               typeNode.ImageIndex = 0;
               if (type.IsInterface) typeNode.ImageIndex = 2;
               else if (type.IsAbstract) typeNode.ImageIndex = 3;
@@ -137,7 +138,7 @@ namespace HeuristicLab.Core.Views {
             typesTreeView.Nodes.Add(pluginNode);
         }
         if (typesTreeView.Nodes.Count == 0) {
-          typesTreeView.Nodes.Add("No types of base type \"" + BaseType.Name + "\" found");
+          typesTreeView.Nodes.Add("No types of base type \"" + BaseType.GetPrettyName() + "\" found");
           typesTreeView.Enabled = false;
         }
         if (selectedNode != null) {
