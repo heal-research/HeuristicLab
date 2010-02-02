@@ -30,16 +30,16 @@ namespace HeuristicLab.Persistence.Auxiliary {
 
       Version := '\d+\.\d+\.\d+\.\d+)'
 
-      IDENTIFIER = [a-zA-Z][a-ZA-Z0-9]*
+      IDENTIFIER = [_a-zA-Z][_a-ZA-Z0-9]*
     */
 
 
     class Token {
       private static Dictionary<string, string> tokens =
         new Dictionary<string, string> {
+          {"-", "DASH"},
           {"&", "AMPERSAND"},
           {".", "DOT"},
-          {"-", "DASH"},
           {"+", "PLUS"},
           {",", "COMMA"},
           {"[", "OPEN_BRACKET"},
@@ -49,7 +49,7 @@ namespace HeuristicLab.Persistence.Auxiliary {
           {"=", "EQUALS"},
           {"`", "BACKTICK"} };
       private static Regex NumberRegex = new Regex("^\\d+$");
-      private static Regex TokenRegex = new Regex("[-&.+,\\[\\]* =`]|\\d+|[a-zA-Z][a-zA-Z0-9]*");
+      private static Regex TokenRegex = new Regex("[-&.+,\\[\\]* =`]|\\d+|[_a-zA-Z][_a-zA-Z0-9]*");
       public string Name { get; private set; }
       public string Value { get; private set; }
       public int? Number { get; private set; }

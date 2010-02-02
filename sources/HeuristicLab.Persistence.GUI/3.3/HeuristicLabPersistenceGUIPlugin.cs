@@ -6,11 +6,11 @@ namespace HeuristicLab.Persistence.GUI {
   [Plugin("HeuristicLab.Persistence.GUI-3.3")]
   [PluginFile("HeuristicLab.Persistence.GUI-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Persistence-3.3")]
-  public class HeuristicLabPersistencePlugin : PluginBase { }
+  public class HeuristicLabPersistenceGUIPlugin : PluginBase { }
 
 
   [Application("Persistence Configuration")]
-  public class HeuristicLabPersistenceApplication : ApplicationBase {
+  public class HeuristicLabPersistenceGUIApplication : ApplicationBase {
     public override void Run() {
       Application.EnableVisualStyles();
       Application.SetCompatibleTextRenderingDefault(false);

@@ -52,7 +52,7 @@ namespace HeuristicLab.Persistence.Core {
 
     private List<TypeMapping> externalTypeCache;
     private List<string> requiredFiles;
-    private void BuildTypeCache() {      
+    private void BuildTypeCache() {
       externalTypeCache = new List<TypeMapping>();
       Dictionary<Assembly, bool> assemblies = new Dictionary<Assembly, bool>();
       foreach (var pair in typeCache) {
@@ -83,7 +83,6 @@ namespace HeuristicLab.Persistence.Core {
       : this(obj, configuration, rootName, false) { }
 
     public Serializer(object obj, Configuration configuration, string rootName, bool isTestRun) {
-    
       this.obj = obj;
       this.rootName = rootName;
       this.configuration = configuration;
@@ -173,23 +172,27 @@ namespace HeuristicLab.Persistence.Core {
         string name, IEnumerable<Tag> tags, int? id, int typeId, IEnumerable<Tag> metaInfo) {
       yield return new BeginToken(name, typeId, id);
       bool first = true;
-      foreach (var tag in metaInfo) {
-        IEnumerator<ISerializationToken> metaIt = Serialize(new DataMemberAccessor(tag.Value, tag.Name));
-        while (metaIt.MoveNext()) {
-          if (first) {
-            yield return new MetaInfoBeginToken();
-            first = false;
+      if (metaInfo != null) {
+        foreach (var tag in metaInfo) {
+          IEnumerator<ISerializationToken> metaIt = Serialize(new DataMemberAccessor(tag.Value, tag.Name));
+          while (metaIt.MoveNext()) {
+            if (first) {
+              yield return new MetaInfoBeginToken();
+              first = false;
+            }
+            yield return metaIt.Current;
           }
-          yield return metaIt.Current;
         }
       }
       if (!first) {
         yield return new MetaInfoEndToken();
       }
-      foreach (var tag in tags) {
-        IEnumerator<ISerializationToken> it = Serialize(new DataMemberAccessor(tag.Value, tag.Name));
-        while (it.MoveNext())
-          yield return it.Current;
+      if (tags != null) {
+        foreach (var tag in tags) {
+          IEnumerator<ISerializationToken> it = Serialize(new DataMemberAccessor(tag.Value, tag.Name));
+          while (it.MoveNext())
+            yield return it.Current;
+        }
       }
       yield return new EndToken(name, typeId, id);
     }
