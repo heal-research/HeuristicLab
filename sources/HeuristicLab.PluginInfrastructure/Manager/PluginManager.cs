@@ -126,7 +126,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       try {
         AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
         setup.PrivateBinPath = pluginDir;
-        applicationDomain = AppDomain.CreateDomain(appInfo.Name, null, setup);
+        applicationDomain = AppDomain.CreateDomain(AppDomain.CurrentDomain.FriendlyName, null, setup);
         Type applicationManagerType = typeof(ApplicationManager);
         ApplicationManager applicationManager =
           (ApplicationManager)applicationDomain.CreateInstanceAndUnwrap(applicationManagerType.Assembly.FullName, applicationManagerType.FullName, true, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null, null, null);
