@@ -35,29 +35,15 @@ namespace HeuristicLab.Operators {
   [Item("SequentialProcessor", "An operator which executes multiple operators sequentially.")]
   [Creatable("Test")]
   [EmptyStorableClass]
-  public sealed class SequentialProcessor : Operator, IOperator {
-    public new ParameterCollection Parameters {
-      get {
-        return base.Parameters;
-      }
-    }
-    IObservableKeyedCollection<string, IParameter> IOperator.Parameters {
-      get { return Parameters; }
-    }
-
+  public sealed class SequentialProcessor : MultipleSuccessorsOperator {
     public SequentialProcessor()
       : base() {
     }
 
-    public override ExecutionContextCollection Apply(ExecutionContext context) {
+    public override ExecutionContextCollection Apply() {
       ExecutionContextCollection next = new ExecutionContextCollection();
-      foreach (IParameter param in Parameters) {
-        IOperatorParameter opParam = param as IOperatorParameter;
-        if (opParam != null) {
-          IOperator op = (IOperator)opParam.GetValue(context);
-          if (op != null) next.Add(new ExecutionContext(context.Parent, op, context.Scope));
-        }
-      }
+      for (int i = 0; i < Successors.Count; i++)
+        next.Add(new ExecutionContext(ExecutionContext.Parent, Successors[i], ExecutionContext.Scope));
       return next;
     }
   }

@@ -26,10 +26,8 @@ using System.Xml;
 
 namespace HeuristicLab.Core {
   public interface IOperatorParameter : IParameter {
-    string ActualName { get; set; }
     IOperator Value { get; set; }
 
-    event EventHandler ActualNameChanged;
     event EventHandler ValueChanged;
   }
 }

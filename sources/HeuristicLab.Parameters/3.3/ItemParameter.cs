@@ -28,7 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Parameters {
   /// <summary>
-  /// Represents a parameter.
+  /// A generic parameter which represents an instance of type T.
   /// </summary>
   [Item("ItemParameter<T>", "A generic parameter which represents an instance of type T.")]
   public class ItemParameter<T> : Parameter where T : class, IItem {
@@ -45,68 +45,99 @@ namespace HeuristicLab.Parameters {
       }
     }
 
-    private T value;
+    private T localValue;
     [Storable]
-    public T Value {
-      get { return this.value; }
+    public T LocalValue {
+      get { return this.localValue; }
       set {
-        if (value != this.value) {
+        if (value != this.localValue) {
           if ((value != null) && (!DataType.IsInstanceOfType(value))) throw new ArgumentException("Static value does not match data type of parameter");
-          if (this.value != null) this.value.Changed -= new ChangedEventHandler(Value_Changed);
-          this.value = value;
-          if (this.value != null) this.value.Changed += new ChangedEventHandler(Value_Changed);
-          OnValueChanged();
+          if (this.localValue != null) this.localValue.Changed -= new ChangedEventHandler(LocalValue_Changed);
+          this.localValue = value;
+          if (this.localValue != null) this.localValue.Changed += new ChangedEventHandler(LocalValue_Changed);
+          OnLocalValueChanged();
         }
       }
+    }
+
+    public T Value {
+      get { return GetValue(); }
+      set { SetValue(value); }
     }
 
     public ItemParameter()
       : base("Anonymous", null, typeof(T)) {
       actualName = Name;
-      Value = null;
+      LocalValue = null;
     }
     public ItemParameter(string name, string description)
       : base(name, description, typeof(T)) {
-      this.actualName = Name;
-      this.Value = null;
+      actualName = Name;
+      LocalValue = null;
     }
-    public ItemParameter(string name, string description, T value)
+    public ItemParameter(string name, string description, T localValue)
       : base(name, description, typeof(T)) {
-      this.actualName = Name;
-      this.Value = value;
+      actualName = Name;
+      LocalValue = localValue;
     }
 
-    public override IItem GetValue(ExecutionContext context) {
+    public override IDeepCloneable Clone(Cloner cloner) {
+      ItemParameter<T> clone = (ItemParameter<T>)base.Clone(cloner);
+      clone.actualName = actualName;
+      clone.LocalValue = (T)cloner.Clone(localValue);
+      return clone;
+    }
+
+    public override string ToString() {
+      return string.Format("{0}: {1} ({2})", Name, LocalValue != null ? LocalValue.ToString() : ActualName, DataType.Name);
+    }
+
+    protected ItemParameter<T> GetParameter(out string name) {
       ItemParameter<T> param = this;
-      ExecutionContext current = context;
-      string actualName = null;
+      ExecutionContext current = ExecutionContext;
+      name = param.Name;
       while (param != null) {
-        if (param.Value != null) return param.Value;
-        actualName = param.ActualName;
+        if (param.LocalValue != null) return param;
+        name = param.ActualName;
         current = current.Parent;
-        while ((current != null) && !current.Operator.Parameters.ContainsKey(actualName))
+        while ((current != null) && !current.Operator.Parameters.ContainsKey(name))
           current = current.Parent;
         if (current != null)
           param = (ItemParameter<T>)current.Operator.Parameters[actualName];
         else
           param = null;
       }
-
-      IScope scope = context.Scope;
-      while ((scope != null) && !scope.Variables.ContainsKey(actualName))
+      return null;
+    }
+    protected IVariable GetVariable(string name) {
+      IScope scope = ExecutionContext.Scope;
+      while ((scope != null) && !scope.Variables.ContainsKey(name))
         scope = scope.Parent;
-      return scope != null ? scope.Variables[actualName].Value : null;
+      return scope != null ? scope.Variables[actualName] : null;
     }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      ItemParameter<T> clone = (ItemParameter<T>)base.Clone(cloner);
-      clone.actualName = actualName;
-      clone.Value = (T)cloner.Clone(value);
-      return clone;
+    protected virtual T GetValue() {
+      string name;
+      // try to get local value from context stack
+      ItemParameter<T> param = GetParameter(out name);
+      if (param != null) return param.Value;
+      else {
+        // try to get variable from scope
+        IVariable var = GetVariable(name);
+        if (var != null) return (T)var.Value;
+      }
+      return null;
     }
-
-    public override string ToString() {
-      return string.Format("{0}: {1} ({2})", Name, Value != null ? Value.ToString() : ActualName, DataType.Name);
+    protected virtual void SetValue(T value) {
+      string name;
+      // try to get local value from context stack
+      ItemParameter<T> param = GetParameter(out name);
+      if (param != null) param.Value = value;
+      else {
+        // try to get variable from scope
+        IVariable var = GetVariable(name);
+        if (var != null) var.Value = value;
+        else ExecutionContext.Scope.Variables.Add(new Variable(name, value));
+      }
     }
 
     public event EventHandler ActualNameChanged;
@@ -115,14 +146,13 @@ namespace HeuristicLab.Parameters {
         ActualNameChanged(this, new EventArgs());
       OnChanged();
     }
-    public event EventHandler ValueChanged;
-    private void OnValueChanged() {
-      if (ValueChanged != null)
-        ValueChanged(this, new EventArgs());
+    public event EventHandler LocalValueChanged;
+    private void OnLocalValueChanged() {
+      if (LocalValueChanged != null)
+        LocalValueChanged(this, new EventArgs());
       OnChanged();
     }
-
-    private void Value_Changed(object sender, ChangedEventArgs e) {
+    private void LocalValue_Changed(object sender, ChangedEventArgs e) {
       OnChanged(e);
     }
   }

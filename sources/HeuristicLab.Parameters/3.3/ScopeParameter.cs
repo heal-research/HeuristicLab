@@ -20,27 +20,33 @@
 #endregion
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Data {
+namespace HeuristicLab.Parameters {
   /// <summary>
-  /// Generic list of elements that implement the interface <see cref="IItem"/>.
+  /// A parameter which represents the current scope.
   /// </summary>
-  public class ItemList : ItemList<IItem> {
-    /// <summary>
-    /// Clones the current list and all its elements.
-    /// </summary>
-    /// <param name="clonedObjects">A dictionary of all already cloned objects.</param>
-    /// <returns>The cloned instance as <see cref="ItemList"/>.</returns>
-    public override IItem Clone(ICloner cloner) {
-      ItemList clone = new ItemList();
-      cloner.RegisterClonedObject(this, clone);
-      base.CloneElements(cloner, clone);
-      return clone;
+  [Item("ScopeParameter", "A parameter which represents the current scope.")]
+  [EmptyStorableClass]
+  [Creatable("Test")]
+  public class ScopeParameter : Parameter {
+    public IScope Value {
+      get { return ExecutionContext.Scope; }
+    }
+
+    public ScopeParameter()
+      : base("Anonymous", null, typeof(IScope)) {
+    }
+    public ScopeParameter(string name, string description)
+      : base(name, description, typeof(IScope)) {
+    }
+
+    public override string ToString() {
+      return string.Format("{0} ({1})", Name, DataType.Name);
     }
   }
 }

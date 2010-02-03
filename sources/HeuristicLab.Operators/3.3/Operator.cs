@@ -83,6 +83,12 @@ namespace HeuristicLab.Operators {
       }
     }
 
+    [Storable]
+    private ExecutionContext executionContext;
+    protected ExecutionContext ExecutionContext {
+      get { return executionContext; }
+    }
+
     /// <summary>
     /// Initializes a new instance of <see cref="OperatorBase"/> setting the breakpoint flag and 
     /// the canceled flag to <c>false</c> and the name of the operator to the type name. 
@@ -106,15 +112,26 @@ namespace HeuristicLab.Operators {
       clone.Parameters = (ParameterCollection)cloner.Clone(parameters);
       clone.canceled = canceled;
       clone.breakpoint = breakpoint;
+      clone.executionContext = (ExecutionContext)cloner.Clone(executionContext);
       return clone;
     }
 
     /// <inheritdoc/>
     public virtual ExecutionContextCollection Execute(ExecutionContext context) {
-      canceled = false;
-      ExecutionContextCollection next = Apply(context);
-      OnExecuted();
-      return next;
+      try {
+        canceled = false;
+        executionContext = context;
+        foreach (IParameter param in Parameters)
+          param.ExecutionContext = context;
+        ExecutionContextCollection next = Apply();
+        OnExecuted();
+        return next;
+      }
+      finally {
+        foreach (IParameter param in Parameters)
+          param.ExecutionContext = null;
+        context = null;
+      }
     }
     /// <inheritdoc/>
     /// <remarks>Sets property <see cref="Canceled"/> to <c>true</c>.</remarks>
@@ -126,7 +143,7 @@ namespace HeuristicLab.Operators {
     /// </summary>
     /// <param name="scope">The scope where to execute the operator</param>
     /// <returns><c>null</c>.</returns>
-    public virtual ExecutionContextCollection Apply(ExecutionContext context) {
+    public virtual ExecutionContextCollection Apply() {
       return new ExecutionContextCollection();
     }
 

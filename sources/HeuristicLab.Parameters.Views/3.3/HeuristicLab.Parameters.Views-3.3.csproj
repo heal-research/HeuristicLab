@@ -50,6 +50,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SubScopesItemParameterView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SubScopesItemParameterView.Designer.cs">
+      <DependentUpon>SubScopesItemParameterView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OperatorParameterView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OperatorParameterView.Designer.cs">
+      <DependentUpon>OperatorParameterView.cs</DependentUpon>
+    </Compile>
     <Compile Include="HeuristicLabParametersViewsPlugin.cs" />
     <Compile Include="ItemParameterView.cs">
       <SubType>UserControl</SubType>

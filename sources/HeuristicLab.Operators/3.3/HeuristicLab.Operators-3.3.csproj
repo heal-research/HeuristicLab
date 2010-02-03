@@ -85,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CombinedOperator.cs" />
+    <Compile Include="MultipleSuccessorsOperator.cs" />
     <Compile Include="Counter.cs" />
     <Compile Include="EmptyOperator.cs">
       <SubType>Code</SubType>
@@ -93,7 +94,7 @@
     <Compile Include="Operator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SequentialProcessor.cs" />
-    <Compile Include="StandardOperator.cs" />
+    <Compile Include="SingleSuccessorOperator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">

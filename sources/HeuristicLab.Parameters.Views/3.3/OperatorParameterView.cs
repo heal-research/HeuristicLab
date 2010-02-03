@@ -34,8 +34,9 @@ namespace HeuristicLab.Parameters.Views {
   /// <summary>
   /// The visual representation of a <see cref="Parameter"/>.
   /// </summary>
-  [Content(typeof(ItemParameter<>), true)]
-  public partial class ItemParameterView<T> : ParameterView where T : class, IItem {
+  [Content(typeof(OperatorParameter), true)]
+  [Content(typeof(IOperatorParameter), false)]
+  public partial class OperatorParameterView : ParameterView {
     protected TypeSelectorDialog typeSelectorDialog;
 
     /// <summary>
@@ -43,24 +44,24 @@ namespace HeuristicLab.Parameters.Views {
     /// </summary>
     /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
     /// No own data storage present.</remarks>
-    public new ItemParameter<T> Content {
-      get { return (ItemParameter<T>)base.Content; }
+    public new IOperatorParameter Content {
+      get { return (IOperatorParameter)base.Content; }
       set { base.Content = value; }
     }
 
     /// <summary>
     /// Initializes a new instance of <see cref="VariableView"/> with caption "Variable".
     /// </summary>
-    public ItemParameterView() {
+    public OperatorParameterView() {
       InitializeComponent();
-      Caption = "ItemParameter";
+      Caption = "OperatorParameter";
     }
     /// <summary>
     /// Initializes a new instance of <see cref="VariableView"/> with the given <paramref name="variable"/>.
     /// </summary>
     /// <remarks>Calls <see cref="VariableView()"/>.</remarks>
     /// <param name="variable">The variable to represent visually.</param>
-    public ItemParameterView(ItemParameter<T> content)
+    public OperatorParameterView(IOperatorParameter content)
       : this() {
       Content = content;
     }
@@ -70,8 +71,7 @@ namespace HeuristicLab.Parameters.Views {
     /// </summary>
     /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void DeregisterContentEvents() {
-      Content.ActualNameChanged -= new EventHandler(Content_ActualNameChanged);
-      Content.LocalValueChanged -= new EventHandler(Content_LocalValueChanged);
+      Content.ValueChanged -= new EventHandler(Content_ValueChanged);
       base.DeregisterContentEvents();
     }
 
@@ -81,64 +81,49 @@ namespace HeuristicLab.Parameters.Views {
     /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.ActualNameChanged += new EventHandler(Content_ActualNameChanged);
-      Content.LocalValueChanged += new EventHandler(Content_LocalValueChanged);
+      Content.ValueChanged += new EventHandler(Content_ValueChanged);
     }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        Caption = "ItemParameter";
-        actualNameTextBox.Text = "-";
-        actualNameTextBox.Enabled = false;
-        setLocalValueButton.Enabled = false;
-        clearLocalValueButton.Enabled = false;
-        localValueGroupBox.Enabled = false;
+        Caption = "OperatorParameter";
+        setValueButton.Enabled = false;
+        clearValueButton.Enabled = false;
+        valueGroupBox.Enabled = false;
         viewHost.Content = null;
       } else {
         Caption = Content.Name + " (" + Content.GetType().Name + ")";
-        actualNameTextBox.Text = Content.ActualName;
-        actualNameTextBox.Enabled = Content.LocalValue == null;
-        setLocalValueButton.Enabled = Content.LocalValue == null;
-        clearLocalValueButton.Enabled = Content.LocalValue != null;
-        localValueGroupBox.Enabled = true;
-        viewHost.Content = Content.LocalValue;
+        setValueButton.Enabled = Content.Value == null;
+        clearValueButton.Enabled = Content.Value != null;
+        valueGroupBox.Enabled = true;
+        viewHost.Content = Content.Value;
       }
     }
 
-    protected virtual void Content_ActualNameChanged(object sender, EventArgs e) {
+    protected virtual void Content_ValueChanged(object sender, EventArgs e) {
       if (InvokeRequired)
-        Invoke(new EventHandler(Content_ActualNameChanged), sender, e);
-      else
-        actualNameTextBox.Text = Content.ActualName;
-    }
-    protected virtual void Content_LocalValueChanged(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_LocalValueChanged), sender, e);
+        Invoke(new EventHandler(Content_ValueChanged), sender, e);
       else {
-        actualNameTextBox.Enabled = Content.LocalValue == null;
-        setLocalValueButton.Enabled = Content.LocalValue == null;
-        clearLocalValueButton.Enabled = Content.LocalValue != null;
-        viewHost.Content = Content.LocalValue;
+        setValueButton.Enabled = Content.Value == null;
+        clearValueButton.Enabled = Content.Value != null;
+        viewHost.Content = Content.Value;
       }
     }
 
-    protected virtual void actualNameTextBox_Validated(object sender, EventArgs e) {
-      Content.ActualName = actualNameTextBox.Text;
-    }
-    protected virtual void setLocalValueButton_Click(object sender, EventArgs e) {
+    protected virtual void setValueButton_Click(object sender, EventArgs e) {
       if (typeSelectorDialog == null) {
         typeSelectorDialog = new TypeSelectorDialog();
-        typeSelectorDialog.Caption = "Select Local Value Type";
+        typeSelectorDialog.Caption = "Select Operator";
+        typeSelectorDialog.TypeSelector.Configure(Content.DataType, false, false);
       }
-      typeSelectorDialog.TypeSelector.Configure(Content.DataType, false, false);
       if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK)
-        Content.LocalValue = (T)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
+        Content.Value = (IOperator)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
     }
-    protected virtual void clearLocalValueButton_Click(object sender, EventArgs e) {
-      Content.LocalValue = null;
+    protected virtual void clearValueButton_Click(object sender, EventArgs e) {
+      Content.Value = null;
     }
-    protected virtual void localValuePanel_DragEnterOver(object sender, DragEventArgs e) {
+    protected virtual void valuePanel_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
       Type type = e.Data.GetData("Type") as Type;
       if ((type != null) && (Content.DataType.IsAssignableFrom(type))) {
@@ -149,11 +134,11 @@ namespace HeuristicLab.Parameters.Views {
         else if ((e.AllowedEffect & DragDropEffects.Move) == DragDropEffects.Move) e.Effect = DragDropEffects.Move;
       }
     }
-    protected virtual void localValuePanel_DragDrop(object sender, DragEventArgs e) {
+    protected virtual void valuePanel_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
-        T item = e.Data.GetData("Value") as T;
-        if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) item = (T)item.Clone();
-        Content.LocalValue = item;
+        IOperator value = e.Data.GetData("Value") as IOperator;
+        if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) value = (IOperator)value.Clone();
+        Content.Value = value;
       }
     }
   }

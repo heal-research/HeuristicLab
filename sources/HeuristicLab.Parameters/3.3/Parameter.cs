@@ -28,7 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Parameters {
   /// <summary>
-  /// Represents a parameter.
+  /// A base class for parameters.
   /// </summary>
   [Item("Parameter", "A base class for parameters.")]
   public abstract class Parameter : NamedItem, IParameter {
@@ -44,6 +44,12 @@ namespace HeuristicLab.Parameters {
     public Type DataType {
       get { return dataType; }
     }
+    [Storable]
+    private ExecutionContext executionContext;
+    public ExecutionContext ExecutionContext {
+      get { return executionContext; }
+      set { executionContext = value; }
+    }
 
     protected Parameter()
       : base("Anonymous") {
@@ -55,11 +61,10 @@ namespace HeuristicLab.Parameters {
       this.dataType = dataType;
     }
 
-    public abstract IItem GetValue(ExecutionContext context);
-
     public override IDeepCloneable Clone(Cloner cloner) {
       Parameter clone = (Parameter)base.Clone(cloner);
       clone.dataType = dataType;
+      clone.executionContext = (ExecutionContext)cloner.Clone(executionContext);
       return clone;
     }
 

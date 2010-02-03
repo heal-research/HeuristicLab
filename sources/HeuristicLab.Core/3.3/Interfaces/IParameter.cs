@@ -28,7 +28,6 @@ using HeuristicLab.Common;
 namespace HeuristicLab.Core {
   public interface IParameter : INamedItem {
     Type DataType { get; }
-
-    IItem GetValue(ExecutionContext context);
+    ExecutionContext ExecutionContext { get; set; }
   }
 }

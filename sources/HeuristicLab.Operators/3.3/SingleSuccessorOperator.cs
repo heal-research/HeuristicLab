@@ -31,23 +31,26 @@ namespace HeuristicLab.Operators {
   /// <summary>
   /// A base class for operators which have only one successor.
   /// </summary>
-  [Item("StandardOperator", "A base class for operators which have only one successor.")]
+  [Item("SingleSuccessorOperator", "A base class for operators which have only one successor.")]
   [Creatable("Test")]
   [EmptyStorableClass]
-  public abstract class StandardOperator : Operator {
-    public OperatorParameter Successor {
+  public abstract class SingleSuccessorOperator : Operator {
+    protected OperatorParameter SuccessorParameter {
       get { return (OperatorParameter)Parameters["Successor"]; }
     }
-
-    public StandardOperator()
-      : base() {
-      Parameters.Add(new OperatorParameter("Successor", "Operator which is executed next"));
+    public IOperator Successor {
+      get { return SuccessorParameter.Value; }
+      set { SuccessorParameter.Value = value; }
     }
 
-    public override ExecutionContextCollection Apply(ExecutionContext context) {
-      IOperator successor = (IOperator)Successor.GetValue(context);
-      if (successor != null)
-        return new ExecutionContextCollection(new ExecutionContext(context.Parent, successor, context.Scope));
+    public SingleSuccessorOperator()
+      : base() {
+      Parameters.Add(new OperatorParameter("Successor", "Operator which is executed next."));
+    }
+
+    public override ExecutionContextCollection Apply() {
+      if (Successor != null)
+        return new ExecutionContextCollection(new ExecutionContext(ExecutionContext.Parent, Successor, ExecutionContext.Scope));
       else
         return new ExecutionContextCollection();
     }

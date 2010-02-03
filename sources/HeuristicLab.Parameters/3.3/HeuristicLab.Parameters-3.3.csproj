@@ -48,6 +48,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SubScopesItemParameter.cs" />
+    <Compile Include="ScopeParameter.cs" />
     <Compile Include="HeuristicLabParametersPlugin.cs" />
     <Compile Include="ItemParameter.cs" />
     <Compile Include="OperatorParameter.cs" />

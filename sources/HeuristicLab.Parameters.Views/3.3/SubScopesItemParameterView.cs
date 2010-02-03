@@ -34,8 +34,8 @@ namespace HeuristicLab.Parameters.Views {
   /// <summary>
   /// The visual representation of a <see cref="Parameter"/>.
   /// </summary>
-  [Content(typeof(ItemParameter<>), true)]
-  public partial class ItemParameterView<T> : ParameterView where T : class, IItem {
+  [Content(typeof(SubScopesItemParameter<>), true)]
+  public partial class SubScopesItemParameterView<T> : ParameterView where T : class, IItem {
     protected TypeSelectorDialog typeSelectorDialog;
 
     /// <summary>
@@ -43,24 +43,24 @@ namespace HeuristicLab.Parameters.Views {
     /// </summary>
     /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
     /// No own data storage present.</remarks>
-    public new ItemParameter<T> Content {
-      get { return (ItemParameter<T>)base.Content; }
+    public new SubScopesItemParameter<T> Content {
+      get { return (SubScopesItemParameter<T>)base.Content; }
       set { base.Content = value; }
     }
 
     /// <summary>
     /// Initializes a new instance of <see cref="VariableView"/> with caption "Variable".
     /// </summary>
-    public ItemParameterView() {
+    public SubScopesItemParameterView() {
       InitializeComponent();
-      Caption = "ItemParameter";
+      Caption = "SubScopesItemParameter";
     }
     /// <summary>
     /// Initializes a new instance of <see cref="VariableView"/> with the given <paramref name="variable"/>.
     /// </summary>
     /// <remarks>Calls <see cref="VariableView()"/>.</remarks>
     /// <param name="variable">The variable to represent visually.</param>
-    public ItemParameterView(ItemParameter<T> content)
+    public SubScopesItemParameterView(SubScopesItemParameter<T> content)
       : this() {
       Content = content;
     }
@@ -71,7 +71,6 @@ namespace HeuristicLab.Parameters.Views {
     /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void DeregisterContentEvents() {
       Content.ActualNameChanged -= new EventHandler(Content_ActualNameChanged);
-      Content.LocalValueChanged -= new EventHandler(Content_LocalValueChanged);
       base.DeregisterContentEvents();
     }
 
@@ -82,27 +81,18 @@ namespace HeuristicLab.Parameters.Views {
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.ActualNameChanged += new EventHandler(Content_ActualNameChanged);
-      Content.LocalValueChanged += new EventHandler(Content_LocalValueChanged);
     }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        Caption = "ItemParameter";
+        Caption = "SubScopesItemParameter";
         actualNameTextBox.Text = "-";
         actualNameTextBox.Enabled = false;
-        setLocalValueButton.Enabled = false;
-        clearLocalValueButton.Enabled = false;
-        localValueGroupBox.Enabled = false;
-        viewHost.Content = null;
       } else {
         Caption = Content.Name + " (" + Content.GetType().Name + ")";
         actualNameTextBox.Text = Content.ActualName;
-        actualNameTextBox.Enabled = Content.LocalValue == null;
-        setLocalValueButton.Enabled = Content.LocalValue == null;
-        clearLocalValueButton.Enabled = Content.LocalValue != null;
-        localValueGroupBox.Enabled = true;
-        viewHost.Content = Content.LocalValue;
+        actualNameTextBox.Enabled = true;
       }
     }
 
@@ -112,49 +102,9 @@ namespace HeuristicLab.Parameters.Views {
       else
         actualNameTextBox.Text = Content.ActualName;
     }
-    protected virtual void Content_LocalValueChanged(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_LocalValueChanged), sender, e);
-      else {
-        actualNameTextBox.Enabled = Content.LocalValue == null;
-        setLocalValueButton.Enabled = Content.LocalValue == null;
-        clearLocalValueButton.Enabled = Content.LocalValue != null;
-        viewHost.Content = Content.LocalValue;
-      }
-    }
 
     protected virtual void actualNameTextBox_Validated(object sender, EventArgs e) {
       Content.ActualName = actualNameTextBox.Text;
-    }
-    protected virtual void setLocalValueButton_Click(object sender, EventArgs e) {
-      if (typeSelectorDialog == null) {
-        typeSelectorDialog = new TypeSelectorDialog();
-        typeSelectorDialog.Caption = "Select Local Value Type";
-      }
-      typeSelectorDialog.TypeSelector.Configure(Content.DataType, false, false);
-      if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK)
-        Content.LocalValue = (T)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
-    }
-    protected virtual void clearLocalValueButton_Click(object sender, EventArgs e) {
-      Content.LocalValue = null;
-    }
-    protected virtual void localValuePanel_DragEnterOver(object sender, DragEventArgs e) {
-      e.Effect = DragDropEffects.None;
-      Type type = e.Data.GetData("Type") as Type;
-      if ((type != null) && (Content.DataType.IsAssignableFrom(type))) {
-        if ((e.KeyState & 8) == 8) e.Effect = DragDropEffects.Copy;  // CTRL key
-        else if ((e.KeyState & 4) == 4) e.Effect = DragDropEffects.Move;  // SHIFT key
-        else if ((e.AllowedEffect & DragDropEffects.Link) == DragDropEffects.Link) e.Effect = DragDropEffects.Link;
-        else if ((e.AllowedEffect & DragDropEffects.Copy) == DragDropEffects.Copy) e.Effect = DragDropEffects.Copy;
-        else if ((e.AllowedEffect & DragDropEffects.Move) == DragDropEffects.Move) e.Effect = DragDropEffects.Move;
-      }
-    }
-    protected virtual void localValuePanel_DragDrop(object sender, DragEventArgs e) {
-      if (e.Effect != DragDropEffects.None) {
-        T item = e.Data.GetData("Value") as T;
-        if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) item = (T)item.Clone();
-        Content.LocalValue = item;
-      }
     }
   }
 }

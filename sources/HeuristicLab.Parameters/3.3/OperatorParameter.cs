@@ -28,20 +28,54 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Parameters {
   /// <summary>
-  /// Represents a parameter.
+  /// A parameter which represents an operator.
   /// </summary>
   [Item("OperatorParameter", "A parameter which represents an operator.")]
-  [EmptyStorableClass]
   [Creatable("Test")]
-  public class OperatorParameter : ItemParameter<IOperator>, IOperatorParameter {
+  public class OperatorParameter : Parameter, IOperatorParameter {
+    private IOperator value;
+    [Storable]
+    public IOperator Value {
+      get { return this.value; }
+      set {
+        if (value != this.value) {
+          if (this.value != null) this.value.Changed -= new ChangedEventHandler(Value_Changed);
+          this.value = value;
+          if (this.value != null) this.value.Changed += new ChangedEventHandler(Value_Changed);
+          OnValueChanged();
+        }
+      }
+    }
+
     public OperatorParameter()
-      : base("Anonymous", null) {
+      : base("Anonymous", null, typeof(IOperator)) {
     }
     public OperatorParameter(string name, string description)
-      : base(name, description) {
+      : base(name, description, typeof(IOperator)) {
     }
     public OperatorParameter(string name, string description, IOperator value)
-      : base(name, description, value) {
+      : base(name, description, typeof(IOperator)) {
+      Value = value;
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      OperatorParameter clone = (OperatorParameter)base.Clone(cloner);
+      clone.Value = (IOperator)cloner.Clone(value);
+      return clone;
+    }
+
+    public override string ToString() {
+      return string.Format("{0}: {1} ({2})", Name, Value != null ? Value.ToString() : "null", DataType.Name);
+    }
+
+    public event EventHandler ValueChanged;
+    private void OnValueChanged() {
+      if (ValueChanged != null)
+        ValueChanged(this, new EventArgs());
+      OnChanged();
+    }
+    private void Value_Changed(object sender, ChangedEventArgs e) {
+      OnChanged(e);
     }
   }
 }

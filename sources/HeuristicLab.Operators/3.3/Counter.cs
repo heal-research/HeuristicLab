@@ -34,7 +34,7 @@ namespace HeuristicLab.Operators {
   [Item("Counter", "An operator which increments an integer variable.")]
   [EmptyStorableClass]
   [Creatable("Test")]
-  public sealed class Counter : StandardOperator {
+  public sealed class Counter : SingleSuccessorOperator {
     public ItemParameter<IntData> Value {
       get { return (ItemParameter<IntData>)Parameters["Value"]; }
     }
@@ -48,11 +48,11 @@ namespace HeuristicLab.Operators {
       Parameters.Add(new ItemParameter<IntData>("Increment", "The increment which is added to the value.", new IntData(1)));
     }
 
-    public override ExecutionContextCollection Apply(ExecutionContext context) {
-      IntData value = (IntData)Value.GetValue(context);
-      IntData increment = (IntData)Increment.GetValue(context);
+    public override ExecutionContextCollection Apply() {
+      IntData value = (IntData)Value.Value;
+      IntData increment = (IntData)Increment.Value;
       value.Value += increment.Value;
-      return base.Apply(context);
+      return base.Apply();
     }
   }
 }

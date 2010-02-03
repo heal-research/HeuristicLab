@@ -35,7 +35,7 @@ namespace HeuristicLab.Operators {
   /// </summary>
   [Item("CombinedOperator", "An operator which contains an operator graph.")]
   [Creatable("Test")]
-  public sealed class CombinedOperator : StandardOperator, IOperator {
+  public sealed class CombinedOperator : SingleSuccessorOperator, IOperator {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Module; }
     }
@@ -67,10 +67,10 @@ namespace HeuristicLab.Operators {
       return clone;
     }
 
-    public override ExecutionContextCollection Apply(ExecutionContext context) {
-      ExecutionContextCollection next = base.Apply(context);
+    public override ExecutionContextCollection Apply() {
+      ExecutionContextCollection next = base.Apply();
       if (operatorGraph.InitialOperator != null)
-        next.Insert(0, new ExecutionContext(context, operatorGraph.InitialOperator, context.Scope));
+        next.Insert(0, new ExecutionContext(ExecutionContext, operatorGraph.InitialOperator, ExecutionContext.Scope));
       return next;
     }
   }
