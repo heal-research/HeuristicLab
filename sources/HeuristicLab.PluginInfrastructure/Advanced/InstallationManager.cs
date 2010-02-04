@@ -40,6 +40,11 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     internal event EventHandler<PluginInfrastructureEventArgs> PluginRemoved;
     internal event EventHandler<PluginInfrastructureEventArgs> PluginInstalled;
 
+
+    public IEnumerable<PluginDescription> Plugins {
+      get { return pluginManager.Plugins; }
+    }
+
     private string pluginDir;
     private string updateLocationUrl;
     private PluginManager pluginManager;
@@ -65,25 +70,26 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       builder.Append("Name: ").AppendLine(desc.Name);
       builder.Append("Version: ").AppendLine(desc.Version.ToString());
       builder.AppendLine("Description:").AppendLine(desc.Description);
-      builder.Append("Build date: ").AppendLine(desc.BuildDate.ToString());
+      builder.AppendLine("This plugin is " + desc.PluginState.ToString().ToLowerInvariant() + ".");
+      builder.Append("Build date: ").AppendLine(desc.BuildDate.ToString()).AppendLine();
       builder.AppendLine("Files: ");
-      foreach (string fileName in from file in desc.Files select file.Name) {
-        builder.AppendLine(fileName);
+      foreach (var file in desc.Files) {
+        builder.AppendLine(file.Type + " " + file.Name);
       }
-      builder.AppendLine("Directly depends on:");
+      builder.AppendLine().AppendLine("Directly depends on:");
       if (desc.Dependencies.Count() == 0) builder.AppendLine("None");
       foreach (var dependency in desc.Dependencies) {
-        builder.AppendLine(dependency.Name);
+        builder.AppendLine(dependency.Name + " " + dependency.Version);
       }
-      builder.AppendFormat("Plugins directly dependent on {0}:\n", desc.Name);
+      builder.AppendLine().AppendFormat("Plugins directly dependent on {0}:\n", desc.Name);
       var dependents = from x in pluginManager.Plugins
                        where x.Dependencies.Contains(desc)
-                       select x.Name;
+                       select x;
       if (dependents.Count() == 0) builder.AppendLine("None");
       foreach (var dependent in dependents) {
-        builder.AppendLine(dependent);
+        builder.AppendLine(dependent.Name + " " + dependent.Version);
       }
-      builder.AppendLine("This plugin is " + desc.PluginState.ToString().ToLowerInvariant() + ".");
+      builder.AppendLine();
       if (desc.PluginState == PluginState.Disabled) {
         builder.AppendLine(DetermineProblem(desc));
       }
@@ -94,6 +100,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private static string DetermineProblem(PluginDescription desc) {
       // either any file is missing
       StringBuilder builder = new StringBuilder();
+      builder.AppendLine("Problem report:");
       var missingFiles = from x in desc.Files
                          where !File.Exists(x.Name)
                          select x.Name;
