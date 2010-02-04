@@ -147,13 +147,10 @@ namespace HeuristicLab.Operators.Views {
 
     #endregion
 
-    private System.Windows.Forms.TabControl tabControl;
-    private System.Windows.Forms.TabPage parametersTabPage;
-    private System.Windows.Forms.TabPage operatorGraphTabPage;
-    private HeuristicLab.Core.Views.ParameterCollectionView parameterCollectionView;
-    private HeuristicLab.Core.Views.OperatorGraphView operatorGraphView;
-
-
-
+    protected System.Windows.Forms.TabControl tabControl;
+    protected System.Windows.Forms.TabPage parametersTabPage;
+    protected System.Windows.Forms.TabPage operatorGraphTabPage;
+    protected HeuristicLab.Core.Views.ParameterCollectionView parameterCollectionView;
+    protected HeuristicLab.Core.Views.OperatorGraphView operatorGraphView;
   }
 }
