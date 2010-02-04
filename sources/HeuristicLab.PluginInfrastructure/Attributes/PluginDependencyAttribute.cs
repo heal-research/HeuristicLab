@@ -25,7 +25,7 @@ using System.Text;
 
 namespace HeuristicLab.PluginInfrastructure {
   /// <summary>
-  /// This attribute can be used to declare that an plugin depends on a another plugin.
+  /// This attribute can be used to declare that a plugin depends on a another plugin.
   /// </summary>
   [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
   public sealed class PluginDependencyAttribute : System.Attribute {

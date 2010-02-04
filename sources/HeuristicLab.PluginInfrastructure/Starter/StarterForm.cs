@@ -32,6 +32,7 @@ using HeuristicLab.PluginInfrastructure;
 using System.Threading;
 using HeuristicLab.PluginInfrastructure.Manager;
 using System.IO;
+using HeuristicLab.PluginInfrastructure.Advanced;
 
 namespace HeuristicLab.PluginInfrastructure.Starter {
   public partial class StarterForm : Form {
@@ -44,7 +45,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       : base() {
       InitializeComponent();
 
-      string pluginPath = Path.GetFullPath(Application.StartupPath);      
+      string pluginPath = Path.GetFullPath(Application.StartupPath);
       pluginManager = new PluginManager(pluginPath);
       SplashScreen splashScreen = new SplashScreen(pluginManager, 1000, "Loading HeuristicLab...");
       splashScreen.Show();
@@ -76,7 +77,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       : this() {
       var appDesc = (from desc in pluginManager.Applications
                      where desc.Name == appName
-                     select desc).Single();
+                     select desc).SingleOrDefault();
       if (appDesc != null) {
         StartApplication(appDesc);
       } else {
@@ -92,12 +93,12 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
         ListViewItem selected = applicationsListView.SelectedItems[0];
         if (selected == pluginManagerListViewItem) {
           try {
-            //Cursor = Cursors.AppStarting;
-            //ManagerForm form = new ManagerForm();
-            //this.Visible = false;
-            //form.ShowDialog(this);
-            //// RefreshApplicationsList();
-            //this.Visible = true;
+            Cursor = Cursors.AppStarting;
+            InstallationManagerForm form = new InstallationManagerForm();
+            this.Visible = false;
+            form.ShowDialog(this);
+            // RefreshApplicationsList();
+            this.Visible = true;
           }
           finally {
             Cursor = Cursors.Arrow;

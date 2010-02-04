@@ -45,7 +45,13 @@ namespace HeuristicLab.PluginInfrastructure {
       get { return appManager; }
     }
 
+    /// <summary>
+    /// Fired when a plugin is loaded.
+    /// </summary>
     internal event EventHandler<PluginInfrastructureEventArgs> PluginLoaded;
+    /// <summary>
+    /// Fired when a plugin is unloaded (when the application terminates).
+    /// </summary>
     internal event EventHandler<PluginInfrastructureEventArgs> PluginUnloaded;
 
     // cache for the AssemblyResolveEvent 
@@ -82,6 +88,12 @@ namespace HeuristicLab.PluginInfrastructure {
       };
     }
 
+    /// <summary>
+    /// Prepares the application domain for the execution of an HL application.
+    /// Pre-loads all <paramref name="plugins"/>.
+    /// </summary>
+    /// <param name="apps">Enumerable of available HL applications.</param>
+    /// <param name="plugins">Enumerable of plugins that should be pre-loaded.</param>
     internal void PrepareApplicationDomain(IEnumerable<ApplicationDescription> apps, IEnumerable<PluginDescription> plugins) {
       this.plugins = new List<PluginDescription>(plugins);
       this.applications = new List<ApplicationDescription>(apps);
@@ -98,6 +110,10 @@ namespace HeuristicLab.PluginInfrastructure {
       appManager = manager;
     }
 
+    /// <summary>
+    /// Loads the <paramref name="plugins"/> into this application domain.
+    /// </summary>
+    /// <param name="plugins">Enumerable of plugins that should be loaded.</param>
     private void LoadPlugins(IEnumerable<PluginDescription> plugins) {
       // load all loadable plugins (all dependencies available) into the execution context
       foreach (var desc in PluginDescriptionIterator.IterateDependenciesBottomUp(plugins.Where(x => x.PluginState != PluginState.Disabled))) {
@@ -115,6 +131,11 @@ namespace HeuristicLab.PluginInfrastructure {
       }
     }
 
+    /// <summary>
+    /// Runs the application declared in <paramref name="appInfo"/>.
+    /// This is a synchronous call. When the application is terminated all plugins are unloaded.
+    /// </summary>
+    /// <param name="appInfo">Description of the application to run</param>
     internal void Run(ApplicationDescription appInfo) {
       IApplication runnablePlugin = (IApplication)Activator.CreateInstance(appInfo.DeclaringAssemblyName, appInfo.DeclaringTypeName).Unwrap();
       try {
@@ -192,7 +213,8 @@ namespace HeuristicLab.PluginInfrastructure {
     /// Finds all types that are subtypes or equal to the specified type.
     /// </summary>
     /// <param name="type">Most general type for which to find matching types.</param>
-    /// <param name="onlyInstantiable">Return only types that are instantiable (instance, abstract... are not returned)</param>
+    /// <param name="onlyInstantiable">Return only types that are instantiable 
+    /// (interfaces, abstract classes... are not returned)</param>
     /// <returns>Enumerable of the discovered types.</returns>
     internal static IEnumerable<Type> GetTypes(Type type, bool onlyInstantiable) {
       return from asm in AppDomain.CurrentDomain.GetAssemblies()
@@ -206,7 +228,8 @@ namespace HeuristicLab.PluginInfrastructure {
     /// </summary>
     /// <param name="type">Most general type for which to find matching types.</param>
     /// <param name="plugin">The plugin the subtypes must be part of.</param>
-    /// <param name="onlyInstantiable">Return only types that are instantiable (instance, abstract... are not returned)</param>
+    /// <param name="onlyInstantiable">Return only types that are instantiable 
+    /// (interfaces, abstract classes... are not returned)</param>
     /// <returns>Enumerable of the discovered types.</returns>
     internal static IEnumerable<Type> GetTypes(Type type, IPluginDescription pluginDescription, bool onlyInstantiable) {
       PluginDescription pluginDesc = (PluginDescription)pluginDescription;
@@ -222,7 +245,8 @@ namespace HeuristicLab.PluginInfrastructure {
     /// </summary>
     /// <param name="type">Most general type we want to find.</param>
     /// <param name="assembly">Assembly that should be searched for types.</param>
-    /// <param name="onlyInstantiable">Return only types that are instantiable (instance, abstract... are not returned)</param>
+    /// <param name="onlyInstantiable">Return only types that are instantiable 
+    /// (interfaces, abstract classes...  are not returned)</param>
     /// <returns>Enumerable of the discovered types.</returns>
     private static IEnumerable<Type> GetTypes(Type type, Assembly assembly, bool onlyInstantiable) {
       return from t in assembly.GetTypes()

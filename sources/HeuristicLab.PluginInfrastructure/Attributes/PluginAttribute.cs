@@ -51,7 +51,7 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <param name="name">Name of the plugin</param>
     /// </summary>
     public PluginAttribute(string name)
-      : this(name, "") {
+      : this(name, string.Empty) {
     }
 
     /// <summary>
@@ -60,6 +60,8 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <param name="description">Description of the plugin</param>
     /// </summary>
     public PluginAttribute(string name, string description) {
+      if (string.IsNullOrEmpty(name)) throw new ArgumentException("Plugin name is null or empty.");
+      if (description == null) throw new ArgumentNullException("description");
       this.name = name;
       this.description = description;
     }

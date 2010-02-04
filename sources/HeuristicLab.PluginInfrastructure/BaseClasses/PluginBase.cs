@@ -57,9 +57,9 @@ namespace HeuristicLab.PluginInfrastructure {
       }
     }
 
-    /// <inhertitdoc>
+    /// <inhertitdoc />
     public virtual void OnLoad() { }
-    /// <inhertitdoc>
+    /// <inhertitdoc />
     public virtual void OnUnload() { }
     #endregion
 
