@@ -29,7 +29,7 @@ namespace HeuristicLab.Core {
   /// <summary>
   /// Plugin class for HeuristicLab.Core plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Core-3.2")]
+  [Plugin("HeuristicLab.Core-3.2", "3.2.0.0")]
   [PluginFile("HeuristicLab.Core-3.2.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Common-3.2")]
   public class HeuristicLabCorePlugin : PluginBase {

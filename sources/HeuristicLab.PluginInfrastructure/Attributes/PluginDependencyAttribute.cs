@@ -38,13 +38,28 @@ namespace HeuristicLab.PluginInfrastructure {
       get { return dependency; }
     }
 
+    private Version version;
+    /// <summary>
+    /// Gets the version of the plugin dependency.
+    /// </summary>
+    public Version Version {
+      get { return version; }
+    }
+
     /// <summary>
     /// Initializes a new instance of <see cref="PluginDependencyAttribute"/>.
     /// <param name="dependency">The name of the plugin that is needed to load a plugin.</param>
     /// </summary>
-    public PluginDependencyAttribute(string dependency) {
-      if (string.IsNullOrEmpty(dependency)) throw new ArgumentException("Dependency is null or empty.", "dependency");
+    [Obsolete]
+    public PluginDependencyAttribute(string dependency)
+      : this(dependency, "0.0.0.0") {
+    }
+
+    public PluginDependencyAttribute(string dependency, string version) {
+      if (string.IsNullOrEmpty(dependency)) throw new ArgumentException("Dependency name is null or empty.", "dependency");
+      if (string.IsNullOrEmpty(version)) throw new ArgumentException("Dependency version is null or empty.", "version");
       this.dependency = dependency;
+      this.version = new Version(version); // throws format exception if the version string can't be parsed
     }
   }
 }

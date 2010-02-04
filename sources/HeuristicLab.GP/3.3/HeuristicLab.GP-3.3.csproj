@@ -88,6 +88,7 @@
     <Compile Include="BaseClasses\TerminalTreeNode.cs" />
     <Compile Include="BaseClasses\Terminal.cs" />
     <Compile Include="BaseClasses\UnaryFunction.cs" />
+    <None Include="HeuristicLabGPPlugin.cs.frame" />
     <Compile Include="FunctionLibraryInjectorView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -177,6 +178,7 @@ set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
-call PreBuildEvent.cmd</PreBuildEvent>
+call PreBuildEvent.cmd
+SubWCRev "%25ProjectDir%25/" "%25ProjectDir%25/HeuristicLabGPPlugin.cs.frame" "%25ProjectDir%25/HeuristicLabGPPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

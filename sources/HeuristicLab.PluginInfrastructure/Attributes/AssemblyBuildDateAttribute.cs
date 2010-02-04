@@ -44,6 +44,7 @@ namespace HeuristicLab.PluginInfrastructure {
     /// </summary>
     /// <exception cref="FormatException">Thrown when the time stamp could not be parsed as build date.</exception>
     /// <param name="buildDate">The build date of the assembly.</param>
+    [Obsolete]
     public AssemblyBuildDateAttribute(string buildDate)
       : base() {
       if (!DateTime.TryParse(buildDate, out this.buildDate)) {

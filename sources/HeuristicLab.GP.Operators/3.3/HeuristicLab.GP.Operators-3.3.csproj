@@ -79,6 +79,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="HeuristicLabGPOperatorsPlugin.cs.frame" />
     <Compile Include="Logging\SymbolFrequencyAnalyser.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="EqualiserController.cs" />
@@ -160,6 +161,7 @@ set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
-call PreBuildEvent.cmd</PreBuildEvent>
+call PreBuildEvent.cmd
+SubWCRev "%25ProjectDir%25/" "%25ProjectDir%25/HeuristicLabGPOperatorsPlugin.cs.frame" "%25ProjectDir%25/HeuristicLabGPOperatorsPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

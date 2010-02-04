@@ -84,6 +84,7 @@
   <ItemGroup>
     <Compile Include="BaseClasses\FunctionTreeBase.cs" />
     <Compile Include="BaseClasses\TreeEvaluatorBase.cs" />
+    <None Include="HeuristicLabGPStructureIdentificationPlugin.cs.frame" />
     <Compile Include="LinearScalingPredictorBuilder.cs" />
     <Compile Include="Evaluators\VariableFrequencyBasedImpactCalculator.cs" />
     <Compile Include="ScalingTreeEvaluator.cs" />
@@ -252,6 +253,7 @@ set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
-call PreBuildEvent.cmd</PreBuildEvent>
+call PreBuildEvent.cmd
+SubWCRev "%25ProjectDir%25/" "%25ProjectDir%25/HeuristicLabGPStructureIdentificationPlugin.cs.frame" "%25ProjectDir%25/HeuristicLabGPStructureIdentificationPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

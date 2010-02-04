@@ -24,17 +24,10 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.GP.Operators {
-  [Plugin("HeuristicLab.GP.Operators", "3.3.0.2730")]
-  [PluginFile("HeuristicLab.GP.Operators-3.3.dll", PluginFileType.Assembly)]
+namespace HeuristicLab.GP.Interfaces {
+  [Plugin("HeuristicLab.GP.Interfaces", "3.3.0.$WCREV$")]
+  [PluginFile("HeuristicLab.GP.Interfaces-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Core-3.2")]
-  [PluginDependency("HeuristicLab.Data-3.2")]
-  [PluginDependency("HeuristicLab.Evolutionary-3.2")]
-  [PluginDependency("HeuristicLab.GP", "3.3")]
-  [PluginDependency("HeuristicLab.GP.Interfaces", "3.3")]
-  [PluginDependency("HeuristicLab.Operators-3.2")]
-  [PluginDependency("HeuristicLab.Random-3.2")]
-  [PluginDependency("HeuristicLab.Selection-3.2")]
-  public class HeuristicLabGPOperatorsPlugin : PluginBase {
+  public class HeuristicLabGPInterfacesPlugin : PluginBase {
   }
 }

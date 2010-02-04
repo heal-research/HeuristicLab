@@ -25,15 +25,15 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.GP.Algorithms {
-  [Plugin("HeuristicLab.GP.Algorithms-3.2")]
+  [Plugin("HeuristicLab.GP.Algorithms", "3.3.0.2728")]
   [PluginFile("HeuristicLab.GP.Algorithms-3.2.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Common-3.2")]
   [PluginDependency("HeuristicLab.Core-3.2")]
   [PluginDependency("HeuristicLab.Data-3.2")]
   [PluginDependency("HeuristicLab.Evolutionary-3.2")]
-  [PluginDependency("HeuristicLab.GP-3.3")]
-  [PluginDependency("HeuristicLab.GP.Interfaces-3.3")]
-  [PluginDependency("HeuristicLab.GP.Operators-3.3")]
+  [PluginDependency("HeuristicLab.GP", "3.3")]
+  [PluginDependency("HeuristicLab.GP.Interfaces", "3.3")]
+  [PluginDependency("HeuristicLab.GP.Operators", "3.3")]
   [PluginDependency("HeuristicLab.Logging-3.2")]
   [PluginDependency("HeuristicLab.Operators-3.2")]
   [PluginDependency("HeuristicLab.Random-3.2")]

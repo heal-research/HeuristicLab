@@ -79,6 +79,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="HeuristicLabGPInterfacesPlugin.cs.frame" />
     <Compile Include="FunctionTreeIterator.cs" />
     <Compile Include="IFunctionTreeSerializer.cs">
       <SubType>Code</SubType>
@@ -118,6 +119,7 @@ set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
-call PreBuildEvent.cmd</PreBuildEvent>
+call PreBuildEvent.cmd
+SubWCRev "%25ProjectDir%25/" "%25ProjectDir%25/HeuristicLabGPInterfacesPlugin.cs.frame" "%25ProjectDir%25/HeuristicLabGPInterfacesPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

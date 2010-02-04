@@ -35,9 +35,21 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
   /// all plugin files are available and checks plugin dependencies. 
   /// </summary>
   internal sealed class PluginValidator : MarshalByRefObject {
+    // private class to store plugin dependency declarations while reflecting over plugins
+    private class PluginDependency {
+      public string Name { get; private set; }
+      public Version Version { get; private set; }
+
+      public PluginDependency(string name, Version version) {
+        this.Name = name;
+        this.Version = version;
+      }
+    }
+
+
     internal event EventHandler<PluginInfrastructureEventArgs> PluginLoaded;
 
-    private Dictionary<PluginDescription, List<string>> pluginDependencies;
+    private Dictionary<PluginDescription, IEnumerable<PluginDependency>> pluginDependencies;
 
     private List<ApplicationDescription> applications;
     internal IEnumerable<ApplicationDescription> Applications {
@@ -60,7 +72,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     internal string PluginDir { get; set; }
 
     internal PluginValidator() {
-      this.pluginDependencies = new Dictionary<PluginDescription, List<string>>();
+      this.pluginDependencies = new Dictionary<PluginDescription, IEnumerable<PluginDependency>>();
 
       // ReflectionOnlyAssemblyResolveEvent must be handled because we load assemblies from the plugin path 
       // (which is not listed in the default assembly lookup locations)
@@ -249,19 +261,39 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     private PluginDescription GetPluginDescription(Type pluginType) {
       // get all attributes of that type
       IList<CustomAttributeData> attributes = CustomAttributeData.GetCustomAttributes(pluginType);
-      List<string> pluginDependencies = new List<string>();
+      List<PluginDependency> pluginDependencies = new List<PluginDependency>();
       List<PluginFile> pluginFiles = new List<PluginFile>();
       string pluginName = null;
       string pluginDescription = null;
+      string pluginVersion = "0.0.0.0";
       // iterate through all custom attributes and search for attributed that we are interested in 
       foreach (CustomAttributeData attributeData in attributes) {
         if (IsAttributeDataForType(attributeData, typeof(PluginAttribute))) {
           pluginName = (string)attributeData.ConstructorArguments[0].Value;
-          if (attributeData.ConstructorArguments.Count() == 2) {
-            pluginDescription = (string)attributeData.ConstructorArguments[1].Value;
-          } else pluginDescription = pluginName;
+          if (attributeData.ConstructorArguments.Count() > 1) {
+            pluginVersion = (string)attributeData.ConstructorArguments[1].Value;
+          }
+          if (attributeData.ConstructorArguments.Count() > 2) {
+            pluginDescription = (string)attributeData.ConstructorArguments[2].Value;
+          } else {
+            // no description given => use name as description
+            pluginDescription = pluginName;
+          }
         } else if (IsAttributeDataForType(attributeData, typeof(PluginDependencyAttribute))) {
-          pluginDependencies.Add((string)attributeData.ConstructorArguments[0].Value);
+          string name = (string)attributeData.ConstructorArguments[0].Value;
+          Version version = new Version();
+          // check if version is given for now
+          // later when the constructore of PluginDependencyAttribute with only one argument has been removed
+          // this conditional can be removed as well
+          if (attributeData.ConstructorArguments.Count > 1) {
+            try {
+              version = new Version((string)attributeData.ConstructorArguments[1].Value); // throws FormatException
+            }
+            catch (FormatException ex) {
+              throw new InvalidPluginException("Invalid version format of dependency " + name + " in plugin " + pluginType.ToString(), ex);
+            }
+          }
+          pluginDependencies.Add(new PluginDependency(name, version));
         } else if (IsAttributeDataForType(attributeData, typeof(PluginFileAttribute))) {
           string pluginFileName = (string)attributeData.ConstructorArguments[0].Value;
           PluginFileType fileType = (PluginFileType)attributeData.ConstructorArguments[1].Value;
@@ -269,21 +301,15 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
         }
       }
 
-      var buildDates = from attr in CustomAttributeData.GetCustomAttributes(pluginType.Assembly)
-                       where IsAttributeDataForType(attr, typeof(AssemblyBuildDateAttribute))
-                       select (string)attr.ConstructorArguments[0].Value;
-
       // minimal sanity check of the attribute values
       if (!string.IsNullOrEmpty(pluginName) &&
           pluginFiles.Count > 0 &&                                   // at least on file
-          pluginFiles.Any(f => f.Type == PluginFileType.Assembly) && // at least on assembly
-          buildDates.Count() == 1) {                                 // build date must be declared
+          pluginFiles.Any(f => f.Type == PluginFileType.Assembly)) { // at least on assembly
         // create a temporary PluginDescription that contains the attribute values
         PluginDescription info = new PluginDescription();
         info.Name = pluginName;
         info.Description = pluginDescription;
-        info.Version = pluginType.Assembly.GetName().Version;
-        info.BuildDate = DateTime.Parse(buildDates.Single(), System.Globalization.CultureInfo.InvariantCulture);
+        info.Version = new Version(pluginVersion);
         info.AddFiles(pluginFiles);
 
         this.pluginDependencies[info] = pluginDependencies;
@@ -302,8 +328,11 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     // and sets the dependencies in the plugin descriptions
     private void BuildDependencyTree(IEnumerable<PluginDescription> pluginDescriptions) {
       foreach (var desc in pluginDescriptions) {
-        foreach (string pluginName in pluginDependencies[desc]) {
-          var matchingDescriptions = pluginDescriptions.Where(x => x.Name == pluginName);
+        foreach (var dependency in pluginDependencies[desc]) {
+          var matchingDescriptions = from availablePlugin in pluginDescriptions
+                                     where availablePlugin.Name == dependency.Name
+                                     where IsCompatiblePluginVersion(availablePlugin.Version, dependency.Version)
+                                     select availablePlugin;
           if (matchingDescriptions.Count() > 0) {
             desc.AddDependency(matchingDescriptions.Single());
           } else {
@@ -312,6 +341,28 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
           }
         }
       }
+    }
+
+    /// <summary>
+    /// Checks if version <paramref name="available"/> is compatible to version <paramref name="requested"/>.
+    /// Note: the compatibility relation is not bijective.
+    /// Compatibility rules:
+    ///  * major and minor number must be the same
+    ///  * build and revision number of <paramref name="available"/> must be larger or equal to <paramref name="requested"/>.
+    /// </summary>
+    /// <param name="available">The available version which should be compared to <paramref name="requested"/>.</param>
+    /// <param name="requested">The requested version that must be matched.</param>
+    /// <returns></returns>
+    private bool IsCompatiblePluginVersion(Version available, Version requested) {
+      // this condition must be removed after all plugins have been updated to declare plugin and dependency versions
+      if (
+        (requested.Major == 0 && requested.Minor == 0) ||
+        (available.Major == 0 && available.Minor == 0)) return true;
+      return
+        available.Major == requested.Major &&
+        available.Minor == requested.Minor &&
+        available.Build >= requested.Build &&
+        available.Revision >= requested.Revision;
     }
 
     private void CheckPluginDependencyCycles(IEnumerable<PluginDescription> pluginDescriptions) {

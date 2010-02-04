@@ -46,24 +46,39 @@ namespace HeuristicLab.PluginInfrastructure {
       get { return description; }
     }
 
+    private Version version;
     /// <summary>
-    /// Initializes a new instance of <see cref="PluginAttribute"/>.
-    /// <param name="name">Name of the plugin</param>
+    /// Gets the version of the plugin.
     /// </summary>
-    public PluginAttribute(string name)
-      : this(name, string.Empty) {
+    public Version Version {
+      get { return version; }
     }
+
+    [Obsolete]
+    public PluginAttribute(string name) : this(name, "0.0.0.0") { }
 
     /// <summary>
     /// Initializes a new instance of <see cref="PluginAttribute"/>.
     /// <param name="name">Name of the plugin</param>
-    /// <param name="description">Description of the plugin</param>
+    /// <param name="version">Version of the plugin</param>
     /// </summary>
-    public PluginAttribute(string name, string description) {
+    public PluginAttribute(string name, string version)
+      : this(name, string.Empty, version) {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of <see cref="PluginAttribute"/>.
+    /// </summary>
+    /// <param name="name">Name of the plugin</param>
+    /// <param name="description">Description of the plugin</param>
+    /// <param name="version">Version of the plugin</param>
+    public PluginAttribute(string name, string description, string version) {
       if (string.IsNullOrEmpty(name)) throw new ArgumentException("Plugin name is null or empty.");
       if (description == null) throw new ArgumentNullException("description");
+      if (string.IsNullOrEmpty(version)) new ArgumentException("Version string is null or empty.");
       this.name = name;
       this.description = description;
+      this.version = new Version(version); // throws format exception if the version string can't be parsed
     }
   }
 }
