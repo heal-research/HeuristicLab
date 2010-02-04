@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="HeuristicLabParametersViewsPlugin.cs.frame" />
     <Compile Include="SubScopesItemParameterView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -125,6 +126,7 @@ set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
-call PreBuildEvent.cmd</PreBuildEvent>
+call PreBuildEvent.cmd
+SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabParametersViewsPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabParametersViewsPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

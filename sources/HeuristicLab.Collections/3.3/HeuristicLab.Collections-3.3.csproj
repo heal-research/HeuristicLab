@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="HeuristicLabCollectionsPlugin.cs.frame" />
     <Compile Include="ReadOnlyObservableArray.cs" />
     <Compile Include="ObservableArray.cs" />
     <Compile Include="IObservableArray.cs" />
@@ -104,6 +105,7 @@ set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
-call PreBuildEvent.cmd</PreBuildEvent>
+call PreBuildEvent.cmd
+SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabCollectionsPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabCollectionsPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

@@ -79,6 +79,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="HeuristicLabWinFormsUIPlugin.cs.frame" />
     <Compile Include="HeuristicLabWinFormsUIPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -115,6 +116,7 @@ set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
-call PreBuildEvent.cmd</PreBuildEvent>
+call PreBuildEvent.cmd
+SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabWinFormsUIPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabWinFormsUIPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

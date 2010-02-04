@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -24,18 +24,12 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Data.Views {
+namespace HeuristicLab.Common {
   /// <summary>
-  /// Plugin class for HeuristicLab.Data.Views plugin.
+  /// Plugin class for HeuristicLab.Common plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Data.Views-3.3", "")]
-  [PluginFile("HeuristicLab.Data.Views-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Common-3.2")]
-  [PluginDependency("HeuristicLab.Core-3.3")]
-  [PluginDependency("HeuristicLab.Core.Views-3.3")]
-  [PluginDependency("HeuristicLab.Data-3.3")]
-  [PluginDependency("HeuristicLab.MainForm-3.2")]
-  [PluginDependency("HeuristicLab.MainForm.WindowsForms-3.2")]
-  public class HeuristicLabDataViewsPlugin : PluginBase {
+  [Plugin("HeuristicLab.Common", "3.2.0.$WCREV$")]
+  [PluginFile("HeuristicLab.Common-3.2.dll", PluginFileType.Assembly)]
+  public class HeuristicLabCommonPlugin : PluginBase {
   }
 }

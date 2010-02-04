@@ -88,6 +88,7 @@
     <Compile Include="ContentView.Designer.cs">
       <DependentUpon>ContentView.cs</DependentUpon>
     </Compile>
+    <None Include="HeuristicLabMainFormWindowsFormsPlugin.cs.frame" />
     <Compile Include="DockForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -198,6 +199,7 @@ set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
-call PreBuildEvent.cmd</PreBuildEvent>
+call PreBuildEvent.cmd
+SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabMainFormWindowsFormsPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabMainFormWindowsFormsPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

@@ -95,6 +95,7 @@
     <Compile Include="Auxiliary\TypeLoader.cs" />
     <Compile Include="Auxiliary\TypeNameParser.cs" />
     <Compile Include="Auxiliary\ReflectionTools.cs" />
+    <None Include="HeuristicLabPersistencePlugin.cs.frame" />
     <Compile Include="Core\Configuration.cs" />
     <Compile Include="Core\PersistenceException.cs" />
     <Compile Include="Core\PrimitiveSerializerBase.cs" />
@@ -202,7 +203,8 @@ set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
-call PreBuildEvent.cmd</PreBuildEvent>
+call PreBuildEvent.cmd
+SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabPersistencePlugin.cs.frame" "%25ProjectDir%25\HeuristicLabPersistencePlugin.cs"</PreBuildEvent>
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>

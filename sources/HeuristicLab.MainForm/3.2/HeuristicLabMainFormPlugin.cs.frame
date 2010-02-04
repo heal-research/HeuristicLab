@@ -24,14 +24,9 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.SequentialEngine {
-  /// <summary>
-  /// Plugin class for HeuristicLab.SequentialEngine plugin.
-  /// </summary>
-  [Plugin("HeuristicLab.SequentialEngine-3.3")]
-  [PluginFile("HeuristicLab.SequentialEngine-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Persistence-3.3")]
-  [PluginDependency("HeuristicLab.Core-3.3")]
-  public class HeuristicLabSequentialEnginePlugin : PluginBase {
+namespace HeuristicLab.Modeling.Database {
+  [Plugin("HeuristicLab.MainForm", "3.2.0.$WCREV$")]
+  [PluginFile("HeuristicLab.MainForm-3.2.dll", PluginFileType.Assembly)]
+  public class HeuristicLabMainFormPlugin : PluginBase {
   }
 }

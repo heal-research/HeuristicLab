@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -24,9 +24,13 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Modeling.Database {
-  [Plugin("HeuristicLab.MainForm-3.2")]
-  [PluginFile("HeuristicLab.MainForm-3.2.dll", PluginFileType.Assembly)]
-  public class HeuristicLabMainFormPlugin : PluginBase {
+namespace HeuristicLab.Collections {
+  /// <summary>
+  /// Plugin class for HeuristicLab.Collections plugin.
+  /// </summary>
+  [Plugin("HeuristicLab.Collections", "3.3.0.$WCREV$")]
+  [PluginFile("HeuristicLab.Collections-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Persistence", "3.3")]
+  public class HeuristicLabCollectionsPlugin : PluginBase {
   }
 }

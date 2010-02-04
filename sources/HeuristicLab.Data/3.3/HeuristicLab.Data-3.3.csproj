@@ -104,6 +104,7 @@
     </Compile>
     <Compile Include="BoolArrayData.cs" />
     <Compile Include="BoolMatrixData.cs" />
+    <None Include="HeuristicLabDataPlugin.cs.frame" />
     <Compile Include="StringMatrixData.cs" />
     <Compile Include="StringArrayData.cs" />
     <Compile Include="FormatPatterns.cs" />
@@ -190,6 +191,7 @@ set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
-call PreBuildEvent.cmd</PreBuildEvent>
+call PreBuildEvent.cmd
+SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabDataPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabDataPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

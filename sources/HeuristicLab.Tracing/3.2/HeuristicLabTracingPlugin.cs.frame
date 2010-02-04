@@ -19,17 +19,14 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Common {
-  /// <summary>
-  /// Plugin class for HeuristicLab.Common plugin.
-  /// </summary>
-  [Plugin("HeuristicLab.Common-3.2")]
-  [PluginFile("HeuristicLab.Common-3.2.dll", PluginFileType.Assembly)]
-  public class HeuristicLabCommonPlugin : PluginBase {
-  }
+namespace HeuristicLab.Tracing {
+
+  [Plugin("HeuristicLab.Tracing", "3.2.0.$WCREV$")]
+  [PluginFile("HeuristicLab.Tracing-3.2.dll", PluginFileType.Assembly)]
+  [PluginFile("HeuristicLab.log4net.xml", PluginFileType.Data)]
+  [PluginDependency("HeuristicLab.log4net", "1.2.10.0")]
+  public class HeuristicLabPersistencePlugin : PluginBase {}
+
 }

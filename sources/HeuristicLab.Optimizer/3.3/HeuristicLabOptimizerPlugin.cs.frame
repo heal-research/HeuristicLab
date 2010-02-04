@@ -1,6 +1,6 @@
-﻿#region License Information
+#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2009 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,13 +24,15 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Collections {
-  /// <summary>
-  /// Plugin class for HeuristicLab.Collections plugin.
-  /// </summary>
-  [Plugin("HeuristicLab.Collections-3.3")]
-  [PluginFile("HeuristicLab.Collections-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Persistence-3.3")]
-  public class HeuristicLabCollectionsPlugin : PluginBase {
+namespace HeuristicLab.Optimizer {
+  [Plugin("HeuristicLab.Optimizer", "3.3.0.$WCREV$")]
+  [PluginFile("HeuristicLab.Optimizer-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Persistence", "3.3")]
+  [PluginDependency("HeuristicLab.Common.Resources", "3.2")]
+  [PluginDependency("HeuristicLab.Core", "3.3")]
+  [PluginDependency("HeuristicLab.Core.Views", "3.3")]
+  [PluginDependency("HeuristicLab.MainForm", "3.2")]
+  [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.2")]
+  public class HeuristicLabOptimizerPlugin : PluginBase {
   }
 }

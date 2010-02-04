@@ -1,4 +1,4 @@
-﻿#region License Information
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -19,14 +19,21 @@
  */
 #endregion
 
+using System;
+using System.Collections.Generic;
+using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Tracing {
-
-  [Plugin("HeuristicLab.Tracing-3.2")]
-  [PluginFile("HeuristicLab.Tracing-3.2.dll", PluginFileType.Assembly)]
-  [PluginFile("HeuristicLab.log4net.xml", PluginFileType.Data)]
-  [PluginDependency("HeuristicLab.log4net-1.2.10.0")]
-  public class HeuristicLabPersistencePlugin : PluginBase {}
-
+namespace HeuristicLab.Core {
+  /// <summary>
+  /// Plugin class for HeuristicLab.Core plugin.
+  /// </summary>
+  [Plugin("HeuristicLab.Core", "3.3.0.$WCREV$")]
+  [PluginFile("HeuristicLab.Core-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Collections", "3.3")]
+  [PluginDependency("HeuristicLab.Common", "3.2")]
+  [PluginDependency("HeuristicLab.Common.Resources", "3.2")]
+  [PluginDependency("HeuristicLab.Persistence", "3.3")]
+  public class HeuristicLabCorePlugin : PluginBase {
+  }
 }

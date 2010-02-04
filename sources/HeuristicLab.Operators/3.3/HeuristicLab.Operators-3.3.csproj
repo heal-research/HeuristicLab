@@ -85,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CombinedOperator.cs" />
+    <None Include="HeuristicLabOperatorsPlugin.cs.frame" />
     <Compile Include="MultipleSuccessorsOperator.cs" />
     <Compile Include="Counter.cs" />
     <Compile Include="EmptyOperator.cs">
@@ -144,6 +145,7 @@ set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
-call PreBuildEvent.cmd</PreBuildEvent>
+call PreBuildEvent.cmd
+SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabOperatorsPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabOperatorsPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

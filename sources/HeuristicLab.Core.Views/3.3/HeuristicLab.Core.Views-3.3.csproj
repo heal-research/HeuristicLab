@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="HeuristicLabCoreViewsPlugin.cs.frame" />
     <Compile Include="ItemArrayView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -241,6 +242,7 @@ set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
-call PreBuildEvent.cmd</PreBuildEvent>
+call PreBuildEvent.cmd
+SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabCoreViewsPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabCoreViewsPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

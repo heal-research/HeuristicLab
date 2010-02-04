@@ -80,6 +80,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="HeuristicLabCommonResourcesPlugin.cs.frame" />
     <Compile Include="HeuristicLabCommonResourcesPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources.Designer.cs">
@@ -325,6 +326,7 @@ set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
-call PreBuildEvent.cmd</PreBuildEvent>
+call PreBuildEvent.cmd
+SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabCommonResourcesPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabCommonResourcesPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

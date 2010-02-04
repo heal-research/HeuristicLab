@@ -3,9 +3,9 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Persistence.GUI {
 
-  [Plugin("HeuristicLab.Persistence.GUI-3.3")]
+  [Plugin("HeuristicLab.Persistence.GUI", "3.3.0.$WCREV$")]
   [PluginFile("HeuristicLab.Persistence.GUI-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Persistence-3.3")]
+  [PluginDependency("HeuristicLab.Persistence", "3.3")]
   public class HeuristicLabPersistenceGUIPlugin : PluginBase { }
 
 

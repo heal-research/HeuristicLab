@@ -87,6 +87,7 @@
     <Compile Include="ButtonItems\NewFormToolStripButtonItem.cs" />
     <Compile Include="ButtonItems\SaveToolStripButtonItem.cs" />
     <Compile Include="ButtonItems\OpenToolStripButtonItem.cs" />
+    <None Include="HeuristicLabMainFormTestPlugin.cs.frame" />
     <Compile Include="FormView2.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -171,6 +172,7 @@ set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
-call PreBuildEvent.cmd</PreBuildEvent>
+call PreBuildEvent.cmd
+SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabMainFormTestPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabMainFormTestPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

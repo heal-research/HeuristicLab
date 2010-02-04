@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using HeuristicLab.PluginInfrastructure;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
@@ -11,7 +10,7 @@ using HeuristicLab.PluginInfrastructure;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("HeuristicLab")]
-[assembly: AssemblyCopyright("(c) 2002-2008 HEAL")]
+[assembly: AssemblyCopyright("(c) 2002-2010 HEAL")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -35,4 +34,3 @@ using HeuristicLab.PluginInfrastructure;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.2.10.0")]
 [assembly: AssemblyFileVersion("1.2.10.0")]
-[assembly: AssemblyBuildDate("$WCNOW$")]

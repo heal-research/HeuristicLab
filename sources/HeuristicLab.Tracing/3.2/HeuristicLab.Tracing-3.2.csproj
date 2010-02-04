@@ -83,6 +83,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="HeuristicLabTracingPlugin.cs.frame" />
     <Compile Include="HiveLogger.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="HeuristicLabTracingPlugin.cs" />
@@ -130,6 +131,7 @@ set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
-call PreBuildEvent.cmd</PreBuildEvent>
+call PreBuildEvent.cmd
+SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabTracingPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabTracingPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

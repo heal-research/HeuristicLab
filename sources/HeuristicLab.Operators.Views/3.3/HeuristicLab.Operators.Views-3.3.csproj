@@ -56,6 +56,7 @@
     <Compile Include="CombinedOperatorView.Designer.cs">
       <DependentUpon>CombinedOperatorView.cs</DependentUpon>
     </Compile>
+    <None Include="HeuristicLabOperatorsViewsPlugin.cs.frame" />
     <Compile Include="HeuristicLabOperatorsViewsPlugin.cs" />
     <Compile Include="OperatorView.cs">
       <SubType>UserControl</SubType>
@@ -113,6 +114,7 @@ set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
-call PreBuildEvent.cmd</PreBuildEvent>
+call PreBuildEvent.cmd
+SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabOperatorsViewsPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabOperatorsViewsPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

@@ -22,7 +22,6 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using HeuristicLab.PluginInfrastructure;
 using System.Security;
 using System;
 
@@ -34,7 +33,7 @@ using System;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("HeuristicLab")]
-[assembly: AssemblyCopyright("(c) 2002-2008 HEAL")]
+[assembly: AssemblyCopyright("(c) 2002-2010 HEAL")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: System.Resources.NeutralResourcesLanguage("en")]
@@ -55,5 +54,5 @@ using System;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("3.2.0.$WCREV$")]
+[assembly: AssemblyVersion("3.2.0.0")]
 [assembly: AssemblyFileVersion("3.2.0.$WCREV$")]

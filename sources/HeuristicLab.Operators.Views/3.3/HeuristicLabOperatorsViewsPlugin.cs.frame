@@ -24,11 +24,18 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.MainForm.WindowsForms {
-  [Plugin("HeuristicLab.MainForm.WindowsForms-3.2")]
-  [PluginFile("HeuristicLab.MainForm.WindowsForms-3.2.dll", PluginFileType.Assembly)]  
-  [PluginDependency("HeuristicLab.MainForm-3.2")]
-  [PluginDependency("HeuristicLab.WinFormsUI-2.3.1")]
-  public class HeuristicLabMainFormTestPlugin : PluginBase {
+namespace HeuristicLab.Operators {
+  /// <summary>
+  /// Plugin class for HeuristicLab.Operators.Views plugin.
+  /// </summary>
+  [Plugin("HeuristicLab.Operators.Views", "3.3.0.$WCREV$")]
+  [PluginFile("HeuristicLab.Operators.Views-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Collections", "3.3")]
+  [PluginDependency("HeuristicLab.Core", "3.3")]
+  [PluginDependency("HeuristicLab.Core.Views", "3.3")]
+  [PluginDependency("HeuristicLab.MainForm", "3.2")]
+  [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.2")]
+  [PluginDependency("HeuristicLab.Operators", "3.3")]
+  public class HeuristicLabOperatorsViewsPlugin : PluginBase {
   }
 }
