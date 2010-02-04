@@ -57,7 +57,7 @@ namespace HeuristicLab.Collections {
       }
       set {
         T item = list[index];
-        if (!item.Equals(value)) {
+        if (!((item == null) && (value == null)) && ((item == null) || (!item.Equals(value)))) {
           list[index] = value;
           OnItemsReplaced(new IndexedItem<T>[] { new IndexedItem<T>(index, value) }, new IndexedItem<T>[] { new IndexedItem<T>(index, item) });
           OnPropertyChanged("Item[]");
@@ -319,7 +319,7 @@ namespace HeuristicLab.Collections {
       }
     }
     public void Sort(int index, int count, IComparer<T> comparer) {
-      if (list.Count > 1) {
+      if (count > 1) {
         IndexedItem<T>[] oldItems = GetIndexedItems(index, count);
         list.Sort(index, count, comparer);
         OnPropertyChanged("Item[]");

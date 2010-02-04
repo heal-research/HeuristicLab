@@ -48,6 +48,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ReadOnlyObservableArray.cs" />
+    <Compile Include="ObservableArray.cs" />
+    <Compile Include="IObservableArray.cs" />
     <Compile Include="ObservableKeyedCollection.cs" />
     <Compile Include="ReadOnlyObservableSet.cs" />
     <Compile Include="IObservableSet.cs" />
