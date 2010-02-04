@@ -51,6 +51,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ItemArrayView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ItemArrayView.Designer.cs">
+      <DependentUpon>ItemArrayView.cs</DependentUpon>
+    </Compile>
     <Compile Include="CreateParameterDialog.cs">
       <SubType>Form</SubType>
     </Compile>

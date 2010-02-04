@@ -102,6 +102,7 @@
     <Compile Include="Cloner.cs" />
     <Compile Include="Attributes\CreatableAttribute.cs" />
     <Compile Include="ChangedEventArgs.cs" />
+    <Compile Include="ItemArray.cs" />
     <Compile Include="DeepCloneable.cs" />
     <Compile Include="Engine.cs" />
     <Compile Include="Interfaces\IOperatorParameter.cs" />
