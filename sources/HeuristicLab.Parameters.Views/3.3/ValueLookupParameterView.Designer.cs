@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Parameters.Views {
-  partial class SubScopesItemParameterView<T> {
+  partial class ValueLookupParameterView<T> {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -46,10 +46,17 @@ namespace HeuristicLab.Parameters.Views {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
+      this.valueGroupBox = new System.Windows.Forms.GroupBox();
+      this.valuePanel = new System.Windows.Forms.Panel();
+      this.viewHost = new HeuristicLab.Core.Views.ViewHost();
+      this.clearValueButton = new System.Windows.Forms.Button();
+      this.setValueButton = new System.Windows.Forms.Button();
+      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.actualNameTextBox = new System.Windows.Forms.TextBox();
       this.actualNameLabel = new System.Windows.Forms.Label();
-      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
+      this.valueGroupBox.SuspendLayout();
+      this.valuePanel.SuspendLayout();
       this.SuspendLayout();
       // 
       // dataTypeLabel
@@ -81,6 +88,68 @@ namespace HeuristicLab.Parameters.Views {
       this.descriptionTextBox.Size = new System.Drawing.Size(306, 62);
       this.descriptionTextBox.TabIndex = 5;
       // 
+      // valueGroupBox
+      // 
+      this.valueGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.valueGroupBox.Controls.Add(this.valuePanel);
+      this.valueGroupBox.Controls.Add(this.clearValueButton);
+      this.valueGroupBox.Controls.Add(this.setValueButton);
+      this.valueGroupBox.Location = new System.Drawing.Point(0, 146);
+      this.valueGroupBox.Name = "valueGroupBox";
+      this.valueGroupBox.Size = new System.Drawing.Size(386, 169);
+      this.valueGroupBox.TabIndex = 8;
+      this.valueGroupBox.TabStop = false;
+      this.valueGroupBox.Text = "&Value:";
+      // 
+      // valuePanel
+      // 
+      this.valuePanel.AllowDrop = true;
+      this.valuePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.valuePanel.Controls.Add(this.viewHost);
+      this.valuePanel.Location = new System.Drawing.Point(6, 48);
+      this.valuePanel.Name = "valuePanel";
+      this.valuePanel.Size = new System.Drawing.Size(374, 115);
+      this.valuePanel.TabIndex = 0;
+      this.valuePanel.DragOver += new System.Windows.Forms.DragEventHandler(this.valuePanel_DragEnterOver);
+      this.valuePanel.DragDrop += new System.Windows.Forms.DragEventHandler(this.valuePanel_DragDrop);
+      this.valuePanel.DragEnter += new System.Windows.Forms.DragEventHandler(this.valuePanel_DragEnterOver);
+      // 
+      // viewHost
+      // 
+      this.viewHost.Content = null;
+      this.viewHost.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.viewHost.Location = new System.Drawing.Point(0, 0);
+      this.viewHost.Name = "viewHost";
+      this.viewHost.Size = new System.Drawing.Size(374, 115);
+      this.viewHost.TabIndex = 0;
+      // 
+      // clearValueButton
+      // 
+      this.clearValueButton.Enabled = false;
+      this.clearValueButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Remove;
+      this.clearValueButton.Location = new System.Drawing.Point(35, 19);
+      this.clearValueButton.Name = "clearValueButton";
+      this.clearValueButton.Size = new System.Drawing.Size(23, 23);
+      this.clearValueButton.TabIndex = 1;
+      this.toolTip.SetToolTip(this.clearValueButton, "Clear Value");
+      this.clearValueButton.UseVisualStyleBackColor = true;
+      this.clearValueButton.Click += new System.EventHandler(this.clearValueButton_Click);
+      // 
+      // setValueButton
+      // 
+      this.setValueButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Add;
+      this.setValueButton.Location = new System.Drawing.Point(6, 19);
+      this.setValueButton.Name = "setValueButton";
+      this.setValueButton.Size = new System.Drawing.Size(23, 23);
+      this.setValueButton.TabIndex = 0;
+      this.toolTip.SetToolTip(this.setValueButton, "Set Value");
+      this.setValueButton.UseVisualStyleBackColor = true;
+      this.setValueButton.Click += new System.EventHandler(this.setValueButton_Click);
+      // 
       // actualNameTextBox
       // 
       this.actualNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
@@ -100,23 +169,27 @@ namespace HeuristicLab.Parameters.Views {
       this.actualNameLabel.TabIndex = 2;
       this.actualNameLabel.Text = "&Actual Name:";
       // 
-      // SubScopesItemParameterView
+      // ValueLookupParameterView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.actualNameTextBox);
       this.Controls.Add(this.actualNameLabel);
-      this.Name = "SubScopesItemParameterView";
-      this.Size = new System.Drawing.Size(386, 143);
+      this.Controls.Add(this.valueGroupBox);
+      this.Name = "ValueLookupParameterView";
+      this.Size = new System.Drawing.Size(386, 315);
       this.Controls.SetChildIndex(this.descriptionTextBox, 0);
       this.Controls.SetChildIndex(this.descriptionLabel, 0);
       this.Controls.SetChildIndex(this.dataTypeTextBox, 0);
-      this.Controls.SetChildIndex(this.actualNameLabel, 0);
       this.Controls.SetChildIndex(this.dataTypeLabel, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
-      this.Controls.SetChildIndex(this.actualNameTextBox, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
+      this.Controls.SetChildIndex(this.valueGroupBox, 0);
+      this.Controls.SetChildIndex(this.actualNameLabel, 0);
+      this.Controls.SetChildIndex(this.actualNameTextBox, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
+      this.valueGroupBox.ResumeLayout(false);
+      this.valuePanel.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -124,8 +197,13 @@ namespace HeuristicLab.Parameters.Views {
 
     #endregion
 
+    protected System.Windows.Forms.GroupBox valueGroupBox;
+    protected System.Windows.Forms.Panel valuePanel;
+    protected HeuristicLab.Core.Views.ViewHost viewHost;
+    protected System.Windows.Forms.Button setValueButton;
+    protected System.Windows.Forms.ToolTip toolTip;
+    protected System.Windows.Forms.Button clearValueButton;
     protected System.Windows.Forms.TextBox actualNameTextBox;
     protected System.Windows.Forms.Label actualNameLabel;
-    protected System.Windows.Forms.ToolTip toolTip;
   }
 }

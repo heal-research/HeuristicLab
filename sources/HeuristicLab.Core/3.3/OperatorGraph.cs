@@ -114,21 +114,21 @@ namespace HeuristicLab.Core {
       // remove edges to removed operator
       var opParams = from o in Operators
                      from p in o.Parameters
-                     where p is IOperatorParameter
-                     where (((IOperatorParameter)p).Value != null) && (((IOperatorParameter)p).Value == op)
-                     select (IOperatorParameter)p;
-      foreach (IOperatorParameter opParam in opParams)
+                     where p is IValueParameter<IOperator>
+                     where (((IValueParameter<IOperator>)p).Value != null) && (((IValueParameter<IOperator>)p).Value == op)
+                     select (IValueParameter<IOperator>)p;
+      foreach (IValueParameter<IOperator> opParam in opParams)
         opParam.Value = null;
     }
     private void AddParameter(IParameter param) {
-      IOperatorParameter opParam = param as IOperatorParameter;
+      IValueParameter<IOperator> opParam = param as IValueParameter<IOperator>;
       if (opParam != null) {
         RegisterOperatorParameterEvents(opParam);
         if (opParam.Value != null) Operators.Add(opParam.Value);
       }
     }
     private void RemoveParameter(IParameter param) {
-      IOperatorParameter opParam = param as IOperatorParameter;
+      IValueParameter<IOperator> opParam = param as IValueParameter<IOperator>;
       if (opParam != null) {
         DeregisterOperatorParameterEvents(opParam);
       }
@@ -162,10 +162,10 @@ namespace HeuristicLab.Core {
       op.Parameters.ItemsReplaced -= new CollectionItemsChangedEventHandler<IParameter>(Parameters_ItemsReplaced);
       op.Parameters.CollectionReset -= new CollectionItemsChangedEventHandler<IParameter>(Parameters_CollectionReset);
     }
-    private void RegisterOperatorParameterEvents(IOperatorParameter opParam) {
+    private void RegisterOperatorParameterEvents(IValueParameter<IOperator> opParam) {
       opParam.ValueChanged += new EventHandler(opParam_ValueChanged);
     }
-    private void DeregisterOperatorParameterEvents(IOperatorParameter opParam) {
+    private void DeregisterOperatorParameterEvents(IValueParameter<IOperator> opParam) {
       opParam.ValueChanged -= new EventHandler(opParam_ValueChanged);
     }
 
@@ -206,7 +206,7 @@ namespace HeuristicLab.Core {
         AddParameter(param);
     }
     private void opParam_ValueChanged(object sender, EventArgs e) {
-      IOperatorParameter opParam = (IOperatorParameter)sender;
+      IValueParameter<IOperator> opParam = (IValueParameter<IOperator>)sender;
       if (opParam.Value != null) Operators.Add(opParam.Value);
     }
     private void Operators_Changed(object sender, ChangedEventArgs e) {

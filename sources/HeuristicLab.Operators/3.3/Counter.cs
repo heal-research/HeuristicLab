@@ -35,23 +35,26 @@ namespace HeuristicLab.Operators {
   [EmptyStorableClass]
   [Creatable("Test")]
   public sealed class Counter : SingleSuccessorOperator {
-    public ItemParameter<IntData> Value {
-      get { return (ItemParameter<IntData>)Parameters["Value"]; }
+    public LookupParameter<IntData> ValueParameter {
+      get { return (LookupParameter<IntData>)Parameters["Value"]; }
     }
-    public ItemParameter<IntData> Increment {
-      get { return (ItemParameter<IntData>)Parameters["Increment"]; }
+    public ValueLookupParameter<IntData> IncrementParaneter {
+      get { return (ValueLookupParameter<IntData>)Parameters["Increment"]; }
+    }
+    public IntData Increment {
+      get { return IncrementParaneter.Value; }
+      set { IncrementParaneter.Value = value; }
     }
 
     public Counter()
       : base() {
-      Parameters.Add(new ItemParameter<IntData>("Value", "The value which should be incremented."));
-      Parameters.Add(new ItemParameter<IntData>("Increment", "The increment which is added to the value.", new IntData(1)));
+      Parameters.Add(new LookupParameter<IntData>("Value", "The value which should be incremented."));
+      Parameters.Add(new ValueLookupParameter<IntData>("Increment", "The increment which is added to the value.", new IntData(1)));
     }
 
     public override ExecutionContextCollection Apply() {
-      IntData value = (IntData)Value.Value;
-      IntData increment = (IntData)Increment.Value;
-      value.Value += increment.Value;
+      if (ValueParameter.ActualValue == null) ValueParameter.ActualValue = new IntData();
+      ValueParameter.ActualValue.Value += IncrementParaneter.ActualValue.Value;
       return base.Apply();
     }
   }

@@ -37,12 +37,12 @@ namespace HeuristicLab.Operators {
   [Creatable("Test")]
   [EmptyStorableClass]
   public abstract class MultipleSuccessorsOperator : Operator {
-    protected IOperatorParameter[] SuccessorParameters {
+    protected IValueParameter<IOperator>[] SuccessorParameters {
       get {
         return (from p in Parameters
-                where p is IOperatorParameter
+                where p is IValueParameter<IOperator>
                 orderby p.Name ascending
-                select (IOperatorParameter)p).ToArray();
+                select (IValueParameter<IOperator>)p).ToArray();
       }
     }
 
@@ -52,7 +52,7 @@ namespace HeuristicLab.Operators {
         if (successors == null) {
           successors = new OperatorList();
           var opParams = SuccessorParameters;
-          foreach (IOperatorParameter opParam in opParams) {
+          foreach (IValueParameter<IOperator> opParam in opParams) {
             opParam.ValueChanged += new EventHandler(opParam_ValueChanged);
             successors.Add(opParam.Value);
           }
@@ -72,12 +72,12 @@ namespace HeuristicLab.Operators {
 
     private void UpdateOperatorParameters() {
       var opParams = SuccessorParameters;
-      foreach (IOperatorParameter opParam in opParams) {
+      foreach (IValueParameter<IOperator> opParam in opParams) {
         opParam.ValueChanged -= new EventHandler(opParam_ValueChanged);
         Parameters.Remove(opParam.Name);
       }
       for (int i = 0; i < Successors.Count; i++) {
-        IOperatorParameter opParam = new OperatorParameter(i.ToString(), string.Empty, Successors[i]);
+        IValueParameter<IOperator> opParam = new OperatorParameter(i.ToString(), string.Empty, Successors[i]);
         opParam.ValueChanged += new EventHandler(opParam_ValueChanged);
         Parameters.Add(opParam);
       }
@@ -91,17 +91,17 @@ namespace HeuristicLab.Operators {
     }
     private void successors_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IOperator>> e) {
       foreach (IndexedItem<IOperator> item in e.Items)
-        ((IOperatorParameter)Parameters[item.Index.ToString()]).Value = item.Value;
+        ((IValueParameter<IOperator>)Parameters[item.Index.ToString()]).Value = item.Value;
     }
     private void successors_ItemsMoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<IOperator>> e) {
       foreach (IndexedItem<IOperator> item in e.Items)
-        ((IOperatorParameter)Parameters[item.Index.ToString()]).Value = item.Value;
+        ((IValueParameter<IOperator>)Parameters[item.Index.ToString()]).Value = item.Value;
     }
     private void successors_CollectionReset(object sender, CollectionItemsChangedEventArgs<IndexedItem<IOperator>> e) {
       UpdateOperatorParameters();
     }
     private void opParam_ValueChanged(object sender, EventArgs e) {
-      IOperatorParameter opParam = (IOperatorParameter)sender;
+      IValueParameter<IOperator> opParam = (IValueParameter<IOperator>)sender;
       int index = int.Parse(opParam.Name);
       successors[index] = opParam.Value;
     }

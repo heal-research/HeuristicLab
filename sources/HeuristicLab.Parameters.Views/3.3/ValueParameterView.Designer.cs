@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Parameters.Views {
-  partial class OperatorParameterView {
+  partial class ValueParameterView<T> {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -57,15 +57,10 @@ namespace HeuristicLab.Parameters.Views {
       this.valuePanel.SuspendLayout();
       this.SuspendLayout();
       // 
-      // dataTypeLabel
-      // 
-      this.dataTypeLabel.TabIndex = 6;
-      // 
       // dataTypeTextBox
       // 
       this.dataTypeTextBox.Location = new System.Drawing.Point(80, 94);
       this.dataTypeTextBox.Size = new System.Drawing.Size(306, 20);
-      this.dataTypeTextBox.TabIndex = 7;
       // 
       // nameTextBox
       // 
@@ -74,15 +69,10 @@ namespace HeuristicLab.Parameters.Views {
       this.nameTextBox.Location = new System.Drawing.Point(80, 0);
       this.nameTextBox.Size = new System.Drawing.Size(306, 20);
       // 
-      // descriptionLabel
-      // 
-      this.descriptionLabel.TabIndex = 4;
-      // 
       // descriptionTextBox
       // 
       this.descriptionTextBox.Location = new System.Drawing.Point(80, 26);
       this.descriptionTextBox.Size = new System.Drawing.Size(306, 62);
-      this.descriptionTextBox.TabIndex = 5;
       // 
       // valueGroupBox
       // 
@@ -95,7 +85,7 @@ namespace HeuristicLab.Parameters.Views {
       this.valueGroupBox.Location = new System.Drawing.Point(0, 120);
       this.valueGroupBox.Name = "valueGroupBox";
       this.valueGroupBox.Size = new System.Drawing.Size(386, 195);
-      this.valueGroupBox.TabIndex = 10;
+      this.valueGroupBox.TabIndex = 6;
       this.valueGroupBox.TabStop = false;
       this.valueGroupBox.Text = "&Value:";
       // 
@@ -130,7 +120,7 @@ namespace HeuristicLab.Parameters.Views {
       this.clearValueButton.Location = new System.Drawing.Point(35, 19);
       this.clearValueButton.Name = "clearValueButton";
       this.clearValueButton.Size = new System.Drawing.Size(23, 23);
-      this.clearValueButton.TabIndex = 9;
+      this.clearValueButton.TabIndex = 1;
       this.toolTip.SetToolTip(this.clearValueButton, "Clear Value");
       this.clearValueButton.UseVisualStyleBackColor = true;
       this.clearValueButton.Click += new System.EventHandler(this.clearValueButton_Click);
@@ -141,17 +131,17 @@ namespace HeuristicLab.Parameters.Views {
       this.setValueButton.Location = new System.Drawing.Point(6, 19);
       this.setValueButton.Name = "setValueButton";
       this.setValueButton.Size = new System.Drawing.Size(23, 23);
-      this.setValueButton.TabIndex = 8;
+      this.setValueButton.TabIndex = 0;
       this.toolTip.SetToolTip(this.setValueButton, "Set Value");
       this.setValueButton.UseVisualStyleBackColor = true;
       this.setValueButton.Click += new System.EventHandler(this.setValueButton_Click);
       // 
-      // OperatorParameterView
+      // ValueParameterView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.valueGroupBox);
-      this.Name = "OperatorParameterView";
+      this.Name = "ValueParameterView";
       this.Size = new System.Drawing.Size(386, 315);
       this.Controls.SetChildIndex(this.descriptionTextBox, 0);
       this.Controls.SetChildIndex(this.descriptionLabel, 0);

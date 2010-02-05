@@ -39,7 +39,10 @@ namespace HeuristicLab.Parameters {
     }
 
     public ScopeParameter()
-      : base("Anonymous", null, typeof(IScope)) {
+      : base("Anonymous", typeof(IScope)) {
+    }
+    public ScopeParameter(string name)
+      : base(name, typeof(IScope)) {
     }
     public ScopeParameter(string name, string description)
       : base(name, description, typeof(IScope)) {

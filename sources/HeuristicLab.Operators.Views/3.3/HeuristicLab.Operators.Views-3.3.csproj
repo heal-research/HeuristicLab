@@ -57,6 +57,12 @@
       <DependentUpon>CombinedOperatorView.cs</DependentUpon>
     </Compile>
     <None Include="HeuristicLabOperatorsViewsPlugin.cs.frame" />
+    <Compile Include="MultipleSuccessorsOperatorView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MultipleSuccessorsOperatorView.Designer.cs">
+      <DependentUpon>MultipleSuccessorsOperatorView.cs</DependentUpon>
+    </Compile>
     <Compile Include="HeuristicLabOperatorsViewsPlugin.cs" />
     <Compile Include="OperatorView.cs">
       <SubType>UserControl</SubType>

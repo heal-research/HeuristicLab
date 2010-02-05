@@ -55,6 +55,11 @@ namespace HeuristicLab.Parameters {
       : base("Anonymous") {
       dataType = typeof(IItem);
     }
+    protected Parameter(string name, Type dataType)
+      : base(name) {
+      if (dataType == null) throw new ArgumentNullException();
+      this.dataType = dataType;
+    }
     protected Parameter(string name, string description, Type dataType)
       : base(name, description) {
       if (dataType == null) throw new ArgumentNullException();

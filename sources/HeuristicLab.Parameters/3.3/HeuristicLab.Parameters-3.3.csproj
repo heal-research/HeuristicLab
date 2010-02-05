@@ -49,10 +49,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLabParametersPlugin.cs.frame" />
-    <Compile Include="SubScopesItemParameter.cs" />
+    <Compile Include="LookupParameter.cs" />
+    <Compile Include="SubScopesLookupParameter.cs" />
+    <Compile Include="ValueLookupParameter.cs" />
+    <Compile Include="ValueParameter.cs" />
     <Compile Include="ScopeParameter.cs" />
     <Compile Include="HeuristicLabParametersPlugin.cs" />
-    <Compile Include="ItemParameter.cs" />
     <Compile Include="OperatorParameter.cs" />
     <Compile Include="Parameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -65,6 +67,10 @@
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
       <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Common\3.2\HeuristicLab.Common-3.2.csproj">
+      <Project>{1FC004FC-59AF-4249-B1B6-FF25873A20E4}</Project>
+      <Name>HeuristicLab.Common-3.2</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
       <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>

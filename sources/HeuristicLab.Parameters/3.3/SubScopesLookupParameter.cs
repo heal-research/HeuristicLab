@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -30,8 +31,8 @@ namespace HeuristicLab.Parameters {
   /// <summary>
   /// A generic parameter representing instances of type T which are collected from the sub-scopes of the current scope.
   /// </summary>
-  [Item("SubScopesItemParameter<T>", "A generic parameter representing instances of type T which are collected from the sub-scopes of the current scope.")]
-  public class SubScopesItemParameter<T> : Parameter where T : class, IItem {
+  [Item("SubScopesLookupParameter<T>", "A generic parameter representing instances of type T which are collected from the sub-scopes of the current scope.")]
+  public class SubScopesLookupParameter<T> : Parameter, ILookupParameter<T> where T : class, IItem {
     [Storable]
     private string actualName;
     public string ActualName {
@@ -45,22 +46,26 @@ namespace HeuristicLab.Parameters {
       }
     }
 
-    public T[] Values {
-      get { return GetValues(); }
-      set { SetValues(value); }
+    public T[] ActualValues {
+      get { return GetActualValues(); }
+      set { SetActualValues(value); }
     }
 
-    public SubScopesItemParameter()
-      : base("Anonymous", null, typeof(T)) {
+    public SubScopesLookupParameter()
+      : base("Anonymous", typeof(T)) {
       actualName = Name;
     }
-    public SubScopesItemParameter(string name, string description)
+    public SubScopesLookupParameter(string name)
+      : base(name, typeof(T)) {
+      actualName = Name;
+    }
+    public SubScopesLookupParameter(string name, string description)
       : base(name, description, typeof(T)) {
       actualName = Name;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      SubScopesItemParameter<T> clone = (SubScopesItemParameter<T>)base.Clone(cloner);
+      SubScopesLookupParameter<T> clone = (SubScopesLookupParameter<T>)base.Clone(cloner);
       clone.actualName = actualName;
       return clone;
     }
@@ -69,30 +74,30 @@ namespace HeuristicLab.Parameters {
       return string.Format("{0}: {1} ({2})", Name, ActualName, DataType.Name);
     }
 
-    protected string GetActualName() {
-      string name = Name;
-      ExecutionContext current = ExecutionContext;
-      while (current != null) {
-        if (current.Operator.Parameters.ContainsKey(name))
-          name = ((SubScopesItemParameter<T>)current.Operator.Parameters[name]).ActualName;
-        current = current.Parent;
-      }
-      return name;
-    }
-    protected virtual T[] GetValues() {
-      string name = GetActualName();
+    protected virtual T[] GetActualValues() {
+      string name = LookupParameter<T>.TranslateName(Name, ExecutionContext);
       IScope scope = ExecutionContext.Scope;
-      T[] value = new T[scope.SubScopes.Count];
+      T[] values = new T[scope.SubScopes.Count];
       IVariable var;
+      T value;
 
-      for (int i = 0; i < value.Length; i++) {
+      for (int i = 0; i < values.Length; i++) {
         scope.SubScopes[i].Variables.TryGetValue(name, out var);
-        if (var != null) value[i] = (T)var.Value;
+        if (var != null) {
+          value = var.Value as T;
+          if (value == null)
+            throw new InvalidOperationException(
+              string.Format("Type mismatch. Variable \"{0}\" does not contain a \"{1}\".",
+                            name,
+                            typeof(T).GetPrettyName())
+            );
+          values[i] = value;
+        }
       }
-      return value;
+      return values;
     }
-    protected virtual void SetValues(T[] values) {
-      string name = GetActualName();
+    protected virtual void SetActualValues(T[] values) {
+      string name = LookupParameter<T>.TranslateName(Name, ExecutionContext);
       IScope scope = ExecutionContext.Scope;
       IVariable var;
 

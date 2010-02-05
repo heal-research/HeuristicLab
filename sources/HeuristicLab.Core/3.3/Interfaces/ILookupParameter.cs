@@ -22,18 +22,12 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using HeuristicLab.PluginInfrastructure;
+using System.Xml;
 
-namespace HeuristicLab.Parameters {
-  /// <summary>
-  /// Plugin class for HeuristicLab.Parameters plugin.
-  /// </summary>
-  [Plugin("HeuristicLab.Parameters", "3.3.0.$WCREV$")]
-  [PluginFile("HeuristicLab.Parameters-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Collections", "3.3")]
-  [PluginDependency("HeuristicLab.Common", "3.2")]
-  [PluginDependency("HeuristicLab.Core", "3.3")]
-  [PluginDependency("HeuristicLab.Persistence", "3.3")]
-  public class HeuristicLabParametersPlugin : PluginBase {
+namespace HeuristicLab.Core {
+  public interface ILookupParameter<T> : IParameter where T : class, IItem {
+    string ActualName { get; set; }
+
+    event EventHandler ActualNameChanged;
   }
 }

@@ -34,9 +34,9 @@ namespace HeuristicLab.Parameters.Views {
   /// <summary>
   /// The visual representation of a <see cref="Parameter"/>.
   /// </summary>
-  [Content(typeof(OperatorParameter), true)]
-  [Content(typeof(IOperatorParameter), false)]
-  public partial class OperatorParameterView : ParameterView {
+  [Content(typeof(ValueParameter<>), true)]
+  [Content(typeof(IValueParameter<>), false)]
+  public partial class ValueParameterView<T> : ParameterView where T : class, IItem {
     protected TypeSelectorDialog typeSelectorDialog;
 
     /// <summary>
@@ -44,24 +44,24 @@ namespace HeuristicLab.Parameters.Views {
     /// </summary>
     /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
     /// No own data storage present.</remarks>
-    public new IOperatorParameter Content {
-      get { return (IOperatorParameter)base.Content; }
+    public new IValueParameter<T> Content {
+      get { return (IValueParameter<T>)base.Content; }
       set { base.Content = value; }
     }
 
     /// <summary>
     /// Initializes a new instance of <see cref="VariableView"/> with caption "Variable".
     /// </summary>
-    public OperatorParameterView() {
+    public ValueParameterView() {
       InitializeComponent();
-      Caption = "OperatorParameter";
+      Caption = "ValueParameter";
     }
     /// <summary>
     /// Initializes a new instance of <see cref="VariableView"/> with the given <paramref name="variable"/>.
     /// </summary>
     /// <remarks>Calls <see cref="VariableView()"/>.</remarks>
     /// <param name="variable">The variable to represent visually.</param>
-    public OperatorParameterView(IOperatorParameter content)
+    public ValueParameterView(IValueParameter<T> content)
       : this() {
       Content = content;
     }
@@ -87,7 +87,7 @@ namespace HeuristicLab.Parameters.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        Caption = "OperatorParameter";
+        Caption = "ValueParameter";
         setValueButton.Enabled = false;
         clearValueButton.Enabled = false;
         valueGroupBox.Enabled = false;
@@ -114,11 +114,11 @@ namespace HeuristicLab.Parameters.Views {
     protected virtual void setValueButton_Click(object sender, EventArgs e) {
       if (typeSelectorDialog == null) {
         typeSelectorDialog = new TypeSelectorDialog();
-        typeSelectorDialog.Caption = "Select Operator";
+        typeSelectorDialog.Caption = "Select Value";
         typeSelectorDialog.TypeSelector.Configure(Content.DataType, false, false);
       }
       if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK)
-        Content.Value = (IOperator)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
+        Content.Value = (T)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
     }
     protected virtual void clearValueButton_Click(object sender, EventArgs e) {
       Content.Value = null;
@@ -136,8 +136,8 @@ namespace HeuristicLab.Parameters.Views {
     }
     protected virtual void valuePanel_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
-        IOperator value = e.Data.GetData("Value") as IOperator;
-        if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) value = (IOperator)value.Clone();
+        T value = e.Data.GetData("Value") as T;
+        if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) value = (T)value.Clone();
         Content.Value = value;
       }
     }

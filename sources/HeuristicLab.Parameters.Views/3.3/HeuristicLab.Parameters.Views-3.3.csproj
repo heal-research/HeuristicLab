@@ -51,25 +51,19 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLabParametersViewsPlugin.cs.frame" />
-    <Compile Include="SubScopesItemParameterView.cs">
+    <Compile Include="ValueLookupParameterView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="SubScopesItemParameterView.Designer.cs">
-      <DependentUpon>SubScopesItemParameterView.cs</DependentUpon>
+    <Compile Include="ValueLookupParameterView.Designer.cs">
+      <DependentUpon>ValueLookupParameterView.cs</DependentUpon>
     </Compile>
-    <Compile Include="OperatorParameterView.cs">
+    <Compile Include="LookupParameterView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="OperatorParameterView.Designer.cs">
-      <DependentUpon>OperatorParameterView.cs</DependentUpon>
+    <Compile Include="LookupParameterView.Designer.cs">
+      <DependentUpon>LookupParameterView.cs</DependentUpon>
     </Compile>
     <Compile Include="HeuristicLabParametersViewsPlugin.cs" />
-    <Compile Include="ItemParameterView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ItemParameterView.Designer.cs">
-      <DependentUpon>ItemParameterView.cs</DependentUpon>
-    </Compile>
     <Compile Include="ParameterView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -77,6 +71,12 @@
       <DependentUpon>ParameterView.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ValueParameterView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ValueParameterView.Designer.cs">
+      <DependentUpon>ValueParameterView.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />

@@ -34,33 +34,33 @@ namespace HeuristicLab.Parameters.Views {
   /// <summary>
   /// The visual representation of a <see cref="Parameter"/>.
   /// </summary>
-  [Content(typeof(SubScopesItemParameter<>), true)]
-  public partial class SubScopesItemParameterView<T> : ParameterView where T : class, IItem {
-    protected TypeSelectorDialog typeSelectorDialog;
-
+  [Content(typeof(LookupParameter<>), true)]
+  [Content(typeof(SubScopesLookupParameter<>), true)]
+  [Content(typeof(ILookupParameter<>), false)]
+  public partial class LookupParameterView<T> : ParameterView where T : class, IItem {
     /// <summary>
     /// Gets or sets the variable to represent visually.
     /// </summary>
     /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
     /// No own data storage present.</remarks>
-    public new SubScopesItemParameter<T> Content {
-      get { return (SubScopesItemParameter<T>)base.Content; }
+    public new ILookupParameter<T> Content {
+      get { return (ILookupParameter<T>)base.Content; }
       set { base.Content = value; }
     }
 
     /// <summary>
     /// Initializes a new instance of <see cref="VariableView"/> with caption "Variable".
     /// </summary>
-    public SubScopesItemParameterView() {
+    public LookupParameterView() {
       InitializeComponent();
-      Caption = "SubScopesItemParameter";
+      Caption = "LookupParameter";
     }
     /// <summary>
     /// Initializes a new instance of <see cref="VariableView"/> with the given <paramref name="variable"/>.
     /// </summary>
     /// <remarks>Calls <see cref="VariableView()"/>.</remarks>
     /// <param name="variable">The variable to represent visually.</param>
-    public SubScopesItemParameterView(SubScopesItemParameter<T> content)
+    public LookupParameterView(ILookupParameter<T> content)
       : this() {
       Content = content;
     }
@@ -86,7 +86,7 @@ namespace HeuristicLab.Parameters.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        Caption = "SubScopesItemParameter";
+        Caption = "LookupParameter";
         actualNameTextBox.Text = "-";
         actualNameTextBox.Enabled = false;
       } else {
