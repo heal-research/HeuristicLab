@@ -59,10 +59,12 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       get { return version; }
       internal set { version = value; }
     }
+    [Obsolete]
     private DateTime buildDate;
     /// <summary>
     /// Gets the build date of the plugin.
     /// </summary>
+    [Obsolete]
     public DateTime BuildDate {
       get { return buildDate; }
       internal set { buildDate = value; }
@@ -131,7 +133,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
 
     internal void Load() {
       if (!(pluginState == PluginState.Enabled || pluginState == PluginState.Loaded))
-        throw new InvalidOperationException("Can't loaded a plugin in state " + pluginState);
+        throw new InvalidOperationException("Can't load a plugin in state " + pluginState);
       pluginState = PluginState.Loaded;
       nTimesLoaded++;
     }

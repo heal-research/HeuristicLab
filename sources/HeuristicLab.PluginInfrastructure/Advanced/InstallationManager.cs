@@ -81,7 +81,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       foreach (var dependency in desc.Dependencies) {
         builder.AppendLine(dependency.Name + " " + dependency.Version);
       }
-      builder.AppendLine().AppendFormat("Plugins directly dependent on {0}:\n", desc.Name);
+      builder.AppendLine().AppendFormat("Plugins directly dependent on {0}:", desc.Name).AppendLine();
       var dependents = from x in pluginManager.Plugins
                        where x.Dependencies.Contains(desc)
                        select x;

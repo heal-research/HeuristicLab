@@ -259,51 +259,15 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     /// </summary>
     /// <param name="t"></param>
     private PluginDescription GetPluginDescription(Type pluginType) {
-      // get all attributes of that type
-      IList<CustomAttributeData> attributes = CustomAttributeData.GetCustomAttributes(pluginType);
-      List<PluginDependency> pluginDependencies = new List<PluginDependency>();
-      List<PluginFile> pluginFiles = new List<PluginFile>();
-      string pluginName = null;
-      string pluginDescription = null;
-      string pluginVersion = "0.0.0.0";
-      // iterate through all custom attributes and search for attributed that we are interested in 
-      foreach (CustomAttributeData attributeData in attributes) {
-        if (IsAttributeDataForType(attributeData, typeof(PluginAttribute))) {
-          pluginName = (string)attributeData.ConstructorArguments[0].Value;
-          if (attributeData.ConstructorArguments.Count() > 1) {
-            pluginVersion = (string)attributeData.ConstructorArguments[1].Value;
-          }
-          if (attributeData.ConstructorArguments.Count() > 2) {
-            pluginDescription = (string)attributeData.ConstructorArguments[2].Value;
-          } else {
-            // no description given => use name as description
-            pluginDescription = pluginName;
-          }
-        } else if (IsAttributeDataForType(attributeData, typeof(PluginDependencyAttribute))) {
-          string name = (string)attributeData.ConstructorArguments[0].Value;
-          Version version = new Version();
-          // check if version is given for now
-          // later when the constructore of PluginDependencyAttribute with only one argument has been removed
-          // this conditional can be removed as well
-          if (attributeData.ConstructorArguments.Count > 1) {
-            try {
-              version = new Version((string)attributeData.ConstructorArguments[1].Value); // throws FormatException
-            }
-            catch (FormatException ex) {
-              throw new InvalidPluginException("Invalid version format of dependency " + name + " in plugin " + pluginType.ToString(), ex);
-            }
-          }
-          pluginDependencies.Add(new PluginDependency(name, version));
-        } else if (IsAttributeDataForType(attributeData, typeof(PluginFileAttribute))) {
-          string pluginFileName = (string)attributeData.ConstructorArguments[0].Value;
-          PluginFileType fileType = (PluginFileType)attributeData.ConstructorArguments[1].Value;
-          pluginFiles.Add(new PluginFile(Path.GetFullPath(Path.Combine(PluginDir, pluginFileName)), fileType));
-        }
-      }
+
+      string pluginName, pluginDescription, pluginVersion;
+      GetPluginMetaData(pluginType, out pluginName, out pluginDescription, out pluginVersion);
+      var pluginFiles = GetPluginFilesMetaData(pluginType);
+      var pluginDependencies = GetPluginDependencyMetaData(pluginType);
 
       // minimal sanity check of the attribute values
       if (!string.IsNullOrEmpty(pluginName) &&
-          pluginFiles.Count > 0 &&                                   // at least on file
+          pluginFiles.Count() > 0 &&                                 // at least on file
           pluginFiles.Any(f => f.Type == PluginFileType.Assembly)) { // at least on assembly
         // create a temporary PluginDescription that contains the attribute values
         PluginDescription info = new PluginDescription();
@@ -316,6 +280,64 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
         return info;
       } else {
         throw new InvalidPluginException("Invalid metadata in plugin " + pluginType.ToString());
+      }
+    }
+
+    private static IEnumerable<PluginDependency> GetPluginDependencyMetaData(Type pluginType) {
+      // get all attributes of type PluginDependency
+      var dependencyAttributes = from attr in CustomAttributeData.GetCustomAttributes(pluginType)
+                                 where IsAttributeDataForType(attr, typeof(PluginDependencyAttribute))
+                                 select attr;
+
+      foreach (var dependencyAttr in dependencyAttributes) {
+        string name = (string)dependencyAttr.ConstructorArguments[0].Value;
+        Version version = new Version("0.0.0.0"); // default version
+        // check if version is given for now
+        // later when the constructor of PluginDependencyAttribute with only one argument has been removed
+        // this conditional can be removed as well
+        if (dependencyAttr.ConstructorArguments.Count > 1) {
+          try {
+            version = new Version((string)dependencyAttr.ConstructorArguments[1].Value); // might throw FormatException
+          }
+          catch (FormatException ex) {
+            throw new InvalidPluginException("Invalid version format of dependency " + name + " in plugin " + pluginType.ToString(), ex);
+          }
+        }
+        yield return new PluginDependency(name, version);
+      }
+    }
+
+    // not static because we need the PluginDir property
+    private IEnumerable<PluginFile> GetPluginFilesMetaData(Type pluginType) {
+      // get all attributes of type PluginFileAttribute
+      var pluginFileAttributes = from attr in CustomAttributeData.GetCustomAttributes(pluginType)
+                                 where IsAttributeDataForType(attr, typeof(PluginFileAttribute))
+                                 select attr;
+      foreach (var pluginFileAttribute in pluginFileAttributes) {
+        string pluginFileName = (string)pluginFileAttribute.ConstructorArguments[0].Value;
+        PluginFileType fileType = (PluginFileType)pluginFileAttribute.ConstructorArguments[1].Value;
+        yield return new PluginFile(Path.GetFullPath(Path.Combine(PluginDir, pluginFileName)), fileType);
+      }
+    }
+
+    private static void GetPluginMetaData(Type pluginType, out string pluginName, out string pluginDescription, out string pluginVersion) {
+      // there must be a single attribute of type PluginAttribute
+      var pluginMetaDataAttr = (from attr in CustomAttributeData.GetCustomAttributes(pluginType)
+                                where IsAttributeDataForType(attr, typeof(PluginAttribute))
+                                select attr).Single();
+
+      pluginName = (string)pluginMetaDataAttr.ConstructorArguments[0].Value;
+
+      // default description and version
+      pluginVersion = "0.0.0.0";
+      pluginDescription = pluginName;
+      if (pluginMetaDataAttr.ConstructorArguments.Count() == 2) {
+        // if two arguments are given the second argument is the version
+        pluginVersion = (string)pluginMetaDataAttr.ConstructorArguments[1].Value;
+      } else if (pluginMetaDataAttr.ConstructorArguments.Count() == 3) {
+        // if three arguments are given the second argument is the description and the third is the version
+        pluginDescription = (string)pluginMetaDataAttr.ConstructorArguments[1].Value;
+        pluginVersion = (string)pluginMetaDataAttr.ConstructorArguments[2].Value;
       }
     }
 
@@ -458,7 +480,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       reflectionOnlyAssemblies.Add(asm.GetName().Name, asm); // add short name
     }
 
-    internal void OnPluginLoaded(PluginInfrastructureEventArgs e) {
+    private void OnPluginLoaded(PluginInfrastructureEventArgs e) {
       if (PluginLoaded != null)
         PluginLoaded(this, e);
     }
