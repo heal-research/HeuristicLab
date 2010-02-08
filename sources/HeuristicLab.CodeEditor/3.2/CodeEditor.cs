@@ -156,8 +156,14 @@ namespace HeuristicLab.CodeEditor {
       ToolTipProvider.Attach(this, textEditor);
 
       projectContentRegistry = new Dom.ProjectContentRegistry(); // Default .NET 2.0 registry
-      projectContentRegistry.ActivatePersistence(Path.Combine(Path.GetTempPath(),
-                                                  "CSharpCodeCompletion"));
+      try {
+        string persistencePath = Path.Combine(Path.GetTempPath(), "HeuristicLab.CodeEditor");
+        if (!Directory.Exists(persistencePath))
+          Directory.CreateDirectory(persistencePath);        
+        File.Create(Path.Combine(persistencePath, "test.tmp"));
+        File.Delete(Path.Combine(persistencePath, "test.tmp"));
+        projectContentRegistry.ActivatePersistence(persistencePath);
+      } catch { }
       projectContent = new Dom.DefaultProjectContent();
       projectContent.Language = Dom.LanguageProperties.CSharp;
     }
