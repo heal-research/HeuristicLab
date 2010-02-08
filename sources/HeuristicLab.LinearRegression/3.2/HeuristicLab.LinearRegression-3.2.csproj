@@ -79,6 +79,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="HeuristicLabLinearRegressionPlugin.cs.frame" />
     <Compile Include="LinearClassification.cs" />
     <Compile Include="HeuristicLabLinearRegressionPlugin.cs" />
     <Compile Include="LinearRegression.cs" />
@@ -166,6 +167,7 @@ set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
-call PreBuildEvent.cmd</PreBuildEvent>
+call PreBuildEvent.cmd
+SubWCRev "%25ProjectDir%25/" "%25ProjectDir%25/HeuristicLabLinearRegressionPlugin.cs.frame" "%25ProjectDir%25/HeuristicLabLinearRegressionPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

@@ -81,6 +81,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConditionalCoefficientOfDeterminationEvaluator.cs" />
+    <None Include="HeuristicLabGPConditionalEvaluationPlugin.cs.frame" />
     <Compile Include="HeuristicLabGPConditionalEvaluationPlugin.cs" />
     <Compile Include="ConditionalMeanAbsolutePercentageErrorEvaluator.cs" />
     <Compile Include="ConditionalMeanAbsolutePercentageOfRangeErrorEvaluator.cs" />
@@ -138,6 +139,7 @@ set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
-call PreBuildEvent.cmd</PreBuildEvent>
+call PreBuildEvent.cmd
+SubWCRev "%25ProjectDir%25/" "%25ProjectDir%25/HeuristicLabGPConditionalEvaluationPlugin.cs.frame" "%25ProjectDir%25/HeuristicLabGPConditionalEvaluationPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

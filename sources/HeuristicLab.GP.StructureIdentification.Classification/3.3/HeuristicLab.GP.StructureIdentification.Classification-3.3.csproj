@@ -80,6 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClassificationMeanSquaredErrorEvaluator.cs" />
+    <None Include="HeuristicLabGPClassificationPlugin.cs.frame" />
     <Compile Include="GPClassificationEvaluatorBase.cs" />
     <Compile Include="CrossValidation.cs" />
     <Compile Include="HeuristicLabGPClassificationPlugin.cs" />
@@ -158,6 +159,7 @@ set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
-call PreBuildEvent.cmd</PreBuildEvent>
+call PreBuildEvent.cmd
+SubWCRev "%25ProjectDir%25/" "%25ProjectDir%25/HeuristicLabGPClassificationPlugin.cs.frame" "%25ProjectDir%25/HeuristicLabGPClassificationPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

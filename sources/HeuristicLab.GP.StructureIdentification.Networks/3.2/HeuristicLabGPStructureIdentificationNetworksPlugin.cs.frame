@@ -24,19 +24,19 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.GP.StructureIdentification.Classification {
-  [Plugin("HeuristicLab.GP.StructureIdentification.Classification-3.3")]
-  [PluginFile("HeuristicLab.GP.StructureIdentification.Classification-3.3.dll", PluginFileType.Assembly)]
+namespace HeuristicLab.GP.StructureIdentification.Networks {
+  [Plugin("HeuristicLab.GP.StructureIdentification.Networks","3.2.0.$WCREV$")]
+  [PluginFile("HeuristicLab.GP.StructureIdentification.Networks-3.2.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Common","3.2.0.0")]
   [PluginDependency("HeuristicLab.Core-3.2")]
   [PluginDependency("HeuristicLab.Data-3.2")]
   [PluginDependency("HeuristicLab.DataAnalysis-3.2")]
-  [PluginDependency("HeuristicLab.GP-3.3")]
-  [PluginDependency("HeuristicLab.GP.Interfaces-3.3")]
-  [PluginDependency("HeuristicLab.GP.StructureIdentification-3.3")]
+  [PluginDependency("HeuristicLab.GP","3.3.0.0")]
+  [PluginDependency("HeuristicLab.GP.Interfaces","3.3.0.0")]
+  [PluginDependency("HeuristicLab.GP.StructureIdentification","3.3.0.0")]
   [PluginDependency("HeuristicLab.Modeling-3.2")]
   [PluginDependency("HeuristicLab.Operators-3.2")]
   [PluginDependency("HeuristicLab.Random-3.2")]
-  public class HeuristicLabGPClassificationPlugin : PluginBase {
+  public class HeuristicLabGPStructureIdentificationNetworksPlugin : PluginBase {
   }
 }

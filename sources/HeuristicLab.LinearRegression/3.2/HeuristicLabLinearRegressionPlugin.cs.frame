@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -18,21 +18,27 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
-
 using System;
 using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.GP.SantaFe {
-  [Plugin("HeuristicLab.GP.SantaFe-3.3")]
-  [PluginFile("HeuristicLab.GP.SantaFe-3.3.dll", PluginFileType.Assembly)]
+namespace HeuristicLab.LinearRegression {
+  [Plugin("HeuristicLab.LinearRegression","3.2.0.$WCREV$")]
+  [PluginFile("HeuristicLab.LinearRegression-3.2.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.ALGLIB-2.1.2.2591")]
+  [PluginDependency("HeuristicLab.Common","3.2.0.0")]
   [PluginDependency("HeuristicLab.Core-3.2")]
   [PluginDependency("HeuristicLab.Data-3.2")]
-  [PluginDependency("HeuristicLab.GP-3.3")]
-  [PluginDependency("HeuristicLab.GP.Interfaces-3.3")]
   [PluginDependency("HeuristicLab.DataAnalysis-3.2")]
+  [PluginDependency("HeuristicLab.GP","3.3.0.0")]
+  [PluginDependency("HeuristicLab.GP.Interfaces","3.3.0.0")]
+  [PluginDependency("HeuristicLab.GP.StructureIdentification","3.3.0.0")]
+  [PluginDependency("HeuristicLab.GP.StructureIdentification.Classification","3.3.0.0")]
+  [PluginDependency("HeuristicLab.GP.StructureIdentification.TimeSeries","3.3.0.0")]
+  [PluginDependency("HeuristicLab.Modeling-3.2")]
   [PluginDependency("HeuristicLab.Random-3.2")]
-  public class HeuristicLabGPSantaFePlugin : PluginBase {
+  [PluginDependency("HeuristicLab.SequentialEngine-3.2")]
+  public class HeuristicLabLinearRegression : PluginBase {
   }
 }

@@ -79,6 +79,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="HeuristicLabGPStructureIdentificationNetworksPlugin.cs.frame" />
     <Compile Include="FunctionLibraryInjector.cs" />
     <Compile Include="HeuristicLabGPStructureIdentificationNetworksPlugin.cs" />
     <Compile Include="OffspringSelectionGPNetworkStructureIdentification.cs" />
@@ -167,6 +168,7 @@ set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
-call PreBuildEvent.cmd</PreBuildEvent>
+call PreBuildEvent.cmd
+SubWCRev "%25ProjectDir%25/" "%25ProjectDir%25/HeuristicLabGPStructureIdentificationNetworksPlugin.cs.frame" "%25ProjectDir%25/HeuristicLabGPStructureIdentificationNetworksPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

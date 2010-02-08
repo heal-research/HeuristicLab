@@ -24,16 +24,19 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.GP.StructureIdentification.ConditionalEvaluation {
-  [Plugin("HeuristicLab.GP.StructureIdentification.ConditionalEvaluation-3.3")]
-  [PluginFile("HeuristicLab.GP.StructureIdentification.ConditionalEvaluation-3.3.dll", PluginFileType.Assembly)]
+namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
+  [Plugin("HeuristicLab.GP.StructureIdentification.TimeSeries","3.3.0.$WCREV$")]
+  [PluginFile("HeuristicLab.GP.StructureIdentification.TimeSeries-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Constraints-3.2")]
   [PluginDependency("HeuristicLab.Core-3.2")]
   [PluginDependency("HeuristicLab.Data-3.2")]
   [PluginDependency("HeuristicLab.DataAnalysis-3.2")]
-  [PluginDependency("HeuristicLab.GP-3.3")]
-  [PluginDependency("HeuristicLab.GP.Interfaces-3.3")]
-  [PluginDependency("HeuristicLab.GP.StructureIdentification-3.3")]
+  [PluginDependency("HeuristicLab.GP","3.3.0.0")]
+  [PluginDependency("HeuristicLab.GP.Interfaces","3.3.0.0")]
+  [PluginDependency("HeuristicLab.GP.StructureIdentification","3.3.0.0")]
+  [PluginDependency("HeuristicLab.Logging-3.2")]
   [PluginDependency("HeuristicLab.Modeling-3.2")]
-  public class HeuristicLabGPConditionalEvaluationPlugin : PluginBase {
+  [PluginDependency("HeuristicLab.Operators-3.2")]
+  public class HeuristicLabGPTimeSeriesPlugin : PluginBase {
   }
 }

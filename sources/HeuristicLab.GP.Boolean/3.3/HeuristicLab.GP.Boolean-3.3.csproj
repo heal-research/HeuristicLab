@@ -80,6 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BooleanTreeInterpreter.cs" />
+    <None Include="HeuristicLabGPBooleanPlugin.cs.frame" />
     <Compile Include="Symbols\And.cs" />
     <Compile Include="Symbols\Nand.cs" />
     <Compile Include="Symbols\Nor.cs" />
@@ -150,6 +151,7 @@ set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
-call PreBuildEvent.cmd</PreBuildEvent>
+call PreBuildEvent.cmd
+SubWCRev "%25ProjectDir%25/" "%25ProjectDir%25/HeuristicLabGPBooleanPlugin.cs.frame" "%25ProjectDir%25/HeuristicLabGPBooleanPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>
