@@ -32,7 +32,7 @@ namespace HeuristicLab.Logging {
   [PluginFile("HeuristicLab.Logging-3.2.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Charting-3.2")]
   [PluginDependency("HeuristicLab.Charting.Data-3.2")]
-  [PluginDependency("HeuristicLab.Common-3.2")]
+  [PluginDependency("HeuristicLab.Common","3.2.0.0")]
   [PluginDependency("HeuristicLab.Core-3.2")]
   [PluginDependency("HeuristicLab.Data-3.2")]
   [PluginDependency("HeuristicLab.Operators-3.2")]

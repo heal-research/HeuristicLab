@@ -30,7 +30,7 @@ namespace HeuristicLab.Hive.Client.Common {
   [PluginFile("HeuristicLab.Hive.Client.Common-3.2.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Core-3.2")]
   [PluginDependency("HeuristicLab.Hive.Contracts-3.2")]
-  [PluginDependency("HeuristicLab.Tracing-3.2")]
+  [PluginDependency("HeuristicLab.Tracing","3.2.0.0")]
   public class CommonPlugin: PluginBase {
   }
 }

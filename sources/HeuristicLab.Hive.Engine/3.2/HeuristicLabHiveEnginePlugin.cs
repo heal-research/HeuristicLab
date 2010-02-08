@@ -30,14 +30,14 @@ namespace HeuristicLab.Hive.Engine {
   /// </summary>
   [Plugin("HeuristicLab.Hive.Engine-3.2")]
   [PluginFile("HeuristicLab.Hive.Engine-3.2.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Common-3.2")]
+  [PluginDependency("HeuristicLab.Common","3.2.0.0")]
   [PluginDependency("HeuristicLab.Core-3.2")]
   [PluginDependency("HeuristicLab.Data-3.2")]
   [PluginDependency("HeuristicLab.DataAccess-3.2")]
   [PluginDependency("HeuristicLab.Hive.Contracts-3.2")]
   [PluginDependency("HeuristicLab.Hive.JobBase-3.2")]
   [PluginDependency("HeuristicLab.SequentialEngine-3.2")]
-  [PluginDependency("HeuristicLab.Tracing-3.2")]
+  [PluginDependency("HeuristicLab.Tracing","3.2.0.0")]
   public class HeuristicLabHiveEnginePlugin : PluginBase {
   }
 }

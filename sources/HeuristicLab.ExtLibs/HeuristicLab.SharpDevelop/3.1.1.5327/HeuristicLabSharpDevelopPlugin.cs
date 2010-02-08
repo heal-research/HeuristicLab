@@ -13,7 +13,7 @@ namespace HeuristicLab.SharpDevelop {
   [PluginFile("Mono.Cecil.dll", PluginFileType.Assembly)]
   [PluginFile("Mono License.txt", PluginFileType.License)]
   [PluginFile("SharpDevelop License.txt", PluginFileType.License)]
-  [PluginDependency("HeuristicLab.log4net-1.2.10.0")]
+  [PluginDependency("HeuristicLab.log4net","1.2.10.0")]
   public class HeuristicLabSharpDevelopPlugin : PluginBase {
   }
 }

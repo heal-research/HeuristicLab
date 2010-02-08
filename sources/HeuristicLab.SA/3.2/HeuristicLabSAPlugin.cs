@@ -28,7 +28,7 @@ namespace HeuristicLab.SA {
   /// </summary>
   [Plugin("HeuristicLab.SA-3.2")]
   [PluginFile("HeuristicLab.SA-3.2.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Common-3.2")]
+  [PluginDependency("HeuristicLab.Common","3.2.0.0")]
   [PluginDependency("HeuristicLab.Core-3.2")]
   [PluginDependency("HeuristicLab.Data-3.2")]
   [PluginDependency("HeuristicLab.Operators-3.2")]

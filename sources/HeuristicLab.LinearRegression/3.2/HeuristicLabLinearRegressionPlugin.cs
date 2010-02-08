@@ -27,7 +27,7 @@ namespace HeuristicLab.LinearRegression {
   [Plugin("HeuristicLab.LinearRegression-3.2")]
   [PluginFile("HeuristicLab.LinearRegression-3.2.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.ALGLIB-2.1.2.2591")]
-  [PluginDependency("HeuristicLab.Common-3.2")]
+  [PluginDependency("HeuristicLab.Common","3.2.0.0")]
   [PluginDependency("HeuristicLab.Core-3.2")]
   [PluginDependency("HeuristicLab.Data-3.2")]
   [PluginDependency("HeuristicLab.DataAnalysis-3.2")]

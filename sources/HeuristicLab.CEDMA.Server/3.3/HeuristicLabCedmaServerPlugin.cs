@@ -35,7 +35,7 @@ namespace HeuristicLab.CEDMA.Server {
   [PluginDependency("HeuristicLab.Modeling-3.2")]
   [PluginDependency("HeuristicLab.Modeling.Database-3.2")]
   [PluginDependency("HeuristicLab.Modeling.Database.SQLServerCompact-3.2")]
-  [PluginDependency("HeuristicLab.Tracing-3.2")]
+  [PluginDependency("HeuristicLab.Tracing","3.2.0.0")]
   public class HeuristicLabCedmaServerPlugin : PluginBase {
   }
 }

@@ -30,7 +30,7 @@ namespace HeuristicLab.Data {
   /// </summary>
   [Plugin("HeuristicLab.Data-3.2")]
   [PluginFile("HeuristicLab.Data-3.2.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Common-3.2")]
+  [PluginDependency("HeuristicLab.Common","3.2.0.0")]
   [PluginDependency("HeuristicLab.Core-3.2")]
   public class HeuristicLabDataPlugin : PluginBase {
   }

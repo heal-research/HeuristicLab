@@ -31,10 +31,6 @@ namespace HeuristicLab.Core {
     /// </summary>
     /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
     protected override void Dispose(bool disposing) {
-      if (scopesTreeView.Nodes.Count > 0) {
-        RemoveTreeNode(scopesTreeView.Nodes[0]);
-        scopesTreeView.Nodes.Clear();
-      }
       if (disposing && (components != null)) {
         components.Dispose();
       }

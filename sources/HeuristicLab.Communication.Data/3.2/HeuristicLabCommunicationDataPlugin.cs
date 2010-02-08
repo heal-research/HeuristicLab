@@ -27,7 +27,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Communication.Data {
   [Plugin("HeuristicLab.Communication.Data-3.2")]
   [PluginFile("HeuristicLab.Communication.Data-3.2.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Common-3.2")]
+  [PluginDependency("HeuristicLab.Common","3.2.0.0")]
   [PluginDependency("HeuristicLab.Core-3.2")]
   [PluginDependency("HeuristicLab.Data-3.2")]
   [PluginDependency("HeuristicLab.Operators.Programmable-3.2")]

@@ -32,7 +32,7 @@ namespace HeuristicLab.Grid.HiveBridge {
   [PluginDependency("HeuristicLab.Hive.Contracts-3.2")]
   [PluginDependency("HeuristicLab.Hive.JobBase-3.2")]
   [PluginDependency("HeuristicLab.Hive.Engine-3.2")]
-  [PluginDependency("HeuristicLab.Tracing-3.2")]
+  [PluginDependency("HeuristicLab.Tracing","3.2.0.0")]
   public class HeuristicLabGridPlugin : PluginBase {
   }
 }

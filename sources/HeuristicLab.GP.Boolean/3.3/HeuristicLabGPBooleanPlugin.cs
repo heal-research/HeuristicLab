@@ -27,7 +27,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.GP.Boolean {
   [Plugin("HeuristicLab.GP.Boolean-3.3")]
   [PluginFile("HeuristicLab.GP.Boolean-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Common-3.2")]
+  [PluginDependency("HeuristicLab.Common","3.2.0.0")]
   [PluginDependency("HeuristicLab.Core-3.2")]
   [PluginDependency("HeuristicLab.Data-3.2")]
   [PluginDependency("HeuristicLab.DataAnalysis-3.2")]
