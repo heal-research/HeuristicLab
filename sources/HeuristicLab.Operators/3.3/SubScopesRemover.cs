@@ -24,47 +24,40 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
   /// <summary>
-  /// Removes one specified or - if nothing specified - all operators from the given scope.
+  /// An operator which removes one specified or (if not specified) all sub-scopes from the current scope.
   /// </summary>
-  public class SubScopesRemover : OperatorBase {
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get {
-        return @"This operator either removes the subscope specified in the variable SubScopeIndex or if this variable is absent, removes all subscopes.";
-      }
+  [Item("SubScopesRemover", "An operator which removes one specified or (if not specified) all sub-scopes from the current scope.")]
+  [EmptyStorableClass]
+  [Creatable("Test")]
+  public class SubScopesRemover : SingleSuccessorOperator {
+    public ValueLookupParameter<IntData> SubScopeIndexParameter {
+      get { return (ValueLookupParameter<IntData>)Parameters["SubScopeIndex"]; }
+    }
+    protected ScopeParameter CurrentScopeParameter {
+      get { return (ScopeParameter)Parameters["CurrentScope"]; }
+    }
+    public IScope CurrentScope {
+      get { return CurrentScopeParameter.ActualValue; }
     }
 
-    /// <summary>
-    /// Initializes a new instance of <see cref="SubScopesRemover"/> with one variable info
-    /// (<c>SubScopeIndex</c>).
-    /// </summary>
     public SubScopesRemover()
       : base() {
-      AddVariableInfo(new VariableInfo("SubScopeIndex", "(Optional) the index of the subscope to remove", typeof(IntData), VariableKind.In));
+      Parameters.Add(new ValueLookupParameter<IntData>("SubScopeIndex", "The index of the sub-scope which should be removed. If this parameter has no value, all sub-scopes of the current scope are removed."));
+      Parameters.Add(new ScopeParameter("CurrentScope", "The current scope from which one or all sub-scopes should be removed."));
     }
 
-    /// <summary>
-    /// Removes one sub scope with a specified index from the given <paramref name="scope"/>, or if no
-    /// index has been specified, all sub scopes are removed.
-    /// </summary>
-    /// <exception cref="InvalidOperationException">Thrown when no sub scope with the specified index 
-    /// exists.</exception>
-    /// <param name="scope">The scope whose sub scope(s) to remove.</param>
-    /// <returns><c>null</c>.</returns>
-    public override IOperation Apply(IScope scope) {
-      IntData index = GetVariableValue<IntData>("SubScopeIndex", scope, true, false);
-      if (index == null) { // remove all scopes
-        while (scope.SubScopes.Count > 0) {
-          scope.RemoveSubScope(scope.SubScopes[0]);
-        }
-      } else {
-        if (index.Data < 0 && index.Data >= scope.SubScopes.Count) throw new InvalidOperationException("ERROR: no scope with index " + index.Data + " exists");
-        scope.RemoveSubScope(scope.SubScopes[index.Data]);
-      }
-      return null;
+    public override IExecutionContext Apply() {
+      IntData index = SubScopeIndexParameter.ActualValue;
+      if (index != null)
+        CurrentScope.SubScopes.RemoveAt(index.Value);
+      else
+        CurrentScope.SubScopes.Clear();
+      return base.Apply();
     }
   }
 }

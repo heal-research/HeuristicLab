@@ -38,12 +38,12 @@ namespace HeuristicLab.Operators {
     public LookupParameter<IntData> ValueParameter {
       get { return (LookupParameter<IntData>)Parameters["Value"]; }
     }
-    public ValueLookupParameter<IntData> IncrementParaneter {
+    public ValueLookupParameter<IntData> IncrementParameter {
       get { return (ValueLookupParameter<IntData>)Parameters["Increment"]; }
     }
     public IntData Increment {
-      get { return IncrementParaneter.Value; }
-      set { IncrementParaneter.Value = value; }
+      get { return IncrementParameter.Value; }
+      set { IncrementParameter.Value = value; }
     }
 
     public Counter()
@@ -52,9 +52,9 @@ namespace HeuristicLab.Operators {
       Parameters.Add(new ValueLookupParameter<IntData>("Increment", "The increment which is added to the value.", new IntData(1)));
     }
 
-    public override ExecutionContextCollection Apply() {
+    public override IExecutionContext Apply() {
       if (ValueParameter.ActualValue == null) ValueParameter.ActualValue = new IntData();
-      ValueParameter.ActualValue.Value += IncrementParaneter.ActualValue.Value;
+      ValueParameter.ActualValue.Value += IncrementParameter.ActualValue.Value;
       return base.Apply();
     }
   }

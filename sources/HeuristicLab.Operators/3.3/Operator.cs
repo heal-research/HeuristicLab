@@ -60,6 +60,18 @@ namespace HeuristicLab.Operators {
       }
     }
 
+    [Storable]
+    private ExecutionContext executionContext;
+    protected ExecutionContext ExecutionContext {
+      get { return executionContext; }
+      private set {
+        if (value != executionContext) {
+          executionContext = value;
+          OnExecutionContextChanged();
+        }
+      }
+    }
+
     /// <summary>
     /// Flag whether the current instance has been canceled.
     /// </summary>
@@ -67,6 +79,12 @@ namespace HeuristicLab.Operators {
     /// <inheritdoc/>
     protected bool Canceled {
       get { return canceled; }
+      private set {
+        if (value != canceled) {
+          canceled = value;
+          OnCanceledChanged();
+        }
+      }
     }
 
     [Storable]
@@ -81,12 +99,6 @@ namespace HeuristicLab.Operators {
           OnBreakpointChanged();
         }
       }
-    }
-
-    [Storable]
-    private ExecutionContext executionContext;
-    protected ExecutionContext ExecutionContext {
-      get { return executionContext; }
     }
 
     /// <summary>
@@ -117,36 +129,36 @@ namespace HeuristicLab.Operators {
     }
 
     /// <inheritdoc/>
-    public virtual ExecutionContextCollection Execute(ExecutionContext context) {
+    public virtual IExecutionContext Execute(ExecutionContext context) {
       try {
-        canceled = false;
-        executionContext = context;
+        Canceled = false;
+        ExecutionContext = context;
         foreach (IParameter param in Parameters)
           param.ExecutionContext = context;
-        ExecutionContextCollection next = Apply();
+        IExecutionContext next = Apply();
         OnExecuted();
         return next;
       }
       finally {
         foreach (IParameter param in Parameters)
           param.ExecutionContext = null;
-        context = null;
+        ExecutionContext = null;
       }
     }
     /// <inheritdoc/>
     /// <remarks>Sets property <see cref="Canceled"/> to <c>true</c>.</remarks>
-    public virtual void Abort() {
-      canceled = true;
+    public void Abort() {
+      Canceled = true;
     }
     /// <summary>
     /// Performs the current operator on the specified <paramref name="scope"/>.
     /// </summary>
     /// <param name="scope">The scope where to execute the operator</param>
     /// <returns><c>null</c>.</returns>
-    public virtual ExecutionContextCollection Apply() {
-      return new ExecutionContextCollection();
-    }
+    public abstract IExecutionContext Apply();
 
+    protected virtual void OnExecutionContextChanged() { }
+    protected virtual void OnCanceledChanged() { }
     /// <inheritdoc/>
     public event EventHandler BreakpointChanged;
     /// <summary>

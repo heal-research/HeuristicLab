@@ -31,7 +31,7 @@ namespace HeuristicLab.Parameters {
   /// <summary>
   /// A parameter whose value is retrieved from the scope.
   /// </summary>
-  [Item("LookupParameter<T>", "A parameter whose value is retrieved from the scope.")]
+  [Item("LookupParameter<T>", "A parameter whose value is retrieved from or written to a scope.")]
   public class LookupParameter<T> : Parameter, ILookupParameter<T> where T : class, IItem {
     [Storable]
     private string actualName;
@@ -45,8 +45,8 @@ namespace HeuristicLab.Parameters {
         }
       }
     }
-    public T ActualValue {
-      get { return GetActualValue(); }
+    public new T ActualValue {
+      get { return (T)GetActualValue(); }
       set { SetActualValue(value); }
     }
 
@@ -79,7 +79,7 @@ namespace HeuristicLab.Parameters {
         scope = scope.Parent;
       return scope != null ? scope.Variables[actualName] : null;
     }
-    protected virtual T GetActualValue() {
+    protected override IItem GetActualValue() {
       string name = TranslateName(Name, ExecutionContext);
       IVariable var = LookupVariable(name);
       if (var != null) {
@@ -94,11 +94,17 @@ namespace HeuristicLab.Parameters {
       }
       return null;
     }
-    protected virtual void SetActualValue(T value) {
+    protected override void SetActualValue(IItem value) {
+      T val = value as T;
+      if (val == null)
+        throw new InvalidOperationException(
+          string.Format("Type mismatch. Value is not a \"{0}\".",
+                        typeof(T).GetPrettyName())
+        );
       string name = TranslateName(Name, ExecutionContext);
       IVariable var = LookupVariable(name);
-      if (var != null) var.Value = value;
-      else ExecutionContext.Scope.Variables.Add(new Variable(name, value));
+      if (var != null) var.Value = val;
+      else ExecutionContext.Scope.Variables.Add(new Variable(name, val));
     }
 
     public event EventHandler ActualNameChanged;

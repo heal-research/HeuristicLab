@@ -30,7 +30,7 @@ namespace HeuristicLab.Data {
   [EmptyStorableClass]
   [Item("TimeSpanData", "Represents a duration of time.")]
   [Creatable("Test")]
-  public sealed class TimeSpanData : ValueTypeData<TimeSpan>, IStringConvertibleData {
+  public sealed class TimeSpanData : ValueTypeData<TimeSpan>, IComparable, IStringConvertibleData {
     public TimeSpanData() : base() { }
     public TimeSpanData(TimeSpan value) : base(value) { }
 
@@ -38,6 +38,14 @@ namespace HeuristicLab.Data {
       TimeSpanData clone = new TimeSpanData(Value);
       cloner.RegisterClonedObject(this, clone);
       return clone;
+    }
+
+    public int CompareTo(object obj) {
+      TimeSpanData other = obj as TimeSpanData;
+      if (other != null)
+        return Value.CompareTo(other.Value);
+      else
+        return Value.CompareTo(obj);
     }
 
     #region IStringConvertibleData Members

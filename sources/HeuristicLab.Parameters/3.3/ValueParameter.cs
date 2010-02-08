@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -44,6 +45,10 @@ namespace HeuristicLab.Parameters {
           OnValueChanged();
         }
       }
+    }
+    public new T ActualValue {
+      get { return Value; }
+      set { Value = value; }
     }
 
     public ValueParameter()
@@ -72,6 +77,19 @@ namespace HeuristicLab.Parameters {
 
     public override string ToString() {
       return string.Format("{0}: {1} ({2})", Name, Value != null ? Value.ToString() : "null", DataType.Name);
+    }
+
+    protected override IItem GetActualValue() {
+      return Value;
+    }
+    protected override void SetActualValue(IItem value) {
+      T val = value as T;
+      if (val == null)
+        throw new InvalidOperationException(
+          string.Format("Type mismatch. Value is not a \"{0}\".",
+                        typeof(T).GetPrettyName())
+        );
+      Value = val;
     }
 
     public event EventHandler ValueChanged;

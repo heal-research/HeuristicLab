@@ -23,27 +23,33 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
   /// <summary>
-  /// Operator that removes all variables in the given scope and deletes also all subscopes.
+  /// An operator which removes all variables and sub-scopes from the current scope.
   /// </summary>
-  public class ScopeCleaner : OperatorBase {
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get { return @"Removes all variables in the current scope and deletes all subscopes"; }
+  [Item("ScopeCleaner", "An operator which removes all variables and sub-scopes from the current scope.")]
+  [EmptyStorableClass]
+  [Creatable("Test")]
+  public sealed class ScopeCleaner : SingleSuccessorOperator {
+    private ScopeParameter CurrentScopeParameter {
+      get { return (ScopeParameter)Parameters["CurrentScope"]; }
+    }
+    public IScope CurrentScope {
+      get { return CurrentScopeParameter.ActualValue; }
     }
 
-    /// <summary>
-    /// Deletes all variable and sub scopes from the given <paramref name="scope"/>.
-    /// </summary>
-    /// <remarks>Calls <see cref="IScope.Clear"/> of interface <see cref="IScope"/>.</remarks>
-    /// <param name="scope">The scope to clear.</param>
-    /// <returns><c>null</c>.</returns>
-    public override IOperation Apply(IScope scope) {
-      scope.Clear();
-      return null;
+    public ScopeCleaner()
+      : base() {
+      Parameters.Add(new ScopeParameter("CurrentScope", "The current scope whose variables and sub-scopes should be removed."));
+    }
+
+    public override IExecutionContext Apply() {
+      CurrentScope.Variables.Clear();
+      CurrentScope.SubScopes.Clear();
+      return base.Apply();
     }
   }
 }

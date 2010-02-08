@@ -34,7 +34,7 @@ namespace HeuristicLab.Parameters {
   [EmptyStorableClass]
   [Creatable("Test")]
   public class ScopeParameter : Parameter {
-    public IScope Value {
+    public new IScope ActualValue {
       get { return ExecutionContext.Scope; }
     }
 
@@ -50,6 +50,13 @@ namespace HeuristicLab.Parameters {
 
     public override string ToString() {
       return string.Format("{0} ({1})", Name, DataType.Name);
+    }
+
+    protected override IItem GetActualValue() {
+      return ExecutionContext.Scope;
+    }
+    protected override void SetActualValue(IItem value) {
+      throw new NotSupportedException("The actual value of a ScopeParameter cannot be set. It is always the current scope.");
     }
   }
 }

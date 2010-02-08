@@ -105,6 +105,8 @@
     <Compile Include="BoolArrayData.cs" />
     <Compile Include="BoolMatrixData.cs" />
     <None Include="HeuristicLabDataPlugin.cs.frame" />
+    <Compile Include="Comparison.cs" />
+    <Compile Include="ComparisonData.cs" />
     <Compile Include="StringMatrixData.cs" />
     <Compile Include="StringArrayData.cs" />
     <Compile Include="FormatPatterns.cs" />

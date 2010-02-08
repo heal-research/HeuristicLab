@@ -24,37 +24,38 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
   /// <summary>
-  /// Operator to create sub scopes in a given scope.
+  /// An operator which adds new and empty sub-scopes to the current scope.
   /// </summary>
-  public class SubScopesCreater : OperatorBase {
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get { return @"TODO\r\nOperator description still missing ..."; }
+  [Item("SubScopesCreater", "An operator which adds new and empty sub-scopes to the current scope.")]
+  [EmptyStorableClass]
+  [Creatable("Test")]
+  public class SubScopesCreater : SingleSuccessorOperator {
+    public ValueLookupParameter<IntData> NumberOfSubScopesParameter {
+      get { return (ValueLookupParameter<IntData>)Parameters["NumberOfSubScopes"]; }
+    }
+    protected ScopeParameter CurrentScopeParameter {
+      get { return (ScopeParameter)Parameters["CurrentScope"]; }
+    }
+    public IScope CurrentScope {
+      get { return CurrentScopeParameter.ActualValue; }
     }
 
-    /// <summary>
-    /// Initializes a new instance of <see cref="SubScopesCreater"/> with one variable info (<c>SubScopes</c>).
-    /// </summary>
     public SubScopesCreater()
       : base() {
-      AddVariableInfo(new VariableInfo("SubScopes", "Number of sub-scopes", typeof(IntData), VariableKind.In));
+      Parameters.Add(new ValueLookupParameter<IntData>("NumberOfSubScopes", "The number of new and empty sub-scopes which should be added to the current scope."));
+      Parameters.Add(new ScopeParameter("CurrentScope", "The current scope to which the new and empty sub-scopes are added."));
     }
 
-    /// <summary>
-    /// Creates a specified number of sub scopes in the given <paramref name="scope"/>.
-    /// </summary>
-    /// <param name="scope">The scope where to create the sub scopes.</param>
-    /// <returns><c>null</c>.</returns>
-    public override IOperation Apply(IScope scope) {
-      IntData count = GetVariableValue<IntData>("SubScopes", scope, true);
-
-      for (int i = 0; i < count.Data; i++)
-        scope.AddSubScope(new Scope(i.ToString()));
-
-      return null;
+    public override IExecutionContext Apply() {
+      int n = NumberOfSubScopesParameter.ActualValue.Value;
+      for (int i = 0; i < n; i++)
+        CurrentScope.SubScopes.Add(new Scope(i.ToString()));
+      return base.Apply();
     }
   }
 }

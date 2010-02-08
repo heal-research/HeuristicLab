@@ -40,10 +40,12 @@ namespace HeuristicLab.Operators {
       : base() {
     }
 
-    public override ExecutionContextCollection Apply() {
+    public override IExecutionContext Apply() {
       ExecutionContextCollection next = new ExecutionContextCollection();
-      for (int i = 0; i < Successors.Count; i++)
-        next.Add(new ExecutionContext(ExecutionContext.Parent, Successors[i], ExecutionContext.Scope));
+      for (int i = 0; i < Successors.Count; i++) {
+        if (Successors[i] != null)
+          next.Add(new ExecutionContext(ExecutionContext.Parent, Successors[i], ExecutionContext.Scope));
+      }
       return next;
     }
   }

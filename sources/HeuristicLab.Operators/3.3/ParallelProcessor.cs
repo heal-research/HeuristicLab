@@ -22,30 +22,31 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml;
+using HeuristicLab.Collections;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
   /// <summary>
-  /// Performs <c>n</c> operators on the given scope; operations can be executed in parallel.
+  /// Operator which executes multiple operators in parallel.
   /// </summary>
-  public class ParallelProcessor : OperatorBase {
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get { return @"TODO\r\nOperator description still missing ..."; }
+  [Item("ParallelProcessor", "An operator which executes multiple operators in parallel.")]
+  [Creatable("Test")]
+  [EmptyStorableClass]
+  public sealed class ParallelProcessor : MultipleSuccessorsOperator {
+    public ParallelProcessor()
+      : base() {
     }
 
-    /// <summary>
-    /// Applies <c>n</c> operators on the given <paramref name="scope"/>.
-    /// </summary>
-    /// <param name="scope">The scope to apply the operators on.</param>
-    /// <returns>A new <see cref="CompositeOperation"/> with the <c>n</c> operators applied 
-    /// to the given <paramref name="scope"/> with the <c>ExecuteInParallel</c> set to <c>true</c>.</returns>
-    public override IOperation Apply(IScope scope) {
-      CompositeOperation next = new CompositeOperation();
-      next.ExecuteInParallel = true;
-      for (int i = 0; i < SubOperators.Count; i++)
-        next.AddOperation(new AtomicOperation(SubOperators[i], scope));
+    public override IExecutionContext Apply() {
+      ExecutionContextCollection next = new ExecutionContextCollection();
+      for (int i = 0; i < Successors.Count; i++) {
+        if (Successors[i] != null)
+          next.Add(new ExecutionContext(ExecutionContext.Parent, Successors[i], ExecutionContext.Scope));
+      }
+      next.Parallel = true;
       return next;
     }
   }

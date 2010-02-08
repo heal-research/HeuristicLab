@@ -21,14 +21,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
-  public class ExecutionContextCollection : DeepCloneable, IList<ExecutionContext> {
+  public class ExecutionContextCollection : DeepCloneable, IList<IExecutionContext>, IExecutionContext {
     [Storable]
-    private IList<ExecutionContext> contexts;
+    private IList<IExecutionContext> contexts;
 
     [Storable]
     private bool parallel;
@@ -38,15 +39,15 @@ namespace HeuristicLab.Core {
     }
 
     public ExecutionContextCollection() {
-      contexts = new List<ExecutionContext>();
+      contexts = new List<IExecutionContext>();
       parallel = false;
     }
-    public ExecutionContextCollection(IEnumerable<ExecutionContext> collection) {
-      contexts = new List<ExecutionContext>(collection);
+    public ExecutionContextCollection(IEnumerable<IExecutionContext> collection) {
+      contexts = new List<IExecutionContext>(collection.Where(e => e != null));
       parallel = false;
     }
-    public ExecutionContextCollection(params ExecutionContext[] list) {
-      contexts = new List<ExecutionContext>(list);
+    public ExecutionContextCollection(params IExecutionContext[] list) {
+      contexts = new List<IExecutionContext>(list.Where(e => e != null));
       parallel = false;
     }
 
@@ -55,37 +56,37 @@ namespace HeuristicLab.Core {
       cloner.RegisterClonedObject(this, clone);
       clone.parallel = parallel;
       for (int i = 0; i < contexts.Count; i++)
-        clone.contexts.Add((ExecutionContext)cloner.Clone(contexts[i]));
+        clone.contexts.Add((IExecutionContext)cloner.Clone(contexts[i]));
       return clone;
     }
 
-    #region IList<ExecutionContext> Members
-    public int IndexOf(ExecutionContext item) {
+    #region IList<IExecutionContext> Members
+    public int IndexOf(IExecutionContext item) {
       return contexts.IndexOf(item);
     }
-    public void Insert(int index, ExecutionContext item) {
-      contexts.Insert(index, item);
+    public void Insert(int index, IExecutionContext item) {
+      if (item != null) contexts.Insert(index, item);
     }
     public void RemoveAt(int index) {
       contexts.RemoveAt(index);
     }
-    public ExecutionContext this[int index] {
+    public IExecutionContext this[int index] {
       get { return contexts[index]; }
-      set { contexts[index] = value; }
+      set { if (value != null) contexts[index] = value; }
     }
     #endregion
 
-    #region ICollection<ExecutionContext> Members
-    public void Add(ExecutionContext item) {
-      contexts.Add(item);
+    #region ICollection<IExecutionContext> Members
+    public void Add(IExecutionContext item) {
+      if (item != null) contexts.Add(item);
     }
     public void Clear() {
       contexts.Clear();
     }
-    public bool Contains(ExecutionContext item) {
+    public bool Contains(IExecutionContext item) {
       return contexts.Contains(item);
     }
-    public void CopyTo(ExecutionContext[] array, int arrayIndex) {
+    public void CopyTo(IExecutionContext[] array, int arrayIndex) {
       contexts.CopyTo(array, arrayIndex);
     }
     public int Count {
@@ -94,13 +95,13 @@ namespace HeuristicLab.Core {
     public bool IsReadOnly {
       get { return contexts.IsReadOnly; }
     }
-    public bool Remove(ExecutionContext item) {
+    public bool Remove(IExecutionContext item) {
       return contexts.Remove(item);
     }
     #endregion
 
-    #region IEnumerable<ExecutionContext> Members
-    public IEnumerator<ExecutionContext> GetEnumerator() {
+    #region IEnumerable<IExecutionContext> Members
+    public IEnumerator<IExecutionContext> GetEnumerator() {
       return contexts.GetEnumerator();
     }
     #endregion

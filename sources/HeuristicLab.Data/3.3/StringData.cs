@@ -30,7 +30,7 @@ namespace HeuristicLab.Data {
   [EmptyStorableClass]
   [Item("StringData", "Represents a string.")]
   [Creatable("Test")]
-  public sealed class StringData : Item, IStringConvertibleData {
+  public sealed class StringData : Item, IComparable, IStringConvertibleData {
     [Storable]
     private string value;
     public string Value {
@@ -60,6 +60,14 @@ namespace HeuristicLab.Data {
 
     public override string ToString() {
       return value;
+    }
+
+    public int CompareTo(object obj) {
+      StringData other = obj as StringData;
+      if (other != null)
+        return Value.CompareTo(other.Value);
+      else
+        return Value.CompareTo(obj);
     }
 
     #region IStringConvertibleData Members

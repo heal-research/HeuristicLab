@@ -30,7 +30,7 @@ namespace HeuristicLab.Data {
   [EmptyStorableClass]
   [Item("BoolData", "Represents a boolean value.")]
   [Creatable("Test")]
-  public sealed class BoolData : ValueTypeData<bool>, IStringConvertibleData {
+  public sealed class BoolData : ValueTypeData<bool>, IComparable, IStringConvertibleData {
     public BoolData() : base() { }
     public BoolData(bool value) : base(value) { }
 
@@ -38,6 +38,14 @@ namespace HeuristicLab.Data {
       BoolData clone = new BoolData(Value);
       cloner.RegisterClonedObject(this, clone);
       return clone;
+    }
+
+    public int CompareTo(object obj) {
+      BoolData other = obj as BoolData;
+      if (other != null)
+        return Value.CompareTo(other.Value);
+      else
+        return Value.CompareTo(obj);
     }
 
     #region IStringConvertibleData Members

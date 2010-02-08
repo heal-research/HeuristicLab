@@ -56,21 +56,24 @@ namespace HeuristicLab.SequentialEngine {
     /// If the execution was successful <see cref="EngineBase.OnOperationExecuted"/> is called.</remarks>
     protected override void ProcessNextOperator() {
       currentOperator = null;
-      ExecutionContext context = ExecutionStack.Pop();
-      ExecutionContextCollection next = null;
+      IExecutionContext next = ExecutionStack.Pop();
+      ExecutionContextCollection coll = next as ExecutionContextCollection;
+      while (coll != null) {
+        for (int i = coll.Count - 1; i >= 0; i--)
+          ExecutionStack.Push(coll[i]);
+        next = ExecutionStack.Pop();
+        coll = next as ExecutionContextCollection;
+      }
+      ExecutionContext context = next as ExecutionContext;
       try {
         currentOperator = context.Operator;
-        next = context.Operator.Execute(context);
+        ExecutionStack.Push(context.Operator.Execute(context));
         currentOperator = null;
       }
       catch (Exception ex) {
         ExecutionStack.Push(context);
         Stop();
         OnExceptionOccurred(ex);
-      }
-      if (next != null) {
-        for (int i = next.Count - 1; i >= 0; i--)
-          ExecutionStack.Push(next[i]);
       }
       if (context.Operator.Breakpoint)
         Stop();

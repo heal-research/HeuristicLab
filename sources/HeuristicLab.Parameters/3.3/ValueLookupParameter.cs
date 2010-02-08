@@ -31,7 +31,7 @@ namespace HeuristicLab.Parameters {
   /// <summary>
   /// A parameter whose value is either defined it the parameter itself or is retrieved from the scope.
   /// </summary>
-  [Item("ValueLookupParameter<T>", "A parameter whose value is either defined it the parameter itself or is retrieved from the scope.")]
+  [Item("ValueLookupParameter<T>", "A parameter whose value is either defined it the parameter itself or is retrieved from or written to a scope.")]
   public class ValueLookupParameter<T> : Parameter, IValueLookupParameter<T> where T : class, IItem {
     [Storable]
     private string actualName;
@@ -60,8 +60,8 @@ namespace HeuristicLab.Parameters {
       }
     }
 
-    public T ActualValue {
-      get { return GetActualValue(); }
+    public new T ActualValue {
+      get { return (T)GetActualValue(); }
       set { SetActualValue(value); }
     }
 
@@ -136,7 +136,7 @@ namespace HeuristicLab.Parameters {
         scope = scope.Parent;
       return scope != null ? scope.Variables[actualName] : null;
     }
-    protected virtual T GetActualValue() {
+    protected override IItem GetActualValue() {
       string name;
       // try to get local value from context stack
       IValueParameter<T> param = GetParameter(out name);
@@ -156,14 +156,20 @@ namespace HeuristicLab.Parameters {
       }
       return null;
     }
-    protected virtual void SetActualValue(T value) {
-      string name;
+    protected override void SetActualValue(IItem value) {
+      T val = value as T;
+      if (val == null)
+        throw new InvalidOperationException(
+          string.Format("Type mismatch. Value is not a \"{0}\".",
+                        typeof(T).GetPrettyName())
+        );
       // try to get local value from context stack
+      string name;
       IValueParameter<T> param = GetParameter(out name);
-      if (param != null) param.Value = value;
+      if (param != null) param.Value = val;
       else {  // try to get variable from scope
         IVariable var = LookupVariable(name);
-        if (var != null) var.Value = value;
+        if (var != null) var.Value = val;
         else ExecutionContext.Scope.Variables.Add(new Variable(name, value));
       }
     }

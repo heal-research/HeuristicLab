@@ -22,31 +22,41 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
   /// <summary>
-  /// Performs the same operator on all <c>n</c> existing sub scopes of a given scope; 
-  /// operations can be executed in parallel.
+  /// An operator which applies a specified operator on all sub-scopes of the current scope in parallel.
   /// </summary>
-  public class UniformParallelSubScopesProcessor : OperatorBase {
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get { return @"TODO\r\nOperator description still missing ..."; }
+  [Item("UniformParallelSubScopesProcessor", "An operator which applies a specified operator on all sub-scopes of the current scope in parallel.")]
+  [Creatable("Test")]
+  [EmptyStorableClass]
+  public sealed class UniformParallelSubScopesProcessor : SingleSuccessorOperator {
+    private OperatorParameter OperatorParameter {
+      get { return (OperatorParameter)Parameters["Operator"]; }
+    }
+    public IOperator Operator {
+      get { return OperatorParameter.Value; }
+      set { OperatorParameter.Value = value; }
     }
 
-    /// <summary>
-    /// Applies one operator on all the sub scopes of the given <paramref name="scope"/>.
-    /// </summary>
-    /// <param name="scope">The scope on whose sub scopes the operator is applied.</param>
-    /// <returns>A new <see cref="CompositeOperation"/> with one operator and all sub scopes and
-    /// the <c>ExecuteInParallel</c> flag set to <c>true</c>.</returns>
-    public override IOperation Apply(IScope scope) {
-      CompositeOperation next = new CompositeOperation();
-      next.ExecuteInParallel = true;
-      for (int i = 0; i < scope.SubScopes.Count; i++)
-        next.AddOperation(new AtomicOperation(SubOperators[0], scope.SubScopes[i]));
+    public UniformParallelSubScopesProcessor()
+      : base() {
+      Parameters.Add(new OperatorParameter("Operator", "The operator which should be applied on all sub-scopes of the current scope in parallel."));
+    }
+
+    public override IExecutionContext Apply() {
+      ExecutionContextCollection next = new ExecutionContextCollection(base.Apply());
+      if (Operator != null) {
+        ExecutionContextCollection inner = new ExecutionContextCollection();
+        inner.Parallel = true;
+        for (int i = 0; i < ExecutionContext.Scope.SubScopes.Count; i++)
+          inner.Add(new ExecutionContext(ExecutionContext.Parent, Operator, ExecutionContext.Scope.SubScopes[i]));
+        next.Insert(0, inner);
+      }
       return next;
     }
   }

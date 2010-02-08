@@ -44,11 +44,20 @@ namespace HeuristicLab.Parameters {
     public Type DataType {
       get { return dataType; }
     }
+    public IItem ActualValue {
+      get { return GetActualValue(); }
+      set { SetActualValue(value); }
+    }
     [Storable]
     private ExecutionContext executionContext;
     public ExecutionContext ExecutionContext {
       get { return executionContext; }
-      set { executionContext = value; }
+      set {
+        if (value != executionContext) {
+          executionContext = value;
+          OnExecutionContextChanged();
+        }
+      }
     }
 
     protected Parameter()
@@ -76,5 +85,10 @@ namespace HeuristicLab.Parameters {
     public override string ToString() {
       return string.Format("{0} ({1})", Name, DataType.Name);
     }
+
+    protected abstract IItem GetActualValue();
+    protected abstract void SetActualValue(IItem value);
+
+    protected virtual void OnExecutionContextChanged() { }
   }
 }

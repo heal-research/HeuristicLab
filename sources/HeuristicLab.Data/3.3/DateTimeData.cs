@@ -31,7 +31,7 @@ namespace HeuristicLab.Data {
   [EmptyStorableClass]
   [Item("DateTimeData", "Represents a date and time value.")]
   [Creatable("Test")]
-  public sealed class DateTimeData : ValueTypeData<DateTime>, IStringConvertibleData {
+  public sealed class DateTimeData : ValueTypeData<DateTime>, IComparable, IStringConvertibleData {
     public DateTimeData() : base() { }
     public DateTimeData(DateTime value) : base(value) { }
 
@@ -43,6 +43,14 @@ namespace HeuristicLab.Data {
 
     public override string ToString() {
       return Value.ToString("o");  // round-trip format
+    }
+
+    public int CompareTo(object obj) {
+      DateTimeData other = obj as DateTimeData;
+      if (other != null)
+        return Value.CompareTo(other.Value);
+      else
+        return Value.CompareTo(obj);
     }
 
     #region IStringConvertibleData Members

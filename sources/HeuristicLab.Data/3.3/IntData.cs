@@ -30,7 +30,7 @@ namespace HeuristicLab.Data {
   [EmptyStorableClass]
   [Item("IntData", "Represents an integer value.")]
   [Creatable("Test")]
-  public sealed class IntData : ValueTypeData<int>, IStringConvertibleData {
+  public sealed class IntData : ValueTypeData<int>, IComparable, IStringConvertibleData {
     public IntData() : base() { }
     public IntData(int value) : base(value) { }
 
@@ -38,6 +38,14 @@ namespace HeuristicLab.Data {
       IntData clone = new IntData(Value);
       cloner.RegisterClonedObject(this, clone);
       return clone;
+    }
+
+    public int CompareTo(object obj) {
+      IntData other = obj as IntData;
+      if (other != null)
+        return Value.CompareTo(other.Value);
+      else
+        return Value.CompareTo(obj);
     }
 
     #region IStringConvertibleData Members

@@ -31,7 +31,7 @@ namespace HeuristicLab.Parameters {
   /// <summary>
   /// A generic parameter representing instances of type T which are collected from the sub-scopes of the current scope.
   /// </summary>
-  [Item("SubScopesLookupParameter<T>", "A generic parameter representing instances of type T which are collected from the sub-scopes of the current scope.")]
+  [Item("SubScopesLookupParameter<T>", "A generic parameter representing instances of type T which are collected from or written to the sub-scopes of the current scope.")]
   public class SubScopesLookupParameter<T> : Parameter, ILookupParameter<T> where T : class, IItem {
     [Storable]
     private string actualName;
@@ -46,21 +46,21 @@ namespace HeuristicLab.Parameters {
       }
     }
 
-    public T[] ActualValues {
-      get { return GetActualValues(); }
-      set { SetActualValues(value); }
+    public new ItemArray<T> ActualValue {
+      get { return (ItemArray<T>)GetActualValue(); }
+      set { SetActualValue(value); }
     }
 
     public SubScopesLookupParameter()
-      : base("Anonymous", typeof(T)) {
+      : base("Anonymous", typeof(ItemArray<T>)) {
       actualName = Name;
     }
     public SubScopesLookupParameter(string name)
-      : base(name, typeof(T)) {
+      : base(name, typeof(ItemArray<T>)) {
       actualName = Name;
     }
     public SubScopesLookupParameter(string name, string description)
-      : base(name, description, typeof(T)) {
+      : base(name, description, typeof(ItemArray<T>)) {
       actualName = Name;
     }
 
@@ -74,10 +74,10 @@ namespace HeuristicLab.Parameters {
       return string.Format("{0}: {1} ({2})", Name, ActualName, DataType.Name);
     }
 
-    protected virtual T[] GetActualValues() {
+    protected override IItem GetActualValue() {
       string name = LookupParameter<T>.TranslateName(Name, ExecutionContext);
       IScope scope = ExecutionContext.Scope;
-      T[] values = new T[scope.SubScopes.Count];
+      ItemArray<T> values = new ItemArray<T>(scope.SubScopes.Count);
       IVariable var;
       T value;
 
@@ -96,7 +96,14 @@ namespace HeuristicLab.Parameters {
       }
       return values;
     }
-    protected virtual void SetActualValues(T[] values) {
+    protected override void SetActualValue(IItem value) {
+      ItemArray<T> values = value as ItemArray<T>;
+      if (values == null)
+        throw new InvalidOperationException(
+          string.Format("Type mismatch. Value is not a \"{0}\".",
+                        typeof(ItemArray<T>).GetPrettyName())
+        );
+
       string name = LookupParameter<T>.TranslateName(Name, ExecutionContext);
       IScope scope = ExecutionContext.Scope;
       IVariable var;

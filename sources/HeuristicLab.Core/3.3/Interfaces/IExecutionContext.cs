@@ -21,14 +21,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
-using System.Xml;
-using HeuristicLab.Common;
+using System.Drawing;
 
 namespace HeuristicLab.Core {
-  public interface IParameter : INamedItem {
-    Type DataType { get; }
-    IItem ActualValue { get; set; }
-    ExecutionContext ExecutionContext { get; set; }
-  }
+  /// <summary>
+  /// Interface which represents an execution context.
+  /// </summary>
+  public interface IExecutionContext : IDeepCloneable { }
 }

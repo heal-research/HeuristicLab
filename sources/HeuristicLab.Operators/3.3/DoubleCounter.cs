@@ -24,39 +24,38 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
   /// <summary>
-  /// Class to add a specified interval to a double value.
+  /// Operator which increments a double variable.
   /// </summary>
-  public class DoubleCounter : OperatorBase {
-    /// <summary>
-    /// Gets the description of the current instance.
-    /// </summary>
-    public override string Description {
-      get { return @"Adds a given interval to a double value"; }
+  [Item("DoubleCounter", "An operator which increments a double variable.")]
+  [EmptyStorableClass]
+  [Creatable("Test")]
+  public sealed class DoubleCounter : SingleSuccessorOperator {
+    public LookupParameter<DoubleData> ValueParameter {
+      get { return (LookupParameter<DoubleData>)Parameters["Value"]; }
+    }
+    public ValueLookupParameter<DoubleData> IncrementParameter {
+      get { return (ValueLookupParameter<DoubleData>)Parameters["Increment"]; }
+    }
+    public DoubleData Increment {
+      get { return IncrementParameter.Value; }
+      set { IncrementParameter.Value = value; }
     }
 
-    /// <summary>
-    /// Initializes a new instance of <see cref="DoubleCounter"/>, including two variable infos 
-    /// (<c>Value</c> and <c>Interval</c>).
-    /// </summary>
     public DoubleCounter()
       : base() {
-      AddVariableInfo(new VariableInfo("Value", "Counter value", typeof(DoubleData), VariableKind.In | VariableKind.Out));
-      AddVariableInfo(new VariableInfo("Interval", "Interval value", typeof(DoubleData), VariableKind.In));
+      Parameters.Add(new LookupParameter<DoubleData>("Value", "The value which should be incremented."));
+      Parameters.Add(new ValueLookupParameter<DoubleData>("Increment", "The increment which is added to the value.", new DoubleData(1)));
     }
 
-    /// <summary>
-    /// Adds to a double value of the given <paramref name="scope"/> a specified interval.
-    /// </summary>
-    /// <param name="scope">The scope whose variable should be incremented.</param>
-    /// <returns><c>null</c>.</returns>
-    public override IOperation Apply(IScope scope) {
-      DoubleData value = GetVariableValue<DoubleData>("Value", scope, true);
-      double interval = GetVariableValue<DoubleData>("Interval", scope, true).Data;
-      value.Data += interval;
-      return null;
+    public override IExecutionContext Apply() {
+      if (ValueParameter.ActualValue == null) ValueParameter.ActualValue = new DoubleData();
+      ValueParameter.ActualValue.Value += IncrementParameter.ActualValue.Value;
+      return base.Apply();
     }
   }
 }

@@ -29,7 +29,6 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Collections;
 
-
 namespace HeuristicLab.Core {
   [EmptyStorableClass]
   [Item("ItemArray<T>", "Represents an array of items.")]

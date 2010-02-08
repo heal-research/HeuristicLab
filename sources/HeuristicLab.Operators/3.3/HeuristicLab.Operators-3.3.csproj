@@ -86,6 +86,16 @@
   <ItemGroup>
     <Compile Include="CombinedOperator.cs" />
     <None Include="HeuristicLabOperatorsPlugin.cs.frame" />
+    <Compile Include="ConditionalBranch.cs" />
+    <Compile Include="Comparator.cs" />
+    <Compile Include="ScopeCleaner.cs" />
+    <Compile Include="SubScopesRemover.cs" />
+    <Compile Include="SubScopesSorter.cs" />
+    <Compile Include="DoubleCounter.cs" />
+    <Compile Include="ParallelProcessor.cs" />
+    <Compile Include="UniformParallelSubScopesProcessor.cs" />
+    <Compile Include="UniformSequentialSubScopesProcessor.cs" />
+    <Compile Include="ValueCollector.cs" />
     <Compile Include="MultipleSuccessorsOperator.cs" />
     <Compile Include="Counter.cs" />
     <Compile Include="EmptyOperator.cs">
@@ -96,6 +106,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SequentialProcessor.cs" />
     <Compile Include="SingleSuccessorOperator.cs" />
+    <Compile Include="SubScopesCreater.cs" />
+    <Compile Include="VariableInjector.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">

@@ -30,7 +30,7 @@ namespace HeuristicLab.Data {
   [EmptyStorableClass]
   [Item("DoubleData", "Represents a double value.")]
   [Creatable("Test")]
-  public sealed class DoubleData : ValueTypeData<double>, IStringConvertibleData {
+  public sealed class DoubleData : ValueTypeData<double>, IComparable, IStringConvertibleData {
     public DoubleData() : base() { }
     public DoubleData(double value) : base(value) { }
 
@@ -42,6 +42,14 @@ namespace HeuristicLab.Data {
 
     public override string ToString() {
       return Value.ToString("r");  // round-trip format
+    }
+
+    public int CompareTo(object obj) {
+      DoubleData other = obj as DoubleData;
+      if (other != null)
+        return Value.CompareTo(other.Value);
+      else
+        return Value.CompareTo(obj);
     }
 
     #region IStringConvertibleData Members

@@ -57,6 +57,12 @@
       <DependentUpon>BoolDataView.cs</DependentUpon>
     </Compile>
     <None Include="HeuristicLabDataViewsPlugin.cs.frame" />
+    <Compile Include="ComparisonDataView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ComparisonDataView.Designer.cs">
+      <DependentUpon>ComparisonDataView.cs</DependentUpon>
+    </Compile>
     <Compile Include="StringConvertibleDataView.cs">
       <SubType>UserControl</SubType>
     </Compile>

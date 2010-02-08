@@ -24,35 +24,28 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
-using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Operators {
-  /// <summary>
-  /// A base class for operators which have only one successor.
-  /// </summary>
-  [Item("SingleSuccessorOperator", "A base class for operators which have only one successor.")]
-  [Creatable("Test")]
+namespace HeuristicLab.Data {
   [EmptyStorableClass]
-  public abstract class SingleSuccessorOperator : Operator {
-    protected OperatorParameter SuccessorParameter {
-      get { return (OperatorParameter)Parameters["Successor"]; }
-    }
-    public IOperator Successor {
-      get { return SuccessorParameter.Value; }
-      set { SuccessorParameter.Value = value; }
+  [Item("ComparisonData", "Represents a comparison.")]
+  [Creatable("Test")]
+  public sealed class ComparisonData : ValueTypeData<Comparison>, IComparable {
+    public ComparisonData() : base() { }
+    public ComparisonData(Comparison value) : base(value) { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      ComparisonData clone = new ComparisonData(Value);
+      cloner.RegisterClonedObject(this, clone);
+      return clone;
     }
 
-    public SingleSuccessorOperator()
-      : base() {
-      Parameters.Add(new OperatorParameter("Successor", "Operator which is executed next."));
-    }
-
-    public override IExecutionContext Apply() {
-      if (Successor != null)
-        return new ExecutionContext(ExecutionContext.Parent, Successor, ExecutionContext.Scope);
+    public int CompareTo(object obj) {
+      ComparisonData other = obj as ComparisonData;
+      if (other != null)
+        return Value.CompareTo(other.Value);
       else
-        return null;
+        return Value.CompareTo(obj);
     }
   }
 }
