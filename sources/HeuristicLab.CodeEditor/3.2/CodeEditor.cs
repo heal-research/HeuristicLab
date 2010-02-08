@@ -159,11 +159,18 @@ namespace HeuristicLab.CodeEditor {
       try {
         string persistencePath = Path.Combine(Path.GetTempPath(), "HeuristicLab.CodeEditor");
         if (!Directory.Exists(persistencePath))
-          Directory.CreateDirectory(persistencePath);        
-        File.Create(Path.Combine(persistencePath, "test.tmp"));
+          Directory.CreateDirectory(persistencePath);
+        FileStream fs = File.Create(Path.Combine(persistencePath, "test.tmp"));
+        fs.Close();
         File.Delete(Path.Combine(persistencePath, "test.tmp"));
+        // if we made it this far, enable on-disk parsing cache
         projectContentRegistry.ActivatePersistence(persistencePath);
-      } catch { }
+      } catch (NotSupportedException) {
+      } catch (IOException) {
+      } catch (System.Security.SecurityException) {
+      } catch (UnauthorizedAccessException) {
+      } catch (ArgumentException) {
+      }
       projectContent = new Dom.DefaultProjectContent();
       projectContent.Language = Dom.LanguageProperties.CSharp;
     }
