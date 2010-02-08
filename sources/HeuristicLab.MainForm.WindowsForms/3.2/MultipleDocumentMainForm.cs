@@ -40,8 +40,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
       InitializeComponent();
     }
 
-    protected override void AdditionalCreationOfGUIElements() {
-      base.AdditionalCreationOfGUIElements();
+    protected override void AdditionalCreationOfGuiElements() {
+      base.AdditionalCreationOfGuiElements();
       ToolStripMenuItem window = new ToolStripMenuItem("Windows");
       this.menuStrip.MdiWindowListItem = window;
       this.menuStrip.Items.Add(window);

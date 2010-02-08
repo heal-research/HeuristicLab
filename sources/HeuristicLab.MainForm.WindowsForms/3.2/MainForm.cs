@@ -286,10 +286,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
           AddToolStripButtonItem((IToolBarSeparatorItem)toolStripButtonItem);
       }
 
-      this.AdditionalCreationOfGUIElements();
+      this.AdditionalCreationOfGuiElements();
     }
 
-    protected virtual void AdditionalCreationOfGUIElements() {
+    protected virtual void AdditionalCreationOfGuiElements() {
     }
 
     private void AddToolStripMenuItem(IMenuItem menuItem) {

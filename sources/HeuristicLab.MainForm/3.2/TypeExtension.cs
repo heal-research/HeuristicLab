@@ -77,10 +77,5 @@ namespace HeuristicLab.MainForm {
       }
       return true;
     }
-
-    internal static Type[] ExtractGenericTypeArguments(this Type type, Type other) {
-      Type[] types = new Type[0];
-      return types;
-    }
   }
 }

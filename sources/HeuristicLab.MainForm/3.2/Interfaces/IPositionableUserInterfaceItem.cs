@@ -25,7 +25,7 @@ using System.Linq;
 using System.Text;
 
 namespace HeuristicLab.MainForm {
-  public interface IPositionableUserInterfaceItem :IUserInterfaceItem {
+  public interface IPositionableUserInterfaceItem : IUserInterfaceItem {
     int Position { get; }
     IEnumerable<string> Structure { get; }
   }

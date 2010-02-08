@@ -27,8 +27,6 @@ using HeuristicLab.PluginInfrastructure;
 using System.Diagnostics;
 
 namespace HeuristicLab.MainForm {
-  class StringDict<T> : Dictionary<string, T> {
-  }
   public static class MainFormManager {
     private static object locker;
     private static IMainForm mainform;
@@ -37,18 +35,19 @@ namespace HeuristicLab.MainForm {
 
     static MainFormManager() {
       locker = new object();
+      mainform = null;
       views = new HashSet<Type>();
       defaultViews = new Dictionary<Type, Type>();
     }
 
-    public static void RegisterMainForm(IMainForm mainform) {
+    public static void RegisterMainForm(IMainForm mainForm) {
       lock (locker) {
         if (MainFormManager.mainform != null)
           throw new ArgumentException("A mainform was already associated with the mainform manager.");
-        if (mainform == null)
+        if (mainForm == null)
           throw new ArgumentException("Could not associate null as a mainform in the mainform manager.");
 
-        MainFormManager.mainform = mainform;
+        MainFormManager.mainform = mainForm;
         IEnumerable<Type> types =
           from t in ApplicationManager.Manager.GetTypes(typeof(IView))
           where !t.IsAbstract && !t.IsInterface && ContentAttribute.HasContentAttribute(t)
@@ -85,8 +84,8 @@ namespace HeuristicLab.MainForm {
       return viewTypes.Where(t => t != null);
     }
 
-    public static bool ViewCanViewObject(IView view, object o) {
-      return ContentAttribute.CanViewType(view.GetType(), o.GetType());
+    public static bool ViewCanViewObject(IView view, object content) {
+      return ContentAttribute.CanViewType(view.GetType(), content.GetType());
     }
 
     public static Type GetDefaultViewType(Type contentType) {
@@ -112,16 +111,16 @@ namespace HeuristicLab.MainForm {
         return TransformGenericTypeDefinition(defaultViews[temp[0]], contentType);
       //more than one default view for implemented interfaces are found
       if (temp.Count > 1)
-        throw new Exception("Could not determine which is the default view for type " + contentType.ToString() + ". Because more than one implemented interfaces have a default view.");
+        throw new InvalidOperationException("Could not determine which is the default view for type " + contentType.ToString() + ". Because more than one implemented interfaces have a default view.");
       return null;
     }
 
-    public static IView CreateDefaultView(object objectToView) {
-      Type t = GetDefaultViewType(objectToView.GetType());
+    public static IView CreateDefaultView(object content) {
+      Type t = GetDefaultViewType(content.GetType());
       if (t == null)
         return null;
 
-      return (IView)Activator.CreateInstance(t, objectToView);
+      return (IView)Activator.CreateInstance(t, content);
     }
 
     public static IView CreateView(Type viewType) {
@@ -133,13 +132,13 @@ namespace HeuristicLab.MainForm {
       return (IView)Activator.CreateInstance(viewType);
     }
 
-    public static IView CreateView(Type viewType, object objectToView) {
+    public static IView CreateView(Type viewType, object content) {
       if (!typeof(IView).IsAssignableFrom(viewType))
         throw new ArgumentException("View can not be created becaues given type " + viewType.ToString() + " is not of type IView.");
       if (viewType.IsGenericTypeDefinition)
         throw new ArgumentException("View can not be created becaues given type " + viewType.ToString() + " is a generic type definition.");
 
-      return (IView)Activator.CreateInstance(viewType, objectToView);
+      return (IView)Activator.CreateInstance(viewType, content);
     }
 
     private static Type TransformGenericTypeDefinition(Type viewType, Type contentType) {

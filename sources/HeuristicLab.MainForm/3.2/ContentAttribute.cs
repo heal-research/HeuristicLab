@@ -23,17 +23,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 
 namespace HeuristicLab.MainForm {
   [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
-  public class ContentAttribute : Attribute {
-    private Type type;
-    public ContentAttribute(Type type) {
-      this.type = type;
+  public sealed class ContentAttribute : Attribute {
+    public ContentAttribute(Type contentType) {
+      this.contentType = contentType;
     }
 
-    public ContentAttribute(Type type, bool isDefaultView)
-      : this(type) {
+    public ContentAttribute(Type contentType, bool isDefaultView)
+      : this(contentType) {
       this.isDefaultView = isDefaultView;
     }
 
@@ -43,27 +43,32 @@ namespace HeuristicLab.MainForm {
       set { this.isDefaultView = value; }
     }
 
-    public static bool HasContentAttribute(Type viewType) {
+    private Type contentType;
+    public Type ContentType {
+      get { return this.contentType; }
+    }
+
+    public static bool HasContentAttribute(MemberInfo viewType) {
       ContentAttribute[] attributes = (ContentAttribute[])viewType.GetCustomAttributes(typeof(ContentAttribute), false);
       return attributes.Length != 0;
     }
 
-    public static bool CanViewType(Type viewType, Type content) {
+    public static bool CanViewType(MemberInfo viewType, Type content) {
       ContentAttribute[] attributes = (ContentAttribute[])viewType.GetCustomAttributes(typeof(ContentAttribute), false);
-      return attributes.Any(a => content.IsAssignableTo(a.type));
+      return attributes.Any(a => content.IsAssignableTo(a.contentType));
     }
 
     internal static IEnumerable<Type> GetDefaultViewableTypes(Type viewType) {
       ContentAttribute[] attributes = (ContentAttribute[])viewType.GetCustomAttributes(typeof(ContentAttribute), false);
       return from a in attributes
              where a.isDefaultView
-             select a.type;
+             select a.contentType;
     }
 
     internal static IEnumerable<Type> GetViewableTypes(Type viewType) {
       ContentAttribute[] attributes = (ContentAttribute[])viewType.GetCustomAttributes(typeof(ContentAttribute), false);
       return from a in attributes
-             select a.type;
+             select a.contentType;
     }
   }
 }
