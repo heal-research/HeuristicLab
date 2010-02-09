@@ -9,7 +9,7 @@
     <ApplicationIcon>Resources\Schema.ico</ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
-    <AssemblyName>Netron.Diagramming.Core</AssemblyName>
+    <AssemblyName>Netron.Diagramming.Core-3.0.2672.12446</AssemblyName>
     <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>

@@ -42,6 +42,10 @@ HeuristicLab.ExtLibs\HeuristicLab.log4net\1.2.10.0:HeuristicLab.log4net-1.2.10.0
 HeuristicLab.ExtLibs\HeuristicLab.log4net\1.2.10.0:log4net.dll 
 HeuristicLab.ExtLibs\HeuristicLab.log4net\1.2.10.0:log4net License.txt 
 
+HeuristicLab.ExtLibs\HeuristicLab.Netron\3.0.2672.12446\Netron.Diagramming.Core-3.0.2672.12446:Netron.Diagramming.Core-3.0.2672.12446.dll
+HeuristicLab.ExtLibs\HeuristicLab.Netron\3.0.2672.12446\HeuristicLab.Netron-3.0.2672.12446:HeuristicLab.Netron-3.0.2672.12446.dll
+HeuristicLab.ExtLibs\HeuristicLab.Netron\3.0.2672.12446\HeuristicLab.Netron-3.0.2672.12446:Netron.Diagramming.Core License.txt
+
 HeuristicLab.ExtLibs\HeuristicLab.WinFormsUI\2.3.1\WinFormsUI-2.3.1:WeifenLuo.WinFormsUI.Docking-2.3.1.dll
 HeuristicLab.ExtLibs\HeuristicLab.WinFormsUI\2.3.1\HeuristicLab.WinFormsUI-2.3.1:HeuristicLab.WinFormsUI-2.3.1.dll
 HeuristicLab.ExtLibs\HeuristicLab.WinFormsUI\2.3.1\HeuristicLab.WinFormsUI-2.3.1:WeifenLuo.WinFormsUI.Docking License.txt

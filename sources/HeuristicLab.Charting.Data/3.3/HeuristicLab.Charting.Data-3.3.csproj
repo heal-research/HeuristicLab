@@ -85,7 +85,6 @@
   <ItemGroup>
     <Compile Include="Datachart.cs" />
     <Compile Include="DataChartControl.cs">
-      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="DataChartControl.Designer.cs">
       <DependentUpon>DataChartControl.cs</DependentUpon>
