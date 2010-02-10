@@ -51,7 +51,7 @@ namespace HeuristicLab.Operators {
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope to which the new and empty sub-scopes are added."));
     }
 
-    public override IExecutionContext Apply() {
+    public override IExecutionSequence Apply() {
       int n = NumberOfSubScopesParameter.ActualValue.Value;
       for (int i = 0; i < n; i++)
         CurrentScope.SubScopes.Add(new Scope(i.ToString()));

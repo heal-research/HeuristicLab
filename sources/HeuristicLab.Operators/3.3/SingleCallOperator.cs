@@ -29,28 +29,30 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
   /// <summary>
-  /// An operator which collects the actual values of parameters.
+  /// An operator which applies a specified operator on the current scope.
   /// </summary>
-  [Item("ValueCollector", "An operator which collects the actual values of parameters.")]
-  [EmptyStorableClass]
+  [Item("SingleCallOperator", "An operator which applies a specified operator on the current scope.")]
   [Creatable("Test")]
-  public abstract class ValueCollector : SingleSuccessorOperator, IOperator {
-    protected ValueParameter<ParameterCollection> CollectedValuesParameter {
-      get { return (ValueParameter<ParameterCollection>)Parameters["CollectedValues"]; }
+  [EmptyStorableClass]
+  public class SingleCallOperator : SingleSuccessorOperator {
+    protected OperatorParameter OperatorParameter {
+      get { return (OperatorParameter)Parameters["Operator"]; }
     }
-    public ParameterCollection CollectedValues {
-      get { return CollectedValuesParameter.Value; }
-      set { CollectedValuesParameter.Value = value; }
+    public IOperator Operator {
+      get { return OperatorParameter.Value; }
+      set { OperatorParameter.Value = value; }
     }
 
-    public ValueCollector()
+    public SingleCallOperator()
       : base() {
-      Parameters.Add(new ValueParameter<ParameterCollection>("CollectedValues", "The parameters whose actual values are collected.", new ParameterCollection()));
+      Parameters.Add(new OperatorParameter("Operator", "The operator which should be applied on the current scope."));
     }
 
-    protected override void OnExecutionContextChanged() {
-      foreach (IParameter param in CollectedValues)
-        param.ExecutionContext = ExecutionContext;
+    public override IExecutionSequence Apply() {
+      ExecutionContextCollection next = new ExecutionContextCollection(base.Apply());
+      if (Operator != null)
+        next.Insert(0, new ExecutionContext(ExecutionContext.Parent, Operator, ExecutionContext.Scope));
+      return next;
     }
   }
 }

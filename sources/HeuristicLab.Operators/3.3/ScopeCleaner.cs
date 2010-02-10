@@ -46,7 +46,7 @@ namespace HeuristicLab.Operators {
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope whose variables and sub-scopes should be removed."));
     }
 
-    public override IExecutionContext Apply() {
+    public override IExecutionSequence Apply() {
       CurrentScope.Variables.Clear();
       CurrentScope.SubScopes.Clear();
       return base.Apply();

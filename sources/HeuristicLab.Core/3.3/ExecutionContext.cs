@@ -25,7 +25,7 @@ using System.Text;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
-  public class ExecutionContext : DeepCloneable, IExecutionContext {
+  public class ExecutionContext : DeepCloneable, IExecutionSequence {
     [Storable]
     private ExecutionContext parent;
     public ExecutionContext Parent {

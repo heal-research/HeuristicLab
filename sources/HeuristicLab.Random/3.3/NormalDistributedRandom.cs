@@ -22,9 +22,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using HeuristicLab.Core;
 using System.Xml;
 using System.Globalization;
+using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Random {
@@ -34,8 +34,8 @@ namespace HeuristicLab.Random {
   /// Uses the Ziggurat transform to efficiently generate normal distributed random numbers.
   /// See "The Ziggurat Method for Generating Random Variables" (G. Marsaglia and W.W. Tsang 2000).
   /// </summary>
-  public class NormalDistributedRandom : ItemBase, IRandom {
-
+  [Item("NormalDistributedRandom", "A pseudo random number generator which uses the Ziggurat method to create normally distributed random numbers.")]
+  public class NormalDistributedRandom : Item, IRandom {
     [Storable]
     private double mu;
     /// <summary>
@@ -486,30 +486,24 @@ namespace HeuristicLab.Random {
     }
 
     /// <summary>
-    /// TODO: The method is not implemented.
+    /// This method is not implemented.
     /// </summary>
-    /// <returns>TODO</returns>
     public int Next() {
-      throw new Exception("The method or operation is not implemented.");
+      throw new NotImplementedException();
     }
 
     /// <summary>
-    /// TODO: The method is not implemented.
+    /// This method is not implemented.
     /// </summary>
-    /// <param name="maxVal">TODO</param>
-    /// <returns>TODO</returns>
     public int Next(int maxVal) {
-      throw new Exception("The method or operation is not implemented.");
+      throw new NotImplementedException();
     }
 
     /// <summary>
-    /// TODO: The method is not implemented.
+    /// This method is not implemented.
     /// </summary>
-    /// <param name="minVal">TODO</param>
-    /// <param name="maxVal">TODO</param>
-    /// <returns>TODO</returns>
     public int Next(int minVal, int maxVal) {
-      throw new Exception("The method or operation is not implemented.");
+      throw new NotImplementedException();
     }
 
     /// <summary>
@@ -560,7 +554,7 @@ namespace HeuristicLab.Random {
     /// <see cref="Auxiliary"/>.</remarks>
     /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
     /// <returns>The cloned object as <see cref="NormalDistributedRandom"/>.</returns>
-    public override IItem Clone(ICloner cloner) {
+    public override IDeepCloneable Clone(Cloner cloner) {
       NormalDistributedRandom clone = new NormalDistributedRandom((IRandom)cloner.Clone(uniform), mu, sigma);
       cloner.RegisterClonedObject(this, clone);
       return clone;

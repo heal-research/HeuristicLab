@@ -29,32 +29,27 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
   /// <summary>
-  /// Operator which increments an integer variable.
+  /// An operator which clones and assigns the value of one parameter to another parameter.
   /// </summary>
-  [Item("Counter", "An operator which increments an integer variable.")]
+  [Item("Assigner", "An operator which clones and assigns the value of one parameter to another parameter.")]
   [EmptyStorableClass]
   [Creatable("Test")]
-  public sealed class Counter : SingleSuccessorOperator {
-    public LookupParameter<IntData> ValueParameter {
-      get { return (LookupParameter<IntData>)Parameters["Value"]; }
+  public sealed class Assigner : SingleSuccessorOperator {
+    public LookupParameter<IItem> LeftSideParameter {
+      get { return (LookupParameter<IItem>)Parameters["LeftSide"]; }
     }
-    public ValueLookupParameter<IntData> IncrementParameter {
-      get { return (ValueLookupParameter<IntData>)Parameters["Increment"]; }
-    }
-    public IntData Increment {
-      get { return IncrementParameter.Value; }
-      set { IncrementParameter.Value = value; }
+    public ValueLookupParameter<IItem> RightSideParameter {
+      get { return (ValueLookupParameter<IItem>)Parameters["RightSide"]; }
     }
 
-    public Counter()
+    public Assigner()
       : base() {
-      Parameters.Add(new LookupParameter<IntData>("Value", "The value which should be incremented."));
-      Parameters.Add(new ValueLookupParameter<IntData>("Increment", "The increment which is added to the value.", new IntData(1)));
+      Parameters.Add(new LookupParameter<IItem>("LeftSide", "The parameter whose value gets assigned with a clone of the other parameter's value."));
+      Parameters.Add(new ValueLookupParameter<IItem>("RightSide", "The parameter whose value is cloned and assigned to the value of the other parameter."));
     }
 
-    public override IExecutionContext Apply() {
-      if (ValueParameter.ActualValue == null) ValueParameter.ActualValue = new IntData();
-      ValueParameter.ActualValue.Value += IncrementParameter.ActualValue.Value;
+    public override IExecutionSequence Apply() {
+      LeftSideParameter.ActualValue = (IItem)RightSideParameter.ActualValue.Clone();
       return base.Apply();
     }
   }

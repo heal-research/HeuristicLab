@@ -22,32 +22,40 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Xml;
-using HeuristicLab.Collections;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
   /// <summary>
-  /// Operator which executes multiple operators in parallel.
+  /// An operator which increments an integer variable.
   /// </summary>
-  [Item("ParallelProcessor", "An operator which executes multiple operators in parallel.")]
-  [Creatable("Test")]
+  [Item("IntCounter", "An operator which increments an integer variable.")]
   [EmptyStorableClass]
-  public sealed class ParallelProcessor : MultipleSuccessorsOperator {
-    public ParallelProcessor()
-      : base() {
+  [Creatable("Test")]
+  public sealed class IntCounter : SingleSuccessorOperator {
+    public LookupParameter<IntData> ValueParameter {
+      get { return (LookupParameter<IntData>)Parameters["Value"]; }
+    }
+    public ValueLookupParameter<IntData> IncrementParameter {
+      get { return (ValueLookupParameter<IntData>)Parameters["Increment"]; }
+    }
+    public IntData Increment {
+      get { return IncrementParameter.Value; }
+      set { IncrementParameter.Value = value; }
     }
 
-    public override IExecutionContext Apply() {
-      ExecutionContextCollection next = new ExecutionContextCollection();
-      for (int i = 0; i < Successors.Count; i++) {
-        if (Successors[i] != null)
-          next.Add(new ExecutionContext(ExecutionContext.Parent, Successors[i], ExecutionContext.Scope));
-      }
-      next.Parallel = true;
-      return next;
+    public IntCounter()
+      : base() {
+      Parameters.Add(new LookupParameter<IntData>("Value", "The value which should be incremented."));
+      Parameters.Add(new ValueLookupParameter<IntData>("Increment", "The increment which is added to the value.", new IntData(1)));
+    }
+
+    public override IExecutionSequence Apply() {
+      if (ValueParameter.ActualValue == null) ValueParameter.ActualValue = new IntData();
+      ValueParameter.ActualValue.Value += IncrementParameter.ActualValue.Value;
+      return base.Apply();
     }
   }
 }

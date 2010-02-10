@@ -29,5 +29,5 @@ namespace HeuristicLab.Core {
   /// <summary>
   /// Interface which represents an execution context.
   /// </summary>
-  public interface IExecutionContext : IDeepCloneable { }
+  public interface IExecutionSequence : IDeepCloneable { }
 }

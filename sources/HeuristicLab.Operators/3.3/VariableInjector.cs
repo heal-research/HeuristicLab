@@ -36,7 +36,7 @@ namespace HeuristicLab.Operators {
   [Item("VariableInjector", "An operator which collects the actual values of parameters and clones them into the current scope.")]
   [Creatable("Test")]
   [EmptyStorableClass]
-  public class VariableInjector : ValueCollector {
+  public class VariableInjector : ValuesCollector {
     protected ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
     }
@@ -49,7 +49,7 @@ namespace HeuristicLab.Operators {
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope into which the parameter values are cloned."));
     }
 
-    public override IExecutionContext Apply() {
+    public override IExecutionSequence Apply() {
       IVariable var;
       foreach (IParameter param in CollectedValues) {
         CurrentScope.Variables.TryGetValue(param.Name, out var);

@@ -84,17 +84,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UniformRandomAdder.cs" />
-    <Compile Include="NormalRandomAdder.cs" />
+    <None Include="HeuristicLabRandomPlugin.cs.frame" />
+    <Compile Include="RandomInitializer.cs" />
     <Compile Include="HeuristicLabRandomPlugin.cs" />
-    <Compile Include="MersenneTwister.cs" />
-    <Compile Include="NormalDistributedRandom.cs" />
-    <Compile Include="NormalRandomizer.cs" />
+    <Compile Include="MersenneTwister.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="NormalDistributedRandom.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RandomInjector.cs" />
-    <Compile Include="UniformRandomizer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
+      <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
+      <Name>HeuristicLab.Collections-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
       <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
       <Name>HeuristicLab.Core-3.3</Name>
@@ -106,6 +111,10 @@
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
       <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
       <Name>HeuristicLab.Operators-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj">
+      <Project>{56F9106A-079F-4C61-92F6-86A84C2D84B7}</Project>
+      <Name>HeuristicLab.Parameters-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
       <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
@@ -134,6 +143,7 @@ set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
-call PreBuildEvent.cmd</PreBuildEvent>
+call PreBuildEvent.cmd
+SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabRandomPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabRandomPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

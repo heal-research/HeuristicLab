@@ -42,7 +42,8 @@ namespace HeuristicLab.Random {
   /// <summary>
   /// A 623-Dimensionally Equidistributed Uniform Pseudo-Random Number Generator.
   /// </summary>
-  public class MersenneTwister : ItemBase, IRandom {
+  [Item("MersenneTwister", "A high-quality pseudo random number generator which creates uniformly distributed random numbers.")]
+  public class MersenneTwister : Item, IRandom {
     private const int n = 624, m = 397;
 
     private object locker = new object();
@@ -83,7 +84,7 @@ namespace HeuristicLab.Random {
     /// </summary>
     /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
     /// <returns>The cloned object as <see cref="MersenneTwister"/>.</returns>
-    public override IItem Clone(ICloner cloner) {
+    public override IDeepCloneable Clone(Cloner cloner) {
       MersenneTwister clone = new MersenneTwister();
       cloner.RegisterClonedObject(this, clone);
       clone.state = (uint[])state.Clone();

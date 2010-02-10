@@ -29,7 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
   /// <summary>
-  /// Operator which increments a double variable.
+  /// An operator which increments a double variable.
   /// </summary>
   [Item("DoubleCounter", "An operator which increments a double variable.")]
   [EmptyStorableClass]
@@ -52,7 +52,7 @@ namespace HeuristicLab.Operators {
       Parameters.Add(new ValueLookupParameter<DoubleData>("Increment", "The increment which is added to the value.", new DoubleData(1)));
     }
 
-    public override IExecutionContext Apply() {
+    public override IExecutionSequence Apply() {
       if (ValueParameter.ActualValue == null) ValueParameter.ActualValue = new DoubleData();
       ValueParameter.ActualValue.Value += IncrementParameter.ActualValue.Value;
       return base.Apply();

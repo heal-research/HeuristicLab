@@ -92,11 +92,11 @@ namespace HeuristicLab.Core {
     /// Field of the current instance that represent the execution stack.
     /// </summary>
     [Storable]
-    private Stack<IExecutionContext> executionStack;
+    private Stack<IExecutionSequence> executionStack;
     /// <summary>
     /// Gets the current execution stack.
     /// </summary>
-    protected Stack<IExecutionContext> ExecutionStack {
+    protected Stack<IExecutionSequence> ExecutionStack {
       get { return executionStack; }
     }
 
@@ -134,7 +134,7 @@ namespace HeuristicLab.Core {
     /// <remarks>Calls <see cref="Reset"/>.</remarks>
     protected Engine() {
       globalScope = new Scope("Global");
-      executionStack = new Stack<IExecutionContext>();
+      executionStack = new Stack<IExecutionSequence>();
       OperatorGraph = new OperatorGraph();
     }
 
@@ -150,9 +150,9 @@ namespace HeuristicLab.Core {
       clone.OperatorGraph = (OperatorGraph)cloner.Clone(operatorGraph);
       clone.globalScope = (Scope)cloner.Clone(globalScope);
       clone.executionTime = executionTime;
-      IExecutionContext[] contexts = executionStack.ToArray();
+      IExecutionSequence[] contexts = executionStack.ToArray();
       for (int i = contexts.Length - 1; i >= 0; i--)
-        clone.executionStack.Push((IExecutionContext)cloner.Clone(contexts[i]));
+        clone.executionStack.Push((IExecutionSequence)cloner.Clone(contexts[i]));
       clone.running = running;
       clone.canceled = canceled;
       return clone;

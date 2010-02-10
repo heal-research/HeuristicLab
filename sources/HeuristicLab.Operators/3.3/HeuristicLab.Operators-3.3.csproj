@@ -88,25 +88,29 @@
     <None Include="HeuristicLabOperatorsPlugin.cs.frame" />
     <Compile Include="ConditionalBranch.cs" />
     <Compile Include="Comparator.cs" />
+    <Compile Include="Assigner.cs" />
+    <Compile Include="MultipleCallsOperator.cs" />
+    <Compile Include="ParallelSubScopesProcessor.cs" />
+    <Compile Include="Placeholder.cs" />
+    <Compile Include="SingleCallOperator.cs" />
+    <Compile Include="IntCounter.cs" />
     <Compile Include="ScopeCleaner.cs" />
+    <Compile Include="SequentialSubScopesProcessor.cs" />
+    <Compile Include="StochasticBranch.cs" />
     <Compile Include="SubScopesRemover.cs" />
     <Compile Include="SubScopesSorter.cs" />
     <Compile Include="DoubleCounter.cs" />
-    <Compile Include="ParallelProcessor.cs" />
     <Compile Include="UniformParallelSubScopesProcessor.cs" />
     <Compile Include="UniformSequentialSubScopesProcessor.cs" />
-    <Compile Include="ValueCollector.cs" />
-    <Compile Include="MultipleSuccessorsOperator.cs" />
-    <Compile Include="Counter.cs" />
     <Compile Include="EmptyOperator.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="HeuristicLabOperatorsPlugin.cs" />
     <Compile Include="Operator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SequentialProcessor.cs" />
     <Compile Include="SingleSuccessorOperator.cs" />
     <Compile Include="SubScopesCreater.cs" />
+    <Compile Include="ValuesCollector.cs" />
     <Compile Include="VariableInjector.cs">
       <SubType>Code</SubType>
     </Compile>

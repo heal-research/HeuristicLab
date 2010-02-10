@@ -34,24 +34,24 @@ namespace HeuristicLab.Operators.Views {
   /// <summary>
   /// The base class for visual representations of items.
   /// </summary>
-  [Content(typeof(MultipleSuccessorsOperator), true)]
-  public partial class MultipleSuccessorsOperatorView : NamedItemView {
-    public new MultipleSuccessorsOperator Content {
-      get { return (MultipleSuccessorsOperator)base.Content; }
+  [Content(typeof(MultipleCallsOperator), true)]
+  public partial class MultipleCallsOperatorView : NamedItemView {
+    public new MultipleCallsOperator Content {
+      get { return (MultipleCallsOperator)base.Content; }
       set { base.Content = value; }
     }
 
     /// <summary>
     /// Initializes a new instance of <see cref="ItemBaseView"/>.
     /// </summary>
-    public MultipleSuccessorsOperatorView() {
+    public MultipleCallsOperatorView() {
       InitializeComponent();
     }
     /// <summary>
     /// Intializes a new instance of <see cref="ItemBaseView"/> with the given <paramref name="item"/>.
     /// </summary>
     /// <param name="item">The item that should be displayed.</param>
-    public MultipleSuccessorsOperatorView(MultipleSuccessorsOperator content)
+    public MultipleCallsOperatorView(MultipleCallsOperator content)
       : this() {
       Content = content;
     }
@@ -59,11 +59,11 @@ namespace HeuristicLab.Operators.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        successorsListView.Content = null;
+        operatorListView.Content = null;
         parameterCollectionView.Content = null;
         tabControl.Enabled = false;
       } else {
-        successorsListView.Content = Content.Successors;
+        operatorListView.Content = Content.Operators;
         parameterCollectionView.Content = ((IOperator)Content).Parameters;
         tabControl.Enabled = true;
       }

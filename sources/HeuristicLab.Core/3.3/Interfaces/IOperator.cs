@@ -43,7 +43,7 @@ namespace HeuristicLab.Core {
     /// </summary>
     /// <param name="scope">The scope where to execute the current instance.</param>
     /// <returns>The next operation.</returns>
-    IExecutionContext Execute(ExecutionContext context);
+    IExecutionSequence Execute(ExecutionContext context);
     /// <summary>
     /// Aborts the current operator.
     /// </summary>

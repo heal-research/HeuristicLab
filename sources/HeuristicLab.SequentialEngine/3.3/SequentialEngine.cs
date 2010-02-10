@@ -56,7 +56,7 @@ namespace HeuristicLab.SequentialEngine {
     /// If the execution was successful <see cref="EngineBase.OnOperationExecuted"/> is called.</remarks>
     protected override void ProcessNextOperator() {
       currentOperator = null;
-      IExecutionContext next = ExecutionStack.Pop();
+      IExecutionSequence next = ExecutionStack.Pop();
       ExecutionContextCollection coll = next as ExecutionContextCollection;
       while (coll != null) {
         for (int i = coll.Count - 1; i >= 0; i--)

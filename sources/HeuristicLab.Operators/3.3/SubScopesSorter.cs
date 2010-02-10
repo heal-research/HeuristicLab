@@ -58,7 +58,7 @@ namespace HeuristicLab.Operators {
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope whose sub-scopes are sorted."));
     }
 
-    public override IExecutionContext Apply() {
+    public override IExecutionSequence Apply() {
       descending = DescendingParameter.ActualValue.Value;
       actualName = LookupParameter<DoubleData>.TranslateName(ValueParameter.Name, ExecutionContext);
       CurrentScope.SubScopes.Sort(SortScopes);

@@ -61,7 +61,7 @@ namespace HeuristicLab.Operators {
       Parameters.Add(new OperatorParameter("FalseBranch", "The operator which is executed if the condition is false."));
     }
 
-    public override IExecutionContext Apply() {
+    public override IExecutionSequence Apply() {
       ExecutionContextCollection next = new ExecutionContextCollection(base.Apply());
       if (ConditionParameter.ActualValue.Value) {
         if (TrueBranch != null) next.Insert(0, new ExecutionContext(ExecutionContext.Parent, TrueBranch, ExecutionContext.Scope));

@@ -21,31 +21,34 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Xml;
+using HeuristicLab.Collections;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
   /// <summary>
-  /// Performs <c>n</c> operators on <c>n</c> subscopes, operations can be executed in parallel.
+  /// An operator which contains multiple operators of which each is applied in parallel on one sub-scope of the current scope. The first operator is applied on the first sub-scope, the second on the second, and so on.
   /// </summary>
-  public class ParallelSubScopesProcessor : OperatorBase {
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get { return @"TODO\r\nOperator description still missing ..."; }
+  [Item("ParallelSubScopesProcessor", "An operator which contains multiple operators of which each is applied in parallel on one sub-scope of the current scope. The first operator is applied on the first sub-scope, the second on the second, and so on.")]
+  [Creatable("Test")]
+  public sealed class ParallelSubScopesProcessor : MultipleCallsOperator {
+    public ParallelSubScopesProcessor()
+      : base() {
     }
 
-    /// <summary>
-    /// Applies <c>n</c> operators on all the <c>n</c> sub scopes of the given <paramref name="scope"/>.
-    /// </summary>
-    /// <param name="scope">The scope on whose sub scopes the operators are applied.</param>
-    /// <returns>A new <see cref="CompositeOperation"/> with the <c>i</c>th operator applied
-    /// on the <c>i</c>th sub scope, the <c>ExecuteInParallel</c> flag set to <c>true</c>.</returns>
-    public override IOperation Apply(IScope scope) {
-      CompositeOperation next = new CompositeOperation();
-      next.ExecuteInParallel = true;
-      for (int i = 0; i < scope.SubScopes.Count; i++)
-        next.AddOperation(new AtomicOperation(SubOperators[i], scope.SubScopes[i]));
+    public override IExecutionSequence Apply() {
+      ExecutionContextCollection next = new ExecutionContextCollection(base.Apply());
+      if (Operators.Count > 0) {
+        ExecutionContextCollection inner = new ExecutionContextCollection();
+        inner.Parallel = true;
+        for (int i = 0; (i < ExecutionContext.Scope.SubScopes.Count) && (i < Operators.Count); i++)
+          inner.Add(new ExecutionContext(ExecutionContext.Parent, Operators[i], ExecutionContext.Scope.SubScopes[i]));
+        next.Insert(0, inner);
+      }
       return next;
     }
   }

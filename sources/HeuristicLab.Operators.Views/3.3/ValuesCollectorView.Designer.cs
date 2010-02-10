@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Operators.Views {
-  partial class MultipleSuccessorsOperatorView {
+  partial class ValuesCollectorView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -45,13 +45,13 @@ namespace HeuristicLab.Operators.Views {
     /// </summary>
     private void InitializeComponent() {
       this.tabControl = new System.Windows.Forms.TabControl();
-      this.successorsTabPage = new System.Windows.Forms.TabPage();
-      this.successorsListView = new HeuristicLab.Core.Views.OperatorListView();
+      this.collectedValuesTabPage = new System.Windows.Forms.TabPage();
+      this.collectedValuesView = new HeuristicLab.Core.Views.ParameterCollectionView();
       this.parametersTabPage = new System.Windows.Forms.TabPage();
       this.parameterCollectionView = new HeuristicLab.Core.Views.ParameterCollectionView();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.tabControl.SuspendLayout();
-      this.successorsTabPage.SuspendLayout();
+      this.collectedValuesTabPage.SuspendLayout();
       this.parametersTabPage.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -72,7 +72,7 @@ namespace HeuristicLab.Operators.Views {
       this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.tabControl.Controls.Add(this.successorsTabPage);
+      this.tabControl.Controls.Add(this.collectedValuesTabPage);
       this.tabControl.Controls.Add(this.parametersTabPage);
       this.tabControl.Location = new System.Drawing.Point(0, 118);
       this.tabControl.Name = "tabControl";
@@ -80,28 +80,28 @@ namespace HeuristicLab.Operators.Views {
       this.tabControl.Size = new System.Drawing.Size(486, 364);
       this.tabControl.TabIndex = 4;
       // 
-      // successorsTabPage
+      // collectedValuesTabPage
       // 
-      this.successorsTabPage.Controls.Add(this.successorsListView);
-      this.successorsTabPage.Location = new System.Drawing.Point(4, 22);
-      this.successorsTabPage.Name = "successorsTabPage";
-      this.successorsTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.successorsTabPage.Size = new System.Drawing.Size(478, 338);
-      this.successorsTabPage.TabIndex = 0;
-      this.successorsTabPage.Text = "Successors";
-      this.successorsTabPage.UseVisualStyleBackColor = true;
+      this.collectedValuesTabPage.Controls.Add(this.collectedValuesView);
+      this.collectedValuesTabPage.Location = new System.Drawing.Point(4, 22);
+      this.collectedValuesTabPage.Name = "collectedValuesTabPage";
+      this.collectedValuesTabPage.Padding = new System.Windows.Forms.Padding(3);
+      this.collectedValuesTabPage.Size = new System.Drawing.Size(478, 338);
+      this.collectedValuesTabPage.TabIndex = 0;
+      this.collectedValuesTabPage.Text = "Collected Values";
+      this.collectedValuesTabPage.UseVisualStyleBackColor = true;
       // 
-      // successorsListView
+      // collectedValuesView
       // 
-      this.successorsListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+      this.collectedValuesView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.successorsListView.Caption = "Operator List";
-      this.successorsListView.Content = null;
-      this.successorsListView.Location = new System.Drawing.Point(6, 6);
-      this.successorsListView.Name = "successorsListView";
-      this.successorsListView.Size = new System.Drawing.Size(466, 326);
-      this.successorsListView.TabIndex = 0;
+      this.collectedValuesView.Caption = "ParameterCollection";
+      this.collectedValuesView.Content = null;
+      this.collectedValuesView.Location = new System.Drawing.Point(6, 6);
+      this.collectedValuesView.Name = "collectedValuesView";
+      this.collectedValuesView.Size = new System.Drawing.Size(466, 326);
+      this.collectedValuesView.TabIndex = 0;
       // 
       // parametersTabPage
       // 
@@ -126,12 +126,12 @@ namespace HeuristicLab.Operators.Views {
       this.parameterCollectionView.Size = new System.Drawing.Size(466, 326);
       this.parameterCollectionView.TabIndex = 0;
       // 
-      // MultipleSuccessorsOperatorView
+      // ValuesCollectorView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.tabControl);
-      this.Name = "MultipleSuccessorsOperatorView";
+      this.Name = "ValuesCollectorView";
       this.Size = new System.Drawing.Size(486, 482);
       this.Controls.SetChildIndex(this.tabControl, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
@@ -140,7 +140,7 @@ namespace HeuristicLab.Operators.Views {
       this.Controls.SetChildIndex(this.descriptionTextBox, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.tabControl.ResumeLayout(false);
-      this.successorsTabPage.ResumeLayout(false);
+      this.collectedValuesTabPage.ResumeLayout(false);
       this.parametersTabPage.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
@@ -150,9 +150,10 @@ namespace HeuristicLab.Operators.Views {
     #endregion
 
     protected System.Windows.Forms.TabControl tabControl;
-    protected System.Windows.Forms.TabPage successorsTabPage;
+    protected System.Windows.Forms.TabPage collectedValuesTabPage;
     protected System.Windows.Forms.TabPage parametersTabPage;
-    private HeuristicLab.Core.Views.ParameterCollectionView parameterCollectionView;
-    private HeuristicLab.Core.Views.OperatorListView successorsListView;
+    protected HeuristicLab.Core.Views.ParameterCollectionView parameterCollectionView;
+    protected HeuristicLab.Core.Views.ParameterCollectionView collectedValuesView;
+
   }
 }

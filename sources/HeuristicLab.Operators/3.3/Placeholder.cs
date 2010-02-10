@@ -21,56 +21,34 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Text;
 using System.Xml;
-using HeuristicLab.Collections;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
   /// <summary>
-  /// Operator which contains an operator graph.
+  /// An operator which acts as a placeholder for another operator retrieved from the scope or a parent execution context.
   /// </summary>
-  [Item("CombinedOperator", "An operator which contains an operator graph.")]
+  [Item("Placeholder", "An operator which acts as a placeholder for another operator retrieved from the scope or a parent execution context.")]
   [Creatable("Test")]
-  public sealed class CombinedOperator : SingleSuccessorOperator, IOperator {
-    public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Module; }
-    }
-    [Storable]
-    private OperatorGraph operatorGraph;
-    public OperatorGraph OperatorGraph {
-      get { return operatorGraph; }
-    }
-    public new ParameterCollection Parameters {
-      get {
-        return base.Parameters;
-      }
-    }
-    IObservableKeyedCollection<string, IParameter> IOperator.Parameters {
-      get { return Parameters; }
-    }
-    public override bool CanChangeDescription {
-      get { return true; }
+  [EmptyStorableClass]
+  public sealed class Placeholder : SingleSuccessorOperator {
+    public LookupParameter<IOperator> OperatorParameter {
+      get { return (LookupParameter<IOperator>)Parameters["Operator"]; }
     }
 
-    public CombinedOperator()
+    public Placeholder()
       : base() {
-      operatorGraph = new OperatorGraph();
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      CombinedOperator clone = (CombinedOperator)base.Clone(cloner);
-      clone.operatorGraph = (OperatorGraph)cloner.Clone(operatorGraph);
-      return clone;
+      Parameters.Add(new LookupParameter<IOperator>("Operator", "The operator which is retrieved from the scope or a parent execution context and applied on the current scope."));
     }
 
     public override IExecutionSequence Apply() {
       ExecutionContextCollection next = new ExecutionContextCollection(base.Apply());
-      if (operatorGraph.InitialOperator != null)
-        next.Insert(0, new ExecutionContext(ExecutionContext, operatorGraph.InitialOperator, ExecutionContext.Scope));
+      IOperator op = OperatorParameter.ActualValue;
+      if (op != null)
+        next.Insert(0, new ExecutionContext(ExecutionContext.Parent, op, ExecutionContext.Scope));
       return next;
     }
   }

@@ -57,11 +57,17 @@
       <DependentUpon>CombinedOperatorView.cs</DependentUpon>
     </Compile>
     <None Include="HeuristicLabOperatorsViewsPlugin.cs.frame" />
-    <Compile Include="MultipleSuccessorsOperatorView.cs">
+    <Compile Include="MultipleCallsOperatorView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="MultipleSuccessorsOperatorView.Designer.cs">
-      <DependentUpon>MultipleSuccessorsOperatorView.cs</DependentUpon>
+    <Compile Include="MultipleCallsOperatorView.Designer.cs">
+      <DependentUpon>MultipleCallsOperatorView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ValuesCollectorView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ValuesCollectorView.Designer.cs">
+      <DependentUpon>ValuesCollectorView.cs</DependentUpon>
     </Compile>
     <Compile Include="HeuristicLabOperatorsViewsPlugin.cs" />
     <Compile Include="OperatorView.cs">

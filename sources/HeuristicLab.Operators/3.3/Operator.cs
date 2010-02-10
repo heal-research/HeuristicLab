@@ -129,13 +129,13 @@ namespace HeuristicLab.Operators {
     }
 
     /// <inheritdoc/>
-    public virtual IExecutionContext Execute(ExecutionContext context) {
+    public virtual IExecutionSequence Execute(ExecutionContext context) {
       try {
         Canceled = false;
         ExecutionContext = context;
         foreach (IParameter param in Parameters)
           param.ExecutionContext = context;
-        IExecutionContext next = Apply();
+        IExecutionSequence next = Apply();
         OnExecuted();
         return next;
       }
@@ -155,7 +155,7 @@ namespace HeuristicLab.Operators {
     /// </summary>
     /// <param name="scope">The scope where to execute the operator</param>
     /// <returns><c>null</c>.</returns>
-    public abstract IExecutionContext Apply();
+    public abstract IExecutionSequence Apply();
 
     protected virtual void OnExecutionContextChanged() { }
     protected virtual void OnCanceledChanged() { }

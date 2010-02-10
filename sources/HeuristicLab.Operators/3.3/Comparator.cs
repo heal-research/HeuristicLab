@@ -60,7 +60,7 @@ namespace HeuristicLab.Operators {
       Parameters.Add(new LookupParameter<BoolData>("Result", "The result of the comparison."));
     }
 
-    public override IExecutionContext Apply() {
+    public override IExecutionSequence Apply() {
       IItem left = LeftSideParameter.ActualValue;
       IItem right = RightSideParameter.ActualValue;
       IComparable comparable = left as IComparable;
