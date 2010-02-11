@@ -74,7 +74,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
         builder.Append("Contact: ").Append(desc.ContactName).Append(", ").AppendLine(desc.ContactEmail);
       }
       builder.AppendLine("This plugin is " + desc.PluginState.ToString().ToLowerInvariant() + ".");
-      // builder.Append("Build date: ").AppendLine(desc.BuildDate.ToString()).AppendLine();
       builder.AppendLine("Files: ");
       foreach (var file in desc.Files) {
         builder.AppendLine(file.Type + " " + file.Name);
