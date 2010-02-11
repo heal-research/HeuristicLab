@@ -101,6 +101,7 @@
     </Compile>
     <Compile Include="Attributes\ApplicationAttribute.cs" />
     <Compile Include="Attributes\AssemblyBuildDateAttribute.cs" />
+    <Compile Include="Attributes\ContactInformationAttribute.cs" />
     <Compile Include="Attributes\PluginAttribute.cs" />
     <Compile Include="Attributes\PluginDependencyAttribute.cs" />
     <Compile Include="Attributes\PluginFileAttribute.cs" />

@@ -70,6 +70,24 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       internal set { buildDate = value; }
     }
 
+    private string contactName;
+    /// <summary>
+    /// Gets or sets the name of the contact person for this plugin.
+    /// </summary>
+    internal string ContactName {
+      get { return contactName; }
+      set { contactName = value; }
+    }
+
+    private string contactEmail;
+    /// <summary>
+    /// Gets or sets the e-mail address of the contact person for this plugin.
+    /// </summary>
+    internal string ContactEmail {
+      get { return contactEmail; }
+      set { contactEmail = value; }
+    }
+
     private PluginState pluginState;
     /// <summary>
     /// Gets or sets the plugin state.

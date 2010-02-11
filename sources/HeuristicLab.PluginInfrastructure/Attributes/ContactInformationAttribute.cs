@@ -21,32 +21,41 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
+using System.IO;
 
 namespace HeuristicLab.PluginInfrastructure {
   /// <summary>
-  /// Represents meta-data of a plugin.
+  /// ContactInformationAttribute can be used to declare contact information (name, e-mail) for a plugin.
   /// </summary>
-  public interface IPluginDescription {
+  [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+  public sealed class ContactInformationAttribute : System.Attribute {
+    private string name;
+
     /// <summary>
-    /// Gets the name of the plugin.
+    /// Gets the name of the contact person.
     /// </summary>
-    string Name { get; }
+    public string Name {
+      get { return name; }
+    }
+
+    private string email;
     /// <summary>
-    /// Gets the version of the plugin.
+    /// Gets the e-mail address of the contact person.
     /// </summary>
-    Version Version { get; }
+    public string EMail {
+      get { return email; }
+    }
+
     /// <summary>
-    /// Gets the build date of the plugin.
+    /// Initializes a new instance of <see cref="ContactInformationAttribute"/>.
+    /// <param name="name">Name of the contact person</param>
+    /// <param name="email">E-mail address of the person</param>
     /// </summary>
-    [Obsolete]
-    DateTime BuildDate { get; }
-    /// <summary>
-    /// Gets the dependencies of the plugin.
-    /// </summary>
-    IEnumerable<IPluginDescription> Dependencies { get; }
-    /// <summary>
-    /// Gets the file names of files that are part of the plugin.
-    /// </summary>
-    IEnumerable<IPluginFile> Files { get; }
+    public ContactInformationAttribute(string name, string email) {
+      if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(email)) throw new ArgumentException("Empty name or e-mail address.");
+      this.name = name;
+      this.email = email;
+    }
   }
 }

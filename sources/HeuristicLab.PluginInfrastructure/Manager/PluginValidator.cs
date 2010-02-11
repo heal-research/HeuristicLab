@@ -261,19 +261,23 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     private PluginDescription GetPluginDescription(Type pluginType) {
 
       string pluginName, pluginDescription, pluginVersion;
+      string contactName, contactAddress;
       GetPluginMetaData(pluginType, out pluginName, out pluginDescription, out pluginVersion);
+      GetPluginContactMetaData(pluginType, out contactName, out contactAddress);
       var pluginFiles = GetPluginFilesMetaData(pluginType);
       var pluginDependencies = GetPluginDependencyMetaData(pluginType);
 
       // minimal sanity check of the attribute values
       if (!string.IsNullOrEmpty(pluginName) &&
-          pluginFiles.Count() > 0 &&                                 // at least on file
-          pluginFiles.Any(f => f.Type == PluginFileType.Assembly)) { // at least on assembly
+          pluginFiles.Count() > 0 &&                                 // at least one file
+          pluginFiles.Any(f => f.Type == PluginFileType.Assembly)) { // at least one assembly
         // create a temporary PluginDescription that contains the attribute values
         PluginDescription info = new PluginDescription();
         info.Name = pluginName;
         info.Description = pluginDescription;
         info.Version = new Version(pluginVersion);
+        info.ContactName = contactName;
+        info.ContactEmail = contactAddress;
         info.AddFiles(pluginFiles);
 
         this.pluginDependencies[info] = pluginDependencies;
@@ -304,6 +308,21 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
           }
         }
         yield return new PluginDependency(name, version);
+      }
+    }
+
+    private static void GetPluginContactMetaData(Type pluginType, out string contactName, out string contactAddress) {
+      // get attribute of type ContactInformation if there is any
+      var contactInfoAttribute = (from attr in CustomAttributeData.GetCustomAttributes(pluginType)
+                                  where IsAttributeDataForType(attr, typeof(ContactInformationAttribute))
+                                  select attr).SingleOrDefault();
+
+      if (contactInfoAttribute != null) {
+        contactName = (string)contactInfoAttribute.ConstructorArguments[0].Value;
+        contactAddress = (string)contactInfoAttribute.ConstructorArguments[1].Value;
+      } else {
+        contactName = string.Empty;
+        contactAddress = string.Empty;
       }
     }
 

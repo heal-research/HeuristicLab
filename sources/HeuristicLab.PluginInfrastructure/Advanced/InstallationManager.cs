@@ -70,8 +70,11 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       builder.Append("Name: ").AppendLine(desc.Name);
       builder.Append("Version: ").AppendLine(desc.Version.ToString());
       builder.AppendLine("Description:").AppendLine(desc.Description);
+      if (!string.IsNullOrEmpty(desc.ContactName)) {
+        builder.Append("Contact: ").Append(desc.ContactName).Append(", ").AppendLine(desc.ContactEmail);
+      }
       builder.AppendLine("This plugin is " + desc.PluginState.ToString().ToLowerInvariant() + ".");
-      builder.Append("Build date: ").AppendLine(desc.BuildDate.ToString()).AppendLine();
+      // builder.Append("Build date: ").AppendLine(desc.BuildDate.ToString()).AppendLine();
       builder.AppendLine("Files: ");
       foreach (var file in desc.Files) {
         builder.AppendLine(file.Type + " " + file.Name);
