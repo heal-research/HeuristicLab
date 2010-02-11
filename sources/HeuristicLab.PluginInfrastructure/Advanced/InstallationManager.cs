@@ -104,46 +104,8 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // either any file is missing
       StringBuilder builder = new StringBuilder();
       builder.AppendLine("Problem report:");
-      var missingFiles = from x in desc.Files
-                         where !File.Exists(x.Name)
-                         select x.Name;
-      if (missingFiles.Count() > 0) {
-        foreach (string fileName in from file in desc.Files select file.Name) {
-          if (!File.Exists(fileName)) builder.Append("Missing file: ").AppendLine(fileName);
-        }
-        return builder.ToString();
-      } else {
-        // or any dependency is disabled
-        var disabledDependencies = from x in desc.Dependencies
-                                   where x.PluginState == PluginState.Disabled
-                                   select x;
-        if (disabledDependencies.Count() > 0) {
-          foreach (var dependency in disabledDependencies) {
-            builder.Append(dependency.Name).AppendLine(" is disabled.").AppendLine(DetermineProblem(dependency));
-          }
-          return builder.ToString();
-        } else {
-          // or any dependency is missing / not installed
-          var declaredDependencies = GetDeclaredDependencies(desc);
-          if (declaredDependencies.Count() != desc.Dependencies.Count()) {
-            var missingDependencies = from x in declaredDependencies
-                                      where !desc.Dependencies.Any(dep => dep.Name == x)
-                                      select x;
-            builder.AppendLine("Necessary dependencies are missing:");
-            foreach (string missingDependency in missingDependencies) {
-              builder.AppendLine(missingDependency);
-            }
-          } else {
-            // or there was a problem loading the assemblies
-            builder.AppendLine("There was a problem while loading assemblies: ");
-            foreach (string assemblyLocation in desc.AssemblyLocations) {
-              builder.AppendLine(assemblyLocation + ": " + AssemblyName.GetAssemblyName(assemblyLocation).FullName);
-            }
-            return builder.ToString();
-          }
-        }
-      }
-      return "There is an unknown problem with plugin: " + desc.Name;
+      builder.AppendLine(desc.LoadingErrorInformation);
+      return builder.ToString();
     }
 
     private static IEnumerable<string> GetDeclaredDependencies(PluginDescription desc) {

@@ -189,36 +189,43 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     private void CheckPluginAssemblies(IEnumerable<PluginDescription> pluginDescriptions) {
       foreach (var desc in pluginDescriptions.Where(x => x.PluginState != PluginState.Disabled)) {
         try {
+          var missingAssemblies = new List<string>();
           foreach (var asmLocation in desc.AssemblyLocations) {
             // the assembly must have been loaded in ReflectionOnlyDlls
             // so we simply determine the name of the assembly and try to find it in the cache of loaded assemblies
             var asmName = AssemblyName.GetAssemblyName(asmLocation);
-
             if (!reflectionOnlyAssemblies.ContainsKey(asmName.FullName)) {
-              desc.Disable();
-              break; // as soon as one assembly is not available disable the plugin and check the next plugin description
+              missingAssemblies.Add(asmName.FullName);
             }
           }
+          if (missingAssemblies.Count > 0) {
+            StringBuilder errorStrBuiler = new StringBuilder();
+            errorStrBuiler.AppendLine("Missing assemblies:");
+            foreach (string missingAsm in missingAssemblies) {
+              errorStrBuiler.AppendLine(missingAsm);
+            }
+            desc.Disable(errorStrBuiler.ToString());
+          }
         }
-        catch (BadImageFormatException) {
+        catch (BadImageFormatException ex) {
           // disable the plugin
-          desc.Disable();
+          desc.Disable("Problem while loading plugin assemblies:" + Environment.NewLine + "BadImageFormatException: " + ex.Message);
         }
-        catch (FileNotFoundException) {
+        catch (FileNotFoundException ex) {
           // disable the plugin
-          desc.Disable();
+          desc.Disable("Problem while loading plugin assemblies:" + Environment.NewLine + "FileNotFoundException: " + ex.Message);
         }
-        catch (FileLoadException) {
+        catch (FileLoadException ex) {
           // disable the plugin
-          desc.Disable();
+          desc.Disable("Problem while loading plugin assemblies:" + Environment.NewLine + "FileLoadException: " + ex.Message);
         }
-        catch (ArgumentException) {
+        catch (ArgumentException ex) {
           // disable the plugin
-          desc.Disable();
+          desc.Disable("Problem while loading plugin assemblies:" + Environment.NewLine + "ArgumentException: " + ex.Message);
         }
-        catch (SecurityException) {
+        catch (SecurityException ex) {
           // disable the plugin
-          desc.Disable();
+          desc.Disable("Problem while loading plugin assemblies:" + Environment.NewLine + "SecurityException: " + ex.Message);
         }
       }
     }
@@ -369,6 +376,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     // and sets the dependencies in the plugin descriptions
     private void BuildDependencyTree(IEnumerable<PluginDescription> pluginDescriptions) {
       foreach (var desc in pluginDescriptions) {
+        var missingDependencies = new List<PluginDependency>();
         foreach (var dependency in pluginDependencies[desc]) {
           var matchingDescriptions = from availablePlugin in pluginDescriptions
                                      where availablePlugin.Name == dependency.Name
@@ -377,9 +385,17 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
           if (matchingDescriptions.Count() > 0) {
             desc.AddDependency(matchingDescriptions.Single());
           } else {
-            // no plugin description that matches the dependency name is available => plugin is disabled
-            desc.Disable(); break;
+            missingDependencies.Add(dependency);
           }
+        }
+        // no plugin description that matches the dependencies are available => plugin is disabled
+        if (missingDependencies.Count > 0) {
+          StringBuilder errorStrBuilder = new StringBuilder();
+          errorStrBuilder.AppendLine("Missing dependencies:");
+          foreach (var missingDep in missingDependencies) {
+            errorStrBuilder.AppendLine(missingDep.Name + " " + missingDep.Version);
+          }
+          desc.Disable(errorStrBuilder.ToString());
         }
       }
     }
@@ -408,9 +424,9 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
 
     private void CheckPluginDependencyCycles(IEnumerable<PluginDescription> pluginDescriptions) {
       foreach (var plugin in pluginDescriptions) {
-        // if the plugin is not disabled anyway check if there are cycles
+        // if the plugin is not disabled check if there are cycles
         if (plugin.PluginState != PluginState.Disabled && HasCycleInDependencies(plugin, plugin.Dependencies)) {
-          plugin.Disable();
+          plugin.Disable("Dependency graph has a cycle.");
         }
       }
     }
@@ -428,19 +444,28 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
 
     private void CheckPluginDependencies(IEnumerable<PluginDescription> pluginDescriptions) {
       foreach (PluginDescription pluginDescription in pluginDescriptions.Where(x => x.PluginState != PluginState.Disabled)) {
-        if (IsAnyDependencyDisabled(pluginDescription)) {
-          pluginDescription.Disable();
+        List<PluginDescription> disabledPlugins = new List<PluginDescription>();
+        if (IsAnyDependencyDisabled(pluginDescription, disabledPlugins)) {
+          StringBuilder errorStrBuilder = new StringBuilder();
+          errorStrBuilder.AppendLine("Dependencies are disabled:");
+          foreach (var disabledPlugin in disabledPlugins) {
+            errorStrBuilder.AppendLine(disabledPlugin.Name + " " + disabledPlugin.Version);
+          }
+          pluginDescription.Disable(errorStrBuilder.ToString());
         }
       }
     }
 
 
-    private bool IsAnyDependencyDisabled(PluginDescription descr) {
-      if (descr.PluginState == PluginState.Disabled) return true;
-      foreach (PluginDescription dependency in descr.Dependencies) {
-        if (IsAnyDependencyDisabled(dependency)) return true;
+    private bool IsAnyDependencyDisabled(PluginDescription descr, List<PluginDescription> disabledPlugins) {
+      if (descr.PluginState == PluginState.Disabled) {
+        disabledPlugins.Add(descr);
+        return true;
       }
-      return false;
+      foreach (PluginDescription dependency in descr.Dependencies) {
+        IsAnyDependencyDisabled(dependency, disabledPlugins);
+      }
+      return disabledPlugins.Count > 0;
     }
 
     private void LoadPlugins(IEnumerable<PluginDescription> pluginDescriptions) {
@@ -472,20 +497,28 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     // checks if all declared plugin files are actually available and disables plugins with missing files
     private void CheckPluginFiles(IEnumerable<PluginDescription> pluginDescriptions) {
       foreach (PluginDescription desc in pluginDescriptions) {
-        if (!CheckPluginFiles(desc)) {
-          desc.Disable();
+        IEnumerable<string> missingFiles;
+        if (ArePluginFilesMissing(desc, out missingFiles)) {
+          StringBuilder errorStrBuilder = new StringBuilder();
+          errorStrBuilder.AppendLine("Missing files:");
+          foreach (string fileName in missingFiles) {
+            errorStrBuilder.AppendLine(fileName);
+          }
+          desc.Disable(errorStrBuilder.ToString());
         }
       }
     }
 
-    private bool CheckPluginFiles(PluginDescription pluginDescription) {
+    private bool ArePluginFilesMissing(PluginDescription pluginDescription, out IEnumerable<string> missingFiles) {
+      List<string> missing = new List<string>();
       foreach (string filename in pluginDescription.Files.Select(x => x.Name)) {
         if (!FileLiesInDirectory(PluginDir, filename) ||
           !File.Exists(filename)) {
-          return false;
+          missing.Add(filename);
         }
       }
-      return true;
+      missingFiles = missing;
+      return missing.Count > 0;
     }
 
     private static bool FileLiesInDirectory(string dir, string fileName) {

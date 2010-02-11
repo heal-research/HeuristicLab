@@ -96,6 +96,15 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       get { return pluginState; }
     }
 
+    private string loadingErrorInformation;
+    /// <summary>
+    /// Gets the error message why this plugin has been disabled.
+    /// </summary>
+    internal string LoadingErrorInformation {
+      get {
+        return loadingErrorInformation;
+      }
+    }
 
     private List<PluginFile> files = new List<PluginFile>();
     /// <summary>
@@ -125,7 +134,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       dependencies.Add(dependency);
     }
 
-    
+
     /// <summary>
     /// Gets the locations (file names) of the assemblies that belong to this plugin.
     /// </summary>
@@ -137,10 +146,11 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       pluginState = PluginState.Undefined;
     }
 
-    internal void Disable() {
+    internal void Disable(string loadingErrorInformation) {
       if (pluginState != PluginState.Undefined)
         throw new InvalidOperationException("Can't disabled a plugin in state " + pluginState);
       pluginState = PluginState.Disabled;
+      this.loadingErrorInformation = loadingErrorInformation;
     }
 
     internal void Enable() {
