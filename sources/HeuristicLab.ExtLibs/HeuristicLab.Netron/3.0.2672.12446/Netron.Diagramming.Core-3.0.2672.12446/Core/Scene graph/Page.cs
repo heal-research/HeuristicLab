@@ -168,8 +168,12 @@ namespace Netron.Diagramming.Core
                 }
 
                 // Offset the upper-left corner by 1 inch.
-                float x = 1F * Display.DpiX;
-                float y = 1F * Display.DpiY;
+                //float x = 1F * Display.DpiX;
+                //float y = 1F * Display.DpiY;
+
+              //inserted to remove margin around the drawi-ng aera
+                float x = 0;
+                float y = 0;
 
                 RectangleF bounds = new RectangleF(x, y, width, height);
                 return bounds;

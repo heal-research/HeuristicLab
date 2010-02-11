@@ -18,6 +18,12 @@ namespace HeuristicLab.Netron {
       TextEditor.GetEditor(textProvider);
       TextEditor.Show();
       return true;
-    }  
+    }
+
+    public ILayout StandardTreeLayout {
+      get {
+        return (ILayout)this.FindActivity("Standard TreeLayout");
+      }
+    }
   }
 }

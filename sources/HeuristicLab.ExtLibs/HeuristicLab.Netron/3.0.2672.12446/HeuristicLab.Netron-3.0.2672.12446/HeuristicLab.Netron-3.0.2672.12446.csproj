@@ -49,6 +49,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NetronForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NetronForm.Designer.cs">
+      <DependentUpon>NetronForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NetronTestApplication.cs" />
     <Compile Include="NetronVisualization.cs">
       <SubType>Component</SubType>
     </Compile>

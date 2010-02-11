@@ -185,10 +185,10 @@ namespace Netron.Diagramming.Core
         {
             get
             {
-                if (m_anchor != null)
-                {
-                    return m_anchor;
-                }
+                //if (m_anchor != null)
+                //{
+                //    return m_anchor;
+                //}
 
                 m_tmpa = PointF.Empty;
                 if (Graph != null)

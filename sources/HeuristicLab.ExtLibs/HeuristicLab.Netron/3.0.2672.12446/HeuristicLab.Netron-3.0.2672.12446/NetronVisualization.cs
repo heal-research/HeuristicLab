@@ -12,9 +12,12 @@ using Netron.Diagramming.Core;
 namespace HeuristicLab.Netron {
   [ToolboxItem(true)]
   public partial class NetronVisualization : DiagramControlBase {
+    private static Size INVALID_SIZE = new Size(-1,-1);
+    private Size oldSize;
     public NetronVisualization()
       : base() {
       InitializeComponent();
+      this.oldSize = INVALID_SIZE;
 
       SetStyle(ControlStyles.AllPaintingInWmPaint, true);
       SetStyle(ControlStyles.DoubleBuffer, true);
@@ -33,15 +36,28 @@ namespace HeuristicLab.Netron {
         View.OnCursorChange += new EventHandler<CursorEventArgs>(mView_OnCursorChange);
         View.OnBackColorChange += new EventHandler<ColorEventArgs>(View_OnBackColorChange);
 
-        this.SizeChanged += new EventHandler(AlgorithmVisualization_SizeChanged);
+        this.SizeChanged += new EventHandler(NetronVisualization_SizeChanged);
         this.AllowDrop = true;
       }
     }
 
-    void AlgorithmVisualization_SizeChanged(object sender, EventArgs e) {
-      Size newSize = new Size((int) (this.Size.Width * this.View.Magnification.Width),
-        (int) (this.Size.Height * this.View.Magnification.Height));
-      this.View.PageSize = newSize;
+    private void NetronVisualization_SizeChanged(object sender, EventArgs e) {
+      if (this.oldSize == INVALID_SIZE) {
+        this.View.PageSize = new Size((int)(this.Size.Width * this.Magnification.Width), (int)(this.Size.Height * this.Magnification.Height));
+        oldSize = this.Size;
+        return;
+      }
+
+      SizeF magnificationChanges = new SizeF();
+      magnificationChanges.Width = ((float)this.Size.Width) / oldSize.Width;
+      magnificationChanges.Height = ((float)this.Size.Height) / oldSize.Height;
+
+      SizeF newMagnification = new SizeF();
+      newMagnification.Width = this.View.Magnification.Width * magnificationChanges.Width;
+      newMagnification.Height = this.View.Magnification.Height * magnificationChanges.Height;
+
+      this.Magnification = newMagnification;
+      this.oldSize = this.Size;
     }
 
     protected override void OnScroll(ScrollEventArgs se) {
@@ -52,7 +68,7 @@ namespace HeuristicLab.Netron {
       } else {
         Origin = new Point(Origin.X, se.NewValue);
         //System.Diagnostics.Trace.WriteLine(se.NewValue);
-      } 
+      }
     }
 
     private void mView_OnCursorChange(object sender, CursorEventArgs e) {
