@@ -54,7 +54,7 @@ namespace HeuristicLab.BitVector {
     public static bool[] Apply(IRandom random, int length) {
       bool[] result = new bool[length];
       for (int i = 0; i < length; i++)
-        result[i] = random.Next() < 0.5;
+        result[i] = random.NextDouble() < 0.5;
       return result;
     }
 
