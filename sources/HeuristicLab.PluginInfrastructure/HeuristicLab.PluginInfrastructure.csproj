@@ -154,15 +154,18 @@
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="Service References\UpdateLocationReference\UpdateLocation.xsd" />
-    <None Include="Service References\UpdateLocationReference\UpdateLocation1.xsd" />
+    <None Include="Service References\PluginUpdateService\HeuristicLab.Services.Deployment.DataAccess.xsd" />
+    <None Include="Service References\PluginUpdateService\service.wsdl" />
+    <None Include="Service References\PluginUpdateService\service.xsd" />
+    <None Include="Service References\PluginUpdateService\service1.xsd" />
+    <None Include="Service References\PluginUpdateService\System.xsd" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Sandboxing\SandboxManager.cs" />
-    <Compile Include="Service References\UpdateLocationReference\Reference.cs">
+    <Compile Include="Service References\PluginUpdateService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -192,26 +195,24 @@
     <Content Include="Resources\LargeIcons.gif" />
     <Content Include="Resources\List.gif" />
     <Content Include="Resources\Logo_white.gif" />
-    <None Include="Service References\UpdateLocationReference\HeuristicLab.PluginInfrastructure.UpdateLocationReference.PluginInformation.datasource">
+    <None Include="Service References\PluginUpdateService\HeuristicLab.PluginInfrastructure.PluginUpdateService.PluginDescription.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\UpdateLocationReference\Reference.svcmap">
+    <None Include="Service References\PluginUpdateService\HeuristicLab.PluginInfrastructure.PluginUpdateService.ProductDescription.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PluginUpdateService\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
-    <None Include="Service References\UpdateLocationReference\configuration.svcinfo" />
-    <None Include="Service References\UpdateLocationReference\configuration91.svcinfo" />
-    <None Include="Service References\UpdateLocationReference\UpdateLocation.disco" />
-    <None Include="Service References\UpdateLocationReference\UpdateLocation.wsdl" />
-    <None Include="Service References\UpdateLocationReference\UpdateLocation2.xsd" />
-    <None Include="Service References\UpdateLocationReference\UpdateLocation3.xsd" />
-    <None Include="Service References\UpdateLocationReference\UpdateLocation4.xsd" />
+    <None Include="Service References\PluginUpdateService\configuration.svcinfo" />
+    <None Include="Service References\PluginUpdateService\configuration91.svcinfo" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadataStorage Include="Service References\UpdateLocationReference\" />
+    <WCFMetadataStorage Include="Service References\PluginUpdateService\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

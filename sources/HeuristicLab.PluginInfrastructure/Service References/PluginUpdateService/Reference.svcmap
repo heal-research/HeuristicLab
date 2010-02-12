@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="f812011a-5964-4a70-a5c3-56d61f8923a6" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:8731/Design_Time_Addresses/HeuristicLab.Services.Deployment/Update/mex" Protocol="mex" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="da49b229-1b99-4a22-a144-f789b9caed39" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/HeuristicLab.Services.Deployment/Update/mex" />
+    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="532b4de7-5a6b-4113-b0eb-355a3ebc734c" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/HeuristicLab.Services.Deployment/Update/mex" />
+    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="92e7adf1-aa9b-4a1f-bc53-2eb5ba10a94b" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/HeuristicLab.Services.Deployment/Update/mex" />
+    <MetadataFile FileName="HeuristicLab.Services.Deployment.DataAccess.xsd" MetadataType="Schema" ID="58f9d4da-dece-48c7-b2e3-e68d50b03ef9" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/HeuristicLab.Services.Deployment/Update/mex" />
+    <MetadataFile FileName="System.xsd" MetadataType="Schema" ID="cc964e60-dcb4-44a8-985a-49c8ac050849" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/HeuristicLab.Services.Deployment/Update/mex" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

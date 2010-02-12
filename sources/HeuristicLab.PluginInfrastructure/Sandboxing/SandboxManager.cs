@@ -26,7 +26,6 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure.Manager;
 using System.IO;
 using System.ComponentModel;
-using HeuristicLab.PluginInfrastructure.UpdateLocationReference;
 using System.Security;
 using System.Security.Permissions;
 using System.Security.Policy;
