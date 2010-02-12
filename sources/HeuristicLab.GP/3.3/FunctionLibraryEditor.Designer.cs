@@ -53,7 +53,6 @@ namespace HeuristicLab.GP {
       this.addButton = new System.Windows.Forms.Button();
       this.functionDetailsGroupBox = new System.Windows.Forms.GroupBox();
       this.functionDetailsPanel = new System.Windows.Forms.Panel();
-      this.functionsComboBox = new System.Windows.Forms.ComboBox();
       this.initializationTabPage = new System.Windows.Forms.TabPage();
       this.initSplitContainer = new System.Windows.Forms.SplitContainer();
       this.initListView = new System.Windows.Forms.ListView();
@@ -143,12 +142,14 @@ namespace HeuristicLab.GP {
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.functionsListView.Location = new System.Drawing.Point(6, 19);
+      this.functionsListView.MultiSelect = false;
       this.functionsListView.Name = "functionsListView";
       this.functionsListView.Size = new System.Drawing.Size(218, 475);
       this.functionsListView.TabIndex = 3;
       this.functionsListView.UseCompatibleStateImageBehavior = false;
       this.functionsListView.View = System.Windows.Forms.View.List;
       this.functionsListView.SelectedIndexChanged += new System.EventHandler(this.functionsListView_SelectedIndexChanged);
+      this.functionsListView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.functionsListView_MouseUp);
       this.functionsListView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.functionsListView_KeyUp);
       this.functionsListView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.functionsListView_ItemDrag);
       // 
@@ -177,7 +178,6 @@ namespace HeuristicLab.GP {
       // functionDetailsGroupBox
       // 
       this.functionDetailsGroupBox.Controls.Add(this.functionDetailsPanel);
-      this.functionDetailsGroupBox.Controls.Add(this.functionsComboBox);
       this.functionDetailsGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
       this.functionDetailsGroupBox.Location = new System.Drawing.Point(0, 0);
       this.functionDetailsGroupBox.Name = "functionDetailsGroupBox";
@@ -191,19 +191,10 @@ namespace HeuristicLab.GP {
       this.functionDetailsPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.functionDetailsPanel.Location = new System.Drawing.Point(6, 46);
+      this.functionDetailsPanel.Location = new System.Drawing.Point(6, 19);
       this.functionDetailsPanel.Name = "functionDetailsPanel";
-      this.functionDetailsPanel.Size = new System.Drawing.Size(417, 477);
+      this.functionDetailsPanel.Size = new System.Drawing.Size(417, 504);
       this.functionDetailsPanel.TabIndex = 7;
-      // 
-      // functionsComboBox
-      // 
-      this.functionsComboBox.FormattingEnabled = true;
-      this.functionsComboBox.Location = new System.Drawing.Point(6, 19);
-      this.functionsComboBox.Name = "functionsComboBox";
-      this.functionsComboBox.Size = new System.Drawing.Size(178, 21);
-      this.functionsComboBox.TabIndex = 0;
-      this.functionsComboBox.SelectedIndexChanged += new System.EventHandler(this.functionsComboBox_SelectedIndexChanged);
       // 
       // initializationTabPage
       // 
@@ -384,7 +375,6 @@ namespace HeuristicLab.GP {
     private System.Windows.Forms.ListView functionsListView;
     private System.Windows.Forms.SplitContainer splitContainer;
     private System.Windows.Forms.Panel functionDetailsPanel;
-    private System.Windows.Forms.ComboBox functionsComboBox;
     private System.Windows.Forms.GroupBox availableFunctionsGroupBox;
     private System.Windows.Forms.GroupBox functionDetailsGroupBox;
     private System.Windows.Forms.TabPage testTabPage;

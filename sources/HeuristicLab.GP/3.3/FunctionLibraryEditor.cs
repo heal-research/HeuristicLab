@@ -56,10 +56,8 @@ namespace HeuristicLab.GP {
       mutationListView.Items.Clear();
       initListView.Items.Clear();
       functionsListView.Clear();
-      functionsComboBox.Items.Clear();
       foreach (IFunction fun in FunctionLibrary.Functions) {
         functionsListView.Items.Add(CreateListViewItem(fun));
-        functionsComboBox.Items.Add(fun);
         if (fun.Manipulator != null) {
           mutationListView.Items.Add(CreateListViewItem(fun));
         }
@@ -133,16 +131,6 @@ namespace HeuristicLab.GP {
       data.SetData("IFunction", fun);
       data.SetData("DragSource", functionsListView);
       DoDragDrop(data, DragDropEffects.Link);
-    }
-
-    private void functionsComboBox_SelectedIndexChanged(object sender, EventArgs e) {
-      if (functionsComboBox.SelectedItem != null) {
-        IFunction selectedFun = (IFunction)functionsComboBox.SelectedItem;
-        Control funView = (Control)selectedFun.CreateView();
-        funView.Dock = DockStyle.Fill;
-        functionDetailsPanel.Controls.Clear();
-        functionDetailsPanel.Controls.Add(funView);
-      }
     }
 
     private void functionsListView_KeyUp(object sender, KeyEventArgs e) {
@@ -319,5 +307,15 @@ namespace HeuristicLab.GP {
       }
     }
     #endregion
+
+    private void functionsListView_MouseUp(object sender, MouseEventArgs e) {
+      if (functionsListView.SelectedItems.Count > 0) {
+        IFunction selectedFun = (IFunction)functionsListView.SelectedItems[0].Tag;
+        Control funView = (Control)selectedFun.CreateView();
+        funView.Dock = DockStyle.Fill;
+        functionDetailsPanel.Controls.Clear();
+        functionDetailsPanel.Controls.Add(funView);
+      }
+    }
   }
 }
