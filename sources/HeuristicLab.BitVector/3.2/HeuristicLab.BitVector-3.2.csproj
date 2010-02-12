@@ -73,6 +73,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UniformCrossover.cs" />
     <Compile Include="RandomBitVectorGenerator.cs" />
     <Compile Include="HeuristicLabBitVectorPlugin.cs" />
     <Compile Include="BitVectorCrossoverBase.cs" />
