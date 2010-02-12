@@ -36,8 +36,9 @@ namespace HeuristicLab.LinearRegression {
     private static double constant = 1.0;
 
     public LinearRegressionOperator() {
-      AddVariableInfo(new VariableInfo("TargetVariable", "Name of the target variable", typeof(StringData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Dataset", "Dataset with all samples on which to apply the function", typeof(Dataset), VariableKind.In));
+      AddVariableInfo(new VariableInfo("TargetVariable", "Name of the target variable", typeof(StringData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("InputVariables", "List of allowed input variable names", typeof(ItemList), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesStart", "Start index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesEnd", "End index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("MaxTimeOffset", "(optional) Maximal time offset for time-series prognosis", typeof(IntData), VariableKind.In));
@@ -55,8 +56,14 @@ namespace HeuristicLab.LinearRegression {
       int maxTimeOffset = maxTimeOffsetData == null ? 0 : maxTimeOffsetData.Data;
       IntData minTimeOffsetData = GetVariableValue<IntData>("MinTimeOffset", scope, true, false);
       int minTimeOffset = minTimeOffsetData == null ? 0 : minTimeOffsetData.Data;
-
-      IFunctionTree tree = CreateModel(dataset, targetVariable, dataset.VariableNames, start, end, minTimeOffset, maxTimeOffset);
+      ItemList inputVariables = GetVariableValue<ItemList>("InputVariables", scope, true, false);
+      
+      IFunctionTree tree;
+      if (inputVariables != null) {
+        tree = CreateModel(dataset, targetVariable, inputVariables.Cast<StringData>().Select(x => x.Data), start, end, minTimeOffset, maxTimeOffset);
+      } else {
+        tree = CreateModel(dataset, targetVariable, dataset.VariableNames, start, end, minTimeOffset, maxTimeOffset);
+      }
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("LinearRegressionModel"), new GeneticProgrammingModel(tree)));
       return null;
     }
@@ -105,6 +112,8 @@ namespace HeuristicLab.LinearRegression {
       alglib.linreg.lrreport ar = new alglib.linreg.lrreport();
       int n = targetVector.Length;
       int p = inputMatrix.GetLength(1);
+      // no features allowed -> return constant offset
+      if (p == 0) return new double[] { Statistics.Mean(targetVector) };
       double[,] dataset = new double[n, p];
       for (int row = 0; row < n; row++) {
         for (int column = 0; column < p - 1; column++) {
