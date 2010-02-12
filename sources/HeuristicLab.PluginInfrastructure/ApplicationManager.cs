@@ -234,10 +234,14 @@ namespace HeuristicLab.PluginInfrastructure {
     internal static IEnumerable<Type> GetTypes(Type type, IPluginDescription pluginDescription, bool onlyInstantiable) {
       PluginDescription pluginDesc = (PluginDescription)pluginDescription;
       return from asm in AppDomain.CurrentDomain.GetAssemblies()
-             where !string.IsNullOrEmpty(asm.Location) // ignore dynamically generated assemblies
+             where !IsDynamicAssembly(asm)
              where pluginDesc.AssemblyLocations.Any(location => location.Equals(Path.GetFullPath(asm.Location), StringComparison.CurrentCultureIgnoreCase))
              from t in GetTypes(type, asm, onlyInstantiable)
              select t;
+    }
+
+    private static bool IsDynamicAssembly(Assembly asm) {
+      return (asm is System.Reflection.Emit.AssemblyBuilder) || string.IsNullOrEmpty(asm.Location);
     }
 
     /// <summary>
