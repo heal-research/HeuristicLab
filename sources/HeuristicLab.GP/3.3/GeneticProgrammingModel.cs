@@ -59,18 +59,23 @@ namespace HeuristicLab.GP {
 
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
+      // persist the tree in linear form
       PersistTree(node, document, persistedObjects, FunctionTree);
       return node;
     }
 
     private void PersistTree(XmlNode node, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects, IFunctionTree tree) {
       XmlNode fNode = PersistenceManager.Persist(tree.Function, document, persistedObjects);
+      // save the number of sub-trees
       XmlAttribute subTreesAttr = document.CreateAttribute("Args");
       subTreesAttr.Value = XmlConvert.ToString(tree.SubTrees.Count);
       fNode.Attributes.Append(subTreesAttr);
+      // save the function symbol
       node.AppendChild(fNode);
+      // if the tree node has local data save it into a child element called "data"
       XmlNode treeNode = tree.GetXmlNode("Data", document, persistedObjects);
       if (treeNode != null) fNode.AppendChild(treeNode);
+      // recursivly store the children into the same linear form
       foreach (IFunctionTree subTree in tree.SubTrees) {
         PersistTree(node, document, persistedObjects, subTree);
       }
@@ -79,17 +84,24 @@ namespace HeuristicLab.GP {
     public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
       int nodeIndex = 0;
+      // restore linear form back into tree form
       FunctionTree = RestoreTree(node, ref nodeIndex, restoredObjects);
     }
 
     private IFunctionTree RestoreTree(XmlNode node, ref int nodeIndex, IDictionary<Guid, IStorable> restoredObjects) {
       XmlNode fNode = node.ChildNodes[nodeIndex];
+      // restore the number of child nodes
       int subTrees = XmlConvert.ToInt32(fNode.Attributes["Args"].Value);
+      // restore the function symbol
       IFunction f = (IFunction)PersistenceManager.Restore(fNode, restoredObjects);
+      // create a tree node from the function
       IFunctionTree tree = f.GetTreeNode();
-      if (fNode.ChildNodes.Count > 0) tree.Populate(fNode.ChildNodes[0], restoredObjects);
+      // check if there is data for the tree node that needs to be restored and restore the data if needed
+      var dataNode = fNode.SelectSingleNode("Data");
+      if (dataNode!=null) tree.Populate(dataNode, restoredObjects);
       nodeIndex++;
       for (int i = 0; i < subTrees; i++) {
+        // recursively read children from linear representation
         tree.AddSubTree(RestoreTree(node, ref nodeIndex, restoredObjects));
       }
       return tree;
