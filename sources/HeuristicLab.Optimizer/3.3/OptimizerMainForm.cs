@@ -38,7 +38,8 @@ namespace HeuristicLab.Optimizer {
       InitializeComponent();
     }
 
-    private void OptimizerMainForm_Load(object sender, EventArgs e) {
+    protected override void OnInitialized(EventArgs e) {
+      base.OnInitialized(e);
       Title = "HeuristicLab Optimizer " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
       ViewClosed += new EventHandler<ViewEventArgs>(FileManager.ViewClosed);
       OperatorsSidebar operatorsSidebar = new OperatorsSidebar();

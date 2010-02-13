@@ -54,7 +54,6 @@ namespace HeuristicLab.Optimizer {
       this.Name = "OptimizerMainForm";
       this.Text = "HeuristicLab Optimizer";
       this.Title = "HeuristicLab Optimizer";
-      this.Load += new System.EventHandler(this.OptimizerMainForm_Load);
       this.ResumeLayout(false);
       this.PerformLayout();
 
