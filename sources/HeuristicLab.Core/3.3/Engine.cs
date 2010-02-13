@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -57,7 +57,7 @@ namespace HeuristicLab.Core {
           operatorGraph = value;
           if (operatorGraph != null) operatorGraph.InitialOperatorChanged += new EventHandler(operatorGraph_InitialOperatorChanged);
           OnOperatorGraphChanged();
-          Initialize();
+          Prepare();
         }
       }
     }
@@ -66,7 +66,7 @@ namespace HeuristicLab.Core {
     /// Field of the current instance that represent the global scope.
     /// </summary>
     [Storable]
-    private Scope globalScope;
+    private IScope globalScope;
     /// <summary>
     /// Gets the current global scope.
     /// </summary>
@@ -131,7 +131,6 @@ namespace HeuristicLab.Core {
     /// <summary>
     /// Initializes a new instance of <see cref="EngineBase"/> with a new global scope.
     /// </summary>
-    /// <remarks>Calls <see cref="Reset"/>.</remarks>
     protected Engine() {
       globalScope = new Scope("Global");
       executionStack = new Stack<IExecutionSequence>();
@@ -160,10 +159,10 @@ namespace HeuristicLab.Core {
 
     /// <inheritdoc/>
     /// <remarks>Sets <c>myCanceled</c> and <c>myRunning</c> to <c>false</c>. The global scope is cleared,
-    /// the execution time is reseted, the execution stack is cleared and a new <see cref="AtomicOperation"/>
+    /// the execution time is reset, the execution stack is cleared and a new <see cref="AtomicOperation"/>
     /// with the initial operator is added. <br/>
-    /// Calls <see cref="OnInitialized"/>.</remarks>
-    public void Initialize() {
+    /// Calls <see cref="OnPrepared"/>.</remarks>
+    public void Prepare() {
       canceled = false;
       running = false;
       globalScope.Clear();
@@ -171,7 +170,7 @@ namespace HeuristicLab.Core {
       executionStack.Clear();
       if (OperatorGraph.InitialOperator != null)
         executionStack.Push(new ExecutionContext(null, OperatorGraph.InitialOperator, GlobalScope));
-      OnInitialized();
+      OnPrepared();
     }
     /// <inheritdoc/>
     /// <remarks>Calls <see cref="ThreadPool.QueueUserWorkItem(System.Threading.WaitCallback, object)"/> 
@@ -225,7 +224,7 @@ namespace HeuristicLab.Core {
     protected abstract void ProcessNextOperator();
 
     private void operatorGraph_InitialOperatorChanged(object sender, EventArgs e) {
-      Initialize();
+      Prepare();
     }
 
     public event EventHandler OperatorGraphChanged;
@@ -245,15 +244,15 @@ namespace HeuristicLab.Core {
         ExecutionTimeChanged(this, new EventArgs());
     }
     /// <summary>
-    /// Occurs when the execution is initialized.
+    /// Occurs when the execution is prepared for a new run.
     /// </summary>
-    public event EventHandler Initialized;
+    public event EventHandler Prepared;
     /// <summary>
-    /// Fires a new <c>Initialized</c> event.
+    /// Fires a new <c>Prepared</c> event.
     /// </summary>
-    protected virtual void OnInitialized() {
-      if (Initialized != null)
-        Initialized(this, new EventArgs());
+    protected virtual void OnPrepared() {
+      if (Prepared != null)
+        Prepared(this, new EventArgs());
     }
     /// <summary>
     /// Occurs when the execution is executed.

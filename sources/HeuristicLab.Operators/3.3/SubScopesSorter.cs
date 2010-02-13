@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -44,7 +44,7 @@ namespace HeuristicLab.Operators {
     public ValueLookupParameter<BoolData> DescendingParameter {
       get { return (ValueLookupParameter<BoolData>)Parameters["Descending"]; }
     }
-    protected ScopeParameter CurrentScopeParameter {
+    private ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
     }
     public IScope CurrentScope {

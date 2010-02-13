@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,30 +22,20 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   /// <summary>
   /// A helper class which is used to create deep clones of object graphs.
   /// </summary>
   public sealed class Cloner {
-    private class ReferenceEqualityComparer : IEqualityComparer<IDeepCloneable> {
-      bool IEqualityComparer<IDeepCloneable>.Equals(IDeepCloneable x, IDeepCloneable y) {
-        return object.ReferenceEquals(x, y);
-      }
-
-      int IEqualityComparer<IDeepCloneable>.GetHashCode(IDeepCloneable obj) {
-        if (obj == null) return 0;
-        return obj.GetHashCode();
-      }
-    }
-
     private Dictionary<IDeepCloneable, IDeepCloneable> mapping;
 
     /// <summary>
     /// Creates a new Cloner instance.
     /// </summary>
     public Cloner() {
-      mapping = new Dictionary<IDeepCloneable, IDeepCloneable>(new ReferenceEqualityComparer());
+      mapping = new Dictionary<IDeepCloneable, IDeepCloneable>(new ReferenceEqualityComparer<IDeepCloneable>());
     }
 
     /// <summary>

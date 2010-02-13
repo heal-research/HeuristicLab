@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -106,7 +106,7 @@ namespace HeuristicLab.Operators {
     /// the canceled flag to <c>false</c> and the name of the operator to the type name. 
     /// </summary>
     protected Operator() {
-      name = ItemName;
+      Name = ItemName;
       Parameters = new ParameterCollection();
       readOnlyParameters = null;
       canceled = false;

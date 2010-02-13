@@ -80,44 +80,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbsolutePositionTopologicalCrossover.cs" />
-    <Compile Include="CosaCrossover.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="CyclicCrossover.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="EdgeRecombinationCrossover.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="InsertionManipulator.cs" />
-    <Compile Include="InversionManipulator.cs" />
-    <Compile Include="MaximalPreservativeCrossover.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="OrderBasedCrossover.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="OrderCrossover.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PartiallyMatchedCrossover.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PermutationCrossoverBase.cs" />
+    <None Include="HeuristicLabPermutationPlugin.cs.frame" />
     <Compile Include="HeuristicLabPermutationPlugin.cs" />
-    <Compile Include="Permutation.cs" />
-    <Compile Include="PermutationManipulatorBase.cs" />
-    <Compile Include="PositionBasedCrossover.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RandomPermutationGenerator.cs" />
-    <Compile Include="ScrambleManipulator.cs" />
-    <Compile Include="Swap2Manipulator.cs" />
-    <Compile Include="Swap3Manipulator.cs" />
-    <Compile Include="TranslocationInversionManipulator.cs" />
-    <Compile Include="TranslocationManipulator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
@@ -159,6 +124,7 @@ set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
-call PreBuildEvent.cmd</PreBuildEvent>
+call PreBuildEvent.cmd
+SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabPermutationPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabPermutationPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

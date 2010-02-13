@@ -84,35 +84,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TSPTourInjector.cs" />
-    <Compile Include="TSPTourView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="TSPTourView.Designer.cs">
-      <DependentUpon>TSPTourView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TSPTour.cs" />
-    <Compile Include="TSPInjectorView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="TSPInjectorView.Designer.cs">
-      <DependentUpon>TSPInjectorView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TSPRoundedEuclideanDistanceMatrixInjector.cs" />
-    <Compile Include="TSPDistanceMatrixInjectorBase.cs" />
-    <Compile Include="DistanceMatrixPathTSPEvaluator.cs" />
-    <Compile Include="PathTSPEvaluatorBase.cs" />
+    <None Include="HeuristicLabRoutingTSPPlugin.cs.frame" />
     <Compile Include="HeuristicLabRoutingTSPPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RoundedEuclideanPathTSPEvaluator.cs" />
-    <Compile Include="TSPInjector.cs" />
-    <Compile Include="TSPParser.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HeuristicLab.Charting\3.3\HeuristicLab.Charting-3.3.csproj">
-      <Project>{A8265018-D687-4907-8A36-63B25967A038}</Project>
-      <Name>HeuristicLab.Charting-3.3</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Core.Views\3.3\HeuristicLab.Core.Views-3.3.csproj">
       <Project>{E226881D-315F-423D-B419-A766FE0D8685}</Project>
       <Name>HeuristicLab.Core.Views-3.3</Name>
@@ -154,16 +130,6 @@
     <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="TSPTourView.resx">
-      <DependentUpon>TSPTourView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TSPInjectorView.resx">
-      <DependentUpon>TSPInjectorView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -178,6 +144,7 @@ set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
-call PreBuildEvent.cmd</PreBuildEvent>
+call PreBuildEvent.cmd
+SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabRoutingTSPPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabRoutingTSPPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,8 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace HeuristicLab.Collections {
@@ -42,11 +40,7 @@ namespace HeuristicLab.Collections {
     }
 
     public override string ToString() {
-      StringBuilder sb = new StringBuilder();
-      sb.Append("[").Append(index).Append(": ");
-      if (value != null) sb.Append(value.ToString());
-      sb.Append("]");
-      return sb.ToString();
+      return "[" + index.ToString() + ": " + value == null ? "null" : value.ToString() + "]";
     }
   }
 }

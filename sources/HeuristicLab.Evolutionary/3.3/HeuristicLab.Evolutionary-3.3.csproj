@@ -80,14 +80,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChildrenInitializer.cs" />
-    <Compile Include="SASEGASAReunificator.cs" />
-    <Compile Include="CrossoverBase.cs" />
+    <None Include="HeuristicLabEvolutionaryPlugin.cs.frame" />
     <Compile Include="HeuristicLabEvolutionaryPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SubScopesStorer.cs" />
-    <Compile Include="SuccessRuleMutationStrengthAdjuster.cs" />
-    <Compile Include="UnidirectionalRingMigrator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
@@ -125,6 +120,7 @@ set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
-call PreBuildEvent.cmd</PreBuildEvent>
+call PreBuildEvent.cmd
+SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabEvolutionaryPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabEvolutionaryPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

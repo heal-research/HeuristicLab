@@ -1,18 +1,33 @@
-﻿using System;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using System.Drawing;
-using HeuristicLab.MainForm;
-using HeuristicLab.MainForm.WindowsForms;
-using HeuristicLab.Common.Resources;
-using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Optimizer.MenuItems {
   internal class OperatorsMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, IOptimizerUserInterfaceItemProvider {
-    private OperatorsSidebar view;
     private ToolStripMenuItem menuItem;
 
     public override string Name {
@@ -26,32 +41,31 @@ namespace HeuristicLab.Optimizer.MenuItems {
     }
 
     protected override void OnToolStripItemSet(EventArgs e) {
-      view = new OperatorsSidebar();
-      view.Dock = DockStyle.Left;
+      MainFormManager.MainForm.ViewShown += new EventHandler<ViewShownEventArgs>(MainForm_ViewShown);
       MainFormManager.MainForm.ViewHidden += new EventHandler<ViewEventArgs>(MainForm_ViewHidden);
 
       menuItem = ToolStripItem as ToolStripMenuItem;
-      if (menuItem != null) {
-        menuItem.Checked = true;
+      if (menuItem != null)
         menuItem.CheckOnClick = true;
-      }
-      view.Show();
     }
 
+    private void MainForm_ViewShown(object sender, ViewShownEventArgs e) {
+      if ((e.View is OperatorsSidebar) && (menuItem != null))
+        menuItem.Checked = true;
+    }
     private void MainForm_ViewHidden(object sender, ViewEventArgs e) {
-      if ((e.View == view) && (menuItem != null))
+      if ((e.View is OperatorsSidebar) && (menuItem != null))
         menuItem.Checked = false;
     }
 
     public override void Execute() {
-      if (menuItem != null) {
-        if (menuItem.Checked)
-          view.Show();
-        else
-          view.Hide();
-      } else {
+      var view = (from v in MainFormManager.MainForm.Views
+                 where v is OperatorsSidebar
+                 select v as OperatorsSidebar).FirstOrDefault();
+      if (view.IsShown)
+        view.Hide();
+      else
         view.Show();
-      }
     }
   }
 }

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,26 +22,19 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   public delegate void ChangedEventHandler(object sender, ChangedEventArgs e);
 
   public class ChangedEventArgs : EventArgs {
-    private class ReferenceEqualityComparer : IEqualityComparer<object> {
-      bool IEqualityComparer<object>.Equals(object x, object y) {
-        return object.ReferenceEquals(x, y);
-      }
-
-      int IEqualityComparer<object>.GetHashCode(object obj) {
-        if (obj == null) return 0;
-        return obj.GetHashCode();
-      }
-    }
-
     private HashSet<object> changedObjects;
 
     public ChangedEventArgs() {
-      changedObjects = new HashSet<object>(new ReferenceEqualityComparer());
+      changedObjects = new HashSet<object>(new ReferenceEqualityComparer<object>());
+    }
+    public ChangedEventArgs(IEnumerable<object> collection) {
+      changedObjects = new HashSet<object>(collection, new ReferenceEqualityComparer<object>());
     }
 
     public bool RegisterChangedObject(object obj) {

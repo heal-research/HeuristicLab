@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -140,10 +140,24 @@ namespace HeuristicLab.Core {
         operators.ItemsAdded += new CollectionItemsChangedEventHandler<IOperator>(Operators_ItemsAdded);
         operators.ItemsRemoved += new CollectionItemsChangedEventHandler<IOperator>(Operators_ItemsRemoved);
         operators.CollectionReset += new CollectionItemsChangedEventHandler<IOperator>(Operators_CollectionReset);
+        foreach (IOperator op in operators) {
+          RegisterOperatorEvents(op);
+          foreach (IParameter param in op.Parameters) {
+            IValueParameter<IOperator> opParam = param as IValueParameter<IOperator>;
+            if (opParam != null) RegisterOperatorParameterEvents(opParam);
+          }
+        }
       }
     }
     private void DeregisterOperatorsEvents() {
       if (operators != null) {
+        foreach (IOperator op in operators) {
+          foreach (IParameter param in op.Parameters) {
+            IValueParameter<IOperator> opParam = param as IValueParameter<IOperator>;
+            if (opParam != null) DeregisterOperatorParameterEvents(opParam);
+          }
+          DeregisterOperatorEvents(op);
+        }
         operators.Changed -= new ChangedEventHandler(Operators_Changed);
         operators.ItemsAdded -= new CollectionItemsChangedEventHandler<IOperator>(Operators_ItemsAdded);
         operators.ItemsRemoved -= new CollectionItemsChangedEventHandler<IOperator>(Operators_ItemsRemoved);

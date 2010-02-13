@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,36 +19,16 @@
  */
 #endregion
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
-using System.Drawing;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common.Resources;
 
 namespace HeuristicLab.Core {
   [EmptyStorableClass]
   [Item("ParameterCollection", "Represents a collection of parameters.")]
   [Creatable("Test")]
-  public class ParameterCollection : NamedItemCollection<IParameter>, IItem {
-    public virtual string ItemName {
-      get { return ItemAttribute.GetName(this.GetType()); }
-    }
-    public virtual string ItemDescription {
-      get { return ItemAttribute.GetDescription(this.GetType()); }
-    }
-    public virtual Image ItemImage {
-      get { return VS2008ImageLibrary.Class; }
-    }
-
+  public class ParameterCollection : NamedItemCollection<IParameter> {
     public ParameterCollection() : base() { }
     public ParameterCollection(int capacity) : base(capacity) { }
     public ParameterCollection(IEnumerable<IParameter> collection) : base(collection) { }
-
-    public override string ToString() {
-      return ItemName;
-    }
   }
 }

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -34,5 +34,7 @@ namespace HeuristicLab.Core {
     IScope Parent { get; set; }
     VariableCollection Variables { get; }
     ScopeList SubScopes { get; }
+
+    void Clear();
   }
 }

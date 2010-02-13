@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -55,9 +55,9 @@ namespace HeuristicLab.Core {
     bool Finished { get; }
 
     /// <summary>
-    /// Resets the current instance.
+    /// Prepares the engine for a new run.
     /// </summary>
-    void Initialize();
+    void Prepare();
     /// <summary>
     /// Executes the whole run.
     /// </summary>
@@ -77,9 +77,9 @@ namespace HeuristicLab.Core {
     /// </summary>
     event EventHandler ExecutionTimeChanged;
     /// <summary>
-    /// Occurs when the engine is initialized.
+    /// Occurs when the engine is prepared for a new run.
     /// </summary>
-    event EventHandler Initialized;
+    event EventHandler Prepared;
     /// <summary>
     /// Occurs when the engine is executed.
     /// </summary>

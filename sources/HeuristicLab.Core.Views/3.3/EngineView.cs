@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -65,7 +65,7 @@ namespace HeuristicLab.Core.Views {
     /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void DeregisterContentEvents() {
       Content.OperatorGraphChanged -= new EventHandler(Content_OperatorGraphChanged);
-      Content.Initialized -= new EventHandler(Content_Initialized);
+      Content.Prepared -= new EventHandler(Content_Prepared);
       Content.Started -= new EventHandler(Content_Started);
       Content.Stopped -= new EventHandler(Content_Stopped);
       Content.ExecutionTimeChanged -= new EventHandler(Content_ExecutionTimeChanged);
@@ -80,7 +80,7 @@ namespace HeuristicLab.Core.Views {
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.OperatorGraphChanged += new EventHandler(Content_OperatorGraphChanged);
-      Content.Initialized += new EventHandler(Content_Initialized);
+      Content.Prepared += new EventHandler(Content_Prepared);
       Content.Started += new EventHandler(Content_Started);
       Content.Stopped += new EventHandler(Content_Stopped);
       Content.ExecutionTimeChanged += new EventHandler(Content_ExecutionTimeChanged);
@@ -117,9 +117,9 @@ namespace HeuristicLab.Core.Views {
       else
         operatorGraphView.Content = Content.OperatorGraph;
     }
-    protected virtual void Content_Initialized(object sender, EventArgs e) {
+    protected virtual void Content_Prepared(object sender, EventArgs e) {
       if (InvokeRequired)
-        Invoke(new EventHandler(Content_Initialized), sender, e);
+        Invoke(new EventHandler(Content_Prepared), sender, e);
       else {
         operatorGraphView.Enabled = true;
         scopeView.Enabled = true;
@@ -177,7 +177,7 @@ namespace HeuristicLab.Core.Views {
       Content.Stop();
     }
     protected virtual void resetButton_Click(object sender, EventArgs e) {
-      Content.Initialize();
+      Content.Prepare();
     }
     #endregion
 

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,16 +20,25 @@
 #endregion
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System.Drawing;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
-  public class NamedItemCollection<T> : ObservableKeyedCollection<string, T>, IDeepCloneable where T : class, INamedItem {
+  [Item("NamedItemCollection<T>", "Represents a collection of named items.")]
+  public class NamedItemCollection<T> : ObservableKeyedCollection<string, T>, IItem where T : class, INamedItem {
+    public virtual string ItemName {
+      get { return ItemAttribute.GetName(this.GetType()); }
+    }
+    public virtual string ItemDescription {
+      get { return ItemAttribute.GetDescription(this.GetType()); }
+    }
+    public virtual Image ItemImage {
+      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Class; }
+    }
+
     [Storable(Name = "RestoreEvents")]
     private object RestoreEvents {
       get { return null; }
@@ -49,7 +58,6 @@ namespace HeuristicLab.Core {
     public object Clone() {
       return Clone(new Cloner());
     }
-
     public IDeepCloneable Clone(Cloner cloner) {
       List<T> items = new List<T>();
       foreach (T item in this)
@@ -57,6 +65,10 @@ namespace HeuristicLab.Core {
       NamedItemCollection<T> clone = (NamedItemCollection<T>)Activator.CreateInstance(this.GetType(), items);
       cloner.RegisterClonedObject(this, clone);
       return clone;
+    }
+
+    public override string ToString() {
+      return ItemName;
     }
 
     public event ChangedEventHandler Changed;

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -30,7 +30,7 @@ namespace HeuristicLab.Core {
   [Item("NamedItem", "Base class for items which have a name and an optional description.")]
   public abstract class NamedItem : Item, INamedItem {
     [Storable]
-    protected string name;
+    private string name;
     /// <inheritdoc/>
     /// <remarks>Calls <see cref="OnNameChanging"/> and also <see cref="OnNameChanged"/> 
     /// eventually in the setter.</remarks>
@@ -53,7 +53,7 @@ namespace HeuristicLab.Core {
       get { return true; }
     }
     [Storable]
-    protected string description;
+    private string description;
     public string Description {
       get { return description; }
       set {

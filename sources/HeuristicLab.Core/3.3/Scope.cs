@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -96,8 +96,8 @@ namespace HeuristicLab.Core {
     public override IDeepCloneable Clone(Cloner cloner) {
       Scope clone = new Scope();
       cloner.RegisterClonedObject(this, clone);
-      clone.name = name;
-      clone.description = description;
+      clone.Name = Name;
+      clone.Description = Description;
       clone.parent = (IScope)cloner.Clone(parent);
       clone.Variables = (VariableCollection)cloner.Clone(variables);
       clone.SubScopes = (ScopeList)cloner.Clone(subScopes);

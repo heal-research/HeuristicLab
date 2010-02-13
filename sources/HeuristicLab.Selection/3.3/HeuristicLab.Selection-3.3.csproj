@@ -80,19 +80,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="RightChildReducer.cs" />
-    <Compile Include="LeftReducer.cs" />
-    <Compile Include="MergingReducer.cs" />
-    <Compile Include="ProportionalSelector.cs" />
-    <Compile Include="LinearRankSelector.cs" />
-    <Compile Include="LeftSelector.cs" />
-    <Compile Include="RandomSelector.cs" />
-    <Compile Include="ReducerBase.cs" />
-    <Compile Include="RightReducer.cs" />
-    <Compile Include="RightSelector.cs" />
-    <Compile Include="SelectorBase.cs" />
-    <Compile Include="StochasticSelectorBase.cs" />
-    <Compile Include="TournamentSelector.cs" />
+    <None Include="HeuristicLabSelectionPlugin.cs.frame" />
     <Compile Include="HeuristicLabSelectionPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -132,6 +120,7 @@ set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
-call PreBuildEvent.cmd</PreBuildEvent>
+call PreBuildEvent.cmd
+SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabSelectionPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabSelectionPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

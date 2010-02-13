@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -32,7 +32,7 @@ namespace HeuristicLab.Core.Views {
   /// <summary>
   /// The visual representation of a <see cref="Variable"/>.
   /// </summary>
-  [Content(typeof(NamedItem), true)]
+  [Content(typeof(NamedItem), false)]
   [Content(typeof(INamedItem), false)]
   public partial class NamedItemView : ItemView {
     public new INamedItem Content {

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,18 +22,16 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Permutation {
-  /// <summary>
-  /// Plugin class for HeuristicLab.Permutation plugin.
-  /// </summary>
-  [ClassInfo(Name = "HeuristicLab.Permutation-3.3")]
-  [PluginFile(Filename = "HeuristicLab.Permutation-3.3.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.3")]
-  [Dependency(Dependency = "HeuristicLab.Data-3.3")]
-  [Dependency(Dependency = "HeuristicLab.Evolutionary-3.3")]
-  [Dependency(Dependency = "HeuristicLab.Random-3.3")]
-  public class HeuristicLabRandomPlugin : PluginBase {
+namespace HeuristicLab.Common {
+  public class ReferenceEqualityComparer<T> : IEqualityComparer<T> where T : class {
+    bool IEqualityComparer<T>.Equals(T x, T y) {
+      return object.ReferenceEquals(x, y);
+    }
+
+    int IEqualityComparer<T>.GetHashCode(T obj) {
+      if (obj == null) return 0;
+      return obj.GetHashCode();
+    }
   }
 }

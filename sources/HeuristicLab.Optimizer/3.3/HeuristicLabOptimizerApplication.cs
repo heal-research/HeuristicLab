@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2009 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,22 +19,14 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Reflection;
 using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Common.Resources;
-using HeuristicLab.MainForm;
-using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Optimizer {
   [Application("Optimizer 3.3", "Next generation heuristic optimization environment.")]
   internal class HeuristicLabOptimizerApplication : ApplicationBase {
     public override void Run() {
       OptimizerMainForm mainForm = new OptimizerMainForm(typeof(IOptimizerUserInterfaceItemProvider));
-      mainForm.ViewClosed += new EventHandler<ViewEventArgs>(FileManager.ViewClosed);
       Application.Run(mainForm);
     }
   }

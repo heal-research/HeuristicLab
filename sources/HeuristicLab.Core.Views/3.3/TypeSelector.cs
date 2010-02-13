@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -174,7 +174,6 @@ namespace HeuristicLab.Core.Views {
           StringBuilder sb = new StringBuilder();
           sb.Append("Plugin: ").Append(plugin.Name).Append(Environment.NewLine);
           sb.Append("Version: ").Append(plugin.Version.ToString()).Append(Environment.NewLine);
-          sb.Append("Build Date: ").Append(plugin.BuildDate.ToString());
           descriptionTextBox.Text = sb.ToString();
         }
         Type type = typesTreeView.SelectedNode.Tag as Type;
