@@ -241,7 +241,7 @@ namespace HeuristicLab.Core {
     /// </summary>
     protected virtual void OnExecutionTimeChanged() {
       if (ExecutionTimeChanged != null)
-        ExecutionTimeChanged(this, new EventArgs());
+        ExecutionTimeChanged(this, EventArgs.Empty);
     }
     /// <summary>
     /// Occurs when the execution is prepared for a new run.
@@ -252,7 +252,7 @@ namespace HeuristicLab.Core {
     /// </summary>
     protected virtual void OnPrepared() {
       if (Prepared != null)
-        Prepared(this, new EventArgs());
+        Prepared(this, EventArgs.Empty);
     }
     /// <summary>
     /// Occurs when the execution is executed.
@@ -263,7 +263,7 @@ namespace HeuristicLab.Core {
     /// </summary>
     protected virtual void OnStarted() {
       if (Started != null)
-        Started(this, new EventArgs());
+        Started(this, EventArgs.Empty);
     }
     /// <summary>
     /// Occurs when the execution is finished.
@@ -274,7 +274,7 @@ namespace HeuristicLab.Core {
     /// </summary>
     protected virtual void OnStopped() {
       if (Stopped != null)
-        Stopped(this, new EventArgs());
+        Stopped(this, EventArgs.Empty);
     }
     /// <summary>
     /// Occurs when an exception occured during the execution.

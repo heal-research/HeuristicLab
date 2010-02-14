@@ -96,7 +96,7 @@ namespace HeuristicLab.Core {
     /// </summary>
     protected virtual void OnInitialOperatorChanged() {
       if (InitialOperatorChanged != null)
-        InitialOperatorChanged(this, new EventArgs());
+        InitialOperatorChanged(this, EventArgs.Empty);
       OnChanged();
     }
 

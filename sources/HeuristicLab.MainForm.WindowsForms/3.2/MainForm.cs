@@ -109,7 +109,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       if (InvokeRequired)
         Invoke((MethodInvoker)OnActiveViewChanged);
       else if (ActiveViewChanged != null)
-        ActiveViewChanged(this, new EventArgs());
+        ActiveViewChanged(this, EventArgs.Empty);
     }
 
     public event EventHandler<ViewEventArgs> ViewClosed;
@@ -141,7 +141,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       if (InvokeRequired)
         Invoke((MethodInvoker)FireMainFormChanged);
       else if (Changed != null)
-        Changed(this, new EventArgs());
+        Changed(this, EventArgs.Empty);
     }
 
     private void MainFormBase_Load(object sender, EventArgs e) {
@@ -149,7 +149,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
         MainFormManager.RegisterMainForm(this);
         if (!this.initialized) {
           this.initialized = true;
-          this.OnInitialized(new EventArgs());
+          this.OnInitialized(EventArgs.Empty);
         }
         this.CreateGUI();
       }

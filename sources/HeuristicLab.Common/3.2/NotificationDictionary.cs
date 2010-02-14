@@ -47,32 +47,32 @@ namespace HeuristicLab.Common {
 
     protected virtual void OnBeforeInsert() {
       if (BeforeInsertEvent != null)
-        BeforeInsertEvent(this, new EventArgs());
+        BeforeInsertEvent(this, EventArgs.Empty);
     }
 
     protected virtual void OnAfterInsert() {
       if (AfterInsertEvent != null)
-        AfterInsertEvent(this, new EventArgs());
+        AfterInsertEvent(this, EventArgs.Empty);
     }
 
     protected virtual void OnBeforeRemove() {
       if (BeforeRemoveEvent != null)
-        BeforeRemoveEvent(this, new EventArgs());
+        BeforeRemoveEvent(this, EventArgs.Empty);
     }
 
     protected virtual void OnAfterRemove() {
       if (AfterRemoveEvent != null)
-        AfterRemoveEvent(this, new EventArgs());
+        AfterRemoveEvent(this, EventArgs.Empty);
     }
 
     protected virtual void OnChange() {
       if (ChangeEvent != null)
-        ChangeEvent(this, new EventArgs());
+        ChangeEvent(this, EventArgs.Empty);
     }
 
     protected virtual void OnClear() {
       if (ClearEvent != null)
-        ClearEvent(this, new EventArgs());
+        ClearEvent(this, EventArgs.Empty);
     }
 
     #endregion

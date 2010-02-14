@@ -35,7 +35,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
           bool firstTimeSet = this.toolStripItem == null;
           this.toolStripItem = value;
           if (firstTimeSet)
-            this.OnToolStripItemSet(new EventArgs());
+            this.OnToolStripItemSet(EventArgs.Empty);
         }
       }
     }

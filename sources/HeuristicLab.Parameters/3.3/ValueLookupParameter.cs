@@ -78,7 +78,7 @@ namespace HeuristicLab.Parameters {
     public event EventHandler ValueChanged;
     private void OnValueChanged() {
       if (ValueChanged != null)
-        ValueChanged(this, new EventArgs());
+        ValueChanged(this, EventArgs.Empty);
       OnChanged();
     }
     private void Value_Changed(object sender, ChangedEventArgs e) {

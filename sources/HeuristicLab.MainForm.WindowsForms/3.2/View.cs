@@ -95,13 +95,13 @@ namespace HeuristicLab.MainForm.WindowsForms {
     public new void Hide() {
       this.IsShown = false;
       MainFormManager.GetMainForm<MainForm>().HideView(this);
-      this.OnHidden(new EventArgs());
+      this.OnHidden(EventArgs.Empty);
     }
 
     public event EventHandler CaptionChanged;
     protected virtual void OnCaptionChanged() {
       if (CaptionChanged != null)
-        CaptionChanged(this, new EventArgs());
+        CaptionChanged(this, EventArgs.Empty);
     }
 
     public event EventHandler Changed;
@@ -109,7 +109,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       if (InvokeRequired)
         Invoke((MethodInvoker)OnChanged);
       else if (Changed != null)
-        Changed(this, new EventArgs());
+        Changed(this, EventArgs.Empty);
     }
 
     protected virtual void OnShown(ViewShownEventArgs e) {

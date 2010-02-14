@@ -151,7 +151,7 @@ namespace HeuristicLab.Parameters {
     public event EventHandler ActualNameChanged;
     private void OnActualNameChanged() {
       if (ActualNameChanged != null)
-        ActualNameChanged(this, new EventArgs());
+        ActualNameChanged(this, EventArgs.Empty);
       OnChanged();
     }
 

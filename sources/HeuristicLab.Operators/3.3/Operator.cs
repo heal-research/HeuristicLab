@@ -166,7 +166,7 @@ namespace HeuristicLab.Operators {
     /// </summary>
     protected virtual void OnBreakpointChanged() {
       if (BreakpointChanged != null) {
-        BreakpointChanged(this, new EventArgs());
+        BreakpointChanged(this, EventArgs.Empty);
       }
       OnChanged();
     }
@@ -177,7 +177,7 @@ namespace HeuristicLab.Operators {
     /// </summary>
     protected virtual void OnExecuted() {
       if (Executed != null) {
-        Executed(this, new EventArgs());
+        Executed(this, EventArgs.Empty);
       }
     }
 

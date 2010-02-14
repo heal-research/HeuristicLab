@@ -130,7 +130,7 @@ namespace HeuristicLab.Core {
     /// <remarks>Calls <see cref="ItemBase.OnChanged"/>.</remarks>
     protected virtual void OnNameChanged() {
       if (NameChanged != null)
-        NameChanged(this, new EventArgs());
+        NameChanged(this, EventArgs.Empty);
       OnChanged();
     }
     /// <inheritdoc/>
@@ -141,7 +141,7 @@ namespace HeuristicLab.Core {
     /// <remarks>Calls <see cref="ItemBase.OnChanged"/>.</remarks>
     protected virtual void OnDescriptionChanged() {
       if (DescriptionChanged != null)
-        DescriptionChanged(this, new EventArgs());
+        DescriptionChanged(this, EventArgs.Empty);
       OnChanged();
     }
   }
