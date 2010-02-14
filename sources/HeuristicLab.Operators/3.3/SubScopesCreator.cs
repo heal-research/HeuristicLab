@@ -19,24 +19,22 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml;
-using HeuristicLab.Collections;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
   /// <summary>
-  /// An operator which collects the actual values of parameters and clones them into the current scope.
+  /// An operator which adds new and empty sub-scopes to the current scope.
   /// </summary>
-  [Item("VariableInjector", "An operator which collects the actual values of parameters and clones them into the current scope.")]
-  [Creatable("Test")]
+  [Item("SubScopesCreator", "An operator which adds new and empty sub-scopes to the current scope.")]
   [EmptyStorableClass]
-  public class VariableInjector : ValuesCollector {
+  [Creatable("Test")]
+  public class SubScopesCreator : SingleSuccessorOperator {
+    public ValueLookupParameter<IntData> NumberOfSubScopesParameter {
+      get { return (ValueLookupParameter<IntData>)Parameters["NumberOfSubScopes"]; }
+    }
     protected ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
     }
@@ -44,20 +42,16 @@ namespace HeuristicLab.Operators {
       get { return CurrentScopeParameter.ActualValue; }
     }
 
-    public VariableInjector()
+    public SubScopesCreator()
       : base() {
-      Parameters.Add(new ScopeParameter("CurrentScope", "The current scope into which the parameter values are cloned."));
+      Parameters.Add(new ValueLookupParameter<IntData>("NumberOfSubScopes", "The number of new and empty sub-scopes which should be added to the current scope."));
+      Parameters.Add(new ScopeParameter("CurrentScope", "The current scope to which the new and empty sub-scopes are added."));
     }
 
     public override IExecutionSequence Apply() {
-      IVariable var;
-      foreach (IParameter param in CollectedValues) {
-        CurrentScope.Variables.TryGetValue(param.Name, out var);
-        if (var != null)
-          var.Value = (IItem)param.ActualValue.Clone();
-        else
-          CurrentScope.Variables.Add(new Variable(param.Name, (IItem)param.ActualValue.Clone()));
-      }
+      int n = NumberOfSubScopesParameter.ActualValue.Value;
+      for (int i = 0; i < n; i++)
+        CurrentScope.SubScopes.Add(new Scope(i.ToString()));
       return base.Apply();
     }
   }

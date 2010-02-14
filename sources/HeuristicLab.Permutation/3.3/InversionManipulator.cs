@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,29 +19,26 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Permutation {
   /// <summary>
-  /// Manipulates a permutation array by reversing a randomly chosen interval.
+  /// An operator which inverts a randomly chosen part of a permutation.
   /// </summary>
-  public class InversionManipulator : PermutationManipulatorBase {
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get { return @"TODO\r\nOperator description still missing ..."; }
-    }
+  [Item("InversionManipulator", "An operator which inverts a randomly chosen part of a permutation.")]
+  [EmptyStorableClass]
+  [Creatable("Test")]
+  public class InversionManipulator : PermutationManipulator {
 
     /// <summary>
-    /// Reverses the specified <paramref name="permutation"/> between two randomly generated positions.
+    /// Inverts a randomly chosen part of a permutation.
     /// </summary>
-    /// <param name="random">The random number generator.</param>
-    /// <param name="permutation">The permutation array to manipulate.</param>
-    /// <returns>The new permuation array with the manipulated data.</returns>
-    public static int[] Apply(IRandom random, int[] permutation) {
-      int[] result = (int[])permutation.Clone();
+    /// <param name="random">A random number generator.</param>
+    /// <param name="permutation">The permutation to manipulate.</param>
+    /// <returns>The new manipulated permutation.</returns>
+    public static Permutation Apply(IRandom random, Permutation permutation) {
+      Permutation result = (Permutation)permutation.Clone();
       int breakPoint1, breakPoint2;
 
       breakPoint1 = random.Next(result.Length - 1);
@@ -50,21 +47,19 @@ namespace HeuristicLab.Permutation {
       } while (breakPoint2 == breakPoint1);
       if (breakPoint2 < breakPoint1) { int h = breakPoint1; breakPoint1 = breakPoint2; breakPoint2 = h; }
 
-      for (int i = 0; i <= (breakPoint2 - breakPoint1); i++) {  // reverse permutation between breakpoints
+      for (int i = 0; i <= (breakPoint2 - breakPoint1); i++) {  // invert permutation between breakpoints
         result[breakPoint1 + i] = permutation[breakPoint2 - i];
       }
       return result;
     }
 
     /// <summary>
-    /// Reverses the specified <paramref name="permutation"/> between two randomly generated positions.
+    /// Inverts a randomly chosen part of a permutation.
     /// </summary>
-    /// <remarks>Calls <see cref="Apply"/>.</remarks>
-    /// <param name="scope">The current scope.</param>
-    /// <param name="random">The random number generator.</param>
-    /// <param name="permutation">The permutation array to manipulate.</param>
-    /// <returns>The new permuation array with the manipulated data.</returns>
-    protected override int[] Manipulate(IScope scope, IRandom random, int[] permutation) {
+    /// <param name="random">A random number generator.</param>
+    /// <param name="permutation">The permutation to manipulate.</param>
+    /// <returns>The new manipulated permuation.</returns>
+    protected override Permutation Manipulate(IRandom random, Permutation permutation) {
       return Apply(random, permutation);
     }
   }

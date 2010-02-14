@@ -20,8 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -29,7 +27,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
   /// <summary>
-  /// Operator which increments an integer variable.
+  /// An operator which compares two items.
   /// </summary>
   [Item("Comparator", "An operator which compares two items.")]
   [EmptyStorableClass]

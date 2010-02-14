@@ -20,13 +20,10 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
 using System.Drawing;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Core;
 using HeuristicLab.Collections;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
   /// <summary>

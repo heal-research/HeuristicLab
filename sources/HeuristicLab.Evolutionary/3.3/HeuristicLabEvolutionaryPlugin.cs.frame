@@ -19,9 +19,6 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Evolutionary {
@@ -30,9 +27,12 @@ namespace HeuristicLab.Evolutionary {
   /// </summary>
   [Plugin("HeuristicLab.Evolutionary", "3.3.0.$WCREV$")]
   [PluginFile("HeuristicLab.Evolutionary-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Data", "3.3")]
   [PluginDependency("HeuristicLab.Operators", "3.3")]
+  [PluginDependency("HeuristicLab.Parameters", "3.3")]
+  [PluginDependency("HeuristicLab.Persistence", "3.3")]
   public class HeuristicLabEvolutionaryPlugin : PluginBase {
   }
 }

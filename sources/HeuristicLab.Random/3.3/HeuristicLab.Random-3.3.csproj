@@ -85,7 +85,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLabRandomPlugin.cs.frame" />
-    <Compile Include="RandomInitializer.cs" />
     <Compile Include="HeuristicLabRandomPlugin.cs" />
     <Compile Include="MersenneTwister.cs">
       <SubType>Code</SubType>
@@ -94,6 +93,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RandomCreator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">

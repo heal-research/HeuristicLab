@@ -19,9 +19,6 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -30,12 +27,12 @@ using HeuristicLab.Random;
 
 namespace HeuristicLab.Operators {
   /// <summary>
-  /// An operator which initializes a pseudo random number generator.
+  /// An operator which creates a new pseudo random number generator.
   /// </summary>
-  [Item("RandomInitializer", "An operator which initializes a pseudo random number generator.")]
+  [Item("RandomCreator", "An operator which creates a new pseudo random number generator.")]
   [EmptyStorableClass]
   [Creatable("Test")]
-  public sealed class RandomInitializer : SingleSuccessorOperator {
+  public sealed class RandomCreator : SingleSuccessorOperator {
     public ValueLookupParameter<BoolData> SetSeedRandomlyParameter {
       get { return (ValueLookupParameter<BoolData>)Parameters["SetSeedRandomly"]; }
     }
@@ -54,11 +51,11 @@ namespace HeuristicLab.Operators {
       set { SeedParameter.Value = value; }
     }
 
-    public RandomInitializer()
+    public RandomCreator()
       : base() {
       Parameters.Add(new ValueLookupParameter<BoolData>("SetSeedRandomly", "True if the random seed should be set to a random value, otherwise false.", new BoolData(true)));
-      Parameters.Add(new ValueLookupParameter<IntData>("Seed", "The random seed used to initialize the pseudo random number generator.", new IntData(0)));
-      Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be initialized with the given seed."));
+      Parameters.Add(new ValueLookupParameter<IntData>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntData(0)));
+      Parameters.Add(new LookupParameter<IRandom>("Random", "The new pseudo random number generator which is initialized with the given seed."));
     }
 
     public override IExecutionSequence Apply() {

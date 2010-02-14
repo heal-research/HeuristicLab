@@ -19,9 +19,6 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;

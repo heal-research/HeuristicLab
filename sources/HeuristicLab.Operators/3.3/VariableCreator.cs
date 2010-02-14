@@ -19,25 +19,18 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
   /// <summary>
-  /// An operator which adds new and empty sub-scopes to the current scope.
+  /// An operator which collects the actual values of parameters and clones them into the current scope.
   /// </summary>
-  [Item("SubScopesCreater", "An operator which adds new and empty sub-scopes to the current scope.")]
-  [EmptyStorableClass]
+  [Item("VariableCreator", "An operator which collects the actual values of parameters and clones them into the current scope.")]
   [Creatable("Test")]
-  public class SubScopesCreater : SingleSuccessorOperator {
-    public ValueLookupParameter<IntData> NumberOfSubScopesParameter {
-      get { return (ValueLookupParameter<IntData>)Parameters["NumberOfSubScopes"]; }
-    }
+  [EmptyStorableClass]
+  public class VariableCreator : ValuesCollector {
     protected ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
     }
@@ -45,16 +38,20 @@ namespace HeuristicLab.Operators {
       get { return CurrentScopeParameter.ActualValue; }
     }
 
-    public SubScopesCreater()
+    public VariableCreator()
       : base() {
-      Parameters.Add(new ValueLookupParameter<IntData>("NumberOfSubScopes", "The number of new and empty sub-scopes which should be added to the current scope."));
-      Parameters.Add(new ScopeParameter("CurrentScope", "The current scope to which the new and empty sub-scopes are added."));
+      Parameters.Add(new ScopeParameter("CurrentScope", "The current scope into which the parameter values are cloned."));
     }
 
     public override IExecutionSequence Apply() {
-      int n = NumberOfSubScopesParameter.ActualValue.Value;
-      for (int i = 0; i < n; i++)
-        CurrentScope.SubScopes.Add(new Scope(i.ToString()));
+      IVariable var;
+      foreach (IParameter param in CollectedValues) {
+        CurrentScope.Variables.TryGetValue(param.Name, out var);
+        if (var != null)
+          var.Value = (IItem)param.ActualValue.Clone();
+        else
+          CurrentScope.Variables.Add(new Variable(param.Name, (IItem)param.ActualValue.Clone()));
+      }
       return base.Apply();
     }
   }

@@ -19,14 +19,9 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
-using System.Xml;
 using HeuristicLab.Collections;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
