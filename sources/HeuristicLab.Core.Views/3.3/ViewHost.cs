@@ -30,10 +30,9 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.MainForm;
 
-namespace HeuristicLab.Core.Views { 
+namespace HeuristicLab.Core.Views {
   public partial class ViewHost : UserControl {
     private Dictionary<Type, ToolStripMenuItem> typeMenuItemTable;
-
     public IEnumerable<Type> AvailableViewTypes {
       get { return typeMenuItemTable.Keys; }
     }
@@ -49,17 +48,38 @@ namespace HeuristicLab.Core.Views {
       }
     }
 
+    private Type viewType;
+    public Type ViewType {
+      get { return this.viewType; }
+      set {
+        if (!ViewTypeCanShowContent(value, content))
+          throw new ArgumentException(string.Format("View \"{0}\" cannot display content \"{1}\".",
+                                                    value.GetPrettyName(),
+                                                    content.GetType().GetPrettyName()));
+        viewType = value;
+        ShowView();
+      }
+    }
+
     public ViewHost() {
       typeMenuItemTable = new Dictionary<Type, ToolStripMenuItem>();
+      viewType = null;
+      content = null;
       InitializeComponent();
       Initialize();
     }
 
-    public void ShowView(Type viewType) {
-      if (!typeMenuItemTable.ContainsKey(viewType))
+    private void ShowView() {
+      if (viewPanel.Controls.Count > 0) viewPanel.Controls[0].Dispose();
+      viewPanel.Controls.Clear();
+
+      if (viewType == null || content == null)
+        return;
+
+      if (!ViewTypeCanShowContent(viewType, content) || !typeMenuItemTable.ContainsKey(viewType))
         throw new ArgumentException(string.Format("View \"{0}\" cannot display content \"{1}\".",
                                                   viewType.GetPrettyName(),
-                                                  content.GetType().GetPrettyName()));
+                                                  Content.GetType().GetPrettyName()));
 
       foreach (ToolStripMenuItem item in typeMenuItemTable.Values) {
         item.Checked = false;
@@ -68,8 +88,6 @@ namespace HeuristicLab.Core.Views {
       typeMenuItemTable[viewType].Checked = true;
       typeMenuItemTable[viewType].Enabled = false;
 
-      if (viewPanel.Controls.Count > 0) viewPanel.Controls[0].Dispose();
-      viewPanel.Controls.Clear();
       Control view = (Control)MainFormManager.CreateView(viewType, Content);
       viewPanel.Controls.Add(view);
       viewPanel.Tag = view;
@@ -111,12 +129,21 @@ namespace HeuristicLab.Core.Views {
           messageLabel.Visible = false;
         }
 
-        Type viewType = MainFormManager.GetDefaultViewType(Content.GetType());
-        if ((viewType == null) && (contextMenuStrip.Items.Count > 0))  // create first available view if default view is not available
-          viewType = (Type)contextMenuStrip.Items[0].Tag;
-        if (viewType != null)
-          ShowView(viewType);
+        if (!ViewTypeCanShowContent(viewType, Content)) {
+          viewType = MainFormManager.GetDefaultViewType(Content.GetType());
+          if ((viewType == null) && (contextMenuStrip.Items.Count > 0))  // create first available view if default view is not available
+            viewType = (Type)contextMenuStrip.Items[0].Tag;
+        }
+        ShowView();
       }
+    }
+
+    private bool ViewTypeCanShowContent(Type viewType, object content) {
+      if (content == null) // every view can display null
+        return true;
+      if (viewType == null)
+        return false;
+      return ContentAttribute.CanViewType(viewType, Content.GetType());
     }
 
     private void viewsLabel_DoubleClick(object sender, EventArgs e) {
@@ -124,7 +151,8 @@ namespace HeuristicLab.Core.Views {
     }
     protected void contextMenuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e) {
       Type viewType = (Type)e.ClickedItem.Tag;
-      ShowView(viewType);
+      ViewType = viewType;
+      ShowView();
     }
   }
 }
