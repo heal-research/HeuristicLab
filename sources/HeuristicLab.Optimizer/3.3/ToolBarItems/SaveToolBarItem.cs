@@ -22,7 +22,6 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
 using HeuristicLab.MainForm;
 
@@ -38,7 +37,7 @@ namespace HeuristicLab.Optimizer {
       get { return 30; }
     }
     public override Image Image {
-      get { return Resources.SaveIcon; }
+      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Save; }
     }
 
     protected override void OnToolStripItemSet(EventArgs e) {

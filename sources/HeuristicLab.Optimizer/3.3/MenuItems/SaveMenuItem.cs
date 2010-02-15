@@ -23,7 +23,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
 using HeuristicLab.MainForm;
 
@@ -39,7 +38,7 @@ namespace HeuristicLab.Optimizer.MenuItems {
       get { return 1300; }
     }
     public override Image Image {
-      get { return Resources.SaveIcon; }
+      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Save; }
     }
     public override Keys ShortCutKeys {
       get { return Keys.Control | Keys.S; }

@@ -95,9 +95,9 @@ namespace HeuristicLab.Core.Views {
       // 
       this.removeButton.Enabled = false;
       this.removeButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Remove;
-      this.removeButton.Location = new System.Drawing.Point(90, 3);
+      this.removeButton.Location = new System.Drawing.Point(93, 3);
       this.removeButton.Name = "removeButton";
-      this.removeButton.Size = new System.Drawing.Size(23, 23);
+      this.removeButton.Size = new System.Drawing.Size(24, 24);
       this.removeButton.TabIndex = 3;
       this.toolTip.SetToolTip(this.removeButton, "Remove");
       this.removeButton.UseVisualStyleBackColor = true;
@@ -107,9 +107,9 @@ namespace HeuristicLab.Core.Views {
       // 
       this.moveUpButton.Enabled = false;
       this.moveUpButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.ArrowUp;
-      this.moveUpButton.Location = new System.Drawing.Point(32, 3);
+      this.moveUpButton.Location = new System.Drawing.Point(33, 3);
       this.moveUpButton.Name = "moveUpButton";
-      this.moveUpButton.Size = new System.Drawing.Size(23, 23);
+      this.moveUpButton.Size = new System.Drawing.Size(24, 24);
       this.moveUpButton.TabIndex = 1;
       this.toolTip.SetToolTip(this.moveUpButton, "Move Up");
       this.moveUpButton.UseVisualStyleBackColor = true;
@@ -119,9 +119,9 @@ namespace HeuristicLab.Core.Views {
       // 
       this.moveDownButton.Enabled = false;
       this.moveDownButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.ArrowDown;
-      this.moveDownButton.Location = new System.Drawing.Point(61, 3);
+      this.moveDownButton.Location = new System.Drawing.Point(63, 3);
       this.moveDownButton.Name = "moveDownButton";
-      this.moveDownButton.Size = new System.Drawing.Size(23, 23);
+      this.moveDownButton.Size = new System.Drawing.Size(24, 24);
       this.moveDownButton.TabIndex = 2;
       this.toolTip.SetToolTip(this.moveDownButton, "Move Down");
       this.moveDownButton.UseVisualStyleBackColor = true;
@@ -137,10 +137,10 @@ namespace HeuristicLab.Core.Views {
             this.listViewColumnHeader});
       this.itemsListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
       this.itemsListView.HideSelection = false;
-      this.itemsListView.Location = new System.Drawing.Point(3, 32);
+      this.itemsListView.Location = new System.Drawing.Point(3, 33);
       this.itemsListView.Name = "itemsListView";
       this.itemsListView.ShowItemToolTips = true;
-      this.itemsListView.Size = new System.Drawing.Size(194, 287);
+      this.itemsListView.Size = new System.Drawing.Size(194, 286);
       this.itemsListView.SmallImageList = this.imageList;
       this.itemsListView.TabIndex = 4;
       this.itemsListView.UseCompatibleStateImageBehavior = false;
@@ -165,7 +165,7 @@ namespace HeuristicLab.Core.Views {
       this.addButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Add;
       this.addButton.Location = new System.Drawing.Point(3, 3);
       this.addButton.Name = "addButton";
-      this.addButton.Size = new System.Drawing.Size(23, 23);
+      this.addButton.Size = new System.Drawing.Size(24, 24);
       this.addButton.TabIndex = 0;
       this.toolTip.SetToolTip(this.addButton, "Add");
       this.addButton.UseVisualStyleBackColor = true;
@@ -177,7 +177,7 @@ namespace HeuristicLab.Core.Views {
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.detailsGroupBox.Controls.Add(this.viewHost);
-      this.detailsGroupBox.Location = new System.Drawing.Point(3, 26);
+      this.detailsGroupBox.Location = new System.Drawing.Point(3, 27);
       this.detailsGroupBox.Name = "detailsGroupBox";
       this.detailsGroupBox.Size = new System.Drawing.Size(283, 294);
       this.detailsGroupBox.TabIndex = 0;
@@ -189,9 +189,9 @@ namespace HeuristicLab.Core.Views {
       this.viewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.viewHost.Content = null;
       this.viewHost.Location = new System.Drawing.Point(6, 19);
       this.viewHost.Name = "viewHost";
-      this.viewHost.Content = null;
       this.viewHost.Size = new System.Drawing.Size(271, 269);
       this.viewHost.TabIndex = 0;
       // 

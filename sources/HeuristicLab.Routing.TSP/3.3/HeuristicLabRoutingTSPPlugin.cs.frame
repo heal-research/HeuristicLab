@@ -19,9 +19,6 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Routing.TSP {
@@ -30,11 +27,9 @@ namespace HeuristicLab.Routing.TSP {
   /// </summary>
   [Plugin("HeuristicLab.Routing.TSP", "3.3.0.$WCREV$")]
   [PluginFile("HeuristicLab.Routing.TSP-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
-  [PluginDependency("HeuristicLab.Core.Views", "3.3")]
   [PluginDependency("HeuristicLab.Data", "3.3")]
-  [PluginDependency("HeuristicLab.MainForm", "3.2")]
-  [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.2")]
   [PluginDependency("HeuristicLab.Operators", "3.3")]
   [PluginDependency("HeuristicLab.Permutation", "3.3")]
   [PluginDependency("HeuristicLab.Persistence", "3.3")]

@@ -64,9 +64,9 @@ namespace HeuristicLab.Operators {
     public override IExecutionSequence Apply() {
       ExecutionContextCollection next = new ExecutionContextCollection(base.Apply());
       if (RandomParameter.ActualValue.NextDouble() < ProbabilityParameter.ActualValue.Value) {
-        if (FirstBranch != null) next.Insert(0, new ExecutionContext(ExecutionContext.Parent, FirstBranch, ExecutionContext.Scope));
+        if (FirstBranch != null) next.Insert(0, ExecutionContext.CreateContext(FirstBranch));
       } else {
-        if (SecondBranch != null) next.Insert(0, new ExecutionContext(ExecutionContext.Parent, SecondBranch, ExecutionContext.Scope));
+        if (SecondBranch != null) next.Insert(0, ExecutionContext.CreateContext(SecondBranch));
       }
       return next;
     }

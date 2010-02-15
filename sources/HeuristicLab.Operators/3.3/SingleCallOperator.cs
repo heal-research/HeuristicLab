@@ -47,7 +47,7 @@ namespace HeuristicLab.Operators {
     public override IExecutionSequence Apply() {
       ExecutionContextCollection next = new ExecutionContextCollection(base.Apply());
       if (Operator != null)
-        next.Insert(0, new ExecutionContext(ExecutionContext.Parent, Operator, ExecutionContext.Scope));
+        next.Insert(0, ExecutionContext.CreateContext(Operator));
       return next;
     }
   }

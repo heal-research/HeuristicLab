@@ -119,14 +119,14 @@ namespace HeuristicLab.Core.Views {
       this.descriptionTextBox.Multiline = true;
       this.descriptionTextBox.Name = "descriptionTextBox";
       this.descriptionTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-      this.descriptionTextBox.Size = new System.Drawing.Size(452, 103);
+      this.descriptionTextBox.Size = new System.Drawing.Size(452, 102);
       this.descriptionTextBox.TabIndex = 4;
       // 
       // dataTypeLabel
       // 
       this.dataTypeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.dataTypeLabel.AutoSize = true;
-      this.dataTypeLabel.Location = new System.Drawing.Point(9, 426);
+      this.dataTypeLabel.Location = new System.Drawing.Point(12, 425);
       this.dataTypeLabel.Name = "dataTypeLabel";
       this.dataTypeLabel.Size = new System.Drawing.Size(60, 13);
       this.dataTypeLabel.TabIndex = 5;
@@ -137,10 +137,10 @@ namespace HeuristicLab.Core.Views {
       this.dataTypeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.dataTypeTextBox.Enabled = false;
-      this.dataTypeTextBox.Location = new System.Drawing.Point(78, 423);
+      this.dataTypeTextBox.Location = new System.Drawing.Point(78, 422);
       this.dataTypeTextBox.Name = "dataTypeTextBox";
       this.dataTypeTextBox.ReadOnly = true;
-      this.dataTypeTextBox.Size = new System.Drawing.Size(423, 20);
+      this.dataTypeTextBox.Size = new System.Drawing.Size(422, 20);
       this.dataTypeTextBox.TabIndex = 6;
       // 
       // setDataTypeButton
@@ -148,9 +148,9 @@ namespace HeuristicLab.Core.Views {
       this.setDataTypeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.setDataTypeButton.Enabled = false;
       this.setDataTypeButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Add;
-      this.setDataTypeButton.Location = new System.Drawing.Point(507, 421);
+      this.setDataTypeButton.Location = new System.Drawing.Point(506, 420);
       this.setDataTypeButton.Name = "setDataTypeButton";
-      this.setDataTypeButton.Size = new System.Drawing.Size(23, 23);
+      this.setDataTypeButton.Size = new System.Drawing.Size(24, 24);
       this.setDataTypeButton.TabIndex = 7;
       this.toolTip.SetToolTip(this.setDataTypeButton, "Set Data Type");
       this.setDataTypeButton.UseVisualStyleBackColor = true;
@@ -192,7 +192,6 @@ namespace HeuristicLab.Core.Views {
       this.ShowInTaskbar = false;
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
       this.Text = "Create Parameter";
-      this.Load += new System.EventHandler(this.CreateParameterDialog_Load);
       this.ResumeLayout(false);
       this.PerformLayout();
 

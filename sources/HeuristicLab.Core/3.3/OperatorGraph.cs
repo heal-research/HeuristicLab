@@ -33,7 +33,7 @@ namespace HeuristicLab.Core {
   /// Represents a graph of operators.
   /// </summary>
   [Item("OperatorGraph", "Represents a graph of operators.")]
-  [Creatable("Test")]
+  [Creatable("Algorithms")]
   public class OperatorGraph : Item {
     private OperatorSet operators;
     /// <summary>

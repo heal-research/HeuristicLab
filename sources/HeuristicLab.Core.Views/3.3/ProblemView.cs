@@ -19,47 +19,41 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
-namespace HeuristicLab.Operators.Views { 
+namespace HeuristicLab.Core.Views { 
   /// <summary>
   /// The base class for visual representations of items.
   /// </summary>
-  [Content(typeof(ValuesCollector), true)]
-  public partial class ValuesCollectorView : NamedItemView {
-    public new ValuesCollector Content {
-      get { return (ValuesCollector)base.Content; }
+  [Content(typeof(Problem), true)]
+  [Content(typeof(IProblem), false)]
+  public partial class ProblemView : NamedItemView {
+    public new IProblem Content {
+      get { return (IProblem)base.Content; }
       set { base.Content = value; }
     }
 
     /// <summary>
     /// Initializes a new instance of <see cref="ItemBaseView"/>.
     /// </summary>
-    public ValuesCollectorView() {
+    public ProblemView() {
       InitializeComponent();
     }
     /// <summary>
     /// Intializes a new instance of <see cref="ItemBaseView"/> with the given <paramref name="item"/>.
     /// </summary>
     /// <param name="item">The item that should be displayed.</param>
-    public ValuesCollectorView(ValuesCollector content)
+    public ProblemView(IProblem content)
       : this() {
       Content = content;
     }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      if (Content == null) {
-        collectedValuesView.Content = null;
-        parameterCollectionView.Content = null;
-        tabControl.Enabled = false;
-      } else {
-        collectedValuesView.Content = Content.CollectedValues;
-        parameterCollectionView.Content = ((IOperator)Content).Parameters;
-        tabControl.Enabled = true;
-      }
+      if (Content == null)
+        valueParameterCollectionView.Content = null;
+      else
+        valueParameterCollectionView.Content = ((IProblem)Content).Parameters;
     }
   }
 }

@@ -20,7 +20,6 @@
 #endregion
 
 using System.Drawing;
-using HeuristicLab.Common.Resources;
 
 namespace HeuristicLab.Optimizer {
   internal class OpenToolBarItem : HeuristicLab.MainForm.WindowsForms.ToolBarItem, IOptimizerUserInterfaceItemProvider {
@@ -34,7 +33,7 @@ namespace HeuristicLab.Optimizer {
       get { return 20; }
     }
     public override Image Image {
-      get { return Resources.OpenIcon; }
+      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Open; }
     }
 
     public override void Execute() {

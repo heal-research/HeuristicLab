@@ -21,12 +21,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Xml;
-using System.Threading;
 using System.Drawing;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System.Threading;
 using HeuristicLab.Common;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
   /// <summary>
@@ -40,12 +38,9 @@ namespace HeuristicLab.Core {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Event; }
     }
 
-    /// <summary>
-    /// Field of the current instance that represent the operator graph.
-    /// </summary>
     private OperatorGraph operatorGraph;
     /// <summary>
-    /// Gets the current operator graph.
+    /// Gets or sets the current operator graph.
     /// </summary>
     [Storable]
     public OperatorGraph OperatorGraph {
@@ -72,6 +67,23 @@ namespace HeuristicLab.Core {
     /// </summary>
     public IScope GlobalScope {
       get { return globalScope; }
+    }
+
+    [Storable]
+    private IProblem problem;
+    /// <summary>
+    /// Gets or sets the current problem.
+    /// </summary>
+    public IProblem Problem {
+      get { return problem; }
+      set {
+        if (value == null) throw new ArgumentNullException();
+        if (value != problem) {
+          problem = value;
+          OnProblemChanged();
+          Prepare();
+        }
+      }
     }
 
     [Storable]
@@ -133,6 +145,7 @@ namespace HeuristicLab.Core {
     /// </summary>
     protected Engine() {
       globalScope = new Scope("Global");
+      problem = null;
       executionStack = new Stack<IExecutionSequence>();
       OperatorGraph = new OperatorGraph();
     }
@@ -148,6 +161,7 @@ namespace HeuristicLab.Core {
       Engine clone = (Engine)base.Clone(cloner);
       clone.OperatorGraph = (OperatorGraph)cloner.Clone(operatorGraph);
       clone.globalScope = (Scope)cloner.Clone(globalScope);
+      clone.problem = (IProblem)cloner.Clone(problem);
       clone.executionTime = executionTime;
       IExecutionSequence[] contexts = executionStack.ToArray();
       for (int i = contexts.Length - 1; i >= 0; i--)
@@ -168,8 +182,8 @@ namespace HeuristicLab.Core {
       globalScope.Clear();
       ExecutionTime = new TimeSpan();
       executionStack.Clear();
-      if (OperatorGraph.InitialOperator != null)
-        executionStack.Push(new ExecutionContext(null, OperatorGraph.InitialOperator, GlobalScope));
+      if ((OperatorGraph.InitialOperator != null) && (Problem != null))
+        executionStack.Push(new ExecutionContext(null, OperatorGraph.InitialOperator, GlobalScope, Problem));
       OnPrepared();
     }
     /// <inheritdoc/>
@@ -227,10 +241,27 @@ namespace HeuristicLab.Core {
       Prepare();
     }
 
+    /// <summary>
+    /// Occurs when the operator graph was changed.
+    /// </summary>
     public event EventHandler OperatorGraphChanged;
+    /// <summary>
+    /// Fires a new <c>OperatorGraphChanged</c> event.
+    /// </summary>
     protected virtual void OnOperatorGraphChanged() {
       if (OperatorGraphChanged != null)
         OperatorGraphChanged(this, EventArgs.Empty);
+    }
+    /// <summary>
+    /// Occurs when the problem was changed.
+    /// </summary>
+    public event EventHandler ProblemChanged;
+    /// <summary>
+    /// Fires a new <c>ProblemChanged</c> event.
+    /// </summary>
+    protected virtual void OnProblemChanged() {
+      if (ProblemChanged != null)
+        ProblemChanged(this, EventArgs.Empty);
     }
     /// <summary>
     /// Occurs when the execution time changed.

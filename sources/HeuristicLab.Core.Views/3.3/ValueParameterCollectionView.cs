@@ -31,16 +31,16 @@ using HeuristicLab.MainForm;
 using HeuristicLab.Collections;
 
 namespace HeuristicLab.Core.Views {
-  [Content(typeof(ParameterCollection), true)]
-  [Content(typeof(IObservableKeyedCollection<string, IParameter>), false)]
-  public partial class ParameterCollectionView : NamedItemCollectionView<IParameter> {
+  [Content(typeof(ValueParameterCollection), true)]
+  [Content(typeof(IObservableKeyedCollection<string, IValueParameter>), false)]
+  public partial class ValueParameterCollectionView : NamedItemCollectionView<IValueParameter> {
     protected CreateParameterDialog createParameterDialog;
     /// <summary>
     /// Initializes a new instance of <see cref="VariablesScopeView"/> with caption "Variables Scope View".
     /// </summary>
-    public ParameterCollectionView() {
+    public ValueParameterCollectionView() {
       InitializeComponent();
-      Caption = "ParameterCollection";
+      Caption = "ValueParameterCollection";
       itemsGroupBox.Text = "&Parameters";
     }
     /// <summary>
@@ -49,18 +49,21 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     /// <remarks>Calls <see cref="VariablesScopeView()"/>.</remarks>
     /// <param name="scope">The scope whose variables should be represented visually.</param>
-    public ParameterCollectionView(IObservableKeyedCollection<string, IParameter> content)
+    public ValueParameterCollectionView(IObservableKeyedCollection<string, IValueParameter> content)
       : this() {
       Content = content;
     }
 
-    protected override IParameter CreateItem() {
-      if (createParameterDialog == null) createParameterDialog = new CreateParameterDialog();
+    protected override IValueParameter CreateItem() {
+      if (createParameterDialog == null) {
+        createParameterDialog = new CreateParameterDialog();
+        createParameterDialog.ParameterTypeSelector.Configure(typeof(IValueParameter), false, true);
+      }
 
       if (createParameterDialog.ShowDialog(this) == DialogResult.OK) {
-        IParameter param = createParameterDialog.Parameter;
+        IValueParameter param = (IValueParameter)createParameterDialog.Parameter;
         if (Content.ContainsKey(param.Name))
-          param = (IParameter)Activator.CreateInstance(param.GetType(), GetUniqueName(param.Name), param.Description);
+          param = (IValueParameter)Activator.CreateInstance(param.GetType(), GetUniqueName(param.Name), param.Description);
         return param;
       } else
         return null;

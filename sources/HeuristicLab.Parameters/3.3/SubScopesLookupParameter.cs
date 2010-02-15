@@ -32,47 +32,10 @@ namespace HeuristicLab.Parameters {
   /// A generic parameter representing instances of type T which are collected from the sub-scopes of the current scope.
   /// </summary>
   [Item("SubScopesLookupParameter<T>", "A generic parameter representing instances of type T which are collected from or written to the sub-scopes of the current scope.")]
-  public class SubScopesLookupParameter<T> : Parameter, ILookupParameter<T> where T : class, IItem {
-    [Storable]
-    private string actualName;
-    public string ActualName {
-      get { return actualName; }
-      set {
-        if (value == null) throw new ArgumentNullException();
-        if (!actualName.Equals(value)) {
-          actualName = value;
-          OnActualNameChanged();
-        }
-      }
-    }
-
-    public new ItemArray<T> ActualValue {
-      get { return (ItemArray<T>)GetActualValue(); }
-      set { SetActualValue(value); }
-    }
-
-    public SubScopesLookupParameter()
-      : base("Anonymous", typeof(ItemArray<T>)) {
-      actualName = Name;
-    }
-    public SubScopesLookupParameter(string name)
-      : base(name, typeof(ItemArray<T>)) {
-      actualName = Name;
-    }
-    public SubScopesLookupParameter(string name, string description)
-      : base(name, description, typeof(ItemArray<T>)) {
-      actualName = Name;
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      SubScopesLookupParameter<T> clone = (SubScopesLookupParameter<T>)base.Clone(cloner);
-      clone.actualName = actualName;
-      return clone;
-    }
-
-    public override string ToString() {
-      return string.Format("{0}: {1} ({2})", Name, ActualName, DataType.Name);
-    }
+  public class SubScopesLookupParameter<T> : LookupParameter<ItemArray<T>> where T : class, IItem {
+    public SubScopesLookupParameter() : base() { }
+    public SubScopesLookupParameter(string name) : base(name) { }
+    public SubScopesLookupParameter(string name, string description) : base(name, description) { }
 
     protected override IItem GetActualValue() {
       string name = LookupParameter<T>.TranslateName(Name, ExecutionContext);
@@ -113,13 +76,6 @@ namespace HeuristicLab.Parameters {
         if (var != null) var.Value = values[i];
         else scope.SubScopes[i].Variables.Add(new Variable(name, values[i]));
       }
-    }
-
-    public event EventHandler ActualNameChanged;
-    private void OnActualNameChanged() {
-      if (ActualNameChanged != null)
-        ActualNameChanged(this, EventArgs.Empty);
-      OnChanged();
     }
   }
 }

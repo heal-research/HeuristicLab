@@ -25,9 +25,12 @@ using System.Text;
 using System.Xml;
 
 namespace HeuristicLab.Core {
-  public interface IValueParameter<T> : IParameter where T : class, IItem {
-    T Value { get; set; }
-
+  public interface IValueParameter : IParameter {
+    IItem Value { get; set; }
     event EventHandler ValueChanged;
+  }
+
+  public interface IValueParameter<T> : IValueParameter where T : class, IItem {
+    new T Value { get; set; }
   }
 }

@@ -25,9 +25,12 @@ using System.Text;
 using System.Xml;
 
 namespace HeuristicLab.Core {
-  public interface ILookupParameter<T> : IParameter where T : class, IItem {
+  public interface ILookupParameter : IParameter {
     string ActualName { get; set; }
-
     event EventHandler ActualNameChanged;
+  }
+
+  public interface ILookupParameter<T> : ILookupParameter where T : class, IItem {
+    new T ActualValue { get; set; }
   }
 }

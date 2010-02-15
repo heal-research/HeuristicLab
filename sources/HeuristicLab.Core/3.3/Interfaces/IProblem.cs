@@ -19,24 +19,13 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Collections;
 
-namespace HeuristicLab.Core.Views {
+namespace HeuristicLab.Core {
   /// <summary>
-  /// Plugin class for HeuristicLab.Core.Views plugin.
+  /// Interface to represent a problem.
   /// </summary>
-  [Plugin("HeuristicLab.Core.Views", "3.3.0.$WCREV$")]
-  [PluginFile("HeuristicLab.Core.Views-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Collections", "3.3")]
-  [PluginDependency("HeuristicLab.Common", "3.2")]
-  [PluginDependency("HeuristicLab.Common.Resources", "3.2")]
-  [PluginDependency("HeuristicLab.Core", "3.3")]
-  [PluginDependency("HeuristicLab.MainForm", "3.2")]
-  [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.2")]
-  [PluginDependency("HeuristicLab.Persistence", "3.3")]
-  public class HeuristicLabCoreViewsPlugin : PluginBase {
+  public interface IProblem : INamedItem {
+    IObservableKeyedCollection<string, IValueParameter> Parameters { get; }
   }
 }

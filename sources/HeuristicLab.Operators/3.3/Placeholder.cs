@@ -44,7 +44,7 @@ namespace HeuristicLab.Operators {
       ExecutionContextCollection next = new ExecutionContextCollection(base.Apply());
       IOperator op = OperatorParameter.ActualValue;
       if (op != null)
-        next.Insert(0, new ExecutionContext(ExecutionContext.Parent, op, ExecutionContext.Scope));
+        next.Insert(0, ExecutionContext.CreateContext(op));
       return next;
     }
   }

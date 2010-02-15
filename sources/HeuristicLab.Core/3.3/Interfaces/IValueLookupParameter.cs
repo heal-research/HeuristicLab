@@ -25,5 +25,7 @@ using System.Text;
 using System.Xml;
 
 namespace HeuristicLab.Core {
-  public interface IValueLookupParameter<T> : IValueParameter<T>, ILookupParameter<T> where T : class, IItem { }
+  public interface IValueLookupParameter : IValueParameter, ILookupParameter { }
+
+  public interface IValueLookupParameter<T> : IValueLookupParameter, IValueParameter<T>, ILookupParameter<T> where T : class, IItem { }
 }

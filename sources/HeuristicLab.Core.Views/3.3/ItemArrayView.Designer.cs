@@ -95,7 +95,7 @@ namespace HeuristicLab.Core.Views {
       this.moveUpButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.ArrowUp;
       this.moveUpButton.Location = new System.Drawing.Point(3, 3);
       this.moveUpButton.Name = "moveUpButton";
-      this.moveUpButton.Size = new System.Drawing.Size(23, 23);
+      this.moveUpButton.Size = new System.Drawing.Size(24, 24);
       this.moveUpButton.TabIndex = 0;
       this.toolTip.SetToolTip(this.moveUpButton, "Move Up");
       this.moveUpButton.UseVisualStyleBackColor = true;
@@ -105,9 +105,9 @@ namespace HeuristicLab.Core.Views {
       // 
       this.moveDownButton.Enabled = false;
       this.moveDownButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.ArrowDown;
-      this.moveDownButton.Location = new System.Drawing.Point(32, 3);
+      this.moveDownButton.Location = new System.Drawing.Point(33, 3);
       this.moveDownButton.Name = "moveDownButton";
-      this.moveDownButton.Size = new System.Drawing.Size(23, 23);
+      this.moveDownButton.Size = new System.Drawing.Size(24, 24);
       this.moveDownButton.TabIndex = 1;
       this.toolTip.SetToolTip(this.moveDownButton, "Move Down");
       this.moveDownButton.UseVisualStyleBackColor = true;
@@ -123,10 +123,10 @@ namespace HeuristicLab.Core.Views {
             this.listViewColumnHeader});
       this.itemsListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
       this.itemsListView.HideSelection = false;
-      this.itemsListView.Location = new System.Drawing.Point(3, 32);
+      this.itemsListView.Location = new System.Drawing.Point(3, 33);
       this.itemsListView.Name = "itemsListView";
       this.itemsListView.ShowItemToolTips = true;
-      this.itemsListView.Size = new System.Drawing.Size(194, 287);
+      this.itemsListView.Size = new System.Drawing.Size(194, 286);
       this.itemsListView.SmallImageList = this.imageList;
       this.itemsListView.TabIndex = 2;
       this.itemsListView.UseCompatibleStateImageBehavior = false;
@@ -152,7 +152,7 @@ namespace HeuristicLab.Core.Views {
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.detailsGroupBox.Controls.Add(this.viewHost);
-      this.detailsGroupBox.Location = new System.Drawing.Point(3, 26);
+      this.detailsGroupBox.Location = new System.Drawing.Point(3, 27);
       this.detailsGroupBox.Name = "detailsGroupBox";
       this.detailsGroupBox.Size = new System.Drawing.Size(283, 294);
       this.detailsGroupBox.TabIndex = 0;

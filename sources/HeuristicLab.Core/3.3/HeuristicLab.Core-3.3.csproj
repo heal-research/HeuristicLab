@@ -103,6 +103,8 @@
     <Compile Include="Attributes\CreatableAttribute.cs" />
     <Compile Include="ChangedEventArgs.cs" />
     <None Include="HeuristicLabCorePlugin.cs.frame" />
+    <Compile Include="ValueParameterCollection.cs" />
+    <Compile Include="Interfaces\IProblem.cs" />
     <Compile Include="Interfaces\IExecutionSequence.cs" />
     <Compile Include="Interfaces\IValueLookupParameter.cs" />
     <Compile Include="Interfaces\IValueParameter.cs" />
@@ -114,6 +116,8 @@
     <Compile Include="Interfaces\IVariable.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="NamedItem.cs" />
+    <Compile Include="Operator.cs" />
+    <Compile Include="Problem.cs" />
     <Compile Include="OperatorGraph.cs" />
     <Compile Include="Interfaces\IParameter.cs" />
     <Compile Include="OperatorCollection.cs" />

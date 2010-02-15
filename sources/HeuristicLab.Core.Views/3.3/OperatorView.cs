@@ -19,18 +19,9 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Text;
-using System.Windows.Forms;
-using HeuristicLab.Core;
-using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
-namespace HeuristicLab.Operators.Views { 
+namespace HeuristicLab.Core.Views {
   /// <summary>
   /// The base class for visual representations of items.
   /// </summary>

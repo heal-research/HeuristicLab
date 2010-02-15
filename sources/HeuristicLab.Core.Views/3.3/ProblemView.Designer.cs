@@ -19,8 +19,8 @@
  */
 #endregion
 
-namespace HeuristicLab.Operators.Views {
-  partial class OperatorView {
+namespace HeuristicLab.Core.Views {
+  partial class ProblemView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -44,7 +44,7 @@ namespace HeuristicLab.Operators.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.parameterCollectionView = new HeuristicLab.Core.Views.ParameterCollectionView();
+      this.valueParameterCollectionView = new HeuristicLab.Core.Views.ValueParameterCollectionView();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
       // 
@@ -60,29 +60,30 @@ namespace HeuristicLab.Operators.Views {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.descriptionTextBox.Size = new System.Drawing.Size(418, 87);
       // 
-      // parameterCollectionView
+      // valueParameterCollectionView
       // 
-      this.parameterCollectionView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+      this.valueParameterCollectionView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.parameterCollectionView.Caption = "ParameterCollection";
-      this.parameterCollectionView.Location = new System.Drawing.Point(0, 119);
-      this.parameterCollectionView.Name = "parameterCollectionView";
-      this.parameterCollectionView.Size = new System.Drawing.Size(490, 234);
-      this.parameterCollectionView.TabIndex = 4;
+      this.valueParameterCollectionView.Caption = "ValueParameterCollection";
+      this.valueParameterCollectionView.Content = null;
+      this.valueParameterCollectionView.Location = new System.Drawing.Point(0, 119);
+      this.valueParameterCollectionView.Name = "valueParameterCollectionView";
+      this.valueParameterCollectionView.Size = new System.Drawing.Size(490, 234);
+      this.valueParameterCollectionView.TabIndex = 4;
       // 
-      // OperatorView
+      // ProblemView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.parameterCollectionView);
-      this.Name = "OperatorView";
+      this.Controls.Add(this.valueParameterCollectionView);
+      this.Name = "ProblemView";
       this.Size = new System.Drawing.Size(490, 353);
-      this.Controls.SetChildIndex(this.nameTextBox, 0);
+      this.Controls.SetChildIndex(this.valueParameterCollectionView, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
       this.Controls.SetChildIndex(this.descriptionLabel, 0);
+      this.Controls.SetChildIndex(this.nameTextBox, 0);
       this.Controls.SetChildIndex(this.descriptionTextBox, 0);
-      this.Controls.SetChildIndex(this.parameterCollectionView, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
@@ -91,7 +92,7 @@ namespace HeuristicLab.Operators.Views {
 
     #endregion
 
-    protected HeuristicLab.Core.Views.ParameterCollectionView parameterCollectionView;
+    private ValueParameterCollectionView valueParameterCollectionView;
 
 
   }

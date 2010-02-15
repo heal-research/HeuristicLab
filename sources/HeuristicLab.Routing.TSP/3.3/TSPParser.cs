@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,14 +20,12 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.IO;
 using System.Globalization;
+using System.IO;
 
 namespace HeuristicLab.Routing.TSP {
   /// <summary>
-  /// Parses a *.tsp file and extracts its information about a TSP.
+  /// Parses a *.tsp file in the TSPLIB format and extracts its information about a TSP.
   /// </summary>
   public class TSPParser {
     private const int EOF = 0;

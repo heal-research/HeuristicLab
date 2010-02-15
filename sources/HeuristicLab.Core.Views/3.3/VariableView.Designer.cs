@@ -111,9 +111,9 @@ namespace HeuristicLab.Core.Views {
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.valuePanel.Controls.Add(this.viewHost);
-      this.valuePanel.Location = new System.Drawing.Point(6, 48);
+      this.valuePanel.Location = new System.Drawing.Point(6, 49);
       this.valuePanel.Name = "valuePanel";
-      this.valuePanel.Size = new System.Drawing.Size(347, 100);
+      this.valuePanel.Size = new System.Drawing.Size(347, 99);
       this.valuePanel.TabIndex = 2;
       this.valuePanel.DragOver += new System.Windows.Forms.DragEventHandler(this.valuePanel_DragEnterOver);
       this.valuePanel.DragDrop += new System.Windows.Forms.DragEventHandler(this.valuePanel_DragDrop);
@@ -121,19 +121,19 @@ namespace HeuristicLab.Core.Views {
       // 
       // viewHost
       // 
+      this.viewHost.Content = null;
       this.viewHost.Dock = System.Windows.Forms.DockStyle.Fill;
       this.viewHost.Location = new System.Drawing.Point(0, 0);
       this.viewHost.Name = "viewHost";
-      this.viewHost.Content = null;
-      this.viewHost.Size = new System.Drawing.Size(347, 100);
+      this.viewHost.Size = new System.Drawing.Size(347, 99);
       this.viewHost.TabIndex = 0;
       // 
       // clearValueButton
       // 
       this.clearValueButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Remove;
-      this.clearValueButton.Location = new System.Drawing.Point(35, 19);
+      this.clearValueButton.Location = new System.Drawing.Point(36, 19);
       this.clearValueButton.Name = "clearValueButton";
-      this.clearValueButton.Size = new System.Drawing.Size(23, 23);
+      this.clearValueButton.Size = new System.Drawing.Size(24, 24);
       this.clearValueButton.TabIndex = 1;
       this.toolTip.SetToolTip(this.clearValueButton, "Clear Value");
       this.clearValueButton.UseVisualStyleBackColor = true;
@@ -144,7 +144,7 @@ namespace HeuristicLab.Core.Views {
       this.setValueButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Add;
       this.setValueButton.Location = new System.Drawing.Point(6, 19);
       this.setValueButton.Name = "setValueButton";
-      this.setValueButton.Size = new System.Drawing.Size(23, 23);
+      this.setValueButton.Size = new System.Drawing.Size(24, 24);
       this.setValueButton.TabIndex = 1;
       this.toolTip.SetToolTip(this.setValueButton, "Set Value");
       this.setValueButton.UseVisualStyleBackColor = true;

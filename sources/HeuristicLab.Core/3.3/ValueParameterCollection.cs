@@ -19,24 +19,16 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.Text;
-using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Core.Views {
-  /// <summary>
-  /// Plugin class for HeuristicLab.Core.Views plugin.
-  /// </summary>
-  [Plugin("HeuristicLab.Core.Views", "3.3.0.$WCREV$")]
-  [PluginFile("HeuristicLab.Core.Views-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Collections", "3.3")]
-  [PluginDependency("HeuristicLab.Common", "3.2")]
-  [PluginDependency("HeuristicLab.Common.Resources", "3.2")]
-  [PluginDependency("HeuristicLab.Core", "3.3")]
-  [PluginDependency("HeuristicLab.MainForm", "3.2")]
-  [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.2")]
-  [PluginDependency("HeuristicLab.Persistence", "3.3")]
-  public class HeuristicLabCoreViewsPlugin : PluginBase {
+namespace HeuristicLab.Core {
+  [EmptyStorableClass]
+  [Item("ValueParameterCollection", "Represents a collection of value parameters.")]
+  [Creatable("Test")]
+  public class ValueParameterCollection : NamedItemCollection<IValueParameter> {
+    public ValueParameterCollection() : base() { }
+    public ValueParameterCollection(int capacity) : base(capacity) { }
+    public ValueParameterCollection(IEnumerable<IValueParameter> collection) : base(collection) { }
   }
 }

@@ -46,6 +46,18 @@ namespace HeuristicLab.Parameters {
         }
       }
     }
+    IItem IValueParameter.Value {
+      get { return Value; }
+      set {
+        T val = value as T;
+        if (val == null)
+          throw new InvalidOperationException(
+            string.Format("Type mismatch. Value is not a \"{0}\".",
+                          typeof(T).GetPrettyName())
+          );
+        Value = val;
+      }
+    }
 
     public ValueLookupParameter()
       : base() {

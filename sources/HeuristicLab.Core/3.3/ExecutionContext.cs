@@ -44,16 +44,24 @@ namespace HeuristicLab.Core {
       get { return scope; }
     }
 
+    [Storable]
+    private IProblem problem;
+    public IProblem Problem {
+      get { return problem; }
+    }
+
     private ExecutionContext() {
       parent = null;
       op = null;
       scope = null;
+      problem = null;
     }
-    public ExecutionContext(ExecutionContext parent, IOperator op, IScope scope) {
-      if ((op == null) || (scope == null)) throw new ArgumentNullException();
+    public ExecutionContext(ExecutionContext parent, IOperator op, IScope scope, IProblem problem) {
+      if ((op == null) || (scope == null) || (problem == null)) throw new ArgumentNullException();
       this.parent = parent;
       this.op = op;
       this.scope = scope;
+      this.problem = problem;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -62,7 +70,21 @@ namespace HeuristicLab.Core {
       clone.parent = (ExecutionContext)cloner.Clone(parent);
       clone.op = (IOperator)cloner.Clone(op);
       clone.scope = (IScope)cloner.Clone(scope);
+      clone.problem = (IProblem)cloner.Clone(problem);
       return clone;
+    }
+
+    public ExecutionContext CreateContext(IOperator op) {
+      return new ExecutionContext(parent, op, scope, problem);
+    }
+    public ExecutionContext CreateContext(IOperator op, IScope scope) {
+      return new ExecutionContext(parent, op, scope, problem);
+    }
+    public ExecutionContext CreateChildContext(IOperator op) {
+      return new ExecutionContext(this, op, scope, problem);
+    }
+    public ExecutionContext CreateChildContext(IOperator op, IScope scope) {
+      return new ExecutionContext(this, op, scope, problem);
     }
   }
 }

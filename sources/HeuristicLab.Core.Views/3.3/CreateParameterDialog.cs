@@ -34,6 +34,9 @@ namespace HeuristicLab.Core.Views {
   public partial class CreateParameterDialog : Form {
     protected TypeSelectorDialog typeSelectorDialog;
 
+    public TypeSelector ParameterTypeSelector {
+      get { return parameterTypeSelector; }
+    }
     public IParameter Parameter {
       get {
         try {
@@ -55,6 +58,7 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     public CreateParameterDialog() {
       InitializeComponent();
+      parameterTypeSelector.Configure(typeof(IParameter), false, true);
     }
 
     protected virtual void setDataTypeButton_Click(object sender, EventArgs e) {
@@ -69,10 +73,6 @@ namespace HeuristicLab.Core.Views {
         dataTypeTextBox.Tag = typeSelectorDialog.TypeSelector.SelectedType;
       }
       okButton.Enabled = dataTypeTextBox.Tag != null;
-    }
-
-    protected virtual void CreateParameterDialog_Load(object sender, EventArgs e) {
-      parameterTypeSelector.Configure(typeof(IParameter), false, true);
     }
 
     protected virtual void parameterTypeSelector_SelectedTypeChanged(object sender, EventArgs e) {

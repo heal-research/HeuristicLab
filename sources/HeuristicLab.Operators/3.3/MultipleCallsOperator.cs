@@ -109,7 +109,7 @@ namespace HeuristicLab.Operators {
     public override IExecutionSequence Apply() {
       ExecutionContextCollection next = new ExecutionContextCollection(base.Apply());
       for (int i = Operators.Count - 1; i >= 0; i--)
-        next.Insert(0, new ExecutionContext(ExecutionContext.Parent, Operators[i], ExecutionContext.Scope));
+        next.Insert(0, ExecutionContext.CreateContext(Operators[i]));
       return next;
     }
   }

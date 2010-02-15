@@ -22,7 +22,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using HeuristicLab.Common.Resources;
 
 namespace HeuristicLab.Optimizer.MenuItems {
   internal class OpenMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, IOptimizerUserInterfaceItemProvider {
@@ -36,7 +35,7 @@ namespace HeuristicLab.Optimizer.MenuItems {
       get { return 1200; }
     }
     public override Image Image {
-      get { return Resources.OpenIcon; }
+      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Open; }
     }
     public override Keys ShortCutKeys {
       get { return Keys.Control | Keys.O; }

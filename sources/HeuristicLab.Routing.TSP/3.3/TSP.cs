@@ -19,36 +19,21 @@
  */
 #endregion
 
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Xml;
 using HeuristicLab.Core;
-using HeuristicLab.Parameters;
+using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Operators {
-  /// <summary>
-  /// A base class for operators which have only one successor.
-  /// </summary>
-  [Item("SingleSuccessorOperator", "A base class for operators which have only one successor.")]
-  [Creatable("Test")]
-  [EmptyStorableClass]
-  public abstract class SingleSuccessorOperator : Operator {
-    protected OperatorParameter SuccessorParameter {
-      get { return (OperatorParameter)Parameters["Successor"]; }
-    }
-    public IOperator Successor {
-      get { return SuccessorParameter.Value; }
-      set { SuccessorParameter.Value = value; }
-    }
-
-    public SingleSuccessorOperator()
+namespace HeuristicLab.Data {
+  [Item("TSP", "Represents a symmetric Traveling Salesman Problem.")]
+  [Creatable("Problems")]
+  public sealed class TSP : Problem {
+    public TSP()
       : base() {
-      Parameters.Add(new OperatorParameter("Successor", "Operator which is executed next."));
-    }
 
-    public override IExecutionSequence Apply() {
-      if (Successor != null)
-        return ExecutionContext.CreateContext(Successor);
-      else
-        return null;
     }
   }
 }

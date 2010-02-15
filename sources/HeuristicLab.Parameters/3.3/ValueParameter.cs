@@ -46,9 +46,17 @@ namespace HeuristicLab.Parameters {
         }
       }
     }
-    public new T ActualValue {
+    IItem IValueParameter.Value {
       get { return Value; }
-      set { Value = value; }
+      set {
+        T val = value as T;
+        if (val == null)
+          throw new InvalidOperationException(
+            string.Format("Type mismatch. Value is not a \"{0}\".",
+                          typeof(T).GetPrettyName())
+          );
+        Value = val;
+      }
     }
 
     public ValueParameter()
@@ -83,13 +91,7 @@ namespace HeuristicLab.Parameters {
       return Value;
     }
     protected override void SetActualValue(IItem value) {
-      T val = value as T;
-      if (val == null)
-        throw new InvalidOperationException(
-          string.Format("Type mismatch. Value is not a \"{0}\".",
-                        typeof(T).GetPrettyName())
-        );
-      Value = val;
+      ((IValueParameter)this).Value = value;
     }
 
     public event EventHandler ValueChanged;
