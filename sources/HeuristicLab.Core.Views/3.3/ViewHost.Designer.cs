@@ -108,11 +108,11 @@ namespace HeuristicLab.Core.Views {
 
     #endregion
 
-    protected System.Windows.Forms.Panel viewPanel;
-    protected System.Windows.Forms.Label viewsLabel;
-    protected System.Windows.Forms.Label messageLabel;
-    protected System.Windows.Forms.ContextMenuStrip contextMenuStrip;
-    protected System.Windows.Forms.ToolTip toolTip;
+    private System.Windows.Forms.Panel viewPanel;
+    private System.Windows.Forms.Label viewsLabel;
+    private System.Windows.Forms.Label messageLabel;
+    private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
+    private System.Windows.Forms.ToolTip toolTip;
 
   }
 }
