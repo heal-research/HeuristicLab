@@ -33,25 +33,27 @@ using System.Text.RegularExpressions;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using System.Data.Linq;
+using System.Xml.XPath;
+using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators.Programmable {
-  public class ProgrammableOperator : OperatorBase {
+
+  public class ProgrammableOperator : Operator {
+
+    #region Fields & Properties
+
     private MethodInfo executeMethod;
-
+    public CompilerErrorCollection CompileErrors { get; private set; }
+    public string CompilationUnitCode { get; private set; }
+    
     [Storable]
-    private string myDescription;
-    public override string Description {
-      get { return myDescription; }
-    }
-
-    [Storable]
-    private string myCode;    
+    private string code;
     public string Code {
-      get { return myCode; }
+      get { return code; }
       set {
-        if (value != myCode) {
-          myCode = value;
+        if (value != code) {
+          code = value;
           executeMethod = null;
           OnCodeChanged();
         }
@@ -60,143 +62,345 @@ namespace HeuristicLab.Operators.Programmable {
 
     private object syncRoot = new object();
 
-    public ProgrammableOperator() {
-      myCode = "Result.Data = true;";
-      myDescription = "An operator that can be programmed for arbitrary needs.";
-      AddVariableInfo(new VariableInfo("Result", "A computed variable", typeof(BoolData), VariableKind.New | VariableKind.Out));
-      executeMethod = null;
+    private static object initLock = new object();
+    private static Dictionary<string, List<Assembly>> defaultPluginDict;
+    private static Dictionary<Assembly, bool> defaultAssemblyDict;
+
+    public readonly Dictionary<string, List<Assembly>> Plugins;
+
+    protected Dictionary<Assembly, bool> Assemblies;
+
+    [Storable]
+    private IEnumerable<string> _persistedAssemblyNames {      
+      get {        
+        return Assemblies.Keys.Select(a => a.FullName);
+      }
+      set {
+        var selectedAssemblyNames = new HashSet<string>(value);        
+        foreach (var a in Assemblies.Keys.ToList()) {
+          Assemblies[a] = selectedAssemblyNames.Contains(a.FullName);
+        }      
+      }
+    }
+
+    public IEnumerable<Assembly> AvailableAssemblies {
+      get { return Assemblies.Keys; }
+    }
+
+    public IEnumerable<Assembly> SelectedAssemblies {
+      get { return Assemblies.Where(kvp => kvp.Value).Select(kvp => kvp.Key); }
+    }
+
+    [Storable]
+    private HashSet<string> namespaces;
+    public IEnumerable<string> Namespaces {
+      get { return namespaces; }
+    }
+
+    #endregion
+
+    #region Extended Accessors
+
+    public void SelectAssembly(Assembly a) {
+      if (a != null && Assemblies.ContainsKey(a))
+        Assemblies[a] = true;
+    }
+
+    public void UnselectAssembly(Assembly a) {
+      if (a != null && Assemblies.ContainsKey(a))
+        Assemblies[a] = false;
+    }
+
+    public void SelectNamespace(string ns) {
+      namespaces.Add(ns);
+    }
+
+    public void UnselectNamespace(string ns) {
+      namespaces.Remove(ns);
     }
 
     public void SetDescription(string description) {
       if (description == null)
-        throw new NullReferenceException("description must not be null");
+        throw new NullReferenceException("description must not be null");            
+      Description = description;              
+    }
 
-      if (description != myDescription) {
-        myDescription = description;
-        OnDescriptionChanged();
+    public IEnumerable<string> GetAllNamespaces(bool selectedAssembliesOnly) {
+      var namespaces = new HashSet<string>();
+      foreach (var a in Assemblies) {
+        if (!selectedAssembliesOnly || a.Value) {
+          foreach (var t in a.Key.GetTypes()) {
+            if (t.IsPublic) {
+              foreach (string ns in GetNamespaceHierachy(t.Namespace)) {
+                namespaces.Add(ns);
+              }
+            }
+          }
+        }
+      }
+      return namespaces;
+    }
+
+    private IEnumerable<string> GetNamespaceHierachy(string ns) {
+      for (int i = ns.Length; i != -1; i = ns.LastIndexOf('.', i - 1)) {
+        yield return ns.Substring(0, i);
       }
     }
 
-    public virtual void Compile() {
-      CodeNamespace ns = new CodeNamespace("HeuristicLab.Operators.Programmable.CustomOperators");
-      CodeTypeDeclaration typeDecl = new CodeTypeDeclaration("Operator");
-      typeDecl.IsClass = true;
-      typeDecl.TypeAttributes = TypeAttributes.Public;
+    #endregion
 
-      CodeMemberMethod method = new CodeMemberMethod();
-      method.Name = "Execute";
-      method.ReturnType = new CodeTypeReference(typeof(IOperation));
-      method.Attributes = MemberAttributes.Public | MemberAttributes.Static;
-      method.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IOperator), "op"));
-      method.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IScope), "scope"));
-      foreach (IVariableInfo info in VariableInfos)
-        method.Parameters.Add(new CodeParameterDeclarationExpression(info.DataType, info.FormalName));
-      string code = myCode + "\r\n" + "return null;";
-      method.Statements.Add(new CodeSnippetStatement(code));
-      typeDecl.Members.Add(method);
+    #region Construction & Initialization
 
-      ns.Types.Add(typeDecl);
-      ns.Imports.Add(new CodeNamespaceImport("System"));
-      ns.Imports.Add(new CodeNamespaceImport("System.Collections.Generic"));
-      ns.Imports.Add(new CodeNamespaceImport("System.Text"));
-      ns.Imports.Add(new CodeNamespaceImport("System.Linq"));
-      ns.Imports.Add(new CodeNamespaceImport("System.Data.Linq"));
-      ns.Imports.Add(new CodeNamespaceImport("HeuristicLab.Core"));
-      foreach (IVariableInfo variableInfo in VariableInfos)
-        ns.Imports.Add(new CodeNamespaceImport(variableInfo.DataType.Namespace));
+    public ProgrammableOperator() {      
+      code = "";
+      Description = "An operator that can be programmed for arbitrary needs.";
+      executeMethod = null;
+      ProgrammableOperator.StaticInitialize();
+      Assemblies = defaultAssemblyDict;
+      Plugins = defaultPluginDict;
+      namespaces = new HashSet<string>(DiscoverNamespaces());
+    }
 
-      CodeCompileUnit unit = new CodeCompileUnit();
-      unit.Namespaces.Add(ns);
+    private static void StaticInitialize() {
+      lock (initLock) {
+        if (defaultPluginDict != null || defaultAssemblyDict != null) return;
+        defaultAssemblyDict = DiscoverAssemblies();
+        defaultPluginDict = GroupAssemblies(defaultAssemblyDict.Keys);
+      }
+    }
+
+    private static Dictionary<string, List<Assembly>> GroupAssemblies(IEnumerable<Assembly> assemblies) {
+      var plugins = new Dictionary<string, List<Assembly>>();
+      var locationTable = assemblies.ToDictionary(a => a.Location, a => a);
+      foreach (var plugin in ApplicationManager.Manager.Plugins) {
+        var aList = new List<Assembly>();
+        foreach (var aName in from file in plugin.Files
+                              where file.Type == PluginFileType.Assembly
+                              select file.Name) {
+          Assembly a;
+          locationTable.TryGetValue(aName, out a);
+          if (a != null) {
+            aList.Add(a);
+            locationTable.Remove(aName);
+          }
+        }
+        plugins[plugin.Name] = aList;
+      }
+      plugins["other"] = locationTable.Values.ToList();
+      return plugins;
+    }
+
+    protected static List<Assembly> defaultAssemblies = new List<Assembly>() {      
+      typeof(System.Linq.Enumerable).Assembly,  // add reference to version 3.5 of System.dll
+      typeof(System.Collections.Generic.List<>).Assembly,
+      typeof(System.Text.StringBuilder).Assembly,      
+      typeof(System.Data.Linq.DataContext).Assembly,
+      typeof(HeuristicLab.Core.Item).Assembly,      
+      typeof(HeuristicLab.Data.IntData).Assembly,            
+    };
+
+    protected static Dictionary<Assembly, bool> DiscoverAssemblies() {
+      var assemblies = new Dictionary<Assembly, bool>();
+      foreach (var a in AppDomain.CurrentDomain.GetAssemblies()) {
+        try {
+          if (File.Exists(a.Location)) {
+            assemblies.Add(a, false);
+          }
+        }
+        catch (NotSupportedException) {
+          // NotSupportedException is thrown while accessing 
+          // the Location property of the anonymously hosted
+          // dynamic methods assembly, which is related to
+          // LINQ queries
+        }
+      }
+      foreach (var a in defaultAssemblies) {
+        if (assemblies.ContainsKey(a)) {
+          assemblies[a] = true;
+        } else {
+          assemblies.Add(a, true);
+        }
+      }
+      return assemblies;
+    }
+
+    protected static List<string> DiscoverNamespaces() {
+      return new List<string>() {
+        "System",
+        "System.Collections.Generic",
+        "System.Text",
+        "System.Linq",
+        "System.Data.Linq",
+        "HeuristicLab.Core",
+        "HeuristicLab.Data",
+      };
+    }
+
+    #endregion
+
+    #region Compilation
+
+    private static CSharpCodeProvider codeProvider =
+      new CSharpCodeProvider(
+        new Dictionary<string, string>() {
+          { "CompilerVersion", "v3.5" },  // support C# 3.0 syntax
+        });
+
+    private CompilerResults DoCompile() {
       CompilerParameters parameters = new CompilerParameters();
       parameters.GenerateExecutable = false;
       parameters.GenerateInMemory = true;
       parameters.IncludeDebugInformation = false;
-      Assembly[] loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
-      foreach (Assembly loadedAssembly in loadedAssemblies)
-        parameters.ReferencedAssemblies.Add(loadedAssembly.Location);
-      parameters.ReferencedAssemblies.Add(typeof(Enumerable).Assembly.Location); // add reference to version 3.5 of System.dll
-      parameters.ReferencedAssemblies.Add(typeof(DataContext).Assembly.Location); // add reference System.Data.Linq.Dll
-      CodeDomProvider provider = new CSharpCodeProvider(new Dictionary<string, string>() { { "CompilerVersion", "v3.5" } });  // support C# 3.0 syntax
-      CompilerResults results = provider.CompileAssemblyFromDom(parameters, unit);
+      parameters.ReferencedAssemblies.AddRange(SelectedAssemblies.Select(a => a.Location).ToArray());
+      var unit = CreateCompilationUnit();
+      var writer = new StringWriter();
+      codeProvider.GenerateCodeFromCompileUnit(
+        unit,
+        writer,
+        new CodeGeneratorOptions() {
+          BracingStyle = "C",
+          ElseOnClosing = true,
+          IndentString = "  ",
+        });
+      CompilationUnitCode = writer.ToString();
+      return codeProvider.CompileAssemblyFromDom(parameters, unit);
+    }
 
+    public virtual void Compile() {
+      var results = DoCompile();
       executeMethod = null;
       if (results.Errors.HasErrors) {
-        StringWriter writer = new StringWriter();
-        CodeGeneratorOptions options = new CodeGeneratorOptions();
-        options.BlankLinesBetweenMembers = false;
-        options.ElseOnClosing = true;
-        options.IndentString = "  ";
-        provider.GenerateCodeFromCompileUnit(unit, writer, options);
-        writer.Flush();
-        string[] source = writer.ToString().Split(new string[] { "\r\n" }, StringSplitOptions.None);
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < source.Length; i++)
-          builder.AppendLine((i + 3).ToString("###") + "     " + source[i]);
-        builder.AppendLine();
-        builder.AppendLine();
-        builder.AppendLine();
+        CompileErrors = results.Errors;
+        StringBuilder sb = new StringBuilder();
         foreach (CompilerError error in results.Errors) {
-          builder.Append("Line " + error.Line.ToString());
-          builder.Append(", Column " + error.Column.ToString());
-          builder.AppendLine(": " + error.ErrorText);
+          sb.Append(error.Line).Append(':')
+            .Append(error.Column).Append(": ")
+            .AppendLine(error.ErrorText);
         }
-        throw new Exception("Compile Errors:\n\n" + builder.ToString());
+        throw new Exception(string.Format(
+          "Compilation of \"{0}\" failed:{1}{2}",
+          Name, Environment.NewLine,
+          sb.ToString()));
       } else {
+        CompileErrors = null;
         Assembly assembly = results.CompiledAssembly;
         Type[] types = assembly.GetTypes();
         executeMethod = types[0].GetMethod("Execute");
       }
     }
 
-    public override IItem Clone(ICloner cloner) {
-      ProgrammableOperator clone = (ProgrammableOperator)base.Clone(cloner);
-      clone.myDescription = Description;
-      clone.myCode = Code;
-      clone.executeMethod = executeMethod;
-      return clone;
+    private CodeCompileUnit CreateCompilationUnit() {
+      CodeNamespace ns = new CodeNamespace("HeuristicLab.Operators.Programmable.CustomOperators");
+      ns.Types.Add(CreateType());
+      ns.Imports.AddRange(
+        GetSelectedAndValidNamespaces()
+        .Select(n => new CodeNamespaceImport(n))
+        .ToArray());
+      CodeCompileUnit unit = new CodeCompileUnit();
+      unit.Namespaces.Add(ns);
+      return unit;
     }
 
-    public override IOperation Apply(IScope scope) {
+    public IEnumerable<string> GetSelectedAndValidNamespaces() {
+      var possibleNamespaces = new HashSet<string>(GetAllNamespaces(true));
+      foreach (var ns in Namespaces)
+        if (possibleNamespaces.Contains(ns))
+          yield return ns;
+    }
+
+    public static readonly Regex SafeTypeNameCharRegex = new Regex("[_a-zA-Z0-9]+");
+    public static readonly Regex SafeTypeNameRegex = new Regex("[_a-zA-Z][_a-zA-Z0-9]*");
+
+    public string CompiledTypeName {
+      get {
+        var sb = new StringBuilder();
+        foreach (string s in SafeTypeNameCharRegex.Matches(Name).Cast<Match>().Select(m => m.Value)) {
+          sb.Append(s);
+        }
+        return SafeTypeNameRegex.Match(sb.ToString()).Value;
+      }
+    }
+
+    private CodeTypeDeclaration CreateType() {
+      CodeTypeDeclaration typeDecl = new CodeTypeDeclaration(CompiledTypeName) {
+        IsClass = true,
+        TypeAttributes = TypeAttributes.Public,
+      };
+      typeDecl.Members.Add(CreateMethod());
+      return typeDecl;
+    }
+
+    public string Signature {
+      get {
+        var sb = new StringBuilder()
+        .Append("public static IOperation Execute(IOperator op, IScope scope");        
+        foreach (IParameter param in Parameters) {
+          sb.Append(String.Format(", {0} {1}", param.DataType.Name, param.Name));
+        }        
+        return sb.Append(")").ToString();
+      }
+    }
+
+    private static Regex lineSplitter = new Regex(@"\r\n|\r|\n");
+
+    private CodeMemberMethod CreateMethod() {
+      CodeMemberMethod method = new CodeMemberMethod();
+      method.Name = "Execute";
+      method.ReturnType = new CodeTypeReference(typeof(HeuristicLab.Core.IExecutionSequence));
+      method.Attributes = MemberAttributes.Public | MemberAttributes.Static;
+      method.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IOperator), "op"));
+//      method.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IScope), "scope"));
+      foreach (var param in Parameters)
+        method.Parameters.Add(new CodeParameterDeclarationExpression(param.DataType, param.Name));
+      string[] codeLines = lineSplitter.Split(code);
+      for (int i = 0; i < codeLines.Length; i++) {
+        codeLines[i] = string.Format("#line {0} \"ProgrammableOperator\"{1}{2}", i + 1, "\r\n", codeLines[i]);
+      }
+      method.Statements.Add(new CodeSnippetStatement(
+        string.Join("\r\n", codeLines) +
+        "\r\nreturn null;"));
+      return method;
+    }
+
+    #endregion
+
+    #region HeuristicLab interfaces
+    
+    public override IExecutionSequence Apply() {
       lock (syncRoot) {
         if (executeMethod == null) {
           Compile();
         }
       }
 
-      // collect parameters
-      object[] parameters = new object[VariableInfos.Count + 2];
-      parameters[0] = this;
-      parameters[1] = scope;
-      int i = 2;
-      foreach (IVariableInfo info in VariableInfos) {
-        if ((info.Kind & VariableKind.New) == VariableKind.New) {
-          parameters[i] = GetVariableValue(info.FormalName, scope, false, false);
-          if (parameters[i] == null) {
-            IItem value = (IItem)Activator.CreateInstance(info.DataType);
-            if (info.Local) {
-              AddVariable(new Variable(info.ActualName, value));
-            } else {
-              scope.AddVariable(new Variable(scope.TranslateName(info.FormalName), value));
-            }
-            parameters[i] = value;
-          }
-        } else
-          parameters[i] = GetVariableValue(info.FormalName, scope, true);
-        i++;
-      }
-
-      return (IOperation)executeMethod.Invoke(null, parameters);
+      var parameters = new List<object>() { this };      
+      parameters.AddRange(Parameters.Select(p => (object)p.ActualValue));
+      return (IExecutionSequence)executeMethod.Invoke(null, parameters.ToArray());
     }
-
-    public event EventHandler DescriptionChanged;
-    protected virtual void OnDescriptionChanged() {
-      if (DescriptionChanged != null)
-        DescriptionChanged(this, new EventArgs());
-    }
+    
     public event EventHandler CodeChanged;
     protected virtual void OnCodeChanged() {
       if (CodeChanged != null)
         CodeChanged(this, new EventArgs());
     }
+
+    #endregion
+
+    #region Cloning        
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      ProgrammableOperator clone = (ProgrammableOperator)base.Clone(cloner);
+      clone.Description = Description;
+      clone.code = Code;
+      clone.executeMethod = executeMethod;
+      clone.Assemblies = Assemblies.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+      clone.namespaces = namespaces;
+      clone.CompilationUnitCode = CompilationUnitCode;
+      clone.CompileErrors = CompileErrors;
+      return clone;
+    }
+    
+    #endregion
+   
   }
 }

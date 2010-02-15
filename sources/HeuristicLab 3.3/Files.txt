@@ -5,6 +5,7 @@ HeuristicLab.PluginInfrastructure:ICSharpCode.SharpZipLib.dll
 HeuristicLab.PluginInfrastructure:ICSharpCode.SharpZipLib License.txt
 HeuristicLab.Charting\3.3:HeuristicLab.Charting-3.3.dll 
 HeuristicLab.Charting.Data\3.3:HeuristicLab.Charting.Data-3.3.dll 
+HeuristicLab.CodeEditor\3.2:HeuristicLab.CodeEditor-3.2.dll
 HeuristicLab.Collections\3.3:HeuristicLab.Collections-3.3.dll 
 HeuristicLab.Common\3.2:HeuristicLab.Common-3.2.dll  
 HeuristicLab.Common.Resources\3.2:HeuristicLab.Common.Resources-3.2.dll 
@@ -50,3 +51,11 @@ HeuristicLab.ExtLibs\HeuristicLab.Netron\3.0.2672.12446\HeuristicLab.Netron-3.0.
 HeuristicLab.ExtLibs\HeuristicLab.WinFormsUI\2.3.1\WinFormsUI-2.3.1:WeifenLuo.WinFormsUI.Docking-2.3.1.dll
 HeuristicLab.ExtLibs\HeuristicLab.WinFormsUI\2.3.1\HeuristicLab.WinFormsUI-2.3.1:HeuristicLab.WinFormsUI-2.3.1.dll
 HeuristicLab.ExtLibs\HeuristicLab.WinFormsUI\2.3.1\HeuristicLab.WinFormsUI-2.3.1:WeifenLuo.WinFormsUI.Docking License.txt
+
+HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327:HeuristicLab.SharpDevelop-3.1.1.5327.dll
+HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327:ICSharpCode.NRefactory.dll
+HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327:ICSharpCode.SharpDevelop.Dom.dll
+HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327:ICSharpCode.TextEditor.dll
+HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327:Mono.Cecil.dll
+HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327:Mono License.txt
+HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327:SharpDevelop License.txt
