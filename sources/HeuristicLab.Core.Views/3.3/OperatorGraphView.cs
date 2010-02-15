@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
@@ -53,6 +54,7 @@ namespace HeuristicLab.Core.Views {
     public OperatorGraphView() {
       InitializeComponent();
       Caption = "Operator Graph";
+      this.viewHost.ViewType = typeof(OperatorTreeView);
     }
     /// <summary>
     /// Initializes a new instance of <see cref="OperatorGraphView"/> 
@@ -89,23 +91,19 @@ namespace HeuristicLab.Core.Views {
     /// <remarks>Calls <see cref="ViewBase.UpdateControls"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void OnContentChanged() {
       base.OnContentChanged();
+      Caption = "Operator Graph";
       operatorsView.Content = null;
       operatorsView.Enabled = false;
-      graphView.Content = null;
-      graphView.Enabled = false;
-      if (Content == null) {
-        Caption = "Operator Graph";
-        operatorsView.Content = null;
-        operatorsView.Enabled = false;
-        graphView.Content = null;
-        graphView.Enabled = false;
-      } else {
+      viewHost.Content = null;
+      viewHost.Enabled = false;
+
+      if (Content != null) {
         Caption = Content.ItemName + " (" + Content.GetType().Name + ")";
         operatorsView.Content = Content.Operators;
         operatorsView.Enabled = true;
         MarkInitialOperator();
-        graphView.Content = Content.InitialOperator;
-        graphView.Enabled = true;
+        viewHost.Content = Content.InitialOperator;
+        viewHost.Enabled = true;
       }
     }
 
@@ -147,7 +145,7 @@ namespace HeuristicLab.Core.Views {
         Invoke(new EventHandler(Content_InitialOperatorChanged), sender, e);
       else {
         MarkInitialOperator();
-        graphView.Content = Content.InitialOperator;
+        viewHost.Content = Content.InitialOperator;
       }
     }
     #endregion

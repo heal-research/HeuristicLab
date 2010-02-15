@@ -1,4 +1,25 @@
-﻿using System;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -12,7 +33,7 @@ using Netron.Diagramming.Core;
 namespace HeuristicLab.Netron {
   [ToolboxItem(true)]
   public partial class NetronVisualization : DiagramControlBase {
-    private static Size INVALID_SIZE = new Size(-1,-1);
+    private static Size INVALID_SIZE = new Size(-1, -1);
     private Size oldSize;
     public NetronVisualization()
       : base() {
@@ -42,22 +63,23 @@ namespace HeuristicLab.Netron {
     }
 
     private void NetronVisualization_SizeChanged(object sender, EventArgs e) {
-      if (this.oldSize == INVALID_SIZE) {
+      //if (this.oldSize == INVALID_SIZE) {
         this.View.PageSize = new Size((int)(this.Size.Width * this.Magnification.Width), (int)(this.Size.Height * this.Magnification.Height));
-        oldSize = this.Size;
-        return;
-      }
+      //  if (!this.DesignMode)
+      //    oldSize = this.Size;
+      //  return;
+      //}
 
-      SizeF magnificationChanges = new SizeF();
-      magnificationChanges.Width = ((float)this.Size.Width) / oldSize.Width;
-      magnificationChanges.Height = ((float)this.Size.Height) / oldSize.Height;
+      //SizeF magnificationChanges = new SizeF();
+      //magnificationChanges.Width = ((float)this.Size.Width) / oldSize.Width;
+      //magnificationChanges.Height = ((float)this.Size.Height) / oldSize.Height;
 
-      SizeF newMagnification = new SizeF();
-      newMagnification.Width = this.View.Magnification.Width * magnificationChanges.Width;
-      newMagnification.Height = this.View.Magnification.Height * magnificationChanges.Height;
+      //SizeF newMagnification = new SizeF();
+      //newMagnification.Width = this.View.Magnification.Width * magnificationChanges.Width;
+      //newMagnification.Height = this.View.Magnification.Height * magnificationChanges.Height;
 
-      this.Magnification = newMagnification;
-      this.oldSize = this.Size;
+      //this.Magnification = newMagnification;
+      //this.oldSize = this.Size;
     }
 
     protected override void OnScroll(ScrollEventArgs se) {

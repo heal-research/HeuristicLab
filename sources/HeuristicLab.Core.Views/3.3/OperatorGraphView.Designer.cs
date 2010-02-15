@@ -48,9 +48,9 @@ namespace HeuristicLab.Core.Views {
       this.operatorsContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.initialOperatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.operatorsView = new HeuristicLab.Core.Views.OperatorSetView();
-      this.graphView = new HeuristicLab.Core.Views.OperatorTreeView();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
       this.graphGroupBox = new System.Windows.Forms.GroupBox();
+      this.viewHost = new HeuristicLab.Core.Views.ViewHost();
       this.operatorsContextMenuStrip.SuspendLayout();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
@@ -81,22 +81,12 @@ namespace HeuristicLab.Core.Views {
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.operatorsView.Caption = "Operator Set";
+      this.operatorsView.Content = null;
       this.operatorsView.Location = new System.Drawing.Point(3, 3);
       this.operatorsView.Name = "operatorsView";
       this.operatorsView.Size = new System.Drawing.Size(602, 309);
       this.operatorsView.TabIndex = 0;
       this.operatorsView.Load += new System.EventHandler(this.operatorsView_Load);
-      // 
-      // graphView
-      // 
-      this.graphView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.graphView.Caption = "Operator";
-      this.graphView.Location = new System.Drawing.Point(6, 19);
-      this.graphView.Name = "graphView";
-      this.graphView.Size = new System.Drawing.Size(590, 183);
-      this.graphView.TabIndex = 0;
       // 
       // splitContainer
       // 
@@ -121,13 +111,22 @@ namespace HeuristicLab.Core.Views {
       this.graphGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.graphGroupBox.Controls.Add(this.graphView);
+      this.graphGroupBox.Controls.Add(this.viewHost);
       this.graphGroupBox.Location = new System.Drawing.Point(3, 3);
       this.graphGroupBox.Name = "graphGroupBox";
       this.graphGroupBox.Size = new System.Drawing.Size(602, 208);
       this.graphGroupBox.TabIndex = 0;
       this.graphGroupBox.TabStop = false;
       this.graphGroupBox.Text = "Operator &Graph";
+      // 
+      // viewHost
+      // 
+      this.viewHost.Content = null;
+      this.viewHost.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.viewHost.Location = new System.Drawing.Point(3, 16);
+      this.viewHost.Name = "viewHost";
+      this.viewHost.Size = new System.Drawing.Size(596, 189);
+      this.viewHost.TabIndex = 0;
       // 
       // OperatorGraphView
       // 
@@ -150,8 +149,8 @@ namespace HeuristicLab.Core.Views {
     protected System.Windows.Forms.ContextMenuStrip operatorsContextMenuStrip;
     protected System.Windows.Forms.ToolStripMenuItem initialOperatorToolStripMenuItem;
     protected OperatorSetView operatorsView;
-    protected OperatorTreeView graphView;
     protected System.Windows.Forms.SplitContainer splitContainer;
     protected System.Windows.Forms.GroupBox graphGroupBox;
+    private ViewHost viewHost;
   }
 }

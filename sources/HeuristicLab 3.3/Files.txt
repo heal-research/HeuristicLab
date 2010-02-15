@@ -20,6 +20,7 @@ HeuristicLab.MainForm.Test\3.2:HeuristicLab.MainForm.Test-3.2.dll
 HeuristicLab.MainForm.WindowsForms\3.2:HeuristicLab.MainForm.WindowsForms-3.2.dll 
 HeuristicLab.Operators\3.3:HeuristicLab.Operators-3.3.dll 
 HeuristicLab.Operators.Views\3.3:HeuristicLab.Operators.Views-3.3.dll 
+HeuristicLab.Operators.Views.GraphVisualization\3.3:HeuristicLab.Operators.Views.GraphVisualization-3.3.dll 
 HeuristicLab.Operators.Programmable\3.3:HeuristicLab.Operators.Programmable-3.3.dll 
 HeuristicLab.Optimizer\3.3:HeuristicLab.Optimizer-3.3.dll 
 HeuristicLab.Parameters\3.3:HeuristicLab.Parameters-3.3.dll 
