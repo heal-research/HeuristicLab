@@ -135,10 +135,11 @@ namespace HeuristicLab.MainForm {
     public static IView CreateView(Type viewType, object content) {
       if (!typeof(IView).IsAssignableFrom(viewType))
         throw new ArgumentException("View can not be created becaues given type " + viewType.ToString() + " is not of type IView.");
-      if (viewType.IsGenericTypeDefinition)
-        throw new ArgumentException("View can not be created becaues given type " + viewType.ToString() + " is a generic type definition.");
+      Type view = viewType;
+      if (view.IsGenericTypeDefinition)
+        view = TransformGenericTypeDefinition(view, content.GetType());
 
-      return (IView)Activator.CreateInstance(viewType, content);
+      return (IView)Activator.CreateInstance(view, content);
     }
 
     private static Type TransformGenericTypeDefinition(Type viewType, Type contentType) {
