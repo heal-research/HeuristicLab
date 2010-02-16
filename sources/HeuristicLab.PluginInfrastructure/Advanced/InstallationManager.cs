@@ -26,7 +26,6 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure.Manager;
 using System.IO;
 using System.ComponentModel;
-using UpdateService = HeuristicLab.PluginInfrastructure.PluginUpdateService;
 using System.Reflection;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
@@ -184,14 +183,14 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     public void Update(IEnumerable<string> pluginNames) {
       var pluginDescriptions = from name in pluginNames
                                select GetPluginDescription(name);
-      Dictionary<UpdateService.PluginDescription, string> matchingPlugins = new Dictionary<UpdateService.PluginDescription, string>();
+      Dictionary<DeploymentService.PluginDescription, string> matchingPlugins = new Dictionary<DeploymentService.PluginDescription, string>();
       foreach (var updateLocation in HeuristicLab.PluginInfrastructure.Properties.Settings.Default.UpdateLocations) {
-        using (var client = new UpdateService.UpdateClient("", updateLocation)) {
+        using (var client = new DeploymentService.UpdateClient("", updateLocation)) {
           var updateLocationMatchingPlugins = from desc in pluginDescriptions
                                               from info in client.GetPlugins()
                                               where desc.Name == info.Name
                                               select info;
-          foreach (UpdateService.PluginDescription info in updateLocationMatchingPlugins) {
+          foreach (DeploymentService.PluginDescription info in updateLocationMatchingPlugins) {
             // keep only the highest version of any plugin
             var existingPlugin = matchingPlugins.Keys.FirstOrDefault(x => x.Name == info.Name);
             if (existingPlugin == null || existingPlugin.Version < info.Version) {
@@ -206,7 +205,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       if (!args.Cancel) {
         var groupedInfos = matchingPlugins.GroupBy(x => x.Value);
         foreach (var group in groupedInfos) {
-          using (var client = new UpdateService.UpdateClient(group.Key)) {
+          using (var client = new DeploymentService.UpdateClient(group.Key)) {
             foreach (var info in group) {
               client.GetPlugin(info.Key);
             }

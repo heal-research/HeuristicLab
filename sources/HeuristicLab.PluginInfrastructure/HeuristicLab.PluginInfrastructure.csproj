@@ -91,6 +91,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Advanced\DeploymentService\DeploymentService.cs" />
     <Compile Include="Advanced\InstallationManagerConsole.cs" />
     <Compile Include="Advanced\InstallationManager.cs" />
     <Compile Include="Advanced\InstallationManagerForm.cs">
@@ -98,6 +99,12 @@
     </Compile>
     <Compile Include="Advanced\InstallationManagerForm.Designer.cs">
       <DependentUpon>InstallationManagerForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Advanced\DeploymentService\PluginDescription.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Advanced\DeploymentService\ProductDescription.cs">
+      <SubType>Code</SubType>
     </Compile>
     <Compile Include="Attributes\ApplicationAttribute.cs" />
     <Compile Include="Attributes\AssemblyBuildDateAttribute.cs" />
@@ -154,22 +161,12 @@
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="Service References\PluginUpdateService\HeuristicLab.Services.Deployment.DataAccess.xsd" />
-    <None Include="Service References\PluginUpdateService\service.wsdl" />
-    <None Include="Service References\PluginUpdateService\service.xsd" />
-    <None Include="Service References\PluginUpdateService\service1.xsd" />
-    <None Include="Service References\PluginUpdateService\System.xsd" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Sandboxing\SandboxManager.cs" />
-    <Compile Include="Service References\PluginUpdateService\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Compile>
     <Compile Include="Starter\SplashScreen.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -195,24 +192,11 @@
     <Content Include="Resources\LargeIcons.gif" />
     <Content Include="Resources\List.gif" />
     <Content Include="Resources\Logo_white.gif" />
-    <None Include="Service References\PluginUpdateService\HeuristicLab.PluginInfrastructure.PluginUpdateService.PluginDescription.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\PluginUpdateService\HeuristicLab.PluginInfrastructure.PluginUpdateService.ProductDescription.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\PluginUpdateService\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
-    <None Include="Service References\PluginUpdateService\configuration.svcinfo" />
-    <None Include="Service References\PluginUpdateService\configuration91.svcinfo" />
+    <None Include="Advanced\DeploymentService\output.config" />
+    <None Include="Advanced\DeploymentService\RegenerateServiceClasses.cmd" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadataStorage Include="Service References\PluginUpdateService\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

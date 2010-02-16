@@ -1,0 +1,2 @@
+﻿#
+svcutil http://localhost:8731/Design_Time_Addresses/HeuristicLab.Services.Deployment/Update/mex http://localhost:8731/Design_Time_Addresses/HeuristicLab.Services.Deployment/Admin/mex  /language:C# /targetClientVersion:Version35 /out:DeploymentService /namespace:*,HeuristicLab.PluginInfrastructure.Advanced.DeploymentService

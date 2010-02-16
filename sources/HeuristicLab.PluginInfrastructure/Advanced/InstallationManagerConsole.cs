@@ -26,7 +26,7 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure.Manager;
 using System.IO;
 using System.ComponentModel;
-using UpdateService = HeuristicLab.PluginInfrastructure.PluginUpdateService;
+
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
   public class InstallationManagerConsole {
@@ -43,7 +43,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
     void installManager_PreUpdatePlugin(object sender, PluginInfrastructureCancelEventArgs e) {
       Console.WriteLine("Following plugins are updated:");
-      var infos = (IEnumerable<UpdateService.PluginDescription>)e.Entity;
+      var infos = (IEnumerable<PluginDescription>)e.Entity;
       foreach (var info in infos) {
         Console.WriteLine(info.Name + " " + info.Version);
       }
@@ -53,7 +53,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     }
 
     void installManager_PluginUpdated(object sender, PluginInfrastructureEventArgs e) {
-      foreach (var info in (IEnumerable<UpdateService.PluginDescription>)e.Entity)
+      foreach (var info in (IEnumerable<PluginDescription>)e.Entity)
         Console.WriteLine("Updated: {0}", info.Name);
     }
 
