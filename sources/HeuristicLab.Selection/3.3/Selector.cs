@@ -59,25 +59,20 @@ namespace HeuristicLab.Selection {
     }
 
     public sealed override IExecutionSequence Apply() {
-      ScopeList source = new ScopeList(CurrentScope.SubScopes);
-      ScopeList target = new ScopeList();
-
-      Select(source, target);
+      ScopeList scopes = new ScopeList(CurrentScope.SubScopes);
+      ScopeList selected = Select(scopes);
 
       CurrentScope.SubScopes.Clear();
-      IScope remaining = new Scope("Remaining");
-      CurrentScope.SubScopes.Add(remaining);
-      IScope selected = new Scope("Selected");
-      CurrentScope.SubScopes.Add(selected);
-
-      for (int i = 0; i < source.Count; i++)
-        remaining.SubScopes.Add(source[i]);
-      for (int i = 0; i < target.Count; i++)
-        selected.SubScopes.Add(target[i]);
+      IScope remainingScope = new Scope("Remaining");
+      remainingScope.SubScopes.AddRange(scopes);
+      CurrentScope.SubScopes.Add(remainingScope);
+      IScope selectedScope = new Scope("Selected");
+      selectedScope.SubScopes.AddRange(selected);
+      CurrentScope.SubScopes.Add(selectedScope);
 
       return base.Apply();
     }
 
-    protected abstract void Select(ScopeList source, ScopeList target);
+    protected abstract ScopeList Select(ScopeList scopes);
   }
 }

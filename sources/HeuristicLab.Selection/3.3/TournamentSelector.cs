@@ -39,21 +39,23 @@ namespace HeuristicLab.Selection {
 
     public TournamentSelector() : base() {
       Parameters.Add(new ValueLookupParameter<IntData>("GroupSize", "The size of the tournament group.", new IntData(2)));
+      CopySelected.Value = true;
     }
 
-    protected override void Select(ScopeList source, ScopeList target) {
+    protected override ScopeList Select(ScopeList scopes) {
       int count = NumberOfSelectedSubScopesParameter.ActualValue.Value;
       bool copy = CopySelectedParameter.Value.Value;
       IRandom random = RandomParameter.ActualValue;
       bool maximization = MaximizationParameter.ActualValue.Value;
       List<DoubleData> qualities = new List<DoubleData>(QualityParameter.ActualValue);
       int groupSize = GroupSizeParameter.ActualValue.Value;
+      ScopeList selected = new ScopeList();
 
       for (int i = 0; i < count; i++) {
-        int best = random.Next(source.Count);
+        int best = random.Next(scopes.Count);
         int index;
         for (int j = 1; j < groupSize; j++) {
-          index = random.Next(source.Count);
+          index = random.Next(scopes.Count);
           if (((maximization) && (qualities[index].Value > qualities[best].Value)) ||
               ((!maximization) && (qualities[index].Value < qualities[best].Value))) {
             best = index;
@@ -61,13 +63,14 @@ namespace HeuristicLab.Selection {
         }
 
         if (copy)
-          target.Add((IScope)source[best].Clone());
+          selected.Add((IScope)scopes[best].Clone());
         else {
-          target.Add(source[best]);
-          source.RemoveAt(best);
+          selected.Add(scopes[best]);
+          scopes.RemoveAt(best);
           qualities.RemoveAt(best);
         }
       }
+      return selected;
     }
   }
 }

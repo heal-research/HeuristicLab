@@ -119,7 +119,7 @@ namespace HeuristicLab.Core.Views {
       if (viewType == null || content == null)
         return;
 
-      if (!ViewCanShowContent(viewType, content) || !typeMenuItemTable.ContainsKey(viewType))
+      if (!ViewCanShowContent(viewType, content))
         throw new ArgumentException(string.Format("View \"{0}\" cannot display content \"{1}\".",
                                                   viewType.GetPrettyName(),
                                                   Content.GetType().GetPrettyName()));

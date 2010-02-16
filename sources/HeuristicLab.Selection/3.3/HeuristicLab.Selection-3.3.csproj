@@ -81,6 +81,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLabSelectionPlugin.cs.frame" />
+    <Compile Include="LeftReducer.cs" />
+    <Compile Include="MergingReducer.cs" />
+    <Compile Include="Reducer.cs" />
+    <Compile Include="LinearRankSelector.cs" />
+    <Compile Include="ProportionalSelector.cs" />
+    <Compile Include="RightReducer.cs" />
     <Compile Include="RightSelector.cs" />
     <Compile Include="StochasticSelector.cs" />
     <Compile Include="LeftSelector.cs" />

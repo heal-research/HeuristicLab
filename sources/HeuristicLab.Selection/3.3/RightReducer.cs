@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,33 +19,26 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.Text;
 using HeuristicLab.Core;
-using HeuristicLab.Operators;
+using HeuristicLab.Data;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Selection {
   /// <summary>
-  /// Takes only sub scopes from the right child of the tree.
+  /// An operator which reduces to the sub-scopes of the rightmost sub-scope of the current scope.
   /// </summary>
-  public class RightReducer : ReducerBase {
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get { return @"TODO\r\nOperator description still missing ..."; }
-    }
+  [Item("RightReducer", "An operator which reduces to the sub-scopes of the rightmost sub-scope of the current scope.")]
+  [EmptyStorableClass]
+  [Creatable("Test")]
+  public sealed class RightReducer : Reducer {
+    public RightReducer() : base() { }
 
-    /// <summary>
-    /// Takes only the sub scopes from the right part of the tree.
-    /// </summary>
-    /// <param name="scope">The current scope.</param>
-    /// <returns>All sub scopes from the right sub scope of the tree.</returns>
-    protected override ICollection<IScope> Reduce(IScope scope) {
-      List<IScope> subScopes = new List<IScope>();
-
-      if (scope.SubScopes.Count > 0)
-        subScopes.AddRange(scope.SubScopes[scope.SubScopes.Count - 1].SubScopes);
-      return subScopes;
+    protected override ScopeList Reduce(ScopeList scopes) {
+      ScopeList reduced = new ScopeList();
+      if (scopes.Count > 0) reduced.AddRange(scopes[scopes.Count - 1].SubScopes);
+      return reduced;
     }
   }
 }

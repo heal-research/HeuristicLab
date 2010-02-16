@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,67 +19,61 @@
  */
 #endregion
 
-using System;
+using System.Linq;
 using System.Collections.Generic;
-using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Selection {
   /// <summary>
-  /// Selects scopes based on their rank, which has been determined through their quality.
+  /// A linear rank selection operator which considers the rank based on a single double quality value for selection.
   /// </summary>
-  public class LinearRankSelector : StochasticSelectorBase {
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get { return @"TODO\r\nOperator description still missing ..."; }
+  [Item("LinearRankSelector", "A linear rank selection operator which considers the rank based on a single double quality value for selection.")]
+  [EmptyStorableClass]
+  [Creatable("Test")]
+  public sealed class LinearRankSelector : StochasticSingleObjectiveSelector {
+    public LinearRankSelector()
+      : base() {
+      CopySelected.Value = true;
     }
 
-    /// <summary>
-    /// Initializes a new instance of <see cref="LinearRankSelector"/> with the <c>CopySelected</c> flag
-    /// set to <c>true</c>.
-    /// </summary>
-    public LinearRankSelector() {
-      GetVariable("CopySelected").GetValue<BoolData>().Data = true;
-    }
+    protected override ScopeList Select(ScopeList scopes) {
+      int count = NumberOfSelectedSubScopesParameter.ActualValue.Value;
+      bool copy = CopySelectedParameter.Value.Value;
+      IRandom random = RandomParameter.ActualValue;
+      bool maximization = MaximizationParameter.ActualValue.Value;
+      ItemArray<DoubleData> qualities = QualityParameter.ActualValue;
+      ScopeList selected = new ScopeList();
 
-    /// <summary>
-    /// Copies or moves sub scopes from the given <paramref name="source"/> to the specified
-    /// <paramref name="target"/> according to their rank which is determined through their quality.
-    /// </summary>
-    /// <exception cref="InvalidOperationException">Thrown when no source sub scopes are available.</exception>
-    /// <param name="random">The random number generator.</param>
-    /// <param name="source">The source scope from where to copy/move the sub scopes.</param>
-    /// <param name="selected">The number of sub scopes to copy/move.</param>
-    /// <param name="target">The target scope where to add the sub scopes.</param>
-    /// <param name="copySelected">Boolean flag whether the sub scopes shall be moved or copied.</param>
-    protected override void Select(IRandom random, IScope source, int selected, IScope target, bool copySelected) {
-      int subScopes = source.SubScopes.Count;
-      int lotSum = (subScopes * (subScopes + 1)) / 2;
-      int selectedLot;
-      int currentLot;
-      int index;
+      // create a list for each scope that contains the scope's index in the original scope list and its lots
+      var temp = qualities.Select((x, index) => new { index, x.Value });
+      if (maximization)
+        temp = temp.OrderBy(x => x.Value);
+      else
+        temp = temp.OrderByDescending(x => x.Value);
+      var list = temp.Select((x, lots) => new { x.index, lots }).ToList();
 
-      for (int i = 0; i < selected; i++) {
-        if (subScopes < 1) throw new InvalidOperationException("No source scopes available to select.");
-
-        selectedLot = random.Next(1, lotSum + 1);
-        currentLot = subScopes;  // first individual is the best one
-        index = 0;
+      int lotSum = list.Count * (list.Count + 1) / 2;
+      for (int i = 0; i < count; i++) {
+        int selectedLot = random.Next(lotSum) + 1;
+        int index = 0;
+        int currentLot = list[index].lots;
         while (currentLot < selectedLot) {
           index++;
-          currentLot += subScopes - index;
+          currentLot += list[index].lots;
         }
-        IScope selectedScope = source.SubScopes[index];
-        if (copySelected)
-          target.AddSubScope((IScope)selectedScope.Clone());
+        if (copy)
+          selected.Add((IScope)scopes[list[index].index].Clone());
         else {
-          source.RemoveSubScope(selectedScope);
-          target.AddSubScope(selectedScope);
-          subScopes--;
-          lotSum = (subScopes * (subScopes + 1)) / 2;
+          selected.Add(scopes[list[index].index]);
+          scopes.RemoveAt(list[index].index);
+          lotSum -= list[index].lots;
+          list.RemoveAt(index);
         }
       }
+      return selected;
     }
   }
 }

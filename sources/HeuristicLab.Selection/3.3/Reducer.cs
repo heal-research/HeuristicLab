@@ -19,38 +19,43 @@
  */
 #endregion
 
-using System.Collections.Generic;
+using System;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Selection {
   /// <summary>
-  /// A random selection operator.
+  /// A base class for reduction operators.
   /// </summary>
-  [Item("RandomSelector", "A random selection operator.")]
+  [Item("Reducer", "A base class for reduction operators.")]
   [EmptyStorableClass]
-  [Creatable("Test")]
-  public sealed class RandomSelector : StochasticSelector {
-    public RandomSelector() : base() { }
-
-    protected override ScopeList Select(ScopeList scopes) {
-      int count = NumberOfSelectedSubScopesParameter.ActualValue.Value;
-      bool copy = CopySelectedParameter.Value.Value;
-      IRandom random = RandomParameter.ActualValue;
-      ScopeList selected = new ScopeList();
-
-      for (int i = 0; i < count; i++) {
-        if (copy)
-          selected.Add((IScope)scopes[random.Next(scopes.Count)].Clone());
-        else {
-          int index = random.Next(scopes.Count);
-          selected.Add(scopes[index]);
-          scopes.RemoveAt(index);
-        }
-      }
-      return selected;
+  public abstract class Reducer : SingleSuccessorOperator {
+    protected ScopeParameter CurrentScopeParameter {
+      get { return (ScopeParameter)Parameters["CurrentScope"]; }
     }
+
+    public IScope CurrentScope {
+      get { return CurrentScopeParameter.ActualValue; }
+    }
+
+    protected Reducer()
+      : base() {
+      Parameters.Add(new ScopeParameter("CurrentScope", "The current scope from which sub-scopes should be selected."));
+    }
+
+    public sealed override IExecutionSequence Apply() {
+      ScopeList scopes = new ScopeList(CurrentScope.SubScopes);
+      ScopeList reduced = Reduce(scopes);
+
+      CurrentScope.SubScopes.Clear();
+      CurrentScope.SubScopes.AddRange(reduced);
+
+      return base.Apply();
+    }
+
+    protected abstract ScopeList Reduce(ScopeList scopes);
   }
 }

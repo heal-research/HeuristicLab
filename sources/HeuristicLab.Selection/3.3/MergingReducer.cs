@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,35 +19,27 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.Text;
 using HeuristicLab.Core;
-using HeuristicLab.Operators;
+using HeuristicLab.Data;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Selection {
   /// <summary>
-  /// Merges all sub scopes of the children to one list.
+  /// An operator which reduces to the sub-scopes of all sub-scopes of the current scope.
   /// </summary>
-  public class MergingReducer : ReducerBase {
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get { return @"TODO\r\nOperator description still missing ..."; }
-    }
+  [Item("MergingReducer", "An operator which reduces to the sub-scopes of all sub-scopes of the current scope.")]
+  [EmptyStorableClass]
+  [Creatable("Test")]
+  public sealed class MergingReducer : Reducer {
+    public MergingReducer() : base() { }
 
-    /// <summary>
-    /// Merges all sub scopes of the sub scopes of the current <paramref name="scope"/>.
-    /// </summary>
-    /// <param name="scope">The current scope whose sub scopes to merge.</param>
-    /// <returns>A list of all merged subscopes of the given <paramref name="scope"/>.</returns>
-    protected override ICollection<IScope> Reduce(IScope scope) {
-      List<IScope> subScopes = new List<IScope>();
-
-      for (int i = 0; i < scope.SubScopes.Count; i++) {
-        for (int j = 0; j < scope.SubScopes[i].SubScopes.Count; j++)
-          subScopes.Add(scope.SubScopes[i].SubScopes[j]);
-      }
-      return subScopes;
+    protected override ScopeList Reduce(ScopeList scopes) {
+      ScopeList reduced = new ScopeList();
+      for (int i = 0; i < scopes.Count; i++)
+        reduced.AddRange(scopes[i].SubScopes);
+      return reduced;
     }
   }
 }

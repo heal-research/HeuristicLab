@@ -35,21 +35,23 @@ namespace HeuristicLab.Selection {
   public sealed class RightSelector : Selector {
     public RightSelector() : base() { }
 
-    protected override void Select(ScopeList source, ScopeList target) {
+    protected override ScopeList Select(ScopeList scopes) {
       int count = NumberOfSelectedSubScopesParameter.ActualValue.Value;
       bool copy = CopySelectedParameter.Value.Value;
+      ScopeList selected = new ScopeList();
 
-      int j = source.Count - 1;
+      int j = scopes.Count - 1;
       for (int i = 0; i < count; i++) {
         if (copy) {
-          target.Add((IScope)source[j].Clone());
+          selected.Add((IScope)scopes[j].Clone());
           j--;
-          if (j < 0) j = source.Count - 1;
+          if (j < 0) j = scopes.Count - 1;
         } else {
-          target.Add(source[source.Count - 1]);
-          source.RemoveAt(source.Count - 1);
+          selected.Add(scopes[scopes.Count - 1]);
+          scopes.RemoveAt(scopes.Count - 1);
         }
       }
+      return selected;
     }
   }
 }
