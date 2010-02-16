@@ -192,7 +192,6 @@
     <Content Include="Resources\LargeIcons.gif" />
     <Content Include="Resources\List.gif" />
     <Content Include="Resources\Logo_white.gif" />
-    <None Include="Advanced\DeploymentService\output.config" />
     <None Include="Advanced\DeploymentService\RegenerateServiceClasses.cmd" />
   </ItemGroup>
   <ItemGroup>

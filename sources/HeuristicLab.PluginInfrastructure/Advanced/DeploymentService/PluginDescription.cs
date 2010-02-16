@@ -32,10 +32,16 @@ namespace HeuristicLab.PluginInfrastructure.Advanced.DeploymentService {
   // extension of auto-generated DataContract class PluginDescription
   public partial class PluginDescription {
     public PluginDescription(string name, Version version) : this(name, version, new List<PluginDescription>()) { }
-    public PluginDescription(string name, Version version, IEnumerable<PluginDescription> dependencies) {
+    public PluginDescription(string name, Version version, IEnumerable<PluginDescription> dependencies)
+      : this(name, version, dependencies, string.Empty, string.Empty) {
+    }
+
+    public PluginDescription(string name, Version version, IEnumerable<PluginDescription> dependencies, string contactInformation, string licenseText) {
       this.Name = name;
       this.Version = version;
       this.Dependencies = dependencies.ToArray();
+      this.ContactInformation = contactInformation;
+      this.LicenseText = licenseText;
     }
   }
 }

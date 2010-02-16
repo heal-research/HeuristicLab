@@ -21,7 +21,11 @@ namespace HeuristicLab.PluginInfrastructure.Advanced.DeploymentService
         
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
+        private string ContactInformationField;
+        
         private HeuristicLab.PluginInfrastructure.Advanced.DeploymentService.PluginDescription[] DependenciesField;
+        
+        private string LicenseTextField;
         
         private string NameField;
         
@@ -40,6 +44,19 @@ namespace HeuristicLab.PluginInfrastructure.Advanced.DeploymentService
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ContactInformation
+        {
+            get
+            {
+                return this.ContactInformationField;
+            }
+            set
+            {
+                this.ContactInformationField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public HeuristicLab.PluginInfrastructure.Advanced.DeploymentService.PluginDescription[] Dependencies
         {
             get
@@ -49,6 +66,19 @@ namespace HeuristicLab.PluginInfrastructure.Advanced.DeploymentService
             set
             {
                 this.DependenciesField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string LicenseText
+        {
+            get
+            {
+                return this.LicenseTextField;
+            }
+            set
+            {
+                this.LicenseTextField = value;
             }
         }
         
