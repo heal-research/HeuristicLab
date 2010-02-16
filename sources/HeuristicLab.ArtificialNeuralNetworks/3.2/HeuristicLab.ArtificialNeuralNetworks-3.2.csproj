@@ -101,9 +101,9 @@
       <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
       <Name>HeuristicLab.Data-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\2.1.2.2591\ALGLIB-2.1.2.2591\ALGLIB-2.1.2.2591.csproj">
-      <Project>{44456535-5DB5-454A-BE2B-7426DA6700B6}</Project>
-      <Name>ALGLIB-2.1.2.2591</Name>
+    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\2.3.0\ALGLIB-2.3.0\ALGLIB-2.3.0.csproj">
+      <Project>{B5EAF001-021A-4572-84E3-FED4B8AEBBAB}</Project>
+      <Name>ALGLIB-2.3.0</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Modeling\3.2\HeuristicLab.Modeling-3.2.csproj">
       <Project>{80F7FADA-549D-4151-8856-79B620A50DBA}</Project>
