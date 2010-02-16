@@ -30,9 +30,12 @@ namespace HeuristicLab.Selection {
   /// </summary>
   [Plugin("HeuristicLab.Selection", "3.3.0.$WCREV$")]
   [PluginFile("HeuristicLab.Selection-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Data", "3.3")]
   [PluginDependency("HeuristicLab.Operators", "3.3")]
+  [PluginDependency("HeuristicLab.Parameters", "3.3")]
+  [PluginDependency("HeuristicLab.Persistence", "3.3")]
   public class HeuristicLabSelectionPlugin : PluginBase {
   }
 }

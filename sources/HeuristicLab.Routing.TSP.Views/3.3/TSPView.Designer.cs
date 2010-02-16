@@ -19,8 +19,8 @@
  */
 #endregion
 
-namespace HeuristicLab.Core.Views {
-  partial class ProblemView {
+namespace HeuristicLab.Routing.TSP.Views {
+  partial class TSPView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -44,41 +44,46 @@ namespace HeuristicLab.Core.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.valueParameterCollectionView = new HeuristicLab.Core.Views.ValueParameterCollectionView();
+      this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+      this.importButton = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
+      // 
+      // valueParameterCollectionView
+      // 
+      this.valueParameterCollectionView.Size = new System.Drawing.Size(490, 205);
       // 
       // nameTextBox
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.nameTextBox, 2);
-      this.nameTextBox.Size = new System.Drawing.Size(418, 20);
       // 
-      // descriptionTextBox
+      // openFileDialog
       // 
-      this.descriptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.openFileDialog.DefaultExt = "tsp";
+      this.openFileDialog.FileName = "tspdata";
+      this.openFileDialog.Filter = "TSPLIB Files|*.tsp|All Files|*.*";
+      this.openFileDialog.Title = "Import TSP Data";
+      // 
+      // importButton
+      // 
+      this.importButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.descriptionTextBox.Size = new System.Drawing.Size(418, 87);
+      this.importButton.Location = new System.Drawing.Point(0, 330);
+      this.importButton.Name = "importButton";
+      this.importButton.Size = new System.Drawing.Size(490, 23);
+      this.importButton.TabIndex = 5;
+      this.importButton.Text = "&Import from TSPLIB";
+      this.importButton.UseVisualStyleBackColor = true;
+      this.importButton.Click += new System.EventHandler(this.importButton_Click);
       // 
-      // valueParameterCollectionView
-      // 
-      this.valueParameterCollectionView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.valueParameterCollectionView.Caption = "ValueParameterCollection";
-      this.valueParameterCollectionView.Content = null;
-      this.valueParameterCollectionView.Location = new System.Drawing.Point(0, 119);
-      this.valueParameterCollectionView.Name = "valueParameterCollectionView";
-      this.valueParameterCollectionView.Size = new System.Drawing.Size(490, 234);
-      this.valueParameterCollectionView.TabIndex = 4;
-      // 
-      // ProblemView
+      // TSPView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.valueParameterCollectionView);
-      this.Name = "ProblemView";
-      this.Size = new System.Drawing.Size(490, 353);
+      this.Controls.Add(this.importButton);
+      this.Name = "TSPView";
+      this.Controls.SetChildIndex(this.importButton, 0);
       this.Controls.SetChildIndex(this.valueParameterCollectionView, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
       this.Controls.SetChildIndex(this.descriptionLabel, 0);
@@ -92,7 +97,8 @@ namespace HeuristicLab.Core.Views {
 
     #endregion
 
-    protected ValueParameterCollectionView valueParameterCollectionView;
+    private System.Windows.Forms.OpenFileDialog openFileDialog;
+    private System.Windows.Forms.Button importButton;
 
   }
 }

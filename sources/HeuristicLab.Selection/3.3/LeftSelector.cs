@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,44 +19,35 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.Text;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Selection {
   /// <summary>
-  /// Copies or moves a defined number of sub scopes from a source scope to a target scope, starting at
-  /// the left side of the tree.
+  /// An operator which selects sub-scopes from left to right.
   /// </summary>
-  public class LeftSelector : StochasticSelectorBase {
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get { return @"TODO\r\nOperator description still missing ..."; }
-    }
+  [Item("LeftSelector", "An operator which selects sub-scopes from left to right.")]
+  [EmptyStorableClass]
+  [Creatable("Test")]
+  public sealed class LeftSelector : Selector {
+    public LeftSelector() : base() { }
 
-    /// <summary>
-    /// Copies or moves a number of sub scopes (<paramref name="selected"/>) from <paramref name="source"/>
-    /// starting at the left end to the <paramref name="target"/>.
-    /// </summary>
-    /// <param name="random">A random number generator.</param>
-    /// <param name="source">The source scope from which to copy/move the sub scopes.</param>
-    /// <param name="selected">The number of sub scopes to move. Can be also bigger than the total 
-    /// number of sub scopes in <paramref name="source"/>, then the copying process starts again from the 
-    /// beginning.</param>
-    /// <param name="target">The target where to copy/move the sub scopes.</param>
-    /// <param name="copySelected">Boolean flag whether the sub scopes shall be copied or moved.</param>
-    protected override void Select(IRandom random, IScope source, int selected, IScope target, bool copySelected) {
-      int index = 0;
-      for (int i = 0; i < selected; i++) {
-        if (copySelected) {
-          target.AddSubScope((IScope)source.SubScopes[index].Clone());
-          index++;
-          if (index >= source.SubScopes.Count) index = 0;
+    protected override void Select(ScopeList source, ScopeList target) {
+      int count = NumberOfSelectedSubScopesParameter.ActualValue.Value;
+      bool copy = CopySelectedParameter.Value.Value;
+
+      int j = 0;
+      for (int i = 0; i < count; i++) {
+        if (copy) {
+          target.Add((IScope)source[j].Clone());
+          j++;
+          if (j >= source.Count) j = 0;
         } else {
-          IScope s = source.SubScopes[0];
-          source.RemoveSubScope(s);
-          target.AddSubScope(s);
+          target.Add(source[0]);
+          source.RemoveAt(0);
         }
       }
     }

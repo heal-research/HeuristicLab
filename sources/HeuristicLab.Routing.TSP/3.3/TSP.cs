@@ -19,21 +19,59 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Parameters;
+using HeuristicLab.Permutation;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Data {
+namespace HeuristicLab.Routing.TSP {
   [Item("TSP", "Represents a symmetric Traveling Salesman Problem.")]
   [Creatable("Problems")]
+  [EmptyStorableClass]
   public sealed class TSP : Problem {
+    private ValueParameter<DoubleMatrixData> CoordinatesParameter {
+      get { return (ValueParameter<DoubleMatrixData>)Parameters["Coordinates"]; }
+    }
+    private OperatorParameter SolutionGeneratorParameter {
+      get { return (OperatorParameter)Parameters["SolutionGenerator"]; }
+    }
+    private OperatorParameter EvaluatorParameter {
+      get { return (OperatorParameter)Parameters["Evaluator"]; }
+    }
+
+    public DoubleMatrixData Coordinates {
+      get { return CoordinatesParameter.Value; }
+      set { CoordinatesParameter.Value = value; }
+    }
+    public IOperator SolutionGenerator {
+      get { return SolutionGeneratorParameter.Value; }
+      set { SolutionGeneratorParameter.Value = value; }
+    }
+    public IOperator Evaluator {
+      get { return EvaluatorParameter.Value; }
+      set { EvaluatorParameter.Value = value; }
+    }
+
     public TSP()
       : base() {
+      Parameters.Add(new ValueParameter<BoolData>("Maximization", "Set to false as the TSP is a minimization problem.", new BoolData(false)));
+      Parameters.Add(new ValueParameter<DoubleMatrixData>("Coordinates", "The x- and y-Coordinates of the cities.", new DoubleMatrixData(0, 0)));
+      Parameters.Add(new ValueParameter<DoubleData>("BestKnownQuality", "The quality of the best known solution of this TSP instance."));
+      Parameters.Add(new OperatorParameter("SolutionGenerator", "The operator which should be used to generate new solutions."));
+      Parameters.Add(new OperatorParameter("Evaluator", "The operator which should be used to evaluate solutions."));
+    }
 
+    public void ImportFromTSPLIB(string filename) {
+      TSPLIBParser parser = new TSPLIBParser(filename);
+      parser.Parse();
+      Coordinates = new DoubleMatrixData(parser.Vertices);
+      int cities = Coordinates.Rows;
+      RandomPermutationCreator creator = new RandomPermutationCreator();
+      creator.LengthParameter.Value = new IntData(cities);
+      SolutionGenerator = creator;
+      TSPRoundedEuclideanPathEvaluator evaluator = new TSPRoundedEuclideanPathEvaluator();
+      Evaluator = evaluator;
     }
   }
 }

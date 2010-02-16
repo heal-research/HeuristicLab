@@ -116,7 +116,6 @@
     <Compile Include="Interfaces\IVariable.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="NamedItem.cs" />
-    <Compile Include="Operator.cs" />
     <Compile Include="Problem.cs" />
     <Compile Include="OperatorGraph.cs" />
     <Compile Include="Interfaces\IParameter.cs" />

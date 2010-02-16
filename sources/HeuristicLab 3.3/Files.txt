@@ -49,10 +49,6 @@ HeuristicLab.ExtLibs\HeuristicLab.Netron\3.0.2672.12446\Netron.Diagramming.Core-
 HeuristicLab.ExtLibs\HeuristicLab.Netron\3.0.2672.12446\HeuristicLab.Netron-3.0.2672.12446:HeuristicLab.Netron-3.0.2672.12446.dll
 HeuristicLab.ExtLibs\HeuristicLab.Netron\3.0.2672.12446\HeuristicLab.Netron-3.0.2672.12446:Netron.Diagramming.Core License.txt
 
-HeuristicLab.ExtLibs\HeuristicLab.WinFormsUI\2.3.1\WinFormsUI-2.3.1:WeifenLuo.WinFormsUI.Docking-2.3.1.dll
-HeuristicLab.ExtLibs\HeuristicLab.WinFormsUI\2.3.1\HeuristicLab.WinFormsUI-2.3.1:HeuristicLab.WinFormsUI-2.3.1.dll
-HeuristicLab.ExtLibs\HeuristicLab.WinFormsUI\2.3.1\HeuristicLab.WinFormsUI-2.3.1:WeifenLuo.WinFormsUI.Docking License.txt
-
 HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327:HeuristicLab.SharpDevelop-3.1.1.5327.dll
 HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327:ICSharpCode.NRefactory.dll
 HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327:ICSharpCode.SharpDevelop.Dom.dll
@@ -60,3 +56,7 @@ HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327:ICSharpCode.TextEditor
 HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327:Mono.Cecil.dll
 HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327:Mono License.txt
 HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327:SharpDevelop License.txt
+
+HeuristicLab.ExtLibs\HeuristicLab.WinFormsUI\2.3.1\WinFormsUI-2.3.1:WeifenLuo.WinFormsUI.Docking-2.3.1.dll
+HeuristicLab.ExtLibs\HeuristicLab.WinFormsUI\2.3.1\HeuristicLab.WinFormsUI-2.3.1:HeuristicLab.WinFormsUI-2.3.1.dll
+HeuristicLab.ExtLibs\HeuristicLab.WinFormsUI\2.3.1\HeuristicLab.WinFormsUI-2.3.1:WeifenLuo.WinFormsUI.Docking License.txt

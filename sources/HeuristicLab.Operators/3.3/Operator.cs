@@ -22,9 +22,10 @@
 using System;
 using System.Drawing;
 using HeuristicLab.Collections;
+using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Core {
+namespace HeuristicLab.Operators {
   /// <summary>
   /// The base class for all operators.
   /// </summary>

@@ -110,24 +110,42 @@ namespace HeuristicLab.Parameters {
         scope = scope.Parent;
       return scope != null ? scope.Variables[actualName] : null;
     }
+    private IValueParameter<T> GetProblemParameter(string name) {
+      IValueParameter<T> param = null;
+      if (ExecutionContext.Problem.Parameters.ContainsKey(name)) {
+        param = ExecutionContext.Problem.Parameters[name] as IValueParameter<T>;
+        if (param == null)
+          throw new InvalidOperationException(
+            string.Format("Parameter look-up chain broken. Parameter \"{0}\" is not an \"{1}\".",
+                          name,
+                          typeof(IValueParameter<T>).GetPrettyName())
+          );
+      }
+      return param;
+    }
     protected override IItem GetActualValue() {
       string name;
-      // try to get local value from context stack
+      // try to get value from context stack
       IValueParameter<T> param = GetParameter(out name);
       if (param != null) return param.Value;
-      else {  // try to get variable from scope
-        IVariable var = LookupVariable(name);
-        if (var != null) {
-          T value = var.Value as T;
-          if (value == null)
-            throw new InvalidOperationException(
-              string.Format("Type mismatch. Variable \"{0}\" does not contain a \"{1}\".",
-                            name,
-                            typeof(T).GetPrettyName())
-            );
-          return value;
-        }
+
+      // try to get variable from scope
+      IVariable var = LookupVariable(name);
+      if (var != null) {
+        T value = var.Value as T;
+        if (value == null)
+          throw new InvalidOperationException(
+            string.Format("Type mismatch. Variable \"{0}\" does not contain a \"{1}\".",
+                          name,
+                          typeof(T).GetPrettyName())
+          );
+        return value;
       }
+
+      // try to get value from problem
+      IValueParameter<T> problemParam = GetProblemParameter(name);
+      if (problemParam != null) return problemParam.Value;
+
       return null;
     }
     protected override void SetActualValue(IItem value) {
@@ -137,15 +155,30 @@ namespace HeuristicLab.Parameters {
           string.Format("Type mismatch. Value is not a \"{0}\".",
                         typeof(T).GetPrettyName())
         );
-      // try to get local value from context stack
+      // try to set value in context stack
       string name;
       IValueParameter<T> param = GetParameter(out name);
-      if (param != null) param.Value = val;
-      else {  // try to get variable from scope
-        IVariable var = LookupVariable(name);
-        if (var != null) var.Value = val;
-        else ExecutionContext.Scope.Variables.Add(new Variable(name, value));
+      if (param != null) {
+        param.Value = val;
+        return;
       }
+
+      // try to set value in scope
+      IVariable var = LookupVariable(name);
+      if (var != null) {
+        var.Value = val;
+        return;
+      }
+
+      // try to set value in problem
+      IValueParameter<T> problemParam = GetProblemParameter(name);
+      if (problemParam != null) {
+        problemParam.Value = val;
+        return;
+      }
+
+      // create new variable
+      ExecutionContext.Scope.Variables.Add(new Variable(name, value));
     }
 
     public event EventHandler ActualNameChanged;

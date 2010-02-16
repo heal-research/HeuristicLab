@@ -19,41 +19,45 @@
  */
 #endregion
 
+using System;
+using System.Windows.Forms;
+using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
-namespace HeuristicLab.Core.Views {
+namespace HeuristicLab.Routing.TSP.Views {
   /// <summary>
   /// The base class for visual representations of items.
   /// </summary>
-  [Content(typeof(Operator), true)]
-  [Content(typeof(IOperator), false)]
-  public partial class OperatorView : NamedItemView {
-    public new IOperator Content {
-      get { return (IOperator)base.Content; }
+  [Content(typeof(TSP), true)]
+  public sealed partial class TSPView : ProblemView {
+    public new TSP Content {
+      get { return (TSP)base.Content; }
       set { base.Content = value; }
     }
 
     /// <summary>
     /// Initializes a new instance of <see cref="ItemBaseView"/>.
     /// </summary>
-    public OperatorView() {
+    public TSPView() {
       InitializeComponent();
     }
     /// <summary>
     /// Intializes a new instance of <see cref="ItemBaseView"/> with the given <paramref name="item"/>.
     /// </summary>
     /// <param name="item">The item that should be displayed.</param>
-    public OperatorView(IOperator content)
+    public TSPView(TSP content)
       : this() {
       Content = content;
     }
 
-    protected override void OnContentChanged() {
-      base.OnContentChanged();
-      if (Content == null) {
-        parameterCollectionView.Content = null;
-      } else {
-        parameterCollectionView.Content = ((IOperator)Content).Parameters;
+    private void importButton_Click(object sender, System.EventArgs e) {
+      if (openFileDialog.ShowDialog(this) == DialogResult.OK) {
+        try {
+          Content.ImportFromTSPLIB(openFileDialog.FileName);
+        }
+        catch (Exception ex) {
+          Auxiliary.ShowErrorMessageBox(ex);
+        }
       }
     }
   }

@@ -85,10 +85,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLabRoutingTSPPlugin.cs.frame" />
+    <Compile Include="TSPDistanceMatrixPathEvaluator.cs" />
+    <Compile Include="TSPLIBParser.cs" />
+    <Compile Include="TSPRoundedEuclideanPathEvaluator.cs" />
+    <Compile Include="TSPPathEvaluator.cs" />
     <Compile Include="TSP.cs" />
     <Compile Include="HeuristicLabRoutingTSPPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TSPParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
@@ -107,6 +110,10 @@
       <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
       <Name>HeuristicLab.Operators-3.3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj">
+      <Project>{56F9106A-079F-4C61-92F6-86A84C2D84B7}</Project>
+      <Name>HeuristicLab.Parameters-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Permutation\3.3\HeuristicLab.Permutation-3.3.csproj">
       <Project>{00282156-589D-424F-9CE4-A8038636C926}</Project>
       <Name>HeuristicLab.Permutation-3.3</Name>
@@ -121,6 +128,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ch130.tsp" />
+    <None Include="fl1400.tsp" />
     <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>

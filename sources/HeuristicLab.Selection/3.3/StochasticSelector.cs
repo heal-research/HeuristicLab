@@ -19,37 +19,26 @@
  */
 #endregion
 
-using System.Collections.Generic;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Selection {
   /// <summary>
-  /// An operator which selects sub-scopes from right to left.
+  /// A base class for stochastic selection operators.
   /// </summary>
-  [Item("RightSelector", "An operator which selects sub-scopes from right to left.")]
+  [Item("StochasticSelector", "A base class for stochastic selection operators.")]
   [EmptyStorableClass]
-  [Creatable("Test")]
-  public sealed class RightSelector : Selector {
-    public RightSelector() : base() { }
+  public abstract class StochasticSelector : Selector {
+    public LookupParameter<IRandom> RandomParameter {
+      get { return (LookupParameter<IRandom>)Parameters["Random"]; }
+    }
 
-    protected override void Select(ScopeList source, ScopeList target) {
-      int count = NumberOfSelectedSubScopesParameter.ActualValue.Value;
-      bool copy = CopySelectedParameter.Value.Value;
-
-      int j = source.Count - 1;
-      for (int i = 0; i < count; i++) {
-        if (copy) {
-          target.Add((IScope)source[j].Clone());
-          j--;
-          if (j < 0) j = source.Count - 1;
-        } else {
-          target.Add(source[source.Count - 1]);
-          source.RemoveAt(source.Count - 1);
-        }
-      }
+    protected StochasticSelector()
+      : base() {
+      Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator used for stochastic selection."));
     }
   }
 }

@@ -27,7 +27,7 @@ namespace HeuristicLab.Routing.TSP {
   /// <summary>
   /// Parses a *.tsp file in the TSPLIB format and extracts its information about a TSP.
   /// </summary>
-  public class TSPParser {
+  public class TSPLIBParser {
     private const int EOF = 0;
     private const int NAME = 1;
     private const int TYPE = 2;
@@ -66,7 +66,7 @@ namespace HeuristicLab.Routing.TSP {
     /// <exception cref="ArgumentException">Thrown when the input file name is not in TSP format (*.tsp)
     /// </exception>
     /// <param name="path">The path where the TSP is stored.</param>
-    public TSPParser(String path) {
+    public TSPLIBParser(String path) {
       if (!path.EndsWith(".tsp"))
         throw new ArgumentException("Input file name has to be in TSP format (*.tsp)");
 

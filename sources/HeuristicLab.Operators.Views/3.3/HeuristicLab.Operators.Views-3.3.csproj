@@ -80,6 +80,12 @@
     <Compile Include="MultipleCallsOperatorView.Designer.cs">
       <DependentUpon>MultipleCallsOperatorView.cs</DependentUpon>
     </Compile>
+    <Compile Include="OperatorView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OperatorView.Designer.cs">
+      <DependentUpon>OperatorView.cs</DependentUpon>
+    </Compile>
     <Compile Include="ValuesCollectorView.cs">
       <SubType>UserControl</SubType>
     </Compile>

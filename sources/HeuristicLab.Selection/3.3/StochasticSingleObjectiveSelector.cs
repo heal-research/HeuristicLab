@@ -19,37 +19,30 @@
  */
 #endregion
 
-using System.Collections.Generic;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Selection {
   /// <summary>
-  /// An operator which selects sub-scopes from right to left.
+  /// A base class for stochastic selection operators which consider a single double quality value for selection.
   /// </summary>
-  [Item("RightSelector", "An operator which selects sub-scopes from right to left.")]
+  [Item("StochasticSingleObjectiveSelector", "A base class for stochastic selection operators which consider a single double quality value for selection.")]
   [EmptyStorableClass]
-  [Creatable("Test")]
-  public sealed class RightSelector : Selector {
-    public RightSelector() : base() { }
+  public abstract class StochasticSingleObjectiveSelector : StochasticSelector {
+    public LookupParameter<BoolData> MaximizationParameter {
+      get { return (LookupParameter<BoolData>)Parameters["Maximization"]; }
+    }
+    public SubScopesLookupParameter<DoubleData> QualityParameter {
+      get { return (SubScopesLookupParameter<DoubleData>)Parameters["Quality"]; }
+    }
 
-    protected override void Select(ScopeList source, ScopeList target) {
-      int count = NumberOfSelectedSubScopesParameter.ActualValue.Value;
-      bool copy = CopySelectedParameter.Value.Value;
-
-      int j = source.Count - 1;
-      for (int i = 0; i < count; i++) {
-        if (copy) {
-          target.Add((IScope)source[j].Clone());
-          j--;
-          if (j < 0) j = source.Count - 1;
-        } else {
-          target.Add(source[source.Count - 1]);
-          source.RemoveAt(source.Count - 1);
-        }
-      }
+    protected StochasticSingleObjectiveSelector()
+      : base() {
+      Parameters.Add(new LookupParameter<BoolData>("Maximization", "True if the current problem is a maximization problem, otherwise false."));
+      Parameters.Add(new SubScopesLookupParameter<DoubleData>("Quality", "The quality value contained in each sub-scope which is used for selection."));
     }
   }
 }
