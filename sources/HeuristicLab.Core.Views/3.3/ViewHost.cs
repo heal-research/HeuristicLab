@@ -144,7 +144,7 @@ namespace HeuristicLab.Core.Views {
         return true;
       if (viewType == null)
         return false;
-      return ContentAttribute.CanViewType(viewType, Content.GetType());
+      return ContentAttribute.CanViewType(viewType, Content.GetType()) && typeMenuItemTable.ContainsKey(viewType);
     }
 
     private void viewsLabel_DoubleClick(object sender, EventArgs e) {
