@@ -285,6 +285,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
         info.Version = new Version(pluginVersion);
         info.ContactName = contactName;
         info.ContactEmail = contactAddress;
+        info.LicenseText = ReadLicenseFiles(pluginFiles);
         info.AddFiles(pluginFiles);
 
         this.pluginDependencies[info] = pluginDependencies;
@@ -292,6 +293,21 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       } else {
         throw new InvalidPluginException("Invalid metadata in plugin " + pluginType.ToString());
       }
+    }
+
+    private string ReadLicenseFiles(IEnumerable<PluginFile> pluginFiles) {
+      // combine the contents of all plugin files 
+      var licenseFiles = from file in pluginFiles
+                         where file.Type == PluginFileType.License
+                         select file;
+      if (licenseFiles.Count() == 0) return string.Empty;
+      StringBuilder licenseTextBuilder = new StringBuilder();
+      licenseTextBuilder.AppendLine(File.ReadAllText(licenseFiles.First().Name));
+      foreach (var licenseFile in licenseFiles.Skip(1)) {
+        licenseTextBuilder.AppendLine().AppendLine(); // leave some empty space between multiple license files
+        licenseTextBuilder.AppendLine(File.ReadAllText(licenseFile.Name));
+      }
+      return licenseTextBuilder.ToString();
     }
 
     private static IEnumerable<PluginDependency> GetPluginDependencyMetaData(Type pluginType) {

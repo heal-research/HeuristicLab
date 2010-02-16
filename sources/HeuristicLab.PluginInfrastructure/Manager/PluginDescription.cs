@@ -74,18 +74,26 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     /// <summary>
     /// Gets or sets the name of the contact person for this plugin.
     /// </summary>
-    internal string ContactName {
+    public string ContactName {
       get { return contactName; }
-      set { contactName = value; }
+      internal set { contactName = value; }
     }
 
     private string contactEmail;
     /// <summary>
     /// Gets or sets the e-mail address of the contact person for this plugin.
     /// </summary>
-    internal string ContactEmail {
+    public string ContactEmail {
       get { return contactEmail; }
-      set { contactEmail = value; }
+      internal set { contactEmail = value; }
+    }
+    private string licenseText;
+    /// <summary>
+    /// Gets or sets the license text of the plugin.
+    /// </summary>
+    public string LicenseText {
+      get { return licenseText; }
+      internal set { licenseText = value; }
     }
 
     private PluginState pluginState;

@@ -48,5 +48,17 @@ namespace HeuristicLab.PluginInfrastructure {
     /// Gets the file names of files that are part of the plugin.
     /// </summary>
     IEnumerable<IPluginFile> Files { get; }
+    /// <summary>
+    /// Gets the name of the contact person of the plugin.
+    /// </summary>
+    string ContactName { get; }
+    /// <summary>
+    /// Gets the e-mail address of the contact person of the plugin.
+    /// </summary>
+    string ContactEmail { get; }
+    /// <summary>
+    /// Gets the license text of the plugin.
+    /// </summary>
+    string LicenseText { get; }
   }
 }
