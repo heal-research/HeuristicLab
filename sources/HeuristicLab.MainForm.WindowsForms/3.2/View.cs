@@ -146,7 +146,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     protected virtual void OnClosed(FormClosedEventArgs e) {
     }
 
-    private void ViewBase_Load(object sender, EventArgs e) {
+    private void View_Load(object sender, EventArgs e) {
       if (!this.initialized && !this.DesignMode) {
         this.OnInitialized(e);
         this.initialized = true;

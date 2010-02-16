@@ -51,7 +51,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Name = "ViewBase";
-      this.Load += new System.EventHandler(this.ViewBase_Load);
+      this.Load += new System.EventHandler(this.View_Load);
       this.ResumeLayout(false);
 
     }
