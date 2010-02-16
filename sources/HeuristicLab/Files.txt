@@ -129,6 +129,10 @@ HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\2.1.2.2591\ALGLIB-2.1.2.2591:ALGLIB-2.1
 HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\2.1.2.2591\HeuristicLab.ALGLIB-2.1.2.2591:HeuristicLab.ALGLIB-2.1.2.2591.dll
 HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\2.1.2.2591\HeuristicLab.ALGLIB-2.1.2.2591:ALGLIB License.txt
 
+HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\2.3.0\ALGLIB-2.3.0:ALGLIB-2.3.0.dll
+HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\2.3.0\HeuristicLab.ALGLIB-2.3.0:HeuristicLab.ALGLIB-2.3.0.dll
+HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\2.3.0\HeuristicLab.ALGLIB-2.3.0:ALGLIB License-2.3.0.txt
+
 HeuristicLab.ExtLibs\HeuristicLab.LibSVM\1.6.3\LibSVM-1.6.3:LibSVM-1.6.3.dll 
 HeuristicLab.ExtLibs\HeuristicLab.LibSVM\1.6.3\HeuristicLab.LibSVM-1.6.3:HeuristicLab.LibSVM-1.6.3.dll
 HeuristicLab.ExtLibs\HeuristicLab.LibSVM\1.6.3\HeuristicLab.LibSVM-1.6.3:LibSVM License.txt
