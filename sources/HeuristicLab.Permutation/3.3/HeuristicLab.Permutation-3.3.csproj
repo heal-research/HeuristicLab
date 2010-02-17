@@ -84,6 +84,8 @@
     <Compile Include="InversionManipulator.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MaximalPreservativeCrossover.cs" />
+    <Compile Include="PartiallyMatchedCrossover.cs" />
     <Compile Include="PermutationManipulator.cs" />
     <Compile Include="HeuristicLabPermutationPlugin.cs" />
     <Compile Include="OrderCrossover.cs" />

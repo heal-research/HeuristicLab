@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,40 +20,38 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Permutation {
   /// <summary>
-  /// Performs a cross over permutation between two permuation arrays
-  /// by taking a randomly chosen interval from the first, keeping the position, 
-  /// then all positions from the second permutation which are still free in the child 
-  /// (the position is free and the value is "free")
-  /// and then missing ones from the second array in the order they occur in the second array.
-  /// </summary>
-  public class PartiallyMatchedCrossover : PermutationCrossoverBase {
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get { return @"TODO\r\nOperator description still missing ..."; }
-    }
-
+  /// An operator which performs the partially matched crossover on two permutations.
+  /// </summar>
+  /// <remarks>
+  /// Implemented as described in Fogel, D.B. 1988. An Evolutionary Approach to the Traveling Salesman Problem. Biological Cybernetics, 60, pp. 139-144, Springer-Verlag.
+  /// which references Goldberg, D.E., and Lingle, R. 1985. Alleles, loci, and the traveling salesman problem. Proceedings of an International Conference on Genetic Algorithms and their Applications. Carnegie-Mellon University, pp. 154-159.
+  /// as the original source of the operator.
+  /// </remarks>
+  [Item("PartiallyMatchedCrossover", "An operator which performs the partially matched crossover on two permutations.")]
+  [EmptyStorableClass]
+  [Creatable("Test")]
+  public class PartiallyMatchedCrossover : PermutationCrossover {
     /// <summary>
-    /// Performs a cross over permuation of <paramref name="parent1"/> and <paramref name="parent2"/>
-    /// by taking a randomly chosen interval from <paramref name="parent1"/>, preserving the position, 
-    /// then all positions from <paramref name="parent2"/> which are still free in the child 
-    /// (the position is free and the value is "free")
-    /// and then missing ones from <paramref name="parent2"/> in the order they occur 
-    /// in <paramref name="parent2"/>.
+    /// Performs the partially matched crossover on <paramref name="parent1"/> and <paramref name="parent2"/>.
     /// </summary>
-    /// <param name="random">The random number generator.</param>
-    /// <param name="parent1">The parent scope 1 to cross over.</param>
-    /// <param name="parent2">The parent scope 2 to cross over.</param>
-    /// <returns>The created cross over permutation as int array.</returns>
-    public static int[] Apply(IRandom random, int[] parent1, int[] parent2) {
+    /// <remarks>
+    /// First a segment from the first parent is copied to the offspring.
+    /// Then the rest of the offspring is filled with the numbers from parent2.
+    /// When a number is encountered in parent2 that is included in the segment which came from the first parent,
+    /// the number in parent2 is used that was replaced by the corresponding number from parent1.
+    /// </remarks>
+    /// <param name="random">A random number generator.</param>
+    /// <param name="parent1">The first parent permutation to cross.</param>
+    /// <param name="parent2">The second parent permutation to cross.</param>
+    /// <returns>The new permutation resulting from the crossover.</returns>
+    public static Permutation Apply(IRandom random, Permutation parent1, Permutation parent2) {
       int length = parent1.Length;
-      int[] result = new int[length];
+      Permutation result = new Permutation(length);
       bool[] numbersCopied = new bool[length];
 
       int breakPoint1 = random.Next(length - 1);
@@ -64,17 +62,19 @@ namespace HeuristicLab.Permutation {
         numbersCopied[result[j]] = true;
       }
 
-      int index = breakPoint1;
-      int i = (breakPoint1 == 0 ? (breakPoint2 + 1) : 0);
+      // calculate the inverse permutation (number -> index) of parent1
+      int[] invParent1 = new int[length];
+      for (int j = 0; j < length; j++) {
+        invParent1[parent1[j]] = j;
+      }
+
+      int i = ((breakPoint1 == 0) ? (breakPoint2 + 1) : (0));
       while (i < length) {  // copy rest from second permutation
         if (!numbersCopied[parent2[i]]) {  // copy directly
           result[i] = parent2[i];
         } else {  // copy from area between breakpoints
-          while (numbersCopied[parent2[index]]) {  // find next valid index
-            index++;
-          }
-          result[i] = parent2[index];
-          index++;
+          int index = invParent1[parent2[i]]; // find the index of the corresponding occupied number in parent1
+          result[i] = parent2[index]; // use that index to take the number from parent2
         }
 
         i++;
@@ -86,15 +86,15 @@ namespace HeuristicLab.Permutation {
     }
 
     /// <summary>
-    /// Performs a partially matched crossover operation for two given parent permutations.
+    /// Checks number of parents and calls <see cref="Apply"/>.
     /// </summary>
-    /// <exception cref="InvalidOperationException">Thrown if there are not exactly two parents.</exception>
+    /// <exception cref="InvalidOperationException">Thrown if there are not exactly two permutations in <paramref name="parents"/>.</exception>
     /// <param name="scope">The current scope.</param>
     /// <param name="random">A random number generator.</param>
     /// <param name="parents">An array containing the two permutations that should be crossed.</param>
     /// <returns>The newly created permutation, resulting from the crossover operation.</returns>
-    protected override int[] Cross(IScope scope, IRandom random, int[][] parents) {
-      if (parents.Length != 2) throw new InvalidOperationException("ERROR in PartiallyMatchedCrossover: The number of parents is not equal to 2");
+    protected override Permutation Cross(IRandom random, ItemArray<Permutation> parents) {
+      if (parents.Length != 2) throw new InvalidOperationException("PartiallyMatchedCrossover: The number of parents is not equal to 2");
       return Apply(random, parents[0], parents[1]);
     }
   }
