@@ -65,10 +65,10 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
     }
 
     protected override FunctionLibrary CreateFunctionLibrary() {
-      return Create(GetVariableValue<BoolData>(DIFFERENTIALS_ALLOWED, null, false).Data, minTimeOffset, maxTimeOffset);
+      return Create(minTimeOffset, maxTimeOffset);
     }
 
-    public static FunctionLibrary Create(bool includeDifferential, int minTimeOffset, int maxTimeOffset) {
+    public static FunctionLibrary Create(int minTimeOffset, int maxTimeOffset) {
       FunctionLibrary functionLibrary = new FunctionLibrary();
 
       #region f0 (...) -> double
@@ -82,11 +82,10 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
 
       List<IFunction> f0Functions =
         new List<IFunction>() { 
-          variable, constant, addition, subtraction,
+          differential, variable, constant, addition, subtraction,
           division, multiplication};
 
-      if (includeDifferential)
-        f0Functions.Add(differential);
+
       #endregion
 
       #region f1: (...) -> (double -> double)
@@ -143,8 +142,6 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
       SetAllowedSubOperators(openMul, f1Functions);
       SetAllowedSubOperators(openSub, f1Functions);
 
-      if (includeDifferential)
-        functionLibrary.AddFunction(differential);
       f0Functions.ForEach(x => functionLibrary.AddFunction(x));
       f1Functions.ForEach(x => functionLibrary.AddFunction(x));
       f2Functions.ForEach(x => functionLibrary.AddFunction(x));

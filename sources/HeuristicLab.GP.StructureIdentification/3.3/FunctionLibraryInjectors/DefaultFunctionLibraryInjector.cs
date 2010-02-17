@@ -125,13 +125,5 @@ namespace HeuristicLab.GP.StructureIdentification {
 
       return functionLibrary;
     }
-
-    private void ConditionalAddFunction(string condName, IFunction fun, List<IFunction> list) {
-      if (GetVariableValue<BoolData>(condName, null, false).Data) list.Add(fun);
-    }
-
-    private void ConditionalAddOperator(string condName, FunctionLibrary functionLib, IFunction op) {
-      if (GetVariableValue<BoolData>(condName, null, false).Data) functionLib.AddFunction(op);
-    }
   }
 }
