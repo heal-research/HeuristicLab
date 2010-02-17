@@ -20,15 +20,7 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Linq;
 using System.Windows.Forms;
-using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Core;
 
 namespace HeuristicLab.Core.Views {
   public partial class CreateParameterDialog : Form {

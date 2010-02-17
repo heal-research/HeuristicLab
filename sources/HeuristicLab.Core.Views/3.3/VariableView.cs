@@ -20,12 +20,8 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Text;
 using System.Windows.Forms;
+using HeuristicLab.Common;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Core.Views {
@@ -94,7 +90,7 @@ namespace HeuristicLab.Core.Views {
         viewHost.Content = null;
       } else {
         Caption = Content.Name + " (" + Content.GetType().Name + ")";
-        dataTypeTextBox.Text = Content.Value == null ? "-" : Content.Value.GetType().FullName;
+        dataTypeTextBox.Text = Content.Value == null ? "-" : Content.Value.GetType().GetPrettyName();
         dataTypeTextBox.Enabled = Content.Value != null;
         setValueButton.Enabled = Content.Value == null;
         clearValueButton.Enabled = Content.Value != null;
@@ -107,7 +103,7 @@ namespace HeuristicLab.Core.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ValueChanged), sender, e);
       else {
-        dataTypeTextBox.Text = Content.Value == null ? "-" : Content.Value.GetType().FullName;
+        dataTypeTextBox.Text = Content.Value == null ? "-" : Content.Value.GetType().GetPrettyName();
         dataTypeTextBox.Enabled = Content.Value != null;
         setValueButton.Enabled = Content.Value == null;
         clearValueButton.Enabled = Content.Value != null;

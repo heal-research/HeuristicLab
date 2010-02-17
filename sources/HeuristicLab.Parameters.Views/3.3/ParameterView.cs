@@ -19,13 +19,7 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Text;
-using System.Windows.Forms;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
@@ -72,7 +66,7 @@ namespace HeuristicLab.Parameters.Views {
         dataTypeTextBox.Enabled = false;
       } else {
         Caption = Content.Name + " (" + Content.GetType().Name + ")";
-        dataTypeTextBox.Text = Content.DataType.Name;
+        dataTypeTextBox.Text = Content.DataType.GetPrettyName();
         dataTypeTextBox.Enabled = true;
       }
     }

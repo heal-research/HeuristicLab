@@ -20,12 +20,8 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Parameters {
   /// <summary>
@@ -38,7 +34,7 @@ namespace HeuristicLab.Parameters {
     public SubScopesLookupParameter(string name, string description) : base(name, description) { }
 
     protected override IItem GetActualValue() {
-      string name = LookupParameter<T>.TranslateName(Name, ExecutionContext);
+      string name = LookupParameter<ItemArray<T>>.TranslateName(Name, ExecutionContext);
       IScope scope = ExecutionContext.Scope;
       ItemArray<T> values = new ItemArray<T>(scope.SubScopes.Count);
       IVariable var;
@@ -67,7 +63,7 @@ namespace HeuristicLab.Parameters {
                         typeof(ItemArray<T>).GetPrettyName())
         );
 
-      string name = LookupParameter<T>.TranslateName(Name, ExecutionContext);
+      string name = LookupParameter<ItemArray<T>>.TranslateName(Name, ExecutionContext);
       IScope scope = ExecutionContext.Scope;
       IVariable var;
 

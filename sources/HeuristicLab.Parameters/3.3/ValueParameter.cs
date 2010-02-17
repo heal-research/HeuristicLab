@@ -20,9 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -84,7 +81,7 @@ namespace HeuristicLab.Parameters {
     }
 
     public override string ToString() {
-      return string.Format("{0}: {1} ({2})", Name, Value != null ? Value.ToString() : "null", DataType.Name);
+      return string.Format("{0}: {1} ({2})", Name, Value != null ? Value.ToString() : "null", DataType.GetPrettyName());
     }
 
     protected override IItem GetActualValue() {

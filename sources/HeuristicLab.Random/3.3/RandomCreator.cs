@@ -59,11 +59,11 @@ namespace HeuristicLab.Operators {
     }
 
     public override IExecutionSequence Apply() {
-      bool setSeedRandomly = SetSeedRandomlyParameter.ActualValue == null ? true : SetSeedRandomlyParameter.ActualValue.Value;
+      if (SetSeedRandomlyParameter.ActualValue == null) SetSeedRandomlyParameter.ActualValue = new BoolData(true);
+      bool setSeedRandomly = SetSeedRandomlyParameter.ActualValue.Value;
+      if (SeedParameter.ActualValue == null) SeedParameter.ActualValue = new IntData(0);
       IntData seed = SeedParameter.ActualValue;
-      IRandom random = RandomParameter.ActualValue;
 
-      if (seed == null) seed = new IntData(0);
       if (setSeedRandomly) seed.Value = new System.Random().Next();
       RandomParameter.ActualValue = new MersenneTwister((uint)seed.Value);
 

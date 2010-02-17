@@ -20,11 +20,8 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Common;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
   /// <summary>
@@ -90,7 +87,7 @@ namespace HeuristicLab.Core {
       if (Value == null)
         return string.Format("{0}: null", Name);
       else
-        return string.Format("{0}: {1} ({2})", Name, Value.ToString(), Value.GetType().Name);
+        return string.Format("{0}: {1} ({2})", Name, Value.ToString(), Value.GetType().GetPrettyName());
     }
 
     /// <inheritdoc/>

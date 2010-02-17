@@ -20,10 +20,8 @@
 #endregion
 
 using System.Linq;
-using System.Collections.Generic;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Selection {
@@ -53,7 +51,7 @@ namespace HeuristicLab.Selection {
         temp = temp.OrderBy(x => x.Value);
       else
         temp = temp.OrderByDescending(x => x.Value);
-      var list = temp.Select((x, lots) => new { x.index, lots }).ToList();
+      var list = temp.Select((x, index) => new { x.index, lots = index + 1 }).ToList();
 
       int lotSum = list.Count * (list.Count + 1) / 2;
       for (int i = 0; i < count; i++) {

@@ -20,9 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -70,16 +67,16 @@ namespace HeuristicLab.Parameters {
     }
 
     public override string ToString() {
-      return string.Format("{0}: {1} ({2})", Name, ActualName, DataType.Name);
+      return string.Format("{0}: {1} ({2})", Name, ActualName, DataType.GetPrettyName());
     }
 
-    private IValueParameter<T> GetParameter(out string name) {
-      IValueParameter<T> valueParam = this as IValueParameter<T>;
-      ILookupParameter<T> lookupParam = this as ILookupParameter<T>;
+    private IValueParameter GetParameter(out string name) {
+      IValueParameter valueParam = this as IValueParameter;
+      ILookupParameter lookupParam = this as ILookupParameter;
       ExecutionContext current = ExecutionContext;
 
       name = Name;
-      while ((valueParam != null) && (lookupParam != null)) {
+      while ((valueParam != null) || (lookupParam != null)) {
         if ((valueParam != null) && (valueParam.Value != null)) return valueParam;
         if (lookupParam != null) name = lookupParam.ActualName;
 
@@ -88,14 +85,14 @@ namespace HeuristicLab.Parameters {
           current = current.Parent;
 
         if (current != null) {
-          valueParam = current.Operator.Parameters[name] as IValueParameter<T>;
-          lookupParam = current.Operator.Parameters[name] as ILookupParameter<T>;
+          valueParam = current.Operator.Parameters[name] as IValueParameter;
+          lookupParam = current.Operator.Parameters[name] as ILookupParameter;
           if ((valueParam == null) && (lookupParam == null))
             throw new InvalidOperationException(
               string.Format("Parameter look-up chain broken. Parameter \"{0}\" is not an \"{1}\" or an \"{2}\".",
                             name,
-                            typeof(IValueParameter<T>).GetPrettyName(),
-                            typeof(ILookupParameter<T>).GetPrettyName())
+                            typeof(IValueParameter).GetPrettyName(),
+                            typeof(ILookupParameter).GetPrettyName())
             );
         } else {
           valueParam = null;
@@ -110,15 +107,15 @@ namespace HeuristicLab.Parameters {
         scope = scope.Parent;
       return scope != null ? scope.Variables[actualName] : null;
     }
-    private IValueParameter<T> GetProblemParameter(string name) {
-      IValueParameter<T> param = null;
+    private IValueParameter GetProblemParameter(string name) {
+      IValueParameter param = null;
       if (ExecutionContext.Problem.Parameters.ContainsKey(name)) {
-        param = ExecutionContext.Problem.Parameters[name] as IValueParameter<T>;
+        param = ExecutionContext.Problem.Parameters[name] as IValueParameter;
         if (param == null)
           throw new InvalidOperationException(
             string.Format("Parameter look-up chain broken. Parameter \"{0}\" is not an \"{1}\".",
                           name,
-                          typeof(IValueParameter<T>).GetPrettyName())
+                          typeof(IValueParameter).GetPrettyName())
           );
       }
       return param;
@@ -126,7 +123,7 @@ namespace HeuristicLab.Parameters {
     protected override IItem GetActualValue() {
       string name;
       // try to get value from context stack
-      IValueParameter<T> param = GetParameter(out name);
+      IValueParameter param = GetParameter(out name);
       if (param != null) return param.Value;
 
       // try to get variable from scope
@@ -143,7 +140,7 @@ namespace HeuristicLab.Parameters {
       }
 
       // try to get value from problem
-      IValueParameter<T> problemParam = GetProblemParameter(name);
+      IValueParameter problemParam = GetProblemParameter(name);
       if (problemParam != null) return problemParam.Value;
 
       return null;
@@ -157,7 +154,7 @@ namespace HeuristicLab.Parameters {
         );
       // try to set value in context stack
       string name;
-      IValueParameter<T> param = GetParameter(out name);
+      IValueParameter param = GetParameter(out name);
       if (param != null) {
         param.Value = val;
         return;
@@ -171,7 +168,7 @@ namespace HeuristicLab.Parameters {
       }
 
       // try to set value in problem
-      IValueParameter<T> problemParam = GetProblemParameter(name);
+      IValueParameter problemParam = GetProblemParameter(name);
       if (problemParam != null) {
         problemParam.Value = val;
         return;
@@ -192,17 +189,17 @@ namespace HeuristicLab.Parameters {
       string currentName = name;
       ExecutionContext currentContext = context;
       IParameter param;
-      ILookupParameter<T> lookupParam;
+      ILookupParameter lookupParam;
 
       while (currentContext != null) {
         currentContext.Operator.Parameters.TryGetValue(currentName, out param);
         if (param != null) {
-          lookupParam = param as ILookupParameter<T>;
+          lookupParam = param as ILookupParameter;
           if (lookupParam == null)
             throw new InvalidOperationException(
               string.Format("Parameter look-up chain broken. Parameter \"{0}\" is not an \"{1}\".",
                             currentName,
-                            typeof(ILookupParameter<T>).GetPrettyName())
+                            typeof(ILookupParameter).GetPrettyName())
             );
           currentName = lookupParam.ActualName;
         }

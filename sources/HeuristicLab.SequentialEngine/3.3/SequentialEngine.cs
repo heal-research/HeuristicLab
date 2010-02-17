@@ -61,22 +61,24 @@ namespace HeuristicLab.SequentialEngine {
       while (coll != null) {
         for (int i = coll.Count - 1; i >= 0; i--)
           ExecutionStack.Push(coll[i]);
-        next = ExecutionStack.Pop();
+        next = ExecutionStack.Count > 0 ? ExecutionStack.Pop() : null;
         coll = next as ExecutionContextCollection;
       }
       ExecutionContext context = next as ExecutionContext;
-      try {
-        currentOperator = context.Operator;
-        ExecutionStack.Push(context.Operator.Execute(context));
-        currentOperator = null;
+      if (context != null) {
+        try {
+          currentOperator = context.Operator;
+          ExecutionStack.Push(context.Operator.Execute(context));
+          currentOperator = null;
+        }
+        catch (Exception ex) {
+          ExecutionStack.Push(context);
+          Stop();
+          OnExceptionOccurred(ex);
+        }
+        if (context.Operator.Breakpoint)
+          Stop();
       }
-      catch (Exception ex) {
-        ExecutionStack.Push(context);
-        Stop();
-        OnExceptionOccurred(ex);
-      }
-      if (context.Operator.Breakpoint)
-        Stop();
     }
   }
 }

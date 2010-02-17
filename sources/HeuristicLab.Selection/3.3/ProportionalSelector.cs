@@ -19,13 +19,13 @@
  */
 #endregion
 
-using System.Linq;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System;
 
 namespace HeuristicLab.Selection {
   /// <summary>
@@ -55,46 +55,47 @@ namespace HeuristicLab.Selection {
       bool copy = CopySelectedParameter.Value.Value;
       IRandom random = RandomParameter.ActualValue;
       bool maximization = MaximizationParameter.ActualValue.Value;
-      List<DoubleData> qualities = new List<DoubleData>(QualityParameter.ActualValue);
       bool windowing = WindowingParameter.Value.Value;
       ScopeList selected = new ScopeList();
 
       // prepare qualities for proportional selection
-      double minQuality = qualities.Min(x => x.Value);
-      double maxQuality = qualities.Max(x => x.Value);
+      var qualities = QualityParameter.ActualValue.Select(x => x.Value);
+      double minQuality = qualities.Min();
+      double maxQuality = qualities.Max();
       if (minQuality == maxQuality) {  // all quality values are equal
-        qualities.ForEach(x => x.Value = 1);
+        qualities = qualities.Select(x => 1.0);
       } else {
         if (windowing) {
           if (maximization)
-            qualities.ForEach(x => x.Value = x.Value - minQuality);
+            qualities = qualities.Select(x => x - minQuality);
           else
-            qualities.ForEach(x => x.Value = maxQuality - x.Value);
+            qualities = qualities.Select(x => maxQuality - x);
         } else {
           if (minQuality < 0.0) throw new InvalidOperationException("Proportional selection without windowing does not work with quality values < 0.");
           if (!maximization) {
             double limit = Math.Min(maxQuality * 2, double.MaxValue);
-            qualities.ForEach(x => x.Value = limit - x.Value);
+            qualities = qualities.Select(x => limit - x);
           }
         }
       }
 
-      double qualitySum = qualities.Sum(x => x.Value);
+      List<double> list = qualities.ToList();
+      double qualitySum = qualities.Sum();
       for (int i = 0; i < count; i++) {
         double selectedQuality = random.NextDouble() * qualitySum;
         int index = 0;
-        double currentQuality = qualities[index].Value;
+        double currentQuality = list[index];
         while (currentQuality < selectedQuality) {
           index++;
-          currentQuality += qualities[index].Value;
+          currentQuality += list[index];
         }
         if (copy)
           selected.Add((IScope)scopes[index].Clone());
         else {
           selected.Add(scopes[index]);
           scopes.RemoveAt(index);
-          qualitySum -= qualities[index].Value;
-          qualities.RemoveAt(index);
+          qualitySum -= list[index];
+          list.RemoveAt(index);
         }
       }
       return selected;

@@ -20,15 +20,7 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Text;
 using System.Windows.Forms;
-using System.Linq;
-using HeuristicLab.MainForm;
-using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Core.Views {
   public partial class OperatorsSidebar : HeuristicLab.MainForm.WindowsForms.View {

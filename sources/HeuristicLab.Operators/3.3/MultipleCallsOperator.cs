@@ -28,11 +28,10 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
   /// <summary>
-  /// An operator which applies multiple operators sequentially on the current scope.
+  /// A base class for operators which apply multiple user-defined operators.
   /// </summary>
-  [Item("MultipleCallsOperator", "An operator which applies multiple operators sequentially on the current scope.")]
-  [Creatable("Test")]
-  public class MultipleCallsOperator : SingleSuccessorOperator {
+  [Item("MultipleCallsOperator", "A base class for operators which apply multiple user-defined operators.")]
+  public abstract class MultipleCallsOperator : SingleSuccessorOperator {
     protected IValueParameter<IOperator>[] OperatorParameters {
       get {
         return (from p in Parameters
@@ -104,13 +103,6 @@ namespace HeuristicLab.Operators {
       IValueParameter<IOperator> opParam = (IValueParameter<IOperator>)sender;
       int index = int.Parse(opParam.Name);
       operators[index] = opParam.Value;
-    }
-
-    public override IExecutionSequence Apply() {
-      ExecutionContextCollection next = new ExecutionContextCollection(base.Apply());
-      for (int i = Operators.Count - 1; i >= 0; i--)
-        next.Insert(0, ExecutionContext.CreateContext(Operators[i]));
-      return next;
     }
   }
 }

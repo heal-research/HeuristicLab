@@ -20,6 +20,7 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -47,7 +48,7 @@ namespace HeuristicLab.Selection {
       bool copy = CopySelectedParameter.Value.Value;
       IRandom random = RandomParameter.ActualValue;
       bool maximization = MaximizationParameter.ActualValue.Value;
-      List<DoubleData> qualities = new List<DoubleData>(QualityParameter.ActualValue);
+      List<double> qualities = QualityParameter.ActualValue.Select(x => x.Value).ToList();
       int groupSize = GroupSizeParameter.ActualValue.Value;
       ScopeList selected = new ScopeList();
 
@@ -56,8 +57,8 @@ namespace HeuristicLab.Selection {
         int index;
         for (int j = 1; j < groupSize; j++) {
           index = random.Next(scopes.Count);
-          if (((maximization) && (qualities[index].Value > qualities[best].Value)) ||
-              ((!maximization) && (qualities[index].Value < qualities[best].Value))) {
+          if (((maximization) && (qualities[index] > qualities[best])) ||
+              ((!maximization) && (qualities[index] < qualities[best]))) {
             best = index;
           }
         }

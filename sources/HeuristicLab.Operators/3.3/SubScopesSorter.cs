@@ -57,7 +57,7 @@ namespace HeuristicLab.Operators {
 
     public override IExecutionSequence Apply() {
       descending = DescendingParameter.ActualValue.Value;
-      actualName = LookupParameter<DoubleData>.TranslateName(ValueParameter.Name, ExecutionContext);
+      actualName = LookupParameter<ItemArray<DoubleData>>.TranslateName(ValueParameter.Name, ExecutionContext);
       CurrentScope.SubScopes.Sort(SortScopes);
       return base.Apply();
     }
@@ -66,7 +66,7 @@ namespace HeuristicLab.Operators {
       IVariable var1;
       IVariable var2;
       x.Variables.TryGetValue(actualName, out var1);
-      x.Variables.TryGetValue(actualName, out var2);
+      y.Variables.TryGetValue(actualName, out var2);
       if ((var1 == null) && (var2 == null))
         return 0;
       else if ((var1 == null) && (var2 != null))

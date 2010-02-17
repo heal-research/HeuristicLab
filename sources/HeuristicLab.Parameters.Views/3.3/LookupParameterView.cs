@@ -20,12 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Text;
-using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
@@ -35,7 +29,6 @@ namespace HeuristicLab.Parameters.Views {
   /// The visual representation of a <see cref="Parameter"/>.
   /// </summary>
   [Content(typeof(LookupParameter<>), true)]
-  [Content(typeof(SubScopesLookupParameter<>), true)]
   [Content(typeof(ILookupParameter<>), false)]
   public partial class LookupParameterView<T> : ParameterView where T : class, IItem {
     /// <summary>

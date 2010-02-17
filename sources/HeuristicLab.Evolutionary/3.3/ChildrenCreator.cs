@@ -67,7 +67,7 @@ namespace HeuristicLab.Evolutionary {
 
       for (int i = 0; i < children; i++) {
         IScope child = new Scope(i.ToString());
-        for (int j = 0; j < parents; j++) {
+        for (int j = 0; j < parentsPerChild; j++) {
           IScope parent = CurrentScope.SubScopes[0];
           CurrentScope.SubScopes.RemoveAt(0);
           child.SubScopes.Add(parent);
