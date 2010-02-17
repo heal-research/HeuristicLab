@@ -40,6 +40,7 @@ namespace HeuristicLab.Permutation {
     /// by preserving a large number of edges in both parents.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown if the numbers in the permutation array are not in the range [0,N) with N = length of the permutation.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="parent1"/> and <paramref name="parent2"/> are not of equal length or when the permutations are shorter than 4 elements.</exception>
     /// <remarks>
     /// First one segment is copied from the first parent to the offspring in the same position.
     /// Then the tour is completed by adding the next number from the second parent if such an edge exists,

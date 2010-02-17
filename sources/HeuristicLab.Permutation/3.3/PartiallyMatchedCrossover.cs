@@ -39,6 +39,7 @@ namespace HeuristicLab.Permutation {
     /// <summary>
     /// Performs the partially matched crossover on <paramref name="parent1"/> and <paramref name="parent2"/>.
     /// </summary>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="parent1"/> and <paramref name="parent2"/> are not of equal length or when the permutations are shorter than 4 elements.</exception>
     /// <remarks>
     /// First a segment from the first parent is copied to the offspring.
     /// Then the rest of the offspring is filled with the numbers from parent2.
@@ -50,38 +51,33 @@ namespace HeuristicLab.Permutation {
     /// <param name="parent2">The second parent permutation to cross.</param>
     /// <returns>The new permutation resulting from the crossover.</returns>
     public static Permutation Apply(IRandom random, Permutation parent1, Permutation parent2) {
+      if (parent1.Length != parent2.Length) throw new ArgumentException("PartiallyMatchedCrossover: The parent permutations are of unequal length");
+      if (parent1.Length < 4) throw new ArgumentException("PartiallyMatchedCrossover: The parent permutation must be at least of size 4");
       int length = parent1.Length;
-      Permutation result = new Permutation(length);
-      bool[] numbersCopied = new bool[length];
+      Permutation result = new Permutation(length); ;
+      int[] invResult = new int[length];
 
-      int breakPoint1 = random.Next(length - 1);
-      int breakPoint2 = random.Next(breakPoint1 + 1, length);
+      int breakPoint1, breakPoint2;
+      do {
+        breakPoint1 = random.Next(length - 1);
+        breakPoint2 = random.Next(breakPoint1 + 1, length);
+      } while (breakPoint2 - breakPoint1 >= length - 2); // prevent the case [0,length-1) -> clone of parent1
 
-      for (int j = breakPoint1; j <= breakPoint2; j++) {  // copy part of first permutation
-        result[j] = parent1[j];
-        numbersCopied[result[j]] = true;
-      }
-
-      // calculate the inverse permutation (number -> index) of parent1
-      int[] invParent1 = new int[length];
+      // clone parent2 and calculate inverse permutation (number -> index)
       for (int j = 0; j < length; j++) {
-        invParent1[parent1[j]] = j;
+        result[j] = parent2[j];
+        invResult[result[j]] = j;
       }
 
-      int i = ((breakPoint1 == 0) ? (breakPoint2 + 1) : (0));
-      while (i < length) {  // copy rest from second permutation
-        if (!numbersCopied[parent2[i]]) {  // copy directly
-          result[i] = parent2[i];
-        } else {  // copy from area between breakpoints
-          int index = invParent1[parent2[i]]; // find the index of the corresponding occupied number in parent1
-          result[i] = parent2[index]; // use that index to take the number from parent2
-        }
-
-        i++;
-        if (i == breakPoint1) {  // skip area between breakpoints
-          i = breakPoint2 + 1;
-        }
+      for (int j = breakPoint1; j <= breakPoint2; j++) {
+        int orig = result[j]; // save the former value
+        result[j] = parent1[j]; // overwrite the former value with the new value
+        int index = invResult[result[j]]; // look where the new value is in the child
+        result[index] = orig; // write the former value to this position
+        invResult[orig] = index; // update the inverse mapping
+        // it's not necessary to do 'invResult[result[j]] = j' as this will not be needed again
       }
+
       return result;
     }
 
