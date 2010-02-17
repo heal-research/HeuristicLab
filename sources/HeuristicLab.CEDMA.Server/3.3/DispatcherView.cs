@@ -17,6 +17,7 @@ namespace HeuristicLab.CEDMA.Server {
       : base() {
       this.dispatcher = dispatcher;
       InitializeComponent();
+      editEngineButton.Enabled = false;
       dispatcher.Changed += (sender, args) => UpdateControls();
       UpdateControls();
       this.inputVariableList.CheckOnClick = true;
@@ -243,6 +244,15 @@ namespace HeuristicLab.CEDMA.Server {
         y0 = tmp;
       }
       return y0 > x1;
+    }
+
+    private void editEngineButton_Click(object sender, EventArgs e) {
+      var algo = (HeuristicLab.Modeling.IAlgorithm)algorithmsListBox.SelectedItem;
+      HeuristicLab.PluginInfrastructure.ControlManager.Manager.ShowControl(algo.Engine.CreateView());
+    }
+
+    private void algorithmsListBox_SelectedIndexChanged(object sender, EventArgs e) {
+      editEngineButton.Enabled = algorithmsListBox.SelectedItems.Count > 0;
     }
 
   }

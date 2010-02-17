@@ -38,13 +38,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.CEDMA.Server {
-  public partial class ServerView : ViewBase {
+  public partial class ServerView : HeuristicLab.MainForm.WindowsForms.View {
     private Server server;
 
     public ServerView(Server server)
       : base() {
       this.server = server;
       InitializeComponent();
+      Caption = "Cedma Server Controller";
     }
 
     private void connectButton_Click(object sender, EventArgs e) {

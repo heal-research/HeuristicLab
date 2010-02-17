@@ -19,20 +19,11 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
-using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Core;
+using HeuristicLab.Modeling;
 
 namespace HeuristicLab.CEDMA.Server {
-  [Application("CEDMA", "Cooperative Evolutionary Data Mining.", true)]
-  class ServerApplication : ApplicationBase {
-    public override void Run() {
-      MainForm mainForm = new MainForm(typeof(IUserInterfaceItemProvider));
-      mainForm.Title = "CEDMA Server Controller";
-      PluginInfrastructure.ControlManager.RegisterManager(mainForm);
-      Application.Run(mainForm);
-    }
+  public interface IUserInterfaceItemProvider {
+
   }
 }

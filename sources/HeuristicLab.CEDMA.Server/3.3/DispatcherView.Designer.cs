@@ -51,6 +51,7 @@
       this.testSamplesStartTextBox = new System.Windows.Forms.TextBox();
       this.testLabel = new System.Windows.Forms.Label();
       this.setAllButton = new System.Windows.Forms.Button();
+      this.editEngineButton = new System.Windows.Forms.Button();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
@@ -129,6 +130,7 @@
       // learningTaskGroupBox
       // 
       this.learningTaskGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.learningTaskGroupBox.Controls.Add(this.editEngineButton);
       this.learningTaskGroupBox.Controls.Add(this.setAlgorithmDefault);
       this.learningTaskGroupBox.Controls.Add(this.autoregressiveLabel);
       this.learningTaskGroupBox.Controls.Add(this.classificationRadioButton);
@@ -192,6 +194,7 @@
       this.algorithmsListBox.Name = "algorithmsListBox";
       this.algorithmsListBox.Size = new System.Drawing.Size(331, 124);
       this.algorithmsListBox.TabIndex = 4;
+      this.algorithmsListBox.SelectedIndexChanged += new System.EventHandler(this.algorithmsListBox_SelectedIndexChanged);
       this.algorithmsListBox.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.algorithmsListBox_ItemCheck);
       // 
       // minTimeOffsetLabel
@@ -380,6 +383,16 @@
       this.setAllButton.UseVisualStyleBackColor = true;
       this.setAllButton.Click += new System.EventHandler(this.setAllButton_Click);
       // 
+      // editEngineButton
+      // 
+      this.editEngineButton.Location = new System.Drawing.Point(108, 292);
+      this.editEngineButton.Name = "editEngineButton";
+      this.editEngineButton.Size = new System.Drawing.Size(75, 23);
+      this.editEngineButton.TabIndex = 37;
+      this.editEngineButton.Text = "Edit engine";
+      this.editEngineButton.UseVisualStyleBackColor = true;
+      this.editEngineButton.Click += new System.EventHandler(this.editEngineButton_Click);
+      // 
       // DispatcherView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -430,5 +443,6 @@
     private System.Windows.Forms.RadioButton timeSeriesRadioButton;
     private System.Windows.Forms.CheckBox autoregressiveCheckBox;
     private System.Windows.Forms.Button setAlgorithmDefault;
+    private System.Windows.Forms.Button editEngineButton;
   }
 }

@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -18,21 +18,29 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
-
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using System.Windows.Forms;
+using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.CEDMA.Server {
-  [Application("CEDMA", "Cooperative Evolutionary Data Mining.", true)]
-  class ServerApplication : ApplicationBase {
-    public override void Run() {
-      MainForm mainForm = new MainForm(typeof(IUserInterfaceItemProvider));
-      mainForm.Title = "CEDMA Server Controller";
-      PluginInfrastructure.ControlManager.RegisterManager(mainForm);
-      Application.Run(mainForm);
+  public class MainForm : DockingMainForm, IControlManager {
+    public MainForm(Type type) : base(type) { }
+
+    protected override void OnInitialized(EventArgs e) {
+      base.OnInitialized(e);
+      (new ServerView(new Server())).Show();
     }
+
+    #region IControlManager Members
+
+    public void ShowControl(object control) {
+      (new ViewWrapper((IView)control)).Show();
+    }
+
+    #endregion
   }
 }

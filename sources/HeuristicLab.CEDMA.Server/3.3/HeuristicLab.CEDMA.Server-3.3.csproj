@@ -90,6 +90,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EngineViewWrapper.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="IUserInterfaceItemProvider.cs" />
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ProblemSpecification.cs" />
     <Compile Include="LearningTask.cs" />
     <Compile Include="ProblemView.cs">
@@ -158,6 +165,14 @@
     <ProjectReference Include="..\..\HeuristicLab.Grid\3.2\HeuristicLab.Grid-3.2.csproj">
       <Project>{545CE756-98D8-423B-AC2E-6E7D70926E5C}</Project>
       <Name>HeuristicLab.Grid-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.MainForm.WindowsForms\3.2\HeuristicLab.MainForm.WindowsForms-3.2.csproj">
+      <Project>{AB687BBE-1BFE-476B-906D-44237135431D}</Project>
+      <Name>HeuristicLab.MainForm.WindowsForms-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.MainForm\3.2\HeuristicLab.MainForm-3.2.csproj">
+      <Project>{3BD61258-31DA-4B09-89C0-4F71FEF5F05A}</Project>
+      <Name>HeuristicLab.MainForm-3.2</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Modeling.Database.SQLServerCompact\3.2\HeuristicLab.Modeling.Database.SQLServerCompact-3.2.csproj">
       <Project>{EC1AA756-D612-4FA6-AA52-25CF4F8E3836}</Project>
