@@ -198,22 +198,7 @@ namespace HeuristicLab.CEDMA.Server {
         }
       }
       algo.AllowedVariables = allowedFeatures;
-
-      IGeneticProgrammingAlgorithm structIdAlgo = algo as IGeneticProgrammingAlgorithm;
-      if (structIdAlgo != null) {
-        var funLib = SelectRandomFunctionLibrary();
-        structIdAlgo.FunctionLibraryInjector = funLib;
-      }
     }
-
-    private IOperator SelectRandomFunctionLibrary() {
-      var injectors = from injector in ApplicationManager.Manager.GetInstances<FunctionLibraryInjectorBase>()
-                      where injector.GetType().GetCustomAttributes(typeof(SymbolicRegressionFunctionLibraryInjectorAttribute), true).Count() > 0
-                      select injector;
-
-      return injectors.ElementAt(random.Next(injectors.Count()));
-    }
-
 
     private void AddDispatchedRun(ProblemSpecification specification, string algorithm) {
       AlgorithmConfiguration conf = new AlgorithmConfiguration();
