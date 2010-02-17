@@ -31,12 +31,14 @@ using HeuristicLab.MainForm;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using Netron.Diagramming.Core;
+using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
   [Content(typeof(IOperator), false)]
   public partial class OperatorGraphVisualizationView : ItemView {
     private Dictionary<IOperator, IShape> operatorShapeMapping;
-    private Dictionary<KeyValuePair<IOperator, IOperator>, IConnection> connectionMapping;
+    private Dictionary<KeyValuePair<IOperator, IValueParameter<IOperator>>, IConnection> connectionMapping;
+    private HashSet<IValueParameter<IOperator>> parameters;
     /// <summary>
     /// Initializes a new instance of <see cref="OperatorGraphVisualizationView"/> with caption "Operator Graph".
     /// </summary>
@@ -44,7 +46,10 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       InitializeComponent();
       Caption = "Operator Graph";
       this.operatorShapeMapping = new Dictionary<IOperator, IShape>();
-      this.connectionMapping = new Dictionary<KeyValuePair<IOperator, IOperator>, IConnection>();
+      this.connectionMapping = new Dictionary<KeyValuePair<IOperator, IValueParameter<IOperator>>, IConnection>();
+      this.parameters = new HashSet<IValueParameter<IOperator>>();
+
+      this.graphVisualization.Controller.Model.OnEntityRemoved += new EventHandler<EntityEventArgs>(Model_OnEntityRemoved);
     }
 
     /// <summary>
@@ -57,7 +62,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       : this() {
       this.Content = content;
     }
-
 
     /// <summary>
     /// Gets or sets the operator graph to represent visually.
@@ -73,51 +77,59 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       get { return this.graphVisualization.Controller.Model; }
     }
 
+
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      this.GraphModel.Shapes.Clear();
-      this.operatorShapeMapping.Clear();
-      this.connectionMapping.Clear();
+      this.ClearGraph();
 
-      this.CreateGraph(null, this.Content);
+      this.CreateGraph(null, new OperatorParameter(string.Empty, this.Content));
       foreach (IShape shape in this.operatorShapeMapping.Values)
         this.GraphModel.AddShape(shape);
 
       foreach (IConnection connection in this.connectionMapping.Values)
         this.GraphModel.AddConnection(connection);
 
-      this.graphVisualization.Controller.View.Invalidate();
-      this.graphVisualization.Controller.Model.LayoutRoot = this.operatorShapeMapping[this.Content];
-      this.graphVisualization.Controller.RunActivity("Standard TreeLayout");
+      if (this.Content == null)
+        this.graphVisualization.Controller.Model.LayoutRoot = null;
+      else
+        this.graphVisualization.Controller.Model.LayoutRoot = this.operatorShapeMapping[this.Content];
+      this.RelayoutOperatorGraph();
     }
 
     private void opParam_ValueChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(opParam_ValueChanged), sender, e);
       else {
-        //IValueParameter<IOperator> opParam = (IValueParameter<IOperator>)sender;
-        //foreach (TreeNode node in opParamNodeTable[opParam].ToArray())
-        //  //remove nodes
-        //foreach (TreeNode node in opParamNodeTable[opParam]) {
-        //  //add nodes
-        //}
+        this.OnContentChanged();
       }
-    } 
+    }
 
-    private void CreateGraph(IOperator parent, IOperator op) {
-      if (op == null)
+    private void ClearGraph() {
+      this.GraphModel.Clear();
+      foreach (IValueParameter<IOperator> opParam in this.parameters)
+        opParam.ValueChanged -= opParam_ValueChanged;
+
+      this.operatorShapeMapping.Clear();
+      this.parameters.Clear();
+      this.connectionMapping.Clear();
+    }
+
+
+
+    private void CreateGraph(IOperator parent, IValueParameter<IOperator> op) {
+      if (op == null || op.Value == null)
         return;
 
       IShape shape;
-      if (!this.operatorShapeMapping.ContainsKey(op)) {
-        shape = CreateOperatorShape(op);
-        this.operatorShapeMapping[op] = shape;
+      if (!this.operatorShapeMapping.ContainsKey(op.Value)) {
+        shape = CreateOperatorShape(op.Value);
+        this.operatorShapeMapping[op.Value] = shape;
 
-        foreach (IParameter param in op.Parameters) {
+        foreach (IParameter param in op.Value.Parameters) {
           IValueParameter<IOperator> opParam = param as IValueParameter<IOperator>;
           if (opParam != null) {
-            opParam.ValueChanged += new EventHandler(opParam_ValueChanged);
-            this.CreateGraph(op, opParam.Value);
+            HandleOperatorParameter(opParam);
+            this.CreateGraph(op.Value, opParam);
           }
         }
       }
@@ -126,15 +138,15 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
         ConnectShapes(parent, op);
     }
 
-    private void RemoveGraph(IOperator op) {
-      if(op == null)
+    private void HandleOperatorParameter(IValueParameter<IOperator> opParam) {
+      if (opParam == null)
         return;
-      IShape shape = this.operatorShapeMapping[op];
-      this.GraphModel.RemoveShape(shape);
+      opParam.ValueChanged += new EventHandler(opParam_ValueChanged);
+      parameters.Add(opParam);
     }
 
-    private IConnection ConnectShapes(IOperator parent, IOperator op) {
-      IShape operatorShape = this.operatorShapeMapping[op];
+    private IConnection ConnectShapes(IOperator parent, IValueParameter<IOperator> opParam) {
+      IShape operatorShape = this.operatorShapeMapping[opParam.Value];
       IShape parentShape = this.operatorShapeMapping[parent];
       IConnector operatorConnector = parentShape.Connectors.Where(c => c.Name == "Bottom connector").First();
       IConnector parentConnector = operatorShape.Connectors.Where(c => c.Name == "Top connector").First();
@@ -143,7 +155,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       parentConnector.AttachConnector(connection.From);
       operatorConnector.AttachConnector(connection.To);
 
-      this.connectionMapping[new KeyValuePair<IOperator, IOperator>(parent, op)] = connection;
+      this.connectionMapping[new KeyValuePair<IOperator, IValueParameter<IOperator>>(parent, opParam)] = connection;
       return connection;
     }
 
@@ -156,5 +168,60 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
       return shape;
     }
+
+    private void Model_OnEntityRemoved(object sender, EntityEventArgs e) {
+      IShape shape = e.Entity as IShape;
+      if (shape != null) {
+        IOperator op = operatorShapeMapping.Where(os => os.Value == shape).First().Key;
+        if (op == this.Content)
+          this.Content = null;
+        else {
+          //clear all connections to the removed operator
+          IEnumerable<IValueParameter<IOperator>> parentOperator = this.connectionMapping.Where(cs => cs.Key.Value.Value == op).Select(x => x.Key.Value);
+          foreach(IValueParameter<IOperator> opParam in parentOperator.ToArray())
+            opParam.Value = null;
+
+          //remove connections from graph view
+          IEnumerable<IConnection> connections = this.connectionMapping.Where(cs => cs.Key.Value.Value == op).Select(x => x.Value);
+          foreach (IConnection connection in connections)
+            this.GraphModel.Remove(connection);
+
+          this.graphVisualization.Invalidate();
+        }
+
+
+      }
+    }
+
+    #region methods for toolbar items
+
+    internal void RelayoutOperatorGraph() {
+      if (this.operatorShapeMapping.Count > 0 && this.connectionMapping.Count > 0) { //otherwise the layout does not work
+        this.graphVisualization.Invalidate();
+        this.graphVisualization.Controller.RunActivity("Standard TreeLayout");
+      }
+    }
+
+    internal void ActivateZoomAreaTool() {
+      this.graphVisualization.Controller.ActivateTool(ControllerBase.ZoomAreaToolName);
+    }
+
+    internal void ActivateZoomInTool() {
+      this.graphVisualization.Controller.ActivateTool(ControllerBase.ZoomInToolName);
+    }
+
+    internal void ActivateZoomOutTool() {
+      this.graphVisualization.Controller.ActivateTool(ControllerBase.ZoomOutToolName);
+    }
+
+    internal void ActivatePanTool() {
+      this.graphVisualization.Controller.ActivateTool(ControllerBase.PanToolName);
+    }
+
+    internal void ActivateSelectTool() {
+      this.graphVisualization.Controller.ActivateTool(ControllerBase.SelectionToolName);
+    }
+
+    #endregion
   }
 }

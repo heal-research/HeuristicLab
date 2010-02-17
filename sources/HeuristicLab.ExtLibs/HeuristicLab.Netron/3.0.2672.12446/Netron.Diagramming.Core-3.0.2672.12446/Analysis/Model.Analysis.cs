@@ -226,7 +226,8 @@ namespace Netron.Diagramming.Core
                             n.ParentEdge = edge;
                             if (p.Children == null)
                                 p.Children = new CollectionBase<INode>();
-                            p.Children.Add(n);
+                            if(!p.Children.Contains(n))                    // mkommend 16.02.2010 avoid duplicate children
+                                p.Children.Add(n);
                         }
                     }
                     catch (ArgumentOutOfRangeException)

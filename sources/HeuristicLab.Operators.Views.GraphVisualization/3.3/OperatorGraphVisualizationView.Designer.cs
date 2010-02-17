@@ -34,15 +34,13 @@
       this.graphVisualization.AutoScroll = true;
       this.graphVisualization.BackColor = System.Drawing.Color.DarkGray;
       this.graphVisualization.BackgroundType = global::Netron.Diagramming.Core.CanvasBackgroundTypes.FlatColor;
-      this.graphVisualization.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.graphVisualization.Document = ((global::Netron.Diagramming.Core.Document)(resources.GetObject("netronVisualization1.Document")));
+      this.graphVisualization.Dock = System.Windows.Forms.DockStyle.Fill;      
       this.graphVisualization.EnableAddConnection = true;
       this.graphVisualization.FileName = "";
       this.graphVisualization.Location = new System.Drawing.Point(0, 0);
       this.graphVisualization.Magnification = new System.Drawing.SizeF(71F, 71F);
       this.graphVisualization.Name = "graphVisualization";
       this.graphVisualization.Origin = new System.Drawing.Point(0, 0);
-      this.graphVisualization.PageSettings = ((System.Drawing.Printing.PageSettings)(resources.GetObject("netronVisualization1.PageSettings")));
       this.graphVisualization.ShowConnectors = true;
       this.graphVisualization.ShowRulers = false;
       this.graphVisualization.Size = new System.Drawing.Size(602, 432);

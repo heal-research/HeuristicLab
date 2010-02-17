@@ -151,6 +151,7 @@ namespace Netron.Diagramming.Core
             if (Graph == null)
                 throw new InconsistencyException("The model has not been set and the Graph property is hence 'null'");
 
+            m_depths = new float[10];
             this.LayoutRoot = this.Controller.Model.LayoutRoot;//could be null if not set in the GUI
             Graph.ClearSpanningTree();
             Graph.MakeSpanningTree(LayoutRoot as INode);
