@@ -94,7 +94,7 @@ namespace HeuristicLab.Core.Views {
       stopButton.Enabled = false;
       if (Content == null) {
         newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = saveOperatorGraphButton.Enabled = false;
-        operatorGraphView.Enabled = false;
+        operatorGraphViewHost.Enabled = false;
         scopeView.Enabled = false;
         newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = false;
         problemViewHost.Enabled = false;
@@ -102,8 +102,8 @@ namespace HeuristicLab.Core.Views {
         executionTimeTextBox.Enabled = false;
       } else {
         newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = saveOperatorGraphButton.Enabled = true;
-        operatorGraphView.Content = Content.OperatorGraph;
-        operatorGraphView.Enabled = true;
+        operatorGraphViewHost.Content = Content.OperatorGraph;
+        operatorGraphViewHost.Enabled = true;
         scopeView.Content = Content.GlobalScope;
         scopeView.Enabled = true;
         newProblemButton.Enabled = openProblemButton.Enabled = true;
@@ -122,7 +122,7 @@ namespace HeuristicLab.Core.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_OperatorGraphChanged), sender, e);
       else
-        operatorGraphView.Content = Content.OperatorGraph;
+        operatorGraphViewHost.Content = Content.OperatorGraph;
     }
     protected void Content_ProblemChanged(object sender, EventArgs e) {
       if (InvokeRequired)
@@ -137,7 +137,7 @@ namespace HeuristicLab.Core.Views {
         Invoke(new EventHandler(Content_Prepared), sender, e);
       else {
         newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = saveOperatorGraphButton.Enabled = true;
-        operatorGraphView.Enabled = true;
+        operatorGraphViewHost.Enabled = true;
         scopeView.Enabled = true;
         newProblemButton.Enabled = openProblemButton.Enabled = true;
         saveProblemButton.Enabled = Content.Problem != null;
@@ -154,7 +154,7 @@ namespace HeuristicLab.Core.Views {
         Invoke(new EventHandler(Content_Started), sender, e);
       else {
         newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = saveOperatorGraphButton.Enabled = false;
-        operatorGraphView.Enabled = false;
+        operatorGraphViewHost.Enabled = false;
         scopeView.Enabled = false;
         newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = false;
         problemViewHost.Enabled = false;
@@ -169,7 +169,7 @@ namespace HeuristicLab.Core.Views {
         Invoke(new EventHandler(Content_Stopped), sender, e);
       else {
         newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = saveOperatorGraphButton.Enabled = true;
-        operatorGraphView.Enabled = true;
+        operatorGraphViewHost.Enabled = true;
         scopeView.Enabled = true;
         newProblemButton.Enabled = openProblemButton.Enabled = true;
         saveProblemButton.Enabled = Content.Problem != null;

@@ -46,9 +46,9 @@ namespace HeuristicLab.Operators.Views {
     private void InitializeComponent() {
       this.tabControl = new System.Windows.Forms.TabControl();
       this.parametersTabPage = new System.Windows.Forms.TabPage();
-      this.operatorGraphTabPage = new System.Windows.Forms.TabPage();
       this.parameterCollectionView = new HeuristicLab.Core.Views.ParameterCollectionView();
-      this.operatorGraphView = new HeuristicLab.Core.Views.OperatorGraphView();
+      this.operatorGraphTabPage = new System.Windows.Forms.TabPage();
+      this.operatorGraphViewHost = new HeuristicLab.Core.Views.ViewHost();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.tabControl.SuspendLayout();
       this.parametersTabPage.SuspendLayout();
@@ -91,9 +91,21 @@ namespace HeuristicLab.Operators.Views {
       this.parametersTabPage.Text = "Parameters";
       this.parametersTabPage.UseVisualStyleBackColor = true;
       // 
+      // parameterCollectionView
+      // 
+      this.parameterCollectionView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.parameterCollectionView.Caption = "ParameterCollection";
+      this.parameterCollectionView.Content = null;
+      this.parameterCollectionView.Location = new System.Drawing.Point(6, 6);
+      this.parameterCollectionView.Name = "parameterCollectionView";
+      this.parameterCollectionView.Size = new System.Drawing.Size(466, 326);
+      this.parameterCollectionView.TabIndex = 0;
+      // 
       // operatorGraphTabPage
       // 
-      this.operatorGraphTabPage.Controls.Add(this.operatorGraphView);
+      this.operatorGraphTabPage.Controls.Add(this.operatorGraphViewHost);
       this.operatorGraphTabPage.Location = new System.Drawing.Point(4, 22);
       this.operatorGraphTabPage.Name = "operatorGraphTabPage";
       this.operatorGraphTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -102,27 +114,17 @@ namespace HeuristicLab.Operators.Views {
       this.operatorGraphTabPage.Text = "Operator Graph";
       this.operatorGraphTabPage.UseVisualStyleBackColor = true;
       // 
-      // parameterCollectionView
+      // operatorGraphViewHost
       // 
-      this.parameterCollectionView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+      this.operatorGraphViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.parameterCollectionView.Caption = "ParameterCollection";
-      this.parameterCollectionView.Location = new System.Drawing.Point(6, 6);
-      this.parameterCollectionView.Name = "parameterCollectionView";
-      this.parameterCollectionView.Size = new System.Drawing.Size(466, 326);
-      this.parameterCollectionView.TabIndex = 0;
-      // 
-      // operatorGraphView
-      // 
-      this.operatorGraphView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.operatorGraphView.Caption = "Operator Graph";
-      this.operatorGraphView.Location = new System.Drawing.Point(6, 6);
-      this.operatorGraphView.Name = "operatorGraphView";
-      this.operatorGraphView.Size = new System.Drawing.Size(466, 326);
-      this.operatorGraphView.TabIndex = 0;
+      this.operatorGraphViewHost.Content = null;
+      this.operatorGraphViewHost.Location = new System.Drawing.Point(6, 6);
+      this.operatorGraphViewHost.Name = "operatorGraphViewHost";
+      this.operatorGraphViewHost.Size = new System.Drawing.Size(466, 326);
+      this.operatorGraphViewHost.TabIndex = 0;
+      this.operatorGraphViewHost.ViewType = null;
       // 
       // CombinedOperatorView
       // 
@@ -151,6 +153,6 @@ namespace HeuristicLab.Operators.Views {
     protected System.Windows.Forms.TabPage parametersTabPage;
     protected System.Windows.Forms.TabPage operatorGraphTabPage;
     protected HeuristicLab.Core.Views.ParameterCollectionView parameterCollectionView;
-    protected HeuristicLab.Core.Views.OperatorGraphView operatorGraphView;
+    protected HeuristicLab.Core.Views.ViewHost operatorGraphViewHost;
   }
 }

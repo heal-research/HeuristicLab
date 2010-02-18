@@ -53,11 +53,11 @@ namespace HeuristicLab.Operators.Views {
       base.OnContentChanged();
       if (Content == null) {
         parameterCollectionView.Content = null;
-        operatorGraphView.Content = null;
+        operatorGraphViewHost.Content = null;
         tabControl.Enabled = false;
       } else {
         parameterCollectionView.Content = ((IOperator)Content).Parameters;
-        operatorGraphView.Content = Content.OperatorGraph;
+        operatorGraphViewHost.Content = Content.OperatorGraph;
         tabControl.Enabled = true;
       }
     }

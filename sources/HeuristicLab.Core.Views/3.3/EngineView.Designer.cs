@@ -48,7 +48,6 @@ namespace HeuristicLab.Core.Views {
       this.components = new System.ComponentModel.Container();
       this.executionTimeTextBox = new System.Windows.Forms.TextBox();
       this.executionTimeLabel = new System.Windows.Forms.Label();
-      this.operatorGraphView = new HeuristicLab.Core.Views.OperatorGraphView();
       this.scopeView = new HeuristicLab.Core.Views.ScopeView();
       this.resetButton = new System.Windows.Forms.Button();
       this.stopButton = new System.Windows.Forms.Button();
@@ -62,6 +61,7 @@ namespace HeuristicLab.Core.Views {
       this.saveOperatorGraphButton = new System.Windows.Forms.Button();
       this.tabControl = new System.Windows.Forms.TabControl();
       this.operatorGraphTabPage = new System.Windows.Forms.TabPage();
+      this.operatorGraphViewHost = new HeuristicLab.Core.Views.ViewHost();
       this.globalScopeTabPage = new System.Windows.Forms.TabPage();
       this.problemTabPage = new System.Windows.Forms.TabPage();
       this.problemViewHost = new HeuristicLab.Core.Views.ViewHost();
@@ -91,18 +91,6 @@ namespace HeuristicLab.Core.Views {
       this.executionTimeLabel.Size = new System.Drawing.Size(83, 13);
       this.executionTimeLabel.TabIndex = 4;
       this.executionTimeLabel.Text = "&Execution Time:";
-      // 
-      // operatorGraphView
-      // 
-      this.operatorGraphView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.operatorGraphView.Caption = "Operator Graph";
-      this.operatorGraphView.Content = null;
-      this.operatorGraphView.Location = new System.Drawing.Point(6, 36);
-      this.operatorGraphView.Name = "operatorGraphView";
-      this.operatorGraphView.Size = new System.Drawing.Size(782, 542);
-      this.operatorGraphView.TabIndex = 3;
       // 
       // scopeView
       // 
@@ -235,10 +223,10 @@ namespace HeuristicLab.Core.Views {
       // 
       // operatorGraphTabPage
       // 
+      this.operatorGraphTabPage.Controls.Add(this.operatorGraphViewHost);
       this.operatorGraphTabPage.Controls.Add(this.saveOperatorGraphButton);
       this.operatorGraphTabPage.Controls.Add(this.openOperatorGraphButton);
       this.operatorGraphTabPage.Controls.Add(this.newOperatorGraphButton);
-      this.operatorGraphTabPage.Controls.Add(this.operatorGraphView);
       this.operatorGraphTabPage.Location = new System.Drawing.Point(4, 22);
       this.operatorGraphTabPage.Name = "operatorGraphTabPage";
       this.operatorGraphTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -246,6 +234,18 @@ namespace HeuristicLab.Core.Views {
       this.operatorGraphTabPage.TabIndex = 0;
       this.operatorGraphTabPage.Text = "Operator Graph";
       this.operatorGraphTabPage.UseVisualStyleBackColor = true;
+      // 
+      // operatorGraphViewHost
+      // 
+      this.operatorGraphViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.operatorGraphViewHost.Content = null;
+      this.operatorGraphViewHost.Location = new System.Drawing.Point(6, 36);
+      this.operatorGraphViewHost.Name = "operatorGraphViewHost";
+      this.operatorGraphViewHost.Size = new System.Drawing.Size(782, 542);
+      this.operatorGraphViewHost.TabIndex = 3;
+      this.operatorGraphViewHost.ViewType = null;
       // 
       // globalScopeTabPage
       // 
@@ -282,6 +282,7 @@ namespace HeuristicLab.Core.Views {
       this.problemViewHost.Name = "problemViewHost";
       this.problemViewHost.Size = new System.Drawing.Size(782, 542);
       this.problemViewHost.TabIndex = 3;
+      this.problemViewHost.ViewType = null;
       // 
       // openFileDialog
       // 
@@ -326,22 +327,22 @@ namespace HeuristicLab.Core.Views {
     protected System.Windows.Forms.Button resetButton;
     protected System.Windows.Forms.Button stopButton;
     protected System.Windows.Forms.Button startButton;
-    protected HeuristicLab.Core.Views.OperatorGraphView operatorGraphView;
     protected HeuristicLab.Core.Views.ScopeView scopeView;
     protected System.Windows.Forms.ToolTip toolTip;
     protected System.Windows.Forms.TabControl tabControl;
-    protected System.Windows.Forms.TabPage operatorGraphTabPage;
     protected System.Windows.Forms.TabPage globalScopeTabPage;
     protected System.Windows.Forms.TabPage problemTabPage;
     protected ViewHost problemViewHost;
     protected System.Windows.Forms.Button newProblemButton;
-    protected System.Windows.Forms.Button saveOperatorGraphButton;
-    protected System.Windows.Forms.Button openOperatorGraphButton;
-    protected System.Windows.Forms.Button newOperatorGraphButton;
     protected System.Windows.Forms.Button saveProblemButton;
     protected System.Windows.Forms.Button openProblemButton;
     protected System.Windows.Forms.OpenFileDialog openFileDialog;
     protected System.Windows.Forms.SaveFileDialog saveFileDialog;
+    protected System.Windows.Forms.TabPage operatorGraphTabPage;
+    protected System.Windows.Forms.Button saveOperatorGraphButton;
+    protected System.Windows.Forms.Button openOperatorGraphButton;
+    protected System.Windows.Forms.Button newOperatorGraphButton;
+    protected ViewHost operatorGraphViewHost;
 
   }
 }
