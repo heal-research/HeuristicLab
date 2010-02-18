@@ -59,7 +59,7 @@ model is worse than the naive model (=> model is useless).";
         double prevValue = values[sample - 1, ORIGINAL_INDEX];
         double estimatedValue = values[sample, ESTIMATION_INDEX];
         double originalValue = values[sample, ORIGINAL_INDEX];
-        if (!double.IsNaN(originalValue) && !double.IsInfinity(originalValue)) {
+        if (!double.IsNaN(originalValue) && !double.IsInfinity(originalValue) && prevValue != 0.0) {
           double errorEstimatedChange = (estimatedValue - originalValue) / prevValue; // percentage error of predicted change
           errorsSquaredSum += errorEstimatedChange * errorEstimatedChange;
           double errorNoChange = (prevValue - originalValue) / prevValue; // percentage error of naive model y(t+1) = y(t)
