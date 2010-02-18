@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,74 +20,87 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Permutation {
   /// <summary>
-  /// Performs a cross over permutation between two int arrays by taking first a whole cycle and then the
-  /// missing ones from the second parent.
+  /// An operator which performs the cyclic crossover on two permutations.
   /// </summary>
-  /// <remarks>A whole cycle means: <br/>
-  /// Start at a randomly chosen position x in parent1 and transfer it to the child at the same position.
-  /// Now this position x is no longer available for the node on position x in parent2, so
-  /// the value of the node at position x in parent2 is searched in parent1 and is then transferred
-  /// to the child preserving the position. Now this new position y is no longer available for the node in parent2 ....<br/>
-  /// This procedure is repeated till it is again at position x, then the cycle is over.
+  /// <remarks>It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.<br />
+  /// The operator first determines all cycles in the permutation and then composes the offspring by alternating between the cycles of the two parents.
   /// </remarks>
-  public class CyclicCrossover : PermutationCrossoverBase {
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get { return @"TODO\r\nOperator description still missing ..."; }
-    }
-
+  [Item("CyclicCrossover", "An operator which performs the cyclic crossover on two permutations as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.")]
+  [EmptyStorableClass]
+  [Creatable("Test")]
+  public class CyclicCrossover : PermutationCrossover {
     /// <summary>
-    /// Performs a cross over permutation of <paramref name="parent1"/> and <paramref name="parent2"/>
-    /// by copying a whole cycle starting at a randomly chosen position in parent1 and taking the rest
-    /// from parent2.
+    /// Performs the cyclic crossover on <paramref name="parent1"/> and <paramref name="parent2"/>.
     /// </summary>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="parent1"/> and <paramref name="parent2"/> are not of equal length.</exception>
+    /// <exception cref="InvalidOperationException">Thrown if the numbers in the permutation elements are not in the range [0,N) with N = length of the permutation.</exception>
+    /// <remarks>
+    /// First this method randomly determines from which parent to start with equal probability.
+    /// Then it copies the first cycle from the chosen parent starting from index 0 in the permutation.
+    /// After the cycle is complete it copies the next cycle starting from the index closest to 0 which was not yet copied from the other parent.
+    /// It continues to switch between parents for each completed cycle until no new cycle is found anymore.<br /><br />
+    /// The stochasticity of this operator is rather low. There are only two possible outcomes for a given pair of parents.
+    /// </remarks>
     /// <param name="random">The random number generator.</param>
     /// <param name="parent1">The parent scope 1 to cross over.</param>
     /// <param name="parent2">The parent scope 2 to cross over.</param>
     /// <returns>The created cross over permutation as int array.</returns>
-    public static int[] Apply(IRandom random, int[] parent1, int[] parent2) {
+    public static Permutation Apply(IRandom random, Permutation parent1, Permutation parent2) {
+      if (parent1.Length != parent2.Length) throw new ArgumentException("CyclicCrossover: The parent permutations are of unequal length");
       int length = parent1.Length;
-      int[] result = new int[length];
+      Permutation result = new Permutation(length);
       bool[] indexCopied = new bool[length];
-      int j, number;
+      int[] invParent1 = new int[length];
+      int[] invParent2 = new int[length];
 
-      j = random.Next(length);  // get number to start cycle
-      while (!indexCopied[j]) {  // copy whole cycle to new permutation
-        result[j] = parent1[j];
-        number = parent2[j];
-        indexCopied[j] = true;
+      // calculate inverse mappings (number -> index) for parent1 and parent2
+      try {
+        for (int i = 0; i < length; i++) {
+          invParent1[parent1[i]] = i;
+          invParent2[parent2[i]] = i;
+        }
+      } catch (IndexOutOfRangeException) {
+        throw new InvalidOperationException("CyclicCrossover: The permutation must consist of consecutive numbers from 0 to N-1 with N = length of the permutation");
+      }
 
+      // randomly choose whether to start copying from parent1 or parent2
+      bool copyFromParent1 = ((random.NextDouble() < 0.5) ? (false) : (true));
+
+      int j = 0;
+      do {
+        do {
+          if (copyFromParent1) {
+            result[j] = parent1[j]; // copy number at position j from parent1
+            j = invParent2[result[j]]; // set position j to the position of the copied number in parent2
+          } else {
+            result[j] = parent2[j]; // copy number at position j from parent2
+            j = invParent1[result[j]]; // set position j to the position of the copied number in parent1
+          }
+          indexCopied[j] = true;
+        } while (!indexCopied[j]);
+        copyFromParent1 = !copyFromParent1;
         j = 0;
-        while ((j < length) && (parent1[j] != number)) {  // search copied number in second permutation
-          j++;
-        }
-      }
+        while (j < length && indexCopied[j]) j++;
+      } while (j < length);
 
-      for (int i = 0; i < length; i++) {  // copy rest of secound permutation to new permutation
-        if (!indexCopied[i]) {
-          result[i] = parent2[i];
-        }
-      }
       return result;
     }
 
     /// <summary>
-    /// Performs a cyclic crossover operation for two given parent permutations.
+    /// Checks number of parents and calls <see cref="Apply(IRandom, Permutation, Permutation)"/>.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown if there are not exactly two parents.</exception>
     /// <param name="scope">The current scope.</param>
     /// <param name="random">A random number generator.</param>
     /// <param name="parents">An array containing the two permutations that should be crossed.</param>
     /// <returns>The newly created permutation, resulting from the crossover operation.</returns>
-    protected override int[] Cross(IScope scope, IRandom random, int[][] parents) {
-      if (parents.Length != 2) throw new InvalidOperationException("ERROR in CyclicCrossover: The number of parents is not equal to 2");
+    protected override Permutation Cross(IRandom random, ItemArray<Permutation> parents) {
+      if (parents.Length != 2) throw new InvalidOperationException("CyclicCrossover: The number of parents is not equal to 2");
       return Apply(random, parents[0], parents[1]);
     }
   }

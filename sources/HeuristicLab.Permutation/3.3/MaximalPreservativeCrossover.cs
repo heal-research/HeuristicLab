@@ -28,10 +28,13 @@ namespace HeuristicLab.Permutation {
   /// <remarks>
   /// Performs a crossover between two permuation arrays by preserving a large number of edges in both parents.
   /// The operator also maintains the position in the arrays to some extent.
-  /// It is implemented as described in Mühlenbein, H. Evolution in time and space - the parallel genetic algorithm. FOUNDATIONS OF GENETIC ALGORITHMS, Morgan Kaufmann, 1991, 316-337.
+  /// It is implemented as described in Mühlenbein, H. 1991. Evolution in time and space - the parallel genetic algorithm. FOUNDATIONS OF GENETIC ALGORITHMS, pp. 316-337. Morgan Kaufmann.
+  /// 
   /// The length of the segment copied from the first parent to the offspring is uniformly distributed in the interval [3, N/3) with N = length of the permutation.
+  /// This recommendation is mentioned in Pohlheim, H. 1999. Evolutionäre Algorithmen: Verfahren, Operatoren und Hinweise für die Praxis, p. 44, Springer.
+  /// If the length of the permutation is smaller than 15, the size of the segment is always equal to 3.
   /// </remarks>
-  [Item("MaximalPreservativeCrossover", "An operator which performs the maximal preservative crossover on two permutations.")]
+  [Item("MaximalPreservativeCrossover", "An operator which performs the maximal preservative crossover on two permutations as described in Mühlenbein, H. 1991. Evolution in time and space - the parallel genetic algorithm. FOUNDATIONS OF GENETIC ALGORITHMS, pp. 316-337. Morgan Kaufmann.")]
   [EmptyStorableClass]
   [Creatable("Test")]
   public class MaximalPreservativeCrossover : PermutationCrossover {
@@ -39,8 +42,8 @@ namespace HeuristicLab.Permutation {
     /// Performs the maximal preservative crossover on <paramref name="parent1"/> and <paramref name="parent2"/>
     /// by preserving a large number of edges in both parents.
     /// </summary>
-    /// <exception cref="InvalidOperationException">Thrown if the numbers in the permutation array are not in the range [0,N) with N = length of the permutation.</exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="parent1"/> and <paramref name="parent2"/> are not of equal length or when the permutations are shorter than 4 elements.</exception>
+    /// <exception cref="InvalidOperationException">Thrown if the numbers in the permutation elements are not in the range [0,N) with N = length of the permutation.</exception>
     /// <remarks>
     /// First one segment is copied from the first parent to the offspring in the same position.
     /// Then the tour is completed by adding the next number from the second parent if such an edge exists,
@@ -59,7 +62,7 @@ namespace HeuristicLab.Permutation {
       bool[] numberCopied = new bool[length];
       int breakPoint1, breakPoint2, subsegmentLength, index;
 
-      subsegmentLength = random.Next(3, Math.Max(length / 3, 4)); // as mentioned in "Pohlheim, H. Evolutionäre Algorithmen: Verfahren, Operatoren und Hinweise für die Praxis, 1999, p.44, Springer.
+      subsegmentLength = random.Next(3, Math.Max(length / 3, 4)); // as mentioned in Pohlheim, H. Evolutionäre Algorithmen: Verfahren, Operatoren und Hinweise für die Praxis, 1999, p.44, Springer.
       breakPoint1 = random.Next(length);
       breakPoint2 = breakPoint1 + subsegmentLength;
       if (breakPoint2 >= length) breakPoint2 -= length;
@@ -125,7 +128,7 @@ namespace HeuristicLab.Permutation {
     }
 
     /// <summary>
-    /// Checks number of parents and calls <see cref="Apply"/>.
+    /// Checks number of parents and calls <see cref="Apply(IRandom, Permutation, Permutation)"/>.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown if there are not exactly two permutations in <paramref name="parents"/>.</exception>
     /// <param name="scope">The current scope.</param>

@@ -81,6 +81,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLabPermutationPlugin.cs.frame" />
+    <Compile Include="CyclicCrossover.cs" />
     <Compile Include="InversionManipulator.cs">
       <SubType>Code</SubType>
     </Compile>

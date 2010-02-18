@@ -32,7 +32,7 @@ namespace HeuristicLab.Permutation {
   /// which references Goldberg, D.E., and Lingle, R. 1985. Alleles, loci, and the traveling salesman problem. Proceedings of an International Conference on Genetic Algorithms and their Applications. Carnegie-Mellon University, pp. 154-159.
   /// as the original source of the operator.
   /// </remarks>
-  [Item("PartiallyMatchedCrossover", "An operator which performs the partially matched crossover on two permutations.")]
+  [Item("PartiallyMatchedCrossover", "An operator which performs the partially matched crossover on two permutations as described in Fogel, D.B. 1988. An Evolutionary Approach to the Traveling Salesman Problem. Biological Cybernetics, 60, pp. 139-144, Springer-Verlag.")]
   [EmptyStorableClass]
   [Creatable("Test")]
   public class PartiallyMatchedCrossover : PermutationCrossover {
@@ -40,11 +40,13 @@ namespace HeuristicLab.Permutation {
     /// Performs the partially matched crossover on <paramref name="parent1"/> and <paramref name="parent2"/>.
     /// </summary>
     /// <exception cref="ArgumentException">Thrown when <paramref name="parent1"/> and <paramref name="parent2"/> are not of equal length or when the permutations are shorter than 4 elements.</exception>
+    /// <exception cref="InvalidOperationException">Thrown if the numbers in the permutation elements are not in the range [0,N) with N = length of the permutation.</exception>
     /// <remarks>
-    /// First a segment from the first parent is copied to the offspring.
-    /// Then the rest of the offspring is filled with the numbers from parent2.
-    /// When a number is encountered in parent2 that is included in the segment which came from the first parent,
-    /// the number in parent2 is used that was replaced by the corresponding number from parent1.
+    /// Initially the new offspring is a clone of <paramref name="parent2"/>.
+    /// Then a segment is extracted from <paramref name="parent1"/> and copied to the offspring position by position.
+    /// Whenever a position is copied, the number at that position currently in the offspring is transfered to the position where the copied number has been.
+    /// E.g.: Position 15 is selected to be copied from <paramref name="parent1"/> to <paramref name="parent2"/>. At position 15 there is a '3' in <paramref name="parent1"/> and a '5' in the new offspring.
+    /// The '5' in the offspring is then moved to replace the '3' in the offspring and '3' is written at position 15.
     /// </remarks>
     /// <param name="random">A random number generator.</param>
     /// <param name="parent1">The first parent permutation to cross.</param>
@@ -64,15 +66,19 @@ namespace HeuristicLab.Permutation {
       } while (breakPoint2 - breakPoint1 >= length - 2); // prevent the case [0,length-1) -> clone of parent1
 
       // clone parent2 and calculate inverse permutation (number -> index)
-      for (int j = 0; j < length; j++) {
-        result[j] = parent2[j];
-        invResult[result[j]] = j;
+      try {
+        for (int j = 0; j < length; j++) {
+          result[j] = parent2[j];
+          invResult[result[j]] = j;
+        }
+      } catch (IndexOutOfRangeException) {
+        throw new InvalidOperationException("PartiallyMatchedCrossover: The permutation must consist of consecutive numbers from 0 to N-1 with N = length of the permutation");
       }
 
       for (int j = breakPoint1; j <= breakPoint2; j++) {
         int orig = result[j]; // save the former value
         result[j] = parent1[j]; // overwrite the former value with the new value
-        int index = invResult[result[j]]; // look where the new value is in the child
+        int index = invResult[result[j]]; // look where the new value is in the offspring
         result[index] = orig; // write the former value to this position
         invResult[orig] = index; // update the inverse mapping
         // it's not necessary to do 'invResult[result[j]] = j' as this will not be needed again
@@ -82,7 +88,7 @@ namespace HeuristicLab.Permutation {
     }
 
     /// <summary>
-    /// Checks number of parents and calls <see cref="Apply"/>.
+    /// Checks number of parents and calls <see cref="Apply(Apply(IRandom, Permutation, Permutation)"/>.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown if there are not exactly two permutations in <paramref name="parents"/>.</exception>
     /// <param name="scope">The current scope.</param>
