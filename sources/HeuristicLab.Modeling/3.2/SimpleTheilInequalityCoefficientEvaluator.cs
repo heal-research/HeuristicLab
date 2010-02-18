@@ -33,7 +33,7 @@ namespace HeuristicLab.Modeling {
 U2 = Sqrt(1/N * Sum(P_t - A_t)^2 ) / Sqrt(1/N * Sum(A_t)^2 ) 
 
 where P_t is the predicted change of the target variable and A_t is the measured (original) change.
-(P_t = y'_t - y_(t-1), A_t = y_t - y_(t-1)).
+(P_t = (y'_t - y_(t-1)) / y_(t-1), A_t = (y_t - y_(t-1)) / y_(t-1)).
 
 U2 is 0 for a perfect prediction and 1 for the naive model y'_t = y_(t-1). An U2 > 1 means the
 model is worse than the naive model (=> model is useless).";
@@ -57,12 +57,13 @@ model is worse than the naive model (=> model is useless).";
       int nSamples = 0;
       for (int sample = 1; sample < n; sample++) {
         double prevValue = values[sample - 1, ORIGINAL_INDEX];
-        double estimatedChange = values[sample, ESTIMATION_INDEX] - prevValue;
-        double originalChange = values[sample, ORIGINAL_INDEX] - prevValue;
-        if (!double.IsNaN(originalChange) && !double.IsInfinity(originalChange)) {
-          double error = estimatedChange - originalChange;
-          errorsSquaredSum += error * error;
-          originalSquaredSum += originalChange * originalChange;
+        double estimatedValue = values[sample, ESTIMATION_INDEX];
+        double originalValue = values[sample, ORIGINAL_INDEX];
+        if (!double.IsNaN(originalValue) && !double.IsInfinity(originalValue)) {
+          double errorEstimatedChange = (estimatedValue - originalValue) / prevValue; // percentage error of predicted change
+          errorsSquaredSum += errorEstimatedChange * errorEstimatedChange;
+          double errorNoChange = (prevValue - originalValue) / prevValue; // percentage error of naive model y(t+1) = y(t)
+          originalSquaredSum += errorNoChange * errorNoChange;
           nSamples++;
         }
       }
