@@ -61,16 +61,19 @@ namespace HeuristicLab.Permutation.Tests {
 
     public int Next(int maxVal) {
       if (nextIntIndex >= intNumbers.Length) throw new InvalidOperationException("Random: No more integer random numbers available");
+      if (IntNumbers[nextIntIndex] >= maxVal) throw new InvalidOperationException("Random: Next integer random number (" + IntNumbers[nextIntIndex] + ") is >= " + maxVal);
       return intNumbers[nextIntIndex++];
     }
 
     public int Next(int minVal, int maxVal) {
       if (nextIntIndex >= intNumbers.Length) throw new InvalidOperationException("Random: No more integer random numbers available");
+      if (IntNumbers[nextIntIndex] < minVal || IntNumbers[nextIntIndex] >= maxVal) throw new InvalidOperationException("Random: Next integer random number (" + IntNumbers[nextIntIndex] + ") is not in the range [" + minVal + ";" + maxVal + ")");
       return intNumbers[nextIntIndex++];
     }
 
     public double NextDouble() {
       if (nextDoubleIndex >= doubleNumbers.Length) throw new InvalidOperationException("Random: No more double random numbers available");
+      if (doubleNumbers[nextDoubleIndex] < 0.0 || doubleNumbers[nextDoubleIndex] >= 1.0) throw new InvalidOperationException("Random: Next double ranomd number (" + DoubleNumbers[nextDoubleIndex] + ") is not in the range [0;1)");
       return doubleNumbers[nextDoubleIndex++];
     }
 

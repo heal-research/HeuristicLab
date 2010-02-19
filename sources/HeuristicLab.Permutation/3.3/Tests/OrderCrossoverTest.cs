@@ -123,20 +123,38 @@ namespace HeuristicLab.Permutation.Tests
       Assert.IsTrue(Auxiliary.PermutationIsEqualByPosition(expected, actual));
       // based on the previous with changed breakpoints
       random.Reset();
-      random.IntNumbers = new int[] { 4, 4 };
-      expected = new Permutation(new int[] { 3, 4, 0, 9, 7, 8, 2, 1, 6, 5 });
+      random.IntNumbers = new int[] { 6, 9 };
+      expected = new Permutation(new int[] { 3, 4, 8, 2, 7, 1, 6, 0, 5, 9 });
       Assert.IsTrue(expected.Validate());
       actual = target.Cross(random, parents);
       Assert.IsTrue(actual.Validate());
       Assert.IsTrue(Auxiliary.PermutationIsEqualByPosition(expected, actual));
       // another one based on the previous with changed breakpoints
       random.Reset();
-      random.IntNumbers = new int[] { 9, 9 };
-      expected = new Permutation(new int[] { 5, 3, 4, 0, 8, 2, 7, 1, 6, 9 });
+      random.IntNumbers = new int[] { 0, 9 };
+      expected = new Permutation(new int[] { 2, 1, 4, 3, 7, 8, 6, 0, 5, 9 });
       Assert.IsTrue(expected.Validate());
       actual = target.Cross(random, parents);
       Assert.IsTrue(actual.Validate());
       Assert.IsTrue(Auxiliary.PermutationIsEqualByPosition(expected, actual));
+      // perform a test with more than two parents
+      random.Reset();
+      bool exceptionFired = false;
+      try {
+        target.Cross(random, new ItemArray<Permutation>(new Permutation[] { new Permutation(4), new Permutation(4), new Permutation(4)}));
+      } catch (System.InvalidOperationException) {
+        exceptionFired = true;
+      }
+      Assert.IsTrue(exceptionFired);
+      // perform a test when two permutations are of unequal length
+      random.Reset();
+      exceptionFired = false;
+      try {
+        target.Cross(random, new ItemArray<Permutation>(new Permutation[] { new Permutation(8), new Permutation(6) }));
+      } catch (System.ArgumentException) {
+        exceptionFired = true;
+      }
+      Assert.IsTrue(exceptionFired);
     }
 
     /// <summary>
@@ -195,20 +213,29 @@ namespace HeuristicLab.Permutation.Tests
       Assert.IsTrue(Auxiliary.PermutationIsEqualByPosition(expected, actual));
       // based on the previous with changed breakpoints
       random.Reset();
-      random.IntNumbers = new int[] { 4, 4 };
-      expected = new Permutation(new int[] { 3, 4, 0, 9, 7, 8, 2, 1, 6, 5 });
+      random.IntNumbers = new int[] { 6, 9 };
+      expected = new Permutation(new int[] { 3, 4, 8, 2, 7, 1, 6, 0, 5, 9 });
       Assert.IsTrue(expected.Validate());
       actual = OrderCrossover.Apply(random, parent1, parent2);
       Assert.IsTrue(actual.Validate());
       Assert.IsTrue(Auxiliary.PermutationIsEqualByPosition(expected, actual));
       // another one based on the previous with changed breakpoints
       random.Reset();
-      random.IntNumbers = new int[] { 9, 9 };
-      expected = new Permutation(new int[] { 5, 3, 4, 0, 8, 2, 7, 1, 6, 9 });
+      random.IntNumbers = new int[] { 0, 9 };
+      expected = new Permutation(new int[] { 2, 1, 4, 3, 7, 8, 6, 0, 5, 9 });
       Assert.IsTrue(expected.Validate());
       actual = OrderCrossover.Apply(random, parent1, parent2);
       Assert.IsTrue(actual.Validate());
       Assert.IsTrue(Auxiliary.PermutationIsEqualByPosition(expected, actual));
+      // perform a test when the two permutations are of unequal length
+      random.Reset();
+      bool exceptionFired = false;
+      try {
+        OrderCrossover.Apply(random, new Permutation(8), new Permutation(6));
+      } catch (System.ArgumentException) {
+        exceptionFired = true;
+      }
+      Assert.IsTrue(exceptionFired);
     }
 
     /// <summary>
