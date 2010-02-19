@@ -44,11 +44,12 @@ namespace HeuristicLab.Core.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ViewHost));
+      this.components = new System.ComponentModel.Container(); 
       this.viewPanel = new System.Windows.Forms.Panel();
       this.messageLabel = new System.Windows.Forms.Label();
       this.viewsLabel = new System.Windows.Forms.Label();
-      this.viewContextMenuStrip = new HeuristicLab.MainForm.WindowsForms.ViewContextMenuStrip();
+      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this.viewContextMenuStrip = new HeuristicLab.MainForm.WindowsForms.ViewContextMenuStrip(this.components);
       this.SuspendLayout();
       // 
       // viewPanel
@@ -75,11 +76,12 @@ namespace HeuristicLab.Core.Views {
       // 
       this.viewsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.viewsLabel.ContextMenuStrip = this.viewContextMenuStrip;
-      this.viewsLabel.Image = ((System.Drawing.Image)(resources.GetObject("viewsLabel.Image")));
+      this.viewsLabel.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Windows;
       this.viewsLabel.Location = new System.Drawing.Point(211, 0);
       this.viewsLabel.Name = "viewsLabel";
       this.viewsLabel.Size = new System.Drawing.Size(16, 16);
       this.viewsLabel.TabIndex = 0;
+      this.toolTip.SetToolTip(this.viewsLabel, "Double-click to open a new window of the current view.\r\nRight-click to change current view.");
       this.viewsLabel.DoubleClick += new System.EventHandler(this.viewsLabel_DoubleClick);
       // 
       // viewContextMenuStrip
@@ -107,6 +109,7 @@ namespace HeuristicLab.Core.Views {
     private System.Windows.Forms.Panel viewPanel;
     private System.Windows.Forms.Label viewsLabel;
     private System.Windows.Forms.Label messageLabel;
+    private System.Windows.Forms.ToolTip toolTip;
     private HeuristicLab.MainForm.WindowsForms.ViewContextMenuStrip viewContextMenuStrip;
 
   }
