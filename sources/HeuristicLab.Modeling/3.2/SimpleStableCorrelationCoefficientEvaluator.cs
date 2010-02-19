@@ -49,8 +49,13 @@ namespace HeuristicLab.Modeling {
       double pop_sd_x = Math.Sqrt(sum_sq_x / values.GetLength(0));
       double pop_sd_y = Math.Sqrt(sum_sq_y / values.GetLength(0));
       double cov_x_y = sum_coproduct / values.GetLength(0);
-      double r = cov_x_y / (pop_sd_x * pop_sd_y);
-      return r * r;
+
+      if (pop_sd_x == 0.0 || pop_sd_y == 0.0)
+        return 0.0;
+      else {
+        double r = cov_x_y / (pop_sd_x * pop_sd_y);
+        return r * r;
+      }
     }
 
     private static bool IsInvalidValue(double d) {

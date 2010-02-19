@@ -16,12 +16,7 @@ namespace HeuristicLab.Modeling {
     }
 
     public override double Evaluate(double[,] values) {
-      try {
-        return Calculate(values);
-      }
-      catch (ArgumentException) {
-        return double.NegativeInfinity;
-      }
+      return Calculate(values);
     }
 
     public static double Calculate(double[,] values) {
