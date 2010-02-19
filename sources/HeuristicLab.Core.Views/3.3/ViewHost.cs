@@ -32,7 +32,7 @@ namespace HeuristicLab.Core.Views {
     public Type ViewType {
       get { return this.viewType; }
       set {
-        if (!ViewCanShowContent(value, content))
+        if (value != null && !ViewCanShowContent(value, content))
           throw new ArgumentException(string.Format("View \"{0}\" cannot display content \"{1}\".",
                                                     value.GetPrettyName(),
                                                     content.GetType().GetPrettyName()));
