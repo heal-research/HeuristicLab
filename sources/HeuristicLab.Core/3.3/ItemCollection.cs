@@ -58,7 +58,7 @@ namespace HeuristicLab.Core {
     public ItemCollection(int capacity) : base(capacity) { }
     public ItemCollection(IEnumerable<T> collection) : base(collection) {
       foreach (T item in this)
-        item.Changed += new ChangedEventHandler(Item_Changed);
+        if (item != null) item.Changed += new ChangedEventHandler(Item_Changed);
     }
 
     public object Clone() {

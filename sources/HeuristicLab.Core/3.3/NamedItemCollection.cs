@@ -104,16 +104,20 @@ namespace HeuristicLab.Core {
 
     private void RegisterItemEvents(IEnumerable<T> items) {
       foreach (T item in items) {
-        item.NameChanging += new EventHandler<CancelEventArgs<string>>(Item_NameChanging);
-        item.NameChanged += new EventHandler(Item_NameChanged);
-        item.Changed += new ChangedEventHandler(Item_Changed);
+        if (item != null) {
+          item.NameChanging += new EventHandler<CancelEventArgs<string>>(Item_NameChanging);
+          item.NameChanged += new EventHandler(Item_NameChanged);
+          item.Changed += new ChangedEventHandler(Item_Changed);
+        }
       }
     }
     private void DeregisterItemEvents(IEnumerable<T> items) {
       foreach (T item in items) {
-        item.NameChanging -= new EventHandler<CancelEventArgs<string>>(Item_NameChanging);
-        item.NameChanged -= new EventHandler(Item_NameChanged);
-        item.Changed -= new ChangedEventHandler(Item_Changed);
+        if (item != null) {
+          item.NameChanging -= new EventHandler<CancelEventArgs<string>>(Item_NameChanging);
+          item.NameChanged -= new EventHandler(Item_NameChanged);
+          item.Changed -= new ChangedEventHandler(Item_Changed);
+        }
       }
     }
 

@@ -71,12 +71,12 @@ namespace HeuristicLab.Core {
     public Variable(string name, IItem value)
       : base(name) {
       this.value = value;
-      this.value.Changed += new ChangedEventHandler(Value_Changed);
+      if (this.value != null) this.value.Changed += new ChangedEventHandler(Value_Changed);
     }
     public Variable(string name, string description, IItem value)
       : base(name, description) {
       this.value = value;
-      this.value.Changed += new ChangedEventHandler(Value_Changed);
+      if (this.value != null) this.value.Changed += new ChangedEventHandler(Value_Changed);
     }
 
     /// <summary>

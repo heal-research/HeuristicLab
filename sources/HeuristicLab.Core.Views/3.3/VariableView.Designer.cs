@@ -107,6 +107,7 @@ namespace HeuristicLab.Core.Views {
       // 
       // valuePanel
       // 
+      this.valuePanel.AllowDrop = true;
       this.valuePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
