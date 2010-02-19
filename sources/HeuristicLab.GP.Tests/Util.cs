@@ -152,8 +152,8 @@ namespace HeuristicLab.GP.Test {
       functionLibrary.AddFunction(tangens);
       functionLibrary.AddFunction(xor);
 
-      variable.SetConstraints(0, 0);
-      differential.SetConstraints(0, 0);
+      variable.MinTimeOffset = variable.MaxTimeOffset = 0;
+      differential.MinTimeOffset = differential.MaxTimeOffset = 0;
 
       return functionLibrary;
 

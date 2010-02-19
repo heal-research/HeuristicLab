@@ -82,9 +82,6 @@ namespace HeuristicLab.CEDMA.Server {
       set { testSamplesEnd = value; }
     }
 
-    public int MaxTimeOffset { get; set; }
-    public int MinTimeOffset { get; set; }
-
     public bool AutoRegressive { get; set; }
 
     private LearningTask learningTask;
@@ -107,8 +104,6 @@ namespace HeuristicLab.CEDMA.Server {
     public ProblemSpecification(ProblemSpecification original) {
       LearningTask = original.LearningTask;
       TargetVariable = original.TargetVariable;
-      MinTimeOffset = original.MinTimeOffset;
-      MaxTimeOffset = original.MaxTimeOffset;
       AutoRegressive = original.AutoRegressive;
       TrainingSamplesStart = original.TrainingSamplesStart;
       TrainingSamplesEnd = original.TrainingSamplesEnd;
@@ -133,8 +128,6 @@ namespace HeuristicLab.CEDMA.Server {
       if (other == null) return false;
       return
         other.LearningTask == LearningTask &&
-        other.MinTimeOffset == MinTimeOffset &&
-        other.MaxTimeOffset == MaxTimeOffset &&
         other.AutoRegressive == AutoRegressive &&
         other.TargetVariable == TargetVariable &&
         other.trainingSamplesStart == trainingSamplesStart &&
@@ -155,8 +148,6 @@ namespace HeuristicLab.CEDMA.Server {
       return
         LearningTask.GetHashCode() |
         TargetVariable.GetHashCode() |
-        MinTimeOffset.GetHashCode() |
-        MaxTimeOffset.GetHashCode() |
         AutoRegressive.GetHashCode() |
         TrainingSamplesStart.GetHashCode() |
         TrainingSamplesEnd.GetHashCode() |

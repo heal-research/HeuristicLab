@@ -111,6 +111,12 @@
       <DependentUpon>PredictorView.cs</DependentUpon>
     </Compile>
     <Compile Include="StandardGPRegression.cs" />
+    <Compile Include="Symbols\VariableView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Symbols\VariableView.Designer.cs">
+      <DependentUpon>VariableView.cs</DependentUpon>
+    </Compile>
     <Compile Include="VariableFrequencyAnalyser.cs" />
     <Compile Include="Symbols\Addition.cs" />
     <Compile Include="Symbols\And.cs" />
@@ -233,6 +239,9 @@
   <ItemGroup>
     <EmbeddedResource Include="PredictorView.resx">
       <DependentUpon>PredictorView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Symbols\VariableView.resx">
+      <DependentUpon>VariableView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

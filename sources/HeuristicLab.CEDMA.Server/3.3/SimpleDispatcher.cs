@@ -105,6 +105,22 @@ namespace HeuristicLab.CEDMA.Server {
     private Dictionary<string, List<AlgorithmConfiguration>> finishedAndDispatchedRuns;
     private object locker = new object();
 
+
+    public double TrainingSetPercentageSize {
+      get;
+      set;
+    }
+
+    public int SkippedRowsBeginning {
+      get;
+      set;
+    }
+
+    public int SkippedRowsEnd {
+      get;
+      set;
+    }
+
     public SimpleDispatcher(IModelingDatabase database, Dataset dataset) {
       this.dataset = dataset;
       this.database = database;
@@ -116,8 +132,11 @@ namespace HeuristicLab.CEDMA.Server {
       algorithms = new Dictionary<string, List<HeuristicLab.Modeling.IAlgorithm>>();
       finishedAndDispatchedRuns = new Dictionary<string, List<AlgorithmConfiguration>>();
 
-      
+
       defaultAlgorithms = ApplicationManager.Manager.GetInstances<HeuristicLab.Modeling.IAlgorithm>().ToArray();
+
+      TrainingSetPercentageSize = 0.5;
+      SkippedRowsBeginning = 2;
 
       // PopulateFinishedRuns();
     }
@@ -189,10 +208,7 @@ namespace HeuristicLab.CEDMA.Server {
       }
 
       if (spec.LearningTask == LearningTask.TimeSeries) {
-        ITimeSeriesAlgorithm timeSeriesAlgo = (ITimeSeriesAlgorithm)algo;
-        timeSeriesAlgo.MinTimeOffset = spec.MinTimeOffset;
-        timeSeriesAlgo.MaxTimeOffset = spec.MaxTimeOffset;
-        timeSeriesAlgo.TrainingSamplesStart = spec.TrainingSamplesStart - spec.MinTimeOffset + 1; // first possible index is 1 because of differential symbol
+        algo.TrainingSamplesStart = spec.TrainingSamplesStart + 1; // first possible index is 1 because of differential symbol
         if (spec.AutoRegressive) {
           allowedFeatures.Add(spec.TargetVariable);
         }
@@ -254,18 +270,20 @@ namespace HeuristicLab.CEDMA.Server {
         double x = dataset.GetValue(firstValueIndex, targetColumn);
         if (!(double.IsNaN(x) || double.IsInfinity(x))) break;
       }
+      firstValueIndex += SkippedRowsBeginning;
       // find index of last correct target value
       int lastValueIndex;
       for (lastValueIndex = dataset.Rows - 1; lastValueIndex > firstValueIndex; lastValueIndex--) {
         double x = dataset.GetValue(lastValueIndex, targetColumn);
         if (!(double.IsNaN(x) || double.IsInfinity(x))) break;
       }
+      lastValueIndex -= SkippedRowsEnd;
 
       int validTargetRange = lastValueIndex - firstValueIndex;
       spec.TrainingSamplesStart = firstValueIndex;
-      spec.TrainingSamplesEnd = firstValueIndex + (int)Math.Floor(validTargetRange * 0.5);
+      spec.TrainingSamplesEnd = firstValueIndex + (int)Math.Floor(validTargetRange * TrainingSetPercentageSize);
       spec.ValidationSamplesStart = spec.TrainingSamplesEnd;
-      spec.ValidationSamplesEnd = firstValueIndex + (int)Math.Floor(validTargetRange * 0.75);
+      spec.ValidationSamplesEnd = spec.TrainingSamplesEnd + (int)Math.Floor(validTargetRange * (1 - TrainingSetPercentageSize) / 2.0);
       spec.TestSamplesStart = spec.ValidationSamplesEnd;
       spec.TestSamplesEnd = lastValueIndex;
       return spec;

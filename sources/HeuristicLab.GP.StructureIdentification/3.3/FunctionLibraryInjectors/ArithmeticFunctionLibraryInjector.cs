@@ -28,31 +28,8 @@ using HeuristicLab.GP;
 namespace HeuristicLab.GP.StructureIdentification {
   [SymbolicRegressionFunctionLibraryInjector]
   public class ArithmeticFunctionLibraryInjector : FunctionLibraryInjectorBase {
-    public const string MINTIMEOFFSET = "MinTimeOffset";
-    public const string MAXTIMEOFFSET = "MaxTimeOffset";
-
-    private int minTimeOffset;
-    private int maxTimeOffset;
-
     public override string Description {
       get { return @"Injects a function library with (+, -, *,  /) symbols."; }
-    }
-
-    public ArithmeticFunctionLibraryInjector()
-      : base() {
-      AddVariableInfo(new VariableInfo(MINTIMEOFFSET, "Minimal time offset for all features", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo(MAXTIMEOFFSET, "Maximal time offset for all feature", typeof(IntData), VariableKind.In));
-    }
-
-    public override IOperation Apply(IScope scope) {
-      // try to get minTimeOffset (use 0 as default if not available)
-      IItem minTimeOffsetItem = GetVariableValue(MINTIMEOFFSET, scope, true, false);
-      minTimeOffset = minTimeOffsetItem == null ? 0 : ((IntData)minTimeOffsetItem).Data;
-      // try to get maxTimeOffset (use 0 as default if not available)
-      IItem maxTimeOffsetItem = GetVariableValue(MAXTIMEOFFSET, scope, true, false);
-      maxTimeOffset = maxTimeOffsetItem == null ? 0 : ((IntData)maxTimeOffsetItem).Data;
-
-      return base.Apply(scope);
     }
 
     protected override FunctionLibrary CreateFunctionLibrary() {
@@ -76,9 +53,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       SetAllowedSubOperators(subtraction, doubleFunctions);
 
       doubleFunctions.ForEach(fun => functionLibrary.AddFunction(fun));
-
-      variable.SetConstraints(minTimeOffset, maxTimeOffset);
-      differential.SetConstraints(minTimeOffset, maxTimeOffset);
 
       return functionLibrary;
     }

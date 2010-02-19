@@ -23,21 +23,19 @@
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
       this.targetVariableList = new System.Windows.Forms.CheckedListBox();
       this.inputVariableList = new System.Windows.Forms.CheckedListBox();
       this.targetVariablesLabel = new System.Windows.Forms.Label();
       this.inputVariablesLabel = new System.Windows.Forms.Label();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
       this.learningTaskGroupBox = new System.Windows.Forms.GroupBox();
+      this.editEngineButton = new System.Windows.Forms.Button();
       this.setAlgorithmDefault = new System.Windows.Forms.Button();
       this.autoregressiveLabel = new System.Windows.Forms.Label();
       this.classificationRadioButton = new System.Windows.Forms.RadioButton();
       this.algorithmsListBox = new System.Windows.Forms.CheckedListBox();
-      this.minTimeOffsetLabel = new System.Windows.Forms.Label();
-      this.minTimeOffsetTextBox = new System.Windows.Forms.TextBox();
-      this.maxTimeOffsetLabel = new System.Windows.Forms.Label();
       this.regressionRadioButton = new System.Windows.Forms.RadioButton();
-      this.maxTimeOffsetTextBox = new System.Windows.Forms.TextBox();
       this.timeSeriesRadioButton = new System.Windows.Forms.RadioButton();
       this.autoregressiveCheckBox = new System.Windows.Forms.CheckBox();
       this.partitioningGroupBox = new System.Windows.Forms.GroupBox();
@@ -51,12 +49,13 @@
       this.testSamplesStartTextBox = new System.Windows.Forms.TextBox();
       this.testLabel = new System.Windows.Forms.Label();
       this.setAllButton = new System.Windows.Forms.Button();
-      this.editEngineButton = new System.Windows.Forms.Button();
+      this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
       this.learningTaskGroupBox.SuspendLayout();
       this.partitioningGroupBox.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
       // 
       // targetVariableList
@@ -135,25 +134,32 @@
       this.learningTaskGroupBox.Controls.Add(this.autoregressiveLabel);
       this.learningTaskGroupBox.Controls.Add(this.classificationRadioButton);
       this.learningTaskGroupBox.Controls.Add(this.algorithmsListBox);
-      this.learningTaskGroupBox.Controls.Add(this.minTimeOffsetLabel);
-      this.learningTaskGroupBox.Controls.Add(this.minTimeOffsetTextBox);
-      this.learningTaskGroupBox.Controls.Add(this.maxTimeOffsetLabel);
       this.learningTaskGroupBox.Controls.Add(this.regressionRadioButton);
-      this.learningTaskGroupBox.Controls.Add(this.maxTimeOffsetTextBox);
       this.learningTaskGroupBox.Controls.Add(this.timeSeriesRadioButton);
       this.learningTaskGroupBox.Controls.Add(this.autoregressiveCheckBox);
       this.learningTaskGroupBox.Enabled = false;
       this.learningTaskGroupBox.Location = new System.Drawing.Point(6, 236);
       this.learningTaskGroupBox.Name = "learningTaskGroupBox";
-      this.learningTaskGroupBox.Size = new System.Drawing.Size(343, 321);
+      this.learningTaskGroupBox.Size = new System.Drawing.Size(343, 341);
       this.learningTaskGroupBox.TabIndex = 36;
       this.learningTaskGroupBox.TabStop = false;
       this.learningTaskGroupBox.Text = "Learning task";
       // 
+      // editEngineButton
+      // 
+      this.editEngineButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.editEngineButton.Location = new System.Drawing.Point(108, 312);
+      this.editEngineButton.Name = "editEngineButton";
+      this.editEngineButton.Size = new System.Drawing.Size(75, 23);
+      this.editEngineButton.TabIndex = 37;
+      this.editEngineButton.Text = "Edit engine";
+      this.editEngineButton.UseVisualStyleBackColor = true;
+      this.editEngineButton.Click += new System.EventHandler(this.editEngineButton_Click);
+      // 
       // setAlgorithmDefault
       // 
       this.setAlgorithmDefault.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.setAlgorithmDefault.Location = new System.Drawing.Point(6, 292);
+      this.setAlgorithmDefault.Location = new System.Drawing.Point(6, 312);
       this.setAlgorithmDefault.Name = "setAlgorithmDefault";
       this.setAlgorithmDefault.Size = new System.Drawing.Size(96, 23);
       this.setAlgorithmDefault.TabIndex = 36;
@@ -190,42 +196,12 @@
       this.algorithmsListBox.Enabled = false;
       this.algorithmsListBox.FormattingEnabled = true;
       this.algorithmsListBox.HorizontalScrollbar = true;
-      this.algorithmsListBox.Location = new System.Drawing.Point(6, 155);
+      this.algorithmsListBox.Location = new System.Drawing.Point(6, 110);
       this.algorithmsListBox.Name = "algorithmsListBox";
-      this.algorithmsListBox.Size = new System.Drawing.Size(331, 124);
+      this.algorithmsListBox.Size = new System.Drawing.Size(331, 184);
       this.algorithmsListBox.TabIndex = 4;
       this.algorithmsListBox.SelectedIndexChanged += new System.EventHandler(this.algorithmsListBox_SelectedIndexChanged);
       this.algorithmsListBox.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.algorithmsListBox_ItemCheck);
-      // 
-      // minTimeOffsetLabel
-      // 
-      this.minTimeOffsetLabel.AutoSize = true;
-      this.minTimeOffsetLabel.Enabled = false;
-      this.minTimeOffsetLabel.Location = new System.Drawing.Point(38, 106);
-      this.minTimeOffsetLabel.Name = "minTimeOffsetLabel";
-      this.minTimeOffsetLabel.Size = new System.Drawing.Size(87, 13);
-      this.minTimeOffsetLabel.TabIndex = 31;
-      this.minTimeOffsetLabel.Text = "Min. Time Offset:";
-      // 
-      // minTimeOffsetTextBox
-      // 
-      this.minTimeOffsetTextBox.Enabled = false;
-      this.minTimeOffsetTextBox.Location = new System.Drawing.Point(131, 103);
-      this.minTimeOffsetTextBox.Name = "minTimeOffsetTextBox";
-      this.minTimeOffsetTextBox.Size = new System.Drawing.Size(96, 20);
-      this.minTimeOffsetTextBox.TabIndex = 32;
-      this.minTimeOffsetTextBox.Validated += new System.EventHandler(this.timeOffsetTextBox_Validated);
-      this.minTimeOffsetTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.timeOffsetTextBox_Validating);
-      // 
-      // maxTimeOffsetLabel
-      // 
-      this.maxTimeOffsetLabel.AutoSize = true;
-      this.maxTimeOffsetLabel.Enabled = false;
-      this.maxTimeOffsetLabel.Location = new System.Drawing.Point(35, 132);
-      this.maxTimeOffsetLabel.Name = "maxTimeOffsetLabel";
-      this.maxTimeOffsetLabel.Size = new System.Drawing.Size(90, 13);
-      this.maxTimeOffsetLabel.TabIndex = 33;
-      this.maxTimeOffsetLabel.Text = "Max. Time Offset:";
       // 
       // regressionRadioButton
       // 
@@ -237,16 +213,6 @@
       this.regressionRadioButton.Text = "Regression";
       this.regressionRadioButton.UseVisualStyleBackColor = true;
       this.regressionRadioButton.CheckedChanged += new System.EventHandler(this.radioButton_CheckedChanged);
-      // 
-      // maxTimeOffsetTextBox
-      // 
-      this.maxTimeOffsetTextBox.Enabled = false;
-      this.maxTimeOffsetTextBox.Location = new System.Drawing.Point(131, 129);
-      this.maxTimeOffsetTextBox.Name = "maxTimeOffsetTextBox";
-      this.maxTimeOffsetTextBox.Size = new System.Drawing.Size(96, 20);
-      this.maxTimeOffsetTextBox.TabIndex = 34;
-      this.maxTimeOffsetTextBox.Validated += new System.EventHandler(this.timeOffsetTextBox_Validated);
-      this.maxTimeOffsetTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.timeOffsetTextBox_Validating);
       // 
       // timeSeriesRadioButton
       // 
@@ -284,16 +250,16 @@
       this.partitioningGroupBox.Controls.Add(this.testSamplesStartTextBox);
       this.partitioningGroupBox.Controls.Add(this.testLabel);
       this.partitioningGroupBox.Enabled = false;
-      this.partitioningGroupBox.Location = new System.Drawing.Point(6, 563);
+      this.partitioningGroupBox.Location = new System.Drawing.Point(6, 583);
       this.partitioningGroupBox.Name = "partitioningGroupBox";
-      this.partitioningGroupBox.Size = new System.Drawing.Size(343, 122);
+      this.partitioningGroupBox.Size = new System.Drawing.Size(343, 102);
       this.partitioningGroupBox.TabIndex = 26;
       this.partitioningGroupBox.TabStop = false;
       this.partitioningGroupBox.Text = "Data set partitions:";
       // 
       // validationSamplesEndTextBox
       // 
-      this.validationSamplesEndTextBox.Location = new System.Drawing.Point(221, 43);
+      this.validationSamplesEndTextBox.Location = new System.Drawing.Point(222, 45);
       this.validationSamplesEndTextBox.Name = "validationSamplesEndTextBox";
       this.validationSamplesEndTextBox.Size = new System.Drawing.Size(96, 20);
       this.validationSamplesEndTextBox.TabIndex = 13;
@@ -303,7 +269,7 @@
       // trainingLabel
       // 
       this.trainingLabel.AutoSize = true;
-      this.trainingLabel.Location = new System.Drawing.Point(13, 20);
+      this.trainingLabel.Location = new System.Drawing.Point(14, 22);
       this.trainingLabel.Name = "trainingLabel";
       this.trainingLabel.Size = new System.Drawing.Size(89, 13);
       this.trainingLabel.TabIndex = 3;
@@ -311,7 +277,7 @@
       // 
       // trainingSamplesStartTextBox
       // 
-      this.trainingSamplesStartTextBox.Location = new System.Drawing.Point(119, 17);
+      this.trainingSamplesStartTextBox.Location = new System.Drawing.Point(120, 19);
       this.trainingSamplesStartTextBox.Name = "trainingSamplesStartTextBox";
       this.trainingSamplesStartTextBox.Size = new System.Drawing.Size(96, 20);
       this.trainingSamplesStartTextBox.TabIndex = 4;
@@ -320,7 +286,7 @@
       // 
       // trainingSamplesEndTextBox
       // 
-      this.trainingSamplesEndTextBox.Location = new System.Drawing.Point(221, 17);
+      this.trainingSamplesEndTextBox.Location = new System.Drawing.Point(222, 19);
       this.trainingSamplesEndTextBox.Name = "trainingSamplesEndTextBox";
       this.trainingSamplesEndTextBox.Size = new System.Drawing.Size(96, 20);
       this.trainingSamplesEndTextBox.TabIndex = 10;
@@ -330,7 +296,7 @@
       // validationLabel
       // 
       this.validationLabel.AutoSize = true;
-      this.validationLabel.Location = new System.Drawing.Point(5, 46);
+      this.validationLabel.Location = new System.Drawing.Point(6, 48);
       this.validationLabel.Name = "validationLabel";
       this.validationLabel.Size = new System.Drawing.Size(97, 13);
       this.validationLabel.TabIndex = 11;
@@ -338,7 +304,7 @@
       // 
       // testSamplesEndTextBox
       // 
-      this.testSamplesEndTextBox.Location = new System.Drawing.Point(221, 68);
+      this.testSamplesEndTextBox.Location = new System.Drawing.Point(222, 70);
       this.testSamplesEndTextBox.Name = "testSamplesEndTextBox";
       this.testSamplesEndTextBox.Size = new System.Drawing.Size(96, 20);
       this.testSamplesEndTextBox.TabIndex = 16;
@@ -347,7 +313,7 @@
       // 
       // validationSamplesStartTextBox
       // 
-      this.validationSamplesStartTextBox.Location = new System.Drawing.Point(119, 43);
+      this.validationSamplesStartTextBox.Location = new System.Drawing.Point(120, 45);
       this.validationSamplesStartTextBox.Name = "validationSamplesStartTextBox";
       this.validationSamplesStartTextBox.Size = new System.Drawing.Size(96, 20);
       this.validationSamplesStartTextBox.TabIndex = 12;
@@ -356,7 +322,7 @@
       // 
       // testSamplesStartTextBox
       // 
-      this.testSamplesStartTextBox.Location = new System.Drawing.Point(119, 68);
+      this.testSamplesStartTextBox.Location = new System.Drawing.Point(120, 70);
       this.testSamplesStartTextBox.Name = "testSamplesStartTextBox";
       this.testSamplesStartTextBox.Size = new System.Drawing.Size(96, 20);
       this.testSamplesStartTextBox.TabIndex = 15;
@@ -366,7 +332,7 @@
       // testLabel
       // 
       this.testLabel.AutoSize = true;
-      this.testLabel.Location = new System.Drawing.Point(30, 71);
+      this.testLabel.Location = new System.Drawing.Point(31, 73);
       this.testLabel.Name = "testLabel";
       this.testLabel.Size = new System.Drawing.Size(72, 13);
       this.testLabel.TabIndex = 14;
@@ -383,15 +349,9 @@
       this.setAllButton.UseVisualStyleBackColor = true;
       this.setAllButton.Click += new System.EventHandler(this.setAllButton_Click);
       // 
-      // editEngineButton
+      // errorProvider
       // 
-      this.editEngineButton.Location = new System.Drawing.Point(108, 292);
-      this.editEngineButton.Name = "editEngineButton";
-      this.editEngineButton.Size = new System.Drawing.Size(75, 23);
-      this.editEngineButton.TabIndex = 37;
-      this.editEngineButton.Text = "Edit engine";
-      this.editEngineButton.UseVisualStyleBackColor = true;
-      this.editEngineButton.Click += new System.EventHandler(this.editEngineButton_Click);
+      this.errorProvider.ContainerControl = this;
       // 
       // DispatcherView
       // 
@@ -409,6 +369,7 @@
       this.learningTaskGroupBox.PerformLayout();
       this.partitioningGroupBox.ResumeLayout(false);
       this.partitioningGroupBox.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);
 
     }
@@ -435,14 +396,11 @@
     private System.Windows.Forms.GroupBox learningTaskGroupBox;
     private System.Windows.Forms.Label autoregressiveLabel;
     private System.Windows.Forms.RadioButton classificationRadioButton;
-    private System.Windows.Forms.Label minTimeOffsetLabel;
-    private System.Windows.Forms.TextBox minTimeOffsetTextBox;
-    private System.Windows.Forms.Label maxTimeOffsetLabel;
     private System.Windows.Forms.RadioButton regressionRadioButton;
-    private System.Windows.Forms.TextBox maxTimeOffsetTextBox;
     private System.Windows.Forms.RadioButton timeSeriesRadioButton;
     private System.Windows.Forms.CheckBox autoregressiveCheckBox;
     private System.Windows.Forms.Button setAlgorithmDefault;
     private System.Windows.Forms.Button editEngineButton;
+    private System.Windows.Forms.ErrorProvider errorProvider;
   }
 }

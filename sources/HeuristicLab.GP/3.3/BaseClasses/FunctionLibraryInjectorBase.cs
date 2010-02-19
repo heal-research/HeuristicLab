@@ -32,7 +32,7 @@ namespace HeuristicLab.GP {
     private const string FUNCTIONLIBRARY = "FunctionLibrary";
 
     public override string Description {
-      get { return @"Descrption is missing."; }
+      get { return @"Description is missing."; }
     }
 
     private FunctionLibrary functionLibrary;
@@ -54,7 +54,7 @@ namespace HeuristicLab.GP {
     }
 
     public override IOperation Apply(IScope scope) {
-      scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(FUNCTIONLIBRARY), functionLibrary));
+      scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(FUNCTIONLIBRARY), (FunctionLibrary)functionLibrary.Clone()));
       return null;
     }
 

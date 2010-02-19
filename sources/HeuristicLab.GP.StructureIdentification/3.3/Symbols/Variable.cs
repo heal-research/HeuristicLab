@@ -23,6 +23,7 @@ using HeuristicLab.GP.Interfaces;
 using HeuristicLab.Operators;
 using HeuristicLab.Random;
 using HeuristicLab.Data;
+using System.Xml;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public class Variable : Terminal {
@@ -31,7 +32,32 @@ namespace HeuristicLab.GP.StructureIdentification {
     public const string VARIABLENAME = "Variable";
 
     private int minOffset;
+    public int MinTimeOffset {
+      get {
+        return minOffset;
+      }
+      set {
+        if (value != minOffset) {
+          minOffset = value;
+          SetupInitialization();
+          SetupManipulation();
+        }
+      }
+    }
+
     private int maxOffset;
+    public int MaxTimeOffset {
+      get {
+        return maxOffset;
+      }
+      set {
+        if (value != maxOffset) {
+          maxOffset = value;
+          SetupManipulation();
+          SetupInitialization();
+        }
+      }
+    }
 
     public override string Description {
       get {
@@ -115,11 +141,32 @@ The index of the row that is actually read is SampleIndex+SampleOffset).";
       Manipulator = combinedOp;
     }
 
-    public void SetConstraints(int minSampleOffset, int maxSampleOffset) {
-      this.minOffset = minSampleOffset;
-      this.maxOffset = maxSampleOffset;
-      SetupInitialization();
-      SetupManipulation();
+    public override HeuristicLab.Core.IView CreateView() {
+      return new VariableView(this);
     }
+
+    #region persistence
+    public override object Clone(System.Collections.Generic.IDictionary<System.Guid, object> clonedObjects) {
+      Variable clone = (Variable)base.Clone(clonedObjects);
+      clone.MaxTimeOffset = MaxTimeOffset;
+      clone.MinTimeOffset = MinTimeOffset;
+      return clone;
+    }
+    public override System.Xml.XmlNode GetXmlNode(string name, System.Xml.XmlDocument document, System.Collections.Generic.IDictionary<System.Guid, HeuristicLab.Core.IStorable> persistedObjects) {
+      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
+      var minTimeOffsetAttr = document.CreateAttribute("MinTimeOffset");
+      minTimeOffsetAttr.Value = MinTimeOffset.ToString();
+      var maxTimeOffsetAttr = document.CreateAttribute("MaxTimeOffset");
+      maxTimeOffsetAttr.Value = MaxTimeOffset.ToString();
+      node.Attributes.Append(minTimeOffsetAttr);
+      node.Attributes.Append(maxTimeOffsetAttr);
+      return node;
+    }
+    public override void Populate(System.Xml.XmlNode node, System.Collections.Generic.IDictionary<System.Guid, HeuristicLab.Core.IStorable> restoredObjects) {
+      base.Populate(node, restoredObjects);
+      MinTimeOffset = XmlConvert.ToInt32(node.Attributes["MinTimeOffset"].Value);
+      MaxTimeOffset = XmlConvert.ToInt32(node.Attributes["MaxTimeOffset"].Value);
+    }
+    #endregion
   }
 }

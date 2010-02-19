@@ -113,7 +113,7 @@ namespace HeuristicLab.LinearRegression {
       int n = targetVector.Length;
       int p = inputMatrix.GetLength(1);
       // no features allowed -> return constant offset
-      if (p == 0) return new double[] { Statistics.Mean(targetVector) };
+      if (p <= 1) return new double[] { Statistics.Mean(targetVector) };
       double[,] dataset = new double[n, p];
       for (int row = 0; row < n; row++) {
         for (int column = 0; column < p - 1; column++) {

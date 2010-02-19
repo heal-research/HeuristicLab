@@ -35,5 +35,9 @@ namespace HeuristicLab.GP.StructureIdentification {
     public override IFunctionTree GetTreeNode() {
       return new VariableFunctionTree(this);
     }
+
+    public override HeuristicLab.Core.IView CreateView() {
+      return new VariableView(this);
+    }
   }
 }

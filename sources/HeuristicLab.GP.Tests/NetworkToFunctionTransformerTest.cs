@@ -329,7 +329,7 @@ namespace HeuristicLab.GP.Test {
 
       MersenneTwister twister = new MersenneTwister();
       Dataset ds = Util.CreateRandomDataset(twister, 1, 20);
-      IFunctionTree[] randomTrees = Util.CreateRandomTrees(twister, ds, FunctionLibraryInjector.Create(0, 0), 1000, 1, 100);
+      IFunctionTree[] randomTrees = Util.CreateRandomTrees(twister, ds, FunctionLibraryInjector.Create(), 1000, 1, 100);
       foreach (var tree in randomTrees) {
         IEnumerable<IFunctionTree> actualTrees = NetworkToFunctionTransformer_Accessor.Transform(tree, new List<string>() { "a", "b", "c" });
         actualTrees.ToList();

@@ -334,30 +334,31 @@ namespace HeuristicLab.GP {
 
     #endregion
 
-    private System.Windows.Forms.GroupBox groupBox;
-    private System.Windows.Forms.TextBox minSubTreesTextBox;
-    private System.Windows.Forms.Label label1;
-    private System.Windows.Forms.TextBox nameTextBox;
-    private System.Windows.Forms.Label nameLabel;
-    private System.Windows.Forms.TextBox maxSubTreesTextBox;
-    private System.Windows.Forms.Label label2;
-    private System.Windows.Forms.TextBox minTreeSizeTextBox;
-    private System.Windows.Forms.Label label3;
-    private System.Windows.Forms.TextBox minTreeHeightTextBox;
-    private System.Windows.Forms.Label label4;
-    private System.Windows.Forms.TextBox ticketsTextBox;
-    private System.Windows.Forms.Label label5;
-    private System.Windows.Forms.ListBox subFunctionsListBox;
-    private System.Windows.Forms.Label label7;
-    private System.Windows.Forms.Button editManipulatorButton;
-    private System.Windows.Forms.TextBox manipulatorTextBox;
-    private System.Windows.Forms.TextBox initializerTextBox;
-    private System.Windows.Forms.Button editInitializerButton;
-    private System.Windows.Forms.Label label8;
-    private System.Windows.Forms.ComboBox argumentComboBox;
-    private System.Windows.Forms.GroupBox subTreesGroupBox;
-    private System.Windows.Forms.Label label6;
-    private System.Windows.Forms.ErrorProvider functionPropertiesErrorProvider;
+    protected System.Windows.Forms.GroupBox groupBox;
+    protected System.Windows.Forms.TextBox minSubTreesTextBox;
+    protected System.Windows.Forms.Label label1;
+    protected System.Windows.Forms.TextBox nameTextBox;
+    protected System.Windows.Forms.Label nameLabel;
+    protected System.Windows.Forms.TextBox maxSubTreesTextBox;
+    protected System.Windows.Forms.Label label2;
+    protected System.Windows.Forms.TextBox minTreeSizeTextBox;
+    protected System.Windows.Forms.Label label3;
+    protected System.Windows.Forms.TextBox minTreeHeightTextBox;
+    protected System.Windows.Forms.Label label4;
+    protected System.Windows.Forms.TextBox ticketsTextBox;
+    protected System.Windows.Forms.Label label5;
+    protected System.Windows.Forms.ListBox subFunctionsListBox;
+    protected System.Windows.Forms.Label label7;
+    protected System.Windows.Forms.Button editManipulatorButton;
+    protected System.Windows.Forms.TextBox manipulatorTextBox;
+    protected System.Windows.Forms.TextBox initializerTextBox;
+    protected System.Windows.Forms.Button editInitializerButton;
+    protected System.Windows.Forms.Label label8;
+    protected System.Windows.Forms.ComboBox argumentComboBox;
+    protected System.Windows.Forms.GroupBox subTreesGroupBox;
+    protected System.Windows.Forms.Label label6;
+    protected System.Windows.Forms.ErrorProvider functionPropertiesErrorProvider;
+
 
   }
 }

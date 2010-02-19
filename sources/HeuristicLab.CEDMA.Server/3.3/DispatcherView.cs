@@ -101,8 +101,6 @@ namespace HeuristicLab.CEDMA.Server {
       validationSamplesEndTextBox.Text = selectedSpec.ValidationSamplesEnd.ToString();
       testSamplesStartTextBox.Text = selectedSpec.TestSamplesStart.ToString();
       testSamplesEndTextBox.Text = selectedSpec.TestSamplesEnd.ToString();
-      minTimeOffsetTextBox.Text = selectedSpec.MinTimeOffset.ToString();
-      maxTimeOffsetTextBox.Text = selectedSpec.MaxTimeOffset.ToString();
       autoregressiveCheckBox.Checked = selectedSpec.AutoRegressive;
     }
 
@@ -135,8 +133,6 @@ namespace HeuristicLab.CEDMA.Server {
         if (targetVar != selectedSpec.TargetVariable) {
           ProblemSpecification spec = dispatcher.GetProblemSpecification(targetVar);
           spec.LearningTask = selectedSpec.LearningTask;
-          spec.MinTimeOffset = selectedSpec.MinTimeOffset;
-          spec.MaxTimeOffset = selectedSpec.MaxTimeOffset;
           spec.AutoRegressive = selectedSpec.AutoRegressive;
           var curAllowedAlgos = dispatcher.GetAllowedAlgorithms(targetVar).ToList();
           foreach (var algo in curAllowedAlgos)
@@ -156,10 +152,6 @@ namespace HeuristicLab.CEDMA.Server {
     }
 
     private void radioButton_CheckedChanged(object sender, EventArgs e) {
-      minTimeOffsetLabel.Enabled = timeSeriesRadioButton.Checked;
-      minTimeOffsetTextBox.Enabled = timeSeriesRadioButton.Checked;
-      maxTimeOffsetLabel.Enabled = timeSeriesRadioButton.Checked;
-      maxTimeOffsetTextBox.Enabled = timeSeriesRadioButton.Checked;
       autoregressiveCheckBox.Enabled = timeSeriesRadioButton.Checked;
       autoregressiveLabel.Enabled = timeSeriesRadioButton.Checked;
       if (timeSeriesRadioButton.Checked) selectedSpec.LearningTask = LearningTask.TimeSeries;
@@ -170,18 +162,6 @@ namespace HeuristicLab.CEDMA.Server {
         dispatcher.DisableAlgorithm(selectedSpec.TargetVariable, algo);
       }
       UpdateAlgorithms();
-    }
-
-    private void timeOffsetTextBox_Validating(object sender, CancelEventArgs e) {
-      int min, max;
-      e.Cancel = !int.TryParse(minTimeOffsetTextBox.Text, out min);
-      e.Cancel = !int.TryParse(maxTimeOffsetTextBox.Text, out max);
-      e.Cancel = min > max;
-    }
-
-    private void timeOffsetTextBox_Validated(object sender, EventArgs e) {
-      selectedSpec.MinTimeOffset = int.Parse(minTimeOffsetTextBox.Text);
-      selectedSpec.MaxTimeOffset = int.Parse(maxTimeOffsetTextBox.Text);
     }
 
     private void samplesTextBox_Validated(object sender, EventArgs e) {
@@ -254,6 +234,5 @@ namespace HeuristicLab.CEDMA.Server {
     private void algorithmsListBox_SelectedIndexChanged(object sender, EventArgs e) {
       editEngineButton.Enabled = algorithmsListBox.SelectedItems.Count > 0;
     }
-
   }
 }

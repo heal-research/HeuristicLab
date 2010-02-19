@@ -27,48 +27,16 @@ using HeuristicLab.GP;
 
 namespace HeuristicLab.GP.StructureIdentification.Networks {
   public class FunctionLibraryInjector : FunctionLibraryInjectorBase {
-    public const string MINTIMEOFFSET = "MinTimeOffset";
-    public const string MAXTIMEOFFSET = "MaxTimeOffset";
-
-    public const string DIFFERENTIALS_ALLOWED = "Differentials";
-
-    private int minTimeOffset;
-    private int maxTimeOffset;
 
     public override string Description {
       get { return @"Injects a function library for network structure identification."; }
     }
 
-    public FunctionLibraryInjector()
-      : base() {
-      AddVariableInfo(new VariableInfo(MINTIMEOFFSET, "Minimal time offset for all features", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo(MAXTIMEOFFSET, "Maximal time offset for all feature", typeof(IntData), VariableKind.In));
-
-      AddVariable(DIFFERENTIALS_ALLOWED, false);
-    }
-
-    private void AddVariable(string name, bool allowed) {
-      AddVariableInfo(new VariableInfo(name, name + " allowed", typeof(BoolData), Core.VariableKind.New));
-      GetVariableInfo(name).Local = true;
-      AddVariable(new Core.Variable(name, new BoolData(allowed)));
-    }
-
-    public override IOperation Apply(IScope scope) {
-      // try to get minTimeOffset (use 0 as default if not available)
-      IItem minTimeOffsetItem = GetVariableValue(MINTIMEOFFSET, scope, true, false);
-      minTimeOffset = minTimeOffsetItem == null ? 0 : ((IntData)minTimeOffsetItem).Data;
-      // try to get maxTimeOffset (use 0 as default if not available)
-      IItem maxTimeOffsetItem = GetVariableValue(MAXTIMEOFFSET, scope, true, false);
-      maxTimeOffset = maxTimeOffsetItem == null ? 0 : ((IntData)maxTimeOffsetItem).Data;
-
-      return base.Apply(scope);
-    }
-
     protected override FunctionLibrary CreateFunctionLibrary() {
-      return Create(minTimeOffset, maxTimeOffset);
+      return Create();
     }
 
-    public static FunctionLibrary Create(int minTimeOffset, int maxTimeOffset) {
+    public static FunctionLibrary Create() {
       FunctionLibrary functionLibrary = new FunctionLibrary();
 
       #region f0 (...) -> double
@@ -146,9 +114,7 @@ namespace HeuristicLab.GP.StructureIdentification.Networks {
       f1Functions.ForEach(x => functionLibrary.AddFunction(x));
       f2Functions.ForEach(x => functionLibrary.AddFunction(x));
 
-      variable.SetConstraints(minTimeOffset, maxTimeOffset);
-      differential.SetConstraints(minTimeOffset, maxTimeOffset);
-      openPar.SetConstraints(minTimeOffset, maxTimeOffset);
+      openPar.SetConstraints(0, 0);
 
 
       return functionLibrary;

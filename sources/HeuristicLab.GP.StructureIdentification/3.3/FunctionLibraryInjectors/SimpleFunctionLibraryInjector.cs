@@ -28,40 +28,15 @@ using HeuristicLab.GP;
 namespace HeuristicLab.GP.StructureIdentification {
   [SymbolicRegressionFunctionLibraryInjector]
   public class SimpleFunctionLibraryInjector : FunctionLibraryInjectorBase {
-    public const string MINTIMEOFFSET = "MinTimeOffset";
-    public const string MAXTIMEOFFSET = "MaxTimeOffset";
-
-    private int minTimeOffset;
-    private int maxTimeOffset;
-
     public override string Description {
       get { return @"Injects a simple function library for regression and classification problems."; }
     }
 
-    public SimpleFunctionLibraryInjector()
-      : base() {
-      AddVariableInfo(new VariableInfo(MINTIMEOFFSET, "Minimal time offset for all features", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo(MAXTIMEOFFSET, "Maximal time offset for all feature", typeof(IntData), VariableKind.In));
-    }
-
-    public override IOperation Apply(IScope scope) {
-      // try to get minTimeOffset (use 0 as default if not available)
-      IItem minTimeOffsetItem = GetVariableValue(MINTIMEOFFSET, scope, true, false);
-      minTimeOffset = minTimeOffsetItem == null ? 0 : ((IntData)minTimeOffsetItem).Data;
-      // try to get maxTimeOffset (use 0 as default if not available)
-      IItem maxTimeOffsetItem = GetVariableValue(MAXTIMEOFFSET, scope, true, false);
-      maxTimeOffset = maxTimeOffsetItem == null ? 0 : ((IntData)maxTimeOffsetItem).Data;
-
-      return base.Apply(scope);
-    }
-
     protected override FunctionLibrary CreateFunctionLibrary() {
-      return Create(
-        minTimeOffset,
-        maxTimeOffset);
+      return Create();
     }
 
-    public static FunctionLibrary Create(int minTimeOffset, int maxTimeOffset) {
+    public static FunctionLibrary Create() {
       FunctionLibrary functionLibrary = new FunctionLibrary();
 
       Variable variable = new Variable();
@@ -109,9 +84,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       SetAllowedSubOperators(tangens, valueNodes);
 
       allFunctions.ForEach(x => functionLibrary.AddFunction(x));
-
-      variable.SetConstraints(minTimeOffset, maxTimeOffset);
-      differential.SetConstraints(minTimeOffset, maxTimeOffset);
 
       return functionLibrary;
     }

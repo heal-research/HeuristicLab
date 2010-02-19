@@ -34,37 +34,8 @@ namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
       }
     }
 
-    public int MinTimeOffset {
-      get { return GetVariableInjector().GetVariable("MinTimeOffset").GetValue<IntData>().Data; }
-      set { GetVariableInjector().GetVariable("MinTimeOffset").GetValue<IntData>().Data = value; }
-    }
-
-    public int MaxTimeOffset {
-      get { return GetVariableInjector().GetVariable("MaxTimeOffset").GetValue<IntData>().Data; }
-      set { GetVariableInjector().GetVariable("MaxTimeOffset").GetValue<IntData>().Data = value; }
-    }
-
     protected override IOperator CreateProblemInjector() {
       return DefaultTimeSeriesOperators.CreateProblemInjector();
-    }
-
-    protected override IOperator CreateFunctionLibraryInjector() {
-      CombinedOperator op = new CombinedOperator();
-      op.Name = "FunctionLibraryInjector";
-      SequentialProcessor seq = new SequentialProcessor();
-      DefaultFunctionLibraryInjector funLibInjector = new DefaultFunctionLibraryInjector();
-      seq.AddSubOperator(funLibInjector);
-      seq.AddSubOperator(new ScalingTreeEvaluatorInjector());
-      op.OperatorGraph.AddOperator(seq);
-      op.OperatorGraph.InitialOperator = seq;
-      return op;
-    }
-
-    protected override VariableInjector CreateGlobalInjector() {
-      VariableInjector injector = base.CreateGlobalInjector();
-      injector.AddVariable(new HeuristicLab.Core.Variable("MinTimeOffset", new IntData()));
-      injector.AddVariable(new HeuristicLab.Core.Variable("MaxTimeOffset", new IntData()));
-      return injector;
     }
 
     protected override IOperator CreateModelAnalyzerOperator() {
