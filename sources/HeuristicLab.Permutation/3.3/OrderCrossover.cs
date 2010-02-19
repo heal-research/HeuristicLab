@@ -25,45 +25,60 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Permutation {
   /// <summary>
-  /// An operator which performs an order crossover of two permutations.
+  /// An operator which performs the order crossover on two permutations.
   /// </summary>
   /// <remarks>
-  /// Crosses two permutations by taking a randomly chosen interval from the frist permutation, preserving
-  /// the positions, and then the missing values from the second permutation in the order they occur in the
-  /// second permutation.
+  /// It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.<br />
+  /// Crosses two permutations by copying a randomly chosen interval from the first permutation, preserving
+  /// the positions. Then, starting from the end of the copied interval, copies the missing values from the second permutation
+  /// in the order they occur.
   /// </remarks>
-  [Item("OrderCrossover", "An operator which performs an order crossover of two permutations.")]
+  [Item("OrderCrossover", "An operator which performs an order crossover of two permutations as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.")]
   [EmptyStorableClass]
   [Creatable("Test")]
   public class OrderCrossover : PermutationCrossover {
     /// <summary>
     /// Performs an order crossover of two permutations.
     /// </summary>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="parent1"/> and <paramref name="parent2"/> are not of equal length.</exception>
+    /// <exception cref="InvalidOperationException">Thrown if the numbers in the permutation elements are not in the range [0,N) with N = length of the permutation.</exception>
+    /// <remarks>
+    /// Crosses two permutations by copying a randomly chosen interval from the first permutation, preserving
+    /// the positions. Then, starting from the end of the copied interval, copies the missing values from the second permutation
+    /// in the order they occur.
+    /// </remarks>
     /// <param name="random">A random number generator.</param>
     /// <param name="parent1">The first parent permutation to cross.</param>
     /// <param name="parent2">The second parent permutation to cross.</param>
     /// <returns>The new permutation resulting from the crossover.</returns>
     public static Permutation Apply(IRandom random, Permutation parent1, Permutation parent2) {
-      int[] result = new int[parent1.Length];
-      bool[] copied = new bool[result.Length];
+      if (parent1.Length != parent2.Length) throw new ArgumentException("OrderCrossover: The parent permutations are of unequal length.");
+      int length = parent1.Length;
+      int[] result = new int[length];
+      bool[] copied = new bool[length];
 
-      int breakPoint1 = random.Next(result.Length - 1);
-      int breakPoint2 = random.Next(breakPoint1 + 1, result.Length);
+      int breakPoint1 = random.Next(length - 1);
+      int breakPoint2 = random.Next(breakPoint1 + 1, length);
 
-      for (int i = breakPoint1; i <= breakPoint2; i++) {  // copy part of first permutation
-        result[i] = parent1[i];
-        copied[parent1[i]] = true;
-      }
-
-      int index = 0;
-      for (int i = 0; i < parent2.Length; i++) {  // copy remaining part of second permutation
-        if (index == breakPoint1) {  // skip already copied part
-          index = breakPoint2 + 1;
+      try {
+        for (int j = breakPoint1; j <= breakPoint2; j++) {  // copy part of first permutation
+          result[j] = parent1[j];
+          copied[parent1[j]] = true;
         }
-        if (!copied[parent2[i]]) {
-          result[index] = parent2[i];
-          index++;
+
+        int index = ((breakPoint2 + 1 >= length) ? (0) : (breakPoint2 + 1));
+        int i = index; // for moving in parent2
+        while (index != breakPoint1) {
+          if (!copied[parent2[i]]) {
+            result[index] = parent2[i];
+            index++;
+            if (index >= length) index = 0;
+          }
+          i++;
+          if (i >= length) i = 0;
         }
+      } catch (IndexOutOfRangeException) {
+        throw new InvalidOperationException("OrderCrossover: The permutation must consist of numbers in the interval [0;N) with N = length of the permutation.");
       }
       return new Permutation(result);
     }
@@ -76,7 +91,7 @@ namespace HeuristicLab.Permutation {
     /// <param name="parents">An array containing the two permutations that should be crossed.</param>
     /// <returns>The new permutation resulting from the crossover.</returns>
     protected override Permutation Cross(IRandom random, ItemArray<Permutation> parents) {
-      if (parents.Length != 2) throw new InvalidOperationException("Number of parents is not equal to 2.");
+      if (parents.Length != 2) throw new InvalidOperationException("OrderCrossover: Number of parents is not equal to 2.");
       return Apply(random, parents[0], parents[1]);
     }
   }

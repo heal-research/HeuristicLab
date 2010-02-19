@@ -53,8 +53,8 @@ namespace HeuristicLab.Permutation {
     /// <param name="parent2">The second parent permutation to cross.</param>
     /// <returns>The new permutation resulting from the crossover.</returns>
     public static Permutation Apply(IRandom random, Permutation parent1, Permutation parent2) {
-      if (parent1.Length != parent2.Length) throw new ArgumentException("PartiallyMatchedCrossover: The parent permutations are of unequal length");
-      if (parent1.Length < 4) throw new ArgumentException("PartiallyMatchedCrossover: The parent permutation must be at least of size 4");
+      if (parent1.Length != parent2.Length) throw new ArgumentException("PartiallyMatchedCrossover: The parent permutations are of unequal length.");
+      if (parent1.Length < 4) throw new ArgumentException("PartiallyMatchedCrossover: The parent permutation must be at least of size 4.");
       int length = parent1.Length;
       int[] result = new int[length];
       int[] invResult = new int[length];
@@ -72,7 +72,7 @@ namespace HeuristicLab.Permutation {
           invResult[result[j]] = j;
         }
       } catch (IndexOutOfRangeException) {
-        throw new InvalidOperationException("PartiallyMatchedCrossover: The permutation must consist of consecutive numbers from 0 to N-1 with N = length of the permutation");
+        throw new InvalidOperationException("PartiallyMatchedCrossover: The permutation must consist of consecutive numbers from 0 to N-1 with N = length of the permutation.");
       }
 
       for (int j = breakPoint1; j <= breakPoint2; j++) {
@@ -96,7 +96,7 @@ namespace HeuristicLab.Permutation {
     /// <param name="parents">An array containing the two permutations that should be crossed.</param>
     /// <returns>The newly created permutation, resulting from the crossover operation.</returns>
     protected override Permutation Cross(IRandom random, ItemArray<Permutation> parents) {
-      if (parents.Length != 2) throw new InvalidOperationException("PartiallyMatchedCrossover: The number of parents is not equal to 2");
+      if (parents.Length != 2) throw new InvalidOperationException("PartiallyMatchedCrossover: The number of parents is not equal to 2.");
       return Apply(random, parents[0], parents[1]);
     }
   }

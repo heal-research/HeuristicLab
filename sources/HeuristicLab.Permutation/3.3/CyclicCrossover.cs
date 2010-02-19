@@ -38,7 +38,7 @@ namespace HeuristicLab.Permutation {
     /// Performs the cyclic crossover on <paramref name="parent1"/> and <paramref name="parent2"/>.
     /// </summary>
     /// <exception cref="ArgumentException">Thrown when <paramref name="parent1"/> and <paramref name="parent2"/> are not of equal length.</exception>
-    /// <exception cref="InvalidOperationException">Thrown if the numbers in the permutation elements are not in the range [0,N) with N = length of the permutation.</exception>
+    /// <exception cref="InvalidOperationException">Thrown if the numbers in the permutation elements are not in the range [0;N) with N = length of the permutation.</exception>
     /// <remarks>
     /// First this method randomly determines from which parent to start with equal probability.
     /// Then it copies the first cycle from the chosen parent starting from index 0 in the permutation.
@@ -51,7 +51,7 @@ namespace HeuristicLab.Permutation {
     /// <param name="parent2">The parent scope 2 to cross over.</param>
     /// <returns>The created cross over permutation as int array.</returns>
     public static Permutation Apply(IRandom random, Permutation parent1, Permutation parent2) {
-      if (parent1.Length != parent2.Length) throw new ArgumentException("CyclicCrossover: The parent permutations are of unequal length");
+      if (parent1.Length != parent2.Length) throw new ArgumentException("CyclicCrossover: The parent permutations are of unequal length.");
       int length = parent1.Length;
       int[] result = new int[length];
       bool[] indexCopied = new bool[length];
@@ -65,7 +65,7 @@ namespace HeuristicLab.Permutation {
           invParent2[parent2[i]] = i;
         }
       } catch (IndexOutOfRangeException) {
-        throw new InvalidOperationException("CyclicCrossover: The permutation must consist of consecutive numbers from 0 to N-1 with N = length of the permutation");
+        throw new InvalidOperationException("CyclicCrossover: The permutation must consist of numbers in the interval [0;N) with N = length of the permutation.");
       }
 
       // randomly choose whether to start copying from parent1 or parent2
@@ -100,7 +100,7 @@ namespace HeuristicLab.Permutation {
     /// <param name="parents">An array containing the two permutations that should be crossed.</param>
     /// <returns>The newly created permutation, resulting from the crossover operation.</returns>
     protected override Permutation Cross(IRandom random, ItemArray<Permutation> parents) {
-      if (parents.Length != 2) throw new InvalidOperationException("CyclicCrossover: The number of parents is not equal to 2");
+      if (parents.Length != 2) throw new InvalidOperationException("CyclicCrossover: The number of parents is not equal to 2.");
       return Apply(random, parents[0], parents[1]);
     }
   }
