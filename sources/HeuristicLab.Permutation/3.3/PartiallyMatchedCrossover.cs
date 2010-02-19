@@ -56,7 +56,7 @@ namespace HeuristicLab.Permutation {
       if (parent1.Length != parent2.Length) throw new ArgumentException("PartiallyMatchedCrossover: The parent permutations are of unequal length");
       if (parent1.Length < 4) throw new ArgumentException("PartiallyMatchedCrossover: The parent permutation must be at least of size 4");
       int length = parent1.Length;
-      Permutation result = new Permutation(length); ;
+      int[] result = new int[length];
       int[] invResult = new int[length];
 
       int breakPoint1, breakPoint2;
@@ -84,7 +84,7 @@ namespace HeuristicLab.Permutation {
         // it's not necessary to do 'invResult[result[j]] = j' as this will not be needed again
       }
 
-      return result;
+      return new Permutation(result);
     }
 
     /// <summary>

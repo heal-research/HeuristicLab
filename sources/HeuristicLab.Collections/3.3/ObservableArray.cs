@@ -67,11 +67,9 @@ namespace HeuristicLab.Collections {
     }
     public ObservableArray(T[] array) {
       this.array = (T[])array.Clone();
-      OnCollectionReset(GetIndexedItems(), new IndexedItem<T>[0]);
     }
     public ObservableArray(IEnumerable<T> collection) {
       array = collection.ToArray();
-      OnCollectionReset(GetIndexedItems(), new IndexedItem<T>[0]);
     }
     #endregion
 

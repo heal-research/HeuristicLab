@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -54,17 +55,17 @@ namespace HeuristicLab.Core {
     }
 
     public ItemSet() : base() { }
-    public ItemSet(IEnumerable<T> collection) : base(collection) { }
+    public ItemSet(IEnumerable<T> collection) : base(collection) {
+      foreach (T item in this)
+        item.Changed += new ChangedEventHandler(Item_Changed);
+    }
 
     public object Clone() {
       return Clone(new Cloner());
     }
 
-    public IDeepCloneable Clone(Cloner cloner) {
-      List<T> items = new List<T>();
-      foreach (T item in this)
-        items.Add((T)cloner.Clone(item));
-      ItemSet<T> clone = (ItemSet<T>)Activator.CreateInstance(this.GetType(), items);
+    public virtual IDeepCloneable Clone(Cloner cloner) {
+      ItemSet<T> clone = (ItemSet<T>)Activator.CreateInstance(this.GetType(), this.Select(x => (T)cloner.Clone(x)));
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }

@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Operators.Views {
-  partial class CombinedOperatorView {
+  partial class AlgorithmOperatorView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -126,12 +126,12 @@ namespace HeuristicLab.Operators.Views {
       this.operatorGraphViewHost.TabIndex = 0;
       this.operatorGraphViewHost.ViewType = null;
       // 
-      // CombinedOperatorView
+      // AlgorithmOperatorView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.tabControl);
-      this.Name = "CombinedOperatorView";
+      this.Name = "AlgorithmOperatorView";
       this.Size = new System.Drawing.Size(486, 482);
       this.Controls.SetChildIndex(this.tabControl, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);

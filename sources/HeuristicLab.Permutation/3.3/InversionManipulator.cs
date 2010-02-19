@@ -30,27 +30,26 @@ namespace HeuristicLab.Permutation {
   [EmptyStorableClass]
   [Creatable("Test")]
   public class InversionManipulator : PermutationManipulator {
-
     /// <summary>
     /// Inverts a randomly chosen part of a permutation.
     /// </summary>
     /// <param name="random">A random number generator.</param>
     /// <param name="permutation">The permutation to manipulate.</param>
     /// <returns>The new manipulated permutation.</returns>
-    public static Permutation Apply(IRandom random, Permutation permutation) {
-      Permutation result = (Permutation)permutation.Clone();
+    public static void Apply(IRandom random, Permutation permutation) {
       int breakPoint1, breakPoint2;
 
-      breakPoint1 = random.Next(result.Length - 1);
+      breakPoint1 = random.Next(permutation.Length - 1);
       do {
-        breakPoint2 = random.Next(result.Length - 1);
+        breakPoint2 = random.Next(permutation.Length - 1);
       } while (breakPoint2 == breakPoint1);
       if (breakPoint2 < breakPoint1) { int h = breakPoint1; breakPoint1 = breakPoint2; breakPoint2 = h; }
 
-      for (int i = 0; i <= (breakPoint2 - breakPoint1); i++) {  // invert permutation between breakpoints
-        result[breakPoint1 + i] = permutation[breakPoint2 - i];
+      for (int i = 0; i <= (breakPoint2 - breakPoint1) / 2; i++) {  // invert permutation between breakpoints
+        int temp = permutation[breakPoint1 + i];
+        permutation[breakPoint1 + i] = permutation[breakPoint2 - i];
+        permutation[breakPoint2 - i] = temp;
       }
-      return result;
     }
 
     /// <summary>
@@ -59,8 +58,8 @@ namespace HeuristicLab.Permutation {
     /// <param name="random">A random number generator.</param>
     /// <param name="permutation">The permutation to manipulate.</param>
     /// <returns>The new manipulated permuation.</returns>
-    protected override Permutation Manipulate(IRandom random, Permutation permutation) {
-      return Apply(random, permutation);
+    protected override void Manipulate(IRandom random, Permutation permutation) {
+      Apply(random, permutation);
     }
   }
 }

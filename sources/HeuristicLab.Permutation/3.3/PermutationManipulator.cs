@@ -45,10 +45,10 @@ namespace HeuristicLab.Permutation {
     }
 
     public sealed override IExecutionSequence Apply() {
-      PermutationParameter.ActualValue = Manipulate(RandomParameter.ActualValue, PermutationParameter.ActualValue);
+      Manipulate(RandomParameter.ActualValue, PermutationParameter.ActualValue);
       return base.Apply();
     }
 
-    protected abstract Permutation Manipulate(IRandom random, Permutation permutation);
+    protected abstract void Manipulate(IRandom random, Permutation permutation);
   }
 }

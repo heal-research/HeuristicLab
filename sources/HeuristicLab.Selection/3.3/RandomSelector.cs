@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -32,18 +33,18 @@ namespace HeuristicLab.Selection {
   public sealed class RandomSelector : StochasticSelector {
     public RandomSelector() : base() { }
 
-    protected override ScopeList Select(ScopeList scopes) {
+    protected override IScope[] Select(List<IScope> scopes) {
       int count = NumberOfSelectedSubScopesParameter.ActualValue.Value;
       bool copy = CopySelectedParameter.Value.Value;
       IRandom random = RandomParameter.ActualValue;
-      ScopeList selected = new ScopeList();
+      IScope[] selected = new IScope[count];
 
       for (int i = 0; i < count; i++) {
         if (copy)
-          selected.Add((IScope)scopes[random.Next(scopes.Count)].Clone());
+          selected[i] = (IScope)scopes[random.Next(scopes.Count)].Clone();
         else {
           int index = random.Next(scopes.Count);
-          selected.Add(scopes[index]);
+          selected[i] = scopes[index];
           scopes.RemoveAt(index);
         }
       }

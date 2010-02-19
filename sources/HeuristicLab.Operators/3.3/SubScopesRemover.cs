@@ -26,17 +26,25 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
   /// <summary>
-  /// An operator which removes one specified or (if not specified) all sub-scopes from the current scope.
+  /// An operator which removes all sub-scopes or one specified sub-scope from the current scope.
   /// </summary>
-  [Item("SubScopesRemover", "An operator which removes one specified or (if not specified) all sub-scopes from the current scope.")]
+  [Item("SubScopesRemover", "An operator which removes all sub-scopes or one specified sub-scope from the current scope.")]
   [EmptyStorableClass]
   [Creatable("Test")]
-  public class SubScopesRemover : SingleSuccessorOperator {
+  public sealed class SubScopesRemover : SingleSuccessorOperator {
+    private ValueParameter<BoolData> RemoveAllSubScopesParameter {
+      get { return (ValueParameter<BoolData>)Parameters["RemoveAllSubScopes"]; }
+    }
     public ValueLookupParameter<IntData> SubScopeIndexParameter {
       get { return (ValueLookupParameter<IntData>)Parameters["SubScopeIndex"]; }
     }
-    protected ScopeParameter CurrentScopeParameter {
+    private ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
+    }
+
+    public bool RemoveAllSubScopes {
+      get { return RemoveAllSubScopesParameter.Value.Value; }
+      set { RemoveAllSubScopesParameter.Value.Value = value; }
     }
     public IScope CurrentScope {
       get { return CurrentScopeParameter.ActualValue; }
@@ -44,16 +52,17 @@ namespace HeuristicLab.Operators {
 
     public SubScopesRemover()
       : base() {
-      Parameters.Add(new ValueLookupParameter<IntData>("SubScopeIndex", "The index of the sub-scope which should be removed. If this parameter has no value, all sub-scopes of the current scope are removed."));
+      Parameters.Add(new ValueParameter<BoolData>("RemoveAllSubScopes", "True if all sub-scopes of the current scope should be removed, otherwise false.", new BoolData(true)));
+      Parameters.Add(new ValueLookupParameter<IntData>("SubScopeIndex", "The index of the sub-scope which should be removed. This parameter is ignored, if RemoveAllSubScopes is true."));
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope from which one or all sub-scopes should be removed."));
     }
 
     public override IExecutionSequence Apply() {
-      IntData index = SubScopeIndexParameter.ActualValue;
-      if (index != null)
-        CurrentScope.SubScopes.RemoveAt(index.Value);
-      else
+      if (RemoveAllSubScopes)
         CurrentScope.SubScopes.Clear();
+      else {
+        CurrentScope.SubScopes.RemoveAt(SubScopeIndexParameter.ActualValue.Value);
+      }
       return base.Apply();
     }
   }

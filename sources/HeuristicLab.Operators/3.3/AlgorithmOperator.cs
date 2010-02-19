@@ -19,28 +19,40 @@
  */
 #endregion
 
+using System.Drawing;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
   /// <summary>
-  /// An operator which contains multiple operators of which each is applied in parallel on one sub-scope of the current scope. The first operator is applied on the first sub-scope, the second on the second, and so on.
+  /// An operator which represents an algorithm represented as an operator graph.
   /// </summary>
-  [Item("ParallelSubScopesProcessor", "An operator which contains multiple operators of which each is applied in parallel on one sub-scope of the current scope. The first operator is applied on the first sub-scope, the second on the second, and so on.")]
-  [Creatable("Test")]
-  public sealed class ParallelSubScopesProcessor : MultipleCallsOperator {
-    public ParallelSubScopesProcessor()
+  [Item("AlgorithmOperator", "An operator which represents an algorithm represented as an operator graph.")]
+  public abstract class AlgorithmOperator : SingleSuccessorOperator {
+    public override Image ItemImage {
+      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Module; }
+    }
+    [Storable]
+    private OperatorGraph operatorGraph;
+    public OperatorGraph OperatorGraph {
+      get { return operatorGraph; }
+    }
+
+    protected AlgorithmOperator()
       : base() {
+      operatorGraph = new OperatorGraph();
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      AlgorithmOperator clone = (AlgorithmOperator)base.Clone(cloner);
+      clone.operatorGraph = (OperatorGraph)cloner.Clone(operatorGraph);
+      return clone;
     }
 
     public override IExecutionSequence Apply() {
       ExecutionContextCollection next = new ExecutionContextCollection(base.Apply());
-      if (Operators.Count > 0) {
-        ExecutionContextCollection inner = new ExecutionContextCollection();
-        inner.Parallel = true;
-        for (int i = 0; (i < ExecutionContext.Scope.SubScopes.Count) && (i < Operators.Count); i++)
-          if (Operators[i] != null) inner.Add(ExecutionContext.CreateContext(Operators[i], ExecutionContext.Scope.SubScopes[i]));
-        next.Insert(0, inner);
-      }
+      if (operatorGraph.InitialOperator != null)
+        next.Insert(0, ExecutionContext.CreateChildContext(operatorGraph.InitialOperator));
       return next;
     }
   }

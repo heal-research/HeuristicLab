@@ -20,15 +20,22 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
   [EmptyStorableClass]
   [Item("VariableCollection", "Represents a collection of variables.")]
   [Creatable("Test")]
-  public class VariableCollection : NamedItemCollection<IVariable> {
+  public sealed class VariableCollection : NamedItemCollection<IVariable> {
     public VariableCollection() : base() { }
     public VariableCollection(int capacity) : base(capacity) { }
     public VariableCollection(IEnumerable<IVariable> collection) : base(collection) { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      VariableCollection clone = new VariableCollection(this.Select(x => (IVariable)cloner.Clone(x)));
+      cloner.RegisterClonedObject(this, clone);
+      return clone;
+    }
   }
 }

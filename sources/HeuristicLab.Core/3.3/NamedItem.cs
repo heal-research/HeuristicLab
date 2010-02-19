@@ -73,8 +73,8 @@ namespace HeuristicLab.Core {
     /// and value <c>null</c>.
     /// </summary>
     protected NamedItem() {
-      name = ItemName;
-      description = ItemDescription;
+      name = string.Empty;
+      description = string.Empty;
     }
     /// <summary>
     /// Initializes a new instance of <see cref="Variable"/> with the specified <paramref name="name"/>
@@ -82,13 +82,14 @@ namespace HeuristicLab.Core {
     /// </summary>
     /// <param name="name">The name of the current instance.</param>
     /// <param name="value">The value of the current instance.</param>
-    protected NamedItem(string name)
-      : this() {
+    protected NamedItem(string name) {
       if (name == null) throw new ArgumentNullException();
       this.name = name;
+      description = string.Empty;
     }
-    protected NamedItem(string name, string description)
-      : this(name) {
+    protected NamedItem(string name, string description) {
+      if (name == null) throw new ArgumentNullException();
+      this.name = name;
       this.description = description;
     }
 

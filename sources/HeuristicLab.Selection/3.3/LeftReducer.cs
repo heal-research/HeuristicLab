@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -32,8 +33,8 @@ namespace HeuristicLab.Selection {
   public sealed class LeftReducer : Reducer {
     public LeftReducer() : base() { }
 
-    protected override ScopeList Reduce(ScopeList scopes) {
-      ScopeList reduced = new ScopeList();
+    protected override List<IScope> Reduce(List<IScope> scopes) {
+      List<IScope> reduced = new List<IScope>();
       if (scopes.Count > 0) reduced.AddRange(scopes[0].SubScopes);
       return reduced;
     }

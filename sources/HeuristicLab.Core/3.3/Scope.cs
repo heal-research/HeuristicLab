@@ -19,12 +19,8 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Collections;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
   /// <summary>
@@ -98,9 +94,8 @@ namespace HeuristicLab.Core {
       cloner.RegisterClonedObject(this, clone);
       clone.Name = Name;
       clone.Description = Description;
-      clone.parent = (IScope)cloner.Clone(parent);
-      clone.Variables = (VariableCollection)cloner.Clone(variables);
-      clone.SubScopes = (ScopeList)cloner.Clone(subScopes);
+      if (variables.Count > 0) clone.Variables = (VariableCollection)cloner.Clone(variables);
+      if (subScopes.Count > 0) clone.SubScopes = (ScopeList)cloner.Clone(subScopes);
       return clone;
     }
 

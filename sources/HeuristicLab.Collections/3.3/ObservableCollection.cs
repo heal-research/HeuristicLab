@@ -58,7 +58,6 @@ namespace HeuristicLab.Collections {
     }
     public ObservableCollection(IEnumerable<T> collection) {
       list = new List<T>(collection);
-      OnItemsAdded(collection);
     }
     #endregion
 

@@ -65,7 +65,6 @@ namespace HeuristicLab.Collections {
       dict = new Dictionary<TKey, TItem>();
       foreach (TItem item in collection)
         dict.Add(GetKeyForItem(item), item);
-      OnItemsAdded(collection);
     }
     protected ObservableKeyedCollection(int capacity, IEqualityComparer<TKey> comparer) {
       dict = new Dictionary<TKey, TItem>(capacity, comparer);
@@ -75,7 +74,6 @@ namespace HeuristicLab.Collections {
       dict = new Dictionary<TKey, TItem>(comparer);
       foreach (TItem item in collection)
         dict.Add(GetKeyForItem(item), item);
-      OnItemsAdded(collection);
     }
     #endregion
 

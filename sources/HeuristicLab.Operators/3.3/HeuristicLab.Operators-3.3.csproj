@@ -89,6 +89,7 @@
     <Compile Include="ConditionalBranch.cs" />
     <Compile Include="Comparator.cs" />
     <Compile Include="Assigner.cs" />
+    <Compile Include="AlgorithmOperator.cs" />
     <Compile Include="MultipleCallsOperator.cs" />
     <Compile Include="Operator.cs" />
     <Compile Include="ParallelSubScopesProcessor.cs" />

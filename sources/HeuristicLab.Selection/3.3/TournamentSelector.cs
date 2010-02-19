@@ -43,14 +43,14 @@ namespace HeuristicLab.Selection {
       CopySelected.Value = true;
     }
 
-    protected override ScopeList Select(ScopeList scopes) {
+    protected override IScope[] Select(List<IScope> scopes) {
       int count = NumberOfSelectedSubScopesParameter.ActualValue.Value;
       bool copy = CopySelectedParameter.Value.Value;
       IRandom random = RandomParameter.ActualValue;
       bool maximization = MaximizationParameter.ActualValue.Value;
       List<double> qualities = QualityParameter.ActualValue.Select(x => x.Value).ToList();
       int groupSize = GroupSizeParameter.ActualValue.Value;
-      ScopeList selected = new ScopeList();
+      IScope[] selected = new IScope[count];
 
       for (int i = 0; i < count; i++) {
         int best = random.Next(scopes.Count);
@@ -64,9 +64,9 @@ namespace HeuristicLab.Selection {
         }
 
         if (copy)
-          selected.Add((IScope)scopes[best].Clone());
+          selected[i] = (IScope)scopes[best].Clone();
         else {
-          selected.Add(scopes[best]);
+          selected[i] = scopes[best];
           scopes.RemoveAt(best);
           qualities.RemoveAt(best);
         }

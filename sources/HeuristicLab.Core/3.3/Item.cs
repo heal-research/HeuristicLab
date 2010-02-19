@@ -19,15 +19,9 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-using System.Xml;
 using System.Drawing;
-using System.Resources;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Common.Resources;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
   /// <summary>
@@ -60,7 +54,7 @@ namespace HeuristicLab.Core {
     }
     protected virtual void OnChanged(ChangedEventArgs e) {
       if ((e.RegisterChangedObject(this)) && (Changed != null))
-          Changed(this, e);
+        Changed(this, e);
     }
   }
 }

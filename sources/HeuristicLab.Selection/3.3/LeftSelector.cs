@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -32,19 +33,19 @@ namespace HeuristicLab.Selection {
   public sealed class LeftSelector : Selector {
     public LeftSelector() : base() { }
 
-    protected override ScopeList Select(ScopeList scopes) {
+    protected override IScope[] Select(List<IScope> scopes) {
       int count = NumberOfSelectedSubScopesParameter.ActualValue.Value;
       bool copy = CopySelectedParameter.Value.Value;
-      ScopeList selected = new ScopeList();
+      IScope[] selected = new IScope[count];
 
       int j = 0;
       for (int i = 0; i < count; i++) {
         if (copy) {
-          selected.Add((IScope)scopes[j].Clone());
+          selected[i] = (IScope)scopes[j].Clone();
           j++;
           if (j >= scopes.Count) j = 0;
         } else {
-          selected.Add(scopes[0]);
+          selected[i] = scopes[0];
           scopes.RemoveAt(0);
         }
       }

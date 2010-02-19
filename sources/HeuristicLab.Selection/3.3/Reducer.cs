@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
@@ -45,8 +46,8 @@ namespace HeuristicLab.Selection {
     }
 
     public sealed override IExecutionSequence Apply() {
-      ScopeList scopes = new ScopeList(CurrentScope.SubScopes);
-      ScopeList reduced = Reduce(scopes);
+      List<IScope> scopes = new List<IScope>(CurrentScope.SubScopes);
+      List<IScope> reduced = Reduce(scopes);
 
       CurrentScope.SubScopes.Clear();
       CurrentScope.SubScopes.AddRange(reduced);
@@ -54,6 +55,6 @@ namespace HeuristicLab.Selection {
       return base.Apply();
     }
 
-    protected abstract ScopeList Reduce(ScopeList scopes);
+    protected abstract List<IScope> Reduce(List<IScope> scopes);
   }
 }

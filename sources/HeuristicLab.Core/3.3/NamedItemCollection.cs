@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Drawing;
 using HeuristicLab.Collections;
@@ -42,27 +43,20 @@ namespace HeuristicLab.Core {
     [Storable(Name = "RestoreEvents")]
     private object RestoreEvents {
       get { return null; }
-      set {
-        foreach (T item in this) {
-          item.NameChanging += new EventHandler<CancelEventArgs<string>>(Item_NameChanging);
-          item.NameChanged += new EventHandler(Item_NameChanged);
-          item.Changed += new ChangedEventHandler(Item_Changed);
-        }
-      }
+      set { RegisterItemEvents(this); }
     }
 
     public NamedItemCollection() : base() { }
     public NamedItemCollection(int capacity) : base(capacity) { }
-    public NamedItemCollection(IEnumerable<T> collection) : base(collection) { }
+    public NamedItemCollection(IEnumerable<T> collection) : base(collection) {
+      RegisterItemEvents(this);
+    }
 
     public object Clone() {
       return Clone(new Cloner());
     }
-    public IDeepCloneable Clone(Cloner cloner) {
-      List<T> items = new List<T>();
-      foreach (T item in this)
-        items.Add((T)cloner.Clone(item));
-      NamedItemCollection<T> clone = (NamedItemCollection<T>)Activator.CreateInstance(this.GetType(), items);
+    public virtual IDeepCloneable Clone(Cloner cloner) {
+      NamedItemCollection<T> clone = (NamedItemCollection<T>)Activator.CreateInstance(this.GetType(), this.Select(x => (T)cloner.Clone(x)));
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
@@ -85,19 +79,11 @@ namespace HeuristicLab.Core {
     }
 
     protected override void OnItemsAdded(IEnumerable<T> items) {
-      foreach (T item in items) {
-        item.NameChanging += new EventHandler<CancelEventArgs<string>>(Item_NameChanging);
-        item.NameChanged += new EventHandler(Item_NameChanged);
-        item.Changed += new ChangedEventHandler(Item_Changed);
-      }
+      RegisterItemEvents(items);
       base.OnItemsAdded(items);
     }
     protected override void OnItemsRemoved(IEnumerable<T> items) {
-      foreach (T item in items) {
-        item.NameChanging -= new EventHandler<CancelEventArgs<string>>(Item_NameChanging);
-        item.NameChanged -= new EventHandler(Item_NameChanged);
-        item.Changed -= new ChangedEventHandler(Item_Changed);
-      }
+      DeregisterItemEvents(items);
       base.OnItemsRemoved(items);
     }
     #region NOTE
@@ -107,21 +93,28 @@ namespace HeuristicLab.Core {
     // do not have to be removed and added again.
     #endregion
     protected override void OnCollectionReset(IEnumerable<T> items, IEnumerable<T> oldItems) {
-      foreach (T oldItem in oldItems) {
-        oldItem.NameChanging -= new EventHandler<CancelEventArgs<string>>(Item_NameChanging);
-        oldItem.NameChanged -= new EventHandler(Item_NameChanged);
-        oldItem.Changed -= new ChangedEventHandler(Item_Changed);
-      }
-      foreach (T item in items) {
-        item.NameChanging += new EventHandler<CancelEventArgs<string>>(Item_NameChanging);
-        item.NameChanged += new EventHandler(Item_NameChanged);
-        item.Changed += new ChangedEventHandler(Item_Changed);
-      }
+      DeregisterItemEvents(oldItems);
+      RegisterItemEvents(items);
       base.OnCollectionReset(items, oldItems);
     }
     protected override void OnPropertyChanged(string propertyName) {
       base.OnPropertyChanged(propertyName);
       OnChanged();
+    }
+
+    private void RegisterItemEvents(IEnumerable<T> items) {
+      foreach (T item in items) {
+        item.NameChanging += new EventHandler<CancelEventArgs<string>>(Item_NameChanging);
+        item.NameChanged += new EventHandler(Item_NameChanged);
+        item.Changed += new ChangedEventHandler(Item_Changed);
+      }
+    }
+    private void DeregisterItemEvents(IEnumerable<T> items) {
+      foreach (T item in items) {
+        item.NameChanging -= new EventHandler<CancelEventArgs<string>>(Item_NameChanging);
+        item.NameChanged -= new EventHandler(Item_NameChanged);
+        item.Changed -= new ChangedEventHandler(Item_Changed);
+      }
     }
 
     private void Item_NameChanging(object sender, CancelEventArgs<string> e) {

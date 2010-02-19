@@ -37,7 +37,7 @@ namespace HeuristicLab.Operators {
       if (Operators.Count > 0) {
         ExecutionContextCollection inner = new ExecutionContextCollection();
         for (int i = 0; (i < ExecutionContext.Scope.SubScopes.Count) && (i < Operators.Count); i++)
-          inner.Add(ExecutionContext.CreateContext(Operators[i], ExecutionContext.Scope.SubScopes[i]));
+          if (Operators[i] != null) inner.Add(ExecutionContext.CreateContext(Operators[i], ExecutionContext.Scope.SubScopes[i]));
         next.Insert(0, inner);
       }
       return next;

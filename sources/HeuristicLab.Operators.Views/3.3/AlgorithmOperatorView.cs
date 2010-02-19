@@ -28,23 +28,23 @@ namespace HeuristicLab.Operators.Views {
   /// The base class for visual representations of items.
   /// </summary>
   [Content(typeof(CombinedOperator), true)]
-  public partial class CombinedOperatorView : NamedItemView {
-    public new CombinedOperator Content {
-      get { return (CombinedOperator)base.Content; }
+  public partial class AlgorithmOperatorView : NamedItemView {
+    public new AlgorithmOperator Content {
+      get { return (AlgorithmOperator)base.Content; }
       set { base.Content = value; }
     }
 
     /// <summary>
     /// Initializes a new instance of <see cref="ItemBaseView"/>.
     /// </summary>
-    public CombinedOperatorView() {
+    public AlgorithmOperatorView() {
       InitializeComponent();
     }
     /// <summary>
     /// Intializes a new instance of <see cref="ItemBaseView"/> with the given <paramref name="item"/>.
     /// </summary>
     /// <param name="item">The item that should be displayed.</param>
-    public CombinedOperatorView(CombinedOperator content)
+    public AlgorithmOperatorView(AlgorithmOperator content)
       : this() {
       Content = content;
     }

@@ -67,11 +67,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CombinedOperatorView.cs">
+    <Compile Include="AlgorithmOperatorView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="CombinedOperatorView.Designer.cs">
-      <DependentUpon>CombinedOperatorView.cs</DependentUpon>
+    <Compile Include="AlgorithmOperatorView.Designer.cs">
+      <DependentUpon>AlgorithmOperatorView.cs</DependentUpon>
     </Compile>
     <None Include="HeuristicLabOperatorsViewsPlugin.cs.frame" />
     <Compile Include="MultipleCallsOperatorView.cs">

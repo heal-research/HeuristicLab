@@ -58,7 +58,7 @@ namespace HeuristicLab.Permutation {
       if (parent1.Length != parent2.Length) throw new ArgumentException("MaximalPreservativeCrossover: The parent permutations are of unequal length");
       if (parent1.Length < 4) throw new ArgumentException("MaximalPreservativeCrossover: The parent permutation must be at least of size 4");
       int length = parent1.Length;
-      Permutation result = new Permutation(length);
+      int[] result = new int[length];
       bool[] numberCopied = new bool[length];
       int breakPoint1, breakPoint2, subsegmentLength, index;
 
@@ -118,7 +118,7 @@ namespace HeuristicLab.Permutation {
         if (index >= length) index -= length;
       } while (index != breakPoint1);
 
-      return result;
+      return new Permutation(result);
     }
 
     private static int GetFollower(Permutation parent, int index) {

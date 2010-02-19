@@ -26,19 +26,11 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
   /// <summary>
-  /// Operator which contains an operator graph.
+  /// An operator which contains an operator graph.
   /// </summary>
   [Item("CombinedOperator", "An operator which contains an operator graph.")]
   [Creatable("Test")]
-  public sealed class CombinedOperator : SingleSuccessorOperator, IOperator {
-    public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Module; }
-    }
-    [Storable]
-    private OperatorGraph operatorGraph;
-    public OperatorGraph OperatorGraph {
-      get { return operatorGraph; }
-    }
+  public sealed class CombinedOperator : AlgorithmOperator, IOperator {
     public new ParameterCollection Parameters {
       get {
         return base.Parameters;
@@ -51,22 +43,6 @@ namespace HeuristicLab.Operators {
       get { return true; }
     }
 
-    public CombinedOperator()
-      : base() {
-      operatorGraph = new OperatorGraph();
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      CombinedOperator clone = (CombinedOperator)base.Clone(cloner);
-      clone.operatorGraph = (OperatorGraph)cloner.Clone(operatorGraph);
-      return clone;
-    }
-
-    public override IExecutionSequence Apply() {
-      ExecutionContextCollection next = new ExecutionContextCollection(base.Apply());
-      if (operatorGraph.InitialOperator != null)
-        next.Insert(0, ExecutionContext.CreateChildContext(operatorGraph.InitialOperator));
-      return next;
-    }
+    public CombinedOperator() : base() { }
   }
 }

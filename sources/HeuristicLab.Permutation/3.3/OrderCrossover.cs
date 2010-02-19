@@ -44,7 +44,7 @@ namespace HeuristicLab.Permutation {
     /// <param name="parent2">The second parent permutation to cross.</param>
     /// <returns>The new permutation resulting from the crossover.</returns>
     public static Permutation Apply(IRandom random, Permutation parent1, Permutation parent2) {
-      Permutation result = new Permutation(parent1.Length);
+      int[] result = new int[parent1.Length];
       bool[] copied = new bool[result.Length];
 
       int breakPoint1 = random.Next(result.Length - 1);
@@ -65,7 +65,7 @@ namespace HeuristicLab.Permutation {
           index++;
         }
       }
-      return result;
+      return new Permutation(result);
     }
 
     /// <summary>

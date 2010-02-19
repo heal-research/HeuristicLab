@@ -43,7 +43,6 @@ namespace HeuristicLab.Permutation {
     }
     public Permutation(int[] elements)
       : base(elements) {
-      if (!Validate()) throw new ArgumentException("Elements do not represent a valid permutation.");
     }
     private Permutation(Permutation elements) : base(elements) { }
 

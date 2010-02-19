@@ -50,14 +50,12 @@ namespace HeuristicLab.Collections {
     }
     public ObservableSet(IEnumerable<T> collection) {
       set = new HashSet<T>(collection);
-      OnItemsAdded(this);
     }
     public ObservableSet(IEqualityComparer<T> comparer) {
       set = new HashSet<T>(comparer);
     }
     public ObservableSet(IEnumerable<T> collection, IEqualityComparer<T> comparer) {
       set = new HashSet<T>(collection, comparer);
-      OnItemsAdded(this);
     }
     #endregion
 

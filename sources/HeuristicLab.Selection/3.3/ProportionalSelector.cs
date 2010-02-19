@@ -50,13 +50,13 @@ namespace HeuristicLab.Selection {
       CopySelected.Value = true;
     }
 
-    protected override ScopeList Select(ScopeList scopes) {
+    protected override IScope[] Select(List<IScope> scopes) {
       int count = NumberOfSelectedSubScopesParameter.ActualValue.Value;
       bool copy = CopySelectedParameter.Value.Value;
       IRandom random = RandomParameter.ActualValue;
       bool maximization = MaximizationParameter.ActualValue.Value;
       bool windowing = WindowingParameter.Value.Value;
-      ScopeList selected = new ScopeList();
+      IScope[] selected = new IScope[count];
 
       // prepare qualities for proportional selection
       var qualities = QualityParameter.ActualValue.Select(x => x.Value);
@@ -90,9 +90,9 @@ namespace HeuristicLab.Selection {
           currentQuality += list[index];
         }
         if (copy)
-          selected.Add((IScope)scopes[index].Clone());
+          selected[i] = (IScope)scopes[index].Clone();
         else {
-          selected.Add(scopes[index]);
+          selected[i] = scopes[index];
           scopes.RemoveAt(index);
           qualitySum -= list[index];
           list.RemoveAt(index);

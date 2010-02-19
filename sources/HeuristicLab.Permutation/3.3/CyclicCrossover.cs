@@ -53,7 +53,7 @@ namespace HeuristicLab.Permutation {
     public static Permutation Apply(IRandom random, Permutation parent1, Permutation parent2) {
       if (parent1.Length != parent2.Length) throw new ArgumentException("CyclicCrossover: The parent permutations are of unequal length");
       int length = parent1.Length;
-      Permutation result = new Permutation(length);
+      int[] result = new int[length];
       bool[] indexCopied = new bool[length];
       int[] invParent1 = new int[length];
       int[] invParent2 = new int[length];
@@ -88,7 +88,7 @@ namespace HeuristicLab.Permutation {
         while (j < length && indexCopied[j]) j++;
       } while (j < length);
 
-      return result;
+      return new Permutation(result);
     }
 
     /// <summary>

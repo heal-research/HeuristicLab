@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -37,13 +38,13 @@ namespace HeuristicLab.Selection {
       CopySelected.Value = true;
     }
 
-    protected override ScopeList Select(ScopeList scopes) {
+    protected override IScope[] Select(List<IScope> scopes) {
       int count = NumberOfSelectedSubScopesParameter.ActualValue.Value;
       bool copy = CopySelectedParameter.Value.Value;
       IRandom random = RandomParameter.ActualValue;
       bool maximization = MaximizationParameter.ActualValue.Value;
       ItemArray<DoubleData> qualities = QualityParameter.ActualValue;
-      ScopeList selected = new ScopeList();
+      IScope[] selected = new IScope[count];
 
       // create a list for each scope that contains the scope's index in the original scope list and its lots
       var temp = qualities.Select((x, index) => new { index, x.Value });
@@ -63,9 +64,9 @@ namespace HeuristicLab.Selection {
           currentLot += list[index].lots;
         }
         if (copy)
-          selected.Add((IScope)scopes[list[index].index].Clone());
+          selected[i] = (IScope)scopes[list[index].index].Clone();
         else {
-          selected.Add(scopes[list[index].index]);
+          selected[i] = scopes[list[index].index];
           scopes.RemoveAt(list[index].index);
           lotSum -= list[index].lots;
           list.RemoveAt(index);

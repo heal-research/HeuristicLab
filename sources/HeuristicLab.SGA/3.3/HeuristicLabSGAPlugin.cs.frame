@@ -19,23 +19,22 @@
  */
 #endregion
 
-using System.Collections.Generic;
-using System.Linq;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Core {
-  [EmptyStorableClass]
-  [Item("ScopeList", "Represents a list of scopes.")]
-  [Creatable("Test")]
-  public sealed class ScopeList : ItemList<IScope> {
-    public ScopeList() : base() { }
-    public ScopeList(int capacity) : base(capacity) { }
-    public ScopeList(IEnumerable<IScope> collection) : base(collection) { }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      ScopeList clone = new ScopeList(this.Select(x => (IScope)cloner.Clone(x)));
-      cloner.RegisterClonedObject(this, clone);
-      return clone;
-    }
+namespace HeuristicLab.SGA {
+  /// <summary>
+  /// Plugin class for HeuristicLab.SGA plugin.
+  /// </summary>
+  [Plugin("HeuristicLab.SGA", "3.3.0.$WCREV$")]
+  [PluginFile("HeuristicLab.SGA-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Collections", "3.3")]
+  [PluginDependency("HeuristicLab.Core", "3.3")]
+  [PluginDependency("HeuristicLab.Data", "3.3")]
+  [PluginDependency("HeuristicLab.Evolutionary", "3.3")]
+  [PluginDependency("HeuristicLab.Operators", "3.3")]
+  [PluginDependency("HeuristicLab.Parameters", "3.3")]
+  [PluginDependency("HeuristicLab.Persistence", "3.3")]
+  [PluginDependency("HeuristicLab.Selection", "3.3")]
+  public class HeuristicLabSGAPlugin : PluginBase {
   }
 }

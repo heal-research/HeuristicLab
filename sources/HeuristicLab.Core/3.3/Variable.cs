@@ -52,7 +52,7 @@ namespace HeuristicLab.Core {
     /// </summary>
     public Variable()
       : base("Anonymous") {
-      Value = null;
+      this.value = null;
     }
     /// <summary>
     /// Initializes a new instance of <see cref="Variable"/> with the specified <paramref name="name"/>
@@ -60,9 +60,23 @@ namespace HeuristicLab.Core {
     /// </summary>
     /// <param name="name">The name of the current instance.</param>
     /// <param name="value">The value of the current instance.</param>
+    public Variable(string name)
+      : base(name) {
+      this.value = null;
+    }
+    public Variable(string name, string description)
+      : base(name, description) {
+      this.value = null;
+    }
     public Variable(string name, IItem value)
       : base(name) {
-      Value = value;
+      this.value = value;
+      this.value.Changed += new ChangedEventHandler(Value_Changed);
+    }
+    public Variable(string name, string description, IItem value)
+      : base(name, description) {
+      this.value = value;
+      this.value.Changed += new ChangedEventHandler(Value_Changed);
     }
 
     /// <summary>
@@ -71,11 +85,8 @@ namespace HeuristicLab.Core {
     /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
     /// <returns>The cloned object as <see cref="Variable"/>.</returns>
     public override IDeepCloneable Clone(Cloner cloner) {
-      Variable clone = new Variable();
+      Variable clone = new Variable(Name, Description, (IItem)cloner.Clone(value));
       cloner.RegisterClonedObject(this, clone);
-      clone.Name = Name;
-      clone.Description = Description;
-      clone.Value = (IItem)cloner.Clone(value);
       return clone;
     }
 
