@@ -7,35 +7,49 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm.WindowsForms {
-  public partial class ViewContextMenuStrip : ContextMenuStrip {
-    private object item;
+  public sealed partial class ViewContextMenuStrip : ContextMenuStrip {
     public ViewContextMenuStrip() {
       InitializeComponent();
+      this.menuItems = new Dictionary<Type, ToolStripMenuItem>();
     }
 
-    public ViewContextMenuStrip(object item) :this() {
-      if (item != null) {
-        this.item = item;
-        IEnumerable<Type> types = MainFormManager.GetViewTypes(item.GetType());
-        if (types != null) {
-          foreach (Type t in types) {
-            ToolStripMenuItem menuItem = new ToolStripMenuItem() {
-              Text = t.Name,
-              Tag = t
-            };
-            this.Items.Add(menuItem);
-          }
+    public ViewContextMenuStrip(object item)
+      : this() {
+      this.Item = item;
+    }
+
+    private object item;
+    public object Item {
+      get { return this.item; }
+      set {
+        if (this.item != value) {
+          this.item = value;
+          this.RefreshMenuItems();
         }
       }
     }
 
-    private void ViewContextMenuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e) {
-      if (item != null) {
-        Type viewType = e.ClickedItem.Tag as Type;
-        IView view = MainFormManager.CreateView(viewType, this.item);
-        view.Show();
-      }
+    private Dictionary<Type, ToolStripMenuItem> menuItems;
+    public IEnumerable<KeyValuePair<Type, ToolStripMenuItem>> MenuItems {
+      get { return this.menuItems; }
     }
 
+    private void RefreshMenuItems() {
+      this.Items.Clear();
+      this.menuItems.Clear();
+
+      if (this.item != null) {
+        ToolStripMenuItem menuItem;
+        IEnumerable<Type> types = MainFormManager.GetViewTypes(item.GetType());
+        foreach (Type t in types) {
+          menuItem = new ToolStripMenuItem();
+          menuItem.Tag = t;
+          menuItem.Text = ViewAttribute.GetViewName(t);
+
+          this.menuItems.Add(t, menuItem);
+          this.Items.Add(menuItem);
+        }
+      }
+    }
   }
 }

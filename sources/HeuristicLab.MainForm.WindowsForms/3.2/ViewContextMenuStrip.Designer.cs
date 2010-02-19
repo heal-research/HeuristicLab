@@ -27,9 +27,7 @@
       // 
       // ViewContextMenuStrip
       // 
-      this.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.ViewContextMenuStrip_ItemClicked);
       this.ResumeLayout(false);
-
     }
 
     #endregion
