@@ -22,11 +22,5 @@
 using System.Collections.Generic;
 
 namespace HeuristicLab.Collections {
-  public interface IObservableList<T> : IList<T>, IObservableCollection<T> {
-    new event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsAdded;
-    new event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsRemoved;
-    event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsReplaced;
-    event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsMoved;
-    new event CollectionItemsChangedEventHandler<IndexedItem<T>> CollectionReset;
-  }
+  public interface IObservableList<T> : IList<T>, IObservableCollection<T>, INotifyObservableListItemsChanged<T> { }
 }

@@ -20,8 +20,13 @@
 #endregion
 
 using System.Collections.Generic;
-using System.ComponentModel;
 
 namespace HeuristicLab.Collections {
-  public interface IObservableCollection<T> : ICollection<T>, INotifyObservableCollectionItemsChanged<T>, INotifyPropertyChanged { }
+  public interface INotifyObservableListItemsChanged<T> : INotifyObservableCollectionItemsChanged<T> {
+    new event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsAdded;
+    new event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsRemoved;
+    event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsReplaced;
+    event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsMoved;
+    new event CollectionItemsChangedEventHandler<IndexedItem<T>> CollectionReset;
+  }
 }

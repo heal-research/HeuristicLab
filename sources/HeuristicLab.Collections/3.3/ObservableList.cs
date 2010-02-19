@@ -381,7 +381,7 @@ namespace HeuristicLab.Collections {
 
     [field: NonSerialized]
     private event CollectionItemsChangedEventHandler<T> itemsAdded;
-    event CollectionItemsChangedEventHandler<T> IObservableCollection<T>.ItemsAdded {
+    event CollectionItemsChangedEventHandler<T> INotifyObservableCollectionItemsChanged<T>.ItemsAdded {
       add { itemsAdded += value; }
       remove { itemsAdded -= value; }
     }
@@ -399,7 +399,7 @@ namespace HeuristicLab.Collections {
 
     [field: NonSerialized]
     private event CollectionItemsChangedEventHandler<T> itemsRemoved;
-    event CollectionItemsChangedEventHandler<T> IObservableCollection<T>.ItemsRemoved {
+    event CollectionItemsChangedEventHandler<T> INotifyObservableCollectionItemsChanged<T>.ItemsRemoved {
       add { itemsRemoved += value; }
       remove { itemsRemoved -= value; }
     }
@@ -431,7 +431,7 @@ namespace HeuristicLab.Collections {
 
     [field: NonSerialized]
     private event CollectionItemsChangedEventHandler<T> collectionReset;
-    event CollectionItemsChangedEventHandler<T> IObservableCollection<T>.CollectionReset {
+    event CollectionItemsChangedEventHandler<T> INotifyObservableCollectionItemsChanged<T>.CollectionReset {
       add { collectionReset += value; }
       remove { collectionReset -= value; }
     }

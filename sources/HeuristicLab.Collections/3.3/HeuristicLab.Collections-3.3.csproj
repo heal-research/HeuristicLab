@@ -66,6 +66,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLabCollectionsPlugin.cs.frame" />
+    <Compile Include="INotifyObservableListItemsChanged.cs" />
+    <Compile Include="INotifyObservableKeyedCollectionItemsChanged.cs" />
+    <Compile Include="INotifyObservableDictionaryItemsChanged.cs" />
+    <Compile Include="INotifyObservableCollectionItemsChanged.cs" />
+    <Compile Include="INotifyObservableArrayItemsChanged.cs" />
     <Compile Include="ReadOnlyObservableArray.cs" />
     <Compile Include="ObservableArray.cs" />
     <Compile Include="IObservableArray.cs" />

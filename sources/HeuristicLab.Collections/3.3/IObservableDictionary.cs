@@ -22,7 +22,5 @@
 using System.Collections.Generic;
 
 namespace HeuristicLab.Collections {
-  public interface IObservableDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IObservableCollection<KeyValuePair<TKey, TValue>> {
-    event CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>> ItemsReplaced;
-  }
+  public interface IObservableDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IObservableCollection<KeyValuePair<TKey, TValue>>, INotifyObservableDictionaryItemsChanged<TKey, TValue> { }
 }

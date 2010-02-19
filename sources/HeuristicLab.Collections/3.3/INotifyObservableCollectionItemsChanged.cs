@@ -23,5 +23,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace HeuristicLab.Collections {
-  public interface IObservableCollection<T> : ICollection<T>, INotifyObservableCollectionItemsChanged<T>, INotifyPropertyChanged { }
+  public interface INotifyObservableCollectionItemsChanged<T> {
+    event CollectionItemsChangedEventHandler<T> ItemsAdded;
+    event CollectionItemsChangedEventHandler<T> ItemsRemoved;
+    event CollectionItemsChangedEventHandler<T> CollectionReset;
+  }
 }

@@ -20,14 +20,12 @@
 #endregion
 
 namespace HeuristicLab.Collections {
-  public interface IObservableKeyedCollection<TKey, TItem> : IObservableCollection<TItem> {
+  public interface IObservableKeyedCollection<TKey, TItem> : IObservableCollection<TItem>, INotifyObservableKeyedCollectionItemsChanged<TKey, TItem> {
     TItem this[TKey key] { get; }
 
     bool ContainsKey(TKey key);
     bool TryGetValue(TKey key, out TItem item);
 
     bool Remove(TKey key);
-
-    event CollectionItemsChangedEventHandler<TItem> ItemsReplaced;
   }
 }

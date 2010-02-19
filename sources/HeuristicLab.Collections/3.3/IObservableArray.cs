@@ -23,11 +23,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace HeuristicLab.Collections {
-  public interface IObservableArray<T> : IList<T>, INotifyPropertyChanged {
+  public interface IObservableArray<T> : IList<T>, INotifyObservableArrayItemsChanged<T>, INotifyPropertyChanged {
     int Length { get; }
-
-    event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsReplaced;
-    event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsMoved;
-    event CollectionItemsChangedEventHandler<IndexedItem<T>> CollectionReset;
   }
 }
