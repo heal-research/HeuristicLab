@@ -44,9 +44,9 @@ namespace HeuristicLab.Operators {
       Parameters.Add(new OperatorParameter("Successor", "Operator which is executed next."));
     }
 
-    public override IExecutionSequence Apply() {
+    public override IOperation Apply() {
       if (Successor != null)
-        return ExecutionContext.CreateContext(Successor);
+        return ExecutionContext.CreateOperation(Successor);
       else
         return null;
     }

@@ -40,11 +40,11 @@ namespace HeuristicLab.Operators {
       Parameters.Add(new LookupParameter<IOperator>("Operator", "The operator which is retrieved from the scope or a parent execution context and applied on the current scope."));
     }
 
-    public override IExecutionSequence Apply() {
-      ExecutionContextCollection next = new ExecutionContextCollection(base.Apply());
+    public override IOperation Apply() {
+      OperationCollection next = new OperationCollection(base.Apply());
       IOperator op = OperatorParameter.ActualValue;
       if (op != null)
-        next.Insert(0, ExecutionContext.CreateContext(op));
+        next.Insert(0, ExecutionContext.CreateOperation(op));
       return next;
     }
   }

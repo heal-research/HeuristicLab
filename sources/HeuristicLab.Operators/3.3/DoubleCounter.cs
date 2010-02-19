@@ -49,7 +49,7 @@ namespace HeuristicLab.Operators {
       Parameters.Add(new ValueLookupParameter<DoubleData>("Increment", "The increment which is added to the value.", new DoubleData(1)));
     }
 
-    public override IExecutionSequence Apply() {
+    public override IOperation Apply() {
       if (ValueParameter.ActualValue == null) ValueParameter.ActualValue = new DoubleData();
       ValueParameter.ActualValue.Value += IncrementParameter.ActualValue.Value;
       return base.Apply();

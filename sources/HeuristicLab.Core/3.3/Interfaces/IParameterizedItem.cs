@@ -23,9 +23,9 @@ using HeuristicLab.Collections;
 
 namespace HeuristicLab.Core {
   /// <summary>
-  /// Interface to represent a problem.
+  /// An interface which represents an item which contains parameters.
   /// </summary>
-  public interface IProblem : INamedItem {
-    IObservableKeyedCollection<string, IValueParameter> Parameters { get; }
+  public interface IParameterizedItem : IItem {
+    IObservableKeyedCollection<string, IParameter> Parameters { get; }
   }
 }

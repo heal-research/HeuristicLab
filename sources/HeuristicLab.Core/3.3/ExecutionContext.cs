@@ -20,22 +20,26 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using HeuristicLab.Collections;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
-  public class ExecutionContext : DeepCloneable, IExecutionSequence {
+  public class ExecutionContext : DeepCloneable, IExecutionContext, IAtomicOperation {
     [Storable]
-    private ExecutionContext parent;
-    public ExecutionContext Parent {
+    private IParameterizedItem parameterizedItem;
+
+    [Storable]
+    private IExecutionContext parent;
+    public IExecutionContext Parent {
       get { return parent; }
     }
 
-    [Storable]
-    private IOperator op;
+    public IObservableKeyedCollection<string, IParameter> Parameters {
+      get { return parameterizedItem.Parameters; }
+    }
+
     public IOperator Operator {
-      get { return op; }
+      get { return parameterizedItem as IOperator; }
     }
 
     [Storable]
@@ -44,47 +48,38 @@ namespace HeuristicLab.Core {
       get { return scope; }
     }
 
-    [Storable]
-    private IProblem problem;
-    public IProblem Problem {
-      get { return problem; }
-    }
-
     private ExecutionContext() {
       parent = null;
-      op = null;
+      parameterizedItem = null;
       scope = null;
-      problem = null;
     }
-    public ExecutionContext(ExecutionContext parent, IOperator op, IScope scope, IProblem problem) {
-      if ((op == null) || (scope == null) || (problem == null)) throw new ArgumentNullException();
+    public ExecutionContext(IExecutionContext parent, IParameterizedItem parameterizedItem, IScope scope) {
+      if ((parameterizedItem == null) || (scope == null)) throw new ArgumentNullException();
       this.parent = parent;
-      this.op = op;
+      this.parameterizedItem = parameterizedItem;
       this.scope = scope;
-      this.problem = problem;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       ExecutionContext clone = new ExecutionContext();
       cloner.RegisterClonedObject(this, clone);
-      clone.parent = (ExecutionContext)cloner.Clone(parent);
-      clone.op = (IOperator)cloner.Clone(op);
+      clone.parent = (IExecutionContext)cloner.Clone(parent);
+      clone.parameterizedItem = (IParameterizedItem)cloner.Clone(parameterizedItem);
       clone.scope = (IScope)cloner.Clone(scope);
-      clone.problem = (IProblem)cloner.Clone(problem);
       return clone;
     }
 
-    public ExecutionContext CreateContext(IOperator op) {
-      return new ExecutionContext(parent, op, scope, problem);
+    public IAtomicOperation CreateOperation(IOperator op) {
+      return new ExecutionContext(parent, op, scope);
     }
-    public ExecutionContext CreateContext(IOperator op, IScope scope) {
-      return new ExecutionContext(parent, op, scope, problem);
+    public IAtomicOperation CreateOperation(IOperator op, IScope scope) {
+      return new ExecutionContext(parent, op, scope);
     }
-    public ExecutionContext CreateChildContext(IOperator op) {
-      return new ExecutionContext(this, op, scope, problem);
+    public IAtomicOperation CreateChildOperation(IOperator op) {
+      return new ExecutionContext(this, op, scope);
     }
-    public ExecutionContext CreateChildContext(IOperator op, IScope scope) {
-      return new ExecutionContext(this, op, scope, problem);
+    public IAtomicOperation CreateChildOperation(IOperator op, IScope scope) {
+      return new ExecutionContext(this, op, scope);
     }
   }
 }

@@ -103,9 +103,12 @@
     <Compile Include="Attributes\CreatableAttribute.cs" />
     <Compile Include="ChangedEventArgs.cs" />
     <None Include="HeuristicLabCorePlugin.cs.frame" />
+    <Compile Include="Interfaces\IParameterizedItem.cs" />
+    <Compile Include="Interfaces\IAtomicOperation.cs" />
+    <Compile Include="Interfaces\IExecutionContext.cs" />
+    <Compile Include="Interfaces\IOperation.cs" />
+    <Compile Include="OperationCollection.cs" />
     <Compile Include="ValueParameterCollection.cs" />
-    <Compile Include="Interfaces\IProblem.cs" />
-    <Compile Include="Interfaces\IExecutionSequence.cs" />
     <Compile Include="Interfaces\IValueLookupParameter.cs" />
     <Compile Include="Interfaces\IValueParameter.cs" />
     <Compile Include="Interfaces\ILookupParameter.cs" />
@@ -116,7 +119,6 @@
     <Compile Include="Interfaces\IVariable.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="NamedItem.cs" />
-    <Compile Include="Problem.cs" />
     <Compile Include="OperatorGraph.cs" />
     <Compile Include="Interfaces\IParameter.cs" />
     <Compile Include="OperatorCollection.cs" />
@@ -127,7 +129,6 @@
     <Compile Include="Interfaces\IEngine.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExecutionContextCollection.cs" />
     <Compile Include="ExecutionContext.cs" />
     <Compile Include="OperatorList.cs" />
     <Compile Include="ParameterCollection.cs" />

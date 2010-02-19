@@ -49,9 +49,9 @@ namespace HeuristicLab.Routing.TSP.Views {
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
       // 
-      // valueParameterCollectionView
+      // parameterCollectionView
       // 
-      this.valueParameterCollectionView.Size = new System.Drawing.Size(490, 205);
+      this.parameterCollectionView.Size = new System.Drawing.Size(490, 205);
       // 
       // nameTextBox
       // 
@@ -84,7 +84,7 @@ namespace HeuristicLab.Routing.TSP.Views {
       this.Controls.Add(this.importButton);
       this.Name = "TSPView";
       this.Controls.SetChildIndex(this.importButton, 0);
-      this.Controls.SetChildIndex(this.valueParameterCollectionView, 0);
+      this.Controls.SetChildIndex(this.parameterCollectionView, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
       this.Controls.SetChildIndex(this.descriptionLabel, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);

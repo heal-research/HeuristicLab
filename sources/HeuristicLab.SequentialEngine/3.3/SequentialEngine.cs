@@ -20,8 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -56,27 +54,27 @@ namespace HeuristicLab.SequentialEngine {
     /// If the execution was successful <see cref="EngineBase.OnOperationExecuted"/> is called.</remarks>
     protected override void ProcessNextOperator() {
       currentOperator = null;
-      IExecutionSequence next = ExecutionStack.Pop();
-      ExecutionContextCollection coll = next as ExecutionContextCollection;
+      IOperation next = ExecutionStack.Pop();
+      OperationCollection coll = next as OperationCollection;
       while (coll != null) {
         for (int i = coll.Count - 1; i >= 0; i--)
           ExecutionStack.Push(coll[i]);
         next = ExecutionStack.Count > 0 ? ExecutionStack.Pop() : null;
-        coll = next as ExecutionContextCollection;
+        coll = next as OperationCollection;
       }
-      ExecutionContext context = next as ExecutionContext;
-      if (context != null) {
+      IAtomicOperation operation = next as IAtomicOperation;
+      if (operation != null) {
         try {
-          currentOperator = context.Operator;
-          ExecutionStack.Push(context.Operator.Execute(context));
+          currentOperator = operation.Operator;
+          ExecutionStack.Push(operation.Operator.Execute((IExecutionContext)operation));
           currentOperator = null;
         }
         catch (Exception ex) {
-          ExecutionStack.Push(context);
+          ExecutionStack.Push(operation);
           Stop();
           OnExceptionOccurred(ex);
         }
-        if (context.Operator.Breakpoint)
+        if (operation.Operator.Breakpoint)
           Stop();
       }
     }

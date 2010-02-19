@@ -19,10 +19,8 @@
  */
 #endregion
 
-using System.Drawing;
 using HeuristicLab.Collections;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
   /// <summary>
@@ -30,13 +28,13 @@ namespace HeuristicLab.Operators {
   /// </summary>
   [Item("CombinedOperator", "An operator which contains an operator graph.")]
   [Creatable("Test")]
-  public sealed class CombinedOperator : AlgorithmOperator, IOperator {
+  public sealed class CombinedOperator : AlgorithmOperator, IParameterizedItem {
     public new ParameterCollection Parameters {
       get {
         return base.Parameters;
       }
     }
-    IObservableKeyedCollection<string, IParameter> IOperator.Parameters {
+    IObservableKeyedCollection<string, IParameter> IParameterizedItem.Parameters {
       get { return Parameters; }
     }
     public override bool CanChangeDescription {

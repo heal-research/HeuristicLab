@@ -43,7 +43,7 @@ namespace HeuristicLab.Operators {
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope into which the parameter values are cloned."));
     }
 
-    public override IExecutionSequence Apply() {
+    public override IOperation Apply() {
       IVariable var;
       foreach (IParameter param in CollectedValues) {
         CurrentScope.Variables.TryGetValue(param.Name, out var);

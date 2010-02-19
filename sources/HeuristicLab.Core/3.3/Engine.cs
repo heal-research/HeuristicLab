@@ -70,23 +70,6 @@ namespace HeuristicLab.Core {
     }
 
     [Storable]
-    private IProblem problem;
-    /// <summary>
-    /// Gets or sets the current problem.
-    /// </summary>
-    public IProblem Problem {
-      get { return problem; }
-      set {
-        if (value == null) throw new ArgumentNullException();
-        if (value != problem) {
-          problem = value;
-          OnProblemChanged();
-          Prepare();
-        }
-      }
-    }
-
-    [Storable]
     private TimeSpan executionTime;
     /// <summary>
     /// Gets or sets the execution time.
@@ -104,11 +87,11 @@ namespace HeuristicLab.Core {
     /// Field of the current instance that represent the execution stack.
     /// </summary>
     [Storable]
-    private Stack<IExecutionSequence> executionStack;
+    private Stack<IOperation> executionStack;
     /// <summary>
     /// Gets the current execution stack.
     /// </summary>
-    protected Stack<IExecutionSequence> ExecutionStack {
+    protected Stack<IOperation> ExecutionStack {
       get { return executionStack; }
     }
 
@@ -145,8 +128,7 @@ namespace HeuristicLab.Core {
     /// </summary>
     protected Engine() {
       globalScope = new Scope("Global");
-      problem = null;
-      executionStack = new Stack<IExecutionSequence>();
+      executionStack = new Stack<IOperation>();
       OperatorGraph = new OperatorGraph();
     }
 
@@ -161,30 +143,33 @@ namespace HeuristicLab.Core {
       Engine clone = (Engine)base.Clone(cloner);
       clone.OperatorGraph = (OperatorGraph)cloner.Clone(operatorGraph);
       clone.globalScope = (Scope)cloner.Clone(globalScope);
-      clone.problem = (IProblem)cloner.Clone(problem);
       clone.executionTime = executionTime;
-      IExecutionSequence[] contexts = executionStack.ToArray();
+      IOperation[] contexts = executionStack.ToArray();
       for (int i = contexts.Length - 1; i >= 0; i--)
-        clone.executionStack.Push((IExecutionSequence)cloner.Clone(contexts[i]));
+        clone.executionStack.Push((IOperation)cloner.Clone(contexts[i]));
       clone.running = running;
       clone.canceled = canceled;
       return clone;
     }
 
+    public void Prepare(IOperation initialOperation) {
+      canceled = false;
+      running = false;
+      globalScope.Clear();
+      ExecutionTime = new TimeSpan();
+      executionStack.Clear();
+      if (initialOperation != null)
+        executionStack.Push(initialOperation);
+      OnPrepared();
+    }
     /// <inheritdoc/>
     /// <remarks>Sets <c>myCanceled</c> and <c>myRunning</c> to <c>false</c>. The global scope is cleared,
     /// the execution time is reset, the execution stack is cleared and a new <see cref="AtomicOperation"/>
     /// with the initial operator is added. <br/>
     /// Calls <see cref="OnPrepared"/>.</remarks>
     public void Prepare() {
-      canceled = false;
-      running = false;
-      globalScope.Clear();
-      ExecutionTime = new TimeSpan();
-      executionStack.Clear();
-      if ((OperatorGraph.InitialOperator != null) && (Problem != null))
-        executionStack.Push(new ExecutionContext(null, OperatorGraph.InitialOperator, GlobalScope, Problem));
-      OnPrepared();
+      if (OperatorGraph.InitialOperator != null)
+        Prepare(new ExecutionContext(null, OperatorGraph.InitialOperator, GlobalScope));
     }
     /// <inheritdoc/>
     /// <remarks>Calls <see cref="ThreadPool.QueueUserWorkItem(System.Threading.WaitCallback, object)"/> 
@@ -251,17 +236,6 @@ namespace HeuristicLab.Core {
     protected virtual void OnOperatorGraphChanged() {
       if (OperatorGraphChanged != null)
         OperatorGraphChanged(this, EventArgs.Empty);
-    }
-    /// <summary>
-    /// Occurs when the problem was changed.
-    /// </summary>
-    public event EventHandler ProblemChanged;
-    /// <summary>
-    /// Fires a new <c>ProblemChanged</c> event.
-    /// </summary>
-    protected virtual void OnProblemChanged() {
-      if (ProblemChanged != null)
-        ProblemChanged(this, EventArgs.Empty);
     }
     /// <summary>
     /// Occurs when the execution time changed.

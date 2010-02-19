@@ -192,7 +192,7 @@ namespace HeuristicLab.SGA {
       return clone;
     }
 
-    public override IExecutionSequence Apply() {
+    public override IOperation Apply() {
       int populationSize = CurrentScope.SubScopes.Count;
       // dynamically set the number of parents which are selected for reproduction
       proportionalSelector.NumberOfSelectedSubScopesParameter.Value = new IntData(2 * (populationSize - ElitesParameter.ActualValue.Value));

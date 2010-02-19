@@ -50,7 +50,7 @@ namespace HeuristicLab.Permutation {
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The new random permutation."));
     }
 
-    public override IExecutionSequence Apply() {
+    public override IOperation Apply() {
       PermutationParameter.ActualValue = new Permutation(LengthParameter.ActualValue.Value, RandomParameter.ActualValue);
       return base.Apply();
     }

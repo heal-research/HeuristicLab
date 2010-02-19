@@ -23,6 +23,7 @@ using System;
 using System.Windows.Forms;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
+using HeuristicLab.Optimization.Views;
 
 namespace HeuristicLab.Routing.TSP.Views {
   /// <summary>

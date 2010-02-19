@@ -61,12 +61,12 @@ namespace HeuristicLab.Operators {
       Parameters.Add(new OperatorParameter("SecondBranch", "The operator which is executed if the first branch is not executed."));
     }
 
-    public override IExecutionSequence Apply() {
-      ExecutionContextCollection next = new ExecutionContextCollection(base.Apply());
+    public override IOperation Apply() {
+      OperationCollection next = new OperationCollection(base.Apply());
       if (RandomParameter.ActualValue.NextDouble() < ProbabilityParameter.ActualValue.Value) {
-        if (FirstBranch != null) next.Insert(0, ExecutionContext.CreateContext(FirstBranch));
+        if (FirstBranch != null) next.Insert(0, ExecutionContext.CreateOperation(FirstBranch));
       } else {
-        if (SecondBranch != null) next.Insert(0, ExecutionContext.CreateContext(SecondBranch));
+        if (SecondBranch != null) next.Insert(0, ExecutionContext.CreateOperation(SecondBranch));
       }
       return next;
     }

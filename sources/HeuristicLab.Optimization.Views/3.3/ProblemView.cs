@@ -19,9 +19,10 @@
  */
 #endregion
 
+using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
-namespace HeuristicLab.Core.Views { 
+namespace HeuristicLab.Optimization.Views { 
   /// <summary>
   /// The base class for visual representations of items.
   /// </summary>
@@ -51,9 +52,9 @@ namespace HeuristicLab.Core.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null)
-        valueParameterCollectionView.Content = null;
+        parameterCollectionView.Content = null;
       else
-        valueParameterCollectionView.Content = ((IProblem)Content).Parameters;
+        parameterCollectionView.Content = ((IProblem)Content).Parameters;
     }
   }
 }

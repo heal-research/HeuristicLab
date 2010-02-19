@@ -58,7 +58,7 @@ namespace HeuristicLab.Selection {
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope from which sub-scopes should be selected."));
     }
 
-    public sealed override IExecutionSequence Apply() {
+    public sealed override IOperation Apply() {
       List<IScope> scopes = new List<IScope>(CurrentScope.SubScopes);
       IScope[] selected = Select(scopes);
 

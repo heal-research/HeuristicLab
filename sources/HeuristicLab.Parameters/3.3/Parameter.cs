@@ -47,8 +47,8 @@ namespace HeuristicLab.Parameters {
       set { SetActualValue(value); }
     }
     [Storable]
-    private ExecutionContext executionContext;
-    public ExecutionContext ExecutionContext {
+    private IExecutionContext executionContext;
+    public IExecutionContext ExecutionContext {
       get { return executionContext; }
       set {
         if (value != executionContext) {
@@ -76,7 +76,7 @@ namespace HeuristicLab.Parameters {
     public override IDeepCloneable Clone(Cloner cloner) {
       Parameter clone = (Parameter)base.Clone(cloner);
       clone.dataType = dataType;
-      clone.executionContext = (ExecutionContext)cloner.Clone(executionContext);
+      clone.executionContext = (IExecutionContext)cloner.Clone(executionContext);
       return clone;
     }
 

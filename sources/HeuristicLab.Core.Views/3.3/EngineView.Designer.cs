@@ -53,9 +53,6 @@ namespace HeuristicLab.Core.Views {
       this.stopButton = new System.Windows.Forms.Button();
       this.startButton = new System.Windows.Forms.Button();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-      this.newProblemButton = new System.Windows.Forms.Button();
-      this.openProblemButton = new System.Windows.Forms.Button();
-      this.saveProblemButton = new System.Windows.Forms.Button();
       this.newOperatorGraphButton = new System.Windows.Forms.Button();
       this.openOperatorGraphButton = new System.Windows.Forms.Button();
       this.saveOperatorGraphButton = new System.Windows.Forms.Button();
@@ -63,14 +60,11 @@ namespace HeuristicLab.Core.Views {
       this.operatorGraphTabPage = new System.Windows.Forms.TabPage();
       this.operatorGraphViewHost = new HeuristicLab.Core.Views.ViewHost();
       this.globalScopeTabPage = new System.Windows.Forms.TabPage();
-      this.problemTabPage = new System.Windows.Forms.TabPage();
-      this.problemViewHost = new HeuristicLab.Core.Views.ViewHost();
       this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
       this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
       this.tabControl.SuspendLayout();
       this.operatorGraphTabPage.SuspendLayout();
       this.globalScopeTabPage.SuspendLayout();
-      this.problemTabPage.SuspendLayout();
       this.SuspendLayout();
       // 
       // executionTimeTextBox
@@ -141,39 +135,6 @@ namespace HeuristicLab.Core.Views {
       this.startButton.UseVisualStyleBackColor = true;
       this.startButton.Click += new System.EventHandler(this.startButton_Click);
       // 
-      // newProblemButton
-      // 
-      this.newProblemButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.NewDocument;
-      this.newProblemButton.Location = new System.Drawing.Point(6, 6);
-      this.newProblemButton.Name = "newProblemButton";
-      this.newProblemButton.Size = new System.Drawing.Size(24, 24);
-      this.newProblemButton.TabIndex = 0;
-      this.toolTip.SetToolTip(this.newProblemButton, "Create New Problem");
-      this.newProblemButton.UseVisualStyleBackColor = true;
-      this.newProblemButton.Click += new System.EventHandler(this.newProblemButton_Click);
-      // 
-      // openProblemButton
-      // 
-      this.openProblemButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Open;
-      this.openProblemButton.Location = new System.Drawing.Point(36, 6);
-      this.openProblemButton.Name = "openProblemButton";
-      this.openProblemButton.Size = new System.Drawing.Size(24, 24);
-      this.openProblemButton.TabIndex = 1;
-      this.toolTip.SetToolTip(this.openProblemButton, "Open Problem");
-      this.openProblemButton.UseVisualStyleBackColor = true;
-      this.openProblemButton.Click += new System.EventHandler(this.openProblemButton_Click);
-      // 
-      // saveProblemButton
-      // 
-      this.saveProblemButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Save;
-      this.saveProblemButton.Location = new System.Drawing.Point(66, 6);
-      this.saveProblemButton.Name = "saveProblemButton";
-      this.saveProblemButton.Size = new System.Drawing.Size(24, 24);
-      this.saveProblemButton.TabIndex = 2;
-      this.toolTip.SetToolTip(this.saveProblemButton, "Save Problem");
-      this.saveProblemButton.UseVisualStyleBackColor = true;
-      this.saveProblemButton.Click += new System.EventHandler(this.saveProblemButton_Click);
-      // 
       // newOperatorGraphButton
       // 
       this.newOperatorGraphButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.NewDocument;
@@ -214,7 +175,6 @@ namespace HeuristicLab.Core.Views {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.operatorGraphTabPage);
       this.tabControl.Controls.Add(this.globalScopeTabPage);
-      this.tabControl.Controls.Add(this.problemTabPage);
       this.tabControl.Location = new System.Drawing.Point(0, 0);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
@@ -258,32 +218,6 @@ namespace HeuristicLab.Core.Views {
       this.globalScopeTabPage.Text = "Global Scope";
       this.globalScopeTabPage.UseVisualStyleBackColor = true;
       // 
-      // problemTabPage
-      // 
-      this.problemTabPage.Controls.Add(this.saveProblemButton);
-      this.problemTabPage.Controls.Add(this.openProblemButton);
-      this.problemTabPage.Controls.Add(this.newProblemButton);
-      this.problemTabPage.Controls.Add(this.problemViewHost);
-      this.problemTabPage.Location = new System.Drawing.Point(4, 22);
-      this.problemTabPage.Name = "problemTabPage";
-      this.problemTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.problemTabPage.Size = new System.Drawing.Size(794, 584);
-      this.problemTabPage.TabIndex = 2;
-      this.problemTabPage.Text = "Problem";
-      this.problemTabPage.UseVisualStyleBackColor = true;
-      // 
-      // problemViewHost
-      // 
-      this.problemViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.problemViewHost.Content = null;
-      this.problemViewHost.Location = new System.Drawing.Point(6, 36);
-      this.problemViewHost.Name = "problemViewHost";
-      this.problemViewHost.Size = new System.Drawing.Size(782, 542);
-      this.problemViewHost.TabIndex = 3;
-      this.problemViewHost.ViewType = null;
-      // 
       // openFileDialog
       // 
       this.openFileDialog.DefaultExt = "hl";
@@ -314,7 +248,6 @@ namespace HeuristicLab.Core.Views {
       this.tabControl.ResumeLayout(false);
       this.operatorGraphTabPage.ResumeLayout(false);
       this.globalScopeTabPage.ResumeLayout(false);
-      this.problemTabPage.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -331,11 +264,6 @@ namespace HeuristicLab.Core.Views {
     protected System.Windows.Forms.ToolTip toolTip;
     protected System.Windows.Forms.TabControl tabControl;
     protected System.Windows.Forms.TabPage globalScopeTabPage;
-    protected System.Windows.Forms.TabPage problemTabPage;
-    protected ViewHost problemViewHost;
-    protected System.Windows.Forms.Button newProblemButton;
-    protected System.Windows.Forms.Button saveProblemButton;
-    protected System.Windows.Forms.Button openProblemButton;
     protected System.Windows.Forms.OpenFileDialog openFileDialog;
     protected System.Windows.Forms.SaveFileDialog saveFileDialog;
     protected System.Windows.Forms.TabPage operatorGraphTabPage;

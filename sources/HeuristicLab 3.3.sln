@@ -151,6 +151,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Routing.TSP.Vi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.SGA-3.3.Tests", "HeuristicLab.SGA\3.3\Tests\HeuristicLab.SGA-3.3.Tests.csproj", "{F42F3576-7233-4B28-90F7-36AE15F30F92}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Optimization-3.3", "HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj", "{14AB8D24-25BC-400C-A846-4627AA945192}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Optimization.Views-3.3", "HeuristicLab.Optimization.Views\3.3\HeuristicLab.Optimization.Views-3.3.csproj", "{662B4B15-8F4D-4AE5-B3EB-D91C215F5AF2}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = HeuristicLab 3.3.vsmdi
@@ -674,6 +678,22 @@ Global
 		{F42F3576-7233-4B28-90F7-36AE15F30F92}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F42F3576-7233-4B28-90F7-36AE15F30F92}.Release|x64.ActiveCfg = Release|Any CPU
 		{F42F3576-7233-4B28-90F7-36AE15F30F92}.Release|x86.ActiveCfg = Release|Any CPU
+		{14AB8D24-25BC-400C-A846-4627AA945192}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14AB8D24-25BC-400C-A846-4627AA945192}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14AB8D24-25BC-400C-A846-4627AA945192}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{14AB8D24-25BC-400C-A846-4627AA945192}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{14AB8D24-25BC-400C-A846-4627AA945192}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14AB8D24-25BC-400C-A846-4627AA945192}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14AB8D24-25BC-400C-A846-4627AA945192}.Release|x64.ActiveCfg = Release|Any CPU
+		{14AB8D24-25BC-400C-A846-4627AA945192}.Release|x86.ActiveCfg = Release|Any CPU
+		{662B4B15-8F4D-4AE5-B3EB-D91C215F5AF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{662B4B15-8F4D-4AE5-B3EB-D91C215F5AF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{662B4B15-8F4D-4AE5-B3EB-D91C215F5AF2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{662B4B15-8F4D-4AE5-B3EB-D91C215F5AF2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{662B4B15-8F4D-4AE5-B3EB-D91C215F5AF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{662B4B15-8F4D-4AE5-B3EB-D91C215F5AF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{662B4B15-8F4D-4AE5-B3EB-D91C215F5AF2}.Release|x64.ActiveCfg = Release|Any CPU
+		{662B4B15-8F4D-4AE5-B3EB-D91C215F5AF2}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

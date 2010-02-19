@@ -44,7 +44,7 @@ namespace HeuristicLab.Permutation {
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The permutation which should be manipulated."));
     }
 
-    public sealed override IExecutionSequence Apply() {
+    public sealed override IOperation Apply() {
       Manipulate(RandomParameter.ActualValue, PermutationParameter.ActualValue);
       return base.Apply();
     }

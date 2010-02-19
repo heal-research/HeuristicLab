@@ -37,10 +37,6 @@ namespace HeuristicLab.Core {
     /// Gets the global scope of the current instance.
     /// </summary>
     IScope GlobalScope { get; }
-    /// <summary>
-    /// Gets the problem of the current instance.
-    /// </summary>
-    IProblem Problem { get; set; }
 
     /// <summary>
     /// Gets the execution time of the current instance.
@@ -61,6 +57,10 @@ namespace HeuristicLab.Core {
     /// </summary>
     void Prepare();
     /// <summary>
+    /// Prepares the engine with a given initial operation.
+    /// </summary>
+    void Prepare(IOperation initialOperation);
+    /// <summary>
     /// Executes the whole run.
     /// </summary>
     void Start();
@@ -77,10 +77,6 @@ namespace HeuristicLab.Core {
     /// Occurs when the operator graph was changed.
     /// </summary>
     event EventHandler OperatorGraphChanged;
-    /// <summary>
-    /// Occurs when the problem was changed.
-    /// </summary>
-    event EventHandler ProblemChanged;
     /// <summary>
     /// Occurs when the execution time was changed.
     /// </summary>

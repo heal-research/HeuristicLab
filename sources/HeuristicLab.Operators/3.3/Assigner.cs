@@ -44,7 +44,7 @@ namespace HeuristicLab.Operators {
       Parameters.Add(new ValueLookupParameter<IItem>("RightSide", "The parameter whose value is cloned and assigned to the value of the other parameter."));
     }
 
-    public override IExecutionSequence Apply() {
+    public override IOperation Apply() {
       LeftSideParameter.ActualValue = (IItem)RightSideParameter.ActualValue.Clone();
       return base.Apply();
     }

@@ -27,7 +27,7 @@ namespace HeuristicLab.Operators.Views {
   /// <summary>
   /// The base class for visual representations of items.
   /// </summary>
-  [Content(typeof(CombinedOperator), true)]
+  [Content(typeof(AlgorithmOperator), true)]
   public partial class AlgorithmOperatorView : NamedItemView {
     public new AlgorithmOperator Content {
       get { return (AlgorithmOperator)base.Content; }

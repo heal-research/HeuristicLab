@@ -58,7 +58,7 @@ namespace HeuristicLab.Operators {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The new pseudo random number generator which is initialized with the given seed."));
     }
 
-    public override IExecutionSequence Apply() {
+    public override IOperation Apply() {
       if (SetSeedRandomlyParameter.ActualValue == null) SetSeedRandomlyParameter.ActualValue = new BoolData(true);
       bool setSeedRandomly = SetSeedRandomlyParameter.ActualValue.Value;
       if (SeedParameter.ActualValue == null) SeedParameter.ActualValue = new IntData(0);

@@ -20,15 +20,11 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   public interface IParameter : INamedItem {
     Type DataType { get; }
     IItem ActualValue { get; set; }
-    ExecutionContext ExecutionContext { get; set; }
+    IExecutionContext ExecutionContext { get; set; }
   }
 }

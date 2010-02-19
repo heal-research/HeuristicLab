@@ -48,7 +48,7 @@ namespace HeuristicLab.Permutation {
       Parameters.Add(new LookupParameter<Permutation>("Child", "The child permutation resulting from the crossover."));
     }
 
-    public sealed override IExecutionSequence Apply() {
+    public sealed override IOperation Apply() {
       ChildParameter.ActualValue = Cross(RandomParameter.ActualValue, ParentsParameter.ActualValue);
       return base.Apply();
     }

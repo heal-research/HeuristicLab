@@ -130,12 +130,6 @@
     <Compile Include="OperatorTreeView.Designer.cs">
       <DependentUpon>OperatorTreeView.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProblemView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ProblemView.Designer.cs">
-      <DependentUpon>ProblemView.cs</DependentUpon>
-    </Compile>
     <Compile Include="TypeSelectorDialog.cs">
       <SubType>Form</SubType>
     </Compile>

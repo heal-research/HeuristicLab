@@ -24,7 +24,7 @@ using HeuristicLab.Collections;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Core {
+namespace HeuristicLab.Optimization {
   /// <summary>
   /// The base class for all problems.
   /// </summary>
@@ -34,9 +34,9 @@ namespace HeuristicLab.Core {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }
     }
 
-    private ValueParameterCollection parameters;
+    private ParameterCollection parameters;
     [Storable]
-    protected ValueParameterCollection Parameters {
+    protected ParameterCollection Parameters {
       get { return parameters;}
       private set {
         if (parameters != null) parameters.Changed -= new ChangedEventHandler(Parameters_Changed);
@@ -45,8 +45,8 @@ namespace HeuristicLab.Core {
         if (parameters != null) parameters.Changed += new ChangedEventHandler(Parameters_Changed);
       }
     }
-    private ReadOnlyObservableKeyedCollection<string, IValueParameter> readOnlyParameters;
-    IObservableKeyedCollection<string, IValueParameter> IProblem.Parameters {
+    private ReadOnlyObservableKeyedCollection<string, IParameter> readOnlyParameters;
+    IObservableKeyedCollection<string, IParameter> IParameterizedItem.Parameters {
       get {
         if (readOnlyParameters == null) readOnlyParameters = parameters.AsReadOnly();
         return readOnlyParameters;
@@ -55,13 +55,13 @@ namespace HeuristicLab.Core {
 
     protected Problem() {
       Name = ItemName;
-      Parameters = new ValueParameterCollection();
+      Parameters = new ParameterCollection();
       readOnlyParameters = null;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       Problem clone = (Problem)base.Clone(cloner);
-      clone.Parameters = (ValueParameterCollection)cloner.Clone(parameters);
+      clone.Parameters = (ParameterCollection)cloner.Clone(parameters);
       return clone;
     }
 

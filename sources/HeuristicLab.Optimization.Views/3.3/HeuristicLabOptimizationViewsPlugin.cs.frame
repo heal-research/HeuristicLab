@@ -19,15 +19,20 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-using System.Drawing;
+using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Core {
+namespace HeuristicLab.Optimization.Views {
   /// <summary>
-  /// Interface which represents an execution context.
+  /// Plugin class for HeuristicLab.Optimization.Views plugin.
   /// </summary>
-  public interface IExecutionSequence : IDeepCloneable { }
+  [Plugin("HeuristicLab.Optimization.Views", "3.3.0.$WCREV$")]
+  [PluginFile("HeuristicLab.Optimization.Views-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Collections", "3.3")]
+  [PluginDependency("HeuristicLab.Core", "3.3")]
+  [PluginDependency("HeuristicLab.Core.Views", "3.3")]
+  [PluginDependency("HeuristicLab.MainForm", "3.2")]
+  [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.2")]
+  [PluginDependency("HeuristicLab.Optimization", "3.3")]
+  public class HeuristicLabOptimizationViewsPlugin : PluginBase {
+  }
 }

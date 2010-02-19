@@ -61,7 +61,6 @@ namespace HeuristicLab.Core.Views {
     /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void DeregisterContentEvents() {
       Content.OperatorGraphChanged -= new EventHandler(Content_OperatorGraphChanged);
-      Content.ProblemChanged -= new EventHandler(Content_ProblemChanged);
       Content.Prepared -= new EventHandler(Content_Prepared);
       Content.Started -= new EventHandler(Content_Started);
       Content.Stopped -= new EventHandler(Content_Stopped);
@@ -77,7 +76,6 @@ namespace HeuristicLab.Core.Views {
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.OperatorGraphChanged += new EventHandler(Content_OperatorGraphChanged);
-      Content.ProblemChanged += new EventHandler(Content_ProblemChanged);
       Content.Prepared += new EventHandler(Content_Prepared);
       Content.Started += new EventHandler(Content_Started);
       Content.Stopped += new EventHandler(Content_Stopped);
@@ -96,8 +94,6 @@ namespace HeuristicLab.Core.Views {
         newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = saveOperatorGraphButton.Enabled = false;
         operatorGraphViewHost.Enabled = false;
         scopeView.Enabled = false;
-        newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = false;
-        problemViewHost.Enabled = false;
         startButton.Enabled = resetButton.Enabled = false;
         executionTimeTextBox.Enabled = false;
       } else {
@@ -106,10 +102,6 @@ namespace HeuristicLab.Core.Views {
         operatorGraphViewHost.Enabled = true;
         scopeView.Content = Content.GlobalScope;
         scopeView.Enabled = true;
-        newProblemButton.Enabled = openProblemButton.Enabled = true;
-        saveProblemButton.Enabled = Content.Problem != null;
-        problemViewHost.Content = Content.Problem;
-        problemViewHost.Enabled = true;
         startButton.Enabled = !Content.Finished;
         resetButton.Enabled = true;
         UpdateExecutionTimeTextBox();
@@ -124,14 +116,6 @@ namespace HeuristicLab.Core.Views {
       else
         operatorGraphViewHost.Content = Content.OperatorGraph;
     }
-    protected void Content_ProblemChanged(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_ProblemChanged), sender, e);
-      else {
-        saveProblemButton.Enabled = Content.Problem != null;
-        problemViewHost.Content = Content.Problem;
-      }
-    }
     protected virtual void Content_Prepared(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_Prepared), sender, e);
@@ -139,9 +123,6 @@ namespace HeuristicLab.Core.Views {
         newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = saveOperatorGraphButton.Enabled = true;
         operatorGraphViewHost.Enabled = true;
         scopeView.Enabled = true;
-        newProblemButton.Enabled = openProblemButton.Enabled = true;
-        saveProblemButton.Enabled = Content.Problem != null;
-        problemViewHost.Enabled = true;
         startButton.Enabled = !Content.Finished;
         stopButton.Enabled = false;
         resetButton.Enabled = true;
@@ -156,8 +137,6 @@ namespace HeuristicLab.Core.Views {
         newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = saveOperatorGraphButton.Enabled = false;
         operatorGraphViewHost.Enabled = false;
         scopeView.Enabled = false;
-        newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = false;
-        problemViewHost.Enabled = false;
         startButton.Enabled = false;
         stopButton.Enabled = true;
         resetButton.Enabled = false;
@@ -171,9 +150,6 @@ namespace HeuristicLab.Core.Views {
         newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = saveOperatorGraphButton.Enabled = true;
         operatorGraphViewHost.Enabled = true;
         scopeView.Enabled = true;
-        newProblemButton.Enabled = openProblemButton.Enabled = true;
-        saveProblemButton.Enabled = Content.Problem != null;
-        problemViewHost.Enabled = true;
         startButton.Enabled = !Content.Finished;
         stopButton.Enabled = false;
         resetButton.Enabled = true;
@@ -223,47 +199,6 @@ namespace HeuristicLab.Core.Views {
             XmlGenerator.Serialize(Content.OperatorGraph, saveFileDialog.FileName, 0);
           else
             XmlGenerator.Serialize(Content.OperatorGraph, saveFileDialog.FileName, 9);
-        }
-        catch (Exception ex) {
-          Auxiliary.ShowErrorMessageBox(ex);
-        }
-      }
-    }
-    protected void newProblemButton_Click(object sender, EventArgs e) {
-      if (typeSelectorDialog == null) {
-        typeSelectorDialog = new TypeSelectorDialog();
-      }
-      typeSelectorDialog.Caption = "Select Problem";
-      typeSelectorDialog.TypeSelector.Configure(typeof(IProblem), false, false);
-
-      if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
-        Content.Problem = (IProblem)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
-      }
-    }
-    protected void openProblemButton_Click(object sender, EventArgs e) {
-      openFileDialog.Title = "Open Problem";
-      if (openFileDialog.ShowDialog(this) == DialogResult.OK) {
-        IProblem problem = null;
-        try {
-          problem = XmlParser.Deserialize(openFileDialog.FileName) as IProblem;
-        }
-        catch (Exception ex) {
-          Auxiliary.ShowErrorMessageBox(ex);
-        }
-        if (problem == null)
-          MessageBox.Show(this, "Selected file does not contain a problem.", "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        else
-          Content.Problem = problem;
-      }
-    }
-    protected void saveProblemButton_Click(object sender, EventArgs e) {
-      saveFileDialog.Title = "Save Problem";
-      if (saveFileDialog.ShowDialog(this) == DialogResult.OK) {
-        try {
-          if (saveFileDialog.FilterIndex == 1)
-            XmlGenerator.Serialize(Content.Problem, saveFileDialog.FileName, 0);
-          else
-            XmlGenerator.Serialize(Content.Problem, saveFileDialog.FileName, 9);
         }
         catch (Exception ex) {
           Auxiliary.ShowErrorMessageBox(ex);

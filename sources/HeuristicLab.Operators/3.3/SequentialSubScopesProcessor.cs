@@ -32,12 +32,12 @@ namespace HeuristicLab.Operators {
       : base() {
     }
 
-    public override IExecutionSequence Apply() {
-      ExecutionContextCollection next = new ExecutionContextCollection(base.Apply());
+    public override IOperation Apply() {
+      OperationCollection next = new OperationCollection(base.Apply());
       if (Operators.Count > 0) {
-        ExecutionContextCollection inner = new ExecutionContextCollection();
+        OperationCollection inner = new OperationCollection();
         for (int i = 0; (i < ExecutionContext.Scope.SubScopes.Count) && (i < Operators.Count); i++)
-          if (Operators[i] != null) inner.Add(ExecutionContext.CreateContext(Operators[i], ExecutionContext.Scope.SubScopes[i]));
+          if (Operators[i] != null) inner.Add(ExecutionContext.CreateOperation(Operators[i], ExecutionContext.Scope.SubScopes[i]));
         next.Insert(0, inner);
       }
       return next;

@@ -19,22 +19,20 @@
  */
 #endregion
 
-using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Collections;
 
-namespace HeuristicLab.Routing.TSP.Views {
+namespace HeuristicLab.Core {
   /// <summary>
-  /// Plugin class for HeuristicLab.Routing.TSP.Views plugin
+  /// Interface which represents an execution context.
   /// </summary>
-  [Plugin("HeuristicLab.Routing.TSP.Views", "3.3.0.$WCREV$")]
-  [PluginFile("HeuristicLab.Routing.TSP.Views-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Collections", "3.3")]
-  [PluginDependency("HeuristicLab.Core", "3.3")]
-  [PluginDependency("HeuristicLab.Core.Views", "3.3")]
-  [PluginDependency("HeuristicLab.MainForm", "3.2")]
-  [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.2")]
-  [PluginDependency("HeuristicLab.Optimization", "3.3")]
-  [PluginDependency("HeuristicLab.Optimization.Views", "3.3")]
-  [PluginDependency("HeuristicLab.Routing.TSP", "3.3")]
-  public class HeuristicLabRoutingTSPViewsPlugin : PluginBase {
+  public interface IExecutionContext : IDeepCloneable {
+    IExecutionContext Parent { get; }
+    IObservableKeyedCollection<string, IParameter> Parameters { get; }
+    IScope Scope { get; }
+
+    IAtomicOperation CreateOperation(IOperator op);
+    IAtomicOperation CreateOperation(IOperator op, IScope scope);
+    IAtomicOperation CreateChildOperation(IOperator op);
+    IAtomicOperation CreateChildOperation(IOperator op, IScope scope);
   }
 }

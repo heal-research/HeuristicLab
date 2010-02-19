@@ -50,7 +50,7 @@ namespace HeuristicLab.Operators {
       }
     }
     private ReadOnlyObservableKeyedCollection<string, IParameter> readOnlyParameters;
-    IObservableKeyedCollection<string, IParameter> IOperator.Parameters {
+    IObservableKeyedCollection<string, IParameter> IParameterizedItem.Parameters {
       get {
         if (readOnlyParameters == null) readOnlyParameters = parameters.AsReadOnly();
         return readOnlyParameters;
@@ -58,8 +58,8 @@ namespace HeuristicLab.Operators {
     }
 
     [Storable]
-    private ExecutionContext executionContext;
-    protected ExecutionContext ExecutionContext {
+    private IExecutionContext executionContext;
+    protected IExecutionContext ExecutionContext {
       get { return executionContext; }
       private set {
         if (value != executionContext) {
@@ -121,18 +121,18 @@ namespace HeuristicLab.Operators {
       clone.Parameters = (ParameterCollection)cloner.Clone(parameters);
       clone.canceled = canceled;
       clone.breakpoint = breakpoint;
-      clone.executionContext = (ExecutionContext)cloner.Clone(executionContext);
+      clone.executionContext = (IExecutionContext)cloner.Clone(executionContext);
       return clone;
     }
 
     /// <inheritdoc/>
-    public virtual IExecutionSequence Execute(ExecutionContext context) {
+    public virtual IOperation Execute(IExecutionContext context) {
       try {
         Canceled = false;
         ExecutionContext = context;
         foreach (IParameter param in Parameters)
           param.ExecutionContext = context;
-        IExecutionSequence next = Apply();
+        IOperation next = Apply();
         OnExecuted();
         return next;
       }
@@ -152,7 +152,7 @@ namespace HeuristicLab.Operators {
     /// </summary>
     /// <param name="scope">The scope where to execute the operator</param>
     /// <returns><c>null</c>.</returns>
-    public abstract IExecutionSequence Apply();
+    public abstract IOperation Apply();
 
     protected virtual void OnExecutionContextChanged() { }
     protected virtual void OnCanceledChanged() { }

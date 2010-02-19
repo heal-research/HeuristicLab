@@ -20,19 +20,13 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using HeuristicLab.Common;
-using HeuristicLab.Collections;
 
 namespace HeuristicLab.Core {
   /// <summary>
   /// Interface to represent an operator (e.g. GreaterThanComparator,...), 
   /// a basic instruction of an algorithm.
   /// </summary>
-  public interface IOperator : INamedItem {
-    IObservableKeyedCollection<string, IParameter> Parameters { get; }
-
+  public interface IOperator : INamedItem, IParameterizedItem {
     /// <summary>
     /// Gets or sets a boolean value whether the engine should stop here during the run.
     /// </summary>
@@ -43,7 +37,7 @@ namespace HeuristicLab.Core {
     /// </summary>
     /// <param name="scope">The scope where to execute the current instance.</param>
     /// <returns>The next operation.</returns>
-    IExecutionSequence Execute(ExecutionContext context);
+    IOperation Execute(IExecutionContext context);
     /// <summary>
     /// Aborts the current operator.
     /// </summary>

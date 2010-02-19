@@ -58,7 +58,7 @@ namespace HeuristicLab.Evolutionary {
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope which represents the population."));
     }
 
-    public override IExecutionSequence Apply() {
+    public override IOperation Apply() {
       int size = PopulationSizeParameter.ActualValue.Value;
       IOperator creator = SolutionCreatorParameter.ActualValue;
       IOperator evaluator = SolutionEvaluatorParameter.ActualValue;
@@ -68,10 +68,10 @@ namespace HeuristicLab.Evolutionary {
       for (int i = 0; i < size; i++)
         CurrentScope.SubScopes.Add(new Scope(i.ToString()));
 
-      ExecutionContextCollection next = new ExecutionContextCollection();
+      OperationCollection next = new OperationCollection();
       for (int i = 0; i < CurrentScope.SubScopes.Count; i++) {
-        if (creator != null) next.Add(ExecutionContext.CreateContext(creator, CurrentScope.SubScopes[i]));
-        if (evaluator != null) next.Add(ExecutionContext.CreateContext(evaluator, CurrentScope.SubScopes[i]));
+        if (creator != null) next.Add(ExecutionContext.CreateOperation(creator, CurrentScope.SubScopes[i]));
+        if (evaluator != null) next.Add(ExecutionContext.CreateOperation(evaluator, CurrentScope.SubScopes[i]));
       }
       next.Add(base.Apply());
       return next;

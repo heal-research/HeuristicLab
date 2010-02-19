@@ -59,7 +59,7 @@ namespace HeuristicLab.Evolutionary {
       Parameters.Add(new ValueLookupParameter<IntData>("ParentsPerChild", "The number of parents that should be crossed per child. Note that some of the typical crossover operators require exactly two parents.", new IntData(2)));
     }
 
-    public override IExecutionSequence Apply() {
+    public override IOperation Apply() {
       int parentsPerChild = ParentsPerChildParameter.ActualValue.Value;
       int parents = CurrentScope.SubScopes.Count;
       if (parents % parentsPerChild > 0) throw new InvalidOperationException("Number of parents is not an integral multiple of ParentsPerChild.");

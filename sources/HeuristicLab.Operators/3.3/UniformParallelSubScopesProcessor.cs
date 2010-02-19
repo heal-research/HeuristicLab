@@ -44,13 +44,13 @@ namespace HeuristicLab.Operators {
       Parameters.Add(new OperatorParameter("Operator", "The operator which should be applied on all sub-scopes of the current scope in parallel."));
     }
 
-    public override IExecutionSequence Apply() {
-      ExecutionContextCollection next = new ExecutionContextCollection(base.Apply());
+    public override IOperation Apply() {
+      OperationCollection next = new OperationCollection(base.Apply());
       if (Operator != null) {
-        ExecutionContextCollection inner = new ExecutionContextCollection();
+        OperationCollection inner = new OperationCollection();
         inner.Parallel = true;
         for (int i = 0; i < ExecutionContext.Scope.SubScopes.Count; i++)
-          inner.Add(ExecutionContext.CreateContext(Operator, ExecutionContext.Scope.SubScopes[i]));
+          inner.Add(ExecutionContext.CreateOperation(Operator, ExecutionContext.Scope.SubScopes[i]));
         next.Insert(0, inner);
       }
       return next;

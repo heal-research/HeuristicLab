@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{DF2E61C4-A76D-4315-9D0B-53A077B1AC2C}</ProjectGuid>
+    <ProjectGuid>{662B4B15-8F4D-4AE5-B3EB-D91C215F5AF2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.Routing.TSP.Views</RootNamespace>
-    <AssemblyName>HeuristicLab.Routing.TSP.Views-3.3</AssemblyName>
+    <RootNamespace>HeuristicLab.Optimization.Views</RootNamespace>
+    <AssemblyName>HeuristicLab.Optimization.Views-3.3</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
@@ -31,7 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\HeuristicLab.Routing.TSP.Views-3.3.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\HeuristicLab.Optimization.Views-3.3.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -50,18 +50,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HeuristicLabRoutingTSPViewsPlugin.cs" />
-    <Compile Include="TSPView.cs">
+    <None Include="HeuristicLabOptimizationViewsPlugin.cs.frame" />
+    <Compile Include="HeuristicLabOptimizationViewsPlugin.cs" />
+    <Compile Include="ProblemView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="TSPView.Designer.cs">
-      <DependentUpon>TSPView.cs</DependentUpon>
+    <Compile Include="ProblemView.Designer.cs">
+      <DependentUpon>ProblemView.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
-    <None Include="HeuristicLabRoutingTSPViewsPlugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
@@ -85,10 +85,6 @@
       <Project>{3BD61258-31DA-4B09-89C0-4F71FEF5F05A}</Project>
       <Name>HeuristicLab.MainForm-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Optimization.Views\3.3\HeuristicLab.Optimization.Views-3.3.csproj">
-      <Project>{662B4B15-8F4D-4AE5-B3EB-D91C215F5AF2}</Project>
-      <Name>HeuristicLab.Optimization.Views-3.3</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
       <Project>{14AB8D24-25BC-400C-A846-4627AA945192}</Project>
       <Name>HeuristicLab.Optimization-3.3</Name>
@@ -96,10 +92,6 @@
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Routing.TSP\3.3\HeuristicLab.Routing.TSP-3.3.csproj">
-      <Project>{600287A3-8714-453E-B875-A05F3EB72315}</Project>
-      <Name>HeuristicLab.Routing.TSP-3.3</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -117,6 +109,6 @@ set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
 call PreBuildEvent.cmd
-SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabRoutingTSPViewsPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabRoutingTSPViewsPlugin.cs"</PreBuildEvent>
+SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabOptimizationViewsPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabOptimizationViewsPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

@@ -49,7 +49,7 @@ namespace HeuristicLab.Routing.TSP {
       Parameters.Add(new LookupParameter<DoubleData>("Quality", "The evaluated quality of the given TSP solution."));
     }
 
-    public override IExecutionSequence Apply() {
+    public override IOperation Apply() {
       DoubleMatrixData coordinates = CoordinatesParameter.ActualValue;
       Permutation.Permutation permutation = PermutationParameter.ActualValue;
 

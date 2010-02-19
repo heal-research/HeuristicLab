@@ -49,10 +49,10 @@ namespace HeuristicLab.Operators {
       return clone;
     }
 
-    public override IExecutionSequence Apply() {
-      ExecutionContextCollection next = new ExecutionContextCollection(base.Apply());
+    public override IOperation Apply() {
+      OperationCollection next = new OperationCollection(base.Apply());
       if (operatorGraph.InitialOperator != null)
-        next.Insert(0, ExecutionContext.CreateChildContext(operatorGraph.InitialOperator));
+        next.Insert(0, ExecutionContext.CreateChildOperation(operatorGraph.InitialOperator));
       return next;
     }
   }

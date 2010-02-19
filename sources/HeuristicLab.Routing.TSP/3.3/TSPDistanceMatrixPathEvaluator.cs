@@ -50,7 +50,7 @@ namespace HeuristicLab.Routing.TSP {
       Parameters.Add(new LookupParameter<DoubleData>("Quality", "The evaluated quality of the given TSP solution."));
     }
 
-    public override IExecutionSequence Apply() {
+    public override IOperation Apply() {
       DoubleMatrixData distanceMatrix = DistanceMatrixParameter.ActualValue;
       Permutation.Permutation permutation = PermutationParameter.ActualValue;
 
