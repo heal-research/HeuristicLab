@@ -74,9 +74,9 @@ namespace HeuristicLab.Operators {
         case HeuristicLab.Data.Comparison.Equal:
           b = i == 0; break;
         case HeuristicLab.Data.Comparison.GreaterOrEqual:
-          b = i > 0; break;
-        case HeuristicLab.Data.Comparison.Greater:
           b = i >= 0; break;
+        case HeuristicLab.Data.Comparison.Greater:
+          b = i > 0; break;
         case HeuristicLab.Data.Comparison.NotEqual:
           b = i != 0; break;
       }

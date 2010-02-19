@@ -60,7 +60,7 @@ namespace HeuristicLab.Operators {
       Parameters.RemoveRange(e.Items);
     }
     #region NOTE
-    // NOTE: The ItemsReplaced event has not to be handled here as it is only fired when the name (i.e. key) of a parameter
+    // NOTE: The ItemsReplaced event does not have to be handled here as it is only fired when the name (i.e. key) of a parameter
     // changes. As the same parameter is also contained in the Parameters collection of the operator, the Parameters collection
     // will react on this name change on its own.
     #endregion
