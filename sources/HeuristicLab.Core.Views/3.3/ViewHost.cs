@@ -28,12 +28,6 @@ using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Core.Views {
   public sealed partial class ViewHost : UserControl {
-    private Dictionary<Type, ToolStripMenuItem> typeMenuItemTable;
-
-    public IEnumerable<Type> AvailableViewTypes {
-      get { return typeMenuItemTable.Keys; }
-    }
-
     private Type viewType;
     public Type ViewType {
       get { return this.viewType; }
@@ -53,56 +47,44 @@ namespace HeuristicLab.Core.Views {
       set {
         if (value != content) {
           content = value;
+          viewContextMenuStrip.Item = content;
           Initialize();
         }
       }
     }
 
     public ViewHost() {
-      typeMenuItemTable = new Dictionary<Type, ToolStripMenuItem>();
+      InitializeComponent();
       viewType = null;
       content = null;
-      InitializeComponent();
       Initialize();
     }
 
     private void Initialize() {
       viewsLabel.Enabled = false;
       viewsLabel.Visible = false;
-      typeMenuItemTable.Clear();
-      contextMenuStrip.Items.Clear();
-      contextMenuStrip.Enabled = false;
+      viewContextMenuStrip.Enabled = false;
       messageLabel.Visible = false;
+
       if (viewPanel.Controls.Count > 0) viewPanel.Controls[0].Dispose();
       viewPanel.Controls.Clear();
       viewPanel.Enabled = false;
       viewPanel.Visible = false;
 
       if (Content != null) {
-        var viewTypes = from t in MainFormManager.GetViewTypes(Content.GetType())
-                        orderby t.Name ascending
-                        select t;
-        foreach (Type v in viewTypes) {
-          ToolStripMenuItem item = new ToolStripMenuItem(v.GetPrettyName());
-          item.Name = v.FullName;
-          item.ToolTipText = v.GetPrettyName(true);
-          item.Tag = v;
-          contextMenuStrip.Items.Add(item);
-          typeMenuItemTable.Add(v, item);
-        }
-        if (contextMenuStrip.Items.Count == 0) {
+        if (viewContextMenuStrip.Items.Count == 0) {
           messageLabel.Visible = true;
         } else {
           viewsLabel.Enabled = true;
           viewsLabel.Visible = true;
-          contextMenuStrip.Enabled = true;
+          viewContextMenuStrip.Enabled = true;
           messageLabel.Visible = false;
         }
 
         if (!ViewCanShowContent(viewType, Content)) {
           viewType = MainFormManager.GetDefaultViewType(Content.GetType());
-          if ((viewType == null) && (contextMenuStrip.Items.Count > 0))  // create first available view if default view is not available
-            viewType = (Type)contextMenuStrip.Items[0].Tag;
+          if ((viewType == null) && (viewContextMenuStrip.Items.Count > 0))  // create first available view if default view is not available
+            viewType = (Type)viewContextMenuStrip.Items[0].Tag;
         }
         UpdateView();
       }
@@ -120,13 +102,7 @@ namespace HeuristicLab.Core.Views {
                                                   viewType.GetPrettyName(),
                                                   Content.GetType().GetPrettyName()));
 
-      foreach (ToolStripMenuItem item in typeMenuItemTable.Values) {
-        item.Checked = false;
-        item.Enabled = true;
-      }
-      typeMenuItemTable[viewType].Checked = true;
-      typeMenuItemTable[viewType].Enabled = false;
-
+      UpdateActiveMenuItem();
       Control view = (Control)MainFormManager.CreateView(viewType, Content);
       viewPanel.Controls.Add(view);
       viewPanel.Tag = view;
@@ -135,18 +111,31 @@ namespace HeuristicLab.Core.Views {
       viewPanel.Visible = true;
     }
 
+    private void UpdateActiveMenuItem() {
+      foreach (KeyValuePair<Type, ToolStripMenuItem> item in viewContextMenuStrip.MenuItems) {
+        if (item.Key == viewType) {
+          item.Value.Checked = true;
+          item.Value.Enabled = false;
+        } else {
+          item.Value.Checked = false;
+          item.Value.Enabled = true;
+        }
+      }
+    }
+
     private bool ViewCanShowContent(Type viewType, object content) {
       if (content == null) // every view can display null
         return true;
       if (viewType == null)
         return false;
-      return ContentAttribute.CanViewType(viewType, Content.GetType()) && typeMenuItemTable.ContainsKey(viewType);
+      return ContentAttribute.CanViewType(viewType, Content.GetType()) && viewContextMenuStrip.MenuItems.Any(item => item.Key == viewType);
     }
 
     private void viewsLabel_DoubleClick(object sender, EventArgs e) {
-      MainFormManager.CreateView(viewPanel.Tag.GetType(), Content).Show();
+      MainFormManager.CreateView(viewType, Content).Show();
     }
-    private void contextMenuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e) {
+
+    private void viewContextMenuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e) {
       Type viewType = (Type)e.ClickedItem.Tag;
       ViewType = viewType;
     }

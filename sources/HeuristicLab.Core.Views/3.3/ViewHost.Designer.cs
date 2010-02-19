@@ -44,12 +44,11 @@ namespace HeuristicLab.Core.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.components = new System.ComponentModel.Container();
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ViewHost));
       this.viewPanel = new System.Windows.Forms.Panel();
       this.messageLabel = new System.Windows.Forms.Label();
       this.viewsLabel = new System.Windows.Forms.Label();
-      this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this.viewContextMenuStrip = new HeuristicLab.MainForm.WindowsForms.ViewContextMenuStrip();
       this.SuspendLayout();
       // 
       // viewPanel
@@ -75,23 +74,20 @@ namespace HeuristicLab.Core.Views {
       // viewsLabel
       // 
       this.viewsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.viewsLabel.ContextMenuStrip = this.contextMenuStrip;
-      this.viewsLabel.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Windows;
+      this.viewsLabel.ContextMenuStrip = this.viewContextMenuStrip;
+      this.viewsLabel.Image = ((System.Drawing.Image)(resources.GetObject("viewsLabel.Image")));
       this.viewsLabel.Location = new System.Drawing.Point(211, 0);
       this.viewsLabel.Name = "viewsLabel";
       this.viewsLabel.Size = new System.Drawing.Size(16, 16);
       this.viewsLabel.TabIndex = 0;
-      this.toolTip.SetToolTip(this.viewsLabel, "Double-click to open a new window of the current view.\r\nRight-click to change cur" +
-              "rent view.");
       this.viewsLabel.DoubleClick += new System.EventHandler(this.viewsLabel_DoubleClick);
       // 
-      // contextMenuStrip
+      // viewContextMenuStrip
       // 
-      this.contextMenuStrip.Name = "contextMenuStrip";
-      this.contextMenuStrip.ShowCheckMargin = true;
-      this.contextMenuStrip.ShowImageMargin = false;
-      this.contextMenuStrip.Size = new System.Drawing.Size(61, 4);
-      this.contextMenuStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.contextMenuStrip_ItemClicked);
+      this.viewContextMenuStrip.Item = null;
+      this.viewContextMenuStrip.Name = "viewContextMenuStrip";
+      this.viewContextMenuStrip.Size = new System.Drawing.Size(61, 4);
+      this.viewContextMenuStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.viewContextMenuStrip_ItemClicked);
       // 
       // ViewHost
       // 
@@ -111,8 +107,7 @@ namespace HeuristicLab.Core.Views {
     private System.Windows.Forms.Panel viewPanel;
     private System.Windows.Forms.Label viewsLabel;
     private System.Windows.Forms.Label messageLabel;
-    private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
-    private System.Windows.Forms.ToolTip toolTip;
+    private HeuristicLab.MainForm.WindowsForms.ViewContextMenuStrip viewContextMenuStrip;
 
   }
 }
