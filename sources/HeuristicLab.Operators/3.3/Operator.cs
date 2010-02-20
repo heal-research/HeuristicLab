@@ -21,7 +21,6 @@
 
 using System;
 using System.Drawing;
-using HeuristicLab.Collections;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -30,31 +29,12 @@ namespace HeuristicLab.Operators {
   /// The base class for all operators.
   /// </summary>
   [Item("Operator", "Base class for operators.")]
-  public abstract class Operator : NamedItem, IOperator {
+  public abstract class Operator : ParameterizedNamedItem, IOperator {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Method; }
     }
     public override bool CanChangeDescription {
       get { return false; }
-    }
-
-    private ParameterCollection parameters;
-    [Storable]
-    protected ParameterCollection Parameters {
-      get { return parameters;}
-      private set {
-        if (parameters != null) parameters.Changed -= new ChangedEventHandler(Parameters_Changed);
-        parameters = value;
-        readOnlyParameters = null;
-        if (parameters != null) parameters.Changed += new ChangedEventHandler(Parameters_Changed);
-      }
-    }
-    private ReadOnlyObservableKeyedCollection<string, IParameter> readOnlyParameters;
-    IObservableKeyedCollection<string, IParameter> IParameterizedItem.Parameters {
-      get {
-        if (readOnlyParameters == null) readOnlyParameters = parameters.AsReadOnly();
-        return readOnlyParameters;
-      }
     }
 
     [Storable]
@@ -102,10 +82,28 @@ namespace HeuristicLab.Operators {
     /// Initializes a new instance of <see cref="OperatorBase"/> setting the breakpoint flag and 
     /// the canceled flag to <c>false</c> and the name of the operator to the type name. 
     /// </summary>
-    protected Operator() {
-      Name = ItemName;
-      Parameters = new ParameterCollection();
-      readOnlyParameters = null;
+    protected Operator()
+      : base() {
+      canceled = false;
+      breakpoint = false;
+    }
+    protected Operator(string name)
+      : base(name) {
+      canceled = false;
+      breakpoint = false;
+    }
+    protected Operator(string name, ParameterCollection parameters)
+      : base(name, parameters) {
+      canceled = false;
+      breakpoint = false;
+    }
+    protected Operator(string name, string description)
+      : base(name, description) {
+      canceled = false;
+      breakpoint = false;
+    }
+    protected Operator(string name, string description, ParameterCollection parameters)
+      : base(name, description, parameters) {
       canceled = false;
       breakpoint = false;
     }
@@ -118,7 +116,6 @@ namespace HeuristicLab.Operators {
     /// <returns>The cloned object as <see cref="OperatorBase"/>.</returns>
     public override IDeepCloneable Clone(Cloner cloner) {
       Operator clone = (Operator)base.Clone(cloner);
-      clone.Parameters = (ParameterCollection)cloner.Clone(parameters);
       clone.canceled = canceled;
       clone.breakpoint = breakpoint;
       clone.executionContext = (IExecutionContext)cloner.Clone(executionContext);
@@ -176,10 +173,6 @@ namespace HeuristicLab.Operators {
       if (Executed != null) {
         Executed(this, EventArgs.Empty);
       }
-    }
-
-    private void Parameters_Changed(object sender, ChangedEventArgs e) {
-      OnChanged(e);
     }
   }
 }

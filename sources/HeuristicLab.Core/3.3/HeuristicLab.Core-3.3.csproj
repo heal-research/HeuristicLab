@@ -103,11 +103,13 @@
     <Compile Include="Attributes\CreatableAttribute.cs" />
     <Compile Include="ChangedEventArgs.cs" />
     <None Include="HeuristicLabCorePlugin.cs.frame" />
+    <Compile Include="Interfaces\IParameterizedNamedItem.cs" />
     <Compile Include="Interfaces\IParameterizedItem.cs" />
     <Compile Include="Interfaces\IAtomicOperation.cs" />
     <Compile Include="Interfaces\IExecutionContext.cs" />
     <Compile Include="Interfaces\IOperation.cs" />
     <Compile Include="OperationCollection.cs" />
+    <Compile Include="ParameterizedNamedItem.cs" />
     <Compile Include="ValueParameterCollection.cs" />
     <Compile Include="Interfaces\IValueLookupParameter.cs" />
     <Compile Include="Interfaces\IValueParameter.cs" />

@@ -26,7 +26,7 @@ namespace HeuristicLab.Core {
   /// Interface to represent an operator (e.g. GreaterThanComparator,...), 
   /// a basic instruction of an algorithm.
   /// </summary>
-  public interface IOperator : INamedItem, IParameterizedItem {
+  public interface IOperator : IParameterizedNamedItem {
     /// <summary>
     /// Gets or sets a boolean value whether the engine should stop here during the run.
     /// </summary>

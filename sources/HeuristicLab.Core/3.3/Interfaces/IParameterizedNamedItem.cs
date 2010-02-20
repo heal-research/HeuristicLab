@@ -19,23 +19,9 @@
  */
 #endregion
 
-using System.Drawing;
-using HeuristicLab.Core;
-
-namespace HeuristicLab.Optimization {
+namespace HeuristicLab.Core {
   /// <summary>
-  /// The base class for all problems.
+  /// An interface which represents an item which has a name and contains parameters.
   /// </summary>
-  [Item("Problem", "Base class for problems.")]
-  public abstract class Problem : ParameterizedNamedItem, IProblem {
-    public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }
-    }
-
-    protected Problem() : base() { }
-    protected Problem(string name) : base(name) { }
-    protected Problem(string name, ParameterCollection parameters) : base(name, parameters) { }
-    protected Problem(string name, string description) : base(name, description) { }
-    protected Problem(string name, string description, ParameterCollection parameters) : base(name, description, parameters) { }
-  }
+  public interface IParameterizedNamedItem : INamedItem, IParameterizedItem { }
 }

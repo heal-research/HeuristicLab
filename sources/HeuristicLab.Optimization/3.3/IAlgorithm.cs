@@ -19,23 +19,29 @@
  */
 #endregion
 
-using System.Drawing;
+using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
-  /// The base class for all problems.
+  /// Interface to represent an algorithm.
   /// </summary>
-  [Item("Problem", "Base class for problems.")]
-  public abstract class Problem : ParameterizedNamedItem, IProblem {
-    public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }
-    }
+  public interface IAlgorithm : IParameterizedNamedItem {
+    IProblem Problem { get; set; }
+    TimeSpan ExecutionTime { get; }
+    bool Running { get; }
+    bool Finished { get; }
 
-    protected Problem() : base() { }
-    protected Problem(string name) : base(name) { }
-    protected Problem(string name, ParameterCollection parameters) : base(name, parameters) { }
-    protected Problem(string name, string description) : base(name, description) { }
-    protected Problem(string name, string description, ParameterCollection parameters) : base(name, description, parameters) { }
+    void Prepare();
+    void Start();
+    void Stop();
+
+    event EventHandler ExecutionTimeChanged;
+    event EventHandler Prepared;
+    event EventHandler Started;
+    event EventHandler Stopped;
+    event EventHandler<EventArgs<Exception>> ExceptionOccurred;
+
   }
 }

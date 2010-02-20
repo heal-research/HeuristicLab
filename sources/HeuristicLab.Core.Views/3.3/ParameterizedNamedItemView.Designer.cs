@@ -19,8 +19,8 @@
  */
 #endregion
 
-namespace HeuristicLab.Operators.Views {
-  partial class OperatorView {
+namespace HeuristicLab.Core.Views {
+  partial class ParameterizedNamedItemView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -44,50 +44,40 @@ namespace HeuristicLab.Operators.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.breakpointLabel = new System.Windows.Forms.Label();
-      this.breakpointCheckBox = new System.Windows.Forms.CheckBox();
+      this.parameterCollectionView = new HeuristicLab.Core.Views.ParameterCollectionView();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
-      // 
-      // parameterCollectionView
-      // 
-      this.parameterCollectionView.Location = new System.Drawing.Point(0, 139);
-      this.parameterCollectionView.Size = new System.Drawing.Size(490, 214);
-      this.parameterCollectionView.TabIndex = 6;
       // 
       // nameTextBox
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.nameTextBox, 2);
+      this.nameTextBox.Size = new System.Drawing.Size(418, 20);
       // 
-      // breakpointLabel
+      // descriptionTextBox
       // 
-      this.breakpointLabel.AutoSize = true;
-      this.breakpointLabel.Location = new System.Drawing.Point(3, 120);
-      this.breakpointLabel.Name = "breakpointLabel";
-      this.breakpointLabel.Size = new System.Drawing.Size(61, 13);
-      this.breakpointLabel.TabIndex = 4;
-      this.breakpointLabel.Text = "&Breakpoint:";
+      this.descriptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.descriptionTextBox.Size = new System.Drawing.Size(418, 87);
       // 
-      // breakpointCheckBox
+      // parameterCollectionView
       // 
-      this.breakpointCheckBox.AutoSize = true;
-      this.breakpointCheckBox.Location = new System.Drawing.Point(72, 119);
-      this.breakpointCheckBox.Name = "breakpointCheckBox";
-      this.breakpointCheckBox.Size = new System.Drawing.Size(15, 14);
-      this.breakpointCheckBox.TabIndex = 5;
-      this.breakpointCheckBox.UseVisualStyleBackColor = true;
-      this.breakpointCheckBox.CheckedChanged += new System.EventHandler(this.breakpointCheckBox_CheckedChanged);
+      this.parameterCollectionView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.parameterCollectionView.Caption = "ParameterCollection";
+      this.parameterCollectionView.Location = new System.Drawing.Point(0, 119);
+      this.parameterCollectionView.Name = "parameterCollectionView";
+      this.parameterCollectionView.Size = new System.Drawing.Size(490, 234);
+      this.parameterCollectionView.TabIndex = 4;
       // 
-      // OperatorView
+      // ParameterizedNamedItemView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.breakpointLabel);
-      this.Controls.Add(this.breakpointCheckBox);
-      this.Name = "OperatorView";
-      this.Controls.SetChildIndex(this.breakpointCheckBox, 0);
-      this.Controls.SetChildIndex(this.breakpointLabel, 0);
+      this.Controls.Add(this.parameterCollectionView);
+      this.Name = "ParameterizedNamedItemView";
+      this.Size = new System.Drawing.Size(490, 353);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
       this.Controls.SetChildIndex(this.descriptionLabel, 0);
@@ -101,8 +91,7 @@ namespace HeuristicLab.Operators.Views {
 
     #endregion
 
-    private System.Windows.Forms.Label breakpointLabel;
-    private System.Windows.Forms.CheckBox breakpointCheckBox;
+    protected ParameterCollectionView parameterCollectionView;
 
   }
 }

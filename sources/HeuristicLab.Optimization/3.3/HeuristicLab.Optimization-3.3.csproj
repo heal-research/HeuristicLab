@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLabOptimizationPlugin.cs.frame" />
+    <Compile Include="IAlgorithm.cs" />
     <Compile Include="HeuristicLabOptimizationPlugin.cs" />
     <Compile Include="IProblem.cs" />
     <Compile Include="Problem.cs" />
@@ -67,6 +68,10 @@
     <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.2\HeuristicLab.Common.Resources-3.2.csproj">
       <Project>{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}</Project>
       <Name>HeuristicLab.Common.Resources-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Common\3.2\HeuristicLab.Common-3.2.csproj">
+      <Project>{1FC004FC-59AF-4249-B1B6-FF25873A20E4}</Project>
+      <Name>HeuristicLab.Common-3.2</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
       <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>

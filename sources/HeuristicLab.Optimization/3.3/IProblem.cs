@@ -25,5 +25,5 @@ namespace HeuristicLab.Optimization {
   /// <summary>
   /// Interface to represent a problem.
   /// </summary>
-  public interface IProblem : INamedItem, IParameterizedItem { }
+  public interface IProblem : IParameterizedNamedItem { }
 }

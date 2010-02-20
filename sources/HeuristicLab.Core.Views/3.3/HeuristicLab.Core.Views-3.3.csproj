@@ -69,6 +69,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLabCoreViewsPlugin.cs.frame" />
+    <Compile Include="OperatorTreeView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OperatorTreeView.Designer.cs">
+      <DependentUpon>OperatorTreeView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ParameterizedNamedItemView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ParameterizedNamedItemView.Designer.cs">
+      <DependentUpon>ParameterizedNamedItemView.cs</DependentUpon>
+    </Compile>
     <Compile Include="ValueParameterCollectionView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -123,12 +135,6 @@
     </Compile>
     <Compile Include="OperatorsSidebar.Designer.cs">
       <DependentUpon>OperatorsSidebar.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OperatorTreeView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OperatorTreeView.Designer.cs">
-      <DependentUpon>OperatorTreeView.cs</DependentUpon>
     </Compile>
     <Compile Include="TypeSelectorDialog.cs">
       <SubType>Form</SubType>
