@@ -50,6 +50,7 @@ namespace HeuristicLab.Hive.Engine {
     private volatile bool abortRequested;
 
     public string HiveServerUrl { get; set; }
+    public string MultiSubmitCount { get; set; }
 
     public HiveEngine() {
       job = new Job();
@@ -91,9 +92,18 @@ namespace HeuristicLab.Hive.Engine {
     public void Execute() {
       var jobObj = CreateJobObj();
       IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(HiveServerUrl);
-      ResponseObject<Contracts.BusinessObjects.Job> res = executionEngineFacade.AddJob(jobObj);
-      jobId = res.Obj.Id;
+      
+      int loops = 1;
+      
+      Int32.TryParse(MultiSubmitCount, out loops);
+      if(loops == 0)
+        loops = 1;
 
+      for (int i = 0; i < loops; i++) {
+        ResponseObject<Contracts.BusinessObjects.Job> res = executionEngineFacade.AddJob(jobObj);
+        jobId = res.Obj.Id;
+      }
+      
       StartResultPollingThread();
     }
 

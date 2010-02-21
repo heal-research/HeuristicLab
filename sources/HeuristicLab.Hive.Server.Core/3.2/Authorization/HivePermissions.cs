@@ -12,8 +12,8 @@ using System.Reflection;
 namespace HeuristicLab.Hive.Server.Core  {
   
   public static class HivePermissions {
-    private const string PERMISSIONFILE = @"plugins\HivePermissionSet.xml";
-    private const string POLICIESFILE = @"plugins\HivePermissionPolicy.xml";
+    private const string PERMISSIONFILE = @"HivePermissionSet.xml";
+    private const string POLICIESFILE = @"HivePermissionPolicy.xml";
 
     public static class Jobmanagement {
       [Flags]

@@ -129,8 +129,8 @@ namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
       lock (engines) {
         foreach (KeyValuePair<Guid, Executor> kvp in engines) {
           Executor e = kvp.Value;
-          if (!e.JobIsFinished) 
-            prog[e.JobId] = e.Progress;
+          //if (!e.JobIsFinished) 
+          prog[e.JobId] = e.Progress;
         }
       }
       return prog;

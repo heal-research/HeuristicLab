@@ -92,8 +92,8 @@ namespace HeuristicLab.PluginInfrastructure.Sandboxing {
       ApplicationDescription[] apps = ApplicationManager.Manager.Applications.Cast<ApplicationDescription>().ToArray();
       PluginDescription[] plugins = ApplicationManager.Manager.Plugins.Cast<PluginDescription>().ToArray();
       applicationManager.PrepareApplicationDomain(apps, plugins);
-      if (files != null && files.Count() > 0)
-        applicationManager.LoadAssemblies(files);
+      //if (files != null && files.Count() > 0)
+        //applicationManager.LoadAssemblies(files);
       return applicationDomain;
     }
 

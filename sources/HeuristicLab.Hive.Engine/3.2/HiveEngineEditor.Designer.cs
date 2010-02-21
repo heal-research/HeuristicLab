@@ -47,6 +47,7 @@ namespace HeuristicLab.Hive.Engine {
       this.urlTextBox = new System.Windows.Forms.TextBox();
       this.urlLabel = new System.Windows.Forms.Label();
       this.snapshotButton = new System.Windows.Forms.Button();
+      this.multiSubmitTextbox = new System.Windows.Forms.TextBox();
       this.splitContainer1.Panel1.SuspendLayout();
       this.splitContainer1.Panel2.SuspendLayout();
       this.splitContainer1.SuspendLayout();
@@ -113,10 +114,20 @@ namespace HeuristicLab.Hive.Engine {
       this.snapshotButton.UseVisualStyleBackColor = true;
       this.snapshotButton.Click += new System.EventHandler(this.snapshotButton_Click);
       // 
+      // multiSubmitTextbox
+      // 
+      this.multiSubmitTextbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.multiSubmitTextbox.Location = new System.Drawing.Point(375, 460);
+      this.multiSubmitTextbox.Name = "multiSubmitTextbox";
+      this.multiSubmitTextbox.Size = new System.Drawing.Size(31, 20);
+      this.multiSubmitTextbox.TabIndex = 10;
+      this.multiSubmitTextbox.Text = "1";
+      // 
       // HiveEngineEditor
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.multiSubmitTextbox);
       this.Controls.Add(this.snapshotButton);
       this.Controls.Add(this.urlTextBox);
       this.Controls.Add(this.urlLabel);
@@ -131,6 +142,7 @@ namespace HeuristicLab.Hive.Engine {
       this.Controls.SetChildIndex(this.urlLabel, 0);
       this.Controls.SetChildIndex(this.urlTextBox, 0);
       this.Controls.SetChildIndex(this.snapshotButton, 0);
+      this.Controls.SetChildIndex(this.multiSubmitTextbox, 0);
       this.splitContainer1.Panel1.ResumeLayout(false);
       this.splitContainer1.Panel2.ResumeLayout(false);
       this.splitContainer1.ResumeLayout(false);
@@ -146,5 +158,6 @@ namespace HeuristicLab.Hive.Engine {
     private System.Windows.Forms.TextBox urlTextBox;
     private System.Windows.Forms.Label urlLabel;
     private System.Windows.Forms.Button snapshotButton;
+    private System.Windows.Forms.TextBox multiSubmitTextbox;
   }
 }

@@ -72,8 +72,7 @@ namespace HeuristicLab.Hive.Client.Core {
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    void heartbeatTimer_Elapsed(object sender, ElapsedEventArgs e) {
-      Console.WriteLine("tick");  
+    void heartbeatTimer_Elapsed(object sender, ElapsedEventArgs e) {      
       ClientInfo info = ConfigManager.Instance.GetClientInfo();      
 
       PerformanceCounter counter = new PerformanceCounter("Memory", "Available Bytes", true);
@@ -85,7 +84,7 @@ namespace HeuristicLab.Hive.Client.Core {
         FreeMemory = mb,
         JobProgress = ConfigManager.Instance.GetProgressOfAllJobs()      
       };
-      
+       
       DateTime lastFullHour = DateTime.Parse(DateTime.Now.Hour.ToString() + ":00");
       TimeSpan span = DateTime.Now - lastFullHour;
       if (span.TotalSeconds < (Interval/1000)) {
@@ -103,12 +102,13 @@ namespace HeuristicLab.Hive.Client.Core {
       if (wcfService.ConnState == NetworkEnum.WcfConnState.Failed) {
         wcfService.Connect();
       } else if (wcfService.ConnState == NetworkEnum.WcfConnState.Loggedin) {
+        Logging.Instance.Info(this.ToString(), "Sending Heartbeat: " + heartBeatData);        
         wcfService.SendHeartBeatAsync(heartBeatData);
       }
     }
 
     void wcfService_ProcessHeartBeatCompleted(object sender, ProcessHeartBeatCompletedEventArgs e) {
-      System.Diagnostics.Debug.WriteLine("Heartbeat received! ");
+      Logging.Instance.Info(this.ToString(), "Heartbeat received");
       e.Result.ActionRequest.ForEach(mc => MessageQueue.GetInstance().AddMessage(mc));      
     }
 

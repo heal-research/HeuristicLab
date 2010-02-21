@@ -25,7 +25,7 @@ namespace HeuristicLab.Security.Core {
           typeof(SqlConnection);
 
         sessionFactory.DbConnectionString =
-          HeuristicLab.Security.Core.Properties.Settings.Default.SecurityServerConnectionString;
+          HeuristicLab.Security.Core.Properties.Settings.Default.SecurityServerConnectionString;      
       }
 
       return sessionFactory;

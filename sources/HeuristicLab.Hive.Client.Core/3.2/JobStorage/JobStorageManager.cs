@@ -16,7 +16,7 @@ namespace HeuristicLab.Hive.Client.Core.JobStorage {
     
     private static List<JobStorageInfo> storedJobsList = new List<JobStorageInfo>();
     
-    private static String path = System.IO.Directory.GetCurrentDirectory()+"\\plugins\\Hive.Client.Jobs\\";
+    private static String path = System.IO.Directory.GetCurrentDirectory()+"\\Hive.Client.Jobs\\";
     
     public static void PersistObjectToDisc(String serverIP, long serverPort, Guid jobId, byte[] job) {
       String filename = serverIP + "." + serverPort + "." + jobId.ToString();
