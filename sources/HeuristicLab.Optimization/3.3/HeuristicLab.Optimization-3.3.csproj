@@ -50,6 +50,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLabOptimizationPlugin.cs.frame" />
+    <Compile Include="Algorithm.cs" />
+    <Compile Include="UserDefinedAlgorithm.cs" />
+    <Compile Include="EngineAlgorithm.cs" />
     <Compile Include="IAlgorithm.cs" />
     <Compile Include="HeuristicLabOptimizationPlugin.cs" />
     <Compile Include="IProblem.cs" />

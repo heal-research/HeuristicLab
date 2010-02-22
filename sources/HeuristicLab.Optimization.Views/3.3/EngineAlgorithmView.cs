@@ -19,76 +19,83 @@
  */
 #endregion
 
+using System;
+using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
-using System;
 
-namespace HeuristicLab.Operators.Views {
+namespace HeuristicLab.Optimization.Views { 
   /// <summary>
   /// The base class for visual representations of items.
   /// </summary>
-  [Content(typeof(Operator), true)]
-  [Content(typeof(IOperator), false)]
-  public partial class OperatorView : ParameterizedNamedItemView {
-    public new IOperator Content {
-      get { return (IOperator)base.Content; }
+  [Content(typeof(EngineAlgorithm), true)]
+  public partial class EngineAlgorithmView : AlgorithmView {
+    private TypeSelectorDialog engineTypeSelectorDialog;
+
+    public new EngineAlgorithm Content {
+      get { return (EngineAlgorithm)base.Content; }
       set { base.Content = value; }
     }
 
     /// <summary>
     /// Initializes a new instance of <see cref="ItemBaseView"/>.
     /// </summary>
-    public OperatorView() {
+    public EngineAlgorithmView() {
       InitializeComponent();
     }
     /// <summary>
     /// Intializes a new instance of <see cref="ItemBaseView"/> with the given <paramref name="item"/>.
     /// </summary>
     /// <param name="item">The item that should be displayed.</param>
-    public OperatorView(IOperator content)
+    public EngineAlgorithmView(EngineAlgorithm content)
       : this() {
       Content = content;
     }
 
-    /// <summary>
-    /// Removes the eventhandlers from the underlying <see cref="IOperatorGraph"/>.
-    /// </summary>
-    /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void DeregisterContentEvents() {
-      Content.BreakpointChanged -= new EventHandler(Content_BreakpointChanged);
+      Content.EngineChanged -= new System.EventHandler(Content_EngineChanged);
       base.DeregisterContentEvents();
     }
-
-    /// <summary>
-    /// Adds eventhandlers to the underlying <see cref="IOperatorGraph"/>.
-    /// </summary>
-    /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.BreakpointChanged += new EventHandler(Content_BreakpointChanged);
+      Content.EngineChanged += new System.EventHandler(Content_EngineChanged);
     }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        breakpointCheckBox.Checked = false;
-        breakpointCheckBox.Enabled = false;
+        engineTextBox.Text = "-";
+        engineTextBox.Enabled = false;
+        setEngineButton.Enabled = false;
       } else {
-        breakpointCheckBox.Checked = Content.Breakpoint;
-        breakpointCheckBox.Enabled = true;
+        engineTextBox.Text = Content.Engine == null ? "-" : Content.Engine.ToString();
+        engineTextBox.Enabled = true;
+        setEngineButton.Enabled = true;
       }
     }
 
-    private void Content_BreakpointChanged(object sender, EventArgs e) {
+    protected void Content_EngineChanged(object sender, System.EventArgs e) {
       if (InvokeRequired)
-        Invoke(new EventHandler(Content_DescriptionChanged), sender, e);
+        Invoke(new EventHandler(Content_EngineChanged), sender, e);
       else
-        breakpointCheckBox.Checked = Content.Breakpoint;
+        engineTextBox.Text = Content.Engine == null ? "-" : Content.Engine.ToString();
     }
 
-    private void breakpointCheckBox_CheckedChanged(object sender, System.EventArgs e) {
-      if (Content != null) Content.Breakpoint = breakpointCheckBox.Checked;
+    protected void setEngineButton_Click(object sender, System.EventArgs e) {
+      if (engineTypeSelectorDialog == null) {
+        engineTypeSelectorDialog = new TypeSelectorDialog();
+        engineTypeSelectorDialog.Caption = "Select Engine";
+        engineTypeSelectorDialog.TypeSelector.Configure(typeof(IEngine), false, false);
+      }
+      if (engineTypeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
+        Content.Engine = (IEngine)engineTypeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
+      }
+    }
+
+    protected void engineTextBox_DoubleClick(object sender, System.EventArgs e) {
+      if (Content.Engine != null)
+        MainFormManager.CreateDefaultView(Content.Engine).Show();
     }
   }
 }

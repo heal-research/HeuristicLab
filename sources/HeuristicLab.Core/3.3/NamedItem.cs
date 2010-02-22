@@ -30,7 +30,7 @@ namespace HeuristicLab.Core {
   [Item("NamedItem", "Base class for items which have a name and an optional description.")]
   public abstract class NamedItem : Item, INamedItem {
     [Storable]
-    private string name;
+    protected string name;
     /// <inheritdoc/>
     /// <remarks>Calls <see cref="OnNameChanging"/> and also <see cref="OnNameChanged"/> 
     /// eventually in the setter.</remarks>
@@ -53,7 +53,7 @@ namespace HeuristicLab.Core {
       get { return true; }
     }
     [Storable]
-    private string description;
+    protected string description;
     public string Description {
       get { return description; }
       set {

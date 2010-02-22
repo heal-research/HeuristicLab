@@ -52,8 +52,10 @@ namespace HeuristicLab.Core.Views {
       base.OnContentChanged();
       if (Content == null) {
         parameterCollectionView.Content = null;
+        parameterCollectionView.Enabled = false;
       } else {
         parameterCollectionView.Content = Content.Parameters;
+        parameterCollectionView.Enabled = true;
       }
     }
   }

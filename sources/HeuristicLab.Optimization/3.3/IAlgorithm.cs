@@ -37,11 +37,11 @@ namespace HeuristicLab.Optimization {
     void Start();
     void Stop();
 
+    event EventHandler ProblemChanged;
     event EventHandler ExecutionTimeChanged;
     event EventHandler Prepared;
     event EventHandler Started;
     event EventHandler Stopped;
     event EventHandler<EventArgs<Exception>> ExceptionOccurred;
-
   }
 }

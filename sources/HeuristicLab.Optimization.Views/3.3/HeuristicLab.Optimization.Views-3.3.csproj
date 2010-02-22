@@ -51,6 +51,24 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLabOptimizationViewsPlugin.cs.frame" />
+    <Compile Include="AlgorithmView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="AlgorithmView.Designer.cs">
+      <DependentUpon>AlgorithmView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserDefinedAlgorithmView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserDefinedAlgorithmView.Designer.cs">
+      <DependentUpon>UserDefinedAlgorithmView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EngineAlgorithmView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="EngineAlgorithmView.Designer.cs">
+      <DependentUpon>EngineAlgorithmView.cs</DependentUpon>
+    </Compile>
     <Compile Include="HeuristicLabOptimizationViewsPlugin.cs" />
     <Compile Include="ProblemView.cs">
       <SubType>UserControl</SubType>
@@ -68,6 +86,14 @@
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
       <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.2\HeuristicLab.Common.Resources-3.2.csproj">
+      <Project>{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}</Project>
+      <Name>HeuristicLab.Common.Resources-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Common\3.2\HeuristicLab.Common-3.2.csproj">
+      <Project>{1FC004FC-59AF-4249-B1B6-FF25873A20E4}</Project>
+      <Name>HeuristicLab.Common-3.2</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Core.Views\3.3\HeuristicLab.Core.Views-3.3.csproj">
       <Project>{E226881D-315F-423D-B419-A766FE0D8685}</Project>
@@ -88,6 +114,10 @@
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
       <Project>{14AB8D24-25BC-400C-A846-4627AA945192}</Project>
       <Name>HeuristicLab.Optimization-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
+      <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
+      <Name>HeuristicLab.Persistence-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>

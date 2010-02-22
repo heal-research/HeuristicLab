@@ -47,21 +47,22 @@ namespace HeuristicLab.Core {
       }
     }
 
-    protected ParameterizedNamedItem() {
-      Name = ItemName;
-      Description = ItemDescription;
+    protected ParameterizedNamedItem()
+      : base() {
+      name = ItemName;
+      description = ItemDescription;
       Parameters = new ParameterCollection();
       readOnlyParameters = null;
     }
     protected ParameterizedNamedItem(string name)
       : base(name) {
-      Description = ItemDescription;
+      description = ItemDescription;
       Parameters = new ParameterCollection();
       readOnlyParameters = null;
     }
     protected ParameterizedNamedItem(string name, ParameterCollection parameters)
       : base(name) {
-      Description = ItemDescription;
+      description = ItemDescription;
       Parameters = parameters;
       readOnlyParameters = null;
     }

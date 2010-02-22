@@ -28,7 +28,7 @@ namespace HeuristicLab.Optimization.Views {
   /// </summary>
   [Content(typeof(Problem), true)]
   [Content(typeof(IProblem), false)]
-  public partial class ProblemView : NamedItemView {
+  public partial class ProblemView : ParameterizedNamedItemView {
     public new IProblem Content {
       get { return (IProblem)base.Content; }
       set { base.Content = value; }
@@ -51,10 +51,6 @@ namespace HeuristicLab.Optimization.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      if (Content == null)
-        parameterCollectionView.Content = null;
-      else
-        parameterCollectionView.Content = ((IProblem)Content).Parameters;
     }
   }
 }

@@ -19,26 +19,41 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Collections;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Operators {
+namespace HeuristicLab.Optimization {
   /// <summary>
-  /// An operator which contains an operator graph.
+  /// An algorithm which can be defined by the user.
   /// </summary>
-  [Item("CombinedOperator", "An operator which contains an operator graph.")]
-  [Creatable("Test")]
-  public sealed class CombinedOperator : AlgorithmOperator, IParameterizedItem {
+  [Item("UserDefinedAlgorithm", "An algorithm which can be defined by the user.")]
+  [Creatable("Algorithms")]
+  [EmptyStorableClass]
+  public sealed class UserDefinedAlgorithm : EngineAlgorithm, IParameterizedItem {
     public new ParameterCollection Parameters {
       get { return base.Parameters; }
     }
     IObservableKeyedCollection<string, IParameter> IParameterizedItem.Parameters {
       get { return Parameters; }
     }
-    public override bool CanChangeDescription {
-      get { return true; }
+
+    public new OperatorGraph OperatorGraph {
+      get { return base.OperatorGraph; }
+      set { base.OperatorGraph = value; }
     }
 
-    public CombinedOperator() : base() { }
+    public new IScope GlobalScope {
+      get { return base.GlobalScope; }
+    }
+
+    public UserDefinedAlgorithm() : base() { }
+
+    public event EventHandler OperatorGraphChanged;
+    protected override void OnOperatorGraphChanged() {
+      if (OperatorGraphChanged != null)
+        OperatorGraphChanged(this, EventArgs.Empty);
+    }
   }
 }

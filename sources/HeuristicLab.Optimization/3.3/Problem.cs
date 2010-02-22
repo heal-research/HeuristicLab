@@ -21,12 +21,14 @@
 
 using System.Drawing;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
-  /// The base class for all problems.
+  /// A base class for problems.
   /// </summary>
-  [Item("Problem", "Base class for problems.")]
+  [Item("Problem", "A base class for problems.")]
+  [EmptyStorableClass]
   public abstract class Problem : ParameterizedNamedItem, IProblem {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }

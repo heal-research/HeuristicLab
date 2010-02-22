@@ -115,6 +115,12 @@ namespace HeuristicLab.Core {
     /// </summary>
     protected bool Canceled {
       get { return canceled; }
+      private set {
+        if (canceled != value) {
+          canceled = value;
+          OnCanceledChanged();
+        }
+      }
     }
     /// <summary>
     /// Gets information whether the instance has already terminated.
@@ -153,7 +159,7 @@ namespace HeuristicLab.Core {
     }
 
     public void Prepare(IOperation initialOperation) {
-      canceled = false;
+      Canceled = false;
       running = false;
       globalScope.Clear();
       ExecutionTime = new TimeSpan();
@@ -176,7 +182,7 @@ namespace HeuristicLab.Core {
     /// of class <see cref="ThreadPool"/>.</remarks>
     public void Start() {
       running = true;
-      canceled = false;
+      Canceled = false;
       ThreadPool.QueueUserWorkItem(new WaitCallback(Run), null);
     }
     /// <inheritdoc/>
@@ -184,13 +190,13 @@ namespace HeuristicLab.Core {
     /// of class <see cref="ThreadPool"/>.</remarks>
     public void Step() {
       running = true;
-      canceled = false;
+      Canceled = false;
       ThreadPool.QueueUserWorkItem(new WaitCallback(RunStep), null);
     }
     /// <inheritdoc/>
     /// <remarks>Sets the protected flag <c>myCanceled</c> to <c>true</c>.</remarks>
-    public virtual void Stop() {
-      canceled = true;
+    public void Stop() {
+      Canceled = true;
     }
 
     private void Run(object state) {
@@ -281,6 +287,7 @@ namespace HeuristicLab.Core {
       if (Stopped != null)
         Stopped(this, EventArgs.Empty);
     }
+    protected virtual void OnCanceledChanged() { }
     /// <summary>
     /// Occurs when an exception occured during the execution.
     /// </summary>

@@ -35,17 +35,6 @@ namespace HeuristicLab.SequentialEngine {
     private IOperator currentOperator;
 
     /// <summary>
-    /// Aborts the engine execution.
-    /// </summary>
-    /// <remarks>Calls <see cref="EngineBase.Abort"/> of base class <see cref="EngineBase"/> and
-    /// <see cref="IOperator.Abort"/> of the current <see cref="IOperator"/>.</remarks>
-    public override void Stop() {
-      base.Stop();
-      if (currentOperator != null)
-        currentOperator.Abort();
-    }
-
-    /// <summary>
     /// Deals with the next operation, if it is an <see cref="AtomicOperation"/> it is executed,
     /// if it is a <see cref="CompositeOperation"/> its single operations are pushed on the execution stack.
     /// </summary>
@@ -77,6 +66,11 @@ namespace HeuristicLab.SequentialEngine {
         if (operation.Operator.Breakpoint)
           Stop();
       }
+    }
+
+    protected override void OnCanceledChanged() {
+      if (Canceled && (currentOperator != null))
+        currentOperator.Abort();
     }
   }
 }
