@@ -82,11 +82,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HeuristicLabOperatorsViewsGraphVisualizationPlugin.cs" />
-    <Compile Include="OperatorGraphVisualizationView.cs">
+    <Compile Include="OperatorGraphView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="OperatorGraphVisualizationView.Designer.cs">
-      <DependentUpon>OperatorGraphVisualizationView.cs</DependentUpon>
+    <Compile Include="OperatorGraphView.Designer.cs">
+      <DependentUpon>OperatorGraphView.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -94,12 +94,23 @@
     <None Include="HeuristicLab.snk" />
     <None Include="HeuristicLabOperatorsViewsGraphVisualizationPlugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.frame" />
+    <Compile Include="Model\ConnectionInfo.cs" />
+    <Compile Include="Model\IConnectionInfo.cs" />
+    <Compile Include="Model\OperatorShapeInfo.cs" />
+    <Compile Include="Model\OperatorGraphVisualizationInfo.cs" />
+    <Compile Include="BidirectionalLookup.cs" />
+    <Compile Include="Model\IShapeInfo.cs" />
+    <Compile Include="Model\OperatorShape.cs" />
+    <Compile Include="Model\ShapeInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\ShapeInfoFactory.cs" />
     <Compile Include="ToolBarItems\SelectToolBarItem.cs" />
     <Compile Include="ToolBarItems\PanToolBarItem.cs" />
     <Compile Include="ToolBarItems\ZoomOutToolBarItem.cs" />
     <Compile Include="ToolBarItems\ZoomInToolBarItem.cs" />
     <Compile Include="ToolBarItems\ZoomToolBarItem.cs" />
-    <Compile Include="ToolBarItems\OperatorGraphVisualizationToolBarItemSeparator.cs" />
+    <Compile Include="ToolBarItems\ToolBarItemSeparator.cs" />
     <Compile Include="ToolBarItems\RelayoutToolBarItem.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -151,6 +162,11 @@
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="OperatorGraphView.resx">
+      <DependentUpon>OperatorGraphView.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

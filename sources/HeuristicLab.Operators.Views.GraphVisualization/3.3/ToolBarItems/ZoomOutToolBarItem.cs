@@ -41,11 +41,11 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
     protected override void OnActiveViewChanged(object sender, System.EventArgs e) {
       base.OnActiveViewChanged(sender, e);
-      this.ToolStripItem.Visible = MainFormManager.MainForm.ActiveView is OperatorGraphVisualizationView;
+      this.ToolStripItem.Enabled = MainFormManager.MainForm.ActiveView is OperatorGraphView;
     }
 
     public override void Execute() {
-      OperatorGraphVisualizationView view = MainFormManager.MainForm.ActiveView as OperatorGraphVisualizationView;
+      OperatorGraphView view = MainFormManager.MainForm.ActiveView as OperatorGraphView;
       if (view != null)
         view.ActivateZoomOutTool();
     }

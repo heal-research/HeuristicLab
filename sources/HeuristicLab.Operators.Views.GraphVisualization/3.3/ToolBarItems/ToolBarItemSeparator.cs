@@ -19,33 +19,10 @@
  */
 #endregion
 
-using System.Drawing;
-using HeuristicLab.MainForm;
-
 namespace HeuristicLab.Operators.Views.GraphVisualization {
-  internal class RelayoutToolBarItem : HeuristicLab.MainForm.WindowsForms.ToolBarItem, HeuristicLab.Optimizer.IOptimizerUserInterfaceItemProvider {
-    public override string Name {
-      get { return "Relayout"; }
-    }
-    public override string ToolTipText {
-      get { return "Relayout"; }
-    }
+  internal class ToolBarItemSeparator : HeuristicLab.MainForm.ToolBarSeparatorItem, HeuristicLab.Optimizer.IOptimizerUserInterfaceItemProvider {
     public override int Position {
-      get { return 110; }
-    }
-    public override Image Image {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.RefreshDocument; }
-    }
-
-    protected override void OnActiveViewChanged(object sender, System.EventArgs e) {
-      base.OnActiveViewChanged(sender, e);
-      this.ToolStripItem.Enabled = MainFormManager.MainForm.ActiveView is OperatorGraphView;
-    }
-
-    public override void Execute() {
-      OperatorGraphView view = MainFormManager.MainForm.ActiveView as OperatorGraphView;
-      if (view != null)
-        view.RelayoutOperatorGraph();
+      get { return 100; }
     }
   }
 }

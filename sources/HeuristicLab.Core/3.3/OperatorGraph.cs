@@ -66,12 +66,28 @@ namespace HeuristicLab.Core {
       }
     }
 
+    [Storable]
+    private IDeepCloneable visualizationInfo;
+    /// <summary>
+    /// Gets or sets the visualizationInfo.
+    /// </summary>
+    /// /// <remarks>The VisualizationInfo can only be set once and fires afterwards and InvalidOperationException</remarks>
+    public IDeepCloneable VisualizationInfo {
+      get { return visualizationInfo; }
+      set {
+        if (visualizationInfo != null)
+          throw new InvalidOperationException("The value of the property VisualizationInfo is already set and cannot be set again.");
+        visualizationInfo = value;
+      }
+    }
+
     /// <summary>
     /// Initializes a new instance of <see cref="OperatorGraph"/>.
     /// </summary>
     public OperatorGraph() {
       Operators = new OperatorSet();
       initialOperator = null;
+      visualizationInfo = null;
     }
 
     /// <summary>
