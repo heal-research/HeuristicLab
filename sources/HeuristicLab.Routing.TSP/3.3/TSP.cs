@@ -30,37 +30,25 @@ namespace HeuristicLab.Routing.TSP {
   [Item("TSP", "Represents a symmetric Traveling Salesman Problem.")]
   [Creatable("Problems")]
   [EmptyStorableClass]
-  public sealed class TSP : Problem {
+  public sealed class TSP : SingleObjectiveProblem {
     private ValueParameter<DoubleMatrixData> CoordinatesParameter {
       get { return (ValueParameter<DoubleMatrixData>)Parameters["Coordinates"]; }
-    }
-    private OperatorParameter SolutionCreatorParameter {
-      get { return (OperatorParameter)Parameters["SolutionCreator"]; }
-    }
-    private OperatorParameter SolutionEvaluatorParameter {
-      get { return (OperatorParameter)Parameters["SolutionEvaluator"]; }
     }
 
     public DoubleMatrixData Coordinates {
       get { return CoordinatesParameter.Value; }
       set { CoordinatesParameter.Value = value; }
     }
-    public IOperator SolutionCreator {
-      get { return SolutionCreatorParameter.Value; }
-      set { SolutionCreatorParameter.Value = value; }
-    }
-    public IOperator SolutionEvaluator {
-      get { return SolutionEvaluatorParameter.Value; }
-      set { SolutionEvaluatorParameter.Value = value; }
-    }
 
     public TSP()
       : base() {
-      Parameters.Add(new ValueParameter<BoolData>("Maximization", "Set to false as the TSP is a minimization problem.", new BoolData(false)));
+      Maximization = new BoolData(false);
       Parameters.Add(new ValueParameter<DoubleMatrixData>("Coordinates", "The x- and y-Coordinates of the cities.", new DoubleMatrixData(0, 0)));
       Parameters.Add(new ValueParameter<DoubleData>("BestKnownQuality", "The quality of the best known solution of this TSP instance."));
-      Parameters.Add(new OperatorParameter("SolutionCreator", "The operator which should be used to create new solutions."));
-      Parameters.Add(new OperatorParameter("SolutionEvaluator", "The operator which should be used to evaluate solutions."));
+      RandomPermutationCreator creator = new RandomPermutationCreator();
+      creator.LengthParameter.Value = new IntData(0);
+      SolutionCreator = creator;
+      Evaluator = new TSPRoundedEuclideanPathEvaluator();
     }
 
     public void ImportFromTSPLIB(string filename) {
@@ -72,7 +60,7 @@ namespace HeuristicLab.Routing.TSP {
       creator.LengthParameter.Value = new IntData(cities);
       SolutionCreator = creator;
       TSPRoundedEuclideanPathEvaluator evaluator = new TSPRoundedEuclideanPathEvaluator();
-      SolutionEvaluator = evaluator;
+      Evaluator = evaluator;
     }
   }
 }

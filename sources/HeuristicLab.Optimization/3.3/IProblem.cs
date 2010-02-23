@@ -20,10 +20,17 @@
 #endregion
 
 using HeuristicLab.Core;
+using System;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
-  /// Interface to represent a problem.
+  /// Interface to represent an optimization problem.
   /// </summary>
-  public interface IProblem : IParameterizedNamedItem { }
+  public interface IProblem : IParameterizedNamedItem {
+    ISolutionCreator SolutionCreator { get; set; }
+    IEvaluator Evaluator { get; set; }
+
+    event EventHandler SolutionCreatorChanged;
+    event EventHandler EvaluatorChanged;
+  }
 }

@@ -19,16 +19,21 @@
  */
 #endregion
 
-using System;
+using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Core {
-  public interface IDeepCloneable : ICloneable {
-    /// <summary>
-    /// Creates a deep clone of this instance.
-    /// </summary>
-    /// <param name="cloner">The cloner which is responsible for keeping track of all already
-    /// cloned objects.</param>
-    /// <returns>A clone of this instance.</returns>
-    IDeepCloneable Clone(Cloner cloner);
+namespace HeuristicLab.SGA.Views {
+  /// <summary>
+  /// Plugin class for HeuristicLab.SGA.Views plugin.
+  /// </summary>
+  [Plugin("HeuristicLab.SGA.Views", "3.3.0.$WCREV$")]
+  [PluginFile("HeuristicLab.SGA.Views-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Core", "3.3")]
+  [PluginDependency("HeuristicLab.Core.Views", "3.3")]
+  [PluginDependency("HeuristicLab.MainForm", "3.2")]
+  [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.2")]
+  [PluginDependency("HeuristicLab.Optimization", "3.3")]
+  [PluginDependency("HeuristicLab.Optimization.Views", "3.3")]
+  [PluginDependency("HeuristicLab.SGA", "3.3")]
+  public class HeuristicLabSGAViewsPlugin : PluginBase {
   }
 }

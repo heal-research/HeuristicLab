@@ -44,7 +44,7 @@ namespace HeuristicLab.Parameters {
         scope.SubScopes[i].Variables.TryGetValue(name, out var);
         if (var != null) {
           value = var.Value as T;
-          if (value == null)
+          if ((var.Value != null) && (value == null))
             throw new InvalidOperationException(
               string.Format("Type mismatch. Variable \"{0}\" does not contain a \"{1}\".",
                             name,

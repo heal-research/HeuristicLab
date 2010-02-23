@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
-namespace HeuristicLab.Optimization.Views { 
+namespace HeuristicLab.Optimization.Views {
   /// <summary>
   /// The base class for visual representations of items.
   /// </summary>

@@ -26,7 +26,7 @@ using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.Persistence.Default.Xml;
 
-namespace HeuristicLab.Optimization.Views { 
+namespace HeuristicLab.Optimization.Views {
   /// <summary>
   /// The base class for visual representations of items.
   /// </summary>
@@ -166,7 +166,7 @@ namespace HeuristicLab.Optimization.Views {
       if (problemTypeSelectorDialog == null) {
         problemTypeSelectorDialog = new TypeSelectorDialog();
         problemTypeSelectorDialog.Caption = "Select Problem";
-        problemTypeSelectorDialog.TypeSelector.Configure(typeof(IProblem), false, false);
+        problemTypeSelectorDialog.TypeSelector.Configure(Content.ProblemType, false, false);
       }
       if (problemTypeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
         Content.Problem = (IProblem)problemTypeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
@@ -183,7 +183,9 @@ namespace HeuristicLab.Optimization.Views {
           Auxiliary.ShowErrorMessageBox(ex);
         }
         if (problem == null)
-          MessageBox.Show(this, "Selected file does not contain a problem.", "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          MessageBox.Show(this, "The selected file does not contain a problem.", "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        else if (!Content.ProblemType.IsInstanceOfType(problem))
+          MessageBox.Show(this, "The selected file contains a problem type which is not supported by this algorithm.", "Invalid Problem Type", MessageBoxButtons.OK, MessageBoxIcon.Error);
         else
           Content.Problem = problem;
       }

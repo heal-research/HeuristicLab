@@ -66,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLabParametersPlugin.cs.frame" />
+    <Compile Include="ConstrainedValueParameter.cs" />
     <Compile Include="LookupParameter.cs" />
     <Compile Include="SubScopesLookupParameter.cs" />
     <Compile Include="ValueLookupParameter.cs" />

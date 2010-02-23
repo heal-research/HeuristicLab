@@ -35,15 +35,20 @@ namespace HeuristicLab.Optimization {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Event; }
     }
 
+    public virtual Type ProblemType {
+      get { return typeof(IProblem); }
+    }
+
     private IProblem problem;
     [Storable]
     public IProblem Problem {
       get { return problem; }
       set {
         if (problem != value) {
-          if (problem != null) problem.Changed -= new ChangedEventHandler(Problem_Changed);
+          if ((value != null) && !ProblemType.IsInstanceOfType(value)) throw new ArgumentException("Invalid problem type.");
+          if (problem != null) DeregisterProblemEvents();
           problem = value;
-          if (problem != null) problem.Changed += new ChangedEventHandler(Problem_Changed);
+          if (problem != null) RegisterProblemEvents();
           OnProblemChanged();
         }
       }
@@ -134,6 +139,19 @@ namespace HeuristicLab.Optimization {
       if (ExceptionOccurred != null)
         ExceptionOccurred(this, new EventArgs<Exception>(exception));
     }
+    protected virtual void DeregisterProblemEvents() {
+      problem.SolutionCreatorChanged -= new EventHandler(Problem_SolutionCreatorChanged);
+      problem.EvaluatorChanged -= new EventHandler(Problem_EvaluatorChanged);
+      problem.Changed -= new ChangedEventHandler(Problem_Changed);
+    }
+    protected virtual void RegisterProblemEvents() {
+      problem.SolutionCreatorChanged += new EventHandler(Problem_SolutionCreatorChanged);
+      problem.EvaluatorChanged += new EventHandler(Problem_EvaluatorChanged);
+      problem.Changed += new ChangedEventHandler(Problem_Changed);
+    }
+
+    protected virtual void Problem_SolutionCreatorChanged(object sender, EventArgs e) { }
+    protected virtual void Problem_EvaluatorChanged(object sender, EventArgs e) { }
     private void Problem_Changed(object sender, ChangedEventArgs e) {
       OnChanged(e);
     }

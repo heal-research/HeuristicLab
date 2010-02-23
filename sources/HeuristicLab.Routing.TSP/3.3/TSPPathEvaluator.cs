@@ -21,7 +21,7 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -31,22 +31,18 @@ namespace HeuristicLab.Routing.TSP {
   /// </summary>
   [Item("TSPPathEvaluator", "A base class for operators which evaluate TSP solutions given in path representation.")]
   [EmptyStorableClass]
-  public abstract class TSPPathEvaluator : SingleSuccessorOperator {
+  public abstract class TSPPathEvaluator : SingleObjectiveEvaluator {
     public LookupParameter<DoubleMatrixData> CoordinatesParameter {
       get { return (LookupParameter<DoubleMatrixData>)Parameters["Coordinates"]; }
     }
     public LookupParameter<Permutation.Permutation> PermutationParameter {
       get { return (LookupParameter<Permutation.Permutation>)Parameters["Permutation"]; }
     }
-    public LookupParameter<DoubleData> QualityParameter {
-      get { return (LookupParameter<DoubleData>)Parameters["Quality"]; }
-    }
 
     protected TSPPathEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<DoubleMatrixData>("Coordinates", "The x- and y-Coordinates of the cities."));
       Parameters.Add(new LookupParameter<Permutation.Permutation>("Permutation", "The TSP solution given in path representation which should be evaluated."));
-      Parameters.Add(new LookupParameter<DoubleData>("Quality", "The evaluated quality of the given TSP solution."));
     }
 
     public override IOperation Apply() {

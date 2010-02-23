@@ -28,6 +28,7 @@ namespace HeuristicLab.Optimization {
   /// Interface to represent an algorithm.
   /// </summary>
   public interface IAlgorithm : IParameterizedNamedItem {
+    Type ProblemType { get; }
     IProblem Problem { get; set; }
     TimeSpan ExecutionTime { get; }
     bool Running { get; }

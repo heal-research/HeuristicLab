@@ -19,16 +19,12 @@
  */
 #endregion
 
-using System;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
 
-namespace HeuristicLab.Core {
-  public interface IDeepCloneable : ICloneable {
-    /// <summary>
-    /// Creates a deep clone of this instance.
-    /// </summary>
-    /// <param name="cloner">The cloner which is responsible for keeping track of all already
-    /// cloned objects.</param>
-    /// <returns>A clone of this instance.</returns>
-    IDeepCloneable Clone(Cloner cloner);
-  }
+namespace HeuristicLab.Optimization {
+  /// <summary>
+  /// An interface which represents an evaluation operator for optimization problems.
+  /// </summary>
+  public interface IEvaluator : IOperator { }
 }

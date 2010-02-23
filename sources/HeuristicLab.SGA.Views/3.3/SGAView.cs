@@ -19,38 +19,49 @@
  */
 #endregion
 
-using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
+using HeuristicLab.Optimization.Views;
 
-namespace HeuristicLab.Optimization.Views {
+namespace HeuristicLab.SGA.Views {
   /// <summary>
   /// The base class for visual representations of items.
   /// </summary>
-  [Content(typeof(Problem), true)]
-  [Content(typeof(IProblem), false)]
-  public partial class ProblemView : ParameterizedNamedItemView {
-    public new IProblem Content {
-      get { return (IProblem)base.Content; }
+  [Content(typeof(SGA), true)]
+  public sealed partial class SGAView : EngineAlgorithmView {
+    public new SGA Content {
+      get { return (SGA)base.Content; }
       set { base.Content = value; }
     }
 
     /// <summary>
     /// Initializes a new instance of <see cref="ItemBaseView"/>.
     /// </summary>
-    public ProblemView() {
+    public SGAView() {
       InitializeComponent();
     }
     /// <summary>
     /// Intializes a new instance of <see cref="ItemBaseView"/> with the given <paramref name="item"/>.
     /// </summary>
     /// <param name="item">The item that should be displayed.</param>
-    public ProblemView(IProblem content)
+    public SGAView(SGA content)
       : this() {
       Content = content;
     }
 
+    protected override void DeregisterContentEvents() {
+      // deregister events here
+      base.DeregisterContentEvents();
+    }
+    protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
+      // register events here
+    }
+
     protected override void OnContentChanged() {
       base.OnContentChanged();
+      if (Content == null) {
+      } else {
+      }
     }
   }
 }

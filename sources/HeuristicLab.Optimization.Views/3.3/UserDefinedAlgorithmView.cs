@@ -26,7 +26,7 @@ using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.Persistence.Default.Xml;
 
-namespace HeuristicLab.Optimization.Views { 
+namespace HeuristicLab.Optimization.Views {
   /// <summary>
   /// The base class for visual representations of items.
   /// </summary>
@@ -93,7 +93,7 @@ namespace HeuristicLab.Optimization.Views {
           Auxiliary.ShowErrorMessageBox(ex);
         }
         if (operatorGraph == null)
-          MessageBox.Show(this, "Selected file does not contain an operator graph.", "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          MessageBox.Show(this, "The selected file does not contain an operator graph.", "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error);
         else
           Content.OperatorGraph = operatorGraph;
       }

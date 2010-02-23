@@ -107,19 +107,6 @@ namespace HeuristicLab.Parameters {
         scope = scope.Parent;
       return scope != null ? scope.Variables[actualName] : null;
     }
-    //private IValueParameter GetProblemParameter(string name) {
-    //  IValueParameter param = null;
-    //  if (ExecutionContext.Problem.Parameters.ContainsKey(name)) {
-    //    param = ExecutionContext.Problem.Parameters[name] as IValueParameter;
-    //    if (param == null)
-    //      throw new InvalidOperationException(
-    //        string.Format("Parameter look-up chain broken. Parameter \"{0}\" is not an \"{1}\".",
-    //                      name,
-    //                      typeof(IValueParameter).GetPrettyName())
-    //      );
-    //  }
-    //  return param;
-    //}
     protected override IItem GetActualValue() {
       string name;
       // try to get value from context stack
@@ -129,25 +116,18 @@ namespace HeuristicLab.Parameters {
       // try to get variable from scope
       IVariable var = LookupVariable(name);
       if (var != null) {
-        T value = var.Value as T;
-        if (value == null)
+        if (!(var.Value is T))
           throw new InvalidOperationException(
             string.Format("Type mismatch. Variable \"{0}\" does not contain a \"{1}\".",
                           name,
                           typeof(T).GetPrettyName())
           );
-        return value;
+        return var.Value;
       }
-
-      // try to get value from problem
-      //IValueParameter problemParam = GetProblemParameter(name);
-      //if (problemParam != null) return problemParam.Value;
-
       return null;
     }
     protected override void SetActualValue(IItem value) {
-      T val = value as T;
-      if (val == null)
+      if (!(value is T))
         throw new InvalidOperationException(
           string.Format("Type mismatch. Value is not a \"{0}\".",
                         typeof(T).GetPrettyName())
@@ -156,23 +136,16 @@ namespace HeuristicLab.Parameters {
       string name;
       IValueParameter param = GetParameter(out name);
       if (param != null) {
-        param.Value = val;
+        param.Value = value;
         return;
       }
 
       // try to set value in scope
       IVariable var = LookupVariable(name);
       if (var != null) {
-        var.Value = val;
+        var.Value = value;
         return;
       }
-
-      // try to set value in problem
-      //IValueParameter problemParam = GetProblemParameter(name);
-      //if (problemParam != null) {
-      //  problemParam.Value = val;
-      //  return;
-      //}
 
       // create new variable
       ExecutionContext.Scope.Variables.Add(new Variable(name, value));

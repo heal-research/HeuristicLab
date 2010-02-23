@@ -19,16 +19,26 @@
  */
 #endregion
 
-using System;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Operators;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Core {
+namespace HeuristicLab.Optimization {
   /// <summary>
-  /// Represents a variable which has a name and holds an IItem.
+  /// A base class for evaluation operators for single-objective optimization problems.
   /// </summary>
-  public interface IVariable : INamedItem {
-    IItem Value { get; set; }
+  [Item("SingleObjectiveEvaluator", "A base class for evaluation operators for single-objective optimization problems.")]
+  [EmptyStorableClass]
+  public abstract class SingleObjectiveEvaluator : SingleSuccessorOperator, ISingleObjectiveEvaluator {
+    public ILookupParameter<DoubleData> QualityParameter {
+      get { return (ILookupParameter<DoubleData>)Parameters["Quality"]; }
+    }
 
-    /// <inheritdoc/>
-    event EventHandler ValueChanged;
+    protected SingleObjectiveEvaluator()
+      : base() {
+      Parameters.Add(new LookupParameter<DoubleData>("Quality", "The evaluated quality of the solution."));
+    }
   }
 }

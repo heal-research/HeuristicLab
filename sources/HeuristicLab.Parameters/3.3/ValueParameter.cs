@@ -47,7 +47,7 @@ namespace HeuristicLab.Parameters {
       get { return Value; }
       set {
         T val = value as T;
-        if (val == null)
+        if ((value != null) && (val == null))
           throw new InvalidOperationException(
             string.Format("Type mismatch. Value is not a \"{0}\".",
                           typeof(T).GetPrettyName())

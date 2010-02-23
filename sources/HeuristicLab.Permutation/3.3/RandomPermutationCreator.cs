@@ -22,6 +22,7 @@
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -32,8 +33,8 @@ namespace HeuristicLab.Permutation {
   [Item("RandomPermutationCreator", "An operator which creates a new random permutation of integer values.")]
   [EmptyStorableClass]
   [Creatable("Test")]
-  public sealed class RandomPermutationCreator : SingleSuccessorOperator {
-    public LookupParameter<IRandom> RandomParameter {
+  public sealed class RandomPermutationCreator : SingleSuccessorOperator, ISolutionCreator {
+    public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
     public ValueLookupParameter<IntData> LengthParameter {
