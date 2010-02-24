@@ -107,8 +107,8 @@ namespace HeuristicLab.Modeling {
       scope.AddVariable(new Variable(scope.TranslateName("NumberOfInputVariables"), new IntData(scopeDataset.Columns - 1)));
       scope.AddVariable(new Variable(scope.TranslateName("InputVariables"), inputVariables));
 
-      int trainingStart = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
-      int trainingEnd = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
+      int trainingStart = ((IntData)GetVariable("TrainingSamplesStart").Value).Data;
+      int trainingEnd = ((IntData)GetVariable("TrainingSamplesEnd").Value).Data;
 
       var maxTraining = GetVariableValue<IntData>("MaxNumberOfTrainingSamples", scope, true, false);
       int nTrainingSamples;
@@ -133,7 +133,7 @@ namespace HeuristicLab.Modeling {
       int targetVariableIndex = operatorDataset.GetVariableIndex(targetVariable);
       for (int row = 0; row < rows; row++) {
         int column = 0;
-        values[row*columns + column] = operatorDataset.GetValue(row, targetVariableIndex); // set target variable value to column index 0
+        values[row * columns + column] = operatorDataset.GetValue(row, targetVariableIndex); // set target variable value to column index 0
         column++; // start input variables at column index 1
         foreach (var inputVariable in operatorAllowedVariables) {
           int variableColumnIndex = operatorDataset.GetVariableIndex(inputVariable.Data);
@@ -164,7 +164,7 @@ namespace HeuristicLab.Modeling {
     }
 
     private void AddVariableToScope(string variableName, IScope scope) {
-      scope.AddVariable(new Variable(scope.TranslateName(variableName), (IItem)GetVariable(variableName).Value.Clone()));      
+      scope.AddVariable(new Variable(scope.TranslateName(variableName), (IItem)GetVariable(variableName).Value.Clone()));
     }
   }
 }
