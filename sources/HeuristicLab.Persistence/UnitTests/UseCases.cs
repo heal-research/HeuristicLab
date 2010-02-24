@@ -407,6 +407,8 @@ namespace HeuristicLab.Persistence.UnitTest {
           continue;
         foreach (Type t in a.GetTypes()) {
           foreach (MemberInfo mi in t.GetMembers(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)) {
+            if (mi.DeclaringType.Name.StartsWith("<>"))
+              continue;
             if (char.IsLower(mi.Name[0])) {
               if (mi.MemberType == MemberTypes.Field)
                 lowerCaseFields.Add(formatFullMemberName(mi));
@@ -502,6 +504,14 @@ namespace HeuristicLab.Persistence.UnitTest {
       Assert.AreEqual(name, TypeNameParser.Parse(name).ToString());
       Assert.AreEqual(shortName, TypeNameParser.Parse(name).ToString(false));
       Assert.AreEqual(shortName, typeof(List<int>[]).VersionInvariantName());
+    }
+
+    [TestMethod]
+    public void TestHexadecimalPublicKeyToken() {
+      string name = "TestClass, TestAssembly, Version=1.2.3.4, PublicKey=1234abc";
+      string shortName = "TestClass, TestAssembly";
+      Assert.AreEqual(name, TypeNameParser.Parse(name).ToString());
+      Assert.AreEqual(shortName, TypeNameParser.Parse(name).ToString(false));
     }
 
     [TestMethod]

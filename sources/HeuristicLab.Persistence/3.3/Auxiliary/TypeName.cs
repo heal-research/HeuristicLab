@@ -30,7 +30,9 @@ namespace HeuristicLab.Persistence.Auxiliary {
 
     public string ToString(bool full, bool includeAssembly) {
       StringBuilder sb = new StringBuilder();
-      sb.Append(Namespace).Append('.').Append(ClassName);
+      if (!string.IsNullOrEmpty(Namespace))
+        sb.Append(Namespace).Append('.');
+      sb.Append(ClassName);
       if (IsGeneric) {
         sb.Append('`').Append(GenericArgs.Count).Append('[');
         bool first = true;

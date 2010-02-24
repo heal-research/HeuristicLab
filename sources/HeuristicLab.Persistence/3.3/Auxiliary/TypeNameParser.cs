@@ -28,7 +28,7 @@ namespace HeuristicLab.Persistence.Auxiliary {
                  |  'PublicKey(Token)?=[a-fA-F0-9]+'
                  |  'Culture=[a-zA-F0-9]+'
 
-      Version := '\d+\.\d+\.\d+\.\d+)'
+      Version := \d+\.\d+\.\d+\.\d+
 
       IDENTIFIER = [_a-zA-Z][_a-ZA-Z0-9]*
     */
@@ -49,9 +49,11 @@ namespace HeuristicLab.Persistence.Auxiliary {
           {"=", "EQUALS"},
           {"`", "BACKTICK"} };
       private static Regex NumberRegex = new Regex("^\\d+$");
-      private static Regex TokenRegex = new Regex("[-&.+,\\[\\]* =`]|\\d+|[_a-zA-Z][_a-zA-Z0-9]*");
+      private static Regex IdentifierRegex = new Regex("^[_a-zA-Z][_a-zA-Z0-9]*$");
+      private static Regex TokenRegex = new Regex("[-&.+,\\[\\]* =`]|[a-f0-9]+|\\d+|[_a-zA-Z][_a-zA-Z0-9]*");
       public string Name { get; private set; }
       public string Value { get; private set; }
+      public bool IsIdentifier { get; private set; }
       public int? Number { get; private set; }
       public int Position { get; private set; }
       private Token(string value, int pos) {
@@ -62,6 +64,7 @@ namespace HeuristicLab.Persistence.Auxiliary {
           Number = int.Parse(value);
         } else {
           Value = value;
+          IsIdentifier = IdentifierRegex.IsMatch(value);
         }
       }
       public static IEnumerable<Token> Tokenize(string s) {
@@ -238,7 +241,7 @@ namespace HeuristicLab.Persistence.Auxiliary {
 
     private KeyValuePair<string, string> ConsumeAssignment(string name) {
       ConsumeToken("EQUALS", true);
-      return new KeyValuePair<string, string>(name, ConsumeIdentifier());
+      return new KeyValuePair<string, string>(name, ConsumeToken());
     }
 
     private string TransformVersion() {
@@ -272,7 +275,7 @@ namespace HeuristicLab.Persistence.Auxiliary {
     private bool ConsumeIdentifier(string value) {
       if (tokens.Count == 0)
         return false;
-      if (tokens.Peek().Value == value) {
+      if (tokens.Peek().Value == value && tokens.Peek().IsIdentifier) {
         tokens.Dequeue();
         return true;
       } else {
@@ -287,10 +290,20 @@ namespace HeuristicLab.Persistence.Auxiliary {
     private string ConsumeIdentifier() {
       if (tokens.Count == 0)
         throw new ParseError("End of input while expecting identifier");
-      if (tokens.Peek().Value != null)
+      if (tokens.Peek().Value != null && tokens.Peek().IsIdentifier)
         return tokens.Dequeue().Value;
       throw new ParseError(String.Format(
         "Identifier expected, found \"{0}\" instead",
+        tokens.Peek().ToString()));
+    }
+
+    private string ConsumeToken() {
+      if (tokens.Count == 0)
+        throw new ParseError("End of input while expecting token");
+      if (tokens.Peek().Value != null)
+        return tokens.Dequeue().Value;
+      throw new ParseError(String.Format(
+        "Token expected, found \"{0}\" instead",
         tokens.Peek().ToString()));
     }
 
