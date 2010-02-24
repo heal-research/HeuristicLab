@@ -30,7 +30,7 @@ using System.Reflection;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced.DeploymentService {
   // extension of auto-generated DataContract class ProductDescription
-  public partial class ProductDescription {
+  public partial class ProductDescription  {
     public ProductDescription(string name, Version version)
       : this(name, version, new List<PluginDescription>()) {
     }

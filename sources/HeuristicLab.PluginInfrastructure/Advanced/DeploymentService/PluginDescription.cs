@@ -30,18 +30,37 @@ using System.Reflection;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced.DeploymentService {
   // extension of auto-generated DataContract class PluginDescription
-  public partial class PluginDescription {
+  public partial class PluginDescription : IPluginDescription {
     public PluginDescription(string name, Version version) : this(name, version, new List<PluginDescription>()) { }
     public PluginDescription(string name, Version version, IEnumerable<PluginDescription> dependencies)
-      : this(name, version, dependencies, string.Empty, string.Empty) {
+      : this(name, version, dependencies, string.Empty, string.Empty, string.Empty) {
     }
 
-    public PluginDescription(string name, Version version, IEnumerable<PluginDescription> dependencies, string contactInformation, string licenseText) {
+    public PluginDescription(string name, Version version, IEnumerable<PluginDescription> dependencies, string contactName, string contactEmail, string licenseText) {
       this.Name = name;
       this.Version = version;
       this.Dependencies = dependencies.ToArray();
-      this.ContactInformation = contactInformation;
       this.LicenseText = licenseText;
     }
+
+    #region IPluginDescription Members
+
+
+    [Obsolete]
+    public DateTime BuildDate {
+      get { throw new NotImplementedException(); }
+    }
+
+    IEnumerable<IPluginDescription> IPluginDescription.Dependencies {
+      get {
+        return Dependencies;
+      }
+    }
+
+    public IEnumerable<IPluginFile> Files {
+      get { return Enumerable.Empty<IPluginFile>(); }
+    }
+
+    #endregion
   }
 }
