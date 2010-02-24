@@ -21,6 +21,7 @@
 
 using HeuristicLab.Core;
 using System;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
@@ -32,5 +33,6 @@ namespace HeuristicLab.Optimization {
 
     event EventHandler SolutionCreatorChanged;
     event EventHandler EvaluatorChanged;
+    event EventHandler<EventArgs<Type>> OperatorsChanged;
   }
 }

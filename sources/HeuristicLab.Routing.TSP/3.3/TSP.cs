@@ -25,6 +25,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Permutation;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System;
 
 namespace HeuristicLab.Routing.TSP {
   [Item("TSP", "Represents a symmetric Traveling Salesman Problem.")]

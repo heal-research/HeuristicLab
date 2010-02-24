@@ -24,6 +24,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Parameters;
 using System;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
@@ -98,6 +99,11 @@ namespace HeuristicLab.Optimization {
     protected virtual void OnEvaluatorChanged() {
       if (EvaluatorChanged != null)
         EvaluatorChanged(this, EventArgs.Empty);
+    }
+    public event EventHandler<EventArgs<Type>> OperatorsChanged;
+    protected virtual void OnOperatorsChanged(Type operatorType) {
+      if (OperatorsChanged != null)
+        OperatorsChanged(this, new EventArgs<Type>(operatorType));
     }
   }
 }

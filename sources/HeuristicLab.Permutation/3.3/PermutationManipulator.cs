@@ -21,6 +21,7 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -30,8 +31,8 @@ namespace HeuristicLab.Permutation {
   /// </summary>
   [Item("PermutationManipulator", "A base class for permutation manipulation operators.")]
   [EmptyStorableClass]
-  public abstract class PermutationManipulator : SingleSuccessorOperator {
-    public LookupParameter<IRandom> RandomParameter {
+  public abstract class PermutationManipulator : SingleSuccessorOperator, IPermutationManipulationOperator {
+    public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
     public LookupParameter<Permutation> PermutationParameter {

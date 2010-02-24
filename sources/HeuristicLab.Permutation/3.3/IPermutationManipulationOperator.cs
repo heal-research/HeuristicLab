@@ -21,10 +21,11 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Optimization {
+namespace HeuristicLab.Permutation {
   /// <summary>
-  /// An interface which represents an operator for creating new solutions.
+  /// An interface which represents an operator for manipulating solutions.
   /// </summary>
-  public interface ISolutionCreator : IOperator { }
+  public interface IPermutationManipulationOperator : IManipulationOperator { }
 }

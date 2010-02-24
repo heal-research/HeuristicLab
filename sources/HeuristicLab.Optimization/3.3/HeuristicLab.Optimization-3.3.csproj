@@ -51,6 +51,10 @@
   <ItemGroup>
     <None Include="HeuristicLabOptimizationPlugin.cs.frame" />
     <Compile Include="Algorithm.cs" />
+    <Compile Include="IManipulationOperator.cs" />
+    <Compile Include="ICrossoverOperator.cs" />
+    <Compile Include="IStochasticSolutionCreator.cs" />
+    <Compile Include="IStochasticOperator.cs" />
     <Compile Include="ISolutionCreator.cs" />
     <Compile Include="SingleObjectiveProblem.cs" />
     <Compile Include="ISingleObjectiveProblem.cs" />

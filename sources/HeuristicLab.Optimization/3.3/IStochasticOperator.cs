@@ -24,7 +24,9 @@ using HeuristicLab.Data;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
-  /// An interface which represents an operator for creating new solutions.
+  /// An interface which represents a stochastic operator.
   /// </summary>
-  public interface ISolutionCreator : IOperator { }
+  public interface IStochasticOperator : IOperator {
+    ILookupParameter<IRandom> RandomParameter { get; }
+  }
 }

@@ -105,7 +105,7 @@ namespace HeuristicLab.SGA {
     }
 
     protected override void OnProblemChanged() {
-      Problem.SolutionCreator.RandomParameter.ActualName = "Random";
+      if (Problem.SolutionCreator is IStochasticSolutionCreator) ((IStochasticSolutionCreator)Problem.SolutionCreator).RandomParameter.ActualName = "Random";
       populationCreator.SolutionCreatorParameter.Value = Problem.SolutionCreator;
       populationCreator.SolutionEvaluatorParameter.Value = Problem.Evaluator;
       sgaOperator.MaximizationParameter.Value = Problem.Maximization;
@@ -114,7 +114,7 @@ namespace HeuristicLab.SGA {
       base.OnProblemChanged();
     }
     protected override void Problem_SolutionCreatorChanged(object sender, EventArgs e) {
-      Problem.SolutionCreator.RandomParameter.ActualName = "Random";
+      if (Problem.SolutionCreator is IStochasticSolutionCreator) ((IStochasticSolutionCreator)Problem.SolutionCreator).RandomParameter.ActualName = "Random";
       populationCreator.SolutionCreatorParameter.Value = Problem.SolutionCreator;
       base.Problem_SolutionCreatorChanged(sender, e);
     }

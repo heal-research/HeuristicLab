@@ -24,7 +24,7 @@ using HeuristicLab.Data;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
-  /// An interface which represents an operator for creating new solutions.
+  /// An interface which represents an operator for crossing solutions.
   /// </summary>
-  public interface ISolutionCreator : IOperator { }
+  public interface ICrossoverOperator : IStochasticOperator { }
 }
