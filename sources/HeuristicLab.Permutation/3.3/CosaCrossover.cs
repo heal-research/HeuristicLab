@@ -32,6 +32,8 @@ namespace HeuristicLab.Permutation {
   /// reverse and forward intervals from the first permutation array inserting 
   /// it in the child on different positions depending on the second permutation array.
   /// </summary>
+  /// <remarks>It is implemented as described in Wendt, O. 1994. COSA: COoperative Simulated Annealing - Integration von Genetischen Algorithmen und Simulated Annealing am Beispiel der Tourenplanung. Dissertation Thesis.<br />
+  /// </remarks>
   [Item("CosaCrossover", "An operator which performs a crossover operation between two permutation arrays by taking randomly chosen reverse and forward intervals from the first permutation array inserting it in the child on different positions depending on the second permutation array.")]
   [EmptyStorableClass]
   [Creatable("Test")]
