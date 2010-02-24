@@ -86,7 +86,8 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       this.connectionConnectorsMapping.Clear();
 
       foreach (IShapeInfo shapeInfo in this.VisualizationInfo.ShapeInfos)
-        this.AddShapeInfo(shapeInfo);
+        if (!this.shapeInfoShapeMapping.ContainsFirst(shapeInfo))
+          this.AddShapeInfo(shapeInfo);
 
       this.UpdateLayoutRoot();
     }
@@ -142,6 +143,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       IShape shape = shapeInfo.CreateShape();
       shape.OnEntityChange += new EventHandler<EntityEventArgs>(shape_OnEntityChange);
       this.shapeInfoShapeMapping.Add(shapeInfo, shape);
+      this.shapeInfoConnectionsMapping.Add(shapeInfo, shapeInfo.ObservableConnections);
 
       foreach (IConnector connector in shape.Connectors)
         this.connectorShapeMapping.Add(connector, shape);
@@ -168,6 +170,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       }
 
       this.shapeInfoShapeMapping.RemoveByFirst(shapeInfo);
+      this.shapeInfoConnectionsMapping.RemoveByFirst(shapeInfo);
 
       if (this.graphVisualization.Controller.Model.Shapes.Contains(shape)) {
         this.graphVisualization.Controller.Model.RemoveShape(shape);
@@ -176,8 +179,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
     private void RegisterShapeInfoEvents(IShapeInfo shapeInfo) {
       shapeInfo.Changed += new ChangedEventHandler(shapeInfo_Changed);
-
-      this.shapeInfoConnectionsMapping.Add(shapeInfo, shapeInfo.ObservableConnections);
       shapeInfo.ObservableConnections.ItemsAdded += new CollectionItemsChangedEventHandler<KeyValuePair<string, IShapeInfo>>(Connections_ItemsAdded);
       shapeInfo.ObservableConnections.ItemsRemoved += new CollectionItemsChangedEventHandler<KeyValuePair<string, IShapeInfo>>(Connections_ItemsRemoved);
       shapeInfo.ObservableConnections.ItemsReplaced += new CollectionItemsChangedEventHandler<KeyValuePair<string, IShapeInfo>>(Connections_ItemsReplaced);
@@ -186,8 +187,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
     private void DeregisterShapeInfoEvents(IShapeInfo shapeInfo) {
       shapeInfo.Changed -= new ChangedEventHandler(shapeInfo_Changed);
-
-      this.shapeInfoConnectionsMapping.RemoveByFirst(shapeInfo);
       shapeInfo.ObservableConnections.ItemsAdded -= new CollectionItemsChangedEventHandler<KeyValuePair<string, IShapeInfo>>(Connections_ItemsAdded);
       shapeInfo.ObservableConnections.ItemsRemoved -= new CollectionItemsChangedEventHandler<KeyValuePair<string, IShapeInfo>>(Connections_ItemsRemoved);
       shapeInfo.ObservableConnections.ItemsReplaced -= new CollectionItemsChangedEventHandler<KeyValuePair<string, IShapeInfo>>(Connections_ItemsReplaced);
