@@ -41,10 +41,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AbsolutePositionTopologicalCrossoverTest.cs" />
     <Compile Include="Auxiliary.cs" />
+    <Compile Include="CosaCrossoverTest.cs" />
+    <Compile Include="CyclicCrossoverTest.cs" />
+    <Compile Include="EdgeRecombinationCrossoverTest.cs" />
+    <Compile Include="InsertionManipulatorTest.cs" />
+    <Compile Include="InversionManipulatorTest.cs" />
+    <Compile Include="MaximalPreservativeCrossoverTest.cs" />
+    <Compile Include="OrderBasedCrossoverTest.cs" />
     <Compile Include="OrderCrossoverTest.cs" />
+    <Compile Include="PartiallyMatchedCrossoverTest.cs" />
+    <Compile Include="PositionBasedCrossoverTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Random.cs" />
+    <Compile Include="ScrambleManipulatorTest.cs" />
+    <Compile Include="Swap2ManipulatorTest.cs" />
+    <Compile Include="Swap3ManipulatorTest.cs" />
+    <Compile Include="TranslocationInversionManipulatorTest.cs" />
+    <Compile Include="TranslocationManipulatorTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="AuthoringTests.txt" />

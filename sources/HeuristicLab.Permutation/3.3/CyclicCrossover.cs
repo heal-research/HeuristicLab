@@ -30,7 +30,7 @@ namespace HeuristicLab.Permutation {
   /// <remarks>It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.<br />
   /// The operator first determines all cycles in the permutation and then composes the offspring by alternating between the cycles of the two parents.
   /// </remarks>
-  [Item("CyclicCrossover", "An operator which performs the cyclic crossover on two permutations as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.")]
+  [Item("CyclicCrossover", "An operator which performs the cyclic crossover on two permutations.")]
   [EmptyStorableClass]
   [Creatable("Test")]
   public class CyclicCrossover : PermutationCrossover {
@@ -46,6 +46,7 @@ namespace HeuristicLab.Permutation {
     /// It continues to switch between parents for each completed cycle until no new cycle is found anymore.<br /><br />
     /// The stochasticity of this operator is rather low. There are only two possible outcomes for a given pair of parents.
     /// </remarks>
+    /// <exception cref="ArgumentException">Thrown if the two parents are not of equal length.</exception>
     /// <param name="random">The random number generator.</param>
     /// <param name="parent1">The parent scope 1 to cross over.</param>
     /// <param name="parent2">The parent scope 2 to cross over.</param>
@@ -76,12 +77,13 @@ namespace HeuristicLab.Permutation {
         do {
           if (copyFromParent1) {
             result[j] = parent1[j]; // copy number at position j from parent1
+            indexCopied[j] = true;
             j = invParent2[result[j]]; // set position j to the position of the copied number in parent2
           } else {
             result[j] = parent2[j]; // copy number at position j from parent2
+            indexCopied[j] = true;
             j = invParent1[result[j]]; // set position j to the position of the copied number in parent1
           }
-          indexCopied[j] = true;
         } while (!indexCopied[j]);
         copyFromParent1 = !copyFromParent1;
         j = 0;
@@ -95,7 +97,6 @@ namespace HeuristicLab.Permutation {
     /// Checks number of parents and calls <see cref="Apply(IRandom, Permutation, Permutation)"/>.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown if there are not exactly two parents.</exception>
-    /// <param name="scope">The current scope.</param>
     /// <param name="random">A random number generator.</param>
     /// <param name="parents">An array containing the two permutations that should be crossed.</param>
     /// <returns>The newly created permutation, resulting from the crossover operation.</returns>

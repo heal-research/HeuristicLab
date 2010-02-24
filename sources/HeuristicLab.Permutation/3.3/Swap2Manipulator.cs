@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,47 +23,43 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Permutation {
   /// <summary>
   /// Manipulates a permutation array by swapping to randomly chosen elements.
   /// </summary>
-  public class Swap2Manipulator : PermutationManipulatorBase {
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get { return @"TODO\r\nOperator description still missing ..."; }
-    }
-
+  ///   /// <remarks>
+  /// It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.<br />
+  /// </remarks>
+  [Item("Swap2Manipulator", "An operator which manipulates a permutation array by swapping to randomly chosen elements.")]
+  [EmptyStorableClass]
+  [Creatable("Test")]
+  public class Swap2Manipulator : PermutationManipulator {
     /// <summary>
-    /// Swaps two randomly chosen elements in the given <paramref name="permutation"/> array.
+    /// Swaps two randomly chosen elements in the given <paramref name="permutation"/> permutation.
     /// </summary>
     /// <param name="random">The random number generator.</param>
-    /// <param name="permutation">The permutation array to manipulate.</param>
-    /// <returns>The new permuation array with the manipulated data.</returns>
-    public static int[] Apply(IRandom random, int[] permutation) {
-      int[] result = (int[])permutation.Clone();
+    /// <param name="permutation">The permutation to manipulate.</param>
+    public static void Apply(IRandom random, Permutation permutation) {
       int index1, index2, temp;
 
-      index1 = random.Next(result.Length);
-      index2 = random.Next(result.Length);
+      index1 = random.Next(permutation.Length);
+      index2 = random.Next(permutation.Length);
 
-      temp = result[index1];
-      result[index1] = result[index2];
-      result[index2] = temp;
-
-      return result;
+      temp = permutation[index1];
+      permutation[index1] = permutation[index2];
+      permutation[index2] = temp;
     }
 
     /// <summary>
     /// Swaps two randomly chosen elements in the given <paramref name="permutation"/> array.
     /// </summary>
     /// <remarks>Calls <see cref="Apply"/>.</remarks>
-    /// <param name="scope">The current scope.</param>
-    /// <param name="random">The random number generator.</param>
-    /// <param name="permutation">The permutation array to manipulate.</param>
-    /// <returns>The new permuation array with the manipulated data.</returns>
-    protected override int[] Manipulate(IScope scope, IRandom random, int[] permutation) {
-      return Apply(random, permutation);
+    /// <param name="random">A random number generator.</param>
+    /// <param name="permutation">The permutation to manipulate.</param>
+    protected override void Manipulate(IRandom random, Permutation permutation) {
+      Apply(random, permutation);
     }
   }
 }

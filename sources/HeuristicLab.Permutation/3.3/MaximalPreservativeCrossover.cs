@@ -33,7 +33,7 @@ namespace HeuristicLab.Permutation {
   /// This recommendation is mentioned in Pohlheim, H. 1999. Evolutionäre Algorithmen: Verfahren, Operatoren und Hinweise für die Praxis, p. 44, Springer.
   /// If the length of the permutation is smaller than 15, the size of the segment is always equal to 3.
   /// </remarks>
-  [Item("MaximalPreservativeCrossover", "An operator which performs the maximal preservative crossover on two permutations as described in Mühlenbein, H. 1991. Evolution in time and space - the parallel genetic algorithm. FOUNDATIONS OF GENETIC ALGORITHMS, pp. 316-337. Morgan Kaufmann.")]
+  [Item("MaximalPreservativeCrossover", "An operator which performs the maximal preservative crossover on two permutations.")]
   [EmptyStorableClass]
   [Creatable("Test")]
   public class MaximalPreservativeCrossover : PermutationCrossover {
@@ -130,7 +130,6 @@ namespace HeuristicLab.Permutation {
     /// Checks number of parents and calls <see cref="Apply(IRandom, Permutation, Permutation)"/>.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown if there are not exactly two permutations in <paramref name="parents"/>.</exception>
-    /// <param name="scope">The current scope.</param>
     /// <param name="random">A random number generator.</param>
     /// <param name="parents">An array containing the two permutations that should be crossed.</param>
     /// <returns>The newly created permutation, resulting from the crossover operation.</returns>

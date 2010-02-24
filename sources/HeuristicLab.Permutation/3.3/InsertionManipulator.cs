@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,49 +23,49 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Permutation {
   /// <summary>
   /// Manipulates a permutation array by moving randomly one element to another position in the array.
-  /// </summary>
-  public class InsertionManipulator : PermutationManipulatorBase {
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get { return @"TODO\r\nOperator description still missing ..."; }
-    }
-
+  /// </summary> 
+  /// <remarks>
+  /// It is implemented as described in Fogel, D.B. (1988). An Evolutionary Approach to the Traveling Salesman Problem, Biological Cybernetics, 60, pp. 139-144
+  /// </remarks>
+  [Item("InsertionManipulator", "An operator which moves randomly one element to another position in the permutation.")]
+  [EmptyStorableClass]
+  [Creatable("Test")]
+  public class InsertionManipulator : PermutationManipulator {
     /// <summary>
     /// Moves an randomly chosen element in the specified <paramref name="permutation"/> array 
     /// to another randomly generated position.
     /// </summary>
     /// <param name="random">The random number generator.</param>
-    /// <param name="permutation">The array to manipulate.</param>
-    /// <returns>The new permuation array with the manipulated data.</returns>
-    public static int[] Apply(IRandom random, int[] permutation) {
-      int[] result = (int[])permutation.Clone();
+    /// <param name="permutation">The permutation to manipulate.</param>
+    public static void Apply(IRandom random, Permutation permutation) {
+      Permutation original = (Permutation)permutation.Clone();
       int cutIndex, insertIndex, number;
 
-      cutIndex = random.Next(permutation.Length);
-      insertIndex = random.Next(permutation.Length);
-      number = permutation[cutIndex];
+      cutIndex = random.Next(original.Length);
+      insertIndex = random.Next(original.Length);
+      number = original[cutIndex];
 
       int i = 0;  // index in new permutation
       int j = 0;  // index in old permutation
-      while (i < permutation.Length) {
+      while (i < original.Length) {
         if (j == cutIndex) {
           j++;
         }
         if (i == insertIndex) {
-          result[i] = number;
+          permutation[i] = number;
           i++;
         }
-        if ((i < permutation.Length) && (j < permutation.Length)) {
-          result[i] = permutation[j];
+        if ((i < original.Length) && (j < original.Length)) {
+          permutation[i] = original[j];
           i++;
           j++;
         }
       }
-      return result;
     }
 
     /// <summary>
@@ -73,12 +73,10 @@ namespace HeuristicLab.Permutation {
     /// to another randomly generated position.
     /// </summary>
     /// <remarks>Calls <see cref="Apply"/>.</remarks>
-    /// <param name="scope">The current scope.</param>
-    /// <param name="random">The random number generator.</param>
-    /// <param name="permutation">The array to manipulate.</param>
-    /// <returns>The new permuation array with the manipulated data.</returns>
-    protected override int[] Manipulate(IScope scope, IRandom random, int[] permutation) {
-      return Apply(random, permutation);
+    /// <param name="random">A random number generator.</param>
+    /// <param name="permutation">The permutation to manipulate.</param>
+    protected override void Manipulate(IRandom random, Permutation permutation) {
+      Apply(random, permutation);
     }
   }
 }

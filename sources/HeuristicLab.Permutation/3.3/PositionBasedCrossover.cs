@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,26 +24,31 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Permutation {
   /// <summary>
   /// Performs a cross over permutation between two permutation arrays based on randomly chosen positions.
   /// </summary>
-  public class PositionBasedCrossover : PermutationCrossoverBase {
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get { return @"TODO\r\nOperator description still missing ..."; }
-    }
-
+  /// <remarks>
+  /// Implemented as described in Syswerda, G. (1991). Schedule Optimization Using Genetic Algorithms,
+  /// in Davis, L. (Ed.) Handbook of Genetic Algorithms, Van Nostrand Reinhold, New York, pp 332-349.
+  /// </remarks>
+  [Item("PositionBasedCrossover", "An operator which performs the position based crossover on two permutations.")]
+  [EmptyStorableClass]
+  [Creatable("Test")]
+  public class PositionBasedCrossover : PermutationCrossover {
     /// <summary>
     /// Performs a cross over permutation of <paramref name="parent1"/> and <paramref name="parent2"/>
     /// based on randomly chosen positions to define which position to take from where.
     /// </summary>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="parent1"/> and <paramref name="parent2"/> are not of equal length.</exception>
     /// <param name="random">The random number generator.</param>
-    /// <param name="parent1">The permutation array of parent 1.</param>
-    /// <param name="parent2">The permutation array of parent 2.</param>
-    /// <returns>The created cross over permutation as int array.</returns>
-    public static int[] Apply(IRandom random, int[] parent1, int[] parent2) {
+    /// <param name="parent1">First parent</param>
+    /// <param name="parent2">Second Parent</param>
+    /// <returns>Child</returns>
+    public static Permutation Apply(IRandom random, Permutation parent1, Permutation parent2) {
+      if (parent1.Length != parent2.Length) throw new ArgumentException("PositionBasedCrossover: The parent permutations are of unequal length.");
       int length = parent1.Length;
       int[] result = new int[length];
       bool[] randomPosition = new bool[length];
@@ -73,18 +78,18 @@ namespace HeuristicLab.Permutation {
           index++;
         }
       }
-      return result;
+
+      return new Permutation(result);
     }
 
     /// <summary>
     /// Performs a position-based crossover operation for two given parent permutations.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown if there are not exactly two parents.</exception>
-    /// <param name="scope">The current scope.</param>
     /// <param name="random">A random number generator.</param>
     /// <param name="parents">An array containing the two permutations that should be crossed.</param>
     /// <returns>The newly created permutation, resulting from the crossover operation.</returns>
-    protected override int[] Cross(IScope scope, IRandom random, int[][] parents) {
+    protected override Permutation Cross(IRandom random, ItemArray<Permutation> parents) {
       if (parents.Length != 2) throw new InvalidOperationException("ERROR in PositionBasedCrossover: The number of parents is not equal to 2");
       return Apply(random, parents[0], parents[1]);
     }

@@ -81,19 +81,30 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLabPermutationPlugin.cs.frame" />
+    <Compile Include="AbsolutePositionTopologicalCrossover.cs" />
+    <Compile Include="CosaCrossover.cs" />
     <Compile Include="CyclicCrossover.cs" />
+    <Compile Include="EdgeRecombinationCrossover.cs" />
+    <Compile Include="InsertionManipulator.cs" />
     <Compile Include="InversionManipulator.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MaximalPreservativeCrossover.cs" />
+    <Compile Include="OrderBasedCrossover.cs" />
     <Compile Include="PartiallyMatchedCrossover.cs" />
     <Compile Include="PermutationManipulator.cs" />
     <Compile Include="HeuristicLabPermutationPlugin.cs" />
     <Compile Include="OrderCrossover.cs" />
     <Compile Include="PermutationCrossover.cs" />
     <Compile Include="Permutation.cs" />
+    <Compile Include="PositionBasedCrossover.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RandomPermutationCreator.cs" />
+    <Compile Include="ScrambleManipulator.cs" />
+    <Compile Include="Swap2Manipulator.cs" />
+    <Compile Include="Swap3Manipulator.cs" />
+    <Compile Include="TranslocationInversionManipulator.cs" />
+    <Compile Include="TranslocationManipulator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />

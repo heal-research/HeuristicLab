@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Permutation {
   /// <summary>
@@ -31,22 +32,26 @@ namespace HeuristicLab.Permutation {
   /// (not an interval!) from the first permutation keeping the correct order and filling 
   /// the missing entries with the elements from the second permutation, also in the right order.
   /// </summary>
-  public class OrderBasedCrossover : PermutationCrossoverBase {
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get { return @"TODO\r\nOperator description still missing ..."; }
-    }
-
+  /// <remarks>
+  /// Implemented as described in Syswerda, G. (1991). Schedule Optimization Using Genetic Algorithms,
+  /// in Davis, L. (Ed.) Handbook of Genetic Algorithms, Van Nostrand Reinhold, New York, pp 332-349.
+  /// </remarks>
+  [Item("OrderBasedCrossover", "An operator which performs an order based crossover of two permutations.")]
+  [EmptyStorableClass]
+  [Creatable("Test")]
+  public class OrderBasedCrossover : PermutationCrossover {
     /// <summary>
     /// Performs a cross over permutation of <paramref name="parent1"/> and <paramref name="parent2"/> by
     /// randomly selecting some values from the first permutation that will be inserted one after each 
     /// other; the missing ones are picked in the correct order from the second permutation.
     /// </summary>
-    /// <param name="random">The random number generator.</param>
-    /// <param name="parent1">The parent scope 1 to cross over.</param>
-    /// <param name="parent2">The parent scope 2 to cross over.</param>
-    /// <returns>The created cross over permutation as int array.</returns>
-    public static int[] Apply(IRandom random, int[] parent1, int[] parent2) {
+    /// <exception cref="ArgumentException">Thrown when <paramref name="parent1"/> and <paramref name="parent2"/> are not of equal length.</exception>
+    /// <param name="random">A random number generator.</param>
+    /// <param name="parent1">The first parent permutation to cross.</param>
+    /// <param name="parent2">The second parent permutation to cross.</param>
+    /// <returns>The new permutation resulting from the crossover.</returns>
+    public static Permutation Apply(IRandom random, Permutation parent1, Permutation parent2) {
+      if (parent1.Length != parent2.Length) throw new ArgumentException("OrderBasedCrossover: The parent permutations are of unequal length.");
       int length = parent1.Length;
       int[] result = new int[length];
       int[] selectedNumbers = new int[random.Next(length + 1)];
@@ -87,19 +92,18 @@ namespace HeuristicLab.Permutation {
           result[i] = parent2[i];
         }
       }
-      return result;
+      return new Permutation(result);
     }
 
     /// <summary>
     /// Performs an order-based crossover operation for two given parent permutations.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown if there are not exactly two parents.</exception>
-    /// <param name="scope">The current scope.</param>
     /// <param name="random">A random number generator.</param>
     /// <param name="parents">An array containing the two permutations that should be crossed.</param>
-    /// <returns>The newly created permutation, resulting from the crossover operation.</returns>
-    protected override int[] Cross(IScope scope, IRandom random, int[][] parents) {
-      if (parents.Length != 2) throw new InvalidOperationException("ERROR in OrderBasedCrossover: The number of parents is not equal to 2");
+    /// <returns>The new permutation resulting from the crossover.</returns>
+    protected override Permutation Cross(IRandom random, ItemArray<Permutation> parents) {
+      if (parents.Length != 2) throw new InvalidOperationException("OrderCrossover: Number of parents is not equal to 2.");
       return Apply(random, parents[0], parents[1]);
     }
   }

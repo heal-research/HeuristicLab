@@ -33,7 +33,7 @@ namespace HeuristicLab.Permutation {
   /// the positions. Then, starting from the end of the copied interval, copies the missing values from the second permutation
   /// in the order they occur.
   /// </remarks>
-  [Item("OrderCrossover", "An operator which performs an order crossover of two permutations as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.")]
+  [Item("OrderCrossover", "An operator which performs an order crossover of two permutations.")]
   [EmptyStorableClass]
   [Creatable("Test")]
   public class OrderCrossover : PermutationCrossover {

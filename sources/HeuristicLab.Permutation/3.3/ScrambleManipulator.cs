@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,32 +23,35 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Permutation {
   /// <summary>
   /// Manipulates a permutation array by randomly scrambling the elements in a randomly chosen interval.
   /// </summary>
-  public class ScrambleManipulator : PermutationManipulatorBase {
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get { return @"TODO\r\nOperator description still missing ..."; }
-    }
-
+  /// <remarks>
+  /// Implemented as described in Syswerda, G. (1991). Schedule Optimization Using Genetic Algorithms,
+  /// in Davis, L. (Ed.) Handbook of Genetic Algorithms, Van Nostrand Reinhold, New York, pp 332-349.
+  /// </remarks>
+  [Item("ScrambleManipulator", "An operator which manipulates a permutation array by randomly scrambling the elements in a randomly chosen interval.")]
+  [EmptyStorableClass]
+  [Creatable("Test")]
+  public class ScrambleManipulator : PermutationManipulator {
     /// <summary>
     /// Mixes the elements of the given <paramref name="permutation"/> randomly 
     /// in a randomly chosen interval.
     /// </summary>
     /// <param name="random">The random number generator.</param>
-    /// <param name="permutation">The permutation array to manipulate.</param>
-    /// <returns>The new permuation array with the manipulated data.</returns>
-    public static int[] Apply(IRandom random, int[] permutation) {
-      int[] result = (int[])permutation.Clone();
+    /// <param name="permutation">The permutation to manipulate.</param>
+    public static void Apply(IRandom random, Permutation permutation) {
+      Permutation original = (Permutation)permutation.Clone();
+
       int breakPoint1, breakPoint2;
       int[] scrambledIndices, remainingIndices, temp;
       int selectedIndex, index;
 
-      breakPoint1 = random.Next(permutation.Length - 1);
-      breakPoint2 = random.Next(breakPoint1 + 1, permutation.Length);
+      breakPoint1 = random.Next(original.Length - 1);
+      breakPoint2 = random.Next(breakPoint1 + 1, original.Length);
 
       scrambledIndices = new int[breakPoint2 - breakPoint1 + 1];
       remainingIndices = new int[breakPoint2 - breakPoint1 + 1];
@@ -72,9 +75,8 @@ namespace HeuristicLab.Permutation {
       }
 
       for (int i = 0; i <= (breakPoint2 - breakPoint1); i++) {  // scramble permutation between breakpoints
-        result[breakPoint1 + i] = permutation[breakPoint1 + scrambledIndices[i]];
+        permutation[breakPoint1 + i] = original[breakPoint1 + scrambledIndices[i]];
       }
-      return result;
     }
 
     /// <summary>
@@ -82,12 +84,10 @@ namespace HeuristicLab.Permutation {
     /// in a randomly chosen interval.
     /// </summary>
     /// <remarks>Calls <see cref="Apply"/>.</remarks>
-    /// <param name="scope">The current scope.</param>
-    /// <param name="random">The random number generator.</param>
-    /// <param name="permutation">The permutation array to manipulate.</param>
-    /// <returns>The new permuation array with the manipulated data.</returns>
-    protected override int[] Manipulate(IScope scope, IRandom random, int[] permutation) {
-      return Apply(random, permutation);
+    /// <param name="random">A random number generator.</param>
+    /// <param name="permutation">The permutation to manipulate.</param>
+    protected override void Manipulate(IRandom random, Permutation permutation) {
+      Apply(random, permutation);
     }
   }
 }

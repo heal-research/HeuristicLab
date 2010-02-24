@@ -26,6 +26,9 @@ namespace HeuristicLab.Permutation {
   /// <summary>
   /// An operator which inverts a randomly chosen part of a permutation.
   /// </summary>
+  /// <remarks>
+  /// It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.<br />
+  /// </remarks>
   [Item("InversionManipulator", "An operator which inverts a randomly chosen part of a permutation.")]
   [EmptyStorableClass]
   [Creatable("Test")]
@@ -35,7 +38,6 @@ namespace HeuristicLab.Permutation {
     /// </summary>
     /// <param name="random">A random number generator.</param>
     /// <param name="permutation">The permutation to manipulate.</param>
-    /// <returns>The new manipulated permutation.</returns>
     public static void Apply(IRandom random, Permutation permutation) {
       int breakPoint1, breakPoint2;
 
@@ -57,7 +59,6 @@ namespace HeuristicLab.Permutation {
     /// </summary>
     /// <param name="random">A random number generator.</param>
     /// <param name="permutation">The permutation to manipulate.</param>
-    /// <returns>The new manipulated permuation.</returns>
     protected override void Manipulate(IRandom random, Permutation permutation) {
       Apply(random, permutation);
     }

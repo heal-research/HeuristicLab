@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Permutation {
   /// <summary>
@@ -31,25 +32,28 @@ namespace HeuristicLab.Permutation {
   /// of each element. Starts at a randomly chosen position, the next element is a neighbour with the least 
   /// number of neighbours, the next again a neighbour and so on.
   /// </summary>
-  public class EdgeRecombinationCrossover : PermutationCrossoverBase {
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get { return @"TODO\r\nOperator description still missing ..."; }
-    }
-
+  ///   /// <remarks>It is implemented as described in Whitley et.al. 1991, The Traveling Salesman and Sequence Scheduling, in Davis, L. (Ed.), Handbook ov Genetic Algorithms, New York, pp. 350-372<br />
+  /// The operator first determines all cycles in the permutation and then composes the offspring by alternating between the cycles of the two parents.
+  /// </remarks>
+  [Item("EdgeRecombinationCrossover", "An operator which performs the edge recombination crossover on two permutations.")]
+  [EmptyStorableClass]
+  [Creatable("Test")]
+  public class EdgeRecombinationCrossover : PermutationCrossover {
     /// <summary>
     /// Performs a cross over permutation of <paramref name="parent1"/> and <paramref name="2"/>
     /// by calculating the edges of each element. Starts at a randomly chosen position, 
     /// the next element is a neighbour with the least 
     /// number of neighbours, the next again a neighbour and so on.
     /// </summary>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="parent1"/> and <paramref name="parent2"/> are not of equal length.</exception>
     /// <exception cref="InvalidOperationException">Thrown when the permutation lacks a number.
     /// </exception>
     /// <param name="random">The random number generator.</param>
     /// <param name="parent1">The parent scope 1 to cross over.</param>
     /// <param name="parent2">The parent scope 2 to cross over.</param>
     /// <returns>The created cross over permutation as int array.</returns>
-    public static int[] Apply(IRandom random, int[] parent1, int[] parent2) {
+    public static Permutation Apply(IRandom random, Permutation parent1, Permutation parent2) {
+      if (parent1.Length != parent2.Length) throw new ArgumentException("EdgeRecombinationCrossover: The parent permutations are of unequal length.");
       int length = parent1.Length;
       int[] result = new int[length];
       int[,] edgeList = new int[length, 4];
@@ -134,18 +138,17 @@ namespace HeuristicLab.Permutation {
           }
         }
       }
-      return result;
+      return new Permutation(result);
     }
 
     /// <summary>
     /// Performs an edge recombination crossover operation for two given parent permutations.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown if there are not exactly two parents.</exception>
-    /// <param name="scope">The current scope.</param>
     /// <param name="random">A random number generator.</param>
     /// <param name="parents">An array containing the two permutations that should be crossed.</param>
     /// <returns>The newly created permutation, resulting from the crossover operation.</returns>
-    protected override int[] Cross(IScope scope, IRandom random, int[][] parents) {
+    protected override Permutation Cross(IRandom random, ItemArray<Permutation> parents) {
       if (parents.Length != 2) throw new InvalidOperationException("ERROR in EdgeRecombinationCrossover: The number of parents is not equal to 2");
       return Apply(random, parents[0], parents[1]);
     }

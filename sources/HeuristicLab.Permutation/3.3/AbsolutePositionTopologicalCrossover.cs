@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Permutation {
   /// <summary>
@@ -31,15 +32,17 @@ namespace HeuristicLab.Permutation {
   /// the entries with the same index (starting at position 0) from both parents 
   /// (minding already inserted values).
   /// </summary>
+  /// <remarks>It is implemented as described in Moraglio, A. and Poli, R. 2005. Topological crossover for the permutation representation. In Proceedings of the 2005 Workshops on Genetic and Evolutionary Computation.<br />
+  /// </remarks>
   /// <example>First take the value at position 0 from parent1 then take the value at position 0
   /// from parent2 if it has not already been inserted, afterwards take the value at position 1 from
   /// parent1 if it has not already been inserted, then from parent2 and so on.</example>
-  public class AbsolutePositionTopologicalCrossover : PermutationCrossoverBase {
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get { return @"TODO\r\nOperator description still missing ..."; }
-    }
-
+  [Item("AbsolutePositionTopologicalCrossover", @"An operator which performs a cross over permutation between two permutation arrays by taking the 
+entries with the same index (starting at position 0) from both parents 
+(minding already inserted values).")]
+  [EmptyStorableClass]
+  [Creatable("Test")]
+  public class AbsolutePositionTopologicalCrossover : PermutationCrossover {
     /// <summary>
     /// Performs a cross over permutation of <paramref name="parent1"/> and <paramref name="parent2"/>
     /// by taking the values from both parents one by one with the same index starting at position 0.
@@ -47,11 +50,13 @@ namespace HeuristicLab.Permutation {
     /// <example>First take the value at position 0 from parent1 then take the value at position 0
     /// from parent2 if it has not already been inserted, afterwards take the value at position 1 from
     /// parent1 if it has not already been inserted, then from parent2 and so on.</example>
-    /// <param name="random">A random number generator.</param>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="parent1"/> and <paramref name="parent2"/> are not of equal length.</exception>
+    /// <param name="random">The random number generator.</param>
     /// <param name="parent1">The parent scope 1 to cross over.</param>
     /// <param name="parent2">The parent scope 2 to cross over.</param>
     /// <returns>The created cross over permutation as int array.</returns>
-    public static int[] Apply(IRandom random, int[] parent1, int[] parent2) {
+    public static Permutation Apply(IRandom random, Permutation parent1, Permutation parent2) {
+      if (parent1.Length != parent2.Length) throw new ArgumentException("AbsolutePositionTopologicalCrossover: The parent permutations are of unequal length.");
       int length = parent1.Length;
       int[] result = new int[length];
       bool[] numberCopied = new bool[length];
@@ -70,18 +75,17 @@ namespace HeuristicLab.Permutation {
           index++;
         }
       }
-      return result;
+      return new Permutation(result);
     }
 
     /// <summary>
     /// Performs an absolute position topological crossover operation for two given parent permutations.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown if there are not exactly two parents.</exception>
-    /// <param name="scope">The current scope.</param>
     /// <param name="random">A random number generator.</param>
     /// <param name="parents">An array containing the two permutations that should be crossed.</param>
     /// <returns>The newly created permutation, resulting from the crossover operation.</returns>
-    protected override int[] Cross(IScope scope, IRandom random, int[][] parents) {
+    protected override Permutation Cross(IRandom random, ItemArray<Permutation> parents) {
       if (parents.Length != 2) throw new InvalidOperationException("ERROR in AbsolutePositionTopologicalCrossover: The number of parents is not equal to 2");
       return Apply(random, parents[0], parents[1]);
     }
