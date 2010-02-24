@@ -26,6 +26,7 @@ using System.Text;
 using HeuristicLab.Core;
 using System.Drawing;
 using Netron.Diagramming.Core;
+using HeuristicLab.Collections;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
   public interface IShapeInfo : IItem{
@@ -33,6 +34,17 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     Point Location { get; set; }
     Size Size { get; set; }
 
+    void AddConnector(string connectorName);
+    void RemoveConnector(string connectorName);
+
+    IEnumerable<KeyValuePair<string,IShapeInfo>> Connections {get;}
+    INotifyObservableDictionaryItemsChanged<string, IShapeInfo> ObservableConnections { get; }
+
+    void AddConnection(string fromConnectorName, IShapeInfo toShapeInfo);
+    void RemoveConnection(string fromConnectorName);
+    void ChangeConnection(string fromConnector, IShapeInfo toShapeInfo);
+
     IShape CreateShape();
+    void UpdateShape(IShape shape);
   }
 }

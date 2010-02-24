@@ -24,15 +24,35 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HeuristicLab.Core;
+using Netron.Diagramming.Core;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
-  public static class ShapeInfoFactory {
+  public static class Factory {
+    private static LinePenStyle connectionPenStyle;
+
+    static Factory() {
+      connectionPenStyle = new LinePenStyle();
+      connectionPenStyle.EndCap = LineCap.ArrowAnchor;
+    }
+
     public static IShapeInfo CreateShapeInfo(IOperator op) {
-      OperatorShapeInfo operatorShapeInfo = new OperatorShapeInfo();
+      IEnumerable<string> paramterNames = op.Parameters.Where(p => p is IValueParameter<IOperator> && p.Name != "Successor").Select(p => p.Name);
+      OperatorShapeInfo operatorShapeInfo = new OperatorShapeInfo(paramterNames);
       operatorShapeInfo.Title = op.Name;
       operatorShapeInfo.Text = op.GetType().ToString();
 
       return operatorShapeInfo;
+    }
+
+    public static IConnection CreateConnection(IConnector from, IConnector to) {
+      Connection connection = new Connection(from.Point, to.Point);
+      connection.AllowMove = false;
+      from.AttachConnector(connection.From);
+      to.AttachConnector(connection.To);
+      connection.PenStyle = connectionPenStyle;
+      return connection;
     }
   }
 }

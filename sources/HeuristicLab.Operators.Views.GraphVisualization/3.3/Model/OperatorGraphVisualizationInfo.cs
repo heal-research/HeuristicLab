@@ -29,21 +29,44 @@ using System.Drawing;
 using HeuristicLab.Collections;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
-  public sealed class OperatorGraphVisualizationInfo : Item {
+  public sealed class OperatorGraphVisualizationInfo : DeepCloneable {
     private BidirectionalLookup<IOperator, IShapeInfo> shapeInfoMapping;
+    private BidirectionalLookup<IOperator, IObservableKeyedCollection<string, IParameter>> operatorParameterCollectionMapping;
+    private Dictionary<IValueParameter<IOperator>, IOperator> parameterOperatorMapping;
 
-    public OperatorGraphVisualizationInfo(OperatorGraph operatorGraph) {
-      this.operatorGraph = operatorGraph;
+    private OperatorGraphVisualizationInfo() {
       this.shapeInfoMapping = new BidirectionalLookup<IOperator, IShapeInfo>();
-      this.shapeInfos = new ObservableSet<IShapeInfo>();
+      this.operatorParameterCollectionMapping = new BidirectionalLookup<IOperator, IObservableKeyedCollection<string, IParameter>>();
+      this.parameterOperatorMapping = new Dictionary<IValueParameter<IOperator>, IOperator>();
 
+      this.shapeInfos = new ObservableSet<IShapeInfo>();
+    }
+
+    public OperatorGraphVisualizationInfo(OperatorGraph operatorGraph)
+      : this() {
+      this.operatorGraph = operatorGraph;
+      this.operatorGraph.InitialOperatorChanged += new EventHandler(operatorGraph_InitialOperatorChanged);
       foreach (IOperator op in operatorGraph.Operators)
         this.AddOperator(op);
-      this.initialOperator = operatorGraph.InitialOperator;
 
       operatorGraph.Operators.ItemsAdded += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IOperator>(Operators_ItemsAdded);
       operatorGraph.Operators.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IOperator>(Operators_ItemsRemoved);
       operatorGraph.Operators.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IOperator>(Operators_CollectionReset);
+    }
+
+    public event EventHandler InitialShapeChanged;
+    private void operatorGraph_InitialOperatorChanged(object sender, EventArgs e) {
+      if (this.InitialShapeChanged != null)
+        this.InitialShapeChanged(this, new EventArgs());
+    }
+
+    public IShapeInfo InitialShape {
+      get {
+        IOperator op = this.operatorGraph.InitialOperator;
+        if (op == null)
+          return null;
+        return this.shapeInfoMapping.GetByFirst(op);
+      }
     }
 
     private OperatorGraph operatorGraph;
@@ -55,27 +78,13 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     public INotifyObservableCollectionItemsChanged<IShapeInfo> ObserveableShapeInfos {
       get { return this.shapeInfos; }
     }
-
     public IEnumerable<IShapeInfo> ShapeInfos {
       get { return this.shapeInfos; }
     }
 
-    private IOperator initialOperator;
-    public IOperator InitialOperator {
-      get { return this.initialOperator; }
-      set {
-        if (this.initialOperator != value) {
-          if (!this.shapeInfoMapping.ContainsFirst(value))
-            throw new ArgumentException("Could not set initial operator in graph visualization information, because the operator " +
-              value.ToString() + " is not contained in the operator set.");
-          this.initialOperator = value;
-          this.OnChanged();
-        }
-      }
-    }
-
     internal void AddShapeInfo(IOperator op, IShapeInfo shapeInfo) {
       this.RegisterOperatorEvents(op);
+      this.operatorParameterCollectionMapping.Add(op, op.Parameters);
       this.shapeInfoMapping.Add(op, shapeInfo);
       this.shapeInfos.Add(shapeInfo);
 
@@ -89,19 +98,26 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
     #region operator events
     private void AddOperator(IOperator op) {
-      if (!shapeInfoMapping.ContainsFirst(op)) {
-        this.RegisterOperatorEvents(op);
+      if (shapeInfoMapping.ContainsFirst(op))
+        return;
 
-        IShapeInfo shapeInfo = ShapeInfoFactory.CreateShapeInfo(op);
-        this.shapeInfoMapping.Add(op, shapeInfo);
-        this.shapeInfos.Add(shapeInfo);
-      }
+      this.RegisterOperatorEvents(op);
+      IShapeInfo shapeInfo = Factory.CreateShapeInfo(op);
+      this.operatorParameterCollectionMapping.Add(op, op.Parameters);
+      this.shapeInfoMapping.Add(op, shapeInfo);
+      foreach (IParameter param in op.Parameters)
+        this.AddParameter(op, param);
+
+      this.shapeInfos.Add(shapeInfo);
     }
 
     private void RemoveOperator(IOperator op) {
       this.DeregisterOperatorEvents(op);
+      foreach (IParameter param in op.Parameters)
+        this.RemoveParameter(op, param);
 
       IShapeInfo shapeInfo = this.shapeInfoMapping.GetByFirst(op);
+      this.operatorParameterCollectionMapping.RemoveByFirst(op);
       this.shapeInfoMapping.RemoveByFirst(op);
       this.shapeInfos.Remove(shapeInfo);
     }
@@ -138,46 +154,73 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     #endregion
 
     #region parameter events
-    private void AddParameter(IParameter param) {
+    private void AddParameter(IOperator op, IParameter param) {
       IValueParameter<IOperator> opParam = param as IValueParameter<IOperator>;
       if (opParam != null) {
-        RegisterOperatorParameterEvents(opParam);
-        //TODO add connector
+        this.RegisterOperatorParameterEvents(opParam);
+        this.parameterOperatorMapping.Add(opParam, op);
+        IShapeInfo shapeInfo = this.shapeInfoMapping.GetByFirst(op);
+        shapeInfo.AddConnector(param.Name);
+
+        if (opParam.Value != null) {
+          if (!this.shapeInfoMapping.ContainsFirst(opParam.Value))
+            this.AddOperator(opParam.Value);
+          shapeInfo.AddConnection(param.Name, this.shapeInfoMapping.GetByFirst(opParam.Value));
+        }
       }
     }
-    private void RemoveParameter(IParameter param) {
+    private void RemoveParameter(IOperator op, IParameter param) {
       IValueParameter<IOperator> opParam = param as IValueParameter<IOperator>;
       if (opParam != null) {
-        DeregisterOperatorParameterEvents(opParam);
-        //TODO remove connector
+        this.DeregisterOperatorParameterEvents(opParam);
+        this.parameterOperatorMapping.Remove(opParam);
+        IShapeInfo shapeInfo = this.shapeInfoMapping.GetByFirst(op);
+        shapeInfo.RemoveConnector(param.Name);
       }
     }
 
     private void opParam_ValueChanged(object sender, EventArgs e) {
       IValueParameter<IOperator> opParam = (IValueParameter<IOperator>)sender;
-      //TODO update connections
+      if (opParam != null) {
+        IOperator op = this.parameterOperatorMapping[opParam];
+        IShapeInfo shapeInfo = this.shapeInfoMapping.GetByFirst(op);
+
+        if (opParam.Value == null)
+          shapeInfo.RemoveConnection(opParam.Name);
+        else
+          shapeInfo.ChangeConnection(opParam.Name, this.shapeInfoMapping.GetByFirst(opParam.Value));
+      }
     }
 
     private void Parameters_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IParameter> e) {
+      IObservableKeyedCollection<string, IParameter> parameterCollection = sender as IObservableKeyedCollection<string, IParameter>;
+      IOperator op = this.operatorParameterCollectionMapping.GetBySecond(parameterCollection);
       foreach (IParameter param in e.Items)
-        AddParameter(param);
+        AddParameter(op, param);
     }
     private void Parameters_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IParameter> e) {
+      IObservableKeyedCollection<string, IParameter> parameterCollection = sender as IObservableKeyedCollection<string, IParameter>;
+      IOperator op = this.operatorParameterCollectionMapping.GetBySecond(parameterCollection);
       foreach (IParameter param in e.Items)
-        RemoveParameter(param);
+        RemoveParameter(op, param);
     }
     private void Parameters_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IParameter> e) {
+      IObservableKeyedCollection<string, IParameter> parameterCollection = sender as IObservableKeyedCollection<string, IParameter>;
+      IOperator op = this.operatorParameterCollectionMapping.GetBySecond(parameterCollection);
       foreach (IParameter param in e.OldItems)
-        RemoveParameter(param);
+        RemoveParameter(op, param);
       foreach (IParameter param in e.Items)
-        AddParameter(param);
+        AddParameter(op, param);
     }
     private void Parameters_CollectionReset(object sender, CollectionItemsChangedEventArgs<IParameter> e) {
+      IObservableKeyedCollection<string, IParameter> parameterCollection = sender as IObservableKeyedCollection<string, IParameter>;
+      IOperator op = this.operatorParameterCollectionMapping.GetBySecond(parameterCollection);
       foreach (IParameter param in e.OldItems)
-        RemoveParameter(param);
+        RemoveParameter(op, param);
       foreach (IParameter param in e.Items)
-        AddParameter(param);
+        AddParameter(op, param);
     }
+
 
     private void RegisterOperatorParameterEvents(IValueParameter<IOperator> opParam) {
       opParam.ValueChanged += new EventHandler(opParam_ValueChanged);
@@ -186,24 +229,5 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       opParam.ValueChanged -= new EventHandler(opParam_ValueChanged);
     }
     #endregion
-
-
-
-
-
-
-
-
-    private static IConnection CreateConnection(IShape from, IShape to) {
-      IConnector parentConnector = from.Connectors.Where(c => c.Name == "Bottom connector").First();
-      IConnector operatorConnector = to.Connectors.Where(c => c.Name == "Top connector").First();
-
-      IConnection connection = new Connection(parentConnector.Point, operatorConnector.Point);
-
-      parentConnector.AttachConnector(connection.From);
-      operatorConnector.AttachConnector(connection.To);
-
-      return connection;
-    }
   }
 }

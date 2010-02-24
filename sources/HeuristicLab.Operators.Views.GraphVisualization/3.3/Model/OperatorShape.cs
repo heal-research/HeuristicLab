@@ -29,38 +29,62 @@ using System.Drawing;
 namespace HeuristicLab.Operators.Views.GraphVisualization {
   public class OperatorShape : ClassShape {
 
-    private BidirectionalLookup<string, IConnector> additionalConnectors;
     public OperatorShape()
       : base() {
-      this.additionalConnectors = new BidirectionalLookup<string,IConnector>();
+      this.additionalConnectors = new List<IConnector>();
     }
 
-    private Connector predecessor;
-    public Connector Predecessor {
+    private List<IConnector> additionalConnectors;
+    public IEnumerable<string> AdditionalConnectorNames {
+      get { return this.additionalConnectors.Select(c => c.Name); }
+    }
+
+    private IConnector predecessor;
+    public IConnector Predecessor {
       get { return this.predecessor; }
     }
 
-    private Connector successor;
-    public Connector Successor {
+    private IConnector successor;
+    public IConnector Successor {
       get { return this.successor; }
     }
 
-
-    public void AddConnector(string connectorName) {
-      Connector connector = new Connector(new Point(Rectangle.Right, Rectangle.Bottom));
+    private IConnector CreateConnector(string connectorName, Point location) {
+      Connector connector = new Connector(location);
       connector.ConnectorStyle = ConnectorStyle.Square;
       connector.Parent = this;
-      this.additionalConnectors.Add(connectorName, connector);
-      Connectors.Add(connector);
+      connector.Name = connectorName;
+      return connector;
     }
 
-    public void RemoveConnector(string connectorName) {
-      this.additionalConnectors.RemoveByFirst(connectorName);
+
+
+    public void AddConnector(string connectorName) {
+      IConnector connector = this.CreateConnector(connectorName, this.BottomRightCorner);
+
+      this.additionalConnectors.Add(connector);
+      this.Connectors.Add(connector);
       this.UpdateConnectorLocation();
     }
 
-    private void UpdateConnectorLocation() { 
-      //TODO set x position of connectors
+    public void RemoveConnector(string connectorName) {
+      IConnector connector = this.additionalConnectors.Where(c => c.Name ==connectorName).FirstOrDefault();
+      if (connector != null) {
+        this.additionalConnectors.Remove(connector);
+        this.Connectors.Remove(connector);
+        this.UpdateConnectorLocation();
+      }
+    }
+
+    private void UpdateConnectorLocation() {
+      int spacing = this.Rectangle.Width / this.additionalConnectors.Count + 1;
+      int margin = spacing / 2;
+      int posX = margin + this.Rectangle.X;
+      int posY = this.additionalConnectors[0].Point.Y;
+      for (int i = 0; i < this.additionalConnectors.Count; i++) {
+        this.additionalConnectors[i].Point = new Point(posX, posY);
+        posX += spacing;
+      }
     }
 
 
@@ -70,16 +94,10 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       #region Connectors
       this.Connectors.Clear();
 
-      predecessor = new Connector(new Point(Rectangle.Right, (int)(Rectangle.Top + Rectangle.Height / 2)));
-      predecessor.ConnectorStyle = ConnectorStyle.Square;
-      predecessor.Name = "Predecessor";
-      predecessor.Parent = this;
+      predecessor = this.CreateConnector("Predecessor", new Point(Rectangle.Left, Center.Y));
       Connectors.Add(predecessor);
 
-      successor = new Connector(new Point(Rectangle.Left, (int)(Rectangle.Top + Rectangle.Height / 2)));
-      predecessor.ConnectorStyle = ConnectorStyle.Square;
-      successor.Name = "Successor";
-      successor.Parent = this;
+      successor = this.CreateConnector("Successor",(new Point(Rectangle.Right, Center.Y)));
       Connectors.Add(successor);
       #endregion
     }

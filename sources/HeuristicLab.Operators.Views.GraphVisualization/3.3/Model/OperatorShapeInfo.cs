@@ -26,14 +26,15 @@ using System.Text;
 using HeuristicLab.Core;
 using System.Drawing;
 using Netron.Diagramming.Core;
+using System.Windows.Forms;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
   internal class OperatorShapeInfo : ShapeInfo {
 
-    private HashSet<string> connectorNames;
+    private List<string> connectorNames;
     public OperatorShapeInfo()
       : base(typeof(OperatorShape)) {
-      this.connectorNames = new HashSet<string>();
+      this.connectorNames = new List<string>();
     }
 
     public OperatorShapeInfo(IEnumerable<string> connectorNames)
@@ -42,16 +43,34 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
         this.connectorNames.Add(connectorName);
     }
 
-    public void AddConnector(string connectorName) {
-      if (this.connectorNames.Add(connectorName))
+    public override void AddConnector(string connectorName) {
+      if (!this.connectorNames.Contains(connectorName) && connectorName != "Successor") {
+        this.connectorNames.Add(connectorName);
         this.OnChanged();
+      }
     }
 
-    public void RemoveConnector(string connectorName) {
-      if (this.connectorNames.Remove(connectorName))
+    public override void RemoveConnector(string connectorName) {
+      if (this.connectorNames.Contains(connectorName)) {
+        this.connectorNames.Remove(connectorName);
+        if (this.connections.ContainsKey(connectorName))
+          this.connections.Remove(connectorName);
         this.OnChanged();
+      }
     }
 
+    public override void AddConnection(string fromConnectorName, IShapeInfo toShapeInfo) {
+      this.connections.Add(fromConnectorName, toShapeInfo);
+    }
+
+    public override void RemoveConnection(string fromConnectorName) {
+      if (this.connections.ContainsKey(fromConnectorName))
+        this.connections.Remove(fromConnectorName);
+    }
+
+    public override void ChangeConnection(string fromConnectorName, IShapeInfo toShapeInfo) {
+      this.connections[fromConnectorName] = toShapeInfo;
+    }
 
     private string title;
     public string Title {
@@ -94,6 +113,36 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       foreach (string connectorName in this.connectorNames)
         shape.AddConnector(connectorName);
       return shape;
+    }
+
+    public override void UpdateShape(IShape shape) {
+      base.UpdateShape(shape);
+      OperatorShape operatorShape = shape as OperatorShape;
+
+      if (operatorShape != null) {
+        operatorShape.Title = this.Title;
+        operatorShape.SubTitle = this.Text;
+        operatorShape.HeadColor = this.HeadColor;
+
+        int i = 0;
+        int j = 0;
+        //remove old connectors and skip correct connectors
+        List<string> oldConnectorNames = operatorShape.AdditionalConnectorNames.ToList();
+        while (i < this.connectorNames.Count && j < oldConnectorNames.Count) {
+          if (this.connectorNames[i] != oldConnectorNames[j]) {
+            operatorShape.RemoveConnector(oldConnectorNames[j]);
+          } else
+            i++;
+          j++;
+        }
+        //remove old connectors
+        for (; j < oldConnectorNames.Count; i++)
+          operatorShape.RemoveConnector(oldConnectorNames[j]);
+
+        //add new connectors
+        for (; i < this.connectorNames.Count; i++)
+          operatorShape.AddConnector(this.connectorNames[i]);
+      }
     }
   }
 }

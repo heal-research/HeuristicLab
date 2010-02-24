@@ -48,6 +48,7 @@
       this.graphVisualization.Size = new System.Drawing.Size(665, 444);
       this.graphVisualization.TabIndex = 0;
       this.graphVisualization.OnEntityRemoved += new System.EventHandler<global::Netron.Diagramming.Core.EntityEventArgs>(this.graphVisualization_OnEntityRemoved);
+      this.graphVisualization.OnEntityAdded += new System.EventHandler<global::Netron.Diagramming.Core.EntityEventArgs>(this.graphVisualization_OnEntityAdded);
       // 
       // OperatorGraphView
       // 

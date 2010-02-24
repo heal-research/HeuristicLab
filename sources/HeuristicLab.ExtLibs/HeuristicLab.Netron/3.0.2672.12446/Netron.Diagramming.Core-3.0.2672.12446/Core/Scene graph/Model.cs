@@ -489,7 +489,7 @@ namespace Netron.Diagramming.Core
         {
             get
             {
-                throw new System.NotImplementedException();
+              return CurrentPage.Connections;
             }
 
         } 

@@ -102,7 +102,7 @@ namespace Netron.Diagramming.Core
             : base("Standard TreeLayout", controller)
         {
 
-
+          Orientation = TreeOrientation.LeftRight;
 
         }
         #endregion

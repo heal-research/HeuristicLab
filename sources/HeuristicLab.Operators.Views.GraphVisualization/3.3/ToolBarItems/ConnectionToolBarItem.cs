@@ -24,19 +24,19 @@ using HeuristicLab.MainForm;
 using System.Windows.Forms;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
-  internal class ZoomOutToolBarItem : HeuristicLab.MainForm.WindowsForms.ToolBarItem, HeuristicLab.Optimizer.IOptimizerUserInterfaceItemProvider {
+  internal class ConnectionToolBarItem : HeuristicLab.MainForm.WindowsForms.ToolBarItem, HeuristicLab.Optimizer.IOptimizerUserInterfaceItemProvider {
     public override string Name {
-      get { return "Zoom Out"; }
+      get { return "Connection"; }
     }
 
     public override string ToolTipText {
-      get { return "Zoom Out"; }
+      get { return "Connection"; }
     }
     public override int Position {
-      get { return 152; }
+      get { return 140; }
     }
     public override Image Image {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.ArrowDown; }
+      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Add; }
     }
 
     protected override void OnActiveViewChanged(object sender, System.EventArgs e) {
@@ -47,7 +47,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     public override void Execute() {
       OperatorGraphView view = MainFormManager.MainForm.ActiveView as OperatorGraphView;
       if (view != null)
-        view.ActivateZoomOutTool();
+        view.ActivateConnectionTool();
     }
   }
 }

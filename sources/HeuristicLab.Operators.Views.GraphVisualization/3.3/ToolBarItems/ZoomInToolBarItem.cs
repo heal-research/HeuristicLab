@@ -33,10 +33,10 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       get { return "Zoom In"; }
     }
     public override int Position {
-      get { return 141; }
+      get { return 151; }
     }
     public override Image Image {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Sort; }
+      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.ArrowUp; }
     }
 
     protected override void OnActiveViewChanged(object sender, System.EventArgs e) {

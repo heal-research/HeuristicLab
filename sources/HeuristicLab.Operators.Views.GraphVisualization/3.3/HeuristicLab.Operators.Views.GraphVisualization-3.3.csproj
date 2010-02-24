@@ -94,8 +94,6 @@
     <None Include="HeuristicLab.snk" />
     <None Include="HeuristicLabOperatorsViewsGraphVisualizationPlugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.frame" />
-    <Compile Include="Model\ConnectionInfo.cs" />
-    <Compile Include="Model\IConnectionInfo.cs" />
     <Compile Include="Model\OperatorShapeInfo.cs" />
     <Compile Include="Model\OperatorGraphVisualizationInfo.cs" />
     <Compile Include="BidirectionalLookup.cs" />
@@ -105,6 +103,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Model\ShapeInfoFactory.cs" />
+    <Compile Include="ToolBarItems\ConnectionToolBarItem.cs" />
     <Compile Include="ToolBarItems\SelectToolBarItem.cs" />
     <Compile Include="ToolBarItems\PanToolBarItem.cs" />
     <Compile Include="ToolBarItems\ZoomOutToolBarItem.cs" />

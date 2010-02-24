@@ -38,7 +38,6 @@ namespace Netron.Diagramming.Core
         public RandomLayout(IController controller)
             : base("Random layout", controller)
         {
-
         }
         #endregion
 

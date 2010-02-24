@@ -42,7 +42,6 @@ namespace Netron.Diagramming.Core
         public FruchtermanReingoldLayout(IController controller)
             : base("FruchtermanReingold Layout", controller)
         {
-
         }
         #endregion
 

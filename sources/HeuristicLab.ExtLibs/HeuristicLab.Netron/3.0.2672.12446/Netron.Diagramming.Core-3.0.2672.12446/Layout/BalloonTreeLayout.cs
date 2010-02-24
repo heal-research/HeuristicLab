@@ -48,7 +48,6 @@ namespace Netron.Diagramming.Core
         public BalloonTreeLayout(IController controller)
             : base("Balloon TreeLayout", controller)
         {
-
         }
         #endregion
 

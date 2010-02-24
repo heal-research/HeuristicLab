@@ -68,7 +68,6 @@ namespace Netron.Diagramming.Core
         public RadialTreeLayout(IController controller)
             : base("Radial TreeLayout", controller)
         {
-
         }
         private bool Init()
         {

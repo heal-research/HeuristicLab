@@ -33,7 +33,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       get { return "Zoom"; }
     }
     public override int Position {
-      get { return 140; }
+      get { return 150; }
     }
     public override Image Image {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Zoom; }
