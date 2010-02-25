@@ -34,18 +34,18 @@ namespace Netron.Diagramming.Core
         /// </summary>
         protected override void OnActivateTool()
         {
-            if(Selection.SelectedItems!=null && Selection.SelectedItems.Count>0)
+          if (this.Controller.Model.Selection.SelectedItems != null && this.Controller.Model.Selection.SelectedItems.Count > 0)
             {
                 /*
                * They should give me a Nobel prize for so much thinking early in the morning...
                */
                 #region Preparation of the ordering
-                Debug.Assert(Selection.SelectedItems[0] != null, "A selection cannot contain a 'null' entity.");
+              Debug.Assert(this.Controller.Model.Selection.SelectedItems[0] != null, "A selection cannot contain a 'null' entity.");
                 //the items have to be moved in the order of the Paintables; the SortedList automatically orders things for us.
                 SortedList<int, IDiagramEntity> list = new SortedList<int, IDiagramEntity>();
                 //We fetch a flattened selection, which means that if there is a group the constituents will be
                 //returned rather than the group itself.
-                foreach (IDiagramEntity entity in Selection.FlattenedSelectionItems)
+                foreach (IDiagramEntity entity in this.Controller.Model.Selection.FlattenedSelectionItems)
                 {
                     //the addition will automatically put the item in increasing order
                     list.Add(this.Controller.Model.Paintables.IndexOf(entity), entity);

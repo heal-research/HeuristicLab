@@ -77,8 +77,8 @@ namespace Netron.Diagramming.Core
 
             //select the newly created group
             CollectionBase<IDiagramEntity> col = new CollectionBase<IDiagramEntity>();
-            col.Add(mGroup);                  
-            Selection.SelectedItems = col;
+            col.Add(mGroup);
+            this.Controller.Model.Selection.SelectedItems = col;
             mGroup.Invalidate();
         }
 
@@ -112,7 +112,7 @@ namespace Netron.Diagramming.Core
                 removedItems.Add(entity);
             }
             //change the visuals such that the entities in the group are selected
-            Selection.SelectedItems = removedItems;
+            this.Controller.Model.Selection.SelectedItems = removedItems;
             //mGroup.Entities.Clear();
 
             //mGroup.Invalidate();

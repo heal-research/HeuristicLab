@@ -37,13 +37,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     void AddConnector(string connectorName);
     void RemoveConnector(string connectorName);
 
-    IEnumerable<KeyValuePair<string,IShapeInfo>> Connections {get;}
-    INotifyObservableDictionaryItemsChanged<string, IShapeInfo> ObservableConnections { get; }
-
-    void AddConnection(string fromConnectorName, IShapeInfo toShapeInfo);
-    void RemoveConnection(string fromConnectorName);
-    void ChangeConnection(string fromConnector, IShapeInfo toShapeInfo);
-
     IShape CreateShape();
     void UpdateShape(IShape shape);
   }

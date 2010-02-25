@@ -65,7 +65,7 @@ namespace Netron.Diagramming.Core {
       if (IsActive) {
         if (foundConnector != null)
           foundConnector.Hovered = false;
-        foundConnector = Selection.FindConnectorAt(e.Location);
+        foundConnector = this.Controller.Model.Selection.FindConnectorAt(e.Location);
         if (foundConnector != null)
           foundConnector.Hovered = true;
       }
@@ -102,8 +102,8 @@ namespace Netron.Diagramming.Core {
         //note that the following can be done because the actual connection has not been created yet
         //otherwise the search would find the endpoints of the newly created connection, which
         //would create a loop and a stack overflow!
-        IConnector startConnector = Selection.FindConnectorAt(initialPoint);
-        IConnector endConnector = Selection.FindConnectorAt(e.Location);
+        IConnector startConnector = this.Controller.Model.Selection.FindConnectorAt(initialPoint);
+        IConnector endConnector = this.Controller.Model.Selection.FindConnectorAt(e.Location);
 
         #region Create the new connection
         Connection cn = new Connection(this.initialPoint, e.Location, this.Controller.Model);

@@ -91,7 +91,7 @@ namespace HeuristicLab.Netron {
     public static void Show() {
       if (myTextProvider == null)
         return;
-      Selection.Clear();
+      diagramControl.Controller.Model.Selection.Clear();
       diagramControl.View.ResetTracker();
       diagramControl.Controller.SuspendAllTools();
       diagramControl.Controller.Enabled = false;

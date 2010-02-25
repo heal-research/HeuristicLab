@@ -53,23 +53,8 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     public override void RemoveConnector(string connectorName) {
       if (this.connectorNames.Contains(connectorName)) {
         this.connectorNames.Remove(connectorName);
-        if (this.connections.ContainsKey(connectorName))
-          this.connections.Remove(connectorName);
         this.OnChanged();
       }
-    }
-
-    public override void AddConnection(string fromConnectorName, IShapeInfo toShapeInfo) {
-      this.connections.Add(fromConnectorName, toShapeInfo);
-    }
-
-    public override void RemoveConnection(string fromConnectorName) {
-      if (this.connections.ContainsKey(fromConnectorName))
-        this.connections.Remove(fromConnectorName);
-    }
-
-    public override void ChangeConnection(string fromConnectorName, IShapeInfo toShapeInfo) {
-      this.connections[fromConnectorName] = toShapeInfo;
     }
 
     private string title;
@@ -136,7 +121,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
           j++;
         }
         //remove old connectors
-        for (; j < oldConnectorNames.Count; i++)
+        for (; j < oldConnectorNames.Count; j++)
           operatorShape.RemoveConnector(oldConnectorNames[j]);
 
         //add new connectors

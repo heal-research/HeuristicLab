@@ -41,15 +41,11 @@ namespace HeuristicLab.Netron {
 
     public View(IDiagramControl control)
       : base(control) {
-      Selection.OnNewSelection += new EventHandler(Selection_OnNewSelection);
+      control.Document.Model.Selection.OnNewSelection += new EventHandler(Selection_OnNewSelection);
       // this.Model.OnEntityAdded += new EventHandler<EntityEventArgs>(Model_OnEntityAdded);
       this.HorizontalRuler.Visible = true;
       this.VerticalRuler.Visible = true;
       GhostsFactory.View = this;
-    }
-
-    void Model_OnEntityAdded(object sender, EntityEventArgs e) {
-
     }
 
     void Selection_OnNewSelection(object sender, EventArgs e) {

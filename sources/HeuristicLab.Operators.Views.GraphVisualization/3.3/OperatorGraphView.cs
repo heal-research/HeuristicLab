@@ -41,7 +41,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
   public partial class OperatorGraphView : ContentView {
     private BidirectionalLookup<IShapeInfo, IShape> shapeInfoShapeMapping;
     private BidirectionalLookup<IShapeInfo, INotifyObservableDictionaryItemsChanged<string, IShapeInfo>> shapeInfoConnectionsMapping;
-    private Dictionary<IConnector, IShape> connectorShapeMapping;
     private BidirectionalLookup<IConnection, KeyValuePair<IConnector, IConnector>> connectionConnectorsMapping;
 
     private bool causedUpdateOfShapeInfo;
@@ -52,7 +51,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       this.shapeInfoShapeMapping = new BidirectionalLookup<IShapeInfo, IShape>();
       this.shapeInfoConnectionsMapping = new BidirectionalLookup<IShapeInfo, INotifyObservableDictionaryItemsChanged<string, IShapeInfo>>();
       this.connectionConnectorsMapping = new BidirectionalLookup<IConnection, KeyValuePair<IConnector, IConnector>>();
-      this.connectorShapeMapping = new Dictionary<IConnector, IShape>();
     }
 
     public OperatorGraphView(OperatorGraph content)
@@ -82,12 +80,14 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
       this.shapeInfoShapeMapping.Clear();
       this.shapeInfoConnectionsMapping.Clear();
-      this.connectorShapeMapping.Clear();
       this.connectionConnectorsMapping.Clear();
 
       foreach (IShapeInfo shapeInfo in this.VisualizationInfo.ShapeInfos)
         if (!this.shapeInfoShapeMapping.ContainsFirst(shapeInfo))
           this.AddShapeInfo(shapeInfo);
+
+      foreach (KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo> connection in this.VisualizationInfo.Connections)
+        this.AddConnection(connection.Key.Key, connection.Key.Value, connection.Value);
 
       this.UpdateLayoutRoot();
     }
@@ -110,6 +110,11 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       this.VisualizationInfo.ObserveableShapeInfos.ItemsAdded += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IShapeInfo>(ShapeInfos_ItemsAdded);
       this.VisualizationInfo.ObserveableShapeInfos.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IShapeInfo>(ShapeInfos_ItemsRemoved);
       this.VisualizationInfo.ObserveableShapeInfos.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IShapeInfo>(ShapeInfos_CollectionReset);
+
+      this.VisualizationInfo.ObservableConnections.ItemsAdded += new CollectionItemsChangedEventHandler<KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo>>(Connections_ItemsAdded);
+      this.VisualizationInfo.ObservableConnections.ItemsRemoved += new CollectionItemsChangedEventHandler<KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo>>(Connections_ItemsRemoved);
+      this.VisualizationInfo.ObservableConnections.ItemsReplaced += new CollectionItemsChangedEventHandler<KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo>>(Connections_ItemsReplaced);
+      this.VisualizationInfo.ObservableConnections.CollectionReset += new CollectionItemsChangedEventHandler<KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo>>(Connections_CollectionReset);
     }
 
     protected override void DeregisterContentEvents() {
@@ -118,6 +123,11 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       this.VisualizationInfo.ObserveableShapeInfos.ItemsAdded -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IShapeInfo>(ShapeInfos_ItemsAdded);
       this.VisualizationInfo.ObserveableShapeInfos.ItemsRemoved -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IShapeInfo>(ShapeInfos_ItemsRemoved);
       this.VisualizationInfo.ObserveableShapeInfos.CollectionReset -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IShapeInfo>(ShapeInfos_CollectionReset);
+
+      this.VisualizationInfo.ObservableConnections.ItemsAdded -= new CollectionItemsChangedEventHandler<KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo>>(Connections_ItemsAdded);
+      this.VisualizationInfo.ObservableConnections.ItemsRemoved -= new CollectionItemsChangedEventHandler<KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo>>(Connections_ItemsRemoved);
+      this.VisualizationInfo.ObservableConnections.ItemsReplaced -= new CollectionItemsChangedEventHandler<KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo>>(Connections_ItemsReplaced);
+      this.VisualizationInfo.ObservableConnections.CollectionReset -= new CollectionItemsChangedEventHandler<KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo>>(Connections_CollectionReset);
     }
 
     private void ShapeInfos_CollectionReset(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IShapeInfo> e) {
@@ -143,18 +153,8 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       IShape shape = shapeInfo.CreateShape();
       shape.OnEntityChange += new EventHandler<EntityEventArgs>(shape_OnEntityChange);
       this.shapeInfoShapeMapping.Add(shapeInfo, shape);
-      this.shapeInfoConnectionsMapping.Add(shapeInfo, shapeInfo.ObservableConnections);
-
-      foreach (IConnector connector in shape.Connectors)
-        this.connectorShapeMapping.Add(connector, shape);
 
       this.graphVisualization.Controller.Model.AddShape(shape);
-
-      foreach (KeyValuePair<string, IShapeInfo> pair in shapeInfo.Connections) {
-        if (!this.shapeInfoShapeMapping.ContainsFirst(pair.Value))
-          this.AddShapeInfo(pair.Value);
-        this.AddConnection(shapeInfo, pair.Key, pair.Value);
-      }
     }
 
     private void RemoveShapeInfo(IShapeInfo shapeInfo) {
@@ -179,53 +179,41 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
     private void RegisterShapeInfoEvents(IShapeInfo shapeInfo) {
       shapeInfo.Changed += new ChangedEventHandler(shapeInfo_Changed);
-      shapeInfo.ObservableConnections.ItemsAdded += new CollectionItemsChangedEventHandler<KeyValuePair<string, IShapeInfo>>(Connections_ItemsAdded);
-      shapeInfo.ObservableConnections.ItemsRemoved += new CollectionItemsChangedEventHandler<KeyValuePair<string, IShapeInfo>>(Connections_ItemsRemoved);
-      shapeInfo.ObservableConnections.ItemsReplaced += new CollectionItemsChangedEventHandler<KeyValuePair<string, IShapeInfo>>(Connections_ItemsReplaced);
-      shapeInfo.ObservableConnections.CollectionReset += new CollectionItemsChangedEventHandler<KeyValuePair<string, IShapeInfo>>(Connections_CollectionReset);
     }
 
     private void DeregisterShapeInfoEvents(IShapeInfo shapeInfo) {
       shapeInfo.Changed -= new ChangedEventHandler(shapeInfo_Changed);
-      shapeInfo.ObservableConnections.ItemsAdded -= new CollectionItemsChangedEventHandler<KeyValuePair<string, IShapeInfo>>(Connections_ItemsAdded);
-      shapeInfo.ObservableConnections.ItemsRemoved -= new CollectionItemsChangedEventHandler<KeyValuePair<string, IShapeInfo>>(Connections_ItemsRemoved);
-      shapeInfo.ObservableConnections.ItemsReplaced -= new CollectionItemsChangedEventHandler<KeyValuePair<string, IShapeInfo>>(Connections_ItemsReplaced);
-      shapeInfo.ObservableConnections.CollectionReset -= new CollectionItemsChangedEventHandler<KeyValuePair<string, IShapeInfo>>(Connections_CollectionReset);
     }
 
-    private void Connections_CollectionReset(object sender, CollectionItemsChangedEventArgs<KeyValuePair<string, IShapeInfo>> e) {
-      IShapeInfo shapeInfo = this.shapeInfoConnectionsMapping.GetBySecond((INotifyObservableDictionaryItemsChanged<string, IShapeInfo>)sender);
+    private void Connections_CollectionReset(object sender, CollectionItemsChangedEventArgs<KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo>> e) {
       IConnection connection;
-      foreach (KeyValuePair<string, IShapeInfo> pair in e.Items) {
-        connection = this.GetConnection(shapeInfo, pair.Key);
+      foreach (KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo> pair in e.Items) {
+        connection = this.GetConnection(pair.Key.Key, pair.Key.Value);
         this.RemoveConnection(connection);
       }
-      foreach (KeyValuePair<string, IShapeInfo> pair in e.Items)
-        this.AddConnection(shapeInfo, pair.Key, pair.Value);
+      foreach (KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo> pair in e.Items)
+        this.AddConnection(pair.Key.Key, pair.Key.Value, pair.Value);
     }
 
-    private void Connections_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<KeyValuePair<string, IShapeInfo>> e) {
-      IShapeInfo shapeInfo = this.shapeInfoConnectionsMapping.GetBySecond((INotifyObservableDictionaryItemsChanged<string, IShapeInfo>)sender);
+    private void Connections_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo>> e) {
       IConnection connection;
-      foreach (KeyValuePair<string, IShapeInfo> pair in e.Items) {
-        connection = this.GetConnection(shapeInfo, pair.Key);
+      foreach (KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo> pair in e.Items) {
+        connection = this.GetConnection(pair.Key.Key, pair.Key.Value);
         this.RemoveConnection(connection);
       }
-      foreach (KeyValuePair<string, IShapeInfo> pair in e.Items)
-        this.AddConnection(shapeInfo, pair.Key, pair.Value);
+      foreach (KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo> pair in e.Items)
+        this.AddConnection(pair.Key.Key, pair.Key.Value, pair.Value);
     }
 
-    private void Connections_ItemsAdded(object sender, CollectionItemsChangedEventArgs<KeyValuePair<string, IShapeInfo>> e) {
-      IShapeInfo shapeInfo = this.shapeInfoConnectionsMapping.GetBySecond((INotifyObservableDictionaryItemsChanged<string, IShapeInfo>)sender);
-      foreach (KeyValuePair<string, IShapeInfo> pair in e.Items)
-        this.AddConnection(shapeInfo, pair.Key, pair.Value);
+    private void Connections_ItemsAdded(object sender, CollectionItemsChangedEventArgs<KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo>> e) {
+      foreach (KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo> pair in e.Items)
+        this.AddConnection(pair.Key.Key, pair.Key.Value, pair.Value);
     }
 
-    private void Connections_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<KeyValuePair<string, IShapeInfo>> e) {
-      IShapeInfo shapeInfo = this.shapeInfoConnectionsMapping.GetBySecond((INotifyObservableDictionaryItemsChanged<string, IShapeInfo>)sender);
+    private void Connections_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo>> e) {
       IConnection connection;
-      foreach (KeyValuePair<string, IShapeInfo> pair in e.Items) {
-        connection = this.GetConnection(shapeInfo, pair.Key);
+      foreach (KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo> pair in e.Items) {
+        connection = this.GetConnection(pair.Key.Key, pair.Key.Value);
         this.RemoveConnection(connection);
       }
     }
@@ -236,11 +224,13 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
       IConnector connectorFrom = shapeFrom.Connectors.Where(c => c.Name == connectorName).First();
       IConnector connectorTo = shapeTo.Connectors.Where(c => c.Name == "Predecessor").FirstOrDefault();
-
-      IConnection connection = Factory.CreateConnection(connectorFrom, connectorTo);
-      this.connectionConnectorsMapping.Add(connection, new KeyValuePair<IConnector, IConnector>(connectorFrom, connectorTo));
-      this.graphVisualization.Controller.Model.AddConnection(connection);
-      this.graphVisualization.Invalidate();
+      KeyValuePair<IConnector, IConnector> connectorPair = new KeyValuePair<IConnector, IConnector>(connectorFrom, connectorTo);
+      if (!this.connectionConnectorsMapping.ContainsSecond(connectorPair)) {
+        IConnection connection = Factory.CreateConnection(connectorFrom, connectorTo);
+        this.connectionConnectorsMapping.Add(connection, connectorPair);
+        this.graphVisualization.Controller.Model.AddConnection(connection);
+        this.graphVisualization.Invalidate();
+      }
     }
 
     private IConnection GetConnection(IShapeInfo shapeInfoFrom, string connectorName) {
@@ -257,7 +247,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     private void ChangeConnection(IShapeInfo shapeInfoFrom, string connectorName, IShapeInfo shapeInfoTo) {
       IConnection connection = this.GetConnection(shapeInfoFrom, connectorName);
       IShape shapeTo = this.shapeInfoShapeMapping.GetByFirst(shapeInfoFrom);
-      IConnector connectorTo = shapeTo.Connectors.Where(c => c.Name == "Predecessor").FirstOrDefault();
+      IConnector connectorTo = shapeTo.Connectors.Where(c => c.Name == "Predecessor").First();
 
       connection.To.DetachFromParent();
       connection.To.AttachTo(connectorTo);
@@ -306,8 +296,19 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     private void graphVisualization_OnEntityAdded(object sender, EntityEventArgs e) {
       IConnection connection = e.Entity as IConnection;
       if (connection != null && !this.connectionConnectorsMapping.ContainsFirst(connection)) {
-        if (connection.From.AttachedTo == null || connection.To.AttachedTo == null)
-          this.RemoveConnection(connection);
+        IConnector connectorFrom = connection.From.AttachedTo;
+        IConnector connectorTo = connection.To.AttachedTo;
+        this.RemoveConnection(connection); //is added again by the model events
+
+        if (connectorFrom != null && connectorTo != null) {
+          IShape shapeFrom = (IShape)connectorFrom.Parent;
+          IShape shapeTo = (IShape)connectorTo.Parent;
+          IShapeInfo shapeInfoFrom = this.shapeInfoShapeMapping.GetBySecond(shapeFrom);
+          IShapeInfo shapeInfoTo = this.shapeInfoShapeMapping.GetBySecond(shapeTo);
+          string connectorName = connectorFrom.Name;
+
+          this.VisualizationInfo.AddConnection(shapeInfoFrom, connectorName, shapeInfoTo);
+        }
       }
     }
 
@@ -320,11 +321,11 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
       IConnection connection = e.Entity as IConnection;
       if (connection != null && this.connectionConnectorsMapping.ContainsFirst(connection)) {
-        IShape parentShape = this.connectorShapeMapping[connection.From.AttachedTo];
+        IShape parentShape = (IShape)connection.From.AttachedTo.Parent;
         IShapeInfo shapeInfo = this.shapeInfoShapeMapping.GetBySecond(parentShape);
-        string parameterName = connection.From.AttachedTo.Name;
+        string connectorName = connection.From.AttachedTo.Name;
 
-        shapeInfo.RemoveConnection(parameterName);
+        this.VisualizationInfo.RemoveConnection(shapeInfo, connectorName);
       }
     }
 

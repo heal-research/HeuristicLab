@@ -94,6 +94,8 @@ namespace Netron.Diagramming.Core
             set;
         }
 
+        Selection Selection { get; set; }
+
         float MeasurementScale 
         { 
             get; 

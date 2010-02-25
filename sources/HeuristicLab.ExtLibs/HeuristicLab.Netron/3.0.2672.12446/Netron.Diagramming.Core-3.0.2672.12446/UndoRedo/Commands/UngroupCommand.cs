@@ -73,8 +73,8 @@ namespace Netron.Diagramming.Core
 
             CollectionBase<IDiagramEntity> col = new CollectionBase<IDiagramEntity>();
             col.AddRange(mGroup.Entities);
-            
-            Selection.SelectedItems = col;
+
+            this.Controller.Model.Selection.SelectedItems = col;
 
             mGroup.Invalidate();
             mGroup = null;
@@ -110,7 +110,7 @@ namespace Netron.Diagramming.Core
             //select the newly created group
             CollectionBase<IDiagramEntity> col = new CollectionBase<IDiagramEntity>();
             col.Add(mGroup);
-            Selection.SelectedItems = col;
+            this.Controller.Model.Selection.SelectedItems = col;
             mGroup.Invalidate();
 
          

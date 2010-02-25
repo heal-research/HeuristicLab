@@ -50,7 +50,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     }
 
     private IConnector CreateConnector(string connectorName, Point location) {
-      Connector connector = new Connector(location);
+      Connector connector = new Connector(location, this.Model);
       connector.ConnectorStyle = ConnectorStyle.Square;
       connector.Parent = this;
       connector.Name = connectorName;
@@ -68,7 +68,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     }
 
     public void RemoveConnector(string connectorName) {
-      IConnector connector = this.additionalConnectors.Where(c => c.Name ==connectorName).FirstOrDefault();
+      IConnector connector = this.additionalConnectors.Where(c => c.Name == connectorName).FirstOrDefault();
       if (connector != null) {
         this.additionalConnectors.Remove(connector);
         this.Connectors.Remove(connector);
@@ -77,7 +77,10 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     }
 
     private void UpdateConnectorLocation() {
-      int spacing = this.Rectangle.Width / this.additionalConnectors.Count + 1;
+      if (this.additionalConnectors.Count == 0)
+        return;
+
+      int spacing = this.Rectangle.Width / this.additionalConnectors.Count;
       int margin = spacing / 2;
       int posX = margin + this.Rectangle.X;
       int posY = this.additionalConnectors[0].Point.Y;
@@ -97,7 +100,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       predecessor = this.CreateConnector("Predecessor", new Point(Rectangle.Left, Center.Y));
       Connectors.Add(predecessor);
 
-      successor = this.CreateConnector("Successor",(new Point(Rectangle.Right, Center.Y)));
+      successor = this.CreateConnector("Successor", (new Point(Rectangle.Right, Center.Y)));
       Connectors.Add(successor);
       #endregion
     }

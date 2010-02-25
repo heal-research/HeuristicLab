@@ -41,7 +41,7 @@ namespace Netron.Diagramming.Core
         // ------------------------------------------------------------------
         protected override void OnActivateTool()
         {
-            if(Selection.SelectedItems.Count == 0)
+          if (this.Controller.Model.Selection.SelectedItems.Count == 0)
                 return;
 
             try
@@ -53,7 +53,7 @@ namespace Netron.Diagramming.Core
 
                 // First add the image to the Windows Clipboard so it can be
                 // pasted into other applications, like PowerPoint.
-                Bitmap image = Selection.ToBitmap();
+                Bitmap image = this.Controller.Model.Selection.ToBitmap();
                 Clipboard.SetDataObject(image, true);
 
                 // This will create a volatile collection of entities, but they 
@@ -74,7 +74,7 @@ namespace Netron.Diagramming.Core
                 // Clipboard, we're using our custom clipboard to keep the
                 // Windows clipboard for moving data across apps.
                 NetronClipboard.Clear();
-                NetronClipboard.Add(Selection.SelectedItems.Copy());
+                NetronClipboard.Add(this.Controller.Model.Selection.SelectedItems.Copy());
                 
             }
             catch (Exception exc)

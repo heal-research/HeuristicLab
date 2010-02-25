@@ -40,6 +40,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       this.parameterOperatorMapping = new Dictionary<IValueParameter<IOperator>, IOperator>();
 
       this.shapeInfos = new ObservableSet<IShapeInfo>();
+      this.connections = new ObservableDictionary<KeyValuePair<IShapeInfo, string>, IShapeInfo>();
     }
 
     public OperatorGraphVisualizationInfo(OperatorGraph operatorGraph)
@@ -47,7 +48,8 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       this.operatorGraph = operatorGraph;
       this.operatorGraph.InitialOperatorChanged += new EventHandler(operatorGraph_InitialOperatorChanged);
       foreach (IOperator op in operatorGraph.Operators)
-        this.AddOperator(op);
+        if (!this.shapeInfoMapping.ContainsFirst(op))
+          this.AddOperator(op);
 
       operatorGraph.Operators.ItemsAdded += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IOperator>(Operators_ItemsAdded);
       operatorGraph.Operators.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IOperator>(Operators_ItemsRemoved);
@@ -82,11 +84,23 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       get { return this.shapeInfos; }
     }
 
+    private ObservableDictionary<KeyValuePair<IShapeInfo, string>, IShapeInfo> connections;
+    public INotifyObservableDictionaryItemsChanged<KeyValuePair<IShapeInfo, string>, IShapeInfo> ObservableConnections {
+      get { return this.connections; }
+    }
+    public IEnumerable<KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo>> Connections {
+      get { return this.connections; }
+    }
+
+    #region methods to manipulate operatorgraph by the shape info
     internal void AddShapeInfo(IOperator op, IShapeInfo shapeInfo) {
       this.RegisterOperatorEvents(op);
       this.operatorParameterCollectionMapping.Add(op, op.Parameters);
       this.shapeInfoMapping.Add(op, shapeInfo);
       this.shapeInfos.Add(shapeInfo);
+
+      foreach (IParameter param in op.Parameters)
+        this.AddParameter(op, param);
 
       this.operatorGraph.Operators.Add(op);
     }
@@ -96,19 +110,41 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       this.operatorGraph.Operators.Remove(op);
     }
 
+    internal void AddConnection(IShapeInfo shapeInfoFrom, string connectorName, IShapeInfo shapeInfoTo) {
+      IOperator opFrom = this.shapeInfoMapping.GetBySecond(shapeInfoFrom);
+      IOperator opTo = this.shapeInfoMapping.GetBySecond(shapeInfoTo);
+
+      IValueParameter<IOperator> param = (IValueParameter<IOperator>)opFrom.Parameters[connectorName];
+      param.Value = opTo;
+    }
+
+    internal void ChangeConnection(IShapeInfo shapeInfoFrom, string connectorName, IShapeInfo shapeInfoTo) {
+      IOperator opFrom = this.shapeInfoMapping.GetBySecond(shapeInfoFrom);
+      IOperator opTo = this.shapeInfoMapping.GetBySecond(shapeInfoTo);
+
+      IValueParameter<IOperator> param = (IValueParameter<IOperator>)opFrom.Parameters[connectorName];
+      param.Value = opTo;
+    }
+
+    internal void RemoveConnection(IShapeInfo shapeInfoFrom, string connectorName) {
+      IOperator opFrom = this.shapeInfoMapping.GetBySecond(shapeInfoFrom);
+      IValueParameter<IOperator> param = (IValueParameter<IOperator>)opFrom.Parameters[connectorName];
+      param.Value = null;
+    }
+    #endregion
+
     #region operator events
     private void AddOperator(IOperator op) {
-      if (shapeInfoMapping.ContainsFirst(op))
-        return;
+      if (!this.shapeInfoMapping.ContainsFirst(op)) {
+        this.RegisterOperatorEvents(op);
+        IShapeInfo shapeInfo = Factory.CreateShapeInfo(op);
+        this.operatorParameterCollectionMapping.Add(op, op.Parameters);
+        this.shapeInfoMapping.Add(op, shapeInfo);
+        foreach (IParameter param in op.Parameters)
+          this.AddParameter(op, param);
 
-      this.RegisterOperatorEvents(op);
-      IShapeInfo shapeInfo = Factory.CreateShapeInfo(op);
-      this.operatorParameterCollectionMapping.Add(op, op.Parameters);
-      this.shapeInfoMapping.Add(op, shapeInfo);
-      foreach (IParameter param in op.Parameters)
-        this.AddParameter(op, param);
-
-      this.shapeInfos.Add(shapeInfo);
+        this.shapeInfos.Add(shapeInfo);
+      }
     }
 
     private void RemoveOperator(IOperator op) {
@@ -165,16 +201,19 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
         if (opParam.Value != null) {
           if (!this.shapeInfoMapping.ContainsFirst(opParam.Value))
             this.AddOperator(opParam.Value);
-          shapeInfo.AddConnection(param.Name, this.shapeInfoMapping.GetByFirst(opParam.Value));
+          this.connections.Add(new KeyValuePair<IShapeInfo, string>(shapeInfo, param.Name), this.shapeInfoMapping.GetByFirst(opParam.Value));
         }
       }
     }
+
     private void RemoveParameter(IOperator op, IParameter param) {
       IValueParameter<IOperator> opParam = param as IValueParameter<IOperator>;
       if (opParam != null) {
         this.DeregisterOperatorParameterEvents(opParam);
         this.parameterOperatorMapping.Remove(opParam);
         IShapeInfo shapeInfo = this.shapeInfoMapping.GetByFirst(op);
+
+        this.connections.Remove(new KeyValuePair<IShapeInfo, string>(shapeInfo, param.Name));
         shapeInfo.RemoveConnector(param.Name);
       }
     }
@@ -184,11 +223,12 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       if (opParam != null) {
         IOperator op = this.parameterOperatorMapping[opParam];
         IShapeInfo shapeInfo = this.shapeInfoMapping.GetByFirst(op);
+        KeyValuePair<IShapeInfo, string> connectionFrom = new KeyValuePair<IShapeInfo, string>(shapeInfo, opParam.Name);
 
         if (opParam.Value == null)
-          shapeInfo.RemoveConnection(opParam.Name);
+          this.connections.Remove(connectionFrom);
         else
-          shapeInfo.ChangeConnection(opParam.Name, this.shapeInfoMapping.GetByFirst(opParam.Value));
+          this.connections[connectionFrom] = this.shapeInfoMapping.GetByFirst(opParam.Value);
       }
     }
 

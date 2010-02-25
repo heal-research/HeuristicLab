@@ -38,17 +38,15 @@ namespace Netron.Diagramming.Core
             #region Validation of the selection
             
             //make sure we have the correct stuff on the table
-            if (Selection.SelectedItems==null || Selection.SelectedItems.Count ==0)
+            if (this.Controller.Model.Selection.SelectedItems == null || this.Controller.Model.Selection.SelectedItems.Count == 0)
             {
                 MessageBox.Show("Nothing is selected, you need to select an existing group.", "Nothing selected.", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                 valid = false;                
-            }
-            else if (Selection.SelectedItems.Count != 1)
+            } else if (this.Controller.Model.Selection.SelectedItems.Count != 1)
             {
                 MessageBox.Show("Multiple items are selected, select only one group.", "Multiple items", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                 valid = false;
-            }
-            else if (!(Selection.SelectedItems[0] is IGroup))
+            } else if (!(this.Controller.Model.Selection.SelectedItems[0] is IGroup))
             {
                 MessageBox.Show("The selected item is not a group.", "Not a group.", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                 valid = false;
@@ -57,7 +55,7 @@ namespace Netron.Diagramming.Core
 
             if (valid)
             {
-                UngroupCommand cmd = new UngroupCommand(this.Controller, Selection.SelectedItems[0] as IGroup);
+              UngroupCommand cmd = new UngroupCommand(this.Controller, this.Controller.Model.Selection.SelectedItems[0] as IGroup);
                 this.Controller.UndoManager.AddUndoCommand(cmd);
                 cmd.Redo();
             }

@@ -39,7 +39,7 @@ namespace Netron.Diagramming.Core
         // ------------------------------------------------------------------
         protected override void OnActivateTool()
         {
-            if (Selection.SelectedItems.Count == 0)
+          if (this.Controller.Model.Selection.SelectedItems.Count == 0)
             {
                 MessageBox.Show("No shapes are selected.  " +
                     "Please make a selection first.",
@@ -53,7 +53,7 @@ namespace Netron.Diagramming.Core
             {
                 // Create an image using the ImageExporter and copy it to
                 // the clipboard.
-                Bitmap image = Selection.ToBitmap();
+              Bitmap image = this.Controller.Model.Selection.ToBitmap();
                 if (image != null)
                 {                    
                     Clipboard.SetImage(image);

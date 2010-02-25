@@ -234,7 +234,7 @@ namespace Netron.Diagramming.Core
             {
                 if (entity.Hit(e.Location))
                 {
-                    Selection.SelectedItems.Add(entity);
+                   this.Model.Selection.SelectedItems.Add(entity);
                     if (entity.MouseDown(e))
                     {
                         result = true;

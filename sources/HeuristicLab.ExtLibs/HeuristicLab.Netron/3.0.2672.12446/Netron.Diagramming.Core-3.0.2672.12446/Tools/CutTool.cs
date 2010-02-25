@@ -29,7 +29,7 @@ namespace Netron.Diagramming.Core
         // ------------------------------------------------------------------
         protected override void OnActivateTool()
         {
-            if (Selection.SelectedItems.Count == 0)
+            if (this.Controller.Model.Selection.SelectedItems.Count == 0)
                 return;
 
             // How about for the cut, if we use two existing tools.  First,

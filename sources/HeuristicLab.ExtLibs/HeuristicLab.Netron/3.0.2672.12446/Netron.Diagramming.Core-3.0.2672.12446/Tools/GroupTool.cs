@@ -36,19 +36,18 @@ namespace Netron.Diagramming.Core
         {
             bool valid = true;
             //make sure we have the correct stuff on the table
-            if (Selection.SelectedItems == null || Selection.SelectedItems.Count == 0)
+            if (this.Controller.Model.Selection.SelectedItems == null || this.Controller.Model.Selection.SelectedItems.Count == 0)
             {
                 MessageBox.Show("Nothing is selected, you need to select at least two items to create a group.", "Nothing selected.", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                 valid = false;
-            }
-            else if (Selection.SelectedItems.Count <= 1)
+            } else if (this.Controller.Model.Selection.SelectedItems.Count <= 1)
             {
                 MessageBox.Show("You need at least two items to create a group.", "Multiple items.", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                 valid = false;
             }
             if (valid)
             {
-                Bundle bundle = new Bundle(Selection.SelectedItems);
+              Bundle bundle = new Bundle(this.Controller.Model.Selection.SelectedItems);
 
                 GroupCommand cmd = new GroupCommand(this.Controller, bundle);
 

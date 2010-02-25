@@ -73,7 +73,7 @@ namespace Netron.Diagramming.Core
 
             if (e.Button == MouseButtons.Left && Enabled && !IsSuspended)
             {
-                if(Selection.SelectedItems.Count == 0 && Selection.Connector==null)
+              if (this.Controller.Model.Selection.SelectedItems.Count == 0 && this.Controller.Model.Selection.Connector == null)
                 {
                     initialPoint = e.Location;
                     ActivateTool();
@@ -124,12 +124,12 @@ namespace Netron.Diagramming.Core
                 DeactivateTool();
                 if(Controller.View.Ghost != null)
                 {
-                    Selection.CollectEntitiesInside(
+                   this.Controller.Model.Selection.CollectEntitiesInside(
                         Controller.View.Ghost.Rectangle);//world space
 
                     Controller.RaiseOnShowSelectionProperties(
                         new SelectionEventArgs(
-                        Selection.SelectedItems.ToArray()));
+                       this.Controller.Model.Selection.SelectedItems.ToArray()));
                 }
                 Controller.View.ResetGhost();                
             }

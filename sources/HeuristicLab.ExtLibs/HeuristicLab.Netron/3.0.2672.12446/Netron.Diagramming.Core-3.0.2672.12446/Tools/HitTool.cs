@@ -90,9 +90,9 @@ namespace Netron.Diagramming.Core
 
                 // Also don't clear the selection if a group is currently
                 // selected so we can drill-down into it.
-                if (Selection.SelectedItems.Count > 0)
+                if (this.Controller.Model.Selection.SelectedItems.Count > 0)
                 {
-                    foreach (IDiagramEntity entity in Selection.SelectedItems)
+                  foreach (IDiagramEntity entity in this.Controller.Model.Selection.SelectedItems)
                     {
                         if ( (entity is IGroup) &&
                             (entity.Hit(e.Location) == true) )
@@ -101,12 +101,12 @@ namespace Netron.Diagramming.Core
                         }
                     }
                 }
-                Selection.CollectEntitiesAt(e.Location, clearSelectionFirst);
+                this.Controller.Model.Selection.CollectEntitiesAt(e.Location, clearSelectionFirst);
 
-                if (Selection.SelectedItems.Count > 0)
+                if (this.Controller.Model.Selection.SelectedItems.Count > 0)
                 {
                     IMouseListener listener =
-                        Selection.SelectedItems[0].GetService(
+                       this.Controller.Model.Selection.SelectedItems[0].GetService(
                         typeof(IMouseListener)) as IMouseListener;
 
                     if (listener != null)
@@ -116,12 +116,12 @@ namespace Netron.Diagramming.Core
                     }
                 }
 
-                if ( (Selection.SelectedItems.Count > 0) && 
-                    (Selection.SelectedItems[0] is ITextProvider) )
+                if ((this.Controller.Model.Selection.SelectedItems.Count > 0) &&
+                    (this.Controller.Model.Selection.SelectedItems[0] is ITextProvider))
                 {
                     //ActivateTool();
-                    ITextProvider textProvider = 
-                        Selection.SelectedItems[0] as ITextProvider;
+                    ITextProvider textProvider =
+                       this.Controller.Model.Selection.SelectedItems[0] as ITextProvider;
 
                     if ((e.Clicks == textProvider.EditTextClicks) &&
                         (textProvider.AllowTextEditing))

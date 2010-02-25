@@ -299,7 +299,7 @@ namespace Netron.Diagramming.Core
                 (Controller.View.Tracker != null) )
             {
 
-                if (Selection.SelectedItems.Count > 0)
+              if (this.Controller.Model.Selection.SelectedItems.Count > 0)
                 {                    
                     UpdateState(e);
 
@@ -330,7 +330,7 @@ namespace Netron.Diagramming.Core
                         EntityBone bone;
                         //take the flat selection and keep the current state as a reference for the transformation
                         //until the mouseup pins down the final scaling
-                        foreach (IDiagramEntity entity in Selection.FlattenedSelectionItems)
+                        foreach (IDiagramEntity entity in this.Controller.Model.Selection.FlattenedSelectionItems)
                         {
                             if (!entity.Resizable) continue;//only take what's resizable
 
@@ -573,7 +573,7 @@ namespace Netron.Diagramming.Core
                 // Since we use the flattened selection the group shapes 
                 // are unaware of the resize, so we have to recalculate 
                 // the group rectangles.
-                foreach (IDiagramEntity entity in Selection.SelectedItems)
+                foreach (IDiagramEntity entity in this.Controller.Model.Selection.SelectedItems)
                 {
                     //the calculation will cascade to subgroups if necessary
                     if (entity is IGroup)

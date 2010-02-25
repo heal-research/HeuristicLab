@@ -78,7 +78,7 @@ namespace Netron.Diagramming.Core
                 throw new ArgumentNullException("The argument object is 'null'");
             if(e.Button == MouseButtons.Left && Enabled && !IsSuspended && !Blocked)
             {
-                if(Selection.SelectedItems.Count > 0)
+              if (this.Controller.Model.Selection.SelectedItems.Count > 0)
                 {
                     initialPoint = e.Location;
                     lastPoint = initialPoint;
@@ -93,10 +93,9 @@ namespace Netron.Diagramming.Core
                     // other mouse listeners can respond.  This tool really
                     // does its thing when the mouse is moved.
                     //return true;
-                }
-                else if(Selection.Connector != null && Selection.Connector.Parent is IConnection)
+              } else if (this.Controller.Model.Selection.Connector != null && this.Controller.Model.Selection.Connector.Parent is IConnection)
                 {
-                    if(!typeof(IShape).IsInstanceOfType(Selection.Connector.Parent)) //note that there is a separate tool to move shape-connectors!
+                if (!typeof(IShape).IsInstanceOfType(this.Controller.Model.Selection.Connector.Parent)) //note that there is a separate tool to move shape-connectors!
                     {
                         initialPoint = e.Location;
                         lastPoint = initialPoint;
@@ -122,18 +121,18 @@ namespace Netron.Diagramming.Core
             if(IsActive)
             {
                 //can be a connector
-                if(Selection.Connector != null)
+              if (this.Controller.Model.Selection.Connector != null)
                 {
-                    Selection.Connector.MoveBy(new Point(point.X - lastPoint.X, point.Y - lastPoint.Y));
+                this.Controller.Model.Selection.Connector.MoveBy(new Point(point.X - lastPoint.X, point.Y - lastPoint.Y));
                     #region Do we hit something meaningful?
 
                     if (hoveredConnector != null)
-                        hoveredConnector.Hovered = false;                        
-                    
-                    hoveredConnector = Selection.FindConnectorAt(e.Location);
+                        hoveredConnector.Hovered = false;
+
+                    hoveredConnector = this.Controller.Model.Selection.FindConnectorAt(e.Location);
                     if(hoveredConnector!=null)
                         hoveredConnector.Hovered = true;
-                    if(hoveredConnector != null && hoveredConnector!=Selection.Connector)
+                    if (hoveredConnector != null && hoveredConnector != this.Controller.Model.Selection.Connector)
                     {
                         Controller.View.CurrentCursor = CursorPalette.Grip;
                         
@@ -144,7 +143,7 @@ namespace Netron.Diagramming.Core
                 }
                 else //can be a selection
                 {
-                    foreach(IDiagramEntity entity in Selection.SelectedItems)
+                  foreach (IDiagramEntity entity in this.Controller.Model.Selection.SelectedItems)
                     {
                         if (entity.AllowMove)
                         {
@@ -203,9 +202,9 @@ namespace Netron.Diagramming.Core
                     
                     #region Is the connector attached?
                     //detach only if there is a parent different than a connection; the join of a chained connection is allowed to move
-                    if( Selection.Connector.AttachedTo != null && !typeof(IConnection).IsInstanceOfType(Selection.Connector.AttachedTo))
+                  if (this.Controller.Model.Selection.Connector.AttachedTo != null && !typeof(IConnection).IsInstanceOfType(this.Controller.Model.Selection.Connector.AttachedTo))
                     {
-                        DetachConnectorCommand detach = new DetachConnectorCommand(this.Controller, Selection.Connector.AttachedTo, Selection.Connector);
+                    DetachConnectorCommand detach = new DetachConnectorCommand(this.Controller, this.Controller.Model.Selection.Connector.AttachedTo, this.Controller.Model.Selection.Connector);
                         detach.Redo();
                         package.Commands.Add(detach);
 
@@ -215,7 +214,7 @@ namespace Netron.Diagramming.Core
                     #region The moving part
                     //a bundle might look like overkill here but it makes the coding model uniform
                     Bundle bundle = new Bundle(Controller.Model);
-                    bundle.Entities.Add(Selection.Connector);
+                    bundle.Entities.Add(this.Controller.Model.Selection.Connector);
                     MoveCommand move = new MoveCommand(this.Controller, bundle, new Point(lastPoint.X - initialPoint.X, lastPoint.Y - initialPoint.Y));
                     //no Redo() necessary here!
                     package.Commands.Add(move);
@@ -230,16 +229,16 @@ namespace Netron.Diagramming.Core
                         {
                             //whatever, except itself and any children of the moved connector
                             //since this would entail a child becoming a parent!
-                            if(conn.Hit(e.Location) && conn != Selection.Connector && !Selection.Connector.AttachedConnectors.Contains(conn)) 
+                          if (conn.Hit(e.Location) && conn != this.Controller.Model.Selection.Connector && !this.Controller.Model.Selection.Connector.AttachedConnectors.Contains(conn)) 
                                 return true;
                             return false;
                         };
                     //find it!
-                    IConnector parentConnector = Selection.FindConnector(predicate);
+                    IConnector parentConnector = this.Controller.Model.Selection.FindConnector(predicate);
 
                     if(parentConnector != null) //aha, there's an attachment
                     {                        
-                        BindConnectorsCommand binder = new BindConnectorsCommand(this.Controller, parentConnector, Selection.Connector);
+                        BindConnectorsCommand binder = new BindConnectorsCommand(this.Controller, parentConnector, this.Controller.Model.Selection.Connector);
                         package.Commands.Add(binder);
                         binder.Redo(); //this one is necessary since the redo cannot be performed on the whole compound command
                     }
@@ -252,7 +251,7 @@ namespace Netron.Diagramming.Core
                 {
                     #region We are moving entities other than a connector
                     Bundle bundle = new Bundle(Controller.Model);
-                    bundle.Entities.AddRange(Selection.SelectedItems);
+                    bundle.Entities.AddRange(this.Controller.Model.Selection.SelectedItems);
                     MoveCommand cmd = new MoveCommand(this.Controller, bundle, new Point(lastPoint.X - initialPoint.X, lastPoint.Y - initialPoint.Y));
                     package.Commands.Add(cmd);
                     //not necessary to perform the Redo action of the command since the mouse-move already moved the bundle!

@@ -79,9 +79,9 @@ namespace Netron.Diagramming.Core
             // Should we set the Origin to the location of the selected items
             // if there are any?  This will allow the user to zoom in on
             // a selection.
-            if (Selection.SelectedItems.Count > 0)
+            if (this.Controller.Model.Selection.SelectedItems.Count > 0)
             {
-                Bundle bundle = new Bundle(Selection.SelectedItems);
+              Bundle bundle = new Bundle(this.Controller.Model.Selection.SelectedItems);
                 Point bundleLocation = bundle.Rectangle.Location;
 
                 // Don't move the origin *exactly* to the bundle's location.

@@ -41,7 +41,7 @@ namespace Netron.Diagramming.Core
             base.OnActivateTool();
 
             // Make sure enough items were selected.
-            if (Selection.SelectedItems == null)
+            if (this.Controller.Model.Selection.SelectedItems == null)
             {
                 MessageBox.Show(
                     "Nothing is selected, you need to select at " +
@@ -53,7 +53,7 @@ namespace Netron.Diagramming.Core
                 return;
             }
 
-            if (Selection.SelectedItems.Count <= 1)
+            if (this.Controller.Model.Selection.SelectedItems.Count <= 1)
             {
                 MessageBox.Show(
                     "You need to select at least two items to align.",
@@ -67,7 +67,7 @@ namespace Netron.Diagramming.Core
             // Since there are enough items, peform the alignment.  But
             // first get all aspects about the location of the first
             // entity.
-            this.firstEntity = Selection.SelectedItems[0];
+            this.firstEntity = this.Controller.Model.Selection.SelectedItems[0];
             this.xLocationOfFirstEntity = firstEntity.Rectangle.X;
             this.yLocationOfFirstEntity = firstEntity.Rectangle.Y;
             this.topEdgeOfFirstEntity = firstEntity.Rectangle.Top;
@@ -75,7 +75,7 @@ namespace Netron.Diagramming.Core
             this.rightEdgeOfFirstEntity = firstEntity.Rectangle.Right;
             this.centerOfFirstEntity = firstEntity.Center;
 
-            this.Align(Selection.SelectedItems.ToArray());
+            this.Align(this.Controller.Model.Selection.SelectedItems.ToArray());
 
             // Reset the Tracker.
             this.Controller.View.ShowTracker();

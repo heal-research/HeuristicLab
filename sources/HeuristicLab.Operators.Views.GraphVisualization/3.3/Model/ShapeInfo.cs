@@ -34,7 +34,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       if (!typeof(IShape).IsAssignableFrom(shapeType))
         throw new ArgumentException("The passed shape type " + shapeType + " must be derived from IShape.");
       this.shapeType = shapeType;
-      this.connections = new ObservableDictionary<string, IShapeInfo>();
     }
 
     private Type shapeType;
@@ -64,20 +63,8 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       }
     }
 
-    protected ObservableDictionary<string, IShapeInfo> connections;
-    public IEnumerable<KeyValuePair<string, IShapeInfo>> Connections {
-      get { return this.connections; }
-    }
-    public INotifyObservableDictionaryItemsChanged<string, IShapeInfo> ObservableConnections {
-      get { return this.connections; }
-    }
-
     public abstract void AddConnector(string connectorName);
     public abstract void RemoveConnector(string connectorName);
-    public abstract void AddConnection(string fromConnectorName, IShapeInfo toShapeInfo);
-    public abstract void RemoveConnection(string fromConnectorName);
-    public abstract void ChangeConnection(string fromConnectorName, IShapeInfo toShapeInfo);
-
 
     public virtual IShape CreateShape() {
       IShape shape = (IShape)Activator.CreateInstance(this.shapeType);

@@ -1009,10 +1009,10 @@ namespace Netron.Diagramming.Core
         // ------------------------------------------------------------------
         public void ShowTracker()
         {
-            if(Selection.SelectedItems != null && 
-                Selection.SelectedItems.Count > 0)
+            if(this.Model.Selection.SelectedItems != null && 
+               this.Model.Selection.SelectedItems.Count > 0)
             {
-                CollectionBase<IDiagramEntity> ents = Selection.SelectedItems;
+                CollectionBase<IDiagramEntity> ents =this.Model.Selection.SelectedItems;
                 bool showHandles = false;
 
                 Rectangle rec = ents[0].Rectangle;

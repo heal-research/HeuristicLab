@@ -64,7 +64,7 @@ namespace Netron.Diagramming.Core
                 throw new ArgumentNullException("The argument object is 'null'");
             if (e.Button == MouseButtons.Left && Enabled && !IsSuspended)
             {
-                fetchedConnector = Selection.FindShapeConnector(e.Location);
+                fetchedConnector =this.Controller.Model.Selection.FindShapeConnector(e.Location);
                 if(fetchedConnector != null)
                 {
                     

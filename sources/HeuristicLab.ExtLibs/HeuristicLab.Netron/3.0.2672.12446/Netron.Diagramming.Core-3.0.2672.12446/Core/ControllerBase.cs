@@ -309,8 +309,6 @@ namespace Netron.Diagramming.Core
             
            
 
-            //Make sure the static selection class knows about the model
-            Selection.Controller = this;
             //Initialize the colorscheme
             ArtPalette.Init();
 
@@ -526,7 +524,7 @@ namespace Netron.Diagramming.Core
             // undo/redo will fail once the selection has changed
             FillStyleCommand cmd = new FillStyleCommand(
                 this, 
-                Selection.SelectedItems.Copy(), 
+                this.Model.Selection.SelectedItems.Copy(), 
                 paintStyle);            
 
             this.UndoManager.AddUndoCommand(cmd);
@@ -543,7 +541,7 @@ namespace Netron.Diagramming.Core
         {
             PenStyleCommand cmd = new PenStyleCommand(
                 this, 
-                Selection.SelectedItems.Copy(), 
+                this.Model.Selection.SelectedItems.Copy(), 
                 penStyle);
 
             this.UndoManager.AddUndoCommand(cmd);
@@ -1274,7 +1272,7 @@ namespace Netron.Diagramming.Core
                 listener.KeyPress(e);
             }
 
-            foreach (IDiagramEntity entity in Selection.SelectedItems)
+            foreach (IDiagramEntity entity in this.Model.Selection.SelectedItems)
             {
                 if (entity is IKeyboardListener)
                 {
@@ -1291,7 +1289,7 @@ namespace Netron.Diagramming.Core
                 listener.KeyUp(e);
             }
 
-            foreach (IDiagramEntity entity in Selection.SelectedItems)
+            foreach (IDiagramEntity entity in  this.Model.Selection.SelectedItems)
             {
                 if (entity is IKeyboardListener)
                 {
@@ -1307,7 +1305,7 @@ namespace Netron.Diagramming.Core
                 listener.KeyDown(e);
             }
 
-            foreach (IDiagramEntity entity in Selection.SelectedItems)
+             foreach (IDiagramEntity entity in this.Model.Selection.SelectedItems)
             {
                 if (entity is IKeyboardListener)
                 {
@@ -1377,7 +1375,7 @@ namespace Netron.Diagramming.Core
 
             //raise the event to give the host the opportunity to show the properties of the selected item(s)
             //Note that if the selection is empty the property grid will show 'nothing'.
-            RaiseOnShowSelectionProperties(new SelectionEventArgs(Selection.SelectedItems.ToArray()));
+            RaiseOnShowSelectionProperties(new SelectionEventArgs(this.Model.Selection.SelectedItems.ToArray()));
 
             foreach(IMouseListener listener in mouseListeners)
             {
@@ -1482,8 +1480,8 @@ namespace Netron.Diagramming.Core
         public void SelectAll()
         {
             this.View.ResetTracker();
-            Selection.Clear();
-            Selection.SelectedItems = this.Model.CurrentPage.Entities;
+            this.Model.Selection.Clear();
+            this.Model.Selection.SelectedItems = this.Model.CurrentPage.Entities;
             this.View.ShowTracker();
             this.View.Invalidate();
         }

@@ -259,6 +259,12 @@ namespace Netron.Diagramming.Core
             }
         }
 
+        private Selection selection;
+        public Selection Selection {
+          get { return this.selection; }
+          set { this.selection = value; }
+        }
+
         // ------------------------------------------------------------------
         /// <summary>
         /// Specifies if all shape's connectors are shown.
@@ -1163,12 +1169,12 @@ namespace Netron.Diagramming.Core
         // ------------------------------------------------------------------
         public void RemoveSelectedItems()
         {
-            if (Selection.SelectedItems.Count < 1)
+            if (this.Selection.SelectedItems.Count < 1)
             {
                 return;
             }
 
-            int numberOfItems = Selection.SelectedItems.Count;
+            int numberOfItems = this.Selection.SelectedItems.Count;
             for (int i = 0; i < numberOfItems - 1; i++)
             {
                 IDiagramEntity entity = Selection.SelectedItems[0];

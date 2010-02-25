@@ -47,9 +47,9 @@ namespace HeuristicLab.Netron {
 
       if (!DesignMode) {
         this.Controller = new Controller(this);
-        this.View = new View(this);
-
         this.Document = new Document();
+        this.Document.Model.Selection = new Selection(this.Controller,this.Document.Model);
+        this.View = new View(this);
         this.AttachToDocument(Document);
         this.Controller.View = View;
         TextEditor.Init(this);

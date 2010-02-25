@@ -34,7 +34,7 @@ namespace Netron.Diagramming.Core
         /// </summary>
         protected override void OnActivateTool()
         {
-            if(Selection.SelectedItems != null && Selection.SelectedItems.Count > 0)
+          if (this.Controller.Model.Selection.SelectedItems != null && this.Controller.Model.Selection.SelectedItems.Count > 0)
             {
                 #region Preparation of the ordering
                 //the items have to be moved in the order of the Paintables
@@ -42,7 +42,7 @@ namespace Netron.Diagramming.Core
                 //to see how things function.
 
                 SortedList<int, IDiagramEntity> list = new SortedList<int, IDiagramEntity>();
-                foreach(IDiagramEntity entity in Selection.FlattenedSelectionItems)
+                foreach (IDiagramEntity entity in this.Controller.Model.Selection.FlattenedSelectionItems)
                 {
                     //the addition will automatically put the item in increasing order
                     list.Add(this.Controller.Model.Paintables.IndexOf(entity), entity);

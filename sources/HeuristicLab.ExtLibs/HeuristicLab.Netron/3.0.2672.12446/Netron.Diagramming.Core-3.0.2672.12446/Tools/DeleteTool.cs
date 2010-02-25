@@ -21,26 +21,26 @@ namespace Netron.Diagramming.Core
 
             DeleteCommand cmd;
 
-            if (Selection.SelectedItems.Count > 0)
+            if (this.Controller.Model.Selection.SelectedItems.Count > 0)
             {
                 // If any one entity in the selction can't be deleted,
                 // remove it from the selection.
-                for (int i = 0; i < Selection.SelectedItems.Count; i++ )
+                for (int i = 0; i <this.Controller.Model.Selection.SelectedItems.Count; i++ )
                 {
-                    IDiagramEntity entity = Selection.SelectedItems[i];
+                    IDiagramEntity entity =this.Controller.Model.Selection.SelectedItems[i];
                     if (entity.AllowDelete == false)
                     {
-                        Selection.SelectedItems.Remove(entity);
+                       this.Controller.Model.Selection.SelectedItems.Remove(entity);
                         i--;
                     }
                 }
                 cmd = new DeleteCommand(
                         this.Controller,
-                        Selection.SelectedItems.Copy());
+                       this.Controller.Model.Selection.SelectedItems.Copy());
                 this.Controller.UndoManager.AddUndoCommand(cmd);
 
                 // Alert each entity that they're about to be deleted.
-                foreach (IDiagramEntity entity in Selection.SelectedItems)
+                foreach (IDiagramEntity entity in this.Controller.Model.Selection.SelectedItems)
                 {
                     entity.OnBeforeDelete(cmd);
                 }
@@ -48,7 +48,7 @@ namespace Netron.Diagramming.Core
                 cmd.Redo();
 
                 // Alert each entity that they have been deleted.
-                foreach (IDiagramEntity entity in Selection.SelectedItems)
+                foreach (IDiagramEntity entity in this.Controller.Model.Selection.SelectedItems)
                 {
                     entity.OnAfterDelete(cmd);
                 }
