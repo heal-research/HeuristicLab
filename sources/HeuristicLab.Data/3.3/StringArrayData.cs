@@ -107,7 +107,7 @@ namespace HeuristicLab.Data {
     }
     int IStringConvertibleMatrixData.Columns {
       get { return 1; }
-      set { throw new NotSupportedException("Columns cannot be changed."); }
+      set { throw new NotSupportedException("The number of columns cannot be changed."); }
     }
 
     bool IStringConvertibleMatrixData.Validate(string value, out string errorMessage) {
