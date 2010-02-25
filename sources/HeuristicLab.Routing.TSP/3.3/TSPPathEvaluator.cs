@@ -21,7 +21,6 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -31,7 +30,7 @@ namespace HeuristicLab.Routing.TSP {
   /// </summary>
   [Item("TSPPathEvaluator", "A base class for operators which evaluate TSP solutions given in path representation.")]
   [EmptyStorableClass]
-  public abstract class TSPPathEvaluator : SingleObjectiveEvaluator {
+  public abstract class TSPPathEvaluator : TSPEvaluator {
     public LookupParameter<DoubleMatrixData> CoordinatesParameter {
       get { return (LookupParameter<DoubleMatrixData>)Parameters["Coordinates"]; }
     }

@@ -20,7 +20,6 @@
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Optimization {
   /// <summary>

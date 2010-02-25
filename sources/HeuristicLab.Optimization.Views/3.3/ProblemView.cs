@@ -26,8 +26,7 @@ namespace HeuristicLab.Optimization.Views {
   /// <summary>
   /// The base class for visual representations of items.
   /// </summary>
-  [Content(typeof(Problem), true)]
-  [Content(typeof(IProblem), false)]
+  [Content(typeof(IProblem), true)]
   public partial class ProblemView : ParameterizedNamedItemView {
     public new IProblem Content {
       get { return (IProblem)base.Content; }

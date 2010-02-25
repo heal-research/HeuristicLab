@@ -20,25 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Operators;
-using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
-  /// A base class for evaluation operators for single-objective optimization problems.
+  /// An interface which represents an operator for crossing solutions.
   /// </summary>
-  [Item("SingleObjectiveEvaluator", "A base class for evaluation operators for single-objective optimization problems.")]
-  [EmptyStorableClass]
-  public abstract class SingleObjectiveEvaluator : SingleSuccessorOperator, ISingleObjectiveEvaluator {
-    public ILookupParameter<DoubleData> QualityParameter {
-      get { return (ILookupParameter<DoubleData>)Parameters["Quality"]; }
-    }
-
-    protected SingleObjectiveEvaluator()
-      : base() {
-      Parameters.Add(new LookupParameter<DoubleData>("Quality", "The evaluated quality of the solution."));
-    }
-  }
+  public interface ICrossover : IOperator { }
 }

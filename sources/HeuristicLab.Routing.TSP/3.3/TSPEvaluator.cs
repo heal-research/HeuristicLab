@@ -19,23 +19,26 @@
  */
 #endregion
 
-using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Operators;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Routing.TSP {
   /// <summary>
-  /// Plugin class for HeuristicLab.Routing.TSP plugin
+  /// A base class for operators which evaluate TSP solutions.
   /// </summary>
-  [Plugin("HeuristicLab.Routing.TSP", "3.3.0.$WCREV$")]
-  [PluginFile("HeuristicLab.Routing.TSP-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Collections", "3.3")]
-  [PluginDependency("HeuristicLab.Common.Resources", "3.2")]
-  [PluginDependency("HeuristicLab.Core", "3.3")]
-  [PluginDependency("HeuristicLab.Data", "3.3")]
-  [PluginDependency("HeuristicLab.Operators", "3.3")]
-  [PluginDependency("HeuristicLab.Optimization", "3.3")]
-  [PluginDependency("HeuristicLab.Parameters", "3.3")]
-  [PluginDependency("HeuristicLab.Permutation", "3.3")]
-  [PluginDependency("HeuristicLab.Persistence", "3.3")]
-  public class HeuristicLabRoutingTSPPlugin : PluginBase {
+  [Item("TSPEvaluator", "A base class for operators which evaluate TSP solutions.")]
+  [EmptyStorableClass]
+  public abstract class TSPEvaluator : SingleSuccessorOperator, ITSPEvaluator {
+    public ILookupParameter<DoubleData> QualityParameter {
+      get { return (ILookupParameter<DoubleData>)Parameters["Quality"]; }
+    }
+
+    protected TSPEvaluator()
+      : base() {
+      Parameters.Add(new LookupParameter<DoubleData>("Quality", "The evaluated quality of the TSP solution."));
+    }
   }
 }

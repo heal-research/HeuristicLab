@@ -31,15 +31,15 @@ namespace HeuristicLab.Permutation {
   /// </summary>
   [Item("PermutationCrossover", "A base class for permutation crossover operators.")]
   [EmptyStorableClass]
-  public abstract class PermutationCrossover : SingleSuccessorOperator, IPermutationCrossoverOperator {
+  public abstract class PermutationCrossover : SingleSuccessorOperator, IPermutationCrossover, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
-    public SubScopesLookupParameter<Permutation> ParentsParameter {
+    public ILookupParameter<ItemArray<Permutation>> ParentsParameter {
       get { return (SubScopesLookupParameter<Permutation>)Parameters["Parents"]; }
     }
-    public LookupParameter<Permutation> ChildParameter {
-      get { return (LookupParameter<Permutation>)Parameters["Child"]; }
+    public ILookupParameter<Permutation> ChildParameter {
+      get { return (ILookupParameter<Permutation>)Parameters["Child"]; }
     }
 
     protected PermutationCrossover()

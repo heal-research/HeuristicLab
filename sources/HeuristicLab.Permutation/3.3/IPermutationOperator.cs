@@ -20,12 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Permutation {
   /// <summary>
-  /// An interface which represents an operator for manipulating solutions.
+  /// An interface which represents an operator dealing with permutations.
   /// </summary>
-  public interface IPermutationManipulationOperator : IManipulationOperator { }
+  public interface IPermutationOperator : IOperator { }
 }

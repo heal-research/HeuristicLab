@@ -19,9 +19,8 @@
  */
 #endregion
 
-using HeuristicLab.Core;
 using System;
-using HeuristicLab.Common;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
   /// <summary>

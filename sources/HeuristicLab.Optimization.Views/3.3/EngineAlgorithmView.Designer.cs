@@ -67,7 +67,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // problemTabPage
       // 
-      this.problemTabPage.Size = new System.Drawing.Size(482, 148);
+      this.problemTabPage.Size = new System.Drawing.Size(648, 252);
       // 
       // parameterCollectionView
       // 
@@ -95,12 +95,12 @@ namespace HeuristicLab.Optimization.Views {
       // executionTimeLabel
       // 
       this.executionTimeLabel.Location = new System.Drawing.Point(430, 440);
-      this.executionTimeLabel.TabIndex = 11;
+      this.executionTimeLabel.TabIndex = 12;
       // 
       // executionTimeTextBox
       // 
       this.executionTimeTextBox.Location = new System.Drawing.Point(519, 437);
-      this.executionTimeTextBox.TabIndex = 12;
+      this.executionTimeTextBox.TabIndex = 13;
       // 
       // nameTextBox
       // 
@@ -149,8 +149,8 @@ namespace HeuristicLab.Optimization.Views {
       this.createUserDefinedAlgorithmButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.createUserDefinedAlgorithmButton.Location = new System.Drawing.Point(90, 433);
       this.createUserDefinedAlgorithmButton.Name = "createUserDefinedAlgorithmButton";
-      this.createUserDefinedAlgorithmButton.Size = new System.Drawing.Size(161, 24);
-      this.createUserDefinedAlgorithmButton.TabIndex = 13;
+      this.createUserDefinedAlgorithmButton.Size = new System.Drawing.Size(254, 24);
+      this.createUserDefinedAlgorithmButton.TabIndex = 11;
       this.createUserDefinedAlgorithmButton.Text = "&Create User Defined Algorithm";
       this.toolTip.SetToolTip(this.createUserDefinedAlgorithmButton, "Create User Defined Algorithm from this Algorithm");
       this.createUserDefinedAlgorithmButton.UseVisualStyleBackColor = true;

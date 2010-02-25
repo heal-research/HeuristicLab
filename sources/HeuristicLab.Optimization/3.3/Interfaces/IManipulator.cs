@@ -19,23 +19,11 @@
  */
 #endregion
 
-using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Core;
 
-namespace HeuristicLab.Routing.TSP {
+namespace HeuristicLab.Optimization {
   /// <summary>
-  /// Plugin class for HeuristicLab.Routing.TSP plugin
+  /// An interface which represents an operator for manipulating solutions.
   /// </summary>
-  [Plugin("HeuristicLab.Routing.TSP", "3.3.0.$WCREV$")]
-  [PluginFile("HeuristicLab.Routing.TSP-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Collections", "3.3")]
-  [PluginDependency("HeuristicLab.Common.Resources", "3.2")]
-  [PluginDependency("HeuristicLab.Core", "3.3")]
-  [PluginDependency("HeuristicLab.Data", "3.3")]
-  [PluginDependency("HeuristicLab.Operators", "3.3")]
-  [PluginDependency("HeuristicLab.Optimization", "3.3")]
-  [PluginDependency("HeuristicLab.Parameters", "3.3")]
-  [PluginDependency("HeuristicLab.Permutation", "3.3")]
-  [PluginDependency("HeuristicLab.Persistence", "3.3")]
-  public class HeuristicLabRoutingTSPPlugin : PluginBase {
-  }
+  public interface IManipulator : IOperator { }
 }

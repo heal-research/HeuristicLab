@@ -19,6 +19,8 @@
  */
 #endregion
 
+using System;
+using System.Linq;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Evolutionary;
@@ -26,7 +28,6 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System;
 
 namespace HeuristicLab.SGA {
   /// <summary>
@@ -39,6 +40,13 @@ namespace HeuristicLab.SGA {
     private PopulationCreator populationCreator;
     [Storable]
     private SGAOperator sgaOperator;
+
+    private ConstrainedValueParameter<ICrossover> CrossoverOperatorParameter {
+      get { return (ConstrainedValueParameter<ICrossover>)Parameters["CrossoverOperator"]; }
+    }
+    private ConstrainedValueParameter<IManipulator> MutationOperatorParameter {
+      get { return (ConstrainedValueParameter<IManipulator>)Parameters["MutationOperator"]; }
+    }
 
     public override Type ProblemType {
       get { return typeof(ISingleObjectiveProblem); }
@@ -53,9 +61,9 @@ namespace HeuristicLab.SGA {
       Parameters.Add(new ValueParameter<IntData>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntData(0)));
       Parameters.Add(new ValueParameter<BoolData>("SetSeedRandomly", "True if the random seed should be set to a random value, otherwise false.", new BoolData(true)));
       Parameters.Add(new ValueParameter<IntData>("PopulationSize", "The size of the population of solutions.", new IntData(100)));
-      Parameters.Add(new OperatorParameter("CrossoverOperator", "The operator used to cross solutions."));
+      Parameters.Add(new ConstrainedValueParameter<ICrossover>("CrossoverOperator", "The operator used to cross solutions."));
       Parameters.Add(new ValueParameter<DoubleData>("MutationProbability", "The probability that the mutation operator is applied on a solution.", new DoubleData(0.05)));
-      Parameters.Add(new OperatorParameter("MutationOperator", "The operator used to mutate solutions."));
+      Parameters.Add(new ConstrainedValueParameter<IManipulator>("MutationOperator", "The operator used to mutate solutions."));
       Parameters.Add(new ValueParameter<IntData>("Elites", "The numer of elite solutions which are kept in each generation.", new IntData(1)));
       Parameters.Add(new ValueParameter<IntData>("MaximumGenerations", "The maximum number of generations which should be processed.", new IntData(1000)));
 
@@ -102,11 +110,29 @@ namespace HeuristicLab.SGA {
 
     protected override void OnProblemChanged() {
       if (Problem.SolutionCreator is IStochasticOperator) ((IStochasticOperator)Problem.SolutionCreator).RandomParameter.ActualName = "Random";
+      if (Problem.Evaluator is IStochasticOperator) ((IStochasticOperator)Problem.Evaluator).RandomParameter.ActualName = "Random";
+      Problem.Operators.Where(x => x is IStochasticOperator).Select(x => (x as IStochasticOperator).RandomParameter.ActualName = "Random");
+
       populationCreator.SolutionCreatorParameter.Value = Problem.SolutionCreator;
       populationCreator.SolutionEvaluatorParameter.Value = Problem.Evaluator;
       sgaOperator.MaximizationParameter.Value = Problem.Maximization;
-      sgaOperator.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.Name;
+      sgaOperator.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
       sgaOperator.SolutionEvaluatorParameter.Value = Problem.Evaluator;
+
+      CrossoverOperatorParameter.ValidValues.Clear();
+      var crossovers = from o in Problem.Operators
+                       where o is ICrossover
+                       select (ICrossover)o;
+      foreach (ICrossover crossover in crossovers)
+        CrossoverOperatorParameter.ValidValues.Add(crossover);
+
+      MutationOperatorParameter.ValidValues.Clear();
+      var mutators = from o in Problem.Operators
+                     where o is IManipulator
+                     select (IManipulator)o;
+      foreach (IManipulator mutator in mutators)
+        MutationOperatorParameter.ValidValues.Add(mutator);
+
       base.OnProblemChanged();
     }
     protected override void Problem_SolutionCreatorChanged(object sender, EventArgs e) {
@@ -115,8 +141,9 @@ namespace HeuristicLab.SGA {
       base.Problem_SolutionCreatorChanged(sender, e);
     }
     protected override void Problem_EvaluatorChanged(object sender, EventArgs e) {
+      if (Problem.Evaluator is IStochasticOperator) ((IStochasticOperator)Problem.Evaluator).RandomParameter.ActualName = "Random";
       populationCreator.SolutionEvaluatorParameter.Value = Problem.Evaluator;
-      sgaOperator.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.Name;
+      sgaOperator.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
       sgaOperator.SolutionEvaluatorParameter.Value = Problem.Evaluator;
       base.Problem_EvaluatorChanged(sender, e);
     }

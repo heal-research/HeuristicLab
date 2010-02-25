@@ -31,12 +31,12 @@ namespace HeuristicLab.Permutation {
   /// </summary>
   [Item("PermutationManipulator", "A base class for permutation manipulation operators.")]
   [EmptyStorableClass]
-  public abstract class PermutationManipulator : SingleSuccessorOperator, IPermutationManipulationOperator {
+  public abstract class PermutationManipulator : SingleSuccessorOperator, IPermutationManipulator, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
-    public LookupParameter<Permutation> PermutationParameter {
-      get { return (LookupParameter<Permutation>)Parameters["Permutation"]; }
+    public ILookupParameter<Permutation> PermutationParameter {
+      get { return (ILookupParameter<Permutation>)Parameters["Permutation"]; }
     }
 
     protected PermutationManipulator()

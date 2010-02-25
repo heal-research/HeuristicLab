@@ -82,6 +82,8 @@
   <ItemGroup>
     <None Include="HeuristicLabPermutationPlugin.cs.frame" />
     <Compile Include="AbsolutePositionTopologicalCrossover.cs" />
+    <Compile Include="IPermutationCreator.cs" />
+    <Compile Include="IPermutationOperator.cs" />
     <Compile Include="CosaCrossover.cs" />
     <Compile Include="CyclicCrossover.cs" />
     <Compile Include="EdgeRecombinationCrossover.cs" />
@@ -89,8 +91,8 @@
     <Compile Include="InversionManipulator.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="IPermutationCrossoverOperator.cs" />
-    <Compile Include="IPermutationManipulationOperator.cs" />
+    <Compile Include="IPermutationCrossover.cs" />
+    <Compile Include="IPermutationManipulator.cs" />
     <Compile Include="MaximalPreservativeCrossover.cs" />
     <Compile Include="OrderBasedCrossover.cs" />
     <Compile Include="PartiallyMatchedCrossover.cs" />

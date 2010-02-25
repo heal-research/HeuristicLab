@@ -33,15 +33,15 @@ namespace HeuristicLab.Permutation {
   [Item("RandomPermutationCreator", "An operator which creates a new random permutation of integer values.")]
   [EmptyStorableClass]
   [Creatable("Test")]
-  public sealed class RandomPermutationCreator : SingleSuccessorOperator, ISolutionCreator {
+  public sealed class RandomPermutationCreator : SingleSuccessorOperator, IPermutationCreator, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
-    public ValueLookupParameter<IntData> LengthParameter {
-      get { return (ValueLookupParameter<IntData>)Parameters["Length"]; }
+    public IValueLookupParameter<IntData> LengthParameter {
+      get { return (IValueLookupParameter<IntData>)Parameters["Length"]; }
     }
-    public LookupParameter<Permutation> PermutationParameter {
-      get { return (LookupParameter<Permutation>)Parameters["Permutation"]; }
+    public ILookupParameter<Permutation> PermutationParameter {
+      get { return (ILookupParameter<Permutation>)Parameters["Permutation"]; }
     }
 
     public RandomPermutationCreator()

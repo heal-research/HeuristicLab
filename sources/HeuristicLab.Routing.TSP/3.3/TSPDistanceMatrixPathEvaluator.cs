@@ -21,7 +21,6 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -32,22 +31,18 @@ namespace HeuristicLab.Routing.TSP {
   [Item("TSPDistanceMatrixPathEvaluator", "An operator which evaluates TSP solutions given in path representation using a distance matrix.")]
   [Creatable("Test")]
   [EmptyStorableClass]
-  public sealed class TSPDistanceMatrixPathEvaluator : SingleSuccessorOperator {
+  public sealed class TSPDistanceMatrixPathEvaluator : TSPEvaluator {
     public LookupParameter<DoubleMatrixData> DistanceMatrixParameter {
       get { return (LookupParameter<DoubleMatrixData>)Parameters["DistanceMatrix"]; }
     }
     public LookupParameter<Permutation.Permutation> PermutationParameter {
       get { return (LookupParameter<Permutation.Permutation>)Parameters["Permutation"]; }
     }
-    public LookupParameter<DoubleData> QualityParameter {
-      get { return (LookupParameter<DoubleData>)Parameters["Quality"]; }
-    }
 
     public TSPDistanceMatrixPathEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<DoubleMatrixData>("DistanceMatrix", "The distance matrix of the cities."));
       Parameters.Add(new LookupParameter<Permutation.Permutation>("Permutation", "The TSP solution given in path representation which should be evaluated."));
-      Parameters.Add(new LookupParameter<DoubleData>("Quality", "The evaluated quality of the given TSP solution."));
     }
 
     public override IOperation Apply() {

@@ -20,11 +20,14 @@
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.Data;
+using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Optimization {
+namespace HeuristicLab.Permutation {
   /// <summary>
-  /// An interface which represents an operator for crossing solutions.
+  /// An interface which represents an operator for crossing permutations.
   /// </summary>
-  public interface ICrossoverOperator : IOperator { }
+  public interface IPermutationCrossover : IPermutationOperator, ICrossover {
+    ILookupParameter<ItemArray<Permutation>> ParentsParameter { get; }
+    ILookupParameter<Permutation> ChildParameter { get; }
+  }
 }

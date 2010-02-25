@@ -19,13 +19,11 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Permutation {
+namespace HeuristicLab.Routing.TSP {
   /// <summary>
-  /// An interface which represents an operator for crossing permutations.
+  /// An interface which represents an evaluation operator for Traveling Salesman Problems.
   /// </summary>
-  public interface IPermutationCrossoverOperator : ICrossoverOperator { }
+  public interface ITSPEvaluator : ISingleObjectiveEvaluator { }
 }
