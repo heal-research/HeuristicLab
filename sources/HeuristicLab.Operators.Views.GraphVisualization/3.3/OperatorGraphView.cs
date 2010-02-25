@@ -36,7 +36,7 @@ using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Collections;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
-
+  [View("Operator Graph Visualization")]
   [Content(typeof(OperatorGraph), false)]
   public partial class OperatorGraphView : ContentView {
     private BidirectionalLookup<IShapeInfo, IShape> shapeInfoShapeMapping;

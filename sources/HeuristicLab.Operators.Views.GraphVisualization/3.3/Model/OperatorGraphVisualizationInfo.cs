@@ -227,8 +227,11 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
         if (opParam.Value == null)
           this.connections.Remove(connectionFrom);
-        else
+        else {
+          if (!this.shapeInfoMapping.ContainsFirst(opParam.Value))
+            this.AddOperator(opParam.Value);
           this.connections[connectionFrom] = this.shapeInfoMapping.GetByFirst(opParam.Value);
+        }
       }
     }
 
