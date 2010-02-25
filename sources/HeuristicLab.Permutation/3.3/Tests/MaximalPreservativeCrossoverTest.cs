@@ -85,7 +85,7 @@ namespace HeuristicLab.Permutation.Tests {
     ///</summary>
     [TestMethod()]
     [DeploymentItem("HeuristicLab.Permutation-3.3.dll")]
-    public void CyclicCrossoverCrossTest() {
+    public void MaximalPreservativeCrossoverCrossTest() {
       TestRandom random = new TestRandom();
       MaximalPreservativeCrossover_Accessor target =
         new MaximalPreservativeCrossover_Accessor(new PrivateObject(typeof(MaximalPreservativeCrossover)));

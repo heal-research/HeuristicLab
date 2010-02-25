@@ -172,6 +172,19 @@ namespace HeuristicLab.Permutation.Tests
       actual = OrderCrossover.Apply(random, parent1, parent2);
       Assert.IsTrue(actual.Validate());
       Assert.IsTrue(Auxiliary.PermutationIsEqualByPosition(expected, actual));
+      // The following test is based on an example from Affenzeller, M. et al. 2009. Genetic Algorithms and Genetic Programming - Modern Concepts and Practical Applications. CRC Press. p. 135.
+      random.Reset();
+      random.IntNumbers = new int[] { 2, 5 };
+      parent1 = new Permutation(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
+      Assert.IsTrue(parent1.Validate());
+      parent2 = new Permutation(new int[] { 2, 5, 6, 0, 9, 1, 3, 8, 4, 7 });
+      Assert.IsTrue(parent2.Validate());
+      expected = new Permutation(new int[] { 2, 0, 9, 1, 3, 5, 6, 7, 8, 4 });
+      Assert.IsTrue(expected.Validate());
+      actual = OrderCrossover.Apply(random, parent1, parent2);
+      Assert.IsTrue(actual.Validate());
+      Assert.IsTrue(Auxiliary.PermutationIsEqualByPosition(expected, actual));
+
       // perform a test when the two permutations are of unequal length
       random.Reset();
       bool exceptionFired = false;
