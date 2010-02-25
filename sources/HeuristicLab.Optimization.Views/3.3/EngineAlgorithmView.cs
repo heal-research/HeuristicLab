@@ -97,5 +97,9 @@ namespace HeuristicLab.Optimization.Views {
       if (Content.Engine != null)
         MainFormManager.CreateDefaultView(Content.Engine).Show();
     }
+
+    protected void createUserDefinedAlgorithmButton_Click(object sender, EventArgs e) {
+      MainFormManager.CreateDefaultView(Content.CreateUserDefinedAlgorithm()).Show();
+    }
   }
 }

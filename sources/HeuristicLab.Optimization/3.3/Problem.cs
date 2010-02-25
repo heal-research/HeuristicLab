@@ -51,6 +51,10 @@ namespace HeuristicLab.Optimization {
       get { return EvaluatorParameter.Value; }
       set { EvaluatorParameter.Value = value; }
     }
+    private OperatorSet operators;
+    public OperatorSet Operators {
+      get { return operators; }
+    }
 
     protected Problem()
       : base() {

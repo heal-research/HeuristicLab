@@ -20,11 +20,19 @@
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.Data;
+using System;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
-  /// An interface which represents an operator for crossing solutions.
+  /// Interface to represent an optimization problem.
   /// </summary>
-  public interface ICrossoverOperator : IStochasticOperator { }
+  public interface IProblem : IParameterizedNamedItem {
+    ISolutionCreator SolutionCreator { get; }
+    IEvaluator Evaluator { get; }
+    OperatorSet Operators { get; }
+
+    event EventHandler SolutionCreatorChanged;
+    event EventHandler EvaluatorChanged;
+  }
 }

@@ -48,6 +48,7 @@ namespace HeuristicLab.Optimization.Views {
       this.engineLabel = new System.Windows.Forms.Label();
       this.engineTextBox = new System.Windows.Forms.TextBox();
       this.setEngineButton = new System.Windows.Forms.Button();
+      this.createUserDefinedAlgorithmButton = new System.Windows.Forms.Button();
       this.tabControl.SuspendLayout();
       this.parametersTabPage.SuspendLayout();
       this.problemTabPage.SuspendLayout();
@@ -57,12 +58,12 @@ namespace HeuristicLab.Optimization.Views {
       // tabControl
       // 
       this.tabControl.Location = new System.Drawing.Point(0, 149);
-      this.tabControl.Size = new System.Drawing.Size(490, 174);
+      this.tabControl.Size = new System.Drawing.Size(656, 278);
       this.tabControl.TabIndex = 7;
       // 
       // parametersTabPage
       // 
-      this.parametersTabPage.Size = new System.Drawing.Size(482, 148);
+      this.parametersTabPage.Size = new System.Drawing.Size(648, 252);
       // 
       // problemTabPage
       // 
@@ -70,7 +71,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // parameterCollectionView
       // 
-      this.parameterCollectionView.Size = new System.Drawing.Size(470, 136);
+      this.parameterCollectionView.Size = new System.Drawing.Size(636, 240);
       // 
       // problemViewHost
       // 
@@ -78,28 +79,38 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // startButton
       // 
+      this.startButton.Location = new System.Drawing.Point(0, 433);
       this.startButton.TabIndex = 8;
       // 
       // stopButton
       // 
+      this.stopButton.Location = new System.Drawing.Point(30, 433);
       this.stopButton.TabIndex = 9;
       // 
       // resetButton
       // 
+      this.resetButton.Location = new System.Drawing.Point(60, 433);
       this.resetButton.TabIndex = 10;
       // 
       // executionTimeLabel
       // 
+      this.executionTimeLabel.Location = new System.Drawing.Point(430, 440);
       this.executionTimeLabel.TabIndex = 11;
       // 
       // executionTimeTextBox
       // 
+      this.executionTimeTextBox.Location = new System.Drawing.Point(519, 437);
       this.executionTimeTextBox.TabIndex = 12;
       // 
       // nameTextBox
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.nameTextBox, 2);
+      this.nameTextBox.Size = new System.Drawing.Size(584, 20);
+      // 
+      // descriptionTextBox
+      // 
+      this.descriptionTextBox.Size = new System.Drawing.Size(584, 87);
       // 
       // engineLabel
       // 
@@ -117,7 +128,7 @@ namespace HeuristicLab.Optimization.Views {
       this.engineTextBox.Location = new System.Drawing.Point(72, 121);
       this.engineTextBox.Name = "engineTextBox";
       this.engineTextBox.ReadOnly = true;
-      this.engineTextBox.Size = new System.Drawing.Size(388, 20);
+      this.engineTextBox.Size = new System.Drawing.Size(554, 20);
       this.engineTextBox.TabIndex = 6;
       this.engineTextBox.DoubleClick += new System.EventHandler(this.engineTextBox_DoubleClick);
       // 
@@ -125,12 +136,25 @@ namespace HeuristicLab.Optimization.Views {
       // 
       this.setEngineButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.setEngineButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Add;
-      this.setEngineButton.Location = new System.Drawing.Point(466, 119);
+      this.setEngineButton.Location = new System.Drawing.Point(632, 119);
       this.setEngineButton.Name = "setEngineButton";
       this.setEngineButton.Size = new System.Drawing.Size(24, 24);
       this.setEngineButton.TabIndex = 5;
+      this.toolTip.SetToolTip(this.setEngineButton, "Set Engine");
       this.setEngineButton.UseVisualStyleBackColor = true;
       this.setEngineButton.Click += new System.EventHandler(this.setEngineButton_Click);
+      // 
+      // createUserDefinedAlgorithmButton
+      // 
+      this.createUserDefinedAlgorithmButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.createUserDefinedAlgorithmButton.Location = new System.Drawing.Point(90, 433);
+      this.createUserDefinedAlgorithmButton.Name = "createUserDefinedAlgorithmButton";
+      this.createUserDefinedAlgorithmButton.Size = new System.Drawing.Size(161, 24);
+      this.createUserDefinedAlgorithmButton.TabIndex = 13;
+      this.createUserDefinedAlgorithmButton.Text = "&Create User Defined Algorithm";
+      this.toolTip.SetToolTip(this.createUserDefinedAlgorithmButton, "Create User Defined Algorithm from this Algorithm");
+      this.createUserDefinedAlgorithmButton.UseVisualStyleBackColor = true;
+      this.createUserDefinedAlgorithmButton.Click += new System.EventHandler(this.createUserDefinedAlgorithmButton_Click);
       // 
       // EngineAlgorithmView
       // 
@@ -139,7 +163,10 @@ namespace HeuristicLab.Optimization.Views {
       this.Controls.Add(this.setEngineButton);
       this.Controls.Add(this.engineTextBox);
       this.Controls.Add(this.engineLabel);
+      this.Controls.Add(this.createUserDefinedAlgorithmButton);
       this.Name = "EngineAlgorithmView";
+      this.Size = new System.Drawing.Size(656, 457);
+      this.Controls.SetChildIndex(this.createUserDefinedAlgorithmButton, 0);
       this.Controls.SetChildIndex(this.engineLabel, 0);
       this.Controls.SetChildIndex(this.engineTextBox, 0);
       this.Controls.SetChildIndex(this.setEngineButton, 0);
@@ -167,6 +194,7 @@ namespace HeuristicLab.Optimization.Views {
     protected System.Windows.Forms.Label engineLabel;
     protected System.Windows.Forms.TextBox engineTextBox;
     protected System.Windows.Forms.Button setEngineButton;
+    protected System.Windows.Forms.Button createUserDefinedAlgorithmButton;
 
 
   }

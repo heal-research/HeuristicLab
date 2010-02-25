@@ -51,21 +51,20 @@
   <ItemGroup>
     <None Include="HeuristicLabOptimizationPlugin.cs.frame" />
     <Compile Include="Algorithm.cs" />
-    <Compile Include="IManipulationOperator.cs" />
-    <Compile Include="ICrossoverOperator.cs" />
-    <Compile Include="IStochasticSolutionCreator.cs" />
-    <Compile Include="IStochasticOperator.cs" />
-    <Compile Include="ISolutionCreator.cs" />
+    <Compile Include="Interfaces\IAlgorithm.cs" />
+    <Compile Include="Interfaces\ICrossoverOperator.cs" />
+    <Compile Include="Interfaces\IEvaluator.cs" />
+    <Compile Include="Interfaces\IManipulationOperator.cs" />
+    <Compile Include="Interfaces\IProblem.cs" />
+    <Compile Include="Interfaces\ISingleObjectiveEvaluator.cs" />
+    <Compile Include="Interfaces\ISingleObjectiveProblem.cs" />
+    <Compile Include="Interfaces\ISolutionCreator.cs" />
+    <Compile Include="Interfaces\IStochasticOperator.cs" />
     <Compile Include="SingleObjectiveProblem.cs" />
-    <Compile Include="ISingleObjectiveProblem.cs" />
-    <Compile Include="IEvaluator.cs" />
-    <Compile Include="ISingleObjectiveEvaluator.cs" />
     <Compile Include="SingleObjectiveEvaluator.cs" />
     <Compile Include="UserDefinedAlgorithm.cs" />
     <Compile Include="EngineAlgorithm.cs" />
-    <Compile Include="IAlgorithm.cs" />
     <Compile Include="HeuristicLabOptimizationPlugin.cs" />
-    <Compile Include="IProblem.cs" />
     <Compile Include="Problem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

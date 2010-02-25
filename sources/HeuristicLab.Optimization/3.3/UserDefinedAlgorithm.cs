@@ -49,6 +49,8 @@ namespace HeuristicLab.Optimization {
     }
 
     public UserDefinedAlgorithm() : base() { }
+    public UserDefinedAlgorithm(string name) : base(name) { }
+    public UserDefinedAlgorithm(string name, string description) : base(name, description) { }
 
     public event EventHandler OperatorGraphChanged;
     protected override void OnOperatorGraphChanged() {

@@ -115,6 +115,17 @@ namespace HeuristicLab.Optimization {
       return clone;
     }
 
+    public UserDefinedAlgorithm CreateUserDefinedAlgorithm() {
+      UserDefinedAlgorithm algorithm = new UserDefinedAlgorithm(Name, Description);
+      Cloner cloner = new Cloner();
+      foreach (IParameter param in Parameters)
+        algorithm.Parameters.Add((IParameter)cloner.Clone(param));
+      algorithm.Problem = (IProblem)cloner.Clone(Problem);
+      algorithm.Engine = (IEngine)cloner.Clone(engine);
+      algorithm.OperatorGraph = (OperatorGraph)cloner.Clone(operatorGraph);
+      return algorithm;
+    }
+
     protected override void OnCanceledChanged() {
       if (Canceled && (engine != null))
         engine.Stop();

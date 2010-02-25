@@ -50,6 +50,7 @@ namespace HeuristicLab.Optimization {
           problem = value;
           if (problem != null) RegisterProblemEvents();
           OnProblemChanged();
+          Prepare();
         }
       }
     }

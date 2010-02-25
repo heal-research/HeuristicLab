@@ -48,10 +48,6 @@ namespace HeuristicLab.SGA {
       set { base.Problem = value; }
     }
 
-    public new IScope GlobalScope {
-      get { return base.GlobalScope; }
-    }
-
     public SGA()
       : base() {
       Parameters.Add(new ValueParameter<IntData>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntData(0)));
@@ -105,7 +101,7 @@ namespace HeuristicLab.SGA {
     }
 
     protected override void OnProblemChanged() {
-      if (Problem.SolutionCreator is IStochasticSolutionCreator) ((IStochasticSolutionCreator)Problem.SolutionCreator).RandomParameter.ActualName = "Random";
+      if (Problem.SolutionCreator is IStochasticOperator) ((IStochasticOperator)Problem.SolutionCreator).RandomParameter.ActualName = "Random";
       populationCreator.SolutionCreatorParameter.Value = Problem.SolutionCreator;
       populationCreator.SolutionEvaluatorParameter.Value = Problem.Evaluator;
       sgaOperator.MaximizationParameter.Value = Problem.Maximization;
@@ -114,7 +110,7 @@ namespace HeuristicLab.SGA {
       base.OnProblemChanged();
     }
     protected override void Problem_SolutionCreatorChanged(object sender, EventArgs e) {
-      if (Problem.SolutionCreator is IStochasticSolutionCreator) ((IStochasticSolutionCreator)Problem.SolutionCreator).RandomParameter.ActualName = "Random";
+      if (Problem.SolutionCreator is IStochasticOperator) ((IStochasticOperator)Problem.SolutionCreator).RandomParameter.ActualName = "Random";
       populationCreator.SolutionCreatorParameter.Value = Problem.SolutionCreator;
       base.Problem_SolutionCreatorChanged(sender, e);
     }
