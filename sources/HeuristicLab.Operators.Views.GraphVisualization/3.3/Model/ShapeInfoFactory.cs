@@ -48,8 +48,10 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
     public static IConnection CreateConnection(IConnector from, IConnector to) {
       Connection connection = new Connection(from.Point, to.Point);
-      connection.AllowMove = false;
+      connection.From.AllowMove = false;
+      connection.To.AllowMove = false;
       from.AttachConnector(connection.From);
+
       to.AttachConnector(connection.To);
       connection.PenStyle = connectionPenStyle;
       return connection;

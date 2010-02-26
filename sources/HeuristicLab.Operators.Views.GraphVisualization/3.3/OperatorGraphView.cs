@@ -155,6 +155,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       this.shapeInfoShapeMapping.Add(shapeInfo, shape);
 
       this.graphVisualization.Controller.Model.AddShape(shape);
+      this.graphVisualization.Invalidate();
     }
 
     private void RemoveShapeInfo(IShapeInfo shapeInfo) {
@@ -175,6 +176,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       if (this.graphVisualization.Controller.Model.Shapes.Contains(shape)) {
         this.graphVisualization.Controller.Model.RemoveShape(shape);
       }
+      this.graphVisualization.Invalidate();
     }
 
     private void RegisterShapeInfoEvents(IShapeInfo shapeInfo) {

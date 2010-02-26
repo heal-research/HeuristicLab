@@ -83,9 +83,8 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       int spacing = this.Rectangle.Width / this.additionalConnectors.Count;
       int margin = spacing / 2;
       int posX = margin + this.Rectangle.X;
-      int posY = this.additionalConnectors[0].Point.Y;
       for (int i = 0; i < this.additionalConnectors.Count; i++) {
-        this.additionalConnectors[i].Point = new Point(posX, posY);
+        this.additionalConnectors[i].MoveBy(new Point(posX - this.additionalConnectors[i].Point.X, 0));
         posX += spacing;
       }
     }
