@@ -34,7 +34,7 @@ namespace Netron.Diagramming.Core
         /// </summary>
         public bool IsExpanded
         {
-            get { return mIsExpanded; }
+            get { return treeChildren.Count != 0; }
             set { mIsExpanded = value; }
         }
 

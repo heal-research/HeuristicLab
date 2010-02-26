@@ -96,7 +96,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       IShapeInfo shapeInfo = this.VisualizationInfo.InitialShape;
       if (shapeInfo != null)
         this.graphVisualization.Controller.Model.LayoutRoot = this.shapeInfoShapeMapping.GetByFirst(shapeInfo);
-      else
+       else
         this.graphVisualization.Controller.Model.LayoutRoot = null;
     }
 
@@ -280,6 +280,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       IShapeInfo shapeInfo = (IShapeInfo)sender;
       IShape shape = this.shapeInfoShapeMapping.GetByFirst(shapeInfo);
       shapeInfo.UpdateShape(shape);
+      shape.Invalidate();
     }
 
 
@@ -333,22 +334,12 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
     #region methods for toolbar items
 
-    private int layoutCount = 0;
     internal void RelayoutOperatorGraph() {
-      if (this.shapeInfoShapeMapping.Count > 0 && this.connectionConnectorsMapping.Count > 0) { //otherwise the layout does not work
-
-        string layoutName = string.Empty;
-        switch (this.layoutCount % 6) {
-          case 0: { layoutName = "Random Layout"; break; }
-          case 1: { layoutName = "FruchtermanReingold Layout"; break; }
-          case 2: { layoutName = "Standard TreeLayout"; break; }
-          case 3: { layoutName = "Radial TreeLayout"; break; }
-          case 4: { layoutName = "Balloon TreeLayout"; break; }
-          case 5: { layoutName = "ForceDirected Layout"; break; }
-        }
+      if (this.shapeInfoShapeMapping.Count > 0 
+        && this.connectionConnectorsMapping.Count > 0 
+        && this.VisualizationInfo.InitialShape != null) { //otherwise the layout does not work
+        string layoutName = "Standard TreeLayout";
         this.graphVisualization.Controller.RunActivity(layoutName);
-        MessageBox.Show(layoutName);
-        this.layoutCount++;
         this.graphVisualization.Invalidate();
       }
     }

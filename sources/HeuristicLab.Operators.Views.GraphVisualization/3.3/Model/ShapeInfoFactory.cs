@@ -42,6 +42,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       OperatorShapeInfo operatorShapeInfo = new OperatorShapeInfo(paramterNames);
       operatorShapeInfo.Title = op.Name;
       operatorShapeInfo.Text = op.GetType().ToString();
+      operatorShapeInfo.HeadColor = Color.LightBlue;
 
       return operatorShapeInfo;
     }

@@ -47,21 +47,40 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       : this() {
       this.operatorGraph = operatorGraph;
       this.operatorGraph.InitialOperatorChanged += new EventHandler(operatorGraph_InitialOperatorChanged);
+      operatorGraph.Operators.ItemsAdded += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IOperator>(Operators_ItemsAdded);
+      operatorGraph.Operators.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IOperator>(Operators_ItemsRemoved);
+      operatorGraph.Operators.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IOperator>(Operators_CollectionReset);
+
       foreach (IOperator op in operatorGraph.Operators)
         if (!this.shapeInfoMapping.ContainsFirst(op))
           this.AddOperator(op);
 
-      operatorGraph.Operators.ItemsAdded += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IOperator>(Operators_ItemsAdded);
-      operatorGraph.Operators.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IOperator>(Operators_ItemsRemoved);
-      operatorGraph.Operators.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IOperator>(Operators_CollectionReset);
+      this.UpdateInitialShape();
     }
 
     public event EventHandler InitialShapeChanged;
     private void operatorGraph_InitialOperatorChanged(object sender, EventArgs e) {
+      this.UpdateInitialShape();
+    }
+
+    private void UpdateInitialShape() {
+      OperatorShapeInfo old = this.oldInitialShape as OperatorShapeInfo;
+      if (old != null)
+        old.HeadColor = oldInitialShapeColor;
+
+      OperatorShapeInfo newInitialShapeInfo = this.InitialShape as OperatorShapeInfo;
+      if (newInitialShapeInfo != null) {
+        oldInitialShapeColor = newInitialShapeInfo.HeadColor;
+        newInitialShapeInfo.HeadColor = Color.LightGreen;
+      }
+
+      oldInitialShape = this.InitialShape;
       if (this.InitialShapeChanged != null)
         this.InitialShapeChanged(this, new EventArgs());
     }
 
+    private IShapeInfo oldInitialShape;
+    private Color oldInitialShapeColor;
     public IShapeInfo InitialShape {
       get {
         IOperator op = this.operatorGraph.InitialOperator;
