@@ -116,7 +116,16 @@ namespace HeuristicLab.Persistence.Core {
       return parentStack.Pop().Obj;
     }
 
+    private void InstantiateParent() {
+      if (parentStack.Count == 0)
+        return;
+      Midwife m = parentStack.Peek();
+      if (!m.MetaMode && m.Obj == null)
+        CreateInstance(m);
+    }
+
     private void CompositeStartHandler(BeginToken token) {
+      InstantiateParent();
       Type type = typeIds[(int)token.TypeId];
       try {
         parentStack.Push(new Midwife(type, (ICompositeSerializer)serializerMapping[type], token.Id));
@@ -192,8 +201,9 @@ namespace HeuristicLab.Persistence.Core {
         parentStack.Push(new Midwife(value));
       } else {
         Midwife m = parentStack.Peek();
-        if (m.MetaMode == false && m.Obj == null)
+        if (m.MetaMode == false && m.Obj == null) {
           CreateInstance(m);
+        }
         m.AddValue(name, value);
       }
     }

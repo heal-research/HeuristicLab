@@ -580,6 +580,33 @@ namespace HeuristicLab.Persistence.UnitTest {
       Assert.AreEqual(((Override)n).Name, ((Override)nn).Name);
     }
 
+    class Child {
+      [Storable]
+      public GrandParent grandParent;
+    }
+
+    class Parent {
+      [Storable]
+      public Child child;
+    }
+
+    class GrandParent {
+      [Storable]
+      public Parent parent;
+    }
+
+    [TestMethod]
+    public void InstantiateParentChainReference() {
+      GrandParent gp = new GrandParent();
+      gp.parent = new Parent();
+      gp.parent.child = new Child();
+      gp.parent.child.grandParent = gp;
+      Assert.AreSame(gp, gp.parent.child.grandParent);
+      XmlGenerator.Serialize(gp, tempFile);
+      GrandParent newGp = (GrandParent)XmlParser.Deserialize(tempFile);
+      Assert.AreSame(newGp, newGp.parent.child.grandParent);
+    }
+
     [ClassInitialize]
     public static void Initialize(TestContext testContext) {
       ConfigurationService.Instance.Reset();
