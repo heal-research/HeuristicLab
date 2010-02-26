@@ -122,11 +122,15 @@ namespace HeuristicLab.Persistence.Default.Xml {
     }
 
     public static object Deserialize(string filename) {
-      return Deserialize(new ZipFile(filename));
+      using (ZipFile file = new ZipFile(filename)) {
+        return Deserialize(file);
+      }
     }
 
     public static object Deserialize(Stream stream) {
-      return Deserialize(new ZipFile(stream));
+      using (ZipFile file = new ZipFile(stream)) {
+        return Deserialize(file);
+      }
     }
 
     private static object Deserialize(ZipFile zipFile) {
