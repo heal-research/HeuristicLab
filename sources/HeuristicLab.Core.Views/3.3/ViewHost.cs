@@ -32,12 +32,14 @@ namespace HeuristicLab.Core.Views {
     public Type ViewType {
       get { return this.viewType; }
       set {
-        if (value != null && !ViewCanShowContent(value, content))
-          throw new ArgumentException(string.Format("View \"{0}\" cannot display content \"{1}\".",
-                                                    value.GetPrettyName(),
-                                                    content.GetType().GetPrettyName()));
-        viewType = value;
-        UpdateView();
+        if (viewType != value) {
+          if (value != null && !ViewCanShowContent(value, content))
+            throw new ArgumentException(string.Format("View \"{0}\" cannot display content \"{1}\".",
+                                                      value.GetPrettyName(),
+                                                      content.GetType().GetPrettyName()));
+          viewType = value;
+          UpdateView();
+        }
       }
     }
 
@@ -61,24 +63,20 @@ namespace HeuristicLab.Core.Views {
     }
 
     private void Initialize() {
-      viewsLabel.Enabled = false;
       viewsLabel.Visible = false;
       viewContextMenuStrip.Enabled = false;
       messageLabel.Visible = false;
 
+      viewPanel.Visible = false;
       if (viewPanel.Controls.Count > 0) viewPanel.Controls[0].Dispose();
       viewPanel.Controls.Clear();
-      viewPanel.Enabled = false;
-      viewPanel.Visible = false;
 
       if (Content != null) {
         if (viewContextMenuStrip.Items.Count == 0) {
           messageLabel.Visible = true;
         } else {
-          viewsLabel.Enabled = true;
           viewsLabel.Visible = true;
           viewContextMenuStrip.Enabled = true;
-          messageLabel.Visible = false;
         }
 
         if (!ViewCanShowContent(viewType, Content)) {
@@ -98,16 +96,15 @@ namespace HeuristicLab.Core.Views {
         return;
 
       if (!ViewCanShowContent(viewType, content))
-        throw new ArgumentException(string.Format("View \"{0}\" cannot display content \"{1}\".",
-                                                  viewType.GetPrettyName(),
-                                                  Content.GetType().GetPrettyName()));
+        throw new InvalidOperationException(string.Format("View \"{0}\" cannot display content \"{1}\".",
+                                                          viewType.GetPrettyName(),
+                                                          Content.GetType().GetPrettyName()));
 
       UpdateActiveMenuItem();
       Control view = (Control)MainFormManager.CreateView(viewType, Content);
-      viewPanel.Controls.Add(view);
       viewPanel.Tag = view;
       view.Dock = DockStyle.Fill;
-      viewPanel.Enabled = true;
+      viewPanel.Controls.Add(view);
       viewPanel.Visible = true;
     }
 

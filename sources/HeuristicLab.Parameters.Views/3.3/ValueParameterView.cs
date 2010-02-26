@@ -85,8 +85,8 @@ namespace HeuristicLab.Parameters.Views {
         Caption = "ValueParameter";
         setValueButton.Enabled = false;
         clearValueButton.Enabled = false;
-        valueGroupBox.Enabled = false;
         viewHost.Content = null;
+        valueGroupBox.Enabled = false;
       } else {
         Caption = Content.Name + " (" + Content.GetType().Name + ")";
         setValueButton.Enabled = Content.Value == null;

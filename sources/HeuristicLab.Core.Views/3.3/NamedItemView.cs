@@ -63,10 +63,8 @@ namespace HeuristicLab.Core.Views {
       if (Content == null) {
         Caption = "NamedItem";
         nameTextBox.Text = "-";
-        nameTextBox.ReadOnly = false;
         nameTextBox.Enabled = false;
         descriptionTextBox.Text = "";
-        nameTextBox.ReadOnly = false;
         descriptionTextBox.Enabled = false;
       } else {
         Caption = Content.Name + " (" + Content.GetType().Name + ")";

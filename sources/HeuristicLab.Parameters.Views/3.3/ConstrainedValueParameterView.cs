@@ -90,9 +90,9 @@ namespace HeuristicLab.Parameters.Views {
       base.OnContentChanged();
       if (Content == null) {
         Caption = "ConstrainedValueParameter";
+        viewHost.Content = null;
         valueGroupBox.Enabled = false;
         FillValueComboBox();
-        viewHost.Content = null;
       } else {
         Caption = Content.Name + " (" + Content.GetType().Name + ")";
         valueGroupBox.Enabled = true;
