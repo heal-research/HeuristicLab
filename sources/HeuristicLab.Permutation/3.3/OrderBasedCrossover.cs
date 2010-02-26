@@ -30,10 +30,10 @@ namespace HeuristicLab.Permutation {
   /// the missing entries with the elements from the second permutation, also in the right order.
   /// </summary>
   /// <remarks>
-  /// Implemented as described in Syswerda, G. (1991). Schedule Optimization Using Genetic Algorithms,
-  /// in Davis, L. (Ed.) Handbook of Genetic Algorithms, Van Nostrand Reinhold, New York, pp 332-349.
+  /// This is in some papers also called Order Crossover #2.<br />
+  /// It is implemented as described in Syswerda, G. (1991). Schedule Optimization Using Genetic Algorithms. In Davis, L. (Ed.) Handbook of Genetic Algorithms, Van Nostrand Reinhold, New York, pp. 332-349.
   /// </remarks>
-  [Item("OrderBasedCrossover", "An operator which performs an order based crossover of two permutations.")]
+  [Item("OrderBasedCrossover", "An operator which performs an order based crossover of two permutations. It is implemented as described in Syswerda, G. (1991). Schedule Optimization Using Genetic Algorithms. In Davis, L. (Ed.) Handbook of Genetic Algorithms, Van Nostrand Reinhold, New York, pp. 332-349.")]
   [EmptyStorableClass]
   [Creatable("Test")]
   public class OrderBasedCrossover : PermutationCrossover {
@@ -93,7 +93,7 @@ namespace HeuristicLab.Permutation {
     }
 
     /// <summary>
-    /// Performs an order-based crossover operation for two given parent permutations.
+    /// Checks number of parents and calls <see cref="Apply(IRandom, Permutation, Permutation)"/>.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown if there are not exactly two parents.</exception>
     /// <param name="random">A random number generator.</param>

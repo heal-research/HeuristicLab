@@ -29,9 +29,9 @@ namespace HeuristicLab.Permutation {
   /// reverse and forward intervals from the first permutation array inserting 
   /// it in the child on different positions depending on the second permutation array.
   /// </summary>
-  /// <remarks>It is implemented as described in Wendt, O. 1994. COSA: COoperative Simulated Annealing - Integration von Genetischen Algorithmen und Simulated Annealing am Beispiel der Tourenplanung. Dissertation Thesis.<br />
+  /// <remarks>It is implemented as described in Wendt, O. 1994. COSA: COoperative Simulated Annealing - Integration von Genetischen Algorithmen und Simulated Annealing am Beispiel der Tourenplanung. Dissertation Thesis. IWI Frankfurt.<br />
   /// </remarks>
-  [Item("CosaCrossover", "An operator which performs a crossover operation between two permutation arrays by taking randomly chosen reverse and forward intervals from the first permutation array inserting it in the child on different positions depending on the second permutation array.")]
+  [Item("CosaCrossover", "An operator which performs a crossover operation between two permutation arrays by taking randomly chosen reverse and forward intervals from the first permutation array inserting it in the child on different positions depending on the second permutation array. It is implemented as described in Wendt, O. 1994. COSA: COoperative Simulated Annealing - Integration von Genetischen Algorithmen und Simulated Annealing am Beispiel der Tourenplanung. Dissertation Thesis. IWI Frankfurt.")]
   [EmptyStorableClass]
   [Creatable("Test")]
   public class CosaCrossover : PermutationCrossover {
@@ -85,14 +85,14 @@ namespace HeuristicLab.Permutation {
     }
 
     /// <summary>
-    /// Performs a COSA crossover operation for two given parent permutations.
+    /// Checks number of parents and calls <see cref="Apply(IRandom, Permutation, Permutation)"/>.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown if there are not exactly two parents.</exception>
     /// <param name="random">A random number generator.</param>
     /// <param name="parents">An array containing the two permutations that should be crossed.</param>
     /// <returns>The newly created permutation, resulting from the crossover operation.</returns>
     protected override Permutation Cross(IRandom random, ItemArray<Permutation> parents) {
-      if (parents.Length != 2) throw new InvalidOperationException("ERROR in CosaCrossover: The number of parents is not equal to 2");
+      if (parents.Length != 2) throw new InvalidOperationException("CosaCrossover: The number of parents is not equal to 2");
       return Apply(random, parents[0], parents[1]);
     }
   }

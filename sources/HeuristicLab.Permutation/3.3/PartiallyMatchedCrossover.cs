@@ -28,11 +28,11 @@ namespace HeuristicLab.Permutation {
   /// An operator which performs the partially matched crossover on two permutations.
   /// </summar>
   /// <remarks>
-  /// Implemented as described in Fogel, D.B. 1988. An Evolutionary Approach to the Traveling Salesman Problem. Biological Cybernetics, 60, pp. 139-144, Springer-Verlag.
+  /// It is implemented as described in Fogel, D.B. 1988. An Evolutionary Approach to the Traveling Salesman Problem. Biological Cybernetics, 60, pp. 139-144, Springer-Verlag.
   /// which references Goldberg, D.E., and Lingle, R. 1985. Alleles, loci, and the traveling salesman problem. Proceedings of an International Conference on Genetic Algorithms and their Applications. Carnegie-Mellon University, pp. 154-159.
   /// as the original source of the operator.
   /// </remarks>
-  [Item("PartiallyMatchedCrossover", "An operator which performs the partially matched crossover on two permutations.")]
+  [Item("PartiallyMatchedCrossover", "An operator which performs the partially matched crossover on two permutations. It is implemented as described in Fogel, D.B. 1988. An Evolutionary Approach to the Traveling Salesman Problem. Biological Cybernetics, 60, pp. 139-144, Springer-Verlag.")]
   [EmptyStorableClass]
   [Creatable("Test")]
   public class PartiallyMatchedCrossover : PermutationCrossover {

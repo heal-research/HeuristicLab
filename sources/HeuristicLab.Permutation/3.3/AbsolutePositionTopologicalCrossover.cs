@@ -25,23 +25,21 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Permutation {
   /// <summary>
-  /// Performs a cross over permutation between two permutation arrays by taking
+  /// Performs the absolute position topological crossover on two permutation arrays by taking
   /// the entries with the same index (starting at position 0) from both parents 
   /// (minding already inserted values).
   /// </summary>
-  /// <remarks>It is implemented as described in Moraglio, A. and Poli, R. 2005. Topological crossover for the permutation representation. In Proceedings of the 2005 Workshops on Genetic and Evolutionary Computation.<br />
+  /// <remarks>It is implemented as described in Moraglio, A. and Poli, R. 2005. Topological crossover for the permutation representation. In Proceedings of the 2005 Workshops on Genetic and Evolutionary Computation. pp. 332-338.<br />
   /// </remarks>
   /// <example>First take the value at position 0 from parent1 then take the value at position 0
   /// from parent2 if it has not already been inserted, afterwards take the value at position 1 from
   /// parent1 if it has not already been inserted, then from parent2 and so on.</example>
-  [Item("AbsolutePositionTopologicalCrossover", @"An operator which performs a cross over permutation between two permutation arrays by taking the 
-entries with the same index (starting at position 0) from both parents 
-(minding already inserted values).")]
+  [Item("AbsolutePositionTopologicalCrossover", "An operator which performs a cross over permutation between two permutation arrays by taking the entries with the same index (starting at position 0) from both parents (minding already inserted values). It is implemented as described in Moraglio, A. and Poli, R. 2005. Topological crossover for the permutation representation. In Proceedings of the 2005 Workshops on Genetic and Evolutionary Computation. pp. 332-338.")]
   [EmptyStorableClass]
   [Creatable("Test")]
   public class AbsolutePositionTopologicalCrossover : PermutationCrossover {
     /// <summary>
-    /// Performs a cross over permutation of <paramref name="parent1"/> and <paramref name="parent2"/>
+    /// Performs the absolute position topological crossover on <paramref name="parent1"/> and <paramref name="parent2"/>
     /// by taking the values from both parents one by one with the same index starting at position 0.
     /// </summary>
     /// <example>First take the value at position 0 from parent1 then take the value at position 0
@@ -76,7 +74,7 @@ entries with the same index (starting at position 0) from both parents
     }
 
     /// <summary>
-    /// Performs an absolute position topological crossover operation for two given parent permutations.
+    /// Checks number of parents and calls <see cref="Apply(IRandom, Permutation, Permutation)"/>.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown if there are not exactly two parents.</exception>
     /// <param name="random">A random number generator.</param>

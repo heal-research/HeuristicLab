@@ -20,8 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -30,10 +28,9 @@ namespace HeuristicLab.Permutation {
   /// Manipulates a permutation array by randomly scrambling the elements in a randomly chosen interval.
   /// </summary>
   /// <remarks>
-  /// Implemented as described in Syswerda, G. (1991). Schedule Optimization Using Genetic Algorithms,
-  /// in Davis, L. (Ed.) Handbook of Genetic Algorithms, Van Nostrand Reinhold, New York, pp 332-349.
+  /// It is implemented as described in Syswerda, G. (1991). Schedule Optimization Using Genetic Algorithms. In Davis, L. (Ed.) Handbook of Genetic Algorithms, Van Nostrand Reinhold, New York, pp 332-349.
   /// </remarks>
-  [Item("ScrambleManipulator", "An operator which manipulates a permutation array by randomly scrambling the elements in a randomly chosen interval.")]
+  [Item("ScrambleManipulator", "An operator which manipulates a permutation array by randomly scrambling the elements in a randomly chosen interval. It is implemented as described in Syswerda, G. (1991). Schedule Optimization Using Genetic Algorithms. In Davis, L. (Ed.) Handbook of Genetic Algorithms, Van Nostrand Reinhold, New York, pp 332-349.")]
   [EmptyStorableClass]
   [Creatable("Test")]
   public class ScrambleManipulator : PermutationManipulator {

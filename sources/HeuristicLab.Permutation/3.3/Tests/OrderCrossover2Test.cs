@@ -1,37 +1,17 @@
-﻿#region License Information
-/* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
- *
- * This file is part of HeuristicLab.
- *
- * HeuristicLab is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * HeuristicLab is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
- */
-#endregion
-
-using HeuristicLab.Permutation;
+﻿using HeuristicLab.Permutation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using HeuristicLab.Core;
 
-namespace HeuristicLab.Permutation.Tests {
-
-
-  /// <summary>
-  ///This is a test class for CyclicCrossover and is intended
-  ///to contain all CyclicCrossover Unit Tests
-  ///</summary>
+namespace HeuristicLab.Permutation.Tests
+{
+    
+    
+    /// <summary>
+    ///This is a test class for OrderCrossover2Test and is intended
+    ///to contain all OrderCrossover2Test Unit Tests
+    ///</summary>
   [TestClass()]
-  public class CyclicCrossoverTest {
+  public class OrderCrossover2Test {
 
 
     private TestContext testContextInstance;
@@ -85,18 +65,15 @@ namespace HeuristicLab.Permutation.Tests {
     ///</summary>
     [TestMethod()]
     [DeploymentItem("HeuristicLab.Permutation-3.3.dll")]
-    public void CyclicCrossoverCrossTest() {
+    public void OrderCrossover2CrossTest() {
       TestRandom random = new TestRandom();
-      CyclicCrossover_Accessor target =
-        new CyclicCrossover_Accessor(new PrivateObject(typeof(CyclicCrossover)));
-      // perform a test with more than two parents
+      OrderCrossover2_Accessor target = new OrderCrossover2_Accessor(new PrivateObject(typeof(OrderCrossover2)));
       random.Reset();
       bool exceptionFired = false;
       try {
         target.Cross(random, new ItemArray<Permutation>(new Permutation[] { 
           new Permutation(4), new Permutation(4), new Permutation(4)}));
-      }
-      catch (System.InvalidOperationException) {
+      } catch (System.InvalidOperationException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);
@@ -106,19 +83,19 @@ namespace HeuristicLab.Permutation.Tests {
     ///A test for Apply
     ///</summary>
     [TestMethod()]
-    public void CyclicCrossoverApplyTest() {
+    public void OrderCrossover2ApplyTest() {
       TestRandom random = new TestRandom();
       Permutation parent1, parent2, expected, actual;
-      // The following test is based on an example from Larranaga, P. et al. 1999. Genetic Algorithms for the Travelling Salesman Problem: A Review of Representations and Operators. Artificial Intelligence Review, 13
+      // The following test is based on an example from Affenzeller, M. et al. 2009. Genetic Algorithms and Genetic Programming - Modern Concepts and Practical Applications. CRC Press. p. 135.
       random.Reset();
-      random.DoubleNumbers = new double[] { 0.9 };
-      parent1 = new Permutation(new int[] { 0, 1, 2, 3, 4, 5, 6, 7 });
+      random.IntNumbers = new int[] { 5, 7 };
+      parent1 = new Permutation(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
       Assert.IsTrue(parent1.Validate());
-      parent2 = new Permutation(new int[] { 1, 3, 5, 7, 6, 4, 2, 0 });
+      parent2 = new Permutation(new int[] { 2, 5, 6, 0, 9, 1, 3, 8, 4, 7 });
       Assert.IsTrue(parent2.Validate());
-      expected = new Permutation(new int[] { 0, 1, 5, 3, 6, 4, 2, 7 });
+      expected = new Permutation(new int[] { 2, 0, 9, 1, 3, 5, 6, 7, 8, 4 });
       Assert.IsTrue(expected.Validate());
-      actual = CyclicCrossover.Apply(random, parent1, parent2);
+      actual = OrderCrossover2.Apply(random, parent1, parent2);
       Assert.IsTrue(actual.Validate());
       Assert.IsTrue(Auxiliary.PermutationIsEqualByPosition(expected, actual));
 
@@ -126,20 +103,19 @@ namespace HeuristicLab.Permutation.Tests {
       random.Reset();
       bool exceptionFired = false;
       try {
-        CyclicCrossover.Apply(random, new Permutation(8), new Permutation(6));
-      }
-      catch (System.ArgumentException) {
+        OrderCrossover.Apply(random, new Permutation(8), new Permutation(6));
+      } catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);
     }
 
     /// <summary>
-    ///A test for OrderCrossover Constructor
+    ///A test for OrderCrossover2 Constructor
     ///</summary>
     [TestMethod()]
-    public void CyclicCrossoverConstructorTest() {
-      CyclicCrossover target = new CyclicCrossover();
+    public void OrderCrossover2ConstructorTest() {
+      OrderCrossover2 target = new OrderCrossover2();
     }
   }
 }

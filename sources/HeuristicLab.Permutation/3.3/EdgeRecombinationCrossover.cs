@@ -29,10 +29,11 @@ namespace HeuristicLab.Permutation {
   /// of each element. Starts at a randomly chosen position, the next element is a neighbour with the least 
   /// number of neighbours, the next again a neighbour and so on.
   /// </summary>
-  ///   /// <remarks>It is implemented as described in Whitley et.al. 1991, The Traveling Salesman and Sequence Scheduling, in Davis, L. (Ed.), Handbook ov Genetic Algorithms, New York, pp. 350-372<br />
+  /// <remarks>
+  /// It is implemented as described in Whitley et.al. 1991, The Traveling Salesman and Sequence Scheduling, in Davis, L. (Ed.), Handbook ov Genetic Algorithms, New York, pp. 350-372.<br />
   /// The operator first determines all cycles in the permutation and then composes the offspring by alternating between the cycles of the two parents.
   /// </remarks>
-  [Item("EdgeRecombinationCrossover", "An operator which performs the edge recombination crossover on two permutations.")]
+  [Item("EdgeRecombinationCrossover", "An operator which performs the edge recombination crossover on two permutations. It is implemented as described in Whitley et.al. 1991, The Traveling Salesman and Sequence Scheduling, in Davis, L. (Ed.), Handbook ov Genetic Algorithms, New York, pp. 350-372.")]
   [EmptyStorableClass]
   [Creatable("Test")]
   public class EdgeRecombinationCrossover : PermutationCrossover {
@@ -139,7 +140,7 @@ namespace HeuristicLab.Permutation {
     }
 
     /// <summary>
-    /// Performs an edge recombination crossover operation for two given parent permutations.
+    /// Checks number of parents and calls <see cref="Apply(IRandom, Permutation, Permutation)"/>.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown if there are not exactly two parents.</exception>
     /// <param name="random">A random number generator.</param>

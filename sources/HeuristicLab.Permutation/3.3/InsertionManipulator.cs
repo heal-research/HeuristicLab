@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -27,9 +28,9 @@ namespace HeuristicLab.Permutation {
   /// Manipulates a permutation array by moving randomly one element to another position in the array.
   /// </summary> 
   /// <remarks>
-  /// It is implemented as described in Fogel, D.B. (1988). An Evolutionary Approach to the Traveling Salesman Problem, Biological Cybernetics, 60, pp. 139-144
+  /// It is implemented as described in Fogel, D.B. (1988). An Evolutionary Approach to the Traveling Salesman Problem, Biological Cybernetics, 60, pp. 139-144.
   /// </remarks>
-  [Item("InsertionManipulator", "An operator which moves randomly one element to another position in the permutation.")]
+  [Item("InsertionManipulator", "An operator which moves randomly one element to another position in the permutation. It is implemented as described in Fogel, D.B. (1988). An Evolutionary Approach to the Traveling Salesman Problem, Biological Cybernetics, 60, pp. 139-144.")]
   [EmptyStorableClass]
   [Creatable("Test")]
   public class InsertionManipulator : PermutationManipulator {

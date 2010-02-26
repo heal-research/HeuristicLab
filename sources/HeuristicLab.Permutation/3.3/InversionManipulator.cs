@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -29,7 +30,7 @@ namespace HeuristicLab.Permutation {
   /// <remarks>
   /// It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.<br />
   /// </remarks>
-  [Item("InversionManipulator", "An operator which inverts a randomly chosen part of a permutation.")]
+  [Item("InversionManipulator", "An operator which inverts a randomly chosen part of a permutation. It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.")]
   [EmptyStorableClass]
   [Creatable("Test")]
   public class InversionManipulator : PermutationManipulator {

@@ -30,6 +30,22 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
@@ -44,12 +60,14 @@
     <Compile Include="AbsolutePositionTopologicalCrossoverTest.cs" />
     <Compile Include="Auxiliary.cs" />
     <Compile Include="CosaCrossoverTest.cs" />
+    <Compile Include="CyclicCrossover2Test.cs" />
     <Compile Include="CyclicCrossoverTest.cs" />
     <Compile Include="EdgeRecombinationCrossoverTest.cs" />
     <Compile Include="InsertionManipulatorTest.cs" />
     <Compile Include="InversionManipulatorTest.cs" />
     <Compile Include="MaximalPreservativeCrossoverTest.cs" />
     <Compile Include="OrderBasedCrossoverTest.cs" />
+    <Compile Include="OrderCrossover2Test.cs" />
     <Compile Include="OrderCrossoverTest.cs" />
     <Compile Include="PartiallyMatchedCrossoverTest.cs" />
     <Compile Include="PositionBasedCrossoverTest.cs" />

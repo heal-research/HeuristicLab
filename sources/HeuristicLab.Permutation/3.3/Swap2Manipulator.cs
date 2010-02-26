@@ -20,8 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -30,9 +28,9 @@ namespace HeuristicLab.Permutation {
   /// Manipulates a permutation array by swapping to randomly chosen elements.
   /// </summary>
   ///   /// <remarks>
-  /// It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.<br />
+  /// It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.
   /// </remarks>
-  [Item("Swap2Manipulator", "An operator which manipulates a permutation array by swapping to randomly chosen elements.")]
+  [Item("Swap2Manipulator", "An operator which manipulates a permutation array by swapping to randomly chosen elements. It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.")]
   [EmptyStorableClass]
   [Creatable("Test")]
   public class Swap2Manipulator : PermutationManipulator {

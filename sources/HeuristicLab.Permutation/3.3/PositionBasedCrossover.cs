@@ -20,10 +20,7 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Permutation {
@@ -31,10 +28,9 @@ namespace HeuristicLab.Permutation {
   /// Performs a cross over permutation between two permutation arrays based on randomly chosen positions.
   /// </summary>
   /// <remarks>
-  /// Implemented as described in Syswerda, G. (1991). Schedule Optimization Using Genetic Algorithms,
-  /// in Davis, L. (Ed.) Handbook of Genetic Algorithms, Van Nostrand Reinhold, New York, pp 332-349.
+  /// It is implemented as described in Syswerda, G. (1991). Schedule Optimization Using Genetic Algorithms. In Davis, L. (Ed.) Handbook of Genetic Algorithms, Van Nostrand Reinhold, New York, pp 332-349.
   /// </remarks>
-  [Item("PositionBasedCrossover", "An operator which performs the position based crossover on two permutations.")]
+  [Item("PositionBasedCrossover", "An operator which performs the position based crossover on two permutations. It is implemented as described in Syswerda, G. (1991). Schedule Optimization Using Genetic Algorithms. In Davis, L. (Ed.) Handbook of Genetic Algorithms, Van Nostrand Reinhold, New York, pp 332-349.")]
   [EmptyStorableClass]
   [Creatable("Test")]
   public class PositionBasedCrossover : PermutationCrossover {
@@ -83,7 +79,7 @@ namespace HeuristicLab.Permutation {
     }
 
     /// <summary>
-    /// Performs a position-based crossover operation for two given parent permutations.
+    /// Checks number of parents and calls <see cref="Apply(IRandom, Permutation, Permutation)"/>.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown if there are not exactly two parents.</exception>
     /// <param name="random">A random number generator.</param>

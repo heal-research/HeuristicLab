@@ -20,8 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -31,9 +29,9 @@ namespace HeuristicLab.Permutation {
   /// (randomly chosen) position in the array.
   /// </summary>
   /// <remarks>
-  /// It is implemented as described in Michalewicz, Z. (1992), Genetic Algorithms ü Data Structures = Evolution Programs, Springer Verlag, Berlin Heidelberg.<br />
+  /// It is implemented as described in Michalewicz, Z. 1992. Genetic Algorithms + Data Structures = Evolution Programs, Springer Verlag, Berlin Heidelberg.
   /// </remarks>
-  [Item("TranslocationManipulator", "An operator which Manipulates a permutation array by moving a randomly chosen interval of elements to another (randomly chosen) position in the array.")]
+  [Item("TranslocationManipulator", "An operator which Manipulates a permutation array by moving a randomly chosen interval of elements to another (randomly chosen) position in the array. It is implemented as described in Michalewicz, Z. 1992. Genetic Algorithms + Data Structures = Evolution Programs, Springer Verlag, Berlin Heidelberg.")]
   [EmptyStorableClass]
   [Creatable("Test")]
   public class TranslocationManipulator : PermutationManipulator {
