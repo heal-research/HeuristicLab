@@ -81,7 +81,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLabPermutationPlugin.cs.frame" />
-    <Compile Include="AbsolutePositionTopologicalCrossover.cs" />
     <Compile Include="CyclicCrossover2.cs" />
     <Compile Include="IPermutationCreator.cs" />
     <Compile Include="IPermutationOperator.cs" />
