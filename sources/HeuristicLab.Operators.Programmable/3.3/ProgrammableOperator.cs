@@ -39,7 +39,10 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators.Programmable {
 
-  public class ProgrammableOperator : Operator {
+  [Item("ProgrammableOperator", "An operator that can be programmed for arbitrary needs.")]
+  [Creatable("Test")]
+  [EmptyStorableClass]
+  public class ProgrammableOperator : SingleSuccessorOperator {
 
     #region Fields & Properties
 
@@ -97,6 +100,12 @@ namespace HeuristicLab.Operators.Programmable {
       get { return namespaces; }
     }
 
+    public override bool CanChangeDescription {
+      get {
+        return true;
+      }
+    }
+
     #endregion
 
     #region Extended Accessors
@@ -152,8 +161,7 @@ namespace HeuristicLab.Operators.Programmable {
     #region Construction & Initialization
 
     public ProgrammableOperator() {      
-      code = "";
-      Description = "An operator that can be programmed for arbitrary needs.";
+      code = "";      
       executeMethod = null;
       ProgrammableOperator.StaticInitialize();
       Assemblies = defaultAssemblyDict;
@@ -346,10 +354,9 @@ namespace HeuristicLab.Operators.Programmable {
     private CodeMemberMethod CreateMethod() {
       CodeMemberMethod method = new CodeMemberMethod();
       method.Name = "Execute";
-      method.ReturnType = new CodeTypeReference(typeof(HeuristicLab.Core.IExecutionSequence));
+      method.ReturnType = new CodeTypeReference(typeof(HeuristicLab.Core.IOperation));
       method.Attributes = MemberAttributes.Public | MemberAttributes.Static;
-      method.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IOperator), "op"));
-//      method.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IScope), "scope"));
+      method.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IOperator), "op"));      
       foreach (var param in Parameters)
         method.Parameters.Add(new CodeParameterDeclarationExpression(param.DataType, param.Name));
       string[] codeLines = lineSplitter.Split(code);
@@ -365,8 +372,8 @@ namespace HeuristicLab.Operators.Programmable {
     #endregion
 
     #region HeuristicLab interfaces
-    
-    public override IExecutionSequence Apply() {
+
+    public override IOperation Apply() {
       lock (syncRoot) {
         if (executeMethod == null) {
           Compile();
@@ -375,7 +382,7 @@ namespace HeuristicLab.Operators.Programmable {
 
       var parameters = new List<object>() { this };      
       parameters.AddRange(Parameters.Select(p => (object)p.ActualValue));
-      return (IExecutionSequence)executeMethod.Invoke(null, parameters.ToArray());
+      return (IOperation)executeMethod.Invoke(null, parameters.ToArray());
     }
     
     public event EventHandler CodeChanged;
@@ -401,6 +408,6 @@ namespace HeuristicLab.Operators.Programmable {
     }
     
     #endregion
-   
+    
   }
 }
