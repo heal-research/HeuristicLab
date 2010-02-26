@@ -109,18 +109,43 @@ namespace HeuristicLab.Permutation.Tests
     public void CosaCrossoverApplyTest() {
       TestRandom random = new TestRandom();
       Permutation parent1, parent2, expected, actual;
+      // The following test is based on an example from Wendt, O. 1994. COSA: COoperative Simulated Annealing - Integration von Genetischen Algorithmen und Simulated Annealing am Beispiel der Tourenplanung. Dissertation Thesis. IWI Frankfurt.
+      random.Reset();
+      random.IntNumbers = new int[] { 1 };
+      parent1 = new Permutation(new int[] { 0, 1, 5, 2, 4, 3 });
+      Assert.IsTrue(parent1.Validate());
+      parent2 = new Permutation(new int[] { 3, 0, 2, 1, 4, 5 });
+      Assert.IsTrue(parent2.Validate());
+      expected = new Permutation(new int[] { 0, 1, 4, 2, 5, 3 });
+      Assert.IsTrue(expected.Validate());
+      actual = CosaCrossover.Apply(random, parent1, parent2);
+      Assert.IsTrue(actual.Validate());
+      Assert.IsTrue(Auxiliary.PermutationIsEqualByPosition(expected, actual));
+      // The following test is not based on published examples
       random.Reset();
       random.IntNumbers = new int[] { 4 };
       parent1 = new Permutation(new int[] { 0, 1, 2, 3, 4, 5, 6, 7 });
       Assert.IsTrue(parent1.Validate());
       parent2 = new Permutation(new int[] { 1, 3, 5, 7, 6, 4, 2, 0 });
       Assert.IsTrue(parent2.Validate());
-      expected = new Permutation(new int[] { 6, 5, 7, 0, 1, 2, 3, 4 });
+      expected = new Permutation(new int[] { 7, 6, 5, 3, 4, 2, 1, 0 });
       Assert.IsTrue(expected.Validate());
       actual = CosaCrossover.Apply(random, parent1, parent2);
       Assert.IsTrue(actual.Validate());
       Assert.IsTrue(Auxiliary.PermutationIsEqualByPosition(expected, actual));
-
+      // The following test is not based on published examples
+      random.Reset();
+      random.IntNumbers = new int[] { 5 };
+      parent1 = new Permutation(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
+      Assert.IsTrue(parent1.Validate());
+      parent2 = new Permutation(new int[] { 4, 3, 5, 1, 0, 9, 7, 2, 8, 6 });
+      Assert.IsTrue(parent2.Validate());
+      expected = new Permutation(new int[] { 7, 6, 2, 3, 4, 5, 1, 0, 9, 8 });
+      Assert.IsTrue(expected.Validate());
+      actual = CosaCrossover.Apply(random, parent1, parent2);
+      Assert.IsTrue(actual.Validate());
+      Assert.IsTrue(Auxiliary.PermutationIsEqualByPosition(expected, actual));
+      
       // perform a test when the two permutations are of unequal length
       random.Reset();
       bool exceptionFired = false;

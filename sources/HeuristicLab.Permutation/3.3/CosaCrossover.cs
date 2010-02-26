@@ -25,21 +25,22 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Permutation {
   /// <summary>
-  /// Performs a crossover operation between two permutation arrays by taking randomly chosen 
-  /// reverse and forward intervals from the first permutation array inserting 
-  /// it in the child on different positions depending on the second permutation array.
+  /// Performs the crossover described in the COSA optimization method.
   /// </summary>
-  /// <remarks>It is implemented as described in Wendt, O. 1994. COSA: COoperative Simulated Annealing - Integration von Genetischen Algorithmen und Simulated Annealing am Beispiel der Tourenplanung. Dissertation Thesis. IWI Frankfurt.<br />
+  /// <remarks>
+  /// It is implemented as described in Wendt, O. 1994. COSA: COoperative Simulated Annealing - Integration von Genetischen Algorithmen und Simulated Annealing am Beispiel der Tourenplanung. Dissertation Thesis. IWI Frankfurt.<br />
+  /// The operator actually performs a 2-opt mutation on the first parent, but it uses the second parent to determine which new edge should be inserted.
+  /// Thus the mutation is not random as the second breakpoint depends on the information that is encoded in other members of the population.
+  /// The idea is that the child should not sit right inbetween the two parents, but rather go a little bit from one parent in direction to the other.
   /// </remarks>
-  [Item("CosaCrossover", "An operator which performs a crossover operation between two permutation arrays by taking randomly chosen reverse and forward intervals from the first permutation array inserting it in the child on different positions depending on the second permutation array. It is implemented as described in Wendt, O. 1994. COSA: COoperative Simulated Annealing - Integration von Genetischen Algorithmen und Simulated Annealing am Beispiel der Tourenplanung. Dissertation Thesis. IWI Frankfurt.")]
+  [Item("CosaCrossover", "An operator which performs the crossover described in the COSA optimization method. It is implemented as described in Wendt, O. 1994. COSA: COoperative Simulated Annealing - Integration von Genetischen Algorithmen und Simulated Annealing am Beispiel der Tourenplanung. Dissertation Thesis. IWI Frankfurt.")]
   [EmptyStorableClass]
   [Creatable("Test")]
   public class CosaCrossover : PermutationCrossover {
     /// <summary>
-    /// Performs a cross over permutation of <paramref name="parent1"/> and <paramref name="parent2"/>
-    /// by taking first the reverse elements of a randomly chosen interval of parent1 
-    /// and inserting it in the result at a position specified by the permutation of parent2. 
-    /// The remaining elements to be inserted are taken again from parent1 in the forward direction.
+    /// The operator actually performs a 2-opt mutation on the first parent, but it uses the second parent to determine which new edge should be inserted.
+    /// Thus the mutation is not random as the second breakpoint depends on the information that is encoded in other members of the population.
+    /// The idea is that the child should not sit right inbetween the two parents, but rather go a little bit from one parent in direction to the other.
     /// </summary>
     /// <exception cref="ArgumentException">Thrown when <paramref name="parent1"/> and <paramref name="parent2"/> are not of equal length.</exception>
     /// <param name="random">The random number generator.</param>
@@ -56,31 +57,33 @@ namespace HeuristicLab.Permutation {
       startIndex = (crossPoint + 1) % length;
 
       int i = 0;
-      while ((i < parent2.Length) && (parent2[i] != parent1[startIndex])) {  // find index of start value in second permutation
+      while ((i < parent2.Length) && (parent2[i] != parent1[crossPoint])) {  // find index of cross point in second permutation
         i++;
       }
-      i = (i + 1) % length;
-      int j = 0;
-      while ((j < parent1.Length) && (parent1[j] != parent2[i])) {  // find index of parent2[i] in first permutation
-        j++;
+      int newEdge = parent2[(i + 1) % length]; // the number that follows the cross point number in parent2 is the new edge that we want to insert
+      endIndex = 0;
+      while ((endIndex < parent1.Length) && (parent1[endIndex] != newEdge)) {  // find index of the new edge in the first permutation
+        endIndex++;
       }
-      endIndex = (j - 1 + length) % length;
 
-      i = endIndex;
-      j = 0;
-      do {  // permutation from end to crosspoint (backwards)
-        result[j] = parent1[i];
-        i = (i - 1 + length) % length;
-        j++;
-      } while (i != crossPoint);
-
-      i = (endIndex + 1) % length;
-      while (i != crossPoint) {  // permutation from end to crosspoint (forwards)
-        result[j] = parent1[i];
-        i = (i + 1) % length;
-        j++;
+      if (startIndex <= endIndex) {
+        // copy parent1 to child and reverse the order in between startIndex and endIndex
+        for (i = 0; i < parent1.Length; i++) {
+          if (i >= startIndex && i <= endIndex) {
+            result[i] = parent1[endIndex - i + startIndex];
+          } else {
+            result[i] = parent1[i];
+          }
+        }
+      } else { // startIndex > endIndex
+        for (i = 0; i < parent1.Length; i++) {
+          if (i >= startIndex || i <= endIndex) {
+            result[i] = parent1[(endIndex - i + startIndex + length) % length]; // add length to wrap around when dropping below index 0
+          } else {
+            result[i] = parent1[i];
+          }
+        }
       }
-      result[j] = parent1[crossPoint];  // last station: crosspoint
       return new Permutation(result);
     }
 
