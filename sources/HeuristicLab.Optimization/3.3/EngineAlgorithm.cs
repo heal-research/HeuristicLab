@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -67,6 +68,15 @@ namespace HeuristicLab.Optimization {
       }
     }
 
+    private ReadOnlyObservableKeyedCollection<string, IVariable> readOnlyResults;
+    public override IObservableKeyedCollection<string, IVariable> Results {
+      get {
+        if (readOnlyResults == null)
+          readOnlyResults = ((VariableCollection)globalScope.Variables["Results"].Value).AsReadOnly();
+        return readOnlyResults;
+      }
+    }
+
     public override TimeSpan ExecutionTime {
       get {
         if (engine == null) return TimeSpan.Zero;
@@ -84,26 +94,31 @@ namespace HeuristicLab.Optimization {
     protected EngineAlgorithm()
       : base() {
       globalScope = new Scope();
+      globalScope.Variables.Add(new Variable("Results", new VariableCollection()));
       OperatorGraph = new OperatorGraph();
     }
     protected EngineAlgorithm(string name)
       : base(name) {
       globalScope = new Scope();
+      globalScope.Variables.Add(new Variable("Results", new VariableCollection()));
       OperatorGraph = new OperatorGraph();
     }
     protected EngineAlgorithm(string name, ParameterCollection parameters)
       : base(name, parameters) {
       globalScope = new Scope();
+      globalScope.Variables.Add(new Variable("Results", new VariableCollection()));
       OperatorGraph = new OperatorGraph();
     }
     protected EngineAlgorithm(string name, string description)
       : base(name, description) {
       globalScope = new Scope();
+      globalScope.Variables.Add(new Variable("Results", new VariableCollection()));
       OperatorGraph = new OperatorGraph();
     }
     protected EngineAlgorithm(string name, string description, ParameterCollection parameters)
       : base(name, description, parameters) {
       globalScope = new Scope();
+      globalScope.Variables.Add(new Variable("Results", new VariableCollection()));
       OperatorGraph = new OperatorGraph();
     }
 
@@ -132,6 +147,9 @@ namespace HeuristicLab.Optimization {
     }
     protected override void OnPrepared() {
       globalScope.Clear();
+      globalScope.Variables.Add(new Variable("Results", new VariableCollection()));
+      readOnlyResults = null;
+
       if (engine != null) {
         ExecutionContext context = null;
         if (operatorGraph.InitialOperator != null) {

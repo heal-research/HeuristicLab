@@ -51,6 +51,10 @@
   <ItemGroup>
     <None Include="HeuristicLabOptimizationPlugin.cs.frame" />
     <Compile Include="Algorithm.cs" />
+    <Compile Include="Interfaces\IMultiObjectiveSelector.cs" />
+    <Compile Include="Interfaces\ISingleObjectiveSelector.cs" />
+    <Compile Include="Interfaces\IReducer.cs" />
+    <Compile Include="Interfaces\ISelector.cs" />
     <Compile Include="Interfaces\IMultiObjectiveProblem.cs" />
     <Compile Include="Interfaces\IMultiObjectiveEvaluator.cs" />
     <Compile Include="Interfaces\IAlgorithm.cs" />

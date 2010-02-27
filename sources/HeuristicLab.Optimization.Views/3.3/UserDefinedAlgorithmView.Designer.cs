@@ -45,28 +45,70 @@ namespace HeuristicLab.Optimization.Views {
     /// </summary>
     private void InitializeComponent() {
       this.operatorGraphTabPage = new System.Windows.Forms.TabPage();
+      this.saveOperatorGraphButton = new System.Windows.Forms.Button();
+      this.openOperatorGraphButton = new System.Windows.Forms.Button();
+      this.newOperatorGraphButton = new System.Windows.Forms.Button();
+      this.operatorGraphViewHost = new HeuristicLab.Core.Views.ViewHost();
       this.globalScopeTabPage = new System.Windows.Forms.TabPage();
       this.globalScopeView = new HeuristicLab.Core.Views.ScopeView();
-      this.operatorGraphViewHost = new HeuristicLab.Core.Views.ViewHost();
-      this.newOperatorGraphButton = new System.Windows.Forms.Button();
-      this.openOperatorGraphButton = new System.Windows.Forms.Button();
-      this.saveOperatorGraphButton = new System.Windows.Forms.Button();
       this.tabControl.SuspendLayout();
       this.parametersTabPage.SuspendLayout();
       this.problemTabPage.SuspendLayout();
+      this.resultsTabPage.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.operatorGraphTabPage.SuspendLayout();
       this.globalScopeTabPage.SuspendLayout();
       this.SuspendLayout();
       // 
+      // setEngineButton
+      // 
+      this.toolTip.SetToolTip(this.setEngineButton, "Set Engine");
+      // 
+      // createUserDefinedAlgorithmButton
+      // 
+      this.toolTip.SetToolTip(this.createUserDefinedAlgorithmButton, "Create User Defined Algorithm from this Algorithm");
+      // 
       // tabControl
       // 
       this.tabControl.Controls.Add(this.operatorGraphTabPage);
       this.tabControl.Controls.Add(this.globalScopeTabPage);
+      this.tabControl.Controls.SetChildIndex(this.resultsTabPage, 0);
       this.tabControl.Controls.SetChildIndex(this.globalScopeTabPage, 0);
       this.tabControl.Controls.SetChildIndex(this.operatorGraphTabPage, 0);
       this.tabControl.Controls.SetChildIndex(this.problemTabPage, 0);
       this.tabControl.Controls.SetChildIndex(this.parametersTabPage, 0);
+      // 
+      // newProblemButton
+      // 
+      this.toolTip.SetToolTip(this.newProblemButton, "New Problem");
+      // 
+      // saveProblemButton
+      // 
+      this.toolTip.SetToolTip(this.saveProblemButton, "Save Problem");
+      // 
+      // openProblemButton
+      // 
+      this.toolTip.SetToolTip(this.openProblemButton, "Open Problem");
+      // 
+      // startButton
+      // 
+      this.toolTip.SetToolTip(this.startButton, "Start Algorithm");
+      // 
+      // stopButton
+      // 
+      this.toolTip.SetToolTip(this.stopButton, "Stop Algorithm");
+      // 
+      // resetButton
+      // 
+      this.toolTip.SetToolTip(this.resetButton, "Reset Algorithm");
+      // 
+      // resultsTabPage
+      // 
+      this.resultsTabPage.Size = new System.Drawing.Size(648, 252);
+      // 
+      // resultsView
+      // 
+      this.resultsView.Size = new System.Drawing.Size(636, 240);
       // 
       // nameTextBox
       // 
@@ -81,17 +123,62 @@ namespace HeuristicLab.Optimization.Views {
       this.operatorGraphTabPage.Controls.Add(this.operatorGraphViewHost);
       this.operatorGraphTabPage.Location = new System.Drawing.Point(4, 22);
       this.operatorGraphTabPage.Name = "operatorGraphTabPage";
-      this.operatorGraphTabPage.Size = new System.Drawing.Size(482, 148);
+      this.operatorGraphTabPage.Size = new System.Drawing.Size(648, 252);
       this.operatorGraphTabPage.TabIndex = 2;
       this.operatorGraphTabPage.Text = "Operator Graph";
       this.operatorGraphTabPage.UseVisualStyleBackColor = true;
+      // 
+      // saveOperatorGraphButton
+      // 
+      this.saveOperatorGraphButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Save;
+      this.saveOperatorGraphButton.Location = new System.Drawing.Point(63, 3);
+      this.saveOperatorGraphButton.Name = "saveOperatorGraphButton";
+      this.saveOperatorGraphButton.Size = new System.Drawing.Size(24, 24);
+      this.saveOperatorGraphButton.TabIndex = 1;
+      this.toolTip.SetToolTip(this.saveOperatorGraphButton, "Save Operator Graph");
+      this.saveOperatorGraphButton.UseVisualStyleBackColor = true;
+      this.saveOperatorGraphButton.Click += new System.EventHandler(this.saveOperatorGraphButton_Click);
+      // 
+      // openOperatorGraphButton
+      // 
+      this.openOperatorGraphButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Open;
+      this.openOperatorGraphButton.Location = new System.Drawing.Point(33, 3);
+      this.openOperatorGraphButton.Name = "openOperatorGraphButton";
+      this.openOperatorGraphButton.Size = new System.Drawing.Size(24, 24);
+      this.openOperatorGraphButton.TabIndex = 1;
+      this.toolTip.SetToolTip(this.openOperatorGraphButton, "Open Operator Graph");
+      this.openOperatorGraphButton.UseVisualStyleBackColor = true;
+      this.openOperatorGraphButton.Click += new System.EventHandler(this.openOperatorGraphButton_Click);
+      // 
+      // newOperatorGraphButton
+      // 
+      this.newOperatorGraphButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.NewDocument;
+      this.newOperatorGraphButton.Location = new System.Drawing.Point(3, 3);
+      this.newOperatorGraphButton.Name = "newOperatorGraphButton";
+      this.newOperatorGraphButton.Size = new System.Drawing.Size(24, 24);
+      this.newOperatorGraphButton.TabIndex = 1;
+      this.toolTip.SetToolTip(this.newOperatorGraphButton, "New Operator Graph");
+      this.newOperatorGraphButton.UseVisualStyleBackColor = true;
+      this.newOperatorGraphButton.Click += new System.EventHandler(this.newOperatorGraphButton_Click);
+      // 
+      // operatorGraphViewHost
+      // 
+      this.operatorGraphViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.operatorGraphViewHost.Content = null;
+      this.operatorGraphViewHost.Location = new System.Drawing.Point(3, 33);
+      this.operatorGraphViewHost.Name = "operatorGraphViewHost";
+      this.operatorGraphViewHost.Size = new System.Drawing.Size(642, 216);
+      this.operatorGraphViewHost.TabIndex = 0;
+      this.operatorGraphViewHost.ViewType = null;
       // 
       // globalScopeTabPage
       // 
       this.globalScopeTabPage.Controls.Add(this.globalScopeView);
       this.globalScopeTabPage.Location = new System.Drawing.Point(4, 22);
       this.globalScopeTabPage.Name = "globalScopeTabPage";
-      this.globalScopeTabPage.Size = new System.Drawing.Size(482, 148);
+      this.globalScopeTabPage.Size = new System.Drawing.Size(648, 252);
       this.globalScopeTabPage.TabIndex = 3;
       this.globalScopeTabPage.Text = "Global Scope";
       this.globalScopeTabPage.UseVisualStyleBackColor = true;
@@ -105,50 +192,8 @@ namespace HeuristicLab.Optimization.Views {
       this.globalScopeView.Content = null;
       this.globalScopeView.Location = new System.Drawing.Point(3, 3);
       this.globalScopeView.Name = "globalScopeView";
-      this.globalScopeView.Size = new System.Drawing.Size(476, 142);
+      this.globalScopeView.Size = new System.Drawing.Size(642, 246);
       this.globalScopeView.TabIndex = 0;
-      // 
-      // operatorGraphViewHost
-      // 
-      this.operatorGraphViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.operatorGraphViewHost.Content = null;
-      this.operatorGraphViewHost.Location = new System.Drawing.Point(3, 33);
-      this.operatorGraphViewHost.Name = "operatorGraphViewHost";
-      this.operatorGraphViewHost.Size = new System.Drawing.Size(476, 112);
-      this.operatorGraphViewHost.TabIndex = 0;
-      this.operatorGraphViewHost.ViewType = null;
-      // 
-      // newOperatorGraphButton
-      // 
-      this.newOperatorGraphButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.NewDocument;
-      this.newOperatorGraphButton.Location = new System.Drawing.Point(3, 3);
-      this.newOperatorGraphButton.Name = "newOperatorGraphButton";
-      this.newOperatorGraphButton.Size = new System.Drawing.Size(24, 24);
-      this.newOperatorGraphButton.TabIndex = 1;
-      this.newOperatorGraphButton.UseVisualStyleBackColor = true;
-      this.newOperatorGraphButton.Click += new System.EventHandler(this.newOperatorGraphButton_Click);
-      // 
-      // openOperatorGraphButton
-      // 
-      this.openOperatorGraphButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Open;
-      this.openOperatorGraphButton.Location = new System.Drawing.Point(33, 3);
-      this.openOperatorGraphButton.Name = "openOperatorGraphButton";
-      this.openOperatorGraphButton.Size = new System.Drawing.Size(24, 24);
-      this.openOperatorGraphButton.TabIndex = 1;
-      this.openOperatorGraphButton.UseVisualStyleBackColor = true;
-      this.openOperatorGraphButton.Click += new System.EventHandler(this.openOperatorGraphButton_Click);
-      // 
-      // saveOperatorGraphButton
-      // 
-      this.saveOperatorGraphButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Save;
-      this.saveOperatorGraphButton.Location = new System.Drawing.Point(63, 3);
-      this.saveOperatorGraphButton.Name = "saveOperatorGraphButton";
-      this.saveOperatorGraphButton.Size = new System.Drawing.Size(24, 24);
-      this.saveOperatorGraphButton.TabIndex = 1;
-      this.saveOperatorGraphButton.UseVisualStyleBackColor = true;
-      this.saveOperatorGraphButton.Click += new System.EventHandler(this.saveOperatorGraphButton_Click);
       // 
       // UserDefinedAlgorithmView
       // 
@@ -158,6 +203,7 @@ namespace HeuristicLab.Optimization.Views {
       this.tabControl.ResumeLayout(false);
       this.parametersTabPage.ResumeLayout(false);
       this.problemTabPage.ResumeLayout(false);
+      this.resultsTabPage.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.operatorGraphTabPage.ResumeLayout(false);
       this.globalScopeTabPage.ResumeLayout(false);

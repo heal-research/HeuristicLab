@@ -40,8 +40,8 @@ namespace HeuristicLab.Evolutionary {
     public ValueLookupParameter<IOperator> SolutionCreatorParameter {
       get { return (ValueLookupParameter<IOperator>)Parameters["SolutionCreator"]; }
     }
-    public ValueLookupParameter<IOperator> SolutionEvaluatorParameter {
-      get { return (ValueLookupParameter<IOperator>)Parameters["SolutionEvaluator"]; }
+    public ValueLookupParameter<IOperator> EvaluatorParameter {
+      get { return (ValueLookupParameter<IOperator>)Parameters["Evaluator"]; }
     }
     private ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
@@ -54,14 +54,14 @@ namespace HeuristicLab.Evolutionary {
       : base() {
       Parameters.Add(new ValueLookupParameter<IntData>("PopulationSize", "The number of individuals that should be created."));
       Parameters.Add(new ValueLookupParameter<IOperator>("SolutionCreator", "The operator which is used to create new solutions."));
-      Parameters.Add(new ValueLookupParameter<IOperator>("SolutionEvaluator", "The operator which is used to evaluate new solutions."));
+      Parameters.Add(new ValueLookupParameter<IOperator>("Evaluator", "The operator which is used to evaluate new solutions."));
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope which represents the population."));
     }
 
     public override IOperation Apply() {
       int size = PopulationSizeParameter.ActualValue.Value;
       IOperator creator = SolutionCreatorParameter.ActualValue;
-      IOperator evaluator = SolutionEvaluatorParameter.ActualValue;
+      IOperator evaluator = EvaluatorParameter.ActualValue;
 
       if (CurrentScope.SubScopes.Count > 0) throw new InvalidOperationException("Population is not empty. PopulationCreator cannot be applied on scopes which already contain sub-scopes.");
 

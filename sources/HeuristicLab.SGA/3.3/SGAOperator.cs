@@ -34,9 +34,6 @@ namespace HeuristicLab.SGA {
   [Item("SGAOperator", "An operator which represents a Standard Genetic Algorithm.")]
   [Creatable("Test")]
   public class SGAOperator : AlgorithmOperator {
-    [Storable]
-    private ProportionalSelector proportionalSelector;
-
     #region Parameter properties
     public ValueLookupParameter<IRandom> RandomParameter {
       get { return (ValueLookupParameter<IRandom>)Parameters["Random"]; }
@@ -47,23 +44,29 @@ namespace HeuristicLab.SGA {
     public SubScopesLookupParameter<DoubleData> QualityParameter {
       get { return (SubScopesLookupParameter<DoubleData>)Parameters["Quality"]; }
     }
-    public ValueLookupParameter<IOperator> CrossoverOperatorParameter {
-      get { return (ValueLookupParameter<IOperator>)Parameters["CrossoverOperator"]; }
+    public ValueLookupParameter<IOperator> SelectorParameter {
+      get { return (ValueLookupParameter<IOperator>)Parameters["Selector"]; }
+    }
+    public ValueLookupParameter<IOperator> CrossoverParameter {
+      get { return (ValueLookupParameter<IOperator>)Parameters["Crossover"]; }
     }
     public ValueLookupParameter<DoubleData> MutationProbabilityParameter {
       get { return (ValueLookupParameter<DoubleData>)Parameters["MutationProbability"]; }
     }
-    public ValueLookupParameter<IOperator> MutationOperatorParameter {
-      get { return (ValueLookupParameter<IOperator>)Parameters["MutationOperator"]; }
+    public ValueLookupParameter<IOperator> MutatorParameter {
+      get { return (ValueLookupParameter<IOperator>)Parameters["Mutator"]; }
     }
-    public ValueLookupParameter<IOperator> SolutionEvaluatorParameter {
-      get { return (ValueLookupParameter<IOperator>)Parameters["SolutionEvaluator"]; }
+    public ValueLookupParameter<IOperator> EvaluatorParameter {
+      get { return (ValueLookupParameter<IOperator>)Parameters["Evaluator"]; }
     }
     public ValueLookupParameter<IntData> ElitesParameter {
       get { return (ValueLookupParameter<IntData>)Parameters["Elites"]; }
     }
     public ValueLookupParameter<IntData> MaximumGenerationsParameter {
       get { return (ValueLookupParameter<IntData>)Parameters["MaximumGenerations"]; }
+    }
+    public ValueLookupParameter<VariableCollection> ResultsParameter {
+      get { return (ValueLookupParameter<VariableCollection>)Parameters["Results"]; }
     }
     private ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
@@ -80,18 +83,20 @@ namespace HeuristicLab.SGA {
       Parameters.Add(new ValueLookupParameter<IRandom>("Random", "A pseudo random number generator."));
       Parameters.Add(new ValueLookupParameter<BoolData>("Maximization", "True if the problem is a maximization problem, otherwise false."));
       Parameters.Add(new SubScopesLookupParameter<DoubleData>("Quality", "The value which represents the quality of a solution."));
-      Parameters.Add(new ValueLookupParameter<IOperator>("CrossoverOperator", "The operator used to cross solutions."));
+      Parameters.Add(new ValueLookupParameter<IOperator>("Selector", "The operator used to select solutions for reproduction."));
+      Parameters.Add(new ValueLookupParameter<IOperator>("Crossover", "The operator used to cross solutions."));
       Parameters.Add(new ValueLookupParameter<DoubleData>("MutationProbability", "The probability that the mutation operator is applied on a solution."));
-      Parameters.Add(new ValueLookupParameter<IOperator>("MutationOperator", "The operator used to mutate solutions."));
-      Parameters.Add(new ValueLookupParameter<IOperator>("SolutionEvaluator", "The operator used to evaluate solutions."));
+      Parameters.Add(new ValueLookupParameter<IOperator>("Mutator", "The operator used to mutate solutions."));
+      Parameters.Add(new ValueLookupParameter<IOperator>("Evaluator", "The operator used to evaluate solutions."));
       Parameters.Add(new ValueLookupParameter<IntData>("Elites", "The numer of elite solutions which are kept in each generation."));
       Parameters.Add(new ValueLookupParameter<IntData>("MaximumGenerations", "The maximum number of generations which should be processed."));
+      Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The variable collection where results should be stored."));
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope which represents a population of solutions on which the SGA should be applied."));
       #endregion
 
       #region Create operator graph
       SubScopesSorter subScopesSorter1 = new SubScopesSorter();
-      proportionalSelector = new ProportionalSelector();
+      Placeholder selector = new Placeholder();
       SequentialSubScopesProcessor sequentialSubScopesProcessor1 = new SequentialSubScopesProcessor();
       ChildrenCreator childrenCreator = new ChildrenCreator();
       UniformSequentialSubScopesProcessor uniformSequentialSubScopesProcessor = new UniformSequentialSubScopesProcessor();
@@ -107,20 +112,17 @@ namespace HeuristicLab.SGA {
       MergingReducer mergingReducer = new MergingReducer();
       IntCounter intCounter = new IntCounter();
       Comparator comparator = new Comparator();
+      ResultsCollector resultsCollector = new ResultsCollector();
       ConditionalBranch conditionalBranch = new ConditionalBranch();
 
       subScopesSorter1.DescendingParameter.ActualName = "Maximization";
       subScopesSorter1.ValueParameter.ActualName = "Quality";
       OperatorGraph.InitialOperator = subScopesSorter1;
-      subScopesSorter1.Successor = proportionalSelector;
+      subScopesSorter1.Successor = selector;
 
-      proportionalSelector.CopySelected = new BoolData(true);
-      proportionalSelector.MaximizationParameter.ActualName = "Maximization";
-      // NOTE: NumberOfSelectedSubScopes is set dynamically when the operator is executed
-      proportionalSelector.QualityParameter.ActualName = "Quality";
-      proportionalSelector.RandomParameter.ActualName = "Random";
-      proportionalSelector.Windowing = new BoolData(true);
-      proportionalSelector.Successor = sequentialSubScopesProcessor1;
+      selector.Name = "Selector";
+      selector.OperatorParameter.ActualName = "Selector";
+      selector.Successor = sequentialSubScopesProcessor1;
 
       sequentialSubScopesProcessor1.Operators.Add(new EmptyOperator());
       sequentialSubScopesProcessor1.Operators.Add(childrenCreator);
@@ -132,8 +134,8 @@ namespace HeuristicLab.SGA {
       uniformSequentialSubScopesProcessor.Operator = crossover;
       uniformSequentialSubScopesProcessor.Successor = subScopesSorter2;
 
-      crossover.Name = "CrossoverOperator";
-      crossover.OperatorParameter.ActualName = "CrossoverOperator";
+      crossover.Name = "Crossover";
+      crossover.OperatorParameter.ActualName = "Crossover";
       crossover.Successor = stochasticBranch;
 
       stochasticBranch.FirstBranch = mutator;
@@ -142,12 +144,12 @@ namespace HeuristicLab.SGA {
       stochasticBranch.SecondBranch = null;
       stochasticBranch.Successor = evaluator;
 
-      mutator.Name = "MutationOperator";
-      mutator.OperatorParameter.ActualName = "MutationOperator";
+      mutator.Name = "Mutator";
+      mutator.OperatorParameter.ActualName = "Mutator";
       mutator.Successor = null;
 
-      evaluator.Name = "SolutionEvaluator";
-      evaluator.OperatorParameter.ActualName = "SolutionEvaluator";
+      evaluator.Name = "Evaluator";
+      evaluator.OperatorParameter.ActualName = "Evaluator";
       evaluator.Successor = subScopesRemover;
 
       subScopesRemover.RemoveAllSubScopes = true;
@@ -177,26 +179,19 @@ namespace HeuristicLab.SGA {
       comparator.LeftSideParameter.ActualName = "Generations";
       comparator.ResultParameter.ActualName = "Terminate";
       comparator.RightSideParameter.ActualName = "MaximumGenerations";
-      comparator.Successor = conditionalBranch;
+      comparator.Successor = resultsCollector;
+
+      SubScopesLookupParameter<DoubleData> quality = new SubScopesLookupParameter<DoubleData>("Qualities");
+      quality.ActualName = "Quality";
+      resultsCollector.CollectedValues.Add(quality);
+      resultsCollector.ResultsParameter.ActualName = "Results";
+      resultsCollector.Successor = conditionalBranch;
 
       conditionalBranch.ConditionParameter.ActualName = "Terminate";
       conditionalBranch.FalseBranch = subScopesSorter1;
       conditionalBranch.TrueBranch = null;
       conditionalBranch.Successor = null;
       #endregion
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      SGAOperator clone = (SGAOperator)base.Clone(cloner);
-      clone.proportionalSelector = (ProportionalSelector)cloner.Clone(proportionalSelector);
-      return clone;
-    }
-
-    public override IOperation Apply() {
-      int populationSize = CurrentScope.SubScopes.Count;
-      // dynamically set the number of parents which are selected for reproduction
-      proportionalSelector.NumberOfSelectedSubScopesParameter.Value = new IntData(2 * (populationSize - ElitesParameter.ActualValue.Value));
-      return base.Apply();
     }
   }
 }

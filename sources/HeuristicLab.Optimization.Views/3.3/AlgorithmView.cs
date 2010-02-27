@@ -81,6 +81,7 @@ namespace HeuristicLab.Optimization.Views {
       if (Content == null) {
         parameterCollectionView.Content = null;
         problemViewHost.Content = null;
+        resultsView.Content = null;
         tabControl.Enabled = false;
         startButton.Enabled = resetButton.Enabled = false;
         executionTimeTextBox.Text = "-";
@@ -89,6 +90,7 @@ namespace HeuristicLab.Optimization.Views {
         parameterCollectionView.Content = Content.Parameters;
         saveProblemButton.Enabled = Content.Problem != null;
         problemViewHost.Content = Content.Problem;
+        resultsView.Content = Content.Results;
         tabControl.Enabled = true;
         startButton.Enabled = !Content.Finished;
         resetButton.Enabled = true;
@@ -105,6 +107,8 @@ namespace HeuristicLab.Optimization.Views {
         parameterCollectionView.Enabled = true;
         newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = true;
         problemViewHost.Enabled = true;
+        resultsView.Content = Content.Results;
+        resultsView.Enabled = true;
         startButton.Enabled = !Content.Finished;
         stopButton.Enabled = false;
         resetButton.Enabled = true;
@@ -127,6 +131,7 @@ namespace HeuristicLab.Optimization.Views {
         parameterCollectionView.Enabled = false;
         newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = false;
         problemViewHost.Enabled = false;
+        resultsView.Enabled = false;
         startButton.Enabled = false;
         stopButton.Enabled = true;
         resetButton.Enabled = false;
@@ -140,6 +145,7 @@ namespace HeuristicLab.Optimization.Views {
         parameterCollectionView.Enabled = true;
         newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = true;
         problemViewHost.Enabled = true;
+        resultsView.Enabled = true;
         startButton.Enabled = !Content.Finished;
         stopButton.Enabled = false;
         resetButton.Enabled = true;

@@ -21,6 +21,7 @@
 
 using System;
 using System.Drawing;
+using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -54,6 +55,8 @@ namespace HeuristicLab.Optimization {
         }
       }
     }
+
+    public abstract IObservableKeyedCollection<string, IVariable> Results { get; }
 
     public abstract TimeSpan ExecutionTime { get; }
 

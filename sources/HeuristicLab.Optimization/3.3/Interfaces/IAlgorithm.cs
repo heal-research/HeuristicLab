@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 
@@ -30,6 +31,7 @@ namespace HeuristicLab.Optimization {
   public interface IAlgorithm : IParameterizedNamedItem {
     Type ProblemType { get; }
     IProblem Problem { get; set; }
+    IObservableKeyedCollection<string, IVariable> Results { get; }
     TimeSpan ExecutionTime { get; }
     bool Running { get; }
     bool Finished { get; }

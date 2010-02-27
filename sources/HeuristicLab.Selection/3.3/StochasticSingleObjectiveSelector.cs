@@ -21,6 +21,7 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -30,17 +31,17 @@ namespace HeuristicLab.Selection {
   /// </summary>
   [Item("StochasticSingleObjectiveSelector", "A base class for stochastic selection operators which consider a single double quality value for selection.")]
   [EmptyStorableClass]
-  public abstract class StochasticSingleObjectiveSelector : StochasticSelector {
-    public LookupParameter<BoolData> MaximizationParameter {
-      get { return (LookupParameter<BoolData>)Parameters["Maximization"]; }
+  public abstract class StochasticSingleObjectiveSelector : StochasticSelector, ISingleObjectiveSelector {
+    public IValueLookupParameter<BoolData> MaximizationParameter {
+      get { return (IValueLookupParameter<BoolData>)Parameters["Maximization"]; }
     }
-    public SubScopesLookupParameter<DoubleData> QualityParameter {
-      get { return (SubScopesLookupParameter<DoubleData>)Parameters["Quality"]; }
+    public ILookupParameter<ItemArray<DoubleData>> QualityParameter {
+      get { return (ILookupParameter<ItemArray<DoubleData>>)Parameters["Quality"]; }
     }
 
     protected StochasticSingleObjectiveSelector()
       : base() {
-      Parameters.Add(new LookupParameter<BoolData>("Maximization", "True if the current problem is a maximization problem, otherwise false."));
+      Parameters.Add(new ValueLookupParameter<BoolData>("Maximization", "True if the current problem is a maximization problem, otherwise false."));
       Parameters.Add(new SubScopesLookupParameter<DoubleData>("Quality", "The quality value contained in each sub-scope which is used for selection."));
     }
   }

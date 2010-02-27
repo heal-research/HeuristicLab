@@ -100,15 +100,20 @@ namespace HeuristicLab.Routing.TSP {
       evaluator.QualityParameter.ActualName = "TSPTourLength";
       EvaluatorParameter.Value = evaluator;
 
-      operators = new OperatorSet();
-      var crossovers = ApplicationManager.Manager.GetInstances<IPermutationCrossover>().ToList();
-      crossovers.ForEach(x => {
-        x.ParentsParameter.ActualName = creator.PermutationParameter.ActualName;
-        x.ChildParameter.ActualName = creator.PermutationParameter.ActualName;
+      var ops = ApplicationManager.Manager.GetInstances<IPermutationOperator>().ToList();
+      ops.ForEach(x => {
+        IPermutationCrossover y = x as IPermutationCrossover;
+        if (y != null) {
+          y.ParentsParameter.ActualName = creator.PermutationParameter.ActualName;
+          y.ChildParameter.ActualName = creator.PermutationParameter.ActualName;
+        }
       });
-      var manipulators = ApplicationManager.Manager.GetInstances<IPermutationManipulator>().ToList();
-      manipulators.ForEach(x => x.PermutationParameter.ActualName = creator.PermutationParameter.ActualName);
-      operators = new OperatorSet(crossovers.Cast<IOperator>().Concat(manipulators.Cast<IOperator>()));
+      ops.ForEach(x => {
+        IPermutationManipulator y = x as IPermutationManipulator;
+        if (y != null)
+          y.PermutationParameter.ActualName = creator.PermutationParameter.ActualName;
+      });
+      operators = new OperatorSet(ops.Cast<IOperator>());
     }
 
     public void ImportFromTSPLIB(string filename) {

@@ -20,24 +20,14 @@
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.Optimization;
-using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Data;
 
-namespace HeuristicLab.Selection {
+namespace HeuristicLab.Optimization {
   /// <summary>
-  /// A base class for stochastic selection operators.
+  /// An interface which represents a selection operator for selecting solutions of single-objective optimization problems.
   /// </summary>
-  [Item("StochasticSelector", "A base class for stochastic selection operators.")]
-  [EmptyStorableClass]
-  public abstract class StochasticSelector : Selector, IStochasticOperator {
-    public ILookupParameter<IRandom> RandomParameter {
-      get { return (LookupParameter<IRandom>)Parameters["Random"]; }
-    }
-
-    protected StochasticSelector()
-      : base() {
-      Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator used for stochastic selection."));
-    }
+  public interface ISingleObjectiveSelector : ISelector {
+    IValueLookupParameter<BoolData> MaximizationParameter { get; }
+    ILookupParameter<ItemArray<DoubleData>> QualityParameter { get; }
   }
 }

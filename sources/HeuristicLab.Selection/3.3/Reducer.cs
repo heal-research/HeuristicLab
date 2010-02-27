@@ -22,6 +22,7 @@
 using System.Collections.Generic;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -31,7 +32,7 @@ namespace HeuristicLab.Selection {
   /// </summary>
   [Item("Reducer", "A base class for reduction operators.")]
   [EmptyStorableClass]
-  public abstract class Reducer : SingleSuccessorOperator {
+  public abstract class Reducer : SingleSuccessorOperator, IReducer {
     protected ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
     }

@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -32,11 +33,11 @@ namespace HeuristicLab.Selection {
   /// </summary>
   [Item("Selector", "A base class for selection operators.")]
   [EmptyStorableClass]
-  public abstract class Selector : SingleSuccessorOperator {
+  public abstract class Selector : SingleSuccessorOperator, ISelector {
     protected ValueParameter<BoolData> CopySelectedParameter {
       get { return (ValueParameter<BoolData>)Parameters["CopySelected"]; }
     }
-    public ValueLookupParameter<IntData> NumberOfSelectedSubScopesParameter {
+    public IValueLookupParameter<IntData> NumberOfSelectedSubScopesParameter {
       get { return (ValueLookupParameter<IntData>)Parameters["NumberOfSelectedSubScopes"]; }
     }
     protected ScopeParameter CurrentScopeParameter {

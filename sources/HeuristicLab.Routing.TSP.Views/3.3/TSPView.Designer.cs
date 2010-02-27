@@ -51,12 +51,17 @@ namespace HeuristicLab.Routing.TSP.Views {
       // 
       // parameterCollectionView
       // 
-      this.parameterCollectionView.Size = new System.Drawing.Size(490, 205);
+      this.parameterCollectionView.Size = new System.Drawing.Size(529, 274);
       // 
       // nameTextBox
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.nameTextBox, 2);
+      this.nameTextBox.Size = new System.Drawing.Size(457, 20);
+      // 
+      // descriptionTextBox
+      // 
+      this.descriptionTextBox.Size = new System.Drawing.Size(457, 87);
       // 
       // openFileDialog
       // 
@@ -69,9 +74,9 @@ namespace HeuristicLab.Routing.TSP.Views {
       // 
       this.importButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.importButton.Location = new System.Drawing.Point(0, 330);
+      this.importButton.Location = new System.Drawing.Point(0, 399);
       this.importButton.Name = "importButton";
-      this.importButton.Size = new System.Drawing.Size(490, 23);
+      this.importButton.Size = new System.Drawing.Size(529, 23);
       this.importButton.TabIndex = 5;
       this.importButton.Text = "&Import from TSPLIB";
       this.importButton.UseVisualStyleBackColor = true;
@@ -83,6 +88,7 @@ namespace HeuristicLab.Routing.TSP.Views {
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.importButton);
       this.Name = "TSPView";
+      this.Size = new System.Drawing.Size(529, 422);
       this.Controls.SetChildIndex(this.importButton, 0);
       this.Controls.SetChildIndex(this.parameterCollectionView, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
