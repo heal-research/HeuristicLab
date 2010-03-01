@@ -372,6 +372,18 @@
   <ItemGroup>
     <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_DeleteFolder.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Pointer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Breakpoint.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_CommonElements_Objects_Zoom_In.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_CommonElements_Objects_Zoom_Out.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
