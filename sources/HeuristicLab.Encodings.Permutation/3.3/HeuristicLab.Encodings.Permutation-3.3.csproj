@@ -80,35 +80,33 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CyclicCrossover2.cs" />
+    <Compile Include="Creators\RandomPermutationCreator.cs" />
+    <Compile Include="Crossovers\CosaCrossover.cs" />
+    <Compile Include="Crossovers\CyclicCrossover.cs" />
+    <Compile Include="Crossovers\CyclicCrossover2.cs" />
+    <Compile Include="Crossovers\EdgeRecombinationCrossover.cs" />
+    <Compile Include="Crossovers\MaximalPreservativeCrossover.cs" />
+    <Compile Include="Crossovers\OrderBasedCrossover.cs" />
+    <Compile Include="Crossovers\OrderCrossover.cs" />
+    <Compile Include="Crossovers\OrderCrossover2.cs" />
+    <Compile Include="Crossovers\PartiallyMatchedCrossover.cs" />
+    <Compile Include="Crossovers\PositionBasedCrossover.cs" />
     <Compile Include="HeuristicLabEncodingsPermutationPlugin.cs" />
-    <Compile Include="IPermutationCreator.cs" />
-    <Compile Include="IPermutationOperator.cs" />
-    <Compile Include="CosaCrossover.cs" />
-    <Compile Include="CyclicCrossover.cs" />
-    <Compile Include="EdgeRecombinationCrossover.cs" />
-    <Compile Include="InsertionManipulator.cs" />
-    <Compile Include="InversionManipulator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IPermutationCrossover.cs" />
-    <Compile Include="IPermutationManipulator.cs" />
-    <Compile Include="MaximalPreservativeCrossover.cs" />
-    <Compile Include="OrderBasedCrossover.cs" />
-    <Compile Include="OrderCrossover2.cs" />
-    <Compile Include="PartiallyMatchedCrossover.cs" />
+    <Compile Include="Interfaces\IPermutationCreator.cs" />
+    <Compile Include="Interfaces\IPermutationCrossover.cs" />
+    <Compile Include="Interfaces\IPermutationManipulator.cs" />
+    <Compile Include="Interfaces\IPermutationOperator.cs" />
+    <Compile Include="Manipulators\InsertionManipulator.cs" />
+    <Compile Include="Manipulators\InversionManipulator.cs" />
+    <Compile Include="Manipulators\ScrambleManipulator.cs" />
+    <Compile Include="Manipulators\Swap2Manipulator.cs" />
+    <Compile Include="Manipulators\Swap3Manipulator.cs" />
+    <Compile Include="Manipulators\TranslocationInversionManipulator.cs" />
+    <Compile Include="Manipulators\TranslocationManipulator.cs" />
     <Compile Include="PermutationManipulator.cs" />
-    <Compile Include="OrderCrossover.cs" />
     <Compile Include="PermutationCrossover.cs" />
     <Compile Include="Permutation.cs" />
-    <Compile Include="PositionBasedCrossover.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RandomPermutationCreator.cs" />
-    <Compile Include="ScrambleManipulator.cs" />
-    <Compile Include="Swap2Manipulator.cs" />
-    <Compile Include="Swap3Manipulator.cs" />
-    <Compile Include="TranslocationInversionManipulator.cs" />
-    <Compile Include="TranslocationManipulator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
