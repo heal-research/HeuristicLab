@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Analysis;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Evolutionary;
@@ -111,6 +112,7 @@ namespace HeuristicLab.Algorithms.SGA {
       MergingReducer mergingReducer = new MergingReducer();
       IntCounter intCounter = new IntCounter();
       Comparator comparator = new Comparator();
+      BestAverageWorstQualityCalculator bestAverageWorstQualityCalculator = new BestAverageWorstQualityCalculator();
       ResultsCollector resultsCollector = new ResultsCollector();
       ConditionalBranch conditionalBranch = new ConditionalBranch();
 
@@ -178,11 +180,24 @@ namespace HeuristicLab.Algorithms.SGA {
       comparator.LeftSideParameter.ActualName = "Generations";
       comparator.ResultParameter.ActualName = "Terminate";
       comparator.RightSideParameter.ActualName = "MaximumGenerations";
-      comparator.Successor = resultsCollector;
+      comparator.Successor = bestAverageWorstQualityCalculator;
 
-      SubScopesLookupParameter<DoubleData> quality = new SubScopesLookupParameter<DoubleData>("Qualities");
-      quality.ActualName = "Quality";
-      resultsCollector.CollectedValues.Add(quality);
+      bestAverageWorstQualityCalculator.AverageQualityParameter.ActualName = "AverageQuality";
+      bestAverageWorstQualityCalculator.BestQualityParameter.ActualName = "BestQuality";
+      bestAverageWorstQualityCalculator.MaximizationParameter.ActualName = "Maximization";
+      bestAverageWorstQualityCalculator.QualityParameter.ActualName = "Quality";
+      bestAverageWorstQualityCalculator.WorstQualityParameter.ActualName = "WorstQuality";
+      bestAverageWorstQualityCalculator.Successor = resultsCollector;
+
+      LookupParameter<DoubleData> bestQuality = new LookupParameter<DoubleData>("BestQuality");
+      bestQuality.ActualName = "BestQuality";
+      resultsCollector.CollectedValues.Add(bestQuality);
+      LookupParameter<DoubleData> averageQuality = new LookupParameter<DoubleData>("AverageQuality");
+      averageQuality.ActualName = "AverageQuality";
+      resultsCollector.CollectedValues.Add(averageQuality);
+      LookupParameter<DoubleData> worstQuality = new LookupParameter<DoubleData>("WorstQuality");
+      worstQuality.ActualName = "WorstQuality";
+      resultsCollector.CollectedValues.Add(worstQuality);
       resultsCollector.ResultsParameter.ActualName = "Results";
       resultsCollector.Successor = conditionalBranch;
 

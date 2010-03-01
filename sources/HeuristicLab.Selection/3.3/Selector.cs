@@ -34,8 +34,8 @@ namespace HeuristicLab.Selection {
   [Item("Selector", "A base class for selection operators.")]
   [EmptyStorableClass]
   public abstract class Selector : SingleSuccessorOperator, ISelector {
-    protected OptionalValueParameter<BoolData> CopySelectedParameter {
-      get { return (OptionalValueParameter<BoolData>)Parameters["CopySelected"]; }
+    protected ValueParameter<BoolData> CopySelectedParameter {
+      get { return (ValueParameter<BoolData>)Parameters["CopySelected"]; }
     }
     public IValueLookupParameter<IntData> NumberOfSelectedSubScopesParameter {
       get { return (ValueLookupParameter<IntData>)Parameters["NumberOfSelectedSubScopes"]; }
@@ -54,7 +54,7 @@ namespace HeuristicLab.Selection {
 
     protected Selector()
       : base() {
-      Parameters.Add(new OptionalValueParameter<BoolData>("CopySelected", "True if the selected sub-scopes should be copied, otherwise false.", new BoolData(false)));
+      Parameters.Add(new ValueParameter<BoolData>("CopySelected", "True if the selected sub-scopes should be copied, otherwise false.", new BoolData(false)));
       Parameters.Add(new ValueLookupParameter<IntData>("NumberOfSelectedSubScopes", "The number of sub-scopes which should be selected."));
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope from which sub-scopes should be selected."));
     }

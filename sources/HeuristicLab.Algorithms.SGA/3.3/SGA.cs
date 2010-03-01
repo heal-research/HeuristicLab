@@ -42,8 +42,8 @@ namespace HeuristicLab.Algorithms.SGA {
     [Storable]
     private SGAOperator sgaOperator;
 
-    private OptionalValueParameter<IntData> PopulationSizeParameter {
-      get { return (OptionalValueParameter<IntData>)Parameters["PopulationSize"]; }
+    private ValueParameter<IntData> PopulationSizeParameter {
+      get { return (ValueParameter<IntData>)Parameters["PopulationSize"]; }
     }
     private ConstrainedValueParameter<ISelector> SelectorParameter {
       get { return (ConstrainedValueParameter<ISelector>)Parameters["Selector"]; }
@@ -54,8 +54,8 @@ namespace HeuristicLab.Algorithms.SGA {
     private ConstrainedValueParameter<IManipulator> MutatorParameter {
       get { return (ConstrainedValueParameter<IManipulator>)Parameters["Mutator"]; }
     }
-    private OptionalValueParameter<IntData> ElitesParameter {
-      get { return (OptionalValueParameter<IntData>)Parameters["Elites"]; }
+    private ValueParameter<IntData> ElitesParameter {
+      get { return (ValueParameter<IntData>)Parameters["Elites"]; }
     }
 
     public override Type ProblemType {
@@ -68,15 +68,15 @@ namespace HeuristicLab.Algorithms.SGA {
 
     public SGA()
       : base() {
-      Parameters.Add(new OptionalValueParameter<IntData>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntData(0)));
-      Parameters.Add(new OptionalValueParameter<BoolData>("SetSeedRandomly", "True if the random seed should be set to a random value, otherwise false.", new BoolData(true)));
-      Parameters.Add(new OptionalValueParameter<IntData>("PopulationSize", "The size of the population of solutions.", new IntData(100)));
+      Parameters.Add(new ValueParameter<IntData>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntData(0)));
+      Parameters.Add(new ValueParameter<BoolData>("SetSeedRandomly", "True if the random seed should be set to a random value, otherwise false.", new BoolData(true)));
+      Parameters.Add(new ValueParameter<IntData>("PopulationSize", "The size of the population of solutions.", new IntData(100)));
       Parameters.Add(new ConstrainedValueParameter<ISelector>("Selector", "The operator used to select solutions for reproduction."));
       Parameters.Add(new ConstrainedValueParameter<ICrossover>("Crossover", "The operator used to cross solutions."));
-      Parameters.Add(new OptionalValueParameter<DoubleData>("MutationProbability", "The probability that the mutation operator is applied on a solution.", new DoubleData(0.05)));
+      Parameters.Add(new ValueParameter<DoubleData>("MutationProbability", "The probability that the mutation operator is applied on a solution.", new DoubleData(0.05)));
       Parameters.Add(new ConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
-      Parameters.Add(new OptionalValueParameter<IntData>("Elites", "The numer of elite solutions which are kept in each generation.", new IntData(1)));
-      Parameters.Add(new OptionalValueParameter<IntData>("MaximumGenerations", "The maximum number of generations which should be processed.", new IntData(1000)));
+      Parameters.Add(new ValueParameter<IntData>("Elites", "The numer of elite solutions which are kept in each generation.", new IntData(1)));
+      Parameters.Add(new ValueParameter<IntData>("MaximumGenerations", "The maximum number of generations which should be processed.", new IntData(1000)));
 
       PopulationSizeParameter.ValueChanged += new EventHandler(PopulationSizeParameter_ValueChanged);
       ElitesParameter.ValueChanged += new EventHandler(ElitesParameter_ValueChanged);

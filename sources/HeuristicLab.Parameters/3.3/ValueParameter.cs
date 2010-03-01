@@ -26,19 +26,20 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Parameters {
   /// <summary>
-  /// A parameter whose value is defined it the parameter itself or is null.
+  /// A parameter whose value is defined it the parameter itself.
   /// </summary>
-  [Item("OptionalValueParameter<T>", "A parameter whose value is defined it the parameter itself or is null.")]
-  public class OptionalValueParameter<T> : Parameter, IValueParameter<T> where T : class, IItem {
+  [Item("ValueParameter<T>", "A parameter whose value is defined it the parameter itself.")]
+  public sealed class ValueParameter<T> : Parameter, IValueParameter<T> where T : class, IItem {
     private T value;
     [Storable]
     public T Value {
       get { return this.value; }
       set {
+        if (value == null) throw new ArgumentNullException();
         if (value != this.value) {
           if (this.value != null) this.value.Changed -= new ChangedEventHandler(Value_Changed);
           this.value = value;
-          if (this.value != null) this.value.Changed += new ChangedEventHandler(Value_Changed);
+          this.value.Changed += new ChangedEventHandler(Value_Changed);
           OnValueChanged();
         }
       }
@@ -46,8 +47,9 @@ namespace HeuristicLab.Parameters {
     IItem IValueParameter.Value {
       get { return Value; }
       set {
+        if (value == null) throw new ArgumentNullException();
         T val = value as T;
-        if ((value != null) && (val == null))
+        if (val == null)
           throw new InvalidOperationException(
             string.Format("Type mismatch. Value is not a \"{0}\".",
                           typeof(T).GetPrettyName())
@@ -56,32 +58,27 @@ namespace HeuristicLab.Parameters {
       }
     }
 
-    public OptionalValueParameter()
+    private ValueParameter()
       : base("Anonymous", typeof(T)) {
     }
-    public OptionalValueParameter(string name)
-      : base(name, typeof(T)) {
-    }
-    public OptionalValueParameter(string name, T value)
+    public ValueParameter(string name, T value)
       : base(name, typeof(T)) {
       Value = value;
     }
-    public OptionalValueParameter(string name, string description)
-      : base(name, description, typeof(T)) {
-    }
-    public OptionalValueParameter(string name, string description, T value)
+    public ValueParameter(string name, string description, T value)
       : base(name, description, typeof(T)) {
       Value = value;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      OptionalValueParameter<T> clone = (OptionalValueParameter<T>)base.Clone(cloner);
+      ValueParameter<T> clone = new ValueParameter<T>(name, description, value);
+      cloner.RegisterClonedObject(this, clone);
       clone.Value = (T)cloner.Clone(value);
       return clone;
     }
 
     public override string ToString() {
-      return string.Format("{0}: {1} ({2})", Name, Value != null ? Value.ToString() : "null", DataType.GetPrettyName());
+      return string.Format("{0}: {1} ({2})", Name, Value.ToString(), DataType.GetPrettyName());
     }
 
     protected override IItem GetActualValue() {

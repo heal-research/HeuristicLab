@@ -74,25 +74,24 @@ namespace HeuristicLab.Problems.TSP {
 
     public TSP()
       : base() {
-      Parameters.Add(new OptionalValueParameter<BoolData>("Maximization", "Set to false as the Traveling Salesman Problem is a minimization problem.", new BoolData(false)));
-      Parameters.Add(new OptionalValueParameter<DoubleMatrixData>("Coordinates", "The x- and y-Coordinates of the cities.", new DoubleMatrixData(0, 0)));
-      Parameters.Add(new OptionalValueParameter<IPermutationCreator>("SolutionCreator", "The operator which should be used to create new TSP solutions."));
-      Parameters.Add(new OptionalValueParameter<ITSPEvaluator>("Evaluator", "The operator which should be used to evaluate TSP solutions."));
+      RandomPermutationCreator creator = new RandomPermutationCreator();
+      TSPRoundedEuclideanPathEvaluator evaluator = new TSPRoundedEuclideanPathEvaluator();
+
+      Parameters.Add(new ValueParameter<BoolData>("Maximization", "Set to false as the Traveling Salesman Problem is a minimization problem.", new BoolData(false)));
+      Parameters.Add(new ValueParameter<DoubleMatrixData>("Coordinates", "The x- and y-Coordinates of the cities.", new DoubleMatrixData(0, 0)));
+      Parameters.Add(new ValueParameter<IPermutationCreator>("SolutionCreator", "The operator which should be used to create new TSP solutions.", creator));
+      Parameters.Add(new ValueParameter<ITSPEvaluator>("Evaluator", "The operator which should be used to evaluate TSP solutions.", evaluator));
       Parameters.Add(new OptionalValueParameter<DoubleData>("BestKnownQuality", "The quality of the best known solution of this TSP instance."));
+
+      creator.PermutationParameter.ActualName = "TSPTour";
+      creator.LengthParameter.Value = new IntData(0);
+      evaluator.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
+      evaluator.PermutationParameter.ActualName = creator.PermutationParameter.ActualName;
+      evaluator.QualityParameter.ActualName = "TSPTourLength";
 
       MaximizationParameter.ValueChanged += new EventHandler(MaximizationParameter_ValueChanged);
       SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
-
-      RandomPermutationCreator creator = new RandomPermutationCreator();
-      creator.PermutationParameter.ActualName = "TSPTour";
-      creator.LengthParameter.Value = new IntData(0);
-      SolutionCreatorParameter.Value = creator;
-      TSPRoundedEuclideanPathEvaluator evaluator = new TSPRoundedEuclideanPathEvaluator();
-      evaluator.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
-      evaluator.PermutationParameter.ActualName = creator.PermutationParameter.ActualName;
-      evaluator.QualityParameter.ActualName = "TSPTourLength";
-      EvaluatorParameter.Value = evaluator;
 
       var ops = ApplicationManager.Manager.GetInstances<IPermutationOperator>();
       foreach (IPermutationCrossover op in ops.OfType<IPermutationCrossover>()) {

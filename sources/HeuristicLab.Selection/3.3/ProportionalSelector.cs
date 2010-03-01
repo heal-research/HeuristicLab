@@ -35,8 +35,8 @@ namespace HeuristicLab.Selection {
   [EmptyStorableClass]
   [Creatable("Test")]
   public sealed class ProportionalSelector : StochasticSingleObjectiveSelector {
-    private OptionalValueParameter<BoolData> WindowingParameter {
-      get { return (OptionalValueParameter<BoolData>)Parameters["Windowing"]; }
+    private ValueParameter<BoolData> WindowingParameter {
+      get { return (ValueParameter<BoolData>)Parameters["Windowing"]; }
     }
 
     public BoolData Windowing {
@@ -46,7 +46,7 @@ namespace HeuristicLab.Selection {
 
     public ProportionalSelector()
       : base() {
-      Parameters.Add(new OptionalValueParameter<BoolData>("Windowing", "Apply windowing strategy (selection probability is proportional to the quality differences and not to the total quality).", new BoolData(true)));
+      Parameters.Add(new ValueParameter<BoolData>("Windowing", "Apply windowing strategy (selection probability is proportional to the quality differences and not to the total quality).", new BoolData(true)));
       CopySelected.Value = true;
     }
 
