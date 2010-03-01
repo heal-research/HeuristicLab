@@ -109,14 +109,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Model\ShapeInfoFactory.cs" />
-    <Compile Include="ToolBarItems\ConnectionToolBarItem.cs" />
-    <Compile Include="ToolBarItems\SelectToolBarItem.cs" />
-    <Compile Include="ToolBarItems\PanToolBarItem.cs" />
-    <Compile Include="ToolBarItems\ZoomOutToolBarItem.cs" />
-    <Compile Include="ToolBarItems\ZoomInToolBarItem.cs" />
-    <Compile Include="ToolBarItems\ZoomToolBarItem.cs" />
-    <Compile Include="ToolBarItems\ToolBarItemSeparator.cs" />
-    <Compile Include="ToolBarItems\RelayoutToolBarItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">

@@ -65,7 +65,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       }
       this.graphVisualizationInfoView.Content = this.VisualizationInfo;
       if (createdVisualizationInfo)
-        this.graphVisualizationInfoView.RelayoutOperatorGraph();
+        this.graphVisualizationInfoView.RelayoutGraph();
     }
 
     private GraphVisualizationInfo VisualizationInfo {
@@ -157,36 +157,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     }
     #endregion
 
-    #region methods for toolbar items
-    internal void RelayoutOperatorGraph() {
-      this.graphVisualizationInfoView.RelayoutOperatorGraph();
-    }
-
-    internal void ActivateConnectionTool() {
-      this.graphVisualizationInfoView.ActivateConnectionTool();
-    }
-
-    internal void ActivateZoomAreaTool() {
-      this.graphVisualizationInfoView.ActivateZoomAreaTool();
-    }
-
-    internal void ActivateZoomInTool() {
-      this.graphVisualizationInfoView.ActivateZoomInTool();
-    }
-
-    internal void ActivateZoomOutTool() {
-      this.graphVisualizationInfoView.ActivateZoomOutTool();
-    }
-
-    internal void ActivatePanTool() {
-      this.graphVisualizationInfoView.ActivatePanTool();
-    }
-
-    internal void ActivateSelectTool() {
-      this.graphVisualizationInfoView.ActivateSelectTool();
-    }
-    #endregion
-
     #region drag and drop
     private void OperatorGraphView_DragEnter(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
@@ -211,5 +181,38 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     }
 
     #endregion
+
+    private void selectButton_Click(object sender, EventArgs e) {
+      ITool tool = this.graphVisualizationInfoView.Controller.Tools.Where(t => t.Name == ControllerBase.SelectionToolName).First();
+      tool.IsSuspended = false;
+      tool = this.graphVisualizationInfoView.Controller.Tools.Where(t => t.Name == ControllerBase.PanToolName).First();
+      this.graphVisualizationInfoView.Controller.DeactivateTool(tool);
+    }
+
+    private void panButton_Click(object sender, EventArgs e) {
+      ITool tool = this.graphVisualizationInfoView.Controller.Tools.Where(t => t.Name == ControllerBase.SelectionToolName).First();
+      tool.IsSuspended = true;
+      this.graphVisualizationInfoView.Controller.ActivateTool(ControllerBase.PanToolName);
+    }
+
+    private void connectButton_Click(object sender, EventArgs e) {
+      this.graphVisualizationInfoView.Controller.ActivateTool(ControllerBase.ConnectionToolName);
+    }
+
+    private void relayoutButton_Click(object sender, EventArgs e) {
+      this.graphVisualizationInfoView.RelayoutGraph();
+    }
+
+    private void zoomAreaButton_Click(object sender, EventArgs e) {
+      this.graphVisualizationInfoView.Controller.ActivateTool(ControllerBase.ZoomAreaToolName);
+    }
+
+    private void zoomInButton_Click(object sender, EventArgs e) {
+      this.graphVisualizationInfoView.Controller.ActivateTool(ControllerBase.ZoomInToolName);
+    }
+
+    private void zoomOutButton_Click(object sender, EventArgs e) {
+      this.graphVisualizationInfoView.Controller.ActivateTool(ControllerBase.ZoomOutToolName);
+    }
   }
 }

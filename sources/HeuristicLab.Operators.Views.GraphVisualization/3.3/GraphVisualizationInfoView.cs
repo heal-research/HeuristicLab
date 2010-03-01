@@ -327,8 +327,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       }
     }
 
-    #region methods for toolbar items
-    internal void RelayoutOperatorGraph() {
+    internal void RelayoutGraph() {
       if (this.shapeInfoShapeMapping.Count > 0
         && this.connectionConnectorsMapping.Count > 0
         && this.Content.InitialShape != null) { //otherwise the layout does not work
@@ -337,30 +336,5 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
         this.graphVisualization.Invalidate();
       }
     }
-
-    internal void ActivateConnectionTool() {
-      this.graphVisualization.Controller.ActivateTool(ControllerBase.ConnectionToolName);
-    }
-
-    internal void ActivateZoomAreaTool() {
-      this.graphVisualization.Controller.ActivateTool(ControllerBase.ZoomAreaToolName);
-    }
-
-    internal void ActivateZoomInTool() {
-      this.graphVisualization.Controller.ActivateTool(ControllerBase.ZoomInToolName);
-    }
-
-    internal void ActivateZoomOutTool() {
-      this.graphVisualization.Controller.ActivateTool(ControllerBase.ZoomOutToolName);
-    }
-
-    internal void ActivatePanTool() {
-      this.graphVisualization.Controller.ActivateTool(ControllerBase.PanToolName);
-    }
-
-    internal void ActivateSelectTool() {
-      this.graphVisualization.Controller.ActivateTool(ControllerBase.SelectionToolName);
-    }
-    #endregion
   }
 }
