@@ -42,45 +42,8 @@ namespace HeuristicLab.Core.Views {
     public ItemCollectionView() {
       InitializeComponent();
       Caption = "Item Collection";
-      this.Resize += new EventHandler(ItemCollectionView_Resize);
-      this.splitContainer.Resize += new EventHandler(splitContainer_Resize);
-      this.splitContainer.Panel1.Resize += new EventHandler(Panel1_Resize);
-      this.splitContainer.Panel2.Resize += new EventHandler(Panel2_Resize);
-
-      this.detailsGroupBox.Resize += new EventHandler(detailsGroupBox_Resize);
-      this.itemsGroupBox.Resize += new EventHandler(itemsGroupBox_Resize);
-      this.itemsListView.Resize += new EventHandler(itemsListView_Resize);
     }
 
-    void Panel1_Resize(object sender, EventArgs e) {
-     // MessageBox.Show("split.panel1 resized");
-    }
-
-    void Panel2_Resize(object sender, EventArgs e) {
-     // MessageBox.Show("split.panel2 resized");
-    }
-
-    void itemsListView_Resize(object sender, EventArgs e) {
-      //MessageBox.Show("itemslistview resized");
-    }
-
-    void itemsGroupBox_Resize(object sender, EventArgs e) {
-     // MessageBox.Show("items groupbox resized");
-    }
-
-    void detailsGroupBox_Resize(object sender, EventArgs e) {
-   //   MessageBox.Show("details groupbox resized");
-    }
-
-    void splitContainer_Resize(object sender, EventArgs e) {
-      //MessageBox.Show("split container resized");
-      
-    }
-
-    void ItemCollectionView_Resize(object sender, EventArgs e) {
-   //   MessageBox.Show("control resized");
-      this.splitContainer.SplitterDistance = this.splitContainer.SplitterDistance + 1;
-    }
     public ItemCollectionView(IObservableCollection<T> content)
       : this() {
       Content = content;
