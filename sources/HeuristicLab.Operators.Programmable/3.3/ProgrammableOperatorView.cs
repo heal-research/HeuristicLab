@@ -33,14 +33,17 @@ using System.CodeDom.Compiler;
 using System.Reflection;
 using HeuristicLab.CodeEditor;
 using HeuristicLab.Core.Views;
+using HeuristicLab.Operators.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Operators.Programmable {
 
+  [Content(typeof(ProgrammableOperator), true)]
   public partial class ProgrammableOperatorView : NamedItemView {
 
     public ProgrammableOperator ProgrammableOperator {
       get { return (ProgrammableOperator)base.Content; }
-      set { base.Content = (NamedItem)value; }
+      set { base.Content = (ProgrammableOperator)value; }
     }
 
     public ProgrammableOperatorView() {
@@ -52,49 +55,30 @@ namespace HeuristicLab.Operators.Programmable {
       ProgrammableOperator = programmableOperator;
     }
 
-    protected override void DeregisterContentEvents() {      
-      //operatorBaseVariableInfosView.Operator = null;
-      //operatorBaseVariablesView.Operator = null;
-      //constrainedItemBaseView.ConstrainedItem = null;
-      ProgrammableOperator.CodeChanged -= new EventHandler(ProgrammableOperator_CodeChanged);
-      ProgrammableOperator.DescriptionChanged -= new EventHandler(ProgrammableOperator_DescriptionChanged);
-      base.DeregisterContentEvents();            
-    }
-
-
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      //operatorBaseVariableInfosView.Operator = ProgrammableOperator;
-      //operatorBaseVariablesView.Operator = ProgrammableOperator;
-      //constrainedItemBaseView.ConstrainedItem = ProgrammableOperator;
-      ProgrammableOperator.CodeChanged += new EventHandler(ProgrammableOperator_CodeChanged);
-      ProgrammableOperator.DescriptionChanged += new EventHandler(ProgrammableOperator_DescriptionChanged);
+      ProgrammableOperator.CodeChanged += ProgrammableOperator_CodeChanged;
+      ProgrammableOperator.DescriptionChanged += ProgrammableOperator_DescriptionChanged;
+      ProgrammableOperator.SignatureChanged += ProgrammableOperator_SignatureChanged;
     }
 
+    protected override void DeregisterContentEvents() {
+      ProgrammableOperator.CodeChanged -= ProgrammableOperator_CodeChanged;
+      ProgrammableOperator.DescriptionChanged -= ProgrammableOperator_DescriptionChanged;
+      ProgrammableOperator.SignatureChanged -= ProgrammableOperator_SignatureChanged;
+      base.DeregisterContentEvents();
+    }
 
     protected override void OnContentChanged() {
-      base.OnContentChanged();    
+      base.OnContentChanged();
       if (ProgrammableOperator == null) {
         codeEditor.Text = "";
         codeEditor.Enabled = false;
-        addVariableInfoButton.Enabled = false;
-        removeVariableInfoButton.Enabled = false;
         descriptionTextBox.Text = "";
         descriptionTextBox.Enabled = false;
-        codeEditor.Prefix = @"using System
-
-public class Operator {
-  public static IOperation Execute(IOperator op, IScope scope, parameters ...) {
-";
-        codeEditor.Suffix = @"
-    return null;
-  }
-}";
         assembliesTreeView.Nodes.Clear();
       } else {
         codeEditor.Enabled = true;
-        addVariableInfoButton.Enabled = true;
-        //removeVariableInfoButton.Enabled = operatorBaseVariableInfosView.SelectedVariableInfos.Count > 0;
         descriptionTextBox.Text = ProgrammableOperator.Description;
         descriptionTextBox.Enabled = true;
         codeEditor.Prefix = GetGeneratedPrefix();
@@ -111,6 +95,7 @@ public class Operator {
           codeEditor.AddAssembly(a);
         }
         codeEditor.ScrollAfterPrefix();
+        codeEditor.ShowCompileErrors(ProgrammableOperator.CompileErrors, "ProgrammableOperator");
       }
     }
 
@@ -129,36 +114,6 @@ public class Operator {
     private void codeEditor_Validated(object sender, EventArgs e) {
       ProgrammableOperator.Code = codeEditor.UserCode;
     }
-    
-    /*
-    private void operatorBaseVariableInfosView_SelectedVariableInfosChanged(object sender, EventArgs e) {
-      removeVariableInfoButton.Enabled = operatorBaseVariableInfosView.SelectedVariableInfos.Count > 0;
-    }
-    
-    private void descriptionTextBox_Validated(object sender, EventArgs e) {
-      ProgrammableOperator.SetDescription(descriptionTextBox.Text);
-    }
-
-    private void addVariableInfoButton_Click(object sender, EventArgs e) {
-      AddVariableInfoDialog dialog = new AddVariableInfoDialog();
-      if (dialog.ShowDialog(this) == DialogResult.OK) {
-        if (ProgrammableOperator.GetVariableInfo(dialog.VariableInfo.FormalName) != null) {
-          Auxiliary.ShowErrorMessageBox("A variable info with the same formal name already exists.");
-        } else {
-          ProgrammableOperator.AddVariableInfo(dialog.VariableInfo);
-          Recompile();
-        }
-      }
-      dialog.Dispose();
-    }
-
-    private void removeVariableInfoButton_Click(object sender, EventArgs e) {
-      IVariableInfo[] selected = new IVariableInfo[operatorBaseVariableInfosView.SelectedVariableInfos.Count];
-      operatorBaseVariableInfosView.SelectedVariableInfos.CopyTo(selected, 0);
-      for (int i = 0; i < selected.Length; i++)
-        ProgrammableOperator.RemoveVariableInfo(selected[i].FormalName);
-      Recompile();
-    } */
 
     private void Recompile() {
       this.Enabled = false;
@@ -169,7 +124,6 @@ public class Operator {
         Auxiliary.ShowErrorMessageBox(ex);
       }
       OnContentChanged();
-      codeEditor.ShowCompileErrors(ProgrammableOperator.CompileErrors, "ProgrammableOperator");
       this.Enabled = true;
     }
 
@@ -183,6 +137,9 @@ public class Operator {
     }
     private void ProgrammableOperator_DescriptionChanged(object sender, EventArgs e) {
       descriptionTextBox.Text = ProgrammableOperator.Description;
+    }
+    private void ProgrammableOperator_SignatureChanged(object sender, EventArgs args) {
+      codeEditor.Prefix = GetGeneratedPrefix();
     }
     #endregion
 
@@ -314,6 +271,10 @@ public class Operator {
 
     private void showCodeButton_Click(object sender, EventArgs e) {
       new CodeViewer(ProgrammableOperator.CompilationUnitCode).ShowDialog(this);
+    }
+
+    private void descriptionTextBox_TextChanged(object sender, EventArgs e) {
+      ProgrammableOperator.SetDescription(descriptionTextBox.Text);
     }
 
 

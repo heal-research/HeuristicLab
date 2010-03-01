@@ -42,14 +42,14 @@ namespace HeuristicLab.Operators.Programmable {
   [Item("ProgrammableOperator", "An operator that can be programmed for arbitrary needs.")]
   [Creatable("Test")]
   [EmptyStorableClass]
-  public class ProgrammableOperator : SingleSuccessorOperator {
+  public class ProgrammableOperator : Operator {
 
     #region Fields & Properties
 
     private MethodInfo executeMethod;
     public CompilerErrorCollection CompileErrors { get; private set; }
     public string CompilationUnitCode { get; private set; }
-    
+
     [Storable]
     private string code;
     public string Code {
@@ -74,15 +74,15 @@ namespace HeuristicLab.Operators.Programmable {
     protected Dictionary<Assembly, bool> Assemblies;
 
     [Storable]
-    private IEnumerable<string> _persistedAssemblyNames {      
-      get {        
+    private IEnumerable<string> _persistedAssemblyNames {
+      get {
         return Assemblies.Keys.Select(a => a.FullName);
       }
       set {
-        var selectedAssemblyNames = new HashSet<string>(value);        
+        var selectedAssemblyNames = new HashSet<string>(value);
         foreach (var a in Assemblies.Keys.ToList()) {
           Assemblies[a] = selectedAssemblyNames.Contains(a.FullName);
-        }      
+        }
       }
     }
 
@@ -130,8 +130,8 @@ namespace HeuristicLab.Operators.Programmable {
 
     public void SetDescription(string description) {
       if (description == null)
-        throw new NullReferenceException("description must not be null");            
-      Description = description;              
+        throw new NullReferenceException("description must not be null");
+      Description = description;
     }
 
     public IEnumerable<string> GetAllNamespaces(bool selectedAssembliesOnly) {
@@ -160,13 +160,19 @@ namespace HeuristicLab.Operators.Programmable {
 
     #region Construction & Initialization
 
-    public ProgrammableOperator() {      
-      code = "";      
+    public ProgrammableOperator() {
+      code = "";
       executeMethod = null;
       ProgrammableOperator.StaticInitialize();
       Assemblies = defaultAssemblyDict;
       Plugins = defaultPluginDict;
       namespaces = new HashSet<string>(DiscoverNamespaces());
+      Parameters.Changed += (s, a) => OnSignatureChanged(s, a);
+    }
+
+    protected void OnSignatureChanged(object sender, EventArgs args) {
+      if (SignatureChanged != null)
+        SignatureChanged(sender, args);
     }
 
     private static void StaticInitialize() {
@@ -198,13 +204,13 @@ namespace HeuristicLab.Operators.Programmable {
       return plugins;
     }
 
-    protected static List<Assembly> defaultAssemblies = new List<Assembly>() {      
+    protected static List<Assembly> defaultAssemblies = new List<Assembly>() {
       typeof(System.Linq.Enumerable).Assembly,  // add reference to version 3.5 of System.dll
       typeof(System.Collections.Generic.List<>).Assembly,
-      typeof(System.Text.StringBuilder).Assembly,      
+      typeof(System.Text.StringBuilder).Assembly,
       typeof(System.Data.Linq.DataContext).Assembly,
-      typeof(HeuristicLab.Core.Item).Assembly,      
-      typeof(HeuristicLab.Data.IntData).Assembly,            
+      typeof(HeuristicLab.Core.Item).Assembly,
+      typeof(HeuristicLab.Data.IntData).Assembly,
     };
 
     protected static Dictionary<Assembly, bool> DiscoverAssemblies() {
@@ -214,8 +220,7 @@ namespace HeuristicLab.Operators.Programmable {
           if (File.Exists(a.Location)) {
             assemblies.Add(a, false);
           }
-        }
-        catch (NotSupportedException) {
+        } catch (NotSupportedException) {
           // NotSupportedException is thrown while accessing 
           // the Location property of the anonymously hosted
           // dynamic methods assembly, which is related to
@@ -341,22 +346,25 @@ namespace HeuristicLab.Operators.Programmable {
     public string Signature {
       get {
         var sb = new StringBuilder()
-        .Append("public static IOperation Execute(IOperator op, IScope scope");        
+        .Append("public static IOperation Execute(IOperator op, IExecutionContext context");
         foreach (IParameter param in Parameters) {
           sb.Append(String.Format(", {0} {1}", param.DataType.Name, param.Name));
-        }        
+        }
         return sb.Append(")").ToString();
       }
     }
+
+    public event EventHandler SignatureChanged;
 
     private static Regex lineSplitter = new Regex(@"\r\n|\r|\n");
 
     private CodeMemberMethod CreateMethod() {
       CodeMemberMethod method = new CodeMemberMethod();
       method.Name = "Execute";
-      method.ReturnType = new CodeTypeReference(typeof(HeuristicLab.Core.IOperation));
+      method.ReturnType = new CodeTypeReference(typeof(IOperation));
       method.Attributes = MemberAttributes.Public | MemberAttributes.Static;
-      method.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IOperator), "op"));      
+      method.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IOperator), "op"));
+      method.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IExecutionContext), "context"));
       foreach (var param in Parameters)
         method.Parameters.Add(new CodeParameterDeclarationExpression(param.DataType, param.Name));
       string[] codeLines = lineSplitter.Split(code);
@@ -380,11 +388,11 @@ namespace HeuristicLab.Operators.Programmable {
         }
       }
 
-      var parameters = new List<object>() { this };      
+      var parameters = new List<object>() { this, ExecutionContext };
       parameters.AddRange(Parameters.Select(p => (object)p.ActualValue));
       return (IOperation)executeMethod.Invoke(null, parameters.ToArray());
     }
-    
+
     public event EventHandler CodeChanged;
     protected virtual void OnCodeChanged() {
       if (CodeChanged != null)
@@ -393,7 +401,7 @@ namespace HeuristicLab.Operators.Programmable {
 
     #endregion
 
-    #region Cloning        
+    #region Cloning
 
     public override IDeepCloneable Clone(Cloner cloner) {
       ProgrammableOperator clone = (ProgrammableOperator)base.Clone(cloner);
@@ -406,8 +414,8 @@ namespace HeuristicLab.Operators.Programmable {
       clone.CompileErrors = CompileErrors;
       return clone;
     }
-    
+
     #endregion
-    
+
   }
 }
