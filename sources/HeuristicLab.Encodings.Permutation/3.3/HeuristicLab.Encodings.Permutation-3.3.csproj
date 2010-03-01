@@ -1,17 +1,22 @@
-﻿<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{F42F3576-7233-4B28-90F7-36AE15F30F92}</ProjectGuid>
+    <ProjectGuid>{00282156-589D-424F-9CE4-A8038636C926}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.Algorithms.SGA.Tests</RootNamespace>
-    <AssemblyName>HeuristicLab.Algorithms.SGA-3.3.Tests</AssemblyName>
+    <RootNamespace>HeuristicLab.Encodings.Permutation</RootNamespace>
+    <AssemblyName>HeuristicLab.Encodings.Permutation-3.3</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -29,6 +34,8 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DocumentationFile>bin\Release\HeuristicLab.Encodings.Permutation-3.3.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -41,6 +48,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\x86\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>bin\x86\Release\HeuristicLab.Encodings.Permutation-3.3.xml</DocumentationFile>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -57,103 +65,93 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
     <OutputPath>bin\x64\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>bin\x64\Release\HeuristicLab.Permutation-3.2.xml</DocumentationFile>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CyclicCrossover2.cs" />
+    <Compile Include="HeuristicLabEncodingsPermutationPlugin.cs" />
+    <Compile Include="IPermutationCreator.cs" />
+    <Compile Include="IPermutationOperator.cs" />
+    <Compile Include="CosaCrossover.cs" />
+    <Compile Include="CyclicCrossover.cs" />
+    <Compile Include="EdgeRecombinationCrossover.cs" />
+    <Compile Include="InsertionManipulator.cs" />
+    <Compile Include="InversionManipulator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IPermutationCrossover.cs" />
+    <Compile Include="IPermutationManipulator.cs" />
+    <Compile Include="MaximalPreservativeCrossover.cs" />
+    <Compile Include="OrderBasedCrossover.cs" />
+    <Compile Include="OrderCrossover2.cs" />
+    <Compile Include="PartiallyMatchedCrossover.cs" />
+    <Compile Include="PermutationManipulator.cs" />
+    <Compile Include="OrderCrossover.cs" />
+    <Compile Include="PermutationCrossover.cs" />
+    <Compile Include="Permutation.cs" />
+    <Compile Include="PositionBasedCrossover.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UnitTest.cs" />
+    <Compile Include="RandomPermutationCreator.cs" />
+    <Compile Include="ScrambleManipulator.cs" />
+    <Compile Include="Swap2Manipulator.cs" />
+    <Compile Include="Swap3Manipulator.cs" />
+    <Compile Include="TranslocationInversionManipulator.cs" />
+    <Compile Include="TranslocationManipulator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="AuthoringTests.txt" />
+    <None Include="HeuristicLab.snk" />
+    <None Include="HeuristicLabEncodingsPermutationPlugin.cs.frame" />
+    <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
-      <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
-      <Name>HeuristicLab.Analysis-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
       <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\HeuristicLab.Common.Resources\3.2\HeuristicLab.Common.Resources-3.2.csproj">
-      <Project>{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}</Project>
-      <Name>HeuristicLab.Common.Resources-3.2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\HeuristicLab.Common\3.2\HeuristicLab.Common-3.2.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Common\3.2\HeuristicLab.Common-3.2.csproj">
       <Project>{1FC004FC-59AF-4249-B1B6-FF25873A20E4}</Project>
       <Name>HeuristicLab.Common-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
       <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
       <Name>HeuristicLab.Core-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
       <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
       <Name>HeuristicLab.Data-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\HeuristicLab.Encodings.Permutation\3.3\HeuristicLab.Encodings.Permutation-3.3.csproj">
-      <Project>{00282156-589D-424F-9CE4-A8038636C926}</Project>
-      <Name>HeuristicLab.Encodings.Permutation-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\HeuristicLab.Evolutionary\3.3\HeuristicLab.Evolutionary-3.3.csproj">
-      <Project>{25087811-F74C-4128-BC86-8324271DA13E}</Project>
-      <Name>HeuristicLab.Evolutionary-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
       <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
       <Name>HeuristicLab.Operators-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
+      <Project>{14AB8D24-25BC-400C-A846-4627AA945192}</Project>
+      <Name>HeuristicLab.Optimization-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj">
       <Project>{56F9106A-079F-4C61-92F6-86A84C2D84B7}</Project>
       <Name>HeuristicLab.Parameters-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
       <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
       <Name>HeuristicLab.Persistence-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\HeuristicLab.Problems.TSP\3.3\HeuristicLab.Problems.TSP-3.3.csproj">
-      <Project>{600287A3-8714-453E-B875-A05F3EB72315}</Project>
-      <Name>HeuristicLab.Problems.TSP-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
-      <Project>{F4539FB6-4708-40C9-BE64-0A1390AEA197}</Project>
-      <Name>HeuristicLab.Random-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\HeuristicLab.Selection\3.3\HeuristicLab.Selection-3.3.csproj">
-      <Project>{2C36CD4F-E5F5-43A4-801A-201EA895FE17}</Project>
-      <Name>HeuristicLab.Selection-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\HeuristicLab.SequentialEngine\3.3\HeuristicLab.SequentialEngine-3.3.csproj">
-      <Project>{DC3D7072-7999-4719-B65D-3997744D5DC1}</Project>
-      <Name>HeuristicLab.SequentialEngine-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\HeuristicLab.Tracing\3.2\HeuristicLab.Tracing-3.2.csproj">
-      <Project>{EE2034D9-6E27-48A1-B855-42D45F69A4FC}</Project>
-      <Name>HeuristicLab.Tracing-3.2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Algorithms.SGA-3.3.csproj">
-      <Project>{4C3305C4-E440-4EAD-B218-68D77AE51543}</Project>
-      <Name>HeuristicLab.Algorithms.SGA-3.3</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="SGAEngine.hl">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -163,4 +161,13 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PreBuildEvent>set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+set ProjectDir=$(ProjectDir)
+set SolutionDir=$(SolutionDir)
+set Outdir=$(Outdir)
+
+call PreBuildEvent.cmd
+SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabEncodingsPermutationPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabEncodingsPermutationPlugin.cs"</PreBuildEvent>
+  </PropertyGroup>
 </Project>

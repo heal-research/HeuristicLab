@@ -21,6 +21,7 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.Permutation;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -34,19 +35,19 @@ namespace HeuristicLab.Problems.TSP {
     public LookupParameter<DoubleMatrixData> CoordinatesParameter {
       get { return (LookupParameter<DoubleMatrixData>)Parameters["Coordinates"]; }
     }
-    public LookupParameter<Permutation.Permutation> PermutationParameter {
-      get { return (LookupParameter<Permutation.Permutation>)Parameters["Permutation"]; }
+    public LookupParameter<Permutation> PermutationParameter {
+      get { return (LookupParameter<Permutation>)Parameters["Permutation"]; }
     }
 
     protected TSPPathEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<DoubleMatrixData>("Coordinates", "The x- and y-Coordinates of the cities."));
-      Parameters.Add(new LookupParameter<Permutation.Permutation>("Permutation", "The TSP solution given in path representation which should be evaluated."));
+      Parameters.Add(new LookupParameter<Permutation>("Permutation", "The TSP solution given in path representation which should be evaluated."));
     }
 
     public override IOperation Apply() {
       DoubleMatrixData coordinates = CoordinatesParameter.ActualValue;
-      Permutation.Permutation permutation = PermutationParameter.ActualValue;
+      Permutation permutation = PermutationParameter.ActualValue;
 
       double length = 0;
       for (int i = 0; i < permutation.Length - 1; i++)

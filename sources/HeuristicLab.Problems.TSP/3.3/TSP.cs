@@ -24,9 +24,9 @@ using System.Drawing;
 using System.Linq;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.Permutation;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Permutation;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 

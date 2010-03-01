@@ -19,23 +19,15 @@
  */
 #endregion
 
-using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Core;
+using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Problems.TSP {
+namespace HeuristicLab.Encodings.Permutation {
   /// <summary>
-  /// Plugin class for HeuristicLab.Problems.TSP plugin
+  /// An interface which represents an operator for crossing permutations.
   /// </summary>
-  [Plugin("HeuristicLab.Problems.TSP", "3.3.0.$WCREV$")]
-  [PluginFile("HeuristicLab.Problems.TSP-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Collections", "3.3")]
-  [PluginDependency("HeuristicLab.Common.Resources", "3.2")]
-  [PluginDependency("HeuristicLab.Core", "3.3")]
-  [PluginDependency("HeuristicLab.Data", "3.3")]
-  [PluginDependency("HeuristicLab.Encodings.Permutation", "3.3")]
-  [PluginDependency("HeuristicLab.Operators", "3.3")]
-  [PluginDependency("HeuristicLab.Optimization", "3.3")]
-  [PluginDependency("HeuristicLab.Parameters", "3.3")]
-  [PluginDependency("HeuristicLab.Persistence", "3.3")]
-  public class HeuristicLabProblemsTSPPlugin : PluginBase {
+  public interface IPermutationCrossover : IPermutationOperator, ICrossover {
+    ILookupParameter<ItemArray<Permutation>> ParentsParameter { get; }
+    ILookupParameter<Permutation> ChildParameter { get; }
   }
 }
