@@ -186,6 +186,14 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       this.shapeInfos.Remove(shapeInfo);
     }
 
+    private void OperatorNameChanged(object sender, EventArgs e) {
+      IOperator op = (IOperator)sender;
+      IShapeInfo shapeInfo = this.shapeInfoMapping.GetByFirst(op);
+      OperatorShapeInfo operatorShapeInfo = shapeInfo as OperatorShapeInfo;
+      if (operatorShapeInfo != null)
+        operatorShapeInfo.Title = op.Name;
+    }
+
     private void Operators_ItemsAdded(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IOperator> e) {
       foreach (IOperator op in e.Items)
         this.AddOperator(op);
@@ -206,12 +214,15 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       op.Parameters.ItemsRemoved += new CollectionItemsChangedEventHandler<IParameter>(Parameters_ItemsRemoved);
       op.Parameters.ItemsReplaced += new CollectionItemsChangedEventHandler<IParameter>(Parameters_ItemsReplaced);
       op.Parameters.CollectionReset += new CollectionItemsChangedEventHandler<IParameter>(Parameters_CollectionReset);
+      op.NameChanged += new EventHandler(OperatorNameChanged);
     }
+
     private void DeregisterOperatorEvents(IOperator op) {
       op.Parameters.ItemsAdded -= new CollectionItemsChangedEventHandler<IParameter>(Parameters_ItemsAdded);
       op.Parameters.ItemsRemoved -= new CollectionItemsChangedEventHandler<IParameter>(Parameters_ItemsRemoved);
       op.Parameters.ItemsReplaced -= new CollectionItemsChangedEventHandler<IParameter>(Parameters_ItemsReplaced);
       op.Parameters.CollectionReset -= new CollectionItemsChangedEventHandler<IParameter>(Parameters_CollectionReset);
+      op.NameChanged -= new EventHandler(OperatorNameChanged);
     }
     #endregion
 
