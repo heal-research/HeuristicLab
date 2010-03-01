@@ -74,21 +74,15 @@ namespace HeuristicLab.Problems.TSP {
 
     public TSP()
       : base() {
-      ValueParameter<BoolData> maximizationParameter = new ValueParameter<BoolData>("Maximization", "Set to false as the Traveling Salesman Problem is a minimization problem.", new BoolData(false));
-      maximizationParameter.ValueChanged += new EventHandler(MaximizationParameter_ValueChanged);
-      Parameters.Add(maximizationParameter);
+      Parameters.Add(new OptionalValueParameter<BoolData>("Maximization", "Set to false as the Traveling Salesman Problem is a minimization problem.", new BoolData(false)));
+      Parameters.Add(new OptionalValueParameter<DoubleMatrixData>("Coordinates", "The x- and y-Coordinates of the cities.", new DoubleMatrixData(0, 0)));
+      Parameters.Add(new OptionalValueParameter<IPermutationCreator>("SolutionCreator", "The operator which should be used to create new TSP solutions."));
+      Parameters.Add(new OptionalValueParameter<ITSPEvaluator>("Evaluator", "The operator which should be used to evaluate TSP solutions."));
+      Parameters.Add(new OptionalValueParameter<DoubleData>("BestKnownQuality", "The quality of the best known solution of this TSP instance."));
 
-      Parameters.Add(new ValueParameter<DoubleMatrixData>("Coordinates", "The x- and y-Coordinates of the cities.", new DoubleMatrixData(0, 0)));
-
-      ValueParameter<IPermutationCreator> solutionCreatorParameter = new ValueParameter<IPermutationCreator>("SolutionCreator", "The operator which should be used to create new TSP solutions.");
-      solutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
-      Parameters.Add(solutionCreatorParameter);
-
-      ValueParameter<ITSPEvaluator> evaluatorParameter = new ValueParameter<ITSPEvaluator>("Evaluator", "The operator which should be used to evaluate TSP solutions.");
-      evaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
-      Parameters.Add(evaluatorParameter);
-
-      Parameters.Add(new ValueParameter<DoubleData>("BestKnownQuality", "The quality of the best known solution of this TSP instance."));
+      MaximizationParameter.ValueChanged += new EventHandler(MaximizationParameter_ValueChanged);
+      SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
+      EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
 
       RandomPermutationCreator creator = new RandomPermutationCreator();
       creator.PermutationParameter.ActualName = "TSPTour";
@@ -100,19 +94,14 @@ namespace HeuristicLab.Problems.TSP {
       evaluator.QualityParameter.ActualName = "TSPTourLength";
       EvaluatorParameter.Value = evaluator;
 
-      var ops = ApplicationManager.Manager.GetInstances<IPermutationOperator>().ToList();
-      ops.ForEach(x => {
-        IPermutationCrossover y = x as IPermutationCrossover;
-        if (y != null) {
-          y.ParentsParameter.ActualName = creator.PermutationParameter.ActualName;
-          y.ChildParameter.ActualName = creator.PermutationParameter.ActualName;
-        }
-      });
-      ops.ForEach(x => {
-        IPermutationManipulator y = x as IPermutationManipulator;
-        if (y != null)
-          y.PermutationParameter.ActualName = creator.PermutationParameter.ActualName;
-      });
+      var ops = ApplicationManager.Manager.GetInstances<IPermutationOperator>();
+      foreach (IPermutationCrossover op in ops.OfType<IPermutationCrossover>()) {
+        op.ParentsParameter.ActualName = creator.PermutationParameter.ActualName;
+        op.ChildParameter.ActualName = creator.PermutationParameter.ActualName;
+      }
+      foreach (IPermutationManipulator op in ops.OfType<IPermutationManipulator>()) {
+        op.PermutationParameter.ActualName = creator.PermutationParameter.ActualName;
+      }
       operators = new OperatorSet(ops.Cast<IOperator>());
     }
 

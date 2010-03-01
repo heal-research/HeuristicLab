@@ -42,8 +42,8 @@ namespace HeuristicLab.Algorithms.SGA {
     [Storable]
     private SGAOperator sgaOperator;
 
-    private ValueParameter<IntData> PopulationSizeParameter {
-      get { return (ValueParameter<IntData>)Parameters["PopulationSize"]; }
+    private OptionalValueParameter<IntData> PopulationSizeParameter {
+      get { return (OptionalValueParameter<IntData>)Parameters["PopulationSize"]; }
     }
     private ConstrainedValueParameter<ISelector> SelectorParameter {
       get { return (ConstrainedValueParameter<ISelector>)Parameters["Selector"]; }
@@ -54,8 +54,8 @@ namespace HeuristicLab.Algorithms.SGA {
     private ConstrainedValueParameter<IManipulator> MutatorParameter {
       get { return (ConstrainedValueParameter<IManipulator>)Parameters["Mutator"]; }
     }
-    private ValueParameter<IntData> ElitesParameter {
-      get { return (ValueParameter<IntData>)Parameters["Elites"]; }
+    private OptionalValueParameter<IntData> ElitesParameter {
+      get { return (OptionalValueParameter<IntData>)Parameters["Elites"]; }
     }
 
     public override Type ProblemType {
@@ -68,15 +68,15 @@ namespace HeuristicLab.Algorithms.SGA {
 
     public SGA()
       : base() {
-      Parameters.Add(new ValueParameter<IntData>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntData(0)));
-      Parameters.Add(new ValueParameter<BoolData>("SetSeedRandomly", "True if the random seed should be set to a random value, otherwise false.", new BoolData(true)));
-      Parameters.Add(new ValueParameter<IntData>("PopulationSize", "The size of the population of solutions.", new IntData(100)));
+      Parameters.Add(new OptionalValueParameter<IntData>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntData(0)));
+      Parameters.Add(new OptionalValueParameter<BoolData>("SetSeedRandomly", "True if the random seed should be set to a random value, otherwise false.", new BoolData(true)));
+      Parameters.Add(new OptionalValueParameter<IntData>("PopulationSize", "The size of the population of solutions.", new IntData(100)));
       Parameters.Add(new ConstrainedValueParameter<ISelector>("Selector", "The operator used to select solutions for reproduction."));
       Parameters.Add(new ConstrainedValueParameter<ICrossover>("Crossover", "The operator used to cross solutions."));
-      Parameters.Add(new ValueParameter<DoubleData>("MutationProbability", "The probability that the mutation operator is applied on a solution.", new DoubleData(0.05)));
+      Parameters.Add(new OptionalValueParameter<DoubleData>("MutationProbability", "The probability that the mutation operator is applied on a solution.", new DoubleData(0.05)));
       Parameters.Add(new ConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
-      Parameters.Add(new ValueParameter<IntData>("Elites", "The numer of elite solutions which are kept in each generation.", new IntData(1)));
-      Parameters.Add(new ValueParameter<IntData>("MaximumGenerations", "The maximum number of generations which should be processed.", new IntData(1000)));
+      Parameters.Add(new OptionalValueParameter<IntData>("Elites", "The numer of elite solutions which are kept in each generation.", new IntData(1)));
+      Parameters.Add(new OptionalValueParameter<IntData>("MaximumGenerations", "The maximum number of generations which should be processed.", new IntData(1000)));
 
       PopulationSizeParameter.ValueChanged += new EventHandler(PopulationSizeParameter_ValueChanged);
       ElitesParameter.ValueChanged += new EventHandler(ElitesParameter_ValueChanged);
@@ -108,11 +108,12 @@ namespace HeuristicLab.Algorithms.SGA {
       OperatorGraph.InitialOperator = randomCreator;
 
       var selectors = ApplicationManager.Manager.GetInstances<ISelector>().Where(x => !(x is IMultiObjectiveSelector));
-      selectors.Select(x => x.CopySelected = new BoolData(true));
-      selectors.Select(x => x.NumberOfSelectedSubScopesParameter.Value = new IntData(2 * (PopulationSizeParameter.Value.Value - ElitesParameter.Value.Value)));
-      selectors.OfType<IStochasticOperator>().Select(x => x.RandomParameter.ActualName = "Random");
-      foreach (ISelector selector in selectors)
+      foreach (ISelector selector in selectors) {
+        selector.CopySelected = new BoolData(true);
+        selector.NumberOfSelectedSubScopesParameter.Value = new IntData(2 * (PopulationSizeParameter.Value.Value - ElitesParameter.Value.Value));
+        if (selector is IStochasticOperator) ((IStochasticOperator)selector).RandomParameter.ActualName = "Random";
         SelectorParameter.ValidValues.Add(selector);
+      }
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -123,10 +124,12 @@ namespace HeuristicLab.Algorithms.SGA {
     }
 
     private void ElitesParameter_ValueChanged(object sender, EventArgs e) {
-      SelectorParameter.ValidValues.Select(x => x.NumberOfSelectedSubScopesParameter.Value = new IntData(2 * (PopulationSizeParameter.Value.Value - ElitesParameter.Value.Value)));
+      foreach (ISelector selector in SelectorParameter.ValidValues)
+        selector.NumberOfSelectedSubScopesParameter.Value = new IntData(2 * (PopulationSizeParameter.Value.Value - ElitesParameter.Value.Value));
     }
     private void PopulationSizeParameter_ValueChanged(object sender, EventArgs e) {
-      SelectorParameter.ValidValues.Select(x => x.NumberOfSelectedSubScopesParameter.Value = new IntData(2 * (PopulationSizeParameter.Value.Value - ElitesParameter.Value.Value)));
+      foreach (ISelector selector in SelectorParameter.ValidValues)
+        selector.NumberOfSelectedSubScopesParameter.Value = new IntData(2 * (PopulationSizeParameter.Value.Value - ElitesParameter.Value.Value));
     }
 
     protected override void DeregisterProblemEvents() {
@@ -141,7 +144,8 @@ namespace HeuristicLab.Algorithms.SGA {
     protected override void OnProblemChanged() {
       if (Problem.SolutionCreator is IStochasticOperator) ((IStochasticOperator)Problem.SolutionCreator).RandomParameter.ActualName = "Random";
       if (Problem.Evaluator is IStochasticOperator) ((IStochasticOperator)Problem.Evaluator).RandomParameter.ActualName = "Random";
-      Problem.Operators.OfType<IStochasticOperator>().Select(x => x.RandomParameter.ActualName = "Random");
+      foreach (IStochasticOperator op in Problem.Operators.OfType<IStochasticOperator>())
+        op.RandomParameter.ActualName = "Random";
 
       populationCreator.SolutionCreatorParameter.Value = Problem.SolutionCreator;
       populationCreator.EvaluatorParameter.Value = Problem.Evaluator;
@@ -149,8 +153,10 @@ namespace HeuristicLab.Algorithms.SGA {
       sgaOperator.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
       sgaOperator.EvaluatorParameter.Value = Problem.Evaluator;
 
-      SelectorParameter.ValidValues.OfType<ISingleObjectiveSelector>().Select(x => x.MaximizationParameter.Value = Problem.Maximization);
-      SelectorParameter.ValidValues.OfType<ISingleObjectiveSelector>().Select(x => x.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName);
+      foreach (ISingleObjectiveSelector op in SelectorParameter.ValidValues.OfType<ISingleObjectiveSelector>()) {
+        op.MaximizationParameter.Value = Problem.Maximization;
+        op.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
+      }
 
       CrossoverParameter.ValidValues.Clear();
       foreach (ICrossover crossover in Problem.Operators.OfType<ICrossover>())
@@ -169,7 +175,11 @@ namespace HeuristicLab.Algorithms.SGA {
     }
     protected override void Problem_EvaluatorChanged(object sender, EventArgs e) {
       if (Problem.Evaluator is IStochasticOperator) ((IStochasticOperator)Problem.Evaluator).RandomParameter.ActualName = "Random";
-      SelectorParameter.ValidValues.OfType<ISingleObjectiveSelector>().Select(x => x.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName);
+
+      foreach (ISingleObjectiveSelector op in SelectorParameter.ValidValues.OfType<ISingleObjectiveSelector>()) {
+        op.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
+      }
+
       populationCreator.EvaluatorParameter.Value = Problem.Evaluator;
       sgaOperator.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
       sgaOperator.EvaluatorParameter.Value = Problem.Evaluator;
@@ -177,7 +187,9 @@ namespace HeuristicLab.Algorithms.SGA {
     }
     private void Problem_MaximizationChanged(object sender, EventArgs e) {
       sgaOperator.MaximizationParameter.Value = Problem.Maximization;
-      SelectorParameter.ValidValues.OfType<ISingleObjectiveSelector>().Select(x => x.MaximizationParameter.Value = Problem.Maximization);
+      foreach (ISingleObjectiveSelector op in SelectorParameter.ValidValues.OfType<ISingleObjectiveSelector>()) {
+        op.MaximizationParameter.Value = Problem.Maximization;
+      }
     }
   }
 }

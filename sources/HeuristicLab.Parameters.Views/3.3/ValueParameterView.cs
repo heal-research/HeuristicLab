@@ -29,7 +29,7 @@ namespace HeuristicLab.Parameters.Views {
   /// <summary>
   /// The visual representation of a <see cref="Parameter"/>.
   /// </summary>
-  [Content(typeof(ValueParameter<>), true)]
+  [Content(typeof(OptionalValueParameter<>), true)]
   [Content(typeof(IValueParameter<>), false)]
   public partial class ValueParameterView<T> : ParameterView where T : class, IItem {
     protected TypeSelectorDialog typeSelectorDialog;

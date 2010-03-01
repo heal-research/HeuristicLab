@@ -26,10 +26,10 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Parameters {
   /// <summary>
-  /// A parameter whose value is defined it the parameter itself.
+  /// A parameter whose value is defined it the parameter itself. The value of the parameter can be null, if the parameter is not set.
   /// </summary>
-  [Item("ValueParameter<T>", "A parameter whose value is defined it the parameter itself.")]
-  public class ValueParameter<T> : Parameter, IValueParameter<T> where T : class, IItem {
+  [Item("OptionalValueParameter<T>", "A parameter whose value is defined it the parameter itself. The value of the parameter can be null, if the parameter is not set.")]
+  public class OptionalValueParameter<T> : Parameter, IValueParameter<T> where T : class, IItem {
     private T value;
     [Storable]
     public T Value {
@@ -56,26 +56,26 @@ namespace HeuristicLab.Parameters {
       }
     }
 
-    public ValueParameter()
+    public OptionalValueParameter()
       : base("Anonymous", typeof(T)) {
     }
-    public ValueParameter(string name)
+    public OptionalValueParameter(string name)
       : base(name, typeof(T)) {
     }
-    public ValueParameter(string name, T value)
+    public OptionalValueParameter(string name, T value)
       : base(name, typeof(T)) {
       Value = value;
     }
-    public ValueParameter(string name, string description)
+    public OptionalValueParameter(string name, string description)
       : base(name, description, typeof(T)) {
     }
-    public ValueParameter(string name, string description, T value)
+    public OptionalValueParameter(string name, string description, T value)
       : base(name, description, typeof(T)) {
       Value = value;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      ValueParameter<T> clone = (ValueParameter<T>)base.Clone(cloner);
+      OptionalValueParameter<T> clone = (OptionalValueParameter<T>)base.Clone(cloner);
       clone.Value = (T)cloner.Clone(value);
       return clone;
     }

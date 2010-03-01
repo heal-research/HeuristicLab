@@ -39,8 +39,8 @@ namespace HeuristicLab.Operators {
     public ValueLookupParameter<IItem> RightSideParameter {
       get { return (ValueLookupParameter<IItem>)Parameters["RightSide"]; }
     }
-    private ValueParameter<ComparisonData> ComparisonParameter {
-      get { return (ValueParameter<ComparisonData>)Parameters["Comparison"]; }
+    private OptionalValueParameter<ComparisonData> ComparisonParameter {
+      get { return (OptionalValueParameter<ComparisonData>)Parameters["Comparison"]; }
     }
     public LookupParameter<BoolData> ResultParameter {
       get { return (LookupParameter<BoolData>)Parameters["Result"]; }
@@ -54,7 +54,7 @@ namespace HeuristicLab.Operators {
       : base() {
       Parameters.Add(new LookupParameter<IItem>("LeftSide", "The left side of the comparison."));
       Parameters.Add(new ValueLookupParameter<IItem>("RightSide", "The right side of the comparison."));
-      Parameters.Add(new ValueParameter<ComparisonData>("Comparison", "The type of comparison.", new ComparisonData()));
+      Parameters.Add(new OptionalValueParameter<ComparisonData>("Comparison", "The type of comparison.", new ComparisonData()));
       Parameters.Add(new LookupParameter<BoolData>("Result", "The result of the comparison."));
     }
 

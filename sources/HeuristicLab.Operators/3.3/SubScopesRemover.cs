@@ -32,8 +32,8 @@ namespace HeuristicLab.Operators {
   [EmptyStorableClass]
   [Creatable("Test")]
   public sealed class SubScopesRemover : SingleSuccessorOperator {
-    private ValueParameter<BoolData> RemoveAllSubScopesParameter {
-      get { return (ValueParameter<BoolData>)Parameters["RemoveAllSubScopes"]; }
+    private OptionalValueParameter<BoolData> RemoveAllSubScopesParameter {
+      get { return (OptionalValueParameter<BoolData>)Parameters["RemoveAllSubScopes"]; }
     }
     public ValueLookupParameter<IntData> SubScopeIndexParameter {
       get { return (ValueLookupParameter<IntData>)Parameters["SubScopeIndex"]; }
@@ -52,7 +52,7 @@ namespace HeuristicLab.Operators {
 
     public SubScopesRemover()
       : base() {
-      Parameters.Add(new ValueParameter<BoolData>("RemoveAllSubScopes", "True if all sub-scopes of the current scope should be removed, otherwise false.", new BoolData(true)));
+      Parameters.Add(new OptionalValueParameter<BoolData>("RemoveAllSubScopes", "True if all sub-scopes of the current scope should be removed, otherwise false.", new BoolData(true)));
       Parameters.Add(new ValueLookupParameter<IntData>("SubScopeIndex", "The index of the sub-scope which should be removed. This parameter is ignored, if RemoveAllSubScopes is true."));
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope from which one or all sub-scopes should be removed."));
     }

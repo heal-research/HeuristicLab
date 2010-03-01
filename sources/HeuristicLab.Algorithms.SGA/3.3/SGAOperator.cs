@@ -24,7 +24,6 @@ using HeuristicLab.Data;
 using HeuristicLab.Evolutionary;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Selection;
 
 namespace HeuristicLab.Algorithms.SGA {

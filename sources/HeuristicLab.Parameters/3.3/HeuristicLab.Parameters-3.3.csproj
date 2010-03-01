@@ -68,9 +68,9 @@
     <None Include="HeuristicLabParametersPlugin.cs.frame" />
     <Compile Include="ConstrainedValueParameter.cs" />
     <Compile Include="LookupParameter.cs" />
+    <Compile Include="OptionalValueParameter.cs" />
     <Compile Include="SubScopesLookupParameter.cs" />
     <Compile Include="ValueLookupParameter.cs" />
-    <Compile Include="ValueParameter.cs" />
     <Compile Include="ScopeParameter.cs" />
     <Compile Include="HeuristicLabParametersPlugin.cs" />
     <Compile Include="OperatorParameter.cs" />
