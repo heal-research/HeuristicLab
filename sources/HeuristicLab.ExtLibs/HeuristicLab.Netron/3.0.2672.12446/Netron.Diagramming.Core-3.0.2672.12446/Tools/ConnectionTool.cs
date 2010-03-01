@@ -83,8 +83,6 @@ namespace Netron.Diagramming.Core {
     /// <param name="e">The <see cref="T:System.Windows.Forms.MouseEventArgs"/> instance containing the event data.</param>
     public void MouseUp(MouseEventArgs e) {
       if (IsActive) {
-        DeactivateTool();
-
         // First, make sure the initial point is far enough away from 
         // the final point to make a connection.
         int maxX = Math.Abs(Math.Max(initialPoint.X, e.Location.X));
@@ -136,8 +134,7 @@ namespace Netron.Diagramming.Core {
           foundConnector.Hovered = false;
         //drop the painted ghost
         Controller.View.ResetGhost();
-        //release other tools
-        this.UnsuspendTools();
+        this.doDraw = false;
       }
     }
     #endregion

@@ -123,7 +123,6 @@ namespace Netron.Diagramming.Core
         {
             if (IsActive)
             {
-                DeactivateTool();
                 IView view = Controller.View;
                 if (view.Ghost != null)
                 {

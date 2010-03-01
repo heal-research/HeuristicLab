@@ -45,6 +45,10 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
       this.graphVisualizationInfoView.Controller.OnShowContextMenu += new EventHandler<EntityMenuEventArgs>(Controller_OnShowContextMenu);
       this.graphVisualizationInfoView.Controller.Model.Selection.OnNewSelection += new EventHandler(Controller_SelectionChanged);
+      foreach (ITool tool in this.graphVisualizationInfoView.Controller.Tools) {
+        tool.OnToolActivate += new EventHandler<ToolEventArgs>(tool_OnToolActivate);
+        tool.OnToolDeactivate += new EventHandler<ToolEventArgs>(tool_OnToolDeactivate);
+      }
     }
 
     public OperatorGraphView(OperatorGraph content)
@@ -182,16 +186,44 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
     #endregion
 
+    private void tool_OnToolActivate(object sender, ToolEventArgs e) {
+      Button button = GetButtonForTool(e.Properties.Name);
+      if (button != null)
+        button.Enabled = false;
+    }
+
+    private void tool_OnToolDeactivate(object sender, ToolEventArgs e) {
+      Button button = GetButtonForTool(e.Properties.Name);
+      if (button != null)
+        button.Enabled = true;
+    }
+
+    private Button GetButtonForTool(string toolName) {
+      Button button = null;
+      switch (toolName) {
+        case ControllerBase.SelectionToolName:
+          button = this.selectButton;
+          break;
+        case ControllerBase.PanToolName:
+          button = this.panButton;
+          break;
+        case ControllerBase.ConnectionToolName:
+          button = this.connectButton;
+          break;
+        case ControllerBase.ZoomAreaToolName:
+          button = this.zoomAreaButton;
+          break;
+      }
+      return button;
+    }
+
     private void selectButton_Click(object sender, EventArgs e) {
       ITool tool = this.graphVisualizationInfoView.Controller.Tools.Where(t => t.Name == ControllerBase.SelectionToolName).First();
       tool.IsSuspended = false;
-      tool = this.graphVisualizationInfoView.Controller.Tools.Where(t => t.Name == ControllerBase.PanToolName).First();
-      this.graphVisualizationInfoView.Controller.DeactivateTool(tool);
+      this.graphVisualizationInfoView.Controller.DeactivateAllTools();
     }
 
     private void panButton_Click(object sender, EventArgs e) {
-      ITool tool = this.graphVisualizationInfoView.Controller.Tools.Where(t => t.Name == ControllerBase.SelectionToolName).First();
-      tool.IsSuspended = true;
       this.graphVisualizationInfoView.Controller.ActivateTool(ControllerBase.PanToolName);
     }
 
