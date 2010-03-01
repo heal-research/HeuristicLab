@@ -25,7 +25,7 @@ using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimization.Views;
 
-namespace HeuristicLab.Routing.TSP.Views {
+namespace HeuristicLab.Problems.TSP.Views {
   /// <summary>
   /// The base class for visual representations of items.
   /// </summary>

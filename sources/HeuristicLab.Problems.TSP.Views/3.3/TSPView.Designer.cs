@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.Routing.TSP.Views {
+namespace HeuristicLab.Problems.TSP.Views {
   partial class TSPView {
     /// <summary> 
     /// Required designer variable.

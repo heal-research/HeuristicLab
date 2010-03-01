@@ -8,8 +8,8 @@
     <ProjectGuid>{DF2E61C4-A76D-4315-9D0B-53A077B1AC2C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.Routing.TSP.Views</RootNamespace>
-    <AssemblyName>HeuristicLab.Routing.TSP.Views-3.3</AssemblyName>
+    <RootNamespace>HeuristicLab.Problems.TSP.Views</RootNamespace>
+    <AssemblyName>HeuristicLab.Problems.TSP.Views-3.3</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
@@ -31,7 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\HeuristicLab.Routing.TSP.Views-3.3.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\HeuristicLab.Problems.TSP.Views-3.3.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -50,7 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HeuristicLabRoutingTSPViewsPlugin.cs" />
+    <Compile Include="HeuristicLabProblemsTSPViewsPlugin.cs" />
     <Compile Include="TSPView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -61,7 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
-    <None Include="HeuristicLabRoutingTSPViewsPlugin.cs.frame" />
+    <None Include="HeuristicLabProblemsTSPViewsPlugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
@@ -97,7 +97,7 @@
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Routing.TSP\3.3\HeuristicLab.Routing.TSP-3.3.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Problems.TSP\3.3\HeuristicLab.Problems.TSP-3.3.csproj">
       <Project>{600287A3-8714-453E-B875-A05F3EB72315}</Project>
       <Name>HeuristicLab.Routing.TSP-3.3</Name>
     </ProjectReference>
@@ -117,6 +117,6 @@ set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
 call PreBuildEvent.cmd
-SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabRoutingTSPViewsPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabRoutingTSPViewsPlugin.cs"</PreBuildEvent>
+SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabProblemsTSPViewsPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabProblemsTSPViewsPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

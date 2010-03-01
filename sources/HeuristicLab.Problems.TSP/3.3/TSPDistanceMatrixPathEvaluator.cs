@@ -24,7 +24,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Routing.TSP {
+namespace HeuristicLab.Problems.TSP {
   /// <summary>
   /// An operator which evaluates TSP solutions given in path representation using a distance matrix.
   /// </summary>

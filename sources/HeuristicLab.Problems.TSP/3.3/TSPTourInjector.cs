@@ -27,7 +27,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Permutation;
 
-namespace HeuristicLab.Routing.TSP {
+namespace HeuristicLab.Problems.TSP {
   /// <summary>
   /// Injects a new TSP tour in a given scope with all its neccessary variables.
   /// </summary>

@@ -28,7 +28,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Permutation;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Routing.TSP {
+namespace HeuristicLab.Problems.TSP {
   /// <summary>
   /// Represent the tour of a TSP.
   /// </summary>

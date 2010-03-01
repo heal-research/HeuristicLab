@@ -24,7 +24,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Routing.TSP {
+namespace HeuristicLab.Problems.TSP {
   /// <summary>
   /// A base class for operators which evaluate TSP solutions given in path representation.
   /// </summary>

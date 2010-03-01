@@ -30,7 +30,7 @@ using HeuristicLab.Permutation;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Routing.TSP {
+namespace HeuristicLab.Problems.TSP {
   [Item("TSP", "Represents a symmetric Traveling Salesman Problem.")]
   [Creatable("Problems")]
   [EmptyStorableClass]

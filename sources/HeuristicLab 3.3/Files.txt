@@ -31,8 +31,8 @@ HeuristicLab.Permutation\3.3:HeuristicLab.Permutation-3.3.dll
 HeuristicLab.Persistence\3.3:HeuristicLab.Persistence-3.3.dll 
 HeuristicLab.Persistence.GUI\3.3:HeuristicLab.Persistence.GUI-3.3.dll 
 HeuristicLab.Random\3.3:HeuristicLab.Random-3.3.dll 
-HeuristicLab.Routing.TSP\3.3:HeuristicLab.Routing.TSP-3.3.dll 
-HeuristicLab.Routing.TSP.Views\3.3:HeuristicLab.Routing.TSP.Views-3.3.dll 
+HeuristicLab.Problems.TSP\3.3:HeuristicLab.Problems.TSP-3.3.dll 
+HeuristicLab.Problems.TSP.Views\3.3:HeuristicLab.Problems.TSP.Views-3.3.dll 
 HeuristicLab.Selection\3.3:HeuristicLab.Selection-3.3.dll 
 HeuristicLab.Selection.OffspringSelection\3.3:HeuristicLab.Selection.OffspringSelection-3.3.dll 
 HeuristicLab.SequentialEngine\3.3:HeuristicLab.SequentialEngine-3.3.dll 

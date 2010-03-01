@@ -33,7 +33,7 @@ using HeuristicLab.Charting;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
-namespace HeuristicLab.Routing.TSP {
+namespace HeuristicLab.Problems.TSP {
   /// <summary>
   /// Class for the visual representation of a <see cref="TSPTour"/>.
   /// </summary>

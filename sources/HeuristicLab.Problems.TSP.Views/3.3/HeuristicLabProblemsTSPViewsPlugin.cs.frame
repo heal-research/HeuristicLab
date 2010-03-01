@@ -21,21 +21,20 @@
 
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Routing.TSP {
+namespace HeuristicLab.Problems.TSP.Views {
   /// <summary>
-  /// Plugin class for HeuristicLab.Routing.TSP plugin
+  /// Plugin class for HeuristicLab.Problems.TSP.Views plugin
   /// </summary>
-  [Plugin("HeuristicLab.Routing.TSP", "3.3.0.$WCREV$")]
-  [PluginFile("HeuristicLab.Routing.TSP-3.3.dll", PluginFileType.Assembly)]
+  [Plugin("HeuristicLab.Problems.TSP.Views", "3.3.0.$WCREV$")]
+  [PluginFile("HeuristicLab.Problems.TSP.Views-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
-  [PluginDependency("HeuristicLab.Common.Resources", "3.2")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
-  [PluginDependency("HeuristicLab.Data", "3.3")]
-  [PluginDependency("HeuristicLab.Operators", "3.3")]
+  [PluginDependency("HeuristicLab.Core.Views", "3.3")]
+  [PluginDependency("HeuristicLab.MainForm", "3.2")]
+  [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.2")]
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
-  [PluginDependency("HeuristicLab.Parameters", "3.3")]
-  [PluginDependency("HeuristicLab.Permutation", "3.3")]
-  [PluginDependency("HeuristicLab.Persistence", "3.3")]
-  public class HeuristicLabRoutingTSPPlugin : PluginBase {
+  [PluginDependency("HeuristicLab.Optimization.Views", "3.3")]
+  [PluginDependency("HeuristicLab.Problems.TSP", "3.3")]
+  public class HeuristicLabProblemsTSPViewsPlugin : PluginBase {
   }
 }

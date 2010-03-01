@@ -23,7 +23,7 @@ using System;
 using System.Globalization;
 using System.IO;
 
-namespace HeuristicLab.Routing.TSP {
+namespace HeuristicLab.Problems.TSP {
   /// <summary>
   /// Parses a *.tsp file in the TSPLIB format and extracts its information about a TSP.
   /// </summary>

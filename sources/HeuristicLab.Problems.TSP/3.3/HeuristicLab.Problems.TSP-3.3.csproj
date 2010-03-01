@@ -7,8 +7,8 @@
     <ProjectGuid>{600287A3-8714-453E-B875-A05F3EB72315}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.Routing.TSP</RootNamespace>
-    <AssemblyName>HeuristicLab.Routing.TSP-3.3</AssemblyName>
+    <RootNamespace>HeuristicLab.Problems.TSP</RootNamespace>
+    <AssemblyName>HeuristicLab.Problems.TSP-3.3</AssemblyName>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
     <FileUpgradeFlags>
@@ -36,7 +36,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\HeuristicLab.Routing.TSP-3.3.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\HeuristicLab.Problems.TSP-3.3.xml</DocumentationFile>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -83,7 +83,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="HeuristicLabRoutingTSPPlugin.cs.frame" />
+    <Compile Include="HeuristicLabProblemsTSPPlugin.cs" />
     <Compile Include="TSPEvaluator.cs" />
     <Compile Include="ITSPEvaluator.cs" />
     <Compile Include="TSPDistanceMatrixPathEvaluator.cs" />
@@ -91,7 +91,6 @@
     <Compile Include="TSPRoundedEuclideanPathEvaluator.cs" />
     <Compile Include="TSPPathEvaluator.cs" />
     <Compile Include="TSP.cs" />
-    <Compile Include="HeuristicLabRoutingTSPPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -140,6 +139,7 @@
     <None Include="ch130.tsp" />
     <None Include="fl1400.tsp" />
     <None Include="HeuristicLab.snk" />
+    <None Include="HeuristicLabProblemsTSPPlugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -157,6 +157,6 @@ set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
 call PreBuildEvent.cmd
-SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabRoutingTSPPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabRoutingTSPPlugin.cs"</PreBuildEvent>
+SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabProblemsTSPPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabProblemsTSPPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>
