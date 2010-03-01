@@ -44,7 +44,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       Caption = "Operator Graph Visualization";
 
       this.graphVisualizationInfoView.Controller.OnShowContextMenu += new EventHandler<EntityMenuEventArgs>(Controller_OnShowContextMenu);
-      this.graphVisualizationInfoView.Controller.Model.Selection.OnNewSelection += new EventHandler(Controller_OnShowSelectionProperties);
+      this.graphVisualizationInfoView.Controller.Model.Selection.OnNewSelection += new EventHandler(Controller_SelectionChanged);
     }
 
     public OperatorGraphView(OperatorGraph content)
@@ -58,9 +58,14 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     }
 
     protected override void OnContentChanged() {
-      if (this.VisualizationInfo == null)
+      bool createdVisualizationInfo = false;
+      if (this.VisualizationInfo == null) {
         this.VisualizationInfo = new GraphVisualizationInfo(this.Content);
+        createdVisualizationInfo = true;
+      }
       this.graphVisualizationInfoView.Content = this.VisualizationInfo;
+      if (createdVisualizationInfo)
+        this.graphVisualizationInfoView.RelayoutOperatorGraph();
     }
 
     private GraphVisualizationInfo VisualizationInfo {
@@ -68,19 +73,43 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       set { this.Content.VisualizationInfo = value; }
     }
 
-    private void Controller_OnShowSelectionProperties(object sender, EventArgs e) {
+
+    #region connector tooltips
+
+    #endregion
+
+    private void Controller_SelectionChanged(object sender, EventArgs e) {
       CollectionBase<IDiagramEntity> selectedObjects = this.graphVisualizationInfoView.Controller.Model.Selection.SelectedItems;
-      this.propertyViewHost.ViewType = null;
+      this.detailsViewHost.ViewType = null;
       if (selectedObjects.Count == 1) {
         IShape shape = selectedObjects[0] as IShape;
         if (shape != null) {
           IShapeInfo shapeInfo = shape.Tag as ShapeInfo;
-          this.propertyViewHost.Content = this.VisualizationInfo.GetOperatorForShapeInfo(shapeInfo);
+          IOperator op = this.VisualizationInfo.GetOperatorForShapeInfo(shapeInfo);
+          this.detailsViewHost.Content = op;
           return;
         }
       }
-      this.propertyViewHost.ViewType = null;
-      this.propertyViewHost.Content = null;
+      IConnector connector = this.graphVisualizationInfoView.Controller.Model.Selection.Connector;
+      if (connector != null) {
+        IShape shape = connector.Parent as IShape;
+        string connectorName = connector.Name;
+        if (shape == null) {
+          shape = connector.AttachedTo.Parent as IShape; //connection connector selected
+          connectorName = connector.AttachedTo.Name;
+        }
+        if (shape != null) {
+          IShapeInfo shapeInfo = shape.Tag as ShapeInfo;
+          IOperator op = this.VisualizationInfo.GetOperatorForShapeInfo(shapeInfo);
+          if (connectorName != "Predecessor") {
+            IParameter parameter = op.Parameters.Where(p => p.Name == connectorName).First();
+            this.detailsViewHost.Content = parameter;
+            return;
+          }
+        }
+      }
+      this.detailsViewHost.ViewType = null;
+      this.detailsViewHost.Content = null;
     }
 
     #region context menu

@@ -30,13 +30,14 @@
       this.initialToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.breakPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
-      this.propertyGroupBox = new System.Windows.Forms.GroupBox();
-      this.propertyViewHost = new HeuristicLab.Core.Views.ViewHost();
+      this.detailsGroupBox = new System.Windows.Forms.GroupBox();
+      this.detailsViewHost = new HeuristicLab.Core.Views.ViewHost();
+      this.connectorToolTip = new System.Windows.Forms.ToolTip(this.components);
       this.shapeContextMenu.SuspendLayout();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
-      this.propertyGroupBox.SuspendLayout();
+      this.detailsGroupBox.SuspendLayout();
       this.SuspendLayout();
       // 
       // graphVisualizationInfoView
@@ -93,31 +94,35 @@
       // 
       // splitContainer.Panel2
       // 
-      this.splitContainer.Panel2.Controls.Add(this.propertyGroupBox);
+      this.splitContainer.Panel2.Controls.Add(this.detailsGroupBox);
       this.splitContainer.Size = new System.Drawing.Size(665, 444);
       this.splitContainer.SplitterDistance = 279;
       this.splitContainer.TabIndex = 1;
       // 
-      // propertyGroupBox
+      // detailsGroupBox
       // 
-      this.propertyGroupBox.Controls.Add(this.propertyViewHost);
-      this.propertyGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.propertyGroupBox.Location = new System.Drawing.Point(0, 0);
-      this.propertyGroupBox.Name = "propertyGroupBox";
-      this.propertyGroupBox.Size = new System.Drawing.Size(665, 161);
-      this.propertyGroupBox.TabIndex = 0;
-      this.propertyGroupBox.TabStop = false;
-      this.propertyGroupBox.Text = "Properties";
+      this.detailsGroupBox.Controls.Add(this.detailsViewHost);
+      this.detailsGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.detailsGroupBox.Location = new System.Drawing.Point(0, 0);
+      this.detailsGroupBox.Name = "detailsGroupBox";
+      this.detailsGroupBox.Size = new System.Drawing.Size(665, 161);
+      this.detailsGroupBox.TabIndex = 0;
+      this.detailsGroupBox.TabStop = false;
+      this.detailsGroupBox.Text = "Details";
       // 
-      // propertyViewHost
+      // detailsViewHost
       // 
-      this.propertyViewHost.Content = null;
-      this.propertyViewHost.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.propertyViewHost.Location = new System.Drawing.Point(3, 16);
-      this.propertyViewHost.Name = "propertyViewHost";
-      this.propertyViewHost.Size = new System.Drawing.Size(659, 142);
-      this.propertyViewHost.TabIndex = 0;
-      this.propertyViewHost.ViewType = null;
+      this.detailsViewHost.Content = null;
+      this.detailsViewHost.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.detailsViewHost.Location = new System.Drawing.Point(3, 16);
+      this.detailsViewHost.Name = "detailsViewHost";
+      this.detailsViewHost.Size = new System.Drawing.Size(659, 142);
+      this.detailsViewHost.TabIndex = 0;
+      this.detailsViewHost.ViewType = null;
+      // 
+      // connectorToolTip
+      // 
+      this.connectorToolTip.IsBalloon = true;
       // 
       // OperatorGraphView
       // 
@@ -133,7 +138,7 @@
       this.splitContainer.Panel1.ResumeLayout(false);
       this.splitContainer.Panel2.ResumeLayout(false);
       this.splitContainer.ResumeLayout(false);
-      this.propertyGroupBox.ResumeLayout(false);
+      this.detailsGroupBox.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
@@ -145,7 +150,8 @@
     private System.Windows.Forms.ToolStripMenuItem initialToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem breakPointToolStripMenuItem;
     private System.Windows.Forms.SplitContainer splitContainer;
-    private System.Windows.Forms.GroupBox propertyGroupBox;
-    private HeuristicLab.Core.Views.ViewHost propertyViewHost;
+    private System.Windows.Forms.GroupBox detailsGroupBox;
+    private HeuristicLab.Core.Views.ViewHost detailsViewHost;
+    private System.Windows.Forms.ToolTip connectorToolTip;
   }
 }

@@ -266,12 +266,14 @@ namespace Netron.Diagramming.Core {
           if (con.From.Hit(surfacePoint)) {
             connector = con.From;
             connector.IsSelected = true;
+            this.RaiseOnNewSelection();
             Invalidate();
             return;
           }
           if (con.To.Hit(surfacePoint)) {
             connector = con.To;
             connector.IsSelected = true;
+            this.RaiseOnNewSelection();
             Invalidate();
             return;
           }
@@ -284,6 +286,7 @@ namespace Netron.Diagramming.Core {
             if (cn.Hit(surfacePoint) && cn.AttachedConnectors.Count == 0) {
               connector = cn;
               connector.IsSelected = true;
+              this.RaiseOnNewSelection();
               Invalidate();//this will invalidate only the selected connector
               return; //we hit a connector and quit the selection. If the user intended to select the entity it had to be away from the connector!
             }
