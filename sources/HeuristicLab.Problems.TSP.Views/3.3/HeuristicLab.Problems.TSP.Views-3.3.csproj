@@ -99,7 +99,7 @@
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Problems.TSP\3.3\HeuristicLab.Problems.TSP-3.3.csproj">
       <Project>{600287A3-8714-453E-B875-A05F3EB72315}</Project>
-      <Name>HeuristicLab.Routing.TSP-3.3</Name>
+      <Name>HeuristicLab.Problems.TSP-3.3</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
