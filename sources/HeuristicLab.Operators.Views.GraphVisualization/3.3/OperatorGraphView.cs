@@ -44,6 +44,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       Caption = "Operator Graph Visualization";
 
       this.graphVisualizationInfoView.Controller.OnShowContextMenu += new EventHandler<EntityMenuEventArgs>(Controller_OnShowContextMenu);
+      this.graphVisualizationInfoView.Controller.Model.Selection.OnNewSelection += new EventHandler(Controller_OnShowSelectionProperties);
     }
 
     public OperatorGraphView(OperatorGraph content)
@@ -65,6 +66,21 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     private GraphVisualizationInfo VisualizationInfo {
       get { return Content.VisualizationInfo as GraphVisualizationInfo; }
       set { this.Content.VisualizationInfo = value; }
+    }
+
+    private void Controller_OnShowSelectionProperties(object sender, EventArgs e) {
+      CollectionBase<IDiagramEntity> selectedObjects = this.graphVisualizationInfoView.Controller.Model.Selection.SelectedItems;
+      this.propertyViewHost.ViewType = null;
+      if (selectedObjects.Count == 1) {
+        IShape shape = selectedObjects[0] as IShape;
+        if (shape != null) {
+          IShapeInfo shapeInfo = shape.Tag as ShapeInfo;
+          this.propertyViewHost.Content = this.VisualizationInfo.GetOperatorForShapeInfo(shapeInfo);
+          return;
+        }
+      }
+      this.propertyViewHost.ViewType = null;
+      this.propertyViewHost.Content = null;
     }
 
     #region context menu
