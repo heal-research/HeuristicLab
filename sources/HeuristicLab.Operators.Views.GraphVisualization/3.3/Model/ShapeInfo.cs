@@ -68,6 +68,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
     public virtual IShape CreateShape() {
       IShape shape = (IShape)Activator.CreateInstance(this.shapeType);
+      shape.Tag = this;
       shape.Location = this.Location;
       shape.Height = this.Size.Height;
       shape.Width = this.Size.Width;

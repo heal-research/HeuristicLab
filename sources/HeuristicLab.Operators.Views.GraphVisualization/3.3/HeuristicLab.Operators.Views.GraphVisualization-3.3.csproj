@@ -94,8 +94,14 @@
     <None Include="HeuristicLab.snk" />
     <None Include="HeuristicLabOperatorsViewsGraphVisualizationPlugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.frame" />
+    <Compile Include="GraphVisualizationInfoView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GraphVisualizationInfoView.Designer.cs">
+      <DependentUpon>GraphVisualizationInfoView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Model\OperatorShapeInfo.cs" />
-    <Compile Include="Model\OperatorGraphVisualizationInfo.cs" />
+    <Compile Include="Model\GraphVisualizationInfo.cs" />
     <Compile Include="BidirectionalLookup.cs" />
     <Compile Include="Model\IShapeInfo.cs" />
     <Compile Include="Model\OperatorShape.cs" />
@@ -145,6 +151,10 @@
       <Project>{3BD61258-31DA-4B09-89C0-4F71FEF5F05A}</Project>
       <Name>HeuristicLab.MainForm-3.2</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Operators.Views\3.3\HeuristicLab.Operators.Views-3.3.csproj">
+      <Project>{C49CB749-8B24-4628-8003-E86475749410}</Project>
+      <Name>HeuristicLab.Operators.Views-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
       <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
       <Name>HeuristicLab.Operators-3.3</Name>
@@ -163,6 +173,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="GraphVisualizationInfoView.resx">
+      <DependentUpon>GraphVisualizationInfoView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="OperatorGraphView.resx">
       <DependentUpon>OperatorGraphView.cs</DependentUpon>
     </EmbeddedResource>

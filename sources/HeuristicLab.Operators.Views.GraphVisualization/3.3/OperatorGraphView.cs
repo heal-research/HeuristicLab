@@ -39,18 +39,11 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
   [View("Operator Graph Visualization")]
   [Content(typeof(OperatorGraph), false)]
   public partial class OperatorGraphView : ContentView {
-    private BidirectionalLookup<IShapeInfo, IShape> shapeInfoShapeMapping;
-    private BidirectionalLookup<IShapeInfo, INotifyObservableDictionaryItemsChanged<string, IShapeInfo>> shapeInfoConnectionsMapping;
-    private BidirectionalLookup<IConnection, KeyValuePair<IConnector, IConnector>> connectionConnectorsMapping;
-
-    private bool causedUpdateOfShapeInfo;
     public OperatorGraphView() {
       InitializeComponent();
-      this.causedUpdateOfShapeInfo = false;
-      Caption = "Operator Graph";
-      this.shapeInfoShapeMapping = new BidirectionalLookup<IShapeInfo, IShape>();
-      this.shapeInfoConnectionsMapping = new BidirectionalLookup<IShapeInfo, INotifyObservableDictionaryItemsChanged<string, IShapeInfo>>();
-      this.connectionConnectorsMapping = new BidirectionalLookup<IConnection, KeyValuePair<IConnector, IConnector>>();
+      Caption = "Operator Graph Visualization";
+
+      this.graphVisualizationInfoView.Controller.OnShowContextMenu += new EventHandler<EntityMenuEventArgs>(Controller_OnShowContextMenu);
     }
 
     public OperatorGraphView(OperatorGraph content)
@@ -65,309 +58,88 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
     protected override void OnContentChanged() {
       if (this.VisualizationInfo == null)
-        this.VisualizationInfo = new OperatorGraphVisualizationInfo(this.Content);
-      this.UpdateVisualizationInfo();
+        this.VisualizationInfo = new GraphVisualizationInfo(this.Content);
+      this.graphVisualizationInfoView.Content = this.VisualizationInfo;
     }
 
-    private OperatorGraphVisualizationInfo VisualizationInfo {
-      get { return Content.VisualizationInfo as OperatorGraphVisualizationInfo; }
+    private GraphVisualizationInfo VisualizationInfo {
+      get { return Content.VisualizationInfo as GraphVisualizationInfo; }
       set { this.Content.VisualizationInfo = value; }
     }
 
-    private void UpdateVisualizationInfo() {
-      foreach (IShapeInfo shapeInfo in this.shapeInfoShapeMapping.FirstValues)
-        this.RemoveShapeInfo(shapeInfo);
-
-      this.shapeInfoShapeMapping.Clear();
-      this.shapeInfoConnectionsMapping.Clear();
-      this.connectionConnectorsMapping.Clear();
-
-      foreach (IShapeInfo shapeInfo in this.VisualizationInfo.ShapeInfos)
-        if (!this.shapeInfoShapeMapping.ContainsFirst(shapeInfo))
-          this.AddShapeInfo(shapeInfo);
-
-      foreach (KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo> connection in this.VisualizationInfo.Connections)
-        this.AddConnection(connection.Key.Key, connection.Key.Value, connection.Value);
-
-      this.UpdateLayoutRoot();
-    }
-
-    private void UpdateLayoutRoot() {
-      IShapeInfo shapeInfo = this.VisualizationInfo.InitialShape;
-      if (shapeInfo != null)
-        this.graphVisualization.Controller.Model.LayoutRoot = this.shapeInfoShapeMapping.GetByFirst(shapeInfo);
-       else
-        this.graphVisualization.Controller.Model.LayoutRoot = null;
-    }
-
-    private void VisualizationInfo_InitialShapeChanged(object sender, EventArgs e) {
-      this.UpdateLayoutRoot();
-    }
-
-    protected override void RegisterContentEvents() {
-      base.RegisterContentEvents();
-      this.VisualizationInfo.InitialShapeChanged += new EventHandler(VisualizationInfo_InitialShapeChanged);
-      this.VisualizationInfo.ObserveableShapeInfos.ItemsAdded += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IShapeInfo>(ShapeInfos_ItemsAdded);
-      this.VisualizationInfo.ObserveableShapeInfos.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IShapeInfo>(ShapeInfos_ItemsRemoved);
-      this.VisualizationInfo.ObserveableShapeInfos.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IShapeInfo>(ShapeInfos_CollectionReset);
-
-      this.VisualizationInfo.ObservableConnections.ItemsAdded += new CollectionItemsChangedEventHandler<KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo>>(Connections_ItemsAdded);
-      this.VisualizationInfo.ObservableConnections.ItemsRemoved += new CollectionItemsChangedEventHandler<KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo>>(Connections_ItemsRemoved);
-      this.VisualizationInfo.ObservableConnections.ItemsReplaced += new CollectionItemsChangedEventHandler<KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo>>(Connections_ItemsReplaced);
-      this.VisualizationInfo.ObservableConnections.CollectionReset += new CollectionItemsChangedEventHandler<KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo>>(Connections_CollectionReset);
-    }
-
-    protected override void DeregisterContentEvents() {
-      base.DeregisterContentEvents();
-      this.VisualizationInfo.InitialShapeChanged -= new EventHandler(VisualizationInfo_InitialShapeChanged);
-      this.VisualizationInfo.ObserveableShapeInfos.ItemsAdded -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IShapeInfo>(ShapeInfos_ItemsAdded);
-      this.VisualizationInfo.ObserveableShapeInfos.ItemsRemoved -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IShapeInfo>(ShapeInfos_ItemsRemoved);
-      this.VisualizationInfo.ObserveableShapeInfos.CollectionReset -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IShapeInfo>(ShapeInfos_CollectionReset);
-
-      this.VisualizationInfo.ObservableConnections.ItemsAdded -= new CollectionItemsChangedEventHandler<KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo>>(Connections_ItemsAdded);
-      this.VisualizationInfo.ObservableConnections.ItemsRemoved -= new CollectionItemsChangedEventHandler<KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo>>(Connections_ItemsRemoved);
-      this.VisualizationInfo.ObservableConnections.ItemsReplaced -= new CollectionItemsChangedEventHandler<KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo>>(Connections_ItemsReplaced);
-      this.VisualizationInfo.ObservableConnections.CollectionReset -= new CollectionItemsChangedEventHandler<KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo>>(Connections_CollectionReset);
-    }
-
-    private void ShapeInfos_CollectionReset(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IShapeInfo> e) {
-      foreach (IShapeInfo shapeInfo in e.OldItems)
-        this.RemoveShapeInfo(shapeInfo);
-      foreach (IShapeInfo shapeInfo in e.Items)
-        this.AddShapeInfo(shapeInfo);
-    }
-
-    private void ShapeInfos_ItemsAdded(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IShapeInfo> e) {
-      foreach (IShapeInfo shapeInfo in e.Items)
-        this.AddShapeInfo(shapeInfo);
-    }
-
-    private void ShapeInfos_ItemsRemoved(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IShapeInfo> e) {
-      foreach (IShapeInfo shapeInfo in e.Items)
-        this.RemoveShapeInfo(shapeInfo);
-    }
-
-    private void AddShapeInfo(IShapeInfo shapeInfo) {
-      this.RegisterShapeInfoEvents(shapeInfo);
-
-      IShape shape = shapeInfo.CreateShape();
-      shape.OnEntityChange += new EventHandler<EntityEventArgs>(shape_OnEntityChange);
-      this.shapeInfoShapeMapping.Add(shapeInfo, shape);
-
-      this.graphVisualization.Controller.Model.AddShape(shape);
-      this.graphVisualization.Invalidate();
-    }
-
-    private void RemoveShapeInfo(IShapeInfo shapeInfo) {
-      this.DeregisterShapeInfoEvents(shapeInfo);
-      IShape shape = this.shapeInfoShapeMapping.GetByFirst(shapeInfo);
-      shape.OnEntityChange -= new EventHandler<EntityEventArgs>(shape_OnEntityChange);
-      shapeInfo.Changed -= new ChangedEventHandler(shapeInfo_Changed);
-
-      IConnection connection;
-      foreach (IConnector connector in shape.Connectors) {
-        connection = this.GetConnection(shapeInfo, connector.Name);
-        this.RemoveConnection(connection);
-      }
-
-      this.shapeInfoShapeMapping.RemoveByFirst(shapeInfo);
-      this.shapeInfoConnectionsMapping.RemoveByFirst(shapeInfo);
-
-      if (this.graphVisualization.Controller.Model.Shapes.Contains(shape)) {
-        this.graphVisualization.Controller.Model.RemoveShape(shape);
-      }
-      this.graphVisualization.Invalidate();
-    }
-
-    private void RegisterShapeInfoEvents(IShapeInfo shapeInfo) {
-      shapeInfo.Changed += new ChangedEventHandler(shapeInfo_Changed);
-    }
-
-    private void DeregisterShapeInfoEvents(IShapeInfo shapeInfo) {
-      shapeInfo.Changed -= new ChangedEventHandler(shapeInfo_Changed);
-    }
-
-    private void Connections_CollectionReset(object sender, CollectionItemsChangedEventArgs<KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo>> e) {
-      IConnection connection;
-      foreach (KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo> pair in e.Items) {
-        connection = this.GetConnection(pair.Key.Key, pair.Key.Value);
-        this.RemoveConnection(connection);
-      }
-      foreach (KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo> pair in e.Items)
-        this.AddConnection(pair.Key.Key, pair.Key.Value, pair.Value);
-    }
-
-    private void Connections_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo>> e) {
-      IConnection connection;
-      foreach (KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo> pair in e.Items) {
-        connection = this.GetConnection(pair.Key.Key, pair.Key.Value);
-        this.RemoveConnection(connection);
-      }
-      foreach (KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo> pair in e.Items)
-        this.AddConnection(pair.Key.Key, pair.Key.Value, pair.Value);
-    }
-
-    private void Connections_ItemsAdded(object sender, CollectionItemsChangedEventArgs<KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo>> e) {
-      foreach (KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo> pair in e.Items)
-        this.AddConnection(pair.Key.Key, pair.Key.Value, pair.Value);
-    }
-
-    private void Connections_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo>> e) {
-      IConnection connection;
-      foreach (KeyValuePair<KeyValuePair<IShapeInfo, string>, IShapeInfo> pair in e.Items) {
-        connection = this.GetConnection(pair.Key.Key, pair.Key.Value);
-        this.RemoveConnection(connection);
+    #region context menu
+    private void Controller_OnShowContextMenu(object sender, EntityMenuEventArgs e) {
+      IShape shape = this.graphVisualizationInfoView.Controller.Model.GetShapeAt(e.MouseEventArgs.Location);
+      if (shape != null) {
+        IShapeInfo shapeInfo = shape.Tag as IShapeInfo;
+        this.shapeContextMenu.Tag = shapeInfo;
+        PointF worldPoint = this.graphVisualizationInfoView.Controller.View.WorldToView(e.MouseEventArgs.Location);
+        this.shapeContextMenu.Show(this, Point.Round(worldPoint));
       }
     }
 
-    private void AddConnection(IShapeInfo shapeInfoFrom, string connectorName, IShapeInfo shapeInfoTo) {
-      IShape shapeFrom = this.shapeInfoShapeMapping.GetByFirst(shapeInfoFrom);
-      IShape shapeTo = this.shapeInfoShapeMapping.GetByFirst(shapeInfoTo);
-
-      IConnector connectorFrom = shapeFrom.Connectors.Where(c => c.Name == connectorName).First();
-      IConnector connectorTo = shapeTo.Connectors.Where(c => c.Name == "Predecessor").FirstOrDefault();
-      KeyValuePair<IConnector, IConnector> connectorPair = new KeyValuePair<IConnector, IConnector>(connectorFrom, connectorTo);
-      if (!this.connectionConnectorsMapping.ContainsSecond(connectorPair)) {
-        IConnection connection = Factory.CreateConnection(connectorFrom, connectorTo);
-        this.connectionConnectorsMapping.Add(connection, connectorPair);
-        this.graphVisualization.Controller.Model.AddConnection(connection);
-        this.graphVisualization.Invalidate();
+    private void shapeContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e) {
+      IShapeInfo shapeInfo = this.shapeContextMenu.Tag as ShapeInfo;
+      if (shapeInfo != null) {
+        IOperator op = this.VisualizationInfo.GetOperatorForShapeInfo(shapeInfo);
+        this.initialToolStripMenuItem.Checked = this.Content.InitialOperator == op;
+        this.breakPointToolStripMenuItem.Checked = op.Breakpoint;
       }
     }
 
-    private IConnection GetConnection(IShapeInfo shapeInfoFrom, string connectorName) {
-      IShape shape = this.shapeInfoShapeMapping.GetByFirst(shapeInfoFrom);
-      IConnector connector = shape.Connectors.Where(c => c.Name == connectorName).First();
-
-      if (!this.connectionConnectorsMapping.SecondValues.Any(p => p.Key == connector))
-        return null;
-
-      KeyValuePair<IConnector, IConnector> connectorPair = this.connectionConnectorsMapping.SecondValues.Where(p => p.Key == connector).FirstOrDefault();
-      return this.connectionConnectorsMapping.GetBySecond(connectorPair);
-    }
-
-    private void ChangeConnection(IShapeInfo shapeInfoFrom, string connectorName, IShapeInfo shapeInfoTo) {
-      IConnection connection = this.GetConnection(shapeInfoFrom, connectorName);
-      IShape shapeTo = this.shapeInfoShapeMapping.GetByFirst(shapeInfoFrom);
-      IConnector connectorTo = shapeTo.Connectors.Where(c => c.Name == "Predecessor").First();
-
-      connection.To.DetachFromParent();
-      connection.To.AttachTo(connectorTo);
-      this.graphVisualization.Invalidate();
-    }
-
-    private void RemoveConnection(IConnection connection) {
-      if (connection == null)
-        return;
-
-      if (connection.From.AttachedTo != null)
-        connection.From.DetachFromParent();
-      if (connection.To.AttachedTo != null)
-        connection.To.DetachFromParent();
-
-      if (this.connectionConnectorsMapping.ContainsFirst(connection))
-        this.connectionConnectorsMapping.RemoveByFirst(connection);
-      if (this.graphVisualization.Controller.Model.Connections.Contains(connection))
-        this.graphVisualization.Controller.Model.Remove(connection);
-      this.graphVisualization.Invalidate();
-    }
-
-
-    private void shapeInfo_Changed(object sender, ChangedEventArgs e) {
-      if (this.causedUpdateOfShapeInfo)
-        return;
-
-      IShapeInfo shapeInfo = (IShapeInfo)sender;
-      IShape shape = this.shapeInfoShapeMapping.GetByFirst(shapeInfo);
-      shapeInfo.UpdateShape(shape);
-      shape.Invalidate();
-    }
-
-
-    private void shape_OnEntityChange(object sender, EntityEventArgs e) {
-      this.causedUpdateOfShapeInfo = true;
-      IShape shape = e.Entity as IShape;
-      IShapeInfo shapeInfo = this.shapeInfoShapeMapping.GetBySecond(shape);
-
-      shapeInfo.Location = shape.Location;
-      shapeInfo.Size = new Size(shape.Width, shape.Height);
-
-      this.graphVisualization.Invalidate();
-      this.causedUpdateOfShapeInfo = false;
-    }
-
-    private void graphVisualization_OnEntityAdded(object sender, EntityEventArgs e) {
-      IConnection connection = e.Entity as IConnection;
-      if (connection != null && !this.connectionConnectorsMapping.ContainsFirst(connection)) {
-        IConnector connectorFrom = connection.From.AttachedTo;
-        IConnector connectorTo = connection.To.AttachedTo;
-        this.RemoveConnection(connection); //is added again by the model events
-
-        if (connectorFrom != null && connectorTo != null) {
-          IShape shapeFrom = (IShape)connectorFrom.Parent;
-          IShape shapeTo = (IShape)connectorTo.Parent;
-          IShapeInfo shapeInfoFrom = this.shapeInfoShapeMapping.GetBySecond(shapeFrom);
-          IShapeInfo shapeInfoTo = this.shapeInfoShapeMapping.GetBySecond(shapeTo);
-          string connectorName = connectorFrom.Name;
-
-          this.VisualizationInfo.AddConnection(shapeInfoFrom, connectorName, shapeInfoTo);
-        }
+    private void openViewToolStripMenuItem_Click(object sender, EventArgs e) {
+      IShapeInfo shapeInfo = this.shapeContextMenu.Tag as ShapeInfo;
+      if (shapeInfo != null) {
+        IOperator op = this.VisualizationInfo.GetOperatorForShapeInfo(shapeInfo);
+        MainFormManager.CreateDefaultView(op).Show();
       }
     }
 
-    private void graphVisualization_OnEntityRemoved(object sender, EntityEventArgs e) {
-      IShape shape = e.Entity as IShape;
-      if (shape != null && this.shapeInfoShapeMapping.ContainsSecond(shape)) {
-        IShapeInfo shapeInfo = this.shapeInfoShapeMapping.GetBySecond(shape);
-        this.VisualizationInfo.RemoveShapeInfo(shapeInfo);
-      }
+    private void initialOperatorToolStripMenuItem_Click(object sender, EventArgs e) {
+      IShapeInfo shapeInfo = this.shapeContextMenu.Tag as ShapeInfo;
+      if (this.VisualizationInfo.InitialShape == shapeInfo)
+        this.VisualizationInfo.InitialShape = null;
+      else
+        this.VisualizationInfo.InitialShape = shapeInfo;
+    }
 
-      IConnection connection = e.Entity as IConnection;
-      if (connection != null && this.connectionConnectorsMapping.ContainsFirst(connection)) {
-        IShape parentShape = (IShape)connection.From.AttachedTo.Parent;
-        IShapeInfo shapeInfo = this.shapeInfoShapeMapping.GetBySecond(parentShape);
-        string connectorName = connection.From.AttachedTo.Name;
-
-        this.VisualizationInfo.RemoveConnection(shapeInfo, connectorName);
+    private void breakPointToolStripMenuItem_Click(object sender, EventArgs e) {
+      IShapeInfo shapeInfo = this.shapeContextMenu.Tag as ShapeInfo;
+      if (shapeInfo != null) {
+        IOperator op = this.VisualizationInfo.GetOperatorForShapeInfo(shapeInfo);
+        op.Breakpoint = !op.Breakpoint;
       }
     }
+    #endregion
 
     #region methods for toolbar items
-
     internal void RelayoutOperatorGraph() {
-      if (this.shapeInfoShapeMapping.Count > 0 
-        && this.connectionConnectorsMapping.Count > 0 
-        && this.VisualizationInfo.InitialShape != null) { //otherwise the layout does not work
-        string layoutName = "Standard TreeLayout";
-        this.graphVisualization.Controller.RunActivity(layoutName);
-        this.graphVisualization.Invalidate();
-      }
+      this.graphVisualizationInfoView.RelayoutOperatorGraph();
     }
 
     internal void ActivateConnectionTool() {
-      this.graphVisualization.Controller.ActivateTool(ControllerBase.ConnectionToolName);
+      this.graphVisualizationInfoView.ActivateConnectionTool();
     }
 
     internal void ActivateZoomAreaTool() {
-      this.graphVisualization.Controller.ActivateTool(ControllerBase.ZoomAreaToolName);
+      this.graphVisualizationInfoView.ActivateZoomAreaTool();
     }
 
     internal void ActivateZoomInTool() {
-      this.graphVisualization.Controller.ActivateTool(ControllerBase.ZoomInToolName);
+      this.graphVisualizationInfoView.ActivateZoomInTool();
     }
 
     internal void ActivateZoomOutTool() {
-      this.graphVisualization.Controller.ActivateTool(ControllerBase.ZoomOutToolName);
+      this.graphVisualizationInfoView.ActivateZoomOutTool();
     }
 
     internal void ActivatePanTool() {
-      this.graphVisualization.Controller.ActivateTool(ControllerBase.PanToolName);
+      this.graphVisualizationInfoView.ActivatePanTool();
     }
 
     internal void ActivateSelectTool() {
-      this.graphVisualization.Controller.ActivateTool(ControllerBase.SelectionToolName);
+      this.graphVisualizationInfoView.ActivateSelectTool();
     }
-
     #endregion
 
     #region drag and drop
@@ -383,9 +155,12 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       if (e.Effect != DragDropEffects.None) {
         IOperator op = e.Data.GetData("Value") as IOperator;
         IShapeInfo shapeInfo = Factory.CreateShapeInfo(op);
-        Point controlCoordinates = this.PointToClient(new Point(e.X, e.Y));
-        PointF viewCoordinates = this.graphVisualization.Controller.View.DeviceToView(controlCoordinates);
-        shapeInfo.Location = new Point((int)viewCoordinates.X, (int)viewCoordinates.Y);
+        Point mouse = new Point(MousePosition.X, MousePosition.Y);
+        Point p = new Point(e.X, e.Y);
+        Point screen = this.PointToScreen(new Point(0, 0));
+        PointF worldPoint = this.graphVisualizationInfoView.Controller.View.WorldToView(new Point(mouse.X - screen.X, mouse.Y - screen.Y));
+
+        shapeInfo.Location = Point.Round(worldPoint);
         this.VisualizationInfo.AddShapeInfo(op, shapeInfo);
       }
     }
