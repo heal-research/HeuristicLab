@@ -88,7 +88,6 @@
     <Compile Include="HeuristicLabHiveEnginePlugin.cs" />
     <Compile Include="HiveEngine.cs" />
     <Compile Include="HiveEngineEditor.cs">
-      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="HiveEngineEditor.Designer.cs">
       <DependentUpon>HiveEngineEditor.cs</DependentUpon>

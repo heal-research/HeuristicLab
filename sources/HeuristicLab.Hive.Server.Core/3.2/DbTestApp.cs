@@ -33,6 +33,7 @@ using HeuristicLab.DataAccess.Interfaces;
 using System.IO;
 using HeuristicLab.Hive.Server.Core;
 using HeuristicLab.Core;
+using HeuristicLab.Hive.Server.LINQDataAccess;
 
 namespace HeuristicLab.Hive.Server {
   [Application("Hive DB Test App", "Test Application for the Hive DataAccess Layer")]
@@ -297,7 +298,7 @@ namespace HeuristicLab.Hive.Server {
            factory.GetSessionForCurrentThread();
 
       IJobAdapter jobAdapter =
-        session.GetDataAdapter<Job, IJobAdapter>();
+        session.GetDataAdapter<HeuristicLab.Hive.Contracts.BusinessObjects.Job, IJobAdapter>();
 
       Stream s = jobAdapter.GetSerializedJobStream(
         new Guid("1b35f32b-d880-4c76-86af-4b4e283b30e6"), true);
@@ -359,12 +360,33 @@ namespace HeuristicLab.Hive.Server {
         PersistenceManager.RestoreFromGZip(response.Obj.SerializedJobResultData);
     }
 
+    private void TestLINQImplementation() {      
+      ClientDao clientDao = new ClientDao();      
+      ClientInfo info = new ClientInfo();
+      info.Id = Guid.NewGuid();
+      info.FreeMemory = 1000;
+      info.Login = DateTime.Now;
+      info.Memory = 1000;
+      info.Name = "jackie";
+      info.NrOfCores = 3;
+      info.NrOfFreeCores = 2;
+      info.CpuSpeedPerCore = 2500;
+      info.State = State.idle;
+      info = clientDao.Insert(info);
+
+    }
+
     public override void Run() {
       //TestClientGroupAdapter();
       //InsertTestClientGroups();
       //TestJobStreaming();
       //TestJobResultStreaming();
-      TestJobResultDeserialization();
+      //TestJobResultDeserialization();
+
+      TestLINQImplementation();
+
     }
+
+
   }
 }

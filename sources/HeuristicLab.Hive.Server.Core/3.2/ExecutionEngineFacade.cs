@@ -28,10 +28,14 @@ using HeuristicLab.Hive.Contracts;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 
 namespace HeuristicLab.Hive.Server.Core {
-  class ExecutionEngineFacade: IExecutionEngineFacade {
+  public class ExecutionEngineFacade: IExecutionEngineFacade {
 
     private IJobManager jobManager =
       ServiceLocator.GetJobManager();
+
+    public ExecutionEngineFacade() {
+      
+    }
 
     #region IExecutionEngineFacade Members
 

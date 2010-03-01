@@ -35,7 +35,10 @@ using HeuristicLab.Hive.Server.Core.InternalInterfaces;
 namespace HeuristicLab.Hive.Server.Core {
   [ServiceBehavior(InstanceContextMode =
     InstanceContextMode.PerCall, ConcurrencyMode = ConcurrencyMode.Multiple)]
-  class ClientFacade: IClientFacade {
+  public class ClientFacade: IClientFacade {
+
+    public ClientFacade() {      
+    }
 
     private IClientCommunicator clientCommunicator =
       ServiceLocator.GetClientCommunicator();

@@ -28,9 +28,11 @@ using HeuristicLab.PluginInfrastructure;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.Net;
+using HeuristicLab.Hive.Server.Core;
 using HeuristicLab.Hive.Contracts;
 using HeuristicLab.Hive.Contracts.Interfaces;
 using HeuristicLab.Hive.Server.Properties;
+using Spring.ServiceModel;
 
 namespace HeuristicLab.Hive.Server {
   [Application("Hive Server", "Server application for the distributed hive engine.", true)]
@@ -66,15 +68,17 @@ namespace HeuristicLab.Hive.Server {
     private Uri StartService(Services svc, IPAddress ipAddress, int port) {
       string curServiceHost = "";
       Uri uriTcp;
-      IEnumerable<IClientFacade> clientCommunicatorInstances = ApplicationManager.Manager.GetInstances<IClientFacade>();
+      /*IEnumerable<IClientFacade> clientCommunicatorInstances = ApplicationManager.Manager.GetInstances<IClientFacade>();
       IEnumerable<IServerConsoleFacade> serverConsoleInstances = ApplicationManager.Manager.GetInstances<IServerConsoleFacade>();
-      IEnumerable<IExecutionEngineFacade> executionEngineInstances = ApplicationManager.Manager.GetInstances<IExecutionEngineFacade>();
-      ServiceHost serviceHost = null;
+      IEnumerable<IExecutionEngineFacade> executionEngineInstances = ApplicationManager.Manager.GetInstances<IExecutionEngineFacade>();*/
+      SpringServiceHost serviceHost = null;
       switch (svc) {
         case Services.ClientCommunicator:
-          if (clientCommunicatorInstances.Count() > 0) {
+        //  if (clientCommunicatorInstances.Count() > 0) {
             uriTcp = new Uri("net.tcp://" + ipAddress + ":" + port + "/HiveServer/");
-            serviceHost = new ServiceHost(clientCommunicatorInstances.First().GetType(), uriTcp);
+            //serviceHost = new ServiceHost(clientCommunicatorInstances.First().GetType(), uriTcp);
+            //serviceHost = new ServiceHost(typeof(ClientFacade), uriTcp);
+            serviceHost = new SpringServiceHost("clientFacade", uriTcp);
             serviceHost.AddServiceEndpoint(typeof(IClientFacade), streamedBinding, STR_ClientCommunicator);
             
             ServiceDebugBehavior sdb = serviceHost.Description.Behaviors.Find<ServiceDebugBehavior>();
@@ -87,30 +91,32 @@ namespace HeuristicLab.Hive.Server {
             
 
             curServiceHost = STR_ClientCommunicator;
-          }
+        //  }
           break;
         case Services.ServerConsoleFacade:
-          if (serverConsoleInstances.Count() > 0) {
+        //  if (serverConsoleInstances.Count() > 0) {
             uriTcp = new Uri("net.tcp://" + ipAddress + ":" + port + "/HiveServerConsole/");
-            serviceHost = new ServiceHost(serverConsoleInstances.First().GetType(), uriTcp);
+            //serviceHost = new ServiceHost(serverConsoleInstances.First().GetType(), uriTcp);
+            serviceHost = new SpringServiceHost("serverConsoleFacade", uriTcp);
             serviceHost.AddServiceEndpoint(typeof(IServerConsoleFacade), binding, STR_ServerConsoleFacade);
             curServiceHost = STR_ServerConsoleFacade;
-          }
+        //  }
           break;
         case Services.ExecutionEngineFacade:
-          if (executionEngineInstances.Count() > 0) {
+        //  if (executionEngineInstances.Count() > 0) {
             uriTcp = new Uri("net.tcp://" + ipAddress + ":" + port + "/ExecutionEngine/");
-            serviceHost = new ServiceHost(executionEngineInstances.First().GetType(), uriTcp);
+            //serviceHost = new ServiceHost(executionEngineInstances.First().GetType(), uriTcp);
+            serviceHost = new SpringServiceHost("executionEngineFacade", uriTcp);
             serviceHost.AddServiceEndpoint(typeof(IExecutionEngineFacade), streamedBinding, STR_ExecutionEngineFacade);
             curServiceHost = STR_ExecutionEngineFacade;
-          }
+        //  }
           break;
         case Services.All:
           throw new InvalidOperationException("Not supported!");
         default:
           return null;
       }
-      if ((serviceHost != null) && (!String.IsNullOrEmpty(curServiceHost))) {
+      if (!String.IsNullOrEmpty(curServiceHost)) {
         AddMexEndpoint(serviceHost);
         //WcfSettings.SetServiceCertificate(serviceHost);
         serviceHost.Open();

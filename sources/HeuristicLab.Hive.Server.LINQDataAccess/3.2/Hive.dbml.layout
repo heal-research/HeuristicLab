@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 14.25, 12.625" name="DataClasses1">
+  <DataContextMoniker Name="/HiveDataContext" />
+  <nestedChildShapes>
+    <classShape Id="3bbfffd4-3ad8-4ff9-b0ff-bdddca70b322" absoluteBounds="3.5, 3.75, 2, 1.3862939453125005">
+      <DataClassMoniker Name="/HiveDataContext/AssignedResource" />
+      <nestedChildShapes>
+        <elementListCompartment Id="40e2e788-932b-41d4-9853-f4bc011a045a" absoluteBounds="3.515, 4.21, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="93016de7-5896-4132-9db6-bc2fe38230fe" absoluteBounds="0.75, 9.25, 2, 1.5785953776041666">
+      <DataClassMoniker Name="/HiveDataContext/UptimeStatistic" />
+      <nestedChildShapes>
+        <elementListCompartment Id="c1f9c6c9-81a2-4007-8bd0-bcadb42ee3d5" absoluteBounds="0.76499999999999968, 9.71, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="5f1881a6-9a97-4298-a30e-bc434b948d15" absoluteBounds="3.625, 11, 2, 1.3862939453124987">
+      <DataClassMoniker Name="/HiveDataContext/ClientConfig" />
+      <nestedChildShapes>
+        <elementListCompartment Id="3dbf7375-bb24-421c-a581-712b9ba03996" absoluteBounds="3.64, 11.46, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="fdda4acc-8a1b-47c8-95ae-5e366f019c84" absoluteBounds="6, 5, 2, 1.0016910807291666">
+      <DataClassMoniker Name="/HiveDataContext/ClientGroup" />
+      <nestedChildShapes>
+        <elementListCompartment Id="a7ba98a6-72ae-4d79-ac43-e86da625101e" absoluteBounds="6.0150000000000006, 5.46, 1.9700000000000002, 0.44169108072916669" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="0535d2ec-d743-4b65-a1d6-70f7af1eead3" absoluteBounds="6, 6.375, 2, 1.3862939453125005">
+      <DataClassMoniker Name="/HiveDataContext/ClientGroup_Resource" />
+      <nestedChildShapes>
+        <elementListCompartment Id="21c0b804-20b8-44c5-8ca5-27abfd546691" absoluteBounds="6.015, 6.835, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="63840838-dba2-4615-b10b-b812f68ec9a1" absoluteBounds="9, 6.25, 2, 3.5016097005208318">
+      <DataClassMoniker Name="/HiveDataContext/Job" />
+      <nestedChildShapes>
+        <elementListCompartment Id="3758a5b7-d1ea-4673-b0e6-db5da665526e" absoluteBounds="9.015, 6.7100000000000009, 1.9700000000000002, 2.941609700520833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="a054f27a-f931-4019-b8a0-500bbd926986" absoluteBounds="12, 6.375, 2, 1.5785953776041666">
+      <DataClassMoniker Name="/HiveDataContext/PluginInfo" />
+      <nestedChildShapes>
+        <elementListCompartment Id="02e6b3f0-ccab-4dba-863d-9d35e1214765" absoluteBounds="12.015, 6.835, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="401c6a1e-69dc-43e4-a4c6-bfc7c2130170" absoluteBounds="6.25, 10.5, 2, 1.193992513020834">
+      <DataClassMoniker Name="/HiveDataContext/Project" />
+      <nestedChildShapes>
+        <elementListCompartment Id="ca3c7af1-fbed-43b6-8624-d94da9397e73" absoluteBounds="6.265, 10.96, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="59a84aec-bc57-49b5-a709-71cdf7612b31" absoluteBounds="12, 8.75, 2, 1.3862939453124987">
+      <DataClassMoniker Name="/HiveDataContext/RequiredPlugin" />
+      <nestedChildShapes>
+        <elementListCompartment Id="eabd8d36-2ac8-4d59-9e58-18e1ce2c7d22" absoluteBounds="12.015, 9.21, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="e44e8355-4290-42f0-8b46-4473e91e504b" absoluteBounds="3.375, 5.75, 2, 1.1939925130208327">
+      <DataClassMoniker Name="/HiveDataContext/Resource" />
+      <nestedChildShapes>
+        <elementListCompartment Id="822605f6-079e-4225-bd10-dc002d09045d" absoluteBounds="3.39, 6.21, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(7 : 6.00169108072917); (7 : 6.375)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/HiveDataContext/ClientGroup/ClientGroup_ClientGroup_Resource" />
+      <nodes>
+        <classShapeMoniker Id="fdda4acc-8a1b-47c8-95ae-5e366f019c84" />
+        <classShapeMoniker Id="0535d2ec-d743-4b65-a1d6-70f7af1eead3" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(10 : 6.25); (10 : 4.34375); (5.5 : 4.34375)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/HiveDataContext/Job/Job_AssignedResource" />
+      <nodes>
+        <classShapeMoniker Id="63840838-dba2-4615-b10b-b812f68ec9a1" />
+        <classShapeMoniker Id="3bbfffd4-3ad8-4ff9-b0ff-bdddca70b322" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(9.70923076923077 : 9.75160970052083); (9.70923076923077 : 10.0016097005208); (10.3046153846154 : 10.0016097005208); (10.3046153846154 : 9.75160970052083)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/HiveDataContext/Job/Job_Job" />
+      <nodes>
+        <classShapeMoniker Id="63840838-dba2-4615-b10b-b812f68ec9a1" />
+        <classShapeMoniker Id="63840838-dba2-4615-b10b-b812f68ec9a1" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(8.25 : 11.0969962565104); (9.32336288461538 : 11.0969962565104); (9.32336288461538 : 9.75160970052083)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/HiveDataContext/Project/Project_Job" />
+      <nodes>
+        <classShapeMoniker Id="401c6a1e-69dc-43e4-a4c6-bfc7c2130170" />
+        <classShapeMoniker Id="63840838-dba2-4615-b10b-b812f68ec9a1" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(11 : 9.25080485026042); (12 : 9.25080485026042)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/HiveDataContext/Job/Job_RequiredPlugin" />
+      <nodes>
+        <classShapeMoniker Id="63840838-dba2-4615-b10b-b812f68ec9a1" />
+        <classShapeMoniker Id="59a84aec-bc57-49b5-a709-71cdf7612b31" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(13 : 7.95359537760417); (13 : 8.75)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/HiveDataContext/PluginInfo/PluginInfo_RequiredPlugin" />
+      <nodes>
+        <classShapeMoniker Id="a054f27a-f931-4019-b8a0-500bbd926986" />
+        <classShapeMoniker Id="59a84aec-bc57-49b5-a709-71cdf7612b31" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(4.4375 : 5.75); (4.4375 : 5.1362939453125)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/HiveDataContext/Resource/Resource_AssignedResource" />
+      <nodes>
+        <classShapeMoniker Id="e44e8355-4290-42f0-8b46-4473e91e504b" />
+        <classShapeMoniker Id="3bbfffd4-3ad8-4ff9-b0ff-bdddca70b322" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(5.375 : 5.87584554036458); (6 : 5.87584554036458)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/HiveDataContext/Resource/Resource_ClientGroup" />
+      <nodes>
+        <classShapeMoniker Id="e44e8355-4290-42f0-8b46-4473e91e504b" />
+        <classShapeMoniker Id="fdda4acc-8a1b-47c8-95ae-5e366f019c84" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(5.375 : 6.65949625651042); (6 : 6.65949625651042)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/HiveDataContext/Resource/Resource_ClientGroup_Resource" />
+      <nodes>
+        <classShapeMoniker Id="e44e8355-4290-42f0-8b46-4473e91e504b" />
+        <classShapeMoniker Id="0535d2ec-d743-4b65-a1d6-70f7af1eead3" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="a2f0b500-6e5f-4de0-b608-64e4b55a73c4" absoluteBounds="3.625, 7.625, 2, 2.5401025390625">
+      <DataClassMoniker Name="/HiveDataContext/Client" />
+      <nestedChildShapes>
+        <elementListCompartment Id="73aab418-5f1d-4648-a326-abf68f213f0e" absoluteBounds="3.64, 8.085, 1.9700000000000002, 1.9801025390625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(3.625 : 9.70755126953125); (2.75 : 9.70755126953125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/HiveDataContext/Client/Client_UptimeStatistic" />
+      <nodes>
+        <classShapeMoniker Id="a2f0b500-6e5f-4de0-b608-64e4b55a73c4" />
+        <classShapeMoniker Id="93016de7-5896-4132-9db6-bc2fe38230fe" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(5.625 : 8.78770182291667); (9 : 8.78770182291667)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/HiveDataContext/Client/Client_Job" />
+      <nodes>
+        <classShapeMoniker Id="a2f0b500-6e5f-4de0-b608-64e4b55a73c4" />
+        <classShapeMoniker Id="63840838-dba2-4615-b10b-b812f68ec9a1" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(4.5 : 6.94399251302083); (4.5 : 7.625)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/HiveDataContext/Resource/Resource_Client" />
+      <nodes>
+        <classShapeMoniker Id="e44e8355-4290-42f0-8b46-4473e91e504b" />
+        <classShapeMoniker Id="a2f0b500-6e5f-4de0-b608-64e4b55a73c4" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(4.625 : 11); (4.625 : 10.1651025390625)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/HiveDataContext/ClientConfig/ClientConfig_Client" />
+      <nodes>
+        <classShapeMoniker Id="5f1881a6-9a97-4298-a30e-bc434b948d15" />
+        <classShapeMoniker Id="a2f0b500-6e5f-4de0-b608-64e4b55a73c4" />
+      </nodes>
+    </associationConnector>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>

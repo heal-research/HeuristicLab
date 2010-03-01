@@ -43,6 +43,9 @@ namespace HeuristicLab.Hive.Server.Core {
 
     public Guid sessionID = Guid.Empty;
 
+    public ServerConsoleFacade() {      
+    }
+
     public Response Login(string username, string password) {
       Response resp = new Response();
      

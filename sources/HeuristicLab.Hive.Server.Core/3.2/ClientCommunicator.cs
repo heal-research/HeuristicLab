@@ -38,6 +38,7 @@ using HeuristicLab.DataAccess.Interfaces;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using HeuristicLab.Tracing;
+using Linq = HeuristicLab.Hive.Server.LINQDataAccess;
 
 namespace HeuristicLab.Hive.Server.Core {
   /// <summary>
@@ -59,6 +60,8 @@ namespace HeuristicLab.Hive.Server.Core {
     private ILifecycleManager lifecycleManager;
     private IInternalJobManager jobManager;
     private IScheduler scheduler;
+
+    Linq.ClientDao clientDao = new Linq.ClientDao();
 
     private static int PENDING_TIMEOUT = 100;
 
@@ -194,14 +197,14 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="clientInfo"></param>
     /// <returns></returns>
     public Response Login(ClientInfo clientInfo) {
-      ISession session = factory.GetSessionForCurrentThread();
-      ITransaction tx = null;
+    //  ISession session = factory.GetSessionForCurrentThread();
+    //  ITransaction tx = null;
 
-      try {
-        IClientAdapter clientAdapter =
-          session.GetDataAdapter<ClientInfo, IClientAdapter>();
+    //  try {
+    //    IClientAdapter clientAdapter =
+    //      session.GetDataAdapter<ClientInfo, IClientAdapter>();
 
-        tx = session.BeginTransaction();
+    //    tx = session.BeginTransaction();
 
         Response response = new Response();
 
@@ -214,14 +217,19 @@ namespace HeuristicLab.Hive.Server.Core {
         heartbeatLock.ExitWriteLock();
 
         clientInfo.State = State.idle;
-        clientAdapter.Update(clientInfo);
+
+        if (clientDao.FindById(clientInfo.Id) == null)
+          clientDao.Insert(clientInfo); 
+        else 
+          clientDao.Update(clientInfo);
+        //clientAdapter.Update(clientInfo);
         response.Success = true;
         response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_LOGIN_SUCCESS;
 
-        tx.Commit();
+        //tx.Commit();
         return response;
-      }
-      catch (Exception ex) {
+      //}
+      /*catch (Exception ex) {
         if (tx != null)
           tx.Rollback();
         throw ex;
@@ -229,7 +237,7 @@ namespace HeuristicLab.Hive.Server.Core {
       finally {
         if (session != null)
           session.EndSession();
-      }
+      } */
     }
 
     /// <summary>

@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Database Name="HeuristicLab.Hive.Linq" Class="HiveDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=SEMTEX-PC;Initial Catalog=HeuristicLab.Hive.Linq;Integrated Security=True" SettingsObjectName="HeuristicLab.Hive.Server.LINQDataAccess.Properties.Settings" SettingsPropertyName="HeuristicLab_Hive_LinqConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.AssignedResources" Member="AssignedResources">
+    <Type Name="AssignedResource">
+      <Column Name="ResourceId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="JobId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="AssignedRessourcesId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Association Name="Job_AssignedResource" Member="Job" ThisKey="JobId" OtherKey="JobId" Type="Job" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Association Name="Resource_AssignedResource" Member="Resource" ThisKey="ResourceId" OtherKey="ResourceId" Type="Resource" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.UptimeStatistics" Member="UptimeStatistics">
+    <Type Name="UptimeStatistic">
+      <Column Name="UptimeStatisticsId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Login" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Logout" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ResourceId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Association Name="Client_UptimeStatistic" Member="Client" ThisKey="ResourceId" OtherKey="ResourceId" Type="Client" IsForeignKey="true" DeleteRule="SET NULL" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ClientConfig" Member="ClientConfigs">
+    <Type Name="ClientConfig">
+      <Column Name="ClientConfigId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="UpDownTimeCalendar" Type="System.Xml.Linq.XElement" DbType="Xml" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="HeartBeatIntervall" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="ClientConfig_Client" Member="Clients" ThisKey="ClientConfigId" OtherKey="ClientConfigId" Type="Client" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ClientGroup" Member="ClientGroups">
+    <Type Name="ClientGroup">
+      <Column Name="ResourceId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="ClientGroup_ClientGroup_Resource" Member="ClientGroup_Resources" ThisKey="ResourceId" OtherKey="ClientGroupId" Type="ClientGroup_Resource" />
+      <Association Name="Resource_ClientGroup" Member="Resource" ThisKey="ResourceId" OtherKey="ResourceId" Type="Resource" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ClientGroup_Resource" Member="ClientGroup_Resources">
+    <Type Name="ClientGroup_Resource">
+      <Column Name="ClientGroupId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="ResourceId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="ClientGroup_RessourceId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Association Name="ClientGroup_ClientGroup_Resource" Member="ClientGroup" ThisKey="ClientGroupId" OtherKey="ResourceId" Type="ClientGroup" IsForeignKey="true" />
+      <Association Name="Resource_ClientGroup_Resource" Member="Resource" ThisKey="ResourceId" OtherKey="ResourceId" Type="Resource" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Job" Member="Jobs">
+    <Type Name="Job">
+      <Column Name="JobId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ParentJobId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="JobState" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="ResourceId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="Percentage" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="SerializedJob" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="DateCreated" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="DateCalculated" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="DateFinished" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Priority" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ProjectId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="CoresNeeded" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="MemoryNeeded" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Job_AssignedResource" Member="AssignedResources" ThisKey="JobId" OtherKey="JobId" Type="AssignedResource" />
+      <Association Name="Job_Job" Member="Jobs" ThisKey="JobId" OtherKey="ParentJobId" Type="Job" />
+      <Association Name="Job_RequiredPlugin" Member="RequiredPlugins" ThisKey="JobId" OtherKey="JobId" Type="RequiredPlugin" />
+      <Association Name="Job_Job" Member="Job1" ThisKey="ParentJobId" OtherKey="JobId" Type="Job" IsForeignKey="true" />
+      <Association Name="Project_Job" Member="Project" ThisKey="ProjectId" OtherKey="ProjectId" Type="Project" IsForeignKey="true" DeleteRule="SET NULL" />
+      <Association Name="Client_Job" Member="Client" ThisKey="ResourceId" OtherKey="ResourceId" Type="Client" IsForeignKey="true" DeleteRule="SET NULL" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PluginInfo" Member="PluginInfos">
+    <Type Name="PluginInfo">
+      <Column Name="PluginId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="Version" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="BuildDate" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Association Name="PluginInfo_RequiredPlugin" Member="RequiredPlugins" ThisKey="PluginId" OtherKey="PluginId" Type="RequiredPlugin" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Project" Member="Projects">
+    <Type Name="Project">
+      <Column Name="ProjectId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Association Name="Project_Job" Member="Jobs" ThisKey="ProjectId" OtherKey="ProjectId" Type="Job" />
+    </Type>
+  </Table>
+  <Table Name="dbo.RequiredPlugins" Member="RequiredPlugins">
+    <Type Name="RequiredPlugin">
+      <Column Name="JobId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="PluginId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="RequiredPluginId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Association Name="Job_RequiredPlugin" Member="Job" ThisKey="JobId" OtherKey="JobId" Type="Job" IsForeignKey="true" />
+      <Association Name="PluginInfo_RequiredPlugin" Member="PluginInfo" ThisKey="PluginId" OtherKey="PluginId" Type="PluginInfo" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Resource" Member="Resources">
+    <Type Name="Resource">
+      <Column Name="ResourceId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Association Name="Resource_AssignedResource" Member="AssignedResources" ThisKey="ResourceId" OtherKey="ResourceId" Type="AssignedResource" />
+      <Association Name="Resource_ClientGroup" Member="ClientGroup" ThisKey="ResourceId" OtherKey="ResourceId" Type="ClientGroup" Cardinality="One" />
+      <Association Name="Resource_ClientGroup_Resource" Member="ClientGroup_Resources" ThisKey="ResourceId" OtherKey="ResourceId" Type="ClientGroup_Resource" />
+      <Association Name="Resource_Client" Member="Client" ThisKey="ResourceId" OtherKey="ResourceId" Type="Client" Cardinality="One" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Client" Member="Clients">
+    <Type Name="Client">
+      <Column Name="ResourceId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="CPUSpeed" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Memory" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Login" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Status" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="ClientConfigId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="NumberOfCores" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="NumberOfFreeCores" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="FreeMemory" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Client_UptimeStatistic" Member="UptimeStatistics" ThisKey="ResourceId" OtherKey="ResourceId" Type="UptimeStatistic" />
+      <Association Name="Client_Job" Member="Jobs" ThisKey="ResourceId" OtherKey="ResourceId" Type="Job" />
+      <Association Name="Resource_Client" Member="Resource" ThisKey="ResourceId" OtherKey="ResourceId" Type="Resource" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Association Name="ClientConfig_Client" Member="ClientConfig" ThisKey="ClientConfigId" OtherKey="ClientConfigId" Type="ClientConfig" IsForeignKey="true" DeleteRule="SET NULL" />
+    </Type>
+  </Table>
+</Database>

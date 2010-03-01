@@ -28,9 +28,14 @@ using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Contracts;
 using HeuristicLab.Hive.Server.DataAccess;
 using HeuristicLab.DataAccess.Interfaces;
+using HeuristicLab.Hive.Server.LINQDataAccess;
+using ClientGroup=HeuristicLab.Hive.Contracts.BusinessObjects.ClientGroup;
+using Resource=HeuristicLab.Hive.Contracts.BusinessObjects.Resource;
 
 namespace HeuristicLab.Hive.Server.Core {
   class ClientManager: IClientManager {
+
+    ClientDao clientDao = new ClientDao();
 
     ISessionFactory factory;
     List<ClientGroup> clientGroups;
