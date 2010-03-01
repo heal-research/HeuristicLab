@@ -85,7 +85,6 @@
     <Compile Include="BestAverageWorstQualityCalculator.cs" />
     <Compile Include="BestSolutionStorer.cs" />
     <Compile Include="PointXYChartView.cs">
-      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="PointXYChartView.Designer.cs">
       <DependentUpon>PointXYChartView.cs</DependentUpon>
@@ -94,13 +93,11 @@
     <Compile Include="Linechart.cs" />
     <Compile Include="HeuristicLabLoggingPlugin.cs" />
     <Compile Include="LinechartView.cs">
-      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="LinechartView.Designer.cs">
       <DependentUpon>LinechartView.cs</DependentUpon>
     </Compile>
     <Compile Include="LogView.cs">
-      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="LogView.Designer.cs">
       <DependentUpon>LogView.cs</DependentUpon>
@@ -118,14 +115,6 @@
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HeuristicLab.Charting.Data\3.3\HeuristicLab.Charting.Data-3.3.csproj">
-      <Project>{EE956A95-6344-4B01-876F-BE95C5E2F92B}</Project>
-      <Name>HeuristicLab.Charting.Data-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Charting\3.3\HeuristicLab.Charting-3.3.csproj">
-      <Project>{A8265018-D687-4907-8A36-63B25967A038}</Project>
-      <Name>HeuristicLab.Charting-3.3</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Common\3.2\HeuristicLab.Common-3.2.csproj">
       <Project>{1FC004FC-59AF-4249-B1B6-FF25873A20E4}</Project>
       <Name>HeuristicLab.Common-3.2</Name>
