@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,66 +20,57 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.RealVector {
   /// <summary>
-  /// Michalewicz, Z. (1992). Genetic Algorithms + Data Structures = Evolution Programs<br/>
-  /// Non-uniformly distributed change of one position of a real vector.
+  /// The solution is manipulated with diminishing strength over time. In addition the mutated value is not sampled over the entire domain, but additive at the selected position.<br/>
+  /// Initially, the space will be searched uniformly and very locally at later stages. This increases the probability of generating the new number closer to the current value.
   /// </summary>
-  public class MichalewiczNonUniformOnePositionManipulator : RealVectorManipulatorBase {
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get { return
-@"Non-uniformly distributed change of one position of a real vector (Michalewicz 1992)
-Initially, the space will be searched uniformly and very locally at later stages. This increases the probability of generating the new number closer to its successor instead of a random number.
-
-Michalewicz, Z. (1992). Genetic Algorithms + Data Structures = Evolution Programs. Springer Verlag.";
-      }
+  /// <remarks>
+  /// It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.
+  /// </remarks>
+  [Item("MichalewiczNonUniformOnePositionManipulator", "It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.")]
+  [EmptyStorableClass]
+  public class MichalewiczNonUniformOnePositionManipulator : RealVectorManipulator {
+    public ValueLookupParameter<DoubleData> MinimumParameter {
+      get { return (ValueLookupParameter<DoubleData>)Parameters["Minimum"]; }
+    }
+    public ValueLookupParameter<DoubleData> MaximumParameter {
+      get { return (ValueLookupParameter<DoubleData>)Parameters["Maximum"]; }
+    }
+    public LookupParameter<IntData> GenerationParameter {
+      get { return (LookupParameter<IntData>)Parameters["Generation"]; }
+    }
+    public LookupParameter<IntData> MaximumGenerationsParameter {
+      get { return (LookupParameter<IntData>)Parameters["MaximumGenerations"]; }
+    }
+    public ValueLookupParameter<DoubleData> GenerationDependencyParameter {
+      get { return (ValueLookupParameter<DoubleData>)Parameters["GenerationDependency"]; }
     }
 
     /// <summary>
     /// Initializes a new instance of <see cref="MichalewiczNonUniformOnePositionManipulator"/> with five 
-    /// variable infos (<c>Minimum</c>, <c>Maximum</c>, <c>CurrentGeneration</c>, <c>MaximumGenerations</c>
-    /// and <c>GenerationsDependency</c>).
+    /// parameters (<c>Minimum</c>, <c>Maximum</c>, <c>CurrentGeneration</c>, <c>MaximumGenerations</c>
+    /// and <c>GenerationDependency</c>).
     /// </summary>
     public MichalewiczNonUniformOnePositionManipulator()
       : base() {
-      AddVariableInfo(new VariableInfo("Minimum", "Minimum of the sampling range for the vector element (included)", typeof(DoubleData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("Maximum", "Maximum of the sampling range for the vector element (excluded)", typeof(DoubleData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("CurrentGeneration", "Current Generation of the algorithm", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("MaximumGenerations", "Maximum number of Generations", typeof(IntData), VariableKind.In));
-      VariableInfo genDepInfo = new VariableInfo("GenerationsDependency", "Specifies the degree of dependency on the number of generations", typeof(IntData), VariableKind.In);
-      genDepInfo.Local = true;
-      AddVariableInfo(genDepInfo);
-      AddVariable(new Variable("GenerationsDependency", new IntData(5)));
+      Parameters.Add(new ValueLookupParameter<DoubleData>("Minimum", "Minimum of the sampling range for the vector element (included)"));
+      Parameters.Add(new ValueLookupParameter<DoubleData>("Maximum", "Maximum of the sampling range for the vector element (excluded)"));
+      Parameters.Add(new LookupParameter<IntData>("Generation", "Current generation of the algorithm"));
+      Parameters.Add(new LookupParameter<IntData>("MaximumGenerations", "Maximum number of generations"));
+      Parameters.Add(new ValueLookupParameter<DoubleData>("GenerationDependency", "Specifies the degree of dependency on the number of generations", new DoubleData(5)));
     }
 
     /// <summary>
     /// Performs a non uniformly distributed one position manipulation on the given 
-    /// real <paramref name="vector"/>, published by Z. Michalewicz, 1992.
+    /// real <paramref name="vector"/>. The probability of stronger mutations reduces the more <see cref="currentGeneration"/> approaches <see cref="maximumGenerations"/>.
     /// </summary>
-    /// <remarks>Calls <see cref="Apply"/>.</remarks>
-    /// <param name="scope">The current scope.</param>
-    /// <param name="random">The random number generator.</param>
-    /// <param name="vector">The real vector to manipulate.</param>
-    /// <returns>The manipulated real vector.</returns>
-    protected override double[] Manipulate(IScope scope, IRandom random, double[] vector) {
-      double min = GetVariableValue<DoubleData>("Minimum", scope, true).Data;
-      double max = GetVariableValue<DoubleData>("Maximum", scope, true).Data;
-      int currentGeneration = GetVariableValue<IntData>("CurrentGeneration", scope, true).Data;
-      int maximumGenerations = GetVariableValue<IntData>("MaximumGenerations", scope, true).Data;
-      int generationsDependency = GetVariableValue<IntData>("GenerationsDependency", scope, true).Data;
-      return Apply(random, vector, min, max, currentGeneration, maximumGenerations, generationsDependency);
-    }
-
-    /// <summary>
-    /// Performs a non uniformly distributed one position manipulation on the given 
-    /// real <paramref name="vector"/>, published by Z. Michalewicz, 1992.
-    /// </summary>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="currentGeneration"/> is greater than <paramref name="maximumGenerations"/>.</exception>
     /// <param name="random">The random number generator.</param>
     /// <param name="vector">The real vector to manipulate.</param>
     /// <param name="min">The minimum value of the sampling range for the vector element (inclusive).</param>
@@ -88,22 +79,32 @@ Michalewicz, Z. (1992). Genetic Algorithms + Data Structures = Evolution Program
     /// <param name="maximumGenerations">Maximum number of generations.</param>
     /// <param name="generationsDependency">Specifies the degree of dependency on the number of generations.</param>
     /// <returns>The manipulated real vector.</returns>
-    public static double[] Apply(IRandom random, double[] vector, double min, double max, int currentGeneration, int maximumGenerations, int generationsDependency) {
+    public static void Apply(IRandom random, DoubleArrayData vector, DoubleData min, DoubleData max, IntData currentGeneration, IntData maximumGenerations, DoubleData generationsDependency) {
+      if (currentGeneration.Value > maximumGenerations.Value) throw new ArgumentException("MichalewiczNonUniformOnePositionManipulator: CurrentGeneration must be smaller or equal than MaximumGeneration", "currentGeneration");
       int length = vector.Length;
-      double[] result = new double[length];
-      int pos = random.Next(length);
+      int index = random.Next(length);
+
+      double prob = (1 - Math.Pow(random.NextDouble(), Math.Pow(1 - currentGeneration.Value / maximumGenerations.Value, generationsDependency.Value)));
 
       if (random.NextDouble() < 0.5) {
-        vector[pos] = vector[pos] + Delta(random, currentGeneration, max - vector[pos], maximumGenerations, generationsDependency);
+        vector[index] = vector[index] + (max.Value - vector[index]) * prob;
       } else {
-        vector[pos] = vector[pos] - Delta(random, currentGeneration, vector[pos] - min, maximumGenerations, generationsDependency);
+        vector[index] = vector[index] - (vector[index] - min.Value) * prob;
       }
-      return vector;
     }
 
-    // returns a value between 0 and y (both included)
-    private static double Delta(IRandom random, int currentGeneration, double y, int maximumGenerations, int generationsDependency) {
-      return y * (1 - Math.Pow(random.NextDouble(), Math.Pow(1 - currentGeneration / maximumGenerations, generationsDependency)));
+    /// <summary>
+    /// Checks if all parameters are available and forwards the call to <see cref="Apply(IRandom, DoubleArrayData, DoubleData, DoubleData, IntData, IntData, DoubleData)"/>.
+    /// </summary>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="realVector">The real vector that should be manipulated.</param>
+    protected override void Manipulate(IRandom random, DoubleArrayData realVector) {
+      if (MinimumParameter.ActualValue == null) throw new InvalidOperationException("MichalewiczNonUniformOnePositionManipulator: Parameter " + MinimumParameter.ActualName + " could not be found.");
+      if (MaximumParameter.ActualValue == null) throw new InvalidOperationException("MichalewiczNonUniformOnePositionManipulator: Parameter " + MaximumParameter.ActualName + " could not be found.");
+      if (GenerationParameter.ActualValue == null) throw new InvalidOperationException("MichalewiczNonUniformOnePositionManipulator: Parameter " + GenerationParameter.ActualName + " could not be found.");
+      if (MaximumGenerationsParameter.ActualValue == null) throw new InvalidOperationException("MichalewiczNonUniformOnePositionManipulator: Parameter " + MaximumGenerationsParameter.ActualName + " could not be found.");
+      if (GenerationDependencyParameter.ActualValue == null) throw new InvalidOperationException("MichalewiczNonUniformOnePositionManipulator: Parameter " + GenerationDependencyParameter.ActualName + " could not be found.");
+      Apply(random, realVector, MinimumParameter.ActualValue, MaximumParameter.ActualValue, GenerationParameter.ActualValue, MaximumGenerationsParameter.ActualValue, GenerationDependencyParameter.ActualValue);
     }
   }
 }
