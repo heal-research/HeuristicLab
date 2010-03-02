@@ -51,6 +51,6 @@ namespace HeuristicLab.Encodings.RealVector {
       return base.Apply();
     }
 
-    protected abstract void Manipulate(IRandom random, DoubleArrayData permutation);
+    protected abstract void Manipulate(IRandom random, DoubleArrayData realVector);
   }
 }

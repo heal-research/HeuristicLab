@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,28 +20,36 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.RealVector {
   /// <summary>
-  /// Uniformly distributed change of a single position of a real vector.
+  /// Uniformly distributed change of a single position in a real vector.
   /// </summary>
-  public class UniformOnePositionManipulator : RealVectorManipulatorBase {
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get { return "Uniformly distributed change of a single position of a real vector."; }
+  /// <remarks>
+  /// It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.
+  /// </remarks>
+  [Item("UniformOnePositionManipulator", "Changes a single position in the vector by sampling uniformly from the interval [Minimum, Maximum). It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.")]
+  [EmptyStorableClass]
+  public class UniformOnePositionManipulator : RealVectorManipulator {
+    public ValueLookupParameter<DoubleData> MinimumParameter {
+      get { return (ValueLookupParameter<DoubleData>)Parameters["Minimum"]; }
+    }
+
+    public ValueLookupParameter<DoubleData> MaximumParameter {
+      get { return (ValueLookupParameter<DoubleData>)Parameters["Maximum"]; }
     }
 
     /// <summary>
-    /// Initializes a new instance of <see cref="UniformOnePositionManipulator"/> with two variable infos
+    /// Initializes a new instance of <see cref="UniformOnePositionManipulator"/> with two parameters
     /// (<c>Minimum</c> and <c>Maximum</c>).
     /// </summary>
     public UniformOnePositionManipulator() {
-      AddVariableInfo(new VariableInfo("Minimum", "Minimum of the sampling range for the vector element (included)", typeof(DoubleData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("Maximum", "Maximum of the sampling range for the vector element (excluded)", typeof(DoubleData), VariableKind.In));
+      Parameters.Add(new ValueLookupParameter<DoubleData>("Minimum", "Minimum of the sampling range for the vector element (included)"));
+      Parameters.Add(new ValueLookupParameter<DoubleData>("Maximum", "Maximum of the sampling range for the vector element (excluded)"));
     }
 
     /// <summary>
@@ -53,26 +61,20 @@ namespace HeuristicLab.Encodings.RealVector {
     /// the vector element to change (inclusive).</param>
     /// <param name="max">The maximum value of the sampling range for
     /// the vector element to change (exclusive).</param>
-    /// <returns>The new real vector that has been manipulated.</returns>
-    public static double[] Apply(IRandom random, double[] vector, double min, double max) {
-      double[] result = (double[])vector.Clone();
-      int index = random.Next(result.Length);
-      result[index] = min + random.NextDouble() * (max - min);
-      return result;
+    public static void Apply(IRandom random, DoubleArrayData vector, DoubleData min, DoubleData max) {
+      int index = random.Next(vector.Length);
+      vector[index] = min.Value + random.NextDouble() * (max.Value - min.Value);
     }
 
     /// <summary>
-    /// Changes randomly a single position in the given real <paramref name="vector"/>.
+    /// Checks if the minimum and maximum parameters are available and forwards the call to <see cref="Apply(IRandom, DoubleArrayData, DoubleData, DoubleData)"/>.
     /// </summary>
-    /// <remarks>Calls <see cref="Apply"/>.</remarks>
-    /// <param name="scope">The current scope.</param>
-    /// <param name="random">A random number generator.</param>
-    /// <param name="vector">The real vector to manipulate.</param>
-    /// <returns>The new real vector that has been manipulated.</returns>
-    protected override double[] Manipulate(IScope scope, IRandom random, double[] vector) {
-      double min = GetVariableValue<DoubleData>("Minimum", scope, true).Data;
-      double max = GetVariableValue<DoubleData>("Maximum", scope, true).Data;
-      return Apply(random, vector, min, max);
+    /// <param name="random">The random number generator to use.</param>
+    /// <param name="realVector">The real vector to manipulate.</param>
+    protected override void Manipulate(IRandom random, DoubleArrayData realVector) {
+      if (MinimumParameter.ActualValue == null) throw new InvalidOperationException("UniformOnePositionManipulator: Parameter " + MinimumParameter.ActualName + " could not be found.");
+      if (MaximumParameter.ActualValue == null) throw new InvalidOperationException("UniformOnePositionManipulator: Parameter " + MaximumParameter.ActualName + " could not be found.");
+      Apply(random, realVector, MinimumParameter.ActualValue, MaximumParameter.ActualValue);
     }
   }
 }

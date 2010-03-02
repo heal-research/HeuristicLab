@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,56 +20,58 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.RealVector {
   /// <summary>
-  /// Blend alpha crossover for real vectors. Creates a new offspring by selecting a random value 
+  /// Blend alpha crossover for real vectors (BLX-a). Creates a new offspring by selecting a random value 
   /// from the interval between the two alleles of the parent solutions. The interval is increased 
   /// in both directions by the factor alpha.
   /// </summary>
-  public class BlendAlphaCrossover : RealVectorCrossoverBase {
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get { return
-@"Blend alpha crossover for real vectors. Creates a new offspring by selecting a random value from the interval between the two alleles of the parent solutions. The interval is increased in both directions by the factor alpha.
-Please use the operator BoundsChecker if necessary.";
-      }
+  /// <remarks>
+  /// It is implemented as described in Takahashi, M. and Kita, H. 2001. A crossover operator using independent component analysis for real-coded genetic algorithms Proceedings of the 2001 Congress on Evolutionary Computation, pp. 643-649.<br/>
+  /// The default value for alpha is 0.5.
+  /// </remarks>
+  [Item("BlendAlphaCrossover", "The blend alpha crossover (BLX-a) for real vectors creates new offspring by sampling a new value in the range [min_i - d * alpha, max_i + d * alpha) at each position i. Here min_i and max_i are the smaller and larger value of the two parents at position i and d is max_i - min_i. It is implemented as described in Takahashi, M. and Kita, H. 2001. A crossover operator using independent component analysis for real-coded genetic algorithms Proceedings of the 2001 Congress on Evolutionary Computation, pp. 643-649.")]
+  [EmptyStorableClass]
+  public class BlendAlphaCrossover : RealVectorCrossover {
+    public ValueLookupParameter<DoubleData> AlphaParameter {
+      get { return (ValueLookupParameter<DoubleData>)Parameters["Alpha"]; }
     }
-
     /// <summary>
-    /// Initializes a new instance of <see cref="BlendAlphaCrossover"/> with one variable info (<c>Alpha</c>).
+    /// Initializes a new instance of <see cref="BlendAlphaCrossover"/> with one parameter (<c>Alpha</c>).
     /// </summary>
     public BlendAlphaCrossover()
       : base() {
-      VariableInfo alphaVarInfo = new VariableInfo("Alpha", "Value for alpha", typeof(DoubleData), VariableKind.In);
-      alphaVarInfo.Local = true;
-      AddVariableInfo(alphaVarInfo);
-      AddVariable(new Variable("Alpha", new DoubleData(0.5)));
+      Parameters.Add(new ValueLookupParameter<DoubleData>("Alpha", "Value for alpha", new DoubleData(0.5)));
     }
 
     /// <summary>
-    /// Performs a blend alpha crossover of two real vectors.
+    /// Performs the blend alpha crossover (BLX-a) of two real vectors.<br/>
+    /// It creates new offspring by sampling a new value in the range [min_i - d * alpha, max_i + d * alpha) at each position i.
+    /// Here min_i and max_i are the smaller and larger value of the two parents at position i and d is max_i - min_i.
     /// </summary>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="parent1"/> and <paramref name="parent2"/> are of different length.</exception>
     /// <param name="random">The random number generator.</param>
     /// <param name="parent1">The first parent for the crossover operation.</param>
     /// <param name="parent2">The second parent for the crossover operation.</param>
     /// <param name="alpha">The alpha value for the crossover.</param>
     /// <returns>The newly created real vector resulting from the crossover operation.</returns>
-    public static double[] Apply(IRandom random, double[] parent1, double[] parent2, double alpha) {
+    public static DoubleArrayData Apply(IRandom random, DoubleArrayData parent1, DoubleArrayData parent2, DoubleData alpha) {
+      if (parent1.Length != parent2.Length) throw new ArgumentException("BlendAlphaCrossover: The parents' vectors are of different length.", "parent1");
       int length = parent1.Length;
-      double[] result = new double[length];
-      double cMax = 0, cMin = 0, interval = 0, resMin = 0, resMax = 0;
+      DoubleArrayData result = new DoubleArrayData(length);
+      double max = 0, min = 0, d = 0, resMin = 0, resMax = 0;
 
       for (int i = 0; i < length; i++) {
-        cMax = Math.Max(parent1[i], parent2[i]);
-        cMin = Math.Min(parent1[i], parent2[i]);
-        interval = Math.Abs(cMax - cMin);
-        resMin = cMin - interval * alpha;
-        resMax = cMax + interval * alpha;
+        max = Math.Max(parent1[i], parent2[i]);
+        min = Math.Min(parent1[i], parent2[i]);
+        d = Math.Abs(max - min);
+        resMin = min - d * alpha.Value;
+        resMax = max + d * alpha.Value;
 
         result[i] = resMin + random.NextDouble() * Math.Abs(resMax - resMin);
       }
@@ -77,17 +79,17 @@ Please use the operator BoundsChecker if necessary.";
     }
 
     /// <summary>
-    /// Performs a blend alpha crossover operation for two given parent real vectors.
+    /// Checks that the number of parents is equal to 2 and forwards the call to <see cref="Apply(IRandom, DoubleArrayData, DoubleArrayData, DoubleData)"/>.
     /// </summary>
-    /// <exception cref="InvalidOperationException">Thrown if there are not exactly two parents.</exception>
-    /// <param name="scope">The current scope.</param>
-    /// <param name="random">A random number generator.</param>
-    /// <param name="parents">An array containing the two real vectors that should be crossed.</param>
-    /// <returns>The newly created real vector, resulting from the crossover operation.</returns>
-    protected override double[] Cross(IScope scope, IRandom random, double[][] parents) {
-      if (parents.Length != 2) throw new InvalidOperationException("ERROR in BlendAlphaCrossover: The number of parents is not equal to 2");
-      double alpha = GetVariableValue<DoubleData>("Alpha", scope, true).Data;
-      return Apply(random, parents[0], parents[1], alpha);
+    /// <exception cref="ArgumentException">Thrown when the number of parents is not equal to 2.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the parameter alpha could not be found.</exception>
+    /// <param name="random">The random number generator to use.</param>
+    /// <param name="parents">The collection of parents (must be of size 2).</param>
+    /// <returns>The real vector resulting from the crossover operation.</returns>
+    protected override DoubleArrayData Cross(IRandom random, ItemArray<DoubleArrayData> parents) {
+      if (parents.Length != 2) throw new ArgumentException("BlendAlphaCrossover: The number of parents is not equal to 2", "parents");
+      if (AlphaParameter.ActualValue == null) throw new InvalidOperationException("BlendAlphaCrossover: Parameter " + AlphaParameter.ActualName + " could not be found.");
+      return Apply(random, parents[0], parents[1], AlphaParameter.ActualValue);
     }
   }
 }

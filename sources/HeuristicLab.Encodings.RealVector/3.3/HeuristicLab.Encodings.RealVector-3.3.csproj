@@ -90,6 +90,10 @@
     <Compile Include="RealVectorManipulator.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Crossovers\BlendAlphaCrossover.cs" />
+    <Compile Include="Crossovers\SinglePointCrossover.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="HeuristicLabEncodingsRealVectorPlugin.cs" />
     <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.frame" />

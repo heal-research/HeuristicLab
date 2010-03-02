@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,32 +20,36 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.RealVector {
   /// <summary>
-  /// Single point crossover for real vectors.
+  /// Single point crossover for real vectors. The implementation is similar to the single point crossover for binary vectors.
+  /// After a breakpoint is randomly chosen in the interval [1,N-1) with N = length of the vector, the first part is copied from parent1 the other part copied from parent2.
+  /// The interval is chosen such that at least one position is taken from a different parent.
   /// </summary>
-  public class SinglePointCrossover : RealVectorCrossoverBase {
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get { return "Single point crossover for real vectors."; }
-    }
-
+  /// <remarks>
+  /// It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.
+  /// </remarks>
+  [Item("SinglePointCrossover", "Breaks both parent chromosomes at a randomly chosen point and assembles a child by taking one part of the first parent and the other part of the second pard. It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.")]
+  [EmptyStorableClass]
+  public class SinglePointCrossover : RealVectorCrossover {
     /// <summary>
-    /// Performs a single point crossover at a randomly chosen position of the two 
-    /// given parent real vectors.
+    /// Performs the single point crossover for real vectors. The implementation is similar to the single point crossover for binary vectors.
+    /// After a breakpoint is randomly chosen in the interval [1,N-1) with N = length of the vector, the first part is copied from parent1 the other part copied from parent2.
     /// </summary>
+    /// <exception cref="ArgumentException">Thrown when the length of the vector is not the same in both parents.</exception>
     /// <param name="random">A random number generator.</param>
     /// <param name="parent1">The first parent for crossover.</param>
     /// <param name="parent2">The second parent for crossover.</param>
     /// <returns>The newly created real vector, resulting from the single point crossover.</returns>
-    public static double[] Apply(IRandom random, double[] parent1, double[] parent2) {
+    public static DoubleArrayData Apply(IRandom random, DoubleArrayData parent1, DoubleArrayData parent2) {
+      if (parent1.Length != parent2.Length) throw new ArgumentException("SinglePointCrossover: Parents are of unequal length");
       int length = parent1.Length;
-      double[] result = new double[length];
-      int breakPoint = random.Next(1, length);
+      DoubleArrayData result = new DoubleArrayData(length);
+      int breakPoint = random.Next(1, length - 1);
 
       for (int i = 0; i < breakPoint; i++)
         result[i] = parent1[i];
@@ -56,15 +60,13 @@ namespace HeuristicLab.Encodings.RealVector {
     }
 
     /// <summary>
-    /// Performs a single point crossover operation for two given parent real vectors.
+    /// Checks number of parents and forwards the call to <see cref="Apply(IRandom, DoubleArrayData, DoubleArrayData)"/>.
     /// </summary>
-    /// <exception cref="InvalidOperationException">Thrown if there are not exactly two parents.</exception>
-    /// <param name="scope">The current scope.</param>
-    /// <param name="random">A random number generator.</param>
-    /// <param name="parents">An array containing the two real vectors that should be crossed.</param>
-    /// <returns>The newly created real vector, resulting from the crossover operation.</returns>
-    protected override double[] Cross(IScope scope, IRandom random, double[][] parents) {
-      if (parents.Length != 2) throw new InvalidOperationException("ERROR in SinglePointCrossover: The number of parents is not equal to 2");
+    /// <param name="random">The pseudo random number generator to use.</param>
+    /// <param name="parents">The list of parents.</param>
+    /// <returns>A new real vector.</returns>
+    protected override HeuristicLab.Data.DoubleArrayData Cross(IRandom random, ItemArray<DoubleArrayData> parents) {
+      if (parents.Length != 2) throw new InvalidOperationException("SinglePointCrossover: The number of parents is not equal to 2");
       return Apply(random, parents[0], parents[1]);
     }
   }

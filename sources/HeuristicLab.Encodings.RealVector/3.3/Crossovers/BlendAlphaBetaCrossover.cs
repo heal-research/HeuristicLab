@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,17 +22,21 @@
 using System;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.RealVector {
   /// <summary>
-  /// Blend alpha-beta crossover for real vectors. Creates a new offspring by selecting a 
+  /// Blend alpha-beta crossover for real vectors (BLX-a-b). Creates a new offspring by selecting a 
   /// random value from the interval between the two alleles of the parent solutions. 
   /// The interval is increased in both directions as follows: Into the direction of the 'better' 
   /// solution by the factor alpha, into the direction of the 'worse' solution by the factor beta.
   /// </summary>
-  [Item("BlendAlphaBetaCrossover", "FIXME: CHECK WITH LITERATURE AND VALIDATE IT.")]
+  /// <remarks>
+  /// It is implemented as described in Takahashi, M. and Kita, H. 2001. A crossover operator using independent component analysis for real-coded genetic algorithms Proceedings of the 2001 Congress on Evolutionary Computation, pp. 643-649.<br/>
+  /// The default value for alpha is 0.75, the default value for beta is 0.25.
+  /// </remarks>
+  [Item("BlendAlphaBetaCrossover", "The blend alpha beta crossover (BLX-a-b) for real vectors is similar to the blend alpha crossover (BLX-a), but distinguishes between the better and worse of the parents. The interval from which to choose the new offspring can be extended more around the better parent by specifying a higher alpha value. It is implemented as described in Takahashi, M. and Kita, H. 2001. A crossover operator using independent component analysis for real-coded genetic algorithms Proceedings of the 2001 Congress on Evolutionary Computation, pp. 643-649.")]
   [EmptyStorableClass]
   public class BlendAlphaBetaCrossover : RealVectorCrossover {
     public ValueLookupParameter<BoolData> MaximizationParameter {
@@ -59,39 +63,63 @@ namespace HeuristicLab.Encodings.RealVector {
       Parameters.Add(new ValueLookupParameter<DoubleData>("Beta", "The value for beta.", new DoubleData(0.25)));
     }
 
+    /// <summary>
+    /// Performs the blend alpha beta crossover (BLX-a-b) on two parent vectors.
+    /// </summary>
+    /// <exception cref="ArgumentException">
+    /// Thrown when either:<br/>
+    /// <list type="bullet">
+    /// <item><description>The length of <paramref name="betterParent"/> and <paramref name="worseParent"/> is not equal.</description></item>
+    /// <item><description>The parameter <paramref name="alpha"/> is smaller than 0.</description></item>
+    /// <item><description>The parameter <paramref name="beta"/> is smaller than 0.</description></item>
+    /// </list>
+    /// </exception>
+    /// <param name="random">The random number generator to use.</param>
+    /// <param name="betterParent">The better of the two parents with regard to their fitness.</param>
+    /// <param name="worseParent">The worse of the two parents with regard to their fitness.</param>
+    /// <param name="alpha">The parameter alpha.</param>
+    /// <param name="beta">The parameter beta.</param>
+    /// <returns>The real vector that results from the crossover.</returns>
     public static DoubleArrayData Apply(IRandom random, DoubleArrayData betterParent, DoubleArrayData worseParent, DoubleData alpha, DoubleData beta) {
       if (betterParent.Length != worseParent.Length) throw new ArgumentException("BlendAlphaBetaCrossover: The parents' vectors are of different length.", "betterParent");
+      if (alpha.Value < 0) throw new ArgumentException("BlendAlphaBetaCrossover: Parameter alpha must be greater or equal to 0.", "alpha");
+      if (beta.Value < 0) throw new ArgumentException("BlendAlphaBetaCrossover: Parameter beta must be greater or equal to 0.", "beta");
       int length = betterParent.Length;
+      double min, max, d;
       DoubleArrayData result = new DoubleArrayData(length);
 
       for (int i = 0; i < length; i++) {
-        double interval = Math.Abs(betterParent[i] - worseParent[i]);
-        result[i] = SelectFromInterval(random, interval, betterParent[i], worseParent[i], alpha.Value, beta.Value);
+        d = Math.Abs(betterParent[i] - worseParent[i]);
+        if (betterParent[i] <= worseParent[i]) {
+          min = betterParent[i] - d * alpha.Value;
+          max = worseParent[i] + d * beta.Value;
+        } else {
+          min = worseParent[i] - d * beta.Value;
+          max = betterParent[i] + d * alpha.Value;
+        }
+        result[i] = min + random.NextDouble() * (max - min);
       }
       return result;
     }
 
-    private static double SelectFromInterval(IRandom random, double interval, double val1, double val2, double alpha, double beta) {
-      double resMin = 0;
-      double resMax = 0;
-
-      if (val1 <= val2) {
-        resMin = val1 - interval * alpha;
-        resMax = val2 + interval * beta;
-      } else {
-        resMin = val2 - interval * beta;
-        resMax = val1 + interval * alpha;
-      }
-
-      return SelectRandomFromInterval(random, resMin, resMax);
-    }
-
-    private static double SelectRandomFromInterval(IRandom random, double resMin, double resMax) {
-      return resMin + random.NextDouble() * Math.Abs(resMax - resMin);
-    }
-
+    /// <summary>
+    /// Checks if the number of parents is equal to 2, if all parameters are available and forwards the call to <see cref="Apply(IRandom, DoubleArrayData, DoubleArrayData, DoubleData, DoubleData)"/>.
+    /// </summary>
+    /// <exception cref="ArgumentException">Thrown when the number of parents is not equal to 2.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when either:<br/>
+    /// <list type="bullet">
+    /// <item><description>Maximization parameter could not be found.</description></item>
+    /// <item><description>Quality parameter could not be found or the number of quality values is not equal to the number of parents.</description></item>
+    /// <item><description>Alpha parameter could not be found.</description></item>
+    /// <item><description>Beta parameter could not be found.</description></item>
+    /// </list>
+    /// </exception>
+    /// <param name="random">The random number generator to use.</param>
+    /// <param name="parents">The collection of parents (must be of size 2).</param>
+    /// <returns>The real vector that results from the crossover.</returns>
     protected override DoubleArrayData Cross(IRandom random, ItemArray<DoubleArrayData> parents) {
-      if (parents.Length != 2) throw new InvalidOperationException("BlendAlphaBetaCrossover: Number of parents is not equal to 2.");
+      if (parents.Length != 2) throw new ArgumentException("BlendAlphaBetaCrossover: Number of parents is not equal to 2.", "parents");
       if (MaximizationParameter.ActualValue == null) throw new InvalidOperationException("BlendAlphaBetaCrossover: Parameter " + MaximizationParameter.ActualName + " could not be found.");
       if (QualityParameter.ActualValue == null || QualityParameter.ActualValue.Length != parents.Length) throw new InvalidOperationException("BlendAlphaBetaCrossover: Parameter " + QualityParameter.ActualName + " could not be found, or not in the same quantity as there are parents.");
       if (AlphaParameter.ActualValue == null || BetaParameter.ActualValue == null) throw new InvalidOperationException("BlendAlphaBetaCrossover: Parameter " + AlphaParameter.ActualName + " or paramter " + BetaParameter.ActualName + " could not be found.");
