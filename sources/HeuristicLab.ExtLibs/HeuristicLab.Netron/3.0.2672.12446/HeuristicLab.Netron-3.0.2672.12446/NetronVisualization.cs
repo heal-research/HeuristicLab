@@ -48,7 +48,7 @@ namespace HeuristicLab.Netron {
       if (!DesignMode) {
         this.Controller = new Controller(this);
         this.Document = new Document();
-        this.Document.Model.Selection = new Selection(this.Controller,this.Document.Model);
+        this.Document.Model.Selection = new Selection(this.Controller, this.Document.Model);
         this.View = new View(this);
         this.AttachToDocument(Document);
         this.Controller.View = View;
@@ -58,13 +58,46 @@ namespace HeuristicLab.Netron {
         View.OnBackColorChange += new EventHandler<ColorEventArgs>(View_OnBackColorChange);
 
         this.SizeChanged += new EventHandler(NetronVisualization_SizeChanged);
-        this.AllowDrop = true;
+        this.UpdateView();
+      }
+    }
+
+    public Size PageSize {
+      get { return this.View.PageSize; }
+      set {
+        this.View.PageSize = value;
+        this.UpdateView();
+      }
+    }
+
+    private void UpdateView() {
+      //zoom in to show scrollbars - code taken from ControllerBase line 1082
+      SizeF s = this.View.Magnification;
+      float alpha = 1.1F;
+      View.Magnification = new SizeF(
+          s.Width * alpha,
+          s.Height * alpha);
+
+      float w = (float)this.AutoScrollPosition.X /
+          (float)this.AutoScrollMinSize.Width;
+
+      float h = (float)this.AutoScrollPosition.Y /
+          (float)this.AutoScrollMinSize.Height;
+
+      RectangleF pageBounds = this.Controller.Model.CurrentPage.Bounds;
+      pageBounds.Inflate(s);
+      SizeF deltaSize = new SizeF(
+          pageBounds.Width - this.ClientRectangle.Width,
+          pageBounds.Height - this.ClientRectangle.Height);
+
+      if ((deltaSize.Width > 0) && (deltaSize.Height > 0)) {
+        this.AutoScrollMinSize = Size.Round(deltaSize);
       }
     }
 
     private void NetronVisualization_SizeChanged(object sender, EventArgs e) {
       //if (this.oldSize == INVALID_SIZE) {
-        this.View.PageSize = new Size((int)(this.Size.Width * this.Magnification.Width), (int)(this.Size.Height * this.Magnification.Height));
+      //this.View.PageSize = new Size((int)(this.Size.Width * this.Magnification.Width), (int)(this.Size.Height * this.Magnification.Height));
       //  if (!this.DesignMode)
       //    oldSize = this.Size;
       //  return;

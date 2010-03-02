@@ -38,9 +38,10 @@
       this.graphVisualization.EnableAddConnection = true;
       this.graphVisualization.FileName = "";
       this.graphVisualization.Location = new System.Drawing.Point(0, 0);
-      this.graphVisualization.Magnification = new System.Drawing.SizeF(71F, 71F);
+      this.graphVisualization.Magnification = new System.Drawing.SizeF(80F, 80F);
       this.graphVisualization.Name = "graphVisualization";
       this.graphVisualization.Origin = new System.Drawing.Point(0, 0);
+      this.graphVisualization.PageSize = new System.Drawing.Size(100000, 100000);
       this.graphVisualization.ShowConnectors = true;
       this.graphVisualization.ShowRulers = false;
       this.graphVisualization.Size = new System.Drawing.Size(665, 444);

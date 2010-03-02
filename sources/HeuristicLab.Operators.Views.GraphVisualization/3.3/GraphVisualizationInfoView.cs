@@ -34,6 +34,8 @@ using Netron.Diagramming.Core;
 using HeuristicLab.Parameters;
 using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Collections;
+using System.Diagnostics;
+using System.Threading;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
   [Content(typeof(GraphVisualizationInfo), false)]
@@ -334,6 +336,17 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
         string layoutName = "Standard TreeLayout";
         this.graphVisualization.Controller.RunActivity(layoutName);
         this.graphVisualization.Invalidate();
+
+        //fix to avoid negative shape positions after layouting
+        Thread.Sleep(100);
+        int minX = this.graphVisualization.Controller.Model.Shapes.Min(s => s.Location.X);
+        int shiftX = minX < 0 ? Math.Abs(minX) + 50 : 0;
+        int minY = this.graphVisualization.Controller.Model.Shapes.Min(s => s.Location.Y);
+        int shiftY = minY < 0 ? Math.Abs(minY) + 50 : 0;
+        if (minX < 0 || minY < 0) {
+          foreach (IShape s in this.Controller.Model.Shapes)
+            s.MoveBy(new Point(shiftX, shiftY));
+        }
       }
     }
   }
