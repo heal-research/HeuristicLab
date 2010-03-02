@@ -84,11 +84,16 @@
   <ItemGroup>
     <None Include="HeuristicLabAnalysisPlugin.cs.frame" />
     <Compile Include="BestAverageWorstQualityCalculator.cs" />
+    <Compile Include="DataRow.cs" />
     <Compile Include="HeuristicLabAnalysisPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="DataTable.cs" />
+    <Compile Include="DataTableValuesCollector.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
+    <None Include="Microsoft Chart Controls\DataVisChartControl.chm" />
+    <None Include="Microsoft Chart Controls\WinSamples.zip" />
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
@@ -120,6 +125,10 @@
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Microsoft Chart Controls\MSChart.exe" />
+    <None Include="Microsoft Chart Controls\MSChart_VisualStudioAddOn.exe" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

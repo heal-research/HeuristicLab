@@ -95,6 +95,8 @@ namespace HeuristicLab.Algorithms.SGA {
       #endregion
 
       #region Create operator graph
+      VariableCreator variableCreator = new VariableCreator();
+      ResultsCollector resultsCollector1 = new ResultsCollector();
       SubScopesSorter subScopesSorter1 = new SubScopesSorter();
       Placeholder selector = new Placeholder();
       SequentialSubScopesProcessor sequentialSubScopesProcessor1 = new SequentialSubScopesProcessor();
@@ -113,12 +115,23 @@ namespace HeuristicLab.Algorithms.SGA {
       IntCounter intCounter = new IntCounter();
       Comparator comparator = new Comparator();
       BestAverageWorstQualityCalculator bestAverageWorstQualityCalculator = new BestAverageWorstQualityCalculator();
-      ResultsCollector resultsCollector = new ResultsCollector();
+      ResultsCollector resultsCollector2 = new ResultsCollector();
+      DataTableValuesCollector dataTableValuesCollector = new DataTableValuesCollector();
       ConditionalBranch conditionalBranch = new ConditionalBranch();
+
+      OperatorGraph.InitialOperator = variableCreator;
+
+      variableCreator.CollectedValues.Add(new ValueParameter<DataTable>("Qualities", new DataTable("Qualities")));
+      variableCreator.Successor = resultsCollector1;
+
+      LookupParameter<DataTable> qualities = new LookupParameter<DataTable>("Qualities");
+      qualities.ActualName = "Qualities";
+      resultsCollector1.CollectedValues.Add(qualities);
+      resultsCollector1.ResultsParameter.ActualName = "Results";
+      resultsCollector1.Successor = subScopesSorter1;
 
       subScopesSorter1.DescendingParameter.ActualName = "Maximization";
       subScopesSorter1.ValueParameter.ActualName = "Quality";
-      OperatorGraph.InitialOperator = subScopesSorter1;
       subScopesSorter1.Successor = selector;
 
       selector.Name = "Selector";
@@ -187,19 +200,31 @@ namespace HeuristicLab.Algorithms.SGA {
       bestAverageWorstQualityCalculator.MaximizationParameter.ActualName = "Maximization";
       bestAverageWorstQualityCalculator.QualityParameter.ActualName = "Quality";
       bestAverageWorstQualityCalculator.WorstQualityParameter.ActualName = "WorstQuality";
-      bestAverageWorstQualityCalculator.Successor = resultsCollector;
+      bestAverageWorstQualityCalculator.Successor = dataTableValuesCollector;
 
       LookupParameter<DoubleData> bestQuality = new LookupParameter<DoubleData>("BestQuality");
       bestQuality.ActualName = "BestQuality";
-      resultsCollector.CollectedValues.Add(bestQuality);
+      dataTableValuesCollector.CollectedValues.Add(bestQuality);
       LookupParameter<DoubleData> averageQuality = new LookupParameter<DoubleData>("AverageQuality");
       averageQuality.ActualName = "AverageQuality";
-      resultsCollector.CollectedValues.Add(averageQuality);
+      dataTableValuesCollector.CollectedValues.Add(averageQuality);
       LookupParameter<DoubleData> worstQuality = new LookupParameter<DoubleData>("WorstQuality");
       worstQuality.ActualName = "WorstQuality";
-      resultsCollector.CollectedValues.Add(worstQuality);
-      resultsCollector.ResultsParameter.ActualName = "Results";
-      resultsCollector.Successor = conditionalBranch;
+      dataTableValuesCollector.CollectedValues.Add(worstQuality);
+      dataTableValuesCollector.DataTableParameter.ActualName = "Qualities";
+      dataTableValuesCollector.Successor = resultsCollector2;
+
+      bestQuality = new LookupParameter<DoubleData>("BestQuality");
+      bestQuality.ActualName = "BestQuality";
+      resultsCollector2.CollectedValues.Add(bestQuality);
+      averageQuality = new LookupParameter<DoubleData>("AverageQuality");
+      averageQuality.ActualName = "AverageQuality";
+      resultsCollector2.CollectedValues.Add(averageQuality);
+      worstQuality = new LookupParameter<DoubleData>("WorstQuality");
+      worstQuality.ActualName = "WorstQuality";
+      resultsCollector2.CollectedValues.Add(worstQuality);
+      resultsCollector2.ResultsParameter.ActualName = "Results";
+      resultsCollector2.Successor = conditionalBranch;
 
       conditionalBranch.ConditionParameter.ActualName = "Terminate";
       conditionalBranch.FalseBranch = subScopesSorter1;

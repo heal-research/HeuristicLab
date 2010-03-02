@@ -74,6 +74,7 @@
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -87,6 +88,12 @@
     <None Include="HeuristicLabAnalysisViewsPlugin.cs.frame" />
     <Compile Include="HeuristicLabAnalysisViewsPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="DataTableView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DataTableView.Designer.cs">
+      <DependentUpon>DataTableView.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
@@ -97,9 +104,17 @@
       <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
       <Name>HeuristicLab.Analysis-3.3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
+      <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
+      <Name>HeuristicLab.Collections-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Core.Views\3.3\HeuristicLab.Core.Views-3.3.csproj">
       <Project>{E226881D-315F-423D-B419-A766FE0D8685}</Project>
       <Name>HeuristicLab.Core.Views-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
+      <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
+      <Name>HeuristicLab.Core-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.MainForm.WindowsForms\3.2\HeuristicLab.MainForm.WindowsForms-3.2.csproj">
       <Project>{AB687BBE-1BFE-476B-906D-44237135431D}</Project>

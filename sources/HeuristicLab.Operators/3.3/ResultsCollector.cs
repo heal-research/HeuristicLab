@@ -25,9 +25,9 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
   /// <summary>
-  /// An operator which collects the actual values of parameters and clones them into a collection of variables.
+  /// An operator which collects the actual values of parameters and adds them to a collection of variables.
   /// </summary>
-  [Item("ResultsCollector", "An operator which collects the actual values of parameters and clones them into a collection of variables.")]
+  [Item("ResultsCollector", "An operator which collects the actual values of parameters and adds them to a collection of variables.")]
   [Creatable("Test")]
   [EmptyStorableClass]
   public class ResultsCollector : ValuesCollector {
@@ -46,9 +46,9 @@ namespace HeuristicLab.Operators {
       foreach (IParameter param in CollectedValues) {
         results.TryGetValue(param.Name, out var);
         if (var != null)
-          var.Value = (IItem)param.ActualValue.Clone();
+          var.Value = (IItem)param.ActualValue;
         else
-          results.Add(new Variable(param.Name, (IItem)param.ActualValue.Clone()));
+          results.Add(new Variable(param.Name, param.ActualValue));
       }
       return base.Apply();
     }
