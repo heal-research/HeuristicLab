@@ -22,7 +22,6 @@ HeuristicLab.Encodings.RealVector\3.3:HeuristicLab.Encodings.RealVector-3.3.dll
 HeuristicLab.Evolutionary\3.3:HeuristicLab.Evolutionary-3.3.dll
 HeuristicLab.Logging\3.3:HeuristicLab.Logging-3.3.dll
 HeuristicLab.MainForm\3.2:HeuristicLab.MainForm-3.2.dll
-HeuristicLab.MainForm.Test\3.2:HeuristicLab.MainForm.Test-3.2.dll
 HeuristicLab.MainForm.WindowsForms\3.2:HeuristicLab.MainForm.WindowsForms-3.2.dll
 HeuristicLab.Operators\3.3:HeuristicLab.Operators-3.3.dll
 HeuristicLab.Operators.Views\3.3:HeuristicLab.Operators.Views-3.3.dll

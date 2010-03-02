@@ -24,11 +24,11 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.SQLite {
+namespace HeuristicLab.log4net {
   [Plugin("HeuristicLab.log4net", "1.2.10.0")]
   [PluginFile("HeuristicLab.log4net-1.2.10.0.dll", PluginFileType.Assembly)]
   [PluginFile("log4net.dll", PluginFileType.Assembly)]
   [PluginFile("log4net License.txt", PluginFileType.License)]
-  public class HeuristicLabSQLitePlugin : PluginBase {
+  public class HeuristicLablog4netPlugin : PluginBase {
   }
 }

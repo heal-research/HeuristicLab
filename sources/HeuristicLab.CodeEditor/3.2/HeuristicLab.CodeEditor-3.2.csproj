@@ -121,6 +121,7 @@
     <Compile Include="CodeViewer.Designer.cs">
       <DependentUpon>CodeViewer.cs</DependentUpon>
     </Compile>
+    <None Include="HeuristicLabCodeEditorPlugin.cs.frame" />
     <Compile Include="HeuristicLabCodeEditorPlugin.cs" />
     <Compile Include="ErrorBookmark.cs" />
     <Compile Include="HostCallbackImplementation.cs" />
@@ -158,6 +159,7 @@ set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
-call PreBuildEvent.cmd</PreBuildEvent>
+call PreBuildEvent.cmd
+SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabCodeEditorPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabCodeEditorPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

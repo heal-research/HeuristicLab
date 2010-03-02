@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,10 +27,10 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Operators.Programmable {
   [Plugin("HeuristicLab.Operators.Programmable", "3.3.0.$WCREV$")]
   [PluginFile("HeuristicLab.Operators.Programmable-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.CodeEditor-3.2")]
+  [PluginDependency("HeuristicLab.CodeEditor", "3.2")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
-  [PluginDependency("HeuristicLab.Core.Views", "3.3")]  
+  [PluginDependency("HeuristicLab.Core.Views", "3.3")]
   [PluginDependency("HeuristicLab.Data", "3.3")]
   [PluginDependency("HeuristicLab.Operators", "3.3")]
   [PluginDependency("HeuristicLab.Persistence", "3.3")]
