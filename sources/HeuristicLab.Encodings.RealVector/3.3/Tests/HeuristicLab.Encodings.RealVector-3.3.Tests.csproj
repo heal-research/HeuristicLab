@@ -1,19 +1,17 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{2D4E4565-3ED9-4BEB-AE75-39D871843D24}</ProjectGuid>
+    <ProjectGuid>{446C4F3D-1A12-465A-9128-97D0F47140C9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.Encodings.RealVector</RootNamespace>
-    <AssemblyName>HeuristicLab.Encodings.RealVector-3.3</AssemblyName>
+    <RootNamespace>HeuristicLab.Encodings.RealVector.Tests</RootNamespace>
+    <AssemblyName>HeuristicLab.Encodings.RealVector-3.3.Tests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,7 +29,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\HeuristicLab.Encodings.RealVector-3.3.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -44,7 +41,6 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\x86\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <DocumentationFile>bin\x86\Release\HeuristicLab.Encodings.RealVector-3.3.XML</DocumentationFile>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -61,83 +57,76 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
     <OutputPath>bin\x64\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <DocumentationFile>bin\x64\Release\HeuristicLab.Encodings.RealVector-3.3.XML</DocumentationFile>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="HeuristicLabEncodingsRealVectorPlugin.cs.frame" />
-    <Compile Include="Crossovers\BlendAlphaBetaCrossover.cs" />
-    <Compile Include="Interfaces\IRealVectorManipulator.cs" />
-    <Compile Include="Interfaces\IRealVectorOperator.cs" />
-    <Compile Include="Interfaces\IRealVectorCrossover.cs" />
-    <Compile Include="Interfaces\IRealVectorCreator.cs" />
-    <Compile Include="BoundsChecker.cs" />
-    <Compile Include="Creators\UniformRandomRealVectorCreator.cs" />
-    <Compile Include="RealVectorCreator.cs" />
-    <Compile Include="RealVectorCrossover.cs" />
+    <Compile Include="Auxiliary.cs" />
+    <Compile Include="BlendAlphaCrossoverTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RealVectorManipulator.cs" />
+    <Compile Include="TestRandom.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Crossovers\BlendAlphaCrossover.cs" />
-    <Compile Include="Crossovers\SinglePointCrossover.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="HeuristicLabEncodingsRealVectorPlugin.cs" />
-    <Compile Include="Manipulators\UniformOnePositionManipulator.cs" />
-    <None Include="HeuristicLab.snk" />
-    <None Include="Properties\AssemblyInfo.frame" />
+    <Content Include="AuthoringTests.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
+    <ProjectReference Include="..\..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
       <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Common\3.2\HeuristicLab.Common-3.2.csproj">
+    <ProjectReference Include="..\..\..\HeuristicLab.Common\3.2\HeuristicLab.Common-3.2.csproj">
       <Project>{1FC004FC-59AF-4249-B1B6-FF25873A20E4}</Project>
       <Name>HeuristicLab.Common-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
-      <Project>{F43B59AB-2B8C-4570-BC1E-15592086517C}</Project>
+    <ProjectReference Include="..\..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
+      <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
       <Name>HeuristicLab.Core-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
-      <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
+    <ProjectReference Include="..\..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
+      <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
       <Name>HeuristicLab.Data-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
+    <ProjectReference Include="..\..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
       <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
       <Name>HeuristicLab.Operators-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
+    <ProjectReference Include="..\..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
       <Project>{14AB8D24-25BC-400C-A846-4627AA945192}</Project>
       <Name>HeuristicLab.Optimization-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj">
+    <ProjectReference Include="..\..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj">
       <Project>{56F9106A-079F-4C61-92F6-86A84C2D84B7}</Project>
       <Name>HeuristicLab.Parameters-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
+    <ProjectReference Include="..\..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
       <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
       <Name>HeuristicLab.Persistence-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
+    <ProjectReference Include="..\..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Encodings.RealVector-3.3.csproj">
+      <Project>{2D4E4565-3ED9-4BEB-AE75-39D871843D24}</Project>
+      <Name>HeuristicLab.Encodings.RealVector-3.3</Name>
+    </ProjectReference>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Shadow Include="Test References\HeuristicLab.Encodings.RealVector-3.3.accessor" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -145,13 +134,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <PropertyGroup>
-    <PreBuildEvent>set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
-set ProjectDir=$(ProjectDir)
-set SolutionDir=$(SolutionDir)
-set Outdir=$(Outdir)
-
-call PreBuildEvent.cmd
-SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabEncodingsRealVectorPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabEncodingsRealVectorPlugin.cs"</PreBuildEvent>
-  </PropertyGroup>
 </Project>

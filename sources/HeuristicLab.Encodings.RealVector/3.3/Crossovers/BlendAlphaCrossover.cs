@@ -54,7 +54,10 @@ namespace HeuristicLab.Encodings.RealVector {
     /// It creates new offspring by sampling a new value in the range [min_i - d * alpha, max_i + d * alpha) at each position i.
     /// Here min_i and max_i are the smaller and larger value of the two parents at position i and d is max_i - min_i.
     /// </summary>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="parent1"/> and <paramref name="parent2"/> are of different length.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="parent1"/> and <paramref name="parent2"/> are of different length or<br/>
+    /// when <paramref name="alpha"/> is less than 0.
+    /// </exception>
     /// <param name="random">The random number generator.</param>
     /// <param name="parent1">The first parent for the crossover operation.</param>
     /// <param name="parent2">The second parent for the crossover operation.</param>
@@ -62,6 +65,7 @@ namespace HeuristicLab.Encodings.RealVector {
     /// <returns>The newly created real vector resulting from the crossover operation.</returns>
     public static DoubleArrayData Apply(IRandom random, DoubleArrayData parent1, DoubleArrayData parent2, DoubleData alpha) {
       if (parent1.Length != parent2.Length) throw new ArgumentException("BlendAlphaCrossover: The parents' vectors are of different length.", "parent1");
+      if (alpha.Value < 0) throw new ArgumentException("BlendAlphaCrossover: Paramter alpha must be greater or equal than 0.", "alpha");
       int length = parent1.Length;
       DoubleArrayData result = new DoubleArrayData(length);
       double max = 0, min = 0, d = 0, resMin = 0, resMax = 0;
