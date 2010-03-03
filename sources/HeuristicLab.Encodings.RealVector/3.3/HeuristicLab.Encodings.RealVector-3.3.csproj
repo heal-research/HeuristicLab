@@ -96,10 +96,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="HeuristicLabEncodingsRealVectorPlugin.cs" />
+    <Compile Include="Manipulators\PolynomialAllPositionManipulator.cs" />
     <Compile Include="Manipulators\MichalewiczNonUniformAllPositionsManipulator.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Manipulators\MichalewiczNonUniformOnePositionManipulator.cs" />
+    <Compile Include="Manipulators\PolynomialOnePositionManipulator.cs" />
     <Compile Include="Manipulators\UniformOnePositionManipulator.cs" />
     <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.frame" />
