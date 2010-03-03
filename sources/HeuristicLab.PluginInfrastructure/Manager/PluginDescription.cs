@@ -47,9 +47,9 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     /// <summary>
     /// Gets or sets the description of the plugin.
     /// </summary>
-    internal string Description {
+    public string Description {
       get { return description; }
-      set { description = value; }
+      internal set { description = value; }
     }
     private Version version;
     /// <summary>
@@ -187,7 +187,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     /// </summary>
     /// <returns>The name of the plugin.</returns>
     public override string ToString() {
-      return Name;
+      return Name + " " + Version;
     }
 
     // equals and hashcode have to be implemented because we want to compare PluginDescriptions from 

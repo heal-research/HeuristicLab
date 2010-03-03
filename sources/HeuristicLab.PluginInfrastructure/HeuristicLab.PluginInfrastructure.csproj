@@ -74,6 +74,7 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -105,6 +106,18 @@
     </Compile>
     <Compile Include="Advanced\DeploymentService\ProductDescription.cs">
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Advanced\LocalPluginManager.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Advanced\LocalPluginManager.Designer.cs">
+      <DependentUpon>LocalPluginManager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Advanced\RemotePluginInstaller.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Advanced\RemotePluginInstaller.Designer.cs">
+      <DependentUpon>RemotePluginInstaller.cs</DependentUpon>
     </Compile>
     <Compile Include="Attributes\ApplicationAttribute.cs" />
     <Compile Include="Attributes\AssemblyBuildDateAttribute.cs" />
@@ -138,10 +151,20 @@
     <EmbeddedResource Include="Advanced\InstallationManagerForm.resx">
       <DependentUpon>InstallationManagerForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Advanced\LocalPluginManager.resx">
+      <DependentUpon>LocalPluginManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Advanced\RemotePluginInstaller.resx">
+      <DependentUpon>RemotePluginInstaller.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Starter\SplashScreen.resx">
       <DependentUpon>SplashScreen.cs</DependentUpon>
@@ -165,6 +188,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Resources\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Sandboxing\SandboxManager.cs" />
     <Compile Include="Starter\SplashScreen.cs">
@@ -192,6 +220,12 @@
     <Content Include="Resources\LargeIcons.gif" />
     <Content Include="Resources\List.gif" />
     <Content Include="Resources\Logo_white.gif" />
+    <None Include="Resources\VS2008ImageLibrary_Actions_Delete.png" />
+    <None Include="Resources\VS2008ImageLibrary_CommonElements_Actions_Remove.png" />
+    <Content Include="Resources\VS2008ImageLibrary_CommonElements_Objects_Arrow_Down.png" />
+    <None Include="Resources\VS2008ImageLibrary_Objects_Internet.png" />
+    <None Include="Resources\VS2008ImageLibrary_Objects_Install.png" />
+    <None Include="Resources\VS2008ImageLibrary_Objects_Assembly.png" />
     <None Include="Advanced\DeploymentService\RegenerateServiceClasses.cmd" />
   </ItemGroup>
   <ItemGroup>

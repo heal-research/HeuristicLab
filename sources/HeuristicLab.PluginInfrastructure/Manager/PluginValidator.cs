@@ -503,7 +503,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
           if (!pluginType.IsAbstract && !pluginType.IsInterface && !pluginType.HasElementType) {
             IPlugin plugin = (IPlugin)Activator.CreateInstance(pluginType);
             plugin.OnLoad();
-            OnPluginLoaded(new PluginInfrastructureEventArgs("Plugin loaded", plugin.Name));
+            OnPluginLoaded(new PluginInfrastructureEventArgs(desc));
           }
         }
         desc.Load();

@@ -44,7 +44,9 @@ namespace HeuristicLab.PluginInfrastructure.Advanced.DeploymentService {
     }
 
     #region IPluginDescription Members
-
+    public string Description {
+      get { return string.Empty; }
+    }
 
     [Obsolete]
     public DateTime BuildDate {
@@ -62,5 +64,9 @@ namespace HeuristicLab.PluginInfrastructure.Advanced.DeploymentService {
     }
 
     #endregion
+
+    public override string ToString() {
+      return Name + " " + Version;
+    }
   }
 }

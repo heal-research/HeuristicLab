@@ -126,7 +126,7 @@ namespace HeuristicLab.PluginInfrastructure {
             loadedPlugins.Add(plugin);
           }
         }
-        OnPluginLoaded(new PluginInfrastructureEventArgs("Plugin loaded", desc));
+        OnPluginLoaded(new PluginInfrastructureEventArgs(desc));
         desc.Load();
       }
     }
@@ -148,7 +148,7 @@ namespace HeuristicLab.PluginInfrastructure {
         }
         foreach (var desc in PluginDescriptionIterator.IterateDependenciesBottomUp(plugins.Where(x => x.PluginState != PluginState.Disabled))) {
           desc.Unload();
-          OnPluginUnloaded(new PluginInfrastructureEventArgs("Plugin unloaded", desc));
+          OnPluginUnloaded(new PluginInfrastructureEventArgs(desc));
         }
       }
     }

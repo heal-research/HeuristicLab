@@ -45,7 +45,12 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.initialInterval = initialInterval;
       this.manager = manager;
 
-      manager.Action += managerActionEventHandler;
+      manager.ApplicationStarted += new EventHandler<PluginInfrastructureEventArgs>(manager_ApplicationStarted);
+      manager.ApplicationStarting += new EventHandler<PluginInfrastructureEventArgs>(manager_ApplicationStarting);
+      manager.Initializing += new EventHandler<PluginInfrastructureEventArgs>(manager_Initializing);
+      manager.Initialized += new EventHandler<PluginInfrastructureEventArgs>(manager_Initialized);
+      manager.PluginLoaded += new EventHandler<PluginInfrastructureEventArgs>(manager_PluginLoaded);
+      manager.PluginUnloaded += new EventHandler<PluginInfrastructureEventArgs>(manager_PluginUnloaded);
 
       infoLabel.Text = initialText;
       titleLabel.Text = Application.ProductName;
@@ -66,6 +71,30 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       fadeTimer.Interval = initialInterval;
     }
 
+    void manager_PluginUnloaded(object sender, PluginInfrastructureEventArgs e) {
+      UpdateMessage("Unloaded " + e.Entity);
+    }
+
+    void manager_PluginLoaded(object sender, PluginInfrastructureEventArgs e) {
+      UpdateMessage("Loaded " + e.Entity);
+    }
+
+    void manager_Initialized(object sender, PluginInfrastructureEventArgs e) {
+      UpdateMessage("Initialized");
+    }
+
+    void manager_Initializing(object sender, PluginInfrastructureEventArgs e) {
+      UpdateMessage("Initializing");
+    }
+
+    void manager_ApplicationStarting(object sender, PluginInfrastructureEventArgs e) {
+      UpdateMessage("Starting " + e.Entity);
+    }
+
+    void manager_ApplicationStarted(object sender, PluginInfrastructureEventArgs e) {
+      UpdateMessage("Started " + e.Entity);
+    }
+
     private void SetInfoText(string text) {
       if (InvokeRequired) Invoke((Action<string>)SetInfoText, text);
       else {
@@ -73,13 +102,12 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       }
     }
 
-    private void managerActionEventHandler(object sender, PluginInfrastructureEventArgs e) {
+    private void UpdateMessage(string msg) {
       if (InvokeRequired) {
-        Invoke((EventHandler<PluginInfrastructureEventArgs>)managerActionEventHandler, sender, e);
+        Invoke((Action<string>)UpdateMessage, msg);
       } else {
         ResetFadeTimer();
-        string info = e.Action + ": " + e.Entity;
-        SetInfoText(info);
+        SetInfoText(msg);
         Application.DoEvents(); // force immediate update of splash screen control
       }
     }
@@ -102,7 +130,13 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
         Opacity = 0;
         fadeTimer.Stop();
         fadeTimer.Dispose();
-        manager.Action -= managerActionEventHandler; // remove event before calling close
+        // remove event before calling close
+        manager.ApplicationStarted -= new EventHandler<PluginInfrastructureEventArgs>(manager_ApplicationStarted);
+        manager.ApplicationStarting -= new EventHandler<PluginInfrastructureEventArgs>(manager_ApplicationStarting);
+        manager.Initializing -= new EventHandler<PluginInfrastructureEventArgs>(manager_Initialized);
+        manager.Initialized -= new EventHandler<PluginInfrastructureEventArgs>(manager_Initializing);
+        manager.PluginLoaded -= new EventHandler<PluginInfrastructureEventArgs>(manager_PluginLoaded);
+        manager.PluginUnloaded -= new EventHandler<PluginInfrastructureEventArgs>(manager_PluginUnloaded);
         Close();
       }
     }

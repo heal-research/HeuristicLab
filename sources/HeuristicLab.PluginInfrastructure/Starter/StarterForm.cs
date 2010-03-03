@@ -92,16 +92,21 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       if (applicationsListView.SelectedItems.Count > 0) {
         ListViewItem selected = applicationsListView.SelectedItems[0];
         if (selected == pluginManagerListViewItem) {
-          try {
-            Cursor = Cursors.AppStarting;
-            InstallationManagerForm form = new InstallationManagerForm();
-            this.Visible = false;
-            form.ShowDialog(this);
-            // RefreshApplicationsList();
-            this.Visible = true;
-          }
-          finally {
-            Cursor = Cursors.Arrow;
+          if (pluginManager.Plugins.Any(x => x.PluginState == PluginState.Loaded)) {
+            MessageBox.Show("Installation Manager cannot be started while another HeuristicLab application is active." + Environment.NewLine +
+              "Please stop all HeuristicLab applications and try again.");
+          } else {
+            try {
+              Cursor = Cursors.AppStarting;
+              InstallationManagerForm form = new InstallationManagerForm();
+              this.Visible = false;
+              form.ShowDialog(this);
+              // RefreshApplicationsList();
+              this.Visible = true;
+            }
+            finally {
+              Cursor = Cursors.Arrow;
+            }
           }
         } else {
           ApplicationDescription app = (ApplicationDescription)applicationsListView.SelectedItems[0].Tag;
@@ -117,8 +122,10 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
         bool stopped = false;
         do {
           try {
-            if (!abortRequested)
+            if (!abortRequested) {
+              SetCursor(Cursors.AppStarting);
               pluginManager.Run(app);
+            }
             stopped = true;
           }
           catch (Exception ex) {
@@ -126,10 +133,20 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
             ThreadPool.QueueUserWorkItem(delegate(object exception) { ShowErrorMessageBox((Exception)exception); }, ex);
             Thread.Sleep(5000); // sleep 5 seconds before autorestart
           }
+          finally {
+            SetCursor(Cursors.Default);
+          }
         } while (!abortRequested && !stopped && app.AutoRestart);
       });
       t.SetApartmentState(ApartmentState.STA); // needed for the AdvancedOptimizationFrontent
       t.Start();
+    }
+
+    private void SetCursor(Cursor cursor) {
+      if (InvokeRequired) Invoke((Action<Cursor>)SetCursor, cursor);
+      else {
+        Cursor = cursor;
+      }
     }
 
     private void applicationsListBox_SelectedIndexChanged(object sender, ListViewItemSelectionChangedEventArgs e) {

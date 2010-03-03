@@ -36,6 +36,10 @@ namespace HeuristicLab.PluginInfrastructure {
     /// </summary>
     Version Version { get; }
     /// <summary>
+    /// Gets the description of the plugin.
+    /// </summary>
+    string Description { get; }
+    /// <summary>
     /// Gets the build date of the plugin.
     /// </summary>
     [Obsolete]

@@ -35,10 +35,12 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
   /// Class to manage different plugins.
   /// </summary>
   internal sealed class PluginManager : MarshalByRefObject {
-    /// <summary>
-    /// Event handler for actions in the plugin manager.
-    /// </summary>
-    internal event EventHandler<PluginInfrastructureEventArgs> Action;
+    internal event EventHandler<PluginInfrastructureEventArgs> PluginLoaded;
+    internal event EventHandler<PluginInfrastructureEventArgs> PluginUnloaded;
+    internal event EventHandler<PluginInfrastructureEventArgs> Initializing;
+    internal event EventHandler<PluginInfrastructureEventArgs> Initialized;
+    internal event EventHandler<PluginInfrastructureEventArgs> ApplicationStarting;
+    internal event EventHandler<PluginInfrastructureEventArgs> ApplicationStarted;
 
     private string pluginDir;
 
@@ -65,21 +67,14 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       this.pluginDir = pluginDir;
       plugins = new List<PluginDescription>();
       applications = new List<ApplicationDescription>();
-      Reset();
-    }
-
-    internal void Reset() {
       initialized = false;
-      if (plugins != null && plugins.Any(x => x.PluginState == PluginState.Loaded)) throw new InvalidOperationException("Reset() is not allowed while applications are active.");
-      plugins.Clear();
-      applications.Clear();
     }
 
     /// <summary>
     /// Determines installed plugins and checks if all plugins are loadable.
     /// </summary>
     internal void DiscoverAndCheckPlugins() {
-      OnAction(new PluginInfrastructureEventArgs("Initializing", "PluginInfrastructure"));
+      OnInitializing(PluginInfrastructureEventArgs.Empty);
       AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
       setup.PrivateBinPath = pluginDir;
       AppDomain pluginDomain = null;
@@ -91,21 +86,23 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
         // forward all events from the remoteValidator to listeners
         remoteValidator.PluginLoaded +=
           delegate(object sender, PluginInfrastructureEventArgs e) {
-            OnAction(e);
+            OnPluginLoaded(e);
           };
         // get list of plugins and applications from the validator
         plugins.Clear(); applications.Clear();
         plugins.AddRange(remoteValidator.Plugins);
         applications.AddRange(remoteValidator.Applications);
-        OnAction(new PluginInfrastructureEventArgs("Initialized", "PluginInfrastructure"));
       }
       finally {
         // discard the AppDomain that was used for plugin discovery
         AppDomain.Unload(pluginDomain);
         // unload all plugins
-        foreach (var pluginDescription in plugins.Where(x => x.PluginState == PluginState.Loaded))
+        foreach (var pluginDescription in plugins.Where(x => x.PluginState == PluginState.Loaded)) {
           pluginDescription.Unload();
+          OnPluginUnloaded(new PluginInfrastructureEventArgs(pluginDescription));
+        }
         initialized = true;
+        OnInitialized(PluginInfrastructureEventArgs.Empty);
       }
     }
 
@@ -121,7 +118,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       // initialize the static ApplicationManager in the AppDomain
       // and remotely tell it to start the application
 
-      OnAction(new PluginInfrastructureEventArgs("Starting application", appInfo));
+      OnApplicationStarting(new PluginInfrastructureEventArgs(appInfo));
       AppDomain applicationDomain = null;
       try {
         AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
@@ -133,7 +130,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
         applicationManager.PluginLoaded += applicationManager_PluginLoaded;
         applicationManager.PluginUnloaded += applicationManager_PluginUnloaded;
         applicationManager.PrepareApplicationDomain(applications, plugins);
-        OnAction(new PluginInfrastructureEventArgs("Started application", appInfo));
+        OnApplicationStarted(new PluginInfrastructureEventArgs(appInfo));
         applicationManager.Run(appInfo);
       }
       finally {
@@ -149,9 +146,10 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       // access to plugin descriptions has to be synchronized because multiple applications 
       // can be started or stopped at the same time
       lock (locker) {
+        // also unload the matching plugin description in this AppDomain
         plugins.First(x => x.Equals(desc)).Unload();
       }
-      OnAction(new PluginInfrastructureEventArgs(e.Action, e.Entity));
+      OnPluginUnloaded(e);
     }
 
     private void applicationManager_PluginLoaded(object sender, PluginInfrastructureEventArgs e) {
@@ -160,20 +158,53 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       // access to plugin descriptions has to be synchronized because multiple applications 
       // can be started or stopped at the same time
       lock (locker) {
+        // also load the matching plugin description in this AppDomain
         plugins.First(x => x.Equals(desc)).Load();
       }
-      OnAction(new PluginInfrastructureEventArgs(e.Action, e.Entity));
+      OnPluginLoaded(e);
     }
 
-    private void OnAction(PluginInfrastructureEventArgs e) {
-      if (Action != null) {
-        Action(this, e);
+    #region event raising methods
+    private void OnPluginLoaded(PluginInfrastructureEventArgs e) {
+      if (PluginLoaded != null) {
+        PluginLoaded(this, e);
       }
     }
+
+    private void OnPluginUnloaded(PluginInfrastructureEventArgs e) {
+      if (PluginUnloaded != null) {
+        PluginUnloaded(this, e);
+      }
+    }
+
+    private void OnInitializing(PluginInfrastructureEventArgs e) {
+      if (Initializing != null) {
+        Initializing(this, e);
+      }
+    }
+
+    private void OnInitialized(PluginInfrastructureEventArgs e) {
+      if (Initialized != null) {
+        Initialized(this, e);
+      }
+    }
+
+    private void OnApplicationStarting(PluginInfrastructureEventArgs e) {
+      if (ApplicationStarting != null) {
+        ApplicationStarting(this, e);
+      }
+    }
+
+    private void OnApplicationStarted(PluginInfrastructureEventArgs e) {
+      if (ApplicationStarted != null) {
+        ApplicationStarted(this, e);
+      }
+    }
+    #endregion
 
     // infinite lease time
     /// <summary>
-    /// Initializes the life time service with infinite lease time.
+    /// Make sure that the plugin manager is never disposed (necessary for cross-app-domain events)
     /// </summary>
     /// <returns><c>null</c>.</returns>
     public override object InitializeLifetimeService() {

@@ -85,7 +85,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     }
 
     public override string ToString() {
-      return Name;
+      return Name + " " + Version;
     }
   }
 }

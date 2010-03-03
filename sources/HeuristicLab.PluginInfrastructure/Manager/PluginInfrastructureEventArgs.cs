@@ -27,11 +27,14 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
   // to be replaced by GenericEventArgs
   [Serializable]
   internal sealed class PluginInfrastructureEventArgs : EventArgs {
-    internal string Action { get; private set; }
     internal object Entity { get; private set; }
-    internal PluginInfrastructureEventArgs(string action, object entity) {
-      this.Action = action;
+    internal PluginInfrastructureEventArgs(object entity) {
       this.Entity = entity;
+    }
+
+    private static PluginInfrastructureEventArgs emptyArgs = new PluginInfrastructureEventArgs(string.Empty);
+    internal static PluginInfrastructureEventArgs Empty {
+      get { return emptyArgs; }
     }
   }
 }
