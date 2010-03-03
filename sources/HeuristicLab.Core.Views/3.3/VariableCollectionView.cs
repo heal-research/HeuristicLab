@@ -2,6 +2,7 @@
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Core.Views {
+  [View("VariableCollection View")]
   [Content(typeof(VariableCollection), true)]
   [Content(typeof(IObservableKeyedCollection<string, IVariable>), false)]
   public partial class VariableCollectionView : NamedItemCollectionView<IVariable> {

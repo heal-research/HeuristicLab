@@ -44,18 +44,20 @@ namespace HeuristicLab.Parameters.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.components = new System.ComponentModel.Container();
       this.valueGroupBox = new System.Windows.Forms.GroupBox();
       this.viewHost = new HeuristicLab.Core.Views.ViewHost();
-      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.valueComboBox = new System.Windows.Forms.ComboBox();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.valueGroupBox.SuspendLayout();
       this.SuspendLayout();
       // 
+      // dataTypeLabel
+      // 
+      this.dataTypeLabel.Location = new System.Drawing.Point(3, 55);
+      // 
       // dataTypeTextBox
       // 
-      this.dataTypeTextBox.Location = new System.Drawing.Point(80, 94);
+      this.dataTypeTextBox.Location = new System.Drawing.Point(80, 52);
       this.dataTypeTextBox.Size = new System.Drawing.Size(306, 20);
       // 
       // nameTextBox
@@ -68,7 +70,7 @@ namespace HeuristicLab.Parameters.Views {
       // descriptionTextBox
       // 
       this.descriptionTextBox.Location = new System.Drawing.Point(80, 26);
-      this.descriptionTextBox.Size = new System.Drawing.Size(306, 62);
+      this.descriptionTextBox.Size = new System.Drawing.Size(306, 20);
       // 
       // valueGroupBox
       // 
@@ -77,9 +79,9 @@ namespace HeuristicLab.Parameters.Views {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.valueGroupBox.Controls.Add(this.viewHost);
       this.valueGroupBox.Controls.Add(this.valueComboBox);
-      this.valueGroupBox.Location = new System.Drawing.Point(0, 120);
+      this.valueGroupBox.Location = new System.Drawing.Point(0, 78);
       this.valueGroupBox.Name = "valueGroupBox";
-      this.valueGroupBox.Size = new System.Drawing.Size(386, 195);
+      this.valueGroupBox.Size = new System.Drawing.Size(386, 237);
       this.valueGroupBox.TabIndex = 6;
       this.valueGroupBox.TabStop = false;
       this.valueGroupBox.Text = "&Value:";
@@ -92,7 +94,7 @@ namespace HeuristicLab.Parameters.Views {
       this.viewHost.Content = null;
       this.viewHost.Location = new System.Drawing.Point(6, 46);
       this.viewHost.Name = "viewHost";
-      this.viewHost.Size = new System.Drawing.Size(374, 143);
+      this.viewHost.Size = new System.Drawing.Size(374, 185);
       this.viewHost.TabIndex = 0;
       this.viewHost.ViewType = null;
       // 
@@ -134,7 +136,6 @@ namespace HeuristicLab.Parameters.Views {
 
     private System.Windows.Forms.GroupBox valueGroupBox;
     private HeuristicLab.Core.Views.ViewHost viewHost;
-    private System.Windows.Forms.ToolTip toolTip;
     private System.Windows.Forms.ComboBox valueComboBox;
   }
 }

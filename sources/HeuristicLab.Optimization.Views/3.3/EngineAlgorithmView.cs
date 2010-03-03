@@ -31,6 +31,7 @@ namespace HeuristicLab.Optimization.Views {
   /// <summary>
   /// The base class for visual representations of items.
   /// </summary>
+  [View("EngineAlgorithm View")]
   [Content(typeof(EngineAlgorithm), true)]
   public partial class EngineAlgorithmView : AlgorithmView {
     private List<Type> engineTypes;

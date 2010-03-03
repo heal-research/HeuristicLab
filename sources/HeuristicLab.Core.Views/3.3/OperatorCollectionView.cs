@@ -3,6 +3,7 @@ using HeuristicLab.Collections;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Core.Views {
+  [View("OperatorCollection View")]
   [Content(typeof(OperatorCollection), true)]
   [Content(typeof(IObservableCollection<IOperator>), false)]
   public partial class OperatorCollectionView : ItemCollectionView<IOperator> {

@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
@@ -27,6 +28,7 @@ namespace HeuristicLab.Operators.Views {
   /// <summary>
   /// The base class for visual representations of items.
   /// </summary>
+  [View("ValuesCollector View")]
   [Content(typeof(ValuesCollector), true)]
   public partial class ValuesCollectorView : NamedItemView {
     public new ValuesCollector Content {
@@ -49,17 +51,50 @@ namespace HeuristicLab.Operators.Views {
       Content = content;
     }
 
+    /// <summary>
+    /// Removes the eventhandlers from the underlying <see cref="IOperatorGraph"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
+    protected override void DeregisterContentEvents() {
+      Content.BreakpointChanged -= new EventHandler(Content_BreakpointChanged);
+      base.DeregisterContentEvents();
+    }
+
+    /// <summary>
+    /// Adds eventhandlers to the underlying <see cref="IOperatorGraph"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
+    protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
+      Content.BreakpointChanged += new EventHandler(Content_BreakpointChanged);
+    }
+
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
+        breakpointCheckBox.Checked = false;
+        breakpointCheckBox.Enabled = false;
         collectedValuesView.Content = null;
         parameterCollectionView.Content = null;
         tabControl.Enabled = false;
       } else {
+        breakpointCheckBox.Checked = Content.Breakpoint;
+        breakpointCheckBox.Enabled = true;
         collectedValuesView.Content = Content.CollectedValues;
         parameterCollectionView.Content = ((IOperator)Content).Parameters;
         tabControl.Enabled = true;
       }
+    }
+
+    protected void Content_BreakpointChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_DescriptionChanged), sender, e);
+      else
+        breakpointCheckBox.Checked = Content.Breakpoint;
+    }
+
+    protected void breakpointCheckBox_CheckedChanged(object sender, System.EventArgs e) {
+      if (Content != null) Content.Breakpoint = breakpointCheckBox.Checked;
     }
   }
 }

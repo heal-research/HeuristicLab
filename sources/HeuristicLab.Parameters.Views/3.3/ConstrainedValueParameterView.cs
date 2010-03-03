@@ -30,6 +30,7 @@ namespace HeuristicLab.Parameters.Views {
   /// <summary>
   /// The visual representation of a <see cref="Parameter"/>.
   /// </summary>
+  [View("ConstrainedValueParameter View")]
   [Content(typeof(ConstrainedValueParameter<>), true)]
   public sealed partial class ConstrainedValueParameterView<T> : ParameterView where T : class, IItem {
     private List<T> valueComboBoxItems;

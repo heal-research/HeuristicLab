@@ -29,6 +29,7 @@ namespace HeuristicLab.Parameters.Views {
   /// <summary>
   /// The visual representation of a <see cref="Parameter"/>.
   /// </summary>
+  [View("ValueParameter View")]
   [Content(typeof(ValueParameter<>), true)]
   public partial class ValueParameterView<T> : ParameterView where T : class, IItem {
     /// <summary>

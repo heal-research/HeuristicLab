@@ -3,6 +3,7 @@ using HeuristicLab.Collections;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Core.Views {
+  [View("OperatorSet View")]
   [Content(typeof(OperatorSet), true)]
   [Content(typeof(IObservableSet<IOperator>), false)]
   public partial class OperatorSetView : ItemSetView<IOperator> {

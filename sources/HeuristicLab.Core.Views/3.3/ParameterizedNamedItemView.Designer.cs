@@ -56,9 +56,7 @@ namespace HeuristicLab.Core.Views {
       // 
       // descriptionTextBox
       // 
-      this.descriptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.descriptionTextBox.Size = new System.Drawing.Size(418, 87);
+      this.descriptionTextBox.Size = new System.Drawing.Size(418, 20);
       // 
       // parameterCollectionView
       // 
@@ -66,9 +64,10 @@ namespace HeuristicLab.Core.Views {
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.parameterCollectionView.Caption = "ParameterCollection";
-      this.parameterCollectionView.Location = new System.Drawing.Point(0, 119);
+      this.parameterCollectionView.Content = null;
+      this.parameterCollectionView.Location = new System.Drawing.Point(0, 52);
       this.parameterCollectionView.Name = "parameterCollectionView";
-      this.parameterCollectionView.Size = new System.Drawing.Size(490, 234);
+      this.parameterCollectionView.Size = new System.Drawing.Size(490, 301);
       this.parameterCollectionView.TabIndex = 4;
       // 
       // ParameterizedNamedItemView

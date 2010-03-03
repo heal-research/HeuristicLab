@@ -51,12 +51,12 @@ namespace HeuristicLab.Parameters.Views {
       // 
       // dataTypeLabel
       // 
-      this.dataTypeLabel.Location = new System.Drawing.Point(3, 123);
+      this.dataTypeLabel.Location = new System.Drawing.Point(3, 81);
       this.dataTypeLabel.TabIndex = 6;
       // 
       // dataTypeTextBox
       // 
-      this.dataTypeTextBox.Location = new System.Drawing.Point(80, 120);
+      this.dataTypeTextBox.Location = new System.Drawing.Point(80, 78);
       this.dataTypeTextBox.Size = new System.Drawing.Size(306, 20);
       this.dataTypeTextBox.TabIndex = 7;
       // 
@@ -75,7 +75,7 @@ namespace HeuristicLab.Parameters.Views {
       // descriptionTextBox
       // 
       this.descriptionTextBox.Location = new System.Drawing.Point(80, 52);
-      this.descriptionTextBox.Size = new System.Drawing.Size(306, 62);
+      this.descriptionTextBox.Size = new System.Drawing.Size(306, 20);
       this.descriptionTextBox.TabIndex = 5;
       // 
       // actualNameTextBox
@@ -104,12 +104,12 @@ namespace HeuristicLab.Parameters.Views {
       this.Controls.Add(this.actualNameTextBox);
       this.Controls.Add(this.actualNameLabel);
       this.Name = "LookupParameterView";
-      this.Size = new System.Drawing.Size(386, 143);
+      this.Size = new System.Drawing.Size(386, 105);
       this.Controls.SetChildIndex(this.descriptionTextBox, 0);
-      this.Controls.SetChildIndex(this.descriptionLabel, 0);
       this.Controls.SetChildIndex(this.dataTypeTextBox, 0);
-      this.Controls.SetChildIndex(this.actualNameLabel, 0);
+      this.Controls.SetChildIndex(this.descriptionLabel, 0);
       this.Controls.SetChildIndex(this.dataTypeLabel, 0);
+      this.Controls.SetChildIndex(this.actualNameLabel, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
       this.Controls.SetChildIndex(this.actualNameTextBox, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);

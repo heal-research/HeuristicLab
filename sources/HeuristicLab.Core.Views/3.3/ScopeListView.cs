@@ -2,6 +2,7 @@
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Core.Views {
+  [View("ScopeList View")]
   [Content(typeof(ScopeList), true)]
   [Content(typeof(IObservableList<IScope>), false)]
   public partial class ScopeListView : ItemListView<IScope> {

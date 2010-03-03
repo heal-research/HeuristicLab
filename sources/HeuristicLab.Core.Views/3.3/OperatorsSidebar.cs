@@ -21,8 +21,10 @@
 
 using System;
 using System.Windows.Forms;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Core.Views {
+  [View("Operators Sidebar")]
   public partial class OperatorsSidebar : HeuristicLab.MainForm.WindowsForms.View {
     public OperatorsSidebar() {
       InitializeComponent();

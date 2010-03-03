@@ -30,6 +30,7 @@ namespace HeuristicLab.Optimization.Views {
   /// <summary>
   /// The base class for visual representations of items.
   /// </summary>
+  [View("UserDefinedAlgorithm View")]
   [Content(typeof(UserDefinedAlgorithm), true)]
   public sealed partial class UserDefinedAlgorithmView : EngineAlgorithmView {
     public new UserDefinedAlgorithm Content {

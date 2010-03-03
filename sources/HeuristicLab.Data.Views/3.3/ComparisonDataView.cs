@@ -31,6 +31,7 @@ using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Data.Views {
+  [View("ComparisonData View")]
   [Content(typeof(ComparisonData), true)]
   public partial class ComparisonDataView : ItemView {
     public new ComparisonData Content {

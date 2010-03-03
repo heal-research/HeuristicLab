@@ -107,12 +107,14 @@ namespace HeuristicLab.Algorithms.SGA {
 
       OperatorGraph.InitialOperator = randomCreator;
 
-      var selectors = ApplicationManager.Manager.GetInstances<ISelector>().Where(x => !(x is IMultiObjectiveSelector));
-      foreach (ISelector selector in selectors) {
-        selector.CopySelected = new BoolData(true);
-        selector.NumberOfSelectedSubScopesParameter.Value = new IntData(2 * (PopulationSizeParameter.Value.Value - ElitesParameter.Value.Value));
-        if (selector is IStochasticOperator) ((IStochasticOperator)selector).RandomParameter.ActualName = "Random";
-        SelectorParameter.ValidValues.Add(selector);
+      if (ApplicationManager.Manager != null) {
+        var selectors = ApplicationManager.Manager.GetInstances<ISelector>().Where(x => !(x is IMultiObjectiveSelector)).OrderBy(x => x.Name);
+        foreach (ISelector selector in selectors) {
+          selector.CopySelected = new BoolData(true);
+          selector.NumberOfSelectedSubScopesParameter.Value = new IntData(2 * (PopulationSizeParameter.Value.Value - ElitesParameter.Value.Value));
+          if (selector is IStochasticOperator) ((IStochasticOperator)selector).RandomParameter.ActualName = "Random";
+          SelectorParameter.ValidValues.Add(selector);
+        }
       }
     }
 
@@ -158,13 +160,21 @@ namespace HeuristicLab.Algorithms.SGA {
         op.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
       }
 
+      ICrossover oldCrossover = CrossoverParameter.Value;
       CrossoverParameter.ValidValues.Clear();
-      foreach (ICrossover crossover in Problem.Operators.OfType<ICrossover>())
+      foreach (ICrossover crossover in Problem.Operators.OfType<ICrossover>().OrderBy(x => x.Name))
         CrossoverParameter.ValidValues.Add(crossover);
+      if (oldCrossover != null) {
+        CrossoverParameter.Value = CrossoverParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldCrossover.GetType());
+      }
 
+      IManipulator oldMutator = MutatorParameter.Value;
       MutatorParameter.ValidValues.Clear();
-      foreach (IManipulator mutator in Problem.Operators.OfType<IManipulator>())
+      foreach (IManipulator mutator in Problem.Operators.OfType<IManipulator>().OrderBy(x => x.Name))
         MutatorParameter.ValidValues.Add(mutator);
+      if (oldMutator != null) {
+        MutatorParameter.Value = MutatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMutator.GetType());
+      }
 
       base.OnProblemChanged();
     }

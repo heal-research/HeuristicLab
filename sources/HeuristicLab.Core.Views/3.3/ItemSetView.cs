@@ -25,6 +25,7 @@ using HeuristicLab.Collections;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Core.Views {
+  [View("ItemSet View")]
   [Content(typeof(ItemSet<>), true)]
   [Content(typeof(IObservableSet<>), false)]
   public partial class ItemSetView<T> : ItemCollectionView<T> where T : class, IItem {

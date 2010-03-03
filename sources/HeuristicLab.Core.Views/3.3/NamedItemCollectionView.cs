@@ -25,6 +25,7 @@ using HeuristicLab.Collections;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Core.Views {
+  [View("NamedItemCollection View")]
   [Content(typeof(NamedItemCollection<>), true)]
   public partial class NamedItemCollectionView<T> : ItemCollectionView<T> where T : class, INamedItem {
     public new IObservableKeyedCollection<string, T> Content {

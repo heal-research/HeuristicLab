@@ -51,8 +51,8 @@ namespace HeuristicLab.Operators.Views {
       // 
       // parameterCollectionView
       // 
-      this.parameterCollectionView.Location = new System.Drawing.Point(0, 139);
-      this.parameterCollectionView.Size = new System.Drawing.Size(490, 214);
+      this.parameterCollectionView.Location = new System.Drawing.Point(0, 72);
+      this.parameterCollectionView.Size = new System.Drawing.Size(490, 281);
       this.parameterCollectionView.TabIndex = 6;
       // 
       // nameTextBox
@@ -63,7 +63,7 @@ namespace HeuristicLab.Operators.Views {
       // breakpointLabel
       // 
       this.breakpointLabel.AutoSize = true;
-      this.breakpointLabel.Location = new System.Drawing.Point(3, 120);
+      this.breakpointLabel.Location = new System.Drawing.Point(3, 52);
       this.breakpointLabel.Name = "breakpointLabel";
       this.breakpointLabel.Size = new System.Drawing.Size(61, 13);
       this.breakpointLabel.TabIndex = 4;
@@ -72,7 +72,7 @@ namespace HeuristicLab.Operators.Views {
       // breakpointCheckBox
       // 
       this.breakpointCheckBox.AutoSize = true;
-      this.breakpointCheckBox.Location = new System.Drawing.Point(72, 119);
+      this.breakpointCheckBox.Location = new System.Drawing.Point(72, 52);
       this.breakpointCheckBox.Name = "breakpointCheckBox";
       this.breakpointCheckBox.Size = new System.Drawing.Size(15, 14);
       this.breakpointCheckBox.TabIndex = 5;
@@ -83,11 +83,11 @@ namespace HeuristicLab.Operators.Views {
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.breakpointLabel);
       this.Controls.Add(this.breakpointCheckBox);
+      this.Controls.Add(this.breakpointLabel);
       this.Name = "OperatorView";
-      this.Controls.SetChildIndex(this.breakpointCheckBox, 0);
       this.Controls.SetChildIndex(this.breakpointLabel, 0);
+      this.Controls.SetChildIndex(this.breakpointCheckBox, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
       this.Controls.SetChildIndex(this.descriptionLabel, 0);
@@ -101,8 +101,8 @@ namespace HeuristicLab.Operators.Views {
 
     #endregion
 
-    private System.Windows.Forms.Label breakpointLabel;
-    private System.Windows.Forms.CheckBox breakpointCheckBox;
+    protected System.Windows.Forms.Label breakpointLabel;
+    protected System.Windows.Forms.CheckBox breakpointCheckBox;
 
   }
 }

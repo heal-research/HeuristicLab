@@ -28,6 +28,7 @@ namespace HeuristicLab.Core.Views {
   /// <summary>
   /// The visual representation of a <see cref="Variable"/>.
   /// </summary>
+  [View("Variable View")]
   [Content(typeof(Variable), true)]
   [Content(typeof(IVariable), false)]
   public partial class VariableView : NamedItemView {

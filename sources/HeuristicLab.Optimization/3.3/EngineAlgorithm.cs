@@ -130,10 +130,12 @@ namespace HeuristicLab.Optimization {
     }
 
     private void InitializeEngine() {
-      var types = ApplicationManager.Manager.GetTypes(typeof(IEngine));
-      Type t = types.FirstOrDefault(x => x.Name.Equals("SequentialEngine"));
-      if (t == null) t = types.FirstOrDefault();
-      if (t != null) Engine = (IEngine)Activator.CreateInstance(t);
+      if (ApplicationManager.Manager != null) {
+        var types = ApplicationManager.Manager.GetTypes(typeof(IEngine));
+        Type t = types.FirstOrDefault(x => x.Name.Equals("SequentialEngine"));
+        if (t == null) t = types.FirstOrDefault();
+        if (t != null) Engine = (IEngine)Activator.CreateInstance(t);
+      }
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

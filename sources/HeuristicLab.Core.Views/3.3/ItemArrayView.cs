@@ -31,6 +31,7 @@ namespace HeuristicLab.Core.Views {
   /// <summary>
   /// The visual representation of all variables in a specified scope.
   /// </summary>
+  [View("ItemArray View")]
   [Content(typeof(ItemArray<>), true)]
   [Content(typeof(IObservableArray<>), false)]
   public partial class ItemArrayView<T> : ContentView where T : class, IItem {

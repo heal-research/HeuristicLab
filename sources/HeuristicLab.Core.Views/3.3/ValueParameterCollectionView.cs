@@ -25,6 +25,7 @@ using HeuristicLab.Collections;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Core.Views {
+  [View("ValueParameterCollection View")]
   [Content(typeof(ValueParameterCollection), true)]
   [Content(typeof(IObservableKeyedCollection<string, IValueParameter>), false)]
   public partial class ValueParameterCollectionView : NamedItemCollectionView<IValueParameter> {

@@ -63,31 +63,31 @@ namespace HeuristicLab.Algorithms.SGA.Views {
       // 
       // engineTabPage
       // 
-      this.engineTabPage.Size = new System.Drawing.Size(736, 401);
+      this.engineTabPage.Size = new System.Drawing.Size(736, 468);
       // 
       // engineViewHost
       // 
-      this.engineViewHost.Size = new System.Drawing.Size(724, 362);
+      this.engineViewHost.Size = new System.Drawing.Size(724, 429);
       // 
       // tabControl
       // 
-      this.tabControl.Size = new System.Drawing.Size(744, 427);
+      this.tabControl.Size = new System.Drawing.Size(744, 494);
       // 
       // parametersTabPage
       // 
-      this.parametersTabPage.Size = new System.Drawing.Size(736, 401);
+      this.parametersTabPage.Size = new System.Drawing.Size(736, 468);
       // 
       // problemTabPage
       // 
-      this.problemTabPage.Size = new System.Drawing.Size(736, 401);
+      this.problemTabPage.Size = new System.Drawing.Size(736, 468);
       // 
       // parameterCollectionView
       // 
-      this.parameterCollectionView.Size = new System.Drawing.Size(724, 389);
+      this.parameterCollectionView.Size = new System.Drawing.Size(724, 456);
       // 
       // problemViewHost
       // 
-      this.problemViewHost.Size = new System.Drawing.Size(724, 359);
+      this.problemViewHost.Size = new System.Drawing.Size(724, 426);
       // 
       // newProblemButton
       // 
@@ -126,11 +126,11 @@ namespace HeuristicLab.Algorithms.SGA.Views {
       // 
       // resultsTabPage
       // 
-      this.resultsTabPage.Size = new System.Drawing.Size(736, 401);
+      this.resultsTabPage.Size = new System.Drawing.Size(736, 468);
       // 
       // resultsView
       // 
-      this.resultsView.Size = new System.Drawing.Size(724, 389);
+      this.resultsView.Size = new System.Drawing.Size(724, 456);
       // 
       // nameTextBox
       // 
@@ -140,7 +140,7 @@ namespace HeuristicLab.Algorithms.SGA.Views {
       // 
       // descriptionTextBox
       // 
-      this.descriptionTextBox.Size = new System.Drawing.Size(672, 87);
+      this.descriptionTextBox.Size = new System.Drawing.Size(672, 20);
       // 
       // SGAView
       // 

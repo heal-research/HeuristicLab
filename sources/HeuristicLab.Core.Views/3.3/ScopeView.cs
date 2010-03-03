@@ -29,6 +29,7 @@ namespace HeuristicLab.Core.Views {
   /// <summary>
   /// The visual represenation of <see cref="Scope"/>.
   /// </summary>
+  [View("Scope View")]
   [Content(typeof(Scope), true)]
   [Content(typeof(IScope), false)]
   public sealed partial class ScopeView : ItemView {

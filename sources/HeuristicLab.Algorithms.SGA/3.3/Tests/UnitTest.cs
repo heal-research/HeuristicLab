@@ -21,6 +21,7 @@
 
 using System;
 using System.Threading;
+using HeuristicLab.Common;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -75,16 +76,24 @@ namespace HeuristicLab.Algorithms.SGA.Tests {
     #endregion
 
     private EventWaitHandle trigger = new AutoResetEvent(false);
+    private Exception ex;
 
     [TestMethod]
     [DeploymentItem(@"SGA.hl")]
     public void SGAPerformanceTest() {
+      ex = null;
       IAlgorithm sga = (IAlgorithm)XmlParser.Deserialize("SGA.hl");
+      sga.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(sga_ExceptionOccurred);
       sga.Stopped += new EventHandler(sga_Stopped);
       sga.Prepare();
       sga.Start();
       trigger.WaitOne();
       TestContext.WriteLine("Runtime: {0}", sga.ExecutionTime.ToString());
+      if (ex != null) throw ex;
+    }
+
+    void sga_ExceptionOccurred(object sender, EventArgs<Exception> e) {
+      ex = e.Value;
     }
 
     private void sga_Stopped(object sender, EventArgs e) {

@@ -53,28 +53,16 @@ namespace HeuristicLab.Parameters.Views {
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.nameTextBox, 2);
-      this.nameTextBox.Location = new System.Drawing.Point(72, 0);
       this.nameTextBox.Size = new System.Drawing.Size(321, 20);
-      // 
-      // nameLabel
-      // 
-      this.nameLabel.Location = new System.Drawing.Point(3, 3);
-      // 
-      // descriptionLabel
-      // 
-      this.descriptionLabel.Location = new System.Drawing.Point(3, 29);
       // 
       // descriptionTextBox
       // 
-      this.descriptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.descriptionTextBox.Location = new System.Drawing.Point(72, 26);
-      this.descriptionTextBox.Size = new System.Drawing.Size(321, 62);
+      this.descriptionTextBox.Size = new System.Drawing.Size(321, 20);
       // 
       // dataTypeLabel
       // 
       this.dataTypeLabel.AutoSize = true;
-      this.dataTypeLabel.Location = new System.Drawing.Point(3, 97);
+      this.dataTypeLabel.Location = new System.Drawing.Point(3, 55);
       this.dataTypeLabel.Name = "dataTypeLabel";
       this.dataTypeLabel.Size = new System.Drawing.Size(60, 13);
       this.dataTypeLabel.TabIndex = 4;
@@ -84,7 +72,7 @@ namespace HeuristicLab.Parameters.Views {
       // 
       this.dataTypeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.dataTypeTextBox.Location = new System.Drawing.Point(72, 94);
+      this.dataTypeTextBox.Location = new System.Drawing.Point(72, 52);
       this.dataTypeTextBox.Name = "dataTypeTextBox";
       this.dataTypeTextBox.ReadOnly = true;
       this.dataTypeTextBox.Size = new System.Drawing.Size(321, 20);
@@ -97,7 +85,7 @@ namespace HeuristicLab.Parameters.Views {
       this.Controls.Add(this.dataTypeLabel);
       this.Controls.Add(this.dataTypeTextBox);
       this.Name = "ParameterView";
-      this.Size = new System.Drawing.Size(393, 124);
+      this.Size = new System.Drawing.Size(393, 79);
       this.Controls.SetChildIndex(this.dataTypeTextBox, 0);
       this.Controls.SetChildIndex(this.descriptionTextBox, 0);
       this.Controls.SetChildIndex(this.descriptionLabel, 0);

@@ -27,6 +27,7 @@ namespace HeuristicLab.Core.Views {
   /// <summary>
   /// Base class for all visual representations.
   /// </summary>
+  [View("Item View")]
   [Content(typeof(Item), false)]
   [Content(typeof(IItem), false)]
   public partial class ItemView : ContentView {

@@ -22,12 +22,14 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
+using HeuristicLab.Common;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Core.Views {
   /// <summary>
   /// The visual representation of a <see cref="Variable"/>.
   /// </summary>
+  [View("NamedItem View")]
   [Content(typeof(NamedItem), false)]
   [Content(typeof(INamedItem), false)]
   public partial class NamedItemView : ItemView {
@@ -66,6 +68,7 @@ namespace HeuristicLab.Core.Views {
         nameTextBox.Enabled = false;
         descriptionTextBox.Text = "";
         descriptionTextBox.Enabled = false;
+        toolTip.SetToolTip(descriptionTextBox, string.Empty);
       } else {
         Caption = Content.Name + " (" + Content.GetType().Name + ")";
         nameTextBox.Text = Content.Name;
@@ -74,6 +77,7 @@ namespace HeuristicLab.Core.Views {
         descriptionTextBox.Text = Content.Description;
         descriptionTextBox.ReadOnly = !Content.CanChangeDescription;
         descriptionTextBox.Enabled = true;
+        toolTip.SetToolTip(descriptionTextBox, Content.Description);
       }
     }
 
@@ -86,8 +90,10 @@ namespace HeuristicLab.Core.Views {
     protected virtual void Content_DescriptionChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_DescriptionChanged), sender, e);
-      else
+      else {
         descriptionTextBox.Text = Content.Description;
+        toolTip.SetToolTip(descriptionTextBox, Content.Description);
+      }
     }
 
     protected virtual void nameTextBox_Validating(object sender, CancelEventArgs e) {
@@ -116,6 +122,13 @@ namespace HeuristicLab.Core.Views {
     protected virtual void descriptionTextBox_Validated(object sender, EventArgs e) {
       if (Content.CanChangeDescription)
         Content.Description = descriptionTextBox.Text;
+    }
+
+    protected void descriptionTextBox_DoubleClick(object sender, EventArgs e) {
+      using (TextDialog dialog = new TextDialog("Description of " + Content.Name, Content.Description, !Content.CanChangeDescription)) {
+        if (dialog.ShowDialog(this) == DialogResult.OK)
+          Content.Description = dialog.Content;
+      }
     }
   }
 }

@@ -31,6 +31,7 @@ namespace HeuristicLab.Core.Views {
   /// <summary>
   /// The visual representation of an <see cref="OperatorGraph"/>.
   /// </summary>
+  [View("Operator View (Successors)")]
   [Content(typeof(IOperator), false)]
   public sealed partial class OperatorTreeView : ItemView {
     private Dictionary<IValueParameter<IOperator>, List<TreeNode>> opParamNodeTable;

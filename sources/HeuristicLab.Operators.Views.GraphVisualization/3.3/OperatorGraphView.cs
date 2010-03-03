@@ -36,7 +36,7 @@ using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Collections;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
-  [View("Operator Graph Visualization")]
+  [View("OperatorGraph View (Chart)")]
   [Content(typeof(OperatorGraph), false)]
   public partial class OperatorGraphView : ContentView {
     public OperatorGraphView() {

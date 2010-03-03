@@ -44,72 +44,53 @@ namespace HeuristicLab.Core.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.components = new System.ComponentModel.Container();
       this.executionTimeTextBox = new System.Windows.Forms.TextBox();
       this.executionTimeLabel = new System.Windows.Forms.Label();
-      this.stopButton = new System.Windows.Forms.Button();
-      this.startButton = new System.Windows.Forms.Button();
-      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.logTextBox = new System.Windows.Forms.TextBox();
+      this.logLabel = new System.Windows.Forms.Label();
       this.SuspendLayout();
       // 
       // executionTimeTextBox
       // 
-      this.executionTimeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.executionTimeTextBox.Location = new System.Drawing.Point(661, 620);
+      this.executionTimeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.executionTimeTextBox.Location = new System.Drawing.Point(92, 0);
       this.executionTimeTextBox.Name = "executionTimeTextBox";
       this.executionTimeTextBox.ReadOnly = true;
-      this.executionTimeTextBox.Size = new System.Drawing.Size(141, 20);
-      this.executionTimeTextBox.TabIndex = 5;
+      this.executionTimeTextBox.Size = new System.Drawing.Size(338, 20);
+      this.executionTimeTextBox.TabIndex = 1;
       // 
       // executionTimeLabel
       // 
-      this.executionTimeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.executionTimeLabel.AutoSize = true;
-      this.executionTimeLabel.Location = new System.Drawing.Point(572, 623);
+      this.executionTimeLabel.Location = new System.Drawing.Point(3, 3);
       this.executionTimeLabel.Name = "executionTimeLabel";
       this.executionTimeLabel.Size = new System.Drawing.Size(83, 13);
-      this.executionTimeLabel.TabIndex = 4;
+      this.executionTimeLabel.TabIndex = 0;
       this.executionTimeLabel.Text = "&Execution Time:";
-      // 
-      // stopButton
-      // 
-      this.stopButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.stopButton.Enabled = false;
-      this.stopButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Stop;
-      this.stopButton.Location = new System.Drawing.Point(30, 616);
-      this.stopButton.Name = "stopButton";
-      this.stopButton.Size = new System.Drawing.Size(24, 24);
-      this.stopButton.TabIndex = 2;
-      this.toolTip.SetToolTip(this.stopButton, "Stop Engine");
-      this.stopButton.UseVisualStyleBackColor = true;
-      this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
-      // 
-      // startButton
-      // 
-      this.startButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.startButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Play;
-      this.startButton.Location = new System.Drawing.Point(0, 616);
-      this.startButton.Name = "startButton";
-      this.startButton.Size = new System.Drawing.Size(24, 24);
-      this.startButton.TabIndex = 1;
-      this.toolTip.SetToolTip(this.startButton, "Start Engine");
-      this.startButton.UseVisualStyleBackColor = true;
-      this.startButton.Click += new System.EventHandler(this.startButton_Click);
       // 
       // logTextBox
       // 
       this.logTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.logTextBox.Location = new System.Drawing.Point(0, 0);
+      this.logTextBox.Location = new System.Drawing.Point(0, 39);
       this.logTextBox.Multiline = true;
       this.logTextBox.Name = "logTextBox";
       this.logTextBox.ReadOnly = true;
       this.logTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-      this.logTextBox.Size = new System.Drawing.Size(802, 610);
-      this.logTextBox.TabIndex = 6;
+      this.logTextBox.Size = new System.Drawing.Size(430, 315);
+      this.logTextBox.TabIndex = 3;
       this.logTextBox.WordWrap = false;
+      // 
+      // logLabel
+      // 
+      this.logLabel.AutoSize = true;
+      this.logLabel.Location = new System.Drawing.Point(3, 23);
+      this.logLabel.Name = "logLabel";
+      this.logLabel.Size = new System.Drawing.Size(28, 13);
+      this.logLabel.TabIndex = 2;
+      this.logLabel.Text = "&Log:";
       // 
       // EngineView
       // 
@@ -117,11 +98,10 @@ namespace HeuristicLab.Core.Views {
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.logTextBox);
       this.Controls.Add(this.executionTimeTextBox);
-      this.Controls.Add(this.stopButton);
+      this.Controls.Add(this.logLabel);
       this.Controls.Add(this.executionTimeLabel);
-      this.Controls.Add(this.startButton);
       this.Name = "EngineView";
-      this.Size = new System.Drawing.Size(802, 640);
+      this.Size = new System.Drawing.Size(430, 354);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -131,10 +111,8 @@ namespace HeuristicLab.Core.Views {
 
     protected System.Windows.Forms.TextBox executionTimeTextBox;
     protected System.Windows.Forms.Label executionTimeLabel;
-    protected System.Windows.Forms.Button stopButton;
-    protected System.Windows.Forms.Button startButton;
-    protected System.Windows.Forms.ToolTip toolTip;
     protected System.Windows.Forms.TextBox logTextBox;
+    protected System.Windows.Forms.Label logLabel;
 
   }
 }

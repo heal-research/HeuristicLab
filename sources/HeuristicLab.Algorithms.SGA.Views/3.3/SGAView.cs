@@ -26,6 +26,7 @@ namespace HeuristicLab.Algorithms.SGA.Views {
   /// <summary>
   /// The base class for visual representations of items.
   /// </summary>
+  [View("SGA View")]
   [Content(typeof(SGA), true)]
   public sealed partial class SGAView : EngineAlgorithmView {
     public new SGA Content {

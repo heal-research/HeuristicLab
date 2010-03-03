@@ -86,6 +86,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLabCoreViewsPlugin.cs.frame" />
+    <Compile Include="TextDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TextDialog.Designer.cs">
+      <DependentUpon>TextDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="OperatorTreeView.cs">
       <SubType>UserControl</SubType>
     </Compile>

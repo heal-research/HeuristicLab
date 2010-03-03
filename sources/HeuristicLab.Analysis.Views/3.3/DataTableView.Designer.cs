@@ -60,35 +60,39 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // descriptionTextBox
       // 
-      this.descriptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.descriptionTextBox.Size = new System.Drawing.Size(287, 62);
+      this.descriptionTextBox.Size = new System.Drawing.Size(287, 20);
       // 
       // chart
       // 
       this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.chart.BorderlineColor = System.Drawing.Color.Black;
+      this.chart.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
+      chartArea1.CursorX.IsUserEnabled = true;
+      chartArea1.CursorX.IsUserSelectionEnabled = true;
+      chartArea1.CursorY.IsUserEnabled = true;
+      chartArea1.CursorY.IsUserSelectionEnabled = true;
       chartArea1.Name = "ChartArea1";
       this.chart.ChartAreas.Add(chartArea1);
       legend1.Name = "Legend1";
       this.chart.Legends.Add(legend1);
-      this.chart.Location = new System.Drawing.Point(0, 94);
+      this.chart.Location = new System.Drawing.Point(0, 52);
       this.chart.Name = "chart";
       series1.ChartArea = "ChartArea1";
       series1.Legend = "Legend1";
       series1.Name = "Series1";
       this.chart.Series.Add(series1);
-      this.chart.Size = new System.Drawing.Size(359, 180);
+      this.chart.Size = new System.Drawing.Size(359, 222);
       this.chart.TabIndex = 4;
       this.chart.Text = "chart1";
       // 
-      // ChartView
+      // DataTableView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.chart);
-      this.Name = "ChartView";
+      this.Name = "DataTableView";
       this.Size = new System.Drawing.Size(359, 274);
       this.Controls.SetChildIndex(this.chart, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);

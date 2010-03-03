@@ -51,7 +51,7 @@ namespace HeuristicLab.Problems.TSP.Views {
       // 
       // parameterCollectionView
       // 
-      this.parameterCollectionView.Size = new System.Drawing.Size(529, 274);
+      this.parameterCollectionView.Size = new System.Drawing.Size(529, 341);
       // 
       // nameTextBox
       // 
@@ -61,7 +61,7 @@ namespace HeuristicLab.Problems.TSP.Views {
       // 
       // descriptionTextBox
       // 
-      this.descriptionTextBox.Size = new System.Drawing.Size(457, 87);
+      this.descriptionTextBox.Size = new System.Drawing.Size(457, 20);
       // 
       // openFileDialog
       // 

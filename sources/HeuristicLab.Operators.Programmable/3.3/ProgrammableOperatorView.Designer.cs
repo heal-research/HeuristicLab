@@ -76,9 +76,7 @@ namespace HeuristicLab.Operators.Programmable {
       // 
       // descriptionTextBox
       // 
-      this.descriptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.descriptionTextBox.Size = new System.Drawing.Size(913, 48);
+      this.descriptionTextBox.Size = new System.Drawing.Size(913, 20);
       this.descriptionTextBox.TextChanged += new System.EventHandler(this.descriptionTextBox_TextChanged);
       // 
       // tabPage2
@@ -197,10 +195,10 @@ namespace HeuristicLab.Operators.Programmable {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl1.Controls.Add(this.tabPage1);
       this.tabControl1.Controls.Add(tabPage2);
-      this.tabControl1.Location = new System.Drawing.Point(0, 78);
+      this.tabControl1.Location = new System.Drawing.Point(0, 52);
       this.tabControl1.Name = "tabControl1";
       this.tabControl1.SelectedIndex = 0;
-      this.tabControl1.Size = new System.Drawing.Size(985, 619);
+      this.tabControl1.Size = new System.Drawing.Size(985, 645);
       this.tabControl1.TabIndex = 7;
       // 
       // tabPage1
@@ -209,7 +207,7 @@ namespace HeuristicLab.Operators.Programmable {
       this.tabPage1.Location = new System.Drawing.Point(4, 22);
       this.tabPage1.Name = "tabPage1";
       this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage1.Size = new System.Drawing.Size(898, 439);
+      this.tabPage1.Size = new System.Drawing.Size(977, 619);
       this.tabPage1.TabIndex = 0;
       this.tabPage1.Text = "Parameters";
       this.tabPage1.UseVisualStyleBackColor = true;
@@ -221,7 +219,7 @@ namespace HeuristicLab.Operators.Programmable {
       this.parameterCollectionView1.Dock = System.Windows.Forms.DockStyle.Fill;
       this.parameterCollectionView1.Location = new System.Drawing.Point(3, 3);
       this.parameterCollectionView1.Name = "parameterCollectionView1";
-      this.parameterCollectionView1.Size = new System.Drawing.Size(892, 433);
+      this.parameterCollectionView1.Size = new System.Drawing.Size(971, 613);
       this.parameterCollectionView1.TabIndex = 0;
       // 
       // ProgrammableOperatorView

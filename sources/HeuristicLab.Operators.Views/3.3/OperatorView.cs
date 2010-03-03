@@ -28,6 +28,7 @@ namespace HeuristicLab.Operators.Views {
   /// <summary>
   /// The base class for visual representations of items.
   /// </summary>
+  [View("Operator View (Default)")]
   [Content(typeof(Operator), true)]
   [Content(typeof(IOperator), false)]
   public partial class OperatorView : ParameterizedNamedItemView {
@@ -80,14 +81,14 @@ namespace HeuristicLab.Operators.Views {
       }
     }
 
-    private void Content_BreakpointChanged(object sender, EventArgs e) {
+    protected void Content_BreakpointChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_DescriptionChanged), sender, e);
       else
         breakpointCheckBox.Checked = Content.Breakpoint;
     }
 
-    private void breakpointCheckBox_CheckedChanged(object sender, System.EventArgs e) {
+    protected void breakpointCheckBox_CheckedChanged(object sender, System.EventArgs e) {
       if (Content != null) Content.Breakpoint = breakpointCheckBox.Checked;
     }
   }

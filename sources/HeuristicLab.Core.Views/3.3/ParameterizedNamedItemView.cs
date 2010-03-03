@@ -25,6 +25,7 @@ namespace HeuristicLab.Core.Views {
   /// <summary>
   /// The base class for visual representations of items.
   /// </summary>
+  [View("ParameterizedNamedItem View")]
   [Content(typeof(ParameterizedNamedItem), true)]
   [Content(typeof(IParameterizedNamedItem), false)]
   public partial class ParameterizedNamedItemView : NamedItemView {

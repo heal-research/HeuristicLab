@@ -50,6 +50,7 @@ namespace HeuristicLab.Core.Views {
       this.descriptionLabel = new System.Windows.Forms.Label();
       this.descriptionTextBox = new System.Windows.Forms.TextBox();
       this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
+      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
       // 
@@ -85,15 +86,14 @@ namespace HeuristicLab.Core.Views {
       // 
       // descriptionTextBox
       // 
-      this.descriptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
+      this.descriptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.descriptionTextBox.Location = new System.Drawing.Point(72, 26);
-      this.descriptionTextBox.Multiline = true;
       this.descriptionTextBox.Name = "descriptionTextBox";
       this.descriptionTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-      this.descriptionTextBox.Size = new System.Drawing.Size(279, 86);
+      this.descriptionTextBox.Size = new System.Drawing.Size(279, 20);
       this.descriptionTextBox.TabIndex = 3;
+      this.descriptionTextBox.DoubleClick += new System.EventHandler(this.descriptionTextBox_DoubleClick);
       this.descriptionTextBox.Validated += new System.EventHandler(this.descriptionTextBox_Validated);
       // 
       // errorProvider
@@ -110,7 +110,7 @@ namespace HeuristicLab.Core.Views {
       this.Controls.Add(this.descriptionLabel);
       this.Controls.Add(this.nameLabel);
       this.Name = "NamedItemView";
-      this.Size = new System.Drawing.Size(351, 112);
+      this.Size = new System.Drawing.Size(351, 52);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
@@ -124,5 +124,6 @@ namespace HeuristicLab.Core.Views {
     protected System.Windows.Forms.Label descriptionLabel;
     protected System.Windows.Forms.TextBox descriptionTextBox;
     protected System.Windows.Forms.ErrorProvider errorProvider;
+    protected System.Windows.Forms.ToolTip toolTip;
   }
 }

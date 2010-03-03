@@ -30,6 +30,7 @@ namespace HeuristicLab.Analysis.Views {
   /// <summary>
   /// The visual representation of a <see cref="Variable"/>.
   /// </summary>
+  [View("DataTable View")]
   [Content(typeof(DataTable), true)]
   public sealed partial class DataTableView : NamedItemView {
     Dictionary<IObservableList<double>, DataRow> valuesRowsTable;
@@ -108,6 +109,7 @@ namespace HeuristicLab.Analysis.Views {
     private void AddDataRow(DataRow row) {
       Series series = new Series(row.Name);
       series.ChartType = SeriesChartType.FastLine;
+      series.ToolTip = "#VAL";
       for (int i = 0; i < row.Values.Count; i++)
         series.Points.Add(row.Values[i]);
       chart.Series.Add(series);

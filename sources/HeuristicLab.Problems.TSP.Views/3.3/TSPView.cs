@@ -29,6 +29,7 @@ namespace HeuristicLab.Problems.TSP.Views {
   /// <summary>
   /// The base class for visual representations of items.
   /// </summary>
+  [View("TSP View")]
   [Content(typeof(TSP), true)]
   public sealed partial class TSPView : ProblemView {
     public new TSP Content {

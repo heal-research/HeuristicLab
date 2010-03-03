@@ -93,15 +93,19 @@ namespace HeuristicLab.Problems.TSP {
       SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
 
-      var ops = ApplicationManager.Manager.GetInstances<IPermutationOperator>();
-      foreach (IPermutationCrossover op in ops.OfType<IPermutationCrossover>()) {
-        op.ParentsParameter.ActualName = creator.PermutationParameter.ActualName;
-        op.ChildParameter.ActualName = creator.PermutationParameter.ActualName;
+      operators = new OperatorSet();
+      if (ApplicationManager.Manager != null) {
+        var ops = ApplicationManager.Manager.GetInstances<IPermutationOperator>();
+        foreach (IPermutationCrossover op in ops.OfType<IPermutationCrossover>()) {
+          op.ParentsParameter.ActualName = creator.PermutationParameter.ActualName;
+          op.ChildParameter.ActualName = creator.PermutationParameter.ActualName;
+        }
+        foreach (IPermutationManipulator op in ops.OfType<IPermutationManipulator>()) {
+          op.PermutationParameter.ActualName = creator.PermutationParameter.ActualName;
+        }
+        foreach (IPermutationOperator op in ops)
+          operators.Add(op);
       }
-      foreach (IPermutationManipulator op in ops.OfType<IPermutationManipulator>()) {
-        op.PermutationParameter.ActualName = creator.PermutationParameter.ActualName;
-      }
-      operators = new OperatorSet(ops.Cast<IOperator>());
     }
 
     public void ImportFromTSPLIB(string filename) {

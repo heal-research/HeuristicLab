@@ -37,7 +37,7 @@ using HeuristicLab.Operators.Views;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Operators.Programmable {
-
+  [View("ProgrammableOperator View")]
   [Content(typeof(ProgrammableOperator), true)]
   public partial class ProgrammableOperatorView : NamedItemView {
 

@@ -31,6 +31,7 @@ namespace HeuristicLab.Optimization.Views {
   /// <summary>
   /// The base class for visual representations of items.
   /// </summary>
+  [View("Algorithm View")]
   [Content(typeof(Algorithm), true)]
   [Content(typeof(IAlgorithm), false)]
   public partial class AlgorithmView : NamedItemView {

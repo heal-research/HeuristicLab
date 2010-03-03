@@ -38,6 +38,7 @@ using System.Diagnostics;
 using System.Threading;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
+  [View("GraphVisualizationInfo View")]
   [Content(typeof(GraphVisualizationInfo), false)]
   public partial class GraphVisualizationInfoView : ContentView {
     private BidirectionalLookup<IShapeInfo, IShape> shapeInfoShapeMapping;

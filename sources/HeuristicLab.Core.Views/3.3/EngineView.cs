@@ -27,6 +27,7 @@ namespace HeuristicLab.Core.Views {
   /// <summary>
   /// Base class for editors of engines.
   /// </summary>
+  [View("Engine View")]
   [Content(typeof(Engine), true)]
   [Content(typeof(IEngine), false)]
   public partial class EngineView : ItemView {
@@ -84,15 +85,12 @@ namespace HeuristicLab.Core.Views {
     /// <remarks>Calls <see cref="EditorBase.UpdateControls"/> of base class <see cref="EditorBase"/>.</remarks>
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      stopButton.Enabled = false;
       logTextBox.Clear();
       if (Content == null) {
         logTextBox.Enabled = false;
-        startButton.Enabled = false;
         executionTimeTextBox.Enabled = false;
       } else {
         logTextBox.Enabled = true;
-        startButton.Enabled = !Content.Finished;
         UpdateExecutionTimeTextBox();
         executionTimeTextBox.Enabled = true;
       }
@@ -103,8 +101,6 @@ namespace HeuristicLab.Core.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_Prepared), sender, e);
       else {
-        startButton.Enabled = !Content.Finished;
-        stopButton.Enabled = false;
         UpdateExecutionTimeTextBox();
         logTextBox.Clear();
         Log("Engine prepared");
@@ -115,8 +111,6 @@ namespace HeuristicLab.Core.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_Started), sender, e);
       else {
-        startButton.Enabled = false;
-        stopButton.Enabled = true;
         UpdateExecutionTimeTextBox();
         Log("Engine started");
       }
@@ -125,8 +119,6 @@ namespace HeuristicLab.Core.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_Stopped), sender, e);
       else {
-        startButton.Enabled = !Content.Finished;
-        stopButton.Enabled = false;
         UpdateExecutionTimeTextBox();
         if (Content.Finished) Log("Engine finished");
         else Log("Engine stopped");
@@ -144,15 +136,6 @@ namespace HeuristicLab.Core.Views {
         Invoke(new EventHandler<EventArgs<Exception>>(Content_ExceptionOccurred), sender, e);
       else
         Log(Auxiliary.BuildErrorMessage(e.Value));
-    }
-    #endregion
-
-    #region Button events
-    protected virtual void startButton_Click(object sender, EventArgs e) {
-      Content.Start();
-    }
-    protected virtual void stopButton_Click(object sender, EventArgs e) {
-      Content.Stop();
     }
     #endregion
 

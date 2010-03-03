@@ -32,6 +32,7 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Data.Views {
+  [View("StringConvertibleData View")]
   [Content(typeof(IStringConvertibleData), true)]
   public partial class StringConvertibleDataView : ContentView {
     public new IStringConvertibleData Content {

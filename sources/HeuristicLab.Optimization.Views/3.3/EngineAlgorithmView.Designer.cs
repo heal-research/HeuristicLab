@@ -60,7 +60,7 @@ namespace HeuristicLab.Optimization.Views {
       // tabControl
       // 
       this.tabControl.Controls.Add(this.engineTabPage);
-      this.tabControl.Size = new System.Drawing.Size(713, 400);
+      this.tabControl.Size = new System.Drawing.Size(713, 467);
       this.tabControl.Controls.SetChildIndex(this.resultsTabPage, 0);
       this.tabControl.Controls.SetChildIndex(this.engineTabPage, 0);
       this.tabControl.Controls.SetChildIndex(this.problemTabPage, 0);
@@ -68,19 +68,19 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // parametersTabPage
       // 
-      this.parametersTabPage.Size = new System.Drawing.Size(705, 374);
+      this.parametersTabPage.Size = new System.Drawing.Size(705, 441);
       // 
       // problemTabPage
       // 
-      this.problemTabPage.Size = new System.Drawing.Size(705, 374);
+      this.problemTabPage.Size = new System.Drawing.Size(705, 441);
       // 
       // parameterCollectionView
       // 
-      this.parameterCollectionView.Size = new System.Drawing.Size(693, 362);
+      this.parameterCollectionView.Size = new System.Drawing.Size(693, 429);
       // 
       // problemViewHost
       // 
-      this.problemViewHost.Size = new System.Drawing.Size(693, 332);
+      this.problemViewHost.Size = new System.Drawing.Size(693, 399);
       // 
       // newProblemButton
       // 
@@ -121,11 +121,11 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // resultsTabPage
       // 
-      this.resultsTabPage.Size = new System.Drawing.Size(705, 374);
+      this.resultsTabPage.Size = new System.Drawing.Size(705, 441);
       // 
       // resultsView
       // 
-      this.resultsView.Size = new System.Drawing.Size(693, 362);
+      this.resultsView.Size = new System.Drawing.Size(693, 429);
       // 
       // nameTextBox
       // 
@@ -135,7 +135,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // descriptionTextBox
       // 
-      this.descriptionTextBox.Size = new System.Drawing.Size(641, 87);
+      this.descriptionTextBox.Size = new System.Drawing.Size(641, 20);
       // 
       // engineLabel
       // 
@@ -178,7 +178,7 @@ namespace HeuristicLab.Optimization.Views {
       this.engineTabPage.Location = new System.Drawing.Point(4, 22);
       this.engineTabPage.Name = "engineTabPage";
       this.engineTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.engineTabPage.Size = new System.Drawing.Size(705, 374);
+      this.engineTabPage.Size = new System.Drawing.Size(705, 441);
       this.engineTabPage.TabIndex = 3;
       this.engineTabPage.Text = "Engine";
       this.engineTabPage.UseVisualStyleBackColor = true;
@@ -191,7 +191,7 @@ namespace HeuristicLab.Optimization.Views {
       this.engineViewHost.Content = null;
       this.engineViewHost.Location = new System.Drawing.Point(6, 33);
       this.engineViewHost.Name = "engineViewHost";
-      this.engineViewHost.Size = new System.Drawing.Size(693, 335);
+      this.engineViewHost.Size = new System.Drawing.Size(693, 402);
       this.engineViewHost.TabIndex = 2;
       this.engineViewHost.ViewType = null;
       // 

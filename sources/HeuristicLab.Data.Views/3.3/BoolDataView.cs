@@ -31,6 +31,7 @@ using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Data.Views {
+  [View("BoolData View")]
   [Content(typeof(BoolData), true)]
   public partial class BoolDataView : ItemView {
     public new BoolData Content {

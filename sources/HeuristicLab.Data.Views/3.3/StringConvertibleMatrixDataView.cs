@@ -33,6 +33,7 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Data.Views {
+  [View("StringConvertibleMatrix View")]
   [Content(typeof(IStringConvertibleMatrixData), true)]
   public partial class StringConvertibleMatrixDataView : ContentView {
     public new IStringConvertibleMatrixData Content {
