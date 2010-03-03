@@ -69,9 +69,11 @@ namespace HeuristicLab.Encodings.RealVector {
           double beta = 0;
           if (u < 0.5) { // if u is smaller than 0.5 perform a contracting crossover
             beta = Math.Pow(2 * u, 1.0 / (contiguity.Value + 1));
-          } else { // otherwise perform an expanding crossover
+          } else if (u > 0.5) { // otherwise perform an expanding crossover
             beta = Math.Pow(1.0 / (2 - 2 * u), (contiguity.Value + 1));
-          }
+          } else if (u == 0.5)
+            beta = 1;
+
           if (random.NextDouble() < 0.5)
             result[i] = ((parent1[i] + parent2[i]) / 2.0) - beta * 0.5 * Math.Abs(parent1[i] - parent2[i]);
           else
