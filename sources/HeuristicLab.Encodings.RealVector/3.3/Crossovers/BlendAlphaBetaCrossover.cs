@@ -39,18 +39,31 @@ namespace HeuristicLab.Encodings.RealVector {
   [Item("BlendAlphaBetaCrossover", "The blend alpha beta crossover (BLX-a-b) for real vectors is similar to the blend alpha crossover (BLX-a), but distinguishes between the better and worse of the parents. The interval from which to choose the new offspring can be extended more around the better parent by specifying a higher alpha value. It is implemented as described in Takahashi, M. and Kita, H. 2001. A crossover operator using independent component analysis for real-coded genetic algorithms Proceedings of the 2001 Congress on Evolutionary Computation, pp. 643-649.")]
   [EmptyStorableClass]
   public class BlendAlphaBetaCrossover : RealVectorCrossover {
+    /// <summary>
+    /// Whether the problem is a maximization or minimization problem.
+    /// </summary>
     public ValueLookupParameter<BoolData> MaximizationParameter {
       get { return (ValueLookupParameter<BoolData>)Parameters["Maximization"]; }
     }
+    /// <summary>
+    /// The quality of the parents.
+    /// </summary>
     public SubScopesLookupParameter<DoubleData> QualityParameter {
       get { return (SubScopesLookupParameter<DoubleData>)Parameters["Quality"]; }
     }
+    /// <summary>
+    /// The alpha parameter specifies how much the interval between the parents should be extended in direction of the better parent.
+    /// </summary>
     public ValueLookupParameter<DoubleData> AlphaParameter {
       get { return (ValueLookupParameter<DoubleData>)Parameters["Alpha"]; }
     }
+    /// <summary>
+    /// The beta parameter specifies how much the interval between the parents should be extended in direction of the worse parent.
+    /// </summary>
     public ValueLookupParameter<DoubleData> BetaParameter {
       get { return (ValueLookupParameter<DoubleData>)Parameters["Beta"]; }
     }
+
     /// <summary>
     /// Initializes a new instance of <see cref="BlendAlphaBetaCrossover"/> with four additional parameters
     /// (<c>Maximization</c>, <c>Quality</c>, <c>Alpha</c> and <c>Beta</c>).

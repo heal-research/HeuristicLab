@@ -35,10 +35,15 @@ namespace HeuristicLab.Encodings.RealVector {
   [Item("UniformOnePositionManipulator", "Changes a single position in the vector by sampling uniformly from the interval [Minimum, Maximum). It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.")]
   [EmptyStorableClass]
   public class UniformOnePositionManipulator : RealVectorManipulator {
+    /// <summary>
+    /// The lower bound of the values in the real vector.
+    /// </summary>
     public ValueLookupParameter<DoubleData> MinimumParameter {
       get { return (ValueLookupParameter<DoubleData>)Parameters["Minimum"]; }
     }
-
+    /// <summary>
+    /// The upper bound of the values in the real vector.
+    /// </summary>
     public ValueLookupParameter<DoubleData> MaximumParameter {
       get { return (ValueLookupParameter<DoubleData>)Parameters["Maximum"]; }
     }

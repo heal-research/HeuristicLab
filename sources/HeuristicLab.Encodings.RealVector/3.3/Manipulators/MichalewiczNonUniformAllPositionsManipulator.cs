@@ -36,18 +36,33 @@ namespace HeuristicLab.Encodings.RealVector {
   [Item("MichalewiczNonUniformOnePositionManipulator", "It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.")]
   [EmptyStorableClass]
   public class MichalewiczNonUniformAllPositionsManipulator : RealVectorManipulator {
+    /// <summary>
+    /// The lower bound of the values in the real vector.
+    /// </summary>
     public ValueLookupParameter<DoubleData> MinimumParameter {
       get { return (ValueLookupParameter<DoubleData>)Parameters["Minimum"]; }
     }
+    /// <summary>
+    /// The upper bound of the values in the real vector.
+    /// </summary>
     public ValueLookupParameter<DoubleData> MaximumParameter {
       get { return (ValueLookupParameter<DoubleData>)Parameters["Maximum"]; }
     }
+    /// <summary>
+    /// The current generation.
+    /// </summary>
     public LookupParameter<IntData> GenerationParameter {
       get { return (LookupParameter<IntData>)Parameters["Generation"]; }
     }
+    /// <summary>
+    /// The maximum generation.
+    /// </summary>
     public LookupParameter<IntData> MaximumGenerationsParameter {
       get { return (LookupParameter<IntData>)Parameters["MaximumGenerations"]; }
     }
+    /// <summary>
+    /// The parameter describing how much the mutation should depend on the progress towards the maximum generation.
+    /// </summary>
     public ValueLookupParameter<DoubleData> GenerationDependencyParameter {
       get { return (ValueLookupParameter<DoubleData>)Parameters["GenerationDependency"]; }
     }

@@ -43,6 +43,10 @@ namespace HeuristicLab.Encodings.RealVector {
       get { return (ValueLookupParameter<DoubleData>)Parameters["Contiguity"]; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="SimulatedBinaryCrossover"/> with one 
+    /// parameter (<c>Contiguity</c>).
+    /// </summary>
     public SimulatedBinaryCrossover()
       : base() {
       Parameters.Add(new ValueLookupParameter<DoubleData>("Contiguity", "Specifies whether the crossover should produce very different (small value) or very similar (large value) children. Valid values must be greater or equal to 0.", new DoubleData(2)));
