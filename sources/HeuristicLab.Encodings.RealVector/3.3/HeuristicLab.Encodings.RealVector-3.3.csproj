@@ -91,6 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Crossovers\BlendAlphaCrossover.cs" />
+    <Compile Include="Crossovers\SimulatedBinaryCrossover.cs" />
     <Compile Include="Crossovers\SinglePointCrossover.cs">
       <SubType>Code</SubType>
     </Compile>
