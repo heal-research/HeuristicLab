@@ -30,15 +30,6 @@ namespace HeuristicLab.Core {
   /// </summary>
   public interface IEngine : IItem {
     /// <summary>
-    /// Gets the operator graph of the current instance.
-    /// </summary>
-    OperatorGraph OperatorGraph { get; set; }
-    /// <summary>
-    /// Gets the global scope of the current instance.
-    /// </summary>
-    IScope GlobalScope { get; }
-
-    /// <summary>
     /// Gets the execution time of the current instance.
     /// </summary>
     TimeSpan ExecutionTime { get; }
@@ -52,10 +43,6 @@ namespace HeuristicLab.Core {
     /// </summary>
     bool Finished { get; }
 
-    /// <summary>
-    /// Prepares the engine for a new run.
-    /// </summary>
-    void Prepare();
     /// <summary>
     /// Prepares the engine with a given initial operation.
     /// </summary>
@@ -73,10 +60,6 @@ namespace HeuristicLab.Core {
     /// </summary>
     void Stop();
 
-    /// <summary>
-    /// Occurs when the operator graph was changed.
-    /// </summary>
-    event EventHandler OperatorGraphChanged;
     /// <summary>
     /// Occurs when the execution time was changed.
     /// </summary>

@@ -52,8 +52,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
           if (this.content != value) {
             if (this.content != null) this.DeregisterContentEvents();
             this.content = value;
-            this.OnContentChanged();
             if (this.content != null) this.RegisterContentEvents();
+            this.OnContentChanged();
           }
         }
       }

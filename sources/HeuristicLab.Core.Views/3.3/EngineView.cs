@@ -20,10 +20,8 @@
 #endregion
 
 using System;
-using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.MainForm;
-using HeuristicLab.Persistence.Default.Xml;
 
 namespace HeuristicLab.Core.Views {
   /// <summary>
@@ -32,7 +30,6 @@ namespace HeuristicLab.Core.Views {
   [Content(typeof(Engine), true)]
   [Content(typeof(IEngine), false)]
   public partial class EngineView : ItemView {
-    protected TypeSelectorDialog typeSelectorDialog;
     private int executionTimeCounter;
 
     /// <summary>
@@ -60,7 +57,6 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void DeregisterContentEvents() {
-      Content.OperatorGraphChanged -= new EventHandler(Content_OperatorGraphChanged);
       Content.Prepared -= new EventHandler(Content_Prepared);
       Content.Started -= new EventHandler(Content_Started);
       Content.Stopped -= new EventHandler(Content_Stopped);
@@ -75,7 +71,6 @@ namespace HeuristicLab.Core.Views {
     /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.OperatorGraphChanged += new EventHandler(Content_OperatorGraphChanged);
       Content.Prepared += new EventHandler(Content_Prepared);
       Content.Started += new EventHandler(Content_Started);
       Content.Stopped += new EventHandler(Content_Stopped);
@@ -90,43 +85,29 @@ namespace HeuristicLab.Core.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       stopButton.Enabled = false;
+      logTextBox.Clear();
       if (Content == null) {
-        newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = saveOperatorGraphButton.Enabled = false;
-        operatorGraphViewHost.Enabled = false;
-        scopeView.Enabled = false;
-        startButton.Enabled = resetButton.Enabled = false;
+        logTextBox.Enabled = false;
+        startButton.Enabled = false;
         executionTimeTextBox.Enabled = false;
       } else {
-        newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = saveOperatorGraphButton.Enabled = true;
-        operatorGraphViewHost.Content = Content.OperatorGraph;
-        operatorGraphViewHost.Enabled = true;
-        scopeView.Content = Content.GlobalScope;
-        scopeView.Enabled = true;
+        logTextBox.Enabled = true;
         startButton.Enabled = !Content.Finished;
-        resetButton.Enabled = true;
         UpdateExecutionTimeTextBox();
         executionTimeTextBox.Enabled = true;
       }
     }
 
     #region Content Events
-    protected virtual void Content_OperatorGraphChanged(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_OperatorGraphChanged), sender, e);
-      else
-        operatorGraphViewHost.Content = Content.OperatorGraph;
-    }
     protected virtual void Content_Prepared(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_Prepared), sender, e);
       else {
-        newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = saveOperatorGraphButton.Enabled = true;
-        operatorGraphViewHost.Enabled = true;
-        scopeView.Enabled = true;
         startButton.Enabled = !Content.Finished;
         stopButton.Enabled = false;
-        resetButton.Enabled = true;
         UpdateExecutionTimeTextBox();
+        logTextBox.Clear();
+        Log("Engine prepared");
       }
     }
     protected virtual void Content_Started(object sender, EventArgs e) {
@@ -134,26 +115,21 @@ namespace HeuristicLab.Core.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_Started), sender, e);
       else {
-        newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = saveOperatorGraphButton.Enabled = false;
-        operatorGraphViewHost.Enabled = false;
-        scopeView.Enabled = false;
         startButton.Enabled = false;
         stopButton.Enabled = true;
-        resetButton.Enabled = false;
         UpdateExecutionTimeTextBox();
+        Log("Engine started");
       }
     }
     protected virtual void Content_Stopped(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_Stopped), sender, e);
       else {
-        newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = saveOperatorGraphButton.Enabled = true;
-        operatorGraphViewHost.Enabled = true;
-        scopeView.Enabled = true;
         startButton.Enabled = !Content.Finished;
         stopButton.Enabled = false;
-        resetButton.Enabled = true;
         UpdateExecutionTimeTextBox();
+        if (Content.Finished) Log("Engine finished");
+        else Log("Engine stopped");
       }
     }
     protected virtual void Content_ExecutionTimeChanged(object sender, EventArgs e) {
@@ -167,52 +143,16 @@ namespace HeuristicLab.Core.Views {
       if (InvokeRequired)
         Invoke(new EventHandler<EventArgs<Exception>>(Content_ExceptionOccurred), sender, e);
       else
-        Auxiliary.ShowErrorMessageBox(e.Value);
+        Log(Auxiliary.BuildErrorMessage(e.Value));
     }
     #endregion
 
     #region Button events
-    protected void newOperatorGraphButton_Click(object sender, EventArgs e) {
-      Content.OperatorGraph = new OperatorGraph();
-    }
-    protected void openOperatorGraphButton_Click(object sender, EventArgs e) {
-      openFileDialog.Title = "Open Operator Graph";
-      if (openFileDialog.ShowDialog(this) == DialogResult.OK) {
-        OperatorGraph operatorGraph = null;
-        try {
-          operatorGraph = XmlParser.Deserialize(openFileDialog.FileName) as OperatorGraph;
-        }
-        catch (Exception ex) {
-          Auxiliary.ShowErrorMessageBox(ex);
-        }
-        if (operatorGraph == null)
-          MessageBox.Show(this, "Selected file does not contain an operator graph.", "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        else
-          Content.OperatorGraph = operatorGraph;
-      }
-    }
-    protected void saveOperatorGraphButton_Click(object sender, EventArgs e) {
-      saveFileDialog.Title = "Save Operator Graph";
-      if (saveFileDialog.ShowDialog(this) == DialogResult.OK) {
-        try {
-          if (saveFileDialog.FilterIndex == 1)
-            XmlGenerator.Serialize(Content.OperatorGraph, saveFileDialog.FileName, 0);
-          else
-            XmlGenerator.Serialize(Content.OperatorGraph, saveFileDialog.FileName, 9);
-        }
-        catch (Exception ex) {
-          Auxiliary.ShowErrorMessageBox(ex);
-        }
-      }
-    }
     protected virtual void startButton_Click(object sender, EventArgs e) {
       Content.Start();
     }
     protected virtual void stopButton_Click(object sender, EventArgs e) {
       Content.Stop();
-    }
-    protected virtual void resetButton_Click(object sender, EventArgs e) {
-      Content.Prepare();
     }
     #endregion
 
@@ -222,6 +162,18 @@ namespace HeuristicLab.Core.Views {
         Invoke(new Action(UpdateExecutionTimeTextBox));
       else
         executionTimeTextBox.Text = Content.ExecutionTime.ToString();
+    }
+    protected virtual void Log(string message) {
+      if (InvokeRequired)
+        Invoke(new Action<string>(Log), message);
+      else {
+        message = DateTime.Now.ToString() + "\t" + message;
+        string[] newLines = message.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+        string[] lines = new string[logTextBox.Lines.Length + newLines.Length];
+        logTextBox.Lines.CopyTo(lines, 0);
+        newLines.CopyTo(lines, logTextBox.Lines.Length);
+        logTextBox.Lines = lines;
+      }
     }
     #endregion
   }

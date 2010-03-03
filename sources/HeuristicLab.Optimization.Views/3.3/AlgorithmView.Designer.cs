@@ -103,7 +103,7 @@ namespace HeuristicLab.Optimization.Views {
       this.parametersTabPage.Location = new System.Drawing.Point(4, 22);
       this.parametersTabPage.Name = "parametersTabPage";
       this.parametersTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.parametersTabPage.Size = new System.Drawing.Size(482, 178);
+      this.parametersTabPage.Size = new System.Drawing.Size(671, 307);
       this.parametersTabPage.TabIndex = 0;
       this.parametersTabPage.Text = "Parameters";
       this.parametersTabPage.UseVisualStyleBackColor = true;
@@ -117,7 +117,7 @@ namespace HeuristicLab.Optimization.Views {
       this.parameterCollectionView.Content = null;
       this.parameterCollectionView.Location = new System.Drawing.Point(6, 6);
       this.parameterCollectionView.Name = "parameterCollectionView";
-      this.parameterCollectionView.Size = new System.Drawing.Size(470, 166);
+      this.parameterCollectionView.Size = new System.Drawing.Size(659, 295);
       this.parameterCollectionView.TabIndex = 0;
       // 
       // problemTabPage
@@ -185,7 +185,7 @@ namespace HeuristicLab.Optimization.Views {
       this.resultsTabPage.Location = new System.Drawing.Point(4, 22);
       this.resultsTabPage.Name = "resultsTabPage";
       this.resultsTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.resultsTabPage.Size = new System.Drawing.Size(482, 178);
+      this.resultsTabPage.Size = new System.Drawing.Size(671, 307);
       this.resultsTabPage.TabIndex = 2;
       this.resultsTabPage.Text = "Results";
       this.resultsTabPage.UseVisualStyleBackColor = true;
@@ -199,7 +199,7 @@ namespace HeuristicLab.Optimization.Views {
       this.resultsView.Content = null;
       this.resultsView.Location = new System.Drawing.Point(6, 6);
       this.resultsView.Name = "resultsView";
-      this.resultsView.Size = new System.Drawing.Size(470, 166);
+      this.resultsView.Size = new System.Drawing.Size(659, 295);
       this.resultsView.TabIndex = 0;
       // 
       // startButton

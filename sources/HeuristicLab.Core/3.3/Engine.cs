@@ -38,37 +38,6 @@ namespace HeuristicLab.Core {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Event; }
     }
 
-    private OperatorGraph operatorGraph;
-    /// <summary>
-    /// Gets or sets the current operator graph.
-    /// </summary>
-    [Storable]
-    public OperatorGraph OperatorGraph {
-      get { return operatorGraph; }
-      set {
-        if (value == null) throw new ArgumentNullException();
-        if (value != operatorGraph) {
-          if (operatorGraph != null) operatorGraph.InitialOperatorChanged -= new EventHandler(operatorGraph_InitialOperatorChanged);
-          operatorGraph = value;
-          if (operatorGraph != null) operatorGraph.InitialOperatorChanged += new EventHandler(operatorGraph_InitialOperatorChanged);
-          OnOperatorGraphChanged();
-          Prepare();
-        }
-      }
-    }
-
-    /// <summary>
-    /// Field of the current instance that represent the global scope.
-    /// </summary>
-    [Storable]
-    private IScope globalScope;
-    /// <summary>
-    /// Gets the current global scope.
-    /// </summary>
-    public IScope GlobalScope {
-      get { return globalScope; }
-    }
-
     [Storable]
     private TimeSpan executionTime;
     /// <summary>
@@ -133,9 +102,7 @@ namespace HeuristicLab.Core {
     /// Initializes a new instance of <see cref="EngineBase"/> with a new global scope.
     /// </summary>
     protected Engine() {
-      globalScope = new Scope("Global");
       executionStack = new Stack<IOperation>();
-      OperatorGraph = new OperatorGraph();
     }
 
     /// <summary>
@@ -147,8 +114,6 @@ namespace HeuristicLab.Core {
     /// <returns>The cloned object as <see cref="EngineBase"/>.</returns>
     public override IDeepCloneable Clone(Cloner cloner) {
       Engine clone = (Engine)base.Clone(cloner);
-      clone.OperatorGraph = (OperatorGraph)cloner.Clone(operatorGraph);
-      clone.globalScope = (Scope)cloner.Clone(globalScope);
       clone.executionTime = executionTime;
       IOperation[] contexts = executionStack.ToArray();
       for (int i = contexts.Length - 1; i >= 0; i--)
@@ -161,21 +126,11 @@ namespace HeuristicLab.Core {
     public void Prepare(IOperation initialOperation) {
       Canceled = false;
       running = false;
-      globalScope.Clear();
       ExecutionTime = new TimeSpan();
       executionStack.Clear();
       if (initialOperation != null)
         executionStack.Push(initialOperation);
       OnPrepared();
-    }
-    /// <inheritdoc/>
-    /// <remarks>Sets <c>myCanceled</c> and <c>myRunning</c> to <c>false</c>. The global scope is cleared,
-    /// the execution time is reset, the execution stack is cleared and a new <see cref="AtomicOperation"/>
-    /// with the initial operator is added. <br/>
-    /// Calls <see cref="OnPrepared"/>.</remarks>
-    public void Prepare() {
-      if (OperatorGraph.InitialOperator != null)
-        Prepare(new ExecutionContext(null, OperatorGraph.InitialOperator, GlobalScope));
     }
     /// <inheritdoc/>
     /// <remarks>Calls <see cref="ThreadPool.QueueUserWorkItem(System.Threading.WaitCallback, object)"/> 
@@ -228,21 +183,6 @@ namespace HeuristicLab.Core {
     /// </summary>
     protected abstract void ProcessNextOperator();
 
-    private void operatorGraph_InitialOperatorChanged(object sender, EventArgs e) {
-      Prepare();
-    }
-
-    /// <summary>
-    /// Occurs when the operator graph was changed.
-    /// </summary>
-    public event EventHandler OperatorGraphChanged;
-    /// <summary>
-    /// Fires a new <c>OperatorGraphChanged</c> event.
-    /// </summary>
-    protected virtual void OnOperatorGraphChanged() {
-      if (OperatorGraphChanged != null)
-        OperatorGraphChanged(this, EventArgs.Empty);
-    }
     /// <summary>
     /// Occurs when the execution time changed.
     /// </summary>

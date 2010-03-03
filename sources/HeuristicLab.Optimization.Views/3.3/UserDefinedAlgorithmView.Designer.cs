@@ -51,6 +51,7 @@ namespace HeuristicLab.Optimization.Views {
       this.operatorGraphViewHost = new HeuristicLab.Core.Views.ViewHost();
       this.globalScopeTabPage = new System.Windows.Forms.TabPage();
       this.globalScopeView = new HeuristicLab.Core.Views.ScopeView();
+      this.engineTabPage.SuspendLayout();
       this.tabControl.SuspendLayout();
       this.parametersTabPage.SuspendLayout();
       this.problemTabPage.SuspendLayout();
@@ -60,10 +61,6 @@ namespace HeuristicLab.Optimization.Views {
       this.globalScopeTabPage.SuspendLayout();
       this.SuspendLayout();
       // 
-      // setEngineButton
-      // 
-      this.toolTip.SetToolTip(this.setEngineButton, "Set Engine");
-      // 
       // createUserDefinedAlgorithmButton
       // 
       this.toolTip.SetToolTip(this.createUserDefinedAlgorithmButton, "Create User Defined Algorithm from this Algorithm");
@@ -72,9 +69,10 @@ namespace HeuristicLab.Optimization.Views {
       // 
       this.tabControl.Controls.Add(this.operatorGraphTabPage);
       this.tabControl.Controls.Add(this.globalScopeTabPage);
-      this.tabControl.Controls.SetChildIndex(this.resultsTabPage, 0);
       this.tabControl.Controls.SetChildIndex(this.globalScopeTabPage, 0);
       this.tabControl.Controls.SetChildIndex(this.operatorGraphTabPage, 0);
+      this.tabControl.Controls.SetChildIndex(this.resultsTabPage, 0);
+      this.tabControl.Controls.SetChildIndex(this.engineTabPage, 0);
       this.tabControl.Controls.SetChildIndex(this.problemTabPage, 0);
       this.tabControl.Controls.SetChildIndex(this.parametersTabPage, 0);
       // 
@@ -102,14 +100,6 @@ namespace HeuristicLab.Optimization.Views {
       // 
       this.toolTip.SetToolTip(this.resetButton, "Reset Algorithm");
       // 
-      // resultsTabPage
-      // 
-      this.resultsTabPage.Size = new System.Drawing.Size(648, 252);
-      // 
-      // resultsView
-      // 
-      this.resultsView.Size = new System.Drawing.Size(636, 240);
-      // 
       // nameTextBox
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
@@ -123,7 +113,7 @@ namespace HeuristicLab.Optimization.Views {
       this.operatorGraphTabPage.Controls.Add(this.operatorGraphViewHost);
       this.operatorGraphTabPage.Location = new System.Drawing.Point(4, 22);
       this.operatorGraphTabPage.Name = "operatorGraphTabPage";
-      this.operatorGraphTabPage.Size = new System.Drawing.Size(648, 252);
+      this.operatorGraphTabPage.Size = new System.Drawing.Size(705, 374);
       this.operatorGraphTabPage.TabIndex = 2;
       this.operatorGraphTabPage.Text = "Operator Graph";
       this.operatorGraphTabPage.UseVisualStyleBackColor = true;
@@ -169,7 +159,7 @@ namespace HeuristicLab.Optimization.Views {
       this.operatorGraphViewHost.Content = null;
       this.operatorGraphViewHost.Location = new System.Drawing.Point(3, 33);
       this.operatorGraphViewHost.Name = "operatorGraphViewHost";
-      this.operatorGraphViewHost.Size = new System.Drawing.Size(642, 216);
+      this.operatorGraphViewHost.Size = new System.Drawing.Size(699, 338);
       this.operatorGraphViewHost.TabIndex = 0;
       this.operatorGraphViewHost.ViewType = null;
       // 
@@ -178,7 +168,7 @@ namespace HeuristicLab.Optimization.Views {
       this.globalScopeTabPage.Controls.Add(this.globalScopeView);
       this.globalScopeTabPage.Location = new System.Drawing.Point(4, 22);
       this.globalScopeTabPage.Name = "globalScopeTabPage";
-      this.globalScopeTabPage.Size = new System.Drawing.Size(648, 252);
+      this.globalScopeTabPage.Size = new System.Drawing.Size(705, 374);
       this.globalScopeTabPage.TabIndex = 3;
       this.globalScopeTabPage.Text = "Global Scope";
       this.globalScopeTabPage.UseVisualStyleBackColor = true;
@@ -192,7 +182,7 @@ namespace HeuristicLab.Optimization.Views {
       this.globalScopeView.Content = null;
       this.globalScopeView.Location = new System.Drawing.Point(3, 3);
       this.globalScopeView.Name = "globalScopeView";
-      this.globalScopeView.Size = new System.Drawing.Size(642, 246);
+      this.globalScopeView.Size = new System.Drawing.Size(699, 368);
       this.globalScopeView.TabIndex = 0;
       // 
       // UserDefinedAlgorithmView
@@ -200,6 +190,8 @@ namespace HeuristicLab.Optimization.Views {
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Name = "UserDefinedAlgorithmView";
+      this.engineTabPage.ResumeLayout(false);
+      this.engineTabPage.PerformLayout();
       this.tabControl.ResumeLayout(false);
       this.parametersTabPage.ResumeLayout(false);
       this.problemTabPage.ResumeLayout(false);

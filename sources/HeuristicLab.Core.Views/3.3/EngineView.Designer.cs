@@ -32,7 +32,6 @@ namespace HeuristicLab.Core.Views {
     /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
     protected override void Dispose(bool disposing) {
       if (disposing) {
-        if (typeSelectorDialog != null) typeSelectorDialog.Dispose();
         if (components != null) components.Dispose();
       }
       base.Dispose(disposing);
@@ -48,23 +47,10 @@ namespace HeuristicLab.Core.Views {
       this.components = new System.ComponentModel.Container();
       this.executionTimeTextBox = new System.Windows.Forms.TextBox();
       this.executionTimeLabel = new System.Windows.Forms.Label();
-      this.scopeView = new HeuristicLab.Core.Views.ScopeView();
-      this.resetButton = new System.Windows.Forms.Button();
       this.stopButton = new System.Windows.Forms.Button();
       this.startButton = new System.Windows.Forms.Button();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-      this.newOperatorGraphButton = new System.Windows.Forms.Button();
-      this.openOperatorGraphButton = new System.Windows.Forms.Button();
-      this.saveOperatorGraphButton = new System.Windows.Forms.Button();
-      this.tabControl = new System.Windows.Forms.TabControl();
-      this.operatorGraphTabPage = new System.Windows.Forms.TabPage();
-      this.operatorGraphViewHost = new HeuristicLab.Core.Views.ViewHost();
-      this.globalScopeTabPage = new System.Windows.Forms.TabPage();
-      this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-      this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-      this.tabControl.SuspendLayout();
-      this.operatorGraphTabPage.SuspendLayout();
-      this.globalScopeTabPage.SuspendLayout();
+      this.logTextBox = new System.Windows.Forms.TextBox();
       this.SuspendLayout();
       // 
       // executionTimeTextBox
@@ -85,30 +71,6 @@ namespace HeuristicLab.Core.Views {
       this.executionTimeLabel.Size = new System.Drawing.Size(83, 13);
       this.executionTimeLabel.TabIndex = 4;
       this.executionTimeLabel.Text = "&Execution Time:";
-      // 
-      // scopeView
-      // 
-      this.scopeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.scopeView.Caption = "Scope";
-      this.scopeView.Content = null;
-      this.scopeView.Location = new System.Drawing.Point(6, 6);
-      this.scopeView.Name = "scopeView";
-      this.scopeView.Size = new System.Drawing.Size(782, 572);
-      this.scopeView.TabIndex = 0;
-      // 
-      // resetButton
-      // 
-      this.resetButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.resetButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Restart;
-      this.resetButton.Location = new System.Drawing.Point(60, 616);
-      this.resetButton.Name = "resetButton";
-      this.resetButton.Size = new System.Drawing.Size(24, 24);
-      this.resetButton.TabIndex = 3;
-      this.toolTip.SetToolTip(this.resetButton, "Reset Engine");
-      this.resetButton.UseVisualStyleBackColor = true;
-      this.resetButton.Click += new System.EventHandler(this.resetButton_Click);
       // 
       // stopButton
       // 
@@ -135,119 +97,31 @@ namespace HeuristicLab.Core.Views {
       this.startButton.UseVisualStyleBackColor = true;
       this.startButton.Click += new System.EventHandler(this.startButton_Click);
       // 
-      // newOperatorGraphButton
+      // logTextBox
       // 
-      this.newOperatorGraphButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.NewDocument;
-      this.newOperatorGraphButton.Location = new System.Drawing.Point(6, 6);
-      this.newOperatorGraphButton.Name = "newOperatorGraphButton";
-      this.newOperatorGraphButton.Size = new System.Drawing.Size(24, 24);
-      this.newOperatorGraphButton.TabIndex = 0;
-      this.toolTip.SetToolTip(this.newOperatorGraphButton, "Create New Operator Graph");
-      this.newOperatorGraphButton.UseVisualStyleBackColor = true;
-      this.newOperatorGraphButton.Click += new System.EventHandler(this.newOperatorGraphButton_Click);
-      // 
-      // openOperatorGraphButton
-      // 
-      this.openOperatorGraphButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Open;
-      this.openOperatorGraphButton.Location = new System.Drawing.Point(36, 6);
-      this.openOperatorGraphButton.Name = "openOperatorGraphButton";
-      this.openOperatorGraphButton.Size = new System.Drawing.Size(24, 24);
-      this.openOperatorGraphButton.TabIndex = 1;
-      this.toolTip.SetToolTip(this.openOperatorGraphButton, "Open Operator Graph");
-      this.openOperatorGraphButton.UseVisualStyleBackColor = true;
-      this.openOperatorGraphButton.Click += new System.EventHandler(this.openOperatorGraphButton_Click);
-      // 
-      // saveOperatorGraphButton
-      // 
-      this.saveOperatorGraphButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Save;
-      this.saveOperatorGraphButton.Location = new System.Drawing.Point(66, 6);
-      this.saveOperatorGraphButton.Name = "saveOperatorGraphButton";
-      this.saveOperatorGraphButton.Size = new System.Drawing.Size(24, 24);
-      this.saveOperatorGraphButton.TabIndex = 2;
-      this.toolTip.SetToolTip(this.saveOperatorGraphButton, "Save Operator Graph");
-      this.saveOperatorGraphButton.UseVisualStyleBackColor = true;
-      this.saveOperatorGraphButton.Click += new System.EventHandler(this.saveOperatorGraphButton_Click);
-      // 
-      // tabControl
-      // 
-      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+      this.logTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.tabControl.Controls.Add(this.operatorGraphTabPage);
-      this.tabControl.Controls.Add(this.globalScopeTabPage);
-      this.tabControl.Location = new System.Drawing.Point(0, 0);
-      this.tabControl.Name = "tabControl";
-      this.tabControl.SelectedIndex = 0;
-      this.tabControl.Size = new System.Drawing.Size(802, 610);
-      this.tabControl.TabIndex = 3;
-      // 
-      // operatorGraphTabPage
-      // 
-      this.operatorGraphTabPage.Controls.Add(this.operatorGraphViewHost);
-      this.operatorGraphTabPage.Controls.Add(this.saveOperatorGraphButton);
-      this.operatorGraphTabPage.Controls.Add(this.openOperatorGraphButton);
-      this.operatorGraphTabPage.Controls.Add(this.newOperatorGraphButton);
-      this.operatorGraphTabPage.Location = new System.Drawing.Point(4, 22);
-      this.operatorGraphTabPage.Name = "operatorGraphTabPage";
-      this.operatorGraphTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.operatorGraphTabPage.Size = new System.Drawing.Size(794, 584);
-      this.operatorGraphTabPage.TabIndex = 0;
-      this.operatorGraphTabPage.Text = "Operator Graph";
-      this.operatorGraphTabPage.UseVisualStyleBackColor = true;
-      // 
-      // operatorGraphViewHost
-      // 
-      this.operatorGraphViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.operatorGraphViewHost.Content = null;
-      this.operatorGraphViewHost.Location = new System.Drawing.Point(6, 36);
-      this.operatorGraphViewHost.Name = "operatorGraphViewHost";
-      this.operatorGraphViewHost.Size = new System.Drawing.Size(782, 542);
-      this.operatorGraphViewHost.TabIndex = 3;
-      this.operatorGraphViewHost.ViewType = null;
-      // 
-      // globalScopeTabPage
-      // 
-      this.globalScopeTabPage.Controls.Add(this.scopeView);
-      this.globalScopeTabPage.Location = new System.Drawing.Point(4, 22);
-      this.globalScopeTabPage.Name = "globalScopeTabPage";
-      this.globalScopeTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.globalScopeTabPage.Size = new System.Drawing.Size(794, 584);
-      this.globalScopeTabPage.TabIndex = 1;
-      this.globalScopeTabPage.Text = "Global Scope";
-      this.globalScopeTabPage.UseVisualStyleBackColor = true;
-      // 
-      // openFileDialog
-      // 
-      this.openFileDialog.DefaultExt = "hl";
-      this.openFileDialog.FileName = "Item";
-      this.openFileDialog.Filter = "HeuristicLab Files|*.hl|All Files|*.*";
-      this.openFileDialog.Title = "Open File";
-      // 
-      // saveFileDialog
-      // 
-      this.saveFileDialog.DefaultExt = "hl";
-      this.saveFileDialog.FileName = "Item";
-      this.saveFileDialog.Filter = "Uncompressed HeuristicLab Files|*.hl|HeuristicLab Files|*.hl|All Files|*.*";
-      this.saveFileDialog.FilterIndex = 2;
-      this.saveFileDialog.Title = "Save File";
+      this.logTextBox.Location = new System.Drawing.Point(0, 0);
+      this.logTextBox.Multiline = true;
+      this.logTextBox.Name = "logTextBox";
+      this.logTextBox.ReadOnly = true;
+      this.logTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+      this.logTextBox.Size = new System.Drawing.Size(802, 610);
+      this.logTextBox.TabIndex = 6;
+      this.logTextBox.WordWrap = false;
       // 
       // EngineView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.tabControl);
+      this.Controls.Add(this.logTextBox);
       this.Controls.Add(this.executionTimeTextBox);
       this.Controls.Add(this.stopButton);
       this.Controls.Add(this.executionTimeLabel);
-      this.Controls.Add(this.resetButton);
       this.Controls.Add(this.startButton);
       this.Name = "EngineView";
       this.Size = new System.Drawing.Size(802, 640);
-      this.tabControl.ResumeLayout(false);
-      this.operatorGraphTabPage.ResumeLayout(false);
-      this.globalScopeTabPage.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -257,20 +131,10 @@ namespace HeuristicLab.Core.Views {
 
     protected System.Windows.Forms.TextBox executionTimeTextBox;
     protected System.Windows.Forms.Label executionTimeLabel;
-    protected System.Windows.Forms.Button resetButton;
     protected System.Windows.Forms.Button stopButton;
     protected System.Windows.Forms.Button startButton;
-    protected HeuristicLab.Core.Views.ScopeView scopeView;
     protected System.Windows.Forms.ToolTip toolTip;
-    protected System.Windows.Forms.TabControl tabControl;
-    protected System.Windows.Forms.TabPage globalScopeTabPage;
-    protected System.Windows.Forms.OpenFileDialog openFileDialog;
-    protected System.Windows.Forms.SaveFileDialog saveFileDialog;
-    protected System.Windows.Forms.TabPage operatorGraphTabPage;
-    protected System.Windows.Forms.Button saveOperatorGraphButton;
-    protected System.Windows.Forms.Button openOperatorGraphButton;
-    protected System.Windows.Forms.Button newOperatorGraphButton;
-    protected ViewHost operatorGraphViewHost;
+    protected System.Windows.Forms.TextBox logTextBox;
 
   }
 }

@@ -1,7 +1,27 @@
-﻿using System;
-using System.Diagnostics;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
 using System.Threading;
-using HeuristicLab.Core;
+using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -57,17 +77,17 @@ namespace HeuristicLab.Algorithms.SGA.Tests {
     private EventWaitHandle trigger = new AutoResetEvent(false);
 
     [TestMethod]
-    [DeploymentItem(@"SGAEngine.hl")]
+    [DeploymentItem(@"SGA.hl")]
     public void SGAPerformanceTest() {
-      IEngine engine = (IEngine)XmlParser.Deserialize("SGAEngine.hl");
-      engine.Stopped += new EventHandler(engine_Stopped);
-      engine.Prepare();
-      engine.Start();
+      IAlgorithm sga = (IAlgorithm)XmlParser.Deserialize("SGA.hl");
+      sga.Stopped += new EventHandler(sga_Stopped);
+      sga.Prepare();
+      sga.Start();
       trigger.WaitOne();
-      TestContext.WriteLine("Runtime: {0}", engine.ExecutionTime.ToString());
+      TestContext.WriteLine("Runtime: {0}", sga.ExecutionTime.ToString());
     }
 
-    private void engine_Stopped(object sender, EventArgs e) {
+    private void sga_Stopped(object sender, EventArgs e) {
       trigger.Set();
     }
   }

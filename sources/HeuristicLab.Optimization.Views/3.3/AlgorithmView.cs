@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.Core.Views;
@@ -54,6 +55,20 @@ namespace HeuristicLab.Optimization.Views {
     public AlgorithmView(IAlgorithm content)
       : this() {
       Content = content;
+    }
+
+    protected override void OnInitialized(EventArgs e) {
+      // Set order of tab pages according to z order.
+      // NOTE: This is required due to a bug in the VS designer.
+      List<Control> tabPages = new List<Control>();
+      for (int i = 0; i < tabControl.Controls.Count; i++) {
+        tabPages.Add(tabControl.Controls[i]);
+      }
+      tabControl.Controls.Clear();
+      foreach (Control control in tabPages)
+        tabControl.Controls.Add(control);
+
+      base.OnInitialized(e);
     }
 
     protected override void DeregisterContentEvents() {

@@ -44,25 +44,116 @@ namespace HeuristicLab.Algorithms.SGA.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.engineTabPage.SuspendLayout();
       this.tabControl.SuspendLayout();
       this.parametersTabPage.SuspendLayout();
       this.problemTabPage.SuspendLayout();
+      this.resultsTabPage.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
+      // 
+      // createUserDefinedAlgorithmButton
+      // 
+      this.createUserDefinedAlgorithmButton.Location = new System.Drawing.Point(90, 552);
+      this.toolTip.SetToolTip(this.createUserDefinedAlgorithmButton, "Create User Defined Algorithm from this Algorithm");
+      // 
+      // engineComboBox
+      // 
+      this.engineComboBox.Size = new System.Drawing.Size(675, 21);
+      // 
+      // engineTabPage
+      // 
+      this.engineTabPage.Size = new System.Drawing.Size(736, 401);
+      // 
+      // engineViewHost
+      // 
+      this.engineViewHost.Size = new System.Drawing.Size(724, 362);
+      // 
+      // tabControl
+      // 
+      this.tabControl.Size = new System.Drawing.Size(744, 427);
+      // 
+      // parametersTabPage
+      // 
+      this.parametersTabPage.Size = new System.Drawing.Size(736, 401);
+      // 
+      // problemTabPage
+      // 
+      this.problemTabPage.Size = new System.Drawing.Size(736, 401);
+      // 
+      // parameterCollectionView
+      // 
+      this.parameterCollectionView.Size = new System.Drawing.Size(724, 389);
+      // 
+      // problemViewHost
+      // 
+      this.problemViewHost.Size = new System.Drawing.Size(724, 359);
+      // 
+      // newProblemButton
+      // 
+      this.toolTip.SetToolTip(this.newProblemButton, "New Problem");
+      // 
+      // saveProblemButton
+      // 
+      this.toolTip.SetToolTip(this.saveProblemButton, "Save Problem");
+      // 
+      // openProblemButton
+      // 
+      this.toolTip.SetToolTip(this.openProblemButton, "Open Problem");
+      // 
+      // startButton
+      // 
+      this.startButton.Location = new System.Drawing.Point(0, 552);
+      this.toolTip.SetToolTip(this.startButton, "Start Algorithm");
+      // 
+      // stopButton
+      // 
+      this.stopButton.Location = new System.Drawing.Point(30, 552);
+      this.toolTip.SetToolTip(this.stopButton, "Stop Algorithm");
+      // 
+      // resetButton
+      // 
+      this.resetButton.Location = new System.Drawing.Point(60, 552);
+      this.toolTip.SetToolTip(this.resetButton, "Reset Algorithm");
+      // 
+      // executionTimeLabel
+      // 
+      this.executionTimeLabel.Location = new System.Drawing.Point(518, 559);
+      // 
+      // executionTimeTextBox
+      // 
+      this.executionTimeTextBox.Location = new System.Drawing.Point(607, 556);
+      // 
+      // resultsTabPage
+      // 
+      this.resultsTabPage.Size = new System.Drawing.Size(736, 401);
+      // 
+      // resultsView
+      // 
+      this.resultsView.Size = new System.Drawing.Size(724, 389);
       // 
       // nameTextBox
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.nameTextBox, 2);
+      this.nameTextBox.Size = new System.Drawing.Size(672, 20);
+      // 
+      // descriptionTextBox
+      // 
+      this.descriptionTextBox.Size = new System.Drawing.Size(672, 87);
       // 
       // SGAView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Name = "SGAView";
+      this.Size = new System.Drawing.Size(744, 576);
+      this.engineTabPage.ResumeLayout(false);
+      this.engineTabPage.PerformLayout();
       this.tabControl.ResumeLayout(false);
       this.parametersTabPage.ResumeLayout(false);
       this.problemTabPage.ResumeLayout(false);
+      this.resultsTabPage.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
@@ -70,6 +161,7 @@ namespace HeuristicLab.Algorithms.SGA.Views {
     }
 
     #endregion
+
 
 
   }

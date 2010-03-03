@@ -20,10 +20,12 @@
 #endregion
 
 using System;
+using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
@@ -96,30 +98,42 @@ namespace HeuristicLab.Optimization {
       globalScope = new Scope();
       globalScope.Variables.Add(new Variable("Results", new VariableCollection()));
       OperatorGraph = new OperatorGraph();
+      InitializeEngine();
     }
     protected EngineAlgorithm(string name)
       : base(name) {
       globalScope = new Scope();
       globalScope.Variables.Add(new Variable("Results", new VariableCollection()));
       OperatorGraph = new OperatorGraph();
+      InitializeEngine();
     }
     protected EngineAlgorithm(string name, ParameterCollection parameters)
       : base(name, parameters) {
       globalScope = new Scope();
       globalScope.Variables.Add(new Variable("Results", new VariableCollection()));
       OperatorGraph = new OperatorGraph();
+      InitializeEngine();
     }
     protected EngineAlgorithm(string name, string description)
       : base(name, description) {
       globalScope = new Scope();
       globalScope.Variables.Add(new Variable("Results", new VariableCollection()));
       OperatorGraph = new OperatorGraph();
+      InitializeEngine();
     }
     protected EngineAlgorithm(string name, string description, ParameterCollection parameters)
       : base(name, description, parameters) {
       globalScope = new Scope();
       globalScope.Variables.Add(new Variable("Results", new VariableCollection()));
       OperatorGraph = new OperatorGraph();
+      InitializeEngine();
+    }
+
+    private void InitializeEngine() {
+      var types = ApplicationManager.Manager.GetTypes(typeof(IEngine));
+      Type t = types.FirstOrDefault(x => x.Name.Equals("SequentialEngine"));
+      if (t == null) t = types.FirstOrDefault();
+      if (t != null) Engine = (IEngine)Activator.CreateInstance(t);
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

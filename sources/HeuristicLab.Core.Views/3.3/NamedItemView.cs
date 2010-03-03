@@ -91,7 +91,7 @@ namespace HeuristicLab.Core.Views {
     }
 
     protected virtual void nameTextBox_Validating(object sender, CancelEventArgs e) {
-      if (Content.CanChangeName) {
+      if ((Content != null) && (Content.CanChangeName)) {
         Content.Name = nameTextBox.Text;
 
         // check if variable name was set successfully

@@ -81,7 +81,7 @@ namespace HeuristicLab.Core.Views {
       this.viewsLabel.Name = "viewsLabel";
       this.viewsLabel.Size = new System.Drawing.Size(16, 16);
       this.viewsLabel.TabIndex = 0;
-      this.toolTip.SetToolTip(this.viewsLabel, "Double-click to open a new window of the current view.\r\nRight-click to change current view.");
+      this.toolTip.SetToolTip(this.viewsLabel, "Double-click to open a new window of the current view." + System.Environment.NewLine + "Right-click to change current view.");
       this.viewsLabel.DoubleClick += new System.EventHandler(this.viewsLabel_DoubleClick);
       // 
       // viewContextMenuStrip

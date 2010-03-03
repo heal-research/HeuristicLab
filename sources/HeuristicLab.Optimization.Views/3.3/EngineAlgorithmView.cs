@@ -20,10 +20,12 @@
 #endregion
 
 using System;
-using System.Windows.Forms;
+using System.Collections.Generic;
+using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Optimization.Views {
   /// <summary>
@@ -31,7 +33,7 @@ namespace HeuristicLab.Optimization.Views {
   /// </summary>
   [Content(typeof(EngineAlgorithm), true)]
   public partial class EngineAlgorithmView : AlgorithmView {
-    private TypeSelectorDialog engineTypeSelectorDialog;
+    private List<Type> engineTypes;
 
     public new EngineAlgorithm Content {
       get { return (EngineAlgorithm)base.Content; }
@@ -44,6 +46,7 @@ namespace HeuristicLab.Optimization.Views {
     public EngineAlgorithmView() {
       InitializeComponent();
     }
+
     /// <summary>
     /// Intializes a new instance of <see cref="ItemBaseView"/> with the given <paramref name="item"/>.
     /// </summary>
@@ -64,38 +67,58 @@ namespace HeuristicLab.Optimization.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
+
+      if (engineTypes == null) {
+        engineTypes = ApplicationManager.Manager.GetTypes(typeof(IEngine)).
+                      OrderBy(x => {
+                        string name = ItemAttribute.GetName(x);
+                        if (name != null) return name;
+                        else return x.GetPrettyName();
+                      }).ToList();
+        foreach (Type t in engineTypes) {
+          string name = ItemAttribute.GetName(t);
+          if (name == null) name = t.GetPrettyName();
+          engineComboBox.Items.Add(name);
+        }
+        engineTypes.Insert(0, null);
+        engineComboBox.Items.Insert(0, "-");
+      }
+
       if (Content == null) {
-        engineTextBox.Text = "-";
-        engineTextBox.Enabled = false;
-        setEngineButton.Enabled = false;
+        engineComboBox.Enabled = false;
+        engineViewHost.Content = null;
+        engineViewHost.Enabled = false;
       } else {
-        engineTextBox.Text = Content.Engine == null ? "-" : Content.Engine.ToString();
-        engineTextBox.Enabled = true;
-        setEngineButton.Enabled = true;
+        engineComboBox.Enabled = true;
+        if (Content.Engine == null)
+          engineComboBox.SelectedIndex = engineTypes.IndexOf(null);
+        else
+          engineComboBox.SelectedIndex = engineTypes.IndexOf(Content.Engine.GetType());
+        engineViewHost.Enabled = true;
+        engineViewHost.Content = Content.Engine;
       }
     }
 
     protected void Content_EngineChanged(object sender, System.EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_EngineChanged), sender, e);
-      else
-        engineTextBox.Text = Content.Engine == null ? "-" : Content.Engine.ToString();
-    }
-
-    protected void setEngineButton_Click(object sender, System.EventArgs e) {
-      if (engineTypeSelectorDialog == null) {
-        engineTypeSelectorDialog = new TypeSelectorDialog();
-        engineTypeSelectorDialog.Caption = "Select Engine";
-        engineTypeSelectorDialog.TypeSelector.Configure(typeof(IEngine), false, false);
-      }
-      if (engineTypeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
-        Content.Engine = (IEngine)engineTypeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
+      else {
+        if (Content.Engine == null)
+          engineComboBox.SelectedIndex = engineTypes.IndexOf(null);
+        else
+          engineComboBox.SelectedIndex = engineTypes.IndexOf(Content.Engine.GetType());
+        engineViewHost.Content = Content.Engine;
       }
     }
 
-    protected void engineTextBox_DoubleClick(object sender, System.EventArgs e) {
-      if (Content.Engine != null)
-        MainFormManager.CreateDefaultView(Content.Engine).Show();
+    protected void engineComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+      if (Content != null) {
+        Type t = engineTypes[engineComboBox.SelectedIndex];
+        if (t == null)
+          Content.Engine = null;
+        else
+          Content.Engine = (IEngine)Activator.CreateInstance(t);
+      }
     }
 
     protected void createUserDefinedAlgorithmButton_Click(object sender, EventArgs e) {
