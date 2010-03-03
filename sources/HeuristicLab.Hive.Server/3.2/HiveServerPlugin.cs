@@ -31,7 +31,7 @@ namespace HeuristicLab.Hive.Server {
   [PluginDependency("HeuristicLab.Core-3.2")]
   [PluginDependency("HeuristicLab.Hive.Server.Core-3.2")]
   [PluginDependency("HeuristicLab.Hive.Contracts-3.2")]
-  //[PluginDependency("HeuristicLab.SpringNET-1.3.0")]
+  [PluginDependency("HeuristicLab.SpringNET", "1.3.0.0")]
   public class HiveServerPlugin : PluginBase {
   }
 }
