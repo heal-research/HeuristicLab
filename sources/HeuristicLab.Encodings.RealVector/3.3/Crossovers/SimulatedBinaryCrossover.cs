@@ -57,6 +57,9 @@ namespace HeuristicLab.Encodings.RealVector {
     /// For more details refer to the paper by Deb and Agrawal.
     /// </summary>
     /// <exception cref="ArgumentException">Thrown when the parents' vectors are of unequal length or when <paramref name="contiguity"/> is smaller than 0.</exception>
+    /// <remarks>
+    /// The manipulated value is not restricted by the (possibly) specified lower and upper bounds. Use the <see cref="BoundsChecker"/> to correct the values after performing the crossover.
+    /// </remarks>
     /// <param name="random">The random number generator to use.</param>
     /// <param name="parent1">The first parent vector.</param>
     /// <param name="parent2">The second parent vector.</param>
@@ -68,7 +71,7 @@ namespace HeuristicLab.Encodings.RealVector {
       int length = parent1.Length;
       DoubleArrayData result = new DoubleArrayData(length);
       for (int i = 0; i < length; i++) {
-        if (random.NextDouble() < 0.5) { // cross this variable
+        if (length == 1 || random.NextDouble() < 0.5) { // cross this variable
           double u = random.NextDouble();
           double beta = 0;
           if (u < 0.5) { // if u is smaller than 0.5 perform a contracting crossover
@@ -82,7 +85,7 @@ namespace HeuristicLab.Encodings.RealVector {
             result[i] = ((parent1[i] + parent2[i]) / 2.0) - beta * 0.5 * Math.Abs(parent1[i] - parent2[i]);
           else
             result[i] = ((parent1[i] + parent2[i]) / 2.0) + beta * 0.5 * Math.Abs(parent1[i] - parent2[i]);
-        }
+        } else result[i] = parent1[i];
       }
       return result;
     }
