@@ -20,6 +20,7 @@
 #endregion
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using HeuristicLab.Encodings.Permutation;
 
 namespace HeuristicLab.Encodings.Permutation_33.Tests {
   /// <summary>
@@ -82,37 +83,18 @@ namespace HeuristicLab.Encodings.Permutation_33.Tests {
     [TestMethod()]
     public void ScrambleManipulatorApplyTest() {
       TestRandom random = new TestRandom();
-      Permutation parent, expected;
+      Permutation.Permutation parent, expected;
       // The following test is based on an example from Larranaga, P. et al. 1999. Genetic Algorithms for the Travelling Salesman Problem: A Review of Representations and Operators. Artificial Intelligence Review, 13
       random.Reset();
       random.IntNumbers = new int[] { 3, 6, 1, 1, 1, 0 };
-      parent = new Permutation(new int[] { 0, 1, 2, 3, 4, 5, 6, 7 });
+      parent = new Permutation.Permutation(new int[] { 0, 1, 2, 3, 4, 5, 6, 7 });
       Assert.IsTrue(parent.Validate());
       
-      expected = new Permutation(new int[] { 0, 1, 2, 4, 5, 6, 3, 7 });
+      expected = new Permutation.Permutation(new int[] { 0, 1, 2, 4, 5, 6, 3, 7 });
       Assert.IsTrue(expected.Validate());
       ScrambleManipulator.Apply(random, parent);
       Assert.IsTrue(parent.Validate());
       Assert.IsTrue(Auxiliary.PermutationIsEqualByPosition(expected, parent));
-     
-      // perform a test when the two permutations are of unequal length
-      random.Reset();
-      bool exceptionFired = false;
-      try {
-        CyclicCrossover.Apply(random, new Permutation(8), new Permutation(6));
-      }
-      catch (System.ArgumentException) {
-        exceptionFired = true;
-      }
-      Assert.IsTrue(exceptionFired);
-    }
-
-    /// <summary>
-    ///A test for ScrambleManipulator Constructor
-    ///</summary>
-    [TestMethod()]
-    public void ScrambleManipulatorConstructorTest() {
-      ScrambleManipulator target = new ScrambleManipulator();
     }
   }
 }

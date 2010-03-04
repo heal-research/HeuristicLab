@@ -21,6 +21,7 @@
 
 using HeuristicLab.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using HeuristicLab.Encodings.Permutation;
 
 namespace HeuristicLab.Encodings.Permutation_33.Tests {
   /// <summary>
@@ -90,8 +91,8 @@ namespace HeuristicLab.Encodings.Permutation_33.Tests {
       random.Reset();
       bool exceptionFired = false;
       try {
-        target.Cross(random, new ItemArray<Permutation>(new Permutation[] { 
-          new Permutation(4), new Permutation(4), new Permutation(4)}));
+        target.Cross(random, new ItemArray<Permutation.Permutation>(new Permutation.Permutation[] { 
+          new Permutation.Permutation(4), new Permutation.Permutation(4), new Permutation.Permutation(4)}));
       }
       catch (System.InvalidOperationException) {
         exceptionFired = true;
@@ -105,15 +106,15 @@ namespace HeuristicLab.Encodings.Permutation_33.Tests {
     [TestMethod()]
     public void CyclicCrossoverApplyTest() {
       TestRandom random = new TestRandom();
-      Permutation parent1, parent2, expected, actual;
+      Permutation.Permutation parent1, parent2, expected, actual;
       // The following test is based on an example from Larranaga, P. et al. 1999. Genetic Algorithms for the Travelling Salesman Problem: A Review of Representations and Operators. Artificial Intelligence Review, 13
       random.Reset();
       random.DoubleNumbers = new double[] { 0.9 };
-      parent1 = new Permutation(new int[] { 0, 1, 2, 3, 4, 5, 6, 7 });
+      parent1 = new Permutation.Permutation(new int[] { 0, 1, 2, 3, 4, 5, 6, 7 });
       Assert.IsTrue(parent1.Validate());
-      parent2 = new Permutation(new int[] { 1, 3, 5, 7, 6, 4, 2, 0 });
+      parent2 = new Permutation.Permutation(new int[] { 1, 3, 5, 7, 6, 4, 2, 0 });
       Assert.IsTrue(parent2.Validate());
-      expected = new Permutation(new int[] { 0, 1, 5, 3, 6, 4, 2, 7 });
+      expected = new Permutation.Permutation(new int[] { 0, 1, 5, 3, 6, 4, 2, 7 });
       Assert.IsTrue(expected.Validate());
       actual = CyclicCrossover.Apply(random, parent1, parent2);
       Assert.IsTrue(actual.Validate());
@@ -123,20 +124,12 @@ namespace HeuristicLab.Encodings.Permutation_33.Tests {
       random.Reset();
       bool exceptionFired = false;
       try {
-        CyclicCrossover.Apply(random, new Permutation(8), new Permutation(6));
+        CyclicCrossover.Apply(random, new Permutation.Permutation(8), new Permutation.Permutation(6));
       }
       catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);
-    }
-
-    /// <summary>
-    ///A test for OrderCrossover Constructor
-    ///</summary>
-    [TestMethod()]
-    public void CyclicCrossoverConstructorTest() {
-      CyclicCrossover target = new CyclicCrossover();
     }
   }
 }

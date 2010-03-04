@@ -21,6 +21,7 @@
 
 using HeuristicLab.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using HeuristicLab.Encodings.Permutation;
 
 namespace HeuristicLab.Encodings.Permutation_33.Tests {
   /// <summary>
@@ -90,8 +91,8 @@ namespace HeuristicLab.Encodings.Permutation_33.Tests {
       random.Reset();
       bool exceptionFired = false;
       try {
-        target.Cross(random, new ItemArray<Permutation>(new Permutation[] { 
-          new Permutation(4), new Permutation(4), new Permutation(4)}));
+        target.Cross(random, new ItemArray<Permutation.Permutation>(new Permutation.Permutation[] { 
+          new Permutation.Permutation(4), new Permutation.Permutation(4), new Permutation.Permutation(4)}));
       }
       catch (System.InvalidOperationException) {
         exceptionFired = true;
@@ -105,16 +106,16 @@ namespace HeuristicLab.Encodings.Permutation_33.Tests {
     [TestMethod()]
     public void EdgeRecombinationCrossoverApplyTest() {
       TestRandom random = new TestRandom();
-      Permutation parent1, parent2, expected, actual;
+      Permutation.Permutation parent1, parent2, expected, actual;
       // The following test is based on an example from Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg, pp. 54-55
       random.Reset();
       random.IntNumbers = new int[] { 0 };
       random.DoubleNumbers = new double[] { 0.5, 0, 0, 0 };
-      parent1 = new Permutation(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 });
+      parent1 = new Permutation.Permutation(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 });
       Assert.IsTrue(parent1.Validate());
-      parent2 = new Permutation(new int[] { 8, 2, 6, 7, 1, 5, 4, 0, 3 });
+      parent2 = new Permutation.Permutation(new int[] { 8, 2, 6, 7, 1, 5, 4, 0, 3 });
       Assert.IsTrue(parent2.Validate());
-      expected = new Permutation(new int[] { 0, 4, 5, 1, 7, 6, 2, 8, 3 });
+      expected = new Permutation.Permutation(new int[] { 0, 4, 5, 1, 7, 6, 2, 8, 3 });
       Assert.IsTrue(expected.Validate());
       actual = EdgeRecombinationCrossover.Apply(random, parent1, parent2);
       Assert.IsTrue(actual.Validate());
@@ -124,20 +125,12 @@ namespace HeuristicLab.Encodings.Permutation_33.Tests {
       random.Reset();
       bool exceptionFired = false;
       try {
-        EdgeRecombinationCrossover.Apply(random, new Permutation(8), new Permutation(6));
+        EdgeRecombinationCrossover.Apply(random, new Permutation.Permutation(8), new Permutation.Permutation(6));
       }
       catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);
-    }
-
-    /// <summary>
-    ///A test for EdgeRecombinationCrossover Constructor
-    ///</summary>
-    [TestMethod()]
-    public void EdgeRecombinationCrossoverConstructorTest() {
-      EdgeRecombinationCrossover target = new EdgeRecombinationCrossover();
     }
   }
 }

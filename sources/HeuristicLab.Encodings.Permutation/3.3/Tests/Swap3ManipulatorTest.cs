@@ -20,6 +20,7 @@
 #endregion
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using HeuristicLab.Encodings.Permutation;
 
 namespace HeuristicLab.Encodings.Permutation_33.Tests {
   /// <summary>
@@ -82,38 +83,19 @@ namespace HeuristicLab.Encodings.Permutation_33.Tests {
     [TestMethod()]
     public void Swap3ManipulatorApplyTest() {
       TestRandom random = new TestRandom();
-      Permutation parent, expected;
+      Permutation.Permutation parent, expected;
       // Test manipulator
       random.Reset();
       random.IntNumbers = new int[] { 1, 3, 6 };
       random.DoubleNumbers = new double[] { 0 };
-      parent = new Permutation(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 });
+      parent = new Permutation.Permutation(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 });
       Assert.IsTrue(parent.Validate());
 
-      expected = new Permutation(new int[] { 0, 3, 2, 6, 4, 5, 1, 7, 8 });
+      expected = new Permutation.Permutation(new int[] { 0, 3, 2, 6, 4, 5, 1, 7, 8 });
       Assert.IsTrue(expected.Validate());
       Swap3Manipulator.Apply(random, parent);
       Assert.IsTrue(parent.Validate());
       Assert.IsTrue(Auxiliary.PermutationIsEqualByPosition(expected, parent));
-     
-      // perform a test when the two permutations are of unequal length
-      random.Reset();
-      bool exceptionFired = false;
-      try {
-        CyclicCrossover.Apply(random, new Permutation(8), new Permutation(6));
-      }
-      catch (System.ArgumentException) {
-        exceptionFired = true;
-      }
-      Assert.IsTrue(exceptionFired);
-    }
-
-    /// <summary>
-    ///A test for Swap3Manipulator Constructor
-    ///</summary>
-    [TestMethod()]
-    public void Swap3ManipulatorConstructorTest() {
-      Swap3Manipulator target = new Swap3Manipulator();
     }
   }
 }

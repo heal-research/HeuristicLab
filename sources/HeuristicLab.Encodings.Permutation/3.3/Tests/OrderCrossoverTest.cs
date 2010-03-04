@@ -21,6 +21,7 @@
 
 using HeuristicLab.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using HeuristicLab.Encodings.Permutation;
 
 namespace HeuristicLab.Encodings.Permutation_33.Tests {
     /// <summary>
@@ -90,8 +91,8 @@ namespace HeuristicLab.Encodings.Permutation_33.Tests {
       random.Reset();
       bool exceptionFired = false;
       try {
-        target.Cross(random, new ItemArray<Permutation>(new Permutation[] { 
-          new Permutation(4), new Permutation(4), new Permutation(4)}));
+        target.Cross(random, new ItemArray<Permutation.Permutation>(new Permutation.Permutation[] { 
+          new Permutation.Permutation(4), new Permutation.Permutation(4), new Permutation.Permutation(4)}));
       } catch (System.InvalidOperationException) {
         exceptionFired = true;
       }
@@ -104,15 +105,15 @@ namespace HeuristicLab.Encodings.Permutation_33.Tests {
     [TestMethod()]
     public void OrderCrossoverApplyTest() {
       TestRandom random = new TestRandom();
-      Permutation parent1, parent2, expected, actual;
+      Permutation.Permutation parent1, parent2, expected, actual;
       // The following test is based on an example from Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg, pp. 55-56
       random.Reset();
       random.IntNumbers = new int[] { 3, 6 };
-      parent1 = new Permutation(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 });
+      parent1 = new Permutation.Permutation(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 });
       Assert.IsTrue(parent1.Validate());
-      parent2 = new Permutation(new int[] { 8, 2, 6, 7, 1, 5, 4, 0, 3 });
+      parent2 = new Permutation.Permutation(new int[] { 8, 2, 6, 7, 1, 5, 4, 0, 3 });
       Assert.IsTrue(parent2.Validate());
-      expected = new Permutation(new int[] { 2, 7, 1, 3, 4, 5, 6, 0, 8 });
+      expected = new Permutation.Permutation(new int[] { 2, 7, 1, 3, 4, 5, 6, 0, 8 });
       Assert.IsTrue(expected.Validate());
       actual = OrderCrossover.Apply(random, parent1, parent2);
       Assert.IsTrue(actual.Validate());
@@ -120,22 +121,22 @@ namespace HeuristicLab.Encodings.Permutation_33.Tests {
       // The following test is based on an example from Larranaga, P. et al. 1999. Genetic Algorithms for the Travelling Salesman Problem: A Review of Representations and Operators. Artificial Intelligence Review, 13, pp. 129-170.
       random.Reset();
       random.IntNumbers = new int[] { 2, 4 };
-      parent1 = new Permutation(new int[] { 0, 1, 2, 3, 4, 5, 6, 7 });
+      parent1 = new Permutation.Permutation(new int[] { 0, 1, 2, 3, 4, 5, 6, 7 });
       Assert.IsTrue(parent1.Validate());
-      parent2 = new Permutation(new int[] { 1, 3, 5, 7, 6, 4, 2, 0 });
+      parent2 = new Permutation.Permutation(new int[] { 1, 3, 5, 7, 6, 4, 2, 0 });
       Assert.IsTrue(parent2.Validate());
-      expected = new Permutation(new int[] { 7, 6, 2, 3, 4, 0, 1, 5 });
+      expected = new Permutation.Permutation(new int[] { 7, 6, 2, 3, 4, 0, 1, 5 });
       actual = OrderCrossover.Apply(random, parent1, parent2);
       Assert.IsTrue(actual.Validate());
       Assert.IsTrue(Auxiliary.PermutationIsEqualByPosition(expected, actual));
       // The following test is based on an example from Talbi, E.G. 2009. Metaheuristics - From Design to Implementation. Wiley, p. 218.
       random.Reset();
       random.IntNumbers = new int[] { 2, 5 };
-      parent1 = new Permutation(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 });
+      parent1 = new Permutation.Permutation(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 });
       Assert.IsTrue(parent1.Validate());
-      parent2 = new Permutation(new int[] { 7, 3, 0, 4, 8, 2, 5, 1, 6 });
+      parent2 = new Permutation.Permutation(new int[] { 7, 3, 0, 4, 8, 2, 5, 1, 6 });
       Assert.IsTrue(parent2.Validate());
-      expected = new Permutation(new int[] { 0, 8, 2, 3, 4, 5, 1, 6, 7 });
+      expected = new Permutation.Permutation(new int[] { 0, 8, 2, 3, 4, 5, 1, 6, 7 });
       Assert.IsTrue(expected.Validate());
       actual = OrderCrossover.Apply(random, parent1, parent2);
       Assert.IsTrue(actual.Validate());
@@ -143,11 +144,11 @@ namespace HeuristicLab.Encodings.Permutation_33.Tests {
       // The following test is not based on published examples
       random.Reset();
       random.IntNumbers = new int[] { 0, 5 };
-      parent1 = new Permutation(new int[] { 2, 1, 4, 3, 7, 8, 6, 0, 5, 9 });
+      parent1 = new Permutation.Permutation(new int[] { 2, 1, 4, 3, 7, 8, 6, 0, 5, 9 });
       Assert.IsTrue(parent1.Validate());
-      parent2 = new Permutation(new int[] { 5, 3, 4, 0, 9, 8, 2, 7, 1, 6 });
+      parent2 = new Permutation.Permutation(new int[] { 5, 3, 4, 0, 9, 8, 2, 7, 1, 6 });
       Assert.IsTrue(parent2.Validate());
-      expected = new Permutation(new int[] { 2, 1, 4, 3, 7, 8, 6, 5, 0, 9 });
+      expected = new Permutation.Permutation(new int[] { 2, 1, 4, 3, 7, 8, 6, 5, 0, 9 });
       Assert.IsTrue(expected.Validate());
       actual = OrderCrossover.Apply(random, parent1, parent2);
       Assert.IsTrue(actual.Validate());
@@ -155,7 +156,7 @@ namespace HeuristicLab.Encodings.Permutation_33.Tests {
       // based on the previous with changed breakpoints
       random.Reset();
       random.IntNumbers = new int[] { 6, 9 };
-      expected = new Permutation(new int[] { 3, 4, 8, 2, 7, 1, 6, 0, 5, 9 });
+      expected = new Permutation.Permutation(new int[] { 3, 4, 8, 2, 7, 1, 6, 0, 5, 9 });
       Assert.IsTrue(expected.Validate());
       actual = OrderCrossover.Apply(random, parent1, parent2);
       Assert.IsTrue(actual.Validate());
@@ -163,7 +164,7 @@ namespace HeuristicLab.Encodings.Permutation_33.Tests {
       // another one based on the previous with changed breakpoints
       random.Reset();
       random.IntNumbers = new int[] { 0, 9 };
-      expected = new Permutation(new int[] { 2, 1, 4, 3, 7, 8, 6, 0, 5, 9 });
+      expected = new Permutation.Permutation(new int[] { 2, 1, 4, 3, 7, 8, 6, 0, 5, 9 });
       Assert.IsTrue(expected.Validate());
       actual = OrderCrossover.Apply(random, parent1, parent2);
       Assert.IsTrue(actual.Validate());
@@ -173,19 +174,11 @@ namespace HeuristicLab.Encodings.Permutation_33.Tests {
       random.Reset();
       bool exceptionFired = false;
       try {
-        OrderCrossover.Apply(random, new Permutation(8), new Permutation(6));
+        OrderCrossover.Apply(random, new Permutation.Permutation(8), new Permutation.Permutation(6));
       } catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);
-    }
-
-    /// <summary>
-    ///A test for OrderCrossover Constructor
-    ///</summary>
-    [TestMethod()]
-    public void OrderCrossoverConstructorTest() {
-      OrderCrossover target = new OrderCrossover();
     }
   }
 }

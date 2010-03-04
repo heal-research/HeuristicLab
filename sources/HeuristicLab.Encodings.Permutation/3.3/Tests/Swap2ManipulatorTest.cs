@@ -20,6 +20,7 @@
 #endregion
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using HeuristicLab.Encodings.Permutation;
 
 namespace HeuristicLab.Encodings.Permutation_33.Tests {
   /// <summary>
@@ -82,37 +83,18 @@ namespace HeuristicLab.Encodings.Permutation_33.Tests {
     [TestMethod()]
     public void Swap2ManipulatorApplyTest() {
       TestRandom random = new TestRandom();
-      Permutation parent, expected;
+      Permutation.Permutation parent, expected;
       // The following test is based on an example from Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg, p. 45
       random.Reset();
       random.IntNumbers = new int[] { 1, 4 };
-      parent = new Permutation(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 });
+      parent = new Permutation.Permutation(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 });
       Assert.IsTrue(parent.Validate());
 
-      expected = new Permutation(new int[] { 0, 4, 2, 3, 1, 5, 6, 7, 8 });
+      expected = new Permutation.Permutation(new int[] { 0, 4, 2, 3, 1, 5, 6, 7, 8 });
       Assert.IsTrue(expected.Validate());
       Swap2Manipulator.Apply(random, parent);
       Assert.IsTrue(parent.Validate());
       Assert.IsTrue(Auxiliary.PermutationIsEqualByPosition(expected, parent));
-     
-      // perform a test when the two permutations are of unequal length
-      random.Reset();
-      bool exceptionFired = false;
-      try {
-        CyclicCrossover.Apply(random, new Permutation(8), new Permutation(6));
-      }
-      catch (System.ArgumentException) {
-        exceptionFired = true;
-      }
-      Assert.IsTrue(exceptionFired);
-    }
-
-    /// <summary>
-    ///A test for Swap2Manipulator Constructor
-    ///</summary>
-    [TestMethod()]
-    public void Swap2ManipulatorConstructorTest() {
-      Swap2Manipulator target = new Swap2Manipulator();
     }
   }
 }

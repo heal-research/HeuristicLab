@@ -21,6 +21,7 @@
 
 using HeuristicLab.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using HeuristicLab.Encodings.Permutation;
 
 namespace HeuristicLab.Encodings.Permutation_33.Tests {
     /// <summary>
@@ -90,8 +91,8 @@ namespace HeuristicLab.Encodings.Permutation_33.Tests {
       random.Reset();
       bool exceptionFired = false;
       try {
-        target.Cross(random, new ItemArray<Permutation>(new Permutation[] { 
-          new Permutation(4), new Permutation(4), new Permutation(4)}));
+        target.Cross(random, new ItemArray<Permutation.Permutation>(new Permutation.Permutation[] { 
+          new Permutation.Permutation(4), new Permutation.Permutation(4), new Permutation.Permutation(4)}));
       } catch (System.InvalidOperationException) {
         exceptionFired = true;
       }
@@ -104,15 +105,15 @@ namespace HeuristicLab.Encodings.Permutation_33.Tests {
     [TestMethod()]
     public void CosaCrossoverApplyTest() {
       TestRandom random = new TestRandom();
-      Permutation parent1, parent2, expected, actual;
+      Permutation.Permutation parent1, parent2, expected, actual;
       // The following test is based on an example from Wendt, O. 1994. COSA: COoperative Simulated Annealing - Integration von Genetischen Algorithmen und Simulated Annealing am Beispiel der Tourenplanung. Dissertation Thesis. IWI Frankfurt.
       random.Reset();
       random.IntNumbers = new int[] { 1 };
-      parent1 = new Permutation(new int[] { 0, 1, 5, 2, 4, 3 });
+      parent1 = new Permutation.Permutation(new int[] { 0, 1, 5, 2, 4, 3 });
       Assert.IsTrue(parent1.Validate());
-      parent2 = new Permutation(new int[] { 3, 0, 2, 1, 4, 5 });
+      parent2 = new Permutation.Permutation(new int[] { 3, 0, 2, 1, 4, 5 });
       Assert.IsTrue(parent2.Validate());
-      expected = new Permutation(new int[] { 0, 1, 4, 2, 5, 3 });
+      expected = new Permutation.Permutation(new int[] { 0, 1, 4, 2, 5, 3 });
       Assert.IsTrue(expected.Validate());
       actual = CosaCrossover.Apply(random, parent1, parent2);
       Assert.IsTrue(actual.Validate());
@@ -120,11 +121,11 @@ namespace HeuristicLab.Encodings.Permutation_33.Tests {
       // The following test is not based on published examples
       random.Reset();
       random.IntNumbers = new int[] { 4 };
-      parent1 = new Permutation(new int[] { 0, 1, 2, 3, 4, 5, 6, 7 });
+      parent1 = new Permutation.Permutation(new int[] { 0, 1, 2, 3, 4, 5, 6, 7 });
       Assert.IsTrue(parent1.Validate());
-      parent2 = new Permutation(new int[] { 1, 3, 5, 7, 6, 4, 2, 0 });
+      parent2 = new Permutation.Permutation(new int[] { 1, 3, 5, 7, 6, 4, 2, 0 });
       Assert.IsTrue(parent2.Validate());
-      expected = new Permutation(new int[] { 7, 6, 5, 3, 4, 2, 1, 0 });
+      expected = new Permutation.Permutation(new int[] { 7, 6, 5, 3, 4, 2, 1, 0 });
       Assert.IsTrue(expected.Validate());
       actual = CosaCrossover.Apply(random, parent1, parent2);
       Assert.IsTrue(actual.Validate());
@@ -132,11 +133,11 @@ namespace HeuristicLab.Encodings.Permutation_33.Tests {
       // The following test is not based on published examples
       random.Reset();
       random.IntNumbers = new int[] { 5 };
-      parent1 = new Permutation(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
+      parent1 = new Permutation.Permutation(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
       Assert.IsTrue(parent1.Validate());
-      parent2 = new Permutation(new int[] { 4, 3, 5, 1, 0, 9, 7, 2, 8, 6 });
+      parent2 = new Permutation.Permutation(new int[] { 4, 3, 5, 1, 0, 9, 7, 2, 8, 6 });
       Assert.IsTrue(parent2.Validate());
-      expected = new Permutation(new int[] { 7, 6, 2, 3, 4, 5, 1, 0, 9, 8 });
+      expected = new Permutation.Permutation(new int[] { 7, 6, 2, 3, 4, 5, 1, 0, 9, 8 });
       Assert.IsTrue(expected.Validate());
       actual = CosaCrossover.Apply(random, parent1, parent2);
       Assert.IsTrue(actual.Validate());
@@ -146,19 +147,11 @@ namespace HeuristicLab.Encodings.Permutation_33.Tests {
       random.Reset();
       bool exceptionFired = false;
       try {
-        CosaCrossover.Apply(random, new Permutation(8), new Permutation(6));
+        CosaCrossover.Apply(random, new Permutation.Permutation(8), new Permutation.Permutation(6));
       } catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);
-    }
-
-    /// <summary>
-    ///A test for CosaCrossover Constructor
-    ///</summary>
-    [TestMethod()]
-    public void CosaCrossoverConstructorTest() {
-      CosaCrossover target = new CosaCrossover();
     }
   }
 }
