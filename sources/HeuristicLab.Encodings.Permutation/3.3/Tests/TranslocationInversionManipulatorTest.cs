@@ -21,7 +21,7 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Encodings.Permutation.Tests {
+namespace HeuristicLab.Encodings.Permutation_33.Tests {
   /// <summary>
   ///This is a test class for TranslocationInversionManipulator and is intended
   ///to contain all TranslocationInversionManipulator Unit Tests

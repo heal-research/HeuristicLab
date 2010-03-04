@@ -22,7 +22,7 @@
 using System;
 using HeuristicLab.Core;
 
-namespace HeuristicLab.Encodings.Permutation.Tests {
+namespace HeuristicLab.Encodings.Permutation_33.Tests {
   public class TestRandom : IRandom {
     #region Variables and Properties
     private int[] intNumbers;

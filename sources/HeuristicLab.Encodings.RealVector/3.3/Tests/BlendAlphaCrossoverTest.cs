@@ -4,7 +4,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 
-namespace HeuristicLab.Encodings.RealVector.Tests {
+namespace HeuristicLab.Encodings.RealVector_33.Tests {
 
 
   /// <summary>

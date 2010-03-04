@@ -1,7 +1,7 @@
 ﻿using HeuristicLab.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Encodings.Permutation.Tests {
+namespace HeuristicLab.Encodings.Permutation_33.Tests {
     /// <summary>
     ///This is a test class for OrderCrossover2Test and is intended
     ///to contain all OrderCrossover2Test Unit Tests

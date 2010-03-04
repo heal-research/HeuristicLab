@@ -7,7 +7,7 @@
     <ProjectGuid>{4D59BEC9-A69E-4686-B8C9-0E6C073B093E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.Encodings.Permutation.Tests</RootNamespace>
+    <RootNamespace>HeuristicLab.Encodings.Permutation_33.Tests</RootNamespace>
     <AssemblyName>HeuristicLab.Encodings.Permutation-3.3.Tests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

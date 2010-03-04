@@ -22,7 +22,7 @@
 using HeuristicLab.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Encodings.Permutation.Tests {
+namespace HeuristicLab.Encodings.Permutation_33.Tests {
   /// <summary>
   ///This is a test class for PartiallyMatchedCrossover and is intended
   ///to contain all PartiallyMatchedCrossover Unit Tests

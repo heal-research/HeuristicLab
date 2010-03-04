@@ -7,7 +7,7 @@
     <ProjectGuid>{446C4F3D-1A12-465A-9128-97D0F47140C9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.Encodings.RealVector.Tests</RootNamespace>
+    <RootNamespace>HeuristicLab.Encodings.RealVector_33.Tests</RootNamespace>
     <AssemblyName>HeuristicLab.Encodings.RealVector-3.3.Tests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.Encodings.Permutation.Tests {
+namespace HeuristicLab.Encodings.Permutation_33.Tests {
   public static class Auxiliary {
     public static bool PermutationIsEqualByPosition(Permutation p1, Permutation p2) {
       bool equal = (p1.Length == p2.Length);
