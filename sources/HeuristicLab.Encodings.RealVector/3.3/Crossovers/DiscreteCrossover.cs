@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,46 +20,52 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.RealVector {
   /// <summary>
   /// Discrete crossover for real vectors: For each position in the new vector an allele
   /// of one of the parents is randomly selected.
   /// </summary>
-  public class DiscreteCrossover : RealVectorCrossoverBase {
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get { return @"Discrete crossover for real vectors: creates a new offspring by combining the alleles in the parents such that each allele is randomly selected from one parent."; }
-    }
-
+  /// <remarks>
+  /// This operator is also called dominant recombination and unlike other crossovers works on more than two parents also.<br />
+  /// It is implemented as described in Beyer, H.-G. and Schwefel, H.-P. 2002. Evolution Strategies - A Comprehensive Introduction Natural Computing, 1, pp. 3-52.
+  /// </remarks>
+  [Item("DiscreteCrossover", "Discrete crossover for real vectors: Creates a new offspring by combining the alleles in the parents such that each allele is randomly selected from one parent. It is implemented as described in Beyer, H.-G. and Schwefel, H.-P. 2002. Evolution Strategies - A Comprehensive Introduction Natural Computing, 1, pp. 3-52.")]
+  [EmptyStorableClass]
+  public class DiscreteCrossover : RealVectorCrossover {
     /// <summary>
-    /// Performs a discrete crossover operation on multiple given parents.
+    /// Performs a discrete crossover operation on multiple parents.
     /// </summary>
+    /// <exception cref="ArgumentException">Thrown when the vectors of the parents are of different length.</exception>
     /// <param name="random">A random number generator.</param>
     /// <param name="parents">An array containing the parents that should be crossed.</param>
     /// <returns>The newly created real vector, resulting from the crossover operation.</returns>
-    public static double[] Apply(IRandom random, double[][] parents) {
+    public static DoubleArrayData Apply(IRandom random, ItemArray<DoubleArrayData> parents) {
       int length = parents[0].Length;
-      double[] result = new double[length];
-      for (int i = 0; i < length; i++) {
-        result[i] = parents[random.Next(parents.Length)][i];
+      DoubleArrayData result = new DoubleArrayData(length);
+      try {
+        for (int i = 0; i < length; i++) {
+          result[i] = parents[random.Next(parents.Length)][i];
+        }
+      } catch (IndexOutOfRangeException) {
+        throw new ArgumentException("DiscreteCrossover: The parents' vectors are of different length.", "parents");
       }
       return result;
     }
 
     /// <summary>
-    /// Performs a discrete crossover operation for multiple given parent real vectors.
+    /// Checks number of parents and forwards the call to <see cref="Apply(IRandom, ItemArray<DoubleArrayData>)"/>.
     /// </summary>
-    /// <exception cref="InvalidOperationException">Thrown if there are less than two parents.</exception>
-    /// <param name="scope">The current scope.</param>
-    /// <param name="random">A random number generator.</param>
-    /// <param name="parents">An array containing the real vectors that should be crossed.</param>
-    /// <returns>The newly created real vector, resulting from the crossover operation.</returns>
-    protected override double[] Cross(IScope scope, IRandom random, double[][] parents) {
-      if (parents.Length < 2) throw new InvalidOperationException("ERROR in DiscreteCrossover: The number of parents is less than 2");
+    /// <exception cref="ArgumentException">Thrown when <paramref name="parents"/> contains less than 2 elements.</exception>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="parents">The collection of parents (must be of size 2 or greater).</param>
+    /// <returns>The real vector resulting from the crossover.</returns>
+    protected override DoubleArrayData Cross(IRandom random, ItemArray<DoubleArrayData> parents) {
+      if (parents.Length < 2) throw new ArgumentException("DiscreteCrossover: The number of parents is less than 2.", "parents");
       return Apply(random, parents);
     }
   }

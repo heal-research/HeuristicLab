@@ -66,7 +66,7 @@ namespace HeuristicLab.Encodings.RealVector {
     /// <param name="contiguity">The contiguity value that specifies how close a child should be to its parents (larger value means closer). The value must be greater or equal than 0. Typical values are in the range [2;5].</param>
     /// <returns>The vector resulting from the crossover.</returns>
     public static DoubleArrayData Apply(IRandom random, DoubleArrayData parent1, DoubleArrayData parent2, DoubleData contiguity) {
-      if (parent1.Length != parent2.Length) throw new ArgumentException("SinglePointCrossover: Parents are of unequal length");
+      if (parent1.Length != parent2.Length) throw new ArgumentException("SimulatedBinaryCrossover: Parents are of unequal length");
       if (contiguity.Value < 0) throw new ArgumentException("SimulatedBinaryCrossover: Contiguity value is smaller than 0", "contiguity");
       int length = parent1.Length;
       DoubleArrayData result = new DoubleArrayData(length);
@@ -98,7 +98,7 @@ namespace HeuristicLab.Encodings.RealVector {
     /// <param name="parents">The collection of parents (must be of size 2).</param>
     /// <returns>The real vector resulting from the crossover.</returns>
     protected override DoubleArrayData Cross(IRandom random, ItemArray<DoubleArrayData> parents) {
-      if (parents.Length != 2) throw new InvalidOperationException("SinglePointCrossover: The number of parents is not equal to 2");
+      if (parents.Length != 2) throw new InvalidOperationException("SimulatedBinaryCrossover: The number of parents is not equal to 2");
       if (ContiguityParameter.ActualValue == null) throw new InvalidOperationException("SimulatedBinaryCrossover: Parameter " + ContiguityParameter.ActualName + " could not be found.");
       return Apply(random, parents[0], parents[1], ContiguityParameter.ActualValue);
     }
