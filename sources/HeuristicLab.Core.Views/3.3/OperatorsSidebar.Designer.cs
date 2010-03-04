@@ -49,7 +49,7 @@ namespace HeuristicLab.Core.Views {
       // 
       // typeSelector
       // 
-      this.typeSelector.Caption = "&Available Operators";
+      this.typeSelector.Caption = "Available Operators";
       this.typeSelector.Dock = System.Windows.Forms.DockStyle.Fill;
       this.typeSelector.Location = new System.Drawing.Point(0, 0);
       this.typeSelector.Name = "typeSelector";

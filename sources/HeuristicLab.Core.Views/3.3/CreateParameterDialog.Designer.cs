@@ -161,7 +161,7 @@ namespace HeuristicLab.Core.Views {
       this.parameterTypeSelector.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.parameterTypeSelector.Caption = "Available &Parameters";
+      this.parameterTypeSelector.Caption = "Available Parameters";
       this.parameterTypeSelector.Location = new System.Drawing.Point(12, 12);
       this.parameterTypeSelector.Name = "parameterTypeSelector";
       this.parameterTypeSelector.Size = new System.Drawing.Size(518, 268);

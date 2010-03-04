@@ -12,7 +12,7 @@ namespace HeuristicLab.Core.Views {
     public VariableCollectionView() {
       InitializeComponent();
       Caption = "VariableCollection";
-      itemsGroupBox.Text = "&Variables";
+      itemsGroupBox.Text = "Variables";
     }
     /// <summary>
     /// Initializes a new instance of <see cref="VariablesScopeView"/> with 

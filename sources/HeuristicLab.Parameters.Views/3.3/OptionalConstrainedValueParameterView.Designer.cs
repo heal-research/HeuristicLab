@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Parameters.Views {
-  partial class ConstrainedValueParameterView<T> {
+  partial class OptionalConstrainedValueParameterView<T> {
     /// <summary> 
     /// Required designer variable.
     /// </summary>

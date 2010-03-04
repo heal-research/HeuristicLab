@@ -95,35 +95,35 @@ namespace HeuristicLab.Optimization {
 
     protected EngineAlgorithm()
       : base() {
-      globalScope = new Scope();
+      globalScope = new Scope("Global Scope");
       globalScope.Variables.Add(new Variable("Results", new VariableCollection()));
       OperatorGraph = new OperatorGraph();
       InitializeEngine();
     }
     protected EngineAlgorithm(string name)
       : base(name) {
-      globalScope = new Scope();
+      globalScope = new Scope("Global Scope");
       globalScope.Variables.Add(new Variable("Results", new VariableCollection()));
       OperatorGraph = new OperatorGraph();
       InitializeEngine();
     }
     protected EngineAlgorithm(string name, ParameterCollection parameters)
       : base(name, parameters) {
-      globalScope = new Scope();
+      globalScope = new Scope("Global Scope");
       globalScope.Variables.Add(new Variable("Results", new VariableCollection()));
       OperatorGraph = new OperatorGraph();
       InitializeEngine();
     }
     protected EngineAlgorithm(string name, string description)
       : base(name, description) {
-      globalScope = new Scope();
+      globalScope = new Scope("Global Scope");
       globalScope.Variables.Add(new Variable("Results", new VariableCollection()));
       OperatorGraph = new OperatorGraph();
       InitializeEngine();
     }
     protected EngineAlgorithm(string name, string description, ParameterCollection parameters)
       : base(name, description, parameters) {
-      globalScope = new Scope();
+      globalScope = new Scope("Global Scope");
       globalScope.Variables.Add(new Variable("Results", new VariableCollection()));
       OperatorGraph = new OperatorGraph();
       InitializeEngine();

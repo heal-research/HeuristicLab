@@ -50,6 +50,7 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     public TypeSelectorDialog() {
       InitializeComponent();
+      okButton.Enabled = typeSelector.SelectedType != null;
     }
 
     protected virtual void TypeSelectorDialog_Load(object sender, EventArgs e) {

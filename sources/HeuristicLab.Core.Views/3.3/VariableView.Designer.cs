@@ -99,7 +99,7 @@ namespace HeuristicLab.Core.Views {
       this.valueGroupBox.Size = new System.Drawing.Size(359, 196);
       this.valueGroupBox.TabIndex = 7;
       this.valueGroupBox.TabStop = false;
-      this.valueGroupBox.Text = "&Value:";
+      this.valueGroupBox.Text = "Value";
       // 
       // valuePanel
       // 

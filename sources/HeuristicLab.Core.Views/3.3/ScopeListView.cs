@@ -12,7 +12,7 @@ namespace HeuristicLab.Core.Views {
     public ScopeListView() {
       InitializeComponent();
       Caption = "ScopeList";
-      itemsGroupBox.Text = "&Scopes";
+      itemsGroupBox.Text = "Scopes";
     }
     /// <summary>
     /// Initializes a new instance of <see cref="VariablesScopeView"/> with 

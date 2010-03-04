@@ -15,7 +15,7 @@ namespace HeuristicLab.Core.Views {
     public OperatorSetView() {
       InitializeComponent();
       Caption = "Operator Set";
-      itemsGroupBox.Text = "&Operators";
+      itemsGroupBox.Text = "Operators";
     }
     /// <summary>
     /// Initializes a new instance of <see cref="VariablesScopeView"/> with 
@@ -31,7 +31,7 @@ namespace HeuristicLab.Core.Views {
     protected override IOperator CreateItem() {
       if (typeSelectorDialog == null) {
         typeSelectorDialog = new TypeSelectorDialog();
-        typeSelectorDialog.TypeSelector.Caption = "&Available Operators";
+        typeSelectorDialog.TypeSelector.Caption = "Available Operators";
         typeSelectorDialog.TypeSelector.Configure(typeof(IOperator), false, false);
       }
 

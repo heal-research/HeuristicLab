@@ -51,8 +51,8 @@ namespace HeuristicLab.Algorithms.SGA {
     private ConstrainedValueParameter<ICrossover> CrossoverParameter {
       get { return (ConstrainedValueParameter<ICrossover>)Parameters["Crossover"]; }
     }
-    private ConstrainedValueParameter<IManipulator> MutatorParameter {
-      get { return (ConstrainedValueParameter<IManipulator>)Parameters["Mutator"]; }
+    private OptionalConstrainedValueParameter<IManipulator> MutatorParameter {
+      get { return (OptionalConstrainedValueParameter<IManipulator>)Parameters["Mutator"]; }
     }
     private ValueParameter<IntData> ElitesParameter {
       get { return (ValueParameter<IntData>)Parameters["Elites"]; }
@@ -74,7 +74,7 @@ namespace HeuristicLab.Algorithms.SGA {
       Parameters.Add(new ConstrainedValueParameter<ISelector>("Selector", "The operator used to select solutions for reproduction."));
       Parameters.Add(new ConstrainedValueParameter<ICrossover>("Crossover", "The operator used to cross solutions."));
       Parameters.Add(new ValueParameter<DoubleData>("MutationProbability", "The probability that the mutation operator is applied on a solution.", new DoubleData(0.05)));
-      Parameters.Add(new ConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
+      Parameters.Add(new OptionalConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
       Parameters.Add(new ValueParameter<IntData>("Elites", "The numer of elite solutions which are kept in each generation.", new IntData(1)));
       Parameters.Add(new ValueParameter<IntData>("MaximumGenerations", "The maximum number of generations which should be processed.", new IntData(1000)));
 

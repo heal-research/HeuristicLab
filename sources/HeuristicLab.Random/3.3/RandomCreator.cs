@@ -27,9 +27,9 @@ using HeuristicLab.Random;
 
 namespace HeuristicLab.Operators {
   /// <summary>
-  /// An operator which creates a new pseudo random number generator.
+  /// An operator which creates a new Mersenne Twister pseudo random number generator.
   /// </summary>
-  [Item("RandomCreator", "An operator which creates a new pseudo random number generator.")]
+  [Item("RandomCreator", "An operator which creates a new Mersenne Twister pseudo random number generator.")]
   [EmptyStorableClass]
   [Creatable("Test")]
   public sealed class RandomCreator : SingleSuccessorOperator {

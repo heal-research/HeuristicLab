@@ -32,7 +32,7 @@ namespace HeuristicLab.Parameters {
   public class OptionalValueParameter<T> : Parameter, IValueParameter<T> where T : class, IItem {
     private T value;
     [Storable]
-    public T Value {
+    public virtual T Value {
       get { return this.value; }
       set {
         if (value != this.value) {

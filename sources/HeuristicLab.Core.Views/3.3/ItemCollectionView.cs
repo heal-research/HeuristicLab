@@ -121,7 +121,6 @@ namespace HeuristicLab.Core.Views {
     protected virtual void UpdateListViewItem(ListViewItem listViewItem) {
       if (!listViewItem.Text.Equals(listViewItem.Tag.ToString())) {
         listViewItem.Text = listViewItem.Tag.ToString();
-        itemsListView.Sort();
       }
     }
     protected virtual IEnumerable<ListViewItem> GetListViewItemsForItem(T item) {

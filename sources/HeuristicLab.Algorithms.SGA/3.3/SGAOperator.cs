@@ -96,7 +96,7 @@ namespace HeuristicLab.Algorithms.SGA {
 
       #region Create operator graph
       VariableCreator variableCreator = new VariableCreator();
-      ResultsCollector resultsCollector1 = new ResultsCollector();
+      ResultsCollector resultsCollector = new ResultsCollector();
       SubScopesSorter subScopesSorter1 = new SubScopesSorter();
       Placeholder selector = new Placeholder();
       SequentialSubScopesProcessor sequentialSubScopesProcessor1 = new SequentialSubScopesProcessor();
@@ -115,20 +115,25 @@ namespace HeuristicLab.Algorithms.SGA {
       IntCounter intCounter = new IntCounter();
       Comparator comparator = new Comparator();
       BestAverageWorstQualityCalculator bestAverageWorstQualityCalculator = new BestAverageWorstQualityCalculator();
-      ResultsCollector resultsCollector2 = new ResultsCollector();
       DataTableValuesCollector dataTableValuesCollector = new DataTableValuesCollector();
       ConditionalBranch conditionalBranch = new ConditionalBranch();
 
       OperatorGraph.InitialOperator = variableCreator;
 
+      variableCreator.CollectedValues.Add(new ValueParameter<IntData>("Generations", new IntData(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<DoubleData>("Best Quality", new DoubleData(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<DoubleData>("Average Quality", new DoubleData(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<DoubleData>("Worst Quality", new DoubleData(0)));
       variableCreator.CollectedValues.Add(new ValueParameter<DataTable>("Qualities", new DataTable("Qualities")));
-      variableCreator.Successor = resultsCollector1;
+      variableCreator.Successor = resultsCollector;
 
-      LookupParameter<DataTable> qualities = new LookupParameter<DataTable>("Qualities");
-      qualities.ActualName = "Qualities";
-      resultsCollector1.CollectedValues.Add(qualities);
-      resultsCollector1.ResultsParameter.ActualName = "Results";
-      resultsCollector1.Successor = subScopesSorter1;
+      resultsCollector.CollectedValues.Add(new LookupParameter<IntData>("Generations"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleData>("Best Quality"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleData>("Average Quality"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleData>("Worst Quality"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<DataTable>("Qualities"));
+      resultsCollector.ResultsParameter.ActualName = "Results";
+      resultsCollector.Successor = subScopesSorter1;
 
       subScopesSorter1.DescendingParameter.ActualName = "Maximization";
       subScopesSorter1.ValueParameter.ActualName = "Quality";
@@ -195,36 +200,18 @@ namespace HeuristicLab.Algorithms.SGA {
       comparator.RightSideParameter.ActualName = "MaximumGenerations";
       comparator.Successor = bestAverageWorstQualityCalculator;
 
-      bestAverageWorstQualityCalculator.AverageQualityParameter.ActualName = "AverageQuality";
-      bestAverageWorstQualityCalculator.BestQualityParameter.ActualName = "BestQuality";
+      bestAverageWorstQualityCalculator.AverageQualityParameter.ActualName = "Average Quality";
+      bestAverageWorstQualityCalculator.BestQualityParameter.ActualName = "Best Quality";
       bestAverageWorstQualityCalculator.MaximizationParameter.ActualName = "Maximization";
       bestAverageWorstQualityCalculator.QualityParameter.ActualName = "Quality";
-      bestAverageWorstQualityCalculator.WorstQualityParameter.ActualName = "WorstQuality";
+      bestAverageWorstQualityCalculator.WorstQualityParameter.ActualName = "Worst Quality";
       bestAverageWorstQualityCalculator.Successor = dataTableValuesCollector;
 
-      LookupParameter<DoubleData> bestQuality = new LookupParameter<DoubleData>("BestQuality");
-      bestQuality.ActualName = "BestQuality";
-      dataTableValuesCollector.CollectedValues.Add(bestQuality);
-      LookupParameter<DoubleData> averageQuality = new LookupParameter<DoubleData>("AverageQuality");
-      averageQuality.ActualName = "AverageQuality";
-      dataTableValuesCollector.CollectedValues.Add(averageQuality);
-      LookupParameter<DoubleData> worstQuality = new LookupParameter<DoubleData>("WorstQuality");
-      worstQuality.ActualName = "WorstQuality";
-      dataTableValuesCollector.CollectedValues.Add(worstQuality);
+      dataTableValuesCollector.CollectedValues.Add(new LookupParameter<DoubleData>("Best Quality"));
+      dataTableValuesCollector.CollectedValues.Add(new LookupParameter<DoubleData>("Average Quality"));
+      dataTableValuesCollector.CollectedValues.Add(new LookupParameter<DoubleData>("Worst Quality"));
       dataTableValuesCollector.DataTableParameter.ActualName = "Qualities";
-      dataTableValuesCollector.Successor = resultsCollector2;
-
-      bestQuality = new LookupParameter<DoubleData>("BestQuality");
-      bestQuality.ActualName = "BestQuality";
-      resultsCollector2.CollectedValues.Add(bestQuality);
-      averageQuality = new LookupParameter<DoubleData>("AverageQuality");
-      averageQuality.ActualName = "AverageQuality";
-      resultsCollector2.CollectedValues.Add(averageQuality);
-      worstQuality = new LookupParameter<DoubleData>("WorstQuality");
-      worstQuality.ActualName = "WorstQuality";
-      resultsCollector2.CollectedValues.Add(worstQuality);
-      resultsCollector2.ResultsParameter.ActualName = "Results";
-      resultsCollector2.Successor = conditionalBranch;
+      dataTableValuesCollector.Successor = conditionalBranch;
 
       conditionalBranch.ConditionParameter.ActualName = "Terminate";
       conditionalBranch.FalseBranch = subScopesSorter1;

@@ -103,7 +103,7 @@ namespace HeuristicLab.Core.Views {
       this.scopesGroupBox.Size = new System.Drawing.Size(394, 194);
       this.scopesGroupBox.TabIndex = 0;
       this.scopesGroupBox.TabStop = false;
-      this.scopesGroupBox.Text = "&Scopes";
+      this.scopesGroupBox.Text = "Scopes";
       // 
       // variableCollectionView
       // 

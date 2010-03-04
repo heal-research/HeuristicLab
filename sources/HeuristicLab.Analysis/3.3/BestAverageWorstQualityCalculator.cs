@@ -75,9 +75,16 @@ namespace HeuristicLab.Analysis {
           min = max;
           max = temp;
         }
-        BestQualityParameter.ActualValue = new DoubleData(max);
-        AverageQualityParameter.ActualValue = new DoubleData(sum / qualities.Length);
-        WorstQualityParameter.ActualValue = new DoubleData(min);
+
+        DoubleData best = BestQualityParameter.ActualValue;
+        if (best == null) BestQualityParameter.ActualValue = new DoubleData(max);
+        else best.Value = max;
+        DoubleData average = AverageQualityParameter.ActualValue;
+        if (average == null) AverageQualityParameter.ActualValue = new DoubleData(sum / qualities.Length);
+        else average.Value = sum / qualities.Length;
+        DoubleData worst = WorstQualityParameter.ActualValue;
+        if (worst == null) WorstQualityParameter.ActualValue = new DoubleData(min);
+        else worst.Value = min;
       }
       return base.Apply();
     }

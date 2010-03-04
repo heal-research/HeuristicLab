@@ -157,7 +157,7 @@ namespace HeuristicLab.Core.Views {
       this.detailsGroupBox.Size = new System.Drawing.Size(283, 294);
       this.detailsGroupBox.TabIndex = 0;
       this.detailsGroupBox.TabStop = false;
-      this.detailsGroupBox.Text = "&Details";
+      this.detailsGroupBox.Text = "Details";
       // 
       // viewHost
       // 
@@ -179,7 +179,7 @@ namespace HeuristicLab.Core.Views {
       this.itemsGroupBox.Size = new System.Drawing.Size(499, 342);
       this.itemsGroupBox.TabIndex = 0;
       this.itemsGroupBox.TabStop = false;
-      this.itemsGroupBox.Text = "&Items";
+      this.itemsGroupBox.Text = "Items";
       // 
       // ItemArrayView
       // 

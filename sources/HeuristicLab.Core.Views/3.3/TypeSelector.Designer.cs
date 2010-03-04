@@ -88,7 +88,7 @@ namespace HeuristicLab.Core.Views {
       this.typesGroupBox.Size = new System.Drawing.Size(303, 306);
       this.typesGroupBox.TabIndex = 0;
       this.typesGroupBox.TabStop = false;
-      this.typesGroupBox.Text = "&Available Types";
+      this.typesGroupBox.Text = "Available Types";
       // 
       // splitContainer
       // 

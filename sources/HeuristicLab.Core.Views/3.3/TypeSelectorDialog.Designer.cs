@@ -74,7 +74,7 @@ namespace HeuristicLab.Core.Views {
       this.typeSelector.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.typeSelector.Caption = "&Available Types";
+      this.typeSelector.Caption = "Available Types";
       this.typeSelector.Location = new System.Drawing.Point(12, 12);
       this.typeSelector.Name = "typeSelector";
       this.typeSelector.Size = new System.Drawing.Size(449, 350);

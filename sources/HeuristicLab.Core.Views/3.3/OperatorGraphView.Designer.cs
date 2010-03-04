@@ -117,7 +117,7 @@ namespace HeuristicLab.Core.Views {
       this.graphGroupBox.Size = new System.Drawing.Size(602, 208);
       this.graphGroupBox.TabIndex = 0;
       this.graphGroupBox.TabStop = false;
-      this.graphGroupBox.Text = "Operator &Graph";
+      this.graphGroupBox.Text = "Operator Graph";
       // 
       // viewHost
       // 

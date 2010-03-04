@@ -29,7 +29,6 @@ namespace HeuristicLab.SequentialEngine {
   /// in parallel.
   /// </summary>
   [EmptyStorableClass]
-  [Creatable("Engines")]
   [Item("Sequential Engine", "Engine for sequential execution of algorithms.")]
   public class SequentialEngine : Engine {
     private IOperator currentOperator;

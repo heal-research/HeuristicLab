@@ -36,7 +36,7 @@ namespace HeuristicLab.Core.Views {
     public ValueParameterCollectionView() {
       InitializeComponent();
       Caption = "ValueParameterCollection";
-      itemsGroupBox.Text = "&Parameters";
+      itemsGroupBox.Text = "Parameters";
     }
     /// <summary>
     /// Initializes a new instance of <see cref="VariablesScopeView"/> with 

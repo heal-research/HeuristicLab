@@ -91,6 +91,12 @@
     <Compile Include="ConstrainedValueParameterView.Designer.cs">
       <DependentUpon>ConstrainedValueParameterView.cs</DependentUpon>
     </Compile>
+    <Compile Include="OptionalConstrainedValueParameterView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OptionalConstrainedValueParameterView.Designer.cs">
+      <DependentUpon>OptionalConstrainedValueParameterView.cs</DependentUpon>
+    </Compile>
     <Compile Include="OptionalValueParameterView.cs">
       <SubType>UserControl</SubType>
     </Compile>
