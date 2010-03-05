@@ -64,6 +64,11 @@ namespace HeuristicLab.Core.Views {
       }
       return item;
     }
+    protected override ListViewItem CreateListViewItem(T item) {
+      ListViewItem listViewItem = base.CreateListViewItem(item);
+      listViewItem.ToolTipText = item.ItemName + ": " + item.Description;
+      return listViewItem;
+    }
     protected override void AddListViewItem(ListViewItem listViewItem) {
       ListViewItemDictionary.Add((T)listViewItem.Tag, listViewItem);
       base.AddListViewItem(listViewItem);

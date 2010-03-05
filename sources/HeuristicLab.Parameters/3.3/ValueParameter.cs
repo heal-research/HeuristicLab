@@ -26,9 +26,9 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Parameters {
   /// <summary>
-  /// A parameter whose value is defined it the parameter itself.
+  /// A parameter whose value is defined in the parameter itself.
   /// </summary>
-  [Item("ValueParameter<T>", "A parameter whose value is defined it the parameter itself.")]
+  [Item("ValueParameter<T>", "A parameter whose value is defined in the parameter itself.")]
   [EmptyStorableClass]
   public class ValueParameter<T> : OptionalValueParameter<T> where T : class, IItem {
     public override T Value {

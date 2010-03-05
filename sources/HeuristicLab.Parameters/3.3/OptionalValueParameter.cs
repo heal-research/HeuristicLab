@@ -26,9 +26,9 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Parameters {
   /// <summary>
-  /// A parameter whose value is defined it the parameter itself or is null.
+  /// A parameter whose value is defined in the parameter itself or is null.
   /// </summary>
-  [Item("OptionalValueParameter<T>", "A parameter whose value is defined it the parameter itself or is null.")]
+  [Item("OptionalValueParameter<T>", "A parameter whose value is defined in the parameter itself or is null.")]
   public class OptionalValueParameter<T> : Parameter, IValueParameter<T> where T : class, IItem {
     private T value;
     [Storable]

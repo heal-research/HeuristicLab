@@ -48,7 +48,6 @@ namespace HeuristicLab.Core.Views {
     public OperatorGraphView() {
       InitializeComponent();
       Caption = "Operator Graph";
-      this.viewHost.ViewType = typeof(OperatorTreeView);
     }
     /// <summary>
     /// Initializes a new instance of <see cref="OperatorGraphView"/> 
@@ -88,16 +87,16 @@ namespace HeuristicLab.Core.Views {
       Caption = "Operator Graph";
       operatorsView.Content = null;
       operatorsView.Enabled = false;
-      viewHost.Content = null;
-      viewHost.Enabled = false;
+      operatorTreeView.Content = null;
+      operatorTreeView.Enabled = false;
 
       if (Content != null) {
         Caption = Content.ItemName + " (" + Content.GetType().Name + ")";
         operatorsView.Content = Content.Operators;
         operatorsView.Enabled = true;
         MarkInitialOperator();
-        viewHost.Content = Content.InitialOperator;
-        viewHost.Enabled = true;
+        operatorTreeView.Content = Content.InitialOperator;
+        operatorTreeView.Enabled = true;
       }
     }
 
@@ -139,7 +138,7 @@ namespace HeuristicLab.Core.Views {
         Invoke(new EventHandler(Content_InitialOperatorChanged), sender, e);
       else {
         MarkInitialOperator();
-        viewHost.Content = Content.InitialOperator;
+        operatorTreeView.Content = Content.InitialOperator;
       }
     }
     #endregion

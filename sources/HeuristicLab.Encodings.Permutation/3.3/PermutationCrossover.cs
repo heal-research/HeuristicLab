@@ -46,7 +46,9 @@ namespace HeuristicLab.Encodings.Permutation {
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic crossover operators."));
       Parameters.Add(new SubScopesLookupParameter<Permutation>("Parents", "The parent permutations which should be crossed."));
+      ParentsParameter.ActualName = "Permutation";
       Parameters.Add(new LookupParameter<Permutation>("Child", "The child permutation resulting from the crossover."));
+      ChildParameter.ActualName = "Permutation";
     }
 
     public sealed override IOperation Apply() {

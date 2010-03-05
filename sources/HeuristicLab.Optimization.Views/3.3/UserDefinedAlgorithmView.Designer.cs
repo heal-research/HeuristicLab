@@ -44,6 +44,7 @@ namespace HeuristicLab.Optimization.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserDefinedAlgorithmView));
       this.operatorGraphTabPage = new System.Windows.Forms.TabPage();
       this.saveOperatorGraphButton = new System.Windows.Forms.Button();
       this.openOperatorGraphButton = new System.Windows.Forms.Button();
@@ -63,7 +64,9 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // createUserDefinedAlgorithmButton
       // 
+      this.createUserDefinedAlgorithmButton.Enabled = false;
       this.toolTip.SetToolTip(this.createUserDefinedAlgorithmButton, "Create User Defined Algorithm from this Algorithm");
+      this.createUserDefinedAlgorithmButton.Visible = false;
       // 
       // tabControl
       // 
@@ -113,7 +116,7 @@ namespace HeuristicLab.Optimization.Views {
       this.operatorGraphTabPage.Controls.Add(this.operatorGraphViewHost);
       this.operatorGraphTabPage.Location = new System.Drawing.Point(4, 22);
       this.operatorGraphTabPage.Name = "operatorGraphTabPage";
-      this.operatorGraphTabPage.Size = new System.Drawing.Size(705, 374);
+      this.operatorGraphTabPage.Size = new System.Drawing.Size(705, 441);
       this.operatorGraphTabPage.TabIndex = 2;
       this.operatorGraphTabPage.Text = "Operator Graph";
       this.operatorGraphTabPage.UseVisualStyleBackColor = true;
@@ -159,7 +162,7 @@ namespace HeuristicLab.Optimization.Views {
       this.operatorGraphViewHost.Content = null;
       this.operatorGraphViewHost.Location = new System.Drawing.Point(3, 33);
       this.operatorGraphViewHost.Name = "operatorGraphViewHost";
-      this.operatorGraphViewHost.Size = new System.Drawing.Size(699, 338);
+      this.operatorGraphViewHost.Size = new System.Drawing.Size(699, 405);
       this.operatorGraphViewHost.TabIndex = 0;
       this.operatorGraphViewHost.ViewType = null;
       // 
@@ -168,7 +171,7 @@ namespace HeuristicLab.Optimization.Views {
       this.globalScopeTabPage.Controls.Add(this.globalScopeView);
       this.globalScopeTabPage.Location = new System.Drawing.Point(4, 22);
       this.globalScopeTabPage.Name = "globalScopeTabPage";
-      this.globalScopeTabPage.Size = new System.Drawing.Size(705, 374);
+      this.globalScopeTabPage.Size = new System.Drawing.Size(705, 441);
       this.globalScopeTabPage.TabIndex = 3;
       this.globalScopeTabPage.Text = "Global Scope";
       this.globalScopeTabPage.UseVisualStyleBackColor = true;
@@ -182,7 +185,7 @@ namespace HeuristicLab.Optimization.Views {
       this.globalScopeView.Content = null;
       this.globalScopeView.Location = new System.Drawing.Point(3, 3);
       this.globalScopeView.Name = "globalScopeView";
-      this.globalScopeView.Size = new System.Drawing.Size(699, 368);
+      this.globalScopeView.Size = new System.Drawing.Size(699, 435);
       this.globalScopeView.TabIndex = 0;
       // 
       // UserDefinedAlgorithmView
