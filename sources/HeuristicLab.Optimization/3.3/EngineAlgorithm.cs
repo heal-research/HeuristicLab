@@ -194,20 +194,17 @@ namespace HeuristicLab.Optimization {
     protected virtual void OnEngineChanged() {
       if (EngineChanged != null)
         EngineChanged(this, EventArgs.Empty);
-      OnChanged();
     }
 
     private void OperatorGraph_InitialOperatorChanged(object sender, EventArgs e) {
       Prepare();
     }
     private void RegisterEngineEvents() {
-      Engine.Changed += new ChangedEventHandler(Engine_Changed);
       Engine.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(Engine_ExceptionOccurred);
       Engine.ExecutionTimeChanged += new EventHandler(Engine_ExecutionTimeChanged);
       Engine.Stopped += new EventHandler(Engine_Stopped);
     }
     private void DeregisterEngineEvents() {
-      Engine.Changed -= new ChangedEventHandler(Engine_Changed);
       Engine.ExceptionOccurred -= new EventHandler<EventArgs<Exception>>(Engine_ExceptionOccurred);
       Engine.ExecutionTimeChanged -= new EventHandler(Engine_ExecutionTimeChanged);
       Engine.Stopped -= new EventHandler(Engine_Stopped);
@@ -221,9 +218,6 @@ namespace HeuristicLab.Optimization {
     }
     private void Engine_Stopped(object sender, EventArgs e) {
       OnStopped();
-    }
-    private void Engine_Changed(object sender, ChangedEventArgs e) {
-      OnChanged(e);
     }
   }
 }

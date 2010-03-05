@@ -111,13 +111,13 @@ namespace HeuristicLab.Data {
     private void OnItemChanged(int rowIndex, int columnIndex) {
       if (ItemChanged != null)
         ItemChanged(this, new EventArgs<int, int>(rowIndex, columnIndex));
-      OnChanged();
+      OnToStringChanged();
     }
     protected event EventHandler Reset;
     private void OnReset() {
       if (Reset != null)
         Reset(this, EventArgs.Empty);
-      OnChanged();
+      OnToStringChanged();
     }
   }
 }

@@ -113,7 +113,6 @@ namespace HeuristicLab.Core {
     protected virtual void OnInitialOperatorChanged() {
       if (InitialOperatorChanged != null)
         InitialOperatorChanged(this, EventArgs.Empty);
-      OnChanged();
     }
 
     #region Operators Events
@@ -152,7 +151,6 @@ namespace HeuristicLab.Core {
 
     private void RegisterOperatorsEvents() {
       if (operators != null) {
-        operators.Changed += new ChangedEventHandler(Operators_Changed);
         operators.ItemsAdded += new CollectionItemsChangedEventHandler<IOperator>(Operators_ItemsAdded);
         operators.ItemsRemoved += new CollectionItemsChangedEventHandler<IOperator>(Operators_ItemsRemoved);
         operators.CollectionReset += new CollectionItemsChangedEventHandler<IOperator>(Operators_CollectionReset);
@@ -174,7 +172,6 @@ namespace HeuristicLab.Core {
           }
           DeregisterOperatorEvents(op);
         }
-        operators.Changed -= new ChangedEventHandler(Operators_Changed);
         operators.ItemsAdded -= new CollectionItemsChangedEventHandler<IOperator>(Operators_ItemsAdded);
         operators.ItemsRemoved -= new CollectionItemsChangedEventHandler<IOperator>(Operators_ItemsRemoved);
         operators.CollectionReset -= new CollectionItemsChangedEventHandler<IOperator>(Operators_CollectionReset);
@@ -238,9 +235,6 @@ namespace HeuristicLab.Core {
     private void opParam_ValueChanged(object sender, EventArgs e) {
       IValueParameter<IOperator> opParam = (IValueParameter<IOperator>)sender;
       if (opParam.Value != null) Operators.Add(opParam.Value);
-    }
-    private void Operators_Changed(object sender, ChangedEventArgs e) {
-      OnChanged(e);
     }
     #endregion
   }

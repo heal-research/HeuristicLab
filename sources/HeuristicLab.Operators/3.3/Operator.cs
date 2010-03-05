@@ -162,7 +162,6 @@ namespace HeuristicLab.Operators {
       if (BreakpointChanged != null) {
         BreakpointChanged(this, EventArgs.Empty);
       }
-      OnChanged();
     }
     /// <inheritdoc/>
     public event EventHandler Executed;

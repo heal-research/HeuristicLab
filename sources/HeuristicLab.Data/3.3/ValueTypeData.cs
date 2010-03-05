@@ -37,7 +37,7 @@ namespace HeuristicLab.Data {
       set {
         if (!value.Equals(this.value)) {
           this.value = value;
-          OnChanged();
+          OnValueChanged();
         }
       }
     }
@@ -57,6 +57,13 @@ namespace HeuristicLab.Data {
 
     public override string ToString() {
       return value.ToString();
+    }
+
+    public event EventHandler ValueChanged;
+    protected virtual void OnValueChanged() {
+      if (ValueChanged != null)
+        ValueChanged(this, EventArgs.Empty);
+      OnToStringChanged();
     }
   }
 }

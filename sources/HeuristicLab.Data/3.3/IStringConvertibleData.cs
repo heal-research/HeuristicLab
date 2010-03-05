@@ -31,6 +31,6 @@ namespace HeuristicLab.Data {
     string GetValue();
     bool SetValue(string value);
 
-    event ChangedEventHandler Changed;
+    event EventHandler ValueChanged;
   }
 }

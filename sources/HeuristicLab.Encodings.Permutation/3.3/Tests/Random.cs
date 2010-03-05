@@ -111,7 +111,7 @@ namespace HeuristicLab.Encodings.Permutation_33.Tests {
       get { throw new NotImplementedException(); }
     }
 
-    public event ChangedEventHandler Changed;
+    public event EventHandler ToStringChanged;
 
     #endregion
 

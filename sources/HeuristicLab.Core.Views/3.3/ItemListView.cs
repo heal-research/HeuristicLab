@@ -130,14 +130,14 @@ namespace HeuristicLab.Core.Views {
     }
     protected virtual void AddListViewItem(ListViewItem listViewItem) {
       itemsListView.Items.Add(listViewItem);
-      ((T)listViewItem.Tag).Changed += new ChangedEventHandler(Item_Changed);
+      ((T)listViewItem.Tag).ToStringChanged += new EventHandler(Item_ToStringChanged);
     }
     protected virtual void InsertListViewItem(int index, ListViewItem listViewItem) {
       itemsListView.Items.Insert(index, listViewItem);
-      ((T)listViewItem.Tag).Changed += new ChangedEventHandler(Item_Changed);
+      ((T)listViewItem.Tag).ToStringChanged += new EventHandler(Item_ToStringChanged);
     }
     protected virtual void RemoveListViewItem(ListViewItem listViewItem) {
-      ((T)listViewItem.Tag).Changed -= new ChangedEventHandler(Item_Changed);
+      ((T)listViewItem.Tag).ToStringChanged -= new EventHandler(Item_ToStringChanged);
       listViewItem.Remove();
     }
     protected virtual void UpdateListViewItem(ListViewItem listViewItem) {
@@ -332,9 +332,9 @@ namespace HeuristicLab.Core.Views {
     #endregion
 
     #region Item Events
-    protected virtual void Item_Changed(object sender, ChangedEventArgs e) {
+    protected virtual void Item_ToStringChanged(object sender, EventArgs e) {
       if (InvokeRequired)
-        Invoke(new ChangedEventHandler(Item_Changed), sender, e);
+        Invoke(new EventHandler(Item_ToStringChanged), sender, e);
       else {
         T item = (T)sender;
         foreach (ListViewItem listViewItem in itemsListView.Items) {

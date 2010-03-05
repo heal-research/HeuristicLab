@@ -40,15 +40,10 @@ namespace HeuristicLab.Core {
       }
     }
 
-    private VariableCollection variables;
     [Storable]
+    private VariableCollection variables;
     public VariableCollection Variables {
       get { return variables; }
-      private set {
-        if (variables != null) variables.Changed -= new ChangedEventHandler(Variables_Changed);
-        variables = value;
-        if (variables != null) variables.Changed += new ChangedEventHandler(Variables_Changed);
-      }
     }
 
     private ScopeList subScopes;
@@ -68,7 +63,7 @@ namespace HeuristicLab.Core {
     public Scope()
       : base("Anonymous") {
       parent = null;
-      Variables = new VariableCollection();
+      variables = new VariableCollection();
       SubScopes = new ScopeList();
     }
     /// <summary>
@@ -78,13 +73,13 @@ namespace HeuristicLab.Core {
     public Scope(string name)
       : base(name) {
       parent = null;
-      Variables = new VariableCollection();
+      variables = new VariableCollection();
       SubScopes = new ScopeList();
     }
     public Scope(string name, string description)
       : base(name, description) {
       parent = null;
-      Variables = new VariableCollection();
+      variables = new VariableCollection();
       SubScopes = new ScopeList();
     }
 
@@ -100,7 +95,7 @@ namespace HeuristicLab.Core {
       cloner.RegisterClonedObject(this, clone);
       clone.Name = Name;
       clone.Description = Description;
-      if (variables.Count > 0) clone.Variables = (VariableCollection)cloner.Clone(variables);
+      if (variables.Count > 0) clone.variables = (VariableCollection)cloner.Clone(variables);
       if (subScopes.Count > 0) clone.SubScopes = (ScopeList)cloner.Clone(subScopes);
       return clone;
     }
@@ -112,7 +107,6 @@ namespace HeuristicLab.Core {
         subScopes.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_ItemsRemoved);
         subScopes.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_ItemsReplaced);
         subScopes.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_CollectionReset);
-        subScopes.Changed += new ChangedEventHandler(SubScopes_Changed);
       }
     }
     private void DeregisterSubScopesEvents() {
@@ -121,7 +115,6 @@ namespace HeuristicLab.Core {
         subScopes.ItemsRemoved -= new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_ItemsRemoved);
         subScopes.ItemsReplaced -= new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_ItemsReplaced);
         subScopes.CollectionReset -= new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_CollectionReset);
-        subScopes.Changed -= new ChangedEventHandler(SubScopes_Changed);
       }
     }
     private void SubScopes_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<IScope>> e) {
@@ -143,15 +136,6 @@ namespace HeuristicLab.Core {
         oldItem.Value.Parent = null;
       foreach (IndexedItem<IScope> item in e.Items)
         item.Value.Parent = this;
-    }
-    private void SubScopes_Changed(object sender, ChangedEventArgs e) {
-      OnChanged(e);
-    }
-    #endregion
-
-    #region Variables Events
-    private void Variables_Changed(object sender, ChangedEventArgs e) {
-      OnChanged(e);
     }
     #endregion
   }

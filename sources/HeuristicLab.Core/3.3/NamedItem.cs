@@ -129,7 +129,7 @@ namespace HeuristicLab.Core {
     protected virtual void OnNameChanged() {
       if (NameChanged != null)
         NameChanged(this, EventArgs.Empty);
-      OnChanged();
+      OnToStringChanged();
     }
     /// <inheritdoc/>
     public event EventHandler DescriptionChanged;
@@ -140,7 +140,6 @@ namespace HeuristicLab.Core {
     protected virtual void OnDescriptionChanged() {
       if (DescriptionChanged != null)
         DescriptionChanged(this, EventArgs.Empty);
-      OnChanged();
     }
   }
 }

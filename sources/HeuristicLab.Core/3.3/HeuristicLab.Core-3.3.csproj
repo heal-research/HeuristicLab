@@ -101,7 +101,6 @@
     <Compile Include="Attributes\ItemAttribute.cs" />
     <Compile Include="Cloner.cs" />
     <Compile Include="Attributes\CreatableAttribute.cs" />
-    <Compile Include="ChangedEventArgs.cs" />
     <None Include="HeuristicLabCorePlugin.cs.frame" />
     <Compile Include="Interfaces\IParameterizedNamedItem.cs" />
     <Compile Include="Interfaces\IParameterizedItem.cs" />

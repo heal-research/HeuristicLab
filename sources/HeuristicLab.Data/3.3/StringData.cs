@@ -39,7 +39,7 @@ namespace HeuristicLab.Data {
         if (value != this.value) {
           if ((value != null) || (this.value != string.Empty)) {
             this.value = value != null ? value : string.Empty;
-            OnChanged();
+            OnValueChanged();
           }
         }
       }
@@ -68,6 +68,13 @@ namespace HeuristicLab.Data {
         return Value.CompareTo(other.Value);
       else
         return Value.CompareTo(obj);
+    }
+
+    public event EventHandler ValueChanged;
+    private void OnValueChanged() {
+      if (ValueChanged != null)
+        ValueChanged(this, EventArgs.Empty);
+      OnToStringChanged();
     }
 
     #region IStringConvertibleData Members

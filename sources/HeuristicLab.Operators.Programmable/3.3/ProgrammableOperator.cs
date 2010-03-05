@@ -36,6 +36,7 @@ using System.Data.Linq;
 using System.Xml.XPath;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Collections;
 
 namespace HeuristicLab.Operators.Programmable {
 
@@ -167,12 +168,15 @@ namespace HeuristicLab.Operators.Programmable {
       Assemblies = defaultAssemblyDict;
       Plugins = defaultPluginDict;
       namespaces = new HashSet<string>(DiscoverNamespaces());
-      Parameters.Changed += (s, a) => OnSignatureChanged(s, a);
+      Parameters.ItemsAdded += (s, a) => OnSignatureChanged(s, a);
+      Parameters.ItemsRemoved += (s, a) => OnSignatureChanged(s, a);
+      Parameters.ItemsReplaced += (s, a) => OnSignatureChanged(s, a);
+      Parameters.CollectionReset += (s, a) => OnSignatureChanged(s, a);
     }
 
-    protected void OnSignatureChanged(object sender, EventArgs args) {
+    protected void OnSignatureChanged(object sender, CollectionItemsChangedEventArgs<IParameter> args) {
       if (SignatureChanged != null)
-        SignatureChanged(sender, args);
+        SignatureChanged(sender, EventArgs.Empty);
     }
 
     private static void StaticInitialize() {

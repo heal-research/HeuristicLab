@@ -36,9 +36,9 @@ namespace HeuristicLab.Parameters {
       get { return this.value; }
       set {
         if (value != this.value) {
-          if (this.value != null) this.value.Changed -= new ChangedEventHandler(Value_Changed);
+          if (this.value != null) this.value.ToStringChanged -= new EventHandler(Value_ToStringChanged);
           this.value = value;
-          if (this.value != null) this.value.Changed += new ChangedEventHandler(Value_Changed);
+          if (this.value != null) this.value.ToStringChanged += new EventHandler(Value_ToStringChanged);
           OnValueChanged();
         }
       }
@@ -88,10 +88,10 @@ namespace HeuristicLab.Parameters {
     private void OnValueChanged() {
       if (ValueChanged != null)
         ValueChanged(this, EventArgs.Empty);
-      OnChanged();
+      OnToStringChanged();
     }
-    private void Value_Changed(object sender, ChangedEventArgs e) {
-      OnChanged(e);
+    private void Value_ToStringChanged(object sender, EventArgs e) {
+      OnToStringChanged();
     }
   }
 }

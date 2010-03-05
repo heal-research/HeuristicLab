@@ -33,10 +33,8 @@ namespace HeuristicLab.Core {
     protected ParameterCollection Parameters {
       get { return parameters; }
       private set {
-        if (parameters != null) parameters.Changed -= new ChangedEventHandler(Parameters_Changed);
         parameters = value;
         readOnlyParameters = null;
-        if (parameters != null) parameters.Changed += new ChangedEventHandler(Parameters_Changed);
       }
     }
     private ReadOnlyObservableKeyedCollection<string, IParameter> readOnlyParameters;
@@ -81,10 +79,6 @@ namespace HeuristicLab.Core {
       ParameterizedNamedItem clone = (ParameterizedNamedItem)base.Clone(cloner);
       clone.Parameters = (ParameterCollection)cloner.Clone(parameters);
       return clone;
-    }
-
-    private void Parameters_Changed(object sender, ChangedEventArgs e) {
-      OnChanged(e);
     }
   }
 }

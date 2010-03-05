@@ -94,13 +94,13 @@ namespace HeuristicLab.Data {
     private void OnItemChanged(int index) {
       if (ItemChanged != null)
         ItemChanged(this, new EventArgs<int, int>(index, 0));
-      OnChanged();
+      OnToStringChanged();
     }
     protected event EventHandler Reset;
     private void OnReset() {
       if (Reset != null)
         Reset(this, EventArgs.Empty);
-      OnChanged();
+      OnToStringChanged();
     }
   }
 }

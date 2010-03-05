@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Drawing;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -48,13 +49,10 @@ namespace HeuristicLab.Core {
       return ItemName;
     }
 
-    public event ChangedEventHandler Changed;
-    protected void OnChanged() {
-      OnChanged(new ChangedEventArgs());
-    }
-    protected virtual void OnChanged(ChangedEventArgs e) {
-      if ((e.RegisterChangedObject(this)) && (Changed != null))
-        Changed(this, e);
+    public event EventHandler ToStringChanged;
+    protected virtual void OnToStringChanged() {
+      if (ToStringChanged != null)
+        ToStringChanged(this, EventArgs.Empty);
     }
   }
 }

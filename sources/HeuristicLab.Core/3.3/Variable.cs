@@ -38,9 +38,9 @@ namespace HeuristicLab.Core {
       get { return value; }
       set {
         if (this.value != value) {
-          if (this.value != null) this.value.Changed -= new ChangedEventHandler(Value_Changed);
+          if (this.value != null) this.value.ToStringChanged -= new EventHandler(Value_ToStringChanged);
           this.value = value;
-          if (this.value != null) this.value.Changed += new ChangedEventHandler(Value_Changed);
+          if (this.value != null) this.value.ToStringChanged += new EventHandler(Value_ToStringChanged);
           OnValueChanged();
         }
       }
@@ -71,12 +71,12 @@ namespace HeuristicLab.Core {
     public Variable(string name, IItem value)
       : base(name) {
       this.value = value;
-      if (this.value != null) this.value.Changed += new ChangedEventHandler(Value_Changed);
+      if (this.value != null) this.value.ToStringChanged += new EventHandler(Value_ToStringChanged);
     }
     public Variable(string name, string description, IItem value)
       : base(name, description) {
       this.value = value;
-      if (this.value != null) this.value.Changed += new ChangedEventHandler(Value_Changed);
+      if (this.value != null) this.value.ToStringChanged += new EventHandler(Value_ToStringChanged);
     }
 
     /// <summary>
@@ -109,11 +109,10 @@ namespace HeuristicLab.Core {
     private void OnValueChanged() {
       if (ValueChanged != null)
         ValueChanged(this, EventArgs.Empty);
-      OnChanged();
     }
 
-    private void Value_Changed(object sender, ChangedEventArgs e) {
-      OnChanged(e);
+    private void Value_ToStringChanged(object sender, EventArgs e) {
+      OnToStringChanged();
     }
   }
 }

@@ -35,15 +35,6 @@ namespace HeuristicLab.Core {
   [EmptyStorableClass]
   [Item("ItemSet<T>", "Represents a set of items.")]
   public class ItemSet<T> : ObservableSet<T>, IItem where T : class, IItem {
-    [Storable(Name = "RestoreEvents")]
-    private object RestoreEvents {
-      get { return null; }
-      set {
-        foreach (T item in this)
-          if (item != null) item.Changed += new ChangedEventHandler(Item_Changed);
-      }
-    }
-
     public virtual string ItemName {
       get { return ItemAttribute.GetName(this.GetType()); }
     }
@@ -55,10 +46,7 @@ namespace HeuristicLab.Core {
     }
 
     public ItemSet() : base() { }
-    public ItemSet(IEnumerable<T> collection) : base(collection) {
-      foreach (T item in this)
-        if (item != null) item.Changed += new ChangedEventHandler(Item_Changed);
-    }
+    public ItemSet(IEnumerable<T> collection) : base(collection) { }
 
     public object Clone() {
       return Clone(new Cloner());
@@ -74,39 +62,10 @@ namespace HeuristicLab.Core {
       return ItemName;
     }
 
-    public event ChangedEventHandler Changed;
-    protected void OnChanged() {
-      OnChanged(new ChangedEventArgs());
-    }
-    protected virtual void OnChanged(ChangedEventArgs e) {
-      if ((e.RegisterChangedObject(this)) && (Changed != null))
-        Changed(this, e);
-    }
-
-    protected override void OnItemsAdded(IEnumerable<T> items) {
-      foreach (T item in items)
-        if (item != null) item.Changed += new ChangedEventHandler(Item_Changed);
-      base.OnItemsAdded(items);
-    }
-    protected override void OnItemsRemoved(IEnumerable<T> items) {
-      foreach (T item in items)
-        if (item != null) item.Changed -= new ChangedEventHandler(Item_Changed);
-      base.OnItemsRemoved(items);
-    }
-    protected override void OnCollectionReset(IEnumerable<T> items, IEnumerable<T> oldItems) {
-      foreach (T oldItem in oldItems)
-        if (oldItem != null) oldItem.Changed -= new ChangedEventHandler(Item_Changed);
-      foreach (T item in items)
-        if (item != null) item.Changed += new ChangedEventHandler(Item_Changed);
-      base.OnCollectionReset(items, oldItems);
-    }
-    protected override void OnPropertyChanged(string propertyName) {
-      base.OnPropertyChanged(propertyName);
-      OnChanged();
-    }
-
-    private void Item_Changed(object sender, ChangedEventArgs e) {
-      OnChanged(e);
+    public event EventHandler ToStringChanged;
+    protected virtual void OnToStringChanged() {
+      if (ToStringChanged != null)
+        ToStringChanged(this, EventArgs.Empty);
     }
   }
 }

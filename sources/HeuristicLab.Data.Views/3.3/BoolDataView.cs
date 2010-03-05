@@ -49,13 +49,13 @@ namespace HeuristicLab.Data.Views {
     }
 
     protected override void DeregisterContentEvents() {
-      Content.Changed -= new ChangedEventHandler(Content_Changed);
+      Content.ValueChanged -= new EventHandler(Content_ValueChanged);
       base.DeregisterContentEvents();
     }
 
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.Changed += new ChangedEventHandler(Content_Changed);
+      Content.ValueChanged += new EventHandler(Content_ValueChanged);
     }
 
     protected override void OnContentChanged() {
@@ -71,9 +71,9 @@ namespace HeuristicLab.Data.Views {
       }
     }
 
-    private void Content_Changed(object sender, ChangedEventArgs e) {
+    private void Content_ValueChanged(object sender, EventArgs e) {
       if (InvokeRequired)
-        Invoke(new ChangedEventHandler(Content_Changed), sender, e);
+        Invoke(new EventHandler(Content_ValueChanged), sender, e);
       else
         valueCheckBox.Checked = Content.Value;
     }

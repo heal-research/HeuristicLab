@@ -49,11 +49,14 @@ namespace HeuristicLab.Parameters {
       set {
         if (value != this.value) {
           if ((value != null) && !validValues.Contains(value)) throw new ArgumentException("Invalid value.");
+          if (this.value != null) this.value.ToStringChanged -= new EventHandler(Value_ToStringChanged);
           this.value = value;
+          if (this.value != null) this.value.ToStringChanged += new EventHandler(Value_ToStringChanged);
           OnValueChanged();
         }
       }
     }
+
     IItem IValueParameter.Value {
       get { return Value; }
       set {
@@ -120,7 +123,7 @@ namespace HeuristicLab.Parameters {
     protected virtual void OnValueChanged() {
       if (ValueChanged != null)
         ValueChanged(this, EventArgs.Empty);
-      OnChanged();
+      OnToStringChanged();
     }
 
     private void RegisterValidValuesEvents() {
@@ -128,7 +131,6 @@ namespace HeuristicLab.Parameters {
         validValues.ItemsAdded += new CollectionItemsChangedEventHandler<T>(validValues_ItemsAdded);
         validValues.ItemsRemoved += new CollectionItemsChangedEventHandler<T>(ValidValues_ItemsRemoved);
         validValues.CollectionReset += new CollectionItemsChangedEventHandler<T>(ValidValues_CollectionReset);
-        validValues.Changed += new ChangedEventHandler(ValidValues_Changed);
       }
     }
 
@@ -137,7 +139,6 @@ namespace HeuristicLab.Parameters {
         validValues.ItemsAdded -= new CollectionItemsChangedEventHandler<T>(validValues_ItemsAdded);
         validValues.ItemsRemoved -= new CollectionItemsChangedEventHandler<T>(ValidValues_ItemsRemoved);
         validValues.CollectionReset -= new CollectionItemsChangedEventHandler<T>(ValidValues_CollectionReset);
-        validValues.Changed -= new ChangedEventHandler(ValidValues_Changed);
       }
     }
 
@@ -148,8 +149,8 @@ namespace HeuristicLab.Parameters {
     protected virtual void ValidValues_CollectionReset(object sender, CollectionItemsChangedEventArgs<T> e) {
       if ((Value != null) && !validValues.Contains(Value)) Value = null;
     }
-    protected virtual void ValidValues_Changed(object sender, ChangedEventArgs e) {
-      OnChanged(e);
+    protected virtual void Value_ToStringChanged(object sender, EventArgs e) {
+      OnToStringChanged();
     }
   }
 }

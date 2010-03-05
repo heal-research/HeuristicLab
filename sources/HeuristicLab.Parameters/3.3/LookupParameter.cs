@@ -155,7 +155,7 @@ namespace HeuristicLab.Parameters {
     private void OnActualNameChanged() {
       if (ActualNameChanged != null)
         ActualNameChanged(this, EventArgs.Empty);
-      OnChanged();
+      OnToStringChanged();
     }
 
     public static string TranslateName(string name, IExecutionContext context) {

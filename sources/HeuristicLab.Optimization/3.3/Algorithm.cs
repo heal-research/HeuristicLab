@@ -111,31 +111,26 @@ namespace HeuristicLab.Optimization {
     protected virtual void OnProblemChanged() {
       if (ProblemChanged != null)
         ProblemChanged(this, EventArgs.Empty);
-      OnChanged();
     }
     public event EventHandler ExecutionTimeChanged;
     protected virtual void OnExecutionTimeChanged() {
       if (ExecutionTimeChanged != null)
         ExecutionTimeChanged(this, EventArgs.Empty);
-      OnChanged();
     }
     public event EventHandler Prepared;
     protected virtual void OnPrepared() {
       if (Prepared != null)
         Prepared(this, EventArgs.Empty);
-      OnChanged();
     }
     public event EventHandler Started;
     protected virtual void OnStarted() {
       if (Started != null)
         Started(this, EventArgs.Empty);
-      OnChanged();
     }
     public event EventHandler Stopped;
     protected virtual void OnStopped() {
       if (Stopped != null)
         Stopped(this, EventArgs.Empty);
-      OnChanged();
     }
     protected virtual void OnCanceledChanged() { }
     public event EventHandler<EventArgs<Exception>> ExceptionOccurred;
@@ -146,19 +141,14 @@ namespace HeuristicLab.Optimization {
     protected virtual void DeregisterProblemEvents() {
       problem.SolutionCreatorChanged -= new EventHandler(Problem_SolutionCreatorChanged);
       problem.EvaluatorChanged -= new EventHandler(Problem_EvaluatorChanged);
-      problem.Changed -= new ChangedEventHandler(Problem_Changed);
     }
     protected virtual void RegisterProblemEvents() {
       problem.SolutionCreatorChanged += new EventHandler(Problem_SolutionCreatorChanged);
       problem.EvaluatorChanged += new EventHandler(Problem_EvaluatorChanged);
-      problem.Changed += new ChangedEventHandler(Problem_Changed);
     }
 
     protected virtual void Problem_SolutionCreatorChanged(object sender, EventArgs e) { }
     protected virtual void Problem_EvaluatorChanged(object sender, EventArgs e) { }
-    private void Problem_Changed(object sender, ChangedEventArgs e) {
-      OnChanged(e);
-    }
     #endregion
   }
 }

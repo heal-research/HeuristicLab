@@ -37,7 +37,7 @@ namespace HeuristicLab.Core.Views {
       if (disposing) {
         foreach (ListViewItem listViewItem in itemsListView.Items) {
           T item = listViewItem.Tag as T;
-          if (item != null) item.Changed -= new ChangedEventHandler(Item_Changed);
+          if (item != null) item.ToStringChanged -= new EventHandler(Item_ToStringChanged);
         }
         if (components != null) components.Dispose();
       }

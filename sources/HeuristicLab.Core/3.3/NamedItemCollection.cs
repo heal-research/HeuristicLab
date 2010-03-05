@@ -65,13 +65,10 @@ namespace HeuristicLab.Core {
       return ItemName;
     }
 
-    public event ChangedEventHandler Changed;
-    protected void OnChanged() {
-      OnChanged(new ChangedEventArgs());
-    }
-    protected virtual void OnChanged(ChangedEventArgs e) {
-      if ((e.RegisterChangedObject(this)) && (Changed != null))
-        Changed(this, e);
+    public event EventHandler ToStringChanged;
+    protected virtual void OnToStringChanged() {
+      if (ToStringChanged != null)
+        ToStringChanged(this, EventArgs.Empty);
     }
 
     protected override string GetKeyForItem(T item) {
@@ -97,17 +94,12 @@ namespace HeuristicLab.Core {
       RegisterItemEvents(items);
       base.OnCollectionReset(items, oldItems);
     }
-    protected override void OnPropertyChanged(string propertyName) {
-      base.OnPropertyChanged(propertyName);
-      OnChanged();
-    }
 
     private void RegisterItemEvents(IEnumerable<T> items) {
       foreach (T item in items) {
         if (item != null) {
           item.NameChanging += new EventHandler<CancelEventArgs<string>>(Item_NameChanging);
           item.NameChanged += new EventHandler(Item_NameChanged);
-          item.Changed += new ChangedEventHandler(Item_Changed);
         }
       }
     }
@@ -116,7 +108,6 @@ namespace HeuristicLab.Core {
         if (item != null) {
           item.NameChanging -= new EventHandler<CancelEventArgs<string>>(Item_NameChanging);
           item.NameChanged -= new EventHandler(Item_NameChanged);
-          item.Changed -= new ChangedEventHandler(Item_Changed);
         }
       }
     }
@@ -127,9 +118,6 @@ namespace HeuristicLab.Core {
     private void Item_NameChanged(object sender, EventArgs e) {
       T item = (T)sender;
       UpdateItemKey(item);
-    }
-    private void Item_Changed(object sender, ChangedEventArgs e) {
-      OnChanged(e);
     }
   }
 }
