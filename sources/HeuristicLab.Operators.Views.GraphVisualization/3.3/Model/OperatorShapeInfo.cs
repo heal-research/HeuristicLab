@@ -110,6 +110,30 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     }
 
     [Storable]
+    private Color lineColor;
+    public Color LineColor {
+      get { return this.lineColor; }
+      set {
+        if (this.lineColor != value) {
+          this.lineColor = value;
+          this.OnChanged();
+        }
+      }
+    }
+
+    [Storable]
+    private float lineWidth;
+    public float LineWidth {
+      get { return this.lineWidth; }
+      set {
+        if (this.lineWidth != value) {
+          this.lineWidth = value;
+          this.OnChanged();
+        }
+      }
+    }
+
+    [Storable]
     private Bitmap icon;
     public Bitmap Icon {
       get { return this.icon; }
@@ -125,6 +149,8 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       OperatorShape shape = (OperatorShape)base.CreateShape();
       shape.Title = this.Title;
       shape.Color = this.Color;
+      shape.LineColor = this.LineColor;
+      shape.LineWidth = this.LineWidth;
       shape.Icon = this.Icon;
       shape.Collapsed = this.Collapsed;
       foreach (string connectorName in this.connectorNames)
@@ -140,6 +166,8 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       if (operatorShape != null) {
         operatorShape.Title = this.Title;
         operatorShape.Color = this.Color;
+        operatorShape.LineColor = this.LineColor;
+        operatorShape.LineWidth = this.LineWidth;
         operatorShape.Collapsed = this.Collapsed;
 
         int i = 0;

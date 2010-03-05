@@ -201,6 +201,18 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       this.shapeInfos.Remove(shapeInfo);
     }
 
+    private void OperatorBreakpointChanged(object sender, EventArgs e) {
+      IOperator op = (IOperator)sender;
+      IOperatorShapeInfo operatorShapeInfo = this.operatorShapeInfoMapping.GetByFirst(op);
+      if (op.Breakpoint) {
+        operatorShapeInfo.LineColor = Color.Red;
+        operatorShapeInfo.LineWidth = 2;
+      } else {
+        operatorShapeInfo.LineColor = Color.Black;
+        operatorShapeInfo.LineWidth = 1;
+      }
+    }
+
     private void OperatorNameChanged(object sender, EventArgs e) {
       IOperator op = (IOperator)sender;
       IOperatorShapeInfo operatorShapeInfo = this.operatorShapeInfoMapping.GetByFirst(op);
@@ -228,6 +240,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       op.Parameters.ItemsReplaced += new CollectionItemsChangedEventHandler<IParameter>(Parameters_ItemsReplaced);
       op.Parameters.CollectionReset += new CollectionItemsChangedEventHandler<IParameter>(Parameters_CollectionReset);
       op.NameChanged += new EventHandler(OperatorNameChanged);
+      op.BreakpointChanged += new EventHandler(OperatorBreakpointChanged);
     }
 
     private void DeregisterOperatorEvents(IOperator op) {
@@ -236,6 +249,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       op.Parameters.ItemsReplaced -= new CollectionItemsChangedEventHandler<IParameter>(Parameters_ItemsReplaced);
       op.Parameters.CollectionReset -= new CollectionItemsChangedEventHandler<IParameter>(Parameters_CollectionReset);
       op.NameChanged -= new EventHandler(OperatorNameChanged);
+      op.BreakpointChanged -= new EventHandler(OperatorBreakpointChanged);
     }
     #endregion
 

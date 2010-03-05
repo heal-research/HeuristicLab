@@ -30,6 +30,8 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     bool Collapsed { get; set; }
     string Title { get; set; }
     Color Color { get; set; }
+    Color LineColor { get; set; }
+    float LineWidth { get; set; }
     Bitmap Icon { get; set; }
 
     void AddConnector(string connectorName);

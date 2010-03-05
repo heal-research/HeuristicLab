@@ -28,6 +28,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using HeuristicLab.Netron;
 
+
 namespace HeuristicLab.Operators.Views.GraphVisualization {
   public class OperatorShape : ComplexShapeBase {
     private static int LABEL_HEIGHT = 16;
@@ -53,6 +54,18 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
         if (this.expandIconMaterial.Collapsed != value)
           this.expandIconMaterial.Collapsed = value;
       }
+    }
+
+    private Color lineColor;
+    public Color LineColor {
+      get { return this.lineColor; }
+      set { this.lineColor = value; }
+    }
+
+    private float lineWidth;
+    public float LineWidth {
+      get { return this.lineWidth; }
+      set { this.lineWidth = value; }
     }
 
     private Color color;
@@ -204,11 +217,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
       g.SmoothingMode = SmoothingMode.HighQuality;
 
-      Pen pen;
-      if (Hovered)
-        pen = ArtPalette.HighlightPen;
-      else
-        pen = mPenStyle.DrawingPen();
+      Pen pen = new Pen(lineColor,lineWidth);
 
       GraphicsPath path = new GraphicsPath();
       path.AddArc(Rectangle.X, Rectangle.Y, 20, 20, -180, 90);

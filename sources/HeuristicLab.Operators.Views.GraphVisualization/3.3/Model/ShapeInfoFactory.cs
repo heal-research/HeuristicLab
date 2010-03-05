@@ -45,6 +45,8 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       operatorShapeInfo.Collapsed = true;
       operatorShapeInfo.Title = op.Name;
       operatorShapeInfo.Color = Color.LightBlue;
+      operatorShapeInfo.LineWidth = 1;
+      operatorShapeInfo.LineColor = Color.Black;
       operatorShapeInfo.Icon = new Bitmap(op.ItemImage);
 
       return operatorShapeInfo;
