@@ -31,7 +31,7 @@ namespace HeuristicLab.MainForm {
       if (other.IsAssignableFrom(type))
         return true;
 
-      if (recursiveCheckGenericTypes(type, other))
+      if (RecursiveCheckGenericTypes(type, other))
         return true;
 
       IEnumerable<Type> implementedInterfaces = type.GetInterfaces().Where(t => t.IsGenericType);
@@ -43,14 +43,14 @@ namespace HeuristicLab.MainForm {
       return false;
     }
 
-    private static bool recursiveCheckGenericTypes(Type type, Type other) {
+    private static bool RecursiveCheckGenericTypes(Type type, Type other) {
       if (type.CheckGenericTypes(other))
         return true;
 
       if (type.BaseType == null)
         return false;
 
-      return recursiveCheckGenericTypes(type.BaseType, other);
+      return RecursiveCheckGenericTypes(type.BaseType, other);
     }
 
     internal static bool CheckGenericTypes(this Type type, Type other) {
