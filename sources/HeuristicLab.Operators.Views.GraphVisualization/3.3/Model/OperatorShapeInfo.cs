@@ -27,14 +27,19 @@ using HeuristicLab.Core;
 using System.Drawing;
 using Netron.Diagramming.Core;
 using System.Windows.Forms;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
-  internal class OperatorShapeInfo : ShapeInfo {
-
+  internal class OperatorShapeInfo : ShapeInfo, IOperatorShapeInfo {
+    [Storable]
     private List<string> connectorNames;
+    [Storable]
+    private List<string> labels;
+
     public OperatorShapeInfo()
       : base(typeof(OperatorShape)) {
       this.connectorNames = new List<string>();
+      this.labels = new List<string>();
     }
 
     public OperatorShapeInfo(IEnumerable<string> connectorNames)
@@ -43,20 +48,44 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
         this.connectorNames.Add(connectorName);
     }
 
-    public override void AddConnector(string connectorName) {
+    public OperatorShapeInfo(IEnumerable<string> connectorNames, IEnumerable<string> labels)
+      : this(connectorNames) {
+      foreach (string label in labels)
+        this.labels.Add(label);
+    }
+
+    public void AddConnector(string connectorName) {
       if (!this.connectorNames.Contains(connectorName) && connectorName != "Successor") {
         this.connectorNames.Add(connectorName);
         this.OnChanged();
       }
     }
 
-    public override void RemoveConnector(string connectorName) {
+    public void RemoveConnector(string connectorName) {
       if (this.connectorNames.Contains(connectorName)) {
         this.connectorNames.Remove(connectorName);
         this.OnChanged();
       }
     }
 
+    public void UpdateLabels(IEnumerable<string> labels) {
+      this.labels = new List<string>(labels);
+      this.OnChanged();
+    }
+
+    [Storable]
+    private bool collapsed;
+    public bool Collapsed {
+      get { return this.collapsed; }
+      set {
+        if (this.collapsed != value) {
+          this.collapsed = value;
+          this.OnChanged();
+        }
+      }
+    }
+
+    [Storable]
     private string title;
     public string Title {
       get { return this.title; }
@@ -68,23 +97,25 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       }
     }
 
-    private string text;
-    public string Text {
-      get { return this.text; }
+    [Storable]
+    private Color color;
+    public Color Color {
+      get { return this.color; }
       set {
-        if (this.text != value) {
-          this.text = value;
+        if (this.color != value) {
+          this.color = value;
           this.OnChanged();
         }
       }
     }
 
-    private Color headColor;
-    public Color HeadColor {
-      get { return this.headColor; }
+    [Storable]
+    private Bitmap icon;
+    public Bitmap Icon {
+      get { return this.icon; }
       set {
-        if (this.headColor != value) {
-          this.headColor = value;
+        if (this.icon != value) {
+          this.icon = value;
           this.OnChanged();
         }
       }
@@ -93,21 +124,23 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     public override IShape CreateShape() {
       OperatorShape shape = (OperatorShape)base.CreateShape();
       shape.Title = this.Title;
-      shape.SubTitle = this.Text;
-      shape.HeadColor = this.HeadColor;
+      shape.Color = this.Color;
+      shape.Icon = this.Icon;
+      shape.Collapsed = this.Collapsed;
       foreach (string connectorName in this.connectorNames)
         shape.AddConnector(connectorName);
+
+      shape.UpdateLabels(this.labels);
       return shape;
     }
 
     public override void UpdateShape(IShape shape) {
       base.UpdateShape(shape);
       OperatorShape operatorShape = shape as OperatorShape;
-
       if (operatorShape != null) {
         operatorShape.Title = this.Title;
-        operatorShape.SubTitle = this.Text;
-        operatorShape.HeadColor = this.HeadColor;
+        operatorShape.Color = this.Color;
+        operatorShape.Collapsed = this.Collapsed;
 
         int i = 0;
         int j = 0;
@@ -120,13 +153,15 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
             i++;
           j++;
         }
-        //remove old connectors
+        //remove remaining old connectors
         for (; j < oldConnectorNames.Count; j++)
           operatorShape.RemoveConnector(oldConnectorNames[j]);
 
         //add new connectors
         for (; i < this.connectorNames.Count; i++)
           operatorShape.AddConnector(this.connectorNames[i]);
+
+        operatorShape.UpdateLabels(this.labels);
       }
     }
   }

@@ -152,7 +152,7 @@ namespace Netron.Diagramming.Core {
       g.Transform = mController.View.ViewMatrix;
       g.SmoothingMode = SmoothingMode.HighQuality;
       Bundle bundle = new Bundle(SelectedItems.Copy());
-      return ImageExporter.FromBundle(bundle, g);
+      return ImageExporter.FromBundle(bundle,g);
     }
 
     public IConnector FindConnector(Predicate<IConnector> predicate) {

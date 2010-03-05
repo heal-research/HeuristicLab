@@ -27,20 +27,28 @@ using HeuristicLab.Core;
 using System.Drawing;
 using Netron.Diagramming.Core;
 using HeuristicLab.Collections;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
-  internal abstract class ShapeInfo : Item, IShapeInfo {
+  internal abstract class ShapeInfo : Item,IShapeInfo {
+    private ShapeInfo() {
+
+    }
     protected ShapeInfo(Type shapeType) {
       if (!typeof(IShape).IsAssignableFrom(shapeType))
         throw new ArgumentException("The passed shape type " + shapeType + " must be derived from IShape.");
       this.shapeType = shapeType;
     }
 
+    public event EventHandler Changed;
+
+    [Storable]
     private Type shapeType;
     public Type ShapeType {
       get { return this.shapeType; }
     }
 
+    [Storable]
     private Point location;
     public Point Location {
       get { return this.location; }
@@ -52,33 +60,20 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       }
     }
 
-    private Size size;
-    public Size Size {
-      get { return this.size; }
-      set {
-        if (this.size != value) {
-          this.size = value;
-          this.OnChanged();
-        }
-      }
+    protected void OnChanged() {
+      if (this.Changed != null)
+        this.Changed(this, EventArgs.Empty);
     }
-
-    public abstract void AddConnector(string connectorName);
-    public abstract void RemoveConnector(string connectorName);
 
     public virtual IShape CreateShape() {
       IShape shape = (IShape)Activator.CreateInstance(this.shapeType);
       shape.Tag = this;
       shape.Location = this.Location;
-      shape.Height = this.Size.Height;
-      shape.Width = this.Size.Width;
       return shape;
     }
 
     public virtual void UpdateShape(IShape shape) {
       shape.Location = this.Location;
-      shape.Height = this.Size.Height;
-      shape.Width = this.Size.Width;
     }
   }
 }

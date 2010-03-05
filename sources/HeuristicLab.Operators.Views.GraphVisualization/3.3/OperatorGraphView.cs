@@ -77,18 +77,13 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       set { this.Content.VisualizationInfo = value; }
     }
 
-
-    #region connector tooltips
-
-    #endregion
-
     private void Controller_SelectionChanged(object sender, EventArgs e) {
       CollectionBase<IDiagramEntity> selectedObjects = this.graphVisualizationInfoView.Controller.Model.Selection.SelectedItems;
       this.detailsViewHost.ViewType = null;
       if (selectedObjects.Count == 1) {
         IShape shape = selectedObjects[0] as IShape;
         if (shape != null) {
-          IShapeInfo shapeInfo = shape.Tag as ShapeInfo;
+          IOperatorShapeInfo shapeInfo = shape.Tag as IOperatorShapeInfo;
           IOperator op = this.VisualizationInfo.GetOperatorForShapeInfo(shapeInfo);
           this.detailsViewHost.Content = op;
           return;
@@ -103,7 +98,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
           connectorName = connector.AttachedTo.Name;
         }
         if (shape != null) {
-          IShapeInfo shapeInfo = shape.Tag as ShapeInfo;
+          IOperatorShapeInfo shapeInfo = shape.Tag as IOperatorShapeInfo;
           IOperator op = this.VisualizationInfo.GetOperatorForShapeInfo(shapeInfo);
           if (connectorName != "Predecessor") {
             IParameter parameter = op.Parameters.Where(p => p.Name == connectorName).First();
@@ -128,7 +123,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     }
 
     private void shapeContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e) {
-      IShapeInfo shapeInfo = this.shapeContextMenu.Tag as ShapeInfo;
+      IOperatorShapeInfo shapeInfo = this.shapeContextMenu.Tag as IOperatorShapeInfo;
       if (shapeInfo != null) {
         IOperator op = this.VisualizationInfo.GetOperatorForShapeInfo(shapeInfo);
         this.initialToolStripMenuItem.Checked = this.Content.InitialOperator == op;
@@ -137,7 +132,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     }
 
     private void openViewToolStripMenuItem_Click(object sender, EventArgs e) {
-      IShapeInfo shapeInfo = this.shapeContextMenu.Tag as ShapeInfo;
+      IOperatorShapeInfo shapeInfo = this.shapeContextMenu.Tag as IOperatorShapeInfo;
       if (shapeInfo != null) {
         IOperator op = this.VisualizationInfo.GetOperatorForShapeInfo(shapeInfo);
         MainFormManager.CreateDefaultView(op).Show();
@@ -145,7 +140,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     }
 
     private void initialOperatorToolStripMenuItem_Click(object sender, EventArgs e) {
-      IShapeInfo shapeInfo = this.shapeContextMenu.Tag as ShapeInfo;
+      IOperatorShapeInfo shapeInfo = this.shapeContextMenu.Tag as IOperatorShapeInfo;
       if (this.VisualizationInfo.InitialShape == shapeInfo)
         this.VisualizationInfo.InitialShape = null;
       else
@@ -153,7 +148,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     }
 
     private void breakPointToolStripMenuItem_Click(object sender, EventArgs e) {
-      IShapeInfo shapeInfo = this.shapeContextMenu.Tag as ShapeInfo;
+      IOperatorShapeInfo shapeInfo = this.shapeContextMenu.Tag as IOperatorShapeInfo;
       if (shapeInfo != null) {
         IOperator op = this.VisualizationInfo.GetOperatorForShapeInfo(shapeInfo);
         op.Breakpoint = !op.Breakpoint;
@@ -173,17 +168,21 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     private void OperatorGraphView_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
         IOperator op = e.Data.GetData("Value") as IOperator;
-        IShapeInfo shapeInfo = Factory.CreateShapeInfo(op);
+        IOperatorShapeInfo shapeInfo = Factory.CreateOperatorShapeInfo(op);
         Point mouse = new Point(MousePosition.X, MousePosition.Y);
-        Point p = new Point(e.X, e.Y);
-        Point screen = this.PointToScreen(new Point(0, 0));
-        PointF worldPoint = this.graphVisualizationInfoView.Controller.View.WorldToView(new Point(mouse.X - screen.X, mouse.Y - screen.Y));
+        Point screen = this.graphVisualizationInfoView.PointToScreen(new Point(0, 0));
+        Point control = new Point(mouse.X - screen.X, mouse.Y - screen.Y);
+        PointF worldPoint = this.graphVisualizationInfoView.Controller.View.ViewToWorld(control);
+
+        if (worldPoint.X < 0)
+          worldPoint.X = 0;
+        if (worldPoint.Y < 0)
+          worldPoint.Y = 0;
 
         shapeInfo.Location = Point.Round(worldPoint);
         this.VisualizationInfo.AddShapeInfo(op, shapeInfo);
       }
     }
-
     #endregion
 
     private void tool_OnToolActivate(object sender, ToolEventArgs e) {
@@ -236,7 +235,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     }
 
     private void zoomAreaButton_Click(object sender, EventArgs e) {
-      this.graphVisualizationInfoView.Controller.ActivateTool(ControllerBase.ZoomAreaToolName);
+      this.graphVisualizationInfoView.Controller.View.ZoomFit();
     }
 
     private void zoomInButton_Click(object sender, EventArgs e) {
@@ -246,5 +245,19 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     private void zoomOutButton_Click(object sender, EventArgs e) {
       this.graphVisualizationInfoView.Controller.ActivateTool(ControllerBase.ZoomOutToolName);
     }
+
+    private void screenshotButton_Click(object sender, EventArgs e) {
+      Bitmap bitmap = ImageExporter.FromBundle(new Bundle(this.graphVisualizationInfoView.Controller.Model.Paintables),this.graphVisualizationInfoView.Controller.View.Graphics);
+      SaveFileDialog saveFileDialog = new SaveFileDialog();
+      saveFileDialog.Title = "Save Screenshot";
+      saveFileDialog.DefaultExt = "bmp";
+      saveFileDialog.Filter = "Bitmap|*.bmp|All Files|*.*";
+      saveFileDialog.FilterIndex = 1;
+
+      if (saveFileDialog.ShowDialog() == DialogResult.OK) {
+        bitmap.Save(saveFileDialog.FileName);
+      }
+    }
+
   }
 }

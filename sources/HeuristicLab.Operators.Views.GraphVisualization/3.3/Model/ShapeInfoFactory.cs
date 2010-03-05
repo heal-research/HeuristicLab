@@ -37,12 +37,15 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       connectionPenStyle.EndCap = LineCap.ArrowAnchor;
     }
 
-    public static IShapeInfo CreateShapeInfo(IOperator op) {
-      IEnumerable<string> paramterNames = op.Parameters.Where(p => p is IValueParameter<IOperator> && p.Name != "Successor").Select(p => p.Name);
-      OperatorShapeInfo operatorShapeInfo = new OperatorShapeInfo(paramterNames);
+    public static IOperatorShapeInfo CreateOperatorShapeInfo(IOperator op) {
+      IEnumerable<string> operatorParameterNames = op.Parameters.Where(p => p is IValueParameter<IOperator> && p.Name != "Successor").Select(p => p.Name);
+      IEnumerable<string> paramaterNameValues = op.Parameters.Where(p => !(p is IValueParameter<IOperator>)).Select(p => p.ToString());
+
+      OperatorShapeInfo operatorShapeInfo = new OperatorShapeInfo(operatorParameterNames,paramaterNameValues);
+      operatorShapeInfo.Collapsed = true;
       operatorShapeInfo.Title = op.Name;
-      operatorShapeInfo.Text = op.GetType().ToString();
-      operatorShapeInfo.HeadColor = Color.LightBlue;
+      operatorShapeInfo.Color = Color.LightBlue;
+      operatorShapeInfo.Icon = new Bitmap(op.ItemImage);
 
       return operatorShapeInfo;
     }

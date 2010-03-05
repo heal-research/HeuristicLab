@@ -23,10 +23,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
   public class BidirectionalLookup<TFirst, TSecond> {
+    [Storable]
     private Dictionary<TFirst, TSecond> firstToSecond;
+    [Storable]
     private Dictionary<TSecond, TFirst> secondToFirst;
 
     public BidirectionalLookup() {
@@ -120,8 +123,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       this.firstToSecond.Clear();
       this.secondToFirst.Clear();
     }
-
-
     #endregion
   }
 }

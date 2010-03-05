@@ -39,6 +39,7 @@
       this.zoomAreaButton = new System.Windows.Forms.Button();
       this.zoomInButton = new System.Windows.Forms.Button();
       this.zoomOutButton = new System.Windows.Forms.Button();
+      this.screenshotButton = new System.Windows.Forms.Button();
       this.buttonToolTip = new System.Windows.Forms.ToolTip();
       this.shapeContextMenu.SuspendLayout();
       this.splitContainer.Panel1.SuspendLayout();
@@ -99,6 +100,7 @@
       // 
       // splitContainer.Panel1
       // 
+      this.splitContainer.Panel1.Controls.Add(this.screenshotButton);
       this.splitContainer.Panel1.Controls.Add(this.zoomOutButton);
       this.splitContainer.Panel1.Controls.Add(this.zoomInButton);
       this.splitContainer.Panel1.Controls.Add(this.zoomAreaButton);
@@ -213,6 +215,17 @@
       this.zoomOutButton.Click += new System.EventHandler(zoomOutButton_Click);
       this.buttonToolTip.SetToolTip(this.zoomOutButton, "Zoom Out");
       // 
+      // screenshotButton
+      // 
+      this.screenshotButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Copy;
+      this.screenshotButton.Location = new System.Drawing.Point(243, 3);
+      this.screenshotButton.Name = "screenshotButton";
+      this.screenshotButton.Size = new System.Drawing.Size(24, 24);
+      this.screenshotButton.TabIndex = 8;
+      this.screenshotButton.UseVisualStyleBackColor = true;
+      this.screenshotButton.Click += new System.EventHandler(screenshotButton_Click);
+      this.buttonToolTip.SetToolTip(this.screenshotButton, "Screenshot");
+      // 
       // OperatorGraphView
       // 
       this.AllowDrop = true;
@@ -248,6 +261,7 @@
     private System.Windows.Forms.Button relayoutButton;
     private System.Windows.Forms.Button connectButton;
     private System.Windows.Forms.Button panButton;
+    private System.Windows.Forms.Button screenshotButton;
     private System.Windows.Forms.ToolTip buttonToolTip;
   }
 }

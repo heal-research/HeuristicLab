@@ -81,6 +81,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExpandableIconMaterial.cs" />
     <Compile Include="NetronVisualization.cs">
       <SubType>Component</SubType>
     </Compile>

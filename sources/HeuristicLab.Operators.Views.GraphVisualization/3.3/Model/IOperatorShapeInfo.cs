@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,19 +23,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using HeuristicLab.Core;
 using System.Drawing;
-using Netron.Diagramming.Core;
-using HeuristicLab.Collections;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
-  public interface IShapeInfo : IItem{
-    Type ShapeType { get; }
-    Point Location { get; set; }
+  public interface IOperatorShapeInfo : IShapeInfo{
+    bool Collapsed { get; set; }
+    string Title { get; set; }
+    Color Color { get; set; }
+    Bitmap Icon { get; set; }
 
-    IShape CreateShape();
-    void UpdateShape(IShape shape);
+    void AddConnector(string connectorName);
+    void RemoveConnector(string connectorName);
 
-    event EventHandler Changed;
+    void UpdateLabels(IEnumerable<string> labels);
   }
 }
