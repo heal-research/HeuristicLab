@@ -28,7 +28,7 @@ namespace HeuristicLab.Persistence.Default.Xml.Primitive {
       string result = sb.ToString();
       if (result.Length == 0 && x.Data.Length > 0 && !x.Data.Equals("<![CDATA[]]>"))
         throw new PersistenceException("Invalid CDATA section during string parsing.");
-      return sb.ToString();
+      return result;
     }
   }
 }

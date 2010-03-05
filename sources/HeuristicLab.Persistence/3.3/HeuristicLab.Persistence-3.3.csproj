@@ -92,6 +92,7 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -141,6 +142,7 @@
     <Compile Include="Default\DebugString\PrimitiveSerializers\ULong2DebugStringSerializer.cs" />
     <Compile Include="Default\DebugString\PrimitiveSerializers\UShort2DebugStringSerializer.cs" />
     <Compile Include="Default\DebugString\PrimitiveSerializers\ValueType2DebugStringSerializerBase.cs" />
+    <Compile Include="Default\Xml\Compact\ByteArray2XmlSerializer.cs" />
     <Compile Include="Default\Xml\Compact\CompactXmlSerializerBase.cs" />
     <Compile Include="Default\Xml\Compact\DoubleArray2XmlSerializer.cs" />
     <Compile Include="Default\Xml\Compact\DoubleList2XmlSerializer.cs" />
@@ -148,6 +150,7 @@
     <Compile Include="Default\Xml\Compact\IntList2XmlSerializer.cs" />
     <Compile Include="Default\Xml\Compact\NumberArray2XmlSerializerBase.cs" />
     <Compile Include="Default\Xml\Compact\NumberEnumeration2XmlSerializerBase.cs" />
+    <Compile Include="Default\Xml\Primitive\System.Drawing\Bitmap2XmlSerializer.cs" />
     <Compile Include="Default\Xml\Primitive\Bool2XmlSerializer.cs" />
     <Compile Include="Default\Xml\Primitive\Byte2XmlSerializer.cs" />
     <Compile Include="Default\Xml\Primitive\Char2XmlFormatter.cs">
