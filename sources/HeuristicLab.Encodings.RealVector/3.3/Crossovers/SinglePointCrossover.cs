@@ -61,12 +61,13 @@ namespace HeuristicLab.Encodings.RealVector {
 
     /// <summary>
     /// Checks number of parents and forwards the call to <see cref="Apply(IRandom, DoubleArrayData, DoubleArrayData)"/>.
-    /// </summary>
+    /// </summary> 
+    /// <exception cref="ArgumentException">Thrown when the parents' vectors are of unequal length or when <paramref name="contiguity"/> is smaller than 0.</exception>
     /// <param name="random">The pseudo random number generator to use.</param>
     /// <param name="parents">The list of parents.</param>
     /// <returns>A new real vector.</returns>
     protected override HeuristicLab.Data.DoubleArrayData Cross(IRandom random, ItemArray<DoubleArrayData> parents) {
-      if (parents.Length != 2) throw new InvalidOperationException("SinglePointCrossover: The number of parents is not equal to 2");
+      if (parents.Length != 2) throw new ArgumentException("SinglePointCrossover: The number of parents is not equal to 2");
       return Apply(random, parents[0], parents[1]);
     }
   }

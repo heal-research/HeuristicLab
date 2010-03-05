@@ -92,6 +92,9 @@
   <ItemGroup>
     <Compile Include="Crossovers\BlendAlphaCrossover.cs" />
     <Compile Include="Crossovers\DiscreteCrossover.cs" />
+    <Compile Include="Crossovers\HeuristicCrossover.cs" />
+    <Compile Include="Crossovers\LocalCrossover.cs" />
+    <Compile Include="Crossovers\RandomConvexCrossover.cs" />
     <Compile Include="Crossovers\SimulatedBinaryCrossover.cs" />
     <Compile Include="Crossovers\SinglePointCrossover.cs">
       <SubType>Code</SubType>

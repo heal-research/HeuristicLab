@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,68 +24,92 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Evolutionary;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Encodings.RealVector {
   /// <summary>
   /// Heuristic crossover for real vectors: Takes for each position the better parent and adds the difference
   /// of the two parents times a randomly chosen factor.
   /// </summary>
-  public class HeuristicCrossover : RealVectorCrossoverBase {
+  /// <remarks>
+  /// It is implemented as described in Wright, A.H. (1994), Genetic algorithms for real parameter optimization, Foundations of Genetic Algorithms, G.J.E. Rawlins (Ed.), Morgan Kaufmann, San Mateo, CA, 205-218.
+  /// </remarks>
+  [Item("HeuristicCrossover", "Heuristic crossover for real vectors: Takes for each position the better parent and adds the difference. It is implemented as described in Wright, A.H. (1994), Genetic algorithms for real parameter optimization, Foundations of Genetic Algorithms, G.J.E. Rawlins (Ed.), Morgan Kaufmann, San Mateo, CA, 205-218.")]
+  [EmptyStorableClass]
+  public class HeuristicCrossover : RealVectorCrossover {
+    /// <summary>
+    /// Whether the problem is a maximization or minimization problem.
+    /// </summary>
+    public ValueLookupParameter<BoolData> MaximizationParameter {
+      get { return (ValueLookupParameter<BoolData>)Parameters["Maximization"]; }
+    }
+    /// <summary>
+    /// The quality of the parents.
+    /// </summary>
+    public SubScopesLookupParameter<DoubleData> QualityParameter {
+      get { return (SubScopesLookupParameter<DoubleData>)Parameters["Quality"]; }
+    }
+
     /// <summary>
     /// Initializes a new instance of <see cref="HeuristicCrossover"/> with two variable infos
     /// (<c>Maximization</c> and <c>Quality</c>).
     /// </summary>
     public HeuristicCrossover()
       : base() {
-      AddVariableInfo(new VariableInfo("Maximization", "Maximization problem", typeof(BoolData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("Quality", "Quality value", typeof(DoubleData), VariableKind.In));
-    }
-
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get { return "Heuristic crossover for real vectors."; }
+      Parameters.Add(new ValueLookupParameter<BoolData>("Maximization", "Whether the problem is a maximization problem or not."));
+      Parameters.Add(new SubScopesLookupParameter<DoubleData>("Quality", "The quality values of the parents."));
     }
 
     /// <summary>
     /// Perfomrs a heuristic crossover on the two given parents.
     /// </summary>
+    /// <exception cref="ArgumentException">Thrown when two parents are not of the same length.</exception>
     /// <param name="random">The random number generator.</param>
-    /// <param name="maximization">Boolean flag whether it is a maximization problem.</param>
-    /// <param name="parent1">The first parent for the crossover operation.</param>
-    /// <param name="quality1">The quality of the first parent.</param>
-    /// <param name="parent2">The second parent for the crossover operation.</param>
-    /// <param name="quality2">The quality of the second parent.</param>
+    /// <param name="betterParent">The first parent for the crossover operation.</param>
+    /// <param name="worseParent">The second parent for the crossover operation.</param>
     /// <returns>The newly created real vector, resulting from the heuristic crossover.</returns>
-    public static double[] Apply(IRandom random, bool maximization, double[] parent1, double quality1, double[] parent2, double quality2) {
-      int length = parent1.Length;
+    public static DoubleArrayData Apply(IRandom random, DoubleArrayData betterParent, DoubleArrayData worseParent) {
+      if (betterParent.Length != worseParent.Length)
+        throw new ArgumentException("ERROR in HeuristicCrossover: the two parents are not of the same length");
+      
+      int length = betterParent.Length;
       double[] result = new double[length];
       double factor = random.NextDouble();
 
       for (int i = 0; i < length; i++) {
-        if ((maximization && (quality1 > quality2)) || ((!maximization) && (quality1 < quality2)))
-          result[i] = parent1[i] + factor * (parent1[i] - parent2[i]);
-        else
-          result[i] = parent2[i] + factor * (parent2[i] - parent1[i]);
+        result[i] = betterParent[i] + factor * (betterParent[i] - worseParent[i]);
       }
-      return result;
+      return new DoubleArrayData(result);
     }
 
     /// <summary>
     /// Performs a heuristic crossover operation for two given parent real vectors.
     /// </summary>
-    /// <exception cref="InvalidOperationException">Thrown if there are not exactly two parents.</exception>
-    /// <param name="scope">The current scope.</param>
+    /// <exception cref="ArgumentException">Thrown when the number of parents is not equal to 2.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when either:<br/>
+    /// <list type="bullet">
+    /// <item><description>Maximization parameter could not be found.</description></item>
+    /// <item><description>Quality parameter could not be found or the number of quality values is not equal to the number of parents.</description></item>
+    /// </list>
+    /// </exception>
     /// <param name="random">A random number generator.</param>
     /// <param name="parents">An array containing the two real vectors that should be crossed.</param>
     /// <returns>The newly created real vector, resulting from the crossover operation.</returns>
-    protected override double[] Cross(IScope scope, IRandom random, double[][] parents) {
-      if (parents.Length != 2) throw new InvalidOperationException("ERROR in HeuristicCrossover: The number of parents is not equal to 2");
-      bool maximization = GetVariableValue<BoolData>("Maximization", scope, true).Data;
-      double quality1 = scope.SubScopes[0].GetVariableValue<DoubleData>("Quality", false).Data;
-      double quality2 = scope.SubScopes[1].GetVariableValue<DoubleData>("Quality", false).Data;
+    protected override DoubleArrayData Cross(IRandom random, ItemArray<DoubleArrayData> parents) {
+      if (parents.Length != 2) throw new ArgumentException("ERROR in HeuristicCrossover: The number of parents is not equal to 2");
 
-      return Apply(random, maximization, parents[0], quality1, parents[1], quality2);
+      if (MaximizationParameter.ActualValue == null) throw new InvalidOperationException("HeuristicCrossover: Parameter " + MaximizationParameter.ActualName + " could not be found.");
+      if (QualityParameter.ActualValue == null || QualityParameter.ActualValue.Length != parents.Length) throw new InvalidOperationException("HeuristicCrossover: Parameter " + QualityParameter.ActualName + " could not be found, or not in the same quantity as there are parents.");
+
+      ItemArray<DoubleData> qualities = QualityParameter.ActualValue;
+      bool maximization = MaximizationParameter.ActualValue.Value;
+
+      if (maximization && qualities[0].Value >= qualities[1].Value || !maximization && qualities[0].Value <= qualities[1].Value)
+        return Apply(random, parents[0], parents[1]);
+      else
+        return Apply(random, parents[1], parents[0]);
     }
   }
 }

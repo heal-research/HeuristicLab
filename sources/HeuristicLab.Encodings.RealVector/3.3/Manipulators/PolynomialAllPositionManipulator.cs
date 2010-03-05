@@ -25,7 +25,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.RealVector.Manipulators {
+namespace HeuristicLab.Encodings.RealVector {
   /// <summary>
   /// Performs the polynomial manipulation on all positions in the real vector.
   /// </summary>

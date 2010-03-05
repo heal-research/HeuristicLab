@@ -75,7 +75,19 @@
   <ItemGroup>
     <Compile Include="Auxiliary.cs" />
     <Compile Include="BlendAlphaCrossoverTest.cs" />
+    <Compile Include="BlendAlphaBetaCrossoverTest.cs" />
+    <Compile Include="PolynomialOnePositionManipulatorTest.cs" />
+    <Compile Include="UniformOnePositionManipulatorTest.cs" />
+    <Compile Include="PolynomialAllPositionManipulatorTest.cs" />
+    <Compile Include="MichalewiczNonUniformOnePositionManipulatorTest.cs" />
+    <Compile Include="SinglePointCrossoverTest.cs" />
+    <Compile Include="SimulatedBinaryCrossoverTest.cs" />
+    <Compile Include="RandomConvexCrossoverTest.cs" />
+    <Compile Include="LocalCrossoverTest.cs" />
+    <Compile Include="HeuristicCrossoverTest.cs" />
+    <Compile Include="DiscreteCrossoverTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="MichalewiczNonUniformAllPositionsManipulatorTest.cs" />
     <Compile Include="TestRandom.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,26 +24,32 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.RealVector {
   /// <summary>
   /// Local crossover for real vectors: Takes for each element the allele of the first parent times a 
   /// always newly created randomly chosen factor and adds the allele of the second parent times (1 - the randomly chosen factor).
   /// </summary>
-  public class LocalCrossover : RealVectorCrossoverBase {
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get { return "Local crossover for real vectors."; }
-    }
-
+  /// <remarks>
+  /// It is implemented as described in Dumitrescu, D. et al. (2000), Evolutionary computation, CRC Press, Boca Raton, FL, p. 194.
+  /// </remarks>
+  [Item("LocalCrossover", "Local crossover for real vectors: Takes for each element the allele of the first parent times a always newly created randomly chosen factor and adds the allele of the second parent times (1 - the randomly chosen factor. " +
+    "It is implemented as described in Dumitrescu, D. et al. (2000), Evolutionary computation, CRC Press, Boca Raton, FL., p. 194.")]
+  [EmptyStorableClass]
+  public class LocalCrossover : RealVectorCrossover {
     /// <summary>
     /// Performs a local crossover on the two given parent vectors.
     /// </summary>
+    /// <exception cref="ArgumentException">Thrown when two parents are not of the same length.</exception>
     /// <param name="random">The random number generator.</param>
     /// <param name="parent1">The first parent for the crossover operation.</param>
     /// <param name="parent2">The second parent for the crossover operation.</param>
     /// <returns>The newly created real vector, resulting from the local crossover.</returns>
-    public static double[] Apply(IRandom random, double[] parent1, double[] parent2) {
+    public static DoubleArrayData Apply(IRandom random, DoubleArrayData parent1, DoubleArrayData parent2) {
+      if (parent1.Length != parent2.Length)
+        throw new ArgumentException("ERROR in LocalCrossover: the two parents are not of the same length");
+      
       double factor;
       int length = parent1.Length;
       double[] result = new double[length];
@@ -52,19 +58,18 @@ namespace HeuristicLab.Encodings.RealVector {
         factor = random.NextDouble();
         result[i] = (factor * parent1[i]) + ((1 - factor) * parent2[i]);
       }
-      return result;
+      return new DoubleArrayData(result);
     }
 
     /// <summary>
     /// Performs a local crossover operation for two given parent real vectors.
     /// </summary>
-    /// <exception cref="InvalidOperationException">Thrown if there are not exactly two parents.</exception>
-    /// <param name="scope">The current scope.</param>
+    /// <exception cref="ArgumentException">Thrown if there are not exactly two parents.</exception>
     /// <param name="random">A random number generator.</param>
     /// <param name="parents">An array containing the two real vectors that should be crossed.</param>
     /// <returns>The newly created real vector, resulting from the crossover operation.</returns>
-    protected override double[] Cross(IScope scope, IRandom random, double[][] parents) {
-      if (parents.Length != 2) throw new InvalidOperationException("ERROR in LocalCrossover: The number of parents is not equal to 2");
+    protected override DoubleArrayData Cross(IRandom random, ItemArray<DoubleArrayData> parents) {
+      if (parents.Length != 2) throw new ArgumentException("ERROR in LocalCrossover: The number of parents is not equal to 2");
       return Apply(random, parents[0], parents[1]);
     }
   }

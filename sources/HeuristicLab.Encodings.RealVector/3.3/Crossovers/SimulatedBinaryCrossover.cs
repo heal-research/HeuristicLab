@@ -93,12 +93,12 @@ namespace HeuristicLab.Encodings.RealVector {
     /// <summary>
     /// Checks number of parents, availability of the parameters and forwards the call to <see cref="Apply(IRandom, DoubleArrayData, DoubleArrayData, DoubleData)"/>.
     /// </summary>
-    /// <exception cref="InvalidOperationException">Thrown when there are not exactly 2 parents or when the contiguity parameter could not be found.</exception>
+    /// <exception cref="ArgumentException">Thrown when there are not exactly 2 parents or when the contiguity parameter could not be found.</exception>
     /// <param name="random">The random number generator.</param>
     /// <param name="parents">The collection of parents (must be of size 2).</param>
     /// <returns>The real vector resulting from the crossover.</returns>
     protected override DoubleArrayData Cross(IRandom random, ItemArray<DoubleArrayData> parents) {
-      if (parents.Length != 2) throw new InvalidOperationException("SimulatedBinaryCrossover: The number of parents is not equal to 2");
+      if (parents.Length != 2) throw new ArgumentException("SimulatedBinaryCrossover: The number of parents is not equal to 2");
       if (ContiguityParameter.ActualValue == null) throw new InvalidOperationException("SimulatedBinaryCrossover: Parameter " + ContiguityParameter.ActualName + " could not be found.");
       return Apply(random, parents[0], parents[1], ContiguityParameter.ActualValue);
     }

@@ -46,14 +46,17 @@ namespace HeuristicLab.Encodings.RealVector {
     /// <returns>The newly created real vector, resulting from the crossover operation.</returns>
     public static DoubleArrayData Apply(IRandom random, ItemArray<DoubleArrayData> parents) {
       int length = parents[0].Length;
-      DoubleArrayData result = new DoubleArrayData(length);
-      try {
-        for (int i = 0; i < length; i++) {
-          result[i] = parents[random.Next(parents.Length)][i];
-        }
-      } catch (IndexOutOfRangeException) {
-        throw new ArgumentException("DiscreteCrossover: The parents' vectors are of different length.", "parents");
+      
+      for (int i = 0; i < parents.Length; i++) { 
+        if(parents[i].Length != length)
+          throw new ArgumentException("DiscreteCrossover: The parents' vectors are of different length.", "parents");
       }
+      
+      DoubleArrayData result = new DoubleArrayData(length);
+      for (int i = 0; i < length; i++) {
+        result[i] = parents[random.Next(parents.Length)][i];
+      }        
+      
       return result;
     }
 
