@@ -17,6 +17,7 @@ using HeuristicLab.Persistence.Auxiliary;
 using System.Text.RegularExpressions;
 using HeuristicLab.Persistence.Test;
 using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace HeuristicLab.Persistence.UnitTest {
 
@@ -643,6 +644,19 @@ namespace HeuristicLab.Persistence.UnitTest {
       Assert.AreEqual(d[1], newD[1]);
       Assert.AreEqual(d[2], newD[2]);
       Assert.AreEqual(d[3], newD[3]);
+    }
+
+    [TestMethod]
+    public void BitmapTest() {
+      Icon icon = System.Drawing.SystemIcons.Hand;
+      Bitmap bitmap = icon.ToBitmap();
+      XmlGenerator.Serialize(bitmap, tempFile);
+      Bitmap newBitmap = (Bitmap)XmlParser.Deserialize(tempFile);
+
+      Assert.AreEqual(bitmap.Size, newBitmap.Size);
+      for(int i=0; i< bitmap.Size.Width; i++)
+        for(int j =0; j< bitmap.Size.Height; j++)
+          Assert.AreEqual(bitmap.GetPixel(i,j),newBitmap.GetPixel(i,j));
     }
 
     [ClassInitialize]
