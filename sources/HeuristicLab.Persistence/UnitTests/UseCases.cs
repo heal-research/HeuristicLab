@@ -16,6 +16,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers;
 using HeuristicLab.Persistence.Auxiliary;
 using System.Text.RegularExpressions;
 using HeuristicLab.Persistence.Test;
+using System.Drawing;
 
 namespace HeuristicLab.Persistence.UnitTest {
 
@@ -605,6 +606,43 @@ namespace HeuristicLab.Persistence.UnitTest {
       XmlGenerator.Serialize(gp, tempFile);
       GrandParent newGp = (GrandParent)XmlParser.Deserialize(tempFile);
       Assert.AreSame(newGp, newGp.parent.child.grandParent);
+    }
+
+    struct TestStruct {
+      int value;
+      int PropertyValue { get; set; }
+      public TestStruct(int value)
+        : this() {
+        this.value = value;
+        PropertyValue = value;
+      }
+    }
+
+    [TestMethod]
+    public void StructTest() {
+      TestStruct s = new TestStruct(10);
+      XmlGenerator.Serialize(s, tempFile);
+      TestStruct newS = (TestStruct)XmlParser.Deserialize(tempFile);
+      Assert.AreEqual(s, newS);
+    }
+
+    [TestMethod]
+    public void PointTest() {
+      Point p = new Point(12, 34);
+      XmlGenerator.Serialize(p, tempFile);
+      Point newP = (Point)XmlParser.Deserialize(tempFile);
+      Assert.AreEqual(p, newP);
+    }
+
+    [TestMethod]
+    public void NullableValueTypes() {
+      double?[] d = new double?[] { null, 1, 2, 3 };
+      XmlGenerator.Serialize(d, tempFile);
+      double?[] newD = (double?[])XmlParser.Deserialize(tempFile);
+      Assert.AreEqual(d[0], newD[0]);
+      Assert.AreEqual(d[1], newD[1]);
+      Assert.AreEqual(d[2], newD[2]);
+      Assert.AreEqual(d[3], newD[3]);
     }
 
     [ClassInitialize]

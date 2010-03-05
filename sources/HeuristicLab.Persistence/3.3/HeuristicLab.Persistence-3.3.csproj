@@ -120,6 +120,7 @@
     <Compile Include="Default\CompositeSerializers\Storable\EmptyStorableClassAttribute.cs" />
     <Compile Include="Default\CompositeSerializers\Storable\StorableAttribute.cs" />
     <Compile Include="Default\CompositeSerializers\Storable\StorableSerializer.cs" />
+    <Compile Include="Default\CompositeSerializers\StructSerializer.cs" />
     <Compile Include="Default\CompositeSerializers\TypeSerializer.cs" />
     <Compile Include="Default\DebugString\DebugString.cs" />
     <Compile Include="Default\DebugString\DebugStringFormat.cs" />
