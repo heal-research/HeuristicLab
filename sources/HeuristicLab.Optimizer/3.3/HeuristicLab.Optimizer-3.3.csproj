@@ -94,7 +94,6 @@
     <Compile Include="MenuItems\SaveMenuItem.cs" />
     <Compile Include="MenuItems\OpenMenuItem.cs" />
     <Compile Include="MenuItems\ExitMenuItem.cs" />
-    <Compile Include="HeuristicLabOptimizerApplication.cs" />
     <Compile Include="HeuristicLabOptimizerPlugin.cs" />
     <Compile Include="IOptimizerUserInterfaceItemProvider.cs" />
     <Compile Include="MenuItems\NewMenuItem.cs" />

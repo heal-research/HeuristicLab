@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Optimizer {
@@ -31,5 +32,13 @@ namespace HeuristicLab.Optimizer {
   [PluginDependency("HeuristicLab.MainForm", "3.2")]
   [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.2")]
   public class HeuristicLabOptimizerPlugin : PluginBase {
+  }
+
+  [Application("Optimizer", "HeuristicLab Optimizer 3.3.0.$WCREV$")]
+  internal class HeuristicLabOptimizerApplication : ApplicationBase {
+    public override void Run() {
+      OptimizerMainForm mainForm = new OptimizerMainForm(typeof(IOptimizerUserInterfaceItemProvider));
+      Application.Run(mainForm);
+    }
   }
 }

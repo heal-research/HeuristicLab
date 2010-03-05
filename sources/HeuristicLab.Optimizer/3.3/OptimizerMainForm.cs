@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using HeuristicLab.Core.Views;
@@ -40,7 +41,10 @@ namespace HeuristicLab.Optimizer {
 
     protected override void OnInitialized(EventArgs e) {
       base.OnInitialized(e);
-      Title = "HeuristicLab Optimizer " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
+      AssemblyFileVersionAttribute version = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true).
+                                             Cast<AssemblyFileVersionAttribute>().FirstOrDefault();
+      Title = "HeuristicLab Optimizer";
+      if (version != null) Title += " " + version.Version;
       ViewClosed += new EventHandler<ViewEventArgs>(FileManager.ViewClosed);
       OperatorsSidebar operatorsSidebar = new OperatorsSidebar();
       operatorsSidebar.Dock = DockStyle.Left;

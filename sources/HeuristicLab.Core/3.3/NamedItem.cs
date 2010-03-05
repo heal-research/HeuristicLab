@@ -20,11 +20,8 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Common;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
   [Item("NamedItem", "Base class for items which have a name and an optional description.")]
@@ -37,13 +34,12 @@ namespace HeuristicLab.Core {
     public string Name {
       get { return name; }
       set {
-        if (!CanChangeName) throw new NotSupportedException("Name of NamedItem cannot be changed.");
-        if (value == null) throw new ArgumentNullException();
-        if (!name.Equals(value)) {
-          CancelEventArgs<string> e = new CancelEventArgs<string>(value);
+        if (!CanChangeName) throw new NotSupportedException("Name cannot be changed.");
+        if (!(name.Equals(value) || (value == null) && (name == string.Empty))) {
+          CancelEventArgs<string> e = value == null ? new CancelEventArgs<string>(string.Empty) : new CancelEventArgs<string>(value);
           OnNameChanging(e);
           if (!e.Cancel) {
-            name = value;
+            name = value == null ? string.Empty : value;
             OnNameChanged();
           }
         }
@@ -57,9 +53,9 @@ namespace HeuristicLab.Core {
     public string Description {
       get { return description; }
       set {
-        if (!CanChangeDescription) throw new NotSupportedException("Description of NamedItem cannot be changed.");
-        if ((description == null) || (!description.Equals(value))) {
-          description = value;
+        if (!CanChangeDescription) throw new NotSupportedException("Description cannot be changed.");
+        if (!(description.Equals(value) || (value == null) && (description == string.Empty))) {
+          description = value == null ? string.Empty : value;
           OnDescriptionChanged();
         }
       }
@@ -83,14 +79,15 @@ namespace HeuristicLab.Core {
     /// <param name="name">The name of the current instance.</param>
     /// <param name="value">The value of the current instance.</param>
     protected NamedItem(string name) {
-      if (name == null) throw new ArgumentNullException();
-      this.name = name;
+      if (name == null) this.name = string.Empty;
+      else this.name = name;
       description = string.Empty;
     }
     protected NamedItem(string name, string description) {
-      if (name == null) throw new ArgumentNullException();
-      this.name = name;
-      this.description = description;
+      if (name == null) this.name = string.Empty;
+      else this.name = name;
+      if (description == null) this.description = string.Empty;
+      else this.description = description;
     }
 
     /// <summary>

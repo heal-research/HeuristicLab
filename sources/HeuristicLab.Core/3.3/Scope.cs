@@ -81,6 +81,12 @@ namespace HeuristicLab.Core {
       Variables = new VariableCollection();
       SubScopes = new ScopeList();
     }
+    public Scope(string name, string description)
+      : base(name, description) {
+      parent = null;
+      Variables = new VariableCollection();
+      SubScopes = new ScopeList();
+    }
 
     /// <inheritdoc/>
     public void Clear() {

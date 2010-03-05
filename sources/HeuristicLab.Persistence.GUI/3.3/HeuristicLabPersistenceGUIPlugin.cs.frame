@@ -9,7 +9,7 @@ namespace HeuristicLab.Persistence.GUI {
   public class HeuristicLabPersistenceGUIPlugin : PluginBase { }
 
 
-  [Application("Persistence Configuration")]
+  [Application("Persistence Configuration", "Configure type mappings of persistence")]
   public class HeuristicLabPersistenceGUIApplication : ApplicationBase {
     public override void Run() {
       Application.EnableVisualStyles();

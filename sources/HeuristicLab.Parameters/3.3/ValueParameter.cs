@@ -44,7 +44,7 @@ namespace HeuristicLab.Parameters {
     public ValueParameter(string name, string description, T value) : base(name, description, value) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      ValueParameter<T> clone = new ValueParameter<T>(name, description, Value);
+      ValueParameter<T> clone = new ValueParameter<T>(Name, Description, Value);
       cloner.RegisterClonedObject(this, clone);
       clone.Value = (T)cloner.Clone(Value);
       return clone;

@@ -20,20 +20,25 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Resources;
-using System.Drawing;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
   public sealed class ItemAttribute : Attribute {
-    public string Name { get; set; }
-    public string Description { get; set; }
+    private string name;
+    public string Name {
+      get { return name; }
+      set { name = value == null ? string.Empty : value; }
+    }
+    private string description;
+    public string Description {
+      get { return description; }
+      set { description = value == null ? string.Empty : value; }
+    }
 
     public ItemAttribute() {
-      Name = null;
-      Description = null;
+      Name = string.Empty;
+      Description = string.Empty;
     }
     public ItemAttribute(string name, string description) {
       Name = name;
@@ -41,14 +46,14 @@ namespace HeuristicLab.Core {
     }
 
     public static string GetName(Type type) {
-      object[] attribs = type.GetCustomAttributes(typeof(ItemAttribute), true);
+      object[] attribs = type.GetCustomAttributes(typeof(ItemAttribute), false);
       if (attribs.Length > 0) return ((ItemAttribute)attribs[0]).Name;
-      else return null;
+      else return type.GetPrettyName();
     }
     public static string GetDescription(Type type) {
-      object[] attribs = type.GetCustomAttributes(typeof(ItemAttribute), true);
+      object[] attribs = type.GetCustomAttributes(typeof(ItemAttribute), false);
       if (attribs.Length > 0) return ((ItemAttribute)attribs[0]).Description;
-      else return null;
+      else return string.Empty;
     }
   }
 }
