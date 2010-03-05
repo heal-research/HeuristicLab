@@ -42,6 +42,14 @@ namespace HeuristicLab.Optimization {
 
     private IProblem problem;
     [Storable]
+    private IProblem ProblemPersistence {
+      get { return problem; }
+      set {
+        if (problem != null) DeregisterProblemEvents();
+        problem = value;
+        if (problem != null) RegisterProblemEvents();
+      }
+    }
     public IProblem Problem {
       get { return problem; }
       set {

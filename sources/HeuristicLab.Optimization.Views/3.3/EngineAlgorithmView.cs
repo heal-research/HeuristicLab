@@ -117,7 +117,7 @@ namespace HeuristicLab.Optimization.Views {
         Type t = engineTypes[engineComboBox.SelectedIndex];
         if (t == null)
           Content.Engine = null;
-        else
+        else if ((Content.Engine == null) || (Content.Engine.GetType() != t))
           Content.Engine = (IEngine)Activator.CreateInstance(t);
       }
     }

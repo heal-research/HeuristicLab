@@ -92,7 +92,7 @@ namespace HeuristicLab.Algorithms.SGA.Tests {
       if (ex != null) throw ex;
     }
 
-    void sga_ExceptionOccurred(object sender, EventArgs<Exception> e) {
+    private void sga_ExceptionOccurred(object sender, EventArgs<Exception> e) {
       ex = e.Value;
     }
 

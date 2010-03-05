@@ -35,6 +35,14 @@ namespace HeuristicLab.Optimization {
   public abstract class EngineAlgorithm : Algorithm {
     private OperatorGraph operatorGraph;
     [Storable]
+    private OperatorGraph OperatorGraphPersistence {
+      get { return operatorGraph; }
+      set {
+        if (operatorGraph != null) operatorGraph.InitialOperatorChanged -= new EventHandler(OperatorGraph_InitialOperatorChanged);
+        operatorGraph = value;
+        if (operatorGraph != null) operatorGraph.InitialOperatorChanged += new EventHandler(OperatorGraph_InitialOperatorChanged);
+      }
+    }
     protected OperatorGraph OperatorGraph {
       get { return operatorGraph; }
       set {
@@ -57,6 +65,14 @@ namespace HeuristicLab.Optimization {
 
     private IEngine engine;
     [Storable]
+    private IEngine EnginePersistence {
+      get { return engine; }
+      set {
+        if (engine != null) DeregisterEngineEvents();
+        engine = value;
+        if (engine != null) RegisterEngineEvents();
+      }
+    }
     public IEngine Engine {
       get { return engine; }
       set {
