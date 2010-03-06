@@ -30,15 +30,19 @@ namespace HeuristicLab.Parameters.Views {
   /// The visual representation of a <see cref="Parameter"/>.
   /// </summary>
   [View("ValueParameter View")]
+  [Content(typeof(OptionalValueParameter<>), true)]
   [Content(typeof(ValueParameter<>), true)]
+  [Content(typeof(IValueParameter<>), false)]
   public partial class ValueParameterView<T> : ParameterView where T : class, IItem {
+    protected TypeSelectorDialog typeSelectorDialog;
+
     /// <summary>
     /// Gets or sets the variable to represent visually.
     /// </summary>
     /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
     /// No own data storage present.</remarks>
-    public new ValueParameter<T> Content {
-      get { return (ValueParameter<T>)base.Content; }
+    public new IValueParameter<T> Content {
+      get { return (IValueParameter<T>)base.Content; }
       set { base.Content = value; }
     }
 
@@ -54,7 +58,7 @@ namespace HeuristicLab.Parameters.Views {
     /// </summary>
     /// <remarks>Calls <see cref="VariableView()"/>.</remarks>
     /// <param name="variable">The variable to represent visually.</param>
-    public ValueParameterView(ValueParameter<T> content)
+    public ValueParameterView(IValueParameter<T> content)
       : this() {
       Content = content;
     }
@@ -81,10 +85,16 @@ namespace HeuristicLab.Parameters.Views {
       base.OnContentChanged();
       if (Content == null) {
         Caption = "ValueParameter";
+        setValueButton.Enabled = false;
+        clearValueButton.Visible = true;
+        clearValueButton.Enabled = false;
         viewHost.Content = null;
         valueGroupBox.Enabled = false;
       } else {
         Caption = Content.Name + " (" + Content.GetType().Name + ")";
+        setValueButton.Enabled = true;
+        clearValueButton.Visible = !(Content is ValueParameter<T>);
+        clearValueButton.Enabled = Content.Value != null;
         valueGroupBox.Enabled = true;
         viewHost.Content = Content.Value;
       }
@@ -94,10 +104,23 @@ namespace HeuristicLab.Parameters.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ValueChanged), sender, e);
       else {
+        clearValueButton.Enabled = Content.Value != null;
         viewHost.Content = Content.Value;
       }
     }
 
+    protected virtual void changeValueButton_Click(object sender, EventArgs e) {
+      if (typeSelectorDialog == null) {
+        typeSelectorDialog = new TypeSelectorDialog();
+        typeSelectorDialog.Caption = "Select Value";
+        typeSelectorDialog.TypeSelector.Configure(Content.DataType, false, false);
+      }
+      if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK)
+        Content.Value = (T)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
+    }
+    protected virtual void setValueButton_Click(object sender, EventArgs e) {
+      Content.Value = null;
+    }
     protected virtual void valuePanel_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
       Type type = e.Data.GetData("Type") as Type;

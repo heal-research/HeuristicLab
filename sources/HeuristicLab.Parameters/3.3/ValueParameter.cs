@@ -34,20 +34,15 @@ namespace HeuristicLab.Parameters {
     public override T Value {
       get { return base.Value; }
       set {
-        if (value == null) throw new ArgumentNullException();
+        if ((value == null) && (Value != null)) throw new ArgumentNullException();
         base.Value = value;
       }
     }
 
-    private ValueParameter() : base() { }
+    public ValueParameter() : base() { }
+    public ValueParameter(string name) : base(name) { }
     public ValueParameter(string name, T value) : base(name, value) { }
+    public ValueParameter(string name, string description) : base(name, description) { }
     public ValueParameter(string name, string description, T value) : base(name, description, value) { }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      ValueParameter<T> clone = new ValueParameter<T>(Name, Description, Value);
-      cloner.RegisterClonedObject(this, clone);
-      clone.Value = (T)cloner.Clone(Value);
-      return clone;
-    }
   }
 }

@@ -32,6 +32,7 @@ namespace HeuristicLab.Parameters.Views {
     /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
     protected override void Dispose(bool disposing) {
       if (disposing) {
+        if (typeSelectorDialog != null) typeSelectorDialog.Dispose();
         if (components != null) components.Dispose();
       }
       base.Dispose(disposing);
@@ -47,14 +48,12 @@ namespace HeuristicLab.Parameters.Views {
       this.valueGroupBox = new System.Windows.Forms.GroupBox();
       this.valuePanel = new System.Windows.Forms.Panel();
       this.viewHost = new HeuristicLab.Core.Views.ViewHost();
+      this.clearValueButton = new System.Windows.Forms.Button();
+      this.setValueButton = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.valueGroupBox.SuspendLayout();
       this.valuePanel.SuspendLayout();
       this.SuspendLayout();
-      // 
-      // dataTypeLabel
-      // 
-      this.dataTypeLabel.Location = new System.Drawing.Point(3, 55);
       // 
       // dataTypeTextBox
       // 
@@ -79,6 +78,8 @@ namespace HeuristicLab.Parameters.Views {
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.valueGroupBox.Controls.Add(this.valuePanel);
+      this.valueGroupBox.Controls.Add(this.clearValueButton);
+      this.valueGroupBox.Controls.Add(this.setValueButton);
       this.valueGroupBox.Location = new System.Drawing.Point(0, 78);
       this.valueGroupBox.Name = "valueGroupBox";
       this.valueGroupBox.Size = new System.Drawing.Size(386, 237);
@@ -93,9 +94,9 @@ namespace HeuristicLab.Parameters.Views {
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.valuePanel.Controls.Add(this.viewHost);
-      this.valuePanel.Location = new System.Drawing.Point(6, 19);
+      this.valuePanel.Location = new System.Drawing.Point(6, 49);
       this.valuePanel.Name = "valuePanel";
-      this.valuePanel.Size = new System.Drawing.Size(374, 212);
+      this.valuePanel.Size = new System.Drawing.Size(374, 182);
       this.valuePanel.TabIndex = 0;
       this.valuePanel.DragOver += new System.Windows.Forms.DragEventHandler(this.valuePanel_DragEnterOver);
       this.valuePanel.DragDrop += new System.Windows.Forms.DragEventHandler(this.valuePanel_DragDrop);
@@ -107,9 +108,32 @@ namespace HeuristicLab.Parameters.Views {
       this.viewHost.Dock = System.Windows.Forms.DockStyle.Fill;
       this.viewHost.Location = new System.Drawing.Point(0, 0);
       this.viewHost.Name = "viewHost";
-      this.viewHost.Size = new System.Drawing.Size(374, 212);
+      this.viewHost.Size = new System.Drawing.Size(374, 182);
       this.viewHost.TabIndex = 0;
       this.viewHost.ViewType = null;
+      // 
+      // clearValueButton
+      // 
+      this.clearValueButton.Enabled = false;
+      this.clearValueButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Remove;
+      this.clearValueButton.Location = new System.Drawing.Point(36, 19);
+      this.clearValueButton.Name = "clearValueButton";
+      this.clearValueButton.Size = new System.Drawing.Size(24, 24);
+      this.clearValueButton.TabIndex = 1;
+      this.toolTip.SetToolTip(this.clearValueButton, "Clear Value");
+      this.clearValueButton.UseVisualStyleBackColor = true;
+      this.clearValueButton.Click += new System.EventHandler(this.setValueButton_Click);
+      // 
+      // setValueButton
+      // 
+      this.setValueButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Add;
+      this.setValueButton.Location = new System.Drawing.Point(6, 19);
+      this.setValueButton.Name = "setValueButton";
+      this.setValueButton.Size = new System.Drawing.Size(24, 24);
+      this.setValueButton.TabIndex = 0;
+      this.toolTip.SetToolTip(this.setValueButton, "Set Value");
+      this.setValueButton.UseVisualStyleBackColor = true;
+      this.setValueButton.Click += new System.EventHandler(this.changeValueButton_Click);
       // 
       // ValueParameterView
       // 
@@ -138,5 +162,7 @@ namespace HeuristicLab.Parameters.Views {
     protected System.Windows.Forms.GroupBox valueGroupBox;
     protected System.Windows.Forms.Panel valuePanel;
     protected HeuristicLab.Core.Views.ViewHost viewHost;
+    protected System.Windows.Forms.Button setValueButton;
+    protected System.Windows.Forms.Button clearValueButton;
   }
 }

@@ -20,7 +20,7 @@
 #endregion
 
 using System;
-using System.Linq;
+using System.Collections.Generic;
 using HeuristicLab.Collections;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
@@ -31,15 +31,18 @@ namespace HeuristicLab.Parameters.Views {
   /// The visual representation of a <see cref="Parameter"/>.
   /// </summary>
   [View("ConstrainedValueParameter View")]
+  [Content(typeof(OptionalConstrainedValueParameter<>), true)]
   [Content(typeof(ConstrainedValueParameter<>), true)]
   public partial class ConstrainedValueParameterView<T> : ParameterView where T : class, IItem {
+    private List<T> valueComboBoxItems;
+
     /// <summary>
     /// Gets or sets the variable to represent visually.
     /// </summary>
     /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
     /// No own data storage present.</remarks>
-    public new ConstrainedValueParameter<T> Content {
-      get { return (ConstrainedValueParameter<T>)base.Content; }
+    public new OptionalConstrainedValueParameter<T> Content {
+      get { return (OptionalConstrainedValueParameter<T>)base.Content; }
       set { base.Content = value; }
     }
 
@@ -49,13 +52,14 @@ namespace HeuristicLab.Parameters.Views {
     public ConstrainedValueParameterView() {
       InitializeComponent();
       Caption = "ConstrainedValueParameter";
+      valueComboBoxItems = new List<T>();
     }
     /// <summary>
     /// Initializes a new instance of <see cref="VariableView"/> with the given <paramref name="variable"/>.
     /// </summary>
     /// <remarks>Calls <see cref="VariableView()"/>.</remarks>
     /// <param name="variable">The variable to represent visually.</param>
-    public ConstrainedValueParameterView(ConstrainedValueParameter<T> content)
+    public ConstrainedValueParameterView(OptionalConstrainedValueParameter<T> content)
       : this() {
       Content = content;
     }
@@ -101,11 +105,19 @@ namespace HeuristicLab.Parameters.Views {
 
     private void FillValueComboBox() {
       valueComboBox.SelectedIndexChanged -= new EventHandler(valueComboBox_SelectedIndexChanged);
-      valueComboBox.DataSource = null;
+      valueComboBoxItems.Clear();
+      valueComboBox.Items.Clear();
+      if (!(Content is ConstrainedValueParameter<T>)) {
+        valueComboBoxItems.Add(null);
+        valueComboBox.Items.Add("-");
+      }
       if (Content != null) {
-        valueComboBox.DataSource = Content.ValidValues.ToList();
+        foreach (T item in Content.ValidValues) {
+          valueComboBoxItems.Add(item);
+          valueComboBox.Items.Add(item.ToString());
+        }
         valueComboBox.Enabled = valueComboBox.Items.Count > 0;
-        valueComboBox.SelectedItem = Content.Value;
+        valueComboBox.SelectedIndex = valueComboBoxItems.IndexOf(Content.Value);
       }
       valueComboBox.SelectedIndexChanged += new EventHandler(valueComboBox_SelectedIndexChanged);
     }
@@ -115,7 +127,7 @@ namespace HeuristicLab.Parameters.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ValueChanged), sender, e);
       else {
-        valueComboBox.SelectedItem = Content.Value;
+        valueComboBox.SelectedIndex = valueComboBoxItems.IndexOf(Content.Value);
         viewHost.Content = Content.Value;
       }
     }
@@ -140,7 +152,7 @@ namespace HeuristicLab.Parameters.Views {
     #endregion
 
     private void valueComboBox_SelectedIndexChanged(object sender, EventArgs e) {
-      Content.Value = (T)valueComboBox.SelectedItem;
+      Content.Value = valueComboBoxItems[valueComboBox.SelectedIndex];
     }
   }
 }

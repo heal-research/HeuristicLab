@@ -96,7 +96,7 @@ namespace HeuristicLab.Parameters.Views {
         Caption = Content.Name + " (" + Content.GetType().Name + ")";
         actualNameTextBox.Text = Content.ActualName;
         actualNameTextBox.Enabled = true;
-        setValueButton.Enabled = Content.Value == null;
+        setValueButton.Enabled = true;
         clearValueButton.Enabled = Content.Value != null;
         valueGroupBox.Enabled = true;
         viewHost.Content = Content.Value;
@@ -113,7 +113,6 @@ namespace HeuristicLab.Parameters.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ValueChanged), sender, e);
       else {
-        setValueButton.Enabled = Content.Value == null;
         clearValueButton.Enabled = Content.Value != null;
         viewHost.Content = Content.Value;
       }
