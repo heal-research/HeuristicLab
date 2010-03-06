@@ -96,6 +96,7 @@ namespace HeuristicLab.Parameters.Views {
         clearValueButton.Visible = !(Content is ValueParameter<T>);
         clearValueButton.Enabled = Content.Value != null;
         valueGroupBox.Enabled = true;
+        viewHost.ViewType = null;
         viewHost.Content = Content.Value;
       }
     }
@@ -105,6 +106,7 @@ namespace HeuristicLab.Parameters.Views {
         Invoke(new EventHandler(Content_ValueChanged), sender, e);
       else {
         clearValueButton.Enabled = Content.Value != null;
+        viewHost.ViewType = null;
         viewHost.Content = Content.Value;
       }
     }

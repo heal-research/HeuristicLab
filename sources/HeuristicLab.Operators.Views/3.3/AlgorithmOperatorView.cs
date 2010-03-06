@@ -81,6 +81,7 @@ namespace HeuristicLab.Operators.Views {
         breakpointCheckBox.Checked = Content.Breakpoint;
         breakpointCheckBox.Enabled = true;
         parameterCollectionView.Content = ((IOperator)Content).Parameters;
+        operatorGraphViewHost.ViewType = null;
         operatorGraphViewHost.Content = Content.OperatorGraph;
         tabControl.Enabled = true;
       }

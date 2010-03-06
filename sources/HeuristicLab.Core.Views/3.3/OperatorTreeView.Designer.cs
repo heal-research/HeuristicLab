@@ -79,6 +79,7 @@ namespace HeuristicLab.Core.Views {
       this.graphTreeView.TabIndex = 0;
       this.graphTreeView.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.graphTreeView_BeforeExpand);
       this.graphTreeView.DragDrop += new System.Windows.Forms.DragEventHandler(this.graphTreeView_DragDrop);
+      this.graphTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.graphTreeView_AfterSelect);
       this.graphTreeView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.graphTreeView_MouseDown);
       this.graphTreeView.DragEnter += new System.Windows.Forms.DragEventHandler(this.graphTreeView_DragEnterOver);
       this.graphTreeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.graphTreeView_KeyDown);

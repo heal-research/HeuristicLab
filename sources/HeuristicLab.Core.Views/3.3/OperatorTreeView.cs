@@ -48,6 +48,17 @@ namespace HeuristicLab.Core.Views {
       set { base.Content = value; }
     }
 
+    private IOperator selectedOperator;
+    public IOperator SelectedOperator {
+      get { return selectedOperator; }
+      private set {
+        if (value != selectedOperator) {
+          selectedOperator = value;
+          OnSelectedOperatorChanged();
+        }
+      }
+    }
+
     /// <summary>
     /// Initializes a new instance of <see cref="OperatorGraphView"/> with caption "Operator Graph".
     /// </summary>
@@ -87,6 +98,12 @@ namespace HeuristicLab.Core.Views {
         graphTreeView.Nodes.Add(root);
         graphTreeView.Enabled = true;
       }
+    }
+
+    public event EventHandler SelectedOperatorChanged;
+    private void OnSelectedOperatorChanged() {
+      if (SelectedOperatorChanged != null)
+        SelectedOperatorChanged(this, EventArgs.Empty);
     }
 
     #region TreeNode Management
@@ -298,6 +315,9 @@ namespace HeuristicLab.Core.Views {
         IValueParameter<IOperator> opParam = GetOperatorParameterTag(graphTreeView.SelectedNode);
         if (opParam != null) opParam.Value = null;
       }
+    }
+    private void graphTreeView_AfterSelect(object sender, TreeViewEventArgs e) {
+      SelectedOperator = graphTreeView.SelectedNode == null ? null : GetOperatorTag(graphTreeView.SelectedNode);
     }
     private void graphContextMenuStrip_Opening(object sender, CancelEventArgs e) {
       viewToolStripMenuItem.Enabled = false;

@@ -109,6 +109,13 @@ namespace HeuristicLab.Core.Views {
       }
     }
 
+    #region Operator Tree View Events
+    protected virtual void operatorTreeView_SelectedOperatorChanged(object sender, EventArgs e) {
+      foreach (ListViewItem item in operatorsView.ItemsListView.Items)
+        item.Selected = item.Tag == operatorTreeView.SelectedOperator;
+    }
+    #endregion
+
     #region Context Menu Events
     protected virtual void operatorsView_Load(object sender, EventArgs e) {
       operatorsView.ItemsListView.ContextMenuStrip = operatorsContextMenuStrip;

@@ -105,6 +105,7 @@ namespace HeuristicLab.Optimization.Views {
       } else {
         parameterCollectionView.Content = Content.Parameters;
         saveProblemButton.Enabled = Content.Problem != null;
+        problemViewHost.ViewType = null;
         problemViewHost.Content = Content.Problem;
         resultsView.Content = Content.Results;
         tabControl.Enabled = true;
@@ -135,6 +136,7 @@ namespace HeuristicLab.Optimization.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ProblemChanged), sender, e);
       else {
+        problemViewHost.ViewType = null;
         problemViewHost.Content = Content.Problem;
         saveProblemButton.Enabled = Content.Problem != null;
       }

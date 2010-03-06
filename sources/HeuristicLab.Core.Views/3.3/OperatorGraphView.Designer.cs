@@ -130,6 +130,7 @@ namespace HeuristicLab.Core.Views {
       this.operatorTreeView.Name = "operatorTreeView";
       this.operatorTreeView.Size = new System.Drawing.Size(590, 183);
       this.operatorTreeView.TabIndex = 0;
+      this.operatorTreeView.SelectedOperatorChanged += new System.EventHandler(this.operatorTreeView_SelectedOperatorChanged);
       // 
       // OperatorGraphView
       // 

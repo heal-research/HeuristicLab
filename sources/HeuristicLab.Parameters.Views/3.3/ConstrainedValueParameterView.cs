@@ -99,6 +99,7 @@ namespace HeuristicLab.Parameters.Views {
         Caption = Content.Name + " (" + Content.GetType().Name + ")";
         valueGroupBox.Enabled = true;
         FillValueComboBox();
+        viewHost.ViewType = null;
         viewHost.Content = Content.Value;
       }
     }
@@ -128,6 +129,7 @@ namespace HeuristicLab.Parameters.Views {
         Invoke(new EventHandler(Content_ValueChanged), sender, e);
       else {
         valueComboBox.SelectedIndex = valueComboBoxItems.IndexOf(Content.Value);
+        viewHost.ViewType = null;
         viewHost.Content = Content.Value;
       }
     }

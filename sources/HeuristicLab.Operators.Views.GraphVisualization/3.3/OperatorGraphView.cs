@@ -85,6 +85,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
         if (shape != null) {
           IOperatorShapeInfo shapeInfo = shape.Tag as IOperatorShapeInfo;
           IOperator op = this.VisualizationInfo.GetOperatorForShapeInfo(shapeInfo);
+          this.detailsViewHost.ViewType = null;
           this.detailsViewHost.Content = op;
           return;
         }
@@ -102,6 +103,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
           IOperator op = this.VisualizationInfo.GetOperatorForShapeInfo(shapeInfo);
           if (connectorName != "Predecessor") {
             IParameter parameter = op.Parameters.Where(p => p.Name == connectorName).First();
+            this.detailsViewHost.ViewType = null;
             this.detailsViewHost.Content = parameter;
             return;
           }

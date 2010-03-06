@@ -135,6 +135,7 @@ namespace HeuristicLab.Operators.Views {
       this.breakpointCheckBox.TabIndex = 5;
       this.breakpointCheckBox.UseVisualStyleBackColor = true;
       this.breakpointCheckBox.CheckedChanged += new System.EventHandler(this.breakpointCheckBox_CheckedChanged);
+      this.toolTip.SetToolTip(this.breakpointCheckBox, "Check if an engine should stop execution each time after this operator has been processed.");
       // 
       // breakpointLabel
       // 

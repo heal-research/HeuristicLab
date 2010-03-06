@@ -96,6 +96,7 @@ namespace HeuristicLab.Optimization.Views {
         else
           engineComboBox.SelectedIndex = engineTypes.IndexOf(Content.Engine.GetType());
         engineViewHost.Enabled = true;
+        engineViewHost.ViewType = null;
         engineViewHost.Content = Content.Engine;
       }
     }
@@ -108,6 +109,7 @@ namespace HeuristicLab.Optimization.Views {
           engineComboBox.SelectedIndex = engineTypes.IndexOf(null);
         else
           engineComboBox.SelectedIndex = engineTypes.IndexOf(Content.Engine.GetType());
+        engineViewHost.ViewType = null;
         engineViewHost.Content = Content.Engine;
       }
     }

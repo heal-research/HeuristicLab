@@ -163,6 +163,7 @@ namespace HeuristicLab.Core.Views {
       if (itemsListView.SelectedItems.Count == 1) {
         T item = (T)itemsListView.SelectedItems[0].Tag;
         detailsGroupBox.Enabled = true;
+        viewHost.ViewType = null;
         viewHost.Content = item;
       } else {
         viewHost.Content = null;

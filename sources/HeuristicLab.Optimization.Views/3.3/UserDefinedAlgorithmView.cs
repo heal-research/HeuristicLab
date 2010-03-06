@@ -68,6 +68,7 @@ namespace HeuristicLab.Optimization.Views {
         operatorGraphViewHost.Content = null;
         globalScopeView.Content = null;
       } else {
+        operatorGraphViewHost.ViewType = null;
         operatorGraphViewHost.Content = Content.OperatorGraph;
         globalScopeView.Content = Content.GlobalScope;
       }
@@ -76,8 +77,10 @@ namespace HeuristicLab.Optimization.Views {
     private void Content_OperatorGraphChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_OperatorGraphChanged), sender, e);
-      else
+      else {
+        operatorGraphViewHost.ViewType = null;
         operatorGraphViewHost.Content = Content.OperatorGraph;
+      }
     }
 
     private void newOperatorGraphButton_Click(object sender, EventArgs e) {

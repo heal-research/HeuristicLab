@@ -96,6 +96,7 @@ namespace HeuristicLab.Core.Views {
         setValueButton.Enabled = true;
         clearValueButton.Enabled = Content.Value != null;
         valueGroupBox.Enabled = true;
+        viewHost.ViewType = null;
         viewHost.Content = Content.Value;
       }
     }
@@ -107,6 +108,7 @@ namespace HeuristicLab.Core.Views {
         dataTypeTextBox.Text = Content.Value == null ? "-" : Content.Value.GetType().GetPrettyName();
         dataTypeTextBox.Enabled = Content.Value != null;
         clearValueButton.Enabled = Content.Value != null;
+        viewHost.ViewType = null;
         viewHost.Content = Content.Value;
       }
     }
