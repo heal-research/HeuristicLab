@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using System.Reflection;
 
-namespace HeuristicLab.Persistence.Test {
+namespace HeuristicLab.Persistence_33.Tests {
 
   class DemoClass {
 

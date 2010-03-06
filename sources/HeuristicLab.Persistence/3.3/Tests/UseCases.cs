@@ -15,11 +15,10 @@ using HeuristicLab.Persistence.Default.Xml.Primitive;
 using HeuristicLab.Persistence.Default.CompositeSerializers;
 using HeuristicLab.Persistence.Auxiliary;
 using System.Text.RegularExpressions;
-using HeuristicLab.Persistence.Test;
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace HeuristicLab.Persistence.UnitTest {
+namespace HeuristicLab.Persistence_33.Tests {
 
   public class NumberTest {
     [Storable]

@@ -7,8 +7,8 @@
     <ProjectGuid>{BF7D9494-A586-457B-8DF9-ED599F9E6A71}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.Persistence.UnitTest</RootNamespace>
-    <AssemblyName>HeuristicLab.Persistence.UnitTest</AssemblyName>
+    <RootNamespace>HeuristicLab.Persistence_33.Tests</RootNamespace>
+    <AssemblyName>HeuristicLab.Persistence-3.3.Tests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -79,7 +79,7 @@
     <Content Include="AuthoringTests.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\3.3\HeuristicLab.Persistence-3.3.csproj">
+    <ProjectReference Include="..\HeuristicLab.Persistence-3.3.csproj">
       <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
       <Name>HeuristicLab.Persistence-3.3</Name>
     </ProjectReference>

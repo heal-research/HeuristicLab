@@ -7,7 +7,7 @@
     <ProjectGuid>{F42F3576-7233-4B28-90F7-36AE15F30F92}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.Algorithms.SGA.Tests</RootNamespace>
+    <RootNamespace>HeuristicLab.Algorithms.SGA_33.Tests</RootNamespace>
     <AssemblyName>HeuristicLab.Algorithms.SGA-3.3.Tests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
