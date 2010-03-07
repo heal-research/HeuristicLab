@@ -117,7 +117,7 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     protected override void OnClosed(FormClosedEventArgs e) {
-      Content.Stop();
+      if (Content != null) Content.Stop();
       base.OnClosed(e);
     }
 
