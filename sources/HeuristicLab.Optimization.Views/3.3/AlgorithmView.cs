@@ -199,33 +199,51 @@ namespace HeuristicLab.Optimization.Views {
     protected void openProblemButton_Click(object sender, EventArgs e) {
       openFileDialog.Title = "Open Problem";
       if (openFileDialog.ShowDialog(this) == DialogResult.OK) {
-        IProblem problem = null;
-        try {
-          problem = XmlParser.Deserialize(openFileDialog.FileName) as IProblem;
-        }
-        catch (Exception ex) {
-          Auxiliary.ShowErrorMessageBox(ex);
-        }
-        if (problem == null)
-          MessageBox.Show(this, "The selected file does not contain a problem.", "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        else if (!Content.ProblemType.IsInstanceOfType(problem))
-          MessageBox.Show(this, "The selected file contains a problem type which is not supported by this algorithm.", "Invalid Problem Type", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        else
-          Content.Problem = problem;
+        this.Cursor = Cursors.AppStarting;
+        newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = false;
+
+        var call = new Func<string, object>(XmlParser.Deserialize);
+        call.BeginInvoke(openFileDialog.FileName, delegate(IAsyncResult a) {
+          IProblem problem = null;
+          try {
+            problem = call.EndInvoke(a) as IProblem;
+          } catch (Exception ex) {
+            Auxiliary.ShowErrorMessageBox(ex);
+          }
+          Invoke(new Action(delegate() {
+            if (problem == null)
+              MessageBox.Show(this, "The selected file does not contain a problem.", "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            else if (!Content.ProblemType.IsInstanceOfType(problem))
+              MessageBox.Show(this, "The selected file contains a problem type which is not supported by this algorithm.", "Invalid Problem Type", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            else
+              Content.Problem = problem;
+            newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = true;
+            this.Cursor = Cursors.Default;
+          }));
+        }, null);
       }
     }
     protected void saveProblemButton_Click(object sender, EventArgs e) {
       saveFileDialog.Title = "Save Problem";
       if (saveFileDialog.ShowDialog(this) == DialogResult.OK) {
-        try {
-          if (saveFileDialog.FilterIndex == 1)
-            XmlGenerator.Serialize(Content.Problem, saveFileDialog.FileName, 0);
-          else
-            XmlGenerator.Serialize(Content.Problem, saveFileDialog.FileName, 9);
-        }
-        catch (Exception ex) {
-          Auxiliary.ShowErrorMessageBox(ex);
-        }
+        this.Cursor = Cursors.AppStarting;
+        newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = false;
+
+        var call = new Action<IProblem, string, int>(XmlGenerator.Serialize);
+        int compression = 9;
+        if (saveFileDialog.FilterIndex == 1) compression = 0;
+        call.BeginInvoke(Content.Problem, saveFileDialog.FileName, compression, delegate(IAsyncResult a) {
+          try {
+            call.EndInvoke(a);
+          }
+          catch (Exception ex) {
+            Auxiliary.ShowErrorMessageBox(ex);
+          }
+          Invoke(new Action(delegate() {
+            newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = true;
+            this.Cursor = Cursors.Default;
+          }));
+        }, null);
       }
     }
     protected virtual void startButton_Click(object sender, EventArgs e) {

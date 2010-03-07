@@ -89,31 +89,50 @@ namespace HeuristicLab.Optimization.Views {
     private void openOperatorGraphButton_Click(object sender, EventArgs e) {
       openFileDialog.Title = "Open Operator Graph";
       if (openFileDialog.ShowDialog(this) == DialogResult.OK) {
-        OperatorGraph operatorGraph = null;
-        try {
-          operatorGraph = XmlParser.Deserialize(openFileDialog.FileName) as OperatorGraph;
-        }
-        catch (Exception ex) {
-          Auxiliary.ShowErrorMessageBox(ex);
-        }
-        if (operatorGraph == null)
-          MessageBox.Show(this, "The selected file does not contain an operator graph.", "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        else
-          Content.OperatorGraph = operatorGraph;
+        this.Cursor = Cursors.AppStarting;
+        newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = saveOperatorGraphButton.Enabled = false;
+
+        var call = new Func<string, object>(XmlParser.Deserialize);
+        call.BeginInvoke(openFileDialog.FileName, delegate(IAsyncResult a) {
+          OperatorGraph operatorGraph = null;
+          try {
+            operatorGraph = call.EndInvoke(a) as OperatorGraph;
+          }
+          catch (Exception ex) {
+            Auxiliary.ShowErrorMessageBox(ex);
+          }
+          Invoke(new Action(delegate() {
+            if (operatorGraph == null)
+              MessageBox.Show(this, "The selected file does not contain an operator graph.", "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            else
+              Content.OperatorGraph = operatorGraph;
+            newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = saveOperatorGraphButton.Enabled = true;
+            this.Cursor = Cursors.Default;
+          }));
+        }, null);
       }
     }
     private void saveOperatorGraphButton_Click(object sender, EventArgs e) {
       saveFileDialog.Title = "Save Operator Graph";
       if (saveFileDialog.ShowDialog(this) == DialogResult.OK) {
-        try {
-          if (saveFileDialog.FilterIndex == 1)
-            XmlGenerator.Serialize(Content.OperatorGraph, saveFileDialog.FileName, 0);
-          else
-            XmlGenerator.Serialize(Content.OperatorGraph, saveFileDialog.FileName, 9);
-        }
-        catch (Exception ex) {
-          Auxiliary.ShowErrorMessageBox(ex);
-        }
+        this.Cursor = Cursors.AppStarting;
+        newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = saveOperatorGraphButton.Enabled = false;
+
+        var call = new Action<OperatorGraph, string, int>(XmlGenerator.Serialize);
+        int compression = 9;
+        if (saveFileDialog.FilterIndex == 1) compression = 0;
+        call.BeginInvoke(Content.OperatorGraph, saveFileDialog.FileName, compression, delegate(IAsyncResult a) {
+          try {
+            call.EndInvoke(a);
+          }
+          catch (Exception ex) {
+            Auxiliary.ShowErrorMessageBox(ex);
+          }
+          Invoke(new Action(delegate() {
+            newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = saveOperatorGraphButton.Enabled = true;
+            this.Cursor = Cursors.Default;
+          }));
+        }, null);
       }
     }
   }
