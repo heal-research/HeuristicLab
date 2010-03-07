@@ -159,7 +159,10 @@ namespace HeuristicLab.Optimizer {
                   select v as IContentView;
 
       foreach (IContentView view in views) {
-        Save(view);
+        ItemView itemView = view as ItemView;
+        if ((itemView == null) || (itemView.EnableFileOperations)) {
+          Save(view);
+        }
       }
     }
 

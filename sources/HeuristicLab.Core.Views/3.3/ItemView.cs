@@ -35,6 +35,16 @@ namespace HeuristicLab.Core.Views {
       get { return (IItem)base.Content; }
       set { base.Content = value; }
     }
+    private bool enableFileOperations;
+    public bool EnableFileOperations {
+      get { return enableFileOperations; }
+      protected set {
+        if (value != enableFileOperations) {
+          enableFileOperations = value;
+          OnChanged();
+        }
+      }
+    }
 
     /// <summary>
     /// Initializes a new instance of <see cref="ViewBase"/> with the caption "View".
@@ -42,6 +52,7 @@ namespace HeuristicLab.Core.Views {
     public ItemView() {
       InitializeComponent();
       Caption = "View";
+      enableFileOperations = true;
     }
     public ItemView(IItem content)
       : this() {

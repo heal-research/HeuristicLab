@@ -24,6 +24,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Core;
+using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Optimizer {
@@ -48,6 +49,7 @@ namespace HeuristicLab.Optimizer {
       var views = from v in MainFormManager.MainForm.Views
                   where v is IContentView
                   where CreatableAttribute.IsCreatable(((IContentView)v).Content.GetType())
+                  where ((v is ItemView) && ((ItemView)v).EnableFileOperations) || (!(v is ItemView))
                   select v;
       ToolStripItem.Enabled = views.FirstOrDefault() != null;
     }
