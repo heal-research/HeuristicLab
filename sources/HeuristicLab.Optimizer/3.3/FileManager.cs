@@ -102,7 +102,7 @@ namespace HeuristicLab.Optimizer {
 
     public static void Save() {
       IContentView activeView = MainFormManager.MainForm.ActiveView as IContentView;
-      if ((activeView != null) && (CreatableAttribute.IsCreatable(activeView.Content.GetType()))) {
+      if (activeView != null) {
         Save(activeView);
       }
     }
@@ -119,7 +119,7 @@ namespace HeuristicLab.Optimizer {
 
     public static void SaveAs() {
       IContentView activeView = MainFormManager.MainForm.ActiveView as IContentView;
-      if ((activeView != null) && (CreatableAttribute.IsCreatable(activeView.Content.GetType()))) {
+      if (activeView != null) {
         SaveAs(activeView);
       }
     }
@@ -155,7 +155,6 @@ namespace HeuristicLab.Optimizer {
     public static void SaveAll() {
       var views = from v in MainFormManager.MainForm.Views
                   where v is IContentView
-                  where CreatableAttribute.IsCreatable(((IContentView)v).Content.GetType())
                   select v as IContentView;
 
       foreach (IContentView view in views) {
