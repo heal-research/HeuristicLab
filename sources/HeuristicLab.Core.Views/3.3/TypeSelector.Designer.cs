@@ -49,7 +49,10 @@ namespace HeuristicLab.Core.Views {
       this.imageList = new System.Windows.Forms.ImageList(this.components);
       this.typesGroupBox = new System.Windows.Forms.GroupBox();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
+      this.searchLabel = new System.Windows.Forms.Label();
+      this.searchTextBox = new System.Windows.Forms.TextBox();
       this.descriptionTextBox = new System.Windows.Forms.TextBox();
+      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.typesGroupBox.SuspendLayout();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
@@ -64,12 +67,13 @@ namespace HeuristicLab.Core.Views {
       this.typesTreeView.HideSelection = false;
       this.typesTreeView.ImageIndex = 0;
       this.typesTreeView.ImageList = this.imageList;
-      this.typesTreeView.Location = new System.Drawing.Point(3, 3);
+      this.typesTreeView.Location = new System.Drawing.Point(3, 29);
       this.typesTreeView.Name = "typesTreeView";
       this.typesTreeView.SelectedImageIndex = 0;
       this.typesTreeView.ShowNodeToolTips = true;
-      this.typesTreeView.Size = new System.Drawing.Size(291, 192);
-      this.typesTreeView.TabIndex = 0;
+      this.typesTreeView.Size = new System.Drawing.Size(291, 166);
+      this.typesTreeView.TabIndex = 2;
+      this.typesTreeView.VisibleChanged += new System.EventHandler(this.typesTreeView_VisibleChanged);
       this.typesTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.typesTreeView_AfterSelect);
       this.typesTreeView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.typesTreeView_ItemDrag);
       // 
@@ -99,6 +103,8 @@ namespace HeuristicLab.Core.Views {
       // 
       // splitContainer.Panel1
       // 
+      this.splitContainer.Panel1.Controls.Add(this.searchLabel);
+      this.splitContainer.Panel1.Controls.Add(this.searchTextBox);
       this.splitContainer.Panel1.Controls.Add(this.typesTreeView);
       // 
       // splitContainer.Panel2
@@ -107,6 +113,26 @@ namespace HeuristicLab.Core.Views {
       this.splitContainer.Size = new System.Drawing.Size(297, 287);
       this.splitContainer.SplitterDistance = 198;
       this.splitContainer.TabIndex = 2;
+      // 
+      // searchLabel
+      // 
+      this.searchLabel.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Zoom;
+      this.searchLabel.Location = new System.Drawing.Point(3, 3);
+      this.searchLabel.Name = "searchLabel";
+      this.searchLabel.Size = new System.Drawing.Size(20, 20);
+      this.searchLabel.TabIndex = 0;
+      this.toolTip.SetToolTip(this.searchLabel, "Enter string to search for types");
+      // 
+      // searchTextBox
+      // 
+      this.searchTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.searchTextBox.Location = new System.Drawing.Point(29, 3);
+      this.searchTextBox.Name = "searchTextBox";
+      this.searchTextBox.Size = new System.Drawing.Size(265, 20);
+      this.searchTextBox.TabIndex = 1;
+      this.toolTip.SetToolTip(this.searchTextBox, "Enter string to search for types");
+      this.searchTextBox.TextChanged += new System.EventHandler(this.searchTextBox_TextChanged);
       // 
       // descriptionTextBox
       // 
@@ -131,6 +157,7 @@ namespace HeuristicLab.Core.Views {
       this.Size = new System.Drawing.Size(303, 306);
       this.typesGroupBox.ResumeLayout(false);
       this.splitContainer.Panel1.ResumeLayout(false);
+      this.splitContainer.Panel1.PerformLayout();
       this.splitContainer.Panel2.ResumeLayout(false);
       this.splitContainer.Panel2.PerformLayout();
       this.splitContainer.ResumeLayout(false);
@@ -145,6 +172,9 @@ namespace HeuristicLab.Core.Views {
     protected System.Windows.Forms.ImageList imageList;
     protected System.Windows.Forms.TreeView typesTreeView;
     protected System.Windows.Forms.SplitContainer splitContainer;
+    protected System.Windows.Forms.Label searchLabel;
+    protected System.Windows.Forms.TextBox searchTextBox;
+    protected System.Windows.Forms.ToolTip toolTip;
 
   }
 }
