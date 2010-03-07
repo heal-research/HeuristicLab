@@ -278,7 +278,7 @@ namespace HeuristicLab.Core.Views {
     }
     private void SetTreeNodeVisibility() {
       TreeNode selectedNode = typesTreeView.SelectedNode;
-      if (string.IsNullOrEmpty(currentSearchString)) {
+      if (string.IsNullOrEmpty(currentSearchString) && (typesTreeView.Nodes.Count > 1)) {
         typesTreeView.CollapseAll();
         if (selectedNode != null) typesTreeView.SelectedNode = selectedNode;
       } else {
