@@ -72,7 +72,7 @@ namespace HeuristicLab.Core.Views {
       this.typesTreeView.SelectedImageIndex = 0;
       this.typesTreeView.ShowNodeToolTips = true;
       this.typesTreeView.Size = new System.Drawing.Size(291, 166);
-      this.typesTreeView.TabIndex = 2;
+      this.typesTreeView.TabIndex = 0;
       this.typesTreeView.VisibleChanged += new System.EventHandler(this.typesTreeView_VisibleChanged);
       this.typesTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.typesTreeView_AfterSelect);
       this.typesTreeView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.typesTreeView_ItemDrag);
@@ -120,7 +120,7 @@ namespace HeuristicLab.Core.Views {
       this.searchLabel.Location = new System.Drawing.Point(3, 3);
       this.searchLabel.Name = "searchLabel";
       this.searchLabel.Size = new System.Drawing.Size(20, 20);
-      this.searchLabel.TabIndex = 0;
+      this.searchLabel.TabIndex = 1;
       this.toolTip.SetToolTip(this.searchLabel, "Enter string to search for types");
       // 
       // searchTextBox
@@ -130,7 +130,7 @@ namespace HeuristicLab.Core.Views {
       this.searchTextBox.Location = new System.Drawing.Point(29, 3);
       this.searchTextBox.Name = "searchTextBox";
       this.searchTextBox.Size = new System.Drawing.Size(265, 20);
-      this.searchTextBox.TabIndex = 1;
+      this.searchTextBox.TabIndex = 2;
       this.toolTip.SetToolTip(this.searchTextBox, "Enter string to search for types");
       this.searchTextBox.TextChanged += new System.EventHandler(this.searchTextBox_TextChanged);
       // 
