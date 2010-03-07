@@ -116,6 +116,11 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
 
+    protected override void OnClosed(FormClosedEventArgs e) {
+      Content.Stop();
+      base.OnClosed(e);
+    }
+
     #region Content Events
     protected virtual void Content_Prepared(object sender, EventArgs e) {
       if (InvokeRequired)
