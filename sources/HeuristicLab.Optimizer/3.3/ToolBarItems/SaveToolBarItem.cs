@@ -22,8 +22,6 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using HeuristicLab.Core;
-using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Optimizer {
@@ -46,10 +44,7 @@ namespace HeuristicLab.Optimizer {
     }
     protected override void OnActiveViewChanged(object sender, EventArgs e) {
       IContentView activeView = MainFormManager.MainForm.ActiveView as IContentView;
-      bool enable = activeView != null;
-      ItemView itemView = MainFormManager.MainForm.ActiveView as ItemView;
-      if ((enable) && (itemView != null)) enable = itemView.EnableFileOperations;
-      ToolStripItem.Enabled = enable;
+      ToolStripItem.Enabled = (activeView != null) && (activeView.SaveEnabled);
     }
 
     public override void Execute() {

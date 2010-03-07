@@ -24,8 +24,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using HeuristicLab.Core;
-using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Optimizer.MenuItems {
@@ -47,9 +45,8 @@ namespace HeuristicLab.Optimizer.MenuItems {
       ToolStripItem.Enabled = false;
     }
     protected override void OnActiveViewChanged(object sender, EventArgs e) {
-      var views = from v in MainFormManager.MainForm.Views
-                  where v is IContentView
-                  where ((v is ItemView) && ((ItemView)v).EnableFileOperations) || (!(v is ItemView))
+      var views = from v in MainFormManager.MainForm.Views.OfType<IContentView>()
+                  where v.SaveEnabled
                   select v;
       ToolStripItem.Enabled = views.FirstOrDefault() != null;
     }

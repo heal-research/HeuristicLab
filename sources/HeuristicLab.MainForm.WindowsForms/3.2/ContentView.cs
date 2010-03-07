@@ -30,16 +30,6 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm.WindowsForms {
   public partial class ContentView : View, IContentView {
-    public ContentView()
-      : base() {
-      InitializeComponent();
-    }
-
-    public ContentView(object content)
-      : this() {
-      this.content = content;
-    }
-
     private object content;
     public object Content {
       get { return content; }
@@ -57,6 +47,26 @@ namespace HeuristicLab.MainForm.WindowsForms {
           }
         }
       }
+    }
+    private bool saveEnabled;
+    public bool SaveEnabled {
+      get { return saveEnabled; }
+      protected set {
+        if (value != saveEnabled) {
+          saveEnabled = value;
+          OnChanged();
+        }
+      }
+    }
+
+    public ContentView()
+      : base() {
+      InitializeComponent();
+      saveEnabled = true;
+    }
+    public ContentView(object content)
+      : this() {
+      this.content = content;
     }
 
     /// <summary>

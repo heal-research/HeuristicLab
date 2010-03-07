@@ -151,7 +151,7 @@ namespace HeuristicLab.Optimization.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_Started), sender, e);
       else {
-        EnableFileOperations = false;
+        SaveEnabled = false;
         parameterCollectionView.Enabled = false;
         newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = false;
         problemViewHost.Enabled = false;
@@ -166,7 +166,7 @@ namespace HeuristicLab.Optimization.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_Stopped), sender, e);
       else {
-        EnableFileOperations = true;
+        SaveEnabled = true;
         parameterCollectionView.Enabled = true;
         newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = true;
         problemViewHost.Enabled = true;

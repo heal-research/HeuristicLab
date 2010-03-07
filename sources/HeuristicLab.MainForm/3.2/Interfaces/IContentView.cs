@@ -27,5 +27,6 @@ using System.ComponentModel;
 namespace HeuristicLab.MainForm {
   public interface IContentView : IView {
     object Content { get; }
+    bool SaveEnabled { get; }
   }
 }

@@ -25,7 +25,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
-using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.Persistence.Default.Xml;
@@ -107,13 +106,15 @@ namespace HeuristicLab.Optimizer {
       }
     }
     private static void Save(IContentView view) {
-      if ((!files.ContainsKey(view)) || (!File.Exists(files[view].Filename))) {
-        SaveAs(view);
-      } else {
-        if (files[view].Compressed)
-          SaveItemAsync(view, files[view].Filename, 9);
-        else
-          SaveItemAsync(view, files[view].Filename, 0);
+      if (view.SaveEnabled) {
+        if ((!files.ContainsKey(view)) || (!File.Exists(files[view].Filename))) {
+          SaveAs(view);
+        } else {
+          if (files[view].Compressed)
+            SaveItemAsync(view, files[view].Filename, 9);
+          else
+            SaveItemAsync(view, files[view].Filename, 0);
+        }
       }
     }
 
@@ -124,45 +125,39 @@ namespace HeuristicLab.Optimizer {
       }
     }
     public static void SaveAs(IContentView view) {
-      if (saveFileDialog == null) {
-        saveFileDialog = new SaveFileDialog();
-        saveFileDialog.Title = "Save Item";
-        saveFileDialog.DefaultExt = "hl";
-        saveFileDialog.Filter = "Uncompressed HeuristicLab Files|*.hl|HeuristicLab Files|*.hl|All Files|*.*";
-        saveFileDialog.FilterIndex = 2;
-      }
+      if (view.SaveEnabled) {
+        if (saveFileDialog == null) {
+          saveFileDialog = new SaveFileDialog();
+          saveFileDialog.Title = "Save Item";
+          saveFileDialog.DefaultExt = "hl";
+          saveFileDialog.Filter = "Uncompressed HeuristicLab Files|*.hl|HeuristicLab Files|*.hl|All Files|*.*";
+          saveFileDialog.FilterIndex = 2;
+        }
 
-      if (!files.ContainsKey(view)) {
-        files.Add(view, new FileInfo());
-        saveFileDialog.FileName = view.Caption;
-      } else {
-        saveFileDialog.FileName = files[view].Filename;
-      }
-      if (! files[view].Compressed)
-        saveFileDialog.FilterIndex = 1;
-      else
-        saveFileDialog.FilterIndex = 2;
-
-      if (saveFileDialog.ShowDialog() == DialogResult.OK) {
-        if (saveFileDialog.FilterIndex == 1) {
-          SaveItemAsync(view, saveFileDialog.FileName, 0);
+        if (!files.ContainsKey(view)) {
+          files.Add(view, new FileInfo());
+          saveFileDialog.FileName = view.Caption;
         } else {
-          SaveItemAsync(view, saveFileDialog.FileName, 9);
+          saveFileDialog.FileName = files[view].Filename;
+        }
+        if (!files[view].Compressed)
+          saveFileDialog.FilterIndex = 1;
+        else
+          saveFileDialog.FilterIndex = 2;
+
+        if (saveFileDialog.ShowDialog() == DialogResult.OK) {
+          if (saveFileDialog.FilterIndex == 1) {
+            SaveItemAsync(view, saveFileDialog.FileName, 0);
+          } else {
+            SaveItemAsync(view, saveFileDialog.FileName, 9);
+          }
         }
       }
     }
 
     public static void SaveAll() {
-      var views = from v in MainFormManager.MainForm.Views
-                  where v is IContentView
-                  select v as IContentView;
-
-      foreach (IContentView view in views) {
-        ItemView itemView = view as ItemView;
-        if ((itemView == null) || (itemView.EnableFileOperations)) {
-          Save(view);
-        }
-      }
+      foreach (IContentView view in MainFormManager.MainForm.Views.OfType<IContentView>())
+        Save(view);
     }
 
     // NOTE: This event is fired by the main form. It is registered in HeuristicLabOptimizerApplication.
@@ -210,9 +205,9 @@ namespace HeuristicLab.Optimizer {
           delegate(object arg) {
             try {
               SetWaitingCursor();
-              IItem item = (IItem)XmlParser.Deserialize(filename);
+              object content = XmlParser.Deserialize(filename);
               Invoke(delegate() {
-                IContentView view = MainFormManager.CreateDefaultView(item) as IContentView;
+                IContentView view = MainFormManager.CreateDefaultView(content) as IContentView;
                 if (view == null) {
                   MessageBox.Show("There is no view for the loaded item. It cannot be displayed. ", "No View Available", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } else {
