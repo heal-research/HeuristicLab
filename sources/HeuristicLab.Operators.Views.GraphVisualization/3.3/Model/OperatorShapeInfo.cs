@@ -133,7 +133,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       }
     }
 
-    [Storable]
     private Bitmap icon;
     public Bitmap Icon {
       get { return this.icon; }

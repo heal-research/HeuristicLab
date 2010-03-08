@@ -41,6 +41,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
         foreach (KeyValuePair<IOperator, IOperatorShapeInfo> pair in value.FirstEnumerable) {
           op = pair.Key;
           shapeInfo = pair.Value;
+          shapeInfo.Icon = new Bitmap(op.ItemImage);
           this.RegisterOperatorEvents(op);
           this.operatorParameterCollectionMapping.Add(op, pair.Key.Parameters);
           this.operatorShapeInfoMapping.Add(op, shapeInfo);
