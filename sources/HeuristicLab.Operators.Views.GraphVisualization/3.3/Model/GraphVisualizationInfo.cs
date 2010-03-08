@@ -92,7 +92,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       GraphVisualizationInfo clone = new GraphVisualizationInfo();
       cloner.RegisterClonedObject(this, clone);
       clone.operatorGraph = (OperatorGraph)cloner.Clone(this.operatorGraph);
-      clone.oldInitialShape = (IOperatorShapeInfo)this.oldInitialShape.Clone(cloner);
+      clone.oldInitialShape = (IOperatorShapeInfo)cloner.Clone(this.oldInitialShape);
       clone.oldInitialShapeColor = this.oldInitialShapeColor;
 
       IOperator op;

@@ -201,8 +201,8 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       clone.title = this.title;
       clone.icon = (Bitmap) this.icon.Clone();
 
-      clone.connectorNames = this.connectorNames.ToList();
-      clone.labels = this.labels.ToList();
+      clone.connectorNames = new List<string>(this.connectorNames);
+      clone.labels = new List<string>(this.labels);
 
       return clone;
     }
