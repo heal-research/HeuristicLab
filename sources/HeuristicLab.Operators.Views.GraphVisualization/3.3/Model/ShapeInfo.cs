@@ -30,17 +30,15 @@ using HeuristicLab.Collections;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
-  internal abstract class ShapeInfo : Item,IShapeInfo {
+  internal abstract class ShapeInfo : DeepCloneable, IShapeInfo {
     private ShapeInfo() {
-
     }
+
     protected ShapeInfo(Type shapeType) {
       if (!typeof(IShape).IsAssignableFrom(shapeType))
         throw new ArgumentException("The passed shape type " + shapeType + " must be derived from IShape.");
       this.shapeType = shapeType;
     }
-
-    public event EventHandler Changed;
 
     [Storable]
     private Type shapeType;
@@ -60,6 +58,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       }
     }
 
+    public event EventHandler Changed;
     protected void OnChanged() {
       if (this.Changed != null)
         this.Changed(this, EventArgs.Empty);
@@ -74,6 +73,13 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
     public virtual void UpdateShape(IShape shape) {
       shape.Location = this.Location;
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      ShapeInfo clone = (ShapeInfo) base.Clone(cloner);
+      clone.shapeType = this.shapeType;
+      clone.location = this.location;
+      return clone;
     }
   }
 }

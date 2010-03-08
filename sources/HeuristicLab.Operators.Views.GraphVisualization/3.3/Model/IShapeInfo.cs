@@ -29,7 +29,7 @@ using Netron.Diagramming.Core;
 using HeuristicLab.Collections;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
-  public interface IShapeInfo : IItem{
+  public interface IShapeInfo : IDeepCloneable{
     Type ShapeType { get; }
     Point Location { get; set; }
 

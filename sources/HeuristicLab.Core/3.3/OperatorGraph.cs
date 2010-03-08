@@ -102,6 +102,7 @@ namespace HeuristicLab.Core {
       cloner.RegisterClonedObject(this, clone);
       clone.Operators = (OperatorSet)cloner.Clone(operators);
       clone.initialOperator = (IOperator)cloner.Clone(initialOperator);
+      clone.visualizationInfo = cloner.Clone(visualizationInfo);
       return clone;
     }
 

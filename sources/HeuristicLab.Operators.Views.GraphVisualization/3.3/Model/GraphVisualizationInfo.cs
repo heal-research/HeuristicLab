@@ -48,7 +48,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
           this.shapeInfos.Add(shapeInfo);
         }
 
-        foreach(IOperator oper in value.FirstValues) {
+        foreach (IOperator oper in value.FirstValues) {
           foreach (IParameter param in oper.Parameters) {
             this.parameterOperatorMapping.Add(param, oper);
             IValueParameter<IOperator> opParam = param as IValueParameter<IOperator>;
@@ -86,6 +86,42 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
           this.AddOperator(op);
 
       this.UpdateInitialShape();
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      GraphVisualizationInfo clone = new GraphVisualizationInfo();
+      cloner.RegisterClonedObject(this, clone);
+      clone.operatorGraph = (OperatorGraph)cloner.Clone(this.operatorGraph);
+      clone.oldInitialShape = (IOperatorShapeInfo)this.oldInitialShape.Clone(cloner);
+      clone.oldInitialShapeColor = this.oldInitialShapeColor;
+
+      IOperator op;
+      IOperatorShapeInfo shapeInfo;
+      foreach (KeyValuePair<IOperator, IOperatorShapeInfo> pair in this.operatorShapeInfoMapping.FirstEnumerable) {
+        op = (IOperator)cloner.Clone(pair.Key);
+        shapeInfo = (IOperatorShapeInfo)cloner.Clone(pair.Value);
+        clone.RegisterOperatorEvents(op);
+        clone.operatorParameterCollectionMapping.Add(op, pair.Key.Parameters);
+        clone.operatorShapeInfoMapping.Add(op, shapeInfo);
+        clone.shapeInfos.Add(shapeInfo);
+      }
+
+      foreach (IOperator oper in clone.operatorShapeInfoMapping.FirstValues) {
+        foreach (IParameter param in oper.Parameters) {
+          clone.parameterOperatorMapping.Add(param, oper);
+          IValueParameter<IOperator> opParam = param as IValueParameter<IOperator>;
+          if (opParam != null) {
+            clone.RegisterOperatorParameterEvents(opParam);
+            shapeInfo = clone.operatorShapeInfoMapping.GetByFirst(oper);
+            if (opParam.Value != null) {
+              clone.connections.Add(new KeyValuePair<IOperatorShapeInfo, string>(shapeInfo, param.Name), clone.operatorShapeInfoMapping.GetByFirst(opParam.Value));
+            }
+          } else
+            clone.RegisterParameterEvents(param);
+        }
+      }
+
+      return clone;
     }
 
     public event EventHandler InitialShapeChanged;
@@ -128,7 +164,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       }
     }
 
-    
+
     private OperatorGraph operatorGraph;
     [Storable]
     public OperatorGraph OperatorGraph {

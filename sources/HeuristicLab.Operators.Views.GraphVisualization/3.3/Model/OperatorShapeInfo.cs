@@ -191,5 +191,20 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
         operatorShape.UpdateLabels(this.labels);
       }
     }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      OperatorShapeInfo clone = (OperatorShapeInfo) base.Clone(cloner);
+      clone.collapsed = this.collapsed;
+      clone.color = this.color;
+      clone.lineColor = this.lineColor;
+      clone.lineWidth = this.lineWidth;
+      clone.title = this.title;
+      clone.icon = (Bitmap) this.icon.Clone();
+
+      clone.connectorNames = this.connectorNames.ToList();
+      clone.labels = this.labels.ToList();
+
+      return clone;
+    }
   }
 }
