@@ -29,8 +29,7 @@ namespace HeuristicLab.Persistence.Default.Xml.Primitive {
       stream.Write(array, 0, array.Length);
       stream.Seek(0, SeekOrigin.Begin);
 
-      Image img = Bitmap.FromStream(stream,true);
-      Bitmap bitmap = new Bitmap(img);
+      Bitmap bitmap = new Bitmap(stream);
       return bitmap;
   }
   }
