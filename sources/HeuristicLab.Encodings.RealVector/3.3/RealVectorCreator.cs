@@ -54,6 +54,8 @@ namespace HeuristicLab.Encodings.RealVector {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
       Parameters.Add(new LookupParameter<DoubleArrayData>("RealVector", "The vector which should be manipulated."));
       Parameters.Add(new ValueLookupParameter<IntData>("Length", "The length of the vector."));
+      Parameters.Add(new ValueLookupParameter<DoubleData>("Minimum", "The lower bound for each element in the vector."));
+      Parameters.Add(new ValueLookupParameter<DoubleData>("Maximum", "The upper bound for each element in the vector."));
     }
 
     public sealed override IOperation Apply() {

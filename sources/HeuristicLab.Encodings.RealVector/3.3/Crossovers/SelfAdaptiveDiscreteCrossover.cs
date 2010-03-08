@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,73 +20,89 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.RealVector {
   /// <summary>
-  /// Discrete crossover for real vectors: creates a new offspring by combining the alleles in the parents such that each allele is 
-  /// randomly selected from one parent. It will also use the same strategy to combine the endogenous 
-  /// strategy parameter vector.
+  /// The self adaptive discrete crossover is similar to the <see cref="DiscreteCrossover"/>, but will also copy values from an exising strategy vector (such as in the sigma self adaptive evolution strategy)
+  /// from the same parent to the offspring in each position. The strategy vector can be of different length to the parent vector. The idea is that if it is shorter, it will be cycled.
   /// </summary>
-  public class SelfAdaptiveDiscreteCrossover : RealVectorCrossoverBase {
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get {
-        return @"Discrete crossover for real vectors: creates a new offspring by combining the alleles in the parents such that each allele is randomly selected from one parent. It will also use the same strategy to combine the endogenous strategy parameter vector.";
-      }
-    }
-
+  /// <remarks>
+  /// This operator is not mentioned in the literature, as typically intermediate recombination (<see cref="AverageCrossover"/>) should be used to recombine the strategy vector (Beyer and Schwefel 2002).
+  /// Since <see cref="AverageCrossover"/> is deterministic this can be done for solution vector and strategy vector separately.<br/>
+  /// However if one wishes to use discrete (dominant) recombination on the strategy vectors the idea is probably that the same parent should donate strategy value and solution value in a position. In this case use this operator.
+  /// Otherwise, you can also apply <see cref="DiscreteCrossover"/> independently on the solution vector and on the strategy vector.
+  /// </remarks>
+  public class SelfAdaptiveDiscreteCrossover : RealVectorCrossover {
     /// <summary>
-    /// Initializes a new instance of <see cref="SelfAdaptiveDiscreteCrossover"/> with one additional
-    /// variable infos (<c>StrategyVector</c>).
+    /// Parameter for the parents' strategy vectors.
+    /// </summary>
+    public SubScopesLookupParameter<DoubleArrayData> ParentsStrategyVectorParameter {
+      get { return (SubScopesLookupParameter<DoubleArrayData>)Parameters["ParentsStrategyVector"]; }
+    }
+    /// <summary>
+    /// Parameter for the child's strategy vector.
+    /// </summary>
+    public LookupParameter<DoubleArrayData> ChildStrategyVectorParameter {
+      get { return (LookupParameter<DoubleArrayData>)Parameters["ChildStrategyVector"]; }
+    }
+    /// <summary>
+    /// Initializes a new instance of <see cref="SelfAdaptiveDiscreteCrossover"/> with two parameters (<c>ParentsStrategyVector</c>, and <c>ChildStrategyVector</c>).
     /// </summary>
     public SelfAdaptiveDiscreteCrossover()
       : base() {
-      AddVariableInfo(new VariableInfo("StrategyVector", "Endogenous strategy parameter vector", typeof(DoubleArrayData), VariableKind.In | VariableKind.New));
+      Parameters.Add(new SubScopesLookupParameter<DoubleArrayData>("ParentsStrategyVector", "The vector containing the parents' endogenous strategy parameters."));
+      ParentsStrategyVectorParameter.ActualName = "StrategyVector";
+      Parameters.Add(new LookupParameter<DoubleArrayData>("ChildStrategyVector", "The vector containing the child's endogenous strategy parameters."));
+      ChildStrategyVectorParameter.ActualName = "StrategyVector";
     }
 
     /// <summary>
-    /// Performs a discrete crossover operation for multiple given parent real vectors that combines the strategy vectors in the same way.
+    /// Performs a discrete crossover operation for multiple given parent vectors in a way that the same parent
+    /// is used to donate the value of the solution and of the strategy vector in each position.
     /// </summary>
+    /// <remarks>
+    /// The parent vectors can be of a different length to the strategy vectors, but among each group the length has to be the same.
+    /// </remarks>
     /// <param name="random">A random number generator.</param>
     /// <param name="parents">An array containing the parents that should be crossed.</param>
     /// <param name="strategies">An array containing the strategy vectors of the parents.</param>
     /// <param name="child">The newly created real vector, resulting from the crossover operation (output parameter).</param>
     /// <param name="strategy">The newly created strategy vector, resulting from the crossover operation (output parameter).</param>
-    public static void Apply(IRandom random, double[][] parents, double[][] strategies, out double[] child, out double[] strategy) {
-      child = new double[parents[0].Length];
-      strategy = new double[strategies[0].Length];
-      for (int i = 0; i < child.Length; i++) {
-        int nextParent = random.Next(parents.Length);
-        child[i] = parents[nextParent][i];
-        strategy[i] = strategies[nextParent][i];
+    public static void Apply(IRandom random, ItemArray<DoubleArrayData> parents, ItemArray<DoubleArrayData> strategies, out DoubleArrayData child, out DoubleArrayData strategy) {
+      if (strategies.Length != parents.Length) throw new ArgumentException("SelfAdaptiveDiscreteCrossover: Number of parents is not equal to the number of strategy vectors", "parents");
+      int length = parents[0].Length, strategyLength = strategies[0].Length, parentsCount = parents.Length;
+      child = new DoubleArrayData(length);
+      strategy = new DoubleArrayData(strategyLength);
+      int loopEnd = Math.Max(length, strategyLength);
+      try {
+        for (int i = 0; i < loopEnd; i++) {
+          int nextParent = random.Next(parentsCount);
+          if (i < length) child[i] = parents[nextParent][i];
+          if (i < strategyLength) strategy[i] = strategies[nextParent][i];
+        }
+      } catch (IndexOutOfRangeException) {
+        throw new ArgumentException("SelfAdaptiveDiscreteCrossover: There are different lengths among either the parent vectors or the parents' strategy vectors.");
       }
     }
 
     /// <summary>
-    /// Performs a discrete crossover operation for multiple given parent real vectors that combines the strategy vectors in the same way.
+    /// Checks that there are at least two parents, that the strategy vector is not null and forwards the call to <see cref="Apply(IRandom, ItemArray<DoubleArrayData>, ItemArray<DoubleArrayData>, out DoubleArrayData, out DoubleArrayData)"/>.
     /// </summary>
-    /// <exception cref="InvalidOperationException">Thrown if there are less than two parents or if the length of the strategy vectors is not the same as the length of the real vectors.</exception>
-    /// <param name="scope">The current scope.</param>
-    /// <param name="random">A random number generator.</param>
-    /// <param name="parents">An array containing the real vectors that should be crossed.</param>
-    /// <returns>The newly created real vector, resulting from the crossover operation.</returns>
-    protected override double[] Cross(IScope scope, IRandom random, double[][] parents) {
-      if (parents.Length < 2) throw new InvalidOperationException("ERROR in SelfAdaptiveDiscreteCrossover: The number of parents is less than 2");
-      double[][] strategies = new double[scope.SubScopes.Count][];
-      int length = parents[0].Length;
-      for (int i = 0; i < scope.SubScopes.Count; i++) {
-        strategies[i] = scope.SubScopes[i].GetVariableValue<DoubleArrayData>("StrategyVector", false).Data;
-        if (strategies[i].Length != length) throw new InvalidOperationException("ERROR in SelfAdaptiveDiscreteCrossover: Strategy vectors do not have the same length as the real vectors");
-      }
-
-      double[] child, strategy;
-      Apply(random, parents, strategies, out child, out strategy);
-      scope.AddVariable(new Variable(scope.TranslateName("StrategyVector"), new DoubleArrayData(strategy)));
-      return child;
+    /// <param name="random">The random number generator.</param>
+    /// <param name="parents">The collection of parents (at least of size 2).</param>
+    /// <returns>The child vector that results from the crossover.</returns>
+    protected override DoubleArrayData Cross(IRandom random, ItemArray<DoubleArrayData> parents) {
+      if (parents.Length < 2) throw new ArgumentException("SelfAdaptiveDiscreteCrossover: The number of parents is less than 2", "parents");
+      if (ParentsStrategyVectorParameter.ActualValue == null) throw new InvalidOperationException("SelfAdaptiveDiscreteCrossover: Parameter " + ParentsStrategyVectorParameter.ActualName + " could not be found.");
+      ItemArray<DoubleArrayData> strategies = ParentsStrategyVectorParameter.ActualValue;      
+      DoubleArrayData result, resultStrategyVector;
+      Apply(random, parents, strategies, out result, out resultStrategyVector);
+      ChildStrategyVectorParameter.ActualValue = resultStrategyVector;
+      return result;
     }
   }
 }

@@ -103,12 +103,14 @@
     <Compile Include="Crossovers\UniformAllPositionsArithmeticCrossover.cs" />
     <Compile Include="Crossovers\UniformSomePositionsArithmeticCrossover.cs" />
     <Compile Include="HeuristicLabEncodingsRealVectorPlugin.cs" />
+    <Compile Include="Manipulators\BreederGeneticAlgorithmManipulator.cs" />
     <Compile Include="Manipulators\PolynomialAllPositionManipulator.cs" />
     <Compile Include="Manipulators\MichalewiczNonUniformAllPositionsManipulator.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Manipulators\MichalewiczNonUniformOnePositionManipulator.cs" />
     <Compile Include="Manipulators\PolynomialOnePositionManipulator.cs" />
+    <Compile Include="Manipulators\SelfAdaptiveNormalAllPositionsManipulator.cs" />
     <Compile Include="Manipulators\UniformOnePositionManipulator.cs" />
     <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.frame" />
@@ -149,6 +151,10 @@
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
+      <Project>{F4539FB6-4708-40C9-BE64-0A1390AEA197}</Project>
+      <Name>HeuristicLab.Random-3.3</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

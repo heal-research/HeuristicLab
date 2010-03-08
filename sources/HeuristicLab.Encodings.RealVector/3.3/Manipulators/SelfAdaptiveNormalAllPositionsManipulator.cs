@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,10 +20,10 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.RealVector {
@@ -31,23 +31,30 @@ namespace HeuristicLab.Encodings.RealVector {
   /// Manipulates each dimension in the real vector with the mutation strength given 
   /// in the strategy parameter vector.
   /// </summary>
-  public class SelfAdaptiveNormalAllPositionsManipulator : RealVectorManipulatorBase {
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get { return @"Manipulates each dimension in the real vector with the mutation strength given in the strategy parameter vector"; }
+  /// <remarks>
+  /// It is implemented as described in Beyer, H.-G. and Schwefel, H.-P. 2002. Evolution Strategies - A Comprehensive Introduction Natural Computing, 1, pp. 3-52.<br/>
+  /// The strategy vector can be of smaller length than the solution vector, in which case values are taken from the beginning again once the end of the strategy vector is reached.
+  /// </remarks>
+  [Item("SelfAdaptiveNormalAllPositionsManipulator", "This manipulation operator adds a value sigma_i * N(0,1) to the current value in each position i. The values for sigma_i are taken from the strategy vector. It is implemented as described in Beyer, H.-G. and Schwefel, H.-P. 2002. Evolution Strategies - A Comprehensive Introduction Natural Computing, 1, pp. 3-52.")]
+  [EmptyStorableClass]
+  public class SelfAdaptiveNormalAllPositionsManipulator : RealVectorManipulator {
+    /// <summary>
+    /// Parameter for the strategy vector.
+    /// </summary>
+    public LookupParameter<DoubleArrayData> StrategyVectorParameter {
+      get { return (LookupParameter<DoubleArrayData>)Parameters["StrategyVector"]; }
     }
-
     /// <summary>
     /// Initializes a new instance of <see cref="SelfAdaptiveNormalAllPositionsManipulator"/> with one
-    /// variable info (<c>StrategyVector</c>).
+    /// parameter (<c>StrategyVector</c>).
     /// </summary>
     public SelfAdaptiveNormalAllPositionsManipulator()
       : base() {
-      AddVariableInfo(new VariableInfo("StrategyVector", "The strategy vector determining the strength of the mutation", typeof(DoubleArrayData), VariableKind.In));
+      Parameters.Add(new LookupParameter<DoubleArrayData>("StrategyVector", "The vector containing the endogenous strategy parameters."));
     }
 
     /// <summary>
-    /// Performs a self adaptive normally distributed all position manipulation on the given 
+    /// Performs an adaptive normally distributed all position manipulation on the given 
     /// <paramref name="vector"/>.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown when the strategy vector is not
@@ -56,26 +63,21 @@ namespace HeuristicLab.Encodings.RealVector {
     /// <param name="random">A random number generator.</param>
     /// <param name="vector">The real vector to manipulate.</param>
     /// <returns>The manipulated real vector.</returns>
-    public static double[] Apply(double[] strategyParameters, IRandom random, double[] vector) {
+    public static void Apply(IRandom random, DoubleArrayData vector, DoubleArrayData strategyParameters) {
       NormalDistributedRandom N = new NormalDistributedRandom(random, 0.0, 1.0);
       for (int i = 0; i < vector.Length; i++) {
         vector[i] = vector[i] + (N.NextDouble() * strategyParameters[i % strategyParameters.Length]);
       }
-      return vector;
     }
 
     /// <summary>
-    /// Performs a self adaptive normally distributed all position manipulation on the given 
-    /// <paramref name="vector"/>.
+    /// Checks that the strategy vector is not null and forwards the call to <see cref="Apply(IRandom, DoubleArrayData, DoubleArrayData)"/>.
     /// </summary>
-    /// <remarks>Calls <see cref="Apply"/>.</remarks>
-    /// <param name="scope">The current scope.</param>
-    /// <param name="random">A random number generator.</param>
-    /// <param name="vector">The real vector to manipulate.</param>
-    /// <returns>The manipulated real vector.</returns>
-    protected override double[] Manipulate(IScope scope, IRandom random, double[] vector) {
-      double[] strategyVector = scope.GetVariableValue<DoubleArrayData>("StrategyVector", true).Data;
-      return Apply(strategyVector, random, vector);
+    /// <param name="random">The random number generator.</param>
+    /// <param name="realVector">The vector of real values that is manipulated.</param>
+    protected override void Manipulate(IRandom random, DoubleArrayData realVector) {
+      if (StrategyVectorParameter.ActualValue == null) throw new InvalidOperationException("SelfAdaptiveNormalAllPositionsManipulator: Parameter " + StrategyVectorParameter.ActualName + " could not be found.");
+      Apply(random, realVector, StrategyVectorParameter.ActualValue);
     }
   }
 }
