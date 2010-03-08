@@ -28,15 +28,12 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.RealVector {
   /// <summary>
-  /// Random convex crossover for real vectors: Takes for each element the allele of the first parent times a 
-  /// once created randomly chosen factor and adds the allele of the second parent times 
-  /// (1 - the randomly chosen factor).
+  /// The random convex crossover is similar to the <see cref="LocalCrossover"/>, but chooses just one random alpha for all positions.
   /// </summary>
   /// <remarks>
   /// It is implemented as described in Dumitrescu, D. et al. (2000), Evolutionary computation, CRC Press, Boca Raton, FL, pp. 193 - 194.
   /// </remarks>
-  [Item("RandomConvexCrossover", "Random convex crossover for real vectors: Takes for each element the allele of the first parent times a once created randomly chosen factor and adds the allele of the second parent times (1 - the randomly chosen factor). " +
-    "It is implementes as described in Dumitrescu, D. et al. (2000), Evolutionary computation, CRC Press, Boca Raton, FL, pp. 193 - 194.")]
+  [Item("RandomConvexCrossover", "The random convex crossover acts like the local crossover, but with just one randomly chosen alpha for all crossed positions. It is implementes as described in Dumitrescu, D. et al. (2000), Evolutionary computation, CRC Press, Boca Raton, FL, pp. 193 - 194.")]
   [EmptyStorableClass]
   public class RandomConvexCrossover : RealVectorCrossover {
     /// <summary>

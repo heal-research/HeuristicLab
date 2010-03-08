@@ -90,6 +90,7 @@
     <Compile Include="RealVectorManipulator.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Crossovers\AverageCrossover.cs" />
     <Compile Include="Crossovers\BlendAlphaCrossover.cs" />
     <Compile Include="Crossovers\DiscreteCrossover.cs" />
     <Compile Include="Crossovers\HeuristicCrossover.cs" />
@@ -99,6 +100,8 @@
     <Compile Include="Crossovers\SinglePointCrossover.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Crossovers\UniformAllPositionsArithmeticCrossover.cs" />
+    <Compile Include="Crossovers\UniformSomePositionsArithmeticCrossover.cs" />
     <Compile Include="HeuristicLabEncodingsRealVectorPlugin.cs" />
     <Compile Include="Manipulators\PolynomialAllPositionManipulator.cs" />
     <Compile Include="Manipulators\MichalewiczNonUniformAllPositionsManipulator.cs">

@@ -29,13 +29,13 @@ using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Encodings.RealVector {
   /// <summary>
-  /// Heuristic crossover for real vectors: Takes for each position the better parent and adds the difference
-  /// of the two parents times a randomly chosen factor.
+  /// Heuristic crossover for real vectors: Calculates the vector from the worse to the better parent and adds that to the better parent weighted with a factor in the interval [0;1).
+  /// The idea is that going further in direction from the worse to the better leads to even better solutions (naturally this depends on the fitness landscape).
   /// </summary>
   /// <remarks>
   /// It is implemented as described in Wright, A.H. (1994), Genetic algorithms for real parameter optimization, Foundations of Genetic Algorithms, G.J.E. Rawlins (Ed.), Morgan Kaufmann, San Mateo, CA, 205-218.
   /// </remarks>
-  [Item("HeuristicCrossover", "Heuristic crossover for real vectors: Takes for each position the better parent and adds the difference. It is implemented as described in Wright, A.H. (1994), Genetic algorithms for real parameter optimization, Foundations of Genetic Algorithms, G.J.E. Rawlins (Ed.), Morgan Kaufmann, San Mateo, CA, 205-218.")]
+  [Item("HeuristicCrossover", "The heuristic crossover produces offspring that extend the better parent in direction from the worse to the better parent. It is implemented as described in Wright, A.H. (1994), Genetic algorithms for real parameter optimization, Foundations of Genetic Algorithms, G.J.E. Rawlins (Ed.), Morgan Kaufmann, San Mateo, CA, 205-218.")]
   [EmptyStorableClass]
   public class HeuristicCrossover : RealVectorCrossover {
     /// <summary>
@@ -71,7 +71,7 @@ namespace HeuristicLab.Encodings.RealVector {
     /// <returns>The newly created real vector, resulting from the heuristic crossover.</returns>
     public static DoubleArrayData Apply(IRandom random, DoubleArrayData betterParent, DoubleArrayData worseParent) {
       if (betterParent.Length != worseParent.Length)
-        throw new ArgumentException("ERROR in HeuristicCrossover: the two parents are not of the same length");
+        throw new ArgumentException("HeuristicCrossover: the two parents are not of the same length");
       
       int length = betterParent.Length;
       double[] result = new double[length];
@@ -98,7 +98,7 @@ namespace HeuristicLab.Encodings.RealVector {
     /// <param name="parents">An array containing the two real vectors that should be crossed.</param>
     /// <returns>The newly created real vector, resulting from the crossover operation.</returns>
     protected override DoubleArrayData Cross(IRandom random, ItemArray<DoubleArrayData> parents) {
-      if (parents.Length != 2) throw new ArgumentException("ERROR in HeuristicCrossover: The number of parents is not equal to 2");
+      if (parents.Length != 2) throw new ArgumentException("HeuristicCrossover: The number of parents is not equal to 2");
 
       if (MaximizationParameter.ActualValue == null) throw new InvalidOperationException("HeuristicCrossover: Parameter " + MaximizationParameter.ActualName + " could not be found.");
       if (QualityParameter.ActualValue == null || QualityParameter.ActualValue.Length != parents.Length) throw new InvalidOperationException("HeuristicCrossover: Parameter " + QualityParameter.ActualName + " could not be found, or not in the same quantity as there are parents.");
