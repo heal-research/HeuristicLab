@@ -68,7 +68,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
 
     private void dockPanel_ActiveContentChanged(object sender, EventArgs e) {
       DockForm content = this.dockPanel.ActiveContent as DockForm;
-      this.ActiveView = content == null ? null : content.View;
+      if (content != null)
+        this.ActiveView = content.View;
     }
   }
 }
