@@ -8,8 +8,8 @@ using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Modeling {
   public abstract class SimpleEvaluatorBase : OperatorBase {
-    protected const int ORIGINAL_INDEX = 0;
-    protected const int ESTIMATION_INDEX = 1;
+    public const int ORIGINAL_INDEX = 0;
+    public const int ESTIMATION_INDEX = 1;
 
     public virtual string OutputVariableName {
       get { return "Quality"; }

@@ -34,11 +34,10 @@ namespace HeuristicLab.GP.StructureIdentification {
     public LinearScalingPredictorBuilder()
       : base() {
       AddVariableInfo(new VariableInfo("FunctionTree", "The function tree", typeof(IGeneticProgrammingModel), VariableKind.In));
-      AddVariableInfo(new VariableInfo("PunishmentFactor", "The punishment factor limits the estimated values to a certain range", typeof(DoubleData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("Dataset", "The dataset", typeof(Dataset), VariableKind.In));
-      AddVariableInfo(new VariableInfo("TrainingSamplesStart", "Start index of training set", typeof(DoubleData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("TrainingSamplesEnd", "End index of training set", typeof(DoubleData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("TargetVariable", "Name of the target variable", typeof(StringData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("Beta", "Beta parameter for linear scaling as calculated by LinearScaler", typeof(DoubleData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("Alpha", "Alpha parameter for linear scaling as calculated by LinearScaler", typeof(DoubleData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("UpperEstimationLimit", "Upper limit for estimated value (optional)", typeof(DoubleData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("LowerEstimationLimit", "Lower limit for estimated value (optional)", typeof(DoubleData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Predictor", "The predictor combines the function tree and the evaluator and can be used to generate estimated values", typeof(IPredictor), VariableKind.New));
     }
 
@@ -48,69 +47,32 @@ namespace HeuristicLab.GP.StructureIdentification {
 
     public override IOperation Apply(IScope scope) {
       IGeneticProgrammingModel model = GetVariableValue<IGeneticProgrammingModel>("FunctionTree", scope, true);
-      double punishmentFactor = GetVariableValue<DoubleData>("PunishmentFactor", scope, true).Data;
-      Dataset dataset = GetVariableValue<Dataset>("Dataset", scope, true);
-      int start = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
-      int end = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
-      string targetVariable = GetVariableValue<StringData>("TargetVariable", scope, true).Data;
-      IPredictor predictor = CreatePredictor(model, punishmentFactor, dataset, targetVariable, start, end);
+      //double punishmentFactor = GetVariableValue<DoubleData>("PunishmentFactor", scope, true).Data;
+      //Dataset dataset = GetVariableValue<Dataset>("Dataset", scope, true);
+      //int start = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
+      //int end = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
+      //string targetVariable = GetVariableValue<StringData>("TargetVariable", scope, true).Data;
+      double alpha = GetVariableValue<DoubleData>("Alpha", scope, true).Data;
+      double beta = GetVariableValue<DoubleData>("Beta", scope, true).Data;
+      DoubleData lowerLimit = GetVariableValue<DoubleData>("LowerEstimationLimit", scope, true, false);
+      DoubleData upperLimit = GetVariableValue<DoubleData>("UpperEstimationLimit", scope, true, false);
+      IPredictor predictor;
+      if (lowerLimit == null || upperLimit == null)
+        predictor = CreatePredictor(model, beta, alpha, double.NegativeInfinity, double.PositiveInfinity);
+      else
+        predictor = CreatePredictor(model, beta, alpha, lowerLimit.Data, upperLimit.Data);
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("Predictor"), predictor));
       return null;
     }
 
-    public static IPredictor CreatePredictor(IGeneticProgrammingModel model, double punishmentFactor,
-  Dataset dataset, string targetVariable, int start, int end) {
-      return CreatePredictor(model, punishmentFactor, dataset, dataset.GetVariableIndex(targetVariable), start, end);
-    }
-
-
-    public static IPredictor CreatePredictor(IGeneticProgrammingModel model, double punishmentFactor,
-      Dataset dataset, int targetVariable, int start, int end) {
+    public static IPredictor CreatePredictor(IGeneticProgrammingModel model, double beta, double alpha, double lowerLimit, double upperLimit) {
 
       var evaluator = new HL3TreeEvaluator();
-      // evaluate for all rows
-      evaluator.PrepareForEvaluation(dataset, model.FunctionTree);
-      var result = from row in Enumerable.Range(start, end - start)
-                   let y = evaluator.Evaluate(row)
-                   let y_ = dataset.GetValue(row, targetVariable)
-                   select new { Row = row, Estimation = y, Target = y_ };
-
-      // calculate alpha and beta on the subset of rows with valid values 
-      var filteredResult = result.Where(x => IsValidValue(x.Target) && IsValidValue(x.Estimation));
-      var target = filteredResult.Select(x => x.Target);
-      var estimation = filteredResult.Select(x => x.Estimation);
-      double a, b;
-      if (filteredResult.Count() > 2) {
-        double tMean = target.Sum() / target.Count();
-        double xMean = estimation.Sum() / estimation.Count();
-        double sumXT = 0;
-        double sumXX = 0;
-        foreach (var r in result) {
-          double x = r.Estimation;
-          double t = r.Target;
-          sumXT += (x - xMean) * (t - tMean);
-          sumXX += (x - xMean) * (x - xMean);
-        }
-        b = sumXT / sumXX;
-        a = tMean - b * xMean;
-      } else {
-        b = 1.0;
-        a = 0.0;
-      }
-      double mean = dataset.GetMean(targetVariable, start, end);
-      double range = dataset.GetRange(targetVariable, start, end);
-      double minEstimatedValue = mean - punishmentFactor * range;
-      double maxEstimatedValue = mean + punishmentFactor * range;
-      evaluator.LowerEvaluationLimit = minEstimatedValue;
-      evaluator.UpperEvaluationLimit = maxEstimatedValue;
-      var resultModel = new GeneticProgrammingModel(MakeSum(MakeProduct(model.FunctionTree, b), a));
-      return new Predictor(evaluator, resultModel, minEstimatedValue, maxEstimatedValue);
+      evaluator.LowerEvaluationLimit = lowerLimit;
+      evaluator.UpperEvaluationLimit = upperLimit;
+      var resultModel = new GeneticProgrammingModel(MakeSum(MakeProduct(model.FunctionTree, beta), alpha));
+      return new Predictor(evaluator, resultModel, lowerLimit, upperLimit);
     }
-
-    private static bool IsValidValue(double d) {
-      return !double.IsInfinity(d) && !double.IsNaN(d);
-    }
-
 
     private static IFunctionTree MakeSum(IFunctionTree tree, double x) {
       if (x.IsAlmost(0.0)) return tree;
@@ -132,25 +94,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       var constX = (ConstantFunctionTree)(new Constant()).GetTreeNode();
       constX.Value = x;
       return constX;
-    }
-
-    private static void CalculateScalingParameters(IEnumerable<double> xs, IEnumerable<double> ys, out double k, out double d) {
-      if (xs.Count() != ys.Count()) throw new ArgumentException();
-      double xMean = xs.Sum() / xs.Count();
-      double yMean = ys.Sum() / ys.Count();
-
-      var yEnumerator = ys.GetEnumerator();
-      var xEnumerator = xs.GetEnumerator();
-
-      double sumXY = 0.0;
-      double sumXX = 0.0;
-      while (xEnumerator.MoveNext() && yEnumerator.MoveNext()) {
-        sumXY += (xEnumerator.Current - xMean) * (yEnumerator.Current - yMean);
-        sumXX += (xEnumerator.Current - xMean) * (xEnumerator.Current - xMean);
-      }
-
-      k = sumXY / sumXX;
-      d = yMean - k * xMean;
     }
   }
 }

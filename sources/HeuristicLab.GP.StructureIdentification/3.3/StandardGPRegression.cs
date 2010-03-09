@@ -40,12 +40,16 @@ namespace HeuristicLab.GP.StructureIdentification {
 
     public virtual string TargetVariable {
       get { return ProblemInjector.GetVariableValue<StringData>("TargetVariable", null, false).Data; }
-      set { ProblemInjector.GetVariableValue<StringData>("TargetVariable", null, false).Data = value; }
+      set {
+        ProblemInjector.GetVariableValue<StringData>("TargetVariable", null, false).Data = value;
+      }
     }
 
     public virtual Dataset Dataset {
       get { return ProblemInjector.GetVariableValue<Dataset>("Dataset", null, false); }
-      set { ProblemInjector.GetVariable("Dataset").Value = value; }
+      set {
+        ProblemInjector.GetVariable("Dataset").Value = value;
+      }
     }
 
     public virtual IAnalyzerModel Model {
@@ -100,7 +104,18 @@ namespace HeuristicLab.GP.StructureIdentification {
 
     public virtual double PunishmentFactor {
       get { return GetVariableInjector().GetVariable("PunishmentFactor").GetValue<DoubleData>().Data; }
-      set { GetVariableInjector().GetVariable("PunishmentFactor").GetValue<DoubleData>().Data = value; }
+      set {
+        GetVariableInjector().GetVariable("PunishmentFactor").GetValue<DoubleData>().Data = value;
+      }
+    }
+
+    public virtual double UpperEstimationLimit {
+      get { return GetVariableInjector().GetVariable("UpperEstimationLimit").GetValue<DoubleData>().Data; }
+      set { GetVariableInjector().GetVariable("UpperEstimationLimit").GetValue<DoubleData>().Data = value; }
+    }
+    public virtual double LowerEstimationLimit {
+      get { return GetVariableInjector().GetVariable("LowerEstimationLimit").GetValue<DoubleData>().Data; }
+      set { GetVariableInjector().GetVariable("LowerEstimationLimit").GetValue<DoubleData>().Data = value; }
     }
 
     public virtual int MaxBestValidationSolutionAge {
@@ -192,6 +207,9 @@ namespace HeuristicLab.GP.StructureIdentification {
     protected override VariableInjector CreateGlobalInjector() {
       VariableInjector injector = base.CreateGlobalInjector();
       injector.AddVariable(new HeuristicLab.Core.Variable("PunishmentFactor", new DoubleData()));
+      // NB: LowerEstimationLimit and UpperEstimationLimit should replace the direct use of PunishmentFactor in the algorithm (gkronber 9 March, 2010)
+      injector.AddVariable(new HeuristicLab.Core.Variable("LowerEstimationLimit", new DoubleData(double.NegativeInfinity)));
+      injector.AddVariable(new HeuristicLab.Core.Variable("UpperEstimationLimit", new DoubleData(double.PositiveInfinity)));
       injector.AddVariable(new HeuristicLab.Core.Variable("BestValidationSolutionAge", new IntData()));
       injector.AddVariable(new HeuristicLab.Core.Variable("MaxBestValidationSolutionAge", new IntData()));
       injector.AddVariable(new HeuristicLab.Core.Variable("MaxNumberOfTrainingSamples", new IntData(4000)));
@@ -234,7 +252,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       bestSolutionAge.GetVariableInfo("Result").ActualName = "TerminationCriterion";
 
       IOperator combinedTerminationCriterion = AlgorithmBase.CombineTerminationCriterions(base.CreateTerminationCondition(), bestSolutionAge);
-      
+
       terminationCritertion.OperatorGraph.AddOperator(combinedTerminationCriterion);
       terminationCritertion.OperatorGraph.InitialOperator = combinedTerminationCriterion;
       return terminationCritertion;

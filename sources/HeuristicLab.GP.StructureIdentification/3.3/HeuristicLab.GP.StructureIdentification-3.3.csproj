@@ -87,8 +87,6 @@
     <None Include="HeuristicLabGPStructureIdentificationPlugin.cs.frame" />
     <Compile Include="LinearScalingPredictorBuilder.cs" />
     <Compile Include="Evaluators\VariableFrequencyBasedImpactCalculator.cs" />
-    <Compile Include="ScalingTreeEvaluator.cs" />
-    <Compile Include="ScalingTreeEvaluatorInjector.cs" />
     <Compile Include="Evaluators\TreeComplexityEvaluator.cs" />
     <Compile Include="FunctionLibraryInjectors\ArithmeticFunctionLibraryInjector.cs" />
     <Compile Include="FunctionLibraryInjectors\SymbolicRegressionFunctionLibraryInjectorAttribute.cs" />

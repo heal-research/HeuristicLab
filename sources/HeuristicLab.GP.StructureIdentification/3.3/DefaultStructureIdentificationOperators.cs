@@ -38,19 +38,35 @@ namespace HeuristicLab.GP.StructureIdentification {
       op.Name = "FunctionLibraryInjector";
       SequentialProcessor seq = new SequentialProcessor();
       seq.AddSubOperator(new DefaultFunctionLibraryInjector());
-      seq.AddSubOperator(new ScalingTreeEvaluatorInjector());
+      seq.AddSubOperator(new HL3TreeEvaluatorInjector());
       op.OperatorGraph.AddOperator(seq);
       op.OperatorGraph.InitialOperator = seq;
       return op;
     }
 
     public static IOperator CreateInitialPopulationEvaluator() {
-      MeanSquaredErrorEvaluator eval = new MeanSquaredErrorEvaluator();
-      eval.Name = "Evaluator";
-      eval.GetVariableInfo("MSE").ActualName = "Quality";
+      CombinedOperator combinedOp = new CombinedOperator();
+      combinedOp.Name = "Evaluator";
+      SequentialProcessor seq = new SequentialProcessor();
+
+      SimpleEvaluator eval = new SimpleEvaluator();
+      eval.GetVariableInfo("Values").ActualName = "TrainingValues";
       eval.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
       eval.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
-      return eval;
+
+      LinearScaler scaler = new LinearScaler();
+      scaler.GetVariableInfo("Values").ActualName = "TrainingValues";
+
+      SimpleMSEEvaluator mseEval = new SimpleMSEEvaluator();
+      mseEval.GetVariableInfo("Values").ActualName = "TrainingValues";
+      mseEval.GetVariableInfo("MSE").ActualName = "Quality";
+
+      seq.AddSubOperator(eval);
+      seq.AddSubOperator(scaler);
+      seq.AddSubOperator(mseEval);
+      combinedOp.OperatorGraph.AddOperator(seq);
+      combinedOp.OperatorGraph.InitialOperator = seq;
+      return combinedOp;
     }
 
     public static IOperator CreateEvaluator() {
@@ -69,13 +85,19 @@ namespace HeuristicLab.GP.StructureIdentification {
 
       UniformSequentialSubScopesProcessor subScopesProc = new UniformSequentialSubScopesProcessor();
       SequentialProcessor individualProc = new SequentialProcessor();
-      MeanSquaredErrorEvaluator validationEvaluator = new MeanSquaredErrorEvaluator();
+      SimpleEvaluator validationEvaluator = new SimpleEvaluator();
       validationEvaluator.Name = "ValidationEvaluator";
-      validationEvaluator.GetVariableInfo("MSE").ActualName = "ValidationQuality";
+      validationEvaluator.GetVariableInfo("Values").ActualName = "ValidationValues";
       validationEvaluator.GetVariableInfo("SamplesStart").ActualName = "ValidationSamplesStart";
       validationEvaluator.GetVariableInfo("SamplesEnd").ActualName = "ValidationSamplesEnd";
-
+      LinearScaler validationScaler = new LinearScaler();
+      validationScaler.GetVariableInfo("Values").ActualName = "ValidationValues";
+      SimpleMSEEvaluator mseEval = new SimpleMSEEvaluator();
+      mseEval.GetVariableInfo("Values").ActualName = "ValidationValues";
+      mseEval.GetVariableInfo("MSE").ActualName = "ValidationQuality";
       individualProc.AddSubOperator(validationEvaluator);
+      individualProc.AddSubOperator(validationScaler);
+      individualProc.AddSubOperator(mseEval);
 
       Counter bestValidationSolutionAgeCounter = new Counter();
       bestValidationSolutionAgeCounter.Name = "BestSolutionAgeCounter";
@@ -126,33 +148,38 @@ namespace HeuristicLab.GP.StructureIdentification {
       seq.AddSubOperator(seqSubScopeProc);
       seqSubScopeProc.AddSubOperator(solutionProc);
 
-      ScalingTreeEvaluatorInjector evaluatorInjector = new ScalingTreeEvaluatorInjector();
-      evaluatorInjector.AddVariable(new HeuristicLab.Core.Variable("PunishmentFactor", new DoubleData(1000.0)));
-      evaluatorInjector.GetVariableInfo("TreeEvaluator").ActualName = "ModelAnalysisTreeEvaluator";
-
       #region simple evaluators
       SimpleEvaluator trainingEvaluator = new SimpleEvaluator();
       trainingEvaluator.Name = "TrainingEvaluator";
       trainingEvaluator.GetVariableInfo("SamplesStart").ActualName = "TrainingSamplesStart";
       trainingEvaluator.GetVariableInfo("SamplesEnd").ActualName = "TrainingSamplesEnd";
       trainingEvaluator.GetVariableInfo("Values").ActualName = "TrainingValues";
-      trainingEvaluator.GetVariableInfo("TreeEvaluator").ActualName = "ModelAnalysisTreeEvaluator";
       SimpleEvaluator validationEvaluator = new SimpleEvaluator();
       validationEvaluator.Name = "ValidationEvaluator";
       validationEvaluator.GetVariableInfo("SamplesStart").ActualName = "ValidationSamplesStart";
       validationEvaluator.GetVariableInfo("SamplesEnd").ActualName = "ValidationSamplesEnd";
       validationEvaluator.GetVariableInfo("Values").ActualName = "ValidationValues";
-      validationEvaluator.GetVariableInfo("TreeEvaluator").ActualName = "ModelAnalysisTreeEvaluator";
       SimpleEvaluator testEvaluator = new SimpleEvaluator();
       testEvaluator.Name = "TestEvaluator";
       testEvaluator.GetVariableInfo("SamplesStart").ActualName = "TestSamplesStart";
       testEvaluator.GetVariableInfo("SamplesEnd").ActualName = "TestSamplesEnd";
       testEvaluator.GetVariableInfo("Values").ActualName = "TestValues";
-      testEvaluator.GetVariableInfo("TreeEvaluator").ActualName = "ModelAnalysisTreeEvaluator";
-      solutionProc.AddSubOperator(evaluatorInjector);
+
+      LinearScaler trainingScaler = new LinearScaler();
+      trainingScaler.GetVariableInfo("Values").ActualName = "TrainingValues";
+
+      LinearScaler validationScaler = new LinearScaler();
+      validationScaler.GetVariableInfo("Values").ActualName = "ValidationValues";
+
+      LinearScaler testScaler = new LinearScaler();
+      testEvaluator.GetVariableInfo("Values").ActualName = "TestValues";
+
       solutionProc.AddSubOperator(trainingEvaluator);
       solutionProc.AddSubOperator(validationEvaluator);
       solutionProc.AddSubOperator(testEvaluator);
+      solutionProc.AddSubOperator(trainingScaler);
+      solutionProc.AddSubOperator(validationScaler);
+      solutionProc.AddSubOperator(testScaler);
       #endregion
 
       #region variable impacts
@@ -170,7 +197,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       solutionProc.AddSubOperator(qualityImpactCalculator);
 
       NodeBasedVariableImpactCalculator nodeImpactCalculator = new NodeBasedVariableImpactCalculator();
-      nodeImpactCalculator.GetVariableInfo("TreeEvaluator").ActualName = "ModelAnalysisTreeEvaluator";
       nodeImpactCalculator.GetVariableInfo("SamplesStart").ActualName = "ValidationSamplesStart";
       nodeImpactCalculator.GetVariableInfo("SamplesEnd").ActualName = "ValidationSamplesEnd";
 

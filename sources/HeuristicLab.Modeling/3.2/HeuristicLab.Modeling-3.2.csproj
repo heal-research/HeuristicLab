@@ -83,6 +83,7 @@
   <ItemGroup>
     <Compile Include="AnalyzerModel.cs" />
     <Compile Include="BestSolutionStorer.cs" />
+    <Compile Include="LinearScaler.cs" />
     <Compile Include="SimpleStableCorrelationCoefficientEvaluator.cs" />
     <Compile Include="SimplePearsonCorrelationCoefficientEvaluator.cs" />
     <Compile Include="SimpleSpearmansRankCorrelationCoefficientEvaluator.cs" />

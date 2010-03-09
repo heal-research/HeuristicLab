@@ -197,6 +197,9 @@ namespace HeuristicLab.GP.StructureIdentification {
     protected override VariableInjector CreateGlobalInjector() {
       VariableInjector injector = base.CreateGlobalInjector();
       injector.AddVariable(new HeuristicLab.Core.Variable("PunishmentFactor", new DoubleData()));
+      // NB: LowerEstimationLimit and UpperEstimationLimit should replace the direct use of PunishmentFactor in the algorithm (gkronber 9 March, 2010)
+      injector.AddVariable(new HeuristicLab.Core.Variable("LowerEstimationLimit", new DoubleData(double.NegativeInfinity)));
+      injector.AddVariable(new HeuristicLab.Core.Variable("UpperEstimationLimit", new DoubleData(double.PositiveInfinity)));
       injector.AddVariable(new HeuristicLab.Core.Variable("BestValidationSolutionAge", new IntData()));
       injector.AddVariable(new HeuristicLab.Core.Variable("MaxBestValidationSolutionAge", new IntData()));
       injector.AddVariable(new HeuristicLab.Core.Variable("MaxNumberOfTrainingSamples", new IntData(4000)));
