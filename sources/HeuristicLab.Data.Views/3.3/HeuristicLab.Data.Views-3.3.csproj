@@ -97,6 +97,12 @@
     <Compile Include="ComparisonDataView.Designer.cs">
       <DependentUpon>ComparisonDataView.cs</DependentUpon>
     </Compile>
+    <Compile Include="StringConvertibleArrayDataView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StringConvertibleArrayDataView.Designer.cs">
+      <DependentUpon>StringConvertibleArrayDataView.cs</DependentUpon>
+    </Compile>
     <Compile Include="StringConvertibleDataView.cs">
       <SubType>UserControl</SubType>
     </Compile>

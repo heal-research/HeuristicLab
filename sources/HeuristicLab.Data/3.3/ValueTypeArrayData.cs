@@ -21,9 +21,7 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Text;
-using System.Xml;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -90,13 +88,13 @@ namespace HeuristicLab.Data {
       return array.GetEnumerator();
     }
 
-    protected event EventHandler<EventArgs<int, int>> ItemChanged;
+    public event EventHandler<EventArgs<int>> ItemChanged;
     private void OnItemChanged(int index) {
       if (ItemChanged != null)
-        ItemChanged(this, new EventArgs<int, int>(index, 0));
+        ItemChanged(this, new EventArgs<int>(index));
       OnToStringChanged();
     }
-    protected event EventHandler Reset;
+    public event EventHandler Reset;
     private void OnReset() {
       if (Reset != null)
         Reset(this, EventArgs.Empty);

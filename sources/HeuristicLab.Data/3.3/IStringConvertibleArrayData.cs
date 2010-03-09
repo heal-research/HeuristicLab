@@ -20,18 +20,17 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
 using HeuristicLab.Common;
-using HeuristicLab.Core;
 
 namespace HeuristicLab.Data {
-  [Flags]
-  public enum StringConvertibleArrayDataDimensions {
-    None    = 0,
-    Rows    = 1,
-    Columns = 2,
-    Both    = 3
+  public interface IStringConvertibleArrayData {
+    int Rows { get; set; }
+
+    bool Validate(string value, out string errorMessage);
+    string GetValue(int index);
+    bool SetValue(string value, int index);
+
+    event EventHandler<EventArgs<int>> ItemChanged;
+    event EventHandler Reset;
   }
 }

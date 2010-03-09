@@ -21,9 +21,7 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Text;
-using System.Xml;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -31,7 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Data {
   [Item("StringArrayData", "Represents an array of strings.")]
   [Creatable("Test")]
-  public sealed class StringArrayData : Item, IEnumerable, IStringConvertibleMatrixData {
+  public sealed class StringArrayData : Item, IEnumerable, IStringConvertibleArrayData {
     [Storable]
     private string[] array;
 
@@ -97,20 +95,13 @@ namespace HeuristicLab.Data {
       return array.GetEnumerator();
     }
 
-    #region IStringConvertibleMatrixData Members
-    StringConvertibleArrayDataDimensions IStringConvertibleMatrixData.Dimensions {
-      get { return StringConvertibleArrayDataDimensions.Rows; }
-    }
-    int IStringConvertibleMatrixData.Rows {
+    #region IStringConvertibleArrayData Members
+    int IStringConvertibleArrayData.Rows {
       get { return Length; }
       set { Length = value; }
     }
-    int IStringConvertibleMatrixData.Columns {
-      get { return 1; }
-      set { throw new NotSupportedException("The number of columns cannot be changed."); }
-    }
 
-    bool IStringConvertibleMatrixData.Validate(string value, out string errorMessage) {
+    bool IStringConvertibleArrayData.Validate(string value, out string errorMessage) {
       if (value == null) {
         errorMessage = "Invalid Value (string must not be null)";
         return false;
@@ -119,32 +110,24 @@ namespace HeuristicLab.Data {
         return true;
       }
     }
-    string IStringConvertibleMatrixData.GetValue(int rowIndex, int columIndex) {
-      return this[rowIndex];
+    string IStringConvertibleArrayData.GetValue(int index) {
+      return this[index];
     }
-    bool IStringConvertibleMatrixData.SetValue(string value, int rowIndex, int columnIndex) {
+    bool IStringConvertibleArrayData.SetValue(string value, int index) {
       if (value != null) {
-        this[rowIndex] = value;
+        this[index] = value;
         return true;
       } else {
         return false;
       }
     }
-    private event EventHandler<EventArgs<int, int>> ItemChanged;
-    event EventHandler<EventArgs<int, int>> IStringConvertibleMatrixData.ItemChanged {
-      add { ItemChanged += value; }
-      remove { ItemChanged -= value; }
-    }
+    public event EventHandler<EventArgs<int>> ItemChanged;
     private void OnItemChanged(int index) {
       if (ItemChanged != null)
-        ItemChanged(this, new EventArgs<int, int>(index, 0));
+        ItemChanged(this, new EventArgs<int>(index));
       OnToStringChanged();
     }
-    private event EventHandler Reset;
-    event EventHandler IStringConvertibleMatrixData.Reset {
-      add { Reset += value; }
-      remove { Reset -= value; }
-    }
+    public event EventHandler Reset;
     private void OnReset() {
       if (Reset != null)
         Reset(this, EventArgs.Empty);

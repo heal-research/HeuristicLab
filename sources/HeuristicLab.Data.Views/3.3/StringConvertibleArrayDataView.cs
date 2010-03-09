@@ -28,29 +28,27 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Data.Views {
-  [View("StringConvertibleMatrixData View")]
-  [Content(typeof(IStringConvertibleMatrixData), true)]
-  public partial class StringConvertibleMatrixDataView : ContentView {
-    public new IStringConvertibleMatrixData Content {
-      get { return (IStringConvertibleMatrixData)base.Content; }
+  [View("StringConvertibleArrayData View")]
+  [Content(typeof(IStringConvertibleArrayData), true)]
+  public partial class StringConvertibleArrayDataView : ContentView {
+    public new IStringConvertibleArrayData Content {
+      get { return (IStringConvertibleArrayData)base.Content; }
       set { base.Content = value; }
     }
 
-    public StringConvertibleMatrixDataView() {
+    public StringConvertibleArrayDataView() {
       InitializeComponent();
-      Caption = "StringConvertibleMatrixData View";
+      Caption = "StringConvertibleArrayData View";
       errorProvider.SetIconAlignment(rowsTextBox, ErrorIconAlignment.MiddleLeft);
       errorProvider.SetIconPadding(rowsTextBox, 2);
-      errorProvider.SetIconAlignment(columnsTextBox, ErrorIconAlignment.MiddleLeft);
-      errorProvider.SetIconPadding(columnsTextBox, 2);
     }
-    public StringConvertibleMatrixDataView(IStringConvertibleMatrixData content)
+    public StringConvertibleArrayDataView(IStringConvertibleArrayData content)
       : this() {
       Content = content;
     }
 
     protected override void DeregisterContentEvents() {
-      Content.ItemChanged -= new EventHandler<EventArgs<int, int>>(Content_ItemChanged);
+      Content.ItemChanged -= new EventHandler<EventArgs<int>>(Content_ItemChanged);
       Content.Reset -= new EventHandler(Content_Reset);
       base.DeregisterContentEvents();
     }
@@ -58,23 +56,21 @@ namespace HeuristicLab.Data.Views {
 
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.ItemChanged += new EventHandler<EventArgs<int, int>>(Content_ItemChanged);
+      Content.ItemChanged += new EventHandler<EventArgs<int>>(Content_ItemChanged);
       Content.Reset += new EventHandler(Content_Reset);
     }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        Caption = "StringConvertibleMatrixData View";
+        Caption = "StringConvertibleArrayData View";
         rowsTextBox.Text = "";
         rowsTextBox.Enabled = false;
-        columnsTextBox.Text = "";
-        columnsTextBox.Enabled = false;
         dataGridView.Rows.Clear();
         dataGridView.Columns.Clear();
         dataGridView.Enabled = false;
       } else {
-        Caption = "StringConvertibleMatrixData (" + Content.GetType().Name + ")";
+        Caption = "StringConvertibleArrayData (" + Content.GetType().Name + ")";
         UpdateData();
       }
     }
@@ -82,33 +78,27 @@ namespace HeuristicLab.Data.Views {
     private void UpdateData() {
       rowsTextBox.Text = Content.Rows.ToString();
       rowsTextBox.Enabled = true;
-      columnsTextBox.Text = Content.Columns.ToString();
-      columnsTextBox.Enabled = true;
       dataGridView.Rows.Clear();
       dataGridView.Columns.Clear();
-      if ((Content.Rows > 0) && (Content.Columns > 0)) {
-        for (int i = 0; i < Content.Columns; i++) {
-          dataGridView.ColumnCount++;
-          dataGridView.Columns[dataGridView.ColumnCount - 1].FillWeight = float.Epsilon;  // sum of all fill weights must not be larger than 65535
-        }
+      if (Content.Rows > 0) {
+        dataGridView.ColumnCount++;
+        dataGridView.Columns[0].FillWeight = float.Epsilon;  // sum of all fill weights must not be larger than 65535
         dataGridView.RowCount = Content.Rows;
         for (int i = 0; i < Content.Rows; i++) {
-          for (int j = 0; j < Content.Columns; j++)
-            dataGridView.Rows[i].Cells[j].Value = Content.GetValue(i, j);
+          dataGridView.Rows[i].Cells[0].Value = Content.GetValue(i);
         }
-        for (int i = 0; i < Content.Columns; i++)
-          dataGridView.Columns[i].Width = dataGridView.Columns[i].GetPreferredWidth(DataGridViewAutoSizeColumnMode.AllCells, true);
+        dataGridView.Columns[0].Width = dataGridView.Columns[0].GetPreferredWidth(DataGridViewAutoSizeColumnMode.AllCells, true);
       }
       dataGridView.Enabled = true;
     }
 
-    private void Content_ItemChanged(object sender, EventArgs<int, int> e) {
+    private void Content_ItemChanged(object sender, EventArgs<int> e) {
       if (InvokeRequired)
-        Invoke(new EventHandler<EventArgs<int, int>>(Content_ItemChanged), sender, e);
+        Invoke(new EventHandler<EventArgs<int>>(Content_ItemChanged), sender, e);
       else {
-        dataGridView.Rows[e.Value].Cells[e.Value2].Value = Content.GetValue(e.Value, e.Value2);
-        Size size = dataGridView.Rows[e.Value].Cells[e.Value2].PreferredSize;
-        dataGridView.Columns[e.Value2].Width = Math.Max(dataGridView.Columns[e.Value2].Width, size.Width);
+        dataGridView.Rows[e.Value].Cells[0].Value = Content.GetValue(e.Value);
+        Size size = dataGridView.Rows[e.Value].Cells[0].PreferredSize;
+        dataGridView.Columns[0].Width = Math.Max(dataGridView.Columns[0].Width, size.Width);
       }
     }
     private void Content_Reset(object sender, EventArgs e) {
@@ -139,26 +129,6 @@ namespace HeuristicLab.Data.Views {
         rowsLabel.Focus();  // set focus on label to validate data
       }
     }
-    private void columnsTextBox_Validating(object sender, CancelEventArgs e) {
-      int i = 0;
-      if (!int.TryParse(columnsTextBox.Text, out i) || (i < 0)) {
-        e.Cancel = true;
-        errorProvider.SetError(columnsTextBox, "Invalid Number of Columns (Valid Values: Positive Integers Larger or Equal to 0)");
-        columnsTextBox.SelectAll();
-      }
-    }
-    private void columnsTextBox_Validated(object sender, EventArgs e) {
-      Content.Columns = int.Parse(columnsTextBox.Text);
-      errorProvider.SetError(columnsTextBox, string.Empty);
-    }
-    private void columnsTextBox_KeyDown(object sender, KeyEventArgs e) {
-      if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return)
-        columnsLabel.Focus();  // set focus on label to validate data
-      if (e.KeyCode == Keys.Escape) {
-        columnsTextBox.Text = Content.Columns.ToString();
-        columnsLabel.Focus();  // set focus on label to validate data
-      }
-    }
     #endregion
 
     #region DataGridView Events
@@ -171,8 +141,8 @@ namespace HeuristicLab.Data.Views {
     }
     private void dataGridView_CellParsing(object sender, DataGridViewCellParsingEventArgs e) {
       string value = e.Value.ToString();
-      e.ParsingApplied = Content.SetValue(value, e.RowIndex, e.ColumnIndex);
-      if (e.ParsingApplied) e.Value = Content.GetValue(e.RowIndex, e.ColumnIndex);
+      e.ParsingApplied = Content.SetValue(value, e.RowIndex);
+      if (e.ParsingApplied) e.Value = Content.GetValue(e.RowIndex);
     }
     private void dataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e) {
       dataGridView.Rows[e.RowIndex].ErrorText = string.Empty;

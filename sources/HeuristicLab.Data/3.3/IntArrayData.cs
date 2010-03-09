@@ -19,11 +19,7 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
 using System.Text;
-using System.Xml;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -31,7 +27,7 @@ namespace HeuristicLab.Data {
   [EmptyStorableClass]
   [Item("IntArrayData", "Represents an array of integer values.")]
   [Creatable("Test")]
-  public sealed class IntArrayData : ValueTypeArrayData<int>, IStringConvertibleMatrixData {
+  public sealed class IntArrayData : ValueTypeArrayData<int>, IStringConvertibleArrayData {
     public IntArrayData() : base() { }
     public IntArrayData(int length) : base(length) { }
     public IntArrayData(int[] elements) : base(elements) { }
@@ -43,20 +39,13 @@ namespace HeuristicLab.Data {
       return clone;
     }
 
-    #region IStringConvertibleMatrixData Members
-    StringConvertibleArrayDataDimensions IStringConvertibleMatrixData.Dimensions {
-      get { return StringConvertibleArrayDataDimensions.Rows; }
-    }
-    int IStringConvertibleMatrixData.Rows {
+    #region IStringConvertibleArrayData Members
+    int IStringConvertibleArrayData.Rows {
       get { return Length; }
       set { Length = value; }
     }
-    int IStringConvertibleMatrixData.Columns {
-      get { return 1; }
-      set { throw new NotSupportedException("The number of columns cannot be changed."); }
-    }
 
-    bool IStringConvertibleMatrixData.Validate(string value, out string errorMessage) {
+    bool IStringConvertibleArrayData.Validate(string value, out string errorMessage) {
       int val;
       bool valid = int.TryParse(value, out val);
       errorMessage = string.Empty;
@@ -69,25 +58,17 @@ namespace HeuristicLab.Data {
       }
       return valid;
     }
-    string IStringConvertibleMatrixData.GetValue(int rowIndex, int columIndex) {
-      return this[rowIndex].ToString();
+    string IStringConvertibleArrayData.GetValue(int index) {
+      return this[index].ToString();
     }
-    bool IStringConvertibleMatrixData.SetValue(string value, int rowIndex, int columnIndex) {
+    bool IStringConvertibleArrayData.SetValue(string value, int index) {
       int val;
       if (int.TryParse(value, out val)) {
-        this[rowIndex] = val;
+        this[index] = val;
         return true;
       } else {
         return false;
       }
-    }
-    event EventHandler<EventArgs<int, int>> IStringConvertibleMatrixData.ItemChanged {
-      add { base.ItemChanged += value; }
-      remove { base.ItemChanged -= value; }
-    }
-    event EventHandler IStringConvertibleMatrixData.Reset {
-      add { base.Reset += value; }
-      remove { base.Reset -= value; }
     }
     #endregion
   }

@@ -19,11 +19,6 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
-
 namespace HeuristicLab.Data {
   public enum Comparison {
     Less,

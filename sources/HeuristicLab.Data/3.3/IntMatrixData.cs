@@ -19,11 +19,7 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
 using System.Text;
-using System.Xml;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -44,9 +40,6 @@ namespace HeuristicLab.Data {
     }
 
     #region IStringConvertibleMatrixData Members
-    StringConvertibleArrayDataDimensions IStringConvertibleMatrixData.Dimensions {
-      get { return StringConvertibleArrayDataDimensions.Both; }
-    }
     int IStringConvertibleMatrixData.Rows {
       get { return Rows; }
       set { Rows = value; }
@@ -80,14 +73,6 @@ namespace HeuristicLab.Data {
       } else {
         return false;
       }
-    }
-    event EventHandler<EventArgs<int, int>> IStringConvertibleMatrixData.ItemChanged {
-      add { base.ItemChanged += value; }
-      remove { base.ItemChanged -= value; }
-    }
-    event EventHandler IStringConvertibleMatrixData.Reset {
-      add { base.Reset += value; }
-      remove { base.Reset -= value; }
     }
     #endregion
   }

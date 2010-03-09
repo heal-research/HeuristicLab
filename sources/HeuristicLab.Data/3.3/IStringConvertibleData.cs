@@ -20,10 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
-using HeuristicLab.Core;
 
 namespace HeuristicLab.Data {
   public interface IStringConvertibleData {

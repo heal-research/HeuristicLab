@@ -21,9 +21,7 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Text;
-using System.Xml;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -119,9 +117,6 @@ namespace HeuristicLab.Data {
     }
 
     #region IStringConvertibleMatrixData Members
-    StringConvertibleArrayDataDimensions IStringConvertibleMatrixData.Dimensions {
-      get { return StringConvertibleArrayDataDimensions.Both; }
-    }
     int IStringConvertibleMatrixData.Rows {
       get { return Rows; }
       set { Rows = value; }
@@ -151,21 +146,13 @@ namespace HeuristicLab.Data {
         return false;
       }
     }
-    private event EventHandler<EventArgs<int, int>> ItemChanged;
-    event EventHandler<EventArgs<int, int>> IStringConvertibleMatrixData.ItemChanged {
-      add { ItemChanged += value; }
-      remove { ItemChanged -= value; }
-    }
+    public event EventHandler<EventArgs<int, int>> ItemChanged;
     private void OnItemChanged(int rowIndex, int columnIndex) {
       if (ItemChanged != null)
         ItemChanged(this, new EventArgs<int, int>(rowIndex, columnIndex));
       OnToStringChanged();
     }
-    private event EventHandler Reset;
-    event EventHandler IStringConvertibleMatrixData.Reset {
-      add { Reset += value; }
-      remove { Reset -= value; }
-    }
+    public event EventHandler Reset;
     private void OnReset() {
       if (Reset != null)
         Reset(this, EventArgs.Empty);
