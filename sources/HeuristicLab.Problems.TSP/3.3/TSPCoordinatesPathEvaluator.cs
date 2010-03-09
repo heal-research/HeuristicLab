@@ -19,28 +19,41 @@
  */
 #endregion
 
-using System;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.TSP {
   /// <summary>
-  /// An operator which evaluates TSP solutions given in path representation using the rounded Euclidean distance metric.
+  /// A base class for operators which evaluate TSP solutions given in path representation using city coordinates.
   /// </summary>
-  [Item("TSPRoundedEuclideanPathEvaluator", "An operator which evaluates TSP solutions given in path representation using the rounded Euclidean distance metric.")]
-  [Creatable("Test")]
+  [Item("TSPCoordinatesPathEvaluator", "A base class for operators which evaluate TSP solutions given in path representation using city coordinates.")]
   [EmptyStorableClass]
-  public sealed class TSPRoundedEuclideanPathEvaluator : TSPCoordinatesPathEvaluator {
+  public abstract class TSPCoordinatesPathEvaluator : TSPPathEvaluator, ITSPCoordinatesPathEvaluator {
+    public ILookupParameter<DoubleMatrixData> CoordinatesParameter {
+      get { return (ILookupParameter<DoubleMatrixData>)Parameters["Coordinates"]; }
+    }
+
+    protected TSPCoordinatesPathEvaluator()
+      : base() {
+      Parameters.Add(new LookupParameter<DoubleMatrixData>("Coordinates", "The x- and y-Coordinates of the cities."));
+    }
+
+    protected sealed override double CalculateDistance(int a, int b) {
+      DoubleMatrixData coordinates = CoordinatesParameter.ActualValue;
+      return CalculateDistance(coordinates[a, 0], coordinates[a, 1],
+                               coordinates[b, 0], coordinates[b, 1]);
+    }
+
     /// <summary>
-    /// Calculates the distance between two points using the rounded Euclidean distance metric.
+    /// Calculates the distance between two points.
     /// </summary>
     /// <param name="x1">The x-coordinate of point 1.</param>
     /// <param name="y1">The y-coordinate of point 1.</param>
     /// <param name="x2">The x-coordinate of point 2.</param>
     /// <param name="y2">The y-coordinate of point 2.</param>
     /// <returns>The calculated distance.</returns>
-    protected override double CalculateDistance(double x1, double y1, double x2, double y2) {
-      return Math.Round(Math.Sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)));
-    }
+    protected abstract double CalculateDistance(double x1, double y1, double x2, double y2);
   }
 }

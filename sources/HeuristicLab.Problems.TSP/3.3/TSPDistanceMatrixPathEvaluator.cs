@@ -21,7 +21,6 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.Permutation;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -32,31 +31,19 @@ namespace HeuristicLab.Problems.TSP {
   [Item("TSPDistanceMatrixPathEvaluator", "An operator which evaluates TSP solutions given in path representation using a distance matrix.")]
   [Creatable("Test")]
   [EmptyStorableClass]
-  public sealed class TSPDistanceMatrixPathEvaluator : TSPEvaluator {
-    public LookupParameter<DoubleMatrixData> DistanceMatrixParameter {
-      get { return (LookupParameter<DoubleMatrixData>)Parameters["DistanceMatrix"]; }
-    }
-    public LookupParameter<Permutation> PermutationParameter {
-      get { return (LookupParameter<Permutation>)Parameters["Permutation"]; }
+  public sealed class TSPDistanceMatrixPathEvaluator : TSPPathEvaluator, ITSPDistanceMatrixPathEvaluator {
+    public ILookupParameter<DoubleMatrixData> DistanceMatrixParameter {
+      get { return (ILookupParameter<DoubleMatrixData>)Parameters["DistanceMatrix"]; }
     }
 
     public TSPDistanceMatrixPathEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<DoubleMatrixData>("DistanceMatrix", "The distance matrix of the cities."));
-      Parameters.Add(new LookupParameter<Permutation>("Permutation", "The TSP solution given in path representation which should be evaluated."));
     }
 
-    public override IOperation Apply() {
+    protected override double CalculateDistance(int a, int b) {
       DoubleMatrixData distanceMatrix = DistanceMatrixParameter.ActualValue;
-      Permutation permutation = PermutationParameter.ActualValue;
-
-      double length = 0;
-      for (int i = 0; i < permutation.Length - 1; i++)
-        length += distanceMatrix[permutation[i], permutation[i + 1]];
-      length += distanceMatrix[permutation[permutation.Length - 1], permutation[0]];
-      QualityParameter.ActualValue = new DoubleData(length);
-
-      return base.Apply();
+      return distanceMatrix[a, b];
     }
   }
 }

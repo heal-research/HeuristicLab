@@ -20,8 +20,10 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.Permutation;
@@ -33,44 +35,80 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Problems.TSP {
   [Item("TSP", "Represents a symmetric Traveling Salesman Problem.")]
   [Creatable("Problems")]
-  [EmptyStorableClass]
   public sealed class TSP : ParameterizedNamedItem, ISingleObjectiveProblem {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }
     }
 
-    private IValueParameter<BoolData> MaximizationParameter {
-      get { return (IValueParameter<BoolData>)Parameters["Maximization"]; }
+    #region Parameter Properties
+    public ValueParameter<BoolData> MaximizationParameter {
+      get { return (ValueParameter<BoolData>)Parameters["Maximization"]; }
     }
-    public IValueParameter<DoubleMatrixData> CoordinatesParameter {
-      get { return (IValueParameter<DoubleMatrixData>)Parameters["Coordinates"]; }
+    IParameter ISingleObjectiveProblem.MaximizationParameter {
+      get { return MaximizationParameter; }
     }
-    public IValueParameter<DoubleData> BestKnownQualityParameter {
-      get { return (IValueParameter<DoubleData>)Parameters["BestKnownQuality"]; }
+    public ValueParameter<DoubleMatrixData> CoordinatesParameter {
+      get { return (ValueParameter<DoubleMatrixData>)Parameters["Coordinates"]; }
     }
-    public IValueParameter<IPermutationCreator> SolutionCreatorParameter {
-      get { return (IValueParameter<IPermutationCreator>)Parameters["SolutionCreator"]; }
+    public ValueParameter<IPermutationCreator> SolutionCreatorParameter {
+      get { return (ValueParameter<IPermutationCreator>)Parameters["SolutionCreator"]; }
     }
-    public IValueParameter<ITSPEvaluator> EvaluatorParameter {
-      get { return (IValueParameter<ITSPEvaluator>)Parameters["Evaluator"]; }
+    IParameter IProblem.SolutionCreatorParameter {
+      get { return SolutionCreatorParameter; }
     }
+    public ValueParameter<ITSPEvaluator> EvaluatorParameter {
+      get { return (ValueParameter<ITSPEvaluator>)Parameters["Evaluator"]; }
+    }
+    IParameter IProblem.EvaluatorParameter {
+      get { return EvaluatorParameter; }
+    }
+    public OptionalValueParameter<DoubleData> BestKnownQualityParameter {
+      get { return (OptionalValueParameter<DoubleData>)Parameters["BestKnownQuality"]; }
+    }
+    #endregion
 
-    public BoolData Maximization {
-      get { return MaximizationParameter.Value; }
+    #region Properties
+    public DoubleMatrixData Coordinates {
+      get { return CoordinatesParameter.Value; }
+      set { CoordinatesParameter.Value = value; }
     }
-    public ISolutionCreator SolutionCreator {
+    public IPermutationCreator SolutionCreator {
+      get { return SolutionCreatorParameter.Value; }
+      set { SolutionCreatorParameter.Value = value; }
+    }
+    ISolutionCreator IProblem.SolutionCreator {
       get { return SolutionCreatorParameter.Value; }
     }
-    public ISingleObjectiveEvaluator Evaluator {
+    public ITSPEvaluator Evaluator {
+      get { return EvaluatorParameter.Value; }
+      set { EvaluatorParameter.Value = value; }
+    }
+    ISingleObjectiveEvaluator ISingleObjectiveProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
     }
     IEvaluator IProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
     }
-    private OperatorSet operators;
-    public OperatorSet Operators {
-      get { return operators; }
+    public DoubleData BestKnownQuality {
+      get { return BestKnownQualityParameter.Value; }
+      set { BestKnownQualityParameter.Value = value; }
     }
+    private OperatorSet operators;
+    public IEnumerable<IOperator> Operators {
+      get {
+        if (operators == null) InitializeOperators();
+        return operators;
+      }
+    }
+    #endregion
+
+    #region Persistence Properties
+    [Storable]
+    private object RestoreEvents {
+      get { return null; }
+      set { RegisterEvents(); }
+    }
+    #endregion
 
     public TSP()
       : base() {
@@ -84,53 +122,26 @@ namespace HeuristicLab.Problems.TSP {
       Parameters.Add(new OptionalValueParameter<DoubleData>("BestKnownQuality", "The quality of the best known solution of this TSP instance."));
 
       creator.PermutationParameter.ActualName = "TSPTour";
-      creator.LengthParameter.Value = new IntData(0);
-      evaluator.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
-      evaluator.PermutationParameter.ActualName = creator.PermutationParameter.ActualName;
       evaluator.QualityParameter.ActualName = "TSPTourLength";
+      ParameterizeSolutionCreator();
+      ParameterizeEvaluator();
 
-      MaximizationParameter.ValueChanged += new EventHandler(MaximizationParameter_ValueChanged);
-      SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
-      EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
+      RegisterEvents();
+    }
 
-      operators = new OperatorSet();
-      if (ApplicationManager.Manager != null) {
-        var ops = ApplicationManager.Manager.GetInstances<IPermutationOperator>();
-        foreach (IPermutationCrossover op in ops.OfType<IPermutationCrossover>()) {
-          op.ParentsParameter.ActualName = creator.PermutationParameter.ActualName;
-          op.ChildParameter.ActualName = creator.PermutationParameter.ActualName;
-        }
-        foreach (IPermutationManipulator op in ops.OfType<IPermutationManipulator>()) {
-          op.PermutationParameter.ActualName = creator.PermutationParameter.ActualName;
-        }
-        foreach (IPermutationOperator op in ops)
-          operators.Add(op);
-      }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      TSP clone = (TSP)base.Clone(cloner);
+      clone.RegisterEvents();
+      return clone;
     }
 
     public void ImportFromTSPLIB(string filename) {
       TSPLIBParser parser = new TSPLIBParser(filename);
       parser.Parse();
-      CoordinatesParameter.Value = new DoubleMatrixData(parser.Vertices);
-      int cities = CoordinatesParameter.Value.Rows;
-      SolutionCreatorParameter.Value.LengthParameter.Value = new IntData(cities);
+      Coordinates = new DoubleMatrixData(parser.Vertices);
     }
 
-    private void MaximizationParameter_ValueChanged(object sender, EventArgs e) {
-      OnMaximizationChanged();
-    }
-    private void SolutionCreatorParameter_ValueChanged(object sender, EventArgs e) {
-      OnSolutionCreatorChanged();
-    }
-    private void EvaluatorParameter_ValueChanged(object sender, EventArgs e) {
-      OnEvaluatorChanged();
-    }
-
-    public event EventHandler MaximizationChanged;
-    private void OnMaximizationChanged() {
-      if (MaximizationChanged != null)
-        MaximizationChanged(this, EventArgs.Empty);
-    }
+    #region Events
     public event EventHandler SolutionCreatorChanged;
     private void OnSolutionCreatorChanged() {
       if (SolutionCreatorChanged != null)
@@ -141,5 +152,74 @@ namespace HeuristicLab.Problems.TSP {
       if (EvaluatorChanged != null)
         EvaluatorChanged(this, EventArgs.Empty);
     }
+    public event EventHandler OperatorsChanged;
+    private void OnOperatorsChanged() {
+      if (OperatorsChanged != null)
+        OperatorsChanged(this, EventArgs.Empty);
+    }
+
+    private void CoordinatesParameter_ValueChanged(object sender, EventArgs e) {
+      Coordinates.ItemChanged += new EventHandler<EventArgs<int, int>>(Coordinates_ItemChanged);
+      Coordinates.Reset += new EventHandler(Coordinates_Reset);
+      ParameterizeSolutionCreator();
+    }
+    private void Coordinates_ItemChanged(object sender, EventArgs<int, int> e) {
+    }
+    private void Coordinates_Reset(object sender, EventArgs e) {
+      ParameterizeSolutionCreator();
+    }
+    private void SolutionCreatorParameter_ValueChanged(object sender, EventArgs e) {
+      SolutionCreator.PermutationParameter.ActualNameChanged += new EventHandler(SolutionCreator_PermutationParameter_ActualNameChanged);
+      ParameterizeSolutionCreator();
+      ParameterizeEvaluator();
+      ParameterizeOperators();
+      OnSolutionCreatorChanged();
+    }
+    private void SolutionCreator_PermutationParameter_ActualNameChanged(object sender, EventArgs e) {
+      ParameterizeEvaluator();
+      ParameterizeOperators();
+    }
+    private void EvaluatorParameter_ValueChanged(object sender, EventArgs e) {
+      ParameterizeEvaluator();
+      OnEvaluatorChanged();
+    }
+    #endregion
+
+    #region Helpers
+    private void RegisterEvents() {
+      CoordinatesParameter.ValueChanged += new EventHandler(CoordinatesParameter_ValueChanged);
+      Coordinates.ItemChanged += new EventHandler<EventArgs<int, int>>(Coordinates_ItemChanged);
+      Coordinates.Reset += new EventHandler(Coordinates_Reset);
+      SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
+      SolutionCreator.PermutationParameter.ActualNameChanged += new EventHandler(SolutionCreator_PermutationParameter_ActualNameChanged);
+      EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
+    }
+    private void ParameterizeSolutionCreator() {
+      SolutionCreator.LengthParameter.Value = new IntData(Coordinates.Rows);
+    }
+    private void ParameterizeEvaluator() {
+      if (Evaluator is ITSPPathEvaluator)
+        ((ITSPPathEvaluator)Evaluator).PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+      if (Evaluator is ITSPCoordinatesPathEvaluator)
+        ((ITSPCoordinatesPathEvaluator)Evaluator).CoordinatesParameter.ActualName = CoordinatesParameter.Name;
+    }
+    private void InitializeOperators() {
+      operators = new OperatorSet();
+      if (ApplicationManager.Manager != null) {
+        foreach (IPermutationOperator op in ApplicationManager.Manager.GetInstances<IPermutationOperator>())
+          operators.Add(op);
+        ParameterizeOperators();
+      }
+    }
+    private void ParameterizeOperators() {
+      foreach (IPermutationCrossover op in Operators.OfType<IPermutationCrossover>()) {
+        op.ParentsParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+        op.ChildParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+      }
+      foreach (IPermutationManipulator op in Operators.OfType<IPermutationManipulator>()) {
+        op.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+      }
+    }
+    #endregion
   }
 }

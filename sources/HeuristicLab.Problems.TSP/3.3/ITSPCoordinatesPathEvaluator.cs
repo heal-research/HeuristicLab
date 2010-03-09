@@ -19,23 +19,14 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 
-namespace HeuristicLab.Optimization {
+namespace HeuristicLab.Problems.TSP {
   /// <summary>
-  /// Interface to represent an optimization problem.
+  /// An interface which represents an evaluation operator which evaluates TSP solutions given in path representation using city coordinates.
   /// </summary>
-  public interface IProblem : IParameterizedNamedItem {
-    IParameter SolutionCreatorParameter { get; }
-    ISolutionCreator SolutionCreator { get; }
-    IParameter EvaluatorParameter { get; }
-    IEvaluator Evaluator { get; }
-    IEnumerable<IOperator> Operators { get; }
-
-    event EventHandler SolutionCreatorChanged;
-    event EventHandler EvaluatorChanged;
-    event EventHandler OperatorsChanged;
+  public interface ITSPCoordinatesPathEvaluator : ITSPPathEvaluator {
+    ILookupParameter<DoubleMatrixData> CoordinatesParameter { get; }
   }
 }

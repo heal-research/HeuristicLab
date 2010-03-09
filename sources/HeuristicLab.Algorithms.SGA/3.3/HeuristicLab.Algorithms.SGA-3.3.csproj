@@ -82,7 +82,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HeuristicLabAlgorithmsSGAPlugin.cs" />
-    <Compile Include="SGA.cs" />
+    <Compile Include="SGA.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SGAOperator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

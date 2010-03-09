@@ -19,17 +19,14 @@
  */
 #endregion
 
-using System;
-using HeuristicLab.Data;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
   /// An interface to represent a single-objective optimization problem.
   /// </summary>
   public interface ISingleObjectiveProblem : IProblem {
-    BoolData Maximization { get; }
+    IParameter MaximizationParameter { get; }
     new ISingleObjectiveEvaluator Evaluator { get; }
-
-    event EventHandler MaximizationChanged;
   }
 }
