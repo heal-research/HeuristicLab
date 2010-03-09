@@ -30,7 +30,7 @@ namespace HeuristicLab.Encodings.Permutation {
   [EmptyStorableClass]
   [Item("Permutation", "Represents a permutation of integer values.")]
   [Creatable("Test")]
-  public sealed class Permutation : ValueTypeArrayData<int>, IStringConvertibleMatrixData {
+  public sealed class Permutation : ValueTypeArrayData<int>, IStringConvertibleArrayData {
     public Permutation() : base() { }
     public Permutation(int length)
       : base(length) {
@@ -84,20 +84,13 @@ namespace HeuristicLab.Encodings.Permutation {
       Randomize(random, 0, Length);
     }
 
-    #region IStringConvertibleMatrixData Members
-    StringConvertibleArrayDataDimensions IStringConvertibleMatrixData.Dimensions {
-      get { return StringConvertibleArrayDataDimensions.Rows; }
-    }
-    int IStringConvertibleMatrixData.Rows {
+    #region IStringConvertibleArrayData Members
+    int IStringConvertibleArrayData.Length {
       get { return Length; }
       set { Length = value; }
     }
-    int IStringConvertibleMatrixData.Columns {
-      get { return 1; }
-      set { throw new NotSupportedException("The number of columns cannot be changed."); }
-    }
 
-    bool IStringConvertibleMatrixData.Validate(string value, out string errorMessage) {
+    bool IStringConvertibleArrayData.Validate(string value, out string errorMessage) {
       int val;
       bool valid = int.TryParse(value, out val);
       errorMessage = string.Empty;
@@ -110,25 +103,17 @@ namespace HeuristicLab.Encodings.Permutation {
       }
       return valid;
     }
-    string IStringConvertibleMatrixData.GetValue(int rowIndex, int columIndex) {
-      return this[rowIndex].ToString();
+    string IStringConvertibleArrayData.GetValue(int index) {
+      return this[index].ToString();
     }
-    bool IStringConvertibleMatrixData.SetValue(string value, int rowIndex, int columnIndex) {
+    bool IStringConvertibleArrayData.SetValue(string value, int index) {
       int val;
       if (int.TryParse(value, out val)) {
-        this[rowIndex] = val;
+        this[index] = val;
         return true;
       } else {
         return false;
       }
-    }
-    event EventHandler<EventArgs<int, int>> IStringConvertibleMatrixData.ItemChanged {
-      add { base.ItemChanged += value; }
-      remove { base.ItemChanged -= value; }
-    }
-    event EventHandler IStringConvertibleMatrixData.Reset {
-      add { base.Reset += value; }
-      remove { base.Reset -= value; }
     }
     #endregion
   }

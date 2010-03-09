@@ -45,34 +45,34 @@ namespace HeuristicLab.Data.Views {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      this.rowsLabel = new System.Windows.Forms.Label();
-      this.rowsTextBox = new System.Windows.Forms.TextBox();
+      this.lengthLabel = new System.Windows.Forms.Label();
+      this.lengthTextBox = new System.Windows.Forms.TextBox();
       this.dataGridView = new System.Windows.Forms.DataGridView();
       this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
       // 
-      // rowsLabel
+      // lengthLabel
       // 
-      this.rowsLabel.AutoSize = true;
-      this.rowsLabel.Location = new System.Drawing.Point(3, 3);
-      this.rowsLabel.Name = "rowsLabel";
-      this.rowsLabel.Size = new System.Drawing.Size(37, 13);
-      this.rowsLabel.TabIndex = 0;
-      this.rowsLabel.Text = "&Rows:";
+      this.lengthLabel.AutoSize = true;
+      this.lengthLabel.Location = new System.Drawing.Point(3, 3);
+      this.lengthLabel.Name = "lengthLabel";
+      this.lengthLabel.Size = new System.Drawing.Size(43, 13);
+      this.lengthLabel.TabIndex = 0;
+      this.lengthLabel.Text = "&Length:";
       // 
-      // rowsTextBox
+      // lengthTextBox
       // 
-      this.rowsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.lengthTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.rowsTextBox.Location = new System.Drawing.Point(69, 0);
-      this.rowsTextBox.Name = "rowsTextBox";
-      this.rowsTextBox.Size = new System.Drawing.Size(355, 20);
-      this.rowsTextBox.TabIndex = 1;
-      this.rowsTextBox.Validated += new System.EventHandler(this.rowsTextBox_Validated);
-      this.rowsTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.rowsTextBox_KeyDown);
-      this.rowsTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.rowsTextBox_Validating);
+      this.lengthTextBox.Location = new System.Drawing.Point(52, 0);
+      this.lengthTextBox.Name = "lengthTextBox";
+      this.lengthTextBox.Size = new System.Drawing.Size(372, 20);
+      this.lengthTextBox.TabIndex = 1;
+      this.lengthTextBox.Validated += new System.EventHandler(this.lengthTextBox_Validated);
+      this.lengthTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lengthTextBox_KeyDown);
+      this.lengthTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.lengthTextBox_Validating);
       // 
       // dataGridView
       // 
@@ -87,7 +87,7 @@ namespace HeuristicLab.Data.Views {
       this.dataGridView.Location = new System.Drawing.Point(0, 26);
       this.dataGridView.Name = "dataGridView";
       this.dataGridView.Size = new System.Drawing.Size(424, 378);
-      this.dataGridView.TabIndex = 4;
+      this.dataGridView.TabIndex = 2;
       this.dataGridView.CellParsing += new System.Windows.Forms.DataGridViewCellParsingEventHandler(this.dataGridView_CellParsing);
       this.dataGridView.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dataGridView_CellValidating);
       this.dataGridView.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellEndEdit);
@@ -102,8 +102,8 @@ namespace HeuristicLab.Data.Views {
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.dataGridView);
-      this.Controls.Add(this.rowsTextBox);
-      this.Controls.Add(this.rowsLabel);
+      this.Controls.Add(this.lengthTextBox);
+      this.Controls.Add(this.lengthLabel);
       this.Name = "StringConvertibleArrayDataView";
       this.Size = new System.Drawing.Size(424, 404);
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
@@ -115,8 +115,8 @@ namespace HeuristicLab.Data.Views {
 
     #endregion
 
-    private System.Windows.Forms.Label rowsLabel;
-    private System.Windows.Forms.TextBox rowsTextBox;
+    private System.Windows.Forms.Label lengthLabel;
+    private System.Windows.Forms.TextBox lengthTextBox;
     private System.Windows.Forms.DataGridView dataGridView;
     private System.Windows.Forms.ErrorProvider errorProvider;
 

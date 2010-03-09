@@ -40,7 +40,7 @@ namespace HeuristicLab.Data {
     }
 
     #region IStringConvertibleArrayData Members
-    int IStringConvertibleArrayData.Rows {
+    int IStringConvertibleArrayData.Length {
       get { return Length; }
       set { Length = value; }
     }

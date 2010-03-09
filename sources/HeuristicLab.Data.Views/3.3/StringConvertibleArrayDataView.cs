@@ -39,8 +39,8 @@ namespace HeuristicLab.Data.Views {
     public StringConvertibleArrayDataView() {
       InitializeComponent();
       Caption = "StringConvertibleArrayData View";
-      errorProvider.SetIconAlignment(rowsTextBox, ErrorIconAlignment.MiddleLeft);
-      errorProvider.SetIconPadding(rowsTextBox, 2);
+      errorProvider.SetIconAlignment(lengthTextBox, ErrorIconAlignment.MiddleLeft);
+      errorProvider.SetIconPadding(lengthTextBox, 2);
     }
     public StringConvertibleArrayDataView(IStringConvertibleArrayData content)
       : this() {
@@ -64,8 +64,8 @@ namespace HeuristicLab.Data.Views {
       base.OnContentChanged();
       if (Content == null) {
         Caption = "StringConvertibleArrayData View";
-        rowsTextBox.Text = "";
-        rowsTextBox.Enabled = false;
+        lengthTextBox.Text = "";
+        lengthTextBox.Enabled = false;
         dataGridView.Rows.Clear();
         dataGridView.Columns.Clear();
         dataGridView.Enabled = false;
@@ -76,15 +76,15 @@ namespace HeuristicLab.Data.Views {
     }
 
     private void UpdateData() {
-      rowsTextBox.Text = Content.Rows.ToString();
-      rowsTextBox.Enabled = true;
+      lengthTextBox.Text = Content.Length.ToString();
+      lengthTextBox.Enabled = true;
       dataGridView.Rows.Clear();
       dataGridView.Columns.Clear();
-      if (Content.Rows > 0) {
+      if (Content.Length > 0) {
         dataGridView.ColumnCount++;
         dataGridView.Columns[0].FillWeight = float.Epsilon;  // sum of all fill weights must not be larger than 65535
-        dataGridView.RowCount = Content.Rows;
-        for (int i = 0; i < Content.Rows; i++) {
+        dataGridView.RowCount = Content.Length;
+        for (int i = 0; i < Content.Length; i++) {
           dataGridView.Rows[i].Cells[0].Value = Content.GetValue(i);
         }
         dataGridView.Columns[0].Width = dataGridView.Columns[0].GetPreferredWidth(DataGridViewAutoSizeColumnMode.AllCells, true);
@@ -109,24 +109,24 @@ namespace HeuristicLab.Data.Views {
     }
 
     #region TextBox Events
-    private void rowsTextBox_Validating(object sender, CancelEventArgs e) {
+    private void lengthTextBox_Validating(object sender, CancelEventArgs e) {
       int i = 0;
-      if (!int.TryParse(rowsTextBox.Text, out i) || (i < 0)) {
+      if (!int.TryParse(lengthTextBox.Text, out i) || (i < 0)) {
         e.Cancel = true;
-        errorProvider.SetError(rowsTextBox, "Invalid Number of Rows (Valid Values: Positive Integers Larger or Equal to 0)");
-        rowsTextBox.SelectAll();
+        errorProvider.SetError(lengthTextBox, "Invalid Array Length (Valid Values: Positive Integers Larger or Equal to 0)");
+        lengthTextBox.SelectAll();
       }
     }
-    private void rowsTextBox_Validated(object sender, EventArgs e) {
-      Content.Rows = int.Parse(rowsTextBox.Text);
-      errorProvider.SetError(rowsTextBox, string.Empty);
+    private void lengthTextBox_Validated(object sender, EventArgs e) {
+      Content.Length = int.Parse(lengthTextBox.Text);
+      errorProvider.SetError(lengthTextBox, string.Empty);
     }
-    private void rowsTextBox_KeyDown(object sender, KeyEventArgs e) {
+    private void lengthTextBox_KeyDown(object sender, KeyEventArgs e) {
       if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return)
-        rowsLabel.Focus();  // set focus on label to validate data
+        lengthLabel.Focus();  // set focus on label to validate data
       if (e.KeyCode == Keys.Escape) {
-        rowsTextBox.Text = Content.Rows.ToString();
-        rowsLabel.Focus();  // set focus on label to validate data
+        lengthTextBox.Text = Content.Length.ToString();
+        lengthLabel.Focus();  // set focus on label to validate data
       }
     }
     #endregion

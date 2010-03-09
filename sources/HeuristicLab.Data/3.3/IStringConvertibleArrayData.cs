@@ -24,7 +24,7 @@ using HeuristicLab.Common;
 
 namespace HeuristicLab.Data {
   public interface IStringConvertibleArrayData {
-    int Rows { get; set; }
+    int Length { get; set; }
 
     bool Validate(string value, out string errorMessage);
     string GetValue(int index);
