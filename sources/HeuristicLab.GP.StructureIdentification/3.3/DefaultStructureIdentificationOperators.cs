@@ -172,7 +172,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       validationScaler.GetVariableInfo("Values").ActualName = "ValidationValues";
 
       LinearScaler testScaler = new LinearScaler();
-      testEvaluator.GetVariableInfo("Values").ActualName = "TestValues";
+      testScaler.GetVariableInfo("Values").ActualName = "TestValues";
 
       solutionProc.AddSubOperator(trainingEvaluator);
       solutionProc.AddSubOperator(validationEvaluator);
