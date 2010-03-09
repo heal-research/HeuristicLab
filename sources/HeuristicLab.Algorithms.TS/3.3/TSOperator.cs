@@ -22,10 +22,8 @@
 using HeuristicLab.Analysis;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-//using HeuristicLab.Evolutionary;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-//using HeuristicLab.Selection;
 
 namespace HeuristicLab.Algorithms.TS {
   /// <summary>
@@ -46,6 +44,9 @@ namespace HeuristicLab.Algorithms.TS {
     public ValueLookupParameter<IntData> MaximumIterationsParameter {
       get { return (ValueLookupParameter<IntData>)Parameters["MaximumIterations"]; }
     }
+    public ValueLookupParameter<IntData> TabuTenureParameter {
+      get { return (ValueLookupParameter<IntData>)Parameters["TabuTenure"]; }
+    }
     public ValueLookupParameter<VariableCollection> ResultsParameter {
       get { return (ValueLookupParameter<VariableCollection>)Parameters["Results"]; }
     }
@@ -65,15 +66,30 @@ namespace HeuristicLab.Algorithms.TS {
       Parameters.Add(new ValueLookupParameter<BoolData>("Maximization", "True if the problem is a maximization problem, otherwise false."));
       Parameters.Add(new SubScopesLookupParameter<DoubleData>("Quality", "The value which represents the quality of a solution."));
       Parameters.Add(new ValueLookupParameter<IntData>("MaximumIterations", "The maximum number of generations which should be processed."));
+      Parameters.Add(new ValueLookupParameter<IntData>("TabuTenure", "The length of the tabu list, and also means the number of iterations a move is kept tabu"));
       Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The variable collection where results should be stored."));
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope which represents a population of solutions on which the TS should be applied."));
       #endregion
 
-      #region Create operator graph
+      #region Create operators
       VariableCreator variableCreator = new VariableCreator();
       ResultsCollector resultsCollector = new ResultsCollector();
-
-      OperatorGraph.InitialOperator = variableCreator;
+      Placeholder moveGenerator = new Placeholder();
+      UniformSequentialSubScopesProcessor moveEvaluationProcessor = new UniformSequentialSubScopesProcessor();
+      Placeholder moveQualityEvaluator = new Placeholder();
+      Placeholder moveTabuEvaluator = new Placeholder();
+      SubScopesSorter moveQualitySorter = new SubScopesSorter();
+      Placeholder tabuSelector = new Placeholder();
+      SequentialSubScopesProcessor moveMakingProcessor = new SequentialSubScopesProcessor();
+      EmptyOperator emptyOp = new EmptyOperator();
+      UniformSequentialSubScopesProcessor actualMoveMakingProcessor = new UniformSequentialSubScopesProcessor();
+      Placeholder moveMaker = new Placeholder();
+      Placeholder moveTabuMaker = new Placeholder();
+      SubScopesRemover subScopesRemover = new SubScopesRemover();
+      IntCounter iterationsCounter = new IntCounter();
+      Comparator iterationsComparator = new Comparator();
+      ConditionalBranch iterationsTermination = new ConditionalBranch();
+      EmptyOperator finished = new EmptyOperator();
 
       variableCreator.CollectedValues.Add(new ValueParameter<IntData>("Iterations", new IntData(0)));
       variableCreator.CollectedValues.Add(new ValueParameter<DoubleData>("Best Quality", new DoubleData(0)));
@@ -82,7 +98,6 @@ namespace HeuristicLab.Algorithms.TS {
       variableCreator.CollectedValues.Add(new ValueParameter<DoubleData>("Worst Move Quality", new DoubleData(0)));
       variableCreator.CollectedValues.Add(new ValueParameter<DataTable>("Qualities", new DataTable("Qualities")));
       variableCreator.CollectedValues.Add(new ValueParameter<DataTable>("MoveQualities", new DataTable("MoveQualities")));
-      variableCreator.Successor = resultsCollector;
 
       resultsCollector.CollectedValues.Add(new LookupParameter<IntData>("Iterations"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleData>("Best Quality"));
@@ -92,7 +107,60 @@ namespace HeuristicLab.Algorithms.TS {
       resultsCollector.CollectedValues.Add(new LookupParameter<DataTable>("Qualities"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DataTable>("MoveQualities"));
       resultsCollector.ResultsParameter.ActualName = "Results";
-      resultsCollector.Successor = null;
+
+      moveGenerator.Name = "MoveGenerator (placeholder)";
+      moveGenerator.OperatorParameter.ActualName = "MoveGenerator";
+
+      moveQualityEvaluator.Name = "MoveQualityEvaluator (placeholder)";
+      moveQualityEvaluator.OperatorParameter.ActualName = "MoveQualityEvaluator";
+
+      moveTabuEvaluator.Name = "MoveTabuEvaluator (placeholder)";
+      moveTabuEvaluator.OperatorParameter.ActualName = "MoveTabuEvaluator";
+
+      moveQualitySorter.DescendingParameter.ActualName = "Maximization";
+      moveQualitySorter.ValueParameter.ActualName = "MoveQuality";
+
+      tabuSelector.Name = "TabuSelector (placeholder)";
+      tabuSelector.OperatorParameter.ActualName = "TabuSelector";
+
+      moveMaker.Name = "MoveMaker (placeholder)";
+      moveMaker.OperatorParameter.ActualName = "MoveMaker";
+
+      moveTabuMaker.Name = "MoveTabuMaker (placeholder)";
+      moveTabuMaker.OperatorParameter.ActualName = "MoveTabuMaker";
+
+      subScopesRemover.RemoveAllSubScopes = true;
+
+      iterationsCounter.Increment = new IntData(1);
+      iterationsCounter.IncrementParameter.ActualName = "Iterations";
+
+      iterationsComparator.Comparison = new ComparisonData(Comparison.Less);
+      iterationsComparator.LeftSideParameter.ActualName = "Iterations";
+      iterationsComparator.RightSideParameter.ActualName = "MaximumIterations";
+      iterationsComparator.ResultParameter.ActualName = "IterationsCondition";
+
+      iterationsTermination.ConditionParameter.ActualName = "IterationsCondition";
+      #endregion
+
+      #region Create operator graph
+      OperatorGraph.InitialOperator = variableCreator;
+      variableCreator.Successor = resultsCollector;
+      resultsCollector.Successor = moveGenerator;
+      moveGenerator.Successor = moveEvaluationProcessor;
+      moveEvaluationProcessor.Operator = moveQualityEvaluator;
+      moveQualityEvaluator.Successor = moveTabuEvaluator;
+      moveEvaluationProcessor.Successor = moveQualitySorter;
+      moveQualitySorter.Successor = tabuSelector;
+      tabuSelector.Successor = moveMakingProcessor;
+      moveMakingProcessor.Operators.AddRange(new Operator[] { emptyOp, actualMoveMakingProcessor });
+      actualMoveMakingProcessor.Operator = moveMaker;
+      moveMaker.Successor = moveTabuMaker;
+      moveMakingProcessor.Successor = subScopesRemover;
+      subScopesRemover.Successor = iterationsCounter;
+      iterationsCounter.Successor = iterationsComparator;
+      iterationsComparator.Successor = iterationsTermination;
+      iterationsTermination.TrueBranch = resultsCollector;
+      iterationsTermination.FalseBranch = finished;
       #endregion
     }
   }
