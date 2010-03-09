@@ -51,7 +51,7 @@ namespace HeuristicLab.ArtificialNeuralNetworks {
       var inputVariableNames = from x in inputVariables
                                select ((StringData)x).Data;
       string targetVariable = GetVariableValue<StringData>("TargetVariable", scope, true).Data;
-      int targetVariableIndex = dataset.GetVariableIndex(targetVariable);
+      // int targetVariableIndex = dataset.GetVariableIndex(targetVariable);
       int start = GetVariableValue<IntData>("SamplesStart", scope, true).Data;
       int end = GetVariableValue<IntData>("SamplesEnd", scope, true).Data;
       IntData minTimeOffsetData = GetVariableValue<IntData>("MinTimeOffset", scope, true, false);
@@ -60,17 +60,22 @@ namespace HeuristicLab.ArtificialNeuralNetworks {
       int maxTimeOffset = maxTimeOffsetData == null ? 0 : maxTimeOffsetData.Data;
       MultiLayerPerceptron model = GetVariableValue<MultiLayerPerceptron>("MultiLayerPerceptron", scope, true);
 
-      double[,] values = new double[end - start, 2];
-      for (int i = 0; i < end - start; i++) {
+      double[] targetVector;
+      double[,] inputMatrix;
+      MultiLayerPerceptronRegressionOperator.PrepareDataset(dataset, targetVariable, inputVariableNames, start, end, minTimeOffset, maxTimeOffset,
+        out inputMatrix, out targetVector);
+
+      double[,] values = new double[targetVector.Length, 2];
+      for (int i = 0; i < targetVector.Length; i++) {
         double[] output = new double[1];
-        double[] inputRow = new double[dataset.Columns - 1];
-        for (int c = 1; c < inputRow.Length; c++) {
-          inputRow[c - 1] = dataset.GetValue(i + start, c);
+        double[] inputRow = new double[inputMatrix.GetLength(1)];
+        for (int c = 0; c < inputRow.Length; c++) {
+          inputRow[c] = inputMatrix[i, c];
         }
         alglib.mlpbase.multilayerperceptron p = model.Perceptron;
         alglib.mlpbase.mlpprocess(ref p, ref inputRow, ref output);
         model.Perceptron = p;
-        values[i, 0] = dataset.GetValue(start + i, targetVariableIndex);
+        values[i, 0] = targetVector[i];
         values[i, 1] = output[0];
       }
 

@@ -67,6 +67,8 @@ namespace HeuristicLab.ArtificialNeuralNetworks {
       MultiLayerPerceptron clone = (MultiLayerPerceptron)base.Clone(clonedObjects);
 
       clone.inputVariables = new List<string>(inputVariables);
+      clone.minTimeOffset = MinTimeOffset;
+      clone.maxTimeOffset = MaxTimeOffset;
 
       double[] ra = null;
       int rlen = 0;
@@ -77,7 +79,12 @@ namespace HeuristicLab.ArtificialNeuralNetworks {
 
     public override System.Xml.XmlNode GetXmlNode(string name, System.Xml.XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-
+      var minTimeOffsetAttr = document.CreateAttribute("MinTimeOffset");
+      minTimeOffsetAttr.Value = minTimeOffset.ToString();
+      var maxTimeOffsetAttr = document.CreateAttribute("MaxTimeOffset");
+      maxTimeOffsetAttr.Value = maxTimeOffset.ToString();
+      node.Attributes.Append(minTimeOffsetAttr);
+      node.Attributes.Append(maxTimeOffsetAttr);
       XmlNode networkInformation = document.CreateElement("NetworkInformation");
       double[] ra = null;
       int rlen = 0;
@@ -93,6 +100,8 @@ namespace HeuristicLab.ArtificialNeuralNetworks {
 
     public override void Populate(System.Xml.XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
+      minTimeOffset = XmlConvert.ToInt32(node.Attributes["MinTimeOffset"].Value);
+      maxTimeOffset = XmlConvert.ToInt32(node.Attributes["MaxTimeOffset"].Value);
       double[] ra = (from s in node.SelectSingleNode("NetworkInformation").InnerText.Split(';')
                      select double.Parse(s, CultureInfo.InvariantCulture)).ToArray();
       alglib.mlpbase.mlpunserialize(ref ra, ref perceptron);

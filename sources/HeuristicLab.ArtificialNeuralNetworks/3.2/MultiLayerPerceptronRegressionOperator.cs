@@ -35,6 +35,8 @@ namespace HeuristicLab.ArtificialNeuralNetworks {
       AddVariableInfo(new VariableInfo("Dataset", "Dataset with all samples on which to apply the function", typeof(Dataset), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesStart", "Start index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesEnd", "End index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("ValidationSamplesStart", "Start of validation set", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("ValidationSamplesEnd", "End of validation set", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("NumberOfHiddenLayerNeurons", "The number of nodes in the hidden layer.", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("MaxTimeOffset", "(optional) Maximal time offset for time-series prognosis", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("MinTimeOffset", "(optional) Minimal time offset for time-series prognosis", typeof(IntData), VariableKind.In));
@@ -47,40 +49,45 @@ namespace HeuristicLab.ArtificialNeuralNetworks {
       int targetVariableIndex = dataset.GetVariableIndex(targetVariable);
       int start = GetVariableValue<IntData>("SamplesStart", scope, true).Data;
       int end = GetVariableValue<IntData>("SamplesEnd", scope, true).Data;
+
+      int valStart = GetVariableValue<IntData>("ValidationSamplesStart", scope, true).Data;
+      int valEnd = GetVariableValue<IntData>("ValidationSamplesEnd", scope, true).Data;
+
+
       IntData maxTimeOffsetData = GetVariableValue<IntData>("MaxTimeOffset", scope, true, false);
       int maxTimeOffset = maxTimeOffsetData == null ? 0 : maxTimeOffsetData.Data;
       IntData minTimeOffsetData = GetVariableValue<IntData>("MinTimeOffset", scope, true, false);
       int minTimeOffset = minTimeOffsetData == null ? 0 : minTimeOffsetData.Data;
       int nHiddenNodes = GetVariableValue<IntData>("NumberOfHiddenLayerNeurons", scope, true).Data;
 
-      var perceptron = CreateModel(dataset, targetVariable, dataset.VariableNames, start, end, minTimeOffset, maxTimeOffset, nHiddenNodes);
+      var perceptron = CreateModel(dataset, targetVariable, dataset.VariableNames, start, end, valStart, valEnd, minTimeOffset, maxTimeOffset, nHiddenNodes);
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("MultiLayerPerceptron"), perceptron));
       return null;
     }
 
-    public static MultiLayerPerceptron CreateModel(Dataset dataset, string targetVariable, IEnumerable<string> inputVariables, int start, int end, int nHiddenNodes) {
-      return CreateModel(dataset, targetVariable, inputVariables, start, end, 0, 0, nHiddenNodes);
-    }
+    //public static MultiLayerPerceptron CreateModel(Dataset dataset, string targetVariable, IEnumerable<string> inputVariables, int start, int end, int nHiddenNodes) {
+    //  return CreateModel(dataset, targetVariable, inputVariables, start, end, 0, 0, nHiddenNodes);
+    //}
 
     public static MultiLayerPerceptron CreateModel(Dataset dataset, string targetVariable, IEnumerable<string> inputVariables,
-        int start, int end,
+        int start, int end, int valStart, int valEnd,
         int minTimeOffset, int maxTimeOffset, int nHiddenNodes) {
-      int targetVariableIndex = dataset.GetVariableIndex(targetVariable);
-      List<int> allowedColumns = CalculateAllowedColumns(dataset, targetVariableIndex, inputVariables.Select(x => dataset.GetVariableIndex(x)), start, end);
-      List<int> allowedRows = CalculateAllowedRows(dataset, targetVariableIndex, allowedColumns, start, end, minTimeOffset, maxTimeOffset);
-
-      double[,] inputMatrix = PrepareInputMatrix(dataset, allowedColumns, allowedRows, minTimeOffset, maxTimeOffset);
-      double[] targetVector = PrepareTargetVector(dataset, targetVariableIndex, allowedRows);
-
-      var perceptron = TrainPerceptron(inputMatrix, targetVector, nHiddenNodes);
+      double[,] inputMatrix;
+      double[,] validationData;
+      double[] targetVector;
+      double[] validationTargetVector;
+      PrepareDataset(dataset, targetVariable, inputVariables, start, end, minTimeOffset, maxTimeOffset, out inputMatrix, out targetVector);
+      PrepareDataset(dataset, targetVariable, inputVariables, valStart, valEnd, minTimeOffset, maxTimeOffset, out validationData, out validationTargetVector);
+      var perceptron = TrainPerceptron(inputMatrix, targetVector, nHiddenNodes, validationData, validationTargetVector);
       return new MultiLayerPerceptron(perceptron, inputVariables, minTimeOffset, maxTimeOffset);
     }
 
 
 
-    private static alglib.mlpbase.multilayerperceptron TrainPerceptron(double[,] inputMatrix, double[] targetVector, int nHiddenNodes) {
+    private static alglib.mlpbase.multilayerperceptron TrainPerceptron(double[,] inputMatrix, double[] targetVector, int nHiddenNodes, double[,] validationData, double[] validationTargetVector) {
       int retVal = 0;
       int n = targetVector.Length;
+      int validationN = validationTargetVector.Length;
       int p = inputMatrix.GetLength(1);
       alglib.mlpbase.multilayerperceptron perceptron = new alglib.mlpbase.multilayerperceptron();
       alglib.mlpbase.mlpcreate1(p - 1, nHiddenNodes, 1, ref perceptron);
@@ -92,9 +99,28 @@ namespace HeuristicLab.ArtificialNeuralNetworks {
         }
         dataset[row, p - 1] = targetVector[row];
       }
-      alglib.mlptrain.mlptrainlbfgs(ref perceptron, ref dataset, n, 0.001, 2, 0.01, 0, ref retVal, ref report);
-      if (retVal != 2) throw new ArgumentException("Error in training of multi layer perceptron");
+      double[,] validationDataset = new double[validationN, p];
+      for (int row = 0; row < validationN; row++) {
+        for (int column = 0; column < p - 1; column++) {
+          validationDataset[row, column] = validationData[row, column];
+        }
+        validationDataset[row, p - 1] = validationTargetVector[row];
+      }
+      //alglib.mlptrain.mlptrainlbfgs(ref perceptron, ref dataset, n, 0.001, 10, 0.01, 0, ref retVal, ref report);
+      alglib.mlptrain.mlptraines(ref perceptron, ref dataset, n, ref validationDataset, validationN, 0.001, 10, ref retVal, ref report);
+      if (retVal != 2 && retVal != 6) throw new ArgumentException("Error in training of multi layer perceptron");
       return perceptron;
+    }
+
+    public static void PrepareDataset(Dataset dataset, string targetVariable, IEnumerable<string> inputVariables, int start, int end, int minTimeOffset, int maxTimeOffset,
+      out double[,] inputMatrix, out double[] targetVector) {
+      int targetVariableIndex = dataset.GetVariableIndex(targetVariable);
+      List<int> allowedColumns = CalculateAllowedColumns(dataset, targetVariableIndex, inputVariables.Select(x => dataset.GetVariableIndex(x)), start, end);
+      List<int> allowedRows = CalculateAllowedRows(dataset, targetVariableIndex, allowedColumns, start, end, minTimeOffset, maxTimeOffset);
+
+      inputMatrix = PrepareInputMatrix(dataset, allowedColumns, allowedRows, minTimeOffset, maxTimeOffset);
+      targetVector = PrepareTargetVector(dataset, targetVariableIndex, allowedRows);
+
     }
 
     //returns list of valid row indexes (rows without NaN values)
@@ -138,15 +164,12 @@ namespace HeuristicLab.ArtificialNeuralNetworks {
     private static double[,] PrepareInputMatrix(Dataset dataset, List<int> allowedColumns, List<int> allowedRows, int minTimeOffset, int maxTimeOffset) {
       int rowCount = allowedRows.Count;
       int timeOffsetRange = (maxTimeOffset - minTimeOffset + 1);
-      double[,] matrix = new double[rowCount, (allowedColumns.Count * timeOffsetRange) + 1];
+      double[,] matrix = new double[rowCount, (allowedColumns.Count * timeOffsetRange)];
       for (int row = 0; row < allowedRows.Count; row++)
         for (int col = 0; col < allowedColumns.Count; col++) {
           for (int timeOffset = minTimeOffset; timeOffset <= maxTimeOffset; timeOffset++)
             matrix[row, (col * timeOffsetRange) + (timeOffset - minTimeOffset)] = dataset.GetValue(allowedRows[row] + timeOffset, allowedColumns[col]);
         }
-      //add constant 1.0 in last column
-      for (int i = 0; i < rowCount; i++)
-        matrix[i, allowedColumns.Count * timeOffsetRange] = 1.0;
       return matrix;
     }
 

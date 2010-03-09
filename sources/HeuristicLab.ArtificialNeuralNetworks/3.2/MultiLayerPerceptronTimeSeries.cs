@@ -35,9 +35,9 @@ using HeuristicLab.Selection;
 using HeuristicLab.Operators.Programmable;
 
 namespace HeuristicLab.ArtificialNeuralNetworks {
-  public class MultiLayerPerceptronRegression : ItemBase, IEditable, IAlgorithm {
+  public class MultiLayerPerceptronTimeSeries : ItemBase, IEditable, ITimeSeriesAlgorithm {
 
-    public virtual string Name { get { return "MultiLayerPerceptronRegression"; } }
+    public virtual string Name { get { return "MultiLayerPerceptron - Time Series Prognosis"; } }
     public virtual string Description { get { return "TODO"; } }
 
     private IEngine engine;
@@ -127,7 +127,7 @@ namespace HeuristicLab.ArtificialNeuralNetworks {
       }
     }
 
-    public MultiLayerPerceptronRegression() {
+    public MultiLayerPerceptronTimeSeries() {
       engine = new SequentialEngine.SequentialEngine();
       CombinedOperator algo = CreateAlgorithm();
       engine.OperatorGraph.AddOperator(algo);
@@ -314,7 +314,7 @@ Value.Data = ValueList.Data[ValueIndex.Data];
 
 
     protected virtual IOperator CreateProblemInjector() {
-      return DefaultRegressionOperators.CreateProblemInjector();
+      return DefaultTimeSeriesOperators.CreateProblemInjector();
     }
 
     protected virtual VariableInjector CreateGlobalInjector() {
@@ -326,6 +326,8 @@ Value.Data = ValueList.Data[ValueIndex.Data];
       injector.AddVariable(new HeuristicLab.Core.Variable("MaxNumberOfHiddenNodesIndex", new IntData(0)));
       injector.AddVariable(new HeuristicLab.Core.Variable("NumberOfHiddenNodesList", new IntArrayData(new int[] { 2, 4, 8, 16, 32, 64, 128 })));
       injector.AddVariable(new HeuristicLab.Core.Variable("Log", new ItemList()));
+      injector.AddVariable(new HeuristicLab.Core.Variable("MaxTimeOffset", new IntData(0)));
+      injector.AddVariable(new HeuristicLab.Core.Variable("MinTimeOffset", new IntData(1)));
       return injector;
     }
 
@@ -372,7 +374,7 @@ Value.Data = ValueList.Data[ValueIndex.Data];
     }
 
     protected virtual IOperator CreateModelAnalyzerOperator() {
-      return DefaultRegressionOperators.CreatePostProcessingOperator();
+      return DefaultTimeSeriesOperators.CreatePostProcessingOperator();
     }
 
     protected virtual IAnalyzerModel CreateMlpModel(IScope bestModelScope) {
@@ -391,7 +393,7 @@ Value.Data = ValueList.Data[ValueIndex.Data];
     }
 
     protected virtual void CreateSpecificMlpModel(IScope bestModelScope, IAnalyzerModel model) {
-      DefaultRegressionOperators.PopulateAnalyzerModel(bestModelScope, model);
+      DefaultTimeSeriesOperators.PopulateAnalyzerModel(bestModelScope, model);
     }
 
     protected virtual IOperator GetMainOperator() {
@@ -417,7 +419,7 @@ Value.Data = ValueList.Data[ValueIndex.Data];
 
     #region persistence
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      MultiLayerPerceptronRegression clone = (MultiLayerPerceptronRegression)base.Clone(clonedObjects);
+      MultiLayerPerceptronTimeSeries clone = (MultiLayerPerceptronTimeSeries)base.Clone(clonedObjects);
       clone.engine = (IEngine)Auxiliary.Clone(Engine, clonedObjects);
       return clone;
     }

@@ -26,6 +26,7 @@ using HeuristicLab.Modeling;
 using System;
 using System.Xml;
 using HeuristicLab.DataAnalysis;
+using System.Linq;
 
 namespace HeuristicLab.ArtificialNeuralNetworks {
   public class Predictor : PredictorBase {
@@ -43,14 +44,23 @@ namespace HeuristicLab.ArtificialNeuralNetworks {
 
       for (int i = 0; i < end - start; i++) {
         double[] output = new double[1];
-        double[] inputRow = new double[input.Columns - 1];
-        for (int c = 1; c < inputRow.Length; c++) {
-          inputRow[c - 1] = input.GetValue(i + start, c);
+        double[] inputRow = new double[GetInputVariables().Count()];
+        int c = 0;
+        foreach (var inputVariable in GetInputVariables()) {
+          int inputVariableIndex = input.GetVariableIndex(inputVariable);
+          inputRow[c++] = input.GetValue(i + start, inputVariableIndex);
         }
-        alglib.mlpbase.multilayerperceptron p = perceptron.Perceptron;
-        alglib.mlpbase.mlpprocess(ref p, ref inputRow, ref output);
-        perceptron.Perceptron = p;
-        yield return Math.Max(Math.Min(output[0], UpperPredictionLimit), LowerPredictionLimit);
+        double estimatedValue;
+        try {
+          alglib.mlpbase.multilayerperceptron p = perceptron.Perceptron;
+          alglib.mlpbase.mlpprocess(ref p, ref inputRow, ref output);
+          perceptron.Perceptron = p;
+          estimatedValue = output[0];
+        }
+        catch (ArithmeticException) {
+          estimatedValue = UpperPredictionLimit;
+        }
+        yield return Math.Max(Math.Min(estimatedValue, UpperPredictionLimit), LowerPredictionLimit);
       }
     }
 
