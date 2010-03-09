@@ -691,6 +691,28 @@ namespace HeuristicLab.Persistence_33.Tests {
       Assert.AreEqual(newHookTest.sum, newHookTest.a + newHookTest.b);
       Assert.IsFalse(newHookTest.WasSerialized);
     }
+    
+    [EmptyStorableClass]
+    private class CustomConstructor {
+      public string Value = "none";
+      public CustomConstructor() {
+        Value = "default";
+      }
+      [StorableConstructor]
+      private CustomConstructor(bool deserializing) {
+        Assert.IsTrue(deserializing);
+        Value = "persistence";
+      }
+    }
+
+    [TestMethod]
+    public void TestCustomConstructor() {
+      CustomConstructor cc = new CustomConstructor();
+      Assert.AreEqual(cc.Value, "default");
+      XmlGenerator.Serialize(cc, tempFile);
+      CustomConstructor newCC = (CustomConstructor)XmlParser.Deserialize(tempFile);
+      Assert.AreEqual(newCC.Value, "persistence");
+    }
 
     [ClassInitialize]
     public static void Initialize(TestContext testContext) {

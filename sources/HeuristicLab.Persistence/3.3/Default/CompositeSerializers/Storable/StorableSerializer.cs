@@ -39,7 +39,10 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     }
 
     public object CreateInstance(Type type, IEnumerable<Tag> metaInfo) {
-      return Activator.CreateInstance(type, true);
+      object instance = StorableConstructorAttribute.CallStorableConstructor(type);
+      if (instance == null)
+        instance = Activator.CreateInstance(type, true);
+      return instance;
     }
 
     public void Populate(object instance, IEnumerable<Tag> objects, Type type) {

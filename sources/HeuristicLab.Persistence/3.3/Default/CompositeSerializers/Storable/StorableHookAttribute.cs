@@ -30,13 +30,12 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
         throw new ArgumentNullException("Cannot invoke hooks on null");
       Type type = obj.GetType();
       foreach (MemberInfo memberInfo in type.GetMembers(instanceMembers)) {
-        foreach (object attribute in memberInfo.GetCustomAttributes(false)) {
-          StorableHookAttribute hook = attribute as StorableHookAttribute;
+        foreach (StorableHookAttribute hook in memberInfo.GetCustomAttributes(typeof(StorableHookAttribute), false)) {          
           if (hook != null && hook.HookType == hookType) {
             MethodInfo methodInfo = memberInfo as MethodInfo;
             if (memberInfo.MemberType != MemberTypes.Method || memberInfo == null)
-              throw new ArgumentException("Storable hooks must be methods");            
-            methodInfo.Invoke(obj, emptyArgs);            
+              throw new ArgumentException("Storable hooks must be methods");
+            methodInfo.Invoke(obj, emptyArgs);
           }
         }
       }
