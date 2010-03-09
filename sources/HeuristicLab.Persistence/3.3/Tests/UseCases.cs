@@ -658,6 +658,40 @@ namespace HeuristicLab.Persistence_33.Tests {
           Assert.AreEqual(bitmap.GetPixel(i,j),newBitmap.GetPixel(i,j));
     }
 
+    private class PersistenceHooks {
+      [Storable]
+      public int a;
+      [Storable]
+      public int b;
+      public int sum;
+      public bool WasSerialized { get; private set; }
+      [StorableHook(HookType.BeforeSerialization)]
+      void PreSerializationHook() {
+        WasSerialized = true;
+      }
+      [StorableHook(HookType.AfterDeserialization)]
+      void PostDeserializationHook() {
+        sum = a + b;
+      }
+    }
+
+    [TestMethod]
+    public void HookTest() {
+      PersistenceHooks hookTest = new PersistenceHooks();
+      hookTest.a = 2;
+      hookTest.b = 5;
+      Assert.IsFalse(hookTest.WasSerialized);
+      Assert.AreEqual(hookTest.sum, 0);
+      XmlGenerator.Serialize(hookTest, tempFile);
+      Assert.IsTrue(hookTest.WasSerialized);
+      Assert.AreEqual(hookTest.sum, 0);
+      PersistenceHooks newHookTest = (PersistenceHooks)XmlParser.Deserialize(tempFile);
+      Assert.AreEqual(newHookTest.a, hookTest.a);
+      Assert.AreEqual(newHookTest.b, hookTest.b);
+      Assert.AreEqual(newHookTest.sum, newHookTest.a + newHookTest.b);
+      Assert.IsFalse(newHookTest.WasSerialized);
+    }
+
     [ClassInitialize]
     public static void Initialize(TestContext testContext) {
       ConfigurationService.Instance.Reset();

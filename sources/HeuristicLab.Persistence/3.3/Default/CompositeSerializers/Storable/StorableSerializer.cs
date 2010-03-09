@@ -28,6 +28,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     }
 
     public IEnumerable<Tag> CreateMetaInfo(object o) {
+      StorableHookAttribute.InvokeHook(HookType.BeforeSerialization, o);
       return new Tag[] { };
     }
 
@@ -47,13 +48,14 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       while (iter.MoveNext()) {
         memberDict.Add(iter.Current.Name, iter.Current);
       }
-      foreach (var accessor in StorableAttribute.GetStorableAccessors(instance)) {        
+      foreach (var accessor in StorableAttribute.GetStorableAccessors(instance)) {
         if (memberDict.ContainsKey(accessor.Name)) {
-          accessor.Set(memberDict[accessor.Name].Value);          
+          accessor.Set(memberDict[accessor.Name].Value);
         } else if (accessor.DefaultValue != null) {
-          accessor.Set(accessor.DefaultValue);          
+          accessor.Set(accessor.DefaultValue);
         }
       }
+      StorableHookAttribute.InvokeHook(HookType.AfterDeserialization, instance);
     }
   }
 }
