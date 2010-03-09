@@ -103,6 +103,9 @@
     <Compile Include="Manipulators\Swap3Manipulator.cs" />
     <Compile Include="Manipulators\TranslocationInversionManipulator.cs" />
     <Compile Include="Manipulators\TranslocationManipulator.cs" />
+    <Compile Include="Moves\Permutation2IndexMove.cs" />
+    <Compile Include="Moves\Permutation2OptExhaustiveMoveGenerator.cs" />
+    <Compile Include="Moves\Permutation2OptMove.cs" />
     <Compile Include="PermutationManipulator.cs" />
     <Compile Include="PermutationCrossover.cs" />
     <Compile Include="Permutation.cs" />
