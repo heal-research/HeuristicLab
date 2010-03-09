@@ -153,8 +153,8 @@ namespace HeuristicLab.Algorithms.TS {
       moveQualitySorter.Successor = tabuSelector;
       tabuSelector.Successor = moveMakingProcessor;
       moveMakingProcessor.Operators.AddRange(new Operator[] { emptyOp, actualMoveMakingProcessor });
-      actualMoveMakingProcessor.Operator = moveMaker;
-      moveMaker.Successor = moveTabuMaker;
+      actualMoveMakingProcessor.Operator = moveTabuMaker;
+      moveTabuMaker.Successor = moveMaker;
       moveMakingProcessor.Successor = subScopesRemover;
       subScopesRemover.Successor = iterationsCounter;
       iterationsCounter.Successor = iterationsComparator;
