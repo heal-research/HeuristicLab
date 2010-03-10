@@ -84,6 +84,17 @@ namespace HeuristicLab.MainForm {
       return viewTypes.Where(t => t != null);
     }
 
+    public static IEnumerable<Type> GetViewTypes(Type contentType, bool returnOnlyMostSpecificViewTypes) {
+      List<Type> viewTypes = new List<Type>(GetViewTypes(contentType));
+      if (returnOnlyMostSpecificViewTypes) {
+        foreach (Type viewType in viewTypes.ToList()) {
+          if(viewTypes.Any(t => t.IsSubclassOf(viewType)))
+            viewTypes.Remove(viewType);
+        }
+      }
+      return viewTypes;
+    }
+
     public static bool ViewCanViewObject(IView view, object content) {
       return ContentAttribute.CanViewType(view.GetType(), content.GetType());
     }

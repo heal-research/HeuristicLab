@@ -40,7 +40,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
 
       if (this.item != null) {
         ToolStripMenuItem menuItem;
-        IEnumerable<Type> types = MainFormManager.GetViewTypes(item.GetType());
+        IEnumerable<Type> types = MainFormManager.GetViewTypes(item.GetType(),true);
         foreach (Type t in types) {
           menuItem = new ToolStripMenuItem();
           menuItem.Tag = t;
