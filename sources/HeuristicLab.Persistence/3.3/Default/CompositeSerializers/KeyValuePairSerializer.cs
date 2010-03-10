@@ -15,11 +15,18 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
       get { return 100; }
     }
 
+    private static readonly Type genericKeyValuePairType =
+      typeof(KeyValuePair<int, int>).GetGenericTypeDefinition();
 
     public bool CanSerialize(Type type) {
       return type.IsGenericType &&
-             type.GetGenericTypeDefinition() ==
-             typeof(KeyValuePair<int, int>).GetGenericTypeDefinition();
+             type.GetGenericTypeDefinition() == genericKeyValuePairType;             
+    }
+
+    public string JustifyRejection(Type type) {
+      if (!type.IsGenericType)
+        return "not even generic";      
+      return "not generic KeyValuePair<,>";
     }
 
     public IEnumerable<Tag> CreateMetaInfo(object o) {

@@ -23,6 +23,10 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
         type.GetGenericTypeDefinition() == typeof(Stack<>);
     }
 
+    public string JustifyRejection(Type type) {
+        return "not Stack or generic Stack<>";
+    }
+
     public IEnumerable<Tag> CreateMetaInfo(object o) {
       return new Tag[] { };
     }

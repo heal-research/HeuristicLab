@@ -25,6 +25,13 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
         numberConverter.CanSerialize(type.GetElementType());
     }
 
+    public string JustifyRejection(Type type) {
+      if (!type.IsArray && type != typeof(Array))
+        return "not an array";
+      return string.Format("number converter cannot serialize elements: " +
+        numberConverter.JustifyRejection(type.GetElementType()));
+    }
+
     public IEnumerable<Tag> CreateMetaInfo(object obj) {
       Array a = (Array)obj;
       int[] lengths = new int[a.Rank];

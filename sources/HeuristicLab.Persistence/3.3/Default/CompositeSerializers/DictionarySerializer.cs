@@ -21,6 +21,12 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
         type.GetInterface(typeof(IDictionary).FullName) != null;
     }
 
+    public string JustifyRejection(Type type) {
+      if (!ReflectionTools.HasDefaultConstructor(type))
+        return "no default constructor";
+      return "interface IDictionary not implemented";
+    }
+
     public IEnumerable<Tag> CreateMetaInfo(object o) {
       return new Tag[] { };
     }

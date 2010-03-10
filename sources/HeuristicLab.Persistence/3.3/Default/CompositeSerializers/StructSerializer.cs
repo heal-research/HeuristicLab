@@ -20,6 +20,16 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
       return type.IsValueType && !type.IsPrimitive && !type.IsEnum && type.IsSealed;      
     }
 
+    public string JustifyRejection(Type type) {
+      if (!type.IsValueType)
+        return "not a value type";
+      if (type.IsPrimitive)
+        return "type is primitive (int, float, ...)";
+      if (type.IsEnum)
+        return "type is enum";
+      return "type is not sealed";
+    }
+
     public IEnumerable<Tag> CreateMetaInfo(object obj) {
       return null;
     }

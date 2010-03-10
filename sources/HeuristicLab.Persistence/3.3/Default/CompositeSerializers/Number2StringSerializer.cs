@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Auxiliary;
@@ -42,6 +43,11 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
     public bool CanSerialize(Type type) {
       return numberParsers.ContainsKey(type);
+    }
+
+    public string JustifyRejection(Type type) {
+      return string.Format("not a number type (one of {0})",
+        string.Join(", ", numberTypes.Select(n => n.Name).ToArray()));
     }
 
     public string Format(object obj) {

@@ -3,6 +3,7 @@ using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Interfaces;
 using System.Collections.Generic;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System.Text;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
@@ -15,6 +16,10 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
     public bool CanSerialize(Type type) {
       return type.IsArray || type == typeof(Array);
+    }
+
+    public string JustifyRejection(Type type) {
+      return "not an array and not of type System.Array";
     }
 
     public IEnumerable<Tag> CreateMetaInfo(object obj) {

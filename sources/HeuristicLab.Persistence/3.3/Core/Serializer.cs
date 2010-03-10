@@ -136,15 +136,7 @@ namespace HeuristicLab.Persistence.Core {
         ICompositeSerializer compositeSerializer = configuration.GetCompositeSerializer(type);
         if (compositeSerializer != null)
           return CompositeEnumerator(accessor.Name, compositeSerializer.Decompose(value), id, typeId, compositeSerializer.CreateMetaInfo(value));
-        throw new PersistenceException(
-            String.Format(
-            "No suitable method for serializing values of type \"{0}\" found\r\n" +
-            "primitive serializers:\r\n{1}\r\n" +
-            "composite serializers:\r\n{2}",
-            value.GetType().VersionInvariantName(),
-            string.Join("\r\n", configuration.PrimitiveSerializers.Select(f => f.GetType().VersionInvariantName()).ToArray()),
-            string.Join("\r\n", configuration.CompositeSerializers.Select(d => d.GetType().VersionInvariantName()).ToArray())
-            ));
+        throw CreatePersistenceException(type);
       } catch (Exception x) {
         if (isTestRun) {
           exceptions.Add(x);
@@ -153,6 +145,27 @@ namespace HeuristicLab.Persistence.Core {
           throw x;
         }
       }
+    }
+
+    private PersistenceException CreatePersistenceException(Type type) {
+      StringBuilder sb = new StringBuilder();
+      sb.Append("Could not determine how to serialize a value of type \"")
+        .Append(type.VersionInvariantName())
+        .AppendLine("\"");
+      sb.AppendLine("No registered primitive serializer for this type:");
+      foreach (var ps in configuration.PrimitiveSerializers)
+        sb.Append(ps.SourceType.VersionInvariantName())
+          .Append(" ---- (")
+          .Append(ps.GetType().VersionInvariantName())
+          .AppendLine(")");          
+      sb.AppendLine("Rejected by all composite serializers:");
+      foreach (var cs in configuration.CompositeSerializers)
+        sb.Append("\"")
+          .Append(cs.JustifyRejection(type))
+          .Append("\" ---- (")
+          .Append(cs.GetType().VersionInvariantName())
+          .AppendLine(")");
+      return new PersistenceException(sb.ToString());              
     }
 
     private IEnumerator<ISerializationToken> NullReferenceEnumerator(string name) {

@@ -19,6 +19,10 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
              type.VersionInvariantName() == "System.RuntimeType, mscorlib";
     }
 
+    public string JustifyRejection(Type type) {
+      return "not System.Type nor System.RuntimeType";
+    }
+
     public IEnumerable<Tag> CreateMetaInfo(object o) {
       yield return new Tag("AssemblyQualifiedName", ((Type)o).AssemblyQualifiedName);
     }

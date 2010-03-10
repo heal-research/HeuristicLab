@@ -21,6 +21,12 @@ namespace HeuristicLab.Persistence.Interfaces {
     bool CanSerialize(Type type);
 
     /// <summary>
+    /// Give a reason if possibly why the given type cannot be serialized by this
+    /// ICompositeSerializer.
+    /// </summary>
+    string JustifyRejection(Type type);
+
+    /// <summary>
     /// Generate MetaInfo necessary for instance creation. (i.e.
     /// array dimensions).
     /// </summary>    

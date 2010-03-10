@@ -17,6 +17,10 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
       return type.IsEnum || type == typeof(Enum);
     }
 
+    public string JustifyRejection(Type type) {
+      return "not an enum and not System.Enum";
+    }
+
     public IEnumerable<Tag> CreateMetaInfo(object obj) {
       yield return new Tag(Enum.Format(obj.GetType(), obj, "G"));
     }

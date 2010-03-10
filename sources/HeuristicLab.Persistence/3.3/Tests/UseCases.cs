@@ -735,6 +735,17 @@ namespace HeuristicLab.Persistence_33.Tests {
       }
     }
 
+    [TestMethod]
+    public void TestRejectionJustifications() { 
+      NonSerializable ns = new NonSerializable();
+      try {
+        XmlGenerator.Serialize(ns, tempFile);
+        Assert.Fail("PersistenceException expected");
+      } catch (PersistenceException x) {
+        Assert.IsTrue(x.Message.Contains(new StorableSerializer().JustifyRejection(typeof(NonSerializable))));        
+      }
+    }
+
     [ClassInitialize]
     public static void Initialize(TestContext testContext) {
       ConfigurationService.Instance.Reset();

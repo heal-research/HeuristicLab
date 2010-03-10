@@ -16,7 +16,8 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     }
 
     public bool CanSerialize(Type type) {
-      if (!ReflectionTools.HasDefaultConstructor(type))
+      if (!ReflectionTools.HasDefaultConstructor(type) &&
+        StorableConstructorAttribute.GetStorableConstructor(type) == null)
         return false;
       while (type != null) {
         if (StorableAttribute.GetStorableMembers(type, false).Count() == 0 &&
@@ -25,6 +26,20 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
         type = type.BaseType;
       }
       return true;
+    }
+
+    public string JustifyRejection(Type type) {
+      if (!ReflectionTools.HasDefaultConstructor(type) &&
+        StorableConstructorAttribute.GetStorableConstructor(type) == null)
+        return "no default constructor and no storable constructor";
+      while (type != null) {
+        if (StorableAttribute.GetStorableMembers(type, false).Count() == 0 &&
+            !EmptyStorableClassAttribute.IsEmptyStorable(type))
+          return string.Format("{0} has no storable members and is not marked [EmtpyStorableClass]",
+            type);
+        type = type.BaseType;
+      }
+      return "no reason";
     }
 
     public IEnumerable<Tag> CreateMetaInfo(object o) {

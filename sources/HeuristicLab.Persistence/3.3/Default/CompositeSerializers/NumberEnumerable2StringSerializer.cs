@@ -59,6 +59,14 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
         HasAddMethod(type);
     }
 
+    public string JustifyRejection(Type type) {
+      if (!ReflectionTools.HasDefaultConstructor(type))
+        return "no default constructor";
+      if (!ImplementsGenericEnumerable(type))
+        return "IEnumerable<> not implemented";
+      return "no Add method with one parameter";
+    }
+
     public IEnumerable<Tag> CreateMetaInfo(object o) {
       return new Tag[] { };
     }
