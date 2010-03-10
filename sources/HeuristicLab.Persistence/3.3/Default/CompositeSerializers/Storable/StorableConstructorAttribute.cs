@@ -11,22 +11,27 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
   public sealed class StorableConstructorAttribute : Attribute {
 
     private static readonly BindingFlags allConstructors =
-      BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+      BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;    
 
-    private static readonly object[] defaultArgs = new object[] { true };
+    private static Dictionary<Type, ConstructorInfo> constructorCache =
+      new Dictionary<Type, ConstructorInfo>();
 
-    public static object CallStorableConstructor(Type type) {
-      foreach (ConstructorInfo constructorInfo in type.GetConstructors(allConstructors)) {
-        if (constructorInfo
-          .GetCustomAttributes(typeof(StorableConstructorAttribute), false).Length > 0) {
-          if (constructorInfo.GetParameters().Length != 1 ||
-              constructorInfo.GetParameters()[0].ParameterType != typeof(bool))
-            throw new PersistenceException("StorableConstructor must have exactly one argument of type bool");
-          return constructorInfo.Invoke(defaultArgs);
+    public static ConstructorInfo GetStorableConstructor(Type type) {
+      lock (constructorCache) {
+        if (constructorCache.ContainsKey(type))
+          return constructorCache[type];
+        foreach (ConstructorInfo ci in type.GetConstructors(allConstructors)) {
+          if (ci.GetCustomAttributes(typeof(StorableConstructorAttribute), false).Length > 0) {
+            if (ci.GetParameters().Length != 1 ||
+                ci.GetParameters()[0].ParameterType != typeof(bool))
+              throw new PersistenceException("StorableConstructor must have exactly one argument of type bool");
+            constructorCache[type] = ci;
+            return ci;
+          }
         }
+        constructorCache[type] = null;
+        return null;
       }
-      return null;
     }
-
   }
 }

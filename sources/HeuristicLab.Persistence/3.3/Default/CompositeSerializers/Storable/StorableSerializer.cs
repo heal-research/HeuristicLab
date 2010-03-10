@@ -18,7 +18,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     public bool CanSerialize(Type type) {
       if (!ReflectionTools.HasDefaultConstructor(type))
         return false;
-      while (type != null) {        
+      while (type != null) {
         if (StorableAttribute.GetStorableMembers(type, false).Count() == 0 &&
             !EmptyStorableClassAttribute.IsEmptyStorable(type))
           return false;
@@ -38,12 +38,12 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       }
     }
 
+    private static readonly object[] defaultArgs = new object[] { true };
+
     public object CreateInstance(Type type, IEnumerable<Tag> metaInfo) {
       try {
-        object instance = StorableConstructorAttribute.CallStorableConstructor(type);
-        if (instance == null)
-          instance = Activator.CreateInstance(type, true);
-        return instance;
+        ConstructorInfo constructor = StorableConstructorAttribute.GetStorableConstructor(type);
+        return constructor != null ? constructor.Invoke(defaultArgs) :  Activator.CreateInstance(type, true);        
       } catch (TargetInvocationException x) {
         throw new PersistenceException(
           "Could not instantiate storable object: Encountered exception during constructor call",

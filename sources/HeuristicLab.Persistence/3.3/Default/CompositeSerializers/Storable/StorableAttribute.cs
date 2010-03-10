@@ -87,12 +87,14 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     }
 
     public static IEnumerable<StorableMemberInfo> GetStorableMembers(Type type, bool inherited) {
-      var query = new TypeQuery(type, inherited);
-      if (memberCache.ContainsKey(query))
-        return memberCache[query];
-      var storablesMembers = GenerateStorableMembers(type, inherited);
-      memberCache[query] = storablesMembers;
-      return storablesMembers;
+      lock (memberCache) {
+        var query = new TypeQuery(type, inherited);
+        if (memberCache.ContainsKey(query))
+          return memberCache[query];
+        var storablesMembers = GenerateStorableMembers(type, inherited);
+        memberCache[query] = storablesMembers;
+        return storablesMembers;
+      }
     }
 
     private static IEnumerable<StorableMemberInfo> GenerateStorableMembers(Type type, bool inherited) {
@@ -100,11 +102,8 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       if (inherited && type.BaseType != null)
         storableMembers.AddRange(GenerateStorableMembers(type.BaseType, true));
       foreach (MemberInfo memberInfo in type.GetMembers(instanceMembers)) {
-        foreach (object attribute in memberInfo.GetCustomAttributes(false)) {
-          StorableAttribute storableAttribute = attribute as StorableAttribute;
-          if (storableAttribute != null) {
-            storableMembers.Add(new StorableMemberInfo(storableAttribute, memberInfo));
-          }
+        foreach (StorableAttribute attribute in memberInfo.GetCustomAttributes(typeof(StorableAttribute), false)) {          
+          storableMembers.Add(new StorableMemberInfo(attribute, memberInfo));          
         }
       }
       return DisentangleNameMapping(storableMembers);
