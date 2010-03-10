@@ -29,7 +29,7 @@ namespace HeuristicLab.Operators {
   /// </summary>
   [Item("SingleSuccessorOperator", "A base class for operators which have only one successor.")]
   [Creatable("Test")]
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   public abstract class SingleSuccessorOperator : Operator {
     protected OperatorParameter SuccessorParameter {
       get { return (OperatorParameter)Parameters["Successor"]; }

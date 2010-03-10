@@ -32,7 +32,7 @@ namespace HeuristicLab.Encodings.RealVector {
   /// If not, the elements are corrected.
   /// </summary>
   [Item("BoundsChecker", "Checks if all elements of a real vector are inside a given minimum and maximum value. If not, elements are corrected.")]
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   public class BoundsChecker : SingleSuccessorOperator {
     public LookupParameter<DoubleArrayData> RealVectorParameter {
       get { return (LookupParameter<DoubleArrayData>)Parameters["RealVector"]; }

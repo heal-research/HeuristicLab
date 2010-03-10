@@ -24,7 +24,7 @@ using System.Linq;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   [Item("VariableCollection", "Represents a collection of variables.")]
   [Creatable("Test")]
   public sealed class VariableCollection : NamedItemCollection<IVariable> {

@@ -27,7 +27,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.Permutation {
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   [Item("Permutation", "Represents a permutation of integer values.")]
   [Creatable("Test")]
   public sealed class Permutation : ValueTypeArrayData<int>, IStringConvertibleArrayData {

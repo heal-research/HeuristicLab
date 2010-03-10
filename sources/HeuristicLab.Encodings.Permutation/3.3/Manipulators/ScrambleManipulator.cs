@@ -30,7 +30,7 @@ namespace HeuristicLab.Encodings.Permutation {
   /// It is implemented as described in Syswerda, G. (1991). Schedule Optimization Using Genetic Algorithms. In Davis, L. (Ed.) Handbook of Genetic Algorithms, Van Nostrand Reinhold, New York, pp 332-349.
   /// </remarks>
   [Item("ScrambleManipulator", "An operator which manipulates a permutation array by randomly scrambling the elements in a randomly chosen interval. It is implemented as described in Syswerda, G. (1991). Schedule Optimization Using Genetic Algorithms. In Davis, L. (Ed.) Handbook of Genetic Algorithms, Van Nostrand Reinhold, New York, pp 332-349.")]
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   [Creatable("Test")]
   public class ScrambleManipulator : PermutationManipulator {
     /// <summary>

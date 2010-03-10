@@ -36,7 +36,7 @@ namespace HeuristicLab.Encodings.RealVector {
   /// The strategy vector can be of smaller length than the solution vector, in which case values are taken from the beginning again once the end of the strategy vector is reached.
   /// </remarks>
   [Item("SelfAdaptiveNormalAllPositionsManipulator", "This manipulation operator adds a value sigma_i * N(0,1) to the current value in each position i. The values for sigma_i are taken from the strategy vector. It is implemented as described in Beyer, H.-G. and Schwefel, H.-P. 2002. Evolution Strategies - A Comprehensive Introduction Natural Computing, 1, pp. 3-52.")]
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   public class SelfAdaptiveNormalAllPositionsManipulator : RealVectorManipulator {
     /// <summary>
     /// Parameter for the strategy vector.

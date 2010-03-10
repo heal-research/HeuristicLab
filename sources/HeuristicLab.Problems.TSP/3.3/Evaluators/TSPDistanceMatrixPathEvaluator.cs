@@ -31,7 +31,7 @@ namespace HeuristicLab.Problems.TSP {
   /// </summary>
   [Item("TSPDistanceMatrixPathEvaluator", "An operator which evaluates TSP solutions given in path representation using a distance matrix.")]
   [Creatable("Test")]
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   public sealed class TSPDistanceMatrixPathEvaluator : TSPEvaluator, ITSPDistanceMatrixPathEvaluator {
     public ILookupParameter<Permutation> PermutationParameter {
       get { return (ILookupParameter<Permutation>)Parameters["Permutation"]; }

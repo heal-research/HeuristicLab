@@ -28,7 +28,7 @@ namespace HeuristicLab.Operators {
   /// An operator which clones and assigns the value of one parameter to another parameter.
   /// </summary>
   [Item("Assigner", "An operator which clones and assigns the value of one parameter to another parameter.")]
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   [Creatable("Test")]
   public sealed class Assigner : SingleSuccessorOperator {
     public LookupParameter<IItem> LeftSideParameter {

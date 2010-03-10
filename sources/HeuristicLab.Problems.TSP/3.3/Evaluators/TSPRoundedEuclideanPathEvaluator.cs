@@ -29,7 +29,7 @@ namespace HeuristicLab.Problems.TSP {
   /// </summary>
   [Item("TSPRoundedEuclideanPathEvaluator", "An operator which evaluates TSP solutions given in path representation using the rounded Euclidean distance metric.")]
   [Creatable("Test")]
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   public sealed class TSPRoundedEuclideanPathEvaluator : TSPCoordinatesPathEvaluator {
     /// <summary>
     /// Calculates the distance between two points using the rounded Euclidean distance metric.

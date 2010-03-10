@@ -37,7 +37,7 @@ namespace HeuristicLab.Algorithms.SGA {
   /// </summary>
   [Item("SGA", "A standard genetic algorithm.")]
   [Creatable("Algorithms")]
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   public sealed class SGA : EngineAlgorithm {
     #region Problem Properties
     public override Type ProblemType {

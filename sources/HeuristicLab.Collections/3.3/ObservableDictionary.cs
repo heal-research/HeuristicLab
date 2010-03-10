@@ -28,6 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Collections {
   [Serializable]
+  [StorableClass(StorableClassType.MarkedOnly)]
   public class ObservableDictionary<TKey, TValue> : IObservableDictionary<TKey, TValue> {
     [Storable]
     private Dictionary<TKey, TValue> dict;

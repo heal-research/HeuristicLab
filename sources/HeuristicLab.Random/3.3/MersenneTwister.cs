@@ -40,6 +40,7 @@ namespace HeuristicLab.Random {
   /// A 623-Dimensionally Equidistributed Uniform Pseudo-Random Number Generator.
   /// </summary>
   [Item("MersenneTwister", "A high-quality pseudo random number generator which creates uniformly distributed random numbers.")]
+  [StorableClass(StorableClassType.MarkedOnly)]
   public class MersenneTwister : Item, IRandom {
     private const int n = 624, m = 397;
 

@@ -28,7 +28,7 @@ namespace HeuristicLab.Selection {
   /// An operator which reduces to the sub-scopes of all sub-scopes of the current scope.
   /// </summary>
   [Item("MergingReducer", "An operator which reduces to the sub-scopes of all sub-scopes of the current scope.")]
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   [Creatable("Test")]
   public sealed class MergingReducer : Reducer {
     public MergingReducer() : base() { }

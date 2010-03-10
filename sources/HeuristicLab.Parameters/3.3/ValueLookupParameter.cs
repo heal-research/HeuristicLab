@@ -29,6 +29,7 @@ namespace HeuristicLab.Parameters {
   /// A parameter whose value is either defined in the parameter itself or is retrieved from the scope.
   /// </summary>
   [Item("ValueLookupParameter<T>", "A parameter whose value is either defined in the parameter itself or is retrieved from or written to a scope.")]
+  [StorableClass(StorableClassType.MarkedOnly)]
   public class ValueLookupParameter<T> : LookupParameter<T>, IValueLookupParameter<T> where T : class, IItem {
     private T value;
     [Storable]

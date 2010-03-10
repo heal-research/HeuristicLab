@@ -31,7 +31,7 @@ using HeuristicLab.Common.Resources;
 using HeuristicLab.Collections;
 
 namespace HeuristicLab.Core {
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   [Item("ItemArray<T>", "Represents an array of items.")]
   public class ItemArray<T> : ObservableArray<T>, IItem where T : class, IItem {
     public virtual string ItemName {

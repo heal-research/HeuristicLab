@@ -31,7 +31,7 @@ namespace HeuristicLab.Encodings.RealVector {
   /// A base class for operators creating real-valued vectors.
   /// </summary>
   [Item("RealVectorCreator", "A base class for operators creating real-valued vectors.")]
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   public abstract class RealVectorCreator : SingleSuccessorOperator, IRealVectorCreator, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }

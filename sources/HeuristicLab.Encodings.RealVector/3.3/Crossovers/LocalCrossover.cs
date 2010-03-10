@@ -32,7 +32,7 @@ namespace HeuristicLab.Encodings.RealVector {
   /// It is implemented as described in Dumitrescu, D. et al. (2000), Evolutionary computation, CRC Press, Boca Raton, FL, p. 194.
   /// </remarks>
   [Item("LocalCrossover", @"The local crossover is similar to the arithmetic all positions crossover, but uses a random alpha for each position x = alpha * p1 + (1-alpha) * p2. It is implemented as described in Dumitrescu, D. et al. (2000), Evolutionary computation, CRC Press, Boca Raton, FL., p. 194.")]
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   public class LocalCrossover : RealVectorCrossover {
     /// <summary>
     /// Performs a local crossover on the two given parent vectors.

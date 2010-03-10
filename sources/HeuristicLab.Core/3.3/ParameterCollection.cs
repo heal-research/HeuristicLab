@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   [Item("ParameterCollection", "Represents a collection of parameters.")]
   [Creatable("Test")]
   public class ParameterCollection : NamedItemCollection<IParameter> {

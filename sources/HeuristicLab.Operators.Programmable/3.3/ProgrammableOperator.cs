@@ -42,7 +42,7 @@ namespace HeuristicLab.Operators.Programmable {
 
   [Item("ProgrammableOperator", "An operator that can be programmed for arbitrary needs.")]
   [Creatable("Test")]
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.MarkedOnly)]  
   public class ProgrammableOperator : Operator {
 
     #region Fields & Properties

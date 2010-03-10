@@ -30,7 +30,7 @@ namespace HeuristicLab.Analysis {
   /// An operator which calculates the best, average and worst solution quality of the current population.
   /// </summary>
   [Item("BestAverageWorstQualityCalculator", "An operator which calculates the best, average and worst solution quality of the current population.")]
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   [Creatable("Test")]
   public sealed class BestAverageWorstQualityCalculator : SingleSuccessorOperator {
     public IValueLookupParameter<BoolData> MaximizationParameter {

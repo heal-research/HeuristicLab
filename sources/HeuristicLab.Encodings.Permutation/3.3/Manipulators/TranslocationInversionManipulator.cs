@@ -31,7 +31,7 @@ namespace HeuristicLab.Encodings.Permutation {
   /// It is implemented as described in Fogel, D.B. 1993. Applying Evolutionary Programming to Selected TSP Problems, Cybernetics and Systems, 22, pp 27-36.
   /// </remarks>
   [Item("TranslocationInversionManipulator", "An operator which inverts a randomly chosen part of a permutation and inserts it at a random position. It is implemented as described in Fogel, D.B. 1993. Applying Evolutionary Programming to Selected TSP Problems, Cybernetics and Systems, 22, pp. 27-36.")]
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   [Creatable("Test")]
   public class TranslocationInversionManipulator : PermutationManipulator {
     /// <summary>

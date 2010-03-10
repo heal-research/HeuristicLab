@@ -26,6 +26,7 @@ using System.Text;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
+  [StorableClass(StorableClassType.MarkedOnly)]
   public class BidirectionalLookup<TFirst, TSecond> {
     [Storable]
     private Dictionary<TFirst, TSecond> firstToSecond;

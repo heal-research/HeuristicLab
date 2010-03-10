@@ -9,7 +9,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Persistence.Default.DebugString {
 
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   public class DebugStringFormat : FormatBase<DebugString> {
     public override string Name { get { return "DebugString"; } }
   }

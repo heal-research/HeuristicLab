@@ -24,6 +24,7 @@ using HeuristicLab.Collections;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
+  [StorableClass(StorableClassType.MarkedOnly)]
   public class ExecutionContext : DeepCloneable, IExecutionContext, IAtomicOperation {
     [Storable]
     private IParameterizedItem parameterizedItem;

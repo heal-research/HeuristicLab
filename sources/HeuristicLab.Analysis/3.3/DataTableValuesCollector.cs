@@ -32,7 +32,7 @@ namespace HeuristicLab.Analysis {
   /// </summary>
   [Item("DataTableValuesCollector", "An operator which collects the actual values of parameters and adds them to a table of data values.")]
   [Creatable("Test")]
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   public class DataTableValuesCollector : ValuesCollector {
     public ValueLookupParameter<DataTable> DataTableParameter {
       get { return (ValueLookupParameter<DataTable>)Parameters["DataTable"]; }

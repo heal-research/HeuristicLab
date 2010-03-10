@@ -32,7 +32,7 @@ namespace HeuristicLab.Encodings.RealVector {
   /// An operator which creates a new random real vector with each element uniformly distributed in a specified range.
   /// </summary>
   [Item("UniformRandomRealVectorCreator", "An operator which creates a new random real vector with each element uniformly distributed in a specified range.")]
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   [Creatable("Test")]
   public class UniformRandomRealVectorCreator : RealVectorCreator {
     /// <summary>

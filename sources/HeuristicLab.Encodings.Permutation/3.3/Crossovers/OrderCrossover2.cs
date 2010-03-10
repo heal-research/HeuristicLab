@@ -33,7 +33,7 @@ namespace HeuristicLab.Encodings.Permutation {
   /// the positions. But then, instead of starting from the end of the copied interval, the missing values are copied from the start of the permutation in the order they occur.
   /// </remarks>
   [Item("OrderCrossover2", "An operator which performs an order crossover of two permutations. It is implemented as described in Affenzeller, M. et al. 2009. Genetic Algorithms and Genetic Programming - Modern Concepts and Practical Applications. CRC Press. p. 135.")]
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   [Creatable("Test")]
   public class OrderCrossover2 : PermutationCrossover {
     /// <summary>

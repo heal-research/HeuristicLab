@@ -32,7 +32,7 @@ namespace HeuristicLab.Encodings.RealVector {
   /// It is implemented as described by Beyer, H.-G. and Schwefel, H.-P. 2002. Evolution Strategies - A Comprehensive Introduction Natural Computing, 1, pp. 3-52.
   /// </remarks>
   [Item("AverageCrossover", "The average crossover (intermediate recombination) produces a new offspring by calculating in each position the average of a number of parents. It is implemented as described by Beyer, H.-G. and Schwefel, H.-P. 2002. Evolution Strategies - A Comprehensive Introduction Natural Computing, 1, pp. 3-52.")]
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   public class AverageCrossover : RealVectorCrossover {
     /// <summary>
     /// Performs the average crossover (intermediate recombination) on a list of parents.

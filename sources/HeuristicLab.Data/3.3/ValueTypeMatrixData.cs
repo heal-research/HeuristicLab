@@ -28,6 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
   [Item("ValueTypeMatrixData<T>", "A base class for representing matrices of value types.")]
+  [StorableClass(StorableClassType.MarkedOnly)]
   public class ValueTypeMatrixData<T> : Item, IEnumerable where T : struct {
     [Storable]
     private T[,] array;

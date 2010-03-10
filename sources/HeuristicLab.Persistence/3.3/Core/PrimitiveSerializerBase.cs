@@ -4,7 +4,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Persistence.Interfaces {
 
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   public abstract class PrimitiveSerializerBase<Source, SerialData> :
       IPrimitiveSerializer<Source, SerialData>
       where SerialData : ISerialData {

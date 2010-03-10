@@ -31,7 +31,7 @@ namespace HeuristicLab.Encodings.Permutation {
   /// The operator first determines all cycles in the permutation and then composes the offspring by alternating between the cycles of the two parents.
   /// </remarks>
   [Item("CyclicCrossover", "An operator which performs the cyclic crossover on two permutations. It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.")]
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   [Creatable("Test")]
   public class CyclicCrossover : PermutationCrossover {
     /// <summary>

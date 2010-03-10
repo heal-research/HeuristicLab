@@ -27,7 +27,7 @@ namespace HeuristicLab.Parameters {
   /// A parameter which represents an operator.
   /// </summary>
   [Item("OperatorParameter", "A parameter which represents an operator.")]
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   [Creatable("Test")]
   public class OperatorParameter : OptionalValueParameter<IOperator> {
     public OperatorParameter()

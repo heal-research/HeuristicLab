@@ -6,13 +6,33 @@ using System.Text;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
 
+
+  /// <summary>
+  /// Mark the member of a class to be considered by the <code>StorableSerializer</code>.
+  /// The class must be marked as <code>[StorableClass(StorableClassType.Empty)]</code> and the
+  /// <code>StorableClassType</code> should be set to <code>MarkedOnly</code> for
+  /// this attribute to kick in.
+  /// </summary>
   [AttributeUsage(
     AttributeTargets.Field | AttributeTargets.Property,
     AllowMultiple = false,
-    Inherited = false)]
+    Inherited = false)]    
   public class StorableAttribute : Attribute {
 
+    /// <summary>
+    /// An optional name for this member that will be used during serialization.
+    /// 
+    /// This allows to rename a field/property in code but still be able to read
+    /// the old serialized format.
+    /// </summary>
     public string Name { get; set; }
+
+
+    /// <summary>
+    /// A default value in case the field/property was not present or not serialized
+    /// in a previous version of the class and could therefore be absent during
+    /// deserialization.
+    /// </summary>
     public object DefaultValue { get; set; }
 
     public override string ToString() {
@@ -82,10 +102,20 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
 
     private static MemberCache memberCache = new MemberCache();
 
+
+    /// <summary>
+    /// Get all fields and properties of a class that have the
+    /// <code>[Storable]</code> attribute set.
+    /// </summary>    
     public static IEnumerable<StorableMemberInfo> GetStorableMembers(Type type) {
       return GetStorableMembers(type, true);
     }
 
+    /// <summary>
+    /// Get all fields and properties of a class that have the
+    /// <code>[Storable]</code> attribute set.
+    /// </summary>        
+    /// <param name="inherited">should storable members from base classes be included</param>    
     public static IEnumerable<StorableMemberInfo> GetStorableMembers(Type type, bool inherited) {
       lock (memberCache) {
         var query = new TypeQuery(type, inherited);
@@ -109,6 +139,12 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       return DisentangleNameMapping(storableMembers);
     }
 
+
+    /// <summary>
+    /// Get the associated accessors for all storable memebrs.
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <returns></returns>
     public static IEnumerable<DataMemberAccessor> GetStorableAccessors(object obj) {      
       foreach (var memberInfo in GetStorableMembers(obj.GetType()))
         yield return new DataMemberAccessor(

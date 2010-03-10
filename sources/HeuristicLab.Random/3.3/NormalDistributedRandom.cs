@@ -31,6 +31,7 @@ namespace HeuristicLab.Random {
   /// See "The Ziggurat Method for Generating Random Variables" (G. Marsaglia and W.W. Tsang 2000).
   /// </summary>
   [Item("NormalDistributedRandom", "A pseudo random number generator which uses the Ziggurat method to create normally distributed random numbers.")]
+  [StorableClass(StorableClassType.MarkedOnly)]
   public class NormalDistributedRandom : Item, IRandom {
     [Storable]
     private double mu;

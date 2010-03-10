@@ -29,7 +29,7 @@ namespace HeuristicLab.Parameters {
   /// A parameter whose value is defined in the parameter itself.
   /// </summary>
   [Item("ValueParameter<T>", "A parameter whose value is defined in the parameter itself.")]
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   public class ValueParameter<T> : OptionalValueParameter<T> where T : class, IItem {
     public override T Value {
       get { return base.Value; }

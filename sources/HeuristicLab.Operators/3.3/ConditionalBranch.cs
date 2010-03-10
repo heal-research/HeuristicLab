@@ -30,7 +30,7 @@ namespace HeuristicLab.Operators {
   /// </summary>
   [Item("ConditionalBranch", "A branch of two operators whose executions depend on a boolean condition.")]
   [Creatable("Test")]
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   public class ConditionalBranch : SingleSuccessorOperator {
     public LookupParameter<BoolData> ConditionParameter {
       get { return (LookupParameter<BoolData>)Parameters["Condition"]; }

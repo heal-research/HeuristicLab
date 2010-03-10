@@ -9,7 +9,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   public class CompactNumberArray2StringSerializer : ICompositeSerializer {
 
     public int Priority {

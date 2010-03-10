@@ -9,6 +9,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Persistence.Default.DebugString {
   
+  [StorableClass(StorableClassType.MarkedOnly)]  
   public class DebugString : ISerialData {
 
     [Storable]

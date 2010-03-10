@@ -8,7 +8,13 @@ using HeuristicLab.Persistence.Auxiliary;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
 
-  [EmptyStorableClass]
+  /// <summary>
+  /// Intended for serialization of all custom classes. Classes should have the
+  /// <code>[StorableClass(StorableClassType.Empty)]</code> attribute set and a serialization mode set.
+  /// Optionally selected fields and properties can be marked with the
+  /// <code>[Storable]</code> attribute.
+  /// </summary>
+  [StorableClass(StorableClassType.Empty)]    
   public class StorableSerializer : ICompositeSerializer {
 
     public int Priority {
@@ -19,27 +25,14 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       if (!ReflectionTools.HasDefaultConstructor(type) &&
         StorableConstructorAttribute.GetStorableConstructor(type) == null)
         return false;
-      while (type != null) {
-        if (StorableAttribute.GetStorableMembers(type, false).Count() == 0 &&
-            !EmptyStorableClassAttribute.IsEmptyStorable(type))
-          return false;
-        type = type.BaseType;
-      }
-      return true;
+      return StorableClassAttribute.IsStorableType(type, true);
     }
 
     public string JustifyRejection(Type type) {
       if (!ReflectionTools.HasDefaultConstructor(type) &&
         StorableConstructorAttribute.GetStorableConstructor(type) == null)
         return "no default constructor and no storable constructor";
-      while (type != null) {
-        if (StorableAttribute.GetStorableMembers(type, false).Count() == 0 &&
-            !EmptyStorableClassAttribute.IsEmptyStorable(type))
-          return string.Format("{0} has no storable members and is not marked [EmtpyStorableClass]",
-            type);
-        type = type.BaseType;
-      }
-      return "no reason";
+      return "class or one of its base classes is not empty and has no [StorableClass(StorableClassType.Empty)] attribute";
     }
 
     public IEnumerable<Tag> CreateMetaInfo(object o) {
@@ -58,7 +51,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     public object CreateInstance(Type type, IEnumerable<Tag> metaInfo) {
       try {
         ConstructorInfo constructor = StorableConstructorAttribute.GetStorableConstructor(type);
-        return constructor != null ? constructor.Invoke(defaultArgs) :  Activator.CreateInstance(type, true);        
+        return constructor != null ? constructor.Invoke(defaultArgs) : Activator.CreateInstance(type, true);
       } catch (TargetInvocationException x) {
         throw new PersistenceException(
           "Could not instantiate storable object: Encountered exception during constructor call",
@@ -71,7 +64,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       IEnumerator<Tag> iter = objects.GetEnumerator();
       while (iter.MoveNext()) {
         memberDict.Add(iter.Current.Name, iter.Current);
-      }
+      }      
       foreach (var accessor in StorableAttribute.GetStorableAccessors(instance)) {
         if (memberDict.ContainsKey(accessor.Name)) {
           accessor.Set(memberDict[accessor.Name].Value);

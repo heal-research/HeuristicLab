@@ -5,6 +5,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Persistence.Core {
 
+  [StorableClass(StorableClassType.MarkedOnly)]    
   public class Configuration {
 
     [Storable]
@@ -16,7 +17,7 @@ namespace HeuristicLab.Persistence.Core {
 
     [Storable]
     public IFormat Format { get; private set; }
-
+    
     private Configuration() {
       compositeSerializerCache = new Dictionary<Type, ICompositeSerializer>();
     }

@@ -30,7 +30,7 @@ namespace HeuristicLab.Optimization {
   /// </summary>
   [Item("UserDefinedAlgorithm", "An algorithm which can be defined by the user.")]
   [Creatable("Algorithms")]
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   public sealed class UserDefinedAlgorithm : EngineAlgorithm, IParameterizedItem {
     public new ParameterCollection Parameters {
       get { return base.Parameters; }

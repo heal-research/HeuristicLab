@@ -28,7 +28,7 @@ namespace HeuristicLab.Selection {
   /// An operator which selects sub-scopes from right to left.
   /// </summary>
   [Item("RightSelector", "An operator which selects sub-scopes from right to left.")]
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   [Creatable("Test")]
   public sealed class RightSelector : Selector {
     public RightSelector() : base() { }

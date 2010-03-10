@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   [Item("IntData", "Represents an integer value.")]
   [Creatable("Test")]
   public sealed class IntData : ValueTypeData<int>, IComparable, IStringConvertibleData {

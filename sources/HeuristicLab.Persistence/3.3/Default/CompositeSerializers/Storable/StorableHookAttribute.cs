@@ -6,9 +6,18 @@ using System.Reflection;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
 
+
+  /// <summary>
+  /// Indicates the time at which the hook should be invoked.
+  /// </summary>
   public enum HookType { BeforeSerialization, AfterDeserialization };
 
-  [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
+
+  /// <summary>
+  /// Mark methods that should be called at certain times during
+  /// serialization/deserialization by the <code>StorableSerializer</code>.
+  /// </summary>
+  [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = true)]
   public sealed class StorableHookAttribute : Attribute {
 
     private sealed class HookDesignator {
@@ -26,6 +35,12 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       get { return hookType; }
     }
 
+
+    /// <summary>
+    /// Mark method as <code>StorableSerializer</code> hook to be run
+    /// at the <code>HookType</code> time.
+    /// </summary>
+    /// <param name="hookType"></param>
     public StorableHookAttribute(HookType hookType) {
       this.hookType = hookType;
     }
@@ -38,13 +53,17 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     private static Dictionary<HookDesignator, List<MethodInfo>> hookCache =
       new Dictionary<HookDesignator, List<MethodInfo>>();
 
+
+    /// <summary>
+    /// Invoke <code>hookType</code> hook on <code>obj</code>.
+    /// </summary>    
     public static void InvokeHook(HookType hookType, object obj) {
       if (obj == null)
         throw new ArgumentNullException("Cannot invoke hooks on null");
       foreach (MethodInfo mi in GetHooks(hookType, obj.GetType())) {
         mi.Invoke(obj, emptyArgs);
       }
-    }
+    }    
 
     private static IEnumerable<MethodInfo> GetHooks(HookType hookType, Type type) {
       lock (hookCache) {

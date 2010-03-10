@@ -5,6 +5,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Persistence.Default.Xml {
 
+  [StorableClass(StorableClassType.MarkedOnly)]  
   public class XmlString : ISerialData {
 
     [Storable]

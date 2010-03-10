@@ -118,7 +118,7 @@
     <Compile Include="Default\CompositeSerializers\NumberEnumerable2StringSerializer.cs" />
     <Compile Include="Default\CompositeSerializers\StackSerializer.cs" />
     <Compile Include="Default\CompositeSerializers\Storable\DataMemberAccessor.cs" />
-    <Compile Include="Default\CompositeSerializers\Storable\EmptyStorableClassAttribute.cs" />
+    <Compile Include="Default\CompositeSerializers\Storable\StorableClassAttribute.cs" />
     <Compile Include="Default\CompositeSerializers\Storable\StorableAttribute.cs" />
     <Compile Include="Default\CompositeSerializers\Storable\StorableConstructorAttribute.cs" />
     <Compile Include="Default\CompositeSerializers\Storable\StorableHookAttribute.cs" />

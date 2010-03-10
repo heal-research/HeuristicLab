@@ -28,6 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Collections {
   [Serializable]
+  [StorableClass(StorableClassType.MarkedOnly)]
   public class ObservableArray<T> : IObservableArray<T> {
     [Storable]
     private T[] array;

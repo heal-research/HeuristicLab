@@ -28,7 +28,7 @@ using System.Drawing;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   [Item("OperatorList", "Represents a list of operators.")]
   [Creatable("Test")]
   public class OperatorList : ItemList<IOperator> {

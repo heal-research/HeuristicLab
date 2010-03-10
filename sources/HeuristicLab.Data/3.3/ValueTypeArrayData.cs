@@ -28,6 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
   [Item("ValueTypeArrayData<T>", "A base class for representing arrays of value types.")]
+  [StorableClass(StorableClassType.MarkedOnly)]
   public class ValueTypeArrayData<T> : Item, IEnumerable where T : struct {
     [Storable]
     private T[] array;

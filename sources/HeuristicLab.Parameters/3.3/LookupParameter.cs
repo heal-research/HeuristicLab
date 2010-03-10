@@ -29,6 +29,7 @@ namespace HeuristicLab.Parameters {
   /// A parameter whose value is retrieved from the scope.
   /// </summary>
   [Item("LookupParameter<T>", "A parameter whose value is retrieved from or written to a scope.")]
+  [StorableClass(StorableClassType.MarkedOnly)]
   public class LookupParameter<T> : Parameter, ILookupParameter<T> where T : class, IItem {
     [Storable]
     private string actualName;

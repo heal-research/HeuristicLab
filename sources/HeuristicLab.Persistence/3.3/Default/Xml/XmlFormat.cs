@@ -4,7 +4,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Persistence.Default.Xml {
 
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   public class XmlFormat : FormatBase<XmlString> {
     public override string Name { get { return "XML"; } }
   }

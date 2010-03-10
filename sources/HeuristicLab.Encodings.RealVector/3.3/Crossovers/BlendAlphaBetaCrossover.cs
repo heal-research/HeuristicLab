@@ -37,7 +37,7 @@ namespace HeuristicLab.Encodings.RealVector {
   /// The default value for alpha is 0.75, the default value for beta is 0.25.
   /// </remarks>
   [Item("BlendAlphaBetaCrossover", "The blend alpha beta crossover (BLX-a-b) for real vectors is similar to the blend alpha crossover (BLX-a), but distinguishes between the better and worse of the parents. The interval from which to choose the new offspring can be extended more around the better parent by specifying a higher alpha value. It is implemented as described in Takahashi, M. and Kita, H. 2001. A crossover operator using independent component analysis for real-coded genetic algorithms Proceedings of the 2001 Congress on Evolutionary Computation, pp. 643-649.")]
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   public class BlendAlphaBetaCrossover : RealVectorCrossover {
     /// <summary>
     /// Whether the problem is a maximization or minimization problem.

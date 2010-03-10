@@ -29,6 +29,7 @@ namespace HeuristicLab.Parameters {
   /// A parameter whose value is defined in the parameter itself or is null.
   /// </summary>
   [Item("OptionalValueParameter<T>", "A parameter whose value is defined in the parameter itself or is null.")]
+  [StorableClass(StorableClassType.MarkedOnly)]
   public class OptionalValueParameter<T> : Parameter, IValueParameter<T> where T : class, IItem {
     private T value;
     [Storable]

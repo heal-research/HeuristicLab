@@ -34,7 +34,7 @@ namespace HeuristicLab.Encodings.RealVector {
   /// It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.
   /// </remarks>
   [Item("SinglePointCrossover", "Breaks both parent chromosomes at a randomly chosen point and assembles a child by taking one part of the first parent and the other part of the second pard. It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.")]
-  [EmptyStorableClass]
+  [StorableClass(StorableClassType.Empty)]
   public class SinglePointCrossover : RealVectorCrossover {
     /// <summary>
     /// Performs the single point crossover for real vectors. The implementation is similar to the single point crossover for binary vectors.
