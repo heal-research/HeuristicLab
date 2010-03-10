@@ -109,6 +109,7 @@ namespace HeuristicLab.Core {
     private void OnValueChanged() {
       if (ValueChanged != null)
         ValueChanged(this, EventArgs.Empty);
+      OnToStringChanged();
     }
 
     private void Value_ToStringChanged(object sender, EventArgs e) {
