@@ -35,6 +35,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Problems.TSP {
   [Item("TSP", "Represents a symmetric Traveling Salesman Problem.")]
   [Creatable("Problems")]
+  [EmptyStorableClass]
   public sealed class TSP : ParameterizedNamedItem, ISingleObjectiveProblem {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }
@@ -93,20 +94,9 @@ namespace HeuristicLab.Problems.TSP {
       get { return BestKnownQualityParameter.Value; }
       set { BestKnownQualityParameter.Value = value; }
     }
-    private OperatorSet operators;
+    private List<IPermutationOperator> operators;
     public IEnumerable<IOperator> Operators {
-      get {
-        if (operators == null) InitializeOperators();
-        return operators;
-      }
-    }
-    #endregion
-
-    #region Persistence Properties
-    [Storable]
-    private object RestoreEvents {
-      get { return null; }
-      set { RegisterEvents(); }
+      get { return operators.Cast<IOperator>(); }
     }
     #endregion
 
@@ -126,12 +116,14 @@ namespace HeuristicLab.Problems.TSP {
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
 
-      RegisterEvents();
+      Initialize();
     }
+    [StorableConstructor]
+    private TSP(bool deserializing) : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       TSP clone = (TSP)base.Clone(cloner);
-      clone.RegisterEvents();
+      clone.Initialize();
       return clone;
     }
 
@@ -186,7 +178,9 @@ namespace HeuristicLab.Problems.TSP {
     #endregion
 
     #region Helpers
-    private void RegisterEvents() {
+    [StorableHook(HookType.AfterDeserialization)]
+    private void Initialize() {
+      InitializeOperators();
       CoordinatesParameter.ValueChanged += new EventHandler(CoordinatesParameter_ValueChanged);
       Coordinates.ItemChanged += new EventHandler<EventArgs<int, int>>(Coordinates_ItemChanged);
       Coordinates.Reset += new EventHandler(Coordinates_Reset);
@@ -204,10 +198,9 @@ namespace HeuristicLab.Problems.TSP {
         ((ITSPCoordinatesPathEvaluator)Evaluator).CoordinatesParameter.ActualName = CoordinatesParameter.Name;
     }
     private void InitializeOperators() {
-      operators = new OperatorSet();
+      operators = new List<IPermutationOperator>();
       if (ApplicationManager.Manager != null) {
-        foreach (IPermutationOperator op in ApplicationManager.Manager.GetInstances<IPermutationOperator>())
-          operators.Add(op);
+        operators.AddRange(ApplicationManager.Manager.GetInstances<IPermutationOperator>());
         ParameterizeOperators();
       }
     }
