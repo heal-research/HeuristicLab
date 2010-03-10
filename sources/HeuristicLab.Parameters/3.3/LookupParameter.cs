@@ -43,8 +43,14 @@ namespace HeuristicLab.Parameters {
       }
     }
     public new T ActualValue {
-      get { return (T)GetActualValue(); }
-      set { SetActualValue(value); }
+      get {
+        if (cachedActualValue == null) cachedActualValue = GetActualValue();
+        return (T)cachedActualValue;
+      }
+      set {
+        cachedActualValue = value;
+        SetActualValue(value);
+      }
     }
 
     public LookupParameter()

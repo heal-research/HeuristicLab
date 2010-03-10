@@ -42,9 +42,16 @@ namespace HeuristicLab.Parameters {
     public Type DataType {
       get { return dataType; }
     }
+    protected IItem cachedActualValue;
     public IItem ActualValue {
-      get { return GetActualValue(); }
-      set { SetActualValue(value); }
+      get {
+        if (cachedActualValue == null) cachedActualValue = GetActualValue();
+        return cachedActualValue;
+      }
+      set {
+        cachedActualValue = value;
+        SetActualValue(value);
+      }
     }
     [Storable]
     private IExecutionContext executionContext;
@@ -53,6 +60,7 @@ namespace HeuristicLab.Parameters {
       set {
         if (value != executionContext) {
           executionContext = value;
+          cachedActualValue = null;
           OnExecutionContextChanged();
         }
       }
