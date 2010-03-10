@@ -83,17 +83,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TSPCoordinatesPathEvaluator.cs" />
-    <Compile Include="ITSPDistanceMatrixPathEvaluator.cs" />
-    <Compile Include="ITSPCoordinatesPathEvaluator.cs" />
-    <Compile Include="ITSPPathEvaluator.cs" />
+    <Compile Include="Evaluators\TSPCoordinatesPathEvaluator.cs" />
+    <Compile Include="Evaluators\TSPDistanceMatrixPathEvaluator.cs" />
+    <Compile Include="Evaluators\TSPEvaluator.cs" />
+    <Compile Include="Evaluators\TSPRoundedEuclideanPathEvaluator.cs" />
+    <Compile Include="Interfaces\ITSPCoordinatesPathEvaluator.cs" />
+    <Compile Include="Interfaces\ITSPDistanceMatrixPathEvaluator.cs" />
+    <Compile Include="Interfaces\ITSPEvaluator.cs" />
+    <Compile Include="Interfaces\ITSPPathEvaluator.cs" />
     <Compile Include="HeuristicLabProblemsTSPPlugin.cs" />
-    <Compile Include="TSPEvaluator.cs" />
-    <Compile Include="ITSPEvaluator.cs" />
-    <Compile Include="TSPDistanceMatrixPathEvaluator.cs" />
     <Compile Include="TSPLIBParser.cs" />
-    <Compile Include="TSPRoundedEuclideanPathEvaluator.cs" />
-    <Compile Include="TSPPathEvaluator.cs" />
     <Compile Include="TSP.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

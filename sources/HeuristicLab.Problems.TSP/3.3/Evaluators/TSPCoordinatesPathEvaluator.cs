@@ -21,6 +21,7 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.Permutation;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -30,20 +31,31 @@ namespace HeuristicLab.Problems.TSP {
   /// </summary>
   [Item("TSPCoordinatesPathEvaluator", "A base class for operators which evaluate TSP solutions given in path representation using city coordinates.")]
   [EmptyStorableClass]
-  public abstract class TSPCoordinatesPathEvaluator : TSPPathEvaluator, ITSPCoordinatesPathEvaluator {
+  public abstract class TSPCoordinatesPathEvaluator : TSPEvaluator, ITSPCoordinatesPathEvaluator {
+    public ILookupParameter<Permutation> PermutationParameter {
+      get { return (ILookupParameter<Permutation>)Parameters["Permutation"]; }
+    }
     public ILookupParameter<DoubleMatrixData> CoordinatesParameter {
       get { return (ILookupParameter<DoubleMatrixData>)Parameters["Coordinates"]; }
     }
 
     protected TSPCoordinatesPathEvaluator()
       : base() {
+      Parameters.Add(new LookupParameter<Permutation>("Permutation", "The TSP solution given in path representation which should be evaluated."));
       Parameters.Add(new LookupParameter<DoubleMatrixData>("Coordinates", "The x- and y-Coordinates of the cities."));
     }
 
-    protected sealed override double CalculateDistance(int a, int b) {
-      DoubleMatrixData coordinates = CoordinatesParameter.ActualValue;
-      return CalculateDistance(coordinates[a, 0], coordinates[a, 1],
-                               coordinates[b, 0], coordinates[b, 1]);
+    public sealed override IOperation Apply() {
+      Permutation p = PermutationParameter.ActualValue;
+      DoubleMatrixData c = CoordinatesParameter.ActualValue;
+
+      double length = 0;
+      for (int i = 0; i < p.Length - 1; i++)
+        length += CalculateDistance(c[p[i], 0], c[p[i], 1], c[p[i + 1], 0], c[p[i + 1], 1]);
+      length += CalculateDistance(c[p[p.Length - 1], 0], c[p[p.Length - 1], 1], c[p[0], 0], c[p[0], 1]);
+      QualityParameter.ActualValue = new DoubleData(length);
+
+      return base.Apply();
     }
 
     /// <summary>
