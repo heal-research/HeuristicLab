@@ -714,6 +714,27 @@ namespace HeuristicLab.Persistence_33.Tests {
       Assert.AreEqual(newCC.Value, "persistence");
     }
 
+    [EmptyStorableClass]
+    public class ExplodingDefaultConstructor {
+      public ExplodingDefaultConstructor() {
+        throw new Exception("this constructor will always fail");
+      }
+      public ExplodingDefaultConstructor(string password) {
+      }
+    }
+
+    [TestMethod]
+    public void TestConstructorExceptionUnwrapping() {
+      ExplodingDefaultConstructor x = new ExplodingDefaultConstructor("password");
+      XmlGenerator.Serialize(x, tempFile);
+      try {
+        ExplodingDefaultConstructor newX = (ExplodingDefaultConstructor)XmlParser.Deserialize(tempFile);
+        Assert.Fail("Exception expected");
+      } catch (PersistenceException pe) {
+        Assert.AreEqual(pe.InnerException.Message, "this constructor will always fail");
+      }
+    }
+
     [ClassInitialize]
     public static void Initialize(TestContext testContext) {
       ConfigurationService.Instance.Reset();

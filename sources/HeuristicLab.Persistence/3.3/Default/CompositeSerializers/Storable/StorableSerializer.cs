@@ -39,10 +39,16 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     }
 
     public object CreateInstance(Type type, IEnumerable<Tag> metaInfo) {
-      object instance = StorableConstructorAttribute.CallStorableConstructor(type);
-      if (instance == null)
-        instance = Activator.CreateInstance(type, true);
-      return instance;
+      try {
+        object instance = StorableConstructorAttribute.CallStorableConstructor(type);
+        if (instance == null)
+          instance = Activator.CreateInstance(type, true);
+        return instance;
+      } catch (TargetInvocationException x) {
+        throw new PersistenceException(
+          "Could not instantiate storable object: Encountered exception during constructor call",
+          x.InnerException);
+      }
     }
 
     public void Populate(object instance, IEnumerable<Tag> objects, Type type) {
