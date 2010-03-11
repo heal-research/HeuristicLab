@@ -21,6 +21,7 @@
 
 using HeuristicLab.Collections;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
   /// <summary>
@@ -28,6 +29,7 @@ namespace HeuristicLab.Operators {
   /// </summary>
   [Item("CombinedOperator", "An operator which contains an operator graph.")]
   [Creatable("Test")]
+  [StorableClass(StorableClassType.Empty)]
   public sealed class CombinedOperator : AlgorithmOperator, IParameterizedItem {
     public new ParameterCollection Parameters {
       get { return base.Parameters; }

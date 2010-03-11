@@ -25,6 +25,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Evolutionary;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Selection;
 
 namespace HeuristicLab.Algorithms.SGA {
@@ -33,6 +34,7 @@ namespace HeuristicLab.Algorithms.SGA {
   /// </summary>
   [Item("SGAOperator", "An operator which represents a Standard Genetic Algorithm.")]
   [Creatable("Test")]
+  [StorableClass(StorableClassType.Empty)]
   public class SGAOperator : AlgorithmOperator {
     #region Parameter properties
     public ValueLookupParameter<IRandom> RandomParameter {
