@@ -92,6 +92,9 @@
     <Compile Include="Interfaces\ITSPEvaluator.cs" />
     <Compile Include="Interfaces\ITSPPathEvaluator.cs" />
     <Compile Include="HeuristicLabProblemsTSPPlugin.cs" />
+    <Compile Include="MoveEvaluators\TwoOptMoveTSPEvaluator.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="TSPLIBParser.cs" />
     <Compile Include="TSP.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

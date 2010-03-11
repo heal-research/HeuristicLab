@@ -84,6 +84,12 @@ namespace HeuristicLab.Encodings.Permutation {
       Randomize(random, 0, Length);
     }
 
+    public int GetCircular(int position) {
+      if (position >= Length) position = position % Length;
+      while (position < 0) position += Length;
+      return this[position];
+    }
+
     #region IStringConvertibleArrayData Members
     int IStringConvertibleArrayData.Length {
       get { return Length; }

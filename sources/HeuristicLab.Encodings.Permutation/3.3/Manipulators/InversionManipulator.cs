@@ -46,7 +46,10 @@ namespace HeuristicLab.Encodings.Permutation {
         breakPoint2 = random.Next(permutation.Length - 1);
       } while (breakPoint2 == breakPoint1);
       if (breakPoint2 < breakPoint1) { int h = breakPoint1; breakPoint1 = breakPoint2; breakPoint2 = h; }
+      Apply(permutation, breakPoint1, breakPoint2);
+    }
 
+    public static void Apply(Permutation permutation, int breakPoint1, int breakPoint2) {
       for (int i = 0; i <= (breakPoint2 - breakPoint1) / 2; i++) {  // invert permutation between breakpoints
         int temp = permutation[breakPoint1 + i];
         permutation[breakPoint1 + i] = permutation[breakPoint2 - i];

@@ -82,8 +82,15 @@
     <None Include="HeuristicLabAlgorithmsTSPlugin.cs.frame" />
     <Compile Include="HeuristicLabAlgorithmsTSPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TabuSelector.cs" />
-    <Compile Include="TSOperator.cs" />
+    <Compile Include="TabuListCreator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TabuSelector.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TSOperator.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />

@@ -39,12 +39,6 @@ namespace HeuristicLab.Algorithms.TS {
   [StorableClass(StorableClassType.Empty)]
   public class TabuSelector : Selector {
     /// <summary>
-    /// The quality of the current solution.
-    /// </summary>
-    public LookupParameter<DoubleData> QualityParameter {
-      get { return (LookupParameter<DoubleData>)Parameters["Quality"]; }
-    }
-    /// <summary>
     /// The best found quality so far.
     /// </summary>
     public LookupParameter<DoubleData> BestQualityParameter {
@@ -75,13 +69,16 @@ namespace HeuristicLab.Algorithms.TS {
       get { return (ILookupParameter<ItemArray<BoolData>>)Parameters["MoveTabu"]; }
     }
 
+    public IntData NumberOfSelectedSubScopes {
+      set { NumberOfSelectedSubScopesParameter.Value = value; }
+    }
+
     /// <summary>
     /// Initializes a new intsance with 6 parameters (<c>Quality</c>, <c>BestQuality</c>,
     /// <c>Aspiration</c>, <c>Maximization</c>, <c>MoveQuality</c>, and <c>MoveTabu</c>).
     /// </summary>
     public TabuSelector()
       : base() {
-      Parameters.Add(new LookupParameter<DoubleData>("Quality", "The quality of the current solution."));
       Parameters.Add(new LookupParameter<DoubleData>("BestQuality", "The best found quality so far."));
       Parameters.Add(new ValueLookupParameter<BoolData>("Aspiration", "Whether the default aspiration criterion should be used or not. The default aspiration criterion accepts a tabu move if it results in a better solution than the best solution found so far.", new BoolData(true)));
       Parameters.Add(new ValueLookupParameter<BoolData>("Maximization", "Whether the problem is a maximization or minimization problem (used to decide whether a solution is better"));
@@ -100,7 +97,6 @@ namespace HeuristicLab.Algorithms.TS {
       bool aspiration = AspirationParameter.ActualValue.Value;
       bool maximization = MaximizationParameter.ActualValue.Value;
       double bestQuality = BestQualityParameter.ActualValue.Value;
-      double quality = QualityParameter.ActualValue.Value;
       ItemArray<DoubleData> moveQualities = MoveQualityParameter.ActualValue;
       ItemArray<BoolData> moveTabus = MoveTabuParameter.ActualValue;
 
@@ -109,9 +105,8 @@ namespace HeuristicLab.Algorithms.TS {
       // remember scopes that should be removed
       List<int> scopesToRemove = new List<int>();
       for (int i = 0; i < scopes.Count; i++) {
-        if (count > 0 && (!moveTabus[i].Value || aspiration &&
-          (maximization && moveQualities[i].Value + quality > bestQuality
-          || !maximization && moveQualities[i].Value + quality < bestQuality))) {
+        if (count > 0 && (!moveTabus[i].Value
+          || aspiration && IsBetter(maximization, moveQualities[i].Value, bestQuality))) {
           scopesToRemove.Add(i);
           if (copy) selected[selected.Length - count] = (IScope)scopes[i].Clone();
           else selected[selected.Length - count] = scopes[i];
@@ -131,6 +126,10 @@ namespace HeuristicLab.Algorithms.TS {
       }
 
       return selected;
+    }
+
+    private bool IsBetter(bool maximization, double moveQuality, double bestQuality) {
+      return (maximization && moveQuality > bestQuality || !maximization && moveQuality < bestQuality);
     }
   }
 }

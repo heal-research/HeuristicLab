@@ -20,30 +20,13 @@
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Encodings.Permutation {
-  [Item("Permutation2IndexMove", "A move on a permutation that is specified by 2 indices")]
-  [StorableClass(StorableClassType.MarkedOnly)]
-  public class Permutation2IndexMove : Item {
-    [Storable]
-    public int Index1 { get; protected set; }
-    [Storable]
-    public int Index2 { get; protected set; }
-    [Storable]
-    public Permutation Permutation { get; protected set; }
-
-    protected Permutation2IndexMove() {
-      Index1 = -1;
-      Index2 = -1;
-      Permutation = null;
-    }
-
-    public Permutation2IndexMove(int index1, int index2, Permutation permutation)
-      : base() {
-      Index1 = index1;
-      Index2 = index2;
-      Permutation = permutation;
-    }
+  /// <summary>
+  /// An interface which represents an operator for manipulating solutions.
+  /// </summary>
+  public interface IPermutationMoveGenerator : IPermutationOperator, IMoveGenerator {
+    ILookupParameter<Permutation> PermutationParameter { get; }
   }
 }

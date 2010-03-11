@@ -20,13 +20,22 @@
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.Operators;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.Permutation.Moves {
-  public class Permutation2OptExhaustiveMoveGenerator : SingleSuccessorOperator {
-    public override IOperation Apply() {
-      return base.Apply();
+namespace HeuristicLab.Encodings.Permutation {
+  [Item("TwoOptMove", "Item that describes a 2-Opt move.")]
+  [StorableClass(StorableClassType.Empty)]
+  public class TwoOptMove : TwoIndexMove {
+    public TwoOptMove()
+      : base() {
+    }
+
+    public TwoOptMove(int index1, int index2)
+      : base(index1, index2, null) {
+    }
+
+    public TwoOptMove(int index1, int index2, Permutation permutation)
+      : base(index1, index2, permutation) {
     }
   }
 }

@@ -20,21 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.Permutation {
-  [Item("Permutation2OptMove", "Item that describes a 2-Opt move.")]
-  public class Permutation2OptMove : Permutation2IndexMove {
-    protected Permutation2OptMove()
-      : base() {
-    }
-
-    public Permutation2OptMove(int index1, int index2)
-      : base(index1, index2, null) {
-    }
-
-    public Permutation2OptMove(int index1, int index2, Permutation permutation)
-      : base(index1, index2, permutation) {
-    }
-  }
+namespace HeuristicLab.Optimization {
+  /// <summary>
+  /// An interface which represents an operator for generating moves.
+  /// </summary>
+  public interface IMoveGenerator : IOperator { }
 }
