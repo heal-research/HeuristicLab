@@ -31,6 +31,7 @@ namespace HeuristicLab.Operators {
   /// A base class for operators which apply multiple user-defined operators.
   /// </summary>
   [Item("MultipleCallsOperator", "A base class for operators which apply multiple user-defined operators.")]
+  [StorableClass(StorableClassType.MarkedOnly)]
   public abstract class MultipleCallsOperator : SingleSuccessorOperator {
     protected IValueParameter<IOperator>[] OperatorParameters {
       get {

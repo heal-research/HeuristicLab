@@ -27,6 +27,7 @@ namespace HeuristicLab.Core {
   /// A base class for items which have a name and contain parameters.
   /// </summary>
   [Item("ParameterizedNamedItem", "A base class for items which have a name and contain parameters.")]
+  [StorableClass(StorableClassType.MarkedOnly)]
   public abstract class ParameterizedNamedItem : NamedItem, IParameterizedNamedItem {
     private ParameterCollection parameters;
     [Storable]

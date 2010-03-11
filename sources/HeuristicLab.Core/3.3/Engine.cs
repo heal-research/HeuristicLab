@@ -33,6 +33,7 @@ namespace HeuristicLab.Core {
   /// one execution and can handle parallel executions.
   /// </summary>
   [Item("Engine", "A base class for engines.")]
+  [StorableClass(StorableClassType.MarkedOnly)]
   public abstract class Engine : Item, IEngine {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Event; }

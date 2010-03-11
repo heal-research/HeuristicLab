@@ -30,6 +30,7 @@ using System.Windows.Forms;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
+  [StorableClass(StorableClassType.MarkedOnly)]
   internal class OperatorShapeInfo : ShapeInfo, IOperatorShapeInfo {
     [Storable]
     private List<string> connectorNames;

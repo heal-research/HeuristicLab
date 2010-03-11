@@ -28,6 +28,7 @@ namespace HeuristicLab.Operators {
   /// An operator which represents an algorithm represented as an operator graph.
   /// </summary>
   [Item("AlgorithmOperator", "An operator which represents an algorithm represented as an operator graph.")]
+  [StorableClass(StorableClassType.MarkedOnly)]
   public abstract class AlgorithmOperator : SingleSuccessorOperator {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Module; }

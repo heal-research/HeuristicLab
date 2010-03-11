@@ -30,6 +30,7 @@ using HeuristicLab.Collections;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
+  [StorableClass(StorableClassType.MarkedOnly)]
   public sealed class GraphVisualizationInfo : DeepCloneable {
     private BidirectionalLookup<IOperator, IOperatorShapeInfo> operatorShapeInfoMapping;
     [Storable]
