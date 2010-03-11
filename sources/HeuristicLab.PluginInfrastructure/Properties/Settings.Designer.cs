@@ -41,14 +41,51 @@ namespace HeuristicLab.PluginInfrastructure.Properties {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
-            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
-            "tring>http://localhost:59253/UpdateLocation.svc</string>\r\n</ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection UpdateLocations {
+        [global::System.Configuration.DefaultSettingValueAttribute("http://servdev.heuristiclab.com/Deployment/Update.svc")]
+        public string UpdateLocation {
             get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["UpdateLocations"]));
+                return ((string)(this["UpdateLocation"]));
+            }
+            set {
+                this["UpdateLocation"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string UpdateLocationUserName {
+            get {
+                return ((string)(this["UpdateLocationUserName"]));
+            }
+            set {
+                this["UpdateLocationUserName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string UpdateLocationPassword {
+            get {
+                return ((string)(this["UpdateLocationPassword"]));
+            }
+            set {
+                this["UpdateLocationPassword"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://servdev.heuristiclab.com/Deployment/Admin.svc")]
+        public string UpdateLocationAdministrationAddress {
+            get {
+                return ((string)(this["UpdateLocationAdministrationAddress"]));
+            }
+            set {
+                this["UpdateLocationAdministrationAddress"] = value;
             }
         }
     }

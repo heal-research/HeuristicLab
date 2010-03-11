@@ -92,7 +92,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Advanced\ConnectionSetupView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Advanced\ConnectionSetupView.Designer.cs">
+      <DependentUpon>ConnectionSetupView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Advanced\DeploymentService\AdminClientFactory.cs" />
     <Compile Include="Advanced\DeploymentService\DeploymentService.cs" />
+    <Compile Include="Advanced\DeploymentService\UpdateClientFactory.cs" />
     <Compile Include="Advanced\InstallationManagerConsole.cs" />
     <Compile Include="Advanced\InstallationManager.cs" />
     <Compile Include="Advanced\InstallationManagerForm.cs">
@@ -107,11 +115,35 @@
     <Compile Include="Advanced\DeploymentService\ProductDescription.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Advanced\LicenseConfirmationBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Advanced\LicenseConfirmationBox.Designer.cs">
+      <DependentUpon>LicenseConfirmationBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Advanced\LicenseView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Advanced\LicenseView.Designer.cs">
+      <DependentUpon>LicenseView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Advanced\LocalPluginManager.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Advanced\LocalPluginManager.Designer.cs">
       <DependentUpon>LocalPluginManager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Advanced\InstallationManagerControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Advanced\InstallationManagerControl.Designer.cs">
+      <DependentUpon>InstallationManagerControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Advanced\PluginView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Advanced\PluginView.Designer.cs">
+      <DependentUpon>PluginView.cs</DependentUpon>
     </Compile>
     <Compile Include="Advanced\RemotePluginInstaller.cs">
       <SubType>UserControl</SubType>
@@ -220,9 +252,24 @@
     <Content Include="Resources\LargeIcons.gif" />
     <Content Include="Resources\List.gif" />
     <Content Include="Resources\Logo_white.gif" />
+    <EmbeddedResource Include="Advanced\ConnectionSetupView.resx">
+      <DependentUpon>ConnectionSetupView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Advanced\DeploymentService\servdev.cer" />
+    <EmbeddedResource Include="Advanced\LicenseConfirmationBox.resx">
+      <DependentUpon>LicenseConfirmationBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Advanced\LicenseView.resx">
+      <DependentUpon>LicenseView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Advanced\PluginView.resx">
+      <DependentUpon>PluginView.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Resources\VS2008ImageLibrary_Actions_Delete.png" />
     <None Include="Resources\VS2008ImageLibrary_CommonElements_Actions_Remove.png" />
     <Content Include="Resources\VS2008ImageLibrary_CommonElements_Objects_Arrow_Down.png" />
+    <None Include="Resources\VS2008ImageLibrary_Objects_File.png" />
+    <None Include="Resources\VS2008ImageLibrary_Objects_Document.png" />
     <None Include="Resources\VS2008ImageLibrary_Objects_Internet.png" />
     <None Include="Resources\VS2008ImageLibrary_Objects_Install.png" />
     <None Include="Resources\VS2008ImageLibrary_Objects_Assembly.png" />

@@ -51,7 +51,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
     void installManager_PreUpdatePlugin(object sender, PluginInfrastructureCancelEventArgs e) {
       Console.WriteLine("Following plugins are updated:");
-      foreach (var info in e.Entities) {
+      foreach (var info in e.Plugins) {
         Console.WriteLine(e);
       }
       if (GetUserConfirmation()) e.Cancel = false;
@@ -66,8 +66,9 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
     void installManager_PreRemovePlugin(object sender, PluginInfrastructureCancelEventArgs e) {
       Console.WriteLine("Following files are deleted:");
-      foreach (string fileName in e.Entities) {
-        Console.WriteLine(fileName);
+      foreach (var plugin in e.Plugins) {
+        foreach (var file in plugin.Files)
+          Console.WriteLine(file);
       }
       if (GetUserConfirmation()) e.Cancel = false;
       else e.Cancel = true;

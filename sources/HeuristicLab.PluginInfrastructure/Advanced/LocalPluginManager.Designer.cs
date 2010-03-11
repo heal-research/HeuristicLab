@@ -56,6 +56,7 @@
       this.localPluginsListView.TabIndex = 8;
       this.localPluginsListView.UseCompatibleStateImageBehavior = false;
       this.localPluginsListView.View = System.Windows.Forms.View.Details;
+      this.localPluginsListView.ItemActivate += new System.EventHandler(this.localPluginsListView_ItemActivate);
       this.localPluginsListView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.pluginsListView_ItemChecked);
       // 
       // pluginNameHeader

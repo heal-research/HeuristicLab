@@ -28,10 +28,10 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
   // to be replaced by GenericEventArgs
   [Serializable]
   internal sealed class PluginInfrastructureCancelEventArgs : CancelEventArgs {
-    internal IEnumerable<string> Entities { get; private set; }
-    internal PluginInfrastructureCancelEventArgs(IEnumerable<string> entities)
+    internal IEnumerable<IPluginDescription> Plugins { get; private set; }
+    internal PluginInfrastructureCancelEventArgs(IEnumerable<IPluginDescription> plugins)
       : base() {
-      this.Entities = entities;
+      this.Plugins = plugins;
     }
   }
 }

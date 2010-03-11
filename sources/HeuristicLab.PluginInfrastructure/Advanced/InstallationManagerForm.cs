@@ -12,7 +12,6 @@ using HeuristicLab.PluginInfrastructure.Manager;
 namespace HeuristicLab.PluginInfrastructure.Advanced {
   public partial class InstallationManagerForm : Form {
     private class UpdateOrInstallPluginsBackgroundWorkerArgument {
-      public string ConnectionString { get; set; }
       public IEnumerable<IPluginDescription> PluginsToUpdate { get; set; }
       public IEnumerable<IPluginDescription> PluginsToInstall { get; set; }
     }
@@ -55,11 +54,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       refreshLocalPluginsBackgroundWorker.DoWork += new DoWorkEventHandler(refreshLocalPluginsBackgroundWorker_DoWork);
       refreshLocalPluginsBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(refreshLocalPluginsBackgroundWorker_RunWorkerCompleted);
       #endregion
-
-      // get default connection string
-      using (var client = new DeploymentService.UpdateClient()) {
-        serverUrlTextBox.Text = client.Endpoint.Address.ToString();
-      }
 
       installationManager = new InstallationManager(pluginDir);
       installationManager.PluginInstalled += new EventHandler<PluginInfrastructureEventArgs>(installationManager_PluginInstalled);
@@ -129,8 +123,8 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
     void updateOrInstallPluginsBackgroundWorker_DoWork(object sender, DoWorkEventArgs e) {
       UpdateOrInstallPluginsBackgroundWorkerArgument info = (UpdateOrInstallPluginsBackgroundWorkerArgument)e.Argument;
-      installationManager.Install(info.ConnectionString, info.PluginsToInstall);
-      installationManager.Update(info.ConnectionString, info.PluginsToUpdate);
+      installationManager.Install(info.PluginsToInstall);
+      installationManager.Update(info.PluginsToUpdate);
     }
     #endregion
 
@@ -146,11 +140,9 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     }
 
     void refreshServerPluginsBackgroundWorker_DoWork(object sender, DoWorkEventArgs e) {
-      string connectionString = (string)e.Argument;
-
       RefreshBackgroundWorkerResult result = new RefreshBackgroundWorkerResult();
-      result.RemotePlugins = installationManager.GetRemotePluginList(connectionString);
-      result.RemoteProducts = installationManager.GetRemoteProductList(connectionString);
+      result.RemotePlugins = installationManager.GetRemotePluginList();
+      result.RemoteProducts = installationManager.GetRemoteProductList();
       e.Cancel = false;
       e.Result = result;
     }
@@ -179,18 +171,26 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
     #region installation manager event handlers
     void installationManager_PreUpdatePlugin(object sender, PluginInfrastructureCancelEventArgs e) {
-      if (ConfirmUpdateAction(e.Entities) == true) e.Cancel = false;
-      else e.Cancel = true;
+      if (e.Plugins.Count() > 0) {
+        e.Cancel = ConfirmUpdateAction(e.Plugins) == false;
+      }
     }
 
     void installationManager_PreRemovePlugin(object sender, PluginInfrastructureCancelEventArgs e) {
-      if (ConfirmRemoveAction(e.Entities) == true) e.Cancel = false;
-      else e.Cancel = true;
+      if (e.Plugins.Count() > 0) {
+        e.Cancel = ConfirmRemoveAction(e.Plugins) == false;
+      }
     }
 
     void installationManager_PreInstallPlugin(object sender, PluginInfrastructureCancelEventArgs e) {
-      if (e.Entities.Count() > 0)
-        SetStatusStrip("Installing " + e.Entities.Aggregate((a, b) => a + Environment.NewLine + b));
+      if (e.Plugins.Count() > 0)
+        if (ConfirmInstallAction(e.Plugins) == true) {
+          SetStatusStrip("Installing " + e.Plugins.Aggregate("", (a, b) => a.ToString() + "; " + b.ToString()));
+          e.Cancel = false;
+        } else {
+          e.Cancel = true;
+          SetStatusStrip("Install canceled");
+        }
     }
 
     void installationManager_PluginUpdated(object sender, PluginInfrastructureEventArgs e) {
@@ -238,7 +238,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // otherwise install a new plugin
       var pluginsToInstall = remotePluginInstaller.CheckedPlugins.Except(pluginsToUpdate);
 
-      updateOrInstallInfo.ConnectionString = serverUrlTextBox.Text;
       updateOrInstallInfo.PluginsToInstall = pluginsToInstall;
       updateOrInstallInfo.PluginsToUpdate = pluginsToUpdate;
       updateOrInstallPluginsBackgroundWorker.RunWorkerAsync(updateOrInstallInfo);
@@ -254,23 +253,37 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     #endregion
 
     #region confirmation dialogs
-    private bool ConfirmRemoveAction(IEnumerable<string> fileNames) {
+    private bool ConfirmRemoveAction(IEnumerable<IPluginDescription> plugins) {
       StringBuilder strBuilder = new StringBuilder();
       strBuilder.AppendLine("Delete files:");
-      foreach (var fileName in fileNames) {
-        strBuilder.AppendLine(fileName);
+      foreach (var plugin in plugins) {
+        foreach (var file in plugin.Files) {
+          strBuilder.AppendLine(file.ToString());
+        }
       }
       return MessageBox.Show(strBuilder.ToString(), "Confirm Delete", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK;
     }
 
-    private bool ConfirmUpdateAction(IEnumerable<string> plugins) {
+    private bool ConfirmUpdateAction(IEnumerable<IPluginDescription> plugins) {
       StringBuilder strBuilder = new StringBuilder();
       strBuilder.AppendLine("Update plugins:");
       foreach (var plugin in plugins) {
-        strBuilder.AppendLine(plugin);
+        strBuilder.AppendLine(plugin.ToString());
       }
       return MessageBox.Show(strBuilder.ToString(), "Confirm Update", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK;
     }
+
+    private bool ConfirmInstallAction(IEnumerable<IPluginDescription> plugins) {
+      foreach (var plugin in plugins) {
+        if (!string.IsNullOrEmpty(plugin.LicenseText)) {
+          var licenseConfirmationBox = new LicenseConfirmationBox(plugin);
+          if (licenseConfirmationBox.ShowDialog() != DialogResult.OK)
+            return false;
+        }
+      }
+      return true;
+    }
+
 
     #endregion
 
@@ -305,7 +318,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       Cursor = Cursors.AppStarting;
       toolStripProgressBar.Visible = true;
       DisableControls();
-      refreshServerPluginsBackgroundWorker.RunWorkerAsync(serverUrlTextBox.Text);
+      refreshServerPluginsBackgroundWorker.RunWorkerAsync();
     }
 
     private void RefreshLocalPluginListAsync() {
@@ -319,14 +332,12 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       //localPluginsListView.Enabled = false;
       //ClearPluginsList(remotePluginsListView);
       refreshButton.Enabled = true;
-      serverUrlTextBox.Enabled = true;
       toolStripProgressBar.Visible = false;
       Cursor = Cursors.Default;
     }
 
     private void UpdateControlsConnected() {
       refreshButton.Enabled = true;
-      serverUrlTextBox.Enabled = true;
       toolStripProgressBar.Visible = false;
       Cursor = Cursors.Default;
     }
@@ -343,6 +354,10 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
     private void remotePluginInstaller_ItemChecked(object sender, ItemCheckedEventArgs e) {
       installButton.Enabled = remotePluginInstaller.CheckedPlugins.Count() > 0;
+    }
+
+    private void editConnectionButton_Click(object sender, EventArgs e) {
+      (new ConnectionSetupView()).ShowInForm();
     }
   }
 }

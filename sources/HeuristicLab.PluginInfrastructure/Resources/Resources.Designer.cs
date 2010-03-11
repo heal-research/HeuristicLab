@@ -74,6 +74,20 @@ namespace HeuristicLab.PluginInfrastructure.Resources {
             }
         }
         
+        internal static System.Drawing.Bitmap Document {
+            get {
+                object obj = ResourceManager.GetObject("Document", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap File {
+            get {
+                object obj = ResourceManager.GetObject("File", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Install {
             get {
                 object obj = ResourceManager.GetObject("Install", resourceCulture);

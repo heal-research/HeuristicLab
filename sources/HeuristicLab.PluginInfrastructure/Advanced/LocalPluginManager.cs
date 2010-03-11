@@ -91,5 +91,13 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private void OnItemChecked(ItemCheckedEventArgs e) {
       if (ItemChecked != null) ItemChecked(this, e);
     }
+
+    private void localPluginsListView_ItemActivate(object sender, EventArgs e) {
+      if (localPluginsListView.SelectedItems.Count > 0) {
+        var plugin = (PluginDescription)localPluginsListView.SelectedItems[0].Tag;
+        PluginView pluginView = new PluginView(plugin);
+        pluginView.ShowInForm();
+      }
+    }
   }
 }

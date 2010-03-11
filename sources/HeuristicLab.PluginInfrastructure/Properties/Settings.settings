@@ -8,11 +8,17 @@
     <Setting Name="Organization" Type="System.String" Scope="Application">
       <Value Profile="(Default)">-</Value>
     </Setting>
-    <Setting Name="UpdateLocations" Type="System.Collections.Specialized.StringCollection" Scope="Application">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;string&gt;http://localhost:59253/UpdateLocation.svc&lt;/string&gt;
-&lt;/ArrayOfString&gt;</Value>
+    <Setting Name="UpdateLocation" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://servdev.heuristiclab.com/Deployment/Update.svc</Value>
+    </Setting>
+    <Setting Name="UpdateLocationUserName" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="UpdateLocationPassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="UpdateLocationAdministrationAddress" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://servdev.heuristiclab.com/Deployment/Admin.svc</Value>
     </Setting>
   </Settings>
 </SettingsFile>

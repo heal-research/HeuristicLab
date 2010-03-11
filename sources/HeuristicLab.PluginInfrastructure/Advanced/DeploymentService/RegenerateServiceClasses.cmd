@@ -1,2 +1,2 @@
 ﻿#
-svcutil http://localhost:8731/Design_Time_Addresses/HeuristicLab.Services.Deployment/Update/mex http://localhost:8731/Design_Time_Addresses/HeuristicLab.Services.Deployment/Admin/mex  /language:C# /targetClientVersion:Version35 /out:DeploymentService /namespace:*,HeuristicLab.PluginInfrastructure.Advanced.DeploymentService /mergeConfig /config:../../app.config
+svcutil http://servdev.heuristiclab.com/Deployment/Update.svc/mex http://servdev.heuristiclab.com/Deployment/Admin.svc/mex  /language:C# /targetClientVersion:Version35 /out:DeploymentService /namespace:*,HeuristicLab.PluginInfrastructure.Advanced.DeploymentService /mergeConfig /config:../../app.config

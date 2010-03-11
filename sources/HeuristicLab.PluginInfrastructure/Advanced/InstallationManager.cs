@@ -28,6 +28,7 @@ using System.IO;
 using System.ComponentModel;
 using System.Reflection;
 using ICSharpCode.SharpZipLib.Zip;
+using System.ServiceModel;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
   internal class InstallationManager {
@@ -128,9 +129,16 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     /// </summary>
     /// <param name="connectionString"></param>
     /// <returns></returns>
-    public IEnumerable<IPluginDescription> GetRemotePluginList(string connectionString) {
-      using (var client = new DeploymentService.UpdateClient()) {
-        return client.GetPlugins();
+    public IEnumerable<IPluginDescription> GetRemotePluginList() {
+      var client = DeploymentService.UpdateClientFactory.CreateClient();
+      try {
+        List<IPluginDescription> plugins = new List<IPluginDescription>(client.GetPlugins());
+        client.Close();
+        return plugins;
+      }
+      catch (FaultException) {
+        client.Abort();
+        return new IPluginDescription[] { };
       }
     }
 
@@ -139,9 +147,16 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     /// </summary>
     /// <param name="connectionString"></param>
     /// <returns></returns>
-    public IEnumerable<DeploymentService.ProductDescription> GetRemoteProductList(string connectionString) {
-      using (var client = new DeploymentService.UpdateClient()) {
-        return client.GetProducts();
+    public IEnumerable<DeploymentService.ProductDescription> GetRemoteProductList() {
+      var client = DeploymentService.UpdateClientFactory.CreateClient();
+      try {
+        List<DeploymentService.ProductDescription> products = new List<DeploymentService.ProductDescription>(client.GetProducts());
+        client.Close();
+        return products;
+      }
+      catch (FaultException) {
+        client.Abort();
+        return new DeploymentService.ProductDescription[] { };
       }
     }
 
@@ -150,14 +165,21 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     /// </summary>
     /// <param name="connectionString"></param>
     /// <param name="pluginNames"></param>
-    public void Install(string connectionString, IEnumerable<IPluginDescription> plugins) {
-      using (var client = new DeploymentService.UpdateClient()) {
-        var args = new PluginInfrastructureCancelEventArgs(plugins.Select(x => x.Name + " " + x.Version));
-        OnPreInstall(args);
-        foreach (DeploymentService.PluginDescription plugin in plugins) {
-          byte[] zippedPackage = client.GetPlugin(plugin);
-          Unpack(zippedPackage);
-          OnInstalled(new PluginInfrastructureEventArgs(plugin));
+    public void Install(IEnumerable<IPluginDescription> plugins) {
+      var args = new PluginInfrastructureCancelEventArgs(plugins);
+      OnPreInstall(args);
+      if (!args.Cancel) {
+        var client = DeploymentService.UpdateClientFactory.CreateClient();
+        try {
+          foreach (DeploymentService.PluginDescription plugin in plugins) {
+            byte[] zippedPackage = client.GetPlugin(plugin);
+            Unpack(zippedPackage);
+            OnInstalled(new PluginInfrastructureEventArgs(plugin));
+          }
+          client.Close();
+        }
+        catch (FaultException) {
+          client.Abort();
         }
       }
     }
@@ -166,16 +188,21 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     /// Updates plugins from remote server
     /// </summary>
     /// <param name="pluginNames"></param>
-    public void Update(string connectionString, IEnumerable<IPluginDescription> plugins) {
-      PluginInfrastructureCancelEventArgs args = new PluginInfrastructureCancelEventArgs(plugins.Select(x => x.Name + " " + x.Version));
+    public void Update(IEnumerable<IPluginDescription> plugins) {
+      PluginInfrastructureCancelEventArgs args = new PluginInfrastructureCancelEventArgs(plugins);
       OnPreUpdate(args);
       if (!args.Cancel) {
-        using (var client = new DeploymentService.UpdateClient()) {
+        var client = DeploymentService.UpdateClientFactory.CreateClient();
+        try {
           foreach (DeploymentService.PluginDescription plugin in plugins) {
             byte[] zippedPackage = client.GetPlugin(plugin);
             Unpack(zippedPackage);
             OnUpdated(new PluginInfrastructureEventArgs(plugin));
           }
+          client.Close();
+        }
+        catch (FaultException) {
+          client.Abort();
         }
       }
     }
@@ -188,7 +215,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       var fileNames = from pluginToDelete in plugins
                       from file in pluginToDelete.Files
                       select Path.Combine(pluginDir, file.Name);
-      var args = new PluginInfrastructureCancelEventArgs(fileNames);
+      var args = new PluginInfrastructureCancelEventArgs(plugins);
       OnPreDelete(args);
       if (!args.Cancel) {
         foreach (string fileName in fileNames) {

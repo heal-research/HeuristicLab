@@ -27,9 +27,6 @@
       this.toolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
       this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
       this.removeButton = new System.Windows.Forms.Button();
-      this.serverUrlLabel = new System.Windows.Forms.Label();
-      this.serverUrlTextBox = new System.Windows.Forms.TextBox();
-      this.refreshButton = new System.Windows.Forms.Button();
       this.installButton = new System.Windows.Forms.Button();
       this.tabControl = new System.Windows.Forms.TabControl();
       this.localPluginsTabPage = new System.Windows.Forms.TabPage();
@@ -38,6 +35,8 @@
       this.remotePluginInstaller = new HeuristicLab.PluginInfrastructure.Advanced.RemotePluginInstaller();
       this.logTabPage = new System.Windows.Forms.TabPage();
       this.logTextBox = new System.Windows.Forms.TextBox();
+      this.refreshButton = new System.Windows.Forms.Button();
+      this.editConnectionButton = new System.Windows.Forms.Button();
       this.statusStrip.SuspendLayout();
       this.tabControl.SuspendLayout();
       this.localPluginsTabPage.SuspendLayout();
@@ -79,32 +78,6 @@
       this.removeButton.Text = "Remove Plugins";
       this.removeButton.UseVisualStyleBackColor = true;
       this.removeButton.Click += new System.EventHandler(this.removeButton_Click);
-      // 
-      // serverUrlLabel
-      // 
-      this.serverUrlLabel.AutoSize = true;
-      this.serverUrlLabel.Location = new System.Drawing.Point(9, 11);
-      this.serverUrlLabel.Name = "serverUrlLabel";
-      this.serverUrlLabel.Size = new System.Drawing.Size(73, 13);
-      this.serverUrlLabel.TabIndex = 13;
-      this.serverUrlLabel.Text = "Plugin Server:";
-      // 
-      // serverUrlTextBox
-      // 
-      this.serverUrlTextBox.Location = new System.Drawing.Point(88, 8);
-      this.serverUrlTextBox.Name = "serverUrlTextBox";
-      this.serverUrlTextBox.Size = new System.Drawing.Size(264, 20);
-      this.serverUrlTextBox.TabIndex = 12;
-      // 
-      // refreshButton
-      // 
-      this.refreshButton.Location = new System.Drawing.Point(358, 6);
-      this.refreshButton.Name = "refreshButton";
-      this.refreshButton.Size = new System.Drawing.Size(75, 23);
-      this.refreshButton.TabIndex = 11;
-      this.refreshButton.Text = "Refresh";
-      this.refreshButton.UseVisualStyleBackColor = true;
-      this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
       // 
       // installButton
       // 
@@ -156,9 +129,8 @@
       // 
       // remotePluginsTabPage
       // 
-      this.remotePluginsTabPage.Controls.Add(this.serverUrlLabel);
+      this.remotePluginsTabPage.Controls.Add(this.editConnectionButton);
       this.remotePluginsTabPage.Controls.Add(this.remotePluginInstaller);
-      this.remotePluginsTabPage.Controls.Add(this.serverUrlTextBox);
       this.remotePluginsTabPage.Controls.Add(this.refreshButton);
       this.remotePluginsTabPage.Controls.Add(this.installButton);
       this.remotePluginsTabPage.Location = new System.Drawing.Point(4, 22);
@@ -204,6 +176,26 @@
       this.logTextBox.Size = new System.Drawing.Size(598, 586);
       this.logTextBox.TabIndex = 0;
       // 
+      // refreshButton
+      // 
+      this.refreshButton.Location = new System.Drawing.Point(8, 6);
+      this.refreshButton.Name = "refreshButton";
+      this.refreshButton.Size = new System.Drawing.Size(75, 23);
+      this.refreshButton.TabIndex = 11;
+      this.refreshButton.Text = "Refresh";
+      this.refreshButton.UseVisualStyleBackColor = true;
+      this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
+      // 
+      // editConnectionButton
+      // 
+      this.editConnectionButton.Location = new System.Drawing.Point(89, 6);
+      this.editConnectionButton.Name = "editConnectionButton";
+      this.editConnectionButton.Size = new System.Drawing.Size(108, 23);
+      this.editConnectionButton.TabIndex = 16;
+      this.editConnectionButton.Text = "Edit Connection...";
+      this.editConnectionButton.UseVisualStyleBackColor = true;
+      this.editConnectionButton.Click += new System.EventHandler(this.editConnectionButton_Click);
+      // 
       // InstallationManagerForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -218,7 +210,6 @@
       this.tabControl.ResumeLayout(false);
       this.localPluginsTabPage.ResumeLayout(false);
       this.remotePluginsTabPage.ResumeLayout(false);
-      this.remotePluginsTabPage.PerformLayout();
       this.logTabPage.ResumeLayout(false);
       this.logTabPage.PerformLayout();
       this.ResumeLayout(false);
@@ -231,9 +222,6 @@
     private System.Windows.Forms.StatusStrip statusStrip;
     private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar;
     private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
-    private System.Windows.Forms.Label serverUrlLabel;
-    private System.Windows.Forms.TextBox serverUrlTextBox;
-    private System.Windows.Forms.Button refreshButton;
     private LocalPluginManager localPluginManager;
     private RemotePluginInstaller remotePluginInstaller;
     private System.Windows.Forms.Button removeButton;
@@ -243,5 +231,7 @@
     private System.Windows.Forms.TabPage remotePluginsTabPage;
     private System.Windows.Forms.TabPage logTabPage;
     private System.Windows.Forms.TextBox logTextBox;
+    private System.Windows.Forms.Button editConnectionButton;
+    private System.Windows.Forms.Button refreshButton;
   }
 }

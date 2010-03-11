@@ -46,5 +46,9 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       this.name = name;
       this.type = type;
     }
+
+    public override string ToString() {
+      return name;
+    }
   }
 }
