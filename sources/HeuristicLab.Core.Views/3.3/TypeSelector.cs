@@ -127,8 +127,7 @@ namespace HeuristicLab.Core.Views {
                   imageList.Images.Add(type.FullName, item.ItemImage);
                   typeNode.ImageIndex = imageList.Images.IndexOfKey(type.FullName);
                 }
-                catch (Exception) {
-                }
+                catch (Exception) { }
               }
               typeNode.SelectedImageIndex = typeNode.ImageIndex;
               typeNode.Tag = type;
@@ -198,12 +197,10 @@ namespace HeuristicLab.Core.Views {
     }
 
     public virtual object CreateInstanceOfSelectedType(params object[] args) {
-      if (SelectedType != null) {
-      try {
+      if (SelectedType == null)
+        throw new InvalidOperationException("No type selected.");
+      else
         return Activator.CreateInstance(SelectedType, args);
-      } catch(Exception) { }
-      }
-      return null;
     }
 
     public event EventHandler SelectedTypeChanged;
@@ -247,15 +244,12 @@ namespace HeuristicLab.Core.Views {
     protected virtual void typesTreeView_ItemDrag(object sender, ItemDragEventArgs e) {
       TreeNode node = (TreeNode)e.Item;
       Type type = node.Tag as Type;
-      if (type != null) {
-        try {
-          object o = Activator.CreateInstance(type);
-          DataObject data = new DataObject();
-          data.SetData("Type", type);
-          data.SetData("Value", o);
-          DoDragDrop(data, DragDropEffects.Copy);
-        } catch (Exception) {
-        }
+      if ((type != null) && (!type.IsInterface) && (!type.IsAbstract) && (!type.HasElementType) && (!type.ContainsGenericParameters)) {
+        object o = Activator.CreateInstance(type);
+        DataObject data = new DataObject();
+        data.SetData("Type", type);
+        data.SetData("Value", o);
+        DoDragDrop(data, DragDropEffects.Copy);
       }
     }
 
