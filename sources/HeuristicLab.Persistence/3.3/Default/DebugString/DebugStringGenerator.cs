@@ -96,6 +96,10 @@ namespace HeuristicLab.Persistence.Default.DebugString {
       return "]";
     }
 
+    protected override string Format(TypeToken typeToken) {
+      return string.Empty;
+    }
+
     public static string Serialize(object o) {
       return Serialize(o, ConfigurationService.Instance.GetDefaultConfig(new DebugStringFormat()));
     }

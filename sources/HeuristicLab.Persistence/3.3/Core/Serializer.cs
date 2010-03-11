@@ -49,6 +49,8 @@ namespace HeuristicLab.Persistence.Core {
     private readonly bool isTestRun;
     private readonly List<Exception> exceptions;
 
+    public bool InterleaveTypeInformation { get; set; }
+
     /// <summary>
     /// Contains a mapping of type id to type and serializer.
     /// </summary>
@@ -105,6 +107,7 @@ namespace HeuristicLab.Persistence.Core {
     /// <param name="isTestRun">Try to complete the whole object graph,
     /// don't stop at the first exception</param>
     public Serializer(object obj, Configuration configuration, string rootName, bool isTestRun) {
+      this.InterleaveTypeInformation = false;
       this.obj = obj;
       this.rootName = rootName;
       this.configuration = configuration;
@@ -143,8 +146,11 @@ namespace HeuristicLab.Persistence.Core {
       Type type = value.GetType();
       if (obj2id.ContainsKey(value))
         return ReferenceEnumerator(accessor.Name, obj2id[value]);
-      if (!typeCache.ContainsKey(type))
+      bool emitTypeInfo = false;
+      if (!typeCache.ContainsKey(type)) {
         typeCache.Add(type, typeCache.Count);
+        emitTypeInfo = InterleaveTypeInformation;
+      }
       int typeId = typeCache[type];
       int? id = null;
       if (!type.IsValueType) {
@@ -154,10 +160,21 @@ namespace HeuristicLab.Persistence.Core {
       try {
         IPrimitiveSerializer primitiveSerializer = configuration.GetPrimitiveSerializer(type);
         if (primitiveSerializer != null)
-          return PrimitiveEnumerator(accessor.Name, typeId, primitiveSerializer.Format(value), id);
+          return PrimitiveEnumerator(
+            accessor.Name,
+            typeId,
+            primitiveSerializer.Format(value),
+            id,
+            emitTypeInfo);
         ICompositeSerializer compositeSerializer = configuration.GetCompositeSerializer(type);
         if (compositeSerializer != null)
-          return CompositeEnumerator(accessor.Name, compositeSerializer.Decompose(value), id, typeId, compositeSerializer.CreateMetaInfo(value));
+          return CompositeEnumerator(
+            accessor.Name,
+            compositeSerializer.Decompose(value),
+            id,
+            typeId,
+            compositeSerializer.CreateMetaInfo(value),
+            emitTypeInfo);
         throw CreatePersistenceException(type);
       } catch (Exception x) {
         if (isTestRun) {
@@ -199,12 +216,21 @@ namespace HeuristicLab.Persistence.Core {
     }
 
     private IEnumerator<ISerializationToken> PrimitiveEnumerator(string name,
-        int typeId, ISerialData serializedValue, int? id) {
+        int typeId, ISerialData serializedValue, int? id, bool emitTypeInfo) {
+      if (emitTypeInfo) {
+        var mapping = TypeCache[typeId];
+        yield return new TypeToken(mapping.Id, mapping.TypeName, mapping.Serializer);
+      }
       yield return new PrimitiveToken(name, typeId, id, serializedValue);
     }
 
     private IEnumerator<ISerializationToken> CompositeEnumerator(
-        string name, IEnumerable<Tag> tags, int? id, int typeId, IEnumerable<Tag> metaInfo) {
+        string name, IEnumerable<Tag> tags, int? id, int typeId, IEnumerable<Tag> metaInfo,
+        bool emitTypeInfo) {
+      if (emitTypeInfo) {
+        var mapping = TypeCache[typeId];
+        yield return new TypeToken(mapping.Id, mapping.TypeName, mapping.Serializer);
+      }
       yield return new BeginToken(name, typeId, id);
       bool first = true;
       if (metaInfo != null) {

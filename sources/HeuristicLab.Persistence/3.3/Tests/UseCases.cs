@@ -198,27 +198,13 @@ namespace HeuristicLab.Persistence_33.Tests {
 
     [TestMethod]
     public void ComplexStorable() {
-      Root r = new Root();
-      r.intStack.Push(1);
-      r.intStack.Push(2);
-      r.intStack.Push(3);
-      r.selfReferences = new List<Root> { r, r };
-      r.c = new Custom { r = r };
-      r.dict.Add("one", 1);
-      r.dict.Add("two", 2);
-      r.dict.Add("three", 3);
-      r.myEnum = TestEnum.va1;
-      r.i = new[] { 7, 5, 6 };
-      r.s = "new value";
-      r.intArray = new ArrayList { 3, 2, 1 };
-      r.intList = new List<int> { 9, 8, 7 };
-      r.multiDimArray = new double[,] { { 5, 4, 3 }, { 1, 4, 6 } };
-      r.boolean = false;
-      r.dateTime = DateTime.Now;
-      r.kvp = new KeyValuePair<string, int>("string key", 321);
-      r.uninitialized = null;
+      Root r = InitializeComplexStorable();
       XmlGenerator.Serialize(r, tempFile);
       Root newR = (Root)XmlParser.Deserialize(tempFile);
+      CompareComplexStorables(r, newR);
+    }
+
+    private static void CompareComplexStorables(Root r, Root newR) {
       Assert.AreEqual(
         DebugStringGenerator.Serialize(r),
         DebugStringGenerator.Serialize(newR));
@@ -271,6 +257,30 @@ namespace HeuristicLab.Persistence_33.Tests {
       Assert.AreEqual(newR.kvp.Key, "string key");
       Assert.AreEqual(newR.kvp.Value, 321);
       Assert.IsNull(newR.uninitialized);
+    }
+
+    private static Root InitializeComplexStorable() {
+      Root r = new Root();
+      r.intStack.Push(1);
+      r.intStack.Push(2);
+      r.intStack.Push(3);
+      r.selfReferences = new List<Root> { r, r };
+      r.c = new Custom { r = r };
+      r.dict.Add("one", 1);
+      r.dict.Add("two", 2);
+      r.dict.Add("three", 3);
+      r.myEnum = TestEnum.va1;
+      r.i = new[] { 7, 5, 6 };
+      r.s = "new value";
+      r.intArray = new ArrayList { 3, 2, 1 };
+      r.intList = new List<int> { 9, 8, 7 };
+      r.multiDimArray = new double[,] { { 5, 4, 3 }, { 1, 4, 6 } };
+      r.boolean = false;
+      r.dateTime = DateTime.Now;
+      r.kvp = new KeyValuePair<string, int>("string key", 321);
+      r.uninitialized = null;
+
+      return r;
     }
 
     [TestMethod]
@@ -758,6 +768,18 @@ namespace HeuristicLab.Persistence_33.Tests {
         Assert.Fail("PersistenceException expected");
       } catch (PersistenceException x) {
         Assert.IsTrue(x.Message.Contains(new StorableSerializer().JustifyRejection(typeof(NonSerializable))));        
+      }
+    }
+
+    [TestMethod]
+    public void TestStreaming() {
+      using (MemoryStream stream = new MemoryStream()) {
+        Root r = InitializeComplexStorable();
+        XmlGenerator.Serialize(r, stream);
+        using (MemoryStream stream2 = new MemoryStream(stream.ToArray())) {
+          Root newR = (Root)XmlParser.Deserialize(stream2);
+          CompareComplexStorables(r, newR);
+        }
       }
     }
 

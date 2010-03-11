@@ -7,6 +7,7 @@ using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Interfaces;
 using ICSharpCode.SharpZipLib.Zip;
 using HeuristicLab.Persistence.Core.Tokens;
+using System.IO.Compression;
 
 namespace HeuristicLab.Persistence.Default.Xml {
 
@@ -29,6 +30,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
                      {XmlStringConstants.REFERENCE, ParseReference},
                      {XmlStringConstants.NULL, ParseNull},
                      {XmlStringConstants.METAINFO, ParseMetaInfo},
+                     {XmlStringConstants.TYPE, ParseTypeInfo},
                    };
     }
 
@@ -58,6 +60,10 @@ namespace HeuristicLab.Persistence.Default.Xml {
         id = int.Parse(idString);
       string name = reader.GetAttribute("name");
       int typeId = int.Parse(reader.GetAttribute("typeId"));
+      string typeName = reader.GetAttribute("typeName");
+      string serializer = reader.GetAttribute("serializer");
+      if (typeName != null)
+        yield return new TypeToken(typeId, typeName, serializer);
       XmlReader inner = reader.ReadSubtree();
       inner.Read();
       string xml = inner.ReadInnerXml();
@@ -72,6 +78,10 @@ namespace HeuristicLab.Persistence.Default.Xml {
       if (idString != null)
         id = int.Parse(idString);
       int typeId = int.Parse(reader.GetAttribute("typeId"));
+      string typeName = reader.GetAttribute("typeName");
+      string serializer = reader.GetAttribute("serializer");
+      if (typeName != null)
+        yield return new TypeToken(typeId, typeName, serializer);
       yield return new BeginToken(name, typeId, id);
       IEnumerator<ISerializationToken> iterator = GetEnumerator();
       while (iterator.MoveNext())
@@ -95,6 +105,13 @@ namespace HeuristicLab.Persistence.Default.Xml {
       while (iterator.MoveNext())
         yield return iterator.Current;
       yield return new MetaInfoEndToken();
+    }
+
+    private IEnumerator<ISerializationToken> ParseTypeInfo() {
+      yield return new TypeToken(
+        int.Parse(reader.GetAttribute("id")),
+        reader.GetAttribute("typeName"),
+        reader.GetAttribute("serializer"));
     }
 
     IEnumerator IEnumerable.GetEnumerator() {
@@ -128,23 +145,34 @@ namespace HeuristicLab.Persistence.Default.Xml {
     }
 
     public static object Deserialize(Stream stream) {
-      using (ZipFile file = new ZipFile(stream)) {
-        return Deserialize(file);
+      try {
+        using (StreamReader reader = new StreamReader(new GZipStream(stream, CompressionMode.Decompress))) {
+          XmlParser parser = new XmlParser(reader);
+          Deserializer deserializer = new Deserializer(new TypeMapping[] { });
+          return deserializer.Deserialize(parser);
+        }
+      } catch (PersistenceException) {
+        throw;
+      } catch (Exception x) {
+        throw new PersistenceException("Unexpected exception during deserialization", x);
       }
     }
 
     private static object Deserialize(ZipFile zipFile) {
       try {
-        Deserializer deSerializer = new Deserializer(
-          ParseTypeCache(
-          new StreamReader(
-            zipFile.GetInputStream(zipFile.GetEntry("typecache.xml")))));
+        ZipEntry typecache = zipFile.GetEntry("typecache.xml");
+        if (typecache == null)
+          throw new PersistenceException("file does not contain typecache.xml");
+        Deserializer deSerializer = new Deserializer(ParseTypeCache(new StreamReader(zipFile.GetInputStream(typecache))));
+        ZipEntry data = zipFile.GetEntry("data.xml");
+        if (data == null)
+          throw new PersistenceException("file does not contain data.xml");
         XmlParser parser = new XmlParser(
-          new StreamReader(zipFile.GetInputStream(zipFile.GetEntry("data.xml"))));
+          new StreamReader(zipFile.GetInputStream(data)));
         object result = deSerializer.Deserialize(parser);
         zipFile.Close();
         return result;
-      } catch (PersistenceException e) {
+      } catch (PersistenceException) {
         throw;
       } catch (Exception e) {
         throw new PersistenceException("Unexpected exception during deserialization", e);

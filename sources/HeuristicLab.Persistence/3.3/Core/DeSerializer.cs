@@ -76,31 +76,33 @@ namespace HeuristicLab.Persistence.Core {
       id2obj = new Dictionary<int, object>();
       parentStack = new Stack<Midwife>();
       typeIds = new Dictionary<int, Type>();
-      serializerMapping = CreateSerializers(typeCache);
+      serializerMapping = new Dictionary<Type, object>();
+      foreach (var typeMapping in typeCache) {
+        AddTypeInfo(typeMapping);
+      }
     }
 
-    private Dictionary<Type, object> CreateSerializers(IEnumerable<TypeMapping> typeCache) {
-      Dictionary<Type, object> serializerInstances = new Dictionary<Type, object>();
+    private Dictionary<Type, object> serializerInstances = new Dictionary<Type, object>();    
+
+    public void AddTypeInfo(TypeMapping typeMapping) {
+      if (typeIds.ContainsKey(typeMapping.Id))
+        return;
       try {
-        var map = new Dictionary<Type, object>();
-        foreach (var typeMapping in typeCache) {
-          Type type = TypeLoader.Load(typeMapping.TypeName);
-          typeIds.Add(typeMapping.Id, type);
-          Type serializerType = TypeLoader.Load(typeMapping.Serializer);
-          object serializer;
-          if (serializerInstances.ContainsKey(serializerType))
-            serializer = serializerInstances[serializerType];
-          else
-            serializer = Activator.CreateInstance(serializerType, true);
-          map.Add(type, serializer);
-        }
-        return map;
+        Type type = TypeLoader.Load(typeMapping.TypeName);
+        typeIds.Add(typeMapping.Id, type);
+        Type serializerType = TypeLoader.Load(typeMapping.Serializer);
+        object serializer;
+        if (serializerInstances.ContainsKey(serializerType))
+          serializer = serializerInstances[serializerType];
+        else
+          serializer = Activator.CreateInstance(serializerType, true);
+        serializerMapping.Add(type, serializer);
       } catch (PersistenceException) {
         throw;
       } catch (Exception e) {
-        throw new PersistenceException(
-          "The serialization type cache could not be loaded.\r\n" +
-          "This usualy happens when you are missing an Assembly or Plugin.", e);
+        throw new PersistenceException(string.Format(
+          "Could not add type info for {0} ({1})",
+          typeMapping.TypeName, typeMapping.Serializer), e);
       }
     }
 
@@ -124,6 +126,8 @@ namespace HeuristicLab.Persistence.Core {
           MetaInfoBegin((MetaInfoBeginToken)token);
         } else if (t == typeof(MetaInfoEndToken)) {
           MetaInfoEnd((MetaInfoEndToken)token);
+        } else if (t == typeof(TypeToken)) {
+          Type((TypeToken)token);
         } else {
           throw new PersistenceException("invalid token type");
         }
@@ -137,6 +141,10 @@ namespace HeuristicLab.Persistence.Core {
       Midwife m = parentStack.Peek();
       if (!m.MetaMode && m.Obj == null)
         CreateInstance(m);
+    }
+
+    private void Type(TypeToken token) {
+      AddTypeInfo(new TypeMapping(token.Id, token.TypeName, token.Serializer));
     }
 
     private void CompositeStartHandler(BeginToken token) {

@@ -105,6 +105,7 @@
     <Compile Include="Core\PrimitiveSerializerBase.cs" />
     <Compile Include="Core\FormatBase.cs" />
     <Compile Include="Auxiliary\TypeExtensions.cs" />
+    <Compile Include="Core\Tokens\TypeToken.cs" />
     <Compile Include="Core\TypeMapping.cs" />
     <Compile Include="Auxiliary\TypeName.cs" />
     <Compile Include="Core\GeneratorBase.cs" />

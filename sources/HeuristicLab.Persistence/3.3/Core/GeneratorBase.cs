@@ -33,6 +33,8 @@ namespace HeuristicLab.Persistence.Core {
         return Format((MetaInfoBeginToken)token);
       if (type == typeof(MetaInfoEndToken))
         return Format((MetaInfoEndToken)token);
+      if (type == typeof(TypeToken))
+        return Format((TypeToken)token);
       throw new ApplicationException("Invalid token of type " + type.FullName);
     }
 
@@ -43,6 +45,7 @@ namespace HeuristicLab.Persistence.Core {
     protected abstract T Format(NullReferenceToken nullReferenceToken);
     protected abstract T Format(MetaInfoBeginToken metaInfoBeginToken);
     protected abstract T Format(MetaInfoEndToken metaInfoEndToken);
+    protected abstract T Format(TypeToken typeToken);
 
   }
 }
