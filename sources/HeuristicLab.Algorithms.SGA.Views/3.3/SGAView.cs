@@ -48,21 +48,5 @@ namespace HeuristicLab.Algorithms.SGA.Views {
       : this() {
       Content = content;
     }
-
-    protected override void DeregisterContentEvents() {
-      // deregister events here
-      base.DeregisterContentEvents();
-    }
-    protected override void RegisterContentEvents() {
-      base.RegisterContentEvents();
-      // register events here
-    }
-
-    protected override void OnContentChanged() {
-      base.OnContentChanged();
-      if (Content == null) {
-      } else {
-      }
-    }
   }
 }

@@ -86,22 +86,40 @@ namespace HeuristicLab.Optimization.Views {
       }
 
       if (Content == null) {
-        engineComboBox.Enabled = false;
         engineViewHost.Content = null;
-        engineViewHost.Enabled = false;
+        createUserDefinedAlgorithmButton.Enabled = false;
       } else {
-        engineComboBox.Enabled = true;
         if (Content.Engine == null)
           engineComboBox.SelectedIndex = engineTypes.IndexOf(null);
         else
           engineComboBox.SelectedIndex = engineTypes.IndexOf(Content.Engine.GetType());
-        engineViewHost.Enabled = true;
         engineViewHost.ViewType = null;
         engineViewHost.Content = Content.Engine;
+        createUserDefinedAlgorithmButton.Enabled = true;
       }
     }
 
-    protected void Content_EngineChanged(object sender, System.EventArgs e) {
+    protected override void Content_Started(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_Started), sender, e);
+      else {
+        createUserDefinedAlgorithmButton.Enabled = false;
+        engineComboBox.Enabled = false;
+        engineViewHost.Enabled = false;
+        base.Content_Started(sender, e);
+      }
+    }
+    protected override void Content_Stopped(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_Stopped), sender, e);
+      else {
+        createUserDefinedAlgorithmButton.Enabled = true;
+        engineComboBox.Enabled = true;
+        engineViewHost.Enabled = true;
+        base.Content_Stopped(sender, e);
+      }
+    }
+    protected virtual void Content_EngineChanged(object sender, System.EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_EngineChanged), sender, e);
       else {
@@ -114,7 +132,7 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
 
-    protected void engineComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+    protected virtual void engineComboBox_SelectedIndexChanged(object sender, EventArgs e) {
       if (Content != null) {
         Type t = engineTypes[engineComboBox.SelectedIndex];
         if (t == null)
@@ -124,7 +142,7 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
 
-    protected void createUserDefinedAlgorithmButton_Click(object sender, EventArgs e) {
+    protected virtual void createUserDefinedAlgorithmButton_Click(object sender, EventArgs e) {
       MainFormManager.CreateDefaultView(Content.CreateUserDefinedAlgorithm()).Show();
     }
   }

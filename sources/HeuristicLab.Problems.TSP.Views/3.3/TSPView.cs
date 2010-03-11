@@ -52,6 +52,15 @@ namespace HeuristicLab.Problems.TSP.Views {
       Content = content;
     }
 
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      if (Content == null) {
+        importButton.Enabled = false;
+      } else {
+        importButton.Enabled = true;
+      }
+    }
+
     private void importButton_Click(object sender, System.EventArgs e) {
       if (openFileDialog.ShowDialog(this) == DialogResult.OK) {
         try {

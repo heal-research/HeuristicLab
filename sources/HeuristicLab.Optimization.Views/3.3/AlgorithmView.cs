@@ -126,18 +126,12 @@ namespace HeuristicLab.Optimization.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_Prepared), sender, e);
       else {
-        parameterCollectionView.Enabled = true;
-        newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = true;
-        problemViewHost.Enabled = true;
         resultsView.Content = Content.Results;
-        resultsView.Enabled = true;
         startButton.Enabled = !Content.Finished;
-        stopButton.Enabled = false;
-        resetButton.Enabled = true;
         UpdateExecutionTimeTextBox();
       }
     }
-    protected void Content_ProblemChanged(object sender, EventArgs e) {
+    protected virtual void Content_ProblemChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ProblemChanged), sender, e);
       else {
@@ -193,7 +187,7 @@ namespace HeuristicLab.Optimization.Views {
     #endregion
 
     #region Button events
-    protected void newProblemButton_Click(object sender, EventArgs e) {
+    protected virtual void newProblemButton_Click(object sender, EventArgs e) {
       if (problemTypeSelectorDialog == null) {
         problemTypeSelectorDialog = new TypeSelectorDialog();
         problemTypeSelectorDialog.Caption = "Select Problem";
@@ -203,7 +197,7 @@ namespace HeuristicLab.Optimization.Views {
         Content.Problem = (IProblem)problemTypeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
       }
     }
-    protected void openProblemButton_Click(object sender, EventArgs e) {
+    protected virtual void openProblemButton_Click(object sender, EventArgs e) {
       openFileDialog.Title = "Open Problem";
       if (openFileDialog.ShowDialog(this) == DialogResult.OK) {
         this.Cursor = Cursors.AppStarting;
@@ -230,7 +224,7 @@ namespace HeuristicLab.Optimization.Views {
         }, null);
       }
     }
-    protected void saveProblemButton_Click(object sender, EventArgs e) {
+    protected virtual void saveProblemButton_Click(object sender, EventArgs e) {
       saveFileDialog.Title = "Save Problem";
       if (saveFileDialog.ShowDialog(this) == DialogResult.OK) {
         this.Cursor = Cursors.AppStarting;
