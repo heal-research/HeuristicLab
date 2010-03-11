@@ -8,9 +8,17 @@ using System.Reflection;
 
 namespace HeuristicLab.Persistence.Core {
 
+  /// <summary>
+  /// Core hub for deserialization. Reads the serialization token stream,
+  /// instantiates objects and fills in values.
+  /// </summary>
   public class Deserializer {
 
-    class Midwife {
+    /// <summary>
+    /// Helps in delivering the class instance and acts as proxy while
+    /// the object cannot yet be instantiate.
+    /// </summary>
+    private class Midwife {
 
       public int? Id { get; private set; }
       public bool MetaMode { get; set; }
@@ -52,12 +60,17 @@ namespace HeuristicLab.Persistence.Core {
         compositeSerializer.Populate(Obj, customValues, type);
       }
     }
-
+    
     private readonly Dictionary<int, object> id2obj;
     private readonly Dictionary<Type, object> serializerMapping;
     private readonly Stack<Midwife> parentStack;
     private readonly Dictionary<int, Type> typeIds;
 
+    /// <summary>
+    /// Instantiates a new deserializer with the given type cache,
+    /// that contains information about the serializers to use
+    /// for every type and their type ids.
+    /// </summary>    
     public Deserializer(
       IEnumerable<TypeMapping> typeCache) {
       id2obj = new Dictionary<int, object>();
@@ -91,7 +104,9 @@ namespace HeuristicLab.Persistence.Core {
       }
     }
 
-
+    /// <summary>
+    /// Process the token stream and deserialize an instantate a new object graph.
+    /// </summary>    
     public object Deserialize(IEnumerable<ISerializationToken> tokens) {
       foreach (ISerializationToken token in tokens) {
         Type t = token.GetType();

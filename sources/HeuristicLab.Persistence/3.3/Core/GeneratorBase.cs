@@ -10,6 +10,11 @@ using HeuristicLab.Persistence.Core.Tokens;
 
 namespace HeuristicLab.Persistence.Core {
 
+  /// <summary>
+  /// Base class for serialization generators. Provides a common entry point
+  /// <code>Format</code> and dispatches to different abstract methods for
+  /// every token type.
+  /// </summary>  
   public abstract class GeneratorBase<T> {
 
     public T Format(ISerializationToken token) {

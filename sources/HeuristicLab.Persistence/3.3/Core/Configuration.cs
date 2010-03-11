@@ -5,6 +5,11 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Persistence.Core {
 
+  /// <summary>
+  /// Defines the set of primitive and composite serializers that are to be used
+  /// for a certain seraial format. The configuration can be obtained from the
+  /// <code>ConfigurationService</code>.
+  /// </summary>
   [StorableClass(StorableClassType.MarkedOnly)]    
   public class Configuration {
 

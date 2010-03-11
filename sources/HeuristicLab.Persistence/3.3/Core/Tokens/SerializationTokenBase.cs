@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Text;
 
 namespace HeuristicLab.Persistence.Core.Tokens {
-
+  
   public abstract class SerializationTokenBase : ISerializationToken {
     public readonly string Name;
     public SerializationTokenBase(string name) {

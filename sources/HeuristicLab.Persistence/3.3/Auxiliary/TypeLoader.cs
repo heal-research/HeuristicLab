@@ -9,7 +9,7 @@ using HeuristicLab.Persistence.Core;
 
 namespace HeuristicLab.Persistence.Auxiliary {
 
-  public class TypeLoader {
+  internal class TypeLoader {
 
     public static Type Load(string typeNameString) {
       Type type;

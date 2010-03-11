@@ -10,6 +10,11 @@ using HeuristicLab.Persistence.Core.Tokens;
 
 namespace HeuristicLab.Persistence.Default.Xml {
 
+
+  /// <summary>
+  /// Main entry point of persistence to XML. Use the static methods to serialize
+  /// to a file or to a stream.
+  /// </summary>
   public class XmlGenerator : GeneratorBase<string> {
 
     private int depth;
@@ -154,13 +159,28 @@ namespace HeuristicLab.Persistence.Default.Xml {
       yield return CreateNodeEnd(XmlStringConstants.TYPECACHE);
     }
 
+    /// <summary>
+    /// Serialize an object into a file.
+    /// 
+    /// The XML configuration is obtained from the <code>ConfigurationService</code>.
+    /// The file is actually a ZIP file.
+    /// Compression level is set to 5 and needed assemblies are not included.
+    /// </summary>    
     public static void Serialize(object o, string filename) {
-      Serialize(o, filename, ConfigurationService.Instance.GetDefaultConfig(new XmlFormat()), false, 5);
+      Serialize(o, filename, ConfigurationService.Instance.GetConfiguration(new XmlFormat()), false, 5);
     }
 
+    /// <summary>
+    /// Serialize an object into a file.
+    /// 
+    /// The XML configuration is obtained from the <code>ConfigurationService</code>.
+    /// Needed assemblies are not included.
+    /// </summary>
+    /// <param name="compression">ZIP file compression level</param>
     public static void Serialize(object o, string filename, int compression) {
       Serialize(o, filename, ConfigurationService.Instance.GetConfiguration(new XmlFormat()), false, compression);
     }
+
 
     public static void Serialize(object obj, string filename, Configuration config) {
       Serialize(obj, filename, config, false, 5);

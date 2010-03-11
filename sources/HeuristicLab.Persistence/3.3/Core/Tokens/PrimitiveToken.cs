@@ -2,6 +2,9 @@
 
 namespace HeuristicLab.Persistence.Core.Tokens {
 
+  /// <summary>
+  /// Encapsulated the serialization of a single primitive value.
+  /// </summary>
   public class PrimitiveToken : SerializationTokenBase {
     public readonly int TypeId;
     public readonly int? Id;

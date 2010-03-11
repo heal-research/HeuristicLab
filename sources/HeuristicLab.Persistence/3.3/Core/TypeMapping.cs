@@ -2,6 +2,9 @@
 
 namespace HeuristicLab.Persistence.Core {
 
+  /// <summary>
+  /// Association of id, type name and serializer
+  /// </summary>
   public class TypeMapping {
 
     public readonly int Id;

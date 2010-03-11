@@ -2,6 +2,10 @@
 
 namespace HeuristicLab.Persistence.Core {
 
+  /// <summary>
+  /// Vehicle used inside the serialization/deserizalisation process
+  /// between composite serializers and the core.
+  /// </summary>  
   public class Tag {
     public string Name { get; private set; }
     public object Value { get; set; }

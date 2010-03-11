@@ -12,9 +12,22 @@ using System.IO;
 
 namespace HeuristicLab.Persistence.Core {
 
+  /// <summary>
+  /// The core hub for serialization. This class transforms an object graph
+  /// into a tree and later into a stream of serialization tokens using
+  /// the given configuration.
+  /// 
+  /// <para>Primitive serializers directly format an object to a serializable type.</para>
+  /// 
+  /// <para>Composite serializers decompose an object into other object that are then
+  /// recursively serialized.</para>  
+  /// 
+  /// A constructed serializer is enumerable and continuously analyses
+  /// and traverses the object graph while the enumerator is iterated
+  /// </summary>  
   public class Serializer : IEnumerable<ISerializationToken> {
 
-    class ReferenceEqualityComparer : IEqualityComparer<object> {
+    private class ReferenceEqualityComparer : IEqualityComparer<object> {
 
       public new bool Equals(object a, object b) {
         return Object.ReferenceEquals(a, b);
@@ -36,13 +49,20 @@ namespace HeuristicLab.Persistence.Core {
     private readonly bool isTestRun;
     private readonly List<Exception> exceptions;
 
+    /// <summary>
+    /// Contains a mapping of type id to type and serializer.
+    /// </summary>
     public List<TypeMapping> TypeCache {
       get {
         BuildTypeCache();
         return externalTypeCache;
       }
     }
-
+    
+    /// <summary>
+    /// Contains a list of files (mostly assemblies) that are
+    /// necessary to deserialize the object graph again.    
+    /// </summary>
     public List<string> RequiredFiles {
       get {
         BuildTypeCache();
@@ -75,13 +95,15 @@ namespace HeuristicLab.Persistence.Core {
       }
       requiredFiles = new List<string>(files.Keys);
     }
-
+    
     public Serializer(object obj, Configuration configuration) :
       this(obj, configuration, "ROOT") { }
 
     public Serializer(object obj, Configuration configuration, string rootName)
       : this(obj, configuration, rootName, false) { }
 
+    /// <param name="isTestRun">Try to complete the whole object graph,
+    /// don't stop at the first exception</param>
     public Serializer(object obj, Configuration configuration, string rootName, bool isTestRun) {
       this.obj = obj;
       this.rootName = rootName;
@@ -105,7 +127,7 @@ namespace HeuristicLab.Persistence.Core {
       }
     }
 
-    public IEnumerator<ISerializationToken> AddExceptionCompiler(IEnumerator<ISerializationToken> enumerator) {
+    private IEnumerator<ISerializationToken> AddExceptionCompiler(IEnumerator<ISerializationToken> enumerator) {
       while (enumerator.MoveNext())
         yield return enumerator.Current;
       if (exceptions.Count == 1)

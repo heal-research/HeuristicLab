@@ -12,12 +12,31 @@ using HeuristicLab.Persistence.Auxiliary;
 
 namespace HeuristicLab.Persistence.Core {
 
+  /// <summary>
+  /// Provides a persistable configuration of primitive and composite serializers for
+  /// all registered serial formats. Custom formats can be defined and will be saved
+  /// for future sessions. A default configuration can be generated through reflection.
+  /// 
+  /// This class has only a single instance.
+  /// </summary>
   public class ConfigurationService {
 
     private static ConfigurationService instance;
     private readonly Dictionary<IFormat, Configuration> customConfigurations;
+
+    /// <summary>
+    /// List of all available primitive serializers.
+    /// </summary>
     public Dictionary<Type, List<IPrimitiveSerializer>> PrimitiveSerializers { get; private set; }
+
+    /// <summary>
+    /// List of all available composite serializers (discovered through reflection).
+    /// </summary>
     public List<ICompositeSerializer> CompositeSerializers { get; private set; }
+
+    /// <summary>
+    /// List of all available formats (discovered through reflection).    
+    /// </summary>
     public List<IFormat> Formats { get; private set; }
 
     public static ConfigurationService Instance {
@@ -91,6 +110,10 @@ namespace HeuristicLab.Persistence.Core {
       Properties.Settings.Default.Save();
     }
 
+
+    /// <summary>
+    /// Rediscover available serializers and discard all custom configurations.
+    /// </summary>
     public void Reset() {
       customConfigurations.Clear();
       PrimitiveSerializers.Clear();
@@ -107,7 +130,7 @@ namespace HeuristicLab.Persistence.Core {
       SortCompositeSerializers();
     }
 
-    class PriortiySorter : IComparer<ICompositeSerializer> {
+    private class PriortiySorter : IComparer<ICompositeSerializer> {
       public int Compare(ICompositeSerializer x, ICompositeSerializer y) {
         return y.Priority - x.Priority;
       }
@@ -168,6 +191,9 @@ namespace HeuristicLab.Persistence.Core {
       }
     }
 
+    /// <summary>
+    /// Get the default (automatically discovered) configuration for a certain format.
+    /// </summary>    
     public Configuration GetDefaultConfig(IFormat format) {
       Dictionary<Type, IPrimitiveSerializer> primitiveConfig = new Dictionary<Type, IPrimitiveSerializer>();
       if (PrimitiveSerializers.ContainsKey(format.SerialDataType)) {
@@ -187,12 +213,20 @@ namespace HeuristicLab.Persistence.Core {
         CompositeSerializers.Where((d) => d.Priority > 0));
     }
 
+
+    /// <summary>
+    /// Get a configuration for a certain format. This returns a custom configuration
+    /// if defined, otherwise returns the default (automatically discovered) configuration.
+    /// </summary>    
     public Configuration GetConfiguration(IFormat format) {
       if (customConfigurations.ContainsKey(format))
         return customConfigurations[format];
       return GetDefaultConfig(format);
     }
 
+    /// <summary>
+    /// Define a new custom configuration for a ceratin format.
+    /// </summary>    
     public void DefineConfiguration(Configuration configuration) {
       customConfigurations[configuration.Format] = configuration;
       SaveSettings();

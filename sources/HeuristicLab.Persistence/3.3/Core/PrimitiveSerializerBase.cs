@@ -4,6 +4,10 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Persistence.Interfaces {
 
+  /// <summary>
+  /// Base class for primitive serializers. These are serializers that map
+  /// directly to a single datatype and directly produce a serializable object.
+  /// </summary>
   [StorableClass(StorableClassType.Empty)]
   public abstract class PrimitiveSerializerBase<Source, SerialData> :
       IPrimitiveSerializer<Source, SerialData>

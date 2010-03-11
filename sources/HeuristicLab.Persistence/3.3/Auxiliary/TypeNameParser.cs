@@ -10,6 +10,41 @@ namespace HeuristicLab.Persistence.Auxiliary {
     public ParseError(string message) : base(message) { }
   }
 
+
+  /// <summary>
+  /// Parse a .NET type name using the following grammar:  
+  ///   
+  /// <para><code>
+  /// TypeSpec := SimpleTypeSpec '&amp;'?  
+  /// </code></para>
+  /// 
+  /// <para><code>
+  /// SimpleTypeSpec := (IDENTIFIER '.')*
+  ///                   (IDENTIFIER '+')*
+  ///                    IDENTIFIER
+  ///                   ( '`\d+[' Generics ']' )?
+  ///                   (\*|\[(\d+\.\.\d+|\d+\.\.\.|(|\*)(,(|\*))*)\])* 
+  ///                   (',\s*' IDENTIFIER (',\s*' AssemblyProperty)* )?  
+  /// </code></para>
+  ///
+  /// <para><code>
+  /// Generics := '[' SimpleTypeSpec ']' (',[' SimpleTypeSpec ']')
+  /// </code></para>
+  ///
+  /// <para><code>
+  /// AssemblyProperty := 'Version=' Version
+  ///                  |  'PublicKey(Token)?=[a-fA-F0-9]+'
+  ///                  |  'Culture=[a-zA-F0-9]+'
+  /// </code></para>
+  ///
+  /// <para><code>
+  /// Version := \d+\.\d+\.\d+\.\d+
+  /// </code></para>
+  ///
+  /// <para><code>
+  /// IDENTIFIER = [_a-zA-Z][_a-ZA-Z0-9]*  
+  /// </code></para>
+  /// </summary>
   public class TypeNameParser {
 
     /*
@@ -34,7 +69,7 @@ namespace HeuristicLab.Persistence.Auxiliary {
     */
 
 
-    class Token {
+    private class Token {
       private static Dictionary<string, string> tokens =
         new Dictionary<string, string> {
           {"-", "DASH"},
@@ -67,7 +102,7 @@ namespace HeuristicLab.Persistence.Auxiliary {
           IsIdentifier = IdentifierRegex.IsMatch(value);
         }
       }
-      public static IEnumerable<Token> Tokenize(string s) {
+      public static IEnumerable<Token> Tokenize(string s) {        
         int pos = 0;
         foreach (Match m in TokenRegex.Matches(s)) {
           yield return new Token(m.Value, pos);

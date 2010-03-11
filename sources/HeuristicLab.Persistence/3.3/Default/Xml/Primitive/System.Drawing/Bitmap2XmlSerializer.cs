@@ -10,12 +10,11 @@ using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Default.Xml.Compact;
 
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {
-  public class Bitmap2XmlSerializer :PrimitiveXmlSerializerBase<Bitmap>{
-    private static Regex re = new Regex(@"<!\[CDATA\[((?:[^]]|\](?!\]>))*)\]\]>", RegexOptions.Singleline);
+  public class Bitmap2XmlSerializer : PrimitiveXmlSerializerBase<Bitmap> {
 
     public override XmlString Format(Bitmap o) {
       MemoryStream stream = new MemoryStream();
-      o.Save(stream,ImageFormat.Png);
+      o.Save(stream, ImageFormat.Png);
       byte[] array = stream.ToArray();
       Byte1DArray2XmlSerializer serializer = new Byte1DArray2XmlSerializer();
       return serializer.Format(array);
@@ -31,6 +30,6 @@ namespace HeuristicLab.Persistence.Default.Xml.Primitive {
 
       Bitmap bitmap = new Bitmap(stream);
       return bitmap;
-  }
+    }
   }
 }
