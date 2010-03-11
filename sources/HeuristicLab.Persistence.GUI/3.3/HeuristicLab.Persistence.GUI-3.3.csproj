@@ -89,6 +89,7 @@
   <ItemGroup>
     <None Include="HeuristicLabPersistenceGUIPlugin.cs.frame" />
     <Compile Include="HeuristicLabPersistenceGUIPlugin.cs" />
+    <Compile Include="PersistenceAnalysis.cs" />
     <Compile Include="PersistenceConfigurationForm.cs">
       <SubType>Form</SubType>
     </Compile>
