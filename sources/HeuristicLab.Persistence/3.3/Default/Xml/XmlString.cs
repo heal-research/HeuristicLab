@@ -11,6 +11,8 @@ namespace HeuristicLab.Persistence.Default.Xml {
     [Storable]
     public string Data { get; private set; }
 
+    private XmlString() { }
+
     public XmlString(string data) {
       Data = data;
     }

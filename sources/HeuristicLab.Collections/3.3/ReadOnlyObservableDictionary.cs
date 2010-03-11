@@ -32,6 +32,15 @@ namespace HeuristicLab.Collections {
     [Storable]
     private IObservableDictionary<TKey, TValue> dict;
 
+    #region persistence
+    private ReadOnlyObservableDictionary() { }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void PostDeserizlationHook() {
+      RegisterEvents();
+    }
+    #endregion
+
     #region Properties
     public ICollection<TKey> Keys {
       get { return dict.Keys; }
@@ -59,6 +68,10 @@ namespace HeuristicLab.Collections {
     public ReadOnlyObservableDictionary(IObservableDictionary<TKey, TValue> dictionary) {
       if (dictionary == null) throw new ArgumentNullException();
       dict = dictionary;
+      RegisterEvents();
+    }
+
+    private void RegisterEvents() {
       dict.ItemsAdded += new CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>>(dict_ItemsAdded);
       dict.ItemsRemoved += new CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>>(dict_ItemsRemoved);
       dict.ItemsReplaced += new CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>>(dict_ItemsReplaced);

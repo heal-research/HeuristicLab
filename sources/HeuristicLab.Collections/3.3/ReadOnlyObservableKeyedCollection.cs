@@ -32,6 +32,15 @@ namespace HeuristicLab.Collections {
     [Storable]
     private IObservableKeyedCollection<TKey, TItem> collection;
 
+    #region persistence
+    private ReadOnlyObservableKeyedCollection() { }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void PostDeserizlationHook() {
+      RegisterEvents();
+    }
+    #endregion
+
     #region Properties
     public int Count {
       get { return collection.Count; }
@@ -51,6 +60,10 @@ namespace HeuristicLab.Collections {
     public ReadOnlyObservableKeyedCollection(IObservableKeyedCollection<TKey, TItem> collection) {
       if (collection == null) throw new ArgumentNullException();
       this.collection = collection;
+      RegisterEvents();
+    }
+
+    private void RegisterEvents() {
       collection.ItemsAdded += new CollectionItemsChangedEventHandler<TItem>(collection_ItemsAdded);
       collection.ItemsRemoved += new CollectionItemsChangedEventHandler<TItem>(collection_ItemsRemoved);
       collection.ItemsReplaced += new CollectionItemsChangedEventHandler<TItem>(collection_ItemsReplaced);

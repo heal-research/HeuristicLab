@@ -15,6 +15,8 @@ namespace HeuristicLab.Persistence.Default.DebugString {
     [Storable]
     public string Data { get; set; }
 
+    private DebugString() { }
+
     public DebugString(string s) {
       Data = s;
     }

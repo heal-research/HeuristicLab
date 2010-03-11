@@ -32,6 +32,15 @@ namespace HeuristicLab.Collections {
     [Storable]
     private IObservableSet<T> set;
 
+    #region persistence
+    private ReadOnlyObservableSet() { }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void PostDeserizlationHook() {
+      RegisterEvents();
+    }
+    #endregion
+
     #region Properties
     public int Count {
       get { return set.Count; }
@@ -45,6 +54,10 @@ namespace HeuristicLab.Collections {
     public ReadOnlyObservableSet(IObservableSet<T> set) {
       if (set == null) throw new ArgumentNullException();
       this.set = set;
+      RegisterEvents();
+    }
+
+    private void RegisterEvents() {
       set.ItemsAdded += new CollectionItemsChangedEventHandler<T>(set_ItemsAdded);
       set.ItemsRemoved += new CollectionItemsChangedEventHandler<T>(set_ItemsRemoved);
       set.CollectionReset += new CollectionItemsChangedEventHandler<T>(set_CollectionReset);

@@ -32,6 +32,15 @@ namespace HeuristicLab.Collections {
     [Storable]
     private IObservableArray<T> array;
 
+    #region Persistence
+    private ReadOnlyObservableArray() { }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void PostDeserializationHook() {
+      RegisterEvents();
+    }
+    #endregion
+
     #region Properties
     public int Length {
       get { return array.Length; }
@@ -52,10 +61,16 @@ namespace HeuristicLab.Collections {
     }
     #endregion
 
+    
+
     #region Constructors
     public ReadOnlyObservableArray(IObservableArray<T> array) {
       if (array == null) throw new ArgumentNullException();
       this.array = array;
+      RegisterEvents();
+    }
+
+    private void RegisterEvents() {
       array.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<T>>(array_ItemsReplaced);
       array.ItemsMoved += new CollectionItemsChangedEventHandler<IndexedItem<T>>(array_ItemsMoved);
       array.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<T>>(array_CollectionReset);
