@@ -34,6 +34,7 @@ namespace HeuristicLab.Encodings.RealVector {
   /// It is implemented as described by Mühlenbein, H. and Schlierkamp-Voosen, D. 1993. Predictive Models for the Breeder Genetic Algorithm - I. Continuous Parameter Optimization. Evolutionary Computation, 1(1), pp. 25-49.<br/>
   /// </remarks>
   [Item("BreederGeneticAlgorithmManipulator", "It is implemented as described by Mühlenbein, H. and Schlierkamp-Voosen, D. 1993. Predictive Models for the Breeder Genetic Algorithm - I. Continuous Parameter Optimization. Evolutionary Computation, 1(1), pp. 25-49.")]
+  [StorableClass(StorableClassType.Empty)]
   public class BreederGeneticAlgorithmManipulator : RealVectorManipulator {
     private static readonly double[] powerOfTwo = new double[] { 1, 0.5, 0.25, 0.125, 0.0625, 0.03125, 0.015625, 0.0078125, 0.00390625, 0.001953125, 0.0009765625, 0.00048828125, 0.000244140625, 0.0001220703125, 0.00006103515625, 0.000030517578125 };
     public ValueLookupParameter<DoubleData> MinimumParameter {

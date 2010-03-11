@@ -24,9 +24,9 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
-  [StorableClass(StorableClassType.Empty)]
   [Item("IntMatrixData", "Represents a matrix of integer values.")]
   [Creatable("Test")]
+  [StorableClass(StorableClassType.Empty)]
   public sealed class IntMatrixData : ValueTypeMatrixData<int>, IStringConvertibleMatrixData {
     public IntMatrixData() : base() { }
     public IntMatrixData(int rows, int columns) : base(rows, columns) { }
