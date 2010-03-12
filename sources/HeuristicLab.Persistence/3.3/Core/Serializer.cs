@@ -9,6 +9,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using System.Text;
 using System.Reflection;
 using System.IO;
+using System.Diagnostics;
 
 namespace HeuristicLab.Persistence.Core {
 
@@ -139,7 +140,10 @@ namespace HeuristicLab.Persistence.Core {
         throw new PersistenceException("Multiple exceptions during serialization", exceptions);
     }
 
+    private Stack<string> objectGraphTrace = new Stack<string>();
+
     private IEnumerator<ISerializationToken> Serialize(DataMemberAccessor accessor) {
+      
       object value = accessor.Get();
       if (value == null)
         return NullReferenceEnumerator(accessor.Name);
@@ -158,6 +162,7 @@ namespace HeuristicLab.Persistence.Core {
         obj2id.Add(value, (int)id);
       }
       try {
+        objectGraphTrace.Push(accessor.Name);
         IPrimitiveSerializer primitiveSerializer = configuration.GetPrimitiveSerializer(type);
         if (primitiveSerializer != null)
           return PrimitiveEnumerator(
@@ -181,8 +186,10 @@ namespace HeuristicLab.Persistence.Core {
           exceptions.Add(x);
           return new List<ISerializationToken>().GetEnumerator();
         } else {
-          throw x;
+          throw;
         }
+      } finally {
+        objectGraphTrace.Pop();
       }
     }
 
@@ -190,8 +197,10 @@ namespace HeuristicLab.Persistence.Core {
       StringBuilder sb = new StringBuilder();
       sb.Append("Could not determine how to serialize a value of type \"")
         .Append(type.VersionInvariantName())
-        .AppendLine("\"");
-      sb.AppendLine("No registered primitive serializer for this type:");
+        .AppendLine("\"")
+        .Append("object graph location: ")
+        .AppendLine(string.Join(".", objectGraphTrace.ToArray()))
+        .AppendLine("No registered primitive serializer for this type:");
       foreach (var ps in configuration.PrimitiveSerializers)
         sb.Append(ps.SourceType.VersionInvariantName())
           .Append(" ---- (")
@@ -204,7 +213,7 @@ namespace HeuristicLab.Persistence.Core {
           .Append("\" ---- (")
           .Append(cs.GetType().VersionInvariantName())
           .AppendLine(")");
-      return new PersistenceException(sb.ToString());              
+      return new PersistenceException(sb.ToString());
     }
 
     private IEnumerator<ISerializationToken> NullReferenceEnumerator(string name) {
