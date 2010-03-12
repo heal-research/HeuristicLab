@@ -102,8 +102,7 @@ namespace HeuristicLab.Hive.Server.Core {
               HiveLogger.Info(this.ToString() + ": Client " + client.Id +
                               " wasn't offline but hasn't sent heartbeats - setting offline");
               client.State = State.offline;
-              DaoLocator.ClientDao.Update(client);
-              //clientAdapter.Update(client);
+              DaoLocator.ClientDao.Update(client);              
               HiveLogger.Info(this.ToString() + ": Client " + client.Id +
                               " wasn't offline but hasn't sent heartbeats - Resetting all his jobs");
               foreach (JobDto job in DaoLocator.JobDao.FindActiveJobsOfClient(client)) {

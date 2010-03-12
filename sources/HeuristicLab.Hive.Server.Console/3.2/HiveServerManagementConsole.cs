@@ -421,8 +421,10 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       }
 
       lblJobName.Text = currentJob.Id.ToString();
-      progressJob.Value = (int)(currentJob.Percentage * 100);
-      lblProgress.Text = (int)(currentJob.Percentage * 100) + "% calculated";
+      if (currentJob.Percentage != null) {
+        progressJob.Value = (int) (currentJob.Percentage*100);
+        lblProgress.Text = (int) (currentJob.Percentage*100) + "% calculated";
+      }
 
       ListViewItem lvi = new ListViewItem();
       lvi.Text = "User:";

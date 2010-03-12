@@ -101,11 +101,11 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
 
     public Stream GetSerializedJobStream(Guid jobId) {
       HiveDataContext hdc = new HiveDataContext();
-      hdc.Transaction = null;
-
+      String ConnStr = hdc.Connection.ConnectionString;
+      SqlConnection connection = new SqlConnection(hdc.Connection.ConnectionString);      
       VarBinarySource source =
         new VarBinarySource(
-          hdc.Connection as SqlConnection, null,
+          connection, null,
           "Job", "SerializedJob", "JobId", jobId);
 
       return new VarBinaryStream(source);

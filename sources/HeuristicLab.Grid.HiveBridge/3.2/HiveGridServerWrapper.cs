@@ -47,7 +47,7 @@ namespace HeuristicLab.Grid.HiveBridge {
     }
 
     public JobState JobState(Guid guid) {
-      ResponseObject<SerializedJobResult> response = SavelyExecute(() => executionEngine.GetLastSerializedResult(guid, false));
+      ResponseObject<SerializedJob> response = SavelyExecute(() => executionEngine.GetLastSerializedResult(guid, false));
       if (response != null) {
         return HeuristicLab.Grid.JobState.Busy;
       } else return HeuristicLab.Grid.JobState.Unknown;
@@ -56,15 +56,15 @@ namespace HeuristicLab.Grid.HiveBridge {
     public Guid BeginExecuteEngine(byte[] engine) {
       var jobObj = CreateJobObj(engine);
 
-      ResponseObject<HeuristicLab.Hive.Contracts.BusinessObjects.Job> res = SavelyExecute(() => executionEngine.AddJob(jobObj));
+      ResponseObject<HeuristicLab.Hive.Contracts.BusinessObjects.JobDto> res = SavelyExecute(() => executionEngine.AddJob(jobObj));
       return res == null ? Guid.Empty : res.Obj.Id;
     }
 
     public byte[] TryEndExecuteEngine(Guid guid) {
-      ResponseObject<SerializedJobResult> response = SavelyExecute(() => executionEngine.GetLastSerializedResult(guid, false));
+      ResponseObject<SerializedJob> response = SavelyExecute(() => executionEngine.GetLastSerializedResult(guid, false));
       if (response != null &&
         response.Success && response.Obj != null) {
-        HeuristicLab.Hive.Engine.Job restoredJob = (HeuristicLab.Hive.Engine.Job)PersistenceManager.RestoreFromGZip(response.Obj.SerializedJobResultData);
+        HeuristicLab.Hive.Engine.Job restoredJob = (HeuristicLab.Hive.Engine.Job)PersistenceManager.RestoreFromGZip(response.Obj.SerializedJobData);
         // only return the engine when it wasn't canceled (result is only a snapshot)
         if (restoredJob.Progress == 1.0) {
           // Serialize the engine
@@ -85,9 +85,9 @@ namespace HeuristicLab.Grid.HiveBridge {
     }
 
     private HeuristicLab.Hive.Contracts.BusinessObjects.SerializedJob CreateJobObj(byte[] serializedEngine) {
-      HeuristicLab.Hive.Contracts.BusinessObjects.Job jobObj = new HeuristicLab.Hive.Contracts.BusinessObjects.Job();
+      HeuristicLab.Hive.Contracts.BusinessObjects.JobDto jobObj = new HeuristicLab.Hive.Contracts.BusinessObjects.JobDto();
 
-      List<HivePluginInfo> requiredPlugins = new List<HivePluginInfo>();
+      List<HivePluginInfoDto> requiredPlugins = new List<HivePluginInfoDto>();
       IEngine engine = RestoreEngine(serializedEngine, requiredPlugins);
 
       HeuristicLab.Hive.Engine.Job job = new HeuristicLab.Hive.Engine.Job();
@@ -118,7 +118,7 @@ namespace HeuristicLab.Grid.HiveBridge {
       return computableJob;
     }
 
-    private IEngine RestoreEngine(byte[] serializedEngine, List<HivePluginInfo> requiredPlugins) {
+    private IEngine RestoreEngine(byte[] serializedEngine, List<HivePluginInfoDto> requiredPlugins) {
       // unzip and restore to determine the list of required plugins (NB: inefficient!)
       MemoryStream memStream = new MemoryStream(serializedEngine);
       GZipStream stream = new GZipStream(memStream, CompressionMode.Decompress, true);
@@ -143,8 +143,8 @@ namespace HeuristicLab.Grid.HiveBridge {
       }
 
       foreach (IPluginDescription uniquePlugin in plugins) {
-        HivePluginInfo pluginInfo =
-          new HivePluginInfo();
+        HivePluginInfoDto pluginInfo =
+          new HivePluginInfoDto();
         pluginInfo.Name = uniquePlugin.Name;
         pluginInfo.Version = uniquePlugin.Version.ToString();
         pluginInfo.BuildDate = uniquePlugin.BuildDate;
