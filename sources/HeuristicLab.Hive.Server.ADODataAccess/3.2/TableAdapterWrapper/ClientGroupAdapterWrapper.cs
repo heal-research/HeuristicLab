@@ -10,10 +10,10 @@ using System.Data.Common;
 namespace HeuristicLab.Hive.Server.ADODataAccess.TableAdapterWrapper {
   class ClientGroupAdapterWrapper :
     TableAdapterWrapperBase<dsHiveServerTableAdapters.ClientGroupTableAdapter,
-    ClientGroup,
+    ClientGroupDto,
     dsHiveServer.ClientGroupRow> {
     public override dsHiveServer.ClientGroupRow
-     InsertNewRow(ClientGroup group) {
+     InsertNewRow(ClientGroupDto group) {
       dsHiveServer.ClientGroupDataTable data =
          new dsHiveServer.ClientGroupDataTable();
 

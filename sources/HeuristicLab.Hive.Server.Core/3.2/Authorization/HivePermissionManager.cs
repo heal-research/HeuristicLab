@@ -52,7 +52,7 @@ namespace HeuristicLab.Hive.Server.Core {
       //check if user has 'xxx.Project' permission
       if ((p != null) && (entityID!=Guid.Empty))
       {
-          ResponseObject<Job> job = jobManager.GetJobById(entityID);
+          ResponseObject<JobDto> job = jobManager.GetJobById(entityID);
           if (job.Obj.Project != null)
               if (CheckPermission(sessionID, p.Id, jobManager.GetJobById(entityID).Obj.Project.Id)) return;
       }
@@ -91,8 +91,8 @@ namespace HeuristicLab.Hive.Server.Core {
 
     private bool CheckPermissionHelper(Guid sessionId, Guid actionId, Guid entityId) {
       if (entityId == Guid.Empty) return true;
-      IList<ClientGroup> groups = clientManager.GetAllGroupsOfResource(entityId).Obj;
-      foreach (ClientGroup group in groups)
+      IList<ClientGroupDto> groups = clientManager.GetAllGroupsOfResource(entityId).Obj;
+      foreach (ClientGroupDto group in groups)
         if (CheckPermission(sessionId, actionId, group.Id)) return true;
       return false;
     }

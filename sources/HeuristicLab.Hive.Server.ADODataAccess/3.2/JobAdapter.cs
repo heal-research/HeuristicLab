@@ -36,7 +36,7 @@ using System.IO;
 namespace HeuristicLab.Hive.Server.ADODataAccess {
   class JobAdapter :
     DataAdapterBase<dsHiveServerTableAdapters.JobTableAdapter,
-                      Job, 
+                      JobDto, 
                       dsHiveServer.JobRow>, 
     IJobAdapter {
     #region Fields
@@ -86,7 +86,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       get {
         if (clientAdapter == null)
           clientAdapter = 
-            this.Session.GetDataAdapter<ClientInfo, IClientAdapter>();
+            this.Session.GetDataAdapter<ClientDto, IClientAdapter>();
 
         return clientAdapter;
       }
@@ -111,7 +111,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       get {
         if (pluginInfoAdapter == null) {
           pluginInfoAdapter =
-            this.Session.GetDataAdapter<HivePluginInfo, IPluginInfoAdapter>();
+            this.Session.GetDataAdapter<HivePluginInfoDto, IPluginInfoAdapter>();
         }
 
         return pluginInfoAdapter;
@@ -124,7 +124,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       get {
         if (projectAdapter == null) {
           projectAdapter =
-            this.Session.GetDataAdapter<Project, IProjectAdapter>();
+            this.Session.GetDataAdapter<ProjectDto, IProjectAdapter>();
         }
 
         return projectAdapter;
@@ -136,8 +136,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     #region Overrides
-    protected override Job ConvertRow(dsHiveServer.JobRow row,
-      Job job) {
+    protected override JobDto ConvertRow(dsHiveServer.JobRow row,
+      JobDto job) {
       if (row != null && job != null) {
         job.Id = row.JobId;
 
@@ -202,7 +202,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         
         job.PluginsNeeded.Clear();
         foreach (Guid requiredPlugin in requiredPlugins) {
-          HivePluginInfo pluginInfo = 
+          HivePluginInfoDto pluginInfo = 
             PluginInfoAdapter.GetById(requiredPlugin);
 
           job.PluginsNeeded.Add(pluginInfo);
@@ -217,7 +217,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         return null;
     }
 
-    protected override dsHiveServer.JobRow ConvertObj(Job job,
+    protected override dsHiveServer.JobRow ConvertObj(JobDto job,
       dsHiveServer.JobRow row) {
       if (job != null && row != null) {
         row.JobId = job.Id;
@@ -249,6 +249,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         else
           row.SetJobStateNull();
 
+        //Todo: commout
+        /*
         row.Percentage = job.Percentage;
 
         if (job.DateCreated != DateTime.MinValue)
@@ -265,7 +267,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
         row.CoresNeeded = job.CoresNeeded;
 
-        row.MemoryNeeded = job.MemoryNeeded;
+        row.MemoryNeeded = job.MemoryNeeded;*/
 
         if (job.Project != null)
           row.ProjectId = job.Project.Id;
@@ -278,7 +280,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     #endregion
 
     #region IJobAdapter Members
-    public ICollection<Job> GetAllSubjobs(Job job) {
+    public ICollection<JobDto> GetAllSubjobs(JobDto job) {
       if (job != null) {
         return
           base.FindMultiple(
@@ -290,7 +292,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       return null;
     }
 
-    public ICollection<Job> GetJobsByState(State state) {
+    public ICollection<JobDto> GetJobsByState(State state) {
       return
          base.FindMultiple(
            delegate() {
@@ -298,7 +300,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
            });
     }
 
-    public ICollection<Job> GetJobsOf(ClientInfo client) {
+    public ICollection<JobDto> GetJobsOf(ClientDto client) {
       if (client != null) {
         return
           base.FindMultiple(
@@ -310,7 +312,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       return null;
     }
 
-    public ICollection<Job> GetActiveJobsOf(ClientInfo client) {
+    public ICollection<JobDto> GetActiveJobsOf(ClientDto client) {
 
       if (client != null) {
         return
@@ -323,7 +325,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       return null;
     }
 
-    public ICollection<Job> GetJobsOf(Guid userId) {      
+    public ICollection<JobDto> GetJobsOf(Guid userId) {      
       return 
           base.FindMultiple(
             delegate() {
@@ -331,7 +333,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             });
     }
 
-    public ICollection<Job> FindJobs(State state, int cores, int memory,
+    public ICollection<JobDto> FindJobs(State state, int cores, int memory,
       Guid resourceId) {
       return
          base.FindMultiple(
@@ -344,7 +346,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
            });
     }
 
-    public ICollection<Job> GetJobsByProject(Guid projectId) {
+    public ICollection<JobDto> GetJobsByProject(Guid projectId) {
       return
          base.FindMultiple(
            delegate() {
@@ -352,7 +354,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
            });
     }
 
-    protected override void doUpdate(Job obj) {
+    protected override void doUpdate(JobDto obj) {
       if (obj != null) {
         ProjectAdapter.Update(obj.Project);
         ClientAdapter.Update(obj.Client);
@@ -363,9 +365,9 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         //update relationships
         List<Guid> relationships =
           new List<Guid>();
-        foreach (HivePluginInfo pluginInfo in obj.PluginsNeeded) {
+        foreach (HivePluginInfoDto pluginInfo in obj.PluginsNeeded) {
           //first check if pluginInfo already exists in the db
-          HivePluginInfo found = PluginInfoAdapter.GetByNameVersionBuilddate(
+          HivePluginInfoDto found = PluginInfoAdapter.GetByNameVersionBuilddate(
             pluginInfo.Name, pluginInfo.Version, pluginInfo.BuildDate);
           if (found != null) {
             pluginInfo.Id = found.Id;
@@ -383,7 +385,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       }
     }
 
-    protected override bool doDelete(Job job) {
+    protected override bool doDelete(JobDto job) {
       if (job != null) {
         dsHiveServer.JobRow row =
           GetRowById(job.Id);
@@ -402,9 +404,9 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             new List<Guid>());
 
           //delete orphaned pluginInfos
-          ICollection<HivePluginInfo> orphanedPluginInfos =
+          ICollection<HivePluginInfoDto> orphanedPluginInfos =
              PluginInfoAdapter.GetOrphanedPluginInfos();
-          foreach(HivePluginInfo orphanedPlugin in orphanedPluginInfos) {
+          foreach(HivePluginInfoDto orphanedPlugin in orphanedPluginInfos) {
             PluginInfoAdapter.Delete(orphanedPlugin);
           }
 

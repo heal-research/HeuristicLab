@@ -14,6 +14,9 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
           _hiveDataContext = new HiveDataContext();
         return _hiveDataContext;        
       } 
+      set {
+        _hiveDataContext = value;
+      }
     }
   }
 }

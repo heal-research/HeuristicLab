@@ -36,7 +36,7 @@ using HeuristicLab.Hive.Server.ADODataAccess.TableAdapterWrapper;
 namespace HeuristicLab.Hive.Server.ADODataAccess {
   class ClientGroupAdapter : 
     DataAdapterBase<dsHiveServerTableAdapters.ClientGroupTableAdapter, 
-    ClientGroup, 
+    ClientGroupDto, 
     dsHiveServer.ClientGroupRow>, 
     IClientGroupAdapter {
     #region Fields
@@ -65,7 +65,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       get {
         if (resourceAdapter == null)
           resourceAdapter =
-            this.Session.GetDataAdapter<Resource, IResourceAdapter>();
+            this.Session.GetDataAdapter<ResourceDto, IResourceAdapter>();
 
         return resourceAdapter;
       }
@@ -77,8 +77,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     #region Overrides
-    protected override ClientGroup ConvertRow(dsHiveServer.ClientGroupRow row,
-      ClientGroup clientGroup) {
+    protected override ClientGroupDto ConvertRow(dsHiveServer.ClientGroupRow row,
+      ClientGroupDto clientGroup) {
       if (row != null && clientGroup != null) {
         /*Parent - Permission Owner*/
         clientGroup.Id = row.ResourceId;
@@ -89,7 +89,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
         clientGroup.Resources.Clear();
         foreach(Guid resource in resources) {
-          Resource res =
+          ResourceDto res =
             ResAdapter.GetByIdPolymorphic(resource);
 
             clientGroup.Resources.Add(res);         
@@ -100,7 +100,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         return null;
     }
 
-    protected override dsHiveServer.ClientGroupRow ConvertObj(ClientGroup clientGroup,
+    protected override dsHiveServer.ClientGroupRow ConvertObj(ClientGroupDto clientGroup,
       dsHiveServer.ClientGroupRow row) {
       if (clientGroup != null && row != null) {
         row.ResourceId = clientGroup.Id;
@@ -111,7 +111,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     #endregion
 
     #region IClientGroupAdapter Members
-    protected override void doUpdate(ClientGroup group) {
+    protected override void doUpdate(ClientGroupDto group) {
       if (group != null) {
         ResAdapter.Update(group);
 
@@ -119,7 +119,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
         List<Guid> relationships = 
           new List<Guid>();
-        foreach(Resource res in group.Resources) {
+        foreach(ResourceDto res in group.Resources) {
           ResAdapter.UpdatePolymorphic(res);
 
           relationships.Add(res.Id);
@@ -130,9 +130,9 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       }
     }
 
-    public ClientGroup GetByName(string name) {
-      ClientGroup group = new ClientGroup();
-      Resource res =
+    public ClientGroupDto GetByName(string name) {
+      ClientGroupDto group = new ClientGroupDto();
+      ResourceDto res =
         ResAdapter.GetByName(name);
 
       if (res != null) {
@@ -142,7 +142,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       return null;
     }
 
-    public ICollection<ClientGroup> MemberOf(Resource resource) {
+    public ICollection<ClientGroupDto> MemberOf(ResourceDto resource) {
       if (resource != null) {
         return base.FindMultiple(
            delegate() {
@@ -154,12 +154,12 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       return null;
     }
 
-    protected override bool doDelete(ClientGroup group) {
+    protected override bool doDelete(ClientGroupDto group) {
       if (group != null) {
         //recursively delete all subgroups
-        foreach (Resource res in group.Resources) {
-          if (res is ClientGroup) {
-            Delete(res as ClientGroup);
+        foreach (ResourceDto res in group.Resources) {
+          if (res is ClientGroupDto) {
+            Delete(res as ClientGroupDto);
           }
         }
 

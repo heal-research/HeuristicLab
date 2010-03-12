@@ -28,7 +28,7 @@ using System.IO;
 
 namespace HeuristicLab.Hive.Server.Core.InternalInterfaces {
   interface IInternalJobManager {
-    void ResetJobsDependingOnResults(Job job);
+    void ResetJobsDependingOnResults(JobDto job);
 
     Stream GetJobStreamById(Guid jobId);
   }

@@ -11,14 +11,14 @@ namespace HeuristicLab.Hive.Server.ADODataAccess.TableAdapterWrapper {
   class ClientConfigAdapterWrapper :
     TableAdapterWrapperBase<
         dsHiveServerTableAdapters.ClientConfigTableAdapter,
-    ClientConfig,
+    ClientConfigDto,
     dsHiveServer.ClientConfigRow> {
     public override void UpdateRow(dsHiveServer.ClientConfigRow row) {
       TransactionalAdapter.Update(row);
     }
 
     public override dsHiveServer.ClientConfigRow
-      InsertNewRow(ClientConfig config) {
+      InsertNewRow(ClientConfigDto config) {
       dsHiveServer.ClientConfigDataTable data =
         new dsHiveServer.ClientConfigDataTable();
 

@@ -3,91 +3,105 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
+using HeuristicLab.Hive.Server.DataAccess;
+using System.Threading;
 
 namespace HeuristicLab.Hive.Server.LINQDataAccess {
-  public class ClientDao: BaseDao, IClientDao {
+  public class ClientDao: BaseDao<ClientDto, Client>, IClientDao {
 
     public ClientDao() {      
     }
 
-    public ClientInfo FindById(Guid id) {
+    public ClientDto FindById(Guid id) {
       return (from client in Context.Clients
               where client.ResourceId.Equals(id)
-              select
-                new ClientInfo {
-                  CpuSpeedPerCore = client.CPUSpeed,
-                  FreeMemory = client.FreeMemory,
-                  Id = client.ResourceId,
-                  Login = client.Login,
-                  Memory = client.Memory,
-                  Name = client.Resource.Name,
-                  NrOfCores = client.NumberOfCores,
-                  NrOfFreeCores = client.NumberOfFreeCores,
-                  State = (State)Enum.Parse(typeof(State), client.Status)
-                }
+              select EntityToDto(client, null)
             ).SingleOrDefault();      
     }
 
-    public IEnumerable<ClientInfo> FindAll() {
+    public IEnumerable<ClientDto> FindAll() {
       return (from client in Context.Clients
               select
-                new ClientInfo {
-                                 CpuSpeedPerCore = client.CPUSpeed,
-                                 FreeMemory = client.FreeMemory,
-                                 Id = client.ResourceId,
-                                 Login = client.Login,
-                                 Memory = client.Memory,
-                                 Name = client.Resource.Name,
-                                 NrOfCores = client.NumberOfCores,
-                                 NrOfFreeCores = client.NumberOfFreeCores,
-                                 State = (State) Enum.Parse(typeof (State), client.Status)
-                               }
+                EntityToDto(client, null)
              ).ToList();
     }
 
- 
-    public ClientInfo Insert(ClientInfo info) {
-      Client c = new Client {
-                              CPUSpeed = info.CpuSpeedPerCore,
-                              FreeMemory = info.FreeMemory,
-                              Resource = new Resource {Name = info.Name, ResourceId = info.Id},
-                              Login = info.Login,
-                              Memory = info.Memory,
-                              NumberOfCores = info.NrOfCores,
-                              NumberOfFreeCores = info.NrOfFreeCores,
-                              Status = Enum.GetName(typeof (State), info.State)
-                            };
+    public IEnumerable<ClientDto> FindAllClientsWithoutGroup() {
+      return (from client in Context.Clients
+              where client.Resource.ClientGroup_Resources.Count == 0
+              select EntityToDto(client, null)).ToList();
+    }
 
+    public ClientDto GetClientForJob(Guid jobId) {
+      return (from job in Context.Jobs
+              where job.JobId.Equals(jobId)
+              select EntityToDto(job.Client, null)).SingleOrDefault();
+    }
+ 
+    public ClientDto Insert(ClientDto info) {
+      Client c = DtoToEntity(info, null);      
       Context.Clients.InsertOnSubmit(c);
       Context.SubmitChanges();
       info.Id = c.ResourceId;
       return info;
     }
 
-    public void Delete(ClientInfo info) {
-      Client client = Context.Clients.SingleOrDefault(c => c.ResourceId.Equals(info.Id));
-      Context.Clients.DeleteOnSubmit(client);
-    }
-
-    public void Update(ClientInfo info) {
-      Client client = Context.Clients.SingleOrDefault(c => c.ResourceId.Equals(info.Id));
-      client.CPUSpeed = info.CpuSpeedPerCore;
-      client.FreeMemory = info.FreeMemory;
-      client.Resource.Name = info.Name;
-      client.Login = info.Login;
-      client.Memory = info.Memory;
-      client.NumberOfCores = info.NrOfCores;
-      client.NumberOfFreeCores = info.NrOfFreeCores;
-      client.Status = Enum.GetName(typeof (State), info.State);
+    //Cascading delete takes care of the rest
+    public void Delete(ClientDto info) {
+      Resource res = Context.Resources.SingleOrDefault(c => c.ResourceId.Equals(info.Id));            
+      Context.Resources.DeleteOnSubmit(res);
       Context.SubmitChanges();
     }
 
+    public void Update(ClientDto info) {
+      Client client = Context.Clients.SingleOrDefault(c => c.ResourceId.Equals(info.Id));
+      DtoToEntity(info, client);
+      try {
+        Console.WriteLine("Sending from thread: " + Thread.CurrentThread.ManagedThreadId);
+        Context.SubmitChanges();
+      } catch (System.Data.Linq.ChangeConflictException cce) {
+        Console.WriteLine(cce);        
+      }
+    }
 
+    public override Client DtoToEntity(ClientDto source, Client target) {
+      if (source == null)
+        return null;
+      if (target == null) 
+        target = new Client();
+      
+      target.CPUSpeed = source.CpuSpeedPerCore;
+      
+      if(target.Resource == null)
+        target.Resource = new Resource();
 
-    #region IGenericDao<ClientInfo,Client> Members
+      target.FreeMemory = source.FreeMemory;
+      target.Resource.Name = source.Name;
+      target.Resource.ResourceId = source.Id;
 
+      target.Login = source.Login;
+      target.Memory = source.Memory;
+      target.NumberOfCores = source.NrOfCores;
+      target.NumberOfFreeCores = source.NrOfFreeCores;
+      target.Status = Enum.GetName(typeof(State), source.State);
+      return target;
+    }
 
-
-    #endregion
+    public override ClientDto EntityToDto(Client source, ClientDto target) {
+      if (source == null)
+        return null;
+      if(target == null) 
+        target = new ClientDto();
+      target.CpuSpeedPerCore = source.CPUSpeed;
+      target.FreeMemory = source.FreeMemory;
+      target.Id = source.ResourceId;
+      target.Login = source.Login;
+      target.Memory = source.Memory;
+      target.Name = source.Resource.Name;
+      target.NrOfCores = source.NumberOfCores;
+      target.NrOfFreeCores = source.NumberOfFreeCores;
+      target.State = (State) Enum.Parse(typeof (State), source.Status);
+      return target;
+    }
   }
 }

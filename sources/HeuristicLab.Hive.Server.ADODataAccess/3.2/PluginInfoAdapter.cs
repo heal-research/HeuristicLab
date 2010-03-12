@@ -13,7 +13,7 @@ using System.IO;
 namespace HeuristicLab.Hive.Server.ADODataAccess {
   class PluginInfoAdapter:
     DataAdapterBase<dsHiveServerTableAdapters.PluginInfoTableAdapter,
-      HivePluginInfo,
+      HivePluginInfoDto,
       dsHiveServer.PluginInfoRow>,
     IPluginInfoAdapter {
 
@@ -21,7 +21,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       base(new PluginInfoAdapterWrapper()) {
     }
 
-    protected override dsHiveServer.PluginInfoRow ConvertObj(HivePluginInfo pluginInfo, 
+    protected override dsHiveServer.PluginInfoRow ConvertObj(HivePluginInfoDto pluginInfo, 
       dsHiveServer.PluginInfoRow row) {
       if (row != null && pluginInfo != null) {
         row.PluginId = pluginInfo.Id;
@@ -35,8 +35,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       }       
     }
 
-    protected override HivePluginInfo ConvertRow(dsHiveServer.PluginInfoRow row,
-      HivePluginInfo pluginInfo) {
+    protected override HivePluginInfoDto ConvertRow(dsHiveServer.PluginInfoRow row,
+      HivePluginInfoDto pluginInfo) {
       if (row != null && pluginInfo != null) {
         pluginInfo.Id = row.PluginId;
 
@@ -64,7 +64,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       } 
     }
 
-    public HivePluginInfo GetByNameVersionBuilddate(String name, String version, DateTime buildDate) {
+    public HivePluginInfoDto GetByNameVersionBuilddate(String name, String version, DateTime buildDate) {
       return
          base.FindSingle(
            delegate() {
@@ -72,7 +72,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
            });
     }
 
-    public ICollection<HivePluginInfo> GetOrphanedPluginInfos() {
+    public ICollection<HivePluginInfoDto> GetOrphanedPluginInfos() {
       return
         base.FindMultiple(
           delegate() {

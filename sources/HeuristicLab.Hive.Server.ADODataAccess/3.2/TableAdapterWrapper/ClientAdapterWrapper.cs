@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,14 +11,14 @@ namespace HeuristicLab.Hive.Server.ADODataAccess.TableAdapterWrapper {
   class ClientAdapterWrapper :
    TableAdapterWrapperBase<
        dsHiveServerTableAdapters.ClientTableAdapter,
-   ClientInfo,
+   ClientDto,
    dsHiveServer.ClientRow> {
     public override void UpdateRow(dsHiveServer.ClientRow row) {
       TransactionalAdapter.Update(row);
     }
 
     public override dsHiveServer.ClientRow
-      InsertNewRow(ClientInfo client) {
+      InsertNewRow(ClientDto client) {
       dsHiveServer.ClientDataTable data =
         new dsHiveServer.ClientDataTable();
 

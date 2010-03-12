@@ -26,8 +26,9 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Hive.DataAccess {
   [Plugin("HeuristicLab.Hive.Server.DataAccess-3.2")]
-  [PluginFile("HeuristicLab.Hive.Server.DataAccess-3.2.dll", PluginFileType.Assembly)]
+  [PluginFile("HeuristicLab.Hive.Server.DataAccess-3.2.dll", PluginFileType.Assembly)]  
   [PluginDependency("HeuristicLab.Core-3.2")]
+  [PluginDependency("HeuristicLab.Hive.DataAccess-3.2")]
   [PluginDependency("HeuristicLab.Hive.Contracts-3.2")]
   public class HiveServerDataAccessPlugin : PluginBase {
   }

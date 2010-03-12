@@ -47,14 +47,14 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     public event closeForm closeFormEvent;
 
     #region private variables
-    private ResponseList<Job> jobs = null;
+    private ResponseList<JobDto> jobs = null;
 
     List<ListViewGroup> jobGroup;
     private Dictionary<Guid, List<ListViewItem>> clientList = new Dictionary<Guid, List<ListViewItem>>();
     private List<Changes> changes = new List<Changes>();
 
-    private Job currentJob = null;
-    private ClientInfo currentClient = null;
+    private JobDto currentJob = null;
+    private ClientDto currentClient = null;
 
     private TreeNode currentGroupNode = null;
     Guid parentgroup = Guid.Empty;
@@ -92,7 +92,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       menuItemAbortJob.Click += (s, e) => {
         IJobManager jobManager = ServiceLocator.GetJobManager();
         if (lvJobControl.SelectedItems.Count == 1) {
-          jobManager.AbortJob(((Job)(lvJobControl.SelectedItems[0].Tag)).Id);
+          jobManager.AbortJob(((JobDto)(lvJobControl.SelectedItems[0].Tag)).Id);
         }
       };
 
@@ -100,7 +100,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       menuItemGetSnapshot.Click += (s, e) => {
         IJobManager jobManager = ServiceLocator.GetJobManager();
         if (lvJobControl.SelectedItems.Count == 1) {
-          jobManager.RequestSnapshot(((Job)(lvJobControl.SelectedItems[0].Tag)).Id);
+          jobManager.RequestSnapshot(((JobDto)(lvJobControl.SelectedItems[0].Tag)).Id);
         }
       };
 
@@ -108,8 +108,8 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       menuItemAddGroup.Click += (s, e) => {
         AddGroup addgroup = new AddGroup();
         parentgroup = Guid.Empty;
-        if ((tvClientControl.SelectedNode != null) && (((ClientGroup)tvClientControl.SelectedNode.Tag).Id != Guid.Empty)) {
-          parentgroup = ((ClientGroup)tvClientControl.SelectedNode.Tag).Id;
+        if ((tvClientControl.SelectedNode != null) && (((ClientGroupDto)tvClientControl.SelectedNode.Tag).Id != Guid.Empty)) {
+          parentgroup = ((ClientGroupDto)tvClientControl.SelectedNode.Tag).Id;
         }
         addgroup.addGroupEvent += new AddGroupDelegate(addgroup_addGroupEvent);
         addgroup.Show();
@@ -119,7 +119,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       menuItemDeleteGroup.Click += (s, e) => {
         IClientManager clientManager = ServiceLocator.GetClientManager();
         if (tvClientControl.SelectedNode != null) {
-          Response resp = clientManager.DeleteClientGroup(((ClientGroup)tvClientControl.SelectedNode.Tag).Id);
+          Response resp = clientManager.DeleteClientGroup(((ClientGroupDto)tvClientControl.SelectedNode.Tag).Id);
           if (tvClientControl.SelectedNode == currentGroupNode) {
             currentGroupNode = null;
           }
@@ -146,7 +146,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       tvClientControl.DragOver += delegate(object sender, DragEventArgs e) {
         Point mouseLocation = tvClientControl.PointToClient(new Point(e.X, e.Y));
         TreeNode node = tvClientControl.GetNodeAt(mouseLocation);
-        if (node != null && ((ClientGroup)node.Tag).Id != Guid.Empty) {
+        if (node != null && ((ClientGroupDto)node.Tag).Id != Guid.Empty) {
           e.Effect = DragDropEffects.Move;
           if (hoverNode == null) {
             node.BackColor = Color.LightBlue;
@@ -169,18 +169,18 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         if (e.Data.GetDataPresent(typeof(string[]))) {
           Point dropLocation = (sender as TreeView).PointToClient(new Point(e.X, e.Y));
           TreeNode dropNode = (sender as TreeView).GetNodeAt(dropLocation);
-          if (((ClientGroup)dropNode.Tag).Id != Guid.Empty) {
-            Dictionary<ClientInfo, Guid> clients = new Dictionary<ClientInfo, Guid>();
+          if (((ClientGroupDto)dropNode.Tag).Id != Guid.Empty) {
+            Dictionary<ClientDto, Guid> clients = new Dictionary<ClientDto, Guid>();
             foreach (ListViewItem lvi in lvClientControl.SelectedItems) {
               Guid groupId = Guid.Empty;
               foreach (ListViewGroup lvg in lvClientGroups) {
-                if (lvi.Group.Header == ((ClientGroup)lvg.Tag).Name) {
-                  groupId = ((ClientGroup)lvg.Tag).Id;
+                if (lvi.Group.Header == ((ClientGroupDto)lvg.Tag).Name) {
+                  groupId = ((ClientGroupDto)lvg.Tag).Id;
                 }
               }
-              clients.Add((ClientInfo)lvi.Tag, groupId);
+              clients.Add((ClientDto)lvi.Tag, groupId);
             }
-            ChangeGroup(clients, ((ClientGroup)dropNode.Tag).Id);
+            ChangeGroup(clients, ((ClientGroupDto)dropNode.Tag).Id);
           }
           tvClientControl_DragLeave(null, EventArgs.Empty);
           AddClients();
@@ -193,9 +193,9 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     /// </summary>
     /// <param name="clients">list of clients</param>
     /// <param name="clientgroupID">group of clients</param>
-    private void ChangeGroup(Dictionary<ClientInfo, Guid> clients, Guid clientgroupID) {
+    private void ChangeGroup(Dictionary<ClientDto, Guid> clients, Guid clientgroupID) {
       IClientManager clientManager = ServiceLocator.GetClientManager();
-      foreach (KeyValuePair<ClientInfo, Guid> client in clients) {
+      foreach (KeyValuePair<ClientDto, Guid> client in clients) {
         if (client.Key.Id != Guid.Empty) {
           Response resp = clientManager.DeleteResourceFromGroup(client.Value, client.Key.Id);
         }
@@ -223,14 +223,14 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
       changes.Clear();
 
-      ResponseList<Job> jobsOld = jobs;
+      ResponseList<JobDto> jobsOld = jobs;
       try {
         IJobManager jobManager =
                 ServiceLocator.GetJobManager();
 
         jobs = jobManager.GetAllJobs();
 
-        IDictionary<int, Job> jobsOldHelp;
+        IDictionary<int, JobDto> jobsOldHelp;
         CloneList(jobsOld, out jobsOldHelp);
 
         GetDelta(jobsOld.List, jobsOldHelp);
@@ -268,7 +268,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
         if (jobs != null && jobs.List != null) {
 
-          foreach (Job job in jobs.List) {
+          foreach (JobDto job in jobs.List) {
             if (job.State == State.calculating) {
               ListViewItem lvi = new ListViewItem(job.Id.ToString(), 1, lvJobCalculating);
               lvi.Tag = job;
@@ -311,10 +311,10 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       clientList.Clear();
       tvClientControl.Nodes.Clear();
       try {
-        ResponseList<ClientGroup> clientGroups = ClientManager.GetAllClientGroups();
+        ResponseList<ClientGroupDto> clientGroups = ClientManager.GetAllClientGroups();
 
         if (clientGroups != null && clientGroups.List != null) {
-          foreach (ClientGroup cg in clientGroups.List) {
+          foreach (ClientGroupDto cg in clientGroups.List) {
             AddClientOrGroup(cg, null);
           }
 
@@ -332,7 +332,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       }
     }
 
-    private void AddClientOrGroup(ClientGroup clientGroup, TreeNode currentNode) {
+    private void AddClientOrGroup(ClientGroupDto clientGroup, TreeNode currentNode) {
       currentNode = CreateTreeNode(clientGroup, currentNode);
       List<ListViewItem> clientGroupList = new List<ListViewItem>();
       ListViewGroup lvg;
@@ -344,12 +344,12 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       lvClientControl.Groups.Add(lvg);
       lvg.Tag = clientGroup;
       lvClientGroups.Add(lvg);
-      foreach (Resource resource in clientGroup.Resources) {
-        if (resource is ClientInfo) {
-          int percentageUsage = CapacityRam(((ClientInfo)resource).NrOfCores, ((ClientInfo)resource).NrOfFreeCores);
+      foreach (ResourceDto resource in clientGroup.Resources) {
+        if (resource is ClientDto) {
+          int percentageUsage = CapacityRam(((ClientDto)resource).NrOfCores, ((ClientDto)resource).NrOfFreeCores);
           int usage = 3;
-          if ((((ClientInfo)resource).State != State.offline) &&
-            (((ClientInfo)resource).State != State.nullState)) {
+          if ((((ClientDto)resource).State != State.offline) &&
+            (((ClientDto)resource).State != State.nullState)) {
             if ((percentageUsage >= 0) && (percentageUsage <= 25)) {
               usage = 0;
             } else if ((percentageUsage > 25) && (percentageUsage <= 75)) {
@@ -359,16 +359,16 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
             }
           }
           ListViewItem lvi = new ListViewItem(resource.Name, usage, lvg);
-          lvi.Tag = resource as ClientInfo;
+          lvi.Tag = resource as ClientDto;
           clientGroupList.Add(lvi);
-        } else if (resource is ClientGroup) {
-          AddClientOrGroup(resource as ClientGroup, currentNode);
+        } else if (resource is ClientGroupDto) {
+          AddClientOrGroup(resource as ClientGroupDto, currentNode);
         }
       }
       clientList.Add(clientGroup.Id, clientGroupList);
     }
 
-    private TreeNode CreateTreeNode(ClientGroup clientGroup, TreeNode currentNode) {
+    private TreeNode CreateTreeNode(ClientGroupDto clientGroup, TreeNode currentNode) {
       TreeNode tn;
       if (string.IsNullOrEmpty(clientGroup.Name)) {
         tn = new TreeNode(NOGROUP);
@@ -389,7 +389,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         ListViewGroup lvg = new ListViewGroup(node.Text, HorizontalAlignment.Left);
         lvClientControl.Groups.Add(lvg);
         lvg.Tag = node.Tag;
-        foreach (ListViewItem item in clientList[((ClientGroup)node.Tag).Id]) {
+        foreach (ListViewItem item in clientList[((ClientGroupDto)node.Tag).Id]) {
           item.Group = lvg;
           lvClientControl.Items.Add(item);
         }
@@ -474,7 +474,8 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         if (currentJob.State == State.finished) {
           IJobManager jobManager =
             ServiceLocator.GetJobManager();
-          ResponseObject<JobResult> jobRes = jobManager.GetLastJobResultOf(currentJob.Id);
+          ResponseObject<JobResult> jobRes = null;
+          //Todo: jobManager.GetLastJobResultOf(currentJob.Id);
 
           if (jobRes != null && jobRes.Obj != null) {
             lvi = null;
@@ -531,7 +532,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       if (change.ChangeType == Change.Update) {
         for (int i = 0; i < lvJobControl.Items.Count; i++) {
           if (lvJobControl.Items[i].Text == change.ID.ToString()) {
-            foreach (Job job in jobs.List) {
+            foreach (JobDto job in jobs.List) {
               if (job.Id == change.ID) {
                 lvJobControl.Items[i].Tag = job;
                 if (currentJob != null) {
@@ -561,7 +562,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
         ListViewItem lvi = new ListViewItem(
           change.ID.ToString(), 2, jobGroup[2]);
-        foreach (Job job in jobs.List) {
+        foreach (JobDto job in jobs.List) {
           if (job.Id == change.ID) {
             lvi.Tag = job;
             break;
@@ -611,7 +612,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     }
 
     private void OnLVJobControlClicked(object sender, EventArgs e) {
-      currentJob = (Job)lvJobControl.SelectedItems[0].Tag;
+      currentJob = (JobDto)lvJobControl.SelectedItems[0].Tag;
       JobClicked();
     }
 
@@ -628,7 +629,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       lvJobControl.ContextMenuStrip.Items.Clear();
       ListViewHitTestInfo hitTestInfo = lvJobControl.HitTest(e.Location);
       if (e.Button == MouseButtons.Right && hitTestInfo.Item != null && lvJobControl.SelectedItems.Count == 1) {
-        Job selectedJob = (Job)lvJobControl.SelectedItems[0].Tag;
+        JobDto selectedJob = (JobDto)lvJobControl.SelectedItems[0].Tag;
 
         if (selectedJob != null && selectedJob.State == State.calculating) {
           lvJobControl.ContextMenuStrip.Items.Add(menuItemAbortJob);
@@ -648,8 +649,8 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     private void groupToolStripMenuItem_Click(object sender, EventArgs e) {
       AddGroup addgroup = new AddGroup();
       parentgroup = Guid.Empty;
-      if ((tvClientControl.SelectedNode != null) && (((ClientGroup)tvClientControl.SelectedNode.Tag).Id != Guid.Empty)) {
-        parentgroup = ((ClientGroup)tvClientControl.SelectedNode.Tag).Id;
+      if ((tvClientControl.SelectedNode != null) && (((ClientGroupDto)tvClientControl.SelectedNode.Tag).Id != Guid.Empty)) {
+        parentgroup = ((ClientGroupDto)tvClientControl.SelectedNode.Tag).Id;
       }
       addgroup.addGroupEvent += new AddGroupDelegate(addgroup_addGroupEvent);
       addgroup.Show();
@@ -662,7 +663,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     }
 
     private void OnLVClientClicked(object sender, EventArgs e) {
-      currentClient = (ClientInfo)lvClientControl.SelectedItems[0].Tag;
+      currentClient = (ClientDto)lvClientControl.SelectedItems[0].Tag;
       ClientClicked();
     }
 
@@ -674,7 +675,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       tvClientControl.SelectedNode = hitTestInfo.Node;
       if (e.Button != MouseButtons.Right) return;
       if (hitTestInfo.Node != null) {
-        Resource selectedGroup = (Resource)tvClientControl.SelectedNode.Tag;
+        ResourceDto selectedGroup = (ResourceDto)tvClientControl.SelectedNode.Tag;
 
         if (selectedGroup != null) {
           contextMenuGroup.Items.Add(menuItemAddGroup);
@@ -689,7 +690,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     private void addproject_AddProjectEvent(string name) {
       IJobManager jobManager = ServiceLocator.GetJobManager();
 
-      Project pg = new Project() { Name = name };
+      ProjectDto pg = new ProjectDto() { Name = name };
       jobManager.CreateProject(pg);
 
     }
@@ -698,14 +699,14 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       IClientManager clientManager = ServiceLocator.GetClientManager();
 
       if (parentgroup != Guid.Empty) {
-        ClientGroup cg = new ClientGroup() { Name = name };
-        ResponseObject<ClientGroup> respcg = clientManager.AddClientGroup(cg);
+        ClientGroupDto cg = new ClientGroupDto() { Name = name };
+        ResponseObject<ClientGroupDto> respcg = clientManager.AddClientGroup(cg);
         Response res = clientManager.AddResourceToGroup(parentgroup, respcg.Obj);
         if (res != null && !res.Success) {
           MessageBox.Show(res.StatusMessage, "Error adding Group", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
       } else {
-        ClientGroup cg = new ClientGroup() { Name = name };
+        ClientGroupDto cg = new ClientGroupDto() { Name = name };
         clientManager.AddClientGroup(cg);
       }
       AddClients();
@@ -761,14 +762,14 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
     #region Helper methods
 
-    private void CloneList(ResponseList<Job> oldList, out IDictionary<int, Job> newList) {
-      newList = new Dictionary<int, Job>();
+    private void CloneList(ResponseList<JobDto> oldList, out IDictionary<int, JobDto> newList) {
+      newList = new Dictionary<int, JobDto>();
       for (int i = 0; i < oldList.List.Count; i++) {
         newList.Add(i, oldList.List[i]);
       }
     }
 
-    private bool IsEqual(ClientInfo ci1, ClientInfo ci2) {
+    private bool IsEqual(ClientDto ci1, ClientDto ci2) {
       if (ci2 == null) {
         return false;
       }
@@ -785,13 +786,13 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       return 100;
     }
 
-    private void GetDelta(IList<Job> oldJobs, IDictionary<int, Job> helpJobs) {
+    private void GetDelta(IList<JobDto> oldJobs, IDictionary<int, JobDto> helpJobs) {
       bool found = false;
       for (int i = 0; i < jobs.List.Count; i++) {
-        Job job = jobs.List[i];
+        JobDto job = jobs.List[i];
         for (int j = 0; j < oldJobs.Count; j++) {
 
-          Job jobold = oldJobs[j];
+          JobDto jobold = oldJobs[j];
 
           if (job.Id.Equals(jobold.Id)) {
 
@@ -813,7 +814,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
             }
 
             int removeAt = -1;
-            foreach (KeyValuePair<int, Job> kvp in helpJobs) {
+            foreach (KeyValuePair<int, JobDto> kvp in helpJobs) {
               if (job.Id.Equals(kvp.Value.Id)) {
                 removeAt = kvp.Key;
                 break;
@@ -831,7 +832,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         }
         found = false;
       }
-      foreach (KeyValuePair<int, Job> kvp in helpJobs) {
+      foreach (KeyValuePair<int, JobDto> kvp in helpJobs) {
         changes.Add(new Changes { Types = Type.Job, ID = kvp.Value.Id, ChangeType = Change.Delete, Position = kvp.Key });
       }
     }
@@ -843,7 +844,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
       ResponseList<JobResult> jobRes = jobManager.GetAllJobResults(currentJob.Id);
 
-      if (jobRes.List != null) {
+      if (jobRes != null && jobRes.List != null) {
         foreach (JobResult jobresult in jobRes.List) {
           ListViewItem curSnapshot = new ListViewItem(jobresult.ClientId.ToString());
           double percentage = jobresult.Percentage * 100;
@@ -853,7 +854,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         }
       }
 
-      if ((jobRes.List == null) && (jobRes.List.Count == 0)) {
+      if ((jobRes.List == null) || (jobRes.List.Count == 0)) {
         lvSnapshots.Visible = false;
       } else {
         lvSnapshots.Visible = true;

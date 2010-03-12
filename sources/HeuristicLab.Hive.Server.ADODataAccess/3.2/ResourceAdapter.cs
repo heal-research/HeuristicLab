@@ -1,4 +1,4 @@
-﻿#region License Information
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -35,7 +35,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
   class ResourceAdapter: 
     DataAdapterBase<
       dsHiveServerTableAdapters.ResourceTableAdapter, 
-      Resource, 
+      ResourceDto, 
       dsHiveServer.ResourceRow>,  
     IResourceAdapter {
     #region Fields
@@ -45,7 +45,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       get {
         if (clientAdapter == null)
           clientAdapter =
-            this.Session.GetDataAdapter<ClientInfo, IClientAdapter>();
+            this.Session.GetDataAdapter<ClientDto, IClientAdapter>();
         
         return clientAdapter;
       }
@@ -57,7 +57,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       get {
         if (clientGroupAdapter == null)
           clientGroupAdapter =
-            this.Session.GetDataAdapter<ClientGroup, IClientGroupAdapter>();
+            this.Session.GetDataAdapter<ClientGroupDto, IClientGroupAdapter>();
 
         return clientGroupAdapter;
       }
@@ -68,8 +68,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     #region Overrides
-    protected override Resource ConvertRow(dsHiveServer.ResourceRow row,
-      Resource resource) {
+    protected override ResourceDto ConvertRow(dsHiveServer.ResourceRow row,
+      ResourceDto resource) {
       if (row != null && resource != null) {
         resource.Id = row.ResourceId;
         if (!row.IsNameNull())
@@ -82,7 +82,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         return null;
     }
 
-    protected override dsHiveServer.ResourceRow ConvertObj(Resource resource,
+    protected override dsHiveServer.ResourceRow ConvertObj(ResourceDto resource,
       dsHiveServer.ResourceRow row) {
       if (resource != null && row != null) {
         row.ResourceId = resource.Id;
@@ -95,7 +95,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     #endregion
 
     #region IResourceAdapter Members
-    public bool GetById(Resource resource) {
+    public bool GetById(ResourceDto resource) {
       if (resource != null) {
         dsHiveServer.ResourceRow row =
           GetRowById(resource.Id);
@@ -110,7 +110,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       return false;
     }
 
-    public Resource GetByName(string name) {
+    public ResourceDto GetByName(string name) {
       return
         base.FindSingle (
           delegate() {
@@ -122,24 +122,24 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     #region IPolymorphicDataAdapter<Resource> Members
 
-    public void UpdatePolymorphic(Resource res) {
-      if (res is ClientInfo) {
-        ClientAdapter.Update(res as ClientInfo);
-      } else if (res is ClientGroup) {
-        ClientGroupAdapter.Update(res as ClientGroup);
+    public void UpdatePolymorphic(ResourceDto res) {
+      if (res is ClientDto) {
+        ClientAdapter.Update(res as ClientDto);
+      } else if (res is ClientGroupDto) {
+        ClientGroupAdapter.Update(res as ClientGroupDto);
       } else {
         this.Update(res);
       }
     }
 
-    public Resource GetByIdPolymorphic(Guid id) {
-      ClientGroup group =
+    public ResourceDto GetByIdPolymorphic(Guid id) {
+      ClientGroupDto group =
         ClientGroupAdapter.GetById(id);
 
       if (group != null)
         return group;
       else {
-        ClientInfo client =
+        ClientDto client =
           ClientAdapter.GetById(id);
 
         if (client != null)
@@ -150,11 +150,11 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       }
     }
 
-    public bool DeletePolymorphic(Resource res) {
-      if (res is ClientInfo) {
-        return ClientAdapter.Delete(res as ClientInfo);
-      } else if (res is ClientGroup) {
-        return ClientGroupAdapter.Delete(res as ClientGroup);
+    public bool DeletePolymorphic(ResourceDto res) {
+      if (res is ClientDto) {
+        return ClientAdapter.Delete(res as ClientDto);
+      } else if (res is ClientGroupDto) {
+        return ClientGroupAdapter.Delete(res as ClientGroupDto);
       } else {
         return this.Delete(res);
       }

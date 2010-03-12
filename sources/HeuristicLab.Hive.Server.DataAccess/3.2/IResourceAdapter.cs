@@ -1,4 +1,4 @@
-﻿#region License Information
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -29,19 +29,19 @@ namespace HeuristicLab.Hive.Server.DataAccess {
   /// <summary>
   /// The resource database adapter
   /// </summary>
-  public interface IResourceAdapter: IPolymorphicDataAdapter<Resource> {
+  public interface IResourceAdapter: IPolymorphicDataAdapter<ResourceDto> {
     /// <summary>
     /// Gets the resource and updates the values of the object
     /// </summary>
     /// <param name="resource"></param>
     /// <returns></returns>
-    bool GetById(Resource resource);
+    bool GetById(ResourceDto resource);
 
     /// <summary>
     /// Get the resource with the specified name
     /// </summary>
     /// <param name="clientId"></param>
     /// <returns></returns>
-    Resource GetByName(string name);
+    ResourceDto GetByName(string name);
   }
 }

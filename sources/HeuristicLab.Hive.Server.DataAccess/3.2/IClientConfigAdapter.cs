@@ -25,6 +25,6 @@ using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.DataAccess.Interfaces;
 
 namespace HeuristicLab.Hive.Server.DataAccess {
-  public interface IClientConfigAdapter: IDataAdapter<ClientConfig> {
+  public interface IClientConfigAdapter: IDataAdapter<ClientConfigDto> {
   }
 }

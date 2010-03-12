@@ -1,4 +1,4 @@
-﻿#region License Information
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -45,7 +45,7 @@ namespace HeuristicLab.Hive.Server.Core {
 
     #region IClientCommunicator Members
 
-    public Response Login(ClientInfo clientInfo) {
+    public Response Login(ClientDto clientInfo) {
       return clientCommunicator.Login(clientInfo);
     }
 
@@ -57,9 +57,9 @@ namespace HeuristicLab.Hive.Server.Core {
       return clientCommunicator.SendJob(clientId);
     }
 
-    public ResponseSerializedJob SendSerializedJob(Guid clientId) {
+    /*public ResponseSerializedJob SendSerializedJob(Guid clientId) {
       return clientCommunicator.SendSerializedJob(clientId);
-    }
+    } */
 
     public ResponseResultReceived StoreFinishedJobResult(Guid clientId,
       Guid jobId,
@@ -77,7 +77,7 @@ namespace HeuristicLab.Hive.Server.Core {
       return clientCommunicator.IsJobStillNeeded(jobId);
     }
 
-    public ResponsePlugin SendPlugins(List<HivePluginInfo> pluginList) {
+    public ResponsePlugin SendPlugins(List<HivePluginInfoDto> pluginList) {
       return clientCommunicator.SendPlugins(pluginList);
     }
 
@@ -119,7 +119,7 @@ namespace HeuristicLab.Hive.Server.Core {
       return stream;
     }
 
-    public Stream SendStreamedPlugins(List<HivePluginInfo> pluginList) {
+    public Stream SendStreamedPlugins(List<HivePluginInfoDto> pluginList) {
       return
         new StreamedObject<ResponsePlugin>(
           this.SendPlugins(pluginList));

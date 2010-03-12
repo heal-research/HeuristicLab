@@ -1,4 +1,4 @@
-﻿#region License Information
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -34,13 +34,13 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
   [ServiceContract]
   public interface IClientCommunicator {
     [OperationContract]
-    Response Login(ClientInfo clientInfo);
+    Response Login(ClientDto clientInfo);
     [OperationContract]
     ResponseHB ProcessHeartBeat(HeartBeatData hbData);
     [OperationContract]
     ResponseJob SendJob(Guid clientId);
-    [OperationContract]
-    ResponseSerializedJob SendSerializedJob(Guid clientId);
+    //[OperationContract]
+    //ResponseSerializedJob SendSerializedJob(Guid clientId);
     [OperationContract]
     ResponseResultReceived StoreFinishedJobResult(Guid clientId, 
       Guid jobId, 
@@ -58,6 +58,6 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
     [OperationContract]
     Response IsJobStillNeeded(Guid jobId);
     [OperationContract]
-    ResponsePlugin SendPlugins(List<HivePluginInfo> pluginList);
+    ResponsePlugin SendPlugins(List<HivePluginInfoDto> pluginList);
   }
 }

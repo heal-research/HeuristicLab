@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,25 +19,25 @@ namespace HeuristicLab.Hive.Client.Core {
       }
     } 
     
-    private List<CachedHivePluginInfo> pluginCache;
+    private List<CachedHivePluginInfoDto> pluginCache;
     
 
     public PluginCache() {
-      pluginCache = new List<CachedHivePluginInfo>();
+      pluginCache = new List<CachedHivePluginInfoDto>();
     }
     
-    public void AddPlugin(CachedHivePluginInfo plugin) {
+    public void AddPlugin(CachedHivePluginInfoDto plugin) {
       pluginCache.Add(plugin);    
     }
 
-    public List<CachedHivePluginInfo> GetPlugins(List<HivePluginInfo> requests) {
-      List<CachedHivePluginInfo> neededPlugins = new List<CachedHivePluginInfo>();
-      List<HivePluginInfo> missingPlugins = new List<HivePluginInfo>();
+    public List<CachedHivePluginInfoDto> GetPlugins(List<HivePluginInfoDto> requests) {
+      List<CachedHivePluginInfoDto> neededPlugins = new List<CachedHivePluginInfoDto>();
+      List<HivePluginInfoDto> missingPlugins = new List<HivePluginInfoDto>();
       bool found = false;
             
-      foreach (HivePluginInfo info in requests) {
+      foreach (HivePluginInfoDto info in requests) {
         //we MAY run in problems here - if there is a plugin twice in requests, there may be added two different versions of the plugin
-        foreach (CachedHivePluginInfo cache in pluginCache) {
+        foreach (CachedHivePluginInfoDto cache in pluginCache) {
           if (info.Name.Equals(cache.Name) && info.Version.Equals(cache.Version) && info.BuildDate <= cache.BuildDate) {
             neededPlugins.Add(cache);
             found = true;
@@ -49,7 +49,7 @@ namespace HeuristicLab.Hive.Client.Core {
         found = false;
       }
 
-      List<CachedHivePluginInfo> receivedPlugins = WcfService.Instance.RequestPlugins(missingPlugins);
+      List<CachedHivePluginInfoDto> receivedPlugins = WcfService.Instance.RequestPlugins(missingPlugins);
       if (receivedPlugins != null) {
         neededPlugins.AddRange(receivedPlugins);
         pluginCache.AddRange(receivedPlugins);

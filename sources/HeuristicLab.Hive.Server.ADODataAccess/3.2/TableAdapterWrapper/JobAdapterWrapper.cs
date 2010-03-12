@@ -13,14 +13,14 @@ using System.Data;
 namespace HeuristicLab.Hive.Server.ADODataAccess.TableAdapterWrapper {
   class JobAdapterWrapper :
     TableAdapterWrapperBase<dsHiveServerTableAdapters.JobTableAdapter,
-                      Job,
+                      JobDto,
                       dsHiveServer.JobRow> {
     public override void UpdateRow(dsHiveServer.JobRow row) {
       TransactionalAdapter.Update(row);
     }
 
     public override dsHiveServer.JobRow
-      InsertNewRow(Job job) {
+      InsertNewRow(JobDto job) {
       dsHiveServer.JobDataTable data =
         new dsHiveServer.JobDataTable();
 

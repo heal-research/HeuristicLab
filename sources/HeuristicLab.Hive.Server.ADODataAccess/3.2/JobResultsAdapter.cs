@@ -24,7 +24,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       get {
         if (clientAdapter == null)
           clientAdapter =
-            this.Session.GetDataAdapter<ClientInfo, IClientAdapter>();
+            this.Session.GetDataAdapter<ClientDto, IClientAdapter>();
 
         return clientAdapter;
       }
@@ -36,7 +36,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       get {
         if (jobAdapter == null)
           jobAdapter =
-            this.Session.GetDataAdapter<Job, IJobAdapter>();
+            this.Session.GetDataAdapter<JobDto, IJobAdapter>();
 
         return jobAdapter;
       }
@@ -56,7 +56,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           row.SetJobIdNull();
 
         if (result.ClientId != Guid.Empty)  {
-          ClientInfo client = 
+          ClientDto client = 
                  ClientAdapter.GetById(result.ClientId);
 
           if (client != null)

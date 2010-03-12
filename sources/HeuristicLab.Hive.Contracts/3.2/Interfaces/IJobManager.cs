@@ -33,17 +33,17 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
   [ServiceContract]
   public interface IJobManager {
     [OperationContract]
-    ResponseList<Job> GetAllJobs();
+    ResponseList<JobDto> GetAllJobs();
     [OperationContract]
-    ResponseObject<Job> GetJobById(Guid jobId);
+    ResponseObject<JobDto> GetJobById(Guid jobId);
     [OperationContract]
-    ResponseObject<Job> AddNewJob(SerializedJob job);
+    ResponseObject<JobDto> AddNewJob(SerializedJob job);
     [OperationContract]
     Response RemoveJob(Guid jobId);
     [OperationContract]
-    ResponseObject<JobResult> GetLastJobResultOf(Guid jobId);
+    ResponseObject<JobDto> GetLastJobResultOf(Guid jobId);
     [OperationContract]
-    ResponseObject<SerializedJobResult> GetLastSerializedJobResultOf(Guid jobId, bool requested);
+    ResponseObject<SerializedJob> GetLastSerializedJobResultOf(Guid jobId, bool requested);
     [OperationContract]
     ResponseList<JobResult> GetAllJobResults(Guid jobId);
     [OperationContract]
@@ -51,14 +51,14 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
     [OperationContract]
     Response AbortJob(Guid jobId);
     [OperationContract]
-    ResponseList<Project> GetAllProjects();
+    ResponseList<ProjectDto> GetAllProjects();
     [OperationContract]
-    Response CreateProject(Project project);
+    Response CreateProject(ProjectDto project);
     [OperationContract]
-    Response ChangeProject(Project project);
+    Response ChangeProject(ProjectDto project);
     [OperationContract]
     Response DeleteProject(Guid projectId);
     [OperationContract]
-    ResponseList<Job> GetJobsByProject(Guid projectId);
+    ResponseList<JobDto> GetJobsByProject(Guid projectId);
   }
 }

@@ -603,7 +603,7 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 			}
 		}
 		
-		[Column(Storage="_UpDownTimeCalendar", DbType="Xml", UpdateCheck=UpdateCheck.Never)]
+		[Column(Storage="_UpDownTimeCalendar", DbType="Xml", CanBeNull=true, UpdateCheck=UpdateCheck.Never)]
 		public System.Xml.Linq.XElement UpDownTimeCalendar
 		{
 			get
@@ -1028,7 +1028,7 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 		
 		private System.Nullable<double> _Percentage;
 		
-		private System.Data.Linq.Binary _SerializedJob;
+		private System.Data.Linq.Link<System.Data.Linq.Binary> _SerializedJob;
 		
 		private System.Nullable<System.DateTime> _DateCreated;
 		
@@ -1042,9 +1042,9 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 		
 		private System.Nullable<System.Guid> _UserId;
 		
-		private System.Nullable<int> _CoresNeeded;
+		private int _CoresNeeded;
 		
-		private System.Nullable<int> _MemoryNeeded;
+		private int _MemoryNeeded;
 		
 		private EntitySet<AssignedResource> _AssignedResources;
 		
@@ -1086,9 +1086,9 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
     partial void OnProjectIdChanged();
     partial void OnUserIdChanging(System.Nullable<System.Guid> value);
     partial void OnUserIdChanged();
-    partial void OnCoresNeededChanging(System.Nullable<int> value);
+    partial void OnCoresNeededChanging(int value);
     partial void OnCoresNeededChanged();
-    partial void OnMemoryNeededChanging(System.Nullable<int> value);
+    partial void OnMemoryNeededChanging(int value);
     partial void OnMemoryNeededChanged();
     #endregion
 		
@@ -1211,20 +1211,20 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 			}
 		}
 		
-		[Column(Storage="_SerializedJob", DbType="VarBinary(MAX)", UpdateCheck=UpdateCheck.Never)]
+		[Column(Storage="_SerializedJob", DbType="VarBinary(MAX)", CanBeNull=true, UpdateCheck=UpdateCheck.Never)]
 		public System.Data.Linq.Binary SerializedJob
 		{
 			get
 			{
-				return this._SerializedJob;
+				return this._SerializedJob.Value;
 			}
 			set
 			{
-				if ((this._SerializedJob != value))
+				if ((this._SerializedJob.Value != value))
 				{
 					this.OnSerializedJobChanging(value);
 					this.SendPropertyChanging();
-					this._SerializedJob = value;
+					this._SerializedJob.Value = value;
 					this.SendPropertyChanged("SerializedJob");
 					this.OnSerializedJobChanged();
 				}
@@ -1356,7 +1356,7 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 		}
 		
 		[Column(Storage="_CoresNeeded", DbType="Int")]
-		public System.Nullable<int> CoresNeeded
+		public int CoresNeeded
 		{
 			get
 			{
@@ -1376,7 +1376,7 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 		}
 		
 		[Column(Storage="_MemoryNeeded", DbType="Int")]
-		public System.Nullable<int> MemoryNeeded
+		public int MemoryNeeded
 		{
 			get
 			{
@@ -1952,7 +1952,7 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 			}
 		}
 		
-		[Column(Storage="_RequiredPluginId", AutoSync=AutoSync.OnInsert, DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true, IsDbGenerated=true)]
+		[Column(Storage="_RequiredPluginId", AutoSync=AutoSync.OnInsert, DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true, IsDbGenerated=true, UpdateCheck=UpdateCheck.Never)]
 		public System.Guid RequiredPluginId
 		{
 			get
@@ -2098,7 +2098,7 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 			OnCreated();
 		}
 		
-		[Column(Storage="_ResourceId", AutoSync=AutoSync.OnInsert, DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true, IsDbGenerated=true)]
+		[Column(Storage="_ResourceId", AutoSync=AutoSync.OnInsert, DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
 		public System.Guid ResourceId
 		{
 			get

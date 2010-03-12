@@ -29,9 +29,9 @@ namespace HeuristicLab.Hive.Server.DataAccess {
   /// <summary>
   /// The plugin info database adapter
   /// </summary>
-  public interface IPluginInfoAdapter : IDataAdapter<HivePluginInfo> {
-    HivePluginInfo GetByNameVersionBuilddate(String name, String version, DateTime buildDate);
+  public interface IPluginInfoAdapter : IDataAdapter<HivePluginInfoDto> {
+    HivePluginInfoDto GetByNameVersionBuilddate(String name, String version, DateTime buildDate);
 
-    ICollection<HivePluginInfo> GetOrphanedPluginInfos();
+    ICollection<HivePluginInfoDto> GetOrphanedPluginInfos();
   }
 }

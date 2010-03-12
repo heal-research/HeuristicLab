@@ -131,28 +131,28 @@
         <elementListCompartment Id="73aab418-5f1d-4648-a326-abf68f213f0e" absoluteBounds="3.64, 8.085, 1.9700000000000002, 1.9801025390625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(3.625 : 9.70755126953125); (2.75 : 9.70755126953125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(3.625 : 9.70755126953125); (2.75 : 9.70755126953125)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HiveDataContext/Client/Client_UptimeStatistic" />
       <nodes>
         <classShapeMoniker Id="a2f0b500-6e5f-4de0-b608-64e4b55a73c4" />
         <classShapeMoniker Id="93016de7-5896-4132-9db6-bc2fe38230fe" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(5.625 : 8.78770182291667); (9 : 8.78770182291667)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(5.625 : 8.78770182291667); (9 : 8.78770182291667)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HiveDataContext/Client/Client_Job" />
       <nodes>
         <classShapeMoniker Id="a2f0b500-6e5f-4de0-b608-64e4b55a73c4" />
         <classShapeMoniker Id="63840838-dba2-4615-b10b-b812f68ec9a1" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(4.5 : 6.94399251302083); (4.5 : 7.625)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(4.5 : 6.94399251302083); (4.5 : 7.625)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HiveDataContext/Resource/Resource_Client" />
       <nodes>
         <classShapeMoniker Id="e44e8355-4290-42f0-8b46-4473e91e504b" />
         <classShapeMoniker Id="a2f0b500-6e5f-4de0-b608-64e4b55a73c4" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(4.625 : 11); (4.625 : 10.1651025390625)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(4.625 : 11); (4.625 : 10.1651025390625)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HiveDataContext/ClientConfig/ClientConfig_Client" />
       <nodes>
         <classShapeMoniker Id="5f1881a6-9a97-4298-a30e-bc434b948d15" />

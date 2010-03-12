@@ -1,4 +1,4 @@
-﻿#region License Information
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -29,18 +29,18 @@ namespace HeuristicLab.Hive.Server.DataAccess {
   /// <summary>
   /// The client database adapter
   /// </summary>
-  public interface IClientAdapter : IDataAdapter<ClientInfo> {
+  public interface IClientAdapter : IDataAdapter<ClientDto> {
     /// <summary>
     /// Get the client with the specified name
     /// </summary>
     /// <param name="clientId"></param>
     /// <returns></returns>
-    ClientInfo GetByName(string name);
+    ClientDto GetByName(string name);
 
     /// <summary>
     /// Gets all clients that are not in a group
     /// </summary>
     /// <returns></returns>
-    ICollection<ClientInfo> GetGrouplessClients();
+    ICollection<ClientDto> GetGrouplessClients();
   }
 }

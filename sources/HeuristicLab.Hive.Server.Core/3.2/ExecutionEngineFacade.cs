@@ -39,7 +39,7 @@ namespace HeuristicLab.Hive.Server.Core {
 
     #region IExecutionEngineFacade Members
 
-    public ResponseObject<Job> AddJob(SerializedJob job) {
+    public ResponseObject<JobDto> AddJob(SerializedJob job) {
       return jobManager.AddNewJob(job);
     }
 
@@ -47,7 +47,7 @@ namespace HeuristicLab.Hive.Server.Core {
       return jobManager.RequestSnapshot(jobId);
     }
 
-    public ResponseObject<SerializedJobResult> 
+    public ResponseObject<SerializedJob> 
       GetLastSerializedResult(Guid jobId, bool requested) {
       return jobManager.GetLastSerializedJobResultOf(jobId, requested);
     }

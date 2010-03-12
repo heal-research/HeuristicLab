@@ -100,7 +100,7 @@ namespace HeuristicLab.Hive.Engine {
         loops = 1;
 
       for (int i = 0; i < loops; i++) {
-        ResponseObject<Contracts.BusinessObjects.Job> res = executionEngineFacade.AddJob(jobObj);
+        ResponseObject<Contracts.BusinessObjects.JobDto> res = executionEngineFacade.AddJob(jobObj);
         jobId = res.Obj.Id;
       }
       
@@ -111,7 +111,7 @@ namespace HeuristicLab.Hive.Engine {
       // start a backgroud thread to poll the final result of the job
       Thread t = new Thread(() => {
         IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(HiveServerUrl);
-        ResponseObject<SerializedJobResult> response = null;
+        ResponseObject<SerializedJob> response = null;
         Job restoredJob = null;
         do {
           Thread.Sleep(RESULT_POLLING_INTERVAL_MS);
@@ -127,7 +127,7 @@ namespace HeuristicLab.Hive.Engine {
             if (abortRequested) return;
             if (response.Success && response.Obj != null) {
               HiveLogger.Debug("HiveEngine: Results-polling - Got result!");
-              restoredJob = (Job)PersistenceManager.RestoreFromGZip(response.Obj.SerializedJobResultData);
+              restoredJob = (Job)PersistenceManager.RestoreFromGZip(response.Obj.SerializedJobData);
               HiveLogger.Debug("HiveEngine: Results-polling - IsSnapshotResult: " + (restoredJob.Progress<1.0));
             }
           }
@@ -145,7 +145,7 @@ namespace HeuristicLab.Hive.Engine {
     public void RequestSnapshot() {
       IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(HiveServerUrl);
       int retryCount = 0;
-      ResponseObject<SerializedJobResult> response;
+      ResponseObject<SerializedJob> response;
       lock (locker) {
         HiveLogger.Debug("HiveEngine: Abort - RequestSnapshot");
         Response snapShotResponse = executionEngineFacade.RequestSnapshot(jobId);
@@ -173,10 +173,10 @@ namespace HeuristicLab.Hive.Engine {
             );
         }
       }
-      SerializedJobResult jobResult = response.Obj;
+      SerializedJob jobResult = response.Obj;
       if (jobResult != null) {
         HiveLogger.Debug("HiveEngine: Results-polling - Got result!");
-        job = (Job)PersistenceManager.RestoreFromGZip(jobResult.SerializedJobResultData);
+        job = (Job)PersistenceManager.RestoreFromGZip(jobResult.SerializedJobData);
         ControlManager.Manager.ShowControl(job.Engine.CreateView());
       }
       //HiveLogger.Debug("HiveEngine: Results-polling - Exception!");
@@ -209,8 +209,8 @@ namespace HeuristicLab.Hive.Engine {
     }
 
     private HeuristicLab.Hive.Contracts.BusinessObjects.SerializedJob CreateJobObj() {
-      HeuristicLab.Hive.Contracts.BusinessObjects.Job jobObj =
-        new HeuristicLab.Hive.Contracts.BusinessObjects.Job();
+      HeuristicLab.Hive.Contracts.BusinessObjects.JobDto jobObj =
+        new HeuristicLab.Hive.Contracts.BusinessObjects.JobDto();
 
       MemoryStream memStream = new MemoryStream();
       GZipStream stream = new GZipStream(memStream, CompressionMode.Compress, true);
@@ -239,11 +239,11 @@ namespace HeuristicLab.Hive.Engine {
         }
       }
 
-      List<HivePluginInfo> pluginsNeeded =
-        new List<HivePluginInfo>();
+      List<HivePluginInfoDto> pluginsNeeded =
+        new List<HivePluginInfoDto>();
       foreach (IPluginDescription uniquePlugin in plugins) {
-        HivePluginInfo pluginInfo =
-          new HivePluginInfo();
+        HivePluginInfoDto pluginInfo =
+          new HivePluginInfoDto();
         pluginInfo.Name = uniquePlugin.Name;
         pluginInfo.Version = uniquePlugin.Version.ToString();
         pluginInfo.BuildDate = uniquePlugin.BuildDate;

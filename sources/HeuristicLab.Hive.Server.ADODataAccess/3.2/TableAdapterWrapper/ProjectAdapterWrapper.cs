@@ -10,14 +10,14 @@ using System.Data.Common;
 namespace HeuristicLab.Hive.Server.ADODataAccess.TableAdapterWrapper {
   class ProjectAdapterWrapper :
     TableAdapterWrapperBase<dsHiveServerTableAdapters.ProjectTableAdapter,
-                      Project,
+                      ProjectDto,
                       dsHiveServer.ProjectRow> {
     public override void UpdateRow(dsHiveServer.ProjectRow row) {
       TransactionalAdapter.Update(row);
     }
 
     public override dsHiveServer.ProjectRow
-      InsertNewRow(Project project) {
+      InsertNewRow(ProjectDto project) {
       dsHiveServer.ProjectDataTable data =
         new dsHiveServer.ProjectDataTable();
 

@@ -30,7 +30,7 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
   [Serializable]
   public class SerializedJob {
     [DataMember]
-    public Job JobInfo { get; set; }
+    public JobDto JobInfo { get; set; }
     
     [DataMember]
     public byte[] SerializedJobData { get; set; }

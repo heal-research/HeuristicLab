@@ -37,7 +37,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
   class ProjectAdapter: 
     DataAdapterBase<
       dsHiveServerTableAdapters.ProjectTableAdapter, 
-      Project, 
+      ProjectDto, 
       dsHiveServer.ProjectRow>,
     IProjectAdapter{
     public ProjectAdapter(): 
@@ -45,8 +45,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     #region Overrides
-    protected override Project ConvertRow(dsHiveServer.ProjectRow row, 
-      Project project) {
+    protected override ProjectDto ConvertRow(dsHiveServer.ProjectRow row, 
+      ProjectDto project) {
       if (row != null && project != null) {
         project.Id = row.ProjectId;
 
@@ -61,7 +61,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         return null;
     }
 
-    protected override dsHiveServer.ProjectRow ConvertObj(Project project,
+    protected override dsHiveServer.ProjectRow ConvertObj(ProjectDto project,
       dsHiveServer.ProjectRow row) {
       if (project != null && row != null) {
         row.ProjectId = project.Id;

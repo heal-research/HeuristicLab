@@ -11,14 +11,14 @@ namespace HeuristicLab.Hive.Server.ADODataAccess.TableAdapterWrapper {
   class PluginInfoAdapterWrapper :
    TableAdapterWrapperBase<
        dsHiveServerTableAdapters.PluginInfoTableAdapter,
-   HivePluginInfo,
+   HivePluginInfoDto,
    dsHiveServer.PluginInfoRow> {
     public override void UpdateRow(dsHiveServer.PluginInfoRow row) {
       TransactionalAdapter.Update(row);
     }
 
     public override dsHiveServer.PluginInfoRow
-      InsertNewRow(HivePluginInfo pluginInfo) {
+      InsertNewRow(HivePluginInfoDto pluginInfo) {
       dsHiveServer.PluginInfoDataTable data =
         new dsHiveServer.PluginInfoDataTable();
 

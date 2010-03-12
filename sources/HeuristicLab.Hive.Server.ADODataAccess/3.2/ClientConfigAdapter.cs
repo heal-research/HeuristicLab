@@ -11,7 +11,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
   class ClientConfigAdapter :
     DataAdapterBase<
       dsHiveServerTableAdapters.ClientConfigTableAdapter,
-      ClientConfig,
+      ClientConfigDto,
       dsHiveServer.ClientConfigRow>,
     IClientConfigAdapter {
     public ClientConfigAdapter(): 
@@ -19,18 +19,19 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     protected override dsHiveServer.ClientConfigRow 
-      ConvertObj(ClientConfig config, dsHiveServer.ClientConfigRow row) {
+      ConvertObj(ClientConfigDto config, dsHiveServer.ClientConfigRow row) {
       if (row != null && config != null) {
         row.ClientConfigId = config.Id;
-        row.HeartBeatIntervall = config.HeartBeatIntervall;
-        row.UpDownTimeCalendar = config.UpDownTimeCalendar;
+        //Todo: commOut
+        //row.HeartBeatIntervall = config.HeartBeatIntervall;
+        //row.UpDownTimeCalendar = config.UpDownTimeCalendar;
 
         return row;
       } else
         return null;
     }
 
-    protected override ClientConfig ConvertRow(dsHiveServer.ClientConfigRow row, ClientConfig config) {
+    protected override ClientConfigDto ConvertRow(dsHiveServer.ClientConfigRow row, ClientConfigDto config) {
       if (config != null && row != null) {
         config.Id = row.ClientConfigId;
 

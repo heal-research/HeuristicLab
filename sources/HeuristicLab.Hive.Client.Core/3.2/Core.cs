@@ -54,7 +54,7 @@ namespace HeuristicLab.Hive.Client.Core {
 
     private Dictionary<Guid, Executor> engines = new Dictionary<Guid, Executor>();
     private Dictionary<Guid, AppDomain> appDomains = new Dictionary<Guid, AppDomain>();
-    private Dictionary<Guid, Job> jobs = new Dictionary<Guid, Job>();
+    private Dictionary<Guid, JobDto> jobs = new Dictionary<Guid, JobDto>();
 
     private WcfService wcfService;
     private Heartbeat beat;
@@ -302,7 +302,7 @@ namespace HeuristicLab.Hive.Client.Core {
         bool sandboxed = false;
         List<byte[]> files = new List<byte[]>();
         Logging.Instance.Info(this.ToString(), "Fetching plugins for job " + e.Result.Job.Id);
-        foreach (CachedHivePluginInfo plugininfo in PluginCache.Instance.GetPlugins(e.Result.Job.PluginsNeeded))
+        foreach (CachedHivePluginInfoDto plugininfo in PluginCache.Instance.GetPlugins(e.Result.Job.PluginsNeeded))
           files.AddRange(plugininfo.PluginFiles);
         Logging.Instance.Info(this.ToString(), "Plugins fetched for job " + e.Result.Job.Id);
         AppDomain appDomain = HeuristicLab.PluginInfrastructure.Sandboxing.SandboxManager.CreateAndInitSandbox(e.Result.Job.Id.ToString(), files);
@@ -408,7 +408,7 @@ namespace HeuristicLab.Hive.Client.Core {
       Logging.Instance.Error(this.ToString(), "Exception in AppDomain: " + e.ExceptionObject.ToString());
     }
 
-    internal Dictionary<Guid, Job> GetJobs() {
+    internal Dictionary<Guid, JobDto> GetJobs() {
       return jobs;
     }
 

@@ -87,12 +87,16 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Runtime.Serialization">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.ServiceModel">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -154,6 +158,10 @@
     <ProjectReference Include="..\..\HeuristicLab.Hive.Server.Core\3.2\HeuristicLab.Hive.Server.Core-3.2.csproj">
       <Project>{898B31CF-81DC-453B-AEB3-BDF83197A7EE}</Project>
       <Name>HeuristicLab.Hive.Server.Core-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Hive.Server.LINQDataAccess\3.2\HeuristicLab.Hive.Server.LINQDataAccess-3.2.csproj">
+      <Project>{A4499DDD-D1B8-414F-98F6-903C2C71BEB0}</Project>
+      <Name>HeuristicLab.Hive.Server.LINQDataAccess-3.2</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>

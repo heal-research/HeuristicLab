@@ -1,4 +1,4 @@
-﻿#region License Information
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -29,19 +29,16 @@ using HeuristicLab.Hive.Contracts;
 using HeuristicLab.Hive.Server.DataAccess;
 using HeuristicLab.DataAccess.Interfaces;
 using HeuristicLab.Hive.Server.LINQDataAccess;
-using ClientGroup=HeuristicLab.Hive.Contracts.BusinessObjects.ClientGroup;
-using Resource=HeuristicLab.Hive.Contracts.BusinessObjects.Resource;
+using ClientGroup=HeuristicLab.Hive.Contracts.BusinessObjects.ClientGroupDto;
 
 namespace HeuristicLab.Hive.Server.Core {
   class ClientManager: IClientManager {
-
-    ClientDao clientDao = new ClientDao();
-
-    ISessionFactory factory;
+    
+    //ISessionFactory factory;
     List<ClientGroup> clientGroups;
 
     public ClientManager() {
-      factory = ServiceLocator.GetSessionFactory();
+      //factory = ServiceLocator.GetSessionFactory();
       
       clientGroups = new List<ClientGroup>();
     }
@@ -52,25 +49,26 @@ namespace HeuristicLab.Hive.Server.Core {
     /// Returns all clients stored in the database
     /// </summary>
     /// <returns></returns>
-    public ResponseList<ClientInfo> GetAllClients() {
-      ISession session = factory.GetSessionForCurrentThread();
+    public ResponseList<ClientDto> GetAllClients() {
+      /*ISession session = factory.GetSessionForCurrentThread();
 
       try {
+        
         IClientAdapter clientAdapter =
-          session.GetDataAdapter<ClientInfo, IClientAdapter>();
+          session.GetDataAdapter<ClientDto, IClientAdapter>();*/
 
-        ResponseList<ClientInfo> response = new ResponseList<ClientInfo>();
+        ResponseList<ClientDto> response = new ResponseList<ClientDto>();
 
-        response.List = new List<ClientInfo>(clientAdapter.GetAll());
+        response.List = new List<ClientDto>(DaoLocator.ClientDao.FindAll());
         response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_GET_ALL_CLIENTS;
         response.Success = true;
 
         return response;
-      }
+      /*}
       finally {
         if (session != null)
           session.EndSession();
-      }
+      }*/
     }
 
     /// <summary>
@@ -78,20 +76,20 @@ namespace HeuristicLab.Hive.Server.Core {
     /// </summary>
     /// <returns></returns>
     public ResponseList<ClientGroup> GetAllClientGroups() {
-      ISession session = factory.GetSessionForCurrentThread();
+      /*ISession session = factory.GetSessionForCurrentThread();
 
       try {
         IClientGroupAdapter clientGroupAdapter =
           session.GetDataAdapter<ClientGroup, IClientGroupAdapter>();
         IClientAdapter clientAdapter =
-          session.GetDataAdapter<ClientInfo, IClientAdapter>();
+          session.GetDataAdapter<ClientDto, IClientAdapter>();*/
         ResponseList<ClientGroup> response = new ResponseList<ClientGroup>();
 
-        List<ClientGroup> allClientGroups = new List<ClientGroup>(clientGroupAdapter.GetAll());
+        List<ClientGroup> allClientGroups = new List<ClientGroup>(DaoLocator.ClientGroupDao.FindAllWithSubGroupsAndClients());
         ClientGroup emptyClientGroup = new ClientGroup();
-        ICollection<ClientInfo> groupLessClients = clientAdapter.GetGrouplessClients();
+        IEnumerable<ClientDto> groupLessClients = DaoLocator.ClientDao.FindAllClientsWithoutGroup();
         if (groupLessClients != null) {
-          foreach (ClientInfo currClient in groupLessClients) {
+          foreach (ClientDto currClient in groupLessClients) {
             emptyClientGroup.Resources.Add(currClient);
           }
         }
@@ -103,15 +101,15 @@ namespace HeuristicLab.Hive.Server.Core {
         response.Success = true;
 
         return response;
-      }
+   /*   }
       finally {
         if (session != null)
           session.EndSession();
-      }
+      }*/
     }
 
-    public ResponseList<UpTimeStatistics> GetAllUpTimeStatistics() {
-      ResponseList<UpTimeStatistics> response = new ResponseList<UpTimeStatistics>();
+    public ResponseList<UpTimeStatisticsDto> GetAllUpTimeStatistics() {
+      ResponseList<UpTimeStatisticsDto> response = new ResponseList<UpTimeStatisticsDto>();
       response.Success = true;
       return response;
     }
@@ -122,11 +120,11 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="clientGroup"></param>
     /// <returns></returns>
     public ResponseObject<ClientGroup> AddClientGroup(ClientGroup clientGroup) {
-      ISession session = factory.GetSessionForCurrentThread();
+      /*ISession session = factory.GetSessionForCurrentThread();
 
       try {
         IClientGroupAdapter clientGroupAdapter =
-          session.GetDataAdapter<ClientGroup, IClientGroupAdapter>();
+          session.GetDataAdapter<ClientGroup, IClientGroupAdapter>();*/
 
         ResponseObject<ClientGroup> response = new ResponseObject<ClientGroup>();
 
@@ -134,18 +132,19 @@ namespace HeuristicLab.Hive.Server.Core {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_ID_MUST_NOT_BE_SET;
         } else {
-          clientGroupAdapter.Update(clientGroup);
+          clientGroup = DaoLocator.ClientGroupDao.Insert(clientGroup);
+          //clientGroupAdapter.Update(clientGroup);
           response.Obj = clientGroup;
           response.Success = true;
           response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_CLIENTGROUP_ADDED;
         }
 
         return response;
-      }
+      /*}
       finally {
         if (session != null)
           session.EndSession();
-      }
+      } */
     }
 
     /// <summary>
@@ -154,34 +153,35 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="clientGroupId"></param>
     /// <param name="resource"></param>
     /// <returns></returns>
-    public Response AddResourceToGroup(Guid clientGroupId, Resource resource) {
-      ISession session = factory.GetSessionForCurrentThread();
+    public Response AddResourceToGroup(Guid clientGroupId, ResourceDto resource) {
+      /*ISession session = factory.GetSessionForCurrentThread();
 
       try {
         IClientGroupAdapter clientGroupAdapter =
-          session.GetDataAdapter<ClientGroup, IClientGroupAdapter>();
+          session.GetDataAdapter<ClientGroup, IClientGroupAdapter>();*/
 
         Response response = new Response();
 
-        ClientGroup clientGroup = clientGroupAdapter.GetById(clientGroupId);
+        ClientGroup clientGroup = DaoLocator.ClientGroupDao.FindById(clientGroupId);
         if (clientGroup == null) {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_CLIENTGROUP_DOESNT_EXIST;
           return response;
         }
         clientGroup.Resources.Add(resource);
-        clientGroupAdapter.Update(clientGroup);
+        DaoLocator.ClientGroupDao.AddRessourceToClientGroup(resource.Id, clientGroup.Id);          
+        //clientGroupAdapter.Update(clientGroup);
 
         response.Success = true;
         response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_RESOURCE_ADDED_TO_GROUP;
 
         return response;
       }
-      finally {
+      /*finally {
         if (session != null)
           session.EndSession();
-      }
-    }
+      } 
+    }   */
 
     /// <summary>
     /// Remove a resource from a group
@@ -190,24 +190,25 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="resourceId"></param>
     /// <returns></returns>
     public Response DeleteResourceFromGroup(Guid clientGroupId, Guid resourceId) {
-      ISession session = factory.GetSessionForCurrentThread();
+      /*ISession session = factory.GetSessionForCurrentThread();
 
       try {
         IClientGroupAdapter clientGroupAdapter =
-          session.GetDataAdapter<ClientGroup, IClientGroupAdapter>();
+          session.GetDataAdapter<ClientGroup, IClientGroupAdapter>();*/
 
         Response response = new Response();
 
-        ClientGroup clientGroup = clientGroupAdapter.GetById(clientGroupId);
+        ClientGroup clientGroup = DaoLocator.ClientGroupDao.FindById(clientGroupId);
         if (clientGroup == null) {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_CLIENTGROUP_DOESNT_EXIST;
           return response;
         }
-        foreach (Resource resource in clientGroup.Resources) {
+        foreach (ResourceDto resource in clientGroup.Resources) {
           if (resource.Id == resourceId) {
             clientGroup.Resources.Remove(resource);
-            clientGroupAdapter.Update(clientGroup);
+            DaoLocator.ClientGroupDao.RemoveRessourceFromClientGroup(resource.Id, clientGroup.Id);
+            //clientGroupAdapter.Update(clientGroup);
             response.Success = true;
             response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_RESOURCE_REMOVED;
             return response;
@@ -218,26 +219,26 @@ namespace HeuristicLab.Hive.Server.Core {
 
         return response;
       }
-      finally {
+      /*finally {
         if (session != null)
           session.EndSession();
       }
-    }
+    }   */
 
     public ResponseObject<List<ClientGroup>> GetAllGroupsOfResource(Guid resourceId) {
-      ISession session = factory.GetSessionForCurrentThread();
+      /*ISession session = factory.GetSessionForCurrentThread();
 
       try {
         IClientGroupAdapter clientGroupAdapter =
           session.GetDataAdapter<ClientGroup, IClientGroupAdapter>();
         IClientAdapter clientAdapter =
-          session.GetDataAdapter<ClientInfo, IClientAdapter>();
+          session.GetDataAdapter<ClientDto, IClientAdapter>();*/
 
         ResponseObject<List<ClientGroup>> response = new ResponseObject<List<ClientGroup>>();
 
-        ClientInfo client = clientAdapter.GetById(resourceId);
+        ClientDto client = DaoLocator.ClientDao.FindById(resourceId);
         if (client != null) {
-          List<ClientGroup> groupsOfClient = new List<ClientGroup>(clientGroupAdapter.MemberOf(client));
+          List<ClientGroup> groupsOfClient = new List<ClientGroup>(DaoLocator.ClientGroupDao.MemberOf(client));
           response.Obj = groupsOfClient;
           response.Success = true;
           response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_GET_GROUPS_OF_CLIENT;
@@ -249,39 +250,39 @@ namespace HeuristicLab.Hive.Server.Core {
 
         return response;
       }
-      finally {
+      /*finally {
         if (session != null)
           session.EndSession();
       }
-    }
+    }   */
 
     public Response DeleteClientGroup(Guid clientGroupId) {
-      ISession session = factory.GetSessionForCurrentThread();
+      /*ISession session = factory.GetSessionForCurrentThread();
 
       try {
         IClientGroupAdapter clientGroupAdapter =
-          session.GetDataAdapter<ClientGroup, IClientGroupAdapter>();
+          session.GetDataAdapter<ClientGroup, IClientGroupAdapter>();*/
 
         Response response = new Response();
 
-        ClientGroup clientGroup = clientGroupAdapter.GetById(clientGroupId);
+        ClientGroup clientGroup = DaoLocator.ClientGroupDao.FindById(clientGroupId);
         if (clientGroup == null) {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_CLIENTGROUP_DOESNT_EXIST;
           return response;
         }
 
-        clientGroupAdapter.Delete(clientGroup);
+        DaoLocator.ClientGroupDao.Delete(clientGroup);
 
         response.Success = true;
         response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_CLIENTGROUP_DELETED;
         return response;
 
-      } finally {
+      }/* finally {
         if (session != null)
           session.EndSession();
       }
-    }
+    }    */
 
     #endregion
   }

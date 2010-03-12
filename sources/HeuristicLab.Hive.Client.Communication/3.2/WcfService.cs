@@ -1,4 +1,4 @@
-﻿#region License Information
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -150,7 +150,7 @@ namespace HeuristicLab.Hive.Client.Communication {
     /// </summary>
     #region Login
     public event System.EventHandler<LoginCompletedEventArgs> LoginCompleted;
-    public void LoginAsync(ClientInfo clientInfo) {
+    public void LoginAsync(ClientDto clientInfo) {
       if (ConnState == NetworkEnum.WcfConnState.Connected)
         proxy.LoginAsync(clientInfo);
     }
@@ -161,7 +161,7 @@ namespace HeuristicLab.Hive.Client.Communication {
         HandleNetworkError(e.Error.InnerException);
     }
 
-    public void LoginSync(ClientInfo clientInfo) {
+    public void LoginSync(ClientDto clientInfo) {
       try {
         if (ConnState == NetworkEnum.WcfConnState.Connected) {
           Response res = proxy.Login(clientInfo);
@@ -371,7 +371,7 @@ namespace HeuristicLab.Hive.Client.Communication {
       }
     }
 
-    public List<CachedHivePluginInfo> RequestPlugins(List<HivePluginInfo> requestedPlugins) {
+    public List<CachedHivePluginInfoDto> RequestPlugins(List<HivePluginInfoDto> requestedPlugins) {
       try {
         Stream stream = proxy.SendStreamedPlugins(requestedPlugins.ToArray());
 

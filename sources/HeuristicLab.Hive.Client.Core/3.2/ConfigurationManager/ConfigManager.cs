@@ -46,13 +46,13 @@ namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
     }
 
     public Core Core { get; set; }    
-    private ClientInfo hardwareInfo;        
+    private ClientDto hardwareInfo;        
 
     /// <summary>
     /// Constructor for the singleton, must recover Guid, Calendar, ...
     /// </summary>
     private ConfigManager() {      
-      hardwareInfo = new ClientInfo();
+      hardwareInfo = new ClientDto();
 
       if (Settings.Default.Guid == Guid.Empty) {
         hardwareInfo.Id = Guid.NewGuid();
@@ -70,7 +70,7 @@ namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
     /// Get all the Information about the client
     /// </summary>
     /// <returns>the ClientInfo object</returns>
-    public ClientInfo GetClientInfo() {
+    public ClientDto GetClientInfo() {
       hardwareInfo.Login = WcfService.Instance.ConnectedSince;
       return hardwareInfo;          
     }
@@ -138,10 +138,10 @@ namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
 
     public int GetUsedCores() {
       Dictionary<Guid, Executor> engines = Core.GetExecutionEngines();
-      Dictionary<Guid, Job> jobs = Core.GetJobs();
+      Dictionary<Guid, JobDto> jobs = Core.GetJobs();
       int usedCores = 0;
       lock (engines) {        
-        foreach (KeyValuePair<Guid, Job> kvp in jobs)
+        foreach (KeyValuePair<Guid, JobDto> kvp in jobs)
           usedCores += kvp.Value.CoresNeeded;
       }
       return usedCores;

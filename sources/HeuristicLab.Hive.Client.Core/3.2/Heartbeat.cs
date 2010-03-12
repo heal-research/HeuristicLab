@@ -1,4 +1,4 @@
-﻿#region License Information
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -73,7 +73,7 @@ namespace HeuristicLab.Hive.Client.Core {
     /// <param name="sender"></param>
     /// <param name="e"></param>
     void heartbeatTimer_Elapsed(object sender, ElapsedEventArgs e) {      
-      ClientInfo info = ConfigManager.Instance.GetClientInfo();      
+      ClientDto info = ConfigManager.Instance.GetClientInfo();      
 
       PerformanceCounter counter = new PerformanceCounter("Memory", "Available Bytes", true);
       int mb = (int)(counter.NextValue() / 1024 / 1024);

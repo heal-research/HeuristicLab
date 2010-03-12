@@ -34,7 +34,7 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
     Stream SendStreamedJob(Guid clientId);
 
     [OperationContract]
-    Stream SendStreamedPlugins(List<HivePluginInfo> pluginList);
+    Stream SendStreamedPlugins(List<HivePluginInfoDto> pluginList);
 
     [OperationContract]
     ResponseResultReceived StoreFinishedJobResultStreamed(Stream stream);

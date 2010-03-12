@@ -50,15 +50,15 @@
       <Column Name="JobState" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
       <Column Name="ResourceId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
       <Column Name="Percentage" Type="System.Double" DbType="Float" CanBeNull="true" />
-      <Column Name="SerializedJob" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="SerializedJob" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" IsDelayLoaded="true" />
       <Column Name="DateCreated" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="DateCalculated" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="DateFinished" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="Priority" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="ProjectId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
       <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
-      <Column Name="CoresNeeded" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="MemoryNeeded" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CoresNeeded" Type="System.Int32" DbType="Int" CanBeNull="false" />
+      <Column Name="MemoryNeeded" Type="System.Int32" DbType="Int" CanBeNull="false" />
       <Association Name="Job_AssignedResource" Member="AssignedResources" ThisKey="JobId" OtherKey="JobId" Type="AssignedResource" />
       <Association Name="Job_Job" Member="Jobs" ThisKey="JobId" OtherKey="ParentJobId" Type="Job" />
       <Association Name="Job_RequiredPlugin" Member="RequiredPlugins" ThisKey="JobId" OtherKey="JobId" Type="RequiredPlugin" />
@@ -87,14 +87,14 @@
     <Type Name="RequiredPlugin">
       <Column Name="JobId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
       <Column Name="PluginId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="RequiredPluginId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="RequiredPluginId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" UpdateCheck="Never" />
       <Association Name="Job_RequiredPlugin" Member="Job" ThisKey="JobId" OtherKey="JobId" Type="Job" IsForeignKey="true" />
       <Association Name="PluginInfo_RequiredPlugin" Member="PluginInfo" ThisKey="PluginId" OtherKey="PluginId" Type="PluginInfo" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
     </Type>
   </Table>
   <Table Name="dbo.Resource" Member="Resources">
     <Type Name="Resource">
-      <Column Name="ResourceId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ResourceId" AutoSync="OnInsert" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
       <Association Name="Resource_AssignedResource" Member="AssignedResources" ThisKey="ResourceId" OtherKey="ResourceId" Type="AssignedResource" />
       <Association Name="Resource_ClientGroup" Member="ClientGroup" ThisKey="ResourceId" OtherKey="ResourceId" Type="ClientGroup" Cardinality="One" />

@@ -37,7 +37,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
   class ClientAdapter: 
     DataAdapterBase<
       dsHiveServerTableAdapters.ClientTableAdapter, 
-      ClientInfo, 
+      ClientDto, 
       dsHiveServer.ClientRow>,
     IClientAdapter {
     #region Fields
@@ -47,7 +47,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       get {
         if (resAdapter == null)
           resAdapter =
-            this.Session.GetDataAdapter<Resource, IResourceAdapter>();
+            this.Session.GetDataAdapter<ResourceDto, IResourceAdapter>();
 
         return resAdapter;
       }
@@ -59,7 +59,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       get {
         if (clientGroupAdapter == null) {
           clientGroupAdapter =
-            this.Session.GetDataAdapter<ClientGroup, IClientGroupAdapter>();
+            this.Session.GetDataAdapter<ClientGroupDto, IClientGroupAdapter>();
         }
 
         return clientGroupAdapter;
@@ -71,7 +71,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     private IJobAdapter JobAdapter {
       get {
         if (jobAdapter == null) {
-          this.Session.GetDataAdapter<Job, IJobAdapter>();
+          this.Session.GetDataAdapter<JobDto, IJobAdapter>();
         }
 
         return jobAdapter;
@@ -84,7 +84,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       get {
         if (clientConfigAdapter == null) {
           clientConfigAdapter =
-            this.Session.GetDataAdapter<ClientConfig, IClientConfigAdapter>();
+            this.Session.GetDataAdapter<ClientConfigDto, IClientConfigAdapter>();
         }
 
         return clientConfigAdapter;
@@ -97,8 +97,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     #region Overrides
-    protected override ClientInfo ConvertRow(dsHiveServer.ClientRow row, 
-      ClientInfo client) {
+    protected override ClientDto ConvertRow(dsHiveServer.ClientRow row, 
+      ClientDto client) {
       if(row != null && client != null) {      
         /*Parent - resource*/
         client.Id = row.ResourceId;
@@ -151,7 +151,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         return null;
     }
 
-    protected override dsHiveServer.ClientRow ConvertObj(ClientInfo client,
+    protected override dsHiveServer.ClientRow ConvertObj(ClientDto client,
       dsHiveServer.ClientRow row) {
       if (client != null && row != null) {
         row.ResourceId = client.Id;
@@ -178,7 +178,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     #endregion
 
     #region IClientAdapter Members
-    protected override void doUpdate(ClientInfo client) {
+    protected override void doUpdate(ClientDto client) {
       if (client != null) {
         ResAdapter.Update(client);
         ClientConfigAdapter.Update(client.Config);
@@ -187,19 +187,19 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       }
     }
 
-    public ClientInfo GetByName(string name) {
-      return (ClientInfo)
+    public ClientDto GetByName(string name) {
+      return (ClientDto)
         base.doInTransaction(
         delegate() {
-          ClientInfo client = new ClientInfo();
-          Resource res =
+          ClientDto client = new ClientDto();
+          ResourceDto res =
             ResAdapter.GetByName(name);
 
           return GetById(res.Id);
         });
     }
 
-    protected override bool doDelete(ClientInfo client) {
+    protected override bool doDelete(ClientDto client) {
       return (bool)base.doInTransaction(
         delegate() {
           bool success = false;
@@ -218,7 +218,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         });
     }
 
-    public ICollection<ClientInfo> GetGrouplessClients() {
+    public ICollection<ClientDto> GetGrouplessClients() {
       return
         base.FindMultiple(
           delegate() {

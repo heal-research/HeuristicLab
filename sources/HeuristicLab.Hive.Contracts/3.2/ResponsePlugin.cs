@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,10 +11,10 @@ namespace HeuristicLab.Hive.Contracts {
   [Serializable]
   public class ResponsePlugin : Response {
     public ResponsePlugin() {
-      Plugins = new List<CachedHivePluginInfo>();
+      Plugins = new List<CachedHivePluginInfoDto>();
     }
 
     [DataMember]
-    public List<CachedHivePluginInfo> Plugins { get; set; }
+    public List<CachedHivePluginInfoDto> Plugins { get; set; }
   }
 }

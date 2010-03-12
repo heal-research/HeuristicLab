@@ -27,18 +27,18 @@ using HeuristicLab.DataAccess.Interfaces;
 using System.IO;
 
 namespace HeuristicLab.Hive.Server.DataAccess {
-  public interface IJobAdapter: IDataAdapter<Job> {
+  public interface IJobAdapter: IDataAdapter<JobDto> {
     /// <summary>
     /// Gets all subjobs of the specified job
     /// </summary>
     /// <returns></returns>
-    ICollection<Job> GetAllSubjobs(Job job);
+    ICollection<JobDto> GetAllSubjobs(JobDto job);
 
     /// <summary>
     /// Gets all Jobs with the specified state
     /// </summary>
     /// <returns></returns>
-    ICollection<Job> GetJobsByState(State state);
+    ICollection<JobDto> GetJobsByState(State state);
 
     /// <summary>
     /// Finds a job with the specified criterias 
@@ -48,7 +48,7 @@ namespace HeuristicLab.Hive.Server.DataAccess {
     /// <param name="memory">all jobs which require less or equal memory</param>
     /// <param name="resourceId">all jobs that can be calculated by that resource</param>
     /// <returns></returns>
-    ICollection<Job> FindJobs(State state, 
+    ICollection<JobDto> FindJobs(State state, 
       int cores, 
       int memory, 
       Guid resourceId);
@@ -58,28 +58,28 @@ namespace HeuristicLab.Hive.Server.DataAccess {
     /// </summary>
     /// <param name="client"></param>
     /// <returns></returns>
-    ICollection<Job> GetJobsOf(ClientInfo client);
+    ICollection<JobDto> GetJobsOf(ClientDto client);
 
     /// <summary>
     /// Gets all active jobs of the client
     /// </summary>
     /// <param name="client"></param>
     /// <returns></returns>
-    ICollection<Job> GetActiveJobsOf(ClientInfo client);
+    ICollection<JobDto> GetActiveJobsOf(ClientDto client);
 
     /// <summary>
     /// Gets all jobs of the user
     /// </summary>
     /// <param name="user"></param>
     /// <returns></returns>
-    ICollection<Job> GetJobsOf(Guid userId);
+    ICollection<JobDto> GetJobsOf(Guid userId);
 
     /// <summary>
     /// Gets all jobs of the project
     /// </summary>
     /// <param name="user"></param>
     /// <returns></returns>
-    ICollection<Job> GetJobsByProject(Guid projectId);
+    ICollection<JobDto> GetJobsByProject(Guid projectId);
 
     /// <summary>
     /// Gets the computable job with the secified jobId

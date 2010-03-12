@@ -39,6 +39,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using HeuristicLab.Tracing;
 using Linq = HeuristicLab.Hive.Server.LINQDataAccess;
+using System.Transactions;
 
 namespace HeuristicLab.Hive.Server.Core {
   /// <summary>
@@ -56,12 +57,10 @@ namespace HeuristicLab.Hive.Server.Core {
     private static ReaderWriterLockSlim heartbeatLock =
       new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
-    private ISessionFactory factory;
+    //private ISessionFactory factory;
     private ILifecycleManager lifecycleManager;
     private IInternalJobManager jobManager;
-    private IScheduler scheduler;
-
-    Linq.ClientDao clientDao = new Linq.ClientDao();
+    private IScheduler scheduler;    
 
     private static int PENDING_TIMEOUT = 100;
 
@@ -71,7 +70,7 @@ namespace HeuristicLab.Hive.Server.Core {
     /// Initialization of lastHearbeats Dictionary
     /// </summary>
     public ClientCommunicator() {
-      factory = ServiceLocator.GetSessionFactory();
+      //factory = ServiceLocator.GetSessionFactory();
 
       lifecycleManager = ServiceLocator.GetLifecycleManager();
       jobManager = ServiceLocator.GetJobManager() as
@@ -89,34 +88,29 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="sender"></param>
     /// <param name="e"></param>
     void lifecycleManager_OnServerHeartbeat(object sender, EventArgs e) {
-      ISession session = factory.GetSessionForCurrentThread();
-      ITransaction tx = null;
-
       HiveLogger.Info(this.ToString() + ": Server Heartbeat ticked");
 
-      try {
-        IClientAdapter clientAdapter =
-          session.GetDataAdapter<ClientInfo, IClientAdapter>();
-        IJobAdapter jobAdapter =
-          session.GetDataAdapter<Job, IJobAdapter>();
+      using (TransactionScope scope = new TransactionScope()) {
 
-        tx = session.BeginTransaction();
+        List<ClientDto> allClients = new List<ClientDto>(DaoLocator.ClientDao.FindAll());
 
-        List<ClientInfo> allClients = new List<ClientInfo>(clientAdapter.GetAll());
-
-        foreach (ClientInfo client in allClients) {
+        foreach (ClientDto client in allClients) {
           if (client.State != State.offline && client.State != State.nullState) {
             heartbeatLock.EnterUpgradeableReadLock();
 
             if (!lastHeartbeats.ContainsKey(client.Id)) {
-              HiveLogger.Info(this.ToString() + ": Client " + client.Id + " wasn't offline but hasn't sent heartbeats - setting offline");
+              HiveLogger.Info(this.ToString() + ": Client " + client.Id +
+                              " wasn't offline but hasn't sent heartbeats - setting offline");
               client.State = State.offline;
-              clientAdapter.Update(client);
-              HiveLogger.Info(this.ToString() + ": Client " + client.Id + " wasn't offline but hasn't sent heartbeats - Resetting all his jobs");
-              foreach (Job job in jobAdapter.GetActiveJobsOf(client)) {                
+              DaoLocator.ClientDao.Update(client);
+              //clientAdapter.Update(client);
+              HiveLogger.Info(this.ToString() + ": Client " + client.Id +
+                              " wasn't offline but hasn't sent heartbeats - Resetting all his jobs");
+              foreach (JobDto job in DaoLocator.JobDao.FindActiveJobsOfClient(client)) {
                 jobManager.ResetJobsDependingOnResults(job);
               }
-            } else {
+            }
+            else {
               DateTime lastHbOfClient = lastHeartbeats[client.Id];
 
               TimeSpan dif = DateTime.Now.Subtract(lastHbOfClient);
@@ -124,7 +118,7 @@ namespace HeuristicLab.Hive.Server.Core {
               if (dif.TotalSeconds > ApplicationConstants.HEARTBEAT_MAX_DIF) {
                 // if client calculated jobs, the job must be reset
                 HiveLogger.Info(this.ToString() + ": Client timed out and is on RESET");
-                foreach (Job job in jobAdapter.GetActiveJobsOf(client)) {
+                foreach (JobDto job in DaoLocator.JobDao.FindActiveJobsOfClient(client)) {
                   jobManager.ResetJobsDependingOnResults(job);
                   lock (newAssignedJobs) {
                     if (newAssignedJobs.ContainsKey(job.Id))
@@ -134,7 +128,9 @@ namespace HeuristicLab.Hive.Server.Core {
 
                 // client must be set offline
                 client.State = State.offline;
-                clientAdapter.Update(client);
+
+                //clientAdapter.Update(client);
+                DaoLocator.ClientDao.Update(client);
 
                 heartbeatLock.EnterWriteLock();
                 lastHeartbeats.Remove(client.Id);
@@ -143,43 +139,36 @@ namespace HeuristicLab.Hive.Server.Core {
             }
 
             heartbeatLock.ExitUpgradeableReadLock();
-          } else {
+          }
+          else {
             //TODO: RLY neccesary?
             //HiveLogger.Info(this.ToString() + ": Client " + client.Id + " has wrong state: Shouldn't have offline or nullstate, has " + client.State);
             heartbeatLock.EnterWriteLock();
             //HiveLogger.Info(this.ToString() + ": Client " + client.Id + " has wrong state: Resetting all his jobs");
             if (lastHeartbeats.ContainsKey(client.Id))
               lastHeartbeats.Remove(client.Id);
-            foreach (Job job in jobAdapter.GetActiveJobsOf(client)) {
+            foreach (JobDto job in DaoLocator.JobDao.FindActiveJobsOfClient(client)) {
               jobManager.ResetJobsDependingOnResults(job);
             }
             heartbeatLock.ExitWriteLock();
           }
         }
-        CheckForPendingJobs(jobAdapter);
-
-        tx.Commit();
-      }
-      catch (Exception ex) {
-        if (tx != null)
-          tx.Rollback();
-        throw ex;
-      }
-      finally {
-        if (session != null)
-          session.EndSession();
+        CheckForPendingJobs();
+        DaoLocator.DestroyContext();
+        scope.Complete();        
       }
     }
 
-    private void CheckForPendingJobs(IJobAdapter jobAdapter) {
-      IList<Job> pendingJobsInDB = new List<Job>(jobAdapter.GetJobsByState(State.pending));
+    private void CheckForPendingJobs() {
+      IList<JobDto> pendingJobsInDB = new List<JobDto>(DaoLocator.JobDao.GetJobsByState(State.pending));
 
-      foreach (Job currJob in pendingJobsInDB) {
+      foreach (JobDto currJob in pendingJobsInDB) {
         lock (pendingJobs) {
           if (pendingJobs.ContainsKey(currJob.Id)) {
             if (pendingJobs[currJob.Id] <= 0) {
               currJob.State = State.offline;
-              jobAdapter.Update(currJob);
+              DaoLocator.JobDao.Update(currJob);
+              //jobAdapter.Update(currJob);
             } else {
               pendingJobs[currJob.Id]--;
             }
@@ -196,7 +185,7 @@ namespace HeuristicLab.Hive.Server.Core {
     /// </summary>
     /// <param name="clientInfo"></param>
     /// <returns></returns>
-    public Response Login(ClientInfo clientInfo) {
+    public Response Login(ClientDto clientInfo) {
     //  ISession session = factory.GetSessionForCurrentThread();
     //  ITransaction tx = null;
 
@@ -218,11 +207,10 @@ namespace HeuristicLab.Hive.Server.Core {
 
         clientInfo.State = State.idle;
 
-        if (clientDao.FindById(clientInfo.Id) == null)
-          clientDao.Insert(clientInfo); 
-        else 
-          clientDao.Update(clientInfo);
-        //clientAdapter.Update(clientInfo);
+        if (DaoLocator.ClientDao.FindById(clientInfo.Id) == null)
+          DaoLocator.ClientDao.Insert(clientInfo); 
+        else
+          DaoLocator.ClientDao.Update(clientInfo);        
         response.Success = true;
         response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_LOGIN_SUCCESS;
 
@@ -249,28 +237,28 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <returns></returns>
     public ResponseHB ProcessHeartBeat(HeartBeatData hbData) {
       
-      ISession session = factory.GetSessionForCurrentThread();
-      ITransaction tx = null;
+     /* ISession session = factory.GetSessionForCurrentThread();
+      ITransaction tx = null;*/
 
       HiveLogger.Info(this.ToString() + ": BEGIN Processing Heartbeat for Client " + hbData.ClientId);
 
-      try {
+      //try {
         HiveLogger.Info(this.ToString() + ": BEGIN Fetching Adapters");
-        IClientAdapter clientAdapter =
-          session.GetDataAdapter<ClientInfo, IClientAdapter>();
+      /*  IClientAdapter clientAdapter =
+          session.GetDataAdapter<ClientDto, IClientAdapter>();
 
         IJobAdapter jobAdapter =        
-          session.GetDataAdapter<Job, IJobAdapter>();
+          session.GetDataAdapter<JobDto, IJobAdapter>(); */
         HiveLogger.Info(this.ToString() + ": END Fetched Adapters");
         HiveLogger.Info(this.ToString() + ": BEGIN Starting Transaction");
-        tx = session.BeginTransaction();
+        //tx = session.BeginTransaction();
         HiveLogger.Info(this.ToString() + ": END Started Transaction");
 
         ResponseHB response = new ResponseHB();
         response.ActionRequest = new List<MessageContainer>();
 
         HiveLogger.Info(this.ToString() + ": BEGIN Started Client Fetching");
-        ClientInfo client = clientAdapter.GetById(hbData.ClientId);
+        ClientDto client = DaoLocator.ClientDao.FindById(hbData.ClientId);
         HiveLogger.Info(this.ToString() + ": END Finished Client Fetching");
         // check if the client is logged in
         if (client.State == State.offline || client.State == State.nullState) {
@@ -310,15 +298,15 @@ namespace HeuristicLab.Hive.Server.Core {
         response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_HEARTBEAT_RECEIVED;
 
         HiveLogger.Info(this.ToString() + ": BEGIN Processing Heartbeat Jobs");
-        processJobProcess(hbData, jobAdapter, clientAdapter, response);
+        processJobProcess(hbData, response);
         HiveLogger.Info(this.ToString() + ": END Processed Heartbeat Jobs");
         
-        clientAdapter.Update(client);
+        DaoLocator.ClientDao.Update(client);
 
-        tx.Commit();
+        //tx.Commit();
         HiveLogger.Info(this.ToString() + ": END Processed Heartbeat for Client " + hbData.ClientId);
         return response;
-      }
+      } /*
       catch (Exception ex) {
         if (tx != null)
           tx.Rollback();
@@ -327,8 +315,8 @@ namespace HeuristicLab.Hive.Server.Core {
       finally {
         if (session != null)
           session.EndSession();
-      }
-    }
+      }   
+    }     */
 
     /// <summary>
     /// Process the Job progress sent by a client
@@ -337,11 +325,11 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="jobAdapter"></param>
     /// <param name="clientAdapter"></param>
     /// <param name="response"></param>
-    private void processJobProcess(HeartBeatData hbData, IJobAdapter jobAdapter, IClientAdapter clientAdapter, ResponseHB response) {
+    private void processJobProcess(HeartBeatData hbData, ResponseHB response) {
       HiveLogger.Info(this.ToString() + " processJobProcess: Started for Client " + hbData.ClientId);      
       
       if (hbData.JobProgress != null && hbData.JobProgress.Count > 0) {
-        List<Job> jobsOfClient = new List<Job>(jobAdapter.GetActiveJobsOf(clientAdapter.GetById(hbData.ClientId)));
+        List<JobDto> jobsOfClient = new List<JobDto>(DaoLocator.JobDao.FindActiveJobsOfClient(DaoLocator.ClientDao.FindById(hbData.ClientId)));
         if (jobsOfClient == null || jobsOfClient.Count == 0) {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_IS_NOT_BEEING_CALCULATED;
@@ -350,7 +338,8 @@ namespace HeuristicLab.Hive.Server.Core {
         }
 
         foreach (KeyValuePair<Guid, double> jobProgress in hbData.JobProgress) {
-          Job curJob = jobAdapter.GetById(jobProgress.Key);
+          JobDto curJob = DaoLocator.JobDao.FindById(jobProgress.Key);
+          curJob.Client = DaoLocator.ClientDao.GetClientForJob(curJob.Id);
           if (curJob.Client == null || curJob.Client.Id != hbData.ClientId) {
             response.Success = false;
             response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_IS_NOT_BEEING_CALCULATED;
@@ -369,9 +358,9 @@ namespace HeuristicLab.Hive.Server.Core {
               curJob.State = State.requestSnapshotSent;
             }
           }
-          jobAdapter.Update(curJob);
+          DaoLocator.JobDao.Update(curJob);
         }
-        foreach (Job currJob in jobsOfClient) {
+        foreach (JobDto currJob in jobsOfClient) {
           bool found = false;
           foreach (Guid jobId in hbData.JobProgress.Keys) {
             if (jobId == currJob.Id) {
@@ -388,7 +377,7 @@ namespace HeuristicLab.Hive.Server.Core {
                   HiveLogger.Error(this.ToString() + " processJobProcess: Job TTL reached Zero, Job gets removed: " + currJob + " and set back to offline. User that sucks: " + currJob.Client);                  
 
                   currJob.State = State.offline;
-                  jobAdapter.Update(currJob);
+                  DaoLocator.JobDao.Update(currJob);
 
                   response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.AbortJob, currJob.Id));
 
@@ -397,7 +386,7 @@ namespace HeuristicLab.Hive.Server.Core {
               } else {
                 HiveLogger.Error(this.ToString() + " processJobProcess: Job ID wasn't with the heartbeats:  " + currJob);                      
                 currJob.State = State.offline;
-                jobAdapter.Update(currJob);
+                DaoLocator.JobDao.Update(currJob);
               }
             } // lock
           } else {
@@ -419,19 +408,19 @@ namespace HeuristicLab.Hive.Server.Core {
     /// </summary>
     /// <param name="clientId"></param>
     /// <returns></returns>
-    public ResponseSerializedJob SendSerializedJob(Guid clientId) {
+    /*public ResponseSerializedJob SendSerializedJob(Guid clientId) {
       ISession session = factory.GetSessionForCurrentThread();
       ITransaction tx = null;
 
       try {
         IJobAdapter jobAdapter =
-          session.GetDataAdapter<Job, IJobAdapter>();
+          session.GetDataAdapter<JobDto, IJobAdapter>();
 
         tx = session.BeginTransaction();
 
         ResponseSerializedJob response = new ResponseSerializedJob();
 
-        Job job2Calculate = scheduler.GetNextJobForClient(clientId);
+        JobDto job2Calculate = scheduler.GetNextJobForClient(clientId);
         if (job2Calculate != null) {
           SerializedJob computableJob =
             jobAdapter.GetSerializedJob(job2Calculate.Id);
@@ -464,7 +453,7 @@ namespace HeuristicLab.Hive.Server.Core {
         if (session != null)
           session.EndSession();
       }
-    }
+    }     */
 
     /// <summary>
     /// if the client was told to pull a job he calls this method
@@ -473,47 +462,30 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="clientId"></param>
     /// <returns></returns>
     public ResponseJob SendJob(Guid clientId) {
-      ISession session = factory.GetSessionForCurrentThread();
-      ITransaction tx = null;
 
-      try {
-        IJobAdapter jobAdapter =
-          session.GetDataAdapter<Job, IJobAdapter>();
+      ResponseJob response = new ResponseJob();
 
-        tx = session.BeginTransaction();
-
-        ResponseJob response = new ResponseJob();
-
-        Job job2Calculate = scheduler.GetNextJobForClient(clientId);
-        if (job2Calculate != null) {
-          response.Job = job2Calculate;
-          response.Success = true;
-          HiveLogger.Info(this.ToString() + " SendSerializedJob: Job pulled: " + job2Calculate + " for user " + clientId);                      
-          response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_PULLED;
-          lock (newAssignedJobs) {
-            if (!newAssignedJobs.ContainsKey(job2Calculate.Id))
-              newAssignedJobs.Add(job2Calculate.Id, ApplicationConstants.JOB_TIME_TO_LIVE);
-          }
-        } else {
-          response.Success = false;
-          response.Job = null;
-          response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOBS_LEFT;
-          HiveLogger.Info(this.ToString() + " SendSerializedJob: No more Jobs left for " + clientId);                      
+      JobDto job2Calculate = scheduler.GetNextJobForClient(clientId);
+      if (job2Calculate != null) {
+        response.Job = job2Calculate;
+        response.Success = true;
+        HiveLogger.Info(this.ToString() + " SendSerializedJob: Job pulled: " + job2Calculate + " for user " + clientId);
+        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_PULLED;
+        lock (newAssignedJobs) {
+          if (!newAssignedJobs.ContainsKey(job2Calculate.Id))
+            newAssignedJobs.Add(job2Calculate.Id, ApplicationConstants.JOB_TIME_TO_LIVE);
         }
+      }
+      else {
+        response.Success = false;
+        response.Job = null;
+        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOBS_LEFT;
+        HiveLogger.Info(this.ToString() + " SendSerializedJob: No more Jobs left for " + clientId);
+      }
 
-        tx.Commit();
 
-        return response;
-      }
-      catch (Exception ex) {
-        if (tx != null)
-          tx.Rollback();
-        throw ex;
-      }
-      finally {
-        if (session != null)
-          session.EndSession();
-      }
+
+      return response;
     }
 
     public ResponseResultReceived ProcessJobResult(
@@ -522,12 +494,11 @@ namespace HeuristicLab.Hive.Server.Core {
 
       HiveLogger.Info(this.ToString() + " ProcessJobResult: BEGIN Job received for Storage - main method:");
       
-      ISession session = factory.GetSessionForCurrentThread();
-      ITransaction tx = null;
+     
       Stream jobResultStream = null;
       Stream jobStream = null;
 
-      try {
+      //try {
         BinaryFormatter formatter =
           new BinaryFormatter();
 
@@ -537,7 +508,7 @@ namespace HeuristicLab.Hive.Server.Core {
         //important - repeatable read isolation level is required here, 
         //otherwise race conditions could occur when writing the stream into the DB
         //just removed TransactionIsolationLevel.RepeatableRead
-        tx = session.BeginTransaction();
+        //tx = session.BeginTransaction();
 
         ResponseResultReceived response =
           ProcessJobResult(
@@ -549,51 +520,19 @@ namespace HeuristicLab.Hive.Server.Core {
           finished);
 
         if (response.Success) {
-          //second deserialize the BLOB
-          IJobResultsAdapter jobResultsAdapter =
-            session.GetDataAdapter<JobResult, IJobResultsAdapter>();
-
-          IJobAdapter jobAdapter =
-            session.GetDataAdapter<Job, IJobAdapter>();
-
-          jobResultStream =
-            jobResultsAdapter.GetSerializedJobResultStream(response.JobResultId, true);
-
-          jobStream =
-            jobAdapter.GetSerializedJobStream(result.JobId, true);
+          jobStream = DaoLocator.JobDao.GetSerializedJobStream(result.JobId);
 
           byte[] buffer = new byte[3024];
           int read = 0;
-          while ((read = stream.Read(buffer, 0, buffer.Length)) > 0) {
-            jobResultStream.Write(buffer, 0, read);
+          while ((read = stream.Read(buffer, 0, buffer.Length)) > 0) {            
             jobStream.Write(buffer, 0, read);
           }
-
-          jobResultStream.Close();
-          jobStream.Close();
-
-          tx.Commit();
-        }
+          jobStream.Close();          
+        }                   
         HiveLogger.Info(this.ToString() + " ProcessJobResult: END Job received for Storage:");
         return response;
       }
-      catch (Exception ex) {
-        HiveLogger.Error(this.ToString() + " ProcessJobResult: Exception raised: " + ex);
-        if (tx != null)
-          tx.Rollback();
-        throw ex;
-      }
-      finally {
-        if (jobStream != null)
-          jobStream.Dispose();
 
-        if (jobResultStream != null)
-          jobResultStream.Dispose();
-
-        if (session != null)
-          session.EndSession();
-      }
-    }
 
     private ResponseResultReceived ProcessJobResult(Guid clientId,
       Guid jobId,
@@ -604,31 +543,17 @@ namespace HeuristicLab.Hive.Server.Core {
       
       HiveLogger.Info(this.ToString() + " ProcessJobResult: BEGIN Job received for Storage - SUB method: " + jobId);
 
-      ISession session = factory.GetSessionForCurrentThread();
-            
-      ITransaction tx = null;
-
-      try {
-        IClientAdapter clientAdapter =
-          session.GetDataAdapter<ClientInfo, IClientAdapter>();
-        IJobAdapter jobAdapter =
-          session.GetDataAdapter<Job, IJobAdapter>();
-        IJobResultsAdapter jobResultAdapter =
-          session.GetDataAdapter<JobResult, IJobResultsAdapter>();
-        
-        //should fetch the existing transaction        
-        tx = session.BeginTransaction();
-
         ResponseResultReceived response = new ResponseResultReceived();
-        ClientInfo client =
-          clientAdapter.GetById(clientId);
+        ClientDto client =
+          DaoLocator.ClientDao.FindById(clientId);
 
         SerializedJob job =
           new SerializedJob();
 
         if (job != null) {
           job.JobInfo =
-            jobAdapter.GetById(jobId);
+            DaoLocator.JobDao.FindById(jobId);          
+          job.JobInfo.Client = job.JobInfo.Client = DaoLocator.ClientDao.GetClientForJob(jobId);
         }
 
         if (job == null && job.JobInfo != null) {
@@ -638,7 +563,7 @@ namespace HeuristicLab.Hive.Server.Core {
           
           HiveLogger.Error(this.ToString() + " ProcessJobResult: No job with Id " + jobId);                      
           
-          tx.Rollback();
+          //tx.Rollback();
           return response;
         }
         if (job.JobInfo.State == State.abort) {
@@ -647,7 +572,7 @@ namespace HeuristicLab.Hive.Server.Core {
           
           HiveLogger.Error(this.ToString() + " ProcessJobResult: Job was aborted! " + job.JobInfo);                      
           
-          tx.Rollback();
+          //tx.Rollback();
           return response;
         }
         if (job.JobInfo.Client == null) {
@@ -657,7 +582,7 @@ namespace HeuristicLab.Hive.Server.Core {
 
           HiveLogger.Error(this.ToString() + " ProcessJobResult: Job is not being calculated (client = null)! " + job.JobInfo);                      
 
-          tx.Rollback();
+          //tx.Rollback();
           return response;
         }
         if (job.JobInfo.Client.Id != clientId) {
@@ -667,7 +592,7 @@ namespace HeuristicLab.Hive.Server.Core {
 
           HiveLogger.Error(this.ToString() + " ProcessJobResult: Wrong Client for this Job! " + job.JobInfo + ", Sending Client is: " + clientId);                      
 
-          tx.Rollback();
+          //tx.Rollback();
           return response;
         }
         if (job.JobInfo.State == State.finished) {
@@ -677,7 +602,7 @@ namespace HeuristicLab.Hive.Server.Core {
 
           HiveLogger.Error(this.ToString() + " ProcessJobResult: Job already finished! " + job.JobInfo + ", Sending Client is: " + clientId);                      
 
-          tx.Rollback();
+          //tx.Rollback();
           return response;
         }
         if (job.JobInfo.State == State.requestSnapshotSent) {
@@ -691,7 +616,7 @@ namespace HeuristicLab.Hive.Server.Core {
 
           HiveLogger.Error(this.ToString() + " ProcessJobResult: Wrong Job State, job is: " + job.JobInfo);                      
 
-          tx.Rollback();
+          //tx.Rollback();
           return response;
         }
         job.JobInfo.Percentage = percentage;
@@ -701,46 +626,17 @@ namespace HeuristicLab.Hive.Server.Core {
         }
 
         job.SerializedJobData = result;
-        jobAdapter.UpdateSerializedJob(job);
-
-        List<JobResult> jobResults = new List<JobResult>(
-          jobResultAdapter.GetResultsOf(job.JobInfo.Id));
-        foreach (JobResult currentResult in jobResults)
-          jobResultAdapter.Delete(currentResult);
-
-        SerializedJobResult serializedjobResult =
-          new SerializedJobResult();
-        JobResult jobResult = new JobResult();
-        jobResult.ClientId = client.Id;
-        jobResult.JobId = job.JobInfo.Id;
-        jobResult.Percentage = percentage;
-        jobResult.Exception = exception;
-        jobResult.DateFinished = DateTime.Now;
-        serializedjobResult.JobResult = jobResult;
-        serializedjobResult.SerializedJobResultData =
-          result;
-
-        jobResultAdapter.UpdateSerializedJobResult(serializedjobResult);
+        
+        DaoLocator.JobDao.Update(job.JobInfo);
 
         response.Success = true;
         response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOBRESULT_RECEIVED;
         response.JobId = jobId;
-        response.finished = finished;
-        response.JobResultId = jobResult.Id;
+        response.finished = finished;        
                 
-        tx.Commit();
         HiveLogger.Info(this.ToString() + " ProcessJobResult: END Job received for Storage - SUB method: " + jobId);        
         return response;
-      }
-      catch (Exception ex) {
-        if (tx != null)
-          tx.Rollback();
-        throw ex;
-      }
-      finally {
-        if (session != null)
-          session.EndSession();
-      }
+
     }
 
 
@@ -779,17 +675,17 @@ namespace HeuristicLab.Hive.Server.Core {
 
       HiveLogger.Info("Client logged out " + clientId);
       
-      ISession session = factory.GetSessionForCurrentThread();
+      /*ISession session = factory.GetSessionForCurrentThread();
       ITransaction tx = null;
 
       try {
         IClientAdapter clientAdapter =
-          session.GetDataAdapter<ClientInfo, IClientAdapter>();
+          session.GetDataAdapter<ClientDto, IClientAdapter>();
         IJobAdapter jobAdapter =
-          session.GetDataAdapter<Job, IJobAdapter>();
+          session.GetDataAdapter<JobDto, IJobAdapter>();
 
         tx = session.BeginTransaction();
-
+           */
         Response response = new Response();
 
         heartbeatLock.EnterWriteLock();
@@ -797,7 +693,7 @@ namespace HeuristicLab.Hive.Server.Core {
           lastHeartbeats.Remove(clientId);
         heartbeatLock.ExitWriteLock();
 
-        ClientInfo client = clientAdapter.GetById(clientId);
+      ClientDto client = DaoLocator.ClientDao.FindById(clientId);
         if (client == null) {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_LOGOUT_CLIENT_NOT_REGISTERED;
@@ -805,22 +701,22 @@ namespace HeuristicLab.Hive.Server.Core {
         }
         if (client.State == State.calculating) {
           // check wich job the client was calculating and reset it
-          ICollection<Job> jobsOfClient = jobAdapter.GetJobsOf(client);
-          foreach (Job job in jobsOfClient) {
+          IEnumerable<JobDto> jobsOfClient = DaoLocator.JobDao.FindActiveJobsOfClient(client);
+          foreach (JobDto job in jobsOfClient) {
             if (job.State != State.finished)
               jobManager.ResetJobsDependingOnResults(job);
           }
         }
 
         client.State = State.offline;
-        clientAdapter.Update(client);
+        DaoLocator.ClientDao.Update(client);
 
         response.Success = true;
         response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_LOGOUT_SUCCESS;
 
-        tx.Commit();
+        //tx.Commit();
         return response;
-      }
+      } /*
       catch (Exception ex) {
         if (tx != null)
           tx.Rollback();
@@ -830,7 +726,7 @@ namespace HeuristicLab.Hive.Server.Core {
         if (session != null)
           session.EndSession();
       }
-    }
+    }     */
 
     /// <summary>
     /// If a client goes offline and restores a job he was calculating 
@@ -839,16 +735,16 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="jobId"></param>
     /// <returns></returns>
     public Response IsJobStillNeeded(Guid jobId) {
-      ISession session = factory.GetSessionForCurrentThread();
+      /*ISession session = factory.GetSessionForCurrentThread();
       ITransaction tx = null;
 
       try {
         IJobAdapter jobAdapter =
-          session.GetDataAdapter<Job, IJobAdapter>();
-        tx = session.BeginTransaction();
+          session.GetDataAdapter<JobDto, IJobAdapter>();
+        tx = session.BeginTransaction();                */
 
         Response response = new Response();
-        Job job = jobAdapter.GetById(jobId);
+      JobDto job = DaoLocator.JobDao.FindById(jobId);
         if (job == null) {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_DOESNT_EXIST;
@@ -866,14 +762,14 @@ namespace HeuristicLab.Hive.Server.Core {
           pendingJobs.Add(job.Id, PENDING_TIMEOUT);
         }
 
-        jobAdapter.Update(job);
+        DaoLocator.JobDao.Update(job);
 
         response.Success = true;
         response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_SEND_JOBRESULT;
-        tx.Commit();
+        //tx.Commit();
         return response;
       }
-      catch (Exception ex) {
+      /*catch (Exception ex) {
         if (tx != null)
           tx.Rollback();
         throw ex;
@@ -882,17 +778,17 @@ namespace HeuristicLab.Hive.Server.Core {
         if (session != null)
           session.EndSession();
       }
-    }
+    }   */
 
-    public ResponsePlugin SendPlugins(List<HivePluginInfo> pluginList) {
+    public ResponsePlugin SendPlugins(List<HivePluginInfoDto> pluginList) {
       ResponsePlugin response = new ResponsePlugin();
-      foreach (HivePluginInfo pluginInfo in pluginList) {
+      foreach (HivePluginInfoDto pluginInfo in pluginList) {
         // TODO: BuildDate deleted, not needed???
         // TODO: Split version to major, minor and revision number
         foreach (IPluginDescription currPlugin in ApplicationManager.Manager.Plugins) {
           if (currPlugin.Name == pluginInfo.Name) {
 
-            CachedHivePluginInfo currCachedPlugin = new CachedHivePluginInfo {
+            CachedHivePluginInfoDto currCachedPlugin = new CachedHivePluginInfoDto {
               Name = currPlugin.Name,
               Version = currPlugin.Version.ToString(),
               BuildDate = currPlugin.BuildDate

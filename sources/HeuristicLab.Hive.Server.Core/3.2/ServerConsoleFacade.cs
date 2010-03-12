@@ -62,27 +62,27 @@ namespace HeuristicLab.Hive.Server.Core {
     }
 
 
-    public ResponseList<ClientInfo> GetAllClients() {
+    public ResponseList<ClientDto> GetAllClients() {
       secMan.Authorize("AccessClients", sessionID, Guid.Empty);
       return clientManager.GetAllClients();
     }
 
-    public ResponseList<ClientGroup> GetAllClientGroups() {
+    public ResponseList<ClientGroupDto> GetAllClientGroups() {
       //secMan.Authorize("AccessClientGroup", sessionID, Guid.Empty);
       return clientManager.GetAllClientGroups();
     }
 
-    public ResponseList<UpTimeStatistics> GetAllUpTimeStatistics() {
+    public ResponseList<UpTimeStatisticsDto> GetAllUpTimeStatistics() {
       secMan.Authorize("AccessStatistics", sessionID, Guid.Empty);
       return clientManager.GetAllUpTimeStatistics();
     }
 
-    public ResponseObject<ClientGroup> AddClientGroup(ClientGroup clientGroup) {
+    public ResponseObject<ClientGroupDto> AddClientGroup(ClientGroupDto clientGroup) {
       secMan.Authorize("AddClientGroup", sessionID, Guid.Empty);
       return clientManager.AddClientGroup(clientGroup);
     }
 
-    public Response AddResourceToGroup(Guid clientGroupId, Resource resource) {
+    public Response AddResourceToGroup(Guid clientGroupId, ResourceDto resource) {
       secMan.Authorize("AddResource", sessionID, Guid.Empty);                
       return clientManager.AddResourceToGroup(clientGroupId, resource);
     }
@@ -91,27 +91,27 @@ namespace HeuristicLab.Hive.Server.Core {
         return clientManager.DeleteResourceFromGroup(clientGroupId, resourceId);
     }
 
-    public ResponseList<Job> GetAllJobs() {
+    public ResponseList<JobDto> GetAllJobs() {
       secMan.Authorize("AccessJobs", sessionID, Guid.Empty);
       return jobManager.GetAllJobs();
     }
 
-    public ResponseObject<Job> GetJobById(Guid jobId) {
+    public ResponseObject<JobDto> GetJobById(Guid jobId) {
       secMan.Authorize("AccessJobs", sessionID, jobId);
       return jobManager.GetJobById(jobId);
     }
 
-    public ResponseObject<Job> AddNewJob(SerializedJob job) {
+    public ResponseObject<JobDto> AddNewJob(SerializedJob job) {
       secMan.Authorize("AddJob", sessionID, job.JobInfo.Id);
       return jobManager.AddNewJob(job);
     }
 
-    public ResponseObject<JobResult> GetLastJobResultOf(Guid jobId) {
+    public ResponseObject<JobDto> GetLastJobResultOf(Guid jobId) {
       secMan.Authorize("AccessJobResults", sessionID, jobId);
       return jobManager.GetLastJobResultOf(jobId);
     }
 
-    public ResponseObject<SerializedJobResult> GetLastSerializedJobResultOf(Guid jobId, bool requested) {
+    public ResponseObject<SerializedJob> GetLastSerializedJobResultOf(Guid jobId, bool requested) {
       secMan.Authorize("AccessJobResults", sessionID, jobId);
       return jobManager.GetLastSerializedJobResultOf(jobId, requested);
     }
@@ -136,7 +136,7 @@ namespace HeuristicLab.Hive.Server.Core {
       return jobManager.AbortJob(jobId);
     }
 
-    public ResponseObject<List<ClientGroup>> GetAllGroupsOfResource(Guid resourceId) {
+    public ResponseObject<List<ClientGroupDto>> GetAllGroupsOfResource(Guid resourceId) {
       secMan.Authorize("AccessUserGroup", sessionID, Guid.Empty);
       return clientManager.GetAllGroupsOfResource(resourceId);
     }
@@ -146,17 +146,17 @@ namespace HeuristicLab.Hive.Server.Core {
       return clientManager.DeleteClientGroup(clientGroupId);
     }
 
-    public ResponseList<Project> GetAllProjects() {
+    public ResponseList<ProjectDto> GetAllProjects() {
       secMan.Authorize("AccessProjects", sessionID, Guid.Empty);
       return jobManager.GetAllProjects();
     }
 
-    public Response CreateProject(Project project) {
+    public Response CreateProject(ProjectDto project) {
       secMan.Authorize("CreateProjects", sessionID, Guid.Empty);
       return jobManager.CreateProject(project);
     }
 
-    public Response ChangeProject(Project project) {
+    public Response ChangeProject(ProjectDto project) {
       secMan.Authorize("ChangeProjects", sessionID, Guid.Empty);
       return jobManager.ChangeProject(project);
     }
@@ -166,7 +166,7 @@ namespace HeuristicLab.Hive.Server.Core {
       return jobManager.DeleteProject(projectId);
     }
 
-    public ResponseList<Job> GetJobsByProject(Guid projectId) {
+    public ResponseList<JobDto> GetJobsByProject(Guid projectId) {
       secMan.Authorize("AccessJobs", sessionID, Guid.Empty);
       return jobManager.GetJobsByProject(projectId);
     }

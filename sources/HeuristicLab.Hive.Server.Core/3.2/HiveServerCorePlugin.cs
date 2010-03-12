@@ -28,7 +28,12 @@ namespace HeuristicLab.Hive.Server {
   [Plugin("HeuristicLab.Hive.Server.Core-3.2")]
   [PluginFile("HeuristicLab.Hive.Server.Core-3.2.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Core-3.2")]
+  [PluginDependency("HeuristicLab.DataAccess-3.2")]
   [PluginDependency("HeuristicLab.Hive.Contracts-3.2")]
+  [PluginDependency("HeuristicLab.Hive.JobBase-3.2")]
+  [PluginDependency("HeuristicLab.Hive.Server.DataAccess-3.2")]
+  [PluginDependency("HeuristicLab.Hive.Server.LINQDataAccess-3.2")]
+  [PluginDependency("HeuristicLab.Hive.Server.Security.Contracts-3.2")]
   public class HiveServerCorePlugin : PluginBase {
   }
 }

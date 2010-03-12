@@ -1,4 +1,4 @@
-﻿#region License Information
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -33,26 +33,26 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
   [ServiceContract]
   public interface IClientManager {
     [OperationContract]
-    ResponseList<ClientInfo> GetAllClients();
+    ResponseList<ClientDto> GetAllClients();
     [OperationContract]
-    [ServiceKnownType(typeof (Resource))]
-    [ServiceKnownType(typeof(ClientInfo))]
-    [ServiceKnownType(typeof(ClientGroup))]
-    ResponseList<ClientGroup> GetAllClientGroups();
+    [ServiceKnownType(typeof (ResourceDto))]
+    [ServiceKnownType(typeof(ClientDto))]
+    [ServiceKnownType(typeof(ClientGroupDto))]
+    ResponseList<ClientGroupDto> GetAllClientGroups();
     [OperationContract]
-    ResponseObject<List<ClientGroup>> GetAllGroupsOfResource(Guid resourceId);
+    ResponseObject<List<ClientGroupDto>> GetAllGroupsOfResource(Guid resourceId);
     [OperationContract]
-    ResponseObject<ClientGroup> AddClientGroup(ClientGroup clientGroup);
+    ResponseObject<ClientGroupDto> AddClientGroup(ClientGroupDto clientGroup);
     [OperationContract]
     Response DeleteClientGroup(Guid clientGroupId);
     [OperationContract]
-    [ServiceKnownType(typeof(Resource))]
-    [ServiceKnownType(typeof(ClientInfo))]
-    [ServiceKnownType(typeof(ClientGroup))]
-    Response AddResourceToGroup(Guid clientGroupId, Resource resource);
+    [ServiceKnownType(typeof(ResourceDto))]
+    [ServiceKnownType(typeof(ClientDto))]
+    [ServiceKnownType(typeof(ClientGroupDto))]
+    Response AddResourceToGroup(Guid clientGroupId, ResourceDto resource);
     [OperationContract]
     Response DeleteResourceFromGroup(Guid clientGroupId, Guid resourceId);
     [OperationContract]
-    ResponseList<UpTimeStatistics> GetAllUpTimeStatistics();
+    ResponseList<UpTimeStatisticsDto> GetAllUpTimeStatistics();
   }
 }

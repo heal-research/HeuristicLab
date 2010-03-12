@@ -29,19 +29,19 @@ namespace HeuristicLab.Hive.Server.DataAccess {
   /// <summary>
   /// The client group database adapter
   /// </summary>
-  public interface IClientGroupAdapter: IDataAdapter<ClientGroup> {
+  public interface IClientGroupAdapter: IDataAdapter<ClientGroupDto> {
     /// <summary>
     /// Get the client group with the specified name
     /// </summary>
     /// <param name="clientId"></param>
     /// <returns></returns>
-    ClientGroup GetByName(string name);
+    ClientGroupDto GetByName(string name);
 
     /// <summary>
     /// Gets all client groups where the resource is member of
     /// </summary>
     /// <param name="permOwner"></param>
     /// <returns></returns>
-    ICollection<ClientGroup> MemberOf(Resource resource);
+    ICollection<ClientGroupDto> MemberOf(ResourceDto resource);
   }
 }

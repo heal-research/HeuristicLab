@@ -1,4 +1,4 @@
-﻿#region License Information
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -42,10 +42,10 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
     public event addDelegate addJobEvent;
 
-    ResponseList<Project> projects = null;
+    ResponseList<ProjectDto> projects = null;
     IJobManager jobManager;
     IClientManager clientManager; 
-    ResponseList<ClientGroup> clientGroups;
+    ResponseList<ClientGroupDto> clientGroups;
 
     Dictionary<Guid, string> clients = null;
 
@@ -68,7 +68,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       clientGroups = clientManager.GetAllClientGroups();
       cbProject.Items.Add("none");
       cbProject.SelectedIndex = 0;
-      foreach (Project project in projects.List) {
+      foreach (ProjectDto project in projects.List) {
         cbProject.Items.Add(project.Name);
       }
 
@@ -85,19 +85,19 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     }
 
     private void AddClientGroups() {
-     foreach (ClientGroup cg in clientGroups.List) {
+     foreach (ClientGroupDto cg in clientGroups.List) {
        if (cg.Id != Guid.Empty)
        clients.Add(cg.Id, cg.Name);
         AddClientOrGroup(cg);
       }
     }
 
-    private void AddClientOrGroup(ClientGroup clientGroup) {
-      foreach (Resource resource in clientGroup.Resources) {
-        if (resource is ClientGroup) {
+    private void AddClientOrGroup(ClientGroupDto clientGroup) {
+      foreach (ResourceDto resource in clientGroup.Resources) {
+        if (resource is ClientGroupDto) {
           if (resource.Id != Guid.Empty)
           clients.Add(resource.Id, resource.Name);
-          AddClientOrGroup(resource as ClientGroup);
+          AddClientOrGroup(resource as ClientGroupDto);
         }
       }
     
@@ -109,7 +109,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         int numJobs = Convert.ToInt32(tbNumJobs.Text);
         if (numJobs > 0) {
           for (int i = 0; i < numJobs; i++) {
-            Job job = new Job { State = State.offline, CoresNeeded = 1 };
+            JobDto job = new JobDto { State = State.offline, CoresNeeded = 1 };
             
             // if project selected (0 -> none)
             if (cbProject.SelectedIndex != 0) {
