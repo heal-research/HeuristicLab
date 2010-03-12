@@ -77,7 +77,7 @@ namespace HeuristicLab.Operators.Programmable {
         descriptionTextBox.Text = "";
         descriptionTextBox.Enabled = false;
         assembliesTreeView.Nodes.Clear();
-        parameterCollectionView1.Content = null;
+        parameterCollectionView.Content = null;
       } else {
         codeEditor.Enabled = true;
         descriptionTextBox.Text = ProgrammableOperator.Description;
@@ -100,7 +100,7 @@ namespace HeuristicLab.Operators.Programmable {
         showCodeButton.Enabled = 
           ProgrammableOperator.CompilationUnitCode != null && 
           ProgrammableOperator.CompilationUnitCode.Length > 0;
-        parameterCollectionView1.Content = ProgrammableOperator.Parameters;        
+        parameterCollectionView.Content = ProgrammableOperator.Parameters;
       }
     }
 

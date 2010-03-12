@@ -54,7 +54,7 @@ namespace HeuristicLab.Operators.Programmable {
       this.codeEditor = new HeuristicLab.CodeEditor.CodeEditor();
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
-      this.parameterCollectionView1 = new HeuristicLab.Core.Views.ParameterCollectionView();
+      this.parameterCollectionView = new HeuristicLab.Core.Views.ParameterCollectionView();
       tabPage2 = new System.Windows.Forms.TabPage();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       tabPage2.SuspendLayout();
@@ -200,7 +200,7 @@ namespace HeuristicLab.Operators.Programmable {
       // 
       // tabPage1
       // 
-      this.tabPage1.Controls.Add(this.parameterCollectionView1);
+      this.tabPage1.Controls.Add(this.parameterCollectionView);
       this.tabPage1.Location = new System.Drawing.Point(4, 22);
       this.tabPage1.Name = "tabPage1";
       this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
@@ -211,13 +211,13 @@ namespace HeuristicLab.Operators.Programmable {
       // 
       // parameterCollectionView1
       // 
-      this.parameterCollectionView1.Caption = "ParameterCollection";
-      this.parameterCollectionView1.Content = null;
-      this.parameterCollectionView1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.parameterCollectionView1.Location = new System.Drawing.Point(3, 3);
-      this.parameterCollectionView1.Name = "parameterCollectionView1";
-      this.parameterCollectionView1.Size = new System.Drawing.Size(971, 613);
-      this.parameterCollectionView1.TabIndex = 0;
+      this.parameterCollectionView.Caption = "ParameterCollection";
+      this.parameterCollectionView.Content = null;
+      this.parameterCollectionView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.parameterCollectionView.Location = new System.Drawing.Point(3, 3);
+      this.parameterCollectionView.Name = "parameterCollectionView1";
+      this.parameterCollectionView.Size = new System.Drawing.Size(971, 613);
+      this.parameterCollectionView.TabIndex = 0;
       // 
       // ProgrammableOperatorView
       // 
@@ -250,7 +250,7 @@ namespace HeuristicLab.Operators.Programmable {
 
     private System.Windows.Forms.TabControl tabControl1;
     private System.Windows.Forms.TabPage tabPage1;
-    private HeuristicLab.Core.Views.ParameterCollectionView parameterCollectionView1;
+    private HeuristicLab.Core.Views.ParameterCollectionView parameterCollectionView;
     private System.Windows.Forms.SplitContainer splitContainer1;
     private HeuristicLab.CodeEditor.CodeEditor codeEditor;
     private System.Windows.Forms.Button compileButton;

@@ -47,7 +47,7 @@ namespace HeuristicLab.Operators.Programmable {
 
     #region Fields & Properties
 
-    public new IObservableKeyedCollection<string, IParameter> Parameters {
+    public new ParameterCollection Parameters {
       get { return base.Parameters; }
     }
 
@@ -171,11 +171,16 @@ namespace HeuristicLab.Operators.Programmable {
       ProgrammableOperator.StaticInitialize();
       Assemblies = defaultAssemblyDict;
       Plugins = defaultPluginDict;
-      namespaces = new HashSet<string>(DiscoverNamespaces());      
-      Parameters.ItemsAdded += (s, a) => OnSignatureChanged(s, a);
-      Parameters.ItemsRemoved += (s, a) => OnSignatureChanged(s, a);
-      Parameters.ItemsReplaced += (s, a) => OnSignatureChanged(s, a);
-      Parameters.CollectionReset += (s, a) => OnSignatureChanged(s, a);
+      namespaces = new HashSet<string>(DiscoverNamespaces());
+      RegisterEvents();
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void RegisterEvents() {
+      Parameters.ItemsAdded += OnSignatureChanged;
+      Parameters.ItemsRemoved += OnSignatureChanged;
+      Parameters.ItemsReplaced += OnSignatureChanged;
+      Parameters.CollectionReset += OnSignatureChanged;
     }
 
     protected void OnSignatureChanged(object sender, CollectionItemsChangedEventArgs<IParameter> args) {
@@ -420,6 +425,7 @@ namespace HeuristicLab.Operators.Programmable {
       clone.namespaces = namespaces;
       clone.CompilationUnitCode = CompilationUnitCode;
       clone.CompileErrors = CompileErrors;
+      clone.RegisterEvents();
       return clone;
     }
 
