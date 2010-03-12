@@ -85,7 +85,7 @@ namespace HeuristicLab.Operators.Programmable {
       tabPage2.Location = new System.Drawing.Point(4, 22);
       tabPage2.Name = "tabPage2";
       tabPage2.Padding = new System.Windows.Forms.Padding(3);
-      tabPage2.Size = new System.Drawing.Size(977, 593);
+      tabPage2.Size = new System.Drawing.Size(977, 619);
       tabPage2.TabIndex = 1;
       tabPage2.Text = "Code";
       tabPage2.UseVisualStyleBackColor = true;
@@ -105,7 +105,7 @@ namespace HeuristicLab.Operators.Programmable {
       // splitContainer1.Panel2
       // 
       this.splitContainer1.Panel2.Controls.Add(this.codeEditor);
-      this.splitContainer1.Size = new System.Drawing.Size(971, 587);
+      this.splitContainer1.Size = new System.Drawing.Size(971, 613);
       this.splitContainer1.SplitterDistance = 254;
       this.splitContainer1.TabIndex = 0;
       // 
@@ -125,8 +125,8 @@ namespace HeuristicLab.Operators.Programmable {
       // splitContainer2.Panel2
       // 
       this.splitContainer2.Panel2.Controls.Add(this.namespacesTreeView);
-      this.splitContainer2.Size = new System.Drawing.Size(248, 552);
-      this.splitContainer2.SplitterDistance = 276;
+      this.splitContainer2.Size = new System.Drawing.Size(248, 578);
+      this.splitContainer2.SplitterDistance = 289;
       this.splitContainer2.TabIndex = 2;
       // 
       // assembliesTreeView
@@ -135,7 +135,7 @@ namespace HeuristicLab.Operators.Programmable {
       this.assembliesTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
       this.assembliesTreeView.Location = new System.Drawing.Point(0, 0);
       this.assembliesTreeView.Name = "assembliesTreeView";
-      this.assembliesTreeView.Size = new System.Drawing.Size(248, 276);
+      this.assembliesTreeView.Size = new System.Drawing.Size(248, 289);
       this.assembliesTreeView.TabIndex = 0;
       this.assembliesTreeView.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.assembliesTreeView_AfterCheck);
       // 
@@ -146,7 +146,7 @@ namespace HeuristicLab.Operators.Programmable {
       this.namespacesTreeView.Location = new System.Drawing.Point(0, 0);
       this.namespacesTreeView.Name = "namespacesTreeView";
       this.namespacesTreeView.PathSeparator = ".";
-      this.namespacesTreeView.Size = new System.Drawing.Size(248, 272);
+      this.namespacesTreeView.Size = new System.Drawing.Size(248, 285);
       this.namespacesTreeView.TabIndex = 0;
       this.namespacesTreeView.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.namespacesTreeView_AfterCheck);
       // 
@@ -154,21 +154,18 @@ namespace HeuristicLab.Operators.Programmable {
       // 
       this.showCodeButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.showCodeButton.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-      this.showCodeButton.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.showCodeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.showCodeButton.Location = new System.Drawing.Point(65, 561);
+      this.showCodeButton.Location = new System.Drawing.Point(65, 587);
       this.showCodeButton.Name = "showCodeButton";
       this.showCodeButton.Size = new System.Drawing.Size(186, 23);
       this.showCodeButton.TabIndex = 0;
-      this.showCodeButton.Text = "&Show Generated Code";
+      this.showCodeButton.Text = "&Show Generated Code ...";
       this.showCodeButton.UseVisualStyleBackColor = false;
       this.showCodeButton.Click += new System.EventHandler(this.showCodeButton_Click);
       // 
       // compileButton
       // 
       this.compileButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.compileButton.Location = new System.Drawing.Point(3, 561);
+      this.compileButton.Location = new System.Drawing.Point(3, 587);
       this.compileButton.Name = "compileButton";
       this.compileButton.Size = new System.Drawing.Size(56, 23);
       this.compileButton.TabIndex = 1;
@@ -182,7 +179,7 @@ namespace HeuristicLab.Operators.Programmable {
       this.codeEditor.Location = new System.Drawing.Point(0, 0);
       this.codeEditor.Name = "codeEditor";
       this.codeEditor.Prefix = "";
-      this.codeEditor.Size = new System.Drawing.Size(713, 587);
+      this.codeEditor.Size = new System.Drawing.Size(713, 613);
       this.codeEditor.Suffix = "";
       this.codeEditor.TabIndex = 0;
       this.codeEditor.UserCode = "";

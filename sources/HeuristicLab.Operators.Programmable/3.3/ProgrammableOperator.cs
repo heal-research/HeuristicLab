@@ -43,9 +43,13 @@ namespace HeuristicLab.Operators.Programmable {
   [Item("ProgrammableOperator", "An operator that can be programmed for arbitrary needs.")]
   [Creatable("Test")]
   [StorableClass(StorableClassType.MarkedOnly)]  
-  public class ProgrammableOperator : Operator {
+  public class ProgrammableOperator : Operator, IParameterizedNamedItem {
 
     #region Fields & Properties
+
+    public new IObservableKeyedCollection<string, IParameter> Parameters {
+      get { return base.Parameters; }
+    }
 
     private MethodInfo executeMethod;
     public CompilerErrorCollection CompileErrors { get; private set; }
@@ -75,9 +79,9 @@ namespace HeuristicLab.Operators.Programmable {
     protected Dictionary<Assembly, bool> Assemblies;
 
     [Storable]
-    private IEnumerable<string> _persistedAssemblyNames {
+    private List<string> _persistedAssemblyNames {
       get {
-        return Assemblies.Keys.Select(a => a.FullName);
+        return Assemblies.Keys.Select(a => a.FullName).ToList();
       }
       set {
         var selectedAssemblyNames = new HashSet<string>(value);
@@ -105,7 +109,7 @@ namespace HeuristicLab.Operators.Programmable {
       get {
         return true;
       }
-    }
+    }    
 
     #endregion
 
@@ -167,7 +171,7 @@ namespace HeuristicLab.Operators.Programmable {
       ProgrammableOperator.StaticInitialize();
       Assemblies = defaultAssemblyDict;
       Plugins = defaultPluginDict;
-      namespaces = new HashSet<string>(DiscoverNamespaces());
+      namespaces = new HashSet<string>(DiscoverNamespaces());      
       Parameters.ItemsAdded += (s, a) => OnSignatureChanged(s, a);
       Parameters.ItemsRemoved += (s, a) => OnSignatureChanged(s, a);
       Parameters.ItemsReplaced += (s, a) => OnSignatureChanged(s, a);
