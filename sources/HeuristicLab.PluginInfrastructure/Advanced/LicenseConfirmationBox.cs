@@ -16,7 +16,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     public LicenseConfirmationBox(IPluginDescription plugin) {
       InitializeComponent();
       richTextBox.Text = plugin.LicenseText;
-      licenseLabel.Text = plugin.ToString() + " " + licenseLabel.Text;
+      this.Text = plugin.ToString();
       this.DialogResult = DialogResult.Cancel;
     }
 
@@ -28,6 +28,10 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private void rejectButton_Click(object sender, EventArgs e) {
       DialogResult = DialogResult.Cancel;
       this.Close();
+    }
+
+    private void radioButton1_CheckedChanged(object sender, EventArgs e) {
+      acceptButton.Enabled = acceptRadioButton.Checked;
     }
   }
 }
