@@ -45,8 +45,8 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       this.hookType = hookType;
     }
 
-    private static readonly BindingFlags instanceMembers =
-      BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
+    private static readonly BindingFlags declaredInstanceMembers =
+      BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly;
 
     private static readonly object[] emptyArgs = new object[] { };
 
@@ -78,8 +78,11 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       }
     }
 
-    private static IEnumerable<MethodInfo> CollectHooks(HookType hookType, Type type) {      
-      foreach (MemberInfo memberInfo in type.GetMembers(instanceMembers)) {
+    private static IEnumerable<MethodInfo> CollectHooks(HookType hookType, Type type) {  
+      if (type.BaseType != null)
+        foreach (var mi in CollectHooks(hookType, type.BaseType))
+          yield return mi;
+      foreach (MemberInfo memberInfo in type.GetMembers(declaredInstanceMembers)) {
         foreach (StorableHookAttribute hook in memberInfo.GetCustomAttributes(typeof(StorableHookAttribute), false)) {
           if (hook != null && hook.HookType == hookType) {
             MethodInfo methodInfo = memberInfo as MethodInfo;

@@ -783,6 +783,37 @@ namespace HeuristicLab.Persistence_33.Tests {
       }
     }
 
+    [StorableClass(StorableClassType.MarkedOnly)]
+    public class HookInheritanceTestBase {
+      [Storable]
+      public object a;
+      public object link;
+      [StorableHook(HookType.AfterDeserialization)]
+      private void relink() {
+        link = a;
+      }
+    }
+
+    [StorableClass(StorableClassType.Empty)]
+    public class HookInheritanceTestDerivedClass : HookInheritanceTestBase {
+      [Storable]
+      public object b;
+      [StorableHook(HookType.AfterDeserialization)]
+      private void relink() {
+        Assert.AreSame(a, link);
+        link = b;
+      }
+    }
+
+    [TestMethod]
+    public void TestLinkInheritance() {
+      HookInheritanceTestDerivedClass c = new HookInheritanceTestDerivedClass();
+      c.a = new object();
+      XmlGenerator.Serialize(c, tempFile);
+      HookInheritanceTestDerivedClass newC = (HookInheritanceTestDerivedClass)XmlParser.Deserialize(tempFile);
+      Assert.AreSame(c.b, c.link);
+    }
+
     [ClassInitialize]
     public static void Initialize(TestContext testContext) {
       ConfigurationService.Instance.Reset();
