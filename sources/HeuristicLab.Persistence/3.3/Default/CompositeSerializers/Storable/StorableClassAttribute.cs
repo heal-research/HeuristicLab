@@ -47,7 +47,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
 
 
   /// <summary>
-  /// Mark a class to be considered by the <code>StorableSerializer</code>.
+  /// Mark a class to be considered by the <c>StorableSerializer</c>.
   /// </summary>
   [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
   public sealed class StorableClassAttribute : Attribute {
@@ -59,7 +59,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     public StorableClassType Type { get; set; }    
 
     /// <summary>
-    /// Mark a class to be serialize by the <code>StorableSerizlier</code>    
+    /// Mark a class to be serialize by the <c>StorableSerizlier</c>    
     /// </summary>    
     public StorableClassAttribute(StorableClassType type) {
       Type = type;
@@ -69,9 +69,11 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     /// Check that the type is either empty i.e. has no fields or properties
     /// or conatins proper parameterization through the storable attribute.
     /// </summary>
-    /// <param name="type"></param>
-    /// <param name="recusrive"></param>
-    /// <returns></returns>
+    /// <param name="type">The type.</param>
+    /// <param name="recusrive">if set to <c>true</c> recusrively checks class hierarchy.</param>
+    /// <returns>
+    /// <c>true</c> if the specified type is a storable type; otherwise, <c>false</c>.
+    /// </returns>
     public static bool IsStorableType(Type type, bool recusrive) {
       if (IsEmptyType(type, recusrive))
         return true;
@@ -90,6 +92,15 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
 
 
+    /// <summary>
+    /// Determines whether the specified type has no fields or properties except
+    /// readonly properties or constant fields.
+    /// </summary>
+    /// <param name="type">The type.</param>
+    /// <param name="recursive">if set to <c>true</c> recursively check class hierarchy.</param>
+    /// <returns>
+    /// <c>true</c> if the specified type is empty; otherwise, <c>false</c>.
+    /// </returns>
     public static bool IsEmptyType(Type type, bool recursive) {
       foreach (MemberInfo memberInfo in type.GetMembers(allDeclaredMembers)) {
         if (

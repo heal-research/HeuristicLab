@@ -10,11 +10,11 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
 
   /// <summary>
   /// Indicate that this constructor should be used instead of the default constructor
-  /// when the <code>StorableSerializer</code> instantiates this class during
+  /// when the <c>StorableSerializer</c> instantiates this class during
   /// deserialization.
   /// 
-  /// The constructor must take exactly one <code>bool</code> argument that will be
-  /// set to <code>true</code> during deserialization.
+  /// The constructor must take exactly one <c>bool</c> argument that will be
+  /// set to <c>true</c> during deserialization.
   /// </summary>
   [AttributeUsage(AttributeTargets.Constructor, Inherited = false, AllowMultiple = false)]
   public sealed class StorableConstructorAttribute : Attribute {
@@ -27,8 +27,10 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
 
 
     /// <summary>
-    /// Get a designated storable constructor for a type or <code>null</code>.
-    /// </summary>    
+    /// Get a designated storable constructor for a type or <c>null</c>.
+    /// </summary>
+    /// <param name="type">The type.</param>
+    /// <returns>The <see cref="ConstructorInfo"/> of the storable constructor or <c>null</c></returns>
     public static ConstructorInfo GetStorableConstructor(Type type) {
       lock (constructorCache) {
         if (constructorCache.ContainsKey(type))

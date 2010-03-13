@@ -39,6 +39,10 @@ namespace HeuristicLab.Persistence.Core {
     /// </summary>
     public List<IFormat> Formats { get; private set; }
 
+    /// <summary>
+    /// Gets the singleton instance.
+    /// </summary>
+    /// <value>The singleton instance.</value>
     public static ConfigurationService Instance {
       get {
         if (instance == null)
@@ -56,10 +60,17 @@ namespace HeuristicLab.Persistence.Core {
       LoadSettings();
     }
 
+    /// <summary>
+    /// Loads the settings.
+    /// </summary>
     public void LoadSettings() {
       LoadSettings(false);
     }
 
+    /// <summary>
+    /// Loads the settings.
+    /// </summary>
+    /// <param name="throwOnError">if set to <c>true</c> throw on error.</param>
     public void LoadSettings(bool throwOnError) {
       try {
         TryLoadSettings();
@@ -72,6 +83,9 @@ namespace HeuristicLab.Persistence.Core {
       }
     }
 
+    /// <summary>
+    /// Tries to load the settings (i.e custom configurations).
+    /// </summary>
     protected void TryLoadSettings() {
       if (String.IsNullOrEmpty(Properties.Settings.Default.CustomConfigurations) ||
           String.IsNullOrEmpty(Properties.Settings.Default.CustomConfigurationsTypeCache))
@@ -90,6 +104,9 @@ namespace HeuristicLab.Persistence.Core {
       }
     }
 
+    /// <summary>
+    /// Saves the settings (i.e custom configurations).
+    /// </summary>
     protected void SaveSettings() {
       Serializer serializer = new Serializer(
         customConfigurations,
@@ -136,10 +153,17 @@ namespace HeuristicLab.Persistence.Core {
       }
     }
 
+    /// <summary>
+    /// Sorts the composite serializers according to their priority.
+    /// </summary>
     protected void SortCompositeSerializers() {
       CompositeSerializers.Sort(new PriortiySorter());
     }
 
+    /// <summary>
+    /// Discovers serializers from an assembly.
+    /// </summary>
+    /// <param name="a">An Assembly.</param>
     protected void DiscoverFrom(Assembly a) {
       try {
         foreach (Type t in a.GetTypes()) {
@@ -193,7 +217,9 @@ namespace HeuristicLab.Persistence.Core {
 
     /// <summary>
     /// Get the default (automatically discovered) configuration for a certain format.
-    /// </summary>    
+    /// </summary>
+    /// <param name="format">The format.</param>
+    /// <returns>The default (auto discovered) configuration.</returns>
     public Configuration GetDefaultConfig(IFormat format) {
       Dictionary<Type, IPrimitiveSerializer> primitiveConfig = new Dictionary<Type, IPrimitiveSerializer>();
       if (PrimitiveSerializers.ContainsKey(format.SerialDataType)) {
@@ -217,7 +243,9 @@ namespace HeuristicLab.Persistence.Core {
     /// <summary>
     /// Get a configuration for a certain format. This returns a custom configuration
     /// if defined, otherwise returns the default (automatically discovered) configuration.
-    /// </summary>    
+    /// </summary>
+    /// <param name="format">The format.</param>
+    /// <returns>A Configuration</returns>
     public Configuration GetConfiguration(IFormat format) {
       if (customConfigurations.ContainsKey(format))
         return customConfigurations[format];
@@ -226,7 +254,8 @@ namespace HeuristicLab.Persistence.Core {
 
     /// <summary>
     /// Define a new custom configuration for a ceratin format.
-    /// </summary>    
+    /// </summary>
+    /// <param name="configuration">The new configuration.</param>
     public void DefineConfiguration(Configuration configuration) {
       customConfigurations[configuration.Format] = configuration;
       SaveSettings();

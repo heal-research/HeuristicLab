@@ -32,6 +32,9 @@ namespace HeuristicLab.Persistence.Default.Xml {
     private string prefix;
 
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="XmlGenerator"/> class.
+    /// </summary>
     public XmlGenerator() {
       Depth = 0;
     }
@@ -197,7 +200,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <summary>
     /// Serialize an object into a file.
     /// 
-    /// The XML configuration is obtained from the <code>ConfigurationService</code>.
+    /// The XML configuration is obtained from the <c>ConfigurationService</c>.
     /// The file is actually a ZIP file.
     /// Compression level is set to 5 and needed assemblies are not included.
     /// </summary>    
@@ -208,7 +211,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <summary>
     /// Serialize an object into a file.
     /// 
-    /// The XML configuration is obtained from the <code>ConfigurationService</code>.
+    /// The XML configuration is obtained from the <c>ConfigurationService</c>.
     /// Needed assemblies are not included.
     /// </summary>
     /// <param name="compression">ZIP file compression level</param>

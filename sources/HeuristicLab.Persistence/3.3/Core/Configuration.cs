@@ -8,7 +8,7 @@ namespace HeuristicLab.Persistence.Core {
   /// <summary>
   /// Defines the set of primitive and composite serializers that are to be used
   /// for a certain seraial format. The configuration can be obtained from the
-  /// <code>ConfigurationService</code>.
+  /// <c>ConfigurationService</c>.
   /// </summary>
   [StorableClass(StorableClassType.MarkedOnly)]    
   public class Configuration {
@@ -20,6 +20,10 @@ namespace HeuristicLab.Persistence.Core {
     private readonly List<ICompositeSerializer> compositeSerializers;
     private readonly Dictionary<Type, ICompositeSerializer> compositeSerializerCache;
 
+    /// <summary>
+    /// Gets the format.
+    /// </summary>
+    /// <value>The format.</value>
     [Storable]
     public IFormat Format { get; private set; }
     
@@ -27,6 +31,12 @@ namespace HeuristicLab.Persistence.Core {
       compositeSerializerCache = new Dictionary<Type, ICompositeSerializer>();
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Configuration"/> class.
+    /// </summary>
+    /// <param name="format">The format.</param>
+    /// <param name="primitiveSerializers">The primitive serializers.</param>
+    /// <param name="compositeSerializers">The composite serializers.</param>
     public Configuration(IFormat format,
         IEnumerable<IPrimitiveSerializer> primitiveSerializers,
         IEnumerable<ICompositeSerializer> compositeSerializers) {
@@ -42,20 +52,38 @@ namespace HeuristicLab.Persistence.Core {
       compositeSerializerCache = new Dictionary<Type, ICompositeSerializer>();
     }
 
+    /// <summary>
+    /// Gets the primitive serializers.
+    /// </summary>
+    /// <value>The primitive serializers.</value>
     public IEnumerable<IPrimitiveSerializer> PrimitiveSerializers {
       get { return primitiveSerializers.Values; }
     }
 
+    /// <summary>
+    /// Gets the composite serializers.
+    /// </summary>
+    /// <value>An enumerable of composite serializers.</value>
     public IEnumerable<ICompositeSerializer> CompositeSerializers {
       get { return compositeSerializers; }
     }
 
+    /// <summary>
+    /// Gets the primitive serializer.
+    /// </summary>
+    /// <param name="type">The type.</param>
+    /// <returns>The appropriate primitive serializer for the type.</returns>
     public IPrimitiveSerializer GetPrimitiveSerializer(Type type) {
       IPrimitiveSerializer primitiveSerializer;
       primitiveSerializers.TryGetValue(type, out primitiveSerializer);
       return primitiveSerializer;
     }
 
+    /// <summary>
+    /// Gets the composite serializer for a given type.
+    /// </summary>
+    /// <param name="type">The type.</param>
+    /// <returns>The first matching composite serializer for the type.</returns>
     public ICompositeSerializer GetCompositeSerializer(Type type) {
       if (compositeSerializerCache.ContainsKey(type))
         return compositeSerializerCache[type];

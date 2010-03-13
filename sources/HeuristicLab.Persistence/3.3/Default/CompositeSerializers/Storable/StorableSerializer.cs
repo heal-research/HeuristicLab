@@ -10,9 +10,9 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
 
   /// <summary>
   /// Intended for serialization of all custom classes. Classes should have the
-  /// <code>[StorableClass(StorableClassType.Empty)]</code> attribute set and a serialization mode set.
+  /// <c>[StorableClass(StorableClassType.Empty)]</c> attribute set and a serialization mode set.
   /// Optionally selected fields and properties can be marked with the
-  /// <code>[Storable]</code> attribute.
+  /// <c>[Storable]</c> attribute.
   /// </summary>
   [StorableClass(StorableClassType.Empty)]    
   public class StorableSerializer : ICompositeSerializer {

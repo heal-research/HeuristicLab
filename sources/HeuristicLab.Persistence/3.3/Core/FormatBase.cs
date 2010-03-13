@@ -8,9 +8,12 @@ namespace HeuristicLab.Persistence.Interfaces {
   /// </summary>  
   [StorableClass(StorableClassType.Empty)]
   public abstract class FormatBase<SerialDataFormat> : IFormat<SerialDataFormat> where SerialDataFormat : ISerialData {
-    
-    public abstract string Name { get; }
 
+    /// <summary>
+    /// Gets the format's name.
+    /// </summary>
+    /// <value>The format's name.</value>
+    public abstract string Name { get; }
     
     /// <summary>
     /// Datatype that describes the atoms used for serialization serialization.

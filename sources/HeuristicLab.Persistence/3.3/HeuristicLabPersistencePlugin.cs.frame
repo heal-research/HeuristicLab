@@ -2,6 +2,9 @@
 
 namespace HeuristicLab.Persistence {
 
+  /// <summary>
+  /// The plugin for HeuriticLab.Persistence
+  /// </summary>
   [Plugin("HeuristicLab.Persistence", "3.3.0.$WCREV$")]
   [PluginFile("HeuristicLab.Persistence-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Tracing", "3.2")]

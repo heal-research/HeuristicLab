@@ -15,7 +15,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
 
   /// <summary>
   /// Mark methods that should be called at certain times during
-  /// serialization/deserialization by the <code>StorableSerializer</code>.
+  /// serialization/deserialization by the <c>StorableSerializer</c>.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = true)]
   public sealed class StorableHookAttribute : Attribute {
@@ -31,16 +31,20 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     }
 
     private readonly HookType hookType;
+    /// <summary>
+    /// Gets the type of the hook.
+    /// </summary>
+    /// <value>The type of the hook.</value>
     public HookType HookType {
       get { return hookType; }
     }
 
 
     /// <summary>
-    /// Mark method as <code>StorableSerializer</code> hook to be run
-    /// at the <code>HookType</code> time.
+    /// Mark method as <c>StorableSerializer</c> hook to be run
+    /// at the <c>HookType</c> time.
     /// </summary>
-    /// <param name="hookType"></param>
+    /// <param name="hookType">Type of the hook.</param>
     public StorableHookAttribute(HookType hookType) {
       this.hookType = hookType;
     }
@@ -55,8 +59,10 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
 
 
     /// <summary>
-    /// Invoke <code>hookType</code> hook on <code>obj</code>.
-    /// </summary>    
+    /// Invoke <c>hookType</c> hook on <c>obj</c>.
+    /// </summary>
+    /// <param name="hookType">Type of the hook.</param>
+    /// <param name="obj">The object.</param>
     public static void InvokeHook(HookType hookType, object obj) {
       if (obj == null)
         throw new ArgumentNullException("Cannot invoke hooks on null");

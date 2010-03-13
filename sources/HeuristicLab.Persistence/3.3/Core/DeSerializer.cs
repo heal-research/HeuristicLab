@@ -70,7 +70,8 @@ namespace HeuristicLab.Persistence.Core {
     /// Instantiates a new deserializer with the given type cache,
     /// that contains information about the serializers to use
     /// for every type and their type ids.
-    /// </summary>    
+    /// </summary>
+    /// <param name="typeCache">The type cache.</param>
     public Deserializer(
       IEnumerable<TypeMapping> typeCache) {
       id2obj = new Dictionary<int, object>();
@@ -82,8 +83,12 @@ namespace HeuristicLab.Persistence.Core {
       }
     }
 
-    private Dictionary<Type, object> serializerInstances = new Dictionary<Type, object>();    
+    private Dictionary<Type, object> serializerInstances = new Dictionary<Type, object>();
 
+    /// <summary>
+    /// Adds additionaly type information.
+    /// </summary>
+    /// <param name="typeMapping">The new type mapping.</param>
     public void AddTypeInfo(TypeMapping typeMapping) {
       if (typeIds.ContainsKey(typeMapping.Id))
         return;
@@ -108,7 +113,9 @@ namespace HeuristicLab.Persistence.Core {
 
     /// <summary>
     /// Process the token stream and deserialize an instantate a new object graph.
-    /// </summary>    
+    /// </summary>
+    /// <param name="tokens">The tokens.</param>
+    /// <returns>A fresh object filled with fresh data.</returns>
     public object Deserialize(IEnumerable<ISerializationToken> tokens) {
       foreach (ISerializationToken token in tokens) {
         Type t = token.GetType();

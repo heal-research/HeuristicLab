@@ -50,11 +50,22 @@ namespace HeuristicLab.Persistence.Core {
     private readonly bool isTestRun;
     private readonly List<Exception> exceptions;
 
+    /// <summary>
+    /// Gets or sets a value indicating whether to interleave type information
+    /// while serializing an object.
+    /// 
+    /// Alternatively the type information can be obtained through the
+    /// <see cref="TypeCache"/> Property after serialization is done.
+    /// </summary>
+    /// <value>
+    /// 	<c>true</c> if type information should be interleaved; otherwise, <c>false</c>.
+    /// </value>
     public bool InterleaveTypeInformation { get; set; }
 
     /// <summary>
     /// Contains a mapping of type id to type and serializer.
     /// </summary>
+    /// <value>The type cache.</value>
     public List<TypeMapping> TypeCache {
       get {
         BuildTypeCache();
@@ -98,13 +109,30 @@ namespace HeuristicLab.Persistence.Core {
       }
       requiredFiles = new List<string>(files.Keys);
     }
-    
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Serializer"/> class.
+    /// </summary>
+    /// <param name="obj">The object to serialize.</param>
+    /// <param name="configuration">The configuration.</param>
     public Serializer(object obj, Configuration configuration) :
       this(obj, configuration, "ROOT") { }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Serializer"/> class.
+    /// </summary>
+    /// <param name="obj">The object to serialize.</param>
+    /// <param name="configuration">The configuration.</param>
+    /// <param name="rootName">Name of the root token.</param>
     public Serializer(object obj, Configuration configuration, string rootName)
       : this(obj, configuration, rootName, false) { }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Serializer"/> class.
+    /// </summary>
+    /// <param name="obj">The object to serialize.</param>
+    /// <param name="configuration">The configuration.</param>
+    /// <param name="rootName">Name of the root token.</param>
     /// <param name="isTestRun">Try to complete the whole object graph,
     /// don't stop at the first exception</param>
     public Serializer(object obj, Configuration configuration, string rootName, bool isTestRun) {
@@ -118,10 +146,24 @@ namespace HeuristicLab.Persistence.Core {
       this.exceptions = new List<Exception>();
     }
 
+    /// <summary>
+    /// Returns an enumerator that iterates through a collection.
+    /// </summary>
+    /// <returns>
+    /// An <see cref="T:System.Collections.IEnumerator"/> object that can be used to
+    /// iterate through the collection.
+    /// </returns>
     IEnumerator IEnumerable.GetEnumerator() {
       return GetEnumerator();
     }
 
+    /// <summary>
+    /// Returns an enumerator that iterates through the serialization tokens.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to
+    /// iterate through serialization tokens.
+    /// </returns>
     public IEnumerator<ISerializationToken> GetEnumerator() {
       var enumerator = Serialize(new DataMemberAccessor(rootName, null, () => obj, null));
       if (isTestRun) {
@@ -266,8 +308,5 @@ namespace HeuristicLab.Persistence.Core {
       }
       yield return new EndToken(name, typeId, id);
     }
-
   }
-
-
 }

@@ -6,44 +6,41 @@ using System.Collections.Generic;
 
 namespace HeuristicLab.Persistence.Auxiliary {
 
+  /// <summary>
+  /// Error during type name parsing, thrown by <see cref="TypeNameParser"/>.
+  /// </summary>
   public class ParseError : Exception {
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ParseError"/> class.
+    /// </summary>
+    /// <param name="message">The message.</param>
     public ParseError(string message) : base(message) { }
   }
-
 
   /// <summary>
   /// Parse a .NET type name using the following grammar:  
   ///   
-  /// <para><code>
+  /// <code>
   /// TypeSpec := SimpleTypeSpec '&amp;'?  
-  /// </code></para>
   /// 
-  /// <para><code>
   /// SimpleTypeSpec := (IDENTIFIER '.')*
   ///                   (IDENTIFIER '+')*
   ///                    IDENTIFIER
   ///                   ( '`\d+[' Generics ']' )?
   ///                   (\*|\[(\d+\.\.\d+|\d+\.\.\.|(|\*)(,(|\*))*)\])* 
   ///                   (',\s*' IDENTIFIER (',\s*' AssemblyProperty)* )?  
-  /// </code></para>
   ///
-  /// <para><code>
   /// Generics := '[' SimpleTypeSpec ']' (',[' SimpleTypeSpec ']')
-  /// </code></para>
   ///
-  /// <para><code>
   /// AssemblyProperty := 'Version=' Version
   ///                  |  'PublicKey(Token)?=[a-fA-F0-9]+'
   ///                  |  'Culture=[a-zA-F0-9]+'
-  /// </code></para>
   ///
-  /// <para><code>
   /// Version := \d+\.\d+\.\d+\.\d+
-  /// </code></para>
   ///
-  /// <para><code>
   /// IDENTIFIER = [_a-zA-Z][_a-ZA-Z0-9]*  
-  /// </code></para>
+  /// </code>
   /// </summary>
   public class TypeNameParser {
 
@@ -134,6 +131,12 @@ namespace HeuristicLab.Persistence.Auxiliary {
       tokens = new Queue<Token>(Token.Tokenize(s));
     }
 
+    /// <summary>
+    /// Parses the specified typename string as obtained by
+    /// <c>System.Object.GetType().FullName"</c>.
+    /// </summary>
+    /// <param name="s">The typename string.</param>
+    /// <returns>A <see cref="TypeName"/> representing the type name.</returns>
     public static TypeName Parse(string s) {
       TypeNameParser p = new TypeNameParser(s);
       try {

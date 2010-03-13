@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Persistence.Auxiliary {
-  
+
   /// <summary>
   /// Contains a more modular representation of type names that can
   /// be used to compare versions and ignore extended assembly
@@ -15,28 +15,65 @@ namespace HeuristicLab.Persistence.Auxiliary {
   [StorableClass(StorableClassType.MarkedOnly)]
   public class TypeName {
 
+    /// <summary>
+    /// Gets or sets the namespace.
+    /// </summary>
+    /// <value>The namespace.</value>
     [Storable]
     public string Namespace { get; private set; }
 
+    /// <summary>
+    /// Gets or sets the name of the class.
+    /// </summary>
+    /// <value>The name of the class.</value>
     [Storable]
     public string ClassName { get; private set; }
 
+    /// <summary>
+    /// Gets or sets the generic args.
+    /// </summary>
+    /// <value>The generic args.</value>
     [Storable]
     public List<TypeName> GenericArgs { get; internal set; }
     public bool IsGeneric { get { return GenericArgs.Count > 0; } }
 
+    /// <summary>
+    /// Gets or sets the memory magic (point or array declaration).
+    /// </summary>
+    /// <value>The memory magic.</value>
     [Storable]
     public string MemoryMagic { get; internal set; }
 
+    /// <summary>
+    /// Gets or sets the name of the assembly.
+    /// </summary>
+    /// <value>The name of the assembly.</value>
     [Storable]
     public string AssemblyName { get; internal set; }
 
+    /// <summary>
+    /// Gets or sets the assembly attribues.
+    /// </summary>
+    /// <value>The assembly attribues.</value>
     [Storable]
     public Dictionary<string, string> AssemblyAttribues { get; internal set; }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether this instance is reference.
+    /// </summary>
+    /// <value>
+    /// 	<c>true</c> if this instance is reference; otherwise, <c>false</c>.
+    /// </value>
     [Storable]
     public bool IsReference { get; internal set; }
 
+
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TypeName"/> class.
+    /// </summary>
+    /// <param name="nameSpace">The namespace.</param>
+    /// <param name="className">Name of the class.</param>
     internal TypeName(string nameSpace, string className) {
       Namespace = nameSpace;
       ClassName = className;
@@ -45,13 +82,27 @@ namespace HeuristicLab.Persistence.Auxiliary {
       AssemblyAttribues = new Dictionary<string, string>();
     }
 
-    /// <param name="full">include assembly properties and generic parameters</param>    
+
+    /// <summary>
+    /// Returns a <see cref="System.String"/> that represents this instance.
+    /// </summary>
+    /// <param name="full">if set to <c>true</c> includes full informatoin
+    /// about generic parameters and assembly properties.</param>
+    /// <returns>
+    /// A <see cref="System.String"/> that represents this instance.
+    /// </returns>
     public string ToString(bool full) {
       return ToString(full, true);
     }
 
 
-    /// <param name="full">include assembly properties and generic parameters</param>    
+    /// <summary>
+    /// Returns a <see cref="System.String"/> that represents this instance.
+    /// </summary>
+    /// <param name="includeAssembly">if set to <c>true</c> include assembly properties and generic parameters.</param>
+    /// <returns>
+    /// A <see cref="System.String"/> that represents this instance.
+    /// </returns>
     public string ToString(bool full, bool includeAssembly) {      
       StringBuilder sb = new StringBuilder();
       if (!string.IsNullOrEmpty(Namespace))
@@ -79,6 +130,13 @@ namespace HeuristicLab.Persistence.Auxiliary {
       return sb.ToString();
     }
 
+
+    /// <summary>
+    /// Returns a <see cref="System.String"/> that represents this instance.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="System.String"/> that represents this instance.
+    /// </returns>
     public override string ToString() {
       return ToString(true);
     }
@@ -87,7 +145,11 @@ namespace HeuristicLab.Persistence.Auxiliary {
     /// <summary>
     /// Lexicographically compare version information and make sure type and assembly
     /// names are identical. This function recursively checks generic type arguments.
-    /// </summary>    
+    /// </summary>
+    /// <param name="typeName">Name of the type.</param>
+    /// <returns>
+    /// 	<c>true</c> if is newer than the specified type name; otherwise, <c>false</c>.
+    /// </returns>
     public bool IsNewerThan(TypeName typeName) {
       try {
         if (this.ClassName != typeName.ClassName ||
@@ -116,6 +178,10 @@ namespace HeuristicLab.Persistence.Auxiliary {
     /// Make sure major and minor version number are identical. This function
     /// recursively checks generic type arguments.
     /// </summary>
+    /// <param name="typeName">Name of the type.</param>
+    /// <returns>
+    /// 	<c>true</c> if the specified type names are compatible; otherwise, <c>false</c>.
+    /// </returns>
     public bool IsCompatible(TypeName typeName) {
       try {
         if (this.ClassName != typeName.ClassName ||

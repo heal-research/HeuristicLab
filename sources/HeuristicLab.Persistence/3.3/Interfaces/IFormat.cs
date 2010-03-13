@@ -7,7 +7,17 @@ namespace HeuristicLab.Persistence.Interfaces {
   /// interface, derive from FormatBase.
   /// </summary>
   public interface IFormat {
+
+    /// <summary>
+    /// Gets the name.
+    /// </summary>
+    /// <value>The name.</value>
     string Name { get; }
+
+    /// <summary>
+    /// Gets the type of the serial data.
+    /// </summary>
+    /// <value>The type of the serial data.</value>
     Type SerialDataType { get; }
   }
 
