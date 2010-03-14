@@ -29,7 +29,7 @@ namespace HeuristicLab.Parameters {
   /// A generic parameter representing instances of type T which are collected from the sub-scopes of the current scope.
   /// </summary>
   [Item("SubScopesLookupParameter<T>", "A generic parameter representing instances of type T which are collected from or written to the sub-scopes of the current scope.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public class SubScopesLookupParameter<T> : LookupParameter<ItemArray<T>> where T : class, IItem {
     public SubScopesLookupParameter() : base() { }
     public SubScopesLookupParameter(string name) : base(name) { }

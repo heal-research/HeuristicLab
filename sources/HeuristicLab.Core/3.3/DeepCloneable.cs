@@ -26,7 +26,7 @@ namespace HeuristicLab.Core {
   /// <summary>
   /// Represents a base class for all deeply cloneable objects.
   /// </summary>
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public abstract class DeepCloneable : IDeepCloneable {
     /// <summary>
     /// Creates a deep clone of this instance.

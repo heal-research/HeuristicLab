@@ -30,7 +30,7 @@ namespace HeuristicLab.Analysis {
   /// An operator that updates the best quality found so far with those qualities in the subscopes.
   /// </summary>
   [Item("BestQualityMemorizer", "An operator that updates the best quality found so far with those qualities in the subscopes.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public class BestQualityMemorizer : SingleSuccessorOperator {
     public IValueLookupParameter<BoolData> MaximizationParameter {
       get { return (IValueLookupParameter<BoolData>)Parameters["Maximization"]; }

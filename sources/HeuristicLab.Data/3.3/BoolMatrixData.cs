@@ -26,7 +26,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Data {
   [Item("BoolMatrixData", "Represents a matrix of boolean values.")]
   [Creatable("Test")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public sealed class BoolMatrixData : ValueTypeMatrixData<bool>, IStringConvertibleMatrixData {
     public BoolMatrixData() : base() { }
     public BoolMatrixData(int rows, int columns) : base(rows, columns) { }

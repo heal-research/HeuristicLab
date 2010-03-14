@@ -29,7 +29,7 @@ namespace HeuristicLab.Analysis {
   /// </summary>
   [Item("DataRow", "A row of data values.")]
   [Creatable("Test")]
-  [StorableClass(StorableClassType.MarkedOnly)]
+  [StorableClass]
   public sealed class DataRow : NamedItem {
     [Storable]
     private ObservableList<double> values;

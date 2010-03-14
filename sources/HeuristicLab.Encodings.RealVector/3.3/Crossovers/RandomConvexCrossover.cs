@@ -32,7 +32,7 @@ namespace HeuristicLab.Encodings.RealVector {
   /// It is implemented as described in Dumitrescu, D. et al. (2000), Evolutionary computation, CRC Press, Boca Raton, FL, pp. 193 - 194.
   /// </remarks>
   [Item("RandomConvexCrossover", "The random convex crossover acts like the local crossover, but with just one randomly chosen alpha for all crossed positions. It is implementes as described in Dumitrescu, D. et al. (2000), Evolutionary computation, CRC Press, Boca Raton, FL, pp. 193 - 194.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public class RandomConvexCrossover : RealVectorCrossover {
     /// <summary>
     /// Performs a random convex crossover on the two given parents.

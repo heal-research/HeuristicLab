@@ -30,7 +30,7 @@ namespace HeuristicLab.Encodings.Permutation {
   /// It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.
   /// </remarks>
   [Item("Swap2Manipulator", "An operator which manipulates a permutation array by swapping to randomly chosen elements. It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   [Creatable("Test")]
   public class Swap2Manipulator : PermutationManipulator {
     /// <summary>

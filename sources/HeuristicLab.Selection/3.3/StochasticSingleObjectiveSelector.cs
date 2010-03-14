@@ -30,7 +30,7 @@ namespace HeuristicLab.Selection {
   /// A base class for stochastic selection operators which consider a single double quality value for selection.
   /// </summary>
   [Item("StochasticSingleObjectiveSelector", "A base class for stochastic selection operators which consider a single double quality value for selection.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public abstract class StochasticSingleObjectiveSelector : StochasticSelector, ISingleObjectiveSelector {
     public IValueLookupParameter<BoolData> MaximizationParameter {
       get { return (IValueLookupParameter<BoolData>)Parameters["Maximization"]; }

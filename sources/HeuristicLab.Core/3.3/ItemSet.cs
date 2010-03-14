@@ -32,7 +32,7 @@ using HeuristicLab.Collections;
 
 
 namespace HeuristicLab.Core {
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   [Item("ItemSet<T>", "Represents a set of items.")]
   public class ItemSet<T> : ObservableSet<T>, IItem where T : class, IItem {
     public virtual string ItemName {

@@ -29,7 +29,7 @@ namespace HeuristicLab.Operators {
   /// </summary>
   [Item("VariableCreator", "An operator which collects the actual values of parameters and clones them into the current scope.")]
   [Creatable("Test")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public class VariableCreator : ValuesCollector {
     protected ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }

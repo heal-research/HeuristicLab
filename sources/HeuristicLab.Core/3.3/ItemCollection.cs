@@ -28,7 +28,7 @@ using HeuristicLab.Common.Resources;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   [Item("ItemCollection<T>", "Represents a collection of items.")]
   public class ItemCollection<T> : ObservableCollection<T>, IItem where T : class, IItem {
     public virtual string ItemName {

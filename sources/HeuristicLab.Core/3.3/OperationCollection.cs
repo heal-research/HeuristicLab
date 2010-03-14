@@ -24,7 +24,7 @@ using System.Linq;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
-  [StorableClass(StorableClassType.MarkedOnly)]
+  [StorableClass]
   public class OperationCollection : DeepCloneable, IList<IOperation>, IOperation {
     [Storable]
     private IList<IOperation> operations;

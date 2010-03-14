@@ -29,7 +29,7 @@ namespace HeuristicLab.Selection {
   /// A base class for stochastic selection operators.
   /// </summary>
   [Item("StochasticSelector", "A base class for stochastic selection operators.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public abstract class StochasticSelector : Selector, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }

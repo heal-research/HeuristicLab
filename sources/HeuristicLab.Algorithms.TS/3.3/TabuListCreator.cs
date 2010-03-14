@@ -29,7 +29,7 @@ using HeuristicLab.Selection;
 
 namespace HeuristicLab.Algorithms.TS {
   [Item("TabuListCreator", "An operator that creates a new empty tabu list. It can also replace an existing tabu list with a new empty one.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public class TabuListCreator : SingleSuccessorOperator {
     public ValueLookupParameter<ItemList<IItem>> TabuListParameter {
       get { return (ValueLookupParameter<ItemList<IItem>>)Parameters["TabuList"]; }

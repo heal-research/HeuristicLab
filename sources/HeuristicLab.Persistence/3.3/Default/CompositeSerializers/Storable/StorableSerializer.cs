@@ -10,11 +10,11 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
 
   /// <summary>
   /// Intended for serialization of all custom classes. Classes should have the
-  /// <c>[StorableClass(StorableClassType.Empty)]</c> attribute set and a serialization mode set.
+  /// <c>[StorableClass]</c> attribute set and a serialization mode set.
   /// Optionally selected fields and properties can be marked with the
   /// <c>[Storable]</c> attribute.
   /// </summary>
-  [StorableClass(StorableClassType.Empty)]    
+  [StorableClass]    
   public class StorableSerializer : ICompositeSerializer {
 
     public int Priority {
@@ -32,7 +32,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       if (!ReflectionTools.HasDefaultConstructor(type) &&
         StorableConstructorAttribute.GetStorableConstructor(type) == null)
         return "no default constructor and no storable constructor";
-      return "class or one of its base classes is not empty and has no [StorableClass(StorableClassType.Empty)] attribute";
+      return "class or one of its base classes is not empty and has no [StorableClass] attribute";
     }
 
     public IEnumerable<Tag> CreateMetaInfo(object o) {

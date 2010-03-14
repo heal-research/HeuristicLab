@@ -32,7 +32,7 @@ namespace HeuristicLab.Encodings.Permutation {
   /// Then position 1 is put in place of position 3, position 2 is put in place of position 1 and position 3 is put in place of position 2.
   /// </remarks>
   [Item("Swap3Manipulator", "An operator which manipulates a permutation array by swaping three randomly chosen elements. It is implemented such that first 3 positions are randomly chosen in the interval [0;N) with N = length of the permutation with all positions being distinct from each other. Then position 1 is put in place of position 3, position 2 is put in place of position 1 and position 3 is put in place of position 2.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   [Creatable("Test")]
   public class Swap3Manipulator : PermutationManipulator {
     /// <summary>

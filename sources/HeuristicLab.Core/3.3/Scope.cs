@@ -28,7 +28,7 @@ namespace HeuristicLab.Core {
   /// </summary>
   [Item("Scope", "A scope which contains variables and sub-scopes.")]
   [Creatable("Test")]
-  [StorableClass(StorableClassType.MarkedOnly)]
+  [StorableClass]
   public sealed class Scope : NamedItem, IScope {
     [Storable]
     private IScope parent;

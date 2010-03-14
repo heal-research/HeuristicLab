@@ -29,7 +29,7 @@ namespace HeuristicLab.Parameters {
   /// A base class for parameters.
   /// </summary>
   [Item("Parameter", "A base class for parameters.")]
-  [StorableClass(StorableClassType.MarkedOnly)]
+  [StorableClass]
   public abstract class Parameter : NamedItem, IParameter {
     public override bool CanChangeName {
       get { return false; }

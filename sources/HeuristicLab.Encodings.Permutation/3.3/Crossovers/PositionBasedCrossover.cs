@@ -31,7 +31,7 @@ namespace HeuristicLab.Encodings.Permutation {
   /// It is implemented as described in Syswerda, G. (1991). Schedule Optimization Using Genetic Algorithms. In Davis, L. (Ed.) Handbook of Genetic Algorithms, Van Nostrand Reinhold, New York, pp 332-349.
   /// </remarks>
   [Item("PositionBasedCrossover", "An operator which performs the position based crossover on two permutations. It is implemented as described in Syswerda, G. (1991). Schedule Optimization Using Genetic Algorithms. In Davis, L. (Ed.) Handbook of Genetic Algorithms, Van Nostrand Reinhold, New York, pp 332-349.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   [Creatable("Test")]
   public class PositionBasedCrossover : PermutationCrossover {
     /// <summary>

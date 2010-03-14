@@ -36,7 +36,7 @@ namespace HeuristicLab.Evolutionary {
   /// the child and adds the child as sub-scope to the current scope.
   /// </remarks>
   [Item("ChildrenCreator", "An operator which is used to prepare crossover. The sub-scopes of the current scope the operator is applied on represent the parents. The operator creates new and empty scopes for each child, adds the scopes that represent the child's parents as sub-scopes to the child and adds the child as sub-scope to the current scope.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   [Creatable("Test")]
   public sealed class ChildrenCreator : SingleSuccessorOperator {
     private ScopeParameter CurrentScopeParameter {

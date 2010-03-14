@@ -30,7 +30,7 @@ namespace HeuristicLab.Encodings.Permutation {
   /// A base class for permutation crossover operators.
   /// </summary>
   [Item("PermutationCrossover", "A base class for permutation crossover operators.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public abstract class PermutationCrossover : SingleSuccessorOperator, IPermutationCrossover, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }

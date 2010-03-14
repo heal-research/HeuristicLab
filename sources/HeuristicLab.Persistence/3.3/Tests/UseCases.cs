@@ -20,7 +20,7 @@ using System.Drawing.Imaging;
 
 namespace HeuristicLab.Persistence_33.Tests {
 
-  [StorableClass(StorableClassType.MarkedOnly)]  
+  [StorableClass]  
   public class NumberTest {
     [Storable]
     private bool _bool = true;
@@ -42,7 +42,7 @@ namespace HeuristicLab.Persistence_33.Tests {
     private ulong _ulong = 123456;
   }
 
-  [StorableClass(StorableClassType.MarkedOnly)]
+  [StorableClass]
   public class NonDefaultConstructorClass {
     [Storable]
     int value;
@@ -51,7 +51,7 @@ namespace HeuristicLab.Persistence_33.Tests {
     }
   }
 
-  [StorableClass(StorableClassType.MarkedOnly)]
+  [StorableClass]
   public class IntWrapper {
 
     [Storable]
@@ -74,7 +74,7 @@ namespace HeuristicLab.Persistence_33.Tests {
 
   }
 
-  [StorableClass(StorableClassType.MarkedOnly)]
+  [StorableClass]
   public class PrimitivesTest : NumberTest {
     [Storable]
     private char c = 'e';
@@ -89,7 +89,7 @@ namespace HeuristicLab.Persistence_33.Tests {
 
   public enum TestEnum { va1, va2, va3, va8 } ;
 
-  [StorableClass(StorableClassType.MarkedOnly)]
+  [StorableClass]
   public class RootBase {
     [Storable]
     private string baseString = "   Serial  ";
@@ -97,7 +97,7 @@ namespace HeuristicLab.Persistence_33.Tests {
     public TestEnum myEnum = TestEnum.va3;
   }
 
-  [StorableClass(StorableClassType.MarkedOnly)]
+  [StorableClass]
   public class Root : RootBase {
     [Storable]
     public Stack<int> intStack = new Stack<int>();
@@ -132,7 +132,7 @@ namespace HeuristicLab.Persistence_33.Tests {
   [FlagsAttribute]
   public enum TrickyEnum { zero = 0, one = 1, two = 2 }
 
-  [StorableClass(StorableClassType.MarkedOnly)]
+  [StorableClass]
   public class EnumTest {
     [Storable]
     public SimpleEnum simpleEnum = SimpleEnum.one;
@@ -142,7 +142,7 @@ namespace HeuristicLab.Persistence_33.Tests {
     public TrickyEnum trickyEnum = (TrickyEnum)15;
   }
 
-  [StorableClass(StorableClassType.MarkedOnly)]
+  [StorableClass]
   public class Custom {
     [Storable]
     public int i;
@@ -152,7 +152,7 @@ namespace HeuristicLab.Persistence_33.Tests {
     public string name = "<![CDATA[<![CDATA[Serial]]>]]>";
   }
 
-  [StorableClass(StorableClassType.MarkedOnly)]
+  [StorableClass]
   public class Manager {
 
     public DateTime lastLoadTime;
@@ -165,7 +165,7 @@ namespace HeuristicLab.Persistence_33.Tests {
     public double? dbl;
   }
 
-  [StorableClass(StorableClassType.MarkedOnly)]
+  [StorableClass]
   public class C {
     [Storable]
     public C[][] allCs;
@@ -372,7 +372,7 @@ namespace HeuristicLab.Persistence_33.Tests {
         DebugStringGenerator.Serialize(o));
     }
 
-    [StorableClass(StorableClassType.MarkedOnly)]
+    [StorableClass]
     public class NestedType {
       [Storable]
       private string value = "value";
@@ -602,19 +602,19 @@ namespace HeuristicLab.Persistence_33.Tests {
       Assert.AreEqual(((Override)n).Name, ((Override)nn).Name);
     }
 
-    [StorableClass(StorableClassType.MarkedOnly)]
+    [StorableClass]
     class Child {
       [Storable]
       public GrandParent grandParent;
     }
 
-    [StorableClass(StorableClassType.MarkedOnly)]
+    [StorableClass]
     class Parent {
       [Storable]
       public Child child;
     }
 
-    [StorableClass(StorableClassType.MarkedOnly)]
+    [StorableClass]
     class GrandParent {
       [Storable]
       public Parent parent;
@@ -682,7 +682,7 @@ namespace HeuristicLab.Persistence_33.Tests {
           Assert.AreEqual(bitmap.GetPixel(i,j),newBitmap.GetPixel(i,j));
     }
 
-    [StorableClass(StorableClassType.MarkedOnly)]
+    [StorableClass]
     private class PersistenceHooks {
       [Storable]
       public int a;
@@ -717,7 +717,7 @@ namespace HeuristicLab.Persistence_33.Tests {
       Assert.IsFalse(newHookTest.WasSerialized);
     }
     
-    [StorableClass(StorableClassType.Empty)]
+    [StorableClass]
     private class CustomConstructor {
       public string Value = "none";
       public CustomConstructor() {
@@ -739,7 +739,7 @@ namespace HeuristicLab.Persistence_33.Tests {
       Assert.AreEqual(newCC.Value, "persistence");
     }
 
-    [StorableClass(StorableClassType.Empty)]
+    [StorableClass]
     public class ExplodingDefaultConstructor {
       public ExplodingDefaultConstructor() {
         throw new Exception("this constructor will always fail");
@@ -783,7 +783,7 @@ namespace HeuristicLab.Persistence_33.Tests {
       }
     }
 
-    [StorableClass(StorableClassType.MarkedOnly)]
+    [StorableClass]
     public class HookInheritanceTestBase {
       [Storable]
       public object a;
@@ -794,7 +794,7 @@ namespace HeuristicLab.Persistence_33.Tests {
       }
     }
 
-    [StorableClass(StorableClassType.Empty)]
+    [StorableClass]
     public class HookInheritanceTestDerivedClass : HookInheritanceTestBase {
       [Storable]
       public object b;

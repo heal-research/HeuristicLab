@@ -25,7 +25,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
   [Item("NamedItem", "Base class for items which have a name and an optional description.")]
-  [StorableClass(StorableClassType.MarkedOnly)]
+  [StorableClass]
   public abstract class NamedItem : Item, INamedItem {
     [Storable]
     protected string name;

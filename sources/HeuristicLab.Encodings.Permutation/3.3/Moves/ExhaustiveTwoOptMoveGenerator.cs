@@ -27,7 +27,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.Permutation {
   [Item("ExhaustiveTwoOptMoveGenerator", "Generates all possible 2-opt moves from a given permutation.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public class ExhaustiveTwoOptMoveGenerator : SingleSuccessorOperator, IPermutationMoveGenerator {
     public ILookupParameter<Permutation> PermutationParameter {
       get { return (ILookupParameter<Permutation>)Parameters["Permutation"]; }

@@ -10,7 +10,7 @@ namespace HeuristicLab.Persistence.Core {
   /// for a certain seraial format. The configuration can be obtained from the
   /// <c>ConfigurationService</c>.
   /// </summary>
-  [StorableClass(StorableClassType.MarkedOnly)]    
+  [StorableClass]    
   public class Configuration {
 
     [Storable]

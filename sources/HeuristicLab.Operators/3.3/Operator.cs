@@ -29,7 +29,7 @@ namespace HeuristicLab.Operators {
   /// The base class for all operators.
   /// </summary>
   [Item("Operator", "Base class for operators.")]
-  [StorableClass(StorableClassType.MarkedOnly)]
+  [StorableClass]
   public abstract class Operator : ParameterizedNamedItem, IOperator {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Method; }

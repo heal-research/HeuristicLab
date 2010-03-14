@@ -32,7 +32,7 @@ namespace HeuristicLab.Optimization {
   /// A base class for algorithms which use an engine for execution.
   /// </summary>
   [Item("EngineAlgorithm", "A base class for algorithms which use an engine for execution.")]
-  [StorableClass(StorableClassType.MarkedOnly)]
+  [StorableClass]
   public abstract class EngineAlgorithm : Algorithm {
     private OperatorGraph operatorGraph;
     [Storable]

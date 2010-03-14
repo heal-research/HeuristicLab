@@ -29,7 +29,7 @@ namespace HeuristicLab.Operators {
   /// An operator which increments a double variable.
   /// </summary>
   [Item("DoubleCounter", "An operator which increments a double variable.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   [Creatable("Test")]
   public sealed class DoubleCounter : SingleSuccessorOperator {
     public LookupParameter<DoubleData> ValueParameter {

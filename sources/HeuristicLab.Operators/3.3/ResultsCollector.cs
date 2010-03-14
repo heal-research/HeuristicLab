@@ -29,7 +29,7 @@ namespace HeuristicLab.Operators {
   /// </summary>
   [Item("ResultsCollector", "An operator which collects the actual values of parameters and adds them to a collection of variables.")]
   [Creatable("Test")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public class ResultsCollector : ValuesCollector {
     public ValueLookupParameter<VariableCollection> ResultsParameter {
       get { return (ValueLookupParameter<VariableCollection>)Parameters["Results"]; }

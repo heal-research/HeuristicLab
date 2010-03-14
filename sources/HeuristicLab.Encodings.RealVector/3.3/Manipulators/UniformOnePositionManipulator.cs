@@ -33,7 +33,7 @@ namespace HeuristicLab.Encodings.RealVector {
   /// It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.
   /// </remarks>
   [Item("UniformOnePositionManipulator", "Changes a single position in the vector by sampling uniformly from the interval [Minimum, Maximum). It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public class UniformOnePositionManipulator : RealVectorManipulator {
     /// <summary>
     /// The lower bound of the values in the real vector.

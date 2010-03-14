@@ -27,7 +27,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Data {
   [Item("BoolData", "Represents a boolean value.")]
   [Creatable("Test")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public sealed class BoolData : ValueTypeData<bool>, IComparable, IStringConvertibleData {
     public BoolData() : base() { }
     public BoolData(bool value) : base(value) { }

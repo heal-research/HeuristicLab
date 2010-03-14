@@ -29,7 +29,7 @@ namespace HeuristicLab.Operators {
   /// </summary>
   [Item("ValuesCollector", "An operator which collects the actual values of parameters.")]
   [Creatable("Test")]
-  [StorableClass(StorableClassType.MarkedOnly)]
+  [StorableClass]
   public abstract class ValuesCollector : SingleSuccessorOperator, IOperator {
     private ParameterCollection collectedValues;
     [Storable]

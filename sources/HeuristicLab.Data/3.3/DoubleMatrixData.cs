@@ -26,7 +26,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Data {
   [Item("DoubleMatrixData", "Represents a matrix of double values.")]
   [Creatable("Test")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public sealed class DoubleMatrixData : ValueTypeMatrixData<double>, IStringConvertibleMatrixData {
     public DoubleMatrixData() : base() { }
     public DoubleMatrixData(int rows, int columns) : base(rows, columns) { }

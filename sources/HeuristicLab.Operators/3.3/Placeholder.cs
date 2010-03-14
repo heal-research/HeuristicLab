@@ -29,7 +29,7 @@ namespace HeuristicLab.Operators {
   /// </summary>
   [Item("Placeholder", "An operator which acts as a placeholder for another operator retrieved from the scope or a parent execution context.")]
   [Creatable("Test")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public sealed class Placeholder : SingleSuccessorOperator {
     public LookupParameter<IOperator> OperatorParameter {
       get { return (LookupParameter<IOperator>)Parameters["Operator"]; }

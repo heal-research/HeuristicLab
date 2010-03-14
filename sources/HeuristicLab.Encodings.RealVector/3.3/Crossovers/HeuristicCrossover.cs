@@ -34,7 +34,7 @@ namespace HeuristicLab.Encodings.RealVector {
   /// It is implemented as described in Wright, A.H. (1994), Genetic algorithms for real parameter optimization, Foundations of Genetic Algorithms, G.J.E. Rawlins (Ed.), Morgan Kaufmann, San Mateo, CA, 205-218.
   /// </remarks>
   [Item("HeuristicCrossover", "The heuristic crossover produces offspring that extend the better parent in direction from the worse to the better parent. It is implemented as described in Wright, A.H. (1994), Genetic algorithms for real parameter optimization, Foundations of Genetic Algorithms, G.J.E. Rawlins (Ed.), Morgan Kaufmann, San Mateo, CA, 205-218.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public class HeuristicCrossover : RealVectorCrossover {
     /// <summary>
     /// Whether the problem is a maximization or minimization problem.

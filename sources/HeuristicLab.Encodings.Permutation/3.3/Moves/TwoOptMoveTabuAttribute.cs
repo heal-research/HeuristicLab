@@ -24,7 +24,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.Permutation {
   [Item("TwoOptMoveTabuAttribute", "Specifies the tabu attributes for a 2-opt move.")]
-  [StorableClass(StorableClassType.MarkedOnly)]
+  [StorableClass]
   public class TwoOptMoveTabuAttribute : Item {
     [Storable]
     public int Edge1Source { get; private set; }

@@ -30,7 +30,7 @@ namespace HeuristicLab.Encodings.Permutation {
   /// A base class for permutation manipulation operators.
   /// </summary>
   [Item("PermutationManipulator", "A base class for permutation manipulation operators.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public abstract class PermutationManipulator : SingleSuccessorOperator, IPermutationManipulator, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }

@@ -28,7 +28,7 @@ namespace HeuristicLab.Operators {
   /// </summary>
   [Item("SequentialSubScopesProcessor", "An operator which contains multiple operators of which each is applied sequentially on one sub-scope of the current scope. The first operator is applied on the first sub-scope, the second on the second, and so on.")]
   [Creatable("Test")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public sealed class SequentialSubScopesProcessor : MultipleCallsOperator {
     public SequentialSubScopesProcessor()
       : base() {

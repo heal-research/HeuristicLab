@@ -28,7 +28,7 @@ namespace HeuristicLab.Operators {
   /// </summary>
   [Item("EmptyOperator", "An operator which represents an empty statement.")]
   [Creatable("Test")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public sealed class EmptyOperator : SingleSuccessorOperator {
     public EmptyOperator()
       : base() {

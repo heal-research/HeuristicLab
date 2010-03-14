@@ -34,7 +34,7 @@ namespace HeuristicLab.Encodings.RealVector {
   /// It is implemented as described in Deb, K. and Agrawal, R. B. 1995. Simulated binary crossover for continuous search space. Complex Systems, 9, pp. 115-148.
   /// </remarks>
   [Item("SimulatedBinaryCrossover", "The simulated binary crossover (SBX) is implemented as described in Deb, K. and Agrawal, R. B. 1995. Simulated binary crossover for continuous search space. Complex Systems, 9, pp. 115-148.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public class SimulatedBinaryCrossover : RealVectorCrossover {
     /// <summary>
     /// The parameter must be greater or equal than 0. Common values are in the range [0;5] and more often just [2;5].

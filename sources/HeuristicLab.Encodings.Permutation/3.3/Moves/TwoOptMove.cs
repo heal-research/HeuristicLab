@@ -24,7 +24,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.Permutation {
   [Item("TwoOptMove", "Item that describes a 2-Opt move.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public class TwoOptMove : TwoIndexMove {
     public TwoOptMove()
       : base() {

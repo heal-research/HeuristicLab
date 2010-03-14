@@ -31,7 +31,7 @@ namespace HeuristicLab.Selection {
   /// A base class for reduction operators.
   /// </summary>
   [Item("Reducer", "A base class for reduction operators.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public abstract class Reducer : SingleSuccessorOperator, IReducer {
     protected ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }

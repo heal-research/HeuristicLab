@@ -30,7 +30,7 @@ namespace HeuristicLab.Operators {
   /// </summary>
   [Item("StochasticBranch", "A branch of two operators which are executed with a specified probability.")]
   [Creatable("Test")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public class StochasticBranch : SingleSuccessorOperator {
     public LookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }

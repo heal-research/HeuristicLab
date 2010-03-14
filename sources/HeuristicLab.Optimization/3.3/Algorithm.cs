@@ -31,7 +31,7 @@ namespace HeuristicLab.Optimization {
   /// A base class for algorithms.
   /// </summary>
   [Item("Algorithm", "A base class for algorithms.")]
-  [StorableClass(StorableClassType.MarkedOnly)]
+  [StorableClass]
   public abstract class Algorithm : ParameterizedNamedItem, IAlgorithm {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Event; }

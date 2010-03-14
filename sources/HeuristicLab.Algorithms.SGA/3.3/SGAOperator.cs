@@ -34,7 +34,7 @@ namespace HeuristicLab.Algorithms.SGA {
   /// </summary>
   [Item("SGAOperator", "An operator which represents a Standard Genetic Algorithm.")]
   [Creatable("Test")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public class SGAOperator : AlgorithmOperator {
     #region Parameter properties
     public ValueLookupParameter<IRandom> RandomParameter {

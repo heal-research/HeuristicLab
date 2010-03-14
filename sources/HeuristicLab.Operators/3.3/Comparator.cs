@@ -30,7 +30,7 @@ namespace HeuristicLab.Operators {
   /// An operator which compares two items.
   /// </summary>
   [Item("Comparator", "An operator which compares two items.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   [Creatable("Test")]
   public sealed class Comparator : SingleSuccessorOperator {
     public LookupParameter<IItem> LeftSideParameter {

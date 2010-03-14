@@ -29,7 +29,7 @@ namespace HeuristicLab.Operators {
   /// </summary>
   [Item("UniformParallelSubScopesProcessor", "An operator which applies a specified operator on all sub-scopes of the current scope in parallel.")]
   [Creatable("Test")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public sealed class UniformParallelSubScopesProcessor : SingleSuccessorOperator {
     private OperatorParameter OperatorParameter {
       get { return (OperatorParameter)Parameters["Operator"]; }

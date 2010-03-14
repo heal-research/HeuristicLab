@@ -24,7 +24,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.Permutation {
   [Item("TwoIndexMove", "A move on a permutation that is specified by 2 indices")]
-  [StorableClass(StorableClassType.MarkedOnly)]
+  [StorableClass]
   public class TwoIndexMove : Item {
     [Storable]
     public int Index1 { get; protected set; }

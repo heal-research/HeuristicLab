@@ -36,7 +36,7 @@ namespace HeuristicLab.Encodings.RealVector {
   /// The default value for alpha is 0.5.
   /// </remarks>
   [Item("BlendAlphaCrossover", "The blend alpha crossover (BLX-a) for real vectors creates new offspring by sampling a new value in the range [min_i - d * alpha, max_i + d * alpha) at each position i. Here min_i and max_i are the smaller and larger value of the two parents at position i and d is max_i - min_i. It is implemented as described in Takahashi, M. and Kita, H. 2001. A crossover operator using independent component analysis for real-coded genetic algorithms Proceedings of the 2001 Congress on Evolutionary Computation, pp. 643-649.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public class BlendAlphaCrossover : RealVectorCrossover {
     /// <summary>
     /// The alpha parameter specifies how much the interval between the parents should be extended to the left and right.

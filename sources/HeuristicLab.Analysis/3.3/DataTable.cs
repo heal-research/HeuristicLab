@@ -28,7 +28,7 @@ namespace HeuristicLab.Analysis {
   /// </summary>
   [Item("DataTable", "A table of data values.")]
   [Creatable("Test")]
-  [StorableClass(StorableClassType.MarkedOnly)]
+  [StorableClass]
   public sealed class DataTable : NamedItem {
     [Storable]
     private NamedItemCollection<DataRow> rows;

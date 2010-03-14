@@ -30,7 +30,7 @@ using HeuristicLab.Collections;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
-  [StorableClass(StorableClassType.MarkedOnly)]
+  [StorableClass]
   internal abstract class ShapeInfo : DeepCloneable, IShapeInfo {
     private ShapeInfo() {
     }

@@ -28,7 +28,7 @@ namespace HeuristicLab.Selection {
   /// A random selection operator.
   /// </summary>
   [Item("RandomSelector", "A random selection operator.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   [Creatable("Test")]
   public sealed class RandomSelector : StochasticSelector {
     public RandomSelector() : base() { }

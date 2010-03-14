@@ -32,7 +32,7 @@ namespace HeuristicLab.Encodings.Permutation {
   /// Then all empty positions are filled from the second parent.
   /// </remarks>
   [Item("CyclicCrossover2", "An operator which performs the cyclic crossover on two permutations. It is implemented as described in Affenzeller, M. et al. 2009. Genetic Algorithms and Genetic Programming - Modern Concepts and Practical Applications. CRC Press. p. 136.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   [Creatable("Test")]
   public class CyclicCrossover2 : PermutationCrossover {
     /// <summary>

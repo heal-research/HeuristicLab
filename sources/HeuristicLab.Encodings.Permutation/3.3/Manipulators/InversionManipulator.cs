@@ -30,7 +30,7 @@ namespace HeuristicLab.Encodings.Permutation {
   /// It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.<br />
   /// </remarks>
   [Item("InversionManipulator", "An operator which inverts a randomly chosen part of a permutation. It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   [Creatable("Test")]
   public class InversionManipulator : PermutationManipulator {
     /// <summary>

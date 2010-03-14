@@ -9,7 +9,7 @@ using System.IO;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public class StackSerializer : ICompositeSerializer {
 
     public int Priority {

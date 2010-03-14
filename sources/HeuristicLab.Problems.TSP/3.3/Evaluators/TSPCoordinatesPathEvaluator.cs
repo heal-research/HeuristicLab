@@ -30,7 +30,7 @@ namespace HeuristicLab.Problems.TSP {
   /// A base class for operators which evaluate TSP solutions given in path representation using city coordinates.
   /// </summary>
   [Item("TSPCoordinatesPathEvaluator", "A base class for operators which evaluate TSP solutions given in path representation using city coordinates.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public abstract class TSPCoordinatesPathEvaluator : TSPEvaluator, ITSPCoordinatesPathEvaluator {
     public ILookupParameter<Permutation> PermutationParameter {
       get { return (ILookupParameter<Permutation>)Parameters["Permutation"]; }

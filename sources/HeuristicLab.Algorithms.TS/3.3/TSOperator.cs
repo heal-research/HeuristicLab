@@ -32,7 +32,7 @@ namespace HeuristicLab.Algorithms.TS {
   /// An operator which represents a Tabu Search.
   /// </summary>
   [Item("TSOperator", "An operator which represents a Tabu Search.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public class TSOperator : AlgorithmOperator {
     #region Parameter properties
     public ValueLookupParameter<IRandom> RandomParameter {

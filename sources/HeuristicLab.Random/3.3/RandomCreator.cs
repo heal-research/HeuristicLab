@@ -30,7 +30,7 @@ namespace HeuristicLab.Operators {
   /// An operator which creates a new Mersenne Twister pseudo random number generator.
   /// </summary>
   [Item("RandomCreator", "An operator which creates a new Mersenne Twister pseudo random number generator.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   [Creatable("Test")]
   public sealed class RandomCreator : SingleSuccessorOperator {
     public ValueLookupParameter<BoolData> SetSeedRandomlyParameter {

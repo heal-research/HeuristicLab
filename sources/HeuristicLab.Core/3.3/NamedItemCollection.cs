@@ -29,7 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
   [Item("NamedItemCollection<T>", "Represents a collection of named items.")]
-  [StorableClass(StorableClassType.MarkedOnly)]
+  [StorableClass]
   public class NamedItemCollection<T> : ObservableKeyedCollection<string, T>, IItem where T : class, INamedItem {
     public virtual string ItemName {
       get { return ItemAttribute.GetName(this.GetType()); }

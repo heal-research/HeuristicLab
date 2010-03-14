@@ -34,7 +34,7 @@ namespace HeuristicLab.Encodings.Permutation {
   /// The operator first determines all cycles in the permutation and then composes the offspring by alternating between the cycles of the two parents.
   /// </remarks>
   [Item("EdgeRecombinationCrossover", "An operator which performs the edge recombination crossover on two permutations. It is implemented as described in Whitley et.al. 1991, The Traveling Salesman and Sequence Scheduling, in Davis, L. (Ed.), Handbook ov Genetic Algorithms, New York, pp. 350-372.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   [Creatable("Test")]
   public class EdgeRecombinationCrossover : PermutationCrossover {
     /// <summary>

@@ -34,7 +34,7 @@ namespace HeuristicLab.Encodings.Permutation {
   /// The idea is that the child should not sit right inbetween the two parents, but rather go a little bit from one parent in direction to the other.
   /// </remarks>
   [Item("CosaCrossover", "An operator which performs the crossover described in the COSA optimization method. It is implemented as described in Wendt, O. 1994. COSA: COoperative Simulated Annealing - Integration von Genetischen Algorithmen und Simulated Annealing am Beispiel der Tourenplanung. Dissertation Thesis. IWI Frankfurt.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   [Creatable("Test")]
   public class CosaCrossover : PermutationCrossover {
     /// <summary>

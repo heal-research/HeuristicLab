@@ -32,7 +32,7 @@ namespace HeuristicLab.Selection {
   /// A quality proportional selection operator which considers a single double quality value for selection.
   /// </summary>
   [Item("ProportionalSelector", "A quality proportional selection operator which considers a single double quality value for selection.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   [Creatable("Test")]
   public sealed class ProportionalSelector : StochasticSingleObjectiveSelector {
     private ValueParameter<BoolData> WindowingParameter {

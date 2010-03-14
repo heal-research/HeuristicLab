@@ -28,7 +28,7 @@ namespace HeuristicLab.SequentialEngine {
   /// Represents an engine that executes its steps sequentially, also if they could be executed 
   /// in parallel.
   /// </summary>
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   [Item("Sequential Engine", "Engine for sequential execution of algorithms.")]
   public class SequentialEngine : Engine {
     private IOperator currentOperator;

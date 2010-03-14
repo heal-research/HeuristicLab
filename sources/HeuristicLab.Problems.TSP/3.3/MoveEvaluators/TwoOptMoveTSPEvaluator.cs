@@ -32,7 +32,7 @@ namespace HeuristicLab.Problems.TSP {
   /// An operator to evaluate 2-opt moves.
   /// </summary>
   [Item("TwoOptMoveTSPEvaluator", "Evaluates a 2-opt move (rounded euclidean distances) by summing up the length of all added edges and subtracting the length of all deleted edges.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public class TwoOptMoveTSPEvaluator : SingleSuccessorOperator {
     public ILookupParameter<DoubleData> QualityParameter {
       get { return (ILookupParameter<DoubleData>)Parameters["Quality"]; }

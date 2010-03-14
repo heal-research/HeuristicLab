@@ -9,7 +9,7 @@ using HeuristicLab.Persistence.Core;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public class StructSerializer : ICompositeSerializer {    
 
     public int Priority {

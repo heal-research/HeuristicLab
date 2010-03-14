@@ -34,7 +34,7 @@ namespace HeuristicLab.Encodings.Permutation {
   /// If the length of the permutation is smaller than 15, the size of the segment is always equal to 3.
   /// </remarks>
   [Item("MaximalPreservativeCrossover", "An operator which performs the maximal preservative crossover on two permutations. It is implemented as described in Mühlenbein, H. 1991. Evolution in time and space - the parallel genetic algorithm. FOUNDATIONS OF GENETIC ALGORITHMS, pp. 316-337. Morgan Kaufmann.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   [Creatable("Test")]
   public class MaximalPreservativeCrossover : PermutationCrossover {
     /// <summary>

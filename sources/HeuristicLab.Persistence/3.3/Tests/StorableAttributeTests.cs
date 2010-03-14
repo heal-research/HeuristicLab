@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace HeuristicLab.Persistence_33.Tests {
 
-  [StorableClass(StorableClassType.MarkedOnly)] 
+  [StorableClass] 
   class DemoClass {
 
     [Storable(Name = "TestProperty", DefaultValue = 12)]
@@ -20,7 +20,7 @@ namespace HeuristicLab.Persistence_33.Tests {
 
   }
 
-  [StorableClass(StorableClassType.MarkedOnly)]
+  [StorableClass]
   class Base {
     public string baseName;
     [Storable]
@@ -30,7 +30,7 @@ namespace HeuristicLab.Persistence_33.Tests {
     }
   }
 
-  [StorableClass(StorableClassType.MarkedOnly)]
+  [StorableClass]
   class Override : Base {
     [Storable]
     public override string Name {
@@ -39,11 +39,11 @@ namespace HeuristicLab.Persistence_33.Tests {
     }
   }
 
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   class Intermediate : Override {
   }
 
-  [StorableClass(StorableClassType.MarkedOnly)]
+  [StorableClass]
   class New : Intermediate {
     public string newName;
     [Storable]

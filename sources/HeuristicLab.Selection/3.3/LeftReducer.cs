@@ -28,7 +28,7 @@ namespace HeuristicLab.Selection {
   /// An operator which reduces to the sub-scopes of the leftmost sub-scope of the current scope.
   /// </summary>
   [Item("LeftReducer", "An operator which reduces to the sub-scopes of the leftmost sub-scope of the current scope.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   [Creatable("Test")]
   public sealed class LeftReducer : Reducer {
     public LeftReducer() : base() { }

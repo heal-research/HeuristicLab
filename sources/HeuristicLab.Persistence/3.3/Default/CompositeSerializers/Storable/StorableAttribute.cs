@@ -9,7 +9,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
 
   /// <summary>
   /// Mark the member of a class to be considered by the <c>StorableSerializer</c>.
-  /// The class must be marked as <c>[StorableClass(StorableClassType.Empty)]</c> and the
+  /// The class must be marked as <c>[StorableClass]</c> and the
   /// <c>StorableClassType</c> should be set to <c>MarkedOnly</c> for
   /// this attribute to kick in.
   /// </summary>

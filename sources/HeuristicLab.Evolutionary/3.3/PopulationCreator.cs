@@ -31,7 +31,7 @@ namespace HeuristicLab.Evolutionary {
   /// An operator which creates a new population of solutions.
   /// </summary>
   [Item("PopulationCreator", "An operator which creates a new population of solutions.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   [Creatable("Test")]
   public sealed class PopulationCreator : SingleSuccessorOperator {
     public ValueLookupParameter<IntData> PopulationSizeParameter {

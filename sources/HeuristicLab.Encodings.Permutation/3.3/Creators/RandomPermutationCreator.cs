@@ -31,7 +31,7 @@ namespace HeuristicLab.Encodings.Permutation {
   /// An operator which creates a new random permutation of integer values.
   /// </summary>
   [Item("RandomPermutationCreator", "An operator which creates a new random permutation of integer values.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   [Creatable("Test")]
   public sealed class RandomPermutationCreator : SingleSuccessorOperator, IPermutationCreator, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {

@@ -29,7 +29,7 @@ namespace HeuristicLab.Operators {
   /// </summary>
   [Item("CombinedOperator", "An operator which contains an operator graph.")]
   [Creatable("Test")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public sealed class CombinedOperator : AlgorithmOperator, IParameterizedItem {
     public new ParameterCollection Parameters {
       get { return base.Parameters; }

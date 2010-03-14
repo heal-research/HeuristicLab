@@ -6,7 +6,7 @@ namespace HeuristicLab.Persistence.Interfaces {
   /// <summary>
   /// Common base class for defining a new serialization format.
   /// </summary>  
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public abstract class FormatBase<SerialDataFormat> : IFormat<SerialDataFormat> where SerialDataFormat : ISerialData {
 
     /// <summary>

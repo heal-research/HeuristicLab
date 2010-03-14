@@ -28,7 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Collections {
   [Serializable]
-  [StorableClass(StorableClassType.MarkedOnly)]
+  [StorableClass]
   public class ObservableSet<T> : IObservableSet<T> {
     [Storable]
     private HashSet<T> set;

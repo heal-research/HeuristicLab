@@ -29,7 +29,7 @@ namespace HeuristicLab.Operators {
   /// An operator which increments an integer variable.
   /// </summary>
   [Item("IntCounter", "An operator which increments an integer variable.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   [Creatable("Test")]
   public sealed class IntCounter : SingleSuccessorOperator {
     public LookupParameter<IntData> ValueParameter {

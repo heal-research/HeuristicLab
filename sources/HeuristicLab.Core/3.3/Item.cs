@@ -28,7 +28,7 @@ namespace HeuristicLab.Core {
   /// <summary>
   /// Represents the base class for all basic item types.
   /// </summary>
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   [Item("Item", "Base class for all HeuristicLab items.")]
   public abstract class Item : DeepCloneable, IItem {
     public virtual string ItemName {

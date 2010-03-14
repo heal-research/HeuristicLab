@@ -29,7 +29,7 @@ namespace HeuristicLab.Operators {
   /// An Operator which sorts the sub-scopes of the current scope.
   /// </summary>
   [Item("SubScopesSorter", "An operator which sorts the sub-scopes of the current scope.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   [Creatable("Test")]
   public sealed class SubScopesSorter : SingleSuccessorOperator {
     private bool descending;

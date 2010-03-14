@@ -30,7 +30,7 @@ namespace HeuristicLab.Selection {
   /// A linear rank selection operator which considers the rank based on a single double quality value for selection.
   /// </summary>
   [Item("LinearRankSelector", "A linear rank selection operator which considers the rank based on a single double quality value for selection.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   [Creatable("Test")]
   public sealed class LinearRankSelector : StochasticSingleObjectiveSelector {
     public LinearRankSelector()

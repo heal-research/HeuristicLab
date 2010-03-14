@@ -36,7 +36,7 @@ namespace HeuristicLab.Algorithms.TS {
   /// For different aspiration criteria a new operator should be implemented.
   /// </remarks>
   [Item("TabuSelector", "An operator that selects the best move that is either not tabu or satisfies the aspiration criterion. It expects the move subscopes to be sorted.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public class TabuSelector : Selector {
     /// <summary>
     /// The best found quality so far.

@@ -35,7 +35,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Problems.TSP {
   [Item("TSP", "Represents a symmetric Traveling Salesman Problem.")]
   [Creatable("Problems")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public sealed class TSP : ParameterizedNamedItem, ISingleObjectiveProblem {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }

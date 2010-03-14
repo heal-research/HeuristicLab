@@ -28,7 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.Permutation {
   [Item("TwoOptMoveMaker", "Peforms a 2-opt move on a given permutation and updates the quality.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public class TwoOptMoveMaker : SingleSuccessorOperator {
     public LookupParameter<DoubleData> QualityParameter {
       get { return (LookupParameter<DoubleData>)Parameters["Quality"]; }

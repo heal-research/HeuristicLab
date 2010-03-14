@@ -29,7 +29,7 @@ namespace HeuristicLab.Operators {
   /// An operator which adds new and empty sub-scopes to the current scope.
   /// </summary>
   [Item("SubScopesCreator", "An operator which adds new and empty sub-scopes to the current scope.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   [Creatable("Test")]
   public class SubScopesCreator : SingleSuccessorOperator {
     public ValueLookupParameter<IntData> NumberOfSubScopesParameter {

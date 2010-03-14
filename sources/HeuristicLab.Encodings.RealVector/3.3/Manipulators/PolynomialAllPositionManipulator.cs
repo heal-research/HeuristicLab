@@ -34,7 +34,7 @@ namespace HeuristicLab.Encodings.RealVector {
   /// It is performed on all positions of a real vector.
   /// </remarks>
   [Item("PolynomialAllPositionManipulator", "The polynomial manipulation is implemented as described in Deb, K. & Goyal, M. A. 1996. Combined Genetic Adaptive Search (GeneAS) for Engineering Design Computer Science and Informatics, 26, pp. 30-45. In this operator it is performed on all positions of the real vector.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public class PolynomialAllPositionManipulator : RealVectorManipulator {
     /// <summary>
     /// The contiguity parameter specifies the shape of the probability density function that controls the mutation. Setting it to 0 is similar to a uniform distribution over the entire manipulation range (specified by <see cref="MaximumManipulationParameter"/>.

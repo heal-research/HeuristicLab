@@ -10,7 +10,7 @@ namespace HeuristicLab.Persistence.Interfaces {
   /// </summary>
   /// <typeparam name="Source">The source type.</typeparam>
   /// <typeparam name="SerialData">The serialized type.</typeparam>
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public abstract class PrimitiveSerializerBase<Source, SerialData> :
       IPrimitiveSerializer<Source, SerialData>
       where SerialData : ISerialData {

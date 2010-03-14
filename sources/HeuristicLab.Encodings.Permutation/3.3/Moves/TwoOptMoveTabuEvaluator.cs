@@ -28,7 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.Permutation {
   [Item("TwoOptMoveTabuEvaluator", "Evaluates whether a given 2-opt move is tabu.")]
-  [StorableClass(StorableClassType.Empty)]
+  [StorableClass]
   public class TwoOptMoveTabuEvaluator : SingleSuccessorOperator {
     public LookupParameter<TwoOptMove> MoveParameter {
       get { return (LookupParameter<TwoOptMove>)Parameters["Move"]; }
