@@ -18,7 +18,6 @@ HeuristicLab.Data\3.3:HeuristicLab.Data-3.3.dll
 HeuristicLab.Data.Views\3.3:HeuristicLab.Data.Views-3.3.dll
 HeuristicLab.Encodings.Permutation\3.3:HeuristicLab.Encodings.Permutation-3.3.dll
 HeuristicLab.Encodings.RealVector\3.3:HeuristicLab.Encodings.RealVector-3.3.dll
-HeuristicLab.Evolutionary\3.3:HeuristicLab.Evolutionary-3.3.dll
 HeuristicLab.Logging\3.3:HeuristicLab.Logging-3.3.dll
 HeuristicLab.MainForm\3.2:HeuristicLab.MainForm-3.2.dll
 HeuristicLab.MainForm.WindowsForms\3.2:HeuristicLab.MainForm.WindowsForms-3.2.dll
@@ -27,6 +26,7 @@ HeuristicLab.Operators.Views\3.3:HeuristicLab.Operators.Views-3.3.dll
 HeuristicLab.Operators.Views.GraphVisualization\3.3:HeuristicLab.Operators.Views.GraphVisualization-3.3.dll
 HeuristicLab.Operators.Programmable\3.3:HeuristicLab.Operators.Programmable-3.3.dll
 HeuristicLab.Optimization\3.3:HeuristicLab.Optimization-3.3.dll
+HeuristicLab.Optimization.Operators\3.3:HeuristicLab.Optimization.Operators-3.3.dll
 HeuristicLab.Optimization.Views\3.3:HeuristicLab.Optimization.Views-3.3.dll
 HeuristicLab.Optimizer\3.3:HeuristicLab.Optimizer-3.3.dll
 HeuristicLab.Parameters\3.3:HeuristicLab.Parameters-3.3.dll

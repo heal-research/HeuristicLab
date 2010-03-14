@@ -26,8 +26,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("HeuristicLab.Evolutionary")]
-[assembly: AssemblyDescription("HeuristicLab classes for evolutionary algorithms")]
+[assembly: AssemblyTitle("HeuristicLab.Optimization.Operators")]
+[assembly: AssemblyDescription("HeuristicLab operators for solving optimization problems")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("HeuristicLab")]

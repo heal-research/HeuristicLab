@@ -26,7 +26,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Evolutionary {
+namespace HeuristicLab.Optimization.Operators {
   /// <summary>
   /// An operator which creates a new population of solutions.
   /// </summary>
