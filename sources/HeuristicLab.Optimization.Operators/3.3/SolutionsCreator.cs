@@ -28,14 +28,14 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization.Operators {
   /// <summary>
-  /// An operator which creates a new population of solutions.
+  /// An operator which creates new solutions.
   /// </summary>
-  [Item("PopulationCreator", "An operator which creates a new population of solutions.")]
+  [Item("SolutionsCreator", "An operator which creates new solutions.")]
   [StorableClass]
   [Creatable("Test")]
-  public sealed class PopulationCreator : SingleSuccessorOperator {
-    public ValueLookupParameter<IntData> PopulationSizeParameter {
-      get { return (ValueLookupParameter<IntData>)Parameters["PopulationSize"]; }
+  public sealed class SolutionsCreator : SingleSuccessorOperator {
+    public ValueLookupParameter<IntData> NumberOfSolutionsParameter {
+      get { return (ValueLookupParameter<IntData>)Parameters["NumberOfSolutions"]; }
     }
     public ValueLookupParameter<IOperator> SolutionCreatorParameter {
       get { return (ValueLookupParameter<IOperator>)Parameters["SolutionCreator"]; }
@@ -50,28 +50,27 @@ namespace HeuristicLab.Optimization.Operators {
       get { return CurrentScopeParameter.ActualValue; }
     }
 
-    public PopulationCreator()
+    public SolutionsCreator()
       : base() {
-      Parameters.Add(new ValueLookupParameter<IntData>("PopulationSize", "The number of individuals that should be created."));
+      Parameters.Add(new ValueLookupParameter<IntData>("NumberOfSolutions", "The number of solutions that should be created."));
       Parameters.Add(new ValueLookupParameter<IOperator>("SolutionCreator", "The operator which is used to create new solutions."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Evaluator", "The operator which is used to evaluate new solutions."));
-      Parameters.Add(new ScopeParameter("CurrentScope", "The current scope which represents the population."));
+      Parameters.Add(new ScopeParameter("CurrentScope", "The current scope to which the new solutions are added as sub-scopes."));
     }
 
     public override IOperation Apply() {
-      int size = PopulationSizeParameter.ActualValue.Value;
+      int count = NumberOfSolutionsParameter.ActualValue.Value;
       IOperator creator = SolutionCreatorParameter.ActualValue;
       IOperator evaluator = EvaluatorParameter.ActualValue;
 
-      if (CurrentScope.SubScopes.Count > 0) throw new InvalidOperationException("Population is not empty. PopulationCreator cannot be applied on scopes which already contain sub-scopes.");
-
-      for (int i = 0; i < size; i++)
-        CurrentScope.SubScopes.Add(new Scope(i.ToString()));
+      int current = CurrentScope.SubScopes.Count;
+      for (int i = 0; i < count; i++)
+        CurrentScope.SubScopes.Add(new Scope((current + i).ToString()));
 
       OperationCollection next = new OperationCollection();
-      for (int i = 0; i < CurrentScope.SubScopes.Count; i++) {
-        if (creator != null) next.Add(ExecutionContext.CreateOperation(creator, CurrentScope.SubScopes[i]));
-        if (evaluator != null) next.Add(ExecutionContext.CreateOperation(evaluator, CurrentScope.SubScopes[i]));
+      for (int i = 0; i < count; i++) {
+        if (creator != null) next.Add(ExecutionContext.CreateOperation(creator, CurrentScope.SubScopes[current + i]));
+        if (evaluator != null) next.Add(ExecutionContext.CreateOperation(evaluator, CurrentScope.SubScopes[current + i]));
       }
       next.Add(base.Apply());
       return next;

@@ -119,11 +119,11 @@ namespace HeuristicLab.Algorithms.SGA {
     private RandomCreator RandomCreator {
       get { return (RandomCreator)OperatorGraph.InitialOperator; }
     }
-    private PopulationCreator PopulationCreator {
-      get { return (PopulationCreator)RandomCreator.Successor; }
+    private SolutionsCreator SolutionsCreator {
+      get { return (SolutionsCreator)RandomCreator.Successor; }
     }
     private SGAMainLoop SGAMainLoop {
-      get { return (SGAMainLoop)PopulationCreator.Successor; }
+      get { return (SGAMainLoop)SolutionsCreator.Successor; }
     }
     private List<ISelector> selectors;
     private IEnumerable<ISelector> Selectors {
@@ -144,7 +144,7 @@ namespace HeuristicLab.Algorithms.SGA {
       Parameters.Add(new ValueParameter<IntData>("MaximumGenerations", "The maximum number of generations which should be processed.", new IntData(1000)));
 
       RandomCreator randomCreator = new RandomCreator();
-      PopulationCreator populationCreator = new PopulationCreator();
+      SolutionsCreator solutionsCreator = new SolutionsCreator();
       SGAMainLoop sgaMainLoop = new SGAMainLoop();
       OperatorGraph.InitialOperator = randomCreator;
 
@@ -153,10 +153,10 @@ namespace HeuristicLab.Algorithms.SGA {
       randomCreator.SeedParameter.Value = null;
       randomCreator.SetSeedRandomlyParameter.ActualName = SetSeedRandomlyParameter.Name;
       randomCreator.SetSeedRandomlyParameter.Value = null;
-      randomCreator.Successor = populationCreator;
+      randomCreator.Successor = solutionsCreator;
 
-      populationCreator.PopulationSizeParameter.ActualName = PopulationSizeParameter.Name;
-      populationCreator.Successor = sgaMainLoop;
+      solutionsCreator.NumberOfSolutionsParameter.ActualName = PopulationSizeParameter.Name;
+      solutionsCreator.Successor = sgaMainLoop;
 
       sgaMainLoop.SelectorParameter.ActualName = SelectorParameter.Name;
       sgaMainLoop.CrossoverParameter.ActualName = CrossoverParameter.Name;
@@ -183,7 +183,7 @@ namespace HeuristicLab.Algorithms.SGA {
       ParameterizeStochasticOperator(Problem.SolutionCreator);
       ParameterizeStochasticOperator(Problem.Evaluator);
       foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
-      ParameterizePopulationCreator();
+      ParameterizeSolutionsCreator();
       ParameterizeSGAMainLoop();
       ParameterizeSelectors();
       UpdateCrossovers();
@@ -193,12 +193,12 @@ namespace HeuristicLab.Algorithms.SGA {
     }
     protected override void Problem_SolutionCreatorChanged(object sender, EventArgs e) {
       ParameterizeStochasticOperator(Problem.SolutionCreator);
-      ParameterizePopulationCreator();
+      ParameterizeSolutionsCreator();
       base.Problem_SolutionCreatorChanged(sender, e);
     }
     protected override void Problem_EvaluatorChanged(object sender, EventArgs e) {
       ParameterizeStochasticOperator(Problem.Evaluator);
-      ParameterizePopulationCreator();
+      ParameterizeSolutionsCreator();
       ParameterizeSGAMainLoop();
       ParameterizeSelectors();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
@@ -243,9 +243,9 @@ namespace HeuristicLab.Algorithms.SGA {
         Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
     }
 
-    private void ParameterizePopulationCreator() {
-      PopulationCreator.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
-      PopulationCreator.SolutionCreatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
+    private void ParameterizeSolutionsCreator() {
+      SolutionsCreator.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
+      SolutionsCreator.SolutionCreatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
     }
     private void ParameterizeSGAMainLoop() {
       SGAMainLoop.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;

@@ -81,9 +81,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HeuristicLabOptimizationOperatorsPlugin.cs" />
-    <Compile Include="PopulationCreator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ChildrenCreator.cs" />
+    <Compile Include="SolutionsCreator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
