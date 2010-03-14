@@ -104,6 +104,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="UptimeCalendarDao.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Hive.dbml">

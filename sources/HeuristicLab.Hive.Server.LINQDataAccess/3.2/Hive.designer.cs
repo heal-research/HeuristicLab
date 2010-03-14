@@ -63,6 +63,9 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
     partial void InsertJob(Job instance);
     partial void UpdateJob(Job instance);
     partial void DeleteJob(Job instance);
+    partial void InsertUptimeCalendar(UptimeCalendar instance);
+    partial void UpdateUptimeCalendar(UptimeCalendar instance);
+    partial void DeleteUptimeCalendar(UptimeCalendar instance);
     #endregion
 		
 		public HiveDataContext() : 
@@ -180,6 +183,14 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 			get
 			{
 				return this.GetTable<Job>();
+			}
+		}
+		
+		public System.Data.Linq.Table<UptimeCalendar> UptimeCalendars
+		{
+			get
+			{
+				return this.GetTable<UptimeCalendar>();
 			}
 		}
 	}
@@ -603,7 +614,7 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 			}
 		}
 		
-		[Column(Storage="_UpDownTimeCalendar", DbType="Xml", CanBeNull=true, UpdateCheck=UpdateCheck.Never)]
+		[Column(Storage="_UpDownTimeCalendar", DbType="Xml", UpdateCheck=UpdateCheck.Never)]
 		public System.Xml.Linq.XElement UpDownTimeCalendar
 		{
 			get
@@ -1498,6 +1509,8 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 		
 		private EntityRef<Client> _Client;
 		
+		private EntitySet<UptimeCalendar> _UptimeCalendars;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -1514,6 +1527,7 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 			this._ClientGroup = default(EntityRef<ClientGroup>);
 			this._ClientGroup_Resources = new EntitySet<ClientGroup_Resource>(new Action<ClientGroup_Resource>(this.attach_ClientGroup_Resources), new Action<ClientGroup_Resource>(this.detach_ClientGroup_Resources));
 			this._Client = default(EntityRef<Client>);
+			this._UptimeCalendars = new EntitySet<UptimeCalendar>(new Action<UptimeCalendar>(this.attach_UptimeCalendars), new Action<UptimeCalendar>(this.detach_UptimeCalendars));
 			OnCreated();
 		}
 		
@@ -1641,6 +1655,19 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 			}
 		}
 		
+		[Association(Name="Resource_UptimeCalendar", Storage="_UptimeCalendars", ThisKey="ResourceId", OtherKey="ResourceId")]
+		public EntitySet<UptimeCalendar> UptimeCalendars
+		{
+			get
+			{
+				return this._UptimeCalendars;
+			}
+			set
+			{
+				this._UptimeCalendars.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -1680,6 +1707,18 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 		}
 		
 		private void detach_ClientGroup_Resources(ClientGroup_Resource entity)
+		{
+			this.SendPropertyChanging();
+			entity.Resource = null;
+		}
+		
+		private void attach_UptimeCalendars(UptimeCalendar entity)
+		{
+			this.SendPropertyChanging();
+			entity.Resource = this;
+		}
+		
+		private void detach_UptimeCalendars(UptimeCalendar entity)
 		{
 			this.SendPropertyChanging();
 			entity.Resource = null;
@@ -2277,7 +2316,7 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 			}
 		}
 		
-		[Column(Storage="_SerializedJob", DbType="VarBinary(MAX)", CanBeNull=true, UpdateCheck=UpdateCheck.Never)]
+		[Column(Storage="_SerializedJob", DbType="VarBinary(MAX)", UpdateCheck=UpdateCheck.Never)]
 		public System.Data.Linq.Binary SerializedJob
 		{
 			get
@@ -2656,6 +2695,253 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 		{
 			this.SendPropertyChanging();
 			entity.Job1 = null;
+		}
+	}
+	
+	[Table(Name="dbo.UptimeCalendar")]
+	public partial class UptimeCalendar : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _UptimeCalendarId;
+		
+		private System.Guid _ResourceId;
+		
+		private System.DateTime _StartDate;
+		
+		private System.DateTime _EndDate;
+		
+		private bool _AllDayEvent;
+		
+		private bool _Recurring;
+		
+		private System.Guid _RecurringId;
+		
+		private EntityRef<Resource> _Resource;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnUptimeCalendarIdChanging(System.Guid value);
+    partial void OnUptimeCalendarIdChanged();
+    partial void OnResourceIdChanging(System.Guid value);
+    partial void OnResourceIdChanged();
+    partial void OnStartDateChanging(System.DateTime value);
+    partial void OnStartDateChanged();
+    partial void OnEndDateChanging(System.DateTime value);
+    partial void OnEndDateChanged();
+    partial void OnAllDayEventChanging(bool value);
+    partial void OnAllDayEventChanged();
+    partial void OnRecurringChanging(bool value);
+    partial void OnRecurringChanged();
+    partial void OnRecurringIdChanging(System.Guid value);
+    partial void OnRecurringIdChanged();
+    #endregion
+		
+		public UptimeCalendar()
+		{
+			this._Resource = default(EntityRef<Resource>);
+			OnCreated();
+		}
+		
+		[Column(Storage="_UptimeCalendarId", AutoSync=AutoSync.OnInsert, DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true, IsDbGenerated=true)]
+		public System.Guid UptimeCalendarId
+		{
+			get
+			{
+				return this._UptimeCalendarId;
+			}
+			set
+			{
+				if ((this._UptimeCalendarId != value))
+				{
+					this.OnUptimeCalendarIdChanging(value);
+					this.SendPropertyChanging();
+					this._UptimeCalendarId = value;
+					this.SendPropertyChanged("UptimeCalendarId");
+					this.OnUptimeCalendarIdChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_ResourceId", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid ResourceId
+		{
+			get
+			{
+				return this._ResourceId;
+			}
+			set
+			{
+				if ((this._ResourceId != value))
+				{
+					if (this._Resource.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnResourceIdChanging(value);
+					this.SendPropertyChanging();
+					this._ResourceId = value;
+					this.SendPropertyChanged("ResourceId");
+					this.OnResourceIdChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_StartDate", DbType="DateTime NOT NULL")]
+		public System.DateTime StartDate
+		{
+			get
+			{
+				return this._StartDate;
+			}
+			set
+			{
+				if ((this._StartDate != value))
+				{
+					this.OnStartDateChanging(value);
+					this.SendPropertyChanging();
+					this._StartDate = value;
+					this.SendPropertyChanged("StartDate");
+					this.OnStartDateChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_EndDate", DbType="DateTime NOT NULL")]
+		public System.DateTime EndDate
+		{
+			get
+			{
+				return this._EndDate;
+			}
+			set
+			{
+				if ((this._EndDate != value))
+				{
+					this.OnEndDateChanging(value);
+					this.SendPropertyChanging();
+					this._EndDate = value;
+					this.SendPropertyChanged("EndDate");
+					this.OnEndDateChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_AllDayEvent", DbType="Bit NOT NULL")]
+		public bool AllDayEvent
+		{
+			get
+			{
+				return this._AllDayEvent;
+			}
+			set
+			{
+				if ((this._AllDayEvent != value))
+				{
+					this.OnAllDayEventChanging(value);
+					this.SendPropertyChanging();
+					this._AllDayEvent = value;
+					this.SendPropertyChanged("AllDayEvent");
+					this.OnAllDayEventChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_Recurring", DbType="Bit NOT NULL")]
+		public bool Recurring
+		{
+			get
+			{
+				return this._Recurring;
+			}
+			set
+			{
+				if ((this._Recurring != value))
+				{
+					this.OnRecurringChanging(value);
+					this.SendPropertyChanging();
+					this._Recurring = value;
+					this.SendPropertyChanged("Recurring");
+					this.OnRecurringChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_RecurringId", DbType="UniqueIdentifier")]
+		public System.Guid RecurringId
+		{
+			get
+			{
+				return this._RecurringId;
+			}
+			set
+			{
+				if ((this._RecurringId != value))
+				{
+					this.OnRecurringIdChanging(value);
+					this.SendPropertyChanging();
+					this._RecurringId = value;
+					this.SendPropertyChanged("RecurringId");
+					this.OnRecurringIdChanged();
+				}
+			}
+		}
+		
+		[Association(Name="Resource_UptimeCalendar", Storage="_Resource", ThisKey="ResourceId", OtherKey="ResourceId", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
+		public Resource Resource
+		{
+			get
+			{
+				return this._Resource.Entity;
+			}
+			set
+			{
+				Resource previousValue = this._Resource.Entity;
+				if (((previousValue != value) 
+							|| (this._Resource.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Resource.Entity = null;
+						previousValue.UptimeCalendars.Remove(this);
+					}
+					this._Resource.Entity = value;
+					if ((value != null))
+					{
+						value.UptimeCalendars.Add(this);
+						this._ResourceId = value.ResourceId;
+					}
+					else
+					{
+						this._ResourceId = default(System.Guid);
+					}
+					this.SendPropertyChanged("Resource");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
 		}
 	}
 }

@@ -87,6 +87,7 @@
       this.lvClientControl = new System.Windows.Forms.ListView();
       this.tcManagementConsole = new System.Windows.Forms.TabControl();
       this.checkBox1 = new System.Windows.Forms.CheckBox();
+      this.menuItemOpenCalendar = new System.Windows.Forms.ToolStripMenuItem();
       this.menuStrip1.SuspendLayout();
       this.plClientDetails.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pbClientControl)).BeginInit();
@@ -129,21 +130,21 @@
             this.refreshToolStripMenuItem,
             this.closeToolStripMenuItem});
       this.informationToolStripMenuItem.Name = "informationToolStripMenuItem";
-      this.informationToolStripMenuItem.Size = new System.Drawing.Size(81, 20);
+      this.informationToolStripMenuItem.Size = new System.Drawing.Size(90, 20);
       this.informationToolStripMenuItem.Text = "Management";
       // 
       // refreshToolStripMenuItem
       // 
       this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
       this.refreshToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
-      this.refreshToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+      this.refreshToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
       this.refreshToolStripMenuItem.Text = "Refresh";
       this.refreshToolStripMenuItem.Click += new System.EventHandler(this.Refresh_Click);
       // 
       // closeToolStripMenuItem
       // 
       this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-      this.closeToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+      this.closeToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
       this.closeToolStripMenuItem.Text = "Close";
       this.closeToolStripMenuItem.Click += new System.EventHandler(this.Close_Click);
       // 
@@ -154,14 +155,14 @@
             this.groupToolStripMenuItem,
             this.projectToolStripMenuItem});
       this.addToolStripMenuItem.Name = "addToolStripMenuItem";
-      this.addToolStripMenuItem.Size = new System.Drawing.Size(38, 20);
+      this.addToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
       this.addToolStripMenuItem.Text = "Add";
       // 
       // jobToolStripMenuItem
       // 
       this.jobToolStripMenuItem.Name = "jobToolStripMenuItem";
       this.jobToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.J)));
-      this.jobToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+      this.jobToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
       this.jobToolStripMenuItem.Text = "Job";
       this.jobToolStripMenuItem.Click += new System.EventHandler(this.AddJob_Click);
       // 
@@ -169,7 +170,7 @@
       // 
       this.groupToolStripMenuItem.Name = "groupToolStripMenuItem";
       this.groupToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.G)));
-      this.groupToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+      this.groupToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
       this.groupToolStripMenuItem.Text = "Group";
       this.groupToolStripMenuItem.Click += new System.EventHandler(this.groupToolStripMenuItem_Click);
       // 
@@ -177,7 +178,7 @@
       // 
       this.projectToolStripMenuItem.Name = "projectToolStripMenuItem";
       this.projectToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-      this.projectToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+      this.projectToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
       this.projectToolStripMenuItem.Text = "Project";
       this.projectToolStripMenuItem.Click += new System.EventHandler(this.projectToolStripMenuItem_Click);
       // 
@@ -188,7 +189,7 @@
             this.smallIconsToolStripMenuItem,
             this.listToolStripMenuItem});
       this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-      this.viewToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
+      this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
       this.viewToolStripMenuItem.Text = "View";
       // 
       // largeIconsToolStripMenuItem
@@ -197,7 +198,7 @@
       this.largeIconsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
       this.largeIconsToolStripMenuItem.Name = "largeIconsToolStripMenuItem";
       this.largeIconsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D1)));
-      this.largeIconsToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+      this.largeIconsToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
       this.largeIconsToolStripMenuItem.Text = "Large Icons";
       this.largeIconsToolStripMenuItem.Click += new System.EventHandler(this.largeIconsToolStripMenuItem_Click);
       // 
@@ -205,7 +206,7 @@
       // 
       this.smallIconsToolStripMenuItem.Name = "smallIconsToolStripMenuItem";
       this.smallIconsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D2)));
-      this.smallIconsToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+      this.smallIconsToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
       this.smallIconsToolStripMenuItem.Text = "Small Icons";
       this.smallIconsToolStripMenuItem.Click += new System.EventHandler(this.smallIconsToolStripMenuItem_Click);
       // 
@@ -213,7 +214,7 @@
       // 
       this.listToolStripMenuItem.Name = "listToolStripMenuItem";
       this.listToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D3)));
-      this.listToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+      this.listToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
       this.listToolStripMenuItem.Text = "List";
       this.listToolStripMenuItem.Click += new System.EventHandler(this.listToolStripMenuItem_Click);
       // 
@@ -546,18 +547,18 @@
             this.menuItemAbortJob,
             this.menuItemGetSnapshot});
       this.contextMenuJob.Name = "contextMenuJob";
-      this.contextMenuJob.Size = new System.Drawing.Size(151, 48);
+      this.contextMenuJob.Size = new System.Drawing.Size(145, 48);
       // 
       // menuItemAbortJob
       // 
       this.menuItemAbortJob.Name = "menuItemAbortJob";
-      this.menuItemAbortJob.Size = new System.Drawing.Size(150, 22);
+      this.menuItemAbortJob.Size = new System.Drawing.Size(144, 22);
       this.menuItemAbortJob.Text = "Abort";
       // 
       // menuItemGetSnapshot
       // 
       this.menuItemGetSnapshot.Name = "menuItemGetSnapshot";
-      this.menuItemGetSnapshot.Size = new System.Drawing.Size(150, 22);
+      this.menuItemGetSnapshot.Size = new System.Drawing.Size(144, 22);
       this.menuItemGetSnapshot.Text = "Get Snapshot";
       // 
       // ilSmallImgJob
@@ -652,20 +653,21 @@
       // 
       this.contextMenuGroup.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuItemAddGroup,
-            this.menuItemDeleteGroup});
+            this.menuItemDeleteGroup,
+            this.menuItemOpenCalendar});
       this.contextMenuGroup.Name = "contextMenuJob";
-      this.contextMenuGroup.Size = new System.Drawing.Size(149, 48);
+      this.contextMenuGroup.Size = new System.Drawing.Size(154, 92);
       // 
       // menuItemAddGroup
       // 
       this.menuItemAddGroup.Name = "menuItemAddGroup";
-      this.menuItemAddGroup.Size = new System.Drawing.Size(148, 22);
+      this.menuItemAddGroup.Size = new System.Drawing.Size(153, 22);
       this.menuItemAddGroup.Text = "Add Group";
       // 
       // menuItemDeleteGroup
       // 
       this.menuItemDeleteGroup.Name = "menuItemDeleteGroup";
-      this.menuItemDeleteGroup.Size = new System.Drawing.Size(148, 22);
+      this.menuItemDeleteGroup.Size = new System.Drawing.Size(153, 22);
       this.menuItemDeleteGroup.Text = "Delete Group";
       // 
       // lvClientControl
@@ -702,6 +704,12 @@
       this.checkBox1.TabIndex = 0;
       this.checkBox1.Text = "checkBox1";
       this.checkBox1.UseVisualStyleBackColor = true;
+      // 
+      // menuItemOpenCalendar
+      // 
+      this.menuItemOpenCalendar.Name = "menuItemOpenCalendar";
+      this.menuItemOpenCalendar.Size = new System.Drawing.Size(153, 22);
+      this.menuItemOpenCalendar.Text = "Open Calendar";
       // 
       // HiveServerManagementConsole
       // 
@@ -809,5 +817,6 @@
     private System.Windows.Forms.ToolStripMenuItem menuItemDeleteGroup;
     private System.Windows.Forms.ToolStripMenuItem groupToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem projectToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem menuItemOpenCalendar;
   }
 }

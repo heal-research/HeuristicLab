@@ -67,7 +67,7 @@
   <ItemGroup>
     <Reference Include="Calendar.DayView, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\HeuristicLab.Hive.Client.Common\3.2\Calendar.DayView.dll</HintPath>
+      <HintPath>..\..\HeuristicLab.Hive.Contracts\3.2\Calendar.DayView.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">

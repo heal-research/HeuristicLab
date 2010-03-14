@@ -128,6 +128,14 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         }
       };
 
+      menuItemOpenCalendar.Click += (s, e) => {
+                                      if (tvClientControl.SelectedNode != null) {
+                                        CgCalendar cal = new CgCalendar(((ClientGroupDto)tvClientControl.SelectedNode.Tag).Id);                                        
+                                        cal.Show();
+                                      }
+                                    };
+
+
       // drag item to treeview
       lvClientControl.ItemDrag += delegate(object sender, ItemDragEventArgs e) {
         List<string> itemIDs = new List<string>((sender as ListView).SelectedItems.Count);
@@ -682,6 +690,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         if (selectedGroup != null) {
           contextMenuGroup.Items.Add(menuItemAddGroup);
           contextMenuGroup.Items.Add(menuItemDeleteGroup);
+          contextMenuGroup.Items.Add(menuItemOpenCalendar);
         }
       } else {
         contextMenuGroup.Items.Add(menuItemAddGroup);

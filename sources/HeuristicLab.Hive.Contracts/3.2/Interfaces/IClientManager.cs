@@ -54,5 +54,10 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
     Response DeleteResourceFromGroup(Guid clientGroupId, Guid resourceId);
     [OperationContract]
     ResponseList<UpTimeStatisticsDto> GetAllUpTimeStatistics();
+    [OperationContract]
+    ResponseList<AppointmentDto> GetUptimeCalendarForResource(Guid guid);
+
+    [OperationContract]
+    Response SetUptimeCalendarForResource(Guid guid, IEnumerable<AppointmentDto> appointments);
   }
 }

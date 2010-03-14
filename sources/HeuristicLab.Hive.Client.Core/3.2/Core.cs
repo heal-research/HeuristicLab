@@ -103,7 +103,7 @@ namespace HeuristicLab.Hive.Client.Core {
         MessageContainer container = queue.GetMessage();        
         DetermineAction(container);
       }
-      Console.WriteLine("ended!");
+      System.Console.WriteLine("ended");
     }
 
     /// <summary>

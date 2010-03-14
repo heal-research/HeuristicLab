@@ -12,6 +12,7 @@ namespace HeuristicLab.Hive.Server.Core {
     [ThreadStatic] private static IClientGroupDao clientGroupDao;
     [ThreadStatic] private static IJobDao jobDao;
     [ThreadStatic] private static IPluginInfoDao pluginInfoDao;
+    [ThreadStatic] private static IUptimeCalendarDao uptimeCalendarDao;
 
     public static IClientDao ClientDao {
       get {
@@ -50,6 +51,14 @@ namespace HeuristicLab.Hive.Server.Core {
         if(pluginInfoDao == null)
           pluginInfoDao = new PluginInfoDao();
         return pluginInfoDao;
+      }
+    }
+
+    public static IUptimeCalendarDao UptimeCalendarDao {
+      get {
+        if (uptimeCalendarDao == null)
+          uptimeCalendarDao = new UptimeCalendarDao();
+        return uptimeCalendarDao;
       }
     }
 

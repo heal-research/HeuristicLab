@@ -76,6 +76,7 @@
       <Association Name="Resource_ClientGroup" Member="ClientGroup" ThisKey="ResourceId" OtherKey="ResourceId" Type="ClientGroup" Cardinality="One" />
       <Association Name="Resource_ClientGroup_Resource" Member="ClientGroup_Resources" ThisKey="ResourceId" OtherKey="ResourceId" Type="ClientGroup_Resource" />
       <Association Name="Resource_Client" Member="Client" ThisKey="ResourceId" OtherKey="ResourceId" Type="Client" Cardinality="One" />
+      <Association Name="Resource_UptimeCalendar" Member="UptimeCalendars" ThisKey="ResourceId" OtherKey="ResourceId" Type="UptimeCalendar" />
     </Type>
   </Table>
   <Table Name="dbo.Client" Member="Clients">
@@ -117,6 +118,18 @@
       <Association Name="Client_Job" Member="Client" ThisKey="ResourceId" OtherKey="ResourceId" Type="Client" IsForeignKey="true" DeleteRule="SET NULL" />
       <Association Name="Job_Job" Member="Job1" ThisKey="ParentJobId" OtherKey="JobId" Type="Job" IsForeignKey="true" />
       <Association Name="Project_Job" Member="Project" ThisKey="ProjectId" OtherKey="ProjectId" Type="Project" IsForeignKey="true" DeleteRule="SET NULL" />
+    </Type>
+  </Table>
+  <Table Name="dbo.UptimeCalendar" Member="UptimeCalendars">
+    <Type Name="UptimeCalendar">
+      <Column Name="UptimeCalendarId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ResourceId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="StartDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="EndDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="AllDayEvent" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Recurring" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="RecurringId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="false" />
+      <Association Name="Resource_UptimeCalendar" Member="Resource" ThisKey="ResourceId" OtherKey="ResourceId" Type="Resource" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
     </Type>
   </Table>
 </Database>
