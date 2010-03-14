@@ -105,11 +105,12 @@ namespace HeuristicLab.Operators.Programmable {
       get { return namespaces; }
     }
 
+    public override bool CanChangeName {
+      get { return true; }
+    }
     public override bool CanChangeDescription {
-      get {
-        return true;
-      }
-    }    
+      get { return true; }
+    }
 
     #endregion
 

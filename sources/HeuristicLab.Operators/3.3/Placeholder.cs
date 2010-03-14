@@ -31,6 +31,9 @@ namespace HeuristicLab.Operators {
   [Creatable("Test")]
   [StorableClass]
   public sealed class Placeholder : SingleSuccessorOperator {
+    public override bool CanChangeName {
+      get { return true; }
+    }
     public LookupParameter<IOperator> OperatorParameter {
       get { return (LookupParameter<IOperator>)Parameters["Operator"]; }
     }
