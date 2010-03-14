@@ -58,7 +58,7 @@ namespace HeuristicLab.Encodings.RealVector {
     }
 
     /// <summary>
-    /// Performs a Breeder Genetic Algorithm Manipulation on the given <paramref name="vector"/>.
+    /// Performs a breeder genetic algorithm manipulation on the given <paramref name="vector"/>.
     /// </summary>
     /// <param name="random">A random number generator.</param>
     /// <param name="vector">The real vector to manipulate.</param>

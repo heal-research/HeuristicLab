@@ -26,7 +26,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("HeuristicLab.Algorithms.TS")]
-[assembly: AssemblyDescription("HeuristicLab Tabu Search (TS)")]
+[assembly: AssemblyDescription("HeuristicLab tabu search (TS)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("HeuristicLab")]

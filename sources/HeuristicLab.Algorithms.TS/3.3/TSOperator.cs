@@ -29,9 +29,9 @@ using HeuristicLab.Selection;
 
 namespace HeuristicLab.Algorithms.TS {
   /// <summary>
-  /// An operator which represents a Tabu Search.
+  /// An operator which represents a tabu search.
   /// </summary>
-  [Item("TSOperator", "An operator which represents a Tabu Search.")]
+  [Item("TSOperator", "An operator which represents a tabu search.")]
   [StorableClass]
   public class TSOperator : AlgorithmOperator {
     #region Parameter properties

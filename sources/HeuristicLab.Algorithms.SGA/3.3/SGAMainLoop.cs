@@ -30,9 +30,9 @@ using HeuristicLab.Selection;
 
 namespace HeuristicLab.Algorithms.SGA {
   /// <summary>
-  /// An operator which represents the main loop of a Standard Genetic Algorithm.
+  /// An operator which represents the main loop of a standard genetic algorithm (SGA).
   /// </summary>
-  [Item("SGAMainLoop", "An operator which represents the main loop of a Standard Genetic Algorithm.")]
+  [Item("SGAMainLoop", "An operator which represents the main loop of a standard genetic algorithm (SGA).")]
   [Creatable("Test")]
   [StorableClass]
   public class SGAMainLoop : AlgorithmOperator {
