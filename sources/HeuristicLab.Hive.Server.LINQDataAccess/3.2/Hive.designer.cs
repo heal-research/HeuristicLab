@@ -45,9 +45,6 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
     partial void InsertClientGroup_Resource(ClientGroup_Resource instance);
     partial void UpdateClientGroup_Resource(ClientGroup_Resource instance);
     partial void DeleteClientGroup_Resource(ClientGroup_Resource instance);
-    partial void InsertJob(Job instance);
-    partial void UpdateJob(Job instance);
-    partial void DeleteJob(Job instance);
     partial void InsertPluginInfo(PluginInfo instance);
     partial void UpdatePluginInfo(PluginInfo instance);
     partial void DeletePluginInfo(PluginInfo instance);
@@ -63,6 +60,9 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
     partial void InsertClient(Client instance);
     partial void UpdateClient(Client instance);
     partial void DeleteClient(Client instance);
+    partial void InsertJob(Job instance);
+    partial void UpdateJob(Job instance);
+    partial void DeleteJob(Job instance);
     #endregion
 		
 		public HiveDataContext() : 
@@ -135,14 +135,6 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 			}
 		}
 		
-		public System.Data.Linq.Table<Job> Jobs
-		{
-			get
-			{
-				return this.GetTable<Job>();
-			}
-		}
-		
 		public System.Data.Linq.Table<PluginInfo> PluginInfos
 		{
 			get
@@ -182,6 +174,14 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 				return this.GetTable<Client>();
 			}
 		}
+		
+		public System.Data.Linq.Table<Job> Jobs
+		{
+			get
+			{
+				return this.GetTable<Job>();
+			}
+		}
 	}
 	
 	[Table(Name="dbo.AssignedResources")]
@@ -196,9 +196,9 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 		
 		private System.Guid _AssignedRessourcesId;
 		
-		private EntityRef<Job> _Job;
-		
 		private EntityRef<Resource> _Resource;
+		
+		private EntityRef<Job> _Job;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -214,8 +214,8 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 		
 		public AssignedResource()
 		{
-			this._Job = default(EntityRef<Job>);
 			this._Resource = default(EntityRef<Resource>);
+			this._Job = default(EntityRef<Job>);
 			OnCreated();
 		}
 		
@@ -287,40 +287,6 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 			}
 		}
 		
-		[Association(Name="Job_AssignedResource", Storage="_Job", ThisKey="JobId", OtherKey="JobId", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
-		public Job Job
-		{
-			get
-			{
-				return this._Job.Entity;
-			}
-			set
-			{
-				Job previousValue = this._Job.Entity;
-				if (((previousValue != value) 
-							|| (this._Job.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Job.Entity = null;
-						previousValue.AssignedResources.Remove(this);
-					}
-					this._Job.Entity = value;
-					if ((value != null))
-					{
-						value.AssignedResources.Add(this);
-						this._JobId = value.JobId;
-					}
-					else
-					{
-						this._JobId = default(System.Guid);
-					}
-					this.SendPropertyChanged("Job");
-				}
-			}
-		}
-		
 		[Association(Name="Resource_AssignedResource", Storage="_Resource", ThisKey="ResourceId", OtherKey="ResourceId", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
 		public Resource Resource
 		{
@@ -351,6 +317,40 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 						this._ResourceId = default(System.Guid);
 					}
 					this.SendPropertyChanged("Resource");
+				}
+			}
+		}
+		
+		[Association(Name="Job_AssignedResource", Storage="_Job", ThisKey="JobId", OtherKey="JobId", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
+		public Job Job
+		{
+			get
+			{
+				return this._Job.Entity;
+			}
+			set
+			{
+				Job previousValue = this._Job.Entity;
+				if (((previousValue != value) 
+							|| (this._Job.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Job.Entity = null;
+						previousValue.AssignedResources.Remove(this);
+					}
+					this._Job.Entity = value;
+					if ((value != null))
+					{
+						value.AssignedResources.Add(this);
+						this._JobId = value.JobId;
+					}
+					else
+					{
+						this._JobId = default(System.Guid);
+					}
+					this.SendPropertyChanged("Job");
 				}
 			}
 		}
@@ -1012,587 +1012,6 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 		}
 	}
 	
-	[Table(Name="dbo.Job")]
-	public partial class Job : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private System.Guid _JobId;
-		
-		private System.Nullable<System.Guid> _ParentJobId;
-		
-		private string _JobState;
-		
-		private System.Nullable<System.Guid> _ResourceId;
-		
-		private System.Nullable<double> _Percentage;
-		
-		private System.Data.Linq.Link<System.Data.Linq.Binary> _SerializedJob;
-		
-		private System.Nullable<System.DateTime> _DateCreated;
-		
-		private System.Nullable<System.DateTime> _DateCalculated;
-		
-		private System.Nullable<System.DateTime> _DateFinished;
-		
-		private System.Nullable<int> _Priority;
-		
-		private System.Nullable<System.Guid> _ProjectId;
-		
-		private System.Nullable<System.Guid> _UserId;
-		
-		private int _CoresNeeded;
-		
-		private int _MemoryNeeded;
-		
-		private EntitySet<AssignedResource> _AssignedResources;
-		
-		private EntitySet<Job> _Jobs;
-		
-		private EntitySet<RequiredPlugin> _RequiredPlugins;
-		
-		private EntityRef<Job> _Job1;
-		
-		private EntityRef<Project> _Project;
-		
-		private EntityRef<Client> _Client;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnJobIdChanging(System.Guid value);
-    partial void OnJobIdChanged();
-    partial void OnParentJobIdChanging(System.Nullable<System.Guid> value);
-    partial void OnParentJobIdChanged();
-    partial void OnJobStateChanging(string value);
-    partial void OnJobStateChanged();
-    partial void OnResourceIdChanging(System.Nullable<System.Guid> value);
-    partial void OnResourceIdChanged();
-    partial void OnPercentageChanging(System.Nullable<double> value);
-    partial void OnPercentageChanged();
-    partial void OnSerializedJobChanging(System.Data.Linq.Binary value);
-    partial void OnSerializedJobChanged();
-    partial void OnDateCreatedChanging(System.Nullable<System.DateTime> value);
-    partial void OnDateCreatedChanged();
-    partial void OnDateCalculatedChanging(System.Nullable<System.DateTime> value);
-    partial void OnDateCalculatedChanged();
-    partial void OnDateFinishedChanging(System.Nullable<System.DateTime> value);
-    partial void OnDateFinishedChanged();
-    partial void OnPriorityChanging(System.Nullable<int> value);
-    partial void OnPriorityChanged();
-    partial void OnProjectIdChanging(System.Nullable<System.Guid> value);
-    partial void OnProjectIdChanged();
-    partial void OnUserIdChanging(System.Nullable<System.Guid> value);
-    partial void OnUserIdChanged();
-    partial void OnCoresNeededChanging(int value);
-    partial void OnCoresNeededChanged();
-    partial void OnMemoryNeededChanging(int value);
-    partial void OnMemoryNeededChanged();
-    #endregion
-		
-		public Job()
-		{
-			this._AssignedResources = new EntitySet<AssignedResource>(new Action<AssignedResource>(this.attach_AssignedResources), new Action<AssignedResource>(this.detach_AssignedResources));
-			this._Jobs = new EntitySet<Job>(new Action<Job>(this.attach_Jobs), new Action<Job>(this.detach_Jobs));
-			this._RequiredPlugins = new EntitySet<RequiredPlugin>(new Action<RequiredPlugin>(this.attach_RequiredPlugins), new Action<RequiredPlugin>(this.detach_RequiredPlugins));
-			this._Job1 = default(EntityRef<Job>);
-			this._Project = default(EntityRef<Project>);
-			this._Client = default(EntityRef<Client>);
-			OnCreated();
-		}
-		
-		[Column(Storage="_JobId", AutoSync=AutoSync.OnInsert, DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true, IsDbGenerated=true)]
-		public System.Guid JobId
-		{
-			get
-			{
-				return this._JobId;
-			}
-			set
-			{
-				if ((this._JobId != value))
-				{
-					this.OnJobIdChanging(value);
-					this.SendPropertyChanging();
-					this._JobId = value;
-					this.SendPropertyChanged("JobId");
-					this.OnJobIdChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_ParentJobId", DbType="UniqueIdentifier")]
-		public System.Nullable<System.Guid> ParentJobId
-		{
-			get
-			{
-				return this._ParentJobId;
-			}
-			set
-			{
-				if ((this._ParentJobId != value))
-				{
-					if (this._Job1.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnParentJobIdChanging(value);
-					this.SendPropertyChanging();
-					this._ParentJobId = value;
-					this.SendPropertyChanged("ParentJobId");
-					this.OnParentJobIdChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_JobState", DbType="VarChar(MAX)")]
-		public string JobState
-		{
-			get
-			{
-				return this._JobState;
-			}
-			set
-			{
-				if ((this._JobState != value))
-				{
-					this.OnJobStateChanging(value);
-					this.SendPropertyChanging();
-					this._JobState = value;
-					this.SendPropertyChanged("JobState");
-					this.OnJobStateChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_ResourceId", DbType="UniqueIdentifier")]
-		public System.Nullable<System.Guid> ResourceId
-		{
-			get
-			{
-				return this._ResourceId;
-			}
-			set
-			{
-				if ((this._ResourceId != value))
-				{
-					if (this._Client.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnResourceIdChanging(value);
-					this.SendPropertyChanging();
-					this._ResourceId = value;
-					this.SendPropertyChanged("ResourceId");
-					this.OnResourceIdChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_Percentage", DbType="Float")]
-		public System.Nullable<double> Percentage
-		{
-			get
-			{
-				return this._Percentage;
-			}
-			set
-			{
-				if ((this._Percentage != value))
-				{
-					this.OnPercentageChanging(value);
-					this.SendPropertyChanging();
-					this._Percentage = value;
-					this.SendPropertyChanged("Percentage");
-					this.OnPercentageChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_SerializedJob", DbType="VarBinary(MAX)", CanBeNull=true, UpdateCheck=UpdateCheck.Never)]
-		public System.Data.Linq.Binary SerializedJob
-		{
-			get
-			{
-				return this._SerializedJob.Value;
-			}
-			set
-			{
-				if ((this._SerializedJob.Value != value))
-				{
-					this.OnSerializedJobChanging(value);
-					this.SendPropertyChanging();
-					this._SerializedJob.Value = value;
-					this.SendPropertyChanged("SerializedJob");
-					this.OnSerializedJobChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_DateCreated", DbType="DateTime")]
-		public System.Nullable<System.DateTime> DateCreated
-		{
-			get
-			{
-				return this._DateCreated;
-			}
-			set
-			{
-				if ((this._DateCreated != value))
-				{
-					this.OnDateCreatedChanging(value);
-					this.SendPropertyChanging();
-					this._DateCreated = value;
-					this.SendPropertyChanged("DateCreated");
-					this.OnDateCreatedChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_DateCalculated", DbType="DateTime")]
-		public System.Nullable<System.DateTime> DateCalculated
-		{
-			get
-			{
-				return this._DateCalculated;
-			}
-			set
-			{
-				if ((this._DateCalculated != value))
-				{
-					this.OnDateCalculatedChanging(value);
-					this.SendPropertyChanging();
-					this._DateCalculated = value;
-					this.SendPropertyChanged("DateCalculated");
-					this.OnDateCalculatedChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_DateFinished", DbType="DateTime")]
-		public System.Nullable<System.DateTime> DateFinished
-		{
-			get
-			{
-				return this._DateFinished;
-			}
-			set
-			{
-				if ((this._DateFinished != value))
-				{
-					this.OnDateFinishedChanging(value);
-					this.SendPropertyChanging();
-					this._DateFinished = value;
-					this.SendPropertyChanged("DateFinished");
-					this.OnDateFinishedChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_Priority", DbType="Int")]
-		public System.Nullable<int> Priority
-		{
-			get
-			{
-				return this._Priority;
-			}
-			set
-			{
-				if ((this._Priority != value))
-				{
-					this.OnPriorityChanging(value);
-					this.SendPropertyChanging();
-					this._Priority = value;
-					this.SendPropertyChanged("Priority");
-					this.OnPriorityChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_ProjectId", DbType="UniqueIdentifier")]
-		public System.Nullable<System.Guid> ProjectId
-		{
-			get
-			{
-				return this._ProjectId;
-			}
-			set
-			{
-				if ((this._ProjectId != value))
-				{
-					if (this._Project.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnProjectIdChanging(value);
-					this.SendPropertyChanging();
-					this._ProjectId = value;
-					this.SendPropertyChanged("ProjectId");
-					this.OnProjectIdChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_UserId", DbType="UniqueIdentifier")]
-		public System.Nullable<System.Guid> UserId
-		{
-			get
-			{
-				return this._UserId;
-			}
-			set
-			{
-				if ((this._UserId != value))
-				{
-					this.OnUserIdChanging(value);
-					this.SendPropertyChanging();
-					this._UserId = value;
-					this.SendPropertyChanged("UserId");
-					this.OnUserIdChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_CoresNeeded", DbType="Int")]
-		public int CoresNeeded
-		{
-			get
-			{
-				return this._CoresNeeded;
-			}
-			set
-			{
-				if ((this._CoresNeeded != value))
-				{
-					this.OnCoresNeededChanging(value);
-					this.SendPropertyChanging();
-					this._CoresNeeded = value;
-					this.SendPropertyChanged("CoresNeeded");
-					this.OnCoresNeededChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_MemoryNeeded", DbType="Int")]
-		public int MemoryNeeded
-		{
-			get
-			{
-				return this._MemoryNeeded;
-			}
-			set
-			{
-				if ((this._MemoryNeeded != value))
-				{
-					this.OnMemoryNeededChanging(value);
-					this.SendPropertyChanging();
-					this._MemoryNeeded = value;
-					this.SendPropertyChanged("MemoryNeeded");
-					this.OnMemoryNeededChanged();
-				}
-			}
-		}
-		
-		[Association(Name="Job_AssignedResource", Storage="_AssignedResources", ThisKey="JobId", OtherKey="JobId")]
-		public EntitySet<AssignedResource> AssignedResources
-		{
-			get
-			{
-				return this._AssignedResources;
-			}
-			set
-			{
-				this._AssignedResources.Assign(value);
-			}
-		}
-		
-		[Association(Name="Job_Job", Storage="_Jobs", ThisKey="JobId", OtherKey="ParentJobId")]
-		public EntitySet<Job> Jobs
-		{
-			get
-			{
-				return this._Jobs;
-			}
-			set
-			{
-				this._Jobs.Assign(value);
-			}
-		}
-		
-		[Association(Name="Job_RequiredPlugin", Storage="_RequiredPlugins", ThisKey="JobId", OtherKey="JobId")]
-		public EntitySet<RequiredPlugin> RequiredPlugins
-		{
-			get
-			{
-				return this._RequiredPlugins;
-			}
-			set
-			{
-				this._RequiredPlugins.Assign(value);
-			}
-		}
-		
-		[Association(Name="Job_Job", Storage="_Job1", ThisKey="ParentJobId", OtherKey="JobId", IsForeignKey=true)]
-		public Job Job1
-		{
-			get
-			{
-				return this._Job1.Entity;
-			}
-			set
-			{
-				Job previousValue = this._Job1.Entity;
-				if (((previousValue != value) 
-							|| (this._Job1.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Job1.Entity = null;
-						previousValue.Jobs.Remove(this);
-					}
-					this._Job1.Entity = value;
-					if ((value != null))
-					{
-						value.Jobs.Add(this);
-						this._ParentJobId = value.JobId;
-					}
-					else
-					{
-						this._ParentJobId = default(Nullable<System.Guid>);
-					}
-					this.SendPropertyChanged("Job1");
-				}
-			}
-		}
-		
-		[Association(Name="Project_Job", Storage="_Project", ThisKey="ProjectId", OtherKey="ProjectId", IsForeignKey=true, DeleteRule="SET NULL")]
-		public Project Project
-		{
-			get
-			{
-				return this._Project.Entity;
-			}
-			set
-			{
-				Project previousValue = this._Project.Entity;
-				if (((previousValue != value) 
-							|| (this._Project.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Project.Entity = null;
-						previousValue.Jobs.Remove(this);
-					}
-					this._Project.Entity = value;
-					if ((value != null))
-					{
-						value.Jobs.Add(this);
-						this._ProjectId = value.ProjectId;
-					}
-					else
-					{
-						this._ProjectId = default(Nullable<System.Guid>);
-					}
-					this.SendPropertyChanged("Project");
-				}
-			}
-		}
-		
-		[Association(Name="Client_Job", Storage="_Client", ThisKey="ResourceId", OtherKey="ResourceId", IsForeignKey=true, DeleteRule="SET NULL")]
-		public Client Client
-		{
-			get
-			{
-				return this._Client.Entity;
-			}
-			set
-			{
-				Client previousValue = this._Client.Entity;
-				if (((previousValue != value) 
-							|| (this._Client.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Client.Entity = null;
-						previousValue.Jobs.Remove(this);
-					}
-					this._Client.Entity = value;
-					if ((value != null))
-					{
-						value.Jobs.Add(this);
-						this._ResourceId = value.ResourceId;
-					}
-					else
-					{
-						this._ResourceId = default(Nullable<System.Guid>);
-					}
-					this.SendPropertyChanged("Client");
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-		
-		private void attach_AssignedResources(AssignedResource entity)
-		{
-			this.SendPropertyChanging();
-			entity.Job = this;
-		}
-		
-		private void detach_AssignedResources(AssignedResource entity)
-		{
-			this.SendPropertyChanging();
-			entity.Job = null;
-		}
-		
-		private void attach_Jobs(Job entity)
-		{
-			this.SendPropertyChanging();
-			entity.Job1 = this;
-		}
-		
-		private void detach_Jobs(Job entity)
-		{
-			this.SendPropertyChanging();
-			entity.Job1 = null;
-		}
-		
-		private void attach_RequiredPlugins(RequiredPlugin entity)
-		{
-			this.SendPropertyChanging();
-			entity.Job = this;
-		}
-		
-		private void detach_RequiredPlugins(RequiredPlugin entity)
-		{
-			this.SendPropertyChanging();
-			entity.Job = null;
-		}
-	}
-	
 	[Table(Name="dbo.PluginInfo")]
 	public partial class PluginInfo : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -1881,9 +1300,9 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 		
 		private System.Guid _RequiredPluginId;
 		
-		private EntityRef<Job> _Job;
-		
 		private EntityRef<PluginInfo> _PluginInfo;
+		
+		private EntityRef<Job> _Job;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -1899,8 +1318,8 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 		
 		public RequiredPlugin()
 		{
-			this._Job = default(EntityRef<Job>);
 			this._PluginInfo = default(EntityRef<PluginInfo>);
+			this._Job = default(EntityRef<Job>);
 			OnCreated();
 		}
 		
@@ -1972,40 +1391,6 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 			}
 		}
 		
-		[Association(Name="Job_RequiredPlugin", Storage="_Job", ThisKey="JobId", OtherKey="JobId", IsForeignKey=true)]
-		public Job Job
-		{
-			get
-			{
-				return this._Job.Entity;
-			}
-			set
-			{
-				Job previousValue = this._Job.Entity;
-				if (((previousValue != value) 
-							|| (this._Job.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Job.Entity = null;
-						previousValue.RequiredPlugins.Remove(this);
-					}
-					this._Job.Entity = value;
-					if ((value != null))
-					{
-						value.RequiredPlugins.Add(this);
-						this._JobId = value.JobId;
-					}
-					else
-					{
-						this._JobId = default(System.Guid);
-					}
-					this.SendPropertyChanged("Job");
-				}
-			}
-		}
-		
 		[Association(Name="PluginInfo_RequiredPlugin", Storage="_PluginInfo", ThisKey="PluginId", OtherKey="PluginId", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
 		public PluginInfo PluginInfo
 		{
@@ -2036,6 +1421,40 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 						this._PluginId = default(System.Guid);
 					}
 					this.SendPropertyChanged("PluginInfo");
+				}
+			}
+		}
+		
+		[Association(Name="Job_RequiredPlugin", Storage="_Job", ThisKey="JobId", OtherKey="JobId", IsForeignKey=true)]
+		public Job Job
+		{
+			get
+			{
+				return this._Job.Entity;
+			}
+			set
+			{
+				Job previousValue = this._Job.Entity;
+				if (((previousValue != value) 
+							|| (this._Job.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Job.Entity = null;
+						previousValue.RequiredPlugins.Remove(this);
+					}
+					this._Job.Entity = value;
+					if ((value != null))
+					{
+						value.RequiredPlugins.Add(this);
+						this._JobId = value.JobId;
+					}
+					else
+					{
+						this._JobId = default(System.Guid);
+					}
+					this.SendPropertyChanged("Job");
 				}
 			}
 		}
@@ -2656,6 +2075,587 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 		{
 			this.SendPropertyChanging();
 			entity.Client = null;
+		}
+	}
+	
+	[Table(Name="dbo.Job")]
+	public partial class Job : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _JobId;
+		
+		private System.Nullable<System.Guid> _ParentJobId;
+		
+		private string _JobState;
+		
+		private System.Nullable<System.Guid> _ResourceId;
+		
+		private System.Nullable<double> _Percentage;
+		
+		private System.Data.Linq.Binary _SerializedJob;
+		
+		private System.Nullable<System.DateTime> _DateCreated;
+		
+		private System.Nullable<System.DateTime> _DateCalculated;
+		
+		private System.Nullable<System.DateTime> _DateFinished;
+		
+		private int _Priority;
+		
+		private System.Nullable<System.Guid> _ProjectId;
+		
+		private System.Nullable<System.Guid> _UserId;
+		
+		private int _CoresNeeded;
+		
+		private int _MemoryNeeded;
+		
+		private EntitySet<AssignedResource> _AssignedResources;
+		
+		private EntitySet<RequiredPlugin> _RequiredPlugins;
+		
+		private EntitySet<Job> _Jobs;
+		
+		private EntityRef<Client> _Client;
+		
+		private EntityRef<Job> _Job1;
+		
+		private EntityRef<Project> _Project;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnJobIdChanging(System.Guid value);
+    partial void OnJobIdChanged();
+    partial void OnParentJobIdChanging(System.Nullable<System.Guid> value);
+    partial void OnParentJobIdChanged();
+    partial void OnJobStateChanging(string value);
+    partial void OnJobStateChanged();
+    partial void OnResourceIdChanging(System.Nullable<System.Guid> value);
+    partial void OnResourceIdChanged();
+    partial void OnPercentageChanging(System.Nullable<double> value);
+    partial void OnPercentageChanged();
+    partial void OnSerializedJobChanging(System.Data.Linq.Binary value);
+    partial void OnSerializedJobChanged();
+    partial void OnDateCreatedChanging(System.Nullable<System.DateTime> value);
+    partial void OnDateCreatedChanged();
+    partial void OnDateCalculatedChanging(System.Nullable<System.DateTime> value);
+    partial void OnDateCalculatedChanged();
+    partial void OnDateFinishedChanging(System.Nullable<System.DateTime> value);
+    partial void OnDateFinishedChanged();
+    partial void OnPriorityChanging(int value);
+    partial void OnPriorityChanged();
+    partial void OnProjectIdChanging(System.Nullable<System.Guid> value);
+    partial void OnProjectIdChanged();
+    partial void OnUserIdChanging(System.Nullable<System.Guid> value);
+    partial void OnUserIdChanged();
+    partial void OnCoresNeededChanging(int value);
+    partial void OnCoresNeededChanged();
+    partial void OnMemoryNeededChanging(int value);
+    partial void OnMemoryNeededChanged();
+    #endregion
+		
+		public Job()
+		{
+			this._AssignedResources = new EntitySet<AssignedResource>(new Action<AssignedResource>(this.attach_AssignedResources), new Action<AssignedResource>(this.detach_AssignedResources));
+			this._RequiredPlugins = new EntitySet<RequiredPlugin>(new Action<RequiredPlugin>(this.attach_RequiredPlugins), new Action<RequiredPlugin>(this.detach_RequiredPlugins));
+			this._Jobs = new EntitySet<Job>(new Action<Job>(this.attach_Jobs), new Action<Job>(this.detach_Jobs));
+			this._Client = default(EntityRef<Client>);
+			this._Job1 = default(EntityRef<Job>);
+			this._Project = default(EntityRef<Project>);
+			OnCreated();
+		}
+		
+		[Column(Storage="_JobId", AutoSync=AutoSync.OnInsert, DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true, IsDbGenerated=true)]
+		public System.Guid JobId
+		{
+			get
+			{
+				return this._JobId;
+			}
+			set
+			{
+				if ((this._JobId != value))
+				{
+					this.OnJobIdChanging(value);
+					this.SendPropertyChanging();
+					this._JobId = value;
+					this.SendPropertyChanged("JobId");
+					this.OnJobIdChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_ParentJobId", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> ParentJobId
+		{
+			get
+			{
+				return this._ParentJobId;
+			}
+			set
+			{
+				if ((this._ParentJobId != value))
+				{
+					if (this._Job1.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnParentJobIdChanging(value);
+					this.SendPropertyChanging();
+					this._ParentJobId = value;
+					this.SendPropertyChanged("ParentJobId");
+					this.OnParentJobIdChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_JobState", DbType="VarChar(MAX)")]
+		public string JobState
+		{
+			get
+			{
+				return this._JobState;
+			}
+			set
+			{
+				if ((this._JobState != value))
+				{
+					this.OnJobStateChanging(value);
+					this.SendPropertyChanging();
+					this._JobState = value;
+					this.SendPropertyChanged("JobState");
+					this.OnJobStateChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_ResourceId", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> ResourceId
+		{
+			get
+			{
+				return this._ResourceId;
+			}
+			set
+			{
+				if ((this._ResourceId != value))
+				{
+					if (this._Client.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnResourceIdChanging(value);
+					this.SendPropertyChanging();
+					this._ResourceId = value;
+					this.SendPropertyChanged("ResourceId");
+					this.OnResourceIdChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_Percentage", DbType="Float")]
+		public System.Nullable<double> Percentage
+		{
+			get
+			{
+				return this._Percentage;
+			}
+			set
+			{
+				if ((this._Percentage != value))
+				{
+					this.OnPercentageChanging(value);
+					this.SendPropertyChanging();
+					this._Percentage = value;
+					this.SendPropertyChanged("Percentage");
+					this.OnPercentageChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_SerializedJob", DbType="VarBinary(MAX)", CanBeNull=true, UpdateCheck=UpdateCheck.Never)]
+		public System.Data.Linq.Binary SerializedJob
+		{
+			get
+			{
+				return this._SerializedJob;
+			}
+			set
+			{
+				if ((this._SerializedJob != value))
+				{
+					this.OnSerializedJobChanging(value);
+					this.SendPropertyChanging();
+					this._SerializedJob = value;
+					this.SendPropertyChanged("SerializedJob");
+					this.OnSerializedJobChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_DateCreated", DbType="DateTime")]
+		public System.Nullable<System.DateTime> DateCreated
+		{
+			get
+			{
+				return this._DateCreated;
+			}
+			set
+			{
+				if ((this._DateCreated != value))
+				{
+					this.OnDateCreatedChanging(value);
+					this.SendPropertyChanging();
+					this._DateCreated = value;
+					this.SendPropertyChanged("DateCreated");
+					this.OnDateCreatedChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_DateCalculated", DbType="DateTime")]
+		public System.Nullable<System.DateTime> DateCalculated
+		{
+			get
+			{
+				return this._DateCalculated;
+			}
+			set
+			{
+				if ((this._DateCalculated != value))
+				{
+					this.OnDateCalculatedChanging(value);
+					this.SendPropertyChanging();
+					this._DateCalculated = value;
+					this.SendPropertyChanged("DateCalculated");
+					this.OnDateCalculatedChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_DateFinished", DbType="DateTime")]
+		public System.Nullable<System.DateTime> DateFinished
+		{
+			get
+			{
+				return this._DateFinished;
+			}
+			set
+			{
+				if ((this._DateFinished != value))
+				{
+					this.OnDateFinishedChanging(value);
+					this.SendPropertyChanging();
+					this._DateFinished = value;
+					this.SendPropertyChanged("DateFinished");
+					this.OnDateFinishedChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_Priority", DbType="Int NOT NULL")]
+		public int Priority
+		{
+			get
+			{
+				return this._Priority;
+			}
+			set
+			{
+				if ((this._Priority != value))
+				{
+					this.OnPriorityChanging(value);
+					this.SendPropertyChanging();
+					this._Priority = value;
+					this.SendPropertyChanged("Priority");
+					this.OnPriorityChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_ProjectId", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> ProjectId
+		{
+			get
+			{
+				return this._ProjectId;
+			}
+			set
+			{
+				if ((this._ProjectId != value))
+				{
+					if (this._Project.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnProjectIdChanging(value);
+					this.SendPropertyChanging();
+					this._ProjectId = value;
+					this.SendPropertyChanged("ProjectId");
+					this.OnProjectIdChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_UserId", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> UserId
+		{
+			get
+			{
+				return this._UserId;
+			}
+			set
+			{
+				if ((this._UserId != value))
+				{
+					this.OnUserIdChanging(value);
+					this.SendPropertyChanging();
+					this._UserId = value;
+					this.SendPropertyChanged("UserId");
+					this.OnUserIdChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_CoresNeeded", DbType="Int NOT NULL")]
+		public int CoresNeeded
+		{
+			get
+			{
+				return this._CoresNeeded;
+			}
+			set
+			{
+				if ((this._CoresNeeded != value))
+				{
+					this.OnCoresNeededChanging(value);
+					this.SendPropertyChanging();
+					this._CoresNeeded = value;
+					this.SendPropertyChanged("CoresNeeded");
+					this.OnCoresNeededChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_MemoryNeeded", DbType="Int NOT NULL")]
+		public int MemoryNeeded
+		{
+			get
+			{
+				return this._MemoryNeeded;
+			}
+			set
+			{
+				if ((this._MemoryNeeded != value))
+				{
+					this.OnMemoryNeededChanging(value);
+					this.SendPropertyChanging();
+					this._MemoryNeeded = value;
+					this.SendPropertyChanged("MemoryNeeded");
+					this.OnMemoryNeededChanged();
+				}
+			}
+		}
+		
+		[Association(Name="Job_AssignedResource", Storage="_AssignedResources", ThisKey="JobId", OtherKey="JobId")]
+		public EntitySet<AssignedResource> AssignedResources
+		{
+			get
+			{
+				return this._AssignedResources;
+			}
+			set
+			{
+				this._AssignedResources.Assign(value);
+			}
+		}
+		
+		[Association(Name="Job_RequiredPlugin", Storage="_RequiredPlugins", ThisKey="JobId", OtherKey="JobId")]
+		public EntitySet<RequiredPlugin> RequiredPlugins
+		{
+			get
+			{
+				return this._RequiredPlugins;
+			}
+			set
+			{
+				this._RequiredPlugins.Assign(value);
+			}
+		}
+		
+		[Association(Name="Job_Job", Storage="_Jobs", ThisKey="JobId", OtherKey="ParentJobId")]
+		public EntitySet<Job> Jobs
+		{
+			get
+			{
+				return this._Jobs;
+			}
+			set
+			{
+				this._Jobs.Assign(value);
+			}
+		}
+		
+		[Association(Name="Client_Job", Storage="_Client", ThisKey="ResourceId", OtherKey="ResourceId", IsForeignKey=true, DeleteRule="SET NULL")]
+		public Client Client
+		{
+			get
+			{
+				return this._Client.Entity;
+			}
+			set
+			{
+				Client previousValue = this._Client.Entity;
+				if (((previousValue != value) 
+							|| (this._Client.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Client.Entity = null;
+						previousValue.Jobs.Remove(this);
+					}
+					this._Client.Entity = value;
+					if ((value != null))
+					{
+						value.Jobs.Add(this);
+						this._ResourceId = value.ResourceId;
+					}
+					else
+					{
+						this._ResourceId = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("Client");
+				}
+			}
+		}
+		
+		[Association(Name="Job_Job", Storage="_Job1", ThisKey="ParentJobId", OtherKey="JobId", IsForeignKey=true)]
+		public Job Job1
+		{
+			get
+			{
+				return this._Job1.Entity;
+			}
+			set
+			{
+				Job previousValue = this._Job1.Entity;
+				if (((previousValue != value) 
+							|| (this._Job1.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Job1.Entity = null;
+						previousValue.Jobs.Remove(this);
+					}
+					this._Job1.Entity = value;
+					if ((value != null))
+					{
+						value.Jobs.Add(this);
+						this._ParentJobId = value.JobId;
+					}
+					else
+					{
+						this._ParentJobId = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("Job1");
+				}
+			}
+		}
+		
+		[Association(Name="Project_Job", Storage="_Project", ThisKey="ProjectId", OtherKey="ProjectId", IsForeignKey=true, DeleteRule="SET NULL")]
+		public Project Project
+		{
+			get
+			{
+				return this._Project.Entity;
+			}
+			set
+			{
+				Project previousValue = this._Project.Entity;
+				if (((previousValue != value) 
+							|| (this._Project.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Project.Entity = null;
+						previousValue.Jobs.Remove(this);
+					}
+					this._Project.Entity = value;
+					if ((value != null))
+					{
+						value.Jobs.Add(this);
+						this._ProjectId = value.ProjectId;
+					}
+					else
+					{
+						this._ProjectId = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("Project");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_AssignedResources(AssignedResource entity)
+		{
+			this.SendPropertyChanging();
+			entity.Job = this;
+		}
+		
+		private void detach_AssignedResources(AssignedResource entity)
+		{
+			this.SendPropertyChanging();
+			entity.Job = null;
+		}
+		
+		private void attach_RequiredPlugins(RequiredPlugin entity)
+		{
+			this.SendPropertyChanging();
+			entity.Job = this;
+		}
+		
+		private void detach_RequiredPlugins(RequiredPlugin entity)
+		{
+			this.SendPropertyChanging();
+			entity.Job = null;
+		}
+		
+		private void attach_Jobs(Job entity)
+		{
+			this.SendPropertyChanging();
+			entity.Job1 = this;
+		}
+		
+		private void detach_Jobs(Job entity)
+		{
+			this.SendPropertyChanging();
+			entity.Job1 = null;
 		}
 	}
 }

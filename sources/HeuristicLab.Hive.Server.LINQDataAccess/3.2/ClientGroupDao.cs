@@ -108,8 +108,21 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
                select cl);
       foreach (Client client in qClients) {
         parentClientGroup.Resources.Add(cd.EntityToDto(client, null));                        
+      }     
+    }
+
+    public IEnumerable<Guid> FindAllGroupAndParentGroupIdsForClient(Guid clientId) {
+      List<Guid> guids = new List<Guid>();
+      Client c = Context.Clients.SingleOrDefault(client => client.ResourceId.Equals(clientId));
+      FindAllGroupAndParentGroupIdsForClientRecursive(c.Resource, guids);
+      return guids;
+    }
+
+    private void FindAllGroupAndParentGroupIdsForClientRecursive(Resource resource, List<Guid> guids) {
+      foreach (ClientGroup_Resource cgr in resource.ClientGroup_Resources) {
+        guids.Add(cgr.ClientGroupId);
+        FindAllGroupAndParentGroupIdsForClientRecursive(cgr.ClientGroup.Resource, guids);        
       }
-     
     }
 
     #endregion

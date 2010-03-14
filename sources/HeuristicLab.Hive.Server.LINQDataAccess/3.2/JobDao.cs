@@ -41,6 +41,8 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
     public SerializedJob InsertWithAttachedJob(SerializedJob job) {
       Job j = DtoToEntity(job.JobInfo, null);
       j.SerializedJob = job.SerializedJobData;
+      foreach (Guid assignRessourceId in job.JobInfo.AssignedResourceIds)
+        j.AssignedResources.Add(new AssignedResource { ResourceId = assignRessourceId});
       Context.Jobs.InsertOnSubmit(j);
       Context.SubmitChanges();
       job.JobInfo.Id = j.JobId;
@@ -69,12 +71,21 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
                     (j.ResourceId.Equals(client.Id))
               select EntityToDto(j, null)).ToList();
     }
-    public IEnumerable<JobDto> FindFittingJobsForClient(State state, int freeCores, int freeMemory) {
-      return (from j in Context.Jobs
-              where j.JobState == Enum.GetName(typeof (State), State.offline) &&
-                    j.CoresNeeded <= freeCores &&
-                    j.MemoryNeeded <= freeMemory
-              select EntityToDto(j, null)).ToList();
+    public IEnumerable<JobDto> FindFittingJobsForClient(State state, int freeCores, int freeMemory, Guid clientId) {
+      ClientGroupDao cgd = new ClientGroupDao();
+      
+      List<Guid> idList = new List<Guid>(cgd.FindAllGroupAndParentGroupIdsForClient(clientId));
+      //Add myself too - enables jobs for one specific host!
+      idList.Add(clientId);
+      
+      var q = (from ar in Context.AssignedResources               
+               where ar.Job.JobState == Enum.GetName(typeof (State), State.offline) &&
+                     ar.Job.CoresNeeded <= freeCores &&
+                     ar.Job.MemoryNeeded <= freeMemory &&
+                     idList.Contains(ar.ResourceId)
+               orderby ar.Job.Priority descending                 
+               select EntityToDto(ar.Job, null));
+      return q.ToList();
       
     }
 

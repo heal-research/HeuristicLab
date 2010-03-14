@@ -18,7 +18,7 @@ namespace HeuristicLab.Hive.Server.DataAccess {
 
     byte[] GetBinaryJobFile(Guid jobId); 
 
-    IEnumerable<JobDto> FindFittingJobsForClient(State state, int freeCores, int freeMemory);
+    IEnumerable<JobDto> FindFittingJobsForClient(State state, int freeCores, int freeMemory, Guid clientGuid);
     Stream GetSerializedJobStream(Guid jobId);
   }
 }

@@ -183,7 +183,7 @@ namespace HeuristicLab.Hive.Server.Core {
           job.JobInfo.DateCreated = DateTime.Now;
           DaoLocator.JobDao.InsertWithAttachedJob(job);
           DaoLocator.PluginInfoDao.InsertPluginDependenciesForJob(job.JobInfo);
-          //jobAdapter.UpdateSerializedJob(job);
+          
           response.Success = true;
           response.Obj = job.JobInfo;
           response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_ADDED;

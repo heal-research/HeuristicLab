@@ -51,6 +51,7 @@ namespace HeuristicLab.Hive.Engine {
 
     public string HiveServerUrl { get; set; }
     public string MultiSubmitCount { get; set; }
+    public string RessourceIds { get; set; }
 
     public HiveEngine() {
       job = new Job();
@@ -93,6 +94,18 @@ namespace HeuristicLab.Hive.Engine {
       var jobObj = CreateJobObj();
       IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(HiveServerUrl);
       
+      if(!String.Empty.Equals(RessourceIds)) {
+        String[] ids = RessourceIds.Split(';');
+        foreach (string sid in ids) {        
+          try {
+            System.Guid gid = new Guid(sid);
+            jobObj.JobInfo.AssignedResourceIds.Add(gid);
+          } catch(Exception ex) {
+            
+          }   
+        }
+      }      
+
       int loops = 1;
       
       Int32.TryParse(MultiSubmitCount, out loops);

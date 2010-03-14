@@ -102,7 +102,7 @@ namespace HeuristicLab.Hive.Server.Core {
               HiveLogger.Info(this.ToString() + ": Client " + client.Id +
                               " wasn't offline but hasn't sent heartbeats - setting offline");
               client.State = State.offline;
-              DaoLocator.ClientDao.Update(client);              
+              DaoLocator.ClientDao.Update(client);
               HiveLogger.Info(this.ToString() + ": Client " + client.Id +
                               " wasn't offline but hasn't sent heartbeats - Resetting all his jobs");
               foreach (JobDto job in DaoLocator.JobDao.FindActiveJobsOfClient(client)) {
@@ -235,30 +235,19 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="hbData"></param>
     /// <returns></returns>
     public ResponseHB ProcessHeartBeat(HeartBeatData hbData) {
-      
-     /* ISession session = factory.GetSessionForCurrentThread();
-      ITransaction tx = null;*/
+      HiveLogger.Debug(this.ToString() + ": BEGIN Processing Heartbeat for Client " + hbData.ClientId);
+      HiveLogger.Debug(this.ToString() + ": BEGIN Fetching Adapters");
+      HiveLogger.Debug(this.ToString() + ": END Fetched Adapters");
+      HiveLogger.Debug(this.ToString() + ": BEGIN Starting Transaction");
 
-      HiveLogger.Info(this.ToString() + ": BEGIN Processing Heartbeat for Client " + hbData.ClientId);
-
-      //try {
-        HiveLogger.Info(this.ToString() + ": BEGIN Fetching Adapters");
-      /*  IClientAdapter clientAdapter =
-          session.GetDataAdapter<ClientDto, IClientAdapter>();
-
-        IJobAdapter jobAdapter =        
-          session.GetDataAdapter<JobDto, IJobAdapter>(); */
-        HiveLogger.Info(this.ToString() + ": END Fetched Adapters");
-        HiveLogger.Info(this.ToString() + ": BEGIN Starting Transaction");
-        //tx = session.BeginTransaction();
-        HiveLogger.Info(this.ToString() + ": END Started Transaction");
+      HiveLogger.Debug(this.ToString() + ": END Started Transaction");
 
         ResponseHB response = new ResponseHB();
         response.ActionRequest = new List<MessageContainer>();
 
-        HiveLogger.Info(this.ToString() + ": BEGIN Started Client Fetching");
+        HiveLogger.Debug(this.ToString() + ": BEGIN Started Client Fetching");
         ClientDto client = DaoLocator.ClientDao.FindById(hbData.ClientId);
-        HiveLogger.Info(this.ToString() + ": END Finished Client Fetching");
+        HiveLogger.Debug(this.ToString() + ": END Finished Client Fetching");
         // check if the client is logged in
         if (client.State == State.offline || client.State == State.nullState) {
           response.Success = false;
@@ -274,9 +263,9 @@ namespace HeuristicLab.Hive.Server.Core {
         client.FreeMemory = hbData.FreeMemory;
 
         // save timestamp of this heartbeat
-        HiveLogger.Info(this.ToString() + ": BEGIN Locking for Heartbeats");
+        HiveLogger.Debug(this.ToString() + ": BEGIN Locking for Heartbeats");
         heartbeatLock.EnterWriteLock();
-        HiveLogger.Info(this.ToString() + ": END Locked for Heartbeats");
+        HiveLogger.Debug(this.ToString() + ": END Locked for Heartbeats");
         if (lastHeartbeats.ContainsKey(hbData.ClientId)) {
           lastHeartbeats[hbData.ClientId] = DateTime.Now;
         } else {
@@ -286,36 +275,26 @@ namespace HeuristicLab.Hive.Server.Core {
 
         // check if client has a free core for a new job
         // if true, ask scheduler for a new job for this client
-        HiveLogger.Info(this.ToString() + ": BEGIN Looking for Client Jobs");
+        HiveLogger.Debug(this.ToString() + ": BEGIN Looking for Client Jobs");
         if (hbData.FreeCores > 0 && scheduler.ExistsJobForClient(hbData)) {
           response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.FetchJob));
         } else {
           response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.NoMessage));
         }
-        HiveLogger.Info(this.ToString() + ": END Looked for Client Jobs");
+        HiveLogger.Debug(this.ToString() + ": END Looked for Client Jobs");
         response.Success = true;
         response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_HEARTBEAT_RECEIVED;
 
-        HiveLogger.Info(this.ToString() + ": BEGIN Processing Heartbeat Jobs");
+        HiveLogger.Debug(this.ToString() + ": BEGIN Processing Heartbeat Jobs");
         processJobProcess(hbData, response);
-        HiveLogger.Info(this.ToString() + ": END Processed Heartbeat Jobs");
+        HiveLogger.Debug(this.ToString() + ": END Processed Heartbeat Jobs");
         
         DaoLocator.ClientDao.Update(client);
 
         //tx.Commit();
-        HiveLogger.Info(this.ToString() + ": END Processed Heartbeat for Client " + hbData.ClientId);
+        HiveLogger.Debug(this.ToString() + ": END Processed Heartbeat for Client " + hbData.ClientId);
         return response;
-      } /*
-      catch (Exception ex) {
-        if (tx != null)
-          tx.Rollback();
-        throw ex;
       }
-      finally {
-        if (session != null)
-          session.EndSession();
-      }   
-    }     */
 
     /// <summary>
     /// Process the Job progress sent by a client

@@ -79,7 +79,7 @@ namespace HeuristicLab.Hive.Engine {
     private void SetDataBinding() {
       urlTextBox.DataBindings.Add("Text", HiveEngine, "HiveServerUrl");
       multiSubmitTextbox.DataBindings.Add("Text", HiveEngine, "MultiSubmitCount");
-      
+      assignedRessourceTextBox.DataBindings.Add("Text", HiveEngine, "RessourceIds");         
     }
 
     protected override void RemoveItemEvents() {

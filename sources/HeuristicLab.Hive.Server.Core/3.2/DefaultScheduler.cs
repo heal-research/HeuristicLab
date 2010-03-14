@@ -9,8 +9,7 @@ using System.Threading;
 using HeuristicLab.DataAccess.Interfaces;
 
 namespace HeuristicLab.Hive.Server.Core {
-  class DefaultScheduler: IScheduler {
-
+  internal class DefaultScheduler : IScheduler {
     //private ISessionFactory factory;
 
     private static Mutex jobLock =
@@ -23,64 +22,37 @@ namespace HeuristicLab.Hive.Server.Core {
     }
 
     public bool ExistsJobForClient(HeuristicLab.Hive.Contracts.BusinessObjects.HeartBeatData hbData) {
-      //ISession session = factory.GetSessionForCurrentThread();
-
-      //try {
-        /*IJobAdapter jobAdapter =
-          session.GetDataAdapter<JobDto, IJobAdapter>();*/
-
-        List<JobDto> allOfflineJobsForClient = new List<JobDto>(DaoLocator.JobDao.FindFittingJobsForClient(State.offline, hbData.FreeCores, hbData.FreeMemory));
-          /*jobAdapter.FindJobs(State.offline, 
-          hbData.FreeCores,
-          hbData.FreeMemory, 
-          hbData.ClientId));*/
-        return (allOfflineJobsForClient != null && allOfflineJobsForClient.Count > 0);
-      //}
-      /*finally {
-        if (session != null)
-          session.EndSession();
-      } */
-    }   
+      List<JobDto> allOfflineJobsForClient =
+        new List<JobDto>(DaoLocator.JobDao.FindFittingJobsForClient(State.offline, hbData.FreeCores, hbData.FreeMemory,
+                                                                    hbData.ClientId));
+      return (allOfflineJobsForClient != null && allOfflineJobsForClient.Count > 0);
+    }
 
     public HeuristicLab.Hive.Contracts.BusinessObjects.JobDto GetNextJobForClient(Guid clientId) {
-      /*ISession session = factory.GetSessionForCurrentThread();
+      /// Critical section ///
+      jobLock.WaitOne();
 
-      try {
-        IJobAdapter jobAdapter =
-          session.GetDataAdapter<JobDto, IJobAdapter>();
-
-        IClientAdapter clientAdapter =
-          session.GetDataAdapter<ClientDto, IClientAdapter>();*/
-
-        /// Critical section ///
-        jobLock.WaitOne();
-
-        ClientDto client = DaoLocator.ClientDao.FindById(clientId);
+      ClientDto client = DaoLocator.ClientDao.FindById(clientId);
       LinkedList<JobDto> allOfflineJobsForClient =
         new LinkedList<JobDto>(DaoLocator.JobDao.FindFittingJobsForClient(State.offline, client.NrOfFreeCores,
-                                                                          client.FreeMemory));
+                                                                          client.FreeMemory, client.Id));
 
-        JobDto jobToCalculate = null;
-        if (allOfflineJobsForClient != null && allOfflineJobsForClient.Count > 0) {
-          jobToCalculate = allOfflineJobsForClient.First.Value;
-          jobToCalculate.State = State.calculating;
-          jobToCalculate.Client = client;
-          jobToCalculate.Client.State = State.calculating;          
-          jobToCalculate.DateCalculated = DateTime.Now;
-          DaoLocator.JobDao.AssignClientToJob(client.Id, jobToCalculate.Id);
-          DaoLocator.JobDao.Update(jobToCalculate);
-          DaoLocator.ClientDao.Update(jobToCalculate.Client);
-        }
-        jobLock.ReleaseMutex();
-        /// End Critical section ///
-
-        return jobToCalculate;
+      JobDto jobToCalculate = null;
+      if (allOfflineJobsForClient != null && allOfflineJobsForClient.Count > 0) {
+        jobToCalculate = allOfflineJobsForClient.First.Value;
+        jobToCalculate.State = State.calculating;
+        jobToCalculate.Client = client;
+        jobToCalculate.Client.State = State.calculating;
+        jobToCalculate.DateCalculated = DateTime.Now;
+        DaoLocator.JobDao.AssignClientToJob(client.Id, jobToCalculate.Id);
+        DaoLocator.JobDao.Update(jobToCalculate);
+        DaoLocator.ClientDao.Update(jobToCalculate.Client);
       }
-      /*finally {
-        if (session != null)
-          session.EndSession();
-      } 
-    }   */
+      jobLock.ReleaseMutex();
+      /// End Critical section ///
+
+      return jobToCalculate;
+    }
 
     #endregion
   }

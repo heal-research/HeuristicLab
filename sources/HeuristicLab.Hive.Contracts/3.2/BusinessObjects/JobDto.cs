@@ -47,7 +47,7 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
     [DataMember]
     public DateTime? DateCalculated { get; set; }
     [DataMember]
-    public int? Priority { get; set; }
+    public int Priority { get; set; }
     [DataMember]
     public int CoresNeeded { get; set; }
     [DataMember]
