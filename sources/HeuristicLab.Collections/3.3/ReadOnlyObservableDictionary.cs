@@ -32,15 +32,6 @@ namespace HeuristicLab.Collections {
     [Storable]
     private IObservableDictionary<TKey, TValue> dict;
 
-    #region persistence
-    private ReadOnlyObservableDictionary() { }
-
-    [StorableHook(HookType.AfterDeserialization)]
-    private void PostDeserizlationHook() {
-      RegisterEvents();
-    }
-    #endregion
-
     #region Properties
     public ICollection<TKey> Keys {
       get { return dict.Keys; }
@@ -65,18 +56,11 @@ namespace HeuristicLab.Collections {
     #endregion
 
     #region Constructors
+    protected ReadOnlyObservableDictionary() { }
     public ReadOnlyObservableDictionary(IObservableDictionary<TKey, TValue> dictionary) {
       if (dictionary == null) throw new ArgumentNullException();
       dict = dictionary;
       RegisterEvents();
-    }
-
-    private void RegisterEvents() {
-      dict.ItemsAdded += new CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>>(dict_ItemsAdded);
-      dict.ItemsRemoved += new CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>>(dict_ItemsRemoved);
-      dict.ItemsReplaced += new CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>>(dict_ItemsReplaced);
-      dict.CollectionReset += new CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>>(dict_CollectionReset);
-      dict.PropertyChanged += new PropertyChangedEventHandler(dict_PropertyChanged);
     }
     #endregion
 
@@ -129,6 +113,15 @@ namespace HeuristicLab.Collections {
     #endregion
 
     #region Events
+    [StorableHook(HookType.AfterDeserialization)]
+    protected void RegisterEvents() {
+      dict.ItemsAdded += new CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>>(dict_ItemsAdded);
+      dict.ItemsRemoved += new CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>>(dict_ItemsRemoved);
+      dict.ItemsReplaced += new CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>>(dict_ItemsReplaced);
+      dict.CollectionReset += new CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>>(dict_CollectionReset);
+      dict.PropertyChanged += new PropertyChangedEventHandler(dict_PropertyChanged);
+    }
+
     [field: NonSerialized]
     public event CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>> ItemsAdded;
     protected virtual void OnItemsAdded(IEnumerable<KeyValuePair<TKey, TValue>> items) {

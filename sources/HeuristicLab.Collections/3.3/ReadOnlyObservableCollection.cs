@@ -32,15 +32,6 @@ namespace HeuristicLab.Collections {
     [Storable]
     private IObservableCollection<T> collection;
 
-    #region persistence
-    private ReadOnlyObservableCollection() { }
-
-    [StorableHook(HookType.AfterDeserialization)]
-    private void PostDeserializationHook() {
-      RegisterEvents();
-    }
-    #endregion
-
     #region Properties
     public int Count {
       get { return collection.Count; }
@@ -51,17 +42,11 @@ namespace HeuristicLab.Collections {
     #endregion
 
     #region Constructors
+    protected ReadOnlyObservableCollection() { }
     public ReadOnlyObservableCollection(IObservableCollection<T> collection) {
       if (collection == null) throw new ArgumentNullException();
       this.collection = collection;
       RegisterEvents();
-    }
-
-    private void RegisterEvents() {
-      collection.ItemsAdded += new CollectionItemsChangedEventHandler<T>(collection_ItemsAdded);
-      collection.ItemsRemoved += new CollectionItemsChangedEventHandler<T>(collection_ItemsRemoved);
-      collection.CollectionReset += new CollectionItemsChangedEventHandler<T>(collection_CollectionReset);
-      collection.PropertyChanged += new PropertyChangedEventHandler(collection_PropertyChanged);
     }
     #endregion
 
@@ -101,6 +86,14 @@ namespace HeuristicLab.Collections {
     #endregion
 
     #region Events
+    [StorableHook(HookType.AfterDeserialization)]
+    protected void RegisterEvents() {
+      collection.ItemsAdded += new CollectionItemsChangedEventHandler<T>(collection_ItemsAdded);
+      collection.ItemsRemoved += new CollectionItemsChangedEventHandler<T>(collection_ItemsRemoved);
+      collection.CollectionReset += new CollectionItemsChangedEventHandler<T>(collection_CollectionReset);
+      collection.PropertyChanged += new PropertyChangedEventHandler(collection_PropertyChanged);
+    }
+
     [field: NonSerialized]
     public event CollectionItemsChangedEventHandler<T> ItemsAdded;
     protected virtual void OnItemsAdded(IEnumerable<T> items) {

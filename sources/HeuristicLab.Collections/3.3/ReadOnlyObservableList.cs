@@ -32,15 +32,6 @@ namespace HeuristicLab.Collections {
     [Storable]
     private IObservableList<T> list;
 
-    #region persistence
-    private ReadOnlyObservableList() { }
-
-    [StorableHook(HookType.AfterDeserialization)]
-    private void PostDeserizlationHook() {
-      RegisterEvents();
-    }
-    #endregion
-
     #region Properties
     public int Count {
       get { return ((ICollection<T>)list).Count; }
@@ -59,22 +50,11 @@ namespace HeuristicLab.Collections {
     #endregion
 
     #region Constructors
+    protected ReadOnlyObservableList() { }
     public ReadOnlyObservableList(IObservableList<T> list) {
       if (list == null) throw new ArgumentNullException();
       this.list = list;
       RegisterEvents();
-    }
-
-    private void RegisterEvents() {
-      list.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<T>>(list_ItemsAdded);
-      ((IObservableCollection<T>)list).ItemsAdded += new CollectionItemsChangedEventHandler<T>(list_ItemsAdded);
-      list.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<T>>(list_ItemsRemoved);
-      ((IObservableCollection<T>)list).ItemsRemoved += new CollectionItemsChangedEventHandler<T>(list_ItemsRemoved);
-      list.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<T>>(list_ItemsReplaced);
-      list.ItemsMoved += new CollectionItemsChangedEventHandler<IndexedItem<T>>(list_ItemsMoved);
-      list.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<T>>(list_CollectionReset);
-      ((IObservableCollection<T>)list).CollectionReset += new CollectionItemsChangedEventHandler<T>(list_CollectionReset);
-      list.PropertyChanged += new PropertyChangedEventHandler(list_PropertyChanged);
     }
     #endregion
 
@@ -125,6 +105,19 @@ namespace HeuristicLab.Collections {
     #endregion
 
     #region Events
+    [StorableHook(HookType.AfterDeserialization)]
+    protected void RegisterEvents() {
+      list.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<T>>(list_ItemsAdded);
+      ((IObservableCollection<T>)list).ItemsAdded += new CollectionItemsChangedEventHandler<T>(list_ItemsAdded);
+      list.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<T>>(list_ItemsRemoved);
+      ((IObservableCollection<T>)list).ItemsRemoved += new CollectionItemsChangedEventHandler<T>(list_ItemsRemoved);
+      list.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<T>>(list_ItemsReplaced);
+      list.ItemsMoved += new CollectionItemsChangedEventHandler<IndexedItem<T>>(list_ItemsMoved);
+      list.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<T>>(list_CollectionReset);
+      ((IObservableCollection<T>)list).CollectionReset += new CollectionItemsChangedEventHandler<T>(list_CollectionReset);
+      list.PropertyChanged += new PropertyChangedEventHandler(list_PropertyChanged);
+    }
+
     [field: NonSerialized]
     public event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsAdded;
     protected virtual void OnItemsAdded(IEnumerable<IndexedItem<T>> items) {

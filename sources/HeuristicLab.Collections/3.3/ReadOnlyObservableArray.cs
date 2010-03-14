@@ -32,15 +32,6 @@ namespace HeuristicLab.Collections {
     [Storable]
     private IObservableArray<T> array;
 
-    #region Persistence
-    private ReadOnlyObservableArray() { }
-
-    [StorableHook(HookType.AfterDeserialization)]
-    private void PostDeserializationHook() {
-      RegisterEvents();
-    }
-    #endregion
-
     #region Properties
     public int Length {
       get { return array.Length; }
@@ -61,20 +52,12 @@ namespace HeuristicLab.Collections {
     }
     #endregion
 
-    
-
     #region Constructors
+    protected ReadOnlyObservableArray() { }
     public ReadOnlyObservableArray(IObservableArray<T> array) {
       if (array == null) throw new ArgumentNullException();
       this.array = array;
       RegisterEvents();
-    }
-
-    private void RegisterEvents() {
-      array.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<T>>(array_ItemsReplaced);
-      array.ItemsMoved += new CollectionItemsChangedEventHandler<IndexedItem<T>>(array_ItemsMoved);
-      array.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<T>>(array_CollectionReset);
-      array.PropertyChanged += new PropertyChangedEventHandler(array_PropertyChanged);
     }
     #endregion
 
@@ -125,6 +108,14 @@ namespace HeuristicLab.Collections {
     #endregion
 
     #region Events
+    [StorableHook(HookType.AfterDeserialization)]
+    protected void RegisterEvents() {
+      array.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<T>>(array_ItemsReplaced);
+      array.ItemsMoved += new CollectionItemsChangedEventHandler<IndexedItem<T>>(array_ItemsMoved);
+      array.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<T>>(array_CollectionReset);
+      array.PropertyChanged += new PropertyChangedEventHandler(array_PropertyChanged);
+    }
+
     [field: NonSerialized]
     public event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsReplaced;
     protected virtual void OnItemsReplaced(IEnumerable<IndexedItem<T>> items, IEnumerable<IndexedItem<T>> oldItems) {
