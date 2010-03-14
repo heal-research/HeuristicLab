@@ -30,12 +30,12 @@ using HeuristicLab.Selection;
 
 namespace HeuristicLab.Algorithms.SGA {
   /// <summary>
-  /// An operator which represents a Standard Genetic Algorithm.
+  /// An operator which represents the main loop of a Standard Genetic Algorithm.
   /// </summary>
-  [Item("SGAOperator", "An operator which represents a Standard Genetic Algorithm.")]
+  [Item("SGAMainLoop", "An operator which represents the main loop of a Standard Genetic Algorithm.")]
   [Creatable("Test")]
   [StorableClass]
-  public class SGAOperator : AlgorithmOperator {
+  public class SGAMainLoop : AlgorithmOperator {
     #region Parameter properties
     public ValueLookupParameter<IRandom> RandomParameter {
       get { return (ValueLookupParameter<IRandom>)Parameters["Random"]; }
@@ -79,7 +79,7 @@ namespace HeuristicLab.Algorithms.SGA {
     }
     #endregion
 
-    public SGAOperator()
+    public SGAMainLoop()
       : base() {
       #region Create parameters
       Parameters.Add(new ValueLookupParameter<IRandom>("Random", "A pseudo random number generator."));
