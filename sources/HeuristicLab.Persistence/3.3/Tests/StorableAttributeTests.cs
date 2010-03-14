@@ -53,7 +53,7 @@ namespace HeuristicLab.Persistence_33.Tests {
     }
   }
 
-  [TestClass]
+/*  [TestClass]
   public class AttributeTest {
 
     [TestMethod]
@@ -91,6 +91,6 @@ namespace HeuristicLab.Persistence_33.Tests {
       Assert.AreEqual("Override", accessDict[typeof(Override).FullName + ".Name"].Get());
     }
 
-  }
+  }*/
 
 }
