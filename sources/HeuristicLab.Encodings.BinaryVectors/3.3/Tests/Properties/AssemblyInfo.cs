@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("HeuristicLab.Encodings.BoolVector-3.3.Tests")]
+[assembly: AssemblyTitle("HeuristicLab.Encodings.BinaryVector-3.3.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("HeuristicLab.Encodings.BoolVector-3.3.Tests")]
+[assembly: AssemblyProduct("HeuristicLab.Encodings.BinaryVector-3.3.Tests")]
 [assembly: AssemblyCopyright("Copyright © Microsoft 2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

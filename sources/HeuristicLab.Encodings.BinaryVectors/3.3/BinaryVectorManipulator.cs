@@ -30,7 +30,7 @@ namespace HeuristicLab.Encodings.BinaryVectors {
   /// <summary>
   /// A base class for operators that manipulate bool-valued vectors.
   /// </summary>
-  [Item("BoolVectorManipulator", "A base class for operators that manipulate bool-valued vectors.")]
+  [Item("BinaryVectorManipulator", "A base class for operators that manipulate bool-valued vectors.")]
   [StorableClass]
   public abstract class BinaryVectorManipulator : SingleSuccessorOperator, IBinaryVectorManipulator, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {

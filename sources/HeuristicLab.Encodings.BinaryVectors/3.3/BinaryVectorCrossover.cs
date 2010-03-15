@@ -30,7 +30,7 @@ namespace HeuristicLab.Encodings.BinaryVectors {
   /// <summary>
   /// A base class for operators that perform a crossover of bool-valued vectors.
   /// </summary>
-  [Item("BoolVectorCrossover", "A base class for operators that perform a crossover of bool-valued vectors.")]
+  [Item("BinaryVectorCrossover", "A base class for operators that perform a crossover of bool-valued vectors.")]
   [StorableClass]
   public abstract class BinaryVectorCrossover : SingleSuccessorOperator, IBinaryVectorCrossover, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {
