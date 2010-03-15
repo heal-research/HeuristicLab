@@ -33,6 +33,10 @@ namespace HeuristicLab.Encodings.RealVector {
   [Item("RealVectorCrossover", "A base class for operators that perform a crossover of real-valued vectors.")]
   [StorableClass]
   public abstract class RealVectorCrossover : SingleSuccessorOperator, IRealVectorCrossover, IStochasticOperator {
+    public override bool CanChangeName {
+      get { return false; }
+    }
+
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }

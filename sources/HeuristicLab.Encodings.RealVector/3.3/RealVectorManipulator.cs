@@ -33,6 +33,10 @@ namespace HeuristicLab.Encodings.RealVector {
   [Item("RealVectorManipulator", "A base class for operators that manipulate real-valued vectors.")]
   [StorableClass]
   public abstract class RealVectorManipulator : SingleSuccessorOperator, IRealVectorManipulator, IStochasticOperator {
+    public override bool CanChangeName {
+      get { return false; }
+    }
+
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }

@@ -34,6 +34,10 @@ namespace HeuristicLab.Encodings.Permutation {
   [StorableClass]
   [Creatable("Test")]
   public sealed class RandomPermutationCreator : SingleSuccessorOperator, IPermutationCreator, IStochasticOperator {
+    public override bool CanChangeName {
+      get { return false; }
+    }
+
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }

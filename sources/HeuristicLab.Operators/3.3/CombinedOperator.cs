@@ -31,9 +31,6 @@ namespace HeuristicLab.Operators {
   [Creatable("Test")]
   [StorableClass]
   public sealed class CombinedOperator : AlgorithmOperator, IParameterizedItem {
-    public override bool CanChangeName {
-      get { return true; }
-    }
     public override bool CanChangeDescription {
       get { return true; }
     }

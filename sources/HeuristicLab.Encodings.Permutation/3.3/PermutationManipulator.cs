@@ -32,6 +32,10 @@ namespace HeuristicLab.Encodings.Permutation {
   [Item("PermutationManipulator", "A base class for permutation manipulation operators.")]
   [StorableClass]
   public abstract class PermutationManipulator : SingleSuccessorOperator, IPermutationManipulator, IStochasticOperator {
+    public override bool CanChangeName {
+      get { return false; }
+    }
+
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }

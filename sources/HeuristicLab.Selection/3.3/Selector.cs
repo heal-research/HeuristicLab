@@ -34,6 +34,10 @@ namespace HeuristicLab.Selection {
   [Item("Selector", "A base class for selection operators.")]
   [StorableClass]
   public abstract class Selector : SingleSuccessorOperator, ISelector {
+    public override bool CanChangeName {
+      get { return false; }
+    }
+
     protected ValueParameter<BoolData> CopySelectedParameter {
       get { return (ValueParameter<BoolData>)Parameters["CopySelected"]; }
     }
