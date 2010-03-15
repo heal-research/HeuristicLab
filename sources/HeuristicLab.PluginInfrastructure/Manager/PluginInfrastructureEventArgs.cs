@@ -33,7 +33,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     }
 
     private static PluginInfrastructureEventArgs emptyArgs = new PluginInfrastructureEventArgs(string.Empty);
-    internal static PluginInfrastructureEventArgs Empty {
+    internal new static PluginInfrastructureEventArgs Empty {
       get { return emptyArgs; }
     }
   }

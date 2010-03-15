@@ -264,7 +264,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     /// Reads plugin name, list and type of files and dependencies of the plugin. This information is necessary for
     /// plugin dependency checking before plugin activation.
     /// </summary>
-    /// <param name="t"></param>
+    /// <param name="pluginType"></param>
     private PluginDescription GetPluginDescription(Type pluginType) {
 
       string pluginName, pluginDescription, pluginVersion;

@@ -224,10 +224,10 @@ namespace HeuristicLab.PluginInfrastructure {
 
     /// <summary>
     /// Finds all types that are subtypes or equal to the specified type if they are part of the given
-    /// <paramref name="plugin"/>.
+    /// <paramref name="pluginDescription"/>.
     /// </summary>
     /// <param name="type">Most general type for which to find matching types.</param>
-    /// <param name="plugin">The plugin the subtypes must be part of.</param>
+    /// <param name="pluginDescription">The plugin the subtypes must be part of.</param>
     /// <param name="onlyInstantiable">Return only types that are instantiable 
     /// (interfaces, abstract classes... are not returned)</param>
     /// <returns>Enumerable of the discovered types.</returns>
