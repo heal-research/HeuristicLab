@@ -57,8 +57,8 @@ namespace HeuristicLab.Persistence.GUI {
           try {
             if (!IsSerializable(type, config))
               types.Add(type);
-            if (!IsCorrectlyStorable(type))
-              storableInconsistentcy.Add(type);
+            /* if (!IsCorrectlyStorable(type))
+              storableInconsistentcy.Add(type); */
           } catch {
             types.Add(type);
           }
@@ -67,7 +67,7 @@ namespace HeuristicLab.Persistence.GUI {
       return types;
     }
 
-    private static bool IsCorrectlyStorable(Type type) {
+    /* private static bool IsCorrectlyStorable(Type type) {
       if (StorableAttribute.GetStorableMembers(type).Count() > 0) {
         if (!StorableClassAttribute.IsStorableType(type, true))
           return false;
@@ -76,6 +76,6 @@ namespace HeuristicLab.Persistence.GUI {
           return false;
       }
       return true;
-    }    
+    }  */  
   }
 }
