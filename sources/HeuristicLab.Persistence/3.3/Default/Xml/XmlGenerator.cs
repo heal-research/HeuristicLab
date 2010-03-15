@@ -188,6 +188,11 @@ namespace HeuristicLab.Persistence.Default.Xml {
       }
     }
 
+    /// <summary>
+    /// Formats the specified type cache.
+    /// </summary>
+    /// <param name="typeCache">The type cache.</param>
+    /// <returns>An enumerable of formatted type cache tags.</returns>
     public IEnumerable<string> Format(List<TypeMapping> typeCache) {
       yield return CreateNodeStart(XmlStringConstants.TYPECACHE);
       foreach (var mapping in typeCache)
@@ -210,19 +215,35 @@ namespace HeuristicLab.Persistence.Default.Xml {
 
     /// <summary>
     /// Serialize an object into a file.
-    /// 
     /// The XML configuration is obtained from the <c>ConfigurationService</c>.
     /// Needed assemblies are not included.
     /// </summary>
+    /// <param name="o">The object.</param>
+    /// <param name="filename">The filename.</param>
     /// <param name="compression">ZIP file compression level</param>
     public static void Serialize(object o, string filename, int compression) {
       Serialize(o, filename, ConfigurationService.Instance.GetConfiguration(new XmlFormat()), false, compression);
     }
 
+    /// <summary>
+    /// Serializes the specified object into a file.
+    /// Needed assemblies are not included, ZIP compression level is set to 5.
+    /// </summary>
+    /// <param name="obj">The object.</param>
+    /// <param name="filename">The filename.</param>
+    /// <param name="config">The configuration.</param>
     public static void Serialize(object obj, string filename, Configuration config) {
       Serialize(obj, filename, config, false, 5);
     }
 
+    /// <summary>
+    /// Serializes the specified object into a file.
+    /// </summary>
+    /// <param name="obj">The object.</param>
+    /// <param name="filename">The filename.</param>
+    /// <param name="config">The configuration.</param>
+    /// <param name="includeAssemblies">if set to <c>true</c> include needed assemblies.</param>
+    /// <param name="compression">The ZIP compression level.</param>
     public static void Serialize(object obj, string filename, Configuration config, bool includeAssemblies, int compression) {      
       try {
         string tempfile = Path.GetTempFileName();
@@ -277,20 +298,35 @@ namespace HeuristicLab.Persistence.Default.Xml {
       }
     }
 
+    /// <summary>
+    /// Serializes the specified object into a stream using the <see cref="XmlFormat"/>
+    /// obtained from the <see cref="ConfigurationService"/>.
+    /// </summary>
+    /// <param name="obj">The object.</param>
+    /// <param name="stream">The stream.</param>
     public static void Serialize(object obj, Stream stream) {
       Serialize(obj, stream, ConfigurationService.Instance.GetConfiguration(new XmlFormat()));
     }
 
 
+    /// <summary>
+    /// Serializes the specified object into a stream.
+    /// </summary>
+    /// <param name="obj">The object.</param>
+    /// <param name="stream">The stream.</param>
+    /// <param name="config">The configuration.</param>
     public static void Serialize(object obj, Stream stream, Configuration config) {
       Serialize(obj, stream, config, false);
     }
 
-    public static void Serialize(object obj, Stream stream, Configuration config, bool includeAssemblies) {
-      Serialize(obj, stream, config, includeAssemblies, true);
-    }
-
-    public static void Serialize(object obj, Stream stream, Configuration config, bool includeAssemblies, bool interleaveTypeInfo) {      
+    /// <summary>
+    /// Serializes the specified object into a stream.
+    /// </summary>
+    /// <param name="obj">The object.</param>
+    /// <param name="stream">The stream.</param>
+    /// <param name="config">The configuration.</param>
+    /// <param name="includeAssemblies">if set to <c>true</c> include need assemblies.</param>
+    public static void Serialize(object obj, Stream stream, Configuration config, bool includeAssemblies) {      
       try {
         using (StreamWriter writer = new StreamWriter(new GZipStream(stream, CompressionMode.Compress))) {
           Serializer serializer = new Serializer(obj, config);

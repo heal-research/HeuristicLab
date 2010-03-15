@@ -11,12 +11,20 @@ using System.IO.Compression;
 
 namespace HeuristicLab.Persistence.Default.Xml {
 
+  /// <summary>
+  /// Main entry point of persistence loading from XML. Use the static
+  /// methods to load from a file or stream.
+  /// </summary>
   public class XmlParser : IEnumerable<ISerializationToken> {
 
     private readonly XmlReader reader;
     private delegate IEnumerator<ISerializationToken> Handler();
     private readonly Dictionary<string, Handler> handlers;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="XmlParser"/> class.
+    /// </summary>
+    /// <param name="input">The input.</param>
     public XmlParser(TextReader input) {
       XmlReaderSettings settings = new XmlReaderSettings {
         ConformanceLevel = ConformanceLevel.Document,
@@ -34,6 +42,12 @@ namespace HeuristicLab.Persistence.Default.Xml {
                    };
     }
 
+    /// <summary>
+    /// Returns an enumerator that iterates through the serialization tokens.
+    /// </summary>
+    /// <returns>
+    /// An that can be used to iterate through the collection of serialization tokens.
+    /// </returns>
     public IEnumerator<ISerializationToken> GetEnumerator() {
       while (reader.Read()) {
         if (!reader.IsStartElement()) {
@@ -51,6 +65,16 @@ namespace HeuristicLab.Persistence.Default.Xml {
           yield return iterator.Current;
         }
       }
+    }
+
+    /// <summary>
+    /// Returns an enumerator that iterates through the serialization tokens.
+    /// </summary>
+    /// <returns>
+    /// An that can be used to iterate through the collection of serialization tokens.
+    /// </returns>
+    IEnumerator IEnumerable.GetEnumerator() {
+      return GetEnumerator();
     }
 
     private IEnumerator<ISerializationToken> ParsePrimitive() {
@@ -114,10 +138,11 @@ namespace HeuristicLab.Persistence.Default.Xml {
         reader.GetAttribute("serializer"));
     }
 
-    IEnumerator IEnumerable.GetEnumerator() {
-      return GetEnumerator();
-    }
-
+    /// <summary>
+    /// Parses the type cache.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    /// <returns>A list of type mapping entries.</returns>
     public static List<TypeMapping> ParseTypeCache(TextReader reader) {
       try {
         var typeCache = new List<TypeMapping>();
@@ -138,12 +163,33 @@ namespace HeuristicLab.Persistence.Default.Xml {
       }
     }
 
+    /// <summary>
+    /// Deserializes an object from the specified filename.
+    /// </summary>
+    /// <param name="filename">The filename.</param>
+    /// <returns>A fresh object instance</returns>
     public static object Deserialize(string filename) {
       using (ZipFile file = new ZipFile(filename)) {
         return Deserialize(file);
       }
     }
 
+    /// <summary>
+    /// Deserializes the specified filename.
+    /// </summary>
+    /// <typeparam name="T">object type expected from the serialized file</typeparam>
+    /// <param name="filename">The filename.</param>
+    /// <returns>A fresh object of type T</returns>
+    public static T Deserialize<T>(string filename) {
+      return (T)Deserialize(filename);
+    }
+
+
+    /// <summary>
+    /// Deserializes an object from the specified stream.
+    /// </summary>
+    /// <param name="stream">The stream.</param>
+    /// <returns>A fresh object instance.</returns>
     public static object Deserialize(Stream stream) {
       try {
         using (StreamReader reader = new StreamReader(new GZipStream(stream, CompressionMode.Decompress))) {
@@ -156,6 +202,16 @@ namespace HeuristicLab.Persistence.Default.Xml {
       } catch (Exception x) {
         throw new PersistenceException("Unexpected exception during deserialization", x);
       }
+    }
+
+    /// <summary>
+    /// Deserializes an object from the specified stream.
+    /// </summary>
+    /// <typeparam name="T">object type expected from the serialized stream</typeparam>
+    /// <param name="stream">The stream.</param>
+    /// <returns>A fresh object instance.</returns>
+    public static T Deserialize<T>(Stream stream) {
+      return (T)Deserialize(stream);
     }
 
     private static object Deserialize(ZipFile zipFile) {
