@@ -6,6 +6,6 @@ using System.Globalization;
 
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {
 
-  public class SByte2XmlSerializer : SimpleNumber2XmlSerializerBase<sbyte> { }
+  internal sealed class SByte2XmlSerializer : SimpleNumber2XmlSerializerBase<sbyte> { }
 
 }

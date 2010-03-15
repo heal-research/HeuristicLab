@@ -8,7 +8,7 @@ using System.Globalization;
 
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {
 
-  public class TimeSpan2XmlSerializer : PrimitiveXmlSerializerBase<TimeSpan> {
+  internal sealed class TimeSpan2XmlSerializer : PrimitiveXmlSerializerBase<TimeSpan> {
 
     public override XmlString Format(TimeSpan o) {
       return new XmlString(o.ToString());

@@ -8,18 +8,33 @@ using HeuristicLab.Persistence.Core.Tokens;
 
 namespace HeuristicLab.Persistence.Default.DebugString {
 
+  /// <summary>
+  /// Generate a string that recursively describes an object graph.
+  /// </summary>
   public class DebugStringGenerator : GeneratorBase<string> {
 
     private bool isSepReq;
     private readonly bool showRefs;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DebugStringGenerator"/> class.
+    /// </summary>
     public DebugStringGenerator() : this(true) { }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DebugStringGenerator"/> class.
+    /// </summary>
+    /// <param name="showRefs">if set to <c>true</c> show references.</param>
     public DebugStringGenerator(bool showRefs) {
       isSepReq = false;
       this.showRefs = showRefs;
     }
 
+    /// <summary>
+    /// Formats the specified begin token.
+    /// </summary>
+    /// <param name="beginToken">The begin token.</param>
+    /// <returns>The token in serialized form.</returns>
     protected override string Format(BeginToken beginToken) {
       StringBuilder sb = new StringBuilder();
       if (isSepReq)
@@ -37,11 +52,21 @@ namespace HeuristicLab.Persistence.Default.DebugString {
       return sb.ToString();
     }
 
+    /// <summary>
+    /// Formats the specified end token.
+    /// </summary>
+    /// <param name="endToken">The end token.</param>
+    /// <returns>The token in serialized form.</returns>
     protected override string Format(EndToken endToken) {
       isSepReq = true;
       return ")";
     }
 
+    /// <summary>
+    /// Formats the specified primitive token.
+    /// </summary>
+    /// <param name="primitiveToken">The primitive token.</param>
+    /// <returns>The token in serialized form.</returns>
     protected override string Format(PrimitiveToken primitiveToken) {
       StringBuilder sb = new StringBuilder();
       if (isSepReq)
@@ -60,6 +85,11 @@ namespace HeuristicLab.Persistence.Default.DebugString {
       return sb.ToString();
     }
 
+    /// <summary>
+    /// Formats the specified reference token.
+    /// </summary>
+    /// <param name="referenceToken">The reference token.</param>
+    /// <returns>The token in serialized form.</returns>
     protected override string Format(ReferenceToken referenceToken) {
       StringBuilder sb = new StringBuilder();
       if (isSepReq)
@@ -75,6 +105,11 @@ namespace HeuristicLab.Persistence.Default.DebugString {
       return sb.ToString();
     }
 
+    /// <summary>
+    /// Formats the specified null reference token.
+    /// </summary>
+    /// <param name="nullReferenceToken">The null reference token.</param>
+    /// <returns>The token in serialized form.</returns>
     protected override string Format(NullReferenceToken nullReferenceToken) {
       StringBuilder sb = new StringBuilder();
       if (isSepReq)
@@ -88,22 +123,48 @@ namespace HeuristicLab.Persistence.Default.DebugString {
       return sb.ToString();
     }
 
+    /// <summary>
+    /// Formats the specified meta info begin token.
+    /// </summary>
+    /// <param name="metaInfoBeginToken">The meta info begin token.</param>
+    /// <returns>The token in serialized form.</returns>
     protected override string Format(MetaInfoBeginToken metaInfoBeginToken) {
       return "[";
     }
 
+    /// <summary>
+    /// Formats the specified meta info end token.
+    /// </summary>
+    /// <param name="metaInfoEndToken">The meta info end token.</param>
+    /// <returns>The token in serialized form.</returns>
     protected override string Format(MetaInfoEndToken metaInfoEndToken) {
       return "]";
     }
 
+    /// <summary>
+    /// Formats the specified type token.
+    /// </summary>
+    /// <param name="typeToken">The type token.</param>
+    /// <returns>The token in serialized form.</returns>
     protected override string Format(TypeToken typeToken) {
       return string.Empty;
     }
 
+    /// <summary>
+    /// Serializes the specified object.
+    /// </summary>
+    /// <param name="o">The object.</param>
+    /// <returns>A string representation of the complete object graph</returns>
     public static string Serialize(object o) {
       return Serialize(o, ConfigurationService.Instance.GetDefaultConfig(new DebugStringFormat()));
     }
 
+    /// <summary>
+    /// Serializes the specified object.
+    /// </summary>
+    /// <param name="o">The object.</param>
+    /// <param name="configuration">The persistence configuration.</param>
+    /// <returns>A string representation of the complete object graph.</returns>
     public static string Serialize(object o, Configuration configuration) {
       Serializer s = new Serializer(o, configuration);
       DebugStringGenerator generator = new DebugStringGenerator();

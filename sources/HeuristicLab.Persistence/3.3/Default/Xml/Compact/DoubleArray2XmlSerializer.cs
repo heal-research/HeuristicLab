@@ -4,7 +4,7 @@ using HeuristicLab.Persistence.Default.Xml.Primitive;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
-  public abstract class DoubleArray2XmlSerializerBase<T> : NumberArray2XmlSerializerBase<T> where T : class {
+  internal abstract class DoubleArray2XmlSerializerBase<T> : NumberArray2XmlSerializerBase<T> where T : class {
 
     protected override string FormatValue(object o) {
       return Double2XmlSerializer.FormatG17((double)o);
@@ -15,10 +15,10 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
     }
   }
 
-  public class Double1DArray2XmlSerializer : DoubleArray2XmlSerializerBase<double[]> { }
+  internal sealed class Double1DArray2XmlSerializer : DoubleArray2XmlSerializerBase<double[]> { }
 
-  public class Double2DArray2XmlSerializer : DoubleArray2XmlSerializerBase<double[,]> { }
+  internal sealed class Double2DArray2XmlSerializer : DoubleArray2XmlSerializerBase<double[,]> { }
 
-  public class Double3DArray2XmlSerializer : DoubleArray2XmlSerializerBase<double[, ,]> { }
+  internal sealed class Double3DArray2XmlSerializer : DoubleArray2XmlSerializerBase<double[, ,]> { }
 
 }

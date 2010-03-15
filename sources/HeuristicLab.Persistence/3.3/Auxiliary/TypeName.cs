@@ -35,6 +35,13 @@ namespace HeuristicLab.Persistence.Auxiliary {
     /// <value>The generic args.</value>
     [Storable]
     public List<TypeName> GenericArgs { get; internal set; }
+
+    /// <summary>
+    /// Gets a value indicating whether this instance is generic.
+    /// </summary>
+    /// <value>
+    /// 	<c>true</c> if this instance is generic; otherwise, <c>false</c>.
+    /// </value>
     public bool IsGeneric { get { return GenericArgs.Count > 0; } }
 
     /// <summary>
@@ -86,7 +93,7 @@ namespace HeuristicLab.Persistence.Auxiliary {
     /// <summary>
     /// Returns a <see cref="System.String"/> that represents this instance.
     /// </summary>
-    /// <param name="full">if set to <c>true</c> includes full informatoin
+    /// <param name="full">if set to <c>true</c> includes full information
     /// about generic parameters and assembly properties.</param>
     /// <returns>
     /// A <see cref="System.String"/> that represents this instance.
@@ -99,6 +106,8 @@ namespace HeuristicLab.Persistence.Auxiliary {
     /// <summary>
     /// Returns a <see cref="System.String"/> that represents this instance.
     /// </summary>
+    /// <param name="full">if set to <c>true</c> includes full information
+    /// about generic parameters and assembly properties.</param>
     /// <param name="includeAssembly">if set to <c>true</c> include assembly properties and generic parameters.</param>
     /// <returns>
     /// A <see cref="System.String"/> that represents this instance.

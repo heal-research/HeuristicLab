@@ -111,6 +111,11 @@ namespace HeuristicLab.Persistence.Default.Xml {
       return sb.ToString();
     }
 
+    /// <summary>
+    /// Formats the specified begin token.
+    /// </summary>
+    /// <param name="beginToken">The begin token.</param>
+    /// <returns>The token in serialized form.</returns>
     protected override string Format(BeginToken beginToken) {
       var dict = new Dictionary<string, object> {
           {"name", beginToken.Name},
@@ -133,10 +138,20 @@ namespace HeuristicLab.Persistence.Default.Xml {
       }
     }
 
+    /// <summary>
+    /// Formats the specified end token.
+    /// </summary>
+    /// <param name="endToken">The end token.</param>
+    /// <returns>The token in serialized form.</returns>
     protected override string Format(EndToken endToken) {
       return CreateNodeEnd(XmlStringConstants.COMPOSITE);
     }
 
+    /// <summary>
+    /// Formats the specified data token.
+    /// </summary>
+    /// <param name="dataToken">The data token.</param>
+    /// <returns>The token in serialized form.</returns>
     protected override string Format(PrimitiveToken dataToken) {
       var dict = new Dictionary<string, object> {
             {"typeId", dataToken.TypeId},
@@ -147,6 +162,11 @@ namespace HeuristicLab.Persistence.Default.Xml {
         ((XmlString)dataToken.SerialData).Data);
     }
 
+    /// <summary>
+    /// Formats the specified ref token.
+    /// </summary>
+    /// <param name="refToken">The ref token.</param>
+    /// <returns>The token in serialized form.</returns>
     protected override string Format(ReferenceToken refToken) {
       return CreateNode(XmlStringConstants.REFERENCE,
         new Dictionary<string, object> {
@@ -154,21 +174,41 @@ namespace HeuristicLab.Persistence.Default.Xml {
           {"name", refToken.Name}});
     }
 
+    /// <summary>
+    /// Formats the specified null ref token.
+    /// </summary>
+    /// <param name="nullRefToken">The null ref token.</param>
+    /// <returns>The token in serialized form.</returns>
     protected override string Format(NullReferenceToken nullRefToken) {
       return CreateNode(XmlStringConstants.NULL,
         new Dictionary<string, object>{
           {"name", nullRefToken.Name}});
     }
 
+    /// <summary>
+    /// Formats the specified meta info begin token.
+    /// </summary>
+    /// <param name="metaInfoBeginToken">The meta info begin token.</param>
+    /// <returns>The token in serialized form.</returns>
     protected override string Format(MetaInfoBeginToken metaInfoBeginToken) {
       return CreateNodeStart(XmlStringConstants.METAINFO);
     }
 
+    /// <summary>
+    /// Formats the specified meta info end token.
+    /// </summary>
+    /// <param name="metaInfoEndToken">The meta info end token.</param>
+    /// <returns>The token in serialized form.</returns>
     protected override string Format(MetaInfoEndToken metaInfoEndToken) {
       return CreateNodeEnd(XmlStringConstants.METAINFO);
     }
 
     private TypeToken lastTypeToken;
+    /// <summary>
+    /// Formats the specified token.
+    /// </summary>
+    /// <param name="token">The token.</param>
+    /// <returns>The token in serialized form.</returns>
     protected override string Format(TypeToken token) {
       lastTypeToken = token;
       return "";
@@ -204,11 +244,12 @@ namespace HeuristicLab.Persistence.Default.Xml {
 
     /// <summary>
     /// Serialize an object into a file.
-    /// 
     /// The XML configuration is obtained from the <c>ConfigurationService</c>.
     /// The file is actually a ZIP file.
     /// Compression level is set to 5 and needed assemblies are not included.
-    /// </summary>    
+    /// </summary>
+    /// <param name="o">The object.</param>
+    /// <param name="filename">The filename.</param>
     public static void Serialize(object o, string filename) {
       Serialize(o, filename, ConfigurationService.Instance.GetConfiguration(new XmlFormat()), false, 5);
     }

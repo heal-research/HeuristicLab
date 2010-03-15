@@ -24,7 +24,8 @@ namespace HeuristicLab.Persistence.Interfaces {
   /// <summary>
   /// Marker interface for new serialization output format.  Instead of implementing this
   /// interface, derive from FormatBase.
-  /// </summary>  
+  /// </summary>
+  /// <typeparam name="SerialDataFormat">The type of the serial data format.</typeparam>
   public interface IFormat<SerialDataFormat> : IFormat where SerialDataFormat : ISerialData {
   }
 

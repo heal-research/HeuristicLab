@@ -25,8 +25,10 @@ namespace HeuristicLab.Persistence.Interfaces {
     /// <summary>
     /// Parses the specified serialized data back into an object.
     /// </summary>
-    /// <param name="t">The serial data.</param>
-    /// <returns>A newly created object representing the serialized data.</returns>
+    /// <param name="data">The serial data.</param>
+    /// <returns>
+    /// A newly created object representing the serialized data.
+    /// </returns>
     public abstract Source Parse(SerialData data);
 
     /// <summary>
@@ -53,10 +55,10 @@ namespace HeuristicLab.Persistence.Interfaces {
     /// <summary>
     /// Parses the specified serialized data back into an object.
     /// </summary>
-    /// <param name="t">The serial data.</param>
+    /// <param name="data">The serial data.</param>
     /// <returns>A newly created object representing the serialized data.</returns>
-    object IPrimitiveSerializer.Parse(ISerialData o) {
-      return Parse((SerialData)o);
+    object IPrimitiveSerializer.Parse(ISerialData data) {
+      return Parse((SerialData)data);
     }
 
     /// <summary>

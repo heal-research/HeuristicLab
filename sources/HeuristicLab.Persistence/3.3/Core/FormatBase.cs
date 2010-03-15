@@ -5,7 +5,8 @@ namespace HeuristicLab.Persistence.Interfaces {
 
   /// <summary>
   /// Common base class for defining a new serialization format.
-  /// </summary>  
+  /// </summary>
+  /// <typeparam name="SerialDataFormat">The type of the serial data format.</typeparam>
   [StorableClass]
   public abstract class FormatBase<SerialDataFormat> : IFormat<SerialDataFormat> where SerialDataFormat : ISerialData {
 
@@ -22,7 +23,9 @@ namespace HeuristicLab.Persistence.Interfaces {
 
     /// <summary>
     /// Compares formats by name.
-    /// </summary>    
+    /// </summary>
+    /// <param name="f">The format.</param>
+    /// <returns>wheter this object and f are equal by name.</returns>
     public bool Equals(FormatBase<SerialDataFormat> f) {
       if (f == null)
         return false;
@@ -32,11 +35,24 @@ namespace HeuristicLab.Persistence.Interfaces {
     /// <summary>
     /// Compares foramts by name.
     /// </summary>
+    /// <param name="obj">The <see cref="System.Object"/> to compare with this instance.</param>
+    /// <returns>
+    /// 	<c>true</c> if the specified <see cref="System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+    /// </returns>
+    /// <exception cref="T:System.NullReferenceException">
+    /// The <paramref name="obj"/> parameter is null.
+    /// </exception>
     public override bool Equals(object obj) {
       FormatBase<SerialDataFormat> f = obj as FormatBase<SerialDataFormat>;
       return Equals(f);
     }
 
+    /// <summary>
+    /// Returns a hash code for this instance.
+    /// </summary>
+    /// <returns>
+    /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+    /// </returns>
     public override int GetHashCode() {
       return Name.GetHashCode();
     }

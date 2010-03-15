@@ -6,7 +6,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
-  public class IntList2XmlSerializer : NumberEnumeration2XmlSerializerBase<List<int>> {
+  internal sealed class IntList2XmlSerializer : NumberEnumeration2XmlSerializerBase<List<int>> {
 
     protected override void Add(IEnumerable enumeration, object o) {
       ((List<int>)enumeration).Add((int)o);

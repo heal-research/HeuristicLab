@@ -10,7 +10,7 @@ using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Default.Xml.Compact;
 
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {
-  public class Bitmap2XmlSerializer : PrimitiveXmlSerializerBase<Bitmap> {
+  internal sealed class Bitmap2XmlSerializer : PrimitiveXmlSerializerBase<Bitmap> {
 
     public override XmlString Format(Bitmap o) {
       MemoryStream stream = new MemoryStream();

@@ -6,6 +6,6 @@ using System.Globalization;
 
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {
 
-  public class Short2XmlSerializer : SimpleNumber2XmlSerializerBase<short> { }
+  internal sealed class Short2XmlSerializer : SimpleNumber2XmlSerializerBase<short> { }
 
 }

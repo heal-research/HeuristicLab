@@ -8,7 +8,7 @@ using System.Globalization;
 
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {
 
-  public class Guid2XmlSerializer : PrimitiveXmlSerializerBase<Guid> {
+  internal sealed class Guid2XmlSerializer : PrimitiveXmlSerializerBase<Guid> {
 
     public override XmlString Format(Guid o) {
       return new XmlString(o.ToString("D", CultureInfo.InvariantCulture));

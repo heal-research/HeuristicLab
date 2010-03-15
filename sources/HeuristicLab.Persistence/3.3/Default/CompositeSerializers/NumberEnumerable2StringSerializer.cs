@@ -11,7 +11,7 @@ using HeuristicLab.Persistence.Auxiliary;
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
   [StorableClass]
-  public class NumberEnumerable2StringSerializer : ICompositeSerializer {
+  internal sealed class NumberEnumerable2StringSerializer : ICompositeSerializer {
 
     public int Priority {
       get { return 200; }

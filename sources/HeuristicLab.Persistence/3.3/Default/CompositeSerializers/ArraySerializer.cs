@@ -8,7 +8,7 @@ using System.Text;
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
   [StorableClass]
-  public class ArraySerializer : ICompositeSerializer {
+  internal sealed class ArraySerializer : ICompositeSerializer {
 
     public int Priority {
       get { return 100; }

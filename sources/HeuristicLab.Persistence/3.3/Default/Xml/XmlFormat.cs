@@ -10,6 +10,10 @@ namespace HeuristicLab.Persistence.Default.Xml {
   /// </summary>
   [StorableClass]
   public class XmlFormat : FormatBase<XmlString> {
+    /// <summary>
+    /// Gets the format's name.
+    /// </summary>
+    /// <value>The format's name.</value>
     public override string Name { get { return "XML"; } }
   }
 

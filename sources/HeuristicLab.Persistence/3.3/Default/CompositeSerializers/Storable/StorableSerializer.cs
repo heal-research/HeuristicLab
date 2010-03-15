@@ -17,14 +17,25 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
   /// or <c>AllFieldsAndAllProperties</c>.
   /// </summary>
   [StorableClass]
-  public class StorableSerializer : ICompositeSerializer {
+  public sealed class StorableSerializer : ICompositeSerializer {
 
     #region ICompositeSerializer implementation
 
+    /// <summary>
+    /// Priority 200, one of the first default composite serializers to try.
+    /// </summary>
+    /// <value></value>
     public int Priority {
       get { return 200; }
     }
 
+    /// <summary>
+    /// Determines for every type whether the composite serializer is applicable.
+    /// </summary>
+    /// <param name="type">The type.</param>
+    /// <returns>
+    /// 	<c>true</c> if this instance can serialize the specified type; otherwise, <c>false</c>.
+    /// </returns>
     public bool CanSerialize(Type type) {
       if (!ReflectionTools.HasDefaultConstructor(type) &&
         GetStorableConstructor(type) == null)
@@ -32,6 +43,14 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       return StorableReflection.IsEmptyOrStorableType(type, true);
     }
 
+    /// <summary>
+    /// Give a reason if possibly why the given type cannot be serialized by this
+    /// ICompositeSerializer.
+    /// </summary>
+    /// <param name="type">The type.</param>
+    /// <returns>
+    /// A string justifying why type cannot be serialized.
+    /// </returns>
     public string JustifyRejection(Type type) {
       if (!ReflectionTools.HasDefaultConstructor(type) &&
         GetStorableConstructor(type) == null)
@@ -41,11 +60,23 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       return "no reason";
     }
 
+    /// <summary>
+    /// Creates the meta info.
+    /// </summary>
+    /// <param name="o">The object.</param>
+    /// <returns>A list of storable components.</returns>
     public IEnumerable<Tag> CreateMetaInfo(object o) {
       InvokeHook(HookType.BeforeSerialization, o);
       return new Tag[] { };
     }
 
+    /// <summary>
+    /// Decompose an object into <see cref="Tag"/>s, the tag name can be null,
+    /// the order in which elements are generated is guaranteed to be
+    /// the same as they will be supplied to the Populate method.
+    /// </summary>
+    /// <param name="obj">An object.</param>
+    /// <returns>An enumerable of <see cref="Tag"/>s.</returns>
     public IEnumerable<Tag> Decompose(object obj) {
       foreach (var accessor in GetStorableAccessors(obj)) {
         yield return new Tag(accessor.Name, accessor.Get());
@@ -54,6 +85,12 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
 
     private static readonly object[] defaultArgs = new object[] { true };
 
+    /// <summary>
+    /// Create an instance of the object using the provided meta information.
+    /// </summary>
+    /// <param name="type">A type.</param>
+    /// <param name="metaInfo">The meta information.</param>
+    /// <returns>A fresh instance of the provided type.</returns>
     public object CreateInstance(Type type, IEnumerable<Tag> metaInfo) {
       try {
         ConstructorInfo constructor = GetStorableConstructor(type);
@@ -65,6 +102,12 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       }
     }
 
+    /// <summary>
+    /// Populates the specified instance.
+    /// </summary>
+    /// <param name="instance">The instance.</param>
+    /// <param name="objects">The objects.</param>
+    /// <param name="type">The type.</param>
     public void Populate(object instance, IEnumerable<Tag> objects, Type type) {
       var memberDict = new Dictionary<string, Tag>();
       IEnumerator<Tag> iter = objects.GetEnumerator();

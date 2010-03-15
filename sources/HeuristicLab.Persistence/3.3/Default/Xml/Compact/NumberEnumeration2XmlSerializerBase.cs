@@ -8,7 +8,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
   [StorableClass]
-  public abstract class NumberEnumeration2XmlSerializerBase<T> : CompactXmlSerializerBase<T> where T : IEnumerable {
+  internal abstract class NumberEnumeration2XmlSerializerBase<T> : CompactXmlSerializerBase<T> where T : IEnumerable {
 
     protected virtual string Separator { get { return ";"; } }
     protected abstract void Add(IEnumerable enumeration, object o);

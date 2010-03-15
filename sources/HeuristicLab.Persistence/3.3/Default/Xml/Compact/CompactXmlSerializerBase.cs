@@ -4,6 +4,6 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
-  public abstract class CompactXmlSerializerBase<T> : XmlSerializerBase<T> { }
+  internal abstract class CompactXmlSerializerBase<T> : XmlSerializerBase<T> { }
 
 }

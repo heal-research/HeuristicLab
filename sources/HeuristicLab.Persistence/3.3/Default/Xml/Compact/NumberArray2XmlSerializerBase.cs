@@ -8,7 +8,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
   [StorableClass]
-  public abstract class NumberArray2XmlSerializerBase<T> : CompactXmlSerializerBase<T> where T : class {
+  internal abstract class NumberArray2XmlSerializerBase<T> : CompactXmlSerializerBase<T> where T : class {
 
     protected virtual string Separator { get { return ";"; } }
     protected abstract string FormatValue(object o);

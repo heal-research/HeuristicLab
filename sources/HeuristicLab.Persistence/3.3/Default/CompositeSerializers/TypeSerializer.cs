@@ -8,7 +8,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
   [StorableClass]
-  public class TypeSerializer : ICompositeSerializer {
+  internal sealed class TypeSerializer : ICompositeSerializer {
 
     public int Priority {
       get { return 100; }

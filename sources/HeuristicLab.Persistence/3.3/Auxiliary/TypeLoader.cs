@@ -19,8 +19,11 @@ namespace HeuristicLab.Persistence.Auxiliary {
         Logger.Warn(String.Format(
           "Cannot load type \"{0}\", falling back to partial name", typeNameString));
         try {
-          TypeName typeName = TypeNameParser.Parse(typeNameString);
-          Assembly a = Assembly.LoadWithPartialName(typeName.AssemblyName);
+          TypeName typeName = TypeNameParser.Parse(typeNameString);             
+#pragma warning disable 0618
+          Assembly a = Assembly.LoadWithPartialName(typeName.AssemblyName);          
+          // the suggested Assembly.Load() method fails to load assemblies outside the GAC
+#pragma warning restore 0618
           type = a.GetType(typeName.ToString(false, false), true);
         } catch (Exception) {
           throw new PersistenceException(String.Format(

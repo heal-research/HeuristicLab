@@ -10,7 +10,19 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
   /// <summary>
   /// Indicates the time at which the hook should be invoked.
   /// </summary>
-  public enum HookType { BeforeSerialization, AfterDeserialization };
+  public enum HookType {
+
+    /// <summary>
+    /// States that this hook should be called before the storable
+    /// serializer starts decomposing the object.
+    /// </summary>
+    BeforeSerialization,
+    
+    /// <summary>
+    /// States that this hook should be called after the storable
+    /// serializer hast complete re-assembled the object.
+    /// </summary>
+    AfterDeserialization };
 
 
   /// <summary>

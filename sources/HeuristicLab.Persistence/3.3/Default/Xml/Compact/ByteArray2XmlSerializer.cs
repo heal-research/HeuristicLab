@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
-  public class ByteArray2XmlSerializer<T> : NumberArray2XmlSerializerBase<T> where T : class {
+  internal class ByteArray2XmlSerializer<T> : NumberArray2XmlSerializerBase<T> where T : class {
     protected override string FormatValue(object o) {
       return o.ToString();
     }
@@ -14,9 +14,9 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
     }
   }
 
-  public class Byte1DArray2XmlSerializer : ByteArray2XmlSerializer<byte[]> { }
+  internal sealed class Byte1DArray2XmlSerializer : ByteArray2XmlSerializer<byte[]> { }
 
-  public class Bytet2DArray2XmlSerializer : ByteArray2XmlSerializer<byte[,]> { }
+  internal sealed class Bytet2DArray2XmlSerializer : ByteArray2XmlSerializer<byte[,]> { }
 
-  public class Byte3DArray2XmlSerializer : ByteArray2XmlSerializer<byte[, ,]> { }
+  internal sealed class Byte3DArray2XmlSerializer : ByteArray2XmlSerializer<byte[, ,]> { }
 }

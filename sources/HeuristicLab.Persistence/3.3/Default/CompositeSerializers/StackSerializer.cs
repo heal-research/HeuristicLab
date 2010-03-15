@@ -10,7 +10,7 @@ using System.IO;
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
   [StorableClass]
-  public class StackSerializer : ICompositeSerializer {
+  internal sealed class StackSerializer : ICompositeSerializer {
 
     public int Priority {
       get { return 100; }

@@ -9,7 +9,7 @@ using HeuristicLab.Persistence.Auxiliary;
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
   [StorableClass]
-  public class DictionarySerializer : ICompositeSerializer {
+  internal sealed class DictionarySerializer : ICompositeSerializer {
 
     public int Priority {
       get { return 100; }

@@ -41,7 +41,7 @@ namespace HeuristicLab.Persistence.Interfaces {
 
     /// <summary>
     /// Generate MetaInfo necessary for instance creation. (e.g. dimensions
-    /// necessary for array creation (see <see cref="ArraySerializer"/>).
+    /// necessary for array creation.
     /// </summary>
     /// <param name="obj">An object.</param>
     /// <returns>An enumerable of <see cref="Tag"/>s.</returns>

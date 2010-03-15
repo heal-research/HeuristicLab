@@ -6,7 +6,7 @@ using System.Globalization;
 
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {
 
-  public class Decimal2XmlSerializer : PrimitiveXmlSerializerBase<decimal> {
+  internal sealed class Decimal2XmlSerializer : PrimitiveXmlSerializerBase<decimal> {
 
     public static decimal ParseG30(string s) {
       decimal d;

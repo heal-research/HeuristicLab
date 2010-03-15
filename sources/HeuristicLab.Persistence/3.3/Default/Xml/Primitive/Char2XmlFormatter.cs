@@ -6,7 +6,7 @@ using System.Globalization;
 
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {
 
-  public class Char2XmlSerializer : PrimitiveSerializerBase<char, XmlString> {
+  internal sealed class Char2XmlSerializer : PrimitiveSerializerBase<char, XmlString> {
 
     public override XmlString Format(char c) {
       return new XmlString(new string(c, 1));

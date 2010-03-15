@@ -6,7 +6,7 @@ using System.Globalization;
 
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {
 
-  public class Double2XmlSerializer : PrimitiveXmlSerializerBase<double> {
+  internal sealed class Double2XmlSerializer : PrimitiveXmlSerializerBase<double> {
 
     public static double ParseG17(string s) {
       double d;

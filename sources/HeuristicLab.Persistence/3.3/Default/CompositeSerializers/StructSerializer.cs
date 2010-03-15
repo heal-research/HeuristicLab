@@ -10,7 +10,7 @@ using HeuristicLab.Persistence.Core;
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
   [StorableClass]
-  public class StructSerializer : ICompositeSerializer {    
+  internal sealed class StructSerializer : ICompositeSerializer {    
 
     public int Priority {
       get { return 50; }

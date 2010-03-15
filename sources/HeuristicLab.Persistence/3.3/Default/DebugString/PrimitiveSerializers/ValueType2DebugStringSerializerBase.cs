@@ -8,7 +8,7 @@ using HeuristicLab.Persistence.Core.Tokens;
 
 namespace HeuristicLab.Persistence.Default.DebugString.PrimitiveSerializers {
 
-  public abstract class DebugStringSerializerBase<T> : PrimitiveSerializerBase<T, DebugString> {
+  internal abstract class DebugStringSerializerBase<T> : PrimitiveSerializerBase<T, DebugString> {
     public override DebugString Format(T o) { return new DebugString(o.ToString()); }
     public override T Parse(DebugString s) {
       throw new NotImplementedException();

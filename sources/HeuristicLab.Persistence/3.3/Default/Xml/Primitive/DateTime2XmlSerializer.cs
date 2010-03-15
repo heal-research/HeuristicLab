@@ -4,7 +4,7 @@ using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {
 
-  public class DateTime2XmlSerializer : PrimitiveXmlSerializerBase<DateTime> {
+  internal sealed class DateTime2XmlSerializer : PrimitiveXmlSerializerBase<DateTime> {
 
     public override XmlString Format(DateTime dt) {
       return new XmlString(dt.Ticks.ToString());

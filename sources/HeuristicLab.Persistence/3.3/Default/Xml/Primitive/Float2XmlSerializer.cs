@@ -6,7 +6,7 @@ using System.Globalization;
 
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {
 
-  public class Float2XmlSerializer : PrimitiveXmlSerializerBase<float> {
+  internal sealed class Float2XmlSerializer : PrimitiveXmlSerializerBase<float> {
 
     public static float ParseG8(string s) {
       float f;

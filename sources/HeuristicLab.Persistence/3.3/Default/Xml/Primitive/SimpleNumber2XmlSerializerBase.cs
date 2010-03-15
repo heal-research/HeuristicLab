@@ -6,7 +6,7 @@ using System.Globalization;
 
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {
 
-  public abstract class SimpleNumber2XmlSerializerBase<T> : PrimitiveXmlSerializerBase<T> {
+  internal abstract class SimpleNumber2XmlSerializerBase<T> : PrimitiveXmlSerializerBase<T> {
 
     private static MethodInfo ParseMethod = typeof(T)
       .GetMethod(

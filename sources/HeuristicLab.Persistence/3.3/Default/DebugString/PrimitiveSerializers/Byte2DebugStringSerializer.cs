@@ -8,6 +8,6 @@ using HeuristicLab.Persistence.Core.Tokens;
 
 namespace HeuristicLab.Persistence.Default.DebugString.PrimitiveSerializers {
 
-  public class Byte2DebugStringSerializer : DebugStringSerializerBase<byte> { }
+  internal sealed class Byte2DebugStringSerializer : DebugStringSerializerBase<byte> { }
 
 }
