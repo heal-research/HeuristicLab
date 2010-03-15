@@ -167,47 +167,31 @@ namespace HeuristicLab.Persistence.Core {
     protected void DiscoverFrom(Assembly a) {
       try {
         foreach (Type t in a.GetTypes()) {
-          if (t.GetInterface(typeof(IPrimitiveSerializer).FullName) != null) {
-            try {
-              IPrimitiveSerializer primitiveSerializer =
-                (IPrimitiveSerializer)Activator.CreateInstance(t, true);
-              if (!PrimitiveSerializers.ContainsKey(primitiveSerializer.SerialDataType)) {
-                PrimitiveSerializers.Add(primitiveSerializer.SerialDataType, new List<IPrimitiveSerializer>());
-              }
-              PrimitiveSerializers[primitiveSerializer.SerialDataType].Add(primitiveSerializer);
-              Logger.Debug(String.Format("discovered primitive serializer {0} ({1} -> {2})",
-                t.VersionInvariantName(),
-                primitiveSerializer.SourceType.AssemblyQualifiedName,
-                primitiveSerializer.SerialDataType.AssemblyQualifiedName));
-            } catch (MissingMethodException e) {
-              Logger.Warn("Could not instantiate " + t.AssemblyQualifiedName, e);
-            } catch (ArgumentException e) {
-              Logger.Warn("Could not instantiate " + t.AssemblyQualifiedName, e);
-            }
+          if (t.GetInterface(typeof(IPrimitiveSerializer).FullName) != null &&
+              !t.IsAbstract && t.GetConstructor(Type.EmptyTypes) != null && !t.ContainsGenericParameters) {
+            IPrimitiveSerializer primitiveSerializer =
+              (IPrimitiveSerializer)Activator.CreateInstance(t, true);
+            if (!PrimitiveSerializers.ContainsKey(primitiveSerializer.SerialDataType))
+              PrimitiveSerializers.Add(primitiveSerializer.SerialDataType, new List<IPrimitiveSerializer>());
+            PrimitiveSerializers[primitiveSerializer.SerialDataType].Add(primitiveSerializer);
+            Logger.Debug(String.Format("discovered primitive serializer {0} ({1} -> {2})",
+              t.VersionInvariantName(),
+              primitiveSerializer.SourceType.AssemblyQualifiedName,
+              primitiveSerializer.SerialDataType.AssemblyQualifiedName));
           }
-          if (t.GetInterface(typeof(ICompositeSerializer).FullName) != null) {
-            try {
-              CompositeSerializers.Add((ICompositeSerializer)Activator.CreateInstance(t, true));
-              Logger.Debug("discovered composite serializer " + t.AssemblyQualifiedName);
-            } catch (MissingMethodException e) {
-              Logger.Warn("Could not instantiate " + t.AssemblyQualifiedName, e);
-            } catch (ArgumentException e) {
-              Logger.Warn("Could not instantiate " + t.AssemblyQualifiedName, e);
-            }
+          if (t.GetInterface(typeof(ICompositeSerializer).FullName) != null &&
+              !t.IsAbstract && t.GetConstructor(Type.EmptyTypes) != null && !t.ContainsGenericParameters) {
+            CompositeSerializers.Add((ICompositeSerializer)Activator.CreateInstance(t, true));
+            Logger.Debug("discovered composite serializer " + t.AssemblyQualifiedName);
           }
-          if (t.GetInterface(typeof(IFormat).FullName) != null) {
-            try {
-              IFormat format = (IFormat)Activator.CreateInstance(t, true);
-              Formats.Add(format);
-              Logger.Debug(String.Format("discovered format {0} ({2}) with serial data {1}.",
-                format.Name,
-                format.SerialDataType,
-                t.AssemblyQualifiedName));
-            } catch (MissingMethodException e) {
-              Logger.Warn("Could not instantiate " + t.AssemblyQualifiedName, e);
-            } catch (ArgumentException e) {
-              Logger.Warn("Could not instantiate " + t.AssemblyQualifiedName, e);
-            }
+          if (t.GetInterface(typeof(IFormat).FullName) != null &&
+             !t.IsAbstract && t.GetConstructor(Type.EmptyTypes) != null && !t.ContainsGenericParameters) {
+            IFormat format = (IFormat)Activator.CreateInstance(t, true);
+            Formats.Add(format);
+            Logger.Debug(String.Format("discovered format {0} ({2}) with serial data {1}.",
+              format.Name,
+              format.SerialDataType,
+              t.AssemblyQualifiedName));
           }
         }
       } catch (ReflectionTypeLoadException e) {
