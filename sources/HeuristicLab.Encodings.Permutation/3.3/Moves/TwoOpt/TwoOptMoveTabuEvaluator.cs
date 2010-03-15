@@ -23,17 +23,18 @@ using System;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.Permutation {
   [Item("TwoOptMoveTabuEvaluator", "Evaluates whether a given 2-opt move is tabu.")]
   [StorableClass]
-  public class TwoOptMoveTabuEvaluator : SingleSuccessorOperator {
-    public LookupParameter<TwoOptMove> MoveParameter {
+  public class TwoOptMoveTabuEvaluator : SingleSuccessorOperator, ITwoOptPermutationMoveOperator, ITabuMoveEvaluator {
+    public ILookupParameter<TwoOptMove> TwoOptMoveParameter {
       get { return (LookupParameter<TwoOptMove>)Parameters["Move"]; }
     }
-    public LookupParameter<Permutation> PermutationParameter {
+    public ILookupParameter<Permutation> PermutationParameter {
       get { return (LookupParameter<Permutation>)Parameters["Permutation"]; }
     }
     public LookupParameter<ItemList<IItem>> TabuListParameter {
@@ -57,7 +58,7 @@ namespace HeuristicLab.Encodings.Permutation {
 
     public override IOperation Apply() {
       ItemList<IItem> tabuList = TabuListParameter.ActualValue;
-      TwoOptMove move = MoveParameter.ActualValue;
+      TwoOptMove move = TwoOptMoveParameter.ActualValue;
       Permutation permutation = PermutationParameter.ActualValue;
       int length = permutation.Length;
       int E1S = permutation.GetCircular(move.Index1 - 1);

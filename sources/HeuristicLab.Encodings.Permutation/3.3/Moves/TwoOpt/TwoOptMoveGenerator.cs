@@ -22,24 +22,25 @@
 using System;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.Permutation {
-  [Item("ExhaustiveTwoOptMoveGenerator", "Generates all possible 2-opt moves from a given permutation.")]
+  [Item("TwoOptMoveGenerator", "Base class for all 2-opt move generators.")]
   [StorableClass]
-  public class ExhaustiveTwoOptMoveGenerator : SingleSuccessorOperator, IPermutationMoveGenerator {
+  public abstract class TwoOptMoveGenerator : SingleSuccessorOperator, ITwoOptPermutationMoveOperator, IMoveGenerator {
     public ILookupParameter<Permutation> PermutationParameter {
       get { return (ILookupParameter<Permutation>)Parameters["Permutation"]; }
     }
-    public LookupParameter<TwoOptMove> MoveParameter {
+    public ILookupParameter<TwoOptMove> TwoOptMoveParameter {
       get { return (LookupParameter<TwoOptMove>)Parameters["Move"]; }
     }
-    private ScopeParameter CurrentScopeParameter {
+    protected ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
     }
 
-    public ExhaustiveTwoOptMoveGenerator()
+    public TwoOptMoveGenerator()
       : base() {
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The permutation for which moves should be generated."));
       Parameters.Add(new LookupParameter<TwoOptMove>("Move", "The moves that should be generated in subscopes."));
@@ -48,24 +49,16 @@ namespace HeuristicLab.Encodings.Permutation {
 
     public override IOperation Apply() {
       Permutation p = PermutationParameter.ActualValue;
-      int length = p.Length;
-      int totalMoves = (length) * (length - 1) / 2 - 3;
-      Scope[] moveScopes = new Scope[totalMoves];
-      int count = 0;
-      for (int i = 0; i < length - 1; i++)
-        for (int j = i + 1; j < length; j++) {
-          // doesn't make sense to inverse the whole permutation or the whole but one
-          if (i == 0 && j >= length - 2) continue;
-          else if (i == 1 && j >= length - 1) continue;
-          Scope s = new Scope(count.ToString());
-          s.Variables.Add(new Variable(MoveParameter.ActualName, new TwoOptMove(i, j)));
-          moveScopes[count] = s;
-          count++;
-        }
-      // FIXME: remove the line below
-      if (count != totalMoves) throw new InvalidOperationException(Name + ": totalMoves != count");
+      TwoOptMove[] moves = GenerateMoves(p);
+      Scope[] moveScopes = new Scope[moves.Length];
+      for (int i = 0; i < moveScopes.Length; i++) {
+        moveScopes[i] = new Scope(i.ToString());
+        moveScopes[i].Variables.Add(new Variable(TwoOptMoveParameter.ActualName, moves[i]));
+      }
       CurrentScopeParameter.ActualValue.SubScopes.AddRange(moveScopes);
       return base.Apply();
     }
+
+    protected abstract TwoOptMove[] GenerateMoves(Permutation permutation);
   }
 }

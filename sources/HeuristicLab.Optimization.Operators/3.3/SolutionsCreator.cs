@@ -49,6 +49,10 @@ namespace HeuristicLab.Optimization.Operators {
     public IScope CurrentScope {
       get { return CurrentScopeParameter.ActualValue; }
     }
+    public IntData NumberOfSolutions {
+      get { return NumberOfSolutionsParameter.Value; }
+      set { NumberOfSolutionsParameter.Value = value; }
+    }
 
     public SolutionsCreator()
       : base() {

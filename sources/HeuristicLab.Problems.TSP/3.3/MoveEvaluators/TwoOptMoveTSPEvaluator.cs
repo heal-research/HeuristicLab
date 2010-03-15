@@ -78,7 +78,8 @@ namespace HeuristicLab.Problems.TSP {
         coordinates[edge2source, 0], coordinates[edge2source, 1]);
       moveQuality += CalculateDistance(coordinates[edge1target, 0], coordinates[edge1target, 1],
         coordinates[edge2target, 0], coordinates[edge2target, 1]);
-      MoveQualityParameter.ActualValue = new DoubleData(moveQuality);
+      if (MoveQualityParameter.ActualValue == null) MoveQualityParameter.ActualValue = new DoubleData(moveQuality);
+      else MoveQualityParameter.ActualValue.Value = moveQuality;
       return base.Apply();
     }
 

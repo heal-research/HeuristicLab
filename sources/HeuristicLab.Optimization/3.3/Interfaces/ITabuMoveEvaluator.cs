@@ -20,13 +20,8 @@
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Encodings.Permutation {
-  /// <summary>
-  /// An interface which represents an operator for manipulating solutions.
-  /// </summary>
-  public interface IPermutationMoveGenerator : IPermutationOperator, IMoveGenerator {
-    ILookupParameter<Permutation> PermutationParameter { get; }
+namespace HeuristicLab.Optimization {
+  public interface ITabuMoveEvaluator : IOperator {
   }
 }

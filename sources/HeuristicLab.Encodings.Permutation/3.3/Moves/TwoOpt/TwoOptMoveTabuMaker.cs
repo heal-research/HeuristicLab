@@ -23,14 +23,18 @@ using System;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.Permutation.Moves {
   [Item("TwoOptMoveTabuMaker", "Declares a given 2-opt move as tabu, by adding its attributes to the tabu list. It also removes the oldest entry in the tabu list when its size is greater than tenure.")]
   [StorableClass]
-  public class TwoOptMoveTabuMaker : SingleSuccessorOperator {
-    public LookupParameter<TwoOptMove> MoveParameter {
+  public class TwoOptMoveTabuMaker : SingleSuccessorOperator, ITwoOptPermutationMoveOperator, ITabuMoveMaker {
+    public ILookupParameter<Permutation> PermutationParameter {
+      get { return (ILookupParameter<Permutation>)Parameters["Permutation"]; }
+    }
+    public ILookupParameter<TwoOptMove> TwoOptMoveParameter {
       get { return (LookupParameter<TwoOptMove>)Parameters["Move"]; }
     }
     public LookupParameter<ItemList<IItem>> TabuListParameter {
@@ -38,9 +42,6 @@ namespace HeuristicLab.Encodings.Permutation.Moves {
     }
     public ValueLookupParameter<IntData> TabuTenureParameter {
       get { return (ValueLookupParameter<IntData>)Parameters["TabuTenure"]; }
-    }
-    public ILookupParameter<Permutation> PermutationParameter {
-      get { return (ILookupParameter<Permutation>)Parameters["Permutation"]; }
     }
 
     public TwoOptMoveTabuMaker()
@@ -53,7 +54,7 @@ namespace HeuristicLab.Encodings.Permutation.Moves {
 
     public override IOperation Apply() {
       ItemList<IItem> tabuList = TabuListParameter.ActualValue;
-      TwoOptMove move = MoveParameter.ActualValue;
+      TwoOptMove move = TwoOptMoveParameter.ActualValue;
       IntData tabuTenure = TabuTenureParameter.ActualValue;
       Permutation permutation = PermutationParameter.ActualValue;
       

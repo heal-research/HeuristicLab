@@ -23,21 +23,22 @@ using System;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.Permutation {
   [Item("TwoOptMoveMaker", "Peforms a 2-opt move on a given permutation and updates the quality.")]
   [StorableClass]
-  public class TwoOptMoveMaker : SingleSuccessorOperator {
-    public LookupParameter<DoubleData> QualityParameter {
+  public class TwoOptMoveMaker : SingleSuccessorOperator, ITwoOptPermutationMoveOperator, IMoveMaker {
+    public ILookupParameter<DoubleData> QualityParameter {
       get { return (LookupParameter<DoubleData>)Parameters["Quality"]; }
     }
-    public LookupParameter<TwoOptMove> MoveParameter {
-      get { return (LookupParameter<TwoOptMove>)Parameters["Move"]; }
-    }
-    public LookupParameter<DoubleData> MoveQualityParameter {
+    public ILookupParameter<DoubleData> MoveQualityParameter {
       get { return (LookupParameter<DoubleData>)Parameters["MoveQuality"]; }
+    }
+    public ILookupParameter<TwoOptMove> TwoOptMoveParameter {
+      get { return (LookupParameter<TwoOptMove>)Parameters["Move"]; }
     }
     public ILookupParameter<Permutation> PermutationParameter {
       get { return (ILookupParameter<Permutation>)Parameters["Permutation"]; }
@@ -52,7 +53,7 @@ namespace HeuristicLab.Encodings.Permutation {
     }
 
     public override IOperation Apply() {
-      TwoOptMove move = MoveParameter.ActualValue;
+      TwoOptMove move = TwoOptMoveParameter.ActualValue;
       Permutation permutation = PermutationParameter.ActualValue;
       DoubleData moveQuality = MoveQualityParameter.ActualValue;
       DoubleData quality = QualityParameter.ActualValue;

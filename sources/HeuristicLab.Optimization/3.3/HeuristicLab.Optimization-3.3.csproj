@@ -85,7 +85,10 @@
   <ItemGroup>
     <None Include="HeuristicLabOptimizationPlugin.cs.frame" />
     <Compile Include="Algorithm.cs" />
+    <Compile Include="Interfaces\IMoveOperator.cs" />
+    <Compile Include="Interfaces\ISingleObjectiveMoveEvaluator.cs" />
     <Compile Include="Interfaces\IMoveGenerator.cs" />
+    <Compile Include="Interfaces\IMoveMaker.cs" />
     <Compile Include="Interfaces\IMultiObjectiveSelector.cs" />
     <Compile Include="Interfaces\ISingleObjectiveSelector.cs" />
     <Compile Include="Interfaces\IReducer.cs" />
@@ -101,6 +104,8 @@
     <Compile Include="Interfaces\ISingleObjectiveProblem.cs" />
     <Compile Include="Interfaces\ISolutionCreator.cs" />
     <Compile Include="Interfaces\IStochasticOperator.cs" />
+    <Compile Include="Interfaces\ITabuMoveEvaluator.cs" />
+    <Compile Include="Interfaces\ITabuMoveMaker.cs" />
     <Compile Include="UserDefinedAlgorithm.cs" />
     <Compile Include="EngineAlgorithm.cs" />
     <Compile Include="HeuristicLabOptimizationPlugin.cs" />

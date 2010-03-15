@@ -20,12 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.Parameters;
+using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Optimization {
-  /// <summary>
-  /// An interface which represents an operator for generating moves.
-  /// </summary>
-  public interface IMoveGenerator : IOperator {
+namespace HeuristicLab.Encodings.Permutation {
+  public interface IPermutationMoveOperator : IPermutationOperator, IMoveOperator {
+    ILookupParameter<Permutation> PermutationParameter { get; }
   }
 }

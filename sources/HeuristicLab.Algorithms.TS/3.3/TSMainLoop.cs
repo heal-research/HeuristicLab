@@ -31,9 +31,9 @@ namespace HeuristicLab.Algorithms.TS {
   /// <summary>
   /// An operator which represents a tabu search.
   /// </summary>
-  [Item("TSOperator", "An operator which represents a tabu search.")]
+  [Item("TSMainLoop", "An operator which represents the main loop of a tabu search.")]
   [StorableClass]
-  public class TSOperator : AlgorithmOperator {
+  public class TSMainLoop : AlgorithmOperator {
     #region Parameter properties
     public ValueLookupParameter<IRandom> RandomParameter {
       get { return (ValueLookupParameter<IRandom>)Parameters["Random"]; }
@@ -80,7 +80,7 @@ namespace HeuristicLab.Algorithms.TS {
     }
     #endregion
 
-    public TSOperator()
+    public TSMainLoop()
       : base() {
       #region Create parameters
       Parameters.Add(new ValueLookupParameter<IRandom>("Random", "A pseudo random number generator."));
@@ -93,9 +93,6 @@ namespace HeuristicLab.Algorithms.TS {
       Parameters.Add(new ValueLookupParameter<IOperator>("MoveGenerator", "The operator that generates the moves."));
       Parameters.Add(new ValueLookupParameter<IOperator>("MoveQualityEvaluator", "The operator that evaluates the quality of a move."));
       Parameters.Add(new ValueLookupParameter<IOperator>("MoveTabuEvaluator", "The operator that evaluates whether a move is tabu."));
-      TabuSelector tabuSelectorOp = new TabuSelector();
-      tabuSelectorOp.NumberOfSelectedSubScopes = new IntData(1);
-      Parameters.Add(new ValueLookupParameter<IOperator>("TabuSelector", "The operator that selects among the moves the next best.", tabuSelectorOp));
       Parameters.Add(new ValueLookupParameter<IOperator>("MoveTabuMaker", "The operator that declares a move tabu."));
       Parameters.Add(new ValueLookupParameter<IOperator>("MoveMaker", "The operator that performs a move and updates the quality."));
 
@@ -114,7 +111,7 @@ namespace HeuristicLab.Algorithms.TS {
       Placeholder moveTabuEvaluator = new Placeholder();
       SubScopesSorter moveQualitySorter = new SubScopesSorter();
       BestAverageWorstQualityCalculator bestAverageWorstMoveQualityCalculator = new BestAverageWorstQualityCalculator();
-      Placeholder tabuSelector = new Placeholder();
+      TabuSelector tabuSelector = new TabuSelector();
       RightReducer rightReducer = new RightReducer();
       UniformSequentialSubScopesProcessor moveMakingProcessor = new UniformSequentialSubScopesProcessor();
       Placeholder moveTabuMaker = new Placeholder();
@@ -160,8 +157,7 @@ namespace HeuristicLab.Algorithms.TS {
       bestAverageWorstMoveQualityCalculator.QualityParameter.ActualName = "MoveQuality";
       bestAverageWorstMoveQualityCalculator.WorstQualityParameter.ActualName = "Worst Move Quality";
 
-      tabuSelector.Name = "TabuSelector (placeholder)";
-      tabuSelector.OperatorParameter.ActualName = "TabuSelector";
+      tabuSelector.NumberOfSelectedSubScopes = new IntData(1);
 
       moveMakingProcessor.Name = "MoveMaking processor (UniformSequentialSubScopesProcessor)";
 

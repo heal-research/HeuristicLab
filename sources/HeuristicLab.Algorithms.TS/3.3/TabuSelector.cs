@@ -35,7 +35,7 @@ namespace HeuristicLab.Algorithms.TS {
   /// <remarks>
   /// For different aspiration criteria a new operator should be implemented.
   /// </remarks>
-  [Item("TabuSelector", "An operator that selects the best move that is either not tabu or satisfies the aspiration criterion. It expects the move subscopes to be sorted.")]
+  [Item("TabuSelector", "An operator that selects the best move that is either not tabu or satisfies the aspiration criterion. It expects the move subscopes to be sorted by the qualities of the moves (the best move is first).")]
   [StorableClass]
   public class TabuSelector : Selector {
     /// <summary>
@@ -89,6 +89,7 @@ namespace HeuristicLab.Algorithms.TS {
     /// <summary>
     /// Implements the tabu selection with the default aspiration criteria (choose a tabu move when it is better than the best so far).
     /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown when the neighborhood contained too little moves which are not tabu.</exception>
     /// <param name="scopes">The scopes from which to select.</param>
     /// <returns>The selected scopes.</returns>
     protected override IScope[] Select(List<IScope> scopes) {
