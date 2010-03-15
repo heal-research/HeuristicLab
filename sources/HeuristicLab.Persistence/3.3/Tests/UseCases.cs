@@ -814,6 +814,125 @@ namespace HeuristicLab.Persistence_33.Tests {
       Assert.AreSame(c.b, c.link);
     }
 
+    [StorableClass(StorableClassType.AllFields)]
+    public class AllFieldsStorable {
+      public int Value1 = 1;
+      [Storable]
+      public int Value2 = 2;
+      public int Value3 { get; private set; }
+      public int Value4 { get; private set; }
+      [StorableConstructor]
+      public AllFieldsStorable(bool isDeserializing) {
+        if (!isDeserializing) {
+          Value1 = 12;
+          Value2 = 23;
+          Value3 = 34;
+          Value4 = 56;
+        }
+      }
+    }
+
+    [TestMethod]
+    public void TestStorableClassDiscoveryAllFields() {
+      AllFieldsStorable afs = new AllFieldsStorable(false);
+      XmlGenerator.Serialize(afs, tempFile);
+      AllFieldsStorable newAfs = (AllFieldsStorable)XmlParser.Deserialize(tempFile);
+      Assert.AreEqual(afs.Value1, newAfs.Value1);
+      Assert.AreEqual(afs.Value2, newAfs.Value2);
+      Assert.AreEqual(0, newAfs.Value3);
+      Assert.AreEqual(0, newAfs.Value4);
+    }
+
+    [StorableClass(StorableClassType.AllProperties)]
+    public class AllPropertiesStorable {
+      public int Value1 = 1;
+      [Storable]
+      public int Value2 = 2;
+      public int Value3 { get; private set; }
+      public int Value4 { get; private set; }
+      [StorableConstructor]
+      public AllPropertiesStorable(bool isDeserializing) {
+        if (!isDeserializing) {
+          Value1 = 12;
+          Value2 = 23;
+          Value3 = 34;
+          Value4 = 56;
+        }
+      }
+    }
+
+    [TestMethod]
+    public void TestStorableClassDiscoveryAllProperties() {
+      AllPropertiesStorable afs = new AllPropertiesStorable(false);
+      XmlGenerator.Serialize(afs, tempFile);
+      AllPropertiesStorable newAfs = (AllPropertiesStorable)XmlParser.Deserialize(tempFile);
+      Assert.AreEqual(1, newAfs.Value1);
+      Assert.AreEqual(2, newAfs.Value2);
+      Assert.AreEqual(afs.Value3, newAfs.Value3);
+      Assert.AreEqual(afs.Value4, newAfs.Value4);
+      
+    }
+
+    [StorableClass(StorableClassType.AllFieldsAndAllProperties)]
+    public class AllFieldsAndAllPropertiesStorable {
+      public int Value1 = 1;
+      [Storable]
+      public int Value2 = 2;
+      public int Value3 { get; private set; }
+      public int Value4 { get; private set; }
+      [StorableConstructor]
+      public AllFieldsAndAllPropertiesStorable(bool isDeserializing) {
+        if (!isDeserializing) {
+          Value1 = 12;
+          Value2 = 23;
+          Value3 = 34;
+          Value4 = 56;
+        }
+      }
+    }
+
+    [TestMethod]
+    public void TestStorableClassDiscoveryAllFieldsAndAllProperties() {
+      AllFieldsAndAllPropertiesStorable afs = new AllFieldsAndAllPropertiesStorable(false);
+      XmlGenerator.Serialize(afs, tempFile);
+      AllFieldsAndAllPropertiesStorable newAfs = (AllFieldsAndAllPropertiesStorable)XmlParser.Deserialize(tempFile);
+      Assert.AreEqual(afs.Value1, newAfs.Value1);
+      Assert.AreEqual(afs.Value2, newAfs.Value2);
+      Assert.AreEqual(afs.Value3, newAfs.Value3);
+      Assert.AreEqual(afs.Value4, newAfs.Value4);      
+    }
+
+    [StorableClass(StorableClassType.MarkedOnly)]
+    public class MarkedOnlyStorable {
+      public int Value1 = 1;
+      [Storable]
+      public int Value2 = 2;
+      public int Value3 { get; private set; }
+      public int Value4 { get; private set; }
+      [StorableConstructor]
+      public MarkedOnlyStorable(bool isDeserializing) {
+        if (!isDeserializing) {
+          Value1 = 12;
+          Value2 = 23;
+          Value3 = 34;
+          Value4 = 56;
+        }
+      }
+    }
+
+    [TestMethod]
+    public void TestStorableClassDiscoveryMarkedOnly() {
+      MarkedOnlyStorable afs = new MarkedOnlyStorable(false);
+      XmlGenerator.Serialize(afs, tempFile);
+      MarkedOnlyStorable newAfs = (MarkedOnlyStorable)XmlParser.Deserialize(tempFile);
+      Assert.AreEqual(1, newAfs.Value1);      
+      Assert.AreEqual(afs.Value2, newAfs.Value2);
+      Assert.AreEqual(0, newAfs.Value3);
+      Assert.AreEqual(0, newAfs.Value4);
+    }
+
+    
+
     [ClassInitialize]
     public static void Initialize(TestContext testContext) {
       ConfigurationService.Instance.Reset();
