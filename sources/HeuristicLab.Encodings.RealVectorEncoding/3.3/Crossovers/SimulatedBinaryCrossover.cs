@@ -25,7 +25,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.RealVector {
+namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
   /// Performs the simulated binary crossover (SBX) on a vector of real values such that each position is either crossed contracted or expanded with a certain probability.
   /// The probability distribution is designed such that the children will lie closer to their parents as is the case with the single point binary crossover.

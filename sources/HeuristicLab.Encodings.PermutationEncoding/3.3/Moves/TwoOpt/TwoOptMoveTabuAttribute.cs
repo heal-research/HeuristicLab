@@ -22,7 +22,7 @@
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.Permutation {
+namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("TwoOptMoveTabuAttribute", "Specifies the tabu attributes for a 2-opt move.")]
   [StorableClass]
   public class TwoOptMoveTabuAttribute : Item {

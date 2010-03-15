@@ -26,7 +26,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.RealVector {
+namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
   /// A base class for operators creating real-valued vectors.
   /// </summary>

@@ -26,7 +26,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.Permutation {
+namespace HeuristicLab.Encodings.PermutationEncoding {
   /// <summary>
   /// An operator which creates a new random permutation of integer values.
   /// </summary>

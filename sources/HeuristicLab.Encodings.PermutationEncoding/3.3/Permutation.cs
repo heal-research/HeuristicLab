@@ -26,7 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.Permutation {
+namespace HeuristicLab.Encodings.PermutationEncoding {
   [StorableClass]
   [Item("Permutation", "Represents a permutation of integer values.")]
   [Creatable("Test")]

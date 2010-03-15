@@ -26,7 +26,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Random;
 
-namespace HeuristicLab.Encodings.RealVector {
+namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
   /// Manipulates each dimension in the real vector with the mutation strength given 
   /// in the strategy parameter vector.

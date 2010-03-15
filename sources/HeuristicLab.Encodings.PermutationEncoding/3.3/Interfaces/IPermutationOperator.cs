@@ -21,7 +21,7 @@
 
 using HeuristicLab.Core;
 
-namespace HeuristicLab.Encodings.Permutation {
+namespace HeuristicLab.Encodings.PermutationEncoding {
   /// <summary>
   /// An interface which represents an operator dealing with permutations.
   /// </summary>

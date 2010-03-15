@@ -23,7 +23,7 @@ using System;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.Permutation {
+namespace HeuristicLab.Encodings.PermutationEncoding {
   /// <summary>
   /// Performs a cross over permutation between two permutation arrays by calculating the edges (neighbours)
   /// of each element. Starts at a randomly chosen position, the next element is a neighbour with the least 

@@ -26,7 +26,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.Permutation {
+namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("StochasticTwoOptMoveGenerator", "Randomly samples n from all possible 2-opt moves from a given permutation.")]
   [StorableClass]
   public class StochasticTwoOptMoveGenerator : TwoOptMoveGenerator, IStochasticOperator {

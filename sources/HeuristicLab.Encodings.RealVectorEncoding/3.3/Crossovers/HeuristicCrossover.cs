@@ -25,7 +25,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.RealVector {
+namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
   /// Heuristic crossover for real vectors: Calculates the vector from the worse to the better parent and adds that to the better parent weighted with a factor in the interval [0;1).
   /// The idea is that going further in direction from the worse to the better leads to even better solutions (naturally this depends on the fitness landscape).

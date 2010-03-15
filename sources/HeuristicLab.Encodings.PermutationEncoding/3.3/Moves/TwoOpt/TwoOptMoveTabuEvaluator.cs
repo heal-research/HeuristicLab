@@ -27,7 +27,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.Permutation {
+namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("TwoOptMoveTabuEvaluator", "Evaluates whether a given 2-opt move is tabu.")]
   [StorableClass]
   public class TwoOptMoveTabuEvaluator : SingleSuccessorOperator, ITwoOptPermutationMoveOperator, ITabuMoveEvaluator {

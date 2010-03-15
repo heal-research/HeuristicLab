@@ -21,12 +21,12 @@
 
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Encodings.BinaryVectors {
+namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// <summary>
-  /// Plugin class for HeuristicLab.Encodings.BinaryVectors plugin.
+  /// Plugin class for HeuristicLab.Encodings.BinaryVectorEncoding plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Encodings.BinaryVectors", "3.3.0.$WCREV$")]
-  [PluginFile("HeuristicLab.Encodings.BinaryVectors-3.3.dll", PluginFileType.Assembly)]
+  [Plugin("HeuristicLab.Encodings.BinaryVectorEncoding", "3.3.0.$WCREV$")]
+  [PluginFile("HeuristicLab.Encodings.BinaryVectorEncoding-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.2")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
@@ -35,6 +35,6 @@ namespace HeuristicLab.Encodings.BinaryVectors {
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
   [PluginDependency("HeuristicLab.Parameters", "3.3")]
   [PluginDependency("HeuristicLab.Persistence", "3.3")]
-  public class HeuristicLabEncodingsBinaryVectorsPlugin : PluginBase {
+  public class HeuristicLabEncodingsBinaryVectorEncodingPlugin : PluginBase {
   }
 }

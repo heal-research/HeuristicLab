@@ -23,7 +23,7 @@ using System;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.Permutation {
+namespace HeuristicLab.Encodings.PermutationEncoding {
   /// <summary>
   /// Performs a cross over permutation of two permutation arrays by taking randomly a selection of values 
   /// (not an interval!) from the first permutation keeping the correct order and filling 

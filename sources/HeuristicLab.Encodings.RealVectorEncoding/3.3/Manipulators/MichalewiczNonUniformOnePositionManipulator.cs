@@ -25,7 +25,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.RealVector {
+namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
   /// The solution is manipulated with diminishing strength over time. In addition the mutated value is not sampled over the entire domain, but additive at the selected position.<br/>
   /// Initially, the space will be searched uniformly and very locally at later stages. This increases the probability of generating the new number closer to the current value.

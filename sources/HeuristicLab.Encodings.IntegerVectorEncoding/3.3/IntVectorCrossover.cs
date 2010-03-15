@@ -26,7 +26,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.IntVector {
+namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// <summary>
   /// A base class for operators that perform a crossover of int-valued vectors.
   /// </summary>

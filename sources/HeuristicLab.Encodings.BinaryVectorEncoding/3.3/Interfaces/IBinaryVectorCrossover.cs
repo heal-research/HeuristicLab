@@ -23,7 +23,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Encodings.BinaryVectors {
+namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// <summary>
   /// An interface which represents an operator for crossing vectors of bool-valued data.
   /// </summary>

@@ -22,7 +22,7 @@
 using System;
 using HeuristicLab.Core;
 
-namespace HeuristicLab.Encodings.IntVector_33.Tests {
+namespace HeuristicLab.Encodings.BinaryVectorEncoding_33.Tests {
   public class TestRandom : IRandom {
     #region Variables and Properties
     private int[] intNumbers;

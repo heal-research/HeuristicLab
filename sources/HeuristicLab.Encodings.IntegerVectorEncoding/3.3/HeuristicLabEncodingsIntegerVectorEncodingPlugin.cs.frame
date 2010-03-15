@@ -21,12 +21,12 @@
 
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Encodings.Permutation {
+namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// <summary>
-  /// Plugin class for HeuristicLab.Encodings.Permutation plugin.
+  /// Plugin class for HeuristicLab.Encodings.IntegerVectorEncoding plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Encodings.Permutation", "3.3.0.$WCREV$")]
-  [PluginFile("HeuristicLab.Encodings.Permutation-3.3.dll", PluginFileType.Assembly)]
+  [Plugin("HeuristicLab.Encodings.IntegerVectorEncoding", "3.3.0.$WCREV$")]
+  [PluginFile("HeuristicLab.Encodings.IntegerVectorEncoding-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.2")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
@@ -35,6 +35,6 @@ namespace HeuristicLab.Encodings.Permutation {
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
   [PluginDependency("HeuristicLab.Parameters", "3.3")]
   [PluginDependency("HeuristicLab.Persistence", "3.3")]
-  public class HeuristicLabEncodingsPermutationPlugin : PluginBase {
+  public class HeuristicLabEncodingsIntegerVectorEncodingPlugin : PluginBase {
   }
 }

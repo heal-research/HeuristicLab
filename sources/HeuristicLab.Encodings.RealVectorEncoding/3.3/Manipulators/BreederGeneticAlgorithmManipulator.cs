@@ -25,7 +25,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.RealVector {
+namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
   /// Changes one position of a real vector by adding/substracting a value of the interval [(2^-15)*range;~2*range], where range is SearchIntervalFactor * (max - min).
   /// Note that the interval is not uniformly sampled, but smaller values are sampled more often.

@@ -26,8 +26,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("HeuristicLab.Encodings.RealVector")]
-[assembly: AssemblyDescription("HeuristicLab real vector operators")]
+[assembly: AssemblyTitle("HeuristicLab.Encodings.RealVectorEncoding")]
+[assembly: AssemblyDescription("HeuristicLab real vector encoding and related operators")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("HeuristicLab")]

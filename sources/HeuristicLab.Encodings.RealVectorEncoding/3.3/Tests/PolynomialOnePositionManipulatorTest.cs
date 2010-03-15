@@ -20,10 +20,10 @@
 #endregion
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using HeuristicLab.Encodings.RealVector;
+using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Data;
 
-namespace HeuristicLab.Encodings.RealVector_33.Tests {
+namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
   /// <summary>
   ///This is a test class for PolynomialOnePositionManipulator and is intended
   ///to contain all PolynomialOnePositionManipulator Unit Tests

@@ -23,7 +23,7 @@ using System;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.Permutation {
+namespace HeuristicLab.Encodings.PermutationEncoding {
   /// <summary>
   /// Manipulates a permutation array by swaping three randomly chosen elements.
   /// </summary>

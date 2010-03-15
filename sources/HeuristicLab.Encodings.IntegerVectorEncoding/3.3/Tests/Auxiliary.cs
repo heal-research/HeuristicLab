@@ -22,7 +22,7 @@
 using HeuristicLab.Data;
 using HeuristicLab.Common;
 
-namespace HeuristicLab.Encodings.IntVector_33.Tests {
+namespace HeuristicLab.Encodings.IntegerVectorEncoding_33.Tests {
   public static class Auxiliary {
     public static bool IntVectorIsEqualByPosition(IntArray p1, IntArray p2) {
       bool equal = (p1.Length == p2.Length);

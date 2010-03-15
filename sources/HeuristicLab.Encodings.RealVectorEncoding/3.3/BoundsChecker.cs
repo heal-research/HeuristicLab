@@ -26,7 +26,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Parameters;
 using System;
 
-namespace HeuristicLab.Encodings.RealVector {
+namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
   /// Checks if all elements of a real vector are inside a given minimum and maximum value. 
   /// If not, the elements are corrected.

@@ -20,9 +20,9 @@
 #endregion
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using HeuristicLab.Encodings.Permutation;
+using HeuristicLab.Encodings.PermutationEncoding;
 
-namespace HeuristicLab.Encodings.Permutation_33.Tests {
+namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
   /// <summary>
   ///This is a test class for InversionManipulator and is intended
   ///to contain all InversionManipulator Unit Tests
@@ -83,14 +83,14 @@ namespace HeuristicLab.Encodings.Permutation_33.Tests {
     [TestMethod()]
     public void InversionManipulatorApplyTest() {
       TestRandom random = new TestRandom();
-      Permutation.Permutation parent, expected;
+      Permutation parent, expected;
       // The following test is based on an example from Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg, pp. 46-47
       random.Reset();
       random.IntNumbers = new int[] { 1, 4 };
-      parent = new Permutation.Permutation(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 });
+      parent = new Permutation(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 });
       Assert.IsTrue(parent.Validate());
       
-      expected = new Permutation.Permutation(new int[] { 0, 4, 3, 2, 1, 5, 6, 7, 8 });
+      expected = new Permutation(new int[] { 0, 4, 3, 2, 1, 5, 6, 7, 8 });
       Assert.IsTrue(expected.Validate());
       InversionManipulator.Apply(random, parent);
       Assert.IsTrue(parent.Validate());

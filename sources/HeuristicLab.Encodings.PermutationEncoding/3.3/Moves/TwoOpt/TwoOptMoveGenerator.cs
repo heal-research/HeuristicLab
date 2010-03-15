@@ -26,7 +26,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.Permutation {
+namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("TwoOptMoveGenerator", "Base class for all 2-opt move generators.")]
   [StorableClass]
   public abstract class TwoOptMoveGenerator : SingleSuccessorOperator, ITwoOptPermutationMoveOperator, IMoveGenerator {

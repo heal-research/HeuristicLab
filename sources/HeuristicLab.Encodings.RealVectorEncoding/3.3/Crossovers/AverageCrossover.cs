@@ -24,7 +24,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.RealVector {
+namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
   /// The average crossover (intermediate recombination) calculates the average or centroid of a number of parent vectors.
   /// </summary>

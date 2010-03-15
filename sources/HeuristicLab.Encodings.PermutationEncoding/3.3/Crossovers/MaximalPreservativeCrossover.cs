@@ -23,7 +23,7 @@ using System;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.Permutation {
+namespace HeuristicLab.Encodings.PermutationEncoding {
   /// <summary>An operator which performs the maximal preservative crossover on two permutations.</summary>
   /// <remarks>
   /// Performs a crossover between two permuation arrays by preserving a large number of edges in both parents.

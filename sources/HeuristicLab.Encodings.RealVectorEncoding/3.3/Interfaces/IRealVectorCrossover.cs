@@ -23,7 +23,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Encodings.RealVector {
+namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
   /// An interface which represents an operator for crossing vectors of real-valued data.
   /// </summary>

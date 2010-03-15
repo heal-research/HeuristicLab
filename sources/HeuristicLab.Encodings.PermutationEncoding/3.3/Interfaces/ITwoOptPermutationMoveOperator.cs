@@ -22,7 +22,7 @@
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Encodings.Permutation {
+namespace HeuristicLab.Encodings.PermutationEncoding {
   public interface ITwoOptPermutationMoveOperator : IPermutationMoveOperator {
     ILookupParameter<TwoOptMove> TwoOptMoveParameter { get; }
   }

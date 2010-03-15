@@ -20,7 +20,7 @@
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.Permutation;
+using HeuristicLab.Encodings.PermutationEncoding;
 
 namespace HeuristicLab.Problems.TSP {
   /// <summary>

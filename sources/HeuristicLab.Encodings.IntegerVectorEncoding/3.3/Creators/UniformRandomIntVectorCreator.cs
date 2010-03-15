@@ -26,7 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.IntVector {
+namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// <summary>
   /// Generates a new random integer vector with each element uniformly distributed in a specified range.
   /// </summary>

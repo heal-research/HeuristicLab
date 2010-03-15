@@ -20,10 +20,10 @@
 #endregion
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using HeuristicLab.Encodings.IntVector;
+using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Data;
 
-namespace HeuristicLab.Encodings.IntVector_33.Tests {
+namespace HeuristicLab.Encodings.IntegerVectorEncoding_33.Tests {
   /// <summary>
   ///This is a test class for UniformOnePositionManipulator and is intended
   ///to contain all UniformOnePositionManipulator Unit Tests

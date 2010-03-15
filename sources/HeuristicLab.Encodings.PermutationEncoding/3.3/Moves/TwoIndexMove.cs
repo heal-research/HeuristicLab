@@ -22,7 +22,7 @@
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.Permutation {
+namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("TwoIndexMove", "A move on a permutation that is specified by 2 indices")]
   [StorableClass]
   public class TwoIndexMove : Item {

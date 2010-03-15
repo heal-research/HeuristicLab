@@ -27,7 +27,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.Permutation.Moves {
+namespace HeuristicLab.Encodings.PermutationEncoding.Moves {
   [Item("TwoOptMoveTabuMaker", "Declares a given 2-opt move as tabu, by adding its attributes to the tabu list. It also removes the oldest entry in the tabu list when its size is greater than tenure.")]
   [StorableClass]
   public class TwoOptMoveTabuMaker : SingleSuccessorOperator, ITwoOptPermutationMoveOperator, ITabuMoveMaker {

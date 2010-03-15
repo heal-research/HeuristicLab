@@ -22,7 +22,7 @@
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.Permutation {
+namespace HeuristicLab.Encodings.PermutationEncoding {
   /// <summary>
   /// Manipulates a permutation array by moving a randomly chosen interval of elements to another 
   /// (randomly chosen) position in the array.

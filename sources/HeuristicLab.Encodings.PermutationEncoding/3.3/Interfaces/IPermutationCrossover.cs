@@ -22,7 +22,7 @@
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Encodings.Permutation {
+namespace HeuristicLab.Encodings.PermutationEncoding {
   /// <summary>
   /// An interface which represents an operator for crossing permutations.
   /// </summary>

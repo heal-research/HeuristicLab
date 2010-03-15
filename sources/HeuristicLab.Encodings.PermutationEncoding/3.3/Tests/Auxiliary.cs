@@ -19,11 +19,11 @@
  */
 #endregion
 
-using HeuristicLab.Encodings.Permutation;
+using HeuristicLab.Encodings.PermutationEncoding;
 
-namespace HeuristicLab.Encodings.Permutation_33.Tests {
+namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
   public static class Auxiliary {
-    public static bool PermutationIsEqualByPosition(Permutation.Permutation p1, Permutation.Permutation p2) {
+    public static bool PermutationIsEqualByPosition(Permutation p1, Permutation p2) {
       bool equal = (p1.Length == p2.Length);
       if (equal) {
         for (int i = 0; i < p1.Length; i++) {

@@ -23,7 +23,7 @@ using System;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.Permutation {
+namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("ExhaustiveTwoOptMoveGenerator", "Generates all possible 2-opt moves from a given permutation.")]
   [StorableClass]
   public class ExhaustiveTwoOptMoveGenerator : TwoOptMoveGenerator {

@@ -21,7 +21,7 @@
 
 using HeuristicLab.Core;
 
-namespace HeuristicLab.Encodings.BinaryVectors {
+namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// <summary>
   /// An interface which represents an operator dealing with vectors of bool-valued data.
   /// </summary>

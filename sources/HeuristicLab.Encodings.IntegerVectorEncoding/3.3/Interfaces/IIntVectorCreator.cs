@@ -23,7 +23,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Encodings.IntVector {
+namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// <summary>
   /// An interface which represents an operator for creating vectors of int-valued data.
   /// </summary>

@@ -24,7 +24,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.RealVector {
+namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
   /// Single point crossover for real vectors. The implementation is similar to the single point crossover for binary vectors.
   /// After a breakpoint is randomly chosen in the interval [1,N-1) with N = length of the vector, the first part is copied from parent1 the other part copied from parent2.

@@ -27,7 +27,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.IntVector {
+namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// <summary>
   /// Uniformly distributed change of a single position of an integer vector.
   /// </summary>

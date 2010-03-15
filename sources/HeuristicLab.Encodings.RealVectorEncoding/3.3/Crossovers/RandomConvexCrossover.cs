@@ -24,7 +24,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.RealVector {
+namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
   /// The random convex crossover is similar to the <see cref="LocalCrossover"/>, but chooses just one random alpha for all positions.
   /// </summary>

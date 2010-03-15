@@ -25,7 +25,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.RealVector {
+namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
   /// The uniform all positions arithmetic crossover constructs an offspring by calculating x = alpha * p1 + (1-alpha) * p2 for every position x in the vector.
   /// </summary>

@@ -1,10 +1,10 @@
-﻿using HeuristicLab.Encodings.RealVector;
+﻿using HeuristicLab.Encodings.RealVectorEncoding;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 
-namespace HeuristicLab.Encodings.RealVector_33.Tests {
+namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
 
 
   /// <summary>
@@ -64,7 +64,7 @@ namespace HeuristicLab.Encodings.RealVector_33.Tests {
     ///A test for Cross
     ///</summary>
     [TestMethod()]
-    [DeploymentItem("HeuristicLab.Encodings.RealVector-3.3.dll")]
+    [DeploymentItem("HeuristicLab.Encodings.RealVectorEncoding-3.3.dll")]
     public void RandomConvexCrossoverCrossTest() {
       RandomConvexCrossover_Accessor target = new RandomConvexCrossover_Accessor(new PrivateObject(typeof(RandomConvexCrossover)));
       ItemArray<DoubleArray> parents;

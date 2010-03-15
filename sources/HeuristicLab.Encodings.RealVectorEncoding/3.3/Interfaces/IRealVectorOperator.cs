@@ -21,7 +21,7 @@
 
 using HeuristicLab.Core;
 
-namespace HeuristicLab.Encodings.RealVector {
+namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
   /// An interface which represents an operator dealing with vectors of real-valued data.
   /// </summary>

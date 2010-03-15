@@ -20,9 +20,9 @@
 #endregion
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using HeuristicLab.Encodings.Permutation;
+using HeuristicLab.Encodings.PermutationEncoding;
 
-namespace HeuristicLab.Encodings.Permutation_33.Tests {
+namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
   /// <summary>
   ///This is a test class for Swap3Manipulator and is intended
   ///to contain all Swap3Manipulator Unit Tests
@@ -83,15 +83,15 @@ namespace HeuristicLab.Encodings.Permutation_33.Tests {
     [TestMethod()]
     public void Swap3ManipulatorApplyTest() {
       TestRandom random = new TestRandom();
-      Permutation.Permutation parent, expected;
+      Permutation parent, expected;
       // Test manipulator
       random.Reset();
       random.IntNumbers = new int[] { 1, 3, 6 };
       random.DoubleNumbers = new double[] { 0 };
-      parent = new Permutation.Permutation(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 });
+      parent = new Permutation(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 });
       Assert.IsTrue(parent.Validate());
 
-      expected = new Permutation.Permutation(new int[] { 0, 3, 2, 6, 4, 5, 1, 7, 8 });
+      expected = new Permutation(new int[] { 0, 3, 2, 6, 4, 5, 1, 7, 8 });
       Assert.IsTrue(expected.Validate());
       Swap3Manipulator.Apply(random, parent);
       Assert.IsTrue(parent.Validate());

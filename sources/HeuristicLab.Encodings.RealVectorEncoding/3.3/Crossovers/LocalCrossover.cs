@@ -24,7 +24,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.RealVector {
+namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
   /// The local crossover for real vectors is similar to the <see cref="UniformAllPositionsArithmeticCrossover"/>, but where the factor alpha is chosen randomly in the interval [0;1) for each position.
   /// </summary>

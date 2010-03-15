@@ -25,7 +25,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.RealVector {
+namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
   /// Blend alpha crossover for real vectors (BLX-a). Creates a new offspring by selecting a random value 
   /// from the interval between the two alleles of the parent solutions. The interval is increased 

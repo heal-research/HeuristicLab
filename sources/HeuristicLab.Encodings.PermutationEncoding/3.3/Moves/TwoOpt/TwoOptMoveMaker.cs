@@ -27,7 +27,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.Permutation {
+namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("TwoOptMoveMaker", "Peforms a 2-opt move on a given permutation and updates the quality.")]
   [StorableClass]
   public class TwoOptMoveMaker : SingleSuccessorOperator, ITwoOptPermutationMoveOperator, IMoveMaker {

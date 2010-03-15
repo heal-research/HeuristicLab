@@ -26,7 +26,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.BinaryVectors {
+namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// <summary>
   /// A base class for operators that perform a crossover of bool-valued vectors.
   /// </summary>
