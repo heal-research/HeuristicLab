@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -10,7 +11,7 @@ namespace HeuristicLab.Persistence.Core {
   /// for a certain seraial format. The configuration can be obtained from the
   /// <c>ConfigurationService</c>.
   /// </summary>
-  [StorableClass]    
+  [StorableClass]
   public class Configuration {
 
     [Storable]
@@ -26,9 +27,14 @@ namespace HeuristicLab.Persistence.Core {
     /// <value>The format.</value>
     [Storable]
     public IFormat Format { get; private set; }
-    
-    private Configuration() {
+
+    [StorableConstructor]
+    private Configuration(bool isDeserializing) {
       compositeSerializerCache = new Dictionary<Type, ICompositeSerializer>();
+      if (isDeserializing)
+        return;
+      primitiveSerializers = new Dictionary<Type, IPrimitiveSerializer>();
+      compositeSerializers = new List<ICompositeSerializer>();
     }
 
     /// <summary>
@@ -39,17 +45,19 @@ namespace HeuristicLab.Persistence.Core {
     /// <param name="compositeSerializers">The composite serializers.</param>
     public Configuration(IFormat format,
         IEnumerable<IPrimitiveSerializer> primitiveSerializers,
-        IEnumerable<ICompositeSerializer> compositeSerializers) {
+        IEnumerable<ICompositeSerializer> compositeSerializers)
+      : this(false) {
       this.Format = format;
-      this.primitiveSerializers = new Dictionary<Type, IPrimitiveSerializer>();
-      foreach (IPrimitiveSerializer primitiveSerializer in primitiveSerializers) {
-        if (primitiveSerializer.SerialDataType != format.SerialDataType) {
-          throw new ArgumentException("All primitive serializers must have the same IFormat.");
-        }
+      this.compositeSerializers.AddRange(compositeSerializers);
+      foreach (var primitiveSerializer in primitiveSerializers) {
+        if (primitiveSerializer.SerialDataType != format.SerialDataType)
+          throw new ArgumentException(string.Format(
+            "primitive serializer's ({0}) serialized data type ({1}) " + Environment.NewLine +
+            "is not compatible with selected format's ({2}) seriali data type ({3})",
+            primitiveSerializers.GetType().FullName, primitiveSerializer.SerialDataType.FullName,
+            format.Name, format.SerialDataType.FullName));            
         this.primitiveSerializers.Add(primitiveSerializer.SourceType, primitiveSerializer);
-      }
-      this.compositeSerializers = new List<ICompositeSerializer>(compositeSerializers);
-      compositeSerializerCache = new Dictionary<Type, ICompositeSerializer>();
+      }      
     }
 
     /// <summary>
@@ -96,6 +104,23 @@ namespace HeuristicLab.Persistence.Core {
       compositeSerializerCache.Add(type, null);
       return null;
     }
+
+    /// <summary>
+    /// Copies this configuration and re-instantiates all serializers.
+    /// </summary>
+    /// <returns>A new <see cref="Configuration"/></returns>
+    public Configuration Copy() {
+      var config = new Configuration(false);
+      config.Format = Format;
+      foreach (var ps in primitiveSerializers)
+        config.primitiveSerializers.Add(
+          ps.Key,
+          (IPrimitiveSerializer)Activator.CreateInstance(ps.Value.GetType()));
+      foreach (var cs in compositeSerializers)
+        config.compositeSerializers.Add((ICompositeSerializer)Activator.CreateInstance(cs.GetType()));
+      return config;
+    }
+
   }
 
 }

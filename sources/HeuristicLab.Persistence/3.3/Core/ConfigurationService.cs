@@ -241,14 +241,14 @@ namespace HeuristicLab.Persistence.Core {
 
 
     /// <summary>
-    /// Get a configuration for a certain format. This returns a custom configuration
+    /// Get a configuration for a certain format. This returns a fresh copy of a custom configuration,
     /// if defined, otherwise returns the default (automatically discovered) configuration.
     /// </summary>
     /// <param name="format">The format.</param>
     /// <returns>A Configuration</returns>
     public Configuration GetConfiguration(IFormat format) {
       if (customConfigurations.ContainsKey(format))
-        return customConfigurations[format];
+        return customConfigurations[format].Copy();
       return GetDefaultConfig(format);
     }
 
@@ -257,7 +257,7 @@ namespace HeuristicLab.Persistence.Core {
     /// </summary>
     /// <param name="configuration">The new configuration.</param>
     public void DefineConfiguration(Configuration configuration) {
-      customConfigurations[configuration.Format] = configuration;
+      customConfigurations[configuration.Format] = configuration.Copy();
       SaveSettings();
     }
 
