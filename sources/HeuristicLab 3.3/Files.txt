@@ -19,7 +19,7 @@ HeuristicLab.Data.Views\3.3:HeuristicLab.Data.Views-3.3.dll
 HeuristicLab.Encodings.Permutation\3.3:HeuristicLab.Encodings.Permutation-3.3.dll
 HeuristicLab.Encodings.RealVector\3.3:HeuristicLab.Encodings.RealVector-3.3.dll
 HeuristicLab.Encodings.IntVector\3.3:HeuristicLab.Encodings.IntVector-3.3.dll
-HeuristicLab.Encodings.BoolVector\3.3:HeuristicLab.Encodings.BinaryVectors-3.3.dll
+HeuristicLab.Encodings.BinaryVectors\3.3:HeuristicLab.Encodings.BinaryVectors-3.3.dll
 HeuristicLab.Logging\3.3:HeuristicLab.Logging-3.3.dll
 HeuristicLab.MainForm\3.2:HeuristicLab.MainForm-3.2.dll
 HeuristicLab.MainForm.WindowsForms\3.2:HeuristicLab.MainForm.WindowsForms-3.2.dll
