@@ -180,6 +180,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Encodings.IntV
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Encodings.IntVector-3.3.Tests", "HeuristicLab.Encodings.IntVector\3.3\Tests\HeuristicLab.Encodings.IntVector-3.3.Tests.csproj", "{B622D391-FB36-4E3D-B5F6-AEDF237DE890}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Encodings.BinaryVectors-3.3", "HeuristicLab.Encodings.BinaryVectors\3.3\HeuristicLab.Encodings.BinaryVectors-3.3.csproj", "{E61C8E23-B5ED-4B6B-8DD1-670537B57E79}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Encodings.BinaryVectors-3.3.Tests", "HeuristicLab.Encodings.BinaryVectors\3.3\Tests\HeuristicLab.Encodings.BinaryVectors-3.3.Tests.csproj", "{A400DB6D-A343-49A8-B6F8-C8927112A1AE}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = HeuristicLab 3.3.vsmdi
@@ -821,6 +825,22 @@ Global
 		{B622D391-FB36-4E3D-B5F6-AEDF237DE890}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B622D391-FB36-4E3D-B5F6-AEDF237DE890}.Release|x64.ActiveCfg = Release|Any CPU
 		{B622D391-FB36-4E3D-B5F6-AEDF237DE890}.Release|x86.ActiveCfg = Release|Any CPU
+		{E61C8E23-B5ED-4B6B-8DD1-670537B57E79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E61C8E23-B5ED-4B6B-8DD1-670537B57E79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E61C8E23-B5ED-4B6B-8DD1-670537B57E79}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E61C8E23-B5ED-4B6B-8DD1-670537B57E79}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E61C8E23-B5ED-4B6B-8DD1-670537B57E79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E61C8E23-B5ED-4B6B-8DD1-670537B57E79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E61C8E23-B5ED-4B6B-8DD1-670537B57E79}.Release|x64.ActiveCfg = Release|Any CPU
+		{E61C8E23-B5ED-4B6B-8DD1-670537B57E79}.Release|x86.ActiveCfg = Release|Any CPU
+		{A400DB6D-A343-49A8-B6F8-C8927112A1AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A400DB6D-A343-49A8-B6F8-C8927112A1AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A400DB6D-A343-49A8-B6F8-C8927112A1AE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A400DB6D-A343-49A8-B6F8-C8927112A1AE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A400DB6D-A343-49A8-B6F8-C8927112A1AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A400DB6D-A343-49A8-B6F8-C8927112A1AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A400DB6D-A343-49A8-B6F8-C8927112A1AE}.Release|x64.ActiveCfg = Release|Any CPU
+		{A400DB6D-A343-49A8-B6F8-C8927112A1AE}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
