@@ -84,16 +84,16 @@ namespace HeuristicLab.Encodings.RealVector_33.Tests {
     [TestMethod()]
     public void UniformOnePositionManipulatorApplyTest() {
       TestRandom random = new TestRandom();
-      DoubleArrayData parent, expected;
-      DoubleData min, max;
+      DoubleArray parent, expected;
+      DoubleValue min, max;
       // The following test is not based on published examples
       random.Reset();
       random.IntNumbers = new int[] { 3 };
       random.DoubleNumbers = new double[] { 0.2 };
-      parent = new DoubleArrayData(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
-      expected = new DoubleArrayData(new double[] { 0.2, 0.2, 0.3, 0.3, 0.1 });
-      min = new DoubleData(0.2);
-      max = new DoubleData(0.7);
+      parent = new DoubleArray(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
+      expected = new DoubleArray(new double[] { 0.2, 0.2, 0.3, 0.3, 0.1 });
+      min = new DoubleValue(0.2);
+      max = new DoubleValue(0.7);
       UniformOnePositionManipulator.Apply(random, parent, min, max);
       Assert.IsTrue(Auxiliary.RealVectorIsAlmostEqualByPosition(expected, parent));
     }

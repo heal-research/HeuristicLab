@@ -24,15 +24,15 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
-  [Item("DateTimeData", "Represents a date and time value.")]
+  [Item("DateTimeValue", "Represents a date and time value.")]
   [Creatable("Test")]
   [StorableClass]
-  public sealed class DateTimeData : ValueTypeData<DateTime>, IComparable, IStringConvertibleData {
-    public DateTimeData() : base() { }
-    public DateTimeData(DateTime value) : base(value) { }
+  public sealed class DateTimeValue : ValueTypeValue<DateTime>, IComparable, IStringConvertibleValue {
+    public DateTimeValue() : base() { }
+    public DateTimeValue(DateTime value) : base(value) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      DateTimeData clone = new DateTimeData(Value);
+      DateTimeValue clone = new DateTimeValue(Value);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
@@ -42,24 +42,24 @@ namespace HeuristicLab.Data {
     }
 
     public int CompareTo(object obj) {
-      DateTimeData other = obj as DateTimeData;
+      DateTimeValue other = obj as DateTimeValue;
       if (other != null)
         return Value.CompareTo(other.Value);
       else
         return Value.CompareTo(obj);
     }
 
-    #region IStringConvertibleData Members
-    bool IStringConvertibleData.Validate(string value, out string errorMessage) {
+    #region IStringConvertibleValue Members
+    bool IStringConvertibleValue.Validate(string value, out string errorMessage) {
       DateTime val;
       bool valid = DateTime.TryParse(value, out val);
       errorMessage = valid ? string.Empty : "Invalid Value (values must be formatted according to the current culture settings)";
       return valid;
     }
-    string IStringConvertibleData.GetValue() {
+    string IStringConvertibleValue.GetValue() {
       return Value.ToString("o");  // round-trip format
     }
-    bool IStringConvertibleData.SetValue(string value) {
+    bool IStringConvertibleValue.SetValue(string value) {
       DateTime val;
       if (DateTime.TryParse(value, out val)) {
         Value = val;

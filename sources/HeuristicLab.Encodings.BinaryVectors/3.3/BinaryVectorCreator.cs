@@ -36,18 +36,18 @@ namespace HeuristicLab.Encodings.BinaryVectors {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
-    public ILookupParameter<BoolArrayData> BinaryVectorParameter {
-      get { return (ILookupParameter<BoolArrayData>)Parameters["BinaryVector"]; }
+    public ILookupParameter<BoolArray> BinaryVectorParameter {
+      get { return (ILookupParameter<BoolArray>)Parameters["BinaryVector"]; }
     }
-    public IValueLookupParameter<IntData> LengthParameter {
-      get { return (IValueLookupParameter<IntData>)Parameters["Length"]; }
+    public IValueLookupParameter<IntValue> LengthParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters["Length"]; }
     }
 
     protected BinaryVectorCreator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
-      Parameters.Add(new LookupParameter<IntArrayData>("BinaryVector", "The vector which should be manipulated."));
-      Parameters.Add(new ValueLookupParameter<IntData>("Length", "The length of the vector."));
+      Parameters.Add(new LookupParameter<IntArray>("BinaryVector", "The vector which should be manipulated."));
+      Parameters.Add(new ValueLookupParameter<IntValue>("Length", "The length of the vector."));
     }
 
     public sealed override IOperation Apply() {
@@ -55,6 +55,6 @@ namespace HeuristicLab.Encodings.BinaryVectors {
       return base.Apply();
     }
 
-    protected abstract BoolArrayData Create(IRandom random, IntData length);
+    protected abstract BoolArray Create(IRandom random, IntValue length);
   }
 }

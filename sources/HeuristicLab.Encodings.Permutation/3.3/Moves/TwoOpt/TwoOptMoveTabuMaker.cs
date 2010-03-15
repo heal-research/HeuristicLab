@@ -40,22 +40,22 @@ namespace HeuristicLab.Encodings.Permutation.Moves {
     public LookupParameter<ItemList<IItem>> TabuListParameter {
       get { return (LookupParameter<ItemList<IItem>>)Parameters["TabuList"]; }
     }
-    public ValueLookupParameter<IntData> TabuTenureParameter {
-      get { return (ValueLookupParameter<IntData>)Parameters["TabuTenure"]; }
+    public ValueLookupParameter<IntValue> TabuTenureParameter {
+      get { return (ValueLookupParameter<IntValue>)Parameters["TabuTenure"]; }
     }
 
     public TwoOptMoveTabuMaker()
       : base() {
       Parameters.Add(new LookupParameter<TwoOptMove>("Move", "The move that was made."));
       Parameters.Add(new LookupParameter<ItemList<IItem>>("TabuList", "The tabu list where move attributes are stored."));
-      Parameters.Add(new ValueLookupParameter<IntData>("TabuTenure", "The tenure of the tabu list."));
+      Parameters.Add(new ValueLookupParameter<IntValue>("TabuTenure", "The tenure of the tabu list."));
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The solution as permutation."));
     }
 
     public override IOperation Apply() {
       ItemList<IItem> tabuList = TabuListParameter.ActualValue;
       TwoOptMove move = TwoOptMoveParameter.ActualValue;
-      IntData tabuTenure = TabuTenureParameter.ActualValue;
+      IntValue tabuTenure = TabuTenureParameter.ActualValue;
       Permutation permutation = PermutationParameter.ActualValue;
       
       if (tabuList.Count >= tabuTenure.Value) {

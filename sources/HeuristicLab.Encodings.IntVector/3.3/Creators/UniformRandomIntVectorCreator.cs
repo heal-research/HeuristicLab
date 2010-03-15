@@ -42,11 +42,11 @@ namespace HeuristicLab.Encodings.IntVector {
     /// <param name="min">The minimum value of the sampling range for each vector element (inclusive).</param>
     /// <param name="max">The maximum value of the sampling range for each vector element (exclusive).</param>
     /// <returns>The newly created integer vector.</returns>
-    public static IntArrayData Apply(IRandom random, int length, int min, int max) {
+    public static IntArray Apply(IRandom random, int length, int min, int max) {
       int[] result = new int[length];
       for (int i = 0; i < length; i++)
         result[i] = random.Next(min, max);
-      return new IntArrayData(result);
+      return new IntArray(result);
     }
 
     /// <summary>
@@ -57,7 +57,7 @@ namespace HeuristicLab.Encodings.IntVector {
     /// <param name="minimum">The minimum value of the sampling range for each vector element (inclusive).</param>
     /// <param name="maximum">The maximum value of the sampling range for each vector element (exclusive).</param>
     /// <returns>The newly created int vector.</returns>
-    protected override IntArrayData Create(IRandom random, IntData length, IntData minimum, IntData maximum) {
+    protected override IntArray Create(IRandom random, IntValue length, IntValue minimum, IntValue maximum) {
       return Apply(random, length.Value, minimum.Value, maximum.Value);
     }
   }

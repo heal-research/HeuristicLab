@@ -33,34 +33,34 @@ namespace HeuristicLab.Analysis {
   [StorableClass]
   [Creatable("Test")]
   public sealed class BestAverageWorstQualityCalculator : SingleSuccessorOperator {
-    public IValueLookupParameter<BoolData> MaximizationParameter {
-      get { return (IValueLookupParameter<BoolData>)Parameters["Maximization"]; }
+    public IValueLookupParameter<BoolValue> MaximizationParameter {
+      get { return (IValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
-    public ILookupParameter<ItemArray<DoubleData>> QualityParameter {
-      get { return (ILookupParameter<ItemArray<DoubleData>>)Parameters["Quality"]; }
+    public ILookupParameter<ItemArray<DoubleValue>> QualityParameter {
+      get { return (ILookupParameter<ItemArray<DoubleValue>>)Parameters["Quality"]; }
     }
-    public IValueLookupParameter<DoubleData> BestQualityParameter {
-      get { return (IValueLookupParameter<DoubleData>)Parameters["BestQuality"]; }
+    public IValueLookupParameter<DoubleValue> BestQualityParameter {
+      get { return (IValueLookupParameter<DoubleValue>)Parameters["BestQuality"]; }
     }
-    public IValueLookupParameter<DoubleData> AverageQualityParameter {
-      get { return (IValueLookupParameter<DoubleData>)Parameters["AverageQuality"]; }
+    public IValueLookupParameter<DoubleValue> AverageQualityParameter {
+      get { return (IValueLookupParameter<DoubleValue>)Parameters["AverageQuality"]; }
     }
-    public IValueLookupParameter<DoubleData> WorstQualityParameter {
-      get { return (IValueLookupParameter<DoubleData>)Parameters["WorstQuality"]; }
+    public IValueLookupParameter<DoubleValue> WorstQualityParameter {
+      get { return (IValueLookupParameter<DoubleValue>)Parameters["WorstQuality"]; }
     }
 
     public BestAverageWorstQualityCalculator()
       : base() {
-      Parameters.Add(new ValueLookupParameter<BoolData>("Maximization", "True if the current problem is a maximization problem, otherwise false."));
-      Parameters.Add(new SubScopesLookupParameter<DoubleData>("Quality", "The value contained in each sub-scope which represents the solution quality."));
-      Parameters.Add(new ValueLookupParameter<DoubleData>("BestQuality", "The quality value of the best solution."));
-      Parameters.Add(new ValueLookupParameter<DoubleData>("AverageQuality", "The average quality of all solutions."));
-      Parameters.Add(new ValueLookupParameter<DoubleData>("WorstQuality", "The quality value of the worst solution."));
+      Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the current problem is a maximization problem, otherwise false."));
+      Parameters.Add(new SubScopesLookupParameter<DoubleValue>("Quality", "The value contained in each sub-scope which represents the solution quality."));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("BestQuality", "The quality value of the best solution."));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("AverageQuality", "The average quality of all solutions."));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("WorstQuality", "The quality value of the worst solution."));
     }
 
 
     public override IOperation Apply() {
-      ItemArray<DoubleData> qualities = QualityParameter.ActualValue;
+      ItemArray<DoubleValue> qualities = QualityParameter.ActualValue;
       bool maximization = MaximizationParameter.ActualValue.Value;
 
       if (qualities.Length > 0) {
@@ -76,14 +76,14 @@ namespace HeuristicLab.Analysis {
           max = temp;
         }
 
-        DoubleData best = BestQualityParameter.ActualValue;
-        if (best == null) BestQualityParameter.ActualValue = new DoubleData(max);
+        DoubleValue best = BestQualityParameter.ActualValue;
+        if (best == null) BestQualityParameter.ActualValue = new DoubleValue(max);
         else best.Value = max;
-        DoubleData average = AverageQualityParameter.ActualValue;
-        if (average == null) AverageQualityParameter.ActualValue = new DoubleData(sum / qualities.Length);
+        DoubleValue average = AverageQualityParameter.ActualValue;
+        if (average == null) AverageQualityParameter.ActualValue = new DoubleValue(sum / qualities.Length);
         else average.Value = sum / qualities.Length;
-        DoubleData worst = WorstQualityParameter.ActualValue;
-        if (worst == null) WorstQualityParameter.ActualValue = new DoubleData(min);
+        DoubleValue worst = WorstQualityParameter.ActualValue;
+        if (worst == null) WorstQualityParameter.ActualValue = new DoubleValue(min);
         else worst.Value = min;
       }
       return base.Apply();

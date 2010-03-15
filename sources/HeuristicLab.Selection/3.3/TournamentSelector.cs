@@ -34,12 +34,12 @@ namespace HeuristicLab.Selection {
   [StorableClass]
   [Creatable("Test")]
   public sealed class TournamentSelector : StochasticSingleObjectiveSelector {
-    public ValueLookupParameter<IntData> GroupSizeParameter {
-      get { return (ValueLookupParameter<IntData>)Parameters["GroupSize"]; }
+    public ValueLookupParameter<IntValue> GroupSizeParameter {
+      get { return (ValueLookupParameter<IntValue>)Parameters["GroupSize"]; }
     }
 
     public TournamentSelector() : base() {
-      Parameters.Add(new ValueLookupParameter<IntData>("GroupSize", "The size of the tournament group.", new IntData(2)));
+      Parameters.Add(new ValueLookupParameter<IntValue>("GroupSize", "The size of the tournament group.", new IntValue(2)));
       CopySelected.Value = true;
     }
 

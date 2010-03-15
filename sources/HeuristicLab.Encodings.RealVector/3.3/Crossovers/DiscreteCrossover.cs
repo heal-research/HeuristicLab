@@ -44,7 +44,7 @@ namespace HeuristicLab.Encodings.RealVector {
     /// <param name="random">A random number generator.</param>
     /// <param name="parents">An array containing the parents that should be crossed.</param>
     /// <returns>The newly created real vector, resulting from the crossover operation.</returns>
-    public static DoubleArrayData Apply(IRandom random, ItemArray<DoubleArrayData> parents) {
+    public static DoubleArray Apply(IRandom random, ItemArray<DoubleArray> parents) {
       int length = parents[0].Length;
       
       for (int i = 0; i < parents.Length; i++) { 
@@ -52,7 +52,7 @@ namespace HeuristicLab.Encodings.RealVector {
           throw new ArgumentException("DiscreteCrossover: The parents' vectors are of different length.", "parents");
       }
       
-      DoubleArrayData result = new DoubleArrayData(length);
+      DoubleArray result = new DoubleArray(length);
       for (int i = 0; i < length; i++) {
         result[i] = parents[random.Next(parents.Length)][i];
       }        
@@ -61,13 +61,13 @@ namespace HeuristicLab.Encodings.RealVector {
     }
 
     /// <summary>
-    /// Checks number of parents and forwards the call to <see cref="Apply(IRandom, ItemArray<DoubleArrayData>)"/>.
+    /// Checks number of parents and forwards the call to <see cref="Apply(IRandom, ItemArray<DoubleArray>)"/>.
     /// </summary>
     /// <exception cref="ArgumentException">Thrown when <paramref name="parents"/> contains less than 2 elements.</exception>
     /// <param name="random">The random number generator.</param>
     /// <param name="parents">The collection of parents (must be of size 2 or greater).</param>
     /// <returns>The real vector resulting from the crossover.</returns>
-    protected override DoubleArrayData Cross(IRandom random, ItemArray<DoubleArrayData> parents) {
+    protected override DoubleArray Cross(IRandom random, ItemArray<DoubleArray> parents) {
       if (parents.Length < 2) throw new ArgumentException("DiscreteCrossover: The number of parents is less than 2.", "parents");
       return Apply(random, parents);
     }

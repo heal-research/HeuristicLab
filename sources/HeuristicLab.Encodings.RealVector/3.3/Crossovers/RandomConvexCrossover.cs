@@ -42,7 +42,7 @@ namespace HeuristicLab.Encodings.RealVector {
     /// <param name="parent1">The first parent vector for the crossover.</param>
     /// <param name="parent2">The second parent vector for the crossover.</param>
     /// <returns>The newly created real vector, resulting from the random convex crossover.</returns>
-    public static DoubleArrayData Apply(IRandom random, DoubleArrayData parent1, DoubleArrayData parent2) {
+    public static DoubleArray Apply(IRandom random, DoubleArray parent1, DoubleArray parent2) {
       if (parent1.Length != parent2.Length)
         throw new ArgumentException("ERROR in RandomConvexCrossover: the two parents are not of the same length");
       
@@ -52,7 +52,7 @@ namespace HeuristicLab.Encodings.RealVector {
 
       for (int i = 0; i < length; i++)
         result[i] = (factor * parent1[i]) + ((1 - factor) * parent2[i]);
-      return new DoubleArrayData(result);
+      return new DoubleArray(result);
     }
 
     /// <summary>
@@ -62,7 +62,7 @@ namespace HeuristicLab.Encodings.RealVector {
     /// <param name="random">A random number generator.</param>
     /// <param name="parents">An array containing the two real vectors that should be crossed.</param>
     /// <returns>The newly created real vector, resulting from the crossover operation.</returns>
-    protected override DoubleArrayData Cross(IRandom random, ItemArray<DoubleArrayData> parents) {
+    protected override DoubleArray Cross(IRandom random, ItemArray<DoubleArray> parents) {
       if (parents.Length != 2) throw new ArgumentException("ERROR in RandomConvexCrossover: The number of parents is not equal to 2");
       return Apply(random, parents[0], parents[1]);
     }

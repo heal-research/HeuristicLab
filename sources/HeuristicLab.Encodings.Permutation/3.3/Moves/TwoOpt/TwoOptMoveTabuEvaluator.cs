@@ -40,8 +40,8 @@ namespace HeuristicLab.Encodings.Permutation {
     public LookupParameter<ItemList<IItem>> TabuListParameter {
       get { return (LookupParameter<ItemList<IItem>>)Parameters["TabuList"]; }
     }
-    public LookupParameter<BoolData> MoveTabuParameter {
-      get { return (LookupParameter<BoolData>)Parameters["MoveTabu"]; }
+    public LookupParameter<BoolValue> MoveTabuParameter {
+      get { return (LookupParameter<BoolValue>)Parameters["MoveTabu"]; }
     }
     private ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
@@ -50,7 +50,7 @@ namespace HeuristicLab.Encodings.Permutation {
     public TwoOptMoveTabuEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<TwoOptMove>("Move", "The move to evaluate."));
-      Parameters.Add(new LookupParameter<BoolData>("MoveTabu", "The variable to store if a move was tabu."));
+      Parameters.Add(new LookupParameter<BoolValue>("MoveTabu", "The variable to store if a move was tabu."));
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The solution as permutation."));
       Parameters.Add(new LookupParameter<ItemList<IItem>>("TabuList", "The tabu list."));
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope."));
@@ -82,7 +82,7 @@ namespace HeuristicLab.Encodings.Permutation {
           }
         }
       }
-      MoveTabuParameter.ActualValue = new BoolData(isTabu);
+      MoveTabuParameter.ActualValue = new BoolValue(isTabu);
       return base.Apply();
     }
   }

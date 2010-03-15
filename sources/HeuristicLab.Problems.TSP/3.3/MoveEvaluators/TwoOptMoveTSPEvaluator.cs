@@ -34,35 +34,35 @@ namespace HeuristicLab.Problems.TSP {
   [Item("TwoOptMoveTSPEvaluator", "Evaluates a 2-opt move (rounded euclidean distances) by summing up the length of all added edges and subtracting the length of all deleted edges.")]
   [StorableClass]
   public class TwoOptMoveTSPEvaluator : SingleSuccessorOperator {
-    public ILookupParameter<DoubleData> QualityParameter {
-      get { return (ILookupParameter<DoubleData>)Parameters["Quality"]; }
+    public ILookupParameter<DoubleValue> QualityParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
     public LookupParameter<TwoOptMove> MoveParameter {
       get { return (LookupParameter<TwoOptMove>)Parameters["Move"]; }
     }
-    public LookupParameter<DoubleData> MoveQualityParameter {
-      get { return (LookupParameter<DoubleData>)Parameters["MoveQuality"]; }
+    public LookupParameter<DoubleValue> MoveQualityParameter {
+      get { return (LookupParameter<DoubleValue>)Parameters["MoveQuality"]; }
     }
     public ILookupParameter<Permutation> PermutationParameter {
       get { return (ILookupParameter<Permutation>)Parameters["Permutation"]; }
     }
-    public ILookupParameter<DoubleMatrixData> CoordinatesParameter {
-      get { return (ILookupParameter<DoubleMatrixData>)Parameters["Coordinates"]; }
+    public ILookupParameter<DoubleMatrix> CoordinatesParameter {
+      get { return (ILookupParameter<DoubleMatrix>)Parameters["Coordinates"]; }
     }
 
     public TwoOptMoveTSPEvaluator()
       : base() {
-      Parameters.Add(new LookupParameter<DoubleData>("Quality", "The evaluated quality of the TSP solution."));
+      Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The evaluated quality of the TSP solution."));
       Parameters.Add(new LookupParameter<TwoOptMove>("Move", "The move to evaluate."));
-      Parameters.Add(new LookupParameter<DoubleData>("MoveQuality", "Where to store the move quality."));
+      Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "Where to store the move quality."));
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The solution as permutation."));
-      Parameters.Add(new LookupParameter<DoubleMatrixData>("Coordinates", "The city's coordinates."));
+      Parameters.Add(new LookupParameter<DoubleMatrix>("Coordinates", "The city's coordinates."));
     }
 
     public override IOperation Apply() {
       TwoOptMove move = MoveParameter.ActualValue;
       Permutation permutation = PermutationParameter.ActualValue;
-      DoubleMatrixData coordinates = CoordinatesParameter.ActualValue;
+      DoubleMatrix coordinates = CoordinatesParameter.ActualValue;
       double moveQuality = QualityParameter.ActualValue.Value;
       int edge1source = permutation.GetCircular(move.Index1 - 1);
       int edge1target = permutation[move.Index1];
@@ -78,7 +78,7 @@ namespace HeuristicLab.Problems.TSP {
         coordinates[edge2source, 0], coordinates[edge2source, 1]);
       moveQuality += CalculateDistance(coordinates[edge1target, 0], coordinates[edge1target, 1],
         coordinates[edge2target, 0], coordinates[edge2target, 1]);
-      if (MoveQualityParameter.ActualValue == null) MoveQualityParameter.ActualValue = new DoubleData(moveQuality);
+      if (MoveQualityParameter.ActualValue == null) MoveQualityParameter.ActualValue = new DoubleValue(moveQuality);
       else MoveQualityParameter.ActualValue.Value = moveQuality;
       return base.Apply();
     }

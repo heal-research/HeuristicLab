@@ -67,15 +67,15 @@ namespace HeuristicLab.Encodings.RealVector_33.Tests {
     [DeploymentItem("HeuristicLab.Encodings.RealVector-3.3.dll")]
     public void DiscreteCrossoverCrossTest() {
       DiscreteCrossover_Accessor target = new DiscreteCrossover_Accessor(new PrivateObject(typeof(DiscreteCrossover)));
-      ItemArray<DoubleArrayData> parents;
+      ItemArray<DoubleArray> parents;
       TestRandom random = new TestRandom();
       bool exceptionFired;
       // The following test checks if there is an exception when there are less than 2 parents
       random.Reset();
-      parents = new ItemArray<DoubleArrayData>(new DoubleArrayData[] { new DoubleArrayData(4) });
+      parents = new ItemArray<DoubleArray>(new DoubleArray[] { new DoubleArray(4) });
       exceptionFired = false;
       try {
-        DoubleArrayData actual;
+        DoubleArray actual;
         actual = target.Cross(random, parents);
       } catch (System.ArgumentException) {
         exceptionFired = true;
@@ -89,24 +89,24 @@ namespace HeuristicLab.Encodings.RealVector_33.Tests {
     [TestMethod()]
     public void DiscreteCrossoverApplyTest() {
       TestRandom random = new TestRandom();
-      DoubleArrayData parent1, parent2, expected, actual;
-      ItemArray<DoubleArrayData> parents;
+      DoubleArray parent1, parent2, expected, actual;
+      ItemArray<DoubleArray> parents;
       bool exceptionFired;
       // The following test is not based on published examples
       random.Reset();
       random.IntNumbers = new int[] { 0, 0, 1, 0, 1 };
-      parent1 = new DoubleArrayData(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
-      parent2 = new DoubleArrayData(new double[] { 0.4, 0.1, 0.3, 0.2, 0.8 });
-      parents = new ItemArray<DoubleArrayData>( new DoubleArrayData[] { parent1, parent2 } );
-      expected = new DoubleArrayData(new double[] { 0.2, 0.2, 0.3, 0.5, 0.8 });
+      parent1 = new DoubleArray(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
+      parent2 = new DoubleArray(new double[] { 0.4, 0.1, 0.3, 0.2, 0.8 });
+      parents = new ItemArray<DoubleArray>( new DoubleArray[] { parent1, parent2 } );
+      expected = new DoubleArray(new double[] { 0.2, 0.2, 0.3, 0.5, 0.8 });
       actual = DiscreteCrossover.Apply(random, parents);
       Assert.IsTrue(Auxiliary.RealVectorIsAlmostEqualByPosition(actual, expected));
       // The following test is not based on published examples
       random.Reset();
       random.IntNumbers = new int[] { 0, 0, 1, 0, 1, 0 };
-      parent1 = new DoubleArrayData(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1, 0.9 }); // this parent is longer
-      parent2 = new DoubleArrayData(new double[] { 0.4, 0.1, 0.3, 0.2, 0.8 });
-      parents = new ItemArray<DoubleArrayData>(new DoubleArrayData[] { parent1, parent2 });
+      parent1 = new DoubleArray(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1, 0.9 }); // this parent is longer
+      parent2 = new DoubleArray(new double[] { 0.4, 0.1, 0.3, 0.2, 0.8 });
+      parents = new ItemArray<DoubleArray>(new DoubleArray[] { parent1, parent2 });
       exceptionFired = false;
       try {
         actual = DiscreteCrossover.Apply(random, parents);

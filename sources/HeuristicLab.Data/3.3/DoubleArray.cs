@@ -24,28 +24,28 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
-  [Item("DoubleArrayData", "Represents an array of double values.")]
+  [Item("DoubleArray", "Represents an array of double values.")]
   [Creatable("Test")]
   [StorableClass]
-  public sealed class DoubleArrayData : ValueTypeArrayData<double>, IStringConvertibleArrayData {
-    public DoubleArrayData() : base() { }
-    public DoubleArrayData(int length) : base(length) { }
-    public DoubleArrayData(double[] elements) : base(elements) { }
-    private DoubleArrayData(DoubleArrayData elements) : base(elements) { }
+  public sealed class DoubleArray : ValueTypeArray<double>, IStringConvertibleArray {
+    public DoubleArray() : base() { }
+    public DoubleArray(int length) : base(length) { }
+    public DoubleArray(double[] elements) : base(elements) { }
+    private DoubleArray(DoubleArray elements) : base(elements) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      DoubleArrayData clone = new DoubleArrayData(this);
+      DoubleArray clone = new DoubleArray(this);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
 
-    #region IStringConvertibleArrayData Members
-    int IStringConvertibleArrayData.Length {
+    #region IStringConvertibleArray Members
+    int IStringConvertibleArray.Length {
       get { return Length; }
       set { Length = value; }
     }
 
-    bool IStringConvertibleArrayData.Validate(string value, out string errorMessage) {
+    bool IStringConvertibleArray.Validate(string value, out string errorMessage) {
       double val;
       bool valid = double.TryParse(value, out val);
       errorMessage = string.Empty;
@@ -58,10 +58,10 @@ namespace HeuristicLab.Data {
       }
       return valid;
     }
-    string IStringConvertibleArrayData.GetValue(int index) {
+    string IStringConvertibleArray.GetValue(int index) {
       return this[index].ToString();
     }
-    bool IStringConvertibleArrayData.SetValue(string value, int index) {
+    bool IStringConvertibleArray.SetValue(string value, int index) {
       double val;
       if (double.TryParse(value, out val)) {
         this[index] = val;

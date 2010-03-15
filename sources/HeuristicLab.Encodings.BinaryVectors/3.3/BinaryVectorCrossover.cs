@@ -36,18 +36,18 @@ namespace HeuristicLab.Encodings.BinaryVectors {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
-    public ILookupParameter<ItemArray<BoolArrayData>> ParentsParameter {
-      get { return (SubScopesLookupParameter<BoolArrayData>)Parameters["Parents"]; }
+    public ILookupParameter<ItemArray<BoolArray>> ParentsParameter {
+      get { return (SubScopesLookupParameter<BoolArray>)Parameters["Parents"]; }
     }
-    public ILookupParameter<BoolArrayData> ChildParameter {
-      get { return (ILookupParameter<BoolArrayData>)Parameters["Child"]; }
+    public ILookupParameter<BoolArray> ChildParameter {
+      get { return (ILookupParameter<BoolArray>)Parameters["Child"]; }
     }
 
     protected BinaryVectorCrossover()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic crossover operators."));
-      Parameters.Add(new SubScopesLookupParameter<IntArrayData>("Parents", "The parent vectors which should be crossed."));
-      Parameters.Add(new LookupParameter<IntArrayData>("Child", "The child vector resulting from the crossover."));
+      Parameters.Add(new SubScopesLookupParameter<IntArray>("Parents", "The parent vectors which should be crossed."));
+      Parameters.Add(new LookupParameter<IntArray>("Child", "The child vector resulting from the crossover."));
     }
 
     public sealed override IOperation Apply() {
@@ -55,6 +55,6 @@ namespace HeuristicLab.Encodings.BinaryVectors {
       return base.Apply();
     }
 
-    protected abstract BoolArrayData Cross(IRandom random, ItemArray<BoolArrayData> parents);
+    protected abstract BoolArray Cross(IRandom random, ItemArray<BoolArray> parents);
   }
 }

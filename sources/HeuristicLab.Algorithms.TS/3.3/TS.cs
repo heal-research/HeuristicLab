@@ -34,26 +34,26 @@ namespace HeuristicLab.Algorithms.TS {
   [Item("TS", "A tabu search algorithm.")]
   public sealed class TS : EngineAlgorithm {
     /*#region Parameter Properties
-    private ValueParameter<IntData> SeedParameter {
-      get { return (ValueParameter<IntData>)Parameters["Seed"]; }
+    private ValueParameter<IntValue> SeedParameter {
+      get { return (ValueParameter<IntValue>)Parameters["Seed"]; }
     }
-    private ValueParameter<BoolData> SetSeedRandomlyParameter {
-      get { return (ValueParameter<BoolData>)Parameters["SetSeedRandomly"]; }
+    private ValueParameter<BoolValue> SetSeedRandomlyParameter {
+      get { return (ValueParameter<BoolValue>)Parameters["SetSeedRandomly"]; }
     }
     private ConstrainedValueParameter<IMoveGenerator> MoveGeneratorParameter {
       get { return (ConstrainedValueParameter<IMoveGenerator>)Parameters["MoveGenerator"]; }
     }
-    private ValueParameter<IntData> MaximumIterationsParameter {
-      get { return (ValueParameter<IntData>)Parameters["MaximumIterations"]; }
+    private ValueParameter<IntValue> MaximumIterationsParameter {
+      get { return (ValueParameter<IntValue>)Parameters["MaximumIterations"]; }
     }
     #endregion
 
     #region Properties
-    public IntData Seed {
+    public IntValue Seed {
       get { return SeedParameter.Value; }
       set { SeedParameter.Value = value; }
     }
-    public BoolData SetSeedRandomly {
+    public BoolValue SetSeedRandomly {
       get { return SetSeedRandomlyParameter.Value; }
       set { SetSeedRandomlyParameter.Value = value; }
     }
@@ -61,7 +61,7 @@ namespace HeuristicLab.Algorithms.TS {
       get { return MoveGeneratorParameter.Value; }
       set { MoveGeneratorParameter.Value = value; }
     }
-    public IntData MaximumIterations {
+    public IntValue MaximumIterations {
       get { return MaximumIterationsParameter.Value; }
       set { MaximumIterationsParameter.Value = value; }
     }
@@ -78,10 +78,10 @@ namespace HeuristicLab.Algorithms.TS {
 
     public TS()
       : base() {
-      Parameters.Add(new ValueParameter<IntData>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntData(0)));
-      Parameters.Add(new ValueParameter<BoolData>("SetSeedRandomly", "True if the random seed should be set to a random value, otherwise false.", new BoolData(true)));
+      Parameters.Add(new ValueParameter<IntValue>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
+      Parameters.Add(new ValueParameter<BoolValue>("SetSeedRandomly", "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
       Parameters.Add(new ConstrainedValueParameter<IMoveGenerator>("MoveGenerator", "The operator used to generate moves to the neighborhood of the current solution."));
-      Parameters.Add(new ValueParameter<IntData>("MaximumIterations", "The maximum number of generations which should be processed.", new IntData(1000)));
+      Parameters.Add(new ValueParameter<IntValue>("MaximumIterations", "The maximum number of generations which should be processed.", new IntValue(1000)));
 
       RandomCreator randomCreator = new RandomCreator();
       SolutionsCreator solutionsCreator = new SolutionsCreator();
@@ -95,7 +95,7 @@ namespace HeuristicLab.Algorithms.TS {
       randomCreator.SetSeedRandomlyParameter.Value = null;
       randomCreator.Successor = solutionsCreator;
 
-      solutionsCreator.NumberOfSolutions = new IntData(1);
+      solutionsCreator.NumberOfSolutions = new IntValue(1);
       solutionsCreator.Successor = tsMainLoop;
 
       tsMainLoop.MoveGeneratorParameter.ActualName = MoveGeneratorParameter.Name;
@@ -205,8 +205,8 @@ namespace HeuristicLab.Algorithms.TS {
     }
     private void ParameterizeSelectors() {
       foreach (ISelector selector in Selectors) {
-        selector.CopySelected = new BoolData(true);
-        selector.NumberOfSelectedSubScopesParameter.Value = new IntData(2 * (PopulationSizeParameter.Value.Value - ElitesParameter.Value.Value));
+        selector.CopySelected = new BoolValue(true);
+        selector.NumberOfSelectedSubScopesParameter.Value = new IntValue(2 * (PopulationSizeParameter.Value.Value - ElitesParameter.Value.Value));
         ParameterizeStochasticOperator(selector);
       }
       if (Problem != null) {

@@ -25,15 +25,15 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
-  [Item("DoubleData", "Represents a double value.")]
+  [Item("DoubleValue", "Represents a double value.")]
   [Creatable("Test")]
   [StorableClass]
-  public sealed class DoubleData : ValueTypeData<double>, IComparable, IStringConvertibleData {
-    public DoubleData() : base() { }
-    public DoubleData(double value) : base(value) { }
+  public sealed class DoubleValue : ValueTypeValue<double>, IComparable, IStringConvertibleValue {
+    public DoubleValue() : base() { }
+    public DoubleValue(double value) : base(value) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      DoubleData clone = new DoubleData(Value);
+      DoubleValue clone = new DoubleValue(Value);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
@@ -43,15 +43,15 @@ namespace HeuristicLab.Data {
     }
 
     public int CompareTo(object obj) {
-      DoubleData other = obj as DoubleData;
+      DoubleValue other = obj as DoubleValue;
       if (other != null)
         return Value.CompareTo(other.Value);
       else
         return Value.CompareTo(obj);
     }
 
-    #region IStringConvertibleData Members
-    bool IStringConvertibleData.Validate(string value, out string errorMessage) {
+    #region IStringConvertibleValue Members
+    bool IStringConvertibleValue.Validate(string value, out string errorMessage) {
       double val;
       bool valid = double.TryParse(value, out val);
       errorMessage = string.Empty;
@@ -64,10 +64,10 @@ namespace HeuristicLab.Data {
       }
       return valid;
     }
-    string IStringConvertibleData.GetValue() {
+    string IStringConvertibleValue.GetValue() {
       return Value.ToString("r");  // round-trip format
     }
-    bool IStringConvertibleData.SetValue(string value) {
+    bool IStringConvertibleValue.SetValue(string value) {
       double val;
       if (double.TryParse(value, out val)) {
         Value = val;

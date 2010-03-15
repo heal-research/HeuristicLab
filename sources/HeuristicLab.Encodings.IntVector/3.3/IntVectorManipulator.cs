@@ -36,14 +36,14 @@ namespace HeuristicLab.Encodings.IntVector {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
-    public ILookupParameter<IntArrayData> IntVectorParameter {
-      get { return (ILookupParameter<IntArrayData>)Parameters["IntVector"]; }
+    public ILookupParameter<IntArray> IntVectorParameter {
+      get { return (ILookupParameter<IntArray>)Parameters["IntVector"]; }
     }
 
     protected IntVectorManipulator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
-      Parameters.Add(new LookupParameter<IntArrayData>("IntVector", "The vector which should be manipulated."));
+      Parameters.Add(new LookupParameter<IntArray>("IntVector", "The vector which should be manipulated."));
     }
 
     public sealed override IOperation Apply() {
@@ -51,6 +51,6 @@ namespace HeuristicLab.Encodings.IntVector {
       return base.Apply();
     }
 
-    protected abstract void Manipulate(IRandom random, IntArrayData intVector);
+    protected abstract void Manipulate(IRandom random, IntArray intVector);
   }
 }

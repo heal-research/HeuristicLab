@@ -24,7 +24,7 @@ using HeuristicLab.Common;
 
 namespace HeuristicLab.Encodings.IntVector_33.Tests {
   public static class Auxiliary {
-    public static bool BoolVectorIsEqualByPosition(BoolArrayData p1, BoolArrayData p2) {
+    public static bool BoolVectorIsEqualByPosition(BoolArray p1, BoolArray p2) {
       bool equal = (p1.Length == p2.Length);
       if (equal) {
         for (int i = 0; i < p1.Length; i++) {

@@ -41,8 +41,8 @@ namespace HeuristicLab.Encodings.Permutation {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
-    public IValueLookupParameter<IntData> LengthParameter {
-      get { return (IValueLookupParameter<IntData>)Parameters["Length"]; }
+    public IValueLookupParameter<IntValue> LengthParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters["Length"]; }
     }
     public ILookupParameter<Permutation> PermutationParameter {
       get { return (ILookupParameter<Permutation>)Parameters["Permutation"]; }
@@ -51,7 +51,7 @@ namespace HeuristicLab.Encodings.Permutation {
     public RandomPermutationCreator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used to initialize the new random permutation."));
-      Parameters.Add(new ValueLookupParameter<IntData>("Length", "The length of the new random permutation."));
+      Parameters.Add(new ValueLookupParameter<IntValue>("Length", "The length of the new random permutation."));
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The new random permutation."));
     }
 

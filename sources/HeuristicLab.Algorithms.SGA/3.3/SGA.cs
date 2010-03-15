@@ -50,14 +50,14 @@ namespace HeuristicLab.Algorithms.SGA {
     #endregion
 
     #region Parameter Properties
-    private ValueParameter<IntData> SeedParameter {
-      get { return (ValueParameter<IntData>)Parameters["Seed"]; }
+    private ValueParameter<IntValue> SeedParameter {
+      get { return (ValueParameter<IntValue>)Parameters["Seed"]; }
     }
-    private ValueParameter<BoolData> SetSeedRandomlyParameter {
-      get { return (ValueParameter<BoolData>)Parameters["SetSeedRandomly"]; }
+    private ValueParameter<BoolValue> SetSeedRandomlyParameter {
+      get { return (ValueParameter<BoolValue>)Parameters["SetSeedRandomly"]; }
     }
-    private ValueParameter<IntData> PopulationSizeParameter {
-      get { return (ValueParameter<IntData>)Parameters["PopulationSize"]; }
+    private ValueParameter<IntValue> PopulationSizeParameter {
+      get { return (ValueParameter<IntValue>)Parameters["PopulationSize"]; }
     }
     private ConstrainedValueParameter<ISelector> SelectorParameter {
       get { return (ConstrainedValueParameter<ISelector>)Parameters["Selector"]; }
@@ -65,30 +65,30 @@ namespace HeuristicLab.Algorithms.SGA {
     private ConstrainedValueParameter<ICrossover> CrossoverParameter {
       get { return (ConstrainedValueParameter<ICrossover>)Parameters["Crossover"]; }
     }
-    private ValueParameter<DoubleData> MutationProbabilityParameter {
-      get { return (ValueParameter<DoubleData>)Parameters["MutationProbability"]; }
+    private ValueParameter<DoubleValue> MutationProbabilityParameter {
+      get { return (ValueParameter<DoubleValue>)Parameters["MutationProbability"]; }
     }
     private OptionalConstrainedValueParameter<IManipulator> MutatorParameter {
       get { return (OptionalConstrainedValueParameter<IManipulator>)Parameters["Mutator"]; }
     }
-    private ValueParameter<IntData> ElitesParameter {
-      get { return (ValueParameter<IntData>)Parameters["Elites"]; }
+    private ValueParameter<IntValue> ElitesParameter {
+      get { return (ValueParameter<IntValue>)Parameters["Elites"]; }
     }
-    private ValueParameter<IntData> MaximumGenerationsParameter {
-      get { return (ValueParameter<IntData>)Parameters["MaximumGenerations"]; }
+    private ValueParameter<IntValue> MaximumGenerationsParameter {
+      get { return (ValueParameter<IntValue>)Parameters["MaximumGenerations"]; }
     }
     #endregion
 
     #region Properties
-    public IntData Seed {
+    public IntValue Seed {
       get { return SeedParameter.Value; }
       set { SeedParameter.Value = value; }
     }
-    public BoolData SetSeedRandomly {
+    public BoolValue SetSeedRandomly {
       get { return SetSeedRandomlyParameter.Value; }
       set { SetSeedRandomlyParameter.Value = value; }
     }
-    public IntData PopulationSize {
+    public IntValue PopulationSize {
       get { return PopulationSizeParameter.Value; }
       set { PopulationSizeParameter.Value = value; }
     }
@@ -100,7 +100,7 @@ namespace HeuristicLab.Algorithms.SGA {
       get { return CrossoverParameter.Value; }
       set { CrossoverParameter.Value = value; }
     }
-    public DoubleData MutationProbability {
+    public DoubleValue MutationProbability {
       get { return MutationProbabilityParameter.Value; }
       set { MutationProbabilityParameter.Value = value; }
     }
@@ -108,11 +108,11 @@ namespace HeuristicLab.Algorithms.SGA {
       get { return MutatorParameter.Value; }
       set { MutatorParameter.Value = value; }
     }
-    public IntData Elites {
+    public IntValue Elites {
       get { return ElitesParameter.Value; }
       set { ElitesParameter.Value = value; }
     }
-    public IntData MaximumGenerations {
+    public IntValue MaximumGenerations {
       get { return MaximumGenerationsParameter.Value; }
       set { MaximumGenerationsParameter.Value = value; }
     }
@@ -133,15 +133,15 @@ namespace HeuristicLab.Algorithms.SGA {
 
     public SGA()
       : base() {
-      Parameters.Add(new ValueParameter<IntData>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntData(0)));
-      Parameters.Add(new ValueParameter<BoolData>("SetSeedRandomly", "True if the random seed should be set to a random value, otherwise false.", new BoolData(true)));
-      Parameters.Add(new ValueParameter<IntData>("PopulationSize", "The size of the population of solutions.", new IntData(100)));
+      Parameters.Add(new ValueParameter<IntValue>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
+      Parameters.Add(new ValueParameter<BoolValue>("SetSeedRandomly", "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
+      Parameters.Add(new ValueParameter<IntValue>("PopulationSize", "The size of the population of solutions.", new IntValue(100)));
       Parameters.Add(new ConstrainedValueParameter<ISelector>("Selector", "The operator used to select solutions for reproduction."));
       Parameters.Add(new ConstrainedValueParameter<ICrossover>("Crossover", "The operator used to cross solutions."));
-      Parameters.Add(new ValueParameter<DoubleData>("MutationProbability", "The probability that the mutation operator is applied on a solution.", new DoubleData(0.05)));
+      Parameters.Add(new ValueParameter<DoubleValue>("MutationProbability", "The probability that the mutation operator is applied on a solution.", new DoubleValue(0.05)));
       Parameters.Add(new OptionalConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
-      Parameters.Add(new ValueParameter<IntData>("Elites", "The numer of elite solutions which are kept in each generation.", new IntData(1)));
-      Parameters.Add(new ValueParameter<IntData>("MaximumGenerations", "The maximum number of generations which should be processed.", new IntData(1000)));
+      Parameters.Add(new ValueParameter<IntValue>("Elites", "The numer of elite solutions which are kept in each generation.", new IntValue(1)));
+      Parameters.Add(new ValueParameter<IntValue>("MaximumGenerations", "The maximum number of generations which should be processed.", new IntValue(1000)));
 
       RandomCreator randomCreator = new RandomCreator();
       SolutionsCreator solutionsCreator = new SolutionsCreator();
@@ -265,8 +265,8 @@ namespace HeuristicLab.Algorithms.SGA {
     }
     private void ParameterizeSelectors() {
       foreach (ISelector selector in Selectors) {
-        selector.CopySelected = new BoolData(true);
-        selector.NumberOfSelectedSubScopesParameter.Value = new IntData(2 * (PopulationSizeParameter.Value.Value - ElitesParameter.Value.Value));
+        selector.CopySelected = new BoolValue(true);
+        selector.NumberOfSelectedSubScopesParameter.Value = new IntValue(2 * (PopulationSizeParameter.Value.Value - ElitesParameter.Value.Value));
         ParameterizeStochasticOperator(selector);
       }
       if (Problem != null) {

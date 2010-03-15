@@ -24,9 +24,9 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
-  [Item("ValueTypeData<T>", "A base class for representing value types.")]
+  [Item("ValueTypeValue<T>", "A base class for representing value types.")]
   [StorableClass]
-  public class ValueTypeData<T> : Item where T : struct {
+  public class ValueTypeValue<T> : Item where T : struct {
     [Storable]
     private T value;
     public T Value {
@@ -39,15 +39,15 @@ namespace HeuristicLab.Data {
       }
     }
 
-    public ValueTypeData() {
+    public ValueTypeValue() {
       this.value = default(T);
     }
-    public ValueTypeData(T value) {
+    public ValueTypeValue(T value) {
       this.value = value;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      ValueTypeData<T> clone = (ValueTypeData<T>)base.Clone(cloner);
+      ValueTypeValue<T> clone = (ValueTypeValue<T>)base.Clone(cloner);
       clone.value = value;
       return clone;
     }

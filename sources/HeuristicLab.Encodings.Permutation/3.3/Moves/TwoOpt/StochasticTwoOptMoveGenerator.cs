@@ -33,14 +33,14 @@ namespace HeuristicLab.Encodings.Permutation {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
-    private ValueLookupParameter<IntData> SampleSizeParameter {
-      get { return (ValueLookupParameter<IntData>)Parameters["SampleSize"]; }
+    private ValueLookupParameter<IntValue> SampleSizeParameter {
+      get { return (ValueLookupParameter<IntValue>)Parameters["SampleSize"]; }
     }
 
     public StochasticTwoOptMoveGenerator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator."));
-      Parameters.Add(new ValueLookupParameter<IntData>("SampleSize", "The number of moves to generate."));
+      Parameters.Add(new ValueLookupParameter<IntValue>("SampleSize", "The number of moves to generate."));
     }
 
     public static TwoOptMove[] Apply(Permutation permutation, IRandom random, int sampleSize) {

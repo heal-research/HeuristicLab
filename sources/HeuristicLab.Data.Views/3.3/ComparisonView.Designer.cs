@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Data.Views {
-  partial class ComparisonDataView {
+  partial class ComparisonView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -70,13 +70,13 @@ namespace HeuristicLab.Data.Views {
       this.valueComboBox.TabIndex = 1;
       this.valueComboBox.SelectedIndexChanged += new System.EventHandler(this.valueComboBox_SelectedIndexChanged);
       // 
-      // ComparisonDataView
+      // ComparisonView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.valueComboBox);
       this.Controls.Add(this.valueLabel);
-      this.Name = "ComparisonDataView";
+      this.Name = "ComparisonView";
       this.Size = new System.Drawing.Size(265, 29);
       this.ResumeLayout(false);
       this.PerformLayout();

@@ -27,6 +27,6 @@ namespace HeuristicLab.Problems.TSP {
   /// An interface which represents an evaluation operator which evaluates TSP solutions given in path representation using a distance matrix.
   /// </summary>
   public interface ITSPDistanceMatrixPathEvaluator : ITSPPathEvaluator {
-    ILookupParameter<DoubleMatrixData> DistanceMatrixParameter { get; }
+    ILookupParameter<DoubleMatrix> DistanceMatrixParameter { get; }
   }
 }

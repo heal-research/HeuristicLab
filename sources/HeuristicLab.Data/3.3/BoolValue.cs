@@ -25,29 +25,29 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
-  [Item("BoolData", "Represents a boolean value.")]
+  [Item("BoolValue", "Represents a boolean value.")]
   [Creatable("Test")]
   [StorableClass]
-  public sealed class BoolData : ValueTypeData<bool>, IComparable, IStringConvertibleData {
-    public BoolData() : base() { }
-    public BoolData(bool value) : base(value) { }
+  public sealed class BoolValue : ValueTypeValue<bool>, IComparable, IStringConvertibleValue {
+    public BoolValue() : base() { }
+    public BoolValue(bool value) : base(value) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      BoolData clone = new BoolData(Value);
+      BoolValue clone = new BoolValue(Value);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
 
     public int CompareTo(object obj) {
-      BoolData other = obj as BoolData;
+      BoolValue other = obj as BoolValue;
       if (other != null)
         return Value.CompareTo(other.Value);
       else
         return Value.CompareTo(obj);
     }
 
-    #region IStringConvertibleData Members
-    bool IStringConvertibleData.Validate(string value, out string errorMessage) {
+    #region IStringConvertibleValue Members
+    bool IStringConvertibleValue.Validate(string value, out string errorMessage) {
       bool val;
       bool valid = bool.TryParse(value, out val);
       errorMessage = string.Empty;
@@ -60,10 +60,10 @@ namespace HeuristicLab.Data {
       }
       return valid;
     }
-    string IStringConvertibleData.GetValue() {
+    string IStringConvertibleValue.GetValue() {
       return Value.ToString();
     }
-    bool IStringConvertibleData.SetValue(string value) {
+    bool IStringConvertibleValue.SetValue(string value) {
       bool val;
       if (bool.TryParse(value, out val)) {
         Value = val;

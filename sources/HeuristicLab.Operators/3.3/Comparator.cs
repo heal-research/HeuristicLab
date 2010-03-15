@@ -39,13 +39,13 @@ namespace HeuristicLab.Operators {
     public ValueLookupParameter<IItem> RightSideParameter {
       get { return (ValueLookupParameter<IItem>)Parameters["RightSide"]; }
     }
-    private ValueParameter<ComparisonData> ComparisonParameter {
-      get { return (ValueParameter<ComparisonData>)Parameters["Comparison"]; }
+    private ValueParameter<Comparison> ComparisonParameter {
+      get { return (ValueParameter<Comparison>)Parameters["Comparison"]; }
     }
-    public LookupParameter<BoolData> ResultParameter {
-      get { return (LookupParameter<BoolData>)Parameters["Result"]; }
+    public LookupParameter<BoolValue> ResultParameter {
+      get { return (LookupParameter<BoolValue>)Parameters["Result"]; }
     }
-    public ComparisonData Comparison {
+    public Comparison Comparison {
       get { return ComparisonParameter.Value; }
       set { ComparisonParameter.Value = value; }
     }
@@ -54,8 +54,8 @@ namespace HeuristicLab.Operators {
       : base() {
       Parameters.Add(new LookupParameter<IItem>("LeftSide", "The left side of the comparison."));
       Parameters.Add(new ValueLookupParameter<IItem>("RightSide", "The right side of the comparison."));
-      Parameters.Add(new ValueParameter<ComparisonData>("Comparison", "The type of comparison.", new ComparisonData(Data.Comparison.Equal)));
-      Parameters.Add(new LookupParameter<BoolData>("Result", "The result of the comparison."));
+      Parameters.Add(new ValueParameter<Comparison>("Comparison", "The type of comparison.", new Comparison(Data.ComparisonType.Equal)));
+      Parameters.Add(new LookupParameter<BoolValue>("Result", "The result of the comparison."));
     }
 
     public override IOperation Apply() {
@@ -67,20 +67,20 @@ namespace HeuristicLab.Operators {
       int i = comparable.CompareTo(right);
       bool b = false;
       switch (Comparison.Value) {
-        case HeuristicLab.Data.Comparison.Less:
+        case HeuristicLab.Data.ComparisonType.Less:
           b = i < 0; break;
-        case HeuristicLab.Data.Comparison.LessOrEqual:
+        case HeuristicLab.Data.ComparisonType.LessOrEqual:
           b = i <= 0; break;
-        case HeuristicLab.Data.Comparison.Equal:
+        case HeuristicLab.Data.ComparisonType.Equal:
           b = i == 0; break;
-        case HeuristicLab.Data.Comparison.GreaterOrEqual:
+        case HeuristicLab.Data.ComparisonType.GreaterOrEqual:
           b = i >= 0; break;
-        case HeuristicLab.Data.Comparison.Greater:
+        case HeuristicLab.Data.ComparisonType.Greater:
           b = i > 0; break;
-        case HeuristicLab.Data.Comparison.NotEqual:
+        case HeuristicLab.Data.ComparisonType.NotEqual:
           b = i != 0; break;
       }
-      ResultParameter.ActualValue = new BoolData(b);
+      ResultParameter.ActualValue = new BoolValue(b);
       return base.Apply();
     }
   }

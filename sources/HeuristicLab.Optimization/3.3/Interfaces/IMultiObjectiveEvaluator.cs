@@ -27,6 +27,6 @@ namespace HeuristicLab.Optimization {
   /// An interface which represents an evaluation operator for multi-objective optimization problems.
   /// </summary>
   public interface IMultiObjectiveEvaluator : IEvaluator {
-    ILookupParameter<DoubleArrayData> QualitiesParameter { get; }
+    ILookupParameter<DoubleArray> QualitiesParameter { get; }
   }
 }

@@ -24,28 +24,28 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
-  [Item("BoolArrayData", "Represents an array of boolean values.")]
+  [Item("BoolArray", "Represents an array of boolean values.")]
   [Creatable("Test")]
   [StorableClass]
-  public sealed class BoolArrayData : ValueTypeArrayData<bool>, IStringConvertibleArrayData {
-    public BoolArrayData() : base() { }
-    public BoolArrayData(int length) : base(length) { }
-    public BoolArrayData(bool[] elements) : base(elements) { }
-    private BoolArrayData(BoolArrayData elements) : base(elements) { }
+  public sealed class BoolArray : ValueTypeArray<bool>, IStringConvertibleArray {
+    public BoolArray() : base() { }
+    public BoolArray(int length) : base(length) { }
+    public BoolArray(bool[] elements) : base(elements) { }
+    private BoolArray(BoolArray elements) : base(elements) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      BoolArrayData clone = new BoolArrayData(this);
+      BoolArray clone = new BoolArray(this);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
 
-    #region IStringConvertibleArrayData Members
-    int IStringConvertibleArrayData.Length {
+    #region IStringConvertibleArray Members
+    int IStringConvertibleArray.Length {
       get { return Length; }
       set { Length = value; }
     }
 
-    bool IStringConvertibleArrayData.Validate(string value, out string errorMessage) {
+    bool IStringConvertibleArray.Validate(string value, out string errorMessage) {
       bool val;
       bool valid = bool.TryParse(value, out val);
       errorMessage = string.Empty;
@@ -58,10 +58,10 @@ namespace HeuristicLab.Data {
       }
       return valid;
     }
-    string IStringConvertibleArrayData.GetValue(int index) {
+    string IStringConvertibleArray.GetValue(int index) {
       return this[index].ToString();
     }
-    bool IStringConvertibleArrayData.SetValue(string value, int index) {
+    bool IStringConvertibleArray.SetValue(string value, int index) {
       bool val;
       if (bool.TryParse(value, out val)) {
         this[index] = val;

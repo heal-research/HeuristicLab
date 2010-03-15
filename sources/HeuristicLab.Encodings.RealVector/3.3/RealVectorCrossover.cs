@@ -40,18 +40,18 @@ namespace HeuristicLab.Encodings.RealVector {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
-    public ILookupParameter<ItemArray<DoubleArrayData>> ParentsParameter {
-      get { return (SubScopesLookupParameter<DoubleArrayData>)Parameters["Parents"]; }
+    public ILookupParameter<ItemArray<DoubleArray>> ParentsParameter {
+      get { return (SubScopesLookupParameter<DoubleArray>)Parameters["Parents"]; }
     }
-    public ILookupParameter<DoubleArrayData> ChildParameter {
-      get { return (ILookupParameter<DoubleArrayData>)Parameters["Child"]; }
+    public ILookupParameter<DoubleArray> ChildParameter {
+      get { return (ILookupParameter<DoubleArray>)Parameters["Child"]; }
     }
 
     protected RealVectorCrossover()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic crossover operators."));
-      Parameters.Add(new SubScopesLookupParameter<DoubleArrayData>("Parents", "The parent vectors which should be crossed."));
-      Parameters.Add(new LookupParameter<DoubleArrayData>("Child", "The child vector resulting from the crossover."));
+      Parameters.Add(new SubScopesLookupParameter<DoubleArray>("Parents", "The parent vectors which should be crossed."));
+      Parameters.Add(new LookupParameter<DoubleArray>("Child", "The child vector resulting from the crossover."));
     }
 
     public sealed override IOperation Apply() {
@@ -59,6 +59,6 @@ namespace HeuristicLab.Encodings.RealVector {
       return base.Apply();
     }
 
-    protected abstract DoubleArrayData Cross(IRandom random, ItemArray<DoubleArrayData> parents);
+    protected abstract DoubleArray Cross(IRandom random, ItemArray<DoubleArray> parents);
   }
 }

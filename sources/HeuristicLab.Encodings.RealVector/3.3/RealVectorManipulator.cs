@@ -40,14 +40,14 @@ namespace HeuristicLab.Encodings.RealVector {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
-    public ILookupParameter<DoubleArrayData> RealVectorParameter {
-      get { return (ILookupParameter<DoubleArrayData>)Parameters["RealVector"]; }
+    public ILookupParameter<DoubleArray> RealVectorParameter {
+      get { return (ILookupParameter<DoubleArray>)Parameters["RealVector"]; }
     }
 
     protected RealVectorManipulator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
-      Parameters.Add(new LookupParameter<DoubleArrayData>("RealVector", "The vector which should be manipulated."));
+      Parameters.Add(new LookupParameter<DoubleArray>("RealVector", "The vector which should be manipulated."));
     }
 
     public sealed override IOperation Apply() {
@@ -55,6 +55,6 @@ namespace HeuristicLab.Encodings.RealVector {
       return base.Apply();
     }
 
-    protected abstract void Manipulate(IRandom random, DoubleArrayData realVector);
+    protected abstract void Manipulate(IRandom random, DoubleArray realVector);
   }
 }

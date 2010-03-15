@@ -42,14 +42,14 @@ namespace HeuristicLab.Problems.TSP {
     }
 
     #region Parameter Properties
-    public ValueParameter<BoolData> MaximizationParameter {
-      get { return (ValueParameter<BoolData>)Parameters["Maximization"]; }
+    public ValueParameter<BoolValue> MaximizationParameter {
+      get { return (ValueParameter<BoolValue>)Parameters["Maximization"]; }
     }
     IParameter ISingleObjectiveProblem.MaximizationParameter {
       get { return MaximizationParameter; }
     }
-    public ValueParameter<DoubleMatrixData> CoordinatesParameter {
-      get { return (ValueParameter<DoubleMatrixData>)Parameters["Coordinates"]; }
+    public ValueParameter<DoubleMatrix> CoordinatesParameter {
+      get { return (ValueParameter<DoubleMatrix>)Parameters["Coordinates"]; }
     }
     public ValueParameter<IPermutationCreator> SolutionCreatorParameter {
       get { return (ValueParameter<IPermutationCreator>)Parameters["SolutionCreator"]; }
@@ -63,13 +63,13 @@ namespace HeuristicLab.Problems.TSP {
     IParameter IProblem.EvaluatorParameter {
       get { return EvaluatorParameter; }
     }
-    public OptionalValueParameter<DoubleData> BestKnownQualityParameter {
-      get { return (OptionalValueParameter<DoubleData>)Parameters["BestKnownQuality"]; }
+    public OptionalValueParameter<DoubleValue> BestKnownQualityParameter {
+      get { return (OptionalValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
     }
     #endregion
 
     #region Properties
-    public DoubleMatrixData Coordinates {
+    public DoubleMatrix Coordinates {
       get { return CoordinatesParameter.Value; }
       set { CoordinatesParameter.Value = value; }
     }
@@ -90,7 +90,7 @@ namespace HeuristicLab.Problems.TSP {
     IEvaluator IProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
     }
-    public DoubleData BestKnownQuality {
+    public DoubleValue BestKnownQuality {
       get { return BestKnownQualityParameter.Value; }
       set { BestKnownQualityParameter.Value = value; }
     }
@@ -105,11 +105,11 @@ namespace HeuristicLab.Problems.TSP {
       RandomPermutationCreator creator = new RandomPermutationCreator();
       TSPRoundedEuclideanPathEvaluator evaluator = new TSPRoundedEuclideanPathEvaluator();
 
-      Parameters.Add(new ValueParameter<BoolData>("Maximization", "Set to false as the Traveling Salesman Problem is a minimization problem.", new BoolData(false)));
-      Parameters.Add(new ValueParameter<DoubleMatrixData>("Coordinates", "The x- and y-Coordinates of the cities.", new DoubleMatrixData(0, 0)));
+      Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to false as the Traveling Salesman Problem is a minimization problem.", new BoolValue(false)));
+      Parameters.Add(new ValueParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities.", new DoubleMatrix(0, 0)));
       Parameters.Add(new ValueParameter<IPermutationCreator>("SolutionCreator", "The operator which should be used to create new TSP solutions.", creator));
       Parameters.Add(new ValueParameter<ITSPEvaluator>("Evaluator", "The operator which should be used to evaluate TSP solutions.", evaluator));
-      Parameters.Add(new OptionalValueParameter<DoubleData>("BestKnownQuality", "The quality of the best known solution of this TSP instance."));
+      Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this TSP instance."));
 
       creator.PermutationParameter.ActualName = "TSPTour";
       evaluator.QualityParameter.ActualName = "TSPTourLength";
@@ -130,7 +130,7 @@ namespace HeuristicLab.Problems.TSP {
     public void ImportFromTSPLIB(string filename) {
       TSPLIBParser parser = new TSPLIBParser(filename);
       parser.Parse();
-      Coordinates = new DoubleMatrixData(parser.Vertices);
+      Coordinates = new DoubleMatrix(parser.Vertices);
     }
 
     #region Events
@@ -189,7 +189,7 @@ namespace HeuristicLab.Problems.TSP {
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
     }
     private void ParameterizeSolutionCreator() {
-      SolutionCreator.LengthParameter.Value = new IntData(Coordinates.Rows);
+      SolutionCreator.LengthParameter.Value = new IntValue(Coordinates.Rows);
     }
     private void ParameterizeEvaluator() {
       if (Evaluator is ITSPPathEvaluator)

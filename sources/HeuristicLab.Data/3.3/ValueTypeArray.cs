@@ -27,9 +27,9 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
-  [Item("ValueTypeArrayData<T>", "A base class for representing arrays of value types.")]
+  [Item("ValueTypeArray<T>", "A base class for representing arrays of value types.")]
   [StorableClass]
-  public class ValueTypeArrayData<T> : Item, IEnumerable where T : struct {
+  public class ValueTypeArray<T> : Item, IEnumerable where T : struct {
     [Storable]
     private T[] array;
 
@@ -52,23 +52,23 @@ namespace HeuristicLab.Data {
       }
     }
 
-    public ValueTypeArrayData() {
+    public ValueTypeArray() {
       array = new T[0];
     }
-    public ValueTypeArrayData(int length) {
+    public ValueTypeArray(int length) {
       array = new T[length];
     }
-    public ValueTypeArrayData(T[] elements) {
+    public ValueTypeArray(T[] elements) {
       if (elements == null) throw new ArgumentNullException();
       array = (T[])elements.Clone();
     }
-    protected ValueTypeArrayData(ValueTypeArrayData<T> elements) {
+    protected ValueTypeArray(ValueTypeArray<T> elements) {
       if (elements == null) throw new ArgumentNullException();
       array = (T[])elements.array.Clone();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      ValueTypeArrayData<T> clone = (ValueTypeArrayData<T>)base.Clone(cloner);
+      ValueTypeArray<T> clone = (ValueTypeArray<T>)base.Clone(cloner);
       clone.array = (T[])array.Clone();
       return clone;
     }

@@ -34,8 +34,8 @@ namespace HeuristicLab.Optimization.Operators {
   [StorableClass]
   [Creatable("Test")]
   public sealed class SolutionsCreator : SingleSuccessorOperator {
-    public ValueLookupParameter<IntData> NumberOfSolutionsParameter {
-      get { return (ValueLookupParameter<IntData>)Parameters["NumberOfSolutions"]; }
+    public ValueLookupParameter<IntValue> NumberOfSolutionsParameter {
+      get { return (ValueLookupParameter<IntValue>)Parameters["NumberOfSolutions"]; }
     }
     public ValueLookupParameter<IOperator> SolutionCreatorParameter {
       get { return (ValueLookupParameter<IOperator>)Parameters["SolutionCreator"]; }
@@ -49,14 +49,14 @@ namespace HeuristicLab.Optimization.Operators {
     public IScope CurrentScope {
       get { return CurrentScopeParameter.ActualValue; }
     }
-    public IntData NumberOfSolutions {
+    public IntValue NumberOfSolutions {
       get { return NumberOfSolutionsParameter.Value; }
       set { NumberOfSolutionsParameter.Value = value; }
     }
 
     public SolutionsCreator()
       : base() {
-      Parameters.Add(new ValueLookupParameter<IntData>("NumberOfSolutions", "The number of solutions that should be created."));
+      Parameters.Add(new ValueLookupParameter<IntValue>("NumberOfSolutions", "The number of solutions that should be created."));
       Parameters.Add(new ValueLookupParameter<IOperator>("SolutionCreator", "The operator which is used to create new solutions."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Evaluator", "The operator which is used to evaluate new solutions."));
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope to which the new solutions are added as sub-scopes."));

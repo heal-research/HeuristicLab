@@ -25,29 +25,29 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
-  [Item("TimeSpanData", "Represents a duration of time.")]
+  [Item("TimeSpanValue", "Represents a duration of time.")]
   [Creatable("Test")]
   [StorableClass]
-  public sealed class TimeSpanData : ValueTypeData<TimeSpan>, IComparable, IStringConvertibleData {
-    public TimeSpanData() : base() { }
-    public TimeSpanData(TimeSpan value) : base(value) { }
+  public sealed class TimeSpanValue : ValueTypeValue<TimeSpan>, IComparable, IStringConvertibleValue {
+    public TimeSpanValue() : base() { }
+    public TimeSpanValue(TimeSpan value) : base(value) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      TimeSpanData clone = new TimeSpanData(Value);
+      TimeSpanValue clone = new TimeSpanValue(Value);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
 
     public int CompareTo(object obj) {
-      TimeSpanData other = obj as TimeSpanData;
+      TimeSpanValue other = obj as TimeSpanValue;
       if (other != null)
         return Value.CompareTo(other.Value);
       else
         return Value.CompareTo(obj);
     }
 
-    #region IStringConvertibleData Members
-    bool IStringConvertibleData.Validate(string value, out string errorMessage) {
+    #region IStringConvertibleValue Members
+    bool IStringConvertibleValue.Validate(string value, out string errorMessage) {
       TimeSpan val;
       bool valid = TimeSpan.TryParse(value, out val);
       errorMessage = string.Empty;
@@ -60,10 +60,10 @@ namespace HeuristicLab.Data {
       }
       return valid;
     }
-    string IStringConvertibleData.GetValue() {
+    string IStringConvertibleValue.GetValue() {
       return Value.ToString();
     }
-    bool IStringConvertibleData.SetValue(string value) {
+    bool IStringConvertibleValue.SetValue(string value) {
       TimeSpan val;
       if (TimeSpan.TryParse(value, out val)) {
         Value = val;

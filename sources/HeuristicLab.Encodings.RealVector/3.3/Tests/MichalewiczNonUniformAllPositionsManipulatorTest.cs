@@ -84,32 +84,32 @@ namespace HeuristicLab.Encodings.RealVector_33.Tests {
     [TestMethod()]
     public void MichalewiczNonUniformAllPositionsManipulatorApplyTest() {
       TestRandom random = new TestRandom();
-      DoubleArrayData parent, expected;
-      DoubleData min, max, generationsDependency;
-      IntData currentGeneration, maximumGenerations;
+      DoubleArray parent, expected;
+      DoubleValue min, max, generationsDependency;
+      IntValue currentGeneration, maximumGenerations;
       bool exceptionFired;
       // The following test is not based on published examples
       random.Reset();
       random.DoubleNumbers = new double[] { 0.2, 0.5, 0.7, 0.8, 0.9, 0.5, 0.2, 0.5, 0.7, 0.8 };
-      parent = new DoubleArrayData(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
-      expected = new DoubleArrayData(new double[] { 0.45, 0.22, 0.3, 0.6, 0.14 });
-      min = new DoubleData(0.3);
-      max = new DoubleData(0.7);
-      generationsDependency = new DoubleData(0.1);
-      currentGeneration = new IntData(1);
-      maximumGenerations = new IntData(4);
+      parent = new DoubleArray(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
+      expected = new DoubleArray(new double[] { 0.45, 0.22, 0.3, 0.6, 0.14 });
+      min = new DoubleValue(0.3);
+      max = new DoubleValue(0.7);
+      generationsDependency = new DoubleValue(0.1);
+      currentGeneration = new IntValue(1);
+      maximumGenerations = new IntValue(4);
       MichalewiczNonUniformAllPositionsManipulator.Apply(random, parent, min, max, currentGeneration, maximumGenerations, generationsDependency);
       Assert.IsTrue(Auxiliary.RealVectorIsAlmostEqualByPosition(expected, parent));
       // The following test is not based on published examples
       exceptionFired = false;
       random.Reset();
       random.DoubleNumbers = new double[] { 0.2, 0.5, 0.7, 0.8, 0.9, 0.5, 0.2, 0.5, 0.7, 0.8 };
-      parent = new DoubleArrayData(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
-      min = new DoubleData(0.3);
-      max = new DoubleData(0.7);
-      generationsDependency = new DoubleData(0.1);
-      currentGeneration = new IntData(5); //current generation > max generation
-      maximumGenerations = new IntData(4);
+      parent = new DoubleArray(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
+      min = new DoubleValue(0.3);
+      max = new DoubleValue(0.7);
+      generationsDependency = new DoubleValue(0.1);
+      currentGeneration = new IntValue(5); //current generation > max generation
+      maximumGenerations = new IntValue(4);
       try {
         MichalewiczNonUniformAllPositionsManipulator.Apply(random, parent, min, max, currentGeneration, maximumGenerations, generationsDependency);
       }

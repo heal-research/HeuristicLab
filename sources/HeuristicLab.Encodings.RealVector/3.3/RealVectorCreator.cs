@@ -40,26 +40,26 @@ namespace HeuristicLab.Encodings.RealVector {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
-    public ILookupParameter<DoubleArrayData> RealVectorParameter {
-      get { return (ILookupParameter<DoubleArrayData>)Parameters["RealVector"]; }
+    public ILookupParameter<DoubleArray> RealVectorParameter {
+      get { return (ILookupParameter<DoubleArray>)Parameters["RealVector"]; }
     }
-    public IValueLookupParameter<IntData> LengthParameter {
-      get { return (IValueLookupParameter<IntData>)Parameters["Length"]; }
+    public IValueLookupParameter<IntValue> LengthParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters["Length"]; }
     }
-    public IValueLookupParameter<DoubleData> MinimumParameter {
-      get { return (IValueLookupParameter<DoubleData>)Parameters["Minimum"]; }
+    public IValueLookupParameter<DoubleValue> MinimumParameter {
+      get { return (IValueLookupParameter<DoubleValue>)Parameters["Minimum"]; }
     }
-    public IValueLookupParameter<DoubleData> MaximumParameter {
-      get { return (IValueLookupParameter<DoubleData>)Parameters["Maximum"]; }
+    public IValueLookupParameter<DoubleValue> MaximumParameter {
+      get { return (IValueLookupParameter<DoubleValue>)Parameters["Maximum"]; }
     }
 
     protected RealVectorCreator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
-      Parameters.Add(new LookupParameter<DoubleArrayData>("RealVector", "The vector which should be manipulated."));
-      Parameters.Add(new ValueLookupParameter<IntData>("Length", "The length of the vector."));
-      Parameters.Add(new ValueLookupParameter<DoubleData>("Minimum", "The lower bound for each element in the vector."));
-      Parameters.Add(new ValueLookupParameter<DoubleData>("Maximum", "The upper bound for each element in the vector."));
+      Parameters.Add(new LookupParameter<DoubleArray>("RealVector", "The vector which should be manipulated."));
+      Parameters.Add(new ValueLookupParameter<IntValue>("Length", "The length of the vector."));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("Minimum", "The lower bound for each element in the vector."));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("Maximum", "The upper bound for each element in the vector."));
     }
 
     public sealed override IOperation Apply() {
@@ -67,6 +67,6 @@ namespace HeuristicLab.Encodings.RealVector {
       return base.Apply();
     }
 
-    protected abstract DoubleArrayData Create(IRandom random, IntData length, DoubleData minimum, DoubleData maximum);
+    protected abstract DoubleArray Create(IRandom random, IntValue length, DoubleValue minimum, DoubleValue maximum);
   }
 }

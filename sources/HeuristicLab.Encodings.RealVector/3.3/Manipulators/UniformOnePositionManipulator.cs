@@ -38,14 +38,14 @@ namespace HeuristicLab.Encodings.RealVector {
     /// <summary>
     /// The lower bound of the values in the real vector.
     /// </summary>
-    public ValueLookupParameter<DoubleData> MinimumParameter {
-      get { return (ValueLookupParameter<DoubleData>)Parameters["Minimum"]; }
+    public ValueLookupParameter<DoubleValue> MinimumParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["Minimum"]; }
     }
     /// <summary>
     /// The upper bound of the values in the real vector.
     /// </summary>
-    public ValueLookupParameter<DoubleData> MaximumParameter {
-      get { return (ValueLookupParameter<DoubleData>)Parameters["Maximum"]; }
+    public ValueLookupParameter<DoubleValue> MaximumParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["Maximum"]; }
     }
 
     /// <summary>
@@ -53,8 +53,8 @@ namespace HeuristicLab.Encodings.RealVector {
     /// (<c>Minimum</c> and <c>Maximum</c>).
     /// </summary>
     public UniformOnePositionManipulator() {
-      Parameters.Add(new ValueLookupParameter<DoubleData>("Minimum", "Minimum of the sampling range for the vector element (included)"));
-      Parameters.Add(new ValueLookupParameter<DoubleData>("Maximum", "Maximum of the sampling range for the vector element (excluded)"));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("Minimum", "Minimum of the sampling range for the vector element (included)"));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("Maximum", "Maximum of the sampling range for the vector element (excluded)"));
     }
 
     /// <summary>
@@ -66,17 +66,17 @@ namespace HeuristicLab.Encodings.RealVector {
     /// the vector element to change (inclusive).</param>
     /// <param name="max">The maximum value of the sampling range for
     /// the vector element to change (exclusive).</param>
-    public static void Apply(IRandom random, DoubleArrayData vector, DoubleData min, DoubleData max) {
+    public static void Apply(IRandom random, DoubleArray vector, DoubleValue min, DoubleValue max) {
       int index = random.Next(vector.Length);
       vector[index] = min.Value + random.NextDouble() * (max.Value - min.Value);
     }
 
     /// <summary>
-    /// Checks if the minimum and maximum parameters are available and forwards the call to <see cref="Apply(IRandom, DoubleArrayData, DoubleData, DoubleData)"/>.
+    /// Checks if the minimum and maximum parameters are available and forwards the call to <see cref="Apply(IRandom, DoubleArray, DoubleValue, DoubleValue)"/>.
     /// </summary>
     /// <param name="random">The random number generator to use.</param>
     /// <param name="realVector">The real vector to manipulate.</param>
-    protected override void Manipulate(IRandom random, DoubleArrayData realVector) {
+    protected override void Manipulate(IRandom random, DoubleArray realVector) {
       if (MinimumParameter.ActualValue == null) throw new InvalidOperationException("UniformOnePositionManipulator: Parameter " + MinimumParameter.ActualName + " could not be found.");
       if (MaximumParameter.ActualValue == null) throw new InvalidOperationException("UniformOnePositionManipulator: Parameter " + MaximumParameter.ActualName + " could not be found.");
       Apply(random, realVector, MinimumParameter.ActualValue, MaximumParameter.ActualValue);

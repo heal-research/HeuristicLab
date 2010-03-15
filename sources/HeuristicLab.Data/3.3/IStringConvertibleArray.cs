@@ -23,7 +23,7 @@ using System;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Data {
-  public interface IStringConvertibleArrayData {
+  public interface IStringConvertibleArray {
     int Length { get; set; }
 
     bool Validate(string value, out string errorMessage);

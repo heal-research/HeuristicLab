@@ -24,32 +24,32 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
-  [Item("IntMatrixData", "Represents a matrix of integer values.")]
+  [Item("IntMatrix", "Represents a matrix of integer values.")]
   [Creatable("Test")]
   [StorableClass]
-  public sealed class IntMatrixData : ValueTypeMatrixData<int>, IStringConvertibleMatrixData {
-    public IntMatrixData() : base() { }
-    public IntMatrixData(int rows, int columns) : base(rows, columns) { }
-    public IntMatrixData(int[,] elements) : base(elements) { }
-    private IntMatrixData(IntMatrixData elements) : base(elements) { }
+  public sealed class IntMatrix : ValueTypeMatrix<int>, IStringConvertibleMatrix {
+    public IntMatrix() : base() { }
+    public IntMatrix(int rows, int columns) : base(rows, columns) { }
+    public IntMatrix(int[,] elements) : base(elements) { }
+    private IntMatrix(IntMatrix elements) : base(elements) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      IntMatrixData clone = new IntMatrixData(this);
+      IntMatrix clone = new IntMatrix(this);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
 
-    #region IStringConvertibleMatrixData Members
-    int IStringConvertibleMatrixData.Rows {
+    #region IStringConvertibleMatrix Members
+    int IStringConvertibleMatrix.Rows {
       get { return Rows; }
       set { Rows = value; }
     }
-    int IStringConvertibleMatrixData.Columns {
+    int IStringConvertibleMatrix.Columns {
       get { return Columns; }
       set { Columns = value; }
     }
 
-    bool IStringConvertibleMatrixData.Validate(string value, out string errorMessage) {
+    bool IStringConvertibleMatrix.Validate(string value, out string errorMessage) {
       int val;
       bool valid = int.TryParse(value, out val);
       errorMessage = string.Empty;
@@ -62,10 +62,10 @@ namespace HeuristicLab.Data {
       }
       return valid;
     }
-    string IStringConvertibleMatrixData.GetValue(int rowIndex, int columIndex) {
+    string IStringConvertibleMatrix.GetValue(int rowIndex, int columIndex) {
       return this[rowIndex, columIndex].ToString();
     }
-    bool IStringConvertibleMatrixData.SetValue(string value, int rowIndex, int columnIndex) {
+    bool IStringConvertibleMatrix.SetValue(string value, int rowIndex, int columnIndex) {
       int val;
       if (int.TryParse(value, out val)) {
         this[rowIndex, columnIndex] = val;

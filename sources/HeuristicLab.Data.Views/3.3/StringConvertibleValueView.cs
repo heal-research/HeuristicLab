@@ -26,21 +26,21 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Data.Views {
-  [View("StringConvertibleData View")]
-  [Content(typeof(IStringConvertibleData), true)]
-  public partial class StringConvertibleDataView : ContentView {
-    public new IStringConvertibleData Content {
-      get { return (IStringConvertibleData)base.Content; }
+  [View("StringConvertibleValue View")]
+  [Content(typeof(IStringConvertibleValue), true)]
+  public partial class StringConvertibleValueView : ContentView {
+    public new IStringConvertibleValue Content {
+      get { return (IStringConvertibleValue)base.Content; }
       set { base.Content = value; }
     }
 
-    public StringConvertibleDataView() {
+    public StringConvertibleValueView() {
       InitializeComponent();
-      Caption = "StringConvertibleData View";
+      Caption = "StringConvertibleValue View";
       errorProvider.SetIconAlignment(valueTextBox, ErrorIconAlignment.MiddleLeft);
       errorProvider.SetIconPadding(valueTextBox, 2);
     }
-    public StringConvertibleDataView(IStringConvertibleData content)
+    public StringConvertibleValueView(IStringConvertibleValue content)
       : this() {
       Content = content;
     }
@@ -58,7 +58,7 @@ namespace HeuristicLab.Data.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        Caption = "StringConvertibleData View";
+        Caption = "StringConvertibleValue View";
         valueTextBox.Text = string.Empty;
         valueTextBox.Enabled = false;
       } else {

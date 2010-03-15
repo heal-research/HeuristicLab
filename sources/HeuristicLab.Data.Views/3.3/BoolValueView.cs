@@ -25,19 +25,19 @@ using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Data.Views {
-  [View("BoolData View")]
-  [Content(typeof(BoolData), true)]
-  public partial class BoolDataView : ItemView {
-    public new BoolData Content {
-      get { return (BoolData)base.Content; }
+  [View("BoolValue View")]
+  [Content(typeof(BoolValue), true)]
+  public partial class BoolValueView : ItemView {
+    public new BoolValue Content {
+      get { return (BoolValue)base.Content; }
       set { base.Content = value; }
     }
 
-    public BoolDataView() {
+    public BoolValueView() {
       InitializeComponent();
-      Caption = "BoolData View";
+      Caption = "BoolValue View";
     }
-    public BoolDataView(BoolData content)
+    public BoolValueView(BoolValue content)
       : this() {
       Content = content;
     }
@@ -55,7 +55,7 @@ namespace HeuristicLab.Data.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        Caption = "BoolData View";
+        Caption = "BoolValue View";
         valueCheckBox.Checked = false;
         valueCheckBox.Enabled = false;
       } else {

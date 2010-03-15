@@ -41,14 +41,14 @@ namespace HeuristicLab.Encodings.IntVector {
     /// <summary>
     /// The lower bound of the values in the int vector.
     /// </summary>
-    public ValueLookupParameter<IntData> MinimumParameter {
-      get { return (ValueLookupParameter<IntData>)Parameters["Minimum"]; }
+    public ValueLookupParameter<IntValue> MinimumParameter {
+      get { return (ValueLookupParameter<IntValue>)Parameters["Minimum"]; }
     }
     /// <summary>
     /// The upper bound of the values in the int vector.
     /// </summary>
-    public ValueLookupParameter<IntData> MaximumParameter {
-      get { return (ValueLookupParameter<IntData>)Parameters["Maximum"]; }
+    public ValueLookupParameter<IntValue> MaximumParameter {
+      get { return (ValueLookupParameter<IntValue>)Parameters["Maximum"]; }
     }
 
     /// <summary>
@@ -56,8 +56,8 @@ namespace HeuristicLab.Encodings.IntVector {
     /// (<c>Minimum</c> and <c>Maximum</c>).
     /// </summary>
     public UniformOnePositionManipulator() {
-      Parameters.Add(new ValueLookupParameter<IntData>("Minimum", "Minimum of the sampling range for the vector element (included)"));
-      Parameters.Add(new ValueLookupParameter<IntData>("Maximum", "Maximum of the sampling range for the vector element (excluded)"));
+      Parameters.Add(new ValueLookupParameter<IntValue>("Minimum", "Minimum of the sampling range for the vector element (included)"));
+      Parameters.Add(new ValueLookupParameter<IntValue>("Maximum", "Maximum of the sampling range for the vector element (excluded)"));
     }
 
     /// <summary>
@@ -69,7 +69,7 @@ namespace HeuristicLab.Encodings.IntVector {
     /// the vector element to change (inclusive).</param>
     /// <param name="max">The maximum value of the sampling range for
     /// the vector element to change (exclusive).</param>
-    public static void Apply(IRandom random, IntArrayData vector, IntData min, IntData max) {
+    public static void Apply(IRandom random, IntArray vector, IntValue min, IntValue max) {
       int index = random.Next(vector.Length);
       vector[index] = random.Next(min.Value, max.Value);
     }
@@ -80,7 +80,7 @@ namespace HeuristicLab.Encodings.IntVector {
     /// <remarks>Calls <see cref="Apply"/>.</remarks>
     /// <param name="random">A random number generator.</param>
     /// <param name="vector">The integer vector to manipulate.</param>
-    protected override void Manipulate(IRandom random, IntArrayData vector) {
+    protected override void Manipulate(IRandom random, IntArray vector) {
       if (MinimumParameter.ActualValue == null) throw new InvalidOperationException("UniformOnePositionManipulator: Parameter " + MinimumParameter.ActualName + " could not be found.");
       if (MaximumParameter.ActualValue == null) throw new InvalidOperationException("UniformOnePositionManipulator: Parameter " + MaximumParameter.ActualName + " could not be found.");
       Apply(random, vector, MinimumParameter.ActualValue, MaximumParameter.ActualValue);

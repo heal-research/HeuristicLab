@@ -221,7 +221,7 @@ namespace HeuristicLab.Operators.Programmable {
       typeof(System.Text.StringBuilder).Assembly,
       typeof(System.Data.Linq.DataContext).Assembly,
       typeof(HeuristicLab.Core.Item).Assembly,
-      typeof(HeuristicLab.Data.IntData).Assembly,
+      typeof(HeuristicLab.Data.IntValue).Assembly,
     };
 
     protected static Dictionary<Assembly, bool> DiscoverAssemblies() {

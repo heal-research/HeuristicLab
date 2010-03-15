@@ -41,35 +41,35 @@ namespace HeuristicLab.Algorithms.TS {
     /// <summary>
     /// The best found quality so far.
     /// </summary>
-    public LookupParameter<DoubleData> BestQualityParameter {
-      get { return (LookupParameter<DoubleData>)Parameters["BestQuality"]; }
+    public LookupParameter<DoubleValue> BestQualityParameter {
+      get { return (LookupParameter<DoubleValue>)Parameters["BestQuality"]; }
     }
     /// <summary>
     /// Whether to use the default aspiration criteria or not.
     /// </summary>
-    public ValueLookupParameter<BoolData> AspirationParameter {
-      get { return (ValueLookupParameter<BoolData>)Parameters["Aspiration"]; }
+    public ValueLookupParameter<BoolValue> AspirationParameter {
+      get { return (ValueLookupParameter<BoolValue>)Parameters["Aspiration"]; }
     }
     /// <summary>
     /// Whether the problem is a maximization problem or not.
     /// </summary>
-    public IValueLookupParameter<BoolData> MaximizationParameter {
-      get { return (IValueLookupParameter<BoolData>)Parameters["Maximization"]; }
+    public IValueLookupParameter<BoolValue> MaximizationParameter {
+      get { return (IValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
     /// <summary>
     /// The parameter for the move qualities.
     /// </summary>
-    public ILookupParameter<ItemArray<DoubleData>> MoveQualityParameter {
-      get { return (ILookupParameter<ItemArray<DoubleData>>)Parameters["MoveQuality"]; }
+    public ILookupParameter<ItemArray<DoubleValue>> MoveQualityParameter {
+      get { return (ILookupParameter<ItemArray<DoubleValue>>)Parameters["MoveQuality"]; }
     }
     /// <summary>
     /// The parameter for the tabu status of the moves.
     /// </summary>
-    public ILookupParameter<ItemArray<BoolData>> MoveTabuParameter {
-      get { return (ILookupParameter<ItemArray<BoolData>>)Parameters["MoveTabu"]; }
+    public ILookupParameter<ItemArray<BoolValue>> MoveTabuParameter {
+      get { return (ILookupParameter<ItemArray<BoolValue>>)Parameters["MoveTabu"]; }
     }
 
-    public IntData NumberOfSelectedSubScopes {
+    public IntValue NumberOfSelectedSubScopes {
       set { NumberOfSelectedSubScopesParameter.Value = value; }
     }
 
@@ -79,11 +79,11 @@ namespace HeuristicLab.Algorithms.TS {
     /// </summary>
     public TabuSelector()
       : base() {
-      Parameters.Add(new LookupParameter<DoubleData>("BestQuality", "The best found quality so far."));
-      Parameters.Add(new ValueLookupParameter<BoolData>("Aspiration", "Whether the default aspiration criterion should be used or not. The default aspiration criterion accepts a tabu move if it results in a better solution than the best solution found so far.", new BoolData(true)));
-      Parameters.Add(new ValueLookupParameter<BoolData>("Maximization", "Whether the problem is a maximization or minimization problem (used to decide whether a solution is better"));
-      Parameters.Add(new SubScopesLookupParameter<DoubleData>("MoveQuality", "The quality of the move."));
-      Parameters.Add(new SubScopesLookupParameter<BoolData>("MoveTabu", "The tabu status of the move."));
+      Parameters.Add(new LookupParameter<DoubleValue>("BestQuality", "The best found quality so far."));
+      Parameters.Add(new ValueLookupParameter<BoolValue>("Aspiration", "Whether the default aspiration criterion should be used or not. The default aspiration criterion accepts a tabu move if it results in a better solution than the best solution found so far.", new BoolValue(true)));
+      Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "Whether the problem is a maximization or minimization problem (used to decide whether a solution is better"));
+      Parameters.Add(new SubScopesLookupParameter<DoubleValue>("MoveQuality", "The quality of the move."));
+      Parameters.Add(new SubScopesLookupParameter<BoolValue>("MoveTabu", "The tabu status of the move."));
     }
 
     /// <summary>
@@ -98,8 +98,8 @@ namespace HeuristicLab.Algorithms.TS {
       bool aspiration = AspirationParameter.ActualValue.Value;
       bool maximization = MaximizationParameter.ActualValue.Value;
       double bestQuality = BestQualityParameter.ActualValue.Value;
-      ItemArray<DoubleData> moveQualities = MoveQualityParameter.ActualValue;
-      ItemArray<BoolData> moveTabus = MoveTabuParameter.ActualValue;
+      ItemArray<DoubleValue> moveQualities = MoveQualityParameter.ActualValue;
+      ItemArray<BoolValue> moveTabus = MoveTabuParameter.ActualValue;
 
       IScope[] selected = new IScope[count];
 

@@ -50,10 +50,10 @@ namespace HeuristicLab.Encodings.RealVector {
     /// <param name="min">The minimum value of the sampling range for each vector element (inclusive).</param>
     /// <param name="max">The maximum value of the sampling range for each vector element (exclusive).</param>
     /// <returns>The newly created real vector.</returns>
-    public static DoubleArrayData Apply(IRandom random, int length, double min, double max) {
+    public static DoubleArray Apply(IRandom random, int length, double min, double max) {
       if (length <= 0) throw new ArgumentException("UniformRandomRealVectorCreator: Length is smaller or equal to 0.", "length");
       if (min > max) throw new ArgumentException("UniformRandomRealVectorCreator: Minimum is greater than Maximum.", "min");
-      DoubleArrayData result = new DoubleArrayData(length);
+      DoubleArray result = new DoubleArray(length);
       for (int i = 0; i < length; i++)
         result[i] = min + random.NextDouble() * (max - min);
       return result;
@@ -67,7 +67,7 @@ namespace HeuristicLab.Encodings.RealVector {
     /// <param name="minimum">The minimum value of the sampling range for each vector element (inclusive).</param>
     /// <param name="maximum">The maximum value of the sampling range for each vector element (exclusive).</param>
     /// <returns>The newly created real vector.</returns>
-    protected override DoubleArrayData Create(IRandom random, IntData length, DoubleData minimum, DoubleData maximum) {
+    protected override DoubleArray Create(IRandom random, IntValue length, DoubleValue minimum, DoubleValue maximum) {
       return Apply(random, length.Value, minimum.Value, maximum.Value);
     }
   }

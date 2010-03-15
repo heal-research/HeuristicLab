@@ -24,21 +24,21 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
-  [Item("ComparisonData", "Represents a comparison.")]
+  [Item("Comparison", "Represents a comparison.")]
   [Creatable("Test")]
   [StorableClass]
-  public sealed class ComparisonData : ValueTypeData<Comparison>, IComparable {
-    public ComparisonData() : base() { }
-    public ComparisonData(Comparison value) : base(value) { }
+  public sealed class Comparison : ValueTypeValue<ComparisonType>, IComparable {
+    public Comparison() : base() { }
+    public Comparison(ComparisonType value) : base(value) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      ComparisonData clone = new ComparisonData(Value);
+      Comparison clone = new Comparison(Value);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
 
     public int CompareTo(object obj) {
-      ComparisonData other = obj as ComparisonData;
+      Comparison other = obj as Comparison;
       if (other != null)
         return Value.CompareTo(other.Value);
       else

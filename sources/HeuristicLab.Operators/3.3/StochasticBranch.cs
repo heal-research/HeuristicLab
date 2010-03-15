@@ -35,8 +35,8 @@ namespace HeuristicLab.Operators {
     public LookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
-    public ValueLookupParameter<DoubleData> ProbabilityParameter {
-      get { return (ValueLookupParameter<DoubleData>)Parameters["Probability"]; }
+    public ValueLookupParameter<DoubleValue> ProbabilityParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["Probability"]; }
     }
     protected OperatorParameter FirstBranchParameter {
       get { return (OperatorParameter)Parameters["FirstBranch"]; }
@@ -56,7 +56,7 @@ namespace HeuristicLab.Operators {
     public StochasticBranch()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "A pseudo random number generator."));
-      Parameters.Add(new ValueLookupParameter<DoubleData>("Probability", "The probability to execute the first branch."));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("Probability", "The probability to execute the first branch."));
       Parameters.Add(new OperatorParameter("FirstBranch", "The operator which is executed with the given probability."));
       Parameters.Add(new OperatorParameter("SecondBranch", "The operator which is executed if the first branch is not executed."));
     }

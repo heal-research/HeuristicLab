@@ -32,8 +32,8 @@ namespace HeuristicLab.Operators {
   [StorableClass]
   [Creatable("Test")]
   public class SubScopesCreator : SingleSuccessorOperator {
-    public ValueLookupParameter<IntData> NumberOfSubScopesParameter {
-      get { return (ValueLookupParameter<IntData>)Parameters["NumberOfSubScopes"]; }
+    public ValueLookupParameter<IntValue> NumberOfSubScopesParameter {
+      get { return (ValueLookupParameter<IntValue>)Parameters["NumberOfSubScopes"]; }
     }
     protected ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
@@ -44,7 +44,7 @@ namespace HeuristicLab.Operators {
 
     public SubScopesCreator()
       : base() {
-      Parameters.Add(new ValueLookupParameter<IntData>("NumberOfSubScopes", "The number of new and empty sub-scopes which should be added to the current scope."));
+      Parameters.Add(new ValueLookupParameter<IntValue>("NumberOfSubScopes", "The number of new and empty sub-scopes which should be added to the current scope."));
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope to which the new and empty sub-scopes are added."));
     }
 

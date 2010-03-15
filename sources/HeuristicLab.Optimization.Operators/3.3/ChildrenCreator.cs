@@ -42,13 +42,13 @@ namespace HeuristicLab.Optimization.Operators {
     private ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
     }
-    public ValueLookupParameter<IntData> ParentsPerChildParameter {
-      get { return (ValueLookupParameter<IntData>)Parameters["ParentsPerChild"]; }
+    public ValueLookupParameter<IntValue> ParentsPerChildParameter {
+      get { return (ValueLookupParameter<IntValue>)Parameters["ParentsPerChild"]; }
     }
     public IScope CurrentScope {
       get { return CurrentScopeParameter.ActualValue; }
     }
-    public IntData ParentsPerChild {
+    public IntValue ParentsPerChild {
       get { return ParentsPerChildParameter.Value; }
       set { ParentsPerChildParameter.Value = value; }
     }
@@ -56,7 +56,7 @@ namespace HeuristicLab.Optimization.Operators {
     public ChildrenCreator()
       : base() {
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope whose sub-scopes represent the parents."));
-      Parameters.Add(new ValueLookupParameter<IntData>("ParentsPerChild", "The number of parents that should be crossed per child. Note that some of the typical crossover operators require exactly two parents.", new IntData(2)));
+      Parameters.Add(new ValueLookupParameter<IntValue>("ParentsPerChild", "The number of parents that should be crossed per child. Note that some of the typical crossover operators require exactly two parents.", new IntValue(2)));
     }
 
     public override IOperation Apply() {

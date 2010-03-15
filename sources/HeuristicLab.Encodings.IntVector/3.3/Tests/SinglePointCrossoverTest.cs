@@ -67,15 +67,15 @@ namespace HeuristicLab.Encodings.IntVector_33.Tests {
     [DeploymentItem("HeuristicLab.Encodings.IntVector-3.3.dll")]
     public void SinglePointCrossoverCrossTest() {
       SinglePointCrossover_Accessor target = new SinglePointCrossover_Accessor(new PrivateObject(typeof(SinglePointCrossover)));
-      ItemArray<IntArrayData> parents;
+      ItemArray<IntArray> parents;
       TestRandom random = new TestRandom();
       bool exceptionFired;
       // The following test checks if there is an exception when there are more than 2 parents
       random.Reset();
-      parents = new ItemArray<IntArrayData>(new IntArrayData[] { new IntArrayData(5), new IntArrayData(6), new IntArrayData(4) });
+      parents = new ItemArray<IntArray>(new IntArray[] { new IntArray(5), new IntArray(6), new IntArray(4) });
       exceptionFired = false;
       try {
-        IntArrayData actual;
+        IntArray actual;
         actual = target.Cross(random, parents);
       }
       catch (System.ArgumentException) {
@@ -84,10 +84,10 @@ namespace HeuristicLab.Encodings.IntVector_33.Tests {
       Assert.IsTrue(exceptionFired);
       // The following test checks if there is an exception when there are less than 2 parents
       random.Reset();
-      parents = new ItemArray<IntArrayData>(new IntArrayData[] { new IntArrayData(4) });
+      parents = new ItemArray<IntArray>(new IntArray[] { new IntArray(4) });
       exceptionFired = false;
       try {
-        IntArrayData actual;
+        IntArray actual;
         actual = target.Cross(random, parents);
       } catch (System.ArgumentException) {
         exceptionFired = true;
@@ -101,21 +101,21 @@ namespace HeuristicLab.Encodings.IntVector_33.Tests {
     [TestMethod()]
     public void SinglePointCrossoverApplyTest() {
       TestRandom random = new TestRandom();
-      IntArrayData parent1, parent2, expected, actual;
+      IntArray parent1, parent2, expected, actual;
       bool exceptionFired;
       // The following test is not based on published examples
       random.Reset();
       random.IntNumbers = new int[] { 3 };
-      parent1 = new IntArrayData(new int[] { 2, 2, 3, 5, 1 });
-      parent2 = new IntArrayData(new int[] { 4, 1, 3, 2, 8 });
-      expected = new IntArrayData(new int[] { 2, 2, 3, 2, 8 });
+      parent1 = new IntArray(new int[] { 2, 2, 3, 5, 1 });
+      parent2 = new IntArray(new int[] { 4, 1, 3, 2, 8 });
+      expected = new IntArray(new int[] { 2, 2, 3, 2, 8 });
       actual = SinglePointCrossover.Apply(random, parent1, parent2);
       Assert.IsTrue(Auxiliary.IntVectorIsEqualByPosition(actual, expected));
       // The following test is not based on published examples
       random.Reset();
       random.IntNumbers = new int[] { 2 };
-      parent1 = new IntArrayData(new int[] { 2, 2, 3, 5, 1, 9 }); // this parent is longer
-      parent2 = new IntArrayData(new int[] { 4, 1, 3, 2, 8 });
+      parent1 = new IntArray(new int[] { 2, 2, 3, 5, 1, 9 }); // this parent is longer
+      parent2 = new IntArray(new int[] { 4, 1, 3, 2, 8 });
       exceptionFired = false;
       try {
         actual = SinglePointCrossover.Apply(random, parent1, parent2);

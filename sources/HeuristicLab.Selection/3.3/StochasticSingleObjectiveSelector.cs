@@ -32,17 +32,17 @@ namespace HeuristicLab.Selection {
   [Item("StochasticSingleObjectiveSelector", "A base class for stochastic selection operators which consider a single double quality value for selection.")]
   [StorableClass]
   public abstract class StochasticSingleObjectiveSelector : StochasticSelector, ISingleObjectiveSelector {
-    public IValueLookupParameter<BoolData> MaximizationParameter {
-      get { return (IValueLookupParameter<BoolData>)Parameters["Maximization"]; }
+    public IValueLookupParameter<BoolValue> MaximizationParameter {
+      get { return (IValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
-    public ILookupParameter<ItemArray<DoubleData>> QualityParameter {
-      get { return (ILookupParameter<ItemArray<DoubleData>>)Parameters["Quality"]; }
+    public ILookupParameter<ItemArray<DoubleValue>> QualityParameter {
+      get { return (ILookupParameter<ItemArray<DoubleValue>>)Parameters["Quality"]; }
     }
 
     protected StochasticSingleObjectiveSelector()
       : base() {
-      Parameters.Add(new ValueLookupParameter<BoolData>("Maximization", "True if the current problem is a maximization problem, otherwise false."));
-      Parameters.Add(new SubScopesLookupParameter<DoubleData>("Quality", "The quality value contained in each sub-scope which is used for selection."));
+      Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the current problem is a maximization problem, otherwise false."));
+      Parameters.Add(new SubScopesLookupParameter<DoubleValue>("Quality", "The quality value contained in each sub-scope which is used for selection."));
     }
   }
 }

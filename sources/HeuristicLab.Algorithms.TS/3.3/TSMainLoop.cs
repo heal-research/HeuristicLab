@@ -38,17 +38,17 @@ namespace HeuristicLab.Algorithms.TS {
     public ValueLookupParameter<IRandom> RandomParameter {
       get { return (ValueLookupParameter<IRandom>)Parameters["Random"]; }
     }
-    public ValueLookupParameter<BoolData> MaximizationParameter {
-      get { return (ValueLookupParameter<BoolData>)Parameters["Maximization"]; }
+    public ValueLookupParameter<BoolValue> MaximizationParameter {
+      get { return (ValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
-    public SubScopesLookupParameter<DoubleData> QualityParameter {
-      get { return (SubScopesLookupParameter<DoubleData>)Parameters["Quality"]; }
+    public SubScopesLookupParameter<DoubleValue> QualityParameter {
+      get { return (SubScopesLookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
-    public ValueLookupParameter<IntData> MaximumIterationsParameter {
-      get { return (ValueLookupParameter<IntData>)Parameters["MaximumIterations"]; }
+    public ValueLookupParameter<IntValue> MaximumIterationsParameter {
+      get { return (ValueLookupParameter<IntValue>)Parameters["MaximumIterations"]; }
     }
-    public ValueLookupParameter<IntData> TabuTenureParameter {
-      get { return (ValueLookupParameter<IntData>)Parameters["TabuTenure"]; }
+    public ValueLookupParameter<IntValue> TabuTenureParameter {
+      get { return (ValueLookupParameter<IntValue>)Parameters["TabuTenure"]; }
     }
     public ValueLookupParameter<VariableCollection> ResultsParameter {
       get { return (ValueLookupParameter<VariableCollection>)Parameters["Results"]; }
@@ -84,10 +84,10 @@ namespace HeuristicLab.Algorithms.TS {
       : base() {
       #region Create parameters
       Parameters.Add(new ValueLookupParameter<IRandom>("Random", "A pseudo random number generator."));
-      Parameters.Add(new ValueLookupParameter<BoolData>("Maximization", "True if the problem is a maximization problem, otherwise false."));
-      Parameters.Add(new SubScopesLookupParameter<DoubleData>("Quality", "The value which represents the quality of a solution."));
-      Parameters.Add(new ValueLookupParameter<IntData>("MaximumIterations", "The maximum number of generations which should be processed."));
-      Parameters.Add(new ValueLookupParameter<IntData>("TabuTenure", "The length of the tabu list, and also means the number of iterations a move is kept tabu"));
+      Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, otherwise false."));
+      Parameters.Add(new SubScopesLookupParameter<DoubleValue>("Quality", "The value which represents the quality of a solution."));
+      Parameters.Add(new ValueLookupParameter<IntValue>("MaximumIterations", "The maximum number of generations which should be processed."));
+      Parameters.Add(new ValueLookupParameter<IntValue>("TabuTenure", "The length of the tabu list, and also means the number of iterations a move is kept tabu"));
       Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The variable collection where results should be stored."));
 
       Parameters.Add(new ValueLookupParameter<IOperator>("MoveGenerator", "The operator that generates the moves."));
@@ -123,17 +123,17 @@ namespace HeuristicLab.Algorithms.TS {
       ConditionalBranch iterationsTermination = new ConditionalBranch();
       EmptyOperator finished = new EmptyOperator();
 
-      variableCreator.CollectedValues.Add(new ValueParameter<IntData>("Iterations", new IntData(0)));
-      variableCreator.CollectedValues.Add(new ValueParameter<DoubleData>("Best Move Quality", new DoubleData(0)));
-      variableCreator.CollectedValues.Add(new ValueParameter<DoubleData>("Average Move Quality", new DoubleData(0)));
-      variableCreator.CollectedValues.Add(new ValueParameter<DoubleData>("Worst Move Quality", new DoubleData(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Iterations", new IntValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("Best Move Quality", new DoubleValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("Average Move Quality", new DoubleValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("Worst Move Quality", new DoubleValue(0)));
       variableCreator.CollectedValues.Add(new ValueParameter<DataTable>("MoveQualities", new DataTable("MoveQualities")));
 
-      resultsCollector.CollectedValues.Add(new LookupParameter<IntData>("Iterations"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleData>("Best Quality") { ActualName = "BestQuality" });
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleData>("Best Move Quality"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleData>("Average Move Quality"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleData>("Worst Move Quality"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Iterations"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality") { ActualName = "BestQuality" });
+      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Move Quality"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Average Move Quality"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Worst Move Quality"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DataTable>("MoveQualities"));
       resultsCollector.ResultsParameter.ActualName = "Results";
 
@@ -157,7 +157,7 @@ namespace HeuristicLab.Algorithms.TS {
       bestAverageWorstMoveQualityCalculator.QualityParameter.ActualName = "MoveQuality";
       bestAverageWorstMoveQualityCalculator.WorstQualityParameter.ActualName = "Worst Move Quality";
 
-      tabuSelector.NumberOfSelectedSubScopes = new IntData(1);
+      tabuSelector.NumberOfSelectedSubScopes = new IntValue(1);
 
       moveMakingProcessor.Name = "MoveMaking processor (UniformSequentialSubScopesProcessor)";
 
@@ -167,19 +167,19 @@ namespace HeuristicLab.Algorithms.TS {
       moveMaker.Name = "MoveMaker (placeholder)";
       moveMaker.OperatorParameter.ActualName = "MoveMaker";
 
-      valuesCollector.CollectedValues.Add(new LookupParameter<DoubleData>("Best Move Quality"));
-      valuesCollector.CollectedValues.Add(new LookupParameter<DoubleData>("Average Move Quality"));
-      valuesCollector.CollectedValues.Add(new LookupParameter<DoubleData>("Worst Move Quality"));
+      valuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Move Quality"));
+      valuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Average Move Quality"));
+      valuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Worst Move Quality"));
       valuesCollector.DataTableParameter.ActualName = "MoveQualities";
 
       subScopesRemover.RemoveAllSubScopes = true;
 
       iterationsCounter.Name = "Iterations Counter";
-      iterationsCounter.Increment = new IntData(1);
+      iterationsCounter.Increment = new IntValue(1);
       iterationsCounter.ValueParameter.ActualName = "Iterations";
 
       iterationsComparator.Name = "Iterations Comparator";
-      iterationsComparator.Comparison = new ComparisonData(Comparison.Less);
+      iterationsComparator.Comparison = new Comparison(ComparisonType.Less);
       iterationsComparator.LeftSideParameter.ActualName = "Iterations";
       iterationsComparator.RightSideParameter.ActualName = "MaximumIterations";
       iterationsComparator.ResultParameter.ActualName = "IterationsCondition";

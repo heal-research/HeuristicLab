@@ -41,8 +41,8 @@ namespace HeuristicLab.Encodings.RealVector {
     /// <summary>
     /// Parameter for the strategy vector.
     /// </summary>
-    public LookupParameter<DoubleArrayData> StrategyVectorParameter {
-      get { return (LookupParameter<DoubleArrayData>)Parameters["StrategyVector"]; }
+    public LookupParameter<DoubleArray> StrategyVectorParameter {
+      get { return (LookupParameter<DoubleArray>)Parameters["StrategyVector"]; }
     }
     /// <summary>
     /// Initializes a new instance of <see cref="SelfAdaptiveNormalAllPositionsManipulator"/> with one
@@ -50,7 +50,7 @@ namespace HeuristicLab.Encodings.RealVector {
     /// </summary>
     public SelfAdaptiveNormalAllPositionsManipulator()
       : base() {
-      Parameters.Add(new LookupParameter<DoubleArrayData>("StrategyVector", "The vector containing the endogenous strategy parameters."));
+      Parameters.Add(new LookupParameter<DoubleArray>("StrategyVector", "The vector containing the endogenous strategy parameters."));
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ namespace HeuristicLab.Encodings.RealVector {
     /// <param name="random">A random number generator.</param>
     /// <param name="vector">The real vector to manipulate.</param>
     /// <returns>The manipulated real vector.</returns>
-    public static void Apply(IRandom random, DoubleArrayData vector, DoubleArrayData strategyParameters) {
+    public static void Apply(IRandom random, DoubleArray vector, DoubleArray strategyParameters) {
       NormalDistributedRandom N = new NormalDistributedRandom(random, 0.0, 1.0);
       for (int i = 0; i < vector.Length; i++) {
         vector[i] = vector[i] + (N.NextDouble() * strategyParameters[i % strategyParameters.Length]);
@@ -71,11 +71,11 @@ namespace HeuristicLab.Encodings.RealVector {
     }
 
     /// <summary>
-    /// Checks that the strategy vector is not null and forwards the call to <see cref="Apply(IRandom, DoubleArrayData, DoubleArrayData)"/>.
+    /// Checks that the strategy vector is not null and forwards the call to <see cref="Apply(IRandom, DoubleArray, DoubleArray)"/>.
     /// </summary>
     /// <param name="random">The random number generator.</param>
     /// <param name="realVector">The vector of real values that is manipulated.</param>
-    protected override void Manipulate(IRandom random, DoubleArrayData realVector) {
+    protected override void Manipulate(IRandom random, DoubleArray realVector) {
       if (StrategyVectorParameter.ActualValue == null) throw new InvalidOperationException("SelfAdaptiveNormalAllPositionsManipulator: Parameter " + StrategyVectorParameter.ActualName + " could not be found.");
       Apply(random, realVector, StrategyVectorParameter.ActualValue);
     }

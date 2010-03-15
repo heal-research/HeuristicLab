@@ -27,6 +27,6 @@ namespace HeuristicLab.Optimization {
   /// An interface which represents a selection operator for selecting solutions of multi-objective optimization problems.
   /// </summary>
   public interface IMultiObjectiveSelector : ISelector {
-    ILookupParameter<ItemArray<DoubleArrayData>> QualitiesParameter { get; }
+    ILookupParameter<ItemArray<DoubleArray>> QualitiesParameter { get; }
   }
 }

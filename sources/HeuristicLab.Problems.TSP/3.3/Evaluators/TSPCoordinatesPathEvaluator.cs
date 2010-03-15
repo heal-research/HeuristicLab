@@ -35,25 +35,25 @@ namespace HeuristicLab.Problems.TSP {
     public ILookupParameter<Permutation> PermutationParameter {
       get { return (ILookupParameter<Permutation>)Parameters["Permutation"]; }
     }
-    public ILookupParameter<DoubleMatrixData> CoordinatesParameter {
-      get { return (ILookupParameter<DoubleMatrixData>)Parameters["Coordinates"]; }
+    public ILookupParameter<DoubleMatrix> CoordinatesParameter {
+      get { return (ILookupParameter<DoubleMatrix>)Parameters["Coordinates"]; }
     }
 
     protected TSPCoordinatesPathEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The TSP solution given in path representation which should be evaluated."));
-      Parameters.Add(new LookupParameter<DoubleMatrixData>("Coordinates", "The x- and y-Coordinates of the cities."));
+      Parameters.Add(new LookupParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities."));
     }
 
     public sealed override IOperation Apply() {
       Permutation p = PermutationParameter.ActualValue;
-      DoubleMatrixData c = CoordinatesParameter.ActualValue;
+      DoubleMatrix c = CoordinatesParameter.ActualValue;
 
       double length = 0;
       for (int i = 0; i < p.Length - 1; i++)
         length += CalculateDistance(c[p[i], 0], c[p[i], 1], c[p[i + 1], 0], c[p[i + 1], 1]);
       length += CalculateDistance(c[p[p.Length - 1], 0], c[p[p.Length - 1], 1], c[p[0], 0], c[p[0], 1]);
-      QualityParameter.ActualValue = new DoubleData(length);
+      QualityParameter.ActualValue = new DoubleValue(length);
 
       return base.Apply();
     }

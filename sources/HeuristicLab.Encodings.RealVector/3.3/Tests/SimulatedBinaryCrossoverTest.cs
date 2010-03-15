@@ -67,15 +67,15 @@ namespace HeuristicLab.Encodings.RealVector_33.Tests {
     [DeploymentItem("HeuristicLab.Encodings.RealVector-3.3.dll")]
     public void SimulatedBinaryCrossoverCrossTest() {
       SimulatedBinaryCrossover_Accessor target = new SimulatedBinaryCrossover_Accessor(new PrivateObject(typeof(SimulatedBinaryCrossover)));
-      ItemArray<DoubleArrayData> parents;
+      ItemArray<DoubleArray> parents;
       TestRandom random = new TestRandom();
       bool exceptionFired;
       // The following test checks if there is an exception when there are more than 2 parents
       random.Reset();
-      parents = new ItemArray<DoubleArrayData>(new DoubleArrayData[] { new DoubleArrayData(5), new DoubleArrayData(6), new DoubleArrayData(4) });
+      parents = new ItemArray<DoubleArray>(new DoubleArray[] { new DoubleArray(5), new DoubleArray(6), new DoubleArray(4) });
       exceptionFired = false;
       try {
-        DoubleArrayData actual;
+        DoubleArray actual;
         actual = target.Cross(random, parents);
       }
       catch (System.ArgumentException) {
@@ -84,10 +84,10 @@ namespace HeuristicLab.Encodings.RealVector_33.Tests {
       Assert.IsTrue(exceptionFired);
       // The following test checks if there is an exception when there are less than 2 parents
       random.Reset();
-      parents = new ItemArray<DoubleArrayData>(new DoubleArrayData[] { new DoubleArrayData(4) });
+      parents = new ItemArray<DoubleArray>(new DoubleArray[] { new DoubleArray(4) });
       exceptionFired = false;
       try {
-        DoubleArrayData actual;
+        DoubleArray actual;
         actual = target.Cross(random, parents);
       } catch (System.ArgumentException) {
         exceptionFired = true;
@@ -101,24 +101,24 @@ namespace HeuristicLab.Encodings.RealVector_33.Tests {
     [TestMethod()]
     public void SimulatedBinaryCrossoverApplyTest() {
       TestRandom random = new TestRandom();
-      DoubleArrayData parent1, parent2, expected, actual;
-      DoubleData contiguity;
+      DoubleArray parent1, parent2, expected, actual;
+      DoubleValue contiguity;
       bool exceptionFired;
       // The following test is not based on published examples
       random.Reset();
       random.DoubleNumbers = new double[] { 0.3, 0.9, 0.7, 0.2, 0.8, 0.1, 0.2, 0.3, 0.4, 0.8, 0.7 };
-      contiguity = new DoubleData(0.3);
-      parent1 = new DoubleArrayData(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
-      parent2 = new DoubleArrayData(new double[] { 0.4, 0.1, 0.3, 0.2, 0.8 });
-      expected = new DoubleArrayData(new double[] { 1.11032829834638, -0.0145477755417797, 0.3, 0.5, 0.1 });
+      contiguity = new DoubleValue(0.3);
+      parent1 = new DoubleArray(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
+      parent2 = new DoubleArray(new double[] { 0.4, 0.1, 0.3, 0.2, 0.8 });
+      expected = new DoubleArray(new double[] { 1.11032829834638, -0.0145477755417797, 0.3, 0.5, 0.1 });
       actual = SimulatedBinaryCrossover.Apply(random, parent1, parent2, contiguity);
       Assert.IsTrue(Auxiliary.RealVectorIsAlmostEqualByPosition(actual, expected));
       // The following test is not based on published examples
       random.Reset();
       random.DoubleNumbers = new double[] { 0.3, 0.9, 0.7, 0.2, 0.8, 0.1, 0.2, 0.3, 0.4, 0.8, 0.7 };
-      contiguity = new DoubleData(0.3);
-      parent1 = new DoubleArrayData(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1, 0.9 }); // this parent is longer
-      parent2 = new DoubleArrayData(new double[] { 0.4, 0.1, 0.3, 0.2, 0.8 });
+      contiguity = new DoubleValue(0.3);
+      parent1 = new DoubleArray(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1, 0.9 }); // this parent is longer
+      parent2 = new DoubleArray(new double[] { 0.4, 0.1, 0.3, 0.2, 0.8 });
       exceptionFired = false;
       try {
         actual = SimulatedBinaryCrossover.Apply(random, parent1, parent2, contiguity);
@@ -129,9 +129,9 @@ namespace HeuristicLab.Encodings.RealVector_33.Tests {
       // The following test is not based on published examples
       random.Reset();
       random.DoubleNumbers = new double[] { 0.3, 0.9, 0.7, 0.2, 0.8, 0.1, 0.2, 0.3, 0.4, 0.8, 0.7 };
-      contiguity = new DoubleData(-0.3);  //  contiguity < 0
-      parent1 = new DoubleArrayData(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1}); 
-      parent2 = new DoubleArrayData(new double[] { 0.4, 0.1, 0.3, 0.2, 0.8 });
+      contiguity = new DoubleValue(-0.3);  //  contiguity < 0
+      parent1 = new DoubleArray(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1}); 
+      parent2 = new DoubleArray(new double[] { 0.4, 0.1, 0.3, 0.2, 0.8 });
       exceptionFired = false;
       try {
         actual = SimulatedBinaryCrossover.Apply(random, parent1, parent2, contiguity);

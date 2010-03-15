@@ -38,17 +38,17 @@ namespace HeuristicLab.Selection {
       get { return false; }
     }
 
-    protected ValueParameter<BoolData> CopySelectedParameter {
-      get { return (ValueParameter<BoolData>)Parameters["CopySelected"]; }
+    protected ValueParameter<BoolValue> CopySelectedParameter {
+      get { return (ValueParameter<BoolValue>)Parameters["CopySelected"]; }
     }
-    public IValueLookupParameter<IntData> NumberOfSelectedSubScopesParameter {
-      get { return (ValueLookupParameter<IntData>)Parameters["NumberOfSelectedSubScopes"]; }
+    public IValueLookupParameter<IntValue> NumberOfSelectedSubScopesParameter {
+      get { return (ValueLookupParameter<IntValue>)Parameters["NumberOfSelectedSubScopes"]; }
     }
     protected ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
     }
 
-    public BoolData CopySelected {
+    public BoolValue CopySelected {
       get { return CopySelectedParameter.Value; }
       set { CopySelectedParameter.Value = value; }
     }
@@ -58,8 +58,8 @@ namespace HeuristicLab.Selection {
 
     protected Selector()
       : base() {
-      Parameters.Add(new ValueParameter<BoolData>("CopySelected", "True if the selected sub-scopes should be copied, otherwise false.", new BoolData(false)));
-      Parameters.Add(new ValueLookupParameter<IntData>("NumberOfSelectedSubScopes", "The number of sub-scopes which should be selected."));
+      Parameters.Add(new ValueParameter<BoolValue>("CopySelected", "True if the selected sub-scopes should be copied, otherwise false.", new BoolValue(false)));
+      Parameters.Add(new ValueLookupParameter<IntValue>("NumberOfSelectedSubScopes", "The number of sub-scopes which should be selected."));
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope from which sub-scopes should be selected."));
     }
 

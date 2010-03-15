@@ -37,14 +37,14 @@ namespace HeuristicLab.Encodings.RealVector {
   [StorableClass]
   public class BreederGeneticAlgorithmManipulator : RealVectorManipulator {
     private static readonly double[] powerOfTwo = new double[] { 1, 0.5, 0.25, 0.125, 0.0625, 0.03125, 0.015625, 0.0078125, 0.00390625, 0.001953125, 0.0009765625, 0.00048828125, 0.000244140625, 0.0001220703125, 0.00006103515625, 0.000030517578125 };
-    public ValueLookupParameter<DoubleData> MinimumParameter {
-      get { return (ValueLookupParameter<DoubleData>)Parameters["Minimum"]; }
+    public ValueLookupParameter<DoubleValue> MinimumParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["Minimum"]; }
     }
-    public ValueLookupParameter<DoubleData> MaximumParameter {
-      get { return (ValueLookupParameter<DoubleData>)Parameters["Maximum"]; }
+    public ValueLookupParameter<DoubleValue> MaximumParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["Maximum"]; }
     }
-    public ValueLookupParameter<DoubleData> SearchIntervalFactorParameter {
-      get { return (ValueLookupParameter<DoubleData>)Parameters["SearchIntervalFactor"]; }
+    public ValueLookupParameter<DoubleValue> SearchIntervalFactorParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["SearchIntervalFactor"]; }
     }
     /// <summary>
     /// Initializes a new instance of <see cref="BreederGeneticAlgorithmManipulator"/> with three variable
@@ -52,9 +52,9 @@ namespace HeuristicLab.Encodings.RealVector {
     /// </summary>
     public BreederGeneticAlgorithmManipulator()
       : base() {
-      Parameters.Add(new ValueLookupParameter<DoubleData>("Minimum", "The lower bound for each element in the vector."));
-      Parameters.Add(new ValueLookupParameter<DoubleData>("Maximum", "The upper bound for each element in the vector."));
-      Parameters.Add(new ValueLookupParameter<DoubleData>("SearchIntervalFactor", "The factor determining the size of the search interval, that will be added/removed to/from the allele selected for manipulation.", new DoubleData(0.1)));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("Minimum", "The lower bound for each element in the vector."));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("Maximum", "The upper bound for each element in the vector."));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("SearchIntervalFactor", "The factor determining the size of the search interval, that will be added/removed to/from the allele selected for manipulation.", new DoubleValue(0.1)));
     }
 
     /// <summary>
@@ -65,7 +65,7 @@ namespace HeuristicLab.Encodings.RealVector {
     /// <param name="min">The minimum number of the sampling range for the vector element (inclusive).</param>
     /// <param name="max">The maximum number of the sampling range for the vector element (exclusive).</param>
     /// <param name="searchIntervalFactor">The factor determining the size of the search interval.</param>
-    public static void Apply(IRandom random, DoubleArrayData vector, DoubleData min, DoubleData max, DoubleData searchIntervalFactor) {
+    public static void Apply(IRandom random, DoubleArray vector, DoubleValue min, DoubleValue max, DoubleValue searchIntervalFactor) {
       int length = vector.Length;
       double prob, value;
       do {
@@ -113,11 +113,11 @@ namespace HeuristicLab.Encodings.RealVector {
     }
 
     /// <summary>
-    /// Checks the parameters Minimum, Maximum, and SearchIntervalFactor and forwards the call to <see cref="Apply(IRandom, DoubleArrayData, DoubleData, DoubleData, DoubleData)"/>.
+    /// Checks the parameters Minimum, Maximum, and SearchIntervalFactor and forwards the call to <see cref="Apply(IRandom, DoubleArray, DoubleValue, DoubleValue, DoubleValue)"/>.
     /// </summary>
     /// <param name="random">A random number generator.</param>
     /// <param name="realVector">The real vector to manipulate.</param>
-    protected override void Manipulate(IRandom random, DoubleArrayData realVector) {
+    protected override void Manipulate(IRandom random, DoubleArray realVector) {
       if (MinimumParameter.ActualValue == null) throw new InvalidOperationException("BreederGeneticAlgorithmManipulator: Parameter " + MinimumParameter.ActualName + " could not be found.");
       if (MaximumParameter.ActualValue == null) throw new InvalidOperationException("BreederGeneticAlgorithmManipulator: Paraemter " + MaximumParameter.ActualName + " could not be found.");
       if (SearchIntervalFactorParameter.ActualValue == null) throw new InvalidOperationException("BreederGeneticAlgorithmManipulator: Paraemter " + SearchIntervalFactorParameter.ActualName + " could not be found.");

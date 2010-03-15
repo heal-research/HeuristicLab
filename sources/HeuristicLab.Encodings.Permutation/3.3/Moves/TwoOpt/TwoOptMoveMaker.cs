@@ -31,11 +31,11 @@ namespace HeuristicLab.Encodings.Permutation {
   [Item("TwoOptMoveMaker", "Peforms a 2-opt move on a given permutation and updates the quality.")]
   [StorableClass]
   public class TwoOptMoveMaker : SingleSuccessorOperator, ITwoOptPermutationMoveOperator, IMoveMaker {
-    public ILookupParameter<DoubleData> QualityParameter {
-      get { return (LookupParameter<DoubleData>)Parameters["Quality"]; }
+    public ILookupParameter<DoubleValue> QualityParameter {
+      get { return (LookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
-    public ILookupParameter<DoubleData> MoveQualityParameter {
-      get { return (LookupParameter<DoubleData>)Parameters["MoveQuality"]; }
+    public ILookupParameter<DoubleValue> MoveQualityParameter {
+      get { return (LookupParameter<DoubleValue>)Parameters["MoveQuality"]; }
     }
     public ILookupParameter<TwoOptMove> TwoOptMoveParameter {
       get { return (LookupParameter<TwoOptMove>)Parameters["Move"]; }
@@ -46,17 +46,17 @@ namespace HeuristicLab.Encodings.Permutation {
 
     public TwoOptMoveMaker()
       : base() {
-      Parameters.Add(new LookupParameter<DoubleData>("Quality", "The quality of the solution."));
+      Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of the solution."));
       Parameters.Add(new LookupParameter<TwoOptMove>("Move", "The move to evaluate."));
-      Parameters.Add(new LookupParameter<DoubleData>("MoveQuality", "The relative quality of the move."));
+      Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The relative quality of the move."));
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The solution as permutation."));
     }
 
     public override IOperation Apply() {
       TwoOptMove move = TwoOptMoveParameter.ActualValue;
       Permutation permutation = PermutationParameter.ActualValue;
-      DoubleData moveQuality = MoveQualityParameter.ActualValue;
-      DoubleData quality = QualityParameter.ActualValue;
+      DoubleValue moveQuality = MoveQualityParameter.ActualValue;
+      DoubleValue quality = QualityParameter.ActualValue;
 
       InversionManipulator.Apply(permutation, move.Index1, move.Index2);
       quality.Value = moveQuality.Value;

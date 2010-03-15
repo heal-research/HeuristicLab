@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Data.Views {
-  partial class StringConvertibleMatrixDataView {
+  partial class StringConvertibleMatrixView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -120,7 +120,7 @@ namespace HeuristicLab.Data.Views {
       this.columnsLabel.TabIndex = 2;
       this.columnsLabel.Text = "&Columns:";
       // 
-      // StringConvertibleMatrixDataView
+      // StringConvertibleMatrixView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -129,7 +129,7 @@ namespace HeuristicLab.Data.Views {
       this.Controls.Add(this.rowsTextBox);
       this.Controls.Add(this.columnsLabel);
       this.Controls.Add(this.rowsLabel);
-      this.Name = "StringConvertibleMatrixDataView";
+      this.Name = "StringConvertibleMatrixView";
       this.Size = new System.Drawing.Size(424, 404);
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();

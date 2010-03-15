@@ -44,15 +44,15 @@ namespace HeuristicLab.Encodings.RealVector {
     /// When Alpha is 0, then the offspring will only be chosen in between the parents, the bigger alpha is the more it will be possible to choose
     /// values left and right of the min and max value for each gene.
     /// </summary>
-    public ValueLookupParameter<DoubleData> AlphaParameter {
-      get { return (ValueLookupParameter<DoubleData>)Parameters["Alpha"]; }
+    public ValueLookupParameter<DoubleValue> AlphaParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["Alpha"]; }
     }
     /// <summary>
     /// Initializes a new instance of <see cref="BlendAlphaCrossover"/> with one parameter (<c>Alpha</c>).
     /// </summary>
     public BlendAlphaCrossover()
       : base() {
-      Parameters.Add(new ValueLookupParameter<DoubleData>("Alpha", "Value for alpha", new DoubleData(0.5)));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("Alpha", "Value for alpha", new DoubleValue(0.5)));
     }
 
     /// <summary>
@@ -69,11 +69,11 @@ namespace HeuristicLab.Encodings.RealVector {
     /// <param name="parent2">The second parent for the crossover operation.</param>
     /// <param name="alpha">The alpha value for the crossover.</param>
     /// <returns>The newly created real vector resulting from the crossover operation.</returns>
-    public static DoubleArrayData Apply(IRandom random, DoubleArrayData parent1, DoubleArrayData parent2, DoubleData alpha) {
+    public static DoubleArray Apply(IRandom random, DoubleArray parent1, DoubleArray parent2, DoubleValue alpha) {
       if (parent1.Length != parent2.Length) throw new ArgumentException("BlendAlphaCrossover: The parents' vectors are of different length.", "parent1");
       if (alpha.Value < 0) throw new ArgumentException("BlendAlphaCrossover: Paramter alpha must be greater or equal than 0.", "alpha");
       int length = parent1.Length;
-      DoubleArrayData result = new DoubleArrayData(length);
+      DoubleArray result = new DoubleArray(length);
       double max = 0, min = 0, d = 0, resMin = 0, resMax = 0;
 
       for (int i = 0; i < length; i++) {
@@ -89,14 +89,14 @@ namespace HeuristicLab.Encodings.RealVector {
     }
 
     /// <summary>
-    /// Checks that the number of parents is equal to 2 and forwards the call to <see cref="Apply(IRandom, DoubleArrayData, DoubleArrayData, DoubleData)"/>.
+    /// Checks that the number of parents is equal to 2 and forwards the call to <see cref="Apply(IRandom, DoubleArray, DoubleArray, DoubleValue)"/>.
     /// </summary>
     /// <exception cref="ArgumentException">Thrown when the number of parents is not equal to 2.</exception>
     /// <exception cref="InvalidOperationException">Thrown when the parameter alpha could not be found.</exception>
     /// <param name="random">The random number generator to use.</param>
     /// <param name="parents">The collection of parents (must be of size 2).</param>
     /// <returns>The real vector resulting from the crossover operation.</returns>
-    protected override DoubleArrayData Cross(IRandom random, ItemArray<DoubleArrayData> parents) {
+    protected override DoubleArray Cross(IRandom random, ItemArray<DoubleArray> parents) {
       if (parents.Length != 2) throw new ArgumentException("BlendAlphaCrossover: The number of parents is not equal to 2", "parents");
       if (AlphaParameter.ActualValue == null) throw new InvalidOperationException("BlendAlphaCrossover: Parameter " + AlphaParameter.ActualName + " could not be found.");
       return Apply(random, parents[0], parents[1], AlphaParameter.ActualValue);

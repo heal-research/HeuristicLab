@@ -27,10 +27,10 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
-  [Item("StringArrayData", "Represents an array of strings.")]
+  [Item("StringArray", "Represents an array of strings.")]
   [Creatable("Test")]
   [StorableClass]
-  public sealed class StringArrayData : Item, IEnumerable, IStringConvertibleArrayData {
+  public sealed class StringArray : Item, IEnumerable, IStringConvertibleArray {
     [Storable]
     private string[] array;
 
@@ -55,27 +55,27 @@ namespace HeuristicLab.Data {
       }
     }
 
-    public StringArrayData() {
+    public StringArray() {
       array = new string[0];
     }
-    public StringArrayData(int length) {
+    public StringArray(int length) {
       array = new string[length];
       for (int i = 0; i < array.Length; i++)
         array[i] = string.Empty;
     }
-    public StringArrayData(string[] elements) {
+    public StringArray(string[] elements) {
       if (elements == null) throw new ArgumentNullException();
       array = new string[elements.Length];
       for (int i = 0; i < array.Length; i++)
         array[i] = elements[i] == null ? string.Empty : elements[i];
     }
-    private StringArrayData(StringArrayData elements) {
+    private StringArray(StringArray elements) {
       if (elements == null) throw new ArgumentNullException();
       array = (string[])elements.array.Clone();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      StringArrayData clone = new StringArrayData(this);
+      StringArray clone = new StringArray(this);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
@@ -96,13 +96,13 @@ namespace HeuristicLab.Data {
       return array.GetEnumerator();
     }
 
-    #region IStringConvertibleArrayData Members
-    int IStringConvertibleArrayData.Length {
+    #region IStringConvertibleArray Members
+    int IStringConvertibleArray.Length {
       get { return Length; }
       set { Length = value; }
     }
 
-    bool IStringConvertibleArrayData.Validate(string value, out string errorMessage) {
+    bool IStringConvertibleArray.Validate(string value, out string errorMessage) {
       if (value == null) {
         errorMessage = "Invalid Value (string must not be null)";
         return false;
@@ -111,10 +111,10 @@ namespace HeuristicLab.Data {
         return true;
       }
     }
-    string IStringConvertibleArrayData.GetValue(int index) {
+    string IStringConvertibleArray.GetValue(int index) {
       return this[index];
     }
-    bool IStringConvertibleArrayData.SetValue(string value, int index) {
+    bool IStringConvertibleArray.SetValue(string value, int index) {
       if (value != null) {
         this[index] = value;
         return true;

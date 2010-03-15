@@ -39,32 +39,32 @@ namespace HeuristicLab.Encodings.RealVector {
     /// <summary>
     /// The lower bound of the values in the real vector.
     /// </summary>
-    public ValueLookupParameter<DoubleData> MinimumParameter {
-      get { return (ValueLookupParameter<DoubleData>)Parameters["Minimum"]; }
+    public ValueLookupParameter<DoubleValue> MinimumParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["Minimum"]; }
     }
     /// <summary>
     /// The upper bound of the values in the real vector.
     /// </summary>
-    public ValueLookupParameter<DoubleData> MaximumParameter {
-      get { return (ValueLookupParameter<DoubleData>)Parameters["Maximum"]; }
+    public ValueLookupParameter<DoubleValue> MaximumParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["Maximum"]; }
     }
     /// <summary>
     /// The current generation.
     /// </summary>
-    public LookupParameter<IntData> GenerationParameter {
-      get { return (LookupParameter<IntData>)Parameters["Generation"]; }
+    public LookupParameter<IntValue> GenerationParameter {
+      get { return (LookupParameter<IntValue>)Parameters["Generation"]; }
     }
     /// <summary>
     /// The maximum generation.
     /// </summary>
-    public LookupParameter<IntData> MaximumGenerationsParameter {
-      get { return (LookupParameter<IntData>)Parameters["MaximumGenerations"]; }
+    public LookupParameter<IntValue> MaximumGenerationsParameter {
+      get { return (LookupParameter<IntValue>)Parameters["MaximumGenerations"]; }
     }
     /// <summary>
     /// The parameter describing how much the mutation should depend on the progress towards the maximum generation.
     /// </summary>
-    public ValueLookupParameter<DoubleData> GenerationDependencyParameter {
-      get { return (ValueLookupParameter<DoubleData>)Parameters["GenerationDependency"]; }
+    public ValueLookupParameter<DoubleValue> GenerationDependencyParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["GenerationDependency"]; }
     }
 
     /// <summary>
@@ -74,11 +74,11 @@ namespace HeuristicLab.Encodings.RealVector {
     /// </summary>
     public MichalewiczNonUniformOnePositionManipulator()
       : base() {
-      Parameters.Add(new ValueLookupParameter<DoubleData>("Minimum", "Minimum of the sampling range for the vector element (included)"));
-      Parameters.Add(new ValueLookupParameter<DoubleData>("Maximum", "Maximum of the sampling range for the vector element (excluded)"));
-      Parameters.Add(new LookupParameter<IntData>("Generation", "Current generation of the algorithm"));
-      Parameters.Add(new LookupParameter<IntData>("MaximumGenerations", "Maximum number of generations"));
-      Parameters.Add(new ValueLookupParameter<DoubleData>("GenerationDependency", "Specifies the degree of dependency on the number of generations", new DoubleData(5)));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("Minimum", "Minimum of the sampling range for the vector element (included)"));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("Maximum", "Maximum of the sampling range for the vector element (excluded)"));
+      Parameters.Add(new LookupParameter<IntValue>("Generation", "Current generation of the algorithm"));
+      Parameters.Add(new LookupParameter<IntValue>("MaximumGenerations", "Maximum number of generations"));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("GenerationDependency", "Specifies the degree of dependency on the number of generations", new DoubleValue(5)));
     }
 
     /// <summary>
@@ -94,7 +94,7 @@ namespace HeuristicLab.Encodings.RealVector {
     /// <param name="maximumGenerations">Maximum number of generations.</param>
     /// <param name="generationsDependency">Specifies the degree of dependency on the number of generations.</param>
     /// <returns>The manipulated real vector.</returns>
-    public static void Apply(IRandom random, DoubleArrayData vector, DoubleData min, DoubleData max, IntData currentGeneration, IntData maximumGenerations, DoubleData generationsDependency) {
+    public static void Apply(IRandom random, DoubleArray vector, DoubleValue min, DoubleValue max, IntValue currentGeneration, IntValue maximumGenerations, DoubleValue generationsDependency) {
       if (currentGeneration.Value > maximumGenerations.Value) throw new ArgumentException("MichalewiczNonUniformOnePositionManipulator: CurrentGeneration must be smaller or equal than MaximumGeneration", "currentGeneration");
       int length = vector.Length;
       int index = random.Next(length);
@@ -109,11 +109,11 @@ namespace HeuristicLab.Encodings.RealVector {
     }
 
     /// <summary>
-    /// Checks if all parameters are available and forwards the call to <see cref="Apply(IRandom, DoubleArrayData, DoubleData, DoubleData, IntData, IntData, DoubleData)"/>.
+    /// Checks if all parameters are available and forwards the call to <see cref="Apply(IRandom, DoubleArray, DoubleValue, DoubleValue, IntValue, IntValue, DoubleValue)"/>.
     /// </summary>
     /// <param name="random">The random number generator.</param>
     /// <param name="realVector">The real vector that should be manipulated.</param>
-    protected override void Manipulate(IRandom random, DoubleArrayData realVector) {
+    protected override void Manipulate(IRandom random, DoubleArray realVector) {
       if (MinimumParameter.ActualValue == null) throw new InvalidOperationException("MichalewiczNonUniformOnePositionManipulator: Parameter " + MinimumParameter.ActualName + " could not be found.");
       if (MaximumParameter.ActualValue == null) throw new InvalidOperationException("MichalewiczNonUniformOnePositionManipulator: Parameter " + MaximumParameter.ActualName + " could not be found.");
       if (GenerationParameter.ActualValue == null) throw new InvalidOperationException("MichalewiczNonUniformOnePositionManipulator: Parameter " + GenerationParameter.ActualName + " could not be found.");

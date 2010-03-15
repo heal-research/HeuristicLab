@@ -22,7 +22,7 @@
 using System;
 
 namespace HeuristicLab.Data {
-  public interface IStringConvertibleData {
+  public interface IStringConvertibleValue {
     bool Validate(string value, out string errorMessage);
     string GetValue();
     bool SetValue(string value);

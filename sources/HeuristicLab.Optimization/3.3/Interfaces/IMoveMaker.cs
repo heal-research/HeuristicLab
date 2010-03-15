@@ -24,7 +24,7 @@ using HeuristicLab.Data;
 
 namespace HeuristicLab.Optimization {
   public interface IMoveMaker : IOperator {
-    ILookupParameter<DoubleData> QualityParameter { get; }
-    ILookupParameter<DoubleData> MoveQualityParameter { get; }
+    ILookupParameter<DoubleValue> QualityParameter { get; }
+    ILookupParameter<DoubleValue> MoveQualityParameter { get; }
   }
 }

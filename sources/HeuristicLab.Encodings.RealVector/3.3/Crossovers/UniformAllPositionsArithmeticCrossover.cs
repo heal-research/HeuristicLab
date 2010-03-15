@@ -39,8 +39,8 @@ namespace HeuristicLab.Encodings.RealVector {
     /// <summary>
     /// The alpha parameter needs to be in the interval [0;1] and specifies how close the resulting offspring should be either to parent1 (alpha -> 0) or parent2 (alpha -> 1).
     /// </summary>
-    public ValueLookupParameter<DoubleData> AlphaParameter {
-      get { return (ValueLookupParameter<DoubleData>)Parameters["Alpha"]; }
+    public ValueLookupParameter<DoubleValue> AlphaParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["Alpha"]; }
     }
 
     /// <summary>
@@ -48,7 +48,7 @@ namespace HeuristicLab.Encodings.RealVector {
     /// </summary>
     public UniformAllPositionsArithmeticCrossover()
       : base() {
-      Parameters.Add(new ValueLookupParameter<DoubleData>("Alpha", "The alpha value in the range [0;1]", new DoubleData(0.33)));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("Alpha", "The alpha value in the range [0;1]", new DoubleValue(0.33)));
     }
 
     /// <summary>
@@ -60,11 +60,11 @@ namespace HeuristicLab.Encodings.RealVector {
     /// <param name="parent2">The second parent vector.</param>
     /// <param name="alpha">The alpha parameter (<see cref="AlphaParameter"/>).</param>
     /// <returns>The vector resulting from the crossover.</returns>
-    public static DoubleArrayData Apply(IRandom random, DoubleArrayData parent1, DoubleArrayData parent2, DoubleData alpha) {
+    public static DoubleArray Apply(IRandom random, DoubleArray parent1, DoubleArray parent2, DoubleValue alpha) {
       int length = parent1.Length;
       if (length != parent2.Length) throw new ArgumentException("UniformAllPositionsArithmeticCrossover: The parent vectors are of different length.", "parent1");
       if (alpha.Value < 0 || alpha.Value > 1) throw new ArgumentException("UniformAllPositionsArithmeticCrossover: Parameter alpha must be in the range [0;1]", "alpha");
-      DoubleArrayData result = new DoubleArrayData(length);
+      DoubleArray result = new DoubleArray(length);
       for (int i = 0; i < length; i++) {
         result[i] = alpha.Value * parent1[i] + (1 - alpha.Value) * parent2[i];
       }
@@ -72,14 +72,14 @@ namespace HeuristicLab.Encodings.RealVector {
     }
 
     /// <summary>
-    /// Checks that there are exactly 2 parents, that the alpha parameter is not null and fowards the call to <see cref="Apply(IRandom, DoubleArrayData, DoubleArrrayData, DoubleData)"/>.
+    /// Checks that there are exactly 2 parents, that the alpha parameter is not null and fowards the call to <see cref="Apply(IRandom, DoubleArray, DoubleArrrayData, DoubleValue)"/>.
     /// </summary>
     /// <exception cref="ArgumentException">Thrown when there are not exactly two parents.</exception>
     /// <exception cref="InvalidOperationException">Thrown when the alpha parmeter could not be found.</exception>
     /// <param name="random">The random number generator.</param>
     /// <param name="parents">The collection of parents (must be of size 2).</param>
     /// <returns>The vector resulting from the crossover.</returns>
-    protected override DoubleArrayData Cross(IRandom random, ItemArray<DoubleArrayData> parents) {
+    protected override DoubleArray Cross(IRandom random, ItemArray<DoubleArray> parents) {
  	    if (parents.Length != 2) throw new ArgumentException("UniformAllPositionsArithmeticCrossover: There must be exactly two parents.", "parents");
       if (AlphaParameter.ActualValue == null) throw new InvalidOperationException("UniformAllPositionsArithmeticCrossover: Parameter " + AlphaParameter.ActualName + " could not be found.");
       return Apply(random, parents[0], parents[1], AlphaParameter.ActualValue);

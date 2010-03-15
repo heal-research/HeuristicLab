@@ -27,7 +27,7 @@ namespace HeuristicLab.Optimization {
   /// An interface which represents a selection operator.
   /// </summary>
   public interface ISelector : IOperator {
-    BoolData CopySelected { get; set; }
-    IValueLookupParameter<IntData> NumberOfSelectedSubScopesParameter { get; }
+    BoolValue CopySelected { get; set; }
+    IValueLookupParameter<IntValue> NumberOfSelectedSubScopesParameter { get; }
   }
 }

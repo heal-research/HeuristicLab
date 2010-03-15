@@ -24,32 +24,32 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
-  [Item("BoolMatrixData", "Represents a matrix of boolean values.")]
+  [Item("BoolMatrix", "Represents a matrix of boolean values.")]
   [Creatable("Test")]
   [StorableClass]
-  public sealed class BoolMatrixData : ValueTypeMatrixData<bool>, IStringConvertibleMatrixData {
-    public BoolMatrixData() : base() { }
-    public BoolMatrixData(int rows, int columns) : base(rows, columns) { }
-    public BoolMatrixData(bool[,] elements) : base(elements) { }
-    private BoolMatrixData(BoolMatrixData elements) : base(elements) { }
+  public sealed class BoolMatrix : ValueTypeMatrix<bool>, IStringConvertibleMatrix {
+    public BoolMatrix() : base() { }
+    public BoolMatrix(int rows, int columns) : base(rows, columns) { }
+    public BoolMatrix(bool[,] elements) : base(elements) { }
+    private BoolMatrix(BoolMatrix elements) : base(elements) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      BoolMatrixData clone = new BoolMatrixData(this);
+      BoolMatrix clone = new BoolMatrix(this);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
 
-    #region IStringConvertibleMatrixData Members
-    int IStringConvertibleMatrixData.Rows {
+    #region IStringConvertibleMatrix Members
+    int IStringConvertibleMatrix.Rows {
       get { return Rows; }
       set { Rows = value; }
     }
-    int IStringConvertibleMatrixData.Columns {
+    int IStringConvertibleMatrix.Columns {
       get { return Columns; }
       set { Columns = value; }
     }
 
-    bool IStringConvertibleMatrixData.Validate(string value, out string errorMessage) {
+    bool IStringConvertibleMatrix.Validate(string value, out string errorMessage) {
       bool val;
       bool valid = bool.TryParse(value, out val);
       errorMessage = string.Empty;
@@ -62,10 +62,10 @@ namespace HeuristicLab.Data {
       }
       return valid;
     }
-    string IStringConvertibleMatrixData.GetValue(int rowIndex, int columIndex) {
+    string IStringConvertibleMatrix.GetValue(int rowIndex, int columIndex) {
       return this[rowIndex, columIndex].ToString();
     }
-    bool IStringConvertibleMatrixData.SetValue(string value, int rowIndex, int columnIndex) {
+    bool IStringConvertibleMatrix.SetValue(string value, int rowIndex, int columnIndex) {
       bool val;
       if (bool.TryParse(value, out val)) {
         this[rowIndex, columnIndex] = val;

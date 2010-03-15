@@ -35,11 +35,11 @@ namespace HeuristicLab.Operators {
     private bool descending;
     private string actualName;
 
-    public SubScopesLookupParameter<DoubleData> ValueParameter {
-      get { return (SubScopesLookupParameter<DoubleData>)Parameters["Value"]; }
+    public SubScopesLookupParameter<DoubleValue> ValueParameter {
+      get { return (SubScopesLookupParameter<DoubleValue>)Parameters["Value"]; }
     }
-    public ValueLookupParameter<BoolData> DescendingParameter {
-      get { return (ValueLookupParameter<BoolData>)Parameters["Descending"]; }
+    public ValueLookupParameter<BoolValue> DescendingParameter {
+      get { return (ValueLookupParameter<BoolValue>)Parameters["Descending"]; }
     }
     private ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
@@ -50,14 +50,14 @@ namespace HeuristicLab.Operators {
 
     public SubScopesSorter()
       : base() {
-      Parameters.Add(new SubScopesLookupParameter<DoubleData>("Value", "The values contained in each sub-scope acording which the sub-scopes of the current scope are sorted."));
-      Parameters.Add(new ValueLookupParameter<BoolData>("Descending", "True if the sub-scopes should be sorted in descending order, otherwise false."));
+      Parameters.Add(new SubScopesLookupParameter<DoubleValue>("Value", "The values contained in each sub-scope acording which the sub-scopes of the current scope are sorted."));
+      Parameters.Add(new ValueLookupParameter<BoolValue>("Descending", "True if the sub-scopes should be sorted in descending order, otherwise false."));
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope whose sub-scopes are sorted."));
     }
 
     public override IOperation Apply() {
       descending = DescendingParameter.ActualValue.Value;
-      actualName = LookupParameter<ItemArray<DoubleData>>.TranslateName(ValueParameter.Name, ExecutionContext);
+      actualName = LookupParameter<ItemArray<DoubleValue>>.TranslateName(ValueParameter.Name, ExecutionContext);
       CurrentScope.SubScopes.Sort(SortScopes);
       return base.Apply();
     }
@@ -74,7 +74,7 @@ namespace HeuristicLab.Operators {
       else if ((var1 != null) && (var2 == null))
         return -1;
       else {
-        int result = ((DoubleData)var1.Value).CompareTo((DoubleData)var2.Value);
+        int result = ((DoubleValue)var1.Value).CompareTo((DoubleValue)var2.Value);
         if (descending) result = result * -1;
         return result;
       }

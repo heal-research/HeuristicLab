@@ -36,26 +36,26 @@ namespace HeuristicLab.Encodings.IntVector {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
-    public ILookupParameter<IntArrayData> IntVectorParameter {
-      get { return (ILookupParameter<IntArrayData>)Parameters["IntVector"]; }
+    public ILookupParameter<IntArray> IntVectorParameter {
+      get { return (ILookupParameter<IntArray>)Parameters["IntVector"]; }
     }
-    public IValueLookupParameter<IntData> LengthParameter {
-      get { return (IValueLookupParameter<IntData>)Parameters["Length"]; }
+    public IValueLookupParameter<IntValue> LengthParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters["Length"]; }
     }
-    public IValueLookupParameter<IntData> MinimumParameter {
-      get { return (IValueLookupParameter<IntData>)Parameters["Minimum"]; }
+    public IValueLookupParameter<IntValue> MinimumParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters["Minimum"]; }
     }
-    public IValueLookupParameter<IntData> MaximumParameter {
-      get { return (IValueLookupParameter<IntData>)Parameters["Maximum"]; }
+    public IValueLookupParameter<IntValue> MaximumParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters["Maximum"]; }
     }
 
     protected IntVectorCreator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
-      Parameters.Add(new LookupParameter<IntArrayData>("IntVector", "The vector which should be manipulated."));
-      Parameters.Add(new ValueLookupParameter<IntData>("Length", "The length of the vector."));
-      Parameters.Add(new ValueLookupParameter<IntData>("Minimum", "The lower bound for each element in the vector."));
-      Parameters.Add(new ValueLookupParameter<IntData>("Maximum", "The upper bound for each element in the vector."));
+      Parameters.Add(new LookupParameter<IntArray>("IntVector", "The vector which should be manipulated."));
+      Parameters.Add(new ValueLookupParameter<IntValue>("Length", "The length of the vector."));
+      Parameters.Add(new ValueLookupParameter<IntValue>("Minimum", "The lower bound for each element in the vector."));
+      Parameters.Add(new ValueLookupParameter<IntValue>("Maximum", "The upper bound for each element in the vector."));
     }
 
     public sealed override IOperation Apply() {
@@ -63,6 +63,6 @@ namespace HeuristicLab.Encodings.IntVector {
       return base.Apply();
     }
 
-    protected abstract IntArrayData Create(IRandom random, IntData length, IntData minimum, IntData maximum);
+    protected abstract IntArray Create(IRandom random, IntValue length, IntValue minimum, IntValue maximum);
   }
 }

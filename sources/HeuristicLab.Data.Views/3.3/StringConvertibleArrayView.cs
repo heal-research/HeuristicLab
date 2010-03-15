@@ -28,21 +28,21 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Data.Views {
-  [View("StringConvertibleArrayData View")]
-  [Content(typeof(IStringConvertibleArrayData), true)]
-  public partial class StringConvertibleArrayDataView : ContentView {
-    public new IStringConvertibleArrayData Content {
-      get { return (IStringConvertibleArrayData)base.Content; }
+  [View("StringConvertibleArray View")]
+  [Content(typeof(IStringConvertibleArray), true)]
+  public partial class StringConvertibleArrayView : ContentView {
+    public new IStringConvertibleArray Content {
+      get { return (IStringConvertibleArray)base.Content; }
       set { base.Content = value; }
     }
 
-    public StringConvertibleArrayDataView() {
+    public StringConvertibleArrayView() {
       InitializeComponent();
-      Caption = "StringConvertibleArrayData View";
+      Caption = "StringConvertibleArray View";
       errorProvider.SetIconAlignment(lengthTextBox, ErrorIconAlignment.MiddleLeft);
       errorProvider.SetIconPadding(lengthTextBox, 2);
     }
-    public StringConvertibleArrayDataView(IStringConvertibleArrayData content)
+    public StringConvertibleArrayView(IStringConvertibleArray content)
       : this() {
       Content = content;
     }
@@ -63,14 +63,14 @@ namespace HeuristicLab.Data.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        Caption = "StringConvertibleArrayData View";
+        Caption = "StringConvertibleArray View";
         lengthTextBox.Text = "";
         lengthTextBox.Enabled = false;
         dataGridView.Rows.Clear();
         dataGridView.Columns.Clear();
         dataGridView.Enabled = false;
       } else {
-        Caption = "StringConvertibleArrayData (" + Content.GetType().Name + ")";
+        Caption = "StringConvertibleArray (" + Content.GetType().Name + ")";
         UpdateData();
       }
     }

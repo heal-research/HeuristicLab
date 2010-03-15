@@ -84,25 +84,25 @@ namespace HeuristicLab.Encodings.RealVector_33.Tests {
     [TestMethod()]
     public void PolynomialAllPositionManipulatorApplyTest() {
       TestRandom random = new TestRandom();
-      DoubleArrayData parent, expected;
-      DoubleData contiguity, maxManipulation;
+      DoubleArray parent, expected;
+      DoubleValue contiguity, maxManipulation;
       bool exceptionFired;
       // The following test is not based on published examples
       random.Reset();
       random.DoubleNumbers = new double[] { 0.2, 0.7, 0.8, 0.01, 0.1 };
-      parent = new DoubleArrayData(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
-      expected = new DoubleArrayData(new double[] { 0.120213215256006, 0.336631954950876, 0.474551336679454, 0.322759240811056, -0.0182075293954083 });
-      contiguity = new DoubleData(0.8);
-      maxManipulation = new DoubleData(0.2);
+      parent = new DoubleArray(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
+      expected = new DoubleArray(new double[] { 0.120213215256006, 0.336631954950876, 0.474551336679454, 0.322759240811056, -0.0182075293954083 });
+      contiguity = new DoubleValue(0.8);
+      maxManipulation = new DoubleValue(0.2);
       PolynomialAllPositionManipulator.Apply(random, parent, contiguity, maxManipulation);
       Assert.IsTrue(Auxiliary.RealVectorIsAlmostEqualByPosition(expected, parent));
       // The following test is not based on published examples
       exceptionFired = false;
       random.Reset();
       random.DoubleNumbers = new double[] { 0.2, 0.7, 0.8, 0.01, 0.1 };
-      parent = new DoubleArrayData(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
-      contiguity = new DoubleData(-1); //Contiguity value < 0
-      maxManipulation = new DoubleData(0.2);
+      parent = new DoubleArray(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
+      contiguity = new DoubleValue(-1); //Contiguity value < 0
+      maxManipulation = new DoubleValue(0.2);
       try {
         PolynomialAllPositionManipulator.Apply(random, parent, contiguity, maxManipulation);
       }

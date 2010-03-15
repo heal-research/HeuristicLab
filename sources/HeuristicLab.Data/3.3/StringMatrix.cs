@@ -27,10 +27,10 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
-  [Item("StringMatrixData", "Represents a matrix of strings.")]
+  [Item("StringMatrix", "Represents a matrix of strings.")]
   [Creatable("Test")]
   [StorableClass]
-  public sealed class StringMatrixData : Item, IEnumerable, IStringConvertibleMatrixData {
+  public sealed class StringMatrix : Item, IEnumerable, IStringConvertibleMatrix {
     [Storable]
     private string[,] array;
 
@@ -69,17 +69,17 @@ namespace HeuristicLab.Data {
       }
     }
 
-    public StringMatrixData() {
+    public StringMatrix() {
       array = new string[0, 0];
     }
-    public StringMatrixData(int rows, int columns) {
+    public StringMatrix(int rows, int columns) {
       array = new string[rows, columns];
       for (int i = 0; i < array.GetLength(0); i++) {
         for (int j = 0; j < array.GetLength(1); j++)
           array[i, j] = string.Empty;
       }
     }
-    public StringMatrixData(string[,] elements) {
+    public StringMatrix(string[,] elements) {
       if (elements == null) throw new ArgumentNullException();
       array = new string[elements.GetLength(0), elements.GetLength(1)];
       for (int i = 0; i < array.GetLength(0); i++) {
@@ -87,13 +87,13 @@ namespace HeuristicLab.Data {
           array[i, j] = elements[i, j] == null ? string.Empty : elements[i, j];
       }
     }
-    private StringMatrixData(StringMatrixData elements) {
+    private StringMatrix(StringMatrix elements) {
       if (elements == null) throw new ArgumentNullException();
       array = (string[,])elements.array.Clone();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      StringMatrixData clone = new StringMatrixData(this);
+      StringMatrix clone = new StringMatrix(this);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
@@ -117,17 +117,17 @@ namespace HeuristicLab.Data {
       return array.GetEnumerator();
     }
 
-    #region IStringConvertibleMatrixData Members
-    int IStringConvertibleMatrixData.Rows {
+    #region IStringConvertibleMatrix Members
+    int IStringConvertibleMatrix.Rows {
       get { return Rows; }
       set { Rows = value; }
     }
-    int IStringConvertibleMatrixData.Columns {
+    int IStringConvertibleMatrix.Columns {
       get { return Columns; }
       set { Columns = value; }
     }
 
-    bool IStringConvertibleMatrixData.Validate(string value, out string errorMessage) {
+    bool IStringConvertibleMatrix.Validate(string value, out string errorMessage) {
       if (value == null) {
         errorMessage = "Invalid Value (string must not be null)";
         return false;
@@ -136,10 +136,10 @@ namespace HeuristicLab.Data {
         return true;
       }
     }
-    string IStringConvertibleMatrixData.GetValue(int rowIndex, int columIndex) {
+    string IStringConvertibleMatrix.GetValue(int rowIndex, int columIndex) {
       return this[rowIndex, columIndex];
     }
-    bool IStringConvertibleMatrixData.SetValue(string value, int rowIndex, int columnIndex) {
+    bool IStringConvertibleMatrix.SetValue(string value, int rowIndex, int columnIndex) {
       if (value != null) {
         this[rowIndex, columnIndex] = value;
         return true;

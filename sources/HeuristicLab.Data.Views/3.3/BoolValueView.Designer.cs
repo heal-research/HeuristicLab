@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Data.Views {
-  partial class BoolDataView {
+  partial class BoolValueView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -59,12 +59,12 @@ namespace HeuristicLab.Data.Views {
       this.valueCheckBox.UseVisualStyleBackColor = true;
       this.valueCheckBox.CheckedChanged += new System.EventHandler(this.valueCheckBox_CheckedChanged);
       // 
-      // BoolDataView
+      // BoolValueView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.valueCheckBox);
-      this.Name = "BoolDataView";
+      this.Name = "BoolValueView";
       this.Size = new System.Drawing.Size(71, 27);
       this.ResumeLayout(false);
       this.PerformLayout();

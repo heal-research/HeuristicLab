@@ -43,7 +43,7 @@ namespace HeuristicLab.Selection {
       bool copy = CopySelectedParameter.Value.Value;
       IRandom random = RandomParameter.ActualValue;
       bool maximization = MaximizationParameter.ActualValue.Value;
-      ItemArray<DoubleData> qualities = QualityParameter.ActualValue;
+      ItemArray<DoubleValue> qualities = QualityParameter.ActualValue;
       IScope[] selected = new IScope[count];
 
       // create a list for each scope that contains the scope's index in the original scope list and its lots

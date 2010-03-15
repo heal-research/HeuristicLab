@@ -39,8 +39,8 @@ namespace HeuristicLab.Encodings.RealVector {
     /// The contiguity parameter specifies the shape of the probability density function that controls the mutation. Setting it to 0 is similar to a uniform distribution over the entire manipulation range (specified by <see cref="MaximumManipulationParameter"/>.
     /// A higher value will shape the density function such that values closer to 0 (little manipulation) are more likely than values closer to 1 or -1 (maximum manipulation).
     /// </summary>
-    public ValueLookupParameter<DoubleData> ContiguityParameter {
-      get { return (ValueLookupParameter<DoubleData>)Parameters["Contiguity"]; }
+    public ValueLookupParameter<DoubleValue> ContiguityParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["Contiguity"]; }
     }
     /// <summary>
     /// The maximum manipulation parameter specifies the range of the manipulation. The value specified here is the highest value the mutation will ever add to the current value.
@@ -48,8 +48,8 @@ namespace HeuristicLab.Encodings.RealVector {
     /// <remarks>
     /// The manipulated value is not restricted by the (possibly) specified lower and upper bounds. Use the <see cref="BoundsChecker"/> to correct the values after performing the mutation.
     /// </remarks>
-    public ValueLookupParameter<DoubleData> MaximumManipulationParameter {
-      get { return (ValueLookupParameter<DoubleData>)Parameters["MaximumManipulation"]; }
+    public ValueLookupParameter<DoubleValue> MaximumManipulationParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["MaximumManipulation"]; }
     }
 
     /// <summary>
@@ -58,8 +58,8 @@ namespace HeuristicLab.Encodings.RealVector {
     /// </summary>
     public PolynomialOnePositionManipulator()
       : base() {
-      Parameters.Add(new ValueLookupParameter<DoubleData>("Contiguity", "Specifies whether the manipulation should produce far stretching (small value) or close (large value) manipulations with higher probability. Valid values must be greater or equal to 0.", new DoubleData(2)));
-      Parameters.Add(new ValueLookupParameter<DoubleData>("MaximumManipulation", "Specifies the maximum value that should be added or subtracted by the manipulation. If this value is set to 0 no mutation will be performed.", new DoubleData(1)));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("Contiguity", "Specifies whether the manipulation should produce far stretching (small value) or close (large value) manipulations with higher probability. Valid values must be greater or equal to 0.", new DoubleValue(2)));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("MaximumManipulation", "Specifies the maximum value that should be added or subtracted by the manipulation. If this value is set to 0 no mutation will be performed.", new DoubleValue(1)));
     }
 
     /// <summary>
@@ -69,7 +69,7 @@ namespace HeuristicLab.Encodings.RealVector {
     /// <param name="vector">The vector that should be manipulated.</param>
     /// <param name="contiguity">A parameter describing the shape of the probability density function which influences the strength of the manipulation.</param>
     /// <param name="maxManipulation">The maximum strength of the manipulation.</param>
-    public static void Apply(IRandom random, DoubleArrayData vector, DoubleData contiguity, DoubleData maxManipulation) {
+    public static void Apply(IRandom random, DoubleArray vector, DoubleValue contiguity, DoubleValue maxManipulation) {
       if (contiguity.Value < 0) throw new ArgumentException("PolynomialOnePositionManipulator: Contiguity value is smaller than 0", "contiguity");
       int index = random.Next(vector.Length);
       double u = random.NextDouble(), delta = 0;
@@ -84,11 +84,11 @@ namespace HeuristicLab.Encodings.RealVector {
     }
 
     /// <summary>
-    /// Checks the availability of the parameters and forwards the call to <see cref="Apply(IRandom, DoubleArrayData, DoubleData, DoubleData)"/>.
+    /// Checks the availability of the parameters and forwards the call to <see cref="Apply(IRandom, DoubleArray, DoubleValue, DoubleValue)"/>.
     /// </summary>
     /// <param name="random">The random number generator to use.</param>
     /// <param name="realVector">The vector of real values to manipulate.</param>
-    protected override void Manipulate(IRandom random, DoubleArrayData realVector) {
+    protected override void Manipulate(IRandom random, DoubleArray realVector) {
       if (ContiguityParameter.ActualValue == null) throw new InvalidOperationException("PolynomialOnePositionManipulator: Parameter " + ContiguityParameter.ActualName + " could not be found.");
       if (MaximumManipulationParameter.ActualValue == null) throw new InvalidOperationException("PolynomialOnePositionManipulator: Parameter " + MaximumManipulationParameter.ActualName + " could not be found.");
       Apply(random, realVector, ContiguityParameter.ActualValue, MaximumManipulationParameter.ActualValue);

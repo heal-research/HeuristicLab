@@ -25,20 +25,20 @@ using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Data.Views {
-  [View("ComparisonData View")]
-  [Content(typeof(ComparisonData), true)]
-  public partial class ComparisonDataView : ItemView {
-    public new ComparisonData Content {
-      get { return (ComparisonData)base.Content; }
+  [View("Comparison View")]
+  [Content(typeof(Comparison), true)]
+  public partial class ComparisonView : ItemView {
+    public new Comparison Content {
+      get { return (Comparison)base.Content; }
       set { base.Content = value; }
     }
 
-    public ComparisonDataView() {
+    public ComparisonView() {
       InitializeComponent();
-      Caption = "ComparisonData View";
-      valueComboBox.DataSource = Enum.GetValues(typeof(Comparison));
+      Caption = "Comparison View";
+      valueComboBox.DataSource = Enum.GetValues(typeof(ComparisonType));
     }
-    public ComparisonDataView(ComparisonData content)
+    public ComparisonView(Comparison content)
       : this() {
       Content = content;
     }
@@ -56,7 +56,7 @@ namespace HeuristicLab.Data.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        Caption = "ComparisonData View";
+        Caption = "Comparison View";
         valueComboBox.Enabled = false;
       } else {
         Caption = Content.ToString() + " (" + Content.GetType().Name + ")";
@@ -73,7 +73,7 @@ namespace HeuristicLab.Data.Views {
     }
 
     private void valueComboBox_SelectedIndexChanged(object sender, EventArgs e) {
-      if (Content != null) Content.Value = (Comparison)valueComboBox.SelectedItem;
+      if (Content != null) Content.Value = (ComparisonType)valueComboBox.SelectedItem;
     }
   }
 }

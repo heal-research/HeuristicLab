@@ -32,8 +32,8 @@ namespace HeuristicLab.Operators {
   [Creatable("Test")]
   [StorableClass]
   public class ConditionalBranch : SingleSuccessorOperator {
-    public LookupParameter<BoolData> ConditionParameter {
-      get { return (LookupParameter<BoolData>)Parameters["Condition"]; }
+    public LookupParameter<BoolValue> ConditionParameter {
+      get { return (LookupParameter<BoolValue>)Parameters["Condition"]; }
     }
     protected OperatorParameter TrueBranchParameter {
       get { return (OperatorParameter)Parameters["TrueBranch"]; }
@@ -52,7 +52,7 @@ namespace HeuristicLab.Operators {
 
     public ConditionalBranch()
       : base() {
-      Parameters.Add(new LookupParameter<BoolData>("Condition", "A boolean variable which defines which branch is executed."));
+      Parameters.Add(new LookupParameter<BoolValue>("Condition", "A boolean variable which defines which branch is executed."));
       Parameters.Add(new OperatorParameter("TrueBranch", "The operator which is executed if the condition is true."));
       Parameters.Add(new OperatorParameter("FalseBranch", "The operator which is executed if the condition is false."));
     }

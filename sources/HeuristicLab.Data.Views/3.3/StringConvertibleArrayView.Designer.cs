@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Data.Views {
-  partial class StringConvertibleArrayDataView {
+  partial class StringConvertibleArrayView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -97,14 +97,14 @@ namespace HeuristicLab.Data.Views {
       this.errorProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
       this.errorProvider.ContainerControl = this;
       // 
-      // StringConvertibleArrayDataView
+      // StringConvertibleArrayView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.dataGridView);
       this.Controls.Add(this.lengthTextBox);
       this.Controls.Add(this.lengthLabel);
-      this.Name = "StringConvertibleArrayDataView";
+      this.Name = "StringConvertibleArrayView";
       this.Size = new System.Drawing.Size(424, 404);
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();

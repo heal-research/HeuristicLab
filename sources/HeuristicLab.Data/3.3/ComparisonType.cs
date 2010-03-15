@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Data {
-  public enum Comparison {
+  public enum ComparisonType {
     Less,
     LessOrEqual,
     Equal,

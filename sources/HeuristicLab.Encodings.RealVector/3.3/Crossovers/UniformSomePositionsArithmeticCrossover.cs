@@ -39,14 +39,14 @@ namespace HeuristicLab.Encodings.RealVector {
     /// <summary>
     /// The alpha parameter needs to be in the interval [0;1] and specifies how close the resulting offspring should be either to parent1 (alpha -> 0) or parent2 (alpha -> 1).
     /// </summary>
-    public ValueLookupParameter<DoubleData> AlphaParameter {
-      get { return (ValueLookupParameter<DoubleData>)Parameters["Alpha"]; }
+    public ValueLookupParameter<DoubleValue> AlphaParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["Alpha"]; }
     }
     /// <summary>
     /// The probability in the range [0;1] for each position in the vector to be crossed.
     /// </summary>
-    public ValueLookupParameter<DoubleData> ProbabilityParameter {
-      get { return (ValueLookupParameter<DoubleData>)Parameters["Probability"]; }
+    public ValueLookupParameter<DoubleValue> ProbabilityParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["Probability"]; }
     }
 
     /// <summary>
@@ -54,8 +54,8 @@ namespace HeuristicLab.Encodings.RealVector {
     /// </summary>
     public UniformSomePositionsArithmeticCrossover()
       : base() {
-      Parameters.Add(new ValueLookupParameter<DoubleData>("Alpha", "The alpha value in the range [0;1]", new DoubleData(0.5)));
-      Parameters.Add(new ValueLookupParameter<DoubleData>("Probability", "The probability for crossing a position in the range [0;1]", new DoubleData(0.5)));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("Alpha", "The alpha value in the range [0;1]", new DoubleValue(0.5)));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("Probability", "The probability for crossing a position in the range [0;1]", new DoubleValue(0.5)));
     }
 
     /// <summary>
@@ -67,13 +67,13 @@ namespace HeuristicLab.Encodings.RealVector {
     /// <param name="alpha">The alpha parameter (<see cref="AlphaParameter"/>).</param>
     /// <param name="probability">The probability parameter (<see cref="ProbabilityParameter"/>).</param>
     /// <returns>The vector resulting from the crossover.</returns>
-    public static DoubleArrayData Apply(IRandom random, DoubleArrayData parent1, DoubleArrayData parent2, DoubleData alpha, DoubleData probability) {
+    public static DoubleArray Apply(IRandom random, DoubleArray parent1, DoubleArray parent2, DoubleValue alpha, DoubleValue probability) {
       int length = parent1.Length;
       if (length != parent2.Length) throw new ArgumentException("UniformSomePositionsArithmeticCrossover: The parent vectors are of different length.", "parent1");
       if (alpha.Value < 0 || alpha.Value > 1) throw new ArgumentException("UniformSomePositionsArithmeticCrossover: Parameter alpha must be in the range [0;1]", "alpha");
       if (probability.Value < 0 || probability.Value > 1) throw new ArgumentException("UniformSomePositionsArithmeticCrossover: Parameter probability must be in the range [0;1]", "probability");
       
-      DoubleArrayData result = new DoubleArrayData(length);
+      DoubleArray result = new DoubleArray(length);
       for (int i = 0; i < length; i++) {
         if (random.NextDouble() < probability.Value)
           result[i] = alpha.Value * parent1[i] + (1 - alpha.Value) * parent2[i];
@@ -83,14 +83,14 @@ namespace HeuristicLab.Encodings.RealVector {
     }
 
     /// <summary>
-    /// Checks that there are exactly 2 parents, that the alpha and the probability parameter are not null and fowards the call to <see cref="Apply(IRandom, DoubleArrayData, DoubleArrrayData, DoubleData)"/>.
+    /// Checks that there are exactly 2 parents, that the alpha and the probability parameter are not null and fowards the call to <see cref="Apply(IRandom, DoubleArray, DoubleArrrayData, DoubleValue)"/>.
     /// </summary>
     /// <exception cref="ArgumentException">Thrown when there are not exactly two parents.</exception>
     /// <exception cref="InvalidOperationException">Thrown when either the alpha parmeter or the probability parameter could not be found.</exception>
     /// <param name="random">The random number generator.</param>
     /// <param name="parents">The collection of parents (must be of size 2).</param>
     /// <returns>The vector resulting from the crossover.</returns>
-    protected override DoubleArrayData  Cross(IRandom random, ItemArray<DoubleArrayData> parents) {
+    protected override DoubleArray  Cross(IRandom random, ItemArray<DoubleArray> parents) {
       if (parents.Length != 2) throw new ArgumentException("UniformSomePositionsArithmeticCrossover: There must be exactly two parents.", "parents");
       if (AlphaParameter.ActualValue == null) throw new InvalidOperationException("UniformSomePositionsArithmeticCrossover: Parameter " + AlphaParameter.ActualName + " could not be found.");
       if (ProbabilityParameter.ActualValue == null) throw new InvalidOperationException("UniformSomePositionsArithmeticCrossover: Parameter " + ProbabilityParameter.ActualName + " could not be found.");

@@ -28,23 +28,23 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Data.Views {
-  [View("StringConvertibleMatrixData View")]
-  [Content(typeof(IStringConvertibleMatrixData), true)]
-  public partial class StringConvertibleMatrixDataView : ContentView {
-    public new IStringConvertibleMatrixData Content {
-      get { return (IStringConvertibleMatrixData)base.Content; }
+  [View("StringConvertibleMatrix View")]
+  [Content(typeof(IStringConvertibleMatrix), true)]
+  public partial class StringConvertibleMatrixView : ContentView {
+    public new IStringConvertibleMatrix Content {
+      get { return (IStringConvertibleMatrix)base.Content; }
       set { base.Content = value; }
     }
 
-    public StringConvertibleMatrixDataView() {
+    public StringConvertibleMatrixView() {
       InitializeComponent();
-      Caption = "StringConvertibleMatrixData View";
+      Caption = "StringConvertibleMatrix View";
       errorProvider.SetIconAlignment(rowsTextBox, ErrorIconAlignment.MiddleLeft);
       errorProvider.SetIconPadding(rowsTextBox, 2);
       errorProvider.SetIconAlignment(columnsTextBox, ErrorIconAlignment.MiddleLeft);
       errorProvider.SetIconPadding(columnsTextBox, 2);
     }
-    public StringConvertibleMatrixDataView(IStringConvertibleMatrixData content)
+    public StringConvertibleMatrixView(IStringConvertibleMatrix content)
       : this() {
       Content = content;
     }
@@ -65,7 +65,7 @@ namespace HeuristicLab.Data.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        Caption = "StringConvertibleMatrixData View";
+        Caption = "StringConvertibleMatrix View";
         rowsTextBox.Text = "";
         rowsTextBox.Enabled = false;
         columnsTextBox.Text = "";
@@ -74,7 +74,7 @@ namespace HeuristicLab.Data.Views {
         dataGridView.Columns.Clear();
         dataGridView.Enabled = false;
       } else {
-        Caption = "StringConvertibleMatrixData (" + Content.GetType().Name + ")";
+        Caption = "StringConvertibleMatrix (" + Content.GetType().Name + ")";
         UpdateData();
       }
     }

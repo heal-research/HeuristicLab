@@ -32,25 +32,25 @@ namespace HeuristicLab.Operators {
   [StorableClass]
   [Creatable("Test")]
   public sealed class IntCounter : SingleSuccessorOperator {
-    public LookupParameter<IntData> ValueParameter {
-      get { return (LookupParameter<IntData>)Parameters["Value"]; }
+    public LookupParameter<IntValue> ValueParameter {
+      get { return (LookupParameter<IntValue>)Parameters["Value"]; }
     }
-    public ValueLookupParameter<IntData> IncrementParameter {
-      get { return (ValueLookupParameter<IntData>)Parameters["Increment"]; }
+    public ValueLookupParameter<IntValue> IncrementParameter {
+      get { return (ValueLookupParameter<IntValue>)Parameters["Increment"]; }
     }
-    public IntData Increment {
+    public IntValue Increment {
       get { return IncrementParameter.Value; }
       set { IncrementParameter.Value = value; }
     }
 
     public IntCounter()
       : base() {
-      Parameters.Add(new LookupParameter<IntData>("Value", "The value which should be incremented."));
-      Parameters.Add(new ValueLookupParameter<IntData>("Increment", "The increment which is added to the value.", new IntData(1)));
+      Parameters.Add(new LookupParameter<IntValue>("Value", "The value which should be incremented."));
+      Parameters.Add(new ValueLookupParameter<IntValue>("Increment", "The increment which is added to the value.", new IntValue(1)));
     }
 
     public override IOperation Apply() {
-      if (ValueParameter.ActualValue == null) ValueParameter.ActualValue = new IntData();
+      if (ValueParameter.ActualValue == null) ValueParameter.ActualValue = new IntValue();
       ValueParameter.ActualValue.Value += IncrementParameter.ActualValue.Value;
       return base.Apply();
     }

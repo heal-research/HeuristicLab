@@ -25,29 +25,29 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
-  [Item("IntData", "Represents an integer value.")]
+  [Item("IntValue", "Represents an integer value.")]
   [Creatable("Test")]
   [StorableClass]
-  public sealed class IntData : ValueTypeData<int>, IComparable, IStringConvertibleData {
-    public IntData() : base() { }
-    public IntData(int value) : base(value) { }
+  public sealed class IntValue : ValueTypeValue<int>, IComparable, IStringConvertibleValue {
+    public IntValue() : base() { }
+    public IntValue(int value) : base(value) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      IntData clone = new IntData(Value);
+      IntValue clone = new IntValue(Value);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
 
     public int CompareTo(object obj) {
-      IntData other = obj as IntData;
+      IntValue other = obj as IntValue;
       if (other != null)
         return Value.CompareTo(other.Value);
       else
         return Value.CompareTo(obj);
     }
 
-    #region IStringConvertibleData Members
-    bool IStringConvertibleData.Validate(string value, out string errorMessage) {
+    #region IStringConvertibleValue Members
+    bool IStringConvertibleValue.Validate(string value, out string errorMessage) {
       int val;
       bool valid = int.TryParse(value, out val);
       errorMessage = string.Empty;
@@ -60,10 +60,10 @@ namespace HeuristicLab.Data {
       }
       return valid;
     }
-    string IStringConvertibleData.GetValue() {
+    string IStringConvertibleValue.GetValue() {
       return Value.ToString();
     }
-    bool IStringConvertibleData.SetValue(string value) {
+    bool IStringConvertibleValue.SetValue(string value) {
       int val;
       if (int.TryParse(value, out val)) {
         Value = val;

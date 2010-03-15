@@ -67,15 +67,15 @@ namespace HeuristicLab.Encodings.RealVector_33.Tests {
     [DeploymentItem("HeuristicLab.Encodings.RealVector-3.3.dll")]
     public void BlendAlphaCrossoverCrossTest() {
       BlendAlphaCrossover_Accessor target = new BlendAlphaCrossover_Accessor(new PrivateObject(typeof(BlendAlphaCrossover)));
-      ItemArray<DoubleArrayData> parents;
+      ItemArray<DoubleArray> parents;
       TestRandom random = new TestRandom();
       bool exceptionFired;
       // The following test checks if there is an exception when there are more than 2 parents
       random.Reset();
-      parents = new ItemArray<DoubleArrayData>(new DoubleArrayData[] { new DoubleArrayData(5), new DoubleArrayData(6), new DoubleArrayData(4) });
+      parents = new ItemArray<DoubleArray>(new DoubleArray[] { new DoubleArray(5), new DoubleArray(6), new DoubleArray(4) });
       exceptionFired = false;
       try {
-        DoubleArrayData actual;
+        DoubleArray actual;
         actual = target.Cross(random, parents);
       } catch (System.ArgumentException) {
         exceptionFired = true;
@@ -83,10 +83,10 @@ namespace HeuristicLab.Encodings.RealVector_33.Tests {
       Assert.IsTrue(exceptionFired);
       // The following test checks if there is an exception when there are less than 2 parents
       random.Reset();
-      parents = new ItemArray<DoubleArrayData>(new DoubleArrayData[] { new DoubleArrayData(4) });
+      parents = new ItemArray<DoubleArray>(new DoubleArray[] { new DoubleArray(4) });
       exceptionFired = false;
       try {
-        DoubleArrayData actual;
+        DoubleArray actual;
         actual = target.Cross(random, parents);
       } catch (System.ArgumentException) {
         exceptionFired = true;
@@ -100,34 +100,34 @@ namespace HeuristicLab.Encodings.RealVector_33.Tests {
     [TestMethod()]
     public void BlendAlphaCrossoverApplyTest() {
       TestRandom random = new TestRandom();
-      DoubleArrayData parent1, parent2, expected, actual;
-      DoubleData alpha;
+      DoubleArray parent1, parent2, expected, actual;
+      DoubleValue alpha;
       bool exceptionFired;
       // The following test is not based on published examples
       random.Reset();
       random.DoubleNumbers = new double[] { 0.5, 0.5, 0.5, 0.5, 0.5 };
-      alpha = new DoubleData(0.5);
-      parent1 = new DoubleArrayData(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
-      parent2 = new DoubleArrayData(new double[] { 0.4, 0.1, 0.3, 0.2, 0.8 });
-      expected = new DoubleArrayData(new double[] { 0.3, 0.15, 0.3, 0.35, 0.45 });
+      alpha = new DoubleValue(0.5);
+      parent1 = new DoubleArray(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
+      parent2 = new DoubleArray(new double[] { 0.4, 0.1, 0.3, 0.2, 0.8 });
+      expected = new DoubleArray(new double[] { 0.3, 0.15, 0.3, 0.35, 0.45 });
       actual = BlendAlphaCrossover.Apply(random, parent1, parent2, alpha);
       Assert.IsTrue(Auxiliary.RealVectorIsAlmostEqualByPosition(actual, expected));
       // The following test is not based on published examples
       random.Reset();
       random.DoubleNumbers = new double[] { 0.25, 0.75, 0.25, 0.75, 0.25 };
-      alpha = new DoubleData(0.25);
-      parent1 = new DoubleArrayData(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
-      parent2 = new DoubleArrayData(new double[] { 0.4, 0.1, 0.3, 0.2, 0.8 });
-      expected = new DoubleArrayData(new double[] { 0.225, 0.1875, 0.3, 0.4625, 0.1875 });
+      alpha = new DoubleValue(0.25);
+      parent1 = new DoubleArray(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
+      parent2 = new DoubleArray(new double[] { 0.4, 0.1, 0.3, 0.2, 0.8 });
+      expected = new DoubleArray(new double[] { 0.225, 0.1875, 0.3, 0.4625, 0.1875 });
       actual = BlendAlphaCrossover.Apply(random, parent1, parent2, alpha);
       Assert.IsTrue(Auxiliary.RealVectorIsAlmostEqualByPosition(actual, expected));
       // The following test is not based on published examples
       random.Reset();
       random.DoubleNumbers = new double[] { 0.25, 0.75, 0.25, 0.75, 0.25 };
-      alpha = new DoubleData(-0.25); // negative values for alpha are not allowed
-      parent1 = new DoubleArrayData(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
-      parent2 = new DoubleArrayData(new double[] { 0.4, 0.1, 0.3, 0.2, 0.8 });
-      expected = new DoubleArrayData(new double[] { 0.225, 0.1875, 0.3, 0.4625, 0.1875 });
+      alpha = new DoubleValue(-0.25); // negative values for alpha are not allowed
+      parent1 = new DoubleArray(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
+      parent2 = new DoubleArray(new double[] { 0.4, 0.1, 0.3, 0.2, 0.8 });
+      expected = new DoubleArray(new double[] { 0.225, 0.1875, 0.3, 0.4625, 0.1875 });
       exceptionFired = false;
       try {
         actual = BlendAlphaCrossover.Apply(random, parent1, parent2, alpha);
@@ -138,10 +138,10 @@ namespace HeuristicLab.Encodings.RealVector_33.Tests {
       // The following test is not based on published examples
       random.Reset();
       random.DoubleNumbers = new double[] { 0.25, 0.75, 0.25, 0.75, 0.25, .75 };
-      alpha = new DoubleData(0.25);
-      parent1 = new DoubleArrayData(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1, 0.9 }); // this parent is longer
-      parent2 = new DoubleArrayData(new double[] { 0.4, 0.1, 0.3, 0.2, 0.8 });
-      expected = new DoubleArrayData(new double[] { 0.225, 0.1875, 0.3, 0.4625, 0.1875 });
+      alpha = new DoubleValue(0.25);
+      parent1 = new DoubleArray(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1, 0.9 }); // this parent is longer
+      parent2 = new DoubleArray(new double[] { 0.4, 0.1, 0.3, 0.2, 0.8 });
+      expected = new DoubleArray(new double[] { 0.225, 0.1875, 0.3, 0.4625, 0.1875 });
       exceptionFired = false;
       try {
         actual = BlendAlphaCrossover.Apply(random, parent1, parent2, alpha);

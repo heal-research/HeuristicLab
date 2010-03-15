@@ -27,9 +27,9 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
-  [Item("ValueTypeMatrixData<T>", "A base class for representing matrices of value types.")]
+  [Item("ValueTypeMatrix<T>", "A base class for representing matrices of value types.")]
   [StorableClass]
-  public class ValueTypeMatrixData<T> : Item, IEnumerable where T : struct {
+  public class ValueTypeMatrix<T> : Item, IEnumerable where T : struct {
     [Storable]
     private T[,] array;
 
@@ -66,23 +66,23 @@ namespace HeuristicLab.Data {
       }
     }
 
-    public ValueTypeMatrixData() {
+    public ValueTypeMatrix() {
       array = new T[0, 0];
     }
-    public ValueTypeMatrixData(int rows, int columns) {
+    public ValueTypeMatrix(int rows, int columns) {
       array = new T[rows, columns];
     }
-    public ValueTypeMatrixData(T[,] elements) {
+    public ValueTypeMatrix(T[,] elements) {
       if (elements == null) throw new ArgumentNullException();
       array = (T[,])elements.Clone();
     }
-    protected ValueTypeMatrixData(ValueTypeMatrixData<T> elements) {
+    protected ValueTypeMatrix(ValueTypeMatrix<T> elements) {
       if (elements == null) throw new ArgumentNullException();
       array = (T[,])elements.array.Clone();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      ValueTypeMatrixData<T> clone = (ValueTypeMatrixData<T>)base.Clone(cloner);
+      ValueTypeMatrix<T> clone = (ValueTypeMatrix<T>)base.Clone(cloner);
       clone.array = (T[,])array.Clone();
       return clone;
     }

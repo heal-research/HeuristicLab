@@ -51,7 +51,7 @@ namespace HeuristicLab.Analysis {
       }
 
       foreach (IParameter param in CollectedValues) {
-        DoubleData data = param.ActualValue as DoubleData;
+        DoubleValue data = param.ActualValue as DoubleValue;
         if (data == null) throw new InvalidOperationException("Only double data values can be collected by a DataTableValuesCollector.");
 
         DataRow row;

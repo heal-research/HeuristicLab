@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Data.Views {
-  partial class StringConvertibleDataView {
+  partial class StringConvertibleValueView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -77,13 +77,13 @@ namespace HeuristicLab.Data.Views {
       this.valueLabel.TabIndex = 0;
       this.valueLabel.Text = "&Value:";
       // 
-      // StringConvertibleDataView
+      // StringConvertibleValueView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.valueLabel);
       this.Controls.Add(this.valueTextBox);
-      this.Name = "StringConvertibleDataView";
+      this.Name = "StringConvertibleValueView";
       this.Size = new System.Drawing.Size(250, 38);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);

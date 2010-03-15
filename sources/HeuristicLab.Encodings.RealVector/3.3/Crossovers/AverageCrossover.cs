@@ -44,10 +44,10 @@ namespace HeuristicLab.Encodings.RealVector {
     /// <param name="random">The random number generator.</param>
     /// <param name="parents">The list of parents.</param>
     /// <returns>The child vector (average) of the parents.</returns>
-    public static DoubleArrayData Apply(IRandom random, ItemArray<DoubleArrayData> parents) {
+    public static DoubleArray Apply(IRandom random, ItemArray<DoubleArray> parents) {
       int length = parents[0].Length, parentsCount = parents.Length;
       if (parents.Length < 2) throw new ArgumentException("AverageCrossover: The number of parents is less than 2.", "parents");
-      DoubleArrayData result = new DoubleArrayData(length);
+      DoubleArray result = new DoubleArray(length);
       try {
         double avg;
         for (int i = 0; i < length; i++) {
@@ -64,12 +64,12 @@ namespace HeuristicLab.Encodings.RealVector {
     }
 
     /// <summary>
-    /// Forwards the call to <see cref="Apply(IRandom, ItemArray<DoubleArrayData>)"/>.
+    /// Forwards the call to <see cref="Apply(IRandom, ItemArray<DoubleArray>)"/>.
     /// </summary>
     /// <param name="random">The random number generator.</param>
     /// <param name="parents">The list of parents.</param>
     /// <returns>The child vector (average) of the parents.</returns>
-    protected override DoubleArrayData Cross(IRandom random, ItemArray<DoubleArrayData> parents) {
+    protected override DoubleArray Cross(IRandom random, ItemArray<DoubleArray> parents) {
       return Apply(random, parents);
     }
   }

@@ -32,13 +32,13 @@ namespace HeuristicLab.Problems.TSP {
   [Item("TSPEvaluator", "A base class for operators which evaluate TSP solutions.")]
   [StorableClass]
   public abstract class TSPEvaluator : SingleSuccessorOperator, ITSPEvaluator {
-    public ILookupParameter<DoubleData> QualityParameter {
-      get { return (ILookupParameter<DoubleData>)Parameters["Quality"]; }
+    public ILookupParameter<DoubleValue> QualityParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
 
     protected TSPEvaluator()
       : base() {
-      Parameters.Add(new LookupParameter<DoubleData>("Quality", "The evaluated quality of the TSP solution."));
+      Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The evaluated quality of the TSP solution."));
     }
   }
 }

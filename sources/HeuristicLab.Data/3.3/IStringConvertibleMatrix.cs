@@ -23,7 +23,7 @@ using System;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Data {
-  public interface IStringConvertibleMatrixData {
+  public interface IStringConvertibleMatrix {
     int Rows { get; set; }
     int Columns { get; set; }
 

@@ -33,36 +33,36 @@ namespace HeuristicLab.Operators {
   [StorableClass]
   [Creatable("Test")]
   public sealed class RandomCreator : SingleSuccessorOperator {
-    public ValueLookupParameter<BoolData> SetSeedRandomlyParameter {
-      get { return (ValueLookupParameter<BoolData>)Parameters["SetSeedRandomly"]; }
+    public ValueLookupParameter<BoolValue> SetSeedRandomlyParameter {
+      get { return (ValueLookupParameter<BoolValue>)Parameters["SetSeedRandomly"]; }
     }
-    public ValueLookupParameter<IntData> SeedParameter {
-      get { return (ValueLookupParameter<IntData>)Parameters["Seed"]; }
+    public ValueLookupParameter<IntValue> SeedParameter {
+      get { return (ValueLookupParameter<IntValue>)Parameters["Seed"]; }
     }
     public LookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
-    public BoolData SetSeedRandomly {
+    public BoolValue SetSeedRandomly {
       get { return SetSeedRandomlyParameter.Value; }
       set { SetSeedRandomlyParameter.Value = value; }
     }
-    public IntData Seed {
+    public IntValue Seed {
       get { return SeedParameter.Value; }
       set { SeedParameter.Value = value; }
     }
 
     public RandomCreator()
       : base() {
-      Parameters.Add(new ValueLookupParameter<BoolData>("SetSeedRandomly", "True if the random seed should be set to a random value, otherwise false.", new BoolData(true)));
-      Parameters.Add(new ValueLookupParameter<IntData>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntData(0)));
+      Parameters.Add(new ValueLookupParameter<BoolValue>("SetSeedRandomly", "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
+      Parameters.Add(new ValueLookupParameter<IntValue>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
       Parameters.Add(new LookupParameter<IRandom>("Random", "The new pseudo random number generator which is initialized with the given seed."));
     }
 
     public override IOperation Apply() {
-      if (SetSeedRandomlyParameter.ActualValue == null) SetSeedRandomlyParameter.ActualValue = new BoolData(true);
+      if (SetSeedRandomlyParameter.ActualValue == null) SetSeedRandomlyParameter.ActualValue = new BoolValue(true);
       bool setSeedRandomly = SetSeedRandomlyParameter.ActualValue.Value;
-      if (SeedParameter.ActualValue == null) SeedParameter.ActualValue = new IntData(0);
-      IntData seed = SeedParameter.ActualValue;
+      if (SeedParameter.ActualValue == null) SeedParameter.ActualValue = new IntValue(0);
+      IntValue seed = SeedParameter.ActualValue;
 
       if (setSeedRandomly) seed.Value = new System.Random().Next();
       RandomParameter.ActualValue = new MersenneTwister((uint)seed.Value);

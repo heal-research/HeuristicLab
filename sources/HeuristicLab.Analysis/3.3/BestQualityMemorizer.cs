@@ -32,33 +32,33 @@ namespace HeuristicLab.Analysis {
   [Item("BestQualityMemorizer", "An operator that updates the best quality found so far with those qualities in the subscopes.")]
   [StorableClass]
   public class BestQualityMemorizer : SingleSuccessorOperator {
-    public IValueLookupParameter<BoolData> MaximizationParameter {
-      get { return (IValueLookupParameter<BoolData>)Parameters["Maximization"]; }
+    public IValueLookupParameter<BoolValue> MaximizationParameter {
+      get { return (IValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
-    public ILookupParameter<ItemArray<DoubleData>> QualityParameter {
-      get { return (ILookupParameter<ItemArray<DoubleData>>)Parameters["Quality"]; }
+    public ILookupParameter<ItemArray<DoubleValue>> QualityParameter {
+      get { return (ILookupParameter<ItemArray<DoubleValue>>)Parameters["Quality"]; }
     }
-    public IValueLookupParameter<DoubleData> BestQualityParameter {
-      get { return (IValueLookupParameter<DoubleData>)Parameters["BestQuality"]; }
+    public IValueLookupParameter<DoubleValue> BestQualityParameter {
+      get { return (IValueLookupParameter<DoubleValue>)Parameters["BestQuality"]; }
     }
 
     public BestQualityMemorizer()
       : base() {
-      Parameters.Add(new ValueLookupParameter<BoolData>("Maximization", "True if the current problem is a maximization problem, otherwise false."));
-      Parameters.Add(new SubScopesLookupParameter<DoubleData>("Quality", "The value contained in each sub-scope which represents the solution quality."));
-      Parameters.Add(new ValueLookupParameter<DoubleData>("BestQuality", "The quality value of the best solution."));
+      Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the current problem is a maximization problem, otherwise false."));
+      Parameters.Add(new SubScopesLookupParameter<DoubleValue>("Quality", "The value contained in each sub-scope which represents the solution quality."));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("BestQuality", "The quality value of the best solution."));
     }
 
     public override IOperation Apply() {
-      ItemArray<DoubleData> qualities = QualityParameter.ActualValue;
+      ItemArray<DoubleValue> qualities = QualityParameter.ActualValue;
       bool maximization = MaximizationParameter.ActualValue.Value;
-      DoubleData best = BestQualityParameter.ActualValue;
+      DoubleValue best = BestQualityParameter.ActualValue;
       double max = (best != null) ? (best.Value) : ((maximization) ? (double.MinValue) : (double.MaxValue));
       
-      foreach (DoubleData quality in qualities)
+      foreach (DoubleValue quality in qualities)
         if (IsBetter(maximization, quality.Value, max)) max = quality.Value;
 
-      if (best == null) BestQualityParameter.ActualValue = new DoubleData(max);
+      if (best == null) BestQualityParameter.ActualValue = new DoubleValue(max);
       else best.Value = max;
       return base.Apply();
     }

@@ -30,7 +30,7 @@ namespace HeuristicLab.Encodings.Permutation {
   [StorableClass]
   [Item("Permutation", "Represents a permutation of integer values.")]
   [Creatable("Test")]
-  public sealed class Permutation : ValueTypeArrayData<int>, IStringConvertibleArrayData {
+  public sealed class Permutation : ValueTypeArray<int>, IStringConvertibleArray {
     public Permutation() : base() { }
     public Permutation(int length)
       : base(length) {
@@ -91,12 +91,12 @@ namespace HeuristicLab.Encodings.Permutation {
     }
 
     #region IStringConvertibleArrayData Members
-    int IStringConvertibleArrayData.Length {
+    int IStringConvertibleArray.Length {
       get { return Length; }
       set { Length = value; }
     }
 
-    bool IStringConvertibleArrayData.Validate(string value, out string errorMessage) {
+    bool IStringConvertibleArray.Validate(string value, out string errorMessage) {
       int val;
       bool valid = int.TryParse(value, out val);
       errorMessage = string.Empty;
@@ -109,10 +109,10 @@ namespace HeuristicLab.Encodings.Permutation {
       }
       return valid;
     }
-    string IStringConvertibleArrayData.GetValue(int index) {
+    string IStringConvertibleArray.GetValue(int index) {
       return this[index].ToString();
     }
-    bool IStringConvertibleArrayData.SetValue(string value, int index) {
+    bool IStringConvertibleArray.SetValue(string value, int index) {
       int val;
       if (int.TryParse(value, out val)) {
         this[index] = val;

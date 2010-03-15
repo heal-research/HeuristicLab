@@ -27,6 +27,6 @@ namespace HeuristicLab.Problems.TSP {
   /// An interface which represents an evaluation operator which evaluates TSP solutions given in path representation using city coordinates.
   /// </summary>
   public interface ITSPCoordinatesPathEvaluator : ITSPPathEvaluator {
-    ILookupParameter<DoubleMatrixData> CoordinatesParameter { get; }
+    ILookupParameter<DoubleMatrix> CoordinatesParameter { get; }
   }
 }

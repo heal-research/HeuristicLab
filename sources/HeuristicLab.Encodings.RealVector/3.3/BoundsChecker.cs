@@ -34,14 +34,14 @@ namespace HeuristicLab.Encodings.RealVector {
   [Item("BoundsChecker", "Checks if all elements of a real vector are inside a given minimum and maximum value. If not, elements are corrected.")]
   [StorableClass]
   public class BoundsChecker : SingleSuccessorOperator {
-    public LookupParameter<DoubleArrayData> RealVectorParameter {
-      get { return (LookupParameter<DoubleArrayData>)Parameters["RealVector"]; }
+    public LookupParameter<DoubleArray> RealVectorParameter {
+      get { return (LookupParameter<DoubleArray>)Parameters["RealVector"]; }
     }
-    public ValueLookupParameter<DoubleData> MinimumParameter {
-      get { return (ValueLookupParameter<DoubleData>)Parameters["Minimum"]; }
+    public ValueLookupParameter<DoubleValue> MinimumParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["Minimum"]; }
     }
-    public ValueLookupParameter<DoubleData> MaximumParameter {
-      get { return (ValueLookupParameter<DoubleData>)Parameters["Maximum"]; }
+    public ValueLookupParameter<DoubleValue> MaximumParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["Maximum"]; }
     }
 
     /// <summary>
@@ -50,9 +50,9 @@ namespace HeuristicLab.Encodings.RealVector {
     /// </summary>
     public BoundsChecker()
       : base() {
-      Parameters.Add(new LookupParameter<DoubleArrayData>("RealVector", "The real-valued vector for which the bounds should be checked."));
-      Parameters.Add(new ValueLookupParameter<DoubleData>("Minimum", "The lower bound for each element in the vector."));
-      Parameters.Add(new ValueLookupParameter<DoubleData>("Maximum", "The upper bound for each element in the vector."));
+      Parameters.Add(new LookupParameter<DoubleArray>("RealVector", "The real-valued vector for which the bounds should be checked."));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("Minimum", "The lower bound for each element in the vector."));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("Maximum", "The upper bound for each element in the vector."));
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ namespace HeuristicLab.Encodings.RealVector {
     /// <param name="max">The maximum value of the range (inclusive).</param>
     /// <param name="vector">The vector to check.</param>
     /// <returns>The corrected real vector.</returns>
-    public static void Apply(DoubleArrayData vector, DoubleData min, DoubleData max) {
+    public static void Apply(DoubleArray vector, DoubleValue min, DoubleValue max) {
       for (int i = 0; i < vector.Length; i++) {
         if (vector[i] < min.Value) vector[i] = min.Value;
         if (vector[i] > max.Value) vector[i] = max.Value;

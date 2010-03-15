@@ -42,26 +42,26 @@ namespace HeuristicLab.Encodings.RealVector {
     /// <summary>
     /// Whether the problem is a maximization or minimization problem.
     /// </summary>
-    public ValueLookupParameter<BoolData> MaximizationParameter {
-      get { return (ValueLookupParameter<BoolData>)Parameters["Maximization"]; }
+    public ValueLookupParameter<BoolValue> MaximizationParameter {
+      get { return (ValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
     /// <summary>
     /// The quality of the parents.
     /// </summary>
-    public SubScopesLookupParameter<DoubleData> QualityParameter {
-      get { return (SubScopesLookupParameter<DoubleData>)Parameters["Quality"]; }
+    public SubScopesLookupParameter<DoubleValue> QualityParameter {
+      get { return (SubScopesLookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
     /// <summary>
     /// The alpha parameter specifies how much the interval between the parents should be extended in direction of the better parent.
     /// </summary>
-    public ValueLookupParameter<DoubleData> AlphaParameter {
-      get { return (ValueLookupParameter<DoubleData>)Parameters["Alpha"]; }
+    public ValueLookupParameter<DoubleValue> AlphaParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["Alpha"]; }
     }
     /// <summary>
     /// The beta parameter specifies how much the interval between the parents should be extended in direction of the worse parent.
     /// </summary>
-    public ValueLookupParameter<DoubleData> BetaParameter {
-      get { return (ValueLookupParameter<DoubleData>)Parameters["Beta"]; }
+    public ValueLookupParameter<DoubleValue> BetaParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["Beta"]; }
     }
 
     /// <summary>
@@ -70,10 +70,10 @@ namespace HeuristicLab.Encodings.RealVector {
     /// </summary>
     public BlendAlphaBetaCrossover()
       : base() {
-      Parameters.Add(new ValueLookupParameter<BoolData>("Maximization", "Whether the problem is a maximization problem or not."));
-      Parameters.Add(new SubScopesLookupParameter<DoubleData>("Quality", "The quality values of the parents."));
-      Parameters.Add(new ValueLookupParameter<DoubleData>("Alpha", "The value for alpha.", new DoubleData(0.75)));
-      Parameters.Add(new ValueLookupParameter<DoubleData>("Beta", "The value for beta.", new DoubleData(0.25)));
+      Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "Whether the problem is a maximization problem or not."));
+      Parameters.Add(new SubScopesLookupParameter<DoubleValue>("Quality", "The quality values of the parents."));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("Alpha", "The value for alpha.", new DoubleValue(0.75)));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("Beta", "The value for beta.", new DoubleValue(0.25)));
     }
 
     /// <summary>
@@ -93,13 +93,13 @@ namespace HeuristicLab.Encodings.RealVector {
     /// <param name="alpha">The parameter alpha.</param>
     /// <param name="beta">The parameter beta.</param>
     /// <returns>The real vector that results from the crossover.</returns>
-    public static DoubleArrayData Apply(IRandom random, DoubleArrayData betterParent, DoubleArrayData worseParent, DoubleData alpha, DoubleData beta) {
+    public static DoubleArray Apply(IRandom random, DoubleArray betterParent, DoubleArray worseParent, DoubleValue alpha, DoubleValue beta) {
       if (betterParent.Length != worseParent.Length) throw new ArgumentException("BlendAlphaBetaCrossover: The parents' vectors are of different length.", "betterParent");
       if (alpha.Value < 0) throw new ArgumentException("BlendAlphaBetaCrossover: Parameter alpha must be greater or equal to 0.", "alpha");
       if (beta.Value < 0) throw new ArgumentException("BlendAlphaBetaCrossover: Parameter beta must be greater or equal to 0.", "beta");
       int length = betterParent.Length;
       double min, max, d;
-      DoubleArrayData result = new DoubleArrayData(length);
+      DoubleArray result = new DoubleArray(length);
 
       for (int i = 0; i < length; i++) {
         d = Math.Abs(betterParent[i] - worseParent[i]);
@@ -116,7 +116,7 @@ namespace HeuristicLab.Encodings.RealVector {
     }
 
     /// <summary>
-    /// Checks if the number of parents is equal to 2, if all parameters are available and forwards the call to <see cref="Apply(IRandom, DoubleArrayData, DoubleArrayData, DoubleData, DoubleData)"/>.
+    /// Checks if the number of parents is equal to 2, if all parameters are available and forwards the call to <see cref="Apply(IRandom, DoubleArray, DoubleArray, DoubleValue, DoubleValue)"/>.
     /// </summary>
     /// <exception cref="ArgumentException">Thrown when the number of parents is not equal to 2.</exception>
     /// <exception cref="InvalidOperationException">
@@ -131,13 +131,13 @@ namespace HeuristicLab.Encodings.RealVector {
     /// <param name="random">The random number generator to use.</param>
     /// <param name="parents">The collection of parents (must be of size 2).</param>
     /// <returns>The real vector that results from the crossover.</returns>
-    protected override DoubleArrayData Cross(IRandom random, ItemArray<DoubleArrayData> parents) {
+    protected override DoubleArray Cross(IRandom random, ItemArray<DoubleArray> parents) {
       if (parents.Length != 2) throw new ArgumentException("BlendAlphaBetaCrossover: Number of parents is not equal to 2.", "parents");
       if (MaximizationParameter.ActualValue == null) throw new InvalidOperationException("BlendAlphaBetaCrossover: Parameter " + MaximizationParameter.ActualName + " could not be found.");
       if (QualityParameter.ActualValue == null || QualityParameter.ActualValue.Length != parents.Length) throw new InvalidOperationException("BlendAlphaBetaCrossover: Parameter " + QualityParameter.ActualName + " could not be found, or not in the same quantity as there are parents.");
       if (AlphaParameter.ActualValue == null || BetaParameter.ActualValue == null) throw new InvalidOperationException("BlendAlphaBetaCrossover: Parameter " + AlphaParameter.ActualName + " or paramter " + BetaParameter.ActualName + " could not be found.");
       
-      ItemArray<DoubleData> qualities = QualityParameter.ActualValue;
+      ItemArray<DoubleValue> qualities = QualityParameter.ActualValue;
       bool maximization = MaximizationParameter.ActualValue.Value;
       // the better parent 
       if (maximization && qualities[0].Value >= qualities[1].Value || !maximization && qualities[0].Value <= qualities[1].Value)

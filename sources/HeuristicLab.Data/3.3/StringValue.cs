@@ -24,10 +24,10 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
-  [Item("StringData", "Represents a string.")]
+  [Item("StringValue", "Represents a string.")]
   [Creatable("Test")]
   [StorableClass]
-  public sealed class StringData : Item, IComparable, IStringConvertibleData {
+  public sealed class StringValue : Item, IComparable, IStringConvertibleValue {
     [Storable]
     private string value;
     public string Value {
@@ -42,15 +42,15 @@ namespace HeuristicLab.Data {
       }
     }
 
-    public StringData() {
+    public StringValue() {
       this.value = string.Empty;
     }
-    public StringData(string value) {
+    public StringValue(string value) {
       this.value = value != null ? value : string.Empty;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      StringData clone = new StringData(Value);
+      StringValue clone = new StringValue(Value);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
@@ -60,7 +60,7 @@ namespace HeuristicLab.Data {
     }
 
     public int CompareTo(object obj) {
-      StringData other = obj as StringData;
+      StringValue other = obj as StringValue;
       if (other != null)
         return Value.CompareTo(other.Value);
       else
@@ -74,8 +74,8 @@ namespace HeuristicLab.Data {
       OnToStringChanged();
     }
 
-    #region IStringConvertibleData Members
-    bool IStringConvertibleData.Validate(string value, out string errorMessage) {
+    #region IStringConvertibleValue Members
+    bool IStringConvertibleValue.Validate(string value, out string errorMessage) {
       if (value == null) {
         errorMessage = "Invalid Value (string must not be null)";
         return false;
@@ -84,10 +84,10 @@ namespace HeuristicLab.Data {
         return true;
       }
     }
-    string IStringConvertibleData.GetValue() {
+    string IStringConvertibleValue.GetValue() {
       return Value;
     }
-    bool IStringConvertibleData.SetValue(string value) {
+    bool IStringConvertibleValue.SetValue(string value) {
       if (value != null) {
         Value = value;
         return true;
