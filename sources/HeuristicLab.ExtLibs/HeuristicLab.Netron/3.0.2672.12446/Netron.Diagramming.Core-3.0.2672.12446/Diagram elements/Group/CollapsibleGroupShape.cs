@@ -35,13 +35,6 @@ namespace Netron.Diagramming.Core
 
         // ------------------------------------------------------------------
         /// <summary>
-        /// the bounding rectangle
-        /// </summary>
-        // ------------------------------------------------------------------
-        private Rectangle mRectangle;
-
-        // ------------------------------------------------------------------
-        /// <summary>
         /// in essence, whether the group shape should be painted
         /// </summary>
         // ------------------------------------------------------------------

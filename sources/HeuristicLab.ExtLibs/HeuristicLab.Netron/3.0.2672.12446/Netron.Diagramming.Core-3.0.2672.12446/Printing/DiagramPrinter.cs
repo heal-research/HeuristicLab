@@ -18,7 +18,7 @@ namespace Netron.Diagramming.Core
     {
         PrintDocument myDocument;
         IDiagramControl myDiagram;
-        PrinterSettings mySettings;
+        //PrinterSettings mySettings;
         PageSettings myPageSettings;
         int currentPageIndex = 0;
         int numberOfPages = 1;

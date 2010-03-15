@@ -85,7 +85,7 @@ namespace Netron.Diagramming.Core
         /// <summary>
         /// the list of items when set to list-type
         /// </summary>
-        private ClassShapeItemCollection mList = new ClassShapeItemCollection();       
+        private CollectionBase<ClassShapeItem> mList = new CollectionBase<ClassShapeItem>();       
         /// <summary>
         /// the <see cref="LabelMaterial"/> to display the free text
         /// </summary>
@@ -225,7 +225,7 @@ namespace Netron.Diagramming.Core
         /// <summary>
         /// Gets the list of items displayed in the body
         /// </summary>
-        public ClassShapeItemCollection List
+        public CollectionBase<ClassShapeItem> List
         {
             get
             {

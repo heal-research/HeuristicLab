@@ -16,7 +16,7 @@ namespace Netron.Diagramming.Core
         /// Connection.
         /// </summary>
         // ------------------------------------------------------------------
-        protected const double connectionVersion = 1.0;
+        private const double connectionVersion = 1.0;
 
         #region Hack for the caps
         private const float capslength = 0.01F;

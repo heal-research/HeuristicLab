@@ -229,8 +229,8 @@ namespace Netron.Diagramming.Core
         {
             public int d;
             public int r;
-            public double rx;
-            public double ry;
+            //public double rx;
+            //public double ry;
             public double a;
             public double c;
             public double f;

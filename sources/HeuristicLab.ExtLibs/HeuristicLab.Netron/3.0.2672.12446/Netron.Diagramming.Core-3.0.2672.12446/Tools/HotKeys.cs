@@ -32,7 +32,6 @@ namespace Netron.Diagramming.Core
 
         public void KeyUp(System.Windows.Forms.KeyEventArgs e)
         {
-            ICommand cmd = null;
             switch (e.KeyCode)
             {
                 case System.Windows.Forms.Keys.A:

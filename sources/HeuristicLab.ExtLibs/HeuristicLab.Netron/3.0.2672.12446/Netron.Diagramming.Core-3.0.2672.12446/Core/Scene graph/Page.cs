@@ -33,7 +33,7 @@ namespace Netron.Diagramming.Core
         /// <summary>
         /// Occurs before an entity is transformed
         /// </summary>
-        public event EventHandler<CancelableEntityEventArgs> OnBeforeResize;
+        //public event EventHandler<CancelableEntityEventArgs> OnBeforeResize;
         #endregion
 
         #region Fields

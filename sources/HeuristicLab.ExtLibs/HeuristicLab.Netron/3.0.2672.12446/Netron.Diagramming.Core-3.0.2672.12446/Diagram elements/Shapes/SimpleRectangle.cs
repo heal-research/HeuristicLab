@@ -30,28 +30,28 @@ namespace Netron.Diagramming.Core
         /// The bottom connector.
         /// </summary>
         // ------------------------------------------------------------------
-        Connector cBottom;
+        //Connector cBottom;
 
         // ------------------------------------------------------------------
         /// <summary>
         /// The left connector.
         /// </summary>
         // ------------------------------------------------------------------
-        Connector cLeft;
+        //Connector cLeft;
 
         // ------------------------------------------------------------------
         /// <summary>
         /// The right connector.
         /// </summary>
         // ------------------------------------------------------------------
-        Connector cRight;
+        //Connector cRight;
 
         // ------------------------------------------------------------------
         /// <summary>
         /// The top connector.
         /// </summary>
         // ------------------------------------------------------------------
-        Connector cTop;
+        //Connector cTop;
 
         #endregion
 

@@ -39,7 +39,7 @@ namespace Netron.Diagramming.Core
         /// Gets the current version.
         /// </summary>
         // ------------------------------------------------------------------
-        public virtual double Version
+        public override double Version
         {
             get
             {

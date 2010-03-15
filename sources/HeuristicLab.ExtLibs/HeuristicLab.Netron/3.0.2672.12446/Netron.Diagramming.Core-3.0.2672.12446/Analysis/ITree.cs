@@ -16,7 +16,7 @@ namespace Netron.Diagramming.Core.Analysis
         /// <value>
         /// 	<c>true</c> if this instance is directed; otherwise, <c>false</c>.
         /// </value>
-        bool IsDirected { get; set;}
+        new bool IsDirected { get; set;}
         /// <summary>
         /// Gets or sets the root of the tree
         /// </summary>

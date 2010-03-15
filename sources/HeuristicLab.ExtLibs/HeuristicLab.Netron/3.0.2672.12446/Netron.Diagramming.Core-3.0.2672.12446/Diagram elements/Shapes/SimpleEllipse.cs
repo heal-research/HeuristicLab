@@ -22,7 +22,7 @@ namespace Netron.Diagramming.Core
 		/// <summary>
 		/// the connectors
 		/// </summary>
-		Connector cBottom, cLeft, cRight, cTop;
+    //Connector cBottom, cLeft, cRight, cTop;
 		#endregion
 
         #region Properties

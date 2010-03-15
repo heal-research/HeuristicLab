@@ -21,7 +21,7 @@ namespace Netron.Diagramming.Core
         /// </summary>
         /// <param name="info">The info.</param>
         /// <param name="context">The context.</param>
-        protected Connection(SerializationInfo info, StreamingContext context) : base(info, context)
+        private Connection(SerializationInfo info, StreamingContext context) : base(info, context)
         {
             if(Tracing.BinaryDeserializationSwitch.Enabled)
                 Trace.WriteLine("Deserializing the fields of 'Connection'.");

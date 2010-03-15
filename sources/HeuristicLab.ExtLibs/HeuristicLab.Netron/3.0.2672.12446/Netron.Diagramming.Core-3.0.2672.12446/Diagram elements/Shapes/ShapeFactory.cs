@@ -56,8 +56,6 @@ namespace Netron.Diagramming.Core
                 default:
                     return null;
             }
-
-            return null;
         }
   
     }

@@ -280,7 +280,7 @@ namespace Netron.Diagramming.Core
         {
             public IntPtr hIcon;
             public IntPtr iIcon;
-            public uint dwAttributes;
+            public int dwAttributes;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
             public string szDisplayName;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]

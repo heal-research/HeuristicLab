@@ -26,29 +26,23 @@ namespace Netron.Diagramming.Core
 
 			FileStream fs = new FileStream(fileName, FileMode.Create);
 
-			GenericFormatter<BinaryFormatter> f = new GenericFormatter<BinaryFormatter>();			
-			
-			try
-			{
-				Document document = control.Document;
-				
+			GenericFormatter<BinaryFormatter> f = new GenericFormatter<BinaryFormatter>();
 
-				//Warning!: cleaning up, you need to unhook all events since 
-                // unserializable classes hooked to events will give problems.				
-				f.Serialize<Document>(fs, document );
-				return true;
-			}			
-			catch(Exception exc)			
-			{
-				//site.OutputInfo("The graph was not saved, because some graph events were attached to non-serializable classes.\r\n This is a known issue and will be resolved in a later stadium.",OutputInfoLevels.Exception);
-				Trace.WriteLine(exc.Message, "BinarySerializer.SaveAs");
-				
-				//DumpInfo();
-			}
-			catch
-			{
-				Trace.WriteLine("Non-CLS exception caught.","BinarySerializer.SaveAs");
-			}
+      try {
+        Document document = control.Document;
+
+
+        //Warning!: cleaning up, you need to unhook all events since 
+        // unserializable classes hooked to events will give problems.				
+        f.Serialize<Document>(fs, document);
+        return true;
+      }
+      catch (Exception exc) {
+        //site.OutputInfo("The graph was not saved, because some graph events were attached to non-serializable classes.\r\n This is a known issue and will be resolved in a later stadium.",OutputInfoLevels.Exception);
+        Trace.WriteLine(exc.Message, "BinarySerializer.SaveAs");
+
+        //DumpInfo();
+      }
 			finally
 			{
 				fs.Close();
@@ -115,11 +109,6 @@ namespace Netron.Diagramming.Core
 			catch(Exception exc)
 			{
                 MessageBox.Show(exc.Message, "BinarySerializer.Open");
-			}
-			catch
-			{
-                MessageBox.Show("Non-CLS exception caught.", "BinarySerializer.Open");
-				
 			}
 			finally
 			{

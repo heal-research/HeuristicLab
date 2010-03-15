@@ -217,8 +217,8 @@ namespace Netron.Diagramming.Core
         ///<summary>
         /// the shapes of the diagram
         /// </summary>
-        [NonSerialized]
-        private CollectionBase<IShape> mShapes;
+        //[NonSerialized]
+        //private CollectionBase<IShape> mShapes;
         /// <summary>
         /// the bounding rectangle
         /// </summary>
