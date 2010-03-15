@@ -19,30 +19,13 @@
  */
 #endregion
 
-using System;
-using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-
 namespace HeuristicLab.Data {
-  [Item("ComparisonData", "Represents a comparison.")]
-  [Creatable("Test")]
-  [StorableClass]
-  public sealed class ComparisonData : ValueTypeData<Comparison>, IComparable {
-    public ComparisonData() : base() { }
-    public ComparisonData(Comparison value) : base(value) { }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      ComparisonData clone = new ComparisonData(Value);
-      cloner.RegisterClonedObject(this, clone);
-      return clone;
-    }
-
-    public int CompareTo(object obj) {
-      ComparisonData other = obj as ComparisonData;
-      if (other != null)
-        return Value.CompareTo(other.Value);
-      else
-        return Value.CompareTo(obj);
-    }
+  public enum Comparison {
+    Less,
+    LessOrEqual,
+    Equal,
+    GreaterOrEqual,
+    Greater,
+    NotEqual
   }
 }

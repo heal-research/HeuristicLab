@@ -84,38 +84,38 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BoolDataView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="BoolDataView.Designer.cs">
-      <DependentUpon>BoolDataView.cs</DependentUpon>
-    </Compile>
     <None Include="HeuristicLabDataViewsPlugin.cs.frame" />
-    <Compile Include="ComparisonDataView.cs">
+    <Compile Include="BoolValueView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ComparisonDataView.Designer.cs">
-      <DependentUpon>ComparisonDataView.cs</DependentUpon>
+    <Compile Include="BoolValueView.Designer.cs">
+      <DependentUpon>BoolValueView.cs</DependentUpon>
     </Compile>
-    <Compile Include="StringConvertibleArrayDataView.cs">
+    <Compile Include="ComparisonView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="StringConvertibleArrayDataView.Designer.cs">
-      <DependentUpon>StringConvertibleArrayDataView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="StringConvertibleDataView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="StringConvertibleDataView.Designer.cs">
-      <DependentUpon>StringConvertibleDataView.cs</DependentUpon>
+    <Compile Include="ComparisonView.Designer.cs">
+      <DependentUpon>ComparisonView.cs</DependentUpon>
     </Compile>
     <Compile Include="HeuristicLabDataViewsPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StringConvertibleMatrixDataView.cs">
+    <Compile Include="StringConvertibleArrayView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="StringConvertibleMatrixDataView.Designer.cs">
-      <DependentUpon>StringConvertibleMatrixDataView.cs</DependentUpon>
+    <Compile Include="StringConvertibleArrayView.Designer.cs">
+      <DependentUpon>StringConvertibleArrayView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StringConvertibleMatrixView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StringConvertibleMatrixView.Designer.cs">
+      <DependentUpon>StringConvertibleMatrixView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StringConvertibleValueView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StringConvertibleValueView.Designer.cs">
+      <DependentUpon>StringConvertibleValueView.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

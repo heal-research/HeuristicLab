@@ -99,42 +99,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BoolData.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="BoolArrayData.cs" />
-    <Compile Include="BoolMatrixData.cs" />
     <None Include="HeuristicLabDataPlugin.cs.frame" />
+    <Compile Include="BoolArray.cs" />
+    <Compile Include="BoolMatrix.cs" />
+    <Compile Include="BoolValue.cs" />
     <Compile Include="Comparison.cs" />
-    <Compile Include="ComparisonData.cs" />
-    <Compile Include="IStringConvertibleArrayData.cs" />
-    <Compile Include="StringMatrixData.cs" />
-    <Compile Include="StringArrayData.cs" />
+    <Compile Include="ComparisonType.cs" />
+    <Compile Include="DateTimeValue.cs" />
+    <Compile Include="DoubleArray.cs" />
+    <Compile Include="DoubleMatrix.cs" />
+    <Compile Include="DoubleValue.cs" />
     <Compile Include="FormatPatterns.cs" />
-    <Compile Include="DoubleArrayData.cs" />
-    <Compile Include="DoubleMatrixData.cs" />
-    <Compile Include="IntMatrixData.cs" />
-    <Compile Include="ValueTypeMatrixData.cs" />
-    <Compile Include="IStringConvertibleMatrixData.cs" />
-    <Compile Include="ValueTypeArrayData.cs" />
-    <Compile Include="IntArrayData.cs" />
-    <Compile Include="StringData.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="TimeSpanData.cs" />
-    <Compile Include="DateTimeData.cs" />
-    <Compile Include="DoubleData.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IStringConvertibleData.cs" />
-    <Compile Include="ValueTypeData.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="HeuristicLabDataPlugin.cs" />
-    <Compile Include="IntData.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="IntArray.cs" />
+    <Compile Include="IntMatrix.cs" />
+    <Compile Include="IntValue.cs" />
+    <Compile Include="IStringConvertibleArray.cs" />
+    <Compile Include="IStringConvertibleMatrix.cs" />
+    <Compile Include="IStringConvertibleValue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StringArray.cs" />
+    <Compile Include="StringMatrix.cs" />
+    <Compile Include="StringValue.cs" />
+    <Compile Include="TimeSpanValue.cs" />
+    <Compile Include="ValueTypeArray.cs" />
+    <Compile Include="ValueTypeMatrix.cs" />
+    <Compile Include="ValueTypeValue.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.2\HeuristicLab.Common.Resources-3.2.csproj">
