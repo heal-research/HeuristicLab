@@ -42,7 +42,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     }
 
     public IEnumerable<Tag> CreateMetaInfo(object o) {
-      StorableHookAttribute.InvokeHook(HookType.BeforeSerialization, o);
+      InvokeHook(HookType.BeforeSerialization, o);
       return new Tag[] { };
     }
 
@@ -78,7 +78,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
           accessor.Set(accessor.DefaultValue);
         }
       }
-      StorableHookAttribute.InvokeHook(HookType.AfterDeserialization, instance);
+      InvokeHook(HookType.AfterDeserialization, instance);
     }
 
     #endregion
@@ -88,12 +88,24 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     private const BindingFlags ALL_CONSTRUCTORS =
       BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
+    private static readonly object[] emptyArgs = new object[] { };
+
     private sealed class TypeQuery {
       public Type Type { get; private set; }
       public bool Inherited { get; private set; }
       public TypeQuery(Type type, bool inherited) {
         this.Type = type;
         this.Inherited = inherited;
+      }
+    }
+
+    private sealed class HookDesignator {
+      public Type Type { get; set; }
+      public HookType HookType { get; set; }
+      public HookDesignator() { }
+      public HookDesignator(Type type, HookType hookType) {
+        Type = type;
+        HookType = HookType;
       }
     }
 
@@ -106,6 +118,9 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     private MemberCache storableMemberCache = new MemberCache();
     private Dictionary<Type, ConstructorInfo> constructorCache =
       new Dictionary<Type, ConstructorInfo>();
+    
+    private Dictionary<HookDesignator, List<MethodInfo>> hookCache =
+      new Dictionary<HookDesignator, List<MethodInfo>>();
 
     #endregion
 
@@ -149,7 +164,30 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
         .Select(mi => new DataMemberAccessor(mi.MemberInfo, mi.DisentangledName, mi.DefaultValue, obj));
     }
 
+    private void InvokeHook(HookType hookType, object obj) {
+      if (obj == null)
+        throw new ArgumentNullException("Cannot invoke hooks on null");
+      foreach (MethodInfo mi in GetHooks(hookType, obj.GetType())) {
+        mi.Invoke(obj, emptyArgs);
+      }
+    }
+
+    private IEnumerable<MethodInfo> GetHooks(HookType hookType, Type type) {
+      lock (hookCache) {
+        List<MethodInfo> hooks;
+        var designator = new HookDesignator(type, hookType);
+        hookCache.TryGetValue(designator, out hooks);
+        if (hooks != null)
+          return hooks;
+        hooks = new List<MethodInfo>(StorableReflection.CollectHooks(hookType, type));
+        hookCache.Add(designator, hooks);
+        return hooks;
+      }
+    }
+
     #endregion
+
+    
     
   }
   

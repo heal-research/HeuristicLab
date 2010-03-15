@@ -2,11 +2,11 @@
 using System.Reflection;
 using HeuristicLab.Persistence.Core;
 
-namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
+namespace HeuristicLab.Persistence.Core {
 
   /// <summary>
   /// Encapsulation and abstraction for access a data member of an object
-  /// regardless of it being a property or field. Addicionally a
+  /// regardless of it being a property or field. Additionally a
   /// default value and an alternate name can be specified.
   /// </summary>
   public class DataMemberAccessor {

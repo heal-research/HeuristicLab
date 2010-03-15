@@ -17,7 +17,6 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       BindingFlags.NonPublic |
       BindingFlags.DeclaredOnly;
 
-
     public static IEnumerable<StorableMemberInfo> GenerateStorableMembers(Type type, bool inherited) {
       var storableMembers = new List<StorableMemberInfo>();
       if (inherited && type.BaseType != null)
@@ -42,6 +41,30 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       return DisentangleNameMapping(storableMembers);
     }
 
+    public static bool IsEmptyOrStorableType(Type type, bool recusrive) {
+      if (IsEmptyType(type, recusrive)) return true;
+      if (!HasStorableClassAttribute(type)) return false;
+      return !recusrive || type.BaseType == null || IsEmptyOrStorableType(type.BaseType, true);
+    }
+
+    public static IEnumerable<MethodInfo> CollectHooks(HookType hookType, Type type) {
+      if (type.BaseType != null)
+        foreach (var mi in CollectHooks(hookType, type.BaseType))
+          yield return mi;
+      foreach (MemberInfo memberInfo in type.GetMembers(DECLARED_INSTANCE_MEMBERS)) {
+        foreach (StorableHookAttribute hook in memberInfo.GetCustomAttributes(typeof(StorableHookAttribute), false)) {
+          if (hook != null && hook.HookType == hookType) {
+            MethodInfo methodInfo = memberInfo as MethodInfo;
+            if (memberInfo.MemberType != MemberTypes.Method || memberInfo == null)
+              throw new ArgumentException("Storable hooks must be methods");
+            yield return methodInfo;
+          }
+        }
+      }
+    }
+
+    #region [Storable] helpers
+
     private static void AddMarkedMembers(Type type, List<StorableMemberInfo> storableMembers) {
       foreach (MemberInfo memberInfo in type.GetMembers(DECLARED_INSTANCE_MEMBERS)) {
         foreach (StorableAttribute attribute in memberInfo.GetCustomAttributes(typeof(StorableAttribute), false)) {
@@ -59,11 +82,6 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       }
     }
 
-    private static StorableClassAttribute GetStorableClassAttribute(Type type) {
-      return (StorableClassAttribute)type
-        .GetCustomAttributes(typeof(StorableClassAttribute), false)
-        .SingleOrDefault();
-    }
 
     private static IEnumerable<StorableMemberInfo> DisentangleNameMapping(
         IEnumerable<StorableMemberInfo> storableMemberInfos) {
@@ -106,15 +124,23 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       }
     }
 
-    public static bool IsEmptyOrStorableType(Type type, bool recusrive) {
-      if (IsEmptyType(type, recusrive)) return true;
-      if (!HastStorableClassAttribute(type)) return false;
-      return !recusrive || type.BaseType == null || IsEmptyOrStorableType(type.BaseType, true);
-    }
+    #endregion
 
-    private static bool HastStorableClassAttribute(Type type) {
+    #region [StorableClass] helpers
+
+    private static StorableClassAttribute GetStorableClassAttribute(Type type) {
+      return (StorableClassAttribute)type
+        .GetCustomAttributes(typeof(StorableClassAttribute), false)
+        .SingleOrDefault();
+    }    
+
+    private static bool HasStorableClassAttribute(Type type) {
       return type.GetCustomAttributes(typeof(StorableClassAttribute), false).Length > 0;
     }
+
+    #endregion
+
+    #region other helpers
 
     private static bool IsEmptyType(Type type, bool recursive) {
       foreach (MemberInfo memberInfo in type.GetMembers(DECLARED_INSTANCE_MEMBERS)) {
@@ -135,5 +161,8 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     private static bool IsModifiableProperty(PropertyInfo pi) {
       return pi.CanWrite;
     }
+
+    #endregion
+
   }
 }

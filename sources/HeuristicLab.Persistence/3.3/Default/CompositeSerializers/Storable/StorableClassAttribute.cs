@@ -15,7 +15,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     /// <summary>
     /// Specify how members are selected for serialization.
     /// </summary>
-    public StorableClassType Type { get; set; }
+    public StorableClassType Type { get; private set; }
 
     /// <summary>
     /// Mark a class to be serialize by the <c>StorableSerizlier</c>
@@ -30,8 +30,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     /// The default value for <see cref="StorableClassType"/> is
     /// <see cref="StorableClassType.MarkedOnly"/>.
     /// </summary>
-    public StorableClassAttribute() {
-    }
+    public StorableClassAttribute() { }
 
   }
 }
