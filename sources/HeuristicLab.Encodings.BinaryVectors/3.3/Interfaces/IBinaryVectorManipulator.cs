@@ -28,6 +28,6 @@ namespace HeuristicLab.Encodings.BinaryVectors {
   /// An interface which represents an operator for manipulating vectors of bool-valued data.
   /// </summary>
   public interface IBinaryVectorManipulator : IBinaryVectorOperator, IManipulator {
-    ILookupParameter<BoolArrayData> BoolVectorParameter { get; }
+    ILookupParameter<BoolArrayData> BinaryVectorParameter { get; }
   }
 }

@@ -29,6 +29,6 @@ namespace HeuristicLab.Encodings.BinaryVectors {
   /// </summary>
   public interface IBinaryVectorCreator : IBinaryVectorOperator, ISolutionCreator {
     IValueLookupParameter<IntData> LengthParameter { get; }
-    ILookupParameter<BoolArrayData> BoolVectorParameter { get; }
+    ILookupParameter<BoolArrayData> BinaryVectorParameter { get; }
   }
 }
