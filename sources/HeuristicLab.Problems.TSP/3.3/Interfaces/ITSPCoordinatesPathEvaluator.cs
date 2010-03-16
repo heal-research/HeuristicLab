@@ -28,5 +28,7 @@ namespace HeuristicLab.Problems.TSP {
   /// </summary>
   public interface ITSPCoordinatesPathEvaluator : ITSPPathEvaluator {
     ILookupParameter<DoubleMatrix> CoordinatesParameter { get; }
+    ILookupParameter<DoubleMatrix> DistanceMatrixParameter { get; }
+    ILookupParameter<BoolValue> UseDistanceMatrixParameter { get; }
   }
 }

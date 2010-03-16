@@ -84,11 +84,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Evaluators\TSPCoordinatesPathEvaluator.cs" />
-    <Compile Include="Evaluators\TSPDistanceMatrixPathEvaluator.cs" />
     <Compile Include="Evaluators\TSPEvaluator.cs" />
     <Compile Include="Evaluators\TSPRoundedEuclideanPathEvaluator.cs" />
     <Compile Include="Interfaces\ITSPCoordinatesPathEvaluator.cs" />
-    <Compile Include="Interfaces\ITSPDistanceMatrixPathEvaluator.cs" />
     <Compile Include="Interfaces\ITSPEvaluator.cs" />
     <Compile Include="Interfaces\ITSPPathEvaluator.cs" />
     <Compile Include="HeuristicLabProblemsTSPPlugin.cs" />

@@ -51,6 +51,12 @@ namespace HeuristicLab.Problems.TSP {
     public ValueParameter<DoubleMatrix> CoordinatesParameter {
       get { return (ValueParameter<DoubleMatrix>)Parameters["Coordinates"]; }
     }
+    public OptionalValueParameter<DoubleMatrix> DistanceMatrixParameter {
+      get { return (OptionalValueParameter<DoubleMatrix>)Parameters["DistanceMatrix"]; }
+    }
+    public ValueParameter<BoolValue> UseDistanceMatrixParameter {
+      get { return (ValueParameter<BoolValue>)Parameters["UseDistanceMatrix"]; }
+    }
     public ValueParameter<IPermutationCreator> SolutionCreatorParameter {
       get { return (ValueParameter<IPermutationCreator>)Parameters["SolutionCreator"]; }
     }
@@ -72,6 +78,14 @@ namespace HeuristicLab.Problems.TSP {
     public DoubleMatrix Coordinates {
       get { return CoordinatesParameter.Value; }
       set { CoordinatesParameter.Value = value; }
+    }
+    public DoubleMatrix DistanceMatrix {
+      get { return DistanceMatrixParameter.Value; }
+      set { DistanceMatrixParameter.Value = value; }
+    }
+    public BoolValue UseDistanceMatrix {
+      get { return UseDistanceMatrixParameter.Value; }
+      set { UseDistanceMatrixParameter.Value = value; }
     }
     public IPermutationCreator SolutionCreator {
       get { return SolutionCreatorParameter.Value; }
@@ -107,6 +121,8 @@ namespace HeuristicLab.Problems.TSP {
 
       Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to false as the Traveling Salesman Problem is a minimization problem.", new BoolValue(false)));
       Parameters.Add(new ValueParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities.", new DoubleMatrix(0, 0)));
+      Parameters.Add(new OptionalValueParameter<DoubleMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
+      Parameters.Add(new ValueParameter<BoolValue>("UseDistanceMatrix", "True if a distance matrix should be calculated and used for evaluation, otherwise false.", new BoolValue(true)));
       Parameters.Add(new ValueParameter<IPermutationCreator>("SolutionCreator", "The operator which should be used to create new TSP solutions.", creator));
       Parameters.Add(new ValueParameter<ITSPEvaluator>("Evaluator", "The operator which should be used to evaluate TSP solutions.", evaluator));
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this TSP instance."));
@@ -154,11 +170,14 @@ namespace HeuristicLab.Problems.TSP {
       Coordinates.ItemChanged += new EventHandler<EventArgs<int, int>>(Coordinates_ItemChanged);
       Coordinates.Reset += new EventHandler(Coordinates_Reset);
       ParameterizeSolutionCreator();
+      ClearDistanceMatrix();
     }
     private void Coordinates_ItemChanged(object sender, EventArgs<int, int> e) {
+      ClearDistanceMatrix();
     }
     private void Coordinates_Reset(object sender, EventArgs e) {
       ParameterizeSolutionCreator();
+      ClearDistanceMatrix();
     }
     private void SolutionCreatorParameter_ValueChanged(object sender, EventArgs e) {
       SolutionCreator.PermutationParameter.ActualNameChanged += new EventHandler(SolutionCreator_PermutationParameter_ActualNameChanged);
@@ -173,6 +192,7 @@ namespace HeuristicLab.Problems.TSP {
     }
     private void EvaluatorParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
+      ClearDistanceMatrix();
       OnEvaluatorChanged();
     }
     #endregion
@@ -194,8 +214,12 @@ namespace HeuristicLab.Problems.TSP {
     private void ParameterizeEvaluator() {
       if (Evaluator is ITSPPathEvaluator)
         ((ITSPPathEvaluator)Evaluator).PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
-      if (Evaluator is ITSPCoordinatesPathEvaluator)
-        ((ITSPCoordinatesPathEvaluator)Evaluator).CoordinatesParameter.ActualName = CoordinatesParameter.Name;
+      if (Evaluator is ITSPCoordinatesPathEvaluator) {
+        ITSPCoordinatesPathEvaluator evaluator = (ITSPCoordinatesPathEvaluator)Evaluator;
+        evaluator.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
+        evaluator.DistanceMatrixParameter.ActualName = DistanceMatrixParameter.Name;
+        evaluator.UseDistanceMatrixParameter.ActualName = UseDistanceMatrixParameter.Name;
+      }
     }
     private void InitializeOperators() {
       operators = new List<IPermutationOperator>();
@@ -212,6 +236,9 @@ namespace HeuristicLab.Problems.TSP {
       foreach (IPermutationManipulator op in Operators.OfType<IPermutationManipulator>()) {
         op.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
       }
+    }
+    private void ClearDistanceMatrix() {
+      DistanceMatrixParameter.Value = null;
     }
     #endregion
   }
