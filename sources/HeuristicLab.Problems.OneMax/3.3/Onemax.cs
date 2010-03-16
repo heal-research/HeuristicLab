@@ -94,7 +94,7 @@ namespace HeuristicLab.Problems.OneMax {
       RandomBinaryVectorCreator creator = new RandomBinaryVectorCreator();
       OneMaxEvaluator evaluator = new OneMaxEvaluator();
 
-      Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to false as the OneMax Problem is a minimization problem.", new BoolValue(true)));
+      Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to true as the OneMax Problem is a maximization problem.", new BoolValue(true)));
       Parameters.Add(new ValueParameter<IntValue>("Length", "The length of the BinaryVector.", new IntValue(5)));
       Parameters.Add(new ValueParameter<IBinaryVectorCreator>("SolutionCreator", "The operator which should be used to create new OneMax solutions.", creator));
       Parameters.Add(new ValueParameter<IOneMaxEvaluator>("Evaluator", "The operator which should be used to evaluate OneMax solutions.", evaluator));
