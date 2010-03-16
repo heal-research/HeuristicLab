@@ -139,6 +139,12 @@
     <Compile Include="Advanced\InstallationManagerControl.Designer.cs">
       <DependentUpon>InstallationManagerControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Advanced\MultiSelectListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Advanced\MultiSelectListView.Designer.cs">
+      <DependentUpon>MultiSelectListView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Advanced\PluginView.cs">
       <SubType>UserControl</SubType>
     </Compile>

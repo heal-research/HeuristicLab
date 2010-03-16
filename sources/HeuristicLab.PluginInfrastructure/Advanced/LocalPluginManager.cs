@@ -51,6 +51,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
     private void UpdateControl() {
       ClearPluginList();
+      localPluginsListView.SuppressItemCheckedEvents = true;
       foreach (var plugin in plugins) {
         var item = CreateListViewItem(plugin);
         if (plugin.PluginState == PluginState.Enabled) {
@@ -60,6 +61,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
         }
         localPluginsListView.Items.Add(item);
       }
+      localPluginsListView.SuppressItemCheckedEvents = false;
     }
 
     private void ClearPluginList() {
@@ -77,13 +79,29 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private void pluginsListView_ItemChecked(object sender, ItemCheckedEventArgs e) {
       // checked items are marked for removal
       if (e.Item.Checked) {
-        var plugin = (IPluginDescription)e.Item.Tag;
-        foreach (ListViewItem item in localPluginsListView.Items) {
-          var dep = (IPluginDescription)item.Tag;
-          if (!item.Checked && dep.Dependencies.Contains(plugin)) {
-            item.Checked = true;
+        List<ListViewItem> modifiedItems = new List<ListViewItem>();
+        foreach (ListViewItem item in localPluginsListView.SelectedItems) {
+          var plugin = (IPluginDescription)item.Tag;
+          modifiedItems.Add(item);
+          // also uncheck all dependent plugins
+          foreach (ListViewItem dependentItem in localPluginsListView.Items) {
+            var dependent = (IPluginDescription)dependentItem.Tag;
+            if (!dependentItem.Checked && (from dep in dependent.Dependencies
+                                           where dep.Name == plugin.Name
+                                           where dep.Version == plugin.Version
+                                           select dep).Any()) {
+              modifiedItems.Add(dependentItem);
+            }
           }
         }
+        localPluginsListView.CheckItems(modifiedItems);
+      } else {
+        List<ListViewItem> modifiedItems = new List<ListViewItem>();
+        foreach (ListViewItem item in localPluginsListView.SelectedItems) {
+          var plugin = (IPluginDescription)item.Tag;
+          modifiedItems.Add(item);
+        }
+        localPluginsListView.UncheckItems(modifiedItems);
       }
       OnItemChecked(e);
     }

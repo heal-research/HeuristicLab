@@ -24,30 +24,35 @@
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Available Products", System.Windows.Forms.HorizontalAlignment.Left);
-      System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Available Plugins (Most Recent Version)", System.Windows.Forms.HorizontalAlignment.Left);
-      System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Available Plugins (All Versions)", System.Windows.Forms.HorizontalAlignment.Left);
-      this.remotePluginsListView = new System.Windows.Forms.ListView();
-      this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
-      this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
-      this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
+      System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Products", System.Windows.Forms.HorizontalAlignment.Left);
+      System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("New Plugins", System.Windows.Forms.HorizontalAlignment.Left);
+      System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("All Plugins", System.Windows.Forms.HorizontalAlignment.Left);
       this.imageListForRemoteItems = new System.Windows.Forms.ImageList(this.components);
+      this.remotePluginsListView = new HeuristicLab.PluginInfrastructure.Advanced.MultiSelectListView();
+      this.nameHeader = new System.Windows.Forms.ColumnHeader();
+      this.versionHeader = new System.Windows.Forms.ColumnHeader();
+      this.descriptionHeader = new System.Windows.Forms.ColumnHeader();
       this.SuspendLayout();
+      // 
+      // imageListForRemoteItems
+      // 
+      this.imageListForRemoteItems.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+      this.imageListForRemoteItems.ImageSize = new System.Drawing.Size(13, 13);
+      this.imageListForRemoteItems.TransparentColor = System.Drawing.Color.Transparent;
       // 
       // remotePluginsListView
       // 
       this.remotePluginsListView.CheckBoxes = true;
       this.remotePluginsListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2,
-            this.columnHeader3});
+            this.nameHeader,
+            this.versionHeader,
+            this.descriptionHeader});
       this.remotePluginsListView.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.remotePluginsListView.FullRowSelect = true;
-      listViewGroup1.Header = "Available Products";
+      listViewGroup1.Header = "Products";
       listViewGroup1.Name = "productsGroup";
-      listViewGroup2.Header = "Available Plugins (Most Recent Version)";
+      listViewGroup2.Header = "New Plugins";
       listViewGroup2.Name = "newPluginsGroup";
-      listViewGroup3.Header = "Available Plugins (All Versions)";
+      listViewGroup3.Header = "All Plugins";
       listViewGroup3.Name = "allPluginsGroup";
       this.remotePluginsListView.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
             listViewGroup1,
@@ -57,31 +62,26 @@
       this.remotePluginsListView.Name = "remotePluginsListView";
       this.remotePluginsListView.Size = new System.Drawing.Size(533, 558);
       this.remotePluginsListView.StateImageList = this.imageListForRemoteItems;
-      this.remotePluginsListView.TabIndex = 10;
+      this.remotePluginsListView.SuppressItemCheckedEvents = false;
+      this.remotePluginsListView.TabIndex = 0;
       this.remotePluginsListView.UseCompatibleStateImageBehavior = false;
       this.remotePluginsListView.View = System.Windows.Forms.View.Details;
       this.remotePluginsListView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.remotePluginsListView_ItemChecked);
       // 
-      // columnHeader1
+      // nameHeader
       // 
-      this.columnHeader1.Text = "Name";
-      this.columnHeader1.Width = 220;
+      this.nameHeader.Text = "Name";
+      this.nameHeader.Width = 115;
       // 
-      // columnHeader2
+      // versionHeader
       // 
-      this.columnHeader2.Text = "Version";
-      this.columnHeader2.Width = 120;
+      this.versionHeader.Text = "Version";
+      this.versionHeader.Width = 161;
       // 
-      // columnHeader3
+      // descriptionHeader
       // 
-      this.columnHeader3.Text = "Description";
-      this.columnHeader3.Width = 240;
-      // 
-      // imageListForRemoteItems
-      // 
-      this.imageListForRemoteItems.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
-      this.imageListForRemoteItems.ImageSize = new System.Drawing.Size(13, 13);
-      this.imageListForRemoteItems.TransparentColor = System.Drawing.Color.Transparent;
+      this.descriptionHeader.Text = "Description";
+      this.descriptionHeader.Width = 250;
       // 
       // RemotePluginInstaller
       // 
@@ -96,10 +96,10 @@
 
     #endregion
 
-    private System.Windows.Forms.ListView remotePluginsListView;
-    private System.Windows.Forms.ColumnHeader columnHeader1;
-    private System.Windows.Forms.ColumnHeader columnHeader2;
-    private System.Windows.Forms.ColumnHeader columnHeader3;
     private System.Windows.Forms.ImageList imageListForRemoteItems;
+    private MultiSelectListView remotePluginsListView;
+    private System.Windows.Forms.ColumnHeader nameHeader;
+    private System.Windows.Forms.ColumnHeader versionHeader;
+    private System.Windows.Forms.ColumnHeader descriptionHeader;
   }
 }

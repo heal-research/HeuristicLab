@@ -46,6 +46,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       if (this.form == null) {
         form = new Form();
         form.Name = this.Name;
+        form.Size = this.Size;
         this.Dock = DockStyle.Fill;
         form.Controls.Add(this);
       } 

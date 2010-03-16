@@ -71,7 +71,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
     private void UpdateControl() {
       ClearListView();
-
+      remotePluginsListView.SuppressItemCheckedEvents = true;
       foreach (var newPlugin in NewPlugins) {
         var item = CreateListViewItem(newPlugin);
         item.Group = newPluginsGroup;
@@ -89,6 +89,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
         item.Group = allPluginsGroup;
         remotePluginsListView.Items.Add(item);
       }
+      remotePluginsListView.SuppressItemCheckedEvents = false;
     }
 
     private void ClearListView() {
@@ -110,52 +111,62 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
     #region item checked event handler
     private void remotePluginsListView_ItemChecked(object sender, ItemCheckedEventArgs e) {
-      // dispatch by check state and type of item (product/plugin)
-      IPluginDescription plugin = e.Item.Tag as IPluginDescription;
-      if (plugin != null)
-        if (e.Item.Checked)
-          HandlePluginChecked(plugin);
-        else
-          HandlePluginUnchecked(plugin);
-      else {
-        DeploymentService.ProductDescription product = e.Item.Tag as DeploymentService.ProductDescription;
-        if (product != null)
+      foreach (ListViewItem item in remotePluginsListView.SelectedItems) {
+        // dispatch by check state and type of item (product/plugin)
+        IPluginDescription plugin = item.Tag as IPluginDescription;
+        if (plugin != null)
           if (e.Item.Checked)
-            HandleProductChecked(product);
+            HandlePluginChecked(plugin);
           else
-            HandleProductUnchecked(product);
+            HandlePluginUnchecked(plugin);
+        else {
+          DeploymentService.ProductDescription product = item.Tag as DeploymentService.ProductDescription;
+          if (product != null)
+            if (e.Item.Checked)
+              HandleProductChecked(product);
+            else
+              HandleProductUnchecked(product);
+        }
       }
       OnItemChecked(e);
     }
 
     private void HandleProductUnchecked(HeuristicLab.PluginInfrastructure.Advanced.DeploymentService.ProductDescription product) {
       // also uncheck the plugins of the product
+      List<ListViewItem> modifiedItems = new List<ListViewItem>();
+      modifiedItems.Add(FindItemForProduct(product));
       foreach (var plugin in product.Plugins) {
         var item = FindItemForPlugin(plugin);
         if (item != null && item.Checked)
-          item.Checked = false;
+          modifiedItems.Add(item);
       }
+      remotePluginsListView.UncheckItems(modifiedItems);
     }
 
     private void HandleProductChecked(HeuristicLab.PluginInfrastructure.Advanced.DeploymentService.ProductDescription product) {
       // also check all plugins of the product
+      List<ListViewItem> modifiedItems = new List<ListViewItem>();
+      modifiedItems.Add(FindItemForProduct(product));
       foreach (var plugin in product.Plugins) {
         var item = FindItemForPlugin(plugin);
         if (item != null && !item.Checked) {
-          item.Checked = true;
+          modifiedItems.Add(item);
         }
       }
+      remotePluginsListView.CheckItems(modifiedItems);
     }
 
     private void HandlePluginUnchecked(IPluginDescription plugin) {
       // also uncheck all dependent plugins
+      List<ListViewItem> modifiedItems = new List<ListViewItem>();
+      modifiedItems.Add(FindItemForPlugin(plugin));
       var dependentPlugins = from otherPlugin in plugins
                              where otherPlugin.Dependencies.Any(dep => dep.Name == plugin.Name && dep.Version == plugin.Version)
                              select otherPlugin;
       foreach (var dependentPlugin in dependentPlugins) {
         var item = FindItemForPlugin(dependentPlugin);
         if (item != null && item.Checked) {
-          item.Checked = false;
+          modifiedItems.Add(item);
         }
       }
       // also uncheck all products containing this plugin
@@ -165,19 +176,23 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       foreach (var dependentProduct in dependentProducts) {
         var item = FindItemForProduct(dependentProduct);
         if (item != null && item.Checked) {
-          item.Checked = false;
+          modifiedItems.Add(item);
         }
       }
+      remotePluginsListView.UncheckItems(modifiedItems);
     }
 
     private void HandlePluginChecked(IPluginDescription plugin) {
       // also check all dependencies
+      List<ListViewItem> modifiedItems = new List<ListViewItem>();
+      modifiedItems.Add(FindItemForPlugin(plugin));
       foreach (var dep in plugin.Dependencies) {
         var item = FindItemForPlugin(dep);
         if (item != null && !item.Checked) {
-          item.Checked = true;
+          modifiedItems.Add(item);
         }
       }
+      remotePluginsListView.CheckItems(modifiedItems);
     }
 
     private void OnItemChecked(ItemCheckedEventArgs e) {
