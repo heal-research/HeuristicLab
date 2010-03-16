@@ -77,34 +77,31 @@ namespace HeuristicLab.Parameters {
       return string.Format("{0}: {1} ({2})", Name, ActualName, DataType.GetPrettyName());
     }
 
-    private IValueParameter GetParameter(out string name) {
-      IValueParameter valueParam = this as IValueParameter;
-      ILookupParameter lookupParam = this as ILookupParameter;
-      IExecutionContext current = ExecutionContext;
+    private IValueParameter GetValueParameterAndTranslateName(out string actualName) {
+      IValueParameter valueParam;
+      ILookupParameter lookupParam;
+      IExecutionContext currentExecutionContext = ExecutionContext;
 
-      name = Name;
-      while ((valueParam != null) || (lookupParam != null)) {
-        if ((valueParam != null) && (valueParam.Value != null)) return valueParam;
-        if (lookupParam != null) name = lookupParam.ActualName;
+      actualName = Name;
+      while (currentExecutionContext != null) {
+        valueParam = currentExecutionContext.Parameters[actualName] as IValueParameter;
+        lookupParam = currentExecutionContext.Parameters[actualName] as ILookupParameter;
 
-        current = current.Parent;
-        while ((current != null) && !current.Parameters.ContainsKey(name))
-          current = current.Parent;
+        if ((valueParam == null) && (lookupParam == null))
+          throw new InvalidOperationException(
+            string.Format("Parameter look-up chain broken. Parameter \"{0}\" is not an \"{1}\" or an \"{2}\".",
+                          actualName, typeof(IValueParameter).GetPrettyName(), typeof(ILookupParameter).GetPrettyName())
+          );
 
-        if (current != null) {
-          valueParam = current.Parameters[name] as IValueParameter;
-          lookupParam = current.Parameters[name] as ILookupParameter;
-          if ((valueParam == null) && (lookupParam == null))
-            throw new InvalidOperationException(
-              string.Format("Parameter look-up chain broken. Parameter \"{0}\" is not an \"{1}\" or an \"{2}\".",
-                            name,
-                            typeof(IValueParameter).GetPrettyName(),
-                            typeof(ILookupParameter).GetPrettyName())
-            );
-        } else {
-          valueParam = null;
-          lookupParam = null;
+        if (valueParam != null) {
+          if (valueParam.Value != null) return valueParam;
+          else if (lookupParam == null) return valueParam;
         }
+        if (lookupParam != null) actualName = lookupParam.ActualName;
+
+        currentExecutionContext = currentExecutionContext.Parent;
+        while ((currentExecutionContext != null) && !currentExecutionContext.Parameters.ContainsKey(actualName))
+          currentExecutionContext = currentExecutionContext.Parent;
       }
       return null;
     }
@@ -117,8 +114,8 @@ namespace HeuristicLab.Parameters {
     protected override IItem GetActualValue() {
       string name;
       // try to get value from context stack
-      IValueParameter param = GetParameter(out name);
-      if (param != null) return param.Value;
+      IValueParameter param = GetValueParameterAndTranslateName(out name);
+      if (param != null && param.Value != null) return param.Value;
 
       // try to get variable from scope
       IVariable var = LookupVariable(name);
@@ -141,7 +138,7 @@ namespace HeuristicLab.Parameters {
         );
       // try to set value in context stack
       string name;
-      IValueParameter param = GetParameter(out name);
+      IValueParameter param = GetValueParameterAndTranslateName(out name);
       if (param != null) {
         param.Value = value;
         return;
