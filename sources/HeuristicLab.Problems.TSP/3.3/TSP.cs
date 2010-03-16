@@ -195,6 +195,18 @@ namespace HeuristicLab.Problems.TSP {
       ClearDistanceMatrix();
       OnEvaluatorChanged();
     }
+    private void MoveGenerator_TwoOptMoveParameter_ActualNameChanged(object sender, EventArgs e) {
+      string name = ((ILookupParameter<TwoOptMove>)sender).ActualName;
+      foreach (ITwoOptPermutationMoveOperator op in Operators.OfType<ITwoOptPermutationMoveOperator>()) {
+        if (!(op is IMoveGenerator)) op.TwoOptMoveParameter.ActualName = name;
+      }
+    }
+    private void MoveGenerator_ThreeOptMoveParameter_ActualNameChanged(object sender, EventArgs e) {
+      string name = ((ILookupParameter<ThreeOptMove>)sender).ActualName;
+      foreach (IThreeOptPermutationMoveOperator op in Operators.OfType<IThreeOptPermutationMoveOperator>()) {
+        if (!(op is IMoveGenerator)) op.ThreeOptMoveParameter.ActualName = name;
+      }
+    }
     #endregion
 
     #region Helpers
@@ -227,6 +239,7 @@ namespace HeuristicLab.Problems.TSP {
         operators.AddRange(ApplicationManager.Manager.GetInstances<IPermutationOperator>());
         ParameterizeOperators();
       }
+      InitializeMoveGenerators();
     }
     private void ParameterizeOperators() {
       foreach (IPermutationCrossover op in Operators.OfType<IPermutationCrossover>()) {
@@ -236,7 +249,28 @@ namespace HeuristicLab.Problems.TSP {
       foreach (IPermutationManipulator op in Operators.OfType<IPermutationManipulator>()) {
         op.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
       }
+      foreach (IPermutationMoveOperator op in Operators.OfType<IPermutationMoveOperator>()) {
+        op.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+      }
+      foreach (ITSPPathMoveEvaluator op in Operators.OfType<ITSPPathMoveEvaluator>()) {
+        op.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
+        op.DistanceMatrixParameter.ActualName = DistanceMatrixParameter.Name;
+        op.UseDistanceMatrixParameter.ActualName = UseDistanceMatrixParameter.Name;
+      }
     }
+    private void InitializeMoveGenerators() {
+      foreach (ITwoOptPermutationMoveOperator op in Operators.OfType<ITwoOptPermutationMoveOperator>()) {
+        if (op is IMoveGenerator) {
+          op.TwoOptMoveParameter.ActualNameChanged += new EventHandler(MoveGenerator_TwoOptMoveParameter_ActualNameChanged);
+        }
+      }
+      foreach (IThreeOptPermutationMoveOperator op in Operators.OfType<IThreeOptPermutationMoveOperator>()) {
+        if (op is IMoveGenerator) {
+          op.ThreeOptMoveParameter.ActualNameChanged += new EventHandler(MoveGenerator_ThreeOptMoveParameter_ActualNameChanged);
+        }
+      }
+    }
+
     private void ClearDistanceMatrix() {
       DistanceMatrixParameter.Value = null;
     }

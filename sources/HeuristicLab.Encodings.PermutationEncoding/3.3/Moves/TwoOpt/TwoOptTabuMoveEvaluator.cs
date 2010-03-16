@@ -28,11 +28,11 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
-  [Item("TwoOptMoveTabuEvaluator", "Evaluates whether a given 2-opt move is tabu.")]
+  [Item("TwoOptTabuMoveEvaluator", "Evaluates whether a given 2-opt move is tabu.")]
   [StorableClass]
-  public class TwoOptMoveTabuEvaluator : SingleSuccessorOperator, ITwoOptPermutationMoveOperator, ITabuMoveEvaluator {
+  public class TwoOptTabuMoveEvaluator : SingleSuccessorOperator, ITwoOptPermutationMoveOperator, ITabuMoveEvaluator {
     public ILookupParameter<TwoOptMove> TwoOptMoveParameter {
-      get { return (LookupParameter<TwoOptMove>)Parameters["Move"]; }
+      get { return (LookupParameter<TwoOptMove>)Parameters["TwoOptMove"]; }
     }
     public ILookupParameter<Permutation> PermutationParameter {
       get { return (LookupParameter<Permutation>)Parameters["Permutation"]; }
@@ -47,9 +47,9 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
     }
 
-    public TwoOptMoveTabuEvaluator()
+    public TwoOptTabuMoveEvaluator()
       : base() {
-      Parameters.Add(new LookupParameter<TwoOptMove>("Move", "The move to evaluate."));
+      Parameters.Add(new LookupParameter<TwoOptMove>("TwoOptMove", "The move to evaluate."));
       Parameters.Add(new LookupParameter<BoolValue>("MoveTabu", "The variable to store if a move was tabu."));
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The solution as permutation."));
       Parameters.Add(new LookupParameter<ItemList<IItem>>("TabuList", "The tabu list."));
@@ -67,7 +67,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       int E2T = permutation.GetCircular(move.Index2 + 1);
       bool isTabu = false;
       foreach (IItem tabuMove in tabuList) {
-        TwoOptMoveTabuAttribute attribute = (tabuMove as TwoOptMoveTabuAttribute);
+        TwoOptTabuMoveAttribute attribute = (tabuMove as TwoOptTabuMoveAttribute);
         if (attribute != null) {
           // if previously deleted Edge1Source-Target is readded
           if (attribute.Edge1Source == E1S && attribute.Edge1Target == E2S || attribute.Edge1Source == E2S && attribute.Edge1Target == E1S
@@ -84,6 +84,10 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       }
       MoveTabuParameter.ActualValue = new BoolValue(isTabu);
       return base.Apply();
+    }
+
+    public override bool CanChangeName {
+      get { return false; }
     }
   }
 }

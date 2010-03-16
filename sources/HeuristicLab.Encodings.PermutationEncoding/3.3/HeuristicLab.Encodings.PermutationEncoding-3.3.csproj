@@ -97,6 +97,7 @@
     <Compile Include="Interfaces\IPermutationManipulator.cs" />
     <Compile Include="Interfaces\IPermutationMoveOperator.cs" />
     <Compile Include="Interfaces\IPermutationOperator.cs" />
+    <Compile Include="Interfaces\IThreeOptPermutationMoveOperator.cs" />
     <Compile Include="Interfaces\ITwoOptPermutationMoveOperator.cs" />
     <Compile Include="Manipulators\InsertionManipulator.cs" />
     <Compile Include="Manipulators\InversionManipulator.cs" />
@@ -105,6 +106,10 @@
     <Compile Include="Manipulators\Swap3Manipulator.cs" />
     <Compile Include="Manipulators\TranslocationInversionManipulator.cs" />
     <Compile Include="Manipulators\TranslocationManipulator.cs" />
+    <Compile Include="Moves\ThreeIndexMove.cs" />
+    <Compile Include="Moves\ThreeOpt\StochasticThreeOptMoveGenerator.cs" />
+    <Compile Include="Moves\ThreeOpt\ThreeOptMove.cs" />
+    <Compile Include="Moves\ThreeOpt\ThreeOptMoveGenerator.cs" />
     <Compile Include="Moves\TwoOpt\ExhaustiveTwoOptMoveGenerator.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -119,15 +124,9 @@
     <Compile Include="Moves\TwoOpt\TwoOptMoveMaker.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Moves\TwoOpt\TwoOptMoveTabuAttribute.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Moves\TwoOpt\TwoOptMoveTabuEvaluator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Moves\TwoOpt\TwoOptMoveTabuMaker.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Moves\TwoOpt\TwoOptTabuMoveAttribute.cs" />
+    <Compile Include="Moves\TwoOpt\TwoOptTabuMoveEvaluator.cs" />
+    <Compile Include="Moves\TwoOpt\TwoOptTabuMoveMaker.cs" />
     <Compile Include="PermutationManipulator.cs" />
     <Compile Include="PermutationCrossover.cs" />
     <Compile Include="Permutation.cs" />

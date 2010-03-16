@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
@@ -32,8 +33,19 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Algorithms.TS {
   [Item("TS", "A tabu search algorithm.")]
+  [Creatable("Algorithms")]
   public sealed class TS : EngineAlgorithm {
-    /*#region Parameter Properties
+    #region Problem Properties
+    public override Type ProblemType {
+      get { return typeof(ISingleObjectiveProblem); }
+    }
+    public new ISingleObjectiveProblem Problem {
+      get { return (ISingleObjectiveProblem)base.Problem; }
+      set { base.Problem = value; }
+    }
+    #endregion
+
+    #region Parameter Properties
     private ValueParameter<IntValue> SeedParameter {
       get { return (ValueParameter<IntValue>)Parameters["Seed"]; }
     }
@@ -42,6 +54,21 @@ namespace HeuristicLab.Algorithms.TS {
     }
     private ConstrainedValueParameter<IMoveGenerator> MoveGeneratorParameter {
       get { return (ConstrainedValueParameter<IMoveGenerator>)Parameters["MoveGenerator"]; }
+    }
+    private ConstrainedValueParameter<IMoveMaker> MoveMakerParameter {
+      get { return (ConstrainedValueParameter<IMoveMaker>)Parameters["MoveMaker"]; }
+    }
+    private ConstrainedValueParameter<ISingleObjectiveMoveEvaluator> MoveEvaluatorParameter {
+      get { return (ConstrainedValueParameter<ISingleObjectiveMoveEvaluator>)Parameters["MoveEvaluator"]; }
+    }
+    private ConstrainedValueParameter<ITabuMoveEvaluator> TabuMoveEvaluatorParameter {
+      get { return (ConstrainedValueParameter<ITabuMoveEvaluator>)Parameters["TabuMoveEvaluator"]; }
+    }
+    private ConstrainedValueParameter<ITabuMoveMaker> TabuMoveMakerParameter {
+      get { return (ConstrainedValueParameter<ITabuMoveMaker>)Parameters["TabuMoveMaker"]; }
+    }
+    private ValueParameter<IntValue> TabuTenureParameter {
+      get { return (ValueParameter<IntValue>)Parameters["TabuTenure"]; }
     }
     private ValueParameter<IntValue> MaximumIterationsParameter {
       get { return (ValueParameter<IntValue>)Parameters["MaximumIterations"]; }
@@ -60,6 +87,26 @@ namespace HeuristicLab.Algorithms.TS {
     public IMoveGenerator MoveGenerator {
       get { return MoveGeneratorParameter.Value; }
       set { MoveGeneratorParameter.Value = value; }
+    }
+    public IMoveMaker MoveMaker {
+      get { return MoveMakerParameter.Value; }
+      set { MoveMakerParameter.Value = value; }
+    }
+    public ISingleObjectiveMoveEvaluator MoveEvaluator {
+      get { return MoveEvaluatorParameter.Value; }
+      set { MoveEvaluatorParameter.Value = value; }
+    }
+    public ITabuMoveEvaluator TabuMoveEvaluator {
+      get { return TabuMoveEvaluatorParameter.Value; }
+      set { TabuMoveEvaluatorParameter.Value = value; }
+    }
+    public ITabuMoveMaker TabuMoveMaker {
+      get { return TabuMoveMakerParameter.Value; }
+      set { TabuMoveMakerParameter.Value = value; }
+    }
+    public IntValue TabuTenure {
+      get { return TabuTenureParameter.Value; }
+      set { TabuTenureParameter.Value = value; }
     }
     public IntValue MaximumIterations {
       get { return MaximumIterationsParameter.Value; }
@@ -81,6 +128,11 @@ namespace HeuristicLab.Algorithms.TS {
       Parameters.Add(new ValueParameter<IntValue>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
       Parameters.Add(new ValueParameter<BoolValue>("SetSeedRandomly", "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
       Parameters.Add(new ConstrainedValueParameter<IMoveGenerator>("MoveGenerator", "The operator used to generate moves to the neighborhood of the current solution."));
+      Parameters.Add(new ConstrainedValueParameter<IMoveMaker>("MoveMaker", "The operator used to perform a move."));
+      Parameters.Add(new ConstrainedValueParameter<ISingleObjectiveMoveEvaluator>("MoveEvaluator", "The operator used to evaluate a move."));
+      Parameters.Add(new ConstrainedValueParameter<ITabuMoveEvaluator>("TabuMoveEvaluator", "The operator to evaluate whether a move is tabu or not."));
+      Parameters.Add(new ConstrainedValueParameter<ITabuMoveMaker>("TabuMoveMaker", "The operator used to insert attributes of a move into the tabu list."));
+      Parameters.Add(new ValueParameter<IntValue>("TabuTenure", "The length of the tabu list.", new IntValue(10)));
       Parameters.Add(new ValueParameter<IntValue>("MaximumIterations", "The maximum number of generations which should be processed.", new IntValue(1000)));
 
       RandomCreator randomCreator = new RandomCreator();
@@ -99,22 +151,23 @@ namespace HeuristicLab.Algorithms.TS {
       solutionsCreator.Successor = tsMainLoop;
 
       tsMainLoop.MoveGeneratorParameter.ActualName = MoveGeneratorParameter.Name;
-      tsMainLoop.MoveMakerParameter.ActualName = MoveGenerator..Name;
-      tsMainLoop.ElitesParameter.ActualName = ElitesParameter.Name;
-      tsMainLoop.MaximumGenerationsParameter.ActualName = MaximumGenerationsParameter.Name;
-      tsMainLoop.MutatorParameter.ActualName = MutatorParameter.Name;
-      tsMainLoop.MutationProbabilityParameter.ActualName = MutationProbabilityParameter.Name;
+      tsMainLoop.MoveMakerParameter.ActualName = MoveMakerParameter.Name;
+      tsMainLoop.MoveEvaluatorParameter.ActualName = MoveEvaluatorParameter.Name;
+      tsMainLoop.TabuMoveEvaluatorParameter.ActualName = TabuMoveEvaluatorParameter.Name;
+      tsMainLoop.TabuMoveMakerParameter.ActualName = TabuMoveMakerParameter.Name;
+      tsMainLoop.MaximumIterationsParameter.ActualName = MaximumIterationsParameter.Name;
       tsMainLoop.RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
       tsMainLoop.ResultsParameter.ActualName = "Results";
 
-      Initialze();
+      Initialize();
     }
+
     [StorableConstructor]
     private TS(bool deserializing) : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       TS clone = (TS)base.Clone(cloner);
-      clone.Initialze();
+      clone.Initialize();
       return clone;
     }
 
@@ -123,11 +176,14 @@ namespace HeuristicLab.Algorithms.TS {
       ParameterizeStochasticOperator(Problem.SolutionCreator);
       ParameterizeStochasticOperator(Problem.Evaluator);
       foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
+      foreach (ISingleObjectiveMoveEvaluator op in Problem.Operators.OfType<ISingleObjectiveMoveEvaluator>()) {
+        op.MoveQualityParameter.ActualNameChanged += new EventHandler(MoveEvaluator_MoveQualityParameter_ActualNameChanged);
+      }
       ParameterizeSolutionsCreator();
-      ParameterizeSGAMainLoop();
-      ParameterizeSelectors();
-      UpdateCrossovers();
-      UpdateMutators();
+      ParameterizeTSMainLoop();
+      ParameterizeMoveEvaluator();
+      ParameterizeMoveMaker();
+      UpdateMoveGenerator();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.OnProblemChanged();
     }
@@ -139,110 +195,137 @@ namespace HeuristicLab.Algorithms.TS {
     protected override void Problem_EvaluatorChanged(object sender, EventArgs e) {
       ParameterizeStochasticOperator(Problem.Evaluator);
       ParameterizeSolutionsCreator();
-      ParameterizeSGAMainLoop();
-      ParameterizeSelectors();
+      ParameterizeTSMainLoop();
+      ParameterizeMoveEvaluator();
+      ParameterizeMoveMaker();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.Problem_EvaluatorChanged(sender, e);
     }
     protected override void Problem_OperatorsChanged(object sender, EventArgs e) {
       foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
-      UpdateCrossovers();
-      UpdateMutators();
+      // This may seem pointless, but some operators already have the eventhandler registered, others don't
+      // FIXME: Is there another way to solve this problem?
+      foreach (ISingleObjectiveMoveEvaluator op in Problem.Operators.OfType<ISingleObjectiveMoveEvaluator>()) {
+        op.MoveQualityParameter.ActualNameChanged -= new EventHandler(MoveEvaluator_MoveQualityParameter_ActualNameChanged);
+        op.MoveQualityParameter.ActualNameChanged += new EventHandler(MoveEvaluator_MoveQualityParameter_ActualNameChanged);
+      }
+      IMoveGenerator oldMoveGenerator = MoveGenerator;
+      UpdateMoveGenerator();
+      if (oldMoveGenerator == MoveGenerator) // in this case MoveGeneratorParameter_ValueChanged did not fire
+        UpdateMoveParameters();
+      ParameterizeTSMainLoop();
+      ParameterizeMoveEvaluator();
+      ParameterizeMoveMaker();
       base.Problem_OperatorsChanged(sender, e);
     }
-    private void ElitesParameter_ValueChanged(object sender, EventArgs e) {
-      Elites.ValueChanged += new EventHandler(Elites_ValueChanged);
-      ParameterizeSelectors();
-    }
-    private void Elites_ValueChanged(object sender, EventArgs e) {
-      ParameterizeSelectors();
-    }
-    private void PopulationSizeParameter_ValueChanged(object sender, EventArgs e) {
-      PopulationSize.ValueChanged += new EventHandler(PopulationSize_ValueChanged);
-      ParameterizeSelectors();
-    }
-    private void PopulationSize_ValueChanged(object sender, EventArgs e) {
-      ParameterizeSelectors();
-    }
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
-      ParameterizeSGAMainLoop();
-      ParameterizeSelectors();
+      ParameterizeTSMainLoop();
+      ParameterizeMoveEvaluator();
+      ParameterizeMoveMaker();
+    }
+    private void MoveGeneratorParameter_ValueChanged(object sender, EventArgs e) {
+      UpdateMoveParameters();
+    }
+    private void MoveEvaluatorParameter_ValueChanged(object sender, EventArgs e) {
+      ParameterizeTSMainLoop();
+      ParameterizeMoveEvaluator();
+      ParameterizeMoveMaker();
+    }
+    private void MoveEvaluator_MoveQualityParameter_ActualNameChanged(object sender, EventArgs e) {
+      ParameterizeTSMainLoop();
+      ParameterizeMoveEvaluator();
+      ParameterizeMoveMaker();
     }
     #endregion
 
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
-    private void Initialze() {
-      InitializeSelectors();
-      UpdateSelectors();
-      PopulationSizeParameter.ValueChanged += new EventHandler(PopulationSizeParameter_ValueChanged);
-      PopulationSize.ValueChanged += new EventHandler(PopulationSize_ValueChanged);
-      ElitesParameter.ValueChanged += new EventHandler(ElitesParameter_ValueChanged);
-      Elites.ValueChanged += new EventHandler(Elites_ValueChanged);
-      if (Problem != null)
+    private void Initialize() {
+      if (Problem != null) {
         Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
+        foreach (ISingleObjectiveMoveEvaluator op in Problem.Operators.OfType<ISingleObjectiveMoveEvaluator>()) {
+          op.MoveQualityParameter.ActualNameChanged += new EventHandler(MoveEvaluator_MoveQualityParameter_ActualNameChanged);
+        }
+      }
+      MoveGeneratorParameter.ValueChanged += new EventHandler(MoveGeneratorParameter_ValueChanged);
+      MoveEvaluatorParameter.ValueChanged += new EventHandler(MoveEvaluatorParameter_ValueChanged);
     }
-
+    private void UpdateMoveGenerator() {
+      IMoveGenerator oldMoveGenerator = MoveGenerator;
+      MoveGeneratorParameter.ValidValues.Clear();
+      if (Problem != null) {
+        foreach (IMoveGenerator generator in Problem.Operators.OfType<IMoveGenerator>().OrderBy(x => x.Name))
+          MoveGeneratorParameter.ValidValues.Add(generator);
+      }
+      if (oldMoveGenerator != null && MoveGeneratorParameter.ValidValues.Any(x => x.GetType() == oldMoveGenerator.GetType()))
+        MoveGenerator = MoveGeneratorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMoveGenerator.GetType());
+      if (MoveGenerator == null) {
+        ClearMoveParameters();
+      }
+    }
+    private void UpdateMoveParameters() {
+      IMoveMaker oldMoveMaker = MoveMaker;
+      ISingleObjectiveMoveEvaluator oldMoveEvaluator = MoveEvaluator;
+      ITabuMoveEvaluator oldTabuMoveEvaluator = TabuMoveEvaluator;
+      ITabuMoveMaker oldTabuMoveMaker = TabuMoveMaker;
+      ClearMoveParameters();
+      List<Type> moveTypes = MoveGenerator.GetType().GetInterfaces().Where(x => typeof(IMoveOperator).IsAssignableFrom(x)).ToList();
+      foreach (Type type in moveTypes.ToList()) {
+        if (moveTypes.Any(t => t != type && type.IsAssignableFrom(t)))
+          moveTypes.Remove(type);
+      }
+      foreach (Type type in moveTypes) {
+        var operators = Problem.Operators.Where(x => type.IsAssignableFrom(x.GetType())).OrderBy(x => x.Name);
+        foreach (IMoveMaker moveMaker in operators.OfType<IMoveMaker>())
+          MoveMakerParameter.ValidValues.Add(moveMaker);
+        foreach (ISingleObjectiveMoveEvaluator moveEvaluator in operators.OfType<ISingleObjectiveMoveEvaluator>())
+          MoveEvaluatorParameter.ValidValues.Add(moveEvaluator);
+        foreach (ITabuMoveEvaluator tabuMoveEvaluator in operators.OfType<ITabuMoveEvaluator>())
+          TabuMoveEvaluatorParameter.ValidValues.Add(tabuMoveEvaluator);
+        foreach (ITabuMoveMaker tabuMoveMaker in operators.OfType<ITabuMoveMaker>())
+          TabuMoveMakerParameter.ValidValues.Add(tabuMoveMaker);
+      }
+      if (oldMoveMaker != null && MoveMakerParameter.ValidValues.Any(x => x.GetType() == oldMoveMaker.GetType()))
+        MoveMaker = MoveMakerParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMoveMaker.GetType());
+      if (oldMoveEvaluator != null && MoveEvaluatorParameter.ValidValues.Any(x => x.GetType() == oldMoveEvaluator.GetType()))
+        MoveEvaluator = MoveEvaluatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMoveEvaluator.GetType());
+      if (oldTabuMoveMaker != null && TabuMoveMakerParameter.ValidValues.Any(x => x.GetType() == oldTabuMoveMaker.GetType()))
+        TabuMoveMaker = TabuMoveMakerParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldTabuMoveMaker.GetType());
+      if (oldTabuMoveEvaluator != null && TabuMoveEvaluatorParameter.ValidValues.Any(x => x.GetType() == oldTabuMoveEvaluator.GetType()))
+        TabuMoveEvaluator = TabuMoveEvaluatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldTabuMoveEvaluator.GetType());
+    }
+    private void ClearMoveParameters() {
+      MoveMakerParameter.ValidValues.Clear();
+      MoveEvaluatorParameter.ValidValues.Clear();
+      TabuMoveEvaluatorParameter.ValidValues.Clear();
+      TabuMoveMakerParameter.ValidValues.Clear();
+    }
     private void ParameterizeSolutionsCreator() {
       SolutionsCreator.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
       SolutionsCreator.SolutionCreatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
     }
-    private void ParameterizeSGAMainLoop() {
-      TSMainLoop.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
+    private void ParameterizeTSMainLoop() {
       TSMainLoop.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
       TSMainLoop.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
+      if (MoveEvaluator != null)
+        TSMainLoop.MoveQualityParameter.ActualName = MoveEvaluator.MoveQualityParameter.ActualName;
     }
     private void ParameterizeStochasticOperator(IOperator op) {
       if (op is IStochasticOperator)
         ((IStochasticOperator)op).RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
     }
-    private void InitializeSelectors() {
-      selectors = new List<ISelector>();
-      if (ApplicationManager.Manager != null) {
-        selectors.AddRange(ApplicationManager.Manager.GetInstances<ISelector>().Where(x => !(x is IMultiObjectiveSelector)).OrderBy(x => x.Name));
-        ParameterizeSelectors();
+    private void ParameterizeMoveEvaluator() {
+      foreach (ISingleObjectiveMoveEvaluator op in Problem.Operators.OfType<ISingleObjectiveMoveEvaluator>()) {
+        op.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
       }
     }
-    private void ParameterizeSelectors() {
-      foreach (ISelector selector in Selectors) {
-        selector.CopySelected = new BoolValue(true);
-        selector.NumberOfSelectedSubScopesParameter.Value = new IntValue(2 * (PopulationSizeParameter.Value.Value - ElitesParameter.Value.Value));
-        ParameterizeStochasticOperator(selector);
+    private void ParameterizeMoveMaker() {
+      foreach (IMoveMaker op in Problem.Operators.OfType<IMoveMaker>()) {
+        op.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
+        if (MoveEvaluator != null)
+          op.MoveQualityParameter.ActualName = MoveEvaluator.MoveQualityParameter.ActualName;
       }
-      if (Problem != null) {
-        foreach (ISingleObjectiveSelector selector in Selectors.OfType<ISingleObjectiveSelector>()) {
-          selector.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
-          selector.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
-        }
-      }
-    }
-    private void UpdateSelectors() {
-      if (ApplicationManager.Manager != null) {
-        ISelector oldSelector = SelectorParameter.Value;
-        SelectorParameter.ValidValues.Clear();
-        foreach (ISelector selector in Selectors.OrderBy(x => x.Name))
-          SelectorParameter.ValidValues.Add(selector);
-        if (oldSelector != null)
-          SelectorParameter.Value = SelectorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldSelector.GetType());
-      }
-    }
-    private void UpdateCrossovers() {
-      ICrossover oldCrossover = CrossoverParameter.Value;
-      CrossoverParameter.ValidValues.Clear();
-      foreach (ICrossover crossover in Problem.Operators.OfType<ICrossover>().OrderBy(x => x.Name))
-        CrossoverParameter.ValidValues.Add(crossover);
-      if (oldCrossover != null)
-        CrossoverParameter.Value = CrossoverParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldCrossover.GetType());
-    }
-    private void UpdateMutators() {
-      IManipulator oldMutator = MutatorParameter.Value;
-      MutatorParameter.ValidValues.Clear();
-      foreach (IManipulator mutator in Problem.Operators.OfType<IManipulator>().OrderBy(x => x.Name))
-        MutatorParameter.ValidValues.Add(mutator);
-      if (oldMutator != null)
-        MutatorParameter.Value = MutatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMutator.GetType());
     }
     #endregion
-     */
   }
 }

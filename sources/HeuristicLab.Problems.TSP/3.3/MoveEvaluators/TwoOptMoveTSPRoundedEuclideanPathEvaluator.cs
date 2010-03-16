@@ -20,32 +20,22 @@
 #endregion
 
 using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Operators;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System;
 
-namespace HeuristicLab.Encodings.PermutationEncoding {
-  [Item("TwoOptMoveTabuAttribute", "Specifies the tabu attributes for a 2-opt move.")]
+namespace HeuristicLab.Problems.TSP {
+  /// <summary>
+  /// An operator to evaluate 2-opt moves.
+  /// </summary>
+  [Item("TwoOptMoveTSPRoundedEuclideanPathEvaluator", "Evaluates a 2-opt move (rounded euclidean distances) by summing up the length of all added edges and subtracting the length of all deleted edges.")]
   [StorableClass]
-  public class TwoOptMoveTabuAttribute : Item {
-    [Storable]
-    public int Edge1Source { get; private set; }
-    [Storable]
-    public int Edge1Target { get; private set; }
-    [Storable]
-    public int Edge2Source { get; private set; }
-    [Storable]
-    public int Edge2Target { get; private set; }
-
-    [StorableConstructor]
-    private TwoOptMoveTabuAttribute()
-      : base() {
-    }
-
-    public TwoOptMoveTabuAttribute(int edge1Source, int edge1Target, int edge2Source, int edge2Target)
-      : base() {
-      Edge1Source = edge1Source;
-      Edge1Target = edge1Target;
-      Edge2Source = edge2Source;
-      Edge2Target = edge2Target;
+  public class TwoOptMoveTSPRoundedEuclideanPathEvaluator : TwoOptMoveTSPCoordinatesPathEvaluator {
+    protected override double CalculateDistance(double x1, double y1, double x2, double y2) {
+      return Math.Round(Math.Sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)));
     }
   }
 }

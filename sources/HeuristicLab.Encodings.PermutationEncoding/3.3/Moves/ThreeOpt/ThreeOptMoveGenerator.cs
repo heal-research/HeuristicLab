@@ -27,39 +27,39 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
-  [Item("TwoOptMoveGenerator", "Base class for all 2-opt move generators.")]
+  [Item("ThreeOptMoveGenerator", "Base class for move generators that produce 3-opt moves.")]
   [StorableClass]
-  public abstract class TwoOptMoveGenerator : SingleSuccessorOperator, ITwoOptPermutationMoveOperator, IMoveGenerator {
+  public abstract class ThreeOptMoveGenerator : SingleSuccessorOperator, IThreeOptPermutationMoveOperator, IMoveGenerator {
     public ILookupParameter<Permutation> PermutationParameter {
       get { return (ILookupParameter<Permutation>)Parameters["Permutation"]; }
     }
-    public ILookupParameter<TwoOptMove> TwoOptMoveParameter {
-      get { return (LookupParameter<TwoOptMove>)Parameters["TwoOptMove"]; }
+    public ILookupParameter<ThreeOptMove> ThreeOptMoveParameter {
+      get { return (LookupParameter<ThreeOptMove>)Parameters["Move"]; }
     }
     protected ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
     }
 
-    public TwoOptMoveGenerator()
+    public ThreeOptMoveGenerator()
       : base() {
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The permutation for which moves should be generated."));
-      Parameters.Add(new LookupParameter<TwoOptMove>("TwoOptMove", "The moves that should be generated in subscopes."));
+      Parameters.Add(new LookupParameter<ThreeOptMove>("Move", "The moves that should be generated in subscopes."));
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope where the moves should be added as subscopes."));
     }
 
     public override IOperation Apply() {
       Permutation p = PermutationParameter.ActualValue;
-      TwoOptMove[] moves = GenerateMoves(p);
+      ThreeOptMove[] moves = GenerateMoves(p);
       Scope[] moveScopes = new Scope[moves.Length];
       for (int i = 0; i < moveScopes.Length; i++) {
         moveScopes[i] = new Scope(i.ToString());
-        moveScopes[i].Variables.Add(new Variable(TwoOptMoveParameter.ActualName, moves[i]));
+        moveScopes[i].Variables.Add(new Variable(ThreeOptMoveParameter.ActualName, moves[i]));
       }
       CurrentScopeParameter.ActualValue.SubScopes.AddRange(moveScopes);
       return base.Apply();
     }
 
-    protected abstract TwoOptMove[] GenerateMoves(Permutation permutation);
+    protected abstract ThreeOptMove[] GenerateMoves(Permutation permutation);
 
     public override bool CanChangeName {
       get { return false; }

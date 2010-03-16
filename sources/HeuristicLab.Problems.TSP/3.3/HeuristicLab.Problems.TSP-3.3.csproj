@@ -88,9 +88,14 @@
     <Compile Include="Evaluators\TSPRoundedEuclideanPathEvaluator.cs" />
     <Compile Include="Interfaces\ITSPCoordinatesPathEvaluator.cs" />
     <Compile Include="Interfaces\ITSPEvaluator.cs" />
+    <Compile Include="Interfaces\ITSPMoveEvaluator.cs" />
     <Compile Include="Interfaces\ITSPPathEvaluator.cs" />
     <Compile Include="HeuristicLabProblemsTSPPlugin.cs" />
-    <Compile Include="MoveEvaluators\TwoOptMoveTSPEvaluator.cs">
+    <Compile Include="Interfaces\ITSPPathMoveEvaluator.cs" />
+    <Compile Include="MoveEvaluators\TwoOptMoveTSPRoundedEuclideanPathEvaluator.cs" />
+    <Compile Include="MoveEvaluators\TSPPathMoveEvaluator.cs" />
+    <Compile Include="MoveEvaluators\TSPMoveEvaluator.cs" />
+    <Compile Include="MoveEvaluators\TwoOptMoveTSPCoordinatesPathEvaluator.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TSPLIBParser.cs" />

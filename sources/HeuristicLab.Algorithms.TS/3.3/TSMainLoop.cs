@@ -41,8 +41,11 @@ namespace HeuristicLab.Algorithms.TS {
     public ValueLookupParameter<BoolValue> MaximizationParameter {
       get { return (ValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
-    public SubScopesLookupParameter<DoubleValue> QualityParameter {
-      get { return (SubScopesLookupParameter<DoubleValue>)Parameters["Quality"]; }
+    public LookupParameter<DoubleValue> QualityParameter {
+      get { return (LookupParameter<DoubleValue>)Parameters["Quality"]; }
+    }
+    public LookupParameter<DoubleValue> MoveQualityParameter {
+      get { return (LookupParameter<DoubleValue>)Parameters["MoveQuality"]; }
     }
     public ValueLookupParameter<IntValue> MaximumIterationsParameter {
       get { return (ValueLookupParameter<IntValue>)Parameters["MaximumIterations"]; }
@@ -56,20 +59,17 @@ namespace HeuristicLab.Algorithms.TS {
     public ValueLookupParameter<IOperator> MoveGeneratorParameter {
       get { return (ValueLookupParameter<IOperator>)Parameters["MoveGenerator"]; }
     }
-    public ValueLookupParameter<IOperator> MoveQualityEvaluatorParameter {
-      get { return (ValueLookupParameter<IOperator>)Parameters["MoveQualityEvaluator"]; }
-    }
-    public ValueLookupParameter<IOperator> MoveTabuEvaluatorParameter {
-      get { return (ValueLookupParameter<IOperator>)Parameters["MoveTabuEvaluator"]; }
-    }
-    public ValueLookupParameter<IOperator> TabuSelectorParameter {
-      get { return (ValueLookupParameter<IOperator>)Parameters["TabuSelector"]; }
-    }
-    public ValueLookupParameter<IOperator> MoveTabuMakerParameter {
-      get { return (ValueLookupParameter<IOperator>)Parameters["MoveTabuMaker"]; }
+    public ValueLookupParameter<IOperator> MoveEvaluatorParameter {
+      get { return (ValueLookupParameter<IOperator>)Parameters["MoveEvaluator"]; }
     }
     public ValueLookupParameter<IOperator> MoveMakerParameter {
       get { return (ValueLookupParameter<IOperator>)Parameters["MoveMaker"]; }
+    }
+    public ValueLookupParameter<IOperator> TabuMoveEvaluatorParameter {
+      get { return (ValueLookupParameter<IOperator>)Parameters["TabuMoveEvaluator"]; }
+    }
+    public ValueLookupParameter<IOperator> TabuMoveMakerParameter {
+      get { return (ValueLookupParameter<IOperator>)Parameters["TabuMoveMaker"]; }
     }
 
     private ScopeParameter CurrentScopeParameter {
@@ -85,16 +85,17 @@ namespace HeuristicLab.Algorithms.TS {
       #region Create parameters
       Parameters.Add(new ValueLookupParameter<IRandom>("Random", "A pseudo random number generator."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, otherwise false."));
-      Parameters.Add(new SubScopesLookupParameter<DoubleValue>("Quality", "The value which represents the quality of a solution."));
+      Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The value which represents the quality of a solution."));
+      Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The value which represents the quality of a move."));
       Parameters.Add(new ValueLookupParameter<IntValue>("MaximumIterations", "The maximum number of generations which should be processed."));
       Parameters.Add(new ValueLookupParameter<IntValue>("TabuTenure", "The length of the tabu list, and also means the number of iterations a move is kept tabu"));
       Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The variable collection where results should be stored."));
 
       Parameters.Add(new ValueLookupParameter<IOperator>("MoveGenerator", "The operator that generates the moves."));
-      Parameters.Add(new ValueLookupParameter<IOperator>("MoveQualityEvaluator", "The operator that evaluates the quality of a move."));
-      Parameters.Add(new ValueLookupParameter<IOperator>("MoveTabuEvaluator", "The operator that evaluates whether a move is tabu."));
-      Parameters.Add(new ValueLookupParameter<IOperator>("MoveTabuMaker", "The operator that declares a move tabu."));
       Parameters.Add(new ValueLookupParameter<IOperator>("MoveMaker", "The operator that performs a move and updates the quality."));
+      Parameters.Add(new ValueLookupParameter<IOperator>("MoveEvaluator", "The operator that evaluates a move."));
+      Parameters.Add(new ValueLookupParameter<IOperator>("TabuMoveEvaluator", "The operator that evaluates whether a move is tabu."));
+      Parameters.Add(new ValueLookupParameter<IOperator>("TabuMoveMaker", "The operator that declares a move tabu."));
 
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope which represents a population of solutions on which the TS should be applied."));
       #endregion
@@ -107,14 +108,14 @@ namespace HeuristicLab.Algorithms.TS {
       UniformSequentialSubScopesProcessor mainProcessor = new UniformSequentialSubScopesProcessor();
       Placeholder moveGenerator = new Placeholder();
       UniformSequentialSubScopesProcessor moveEvaluationProcessor = new UniformSequentialSubScopesProcessor();
-      Placeholder moveQualityEvaluator = new Placeholder();
-      Placeholder moveTabuEvaluator = new Placeholder();
+      Placeholder moveEvaluator = new Placeholder();
+      Placeholder tabuMoveEvaluator = new Placeholder();
       SubScopesSorter moveQualitySorter = new SubScopesSorter();
       BestAverageWorstQualityCalculator bestAverageWorstMoveQualityCalculator = new BestAverageWorstQualityCalculator();
       TabuSelector tabuSelector = new TabuSelector();
       RightReducer rightReducer = new RightReducer();
       UniformSequentialSubScopesProcessor moveMakingProcessor = new UniformSequentialSubScopesProcessor();
-      Placeholder moveTabuMaker = new Placeholder();
+      Placeholder tabuMoveMaker = new Placeholder();
       Placeholder moveMaker = new Placeholder();
       DataTableValuesCollector valuesCollector = new DataTableValuesCollector();
       SubScopesRemover subScopesRemover = new SubScopesRemover();
@@ -142,11 +143,11 @@ namespace HeuristicLab.Algorithms.TS {
       moveGenerator.Name = "MoveGenerator (placeholder)";
       moveGenerator.OperatorParameter.ActualName = "MoveGenerator";
 
-      moveQualityEvaluator.Name = "MoveQualityEvaluator (placeholder)";
-      moveQualityEvaluator.OperatorParameter.ActualName = "MoveQualityEvaluator";
+      moveEvaluator.Name = "MoveEvaluator (placeholder)";
+      moveEvaluator.OperatorParameter.ActualName = "MoveEvaluator";
 
-      moveTabuEvaluator.Name = "MoveTabuEvaluator (placeholder)";
-      moveTabuEvaluator.OperatorParameter.ActualName = "MoveTabuEvaluator";
+      tabuMoveEvaluator.Name = "TabuMoveEvaluator (placeholder)";
+      tabuMoveEvaluator.OperatorParameter.ActualName = "TabuMoveEvaluator";
 
       moveQualitySorter.DescendingParameter.ActualName = "Maximization";
       moveQualitySorter.ValueParameter.ActualName = "MoveQuality";
@@ -161,8 +162,8 @@ namespace HeuristicLab.Algorithms.TS {
 
       moveMakingProcessor.Name = "MoveMaking processor (UniformSequentialSubScopesProcessor)";
 
-      moveTabuMaker.Name = "MoveTabuMaker (placeholder)";
-      moveTabuMaker.OperatorParameter.ActualName = "MoveTabuMaker";
+      tabuMoveMaker.Name = "TabuMoveMaker (placeholder)";
+      tabuMoveMaker.OperatorParameter.ActualName = "TabuMoveMaker";
 
       moveMaker.Name = "MoveMaker (placeholder)";
       moveMaker.OperatorParameter.ActualName = "MoveMaker";
@@ -197,16 +198,16 @@ namespace HeuristicLab.Algorithms.TS {
       mainProcessor.Operator = moveGenerator;
       mainProcessor.Successor = valuesCollector;
       moveGenerator.Successor = moveEvaluationProcessor;
-      moveEvaluationProcessor.Operator = moveQualityEvaluator;
+      moveEvaluationProcessor.Operator = moveEvaluator;
       moveEvaluationProcessor.Successor = moveQualitySorter;
-      moveQualityEvaluator.Successor = moveTabuEvaluator;
+      moveEvaluator.Successor = tabuMoveEvaluator;
       moveQualitySorter.Successor = bestAverageWorstMoveQualityCalculator;
       bestAverageWorstMoveQualityCalculator.Successor = tabuSelector;
       tabuSelector.Successor = rightReducer;
       rightReducer.Successor = moveMakingProcessor;
-      moveMakingProcessor.Operator = moveTabuMaker;
+      moveMakingProcessor.Operator = tabuMoveMaker;
       moveMakingProcessor.Successor = subScopesRemover;
-      moveTabuMaker.Successor = moveMaker;
+      tabuMoveMaker.Successor = moveMaker;
       valuesCollector.Successor = iterationsCounter;
       iterationsCounter.Successor = iterationsComparator;
       iterationsComparator.Successor = iterationsTermination;

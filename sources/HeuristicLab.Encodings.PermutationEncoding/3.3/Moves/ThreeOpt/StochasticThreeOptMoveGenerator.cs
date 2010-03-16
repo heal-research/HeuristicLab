@@ -27,9 +27,9 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
-  [Item("StochasticTwoOptMoveGenerator", "Randomly samples n from all possible 2-opt moves from a given permutation.")]
+  [Item("StochasticThreeOptMoveGenerator", "Randomly samples n from all possible 3-opt moves from a given permutation.")]
   [StorableClass]
-  public class StochasticTwoOptMoveGenerator : TwoOptMoveGenerator, IStochasticOperator {
+  public class StochasticThreeOptMoveGenerator : ThreeOptMoveGenerator, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
@@ -42,28 +42,34 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       set { SampleSizeParameter.Value = value; }
     }
 
-    public StochasticTwoOptMoveGenerator()
+    public StochasticThreeOptMoveGenerator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator."));
       Parameters.Add(new ValueLookupParameter<IntValue>("SampleSize", "The number of moves to generate."));
     }
 
-    public static TwoOptMove[] Apply(Permutation permutation, IRandom random, int sampleSize) {
+    public static ThreeOptMove[] Apply(Permutation permutation, IRandom random, int sampleSize) {
       int length = permutation.Length;
-      int totalMoves = (length) * (length - 1) / 2 - 3;
-      if (sampleSize >= totalMoves) throw new InvalidOperationException("StochasticTwoOptMoveGenerator: Sample size (" + sampleSize + ") is larger than the set of all possible moves (" + totalMoves + "), use the ExhaustiveTwoOptMoveGenerator instead.");
-      TwoOptMove[] moves = new TwoOptMove[sampleSize];
+      /*int totalMoves = (length) * (length - 1) / 2 - 3;
+      // FIXME: Remove this comment if ExhaustiveThreeOptMoveGenerator exists, otherwise alter the exception message below.
+      if (sampleSize >= totalMoves) throw new InvalidOperationException("StochasticThreeOptMoveGenerator: Sample size (" + sampleSize + ") is larger than the set of all possible moves (" + totalMoves + "), use the ExhaustiveThreeOptMoveGenerator instead.");
+      */
+      ThreeOptMove[] moves = new ThreeOptMove[sampleSize];
       for (int i = 0; i < sampleSize; i++) {
-        int index1 = random.Next(length - 1), index2;
-        if (index1 >= 2)
+        int index1, index2, index3;
+        do {
+          index1 = random.Next(length - 1);
           index2 = random.Next(index1 + 1, length);
-        else index2 = random.Next(index1 + 1, length - (2 - index1));
-        moves[i] = new TwoOptMove(index1, index2);
+        } while (index2 - index1 == length - 1);
+        do {
+          index3 = random.Next(length);
+        } while (index1 <= index3 && index3 <= index2 + 1);
+        moves[i] = new ThreeOptMove(index1, index2, index3);
       }
       return moves;
     }
 
-    protected override TwoOptMove[] GenerateMoves(Permutation permutation) {
+    protected override ThreeOptMove[] GenerateMoves(Permutation permutation) {
       IRandom random = RandomParameter.ActualValue;
       return Apply(permutation, random, SampleSizeParameter.ActualValue.Value);
     }

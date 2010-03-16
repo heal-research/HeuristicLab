@@ -27,15 +27,15 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.PermutationEncoding.Moves {
-  [Item("TwoOptMoveTabuMaker", "Declares a given 2-opt move as tabu, by adding its attributes to the tabu list. It also removes the oldest entry in the tabu list when its size is greater than tenure.")]
+namespace HeuristicLab.Encodings.PermutationEncoding {
+  [Item("TwoOptTabuMoveMaker", "Declares a given 2-opt move as tabu, by adding its attributes to the tabu list. It also removes the oldest entry in the tabu list when its size is greater than tenure.")]
   [StorableClass]
-  public class TwoOptMoveTabuMaker : SingleSuccessorOperator, ITwoOptPermutationMoveOperator, ITabuMoveMaker {
+  public class TwoOptTabuMoveMaker : SingleSuccessorOperator, ITwoOptPermutationMoveOperator, ITabuMoveMaker {
     public ILookupParameter<Permutation> PermutationParameter {
       get { return (ILookupParameter<Permutation>)Parameters["Permutation"]; }
     }
     public ILookupParameter<TwoOptMove> TwoOptMoveParameter {
-      get { return (LookupParameter<TwoOptMove>)Parameters["Move"]; }
+      get { return (LookupParameter<TwoOptMove>)Parameters["TwoOptMove"]; }
     }
     public LookupParameter<ItemList<IItem>> TabuListParameter {
       get { return (LookupParameter<ItemList<IItem>>)Parameters["TabuList"]; }
@@ -44,9 +44,9 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Moves {
       get { return (ValueLookupParameter<IntValue>)Parameters["TabuTenure"]; }
     }
 
-    public TwoOptMoveTabuMaker()
+    public TwoOptTabuMoveMaker()
       : base() {
-      Parameters.Add(new LookupParameter<TwoOptMove>("Move", "The move that was made."));
+      Parameters.Add(new LookupParameter<TwoOptMove>("TwoOptMove", "The move that was made."));
       Parameters.Add(new LookupParameter<ItemList<IItem>>("TabuList", "The tabu list where move attributes are stored."));
       Parameters.Add(new ValueLookupParameter<IntValue>("TabuTenure", "The tenure of the tabu list."));
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The solution as permutation."));
@@ -64,11 +64,15 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Moves {
         tabuList.RemoveAt(tabuList.Count - 1);
       }
 
-      TwoOptMoveTabuAttribute attribute = new TwoOptMoveTabuAttribute(
+      TwoOptTabuMoveAttribute attribute = new TwoOptTabuMoveAttribute(
         permutation.GetCircular(move.Index1 - 1), permutation[move.Index1],
         permutation[move.Index2], permutation.GetCircular(move.Index2 + 1));
       tabuList.Add(attribute);
       return base.Apply();
+    }
+
+    public override bool CanChangeName {
+      get { return false; }
     }
   }
 }

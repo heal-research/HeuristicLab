@@ -32,13 +32,13 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   [StorableClass]
   public class TwoOptMoveMaker : SingleSuccessorOperator, ITwoOptPermutationMoveOperator, IMoveMaker {
     public ILookupParameter<DoubleValue> QualityParameter {
-      get { return (LookupParameter<DoubleValue>)Parameters["Quality"]; }
+      get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
     public ILookupParameter<DoubleValue> MoveQualityParameter {
-      get { return (LookupParameter<DoubleValue>)Parameters["MoveQuality"]; }
+      get { return (ILookupParameter<DoubleValue>)Parameters["MoveQuality"]; }
     }
     public ILookupParameter<TwoOptMove> TwoOptMoveParameter {
-      get { return (LookupParameter<TwoOptMove>)Parameters["Move"]; }
+      get { return (ILookupParameter<TwoOptMove>)Parameters["TwoOptMove"]; }
     }
     public ILookupParameter<Permutation> PermutationParameter {
       get { return (ILookupParameter<Permutation>)Parameters["Permutation"]; }
@@ -47,7 +47,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     public TwoOptMoveMaker()
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of the solution."));
-      Parameters.Add(new LookupParameter<TwoOptMove>("Move", "The move to evaluate."));
+      Parameters.Add(new LookupParameter<TwoOptMove>("TwoOptMove", "The move to evaluate."));
       Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The relative quality of the move."));
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The solution as permutation."));
     }
@@ -62,6 +62,10 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       quality.Value = moveQuality.Value;
 
       return base.Apply();
+    }
+
+    public override bool CanChangeName {
+      get { return false; }
     }
   }
 }
