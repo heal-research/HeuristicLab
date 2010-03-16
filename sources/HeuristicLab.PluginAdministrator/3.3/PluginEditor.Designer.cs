@@ -1,0 +1,130 @@
+﻿namespace HeuristicLab.DeploymentService.AdminClient {
+  partial class PluginEditor {
+    /// <summary> 
+    /// Required designer variable.
+    /// </summary>
+    private System.ComponentModel.IContainer components = null;
+
+    /// <summary> 
+    /// Clean up any resources being used.
+    /// </summary>
+    /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+    protected override void Dispose(bool disposing) {
+      if (disposing && (components != null)) {
+        components.Dispose();
+      }
+      base.Dispose(disposing);
+    }
+
+    #region Component Designer generated code
+
+    /// <summary> 
+    /// Required method for Designer support - do not modify 
+    /// the contents of this method with the code editor.
+    /// </summary>
+    private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
+      this.imageList = new System.Windows.Forms.ImageList(this.components);
+      this.refreshButton = new System.Windows.Forms.Button();
+      this.uploadButton = new System.Windows.Forms.Button();
+      this.listView = new HeuristicLab.DeploymentService.AdminClient.MultiSelectListView();
+      this.pluginNameHeader = new System.Windows.Forms.ColumnHeader();
+      this.localVersionHeader = new System.Windows.Forms.ColumnHeader();
+      this.serverVersionHeader = new System.Windows.Forms.ColumnHeader();
+      this.descriptionHeader = new System.Windows.Forms.ColumnHeader();
+      this.SuspendLayout();
+      // 
+      // imageList
+      // 
+      this.imageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+      this.imageList.ImageSize = new System.Drawing.Size(16, 16);
+      this.imageList.TransparentColor = System.Drawing.Color.Transparent;
+      // 
+      // refreshButton
+      // 
+      this.refreshButton.Location = new System.Drawing.Point(3, 3);
+      this.refreshButton.Name = "refreshButton";
+      this.refreshButton.Size = new System.Drawing.Size(75, 23);
+      this.refreshButton.TabIndex = 6;
+      this.refreshButton.Text = "Refresh";
+      this.refreshButton.UseVisualStyleBackColor = true;
+      this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
+      // 
+      // uploadButton
+      // 
+      this.uploadButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.uploadButton.Location = new System.Drawing.Point(3, 482);
+      this.uploadButton.Name = "uploadButton";
+      this.uploadButton.Size = new System.Drawing.Size(75, 23);
+      this.uploadButton.TabIndex = 7;
+      this.uploadButton.Text = "Upload";
+      this.uploadButton.UseVisualStyleBackColor = true;
+      this.uploadButton.Click += new System.EventHandler(this.uploadButton_Click);
+      // 
+      // listView
+      // 
+      this.listView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.listView.CheckBoxes = true;
+      this.listView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.pluginNameHeader,
+            this.localVersionHeader,
+            this.serverVersionHeader,
+            this.descriptionHeader});
+      this.listView.Location = new System.Drawing.Point(3, 32);
+      this.listView.Name = "listView";
+      this.listView.Size = new System.Drawing.Size(536, 444);
+      this.listView.StateImageList = this.imageList;
+      this.listView.SuppressItemCheckedEvents = false;
+      this.listView.TabIndex = 8;
+      this.listView.UseCompatibleStateImageBehavior = false;
+      this.listView.View = System.Windows.Forms.View.Details;
+      this.listView.ItemActivate += new System.EventHandler(this.listView_ItemActivate);
+      this.listView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.listView_ItemChecked);
+      // 
+      // pluginNameHeader
+      // 
+      this.pluginNameHeader.Text = "Name";
+      this.pluginNameHeader.Width = 161;
+      // 
+      // localVersionHeader
+      // 
+      this.localVersionHeader.Text = "Local Version";
+      this.localVersionHeader.Width = 85;
+      // 
+      // serverVersionHeader
+      // 
+      this.serverVersionHeader.Text = "Server Version";
+      this.serverVersionHeader.Width = 91;
+      // 
+      // descriptionHeader
+      // 
+      this.descriptionHeader.Text = "Description";
+      this.descriptionHeader.Width = 194;
+      // 
+      // PluginEditor
+      // 
+      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.listView);
+      this.Controls.Add(this.uploadButton);
+      this.Controls.Add(this.refreshButton);
+      this.Name = "PluginEditor";
+      this.Size = new System.Drawing.Size(539, 508);
+      this.ResumeLayout(false);
+
+    }
+
+    #endregion
+
+    private System.Windows.Forms.Button refreshButton;
+    private System.Windows.Forms.Button uploadButton;
+    private System.Windows.Forms.ImageList imageList;
+    private MultiSelectListView listView;
+    private System.Windows.Forms.ColumnHeader pluginNameHeader;
+    private System.Windows.Forms.ColumnHeader localVersionHeader;
+    private System.Windows.Forms.ColumnHeader serverVersionHeader;
+    private System.Windows.Forms.ColumnHeader descriptionHeader;
+  }
+}

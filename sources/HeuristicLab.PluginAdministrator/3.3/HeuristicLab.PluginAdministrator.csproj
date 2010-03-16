@@ -1,0 +1,196 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C458C60D-33CE-42B8-8B7A-651B698A3C96}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HeuristicLab.DeploymentService.AdminClient</RootNamespace>
+    <AssemblyName>HeuristicLab.DeploymentService.AdminClient-3.3</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\HeuristicLab.PluginInfrastructure\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.ServiceModel">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ConnectionSetupView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ConnectionSetupView.Designer.cs">
+      <DependentUpon>ConnectionSetupView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EditConnectionAction.cs" />
+    <Compile Include="EditConnectionMenuItem.cs" />
+    <Compile Include="LicenseView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="LicenseView.Designer.cs">
+      <DependentUpon>LicenseView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MultiSelectListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MultiSelectListView.Designer.cs">
+      <DependentUpon>MultiSelectListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PluginComparisonView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PluginComparisonView.Designer.cs">
+      <DependentUpon>PluginComparisonView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PluginEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PluginEditor.Designer.cs">
+      <DependentUpon>PluginEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PluginListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PluginListView.Designer.cs">
+      <DependentUpon>PluginListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PluginView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PluginView.Designer.cs">
+      <DependentUpon>PluginView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProductEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ProductEditor.Designer.cs">
+      <DependentUpon>ProductEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OpenProductEditorAction.cs" />
+    <Compile Include="OpenServerProductsEditMenuItem.cs" />
+    <Compile Include="HeuristicLabDeploymentService.AdminClientApplication.cs" />
+    <Compile Include="HeuristicLabDeploymentService.AdminClientPlugin.cs" />
+    <Compile Include="IUserInterfaceItemProvider.cs" />
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HeuristicLab.Common.Resources\3.2\HeuristicLab.Common.Resources-3.2.csproj">
+      <Project>{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}</Project>
+      <Name>HeuristicLab.Common.Resources-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.MainForm.WindowsForms\3.2\HeuristicLab.MainForm.WindowsForms-3.2.csproj">
+      <Project>{AB687BBE-1BFE-476B-906D-44237135431D}</Project>
+      <Name>HeuristicLab.MainForm.WindowsForms-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.MainForm\3.2\HeuristicLab.MainForm-3.2.csproj">
+      <Project>{3BD61258-31DA-4B09-89C0-4F71FEF5F05A}</Project>
+      <Name>HeuristicLab.MainForm-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
+      <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
+      <Name>HeuristicLab.PluginInfrastructure</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="HeuristicLabDeploymentServiceAdminClientPlugin.cs.frame" />
+    <None Include="Properties\AssemblyInfo.frame" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ConnectionSetupView.resx">
+      <DependentUpon>ConnectionSetupView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LicenseView.resx">
+      <DependentUpon>LicenseView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PluginComparisonView.resx">
+      <DependentUpon>PluginComparisonView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PluginEditor.resx">
+      <DependentUpon>PluginEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PluginListView.resx">
+      <DependentUpon>PluginListView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PluginView.resx">
+      <DependentUpon>PluginView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProductEditor.resx">
+      <DependentUpon>ProductEditor.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\DataSources\HeuristicLab.PluginInfrastructure.PluginUpdateService.PluginDescription.datasource" />
+    <None Include="Properties\DataSources\HeuristicLab.PluginInfrastructure.PluginUpdateService.ProductDescription.datasource" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
