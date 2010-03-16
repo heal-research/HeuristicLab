@@ -28,7 +28,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// An interface which represents an operator for crossing vectors of bool-valued data.
   /// </summary>
   public interface IBinaryVectorCrossover : IBinaryVectorOperator, ICrossover {
-    ILookupParameter<ItemArray<BoolArray>> ParentsParameter { get; }
-    ILookupParameter<BoolArray> ChildParameter { get; }
+    ILookupParameter<ItemArray<BinaryVector>> ParentsParameter { get; }
+    ILookupParameter<BinaryVector> ChildParameter { get; }
   }
 }

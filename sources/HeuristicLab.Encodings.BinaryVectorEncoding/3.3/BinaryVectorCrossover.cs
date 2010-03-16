@@ -36,11 +36,11 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
-    public ILookupParameter<ItemArray<BoolArray>> ParentsParameter {
-      get { return (SubScopesLookupParameter<BoolArray>)Parameters["Parents"]; }
+    public ILookupParameter<ItemArray<BinaryVector>> ParentsParameter {
+      get { return (SubScopesLookupParameter<BinaryVector>)Parameters["Parents"]; }
     }
-    public ILookupParameter<BoolArray> ChildParameter {
-      get { return (ILookupParameter<BoolArray>)Parameters["Child"]; }
+    public ILookupParameter<BinaryVector> ChildParameter {
+      get { return (ILookupParameter<BinaryVector>)Parameters["Child"]; }
     }
 
     protected BinaryVectorCrossover()
@@ -55,6 +55,6 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       return base.Apply();
     }
 
-    protected abstract BoolArray Cross(IRandom random, ItemArray<BoolArray> parents);
+    protected abstract BinaryVector Cross(IRandom random, ItemArray<BinaryVector> parents);
   }
 }

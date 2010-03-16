@@ -36,8 +36,8 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
-    public ILookupParameter<BoolArray> BinaryVectorParameter {
-      get { return (ILookupParameter<BoolArray>)Parameters["BinaryVector"]; }
+    public ILookupParameter<BinaryVector> BinaryVectorParameter {
+      get { return (ILookupParameter<BinaryVector>)Parameters["BinaryVector"]; }
     }
     public IValueLookupParameter<IntValue> LengthParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters["Length"]; }
@@ -55,6 +55,6 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       return base.Apply();
     }
 
-    protected abstract BoolArray Create(IRandom random, IntValue length);
+    protected abstract BinaryVector Create(IRandom random, IntValue length);
   }
 }
