@@ -282,8 +282,10 @@ namespace HeuristicLab.Algorithms.SGA {
         SelectorParameter.ValidValues.Clear();
         foreach (ISelector selector in Selectors.OrderBy(x => x.Name))
           SelectorParameter.ValidValues.Add(selector);
-        if (oldSelector != null)
-          SelectorParameter.Value = SelectorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldSelector.GetType());
+        if (oldSelector != null) {
+          ISelector selector = SelectorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldSelector.GetType());
+          if (selector != null) SelectorParameter.Value = selector;
+        }
       }
     }
     private void UpdateCrossovers() {
@@ -291,16 +293,20 @@ namespace HeuristicLab.Algorithms.SGA {
       CrossoverParameter.ValidValues.Clear();
       foreach (ICrossover crossover in Problem.Operators.OfType<ICrossover>().OrderBy(x => x.Name))
         CrossoverParameter.ValidValues.Add(crossover);
-      if (oldCrossover != null)
-        CrossoverParameter.Value = CrossoverParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldCrossover.GetType());
+      if (oldCrossover != null) {
+        ICrossover crossover = CrossoverParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldCrossover.GetType());
+        if (crossover != null) CrossoverParameter.Value = crossover;
+      }
     }
     private void UpdateMutators() {
       IManipulator oldMutator = MutatorParameter.Value;
       MutatorParameter.ValidValues.Clear();
       foreach (IManipulator mutator in Problem.Operators.OfType<IManipulator>().OrderBy(x => x.Name))
         MutatorParameter.ValidValues.Add(mutator);
-      if (oldMutator != null)
-        MutatorParameter.Value = MutatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMutator.GetType());
+      if (oldMutator != null) {
+        IManipulator mutator = MutatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMutator.GetType());
+        if (mutator != null) MutatorParameter.Value = mutator;
+      }
     }
     #endregion
   }
