@@ -15,7 +15,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
     internal virtual void ShowInForm() {
       Form form = new Form();
-      form.Size = this.Size;
+      form.ClientSize = this.Size;
       form.Text = this.Name;
       this.Dock = DockStyle.Fill;
       form.Controls.Add(this);

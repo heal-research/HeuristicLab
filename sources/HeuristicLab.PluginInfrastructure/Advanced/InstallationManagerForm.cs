@@ -255,22 +255,20 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     #region confirmation dialogs
     private bool ConfirmRemoveAction(IEnumerable<IPluginDescription> plugins) {
       StringBuilder strBuilder = new StringBuilder();
-      strBuilder.AppendLine("Delete files:");
       foreach (var plugin in plugins) {
         foreach (var file in plugin.Files) {
-          strBuilder.AppendLine(file.ToString());
+          strBuilder.AppendLine(Path.GetFileName(file.Name));
         }
       }
-      return MessageBox.Show(strBuilder.ToString(), "Confirm Delete", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK;
+      return (new ConfirmationDialog("Confirm Delete", "Do you want to delete following files?", strBuilder.ToString())).ShowDialog() == DialogResult.OK;
     }
 
     private bool ConfirmUpdateAction(IEnumerable<IPluginDescription> plugins) {
       StringBuilder strBuilder = new StringBuilder();
-      strBuilder.AppendLine("Update plugins:");
       foreach (var plugin in plugins) {
         strBuilder.AppendLine(plugin.ToString());
       }
-      return MessageBox.Show(strBuilder.ToString(), "Confirm Update", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK;
+      return (new ConfirmationDialog("Confirm Update", "Do you want to update following plugins?", strBuilder.ToString())).ShowDialog() == DialogResult.OK;
     }
 
     private bool ConfirmInstallAction(IEnumerable<IPluginDescription> plugins) {

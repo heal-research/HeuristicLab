@@ -71,12 +71,12 @@
       // nameHeader
       // 
       this.nameHeader.Text = "Name";
-      this.nameHeader.Width = 115;
+      this.nameHeader.Width = 185;
       // 
       // versionHeader
       // 
       this.versionHeader.Text = "Version";
-      this.versionHeader.Width = 161;
+      this.versionHeader.Width = 93;
       // 
       // descriptionHeader
       // 

@@ -29,9 +29,11 @@
       this.licenseLabel = new System.Windows.Forms.Label();
       this.label1 = new System.Windows.Forms.Label();
       this.radioButtonGroupBox = new System.Windows.Forms.GroupBox();
-      this.acceptRadioButton = new System.Windows.Forms.RadioButton();
       this.rejectRadioButton = new System.Windows.Forms.RadioButton();
+      this.acceptRadioButton = new System.Windows.Forms.RadioButton();
+      this.panel1 = new System.Windows.Forms.Panel();
       this.radioButtonGroupBox.SuspendLayout();
+      this.panel1.SuspendLayout();
       this.SuspendLayout();
       // 
       // richTextBox
@@ -39,10 +41,11 @@
       this.richTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.richTextBox.BackColor = System.Drawing.SystemColors.HighlightText;
       this.richTextBox.Location = new System.Drawing.Point(12, 48);
       this.richTextBox.Name = "richTextBox";
       this.richTextBox.ReadOnly = true;
-      this.richTextBox.Size = new System.Drawing.Size(494, 261);
+      this.richTextBox.Size = new System.Drawing.Size(494, 287);
       this.richTextBox.TabIndex = 0;
       this.richTextBox.Text = "";
       // 
@@ -50,7 +53,7 @@
       // 
       this.acceptButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.acceptButton.Enabled = false;
-      this.acceptButton.Location = new System.Drawing.Point(346, 394);
+      this.acceptButton.Location = new System.Drawing.Point(347, 53);
       this.acceptButton.Name = "acceptButton";
       this.acceptButton.Size = new System.Drawing.Size(75, 23);
       this.acceptButton.TabIndex = 1;
@@ -61,7 +64,7 @@
       // rejectButton
       // 
       this.rejectButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.rejectButton.Location = new System.Drawing.Point(427, 394);
+      this.rejectButton.Location = new System.Drawing.Point(428, 53);
       this.rejectButton.Name = "rejectButton";
       this.rejectButton.Size = new System.Drawing.Size(79, 23);
       this.rejectButton.TabIndex = 2;
@@ -93,23 +96,11 @@
       this.radioButtonGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.radioButtonGroupBox.Controls.Add(this.rejectRadioButton);
       this.radioButtonGroupBox.Controls.Add(this.acceptRadioButton);
-      this.radioButtonGroupBox.Location = new System.Drawing.Point(12, 315);
+      this.radioButtonGroupBox.Location = new System.Drawing.Point(13, 5);
       this.radioButtonGroupBox.Name = "radioButtonGroupBox";
       this.radioButtonGroupBox.Size = new System.Drawing.Size(281, 71);
       this.radioButtonGroupBox.TabIndex = 5;
       this.radioButtonGroupBox.TabStop = false;
-      // 
-      // acceptRadioButton
-      // 
-      this.acceptRadioButton.AutoSize = true;
-      this.acceptRadioButton.Location = new System.Drawing.Point(6, 19);
-      this.acceptRadioButton.Name = "acceptRadioButton";
-      this.acceptRadioButton.Size = new System.Drawing.Size(231, 17);
-      this.acceptRadioButton.TabIndex = 0;
-      this.acceptRadioButton.TabStop = true;
-      this.acceptRadioButton.Text = "I accept the terms in the license agreement.";
-      this.acceptRadioButton.UseVisualStyleBackColor = true;
-      this.acceptRadioButton.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
       // 
       // rejectRadioButton
       // 
@@ -123,20 +114,45 @@
       this.rejectRadioButton.UseVisualStyleBackColor = true;
       this.rejectRadioButton.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
       // 
+      // acceptRadioButton
+      // 
+      this.acceptRadioButton.AutoSize = true;
+      this.acceptRadioButton.Location = new System.Drawing.Point(6, 19);
+      this.acceptRadioButton.Name = "acceptRadioButton";
+      this.acceptRadioButton.Size = new System.Drawing.Size(231, 17);
+      this.acceptRadioButton.TabIndex = 0;
+      this.acceptRadioButton.TabStop = true;
+      this.acceptRadioButton.Text = "I accept the terms in the license agreement.";
+      this.acceptRadioButton.UseVisualStyleBackColor = true;
+      this.acceptRadioButton.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
+      // 
+      // panel1
+      // 
+      this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.panel1.BackColor = System.Drawing.SystemColors.Control;
+      this.panel1.Controls.Add(this.acceptButton);
+      this.panel1.Controls.Add(this.radioButtonGroupBox);
+      this.panel1.Controls.Add(this.rejectButton);
+      this.panel1.Location = new System.Drawing.Point(-1, 341);
+      this.panel1.Name = "panel1";
+      this.panel1.Size = new System.Drawing.Size(520, 88);
+      this.panel1.TabIndex = 6;
+      // 
       // LicenseConfirmationBox
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.BackColor = System.Drawing.SystemColors.HighlightText;
       this.ClientSize = new System.Drawing.Size(518, 429);
-      this.Controls.Add(this.radioButtonGroupBox);
+      this.Controls.Add(this.panel1);
       this.Controls.Add(this.label1);
       this.Controls.Add(this.licenseLabel);
-      this.Controls.Add(this.rejectButton);
-      this.Controls.Add(this.acceptButton);
       this.Controls.Add(this.richTextBox);
       this.Name = "LicenseConfirmationBox";
       this.radioButtonGroupBox.ResumeLayout(false);
       this.radioButtonGroupBox.PerformLayout();
+      this.panel1.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -152,5 +168,6 @@
     private System.Windows.Forms.GroupBox radioButtonGroupBox;
     private System.Windows.Forms.RadioButton rejectRadioButton;
     private System.Windows.Forms.RadioButton acceptRadioButton;
+    private System.Windows.Forms.Panel panel1;
   }
 }
