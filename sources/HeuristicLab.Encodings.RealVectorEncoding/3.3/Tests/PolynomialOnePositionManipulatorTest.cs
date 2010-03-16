@@ -96,7 +96,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
       contiguity = new DoubleValue(0.2);
       maxManipulation = new DoubleValue(0.7);
       PolynomialOnePositionManipulator.Apply(random, parent, contiguity, maxManipulation);
-      Assert.IsTrue(Auxiliary.DoubleArrayIsAlmostEqualByPosition(expected, parent));
+      Assert.IsTrue(Auxiliary.RealVectorIsAlmostEqualByPosition(expected, parent));
       // The following test is not based on published examples
       exceptionFired = false;
       random.Reset();

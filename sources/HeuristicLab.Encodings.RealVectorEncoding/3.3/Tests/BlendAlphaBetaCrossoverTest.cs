@@ -113,7 +113,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
       parent2 = new RealVector(new double[] { 0.4, 0.1, 0.3, 0.2, 0.8 });
       expected = new RealVector(new double[] { 0.3, 0.15, 0.3, 0.35, 0.45 });
       actual = BlendAlphaBetaCrossover.Apply(random, parent1, parent2, alpha, beta);
-      Assert.IsTrue(Auxiliary.DoubleArrayIsAlmostEqualByPosition(actual, expected));
+      Assert.IsTrue(Auxiliary.RealVectorIsAlmostEqualByPosition(actual, expected));
       // The following test is not based on published examples
       random.Reset();
       random.DoubleNumbers = new double[] { 0.25, 0.75, 0.25, 0.75, 0.25 };

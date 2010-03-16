@@ -19,12 +19,12 @@
  */
 #endregion
 
-using HeuristicLab.Data;
 using HeuristicLab.Common;
+using HeuristicLab.Encodings.IntegerVectorEncoding;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding_33.Tests {
   public static class Auxiliary {
-    public static bool IntVectorIsEqualByPosition(IntArray p1, IntArray p2) {
+    public static bool IntegerVectorIsEqualByPosition(IntegerVector p1, IntegerVector p2) {
       bool equal = (p1.Length == p2.Length);
       if (equal) {
         for (int i = 0; i < p1.Length; i++) {

@@ -94,7 +94,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding_33.Tests {
       min = new IntValue(2);
       max = new IntValue(7);
       UniformOnePositionManipulator.Apply(random, parent, min, max);
-      Assert.IsTrue(Auxiliary.IntVectorIsEqualByPosition(expected, parent));
+      Assert.IsTrue(Auxiliary.IntegerVectorIsEqualByPosition(expected, parent));
     }
 
     /// <summary>

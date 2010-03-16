@@ -19,12 +19,12 @@
  */
 #endregion
 
-using HeuristicLab.Data;
 using HeuristicLab.Common;
+using HeuristicLab.Encodings.BinaryVectorEncoding;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding_33.Tests {
   public static class Auxiliary {
-    public static bool BoolVectorIsEqualByPosition(BoolArray p1, BoolArray p2) {
+    public static bool BinaryVectorIsEqualByPosition(BinaryVector p1, BinaryVector p2) {
       bool equal = (p1.Length == p2.Length);
       if (equal) {
         for (int i = 0; i < p1.Length; i++) {

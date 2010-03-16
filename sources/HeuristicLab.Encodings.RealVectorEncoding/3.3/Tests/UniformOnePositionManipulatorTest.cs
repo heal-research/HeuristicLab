@@ -95,7 +95,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
       min = new DoubleValue(0.2);
       max = new DoubleValue(0.7);
       UniformOnePositionManipulator.Apply(random, parent, min, max);
-      Assert.IsTrue(Auxiliary.DoubleArrayIsAlmostEqualByPosition(expected, parent));
+      Assert.IsTrue(Auxiliary.RealVectorIsAlmostEqualByPosition(expected, parent));
     }
 
     /// <summary>

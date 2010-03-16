@@ -110,7 +110,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding_33.Tests {
       parent2 = new IntegerVector(new int[] { 4, 1, 3, 2, 8 });
       expected = new IntegerVector(new int[] { 2, 2, 3, 2, 8 });
       actual = SinglePointCrossover.Apply(random, parent1, parent2);
-      Assert.IsTrue(Auxiliary.IntVectorIsEqualByPosition(actual, expected));
+      Assert.IsTrue(Auxiliary.IntegerVectorIsEqualByPosition(actual, expected));
       // The following test is not based on published examples
       random.Reset();
       random.IntNumbers = new int[] { 2 };

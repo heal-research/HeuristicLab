@@ -46,8 +46,8 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     protected BinaryVectorCrossover()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic crossover operators."));
-      Parameters.Add(new SubScopesLookupParameter<IntArray>("Parents", "The parent vectors which should be crossed."));
-      Parameters.Add(new LookupParameter<IntArray>("Child", "The child vector resulting from the crossover."));
+      Parameters.Add(new SubScopesLookupParameter<BinaryVector>("Parents", "The parent vectors which should be crossed."));
+      Parameters.Add(new LookupParameter<BinaryVector>("Child", "The child vector resulting from the crossover."));
     }
 
     public sealed override IOperation Apply() {

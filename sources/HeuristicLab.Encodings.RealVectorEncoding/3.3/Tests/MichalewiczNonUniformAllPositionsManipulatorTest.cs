@@ -99,7 +99,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
       currentGeneration = new IntValue(1);
       maximumGenerations = new IntValue(4);
       MichalewiczNonUniformAllPositionsManipulator.Apply(random, parent, min, max, currentGeneration, maximumGenerations, generationsDependency);
-      Assert.IsTrue(Auxiliary.DoubleArrayIsAlmostEqualByPosition(expected, parent));
+      Assert.IsTrue(Auxiliary.RealVectorIsAlmostEqualByPosition(expected, parent));
       // The following test is not based on published examples
       exceptionFired = false;
       random.Reset();

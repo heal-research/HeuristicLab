@@ -43,7 +43,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     protected BinaryVectorManipulator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
-      Parameters.Add(new LookupParameter<IntArray>("BinaryVector", "The vector which should be manipulated."));
+      Parameters.Add(new LookupParameter<BinaryVector>("BinaryVector", "The vector which should be manipulated."));
     }
 
     public sealed override IOperation Apply() {
