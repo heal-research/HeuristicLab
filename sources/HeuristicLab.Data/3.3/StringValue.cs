@@ -27,10 +27,10 @@ namespace HeuristicLab.Data {
   [Item("StringValue", "Represents a string.")]
   [Creatable("Test")]
   [StorableClass]
-  public sealed class StringValue : Item, IComparable, IStringConvertibleValue {
+  public class StringValue : Item, IComparable, IStringConvertibleValue {
     [Storable]
-    private string value;
-    public string Value {
+    protected string value;
+    public virtual string Value {
       get { return value; }
       set {
         if (value != this.value) {
@@ -50,7 +50,7 @@ namespace HeuristicLab.Data {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      StringValue clone = new StringValue(Value);
+      StringValue clone = new StringValue(value);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
@@ -59,7 +59,7 @@ namespace HeuristicLab.Data {
       return value;
     }
 
-    public int CompareTo(object obj) {
+    public virtual int CompareTo(object obj) {
       StringValue other = obj as StringValue;
       if (other != null)
         return Value.CompareTo(other.Value);
@@ -68,14 +68,13 @@ namespace HeuristicLab.Data {
     }
 
     public event EventHandler ValueChanged;
-    private void OnValueChanged() {
+    protected virtual void OnValueChanged() {
       if (ValueChanged != null)
         ValueChanged(this, EventArgs.Empty);
       OnToStringChanged();
     }
 
-    #region IStringConvertibleValue Members
-    bool IStringConvertibleValue.Validate(string value, out string errorMessage) {
+    protected virtual bool Validate(string value, out string errorMessage) {
       if (value == null) {
         errorMessage = "Invalid Value (string must not be null)";
         return false;
@@ -84,16 +83,27 @@ namespace HeuristicLab.Data {
         return true;
       }
     }
-    string IStringConvertibleValue.GetValue() {
+    protected virtual string GetValue() {
       return Value;
     }
-    bool IStringConvertibleValue.SetValue(string value) {
+    protected virtual bool SetValue(string value) {
       if (value != null) {
         Value = value;
         return true;
       } else {
         return false;
       }
+    }
+
+    #region IStringConvertibleValue Members
+    bool IStringConvertibleValue.Validate(string value, out string errorMessage) {
+      return Validate(value, out errorMessage);
+    }
+    string IStringConvertibleValue.GetValue() {
+      return GetValue();
+    }
+    bool IStringConvertibleValue.SetValue(string value) {
+      return SetValue(value);
     }
     #endregion
   }

@@ -19,9 +19,6 @@
  */
 #endregion
 
-using System;
-using System.Text;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -30,7 +27,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   [StorableClass]
   [Item("Permutation", "Represents a permutation of integer values.")]
   [Creatable("Test")]
-  public sealed class Permutation : ValueTypeArray<int>, IStringConvertibleArray {
+  public class Permutation : IntArray {
     public Permutation() : base() { }
     public Permutation(int length)
       : base(length) {
@@ -41,18 +38,20 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       : this(length) {
       Randomize(random);
     }
-    public Permutation(int[] elements)
-      : base(elements) {
+    public Permutation(int[] elements) : base(elements) { }
+    public Permutation(IntArray elements)
+      : this(elements.Length) {
+      for (int i = 0; i < array.Length; i++)
+        array[i] = elements[i];
     }
-    private Permutation(Permutation elements) : base(elements) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      Permutation clone = new Permutation(this);
+      Permutation clone = new Permutation(array);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
 
-    public bool Validate() {
+    public virtual bool Validate() {
       bool[] values = new bool[Length];
       int value;
 
@@ -67,60 +66,31 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       return true;
     }
 
-    public void Randomize(IRandom random, int startIndex, int length) {  // Knuth shuffle
-      int index1, index2;
-      int val;
-      for (int i = length - 1; i > 0; i--) {
-        index1 = startIndex + i;
-        index2 = startIndex + random.Next(i + 1);
-        if (index1 != index2) {
-          val = this[index1];
-          this[index1] = this[index2];
-          this[index2] = val;
+    public virtual void Randomize(IRandom random, int startIndex, int length) {
+      if (length > 1) {
+        // Knuth shuffle
+        int index1, index2;
+        int val;
+        for (int i = length - 1; i > 0; i--) {
+          index1 = startIndex + i;
+          index2 = startIndex + random.Next(i + 1);
+          if (index1 != index2) {
+            val = array[index1];
+            array[index1] = array[index2];
+            array[index2] = val;
+          }
         }
+        OnReset();
       }
     }
     public void Randomize(IRandom random) {
       Randomize(random, 0, Length);
     }
 
-    public int GetCircular(int position) {
+    public virtual int GetCircular(int position) {
       if (position >= Length) position = position % Length;
       while (position < 0) position += Length;
       return this[position];
     }
-
-    #region IStringConvertibleArrayData Members
-    int IStringConvertibleArray.Length {
-      get { return Length; }
-      set { Length = value; }
-    }
-
-    bool IStringConvertibleArray.Validate(string value, out string errorMessage) {
-      int val;
-      bool valid = int.TryParse(value, out val);
-      errorMessage = string.Empty;
-      if (!valid) {
-        StringBuilder sb = new StringBuilder();
-        sb.Append("Invalid Value (Valid Value Format: \"");
-        sb.Append(FormatPatterns.GetIntFormatPattern());
-        sb.Append("\")");
-        errorMessage = sb.ToString();
-      }
-      return valid;
-    }
-    string IStringConvertibleArray.GetValue(int index) {
-      return this[index].ToString();
-    }
-    bool IStringConvertibleArray.SetValue(string value, int index) {
-      int val;
-      if (int.TryParse(value, out val)) {
-        this[index] = val;
-        return true;
-      } else {
-        return false;
-      }
-    }
-    #endregion
   }
 }

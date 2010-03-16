@@ -28,17 +28,17 @@ namespace HeuristicLab.Data {
   [Item("BoolValue", "Represents a boolean value.")]
   [Creatable("Test")]
   [StorableClass]
-  public sealed class BoolValue : ValueTypeValue<bool>, IComparable, IStringConvertibleValue {
+  public class BoolValue : ValueTypeValue<bool>, IComparable, IStringConvertibleValue {
     public BoolValue() : base() { }
     public BoolValue(bool value) : base(value) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      BoolValue clone = new BoolValue(Value);
+      BoolValue clone = new BoolValue(value);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
 
-    public int CompareTo(object obj) {
+    public virtual int CompareTo(object obj) {
       BoolValue other = obj as BoolValue;
       if (other != null)
         return Value.CompareTo(other.Value);
@@ -46,8 +46,7 @@ namespace HeuristicLab.Data {
         return Value.CompareTo(obj);
     }
 
-    #region IStringConvertibleValue Members
-    bool IStringConvertibleValue.Validate(string value, out string errorMessage) {
+    protected virtual bool Validate(string value, out string errorMessage) {
       bool val;
       bool valid = bool.TryParse(value, out val);
       errorMessage = string.Empty;
@@ -60,10 +59,10 @@ namespace HeuristicLab.Data {
       }
       return valid;
     }
-    string IStringConvertibleValue.GetValue() {
+    protected virtual string GetValue() {
       return Value.ToString();
     }
-    bool IStringConvertibleValue.SetValue(string value) {
+    protected virtual bool SetValue(string value) {
       bool val;
       if (bool.TryParse(value, out val)) {
         Value = val;
@@ -71,6 +70,17 @@ namespace HeuristicLab.Data {
       } else {
         return false;
       }
+    }
+
+    #region IStringConvertibleValue Members
+    bool IStringConvertibleValue.Validate(string value, out string errorMessage) {
+      return Validate(value, out errorMessage);
+    }
+    string IStringConvertibleValue.GetValue() {
+      return GetValue();
+    }
+    bool IStringConvertibleValue.SetValue(string value) {
+      return SetValue(value);
     }
     #endregion
   }

@@ -19,30 +19,43 @@
  */
 #endregion
 
-using System;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Data {
-  [Item("Comparison", "Represents a comparison.")]
-  [Creatable("Test")]
+namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [StorableClass]
-  public class Comparison : ValueTypeValue<ComparisonType>, IComparable {
-    public Comparison() : base() { }
-    public Comparison(ComparisonType value) : base(value) { }
+  [Item("IntegerVector", "Represents a vector of integer values.")]
+  [Creatable("Test")]
+  public class IntegerVector : IntArray {
+    public IntegerVector() : base() { }
+    public IntegerVector(int length) : base(length) { }
+    public IntegerVector(int length, IRandom random, int min, int max)
+      : this(length) {
+      Randomize(random, min, max);
+    }
+    public IntegerVector(int[] elements) : base(elements) { }
+    public IntegerVector(IntArray elements)
+      : this(elements.Length) {
+      for (int i = 0; i < array.Length; i++)
+        array[i] = elements[i];
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      Comparison clone = new Comparison(value);
+      IntegerVector clone = new IntegerVector(array);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
 
-    public virtual int CompareTo(object obj) {
-      Comparison other = obj as Comparison;
-      if (other != null)
-        return Value.CompareTo(other.Value);
-      else
-        return Value.CompareTo(obj);
+    public virtual void Randomize(IRandom random, int startIndex, int length, int min, int max) {
+      if (length > 0) {
+        for (int i = 0; i < length; i++)
+          array[startIndex + i] = random.Next(min, max);
+        OnReset();
+      }
+    }
+    public void Randomize(IRandom random, int min, int max) {
+      Randomize(random, 0, Length, min, max);
     }
   }
 }

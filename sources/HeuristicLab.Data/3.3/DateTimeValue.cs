@@ -27,12 +27,12 @@ namespace HeuristicLab.Data {
   [Item("DateTimeValue", "Represents a date and time value.")]
   [Creatable("Test")]
   [StorableClass]
-  public sealed class DateTimeValue : ValueTypeValue<DateTime>, IComparable, IStringConvertibleValue {
+  public class DateTimeValue : ValueTypeValue<DateTime>, IComparable, IStringConvertibleValue {
     public DateTimeValue() : base() { }
     public DateTimeValue(DateTime value) : base(value) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      DateTimeValue clone = new DateTimeValue(Value);
+      DateTimeValue clone = new DateTimeValue(value);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
@@ -41,7 +41,7 @@ namespace HeuristicLab.Data {
       return Value.ToString("o");  // round-trip format
     }
 
-    public int CompareTo(object obj) {
+    public virtual int CompareTo(object obj) {
       DateTimeValue other = obj as DateTimeValue;
       if (other != null)
         return Value.CompareTo(other.Value);
@@ -49,17 +49,16 @@ namespace HeuristicLab.Data {
         return Value.CompareTo(obj);
     }
 
-    #region IStringConvertibleValue Members
-    bool IStringConvertibleValue.Validate(string value, out string errorMessage) {
+    protected virtual bool Validate(string value, out string errorMessage) {
       DateTime val;
       bool valid = DateTime.TryParse(value, out val);
       errorMessage = valid ? string.Empty : "Invalid Value (values must be formatted according to the current culture settings)";
       return valid;
     }
-    string IStringConvertibleValue.GetValue() {
+    protected virtual string GetValue() {
       return Value.ToString("o");  // round-trip format
     }
-    bool IStringConvertibleValue.SetValue(string value) {
+    protected virtual bool SetValue(string value) {
       DateTime val;
       if (DateTime.TryParse(value, out val)) {
         Value = val;
@@ -67,6 +66,17 @@ namespace HeuristicLab.Data {
       } else {
         return false;
       }
+    }
+
+    #region IStringConvertibleValue Members
+    bool IStringConvertibleValue.Validate(string value, out string errorMessage) {
+      return Validate(value, out errorMessage);
+    }
+    string IStringConvertibleValue.GetValue() {
+      return GetValue();
+    }
+    bool IStringConvertibleValue.SetValue(string value) {
+      return SetValue(value);
     }
     #endregion
   }

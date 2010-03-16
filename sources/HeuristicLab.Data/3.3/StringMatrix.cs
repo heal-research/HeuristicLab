@@ -30,39 +30,39 @@ namespace HeuristicLab.Data {
   [Item("StringMatrix", "Represents a matrix of strings.")]
   [Creatable("Test")]
   [StorableClass]
-  public sealed class StringMatrix : Item, IEnumerable, IStringConvertibleMatrix {
+  public class StringMatrix : Item, IEnumerable, IStringConvertibleMatrix {
     [Storable]
-    private string[,] array;
+    protected string[,] matrix;
 
-    public int Rows {
-      get { return array.GetLength(0); }
-      private set {
+    public virtual int Rows {
+      get { return matrix.GetLength(0); }
+      protected set {
         if (value != Rows) {
-          string[,] newArray = new string[value, Columns];
-          Array.Copy(array, newArray, Math.Min(value * Columns, array.Length));
-          array = newArray;
+          string[,] newMatrix = new string[value, Columns];
+          Array.Copy(matrix, newMatrix, Math.Min(value * Columns, matrix.Length));
+          matrix = newMatrix;
           OnReset();
         }
       }
     }
-    public int Columns {
-      get { return array.GetLength(1); }
-      private set {
+    public virtual int Columns {
+      get { return matrix.GetLength(1); }
+      protected set {
         if (value != Columns) {
-          string[,] newArray = new string[Rows, value];
+          string[,] newMatrix = new string[Rows, value];
           for (int i = 0; i < Rows; i++)
-            Array.Copy(array, i * Columns, newArray, i * value, Math.Min(value, Columns));
-          array = newArray;
+            Array.Copy(matrix, i * Columns, newMatrix, i * value, Math.Min(value, Columns));
+          matrix = newMatrix;
           OnReset();
         }
       }
     }
-    public string this[int rowIndex, int columnIndex] {
-      get { return array[rowIndex, columnIndex]; }
+    public virtual string this[int rowIndex, int columnIndex] {
+      get { return matrix[rowIndex, columnIndex]; }
       set {
-        if (value != array[rowIndex, columnIndex]) {
-          if ((value != null) || (array[rowIndex, columnIndex] != string.Empty)) {
-            array[rowIndex, columnIndex] = value != null ? value : string.Empty;
+        if (value != matrix[rowIndex, columnIndex]) {
+          if ((value != null) || (matrix[rowIndex, columnIndex] != string.Empty)) {
+            matrix[rowIndex, columnIndex] = value != null ? value : string.Empty;
             OnItemChanged(rowIndex, columnIndex);
           }
         }
@@ -70,42 +70,39 @@ namespace HeuristicLab.Data {
     }
 
     public StringMatrix() {
-      array = new string[0, 0];
+      matrix = new string[0, 0];
     }
     public StringMatrix(int rows, int columns) {
-      array = new string[rows, columns];
-      for (int i = 0; i < array.GetLength(0); i++) {
-        for (int j = 0; j < array.GetLength(1); j++)
-          array[i, j] = string.Empty;
+      matrix = new string[rows, columns];
+      for (int i = 0; i < matrix.GetLength(0); i++) {
+        for (int j = 0; j < matrix.GetLength(1); j++)
+          matrix[i, j] = string.Empty;
       }
     }
     public StringMatrix(string[,] elements) {
       if (elements == null) throw new ArgumentNullException();
-      array = new string[elements.GetLength(0), elements.GetLength(1)];
-      for (int i = 0; i < array.GetLength(0); i++) {
-        for (int j = 0; j < array.GetLength(1); j++)
-          array[i, j] = elements[i, j] == null ? string.Empty : elements[i, j];
+      matrix = new string[elements.GetLength(0), elements.GetLength(1)];
+      for (int i = 0; i < matrix.GetLength(0); i++) {
+        for (int j = 0; j < matrix.GetLength(1); j++)
+          matrix[i, j] = elements[i, j] == null ? string.Empty : elements[i, j];
       }
-    }
-    private StringMatrix(StringMatrix elements) {
-      if (elements == null) throw new ArgumentNullException();
-      array = (string[,])elements.array.Clone();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      StringMatrix clone = new StringMatrix(this);
+      StringMatrix clone = new StringMatrix();
       cloner.RegisterClonedObject(this, clone);
+      clone.matrix = (string[,])matrix.Clone();
       return clone;
     }
 
     public override string ToString() {
       StringBuilder sb = new StringBuilder();
       sb.Append("[");
-      if (array.Length > 0) {
+      if (matrix.Length > 0) {
         for (int i = 0; i < Rows; i++) {
-          sb.Append("[").Append(array[i, 0]);
+          sb.Append("[").Append(matrix[i, 0]);
           for (int j = 1; j < Columns; j++)
-            sb.Append(";").Append(array[i, j]);
+            sb.Append(";").Append(matrix[i, j]);
           sb.Append("]");
         }
       }
@@ -113,8 +110,42 @@ namespace HeuristicLab.Data {
       return sb.ToString();
     }
 
-    public IEnumerator GetEnumerator() {
-      return array.GetEnumerator();
+    public virtual IEnumerator GetEnumerator() {
+      return matrix.GetEnumerator();
+    }
+
+    protected virtual bool Validate(string value, out string errorMessage) {
+      if (value == null) {
+        errorMessage = "Invalid Value (string must not be null)";
+        return false;
+      } else {
+        errorMessage = string.Empty;
+        return true;
+      }
+    }
+    protected virtual string GetValue(int rowIndex, int columIndex) {
+      return this[rowIndex, columIndex];
+    }
+    protected virtual bool SetValue(string value, int rowIndex, int columnIndex) {
+      if (value != null) {
+        this[rowIndex, columnIndex] = value;
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    public event EventHandler<EventArgs<int, int>> ItemChanged;
+    protected virtual void OnItemChanged(int rowIndex, int columnIndex) {
+      if (ItemChanged != null)
+        ItemChanged(this, new EventArgs<int, int>(rowIndex, columnIndex));
+      OnToStringChanged();
+    }
+    public event EventHandler Reset;
+    protected virtual void OnReset() {
+      if (Reset != null)
+        Reset(this, EventArgs.Empty);
+      OnToStringChanged();
     }
 
     #region IStringConvertibleMatrix Members
@@ -126,38 +157,14 @@ namespace HeuristicLab.Data {
       get { return Columns; }
       set { Columns = value; }
     }
-
     bool IStringConvertibleMatrix.Validate(string value, out string errorMessage) {
-      if (value == null) {
-        errorMessage = "Invalid Value (string must not be null)";
-        return false;
-      } else {
-        errorMessage = string.Empty;
-        return true;
-      }
+      return Validate(value, out errorMessage);
     }
     string IStringConvertibleMatrix.GetValue(int rowIndex, int columIndex) {
-      return this[rowIndex, columIndex];
+      return GetValue(rowIndex, columIndex);
     }
     bool IStringConvertibleMatrix.SetValue(string value, int rowIndex, int columnIndex) {
-      if (value != null) {
-        this[rowIndex, columnIndex] = value;
-        return true;
-      } else {
-        return false;
-      }
-    }
-    public event EventHandler<EventArgs<int, int>> ItemChanged;
-    private void OnItemChanged(int rowIndex, int columnIndex) {
-      if (ItemChanged != null)
-        ItemChanged(this, new EventArgs<int, int>(rowIndex, columnIndex));
-      OnToStringChanged();
-    }
-    public event EventHandler Reset;
-    private void OnReset() {
-      if (Reset != null)
-        Reset(this, EventArgs.Empty);
-      OnToStringChanged();
+      return SetValue(value, rowIndex, columnIndex);
     }
     #endregion
   }

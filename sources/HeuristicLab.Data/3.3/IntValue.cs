@@ -28,17 +28,17 @@ namespace HeuristicLab.Data {
   [Item("IntValue", "Represents an integer value.")]
   [Creatable("Test")]
   [StorableClass]
-  public sealed class IntValue : ValueTypeValue<int>, IComparable, IStringConvertibleValue {
+  public class IntValue : ValueTypeValue<int>, IComparable, IStringConvertibleValue {
     public IntValue() : base() { }
     public IntValue(int value) : base(value) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      IntValue clone = new IntValue(Value);
+      IntValue clone = new IntValue(value);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
 
-    public int CompareTo(object obj) {
+    public virtual int CompareTo(object obj) {
       IntValue other = obj as IntValue;
       if (other != null)
         return Value.CompareTo(other.Value);
@@ -46,8 +46,7 @@ namespace HeuristicLab.Data {
         return Value.CompareTo(obj);
     }
 
-    #region IStringConvertibleValue Members
-    bool IStringConvertibleValue.Validate(string value, out string errorMessage) {
+    protected virtual bool Validate(string value, out string errorMessage) {
       int val;
       bool valid = int.TryParse(value, out val);
       errorMessage = string.Empty;
@@ -60,10 +59,10 @@ namespace HeuristicLab.Data {
       }
       return valid;
     }
-    string IStringConvertibleValue.GetValue() {
+    protected virtual string GetValue() {
       return Value.ToString();
     }
-    bool IStringConvertibleValue.SetValue(string value) {
+    protected virtual bool SetValue(string value) {
       int val;
       if (int.TryParse(value, out val)) {
         Value = val;
@@ -71,6 +70,17 @@ namespace HeuristicLab.Data {
       } else {
         return false;
       }
+    }
+
+    #region IStringConvertibleValue Members
+    bool IStringConvertibleValue.Validate(string value, out string errorMessage) {
+      return Validate(value, out errorMessage);
+    }
+    string IStringConvertibleValue.GetValue() {
+      return GetValue();
+    }
+    bool IStringConvertibleValue.SetValue(string value) {
+      return SetValue(value);
     }
     #endregion
   }

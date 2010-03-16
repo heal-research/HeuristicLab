@@ -1,0 +1,62 @@
+#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+
+namespace HeuristicLab.Encodings.RealVectorEncoding {
+  [StorableClass]
+  [Item("RealVector", "Represents a vector of real values.")]
+  [Creatable("Test")]
+  public class RealVector : DoubleArray {
+    public RealVector() : base() { }
+    public RealVector(int length) : base(length) { }
+    public RealVector(int length, IRandom random, double min, double max)
+      : this(length) {
+      Randomize(random, min, max);
+    }
+    public RealVector(double[] elements) : base(elements) { }
+    public RealVector(DoubleArray elements)
+      : this(elements.Length) {
+      for (int i = 0; i < array.Length; i++)
+        array[i] = elements[i];
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      RealVector clone = new RealVector(array);
+      cloner.RegisterClonedObject(this, clone);
+      return clone;
+    }
+
+    public virtual void Randomize(IRandom random, int startIndex, int length, double min, double max) {
+      double delta = max - min;
+      if (length > 0) {
+        for (int i = 0; i < length; i++)
+          array[startIndex + i] = min + delta * random.NextDouble();
+        OnReset();
+      }
+    }
+    public void Randomize(IRandom random, double min, double max) {
+      Randomize(random, 0, Length, min, max);
+    }
+  }
+}

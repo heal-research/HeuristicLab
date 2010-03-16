@@ -85,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HeuristicLabEncodingsBinaryVectorEncodingPlugin.cs" />
+    <Compile Include="BinaryVector.cs" />
     <Compile Include="Interfaces\IBinaryVectorCreator.cs" />
     <Compile Include="Interfaces\IBinaryVectorCrossover.cs" />
     <Compile Include="Interfaces\IBinaryVectorManipulator.cs" />

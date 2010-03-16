@@ -27,25 +27,18 @@ namespace HeuristicLab.Data {
   [Item("DoubleArray", "Represents an array of double values.")]
   [Creatable("Test")]
   [StorableClass]
-  public sealed class DoubleArray : ValueTypeArray<double>, IStringConvertibleArray {
+  public class DoubleArray : ValueTypeArray<double>, IStringConvertibleArray {
     public DoubleArray() : base() { }
     public DoubleArray(int length) : base(length) { }
     public DoubleArray(double[] elements) : base(elements) { }
-    private DoubleArray(DoubleArray elements) : base(elements) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      DoubleArray clone = new DoubleArray(this);
+      DoubleArray clone = new DoubleArray(array);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
 
-    #region IStringConvertibleArray Members
-    int IStringConvertibleArray.Length {
-      get { return Length; }
-      set { Length = value; }
-    }
-
-    bool IStringConvertibleArray.Validate(string value, out string errorMessage) {
+    protected virtual bool Validate(string value, out string errorMessage) {
       double val;
       bool valid = double.TryParse(value, out val);
       errorMessage = string.Empty;
@@ -58,10 +51,10 @@ namespace HeuristicLab.Data {
       }
       return valid;
     }
-    string IStringConvertibleArray.GetValue(int index) {
+    protected virtual string GetValue(int index) {
       return this[index].ToString();
     }
-    bool IStringConvertibleArray.SetValue(string value, int index) {
+    protected virtual bool SetValue(string value, int index) {
       double val;
       if (double.TryParse(value, out val)) {
         this[index] = val;
@@ -69,6 +62,21 @@ namespace HeuristicLab.Data {
       } else {
         return false;
       }
+    }
+
+    #region IStringConvertibleArray Members
+    int IStringConvertibleArray.Length {
+      get { return Length; }
+      set { Length = value; }
+    }
+    bool IStringConvertibleArray.Validate(string value, out string errorMessage) {
+      return Validate(value, out errorMessage);
+    }
+    string IStringConvertibleArray.GetValue(int index) {
+      return GetValue(index);
+    }
+    bool IStringConvertibleArray.SetValue(string value, int index) {
+      return SetValue(value, index);
     }
     #endregion
   }

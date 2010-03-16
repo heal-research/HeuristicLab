@@ -77,6 +77,10 @@
     <Content Include="AuthoringTests.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\HeuristicLab.Algorithms.TS\3.3\HeuristicLab.Algorithms.TS-3.3.csproj">
+      <Project>{D58A232D-04BA-4186-B73E-0EC86FD31ABE}</Project>
+      <Name>HeuristicLab.Algorithms.TS-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
       <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
       <Name>HeuristicLab.Analysis-3.3</Name>

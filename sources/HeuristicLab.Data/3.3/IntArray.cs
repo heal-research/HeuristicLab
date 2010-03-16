@@ -27,25 +27,18 @@ namespace HeuristicLab.Data {
   [Item("IntArray", "Represents an array of integer values.")]
   [Creatable("Test")]
   [StorableClass]
-  public sealed class IntArray : ValueTypeArray<int>, IStringConvertibleArray {
+  public class IntArray : ValueTypeArray<int>, IStringConvertibleArray {
     public IntArray() : base() { }
     public IntArray(int length) : base(length) { }
     public IntArray(int[] elements) : base(elements) { }
-    private IntArray(IntArray elements) : base(elements) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      IntArray clone = new IntArray(this);
+      IntArray clone = new IntArray(array);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
 
-    #region IStringConvertibleArray Members
-    int IStringConvertibleArray.Length {
-      get { return Length; }
-      set { Length = value; }
-    }
-
-    bool IStringConvertibleArray.Validate(string value, out string errorMessage) {
+    protected virtual bool Validate(string value, out string errorMessage) {
       int val;
       bool valid = int.TryParse(value, out val);
       errorMessage = string.Empty;
@@ -58,10 +51,10 @@ namespace HeuristicLab.Data {
       }
       return valid;
     }
-    string IStringConvertibleArray.GetValue(int index) {
+    protected virtual string GetValue(int index) {
       return this[index].ToString();
     }
-    bool IStringConvertibleArray.SetValue(string value, int index) {
+    protected virtual bool SetValue(string value, int index) {
       int val;
       if (int.TryParse(value, out val)) {
         this[index] = val;
@@ -69,6 +62,21 @@ namespace HeuristicLab.Data {
       } else {
         return false;
       }
+    }
+
+    #region IStringConvertibleArray Members
+    int IStringConvertibleArray.Length {
+      get { return Length; }
+      set { Length = value; }
+    }
+    bool IStringConvertibleArray.Validate(string value, out string errorMessage) {
+      return Validate(value, out errorMessage);
+    }
+    string IStringConvertibleArray.GetValue(int index) {
+      return GetValue(index);
+    }
+    bool IStringConvertibleArray.SetValue(string value, int index) {
+      return SetValue(value, index);
     }
     #endregion
   }

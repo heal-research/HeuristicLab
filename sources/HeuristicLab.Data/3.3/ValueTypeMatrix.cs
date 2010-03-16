@@ -27,74 +27,70 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
-  [Item("ValueTypeMatrix<T>", "A base class for representing matrices of value types.")]
+  [Item("ValueTypeMatrix<T>", "An abstract base class for representing matrices of value types.")]
   [StorableClass]
-  public class ValueTypeMatrix<T> : Item, IEnumerable where T : struct {
+  public abstract class ValueTypeMatrix<T> : Item, IEnumerable where T : struct {
     [Storable]
-    private T[,] array;
+    protected T[,] matrix;
 
-    public int Rows {
-      get { return array.GetLength(0); }
+    public virtual int Rows {
+      get { return matrix.GetLength(0); }
       protected set {
         if (value != Rows) {
           T[,] newArray = new T[value, Columns];
-          Array.Copy(array, newArray, Math.Min(value * Columns, array.Length));
-          array = newArray;
+          Array.Copy(matrix, newArray, Math.Min(value * Columns, matrix.Length));
+          matrix = newArray;
           OnReset();
         }
       }
     }
-    public int Columns {
-      get { return array.GetLength(1); }
+    public virtual int Columns {
+      get { return matrix.GetLength(1); }
       protected set {
         if (value != Columns) {
           T[,] newArray = new T[Rows, value];
           for (int i = 0; i < Rows; i++)
-            Array.Copy(array, i * Columns, newArray, i * value, Math.Min(value, Columns));
-          array = newArray;
+            Array.Copy(matrix, i * Columns, newArray, i * value, Math.Min(value, Columns));
+          matrix = newArray;
           OnReset();
         }
       }
     }
-    public T this[int rowIndex, int columnIndex] {
-      get { return array[rowIndex, columnIndex]; }
+    public virtual T this[int rowIndex, int columnIndex] {
+      get { return matrix[rowIndex, columnIndex]; }
       set {
-        if (!value.Equals(array[rowIndex, columnIndex])) {
-          array[rowIndex, columnIndex] = value;
+        if (!value.Equals(matrix[rowIndex, columnIndex])) {
+          matrix[rowIndex, columnIndex] = value;
           OnItemChanged(rowIndex, columnIndex);
         }
       }
     }
 
-    public ValueTypeMatrix() {
-      array = new T[0, 0];
+    protected ValueTypeMatrix() {
+      matrix = new T[0, 0];
     }
-    public ValueTypeMatrix(int rows, int columns) {
-      array = new T[rows, columns];
+    protected ValueTypeMatrix(int rows, int columns) {
+      matrix = new T[rows, columns];
     }
-    public ValueTypeMatrix(T[,] elements) {
+    protected ValueTypeMatrix(T[,] elements) {
       if (elements == null) throw new ArgumentNullException();
-      array = (T[,])elements.Clone();
-    }
-    protected ValueTypeMatrix(ValueTypeMatrix<T> elements) {
-      if (elements == null) throw new ArgumentNullException();
-      array = (T[,])elements.array.Clone();
+      matrix = (T[,])elements.Clone();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       ValueTypeMatrix<T> clone = (ValueTypeMatrix<T>)base.Clone(cloner);
-      clone.array = (T[,])array.Clone();
+      clone.matrix = (T[,])matrix.Clone();
       return clone;
     }
 
     public override string ToString() {
       StringBuilder sb = new StringBuilder();
       sb.Append("[");
-      if (array.Length > 0) {
+      if (matrix.Length > 0) {
         for (int i = 0; i < Rows; i++) {
-          sb.Append("[").Append(array[i, 0].ToString());
+          sb.Append("[").Append(matrix[i, 0].ToString());
           for (int j = 1; j < Columns; j++)
-            sb.Append(";").Append(array[i, j].ToString());
+            sb.Append(";").Append(matrix[i, j].ToString());
           sb.Append("]");
         }
       }
@@ -102,18 +98,18 @@ namespace HeuristicLab.Data {
       return sb.ToString();
     }
 
-    public IEnumerator GetEnumerator() {
-      return array.GetEnumerator();
+    public virtual IEnumerator GetEnumerator() {
+      return matrix.GetEnumerator();
     }
 
     public event EventHandler<EventArgs<int, int>> ItemChanged;
-    private void OnItemChanged(int rowIndex, int columnIndex) {
+    protected virtual void OnItemChanged(int rowIndex, int columnIndex) {
       if (ItemChanged != null)
         ItemChanged(this, new EventArgs<int, int>(rowIndex, columnIndex));
       OnToStringChanged();
     }
     public event EventHandler Reset;
-    private void OnReset() {
+    protected virtual void OnReset() {
       if (Reset != null)
         Reset(this, EventArgs.Empty);
       OnToStringChanged();

@@ -28,12 +28,12 @@ namespace HeuristicLab.Data {
   [Item("DoubleValue", "Represents a double value.")]
   [Creatable("Test")]
   [StorableClass]
-  public sealed class DoubleValue : ValueTypeValue<double>, IComparable, IStringConvertibleValue {
+  public class DoubleValue : ValueTypeValue<double>, IComparable, IStringConvertibleValue {
     public DoubleValue() : base() { }
     public DoubleValue(double value) : base(value) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      DoubleValue clone = new DoubleValue(Value);
+      DoubleValue clone = new DoubleValue(value);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
@@ -42,7 +42,7 @@ namespace HeuristicLab.Data {
       return Value.ToString("r");  // round-trip format
     }
 
-    public int CompareTo(object obj) {
+    public virtual int CompareTo(object obj) {
       DoubleValue other = obj as DoubleValue;
       if (other != null)
         return Value.CompareTo(other.Value);
@@ -50,8 +50,7 @@ namespace HeuristicLab.Data {
         return Value.CompareTo(obj);
     }
 
-    #region IStringConvertibleValue Members
-    bool IStringConvertibleValue.Validate(string value, out string errorMessage) {
+    protected virtual bool Validate(string value, out string errorMessage) {
       double val;
       bool valid = double.TryParse(value, out val);
       errorMessage = string.Empty;
@@ -64,10 +63,10 @@ namespace HeuristicLab.Data {
       }
       return valid;
     }
-    string IStringConvertibleValue.GetValue() {
+    protected virtual string GetValue() {
       return Value.ToString("r");  // round-trip format
     }
-    bool IStringConvertibleValue.SetValue(string value) {
+    protected virtual bool SetValue(string value) {
       double val;
       if (double.TryParse(value, out val)) {
         Value = val;
@@ -75,6 +74,17 @@ namespace HeuristicLab.Data {
       } else {
         return false;
       }
+    }
+
+    #region IStringConvertibleValue Members
+    bool IStringConvertibleValue.Validate(string value, out string errorMessage) {
+      return Validate(value, out errorMessage);
+    }
+    string IStringConvertibleValue.GetValue() {
+      return GetValue();
+    }
+    bool IStringConvertibleValue.SetValue(string value) {
+      return SetValue(value);
     }
     #endregion
   }

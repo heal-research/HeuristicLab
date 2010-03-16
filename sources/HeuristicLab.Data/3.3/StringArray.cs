@@ -30,20 +30,20 @@ namespace HeuristicLab.Data {
   [Item("StringArray", "Represents an array of strings.")]
   [Creatable("Test")]
   [StorableClass]
-  public sealed class StringArray : Item, IEnumerable, IStringConvertibleArray {
+  public class StringArray : Item, IEnumerable, IStringConvertibleArray {
     [Storable]
-    private string[] array;
+    protected string[] array;
 
-    public int Length {
+    public virtual int Length {
       get { return array.Length; }
-      private set {
+      protected set {
         if (value != Length) {
           Array.Resize<string>(ref array, value);
           OnReset();
         }
       }
     }
-    public string this[int index] {
+    public virtual string this[int index] {
       get { return array[index]; }
       set {
         if (value != array[index]) {
@@ -69,14 +69,11 @@ namespace HeuristicLab.Data {
       for (int i = 0; i < array.Length; i++)
         array[i] = elements[i] == null ? string.Empty : elements[i];
     }
-    private StringArray(StringArray elements) {
-      if (elements == null) throw new ArgumentNullException();
-      array = (string[])elements.array.Clone();
-    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      StringArray clone = new StringArray(this);
+      StringArray clone = new StringArray();
       cloner.RegisterClonedObject(this, clone);
+      clone.array = (string[])array.Clone();
       return clone;
     }
 
@@ -92,17 +89,11 @@ namespace HeuristicLab.Data {
       return sb.ToString();
     }
 
-    public IEnumerator GetEnumerator() {
+    public virtual IEnumerator GetEnumerator() {
       return array.GetEnumerator();
     }
 
-    #region IStringConvertibleArray Members
-    int IStringConvertibleArray.Length {
-      get { return Length; }
-      set { Length = value; }
-    }
-
-    bool IStringConvertibleArray.Validate(string value, out string errorMessage) {
+    protected virtual bool Validate(string value, out string errorMessage) {
       if (value == null) {
         errorMessage = "Invalid Value (string must not be null)";
         return false;
@@ -111,10 +102,10 @@ namespace HeuristicLab.Data {
         return true;
       }
     }
-    string IStringConvertibleArray.GetValue(int index) {
+    protected virtual string GetValue(int index) {
       return this[index];
     }
-    bool IStringConvertibleArray.SetValue(string value, int index) {
+    protected virtual bool SetValue(string value, int index) {
       if (value != null) {
         this[index] = value;
         return true;
@@ -122,17 +113,33 @@ namespace HeuristicLab.Data {
         return false;
       }
     }
+
     public event EventHandler<EventArgs<int>> ItemChanged;
-    private void OnItemChanged(int index) {
+    protected virtual void OnItemChanged(int index) {
       if (ItemChanged != null)
         ItemChanged(this, new EventArgs<int>(index));
       OnToStringChanged();
     }
     public event EventHandler Reset;
-    private void OnReset() {
+    protected virtual void OnReset() {
       if (Reset != null)
         Reset(this, EventArgs.Empty);
       OnToStringChanged();
+    }
+
+    #region IStringConvertibleArray Members
+    int IStringConvertibleArray.Length {
+      get { return Length; }
+      set { Length = value; }
+    }
+    bool IStringConvertibleArray.Validate(string value, out string errorMessage) {
+      return Validate(value, out errorMessage);
+    }
+    string IStringConvertibleArray.GetValue(int index) {
+      return GetValue(index);
+    }
+    bool IStringConvertibleArray.SetValue(string value, int index) {
+      return SetValue(value, index);
     }
     #endregion
   }

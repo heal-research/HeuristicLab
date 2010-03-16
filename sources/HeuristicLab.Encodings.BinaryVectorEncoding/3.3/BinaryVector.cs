@@ -19,48 +19,43 @@
  */
 #endregion
 
-using System;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Data {
-  [Item("ValueTypeValue<T>", "An abstract base class for representing values of value types.")]
+namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [StorableClass]
-  public abstract class ValueTypeValue<T> : Item where T : struct {
-    [Storable]
-    protected T value;
-    public virtual T Value {
-      get { return value; }
-      set {
-        if (!value.Equals(this.value)) {
-          this.value = value;
-          OnValueChanged();
-        }
-      }
+  [Item("BinaryVector", "Represents a vector of binary values.")]
+  [Creatable("Test")]
+  public class BinaryVector : BoolArray {
+    public BinaryVector() : base() { }
+    public BinaryVector(int length) : base(length) { }
+    public BinaryVector(int length, IRandom random)
+      : this(length) {
+      Randomize(random);
     }
-
-    protected ValueTypeValue() {
-      this.value = default(T);
-    }
-    protected ValueTypeValue(T value) {
-      this.value = value;
+    public BinaryVector(bool[] elements) : base(elements) { }
+    public BinaryVector(BoolArray elements)
+      : this(elements.Length) {
+      for (int i = 0; i < array.Length; i++)
+        array[i] = elements[i];
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      ValueTypeValue<T> clone = (ValueTypeValue<T>)base.Clone(cloner);
-      clone.value = value;
+      BinaryVector clone = new BinaryVector(array);
+      cloner.RegisterClonedObject(this, clone);
       return clone;
     }
 
-    public override string ToString() {
-      return value.ToString();
+    public virtual void Randomize(IRandom random, int startIndex, int length) {
+      if (length > 0) {
+        for (int i = 0; i < length; i++)
+          array[startIndex + i] = random.Next(2) == 0;
+        OnReset();
+      }
     }
-
-    public event EventHandler ValueChanged;
-    protected virtual void OnValueChanged() {
-      if (ValueChanged != null)
-        ValueChanged(this, EventArgs.Empty);
-      OnToStringChanged();
+    public void Randomize(IRandom random) {
+      Randomize(random, 0, Length);
     }
   }
 }

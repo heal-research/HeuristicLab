@@ -27,29 +27,18 @@ namespace HeuristicLab.Data {
   [Item("DoubleMatrix", "Represents a matrix of double values.")]
   [Creatable("Test")]
   [StorableClass]
-  public sealed class DoubleMatrix : ValueTypeMatrix<double>, IStringConvertibleMatrix {
+  public class DoubleMatrix : ValueTypeMatrix<double>, IStringConvertibleMatrix {
     public DoubleMatrix() : base() { }
     public DoubleMatrix(int rows, int columns) : base(rows, columns) { }
     public DoubleMatrix(double[,] elements) : base(elements) { }
-    private DoubleMatrix(DoubleMatrix elements) : base(elements) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      DoubleMatrix clone = new DoubleMatrix(this);
+      DoubleMatrix clone = new DoubleMatrix(matrix);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
 
-    #region IStringConvertibleMatrix Members
-    int IStringConvertibleMatrix.Rows {
-      get { return Rows; }
-      set { Rows = value; }
-    }
-    int IStringConvertibleMatrix.Columns {
-      get { return Columns; }
-      set { Columns = value; }
-    }
-
-    bool IStringConvertibleMatrix.Validate(string value, out string errorMessage) {
+    protected virtual bool Validate(string value, out string errorMessage) {
       double val;
       bool valid = double.TryParse(value, out val);
       errorMessage = string.Empty;
@@ -62,10 +51,10 @@ namespace HeuristicLab.Data {
       }
       return valid;
     }
-    string IStringConvertibleMatrix.GetValue(int rowIndex, int columIndex) {
+    protected virtual string GetValue(int rowIndex, int columIndex) {
       return this[rowIndex, columIndex].ToString();
     }
-    bool IStringConvertibleMatrix.SetValue(string value, int rowIndex, int columnIndex) {
+    protected virtual bool SetValue(string value, int rowIndex, int columnIndex) {
       double val;
       if (double.TryParse(value, out val)) {
         this[rowIndex, columnIndex] = val;
@@ -73,6 +62,25 @@ namespace HeuristicLab.Data {
       } else {
         return false;
       }
+    }
+
+    #region IStringConvertibleMatrix Members
+    int IStringConvertibleMatrix.Rows {
+      get { return Rows; }
+      set { Rows = value; }
+    }
+    int IStringConvertibleMatrix.Columns {
+      get { return Columns; }
+      set { Columns = value; }
+    }
+    bool IStringConvertibleMatrix.Validate(string value, out string errorMessage) {
+      return Validate(value, out errorMessage);
+    }
+    string IStringConvertibleMatrix.GetValue(int rowIndex, int columIndex) {
+      return GetValue(rowIndex, columIndex);
+    }
+    bool IStringConvertibleMatrix.SetValue(string value, int rowIndex, int columnIndex) {
+      return SetValue(value, rowIndex, columnIndex);
     }
     #endregion
   }

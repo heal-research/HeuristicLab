@@ -27,29 +27,18 @@ namespace HeuristicLab.Data {
   [Item("BoolMatrix", "Represents a matrix of boolean values.")]
   [Creatable("Test")]
   [StorableClass]
-  public sealed class BoolMatrix : ValueTypeMatrix<bool>, IStringConvertibleMatrix {
+  public class BoolMatrix : ValueTypeMatrix<bool>, IStringConvertibleMatrix {
     public BoolMatrix() : base() { }
     public BoolMatrix(int rows, int columns) : base(rows, columns) { }
     public BoolMatrix(bool[,] elements) : base(elements) { }
-    private BoolMatrix(BoolMatrix elements) : base(elements) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      BoolMatrix clone = new BoolMatrix(this);
+      BoolMatrix clone = new BoolMatrix(matrix);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
 
-    #region IStringConvertibleMatrix Members
-    int IStringConvertibleMatrix.Rows {
-      get { return Rows; }
-      set { Rows = value; }
-    }
-    int IStringConvertibleMatrix.Columns {
-      get { return Columns; }
-      set { Columns = value; }
-    }
-
-    bool IStringConvertibleMatrix.Validate(string value, out string errorMessage) {
+    protected virtual bool Validate(string value, out string errorMessage) {
       bool val;
       bool valid = bool.TryParse(value, out val);
       errorMessage = string.Empty;
@@ -62,10 +51,10 @@ namespace HeuristicLab.Data {
       }
       return valid;
     }
-    string IStringConvertibleMatrix.GetValue(int rowIndex, int columIndex) {
+    protected virtual string GetValue(int rowIndex, int columIndex) {
       return this[rowIndex, columIndex].ToString();
     }
-    bool IStringConvertibleMatrix.SetValue(string value, int rowIndex, int columnIndex) {
+    protected virtual bool SetValue(string value, int rowIndex, int columnIndex) {
       bool val;
       if (bool.TryParse(value, out val)) {
         this[rowIndex, columnIndex] = val;
@@ -73,6 +62,25 @@ namespace HeuristicLab.Data {
       } else {
         return false;
       }
+    }
+
+    #region IStringConvertibleMatrix Members
+    int IStringConvertibleMatrix.Rows {
+      get { return Rows; }
+      set { Rows = value; }
+    }
+    int IStringConvertibleMatrix.Columns {
+      get { return Columns; }
+      set { Columns = value; }
+    }
+    bool IStringConvertibleMatrix.Validate(string value, out string errorMessage) {
+      return Validate(value, out errorMessage);
+    }
+    string IStringConvertibleMatrix.GetValue(int rowIndex, int columIndex) {
+      return GetValue(rowIndex, columIndex);
+    }
+    bool IStringConvertibleMatrix.SetValue(string value, int rowIndex, int columnIndex) {
+      return SetValue(value, rowIndex, columnIndex);
     }
     #endregion
   }

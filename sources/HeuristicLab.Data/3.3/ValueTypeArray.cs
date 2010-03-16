@@ -27,13 +27,13 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
-  [Item("ValueTypeArray<T>", "A base class for representing arrays of value types.")]
+  [Item("ValueTypeArray<T>", "An abstract base class for representing arrays of value types.")]
   [StorableClass]
-  public class ValueTypeArray<T> : Item, IEnumerable where T : struct {
+  public abstract class ValueTypeArray<T> : Item, IEnumerable where T : struct {
     [Storable]
-    private T[] array;
+    protected T[] array;
 
-    public int Length {
+    public virtual int Length {
       get { return array.Length; }
       protected set {
         if (value != Length) {
@@ -42,7 +42,7 @@ namespace HeuristicLab.Data {
         }
       }
     }
-    public T this[int index] {
+    public virtual T this[int index] {
       get { return array[index]; }
       set {
         if (!value.Equals(array[index])) {
@@ -52,19 +52,15 @@ namespace HeuristicLab.Data {
       }
     }
 
-    public ValueTypeArray() {
+    protected ValueTypeArray() {
       array = new T[0];
     }
-    public ValueTypeArray(int length) {
+    protected ValueTypeArray(int length) {
       array = new T[length];
     }
-    public ValueTypeArray(T[] elements) {
+    protected ValueTypeArray(T[] elements) {
       if (elements == null) throw new ArgumentNullException();
       array = (T[])elements.Clone();
-    }
-    protected ValueTypeArray(ValueTypeArray<T> elements) {
-      if (elements == null) throw new ArgumentNullException();
-      array = (T[])elements.array.Clone();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -85,18 +81,18 @@ namespace HeuristicLab.Data {
       return sb.ToString();
     }
 
-    public IEnumerator GetEnumerator() {
+    public virtual IEnumerator GetEnumerator() {
       return array.GetEnumerator();
     }
 
     public event EventHandler<EventArgs<int>> ItemChanged;
-    private void OnItemChanged(int index) {
+    protected virtual void OnItemChanged(int index) {
       if (ItemChanged != null)
         ItemChanged(this, new EventArgs<int>(index));
       OnToStringChanged();
     }
     public event EventHandler Reset;
-    private void OnReset() {
+    protected virtual void OnReset() {
       if (Reset != null)
         Reset(this, EventArgs.Empty);
       OnToStringChanged();
