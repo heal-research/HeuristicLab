@@ -40,6 +40,33 @@ namespace HeuristicLab.Persistence_33.Tests {
     private long _long = 123456;
     [Storable]
     private ulong _ulong = 123456;
+    public override bool Equals(object obj) {
+      NumberTest nt = obj as NumberTest;
+      if (nt == null)
+        throw new NotSupportedException();
+      return
+        nt._bool == _bool &&
+        nt._byte == _byte &&
+        nt._sbyte == _sbyte &&
+        nt._short == _short &&
+        nt._ushort == _ushort &&
+        nt._int == _int &&
+        nt._uint == _uint &&
+        nt._long == _long &&
+        nt._ulong == _ulong;
+    }
+    public override int GetHashCode() {
+      return
+        _bool.GetHashCode() ^
+        _byte.GetHashCode() ^
+        _sbyte.GetHashCode() ^
+        _short.GetHashCode() ^
+        _short.GetHashCode() ^
+        _int.GetHashCode() ^
+        _uint.GetHashCode() ^
+        _long.GetHashCode() ^
+        _ulong.GetHashCode();
+    }
   }
 
   [StorableClass]
@@ -85,6 +112,23 @@ namespace HeuristicLab.Persistence_33.Tests {
     public List<int> list = new List<int> { 1, 2, 3, 4, 5 };
     [Storable]
     private object o = new object();
+    public override bool Equals(object obj) {
+      PrimitivesTest pt = obj as PrimitivesTest;
+      if (pt == null)
+        throw new NotSupportedException();
+      return base.Equals(obj) &&
+        c == pt.c &&
+        _long_array == pt._long_array &&
+        list == pt.list &&
+        o == pt.o;
+    }
+    public override int GetHashCode() {
+      return base.GetHashCode() ^
+        c.GetHashCode() ^
+        _long_array.GetHashCode() ^
+        list.GetHashCode() ^
+        o.GetHashCode();
+    }
   }
 
   public enum TestEnum { va1, va2, va3, va8 } ;
@@ -95,6 +139,17 @@ namespace HeuristicLab.Persistence_33.Tests {
     private string baseString = "   Serial  ";
     [Storable]
     public TestEnum myEnum = TestEnum.va3;
+    public override bool Equals(object obj) {
+      RootBase rb = obj as RootBase;
+      if (rb == null)
+        throw new NotSupportedException();
+      return baseString == rb.baseString &&
+        myEnum == rb.myEnum;
+    }
+    public override int GetHashCode() {
+      return baseString.GetHashCode() ^
+        myEnum.GetHashCode();
+    }
   }
 
   [StorableClass]
@@ -174,7 +229,16 @@ namespace HeuristicLab.Persistence_33.Tests {
   }
 
   public class NonSerializable {
-    int x;
+    int x = 0;
+    public override bool Equals(object obj) {
+      NonSerializable ns = obj as NonSerializable;
+      if (ns == null)
+        throw new NotSupportedException();
+      return ns.x == x;
+    }
+    public override int GetHashCode() {
+      return x.GetHashCode();
+    }
   }
 
 
@@ -376,6 +440,15 @@ namespace HeuristicLab.Persistence_33.Tests {
     public class NestedType {
       [Storable]
       private string value = "value";
+      public override bool Equals(object obj) {
+        NestedType nt = obj as NestedType;
+        if (nt == null)
+          throw new NotSupportedException();
+        return nt.value == value;
+      }
+      public override int GetHashCode() {
+        return value.GetHashCode();
+      }
     }
 
     [TestMethod]
@@ -386,6 +459,7 @@ namespace HeuristicLab.Persistence_33.Tests {
       Assert.AreEqual(
         DebugStringGenerator.Serialize(t),
         DebugStringGenerator.Serialize(o));
+      Assert.IsTrue(t.Equals(o));
     }
 
 
@@ -464,6 +538,7 @@ namespace HeuristicLab.Persistence_33.Tests {
       Assert.AreEqual(
         DebugStringGenerator.Serialize(sdt),
         DebugStringGenerator.Serialize(o));
+      Assert.IsTrue(sdt.Equals(o));
     }
 
     [TestMethod]

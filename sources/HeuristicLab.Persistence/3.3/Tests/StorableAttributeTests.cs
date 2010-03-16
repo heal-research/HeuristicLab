@@ -11,13 +11,12 @@ namespace HeuristicLab.Persistence_33.Tests {
   class DemoClass {
 
     [Storable(Name = "TestProperty", DefaultValue = 12)]
-    public object o;
+    public object o = null;
 
     [Storable]
     public int x = 2;
 
-    public int y;
-
+    public int y = 0;
   }
 
   [StorableClass]
