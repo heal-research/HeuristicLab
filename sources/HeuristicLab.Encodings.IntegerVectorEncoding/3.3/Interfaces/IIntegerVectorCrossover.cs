@@ -27,8 +27,8 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// <summary>
   /// An interface which represents an operator for crossing vectors of int-valued data.
   /// </summary>
-  public interface IIntVectorCrossover : IIntVectorOperator, ICrossover {
-    ILookupParameter<ItemArray<IntArray>> ParentsParameter { get; }
-    ILookupParameter<IntArray> ChildParameter { get; }
+  public interface IIntegerVectorCrossover : IIntegerVectorOperator, ICrossover {
+    ILookupParameter<ItemArray<IntegerVector>> ParentsParameter { get; }
+    ILookupParameter<IntegerVector> ChildParameter { get; }
   }
 }

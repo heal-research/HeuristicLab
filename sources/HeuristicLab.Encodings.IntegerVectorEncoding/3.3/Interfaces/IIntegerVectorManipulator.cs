@@ -27,7 +27,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// <summary>
   /// An interface which represents an operator for manipulating vectors of int-valued data.
   /// </summary>
-  public interface IIntVectorManipulator : IIntVectorOperator, IManipulator {
-    ILookupParameter<IntArray> IntVectorParameter { get; }
+  public interface IIntegerVectorManipulator : IIntegerVectorOperator, IManipulator {
+    ILookupParameter<IntegerVector> IntegerVectorParameter { get; }
   }
 }

@@ -84,13 +84,13 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding_33.Tests {
     [TestMethod()]
     public void UniformOnePositionManipulatorApplyTest() {
       TestRandom random = new TestRandom();
-      IntArray parent, expected;
+      IntegerVector parent, expected;
       IntValue min, max;
       // The following test is not based on published examples
       random.Reset();
       random.IntNumbers = new int[] { 3, 3 };
-      parent = new IntArray(new int[] { 2, 2, 3, 5, 1 });
-      expected = new IntArray(new int[] { 2, 2, 3, 3, 1 });
+      parent = new IntegerVector(new int[] { 2, 2, 3, 5, 1 });
+      expected = new IntegerVector(new int[] { 2, 2, 3, 3, 1 });
       min = new IntValue(2);
       max = new IntValue(7);
       UniformOnePositionManipulator.Apply(random, parent, min, max);

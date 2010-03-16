@@ -31,13 +31,12 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// <summary>
   /// Uniformly distributed change of a single position of an integer vector.
   /// </summary>
-  /// It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.
   /// <remarks>
   /// It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.
   /// </remarks>
   [Item("UniformOnePositionManipulator", " Uniformly distributed change of a single position of an integer vector. It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.")]
   [StorableClass]
-  public class UniformOnePositionManipulator : IntVectorManipulator {
+  public class UniformOnePositionManipulator : IntegerVectorManipulator {
     /// <summary>
     /// The lower bound of the values in the int vector.
     /// </summary>
@@ -69,7 +68,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     /// the vector element to change (inclusive).</param>
     /// <param name="max">The maximum value of the sampling range for
     /// the vector element to change (exclusive).</param>
-    public static void Apply(IRandom random, IntArray vector, IntValue min, IntValue max) {
+    public static void Apply(IRandom random, IntegerVector vector, IntValue min, IntValue max) {
       int index = random.Next(vector.Length);
       vector[index] = random.Next(min.Value, max.Value);
     }
@@ -80,7 +79,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     /// <remarks>Calls <see cref="Apply"/>.</remarks>
     /// <param name="random">A random number generator.</param>
     /// <param name="vector">The integer vector to manipulate.</param>
-    protected override void Manipulate(IRandom random, IntArray vector) {
+    protected override void Manipulate(IRandom random, IntegerVector vector) {
       if (MinimumParameter.ActualValue == null) throw new InvalidOperationException("UniformOnePositionManipulator: Parameter " + MinimumParameter.ActualName + " could not be found.");
       if (MaximumParameter.ActualValue == null) throw new InvalidOperationException("UniformOnePositionManipulator: Parameter " + MaximumParameter.ActualName + " could not be found.");
       Apply(random, vector, MinimumParameter.ActualValue, MaximumParameter.ActualValue);

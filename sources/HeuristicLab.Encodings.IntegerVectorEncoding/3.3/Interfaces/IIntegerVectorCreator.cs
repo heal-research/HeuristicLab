@@ -27,10 +27,10 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// <summary>
   /// An interface which represents an operator for creating vectors of int-valued data.
   /// </summary>
-  public interface IIntVectorCreator : IIntVectorOperator, ISolutionCreator {
+  public interface IIntegerVectorCreator : IIntegerVectorOperator, ISolutionCreator {
     IValueLookupParameter<IntValue> LengthParameter { get; }
     IValueLookupParameter<IntValue> MinimumParameter { get; }
     IValueLookupParameter<IntValue> MaximumParameter { get; }
-    ILookupParameter<IntArray> IntVectorParameter { get; }
+    ILookupParameter<IntegerVector> IntegerVectorParameter { get; }
   }
 }

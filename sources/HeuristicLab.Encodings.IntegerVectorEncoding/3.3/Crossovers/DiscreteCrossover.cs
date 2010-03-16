@@ -35,7 +35,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// </remarks>
   [Item("DiscreteCrossover", "Discrete crossover for integer vectors. It is implemented as described in Gwiazda, T.D. 2006. Genetic algorithms reference Volume I Crossover for single-objective numerical optimization problems, p.17.")]
   [StorableClass]
-  public class DiscreteCrossover : IntVectorCrossover {
+  public class DiscreteCrossover : IntegerVectorCrossover {
     /// <summary>
     /// Performs a discrete crossover operation of the two given parents.
     /// </summary>
@@ -44,7 +44,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     /// <param name="parent1">The first parent for the crossover operation.</param>
     /// <param name="parent2">The second parent for the crossover operation.</param>
     /// <returns>The newly created integer vector, resulting from the crossover operation.</returns>
-    public static IntArray Apply(IRandom random, IntArray parent1, IntArray parent2) {
+    public static IntegerVector Apply(IRandom random, IntegerVector parent1, IntegerVector parent2) {
       if(parent1.Length != parent2.Length)
         throw new ArgumentException("DiscreteCrossover: The parents are of different length.");
 
@@ -57,7 +57,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
         else
           result[i] = parent2[i];
       }
-      return new IntArray(result);
+      return new IntegerVector(result);
     }
 
     /// <summary>
@@ -67,7 +67,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     /// <param name="random">A random number generator.</param>
     /// <param name="parents">An array containing the two integer vectors that should be crossed.</param>
     /// <returns>The newly created integer vector, resulting from the crossover operation.</returns>
-    protected override IntArray Cross(IRandom random, ItemArray<IntArray> parents) {
+    protected override IntegerVector Cross(IRandom random, ItemArray<IntegerVector> parents) {
       if (parents.Length != 2) throw new ArgumentException("ERROR in DiscreteCrossover: The number of parents is not equal to 2");
       return Apply(random, parents[0], parents[1]);
     }

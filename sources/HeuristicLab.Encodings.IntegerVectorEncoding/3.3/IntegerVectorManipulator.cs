@@ -30,27 +30,27 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// <summary>
   /// A base class for operators that manipulate int-valued vectors.
   /// </summary>
-  [Item("IntVectorManipulator", "A base class for operators that manipulate int-valued vectors.")]
+  [Item("IntegerVectorManipulator", "A base class for operators that manipulate int-valued vectors.")]
   [StorableClass]
-  public abstract class IntVectorManipulator : SingleSuccessorOperator, IIntVectorManipulator, IStochasticOperator {
+  public abstract class IntegerVectorManipulator : SingleSuccessorOperator, IIntegerVectorManipulator, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
-    public ILookupParameter<IntArray> IntVectorParameter {
-      get { return (ILookupParameter<IntArray>)Parameters["IntVector"]; }
+    public ILookupParameter<IntegerVector> IntegerVectorParameter {
+      get { return (ILookupParameter<IntegerVector>)Parameters["IntegerVector"]; }
     }
 
-    protected IntVectorManipulator()
+    protected IntegerVectorManipulator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
-      Parameters.Add(new LookupParameter<IntArray>("IntVector", "The vector which should be manipulated."));
+      Parameters.Add(new LookupParameter<IntegerVector>("IntegerVector", "The vector which should be manipulated."));
     }
 
     public sealed override IOperation Apply() {
-      Manipulate(RandomParameter.ActualValue, IntVectorParameter.ActualValue);
+      Manipulate(RandomParameter.ActualValue, IntegerVectorParameter.ActualValue);
       return base.Apply();
     }
 
-    protected abstract void Manipulate(IRandom random, IntArray intVector);
+    protected abstract void Manipulate(IRandom random, IntegerVector integerVector);
   }
 }

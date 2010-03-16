@@ -30,24 +30,24 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// <summary>
   /// A base class for operators that perform a crossover of int-valued vectors.
   /// </summary>
-  [Item("IntVectorCrossover", "A base class for operators that perform a crossover of int-valued vectors.")]
+  [Item("IntegerVectorCrossover", "A base class for operators that perform a crossover of int-valued vectors.")]
   [StorableClass]
-  public abstract class IntVectorCrossover : SingleSuccessorOperator, IIntVectorCrossover, IStochasticOperator {
+  public abstract class IntegerVectorCrossover : SingleSuccessorOperator, IIntegerVectorCrossover, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
-    public ILookupParameter<ItemArray<IntArray>> ParentsParameter {
-      get { return (SubScopesLookupParameter<IntArray>)Parameters["Parents"]; }
+    public ILookupParameter<ItemArray<IntegerVector>> ParentsParameter {
+      get { return (SubScopesLookupParameter<IntegerVector>)Parameters["Parents"]; }
     }
-    public ILookupParameter<IntArray> ChildParameter {
-      get { return (ILookupParameter<IntArray>)Parameters["Child"]; }
+    public ILookupParameter<IntegerVector> ChildParameter {
+      get { return (ILookupParameter<IntegerVector>)Parameters["Child"]; }
     }
 
-    protected IntVectorCrossover()
+    protected IntegerVectorCrossover()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic crossover operators."));
-      Parameters.Add(new SubScopesLookupParameter<IntArray>("Parents", "The parent vectors which should be crossed."));
-      Parameters.Add(new LookupParameter<IntArray>("Child", "The child vector resulting from the crossover."));
+      Parameters.Add(new SubScopesLookupParameter<IntegerVector>("Parents", "The parent vectors which should be crossed."));
+      Parameters.Add(new LookupParameter<IntegerVector>("Child", "The child vector resulting from the crossover."));
     }
 
     public sealed override IOperation Apply() {
@@ -55,6 +55,6 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       return base.Apply();
     }
 
-    protected abstract IntArray Cross(IRandom random, ItemArray<IntArray> parents);
+    protected abstract IntegerVector Cross(IRandom random, ItemArray<IntegerVector> parents);
   }
 }

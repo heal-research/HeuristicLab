@@ -25,5 +25,5 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// <summary>
   /// An interface which represents an operator dealing with vectors of int-valued data.
   /// </summary>
-  public interface IIntVectorOperator : IOperator { }
+  public interface IIntegerVectorOperator : IOperator { }
 }

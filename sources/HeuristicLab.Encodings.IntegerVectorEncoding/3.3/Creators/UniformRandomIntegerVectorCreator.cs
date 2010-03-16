@@ -30,10 +30,10 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// <summary>
   /// Generates a new random integer vector with each element uniformly distributed in a specified range.
   /// </summary>
-  [Item("UniformRandomIntVectorCreator", "An operator which creates a new random int vector with each element uniformly distributed in a specified range.")]
+  [Item("UniformRandomIntegerVectorCreator", "An operator which creates a new random int vector with each element uniformly distributed in a specified range.")]
   [StorableClass]
   [Creatable("Test")]
-  public class UniformRandomIntVectorCreator : IntVectorCreator {
+  public class UniformRandomIntegerVectorCreator : IntegerVectorCreator {
     /// <summary>
     /// Generates a new random integer vector with the given <paramref name="length"/>.
     /// </summary>
@@ -42,11 +42,11 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     /// <param name="min">The minimum value of the sampling range for each vector element (inclusive).</param>
     /// <param name="max">The maximum value of the sampling range for each vector element (exclusive).</param>
     /// <returns>The newly created integer vector.</returns>
-    public static IntArray Apply(IRandom random, int length, int min, int max) {
+    public static IntegerVector Apply(IRandom random, int length, int min, int max) {
       int[] result = new int[length];
       for (int i = 0; i < length; i++)
         result[i] = random.Next(min, max);
-      return new IntArray(result);
+      return new IntegerVector(result);
     }
 
     /// <summary>
@@ -57,7 +57,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     /// <param name="minimum">The minimum value of the sampling range for each vector element (inclusive).</param>
     /// <param name="maximum">The maximum value of the sampling range for each vector element (exclusive).</param>
     /// <returns>The newly created int vector.</returns>
-    protected override IntArray Create(IRandom random, IntValue length, IntValue minimum, IntValue maximum) {
+    protected override IntegerVector Create(IRandom random, IntValue length, IntValue minimum, IntValue maximum) {
       return Apply(random, length.Value, minimum.Value, maximum.Value);
     }
   }

@@ -67,12 +67,12 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding_33.Tests {
     [DeploymentItem("HeuristicLab.Encodings.IntegerVectorEncoding-3.3.dll")]
     public void DiscreteCrossoverCrossTest() {
       DiscreteCrossover_Accessor target = new DiscreteCrossover_Accessor(new PrivateObject(typeof(DiscreteCrossover)));
-      ItemArray<IntArray> parents;
+      ItemArray<IntegerVector> parents;
       TestRandom random = new TestRandom();
       bool exceptionFired;
       // The following test checks if there is an exception when there are less than 2 parents
       random.Reset();
-      parents = new ItemArray<IntArray>(new IntArray[] { new IntArray(4) });
+      parents = new ItemArray<IntegerVector>(new IntegerVector[] { new IntegerVector(4) });
       exceptionFired = false;
       try {
         IntArray actual;
@@ -89,22 +89,22 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding_33.Tests {
     [TestMethod()]
     public void DiscreteCrossoverApplyTest() {
       TestRandom random = new TestRandom();
-      IntArray parent1, parent2, expected, actual;
+      IntegerVector parent1, parent2, expected, actual;
       bool exceptionFired;
       // The following test is not based on published examples
       random.Reset();
       random.DoubleNumbers = new double[] { 0, 0, 0.9, 0, 0.9 };
-      parent1 = new IntArray(new int[] { 2, 2, 3, 5, 1 });
-      parent2 = new IntArray(new int[] { 4, 1, 3, 2, 8 });
-      expected = new IntArray(new int[] { 2, 2, 3, 5, 8 });
+      parent1 = new IntegerVector(new int[] { 2, 2, 3, 5, 1 });
+      parent2 = new IntegerVector(new int[] { 4, 1, 3, 2, 8 });
+      expected = new IntegerVector(new int[] { 2, 2, 3, 5, 8 });
       actual = DiscreteCrossover.Apply(random, parent1, parent2);
       Assert.IsTrue(Auxiliary.IntVectorIsEqualByPosition(actual, expected));
 
       // The following test is not based on published examples
       random.Reset();
       random.DoubleNumbers = new double[] { 0, 0, 0.9, 0, 0.9 };
-      parent1 = new IntArray(new int[] { 2, 2, 3, 5, 1, 9 }); // this parent is longer
-      parent2 = new IntArray(new int[] { 4, 1, 3, 2, 8 });
+      parent1 = new IntegerVector(new int[] { 2, 2, 3, 5, 1, 9 }); // this parent is longer
+      parent2 = new IntegerVector(new int[] { 4, 1, 3, 2, 8 });
       exceptionFired = false;
       try {
         actual = DiscreteCrossover.Apply(random, parent1, parent2);
