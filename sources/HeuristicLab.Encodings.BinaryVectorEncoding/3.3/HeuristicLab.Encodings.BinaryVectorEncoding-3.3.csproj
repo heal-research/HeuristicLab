@@ -84,6 +84,10 @@
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Creators\RandomBinaryVectorCreator.cs" />
+    <Compile Include="Crossovers\UniformCrossover.cs" />
+    <Compile Include="Crossovers\SinglePointCrossover.cs" />
+    <Compile Include="Crossovers\NPointCrossover.cs" />
     <Compile Include="HeuristicLabEncodingsBinaryVectorEncodingPlugin.cs" />
     <Compile Include="BinaryVector.cs" />
     <Compile Include="Interfaces\IBinaryVectorCreator.cs" />
@@ -93,6 +97,8 @@
     <Compile Include="BinaryVectorCreator.cs" />
     <Compile Include="BinaryVectorCrossover.cs" />
     <Compile Include="BinaryVectorManipulator.cs" />
+    <Compile Include="Manipulators\SomePositionsBitflipManipulator.cs" />
+    <Compile Include="Manipulators\SinglePositionBitflipManipulator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -132,11 +138,6 @@
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Creators\" />
-    <Folder Include="Crossovers\" />
-    <Folder Include="Manipulators\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

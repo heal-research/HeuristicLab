@@ -80,7 +80,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Auxiliary.cs" />
+    <Compile Include="SomePositionsBitflipManipulatorTest.cs" />
+    <Compile Include="SinglePositionBitflipManipulatorTest.cs" />
+    <Compile Include="UniformCrossoverTest.cs" />
+    <Compile Include="SinglePointCrossoverTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="NPointCrossoverTest.cs" />
     <Compile Include="TestRandom.cs" />
   </ItemGroup>
   <ItemGroup>
