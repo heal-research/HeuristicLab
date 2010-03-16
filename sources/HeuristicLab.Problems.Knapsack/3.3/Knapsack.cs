@@ -72,6 +72,9 @@ namespace HeuristicLab.Problems.Knapsack {
     IParameter IProblem.EvaluatorParameter {
       get { return EvaluatorParameter; }
     }
+    public OptionalValueParameter<DoubleValue> BestKnownQualityParameter {
+      get { return (OptionalValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
+    }
     #endregion
 
     #region Properties
@@ -91,6 +94,10 @@ namespace HeuristicLab.Problems.Knapsack {
     }
     IEvaluator IProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
+    }
+    public DoubleValue BestKnownQuality {
+      get { return BestKnownQualityParameter.Value; }
+      set { BestKnownQualityParameter.Value = value; }
     }
     private List<IBinaryVectorOperator> operators;
     public IEnumerable<IOperator> Operators {
@@ -112,6 +119,7 @@ namespace HeuristicLab.Problems.Knapsack {
       Parameters.Add(new ValueParameter<DoubleValue>("Penalty", "The penalty value for each unit of overweight.", new DoubleValue(1)));
       Parameters.Add(new ValueParameter<IBinaryVectorCreator>("SolutionCreator", "The operator which should be used to create new Knapsack solutions.", creator));
       Parameters.Add(new ValueParameter<IKnapsackEvaluator>("Evaluator", "The operator which should be used to evaluate Knapsack solutions.", evaluator));
+      Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this Knapsack instance."));
 
       creator.BinaryVectorParameter.ActualName = "KnapsackSolution";
       evaluator.QualityParameter.ActualName = "NumberOfOnes";
