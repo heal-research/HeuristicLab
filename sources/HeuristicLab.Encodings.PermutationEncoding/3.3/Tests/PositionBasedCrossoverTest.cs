@@ -82,7 +82,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
     ///A test for Cross
     ///</summary>
     [TestMethod()]
-    [DeploymentItem("HeuristicLab.Encodings.Permutation-3.3.dll")]
+    [DeploymentItem("HeuristicLab.Encodings.PermutationEncoding-3.3.dll")]
     public void PositionBasedCrossoverCrossTest() {
       TestRandom random = new TestRandom();
       PositionBasedCrossover_Accessor target = new PositionBasedCrossover_Accessor(
@@ -105,7 +105,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
     ///A test for Apply
     ///</summary>
     [TestMethod()]
-    [DeploymentItem("HeuristicLab.Encodings.Permutation-3.3.dll")]
+    [DeploymentItem("HeuristicLab.Encodings.PermutationEncoding-3.3.dll")]
     public void PositionBasedCrossoverApplyTest() {
       TestRandom random = new TestRandom();
       Permutation parent1, parent2, expected, actual;

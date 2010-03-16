@@ -82,7 +82,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
     ///A test for Cross
     ///</summary>
     [TestMethod()]
-    [DeploymentItem("HeuristicLab.Encodings.Permutation-3.3.dll")]
+    [DeploymentItem("HeuristicLab.Encodings.PermutationEncoding-3.3.dll")]
     public void CosaCrossoverCrossTest() {
       TestRandom random = new TestRandom();
       CosaCrossover_Accessor target = 
