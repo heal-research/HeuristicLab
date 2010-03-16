@@ -47,7 +47,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     /// <param name="parents">An array containing the two binary vectors that should be crossed.</param>
     /// <returns>The newly created binary vector, resulting from the single point crossover.</returns>
     protected override BinaryVector Cross(IRandom random, ItemArray<BinaryVector> parents) {
-      if (parents.Length != 2) throw new ArgumentException("ERROR in NPointCrossover: The number of parents is not equal to 2");
+      if (parents.Length != 2) throw new ArgumentException("ERROR in SinglePointCrossover: The number of parents is not equal to 2");
 
       return NPointCrossover.Apply(random, parents[0], parents[1], new IntValue(1));
     }
