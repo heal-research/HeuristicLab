@@ -49,7 +49,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     /// Initializes a new instance of <see cref="NPointCrossover"/>
     /// </summary>
     public NPointCrossover() {
-      Parameters.Add(new ValueLookupParameter<IntValue>("N", "Number of crossover points"));
+      Parameters.Add(new ValueLookupParameter<IntValue>("N", "Number of crossover points", new IntValue(2)));
     }
 
     /// <summary>
