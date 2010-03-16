@@ -84,7 +84,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
     [TestMethod()]
     public void MichalewiczNonUniformOnePositionManipulatorApplyTest() {
       TestRandom random = new TestRandom();
-      DoubleArray parent, expected;
+      RealVector parent, expected;
       DoubleValue min, max, generationsDependency;
       IntValue currentGeneration, maximumGenerations;
       bool exceptionFired;
@@ -92,21 +92,21 @@ namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
       random.Reset();
       random.IntNumbers = new int[] { 3 };
       random.DoubleNumbers = new double[] { 0.2, 0.7 };
-      parent = new DoubleArray(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
-      expected = new DoubleArray(new double[] { 0.2, 0.2, 0.3, 0.34, 0.1 });
+      parent = new RealVector(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
+      expected = new RealVector(new double[] { 0.2, 0.2, 0.3, 0.34, 0.1 });
       min = new DoubleValue(0.3);
       max = new DoubleValue(0.7);
       generationsDependency = new DoubleValue(0.1);
       currentGeneration = new IntValue(1);
       maximumGenerations = new IntValue(4);
       MichalewiczNonUniformOnePositionManipulator.Apply(random, parent, min, max, currentGeneration, maximumGenerations, generationsDependency);
-      Assert.IsTrue(Auxiliary.RealVectorIsAlmostEqualByPosition(expected, parent));
+      Assert.IsTrue(Auxiliary.DoubleArrayIsAlmostEqualByPosition(expected, parent));
       // The following test is not based on published examples
       exceptionFired = false;
       random.Reset();
       random.IntNumbers = new int[] { 3 };
       random.DoubleNumbers = new double[] { 0.2, 0.7 };
-      parent = new DoubleArray(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
+      parent = new RealVector(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
       min = new DoubleValue(0.3);
       max = new DoubleValue(0.7);
       generationsDependency = new DoubleValue(0.1);

@@ -67,15 +67,15 @@ namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
     [DeploymentItem("HeuristicLab.Encodings.RealVectorEncoding-3.3.dll")]
     public void RandomConvexCrossoverCrossTest() {
       RandomConvexCrossover_Accessor target = new RandomConvexCrossover_Accessor(new PrivateObject(typeof(RandomConvexCrossover)));
-      ItemArray<DoubleArray> parents;
+      ItemArray<RealVector> parents;
       TestRandom random = new TestRandom();
       bool exceptionFired;
       // The following test checks if there is an exception when there are more than 2 parents
       random.Reset();
-      parents = new ItemArray<DoubleArray>(new DoubleArray[] { new DoubleArray(5), new DoubleArray(6), new DoubleArray(4) });
+      parents = new ItemArray<RealVector>(new RealVector[] { new RealVector(5), new RealVector(6), new RealVector(4) });
       exceptionFired = false;
       try {
-        DoubleArray actual;
+        RealVector actual;
         actual = target.Cross(random, parents);
       }
       catch (System.ArgumentException) {
@@ -84,10 +84,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
       Assert.IsTrue(exceptionFired);
       // The following test checks if there is an exception when there are less than 2 parents
       random.Reset();
-      parents = new ItemArray<DoubleArray>(new DoubleArray[] { new DoubleArray(4) });
+      parents = new ItemArray<RealVector>(new RealVector[] { new RealVector(4) });
       exceptionFired = false;
       try {
-        DoubleArray actual;
+        RealVector actual;
         actual = target.Cross(random, parents);
       } catch (System.ArgumentException) {
         exceptionFired = true;
@@ -101,21 +101,21 @@ namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
     [TestMethod()]
     public void RandomConvexCrossoverApplyTest() {
       TestRandom random = new TestRandom();
-      DoubleArray parent1, parent2, expected, actual;
+      RealVector parent1, parent2, expected, actual;
       bool exceptionFired;
       // The following test is not based on published examples
       random.Reset();
       random.DoubleNumbers = new double[] { 0.3 };
-      parent1 = new DoubleArray(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
-      parent2 = new DoubleArray(new double[] { 0.4, 0.1, 0.3, 0.2, 0.8 });
-      expected = new DoubleArray(new double[] { 0.34, 0.13, 0.3, 0.29, 0.59 });
+      parent1 = new RealVector(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
+      parent2 = new RealVector(new double[] { 0.4, 0.1, 0.3, 0.2, 0.8 });
+      expected = new RealVector(new double[] { 0.34, 0.13, 0.3, 0.29, 0.59 });
       actual = RandomConvexCrossover.Apply(random, parent1, parent2);
-      Assert.IsTrue(Auxiliary.RealVectorIsAlmostEqualByPosition(actual, expected));
+      Assert.IsTrue(Auxiliary.DoubleArrayIsAlmostEqualByPosition(actual, expected));
       // The following test is not based on published examples
       random.Reset();
       random.DoubleNumbers = new double[] { 0.3 };
-      parent1 = new DoubleArray(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1, 0.9 }); // this parent is longer
-      parent2 = new DoubleArray(new double[] { 0.4, 0.1, 0.3, 0.2, 0.8 });
+      parent1 = new RealVector(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1, 0.9 }); // this parent is longer
+      parent2 = new RealVector(new double[] { 0.4, 0.1, 0.3, 0.2, 0.8 });
       exceptionFired = false;
       try {
         actual = RandomConvexCrossover.Apply(random, parent1, parent2);

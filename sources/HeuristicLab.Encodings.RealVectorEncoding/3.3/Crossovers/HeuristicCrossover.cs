@@ -67,7 +67,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// <param name="betterParent">The first parent for the crossover operation.</param>
     /// <param name="worseParent">The second parent for the crossover operation.</param>
     /// <returns>The newly created real vector, resulting from the heuristic crossover.</returns>
-    public static DoubleArray Apply(IRandom random, DoubleArray betterParent, DoubleArray worseParent) {
+    public static RealVector Apply(IRandom random, RealVector betterParent, RealVector worseParent) {
       if (betterParent.Length != worseParent.Length)
         throw new ArgumentException("HeuristicCrossover: the two parents are not of the same length");
       
@@ -78,7 +78,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       for (int i = 0; i < length; i++) {
         result[i] = betterParent[i] + factor * (betterParent[i] - worseParent[i]);
       }
-      return new DoubleArray(result);
+      return new RealVector(result);
     }
 
     /// <summary>
@@ -95,7 +95,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// <param name="random">A random number generator.</param>
     /// <param name="parents">An array containing the two real vectors that should be crossed.</param>
     /// <returns>The newly created real vector, resulting from the crossover operation.</returns>
-    protected override DoubleArray Cross(IRandom random, ItemArray<DoubleArray> parents) {
+    protected override RealVector Cross(IRandom random, ItemArray<RealVector> parents) {
       if (parents.Length != 2) throw new ArgumentException("HeuristicCrossover: The number of parents is not equal to 2");
 
       if (MaximizationParameter.ActualValue == null) throw new InvalidOperationException("HeuristicCrossover: Parameter " + MaximizationParameter.ActualName + " could not be found.");

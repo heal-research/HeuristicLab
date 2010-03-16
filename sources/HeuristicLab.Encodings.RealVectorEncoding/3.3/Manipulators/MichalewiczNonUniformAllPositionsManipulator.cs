@@ -94,7 +94,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// <param name="maximumGenerations">Maximum number of generations.</param>
     /// <param name="generationsDependency">Specifies the degree of dependency on the number of generations.</param>
     /// <returns>The manipulated real vector.</returns>
-    public static void Apply(IRandom random, DoubleArray vector, DoubleValue min, DoubleValue max, IntValue currentGeneration, IntValue maximumGenerations, DoubleValue generationsDependency) {
+    public static void Apply(IRandom random, RealVector vector, DoubleValue min, DoubleValue max, IntValue currentGeneration, IntValue maximumGenerations, DoubleValue generationsDependency) {
       if (currentGeneration.Value > maximumGenerations.Value) throw new ArgumentException("MichalewiczNonUniformAllPositionManipulator: CurrentGeneration must be smaller or equal than MaximumGeneration", "currentGeneration");
       int length = vector.Length;
 
@@ -110,11 +110,11 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     /// <summary>
-    /// Checks if all parameters are available and forwards the call to <see cref="Apply(IRandom, DoubleArray, DoubleValue, DoubleValue, IntValue, IntValue, DoubleValue)"/>.
+    /// Checks if all parameters are available and forwards the call to <see cref="Apply(IRandom, RealVector, DoubleValue, DoubleValue, IntValue, IntValue, DoubleValue)"/>.
     /// </summary>
     /// <param name="random">The random number generator.</param>
     /// <param name="realVector">The real vector that should be manipulated.</param>
-    protected override void Manipulate(IRandom random, DoubleArray realVector) {
+    protected override void Manipulate(IRandom random, RealVector realVector) {
       if (MinimumParameter.ActualValue == null) throw new InvalidOperationException("MichalewiczNonUniformAllPositionManipulator: Parameter " + MinimumParameter.ActualName + " could not be found.");
       if (MaximumParameter.ActualValue == null) throw new InvalidOperationException("MichalewiczNonUniformAllPositionManipulator: Parameter " + MaximumParameter.ActualName + " could not be found.");
       if (GenerationParameter.ActualValue == null) throw new InvalidOperationException("MichalewiczNonUniformAllPositionManipulator: Parameter " + GenerationParameter.ActualName + " could not be found.");

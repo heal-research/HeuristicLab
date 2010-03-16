@@ -93,13 +93,13 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// <param name="alpha">The parameter alpha.</param>
     /// <param name="beta">The parameter beta.</param>
     /// <returns>The real vector that results from the crossover.</returns>
-    public static DoubleArray Apply(IRandom random, DoubleArray betterParent, DoubleArray worseParent, DoubleValue alpha, DoubleValue beta) {
+    public static RealVector Apply(IRandom random, RealVector betterParent, RealVector worseParent, DoubleValue alpha, DoubleValue beta) {
       if (betterParent.Length != worseParent.Length) throw new ArgumentException("BlendAlphaBetaCrossover: The parents' vectors are of different length.", "betterParent");
       if (alpha.Value < 0) throw new ArgumentException("BlendAlphaBetaCrossover: Parameter alpha must be greater or equal to 0.", "alpha");
       if (beta.Value < 0) throw new ArgumentException("BlendAlphaBetaCrossover: Parameter beta must be greater or equal to 0.", "beta");
       int length = betterParent.Length;
       double min, max, d;
-      DoubleArray result = new DoubleArray(length);
+      RealVector result = new RealVector(length);
 
       for (int i = 0; i < length; i++) {
         d = Math.Abs(betterParent[i] - worseParent[i]);
@@ -116,7 +116,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     /// <summary>
-    /// Checks if the number of parents is equal to 2, if all parameters are available and forwards the call to <see cref="Apply(IRandom, DoubleArray, DoubleArray, DoubleValue, DoubleValue)"/>.
+    /// Checks if the number of parents is equal to 2, if all parameters are available and forwards the call to <see cref="Apply(IRandom, RealVector, RealVector, DoubleValue, DoubleValue)"/>.
     /// </summary>
     /// <exception cref="ArgumentException">Thrown when the number of parents is not equal to 2.</exception>
     /// <exception cref="InvalidOperationException">
@@ -131,7 +131,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// <param name="random">The random number generator to use.</param>
     /// <param name="parents">The collection of parents (must be of size 2).</param>
     /// <returns>The real vector that results from the crossover.</returns>
-    protected override DoubleArray Cross(IRandom random, ItemArray<DoubleArray> parents) {
+    protected override RealVector Cross(IRandom random, ItemArray<RealVector> parents) {
       if (parents.Length != 2) throw new ArgumentException("BlendAlphaBetaCrossover: Number of parents is not equal to 2.", "parents");
       if (MaximizationParameter.ActualValue == null) throw new InvalidOperationException("BlendAlphaBetaCrossover: Parameter " + MaximizationParameter.ActualName + " could not be found.");
       if (QualityParameter.ActualValue == null || QualityParameter.ActualValue.Length != parents.Length) throw new InvalidOperationException("BlendAlphaBetaCrossover: Parameter " + QualityParameter.ActualName + " could not be found, or not in the same quantity as there are parents.");

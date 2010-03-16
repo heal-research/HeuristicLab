@@ -40,8 +40,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
-    public ILookupParameter<DoubleArray> RealVectorParameter {
-      get { return (ILookupParameter<DoubleArray>)Parameters["RealVector"]; }
+    public ILookupParameter<RealVector> RealVectorParameter {
+      get { return (ILookupParameter<RealVector>)Parameters["RealVector"]; }
     }
     public IValueLookupParameter<IntValue> LengthParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters["Length"]; }
@@ -56,7 +56,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     protected RealVectorCreator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
-      Parameters.Add(new LookupParameter<DoubleArray>("RealVector", "The vector which should be manipulated."));
+      Parameters.Add(new LookupParameter<RealVector>("RealVector", "The vector which should be manipulated."));
       Parameters.Add(new ValueLookupParameter<IntValue>("Length", "The length of the vector."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("Minimum", "The lower bound for each element in the vector."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("Maximum", "The upper bound for each element in the vector."));
@@ -67,6 +67,6 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       return base.Apply();
     }
 
-    protected abstract DoubleArray Create(IRandom random, IntValue length, DoubleValue minimum, DoubleValue maximum);
+    protected abstract RealVector Create(IRandom random, IntValue length, DoubleValue minimum, DoubleValue maximum);
   }
 }

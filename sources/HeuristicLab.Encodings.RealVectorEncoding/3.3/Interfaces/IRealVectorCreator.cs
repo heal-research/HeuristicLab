@@ -31,6 +31,6 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     IValueLookupParameter<IntValue> LengthParameter { get; }
     IValueLookupParameter<DoubleValue> MinimumParameter { get; }
     IValueLookupParameter<DoubleValue> MaximumParameter { get; }
-    ILookupParameter<DoubleArray> RealVectorParameter { get; }
+    ILookupParameter<RealVector> RealVectorParameter { get; }
   }
 }

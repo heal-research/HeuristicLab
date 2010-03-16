@@ -69,7 +69,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// <param name="vector">The vector that should be manipulated.</param>
     /// <param name="contiguity">A parameter describing the shape of the probability density function which influences the strength of the manipulation.</param>
     /// <param name="maxManipulation">The maximum strength of the manipulation.</param>
-    public static void Apply(IRandom random, DoubleArray vector, DoubleValue contiguity, DoubleValue maxManipulation) {
+    public static void Apply(IRandom random, RealVector vector, DoubleValue contiguity, DoubleValue maxManipulation) {
       if (contiguity.Value < 0) throw new ArgumentException("PolynomialOnePositionManipulator: Contiguity value is smaller than 0", "contiguity");
       int index = random.Next(vector.Length);
       double u = random.NextDouble(), delta = 0;
@@ -84,11 +84,11 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     /// <summary>
-    /// Checks the availability of the parameters and forwards the call to <see cref="Apply(IRandom, DoubleArray, DoubleValue, DoubleValue)"/>.
+    /// Checks the availability of the parameters and forwards the call to <see cref="Apply(IRandom, RealVector, DoubleValue, DoubleValue)"/>.
     /// </summary>
     /// <param name="random">The random number generator to use.</param>
     /// <param name="realVector">The vector of real values to manipulate.</param>
-    protected override void Manipulate(IRandom random, DoubleArray realVector) {
+    protected override void Manipulate(IRandom random, RealVector realVector) {
       if (ContiguityParameter.ActualValue == null) throw new InvalidOperationException("PolynomialOnePositionManipulator: Parameter " + ContiguityParameter.ActualName + " could not be found.");
       if (MaximumManipulationParameter.ActualValue == null) throw new InvalidOperationException("PolynomialOnePositionManipulator: Parameter " + MaximumManipulationParameter.ActualName + " could not be found.");
       Apply(random, realVector, ContiguityParameter.ActualValue, MaximumManipulationParameter.ActualValue);

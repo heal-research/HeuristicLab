@@ -45,10 +45,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// <param name="parent1">The first parent for crossover.</param>
     /// <param name="parent2">The second parent for crossover.</param>
     /// <returns>The newly created real vector, resulting from the single point crossover.</returns>
-    public static DoubleArray Apply(IRandom random, DoubleArray parent1, DoubleArray parent2) {
+    public static RealVector Apply(IRandom random, RealVector parent1, RealVector parent2) {
       if (parent1.Length != parent2.Length) throw new ArgumentException("SinglePointCrossover: Parents are of unequal length");
       int length = parent1.Length;
-      DoubleArray result = new DoubleArray(length);
+      RealVector result = new RealVector(length);
       int breakPoint = random.Next(1, length - 1);
 
       for (int i = 0; i < breakPoint; i++)
@@ -60,13 +60,13 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     /// <summary>
-    /// Checks number of parents and forwards the call to <see cref="Apply(IRandom, DoubleArray, DoubleArray)"/>.
+    /// Checks number of parents and forwards the call to <see cref="Apply(IRandom, RealVector, RealVector)"/>.
     /// </summary> 
     /// <exception cref="ArgumentException">Thrown when the parents' vectors are of unequal length or when <paramref name="contiguity"/> is smaller than 0.</exception>
     /// <param name="random">The pseudo random number generator to use.</param>
     /// <param name="parents">The list of parents.</param>
     /// <returns>A new real vector.</returns>
-    protected override HeuristicLab.Data.DoubleArray Cross(IRandom random, ItemArray<DoubleArray> parents) {
+    protected override RealVector Cross(IRandom random, ItemArray<RealVector> parents) {
       if (parents.Length != 2) throw new ArgumentException("SinglePointCrossover: The number of parents is not equal to 2");
       return Apply(random, parents[0], parents[1]);
     }

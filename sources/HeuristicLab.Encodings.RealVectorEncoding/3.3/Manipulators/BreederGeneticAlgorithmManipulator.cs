@@ -65,7 +65,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// <param name="min">The minimum number of the sampling range for the vector element (inclusive).</param>
     /// <param name="max">The maximum number of the sampling range for the vector element (exclusive).</param>
     /// <param name="searchIntervalFactor">The factor determining the size of the search interval.</param>
-    public static void Apply(IRandom random, DoubleArray vector, DoubleValue min, DoubleValue max, DoubleValue searchIntervalFactor) {
+    public static void Apply(IRandom random, RealVector vector, DoubleValue min, DoubleValue max, DoubleValue searchIntervalFactor) {
       int length = vector.Length;
       double prob, value;
       do {
@@ -113,11 +113,11 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     /// <summary>
-    /// Checks the parameters Minimum, Maximum, and SearchIntervalFactor and forwards the call to <see cref="Apply(IRandom, DoubleArray, DoubleValue, DoubleValue, DoubleValue)"/>.
+    /// Checks the parameters Minimum, Maximum, and SearchIntervalFactor and forwards the call to <see cref="Apply(IRandom, RealVector, DoubleValue, DoubleValue, DoubleValue)"/>.
     /// </summary>
     /// <param name="random">A random number generator.</param>
     /// <param name="realVector">The real vector to manipulate.</param>
-    protected override void Manipulate(IRandom random, DoubleArray realVector) {
+    protected override void Manipulate(IRandom random, RealVector realVector) {
       if (MinimumParameter.ActualValue == null) throw new InvalidOperationException("BreederGeneticAlgorithmManipulator: Parameter " + MinimumParameter.ActualName + " could not be found.");
       if (MaximumParameter.ActualValue == null) throw new InvalidOperationException("BreederGeneticAlgorithmManipulator: Paraemter " + MaximumParameter.ActualName + " could not be found.");
       if (SearchIntervalFactorParameter.ActualValue == null) throw new InvalidOperationException("BreederGeneticAlgorithmManipulator: Paraemter " + SearchIntervalFactorParameter.ActualName + " could not be found.");

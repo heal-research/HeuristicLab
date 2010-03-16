@@ -84,25 +84,25 @@ namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
     [TestMethod()]
     public void PolynomialOnePositionManipulatorApplyTest() {
       TestRandom random = new TestRandom();
-      DoubleArray parent, expected;
+      RealVector parent, expected;
       DoubleValue contiguity, maxManipulation;
       bool exceptionFired;
       // The following test is not based on published examples
       random.Reset();
       random.IntNumbers = new int[] { 3 };
       random.DoubleNumbers = new double[] { 0.2 };
-      parent = new DoubleArray(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
-      expected = new DoubleArray(new double[] { 0.2, 0.2, 0.3, 0.1261980542102, 0.1 });
+      parent = new RealVector(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
+      expected = new RealVector(new double[] { 0.2, 0.2, 0.3, 0.1261980542102, 0.1 });
       contiguity = new DoubleValue(0.2);
       maxManipulation = new DoubleValue(0.7);
       PolynomialOnePositionManipulator.Apply(random, parent, contiguity, maxManipulation);
-      Assert.IsTrue(Auxiliary.RealVectorIsAlmostEqualByPosition(expected, parent));
+      Assert.IsTrue(Auxiliary.DoubleArrayIsAlmostEqualByPosition(expected, parent));
       // The following test is not based on published examples
       exceptionFired = false;
       random.Reset();
       random.IntNumbers = new int[] { 3 };
       random.DoubleNumbers = new double[] { 0.2 };
-      parent = new DoubleArray(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
+      parent = new RealVector(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
       contiguity = new DoubleValue(-1); //Contiguity value < 0
       maxManipulation = new DoubleValue(0.2);
       try {

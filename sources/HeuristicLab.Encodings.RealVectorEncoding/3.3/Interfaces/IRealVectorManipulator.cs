@@ -28,6 +28,6 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// An interface which represents an operator for manipulating vectors of real-valued data.
   /// </summary>
   public interface IRealVectorManipulator : IRealVectorOperator, IManipulator {
-    ILookupParameter<DoubleArray> RealVectorParameter { get; }
+    ILookupParameter<RealVector> RealVectorParameter { get; }
   }
 }

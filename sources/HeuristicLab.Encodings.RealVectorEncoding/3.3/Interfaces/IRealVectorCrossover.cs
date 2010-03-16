@@ -28,7 +28,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// An interface which represents an operator for crossing vectors of real-valued data.
   /// </summary>
   public interface IRealVectorCrossover : IRealVectorOperator, ICrossover {
-    ILookupParameter<ItemArray<DoubleArray>> ParentsParameter { get; }
-    ILookupParameter<DoubleArray> ChildParameter { get; }
+    ILookupParameter<ItemArray<RealVector>> ParentsParameter { get; }
+    ILookupParameter<RealVector> ChildParameter { get; }
   }
 }

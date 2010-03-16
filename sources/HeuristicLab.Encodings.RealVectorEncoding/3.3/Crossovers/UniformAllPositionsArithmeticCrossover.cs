@@ -60,11 +60,11 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// <param name="parent2">The second parent vector.</param>
     /// <param name="alpha">The alpha parameter (<see cref="AlphaParameter"/>).</param>
     /// <returns>The vector resulting from the crossover.</returns>
-    public static DoubleArray Apply(IRandom random, DoubleArray parent1, DoubleArray parent2, DoubleValue alpha) {
+    public static RealVector Apply(IRandom random, RealVector parent1, RealVector parent2, DoubleValue alpha) {
       int length = parent1.Length;
       if (length != parent2.Length) throw new ArgumentException("UniformAllPositionsArithmeticCrossover: The parent vectors are of different length.", "parent1");
       if (alpha.Value < 0 || alpha.Value > 1) throw new ArgumentException("UniformAllPositionsArithmeticCrossover: Parameter alpha must be in the range [0;1]", "alpha");
-      DoubleArray result = new DoubleArray(length);
+      RealVector result = new RealVector(length);
       for (int i = 0; i < length; i++) {
         result[i] = alpha.Value * parent1[i] + (1 - alpha.Value) * parent2[i];
       }
@@ -72,14 +72,14 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     /// <summary>
-    /// Checks that there are exactly 2 parents, that the alpha parameter is not null and fowards the call to <see cref="Apply(IRandom, DoubleArray, DoubleArrrayData, DoubleValue)"/>.
+    /// Checks that there are exactly 2 parents, that the alpha parameter is not null and fowards the call to <see cref="Apply(IRandom, RealVector, DoubleArrrayData, DoubleValue)"/>.
     /// </summary>
     /// <exception cref="ArgumentException">Thrown when there are not exactly two parents.</exception>
     /// <exception cref="InvalidOperationException">Thrown when the alpha parmeter could not be found.</exception>
     /// <param name="random">The random number generator.</param>
     /// <param name="parents">The collection of parents (must be of size 2).</param>
     /// <returns>The vector resulting from the crossover.</returns>
-    protected override DoubleArray Cross(IRandom random, ItemArray<DoubleArray> parents) {
+    protected override RealVector Cross(IRandom random, ItemArray<RealVector> parents) {
  	    if (parents.Length != 2) throw new ArgumentException("UniformAllPositionsArithmeticCrossover: There must be exactly two parents.", "parents");
       if (AlphaParameter.ActualValue == null) throw new InvalidOperationException("UniformAllPositionsArithmeticCrossover: Parameter " + AlphaParameter.ActualName + " could not be found.");
       return Apply(random, parents[0], parents[1], AlphaParameter.ActualValue);

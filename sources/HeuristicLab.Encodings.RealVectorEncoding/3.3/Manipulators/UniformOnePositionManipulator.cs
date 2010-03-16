@@ -66,17 +66,17 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// the vector element to change (inclusive).</param>
     /// <param name="max">The maximum value of the sampling range for
     /// the vector element to change (exclusive).</param>
-    public static void Apply(IRandom random, DoubleArray vector, DoubleValue min, DoubleValue max) {
+    public static void Apply(IRandom random, RealVector vector, DoubleValue min, DoubleValue max) {
       int index = random.Next(vector.Length);
       vector[index] = min.Value + random.NextDouble() * (max.Value - min.Value);
     }
 
     /// <summary>
-    /// Checks if the minimum and maximum parameters are available and forwards the call to <see cref="Apply(IRandom, DoubleArray, DoubleValue, DoubleValue)"/>.
+    /// Checks if the minimum and maximum parameters are available and forwards the call to <see cref="Apply(IRandom, RealVector, DoubleValue, DoubleValue)"/>.
     /// </summary>
     /// <param name="random">The random number generator to use.</param>
     /// <param name="realVector">The real vector to manipulate.</param>
-    protected override void Manipulate(IRandom random, DoubleArray realVector) {
+    protected override void Manipulate(IRandom random, RealVector realVector) {
       if (MinimumParameter.ActualValue == null) throw new InvalidOperationException("UniformOnePositionManipulator: Parameter " + MinimumParameter.ActualName + " could not be found.");
       if (MaximumParameter.ActualValue == null) throw new InvalidOperationException("UniformOnePositionManipulator: Parameter " + MaximumParameter.ActualName + " could not be found.");
       Apply(random, realVector, MinimumParameter.ActualValue, MaximumParameter.ActualValue);
