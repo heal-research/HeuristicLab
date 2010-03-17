@@ -30,7 +30,7 @@ using HeuristicLab.PluginInfrastructure.Advanced.DeploymentService;
 
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
-  public class InstallationManagerConsole {
+  internal class InstallationManagerConsole {
     private InstallationManager installManager;
     private string connectionString;
     public InstallationManagerConsole(string pluginDir) {
