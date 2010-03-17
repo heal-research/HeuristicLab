@@ -109,7 +109,7 @@ namespace HeuristicLab.Parameters {
       IScope scope = ExecutionContext.Scope;
       while ((scope != null) && !scope.Variables.ContainsKey(name))
         scope = scope.Parent;
-      return scope != null ? scope.Variables[actualName] : null;
+      return scope != null ? scope.Variables[name] : null;
     }
     protected override IItem GetActualValue() {
       string name;
