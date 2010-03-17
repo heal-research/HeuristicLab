@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,12 +26,12 @@ using HeuristicLab.PluginInfrastructure;
 using System.Windows.Forms;
 using HeuristicLab.MainForm.WindowsForms;
 
-namespace HeuristicLab.DeploymentService.AdminClient {
-  [Application("Deployment service administration client")]
-  public class HeuristicLabDeploymentServiceAdminClientApplication : ApplicationBase {
+namespace HeuristicLab.PluginAdministrator {
+  [Application("Deployment Service Administrator")]
+  public class HeuristicLabPluginAdministratorApplication : ApplicationBase {
     public override void Run() {
       MainForm mainForm = new MainForm(typeof(IUserInterfaceItemProvider));
-      mainForm.Title = "Deployment Service Administration Client";
+      mainForm.Title = "Deployment Service Administrator";
       Application.Run(mainForm);
     }
   }

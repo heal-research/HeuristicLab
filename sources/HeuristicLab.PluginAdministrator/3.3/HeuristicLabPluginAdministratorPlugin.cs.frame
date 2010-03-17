@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,9 +24,12 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.DeploymentService.AdminClient {
-  [Plugin("HeuristicLab.DeploymentService.AdminClient", "3.3.0.$WCREV$")]
-  [PluginFile("HeuristicLab.DeploymentService.AdminClient-3.3.dll", PluginFileType.Assembly)]
-  public class HeuristicLabDeploymentServiceAdminClientPlugin : PluginBase {
+namespace HeuristicLab.PluginAdministrator {
+  [Plugin("HeuristicLab.PluginAdministrator", "3.3.0.$WCREV$")]
+  [PluginFile("HeuristicLab.PluginAdministrator-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Common.Resources", "3.2.0.0")]
+  [PluginDependency("HeuristicLab.MainForm", "3.2.0.0")]
+  [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.2.0.0")]
+  public class HeuristicLabPluginAdministratorPlugin : PluginBase {
   }
 }

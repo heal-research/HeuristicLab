@@ -178,6 +178,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
         catch (BadImageFormatException) { } // just ignore the case that the .dll file is not a CLR assembly (e.g. a native dll)
         catch (FileLoadException) { }
         catch (SecurityException) { }
+        catch (ReflectionTypeLoadException) { } // referenced assemblies are missing
       }
       return assemblies;
     }
