@@ -55,6 +55,11 @@ namespace HeuristicLab.PluginInfrastructure {
       : this(dependency, "0.0.0.0") {
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="PluginDependencyAttribute" />.
+    /// </summary>
+    /// <param name="dependency">Name of the plugin dependency.</param>
+    /// <param name="version">Version of the plugin dependency.</param>
     public PluginDependencyAttribute(string dependency, string version) {
       if (string.IsNullOrEmpty(dependency)) throw new ArgumentException("Dependency name is null or empty.", "dependency");
       if (string.IsNullOrEmpty(version)) throw new ArgumentException("Dependency version is null or empty.", "version");

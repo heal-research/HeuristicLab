@@ -29,9 +29,21 @@ namespace HeuristicLab.PluginInfrastructure {
   /// Enumerator of available file types for a plugin.
   /// </summary>
   public enum PluginFileType {
+    /// <summary>
+    /// CLR assembly files are loaded by the plugin infrastructure.
+    /// </summary>
     Assembly,
+    /// <summary>
+    /// Native DLL files are ignored by the plugin infrastructure.
+    /// </summary>
     NativeDll,
+    /// <summary>
+    /// Data files are any kind of support file for your plugin.
+    /// </summary>
     Data,
+    /// <summary>
+    /// License files contain the license text of the plugin (ASCII encoding).
+    /// </summary>
     License
   };
 

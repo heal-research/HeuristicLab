@@ -75,7 +75,6 @@ namespace HeuristicLab.PluginInfrastructure {
     /// Initializes a new instance of <see cref="ApplicationAttribute"/>.
     /// <param name="name">Name of the application</param>
     /// <param name="description">Description of the application</param>
-    /// <param name="version">Version string of the application</param>
     /// <param name="restartOnErrors">Flag that indicates if the application should be restarted on exceptions (for services)</param>
     /// </summary>
     public ApplicationAttribute(string name, string description, bool restartOnErrors) {

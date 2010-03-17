@@ -35,12 +35,20 @@ using System.IO;
 using HeuristicLab.PluginInfrastructure.Advanced;
 
 namespace HeuristicLab.PluginInfrastructure.Starter {
+  /// <summary>
+  /// The starter form is responsible for initializing the plugin infrastructure
+  /// and shows a list of installed applications.
+  /// </summary>
   public partial class StarterForm : Form {
 
     private ListViewItem pluginManagerListViewItem;
     private bool abortRequested;
     private PluginManager pluginManager;
 
+    /// <summary>
+    /// Initializes an instance of the starter form.
+    /// The starter form shows a splashscreen and initializes the plugin infrastructure.
+    /// </summary>
     public StarterForm()
       : base() {
       InitializeComponent();
@@ -73,6 +81,10 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       }
     }
 
+    /// <summary>
+    /// Creates a new StarterForm and tries to start application with <paramref name="appName"/> immediately.
+    /// </summary>
+    /// <param name="appName">Name of the application</param>
     public StarterForm(string appName)
       : this() {
       var appDesc = (from desc in pluginManager.Applications

@@ -50,7 +50,7 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <summary>
     /// Discovers and creates instances of <paramref name="type"/> and all types implementing or inheriting <paramref name="type"/> (directly and indirectly).
     /// </summary>
-    /// <param name="type">The type or super-type to discover.</typeparam>
+    /// <param name="type">The type or super-type to discover.</param>
     /// <returns>An enumerable of instances of the discovered types.</returns>
     IEnumerable<object> GetInstances(Type type);
 

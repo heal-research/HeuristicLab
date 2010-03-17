@@ -24,9 +24,21 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeuristicLab.PluginInfrastructure {
+  /// <summary>
+  /// Interface that must be implemented by HeuristicLab applications.
+  /// </summary>
   public interface IApplication {
+    /// <summary>
+    /// Gets the name of the application.
+    /// </summary>
     string Name { get; }
+    /// <summary>
+    /// Gets the description of the application.
+    /// </summary>
     string Description { get; }
+    /// <summary>
+    /// Main entry point for the application.
+    /// </summary>
     void Run();
   }
 }

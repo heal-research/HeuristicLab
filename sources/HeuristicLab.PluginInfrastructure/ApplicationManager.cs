@@ -154,9 +154,9 @@ namespace HeuristicLab.PluginInfrastructure {
     }
 
     /// <summary>
-    /// Loads assemblies dynamically from a byte array
+    /// Loads raw assemblies dynamically from a byte array
     /// </summary>
-    /// <param name="plugins">bytearray of all assemblies that should be loaded</param>
+    /// <param name="assemblies">bytearray of all raw assemblies that should be loaded</param>
     internal void LoadAssemblies(IEnumerable<byte[]> assemblies) {
       foreach (byte[] asm in assemblies) {
         Assembly loadedAsm = Assembly.Load(asm);
@@ -180,7 +180,7 @@ namespace HeuristicLab.PluginInfrastructure {
              select (T)Activator.CreateInstance(t);
     }
     /// <summary>
-    /// Creates an instance of all types declared in assembly <param name="asm"/> that are subtypes or the same type of the specified type and declared in <paramref name="plugin"/>
+    /// Creates an instance of all types declared in assembly <paramref name="asm"/> that are subtypes or the same type of the specified <typeparamref name="type"/>. 
     /// </summary>
     /// <typeparam name="T">Most general type.</typeparam>
     /// <param name="asm">Declaring assembly.</param>
@@ -202,7 +202,7 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <summary>
     /// Creates an instance of all types that are subtypes or the same type of the specified type
     /// </summary>
-    /// <typeparam name="type">Most general type.</typeparam>
+    /// <param name="type">Most general type.</param>
     /// <returns>Enumerable of the created instances.</returns>
     internal static IEnumerable<object> GetInstances(Type type) {
       return (from t in GetTypes(type, true)

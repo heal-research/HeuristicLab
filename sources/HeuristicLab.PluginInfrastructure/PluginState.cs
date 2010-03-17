@@ -24,8 +24,26 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeuristicLab.PluginInfrastructure {
+  /// <summary>
+  /// Possible states that a plugin can have.
+  /// </summary>
   [Serializable]
   public enum PluginState {
-    Undefined, Enabled, Disabled, Loaded
+    /// <summary>
+    /// Undefined state is the default plugin state.
+    /// </summary>
+    Undefined, 
+    /// <summary>
+    /// Enabled state means that the plugin has correct meta-data and can be loaded.
+    /// </summary>
+    Enabled, 
+    /// <summary>
+    /// Disabled state means that the plugin has incorrect meta-data or missing dependencies and cannot be loaded.
+    /// </summary>
+    Disabled, 
+    /// <summary>
+    /// Loaded means the plugin is currently loaded by an application.
+    /// </summary>
+    Loaded
   }
 }

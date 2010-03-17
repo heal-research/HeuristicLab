@@ -28,7 +28,9 @@ using System.Security.Permissions;
 using System.Security;
 
 namespace HeuristicLab.PluginInfrastructure {
-
+  /// <summary>
+  /// Singleton class for the ControlManager (needed by HeuristicLab 3.2)
+  /// </summary>
   public static class ControlManager {
     // singleton: only one control manager allowed in each application (i.e. AppDomain)
     private static IControlManager controlManager;
@@ -39,6 +41,11 @@ namespace HeuristicLab.PluginInfrastructure {
       get { return controlManager; }
     }
 
+    /// <summary>
+    /// Set the current control manager. 
+    /// </summary>
+    /// <param name="manager">The control manager</param>
+    /// <exception cref="InvalidOperationException">Throws exception when a control manager has previously been set.</exception>
     public static void RegisterManager(IControlManager manager) {
       if (controlManager != null) throw new InvalidOperationException("An control manager has already been set.");
       controlManager = manager;

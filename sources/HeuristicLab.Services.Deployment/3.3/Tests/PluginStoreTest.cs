@@ -174,7 +174,7 @@ namespace HeuristicLab.Services.Deployment.Test {
           target.Persist(newEntity, enc.GetBytes("Zipped " + pluginName));
           Assert.Fail("persist should fail with ArgumentException");
         }
-        catch (ArgumentException e) {
+        catch (ArgumentException) {
           // this is expected
           Assert.IsTrue(true, "expected exception");
         }
@@ -327,7 +327,7 @@ namespace HeuristicLab.Services.Deployment.Test {
           target.Persist(product);
           Assert.Fail("persist should fail with ArgumentException");
         }
-        catch (ArgumentException e) {
+        catch (ArgumentException) {
           // this is expected
           Assert.IsTrue(true, "expected exception");
         }

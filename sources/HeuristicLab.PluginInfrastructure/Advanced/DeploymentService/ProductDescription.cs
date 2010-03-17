@@ -30,11 +30,26 @@ using System.Reflection;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced.DeploymentService {
   // extension of auto-generated DataContract class ProductDescription
+  /// <summary>
+  /// Product description as provided by the deployment service.
+  /// A product has a name, a version and a list of plugins that are part of the product.
+  /// </summary>
   public partial class ProductDescription  {
+    /// <summary>
+    /// Initializes a new instance of <see cref="ProductDescription" />
+    /// </summary>
+    /// <param name="name">Name of the product</param>
+    /// <param name="version">Version of the product</param>
     public ProductDescription(string name, Version version)
       : this(name, version, new List<PluginDescription>()) {
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="ProductDescription" />
+    /// </summary>
+    /// <param name="name">Name of the product</param>
+    /// <param name="version">Version of the product</param>
+    /// <param name="plugins">Enumerable of plugins of the product</param>
     public ProductDescription(string name, Version version, IEnumerable<PluginDescription> plugins) {
       this.Name = name;
       this.Version = version;

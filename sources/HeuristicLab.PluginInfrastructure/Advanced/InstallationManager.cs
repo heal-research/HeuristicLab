@@ -127,7 +127,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     /// <summary>
     /// Retrieves a list of plugins available at the remote server
     /// </summary>
-    /// <param name="connectionString"></param>
     /// <returns></returns>
     public IEnumerable<IPluginDescription> GetRemotePluginList() {
       var client = DeploymentService.UpdateClientFactory.CreateClient();
@@ -145,7 +144,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     /// <summary>
     /// Retrieves the list of products available at the remote server
     /// </summary>
-    /// <param name="connectionString"></param>
     /// <returns></returns>
     public IEnumerable<DeploymentService.ProductDescription> GetRemoteProductList() {
       var client = DeploymentService.UpdateClientFactory.CreateClient();
@@ -163,8 +161,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     /// <summary>
     ///  Installs plugins from remote server
     /// </summary>
-    /// <param name="connectionString"></param>
-    /// <param name="pluginNames"></param>
+    /// <param name="plugins"></param>
     public void Install(IEnumerable<IPluginDescription> plugins) {
       var args = new PluginInfrastructureCancelEventArgs(plugins);
       OnPreInstall(args);
@@ -187,7 +184,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     /// <summary>
     /// Updates plugins from remote server
     /// </summary>
-    /// <param name="pluginNames"></param>
+    /// <param name="plugins"></param>
     public void Update(IEnumerable<IPluginDescription> plugins) {
       PluginInfrastructureCancelEventArgs args = new PluginInfrastructureCancelEventArgs(plugins);
       OnPreUpdate(args);
@@ -210,7 +207,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     /// <summary>
     /// Deletes all plugin files from local installation
     /// </summary>
-    /// <param name="pluginNames"></param>
+    /// <param name="plugins"></param>
     public void Remove(IEnumerable<IPluginDescription> plugins) {
       var fileNames = from pluginToDelete in plugins
                       from file in pluginToDelete.Files

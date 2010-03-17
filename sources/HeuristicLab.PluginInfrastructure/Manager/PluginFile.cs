@@ -26,27 +26,45 @@ using System.Linq;
 using System.Reflection;
 
 namespace HeuristicLab.PluginInfrastructure.Manager {
+  /// <summary>
+  /// Plugin files have a name and a type.
+  /// </summary>
   [Serializable]
   public sealed class PluginFile : IPluginFile {
     #region IPluginFile Members
 
     private string name;
+    /// <summary>
+    /// Gets the name of the file.
+    /// </summary>
     public string Name {
       get { return name; }
     }
 
     private PluginFileType type;
+    /// <summary>
+    /// Gets the type of the file.
+    /// </summary>
     public PluginFileType Type {
       get { return type; }
     }
 
     #endregion
 
+    /// <summary>
+    /// Inizialize a new instance of <see cref="PluginFile" />
+    /// </summary>
+    /// <param name="name">File name</param>
+    /// <param name="type">File type</param>
     public PluginFile(string name, PluginFileType type) {
       this.name = name;
       this.type = type;
     }
 
+    /// <summary>
+    /// ToString override for <see cref="PluginFile" />
+    /// </summary>
+    /// <returns>Plugin file name</returns>
     public override string ToString() {
       return name;
     }

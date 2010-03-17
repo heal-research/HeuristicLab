@@ -28,7 +28,14 @@ using System.IO;
 using HeuristicLab.PluginInfrastructure.Advanced;
 
 namespace HeuristicLab.PluginInfrastructure {
+  /// <summary>
+  /// Static class that contains the main entry point of the plugin infrastructure.
+  /// </summary>
   public static class Main {
+    /// <summary>
+    /// Main entry point of the plugin infrastructure. Either loads a starter form or a console dialog.
+    /// </summary>
+    /// <param name="args">Command line arguments</param>
     public static void Run(string[] args) {
       if (args.Length == 0) {  // normal mode
         try {
