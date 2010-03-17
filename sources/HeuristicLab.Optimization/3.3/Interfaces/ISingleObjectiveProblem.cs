@@ -27,6 +27,7 @@ namespace HeuristicLab.Optimization {
   /// </summary>
   public interface ISingleObjectiveProblem : IProblem {
     IParameter MaximizationParameter { get; }
+    IParameter BestKnownQualityParameter { get; }
     new ISingleObjectiveEvaluator Evaluator { get; }
   }
 }

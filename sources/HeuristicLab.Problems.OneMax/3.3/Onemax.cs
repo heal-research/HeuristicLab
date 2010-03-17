@@ -63,6 +63,12 @@ namespace HeuristicLab.Problems.OneMax {
     IParameter IProblem.EvaluatorParameter {
       get { return EvaluatorParameter; }
     }
+    public ValueParameter<DoubleValue> BestKnownQualityParameter {
+      get { return (ValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
+    }
+    IParameter ISingleObjectiveProblem.BestKnownQualityParameter {
+      get { return BestKnownQualityParameter; }
+    }
     #endregion
 
     #region Properties
@@ -83,6 +89,9 @@ namespace HeuristicLab.Problems.OneMax {
     IEvaluator IProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
     }
+    public DoubleValue BestKnownQuality {
+      get { return BestKnownQualityParameter.Value; }
+    }
     private List<IBinaryVectorOperator> operators;
     public IEnumerable<IOperator> Operators {
       get { return operators.Cast<IOperator>(); }
@@ -98,6 +107,7 @@ namespace HeuristicLab.Problems.OneMax {
       Parameters.Add(new ValueParameter<IntValue>("Length", "The length of the BinaryVector.", new IntValue(5)));
       Parameters.Add(new ValueParameter<IBinaryVectorCreator>("SolutionCreator", "The operator which should be used to create new OneMax solutions.", creator));
       Parameters.Add(new ValueParameter<IOneMaxEvaluator>("Evaluator", "The operator which should be used to evaluate OneMax solutions.", evaluator));
+      Parameters.Add(new ValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this OneMax instance.", new DoubleValue(5)));
 
       creator.BinaryVectorParameter.ActualName = "OneMaxSolution";
       evaluator.QualityParameter.ActualName = "NumberOfOnes";

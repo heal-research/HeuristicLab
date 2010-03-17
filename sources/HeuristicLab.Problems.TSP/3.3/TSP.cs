@@ -72,6 +72,9 @@ namespace HeuristicLab.Problems.TSP {
     public OptionalValueParameter<DoubleValue> BestKnownQualityParameter {
       get { return (OptionalValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
     }
+    IParameter ISingleObjectiveProblem.BestKnownQualityParameter {
+      get { return BestKnownQualityParameter; }
+    }
     #endregion
 
     #region Properties

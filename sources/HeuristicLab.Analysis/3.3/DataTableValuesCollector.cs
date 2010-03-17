@@ -52,7 +52,7 @@ namespace HeuristicLab.Analysis {
 
       foreach (IParameter param in CollectedValues) {
         DoubleValue data = param.ActualValue as DoubleValue;
-        if (data == null) throw new InvalidOperationException("Only double data values can be collected by a DataTableValuesCollector.");
+        if (data == null) data = new DoubleValue(double.NaN);
 
         DataRow row;
         table.Rows.TryGetValue(param.Name, out row);

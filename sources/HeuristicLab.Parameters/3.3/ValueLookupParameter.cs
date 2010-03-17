@@ -74,6 +74,9 @@ namespace HeuristicLab.Parameters {
       : base(name, description) {
       Value = value;
     }
+    public ValueLookupParameter(string name, string description, string actualName)
+      : base(name, description, actualName) {
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       ValueLookupParameter<T> clone = (ValueLookupParameter<T>)base.Clone(cloner);

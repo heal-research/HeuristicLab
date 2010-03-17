@@ -35,7 +35,7 @@ namespace HeuristicLab.Algorithms.SGA {
   [Item("SGAMainLoop", "An operator which represents the main loop of a standard genetic algorithm (SGA).")]
   [Creatable("Test")]
   [StorableClass]
-  public class SGAMainLoop : AlgorithmOperator {
+  public sealed class SGAMainLoop : AlgorithmOperator {
     #region Parameter properties
     public ValueLookupParameter<IRandom> RandomParameter {
       get { return (ValueLookupParameter<IRandom>)Parameters["Random"]; }
@@ -45,6 +45,9 @@ namespace HeuristicLab.Algorithms.SGA {
     }
     public SubScopesLookupParameter<DoubleValue> QualityParameter {
       get { return (SubScopesLookupParameter<DoubleValue>)Parameters["Quality"]; }
+    }
+    public ValueLookupParameter<DoubleValue> BestKnownQualityParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
     }
     public ValueLookupParameter<IOperator> SelectorParameter {
       get { return (ValueLookupParameter<IOperator>)Parameters["Selector"]; }
@@ -79,12 +82,19 @@ namespace HeuristicLab.Algorithms.SGA {
     }
     #endregion
 
+    [StorableConstructor]
+    private SGAMainLoop(bool deserializing) : base() { }
     public SGAMainLoop()
       : base() {
+      Initialize();
+    }
+
+    private void Initialize() {
       #region Create parameters
       Parameters.Add(new ValueLookupParameter<IRandom>("Random", "A pseudo random number generator."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, otherwise false."));
       Parameters.Add(new SubScopesLookupParameter<DoubleValue>("Quality", "The value which represents the quality of a solution."));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("BestKnownQuality", "The best known quality value found so far."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Selector", "The operator used to select solutions for reproduction."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Crossover", "The operator used to cross solutions."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("MutationProbability", "The probability that the mutation operator is applied on a solution."));
@@ -96,8 +106,11 @@ namespace HeuristicLab.Algorithms.SGA {
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope which represents a population of solutions on which the SGA should be applied."));
       #endregion
 
-      #region Create operator graph
+      #region Create operators
       VariableCreator variableCreator = new VariableCreator();
+      BestQualityMemorizer bestQualityMemorizer1 = new BestQualityMemorizer();
+      BestAverageWorstQualityCalculator bestAverageWorstQualityCalculator1 = new BestAverageWorstQualityCalculator();
+      DataTableValuesCollector dataTableValuesCollector1 = new DataTableValuesCollector();
       ResultsCollector resultsCollector = new ResultsCollector();
       SubScopesSorter subScopesSorter1 = new SubScopesSorter();
       Placeholder selector = new Placeholder();
@@ -116,106 +129,129 @@ namespace HeuristicLab.Algorithms.SGA {
       MergingReducer mergingReducer = new MergingReducer();
       IntCounter intCounter = new IntCounter();
       Comparator comparator = new Comparator();
-      BestAverageWorstQualityCalculator bestAverageWorstQualityCalculator = new BestAverageWorstQualityCalculator();
-      DataTableValuesCollector dataTableValuesCollector = new DataTableValuesCollector();
+      BestQualityMemorizer bestQualityMemorizer2 = new BestQualityMemorizer();
+      BestAverageWorstQualityCalculator bestAverageWorstQualityCalculator2 = new BestAverageWorstQualityCalculator();
+      DataTableValuesCollector dataTableValuesCollector2 = new DataTableValuesCollector();
       ConditionalBranch conditionalBranch = new ConditionalBranch();
 
-      OperatorGraph.InitialOperator = variableCreator;
-
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Generations", new IntValue(0)));
-      variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("Best Quality", new DoubleValue(0)));
-      variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("Average Quality", new DoubleValue(0)));
-      variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("Worst Quality", new DoubleValue(0)));
-      variableCreator.CollectedValues.Add(new ValueParameter<DataTable>("Qualities", new DataTable("Qualities")));
-      variableCreator.Successor = resultsCollector;
+
+      bestQualityMemorizer1.BestQualityParameter.ActualName = "Best Quality";
+      bestQualityMemorizer1.MaximizationParameter.ActualName = "Maximization";
+      bestQualityMemorizer1.QualityParameter.ActualName = "Quality";
+
+      bestAverageWorstQualityCalculator1.AverageQualityParameter.ActualName = "Current Average Quality";
+      bestAverageWorstQualityCalculator1.BestQualityParameter.ActualName = "Current Best Quality";
+      bestAverageWorstQualityCalculator1.MaximizationParameter.ActualName = "Maximization";
+      bestAverageWorstQualityCalculator1.QualityParameter.ActualName = "Quality";
+      bestAverageWorstQualityCalculator1.WorstQualityParameter.ActualName = "Current Worst Quality";
+
+      dataTableValuesCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Best Quality"));
+      dataTableValuesCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Average Quality"));
+      dataTableValuesCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Worst Quality"));
+      dataTableValuesCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality"));
+      dataTableValuesCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, "BestKnownQuality"));
+      dataTableValuesCollector1.DataTableParameter.ActualName = "Qualities";
 
       resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Generations"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Best Quality"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Average Quality"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Worst Quality"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Average Quality"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Worst Quality"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, "BestKnownQuality"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DataTable>("Qualities"));
       resultsCollector.ResultsParameter.ActualName = "Results";
-      resultsCollector.Successor = subScopesSorter1;
 
       subScopesSorter1.DescendingParameter.ActualName = "Maximization";
       subScopesSorter1.ValueParameter.ActualName = "Quality";
-      subScopesSorter1.Successor = selector;
 
       selector.Name = "Selector";
       selector.OperatorParameter.ActualName = "Selector";
-      selector.Successor = sequentialSubScopesProcessor1;
-
-      sequentialSubScopesProcessor1.Operators.Add(new EmptyOperator());
-      sequentialSubScopesProcessor1.Operators.Add(childrenCreator);
-      sequentialSubScopesProcessor1.Successor = sequentialSubScopesProcessor2;
 
       childrenCreator.ParentsPerChild = new IntValue(2);
-      childrenCreator.Successor = uniformSequentialSubScopesProcessor;
-
-      uniformSequentialSubScopesProcessor.Operator = crossover;
-      uniformSequentialSubScopesProcessor.Successor = subScopesSorter2;
 
       crossover.Name = "Crossover";
       crossover.OperatorParameter.ActualName = "Crossover";
-      crossover.Successor = stochasticBranch;
 
-      stochasticBranch.FirstBranch = mutator;
       stochasticBranch.ProbabilityParameter.ActualName = "MutationProbability";
       stochasticBranch.RandomParameter.ActualName = "Random";
-      stochasticBranch.SecondBranch = null;
-      stochasticBranch.Successor = evaluator;
 
       mutator.Name = "Mutator";
       mutator.OperatorParameter.ActualName = "Mutator";
-      mutator.Successor = null;
 
       evaluator.Name = "Evaluator";
       evaluator.OperatorParameter.ActualName = "Evaluator";
-      evaluator.Successor = subScopesRemover;
 
       subScopesRemover.RemoveAllSubScopes = true;
-      subScopesRemover.Successor = null;
 
       subScopesSorter2.DescendingParameter.ActualName = "Maximization";
       subScopesSorter2.ValueParameter.ActualName = "Quality";
-      subScopesSorter2.Successor = null;
-
-      sequentialSubScopesProcessor2.Operators.Add(leftSelector);
-      sequentialSubScopesProcessor2.Operators.Add(new EmptyOperator());
-      sequentialSubScopesProcessor2.Successor = mergingReducer;
 
       leftSelector.CopySelected = new BoolValue(false);
       leftSelector.NumberOfSelectedSubScopesParameter.ActualName = "Elites";
-      leftSelector.Successor = rightReducer;
-
-      rightReducer.Successor = null;
-
-      mergingReducer.Successor = intCounter;
 
       intCounter.Increment = new IntValue(1);
       intCounter.ValueParameter.ActualName = "Generations";
-      intCounter.Successor = comparator;
 
       comparator.Comparison = new Comparison(ComparisonType.GreaterOrEqual);
       comparator.LeftSideParameter.ActualName = "Generations";
       comparator.ResultParameter.ActualName = "Terminate";
       comparator.RightSideParameter.ActualName = "MaximumGenerations";
-      comparator.Successor = bestAverageWorstQualityCalculator;
 
-      bestAverageWorstQualityCalculator.AverageQualityParameter.ActualName = "Average Quality";
-      bestAverageWorstQualityCalculator.BestQualityParameter.ActualName = "Best Quality";
-      bestAverageWorstQualityCalculator.MaximizationParameter.ActualName = "Maximization";
-      bestAverageWorstQualityCalculator.QualityParameter.ActualName = "Quality";
-      bestAverageWorstQualityCalculator.WorstQualityParameter.ActualName = "Worst Quality";
-      bestAverageWorstQualityCalculator.Successor = dataTableValuesCollector;
+      bestQualityMemorizer2.BestQualityParameter.ActualName = "Best Quality";
+      bestQualityMemorizer2.MaximizationParameter.ActualName = "Maximization";
+      bestQualityMemorizer2.QualityParameter.ActualName = "Quality";
 
-      dataTableValuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality"));
-      dataTableValuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Average Quality"));
-      dataTableValuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Worst Quality"));
-      dataTableValuesCollector.DataTableParameter.ActualName = "Qualities";
-      dataTableValuesCollector.Successor = conditionalBranch;
+      bestAverageWorstQualityCalculator2.AverageQualityParameter.ActualName = "Current Average Quality";
+      bestAverageWorstQualityCalculator2.BestQualityParameter.ActualName = "Current Best Quality";
+      bestAverageWorstQualityCalculator2.MaximizationParameter.ActualName = "Maximization";
+      bestAverageWorstQualityCalculator2.QualityParameter.ActualName = "Quality";
+      bestAverageWorstQualityCalculator2.WorstQualityParameter.ActualName = "Current Worst Quality";
+
+      dataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Best Quality"));
+      dataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Average Quality"));
+      dataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Worst Quality"));
+      dataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality"));
+      dataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, "BestKnownQuality"));
+      dataTableValuesCollector2.DataTableParameter.ActualName = "Qualities";
 
       conditionalBranch.ConditionParameter.ActualName = "Terminate";
+      #endregion
+
+      #region Create operator graph
+      OperatorGraph.InitialOperator = variableCreator;
+      variableCreator.Successor = bestQualityMemorizer1;
+      bestQualityMemorizer1.Successor = bestAverageWorstQualityCalculator1;
+      bestAverageWorstQualityCalculator1.Successor = dataTableValuesCollector1;
+      dataTableValuesCollector1.Successor = resultsCollector;
+      resultsCollector.Successor = subScopesSorter1;
+      subScopesSorter1.Successor = selector;
+      selector.Successor = sequentialSubScopesProcessor1;
+      sequentialSubScopesProcessor1.Operators.Add(new EmptyOperator());
+      sequentialSubScopesProcessor1.Operators.Add(childrenCreator);
+      sequentialSubScopesProcessor1.Successor = sequentialSubScopesProcessor2;
+      childrenCreator.Successor = uniformSequentialSubScopesProcessor;
+      uniformSequentialSubScopesProcessor.Operator = crossover;
+      uniformSequentialSubScopesProcessor.Successor = subScopesSorter2;
+      crossover.Successor = stochasticBranch;
+      stochasticBranch.FirstBranch = mutator;
+      stochasticBranch.SecondBranch = null;
+      stochasticBranch.Successor = evaluator;
+      mutator.Successor = null;
+      evaluator.Successor = subScopesRemover;
+      subScopesRemover.Successor = null;
+      subScopesSorter2.Successor = null;
+      sequentialSubScopesProcessor2.Operators.Add(leftSelector);
+      sequentialSubScopesProcessor2.Operators.Add(new EmptyOperator());
+      sequentialSubScopesProcessor2.Successor = mergingReducer;
+      leftSelector.Successor = rightReducer;
+      rightReducer.Successor = null;
+      mergingReducer.Successor = intCounter;
+      intCounter.Successor = comparator;
+      comparator.Successor = bestQualityMemorizer2;
+      bestQualityMemorizer2.Successor = bestAverageWorstQualityCalculator2;
+      bestAverageWorstQualityCalculator2.Successor = dataTableValuesCollector2;
+      dataTableValuesCollector2.Successor = conditionalBranch;
       conditionalBranch.FalseBranch = subScopesSorter1;
       conditionalBranch.TrueBranch = null;
       conditionalBranch.Successor = null;

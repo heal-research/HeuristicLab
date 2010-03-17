@@ -248,6 +248,7 @@ namespace HeuristicLab.Algorithms.SGA {
       SolutionsCreator.SolutionCreatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
     }
     private void ParameterizeSGAMainLoop() {
+      SGAMainLoop.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
       SGAMainLoop.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
       SGAMainLoop.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
       SGAMainLoop.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;

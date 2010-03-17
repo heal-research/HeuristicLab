@@ -75,6 +75,9 @@ namespace HeuristicLab.Problems.Knapsack {
     public OptionalValueParameter<DoubleValue> BestKnownQualityParameter {
       get { return (OptionalValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
     }
+    IParameter ISingleObjectiveProblem.BestKnownQualityParameter {
+      get { return BestKnownQualityParameter; }
+    }
     #endregion
 
     #region Properties

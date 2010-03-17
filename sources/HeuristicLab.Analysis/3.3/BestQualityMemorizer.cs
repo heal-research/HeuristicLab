@@ -54,7 +54,7 @@ namespace HeuristicLab.Analysis {
       bool maximization = MaximizationParameter.ActualValue.Value;
       DoubleValue best = BestQualityParameter.ActualValue;
       double max = (best != null) ? (best.Value) : ((maximization) ? (double.MinValue) : (double.MaxValue));
-      
+
       foreach (DoubleValue quality in qualities)
         if (IsBetter(maximization, quality.Value, max)) max = quality.Value;
 

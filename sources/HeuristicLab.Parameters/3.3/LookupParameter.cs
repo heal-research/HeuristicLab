@@ -56,15 +56,19 @@ namespace HeuristicLab.Parameters {
 
     public LookupParameter()
       : base("Anonymous", typeof(T)) {
-      actualName = Name;
+      this.actualName = Name;
     }
     public LookupParameter(string name)
       : base(name, typeof(T)) {
-      actualName = Name;
+      this.actualName = Name;
     }
     public LookupParameter(string name, string description)
       : base(name, description, typeof(T)) {
-      actualName = Name;
+      this.actualName = Name;
+    }
+    public LookupParameter(string name, string description, string actualName)
+      : base(name, description, typeof(T)) {
+      this.actualName = actualName == null ? string.Empty : actualName;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
