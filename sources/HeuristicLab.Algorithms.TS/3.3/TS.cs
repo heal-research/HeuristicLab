@@ -285,14 +285,22 @@ namespace HeuristicLab.Algorithms.TS {
         foreach (ITabuMoveMaker tabuMoveMaker in operators.OfType<ITabuMoveMaker>())
           TabuMoveMakerParameter.ValidValues.Add(tabuMoveMaker);
       }
-      if (oldMoveMaker != null && MoveMakerParameter.ValidValues.Any(x => x.GetType() == oldMoveMaker.GetType()))
-        MoveMaker = MoveMakerParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMoveMaker.GetType());
-      if (oldMoveEvaluator != null && MoveEvaluatorParameter.ValidValues.Any(x => x.GetType() == oldMoveEvaluator.GetType()))
-        MoveEvaluator = MoveEvaluatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMoveEvaluator.GetType());
-      if (oldTabuMoveMaker != null && TabuMoveMakerParameter.ValidValues.Any(x => x.GetType() == oldTabuMoveMaker.GetType()))
-        TabuMoveMaker = TabuMoveMakerParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldTabuMoveMaker.GetType());
-      if (oldTabuMoveEvaluator != null && TabuMoveEvaluatorParameter.ValidValues.Any(x => x.GetType() == oldTabuMoveEvaluator.GetType()))
-        TabuMoveEvaluator = TabuMoveEvaluatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldTabuMoveEvaluator.GetType());
+      if (oldMoveMaker != null) {
+        IMoveMaker mm = MoveMakerParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMoveMaker.GetType());
+        if (mm != null) MoveMaker = mm;
+      }
+      if (oldMoveEvaluator != null) {
+        ISingleObjectiveMoveEvaluator me = MoveEvaluatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMoveEvaluator.GetType());
+        if (me != null) MoveEvaluator = me;
+      }
+      if (oldTabuMoveMaker != null) {
+        ITabuMoveMaker tmm = TabuMoveMakerParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldTabuMoveMaker.GetType());
+        if (tmm != null) TabuMoveMaker = tmm;
+      }
+      if (oldTabuMoveEvaluator != null) {
+        ITabuMoveEvaluator tme = TabuMoveEvaluatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldTabuMoveEvaluator.GetType());
+        if (tme != null) TabuMoveEvaluator = tme;
+      }
     }
     private void ClearMoveParameters() {
       MoveMakerParameter.ValidValues.Clear();

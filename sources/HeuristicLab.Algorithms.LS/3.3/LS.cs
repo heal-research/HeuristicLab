@@ -253,10 +253,14 @@ namespace HeuristicLab.Algorithms.LS {
         foreach (ISingleObjectiveMoveEvaluator moveEvaluator in operators.OfType<ISingleObjectiveMoveEvaluator>())
           MoveEvaluatorParameter.ValidValues.Add(moveEvaluator);
       }
-      if (oldMoveMaker != null && MoveMakerParameter.ValidValues.Any(x => x.GetType() == oldMoveMaker.GetType()))
-        MoveMaker = MoveMakerParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMoveMaker.GetType());
-      if (oldMoveEvaluator != null && MoveEvaluatorParameter.ValidValues.Any(x => x.GetType() == oldMoveEvaluator.GetType()))
-        MoveEvaluator = MoveEvaluatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMoveEvaluator.GetType());
+      if (oldMoveMaker != null) {
+        IMoveMaker mm = MoveMakerParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMoveMaker.GetType());
+        if (mm != null) MoveMaker = mm;
+      }
+      if (oldMoveEvaluator != null) {
+        ISingleObjectiveMoveEvaluator me = MoveEvaluatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMoveEvaluator.GetType());
+        if (me != null) MoveEvaluator = me;
+      }
     }
     private void ClearMoveParameters() {
       MoveMakerParameter.ValidValues.Clear();
