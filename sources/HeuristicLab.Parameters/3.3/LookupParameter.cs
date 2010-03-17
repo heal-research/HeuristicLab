@@ -119,7 +119,7 @@ namespace HeuristicLab.Parameters {
       string name;
       // try to get value from context stack
       IValueParameter param = GetValueParameterAndTranslateName(out name);
-      if (param != null && param.Value != null) return param.Value;
+      if (param != null) return param.Value;
 
       // try to get variable from scope
       IVariable var = LookupVariable(name);
