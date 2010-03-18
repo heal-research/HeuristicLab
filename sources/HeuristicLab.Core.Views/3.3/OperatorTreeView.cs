@@ -69,6 +69,7 @@ namespace HeuristicLab.Core.Views {
       operatorNodeTable = new Dictionary<IOperator, List<TreeNode>>();
       parametersOperatorTable = new Dictionary<IObservableKeyedCollection<string, IParameter>, IOperator>();
       Caption = "Operator";
+      imageList.Images.Add("Default", HeuristicLab.Common.Resources.VS2008ImageLibrary.Method);
     }
     /// <summary>
     /// Initializes a new instance of <see cref="OperatorGraphView"/> 
