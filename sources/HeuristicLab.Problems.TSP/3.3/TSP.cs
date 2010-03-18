@@ -201,13 +201,13 @@ namespace HeuristicLab.Problems.TSP {
     private void MoveGenerator_TwoOptMoveParameter_ActualNameChanged(object sender, EventArgs e) {
       string name = ((ILookupParameter<TwoOptMove>)sender).ActualName;
       foreach (ITwoOptPermutationMoveOperator op in Operators.OfType<ITwoOptPermutationMoveOperator>()) {
-        if (!(op is IMoveGenerator)) op.TwoOptMoveParameter.ActualName = name;
+        op.TwoOptMoveParameter.ActualName = name;
       }
     }
     private void MoveGenerator_ThreeOptMoveParameter_ActualNameChanged(object sender, EventArgs e) {
       string name = ((ILookupParameter<ThreeOptMove>)sender).ActualName;
       foreach (IThreeOptPermutationMoveOperator op in Operators.OfType<IThreeOptPermutationMoveOperator>()) {
-        if (!(op is IMoveGenerator)) op.ThreeOptMoveParameter.ActualName = name;
+        op.ThreeOptMoveParameter.ActualName = name;
       }
     }
     #endregion
@@ -223,6 +223,26 @@ namespace HeuristicLab.Problems.TSP {
       SolutionCreator.PermutationParameter.ActualNameChanged += new EventHandler(SolutionCreator_PermutationParameter_ActualNameChanged);
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
     }
+    private void InitializeOperators() {
+      operators = new List<IPermutationOperator>();
+      if (ApplicationManager.Manager != null) {
+        operators.AddRange(ApplicationManager.Manager.GetInstances<IPermutationOperator>());
+        ParameterizeOperators();
+      }
+      InitializeMoveGenerators();
+    }
+    private void InitializeMoveGenerators() {
+      foreach (ITwoOptPermutationMoveOperator op in Operators.OfType<ITwoOptPermutationMoveOperator>()) {
+        if (op is IMoveGenerator) {
+          op.TwoOptMoveParameter.ActualNameChanged += new EventHandler(MoveGenerator_TwoOptMoveParameter_ActualNameChanged);
+        }
+      }
+      foreach (IThreeOptPermutationMoveOperator op in Operators.OfType<IThreeOptPermutationMoveOperator>()) {
+        if (op is IMoveGenerator) {
+          op.ThreeOptMoveParameter.ActualNameChanged += new EventHandler(MoveGenerator_ThreeOptMoveParameter_ActualNameChanged);
+        }
+      }
+    }
     private void ParameterizeSolutionCreator() {
       SolutionCreator.LengthParameter.Value = new IntValue(Coordinates.Rows);
     }
@@ -235,14 +255,6 @@ namespace HeuristicLab.Problems.TSP {
         evaluator.DistanceMatrixParameter.ActualName = DistanceMatrixParameter.Name;
         evaluator.UseDistanceMatrixParameter.ActualName = UseDistanceMatrixParameter.Name;
       }
-    }
-    private void InitializeOperators() {
-      operators = new List<IPermutationOperator>();
-      if (ApplicationManager.Manager != null) {
-        operators.AddRange(ApplicationManager.Manager.GetInstances<IPermutationOperator>());
-        ParameterizeOperators();
-      }
-      InitializeMoveGenerators();
     }
     private void ParameterizeOperators() {
       foreach (IPermutationCrossover op in Operators.OfType<IPermutationCrossover>()) {
@@ -259,18 +271,6 @@ namespace HeuristicLab.Problems.TSP {
         op.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
         op.DistanceMatrixParameter.ActualName = DistanceMatrixParameter.Name;
         op.UseDistanceMatrixParameter.ActualName = UseDistanceMatrixParameter.Name;
-      }
-    }
-    private void InitializeMoveGenerators() {
-      foreach (ITwoOptPermutationMoveOperator op in Operators.OfType<ITwoOptPermutationMoveOperator>()) {
-        if (op is IMoveGenerator) {
-          op.TwoOptMoveParameter.ActualNameChanged += new EventHandler(MoveGenerator_TwoOptMoveParameter_ActualNameChanged);
-        }
-      }
-      foreach (IThreeOptPermutationMoveOperator op in Operators.OfType<IThreeOptPermutationMoveOperator>()) {
-        if (op is IMoveGenerator) {
-          op.ThreeOptMoveParameter.ActualNameChanged += new EventHandler(MoveGenerator_ThreeOptMoveParameter_ActualNameChanged);
-        }
       }
     }
 
