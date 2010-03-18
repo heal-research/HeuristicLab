@@ -54,6 +54,9 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     public ValueLookupParameter<DoubleValue> EndTemperatureParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["EndTemperature"]; }
     }
+    public ValueLookupParameter<IntValue> InnerIterationsParameter {
+      get { return (ValueLookupParameter<IntValue>)Parameters["InnerIterations"]; }
+    }
     public ValueLookupParameter<IntValue> MaximumIterationsParameter {
       get { return (ValueLookupParameter<IntValue>)Parameters["MaximumIterations"]; }
     }
@@ -96,6 +99,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The value which represents the quality of a move."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("StartTemperature", "The initial temperature."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("EndTemperature", "The end temperature."));
+      Parameters.Add(new ValueLookupParameter<IntValue>("InnerIterations", "The amount of inner iterations (number of moves before temperature is adjusted again)."));
       Parameters.Add(new ValueLookupParameter<IntValue>("MaximumIterations", "The maximum number of iterations which should be processed."));
       Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The variable collection where results should be stored."));
 
@@ -115,14 +119,14 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       BestQualityMemorizer bestQualityMemorizer = new BestQualityMemorizer();
       Placeholder annealingOperator = new Placeholder();
       UniformSequentialSubScopesProcessor mainProcessor = new UniformSequentialSubScopesProcessor();
+      DataTableValuesCollector valuesCollector = new DataTableValuesCollector();
       Placeholder moveGenerator = new Placeholder();
-      SequentialSubScopesProcessor moveEvaluationProcessor = new SequentialSubScopesProcessor();
+      UniformSequentialSubScopesProcessor moveEvaluationProcessor = new UniformSequentialSubScopesProcessor();
       Placeholder moveEvaluator = new Placeholder();
       ProbabilisticQualityComparator qualityComparator = new ProbabilisticQualityComparator();
       ConditionalBranch improvesQualityBranch = new ConditionalBranch();
       Placeholder moveMaker = new Placeholder();
       SubScopesRemover subScopesRemover = new SubScopesRemover();
-      DataTableValuesCollector valuesCollector = new DataTableValuesCollector();
       IntCounter iterationsCounter = new IntCounter();
       Comparator iterationsComparator = new Comparator();
       ConditionalBranch iterationsTermination = new ConditionalBranch();
@@ -141,6 +145,10 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       annealingOperator.Name = "Annealing operator (placeholder)";
       annealingOperator.OperatorParameter.ActualName = "AnnealingOperator";
 
+      valuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Quality"));
+      valuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("BestQuality"));
+      valuesCollector.DataTableParameter.ActualName = "Qualities";
+
       moveGenerator.Name = "Move generator (placeholder)";
       moveGenerator.OperatorParameter.ActualName = "MoveGenerator";
 
@@ -158,10 +166,6 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       moveMaker.OperatorParameter.ActualName = "MoveMaker";
 
       subScopesRemover.RemoveAllSubScopes = true;
-
-      valuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Quality"));
-      valuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("BestQuality"));
-      valuesCollector.DataTableParameter.ActualName = "Qualities";
 
       iterationsCounter.Name = "Increment Iterations";
       iterationsCounter.Increment = new IntValue(1);
@@ -187,15 +191,15 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       sssp.Successor = bestQualityMemorizer;
       bestQualityMemorizer.Successor = annealingOperator;
       annealingOperator.Successor = mainProcessor;
-      mainProcessor.Operator = moveGenerator;
-      mainProcessor.Successor = valuesCollector;
+      mainProcessor.Operator = valuesCollector;
+      mainProcessor.Successor = iterationsCounter;
+      valuesCollector.Successor = moveGenerator;
       moveGenerator.Successor = moveEvaluationProcessor;
-      moveEvaluationProcessor.Operators.Add(moveEvaluator);
+      moveEvaluationProcessor.Operator = moveEvaluator;
       moveEvaluationProcessor.Successor = subScopesRemover;
       moveEvaluator.Successor = qualityComparator;
       qualityComparator.Successor = improvesQualityBranch;
       improvesQualityBranch.TrueBranch = moveMaker;
-      valuesCollector.Successor = iterationsCounter;
       iterationsCounter.Successor = iterationsComparator;
       iterationsComparator.Successor = iterationsTermination;
       iterationsTermination.TrueBranch = finished;

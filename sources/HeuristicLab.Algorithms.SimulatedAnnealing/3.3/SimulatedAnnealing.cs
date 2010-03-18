@@ -52,8 +52,8 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     private ValueParameter<BoolValue> SetSeedRandomlyParameter {
       get { return (ValueParameter<BoolValue>)Parameters["SetSeedRandomly"]; }
     }
-    private ConstrainedValueParameter<ISingleMoveGenerator> MoveGeneratorParameter {
-      get { return (ConstrainedValueParameter<ISingleMoveGenerator>)Parameters["MoveGenerator"]; }
+    private ConstrainedValueParameter<IMultiMoveGenerator> MoveGeneratorParameter {
+      get { return (ConstrainedValueParameter<IMultiMoveGenerator>)Parameters["MoveGenerator"]; }
     }
     private ConstrainedValueParameter<IMoveMaker> MoveMakerParameter {
       get { return (ConstrainedValueParameter<IMoveMaker>)Parameters["MoveMaker"]; }
@@ -66,6 +66,9 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     }
     private ValueParameter<IntValue> MaximumIterationsParameter {
       get { return (ValueParameter<IntValue>)Parameters["MaximumIterations"]; }
+    }
+    private ValueParameter<IntValue> InnerIterationsParameter {
+      get { return (ValueParameter<IntValue>)Parameters["InnerIterations"]; }
     }
     private ValueParameter<DoubleValue> StartTemperatureParameter {
       get { return (ValueParameter<DoubleValue>)Parameters["StartTemperature"]; }
@@ -84,7 +87,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       get { return SetSeedRandomlyParameter.Value; }
       set { SetSeedRandomlyParameter.Value = value; }
     }
-    public ISingleMoveGenerator MoveGenerator {
+    public IMultiMoveGenerator MoveGenerator {
       get { return MoveGeneratorParameter.Value; }
       set { MoveGeneratorParameter.Value = value; }
     }
@@ -99,6 +102,18 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     public IntValue MaximumIterations {
       get { return MaximumIterationsParameter.Value; }
       set { MaximumIterationsParameter.Value = value; }
+    }
+    public IntValue InnerIterations {
+      get { return InnerIterationsParameter.Value; }
+      set { InnerIterationsParameter.Value = value; }
+    }
+    public DoubleValue StartTemperature {
+      get { return StartTemperatureParameter.Value; }
+      set { StartTemperatureParameter.Value = value; }
+    }
+    public DoubleValue EndTemperature {
+      get { return EndTemperatureParameter.Value; }
+      set { EndTemperatureParameter.Value = value; }
     }
     private RandomCreator RandomCreator {
       get { return (RandomCreator)OperatorGraph.InitialOperator; }
@@ -120,11 +135,12 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       : base() {
       Parameters.Add(new ValueParameter<IntValue>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
       Parameters.Add(new ValueParameter<BoolValue>("SetSeedRandomly", "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
-      Parameters.Add(new ConstrainedValueParameter<ISingleMoveGenerator>("MoveGenerator", "The operator used to generate moves to the neighborhood of the current solution."));
+      Parameters.Add(new ConstrainedValueParameter<IMultiMoveGenerator>("MoveGenerator", "The operator used to generate moves to the neighborhood of the current solution."));
       Parameters.Add(new ConstrainedValueParameter<ISingleObjectiveMoveEvaluator>("MoveEvaluator", "The operator used to evaluate a move."));
       Parameters.Add(new ConstrainedValueParameter<IMoveMaker>("MoveMaker", "The operator used to perform a move."));
       Parameters.Add(new ConstrainedValueParameter<IDiscreteDoubleValueModifier>("AnnealingOperator", "The operator used to modify the temperature."));
-      Parameters.Add(new ValueParameter<IntValue>("MaximumIterations", "The maximum number of generations which should be processed.", new IntValue(1000)));
+      Parameters.Add(new ValueParameter<IntValue>("MaximumIterations", "The maximum number of generations which should be processed.", new IntValue(100)));
+      Parameters.Add(new ValueParameter<IntValue>("InnerIterations", "The amount of inner iterations (number of moves before temperature is adjusted again).", new IntValue(10)));
       Parameters.Add(new ValueParameter<DoubleValue>("StartTemperature", "The initial temperature.", new DoubleValue(100)));
       Parameters.Add(new ValueParameter<DoubleValue>("EndTemperature", "The final temperature which should be reached when iterations reaches maximum iterations.", new DoubleValue(1e-6)));
 
@@ -175,8 +191,9 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       }
       ParameterizeSolutionsCreator();
       ParameterizeMainLoop();
-      ParameterizeMoveEvaluator();
-      ParameterizeMoveMaker();
+      ParameterizeMoveEvaluators();
+      ParameterizeMoveMakers();
+      ParameterizeMoveGenerators();
       UpdateMoveGenerator();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.OnProblemChanged();
@@ -190,8 +207,8 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       ParameterizeStochasticOperator(Problem.Evaluator);
       ParameterizeSolutionsCreator();
       ParameterizeMainLoop();
-      ParameterizeMoveEvaluator();
-      ParameterizeMoveMaker();
+      ParameterizeMoveEvaluators();
+      ParameterizeMoveMakers();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.Problem_EvaluatorChanged(sender, e);
     }
@@ -203,32 +220,33 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
         op.MoveQualityParameter.ActualNameChanged -= new EventHandler(MoveEvaluator_MoveQualityParameter_ActualNameChanged);
         op.MoveQualityParameter.ActualNameChanged += new EventHandler(MoveEvaluator_MoveQualityParameter_ActualNameChanged);
       }
-      ISingleMoveGenerator oldMoveGenerator = MoveGenerator;
+      IMultiMoveGenerator oldMoveGenerator = MoveGenerator;
       UpdateMoveGenerator();
       if (oldMoveGenerator == MoveGenerator) // in this case MoveGeneratorParameter_ValueChanged did not fire
         UpdateMoveParameters();
       ParameterizeMainLoop();
-      ParameterizeMoveEvaluator();
-      ParameterizeMoveMaker();
+      ParameterizeMoveEvaluators();
+      ParameterizeMoveMakers();
+      ParameterizeMoveGenerators();
       base.Problem_OperatorsChanged(sender, e);
     }
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeMainLoop();
-      ParameterizeMoveEvaluator();
-      ParameterizeMoveMaker();
+      ParameterizeMoveEvaluators();
+      ParameterizeMoveMakers();
     }
     private void MoveGeneratorParameter_ValueChanged(object sender, EventArgs e) {
       UpdateMoveParameters();
     }
     private void MoveEvaluatorParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeMainLoop();
-      ParameterizeMoveEvaluator();
-      ParameterizeMoveMaker();
+      ParameterizeMoveEvaluators();
+      ParameterizeMoveMakers();
     }
     private void MoveEvaluator_MoveQualityParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeMainLoop();
-      ParameterizeMoveEvaluator();
-      ParameterizeMoveMaker();
+      ParameterizeMoveEvaluators();
+      ParameterizeMoveMakers();
     }
     #endregion
 
@@ -256,14 +274,14 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
         AnnealingOperatorParameter.ValidValues.Add(op);
     }
     private void UpdateMoveGenerator() {
-      ISingleMoveGenerator oldMoveGenerator = MoveGenerator;
+      IMultiMoveGenerator oldMoveGenerator = MoveGenerator;
       MoveGeneratorParameter.ValidValues.Clear();
       if (Problem != null) {
-        foreach (ISingleMoveGenerator generator in Problem.Operators.OfType<ISingleMoveGenerator>().Where(x => !(x is IMultiMoveGenerator)).OrderBy(x => x.Name))
+        foreach (IMultiMoveGenerator generator in Problem.Operators.OfType<IMultiMoveGenerator>().OrderBy(x => x.Name))
           MoveGeneratorParameter.ValidValues.Add(generator);
       }
       if (oldMoveGenerator != null) {
-        ISingleMoveGenerator newMoveGenerator = MoveGeneratorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMoveGenerator.GetType());
+        IMultiMoveGenerator newMoveGenerator = MoveGeneratorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMoveGenerator.GetType());
         if (newMoveGenerator != null) MoveGenerator = newMoveGenerator;
       }
       if (MoveGenerator == null) {
@@ -313,12 +331,12 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       if (op is IStochasticOperator)
         ((IStochasticOperator)op).RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
     }
-    private void ParameterizeMoveEvaluator() {
+    private void ParameterizeMoveEvaluators() {
       foreach (ISingleObjectiveMoveEvaluator op in Problem.Operators.OfType<ISingleObjectiveMoveEvaluator>()) {
         op.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
       }
     }
-    private void ParameterizeMoveMaker() {
+    private void ParameterizeMoveMakers() {
       foreach (IMoveMaker op in Problem.Operators.OfType<IMoveMaker>()) {
         op.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
         if (MoveEvaluator != null)
@@ -334,6 +352,11 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
         op.StartValueParameter.ActualName = StartTemperatureParameter.Name;
         op.EndValueParameter.ActualName = EndTemperatureParameter.Name;
         ParameterizeStochasticOperator(op);
+      }
+    }
+    private void ParameterizeMoveGenerators() {
+      foreach (IMultiMoveGenerator op in Problem.Operators.OfType<IMultiMoveGenerator>()) {
+        op.SampleSizeParameter.ActualName = InnerIterationsParameter.Name;
       }
     }
     #endregion

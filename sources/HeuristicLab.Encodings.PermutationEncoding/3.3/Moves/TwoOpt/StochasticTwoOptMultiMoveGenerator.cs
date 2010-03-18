@@ -46,9 +46,6 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
 
     public static TwoOptMove[] Apply(Permutation permutation, IRandom random, int sampleSize) {
       int length = permutation.Length;
-      int totalMoves = (length) * (length - 1) / 2 - 3;
-      // FIXME: Should this be an exception or a warning for the logger?
-      if (sampleSize >= totalMoves) throw new InvalidOperationException("StochasticTwoOptMoveGenerator: Sample size (" + sampleSize + ") is larger than the set of all possible moves (" + totalMoves + "), use the ExhaustiveTwoOptMoveGenerator instead.");
       TwoOptMove[] moves = new TwoOptMove[sampleSize];
       for (int i = 0; i < sampleSize; i++) {
         moves[i] = Apply(permutation, random);
