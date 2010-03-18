@@ -31,10 +31,10 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Algorithms.LS {
-  [Item("LS", "A local search algorithm.")]
+namespace HeuristicLab.Algorithms.LocalSearch {
+  [Item("LocalSearch", "A local search algorithm.")]
   [Creatable("Algorithms")]
-  public sealed class LS : EngineAlgorithm {
+  public sealed class LocalSearch : EngineAlgorithm {
     #region Problem Properties
     public override Type ProblemType {
       get { return typeof(ISingleObjectiveProblem); }
@@ -97,12 +97,12 @@ namespace HeuristicLab.Algorithms.LS {
     private SolutionsCreator SolutionsCreator {
       get { return (SolutionsCreator)RandomCreator.Successor; }
     }
-    private LSMainLoop LSMainLoop {
-      get { return (LSMainLoop)SolutionsCreator.Successor; }
+    private LocalSearchMainLoop MainLoop {
+      get { return (LocalSearchMainLoop)SolutionsCreator.Successor; }
     }
     #endregion
 
-    public LS()
+    public LocalSearch()
       : base() {
       Parameters.Add(new ValueParameter<IntValue>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
       Parameters.Add(new ValueParameter<BoolValue>("SetSeedRandomly", "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
@@ -113,7 +113,7 @@ namespace HeuristicLab.Algorithms.LS {
 
       RandomCreator randomCreator = new RandomCreator();
       SolutionsCreator solutionsCreator = new SolutionsCreator();
-      LSMainLoop lsMainLoop = new LSMainLoop();
+      LocalSearchMainLoop lsMainLoop = new LocalSearchMainLoop();
       OperatorGraph.InitialOperator = randomCreator;
 
       randomCreator.RandomParameter.ActualName = "Random";
@@ -137,10 +137,10 @@ namespace HeuristicLab.Algorithms.LS {
     }
 
     [StorableConstructor]
-    private LS(bool deserializing) : base() { }
+    private LocalSearch(bool deserializing) : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      LS clone = (LS)base.Clone(cloner);
+      LocalSearch clone = (LocalSearch)base.Clone(cloner);
       clone.Initialize();
       return clone;
     }
@@ -271,10 +271,10 @@ namespace HeuristicLab.Algorithms.LS {
       SolutionsCreator.SolutionCreatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
     }
     private void ParameterizeLSMainLoop() {
-      LSMainLoop.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
-      LSMainLoop.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
+      MainLoop.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
+      MainLoop.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
       if (MoveEvaluator != null)
-        LSMainLoop.MoveQualityParameter.ActualName = MoveEvaluator.MoveQualityParameter.ActualName;
+        MainLoop.MoveQualityParameter.ActualName = MoveEvaluator.MoveQualityParameter.ActualName;
     }
     private void ParameterizeStochasticOperator(IOperator op) {
       if (op is IStochasticOperator)

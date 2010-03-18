@@ -21,12 +21,12 @@
 
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Algorithms.LS {
+namespace HeuristicLab.Algorithms.LocalSearch {
   /// <summary>
-  /// Plugin class for HeuristicLab.Algorithms.LS plugin.
+  /// Plugin class for HeuristicLab.Algorithms.LocalSearch plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Algorithms.LS", "3.3.0.$WCREV$")]
-  [PluginFile("HeuristicLab.Algorithms.LS-3.3.dll", PluginFileType.Assembly)]
+  [Plugin("HeuristicLab.Algorithms.LocalSearch", "3.3.0.$WCREV$")]
+  [PluginFile("HeuristicLab.Algorithms.LocalSearch-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Analysis", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
@@ -38,6 +38,6 @@ namespace HeuristicLab.Algorithms.LS {
   [PluginDependency("HeuristicLab.Persistence", "3.3")]
   [PluginDependency("HeuristicLab.Random", "3.3")]
   [PluginDependency("HeuristicLab.Selection", "3.3")]
-  public class HeuristicLabAlgorithmsLSPlugin : PluginBase {
+  public class HeuristicLabAlgorithmsLocalSearchPlugin : PluginBase {
   }
 }

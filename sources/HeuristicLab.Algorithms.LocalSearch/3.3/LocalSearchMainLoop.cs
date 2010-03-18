@@ -28,13 +28,13 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Selection;
 
-namespace HeuristicLab.Algorithms.LS {
+namespace HeuristicLab.Algorithms.LocalSearch {
   /// <summary>
-  /// An operator which represents a tabu search.
+  /// An operator which represents a local search.
   /// </summary>
-  [Item("LSMainLoop", "An operator which represents the main loop of a best improvement local search.")]
+  [Item("LocalSearchMainLoop", "An operator which represents the main loop of a best improvement local search (if only a single move is generated in each iteration it is a first improvement local search).")]
   [StorableClass]
-  public class LSMainLoop : AlgorithmOperator {
+  public class LocalSearchMainLoop : AlgorithmOperator {
     #region Parameter properties
     public ValueLookupParameter<IRandom> RandomParameter {
       get { return (ValueLookupParameter<IRandom>)Parameters["Random"]; }
@@ -72,7 +72,7 @@ namespace HeuristicLab.Algorithms.LS {
     }
     #endregion
 
-    public LSMainLoop()
+    public LocalSearchMainLoop()
       : base() {
       #region Create parameters
       Parameters.Add(new ValueLookupParameter<IRandom>("Random", "A pseudo random number generator."));
