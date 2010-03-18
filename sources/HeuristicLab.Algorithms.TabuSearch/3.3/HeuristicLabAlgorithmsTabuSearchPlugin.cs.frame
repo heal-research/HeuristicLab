@@ -23,10 +23,10 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Algorithms.TabuSearch {
   /// <summary>
-  /// Plugin class for HeuristicLab.Algorithms.TS plugin.
+  /// Plugin class for HeuristicLab.Algorithms.TabuSearch plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Algorithms.TS", "3.3.0.$WCREV$")]
-  [PluginFile("HeuristicLab.Algorithms.TS-3.3.dll", PluginFileType.Assembly)]
+  [Plugin("HeuristicLab.Algorithms.TabuSearch", "3.3.0.$WCREV$")]
+  [PluginFile("HeuristicLab.Algorithms.TabuSearch-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Analysis", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
@@ -37,6 +37,6 @@ namespace HeuristicLab.Algorithms.TabuSearch {
   [PluginDependency("HeuristicLab.Persistence", "3.3")]
   [PluginDependency("HeuristicLab.Random", "3.3")]
   [PluginDependency("HeuristicLab.Selection", "3.3")]
-  public class HeuristicLabAlgorithmsTSPlugin : PluginBase {
+  public class HeuristicLabAlgorithmsTabuSearchPlugin : PluginBase {
   }
 }
