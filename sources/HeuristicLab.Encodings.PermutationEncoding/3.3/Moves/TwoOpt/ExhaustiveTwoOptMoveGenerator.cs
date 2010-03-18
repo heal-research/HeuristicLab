@@ -22,11 +22,12 @@
 using System;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("ExhaustiveTwoOptMoveGenerator", "Generates all possible 2-opt moves from a given permutation.")]
   [StorableClass]
-  public class ExhaustiveTwoOptMoveGenerator : TwoOptMoveGenerator {
+  public class ExhaustiveTwoOptMoveGenerator : TwoOptMoveGenerator, IExhaustiveMoveGenerator {
     public static TwoOptMove[] Apply(Permutation permutation) {
       int length = permutation.Length;
       int totalMoves = (length) * (length - 1) / 2 - 3;

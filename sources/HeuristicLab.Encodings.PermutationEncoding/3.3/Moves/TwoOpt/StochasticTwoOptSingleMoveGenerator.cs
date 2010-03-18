@@ -27,45 +27,30 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
-  [Item("StochasticTwoOptMoveGenerator", "Randomly samples n from all possible 2-opt moves from a given permutation.")]
+  [Item("StochasticTwoOptSingleMoveGenerator", "Randomly samples a single from all possible 2-opt moves from a given permutation.")]
   [StorableClass]
-  public class StochasticTwoOptMoveGenerator : TwoOptMoveGenerator, IStochasticOperator {
+  public class StochasticTwoOptSingleMoveGenerator : TwoOptMoveGenerator, IStochasticOperator, ISingleMoveGenerator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
-    private ValueLookupParameter<IntValue> SampleSizeParameter {
-      get { return (ValueLookupParameter<IntValue>)Parameters["SampleSize"]; }
-    }
 
-    public IntValue SampleSize {
-      get { return SampleSizeParameter.Value; }
-      set { SampleSizeParameter.Value = value; }
-    }
-
-    public StochasticTwoOptMoveGenerator()
+    public StochasticTwoOptSingleMoveGenerator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator."));
-      Parameters.Add(new ValueLookupParameter<IntValue>("SampleSize", "The number of moves to generate."));
     }
 
-    public static TwoOptMove[] Apply(Permutation permutation, IRandom random, int sampleSize) {
+    public static TwoOptMove Apply(Permutation permutation, IRandom random) {
       int length = permutation.Length;
-      int totalMoves = (length) * (length - 1) / 2 - 3;
-      if (sampleSize >= totalMoves) throw new InvalidOperationException("StochasticTwoOptMoveGenerator: Sample size (" + sampleSize + ") is larger than the set of all possible moves (" + totalMoves + "), use the ExhaustiveTwoOptMoveGenerator instead.");
-      TwoOptMove[] moves = new TwoOptMove[sampleSize];
-      for (int i = 0; i < sampleSize; i++) {
-        int index1 = random.Next(length - 1), index2;
-        if (index1 >= 2)
-          index2 = random.Next(index1 + 1, length);
-        else index2 = random.Next(index1 + 1, length - (2 - index1));
-        moves[i] = new TwoOptMove(index1, index2);
-      }
-      return moves;
+      int index1 = random.Next(length - 1), index2;
+      if (index1 >= 2)
+        index2 = random.Next(index1 + 1, length);
+      else index2 = random.Next(index1 + 1, length - (2 - index1));
+      return new TwoOptMove(index1, index2);;
     }
 
     protected override TwoOptMove[] GenerateMoves(Permutation permutation) {
       IRandom random = RandomParameter.ActualValue;
-      return Apply(permutation, random, SampleSizeParameter.ActualValue.Value);
+      return new TwoOptMove[] { Apply(permutation, random) };
     }
   }
 }

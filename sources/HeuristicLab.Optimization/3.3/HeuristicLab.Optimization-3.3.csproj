@@ -87,7 +87,10 @@
     <Compile Include="Algorithm.cs" />
     <Compile Include="Interfaces\ISolutionVisualizer.cs" />
     <Compile Include="Interfaces\IDiscreteDoubleValueModifier.cs" />
+    <Compile Include="Interfaces\IExhaustiveMoveGenerator.cs" />
     <Compile Include="Interfaces\IMoveOperator.cs" />
+    <Compile Include="Interfaces\IMultiMoveGenerator.cs" />
+    <Compile Include="Interfaces\ISingleMoveGenerator.cs" />
     <Compile Include="Interfaces\ISingleObjectiveMoveEvaluator.cs" />
     <Compile Include="Interfaces\IMoveGenerator.cs" />
     <Compile Include="Interfaces\IMoveMaker.cs" />

@@ -110,13 +110,14 @@
     <Compile Include="Moves\ThreeOpt\StochasticThreeOptMoveGenerator.cs" />
     <Compile Include="Moves\ThreeOpt\ThreeOptMove.cs" />
     <Compile Include="Moves\ThreeOpt\ThreeOptMoveGenerator.cs" />
+    <Compile Include="Moves\TwoOpt\StochasticTwoOptSingleMoveGenerator.cs" />
     <Compile Include="Moves\TwoOpt\ExhaustiveTwoOptMoveGenerator.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Moves\TwoIndexMove.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Moves\TwoOpt\StochasticTwoOptMoveGenerator.cs" />
+    <Compile Include="Moves\TwoOpt\StochasticTwoOptMultiMoveGenerator.cs" />
     <Compile Include="Moves\TwoOpt\TwoOptMove.cs">
       <SubType>Code</SubType>
     </Compile>

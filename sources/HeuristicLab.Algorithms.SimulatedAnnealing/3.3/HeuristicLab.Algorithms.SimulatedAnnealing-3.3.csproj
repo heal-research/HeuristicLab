@@ -81,6 +81,7 @@
   <ItemGroup>
     <Compile Include="HeuristicLabAlgorithmsSimulatedAnnealingPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SimulatedAnnealing.cs" />
     <Compile Include="SimulatedAnnealingMainLoop.cs" />
   </ItemGroup>
   <ItemGroup>

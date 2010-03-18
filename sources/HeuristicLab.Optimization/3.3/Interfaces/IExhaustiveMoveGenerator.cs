@@ -19,12 +19,7 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-
 namespace HeuristicLab.Optimization {
-  /// <summary>
-  /// An interface which represents an operator for generating moves.
-  /// </summary>
-  public interface IMoveGenerator : IOperator {
+  public interface IExhaustiveMoveGenerator : IMoveGenerator {
   }
 }
