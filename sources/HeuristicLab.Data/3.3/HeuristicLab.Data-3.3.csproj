@@ -103,6 +103,7 @@
     <Compile Include="BoolValue.cs" />
     <Compile Include="Comparison.cs" />
     <Compile Include="ComparisonType.cs" />
+    <Compile Include="PercentValue.cs" />
     <Compile Include="DateTimeValue.cs" />
     <Compile Include="DoubleArray.cs" />
     <Compile Include="DoubleMatrix.cs" />

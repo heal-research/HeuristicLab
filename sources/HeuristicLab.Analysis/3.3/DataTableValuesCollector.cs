@@ -57,7 +57,7 @@ namespace HeuristicLab.Analysis {
         DataRow row;
         table.Rows.TryGetValue(param.Name, out row);
         if (row == null) {
-          row = new DataRow(param.Name);
+          row = new DataRow(param.Name, param.Description);
           row.Values.Add(data.Value);
           table.Rows.Add(row);
         } else {

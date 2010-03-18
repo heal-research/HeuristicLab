@@ -55,8 +55,8 @@ namespace HeuristicLab.Algorithms.SGA {
     public ValueLookupParameter<IOperator> CrossoverParameter {
       get { return (ValueLookupParameter<IOperator>)Parameters["Crossover"]; }
     }
-    public ValueLookupParameter<DoubleValue> MutationProbabilityParameter {
-      get { return (ValueLookupParameter<DoubleValue>)Parameters["MutationProbability"]; }
+    public ValueLookupParameter<PercentValue> MutationProbabilityParameter {
+      get { return (ValueLookupParameter<PercentValue>)Parameters["MutationProbability"]; }
     }
     public ValueLookupParameter<IOperator> MutatorParameter {
       get { return (ValueLookupParameter<IOperator>)Parameters["Mutator"]; }
@@ -97,7 +97,7 @@ namespace HeuristicLab.Algorithms.SGA {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("BestKnownQuality", "The best known quality value found so far."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Selector", "The operator used to select solutions for reproduction."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Crossover", "The operator used to cross solutions."));
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("MutationProbability", "The probability that the mutation operator is applied on a solution."));
+      Parameters.Add(new ValueLookupParameter<PercentValue>("MutationProbability", "The probability that the mutation operator is applied on a solution."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Mutator", "The operator used to mutate solutions."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Evaluator", "The operator used to evaluate solutions."));
       Parameters.Add(new ValueLookupParameter<IntValue>("Elites", "The numer of elite solutions which are kept in each generation."));
@@ -109,8 +109,10 @@ namespace HeuristicLab.Algorithms.SGA {
       #region Create operators
       VariableCreator variableCreator = new VariableCreator();
       BestQualityMemorizer bestQualityMemorizer1 = new BestQualityMemorizer();
+      BestQualityMemorizer bestQualityMemorizer2 = new BestQualityMemorizer();
       BestAverageWorstQualityCalculator bestAverageWorstQualityCalculator1 = new BestAverageWorstQualityCalculator();
       DataTableValuesCollector dataTableValuesCollector1 = new DataTableValuesCollector();
+      QualityDifferenceCalculator qualityDifferenceCalculator1 = new QualityDifferenceCalculator();
       ResultsCollector resultsCollector = new ResultsCollector();
       SubScopesSorter subScopesSorter1 = new SubScopesSorter();
       Placeholder selector = new Placeholder();
@@ -129,36 +131,49 @@ namespace HeuristicLab.Algorithms.SGA {
       MergingReducer mergingReducer = new MergingReducer();
       IntCounter intCounter = new IntCounter();
       Comparator comparator = new Comparator();
-      BestQualityMemorizer bestQualityMemorizer2 = new BestQualityMemorizer();
+      BestQualityMemorizer bestQualityMemorizer3 = new BestQualityMemorizer();
+      BestQualityMemorizer bestQualityMemorizer4 = new BestQualityMemorizer();
       BestAverageWorstQualityCalculator bestAverageWorstQualityCalculator2 = new BestAverageWorstQualityCalculator();
       DataTableValuesCollector dataTableValuesCollector2 = new DataTableValuesCollector();
+      QualityDifferenceCalculator qualityDifferenceCalculator2 = new QualityDifferenceCalculator();
       ConditionalBranch conditionalBranch = new ConditionalBranch();
 
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Generations", new IntValue(0)));
 
-      bestQualityMemorizer1.BestQualityParameter.ActualName = "Best Quality";
+      bestQualityMemorizer1.BestQualityParameter.ActualName = "BestQuality";
       bestQualityMemorizer1.MaximizationParameter.ActualName = "Maximization";
       bestQualityMemorizer1.QualityParameter.ActualName = "Quality";
 
-      bestAverageWorstQualityCalculator1.AverageQualityParameter.ActualName = "Current Average Quality";
-      bestAverageWorstQualityCalculator1.BestQualityParameter.ActualName = "Current Best Quality";
+      bestQualityMemorizer2.BestQualityParameter.ActualName = "BestKnownQuality";
+      bestQualityMemorizer2.MaximizationParameter.ActualName = "Maximization";
+      bestQualityMemorizer2.QualityParameter.ActualName = "Quality";
+
+      bestAverageWorstQualityCalculator1.AverageQualityParameter.ActualName = "CurrentAverageQuality";
+      bestAverageWorstQualityCalculator1.BestQualityParameter.ActualName = "CurrentBestQuality";
       bestAverageWorstQualityCalculator1.MaximizationParameter.ActualName = "Maximization";
       bestAverageWorstQualityCalculator1.QualityParameter.ActualName = "Quality";
-      bestAverageWorstQualityCalculator1.WorstQualityParameter.ActualName = "Current Worst Quality";
+      bestAverageWorstQualityCalculator1.WorstQualityParameter.ActualName = "CurrentWorstQuality";
 
-      dataTableValuesCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Best Quality"));
-      dataTableValuesCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Average Quality"));
-      dataTableValuesCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Worst Quality"));
-      dataTableValuesCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality"));
+      dataTableValuesCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Best Quality", null, "CurrentBestQuality"));
+      dataTableValuesCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Average Quality", null, "CurrentAverageQuality"));
+      dataTableValuesCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Worst Quality", null, "CurrentWorstQuality"));
+      dataTableValuesCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
       dataTableValuesCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, "BestKnownQuality"));
       dataTableValuesCollector1.DataTableParameter.ActualName = "Qualities";
 
+      qualityDifferenceCalculator1.AbsoluteDifferenceParameter.ActualName = "AbsoluteDifferenceBestKnownToBest";
+      qualityDifferenceCalculator1.FirstQualityParameter.ActualName = "BestKnownQuality";
+      qualityDifferenceCalculator1.RelativeDifferenceParameter.ActualName = "RelativeDifferenceBestKnownToBest";
+      qualityDifferenceCalculator1.SecondQualityParameter.ActualName = "BestQuality";
+
       resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Generations"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Best Quality"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Average Quality"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Worst Quality"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Best Quality", null, "CurrentBestQuality"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Average Quality", null, "CurrentAverageQuality"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Worst Quality", null, "CurrentWorstQuality"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, "BestKnownQuality"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Absolute Difference of Best Known Quality to Best Quality", null, "AbsoluteDifferenceBestKnownToBest"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Relative Difference of Best Known Quality to Best Quality", null, "RelativeDifferenceBestKnownToBest"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DataTable>("Qualities"));
       resultsCollector.ResultsParameter.ActualName = "Results";
 
@@ -198,22 +213,31 @@ namespace HeuristicLab.Algorithms.SGA {
       comparator.ResultParameter.ActualName = "Terminate";
       comparator.RightSideParameter.ActualName = "MaximumGenerations";
 
-      bestQualityMemorizer2.BestQualityParameter.ActualName = "Best Quality";
-      bestQualityMemorizer2.MaximizationParameter.ActualName = "Maximization";
-      bestQualityMemorizer2.QualityParameter.ActualName = "Quality";
+      bestQualityMemorizer3.BestQualityParameter.ActualName = "BestQuality";
+      bestQualityMemorizer3.MaximizationParameter.ActualName = "Maximization";
+      bestQualityMemorizer3.QualityParameter.ActualName = "Quality";
 
-      bestAverageWorstQualityCalculator2.AverageQualityParameter.ActualName = "Current Average Quality";
-      bestAverageWorstQualityCalculator2.BestQualityParameter.ActualName = "Current Best Quality";
+      bestQualityMemorizer4.BestQualityParameter.ActualName = "BestKnownQuality";
+      bestQualityMemorizer4.MaximizationParameter.ActualName = "Maximization";
+      bestQualityMemorizer4.QualityParameter.ActualName = "Quality";
+
+      bestAverageWorstQualityCalculator2.AverageQualityParameter.ActualName = "CurrentAverageQuality";
+      bestAverageWorstQualityCalculator2.BestQualityParameter.ActualName = "CurrentBestQuality";
       bestAverageWorstQualityCalculator2.MaximizationParameter.ActualName = "Maximization";
       bestAverageWorstQualityCalculator2.QualityParameter.ActualName = "Quality";
-      bestAverageWorstQualityCalculator2.WorstQualityParameter.ActualName = "Current Worst Quality";
+      bestAverageWorstQualityCalculator2.WorstQualityParameter.ActualName = "CurrentWorstQuality";
 
-      dataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Best Quality"));
-      dataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Average Quality"));
-      dataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Worst Quality"));
-      dataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality"));
+      dataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Best Quality", null, "CurrentBestQuality"));
+      dataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Average Quality", null, "CurrentAverageQuality"));
+      dataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Worst Quality", null, "CurrentWorstQuality"));
+      dataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
       dataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, "BestKnownQuality"));
       dataTableValuesCollector2.DataTableParameter.ActualName = "Qualities";
+
+      qualityDifferenceCalculator2.AbsoluteDifferenceParameter.ActualName = "AbsoluteDifferenceBestKnownToBest";
+      qualityDifferenceCalculator2.FirstQualityParameter.ActualName = "BestKnownQuality";
+      qualityDifferenceCalculator2.RelativeDifferenceParameter.ActualName = "RelativeDifferenceBestKnownToBest";
+      qualityDifferenceCalculator2.SecondQualityParameter.ActualName = "BestQuality";
 
       conditionalBranch.ConditionParameter.ActualName = "Terminate";
       #endregion
@@ -221,9 +245,11 @@ namespace HeuristicLab.Algorithms.SGA {
       #region Create operator graph
       OperatorGraph.InitialOperator = variableCreator;
       variableCreator.Successor = bestQualityMemorizer1;
-      bestQualityMemorizer1.Successor = bestAverageWorstQualityCalculator1;
+      bestQualityMemorizer1.Successor = bestQualityMemorizer2;
+      bestQualityMemorizer2.Successor = bestAverageWorstQualityCalculator1;
       bestAverageWorstQualityCalculator1.Successor = dataTableValuesCollector1;
-      dataTableValuesCollector1.Successor = resultsCollector;
+      dataTableValuesCollector1.Successor = qualityDifferenceCalculator1;
+      qualityDifferenceCalculator1.Successor = resultsCollector;
       resultsCollector.Successor = subScopesSorter1;
       subScopesSorter1.Successor = selector;
       selector.Successor = sequentialSubScopesProcessor1;
@@ -248,10 +274,12 @@ namespace HeuristicLab.Algorithms.SGA {
       rightReducer.Successor = null;
       mergingReducer.Successor = intCounter;
       intCounter.Successor = comparator;
-      comparator.Successor = bestQualityMemorizer2;
-      bestQualityMemorizer2.Successor = bestAverageWorstQualityCalculator2;
+      comparator.Successor = bestQualityMemorizer3;
+      bestQualityMemorizer3.Successor = bestQualityMemorizer4;
+      bestQualityMemorizer4.Successor = bestAverageWorstQualityCalculator2;
       bestAverageWorstQualityCalculator2.Successor = dataTableValuesCollector2;
-      dataTableValuesCollector2.Successor = conditionalBranch;
+      dataTableValuesCollector2.Successor = qualityDifferenceCalculator2;
+      qualityDifferenceCalculator2.Successor = conditionalBranch;
       conditionalBranch.FalseBranch = subScopesSorter1;
       conditionalBranch.TrueBranch = null;
       conditionalBranch.Successor = null;

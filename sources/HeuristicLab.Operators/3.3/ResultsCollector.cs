@@ -48,7 +48,7 @@ namespace HeuristicLab.Operators {
         if (var != null)
           var.Value = (IItem)param.ActualValue;
         else
-          results.Add(new Variable(param.Name, param.ActualValue));
+          results.Add(new Variable(param.Name, param.Description, param.ActualValue));
       }
       return base.Apply();
     }

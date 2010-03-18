@@ -65,8 +65,8 @@ namespace HeuristicLab.Algorithms.SGA {
     private ConstrainedValueParameter<ICrossover> CrossoverParameter {
       get { return (ConstrainedValueParameter<ICrossover>)Parameters["Crossover"]; }
     }
-    private ValueParameter<DoubleValue> MutationProbabilityParameter {
-      get { return (ValueParameter<DoubleValue>)Parameters["MutationProbability"]; }
+    private ValueParameter<PercentValue> MutationProbabilityParameter {
+      get { return (ValueParameter<PercentValue>)Parameters["MutationProbability"]; }
     }
     private OptionalConstrainedValueParameter<IManipulator> MutatorParameter {
       get { return (OptionalConstrainedValueParameter<IManipulator>)Parameters["Mutator"]; }
@@ -100,7 +100,7 @@ namespace HeuristicLab.Algorithms.SGA {
       get { return CrossoverParameter.Value; }
       set { CrossoverParameter.Value = value; }
     }
-    public DoubleValue MutationProbability {
+    public PercentValue MutationProbability {
       get { return MutationProbabilityParameter.Value; }
       set { MutationProbabilityParameter.Value = value; }
     }
@@ -138,7 +138,7 @@ namespace HeuristicLab.Algorithms.SGA {
       Parameters.Add(new ValueParameter<IntValue>("PopulationSize", "The size of the population of solutions.", new IntValue(100)));
       Parameters.Add(new ConstrainedValueParameter<ISelector>("Selector", "The operator used to select solutions for reproduction."));
       Parameters.Add(new ConstrainedValueParameter<ICrossover>("Crossover", "The operator used to cross solutions."));
-      Parameters.Add(new ValueParameter<DoubleValue>("MutationProbability", "The probability that the mutation operator is applied on a solution.", new DoubleValue(0.05)));
+      Parameters.Add(new ValueParameter<PercentValue>("MutationProbability", "The probability that the mutation operator is applied on a solution.", new PercentValue(0.05)));
       Parameters.Add(new OptionalConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
       Parameters.Add(new ValueParameter<IntValue>("Elites", "The numer of elite solutions which are kept in each generation.", new IntValue(1)));
       Parameters.Add(new ValueParameter<IntValue>("MaximumGenerations", "The maximum number of generations which should be processed.", new IntValue(1000)));

@@ -50,7 +50,7 @@ namespace HeuristicLab.Operators {
         if (var != null)
           var.Value = (IItem)param.ActualValue.Clone();
         else
-          CurrentScope.Variables.Add(new Variable(param.Name, (IItem)param.ActualValue.Clone()));
+          CurrentScope.Variables.Add(new Variable(param.Name, param.Description, (IItem)param.ActualValue.Clone()));
       }
       return base.Apply();
     }
