@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,91 +20,66 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Permutation;
+using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.TSP {
   /// <summary>
-  /// Represent the tour of a TSP.
+  /// Represents a tour of a Traveling Salesman Problem which can be visualized in the GUI.
   /// </summary>
-  public class TSPTour : ItemBase, IVisualizationItem {
-
+  [Item("TSPTour", "Represents a tour of a Traveling Salesman Problem which can be visualized in the GUI.")]
+  [StorableClass]
+  public sealed class TSPTour : Item {
+    private DoubleMatrix coordinates;
     [Storable]
-    private DoubleMatrixData myCoordinates;
-    /// <summary>
-    /// Gets or sets the coordinates of the current instance.
-    /// </summary>
-    public DoubleMatrixData Coordinates {
-      get { return myCoordinates; }
-      set { myCoordinates = value; }
+    public DoubleMatrix Coordinates {
+      get { return coordinates; }
+      set {
+        if (value == null) throw new ArgumentNullException();
+        if (coordinates != value) {
+          coordinates = value;
+          OnCoordinatesChanged();
+        }
+      }
     }
-
+    private Permutation permutation;
     [Storable]
-    private Permutation.Permutation myTour;
-    /// <summary>
-    /// Gets or sets the current permutation/tour of the current instance.
-    /// </summary>
-    public Permutation.Permutation Tour {
-      get { return myTour; }
-      set { myTour = value; }
+    public Permutation Permutation {
+      get { return permutation; }
+      set {
+        if (value == null) throw new ArgumentNullException();
+        if (permutation != value) {
+          permutation = value;
+          OnPermutationChanged();
+        }
+      }
     }
 
-
-    /// <summary>
-    /// Initializes a new instance of <see cref="TSPTour"/>.
-    /// </summary>
-    public TSPTour() { }
-    /// <summary>
-    /// Initializes a new instance of <see cref="TSPTour"/> with the given <paramref name="coordinates"/>
-    /// and the given <paramref name="tour"/>.
-    /// </summary>
-    /// <param name="coordinates">The coordinates of the TSP.</param>
-    /// <param name="tour">The tour the current instance should represent.</param>
-    public TSPTour(DoubleMatrixData coordinates, Permutation.Permutation tour) {
-      myCoordinates = coordinates;
-      myTour = tour;
+    private TSPTour() : base() { }
+    public TSPTour(DoubleMatrix coordinates, Permutation permutation)
+      : base() {
+      if ((coordinates == null) || (permutation == null)) throw new ArgumentNullException();
+      this.coordinates = coordinates;
+      this.permutation = permutation;
     }
 
-    /// <summary>
-    /// Clones the current instance (deep clone).
-    /// </summary>
-    /// <remarks>Uses <see cref="cloner.Clone"/> method of class <see cref="Auxiliary"/> to clone
-    /// the coordinates.</remarks>
-    /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
-    /// <returns>The cloned object as <see cref="TSPTour"/>.</returns>
-    public override IItem Clone(ICloner cloner) {
-      TSPTour clone = (TSPTour)base.Clone(cloner);
-      clone.myCoordinates = (DoubleMatrixData)cloner.Clone(Coordinates);
-      clone.myTour = Tour;
+    public override IDeepCloneable Clone(Cloner cloner) {
+      TSPTour clone = new TSPTour((DoubleMatrix)cloner.Clone(coordinates), (Permutation)cloner.Clone(permutation));
+      cloner.RegisterClonedObject(this, clone);
       return clone;
     }
 
-    /// <summary>
-    /// Occurs when the coordinates of the current instance have been changed.
-    /// </summary>
     public event EventHandler CoordinatesChanged;
-    /// <summary>
-    /// Fires a new <c>CoordinatesChanged</c> event.
-    /// </summary>
-    protected virtual void OnCoordinatesChanged() {
+    private void OnCoordinatesChanged() {
       if (CoordinatesChanged != null)
-        CoordinatesChanged(this, new EventArgs());
+        CoordinatesChanged(this, EventArgs.Empty);
     }
-    /// <summary>
-    /// Occurs when the tour of the current instance has been changed.
-    /// </summary>
-    public event EventHandler TourChanged;
-    /// <summary>
-    /// Fires a new <c>TourChanged</c> event.
-    /// </summary>
-    protected virtual void OnTourChanged() {
-      if (TourChanged != null)
-        TourChanged(this, new EventArgs());
-    }    
+    public event EventHandler PermutationChanged;
+    private void OnPermutationChanged() {
+      if (PermutationChanged != null)
+        PermutationChanged(this, EventArgs.Empty);
+    }
   }
 }
