@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Optimization {
   public interface ITabuMoveEvaluator : IOperator {
+    ILookupParameter<BoolValue> MoveTabuParameter { get; }
   }
 }

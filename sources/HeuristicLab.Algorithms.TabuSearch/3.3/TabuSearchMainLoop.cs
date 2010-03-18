@@ -47,6 +47,9 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     public LookupParameter<DoubleValue> MoveQualityParameter {
       get { return (LookupParameter<DoubleValue>)Parameters["MoveQuality"]; }
     }
+    public LookupParameter<BoolValue> MoveTabuParameter {
+      get { return (LookupParameter<BoolValue>)Parameters["MoveTabu"]; }
+    }
     public ValueLookupParameter<IntValue> MaximumIterationsParameter {
       get { return (ValueLookupParameter<IntValue>)Parameters["MaximumIterations"]; }
     }
@@ -87,6 +90,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, otherwise false."));
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The value which represents the quality of a solution."));
       Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The value which represents the quality of a move."));
+      Parameters.Add(new LookupParameter<BoolValue>("MoveTabu", "The value that indicates if a move is tabu or not."));
       Parameters.Add(new ValueLookupParameter<IntValue>("MaximumIterations", "The maximum number of generations which should be processed."));
       Parameters.Add(new ValueLookupParameter<IntValue>("TabuTenure", "The length of the tabu list, and also means the number of iterations a move is kept tabu"));
       Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The variable collection where results should be stored."));

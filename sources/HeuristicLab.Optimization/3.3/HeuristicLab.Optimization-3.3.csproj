@@ -111,6 +111,7 @@
     <Compile Include="Interfaces\IStochasticOperator.cs" />
     <Compile Include="Interfaces\ITabuMoveEvaluator.cs" />
     <Compile Include="Interfaces\ITabuMoveMaker.cs" />
+    <Compile Include="TabuMoveMaker.cs" />
     <Compile Include="UserDefinedAlgorithm.cs" />
     <Compile Include="EngineAlgorithm.cs" />
     <Compile Include="HeuristicLabOptimizationPlugin.cs" />

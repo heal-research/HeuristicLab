@@ -179,8 +179,11 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       foreach (ISingleObjectiveMoveEvaluator op in Problem.Operators.OfType<ISingleObjectiveMoveEvaluator>()) {
         op.MoveQualityParameter.ActualNameChanged += new EventHandler(MoveEvaluator_MoveQualityParameter_ActualNameChanged);
       }
+      foreach (ITabuMoveEvaluator op in Problem.Operators.OfType<ITabuMoveEvaluator>()) {
+        op.MoveTabuParameter.ActualNameChanged += new EventHandler(TabuMoveEvaluator_MoveTabuParameter_ActualNameChanged);
+      }
       ParameterizeSolutionsCreator();
-      ParameterizeTSMainLoop();
+      ParameterizeMainLoop();
       ParameterizeMoveEvaluator();
       ParameterizeMoveMaker();
       UpdateMoveGenerator();
@@ -195,7 +198,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     protected override void Problem_EvaluatorChanged(object sender, EventArgs e) {
       ParameterizeStochasticOperator(Problem.Evaluator);
       ParameterizeSolutionsCreator();
-      ParameterizeTSMainLoop();
+      ParameterizeMainLoop();
       ParameterizeMoveEvaluator();
       ParameterizeMoveMaker();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
@@ -209,17 +212,21 @@ namespace HeuristicLab.Algorithms.TabuSearch {
         op.MoveQualityParameter.ActualNameChanged -= new EventHandler(MoveEvaluator_MoveQualityParameter_ActualNameChanged);
         op.MoveQualityParameter.ActualNameChanged += new EventHandler(MoveEvaluator_MoveQualityParameter_ActualNameChanged);
       }
+      foreach (ITabuMoveEvaluator op in Problem.Operators.OfType<ITabuMoveEvaluator>()) {
+        op.MoveTabuParameter.ActualNameChanged -= new EventHandler(TabuMoveEvaluator_MoveTabuParameter_ActualNameChanged);
+        op.MoveTabuParameter.ActualNameChanged += new EventHandler(TabuMoveEvaluator_MoveTabuParameter_ActualNameChanged);
+      }
       IMoveGenerator oldMoveGenerator = MoveGenerator;
       UpdateMoveGenerator();
       if (oldMoveGenerator == MoveGenerator) // in this case MoveGeneratorParameter_ValueChanged did not fire
         UpdateMoveParameters();
-      ParameterizeTSMainLoop();
+      ParameterizeMainLoop();
       ParameterizeMoveEvaluator();
       ParameterizeMoveMaker();
       base.Problem_OperatorsChanged(sender, e);
     }
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
-      ParameterizeTSMainLoop();
+      ParameterizeMainLoop();
       ParameterizeMoveEvaluator();
       ParameterizeMoveMaker();
     }
@@ -227,14 +234,20 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       UpdateMoveParameters();
     }
     private void MoveEvaluatorParameter_ValueChanged(object sender, EventArgs e) {
-      ParameterizeTSMainLoop();
+      ParameterizeMainLoop();
       ParameterizeMoveEvaluator();
       ParameterizeMoveMaker();
     }
     private void MoveEvaluator_MoveQualityParameter_ActualNameChanged(object sender, EventArgs e) {
-      ParameterizeTSMainLoop();
+      ParameterizeMainLoop();
       ParameterizeMoveEvaluator();
       ParameterizeMoveMaker();
+    }
+    private void TabuMoveEvaluatorParameter_ValueChanged(object sender, EventArgs e) {
+      ParameterizeMainLoop();
+    }
+    private void TabuMoveEvaluator_MoveTabuParameter_ActualNameChanged(object sender, EventArgs e) {
+      ParameterizeMainLoop();
     }
     #endregion
 
@@ -249,6 +262,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       }
       MoveGeneratorParameter.ValueChanged += new EventHandler(MoveGeneratorParameter_ValueChanged);
       MoveEvaluatorParameter.ValueChanged += new EventHandler(MoveEvaluatorParameter_ValueChanged);
+      TabuMoveEvaluatorParameter.ValueChanged += new EventHandler(TabuMoveEvaluatorParameter_ValueChanged);
     }
     private void UpdateMoveGenerator() {
       IMoveGenerator oldMoveGenerator = MoveGenerator;
@@ -312,11 +326,13 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       SolutionsCreator.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
       SolutionsCreator.SolutionCreatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
     }
-    private void ParameterizeTSMainLoop() {
+    private void ParameterizeMainLoop() {
       MainLoop.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
       MainLoop.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
       if (MoveEvaluator != null)
         MainLoop.MoveQualityParameter.ActualName = MoveEvaluator.MoveQualityParameter.ActualName;
+      if (TabuMoveEvaluator != null)
+        MainLoop.MoveTabuParameter.ActualName = TabuMoveEvaluator.MoveTabuParameter.ActualName;
     }
     private void ParameterizeStochasticOperator(IOperator op) {
       if (op is IStochasticOperator)

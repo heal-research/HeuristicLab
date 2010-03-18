@@ -110,6 +110,7 @@
     <Compile Include="Moves\ThreeOpt\StochasticThreeOptMoveGenerator.cs" />
     <Compile Include="Moves\ThreeOpt\ThreeOptMove.cs" />
     <Compile Include="Moves\ThreeOpt\ThreeOptMoveGenerator.cs" />
+    <Compile Include="Moves\TwoOpt\PreventReaddTwoOptTabuMoveEvaluator.cs" />
     <Compile Include="Moves\TwoOpt\StochasticTwoOptSingleMoveGenerator.cs" />
     <Compile Include="Moves\TwoOpt\ExhaustiveTwoOptMoveGenerator.cs">
       <SubType>Code</SubType>
@@ -126,7 +127,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Moves\TwoOpt\TwoOptTabuMoveAttribute.cs" />
-    <Compile Include="Moves\TwoOpt\TwoOptTabuMoveEvaluator.cs" />
+    <Compile Include="Moves\TwoOpt\PreventReaddDeleteTwoOptTabuMoveEvaluator.cs" />
     <Compile Include="Moves\TwoOpt\TwoOptTabuMoveMaker.cs" />
     <Compile Include="PermutationManipulator.cs" />
     <Compile Include="PermutationCrossover.cs" />

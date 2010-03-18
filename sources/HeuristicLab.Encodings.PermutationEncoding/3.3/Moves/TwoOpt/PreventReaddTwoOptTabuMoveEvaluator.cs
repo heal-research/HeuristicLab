@@ -28,26 +28,26 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
-  [Item("TwoOptTabuMoveEvaluator", "Evaluates whether a given 2-opt move is tabu.")]
+  [Item("PreventReaddTwoOptTabuMoveEvaluator", "Prevents readding of previously deleted edges, but allows deleting previously added edges.")]
   [StorableClass]
-  public class TwoOptTabuMoveEvaluator : SingleSuccessorOperator, ITwoOptPermutationMoveOperator, ITabuMoveEvaluator {
+  public class PreventReaddTwoOptTabuMoveEvaluator : SingleSuccessorOperator, ITwoOptPermutationMoveOperator, ITabuMoveEvaluator {
     public ILookupParameter<TwoOptMove> TwoOptMoveParameter {
       get { return (LookupParameter<TwoOptMove>)Parameters["TwoOptMove"]; }
     }
     public ILookupParameter<Permutation> PermutationParameter {
       get { return (LookupParameter<Permutation>)Parameters["Permutation"]; }
     }
-    public LookupParameter<ItemList<IItem>> TabuListParameter {
-      get { return (LookupParameter<ItemList<IItem>>)Parameters["TabuList"]; }
+    public ILookupParameter<ItemList<IItem>> TabuListParameter {
+      get { return (ILookupParameter<ItemList<IItem>>)Parameters["TabuList"]; }
     }
-    public LookupParameter<BoolValue> MoveTabuParameter {
-      get { return (LookupParameter<BoolValue>)Parameters["MoveTabu"]; }
+    public ILookupParameter<BoolValue> MoveTabuParameter {
+      get { return (ILookupParameter<BoolValue>)Parameters["MoveTabu"]; }
     }
     private ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
     }
 
-    public TwoOptTabuMoveEvaluator()
+    public PreventReaddTwoOptTabuMoveEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<TwoOptMove>("TwoOptMove", "The move to evaluate."));
       Parameters.Add(new LookupParameter<BoolValue>("MoveTabu", "The variable to store if a move was tabu."));
@@ -71,12 +71,10 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
         if (attribute != null) {
           // if previously deleted Edge1Source-Target is readded
           if (attribute.Edge1Source == E1S && attribute.Edge1Target == E2S || attribute.Edge1Source == E2S && attribute.Edge1Target == E1S
+            || attribute.Edge1Source == E1T && attribute.Edge1Target == E2T || attribute.Edge1Source == E2T && attribute.Edge1Target == E1T
             // if previously deleted Edge2Source-Target is readded
             || attribute.Edge2Source == E1T && attribute.Edge2Target == E2T || attribute.Edge2Source == E2T && attribute.Edge2Target == E1T
-            // if previously added Edge1Source-Edge2Source is deleted
-            || attribute.Edge1Source == E1S && attribute.Edge2Source == E1T || attribute.Edge1Source == E1T && attribute.Edge2Source == E1S
-            // if previously added Edge1Target-Edge2Target is deleted
-            || attribute.Edge1Target == E2S && attribute.Edge2Target == E2T || attribute.Edge1Target == E2T && attribute.Edge2Target == E2S) {
+            || attribute.Edge2Source == E1S && attribute.Edge2Target == E2S || attribute.Edge2Source == E2S && attribute.Edge2Target == E1S) {
             isTabu = true;
             break;
           }

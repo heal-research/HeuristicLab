@@ -30,45 +30,27 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("TwoOptTabuMoveMaker", "Declares a given 2-opt move as tabu, by adding its attributes to the tabu list. It also removes the oldest entry in the tabu list when its size is greater than tenure.")]
   [StorableClass]
-  public class TwoOptTabuMoveMaker : SingleSuccessorOperator, ITwoOptPermutationMoveOperator, ITabuMoveMaker {
+  public class TwoOptTabuMoveMaker : TabuMoveMaker, ITwoOptPermutationMoveOperator {
     public ILookupParameter<Permutation> PermutationParameter {
       get { return (ILookupParameter<Permutation>)Parameters["Permutation"]; }
     }
     public ILookupParameter<TwoOptMove> TwoOptMoveParameter {
       get { return (LookupParameter<TwoOptMove>)Parameters["TwoOptMove"]; }
     }
-    public LookupParameter<ItemList<IItem>> TabuListParameter {
-      get { return (LookupParameter<ItemList<IItem>>)Parameters["TabuList"]; }
-    }
-    public ValueLookupParameter<IntValue> TabuTenureParameter {
-      get { return (ValueLookupParameter<IntValue>)Parameters["TabuTenure"]; }
-    }
 
     public TwoOptTabuMoveMaker()
       : base() {
       Parameters.Add(new LookupParameter<TwoOptMove>("TwoOptMove", "The move that was made."));
-      Parameters.Add(new LookupParameter<ItemList<IItem>>("TabuList", "The tabu list where move attributes are stored."));
-      Parameters.Add(new ValueLookupParameter<IntValue>("TabuTenure", "The tenure of the tabu list."));
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The solution as permutation."));
     }
 
-    public override IOperation Apply() {
-      ItemList<IItem> tabuList = TabuListParameter.ActualValue;
+    protected override IItem GetTabuAttribute() {
       TwoOptMove move = TwoOptMoveParameter.ActualValue;
-      IntValue tabuTenure = TabuTenureParameter.ActualValue;
       Permutation permutation = PermutationParameter.ActualValue;
-      
-      if (tabuList.Count >= tabuTenure.Value) {
-        for (int i = 0; i < tabuTenure.Value - 1; i++)
-          tabuList[i] = tabuList[i + 1];
-        tabuList.RemoveAt(tabuList.Count - 1);
-      }
-
-      TwoOptTabuMoveAttribute attribute = new TwoOptTabuMoveAttribute(
-        permutation.GetCircular(move.Index1 - 1), permutation[move.Index1],
-        permutation[move.Index2], permutation.GetCircular(move.Index2 + 1));
-      tabuList.Add(attribute);
-      return base.Apply();
+      return new TwoOptTabuMoveAttribute( permutation.GetCircular(move.Index1 - 1),
+        permutation[move.Index1],
+        permutation[move.Index2],
+        permutation.GetCircular(move.Index2 + 1));
     }
 
     public override bool CanChangeName {
