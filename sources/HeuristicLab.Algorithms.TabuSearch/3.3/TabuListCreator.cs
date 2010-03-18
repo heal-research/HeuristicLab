@@ -27,7 +27,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Selection;
 
-namespace HeuristicLab.Algorithms.TS {
+namespace HeuristicLab.Algorithms.TabuSearch {
   [Item("TabuListCreator", "An operator that creates a new empty tabu list. It can also replace an existing tabu list with a new empty one.")]
   [StorableClass]
   public class TabuListCreator : SingleSuccessorOperator {

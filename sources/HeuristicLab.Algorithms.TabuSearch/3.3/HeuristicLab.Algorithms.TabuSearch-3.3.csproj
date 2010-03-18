@@ -8,8 +8,8 @@
     <ProjectGuid>{D58A232D-04BA-4186-B73E-0EC86FD31ABE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.Algorithms.TS</RootNamespace>
-    <AssemblyName>HeuristicLab.Algorithms.TS-3.3</AssemblyName>
+    <RootNamespace>HeuristicLab.Algorithms.TabuSearch</RootNamespace>
+    <AssemblyName>HeuristicLab.Algorithms.TabuSearch-3.3</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
@@ -79,8 +79,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="HeuristicLabAlgorithmsTSPlugin.cs.frame" />
-    <Compile Include="HeuristicLabAlgorithmsTSPlugin.cs" />
+    <None Include="HeuristicLabAlgorithmsTabuSearchPlugin.cs.frame" />
+    <Compile Include="HeuristicLabAlgorithmsTabuSearchPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TabuListCreator.cs">
       <SubType>Code</SubType>
@@ -88,8 +88,8 @@
     <Compile Include="TabuSelector.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TS.cs" />
-    <Compile Include="TSMainLoop.cs">
+    <Compile Include="TabuSearch.cs" />
+    <Compile Include="TabuSearchMainLoop.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -162,6 +162,6 @@ set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
 call PreBuildEvent.cmd
-SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabAlgorithmsTSPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabAlgorithmsTSPlugin.cs"</PreBuildEvent>
+SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabAlgorithmsTabuSearchPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabAlgorithmsTabuSearchPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

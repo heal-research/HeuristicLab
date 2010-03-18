@@ -21,7 +21,7 @@
 
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Algorithms.TS {
+namespace HeuristicLab.Algorithms.TabuSearch {
   /// <summary>
   /// Plugin class for HeuristicLab.Algorithms.TS plugin.
   /// </summary>
@@ -35,7 +35,7 @@ namespace HeuristicLab.Algorithms.TS {
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
   [PluginDependency("HeuristicLab.Parameters", "3.3")]
   [PluginDependency("HeuristicLab.Persistence", "3.3")]
-  //[PluginDependency("HeuristicLab.Random", "3.3")]
+  [PluginDependency("HeuristicLab.Random", "3.3")]
   [PluginDependency("HeuristicLab.Selection", "3.3")]
   public class HeuristicLabAlgorithmsTSPlugin : PluginBase {
   }

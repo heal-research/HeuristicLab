@@ -27,13 +27,13 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Selection;
 
-namespace HeuristicLab.Algorithms.TS {
+namespace HeuristicLab.Algorithms.TabuSearch {
   /// <summary>
   /// An operator which represents a tabu search.
   /// </summary>
-  [Item("TSMainLoop", "An operator which represents the main loop of a tabu search.")]
+  [Item("TabuSearchMainLoop", "An operator which represents the main loop of a tabu search.")]
   [StorableClass]
-  public class TSMainLoop : AlgorithmOperator {
+  public class TabuSearchMainLoop : AlgorithmOperator {
     #region Parameter properties
     public ValueLookupParameter<IRandom> RandomParameter {
       get { return (ValueLookupParameter<IRandom>)Parameters["Random"]; }
@@ -80,7 +80,7 @@ namespace HeuristicLab.Algorithms.TS {
     }
     #endregion
 
-    public TSMainLoop()
+    public TabuSearchMainLoop()
       : base() {
       #region Create parameters
       Parameters.Add(new ValueLookupParameter<IRandom>("Random", "A pseudo random number generator."));

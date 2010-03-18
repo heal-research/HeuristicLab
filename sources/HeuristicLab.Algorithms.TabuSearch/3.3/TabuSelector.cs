@@ -28,7 +28,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Selection;
 
-namespace HeuristicLab.Algorithms.TS {
+namespace HeuristicLab.Algorithms.TabuSearch {
   /// <summary>
   /// The tabu selector is a selection operator that separates the best n moves that are either not tabu or satisfy the default aspiration criterion from the rest. It expects the move subscopes to be sorted.
   /// </summary>

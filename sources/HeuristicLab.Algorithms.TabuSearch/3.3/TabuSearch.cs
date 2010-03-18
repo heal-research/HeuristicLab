@@ -31,10 +31,10 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Algorithms.TS {
-  [Item("TS", "A tabu search algorithm.")]
+namespace HeuristicLab.Algorithms.TabuSearch {
+  [Item("TabuSearch", "A tabu search algorithm.")]
   [Creatable("Algorithms")]
-  public sealed class TS : EngineAlgorithm {
+  public sealed class TabuSearch : EngineAlgorithm {
     #region Problem Properties
     public override Type ProblemType {
       get { return typeof(ISingleObjectiveProblem); }
@@ -118,12 +118,12 @@ namespace HeuristicLab.Algorithms.TS {
     private SolutionsCreator SolutionsCreator {
       get { return (SolutionsCreator)RandomCreator.Successor; }
     }
-    private TSMainLoop TSMainLoop {
-      get { return (TSMainLoop)SolutionsCreator.Successor; }
+    private TabuSearchMainLoop MainLoop {
+      get { return (TabuSearchMainLoop)SolutionsCreator.Successor; }
     }
     #endregion
 
-    public TS()
+    public TabuSearch()
       : base() {
       Parameters.Add(new ValueParameter<IntValue>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
       Parameters.Add(new ValueParameter<BoolValue>("SetSeedRandomly", "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
@@ -137,7 +137,7 @@ namespace HeuristicLab.Algorithms.TS {
 
       RandomCreator randomCreator = new RandomCreator();
       SolutionsCreator solutionsCreator = new SolutionsCreator();
-      TSMainLoop tsMainLoop = new TSMainLoop();
+      TabuSearchMainLoop tsMainLoop = new TabuSearchMainLoop();
       OperatorGraph.InitialOperator = randomCreator;
 
       randomCreator.RandomParameter.ActualName = "Random";
@@ -163,10 +163,10 @@ namespace HeuristicLab.Algorithms.TS {
     }
 
     [StorableConstructor]
-    private TS(bool deserializing) : base() { }
+    private TabuSearch(bool deserializing) : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      TS clone = (TS)base.Clone(cloner);
+      TabuSearch clone = (TabuSearch)base.Clone(cloner);
       clone.Initialize();
       return clone;
     }
@@ -313,10 +313,10 @@ namespace HeuristicLab.Algorithms.TS {
       SolutionsCreator.SolutionCreatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
     }
     private void ParameterizeTSMainLoop() {
-      TSMainLoop.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
-      TSMainLoop.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
+      MainLoop.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
+      MainLoop.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
       if (MoveEvaluator != null)
-        TSMainLoop.MoveQualityParameter.ActualName = MoveEvaluator.MoveQualityParameter.ActualName;
+        MainLoop.MoveQualityParameter.ActualName = MoveEvaluator.MoveQualityParameter.ActualName;
     }
     private void ParameterizeStochasticOperator(IOperator op) {
       if (op is IStochasticOperator)
