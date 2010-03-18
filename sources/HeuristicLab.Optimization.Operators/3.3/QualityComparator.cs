@@ -55,12 +55,15 @@ namespace HeuristicLab.Optimization.Operators {
       DoubleValue left = LeftSideParameter.ActualValue;
       DoubleValue right = RightSideParameter.ActualValue;
       BoolValue maximization = MaximizationParameter.ActualValue;
-      bool better = maximization.Value && left.Value > right.Value
-        || !maximization.Value && left.Value < right.Value;
+      bool better = Compare(maximization.Value, left.Value, right.Value);
       if (ResultParameter.ActualValue == null)
         ResultParameter.ActualValue = new BoolValue(better);
       else ResultParameter.ActualValue.Value = better;
       return base.Apply();
+    }
+
+    protected virtual bool Compare(bool maximization, double left, double right) {
+      return maximization && left > right || !maximization && left < right;
     }
   }
 }

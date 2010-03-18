@@ -7,6 +7,7 @@ HeuristicLab.Algorithms.SGA\3.3:HeuristicLab.Algorithms.SGA-3.3.dll
 HeuristicLab.Algorithms.SGA.Views\3.3:HeuristicLab.Algorithms.SGA.Views-3.3.dll
 HeuristicLab.Algorithms.TS\3.3:HeuristicLab.Algorithms.TS-3.3.dll
 HeuristicLab.Algorithms.LS\3.3:HeuristicLab.Algorithms.LS-3.3.dll
+HeuristicLab.Algorithms.SimulatedAnnealing\3.3:HeuristicLab.Algorithms.SimulatedAnnealing-3.3.dll
 HeuristicLab.Analysis\3.3:HeuristicLab.Analysis-3.3.dll
 HeuristicLab.Analysis.Views\3.3:HeuristicLab.Analysis.Views-3.3.dll
 HeuristicLab.CodeEditor\3.2:HeuristicLab.CodeEditor-3.2.dll
