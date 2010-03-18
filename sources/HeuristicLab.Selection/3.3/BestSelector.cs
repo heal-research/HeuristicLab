@@ -19,34 +19,48 @@
  */
 #endregion
 
+using System;
+using System.Linq;
 using System.Collections.Generic;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Selection {
   /// <summary>
-  /// An operator which selects sub-scopes from right to left.
+  /// A selection operator which considers a single double quality value and selects the best.
   /// </summary>
-  [Item("RightSelector", "An operator which selects sub-scopes from right to left.")]
+  [Item("BestSelector", "A selection operator which considers a single double quality value and selects the best.")]
   [StorableClass]
   [Creatable("Test")]
-  public sealed class RightSelector : Selector {
-    public RightSelector() : base() { }
+  public sealed class BestSelector : SingleObjectiveSelector {
+    public BestSelector() : base() { }
 
     protected override IScope[] Select(List<IScope> scopes) {
       int count = NumberOfSelectedSubScopesParameter.ActualValue.Value;
       bool copy = CopySelectedParameter.Value.Value;
+      bool maximization = MaximizationParameter.ActualValue.Value;
+      ItemArray<DoubleValue> qualities = QualityParameter.ActualValue;
       IScope[] selected = new IScope[count];
 
-      int j = scopes.Count - 1;
+      // create a list for each scope that contains the scope's index in the original scope list
+      var temp = qualities.Select((x, index) => new { index, x.Value });
+      if (maximization)
+        temp = temp.OrderByDescending(x => x.Value);
+      else
+        temp = temp.OrderBy(x => x.Value);
+      var list = temp.ToList();
+
+      int j = 0;
       for (int i = 0; i < count; i++) {
         if (copy) {
-          selected[i] = (IScope)scopes[j].Clone();
-          j--;
-          if (j < 0) j = scopes.Count - 1;
+          selected[i] = (IScope)scopes[list[j].index].Clone();
+          j++;
+          if (j >= list.Count) j = 0;
         } else {
-          selected[i] = scopes[scopes.Count - 1];
-          scopes.RemoveAt(scopes.Count - 1);
+          selected[i] = scopes[list[j].index];
+          scopes.RemoveAt(list[j].index);
+          list.RemoveAt(j);
         }
       }
       return selected;

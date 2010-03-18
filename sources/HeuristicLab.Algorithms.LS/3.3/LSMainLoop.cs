@@ -96,8 +96,7 @@ namespace HeuristicLab.Algorithms.LS {
       Placeholder moveGenerator = new Placeholder();
       UniformSequentialSubScopesProcessor moveEvaluationProcessor = new UniformSequentialSubScopesProcessor();
       Placeholder moveEvaluator = new Placeholder();
-      SubScopesSorter moveQualitySorter = new SubScopesSorter();
-      LeftSelector leftSelector = new LeftSelector();
+      BestSelector bestSelector = new BestSelector();
       RightReducer rightReducer = new RightReducer();
       UniformSequentialSubScopesProcessor moveMakingProcessor = new UniformSequentialSubScopesProcessor();
       QualityComparator qualityComparator = new QualityComparator();
@@ -126,10 +125,10 @@ namespace HeuristicLab.Algorithms.LS {
       moveEvaluator.Name = "MoveEvaluator (placeholder)";
       moveEvaluator.OperatorParameter.ActualName = "MoveEvaluator";
 
-      moveQualitySorter.DescendingParameter.ActualName = "Maximization";
-      moveQualitySorter.ValueParameter.ActualName = "MoveQuality";
-
-      leftSelector.NumberOfSelectedSubScopesParameter.Value = new IntValue(1);
+      bestSelector.CopySelected = new BoolValue(false);
+      bestSelector.MaximizationParameter.ActualName = "Maximization";
+      bestSelector.NumberOfSelectedSubScopesParameter.Value = new IntValue(1);
+      bestSelector.QualityParameter.ActualName = "MoveQuality";
 
       moveMakingProcessor.Name = "MoveMaking processor (UniformSequentialSubScopesProcessor)";
 
@@ -169,9 +168,8 @@ namespace HeuristicLab.Algorithms.LS {
       resultsCollector.Successor = moveGenerator;
       moveGenerator.Successor = moveEvaluationProcessor;
       moveEvaluationProcessor.Operator = moveEvaluator;
-      moveEvaluationProcessor.Successor = moveQualitySorter;
-      moveQualitySorter.Successor = leftSelector;
-      leftSelector.Successor = rightReducer;
+      moveEvaluationProcessor.Successor = bestSelector;
+      bestSelector.Successor = rightReducer;
       rightReducer.Successor = moveMakingProcessor;
       moveMakingProcessor.Operator = qualityComparator;
       moveMakingProcessor.Successor = subScopesRemover;

@@ -114,7 +114,6 @@ namespace HeuristicLab.Algorithms.SGA {
       DataTableValuesCollector dataTableValuesCollector1 = new DataTableValuesCollector();
       QualityDifferenceCalculator qualityDifferenceCalculator1 = new QualityDifferenceCalculator();
       ResultsCollector resultsCollector = new ResultsCollector();
-      SubScopesSorter subScopesSorter1 = new SubScopesSorter();
       Placeholder selector = new Placeholder();
       SequentialSubScopesProcessor sequentialSubScopesProcessor1 = new SequentialSubScopesProcessor();
       ChildrenCreator childrenCreator = new ChildrenCreator();
@@ -124,9 +123,8 @@ namespace HeuristicLab.Algorithms.SGA {
       Placeholder mutator = new Placeholder();
       Placeholder evaluator = new Placeholder();
       SubScopesRemover subScopesRemover = new SubScopesRemover();
-      SubScopesSorter subScopesSorter2 = new SubScopesSorter();
       SequentialSubScopesProcessor sequentialSubScopesProcessor2 = new SequentialSubScopesProcessor();
-      LeftSelector leftSelector = new LeftSelector();
+      BestSelector bestSelector = new BestSelector();
       RightReducer rightReducer = new RightReducer();
       MergingReducer mergingReducer = new MergingReducer();
       IntCounter intCounter = new IntCounter();
@@ -177,9 +175,6 @@ namespace HeuristicLab.Algorithms.SGA {
       resultsCollector.CollectedValues.Add(new LookupParameter<DataTable>("Qualities"));
       resultsCollector.ResultsParameter.ActualName = "Results";
 
-      subScopesSorter1.DescendingParameter.ActualName = "Maximization";
-      subScopesSorter1.ValueParameter.ActualName = "Quality";
-
       selector.Name = "Selector";
       selector.OperatorParameter.ActualName = "Selector";
 
@@ -199,11 +194,10 @@ namespace HeuristicLab.Algorithms.SGA {
 
       subScopesRemover.RemoveAllSubScopes = true;
 
-      subScopesSorter2.DescendingParameter.ActualName = "Maximization";
-      subScopesSorter2.ValueParameter.ActualName = "Quality";
-
-      leftSelector.CopySelected = new BoolValue(false);
-      leftSelector.NumberOfSelectedSubScopesParameter.ActualName = "Elites";
+      bestSelector.CopySelected = new BoolValue(false);
+      bestSelector.MaximizationParameter.ActualName = "Maximization";
+      bestSelector.NumberOfSelectedSubScopesParameter.ActualName = "Elites";
+      bestSelector.QualityParameter.ActualName = "Quality";
 
       intCounter.Increment = new IntValue(1);
       intCounter.ValueParameter.ActualName = "Generations";
@@ -250,15 +244,14 @@ namespace HeuristicLab.Algorithms.SGA {
       bestAverageWorstQualityCalculator1.Successor = dataTableValuesCollector1;
       dataTableValuesCollector1.Successor = qualityDifferenceCalculator1;
       qualityDifferenceCalculator1.Successor = resultsCollector;
-      resultsCollector.Successor = subScopesSorter1;
-      subScopesSorter1.Successor = selector;
+      resultsCollector.Successor = selector;
       selector.Successor = sequentialSubScopesProcessor1;
       sequentialSubScopesProcessor1.Operators.Add(new EmptyOperator());
       sequentialSubScopesProcessor1.Operators.Add(childrenCreator);
       sequentialSubScopesProcessor1.Successor = sequentialSubScopesProcessor2;
       childrenCreator.Successor = uniformSequentialSubScopesProcessor;
       uniformSequentialSubScopesProcessor.Operator = crossover;
-      uniformSequentialSubScopesProcessor.Successor = subScopesSorter2;
+      uniformSequentialSubScopesProcessor.Successor = null;
       crossover.Successor = stochasticBranch;
       stochasticBranch.FirstBranch = mutator;
       stochasticBranch.SecondBranch = null;
@@ -266,11 +259,10 @@ namespace HeuristicLab.Algorithms.SGA {
       mutator.Successor = null;
       evaluator.Successor = subScopesRemover;
       subScopesRemover.Successor = null;
-      subScopesSorter2.Successor = null;
-      sequentialSubScopesProcessor2.Operators.Add(leftSelector);
+      sequentialSubScopesProcessor2.Operators.Add(bestSelector);
       sequentialSubScopesProcessor2.Operators.Add(new EmptyOperator());
       sequentialSubScopesProcessor2.Successor = mergingReducer;
-      leftSelector.Successor = rightReducer;
+      bestSelector.Successor = rightReducer;
       rightReducer.Successor = null;
       mergingReducer.Successor = intCounter;
       intCounter.Successor = comparator;
@@ -280,7 +272,7 @@ namespace HeuristicLab.Algorithms.SGA {
       bestAverageWorstQualityCalculator2.Successor = dataTableValuesCollector2;
       dataTableValuesCollector2.Successor = qualityDifferenceCalculator2;
       qualityDifferenceCalculator2.Successor = conditionalBranch;
-      conditionalBranch.FalseBranch = subScopesSorter1;
+      conditionalBranch.FalseBranch = selector;
       conditionalBranch.TrueBranch = null;
       conditionalBranch.Successor = null;
       #endregion

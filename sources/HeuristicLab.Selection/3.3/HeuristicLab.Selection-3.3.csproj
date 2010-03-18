@@ -81,21 +81,22 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLabSelectionPlugin.cs.frame" />
+    <Compile Include="BestSelector.cs" />
+    <Compile Include="SingleObjectiveSelector.cs" />
     <Compile Include="LeftReducer.cs" />
     <Compile Include="MergingReducer.cs" />
     <Compile Include="Reducer.cs" />
     <Compile Include="LinearRankSelector.cs" />
     <Compile Include="ProportionalSelector.cs" />
     <Compile Include="RightReducer.cs" />
-    <Compile Include="RightSelector.cs" />
     <Compile Include="StochasticSelector.cs" />
-    <Compile Include="LeftSelector.cs" />
     <Compile Include="RandomSelector.cs" />
     <Compile Include="StochasticSingleObjectiveSelector.cs" />
     <Compile Include="HeuristicLabSelectionPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Selector.cs" />
     <Compile Include="TournamentSelector.cs" />
+    <Compile Include="WorstSelector.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />

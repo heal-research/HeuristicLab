@@ -40,7 +40,6 @@ namespace HeuristicLab.Selection {
 
     public TournamentSelector() : base() {
       Parameters.Add(new ValueLookupParameter<IntValue>("GroupSize", "The size of the tournament group.", new IntValue(2)));
-      CopySelected.Value = true;
     }
 
     protected override IScope[] Select(List<IScope> scopes) {

@@ -47,7 +47,6 @@ namespace HeuristicLab.Selection {
     public ProportionalSelector()
       : base() {
       Parameters.Add(new ValueParameter<BoolValue>("Windowing", "Apply windowing strategy (selection probability is proportional to the quality differences and not to the total quality).", new BoolValue(true)));
-      CopySelected.Value = true;
     }
 
     protected override IScope[] Select(List<IScope> scopes) {

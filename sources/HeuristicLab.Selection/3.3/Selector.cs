@@ -58,7 +58,7 @@ namespace HeuristicLab.Selection {
 
     protected Selector()
       : base() {
-      Parameters.Add(new ValueParameter<BoolValue>("CopySelected", "True if the selected sub-scopes should be copied, otherwise false.", new BoolValue(false)));
+      Parameters.Add(new ValueParameter<BoolValue>("CopySelected", "True if the selected sub-scopes should be copied, otherwise false.", new BoolValue(true)));
       Parameters.Add(new ValueLookupParameter<IntValue>("NumberOfSelectedSubScopes", "The number of sub-scopes which should be selected."));
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope from which sub-scopes should be selected."));
     }

@@ -33,10 +33,7 @@ namespace HeuristicLab.Selection {
   [StorableClass]
   [Creatable("Test")]
   public sealed class LinearRankSelector : StochasticSingleObjectiveSelector {
-    public LinearRankSelector()
-      : base() {
-      CopySelected.Value = true;
-    }
+    public LinearRankSelector() : base() { }
 
     protected override IScope[] Select(List<IScope> scopes) {
       int count = NumberOfSelectedSubScopesParameter.ActualValue.Value;
