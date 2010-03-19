@@ -162,8 +162,6 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       bestAverageWorstMoveQualityCalculator.QualityParameter.ActualName = "MoveQuality";
       bestAverageWorstMoveQualityCalculator.WorstQualityParameter.ActualName = "Worst Move Quality";
 
-      tabuSelector.NumberOfSelectedSubScopes = new IntValue(1);
-
       moveMakingProcessor.Name = "MoveMaking processor (UniformSequentialSubScopesProcessor)";
 
       tabuMoveMaker.Name = "TabuMoveMaker (placeholder)";

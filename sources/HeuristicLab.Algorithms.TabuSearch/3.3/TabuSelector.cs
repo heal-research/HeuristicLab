@@ -68,9 +68,8 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     public ILookupParameter<ItemArray<BoolValue>> MoveTabuParameter {
       get { return (ILookupParameter<ItemArray<BoolValue>>)Parameters["MoveTabu"]; }
     }
-
-    public IntValue NumberOfSelectedSubScopes {
-      set { NumberOfSelectedSubScopesParameter.Value = value; }
+    public IValueLookupParameter<BoolValue> CopySelectedParameter {
+      get { return (IValueLookupParameter<BoolValue>)Parameters["CopySelected"]; }
     }
 
     /// <summary>
@@ -84,6 +83,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "Whether the problem is a maximization or minimization problem (used to decide whether a solution is better"));
       Parameters.Add(new SubScopesLookupParameter<DoubleValue>("MoveQuality", "The quality of the move."));
       Parameters.Add(new SubScopesLookupParameter<BoolValue>("MoveTabu", "The tabu status of the move."));
+      Parameters.Add(new ValueLookupParameter<BoolValue>("CopySelected", "True if the selected move should be copied."));
     }
 
     /// <summary>
@@ -93,7 +93,6 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     /// <param name="scopes">The scopes from which to select.</param>
     /// <returns>The selected scopes.</returns>
     protected override IScope[] Select(List<IScope> scopes) {
-      int count = NumberOfSelectedSubScopesParameter.ActualValue.Value;
       bool copy = CopySelectedParameter.Value.Value;
       bool aspiration = AspirationParameter.ActualValue.Value;
       bool maximization = MaximizationParameter.ActualValue.Value;
@@ -101,22 +100,21 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       ItemArray<DoubleValue> moveQualities = MoveQualityParameter.ActualValue;
       ItemArray<BoolValue> moveTabus = MoveTabuParameter.ActualValue;
 
-      IScope[] selected = new IScope[count];
+      IScope[] selected = new IScope[1];
 
       // remember scopes that should be removed
       List<int> scopesToRemove = new List<int>();
       for (int i = 0; i < scopes.Count; i++) {
-        if (count > 0 && (!moveTabus[i].Value
-          || aspiration && IsBetter(maximization, moveQualities[i].Value, bestQuality))) {
+        if (!moveTabus[i].Value
+          || aspiration && IsBetter(maximization, moveQualities[i].Value, bestQuality)) {
           scopesToRemove.Add(i);
-          if (copy) selected[selected.Length - count] = (IScope)scopes[i].Clone();
-          else selected[selected.Length - count] = scopes[i];
-          count--;
-          if (count == 0) break;
+          if (copy) selected[0] = (IScope)scopes[i].Clone();
+          else selected[0] = scopes[i];
+          break;
         }
       }
 
-      if (count > 0) throw new InvalidOperationException("TabuSelector: The neighborhood contained no or too little moves that are not tabu.");
+      if (selected[0] == null) throw new InvalidOperationException("TabuSelector: The neighborhood contained no or too little moves that are not tabu.");
 
       // remove from last to first so that the stored indices remain the same
       if (!copy) {
