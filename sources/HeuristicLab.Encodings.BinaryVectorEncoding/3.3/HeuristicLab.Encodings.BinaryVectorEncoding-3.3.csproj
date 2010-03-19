@@ -90,6 +90,7 @@
     <Compile Include="Crossovers\NPointCrossover.cs" />
     <Compile Include="HeuristicLabEncodingsBinaryVectorEncodingPlugin.cs" />
     <Compile Include="BinaryVector.cs" />
+    <Compile Include="Interfaces\IOneBitflipMoveOperator.cs" />
     <Compile Include="Interfaces\IBinaryVectorCreator.cs" />
     <Compile Include="Interfaces\IBinaryVectorCrossover.cs" />
     <Compile Include="Interfaces\IBinaryVectorManipulator.cs" />
@@ -97,8 +98,18 @@
     <Compile Include="BinaryVectorCreator.cs" />
     <Compile Include="BinaryVectorCrossover.cs" />
     <Compile Include="BinaryVectorManipulator.cs" />
+    <Compile Include="Interfaces\IBinaryVectorMoveOperator.cs" />
     <Compile Include="Manipulators\SomePositionsBitflipManipulator.cs" />
     <Compile Include="Manipulators\SinglePositionBitflipManipulator.cs" />
+    <Compile Include="Moves\OneIndexMove.cs" />
+    <Compile Include="Moves\SingleBitflipMove\ExhaustiveOneBitflipMoveGenerator.cs" />
+    <Compile Include="Moves\SingleBitflipMove\OneBitflipMove.cs" />
+    <Compile Include="Moves\SingleBitflipMove\OneBitflipMoveMaker.cs" />
+    <Compile Include="Moves\SingleBitflipMove\OneBitflipMoveGenerator.cs" />
+    <Compile Include="Moves\SingleBitflipMove\PreventOneBitflipTabuMoveEvaluator.cs" />
+    <Compile Include="Moves\SingleBitflipMove\StochasticOneBitflipSingleMoveGenerator.cs" />
+    <Compile Include="Moves\SingleBitflipMove\StochasticOneBitflipMultiMoveGenerator.cs" />
+    <Compile Include="Moves\SingleBitflipMove\OneBitflipTabuMoveMaker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
