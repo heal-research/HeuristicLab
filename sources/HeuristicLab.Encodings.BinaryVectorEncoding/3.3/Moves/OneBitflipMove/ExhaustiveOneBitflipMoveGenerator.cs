@@ -32,7 +32,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       int length = binaryVector.Length;
       int totalMoves = length;
       OneBitflipMove[] moves = new OneBitflipMove[totalMoves];
-      for (int i = 0; i < length - 1; i++)
+      for (int i = 0; i < length; i++)
           moves[i] = new OneBitflipMove(i);
 
       return moves;
