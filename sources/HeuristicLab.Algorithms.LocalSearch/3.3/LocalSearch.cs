@@ -241,25 +241,27 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       IMoveMaker oldMoveMaker = MoveMaker;
       ISingleObjectiveMoveEvaluator oldMoveEvaluator = MoveEvaluator;
       ClearMoveParameters();
-      List<Type> moveTypes = MoveGenerator.GetType().GetInterfaces().Where(x => typeof(IMoveOperator).IsAssignableFrom(x)).ToList();
-      foreach (Type type in moveTypes.ToList()) {
-        if (moveTypes.Any(t => t != type && type.IsAssignableFrom(t)))
-          moveTypes.Remove(type);
-      }
-      foreach (Type type in moveTypes) {
-        var operators = Problem.Operators.Where(x => type.IsAssignableFrom(x.GetType())).OrderBy(x => x.Name);
-        foreach (IMoveMaker moveMaker in operators.OfType<IMoveMaker>())
-          MoveMakerParameter.ValidValues.Add(moveMaker);
-        foreach (ISingleObjectiveMoveEvaluator moveEvaluator in operators.OfType<ISingleObjectiveMoveEvaluator>())
-          MoveEvaluatorParameter.ValidValues.Add(moveEvaluator);
-      }
-      if (oldMoveMaker != null) {
-        IMoveMaker mm = MoveMakerParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMoveMaker.GetType());
-        if (mm != null) MoveMaker = mm;
-      }
-      if (oldMoveEvaluator != null) {
-        ISingleObjectiveMoveEvaluator me = MoveEvaluatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMoveEvaluator.GetType());
-        if (me != null) MoveEvaluator = me;
+      if (MoveGenerator != null) {
+        List<Type> moveTypes = MoveGenerator.GetType().GetInterfaces().Where(x => typeof(IMoveOperator).IsAssignableFrom(x)).ToList();
+        foreach (Type type in moveTypes.ToList()) {
+          if (moveTypes.Any(t => t != type && type.IsAssignableFrom(t)))
+            moveTypes.Remove(type);
+        }
+        foreach (Type type in moveTypes) {
+          var operators = Problem.Operators.Where(x => type.IsAssignableFrom(x.GetType())).OrderBy(x => x.Name);
+          foreach (IMoveMaker moveMaker in operators.OfType<IMoveMaker>())
+            MoveMakerParameter.ValidValues.Add(moveMaker);
+          foreach (ISingleObjectiveMoveEvaluator moveEvaluator in operators.OfType<ISingleObjectiveMoveEvaluator>())
+            MoveEvaluatorParameter.ValidValues.Add(moveEvaluator);
+        }
+        if (oldMoveMaker != null) {
+          IMoveMaker mm = MoveMakerParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMoveMaker.GetType());
+          if (mm != null) MoveMaker = mm;
+        }
+        if (oldMoveEvaluator != null) {
+          ISingleObjectiveMoveEvaluator me = MoveEvaluatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMoveEvaluator.GetType());
+          if (me != null) MoveEvaluator = me;
+        }
       }
     }
     private void ClearMoveParameters() {
