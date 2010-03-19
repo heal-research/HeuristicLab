@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,8 +19,8 @@
  */
 #endregion
 
-namespace HeuristicLab.Problems.TSP {
-  partial class TSPTourView {
+namespace HeuristicLab.Problems.TSP.Views {
+  partial class PathTSPTourView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -31,8 +31,8 @@ namespace HeuristicLab.Problems.TSP {
     /// </summary>
     /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
     protected override void Dispose(bool disposing) {
-      if (disposing && (components != null)) {
-        components.Dispose();
+      if (disposing) {
+        if (components != null) components.Dispose();
       }
       base.Dispose(disposing);
     }
@@ -44,34 +44,39 @@ namespace HeuristicLab.Problems.TSP {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.chartControl = new HeuristicLab.Charting.ChartControl();
+      this.pictureBox = new System.Windows.Forms.PictureBox();
+      ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
       this.SuspendLayout();
       // 
-      // chartControl
+      // pictureBox
       // 
-      this.chartControl.BackColor = System.Drawing.SystemColors.Control;
-      this.chartControl.Chart = null;
-      this.chartControl.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.chartControl.Location = new System.Drawing.Point(0, 0);
-      this.chartControl.Name = "chartControl";
-      this.chartControl.ScaleOnResize = true;
-      this.chartControl.Size = new System.Drawing.Size(160, 147);
-      this.chartControl.TabIndex = 0;
+      this.pictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.pictureBox.BackColor = System.Drawing.Color.White;
+      this.pictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      this.pictureBox.Location = new System.Drawing.Point(0, 0);
+      this.pictureBox.Name = "pictureBox";
+      this.pictureBox.Size = new System.Drawing.Size(392, 310);
+      this.pictureBox.TabIndex = 0;
+      this.pictureBox.TabStop = false;
+      this.pictureBox.SizeChanged += new System.EventHandler(this.pictureBox_SizeChanged);
       // 
-      // TSPTourScopeView
+      // PathTSPTourView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.chartControl);
-      this.Name = "TSPTourScopeView";
-      this.Size = new System.Drawing.Size(160, 147);
+      this.Controls.Add(this.pictureBox);
+      this.Name = "PathTSPTourView";
+      this.Size = new System.Drawing.Size(392, 310);
+      ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
       this.ResumeLayout(false);
 
     }
 
     #endregion
 
-    private HeuristicLab.Charting.ChartControl chartControl;
+    private System.Windows.Forms.PictureBox pictureBox;
 
 
   }

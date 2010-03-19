@@ -73,6 +73,12 @@ namespace HeuristicLab.Algorithms.SGA {
     public ValueLookupParameter<VariableCollection> ResultsParameter {
       get { return (ValueLookupParameter<VariableCollection>)Parameters["Results"]; }
     }
+    public ValueLookupParameter<IOperator> VisualizerParameter {
+      get { return (ValueLookupParameter<IOperator>)Parameters["Visualizer"]; }
+    }
+    public LookupParameter<IItem> VisualizationParameter {
+      get { return (LookupParameter<IItem>)Parameters["Visualization"]; }
+    }
     private ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
     }
@@ -103,6 +109,8 @@ namespace HeuristicLab.Algorithms.SGA {
       Parameters.Add(new ValueLookupParameter<IntValue>("Elites", "The numer of elite solutions which are kept in each generation."));
       Parameters.Add(new ValueLookupParameter<IntValue>("MaximumGenerations", "The maximum number of generations which should be processed."));
       Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The variable collection where results should be stored."));
+      Parameters.Add(new ValueLookupParameter<IOperator>("Visualizer", "The operator used to visualize solutions."));
+      Parameters.Add(new LookupParameter<IItem>("Visualization", "The item which represents the visualization of solutions."));
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope which represents a population of solutions on which the SGA should be applied."));
       #endregion
 
@@ -113,6 +121,7 @@ namespace HeuristicLab.Algorithms.SGA {
       BestAverageWorstQualityCalculator bestAverageWorstQualityCalculator1 = new BestAverageWorstQualityCalculator();
       DataTableValuesCollector dataTableValuesCollector1 = new DataTableValuesCollector();
       QualityDifferenceCalculator qualityDifferenceCalculator1 = new QualityDifferenceCalculator();
+      Placeholder visualizer1 = new Placeholder();
       ResultsCollector resultsCollector = new ResultsCollector();
       Placeholder selector = new Placeholder();
       SequentialSubScopesProcessor sequentialSubScopesProcessor1 = new SequentialSubScopesProcessor();
@@ -134,6 +143,7 @@ namespace HeuristicLab.Algorithms.SGA {
       BestAverageWorstQualityCalculator bestAverageWorstQualityCalculator2 = new BestAverageWorstQualityCalculator();
       DataTableValuesCollector dataTableValuesCollector2 = new DataTableValuesCollector();
       QualityDifferenceCalculator qualityDifferenceCalculator2 = new QualityDifferenceCalculator();
+      Placeholder visualizer2 = new Placeholder();
       ConditionalBranch conditionalBranch = new ConditionalBranch();
 
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Generations", new IntValue(0)));
@@ -164,6 +174,9 @@ namespace HeuristicLab.Algorithms.SGA {
       qualityDifferenceCalculator1.RelativeDifferenceParameter.ActualName = "RelativeDifferenceBestKnownToBest";
       qualityDifferenceCalculator1.SecondQualityParameter.ActualName = "BestQuality";
 
+      visualizer1.Name = "Visualizer";
+      visualizer1.OperatorParameter.ActualName = "Visualizer";
+
       resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Generations"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Best Quality", null, "CurrentBestQuality"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Average Quality", null, "CurrentAverageQuality"));
@@ -172,6 +185,7 @@ namespace HeuristicLab.Algorithms.SGA {
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, "BestKnownQuality"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Absolute Difference of Best Known Quality to Best Quality", null, "AbsoluteDifferenceBestKnownToBest"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Relative Difference of Best Known Quality to Best Quality", null, "RelativeDifferenceBestKnownToBest"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<IItem>("Solution Visualization", null, "Visualization"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DataTable>("Qualities"));
       resultsCollector.ResultsParameter.ActualName = "Results";
 
@@ -233,6 +247,9 @@ namespace HeuristicLab.Algorithms.SGA {
       qualityDifferenceCalculator2.RelativeDifferenceParameter.ActualName = "RelativeDifferenceBestKnownToBest";
       qualityDifferenceCalculator2.SecondQualityParameter.ActualName = "BestQuality";
 
+      visualizer2.Name = "Visualizer";
+      visualizer2.OperatorParameter.ActualName = "Visualizer";
+
       conditionalBranch.ConditionParameter.ActualName = "Terminate";
       #endregion
 
@@ -243,7 +260,8 @@ namespace HeuristicLab.Algorithms.SGA {
       bestQualityMemorizer2.Successor = bestAverageWorstQualityCalculator1;
       bestAverageWorstQualityCalculator1.Successor = dataTableValuesCollector1;
       dataTableValuesCollector1.Successor = qualityDifferenceCalculator1;
-      qualityDifferenceCalculator1.Successor = resultsCollector;
+      qualityDifferenceCalculator1.Successor = visualizer1;
+      visualizer1.Successor = resultsCollector;
       resultsCollector.Successor = selector;
       selector.Successor = sequentialSubScopesProcessor1;
       sequentialSubScopesProcessor1.Operators.Add(new EmptyOperator());
@@ -271,7 +289,8 @@ namespace HeuristicLab.Algorithms.SGA {
       bestQualityMemorizer4.Successor = bestAverageWorstQualityCalculator2;
       bestAverageWorstQualityCalculator2.Successor = dataTableValuesCollector2;
       dataTableValuesCollector2.Successor = qualityDifferenceCalculator2;
-      qualityDifferenceCalculator2.Successor = conditionalBranch;
+      qualityDifferenceCalculator2.Successor = visualizer2;
+      visualizer2.Successor = conditionalBranch;
       conditionalBranch.FalseBranch = selector;
       conditionalBranch.TrueBranch = null;
       conditionalBranch.Successor = null;

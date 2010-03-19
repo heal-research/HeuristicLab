@@ -83,10 +83,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Interfaces\IPathTSPTourVisualizer.cs" />
-    <Compile Include="Interfaces\ITSPTourVisualizer.cs" />
-    <Compile Include="TSPTour.cs" />
-    <Compile Include="Visualizers\PathTSPTourVisualizer.cs" />
+    <Compile Include="Interfaces\ICoordinatesTSPSolutionsVisualizer.cs" />
+    <Compile Include="Interfaces\IPathCoordinatesTSPSolutionsVisualizer.cs" />
+    <Compile Include="Interfaces\ITSPSolutionsVisualizer.cs" />
+    <Compile Include="PathTSPTour.cs" />
+    <Compile Include="Visualizers\BestPathTSPTourVisualizer.cs" />
     <Compile Include="Evaluators\TSPCoordinatesPathEvaluator.cs" />
     <Compile Include="Evaluators\TSPEvaluator.cs" />
     <Compile Include="Evaluators\TSPRoundedEuclideanPathEvaluator.cs" />

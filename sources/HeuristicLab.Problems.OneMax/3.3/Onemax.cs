@@ -63,6 +63,9 @@ namespace HeuristicLab.Problems.OneMax {
     IParameter IProblem.EvaluatorParameter {
       get { return EvaluatorParameter; }
     }
+    IParameter IProblem.VisualizerParameter {
+      get { throw new NotImplementedException(); }
+    }
     public ValueParameter<DoubleValue> BestKnownQualityParameter {
       get { return (ValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
     }
@@ -88,6 +91,9 @@ namespace HeuristicLab.Problems.OneMax {
     }
     IEvaluator IProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
+    }
+    ISolutionsVisualizer IProblem.Visualizer {
+      get { throw new NotImplementedException(); }
     }
     public DoubleValue BestKnownQuality {
       get { return BestKnownQualityParameter.Value; }
@@ -137,6 +143,7 @@ namespace HeuristicLab.Problems.OneMax {
       if (EvaluatorChanged != null)
         EvaluatorChanged(this, EventArgs.Empty);
     }
+    public event EventHandler VisualizerChanged;
     public event EventHandler OperatorsChanged;
     private void OnOperatorsChanged() {
       if (OperatorsChanged != null)

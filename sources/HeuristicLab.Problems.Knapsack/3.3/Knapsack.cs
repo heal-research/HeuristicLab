@@ -72,6 +72,9 @@ namespace HeuristicLab.Problems.Knapsack {
     IParameter IProblem.EvaluatorParameter {
       get { return EvaluatorParameter; }
     }
+    IParameter IProblem.VisualizerParameter {
+      get { throw new NotImplementedException(); }
+    }
     public OptionalValueParameter<DoubleValue> BestKnownQualityParameter {
       get { return (OptionalValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
     }
@@ -97,6 +100,9 @@ namespace HeuristicLab.Problems.Knapsack {
     }
     IEvaluator IProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
+    }
+    ISolutionsVisualizer IProblem.Visualizer {
+      get { throw new NotImplementedException(); }
     }
     public DoubleValue BestKnownQuality {
       get { return BestKnownQualityParameter.Value; }
@@ -152,6 +158,7 @@ namespace HeuristicLab.Problems.Knapsack {
       if (EvaluatorChanged != null)
         EvaluatorChanged(this, EventArgs.Empty);
     }
+    public event EventHandler VisualizerChanged;
     public event EventHandler OperatorsChanged;
     private void OnOperatorsChanged() {
       if (OperatorsChanged != null)

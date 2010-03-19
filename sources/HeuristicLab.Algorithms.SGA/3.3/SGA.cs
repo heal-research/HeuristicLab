@@ -182,6 +182,7 @@ namespace HeuristicLab.Algorithms.SGA {
     protected override void OnProblemChanged() {
       ParameterizeStochasticOperator(Problem.SolutionCreator);
       ParameterizeStochasticOperator(Problem.Evaluator);
+      ParameterizeStochasticOperator(Problem.Visualizer);
       foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
       ParameterizeSolutionsCreator();
       ParameterizeSGAMainLoop();
@@ -203,6 +204,11 @@ namespace HeuristicLab.Algorithms.SGA {
       ParameterizeSelectors();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.Problem_EvaluatorChanged(sender, e);
+    }
+    protected override void Problem_VisualizerChanged(object sender, EventArgs e) {
+      ParameterizeStochasticOperator(Problem.Visualizer);
+      ParameterizeSGAMainLoop();
+      base.Problem_VisualizerChanged(sender, e);
     }
     protected override void Problem_OperatorsChanged(object sender, EventArgs e) {
       foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
@@ -252,6 +258,8 @@ namespace HeuristicLab.Algorithms.SGA {
       SGAMainLoop.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
       SGAMainLoop.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
       SGAMainLoop.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
+      SGAMainLoop.VisualizerParameter.ActualName = Problem.VisualizerParameter.Name;
+      SGAMainLoop.VisualizationParameter.ActualName = Problem.Visualizer.VisualizationParameter.ActualName;
     }
     private void ParameterizeStochasticOperator(IOperator op) {
       if (op is IStochasticOperator)

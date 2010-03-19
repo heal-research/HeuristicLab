@@ -19,14 +19,11 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.TSP {
   /// <summary>
-  /// An interface which represents an operator for visualizing tours of Traveling Salesman Problems given in path representation.
+  /// An interface which represents an operator for visualizing solutions of Traveling Salesman Problems.
   /// </summary>
-  public interface IPathTSPTourVisualizer : ITSPTourVisualizer {
-    ILookupParameter<Permutation> PermutationParameter { get; }
-  }
+  public interface ITSPSolutionsVisualizer : ISingleObjectiveSolutionsVisualizer { }
 }

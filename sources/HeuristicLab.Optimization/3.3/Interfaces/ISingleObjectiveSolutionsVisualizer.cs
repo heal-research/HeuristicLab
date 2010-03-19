@@ -21,13 +21,12 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Problems.TSP {
+namespace HeuristicLab.Optimization {
   /// <summary>
-  /// An interface which represents an operator for visualizing tours of Traveling Salesman Problems.
+  /// An interface which represents an operator for visualizing solutions of single-objective optimization problems.
   /// </summary>
-  public interface ITSPTourVisualizer : ISolutionVisualizer {
-    ILookupParameter<DoubleMatrix> CoordinatesParameter { get; }
+  public interface ISingleObjectiveSolutionsVisualizer : ISolutionsVisualizer {
+    ILookupParameter<ItemArray<DoubleValue>> QualityParameter { get; }
   }
 }

@@ -69,6 +69,12 @@ namespace HeuristicLab.Problems.TSP {
     IParameter IProblem.EvaluatorParameter {
       get { return EvaluatorParameter; }
     }
+    public OptionalValueParameter<ITSPSolutionsVisualizer> VisualizerParameter {
+      get { return (OptionalValueParameter<ITSPSolutionsVisualizer>)Parameters["Visualizer"]; }
+    }
+    IParameter IProblem.VisualizerParameter {
+      get { return VisualizerParameter; }
+    }
     public OptionalValueParameter<DoubleValue> BestKnownQualityParameter {
       get { return (OptionalValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
     }
@@ -107,6 +113,13 @@ namespace HeuristicLab.Problems.TSP {
     IEvaluator IProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
     }
+    public ITSPSolutionsVisualizer Visualizer {
+      get { return VisualizerParameter.Value; }
+      set { VisualizerParameter.Value = value; }
+    }
+    ISolutionsVisualizer IProblem.Visualizer {
+      get { return VisualizerParameter.Value; }
+    }
     public DoubleValue BestKnownQuality {
       get { return BestKnownQualityParameter.Value; }
       set { BestKnownQualityParameter.Value = value; }
@@ -121,6 +134,7 @@ namespace HeuristicLab.Problems.TSP {
       : base() {
       RandomPermutationCreator creator = new RandomPermutationCreator();
       TSPRoundedEuclideanPathEvaluator evaluator = new TSPRoundedEuclideanPathEvaluator();
+      BestPathTSPTourVisualizer visualizer = new BestPathTSPTourVisualizer();
 
       Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to false as the Traveling Salesman Problem is a minimization problem.", new BoolValue(false)));
       Parameters.Add(new ValueParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities.", new DoubleMatrix(0, 0)));
@@ -128,12 +142,14 @@ namespace HeuristicLab.Problems.TSP {
       Parameters.Add(new ValueParameter<BoolValue>("UseDistanceMatrix", "True if a distance matrix should be calculated and used for evaluation, otherwise false.", new BoolValue(true)));
       Parameters.Add(new ValueParameter<IPermutationCreator>("SolutionCreator", "The operator which should be used to create new TSP solutions.", creator));
       Parameters.Add(new ValueParameter<ITSPEvaluator>("Evaluator", "The operator which should be used to evaluate TSP solutions.", evaluator));
+      Parameters.Add(new OptionalValueParameter<ITSPSolutionsVisualizer>("Visualizer", "The operator which should be used to visualize TSP solutions.", visualizer));
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this TSP instance."));
 
       creator.PermutationParameter.ActualName = "TSPTour";
       evaluator.QualityParameter.ActualName = "TSPTourLength";
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
+      ParameterizeVisualizer();
 
       Initialize();
     }
@@ -163,6 +179,11 @@ namespace HeuristicLab.Problems.TSP {
       if (EvaluatorChanged != null)
         EvaluatorChanged(this, EventArgs.Empty);
     }
+    public event EventHandler VisualizerChanged;
+    private void OnVisualizerChanged() {
+      if (VisualizerChanged != null)
+        VisualizerChanged(this, EventArgs.Empty);
+    }
     public event EventHandler OperatorsChanged;
     private void OnOperatorsChanged() {
       if (OperatorsChanged != null)
@@ -186,17 +207,24 @@ namespace HeuristicLab.Problems.TSP {
       SolutionCreator.PermutationParameter.ActualNameChanged += new EventHandler(SolutionCreator_PermutationParameter_ActualNameChanged);
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
+      ParameterizeVisualizer();
       ParameterizeOperators();
       OnSolutionCreatorChanged();
     }
     private void SolutionCreator_PermutationParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
+      ParameterizeVisualizer();
       ParameterizeOperators();
     }
     private void EvaluatorParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
+      ParameterizeVisualizer();
       ClearDistanceMatrix();
       OnEvaluatorChanged();
+    }
+    private void VisualizerParameter_ValueChanged(object sender, EventArgs e) {
+      ParameterizeVisualizer();
+      OnVisualizerChanged();
     }
     private void MoveGenerator_TwoOptMoveParameter_ActualNameChanged(object sender, EventArgs e) {
       string name = ((ILookupParameter<TwoOptMove>)sender).ActualName;
@@ -222,6 +250,7 @@ namespace HeuristicLab.Problems.TSP {
       SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
       SolutionCreator.PermutationParameter.ActualNameChanged += new EventHandler(SolutionCreator_PermutationParameter_ActualNameChanged);
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
+      VisualizerParameter.ValueChanged += new EventHandler(VisualizerParameter_ValueChanged);
     }
     private void InitializeOperators() {
       operators = new List<IPermutationOperator>();
@@ -255,6 +284,13 @@ namespace HeuristicLab.Problems.TSP {
         evaluator.DistanceMatrixParameter.ActualName = DistanceMatrixParameter.Name;
         evaluator.UseDistanceMatrixParameter.ActualName = UseDistanceMatrixParameter.Name;
       }
+    }
+    private void ParameterizeVisualizer() {
+      Visualizer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
+      if (Visualizer is ICoordinatesTSPSolutionsVisualizer)
+        ((ICoordinatesTSPSolutionsVisualizer)Visualizer).CoordinatesParameter.ActualName = CoordinatesParameter.Name;
+      if (Visualizer is IPathCoordinatesTSPSolutionsVisualizer)
+        ((IPathCoordinatesTSPSolutionsVisualizer)Visualizer).PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
     }
     private void ParameterizeOperators() {
       foreach (IPermutationCrossover op in Operators.OfType<IPermutationCrossover>()) {

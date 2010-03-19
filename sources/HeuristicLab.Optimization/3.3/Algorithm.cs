@@ -151,16 +151,19 @@ namespace HeuristicLab.Optimization {
     protected virtual void DeregisterProblemEvents() {
       problem.SolutionCreatorChanged -= new EventHandler(Problem_SolutionCreatorChanged);
       problem.EvaluatorChanged -= new EventHandler(Problem_EvaluatorChanged);
+      problem.VisualizerChanged -= new EventHandler(Problem_VisualizerChanged);
       problem.OperatorsChanged -= new EventHandler(Problem_OperatorsChanged);
     }
     protected virtual void RegisterProblemEvents() {
       problem.SolutionCreatorChanged += new EventHandler(Problem_SolutionCreatorChanged);
       problem.EvaluatorChanged += new EventHandler(Problem_EvaluatorChanged);
+      problem.VisualizerChanged += new EventHandler(Problem_VisualizerChanged);
       problem.OperatorsChanged += new EventHandler(Problem_OperatorsChanged);
     }
 
     protected virtual void Problem_SolutionCreatorChanged(object sender, EventArgs e) { }
     protected virtual void Problem_EvaluatorChanged(object sender, EventArgs e) { }
+    protected virtual void Problem_VisualizerChanged(object sender, EventArgs e) { }
     protected virtual void Problem_OperatorsChanged(object sender, EventArgs e) { }
     #endregion
   }

@@ -20,12 +20,13 @@
 #endregion
 
 using HeuristicLab.Core;
+using HeuristicLab.Encodings.PermutationEncoding;
 
-namespace HeuristicLab.Optimization {
+namespace HeuristicLab.Problems.TSP {
   /// <summary>
-  /// An interface which represents an operator for visualizing solutions.
+  /// An interface which represents an operator for visualizing tours of Traveling Salesman Problems given in path representation using city coordinates.
   /// </summary>
-  public interface ISolutionVisualizer : IOperator {
-    ILookupParameter<IItem> VisualizationParameter { get; }
+  public interface IPathCoordinatesTSPSolutionsVisualizer : ICoordinatesTSPSolutionsVisualizer {
+    ILookupParameter<ItemArray<Permutation>> PermutationParameter { get; }
   }
 }
