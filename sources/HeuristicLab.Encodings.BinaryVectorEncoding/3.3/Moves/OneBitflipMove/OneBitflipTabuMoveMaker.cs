@@ -40,7 +40,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
 
     public OneBitflipTabuMoveMaker()
       : base() {
-      Parameters.Add(new LookupParameter<BinaryVector>("Permutation", "The solution as BinaryVector."));
+      Parameters.Add(new LookupParameter<BinaryVector>("BinaryVector", "The solution as BinaryVector."));
       Parameters.Add(new LookupParameter<OneBitflipMove>("OneBitflipMove", "The move that was made."));
     }
 
