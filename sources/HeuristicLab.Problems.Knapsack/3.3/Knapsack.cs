@@ -205,9 +205,19 @@ namespace HeuristicLab.Problems.Knapsack {
     void WeightsParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
       ParameterizeSolutionCreator();
+
+      WeightsParameter.Value.Reset += new EventHandler(WeightsValue_Reset);
+    }
+    void WeightsValue_Reset(object sender, EventArgs e) {
+      ParameterizeSolutionCreator();
     }
     void ValuesParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
+      ParameterizeSolutionCreator();
+
+      ValuesParameter.Value.Reset += new EventHandler(ValuesValue_Reset);
+    }
+    void ValuesValue_Reset(object sender, EventArgs e) {
       ParameterizeSolutionCreator();
     }
     void PenaltyParameter_ValueChanged(object sender, EventArgs e) {
@@ -224,7 +234,9 @@ namespace HeuristicLab.Problems.Knapsack {
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
       KnapsackCapacityParameter.ValueChanged += new EventHandler(KnapsackCapacityParameter_ValueChanged);
       WeightsParameter.ValueChanged += new EventHandler(WeightsParameter_ValueChanged);
+      WeightsParameter.Value.Reset += new EventHandler(WeightsValue_Reset);
       ValuesParameter.ValueChanged += new EventHandler(ValuesParameter_ValueChanged);
+      ValuesParameter.Value.Reset += new EventHandler(ValuesValue_Reset);
       PenaltyParameter.ValueChanged += new EventHandler(PenaltyParameter_ValueChanged);
     }
     private void ParameterizeSolutionCreator() {
