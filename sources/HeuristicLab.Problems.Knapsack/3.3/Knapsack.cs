@@ -51,14 +51,14 @@ namespace HeuristicLab.Problems.Knapsack {
     public ValueParameter<IntValue> KnapsackCapacityParameter {
       get { return (ValueParameter<IntValue>)Parameters["KnapsackCapacity"]; }
     }
-    public ValueParameter<DoubleValue> PenaltyParameter {
-      get { return (ValueParameter<DoubleValue>)Parameters["Penalty"]; }
-    }
     public ValueParameter<IntArray> WeightsParameter {
       get { return (ValueParameter<IntArray>)Parameters["Weights"]; }
     }
     public ValueParameter<IntArray> ValuesParameter {
       get { return (ValueParameter<IntArray>)Parameters["Values"]; }
+    }
+    public ValueParameter<DoubleValue> PenaltyParameter {
+      get { return (ValueParameter<DoubleValue>)Parameters["Penalty"]; }
     }
     public ValueParameter<IBinaryVectorCreator> SolutionCreatorParameter {
       get { return (ValueParameter<IBinaryVectorCreator>)Parameters["SolutionCreator"]; }
@@ -84,6 +84,22 @@ namespace HeuristicLab.Problems.Knapsack {
     #endregion
 
     #region Properties
+    public IntValue KnapsackCapacity {
+      get { return KnapsackCapacityParameter.Value; }
+      set { KnapsackCapacityParameter.Value = value; }
+    }
+    public IntArray Weights {
+      get { return WeightsParameter.Value; }
+      set { WeightsParameter.Value = value; }
+    }
+    public IntArray Values {
+      get { return ValuesParameter.Value; }
+      set { ValuesParameter.Value = value; }
+    }
+    public DoubleValue Penalty {
+      get { return PenaltyParameter.Value; }
+      set { PenaltyParameter.Value = value; }
+    }
     public IBinaryVectorCreator SolutionCreator {
       get { return SolutionCreatorParameter.Value; }
       set { SolutionCreatorParameter.Value = value; }
@@ -122,9 +138,7 @@ namespace HeuristicLab.Problems.Knapsack {
       Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to true as the Knapsack Problem is a maximization problem.", new BoolValue(true)));
       Parameters.Add(new ValueParameter<IntValue>("KnapsackCapacity", "Capacity of the Knapsack.", new IntValue(0)));
       Parameters.Add(new ValueParameter<IntArray>("Weights", "The weights of the items.", new IntArray(5)));
-      WeightsParameter.ActualValue.ToStringChanged += new EventHandler(WeightsActualValue_ToStringChanged);
       Parameters.Add(new ValueParameter<IntArray>("Values", "The values of the items.", new IntArray(5)));
-      ValuesParameter.ActualValue.ToStringChanged += new EventHandler(ValuesActualValue_ToStringChanged);
       Parameters.Add(new ValueParameter<DoubleValue>("Penalty", "The penalty value for each unit of overweight.", new DoubleValue(1)));
       Parameters.Add(new ValueParameter<IBinaryVectorCreator>("SolutionCreator", "The operator which should be used to create new Knapsack solutions.", creator));
       Parameters.Add(new ValueParameter<IKnapsackEvaluator>("Evaluator", "The operator which should be used to evaluate Knapsack solutions.", evaluator));
@@ -159,6 +173,11 @@ namespace HeuristicLab.Problems.Knapsack {
         EvaluatorChanged(this, EventArgs.Empty);
     }
     public event EventHandler VisualizerChanged;
+    private void OnVisualizerChanged() {
+      if (VisualizerChanged != null)
+        VisualizerChanged(this, EventArgs.Empty);
+    }
+
     public event EventHandler OperatorsChanged;
     private void OnOperatorsChanged() {
       if (OperatorsChanged != null)
@@ -180,13 +199,17 @@ namespace HeuristicLab.Problems.Knapsack {
       ParameterizeEvaluator();
       OnEvaluatorChanged();
     }
-
-    void ValuesActualValue_ToStringChanged(object sender, EventArgs e) {
-      ParameterizeSolutionCreator();
+    void KnapsackCapacityParameter_ValueChanged(object sender, EventArgs e) {
+      ParameterizeEvaluator();
     }
-
-    void WeightsActualValue_ToStringChanged(object sender, EventArgs e) {
-      ParameterizeSolutionCreator();
+    void WeightsParameter_ValueChanged(object sender, EventArgs e) {
+      ParameterizeEvaluator();
+    }
+    void ValuesParameter_ValueChanged(object sender, EventArgs e) {
+      ParameterizeEvaluator();
+    }
+    void PenaltyParameter_ValueChanged(object sender, EventArgs e) {
+      ParameterizeEvaluator();
     }
     #endregion
 
@@ -197,6 +220,10 @@ namespace HeuristicLab.Problems.Knapsack {
       SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
       SolutionCreator.BinaryVectorParameter.ActualNameChanged += new EventHandler(SolutionCreator_PermutationParameter_ActualNameChanged);
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
+      KnapsackCapacityParameter.ValueChanged += new EventHandler(KnapsackCapacityParameter_ValueChanged);
+      WeightsParameter.ValueChanged += new EventHandler(WeightsParameter_ValueChanged);
+      ValuesParameter.ValueChanged += new EventHandler(ValuesParameter_ValueChanged);
+      PenaltyParameter.ValueChanged += new EventHandler(PenaltyParameter_ValueChanged);
     }
     private void ParameterizeSolutionCreator() {
       if(SolutionCreator.LengthParameter.Value == null ||
@@ -208,9 +235,9 @@ namespace HeuristicLab.Problems.Knapsack {
         KnapsackEvaluator knapsackEvaluator =
           (KnapsackEvaluator)Evaluator;
         knapsackEvaluator.BinaryVectorParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
+        knapsackEvaluator.KnapsackCapacityParameter.ActualName = KnapsackCapacityParameter.Name;
         knapsackEvaluator.WeightsParameter.ActualName = WeightsParameter.Name;
         knapsackEvaluator.ValuesParameter.ActualName = ValuesParameter.Name;
-        knapsackEvaluator.KnapsackCapacityParameter.ActualName = KnapsackCapacityParameter.Name;
         knapsackEvaluator.PenaltyParameter.ActualName = PenaltyParameter.Name;
       }
     }
