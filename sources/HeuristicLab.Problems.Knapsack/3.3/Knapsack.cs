@@ -204,9 +204,11 @@ namespace HeuristicLab.Problems.Knapsack {
     }
     void WeightsParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
+      ParameterizeSolutionCreator();
     }
     void ValuesParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
+      ParameterizeSolutionCreator();
     }
     void PenaltyParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
