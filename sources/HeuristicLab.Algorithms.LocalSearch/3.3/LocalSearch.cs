@@ -154,7 +154,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
         op.MoveQualityParameter.ActualNameChanged += new EventHandler(MoveEvaluator_MoveQualityParameter_ActualNameChanged);
       }
       ParameterizeSolutionsCreator();
-      ParameterizeLSMainLoop();
+      ParameterizeMainLoop();
       ParameterizeMoveEvaluator();
       ParameterizeMoveMaker();
       UpdateMoveGenerator();
@@ -169,11 +169,16 @@ namespace HeuristicLab.Algorithms.LocalSearch {
     protected override void Problem_EvaluatorChanged(object sender, EventArgs e) {
       ParameterizeStochasticOperator(Problem.Evaluator);
       ParameterizeSolutionsCreator();
-      ParameterizeLSMainLoop();
+      ParameterizeMainLoop();
       ParameterizeMoveEvaluator();
       ParameterizeMoveMaker();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.Problem_EvaluatorChanged(sender, e);
+    }
+    protected override void Problem_VisualizerChanged(object sender, EventArgs e) {
+      ParameterizeStochasticOperator(Problem.Visualizer);
+      ParameterizeMainLoop();
+      base.Problem_VisualizerChanged(sender, e);
     }
     protected override void Problem_OperatorsChanged(object sender, EventArgs e) {
       foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
@@ -187,13 +192,13 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       UpdateMoveGenerator();
       if (oldMoveGenerator == MoveGenerator) // in this case MoveGeneratorParameter_ValueChanged did not fire
         UpdateMoveParameters();
-      ParameterizeLSMainLoop();
+      ParameterizeMainLoop();
       ParameterizeMoveEvaluator();
       ParameterizeMoveMaker();
       base.Problem_OperatorsChanged(sender, e);
     }
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
-      ParameterizeLSMainLoop();
+      ParameterizeMainLoop();
       ParameterizeMoveEvaluator();
       ParameterizeMoveMaker();
     }
@@ -201,12 +206,12 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       UpdateMoveParameters();
     }
     private void MoveEvaluatorParameter_ValueChanged(object sender, EventArgs e) {
-      ParameterizeLSMainLoop();
+      ParameterizeMainLoop();
       ParameterizeMoveEvaluator();
       ParameterizeMoveMaker();
     }
     private void MoveEvaluator_MoveQualityParameter_ActualNameChanged(object sender, EventArgs e) {
-      ParameterizeLSMainLoop();
+      ParameterizeMainLoop();
       ParameterizeMoveEvaluator();
       ParameterizeMoveMaker();
     }
@@ -272,11 +277,14 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       SolutionsCreator.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
       SolutionsCreator.SolutionCreatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
     }
-    private void ParameterizeLSMainLoop() {
+    private void ParameterizeMainLoop() {
       MainLoop.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
       MainLoop.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
       if (MoveEvaluator != null)
         MainLoop.MoveQualityParameter.ActualName = MoveEvaluator.MoveQualityParameter.ActualName;
+      MainLoop.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
+      MainLoop.VisualizerParameter.ActualName = Problem.VisualizerParameter.Name;
+      MainLoop.VisualizationParameter.ActualName = Problem.Visualizer.VisualizationParameter.ActualName;
     }
     private void ParameterizeStochasticOperator(IOperator op) {
       if (op is IStochasticOperator)
