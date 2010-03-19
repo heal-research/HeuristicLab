@@ -196,6 +196,12 @@ namespace HeuristicLab.Problems.OneMax {
     void VisualizerParameter_ValueChanged(object sender, EventArgs e) {
       OnVisualizerChanged();
     }
+    void OneBitflipMoveParameter_ActualNameChanged(object sender, EventArgs e) {
+      string name = ((ILookupParameter<OneBitflipMove>)sender).ActualName;
+      foreach (IOneBitflipMoveOperator op in Operators.OfType<IOneBitflipMoveOperator>()) {
+        op.OneBitflipMoveParameter.ActualName = name;
+      }
+    }
     #endregion
 
     #region Helpers
@@ -224,6 +230,15 @@ namespace HeuristicLab.Problems.OneMax {
         operators.AddRange(ApplicationManager.Manager.GetInstances<IBinaryVectorOperator>());
         ParameterizeOperators();
       }
+
+      InitializeMoveGenerators();
+    }
+    private void InitializeMoveGenerators() {
+      foreach (IOneBitflipMoveOperator op in Operators.OfType<IOneBitflipMoveOperator>()) {
+        if (op is IMoveGenerator) {
+          op.OneBitflipMoveParameter.ActualNameChanged += new EventHandler(OneBitflipMoveParameter_ActualNameChanged);
+        }
+      }
     }
     private void ParameterizeOperators() {
       foreach (IBinaryVectorCrossover op in Operators.OfType<IBinaryVectorCrossover>()) {
@@ -231,6 +246,9 @@ namespace HeuristicLab.Problems.OneMax {
         op.ChildParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
       }
       foreach (IBinaryVectorManipulator op in Operators.OfType<IBinaryVectorManipulator>()) {
+        op.BinaryVectorParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
+      }
+      foreach (IBinaryVectorMoveOperator op in Operators.OfType<IBinaryVectorMoveOperator>()) {
         op.BinaryVectorParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
       }
     }
