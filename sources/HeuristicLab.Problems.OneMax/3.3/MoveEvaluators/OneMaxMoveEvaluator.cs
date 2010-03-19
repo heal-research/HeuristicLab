@@ -46,8 +46,8 @@ namespace HeuristicLab.Problems.OneMax {
 
     protected OneMaxMoveEvaluator()
       : base() {
-      Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of a TSP solution."));
-      Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The evaluated quality of a move on a TSP solution."));
+      Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of a OneMax solution."));
+      Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The evaluated quality of a move on a OneMax solution."));
       Parameters.Add(new LookupParameter<BinaryVector>("BinaryVector", "The solution as BinaryVector."));
     }
   }
