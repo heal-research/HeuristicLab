@@ -137,6 +137,25 @@ namespace HeuristicLab.Problems.Knapsack {
     }
     #endregion
 
+    private void InitializeRandomKnapsackInstance() {
+      System.Random rand = new System.Random();
+
+      int itemCount = rand.Next(10, 100);
+      int capacity = itemCount * 5;
+
+      KnapsackCapacity = new IntValue(capacity);
+      Weights = new IntArray(itemCount);
+      Values = new IntArray(itemCount);
+
+      for (int i = 0; i < itemCount; i++ ) {
+        int value = rand.Next(1, 10);
+        int weight = rand.Next(1, 10);
+
+        Values[i] = value;
+        Weights[i] = weight;
+      }
+    }
+
     public Knapsack()
       : base() {
       RandomBinaryVectorCreator creator = new RandomBinaryVectorCreator();
@@ -154,6 +173,9 @@ namespace HeuristicLab.Problems.Knapsack {
 
       creator.BinaryVectorParameter.ActualName = "KnapsackSolution";
       evaluator.QualityParameter.ActualName = "NumberOfOnes";
+
+      InitializeRandomKnapsackInstance();
+      
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
 
