@@ -45,7 +45,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
       System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Active Plugins", System.Windows.Forms.HorizontalAlignment.Left);
-      System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Inactive Plugins", System.Windows.Forms.HorizontalAlignment.Left);
+      System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Disabled Plugins", System.Windows.Forms.HorizontalAlignment.Left);
       this.imageListForLocalItems = new System.Windows.Forms.ImageList(this.components);
       this.localPluginsListView = new HeuristicLab.PluginInfrastructure.Advanced.MultiSelectListView();
       this.nameHeader = new System.Windows.Forms.ColumnHeader();
@@ -69,8 +69,8 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.localPluginsListView.Dock = System.Windows.Forms.DockStyle.Fill;
       listViewGroup1.Header = "Active Plugins";
       listViewGroup1.Name = "activePluginsGroup";
-      listViewGroup2.Header = "Inactive Plugins";
-      listViewGroup2.Name = "inactivePluginsGroup";
+      listViewGroup2.Header = "Disabled Plugins";
+      listViewGroup2.Name = "disabledPluginsGroup";
       this.localPluginsListView.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
             listViewGroup1,
             listViewGroup2});

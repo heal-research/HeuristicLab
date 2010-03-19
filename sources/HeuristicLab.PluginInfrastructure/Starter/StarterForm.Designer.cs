@@ -46,8 +46,8 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StarterForm));
-      System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Plugin Management", System.Windows.Forms.HorizontalAlignment.Left);
-      System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Applications", System.Windows.Forms.HorizontalAlignment.Left);
+      System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Applications", System.Windows.Forms.HorizontalAlignment.Left);
+      System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Plugin Management", System.Windows.Forms.HorizontalAlignment.Left);
       this.startButton = new System.Windows.Forms.Button();
       this.largeImageList = new System.Windows.Forms.ImageList(this.components);
       this.applicationsListView = new System.Windows.Forms.ListView();
@@ -87,10 +87,10 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
             this.nameColumnHeader,
             this.versionColumnHeader,
             this.descriptionColumnHeader});
-      listViewGroup1.Header = "Plugin Management";
-      listViewGroup1.Name = "Plugin Management";
-      listViewGroup2.Header = "Applications";
-      listViewGroup2.Name = "Applications";
+      listViewGroup1.Header = "Applications";
+      listViewGroup1.Name = "Applications";
+      listViewGroup2.Header = "Plugin Management";
+      listViewGroup2.Name = "Plugin Management";
       this.applicationsListView.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
             listViewGroup1,
             listViewGroup2});
@@ -130,7 +130,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       // 
       this.detailsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.detailsButton.AutoSize = true;
-      this.detailsButton.Image = HeuristicLab.PluginInfrastructure.Properties.Resources.Details;
+      this.detailsButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.Details;
       this.detailsButton.Location = new System.Drawing.Point(68, 511);
       this.detailsButton.Name = "detailsButton";
       this.detailsButton.Size = new System.Drawing.Size(22, 23);
@@ -143,7 +143,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.listButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.listButton.AutoSize = true;
       this.listButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-      this.listButton.Image = HeuristicLab.PluginInfrastructure.Properties.Resources.List;
+      this.listButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.List;
       this.listButton.Location = new System.Drawing.Point(40, 511);
       this.listButton.Name = "listButton";
       this.listButton.Size = new System.Drawing.Size(22, 22);
@@ -156,7 +156,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.largeIconsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.largeIconsButton.AutoSize = true;
       this.largeIconsButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-      this.largeIconsButton.Image = HeuristicLab.PluginInfrastructure.Properties.Resources.LargeIcons;
+      this.largeIconsButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.LargeIcons;
       this.largeIconsButton.Location = new System.Drawing.Point(12, 511);
       this.largeIconsButton.Name = "largeIconsButton";
       this.largeIconsButton.Size = new System.Drawing.Size(22, 22);
@@ -164,7 +164,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.largeIconsButton.UseVisualStyleBackColor = true;
       this.largeIconsButton.Click += new System.EventHandler(this.largeIconsButton_Click);
       // 
-      // MainForm
+      // StarterForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -175,7 +175,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.Controls.Add(this.applicationsListView);
       this.Controls.Add(this.startButton);
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-      this.Name = "MainForm";
+      this.Name = "StarterForm";
       this.Text = "HeuristicLab Starter";
       this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
       this.ResumeLayout(false);
