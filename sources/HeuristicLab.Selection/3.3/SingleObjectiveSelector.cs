@@ -32,6 +32,12 @@ namespace HeuristicLab.Selection {
   [Item("SingleObjectiveSelector", "A base class for selection operators which consider a single double quality value for selection.")]
   [StorableClass]
   public abstract class SingleObjectiveSelector : Selector, ISingleObjectiveSelector {
+    protected ValueParameter<BoolValue> CopySelectedParameter {
+      get { return (ValueParameter<BoolValue>)Parameters["CopySelected"]; }
+    }
+    public IValueLookupParameter<IntValue> NumberOfSelectedSubScopesParameter {
+      get { return (ValueLookupParameter<IntValue>)Parameters["NumberOfSelectedSubScopes"]; }
+    }
     public IValueLookupParameter<BoolValue> MaximizationParameter {
       get { return (IValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
@@ -39,8 +45,15 @@ namespace HeuristicLab.Selection {
       get { return (ILookupParameter<ItemArray<DoubleValue>>)Parameters["Quality"]; }
     }
 
+    public BoolValue CopySelected {
+      get { return CopySelectedParameter.Value; }
+      set { CopySelectedParameter.Value = value; }
+    }
+
     protected SingleObjectiveSelector()
       : base() {
+      Parameters.Add(new ValueParameter<BoolValue>("CopySelected", "True if the selected sub-scopes should be copied, otherwise false.", new BoolValue(true)));
+      Parameters.Add(new ValueLookupParameter<IntValue>("NumberOfSelectedSubScopes", "The number of sub-scopes which should be selected."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the current problem is a maximization problem, otherwise false."));
       Parameters.Add(new SubScopesLookupParameter<DoubleValue>("Quality", "The quality value contained in each sub-scope which is used for selection."));
     }

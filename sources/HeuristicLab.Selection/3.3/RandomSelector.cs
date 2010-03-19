@@ -21,6 +21,9 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Selection {
@@ -30,8 +33,23 @@ namespace HeuristicLab.Selection {
   [Item("RandomSelector", "A random selection operator.")]
   [StorableClass]
   [Creatable("Test")]
-  public sealed class RandomSelector : StochasticSelector {
-    public RandomSelector() : base() { }
+  public sealed class RandomSelector : StochasticSelector, ISelector {
+    protected ValueParameter<BoolValue> CopySelectedParameter {
+      get { return (ValueParameter<BoolValue>)Parameters["CopySelected"]; }
+    }
+    public IValueLookupParameter<IntValue> NumberOfSelectedSubScopesParameter {
+      get { return (ValueLookupParameter<IntValue>)Parameters["NumberOfSelectedSubScopes"]; }
+    }
+
+    public BoolValue CopySelected {
+      get { return CopySelectedParameter.Value; }
+      set { CopySelectedParameter.Value = value; }
+    }
+    
+    public RandomSelector() : base() {
+      Parameters.Add(new ValueParameter<BoolValue>("CopySelected", "True if the selected sub-scopes should be copied, otherwise false.", new BoolValue(true)));
+      Parameters.Add(new ValueLookupParameter<IntValue>("NumberOfSelectedSubScopes", "The number of sub-scopes which should be selected."));
+    }
 
     protected override IScope[] Select(List<IScope> scopes) {
       int count = NumberOfSelectedSubScopesParameter.ActualValue.Value;
