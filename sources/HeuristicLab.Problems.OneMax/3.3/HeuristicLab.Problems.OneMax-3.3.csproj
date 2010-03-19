@@ -85,6 +85,7 @@
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\IOneMaxSolutionsVisualizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Evaluators\OneMaxEvaluator.cs" />
     <Compile Include="HeuristicLabProblemsOneMaxPlugin.cs" />
