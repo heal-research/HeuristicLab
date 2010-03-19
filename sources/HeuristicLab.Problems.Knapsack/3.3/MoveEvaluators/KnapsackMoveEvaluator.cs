@@ -21,27 +21,28 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
-using HeuristicLab.Operators;
-using System;
 
 namespace HeuristicLab.Problems.Knapsack {
   /// <summary>
-  /// A base class for operators which evaluates Knapsack solutions given in BinaryVector encoding.
+  /// A base class for operators which evaluate Knapsack moves.
   /// </summary>
-  [Item("KnapsackEvaluator", "Evaluates solutions for the Knapsack problem.")]
+  [Item("KnapsackMoveEvaluator", "A base class for operators which evaluate Knapsack moves.")]
   [StorableClass]
-  public class KnapsackEvaluator : SingleSuccessorOperator, IKnapsackEvaluator {
+  public abstract class KnapsackMoveEvaluator : SingleSuccessorOperator, IKnapsackMoveEvaluator, IMoveOperator, IBinaryVectorMoveOperator {
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
-    
+    public ILookupParameter<DoubleValue> MoveQualityParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters["MoveQuality"]; }
+    }
     public ILookupParameter<BinaryVector> BinaryVectorParameter {
       get { return (ILookupParameter<BinaryVector>)Parameters["BinaryVector"]; }
     }
-
     public ILookupParameter<IntValue> KnapsackCapacityParameter {
       get { return (ILookupParameter<IntValue>)Parameters["KnapsackCapacity"]; }
     }
@@ -55,54 +56,15 @@ namespace HeuristicLab.Problems.Knapsack {
       get { return (ILookupParameter<IntArray>)Parameters["Values"]; }
     }
 
-    public KnapsackEvaluator()
+    protected KnapsackMoveEvaluator()
       : base() {
-      Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The evaluated quality of the OneMax solution."));
-      Parameters.Add(new LookupParameter<BinaryVector>("BinaryVector", "The OneMax solution given in path representation which should be evaluated."));
+      Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of a Knapsack solution."));
+      Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The evaluated quality of a move on a Knapsack solution."));
+      Parameters.Add(new LookupParameter<BinaryVector>("BinaryVector", "The solution as BinaryVector."));
       Parameters.Add(new LookupParameter<IntValue>("KnapsackCapacity", "Capacity of the Knapsack."));
       Parameters.Add(new LookupParameter<IntArray>("Weights", "The weights of the items."));
       Parameters.Add(new LookupParameter<IntArray>("Values", "The values of the items."));
       Parameters.Add(new LookupParameter<DoubleValue>("Penalty", "The penalty value for each unit of overweight."));
-    }
-
-    public static DoubleValue Apply(BinaryVector v, IntValue capacity, DoubleValue penalty, IntArray weights, IntArray values) {
-      if (weights.Length != values.Length)
-        throw new InvalidOperationException("The weights and values parameters of the Knapsack problem have different sizes"); 
-      
-      double quality = 0;
-
-      int weight = 0;
-      int value = 0;
-
-      for (int i = 0; i < v.Length; i++) {
-        if (v[i]) {
-          weight += weights[i];
-          value += values[i];
-        }
-      }
-
-      if (weight > capacity.Value) {
-        quality =
-          value - penalty.Value * (weight - capacity.Value);
-      } else {
-        quality = value;
-      }
-
-      return new DoubleValue(quality);
-    }
-
-    public sealed override IOperation Apply() {
-      BinaryVector v = BinaryVectorParameter.ActualValue;
-
-      DoubleValue quality = Apply(BinaryVectorParameter.ActualValue,
-        KnapsackCapacityParameter.ActualValue, 
-        PenaltyParameter.ActualValue, 
-        WeightsParameter.ActualValue, 
-        ValuesParameter.ActualValue);
-
-      QualityParameter.ActualValue = quality;
-
-      return base.Apply();
     }
   }
 }
