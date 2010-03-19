@@ -72,9 +72,12 @@ namespace HeuristicLab.Problems.Knapsack {
     IParameter IProblem.EvaluatorParameter {
       get { return EvaluatorParameter; }
     }
-    IParameter IProblem.VisualizerParameter {
-      get { throw new NotImplementedException(); }
+    public OptionalValueParameter<IKnapsackSolutionsVisualizer> VisualizerParameter {
+      get { return (OptionalValueParameter<IKnapsackSolutionsVisualizer>)Parameters["Visualizer"]; }
     }
+    IParameter IProblem.VisualizerParameter {
+      get { return VisualizerParameter; }
+    }  
     public OptionalValueParameter<DoubleValue> BestKnownQualityParameter {
       get { return (OptionalValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
     }
@@ -117,9 +120,13 @@ namespace HeuristicLab.Problems.Knapsack {
     IEvaluator IProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
     }
-    ISolutionsVisualizer IProblem.Visualizer {
-      get { throw new NotImplementedException(); }
+    public IKnapsackSolutionsVisualizer Visualizer {
+      get { return VisualizerParameter.Value; }
+      set { VisualizerParameter.Value = value; }
     }
+    ISolutionsVisualizer IProblem.Visualizer {
+      get { return VisualizerParameter.Value; }
+    } 
     public DoubleValue BestKnownQuality {
       get { return BestKnownQualityParameter.Value; }
       set { BestKnownQualityParameter.Value = value; }
@@ -143,6 +150,7 @@ namespace HeuristicLab.Problems.Knapsack {
       Parameters.Add(new ValueParameter<IBinaryVectorCreator>("SolutionCreator", "The operator which should be used to create new Knapsack solutions.", creator));
       Parameters.Add(new ValueParameter<IKnapsackEvaluator>("Evaluator", "The operator which should be used to evaluate Knapsack solutions.", evaluator));
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this Knapsack instance."));
+      Parameters.Add(new ValueParameter<IKnapsackSolutionsVisualizer>("Visualizer", "The operator which should be used to visualize Knapsack solutions.", null));
 
       creator.BinaryVectorParameter.ActualName = "KnapsackSolution";
       evaluator.QualityParameter.ActualName = "NumberOfOnes";
@@ -223,6 +231,9 @@ namespace HeuristicLab.Problems.Knapsack {
     void PenaltyParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
     }
+    void VisualizerParameter_ValueChanged(object sender, EventArgs e) {
+      OnVisualizerChanged();
+    }
     #endregion
 
     #region Helpers
@@ -238,6 +249,7 @@ namespace HeuristicLab.Problems.Knapsack {
       ValuesParameter.ValueChanged += new EventHandler(ValuesParameter_ValueChanged);
       ValuesParameter.Value.Reset += new EventHandler(ValuesValue_Reset);
       PenaltyParameter.ValueChanged += new EventHandler(PenaltyParameter_ValueChanged);
+      VisualizerParameter.ValueChanged += new EventHandler(VisualizerParameter_ValueChanged);
     }
     private void ParameterizeSolutionCreator() {
       if(SolutionCreator.LengthParameter.Value == null ||

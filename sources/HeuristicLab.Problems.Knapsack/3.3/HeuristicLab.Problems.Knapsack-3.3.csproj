@@ -83,6 +83,7 @@
     <Compile Include="Evaluators\KnapsackEvaluator.cs" />
     <Compile Include="HeuristicLabProblemsKnapsackPlugin.cs" />
     <Compile Include="Interfaces\IKnapsackEvaluator.cs" />
+    <Compile Include="Interfaces\IKnapsackSolutionsVisualizer.cs" />
     <Compile Include="Knapsack.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
