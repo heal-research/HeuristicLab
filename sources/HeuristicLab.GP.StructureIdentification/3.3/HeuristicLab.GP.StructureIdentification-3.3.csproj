@@ -97,6 +97,7 @@
     <Compile Include="Evaluators\NodeBasedVariableImpactCalculator.cs" />
     <Compile Include="HL3TreeEvaluatorInjector.cs" />
     <Compile Include="HL2TreeEvaluatorInjector.cs" />
+    <Compile Include="InOrderExpressionExporter.cs" />
     <Compile Include="OffspringSelectionGPRegression.cs" />
     <Compile Include="PredictorBuilder.cs" />
     <Compile Include="Predictor.cs" />
