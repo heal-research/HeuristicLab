@@ -65,7 +65,7 @@ namespace HeuristicLab.Problems.OneMax {
     }
     IParameter IProblem.VisualizerParameter {
       get { throw new NotImplementedException(); }
-    }
+    }  
     public ValueParameter<DoubleValue> BestKnownQualityParameter {
       get { return (ValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
     }
@@ -75,6 +75,10 @@ namespace HeuristicLab.Problems.OneMax {
     #endregion
 
     #region Properties
+    public IntValue Length {
+      get { return LengthParameter.Value; }
+      set { LengthParameter.Value = value; }
+    }
     public IBinaryVectorCreator SolutionCreator {
       get { return SolutionCreatorParameter.Value; }
       set { SolutionCreatorParameter.Value = value; }
@@ -94,7 +98,7 @@ namespace HeuristicLab.Problems.OneMax {
     }
     ISolutionsVisualizer IProblem.Visualizer {
       get { throw new NotImplementedException(); }
-    }
+    } 
     public DoubleValue BestKnownQuality {
       get { return BestKnownQualityParameter.Value; }
     }
@@ -144,6 +148,11 @@ namespace HeuristicLab.Problems.OneMax {
         EvaluatorChanged(this, EventArgs.Empty);
     }
     public event EventHandler VisualizerChanged;
+    private void OnVisualizerChanged() {
+      if (VisualizerChanged != null)
+        VisualizerChanged(this, EventArgs.Empty);
+    }
+
     public event EventHandler OperatorsChanged;
     private void OnOperatorsChanged() {
       if (OperatorsChanged != null)
@@ -165,6 +174,16 @@ namespace HeuristicLab.Problems.OneMax {
       ParameterizeEvaluator();
       OnEvaluatorChanged();
     }
+    void LengthParameter_ValueChanged(object sender, EventArgs e) {
+      ParameterizeSolutionCreator();
+      LengthParameter.Value.ValueChanged += new EventHandler(Length_ValueChanged);
+    }
+    void Length_ValueChanged(object sender, EventArgs e) {
+      BestKnownQualityParameter.Value.Value = Length.Value;
+    }
+    void BestKnownQualityParameter_ValueChanged(object sender, EventArgs e) {
+      BestKnownQualityParameter.Value.Value = Length.Value;
+    }
     #endregion
 
     #region Helpers
@@ -174,9 +193,12 @@ namespace HeuristicLab.Problems.OneMax {
       SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
       SolutionCreator.BinaryVectorParameter.ActualNameChanged += new EventHandler(SolutionCreator_PermutationParameter_ActualNameChanged);
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
+      LengthParameter.ValueChanged += new EventHandler(LengthParameter_ValueChanged);
+      BestKnownQualityParameter.Value.Value = Length.Value;
+      BestKnownQualityParameter.ValueChanged += new EventHandler(BestKnownQualityParameter_ValueChanged);
     }
     private void ParameterizeSolutionCreator() {
-      SolutionCreator.LengthParameter.Value = LengthParameter.Value;
+      SolutionCreator.LengthParameter.ActualName = LengthParameter.Name;
     }
     private void ParameterizeEvaluator() {
       if (Evaluator is OneMaxEvaluator)
