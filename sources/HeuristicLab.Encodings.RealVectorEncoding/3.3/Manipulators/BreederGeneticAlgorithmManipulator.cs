@@ -37,23 +37,19 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   [StorableClass]
   public class BreederGeneticAlgorithmManipulator : RealVectorManipulator {
     private static readonly double[] powerOfTwo = new double[] { 1, 0.5, 0.25, 0.125, 0.0625, 0.03125, 0.015625, 0.0078125, 0.00390625, 0.001953125, 0.0009765625, 0.00048828125, 0.000244140625, 0.0001220703125, 0.00006103515625, 0.000030517578125 };
-    public ValueLookupParameter<DoubleValue> MinimumParameter {
-      get { return (ValueLookupParameter<DoubleValue>)Parameters["Minimum"]; }
-    }
-    public ValueLookupParameter<DoubleValue> MaximumParameter {
-      get { return (ValueLookupParameter<DoubleValue>)Parameters["Maximum"]; }
+    public ValueLookupParameter<DoubleMatrix> BoundsParameter {
+      get { return (ValueLookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
     }
     public ValueLookupParameter<DoubleValue> SearchIntervalFactorParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["SearchIntervalFactor"]; }
     }
     /// <summary>
-    /// Initializes a new instance of <see cref="BreederGeneticAlgorithmManipulator"/> with three variable
-    /// infos (<c>Minimum</c>, <c>Maximum</c> and <c>SearchIntervalFactor</c>).
+    /// Initializes a new instance of <see cref="BreederGeneticAlgorithmManipulator"/> with two
+    /// parameters (<c>Bounds</c> and <c>SearchIntervalFactor</c>).
     /// </summary>
     public BreederGeneticAlgorithmManipulator()
       : base() {
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("Minimum", "The lower bound for each element in the vector."));
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("Maximum", "The upper bound for each element in the vector."));
+      Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "The lower and upper bounds for each element in the vector."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("SearchIntervalFactor", "The factor determining the size of the search interval, that will be added/removed to/from the allele selected for manipulation.", new DoubleValue(0.1)));
     }
 
@@ -62,26 +58,25 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// </summary>
     /// <param name="random">A random number generator.</param>
     /// <param name="vector">The real vector to manipulate.</param>
-    /// <param name="min">The minimum number of the sampling range for the vector element (inclusive).</param>
-    /// <param name="max">The maximum number of the sampling range for the vector element (exclusive).</param>
+    /// <param name="bounds">The lower and upper bound (1st and 2nd column) of the positions in the vector. If there are less rows than dimensions, the rows are cycled.</param>
     /// <param name="searchIntervalFactor">The factor determining the size of the search interval.</param>
-    public static void Apply(IRandom random, RealVector vector, DoubleValue min, DoubleValue max, DoubleValue searchIntervalFactor) {
+    public static void Apply(IRandom random, RealVector vector, DoubleMatrix bounds, DoubleValue searchIntervalFactor) {
       int length = vector.Length;
       double prob, value;
       do {
         value = Sigma(random);
       } while (value == 0);
-      value *= searchIntervalFactor.Value * (max.Value - min.Value);
 
       prob = 1.0 / (double)length;
       bool wasMutated = false;
 
       for (int i = 0; i < length; i++) {
         if (random.NextDouble() < prob) {
+          double range = bounds[i % bounds.Rows, 1] - bounds[i % bounds.Rows, 0];
           if (random.NextDouble() < 0.5) {
-            vector[i] = vector[i] + value;
+            vector[i] = vector[i] + value * searchIntervalFactor.Value * range;
           } else {
-            vector[i] = vector[i] - value;
+            vector[i] = vector[i] - value * searchIntervalFactor.Value * range;
           }
           wasMutated = true;
         }
@@ -90,10 +85,11 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       // make sure at least one gene was mutated
       if (!wasMutated) {
         int pos = random.Next(length);
+        double range = bounds[pos % bounds.Rows, 1] - bounds[pos % bounds.Rows, 0];
         if (random.NextDouble() < 0.5) {
-          vector[pos] = vector[pos] + value;
+          vector[pos] = vector[pos] + value * searchIntervalFactor.Value * range;
         } else {
-          vector[pos] = vector[pos] - value;
+          vector[pos] = vector[pos] - value * searchIntervalFactor.Value * range;
         }
       }
     }
@@ -113,15 +109,14 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     /// <summary>
-    /// Checks the parameters Minimum, Maximum, and SearchIntervalFactor and forwards the call to <see cref="Apply(IRandom, RealVector, DoubleValue, DoubleValue, DoubleValue)"/>.
+    /// Checks the parameters Bounds, and SearchIntervalFactor and forwards the call to <see cref="Apply(IRandom, RealVector, DoubleValue, DoubleValue, DoubleValue)"/>.
     /// </summary>
     /// <param name="random">A random number generator.</param>
     /// <param name="realVector">The real vector to manipulate.</param>
     protected override void Manipulate(IRandom random, RealVector realVector) {
-      if (MinimumParameter.ActualValue == null) throw new InvalidOperationException("BreederGeneticAlgorithmManipulator: Parameter " + MinimumParameter.ActualName + " could not be found.");
-      if (MaximumParameter.ActualValue == null) throw new InvalidOperationException("BreederGeneticAlgorithmManipulator: Paraemter " + MaximumParameter.ActualName + " could not be found.");
+      if (BoundsParameter.ActualValue == null) throw new InvalidOperationException("BreederGeneticAlgorithmManipulator: Parameter " + BoundsParameter.ActualName + " could not be found.");
       if (SearchIntervalFactorParameter.ActualValue == null) throw new InvalidOperationException("BreederGeneticAlgorithmManipulator: Paraemter " + SearchIntervalFactorParameter.ActualName + " could not be found.");
-      Apply(random, realVector, MinimumParameter.ActualValue, MaximumParameter.ActualValue, SearchIntervalFactorParameter.ActualValue);
+      Apply(random, realVector, BoundsParameter.ActualValue, SearchIntervalFactorParameter.ActualValue);
     }
   }
 }

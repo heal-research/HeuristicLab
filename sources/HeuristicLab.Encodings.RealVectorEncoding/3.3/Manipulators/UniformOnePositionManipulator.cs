@@ -32,29 +32,22 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <remarks>
   /// It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.
   /// </remarks>
-  [Item("UniformOnePositionManipulator", "Changes a single position in the vector by sampling uniformly from the interval [Minimum, Maximum). It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.")]
+  [Item("UniformOnePositionManipulator", "Changes a single position in the vector by sampling uniformly from the interval [Minimum_i, Maximum_i) in dimension i. It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.")]
   [StorableClass]
   public class UniformOnePositionManipulator : RealVectorManipulator {
     /// <summary>
-    /// The lower bound of the values in the real vector.
+    /// The bounds of the values in the real vector.
     /// </summary>
-    public ValueLookupParameter<DoubleValue> MinimumParameter {
-      get { return (ValueLookupParameter<DoubleValue>)Parameters["Minimum"]; }
-    }
-    /// <summary>
-    /// The upper bound of the values in the real vector.
-    /// </summary>
-    public ValueLookupParameter<DoubleValue> MaximumParameter {
-      get { return (ValueLookupParameter<DoubleValue>)Parameters["Maximum"]; }
+    public ValueLookupParameter<DoubleMatrix> BoundsParameter {
+      get { return (ValueLookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
     }
 
     /// <summary>
-    /// Initializes a new instance of <see cref="UniformOnePositionManipulator"/> with two parameters
-    /// (<c>Minimum</c> and <c>Maximum</c>).
+    /// Initializes a new instance of <see cref="UniformOnePositionManipulator"/> with one parameter
+    /// (<c>Bounds</c>).
     /// </summary>
     public UniformOnePositionManipulator() {
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("Minimum", "Minimum of the sampling range for the vector element (included)"));
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("Maximum", "Maximum of the sampling range for the vector element (excluded)"));
+      Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "Lower and upper bound of the positions in the vector."));
     }
 
     /// <summary>
@@ -62,24 +55,22 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// </summary>
     /// <param name="random">A random number generator.</param>
     /// <param name="vector">The real vector to manipulate.</param>
-    /// <param name="min">The minimum value of the sampling range for 
-    /// the vector element to change (inclusive).</param>
-    /// <param name="max">The maximum value of the sampling range for
-    /// the vector element to change (exclusive).</param>
-    public static void Apply(IRandom random, RealVector vector, DoubleValue min, DoubleValue max) {
+    /// <param name="bounds">The lower and upper bound (1st and 2nd column) of the positions in the vector. If there are less rows than dimensions, the rows are cycled.</param>
+    public static void Apply(IRandom random, RealVector vector, DoubleMatrix bounds) {
       int index = random.Next(vector.Length);
-      vector[index] = min.Value + random.NextDouble() * (max.Value - min.Value);
+      double min = bounds[index % bounds.Rows, 0];
+      double max = bounds[index % bounds.Rows, 1];
+      vector[index] = min + random.NextDouble() * (max - min);
     }
 
     /// <summary>
-    /// Checks if the minimum and maximum parameters are available and forwards the call to <see cref="Apply(IRandom, RealVector, DoubleValue, DoubleValue)"/>.
+    /// Checks if the bounds parameters is available and forwards the call to <see cref="Apply(IRandom, RealVector, DoubleMatrix)"/>.
     /// </summary>
     /// <param name="random">The random number generator to use.</param>
     /// <param name="realVector">The real vector to manipulate.</param>
     protected override void Manipulate(IRandom random, RealVector realVector) {
-      if (MinimumParameter.ActualValue == null) throw new InvalidOperationException("UniformOnePositionManipulator: Parameter " + MinimumParameter.ActualName + " could not be found.");
-      if (MaximumParameter.ActualValue == null) throw new InvalidOperationException("UniformOnePositionManipulator: Parameter " + MaximumParameter.ActualName + " could not be found.");
-      Apply(random, realVector, MinimumParameter.ActualValue, MaximumParameter.ActualValue);
+      if (BoundsParameter.ActualValue == null) throw new InvalidOperationException("MichalewiczNonUniformOnePositionManipulator: Parameter " + BoundsParameter.ActualName + " could not be found.");
+      Apply(random, realVector, BoundsParameter.ActualValue);
     }
   }
 }

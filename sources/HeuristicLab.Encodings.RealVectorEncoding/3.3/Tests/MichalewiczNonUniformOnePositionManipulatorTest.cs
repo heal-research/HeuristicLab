@@ -85,7 +85,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
     public void MichalewiczNonUniformOnePositionManipulatorApplyTest() {
       TestRandom random = new TestRandom();
       RealVector parent, expected;
-      DoubleValue min, max, generationsDependency;
+      DoubleValue generationsDependency;
+      DoubleMatrix bounds;
       IntValue currentGeneration, maximumGenerations;
       bool exceptionFired;
       // The following test is not based on published examples
@@ -94,12 +95,11 @@ namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
       random.DoubleNumbers = new double[] { 0.2, 0.7 };
       parent = new RealVector(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
       expected = new RealVector(new double[] { 0.2, 0.2, 0.3, 0.34, 0.1 });
-      min = new DoubleValue(0.3);
-      max = new DoubleValue(0.7);
+      bounds = new DoubleMatrix(new double[,] { { 0.3, 0.7 } });
       generationsDependency = new DoubleValue(0.1);
       currentGeneration = new IntValue(1);
       maximumGenerations = new IntValue(4);
-      MichalewiczNonUniformOnePositionManipulator.Apply(random, parent, min, max, currentGeneration, maximumGenerations, generationsDependency);
+      MichalewiczNonUniformOnePositionManipulator.Apply(random, parent, bounds, currentGeneration, maximumGenerations, generationsDependency);
       Assert.IsTrue(Auxiliary.RealVectorIsAlmostEqualByPosition(expected, parent));
       // The following test is not based on published examples
       exceptionFired = false;
@@ -107,13 +107,12 @@ namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
       random.IntNumbers = new int[] { 3 };
       random.DoubleNumbers = new double[] { 0.2, 0.7 };
       parent = new RealVector(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
-      min = new DoubleValue(0.3);
-      max = new DoubleValue(0.7);
+      bounds = new DoubleMatrix(new double[,] { { 0.3, 0.7 } });
       generationsDependency = new DoubleValue(0.1);
       currentGeneration = new IntValue(5); //current generation > max generation
       maximumGenerations = new IntValue(4);
       try {
-        MichalewiczNonUniformOnePositionManipulator.Apply(random, parent, min, max, currentGeneration, maximumGenerations, generationsDependency);
+        MichalewiczNonUniformOnePositionManipulator.Apply(random, parent, bounds, currentGeneration, maximumGenerations, generationsDependency);
       }
       catch (System.ArgumentException) {
         exceptionFired = true;

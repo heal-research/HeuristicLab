@@ -46,11 +46,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public IValueLookupParameter<IntValue> LengthParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters["Length"]; }
     }
-    public IValueLookupParameter<DoubleValue> MinimumParameter {
-      get { return (IValueLookupParameter<DoubleValue>)Parameters["Minimum"]; }
-    }
-    public IValueLookupParameter<DoubleValue> MaximumParameter {
-      get { return (IValueLookupParameter<DoubleValue>)Parameters["Maximum"]; }
+    public IValueLookupParameter<DoubleMatrix> BoundsParameter {
+      get { return (IValueLookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
     }
 
     protected RealVectorCreator()
@@ -58,15 +55,14 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
       Parameters.Add(new LookupParameter<RealVector>("RealVector", "The vector which should be manipulated."));
       Parameters.Add(new ValueLookupParameter<IntValue>("Length", "The length of the vector."));
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("Minimum", "The lower bound for each element in the vector."));
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("Maximum", "The upper bound for each element in the vector."));
+      Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "A 2 column matrix specifying the lower and upper bound for each dimension. If there are less rows than dimension the bounds vector is cycled."));
     }
 
     public sealed override IOperation Apply() {
-      RealVectorParameter.ActualValue = Create(RandomParameter.ActualValue, LengthParameter.ActualValue, MinimumParameter.ActualValue, MaximumParameter.ActualValue);
+      RealVectorParameter.ActualValue = Create(RandomParameter.ActualValue, LengthParameter.ActualValue, BoundsParameter.ActualValue);
       return base.Apply();
     }
 
-    protected abstract RealVector Create(IRandom random, IntValue length, DoubleValue minimum, DoubleValue maximum);
+    protected abstract RealVector Create(IRandom random, IntValue length, DoubleMatrix bounds);
   }
 }

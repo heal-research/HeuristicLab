@@ -29,8 +29,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// </summary>
   public interface IRealVectorCreator : IRealVectorOperator, ISolutionCreator {
     IValueLookupParameter<IntValue> LengthParameter { get; }
-    IValueLookupParameter<DoubleValue> MinimumParameter { get; }
-    IValueLookupParameter<DoubleValue> MaximumParameter { get; }
+    IValueLookupParameter<DoubleMatrix> BoundsParameter { get; }
     ILookupParameter<RealVector> RealVectorParameter { get; }
   }
 }

@@ -47,28 +47,23 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// </remarks>
     /// <param name="random">The random number generator.</param>
     /// <param name="length">The length of the real vector.</param>
-    /// <param name="min">The minimum value of the sampling range for each vector element (inclusive).</param>
-    /// <param name="max">The maximum value of the sampling range for each vector element (exclusive).</param>
+    /// <param name="bounds">The lower and upper bound (1st and 2nd column) of the positions in the vector. If there are less rows than dimensions, the rows are cycled.</param>
     /// <returns>The newly created real vector.</returns>
-    public static RealVector Apply(IRandom random, int length, double min, double max) {
-      if (length <= 0) throw new ArgumentException("UniformRandomRealVectorCreator: Length is smaller or equal to 0.", "length");
-      if (min > max) throw new ArgumentException("UniformRandomRealVectorCreator: Minimum is greater than Maximum.", "min");
+    public static RealVector Apply(IRandom random, int length, DoubleMatrix bounds) {
       RealVector result = new RealVector(length);
-      for (int i = 0; i < length; i++)
-        result[i] = min + random.NextDouble() * (max - min);
+      result.Randomize(random, bounds);
       return result;
     }
 
     /// <summary>
-    /// Forwards the call to <see cref="Apply(IRandom, int, double, double)"/>.
+    /// Forwards the call to <see cref="Apply(IRandom, int, DoubleMatrix)"/>.
     /// </summary>
     /// <param name="random">The pseudo random number generator to use.</param>
     /// <param name="length">The length of the real vector.</param>
-    /// <param name="minimum">The minimum value of the sampling range for each vector element (inclusive).</param>
-    /// <param name="maximum">The maximum value of the sampling range for each vector element (exclusive).</param>
+    /// <param name="bounds">The lower and upper bound (1st and 2nd column) of the positions in the vector. If there are less rows than dimensions, the rows are cycled.</param>
     /// <returns>The newly created real vector.</returns>
-    protected override RealVector Create(IRandom random, IntValue length, DoubleValue minimum, DoubleValue maximum) {
-      return Apply(random, length.Value, minimum.Value, maximum.Value);
+    protected override RealVector Create(IRandom random, IntValue length, DoubleMatrix bounds) {
+      return Apply(random, length.Value, bounds);
     }
   }
 }

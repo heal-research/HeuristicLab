@@ -28,60 +28,53 @@ using System;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
-  /// Checks if all elements of a real vector are inside a given minimum and maximum value. 
+  /// Checks if all elements of a real vector are inside the bounds. 
   /// If not, the elements are corrected.
   /// </summary>
-  [Item("BoundsChecker", "Checks if all elements of a real vector are inside a given minimum and maximum value. If not, elements are corrected.")]
+  [Item("BoundsChecker", "Checks if all elements of a real vector are inside the bounds. If not, elements are corrected.")]
   [StorableClass]
   public class BoundsChecker : SingleSuccessorOperator {
     public LookupParameter<RealVector> RealVectorParameter {
       get { return (LookupParameter<RealVector>)Parameters["RealVector"]; }
     }
-    public ValueLookupParameter<DoubleValue> MinimumParameter {
-      get { return (ValueLookupParameter<DoubleValue>)Parameters["Minimum"]; }
-    }
-    public ValueLookupParameter<DoubleValue> MaximumParameter {
-      get { return (ValueLookupParameter<DoubleValue>)Parameters["Maximum"]; }
+    public ValueLookupParameter<DoubleMatrix> BoundsParameter {
+      get { return (ValueLookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
     }
 
     /// <summary>
-    /// Initializes a new instance of <see cref="BoundsChecker"/> with three parameters
-    /// (<c>RealVector</c>, <c>Minimum</c> and <c>Maximum</c>).
+    /// Initializes a new instance of <see cref="BoundsChecker"/> with two parameters
+    /// (<c>RealVector</c>, <c>Bounds</c>).
     /// </summary>
     public BoundsChecker()
       : base() {
       Parameters.Add(new LookupParameter<RealVector>("RealVector", "The real-valued vector for which the bounds should be checked."));
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("Minimum", "The lower bound for each element in the vector."));
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("Maximum", "The upper bound for each element in the vector."));
+      Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "The lower and upper bound (1st and 2nd column) of the positions in the vector. If there are less rows than dimensions, the rows are cycled."));
     }
 
     /// <summary>
-    /// Checks if all elements of the given <paramref name="vector"/> are inside the given minimum 
-    /// and maximum value and if not they are corrected.
+    /// Checks if all elements of the given <paramref name="vector"/> are inside the bounds and if not they are corrected.
     /// </summary>
-    /// <param name="min">The minimum value of the range (inclusive).</param>
-    /// <param name="max">The maximum value of the range (inclusive).</param>
+    /// <param name="bounds">The lower and upper bound (1st and 2nd column) of the positions in the vector. If there are less rows than dimensions, the rows are cycled.</param>
     /// <param name="vector">The vector to check.</param>
     /// <returns>The corrected real vector.</returns>
-    public static void Apply(RealVector vector, DoubleValue min, DoubleValue max) {
+    public static void Apply(RealVector vector, DoubleMatrix bounds) {
       for (int i = 0; i < vector.Length; i++) {
-        if (vector[i] < min.Value) vector[i] = min.Value;
-        if (vector[i] > max.Value) vector[i] = max.Value;
+        double min = bounds[i % bounds.Rows, 0], max = bounds[i % bounds.Rows, 1];
+        if (vector[i] < min) vector[i] = min;
+        if (vector[i] > max) vector[i] = max;
       }
     }
 
     /// <summary>
-    /// Checks if all elements of the given <paramref name="vector"/> are inside the given minimum 
-    /// and maximum value and if not they are corrected.
+    /// Checks if all elements of the given <paramref name="vector"/> are inside the bounds and if not they are corrected.
     /// </summary>
-    /// <exception cref="InvalidOperationException">Thrown when one of the three parameters (vector, minimum, or maximum) could not be found.</exception>
-    /// <remarks>Calls <see cref="Apply(double, double, double[])"/>.</remarks>
+    /// <exception cref="InvalidOperationException">Thrown when either vector or bounds could not be found.</exception>
+    /// <remarks>Calls <see cref="Apply(RealVector, DoubleMatrix)"/>.</remarks>
     /// <inheritdoc select="returns" />
     public override IOperation Apply() {
       if (RealVectorParameter.ActualValue == null) throw new InvalidOperationException("BoundsChecker: Parameter " + RealVectorParameter.ActualName + " could not be found.");
-      if (MinimumParameter.ActualValue == null) throw new InvalidOperationException("BoundsChecker: Parameter " + MinimumParameter.ActualName + " could not be found.");
-      if (MaximumParameter.ActualValue == null) throw new InvalidOperationException("BoundsChecker: Parameter " + MaximumParameter.ActualName + " could not be found.");
-      Apply(RealVectorParameter.ActualValue, MinimumParameter.ActualValue, MaximumParameter.ActualValue);
+      if (BoundsParameter.ActualValue == null) throw new InvalidOperationException("BoundsChecker: Parameter " + BoundsParameter.ActualName + " could not be found.");
+      Apply(RealVectorParameter.ActualValue, BoundsParameter.ActualValue);
       return base.Apply();
     }
   }

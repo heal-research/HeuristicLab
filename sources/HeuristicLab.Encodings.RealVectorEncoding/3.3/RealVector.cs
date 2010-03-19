@@ -55,8 +55,25 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
         OnReset();
       }
     }
+
+    public virtual void Randomize(IRandom random, int startIndex, int length, DoubleMatrix bounds) {
+      if (length > 0) {
+        for (int i = startIndex; i < startIndex + length; i++) {
+          double min = bounds[i % bounds.Rows, 0];
+          double max = bounds[i % bounds.Rows, 1];
+          array[i] = min + (max - min) * random.NextDouble();
+        }
+        OnReset();
+      }
+    }
+
     public void Randomize(IRandom random, double min, double max) {
       Randomize(random, 0, Length, min, max);
     }
+
+    public void Randomize(IRandom random, DoubleMatrix bounds) {
+      Randomize(random, 0, Length, bounds);
+    }
+
   }
 }
