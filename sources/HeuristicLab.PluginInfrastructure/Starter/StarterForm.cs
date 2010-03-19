@@ -44,6 +44,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     private ListViewItem pluginManagerListViewItem;
     private bool abortRequested;
     private PluginManager pluginManager;
+    private SplashScreen splashScreen;
 
     /// <summary>
     /// Initializes an instance of the starter form.
@@ -55,8 +56,8 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
 
       string pluginPath = Path.GetFullPath(Application.StartupPath);
       pluginManager = new PluginManager(pluginPath);
-      SplashScreen splashScreen = new SplashScreen(pluginManager, 1000, "Loading HeuristicLab...");
-      splashScreen.Show();
+      splashScreen = new SplashScreen(pluginManager, 1000);
+      splashScreen.Show("Loading HeuristicLab...");
 
       pluginManager.DiscoverAndCheckPlugins();
 
@@ -128,8 +129,8 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     }
 
     private void StartApplication(ApplicationDescription app) {
-      SplashScreen splashScreen = new SplashScreen(pluginManager, 2000, "Loading " + app.Name);
-      splashScreen.Show();
+      //new SplashScreen(pluginManager, 2000, );
+      splashScreen.Show("Loading " + app.Name);
       Thread t = new Thread(delegate() {
         bool stopped = false;
         do {
