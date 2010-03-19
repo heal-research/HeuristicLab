@@ -56,7 +56,7 @@ namespace HeuristicLab.Problems.TSP {
         if (permutation != value) {
           if (permutation != null) DeregisterPermutationEvents();
           permutation = value;
-          if (permutation != null) RegisterCoordinatesEvents();
+          if (permutation != null) RegisterPermutationEvents();
           OnPermutationChanged();
         }
       }
