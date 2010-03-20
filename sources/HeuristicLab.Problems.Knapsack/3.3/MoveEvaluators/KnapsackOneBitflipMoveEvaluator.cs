@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.Knapsack {
       BinaryVector newSolution = new BinaryVector(binaryVector);
       newSolution[move.Index] = !newSolution[move.Index];
 
-      DoubleValue quality = KnapsackEvaluator.Apply(BinaryVectorParameter.ActualValue,
+      DoubleValue quality = KnapsackEvaluator.Apply(newSolution,
         KnapsackCapacityParameter.ActualValue,
         PenaltyParameter.ActualValue,
         WeightsParameter.ActualValue,
