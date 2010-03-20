@@ -21,7 +21,6 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -31,7 +30,7 @@ namespace HeuristicLab.Selection {
   /// </summary>
   [Item("SingleObjectiveSelector", "A base class for selection operators which consider a single double quality value for selection.")]
   [StorableClass]
-  public abstract class SingleObjectiveSelector : Selector, ISingleObjectiveSelector {
+  public abstract class SingleObjectiveSelector : Selector {
     protected ValueParameter<BoolValue> CopySelectedParameter {
       get { return (ValueParameter<BoolValue>)Parameters["CopySelected"]; }
     }

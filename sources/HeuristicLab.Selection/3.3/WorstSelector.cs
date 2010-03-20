@@ -19,11 +19,12 @@
  */
 #endregion
 
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Data;
+using HeuristicLab.Optimization;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Selection {
   /// <summary>
@@ -32,7 +33,7 @@ namespace HeuristicLab.Selection {
   [Item("WorstSelector", "A selection operator which considers a single double quality value and selects the worst.")]
   [StorableClass]
   [Creatable("Test")]
-  public sealed class WorstSelector : SingleObjectiveSelector {
+  public sealed class WorstSelector : SingleObjectiveSelector, ISingleObjectiveSelector {
     public WorstSelector() : base() { }
 
     protected override IScope[] Select(List<IScope> scopes) {

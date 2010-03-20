@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -33,7 +34,7 @@ namespace HeuristicLab.Selection {
   [Item("TournamentSelector", "A tournament selection operator which considers a single double quality value for selection.")]
   [StorableClass]
   [Creatable("Test")]
-  public sealed class TournamentSelector : StochasticSingleObjectiveSelector {
+  public sealed class TournamentSelector : StochasticSingleObjectiveSelector, ISingleObjectiveSelector {
     public ValueLookupParameter<IntValue> GroupSizeParameter {
       get { return (ValueLookupParameter<IntValue>)Parameters["GroupSize"]; }
     }

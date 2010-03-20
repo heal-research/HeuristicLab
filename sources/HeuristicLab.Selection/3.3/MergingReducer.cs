@@ -21,6 +21,7 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Core;
+using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Selection {
@@ -30,7 +31,7 @@ namespace HeuristicLab.Selection {
   [Item("MergingReducer", "An operator which reduces to the sub-scopes of all sub-scopes of the current scope.")]
   [StorableClass]
   [Creatable("Test")]
-  public sealed class MergingReducer : Reducer {
+  public sealed class MergingReducer : Reducer, IReducer {
     public MergingReducer() : base() { }
 
     protected override List<IScope> Reduce(List<IScope> scopes) {

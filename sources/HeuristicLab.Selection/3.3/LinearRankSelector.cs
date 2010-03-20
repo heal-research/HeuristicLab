@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Selection {
@@ -32,7 +33,7 @@ namespace HeuristicLab.Selection {
   [Item("LinearRankSelector", "A linear rank selection operator which considers the rank based on a single double quality value for selection.")]
   [StorableClass]
   [Creatable("Test")]
-  public sealed class LinearRankSelector : StochasticSingleObjectiveSelector {
+  public sealed class LinearRankSelector : StochasticSingleObjectiveSelector, ISingleObjectiveSelector {
     public LinearRankSelector() : base() { }
 
     protected override IScope[] Select(List<IScope> scopes) {

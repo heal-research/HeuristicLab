@@ -21,6 +21,7 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Core;
+using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Selection {
@@ -30,7 +31,7 @@ namespace HeuristicLab.Selection {
   [Item("LeftReducer", "An operator which reduces to the sub-scopes of the leftmost sub-scope of the current scope.")]
   [StorableClass]
   [Creatable("Test")]
-  public sealed class LeftReducer : Reducer {
+  public sealed class LeftReducer : Reducer, IReducer {
     public LeftReducer() : base() { }
 
     protected override List<IScope> Reduce(List<IScope> scopes) {

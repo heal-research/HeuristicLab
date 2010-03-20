@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -34,7 +35,7 @@ namespace HeuristicLab.Selection {
   [Item("ProportionalSelector", "A quality proportional selection operator which considers a single double quality value for selection.")]
   [StorableClass]
   [Creatable("Test")]
-  public sealed class ProportionalSelector : StochasticSingleObjectiveSelector {
+  public sealed class ProportionalSelector : StochasticSingleObjectiveSelector, ISingleObjectiveSelector {
     private ValueParameter<BoolValue> WindowingParameter {
       get { return (ValueParameter<BoolValue>)Parameters["Windowing"]; }
     }
