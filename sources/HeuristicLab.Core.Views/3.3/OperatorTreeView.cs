@@ -69,7 +69,6 @@ namespace HeuristicLab.Core.Views {
       operatorNodeTable = new Dictionary<IOperator, List<TreeNode>>();
       parametersOperatorTable = new Dictionary<IObservableKeyedCollection<string, IParameter>, IOperator>();
       Caption = "Operator";
-      imageList.Images.Add("Default", HeuristicLab.Common.Resources.VS2008ImageLibrary.Method);
     }
     /// <summary>
     /// Initializes a new instance of <see cref="OperatorGraphView"/> 
@@ -119,44 +118,50 @@ namespace HeuristicLab.Core.Views {
       }
       opParamNodeTable[opParam].Add(node);
 
-      IOperator op = opParam.Value;
-      if (op == null)
-        node.Text += "-";
-      else
-        FillTreeNode(node, op);
-
+      FillTreeNode(node, opParam.Value);
       return node;
     }
     private void FillTreeNode(TreeNode node, IOperator op) {
-      if (!graphTreeView.ImageList.Images.ContainsKey(op.GetType().FullName))
-        graphTreeView.ImageList.Images.Add(op.GetType().FullName, op.ItemImage);
+      if (op == null) {
+        if (!graphTreeView.ImageList.Images.ContainsKey("Default"))
+          graphTreeView.ImageList.Images.Add("Default", HeuristicLab.Common.Resources.VS2008ImageLibrary.Method);
 
-      node.Text += op.Name;
-      node.ToolTipText = op.ItemName + ": " + op.ItemDescription;
-      node.ImageIndex = graphTreeView.ImageList.Images.IndexOfKey(op.GetType().FullName);
-      node.SelectedImageIndex = node.ImageIndex;
-      SetOperatorTag(node, op);
+        node.Text += "-";
+        node.ToolTipText = "";
+        node.ImageIndex = graphTreeView.ImageList.Images.IndexOfKey("Default"); ;
+        node.SelectedImageIndex = node.ImageIndex;
+        node.ForeColor = graphTreeView.ForeColor;
+      } else {
+        if (!graphTreeView.ImageList.Images.ContainsKey(op.GetType().FullName))
+          graphTreeView.ImageList.Images.Add(op.GetType().FullName, op.ItemImage);
 
-      if (!operatorNodeTable.ContainsKey(op)) {
-        operatorNodeTable.Add(op, new List<TreeNode>());
-        op.NameChanged += new EventHandler(op_NameChanged);
-        op.BreakpointChanged += new EventHandler(op_BreakpointChanged);
-        parametersOperatorTable.Add(op.Parameters, op);
-        op.Parameters.ItemsAdded += new CollectionItemsChangedEventHandler<IParameter>(Parameters_ItemsAdded);
-        op.Parameters.ItemsRemoved += new CollectionItemsChangedEventHandler<IParameter>(Parameters_ItemsRemoved);
-        op.Parameters.ItemsReplaced += new CollectionItemsChangedEventHandler<IParameter>(Parameters_ItemsReplaced);
-        op.Parameters.CollectionReset += new CollectionItemsChangedEventHandler<IParameter>(Parameters_CollectionReset);
+        node.Text += op.Name;
+        node.ToolTipText = op.ItemName + ": " + op.ItemDescription;
+        node.ImageIndex = graphTreeView.ImageList.Images.IndexOfKey(op.GetType().FullName);
+        node.SelectedImageIndex = node.ImageIndex;
+        SetOperatorTag(node, op);
+
+        if (!operatorNodeTable.ContainsKey(op)) {
+          operatorNodeTable.Add(op, new List<TreeNode>());
+          op.NameChanged += new EventHandler(op_NameChanged);
+          op.BreakpointChanged += new EventHandler(op_BreakpointChanged);
+          parametersOperatorTable.Add(op.Parameters, op);
+          op.Parameters.ItemsAdded += new CollectionItemsChangedEventHandler<IParameter>(Parameters_ItemsAdded);
+          op.Parameters.ItemsRemoved += new CollectionItemsChangedEventHandler<IParameter>(Parameters_ItemsRemoved);
+          op.Parameters.ItemsReplaced += new CollectionItemsChangedEventHandler<IParameter>(Parameters_ItemsReplaced);
+          op.Parameters.CollectionReset += new CollectionItemsChangedEventHandler<IParameter>(Parameters_CollectionReset);
+        }
+        operatorNodeTable[op].Add(node);
+
+        if (op.Breakpoint) node.ForeColor = Color.Red;
+        else node.ForeColor = graphTreeView.ForeColor;
+
+        foreach (IParameter param in op.Parameters) {
+          if (param is IValueParameter<IOperator>)
+            node.Nodes.Add(new TreeNode());
+        }
+        node.Collapse();
       }
-      operatorNodeTable[op].Add(node);
-
-      if (op.Breakpoint)
-        node.ForeColor = Color.Red;
-
-      foreach (IParameter param in op.Parameters) {
-        if (param is IValueParameter<IOperator>)
-          node.Nodes.Add(new TreeNode());
-      }
-      node.Collapse();
     }
     private void ClearTreeNode(TreeNode node) {
       while (node.Nodes.Count > 0)
@@ -222,10 +227,7 @@ namespace HeuristicLab.Core.Views {
           ClearTreeNode(node);
         foreach (TreeNode node in opParamNodeTable[opParam]) {
           node.Text = opParam.Name + ": ";
-          if (opParam.Value == null)
-            node.Text += "-";
-          else
-            FillTreeNode(node, opParam.Value);
+          FillTreeNode(node, opParam.Value);
         }
       }
     }
