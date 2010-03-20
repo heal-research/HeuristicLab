@@ -38,7 +38,6 @@ namespace HeuristicLab.Problems.TSP {
     public DoubleMatrix Coordinates {
       get { return coordinates; }
       set {
-        if (value == null) throw new ArgumentNullException();
         if (coordinates != value) {
           if (coordinates != null) DeregisterCoordinatesEvents();
           coordinates = value;
@@ -52,7 +51,6 @@ namespace HeuristicLab.Problems.TSP {
     public Permutation Permutation {
       get { return permutation; }
       set {
-        if (value == null) throw new ArgumentNullException();
         if (permutation != value) {
           if (permutation != null) DeregisterPermutationEvents();
           permutation = value;
@@ -62,10 +60,13 @@ namespace HeuristicLab.Problems.TSP {
       }
     }
 
-    private PathTSPTour() : base() { }
-    public PathTSPTour(DoubleMatrix coordinates, Permutation permutation)
+    public PathTSPTour() : base() { }
+    public PathTSPTour(DoubleMatrix coordinates)
       : base() {
       Coordinates = coordinates;
+    }
+    public PathTSPTour(DoubleMatrix coordinates, Permutation permutation)
+      : this(coordinates) {
       Permutation = permutation;
     }
 

@@ -44,11 +44,14 @@ namespace HeuristicLab.Operators {
       VariableCollection results = ResultsParameter.ActualValue;
       IVariable var;
       foreach (IParameter param in CollectedValues) {
-        results.TryGetValue(param.Name, out var);
-        if (var != null)
-          var.Value = (IItem)param.ActualValue;
-        else
-          results.Add(new Variable(param.Name, param.Description, param.ActualValue));
+        IItem value = param.ActualValue;
+        if (value != null) {
+          results.TryGetValue(param.Name, out var);
+          if (var != null)
+            var.Value = value;
+          else
+            results.Add(new Variable(param.Name, param.Description, value));
+        }
       }
       return base.Apply();
     }

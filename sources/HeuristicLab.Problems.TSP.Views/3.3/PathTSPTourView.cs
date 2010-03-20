@@ -82,30 +82,38 @@ namespace HeuristicLab.Problems.TSP.Views {
         } else {
           DoubleMatrix coordinates = Content.Coordinates;
           Permutation permutation = Content.Permutation;
-
-          double xMin = double.MaxValue, yMin = double.MaxValue, xMax = double.MinValue, yMax = double.MinValue;
-          for (int i = 0; i < coordinates.Rows; i++) {
-            if (xMin > coordinates[i, 0]) xMin = coordinates[i, 0];
-            if (yMin > coordinates[i, 1]) yMin = coordinates[i, 1];
-            if (xMax < coordinates[i, 0]) xMax = coordinates[i, 0];
-            if (yMax < coordinates[i, 1]) yMax = coordinates[i, 1];
-          }
-
-          int border = 20;
-          double xStep = (pictureBox.Width - 2 * border) / (xMax - xMin);
-          double yStep = (pictureBox.Height - 2 * border) / (yMax - yMin);
-
-          Point[] points = new Point[coordinates.Rows];
-          for (int i = 0; i < coordinates.Rows; i++)
-            points[i] = new Point(border + ((int)((coordinates[permutation[i], 0] - xMin) * xStep)),
-                                  border + ((int)((coordinates[permutation[i], 1] - yMin) * yStep)));
-
           Bitmap bitmap = new Bitmap(pictureBox.Width, pictureBox.Height);
-          Graphics graphics = Graphics.FromImage(bitmap);
-          graphics.DrawPolygon(Pens.Black, points);
-          for (int i = 0; i < points.Length; i++)
-            graphics.FillRectangle(Brushes.Blue, points[i].X - 1, points[i].Y - 1, 4, 4);
-          graphics.Dispose();
+
+          if (coordinates != null) {
+            double xMin = double.MaxValue, yMin = double.MaxValue, xMax = double.MinValue, yMax = double.MinValue;
+            for (int i = 0; i < coordinates.Rows; i++) {
+              if (xMin > coordinates[i, 0]) xMin = coordinates[i, 0];
+              if (yMin > coordinates[i, 1]) yMin = coordinates[i, 1];
+              if (xMax < coordinates[i, 0]) xMax = coordinates[i, 0];
+              if (yMax < coordinates[i, 1]) yMax = coordinates[i, 1];
+            }
+
+            int border = 20;
+            double xStep = (pictureBox.Width - 2 * border) / (xMax - xMin);
+            double yStep = (pictureBox.Height - 2 * border) / (yMax - yMin);
+
+            Point[] points = new Point[coordinates.Rows];
+            if (permutation == null) {
+              for (int i = 0; i < coordinates.Rows; i++)
+                points[i] = new Point(border + ((int)((coordinates[i, 0] - xMin) * xStep)),
+                                      border + ((int)((coordinates[i, 1] - yMin) * yStep)));
+            } else {
+              for (int i = 0; i < coordinates.Rows; i++)
+                points[i] = new Point(border + ((int)((coordinates[permutation[i], 0] - xMin) * xStep)),
+                                      border + ((int)((coordinates[permutation[i], 1] - yMin) * yStep)));
+            }
+
+            Graphics graphics = Graphics.FromImage(bitmap);
+            if (permutation != null) graphics.DrawPolygon(Pens.Black, points);
+            for (int i = 0; i < points.Length; i++)
+              graphics.FillRectangle(Brushes.Red, points[i].X - 2, points[i].Y - 2, 6, 6);
+            graphics.Dispose();
+          }
           pictureBox.Image = bitmap;
         }
       }

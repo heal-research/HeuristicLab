@@ -217,10 +217,14 @@ namespace HeuristicLab.Problems.TSP {
       ParameterizeOperators();
     }
     private void EvaluatorParameter_ValueChanged(object sender, EventArgs e) {
+      Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       ParameterizeEvaluator();
       ParameterizeVisualizer();
       ClearDistanceMatrix();
       OnEvaluatorChanged();
+    }
+    private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
+      ParameterizeVisualizer();
     }
     private void VisualizerParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeVisualizer();
@@ -250,8 +254,10 @@ namespace HeuristicLab.Problems.TSP {
       SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
       SolutionCreator.PermutationParameter.ActualNameChanged += new EventHandler(SolutionCreator_PermutationParameter_ActualNameChanged);
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
+      Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       VisualizerParameter.ValueChanged += new EventHandler(VisualizerParameter_ValueChanged);
     }
+
     private void InitializeOperators() {
       operators = new List<IPermutationOperator>();
       if (ApplicationManager.Manager != null) {
@@ -286,11 +292,13 @@ namespace HeuristicLab.Problems.TSP {
       }
     }
     private void ParameterizeVisualizer() {
-      Visualizer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
-      if (Visualizer is ICoordinatesTSPSolutionsVisualizer)
-        ((ICoordinatesTSPSolutionsVisualizer)Visualizer).CoordinatesParameter.ActualName = CoordinatesParameter.Name;
-      if (Visualizer is IPathCoordinatesTSPSolutionsVisualizer)
-        ((IPathCoordinatesTSPSolutionsVisualizer)Visualizer).PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+      if (Visualizer != null) {
+        Visualizer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
+        if (Visualizer is ICoordinatesTSPSolutionsVisualizer)
+          ((ICoordinatesTSPSolutionsVisualizer)Visualizer).CoordinatesParameter.ActualName = CoordinatesParameter.Name;
+        if (Visualizer is IPathCoordinatesTSPSolutionsVisualizer)
+          ((IPathCoordinatesTSPSolutionsVisualizer)Visualizer).PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+      }
     }
     private void ParameterizeOperators() {
       foreach (IPermutationCrossover op in Operators.OfType<IPermutationCrossover>()) {

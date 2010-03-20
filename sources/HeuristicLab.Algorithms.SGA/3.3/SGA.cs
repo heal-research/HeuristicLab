@@ -190,8 +190,10 @@ namespace HeuristicLab.Algorithms.SGA {
       UpdateCrossovers();
       UpdateMutators();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
+      if (Problem.Visualizer != null) Problem.Visualizer.VisualizationParameter.ActualNameChanged += new EventHandler(Visualizer_VisualizationParameter_ActualNameChanged);
       base.OnProblemChanged();
     }
+
     protected override void Problem_SolutionCreatorChanged(object sender, EventArgs e) {
       ParameterizeStochasticOperator(Problem.SolutionCreator);
       ParameterizeSolutionsCreator();
@@ -208,6 +210,7 @@ namespace HeuristicLab.Algorithms.SGA {
     protected override void Problem_VisualizerChanged(object sender, EventArgs e) {
       ParameterizeStochasticOperator(Problem.Visualizer);
       ParameterizeSGAMainLoop();
+      if (Problem.Visualizer != null) Problem.Visualizer.VisualizationParameter.ActualNameChanged += new EventHandler(Visualizer_VisualizationParameter_ActualNameChanged);
       base.Problem_VisualizerChanged(sender, e);
     }
     protected override void Problem_OperatorsChanged(object sender, EventArgs e) {
@@ -234,6 +237,9 @@ namespace HeuristicLab.Algorithms.SGA {
       ParameterizeSGAMainLoop();
       ParameterizeSelectors();
     }
+    private void Visualizer_VisualizationParameter_ActualNameChanged(object sender, EventArgs e) {
+      ParameterizeSGAMainLoop();
+    }
     #endregion
 
     #region Helpers
@@ -245,8 +251,12 @@ namespace HeuristicLab.Algorithms.SGA {
       PopulationSize.ValueChanged += new EventHandler(PopulationSize_ValueChanged);
       ElitesParameter.ValueChanged += new EventHandler(ElitesParameter_ValueChanged);
       Elites.ValueChanged += new EventHandler(Elites_ValueChanged);
-      if (Problem != null)
+      if (Problem != null) {
+        UpdateCrossovers();
+        UpdateMutators();
         Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
+        if (Problem.Visualizer != null) Problem.Visualizer.VisualizationParameter.ActualNameChanged += new EventHandler(Visualizer_VisualizationParameter_ActualNameChanged);
+      }
     }
 
     private void ParameterizeSolutionsCreator() {
@@ -259,7 +269,8 @@ namespace HeuristicLab.Algorithms.SGA {
       SGAMainLoop.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
       SGAMainLoop.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
       SGAMainLoop.VisualizerParameter.ActualName = Problem.VisualizerParameter.Name;
-      SGAMainLoop.VisualizationParameter.ActualName = Problem.Visualizer.VisualizationParameter.ActualName;
+      if (Problem.Visualizer != null)
+        SGAMainLoop.VisualizationParameter.ActualName = Problem.Visualizer.VisualizationParameter.ActualName;
     }
     private void ParameterizeStochasticOperator(IOperator op) {
       if (op is IStochasticOperator)
