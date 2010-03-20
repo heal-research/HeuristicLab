@@ -163,26 +163,26 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       mainProcessor.Name = "Solution processor (UniformSequentialSubScopesProcessor)";
 
       moveGenerator.Name = "MoveGenerator (placeholder)";
-      moveGenerator.OperatorParameter.ActualName = "MoveGenerator";
+      moveGenerator.OperatorParameter.ActualName = MoveGeneratorParameter.Name;
 
       moveEvaluator.Name = "MoveEvaluator (placeholder)";
-      moveEvaluator.OperatorParameter.ActualName = "MoveEvaluator";
+      moveEvaluator.OperatorParameter.ActualName = MoveEvaluatorParameter.Name;
 
       bestSelector.CopySelected = new BoolValue(false);
-      bestSelector.MaximizationParameter.ActualName = "Maximization";
+      bestSelector.MaximizationParameter.ActualName = MaximizationParameter.Name;
       bestSelector.NumberOfSelectedSubScopesParameter.Value = new IntValue(1);
-      bestSelector.QualityParameter.ActualName = "MoveQuality";
+      bestSelector.QualityParameter.ActualName = MoveQualityParameter.Name;
 
       moveMakingProcessor.Name = "MoveMaking processor (UniformSequentialSubScopesProcessor)";
 
-      qualityComparator.LeftSideParameter.ActualName = "MoveQuality";
-      qualityComparator.RightSideParameter.ActualName = "Quality";
+      qualityComparator.LeftSideParameter.ActualName = MoveQualityParameter.Name;
+      qualityComparator.RightSideParameter.ActualName = QualityParameter.Name;
       qualityComparator.ResultParameter.ActualName = "IsBetter";
 
       improvesQualityBranch.ConditionParameter.ActualName = "IsBetter";
 
       moveMaker.Name = "MoveMaker (placeholder)";
-      moveMaker.OperatorParameter.ActualName = "MoveMaker";
+      moveMaker.OperatorParameter.ActualName = MoveMakerParameter.Name;
 
       subScopesRemover.RemoveAllSubScopes = true;
 
@@ -190,11 +190,11 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       iterationsCounter.Increment = new IntValue(1);
       iterationsCounter.ValueParameter.ActualName = "Iterations";
 
-      iterationsComparator.Name = "Iterations Comparator";
-      iterationsComparator.Comparison = new Comparison(ComparisonType.Less);
+      iterationsComparator.Name = "Iterations >= MaximumIterations";
+      iterationsComparator.Comparison = new Comparison(ComparisonType.GreaterOrEqual);
       iterationsComparator.LeftSideParameter.ActualName = "Iterations";
-      iterationsComparator.RightSideParameter.ActualName = "MaximumIterations";
-      iterationsComparator.ResultParameter.ActualName = "IterationsCondition";
+      iterationsComparator.RightSideParameter.ActualName = MaximumIterationsParameter.Name;
+      iterationsComparator.ResultParameter.ActualName = "Terminate";
 
       bestQualityMemorizer3.BestQualityParameter.ActualName = BestKnownQualityParameter.Name;
       bestQualityMemorizer3.MaximizationParameter.ActualName = MaximizationParameter.Name;
@@ -217,7 +217,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       visualizer2.OperatorParameter.ActualName = VisualizerParameter.Name;
 
       iterationsTermination.Name = "Iterations Termination Condition";
-      iterationsTermination.ConditionParameter.ActualName = "IterationsCondition";
+      iterationsTermination.ConditionParameter.ActualName = "Terminate";
       #endregion
 
       #region Create operator graph
@@ -251,8 +251,8 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       dataTableValuesCollector2.Successor = qualityDifferenceCalculator2;
       qualityDifferenceCalculator2.Successor = visualizer2;
       visualizer2.Successor = iterationsTermination;
-      iterationsTermination.TrueBranch = mainProcessor;
-      iterationsTermination.FalseBranch = null;
+      iterationsTermination.TrueBranch = null;
+      iterationsTermination.FalseBranch = mainProcessor;
       #endregion
     }
   }

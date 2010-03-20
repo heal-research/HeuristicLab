@@ -211,11 +211,11 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       iterationsCounter.Increment = new IntValue(1);
       iterationsCounter.ValueParameter.ActualName = "Iterations";
 
-      iterationsComparator.Name = "Iterations Comparator";
-      iterationsComparator.Comparison = new Comparison(ComparisonType.Less);
+      iterationsComparator.Name = "Iterations >= MaximumIterations";
+      iterationsComparator.Comparison = new Comparison(ComparisonType.GreaterOrEqual);
       iterationsComparator.LeftSideParameter.ActualName = "Iterations";
       iterationsComparator.RightSideParameter.ActualName = MaximumIterationsParameter.Name;
-      iterationsComparator.ResultParameter.ActualName = "IterationsCondition";
+      iterationsComparator.ResultParameter.ActualName = "Terminate";
 
       bestQualityMemorizer3.BestQualityParameter.ActualName = "BestQuality";
       bestQualityMemorizer3.MaximizationParameter.ActualName = MaximizationParameter.Name;
@@ -234,7 +234,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       visualizer2.OperatorParameter.ActualName = VisualizerParameter.Name;
 
       iterationsTermination.Name = "Iterations Termination Condition";
-      iterationsTermination.ConditionParameter.ActualName = "IterationsCondition";
+      iterationsTermination.ConditionParameter.ActualName = "Terminate";
       #endregion
 
       #region Create operator graph
@@ -269,8 +269,8 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       bestQualityMemorizer4.Successor = qualityDifferenceCalculator2;
       qualityDifferenceCalculator2.Successor = visualizer2;
       visualizer2.Successor = iterationsTermination;
-      iterationsTermination.TrueBranch = mainProcessor;
-      iterationsTermination.FalseBranch = null;
+      iterationsTermination.TrueBranch = null;
+      iterationsTermination.FalseBranch = mainProcessor;
       #endregion
     }
   }
