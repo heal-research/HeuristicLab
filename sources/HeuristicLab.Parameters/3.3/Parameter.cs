@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -31,6 +32,14 @@ namespace HeuristicLab.Parameters {
   [Item("Parameter", "A base class for parameters.")]
   [StorableClass]
   public abstract class Parameter : NamedItem, IParameter {
+    public override Image ItemImage {
+      get {
+        if ((dataType != null) && (typeof(IOperator).IsAssignableFrom(dataType)))
+          return HeuristicLab.Common.Resources.VS2008ImageLibrary.Method;
+        else
+          return base.ItemImage;
+      }
+    }
     public override bool CanChangeName {
       get { return false; }
     }

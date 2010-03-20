@@ -53,14 +53,6 @@ namespace HeuristicLab.Parameters {
         SetActualValue(value);
       }
     }
-    public override System.Drawing.Image ItemImage {
-      get {
-        if (typeof(IOperator).IsAssignableFrom(typeof(T)))
-          return HeuristicLab.Common.Resources.VS2008ImageLibrary.Method;
-        else
-          return base.ItemImage;
-      }
-    }
 
     public LookupParameter()
       : base("Anonymous", typeof(T)) {

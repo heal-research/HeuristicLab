@@ -71,15 +71,6 @@ namespace HeuristicLab.Parameters {
       }
     }
 
-    public override System.Drawing.Image ItemImage {
-      get {
-        if (typeof(IOperator).IsAssignableFrom(typeof(T)))
-          return HeuristicLab.Common.Resources.VS2008ImageLibrary.Method;
-        else
-          return base.ItemImage;
-      }
-    }
-
     public OptionalConstrainedValueParameter()
       : base("Anonymous", typeof(T)) {
       ValidValues = new ItemSet<T>();
