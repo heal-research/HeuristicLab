@@ -34,7 +34,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
   /// </summary>
   [Item("LocalSearchMainLoop", "An operator which represents the main loop of a best improvement local search (if only a single move is generated in each iteration it is a first improvement local search).")]
   [StorableClass]
-  public class LocalSearchMainLoop : AlgorithmOperator {
+  public sealed class LocalSearchMainLoop : AlgorithmOperator {
     #region Parameter properties
     public ValueLookupParameter<IRandom> RandomParameter {
       get { return (ValueLookupParameter<IRandom>)Parameters["Random"]; }
@@ -81,8 +81,14 @@ namespace HeuristicLab.Algorithms.LocalSearch {
     }
     #endregion
 
+    [StorableConstructor]
+    private LocalSearchMainLoop(bool deserializing) : base() { }
     public LocalSearchMainLoop()
       : base() {
+      Initialize();
+    }
+
+    private void Initialize() {
       #region Create parameters
       Parameters.Add(new ValueLookupParameter<IRandom>("Random", "A pseudo random number generator."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, otherwise false."));

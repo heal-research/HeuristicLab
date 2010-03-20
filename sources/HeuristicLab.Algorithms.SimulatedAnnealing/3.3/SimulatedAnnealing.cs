@@ -34,7 +34,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Algorithms.SimulatedAnnealing {
   [Item("Simulated Annealing", "A simulated annealing algorithm.")]
   [Creatable("Algorithms")]
-  public class SimulatedAnnealing : EngineAlgorithm {
+  public sealed class SimulatedAnnealing : EngineAlgorithm {
     #region Problem Properties
     public override Type ProblemType {
       get { return typeof(ISingleObjectiveProblem); }
@@ -131,6 +131,8 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     }
     #endregion
 
+    [StorableConstructor]
+    private SimulatedAnnealing(bool deserializing) : base() { }
     public SimulatedAnnealing()
       : base() {
       Parameters.Add(new ValueParameter<IntValue>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
@@ -172,9 +174,6 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       Initialize();
     }
 
-    [StorableConstructor]
-    private SimulatedAnnealing(bool deserializing) : base() { }
-
     public override IDeepCloneable Clone(Cloner cloner) {
       SimulatedAnnealing clone = (SimulatedAnnealing)base.Clone(cloner);
       clone.Initialize();
@@ -212,6 +211,12 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.Problem_EvaluatorChanged(sender, e);
     }
+    protected override void Problem_VisualizerChanged(object sender, EventArgs e) {
+      ParameterizeStochasticOperator(Problem.Visualizer);
+      ParameterizeMainLoop();
+      if (Problem.Visualizer != null) Problem.Visualizer.VisualizationParameter.ActualNameChanged += new EventHandler(Visualizer_VisualizationParameter_ActualNameChanged);
+      base.Problem_VisualizerChanged(sender, e);
+    }
     protected override void Problem_OperatorsChanged(object sender, EventArgs e) {
       foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
       // This may seem pointless, but some operators already have the eventhandler registered, others don't
@@ -247,6 +252,9 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       ParameterizeMainLoop();
       ParameterizeMoveEvaluators();
       ParameterizeMoveMakers();
+    }
+    private void Visualizer_VisualizationParameter_ActualNameChanged(object sender, EventArgs e) {
+      ParameterizeMainLoop();
     }
     #endregion
 
@@ -324,10 +332,14 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       SolutionsCreator.SolutionCreatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
     }
     private void ParameterizeMainLoop() {
+      MainLoop.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
       MainLoop.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
       MainLoop.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
       if (MoveEvaluator != null)
         MainLoop.MoveQualityParameter.ActualName = MoveEvaluator.MoveQualityParameter.ActualName;
+      MainLoop.VisualizerParameter.ActualName = Problem.VisualizerParameter.Name;
+      if (Problem.Visualizer != null)
+        MainLoop.VisualizationParameter.ActualName = Problem.Visualizer.VisualizationParameter.ActualName;
     }
     private void ParameterizeStochasticOperator(IOperator op) {
       if (op is IStochasticOperator)

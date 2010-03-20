@@ -85,8 +85,14 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     }
     #endregion
 
+    [StorableConstructor]
+    private TabuSearchMainLoop(bool deserializing) : base() { }
     public TabuSearchMainLoop()
       : base() {
+      Initialize();
+    }
+
+    private void Initialize() {
       #region Create parameters
       Parameters.Add(new ValueLookupParameter<IRandom>("Random", "A pseudo random number generator."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, otherwise false."));
@@ -96,7 +102,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       Parameters.Add(new LookupParameter<BoolValue>("MoveTabu", "The value that indicates if a move is tabu or not."));
       Parameters.Add(new ValueLookupParameter<IntValue>("MaximumIterations", "The maximum number of generations which should be processed."));
       Parameters.Add(new ValueLookupParameter<IntValue>("TabuTenure", "The length of the tabu list, and also means the number of iterations a move is kept tabu"));
-      
+
       Parameters.Add(new ValueLookupParameter<IOperator>("MoveGenerator", "The operator that generates the moves."));
       Parameters.Add(new ValueLookupParameter<IOperator>("MoveMaker", "The operator that performs a move and updates the quality."));
       Parameters.Add(new ValueLookupParameter<IOperator>("MoveEvaluator", "The operator that evaluates a move."));
@@ -191,7 +197,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       bestAverageWorstMoveQualityCalculator.MaximizationParameter.ActualName = "Maximization";
       bestAverageWorstMoveQualityCalculator.QualityParameter.ActualName = MoveQualityParameter.Name;
       bestAverageWorstMoveQualityCalculator.WorstQualityParameter.ActualName = "Worst Move Quality";
-      
+
       valuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Move Quality"));
       valuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Average Move Quality"));
       valuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Worst Move Quality"));

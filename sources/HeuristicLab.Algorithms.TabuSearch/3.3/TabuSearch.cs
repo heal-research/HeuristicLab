@@ -127,7 +127,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     #endregion
 
     [StorableConstructor]
-    public TabuSearch(bool deserializing) : base() { }
+    private TabuSearch(bool deserializing) : base() { }
     public TabuSearch()
       : base() {
       Parameters.Add(new ValueParameter<IntValue>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));

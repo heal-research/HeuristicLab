@@ -102,6 +102,8 @@ namespace HeuristicLab.Algorithms.LocalSearch {
     }
     #endregion
 
+    [StorableConstructor]
+    private LocalSearch(bool deserializing) : base() { }
     public LocalSearch()
       : base() {
       Parameters.Add(new ValueParameter<IntValue>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
@@ -136,9 +138,6 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       Initialize();
     }
 
-    [StorableConstructor]
-    private LocalSearch(bool deserializing) : base() { }
-
     public override IDeepCloneable Clone(Cloner cloner) {
       LocalSearch clone = (LocalSearch)base.Clone(cloner);
       clone.Initialize();
@@ -155,8 +154,8 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       }
       ParameterizeSolutionsCreator();
       ParameterizeMainLoop();
-      ParameterizeMoveEvaluator();
-      ParameterizeMoveMaker();
+      ParameterizeMoveEvaluators();
+      ParameterizeMoveMakers();
       UpdateMoveGenerator();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.OnProblemChanged();
@@ -170,14 +169,15 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       ParameterizeStochasticOperator(Problem.Evaluator);
       ParameterizeSolutionsCreator();
       ParameterizeMainLoop();
-      ParameterizeMoveEvaluator();
-      ParameterizeMoveMaker();
+      ParameterizeMoveEvaluators();
+      ParameterizeMoveMakers();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.Problem_EvaluatorChanged(sender, e);
     }
     protected override void Problem_VisualizerChanged(object sender, EventArgs e) {
       ParameterizeStochasticOperator(Problem.Visualizer);
       ParameterizeMainLoop();
+      if (Problem.Visualizer != null) Problem.Visualizer.VisualizationParameter.ActualNameChanged += new EventHandler(Visualizer_VisualizationParameter_ActualNameChanged);
       base.Problem_VisualizerChanged(sender, e);
     }
     protected override void Problem_OperatorsChanged(object sender, EventArgs e) {
@@ -193,27 +193,30 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       if (oldMoveGenerator == MoveGenerator) // in this case MoveGeneratorParameter_ValueChanged did not fire
         UpdateMoveParameters();
       ParameterizeMainLoop();
-      ParameterizeMoveEvaluator();
-      ParameterizeMoveMaker();
+      ParameterizeMoveEvaluators();
+      ParameterizeMoveMakers();
       base.Problem_OperatorsChanged(sender, e);
     }
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeMainLoop();
-      ParameterizeMoveEvaluator();
-      ParameterizeMoveMaker();
+      ParameterizeMoveEvaluators();
+      ParameterizeMoveMakers();
     }
     private void MoveGeneratorParameter_ValueChanged(object sender, EventArgs e) {
       UpdateMoveParameters();
     }
     private void MoveEvaluatorParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeMainLoop();
-      ParameterizeMoveEvaluator();
-      ParameterizeMoveMaker();
+      ParameterizeMoveEvaluators();
+      ParameterizeMoveMakers();
     }
     private void MoveEvaluator_MoveQualityParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeMainLoop();
-      ParameterizeMoveEvaluator();
-      ParameterizeMoveMaker();
+      ParameterizeMoveEvaluators();
+      ParameterizeMoveMakers();
+    }
+    private void Visualizer_VisualizationParameter_ActualNameChanged(object sender, EventArgs e) {
+      ParameterizeMainLoop();
     }
     #endregion
 
@@ -236,8 +239,10 @@ namespace HeuristicLab.Algorithms.LocalSearch {
         foreach (IMoveGenerator generator in Problem.Operators.OfType<IMoveGenerator>().OrderBy(x => x.Name))
           MoveGeneratorParameter.ValidValues.Add(generator);
       }
-      if (oldMoveGenerator != null && MoveGeneratorParameter.ValidValues.Any(x => x.GetType() == oldMoveGenerator.GetType()))
-        MoveGenerator = MoveGeneratorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMoveGenerator.GetType());
+      if (oldMoveGenerator != null) {
+        IMoveGenerator newMoveGenerator = MoveGeneratorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMoveGenerator.GetType());
+        if (newMoveGenerator != null) MoveGenerator = newMoveGenerator;
+      }
       if (MoveGenerator == null) {
         ClearMoveParameters();
       }
@@ -278,24 +283,25 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       SolutionsCreator.SolutionCreatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
     }
     private void ParameterizeMainLoop() {
+      MainLoop.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
       MainLoop.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
       MainLoop.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
       if (MoveEvaluator != null)
         MainLoop.MoveQualityParameter.ActualName = MoveEvaluator.MoveQualityParameter.ActualName;
-      MainLoop.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
       MainLoop.VisualizerParameter.ActualName = Problem.VisualizerParameter.Name;
-      MainLoop.VisualizationParameter.ActualName = Problem.Visualizer.VisualizationParameter.ActualName;
+      if (Problem.Visualizer != null)
+        MainLoop.VisualizationParameter.ActualName = Problem.Visualizer.VisualizationParameter.ActualName;
     }
     private void ParameterizeStochasticOperator(IOperator op) {
       if (op is IStochasticOperator)
         ((IStochasticOperator)op).RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
     }
-    private void ParameterizeMoveEvaluator() {
+    private void ParameterizeMoveEvaluators() {
       foreach (ISingleObjectiveMoveEvaluator op in Problem.Operators.OfType<ISingleObjectiveMoveEvaluator>()) {
         op.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
       }
     }
-    private void ParameterizeMoveMaker() {
+    private void ParameterizeMoveMakers() {
       foreach (IMoveMaker op in Problem.Operators.OfType<IMoveMaker>()) {
         op.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
         if (MoveEvaluator != null)
