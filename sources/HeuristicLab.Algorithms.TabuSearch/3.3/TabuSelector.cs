@@ -72,6 +72,11 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       get { return (IValueLookupParameter<BoolValue>)Parameters["CopySelected"]; }
     }
 
+    public BoolValue CopySelected {
+      get { return CopySelectedParameter.Value; }
+      set { CopySelectedParameter.Value = value; }
+    }
+
     /// <summary>
     /// Initializes a new intsance with 6 parameters (<c>Quality</c>, <c>BestQuality</c>,
     /// <c>Aspiration</c>, <c>Maximization</c>, <c>MoveQuality</c>, and <c>MoveTabu</c>).
@@ -83,7 +88,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "Whether the problem is a maximization or minimization problem (used to decide whether a solution is better"));
       Parameters.Add(new SubScopesLookupParameter<DoubleValue>("MoveQuality", "The quality of the move."));
       Parameters.Add(new SubScopesLookupParameter<BoolValue>("MoveTabu", "The tabu status of the move."));
-      Parameters.Add(new ValueLookupParameter<BoolValue>("CopySelected", "True if the selected move should be copied."));
+      Parameters.Add(new ValueLookupParameter<BoolValue>("CopySelected", "True if the selected move should be copied.", new BoolValue(false)));
     }
 
     /// <summary>
