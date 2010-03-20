@@ -52,22 +52,19 @@ namespace HeuristicLab.Selection {
       var list = temp.ToList();
 
       if (copy) {
-        for (int i = 0, j = 0; i < count; i++, j++) {
-          if (j >= list.Count) j = 0;
+        int j = 0;
+        for (int i = 0; i < count; i++) {
           selected[i] = (IScope)scopes[list[j].index].Clone();
+          j++;
+          if (j >= list.Count) j = 0;
         }
       } else {
-        int i;
-        for (i = 0; i < count; i++) {
-          selected[i] = scopes[list[i].index];
+        for (int i = 0; i < count; i++) {
+          selected[i] = scopes[list[0].index];
+          scopes[list[0].index] = null;
+          list.RemoveAt(0);
         }
-        // remove the selected scopes starting from the scope with the highest index
-        if (i < list.Count) list.RemoveRange(i, list.Count - i);
-        list = list.OrderBy(x => x.index).ToList();
-        do {
-          i--;
-          scopes.RemoveAt(list[i].index);
-        } while (i > 0);
+        scopes.RemoveAll(x => x == null);
       }
       return selected;
     }

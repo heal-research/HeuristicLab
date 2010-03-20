@@ -54,21 +54,22 @@ namespace HeuristicLab.Selection {
       int lotSum = list.Count * (list.Count + 1) / 2;
       for (int i = 0; i < count; i++) {
         int selectedLot = random.Next(lotSum) + 1;
-        int index = 0;
-        int currentLot = list[index].lots;
+        int j = 0;
+        int currentLot = list[j].lots;
         while (currentLot < selectedLot) {
-          index++;
-          currentLot += list[index].lots;
+          j++;
+          currentLot += list[j].lots;
         }
         if (copy)
-          selected[i] = (IScope)scopes[list[index].index].Clone();
+          selected[i] = (IScope)scopes[list[j].index].Clone();
         else {
-          selected[i] = scopes[list[index].index];
-          scopes.RemoveAt(list[index].index);
-          lotSum -= list[index].lots;
-          list.RemoveAt(index);
+          selected[i] = scopes[list[j].index];
+          scopes[list[j].index] = null;
+          lotSum -= list[j].lots;
+          list.RemoveAt(j);
         }
       }
+      if (!copy) scopes.RemoveAll(x => x == null);
       return selected;
     }
   }

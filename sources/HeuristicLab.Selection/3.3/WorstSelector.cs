@@ -50,17 +50,20 @@ namespace HeuristicLab.Selection {
         temp = temp.OrderByDescending(x => x.Value);
       var list = temp.ToList();
 
-      int j = 0;
-      for (int i = 0; i < count; i++) {
-        if (copy) {
+      if (copy) {
+        int j = 0;
+        for (int i = 0; i < count; i++) {
           selected[i] = (IScope)scopes[list[j].index].Clone();
           j++;
           if (j >= list.Count) j = 0;
-        } else {
-          selected[i] = scopes[list[j].index];
-          scopes.RemoveAt(list[j].index);
-          list.RemoveAt(j);
         }
+      } else {
+        for (int i = 0; i < count; i++) {
+          selected[i] = scopes[list[0].index];
+          scopes[list[0].index] = null;
+          list.RemoveAt(0);
+        }
+        scopes.RemoveAll(x => x == null);
       }
       return selected;
     }
