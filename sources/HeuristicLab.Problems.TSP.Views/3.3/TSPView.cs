@@ -32,6 +32,8 @@ namespace HeuristicLab.Problems.TSP.Views {
   [View("TSP View")]
   [Content(typeof(TSP), true)]
   public sealed partial class TSPView : ProblemView {
+    private TSPLIBImportDialog tsplibImportDialog;
+
     public new TSP Content {
       get { return (TSP)base.Content; }
       set { base.Content = value; }
@@ -62,9 +64,14 @@ namespace HeuristicLab.Problems.TSP.Views {
     }
 
     private void importButton_Click(object sender, System.EventArgs e) {
-      if (openFileDialog.ShowDialog(this) == DialogResult.OK) {
+      if (tsplibImportDialog == null) tsplibImportDialog = new TSPLIBImportDialog();
+
+      if (tsplibImportDialog.ShowDialog(this) == DialogResult.OK) {
         try {
-          Content.ImportFromTSPLIB(openFileDialog.FileName);
+          if (tsplibImportDialog.Quality == null)
+            Content.ImportFromTSPLIB(tsplibImportDialog.TSPFileName, tsplibImportDialog.TourFileName);
+          else
+            Content.ImportFromTSPLIB(tsplibImportDialog.TSPFileName, tsplibImportDialog.TourFileName, (double)tsplibImportDialog.Quality);
         }
         catch (Exception ex) {
           Auxiliary.ShowErrorMessageBox(ex);

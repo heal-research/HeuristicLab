@@ -83,6 +83,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TSPLIBTourParser.cs" />
     <Compile Include="Interfaces\ICoordinatesTSPSolutionsVisualizer.cs" />
     <Compile Include="Interfaces\IPathCoordinatesTSPSolutionsVisualizer.cs" />
     <Compile Include="Interfaces\ITSPSolutionsVisualizer.cs" />

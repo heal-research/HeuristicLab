@@ -25,75 +25,64 @@ using System.IO;
 
 namespace HeuristicLab.Problems.TSP {
   /// <summary>
-  /// Parses a *.tsp file in TSPLIB format and extracts its information about a TSP.
+  /// Parses a *.opt.tour file in TSPLIB format and extracts its information about an optimal tour of a TSP.
   /// </summary>
-  public class TSPLIBParser {
+  public class TSPLIBTourParser {
     private const int EOF = 0;
     private const int NAME = 1;
     private const int TYPE = 2;
     private const int COMMENT = 3;
     private const int DIM = 4;
-    private const int WEIGHTTYPE = 5;
-    private const int NODETYPE = 6;
-    private const int NODESECTION = 7;
+    private const int TOURSECTION = 5;
 
     private StreamReader source;
 
     private string name;
     /// <summary>
-    /// Gets the name of the parsed TSP.
+    /// Gets the name of the parsed tour.
     /// </summary>
     public string Name {
       get { return name; }
     }
     private string comment;
     /// <summary>
-    /// Gets the comment of the parsed TSP.
+    /// Gets the comment of the parsed tour.
     /// </summary>
     public string Comment {
       get { return comment; }
     }
-    private double[,] vertices;
+    private int[] tour;
     /// <summary>
-    /// Gets the vertices of the parsed TSP.
+    /// Gets the parsed tour.
     /// </summary>
-    public double[,] Vertices {
-      get { return vertices; }
-    }
-    private int weightType;
-    /// <summary>
-    /// Gets the weight type of the parsed TSP.
-    /// </summary>
-    public int WeightType {
-      get { return weightType; }
+    public int[] Tour {
+      get { return tour; }
     }
 
     /// <summary>
-    /// Initializes a new instance of <see cref="TSPLIBParser"/> with the given <paramref name="path"/>.
+    /// Initializes a new instance of <see cref="TSPLIBTourParser"/> with the given <paramref name="path"/>.
     /// </summary>
-    /// <exception cref="ArgumentException">Thrown if the input file is not a TSPLIB TSP file (*.tsp)
+    /// <exception cref="ArgumentException">Thrown if the input file is not a TSPLIB optimal tour file (*.opt.tour)
     /// </exception>
-    /// <param name="path">The path where the TSP is stored.</param>
-    public TSPLIBParser(String path) {
-      if (!path.EndsWith(".tsp"))
-        throw new ArgumentException("Input file has to be a TSPLIB TSP file (*.tsp).");
+    /// <param name="path">The path where the optimal tour is stored.</param>
+    public TSPLIBTourParser(String path) {
+      if (!path.EndsWith(".opt.tour"))
+        throw new ArgumentException("Input file has to be a TSPLIB optimal tour file (*.opt.tour).");
 
       source = new StreamReader(path);
       name = path;
       comment = string.Empty;
-      vertices = null;
-      weightType = -1;
+      tour = null;
     }
 
     /// <summary>
-    /// Reads the TSPLIB TSP file and parses the elements.
+    /// Reads the TSPLIB optimal tour file and parses its elements.
     /// </summary>
     /// <exception cref="InvalidDataException">Thrown if the file has an invalid format or contains invalid data.</exception>
     public void Parse() {
       int section = -1;
       string str = null;
       bool typeIsChecked = false;
-      bool weightTypeIsChecked = false;
 
       do {
         str = source.ReadLine();
@@ -112,24 +101,17 @@ namespace HeuristicLab.Problems.TSP {
               ReadComment(str);
               break;
             case DIM:
-              InitVerticesArray(str);
+              InitTour(str);
               break;
-            case WEIGHTTYPE:
-              ReadWeightType(str);
-              weightTypeIsChecked = true;
-              break;
-            case NODETYPE:
-              CheckNodeType(str);
-              break;
-            case NODESECTION:
-              ReadVertices();
+            case TOURSECTION:
+              ReadTour();
               break;
           }
         }
       } while (!((section == EOF) || (str == null)));
 
-      if (!(typeIsChecked && weightTypeIsChecked))
-        throw new InvalidDataException("Input file does not contain type or edge weight type information.");
+      if (!typeIsChecked)
+        throw new InvalidDataException("Input file does not contain type information.");
     }
 
     private int GetSection(string str) {
@@ -151,12 +133,8 @@ namespace HeuristicLab.Problems.TSP {
         return COMMENT;
       if (token.Equals("dimension", StringComparison.OrdinalIgnoreCase))
         return DIM;
-      if (token.Equals("edge_weight_type", StringComparison.OrdinalIgnoreCase))
-        return WEIGHTTYPE;
-      if (token.Equals("node_coord_type", StringComparison.OrdinalIgnoreCase))
-        return NODETYPE;
-      if (token.Equals("node_coord_section", StringComparison.OrdinalIgnoreCase))
-        return NODESECTION;
+      if (token.Equals("tour_section", StringComparison.OrdinalIgnoreCase))
+        return TOURSECTION;
 
       return -1;
     }
@@ -170,8 +148,8 @@ namespace HeuristicLab.Problems.TSP {
       string[] tokens = str.Split(new string[] { ":" }, StringSplitOptions.None);
 
       string type = tokens[tokens.Length - 1].Trim();
-      if (!type.Equals("tsp", StringComparison.OrdinalIgnoreCase))
-        throw new InvalidDataException("Input file type is not \"TSP\"");
+      if (!type.Equals("tour", StringComparison.OrdinalIgnoreCase))
+        throw new InvalidDataException("Input data format is not \"TOUR\"");
     }
 
     private void ReadComment(string str) {
@@ -179,48 +157,23 @@ namespace HeuristicLab.Problems.TSP {
       comment = tokens[tokens.Length - 1].Trim();
     }
 
-    private void InitVerticesArray(string str) {
+    private void InitTour(string str) {
       string[] tokens = str.Split(new string[] { ":" }, StringSplitOptions.None);
       string dimension = tokens[tokens.Length - 1].Trim();
 
       int dim = Int32.Parse(dimension);
-      vertices = new double[dim, 2];
+      tour = new int[dim];
     }
 
-    private void ReadWeightType(string str) {
-      string[] tokens = str.Split(new string[] { ":" }, StringSplitOptions.None);
-      string type = tokens[tokens.Length - 1].Trim();
-
-      if (type.Equals("euc_2d", StringComparison.OrdinalIgnoreCase))
-        weightType = 0;
-      else if (type.Equals("geo", StringComparison.OrdinalIgnoreCase))
-        weightType = 1;
-      else
-        throw new InvalidDataException("Input file contains an unsupported edge weight type (only \"EUC_2D\" and \"GEO\" are supported).");
-    }
-
-    private void CheckNodeType(string str) {
-      string[] tokens = str.Split(new string[] { ":" }, StringSplitOptions.None);
-      string type = tokens[tokens.Length - 1].Trim();
-
-      if (!type.Equals("twod_coords", StringComparison.OrdinalIgnoreCase))
-        throw new InvalidDataException("Input file contains an unsupported node coordinates type (only \"TWOD_COORDS\" is supported).");
-    }
-
-    private void ReadVertices() {
-      if (vertices == null)
+    private void ReadTour() {
+      if (tour == null)
         throw new InvalidDataException("Input file does not contain dimension information.");
 
-      for (int i = 0; i < (vertices.Length / 2); i++) {
+      for (int i = 0; i < (tour.Length); i++) {
         string str = source.ReadLine();
-        string[] tokens = str.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-
-        if (tokens.Length != 3)
-          throw new InvalidDataException("Input file contains invalid node coordinates.");
 
         CultureInfo culture = new CultureInfo("en-US");
-        vertices[i, 0] = double.Parse(tokens[1], culture.NumberFormat);
-        vertices[i, 1] = double.Parse(tokens[2], culture.NumberFormat);
+        tour[i] = int.Parse(str, culture.NumberFormat);
       }
     }
   }

@@ -91,6 +91,12 @@
       <DependentUpon>PathTSPTourView.cs</DependentUpon>
     </Compile>
     <Compile Include="HeuristicLabProblemsTSPViewsPlugin.cs" />
+    <Compile Include="TSPLIBImportDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TSPLIBImportDialog.Designer.cs">
+      <DependentUpon>TSPLIBImportDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="TSPView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -108,6 +114,10 @@
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
       <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.2\HeuristicLab.Common.Resources-3.2.csproj">
+      <Project>{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}</Project>
+      <Name>HeuristicLab.Common.Resources-3.2</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Core.Views\3.3\HeuristicLab.Core.Views-3.3.csproj">
       <Project>{E226881D-315F-423D-B419-A766FE0D8685}</Project>

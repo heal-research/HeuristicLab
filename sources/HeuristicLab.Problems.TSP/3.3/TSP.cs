@@ -81,6 +81,9 @@ namespace HeuristicLab.Problems.TSP {
     IParameter ISingleObjectiveProblem.BestKnownQualityParameter {
       get { return BestKnownQualityParameter; }
     }
+    public OptionalValueParameter<Permutation> BestKnownSolutionParameter {
+      get { return (OptionalValueParameter<Permutation>)Parameters["BestKnownSolution"]; }
+    }
     #endregion
 
     #region Properties
@@ -124,6 +127,10 @@ namespace HeuristicLab.Problems.TSP {
       get { return BestKnownQualityParameter.Value; }
       set { BestKnownQualityParameter.Value = value; }
     }
+    public Permutation BestKnownSolution {
+      get { return BestKnownSolutionParameter.Value; }
+      set { BestKnownSolutionParameter.Value = value; }
+    }
     private List<IPermutationOperator> operators;
     public IEnumerable<IOperator> Operators {
       get { return operators.Cast<IOperator>(); }
@@ -144,6 +151,7 @@ namespace HeuristicLab.Problems.TSP {
       Parameters.Add(new ValueParameter<ITSPEvaluator>("Evaluator", "The operator which should be used to evaluate TSP solutions.", evaluator));
       Parameters.Add(new OptionalValueParameter<ITSPSolutionsVisualizer>("Visualizer", "The operator which should be used to visualize TSP solutions.", visualizer));
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this TSP instance."));
+      Parameters.Add(new OptionalValueParameter<Permutation>("BestKnownSolution", "The best known solution of this TSP instance."));
 
       creator.PermutationParameter.ActualName = "TSPTour";
       evaluator.QualityParameter.ActualName = "TSPTourLength";
@@ -162,11 +170,23 @@ namespace HeuristicLab.Problems.TSP {
       return clone;
     }
 
-    public void ImportFromTSPLIB(string filename) {
-      TSPLIBParser parser = new TSPLIBParser(filename);
-      parser.Parse();
-      Name = parser.Name + " TSP (imported from TSPLIB)";
-      Coordinates = new DoubleMatrix(parser.Vertices);
+    public void ImportFromTSPLIB(string tspFileName, string optimalTourFileName) {
+      TSPLIBParser tspParser = new TSPLIBParser(tspFileName);
+      tspParser.Parse();
+      Name = tspParser.Name + " TSP (imported from TSPLIB)";
+      if (!string.IsNullOrEmpty(tspParser.Comment)) Description = tspParser.Comment;
+      Coordinates = new DoubleMatrix(tspParser.Vertices);
+      BestKnownQuality = null;
+
+      if (!string.IsNullOrEmpty(optimalTourFileName)) {
+        TSPLIBTourParser tourParser = new TSPLIBTourParser(optimalTourFileName);
+        tourParser.Parse();
+        BestKnownSolution = new Permutation(tourParser.Tour);
+      }
+    }
+    public void ImportFromTSPLIB(string tspFileName, string optimalTourFileName, double bestKnownQuality) {
+      ImportFromTSPLIB(tspFileName, optimalTourFileName);
+      BestKnownQuality = new DoubleValue(bestKnownQuality);
     }
 
     #region Events
