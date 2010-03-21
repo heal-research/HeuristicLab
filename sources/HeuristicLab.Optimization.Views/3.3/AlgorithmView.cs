@@ -145,6 +145,7 @@ namespace HeuristicLab.Optimization.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_Started), sender, e);
       else {
+        this.SuspendRepaint();
         SaveEnabled = false;
         parameterCollectionView.Enabled = false;
         newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = false;
@@ -154,12 +155,14 @@ namespace HeuristicLab.Optimization.Views {
         stopButton.Enabled = true;
         resetButton.Enabled = false;
         UpdateExecutionTimeTextBox();
+        this.ResumeRepaint(true);
       }
     }
     protected virtual void Content_Stopped(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_Stopped), sender, e);
       else {
+        this.SuspendRepaint();
         SaveEnabled = true;
         parameterCollectionView.Enabled = true;
         newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = true;
@@ -169,6 +172,7 @@ namespace HeuristicLab.Optimization.Views {
         stopButton.Enabled = false;
         resetButton.Enabled = true;
         UpdateExecutionTimeTextBox();
+        this.ResumeRepaint(true);
       }
     }
     protected virtual void Content_ExecutionTimeChanged(object sender, EventArgs e) {
