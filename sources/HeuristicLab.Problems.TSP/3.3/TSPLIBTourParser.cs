@@ -173,7 +173,7 @@ namespace HeuristicLab.Problems.TSP {
         string str = source.ReadLine();
 
         CultureInfo culture = new CultureInfo("en-US");
-        tour[i] = int.Parse(str, culture.NumberFormat);
+        tour[i] = int.Parse(str, culture.NumberFormat) - 1;
       }
     }
   }
