@@ -34,8 +34,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Operators.Prog
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Selection.OffspringSelection-3.3", "HeuristicLab.Selection.OffspringSelection\3.3\HeuristicLab.Selection.OffspringSelection-3.3.csproj", "{81609E8A-9757-4865-8B89-0B6603F769E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.TestFunctions-3.3", "HeuristicLab.TestFunctions\3.3\HeuristicLab.TestFunctions-3.3.csproj", "{55E23C37-F4F8-4B20-89B3-1B8B59050CE2}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.ThreadParallelEngine-3.3", "HeuristicLab.ThreadParallelEngine\3.3\HeuristicLab.ThreadParallelEngine-3.3.csproj", "{C2E99CCE-9FB0-456F-9BA0-57900E4AA799}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab 3.3", "HeuristicLab 3.3\HeuristicLab 3.3.csproj", "{B1DCDECA-B56E-41D5-9850-EF0D3A77DEAF}"
@@ -92,11 +90,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab 3.3", "Heurist
 		{1B3063DB-D71C-4A6A-A359-883E8F53A140} = {1B3063DB-D71C-4A6A-A359-883E8F53A140}
 		{DDFB14DD-2A85-493C-A52D-E69729BBAEB0} = {DDFB14DD-2A85-493C-A52D-E69729BBAEB0}
 		{35A42EE0-A896-4D7A-A99F-8ED9E925F320} = {35A42EE0-A896-4D7A-A99F-8ED9E925F320}
+		{88B9B0E3-344E-4196-82A3-0F9732506FE8} = {88B9B0E3-344E-4196-82A3-0F9732506FE8}
 		{AE5B1CE5-9862-4D6F-A700-D72CD9AEA295} = {AE5B1CE5-9862-4D6F-A700-D72CD9AEA295}
 		{A9E282EA-180F-4233-B809-AEDF0787545C} = {A9E282EA-180F-4233-B809-AEDF0787545C}
 		{96AEBBEE-4203-45F3-BCF5-7B73BF256BDA} = {96AEBBEE-4203-45F3-BCF5-7B73BF256BDA}
 		{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE} = {23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}
 		{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937} = {BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}
+		{6AE0E1F5-D3FF-43A3-90E1-2435E7493FB5} = {6AE0E1F5-D3FF-43A3-90E1-2435E7493FB5}
 		{1FC004FC-59AF-4249-B1B6-FF25873A20E4} = {1FC004FC-59AF-4249-B1B6-FF25873A20E4}
 	EndProjectSection
 EndProject
@@ -216,6 +216,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Algorithms.LocalSearch-3.3", "HeuristicLab.Algorithms.LocalSearch\3.3\HeuristicLab.Algorithms.LocalSearch-3.3.csproj", "{4AE3FC69-C575-42D2-BC46-0FAD5850EFC5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Algorithms.EvolutionStrategy-3.3", "HeuristicLab.Algorithms.EvolutionStrategy\3.3\HeuristicLab.Algorithms.EvolutionStrategy-3.3.csproj", "{E0B45023-CB84-48A1-A1B7-8295B64B7BAD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.TestFunctions.SingleObjective-3.3", "HeuristicLab.Problems.TestFunctions.SingleObjective\3.3\HeuristicLab.Problems.TestFunctions.SingleObjective-3.3.csproj", "{88B9B0E3-344E-4196-82A3-0F9732506FE8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.TestFunctions.SingleObjective.Views-3.3", "HeuristicLab.Problems.TestFunctions.SingleObjective.Views\3.3\HeuristicLab.Problems.TestFunctions.SingleObjective.Views-3.3.csproj", "{6AE0E1F5-D3FF-43A3-90E1-2435E7493FB5}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -429,24 +433,6 @@ Global
 		{81609E8A-9757-4865-8B89-0B6603F769E8}.Services|x64.Build.0 = Release|x64
 		{81609E8A-9757-4865-8B89-0B6603F769E8}.Services|x86.ActiveCfg = Release|x86
 		{81609E8A-9757-4865-8B89-0B6603F769E8}.Services|x86.Build.0 = Release|x86
-		{55E23C37-F4F8-4B20-89B3-1B8B59050CE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{55E23C37-F4F8-4B20-89B3-1B8B59050CE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{55E23C37-F4F8-4B20-89B3-1B8B59050CE2}.Debug|x64.ActiveCfg = Debug|x64
-		{55E23C37-F4F8-4B20-89B3-1B8B59050CE2}.Debug|x64.Build.0 = Debug|x64
-		{55E23C37-F4F8-4B20-89B3-1B8B59050CE2}.Debug|x86.ActiveCfg = Debug|x86
-		{55E23C37-F4F8-4B20-89B3-1B8B59050CE2}.Debug|x86.Build.0 = Debug|x86
-		{55E23C37-F4F8-4B20-89B3-1B8B59050CE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{55E23C37-F4F8-4B20-89B3-1B8B59050CE2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{55E23C37-F4F8-4B20-89B3-1B8B59050CE2}.Release|x64.ActiveCfg = Release|x64
-		{55E23C37-F4F8-4B20-89B3-1B8B59050CE2}.Release|x64.Build.0 = Release|x64
-		{55E23C37-F4F8-4B20-89B3-1B8B59050CE2}.Release|x86.ActiveCfg = Release|x86
-		{55E23C37-F4F8-4B20-89B3-1B8B59050CE2}.Release|x86.Build.0 = Release|x86
-		{55E23C37-F4F8-4B20-89B3-1B8B59050CE2}.Services|Any CPU.ActiveCfg = Release|Any CPU
-		{55E23C37-F4F8-4B20-89B3-1B8B59050CE2}.Services|Any CPU.Build.0 = Release|Any CPU
-		{55E23C37-F4F8-4B20-89B3-1B8B59050CE2}.Services|x64.ActiveCfg = Release|x64
-		{55E23C37-F4F8-4B20-89B3-1B8B59050CE2}.Services|x64.Build.0 = Release|x64
-		{55E23C37-F4F8-4B20-89B3-1B8B59050CE2}.Services|x86.ActiveCfg = Release|x86
-		{55E23C37-F4F8-4B20-89B3-1B8B59050CE2}.Services|x86.Build.0 = Release|x86
 		{C2E99CCE-9FB0-456F-9BA0-57900E4AA799}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C2E99CCE-9FB0-456F-9BA0-57900E4AA799}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2E99CCE-9FB0-456F-9BA0-57900E4AA799}.Debug|x64.ActiveCfg = Debug|x64
@@ -1270,6 +1256,30 @@ Global
 		{E0B45023-CB84-48A1-A1B7-8295B64B7BAD}.Services|Any CPU.Build.0 = Release|Any CPU
 		{E0B45023-CB84-48A1-A1B7-8295B64B7BAD}.Services|x64.ActiveCfg = Release|Any CPU
 		{E0B45023-CB84-48A1-A1B7-8295B64B7BAD}.Services|x86.ActiveCfg = Release|Any CPU
+		{88B9B0E3-344E-4196-82A3-0F9732506FE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88B9B0E3-344E-4196-82A3-0F9732506FE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88B9B0E3-344E-4196-82A3-0F9732506FE8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{88B9B0E3-344E-4196-82A3-0F9732506FE8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{88B9B0E3-344E-4196-82A3-0F9732506FE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88B9B0E3-344E-4196-82A3-0F9732506FE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88B9B0E3-344E-4196-82A3-0F9732506FE8}.Release|x64.ActiveCfg = Release|Any CPU
+		{88B9B0E3-344E-4196-82A3-0F9732506FE8}.Release|x86.ActiveCfg = Release|Any CPU
+		{88B9B0E3-344E-4196-82A3-0F9732506FE8}.Services|Any CPU.ActiveCfg = Release|Any CPU
+		{88B9B0E3-344E-4196-82A3-0F9732506FE8}.Services|Any CPU.Build.0 = Release|Any CPU
+		{88B9B0E3-344E-4196-82A3-0F9732506FE8}.Services|x64.ActiveCfg = Release|Any CPU
+		{88B9B0E3-344E-4196-82A3-0F9732506FE8}.Services|x86.ActiveCfg = Release|Any CPU
+		{6AE0E1F5-D3FF-43A3-90E1-2435E7493FB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AE0E1F5-D3FF-43A3-90E1-2435E7493FB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AE0E1F5-D3FF-43A3-90E1-2435E7493FB5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6AE0E1F5-D3FF-43A3-90E1-2435E7493FB5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6AE0E1F5-D3FF-43A3-90E1-2435E7493FB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AE0E1F5-D3FF-43A3-90E1-2435E7493FB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AE0E1F5-D3FF-43A3-90E1-2435E7493FB5}.Release|x64.ActiveCfg = Release|Any CPU
+		{6AE0E1F5-D3FF-43A3-90E1-2435E7493FB5}.Release|x86.ActiveCfg = Release|Any CPU
+		{6AE0E1F5-D3FF-43A3-90E1-2435E7493FB5}.Services|Any CPU.ActiveCfg = Release|Any CPU
+		{6AE0E1F5-D3FF-43A3-90E1-2435E7493FB5}.Services|Any CPU.Build.0 = Release|Any CPU
+		{6AE0E1F5-D3FF-43A3-90E1-2435E7493FB5}.Services|x64.ActiveCfg = Release|Any CPU
+		{6AE0E1F5-D3FF-43A3-90E1-2435E7493FB5}.Services|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
