@@ -165,6 +165,7 @@ namespace HeuristicLab.Problems.TSP {
     public void ImportFromTSPLIB(string filename) {
       TSPLIBParser parser = new TSPLIBParser(filename);
       parser.Parse();
+      Name = parser.Name + " TSP (imported from TSPLIB)";
       Coordinates = new DoubleMatrix(parser.Vertices);
     }
 
