@@ -192,23 +192,16 @@ namespace Netron.Diagramming.Core
 			r2 = new RectangleF(p2.X, p2.Y, 0, 0);
 			r1.Inflate(3, 3);
 			r2.Inflate(3, 3);
-			//this is like a topological neighborhood
-			//the connection is shifted left and right
-			//and the point under consideration has to be in between.						
 			if (RectangleF.Union(r1, r2).Contains(p))
 			{
-        //if (p1.Y < p2.Y) //SWNE
-        //{
-        //  o = r1.Left + (((r2.Left - r1.Left) * (p.Y - r1.Bottom)) / (r2.Bottom - r1.Bottom));
-        //  u = r1.Right + (((r2.Right - r1.Right) * (p.Y - r1.Top)) / (r2.Top - r1.Top));
-        //  return ((p.X > o) && (p.X < u));
-        //} else //NWSE
-        //{
-        //  o = r1.Left + (((r2.Left - r1.Left) * (p.Y - r1.Top)) / (r2.Top - r1.Top));
-        //  u = r1.Right + (((r2.Right - r1.Right) * (p.Y - r1.Bottom)) / (r2.Bottom - r1.Bottom));
-        //  return ((p.X > o) && (p.X < u));
-        //}
-        return true;
+        PointF connectionVector = new PointF(p2.X - p1.X, p2.Y - p1.Y);
+        PointF normalVector = new PointF(connectionVector.Y, connectionVector.X * -1);
+        PointF pointVector = new PointF(p.X - p1.X, p.Y - p1.Y);
+
+        double normalVectorLength = Math.Sqrt(normalVector.X * normalVector.X + normalVector.Y * normalVector.Y);
+        double distance = Math.Abs(pointVector.X * normalVector.X + pointVector.Y * normalVector.Y) / normalVectorLength;
+
+        return distance < 5;
 			}
 			return false;
 		}
