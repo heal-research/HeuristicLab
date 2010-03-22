@@ -115,14 +115,18 @@ namespace HeuristicLab.Netron {
       //this.oldSize = this.Size;
     }
 
+
+    protected override void OnMouseWheel(MouseEventArgs e) {
+      //inserted to disable scrolling by the mousewheel
+      //base.OnMouseWheel(e);
+    }
+
     protected override void OnScroll(ScrollEventArgs se) {
       //base.OnScroll(se);
       if (se.ScrollOrientation == ScrollOrientation.HorizontalScroll) {
         Origin = new Point(se.NewValue, Origin.Y);
-        //System.Diagnostics.Trace.WriteLine(se.NewValue);
       } else {
         Origin = new Point(Origin.X, se.NewValue);
-        //System.Diagnostics.Trace.WriteLine(se.NewValue);
       }
     }
 
