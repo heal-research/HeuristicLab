@@ -151,6 +151,8 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
       IShape shape = shapeInfo.CreateShape();
       shape.OnEntityChange += new EventHandler<EntityEventArgs>(shape_OnEntityChange);
+      shape.OnMouseEnter += new EventHandler<EntityMouseEventArgs>(shape_OnMouseEnter);
+      shape.OnMouseLeave += new EventHandler<EntityMouseEventArgs>(shape_OnMouseLeave);
       this.shapeInfoShapeMapping.Add(shapeInfo, shape);
 
       this.graphVisualization.Controller.Model.AddShape(shape);
@@ -161,6 +163,8 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       this.DeregisterShapeInfoEvents(shapeInfo);
       IShape shape = this.shapeInfoShapeMapping.GetByFirst(shapeInfo);
       shape.OnEntityChange -= new EventHandler<EntityEventArgs>(shape_OnEntityChange);
+      shape.OnMouseEnter -= new EventHandler<EntityMouseEventArgs>(shape_OnMouseEnter);
+      shape.OnMouseLeave -= new EventHandler<EntityMouseEventArgs>(shape_OnMouseLeave);
 
       IConnection connection;
       foreach (IConnector connector in shape.Connectors) {
@@ -283,6 +287,16 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       this.causedUpdateOfShapeInfo = false;
     }
 
+    private Cursor oldCursor;
+    private void shape_OnMouseEnter(object sender, EntityMouseEventArgs e) {
+      this.oldCursor = this.Cursor;
+      this.Controller.View.CurrentCursor = CursorPalette.Move;
+    }
+
+    private void shape_OnMouseLeave(object sender, EntityMouseEventArgs e) {
+      this.Controller.View.CurrentCursor = this.oldCursor;
+      this.oldCursor = null;
+    }
 
     private void shape_OnEntityChange(object sender, EntityEventArgs e) {
       if (this.causedUpdateOfShapeInfo)
