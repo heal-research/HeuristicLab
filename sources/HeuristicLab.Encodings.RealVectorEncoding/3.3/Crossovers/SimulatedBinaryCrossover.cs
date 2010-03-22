@@ -77,7 +77,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
           if (u < 0.5) { // if u is smaller than 0.5 perform a contracting crossover
             beta = Math.Pow(2 * u, 1.0 / (contiguity.Value + 1));
           } else if (u > 0.5) { // otherwise perform an expanding crossover
-            beta = Math.Pow(1.0 / (2 - 2 * u), (contiguity.Value + 1));
+            beta = Math.Pow(0.5 / (1.0 - u), 1.0 / (contiguity.Value + 1));
           } else if (u == 0.5)
             beta = 1;
 
