@@ -27,7 +27,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using System;
 
-namespace HeuristicLab.Problems.TSP {
+namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
   /// An operator to evaluate 2-opt moves.
   /// </summary>

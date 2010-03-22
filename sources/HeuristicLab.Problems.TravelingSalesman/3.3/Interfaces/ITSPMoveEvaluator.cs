@@ -23,7 +23,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Problems.TSP {
+namespace HeuristicLab.Problems.TravelingSalesman {
   public interface ITSPMoveEvaluator : ISingleObjectiveMoveEvaluator, IMoveOperator {
   }
 }

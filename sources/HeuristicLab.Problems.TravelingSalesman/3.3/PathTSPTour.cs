@@ -26,7 +26,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Problems.TSP {
+namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
   /// Represents a tour of a Traveling Salesman Problem given in path representation which can be visualized in the GUI.
   /// </summary>

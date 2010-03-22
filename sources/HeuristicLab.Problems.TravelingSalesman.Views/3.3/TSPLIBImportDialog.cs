@@ -25,7 +25,7 @@ using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Data;
 
-namespace HeuristicLab.Problems.TSP.Views {
+namespace HeuristicLab.Problems.TravelingSalesman.Views {
   public sealed partial class TSPLIBImportDialog : Form {
     private string tspFileName;
     public string TSPFileName {

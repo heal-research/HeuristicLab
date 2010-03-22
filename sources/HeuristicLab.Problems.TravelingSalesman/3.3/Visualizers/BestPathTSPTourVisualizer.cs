@@ -28,7 +28,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Problems.TSP {
+namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
   /// An operator for visualizing the best tour of Traveling Salesman Problems given in path representation using city coordinates.
   /// </summary>

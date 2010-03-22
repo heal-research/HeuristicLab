@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
-namespace HeuristicLab.Problems.TSP.Views {
+namespace HeuristicLab.Problems.TravelingSalesman.Views {
   /// <summary>
   /// The base class for visual representations of items.
   /// </summary>

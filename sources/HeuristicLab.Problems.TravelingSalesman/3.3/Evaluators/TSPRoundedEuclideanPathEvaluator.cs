@@ -23,7 +23,7 @@ using System;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Problems.TSP {
+namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
   /// An operator which evaluates TSP solutions given in path representation using the rounded Euclidean distance metric.
   /// </summary>

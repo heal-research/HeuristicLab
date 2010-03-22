@@ -23,7 +23,7 @@ using System;
 using System.Globalization;
 using System.IO;
 
-namespace HeuristicLab.Problems.TSP {
+namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
   /// Parses a *.tsp file in TSPLIB format and extracts its information about a TSP.
   /// </summary>

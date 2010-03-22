@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.Problems.TSP.Views {
+namespace HeuristicLab.Problems.TravelingSalesman.Views {
   partial class TSPView {
     /// <summary> 
     /// Required designer variable.
@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.TSP.Views {
       this.parametersTabPage = new System.Windows.Forms.TabPage();
       this.parameterCollectionView = new HeuristicLab.Core.Views.ParameterCollectionView();
       this.visualizationTabPage = new System.Windows.Forms.TabPage();
-      this.pathTSPTourView = new HeuristicLab.Problems.TSP.Views.PathTSPTourView();
+      this.pathTSPTourView = new HeuristicLab.Problems.TravelingSalesman.Views.PathTSPTourView();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.tabControl.SuspendLayout();
       this.parametersTabPage.SuspendLayout();

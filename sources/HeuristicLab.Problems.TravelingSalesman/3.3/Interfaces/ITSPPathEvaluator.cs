@@ -22,7 +22,7 @@
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 
-namespace HeuristicLab.Problems.TSP {
+namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
   /// An interface which represents an evaluation operator which evaluates TSP solutions given in path representation.
   /// </summary>

@@ -22,7 +22,7 @@
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 
-namespace HeuristicLab.Problems.TSP {
+namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
   /// An interface which represents an operator for visualizing tours of Traveling Salesman Problems using city coordinates.
   /// </summary>

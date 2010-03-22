@@ -27,7 +27,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.MainForm;
 
-namespace HeuristicLab.Problems.TSP.Views {
+namespace HeuristicLab.Problems.TravelingSalesman.Views {
   /// <summary>
   /// The base class for visual representations of items.
   /// </summary>

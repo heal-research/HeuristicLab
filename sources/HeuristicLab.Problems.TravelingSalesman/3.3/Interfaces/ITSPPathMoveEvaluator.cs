@@ -23,7 +23,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 
-namespace HeuristicLab.Problems.TSP {
+namespace HeuristicLab.Problems.TravelingSalesman {
   public interface ITSPPathMoveEvaluator : ITSPMoveEvaluator, IPermutationMoveOperator {
     ILookupParameter<DoubleMatrix> CoordinatesParameter { get; }
     ILookupParameter<DoubleMatrix> DistanceMatrixParameter { get; }

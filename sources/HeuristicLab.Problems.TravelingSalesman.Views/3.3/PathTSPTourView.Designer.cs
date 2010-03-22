@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.Problems.TSP.Views {
+namespace HeuristicLab.Problems.TravelingSalesman.Views {
   partial class PathTSPTourView {
     /// <summary> 
     /// Required designer variable.

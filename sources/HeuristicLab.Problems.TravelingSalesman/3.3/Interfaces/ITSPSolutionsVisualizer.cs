@@ -21,7 +21,7 @@
 
 using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Problems.TSP {
+namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
   /// An interface which represents an operator for visualizing solutions of Traveling Salesman Problems.
   /// </summary>
