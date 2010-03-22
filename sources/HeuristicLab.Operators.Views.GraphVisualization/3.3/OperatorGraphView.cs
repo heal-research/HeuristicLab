@@ -45,6 +45,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
       this.graphVisualizationInfoView.Controller.OnShowContextMenu += new EventHandler<EntityMenuEventArgs>(Controller_OnShowContextMenu);
       this.graphVisualizationInfoView.Controller.Model.Selection.OnNewSelection += new EventHandler(Controller_SelectionChanged);
+      this.graphVisualizationInfoView.Controller.OnMouseDown += new EventHandler<MouseEventArgs>(Controller_OnMouseDown);
       foreach (ITool tool in this.graphVisualizationInfoView.Controller.Tools) {
         tool.OnToolActivate += new EventHandler<ToolEventArgs>(tool_OnToolActivate);
         tool.OnToolDeactivate += new EventHandler<ToolEventArgs>(tool_OnToolDeactivate);
@@ -111,6 +112,22 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       }
       this.detailsViewHost.ViewType = null;
       this.detailsViewHost.Content = null;
+    }
+
+    private void Controller_OnMouseDown(object sender, MouseEventArgs e) {
+      if (e.Clicks >= 2) {
+        IShape shape = this.graphVisualizationInfoView.Controller.Model.GetShapeAt(e.Location);
+        if (shape != null) {
+          IOperatorShapeInfo shapeInfo = shape.Tag as IOperatorShapeInfo;
+          if (shapeInfo != null) {
+            IOperator op = this.VisualizationInfo.GetOperatorForShapeInfo(shapeInfo);
+            MainFormManager.CreateDefaultView(op).Show();
+            HandledMouseEventArgs eventArgs = e as HandledMouseEventArgs;
+            if (eventArgs != null)
+              eventArgs.Handled = true;
+          }
+        }
+      }
     }
 
     #region context menu
@@ -248,7 +265,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     }
 
     private void screenshotButton_Click(object sender, EventArgs e) {
-      Bitmap bitmap = ImageExporter.FromBundle(new Bundle(this.graphVisualizationInfoView.Controller.Model.Paintables),this.graphVisualizationInfoView.Controller.View.Graphics);
+      Bitmap bitmap = ImageExporter.FromBundle(new Bundle(this.graphVisualizationInfoView.Controller.Model.Paintables), this.graphVisualizationInfoView.Controller.View.Graphics);
       SaveFileDialog saveFileDialog = new SaveFileDialog();
       saveFileDialog.Title = "Save Screenshot";
       saveFileDialog.DefaultExt = "bmp";
