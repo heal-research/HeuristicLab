@@ -310,7 +310,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       OperatorShape operatorShape = shape as OperatorShape;
       if (operatorShape != null)
         shapeInfo.Collapsed = operatorShape.Collapsed;
-      
+
       this.graphVisualization.Invalidate();
       this.causedUpdateOfShapeInfo = false;
     }
@@ -329,7 +329,8 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
           IOperatorShapeInfo shapeInfoTo = this.shapeInfoShapeMapping.GetBySecond(shapeTo);
           string connectorName = connectorFrom.Name;
 
-          this.Content.AddConnection(shapeInfoFrom, connectorName, shapeInfoTo);
+          if (shapeFrom != shapeTo) //avoid self references
+            this.Content.AddConnection(shapeInfoFrom, connectorName, shapeInfoTo);
         }
       }
     }

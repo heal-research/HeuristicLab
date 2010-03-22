@@ -222,7 +222,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       SizeF titleSize = g.MeasureString(this.Title, ArtPalette.DefaultBoldFont, Rectangle.Width - 45);
       if (titleSize.Height + 10 > Rectangle.Height) {
         headerHeight =  (int)titleSize.Height + 10;
-        mRectangle.Height = headerHeight;
+        this.UpdateLabels();
       }
 
       GraphicsPath path = new GraphicsPath();
