@@ -1235,8 +1235,8 @@ namespace Netron.Diagramming.Core {
       Point p = Point.Round(
           this.View.ViewToWorld(this.View.DeviceToView(e.Location)));
 
-      MouseEventArgs ce =
-          new MouseEventArgs(
+      HandledMouseEventArgs ce =
+          new HandledMouseEventArgs(
           e.Button,
           e.Clicks,
           p.X,
@@ -1246,7 +1246,7 @@ namespace Netron.Diagramming.Core {
 
       if (eventsEnabled)
         RaiseOnMouseDown(ce);
-      if (!controllerEnabled)
+      if (!controllerEnabled || ce.Handled)
         return;
       this.parentControl.Focus();
 
