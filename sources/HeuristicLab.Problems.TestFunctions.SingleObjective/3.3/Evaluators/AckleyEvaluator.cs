@@ -21,9 +21,9 @@
 
 using System;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
   /// <summary>
@@ -31,7 +31,7 @@ namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
   /// Domain:  [-32.768 , 32.768]^n <br/>
   /// Optimum: 0.0 at (0, 0, ..., 0)
   /// </summary
-  [Item("AckleyEvaluator", "Evaluates the Ackley function on a given point. The optimum of the Ackley Function is 0 at the origin.")]
+  [Item("AckleyEvaluator", "Evaluates the Ackley function on a given point. The optimum of this function is 0 at the origin.")]
   [StorableClass]
   public class AckleyEvaluator : SingleObjectiveTestFunctionEvaluator {
     /// <summary>
@@ -41,16 +41,16 @@ namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
       get { return false; }
     }
     /// <summary>
-    /// Gets the lower and upper bound of the function.
-    /// </summary>
-    public override DoubleMatrix Bounds {
-      get { return new DoubleMatrix(new double[,] { { -32.768, 32.768 } }); }
-    }
-    /// <summary>
     /// Gets the optimum function value (0).
     /// </summary>
     public override double BestKnownQuality {
       get { return 0; }
+    }
+    /// <summary>
+    /// Gets the lower and upper bound of the function.
+    /// </summary>
+    public override DoubleMatrix Bounds {
+      get { return new DoubleMatrix(new double[,] { { -32.768, 32.768 } }); }
     }
     /// <summary>
     /// Gets the minimum problem size (1).

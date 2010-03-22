@@ -52,7 +52,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Evaluators\AckleyEvaluator.cs" />
+    <Compile Include="Evaluators\BealeEvaluator.cs" />
+    <Compile Include="Evaluators\BoothEvaluator.cs" />
+    <Compile Include="Evaluators\GriewangkEvaluator.cs" />
+    <Compile Include="Evaluators\LevyEvaluator.cs" />
+    <Compile Include="Evaluators\MatyasEvaluator.cs" />
+    <Compile Include="Evaluators\RastriginEvaluator.cs" />
+    <Compile Include="Evaluators\RosenbrockEvaluator.cs" />
+    <Compile Include="Evaluators\SchwefelEvaluator.cs" />
     <Compile Include="Evaluators\SingleObjectiveTestFunctionEvaluator.cs" />
+    <Compile Include="Evaluators\SphereEvaluator.cs" />
+    <Compile Include="Evaluators\ZakharovEvaluator.cs" />
     <Compile Include="HeuristicLabProblemsTestFunctionsSingleObjectivePlugin.cs" />
     <Compile Include="Interfaces\ISingleObjectiveTestFunctionEvaluator.cs" />
     <Compile Include="Interfaces\ISingleObjectiveTestFunctionSolutionsVisualizer.cs" />

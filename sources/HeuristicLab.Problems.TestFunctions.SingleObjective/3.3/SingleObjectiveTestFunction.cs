@@ -82,6 +82,10 @@ namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
     #endregion
 
     #region Properties
+    public BoolValue Maximization {
+      get { return MaximizationParameter.Value; }
+      set { MaximizationParameter.Value = value; }
+    }
     public DoubleMatrix Bounds {
       get { return BoundsParameter.Value; }
       set { BoundsParameter.Value = value; }
@@ -192,6 +196,13 @@ namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
     }
     private void EvaluatorParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
+      Maximization.Value = Evaluator.Maximization;
+      BoundsParameter.Value = Evaluator.Bounds;
+      if (ProblemSize.Value < Evaluator.MinimumProblemSize)
+        ProblemSize.Value = Evaluator.MinimumProblemSize;
+      else if (ProblemSize.Value > Evaluator.MaximumProblemSize)
+        ProblemSize.Value = Evaluator.MaximumProblemSize;
+      BestKnownQuality = new DoubleValue(Evaluator.BestKnownQuality);
       Evaluator_QualityParameter_ActualNameChanged(null, EventArgs.Empty);
     }
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
@@ -199,6 +210,20 @@ namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
     }
     private void VisualizerParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeVisualizer();
+    }
+    private void BoundsParameter_ValueChanged(object sender, EventArgs e) {
+      Bounds.ToStringChanged += new EventHandler(Bounds_ToStringChanged);
+      Bounds_ToStringChanged(null, EventArgs.Empty);
+    }
+    private void Bounds_ToStringChanged(object sender, EventArgs e) {
+      if (Bounds.Columns != 2 || Bounds.Rows < 1)
+        Bounds = new DoubleMatrix(1, 2);
+    }
+    private void Bounds_ItemChanged(object sender, EventArgs<int, int> e) {
+      if (e.Value2 == 0 && Bounds[e.Value, 1] <= Bounds[e.Value, 0])
+        Bounds[e.Value, 1] = Bounds[e.Value, 0] + 0.1;
+      if (e.Value2 == 1 && Bounds[e.Value, 0] >= Bounds[e.Value, 1])
+        Bounds[e.Value, 0] = Bounds[e.Value, 1] - 0.1;
     }
     #endregion
 
@@ -208,6 +233,9 @@ namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
       InitializeOperators();
       ProblemSizeParameter.ValueChanged += new EventHandler(ProblemSizeParameter_ValueChanged);
       ProblemSize.ValueChanged += new EventHandler(ProblemSize_ValueChanged);
+      BoundsParameter.ValueChanged += new EventHandler(BoundsParameter_ValueChanged);
+      Bounds.ToStringChanged += new EventHandler(Bounds_ToStringChanged);
+      Bounds.ItemChanged += new EventHandler<EventArgs<int, int>>(Bounds_ItemChanged);
       SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
       SolutionCreator.RealVectorParameter.ActualNameChanged += new EventHandler(SolutionCreator_RealVectorParameter_ActualNameChanged);
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
