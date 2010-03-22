@@ -92,6 +92,7 @@
       <DependentUpon>ContentView.cs</DependentUpon>
     </Compile>
     <None Include="HeuristicLabMainFormWindowsFormsPlugin.cs.frame" />
+    <Compile Include="ControlExtensions.cs" />
     <Compile Include="DockForm.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -86,7 +86,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLabCoreViewsPlugin.cs.frame" />
-    <Compile Include="ControlExtensions.cs" />
     <Compile Include="VariableValueView.cs">
       <SubType>UserControl</SubType>
     </Compile>

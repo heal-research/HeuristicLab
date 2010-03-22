@@ -111,6 +111,7 @@ namespace HeuristicLab.Optimization.Views {
       if (openFileDialog.ShowDialog(this) == DialogResult.OK) {
         this.Cursor = Cursors.AppStarting;
         newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = saveOperatorGraphButton.Enabled = false;
+        operatorGraphViewHost.Enabled = false;
 
         var call = new Func<string, object>(XmlParser.Deserialize);
         call.BeginInvoke(openFileDialog.FileName, delegate(IAsyncResult a) {
@@ -126,6 +127,7 @@ namespace HeuristicLab.Optimization.Views {
               MessageBox.Show(this, "The selected file does not contain an operator graph.", "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error);
             else
               Content.OperatorGraph = operatorGraph;
+            operatorGraphViewHost.Enabled = true;
             newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = saveOperatorGraphButton.Enabled = true;
             this.Cursor = Cursors.Default;
           }));
@@ -137,6 +139,7 @@ namespace HeuristicLab.Optimization.Views {
       if (saveFileDialog.ShowDialog(this) == DialogResult.OK) {
         this.Cursor = Cursors.AppStarting;
         newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = saveOperatorGraphButton.Enabled = false;
+        operatorGraphViewHost.Enabled = false;
 
         var call = new Action<OperatorGraph, string, int>(XmlGenerator.Serialize);
         int compression = 9;
@@ -149,6 +152,7 @@ namespace HeuristicLab.Optimization.Views {
             Auxiliary.ShowErrorMessageBox(ex);
           }
           Invoke(new Action(delegate() {
+            operatorGraphViewHost.Enabled = true;
             newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = saveOperatorGraphButton.Enabled = true;
             this.Cursor = Cursors.Default;
           }));

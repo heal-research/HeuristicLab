@@ -145,7 +145,6 @@ namespace HeuristicLab.Optimization.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_Started), sender, e);
       else {
-        this.SuspendRepaint();
         SaveEnabled = false;
         parameterCollectionView.Enabled = false;
         newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = false;
@@ -155,14 +154,12 @@ namespace HeuristicLab.Optimization.Views {
         stopButton.Enabled = true;
         resetButton.Enabled = false;
         UpdateExecutionTimeTextBox();
-        this.ResumeRepaint(true);
       }
     }
     protected virtual void Content_Stopped(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_Stopped), sender, e);
       else {
-        this.SuspendRepaint();
         SaveEnabled = true;
         parameterCollectionView.Enabled = true;
         newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = true;
@@ -172,7 +169,6 @@ namespace HeuristicLab.Optimization.Views {
         stopButton.Enabled = false;
         resetButton.Enabled = true;
         UpdateExecutionTimeTextBox();
-        this.ResumeRepaint(true);
       }
     }
     protected virtual void Content_ExecutionTimeChanged(object sender, EventArgs e) {
@@ -206,6 +202,7 @@ namespace HeuristicLab.Optimization.Views {
       if (openFileDialog.ShowDialog(this) == DialogResult.OK) {
         this.Cursor = Cursors.AppStarting;
         newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = false;
+        problemViewHost.Enabled = false;
 
         var call = new Func<string, object>(XmlParser.Deserialize);
         call.BeginInvoke(openFileDialog.FileName, delegate(IAsyncResult a) {
@@ -222,6 +219,7 @@ namespace HeuristicLab.Optimization.Views {
               MessageBox.Show(this, "The selected file contains a problem type which is not supported by this algorithm.", "Invalid Problem Type", MessageBoxButtons.OK, MessageBoxIcon.Error);
             else
               Content.Problem = problem;
+            problemViewHost.Enabled = true;
             newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = true;
             this.Cursor = Cursors.Default;
           }));
@@ -233,6 +231,7 @@ namespace HeuristicLab.Optimization.Views {
       if (saveFileDialog.ShowDialog(this) == DialogResult.OK) {
         this.Cursor = Cursors.AppStarting;
         newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = false;
+        problemViewHost.Enabled = false;
 
         var call = new Action<IProblem, string, int>(XmlGenerator.Serialize);
         int compression = 9;
@@ -245,6 +244,7 @@ namespace HeuristicLab.Optimization.Views {
             Auxiliary.ShowErrorMessageBox(ex);
           }
           Invoke(new Action(delegate() {
+            problemViewHost.Enabled = true;
             newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = true;
             this.Cursor = Cursors.Default;
           }));

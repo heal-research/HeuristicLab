@@ -27,6 +27,7 @@ using System.Threading;
 using System.Windows.Forms;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Persistence.Default.Xml;
 
 namespace HeuristicLab.Optimizer {
@@ -240,12 +241,16 @@ namespace HeuristicLab.Optimizer {
     }
     private static void DisableView(IView view) {
       Invoke(delegate() {
-        ((UserControl)view).Enabled = false;
+        ((Control)view).SuspendRepaint();
+        ((Control)view).Enabled = false;
+        ((Control)view).ResumeRepaint(true);
       });
     }
     private static void EnableView(IView view) {
       Invoke(delegate() {
-        ((UserControl)view).Enabled = true;
+        ((Control)view).SuspendRepaint();
+        ((Control)view).Enabled = true;
+        ((Control)view).ResumeRepaint(true);
       });
     }
     #endregion

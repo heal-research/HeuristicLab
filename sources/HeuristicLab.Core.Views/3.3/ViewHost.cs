@@ -25,6 +25,7 @@ using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Core.Views {
   public sealed partial class ViewHost : UserControl {
@@ -52,6 +53,15 @@ namespace HeuristicLab.Core.Views {
           viewContextMenuStrip.Item = content;
           Initialize();
         }
+      }
+    }
+
+    public new bool Enabled {
+      get { return base.Enabled; }
+      set {
+        this.SuspendRepaint();
+        base.Enabled = value;
+        this.ResumeRepaint(true);
       }
     }
 

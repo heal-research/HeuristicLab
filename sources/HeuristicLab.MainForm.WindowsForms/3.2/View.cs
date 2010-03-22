@@ -20,12 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Text;
-using System.Xml;
 using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm.WindowsForms {
@@ -159,6 +153,22 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     protected virtual void OnInitialized(EventArgs e) {
+    }
+
+    public new bool Enabled {
+      get { return base.Enabled; }
+      set {
+        SuspendRepaint();
+        base.Enabled = value;
+        ResumeRepaint(true);
+      }
+    }
+
+    public void SuspendRepaint() {
+      ((Control)this).SuspendRepaint();
+    }
+    public void ResumeRepaint(bool refresh) {
+      ((Control)this).ResumeRepaint(refresh);
     }
   }
 }

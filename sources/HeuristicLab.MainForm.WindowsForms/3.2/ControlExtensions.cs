@@ -20,10 +20,10 @@
 #endregion
 
 using System;
-using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
-namespace HeuristicLab.Core.Views {
+namespace HeuristicLab.MainForm.WindowsForms {
   public static class ControlExtensions {
     [DllImport("user32.dll")]
     private static extern int SendMessage(IntPtr hWnd, Int32 wMsg, bool wParam, Int32 lParam);
