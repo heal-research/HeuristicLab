@@ -34,7 +34,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     private static int LABEL_HEIGHT = 16;
     private static int LABEL_WIDTH = 180;
     private static int LABEL_SPACING = 3;
-    private static int HEADER_HEIGHT = 30;
+    private int headerHeight = 30;
 
     private ExpandableIconMaterial expandIconMaterial;
     public OperatorShape()
@@ -167,7 +167,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
     private Size CalculateSize() {
       int width = this.Rectangle.Width;
-      int height = HEADER_HEIGHT;
+      int height = headerHeight;
       if (!Collapsed)
         height += this.labels.Count * (LABEL_HEIGHT + LABEL_SPACING);
       return new Size(width, height);
@@ -188,7 +188,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       base.Initialize();
 
       //the initial size
-      this.Transform(0, 0, 200, HEADER_HEIGHT);
+      this.Transform(0, 0, 200, headerHeight);
       this.color = Color.LightBlue;
 
       this.iconMaterial = new IconMaterial();
@@ -217,7 +217,13 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
       g.SmoothingMode = SmoothingMode.HighQuality;
 
-      Pen pen = new Pen(lineColor,lineWidth);
+      Pen pen = new Pen(lineColor, lineWidth);
+
+      SizeF titleSize = g.MeasureString(this.Title, ArtPalette.DefaultBoldFont, Rectangle.Width - 45);
+      if (titleSize.Height + 10 > Rectangle.Height) {
+        headerHeight =  (int)titleSize.Height + 10;
+        mRectangle.Height = headerHeight;
+      }
 
       GraphicsPath path = new GraphicsPath();
       path.AddArc(Rectangle.X, Rectangle.Y, 20, 20, -180, 90);
@@ -250,7 +256,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
         Rectangle rect;
 
         for (int i = 0; i < this.labels.Count; i++) {
-          rect = new Rectangle(Rectangle.X + 25, Rectangle.Y + HEADER_HEIGHT + i * (LABEL_HEIGHT + LABEL_SPACING), LABEL_WIDTH, LABEL_HEIGHT);
+          rect = new Rectangle(Rectangle.X + 25, Rectangle.Y + headerHeight + i * (LABEL_HEIGHT + LABEL_SPACING), LABEL_WIDTH, LABEL_HEIGHT);
           g.DrawString(textStyle.GetFormattedText(this.labels[i]), textStyle.Font, textStyle.GetBrush(), rect, stringFormat);
         }
       }
@@ -259,7 +265,8 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       g.DrawPath(pen, path);
 
       //the title
-      g.DrawString(this.Title, ArtPalette.DefaultBoldFont, Brushes.Black, new Rectangle(Rectangle.X + 25, Rectangle.Y + 5, Rectangle.Width - 45, 27));
+      g.DrawString(this.Title, ArtPalette.DefaultBoldFont, Brushes.Black, new Rectangle(Rectangle.X + 25, Rectangle.Y + 5, Rectangle.Width - 45, Rectangle.Height - 5));
+
 
       //the material
       foreach (IPaintable material in Children)
