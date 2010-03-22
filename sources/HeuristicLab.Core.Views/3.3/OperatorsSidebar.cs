@@ -36,8 +36,10 @@ namespace HeuristicLab.Core.Views {
     }
     protected override void OnClosing(FormClosingEventArgs e) {
       base.OnClosing(e);
-      e.Cancel = true;
-      this.Hide();
+      if (e.CloseReason == CloseReason.UserClosing) {
+        e.Cancel = true;
+        this.Hide();
+      }
     }
   }
 }
