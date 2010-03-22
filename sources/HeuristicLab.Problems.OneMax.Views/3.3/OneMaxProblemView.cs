@@ -9,25 +9,25 @@ using HeuristicLab.Optimization.Views;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Problems.OneMax.Views {
-  [View("OneMax View")]
-  [Content(typeof(OneMax), true)]
-  public partial class OneMaxView : ProblemView {
-    public new OneMax Content {
-      get { return (OneMax)base.Content; }
+  [View("OneMaxProblem View")]
+  [Content(typeof(OneMaxProblem), true)]
+  public partial class OneMaxProblemView : ProblemView {
+    public new OneMaxProblem Content {
+      get { return (OneMaxProblem)base.Content; }
       set { base.Content = value; }
     }
 
     /// <summary>
     /// Initializes a new instance of <see cref="ItemBaseView"/>.
     /// </summary>
-    public OneMaxView() {
+    public OneMaxProblemView() {
       InitializeComponent();
     }
     /// <summary>
     /// Intializes a new instance of <see cref="ItemBaseView"/> with the given <paramref name="item"/>.
     /// </summary>
     /// <param name="item">The item that should be displayed.</param>
-    public OneMaxView(OneMax content)
+    public OneMaxProblemView(OneMaxProblem content)
       : this() {
       Content = content;
     }

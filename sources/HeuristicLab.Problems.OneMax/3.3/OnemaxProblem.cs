@@ -33,10 +33,10 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.OneMax {
-  [Item("OneMax", "Represents a OneMax Problem.")]
+  [Item("OneMaxProblem", "Represents a OneMax Problem.")]
   [Creatable("Problems")]
   [StorableClass]
-  public sealed class OneMax : ParameterizedNamedItem, ISingleObjectiveProblem {
+  public sealed class OneMaxProblem : ParameterizedNamedItem, ISingleObjectiveProblem {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }
     }
@@ -115,7 +115,7 @@ namespace HeuristicLab.Problems.OneMax {
     }
     #endregion
 
-    public OneMax()
+    public OneMaxProblem()
       : base() {
       RandomBinaryVectorCreator creator = new RandomBinaryVectorCreator();
       OneMaxEvaluator evaluator = new OneMaxEvaluator();
@@ -136,10 +136,10 @@ namespace HeuristicLab.Problems.OneMax {
     }
 
     [StorableConstructor]
-    private OneMax(bool deserializing) : base() { }
+    private OneMaxProblem(bool deserializing) : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      OneMax clone = (OneMax)base.Clone(cloner);
+      OneMaxProblem clone = (OneMaxProblem)base.Clone(cloner);
       clone.Initialize();
       return clone;
     }

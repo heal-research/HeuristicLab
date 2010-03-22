@@ -1,5 +1,5 @@
 ﻿namespace HeuristicLab.Problems.OneMax.Views {
-  partial class OneMaxView {
+  partial class OneMaxProblemView {
     /// <summary>
     /// Required designer variable.
     /// </summary>
