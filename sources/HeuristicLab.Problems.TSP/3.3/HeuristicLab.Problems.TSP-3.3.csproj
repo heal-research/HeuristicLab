@@ -157,14 +157,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ch130.opt.tour" />
-    <None Include="ch130.tsp" />
-    <None Include="fl1400.tsp" />
-    <None Include="gr666.opt.tour" />
-    <None Include="gr666.tsp" />
     <None Include="HeuristicLab.snk" />
     <None Include="HeuristicLabProblemsTSPPlugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.frame" />
+    <None Include="TSPLIB Sample Problems\ch130.opt.tour" />
+    <None Include="TSPLIB Sample Problems\ch130.tsp" />
+    <None Include="TSPLIB Sample Problems\fl1400.tsp" />
+    <None Include="TSPLIB Sample Problems\gr666.opt.tour" />
+    <None Include="TSPLIB Sample Problems\gr666.tsp" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
