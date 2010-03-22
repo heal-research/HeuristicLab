@@ -48,7 +48,7 @@ Optimum: 0.0 at (0.0, 0.0, ..., 0.0)";
     public static double Apply(double[] point) {
       double result = 0;
       for (int i = 0; i < point.Length; i++) {
-        result += i * point[i] * point[i];
+        result += (i + 1) * point[i] * point[i];
       }
       return result;
     }
