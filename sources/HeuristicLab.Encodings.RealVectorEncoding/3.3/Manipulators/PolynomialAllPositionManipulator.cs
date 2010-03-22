@@ -47,7 +47,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// The maximum manipulation parameter specifies the range of the manipulation. The value specified here is the highest value the mutation will ever add to the current value.
     /// </summary>
     /// <remarks>
-    /// The manipulated value is not restricted by the (possibly) specified lower and upper bounds. Use the <see cref="BoundsChecker"/> to correct the values after performing the mutation.
+    /// If there are bounds specified the manipulated value is restricted by the given lower and upper bounds.
     /// </remarks>
     public ValueLookupParameter<DoubleValue> MaximumManipulationParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["MaximumManipulation"]; }

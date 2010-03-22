@@ -187,10 +187,11 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       }
       ParameterizeSolutionsCreator();
       ParameterizeMainLoop();
+      UpdateMoveGenerator();
+      UpdateMoveParameters();
       ParameterizeMoveGenerators();
       ParameterizeMoveEvaluator();
       ParameterizeMoveMaker();
-      UpdateMoveGenerator();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.OnProblemChanged();
     }
@@ -226,10 +227,8 @@ namespace HeuristicLab.Algorithms.TabuSearch {
         op.MoveTabuParameter.ActualNameChanged -= new EventHandler(TabuMoveEvaluator_MoveTabuParameter_ActualNameChanged);
         op.MoveTabuParameter.ActualNameChanged += new EventHandler(TabuMoveEvaluator_MoveTabuParameter_ActualNameChanged);
       }
-      IMoveGenerator oldMoveGenerator = MoveGenerator;
       UpdateMoveGenerator();
-      if (oldMoveGenerator == MoveGenerator) // in this case MoveGeneratorParameter_ValueChanged did not fire
-        UpdateMoveParameters();
+      UpdateMoveParameters();
       ParameterizeMainLoop();
       ParameterizeMoveGenerators();
       ParameterizeMoveEvaluator();

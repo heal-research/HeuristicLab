@@ -190,10 +190,11 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       }
       ParameterizeSolutionsCreator();
       ParameterizeMainLoop();
+      UpdateMoveGenerator();
+      UpdateMoveParameters();
       ParameterizeMoveEvaluators();
       ParameterizeMoveMakers();
       ParameterizeMoveGenerators();
-      UpdateMoveGenerator();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.OnProblemChanged();
     }
@@ -225,10 +226,8 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
         op.MoveQualityParameter.ActualNameChanged -= new EventHandler(MoveEvaluator_MoveQualityParameter_ActualNameChanged);
         op.MoveQualityParameter.ActualNameChanged += new EventHandler(MoveEvaluator_MoveQualityParameter_ActualNameChanged);
       }
-      IMultiMoveGenerator oldMoveGenerator = MoveGenerator;
       UpdateMoveGenerator();
-      if (oldMoveGenerator == MoveGenerator) // in this case MoveGeneratorParameter_ValueChanged did not fire
-        UpdateMoveParameters();
+      UpdateMoveParameters();
       ParameterizeMainLoop();
       ParameterizeMoveEvaluators();
       ParameterizeMoveMakers();

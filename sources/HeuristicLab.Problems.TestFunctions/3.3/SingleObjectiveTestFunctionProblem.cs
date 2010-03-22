@@ -122,9 +122,9 @@ namespace HeuristicLab.Problems.TestFunctions {
       get { return BestKnownQualityParameter.Value; }
       set { BestKnownQualityParameter.Value = value; }
     }
-    private List<IRealVectorOperator> operators;
+    private List<IOperator> operators;
     public IEnumerable<IOperator> Operators {
-      get { return operators.Cast<IOperator>(); }
+      get { return operators; }
     }
     #endregion
 
@@ -196,6 +196,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
     private void EvaluatorParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
+      UpdateMoveEvaluators();
       Maximization.Value = Evaluator.Maximization;
       BoundsParameter.Value = Evaluator.Bounds;
       if (ProblemSize.Value < Evaluator.MinimumProblemSize)
@@ -225,8 +226,11 @@ namespace HeuristicLab.Problems.TestFunctions {
       if (e.Value2 == 1 && Bounds[e.Value, 0] >= Bounds[e.Value, 1])
         Bounds[e.Value, 0] = Bounds[e.Value, 1] - 0.1;
     }
-    private void BoundsParameter_NameChanged(object sender, EventArgs e) {
-      ParameterizeOperators();
+    private void MoveGenerator_AdditiveMoveParameter_ActualNameChanged(object sender, EventArgs e) {
+      string name = ((ILookupParameter<AdditiveMove>)sender).ActualName;
+      foreach (IAdditiveRealVectorMoveOperator op in Operators.OfType<IAdditiveRealVectorMoveOperator>()) {
+        op.AdditiveMoveParameter.ActualName = name;
+      }
     }
     #endregion
 
@@ -236,7 +240,6 @@ namespace HeuristicLab.Problems.TestFunctions {
       InitializeOperators();
       ProblemSizeParameter.ValueChanged += new EventHandler(ProblemSizeParameter_ValueChanged);
       ProblemSize.ValueChanged += new EventHandler(ProblemSize_ValueChanged);
-      BoundsParameter.NameChanged += new EventHandler(BoundsParameter_NameChanged);
       BoundsParameter.ValueChanged += new EventHandler(BoundsParameter_ValueChanged);
       Bounds.ToStringChanged += new EventHandler(Bounds_ToStringChanged);
       Bounds.ItemChanged += new EventHandler<EventArgs<int, int>>(Bounds_ItemChanged);
@@ -247,25 +250,34 @@ namespace HeuristicLab.Problems.TestFunctions {
       VisualizerParameter.ValueChanged += new EventHandler(VisualizerParameter_ValueChanged);
     }
     private void InitializeOperators() {
-      operators = new List<IRealVectorOperator>();
+      operators = new List<IOperator>();
       if (ApplicationManager.Manager != null) {
-        operators.AddRange(ApplicationManager.Manager.GetInstances<IRealVectorOperator>());
+        foreach (IRealVectorOperator op in ApplicationManager.Manager.GetInstances<IRealVectorOperator>())
+          operators.Add(op);
+        UpdateMoveEvaluators();
         ParameterizeOperators();
       }
-      //InitializeMoveGenerators();
+      InitializeMoveGenerators();
     }
-    /*private void InitializeMoveGenerators() {
-      foreach (ITwoOptPermutationMoveOperator op in Operators.OfType<ITwoOptPermutationMoveOperator>()) {
+    private void InitializeMoveGenerators() {
+      foreach (IAdditiveRealVectorMoveOperator op in Operators.OfType<IAdditiveRealVectorMoveOperator>()) {
         if (op is IMoveGenerator) {
-          op.TwoOptMoveParameter.ActualNameChanged += new EventHandler(MoveGenerator_TwoOptMoveParameter_ActualNameChanged);
+          op.AdditiveMoveParameter.ActualNameChanged += new EventHandler(MoveGenerator_AdditiveMoveParameter_ActualNameChanged);
         }
       }
-      foreach (IThreeOptPermutationMoveOperator op in Operators.OfType<IThreeOptPermutationMoveOperator>()) {
-        if (op is IMoveGenerator) {
-          op.ThreeOptMoveParameter.ActualNameChanged += new EventHandler(MoveGenerator_ThreeOptMoveParameter_ActualNameChanged);
-        }
+    }
+    private void UpdateMoveEvaluators() {
+      if (ApplicationManager.Manager != null) {
+        foreach (ISingleObjectiveTestFunctionMoveEvaluator op in Operators.OfType<ISingleObjectiveTestFunctionMoveEvaluator>().ToList())
+          operators.Remove(op);
+        foreach (ISingleObjectiveTestFunctionMoveEvaluator op in ApplicationManager.Manager.GetInstances<ISingleObjectiveTestFunctionMoveEvaluator>())
+          if (op.EvaluatorType == Evaluator.GetType()) {
+            operators.Add(op);
+          }
+        ParameterizeOperators();
+        OnOperatorsChanged();
       }
-    }*/
+    }
     private void ParameterizeSolutionCreator() {
       SolutionCreator.LengthParameter.Value = new IntValue(ProblemSize.Value);
     }
@@ -288,14 +300,16 @@ namespace HeuristicLab.Problems.TestFunctions {
         op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
         op.BoundsParameter.ActualName = BoundsParameter.Name;
       }
-      /*foreach (IPermutationMoveOperator op in Operators.OfType<IPermutationMoveOperator>()) {
-        op.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+      foreach (IRealVectorMoveOperator op in Operators.OfType<IRealVectorMoveOperator>()) {
+        op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
       }
-      foreach (ITSPPathMoveEvaluator op in Operators.OfType<ITSPPathMoveEvaluator>()) {
-        op.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
-        op.DistanceMatrixParameter.ActualName = DistanceMatrixParameter.Name;
-        op.UseDistanceMatrixParameter.ActualName = UseDistanceMatrixParameter.Name;
-      }*/
+      foreach (IRealVectorMoveGenerator op in Operators.OfType<IRealVectorMoveGenerator>()) {
+        op.BoundsParameter.ActualName = BoundsParameter.Name;
+      }
+      foreach (ISingleObjectiveTestFunctionAdditiveMoveEvaluator op in Operators.OfType<ISingleObjectiveTestFunctionAdditiveMoveEvaluator>()) {
+        op.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
+        op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
+      }
     }
     #endregion
   }

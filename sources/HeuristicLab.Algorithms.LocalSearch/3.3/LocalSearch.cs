@@ -64,6 +64,9 @@ namespace HeuristicLab.Algorithms.LocalSearch {
     private ValueParameter<IntValue> MaximumIterationsParameter {
       get { return (ValueParameter<IntValue>)Parameters["MaximumIterations"]; }
     }
+    private ValueParameter<IntValue> SampleSizeParameter {
+      get { return (ValueParameter<IntValue>)Parameters["SampleSize"]; }
+    }
     #endregion
 
     #region Properties
@@ -91,6 +94,10 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       get { return MaximumIterationsParameter.Value; }
       set { MaximumIterationsParameter.Value = value; }
     }
+    public IntValue SampleSize {
+      get { return SampleSizeParameter.Value; }
+      set { SampleSizeParameter.Value = value; }
+    }
     private RandomCreator RandomCreator {
       get { return (RandomCreator)OperatorGraph.InitialOperator; }
     }
@@ -112,6 +119,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       Parameters.Add(new ConstrainedValueParameter<IMoveMaker>("MoveMaker", "The operator used to perform a move."));
       Parameters.Add(new ConstrainedValueParameter<ISingleObjectiveMoveEvaluator>("MoveEvaluator", "The operator used to evaluate a move."));
       Parameters.Add(new ValueParameter<IntValue>("MaximumIterations", "The maximum number of generations which should be processed.", new IntValue(1000)));
+      Parameters.Add(new ValueParameter<IntValue>("SampleSize", "Number of moves that MultiMoveGenerators should create. This is ignored for Exhaustive- and SingleMoveGenerators.", new IntValue(100)));
 
       RandomCreator randomCreator = new RandomCreator();
       SolutionsCreator solutionsCreator = new SolutionsCreator();
@@ -157,6 +165,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       ParameterizeMoveEvaluators();
       ParameterizeMoveMakers();
       UpdateMoveGenerator();
+      UpdateMoveParameters();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.OnProblemChanged();
     }
@@ -188,10 +197,8 @@ namespace HeuristicLab.Algorithms.LocalSearch {
         op.MoveQualityParameter.ActualNameChanged -= new EventHandler(MoveEvaluator_MoveQualityParameter_ActualNameChanged);
         op.MoveQualityParameter.ActualNameChanged += new EventHandler(MoveEvaluator_MoveQualityParameter_ActualNameChanged);
       }
-      IMoveGenerator oldMoveGenerator = MoveGenerator;
       UpdateMoveGenerator();
-      if (oldMoveGenerator == MoveGenerator) // in this case MoveGeneratorParameter_ValueChanged did not fire
-        UpdateMoveParameters();
+      UpdateMoveParameters();
       ParameterizeMainLoop();
       ParameterizeMoveEvaluators();
       ParameterizeMoveMakers();

@@ -46,7 +46,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// The maximum manipulation parameter specifies the range of the manipulation. The value specified here is the highest value the mutation will ever add to the current value.
     /// </summary>
     /// <remarks>
-    /// The manipulated value is not restricted by the (possibly) specified lower and upper bounds. Use the <see cref="BoundsChecker"/> to correct the values after performing the mutation.
+    /// If there are bounds specified the manipulated value is restricted by the given lower and upper bounds.
     /// </remarks>
     public ValueLookupParameter<DoubleValue> MaximumManipulationParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["MaximumManipulation"]; }
@@ -72,15 +72,19 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public static void Apply(IRandom random, RealVector vector, DoubleValue contiguity, DoubleValue maxManipulation) {
       if (contiguity.Value < 0) throw new ArgumentException("PolynomialOnePositionManipulator: Contiguity value is smaller than 0", "contiguity");
       int index = random.Next(vector.Length);
+      vector[index] += Apply(random, contiguity.Value) * maxManipulation.Value;
+    }
+
+    public static double Apply(IRandom random, double contiguity) {
       double u = random.NextDouble(), delta = 0;
 
       if (u < 0.5) {
-        delta = Math.Pow(2 * u, 1.0 / (contiguity.Value + 1)) - 1.0;
+        delta = Math.Pow(2 * u, 1.0 / (contiguity + 1)) - 1.0;
       } else if (u > 0.5) {
-        delta = 1.0 - Math.Pow(2.0 - 2.0 * u, 1.0 / contiguity.Value + 1);
-      } else if (u == 0.5) delta = 0;
+        delta = 1.0 - Math.Pow(2.0 - 2.0 * u, 1.0 / contiguity + 1);
+      } else delta = 0;
 
-      vector[index] += delta * maxManipulation.Value;
+      return delta;
     }
 
     /// <summary>

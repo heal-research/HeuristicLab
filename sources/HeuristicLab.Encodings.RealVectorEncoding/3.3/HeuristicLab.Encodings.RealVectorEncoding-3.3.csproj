@@ -102,7 +102,14 @@
     <Compile Include="Crossovers\UniformAllPositionsArithmeticCrossover.cs" />
     <Compile Include="Crossovers\UniformSomePositionsArithmeticCrossover.cs" />
     <Compile Include="HeuristicLabEncodingsRealVectorEncodingPlugin.cs" />
+    <Compile Include="Interfaces\IAdditiveRealVectorMoveOperator.cs" />
     <Compile Include="Interfaces\IRealVectorBoundsChecker.cs" />
+    <Compile Include="Interfaces\IRealVectorMoveGenerator.cs" />
+    <Compile Include="Interfaces\IRealVectorMoveOperator.cs" />
+    <Compile Include="Moves\Polynomial\StochasticPolynomialMultiMoveGenerator.cs" />
+    <Compile Include="Moves\AdditiveMoveMaker.cs" />
+    <Compile Include="Moves\AdditiveMove.cs" />
+    <Compile Include="Moves\AdditiveMoveGenerator.cs" />
     <Compile Include="RealVector.cs" />
     <Compile Include="Manipulators\BreederGeneticAlgorithmManipulator.cs" />
     <Compile Include="Manipulators\PolynomialAllPositionManipulator.cs" />
