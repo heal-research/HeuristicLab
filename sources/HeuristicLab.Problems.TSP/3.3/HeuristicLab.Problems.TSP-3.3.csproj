@@ -83,6 +83,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Evaluators\TSPEuclideanPathEvaluator.cs" />
+    <Compile Include="Evaluators\TSPGeoPathEvaluator.cs" />
     <Compile Include="TSPLIBTourParser.cs" />
     <Compile Include="Interfaces\ICoordinatesTSPSolutionsVisualizer.cs" />
     <Compile Include="Interfaces\IPathCoordinatesTSPSolutionsVisualizer.cs" />
@@ -158,6 +160,8 @@
     <None Include="ch130.opt.tour" />
     <None Include="ch130.tsp" />
     <None Include="fl1400.tsp" />
+    <None Include="gr666.opt.tour" />
+    <None Include="gr666.tsp" />
     <None Include="HeuristicLab.snk" />
     <None Include="HeuristicLabProblemsTSPPlugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.frame" />

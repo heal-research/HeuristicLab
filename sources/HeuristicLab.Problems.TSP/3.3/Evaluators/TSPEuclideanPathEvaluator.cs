@@ -19,30 +19,28 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Operators;
-using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.TSP {
   /// <summary>
-  /// A base class for operators which evaluate TSP solutions.
+  /// An operator which evaluates TSP solutions given in path representation using the Euclidean distance metric.
   /// </summary>
-  [Item("TSPEvaluator", "A base class for operators which evaluate TSP solutions.")]
+  [Item("TSPEuclideanPathEvaluator", "An operator which evaluates TSP solutions given in path representation using the Euclidean distance metric.")]
+  [Creatable("Test")]
   [StorableClass]
-  public abstract class TSPEvaluator : SingleSuccessorOperator, ITSPEvaluator {
-    public override bool CanChangeName {
-      get { return false; }
-    }
-
-    public ILookupParameter<DoubleValue> QualityParameter {
-      get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
-    }
-
-    protected TSPEvaluator()
-      : base() {
-      Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The evaluated quality of the TSP solution."));
+  public sealed class TSPEuclideanPathEvaluator : TSPCoordinatesPathEvaluator {
+    /// <summary>
+    /// Calculates the distance between two points using the Euclidean distance metric.
+    /// </summary>
+    /// <param name="x1">The x-coordinate of point 1.</param>
+    /// <param name="y1">The y-coordinate of point 1.</param>
+    /// <param name="x2">The x-coordinate of point 2.</param>
+    /// <param name="y2">The y-coordinate of point 2.</param>
+    /// <returns>The calculated distance.</returns>
+    protected override double CalculateDistance(double x1, double y1, double x2, double y2) {
+      return Math.Sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
     }
   }
 }

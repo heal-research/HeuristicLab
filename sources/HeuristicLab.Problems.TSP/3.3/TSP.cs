@@ -177,8 +177,18 @@ namespace HeuristicLab.Problems.TSP {
       Name = tspParser.Name + " TSP (imported from TSPLIB)";
       if (!string.IsNullOrEmpty(tspParser.Comment)) Description = tspParser.Comment;
       Coordinates = new DoubleMatrix(tspParser.Vertices);
+      if (tspParser.WeightType == TSPLIBParser.TSPLIBEdgeWeightType.EUC_2D) {
+        TSPRoundedEuclideanPathEvaluator evaluator = new TSPRoundedEuclideanPathEvaluator();
+        evaluator.QualityParameter.ActualName = "TSPTourLength";
+        Evaluator = evaluator;
+      } else if (tspParser.WeightType == TSPLIBParser.TSPLIBEdgeWeightType.GEO) {
+        TSPGeoPathEvaluator evaluator = new TSPGeoPathEvaluator();
+        evaluator.QualityParameter.ActualName = "TSPTourLength";
+        Evaluator = evaluator;
+      }
       BestKnownQuality = null;
       BestKnownSolution = null;
+
       if (!string.IsNullOrEmpty(optimalTourFileName)) {
         TSPLIBTourParser tourParser = new TSPLIBTourParser(optimalTourFileName);
         tourParser.Parse();

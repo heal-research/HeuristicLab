@@ -28,6 +28,14 @@ namespace HeuristicLab.Problems.TSP {
   /// Parses a *.tsp file in TSPLIB format and extracts its information about a TSP.
   /// </summary>
   public class TSPLIBParser {
+    #region Inner Enum TSPLIBEdgeWeightType
+    public enum TSPLIBEdgeWeightType {
+      UNDEFINED,
+      EUC_2D,
+      GEO
+    }
+    #endregion
+
     private const int EOF = 0;
     private const int NAME = 1;
     private const int TYPE = 2;
@@ -60,11 +68,11 @@ namespace HeuristicLab.Problems.TSP {
     public double[,] Vertices {
       get { return vertices; }
     }
-    private int weightType;
+    private TSPLIBEdgeWeightType weightType;
     /// <summary>
     /// Gets the weight type of the parsed TSP.
     /// </summary>
-    public int WeightType {
+    public TSPLIBEdgeWeightType WeightType {
       get { return weightType; }
     }
 
@@ -82,7 +90,7 @@ namespace HeuristicLab.Problems.TSP {
       name = path;
       comment = string.Empty;
       vertices = null;
-      weightType = -1;
+      weightType = TSPLIBEdgeWeightType.UNDEFINED;
     }
 
     /// <summary>
@@ -192,9 +200,9 @@ namespace HeuristicLab.Problems.TSP {
       string type = tokens[tokens.Length - 1].Trim();
 
       if (type.Equals("euc_2d", StringComparison.OrdinalIgnoreCase))
-        weightType = 0;
+        weightType = TSPLIBEdgeWeightType.EUC_2D;
       else if (type.Equals("geo", StringComparison.OrdinalIgnoreCase))
-        weightType = 1;
+        weightType = TSPLIBEdgeWeightType.GEO;
       else
         throw new InvalidDataException("Input file contains an unsupported edge weight type (only \"EUC_2D\" and \"GEO\" are supported).");
     }
