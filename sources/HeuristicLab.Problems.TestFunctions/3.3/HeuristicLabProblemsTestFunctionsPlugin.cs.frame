@@ -21,12 +21,12 @@
 
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
+namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
-  /// Plugin class for HeuristicLab.Problems.TestFunctions.SingleObjective plugin
+  /// Plugin class for HeuristicLab.Problems.TestFunctions plugin
   /// </summary>
-  [Plugin("HeuristicLab.Problems.TestFunctions.SingleObjective", "3.3.0.$WCREV$")]
-  [PluginFile("HeuristicLab.Problems.TestFunctions.SingleObjective-3.3.dll", PluginFileType.Assembly)]
+  [Plugin("HeuristicLab.Problems.TestFunctions", "3.3.0.$WCREV$")]
+  [PluginFile("HeuristicLab.Problems.TestFunctions-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.2")]
   [PluginDependency("HeuristicLab.Common.Resources", "3.2")]
@@ -37,6 +37,6 @@ namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
   [PluginDependency("HeuristicLab.Parameters", "3.3")]
   [PluginDependency("HeuristicLab.Persistence", "3.3")]
-  public class HeuristicLabProblemsTestFunctionsSingleObjectivePlugin : PluginBase {
+  public class HeuristicLabProblemsTestFunctionsPlugin : PluginBase {
   }
 }

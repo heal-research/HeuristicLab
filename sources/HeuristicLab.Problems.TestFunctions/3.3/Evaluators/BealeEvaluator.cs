@@ -25,15 +25,15 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
+namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
-  /// Matyas Function<br/>
-  /// Domain:  [-10.0 , 10.0]^2<br/>
-  /// Optimum: 0.0 at (0.0, 0.0)
+  /// Beale Function<br/>
+  /// Domain:  [-4.5 , 4.5]^2<br/>
+  /// Optimum: 0.0 at (3.0, 0.5)
   /// </summary>
-  [Item("MatyasEvaluator", "Evaluates the Matyas function on a given point. The optimum of this function is 0 at the origin.")]
+  [Item("BealeEvaluator", "Evaluates the Beale function on a given point. The optimum of this function is 0 at (3,0.5).")]
   [StorableClass]
-  public class MatyasEvaluator : SingleObjectiveTestFunctionEvaluator {
+  public class BealeEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
     /// <summary>
     /// Returns false as the Beale function is a minimization problem.
     /// </summary>
@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
     /// Gets the lower and upper bound of the function.
     /// </summary>
     public override DoubleMatrix Bounds {
-      get { return new DoubleMatrix(new double[,] { { -10, 10 } }); }
+      get { return new DoubleMatrix(new double[,] { { -4.5, 4.5 } }); }
     }
     /// <summary>
     /// Gets the minimum problem size (2).
@@ -69,9 +69,9 @@ namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
     /// Evaluates the test function for a specific <paramref name="point"/>.
     /// </summary>
     /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
-    /// <returns>The result value of the Matyas function at the given point.</returns>
+    /// <returns>The result value of the Beale function at the given point.</returns>
     public static double Apply(RealVector point) {
-      return 0.26 * (point[0] * point[0] + point[1] * point[1]) - 0.48 * point[0] * point[1];
+      return Math.Pow(1.5 - point[0] * (1 - point[1]), 2) + Math.Pow(2.25 - point[0] * (1 - (point[1] * point[1])), 2) + Math.Pow((2.625 - point[0] * (1 - (point[1] * point[1] * point[1]))), 2);
     }
 
     /// <summary>
@@ -79,7 +79,7 @@ namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
     /// </summary>
     /// <remarks>Calls <see cref="Apply"/>.</remarks>
     /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
-    /// <returns>The result value of the Matyas function at the given point.</returns>
+    /// <returns>The result value of the Beale function at the given point.</returns>
     protected override double EvaluateFunction(RealVector point) {
       return Apply(point);
     }

@@ -25,17 +25,17 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
+namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
-  /// Rastrigin Function<br/>
-  /// Domain:  [-5.12 , 5.12]^n <br/>
+  /// Griewangk Function<br/>
+  /// Domain:  [-600.0 , 600.0]^n<br/>
   /// Optimum: 0.0 at (0, 0, ..., 0)
-  /// </summary
-  [Item("RastriginEvaluator", "Evaluates the Rastrigin function on a given point. The optimum of this function is 0 at the origin.")]
+  /// </summary>
+  [Item("GriewangkEvaluator", "Evaluates the Griewangk function on a given point. The optimum of this function is 0 at the origin.")]
   [StorableClass]
-  public class RastriginEvaluator : SingleObjectiveTestFunctionEvaluator {
+  public class GriewangkEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
     /// <summary>
-    /// Returns false as the Rastrigin function is a minimization problem.
+    /// Returns false as the Griewangk function is a minimization problem.
     /// </summary>
     public override bool Maximization {
       get { return false; }
@@ -50,13 +50,13 @@ namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
     /// Gets the lower and upper bound of the function.
     /// </summary>
     public override DoubleMatrix Bounds {
-      get { return new DoubleMatrix(new double[,] { { -5.12, 5.12 } }); }
+      get { return new DoubleMatrix(new double[,] { { -600, 600 } }); }
     }
     /// <summary>
-    /// Gets the minimum problem size (1).
+    /// Gets the minimum problem size (2).
     /// </summary>
     public override int MinimumProblemSize {
-      get { return 1; }
+      get { return 2; }
     }
     /// <summary>
     /// Gets the (theoretical) maximum problem size (2^31 - 1).
@@ -69,13 +69,20 @@ namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
     /// Evaluates the test function for a specific <paramref name="point"/>.
     /// </summary>
     /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
-    /// <returns>The result value of the Rastrigin function at the given point.</returns>
+    /// <returns>The result value of the Griewangk function at the given point.</returns>
     public static double Apply(RealVector point) {
-      double result = 10 * point.Length;
-      for (int i = 0; i < point.Length; i++) {
+      double result = 0;
+      double val = 0;
+
+      for (int i = 0; i < point.Length; i++)
         result += point[i] * point[i];
-        result -= 10 * Math.Cos(2 * Math.PI * point[i]);
-      }
+      result = result / 4000;
+
+      val = Math.Cos(point[0]);
+      for (int i = 1; i < point.Length; i++)
+        val *= Math.Cos(point[i] / Math.Sqrt(i + 1));
+
+      result = result - val + 1;
       return (result);
     }
 
@@ -84,7 +91,7 @@ namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
     /// </summary>
     /// <remarks>Calls <see cref="Apply"/>.</remarks>
     /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
-    /// <returns>The result value of the Rastrigin function at the given point.</returns>
+    /// <returns>The result value of the Griewangk function at the given point.</returns>
     protected override double EvaluateFunction(RealVector point) {
       return Apply(point);
     }

@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{6AE0E1F5-D3FF-43A3-90E1-2435E7493FB5}</ProjectGuid>
+    <ProjectGuid>{88B9B0E3-344E-4196-82A3-0F9732506FE8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.Problems.TestFunctions.SingleObjective.Views</RootNamespace>
-    <AssemblyName>HeuristicLab.Problems.TestFunctions.SingleObjective.Views-3.3</AssemblyName>
+    <RootNamespace>HeuristicLab.Problems.TestFunctions</RootNamespace>
+    <AssemblyName>HeuristicLab.Problems.TestFunctions-3.3</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
@@ -70,7 +70,6 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -84,15 +83,24 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SingleObjectiveTestFunctionView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="SingleObjectiveTestFunctionView.Designer.cs">
-      <DependentUpon>SingleObjectiveTestFunctionView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="HeuristicLabProblemsTestFunctionsSingleObjectiveViewsPlugin.cs" />
+    <Compile Include="Evaluators\AckleyEvaluator.cs" />
+    <Compile Include="Evaluators\BealeEvaluator.cs" />
+    <Compile Include="Evaluators\BoothEvaluator.cs" />
+    <Compile Include="Evaluators\GriewangkEvaluator.cs" />
+    <Compile Include="Evaluators\LevyEvaluator.cs" />
+    <Compile Include="Evaluators\MatyasEvaluator.cs" />
+    <Compile Include="Evaluators\RastriginEvaluator.cs" />
+    <Compile Include="Evaluators\RosenbrockEvaluator.cs" />
+    <Compile Include="Evaluators\SchwefelEvaluator.cs" />
+    <Compile Include="Evaluators\SingleObjectiveTestFunctionProblemEvaluator.cs" />
+    <Compile Include="Evaluators\SphereEvaluator.cs" />
+    <Compile Include="Evaluators\ZakharovEvaluator.cs" />
+    <Compile Include="HeuristicLabProblemsTestFunctionsPlugin.cs" />
+    <Compile Include="Interfaces\ISingleObjectiveTestFunctionProblemEvaluator.cs" />
+    <Compile Include="Interfaces\ISingleObjectiveTestFunctionProblemSolutionsVisualizer.cs" />
+    <Compile Include="SingleObjectiveTestFunctionProblem.cs" />
     <None Include="HeuristicLab.snk" />
-    <None Include="HeuristicLabProblemsTestFunctionsSingleObjectiveViewsPlugin.cs.frame" />
+    <None Include="HeuristicLabProblemsTestFunctionsPlugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
@@ -100,9 +108,13 @@
       <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Core.Views\3.3\HeuristicLab.Core.Views-3.3.csproj">
-      <Project>{E226881D-315F-423D-B419-A766FE0D8685}</Project>
-      <Name>HeuristicLab.Core.Views-3.3</Name>
+    <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.2\HeuristicLab.Common.Resources-3.2.csproj">
+      <Project>{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}</Project>
+      <Name>HeuristicLab.Common.Resources-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Common\3.2\HeuristicLab.Common-3.2.csproj">
+      <Project>{1FC004FC-59AF-4249-B1B6-FF25873A20E4}</Project>
+      <Name>HeuristicLab.Common-3.2</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
       <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
@@ -116,29 +128,25 @@
       <Project>{BB6D334A-4BB6-4674-9883-31A6EBB32CAB}</Project>
       <Name>HeuristicLab.Encodings.RealVectorEncoding-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.MainForm.WindowsForms\3.2\HeuristicLab.MainForm.WindowsForms-3.2.csproj">
-      <Project>{AB687BBE-1BFE-476B-906D-44237135431D}</Project>
-      <Name>HeuristicLab.MainForm.WindowsForms-3.2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.MainForm\3.2\HeuristicLab.MainForm-3.2.csproj">
-      <Project>{3BD61258-31DA-4B09-89C0-4F71FEF5F05A}</Project>
-      <Name>HeuristicLab.MainForm-3.2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Optimization.Views\3.3\HeuristicLab.Optimization.Views-3.3.csproj">
-      <Project>{662B4B15-8F4D-4AE5-B3EB-D91C215F5AF2}</Project>
-      <Name>HeuristicLab.Optimization.Views-3.3</Name>
+    <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
+      <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
+      <Name>HeuristicLab.Operators-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
       <Project>{14AB8D24-25BC-400C-A846-4627AA945192}</Project>
       <Name>HeuristicLab.Optimization-3.3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj">
+      <Project>{56F9106A-079F-4C61-92F6-86A84C2D84B7}</Project>
+      <Name>HeuristicLab.Parameters-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
+      <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
+      <Name>HeuristicLab.Persistence-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Problems.TestFunctions.SingleObjective\3.3\HeuristicLab.Problems.TestFunctions.SingleObjective-3.3.csproj">
-      <Project>{88B9B0E3-344E-4196-82A3-0F9732506FE8}</Project>
-      <Name>HeuristicLab.Problems.TestFunctions.SingleObjective-3.3</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -156,6 +164,6 @@ set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
 call PreBuildEvent.cmd
-SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabProblemsTestFunctionsSingleObjectiveViewsPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabProblemsTestFunctionsSingleObjectiveViewsPlugin.cs"</PreBuildEvent>
+SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabProblemsTestFunctionsPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabProblemsTestFunctionsPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

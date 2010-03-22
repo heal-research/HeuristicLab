@@ -33,11 +33,11 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
+namespace HeuristicLab.Problems.TestFunctions {
   [Item("SingleObjective TestFunction", "Test function with real valued inputs and a single objective.")]
   [StorableClass]
   [Creatable("Problems")]
-  public sealed class SingleObjectiveTestFunction : ParameterizedNamedItem, ISingleObjectiveProblem {
+  public sealed class SingleObjectiveTestFunctionProblem : ParameterizedNamedItem, ISingleObjectiveProblem {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }
     }
@@ -61,14 +61,14 @@ namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
     IParameter IProblem.SolutionCreatorParameter {
       get { return SolutionCreatorParameter; }
     }
-    public ValueParameter<ISingleObjectiveTestFunctionEvaluator> EvaluatorParameter {
-      get { return (ValueParameter<ISingleObjectiveTestFunctionEvaluator>)Parameters["Evaluator"]; }
+    public ValueParameter<ISingleObjectiveTestFunctionProblemEvaluator> EvaluatorParameter {
+      get { return (ValueParameter<ISingleObjectiveTestFunctionProblemEvaluator>)Parameters["Evaluator"]; }
     }
     IParameter IProblem.EvaluatorParameter {
       get { return EvaluatorParameter; }
     }
-    public OptionalValueParameter<ISingleObjectiveTestFunctionSolutionsVisualizer> VisualizerParameter {
-      get { return (OptionalValueParameter<ISingleObjectiveTestFunctionSolutionsVisualizer>)Parameters["Visualizer"]; }
+    public OptionalValueParameter<ISingleObjectiveTestFunctionProblemSolutionsVisualizer> VisualizerParameter {
+      get { return (OptionalValueParameter<ISingleObjectiveTestFunctionProblemSolutionsVisualizer>)Parameters["Visualizer"]; }
     }
     IParameter IProblem.VisualizerParameter {
       get { return VisualizerParameter; }
@@ -101,7 +101,7 @@ namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
     ISolutionCreator IProblem.SolutionCreator {
       get { return SolutionCreatorParameter.Value; }
     }
-    public ISingleObjectiveTestFunctionEvaluator Evaluator {
+    public ISingleObjectiveTestFunctionProblemEvaluator Evaluator {
       get { return EvaluatorParameter.Value; }
       set { EvaluatorParameter.Value = value; }
     }
@@ -111,7 +111,7 @@ namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
     IEvaluator IProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
     }
-    public ISingleObjectiveTestFunctionSolutionsVisualizer Visualizer {
+    public ISingleObjectiveTestFunctionProblemSolutionsVisualizer Visualizer {
       get { return VisualizerParameter.Value; }
       set { VisualizerParameter.Value = value; }
     }
@@ -129,8 +129,8 @@ namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
     #endregion
 
     [StorableConstructor]
-    private SingleObjectiveTestFunction(bool deserializing) : base() { }
-    public SingleObjectiveTestFunction()
+    private SingleObjectiveTestFunctionProblem(bool deserializing) : base() { }
+    public SingleObjectiveTestFunctionProblem()
       : base() {
       UniformRandomRealVectorCreator creator = new UniformRandomRealVectorCreator();
       AckleyEvaluator evaluator = new AckleyEvaluator();
@@ -139,8 +139,8 @@ namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
       Parameters.Add(new ValueParameter<DoubleMatrix>("Bounds", "The lower and upper bounds in each dimension.", evaluator.Bounds));
       Parameters.Add(new ValueParameter<IntValue>("ProblemSize", "The dimension of the problem.", new IntValue(2)));
       Parameters.Add(new ValueParameter<IRealVectorCreator>("SolutionCreator", "The operator which should be used to create new TSP solutions.", creator));
-      Parameters.Add(new ValueParameter<ISingleObjectiveTestFunctionEvaluator>("Evaluator", "The operator which should be used to evaluate TSP solutions.", evaluator));
-      Parameters.Add(new OptionalValueParameter<ISingleObjectiveTestFunctionSolutionsVisualizer>("Visualizer", "The operator which should be used to visualize TSP solutions."));
+      Parameters.Add(new ValueParameter<ISingleObjectiveTestFunctionProblemEvaluator>("Evaluator", "The operator which should be used to evaluate TSP solutions.", evaluator));
+      Parameters.Add(new OptionalValueParameter<ISingleObjectiveTestFunctionProblemSolutionsVisualizer>("Visualizer", "The operator which should be used to visualize TSP solutions."));
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this TSP instance.", new DoubleValue(evaluator.BestKnownQuality)));
 
       creator.RealVectorParameter.ActualName = "Point";
@@ -152,7 +152,7 @@ namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      SingleObjectiveTestFunction clone = (SingleObjectiveTestFunction)base.Clone(cloner);
+      SingleObjectiveTestFunctionProblem clone = (SingleObjectiveTestFunctionProblem)base.Clone(cloner);
       clone.Initialize();
       return clone;
     }

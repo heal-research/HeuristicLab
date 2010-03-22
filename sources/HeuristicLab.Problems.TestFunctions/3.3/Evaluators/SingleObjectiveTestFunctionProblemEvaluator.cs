@@ -26,13 +26,13 @@ using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
+namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
   /// Base class for a test function evaluator.
   /// </summary>
   [Item("Evaluator", "Base calls for single objective test function evaluators.")]
   [StorableClass]
-  public abstract class SingleObjectiveTestFunctionEvaluator : SingleSuccessorOperator, ISingleObjectiveTestFunctionEvaluator {
+  public abstract class SingleObjectiveTestFunctionProblemEvaluator : SingleSuccessorOperator, ISingleObjectiveTestFunctionProblemEvaluator {
     /// <summary>
     /// Returns whether the actual function constitutes a maximization or minimization problem.
     /// </summary>
@@ -64,7 +64,7 @@ namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
     /// Initializes a new instance of <see cref="SingleObjectiveTestFunctionEvaluator"/> with two parameters
     /// (<c>Quality</c> and <c>Point</c>).
     /// </summary>
-    public SingleObjectiveTestFunctionEvaluator() {
+    public SingleObjectiveTestFunctionProblemEvaluator() {
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "Result of the evaluation of a solution."));
       Parameters.Add(new LookupParameter<RealVector>("Point", "The point at which the function should be evaluated."));
     }

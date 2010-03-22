@@ -19,31 +19,22 @@
  */
 #endregion
 
-using System;
-using System.Windows.Forms;
-using HeuristicLab.Core.Views;
-using HeuristicLab.MainForm;
-using HeuristicLab.Optimization.Views;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Encodings.RealVectorEncoding;
+using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Problems.TestFunctions.SingleObjective.Views {
+namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
-  /// Class for viewing the single objective test functions problem.
+  /// An interface which represents an evaluation operator for single objective test functions.
   /// </summary>
-  [View("Single Objective Test Function View")]
-  [Content(typeof(SingleObjectiveTestFunction), true)]
-  public sealed partial class SingleObjectiveTestFunctionView : ProblemView {
-    public new SingleObjectiveTestFunction Content {
-      get { return (SingleObjectiveTestFunction)base.Content; }
-      set { base.Content = value; }
-    }
+  public interface ISingleObjectiveTestFunctionProblemEvaluator : ISingleObjectiveEvaluator {
+    bool Maximization { get; }
+    DoubleMatrix Bounds { get; }
+    double BestKnownQuality { get; }
+    int MinimumProblemSize { get; }
+    int MaximumProblemSize { get; }
 
-    public SingleObjectiveTestFunctionView() {
-      InitializeComponent();
-    }
-
-    public SingleObjectiveTestFunctionView(SingleObjectiveTestFunction content)
-      : this() {
-      Content = content;
-    }
+    ILookupParameter<RealVector> PointParameter { get; }
   }
 }

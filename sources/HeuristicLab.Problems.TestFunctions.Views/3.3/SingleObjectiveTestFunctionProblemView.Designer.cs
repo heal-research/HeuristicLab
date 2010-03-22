@@ -1,5 +1,5 @@
-﻿namespace HeuristicLab.Problems.TestFunctions.SingleObjective.Views {
-  partial class SingleObjectiveTestFunctionView {
+﻿namespace HeuristicLab.Problems.TestFunctions.Views {
+  sealed partial class SingleObjectiveTestFunctionProblemView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>

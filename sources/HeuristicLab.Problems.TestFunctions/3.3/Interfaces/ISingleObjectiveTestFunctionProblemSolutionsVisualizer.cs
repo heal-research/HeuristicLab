@@ -23,11 +23,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
+namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
   /// An interface which represents an operator for visualizing solutions of single objective test functions.
   /// </summary>
-  public interface ISingleObjectiveTestFunctionSolutionsVisualizer : ISingleObjectiveSolutionsVisualizer {
+  public interface ISingleObjectiveTestFunctionProblemSolutionsVisualizer : ISingleObjectiveSolutionsVisualizer {
     ILookupParameter<RealVector> PointParameter { get; }
   }
 }

@@ -21,12 +21,12 @@
 
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Problems.TestFunctions.SingleObjective.Views {
+namespace HeuristicLab.Problems.TestFunctions.Views {
   /// <summary>
-  /// Plugin class for HeuristicLab.Problems.TestFunctions.SingleObjective.Views plugin
+  /// Plugin class for HeuristicLab.Problems.TestFunctions.Views plugin
   /// </summary>
-  [Plugin("HeuristicLab.Problems.TestFunctions.SingleObjective.Views", "3.3.0.$WCREV$")]
-  [PluginFile("HeuristicLab.Problems.TestFunctions.SingleObjective.Views-3.3.dll", PluginFileType.Assembly)]
+  [Plugin("HeuristicLab.Problems.TestFunctions.Views", "3.3.0.$WCREV$")]
+  [PluginFile("HeuristicLab.Problems.TestFunctions.Views-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Core.Views", "3.3")]
@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.TestFunctions.SingleObjective.Views {
   [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.2")]
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
   [PluginDependency("HeuristicLab.Optimization.Views", "3.3")]
-  [PluginDependency("HeuristicLab.Problems.TestFunctions.SingleObjective", "3.3")]
-  public class HeuristicLabProblemsTestFunctionsSingleObjectiveViewsPlugin : PluginBase {
+  [PluginDependency("HeuristicLab.Problems.TestFunctions", "3.3")]
+  public class HeuristicLabProblemsTestFunctionsViewsPlugin : PluginBase {
   }
 }

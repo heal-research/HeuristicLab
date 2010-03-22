@@ -25,17 +25,17 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
+namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
-  /// Beale Function<br/>
-  /// Domain:  [-4.5 , 4.5]^2<br/>
-  /// Optimum: 0.0 at (3.0, 0.5)
+  /// Levy Function<br/>
+  /// Domain:  [-10.0 , 10.0]^n<br/>
+  /// Optimum: 0.0 at (1.0, 1.0, ..., 1.0)
   /// </summary>
-  [Item("BealeEvaluator", "Evaluates the Beale function on a given point. The optimum of this function is 0 at (3,0.5).")]
+  [Item("LevyEvaluator", "Evaluates the Levy function on a given point. The optimum of this function is 0 at (1,1,...,1).")]
   [StorableClass]
-  public class BealeEvaluator : SingleObjectiveTestFunctionEvaluator {
+  public class LevyEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
     /// <summary>
-    /// Returns false as the Beale function is a minimization problem.
+    /// Returns false as the Levy function is a minimization problem.
     /// </summary>
     public override bool Maximization {
       get { return false; }
@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
     /// Gets the lower and upper bound of the function.
     /// </summary>
     public override DoubleMatrix Bounds {
-      get { return new DoubleMatrix(new double[,] { { -4.5, 4.5 } }); }
+      get { return new DoubleMatrix(new double[,] { { -10, 10 } }); }
     }
     /// <summary>
     /// Gets the minimum problem size (2).
@@ -59,19 +59,33 @@ namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
       get { return 2; }
     }
     /// <summary>
-    /// Gets the maximum problem size (2).
+    /// Gets the (theoretical) maximum problem size (2^31 - 1).
     /// </summary>
     public override int MaximumProblemSize {
-      get { return 2; }
+      get { return int.MaxValue; }
     }
 
     /// <summary>
     /// Evaluates the test function for a specific <paramref name="point"/>.
     /// </summary>
     /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
-    /// <returns>The result value of the Beale function at the given point.</returns>
+    /// <returns>The result value of the Levy function at the given point.</returns>
     public static double Apply(RealVector point) {
-      return Math.Pow(1.5 - point[0] * (1 - point[1]), 2) + Math.Pow(2.25 - point[0] * (1 - (point[1] * point[1])), 2) + Math.Pow((2.625 - point[0] * (1 - (point[1] * point[1] * point[1]))), 2);
+      int length = point.Length;
+      double[] z = new double[length];
+      double s;
+
+      for (int i = 0; i < length; i++) {
+        z[i] = 1 + (point[i] - 1) / 4;
+      }
+
+      s = Math.Pow(Math.Sin(Math.PI * z[1]), 2);
+
+      for (int i = 0; i < length - 1; i++) {
+        s += Math.Pow(z[i] - 1, 2) * (1 + 10 * Math.Pow(Math.Sin(Math.PI * z[i] + 1), 2));
+      }
+
+      return s + Math.Pow(z[length - 1] - 1, 2) * (1 + Math.Pow(Math.Sin(2 * Math.PI * z[length - 1]), 2));
     }
 
     /// <summary>
@@ -79,7 +93,7 @@ namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
     /// </summary>
     /// <remarks>Calls <see cref="Apply"/>.</remarks>
     /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
-    /// <returns>The result value of the Beale function at the given point.</returns>
+    /// <returns>The result value of the Levy function at the given point.</returns>
     protected override double EvaluateFunction(RealVector point) {
       return Apply(point);
     }

@@ -25,7 +25,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
+namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
   /// Booth Function<br/>
   /// Domain:  [-10.0 , 10.0]^2<br/>
@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
   /// </summary>
   [Item("BoothEvaluator", "Evaluates the Booth function on a given point. The optimum of this function is 0 at (1,3).")]
   [StorableClass]
-  public class BoothEvaluator : SingleObjectiveTestFunctionEvaluator {
+  public class BoothEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
     /// <summary>
     /// Returns false as the Booth function is a minimization problem.
     /// </summary>

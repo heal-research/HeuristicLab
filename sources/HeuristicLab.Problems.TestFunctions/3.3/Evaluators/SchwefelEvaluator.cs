@@ -25,15 +25,15 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
+namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
-  /// Sphere Function<br/>
-  /// Domain:  [-5.12 , 5.12]^n<br/>
-  /// Optimum: 0.0 at (0, 0, ..., 0)
+  /// Schwefel Function (Sine Root)<br/>
+  /// Domain:  [-500.0 , 500.0]^n<br/>
+  /// Optimum: 0.0 at (420.968746453712, 420.968746453712, ..., 420.968746453712)
   /// </summary>
-  [Item("SphereEvaluator", "Evaluates the Sphere function on a given point. The optimum of this function is 0 at the origin.")]
+  [Item("SchwefelEvaluator", "Evaluates the Schwefel function on a given point. The optimum of this function is 0 at (420.968746453712,420.968746453712,...,420.968746453712).")]
   [StorableClass]
-  public class SphereEvaluator : SingleObjectiveTestFunctionEvaluator {
+  public class SchwefelEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
     /// <summary>
     /// Returns false as the Rosenbrock function is a minimization problem.
     /// </summary>
@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
     /// Gets the lower and upper bound of the function.
     /// </summary>
     public override DoubleMatrix Bounds {
-      get { return new DoubleMatrix(new double[,] { { -5.12, 5.12 } }); }
+      get { return new DoubleMatrix(new double[,] { { -500, 500 } }); }
     }
     /// <summary>
     /// Gets the minimum problem size (1).
@@ -69,12 +69,12 @@ namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
     /// Evaluates the test function for a specific <paramref name="point"/>.
     /// </summary>
     /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
-    /// <returns>The result value of the Sphere function at the given point.</returns>
+    /// <returns>The result value of the Schwefel function at the given point.</returns>
     public static double Apply(RealVector point) {
-      double result = 0;
+      double result = 418.982887272433 * point.Length;
       for (int i = 0; i < point.Length; i++)
-        result += point[i] * point[i];
-      return result;
+        result -= point[i] * Math.Sin(Math.Sqrt(Math.Abs(point[i])));
+      return (result);
     }
 
     /// <summary>
@@ -82,7 +82,7 @@ namespace HeuristicLab.Problems.TestFunctions.SingleObjective {
     /// </summary>
     /// <remarks>Calls <see cref="Apply"/>.</remarks>
     /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
-    /// <returns>The result value of the Sphere function at the given point.</returns>
+    /// <returns>The result value of the Schwefel function at the given point.</returns>
     protected override double EvaluateFunction(RealVector point) {
       return Apply(point);
     }
