@@ -85,7 +85,7 @@
     <Compile Include="Interfaces\IKnapsackEvaluator.cs" />
     <Compile Include="Interfaces\IKnapsackSolutionsVisualizer.cs" />
     <Compile Include="Interfaces\IKnapsackMoveEvaluator.cs" />
-    <Compile Include="Knapsack.cs" />
+    <Compile Include="KnapsackProblem.cs" />
     <Compile Include="MoveEvaluators\KnapsackMoveEvaluator.cs" />
     <Compile Include="MoveEvaluators\KnapsackOneBitflipMoveEvaluator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

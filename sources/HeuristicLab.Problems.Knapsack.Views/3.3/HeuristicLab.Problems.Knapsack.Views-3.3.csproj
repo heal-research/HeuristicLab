@@ -82,13 +82,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HeuristicLabProblemsKnapsackViewsPlugin.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="KnapsackView.cs">
+    <Compile Include="KnapsackProblemView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="KnapsackView.Designer.cs">
-      <DependentUpon>KnapsackView.cs</DependentUpon>
+    <Compile Include="KnapsackProblemView.Designer.cs">
+      <DependentUpon>KnapsackProblemView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />

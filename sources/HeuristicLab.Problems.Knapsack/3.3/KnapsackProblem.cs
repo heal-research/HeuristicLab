@@ -33,10 +33,10 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.Knapsack {
-  [Item("Knapsack", "Represents a Knapsack Problem.")]
+  [Item("KnapsackProblem", "Represents a Knapsack Problem.")]
   [Creatable("Problems")]
   [StorableClass]
-  public sealed class Knapsack : ParameterizedNamedItem, ISingleObjectiveProblem {
+  public sealed class KnapsackProblem : ParameterizedNamedItem, ISingleObjectiveProblem {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }
     }
@@ -156,7 +156,7 @@ namespace HeuristicLab.Problems.Knapsack {
       }
     }
 
-    public Knapsack()
+    public KnapsackProblem()
       : base() {
       RandomBinaryVectorCreator creator = new RandomBinaryVectorCreator();
       KnapsackEvaluator evaluator = new KnapsackEvaluator();
@@ -183,10 +183,10 @@ namespace HeuristicLab.Problems.Knapsack {
     }
 
     [StorableConstructor]
-    private Knapsack(bool deserializing) : base() { }
+    private KnapsackProblem(bool deserializing) : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      Knapsack clone = (Knapsack)base.Clone(cloner);
+      KnapsackProblem clone = (KnapsackProblem)base.Clone(cloner);
       clone.Initialize();
       return clone;
     }

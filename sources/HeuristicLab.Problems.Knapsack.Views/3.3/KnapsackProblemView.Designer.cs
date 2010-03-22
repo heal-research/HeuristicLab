@@ -1,5 +1,5 @@
 ﻿namespace HeuristicLab.Problems.Knapsack.Views {
-  partial class KnapsackView {
+  partial class KnapsackProblemView {
     /// <summary>
     /// Required designer variable.
     /// </summary>
