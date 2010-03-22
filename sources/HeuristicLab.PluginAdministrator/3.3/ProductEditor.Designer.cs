@@ -53,14 +53,14 @@ namespace HeuristicLab.PluginAdministrator {
       this.productNameHeader = new System.Windows.Forms.ColumnHeader();
       this.productVersionHeader = new System.Windows.Forms.ColumnHeader();
       this.productImageList = new System.Windows.Forms.ImageList(this.components);
-      this.pluginImageList = new System.Windows.Forms.ImageList(this.components);
+      this.pluginListView = new HeuristicLab.PluginAdministrator.PluginListView();
       this.pluginsLabel = new System.Windows.Forms.Label();
       this.versionTextBox = new System.Windows.Forms.TextBox();
       this.versionLabel = new System.Windows.Forms.Label();
       this.nameTextBox = new System.Windows.Forms.TextBox();
       this.nameLabel = new System.Windows.Forms.Label();
+      this.pluginImageList = new System.Windows.Forms.ImageList(this.components);
       this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
-      this.pluginListView = new PluginListView();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
@@ -80,6 +80,7 @@ namespace HeuristicLab.PluginAdministrator {
       // saveButton
       // 
       this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.saveButton.Enabled = false;
       this.saveButton.Location = new System.Drawing.Point(3, 365);
       this.saveButton.Name = "saveButton";
       this.saveButton.Size = new System.Drawing.Size(96, 23);
@@ -90,6 +91,7 @@ namespace HeuristicLab.PluginAdministrator {
       // 
       // newProductButton
       // 
+      this.newProductButton.Enabled = false;
       this.newProductButton.Location = new System.Drawing.Point(84, 3);
       this.newProductButton.Name = "newProductButton";
       this.newProductButton.Size = new System.Drawing.Size(91, 23);
@@ -131,6 +133,7 @@ namespace HeuristicLab.PluginAdministrator {
       this.productsListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.productNameHeader,
             this.productVersionHeader});
+      this.productsListView.Enabled = false;
       this.productsListView.FullRowSelect = true;
       this.productsListView.Location = new System.Drawing.Point(3, 3);
       this.productsListView.MultiSelect = false;
@@ -158,11 +161,18 @@ namespace HeuristicLab.PluginAdministrator {
       this.productImageList.ImageSize = new System.Drawing.Size(16, 16);
       this.productImageList.TransparentColor = System.Drawing.Color.Transparent;
       // 
-      // pluginImageList
+      // pluginListView
       // 
-      this.pluginImageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
-      this.pluginImageList.ImageSize = new System.Drawing.Size(16, 16);
-      this.pluginImageList.TransparentColor = System.Drawing.Color.Transparent;
+      this.pluginListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.pluginListView.Enabled = false;
+      this.pluginListView.Location = new System.Drawing.Point(3, 85);
+      this.pluginListView.Name = "pluginListView";
+      this.pluginListView.Plugins = null;
+      this.pluginListView.Size = new System.Drawing.Size(330, 303);
+      this.pluginListView.TabIndex = 7;
+      this.pluginListView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.pluginListView_ItemChecked);
       // 
       // pluginsLabel
       // 
@@ -177,6 +187,7 @@ namespace HeuristicLab.PluginAdministrator {
       // 
       this.versionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.versionTextBox.Enabled = false;
       this.versionTextBox.Location = new System.Drawing.Point(68, 29);
       this.versionTextBox.Name = "versionTextBox";
       this.versionTextBox.Size = new System.Drawing.Size(233, 20);
@@ -186,6 +197,7 @@ namespace HeuristicLab.PluginAdministrator {
       // versionLabel
       // 
       this.versionLabel.AutoSize = true;
+      this.versionLabel.Enabled = false;
       this.versionLabel.Location = new System.Drawing.Point(10, 32);
       this.versionLabel.Name = "versionLabel";
       this.versionLabel.Size = new System.Drawing.Size(45, 13);
@@ -196,6 +208,7 @@ namespace HeuristicLab.PluginAdministrator {
       // 
       this.nameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.nameTextBox.Enabled = false;
       this.nameTextBox.Location = new System.Drawing.Point(68, 3);
       this.nameTextBox.Name = "nameTextBox";
       this.nameTextBox.Size = new System.Drawing.Size(233, 20);
@@ -205,27 +218,22 @@ namespace HeuristicLab.PluginAdministrator {
       // nameLabel
       // 
       this.nameLabel.AutoSize = true;
+      this.nameLabel.Enabled = false;
       this.nameLabel.Location = new System.Drawing.Point(17, 6);
       this.nameLabel.Name = "nameLabel";
       this.nameLabel.Size = new System.Drawing.Size(38, 13);
       this.nameLabel.TabIndex = 2;
       this.nameLabel.Text = "Name:";
       // 
+      // pluginImageList
+      // 
+      this.pluginImageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+      this.pluginImageList.ImageSize = new System.Drawing.Size(16, 16);
+      this.pluginImageList.TransparentColor = System.Drawing.Color.Transparent;
+      // 
       // errorProvider
       // 
       this.errorProvider.ContainerControl = this;
-      // 
-      // pluginListView
-      // 
-      this.pluginListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.pluginListView.Location = new System.Drawing.Point(3, 85);
-      this.pluginListView.Name = "pluginListView";
-      this.pluginListView.Plugins = null;
-      this.pluginListView.Size = new System.Drawing.Size(330, 303);
-      this.pluginListView.TabIndex = 7;
-      this.pluginListView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.pluginListView_ItemChecked);
       // 
       // ProductEditor
       // 

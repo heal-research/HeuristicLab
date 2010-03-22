@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeuristicLab.PluginInfrastructure.Manager {
-  // to be replaced by GenericEventArgs
   [Serializable]
   internal sealed class PluginInfrastructureEventArgs : EventArgs {
     internal object Entity { get; private set; }

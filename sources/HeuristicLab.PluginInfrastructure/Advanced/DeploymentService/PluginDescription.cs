@@ -103,5 +103,15 @@ namespace HeuristicLab.PluginInfrastructure.Advanced.DeploymentService {
     public override string ToString() {
       return Name + " " + Version;
     }
+
+    public override bool Equals(object obj) {
+      PluginDescription other = obj as PluginDescription;
+      if (other == null) return false;
+      else return other.Name == this.Name && other.Version == this.Version;
+    }
+
+    public override int GetHashCode() {
+      return Name.GetHashCode() + Version.GetHashCode();
+    }
   }
 }

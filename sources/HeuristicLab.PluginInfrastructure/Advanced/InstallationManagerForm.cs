@@ -335,7 +335,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private void RefreshRemotePluginListAsync() {
       Cursor = Cursors.AppStarting;
       toolStripProgressBar.Visible = true;
-      DisableControls();
+      refreshButton.Enabled = false;
       refreshServerPluginsBackgroundWorker.RunWorkerAsync();
     }
 
@@ -376,6 +376,16 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
     private void editConnectionButton_Click(object sender, EventArgs e) {
       (new ConnectionSetupView()).ShowInForm();
+    }
+
+    protected override void OnClosing(CancelEventArgs e) {
+      installationManager.PluginInstalled -= new EventHandler<PluginInfrastructureEventArgs>(installationManager_PluginInstalled);
+      installationManager.PluginRemoved -= new EventHandler<PluginInfrastructureEventArgs>(installationManager_PluginRemoved);
+      installationManager.PluginUpdated -= new EventHandler<PluginInfrastructureEventArgs>(installationManager_PluginUpdated);
+      installationManager.PreInstallPlugin -= new EventHandler<PluginInfrastructureCancelEventArgs>(installationManager_PreInstallPlugin);
+      installationManager.PreRemovePlugin -= new EventHandler<PluginInfrastructureCancelEventArgs>(installationManager_PreRemovePlugin);
+      installationManager.PreUpdatePlugin -= new EventHandler<PluginInfrastructureCancelEventArgs>(installationManager_PreUpdatePlugin);
+      base.OnClosing(e);
     }
   }
 }

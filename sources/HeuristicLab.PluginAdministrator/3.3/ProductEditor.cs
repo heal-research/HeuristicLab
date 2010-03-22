@@ -90,16 +90,18 @@ namespace HeuristicLab.PluginAdministrator {
     }
 
     private void refreshProductsWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
-      this.products = new List<PluginDeploymentService.ProductDescription>(
-        (PluginDeploymentService.ProductDescription[])((object[])e.Result)[0]);
-      this.plugins = new List<PluginDeploymentService.PluginDescription>(
-        (PluginDeploymentService.PluginDescription[])((object[])e.Result)[1]);
+      if (!e.Cancelled && e.Result != null) {
+        this.products = new List<PluginDeploymentService.ProductDescription>(
+          (PluginDeploymentService.ProductDescription[])((object[])e.Result)[0]);
+        this.plugins = new List<PluginDeploymentService.PluginDescription>(
+          (PluginDeploymentService.PluginDescription[])((object[])e.Result)[1]);
 
-      UpdateProductsList();
-      dirtyProducts.Clear();
+        UpdateProductsList();
+        dirtyProducts.Clear();
 
-      Cursor = Cursors.Default;
-      SetControlsEnabled(true);
+        Cursor = Cursors.Default;
+        SetControlsEnabled(true);
+      }
     }
     #endregion
 
@@ -135,6 +137,12 @@ namespace HeuristicLab.PluginAdministrator {
       refreshButton.Enabled = enabled;
       newProductButton.Enabled = enabled;
       splitContainer.Enabled = enabled;
+      productsListView.Enabled = enabled;
+      nameLabel.Enabled = enabled;
+      nameTextBox.Enabled = enabled;
+      versionLabel.Enabled = enabled;
+      versionTextBox.Enabled = enabled;
+      pluginListView.Enabled = enabled;
     }
 
     #region button event handlers

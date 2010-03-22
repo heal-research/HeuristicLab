@@ -28,7 +28,7 @@ using HeuristicLab.MainForm.WindowsForms;
 namespace HeuristicLab.PluginAdministrator {
   internal class MainForm : DockingMainForm {
     private System.Windows.Forms.ToolStripProgressBar progressBar;
-
+    private System.Windows.Forms.ToolStripLabel statusLabel;
     public MainForm(Type type)
       : base(type) {
       InitializeComponent();
@@ -40,13 +40,20 @@ namespace HeuristicLab.PluginAdministrator {
     }
 
     private void InitializeComponent() {
+      this.progressBar = new System.Windows.Forms.ToolStripProgressBar();
+      this.statusLabel = new System.Windows.Forms.ToolStripLabel();
       this.SuspendLayout();
+      // 
+      // progressBar
+      // 
+      this.progressBar.MarqueeAnimationSpeed = 30;
+      this.progressBar.Name = "progressBar";
+      this.progressBar.Size = new System.Drawing.Size(100, 16);
+      this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
+      this.progressBar.Visible = false;
 
-      progressBar = new System.Windows.Forms.ToolStripProgressBar();
-      progressBar.MarqueeAnimationSpeed = 30;
-      progressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
-      progressBar.Visible = false;
-      statusStrip.Items.Add(progressBar);
+      this.statusLabel.Name = "statusLabel";
+      this.statusLabel.Visible = true;
       // 
       // MainForm
       // 
@@ -55,6 +62,7 @@ namespace HeuristicLab.PluginAdministrator {
       this.Name = "MainForm";
       this.ResumeLayout(false);
       this.PerformLayout();
+
     }
 
     public void ShowProgressBar() {
@@ -63,6 +71,10 @@ namespace HeuristicLab.PluginAdministrator {
 
     public void HideProgressBar() {
       progressBar.Visible = false;
+    }
+
+    public void SetStatusBarText(string msg) {
+      statusLabel.Text = msg;
     }
   }
 }

@@ -46,10 +46,12 @@ namespace HeuristicLab.PluginAdministrator {
       }
     }
 
-    private List<IPluginDescription> checkedPlugins = new List<IPluginDescription>();
+    private Dictionary<IPluginDescription, bool> checkedPlugins = new Dictionary<IPluginDescription, bool>();
     public IEnumerable<IPluginDescription> CheckedPlugins {
       get {
-        return checkedPlugins;
+        return from pair in checkedPlugins
+               where pair.Value
+               select pair.Key;
       }
     }
 
@@ -76,7 +78,7 @@ namespace HeuristicLab.PluginAdministrator {
 
     private ListViewItem CreateListViewItem(IPluginDescription plugin) {
       var item = new ListViewItem(new string[] { plugin.Name, plugin.Version.ToString() });
-      item.Checked = (from p in checkedPlugins where p.Name == plugin.Name where p.Version == plugin.Version select p).Any();
+      item.Checked = checkedPlugins.ContainsKey(plugin) ? checkedPlugins[plugin] : false;
       item.Tag = plugin;
       return item;
     }
@@ -88,10 +90,12 @@ namespace HeuristicLab.PluginAdministrator {
           var plugin = (IPluginDescription)item.Tag;
           // also check all dependencies
           MarkPluginChecked(plugin);
-          modifiedPlugins.Add(plugin);
+          if (!modifiedPlugins.Contains(plugin))
+            modifiedPlugins.Add(plugin);
           foreach (var dep in GetAllDependencies(plugin)) {
             MarkPluginChecked(dep);
-            modifiedPlugins.Add(dep);
+            if (!modifiedPlugins.Contains(dep))
+              modifiedPlugins.Add(dep);
           }
         }
         listView.CheckItems(modifiedPlugins.Select(x => FindItemsForPlugin(x).Single()));
@@ -101,10 +105,12 @@ namespace HeuristicLab.PluginAdministrator {
           var plugin = (IPluginDescription)item.Tag;
           // also uncheck all dependent plugins
           MarkPluginUnchecked(plugin);
-          modifiedPlugins.Add(plugin);
+          if (!modifiedPlugins.Contains(plugin))
+            modifiedPlugins.Add(plugin);
           foreach (var dep in GetAllDependents(plugin)) {
             MarkPluginUnchecked(dep);
-            modifiedPlugins.Add(dep);
+            if (!modifiedPlugins.Contains(dep))
+              modifiedPlugins.Add(dep);
           }
 
         }
@@ -114,18 +120,11 @@ namespace HeuristicLab.PluginAdministrator {
     }
 
     private void MarkPluginChecked(IPluginDescription plugin) {
-      var matching = from p in checkedPlugins
-                     where p.Name == plugin.Name
-                     where p.Version == plugin.Version
-                     select p;
-      if (!matching.Any()) checkedPlugins.Add(plugin);
+      checkedPlugins[plugin] = true;
     }
 
     private void MarkPluginUnchecked(IPluginDescription plugin) {
-      checkedPlugins = (from p in checkedPlugins
-                        where p.Name != plugin.Name ||
-                              p.Version != plugin.Version
-                        select p).ToList();
+      checkedPlugins[plugin] = false;
     }
 
     private IEnumerable<ListViewItem> FindItemsForPlugin(IPluginDescription plugin) {
@@ -147,11 +146,18 @@ namespace HeuristicLab.PluginAdministrator {
     }
 
     private IEnumerable<IPluginDescription> GetAllDependencies(IPluginDescription plugin) {
+      HashSet<IPluginDescription> yieldedPlugins = new HashSet<IPluginDescription>();
       foreach (var dep in plugin.Dependencies) {
         foreach (var recDep in GetAllDependencies(dep)) {
-          yield return recDep;
+          if (!yieldedPlugins.Contains(recDep)) {
+            yieldedPlugins.Add(recDep);
+            yield return recDep;
+          }
         }
-        yield return dep;
+        if (!yieldedPlugins.Contains(dep)) {
+          yieldedPlugins.Add(dep);
+          yield return dep;
+        }
       }
     }
 

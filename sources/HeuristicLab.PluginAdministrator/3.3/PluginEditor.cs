@@ -132,6 +132,7 @@ namespace HeuristicLab.PluginAdministrator {
         PluginDeploymentService.AdminClient adminClient = PluginDeploymentService.AdminClientFactory.CreateClient();
 
         foreach (var plugin in IteratePlugins(selectedPlugins)) {
+          SetMainFormStatusBar("Uploading", plugin);
           adminClient.DeployPlugin(MakePluginDescription(plugin), CreateZipPackage(plugin));
         }
         e.Cancel = false;
@@ -143,6 +144,7 @@ namespace HeuristicLab.PluginAdministrator {
         e.Cancel = true;
       }
     }
+
     #endregion
 
 
@@ -186,9 +188,11 @@ namespace HeuristicLab.PluginAdministrator {
         foreach (ListViewItem item in listView.SelectedItems) {
           var plugin = (IPluginDescription)item.Tag;
           // also check all dependencies
-          modifiedPlugins.Add(plugin);
+          if (!modifiedPlugins.Contains(plugin))
+            modifiedPlugins.Add(plugin);
           foreach (var dep in GetAllDependencies(plugin)) {
-            modifiedPlugins.Add(dep);
+            if (!modifiedPlugins.Contains(dep))
+              modifiedPlugins.Add(dep);
           }
         }
         listView.CheckItems(modifiedPlugins.Select(x => FindItemForPlugin(x)));
@@ -196,9 +200,11 @@ namespace HeuristicLab.PluginAdministrator {
         foreach (ListViewItem item in listView.SelectedItems) {
           var plugin = (IPluginDescription)item.Tag;
           // also uncheck all dependent plugins
-          modifiedPlugins.Add(plugin);
+          if (!modifiedPlugins.Contains(plugin))
+            modifiedPlugins.Add(plugin);
           foreach (var dep in GetAllDependents(plugin)) {
-            modifiedPlugins.Add(dep);
+            if (!modifiedPlugins.Contains(dep))
+              modifiedPlugins.Add(dep);
           }
         }
         listView.UncheckItems(modifiedPlugins.Select(x => FindItemForPlugin(x)));
@@ -230,11 +236,18 @@ namespace HeuristicLab.PluginAdministrator {
     }
 
     private IEnumerable<IPluginDescription> IteratePlugins(IEnumerable<IPluginDescription> plugins) {
+      HashSet<IPluginDescription> yieldedItems = new HashSet<IPluginDescription>();
       foreach (var plugin in plugins) {
         foreach (var dependency in IteratePlugins(plugin.Dependencies)) {
-          yield return dependency;
+          if (!yieldedItems.Contains(dependency)) {
+            yieldedItems.Add(dependency);
+            yield return dependency;
+          }
         }
-        yield return plugin;
+        if (!yieldedItems.Contains(plugin)) {
+          yieldedItems.Add(plugin);
+          yield return plugin;
+        }
       }
     }
 
@@ -308,6 +321,13 @@ namespace HeuristicLab.PluginAdministrator {
       uploadButton.Enabled = false;
       MainFormManager.GetMainForm<MainForm>().HideProgressBar();
     }
+    private void SetMainFormStatusBar(string p, IPluginDescription plugin) {
+      if (InvokeRequired) Invoke((Action<string, IPluginDescription>)SetMainFormStatusBar, p, plugin);
+      else {
+        MainFormManager.GetMainForm<MainForm>().SetStatusBarText(p + " " + plugin.ToString());
+      }
+    }
+
     #endregion
   }
 }
