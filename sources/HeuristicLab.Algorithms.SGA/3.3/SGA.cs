@@ -178,6 +178,13 @@ namespace HeuristicLab.Algorithms.SGA {
       return clone;
     }
 
+    protected override void OnPrepared() {
+      base.OnPrepared();
+      if (Engine != null) {
+        if (Problem == null) Engine.Prepare(null);
+      }
+    }
+
     #region Events
     protected override void OnProblemChanged() {
       ParameterizeStochasticOperator(Problem.SolutionCreator);
