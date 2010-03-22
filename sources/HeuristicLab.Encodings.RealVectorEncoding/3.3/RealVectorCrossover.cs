@@ -46,16 +46,23 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public ILookupParameter<RealVector> ChildParameter {
       get { return (ILookupParameter<RealVector>)Parameters["Child"]; }
     }
+    public IValueLookupParameter<DoubleMatrix> BoundsParameter {
+      get { return (IValueLookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
+    }
 
     protected RealVectorCrossover()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic crossover operators."));
       Parameters.Add(new SubScopesLookupParameter<RealVector>("Parents", "The parent vectors which should be crossed."));
       Parameters.Add(new LookupParameter<RealVector>("Child", "The child vector resulting from the crossover."));
+      Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "The lower and upper bounds of the real vector."));
     }
 
     public sealed override IOperation Apply() {
-      ChildParameter.ActualValue = Cross(RandomParameter.ActualValue, ParentsParameter.ActualValue);
+      RealVector result = Cross(RandomParameter.ActualValue, ParentsParameter.ActualValue);
+      DoubleMatrix bounds = BoundsParameter.ActualValue;
+      if (bounds != null) BoundsChecker.Apply(result, bounds);
+      ChildParameter.ActualValue = result;
       return base.Apply();
     }
 

@@ -36,21 +36,6 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   [StorableClass]
   public class UniformOnePositionManipulator : RealVectorManipulator {
     /// <summary>
-    /// The bounds of the values in the real vector.
-    /// </summary>
-    public ValueLookupParameter<DoubleMatrix> BoundsParameter {
-      get { return (ValueLookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
-    }
-
-    /// <summary>
-    /// Initializes a new instance of <see cref="UniformOnePositionManipulator"/> with one parameter
-    /// (<c>Bounds</c>).
-    /// </summary>
-    public UniformOnePositionManipulator() {
-      Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "Lower and upper bound of the positions in the vector."));
-    }
-
-    /// <summary>
     /// Changes randomly a single position in the given real <paramref name="vector"/>.
     /// </summary>
     /// <param name="random">A random number generator.</param>

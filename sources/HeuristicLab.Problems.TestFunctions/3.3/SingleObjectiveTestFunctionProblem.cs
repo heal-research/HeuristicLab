@@ -225,6 +225,9 @@ namespace HeuristicLab.Problems.TestFunctions {
       if (e.Value2 == 1 && Bounds[e.Value, 0] >= Bounds[e.Value, 1])
         Bounds[e.Value, 0] = Bounds[e.Value, 1] - 0.1;
     }
+    private void BoundsParameter_NameChanged(object sender, EventArgs e) {
+      ParameterizeOperators();
+    }
     #endregion
 
     #region Helpers
@@ -233,6 +236,7 @@ namespace HeuristicLab.Problems.TestFunctions {
       InitializeOperators();
       ProblemSizeParameter.ValueChanged += new EventHandler(ProblemSizeParameter_ValueChanged);
       ProblemSize.ValueChanged += new EventHandler(ProblemSize_ValueChanged);
+      BoundsParameter.NameChanged += new EventHandler(BoundsParameter_NameChanged);
       BoundsParameter.ValueChanged += new EventHandler(BoundsParameter_ValueChanged);
       Bounds.ToStringChanged += new EventHandler(Bounds_ToStringChanged);
       Bounds.ItemChanged += new EventHandler<EventArgs<int, int>>(Bounds_ItemChanged);
@@ -242,7 +246,6 @@ namespace HeuristicLab.Problems.TestFunctions {
       Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       VisualizerParameter.ValueChanged += new EventHandler(VisualizerParameter_ValueChanged);
     }
-
     private void InitializeOperators() {
       operators = new List<IRealVectorOperator>();
       if (ApplicationManager.Manager != null) {
@@ -279,9 +282,11 @@ namespace HeuristicLab.Problems.TestFunctions {
       foreach (IRealVectorCrossover op in Operators.OfType<IRealVectorCrossover>()) {
         op.ParentsParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
         op.ChildParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
+        op.BoundsParameter.ActualName = BoundsParameter.Name;
       }
       foreach (IRealVectorManipulator op in Operators.OfType<IRealVectorManipulator>()) {
         op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
+        op.BoundsParameter.ActualName = BoundsParameter.Name;
       }
       /*foreach (IPermutationMoveOperator op in Operators.OfType<IPermutationMoveOperator>()) {
         op.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;

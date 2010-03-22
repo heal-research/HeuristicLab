@@ -37,9 +37,6 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   [StorableClass]
   public class BreederGeneticAlgorithmManipulator : RealVectorManipulator {
     private static readonly double[] powerOfTwo = new double[] { 1, 0.5, 0.25, 0.125, 0.0625, 0.03125, 0.015625, 0.0078125, 0.00390625, 0.001953125, 0.0009765625, 0.00048828125, 0.000244140625, 0.0001220703125, 0.00006103515625, 0.000030517578125 };
-    public ValueLookupParameter<DoubleMatrix> BoundsParameter {
-      get { return (ValueLookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
-    }
     public ValueLookupParameter<DoubleValue> SearchIntervalFactorParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["SearchIntervalFactor"]; }
     }
@@ -49,8 +46,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// </summary>
     public BreederGeneticAlgorithmManipulator()
       : base() {
-      Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "The lower and upper bounds for each element in the vector."));
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("SearchIntervalFactor", "The factor determining the size of the search interval, that will be added/removed to/from the allele selected for manipulation.", new DoubleValue(0.1)));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("SearchIntervalFactor", "The factor determining the size of the search interval, that will be added/removed to/from the allele selected for manipulation. E.g. a value of 0.1 means 10% of the range will be maximally added/removed.", new DoubleValue(0.1)));
     }
 
     /// <summary>

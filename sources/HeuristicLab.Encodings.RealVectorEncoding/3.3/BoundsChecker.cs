@@ -19,12 +19,12 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Parameters;
-using System;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
@@ -33,7 +33,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// </summary>
   [Item("BoundsChecker", "Checks if all elements of a real vector are inside the bounds. If not, elements are corrected.")]
   [StorableClass]
-  public class BoundsChecker : SingleSuccessorOperator {
+  public class BoundsChecker : SingleSuccessorOperator, IRealVectorBoundsChecker {
     public LookupParameter<RealVector> RealVectorParameter {
       get { return (LookupParameter<RealVector>)Parameters["RealVector"]; }
     }

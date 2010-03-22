@@ -21,15 +21,11 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
-  /// <summary>
-  /// An interface which represents an operator for crossing vectors of real-valued data.
-  /// </summary>
-  public interface IRealVectorCrossover : IRealVectorOperator, ICrossover {
-    ILookupParameter<ItemArray<RealVector>> ParentsParameter { get; }
-    ILookupParameter<RealVector> ChildParameter { get; }
-    IValueLookupParameter<DoubleMatrix> BoundsParameter { get; }
+  public interface IRealVectorBoundsChecker : IOperator {
+    LookupParameter<RealVector> RealVectorParameter { get; }
+    ValueLookupParameter<DoubleMatrix> BoundsParameter { get; }
   }
 }

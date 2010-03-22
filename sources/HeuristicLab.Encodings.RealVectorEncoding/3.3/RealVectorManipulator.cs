@@ -43,15 +43,22 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public ILookupParameter<RealVector> RealVectorParameter {
       get { return (ILookupParameter<RealVector>)Parameters["RealVector"]; }
     }
+    public IValueLookupParameter<DoubleMatrix> BoundsParameter {
+      get { return (IValueLookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
+    }
 
     protected RealVectorManipulator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
       Parameters.Add(new LookupParameter<RealVector>("RealVector", "The vector which should be manipulated."));
+      Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "The lower and upper bounds of the real vector."));
     }
 
     public sealed override IOperation Apply() {
-      Manipulate(RandomParameter.ActualValue, RealVectorParameter.ActualValue);
+      RealVector vector = RealVectorParameter.ActualValue;
+      Manipulate(RandomParameter.ActualValue, vector);
+      DoubleMatrix bounds = BoundsParameter.ActualValue;
+      if (bounds != null) BoundsChecker.Apply(vector, bounds);
       return base.Apply();
     }
 

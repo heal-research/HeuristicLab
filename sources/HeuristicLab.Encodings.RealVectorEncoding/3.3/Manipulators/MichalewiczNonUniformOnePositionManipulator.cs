@@ -37,12 +37,6 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   [StorableClass]
   public class MichalewiczNonUniformOnePositionManipulator : RealVectorManipulator {
     /// <summary>
-    /// The lower and upper bound (1st and 2nd column) of the positions in the vector. If there are less rows than dimensions, the rows are cycled.
-    /// </summary>
-    public ValueLookupParameter<DoubleMatrix> BoundsParameter {
-      get { return (ValueLookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
-    }
-    /// <summary>
     /// The current generation.
     /// </summary>
     public LookupParameter<IntValue> GenerationParameter {
@@ -68,7 +62,6 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// </summary>
     public MichalewiczNonUniformOnePositionManipulator()
       : base() {
-      Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "The lower and upper bound (1st and 2nd column) of the positions in the vector. If there are less rows than dimensions, the rows are cycled."));
       Parameters.Add(new LookupParameter<IntValue>("Generation", "Current generation of the algorithm"));
       Parameters.Add(new LookupParameter<IntValue>("MaximumGenerations", "Maximum number of generations"));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("GenerationDependency", "Specifies the degree of dependency on the number of generations", new DoubleValue(5)));

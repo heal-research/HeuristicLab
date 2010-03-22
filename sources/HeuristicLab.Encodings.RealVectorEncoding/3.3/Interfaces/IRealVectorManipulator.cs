@@ -29,5 +29,6 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// </summary>
   public interface IRealVectorManipulator : IRealVectorOperator, IManipulator {
     ILookupParameter<RealVector> RealVectorParameter { get; }
+    IValueLookupParameter<DoubleMatrix> BoundsParameter { get; }
   }
 }
