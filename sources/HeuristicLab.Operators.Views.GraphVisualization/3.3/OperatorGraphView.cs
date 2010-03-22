@@ -220,7 +220,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
     private void selectButton_Click(object sender, EventArgs e) {
       ITool tool = this.graphVisualizationInfoView.Controller.Tools.Where(t => t.Name == ControllerBase.SelectionToolName).First();
-      tool.IsSuspended = false;
       this.graphVisualizationInfoView.Controller.DeactivateAllTools();
     }
 
@@ -260,6 +259,5 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
         bitmap.Save(saveFileDialog.FileName);
       }
     }
-
   }
 }
