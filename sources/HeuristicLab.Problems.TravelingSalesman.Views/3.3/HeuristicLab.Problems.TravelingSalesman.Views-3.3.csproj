@@ -91,17 +91,17 @@
     <Compile Include="PathTSPTourView.Designer.cs">
       <DependentUpon>PathTSPTourView.cs</DependentUpon>
     </Compile>
+    <Compile Include="TravelingSalesmanProblemView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TravelingSalesmanProblemView.Designer.cs">
+      <DependentUpon>TravelingSalesmanProblemView.cs</DependentUpon>
+    </Compile>
     <Compile Include="TSPLIBImportDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="TSPLIBImportDialog.Designer.cs">
       <DependentUpon>TSPLIBImportDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TSPView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="TSPView.Designer.cs">
-      <DependentUpon>TSPView.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -29,27 +29,27 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
   /// <summary>
   /// The base class for visual representations of items.
   /// </summary>
-  [View("TSP View")]
-  [Content(typeof(TSP), true)]
-  public sealed partial class TSPView : NamedItemView {
+  [View("Traveling Salesman Problem View")]
+  [Content(typeof(TravelingSalesmanProblem), true)]
+  public sealed partial class TravelingSalesmanProblemView : NamedItemView {
     private TSPLIBImportDialog tsplibImportDialog;
 
-    public new TSP Content {
-      get { return (TSP)base.Content; }
+    public new TravelingSalesmanProblem Content {
+      get { return (TravelingSalesmanProblem)base.Content; }
       set { base.Content = value; }
     }
 
     /// <summary>
     /// Initializes a new instance of <see cref="ItemBaseView"/>.
     /// </summary>
-    public TSPView() {
+    public TravelingSalesmanProblemView() {
       InitializeComponent();
     }
     /// <summary>
     /// Intializes a new instance of <see cref="ItemBaseView"/> with the given <paramref name="item"/>.
     /// </summary>
     /// <param name="item">The item that should be displayed.</param>
-    public TSPView(TSP content)
+    public TravelingSalesmanProblemView(TravelingSalesmanProblem content)
       : this() {
       Content = content;
     }

@@ -34,10 +34,10 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
-  [Item("TSP", "Represents a symmetric Traveling Salesman Problem.")]
+  [Item("Traveling Salesman Problem", "Represents a symmetric Traveling Salesman Problem.")]
   [Creatable("Problems")]
   [StorableClass]
-  public sealed class TSP : ParameterizedNamedItem, ISingleObjectiveProblem {
+  public sealed class TravelingSalesmanProblem : ParameterizedNamedItem, ISingleObjectiveProblem {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }
     }
@@ -138,7 +138,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
     #endregion
 
-    public TSP()
+    public TravelingSalesmanProblem()
       : base() {
       RandomPermutationCreator creator = new RandomPermutationCreator();
       TSPRoundedEuclideanPathEvaluator evaluator = new TSPRoundedEuclideanPathEvaluator();
@@ -163,10 +163,10 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       Initialize();
     }
     [StorableConstructor]
-    private TSP(bool deserializing) : base() { }
+    private TravelingSalesmanProblem(bool deserializing) : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      TSP clone = (TSP)base.Clone(cloner);
+      TravelingSalesmanProblem clone = (TravelingSalesmanProblem)base.Clone(cloner);
       clone.Initialize();
       return clone;
     }

@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Problems.TravelingSalesman.Views {
-  partial class TSPView {
+  partial class TravelingSalesmanProblemView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -138,13 +138,13 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       this.pathTSPTourView.Size = new System.Drawing.Size(509, 303);
       this.pathTSPTourView.TabIndex = 0;
       // 
-      // TSPView
+      // TravelingSalesmanProblemView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.tabControl);
       this.Controls.Add(this.importButton);
-      this.Name = "TSPView";
+      this.Name = "TravelingSalesmanProblemView";
       this.Size = new System.Drawing.Size(529, 422);
       this.Controls.SetChildIndex(this.importButton, 0);
       this.Controls.SetChildIndex(this.tabControl, 0);
