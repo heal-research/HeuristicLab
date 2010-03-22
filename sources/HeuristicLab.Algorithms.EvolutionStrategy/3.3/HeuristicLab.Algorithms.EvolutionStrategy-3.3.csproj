@@ -83,7 +83,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EvolutionStrategy.cs" />
     <Compile Include="EvolutionStrategyMainLoop.cs" />
-    <Compile Include="WithoutRepeatingRandomSelector.cs" />
+    <Compile Include="SelfAdaptiveCrossover.cs" />
+    <Compile Include="StrategyVectorManipulator.cs" />
+    <Compile Include="WithoutRepeatingBatchedRandomSelector.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
