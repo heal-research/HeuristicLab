@@ -49,6 +49,10 @@ namespace HeuristicLab.Optimizer {
       OperatorsSidebar operatorsSidebar = new OperatorsSidebar();
       operatorsSidebar.Dock = DockStyle.Left;
       operatorsSidebar.Show();
+      if (Properties.Settings.Default.ShowStartPage) {
+        StartPage startPage = new StartPage();
+        startPage.Show();
+      }
     }
   }
 }

@@ -27,45 +27,47 @@ using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Optimizer.MenuItems {
-  internal class OperatorsMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, IOptimizerUserInterfaceItemProvider {
+  internal class StartPageMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, IOptimizerUserInterfaceItemProvider {
     private ToolStripMenuItem menuItem;
 
     public override string Name {
-      get { return "&Operators"; }
+      get { return "&Start Page"; }
     }
     public override IEnumerable<string> Structure {
       get { return new string[] { "&View" }; }
     }
     public override int Position {
-      get { return 2200; }
+      get { return 2100; }
     }
 
     protected override void OnToolStripItemSet(EventArgs e) {
       MainFormManager.MainForm.ViewShown += new EventHandler<ViewShownEventArgs>(MainForm_ViewShown);
-      MainFormManager.MainForm.ViewHidden += new EventHandler<ViewEventArgs>(MainForm_ViewHidden);
+      MainFormManager.MainForm.ViewClosed += new EventHandler<ViewEventArgs>(MainForm_ViewClosed);
 
       menuItem = ToolStripItem as ToolStripMenuItem;
       if (menuItem != null) {
         menuItem.CheckOnClick = true;
-        menuItem.Checked = true;
+        menuItem.Checked = Properties.Settings.Default.ShowStartPage;
       }
     }
 
     private void MainForm_ViewShown(object sender, ViewShownEventArgs e) {
-      if ((e.View is OperatorsSidebar) && (menuItem != null))
+      if ((e.View is StartPage) && (menuItem != null))
         menuItem.Checked = true;
     }
-    private void MainForm_ViewHidden(object sender, ViewEventArgs e) {
-      if ((e.View is OperatorsSidebar) && (menuItem != null))
+    private void MainForm_ViewClosed(object sender, ViewEventArgs e) {
+      if ((e.View is StartPage) && (menuItem != null))
         menuItem.Checked = false;
     }
 
     public override void Execute() {
-      var view = MainFormManager.MainForm.Views.OfType<OperatorsSidebar>().FirstOrDefault();
-      if (view.IsShown)
-        view.Hide();
-      else
+      var view = MainFormManager.MainForm.Views.OfType<StartPage>().FirstOrDefault();
+      if (view == null) {
+        view = new StartPage();
         view.Show();
+      } else {
+        view.Close();
+      }
     }
   }
 }

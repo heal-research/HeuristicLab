@@ -19,8 +19,8 @@
  */
 #endregion
 
-namespace HeuristicLab.Core.Views {
-  partial class OperatorsSidebar {
+namespace HeuristicLab.Optimizer {
+  partial class StartPage {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -44,32 +44,36 @@ namespace HeuristicLab.Core.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.typeSelector = new HeuristicLab.Core.Views.TypeSelector();
+      this.showStartPageCheckBox = new System.Windows.Forms.CheckBox();
       this.SuspendLayout();
       // 
-      // typeSelector
+      // showStartPageCheckBox
       // 
-      this.typeSelector.Caption = "Available Operators";
-      this.typeSelector.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.typeSelector.Location = new System.Drawing.Point(0, 0);
-      this.typeSelector.Name = "typeSelector";
-      this.typeSelector.Size = new System.Drawing.Size(316, 296);
-      this.typeSelector.TabIndex = 0;
+      this.showStartPageCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.showStartPageCheckBox.AutoSize = true;
+      this.showStartPageCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+      this.showStartPageCheckBox.Location = new System.Drawing.Point(3, 262);
+      this.showStartPageCheckBox.Name = "showStartPageCheckBox";
+      this.showStartPageCheckBox.Size = new System.Drawing.Size(158, 17);
+      this.showStartPageCheckBox.TabIndex = 0;
+      this.showStartPageCheckBox.Text = "Show Start Page on Startup";
+      this.showStartPageCheckBox.UseVisualStyleBackColor = true;
+      this.showStartPageCheckBox.CheckedChanged += new System.EventHandler(this.showStartPageCheckBox_CheckedChanged);
       // 
-      // OperatorsSidebar
+      // StartPage
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Caption = "Operators";
-      this.Controls.Add(this.typeSelector);
-      this.Name = "OperatorsSidebar";
-      this.Size = new System.Drawing.Size(316, 296);
+      this.Controls.Add(this.showStartPageCheckBox);
+      this.Name = "StartPage";
+      this.Size = new System.Drawing.Size(508, 282);
       this.ResumeLayout(false);
+      this.PerformLayout();
 
     }
 
     #endregion
 
-    protected TypeSelector typeSelector;
+    private System.Windows.Forms.CheckBox showStartPageCheckBox;
   }
 }

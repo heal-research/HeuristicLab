@@ -20,24 +20,25 @@
 #endregion
 
 using System;
-using System.Windows.Forms;
 using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 
-namespace HeuristicLab.Core.Views {
-  [View("Operators Sidebar")]
-  public partial class OperatorsSidebar : HeuristicLab.MainForm.WindowsForms.View {
-    public OperatorsSidebar() {
+namespace HeuristicLab.Optimizer {
+  [View("Start Page")]
+  public partial class StartPage : View {
+    public StartPage() {
       InitializeComponent();
+      Caption = "Start Page";
     }
 
     protected override void OnInitialized(EventArgs e) {
       base.OnInitialized(e);
-      typeSelector.Configure(typeof(IOperator), false, false);
+      showStartPageCheckBox.Checked = Properties.Settings.Default.ShowStartPage;
     }
-    protected override void OnClosing(FormClosingEventArgs e) {
-      base.OnClosing(e);
-      e.Cancel = true;
-      this.Hide();
+
+    private void showStartPageCheckBox_CheckedChanged(object sender, EventArgs e) {
+      Properties.Settings.Default.ShowStartPage = showStartPageCheckBox.Checked;
+      Properties.Settings.Default.Save();
     }
   }
 }

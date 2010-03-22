@@ -86,6 +86,18 @@
   <ItemGroup>
     <None Include="HeuristicLabOptimizerPlugin.cs.frame" />
     <Compile Include="FileManager.cs" />
+    <Compile Include="MenuItems\StartPageMenuItem.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="StartPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StartPage.Designer.cs">
+      <DependentUpon>StartPage.cs</DependentUpon>
+    </Compile>
     <Compile Include="MenuItems\CloseMenuItem.cs" />
     <Compile Include="MenuItems\CloseAllMenuItem.cs" />
     <Compile Include="MenuItems\OperatorsMenuItem.cs" />
@@ -122,8 +134,13 @@
     <Compile Include="ToolBarItems\NewToolBarItem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.frame" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.2\HeuristicLab.Common.Resources-3.2.csproj">
