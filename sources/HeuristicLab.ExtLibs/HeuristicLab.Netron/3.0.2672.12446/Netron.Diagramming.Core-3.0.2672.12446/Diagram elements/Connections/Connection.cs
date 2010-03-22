@@ -197,18 +197,18 @@ namespace Netron.Diagramming.Core
 			//and the point under consideration has to be in between.						
 			if (RectangleF.Union(r1, r2).Contains(p))
 			{
-				if (p1.Y < p2.Y) //SWNE
-				{
-					o = r1.Left + (((r2.Left - r1.Left) * (p.Y - r1.Bottom)) / (r2.Bottom - r1.Bottom));
-					u = r1.Right + (((r2.Right - r1.Right) * (p.Y - r1.Top)) / (r2.Top - r1.Top));
-					return ((p.X > o) && (p.X < u));
-				}
-				else //NWSE
-				{
-					o = r1.Left + (((r2.Left - r1.Left) * (p.Y - r1.Top)) / (r2.Top - r1.Top));
-					u = r1.Right + (((r2.Right - r1.Right) * (p.Y - r1.Bottom)) / (r2.Bottom - r1.Bottom));
-					return ((p.X > o) && (p.X < u));
-				}
+        //if (p1.Y < p2.Y) //SWNE
+        //{
+        //  o = r1.Left + (((r2.Left - r1.Left) * (p.Y - r1.Bottom)) / (r2.Bottom - r1.Bottom));
+        //  u = r1.Right + (((r2.Right - r1.Right) * (p.Y - r1.Top)) / (r2.Top - r1.Top));
+        //  return ((p.X > o) && (p.X < u));
+        //} else //NWSE
+        //{
+        //  o = r1.Left + (((r2.Left - r1.Left) * (p.Y - r1.Top)) / (r2.Top - r1.Top));
+        //  u = r1.Right + (((r2.Right - r1.Right) * (p.Y - r1.Bottom)) / (r2.Bottom - r1.Bottom));
+        //  return ((p.X > o) && (p.X < u));
+        //}
+        return true;
 			}
 			return false;
 		}
