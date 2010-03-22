@@ -142,9 +142,10 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
         Type appType = application.GetType();
         ApplicationAttribute attr = (from x in appType.GetCustomAttributes(typeof(ApplicationAttribute), false)
                                      select (ApplicationAttribute)x).Single();
+        var declaringPlugin = GetDeclaringPlugin(appType, plugins);
         ApplicationDescription info = new ApplicationDescription();
         info.Name = application.Name;
-        info.Version = appType.Assembly.GetName().Version;
+        info.Version = declaringPlugin.Version;
         info.Description = application.Description;
         info.AutoRestart = attr.RestartOnErrors;
         info.DeclaringAssemblyName = appType.Assembly.GetName().Name;
@@ -541,6 +542,13 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     private static bool FileLiesInDirectory(string dir, string fileName) {
       var basePath = Path.GetFullPath(dir);
       return Path.GetFullPath(fileName).StartsWith(basePath);
+    }
+
+    private PluginDescription GetDeclaringPlugin(Type appType, IEnumerable<PluginDescription> plugins) {
+      return (from p in plugins
+              from asmLocation in p.AssemblyLocations
+              where Path.GetFullPath(asmLocation).Equals(Path.GetFullPath(appType.Assembly.Location), StringComparison.CurrentCultureIgnoreCase)
+              select p).Single();
     }
 
     // register assembly in the assembly cache for the ReflectionOnlyAssemblyResolveEvent
