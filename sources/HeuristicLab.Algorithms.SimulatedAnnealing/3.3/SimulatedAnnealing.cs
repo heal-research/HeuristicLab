@@ -180,6 +180,14 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       return clone;
     }
 
+    protected override void OnPrepared() {
+      base.OnPrepared();
+      if (Engine != null) {
+        if (Problem == null || MoveGenerator == null || MoveMaker == null || MoveEvaluator == null)
+          Engine.Prepare(null);
+      }
+    }
+
     #region Events
     protected override void OnProblemChanged() {
       ParameterizeStochasticOperator(Problem.SolutionCreator);
