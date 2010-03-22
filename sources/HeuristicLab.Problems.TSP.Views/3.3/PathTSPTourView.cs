@@ -68,11 +68,12 @@ namespace HeuristicLab.Problems.TSP.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
+        pictureBox.Image = null;
         pictureBox.Enabled = false;
       } else {
         pictureBox.Enabled = true;
+        GenerateImage();
       }
-      GenerateImage();
     }
 
     private void GenerateImage() {
@@ -84,7 +85,7 @@ namespace HeuristicLab.Problems.TSP.Views {
           Permutation permutation = Content.Permutation;
           Bitmap bitmap = new Bitmap(pictureBox.Width, pictureBox.Height);
 
-          if (coordinates != null) {
+          if ((coordinates != null) && (coordinates.Rows > 0) && (coordinates.Columns == 2)) {
             double xMin = double.MaxValue, yMin = double.MaxValue, xMax = double.MinValue, yMax = double.MinValue;
             for (int i = 0; i < coordinates.Rows; i++) {
               if (xMin > coordinates[i, 0]) xMin = coordinates[i, 0];
@@ -98,18 +99,18 @@ namespace HeuristicLab.Problems.TSP.Views {
             double yStep = (pictureBox.Height - 2 * border) / (yMax - yMin);
 
             Point[] points = new Point[coordinates.Rows];
-            if (permutation == null) {
-              for (int i = 0; i < coordinates.Rows; i++)
-                points[i] = new Point(border + ((int)((coordinates[i, 0] - xMin) * xStep)),
-                                      border + ((int)((coordinates[i, 1] - yMin) * yStep)));
-            } else {
-              for (int i = 0; i < coordinates.Rows; i++)
-                points[i] = new Point(border + ((int)((coordinates[permutation[i], 0] - xMin) * xStep)),
-                                      border + ((int)((coordinates[permutation[i], 1] - yMin) * yStep)));
-            }
+            for (int i = 0; i < coordinates.Rows; i++)
+              points[i] = new Point(border + ((int)((coordinates[i, 0] - xMin) * xStep)),
+                                    border + ((int)((coordinates[i, 1] - yMin) * yStep)));
 
             Graphics graphics = Graphics.FromImage(bitmap);
-            if (permutation != null) graphics.DrawPolygon(Pens.Black, points);
+            if ((permutation != null) && (permutation.Length == coordinates.Rows) && (permutation.Validate())) {
+              Point[] tour = new Point[permutation.Length];
+              for (int i = 0; i < permutation.Length; i++) {
+                tour[i] = points[permutation[i]];
+              }
+              graphics.DrawPolygon(Pens.Black, tour);
+            }
             for (int i = 0; i < points.Length; i++)
               graphics.FillRectangle(Brushes.Red, points[i].X - 2, points[i].Y - 2, 6, 6);
             graphics.Dispose();

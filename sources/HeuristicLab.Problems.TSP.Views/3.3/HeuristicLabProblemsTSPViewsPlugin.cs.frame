@@ -37,6 +37,7 @@ namespace HeuristicLab.Problems.TSP.Views {
   [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.2")]
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
   [PluginDependency("HeuristicLab.Optimization.Views", "3.3")]
+  [PluginDependency("HeuristicLab.Parameters", "3.3")]
   [PluginDependency("HeuristicLab.Problems.TSP", "3.3")]
   public class HeuristicLabProblemsTSPViewsPlugin : PluginBase {
   }

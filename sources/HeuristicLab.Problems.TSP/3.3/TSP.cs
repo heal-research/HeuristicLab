@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -177,10 +178,11 @@ namespace HeuristicLab.Problems.TSP {
       if (!string.IsNullOrEmpty(tspParser.Comment)) Description = tspParser.Comment;
       Coordinates = new DoubleMatrix(tspParser.Vertices);
       BestKnownQuality = null;
-
+      BestKnownSolution = null;
       if (!string.IsNullOrEmpty(optimalTourFileName)) {
         TSPLIBTourParser tourParser = new TSPLIBTourParser(optimalTourFileName);
         tourParser.Parse();
+        if (tourParser.Tour.Length != Coordinates.Rows) throw new InvalidDataException("Length of optimal tour is not equal to number of cities.");
         BestKnownSolution = new Permutation(tourParser.Tour);
       }
     }

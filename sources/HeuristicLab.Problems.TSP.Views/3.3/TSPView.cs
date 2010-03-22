@@ -21,9 +21,9 @@
 
 using System;
 using System.Windows.Forms;
+using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
-using HeuristicLab.Optimization.Views;
 
 namespace HeuristicLab.Problems.TSP.Views {
   /// <summary>
@@ -31,7 +31,7 @@ namespace HeuristicLab.Problems.TSP.Views {
   /// </summary>
   [View("TSP View")]
   [Content(typeof(TSP), true)]
-  public sealed partial class TSPView : ProblemView {
+  public sealed partial class TSPView : NamedItemView {
     private TSPLIBImportDialog tsplibImportDialog;
 
     public new TSP Content {
@@ -54,11 +54,30 @@ namespace HeuristicLab.Problems.TSP.Views {
       Content = content;
     }
 
+    protected override void DeregisterContentEvents() {
+      Content.CoordinatesParameter.ValueChanged -= new EventHandler(CoordinatesParameter_ValueChanged);
+      Content.BestKnownSolutionParameter.ValueChanged -= new EventHandler(BestKnownSolutionParameter_ValueChanged);
+      base.DeregisterContentEvents();
+    }
+    protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
+      Content.CoordinatesParameter.ValueChanged += new EventHandler(CoordinatesParameter_ValueChanged);
+      Content.BestKnownSolutionParameter.ValueChanged += new EventHandler(BestKnownSolutionParameter_ValueChanged);
+    }
+
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
+        parameterCollectionView.Content = null;
+        parameterCollectionView.Enabled = false;
+        pathTSPTourView.Content = null;
+        pathTSPTourView.Enabled = false;
         importButton.Enabled = false;
       } else {
+        parameterCollectionView.Content = ((IParameterizedNamedItem)Content).Parameters;
+        parameterCollectionView.Enabled = true;
+        pathTSPTourView.Content = new PathTSPTour(Content.Coordinates, Content.BestKnownSolution);
+        pathTSPTourView.Enabled = true;
         importButton.Enabled = true;
       }
     }
@@ -77,6 +96,13 @@ namespace HeuristicLab.Problems.TSP.Views {
           Auxiliary.ShowErrorMessageBox(ex);
         }
       }
+    }
+
+    private void CoordinatesParameter_ValueChanged(object sender, EventArgs e) {
+      pathTSPTourView.Content.Coordinates = Content.Coordinates;
+    }
+    private void BestKnownSolutionParameter_ValueChanged(object sender, EventArgs e) {
+      pathTSPTourView.Content.Permutation = Content.BestKnownSolution;
     }
   }
 }

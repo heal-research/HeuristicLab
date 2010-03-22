@@ -155,6 +155,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ch130.opt.tour" />
     <None Include="ch130.tsp" />
     <None Include="fl1400.tsp" />
     <None Include="HeuristicLab.snk" />
