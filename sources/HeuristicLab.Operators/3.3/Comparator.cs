@@ -31,7 +31,6 @@ namespace HeuristicLab.Operators {
   /// </summary>
   [Item("Comparator", "An operator which compares two items.")]
   [StorableClass]
-  [Creatable("Test")]
   public sealed class Comparator : SingleSuccessorOperator {
     public LookupParameter<IItem> LeftSideParameter {
       get { return (LookupParameter<IItem>)Parameters["LeftSide"]; }

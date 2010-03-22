@@ -28,7 +28,6 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   /// An operator which evaluates TSP solutions given in path representation using the rounded Euclidean distance metric.
   /// </summary>
   [Item("TSPRoundedEuclideanPathEvaluator", "An operator which evaluates TSP solutions given in path representation using the rounded Euclidean distance metric.")]
-  [Creatable("Test")]
   [StorableClass]
   public sealed class TSPRoundedEuclideanPathEvaluator : TSPCoordinatesPathEvaluator {
     /// <summary>

@@ -26,7 +26,6 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [StorableClass]
   [Item("RealVector", "Represents a vector of real values.")]
-  [Creatable("Test")]
   public class RealVector : DoubleArray {
     public RealVector() : base() { }
     public RealVector(int length) : base(length) { }

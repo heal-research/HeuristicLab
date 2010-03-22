@@ -32,7 +32,6 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   /// </remarks>
   [Item("TranslocationManipulator", "An operator which Manipulates a permutation array by moving a randomly chosen interval of elements to another (randomly chosen) position in the array. It is implemented as described in Michalewicz, Z. 1992. Genetic Algorithms + Data Structures = Evolution Programs, Springer Verlag, Berlin Heidelberg.")]
   [StorableClass]
-  [Creatable("Test")]
   public class TranslocationManipulator : PermutationManipulator {
     /// <summary>
     /// Moves a randomly chosen interval of elements to another (randomly chosen) position in the given

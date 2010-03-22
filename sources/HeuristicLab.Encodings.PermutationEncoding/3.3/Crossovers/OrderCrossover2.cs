@@ -34,7 +34,6 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   /// </remarks>
   [Item("OrderCrossover2", "An operator which performs an order crossover of two permutations. It is implemented as described in Affenzeller, M. et al. 2009. Genetic Algorithms and Genetic Programming - Modern Concepts and Practical Applications. CRC Press. p. 135.")]
   [StorableClass]
-  [Creatable("Test")]
   public class OrderCrossover2 : PermutationCrossover {
     /// <summary>
     /// Performs a slight variation of the order crossover of two permutations.

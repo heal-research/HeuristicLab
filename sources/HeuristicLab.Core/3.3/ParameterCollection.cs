@@ -25,7 +25,6 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Core {
   [StorableClass]
   [Item("ParameterCollection", "Represents a collection of parameters.")]
-  [Creatable("Test")]
   public class ParameterCollection : NamedItemCollection<IParameter> {
     public ParameterCollection() : base() { }
     public ParameterCollection(int capacity) : base(capacity) { }

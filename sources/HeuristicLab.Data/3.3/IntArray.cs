@@ -25,7 +25,6 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
   [Item("IntArray", "Represents an array of integer values.")]
-  [Creatable("Test")]
   [StorableClass]
   public class IntArray : ValueTypeArray<int>, IStringConvertibleArray {
     public IntArray() : base() { }

@@ -32,7 +32,6 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   /// </remarks>
   [Item("CyclicCrossover", "An operator which performs the cyclic crossover on two permutations. It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.")]
   [StorableClass]
-  [Creatable("Test")]
   public class CyclicCrossover : PermutationCrossover {
     /// <summary>
     /// Performs the cyclic crossover on <paramref name="parent1"/> and <paramref name="parent2"/>.

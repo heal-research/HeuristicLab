@@ -35,7 +35,6 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   /// </remarks>
   [Item("CosaCrossover", "An operator which performs the crossover described in the COSA optimization method. It is implemented as described in Wendt, O. 1994. COSA: COoperative Simulated Annealing - Integration von Genetischen Algorithmen und Simulated Annealing am Beispiel der Tourenplanung. Dissertation Thesis. IWI Frankfurt.")]
   [StorableClass]
-  [Creatable("Test")]
   public class CosaCrossover : PermutationCrossover {
     /// <summary>
     /// The operator actually performs a 2-opt mutation on the first parent, but it uses the second parent to determine which new edge should be inserted.

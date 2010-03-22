@@ -32,7 +32,6 @@ namespace HeuristicLab.Selection {
   /// </summary>
   [Item("LinearRankSelector", "A linear rank selection operator which considers the rank based on a single double quality value for selection.")]
   [StorableClass]
-  [Creatable("Test")]
   public sealed class LinearRankSelector : StochasticSingleObjectiveSelector, ISingleObjectiveSelector {
     public LinearRankSelector() : base() { }
 

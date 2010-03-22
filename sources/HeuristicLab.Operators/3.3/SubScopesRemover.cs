@@ -30,7 +30,6 @@ namespace HeuristicLab.Operators {
   /// </summary>
   [Item("SubScopesRemover", "An operator which removes all sub-scopes or one specified sub-scope from the current scope.")]
   [StorableClass]
-  [Creatable("Test")]
   public sealed class SubScopesRemover : SingleSuccessorOperator {
     private ValueParameter<BoolValue> RemoveAllSubScopesParameter {
       get { return (ValueParameter<BoolValue>)Parameters["RemoveAllSubScopes"]; }

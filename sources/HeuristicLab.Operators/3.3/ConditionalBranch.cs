@@ -29,7 +29,6 @@ namespace HeuristicLab.Operators {
   /// A branch of two operators whose executions depend on a condition.
   /// </summary>
   [Item("ConditionalBranch", "A branch of two operators whose executions depend on a boolean condition.")]
-  [Creatable("Test")]
   [StorableClass]
   public class ConditionalBranch : SingleSuccessorOperator {
     public LookupParameter<BoolValue> ConditionParameter {

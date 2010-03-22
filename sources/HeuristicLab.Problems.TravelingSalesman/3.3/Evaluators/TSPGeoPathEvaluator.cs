@@ -28,7 +28,6 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   /// An operator which evaluates TSP solutions given in path representation using the GEO distance metric (globe coordinates).
   /// </summary>
   [Item("TSPGeoPathEvaluator", "An operator which evaluates TSP solutions given in path representation using the GEO distance metric (globe coordinates).")]
-  [Creatable("Test")]
   [StorableClass]
   public sealed class TSPGeoPathEvaluator : TSPCoordinatesPathEvaluator {
     private const double PI = 3.141592;

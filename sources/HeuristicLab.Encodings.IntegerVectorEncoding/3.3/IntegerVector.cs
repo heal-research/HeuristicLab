@@ -26,7 +26,6 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [StorableClass]
   [Item("IntegerVector", "Represents a vector of integer values.")]
-  [Creatable("Test")]
   public class IntegerVector : IntArray {
     public IntegerVector() : base() { }
     public IntegerVector(int length) : base(length) { }

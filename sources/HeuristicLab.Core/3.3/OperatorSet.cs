@@ -30,7 +30,6 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Core {
   [StorableClass]
   [Item("OperatorSet", "Represents a set of operators.")]
-  [Creatable("Test")]
   public class OperatorSet : ItemSet<IOperator> {
     public OperatorSet() : base() { }
     public OperatorSet(IEnumerable<IOperator> collection) : base(collection) { }

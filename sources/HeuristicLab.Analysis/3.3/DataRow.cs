@@ -28,7 +28,6 @@ namespace HeuristicLab.Analysis {
   /// A row of data values.
   /// </summary>
   [Item("DataRow", "A row of data values.")]
-  [Creatable("Test")]
   [StorableClass]
   public sealed class DataRow : NamedItem {
     [Storable]

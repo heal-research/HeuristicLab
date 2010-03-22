@@ -25,7 +25,6 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
   [Item("StringValue", "Represents a string.")]
-  [Creatable("Test")]
   [StorableClass]
   public class StringValue : Item, IComparable, IStringConvertibleValue {
     [Storable]

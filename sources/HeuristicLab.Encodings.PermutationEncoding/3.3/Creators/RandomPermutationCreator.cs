@@ -32,7 +32,6 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   /// </summary>
   [Item("RandomPermutationCreator", "An operator which creates a new random permutation of integer values.")]
   [StorableClass]
-  [Creatable("Test")]
   public sealed class RandomPermutationCreator : SingleSuccessorOperator, IPermutationCreator, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }

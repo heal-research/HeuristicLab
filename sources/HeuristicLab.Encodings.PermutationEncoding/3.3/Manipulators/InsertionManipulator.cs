@@ -31,7 +31,6 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   /// </remarks>
   [Item("InsertionManipulator", "An operator which moves randomly one element to another position in the permutation. It is implemented as described in Fogel, D.B. (1988). An Evolutionary Approach to the Traveling Salesman Problem, Biological Cybernetics, 60, pp. 139-144.")]
   [StorableClass]
-  [Creatable("Test")]
   public class InsertionManipulator : PermutationManipulator {
     /// <summary>
     /// Moves an randomly chosen element in the specified <paramref name="permutation"/> array 

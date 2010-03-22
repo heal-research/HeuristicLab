@@ -27,7 +27,6 @@ namespace HeuristicLab.Core {
   /// Hierarchical container of variables (and of subscopes).
   /// </summary>
   [Item("Scope", "A scope which contains variables and sub-scopes.")]
-  [Creatable("Test")]
   [StorableClass]
   public sealed class Scope : NamedItem, IScope {
     [Storable]

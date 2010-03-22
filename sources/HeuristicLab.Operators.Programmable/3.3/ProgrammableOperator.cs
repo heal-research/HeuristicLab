@@ -41,7 +41,6 @@ using HeuristicLab.Collections;
 namespace HeuristicLab.Operators.Programmable {
 
   [Item("ProgrammableOperator", "An operator that can be programmed for arbitrary needs.")]
-  [Creatable("Test")]
   [StorableClass]  
   public class ProgrammableOperator : Operator, IParameterizedNamedItem {
 

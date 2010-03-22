@@ -32,7 +32,6 @@ namespace HeuristicLab.Selection {
   /// </summary>
   [Item("BestSelector", "A selection operator which considers a single double quality value and selects the best.")]
   [StorableClass]
-  [Creatable("Test")]
   public sealed class BestSelector : SingleObjectiveSelector, ISingleObjectiveSelector {
     public BestSelector() : base() { }
 

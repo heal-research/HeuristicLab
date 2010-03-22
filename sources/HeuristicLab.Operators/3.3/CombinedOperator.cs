@@ -28,7 +28,6 @@ namespace HeuristicLab.Operators {
   /// An operator which contains an operator graph.
   /// </summary>
   [Item("CombinedOperator", "An operator which contains an operator graph.")]
-  [Creatable("Test")]
   [StorableClass]
   public sealed class CombinedOperator : AlgorithmOperator, IParameterizedItem {
     public override bool CanChangeDescription {

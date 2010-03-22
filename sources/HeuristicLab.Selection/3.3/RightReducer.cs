@@ -30,7 +30,6 @@ namespace HeuristicLab.Selection {
   /// </summary>
   [Item("RightReducer", "An operator which reduces to the sub-scopes of the rightmost sub-scope of the current scope.")]
   [StorableClass]
-  [Creatable("Test")]
   public sealed class RightReducer : Reducer, IReducer {
     public RightReducer() : base() { }
 

@@ -30,7 +30,6 @@ namespace HeuristicLab.Operators {
   /// </summary>
   [Item("DoubleCounter", "An operator which increments a double variable.")]
   [StorableClass]
-  [Creatable("Test")]
   public sealed class DoubleCounter : SingleSuccessorOperator {
     public LookupParameter<DoubleValue> ValueParameter {
       get { return (LookupParameter<DoubleValue>)Parameters["Value"]; }

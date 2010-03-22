@@ -26,7 +26,6 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [StorableClass]
   [Item("BinaryVector", "Represents a vector of binary values.")]
-  [Creatable("Test")]
   public class BinaryVector : BoolArray {
     public BinaryVector() : base() { }
     public BinaryVector(int length) : base(length) { }

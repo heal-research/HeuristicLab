@@ -30,7 +30,6 @@ namespace HeuristicLab.Parameters {
   /// </summary>
   [Item("ScopeParameter", "A parameter which represents the current scope.")]
   [StorableClass]
-  [Creatable("Test")]
   public class ScopeParameter : Parameter {
     public new IScope ActualValue {
       get { return ExecutionContext.Scope; }

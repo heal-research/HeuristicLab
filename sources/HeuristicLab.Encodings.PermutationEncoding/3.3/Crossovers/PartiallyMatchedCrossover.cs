@@ -34,7 +34,6 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   /// </remarks>
   [Item("PartiallyMatchedCrossover", "An operator which performs the partially matched crossover on two permutations. It is implemented as described in Fogel, D.B. 1988. An Evolutionary Approach to the Traveling Salesman Problem. Biological Cybernetics, 60, pp. 139-144, Springer-Verlag.")]
   [StorableClass]
-  [Creatable("Test")]
   public class PartiallyMatchedCrossover : PermutationCrossover {
     /// <summary>
     /// Performs the partially matched crossover on <paramref name="parent1"/> and <paramref name="parent2"/>.

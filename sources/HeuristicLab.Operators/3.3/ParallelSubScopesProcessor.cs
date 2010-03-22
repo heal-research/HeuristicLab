@@ -27,7 +27,6 @@ namespace HeuristicLab.Operators {
   /// An operator which contains multiple operators of which each is applied in parallel on one sub-scope of the current scope. The first operator is applied on the first sub-scope, the second on the second, and so on.
   /// </summary>
   [Item("ParallelSubScopesProcessor", "An operator which contains multiple operators of which each is applied in parallel on one sub-scope of the current scope. The first operator is applied on the first sub-scope, the second on the second, and so on.")]
-  [Creatable("Test")]
   [StorableClass]
   public sealed class ParallelSubScopesProcessor : MultipleCallsOperator {
     public ParallelSubScopesProcessor()

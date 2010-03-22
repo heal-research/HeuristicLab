@@ -32,7 +32,6 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// </summary>
   [Item("UniformRandomIntegerVectorCreator", "An operator which creates a new random int vector with each element uniformly distributed in a specified range.")]
   [StorableClass]
-  [Creatable("Test")]
   public class UniformRandomIntegerVectorCreator : IntegerVectorCreator {
     /// <summary>
     /// Generates a new random integer vector with the given <paramref name="length"/>.

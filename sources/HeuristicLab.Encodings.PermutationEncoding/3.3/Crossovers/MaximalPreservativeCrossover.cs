@@ -35,7 +35,6 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   /// </remarks>
   [Item("MaximalPreservativeCrossover", "An operator which performs the maximal preservative crossover on two permutations. It is implemented as described in Mühlenbein, H. 1991. Evolution in time and space - the parallel genetic algorithm. FOUNDATIONS OF GENETIC ALGORITHMS, pp. 316-337. Morgan Kaufmann.")]
   [StorableClass]
-  [Creatable("Test")]
   public class MaximalPreservativeCrossover : PermutationCrossover {
     /// <summary>
     /// Performs the maximal preservative crossover on <paramref name="parent1"/> and <paramref name="parent2"/>

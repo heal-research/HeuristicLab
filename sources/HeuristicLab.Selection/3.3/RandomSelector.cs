@@ -32,7 +32,6 @@ namespace HeuristicLab.Selection {
   /// </summary>
   [Item("RandomSelector", "A random selection operator.")]
   [StorableClass]
-  [Creatable("Test")]
   public sealed class RandomSelector : StochasticSelector, ISelector {
     protected ValueParameter<BoolValue> CopySelectedParameter {
       get { return (ValueParameter<BoolValue>)Parameters["CopySelected"]; }

@@ -25,7 +25,6 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
   [Item("PercentValue", "Represents a double value in percent.")]
-  [Creatable("Test")]
   [StorableClass]
   public class PercentValue : DoubleValue {
     public PercentValue() : base() { }

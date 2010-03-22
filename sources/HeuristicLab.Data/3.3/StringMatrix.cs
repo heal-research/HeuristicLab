@@ -28,7 +28,6 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
   [Item("StringMatrix", "Represents a matrix of strings.")]
-  [Creatable("Test")]
   [StorableClass]
   public class StringMatrix : Item, IEnumerable, IStringConvertibleMatrix {
     [Storable]

@@ -28,7 +28,6 @@ namespace HeuristicLab.Core {
   /// Represents a variable which has a name and holds an IItem.
   /// </summary>
   [Item("Variable", "A variable which has a name and holds an IItem.")]
-  [Creatable("Test")]
   [StorableClass]
   public sealed class Variable : NamedItem, IVariable {
     private IItem value;

@@ -26,7 +26,6 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [StorableClass]
   [Item("Permutation", "Represents a permutation of integer values.")]
-  [Creatable("Test")]
   public class Permutation : IntArray {
     public Permutation() : base() { }
     public Permutation(int length)

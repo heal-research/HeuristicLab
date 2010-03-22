@@ -30,7 +30,6 @@ namespace HeuristicLab.Selection {
   /// </summary>
   [Item("LeftReducer", "An operator which reduces to the sub-scopes of the leftmost sub-scope of the current scope.")]
   [StorableClass]
-  [Creatable("Test")]
   public sealed class LeftReducer : Reducer, IReducer {
     public LeftReducer() : base() { }
 

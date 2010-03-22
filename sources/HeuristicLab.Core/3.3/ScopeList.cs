@@ -26,7 +26,6 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Core {
   [StorableClass]
   [Item("ScopeList", "Represents a list of scopes.")]
-  [Creatable("Test")]
   public sealed class ScopeList : ItemList<IScope> {
     public ScopeList() : base() { }
     public ScopeList(int capacity) : base(capacity) { }

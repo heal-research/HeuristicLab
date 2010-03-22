@@ -26,7 +26,6 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Core {
   [StorableClass]
   [Item("VariableCollection", "Represents a collection of variables.")]
-  [Creatable("Test")]
   public sealed class VariableCollection : NamedItemCollection<IVariable> {
     public VariableCollection() : base() { }
     public VariableCollection(int capacity) : base(capacity) { }

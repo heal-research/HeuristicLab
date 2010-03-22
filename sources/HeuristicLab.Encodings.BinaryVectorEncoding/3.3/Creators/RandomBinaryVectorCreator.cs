@@ -33,7 +33,6 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// </summary>
   [Item("RandomBinaryVectorCreator", "An operator which creates a new random binary vector with each element randomly initialized.")]
   [StorableClass]
-  [Creatable("Test")]
   public class RandomBinaryVectorCreator: BinaryVectorCreator {
     /// <summary>
     /// Generates a new random binary vector with the given <paramref name="length"/>.

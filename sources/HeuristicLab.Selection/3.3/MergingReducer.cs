@@ -30,7 +30,6 @@ namespace HeuristicLab.Selection {
   /// </summary>
   [Item("MergingReducer", "An operator which reduces to the sub-scopes of all sub-scopes of the current scope.")]
   [StorableClass]
-  [Creatable("Test")]
   public sealed class MergingReducer : Reducer, IReducer {
     public MergingReducer() : base() { }
 

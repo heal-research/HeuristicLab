@@ -34,7 +34,6 @@ namespace HeuristicLab.Selection {
   /// </summary>
   [Item("ProportionalSelector", "A quality proportional selection operator which considers a single double quality value for selection.")]
   [StorableClass]
-  [Creatable("Test")]
   public sealed class ProportionalSelector : StochasticSingleObjectiveSelector, ISingleObjectiveSelector {
     private ValueParameter<BoolValue> WindowingParameter {
       get { return (ValueParameter<BoolValue>)Parameters["Windowing"]; }

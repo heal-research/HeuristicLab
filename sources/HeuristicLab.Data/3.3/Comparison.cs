@@ -25,7 +25,6 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
   [Item("Comparison", "Represents a comparison.")]
-  [Creatable("Test")]
   [StorableClass]
   public class Comparison : ValueTypeValue<ComparisonType>, IComparable {
     public Comparison() : base() { }

@@ -31,7 +31,6 @@ namespace HeuristicLab.Operators {
   /// </summary>
   [Item("RandomCreator", "An operator which creates a new Mersenne Twister pseudo random number generator.")]
   [StorableClass]
-  [Creatable("Test")]
   public sealed class RandomCreator : SingleSuccessorOperator {
     public ValueLookupParameter<BoolValue> SetSeedRandomlyParameter {
       get { return (ValueLookupParameter<BoolValue>)Parameters["SetSeedRandomly"]; }

@@ -29,7 +29,6 @@ namespace HeuristicLab.Operators {
   /// </summary>
   [Item("ScopeCleaner", "An operator which removes all variables and sub-scopes from the current scope.")]
   [StorableClass]
-  [Creatable("Test")]
   public sealed class ScopeCleaner : SingleSuccessorOperator {
     private ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }

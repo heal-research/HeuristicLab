@@ -26,7 +26,6 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
   [Item("TimeSpanValue", "Represents a duration of time.")]
-  [Creatable("Test")]
   [StorableClass]
   public class TimeSpanValue : ValueTypeValue<TimeSpan>, IComparable, IStringConvertibleValue {
     public TimeSpanValue() : base() { }

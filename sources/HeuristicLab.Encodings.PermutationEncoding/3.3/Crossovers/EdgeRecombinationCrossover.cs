@@ -35,7 +35,6 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   /// </remarks>
   [Item("EdgeRecombinationCrossover", "An operator which performs the edge recombination crossover on two permutations. It is implemented as described in Whitley et.al. 1991, The Traveling Salesman and Sequence Scheduling, in Davis, L. (Ed.), Handbook of Genetic Algorithms, New York, pp. 350-372.")]
   [StorableClass]
-  [Creatable("Test")]
   public class EdgeRecombinationCrossover : PermutationCrossover {
     /// <summary>
     /// Performs a cross over permutation of <paramref name="parent1"/> and <paramref name="2"/>

@@ -33,7 +33,6 @@ namespace HeuristicLab.Algorithms.SGA {
   /// An operator which represents the main loop of a standard genetic algorithm (SGA).
   /// </summary>
   [Item("SGAMainLoop", "An operator which represents the main loop of a standard genetic algorithm (SGA).")]
-  [Creatable("Test")]
   [StorableClass]
   public sealed class SGAMainLoop : AlgorithmOperator {
     #region Parameter properties

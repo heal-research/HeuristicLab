@@ -32,7 +32,6 @@ namespace HeuristicLab.Optimization.Operators {
   /// </summary>
   [Item("SolutionsCreator", "An operator which creates new solutions.")]
   [StorableClass]
-  [Creatable("Test")]
   public sealed class SolutionsCreator : SingleSuccessorOperator {
     public ValueLookupParameter<IntValue> NumberOfSolutionsParameter {
       get { return (ValueLookupParameter<IntValue>)Parameters["NumberOfSolutions"]; }

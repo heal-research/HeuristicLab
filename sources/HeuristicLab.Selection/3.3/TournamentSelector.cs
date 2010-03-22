@@ -33,7 +33,6 @@ namespace HeuristicLab.Selection {
   /// </summary>
   [Item("TournamentSelector", "A tournament selection operator which considers a single double quality value for selection.")]
   [StorableClass]
-  [Creatable("Test")]
   public sealed class TournamentSelector : StochasticSingleObjectiveSelector, ISingleObjectiveSelector {
     public ValueLookupParameter<IntValue> GroupSizeParameter {
       get { return (ValueLookupParameter<IntValue>)Parameters["GroupSize"]; }
