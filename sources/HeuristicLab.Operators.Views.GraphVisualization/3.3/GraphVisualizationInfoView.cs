@@ -361,7 +361,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
         this.graphVisualization.Invalidate();
 
         //fix to avoid negative shape positions after layouting
-        Thread.Sleep(100);
+        Thread.Sleep(300);
         int minX = this.graphVisualization.Controller.Model.Shapes.Min(s => s.Location.X);
         int shiftX = minX < 0 ? Math.Abs(minX) + 50 : 0;
         int minY = this.graphVisualization.Controller.Model.Shapes.Min(s => s.Location.Y);
