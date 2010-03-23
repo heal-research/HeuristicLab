@@ -154,7 +154,8 @@ namespace HeuristicLab.Parameters.Views {
     #endregion
 
     private void valueComboBox_SelectedIndexChanged(object sender, EventArgs e) {
-      Content.Value = valueComboBoxItems[valueComboBox.SelectedIndex];
+      if (valueComboBox.SelectedIndex >= 0)
+        Content.Value = valueComboBoxItems[valueComboBox.SelectedIndex];
     }
   }
 }
