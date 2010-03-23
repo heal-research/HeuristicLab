@@ -26,6 +26,8 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
+  [Item("TabuMoveMaker", "Base class for all operators that set a move tabu.")]
+  [StorableClass]
   public abstract class TabuMoveMaker : SingleSuccessorOperator, ITabuMoveMaker {
     public LookupParameter<ItemList<IItem>> TabuListParameter {
       get { return (LookupParameter<ItemList<IItem>>)Parameters["TabuList"]; }
