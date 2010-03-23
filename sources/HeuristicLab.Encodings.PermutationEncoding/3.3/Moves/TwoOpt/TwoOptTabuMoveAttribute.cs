@@ -36,9 +36,12 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     public int Edge2Target { get; private set; }
 
     [StorableConstructor]
-    private TwoOptTabuMoveAttribute()
+    private TwoOptTabuMoveAttribute(bool deserializing)
       : base() {
     }
+
+    public TwoOptTabuMoveAttribute()
+      : this(-1, -1, -1, -1) { }
 
     public TwoOptTabuMoveAttribute(int edge1Source, int edge1Target, int edge2Source, int edge2Target)
       : base() {
@@ -46,6 +49,15 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       Edge1Target = edge1Target;
       Edge2Source = edge2Source;
       Edge2Target = edge2Target;
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      TwoOptTabuMoveAttribute clone = (TwoOptTabuMoveAttribute)base.Clone(cloner);
+      clone.Edge1Source = Edge1Source;
+      clone.Edge1Target = Edge1Target;
+      clone.Edge2Source = Edge2Source;
+      clone.Edge2Target = Edge2Target;
+      return clone;
     }
   }
 }
