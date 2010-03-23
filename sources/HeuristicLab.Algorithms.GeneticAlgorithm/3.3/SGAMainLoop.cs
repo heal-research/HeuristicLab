@@ -28,7 +28,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Selection;
 
-namespace HeuristicLab.Algorithms.SGA {
+namespace HeuristicLab.Algorithms.GeneticAlgorithm {
   /// <summary>
   /// An operator which represents the main loop of a standard genetic algorithm (SGA).
   /// </summary>

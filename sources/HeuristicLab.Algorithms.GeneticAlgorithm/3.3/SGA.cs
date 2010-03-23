@@ -31,7 +31,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Algorithms.SGA {
+namespace HeuristicLab.Algorithms.GeneticAlgorithm {
   /// <summary>
   /// A standard genetic algorithm.
   /// </summary>

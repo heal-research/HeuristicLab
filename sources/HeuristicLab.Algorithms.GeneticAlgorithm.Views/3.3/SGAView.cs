@@ -22,7 +22,7 @@
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimization.Views;
 
-namespace HeuristicLab.Algorithms.SGA.Views {
+namespace HeuristicLab.Algorithms.GeneticAlgorithm.Views {
   /// <summary>
   /// The base class for visual representations of items.
   /// </summary>

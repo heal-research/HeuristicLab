@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("HeuristicLab.Algorithms.SGA-3.3.Tests")]
+[assembly: AssemblyTitle("HeuristicLab.Algorithms.GeneticAlgorithm-3.3.Tests")]
 [assembly: AssemblyDescription("Unit tests for the HeuristicLab standard genetic algorithm (SGA)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]

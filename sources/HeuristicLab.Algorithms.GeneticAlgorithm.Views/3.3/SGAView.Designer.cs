@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.Algorithms.SGA.Views {
+namespace HeuristicLab.Algorithms.GeneticAlgorithm.Views {
   partial class SGAView {
     /// <summary> 
     /// Required designer variable.

@@ -26,7 +26,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Algorithms.SGA_33.Tests {
+namespace HeuristicLab.Algorithms.GeneticAlgorithm_33.Tests {
   /// <summary>
   /// Summary description for UnitTest
   /// </summary>

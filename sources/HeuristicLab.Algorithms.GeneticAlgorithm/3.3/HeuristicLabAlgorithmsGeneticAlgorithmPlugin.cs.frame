@@ -21,12 +21,12 @@
 
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Algorithms.SGA {
+namespace HeuristicLab.Algorithms.GeneticAlgorithm {
   /// <summary>
-  /// Plugin class for HeuristicLab.Algorithms.SGA plugin.
+  /// Plugin class for HeuristicLab.Algorithms.GeneticAlgorithm plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Algorithms.SGA", "3.3.0.$WCREV$")]
-  [PluginFile("HeuristicLab.Algorithms.SGA-3.3.dll", PluginFileType.Assembly)]
+  [Plugin("HeuristicLab.Algorithms.GeneticAlgorithm", "3.3.0.$WCREV$")]
+  [PluginFile("HeuristicLab.Algorithms.GeneticAlgorithm-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Analysis", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
@@ -38,6 +38,6 @@ namespace HeuristicLab.Algorithms.SGA {
   [PluginDependency("HeuristicLab.Persistence", "3.3")]
   [PluginDependency("HeuristicLab.Random", "3.3")]
   [PluginDependency("HeuristicLab.Selection", "3.3")]
-  public class HeuristicLabAlgorithmsSGAPlugin : PluginBase {
+  public class HeuristicLabAlgorithmsGeneticAlgorithmPlugin : PluginBase {
   }
 }

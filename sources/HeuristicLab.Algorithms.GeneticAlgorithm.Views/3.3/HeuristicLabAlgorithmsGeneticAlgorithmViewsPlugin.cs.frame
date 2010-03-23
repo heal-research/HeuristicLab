@@ -21,19 +21,19 @@
 
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Algorithms.SGA.Views {
+namespace HeuristicLab.Algorithms.GeneticAlgorithm.Views {
   /// <summary>
-  /// Plugin class for HeuristicLab.Algorithms.SGA.Views plugin.
+  /// Plugin class for HeuristicLab.Algorithms.GeneticAlgorithm.Views plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Algorithms.SGA.Views", "3.3.0.$WCREV$")]
-  [PluginFile("HeuristicLab.Algorithms.SGA.Views-3.3.dll", PluginFileType.Assembly)]
+  [Plugin("HeuristicLab.Algorithms.GeneticAlgorithm.Views", "3.3.0.$WCREV$")]
+  [PluginFile("HeuristicLab.Algorithms.GeneticAlgorithm.Views-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Core.Views", "3.3")]
   [PluginDependency("HeuristicLab.MainForm", "3.2")]
   [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.2")]
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
   [PluginDependency("HeuristicLab.Optimization.Views", "3.3")]
-  [PluginDependency("HeuristicLab.Algorithms.SGA", "3.3")]
-  public class HeuristicLabAlgorithmsSGAViewsPlugin : PluginBase {
+  [PluginDependency("HeuristicLab.Algorithms.GeneticAlgorithm", "3.3")]
+  public class HeuristicLabAlgorithmsGeneticAlgorithmViewsPlugin : PluginBase {
   }
 }

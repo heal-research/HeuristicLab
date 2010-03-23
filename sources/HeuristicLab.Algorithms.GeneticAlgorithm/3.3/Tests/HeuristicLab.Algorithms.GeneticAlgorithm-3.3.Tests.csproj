@@ -4,11 +4,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{F42F3576-7233-4B28-90F7-36AE15F30F92}</ProjectGuid>
+    <ProjectGuid>{DE12659F-87C4-48E6-B2E3-4E73DD95A540}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.Algorithms.SGA_33.Tests</RootNamespace>
-    <AssemblyName>HeuristicLab.Algorithms.SGA-3.3.Tests</AssemblyName>
+    <RootNamespace>HeuristicLab.Algorithms.GeneticAlgorithm_33.Tests</RootNamespace>
+    <AssemblyName>HeuristicLab.Algorithms.GeneticAlgorithm-3.3.Tests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -149,9 +149,9 @@
       <Project>{EE2034D9-6E27-48A1-B855-42D45F69A4FC}</Project>
       <Name>HeuristicLab.Tracing-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Algorithms.SGA-3.3.csproj">
-      <Project>{4C3305C4-E440-4EAD-B218-68D77AE51543}</Project>
-      <Name>HeuristicLab.Algorithms.SGA-3.3</Name>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.GeneticAlgorithm-3.3.csproj">
+      <Project>{A51DA44F-CB35-4F6F-99F5-2A2E904AB93B}</Project>
+      <Name>HeuristicLab.Algorithms.GeneticAlgorithm-3.3</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
