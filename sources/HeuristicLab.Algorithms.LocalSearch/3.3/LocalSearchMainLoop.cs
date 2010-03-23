@@ -115,13 +115,13 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       QualityDifferenceCalculator qualityDifferenceCalculator1 = new QualityDifferenceCalculator();
       Placeholder visualizer1 = new Placeholder();
       ResultsCollector resultsCollector = new ResultsCollector();
-      UniformSequentialSubScopesProcessor mainProcessor = new UniformSequentialSubScopesProcessor();
+      UniformSubScopesProcessor mainProcessor = new UniformSubScopesProcessor();
       Placeholder moveGenerator = new Placeholder();
-      UniformSequentialSubScopesProcessor moveEvaluationProcessor = new UniformSequentialSubScopesProcessor();
+      UniformSubScopesProcessor moveEvaluationProcessor = new UniformSubScopesProcessor();
       Placeholder moveEvaluator = new Placeholder();
       BestSelector bestSelector = new BestSelector();
       RightReducer rightReducer = new RightReducer();
-      UniformSequentialSubScopesProcessor moveMakingProcessor = new UniformSequentialSubScopesProcessor();
+      UniformSubScopesProcessor moveMakingProcessor = new UniformSubScopesProcessor();
       QualityComparator qualityComparator = new QualityComparator();
       ConditionalBranch improvesQualityBranch = new ConditionalBranch();
       Placeholder moveMaker = new Placeholder();
@@ -166,7 +166,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       resultsCollector.CollectedValues.Add(new LookupParameter<DataTable>("Qualities"));
       resultsCollector.ResultsParameter.ActualName = ResultsParameter.Name;
 
-      mainProcessor.Name = "Solution processor (UniformSequentialSubScopesProcessor)";
+      mainProcessor.Name = "Solution processor (UniformSubScopesProcessor)";
 
       moveGenerator.Name = "MoveGenerator (placeholder)";
       moveGenerator.OperatorParameter.ActualName = MoveGeneratorParameter.Name;
@@ -179,7 +179,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       bestSelector.NumberOfSelectedSubScopesParameter.Value = new IntValue(1);
       bestSelector.QualityParameter.ActualName = MoveQualityParameter.Name;
 
-      moveMakingProcessor.Name = "MoveMaking processor (UniformSequentialSubScopesProcessor)";
+      moveMakingProcessor.Name = "MoveMaking processor (UniformSubScopesProcessor)";
 
       qualityComparator.LeftSideParameter.ActualName = MoveQualityParameter.Name;
       qualityComparator.RightSideParameter.ActualName = QualityParameter.Name;

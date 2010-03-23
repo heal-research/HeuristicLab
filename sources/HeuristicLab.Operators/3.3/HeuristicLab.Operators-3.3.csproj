@@ -93,24 +93,22 @@
     <Compile Include="ResultsCollector.cs" />
     <Compile Include="MultipleCallsOperator.cs" />
     <Compile Include="Operator.cs" />
-    <Compile Include="ParallelSubScopesProcessor.cs" />
     <Compile Include="Placeholder.cs" />
     <Compile Include="IntCounter.cs" />
     <Compile Include="ScopeCleaner.cs" />
-    <Compile Include="SequentialSubScopesProcessor.cs" />
     <Compile Include="StochasticBranch.cs" />
     <Compile Include="SubScopesCreator.cs" />
+    <Compile Include="SubScopesProcessor.cs" />
     <Compile Include="SubScopesRemover.cs" />
     <Compile Include="SubScopesSorter.cs" />
     <Compile Include="DoubleCounter.cs" />
-    <Compile Include="UniformParallelSubScopesProcessor.cs" />
-    <Compile Include="UniformSequentialSubScopesProcessor.cs" />
     <Compile Include="EmptyOperator.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="HeuristicLabOperatorsPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SingleSuccessorOperator.cs" />
+    <Compile Include="UniformSubScopesProcessor.cs" />
     <Compile Include="ValuesCollector.cs" />
     <Compile Include="VariableCreator.cs" />
   </ItemGroup>

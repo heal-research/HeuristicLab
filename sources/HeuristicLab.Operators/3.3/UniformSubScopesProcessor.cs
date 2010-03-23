@@ -20,34 +20,45 @@
 #endregion
 
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
   /// <summary>
-  /// An operator which applies a specified operator on all sub-scopes of the current scope in parallel.
+  /// An operator which applies a specified operator on all sub-scopes of the current scope.
   /// </summary>
-  [Item("UniformParallelSubScopesProcessor", "An operator which applies a specified operator on all sub-scopes of the current scope in parallel.")]
+  [Item("UniformSubScopesProcessor", "An operator which applies a specified operator on all sub-scopes of the current scope.")]
   [StorableClass]
-  public sealed class UniformParallelSubScopesProcessor : SingleSuccessorOperator {
+  public sealed class UniformSubScopesProcessor : SingleSuccessorOperator {
     private OperatorParameter OperatorParameter {
       get { return (OperatorParameter)Parameters["Operator"]; }
     }
+    public ValueLookupParameter<BoolValue> ParallelParameter {
+      get { return (ValueLookupParameter<BoolValue>)Parameters["Parallel"]; }
+    }
+
     public IOperator Operator {
       get { return OperatorParameter.Value; }
       set { OperatorParameter.Value = value; }
     }
+    public BoolValue Parallel {
+      get { return ParallelParameter.Value; }
+      set { ParallelParameter.Value = value; }
+    }
 
-    public UniformParallelSubScopesProcessor()
+    public UniformSubScopesProcessor()
       : base() {
-      Parameters.Add(new OperatorParameter("Operator", "The operator which should be applied on all sub-scopes of the current scope in parallel."));
+      Parameters.Add(new OperatorParameter("Operator", "The operator which should be applied on all sub-scopes of the current scope."));
+      Parameters.Add(new ValueLookupParameter<BoolValue>("Parallel", "True if the operator should be applied in parallel on all sub-scopes, otherwise false.", new BoolValue(false)));
     }
 
     public override IOperation Apply() {
+      BoolValue parallel = ParallelParameter.ActualValue;
       OperationCollection next = new OperationCollection(base.Apply());
       if (Operator != null) {
         OperationCollection inner = new OperationCollection();
-        inner.Parallel = true;
+        inner.Parallel = parallel == null ? false : parallel.Value;
         for (int i = 0; i < ExecutionContext.Scope.SubScopes.Count; i++)
           inner.Add(ExecutionContext.CreateOperation(Operator, ExecutionContext.Scope.SubScopes[i]));
         next.Insert(0, inner);

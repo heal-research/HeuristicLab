@@ -122,16 +122,16 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       QualityDifferenceCalculator qualityDifferenceCalculator1 = new QualityDifferenceCalculator();
       Placeholder visualizer1 = new Placeholder();
       ResultsCollector resultsCollector = new ResultsCollector();
-      UniformSequentialSubScopesProcessor mainProcessor = new UniformSequentialSubScopesProcessor();
+      UniformSubScopesProcessor mainProcessor = new UniformSubScopesProcessor();
       Placeholder moveGenerator = new Placeholder();
-      UniformSequentialSubScopesProcessor moveEvaluationProcessor = new UniformSequentialSubScopesProcessor();
+      UniformSubScopesProcessor moveEvaluationProcessor = new UniformSubScopesProcessor();
       Placeholder moveEvaluator = new Placeholder();
       Placeholder tabuMoveEvaluator = new Placeholder();
       SubScopesSorter moveQualitySorter = new SubScopesSorter();
       BestAverageWorstQualityCalculator bestAverageWorstMoveQualityCalculator = new BestAverageWorstQualityCalculator();
       TabuSelector tabuSelector = new TabuSelector();
       RightReducer rightReducer = new RightReducer();
-      UniformSequentialSubScopesProcessor moveMakingProcessor = new UniformSequentialSubScopesProcessor();
+      UniformSubScopesProcessor moveMakingProcessor = new UniformSubScopesProcessor();
       Placeholder tabuMoveMaker = new Placeholder();
       Placeholder moveMaker = new Placeholder();
       DataTableValuesCollector valuesCollector = new DataTableValuesCollector();
@@ -178,7 +178,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       resultsCollector.CollectedValues.Add(new LookupParameter<IItem>("Solution Visualization", null, VisualizationParameter.Name));
       resultsCollector.ResultsParameter.ActualName = "Results";
 
-      mainProcessor.Name = "Solution processor (UniformSequentialSubScopesProcessor)";
+      mainProcessor.Name = "Solution processor (UniformSubScopesProcessor)";
 
       moveGenerator.Name = "MoveGenerator (placeholder)";
       moveGenerator.OperatorParameter.ActualName = MoveGeneratorParameter.Name;
@@ -203,7 +203,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       valuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Worst Move Quality"));
       valuesCollector.DataTableParameter.ActualName = "MoveQualities";
 
-      moveMakingProcessor.Name = "MoveMaking processor (UniformSequentialSubScopesProcessor)";
+      moveMakingProcessor.Name = "MoveMaking processor (UniformSubScopesProcessor)";
 
       tabuMoveMaker.Name = "TabuMoveMaker (placeholder)";
       tabuMoveMaker.OperatorParameter.ActualName = TabuMoveMakerParameter.Name;

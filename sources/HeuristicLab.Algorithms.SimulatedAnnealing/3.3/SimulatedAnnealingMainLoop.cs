@@ -121,13 +121,13 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       BestQualityMemorizer bestQualityMemorizer2 = new BestQualityMemorizer();
       QualityDifferenceCalculator qualityDifferenceCalculator1 = new QualityDifferenceCalculator();
       Placeholder visualizer1 = new Placeholder();
-      SequentialSubScopesProcessor sssp = new SequentialSubScopesProcessor();
+      SubScopesProcessor sssp = new SubScopesProcessor();
       ResultsCollector resultsCollector = new ResultsCollector();
       Placeholder annealingOperator = new Placeholder();
-      UniformSequentialSubScopesProcessor mainProcessor = new UniformSequentialSubScopesProcessor();
+      UniformSubScopesProcessor mainProcessor = new UniformSubScopesProcessor();
       DataTableValuesCollector valuesCollector = new DataTableValuesCollector();
       Placeholder moveGenerator = new Placeholder();
-      UniformSequentialSubScopesProcessor moveEvaluationProcessor = new UniformSequentialSubScopesProcessor();
+      UniformSubScopesProcessor moveEvaluationProcessor = new UniformSubScopesProcessor();
       Placeholder moveEvaluator = new Placeholder();
       ProbabilisticQualityComparator qualityComparator = new ProbabilisticQualityComparator();
       ConditionalBranch improvesQualityBranch = new ConditionalBranch();
