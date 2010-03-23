@@ -394,5 +394,25 @@ namespace HeuristicLab.Hive.Client.Communication {
         HandleNetworkError(e);
       }
     }
+
+    public ResponseCalendar GetCalendarSync(Guid clientId) {
+      try {
+        return proxy.GetCalendar(clientId);        
+      }
+      catch (Exception e) {
+        HandleNetworkError(e);
+        return null;
+      }
+    }
+
+    public Response SetCalendarStatus (Guid clientId, CalendarState state) {
+      try {
+        return proxy.SetCalendarStatus(clientId, state);        
+      } catch (Exception e) {
+        HandleNetworkError(e);
+        return null;
+      }
+    }
+
   }
 }

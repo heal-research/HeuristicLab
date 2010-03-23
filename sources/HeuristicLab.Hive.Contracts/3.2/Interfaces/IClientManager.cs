@@ -56,8 +56,7 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
     ResponseList<UpTimeStatisticsDto> GetAllUpTimeStatistics();
     [OperationContract]
     ResponseList<AppointmentDto> GetUptimeCalendarForResource(Guid guid);
-
     [OperationContract]
-    Response SetUptimeCalendarForResource(Guid guid, IEnumerable<AppointmentDto> appointments);
+    Response SetUptimeCalendarForResource(Guid guid, IEnumerable<AppointmentDto> appointments, bool isForced);
   }
 }

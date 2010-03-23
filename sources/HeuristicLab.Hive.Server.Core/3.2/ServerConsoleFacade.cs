@@ -175,8 +175,9 @@ namespace HeuristicLab.Hive.Server.Core {
       return clientManager.GetUptimeCalendarForResource(guid);
     }
 
-    public Response SetUptimeCalendarForResource(Guid guid, IEnumerable<AppointmentDto> appointments) {
-      return clientManager.SetUptimeCalendarForResource(guid, appointments);
+    public Response SetUptimeCalendarForResource(Guid guid, IEnumerable<AppointmentDto> appointments, bool isForced) {
+      return clientManager.SetUptimeCalendarForResource(guid, appointments, isForced);
     }
+
   }
 }

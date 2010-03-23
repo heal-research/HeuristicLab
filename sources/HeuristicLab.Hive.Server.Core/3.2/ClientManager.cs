@@ -127,9 +127,16 @@ namespace HeuristicLab.Hive.Server.Core {
         response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_CLIENTGROUP_DOESNT_EXIST;
         return response;
       }
+
       clientGroup.Resources.Add(resource);
       DaoLocator.ClientGroupDao.AddRessourceToClientGroup(resource.Id, clientGroup.Id);
-      //clientGroupAdapter.Update(clientGroup);
+
+      //If our resource is in fact a client => set the callendar from the resource as current one.
+      
+      ClientDto dbr = DaoLocator.ClientDao.FindById(resource.Id);
+      if(dbr != null) {
+        DaoLocator.ClientDao.SetServerSideCalendar(dbr, clientGroup.Id);  
+      }
 
       response.Success = true;
       response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_RESOURCE_ADDED_TO_GROUP;
@@ -152,20 +159,12 @@ namespace HeuristicLab.Hive.Server.Core {
         response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_CLIENTGROUP_DOESNT_EXIST;
         return response;
       }
-      foreach (ResourceDto resource in clientGroup.Resources) {
-        if (resource.Id == resourceId) {
-          clientGroup.Resources.Remove(resource);
-          DaoLocator.ClientGroupDao.RemoveRessourceFromClientGroup(resource.Id, clientGroup.Id);
-          //clientGroupAdapter.Update(clientGroup);
-          response.Success = true;
-          response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_RESOURCE_REMOVED;
-          return response;
-        }
-      }
-      response.Success = false;
-      response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_RESOURCE_NOT_FOUND;
-
-      return response;
+     
+      DaoLocator.ClientGroupDao.RemoveRessourceFromClientGroup(resourceId, clientGroup.Id);
+      
+      response.Success = true;
+      response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_RESOURCE_REMOVED;
+      return response;                
     }
 
     public ResponseObject<List<ClientGroup>> GetAllGroupsOfResource(Guid resourceId) {
@@ -211,8 +210,9 @@ namespace HeuristicLab.Hive.Server.Core {
       return response;
     }
 
-    public Response SetUptimeCalendarForResource(Guid guid, IEnumerable<AppointmentDto> appointments) {
+    public Response SetUptimeCalendarForResource(Guid guid, IEnumerable<AppointmentDto> appointments, bool isForced) {
       DaoLocator.UptimeCalendarDao.SetUptimeCalendarForResource(guid, appointments);
+      DaoLocator.UptimeCalendarDao.NotifyClientsOfNewCalendar(guid, isForced);
       return new Response {Success = true};
     }
     #endregion

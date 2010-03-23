@@ -6,7 +6,7 @@ using HeuristicLab.Hive.Contracts.BusinessObjects;
 namespace HeuristicLab.Hive.Server.DataAccess {
   public interface IClientDao: IGenericDao<ClientDto> {
     IEnumerable<ClientDto> FindAllClientsWithoutGroup();
-
     ClientDto GetClientForJob(Guid jobId);
+    void SetServerSideCalendar(ClientDto client, Guid clientGroupId);    
   }
 }

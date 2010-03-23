@@ -53,6 +53,7 @@ namespace HeuristicLab.Hive.Server.Core {
       return clientCommunicator.ProcessHeartBeat(hbData);
     }
 
+
     public ResponseJob SendJob(Guid clientId) {
       return clientCommunicator.SendJob(clientId);
     }
@@ -85,6 +86,14 @@ namespace HeuristicLab.Hive.Server.Core {
       return clientCommunicator.ProcessSnapshot(clientId, jobId, result, percentage, exception);
     }
 
+
+    public ResponseCalendar GetCalendar(Guid clientId) {
+      return clientCommunicator.GetCalendar(clientId);
+    }
+
+    public Response SetCalendarStatus(Guid clientId, CalendarState state) {
+      return clientCommunicator.SetCalendarStatus(clientId, state);      
+    }
     #endregion
 
     #region IClientFacade Members
@@ -134,6 +143,8 @@ namespace HeuristicLab.Hive.Server.Core {
       return ((IInternalClientCommunicator)
         clientCommunicator).ProcessJobResult(stream, false);
     }
+
+
 
     #endregion
   }

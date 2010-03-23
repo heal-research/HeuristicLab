@@ -23,7 +23,7 @@
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      Calendar.DrawTool drawTool6 = new Calendar.DrawTool();
+      Calendar.DrawTool drawTool2 = new Calendar.DrawTool();
       this.dvOnline = new Calendar.DayView();
       this.btnSaveCal = new System.Windows.Forms.Button();
       this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -38,13 +38,15 @@
       this.label1 = new System.Windows.Forms.Label();
       this.btCreate = new System.Windows.Forms.Button();
       this.mcOnline = new System.Windows.Forms.MonthCalendar();
+      this.btnClearCal = new System.Windows.Forms.Button();
+      this.cbx_forcePush = new System.Windows.Forms.CheckBox();
       this.groupBox1.SuspendLayout();
       this.SuspendLayout();
       // 
       // dvOnline
       // 
-      drawTool6.DayView = this.dvOnline;
-      this.dvOnline.ActiveTool = drawTool6;
+      drawTool2.DayView = this.dvOnline;
+      this.dvOnline.ActiveTool = drawTool2;
       this.dvOnline.AmPmDisplay = false;
       this.dvOnline.AppointmentDuration = Calendar.AppointmentSlotDuration.SixtyMinutes;
       this.dvOnline.AppointmentHeightMode = Calendar.AppHeightDrawMode.TrueHeightAll;
@@ -67,11 +69,11 @@
       // 
       // btnSaveCal
       // 
-      this.btnSaveCal.Location = new System.Drawing.Point(642, 144);
+      this.btnSaveCal.Location = new System.Drawing.Point(642, 49);
       this.btnSaveCal.Name = "btnSaveCal";
       this.btnSaveCal.Size = new System.Drawing.Size(199, 23);
       this.btnSaveCal.TabIndex = 45;
-      this.btnSaveCal.Text = "Save calender";
+      this.btnSaveCal.Text = "Save Calendar";
       this.btnSaveCal.UseVisualStyleBackColor = true;
       this.btnSaveCal.Click += new System.EventHandler(this.btnSaveCal_Click);
       // 
@@ -184,7 +186,7 @@
       this.btCreate.Name = "btCreate";
       this.btCreate.Size = new System.Drawing.Size(242, 26);
       this.btCreate.TabIndex = 20;
-      this.btCreate.Text = "Save";
+      this.btCreate.Text = "Save Appointment";
       this.btCreate.UseVisualStyleBackColor = true;
       this.btCreate.Click += new System.EventHandler(this.btCreate_Click);
       // 
@@ -196,20 +198,43 @@
       this.mcOnline.TabIndex = 43;
       this.mcOnline.DateChanged += new System.Windows.Forms.DateRangeEventHandler(this.mcOnline_DateChanged);
       // 
+      // btnClearCal
+      // 
+      this.btnClearCal.Location = new System.Drawing.Point(642, 18);
+      this.btnClearCal.Name = "btnClearCal";
+      this.btnClearCal.Size = new System.Drawing.Size(199, 23);
+      this.btnClearCal.TabIndex = 46;
+      this.btnClearCal.Text = "Clear Calendar";
+      this.btnClearCal.UseVisualStyleBackColor = true;
+      this.btnClearCal.Click += new System.EventHandler(this.btnClearCal_Click);
+      // 
+      // cbx_forcePush
+      // 
+      this.cbx_forcePush.AutoSize = true;
+      this.cbx_forcePush.Location = new System.Drawing.Point(642, 78);
+      this.cbx_forcePush.Name = "cbx_forcePush";
+      this.cbx_forcePush.Size = new System.Drawing.Size(80, 17);
+      this.cbx_forcePush.TabIndex = 47;
+      this.cbx_forcePush.Text = "Force Push";
+      this.cbx_forcePush.UseVisualStyleBackColor = true;
+      // 
       // CgCalendar
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(859, 558);
+      this.Controls.Add(this.cbx_forcePush);
+      this.Controls.Add(this.btnClearCal);
       this.Controls.Add(this.btnSaveCal);
       this.Controls.Add(this.groupBox1);
       this.Controls.Add(this.mcOnline);
       this.Controls.Add(this.dvOnline);
       this.Name = "CgCalendar";
-      this.Text = "CgCalendar";
+      this.Text = "Calendar";
       this.groupBox1.ResumeLayout(false);
       this.groupBox1.PerformLayout();
       this.ResumeLayout(false);
+      this.PerformLayout();
 
     }
 
@@ -229,5 +254,7 @@
     private System.Windows.Forms.Button btCreate;
     private System.Windows.Forms.MonthCalendar mcOnline;
     private Calendar.DayView dvOnline;
+    private System.Windows.Forms.Button btnClearCal;
+    private System.Windows.Forms.CheckBox cbx_forcePush;
   }
 }

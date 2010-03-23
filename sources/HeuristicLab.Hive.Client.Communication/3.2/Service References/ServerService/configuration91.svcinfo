@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="kx3DG0eZsWj8OUKg2cLMJp8jj9s=">
+<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="vFreNGGBW9Tx4nl3MVFjfcaMtKU=">
   <bindingConfigurations>
     <bindingConfiguration bindingType="netTcpBinding" name="NetTcpBinding_IClientFacade">
       <properties>
@@ -82,7 +82,7 @@
           <serializedValue>System.ServiceModel.Configuration.NetTcpSecurityElement</serializedValue>
         </property>
         <property path="/security/mode" isComplexType="false" isExplicitlyDefined="true" clrType="System.ServiceModel.SecurityMode, System.ServiceModel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>Transport</serializedValue>
+          <serializedValue>None</serializedValue>
         </property>
         <property path="/security/transport" isComplexType="true" isExplicitlyDefined="false" clrType="System.ServiceModel.Configuration.TcpTransportSecurityElement, System.ServiceModel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>System.ServiceModel.Configuration.TcpTransportSecurityElement</serializedValue>
@@ -92,6 +92,18 @@
         </property>
         <property path="/security/transport/protectionLevel" isComplexType="false" isExplicitlyDefined="true" clrType="System.Net.Security.ProtectionLevel, System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>EncryptAndSign</serializedValue>
+        </property>
+        <property path="/security/transport/extendedProtectionPolicy" isComplexType="true" isExplicitlyDefined="false" clrType="System.Security.Authentication.ExtendedProtection.Configuration.ExtendedProtectionPolicyElement, System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+          <serializedValue>System.Security.Authentication.ExtendedProtection.Configuration.ExtendedProtectionPolicyElement</serializedValue>
+        </property>
+        <property path="/security/transport/extendedProtectionPolicy/policyEnforcement" isComplexType="false" isExplicitlyDefined="false" clrType="System.Security.Authentication.ExtendedProtection.PolicyEnforcement, System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+          <serializedValue>Never</serializedValue>
+        </property>
+        <property path="/security/transport/extendedProtectionPolicy/protectionScenario" isComplexType="false" isExplicitlyDefined="false" clrType="System.Security.Authentication.ExtendedProtection.ProtectionScenario, System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+          <serializedValue>TransportSelected</serializedValue>
+        </property>
+        <property path="/security/transport/extendedProtectionPolicy/customServiceNames" isComplexType="true" isExplicitlyDefined="false" clrType="System.Security.Authentication.ExtendedProtection.Configuration.ServiceNameElementCollection, System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+          <serializedValue>(Collection)</serializedValue>
         </property>
         <property path="/security/message" isComplexType="true" isExplicitlyDefined="false" clrType="System.ServiceModel.Configuration.MessageSecurityOverTcpElement, System.ServiceModel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>System.ServiceModel.Configuration.MessageSecurityOverTcpElement</serializedValue>
@@ -106,10 +118,10 @@
     </bindingConfiguration>
   </bindingConfigurations>
   <endpoints>
-    <endpoint name="NetTcpBinding_IClientFacade" contract="ServerService.IClientFacade" bindingType="netTcpBinding" address="net.tcp://10.0.2.15:9000/HiveServer/ClientCommunicator" bindingConfiguration="NetTcpBinding_IClientFacade">
+    <endpoint name="NetTcpBinding_IClientFacade" contract="ServerService.IClientFacade" bindingType="netTcpBinding" address="net.tcp://10.0.0.52:9000/HiveServer/ClientCommunicator" bindingConfiguration="NetTcpBinding_IClientFacade">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>net.tcp://10.0.2.15:9000/HiveServer/ClientCommunicator</serializedValue>
+          <serializedValue>net.tcp://10.0.0.52:9000/HiveServer/ClientCommunicator</serializedValue>
         </property>
         <property path="/behaviorConfiguration" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />
@@ -135,8 +147,8 @@
         <property path="/identity/userPrincipalName" isComplexType="true" isExplicitlyDefined="false" clrType="System.ServiceModel.Configuration.UserPrincipalNameElement, System.ServiceModel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>System.ServiceModel.Configuration.UserPrincipalNameElement</serializedValue>
         </property>
-        <property path="/identity/userPrincipalName/value" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>STEFAN-4710DBDB\Stefan</serializedValue>
+        <property path="/identity/userPrincipalName/value" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+          <serializedValue />
         </property>
         <property path="/identity/servicePrincipalName" isComplexType="true" isExplicitlyDefined="false" clrType="System.ServiceModel.Configuration.ServicePrincipalNameElement, System.ServiceModel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>System.ServiceModel.Configuration.ServicePrincipalNameElement</serializedValue>

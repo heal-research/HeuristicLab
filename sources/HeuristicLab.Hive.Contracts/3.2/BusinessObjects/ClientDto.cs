@@ -28,6 +28,7 @@ using System.Runtime.Serialization;
 namespace HeuristicLab.Hive.Contracts.BusinessObjects {
 
   public enum State { nullState, idle, calculating, offline, finished, abort, requestSnapshot, requestSnapshotSent, pending };
+  public enum CalendarState { Fetch, ForceFetch, Fetching, Fetched, NotAllowedToFetch };
 
   [DataContract]
   [Serializable]
@@ -46,6 +47,8 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
     public DateTime Login { get; set; }
     [DataMember]
     public State State { get; set; }
+    [DataMember]
+    public CalendarState CalendarSyncStatus { get; set; }
     [DataMember]
     public ClientConfigDto Config { get; set; }
 

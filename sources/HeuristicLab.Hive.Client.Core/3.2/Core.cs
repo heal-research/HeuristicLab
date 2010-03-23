@@ -87,7 +87,7 @@ namespace HeuristicLab.Hive.Client.Core {
       if (cc.IPAdress != String.Empty && cc.Port != 0)
         wcfService.SetIPAndPort(cc.IPAdress, cc.Port);
 
-      if (UptimeManager.Instance.isOnline())
+      if (!UptimeManager.Instance.CalendarAvailable || UptimeManager.Instance.IsOnline())
         wcfService.Connect();
 
       //Initialize the heartbeat
@@ -190,6 +190,19 @@ namespace HeuristicLab.Hive.Client.Core {
           }
           break;
 
+          //Fetch or Force Fetch Calendar!
+        case MessageContainer.MessageType.FetchOrForceFetchCalendar:
+          ResponseCalendar rescal = wcfService.GetCalendarSync(ConfigManager.Instance.GetClientInfo().Id);
+          if(rescal.Success) {
+            if(!UptimeManager.Instance.SetAppointments(false, rescal)) {
+              wcfService.SetCalendarStatus(ConfigManager.Instance.GetClientInfo().Id, CalendarState.NotAllowedToFetch);              
+            } else {
+              wcfService.SetCalendarStatus(ConfigManager.Instance.GetClientInfo().Id, CalendarState.Fetched);              
+            }
+          } else {
+            wcfService.SetCalendarStatus(ConfigManager.Instance.GetClientInfo().Id, CalendarState.NotAllowedToFetch);
+          }
+        break;
 
         //Hard shutdown of the client
         case MessageContainer.MessageType.Shutdown:
@@ -262,7 +275,7 @@ namespace HeuristicLab.Hive.Client.Core {
         null);
       Logging.Instance.Info(this.ToString(), "END: Sended snapshot sync");
       //Uptime Limit reached, now is a good time to destroy this jobs.
-      if (!UptimeManager.Instance.isOnline()) {
+      if (!UptimeManager.Instance.IsOnline()) {
         KillAppDomain(jId);
         //Still anything running?
         if (engines.Count == 0)
@@ -380,9 +393,25 @@ namespace HeuristicLab.Hive.Client.Core {
     /// <param name="sender"></param>
     /// <param name="e"></param>
     void wcfService_Connected(object sender, EventArgs e) {
-      wcfService.LoginSync(ConfigManager.Instance.GetClientInfo());
-      JobStorageManager.CheckAndSubmitJobsFromDisc();
-      currentlyFetching = false;
+      if (!UptimeManager.Instance.CalendarAvailable) {
+        ResponseCalendar calres = wcfService.GetCalendarSync(ConfigManager.Instance.GetClientInfo().Id);
+        if(calres.Success) {
+          if (UptimeManager.Instance.SetAppointments(false, calres))
+            wcfService.SetCalendarStatus(ConfigManager.Instance.GetClientInfo().Id, CalendarState.Fetched);
+          else
+            wcfService.SetCalendarStatus(ConfigManager.Instance.GetClientInfo().Id, CalendarState.NotAllowedToFetch);
+        }
+        else {
+          wcfService.SetCalendarStatus(ConfigManager.Instance.GetClientInfo().Id, CalendarState.NotAllowedToFetch);
+        }
+      }
+      //if the fetching from the server failed - still set the client online... maybe we get 
+      //a result within the next few heartbeats
+      if (!UptimeManager.Instance.CalendarAvailable || UptimeManager.Instance.IsOnline()) {
+        wcfService.LoginSync(ConfigManager.Instance.GetClientInfo());
+        JobStorageManager.CheckAndSubmitJobsFromDisc();
+        currentlyFetching = false;
+      }
     }
 
     //this is a little bit tricky - 

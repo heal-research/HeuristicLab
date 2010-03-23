@@ -16,17 +16,17 @@ namespace HeuristicLab.Hive.Server {
 
       Object obj;
       
-     // using (TransactionScope scope = new TransactionScope()) {
+      using (TransactionScope scope = new TransactionScope()) {
         try {
           obj = invocation.Proceed();
-     //     scope.Complete();
+          scope.Complete();
         } finally {
           ContextFactory.Context.Dispose();
           Console.WriteLine("setting old context null");
           ContextFactory.Context = null;
           Console.WriteLine("Disposing old Context");      
         }
-     // }     
+      }     
       Console.WriteLine(DateTime.Now + " - " + Thread.CurrentThread.ManagedThreadId + " - Leaving Method " + invocation.Method.Name);            
       return obj;
     }

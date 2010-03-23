@@ -55,7 +55,7 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
     public void AddRessourceToClientGroup(Guid resource, Guid clientGroupId) {
       ClientGroup cg = Context.ClientGroups.SingleOrDefault(c => c.ResourceId.Equals(clientGroupId));
       Resource res = Context.Resources.SingleOrDefault(r => r.ResourceId.Equals(resource));
-      cg.ClientGroup_Resources.Add(new ClientGroup_Resource { ClientGroup = cg, Resource = res });
+      cg.ClientGroup_Resources.Add(new ClientGroup_Resource { ClientGroup = cg, Resource = res });      
       Context.SubmitChanges();
     }
 

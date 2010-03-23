@@ -260,7 +260,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
                                                   };
         appointments.Add(apdto);
       }
-      ServiceLocator.GetClientManager().SetUptimeCalendarForResource(ResourceId, appointments);      
+      ServiceLocator.GetClientManager().SetUptimeCalendarForResource(ResourceId, appointments, cbx_forcePush.Checked);      
     }
 
     private void dvOnline_OnResolveAppointments(object sender, ResolveAppointmentsEventArgs e) {
@@ -280,6 +280,10 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       Appointment.EndDate = e.EndDate;
 
       onlineTimes.Add(Appointment);
+    }
+
+    private void btnClearCal_Click(object sender, EventArgs e) {
+      onlineTimes.Clear();
     }
   }
 }

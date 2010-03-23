@@ -101,6 +101,7 @@
     <Compile Include="BusinessObjects\ClientDto.cs" />
     <Compile Include="BusinessObjects\ClientConfigDto.cs" />
     <Compile Include="RecurrentEvent.cs" />
+    <Compile Include="ResponseCalendar.cs" />
     <Compile Include="ResponseSerializedJob.cs" />
     <Compile Include="MultiStream.cs" />
     <Compile Include="Interfaces\IClientFacade.cs" />

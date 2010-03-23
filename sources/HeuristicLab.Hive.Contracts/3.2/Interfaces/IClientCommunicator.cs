@@ -59,5 +59,11 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
     Response IsJobStillNeeded(Guid jobId);
     [OperationContract]
     ResponsePlugin SendPlugins(List<HivePluginInfoDto> pluginList);
+
+    [OperationContract]
+    ResponseCalendar GetCalendar(Guid clientId);
+    [OperationContract]
+    Response SetCalendarStatus(Guid clientId, CalendarState state);
+
   }
 }

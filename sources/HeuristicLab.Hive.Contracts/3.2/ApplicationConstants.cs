@@ -81,6 +81,9 @@ namespace HeuristicLab.Hive.Contracts {
     public static string RESPONSE_COMMUNICATOR_PLUGINS_SENT = "Communicator.PluginsSent";
     public static string RESPONSE_COMMUNICATOR_JOB_WAS_ABORTED = "Job was aborted";
 
+    public static string RESPONSE_COMMUNICATOR_FETCH_OR_FORCEFETCH_CALENDAR =
+      "new Calendar must be fetched / force fetched";
+
     public static string RESPONSE_JOB_ALL_JOBS = "Job.AllJobs";
     public static string RESPONSE_JOB_GET_JOB_BY_ID = "Job.GetJobById";
     public static string RESPONSE_JOB_ID_MUST_NOT_BE_SET = "Job.IdMustNotBeSet";
@@ -100,5 +103,8 @@ namespace HeuristicLab.Hive.Contracts {
     public static string RESPONSE_JOB_PROJECT_ADDED = "Project successfully added";
     public static string RESPONSE_JOB_PROJECT_DOESNT_EXIST = "The specified project doesn't exist";
     public static string RESPONSE_JOB_PROJECT_DELETED = "The project was sucessfully deleted";
+
+    public static string RESPONSE_UPTIMECALENDAR_NO_CALENDAR_FOUND = "No Calendar could be found anywhere in the tree";
+    public static string RESPONSE_UPTIMECALENDAR_STATUS_UPDATED = "Calendar status has been updated";
   }
 }

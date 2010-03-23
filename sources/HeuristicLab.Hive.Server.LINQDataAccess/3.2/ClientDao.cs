@@ -37,7 +37,14 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
               where job.JobId.Equals(jobId)
               select EntityToDto(job.Client, null)).SingleOrDefault();
     }
- 
+
+    public void SetServerSideCalendar(ClientDto client, Guid clientGroupId) {
+      Client dbclient = Context.Clients.SingleOrDefault(c => c.ResourceId.Equals(client.Id));
+      dbclient.UseCalendarFromResourceId = clientGroupId;
+      dbclient.CalendarSyncStatus = Enum.GetName(typeof(CalendarState), CalendarState.Fetch);
+      Context.SubmitChanges();
+    }
+
     public ClientDto Insert(ClientDto info) {
       Client c = DtoToEntity(info, null);      
       Context.Clients.InsertOnSubmit(c);
@@ -78,7 +85,7 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
       target.FreeMemory = source.FreeMemory;
       target.Resource.Name = source.Name;
       target.Resource.ResourceId = source.Id;
-
+      target.CalendarSyncStatus = Enum.GetName(typeof(CalendarState), source.CalendarSyncStatus);
       target.Login = source.Login;
       target.Memory = source.Memory;
       target.NumberOfCores = source.NrOfCores;
@@ -95,6 +102,7 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
       target.CpuSpeedPerCore = source.CPUSpeed;
       target.FreeMemory = source.FreeMemory;
       target.Id = source.ResourceId;
+      target.CalendarSyncStatus = (CalendarState) Enum.Parse(typeof (CalendarState), source.CalendarSyncStatus);
       target.Login = source.Login;
       target.Memory = source.Memory;
       target.Name = source.Resource.Name;
@@ -102,6 +110,6 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
       target.NrOfFreeCores = source.NumberOfFreeCores;
       target.State = (State) Enum.Parse(typeof (State), source.Status);
       return target;
-    }
+    } 
   }
 }

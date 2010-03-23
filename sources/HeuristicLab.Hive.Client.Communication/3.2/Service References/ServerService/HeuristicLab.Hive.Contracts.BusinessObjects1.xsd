@@ -3,11 +3,12 @@
   <xs:import namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.DataAccess" />
   <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
   <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-  <xs:complexType name="ClientInfo">
+  <xs:complexType name="ClientDto">
     <xs:complexContent mixed="false">
-      <xs:extension base="tns:Resource">
+      <xs:extension base="tns:ResourceDto">
         <xs:sequence>
-          <xs:element minOccurs="0" name="Config" nillable="true" type="tns:ClientConfig" />
+          <xs:element minOccurs="0" name="CalendarSyncStatus" type="tns:CalendarState" />
+          <xs:element minOccurs="0" name="Config" nillable="true" type="tns:ClientConfigDto" />
           <xs:element minOccurs="0" name="CpuSpeedPerCore" type="xs:int" />
           <xs:element minOccurs="0" name="FreeMemory" type="xs:int" />
           <xs:element minOccurs="0" name="Login" type="xs:dateTime" />
@@ -19,8 +20,8 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:element name="ClientInfo" nillable="true" type="tns:ClientInfo" />
-  <xs:complexType name="Resource">
+  <xs:element name="ClientDto" nillable="true" type="tns:ClientDto" />
+  <xs:complexType name="ResourceDto">
     <xs:complexContent mixed="false">
       <xs:extension xmlns:q1="http://schemas.datacontract.org/2004/07/HeuristicLab.DataAccess" base="q1:PersistableObject">
         <xs:sequence>
@@ -29,18 +30,28 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:element name="Resource" nillable="true" type="tns:Resource" />
-  <xs:complexType name="ClientConfig">
+  <xs:element name="ResourceDto" nillable="true" type="tns:ResourceDto" />
+  <xs:simpleType name="CalendarState">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Fetch" />
+      <xs:enumeration value="ForceFetch" />
+      <xs:enumeration value="Fetching" />
+      <xs:enumeration value="Fetched" />
+      <xs:enumeration value="NotAllowedToFetch" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="CalendarState" nillable="true" type="tns:CalendarState" />
+  <xs:complexType name="ClientConfigDto">
     <xs:complexContent mixed="false">
       <xs:extension xmlns:q2="http://schemas.datacontract.org/2004/07/HeuristicLab.DataAccess" base="q2:PersistableObject">
         <xs:sequence>
-          <xs:element minOccurs="0" name="HeartBeatIntervall" type="xs:int" />
+          <xs:element minOccurs="0" name="HeartBeatIntervall" nillable="true" type="xs:int" />
           <xs:element minOccurs="0" name="UpDownTimeCalendar" nillable="true" type="xs:string" />
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:element name="ClientConfig" nillable="true" type="tns:ClientConfig" />
+  <xs:element name="ClientConfigDto" nillable="true" type="tns:ClientConfigDto" />
   <xs:simpleType name="State">
     <xs:restriction base="xs:string">
       <xs:enumeration value="nullState" />
@@ -64,35 +75,35 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="HeartBeatData" nillable="true" type="tns:HeartBeatData" />
-  <xs:complexType name="Job">
+  <xs:complexType name="JobDto">
     <xs:complexContent mixed="false">
       <xs:extension xmlns:q4="http://schemas.datacontract.org/2004/07/HeuristicLab.DataAccess" base="q4:PersistableObject">
         <xs:sequence>
           <xs:element xmlns:q5="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="AssignedResourceIds" nillable="true" type="q5:ArrayOfguid" />
-          <xs:element minOccurs="0" name="Client" nillable="true" type="tns:ClientInfo" />
+          <xs:element minOccurs="0" name="Client" nillable="true" type="tns:ClientDto" />
           <xs:element minOccurs="0" name="CoresNeeded" type="xs:int" />
-          <xs:element minOccurs="0" name="DateCalculated" type="xs:dateTime" />
-          <xs:element minOccurs="0" name="DateCreated" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="DateCalculated" nillable="true" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="DateCreated" nillable="true" type="xs:dateTime" />
           <xs:element minOccurs="0" name="MemoryNeeded" type="xs:int" />
-          <xs:element minOccurs="0" name="ParentJob" nillable="true" type="tns:Job" />
-          <xs:element minOccurs="0" name="Percentage" type="xs:double" />
-          <xs:element minOccurs="0" name="PluginsNeeded" nillable="true" type="tns:ArrayOfHivePluginInfo" />
+          <xs:element minOccurs="0" name="ParentJob" nillable="true" type="tns:JobDto" />
+          <xs:element minOccurs="0" name="Percentage" nillable="true" type="xs:double" />
+          <xs:element minOccurs="0" name="PluginsNeeded" nillable="true" type="tns:ArrayOfHivePluginInfoDto" />
           <xs:element minOccurs="0" name="Priority" type="xs:int" />
-          <xs:element minOccurs="0" name="Project" nillable="true" type="tns:Project" />
+          <xs:element minOccurs="0" name="Project" nillable="true" type="tns:ProjectDto" />
           <xs:element minOccurs="0" name="State" type="tns:State" />
           <xs:element minOccurs="0" name="UserId" type="ser:guid" />
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:element name="Job" nillable="true" type="tns:Job" />
-  <xs:complexType name="ArrayOfHivePluginInfo">
+  <xs:element name="JobDto" nillable="true" type="tns:JobDto" />
+  <xs:complexType name="ArrayOfHivePluginInfoDto">
     <xs:sequence>
-      <xs:element minOccurs="0" maxOccurs="unbounded" name="HivePluginInfo" nillable="true" type="tns:HivePluginInfo" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="HivePluginInfoDto" nillable="true" type="tns:HivePluginInfoDto" />
     </xs:sequence>
   </xs:complexType>
-  <xs:element name="ArrayOfHivePluginInfo" nillable="true" type="tns:ArrayOfHivePluginInfo" />
-  <xs:complexType name="HivePluginInfo">
+  <xs:element name="ArrayOfHivePluginInfoDto" nillable="true" type="tns:ArrayOfHivePluginInfoDto" />
+  <xs:complexType name="HivePluginInfoDto">
     <xs:complexContent mixed="false">
       <xs:extension xmlns:q6="http://schemas.datacontract.org/2004/07/HeuristicLab.DataAccess" base="q6:PersistableObject">
         <xs:sequence>
@@ -103,8 +114,8 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:element name="HivePluginInfo" nillable="true" type="tns:HivePluginInfo" />
-  <xs:complexType name="Project">
+  <xs:element name="HivePluginInfoDto" nillable="true" type="tns:HivePluginInfoDto" />
+  <xs:complexType name="ProjectDto">
     <xs:complexContent mixed="false">
       <xs:extension xmlns:q7="http://schemas.datacontract.org/2004/07/HeuristicLab.DataAccess" base="q7:PersistableObject">
         <xs:sequence>
@@ -113,12 +124,26 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:element name="Project" nillable="true" type="tns:Project" />
-  <xs:complexType name="SerializedJob">
+  <xs:element name="ProjectDto" nillable="true" type="tns:ProjectDto" />
+  <xs:complexType name="ArrayOfAppointmentDto">
     <xs:sequence>
-      <xs:element minOccurs="0" name="JobInfo" nillable="true" type="tns:Job" />
-      <xs:element minOccurs="0" name="SerializedJobData" nillable="true" type="xs:base64Binary" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="AppointmentDto" nillable="true" type="tns:AppointmentDto" />
     </xs:sequence>
   </xs:complexType>
-  <xs:element name="SerializedJob" nillable="true" type="tns:SerializedJob" />
+  <xs:element name="ArrayOfAppointmentDto" nillable="true" type="tns:ArrayOfAppointmentDto" />
+  <xs:complexType name="AppointmentDto">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q8="http://schemas.datacontract.org/2004/07/HeuristicLab.DataAccess" base="q8:PersistableObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="AllDayEvent" type="xs:boolean" />
+          <xs:element minOccurs="0" name="EndDate" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="Recurring" type="xs:boolean" />
+          <xs:element minOccurs="0" name="RecurringId" type="ser:guid" />
+          <xs:element minOccurs="0" name="ResourceId" type="ser:guid" />
+          <xs:element minOccurs="0" name="StartDate" type="xs:dateTime" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="AppointmentDto" nillable="true" type="tns:AppointmentDto" />
 </xs:schema>

@@ -1,33 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:tns="http://tempuri.org/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" name="ClientFacade" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:tns="http://tempuri.org/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" name="clientFacade" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
   <wsp:Policy wsu:Id="NetTcpBinding_IClientFacade_policy">
     <wsp:ExactlyOne>
       <wsp:All>
         <msb:BinaryEncoding xmlns:msb="http://schemas.microsoft.com/ws/06/2004/mspolicy/netbinary1">
         </msb:BinaryEncoding>
-        <sp:TransportBinding xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <wsp:Policy>
-            <sp:TransportToken>
-              <wsp:Policy>
-                <msf:WindowsTransportSecurity xmlns:msf="http://schemas.microsoft.com/ws/2006/05/framing/policy">
-                  <msf:ProtectionLevel>EncryptAndSign</msf:ProtectionLevel>
-                </msf:WindowsTransportSecurity>
-              </wsp:Policy>
-            </sp:TransportToken>
-            <sp:AlgorithmSuite>
-              <wsp:Policy>
-                <sp:Basic256>
-                </sp:Basic256>
-              </wsp:Policy>
-            </sp:AlgorithmSuite>
-            <sp:Layout>
-              <wsp:Policy>
-                <sp:Strict>
-                </sp:Strict>
-              </wsp:Policy>
-            </sp:Layout>
-          </wsp:Policy>
-        </sp:TransportBinding>
         <msf:Streamed xmlns:msf="http://schemas.microsoft.com/ws/2006/05/framing/policy">
         </msf:Streamed>
         <wsaw:UsingAddressing>
@@ -66,12 +43,6 @@
   <wsdl:message name="IClientFacade_SendJob_OutputMessage">
     <wsdl:part name="parameters" element="tns:SendJobResponse" />
   </wsdl:message>
-  <wsdl:message name="IClientFacade_SendSerializedJob_InputMessage">
-    <wsdl:part name="parameters" element="tns:SendSerializedJob" />
-  </wsdl:message>
-  <wsdl:message name="IClientFacade_SendSerializedJob_OutputMessage">
-    <wsdl:part name="parameters" element="tns:SendSerializedJobResponse" />
-  </wsdl:message>
   <wsdl:message name="IClientFacade_StoreFinishedJobResult_InputMessage">
     <wsdl:part name="parameters" element="tns:StoreFinishedJobResult" />
   </wsdl:message>
@@ -101,6 +72,18 @@
   </wsdl:message>
   <wsdl:message name="IClientFacade_SendPlugins_OutputMessage">
     <wsdl:part name="parameters" element="tns:SendPluginsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IClientFacade_GetCalendar_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetCalendar" />
+  </wsdl:message>
+  <wsdl:message name="IClientFacade_GetCalendar_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetCalendarResponse" />
+  </wsdl:message>
+  <wsdl:message name="IClientFacade_SetCalendarStatus_InputMessage">
+    <wsdl:part name="parameters" element="tns:SetCalendarStatus" />
+  </wsdl:message>
+  <wsdl:message name="IClientFacade_SetCalendarStatus_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SetCalendarStatusResponse" />
   </wsdl:message>
   <wsdl:message name="IClientFacade_SendStreamedJob_InputMessage">
     <wsdl:part name="parameters" element="tns:SendStreamedJob" />
@@ -139,10 +122,6 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/SendJob" message="tns:IClientFacade_SendJob_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IClientCommunicator/SendJobResponse" message="tns:IClientFacade_SendJob_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="SendSerializedJob">
-      <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/SendSerializedJob" message="tns:IClientFacade_SendSerializedJob_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IClientCommunicator/SendSerializedJobResponse" message="tns:IClientFacade_SendSerializedJob_OutputMessage" />
-    </wsdl:operation>
     <wsdl:operation name="StoreFinishedJobResult">
       <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/StoreFinishedJobResult" message="tns:IClientFacade_StoreFinishedJobResult_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IClientCommunicator/StoreFinishedJobResultResponse" message="tns:IClientFacade_StoreFinishedJobResult_OutputMessage" />
@@ -162,6 +141,14 @@
     <wsdl:operation name="SendPlugins">
       <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/SendPlugins" message="tns:IClientFacade_SendPlugins_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IClientCommunicator/SendPluginsResponse" message="tns:IClientFacade_SendPlugins_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCalendar">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/GetCalendar" message="tns:IClientFacade_GetCalendar_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientCommunicator/GetCalendarResponse" message="tns:IClientFacade_GetCalendar_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SetCalendarStatus">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/SetCalendarStatus" message="tns:IClientFacade_SetCalendarStatus_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientCommunicator/SetCalendarStatusResponse" message="tns:IClientFacade_SetCalendarStatus_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="SendStreamedJob">
       <wsdl:input wsaw:Action="http://tempuri.org/IClientFacade/SendStreamedJob" message="tns:IClientFacade_SendStreamedJob_InputMessage" />
@@ -204,15 +191,6 @@
     </wsdl:operation>
     <wsdl:operation name="SendJob">
       <soap12:operation soapAction="http://tempuri.org/IClientCommunicator/SendJob" style="document" />
-      <wsdl:input>
-        <soap12:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap12:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="SendSerializedJob">
-      <soap12:operation soapAction="http://tempuri.org/IClientCommunicator/SendSerializedJob" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -265,6 +243,24 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="GetCalendar">
+      <soap12:operation soapAction="http://tempuri.org/IClientCommunicator/GetCalendar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SetCalendarStatus">
+      <soap12:operation soapAction="http://tempuri.org/IClientCommunicator/SetCalendarStatus" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="SendStreamedJob">
       <soap12:operation soapAction="http://tempuri.org/IClientFacade/SendStreamedJob" style="document" />
       <wsdl:input>
@@ -302,14 +298,11 @@
       </wsdl:output>
     </wsdl:operation>
   </wsdl:binding>
-  <wsdl:service name="ClientFacade">
+  <wsdl:service name="clientFacade">
     <wsdl:port name="NetTcpBinding_IClientFacade" binding="tns:NetTcpBinding_IClientFacade">
-      <soap12:address location="net.tcp://10.0.2.15:9000/HiveServer/ClientCommunicator" />
+      <soap12:address location="net.tcp://10.0.0.52:9000/HiveServer/ClientCommunicator" />
       <wsa10:EndpointReference>
-        <wsa10:Address>net.tcp://10.0.2.15:9000/HiveServer/ClientCommunicator</wsa10:Address>
-        <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
-          <Upn>STEFAN-4710DBDB\Stefan</Upn>
-        </Identity>
+        <wsa10:Address>net.tcp://10.0.0.52:9000/HiveServer/ClientCommunicator</wsa10:Address>
       </wsa10:EndpointReference>
     </wsdl:port>
   </wsdl:service>

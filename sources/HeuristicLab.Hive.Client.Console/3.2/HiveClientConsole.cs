@@ -490,6 +490,10 @@ namespace HeuristicLab.Hive.Client.Console
       e.Appointments = Apps;
     }
 
+    private void btnUpdateCalender_Click(object sender, EventArgs e) {
+      clientCommunicator.GetUptimeCalendarAsync();
+    }
+
     private void dvOnline_OnNewAppointment(object sender, NewAppointmentEventArgs e)
     {
       Appointment Appointment = new Appointment();
@@ -670,6 +674,8 @@ namespace HeuristicLab.Hive.Client.Console
     }
 
     #endregion
+
+
 
   }
 }

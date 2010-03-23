@@ -35,11 +35,11 @@ namespace HeuristicLab.Hive.Client.Core.ClientConsoleService {
     }    
 
     public void SetUptimeCalendar(List<Appointment> appointments) {
-      UptimeManager.Instance.Appointments = appointments;
+      UptimeManager.Instance.SetAppointments(true, false, appointments);
     }
 
     public List<Appointment> GetUptimeCalendar() {
-      return UptimeManager.Instance.Appointments;
+      return UptimeManager.Instance.AppContainer.Appointments;
     }
 
     #endregion

@@ -7,6 +7,7 @@ namespace HeuristicLab.Hive.Server.DataAccess {
   public interface IUptimeCalendarDao: IGenericDao<AppointmentDto> {
     IEnumerable<AppointmentDto> GetUptimeCalendarForResource(Guid resourceId);
     void SetUptimeCalendarForResource(Guid resourceId, IEnumerable<AppointmentDto> appointments);
-    
+    void NotifyClientsOfNewCalendar(Guid groupId, bool forcePush);
+    IEnumerable<AppointmentDto> GetCalendarForClient(ClientDto client);
   }
 }

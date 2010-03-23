@@ -135,6 +135,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="Properties\DataSources\HeuristicLab.Hive.Contracts.Response.datasource" />
+    <None Include="Properties\DataSources\HeuristicLab.Hive.Contracts.ResponseCalendar.datasource" />
     <None Include="Properties\DataSources\HeuristicLab.Hive.Contracts.ResponseHB.datasource" />
     <None Include="Properties\DataSources\HeuristicLab.Hive.Contracts.ResponseJob.datasource" />
     <None Include="Properties\DataSources\HeuristicLab.Hive.Contracts.ResponsePlugin.datasource" />

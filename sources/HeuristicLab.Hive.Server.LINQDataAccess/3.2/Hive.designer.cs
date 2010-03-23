@@ -57,15 +57,15 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
     partial void InsertResource(Resource instance);
     partial void UpdateResource(Resource instance);
     partial void DeleteResource(Resource instance);
-    partial void InsertClient(Client instance);
-    partial void UpdateClient(Client instance);
-    partial void DeleteClient(Client instance);
     partial void InsertJob(Job instance);
     partial void UpdateJob(Job instance);
     partial void DeleteJob(Job instance);
     partial void InsertUptimeCalendar(UptimeCalendar instance);
     partial void UpdateUptimeCalendar(UptimeCalendar instance);
     partial void DeleteUptimeCalendar(UptimeCalendar instance);
+    partial void InsertClient(Client instance);
+    partial void UpdateClient(Client instance);
+    partial void DeleteClient(Client instance);
     #endregion
 		
 		public HiveDataContext() : 
@@ -170,14 +170,6 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 			}
 		}
 		
-		public System.Data.Linq.Table<Client> Clients
-		{
-			get
-			{
-				return this.GetTable<Client>();
-			}
-		}
-		
 		public System.Data.Linq.Table<Job> Jobs
 		{
 			get
@@ -191,6 +183,14 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 			get
 			{
 				return this.GetTable<UptimeCalendar>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Client> Clients
+		{
+			get
+			{
+				return this.GetTable<Client>();
 			}
 		}
 	}
@@ -1507,9 +1507,11 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 		
 		private EntitySet<ClientGroup_Resource> _ClientGroup_Resources;
 		
+		private EntitySet<UptimeCalendar> _UptimeCalendars;
+		
 		private EntityRef<Client> _Client;
 		
-		private EntitySet<UptimeCalendar> _UptimeCalendars;
+		private EntityRef<Client> _Client1;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -1526,8 +1528,9 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 			this._AssignedResources = new EntitySet<AssignedResource>(new Action<AssignedResource>(this.attach_AssignedResources), new Action<AssignedResource>(this.detach_AssignedResources));
 			this._ClientGroup = default(EntityRef<ClientGroup>);
 			this._ClientGroup_Resources = new EntitySet<ClientGroup_Resource>(new Action<ClientGroup_Resource>(this.attach_ClientGroup_Resources), new Action<ClientGroup_Resource>(this.detach_ClientGroup_Resources));
-			this._Client = default(EntityRef<Client>);
 			this._UptimeCalendars = new EntitySet<UptimeCalendar>(new Action<UptimeCalendar>(this.attach_UptimeCalendars), new Action<UptimeCalendar>(this.detach_UptimeCalendars));
+			this._Client = default(EntityRef<Client>);
+			this._Client1 = default(EntityRef<Client>);
 			OnCreated();
 		}
 		
@@ -1626,6 +1629,19 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 			}
 		}
 		
+		[Association(Name="Resource_UptimeCalendar", Storage="_UptimeCalendars", ThisKey="ResourceId", OtherKey="ResourceId")]
+		public EntitySet<UptimeCalendar> UptimeCalendars
+		{
+			get
+			{
+				return this._UptimeCalendars;
+			}
+			set
+			{
+				this._UptimeCalendars.Assign(value);
+			}
+		}
+		
 		[Association(Name="Resource_Client", Storage="_Client", ThisKey="ResourceId", OtherKey="ResourceId", IsUnique=true, IsForeignKey=false)]
 		public Client Client
 		{
@@ -1655,16 +1671,32 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 			}
 		}
 		
-		[Association(Name="Resource_UptimeCalendar", Storage="_UptimeCalendars", ThisKey="ResourceId", OtherKey="ResourceId")]
-		public EntitySet<UptimeCalendar> UptimeCalendars
+		[Association(Name="Resource_Client1", Storage="_Client1", ThisKey="ResourceId", OtherKey="ResourceId", IsUnique=true, IsForeignKey=false)]
+		public Client Client1
 		{
 			get
 			{
-				return this._UptimeCalendars;
+				return this._Client1.Entity;
 			}
 			set
 			{
-				this._UptimeCalendars.Assign(value);
+				Client previousValue = this._Client1.Entity;
+				if (((previousValue != value) 
+							|| (this._Client1.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Client1.Entity = null;
+						previousValue.Resource1 = null;
+					}
+					this._Client1.Entity = value;
+					if ((value != null))
+					{
+						value.Resource1 = this;
+					}
+					this.SendPropertyChanged("Client1");
+				}
 			}
 		}
 		
@@ -1725,398 +1757,6 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 		}
 	}
 	
-	[Table(Name="dbo.Client")]
-	public partial class Client : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private System.Guid _ResourceId;
-		
-		private int _CPUSpeed;
-		
-		private int _Memory;
-		
-		private System.DateTime _Login;
-		
-		private string _Status;
-		
-		private System.Nullable<System.Guid> _ClientConfigId;
-		
-		private int _NumberOfCores;
-		
-		private int _NumberOfFreeCores;
-		
-		private int _FreeMemory;
-		
-		private EntitySet<UptimeStatistic> _UptimeStatistics;
-		
-		private EntitySet<Job> _Jobs;
-		
-		private EntityRef<Resource> _Resource;
-		
-		private EntityRef<ClientConfig> _ClientConfig;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnResourceIdChanging(System.Guid value);
-    partial void OnResourceIdChanged();
-    partial void OnCPUSpeedChanging(int value);
-    partial void OnCPUSpeedChanged();
-    partial void OnMemoryChanging(int value);
-    partial void OnMemoryChanged();
-    partial void OnLoginChanging(System.DateTime value);
-    partial void OnLoginChanged();
-    partial void OnStatusChanging(string value);
-    partial void OnStatusChanged();
-    partial void OnClientConfigIdChanging(System.Nullable<System.Guid> value);
-    partial void OnClientConfigIdChanged();
-    partial void OnNumberOfCoresChanging(int value);
-    partial void OnNumberOfCoresChanged();
-    partial void OnNumberOfFreeCoresChanging(int value);
-    partial void OnNumberOfFreeCoresChanged();
-    partial void OnFreeMemoryChanging(int value);
-    partial void OnFreeMemoryChanged();
-    #endregion
-		
-		public Client()
-		{
-			this._UptimeStatistics = new EntitySet<UptimeStatistic>(new Action<UptimeStatistic>(this.attach_UptimeStatistics), new Action<UptimeStatistic>(this.detach_UptimeStatistics));
-			this._Jobs = new EntitySet<Job>(new Action<Job>(this.attach_Jobs), new Action<Job>(this.detach_Jobs));
-			this._Resource = default(EntityRef<Resource>);
-			this._ClientConfig = default(EntityRef<ClientConfig>);
-			OnCreated();
-		}
-		
-		[Column(Storage="_ResourceId", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
-		public System.Guid ResourceId
-		{
-			get
-			{
-				return this._ResourceId;
-			}
-			set
-			{
-				if ((this._ResourceId != value))
-				{
-					if (this._Resource.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnResourceIdChanging(value);
-					this.SendPropertyChanging();
-					this._ResourceId = value;
-					this.SendPropertyChanged("ResourceId");
-					this.OnResourceIdChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_CPUSpeed", DbType="Int NOT NULL")]
-		public int CPUSpeed
-		{
-			get
-			{
-				return this._CPUSpeed;
-			}
-			set
-			{
-				if ((this._CPUSpeed != value))
-				{
-					this.OnCPUSpeedChanging(value);
-					this.SendPropertyChanging();
-					this._CPUSpeed = value;
-					this.SendPropertyChanged("CPUSpeed");
-					this.OnCPUSpeedChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_Memory", DbType="Int NOT NULL")]
-		public int Memory
-		{
-			get
-			{
-				return this._Memory;
-			}
-			set
-			{
-				if ((this._Memory != value))
-				{
-					this.OnMemoryChanging(value);
-					this.SendPropertyChanging();
-					this._Memory = value;
-					this.SendPropertyChanged("Memory");
-					this.OnMemoryChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_Login", DbType="DateTime NOT NULL")]
-		public System.DateTime Login
-		{
-			get
-			{
-				return this._Login;
-			}
-			set
-			{
-				if ((this._Login != value))
-				{
-					this.OnLoginChanging(value);
-					this.SendPropertyChanging();
-					this._Login = value;
-					this.SendPropertyChanged("Login");
-					this.OnLoginChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_Status", DbType="VarChar(MAX)")]
-		public string Status
-		{
-			get
-			{
-				return this._Status;
-			}
-			set
-			{
-				if ((this._Status != value))
-				{
-					this.OnStatusChanging(value);
-					this.SendPropertyChanging();
-					this._Status = value;
-					this.SendPropertyChanged("Status");
-					this.OnStatusChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_ClientConfigId", DbType="UniqueIdentifier")]
-		public System.Nullable<System.Guid> ClientConfigId
-		{
-			get
-			{
-				return this._ClientConfigId;
-			}
-			set
-			{
-				if ((this._ClientConfigId != value))
-				{
-					if (this._ClientConfig.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnClientConfigIdChanging(value);
-					this.SendPropertyChanging();
-					this._ClientConfigId = value;
-					this.SendPropertyChanged("ClientConfigId");
-					this.OnClientConfigIdChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_NumberOfCores", DbType="Int NOT NULL")]
-		public int NumberOfCores
-		{
-			get
-			{
-				return this._NumberOfCores;
-			}
-			set
-			{
-				if ((this._NumberOfCores != value))
-				{
-					this.OnNumberOfCoresChanging(value);
-					this.SendPropertyChanging();
-					this._NumberOfCores = value;
-					this.SendPropertyChanged("NumberOfCores");
-					this.OnNumberOfCoresChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_NumberOfFreeCores", DbType="Int NOT NULL")]
-		public int NumberOfFreeCores
-		{
-			get
-			{
-				return this._NumberOfFreeCores;
-			}
-			set
-			{
-				if ((this._NumberOfFreeCores != value))
-				{
-					this.OnNumberOfFreeCoresChanging(value);
-					this.SendPropertyChanging();
-					this._NumberOfFreeCores = value;
-					this.SendPropertyChanged("NumberOfFreeCores");
-					this.OnNumberOfFreeCoresChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_FreeMemory", DbType="Int NOT NULL")]
-		public int FreeMemory
-		{
-			get
-			{
-				return this._FreeMemory;
-			}
-			set
-			{
-				if ((this._FreeMemory != value))
-				{
-					this.OnFreeMemoryChanging(value);
-					this.SendPropertyChanging();
-					this._FreeMemory = value;
-					this.SendPropertyChanged("FreeMemory");
-					this.OnFreeMemoryChanged();
-				}
-			}
-		}
-		
-		[Association(Name="Client_UptimeStatistic", Storage="_UptimeStatistics", ThisKey="ResourceId", OtherKey="ResourceId")]
-		public EntitySet<UptimeStatistic> UptimeStatistics
-		{
-			get
-			{
-				return this._UptimeStatistics;
-			}
-			set
-			{
-				this._UptimeStatistics.Assign(value);
-			}
-		}
-		
-		[Association(Name="Client_Job", Storage="_Jobs", ThisKey="ResourceId", OtherKey="ResourceId")]
-		public EntitySet<Job> Jobs
-		{
-			get
-			{
-				return this._Jobs;
-			}
-			set
-			{
-				this._Jobs.Assign(value);
-			}
-		}
-		
-		[Association(Name="Resource_Client", Storage="_Resource", ThisKey="ResourceId", OtherKey="ResourceId", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
-		public Resource Resource
-		{
-			get
-			{
-				return this._Resource.Entity;
-			}
-			set
-			{
-				Resource previousValue = this._Resource.Entity;
-				if (((previousValue != value) 
-							|| (this._Resource.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Resource.Entity = null;
-						previousValue.Client = null;
-					}
-					this._Resource.Entity = value;
-					if ((value != null))
-					{
-						value.Client = this;
-						this._ResourceId = value.ResourceId;
-					}
-					else
-					{
-						this._ResourceId = default(System.Guid);
-					}
-					this.SendPropertyChanged("Resource");
-				}
-			}
-		}
-		
-		[Association(Name="ClientConfig_Client", Storage="_ClientConfig", ThisKey="ClientConfigId", OtherKey="ClientConfigId", IsForeignKey=true, DeleteRule="SET NULL")]
-		public ClientConfig ClientConfig
-		{
-			get
-			{
-				return this._ClientConfig.Entity;
-			}
-			set
-			{
-				ClientConfig previousValue = this._ClientConfig.Entity;
-				if (((previousValue != value) 
-							|| (this._ClientConfig.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._ClientConfig.Entity = null;
-						previousValue.Clients.Remove(this);
-					}
-					this._ClientConfig.Entity = value;
-					if ((value != null))
-					{
-						value.Clients.Add(this);
-						this._ClientConfigId = value.ClientConfigId;
-					}
-					else
-					{
-						this._ClientConfigId = default(Nullable<System.Guid>);
-					}
-					this.SendPropertyChanged("ClientConfig");
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-		
-		private void attach_UptimeStatistics(UptimeStatistic entity)
-		{
-			this.SendPropertyChanging();
-			entity.Client = this;
-		}
-		
-		private void detach_UptimeStatistics(UptimeStatistic entity)
-		{
-			this.SendPropertyChanging();
-			entity.Client = null;
-		}
-		
-		private void attach_Jobs(Job entity)
-		{
-			this.SendPropertyChanging();
-			entity.Client = this;
-		}
-		
-		private void detach_Jobs(Job entity)
-		{
-			this.SendPropertyChanging();
-			entity.Client = null;
-		}
-	}
-	
 	[Table(Name="dbo.Job")]
 	public partial class Job : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -2157,11 +1797,11 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 		
 		private EntitySet<Job> _Jobs;
 		
-		private EntityRef<Client> _Client;
-		
 		private EntityRef<Job> _Job1;
 		
 		private EntityRef<Project> _Project;
+		
+		private EntityRef<Client> _Client;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -2202,9 +1842,9 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 			this._AssignedResources = new EntitySet<AssignedResource>(new Action<AssignedResource>(this.attach_AssignedResources), new Action<AssignedResource>(this.detach_AssignedResources));
 			this._RequiredPlugins = new EntitySet<RequiredPlugin>(new Action<RequiredPlugin>(this.attach_RequiredPlugins), new Action<RequiredPlugin>(this.detach_RequiredPlugins));
 			this._Jobs = new EntitySet<Job>(new Action<Job>(this.attach_Jobs), new Action<Job>(this.detach_Jobs));
-			this._Client = default(EntityRef<Client>);
 			this._Job1 = default(EntityRef<Job>);
 			this._Project = default(EntityRef<Project>);
+			this._Client = default(EntityRef<Client>);
 			OnCreated();
 		}
 		
@@ -2316,7 +1956,7 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 			}
 		}
 		
-		[Column(Storage="_SerializedJob", DbType="VarBinary(MAX)", UpdateCheck=UpdateCheck.Never)]
+		[Column(Storage="_SerializedJob", DbType="VarBinary(MAX)", CanBeNull=true, UpdateCheck=UpdateCheck.Never)]
 		public System.Data.Linq.Binary SerializedJob
 		{
 			get
@@ -2539,40 +2179,6 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 			}
 		}
 		
-		[Association(Name="Client_Job", Storage="_Client", ThisKey="ResourceId", OtherKey="ResourceId", IsForeignKey=true, DeleteRule="SET NULL")]
-		public Client Client
-		{
-			get
-			{
-				return this._Client.Entity;
-			}
-			set
-			{
-				Client previousValue = this._Client.Entity;
-				if (((previousValue != value) 
-							|| (this._Client.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Client.Entity = null;
-						previousValue.Jobs.Remove(this);
-					}
-					this._Client.Entity = value;
-					if ((value != null))
-					{
-						value.Jobs.Add(this);
-						this._ResourceId = value.ResourceId;
-					}
-					else
-					{
-						this._ResourceId = default(Nullable<System.Guid>);
-					}
-					this.SendPropertyChanged("Client");
-				}
-			}
-		}
-		
 		[Association(Name="Job_Job", Storage="_Job1", ThisKey="ParentJobId", OtherKey="JobId", IsForeignKey=true)]
 		public Job Job1
 		{
@@ -2637,6 +2243,40 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 						this._ProjectId = default(Nullable<System.Guid>);
 					}
 					this.SendPropertyChanged("Project");
+				}
+			}
+		}
+		
+		[Association(Name="Client_Job", Storage="_Client", ThisKey="ResourceId", OtherKey="ResourceId", IsForeignKey=true, DeleteRule="SET NULL")]
+		public Client Client
+		{
+			get
+			{
+				return this._Client.Entity;
+			}
+			set
+			{
+				Client previousValue = this._Client.Entity;
+				if (((previousValue != value) 
+							|| (this._Client.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Client.Entity = null;
+						previousValue.Jobs.Remove(this);
+					}
+					this._Client.Entity = value;
+					if ((value != null))
+					{
+						value.Jobs.Add(this);
+						this._ResourceId = value.ResourceId;
+					}
+					else
+					{
+						this._ResourceId = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("Client");
 				}
 			}
 		}
@@ -2942,6 +2582,483 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+	}
+	
+	[Table(Name="dbo.Client")]
+	public partial class Client : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _ResourceId;
+		
+		private int _CPUSpeed;
+		
+		private int _Memory;
+		
+		private System.DateTime _Login;
+		
+		private string _Status;
+		
+		private string _CalendarSyncStatus;
+		
+		private System.Nullable<System.Guid> _UseCalendarFromResourceId;
+		
+		private System.Nullable<System.Guid> _ClientConfigId;
+		
+		private int _NumberOfCores;
+		
+		private int _NumberOfFreeCores;
+		
+		private int _FreeMemory;
+		
+		private EntitySet<UptimeStatistic> _UptimeStatistics;
+		
+		private EntitySet<Job> _Jobs;
+		
+		private EntityRef<Resource> _Resource;
+		
+		private EntityRef<Resource> _Resource1;
+		
+		private EntityRef<ClientConfig> _ClientConfig;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnResourceIdChanging(System.Guid value);
+    partial void OnResourceIdChanged();
+    partial void OnCPUSpeedChanging(int value);
+    partial void OnCPUSpeedChanged();
+    partial void OnMemoryChanging(int value);
+    partial void OnMemoryChanged();
+    partial void OnLoginChanging(System.DateTime value);
+    partial void OnLoginChanged();
+    partial void OnStatusChanging(string value);
+    partial void OnStatusChanged();
+    partial void OnCalendarSyncStatusChanging(string value);
+    partial void OnCalendarSyncStatusChanged();
+    partial void OnUseCalendarFromResourceIdChanging(System.Nullable<System.Guid> value);
+    partial void OnUseCalendarFromResourceIdChanged();
+    partial void OnClientConfigIdChanging(System.Nullable<System.Guid> value);
+    partial void OnClientConfigIdChanged();
+    partial void OnNumberOfCoresChanging(int value);
+    partial void OnNumberOfCoresChanged();
+    partial void OnNumberOfFreeCoresChanging(int value);
+    partial void OnNumberOfFreeCoresChanged();
+    partial void OnFreeMemoryChanging(int value);
+    partial void OnFreeMemoryChanged();
+    #endregion
+		
+		public Client()
+		{
+			this._UptimeStatistics = new EntitySet<UptimeStatistic>(new Action<UptimeStatistic>(this.attach_UptimeStatistics), new Action<UptimeStatistic>(this.detach_UptimeStatistics));
+			this._Jobs = new EntitySet<Job>(new Action<Job>(this.attach_Jobs), new Action<Job>(this.detach_Jobs));
+			this._Resource = default(EntityRef<Resource>);
+			this._Resource1 = default(EntityRef<Resource>);
+			this._ClientConfig = default(EntityRef<ClientConfig>);
+			OnCreated();
+		}
+		
+		[Column(Storage="_ResourceId", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid ResourceId
+		{
+			get
+			{
+				return this._ResourceId;
+			}
+			set
+			{
+				if ((this._ResourceId != value))
+				{
+					if (this._Resource.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnResourceIdChanging(value);
+					this.SendPropertyChanging();
+					this._ResourceId = value;
+					this.SendPropertyChanged("ResourceId");
+					this.OnResourceIdChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_CPUSpeed", DbType="Int NOT NULL")]
+		public int CPUSpeed
+		{
+			get
+			{
+				return this._CPUSpeed;
+			}
+			set
+			{
+				if ((this._CPUSpeed != value))
+				{
+					this.OnCPUSpeedChanging(value);
+					this.SendPropertyChanging();
+					this._CPUSpeed = value;
+					this.SendPropertyChanged("CPUSpeed");
+					this.OnCPUSpeedChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_Memory", DbType="Int NOT NULL")]
+		public int Memory
+		{
+			get
+			{
+				return this._Memory;
+			}
+			set
+			{
+				if ((this._Memory != value))
+				{
+					this.OnMemoryChanging(value);
+					this.SendPropertyChanging();
+					this._Memory = value;
+					this.SendPropertyChanged("Memory");
+					this.OnMemoryChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_Login", DbType="DateTime NOT NULL")]
+		public System.DateTime Login
+		{
+			get
+			{
+				return this._Login;
+			}
+			set
+			{
+				if ((this._Login != value))
+				{
+					this.OnLoginChanging(value);
+					this.SendPropertyChanging();
+					this._Login = value;
+					this.SendPropertyChanged("Login");
+					this.OnLoginChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_Status", DbType="VarChar(MAX)")]
+		public string Status
+		{
+			get
+			{
+				return this._Status;
+			}
+			set
+			{
+				if ((this._Status != value))
+				{
+					this.OnStatusChanging(value);
+					this.SendPropertyChanging();
+					this._Status = value;
+					this.SendPropertyChanged("Status");
+					this.OnStatusChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_CalendarSyncStatus", DbType="VarChar(MAX)")]
+		public string CalendarSyncStatus
+		{
+			get
+			{
+				return this._CalendarSyncStatus;
+			}
+			set
+			{
+				if ((this._CalendarSyncStatus != value))
+				{
+					this.OnCalendarSyncStatusChanging(value);
+					this.SendPropertyChanging();
+					this._CalendarSyncStatus = value;
+					this.SendPropertyChanged("CalendarSyncStatus");
+					this.OnCalendarSyncStatusChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_UseCalendarFromResourceId", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> UseCalendarFromResourceId
+		{
+			get
+			{
+				return this._UseCalendarFromResourceId;
+			}
+			set
+			{
+				if ((this._UseCalendarFromResourceId != value))
+				{
+					this.OnUseCalendarFromResourceIdChanging(value);
+					this.SendPropertyChanging();
+					this._UseCalendarFromResourceId = value;
+					this.SendPropertyChanged("UseCalendarFromResourceId");
+					this.OnUseCalendarFromResourceIdChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_ClientConfigId", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> ClientConfigId
+		{
+			get
+			{
+				return this._ClientConfigId;
+			}
+			set
+			{
+				if ((this._ClientConfigId != value))
+				{
+					if (this._ClientConfig.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnClientConfigIdChanging(value);
+					this.SendPropertyChanging();
+					this._ClientConfigId = value;
+					this.SendPropertyChanged("ClientConfigId");
+					this.OnClientConfigIdChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_NumberOfCores", DbType="Int NOT NULL")]
+		public int NumberOfCores
+		{
+			get
+			{
+				return this._NumberOfCores;
+			}
+			set
+			{
+				if ((this._NumberOfCores != value))
+				{
+					this.OnNumberOfCoresChanging(value);
+					this.SendPropertyChanging();
+					this._NumberOfCores = value;
+					this.SendPropertyChanged("NumberOfCores");
+					this.OnNumberOfCoresChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_NumberOfFreeCores", DbType="Int NOT NULL")]
+		public int NumberOfFreeCores
+		{
+			get
+			{
+				return this._NumberOfFreeCores;
+			}
+			set
+			{
+				if ((this._NumberOfFreeCores != value))
+				{
+					this.OnNumberOfFreeCoresChanging(value);
+					this.SendPropertyChanging();
+					this._NumberOfFreeCores = value;
+					this.SendPropertyChanged("NumberOfFreeCores");
+					this.OnNumberOfFreeCoresChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_FreeMemory", DbType="Int NOT NULL")]
+		public int FreeMemory
+		{
+			get
+			{
+				return this._FreeMemory;
+			}
+			set
+			{
+				if ((this._FreeMemory != value))
+				{
+					this.OnFreeMemoryChanging(value);
+					this.SendPropertyChanging();
+					this._FreeMemory = value;
+					this.SendPropertyChanged("FreeMemory");
+					this.OnFreeMemoryChanged();
+				}
+			}
+		}
+		
+		[Association(Name="Client_UptimeStatistic", Storage="_UptimeStatistics", ThisKey="ResourceId", OtherKey="ResourceId")]
+		public EntitySet<UptimeStatistic> UptimeStatistics
+		{
+			get
+			{
+				return this._UptimeStatistics;
+			}
+			set
+			{
+				this._UptimeStatistics.Assign(value);
+			}
+		}
+		
+		[Association(Name="Client_Job", Storage="_Jobs", ThisKey="ResourceId", OtherKey="ResourceId")]
+		public EntitySet<Job> Jobs
+		{
+			get
+			{
+				return this._Jobs;
+			}
+			set
+			{
+				this._Jobs.Assign(value);
+			}
+		}
+		
+		[Association(Name="Resource_Client", Storage="_Resource", ThisKey="ResourceId", OtherKey="ResourceId", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
+		public Resource Resource
+		{
+			get
+			{
+				return this._Resource.Entity;
+			}
+			set
+			{
+				Resource previousValue = this._Resource.Entity;
+				if (((previousValue != value) 
+							|| (this._Resource.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Resource.Entity = null;
+						previousValue.Client = null;
+					}
+					this._Resource.Entity = value;
+					if ((value != null))
+					{
+						value.Client = this;
+						this._ResourceId = value.ResourceId;
+					}
+					else
+					{
+						this._ResourceId = default(System.Guid);
+					}
+					this.SendPropertyChanged("Resource");
+				}
+			}
+		}
+		
+		[Association(Name="Resource_Client1", Storage="_Resource1", ThisKey="ResourceId", OtherKey="ResourceId", IsForeignKey=true)]
+		public Resource Resource1
+		{
+			get
+			{
+				return this._Resource1.Entity;
+			}
+			set
+			{
+				Resource previousValue = this._Resource1.Entity;
+				if (((previousValue != value) 
+							|| (this._Resource1.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Resource1.Entity = null;
+						previousValue.Client1 = null;
+					}
+					this._Resource1.Entity = value;
+					if ((value != null))
+					{
+						value.Client1 = this;
+						this._ResourceId = value.ResourceId;
+					}
+					else
+					{
+						this._ResourceId = default(System.Guid);
+					}
+					this.SendPropertyChanged("Resource1");
+				}
+			}
+		}
+		
+		[Association(Name="ClientConfig_Client", Storage="_ClientConfig", ThisKey="ClientConfigId", OtherKey="ClientConfigId", IsForeignKey=true, DeleteRule="SET NULL")]
+		public ClientConfig ClientConfig
+		{
+			get
+			{
+				return this._ClientConfig.Entity;
+			}
+			set
+			{
+				ClientConfig previousValue = this._ClientConfig.Entity;
+				if (((previousValue != value) 
+							|| (this._ClientConfig.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._ClientConfig.Entity = null;
+						previousValue.Clients.Remove(this);
+					}
+					this._ClientConfig.Entity = value;
+					if ((value != null))
+					{
+						value.Clients.Add(this);
+						this._ClientConfigId = value.ClientConfigId;
+					}
+					else
+					{
+						this._ClientConfigId = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("ClientConfig");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_UptimeStatistics(UptimeStatistic entity)
+		{
+			this.SendPropertyChanging();
+			entity.Client = this;
+		}
+		
+		private void detach_UptimeStatistics(UptimeStatistic entity)
+		{
+			this.SendPropertyChanging();
+			entity.Client = null;
+		}
+		
+		private void attach_Jobs(Job entity)
+		{
+			this.SendPropertyChanging();
+			entity.Client = this;
+		}
+		
+		private void detach_Jobs(Job entity)
+		{
+			this.SendPropertyChanging();
+			entity.Client = null;
 		}
 	}
 }

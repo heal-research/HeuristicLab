@@ -17,19 +17,19 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="net.tcp://10.0.2.15:9000/HiveServer/mex" Protocol="mex" SourceId="1" />
+    <MetadataSource Address="net.tcp://10.0.0.52:9000/HiveServer/mex" Protocol="mex" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="service1.wsdl" MetadataType="Wsdl" ID="67311a7a-922b-4675-a2bb-10ab57a84034" SourceId="1" SourceUrl="net.tcp://10.0.2.15:9000/HiveServer/mex" />
-    <MetadataFile FileName="service2.xsd" MetadataType="Schema" ID="b77a19d5-7c1f-453c-aab7-0899e51523ec" SourceId="1" SourceUrl="net.tcp://10.0.2.15:9000/HiveServer/mex" />
-    <MetadataFile FileName="service3.xsd" MetadataType="Schema" ID="f44e3d38-15e3-439c-87ef-f1fa9333bc3b" SourceId="1" SourceUrl="net.tcp://10.0.2.15:9000/HiveServer/mex" />
-    <MetadataFile FileName="HeuristicLab.Hive.Contracts.BusinessObjects1.xsd" MetadataType="Schema" ID="770b7a79-ce79-43dc-9a74-d3343aa63612" SourceId="1" SourceUrl="net.tcp://10.0.2.15:9000/HiveServer/mex" />
-    <MetadataFile FileName="HeuristicLab.DataAccess1.xsd" MetadataType="Schema" ID="fbac237d-3ab8-487d-af6c-0fe4280cfdf3" SourceId="1" SourceUrl="net.tcp://10.0.2.15:9000/HiveServer/mex" />
-    <MetadataFile FileName="HeuristicLab.Hive.Contracts1.xsd" MetadataType="Schema" ID="27f1b8eb-5d07-4ef1-949c-4d57e10b1301" SourceId="1" SourceUrl="net.tcp://10.0.2.15:9000/HiveServer/mex" />
-    <MetadataFile FileName="Arrays1.xsd" MetadataType="Schema" ID="17721bf1-192c-413b-9514-a9f214b3ae25" SourceId="1" SourceUrl="net.tcp://10.0.2.15:9000/HiveServer/mex" />
-    <MetadataFile FileName="System1.xsd" MetadataType="Schema" ID="69764c0a-dc15-4450-8089-3f7127023a79" SourceId="1" SourceUrl="net.tcp://10.0.2.15:9000/HiveServer/mex" />
-    <MetadataFile FileName="HeuristicLab.PluginInfrastructure2.xsd" MetadataType="Schema" ID="92730854-6687-4242-99b1-ce6d8282968e" SourceId="1" SourceUrl="net.tcp://10.0.2.15:9000/HiveServer/mex" />
-    <MetadataFile FileName="Message1.xsd" MetadataType="Schema" ID="34654b8c-c376-4952-82c5-7a7ea739b2bd" SourceId="1" SourceUrl="net.tcp://10.0.2.15:9000/HiveServer/mex" />
+    <MetadataFile FileName="service1.wsdl" MetadataType="Wsdl" ID="43f7abbb-1069-4460-b195-ca2cfad87502" SourceId="1" SourceUrl="net.tcp://10.0.0.52:9000/HiveServer/mex" />
+    <MetadataFile FileName="service2.xsd" MetadataType="Schema" ID="09a3b5fd-0200-4134-8cb5-ff0716494b94" SourceId="1" SourceUrl="net.tcp://10.0.0.52:9000/HiveServer/mex" />
+    <MetadataFile FileName="service3.xsd" MetadataType="Schema" ID="18c6d1c6-fb6b-4748-9cfb-e28ad6f1f524" SourceId="1" SourceUrl="net.tcp://10.0.0.52:9000/HiveServer/mex" />
+    <MetadataFile FileName="HeuristicLab.Hive.Contracts.BusinessObjects1.xsd" MetadataType="Schema" ID="f18d1d1a-53c9-43d9-8667-1e3d3c309a26" SourceId="1" SourceUrl="net.tcp://10.0.0.52:9000/HiveServer/mex" />
+    <MetadataFile FileName="HeuristicLab.DataAccess1.xsd" MetadataType="Schema" ID="8e533766-2123-4ac5-8c82-b952d5fb6f93" SourceId="1" SourceUrl="net.tcp://10.0.0.52:9000/HiveServer/mex" />
+    <MetadataFile FileName="HeuristicLab.Hive.Contracts1.xsd" MetadataType="Schema" ID="a9f321b3-f525-4e81-8c9a-45f99e4add67" SourceId="1" SourceUrl="net.tcp://10.0.0.52:9000/HiveServer/mex" />
+    <MetadataFile FileName="Arrays1.xsd" MetadataType="Schema" ID="bf61ad21-e8ff-49de-984d-bc1d09a4b367" SourceId="1" SourceUrl="net.tcp://10.0.0.52:9000/HiveServer/mex" />
+    <MetadataFile FileName="System1.xsd" MetadataType="Schema" ID="49213872-cd85-42dc-a191-d1db4c0681e6" SourceId="1" SourceUrl="net.tcp://10.0.0.52:9000/HiveServer/mex" />
+    <MetadataFile FileName="HeuristicLab.PluginInfrastructure2.xsd" MetadataType="Schema" ID="dd25c7c9-6881-4201-927d-11dada59c94e" SourceId="1" SourceUrl="net.tcp://10.0.0.52:9000/HiveServer/mex" />
+    <MetadataFile FileName="Message1.xsd" MetadataType="Schema" ID="e6a864c6-eb46-42ab-a431-2ac11273fb64" SourceId="1" SourceUrl="net.tcp://10.0.0.52:9000/HiveServer/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
