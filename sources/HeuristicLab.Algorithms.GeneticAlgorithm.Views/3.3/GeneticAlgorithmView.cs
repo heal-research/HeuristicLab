@@ -26,25 +26,25 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm.Views {
   /// <summary>
   /// The base class for visual representations of items.
   /// </summary>
-  [View("SGA View")]
-  [Content(typeof(SGA), true)]
-  public sealed partial class SGAView : EngineAlgorithmView {
-    public new SGA Content {
-      get { return (SGA)base.Content; }
+  [View("Genetic Algorithm View")]
+  [Content(typeof(GeneticAlgorithm), true)]
+  public sealed partial class GeneticAlgorithmView : EngineAlgorithmView {
+    public new GeneticAlgorithm Content {
+      get { return (GeneticAlgorithm)base.Content; }
       set { base.Content = value; }
     }
 
     /// <summary>
     /// Initializes a new instance of <see cref="ItemBaseView"/>.
     /// </summary>
-    public SGAView() {
+    public GeneticAlgorithmView() {
       InitializeComponent();
     }
     /// <summary>
     /// Intializes a new instance of <see cref="ItemBaseView"/> with the given <paramref name="item"/>.
     /// </summary>
     /// <param name="item">The item that should be displayed.</param>
-    public SGAView(SGA content)
+    public GeneticAlgorithmView(GeneticAlgorithm content)
       : this() {
       Content = content;
     }

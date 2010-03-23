@@ -84,13 +84,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HeuristicLabAlgorithmsGeneticAlgorithmViewsPlugin.cs" />
-    <Compile Include="SGAView.cs">
+    <Compile Include="GeneticAlgorithmView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="SGAView.Designer.cs">
-      <DependentUpon>SGAView.cs</DependentUpon>
+    <Compile Include="GeneticAlgorithmView.Designer.cs">
+      <DependentUpon>GeneticAlgorithmView.cs</DependentUpon>
     </Compile>
+    <Compile Include="HeuristicLabAlgorithmsGeneticAlgorithmViewsPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -33,12 +33,12 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Algorithms.GeneticAlgorithm {
   /// <summary>
-  /// A standard genetic algorithm.
+  /// A genetic algorithm.
   /// </summary>
-  [Item("SGA", "A standard genetic algorithm.")]
+  [Item("Genetic Algorithm", "A genetic algorithm.")]
   [Creatable("Algorithms")]
   [StorableClass]
-  public sealed class SGA : EngineAlgorithm {
+  public sealed class GeneticAlgorithm : EngineAlgorithm {
     #region Problem Properties
     public override Type ProblemType {
       get { return typeof(ISingleObjectiveProblem); }
@@ -122,8 +122,8 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     private SolutionsCreator SolutionsCreator {
       get { return (SolutionsCreator)RandomCreator.Successor; }
     }
-    private SGAMainLoop SGAMainLoop {
-      get { return (SGAMainLoop)SolutionsCreator.Successor; }
+    private GeneticAlgorithmMainLoop GeneticAlgorithmMainLoop {
+      get { return (GeneticAlgorithmMainLoop)SolutionsCreator.Successor; }
     }
     private List<ISelector> selectors;
     private IEnumerable<ISelector> Selectors {
@@ -131,7 +131,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     }
     #endregion
 
-    public SGA()
+    public GeneticAlgorithm()
       : base() {
       Parameters.Add(new ValueParameter<IntValue>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
       Parameters.Add(new ValueParameter<BoolValue>("SetSeedRandomly", "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
@@ -145,7 +145,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
 
       RandomCreator randomCreator = new RandomCreator();
       SolutionsCreator solutionsCreator = new SolutionsCreator();
-      SGAMainLoop sgaMainLoop = new SGAMainLoop();
+      GeneticAlgorithmMainLoop geneticAlgorithmMainLoop = new GeneticAlgorithmMainLoop();
       OperatorGraph.InitialOperator = randomCreator;
 
       randomCreator.RandomParameter.ActualName = "Random";
@@ -156,24 +156,24 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       randomCreator.Successor = solutionsCreator;
 
       solutionsCreator.NumberOfSolutionsParameter.ActualName = PopulationSizeParameter.Name;
-      solutionsCreator.Successor = sgaMainLoop;
+      solutionsCreator.Successor = geneticAlgorithmMainLoop;
 
-      sgaMainLoop.SelectorParameter.ActualName = SelectorParameter.Name;
-      sgaMainLoop.CrossoverParameter.ActualName = CrossoverParameter.Name;
-      sgaMainLoop.ElitesParameter.ActualName = ElitesParameter.Name;
-      sgaMainLoop.MaximumGenerationsParameter.ActualName = MaximumGenerationsParameter.Name;
-      sgaMainLoop.MutatorParameter.ActualName = MutatorParameter.Name;
-      sgaMainLoop.MutationProbabilityParameter.ActualName = MutationProbabilityParameter.Name;
-      sgaMainLoop.RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
-      sgaMainLoop.ResultsParameter.ActualName = "Results";
+      geneticAlgorithmMainLoop.SelectorParameter.ActualName = SelectorParameter.Name;
+      geneticAlgorithmMainLoop.CrossoverParameter.ActualName = CrossoverParameter.Name;
+      geneticAlgorithmMainLoop.ElitesParameter.ActualName = ElitesParameter.Name;
+      geneticAlgorithmMainLoop.MaximumGenerationsParameter.ActualName = MaximumGenerationsParameter.Name;
+      geneticAlgorithmMainLoop.MutatorParameter.ActualName = MutatorParameter.Name;
+      geneticAlgorithmMainLoop.MutationProbabilityParameter.ActualName = MutationProbabilityParameter.Name;
+      geneticAlgorithmMainLoop.RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
+      geneticAlgorithmMainLoop.ResultsParameter.ActualName = "Results";
 
       Initialze();
     }
     [StorableConstructor]
-    private SGA(bool deserializing) : base() { }
+    private GeneticAlgorithm(bool deserializing) : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      SGA clone = (SGA)base.Clone(cloner);
+      GeneticAlgorithm clone = (GeneticAlgorithm)base.Clone(cloner);
       clone.Initialze();
       return clone;
     }
@@ -192,7 +192,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       ParameterizeStochasticOperator(Problem.Visualizer);
       foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
       ParameterizeSolutionsCreator();
-      ParameterizeSGAMainLoop();
+      ParameterizeGeneticAlgorithmMainLoop();
       ParameterizeSelectors();
       UpdateCrossovers();
       UpdateMutators();
@@ -209,14 +209,14 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     protected override void Problem_EvaluatorChanged(object sender, EventArgs e) {
       ParameterizeStochasticOperator(Problem.Evaluator);
       ParameterizeSolutionsCreator();
-      ParameterizeSGAMainLoop();
+      ParameterizeGeneticAlgorithmMainLoop();
       ParameterizeSelectors();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.Problem_EvaluatorChanged(sender, e);
     }
     protected override void Problem_VisualizerChanged(object sender, EventArgs e) {
       ParameterizeStochasticOperator(Problem.Visualizer);
-      ParameterizeSGAMainLoop();
+      ParameterizeGeneticAlgorithmMainLoop();
       if (Problem.Visualizer != null) Problem.Visualizer.VisualizationParameter.ActualNameChanged += new EventHandler(Visualizer_VisualizationParameter_ActualNameChanged);
       base.Problem_VisualizerChanged(sender, e);
     }
@@ -241,11 +241,11 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       ParameterizeSelectors();
     }
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
-      ParameterizeSGAMainLoop();
+      ParameterizeGeneticAlgorithmMainLoop();
       ParameterizeSelectors();
     }
     private void Visualizer_VisualizationParameter_ActualNameChanged(object sender, EventArgs e) {
-      ParameterizeSGAMainLoop();
+      ParameterizeGeneticAlgorithmMainLoop();
     }
     #endregion
 
@@ -270,14 +270,14 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       SolutionsCreator.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
       SolutionsCreator.SolutionCreatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
     }
-    private void ParameterizeSGAMainLoop() {
-      SGAMainLoop.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
-      SGAMainLoop.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
-      SGAMainLoop.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
-      SGAMainLoop.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
-      SGAMainLoop.VisualizerParameter.ActualName = Problem.VisualizerParameter.Name;
+    private void ParameterizeGeneticAlgorithmMainLoop() {
+      GeneticAlgorithmMainLoop.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
+      GeneticAlgorithmMainLoop.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
+      GeneticAlgorithmMainLoop.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
+      GeneticAlgorithmMainLoop.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
+      GeneticAlgorithmMainLoop.VisualizerParameter.ActualName = Problem.VisualizerParameter.Name;
       if (Problem.Visualizer != null)
-        SGAMainLoop.VisualizationParameter.ActualName = Problem.Visualizer.VisualizationParameter.ActualName;
+        GeneticAlgorithmMainLoop.VisualizationParameter.ActualName = Problem.Visualizer.VisualizationParameter.ActualName;
     }
     private void ParameterizeStochasticOperator(IOperator op) {
       if (op is IStochasticOperator)

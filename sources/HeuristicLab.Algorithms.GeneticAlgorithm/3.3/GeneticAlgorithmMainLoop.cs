@@ -30,11 +30,11 @@ using HeuristicLab.Selection;
 
 namespace HeuristicLab.Algorithms.GeneticAlgorithm {
   /// <summary>
-  /// An operator which represents the main loop of a standard genetic algorithm (SGA).
+  /// An operator which represents the main loop of a genetic algorithm.
   /// </summary>
-  [Item("SGAMainLoop", "An operator which represents the main loop of a standard genetic algorithm (SGA).")]
+  [Item("GeneticAlgorithmMainLoop", "An operator which represents the main loop of a genetic algorithm.")]
   [StorableClass]
-  public sealed class SGAMainLoop : AlgorithmOperator {
+  public sealed class GeneticAlgorithmMainLoop : AlgorithmOperator {
     #region Parameter properties
     public ValueLookupParameter<IRandom> RandomParameter {
       get { return (ValueLookupParameter<IRandom>)Parameters["Random"]; }
@@ -88,8 +88,8 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     #endregion
 
     [StorableConstructor]
-    private SGAMainLoop(bool deserializing) : base() { }
-    public SGAMainLoop()
+    private GeneticAlgorithmMainLoop(bool deserializing) : base() { }
+    public GeneticAlgorithmMainLoop()
       : base() {
       Initialize();
     }
@@ -110,7 +110,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The variable collection where results should be stored."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Visualizer", "The operator used to visualize solutions."));
       Parameters.Add(new LookupParameter<IItem>("Visualization", "The item which represents the visualization of solutions."));
-      Parameters.Add(new ScopeParameter("CurrentScope", "The current scope which represents a population of solutions on which the SGA should be applied."));
+      Parameters.Add(new ScopeParameter("CurrentScope", "The current scope which represents a population of solutions on which the genetic algorithm should be applied."));
       #endregion
 
       #region Create operators

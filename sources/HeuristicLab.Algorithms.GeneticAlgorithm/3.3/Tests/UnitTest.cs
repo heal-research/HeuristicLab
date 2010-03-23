@@ -79,24 +79,24 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm_33.Tests {
     private Exception ex;
 
     [TestMethod]
-    [DeploymentItem(@"SGA.hl")]
-    public void SGAPerformanceTest() {
+    [DeploymentItem(@"GeneticAlgorithm.hl")]
+    public void GeneticAlgorithmPerformanceTest() {
       ex = null;
-      IAlgorithm sga = (IAlgorithm)XmlParser.Deserialize("SGA.hl");
-      sga.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(sga_ExceptionOccurred);
-      sga.Stopped += new EventHandler(sga_Stopped);
-      sga.Prepare();
-      sga.Start();
+      IAlgorithm ga = (IAlgorithm)XmlParser.Deserialize("GeneticAlgorithm.hl");
+      ga.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(ga_ExceptionOccurred);
+      ga.Stopped += new EventHandler(ga_Stopped);
+      ga.Prepare();
+      ga.Start();
       trigger.WaitOne();
-      TestContext.WriteLine("Runtime: {0}", sga.ExecutionTime.ToString());
+      TestContext.WriteLine("Runtime: {0}", ga.ExecutionTime.ToString());
       if (ex != null) throw ex;
     }
 
-    private void sga_ExceptionOccurred(object sender, EventArgs<Exception> e) {
+    private void ga_ExceptionOccurred(object sender, EventArgs<Exception> e) {
       ex = e.Value;
     }
 
-    private void sga_Stopped(object sender, EventArgs e) {
+    private void ga_Stopped(object sender, EventArgs e) {
       trigger.Set();
     }
   }

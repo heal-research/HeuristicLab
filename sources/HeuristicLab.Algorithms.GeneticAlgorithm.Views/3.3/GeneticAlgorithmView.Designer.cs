@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Algorithms.GeneticAlgorithm.Views {
-  partial class SGAView {
+  partial class GeneticAlgorithmView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -142,11 +142,11 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm.Views {
       // 
       this.descriptionTextBox.Size = new System.Drawing.Size(672, 20);
       // 
-      // SGAView
+      // GeneticAlgorithmView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Name = "SGAView";
+      this.Name = "GeneticAlgorithmView";
       this.Size = new System.Drawing.Size(744, 576);
       this.engineTabPage.ResumeLayout(false);
       this.engineTabPage.PerformLayout();
