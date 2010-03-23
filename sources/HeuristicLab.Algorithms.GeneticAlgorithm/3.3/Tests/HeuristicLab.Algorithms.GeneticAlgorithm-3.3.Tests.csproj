@@ -155,7 +155,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="GeneticAlgorithm.hl" />
+    <None Include="GeneticAlgorithm.hl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

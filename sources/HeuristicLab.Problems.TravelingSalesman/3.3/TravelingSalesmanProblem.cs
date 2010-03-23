@@ -293,10 +293,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
 
     private void InitializeOperators() {
       operators = new List<IPermutationOperator>();
-      if (ApplicationManager.Manager != null) {
-        operators.AddRange(ApplicationManager.Manager.GetInstances<IPermutationOperator>());
-        ParameterizeOperators();
-      }
+      if (ApplicationManager.Manager != null) operators.AddRange(ApplicationManager.Manager.GetInstances<IPermutationOperator>());
+      ParameterizeOperators();
       InitializeMoveGenerators();
     }
     private void InitializeMoveGenerators() {
