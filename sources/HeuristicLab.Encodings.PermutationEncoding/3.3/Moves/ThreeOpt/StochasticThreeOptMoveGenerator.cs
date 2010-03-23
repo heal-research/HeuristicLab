@@ -29,12 +29,12 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("StochasticThreeOptMoveGenerator", "Randomly samples n from all possible 3-opt moves from a given permutation.")]
   [StorableClass]
-  public class StochasticThreeOptMoveGenerator : ThreeOptMoveGenerator, IStochasticOperator {
+  public class StochasticThreeOptMultiMoveGenerator : ThreeOptMoveGenerator, IStochasticOperator, IMultiMoveGenerator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
-    private ValueLookupParameter<IntValue> SampleSizeParameter {
-      get { return (ValueLookupParameter<IntValue>)Parameters["SampleSize"]; }
+    public IValueLookupParameter<IntValue> SampleSizeParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters["SampleSize"]; }
     }
 
     public IntValue SampleSize {
@@ -42,7 +42,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       set { SampleSizeParameter.Value = value; }
     }
 
-    public StochasticThreeOptMoveGenerator()
+    public StochasticThreeOptMultiMoveGenerator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator."));
       Parameters.Add(new ValueLookupParameter<IntValue>("SampleSize", "The number of moves to generate."));
@@ -50,20 +50,16 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
 
     public static ThreeOptMove[] Apply(Permutation permutation, IRandom random, int sampleSize) {
       int length = permutation.Length;
-      /*int totalMoves = (length) * (length - 1) / 2 - 3;
-      // FIXME: Remove this comment if ExhaustiveThreeOptMoveGenerator exists, otherwise alter the exception message below.
-      if (sampleSize >= totalMoves) throw new InvalidOperationException("StochasticThreeOptMoveGenerator: Sample size (" + sampleSize + ") is larger than the set of all possible moves (" + totalMoves + "), use the ExhaustiveThreeOptMoveGenerator instead.");
-      */
       ThreeOptMove[] moves = new ThreeOptMove[sampleSize];
       for (int i = 0; i < sampleSize; i++) {
         int index1, index2, index3;
-        do {
-          index1 = random.Next(length - 1);
-          index2 = random.Next(index1 + 1, length);
-        } while (index2 - index1 == length - 1);
-        do {
-          index3 = random.Next(length);
-        } while (index1 <= index3 && index3 <= index2 + 1);
+        index1 = random.Next(length - 1);
+        index2 = random.Next(index1 + 1, length);
+        index3 = length - index2 + index1 - 1;  // get insertion point in remaining part
+        if (index3 > 0)
+          index3 = random.Next(index3);
+        else
+          index3 = 0;
         moves[i] = new ThreeOptMove(index1, index2, index3);
       }
       return moves;

@@ -86,6 +86,8 @@
     <Compile Include="Evaluators\TSPEuclideanPathEvaluator.cs" />
     <Compile Include="Evaluators\TSPGeoPathEvaluator.cs" />
     <Compile Include="HeuristicLabProblemsTravelingSalesmanPlugin.cs" />
+    <Compile Include="MoveEvaluators\ThreeOptMoveTSPCoordinatesPathEvaluator.cs" />
+    <Compile Include="MoveEvaluators\ThreeOptMoveTSPRoundedEuclideanPathEvaluator.cs" />
     <Compile Include="TravelingSalesmanProblem.cs" />
     <Compile Include="TSPLIBTourParser.cs" />
     <Compile Include="Interfaces\ICoordinatesTSPSolutionsVisualizer.cs" />

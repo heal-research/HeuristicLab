@@ -40,7 +40,6 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     /// <param name="random">The random number generator.</param>
     /// <param name="permutation">The permutation array to manipulate.</param>
     public static void Apply(IRandom random, Permutation permutation) {
-      Permutation original = (Permutation)permutation.Clone();
       int breakPoint1, breakPoint2, insertPoint, insertPointLimit;
 
       breakPoint1 = random.Next(permutation.Length - 1);
@@ -50,6 +49,12 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
         insertPoint = random.Next(insertPointLimit);
       else
         insertPoint = 0;
+
+      Apply(permutation, breakPoint1, breakPoint2, insertPoint);
+    }
+
+    public static void Apply(Permutation permutation, int breakPoint1, int breakPoint2, int insertPoint) {
+      Permutation original = (Permutation)permutation.Clone();
 
       int i = 0;  // index in new permutation
       int j = 0;  // index in old permutation
