@@ -85,6 +85,7 @@ namespace HeuristicLab.Optimizer {
       this.itemsListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.nameColumnHeader,
             this.descriptioncolumnHeader});
+      this.itemsListView.FullRowSelect = true;
       this.itemsListView.HideSelection = false;
       this.itemsListView.Location = new System.Drawing.Point(12, 12);
       this.itemsListView.MultiSelect = false;

@@ -44,7 +44,16 @@ namespace HeuristicLab.Optimizer {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
       this.showStartPageCheckBox = new System.Windows.Forms.CheckBox();
+      this.firstStepsRichTextBox = new System.Windows.Forms.RichTextBox();
+      this.titleLabel = new System.Windows.Forms.Label();
+      this.samplesGroupBox = new System.Windows.Forms.GroupBox();
+      this.samplesListView = new System.Windows.Forms.ListView();
+      this.nameColumnHeader = new System.Windows.Forms.ColumnHeader();
+      this.descriptionColumnHeader = new System.Windows.Forms.ColumnHeader();
+      this.imageList = new System.Windows.Forms.ImageList(this.components);
+      this.samplesGroupBox.SuspendLayout();
       this.SuspendLayout();
       // 
       // showStartPageCheckBox
@@ -52,21 +61,100 @@ namespace HeuristicLab.Optimizer {
       this.showStartPageCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.showStartPageCheckBox.AutoSize = true;
       this.showStartPageCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-      this.showStartPageCheckBox.Location = new System.Drawing.Point(3, 262);
+      this.showStartPageCheckBox.Location = new System.Drawing.Point(3, 491);
       this.showStartPageCheckBox.Name = "showStartPageCheckBox";
       this.showStartPageCheckBox.Size = new System.Drawing.Size(158, 17);
-      this.showStartPageCheckBox.TabIndex = 0;
+      this.showStartPageCheckBox.TabIndex = 3;
       this.showStartPageCheckBox.Text = "Show Start Page on Startup";
       this.showStartPageCheckBox.UseVisualStyleBackColor = true;
       this.showStartPageCheckBox.CheckedChanged += new System.EventHandler(this.showStartPageCheckBox_CheckedChanged);
+      // 
+      // firstStepsRichTextBox
+      // 
+      this.firstStepsRichTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.firstStepsRichTextBox.BackColor = System.Drawing.SystemColors.Control;
+      this.firstStepsRichTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+      this.firstStepsRichTextBox.Cursor = System.Windows.Forms.Cursors.Arrow;
+      this.firstStepsRichTextBox.Location = new System.Drawing.Point(3, 33);
+      this.firstStepsRichTextBox.Name = "firstStepsRichTextBox";
+      this.firstStepsRichTextBox.ReadOnly = true;
+      this.firstStepsRichTextBox.Size = new System.Drawing.Size(815, 268);
+      this.firstStepsRichTextBox.TabIndex = 1;
+      this.firstStepsRichTextBox.Text = "First Steps";
+      this.firstStepsRichTextBox.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.firstStepsRichTextBox_LinkClicked);
+      // 
+      // titleLabel
+      // 
+      this.titleLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.titleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.titleLabel.Location = new System.Drawing.Point(3, 0);
+      this.titleLabel.Name = "titleLabel";
+      this.titleLabel.Size = new System.Drawing.Size(815, 30);
+      this.titleLabel.TabIndex = 0;
+      this.titleLabel.Text = "Title";
+      this.titleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      // 
+      // samplesGroupBox
+      // 
+      this.samplesGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.samplesGroupBox.Controls.Add(this.samplesListView);
+      this.samplesGroupBox.Location = new System.Drawing.Point(3, 307);
+      this.samplesGroupBox.Name = "samplesGroupBox";
+      this.samplesGroupBox.Size = new System.Drawing.Size(815, 178);
+      this.samplesGroupBox.TabIndex = 2;
+      this.samplesGroupBox.TabStop = false;
+      this.samplesGroupBox.Text = "Samples";
+      // 
+      // samplesListView
+      // 
+      this.samplesListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.nameColumnHeader,
+            this.descriptionColumnHeader});
+      this.samplesListView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.samplesListView.FullRowSelect = true;
+      this.samplesListView.Location = new System.Drawing.Point(3, 16);
+      this.samplesListView.MultiSelect = false;
+      this.samplesListView.Name = "samplesListView";
+      this.samplesListView.ShowItemToolTips = true;
+      this.samplesListView.Size = new System.Drawing.Size(809, 159);
+      this.samplesListView.SmallImageList = this.imageList;
+      this.samplesListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
+      this.samplesListView.TabIndex = 0;
+      this.samplesListView.UseCompatibleStateImageBehavior = false;
+      this.samplesListView.View = System.Windows.Forms.View.Details;
+      this.samplesListView.DoubleClick += new System.EventHandler(this.samplesListView_DoubleClick);
+      // 
+      // nameColumnHeader
+      // 
+      this.nameColumnHeader.Text = "Name";
+      this.nameColumnHeader.Width = 150;
+      // 
+      // descriptionColumnHeader
+      // 
+      this.descriptionColumnHeader.Text = "Description";
+      this.descriptionColumnHeader.Width = 300;
+      // 
+      // imageList
+      // 
+      this.imageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+      this.imageList.ImageSize = new System.Drawing.Size(16, 16);
+      this.imageList.TransparentColor = System.Drawing.Color.Transparent;
       // 
       // StartPage
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.firstStepsRichTextBox);
+      this.Controls.Add(this.samplesGroupBox);
+      this.Controls.Add(this.titleLabel);
       this.Controls.Add(this.showStartPageCheckBox);
       this.Name = "StartPage";
-      this.Size = new System.Drawing.Size(508, 282);
+      this.Size = new System.Drawing.Size(821, 511);
+      this.samplesGroupBox.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -75,5 +163,12 @@ namespace HeuristicLab.Optimizer {
     #endregion
 
     private System.Windows.Forms.CheckBox showStartPageCheckBox;
+    private System.Windows.Forms.RichTextBox firstStepsRichTextBox;
+    private System.Windows.Forms.Label titleLabel;
+    private System.Windows.Forms.GroupBox samplesGroupBox;
+    private System.Windows.Forms.ListView samplesListView;
+    private System.Windows.Forms.ColumnHeader nameColumnHeader;
+    private System.Windows.Forms.ImageList imageList;
+    private System.Windows.Forms.ColumnHeader descriptionColumnHeader;
   }
 }
