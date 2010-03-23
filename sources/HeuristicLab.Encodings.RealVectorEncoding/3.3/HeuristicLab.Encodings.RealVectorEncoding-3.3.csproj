@@ -106,6 +106,9 @@
     <Compile Include="Interfaces\IRealVectorBoundsChecker.cs" />
     <Compile Include="Interfaces\IRealVectorMoveGenerator.cs" />
     <Compile Include="Interfaces\IRealVectorMoveOperator.cs" />
+    <Compile Include="Moves\AdditiveMoveTabuAttribute.cs" />
+    <Compile Include="Moves\AdditiveTabuMoveEvaluator.cs" />
+    <Compile Include="Moves\AdditiveTabuMoveMaker.cs" />
     <Compile Include="Moves\Polynomial\StochasticPolynomialMultiMoveGenerator.cs" />
     <Compile Include="Moves\AdditiveMoveMaker.cs" />
     <Compile Include="Moves\AdditiveMove.cs" />
