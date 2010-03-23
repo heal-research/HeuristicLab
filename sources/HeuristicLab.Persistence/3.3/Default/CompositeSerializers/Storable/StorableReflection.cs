@@ -41,10 +41,9 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       return DisentangleNameMapping(storableMembers);
     }
 
-    public static bool IsEmptyOrStorableType(Type type, bool recusrive) {
-      if (IsEmptyType(type, recusrive)) return true;
-      if (!HasStorableClassAttribute(type)) return false;
-      return !recusrive || type.BaseType == null || IsEmptyOrStorableType(type.BaseType, true);
+    public static bool IsEmptyOrStorableType(Type type, bool recursive) {      
+      if (!HasStorableClassAttribute(type) && !IsEmptyType(type, false)) return false;
+      return !recursive || type.BaseType == null || IsEmptyOrStorableType(type.BaseType, true);
     }
 
     public static IEnumerable<MethodInfo> CollectHooks(HookType hookType, Type type) {
@@ -76,7 +75,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     private static void AddAll(Type type, MemberTypes memberTypes, List<StorableMemberInfo> storableMembers) {
       foreach (MemberInfo memberInfo in type.GetMembers(DECLARED_INSTANCE_MEMBERS)) {
         if ((memberInfo.MemberType & memberTypes) == memberInfo.MemberType &&
-            !memberInfo.Name.StartsWith("<") && 
+            !memberInfo.Name.StartsWith("<") &&
             !memberInfo.Name.EndsWith("k__BackingField"))
           storableMembers.Add(new StorableMemberInfo(memberInfo));
       }
@@ -132,7 +131,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       return (StorableClassAttribute)type
         .GetCustomAttributes(typeof(StorableClassAttribute), false)
         .SingleOrDefault();
-    }    
+    }
 
     private static bool HasStorableClassAttribute(Type type) {
       return type.GetCustomAttributes(typeof(StorableClassAttribute), false).Length > 0;
@@ -151,7 +150,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
 
     private static bool IsModifiableMember(MemberInfo memberInfo) {
       return memberInfo.MemberType == MemberTypes.Field && IsModifiableField((FieldInfo)memberInfo) ||
-                memberInfo.MemberType == MemberTypes.Property && IsModifiableProperty((PropertyInfo)memberInfo);
+             memberInfo.MemberType == MemberTypes.Property && IsModifiableProperty((PropertyInfo)memberInfo);
     }
 
     private static bool IsModifiableField(FieldInfo fi) {
