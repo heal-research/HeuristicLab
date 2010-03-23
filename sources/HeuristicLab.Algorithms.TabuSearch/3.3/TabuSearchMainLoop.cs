@@ -130,12 +130,16 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       SubScopesSorter moveQualitySorter = new SubScopesSorter();
       BestAverageWorstQualityCalculator bestAverageWorstMoveQualityCalculator = new BestAverageWorstQualityCalculator();
       TabuSelector tabuSelector = new TabuSelector();
+      ConditionalBranch emptyNeighborhoodBranch1 = new ConditionalBranch();
       RightReducer rightReducer = new RightReducer();
       UniformSubScopesProcessor moveMakingProcessor = new UniformSubScopesProcessor();
       Placeholder tabuMoveMaker = new Placeholder();
       Placeholder moveMaker = new Placeholder();
       DataTableValuesCollector valuesCollector = new DataTableValuesCollector();
-      SubScopesRemover subScopesRemover = new SubScopesRemover();
+      SubScopesRemover subScopesRemover1 = new SubScopesRemover();
+      ConditionalBranch emptyNeighborhoodBranch2 = new ConditionalBranch();
+      UniformSubScopesProcessor removeMoves = new UniformSubScopesProcessor();
+      SubScopesRemover subScopesRemover2 = new SubScopesRemover();
       IntCounter iterationsCounter = new IntCounter();
       Comparator iterationsComparator = new Comparator();
       BestQualityMemorizer bestQualityMemorizer3 = new BestQualityMemorizer();
@@ -149,6 +153,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("Average Move Quality", new DoubleValue(0)));
       variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("Worst Move Quality", new DoubleValue(0)));
       variableCreator.CollectedValues.Add(new ValueParameter<DataTable>("MoveQualities", new DataTable("MoveQualities")));
+      variableCreator.CollectedValues.Add(new ValueParameter<BoolValue>("EmptyNeighborhood", new BoolValue(false)));
 
       bestQualityMemorizer1.BestQualityParameter.ActualName = "BestQuality";
       bestQualityMemorizer1.MaximizationParameter.ActualName = MaximizationParameter.Name;
@@ -205,13 +210,21 @@ namespace HeuristicLab.Algorithms.TabuSearch {
 
       moveMakingProcessor.Name = "MoveMaking processor (UniformSubScopesProcessor)";
 
+      emptyNeighborhoodBranch1.Name = "Neighborhood empty?";
+      emptyNeighborhoodBranch1.ConditionParameter.ActualName = "EmptyNeighborhood";
+
       tabuMoveMaker.Name = "TabuMoveMaker (placeholder)";
       tabuMoveMaker.OperatorParameter.ActualName = TabuMoveMakerParameter.Name;
 
       moveMaker.Name = "MoveMaker (placeholder)";
       moveMaker.OperatorParameter.ActualName = MoveMakerParameter.Name;
 
-      subScopesRemover.RemoveAllSubScopes = true;
+      subScopesRemover1.RemoveAllSubScopes = true;
+
+      emptyNeighborhoodBranch2.Name = "Neighborhood empty?";
+      emptyNeighborhoodBranch2.ConditionParameter.ActualName = "EmptyNeighborhood";
+
+      subScopesRemover2.RemoveAllSubScopes = true;
 
       iterationsCounter.Name = "Iterations Counter";
       iterationsCounter.Increment = new IntValue(1);
@@ -253,7 +266,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       visualizer1.Successor = resultsCollector;
       resultsCollector.Successor = mainProcessor;
       mainProcessor.Operator = moveGenerator;
-      mainProcessor.Successor = iterationsCounter;
+      mainProcessor.Successor = emptyNeighborhoodBranch2;
       moveGenerator.Successor = moveEvaluationProcessor;
       moveEvaluationProcessor.Operator = moveEvaluator;
       moveEvaluationProcessor.Successor = moveQualitySorter;
@@ -262,13 +275,22 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       moveQualitySorter.Successor = bestAverageWorstMoveQualityCalculator;
       bestAverageWorstMoveQualityCalculator.Successor = valuesCollector;
       valuesCollector.Successor = tabuSelector;
-      tabuSelector.Successor = rightReducer;
+      tabuSelector.Successor = emptyNeighborhoodBranch1;
+      emptyNeighborhoodBranch1.FalseBranch = rightReducer;
+      emptyNeighborhoodBranch1.TrueBranch = null;
+      emptyNeighborhoodBranch1.Successor = null;
       rightReducer.Successor = moveMakingProcessor;
       moveMakingProcessor.Operator = tabuMoveMaker;
-      moveMakingProcessor.Successor = subScopesRemover;
+      moveMakingProcessor.Successor = subScopesRemover1;
       tabuMoveMaker.Successor = moveMaker;
       moveMaker.Successor = null;
-      subScopesRemover.Successor = null;
+      subScopesRemover1.Successor = null;
+      emptyNeighborhoodBranch2.FalseBranch = iterationsCounter;
+      emptyNeighborhoodBranch2.TrueBranch = removeMoves;
+      emptyNeighborhoodBranch2.Successor = null;
+      removeMoves.Operator = subScopesRemover2;
+      removeMoves.Successor = null;
+      subScopesRemover2.Successor = null;
       iterationsCounter.Successor = iterationsComparator;
       iterationsComparator.Successor = bestQualityMemorizer3;
       bestQualityMemorizer3.Successor = bestQualityMemorizer4;
