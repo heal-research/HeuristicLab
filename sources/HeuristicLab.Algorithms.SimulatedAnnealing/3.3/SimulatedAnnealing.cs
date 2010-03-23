@@ -34,6 +34,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Algorithms.SimulatedAnnealing {
   [Item("Simulated Annealing", "A simulated annealing algorithm.")]
   [Creatable("Algorithms")]
+  [StorableClass]
   public sealed class SimulatedAnnealing : EngineAlgorithm {
     #region Problem Properties
     public override Type ProblemType {

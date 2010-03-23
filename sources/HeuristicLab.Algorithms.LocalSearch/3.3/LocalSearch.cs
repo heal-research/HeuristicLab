@@ -34,6 +34,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Algorithms.LocalSearch {
   [Item("LocalSearch", "A local search algorithm.")]
   [Creatable("Algorithms")]
+  [StorableClass]
   public sealed class LocalSearch : EngineAlgorithm {
     #region Problem Properties
     public override Type ProblemType {

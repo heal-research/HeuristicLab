@@ -34,6 +34,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Algorithms.TabuSearch {
   [Item("TabuSearch", "A tabu search algorithm.")]
   [Creatable("Algorithms")]
+  [StorableClass]
   public sealed class TabuSearch : EngineAlgorithm {
     #region Problem Properties
     public override Type ProblemType {
