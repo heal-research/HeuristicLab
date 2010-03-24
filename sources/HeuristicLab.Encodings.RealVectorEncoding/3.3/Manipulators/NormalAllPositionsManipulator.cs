@@ -35,22 +35,22 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// It is implemented as described in Beyer, H.-G. and Schwefel, H.-P. 2002. Evolution Strategies - A Comprehensive Introduction Natural Computing, 1, pp. 3-52.<br/>
   /// The strategy vector can be of smaller length than the solution vector, in which case values are taken from the beginning again once the end of the strategy vector is reached.
   /// </remarks>
-  [Item("SelfAdaptiveNormalAllPositionsManipulator", "This manipulation operator adds a value sigma_i * N(0,1) to the current value in each position i. The values for sigma_i are taken from the strategy vector. It is implemented as described in Beyer, H.-G. and Schwefel, H.-P. 2002. Evolution Strategies - A Comprehensive Introduction Natural Computing, 1, pp. 3-52.")]
+  [Item("NormalAllPositionsManipulator", "This manipulation operator adds a value sigma_i * N(0,1) to the current value in each position i. The values for sigma_i are taken from the strategy vector, if there are less elements in the strategy vector than positions, then the strategy vector is cycled. It is implemented as described in Beyer, H.-G. and Schwefel, H.-P. 2002. Evolution Strategies - A Comprehensive Introduction Natural Computing, 1, pp. 3-52.")]
   [StorableClass]
-  public class SelfAdaptiveNormalAllPositionsManipulator : RealVectorManipulator {
+  public class NormalAllPositionsManipulator : RealVectorManipulator {
     /// <summary>
     /// Parameter for the strategy vector.
     /// </summary>
-    public LookupParameter<RealVector> StrategyVectorParameter {
-      get { return (LookupParameter<RealVector>)Parameters["StrategyVector"]; }
+    public ValueLookupParameter<RealVector> StrategyVectorParameter {
+      get { return (ValueLookupParameter<RealVector>)Parameters["StrategyVector"]; }
     }
     /// <summary>
-    /// Initializes a new instance of <see cref="SelfAdaptiveNormalAllPositionsManipulator"/> with one
+    /// Initializes a new instance of <see cref="NormalAllPositionsManipulator"/> with one
     /// parameter (<c>StrategyVector</c>).
     /// </summary>
-    public SelfAdaptiveNormalAllPositionsManipulator()
+    public NormalAllPositionsManipulator()
       : base() {
-      Parameters.Add(new LookupParameter<RealVector>("StrategyVector", "The vector containing the endogenous strategy parameters."));
+      Parameters.Add(new ValueLookupParameter<RealVector>("StrategyVector", "The vector containing the endogenous strategy parameters."));
     }
 
     /// <summary>
@@ -76,7 +76,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// <param name="random">The random number generator.</param>
     /// <param name="realVector">The vector of real values that is manipulated.</param>
     protected override void Manipulate(IRandom random, RealVector realVector) {
-      if (StrategyVectorParameter.ActualValue == null) throw new InvalidOperationException("SelfAdaptiveNormalAllPositionsManipulator: Parameter " + StrategyVectorParameter.ActualName + " could not be found.");
+      if (StrategyVectorParameter.ActualValue == null) throw new InvalidOperationException("NormalAllPositionsManipulator: The strategy vector parameter could not be found and does not have an associated value.");
       Apply(random, realVector, StrategyVectorParameter.ActualValue);
     }
   }

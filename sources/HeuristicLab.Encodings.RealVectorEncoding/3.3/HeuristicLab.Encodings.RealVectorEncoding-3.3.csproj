@@ -106,14 +106,15 @@
     <Compile Include="Interfaces\IRealVectorBoundsChecker.cs" />
     <Compile Include="Interfaces\IRealVectorMoveGenerator.cs" />
     <Compile Include="Interfaces\IRealVectorMoveOperator.cs" />
+    <Compile Include="Manipulators\NormalAllPositionsManipulator.cs" />
     <Compile Include="Moves\AdditiveMoveTabuAttribute.cs" />
     <Compile Include="Moves\AdditiveTabuMoveEvaluator.cs" />
     <Compile Include="Moves\AdditiveTabuMoveMaker.cs" />
-    <Compile Include="Moves\Polynomial\StochasticNormalMultiMoveGenerator.cs" />
-    <Compile Include="Moves\Polynomial\StochasticPolynomialMultiMoveGenerator.cs" />
     <Compile Include="Moves\AdditiveMoveMaker.cs" />
     <Compile Include="Moves\AdditiveMove.cs" />
     <Compile Include="Moves\AdditiveMoveGenerator.cs" />
+    <Compile Include="Moves\StochasticNormalMultiMoveGenerator.cs" />
+    <Compile Include="Moves\StochasticPolynomialMultiMoveGenerator.cs" />
     <Compile Include="RealVector.cs" />
     <Compile Include="Manipulators\BreederGeneticAlgorithmManipulator.cs" />
     <Compile Include="Manipulators\PolynomialAllPositionManipulator.cs" />
@@ -122,7 +123,6 @@
     </Compile>
     <Compile Include="Manipulators\MichalewiczNonUniformOnePositionManipulator.cs" />
     <Compile Include="Manipulators\PolynomialOnePositionManipulator.cs" />
-    <Compile Include="Manipulators\SelfAdaptiveNormalAllPositionsManipulator.cs" />
     <Compile Include="Manipulators\UniformOnePositionManipulator.cs" />
     <None Include="HeuristicLab.snk" />
     <None Include="HeuristicLabEncodingsRealVectorEncodingPlugin.cs.frame" />
