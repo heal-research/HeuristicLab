@@ -74,6 +74,7 @@ namespace HeuristicLab.Core.Views {
 
     private void Initialize() {
       viewsLabel.Visible = false;
+      viewsLabel.Enabled = false;
       viewContextMenuStrip.Enabled = false;
       messageLabel.Visible = false;
 
@@ -86,7 +87,8 @@ namespace HeuristicLab.Core.Views {
           messageLabel.Visible = true;
         } else {
           viewsLabel.Visible = true;
-          viewContextMenuStrip.Enabled = true;
+          viewsLabel.Enabled = viewContextMenuStrip.Items.Count > 1;
+          viewContextMenuStrip.Enabled = viewContextMenuStrip.Items.Count > 1; ;
         }
 
         if (!ViewCanShowContent(viewType, Content)) {
