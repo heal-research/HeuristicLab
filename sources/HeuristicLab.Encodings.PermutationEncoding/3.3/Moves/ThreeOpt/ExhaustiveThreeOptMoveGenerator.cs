@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -22,31 +22,34 @@
 using System;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Problems.TravelingSalesman {
-  /// <summary>
-  /// A base class for operators which evaluate TSP solutions.
-  /// </summary>
-  [Item("TSPMoveEvaluator", "A base class for operators which evaluate TSP moves.")]
+namespace HeuristicLab.Encodings.PermutationEncoding {
+  [Item("ExhaustiveThreeOptMoveGenerator", "Generates all possible 3-opt moves from a given permutation.")]
   [StorableClass]
-  public abstract class TSPMoveEvaluator : SingleSuccessorOperator, ITSPMoveEvaluator, IMoveOperator {
-    public abstract Type EvaluatorType { get; }
-
-    public ILookupParameter<DoubleValue> QualityParameter {
-      get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
+  public class ExhaustiveThreeOptMoveGenerator : ThreeOptMoveGenerator, IExhaustiveMoveGenerator {
+    public static ThreeOptMove[] Apply(Permutation permutation) {
+      int length = permutation.Length;
+      ThreeOptMove[] moves = new ThreeOptMove[sampleSize];
+      for (int i = 0; i < sampleSize; i++) {
+        int index1, index2, index3;
+        index1 = random.Next(length - 1);
+        do {
+          index2 = random.Next(index1 + 1, length);
+        } while (index2 - index1 >= length - 2);
+        do {
+          index3 = random.Next(length - index2 + index1 - 1);
+        } while (index3 == index1);
+        
+        moves[i] = new ThreeOptMove(index1, index2, index3);
+      }
+      return moves;
     }
-    public ILookupParameter<DoubleValue> MoveQualityParameter {
-      get { return (ILookupParameter<DoubleValue>)Parameters["MoveQuality"]; }
-    }
 
-    protected TSPMoveEvaluator()
-      : base() {
-      Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of a TSP solution."));
-      Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The evaluated quality of a move on a TSP solution."));
+    protected override ThreeOptMove[] GenerateMoves(Permutation permutation) {
+      return Apply(permutation);
     }
   }
 }

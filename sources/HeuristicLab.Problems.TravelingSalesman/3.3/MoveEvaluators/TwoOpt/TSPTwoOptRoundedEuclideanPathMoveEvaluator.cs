@@ -19,21 +19,21 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Operators;
-using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using System;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
   /// An operator to evaluate 2-opt moves.
   /// </summary>
-  [Item("TwoOptMoveTSPRoundedEuclideanPathEvaluator", "Evaluates a 2-opt move (rounded euclidean distances) by summing up the length of all added edges and subtracting the length of all deleted edges.")]
+  [Item("TSPTwoOptRoundedEuclideanPathMoveEvaluator", "Operator for evaluating a 2-opt move based on rounded euclidean distances.")]
   [StorableClass]
-  public class TwoOptMoveTSPRoundedEuclideanPathEvaluator : TwoOptMoveTSPCoordinatesPathEvaluator {
+  public class TSPTwoOptRoundedEuclideanPathMoveEvaluator : TSPTwoOptPathMoveEvaluator {
+    public override Type EvaluatorType {
+      get { return typeof(TSPRoundedEuclideanPathEvaluator); }
+    }
+
     protected override double CalculateDistance(double x1, double y1, double x2, double y2) {
       return Math.Round(Math.Sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)));
     }

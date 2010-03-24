@@ -27,7 +27,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
-  [Item("StochasticThreeOptMoveGenerator", "Randomly samples n from all possible 3-opt moves from a given permutation.")]
+  [Item("StochasticThreeOptMultiMoveGenerator", "Randomly samples n from all possible 3-opt moves from a given permutation.")]
   [StorableClass]
   public class StochasticThreeOptMultiMoveGenerator : ThreeOptMoveGenerator, IStochasticOperator, IMultiMoveGenerator {
     public ILookupParameter<IRandom> RandomParameter {
@@ -54,12 +54,13 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       for (int i = 0; i < sampleSize; i++) {
         int index1, index2, index3;
         index1 = random.Next(length - 1);
-        index2 = random.Next(index1 + 1, length);
-        index3 = length - index2 + index1 - 1;  // get insertion point in remaining part
-        if (index3 > 0)
-          index3 = random.Next(index3);
-        else
-          index3 = 0;
+        do {
+          index2 = random.Next(index1, length);
+        } while (index2 - index1 >= length - 2);
+        do {
+          index3 = random.Next(length - index2 + index1 - 1);
+        } while (index3 == index1);
+        
         moves[i] = new ThreeOptMove(index1, index2, index3);
       }
       return moves;

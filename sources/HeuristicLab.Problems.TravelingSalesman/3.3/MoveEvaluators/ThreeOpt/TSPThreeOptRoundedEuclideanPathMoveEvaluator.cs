@@ -19,13 +19,23 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Optimization;
 using System;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
-  public interface ITSPMoveEvaluator : ISingleObjectiveMoveEvaluator, IMoveOperator {
-    Type EvaluatorType { get; }
+  /// <summary>
+  /// An operator to evaluate 3-opt moves.
+  /// </summary>
+  [Item("TSPThreeOptRoundedEuclideanPathMoveEvaluator", "Operator for evaluating a 3-opt move based on rounded euclidean distances.")]
+  [StorableClass]
+  public class TSPThreeOptRoundedEuclideanPathMoveEvaluator : TSPThreeOptPathMoveEvaluator {
+    public override Type EvaluatorType {
+      get { return typeof(TSPRoundedEuclideanPathEvaluator); }
+    }
+
+    protected override double CalculateDistance(double x1, double y1, double x2, double y2) {
+      return Math.Round(Math.Sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)));
+    }
   }
 }

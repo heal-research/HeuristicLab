@@ -86,8 +86,13 @@
     <Compile Include="Evaluators\TSPEuclideanPathEvaluator.cs" />
     <Compile Include="Evaluators\TSPGeoPathEvaluator.cs" />
     <Compile Include="HeuristicLabProblemsTravelingSalesmanPlugin.cs" />
-    <Compile Include="MoveEvaluators\ThreeOptMoveTSPCoordinatesPathEvaluator.cs" />
-    <Compile Include="MoveEvaluators\ThreeOptMoveTSPRoundedEuclideanPathEvaluator.cs" />
+    <Compile Include="MoveEvaluators\ThreeOpt\TSPThreeOptRoundedEuclideanPathMoveEvaluator.cs" />
+    <Compile Include="MoveEvaluators\ThreeOpt\TSPThreeOptEuclideanPathMoveEvaluator.cs" />
+    <Compile Include="MoveEvaluators\ThreeOpt\TSPThreeOptGeoPathMoveEvaluator.cs" />
+    <Compile Include="MoveEvaluators\TwoOpt\TSPTwoOptEuclideanPathMoveEvaluator.cs" />
+    <Compile Include="MoveEvaluators\TwoOpt\TSPTwoOptGeoPathMoveEvaluator.cs" />
+    <Compile Include="MoveEvaluators\TwoOpt\TSPTwoOptPathMoveEvaluator.cs" />
+    <Compile Include="MoveEvaluators\TwoOpt\TSPTwoOptRoundedEuclideanPathMoveEvaluator.cs" />
     <Compile Include="TravelingSalesmanProblem.cs" />
     <Compile Include="TSPLIBTourParser.cs" />
     <Compile Include="Interfaces\ICoordinatesTSPSolutionsVisualizer.cs" />
@@ -103,12 +108,9 @@
     <Compile Include="Interfaces\ITSPMoveEvaluator.cs" />
     <Compile Include="Interfaces\ITSPPathEvaluator.cs" />
     <Compile Include="Interfaces\ITSPPathMoveEvaluator.cs" />
-    <Compile Include="MoveEvaluators\TwoOptMoveTSPRoundedEuclideanPathEvaluator.cs" />
+    <Compile Include="MoveEvaluators\ThreeOpt\TSPThreeOptPathMoveEvaluator.cs" />
     <Compile Include="MoveEvaluators\TSPPathMoveEvaluator.cs" />
     <Compile Include="MoveEvaluators\TSPMoveEvaluator.cs" />
-    <Compile Include="MoveEvaluators\TwoOptMoveTSPCoordinatesPathEvaluator.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="TSPLIBParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

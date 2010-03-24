@@ -107,9 +107,12 @@
     <Compile Include="Manipulators\TranslocationInversionManipulator.cs" />
     <Compile Include="Manipulators\TranslocationManipulator.cs" />
     <Compile Include="Moves\ThreeIndexMove.cs" />
+    <Compile Include="Moves\ThreeOpt\StochasticThreeOptMultiMoveGenerator.cs" />
     <Compile Include="Moves\ThreeOpt\ThreeOptMove.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Moves\ThreeOpt\ThreeOptMoveGenerator.cs" />
+    <Compile Include="Moves\ThreeOpt\ThreeOptMoveMaker.cs" />
     <Compile Include="Moves\TwoOpt\PreventReaddTwoOptTabuMoveEvaluator.cs" />
     <Compile Include="Moves\TwoOpt\StochasticTwoOptSingleMoveGenerator.cs" />
     <Compile Include="Moves\TwoOpt\ExhaustiveTwoOptMoveGenerator.cs">

@@ -251,12 +251,9 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
     private void InitializeOperators() {
       operators = new List<IOperator>();
-      if (ApplicationManager.Manager != null) {
-        foreach (IRealVectorOperator op in ApplicationManager.Manager.GetInstances<IRealVectorOperator>())
-          operators.Add(op);
-        UpdateMoveEvaluators();
-        ParameterizeOperators();
-      }
+      if (ApplicationManager.Manager != null) operators.AddRange(ApplicationManager.Manager.GetInstances<IRealVectorOperator>().Cast<IOperator>());
+      UpdateMoveEvaluators();
+      ParameterizeOperators();
       InitializeMoveGenerators();
     }
     private void InitializeMoveGenerators() {

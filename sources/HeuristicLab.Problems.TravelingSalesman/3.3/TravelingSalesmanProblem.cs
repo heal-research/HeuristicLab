@@ -252,6 +252,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     private void EvaluatorParameter_ValueChanged(object sender, EventArgs e) {
       Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       ParameterizeEvaluator();
+      UpdateMoveEvaluators();
       ParameterizeVisualizer();
       ClearDistanceMatrix();
       OnEvaluatorChanged();
@@ -295,6 +296,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       operators = new List<IPermutationOperator>();
       if (ApplicationManager.Manager != null) operators.AddRange(ApplicationManager.Manager.GetInstances<IPermutationOperator>());
       ParameterizeOperators();
+      UpdateMoveEvaluators();
       InitializeMoveGenerators();
     }
     private void InitializeMoveGenerators() {
@@ -307,6 +309,18 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         if (op is IMoveGenerator) {
           op.ThreeOptMoveParameter.ActualNameChanged += new EventHandler(MoveGenerator_ThreeOptMoveParameter_ActualNameChanged);
         }
+      }
+    }
+    private void UpdateMoveEvaluators() {
+      if (ApplicationManager.Manager != null) {
+        foreach (ITSPPathMoveEvaluator op in Operators.OfType<ITSPPathMoveEvaluator>().ToList())
+          operators.Remove(op);
+        foreach (ITSPPathMoveEvaluator op in ApplicationManager.Manager.GetInstances<ITSPPathMoveEvaluator>())
+          if (op.EvaluatorType == Evaluator.GetType()) {
+            operators.Add(op);
+          }
+        ParameterizeOperators();
+        OnOperatorsChanged();
       }
     }
     private void ParameterizeSolutionCreator() {
@@ -346,6 +360,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         op.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
         op.DistanceMatrixParameter.ActualName = DistanceMatrixParameter.Name;
         op.UseDistanceMatrixParameter.ActualName = UseDistanceMatrixParameter.Name;
+        op.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
+        op.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
       }
     }
 

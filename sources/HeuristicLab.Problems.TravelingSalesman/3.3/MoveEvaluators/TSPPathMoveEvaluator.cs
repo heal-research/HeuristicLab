@@ -53,5 +53,36 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       Parameters.Add(new LookupParameter<DoubleMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
       Parameters.Add(new LookupParameter<BoolValue>("UseDistanceMatrix", "True if a distance matrix should be calculated (if it does not exist already) and used for evaluation, otherwise false."));
     }
+
+    public override IOperation Apply() {
+      Permutation permutation = PermutationParameter.ActualValue;
+      DoubleMatrix coordinates = CoordinatesParameter.ActualValue;
+      double relativeQualityDifference = 0;
+      if (UseDistanceMatrixParameter.ActualValue.Value) {
+        DoubleMatrix distanceMatrix = DistanceMatrixParameter.ActualValue;
+        if (distanceMatrix == null) {
+          distanceMatrix = CalculateDistanceMatrix(coordinates);
+          DistanceMatrixParameter.ActualValue = distanceMatrix;
+        }
+        relativeQualityDifference = EvaluateByDistanceMatrix(permutation, distanceMatrix);
+      } else relativeQualityDifference = EvaluateByCoordinates(permutation, coordinates);
+      DoubleValue moveQuality = MoveQualityParameter.ActualValue;
+      if (moveQuality == null) MoveQualityParameter.ActualValue = new DoubleValue(QualityParameter.ActualValue.Value + relativeQualityDifference);
+      else moveQuality.Value = QualityParameter.ActualValue.Value + relativeQualityDifference;
+      return base.Apply();
+    }
+
+    protected abstract double CalculateDistance(double x1, double y1, double x2, double y2);
+    protected abstract double EvaluateByDistanceMatrix(Permutation permutation, DoubleMatrix distanceMatrix);
+    protected abstract double EvaluateByCoordinates(Permutation permutation, DoubleMatrix coordinates);
+
+    private DoubleMatrix CalculateDistanceMatrix(DoubleMatrix c) {
+      DoubleMatrix distanceMatrix = new DoubleMatrix(c.Rows, c.Rows);
+      for (int i = 0; i < distanceMatrix.Rows; i++) {
+        for (int j = 0; j < distanceMatrix.Columns; j++)
+          distanceMatrix[i, j] = CalculateDistance(c[i, 0], c[i, 1], c[j, 0], c[j, 1]);
+      }
+      return distanceMatrix;
+    }
   }
 }
