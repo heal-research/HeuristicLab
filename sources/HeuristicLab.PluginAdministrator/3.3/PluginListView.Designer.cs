@@ -44,7 +44,7 @@ namespace HeuristicLab.PluginAdministrator {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.listView = new MultiSelectListView();
+      this.listView = new HeuristicLab.PluginAdministrator.MultiSelectListView();
       this.nameHeader = new System.Windows.Forms.ColumnHeader();
       this.versionHeader = new System.Windows.Forms.ColumnHeader();
       this.SuspendLayout();
@@ -59,6 +59,7 @@ namespace HeuristicLab.PluginAdministrator {
       this.listView.Location = new System.Drawing.Point(0, 0);
       this.listView.Name = "listView";
       this.listView.Size = new System.Drawing.Size(341, 320);
+      this.listView.SuppressItemCheckedEvents = false;
       this.listView.TabIndex = 1;
       this.listView.UseCompatibleStateImageBehavior = false;
       this.listView.View = System.Windows.Forms.View.Details;
@@ -67,10 +68,12 @@ namespace HeuristicLab.PluginAdministrator {
       // nameHeader
       // 
       this.nameHeader.Text = "Name";
+      this.nameHeader.Width = 40;
       // 
       // versionHeader
       // 
       this.versionHeader.Text = "Version";
+      this.versionHeader.Width = 297;
       // 
       // PluginListView
       // 

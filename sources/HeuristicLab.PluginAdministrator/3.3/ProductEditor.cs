@@ -110,12 +110,26 @@ namespace HeuristicLab.PluginAdministrator {
       foreach (var prodDesc in products) {
         productsListView.Items.Add(CreateListViewItem(prodDesc));
       }
+      foreach (ColumnHeader column in productsListView.Columns)
+        column.Width = -1;
     }
 
     private void productsListBox_SelectedIndexChanged(object sender, EventArgs e) {
-      if (productsListView.SelectedItems.Count == 0) return;
+      bool productSelected = productsListView.SelectedItems.Count > 0;
+      detailsGroupBox.Enabled = productSelected;
+      uploadButton.Enabled = productSelected;
+      if (productsListView.SelectedItems.Count == 0) {
+        ClearProductDetails();
+        return;
+      }
       PluginDeploymentService.ProductDescription activeProduct = (PluginDeploymentService.ProductDescription)((ListViewItem)productsListView.SelectedItems[0]).Tag;
       UpdateProductDetails(activeProduct);
+    }
+
+    private void ClearProductDetails() {
+      nameTextBox.Text = string.Empty;
+      versionTextBox.Text = string.Empty;
+      pluginListView.Plugins = new IPluginDescription[0];
     }
 
     private void UpdateProductDetails(PluginDeploymentService.ProductDescription activeProduct) {
@@ -133,7 +147,7 @@ namespace HeuristicLab.PluginAdministrator {
     }
 
     private void SetControlsEnabled(bool enabled) {
-      saveButton.Enabled = enabled;
+      uploadButton.Enabled = enabled;
       refreshButton.Enabled = enabled;
       newProductButton.Enabled = enabled;
       splitContainer.Enabled = enabled;

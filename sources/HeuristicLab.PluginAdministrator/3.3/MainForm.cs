@@ -32,6 +32,9 @@ namespace HeuristicLab.PluginAdministrator {
     public MainForm(Type type)
       : base(type) {
       InitializeComponent();
+      this.Controls.Remove(toolStrip);
+      this.statusStrip.Items.Add(progressBar);
+      this.statusStrip.Items.Add(statusLabel);
     }
 
     protected override void OnInitialized(EventArgs e) {

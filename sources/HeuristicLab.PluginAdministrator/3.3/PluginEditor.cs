@@ -43,9 +43,7 @@ namespace HeuristicLab.PluginAdministrator {
 
     public PluginEditor() {
       InitializeComponent();
-      imageList.Images.Add(HeuristicLab.Common.Resources.VS2008ImageLibrary.Assembly);
-      imageList.Images.Add(HeuristicLab.Common.Resources.VS2008ImageLibrary.ArrowUp);
-      Caption = "Plugins";
+      Caption = "Upload Plugins";
 
       localAndServerPlugins = new Dictionary<IPluginDescription, PluginDeploymentService.PluginDescription>();
 
@@ -87,6 +85,8 @@ namespace HeuristicLab.PluginAdministrator {
           var item = MakeListViewItem(pair.Key);
           listView.Items.Add(item);
         }
+        foreach (ColumnHeader column in listView.Columns)
+          column.Width = -1;
         //listView.suppressCheckedEvents = false;
         listView.CheckBoxes = true;
         UpdateControlsConnectedState();
@@ -159,11 +159,6 @@ namespace HeuristicLab.PluginAdministrator {
         DisableControl();
         pluginUploadWorker.RunWorkerAsync(selectedPlugins.ToList());
       }
-    }
-
-    private void connectButton_Click(object sender, EventArgs e) {
-      var connectionSetupView = new ConnectionSetupView();
-      connectionSetupView.Show();
     }
 
     private void refreshButton_Click(object sender, EventArgs e) {

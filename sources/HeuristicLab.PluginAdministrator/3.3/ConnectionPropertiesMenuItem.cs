@@ -25,21 +25,21 @@ using System.Text;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.PluginAdministrator {
-  internal class EditConnectionMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, IUserInterfaceItemProvider {
+  internal class ConnectionPropertiesMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, IUserInterfaceItemProvider {
     public override string Name {
-      get { return "Edit Connection Properties"; }
+      get { return "Connection Properties"; }
     }
 
     public override IEnumerable<string> Structure {
-      get { return new string[] { "Plugin Server" }; }
+      get { return new string[] { "Settings" }; }
     }
 
     public override int Position {
-      get { return 1300; }
+      get { return 2100; }
     }
 
     public override void Execute() {
-      EditConnectionAction.Execute(MainFormManager.MainForm);
+      ConnectionPropertiesAction.Execute(MainFormManager.MainForm);
     }
   }
 }

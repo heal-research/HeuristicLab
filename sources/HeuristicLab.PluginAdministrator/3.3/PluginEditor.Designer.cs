@@ -44,22 +44,14 @@ namespace HeuristicLab.PluginAdministrator {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.components = new System.ComponentModel.Container();
-      this.imageList = new System.Windows.Forms.ImageList(this.components);
       this.refreshButton = new System.Windows.Forms.Button();
       this.uploadButton = new System.Windows.Forms.Button();
-      this.listView = new MultiSelectListView();
+      this.listView = new HeuristicLab.PluginAdministrator.MultiSelectListView();
       this.pluginNameHeader = new System.Windows.Forms.ColumnHeader();
       this.localVersionHeader = new System.Windows.Forms.ColumnHeader();
       this.serverVersionHeader = new System.Windows.Forms.ColumnHeader();
       this.descriptionHeader = new System.Windows.Forms.ColumnHeader();
       this.SuspendLayout();
-      // 
-      // imageList
-      // 
-      this.imageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
-      this.imageList.ImageSize = new System.Drawing.Size(16, 16);
-      this.imageList.TransparentColor = System.Drawing.Color.Transparent;
       // 
       // refreshButton
       // 
@@ -96,7 +88,6 @@ namespace HeuristicLab.PluginAdministrator {
       this.listView.Location = new System.Drawing.Point(3, 32);
       this.listView.Name = "listView";
       this.listView.Size = new System.Drawing.Size(536, 444);
-      this.listView.StateImageList = this.imageList;
       this.listView.SuppressItemCheckedEvents = false;
       this.listView.TabIndex = 8;
       this.listView.UseCompatibleStateImageBehavior = false;
@@ -107,22 +98,22 @@ namespace HeuristicLab.PluginAdministrator {
       // pluginNameHeader
       // 
       this.pluginNameHeader.Text = "Name";
-      this.pluginNameHeader.Width = 161;
+      this.pluginNameHeader.Width = 40;
       // 
       // localVersionHeader
       // 
       this.localVersionHeader.Text = "Local Version";
-      this.localVersionHeader.Width = 85;
+      this.localVersionHeader.Width = 76;
       // 
       // serverVersionHeader
       // 
       this.serverVersionHeader.Text = "Server Version";
-      this.serverVersionHeader.Width = 91;
+      this.serverVersionHeader.Width = 81;
       // 
       // descriptionHeader
       // 
       this.descriptionHeader.Text = "Description";
-      this.descriptionHeader.Width = 194;
+      this.descriptionHeader.Width = 335;
       // 
       // PluginEditor
       // 
@@ -141,7 +132,6 @@ namespace HeuristicLab.PluginAdministrator {
 
     private System.Windows.Forms.Button refreshButton;
     private System.Windows.Forms.Button uploadButton;
-    private System.Windows.Forms.ImageList imageList;
     private MultiSelectListView listView;
     private System.Windows.Forms.ColumnHeader pluginNameHeader;
     private System.Windows.Forms.ColumnHeader localVersionHeader;

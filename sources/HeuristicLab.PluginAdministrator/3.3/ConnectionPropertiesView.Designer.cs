@@ -19,7 +19,7 @@
  */
 #endregion
 namespace HeuristicLab.PluginAdministrator {
-  partial class ConnectionSetupView {
+  partial class ConnectionPropertiesView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>

@@ -164,12 +164,12 @@ namespace HeuristicLab.PluginAdministrator {
       // pluginNameHeader
       // 
       this.pluginNameHeader.Text = "Name";
-      this.pluginNameHeader.Width = 200;
+      this.pluginNameHeader.Width = 40;
       // 
       // pluginVersionHeader
       // 
       this.pluginVersionHeader.Text = "Version";
-      this.pluginVersionHeader.Width = 120;
+      this.pluginVersionHeader.Width = 288;
       // 
       // imageList
       // 
@@ -180,8 +180,8 @@ namespace HeuristicLab.PluginAdministrator {
       // filesListView
       // 
       this.filesListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.fileNameHeader,
-            this.fileTypeHeader});
+            this.fileTypeHeader,
+            this.fileNameHeader});
       this.filesListView.Dock = System.Windows.Forms.DockStyle.Fill;
       this.filesListView.Location = new System.Drawing.Point(3, 16);
       this.filesListView.Name = "filesListView";
@@ -194,12 +194,12 @@ namespace HeuristicLab.PluginAdministrator {
       // fileNameHeader
       // 
       this.fileNameHeader.Text = "Name";
-      this.fileNameHeader.Width = 200;
+      this.fileNameHeader.Width = 289;
       // 
       // fileTypeHeader
       // 
       this.fileTypeHeader.Text = "Type";
-      this.fileTypeHeader.Width = 120;
+      this.fileTypeHeader.Width = 36;
       // 
       // filesGroupBox
       // 

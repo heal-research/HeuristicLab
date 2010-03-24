@@ -18,6 +18,7 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,10 +26,14 @@ using System.Text;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.PluginAdministrator {
-  internal static class EditConnectionAction {
+  internal static class UploadPluginsAction {
     internal static void Execute(IMainForm mainForm) {
-      ConnectionSetupView connectionSetup = new ConnectionSetupView();
-      connectionSetup.Show();
+      if (mainForm.Views.Any(x => x is PluginEditor)) {
+        mainForm.Views.First(x => x is PluginEditor).Show();
+      } else {
+        PluginEditor editor = new PluginEditor();
+        editor.Show();
+      }
     }
   }
 }

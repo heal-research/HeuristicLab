@@ -28,10 +28,10 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace HeuristicLab.PluginAdministrator {
-  internal partial class ConnectionSetupView : HeuristicLab.MainForm.WindowsForms.View {
-    public ConnectionSetupView() {
+  internal partial class ConnectionPropertiesView : HeuristicLab.MainForm.WindowsForms.View {
+    public ConnectionPropertiesView() {
       InitializeComponent();
-      Caption = "Edit Connection Settings";
+      Caption = "Connection Properties";
       updateAddressTextBox.Text = HeuristicLab.PluginInfrastructure.Properties.Settings.Default.UpdateLocation;
       adminAddressTextBox.Text = HeuristicLab.PluginInfrastructure.Properties.Settings.Default.UpdateLocationAdministrationAddress;
       userTextBox.Text = HeuristicLab.PluginInfrastructure.Properties.Settings.Default.UpdateLocationUserName;

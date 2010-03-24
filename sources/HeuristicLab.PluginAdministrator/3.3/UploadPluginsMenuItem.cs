@@ -26,10 +26,21 @@ using System.Text;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.PluginAdministrator {
-  internal static class OpenProductEditorAction {
-    internal static void Execute(IMainForm mainForm) {
-      ProductEditor editor = new ProductEditor();
-      editor.Show();
+  internal class UploadPluginsMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, IUserInterfaceItemProvider {
+    public override string Name {
+      get { return "Upload Plugins"; }
+    }
+
+    public override IEnumerable<string> Structure {
+      get { return new string[] { "Views" }; }
+    }
+
+    public override int Position {
+      get { return 1100; }
+    }
+
+    public override void Execute() {
+      UploadPluginsAction.Execute(MainFormManager.MainForm);
     }
   }
 }

@@ -91,14 +91,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConnectionSetupView.cs">
+    <Compile Include="ConnectionPropertiesAction.cs" />
+    <Compile Include="ConnectionPropertiesMenuItem.cs" />
+    <Compile Include="ConnectionPropertiesView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ConnectionSetupView.Designer.cs">
-      <DependentUpon>ConnectionSetupView.cs</DependentUpon>
+    <Compile Include="ConnectionPropertiesView.Designer.cs">
+      <DependentUpon>ConnectionPropertiesView.cs</DependentUpon>
     </Compile>
-    <Compile Include="EditConnectionAction.cs" />
-    <Compile Include="EditConnectionMenuItem.cs" />
+    <Compile Include="EditProductsAction.cs" />
+    <Compile Include="EditProductsMenuItem.cs" />
     <Compile Include="HeuristicLabPluginAdministratorApplication.cs" />
     <Compile Include="HeuristicLabPluginAdministratorPlugin.cs" />
     <Compile Include="LicenseView.cs">
@@ -143,13 +145,13 @@
     <Compile Include="ProductEditor.Designer.cs">
       <DependentUpon>ProductEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="OpenProductEditorAction.cs" />
-    <Compile Include="OpenServerProductsEditMenuItem.cs" />
     <Compile Include="IUserInterfaceItemProvider.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UploadPluginsAction.cs" />
+    <Compile Include="UploadPluginsMenuItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.2\HeuristicLab.Common.Resources-3.2.csproj">
@@ -173,8 +175,8 @@
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ConnectionSetupView.resx">
-      <DependentUpon>ConnectionSetupView.cs</DependentUpon>
+    <EmbeddedResource Include="ConnectionPropertiesView.resx">
+      <DependentUpon>ConnectionPropertiesView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LicenseView.resx">
       <DependentUpon>LicenseView.cs</DependentUpon>

@@ -26,21 +26,21 @@ using System.Text;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.PluginAdministrator {
-  internal class OpenServerProductsEditorMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, IUserInterfaceItemProvider {
+  internal class EditProductsMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, IUserInterfaceItemProvider {
     public override string Name {
       get { return "Edit Products"; }
     }
 
     public override IEnumerable<string> Structure {
-      get { return new string[] { "Plugin Server" }; }
+      get { return new string[] { "Views" }; }
     }
 
     public override int Position {
-      get { return 1300; }
+      get { return 1200; }
     }
 
     public override void Execute() {
-      OpenProductEditorAction.Execute(MainFormManager.MainForm);
+      EditProductsAction.Execute(MainFormManager.MainForm);
     }
   }
 }

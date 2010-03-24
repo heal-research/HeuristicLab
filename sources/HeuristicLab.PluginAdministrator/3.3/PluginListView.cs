@@ -72,6 +72,8 @@ namespace HeuristicLab.PluginAdministrator {
         foreach (var plugin in plugins) {
           listView.Items.Add(CreateListViewItem(plugin));
         }
+        foreach (ColumnHeader column in listView.Columns)
+          column.Width = -1;
         listView.SuppressItemCheckedEvents = false;
       }
     }
