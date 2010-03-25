@@ -34,7 +34,7 @@ namespace HeuristicLab.Operators {
   [Item("MultipleCallsOperator", "A base class for operators which apply multiple user-defined operators.")]
   [StorableClass]
   public abstract class MultipleCallsOperator : SingleSuccessorOperator {
-    private List<OperatorParameter> operatorParameters;
+    private List<IValueParameter<IOperator>> operatorParameters;
 
     private OperatorList operators;
     [Storable]
@@ -55,9 +55,9 @@ namespace HeuristicLab.Operators {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
-      operatorParameters = new List<OperatorParameter>();
+      operatorParameters = new List<IValueParameter<IOperator>>();
       for (int i = 0; i < Operators.Count; i++) {
-        OperatorParameter opParam = (OperatorParameter)Parameters[i.ToString()];
+        IValueParameter<IOperator> opParam = (IValueParameter<IOperator>)Parameters[i.ToString()];
         operatorParameters.Add(opParam);
         opParam.ValueChanged += new EventHandler(opParam_ValueChanged);
       }
@@ -71,13 +71,13 @@ namespace HeuristicLab.Operators {
     }
 
     private void UpdateOperatorParameters() {
-      foreach (OperatorParameter opParam in operatorParameters) {
+      foreach (IValueParameter<IOperator> opParam in operatorParameters) {
         opParam.ValueChanged -= new EventHandler(opParam_ValueChanged);
         Parameters.Remove(opParam.Name);
       }
       operatorParameters.Clear();
       for (int i = 0; i < Operators.Count; i++) {
-        OperatorParameter opParam = new OperatorParameter(i.ToString(), string.Empty, Operators[i]);
+        IValueParameter<IOperator> opParam = new ValueParameter<IOperator>(i.ToString(), string.Empty, Operators[i]);
         opParam.ValueChanged += new EventHandler(opParam_ValueChanged);
         Parameters.Add(opParam);
         operatorParameters.Add(opParam);
@@ -117,7 +117,7 @@ namespace HeuristicLab.Operators {
       UpdateOperatorParameters();
     }
     private void opParam_ValueChanged(object sender, EventArgs e) {
-      OperatorParameter opParam = (OperatorParameter)sender;
+      IValueParameter<IOperator> opParam = (IValueParameter<IOperator>)sender;
       operators[operatorParameters.IndexOf(opParam)] = opParam.Value;
     }
     #endregion
