@@ -44,7 +44,7 @@ namespace HeuristicLab.Services.Deployment {
                                 where pair.ProductId == p.Id
                                 where plugin.Id == pair.PluginId
                                 select plugin
-                  select MakeProductDescription(ctx, p, plugins)).ToList();
+                  select MakeProductDescription(ctx, p, plugins.ToList())).ToList();
         }
       }
     }
@@ -168,7 +168,7 @@ namespace HeuristicLab.Services.Deployment {
       pluginEntity.ContactEmail = pluginDescription.ContactEmail;
 
       // delete cached entry
-      if (pluginDescriptions.ContainsKey(pluginEntity)) pluginDescriptions.Remove(pluginEntity);
+      if (pluginDescriptions.ContainsKey(pluginEntity.Id)) pluginDescriptions.Remove(pluginEntity.Id);
 
       DeleteOldDependencies(ctx, pluginEntity);
 
@@ -194,7 +194,7 @@ namespace HeuristicLab.Services.Deployment {
     #endregion
 
     #region product <-> productDescription transformation
-    private ProductDescription MakeProductDescription(PluginStoreClassesDataContext ctx, Product p, IQueryable<Plugin> plugins) {
+    private ProductDescription MakeProductDescription(PluginStoreClassesDataContext ctx, Product p, IEnumerable<Plugin> plugins) {
       var desc = new ProductDescription(p.Name, new Version(p.Version), from plugin in plugins
                                                                         select MakePluginDescription(ctx, plugin));
       return desc;
@@ -209,21 +209,20 @@ namespace HeuristicLab.Services.Deployment {
 
     #region plugin <-> pluginDescription transformation
     // cache for plugin descriptions
-    private Dictionary<Plugin, PluginDescription> pluginDescriptions = new Dictionary<Plugin, PluginDescription>();
+    private Dictionary<long, PluginDescription> pluginDescriptions = new Dictionary<long, PluginDescription>();
     private PluginDescription MakePluginDescription(PluginStoreClassesDataContext ctx, Plugin plugin) {
-      if (!pluginDescriptions.ContainsKey(plugin)) {
+      if (!pluginDescriptions.ContainsKey(plugin.Id)) {
         // no cached description -> create new
-        var desc = new PluginDescription(plugin.Name,
-          new Version(plugin.Version),
-          from dep in GetDependencies(ctx, plugin)
-          select MakePluginDescription(ctx, dep),
-          plugin.ContactName ?? string.Empty,
-          plugin.ContactEmail ?? string.Empty,
-          plugin.License ?? string.Empty
-          );
-        pluginDescriptions[plugin] = desc;
+        var desc = new PluginDescription(plugin.Name, new Version(plugin.Version));
+        pluginDescriptions[plugin.Id] = desc; // and add to cache
+
+        // fill remaining properties of plugin description
+        desc.Dependencies = new List<PluginDescription>(from dep in GetDependencies(ctx, plugin) select MakePluginDescription(ctx, dep));
+        desc.ContactEmail = plugin.ContactEmail ?? string.Empty;
+        desc.ContactName = plugin.ContactName ?? string.Empty;
+        desc.LicenseText = plugin.License ?? string.Empty;
       }
-      return pluginDescriptions[plugin];
+      return pluginDescriptions[plugin.Id];
     }
 
     private Plugin MakePluginFromDescription(PluginDescription pluginDescription) {

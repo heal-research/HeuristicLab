@@ -26,46 +26,70 @@ using System.Text;
 using System.Runtime.Serialization;
 
 namespace HeuristicLab.Services.Deployment {
-  [DataContract(Name = "PluginDescription")]
+  [DataContract(Name = "PluginDescription", IsReference = true)]
   public class PluginDescription {
 
     [DataMember(Name = "Name")]
     private string name;
     public string Name {
       get { return name; }
+      set {
+        if (string.IsNullOrEmpty(value)) throw new ArgumentException();
+        name = value;
+      }
     }
 
     [DataMember(Name = "Version")]
     private Version version;
     public Version Version {
       get { return version; }
+      set {
+        if (value == null) throw new ArgumentNullException();
+        version = value;
+      }
     }
 
     [DataMember(Name = "ContactName")]
     private string contactName;
     public string ContactName {
       get { return contactName; }
+      set {
+        if (value == null) throw new ArgumentNullException();
+        contactName = value;
+      }
     }
 
     [DataMember(Name = "ContactEmail")]
     private string contactEmail;
     public string ContactEmail {
       get { return contactEmail; }
+      set {
+        if (value == null) throw new ArgumentNullException();
+        contactEmail = value;
+      }
     }
 
     [DataMember(Name = "LicenseText")]
     private string licenseText;
     public string LicenseText {
       get { return licenseText; }
+      set {
+        if (value == null) throw new ArgumentNullException();
+        licenseText = value;
+      }
     }
 
     [DataMember(Name = "Dependencies")]
     private List<PluginDescription> dependencies;
     public List<PluginDescription> Dependencies {
       get { return dependencies; }
+      set {
+        if (value == null) throw new ArgumentNullException();
+        dependencies = value;
+      }
     }
 
-    public PluginDescription(string name, Version version, IEnumerable<PluginDescription> dependencies, 
+    public PluginDescription(string name, Version version, IEnumerable<PluginDescription> dependencies,
       string contactName, string contactEmail, string license) {
       if (string.IsNullOrEmpty(name)) throw new ArgumentException("name is empty");
       if (version == null || dependencies == null ||
