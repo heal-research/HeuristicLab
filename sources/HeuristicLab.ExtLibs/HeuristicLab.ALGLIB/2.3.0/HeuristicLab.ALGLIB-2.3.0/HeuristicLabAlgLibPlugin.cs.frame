@@ -29,7 +29,7 @@ namespace HeuristicLab.ALGLIB {
   [Plugin("HeuristicLab.ALGLIB","2.3.0.$WCREV$")]  
   [PluginFile("HeuristicLab.ALGLIB-2.3.0.dll", PluginFileType.Assembly)]
   [PluginFile("ALGLIB-2.3.0.dll", PluginFileType.Assembly)]
-  [PluginFile("ALGLIB License.txt", PluginFileType.License)]
+  [PluginFile("ALGLIB License-2.3.0.txt", PluginFileType.License)]
   public class HeuristicLabAlgLibPlugin : PluginBase {
   }
 }
