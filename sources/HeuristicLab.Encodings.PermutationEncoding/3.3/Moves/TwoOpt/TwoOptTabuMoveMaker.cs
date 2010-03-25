@@ -31,6 +31,9 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("TwoOptTabuMoveMaker", "Declares a given 2-opt move as tabu, by adding its attributes to the tabu list. It also removes the oldest entry in the tabu list when its size is greater than tenure.")]
   [StorableClass]
   public class TwoOptTabuMoveMaker : TabuMoveMaker, ITwoOptPermutationMoveOperator {
+    public override bool CanChangeName {
+      get { return false; }
+    }
     public ILookupParameter<Permutation> PermutationParameter {
       get { return (ILookupParameter<Permutation>)Parameters["Permutation"]; }
     }
@@ -51,10 +54,6 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
         permutation[move.Index1],
         permutation[move.Index2],
         permutation.GetCircular(move.Index2 + 1));
-    }
-
-    public override bool CanChangeName {
-      get { return false; }
     }
   }
 }

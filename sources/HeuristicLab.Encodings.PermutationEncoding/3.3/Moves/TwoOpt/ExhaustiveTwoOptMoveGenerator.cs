@@ -25,19 +25,19 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
-  [Item("ExhaustiveTwoOptMoveGenerator", "Generates all possible 2-opt moves from a given permutation.")]
+  [Item("ExhaustiveTwoOptMoveGenerator", "Generates all possible 2-opt moves (inversion) from a given permutation.")]
   [StorableClass]
   public class ExhaustiveTwoOptMoveGenerator : TwoOptMoveGenerator, IExhaustiveMoveGenerator {
     public static TwoOptMove[] Apply(Permutation permutation) {
       int length = permutation.Length;
-      int totalMoves = (length) * (length - 1) / 2 - 3;
+      int totalMoves = (length) * (length - 1) / 2; // - 3;
       TwoOptMove[] moves = new TwoOptMove[totalMoves];
       int count = 0;
       for (int i = 0; i < length - 1; i++)
         for (int j = i + 1; j < length; j++) {
           // doesn't make sense to inverse the whole permutation or the whole but one
-          if (i == 0 && j >= length - 2) continue;
-          else if (i == 1 && j >= length - 1) continue;
+          /*if (i == 0 && j >= length - 2) continue;
+          else if (i == 1 && j >= length - 1) continue;*/
           moves[count++] = new TwoOptMove(i, j);
         }
       return moves;

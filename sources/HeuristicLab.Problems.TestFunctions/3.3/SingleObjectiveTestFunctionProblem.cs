@@ -34,7 +34,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.TestFunctions {
-  [Item("SingleObjective TestFunction", "Test function with real valued inputs and a single objective.")]
+  [Item("Single Objective Test Function", "Test function with real valued inputs and a single objective.")]
   [StorableClass]
   [Creatable("Problems")]
   public sealed class SingleObjectiveTestFunctionProblem : ParameterizedNamedItem, ISingleObjectiveProblem {

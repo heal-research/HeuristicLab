@@ -25,7 +25,7 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTree {
-  [Plugin("HeuristicLab.Encodings.SymbolicExpressionTree", "3.3.0.3218")]
+  [Plugin("HeuristicLab.Encodings.SymbolicExpressionTree", "3.3.0.3219")]
   [PluginFile("HeuristicLab.Encodings.SymbolicExpressionTree-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Core", "3.3.0.0")]
   [PluginDependency("HeuristicLab.Data", "3.3.0.0")]

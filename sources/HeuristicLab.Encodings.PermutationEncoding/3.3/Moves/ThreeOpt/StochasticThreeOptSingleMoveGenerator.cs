@@ -27,28 +27,35 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
-  [Item("StochasticTwoOptSingleMoveGenerator", "Randomly samples a single from all possible 2-opt moves (inversion) from a given permutation.")]
+  [Item("StochasticThreeOptSingleMoveGenerator", "Randomly samples one from all possible 3-opt moves from a given permutation.")]
   [StorableClass]
-  public class StochasticTwoOptSingleMoveGenerator : TwoOptMoveGenerator, IStochasticOperator, ISingleMoveGenerator {
+  public class StochasticThreeOptSingleMoveGenerator : ThreeOptMoveGenerator, IStochasticOperator, ISingleMoveGenerator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
 
-    public StochasticTwoOptSingleMoveGenerator()
+    public StochasticThreeOptSingleMoveGenerator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator."));
     }
 
-    public static TwoOptMove Apply(Permutation permutation, IRandom random) {
+    public static ThreeOptMove Apply(Permutation permutation, IRandom random) {
       int length = permutation.Length;
-      int index1 = random.Next(length - 1);
-      int index2 = random.Next(index1 + 1, length);
-      return new TwoOptMove(index1, index2);;
+      int index1, index2, index3;
+      index1 = random.Next(length - 1);
+      do {
+        index2 = random.Next(index1, length);
+      } while (index2 - index1 >= length - 2);
+      do {
+        index3 = random.Next(length - index2 + index1);
+      } while (index3 == index1);
+      
+      return new ThreeOptMove(index1, index2, index3);
     }
 
-    protected override TwoOptMove[] GenerateMoves(Permutation permutation) {
+    protected override ThreeOptMove[] GenerateMoves(Permutation permutation) {
       IRandom random = RandomParameter.ActualValue;
-      return new TwoOptMove[] { Apply(permutation, random) };
+      return new ThreeOptMove[] { Apply(permutation, random) };
     }
   }
 }

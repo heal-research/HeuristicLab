@@ -30,6 +30,9 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("TwoOptMoveGenerator", "Base class for all 2-opt move generators.")]
   [StorableClass]
   public abstract class TwoOptMoveGenerator : SingleSuccessorOperator, ITwoOptPermutationMoveOperator, IMoveGenerator {
+    public override bool CanChangeName {
+      get { return false; }
+    }
     public ILookupParameter<Permutation> PermutationParameter {
       get { return (ILookupParameter<Permutation>)Parameters["Permutation"]; }
     }
@@ -60,9 +63,5 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     protected abstract TwoOptMove[] GenerateMoves(Permutation permutation);
-
-    public override bool CanChangeName {
-      get { return false; }
-    }
   }
 }

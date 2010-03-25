@@ -57,6 +57,10 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         edge3source = permutation.GetCircular(move.Index3 - 1);
         edge3target = permutation[move.Index3];
       }
+      if (move.Index1 == move.Index3
+        || move.Index2 - move.Index1 >= permutation.Length - 2
+        || move.Index1 == permutation.Length - 1 && move.Index3 == 0
+        || move.Index1 == 0 && move.Index3 == permutation.Length - 1) return 0;
       double moveQuality = 0;
       // remove three edges
       moveQuality -= CalculateDistance(coordinates[edge1source, 0], coordinates[edge1source, 1],
@@ -90,7 +94,9 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         edge3target = permutation[move.Index3];
       }
       if (move.Index1 == move.Index3
-        || move.Index2 - move.Index1 >= permutation.Length - 2) return 0;
+        || move.Index2 - move.Index1 >= permutation.Length - 2
+        || move.Index1 == permutation.Length - 1 && move.Index3 == 0
+        || move.Index1 == 0 && move.Index3 == permutation.Length - 1) return 0;
       double moveQuality = 0;
       // remove three edges
       moveQuality -= distanceMatrix[edge1source, edge1target];

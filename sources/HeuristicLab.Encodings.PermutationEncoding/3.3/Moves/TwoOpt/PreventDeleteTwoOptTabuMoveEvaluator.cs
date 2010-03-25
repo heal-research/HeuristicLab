@@ -28,9 +28,9 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
-  [Item("TwoOptPreventEdgeRemovalAndReadding", "Prevents readding of previously deleted edges as well as deleting previously added edges.")]
+  [Item("TwoOptPreventEdgeRemoval", "Prevents deleting of previously added edges.")]
   [StorableClass]
-  public class PreventReaddDeleteTwoOptTabuMoveEvaluator : SingleSuccessorOperator, ITwoOptPermutationMoveOperator, ITabuMoveEvaluator {
+  public class PreventDeleteTwoOptTabuMoveEvaluator : SingleSuccessorOperator, ITwoOptPermutationMoveOperator, ITabuMoveEvaluator {
     public override bool CanChangeName {
       get { return false; }
     }
@@ -50,7 +50,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
     }
 
-    public PreventReaddDeleteTwoOptTabuMoveEvaluator()
+    public PreventDeleteTwoOptTabuMoveEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<TwoOptMove>("TwoOptMove", "The move to evaluate."));
       Parameters.Add(new LookupParameter<BoolValue>("MoveTabu", "The variable to store if a move was tabu."));
@@ -68,19 +68,13 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       int E1T = permutation[move.Index1];
       int E2S = permutation[move.Index2];
       int E2T = permutation.GetCircular(move.Index2 + 1);
-      bool isTabu = (move.Index2 - move.Index1 >= length - 2); // doesn't change the solution;
+      bool isTabu = (move.Index2 - move.Index1 >= length - 2); // doesn't change the solution
       if (!isTabu) {
         foreach (IItem tabuMove in tabuList) {
           TwoOptTabuMoveAttribute attribute = (tabuMove as TwoOptTabuMoveAttribute);
           if (attribute != null) {
-            // if previously deleted Edge1Source-Target is readded
-            if (attribute.Edge1Source == E1S && attribute.Edge1Target == E2S || attribute.Edge1Source == E2S && attribute.Edge1Target == E1S
-              || attribute.Edge1Source == E1T && attribute.Edge1Target == E2T || attribute.Edge1Source == E2T && attribute.Edge1Target == E1T
-              // if previously deleted Edge2Source-Target is readded
-              || attribute.Edge2Source == E1T && attribute.Edge2Target == E2T || attribute.Edge2Source == E2T && attribute.Edge2Target == E1T
-              || attribute.Edge2Source == E1S && attribute.Edge2Target == E2S || attribute.Edge2Source == E2S && attribute.Edge2Target == E1S
-              // if previously added Edge1Source-Edge2Source is deleted
-              || attribute.Edge1Source == E1S && attribute.Edge2Source == E1T || attribute.Edge1Source == E1T && attribute.Edge2Source == E1S
+            // if previously added Edge1Source-Edge2Source is deleted
+            if (attribute.Edge1Source == E1S && attribute.Edge2Source == E1T || attribute.Edge1Source == E1T && attribute.Edge2Source == E1S
               || attribute.Edge1Source == E2S && attribute.Edge2Source == E2T || attribute.Edge1Source == E2T && attribute.Edge2Source == E2S
               // if previously added Edge1Target-Edge2Target is deleted
               || attribute.Edge1Target == E2S && attribute.Edge2Target == E2T || attribute.Edge1Target == E2T && attribute.Edge2Target == E2S

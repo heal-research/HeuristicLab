@@ -52,16 +52,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       int length = permutation.Length;
       ThreeOptMove[] moves = new ThreeOptMove[sampleSize];
       for (int i = 0; i < sampleSize; i++) {
-        int index1, index2, index3;
-        index1 = random.Next(length - 1);
-        do {
-          index2 = random.Next(index1, length);
-        } while (index2 - index1 >= length - 2);
-        do {
-          index3 = random.Next(length - index2 + index1 - 1);
-        } while (index3 == index1);
-        
-        moves[i] = new ThreeOptMove(index1, index2, index3);
+        moves[i] = StochasticThreeOptSingleMoveGenerator.Apply(permutation, random);
       }
       return moves;
     }

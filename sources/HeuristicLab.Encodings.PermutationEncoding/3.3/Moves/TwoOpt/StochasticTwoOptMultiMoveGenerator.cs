@@ -27,9 +27,12 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
-  [Item("StochasticTwoOptMultiMoveGenerator", "Randomly samples n from all possible 2-opt moves from a given permutation.")]
+  [Item("StochasticTwoOptMultiMoveGenerator", "Randomly samples n from all possible 2-opt moves (inversion) from a given permutation.")]
   [StorableClass]
-  public class StochasticTwoOptMultiMoveGenerator : StochasticTwoOptSingleMoveGenerator, IMultiMoveGenerator {
+  public class StochasticTwoOptMultiMoveGenerator : TwoOptMoveGenerator, IMultiMoveGenerator, IStochasticOperator {
+    public ILookupParameter<IRandom> RandomParameter {
+      get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
+    }
     public IValueLookupParameter<IntValue> SampleSizeParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters["SampleSize"]; }
     }
@@ -41,6 +44,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
 
     public StochasticTwoOptMultiMoveGenerator()
       : base() {
+      Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator."));
       Parameters.Add(new ValueLookupParameter<IntValue>("SampleSize", "The number of moves to generate."));
     }
 
@@ -48,7 +52,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       int length = permutation.Length;
       TwoOptMove[] moves = new TwoOptMove[sampleSize];
       for (int i = 0; i < sampleSize; i++) {
-        moves[i] = Apply(permutation, random);
+        moves[i] = StochasticTwoOptSingleMoveGenerator.Apply(permutation, random);
       }
       return moves;
     }

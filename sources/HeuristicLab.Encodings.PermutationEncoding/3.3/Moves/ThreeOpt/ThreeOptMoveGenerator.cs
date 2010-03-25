@@ -30,11 +30,14 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("ThreeOptMoveGenerator", "Base class for move generators that produce 3-opt moves.")]
   [StorableClass]
   public abstract class ThreeOptMoveGenerator : SingleSuccessorOperator, IThreeOptPermutationMoveOperator, IMoveGenerator {
+    public override bool CanChangeName {
+      get { return false; }
+    }
     public ILookupParameter<Permutation> PermutationParameter {
       get { return (ILookupParameter<Permutation>)Parameters["Permutation"]; }
     }
     public ILookupParameter<ThreeOptMove> ThreeOptMoveParameter {
-      get { return (LookupParameter<ThreeOptMove>)Parameters["Move"]; }
+      get { return (LookupParameter<ThreeOptMove>)Parameters["ThreeOptMove"]; }
     }
     protected ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
@@ -43,7 +46,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     public ThreeOptMoveGenerator()
       : base() {
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The permutation for which moves should be generated."));
-      Parameters.Add(new LookupParameter<ThreeOptMove>("Move", "The moves that should be generated in subscopes."));
+      Parameters.Add(new LookupParameter<ThreeOptMove>("ThreeOptMove", "The moves that should be generated in subscopes."));
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope where the moves should be added as subscopes."));
     }
 
@@ -60,9 +63,5 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     protected abstract ThreeOptMove[] GenerateMoves(Permutation permutation);
-
-    public override bool CanChangeName {
-      get { return false; }
-    }
   }
 }

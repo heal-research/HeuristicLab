@@ -44,11 +44,12 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     protected override double EvaluateByCoordinates(Permutation permutation, DoubleMatrix coordinates) {
-      TwoOptMove m = TwoOptMoveParameter.ActualValue;
-      int edge1source = permutation.GetCircular(m.Index1 - 1);
-      int edge1target = permutation[m.Index1];
-      int edge2source = permutation[m.Index2];
-      int edge2target = permutation.GetCircular(m.Index2 + 1);
+      TwoOptMove move = TwoOptMoveParameter.ActualValue;
+      int edge1source = permutation.GetCircular(move.Index1 - 1);
+      int edge1target = permutation[move.Index1];
+      int edge2source = permutation[move.Index2];
+      int edge2target = permutation.GetCircular(move.Index2 + 1);
+      if (move.Index2 - move.Index1 >= permutation.Length - 2) return 0;
       double moveQuality = 0;
       // remove two edges
       moveQuality -= CalculateDistance(coordinates[edge1source, 0], coordinates[edge1source, 1],
@@ -64,11 +65,12 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     protected override double EvaluateByDistanceMatrix(Permutation permutation, DoubleMatrix distanceMatrix) {
-      TwoOptMove m = TwoOptMoveParameter.ActualValue;
-      int edge1source = permutation.GetCircular(m.Index1 - 1);
-      int edge1target = permutation[m.Index1];
-      int edge2source = permutation[m.Index2];
-      int edge2target = permutation.GetCircular(m.Index2 + 1);
+      TwoOptMove move = TwoOptMoveParameter.ActualValue;
+      int edge1source = permutation.GetCircular(move.Index1 - 1);
+      int edge1target = permutation[move.Index1];
+      int edge2source = permutation[move.Index2];
+      int edge2target = permutation.GetCircular(move.Index2 + 1);
+      if (move.Index2 - move.Index1 >= permutation.Length - 2) return 0;
       double moveQuality = 0;
       // remove two edges
       moveQuality -= distanceMatrix[edge1source, edge1target];

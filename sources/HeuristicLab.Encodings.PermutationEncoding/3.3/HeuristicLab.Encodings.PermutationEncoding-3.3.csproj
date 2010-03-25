@@ -107,12 +107,28 @@
     <Compile Include="Manipulators\TranslocationInversionManipulator.cs" />
     <Compile Include="Manipulators\TranslocationManipulator.cs" />
     <Compile Include="Moves\ThreeIndexMove.cs" />
-    <Compile Include="Moves\ThreeOpt\StochasticThreeOptMultiMoveGenerator.cs" />
+    <Compile Include="Moves\ThreeOpt\PreventDeleteThreeOptTabuMoveEvaluator.cs" />
+    <Compile Include="Moves\ThreeOpt\PreventReaddThreeOptTabuMoveEvaluator.cs" />
+    <Compile Include="Moves\ThreeOpt\PreventReaddDeleteThreeOptTabuMoveEvaluator.cs" />
+    <Compile Include="Moves\ThreeOpt\StochasticThreeOptSingleMoveGenerator.cs" />
+    <Compile Include="Moves\ThreeOpt\Insertion\ExhaustiveInsertionMoveGenerator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Moves\ThreeOpt\StochasticThreeOptMultiMoveGenerator.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Moves\ThreeOpt\ThreeOptMove.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Moves\ThreeOpt\ThreeOptMoveGenerator.cs" />
-    <Compile Include="Moves\ThreeOpt\ThreeOptMoveMaker.cs" />
+    <Compile Include="Moves\ThreeOpt\ThreeOptMoveGenerator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Moves\ThreeOpt\ThreeOptMoveMaker.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Moves\ThreeOpt\ThreeOptTabuMoveAttribute.cs" />
+    <Compile Include="Moves\ThreeOpt\ThreeOptTabuMoveMaker.cs" />
+    <Compile Include="Moves\TwoOpt\PreventDeleteTwoOptTabuMoveEvaluator.cs" />
     <Compile Include="Moves\TwoOpt\PreventReaddTwoOptTabuMoveEvaluator.cs" />
     <Compile Include="Moves\TwoOpt\StochasticTwoOptSingleMoveGenerator.cs" />
     <Compile Include="Moves\TwoOpt\ExhaustiveTwoOptMoveGenerator.cs">

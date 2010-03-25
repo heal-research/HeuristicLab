@@ -25,30 +25,26 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System.Collections.Generic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
-  [Item("StochasticTwoOptSingleMoveGenerator", "Randomly samples a single from all possible 2-opt moves (inversion) from a given permutation.")]
+  [Item("ExhaustiveInsertionMoveGenerator", "Generates all possible insertion moves from a given permutation. Insertion is a 3-opt move.")]
   [StorableClass]
-  public class StochasticTwoOptSingleMoveGenerator : TwoOptMoveGenerator, IStochasticOperator, ISingleMoveGenerator {
-    public ILookupParameter<IRandom> RandomParameter {
-      get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
-    }
-
-    public StochasticTwoOptSingleMoveGenerator()
-      : base() {
-      Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator."));
-    }
-
-    public static TwoOptMove Apply(Permutation permutation, IRandom random) {
+  public class ExhaustiveInsertionMoveGenerator : ThreeOptMoveGenerator, IExhaustiveMoveGenerator {
+    public static ThreeOptMove[] Apply(Permutation permutation) {
       int length = permutation.Length;
-      int index1 = random.Next(length - 1);
-      int index2 = random.Next(index1 + 1, length);
-      return new TwoOptMove(index1, index2);;
+      ThreeOptMove[] moves = new ThreeOptMove[length * (length - 1)];
+      int count = 0;
+      for (int i = 0; i < length; i++) {
+        for (int j = 1; j <= length - 1; j++) {
+          moves[count++] = new ThreeOptMove(i, i, (i + j) % length);
+        }
+      }
+      return moves;
     }
 
-    protected override TwoOptMove[] GenerateMoves(Permutation permutation) {
-      IRandom random = RandomParameter.ActualValue;
-      return new TwoOptMove[] { Apply(permutation, random) };
+    protected override ThreeOptMove[] GenerateMoves(Permutation permutation) {
+      return Apply(permutation);
     }
   }
 }

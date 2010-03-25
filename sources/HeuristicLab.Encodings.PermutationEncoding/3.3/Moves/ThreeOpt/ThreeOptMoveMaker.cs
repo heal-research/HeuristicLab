@@ -31,6 +31,9 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("ThreeOptMoveMaker", "Peforms a 3-opt move on a given permutation and updates the quality.")]
   [StorableClass]
   public class ThreeOptMoveMaker : SingleSuccessorOperator, IThreeOptPermutationMoveOperator, IMoveMaker {
+    public override bool CanChangeName {
+      get { return false; }
+    }
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
@@ -62,10 +65,6 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       quality.Value = moveQuality.Value;
 
       return base.Apply();
-    }
-
-    public override bool CanChangeName {
-      get { return false; }
     }
   }
 }

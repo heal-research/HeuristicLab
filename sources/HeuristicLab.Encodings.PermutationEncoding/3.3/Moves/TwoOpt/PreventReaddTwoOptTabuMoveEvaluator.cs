@@ -28,9 +28,12 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
-  [Item("PreventReaddTwoOptTabuMoveEvaluator", "Prevents readding of previously deleted edges, but allows deleting previously added edges.")]
+  [Item("TwoOptPreventEdgeReadding", "Prevents readding of previously deleted edges, but allows deleting previously added edges.")]
   [StorableClass]
   public class PreventReaddTwoOptTabuMoveEvaluator : SingleSuccessorOperator, ITwoOptPermutationMoveOperator, ITabuMoveEvaluator {
+    public override bool CanChangeName {
+      get { return false; }
+    }
     public ILookupParameter<TwoOptMove> TwoOptMoveParameter {
       get { return (LookupParameter<TwoOptMove>)Parameters["TwoOptMove"]; }
     }
@@ -65,27 +68,25 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       int E1T = permutation[move.Index1];
       int E2S = permutation[move.Index2];
       int E2T = permutation.GetCircular(move.Index2 + 1);
-      bool isTabu = false;
-      foreach (IItem tabuMove in tabuList) {
-        TwoOptTabuMoveAttribute attribute = (tabuMove as TwoOptTabuMoveAttribute);
-        if (attribute != null) {
-          // if previously deleted Edge1Source-Target is readded
-          if (attribute.Edge1Source == E1S && attribute.Edge1Target == E2S || attribute.Edge1Source == E2S && attribute.Edge1Target == E1S
-            || attribute.Edge1Source == E1T && attribute.Edge1Target == E2T || attribute.Edge1Source == E2T && attribute.Edge1Target == E1T
-            // if previously deleted Edge2Source-Target is readded
-            || attribute.Edge2Source == E1T && attribute.Edge2Target == E2T || attribute.Edge2Source == E2T && attribute.Edge2Target == E1T
-            || attribute.Edge2Source == E1S && attribute.Edge2Target == E2S || attribute.Edge2Source == E2S && attribute.Edge2Target == E1S) {
-            isTabu = true;
-            break;
+      bool isTabu = (move.Index2 - move.Index1 >= length - 2); // doesn't change the solution;
+      if (!isTabu) {
+        foreach (IItem tabuMove in tabuList) {
+          TwoOptTabuMoveAttribute attribute = (tabuMove as TwoOptTabuMoveAttribute);
+          if (attribute != null) {
+            // if previously deleted Edge1Source-Target is readded
+            if (attribute.Edge1Source == E1S && attribute.Edge1Target == E2S || attribute.Edge1Source == E2S && attribute.Edge1Target == E1S
+              || attribute.Edge1Source == E1T && attribute.Edge1Target == E2T || attribute.Edge1Source == E2T && attribute.Edge1Target == E1T
+              // if previously deleted Edge2Source-Target is readded
+              || attribute.Edge2Source == E1T && attribute.Edge2Target == E2T || attribute.Edge2Source == E2T && attribute.Edge2Target == E1T
+              || attribute.Edge2Source == E1S && attribute.Edge2Target == E2S || attribute.Edge2Source == E2S && attribute.Edge2Target == E1S) {
+              isTabu = true;
+              break;
+            }
           }
         }
       }
       MoveTabuParameter.ActualValue = new BoolValue(isTabu);
       return base.Apply();
-    }
-
-    public override bool CanChangeName {
-      get { return false; }
     }
   }
 }
