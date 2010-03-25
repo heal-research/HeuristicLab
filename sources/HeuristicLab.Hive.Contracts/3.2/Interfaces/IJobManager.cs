@@ -60,5 +60,7 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
     Response DeleteProject(Guid projectId);
     [OperationContract]
     ResponseList<JobDto> GetJobsByProject(Guid projectId);
+    [OperationContract]
+    ResponseObject<JobDto> AddJobWithGroupStrings(SerializedJob job, IEnumerable<string> resources);
   }
 }

@@ -12,5 +12,7 @@ namespace HeuristicLab.Hive.Server.DataAccess {
 
     IEnumerable<ClientGroupDto> FindAllWithSubGroupsAndClients();
     IEnumerable<Guid> FindAllGroupAndParentGroupIdsForClient(Guid clientId);
+
+    IEnumerable<ClientGroupDto> FindByName(string res);
   }
 }

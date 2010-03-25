@@ -310,8 +310,8 @@ namespace HeuristicLab.Hive.Client.Core {
     /// <param name="sender"></param>
     /// <param name="e"></param>
     void wcfService_SendJobCompleted(object sender, SendJobCompletedEventArgs e) {
-      Logging.Instance.Info(this.ToString(), "Received new job with id " + e.Result.Job.Id);
-      if (e.Result.StatusMessage != ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOBS_LEFT) {        
+      if (e.Result.StatusMessage != ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOBS_LEFT) {
+        Logging.Instance.Info(this.ToString(), "Received new job with id " + e.Result.Job.Id);      
         bool sandboxed = false;
         List<byte[]> files = new List<byte[]>();
         Logging.Instance.Info(this.ToString(), "Fetching plugins for job " + e.Result.Job.Id);

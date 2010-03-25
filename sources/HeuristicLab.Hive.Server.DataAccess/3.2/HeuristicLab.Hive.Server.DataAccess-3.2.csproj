@@ -92,7 +92,6 @@
     <Compile Include="IJobAdapter.cs" />
     <Compile Include="IJobResultsAdapter.cs" />
     <Compile Include="IResourceAdapter.cs" />
-    <Compile Include="VarBinaryStream.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.DataAccess\3.2\HeuristicLab.DataAccess-3.2.csproj">

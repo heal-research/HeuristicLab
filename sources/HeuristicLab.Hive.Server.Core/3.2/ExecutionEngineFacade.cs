@@ -43,6 +43,10 @@ namespace HeuristicLab.Hive.Server.Core {
       return jobManager.AddNewJob(job);
     }
 
+    public ResponseObject<JobDto> AddJobWithGroupStrings(SerializedJob job, IEnumerable<string> resources) {      
+      return jobManager.AddJobWithGroupStrings(job, resources);
+    }
+
     public Response RequestSnapshot(Guid jobId) {
       return jobManager.RequestSnapshot(jobId);
     }

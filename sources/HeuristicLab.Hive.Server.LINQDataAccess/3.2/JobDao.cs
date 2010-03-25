@@ -59,7 +59,11 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
     public void Update(JobDto bObj) {
       Job job = Context.Jobs.SingleOrDefault(j => j.JobId.Equals(bObj.Id));
       DtoToEntity(bObj, job);
-      Context.SubmitChanges();
+      try {
+        Context.SubmitChanges();
+      } catch (ChangeConflictException cfe) {
+        
+      }
     }
 
     public IEnumerable<JobDto> FindActiveJobsOfClient(ClientDto client) {
@@ -111,12 +115,9 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
     }
 
     public Stream GetSerializedJobStream(Guid jobId) {
-      HiveDataContext hdc = new HiveDataContext();
-      String ConnStr = hdc.Connection.ConnectionString;
-      SqlConnection connection = new SqlConnection(hdc.Connection.ConnectionString);      
       VarBinarySource source =
         new VarBinarySource(
-          connection, null,
+          (SqlConnection)Context.Connection, null,
           "Job", "SerializedJob", "JobId", jobId);
 
       return new VarBinaryStream(source);

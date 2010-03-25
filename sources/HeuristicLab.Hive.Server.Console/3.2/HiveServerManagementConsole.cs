@@ -130,7 +130,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
       menuItemOpenCalendar.Click += (s, e) => {
                                       if (tvClientControl.SelectedNode != null) {
-                                        CgCalendar cal = new CgCalendar(((ClientGroupDto)tvClientControl.SelectedNode.Tag).Id);                                        
+                                        CgCalendar cal = new CgCalendar(((ClientGroupDto)tvClientControl.SelectedNode.Tag).Id, ((ClientGroupDto)tvClientControl.SelectedNode.Tag).Name);                                        
                                         cal.Show();
                                       }
                                     };

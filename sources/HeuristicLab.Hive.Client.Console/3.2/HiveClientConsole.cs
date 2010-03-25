@@ -530,6 +530,8 @@ namespace HeuristicLab.Hive.Client.Console
         {
           onlineTimes = e.Result.ToList<Appointment>();
           onlineTimes.ForEach(a => a.BorderColor = Color.Red);
+          dvOnline.Invalidate();
+
         }
         else
         {

@@ -34,6 +34,10 @@ namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
       }
     }
 
+    public UptimeManager() {
+      RestoreFromHDD();
+    }
+
     private void PersistToHDD() {
       XmlSerializer s = new XmlSerializer(typeof(AppointmentContainer));
       if (!Directory.Exists(path))

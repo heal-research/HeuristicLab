@@ -33,6 +33,7 @@ using System.Data;
 using System.IO;
 using HeuristicLab.Tracing;
 using System.Transactions;
+using HeuristicLab.Hive.Server.LINQDataAccess;
 
 namespace HeuristicLab.Hive.Server.Core {
   class JobManager: IJobManager, IInternalJobManager {
@@ -148,6 +149,16 @@ namespace HeuristicLab.Hive.Server.Core {
           session.EndSession();
       }
     }   */
+
+    public ResponseObject<JobDto> AddJobWithGroupStrings(SerializedJob job, IEnumerable<string> resources) {
+      IClientGroupDao cgd = DaoLocator.ClientGroupDao;
+      foreach (string res in resources) {
+        foreach(ClientGroupDto cg in cgd.FindByName(res)) {
+          job.JobInfo.AssignedResourceIds.Add(cg.Id);
+        }
+      }
+      return AddNewJob(job);
+    }
 
     /// <summary>
     /// Adds a new job into the database

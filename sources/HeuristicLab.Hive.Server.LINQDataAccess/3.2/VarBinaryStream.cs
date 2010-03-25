@@ -7,7 +7,7 @@ using System.IO;
 using System.Data.SqlClient;
 using System.Data;
 
-namespace HeuristicLab.Hive.Server.DataAccess {
+namespace HeuristicLab.Hive.Server.LINQDataAccess {
   /// <summary>
   /// The VarBinaryStream class inherits from Stream. It uses a
   /// VarBinarySource class to execute the actual TSQL.
@@ -148,7 +148,8 @@ namespace HeuristicLab.Hive.Server.DataAccess {
       string table, string
     dataColumn, string keyColumn, Guid key) {
       _connection = connection;
-      
+      _transaction = (SqlTransaction) ContextFactory.Context.Transaction;
+      /*
       if (_connection.State == ConnectionState.Closed) {
         _connection.Open();
         _ownedConnection = true;
@@ -169,7 +170,7 @@ namespace HeuristicLab.Hive.Server.DataAccess {
 
           _ownedTransaction = true;
         }
-      }
+      }        */
 
       _length = GetLength(connection, table, dataColumn, keyColumn, key);
       _readCommand = CreateReadCommand(connection, table, dataColumn,
@@ -252,15 +253,14 @@ where {2} = @key", dataColumn, table, keyColumn);
 
     public void Close() {
       if (_transaction != null) {
-        if (_ownedTransaction)
-          _transaction.Commit();
+        _transaction.Commit();
         _transaction = null;
       }
 
       if (_connection != null) {
-        if (_ownedConnection)
-          _connection.Close();
-        _connection = null;
+        _connection.Close();
+        ContextFactory.Context.Dispose();
+        ContextFactory.Context = null;
       }
     }
 

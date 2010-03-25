@@ -105,6 +105,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="UptimeCalendarDao.cs" />
+    <Compile Include="VarBinaryStream.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Hive.dbml">

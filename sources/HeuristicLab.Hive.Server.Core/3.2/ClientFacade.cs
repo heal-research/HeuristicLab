@@ -31,6 +31,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.ServiceModel;
 using HeuristicLab.Hive.Server.Core.InternalInterfaces;
+using System.Transactions;
 
 namespace HeuristicLab.Hive.Server.Core {
   [ServiceBehavior(InstanceContextMode =
@@ -102,8 +103,9 @@ namespace HeuristicLab.Hive.Server.Core {
       MultiStream stream =
         new MultiStream();
 
-      ResponseJob job = 
-        this.SendJob(clientId);
+      ResponseJob job = null;
+
+      job = this.SendJob(clientId);      
 
       //first send response
       stream.AddStream(
@@ -113,11 +115,13 @@ namespace HeuristicLab.Hive.Server.Core {
         ServiceLocator.GetJobManager();
 
       //second stream the job binary data
-      stream.AddStream(
-        ((IInternalJobManager)(jobManager)).
-        GetJobStreamById(
-          job.Job.Id));
-
+      
+      if(job.Job != null)
+        stream.AddStream(
+          ((IInternalJobManager) (jobManager)).
+            GetJobStreamById(
+            job.Job.Id));
+      
       OperationContext clientContext = OperationContext.Current;
         clientContext.OperationCompleted += new EventHandler(delegate(object sender, EventArgs args) {
           if (stream != null) {

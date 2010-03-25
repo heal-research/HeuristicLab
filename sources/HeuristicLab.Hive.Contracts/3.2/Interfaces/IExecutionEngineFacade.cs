@@ -32,10 +32,12 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
     [OperationContract]
     ResponseObject<JobDto> AddJob(SerializedJob job);
     [OperationContract]
+    ResponseObject<JobDto> AddJobWithGroupStrings(SerializedJob jobObj, IEnumerable<string> groups);
+    [OperationContract]
     Response RequestSnapshot(Guid jobId);
     [OperationContract]
     ResponseObject<SerializedJob> GetLastSerializedResult(Guid jobId, bool requested);
     [OperationContract]
-    Response AbortJob(Guid jobId);
+    Response AbortJob(Guid jobId);    
   }
 }

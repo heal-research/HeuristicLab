@@ -27,13 +27,16 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
   public partial class CgCalendar : Form {
 
     public Guid ResourceId { get; set; }
+    public string Name { get; set; }
 
     [XmlArray("Appointments")]
     [XmlArrayItem("Appointment", typeof(Appointment))]
     public List<Appointment> onlineTimes = new List<Appointment>();
 
-    public CgCalendar(Guid resourceId) {
+    public CgCalendar(Guid resourceId, String name) {      
+      Name = name;
       ResourceId = resourceId;
+      this.Text = Name + "(" + ResourceId + ")";
       InitializeComponent();
       InitCalender();
       UpdateCalendar();

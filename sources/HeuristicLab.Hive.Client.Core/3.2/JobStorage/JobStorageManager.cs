@@ -62,6 +62,7 @@ namespace HeuristicLab.Hive.Client.Core.JobStorage {
           catch (Exception e) {
             Logging.Instance.Error("JobStorageManager", "Job not on hdd but on list - deleting job from list", e);
             storedJobsList.Remove(storedJobsList[index - 1]);
+            StoreJobList();
           }
       
          }
@@ -81,15 +82,19 @@ namespace HeuristicLab.Hive.Client.Core.JobStorage {
         Directory.CreateDirectory(path);
             
       XmlSerializer serializer = new XmlSerializer(typeof(List<JobStorageInfo>));
+      FileStream stream = null;
       if(File.Exists(Path.Combine(path ,"list.xml"))) {
         try {
-          FileStream stream = new FileStream(Path.Combine(path, "list.xml"), FileMode.Open);
+          stream = new FileStream(Path.Combine(path, "list.xml"), FileMode.Open);
           XmlTextReader reader = new XmlTextReader(stream);
           storedJobsList = (List<JobStorageInfo>)serializer.Deserialize(reader);
           Logging.Instance.Info("JobStorageManager", "Loaded " + storedJobsList.Count + " Elements");
         }
         catch (Exception e) {
           Logging.Instance.Error("JobStorageManager", "Exception while loading the Stored Job List", e);
+        } finally {
+          if(stream != null) 
+            stream.Dispose();
         }
       } else {
         Logging.Instance.Info("JobStorageManager", "no stored jobs on harddisk, starting new list");

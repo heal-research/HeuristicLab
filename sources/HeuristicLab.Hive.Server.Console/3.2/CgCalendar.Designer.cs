@@ -23,7 +23,7 @@
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      Calendar.DrawTool drawTool2 = new Calendar.DrawTool();
+      Calendar.DrawTool drawTool1 = new Calendar.DrawTool();
       this.dvOnline = new Calendar.DayView();
       this.btnSaveCal = new System.Windows.Forms.Button();
       this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -45,8 +45,8 @@
       // 
       // dvOnline
       // 
-      drawTool2.DayView = this.dvOnline;
-      this.dvOnline.ActiveTool = drawTool2;
+      drawTool1.DayView = this.dvOnline;
+      this.dvOnline.ActiveTool = drawTool1;
       this.dvOnline.AmPmDisplay = false;
       this.dvOnline.AppointmentDuration = Calendar.AppointmentSlotDuration.SixtyMinutes;
       this.dvOnline.AppointmentHeightMode = Calendar.AppHeightDrawMode.TrueHeightAll;
@@ -66,6 +66,7 @@
       this.dvOnline.Size = new System.Drawing.Size(823, 354);
       this.dvOnline.StartDate = new System.DateTime(((long)(0)));
       this.dvOnline.TabIndex = 42;
+      this.dvOnline.OnSelectionChanged += new System.EventHandler<System.EventArgs>(this.dvOnline_OnSelectionChanged);
       // 
       // btnSaveCal
       // 
@@ -230,7 +231,6 @@
       this.Controls.Add(this.mcOnline);
       this.Controls.Add(this.dvOnline);
       this.Name = "CgCalendar";
-      this.Text = "Calendar";
       this.groupBox1.ResumeLayout(false);
       this.groupBox1.PerformLayout();
       this.ResumeLayout(false);

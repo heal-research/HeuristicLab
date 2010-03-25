@@ -152,5 +152,13 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
 
       return target;
     }
+
+    public IEnumerable<ClientGroupDto> FindByName(string res) {
+      return (from cq in Context.ClientGroups
+              where cq.Resource.Name == res
+              select EntityToDto(cq, null)).ToList();      
+    }
+
+
   }
 }

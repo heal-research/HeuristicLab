@@ -40,6 +40,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using HeuristicLab.Tracing;
 using Linq = HeuristicLab.Hive.Server.LINQDataAccess;
 using System.Transactions;
+using HeuristicLab.Hive.Server.LINQDataAccess;
 
 namespace HeuristicLab.Hive.Server.Core {
   /// <summary>
@@ -106,7 +107,9 @@ namespace HeuristicLab.Hive.Server.Core {
               HiveLogger.Info(this.ToString() + ": Client " + client.Id +
                               " wasn't offline but hasn't sent heartbeats - Resetting all his jobs");
               foreach (JobDto job in DaoLocator.JobDao.FindActiveJobsOfClient(client)) {
-                jobManager.ResetJobsDependingOnResults(job);
+                //maybe implementa n additional Watchdog? Till then, just set them offline..
+                DaoLocator.JobDao.SetJobOffline(job);                
+                //jobManager.ResetJobsDependingOnResults(job);
               }
             } else {
               DateTime lastHbOfClient = lastHeartbeats[client.Id];
@@ -192,9 +195,14 @@ namespace HeuristicLab.Hive.Server.Core {
       }
       heartbeatLock.ExitWriteLock();
 
-      clientInfo.State = State.idle;
+      ClientDto dbClient = DaoLocator.ClientDao.FindById(clientInfo.Id);
 
-      if (DaoLocator.ClientDao.FindById(clientInfo.Id) == null)
+      //Really set offline? 
+      //Reconnect issues with the currently calculating jobs
+      clientInfo.State = State.idle;
+      clientInfo.CalendarSyncStatus = dbClient != null ? dbClient.CalendarSyncStatus : CalendarState.NotAllowedToFetch;
+
+      if (dbClient == null)
         DaoLocator.ClientDao.Insert(clientInfo);
       else
         DaoLocator.ClientDao.Update(clientInfo);
@@ -335,9 +343,8 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="response"></param>
     private void processJobProcess(HeartBeatData hbData, ResponseHB response) {
       HiveLogger.Info(this.ToString() + " processJobProcess: Started for Client " + hbData.ClientId);
-
-      if (hbData.JobProgress != null && hbData.JobProgress.Count > 0) {
-        List<JobDto> jobsOfClient = new List<JobDto>(DaoLocator.JobDao.FindActiveJobsOfClient(DaoLocator.ClientDao.FindById(hbData.ClientId)));
+      List<JobDto> jobsOfClient = new List<JobDto>(DaoLocator.JobDao.FindActiveJobsOfClient(DaoLocator.ClientDao.FindById(hbData.ClientId)));
+      if (hbData.JobProgress != null && hbData.JobProgress.Count > 0) {        
         if (jobsOfClient == null || jobsOfClient.Count == 0) {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_IS_NOT_BEEING_CALCULATED;
@@ -368,42 +375,44 @@ namespace HeuristicLab.Hive.Server.Core {
           }
           DaoLocator.JobDao.Update(curJob);
         }
-        foreach (JobDto currJob in jobsOfClient) {
-          bool found = false;
+       }
+      foreach (JobDto currJob in jobsOfClient) {
+        bool found = false;
+        if(hbData.JobProgress != null) {
           foreach (Guid jobId in hbData.JobProgress.Keys) {
             if (jobId == currJob.Id) {
               found = true;
               break;
             }
           }
-          if (!found) {
-            lock (newAssignedJobs) {
-              if (newAssignedJobs.ContainsKey(currJob.Id)) {
-                newAssignedJobs[currJob.Id]--;
-                HiveLogger.Error(this.ToString() + " processJobProcess: Job TTL Reduced by one for job: " + currJob + "and is now: " + newAssignedJobs[currJob.Id] + ". User that sucks: " + currJob.Client);
-                if (newAssignedJobs[currJob.Id] <= 0) {
-                  HiveLogger.Error(this.ToString() + " processJobProcess: Job TTL reached Zero, Job gets removed: " + currJob + " and set back to offline. User that sucks: " + currJob.Client);
+        }
+        if (!found) {
+          lock (newAssignedJobs) {
+            if (newAssignedJobs.ContainsKey(currJob.Id)) {
+              newAssignedJobs[currJob.Id]--;
+              HiveLogger.Error(this.ToString() + " processJobProcess: Job TTL Reduced by one for job: " + currJob + "and is now: " + newAssignedJobs[currJob.Id] + ". User that sucks: " + currJob.Client);
+              if (newAssignedJobs[currJob.Id] <= 0) {
+                HiveLogger.Error(this.ToString() + " processJobProcess: Job TTL reached Zero, Job gets removed: " + currJob + " and set back to offline. User that sucks: " + currJob.Client);
 
-                  currJob.State = State.offline;
-                  DaoLocator.JobDao.Update(currJob);
-
-                  response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.AbortJob, currJob.Id));
-
-                  newAssignedJobs.Remove(currJob.Id);
-                }
-              } else {
-                HiveLogger.Error(this.ToString() + " processJobProcess: Job ID wasn't with the heartbeats:  " + currJob);
                 currJob.State = State.offline;
                 DaoLocator.JobDao.Update(currJob);
-              }
-            } // lock
-          } else {
-            lock (newAssignedJobs) {
 
-              if (newAssignedJobs.ContainsKey(currJob.Id)) {
-                HiveLogger.Info(this.ToString() + " processJobProcess: Job is sending a heart beat, removing it from the newAssignedJobList: " + currJob);
+                response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.AbortJob, currJob.Id));
+
                 newAssignedJobs.Remove(currJob.Id);
               }
+            } else {
+              HiveLogger.Error(this.ToString() + " processJobProcess: Job ID wasn't with the heartbeats:  " + currJob);
+              currJob.State = State.offline;
+              DaoLocator.JobDao.Update(currJob);
+            }
+          } // lock
+        } else {
+          lock (newAssignedJobs) {
+
+            if (newAssignedJobs.ContainsKey(currJob.Id)) {
+              HiveLogger.Info(this.ToString() + " processJobProcess: Job is sending a heart beat, removing it from the newAssignedJobList: " + currJob);
+              newAssignedJobs.Remove(currJob.Id);
             }
           }
         }

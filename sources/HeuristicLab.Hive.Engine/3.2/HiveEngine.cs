@@ -93,8 +93,13 @@ namespace HeuristicLab.Hive.Engine {
     public void Execute() {
       var jobObj = CreateJobObj();
       IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(HiveServerUrl);
-      
-      if(!String.Empty.Equals(RessourceIds)) {
+
+      List<string> groups = new List<string>();
+      if (!String.Empty.Equals(RessourceIds)) {
+        groups.AddRange(RessourceIds.Split(';'));        
+      }
+
+      /*if(!String.Empty.Equals(RessourceIds)) {
         String[] ids = RessourceIds.Split(';');
         foreach (string sid in ids) {        
           try {
@@ -104,7 +109,7 @@ namespace HeuristicLab.Hive.Engine {
             
           }   
         }
-      }      
+      } */     
 
       int loops = 1;
       
@@ -113,7 +118,7 @@ namespace HeuristicLab.Hive.Engine {
         loops = 1;
 
       for (int i = 0; i < loops; i++) {
-        ResponseObject<Contracts.BusinessObjects.JobDto> res = executionEngineFacade.AddJob(jobObj);
+        ResponseObject<Contracts.BusinessObjects.JobDto> res = executionEngineFacade.AddJobWithGroupStrings(jobObj, groups);
         jobId = res.Obj.Id;
       }
       

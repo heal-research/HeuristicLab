@@ -179,5 +179,8 @@ namespace HeuristicLab.Hive.Server.Core {
       return clientManager.SetUptimeCalendarForResource(guid, appointments, isForced);
     }
 
+    public ResponseObject<JobDto> AddJobWithGroupStrings(SerializedJob job, IEnumerable<string> resources) {
+      return jobManager.AddJobWithGroupStrings(job, resources);
+    }
   }
 }

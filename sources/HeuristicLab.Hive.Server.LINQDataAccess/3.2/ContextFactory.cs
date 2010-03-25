@@ -2,11 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Data.Common;
+using System.Data.SqlClient;
 
 namespace HeuristicLab.Hive.Server.LINQDataAccess {
   public class ContextFactory {
     [ThreadStatic]
     private static HiveDataContext _hiveDataContext;
+
+    [ThreadStatic]
+    private static SqlTransaction _currentTransaction;
 
     public static HiveDataContext Context { 
       get {
@@ -14,9 +19,17 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
           _hiveDataContext = new HiveDataContext();
         return _hiveDataContext;        
       } 
-      set {
+      set {        
         _hiveDataContext = value;
       }
+    }
+
+    public static SqlTransaction CurrentTransaction { 
+      get {
+        return _currentTransaction;
+      } set {
+        _currentTransaction = value;
+      } 
     }
   }
 }
