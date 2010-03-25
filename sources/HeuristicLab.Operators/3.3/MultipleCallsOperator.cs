@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Core;
@@ -33,55 +34,70 @@ namespace HeuristicLab.Operators {
   [Item("MultipleCallsOperator", "A base class for operators which apply multiple user-defined operators.")]
   [StorableClass]
   public abstract class MultipleCallsOperator : SingleSuccessorOperator {
-    protected IValueParameter<IOperator>[] OperatorParameters {
-      get {
-        return (from p in Parameters
-                where p is IValueParameter<IOperator>
-                where Operators.Contains(((IValueParameter<IOperator>)p).Value)
-                orderby p.Name ascending
-                select (IValueParameter<IOperator>)p).ToArray();
-      }
-    }
+    private List<OperatorParameter> operatorParameters;
 
     private OperatorList operators;
     [Storable]
     public OperatorList Operators {
       get { return operators; }
       private set {
+        if (operators != null) DeregisterOperatorsEvents();
         operators = value;
-        operators.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<IOperator>>(operators_ItemsAdded);
-        operators.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<IOperator>>(operators_ItemsRemoved);
-        operators.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<IOperator>>(operators_ItemsReplaced);
-        operators.ItemsMoved += new CollectionItemsChangedEventHandler<IndexedItem<IOperator>>(operators_ItemsMoved);
-        operators.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<IOperator>>(operators_CollectionReset);
-        var opParams = OperatorParameters;
-        foreach (IValueParameter<IOperator> opParam in opParams)
-          opParam.ValueChanged += new EventHandler(opParam_ValueChanged);
+        if (operators != null) RegisterOperatorsEvents();
       }
     }
 
     public MultipleCallsOperator()
       : base() {
       Operators = new OperatorList();
+      Initialize();
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void Initialize() {
+      operatorParameters = new List<OperatorParameter>();
+      for (int i = 0; i < Operators.Count; i++) {
+        OperatorParameter opParam = (OperatorParameter)Parameters[i.ToString()];
+        operatorParameters.Add(opParam);
+        opParam.ValueChanged += new EventHandler(opParam_ValueChanged);
+      }
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       MultipleCallsOperator clone = (MultipleCallsOperator)base.Clone(cloner);
       clone.Operators = (OperatorList)cloner.Clone(operators);
+      clone.Initialize();
       return clone;
     }
 
     private void UpdateOperatorParameters() {
-      var opParams = OperatorParameters;
-      foreach (IValueParameter<IOperator> opParam in opParams) {
+      foreach (OperatorParameter opParam in operatorParameters) {
         opParam.ValueChanged -= new EventHandler(opParam_ValueChanged);
         Parameters.Remove(opParam.Name);
       }
+      operatorParameters.Clear();
       for (int i = 0; i < Operators.Count; i++) {
-        IValueParameter<IOperator> opParam = new OperatorParameter(i.ToString(), string.Empty, Operators[i]);
+        OperatorParameter opParam = new OperatorParameter(i.ToString(), string.Empty, Operators[i]);
         opParam.ValueChanged += new EventHandler(opParam_ValueChanged);
         Parameters.Add(opParam);
+        operatorParameters.Add(opParam);
       }
+    }
+
+    #region Events
+    private void RegisterOperatorsEvents() {
+      operators.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<IOperator>>(operators_ItemsAdded);
+      operators.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<IOperator>>(operators_ItemsRemoved);
+      operators.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<IOperator>>(operators_ItemsReplaced);
+      operators.ItemsMoved += new CollectionItemsChangedEventHandler<IndexedItem<IOperator>>(operators_ItemsMoved);
+      operators.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<IOperator>>(operators_CollectionReset);
+    }
+    private void DeregisterOperatorsEvents() {
+      operators.ItemsAdded -= new CollectionItemsChangedEventHandler<IndexedItem<IOperator>>(operators_ItemsAdded);
+      operators.ItemsRemoved -= new CollectionItemsChangedEventHandler<IndexedItem<IOperator>>(operators_ItemsRemoved);
+      operators.ItemsReplaced -= new CollectionItemsChangedEventHandler<IndexedItem<IOperator>>(operators_ItemsReplaced);
+      operators.ItemsMoved -= new CollectionItemsChangedEventHandler<IndexedItem<IOperator>>(operators_ItemsMoved);
+      operators.CollectionReset -= new CollectionItemsChangedEventHandler<IndexedItem<IOperator>>(operators_CollectionReset);
     }
     private void operators_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<IOperator>> e) {
       UpdateOperatorParameters();
@@ -91,19 +107,19 @@ namespace HeuristicLab.Operators {
     }
     private void operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IOperator>> e) {
       foreach (IndexedItem<IOperator> item in e.Items)
-        ((IValueParameter<IOperator>)Parameters[item.Index.ToString()]).Value = item.Value;
+        operatorParameters[item.Index].Value = item.Value;
     }
     private void operators_ItemsMoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<IOperator>> e) {
       foreach (IndexedItem<IOperator> item in e.Items)
-        ((IValueParameter<IOperator>)Parameters[item.Index.ToString()]).Value = item.Value;
+        operatorParameters[item.Index].Value = item.Value;
     }
     private void operators_CollectionReset(object sender, CollectionItemsChangedEventArgs<IndexedItem<IOperator>> e) {
       UpdateOperatorParameters();
     }
     private void opParam_ValueChanged(object sender, EventArgs e) {
-      IValueParameter<IOperator> opParam = (IValueParameter<IOperator>)sender;
-      int index = int.Parse(opParam.Name);
-      operators[index] = opParam.Value;
+      OperatorParameter opParam = (OperatorParameter)sender;
+      operators[operatorParameters.IndexOf(opParam)] = opParam.Value;
     }
+    #endregion
   }
 }
