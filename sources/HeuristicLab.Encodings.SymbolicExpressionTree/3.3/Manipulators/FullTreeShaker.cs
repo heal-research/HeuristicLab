@@ -24,10 +24,8 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Random;
 using HeuristicLab.Data;
-using HeuristicLab.GP.Interfaces;
-using HeuristicLab.Selection;
 
-namespace HeuristicLab.GP.Operators {
+namespace HeuristicLab.Encodings.SymbolicExpressionTree {
   public class FullTreeShaker : DelegatingOperator {
     public override string Description {
       get { return "Manipulates all tree nodes for which a manipulator is defined."; }

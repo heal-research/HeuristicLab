@@ -24,10 +24,8 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Random;
 using HeuristicLab.Data;
-using HeuristicLab.Selection;
-using HeuristicLab.GP.Interfaces;
 
-namespace HeuristicLab.GP.Operators {
+namespace HeuristicLab.Encodings.SymbolicExpressionTree {
   public class OnePointShaker : DelegatingOperator {
     public override string Description {
       get { return "Selects a random node of all tree-nodes that have a manipulator defined and manipulates the selected node."; }

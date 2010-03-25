@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
 
-namespace HeuristicLab.GP.Interfaces {
+namespace HeuristicLab.Encodings.SymbolicExpressionTree {
   public interface IFunction : IItem {
     string Name { get; }
     IFunctionTree GetTreeNode();

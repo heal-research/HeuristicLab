@@ -23,7 +23,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.GP.Interfaces;
 
-namespace HeuristicLab.GP.Operators {
+namespace HeuristicLab.Encodings.SymbolicExpressionTree {
   public abstract class SizeConstrictedGPCrossoverBase : GPCrossoverBase {
 
     private int MaxRecombinationTries { get { return 20; } }

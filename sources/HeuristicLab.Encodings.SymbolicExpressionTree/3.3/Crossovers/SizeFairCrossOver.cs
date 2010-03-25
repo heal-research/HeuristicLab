@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.GP.Interfaces;
 using HeuristicLab.Random;
 
-namespace HeuristicLab.GP.Operators {
+namespace HeuristicLab.Encodings.SymbolicExpressionTree {
   /// <summary>
   /// Implementation of a size fair crossover operator as described in: 
   /// William B. Langdon 

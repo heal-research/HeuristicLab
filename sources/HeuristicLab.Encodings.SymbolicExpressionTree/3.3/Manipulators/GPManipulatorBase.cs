@@ -22,9 +22,8 @@
 using HeuristicLab.Core;
 using HeuristicLab.Random;
 using HeuristicLab.Data;
-using HeuristicLab.GP.Interfaces;
 
-namespace HeuristicLab.GP.Operators {
+namespace HeuristicLab.Encodings.SymbolicExpressionTree {
   public abstract class GPManipulatorBase : OperatorBase {
     public GPManipulatorBase()
       : base() {

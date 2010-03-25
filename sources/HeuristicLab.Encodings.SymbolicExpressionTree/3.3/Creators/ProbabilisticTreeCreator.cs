@@ -22,10 +22,9 @@
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Random;
-using HeuristicLab.GP.Interfaces;
 using System;
 
-namespace HeuristicLab.GP.Operators {
+namespace HeuristicLab.Encodings.SymbolicExpressionTree {
   public class ProbabilisticTreeCreator : OperatorBase {
     private static int MAX_TRIES { get { return 100; } }
 

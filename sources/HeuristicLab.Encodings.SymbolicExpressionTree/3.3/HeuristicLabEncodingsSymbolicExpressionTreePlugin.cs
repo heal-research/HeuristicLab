@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,17 +24,15 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.GP.Operators {
-  [Plugin("HeuristicLab.GP.Operators", "3.3.0.$WCREV$")]
-  [PluginFile("HeuristicLab.GP.Operators-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Core-3.2")]
-  [PluginDependency("HeuristicLab.Data-3.2")]
-  [PluginDependency("HeuristicLab.Evolutionary-3.2")]
-  [PluginDependency("HeuristicLab.GP", "3.3")]
-  [PluginDependency("HeuristicLab.GP.Interfaces", "3.3")]
-  [PluginDependency("HeuristicLab.Operators-3.2")]
-  [PluginDependency("HeuristicLab.Random-3.2")]
-  [PluginDependency("HeuristicLab.Selection-3.2")]
-  public class HeuristicLabGPOperatorsPlugin : PluginBase {
+namespace HeuristicLab.Encodings.SymbolicExpressionTree {
+  [Plugin("HeuristicLab.Encodings.SymbolicExpressionTree", "3.3.0.3218")]
+  [PluginFile("HeuristicLab.Encodings.SymbolicExpressionTree-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Core", "3.3.0.0")]
+  [PluginDependency("HeuristicLab.Data", "3.3.0.0")]
+  [PluginDependency("HeuristicLab.Optimization", "3.3.0.0")]
+  [PluginDependency("HeuristicLab.Parameters", "3.3.0.0")]
+  [PluginDependency("HeuristicLab.Persistence", "3.3.0.0")]
+  [PluginDependency("HeuristicLab.Random", "3.3.0.0")]
+  public class HeuristicLabEncodingsSymbolicExpressionTreePlugin : PluginBase {
   }
 }

@@ -24,9 +24,8 @@ using HeuristicLab.Data;
 using System;
 using HeuristicLab.Random;
 using System.Diagnostics;
-using HeuristicLab.GP.Interfaces;
 
-namespace HeuristicLab.GP.Operators {
+namespace HeuristicLab.Encodings.SymbolicExpressionTree {
   public class RampedTreeCreator : OperatorBase {
     public override string Description {
       get { return @"Generates a new random operator tree."; }

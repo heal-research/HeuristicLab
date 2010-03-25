@@ -23,53 +23,51 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
-using HeuristicLab.GP.Interfaces;
 using System.Xml;
 
-namespace HeuristicLab.GP {
-  public class FunctionTree : IFunctionTree {
-    private List<IFunctionTree> subTrees;
+namespace HeuristicLab.Encodings.SymbolicExpressionTree {
+  public class SymbolicExpressionTree  {
+    private List<SymbolicExpressionTree> subTrees;
     private IFunction function;
 
-    public FunctionTree() {
+    public SymbolicExpressionTree() {
     }
 
-    public FunctionTree(IFunction function) {
-      subTrees = new List<IFunctionTree>();
+    public SymbolicExpressionTree(Symbol symbol) {
+      subTrees = new List<SymbolicExpressionTree>();
       this.function = function;
     }
 
-    protected FunctionTree(FunctionTree original) {
+    protected SymbolicExpressionTree(SymbolicExpressionTree original) {
       this.function = original.Function;
-      this.subTrees = new List<IFunctionTree>(original.SubTrees.Count);
-      foreach (IFunctionTree originalSubTree in original.SubTrees) {
-        this.SubTrees.Add((IFunctionTree)originalSubTree.Clone());
+      this.subTrees = new List<SymbolicExpressionTree>(original.SubTrees.Count);
+      foreach (SymbolicExpressionTree originalSubTree in original.SubTrees) {
+        this.SubTrees.Add((SymbolicExpressionTree)originalSubTree.Clone());
       }
     }
 
-    #region IFunctionTree Members
     public virtual bool HasLocalParameters {
       get { return false; }
     }
 
-    public virtual IList<IFunctionTree> SubTrees {
+    public virtual IList<SymbolicExpressionTree> SubTrees {
       get { return subTrees; }
     }
 
-    public IFunction Function {
+    public Symbol Function {
       get { return function; }
       protected set { function = value; }
     }
 
     public int GetSize() {
       int size = 1;
-      foreach (IFunctionTree tree in SubTrees) size += tree.GetSize();
+      foreach (SymbolicExpressionTree tree in SubTrees) size += tree.GetSize();
       return size;
     }
 
     public int GetHeight() {
       int maxHeight = 0;
-      foreach (IFunctionTree tree in SubTrees) maxHeight = Math.Max(maxHeight, tree.GetHeight());
+      foreach (SymbolicExpressionTree tree in SubTrees) maxHeight = Math.Max(maxHeight, tree.GetHeight());
       return maxHeight + 1;
     }
 
@@ -81,11 +79,11 @@ namespace HeuristicLab.GP {
       return null;
     }
 
-    public void AddSubTree(IFunctionTree tree) {
+    public void AddSubTree(SymbolicExpressionTree tree) {
       SubTrees.Add(tree);
     }
 
-    public virtual void InsertSubTree(int index, IFunctionTree tree) {
+    public virtual void InsertSubTree(int index, SymbolicExpressionTree tree) {
       SubTrees.Insert(index, tree);
     }
 
@@ -97,7 +95,6 @@ namespace HeuristicLab.GP {
       return Function.Name;
     }
 
-    #endregion
 
     #region IStorable Members
 
@@ -106,7 +103,7 @@ namespace HeuristicLab.GP {
     }
 
     public virtual object Clone() {
-      return new FunctionTree(this);
+      return new SymbolicExpressionTree(this);
     }
 
     public object Clone(IDictionary<Guid, object> clonedObjects) {

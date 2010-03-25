@@ -223,6 +223,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Algorithms.Gen
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Services.Deployment-3.3.Tests", "HeuristicLab.Services.Deployment\3.3\Tests\HeuristicLab.Services.Deployment-3.3.Tests.csproj", "{421D9CCA-5A48-4813-AB9C-ED7025F9CC35}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Encodings.SymbolicExpressionTree-3.3", "HeuristicLab.Encodings.SymbolicExpressionTree\3.3\HeuristicLab.Encodings.SymbolicExpressionTree-3.3.csproj", "{125D3006-67F5-48CB-913E-73C0548F17FA}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = HeuristicLab 3.3.vsmdi
@@ -1244,6 +1246,21 @@ Global
 		{421D9CCA-5A48-4813-AB9C-ED7025F9CC35}.Services|x64.Build.0 = Release|x64
 		{421D9CCA-5A48-4813-AB9C-ED7025F9CC35}.Services|x86.ActiveCfg = Release|x86
 		{421D9CCA-5A48-4813-AB9C-ED7025F9CC35}.Services|x86.Build.0 = Release|x86
+		{125D3006-67F5-48CB-913E-73C0548F17FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{125D3006-67F5-48CB-913E-73C0548F17FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{125D3006-67F5-48CB-913E-73C0548F17FA}.Debug|x64.ActiveCfg = Debug|x64
+		{125D3006-67F5-48CB-913E-73C0548F17FA}.Debug|x64.Build.0 = Debug|x64
+		{125D3006-67F5-48CB-913E-73C0548F17FA}.Debug|x86.ActiveCfg = Debug|x86
+		{125D3006-67F5-48CB-913E-73C0548F17FA}.Debug|x86.Build.0 = Debug|x86
+		{125D3006-67F5-48CB-913E-73C0548F17FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{125D3006-67F5-48CB-913E-73C0548F17FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{125D3006-67F5-48CB-913E-73C0548F17FA}.Release|x64.ActiveCfg = Release|x64
+		{125D3006-67F5-48CB-913E-73C0548F17FA}.Release|x64.Build.0 = Release|x64
+		{125D3006-67F5-48CB-913E-73C0548F17FA}.Release|x86.ActiveCfg = Release|x86
+		{125D3006-67F5-48CB-913E-73C0548F17FA}.Release|x86.Build.0 = Release|x86
+		{125D3006-67F5-48CB-913E-73C0548F17FA}.Services|Any CPU.ActiveCfg = Release|Any CPU
+		{125D3006-67F5-48CB-913E-73C0548F17FA}.Services|x64.ActiveCfg = Release|x64
+		{125D3006-67F5-48CB-913E-73C0548F17FA}.Services|x86.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

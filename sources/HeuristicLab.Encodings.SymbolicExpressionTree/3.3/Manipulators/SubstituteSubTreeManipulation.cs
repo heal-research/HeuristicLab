@@ -26,7 +26,7 @@ using HeuristicLab.Random;
 using System.Diagnostics;
 using HeuristicLab.GP.Interfaces;
 
-namespace HeuristicLab.GP.Operators {
+namespace HeuristicLab.Encodings.SymbolicExpressionTree {
   public class SubstituteSubTreeManipulation : GPManipulatorBase {
 
     public override string Description {

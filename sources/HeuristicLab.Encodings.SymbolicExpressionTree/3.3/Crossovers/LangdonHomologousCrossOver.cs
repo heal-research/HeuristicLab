@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using HeuristicLab.Random;
 using HeuristicLab.GP.Interfaces;
 
-namespace HeuristicLab.GP.Operators {
+namespace HeuristicLab.Encodings.SymbolicExpressionTree {
   /// <summary>
   /// Implementation of a homologous crossover operator as described in: 
   /// William B. Langdon 

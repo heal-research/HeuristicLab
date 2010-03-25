@@ -23,14 +23,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
-using System.Xml;
-using System.Diagnostics;
-using HeuristicLab.GP.Interfaces;
 using System.Linq;
 
-namespace HeuristicLab.GP {
-  public abstract class Function : ItemBase, IFunction {
-    private List<List<IFunction>> allowedSubFunctions = new List<List<IFunction>>();
+namespace HeuristicLab.Encodings.SymbolicExpressionTree {
+  public abstract class Symbol {
+    private List<List<Symbol>> allowedSubFunctions = new List<List<Symbol>>();
     private int minArity = -1;
     private int maxArity = -1;
     private double tickets = 1.0;
@@ -87,10 +84,10 @@ namespace HeuristicLab.GP {
           while (maxArity > allowedSubFunctions.Count) {
             if (allowedSubFunctions.Count > 0) {
               // copy the list of allowed sub-functions from the previous slot
-              allowedSubFunctions.Add(new List<IFunction>(allowedSubFunctions[allowedSubFunctions.Count - 1]));
+              allowedSubFunctions.Add(new List<Symbol>(allowedSubFunctions[allowedSubFunctions.Count - 1]));
             } else {
               // add empty list
-              allowedSubFunctions.Add(new List<IFunction>());
+              allowedSubFunctions.Add(new List<Symbol>());
             }
           }
           ResetCachedValues();
@@ -106,7 +103,7 @@ namespace HeuristicLab.GP {
           RecalculateMinimalTreeSize();
           FireChanged();
         }
-        Debug.Assert(minTreeSize > 0);
+        // Debug.Assert(minTreeSize > 0);
         return minTreeSize;
       }
     }
@@ -117,7 +114,7 @@ namespace HeuristicLab.GP {
           RecalculateMinimalTreeHeight();
           FireChanged();
         }
-        Debug.Assert(minTreeHeight > 0);
+        // Debug.Assert(minTreeHeight > 0);
         return minTreeHeight;
       }
     }

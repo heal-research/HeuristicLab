@@ -22,10 +22,8 @@
 using System;
 using HeuristicLab.Core;
 using System.Diagnostics;
-using HeuristicLab.Evolutionary;
-using HeuristicLab.GP.Interfaces;
 
-namespace HeuristicLab.GP.Operators {
+namespace HeuristicLab.Encodings.SymbolicExpressionTree {
   public abstract class GPCrossoverBase : CrossoverBase {
     public GPCrossoverBase()
       : base() {

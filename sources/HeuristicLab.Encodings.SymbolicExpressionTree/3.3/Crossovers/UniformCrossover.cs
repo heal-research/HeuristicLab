@@ -21,9 +21,8 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Core;
-using HeuristicLab.GP.Interfaces;
 
-namespace HeuristicLab.GP.Operators {
+namespace HeuristicLab.Encodings.SymbolicExpressionTree {
   /// <summary>
   /// Implementation of a homologous uniform crossover operator as described in: 
   /// R. Poli and W. B. Langdon.  On the Search Properties of Different Crossover Operators in Genetic Programming.

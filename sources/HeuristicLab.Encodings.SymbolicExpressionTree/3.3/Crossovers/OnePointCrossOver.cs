@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using HeuristicLab.Core;
 using HeuristicLab.GP.Interfaces;
 
-namespace HeuristicLab.GP.Operators {
+namespace HeuristicLab.Encodings.SymbolicExpressionTree {
   /// <summary>
   /// Implementation of a homologous one point crossover operator as described in: 
   /// W. B. Langdon and R. Poli.  Foundations of Genetic Programming. Springer-Verlag, 2002.
