@@ -81,8 +81,6 @@ namespace HeuristicLab.Optimization.Views {
           if (name == null) name = t.GetPrettyName();
           engineComboBox.Items.Add(name);
         }
-        engineTypes.Insert(0, null);
-        engineComboBox.Items.Insert(0, "-");
       }
 
       if (Content == null) {
@@ -90,7 +88,7 @@ namespace HeuristicLab.Optimization.Views {
         createUserDefinedAlgorithmButton.Enabled = false;
       } else {
         if (Content.Engine == null)
-          engineComboBox.SelectedIndex = engineTypes.IndexOf(null);
+          engineComboBox.SelectedIndex = -1;
         else
           engineComboBox.SelectedIndex = engineTypes.IndexOf(Content.Engine.GetType());
         engineViewHost.ViewType = null;
@@ -124,7 +122,7 @@ namespace HeuristicLab.Optimization.Views {
         Invoke(new EventHandler(Content_EngineChanged), sender, e);
       else {
         if (Content.Engine == null)
-          engineComboBox.SelectedIndex = engineTypes.IndexOf(null);
+          engineComboBox.SelectedIndex = -1;
         else
           engineComboBox.SelectedIndex = engineTypes.IndexOf(Content.Engine.GetType());
         engineViewHost.ViewType = null;
@@ -134,11 +132,13 @@ namespace HeuristicLab.Optimization.Views {
 
     protected virtual void engineComboBox_SelectedIndexChanged(object sender, EventArgs e) {
       if (Content != null) {
-        Type t = engineTypes[engineComboBox.SelectedIndex];
-        if (t == null)
+        if (engineComboBox.SelectedIndex == -1)
           Content.Engine = null;
-        else if ((Content.Engine == null) || (Content.Engine.GetType() != t))
-          Content.Engine = (IEngine)Activator.CreateInstance(t);
+        else {
+          Type t = engineTypes[engineComboBox.SelectedIndex];
+          if ((Content.Engine == null) || (Content.Engine.GetType() != t))
+            Content.Engine = (IEngine)Activator.CreateInstance(t);
+        }
       }
     }
 
