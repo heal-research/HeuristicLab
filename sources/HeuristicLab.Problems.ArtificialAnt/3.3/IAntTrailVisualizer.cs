@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -20,19 +20,10 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Encodings.SymbolicExpressionTree {
-  [Plugin("HeuristicLab.Encodings.SymbolicExpressionTree", "3.3.0.$WCREV$")]
-  [PluginFile("HeuristicLab.Encodings.SymbolicExpressionTree-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Core", "3.3.0.0")]
-  [PluginDependency("HeuristicLab.Data", "3.3.0.0")]
-  [PluginDependency("HeuristicLab.Optimization", "3.3.0.0")]
-  [PluginDependency("HeuristicLab.Parameters", "3.3.0.0")]
-  [PluginDependency("HeuristicLab.Persistence", "3.3.0.0")]
-  [PluginDependency("HeuristicLab.Random", "3.3.0.0")]
-  public class HeuristicLabEncodingsSymbolicExpressionTreePlugin : PluginBase {
+namespace HeuristicLab.Problems.ArtificialAnt {
+  public interface IAntTrailVisualizer : ISolutionsVisualizer {
   }
 }

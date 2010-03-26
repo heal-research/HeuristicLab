@@ -24,9 +24,12 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
 using System.Linq;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.SymbolicExpressionTree {
-  public abstract class Symbol {
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
+  [StorableClass]
+  [Item("Symbol", "Represents a symbol in a symbolic function tree.")]
+  public abstract class Symbol : Item {
     private List<List<Symbol>> allowedSubFunctions = new List<List<Symbol>>();
     private int minArity = -1;
     private int maxArity = -1;
@@ -43,17 +46,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTree {
         if (string.IsNullOrEmpty(value)) throw new ArgumentException();
         if (value != name) {
           name = value;
-          FireChanged();
         }
       }
     }
 
-    protected Function() {
+    protected Symbol() {
       name = this.GetType().Name;
-    }
-
-    public virtual string Description {
-      get { return "Description for this function is missing (TODO)"; }
     }
 
     public int MinSubTrees {
@@ -64,9 +62,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTree {
         if (value < 0) throw new ArgumentException();
         if (minArity != value) {
           minArity = value;
-          while (minArity > allowedSubFunctions.Count) allowedSubFunctions.Add(new List<IFunction>());
+          while (minArity > allowedSubFunctions.Count) allowedSubFunctions.Add(new List<Symbol>());
           ResetCachedValues();
-          FireChanged();
         }
       }
     }
@@ -91,7 +88,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTree {
             }
           }
           ResetCachedValues();
-          FireChanged();
         }
       }
     }
@@ -101,7 +97,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTree {
       get {
         if (minTreeSize <= 0) {
           RecalculateMinimalTreeSize();
-          FireChanged();
         }
         // Debug.Assert(minTreeSize > 0);
         return minTreeSize;
@@ -112,7 +107,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTree {
       get {
         if (minTreeHeight <= 0) {
           RecalculateMinimalTreeHeight();
-          FireChanged();
         }
         // Debug.Assert(minTreeHeight > 0);
         return minTreeHeight;
@@ -125,7 +119,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTree {
         if (value < 0.0) throw new ArgumentException("Number of tickets must be positive");
         if (value != tickets) {
           tickets = value;
-          FireChanged();
         }
       }
     }
@@ -135,7 +128,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTree {
       set {
         if (initializer != value) {
           initializer = value;
-          FireChanged();
         }
       }
     }
@@ -145,37 +137,34 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTree {
       set {
         if (manipulator != value) {
           manipulator = value;
-          FireChanged();
         }
       }
     }
 
-    public virtual IFunctionTree GetTreeNode() {
-      return new FunctionTree(this);
+    public virtual SymbolicExpressionTreeNode CreateTreeNode() {
+      return new SymbolicExpressionTreeNode(this);
     }
 
-    public ICollection<IFunction> GetAllowedSubFunctions(int index) {
+    public IEnumerable<Symbol> GetAllowedSubFunctions(int index) {
       if (index < 0 || index > MaxSubTrees) throw new ArgumentException("Index outside of allowed range. index = " + index);
       return allowedSubFunctions[index];
     }
 
-    public void AddAllowedSubFunction(IFunction function, int index) {
+    public void AddAllowedSubFunction(Symbol symbol, int index) {
       if (index < 0 || index > MaxSubTrees) throw new ArgumentException("Index outside of allowed range. index = " + index);
       if (allowedSubFunctions[index] == null) {
-        allowedSubFunctions[index] = new List<IFunction>();
+        allowedSubFunctions[index] = new List<Symbol>();
       }
-      if (!allowedSubFunctions[index].Contains(function)) {
-        allowedSubFunctions[index].Add(function);
+      if (!allowedSubFunctions[index].Contains(symbol)) {
+        allowedSubFunctions[index].Add(symbol);
       }
       ResetCachedValues();
-      FireChanged();
     }
-    public void RemoveAllowedSubFunction(IFunction function, int index) {
+    public void RemoveAllowedSubFunction(Symbol symbol, int index) {
       if (index < 0 || index > MaxSubTrees) throw new ArgumentException("Index outside of allowed range. index = " + index);
-      if (allowedSubFunctions[index].Contains(function)) {
-        allowedSubFunctions[index].Remove(function);
+      if (allowedSubFunctions[index].Contains(symbol)) {
+        allowedSubFunctions[index].Remove(symbol);
         ResetCachedValues();
-        FireChanged();
       }
     }
 
@@ -184,8 +173,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTree {
       minTreeSize = -1;
     }
 
-    public bool IsAllowedSubFunction(IFunction function, int index) {
-      return GetAllowedSubFunctions(index).Contains(function);
+    public bool IsAllowedSubFunction(Symbol symbol, int index) {
+      return GetAllowedSubFunctions(index).Contains(symbol);
     }
 
     private void RecalculateMinimalTreeSize() {
@@ -212,78 +201,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTree {
       }
     }
 
-    public override IView CreateView() {
-      return new FunctionView(this);
-    }
-
     public override string ToString() {
       return name;
     }
-
-    #region persistence
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      Function clone = (Function)base.Clone(clonedObjects);
-      if (initializer != null) clone.initializer = (IOperator)Auxiliary.Clone(initializer, clonedObjects);
-      else clone.initializer = null;
-      if (manipulator != null) clone.manipulator = (IOperator)Auxiliary.Clone(manipulator, clonedObjects);
-      else clone.manipulator = null;
-      clone.MaxSubTrees = maxArity;
-      clone.MinSubTrees = minArity;
-      clone.Tickets = tickets;
-      clone.allowedSubFunctions.Clear();
-      for (int i = 0; i < MaxSubTrees; i++) {
-        var allowedSubFunctionsForSlot = new List<IFunction>();
-        foreach (IFunction f in GetAllowedSubFunctions(i)) {
-          allowedSubFunctionsForSlot.Add((IFunction)Auxiliary.Clone(f, clonedObjects));
-        }
-        clone.allowedSubFunctions.Add(allowedSubFunctionsForSlot);
-      }
-      return clone;
-    }
-
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      XmlAttribute minSubTreesAttr = document.CreateAttribute("MinSubTrees");
-      minSubTreesAttr.Value = XmlConvert.ToString(MinSubTrees);
-      XmlAttribute maxSubTreesAttr = document.CreateAttribute("MaxSubTrees");
-      maxSubTreesAttr.Value = XmlConvert.ToString(MaxSubTrees);
-      node.Attributes.Append(minSubTreesAttr);
-      node.Attributes.Append(maxSubTreesAttr);
-      if (initializer != null)
-        node.AppendChild(PersistenceManager.Persist("Initializer", initializer, document, persistedObjects));
-      if (manipulator != null)
-        node.AppendChild(PersistenceManager.Persist("Manipulator", manipulator, document, persistedObjects));
-      for (int i = 0; i < MaxSubTrees; i++) {
-        XmlNode slotNode = document.CreateElement("AllowedSubFunctions");
-        XmlAttribute slotAttr = document.CreateAttribute("Slot");
-        slotAttr.Value = XmlConvert.ToString(i);
-        slotNode.Attributes.Append(slotAttr);
-        node.AppendChild(slotNode);
-        foreach (IFunction f in GetAllowedSubFunctions(i)) {
-          slotNode.AppendChild(PersistenceManager.Persist(f, document, persistedObjects));
-        }
-      }
-      return node;
-    }
-
-    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      MinSubTrees = XmlConvert.ToInt32(node.Attributes["MinSubTrees"].Value);
-      MaxSubTrees = XmlConvert.ToInt32(node.Attributes["MaxSubTrees"].Value);
-      if (node.SelectSingleNode("Initializer") != null) {
-        initializer = (IOperator)PersistenceManager.Restore(node.SelectSingleNode("Initializer"), restoredObjects);
-      }
-      if (node.SelectSingleNode("Manipulator") != null) {
-        manipulator = (IOperator)PersistenceManager.Restore(node.SelectSingleNode("Manipulator"), restoredObjects);
-      }
-      foreach (var subFunctionsList in allowedSubFunctions) subFunctionsList.Clear();
-      foreach (XmlNode allowedSubFunctionsNode in node.SelectNodes("AllowedSubFunctions")) {
-        int slot = XmlConvert.ToInt32(allowedSubFunctionsNode.Attributes["Slot"].Value);
-        foreach (XmlNode fNode in allowedSubFunctionsNode.ChildNodes) {
-          AddAllowedSubFunction((IFunction)PersistenceManager.Restore(fNode, restoredObjects), slot);
-        }
-      }
-    }
-    #endregion
   }
 }

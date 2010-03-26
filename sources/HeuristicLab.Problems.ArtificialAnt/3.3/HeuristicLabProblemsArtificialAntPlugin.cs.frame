@@ -24,15 +24,18 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Encodings.SymbolicExpressionTree {
-  [Plugin("HeuristicLab.Encodings.SymbolicExpressionTree", "3.3.0.3219")]
-  [PluginFile("HeuristicLab.Encodings.SymbolicExpressionTree-3.3.dll", PluginFileType.Assembly)]
+namespace HeuristicLab.Problems.ArtificialAnt {
+  [Plugin("HeuristicLab.Problems.ArtificialAnt","3.3.0.$WCREV$")]
+  [PluginFile("HeuristicLab.Problems.ArtificialAnt-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Collections", "3.3.0.0")]
+  [PluginDependency("HeuristicLab.Common.Resources", "3.2.0.0")]
   [PluginDependency("HeuristicLab.Core", "3.3.0.0")]
   [PluginDependency("HeuristicLab.Data", "3.3.0.0")]
+  [PluginDependency("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding","3.3.0.0")]
   [PluginDependency("HeuristicLab.Optimization", "3.3.0.0")]
+  [PluginDependency("HeuristicLab.Operators", "3.3.0.0")]
   [PluginDependency("HeuristicLab.Parameters", "3.3.0.0")]
   [PluginDependency("HeuristicLab.Persistence", "3.3.0.0")]
-  [PluginDependency("HeuristicLab.Random", "3.3.0.0")]
-  public class HeuristicLabEncodingsSymbolicExpressionTreePlugin : PluginBase {
+  public class HeuristicLabProblemsArtificialAntPlugin : PluginBase {
   }
 }

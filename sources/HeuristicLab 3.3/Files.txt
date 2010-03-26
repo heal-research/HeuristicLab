@@ -23,6 +23,7 @@ HeuristicLab.Encodings.BinaryVectorEncoding\3.3:HeuristicLab.Encodings.BinaryVec
 HeuristicLab.Encodings.IntegerVectorEncoding\3.3:HeuristicLab.Encodings.IntegerVectorEncoding-3.3.dll
 HeuristicLab.Encodings.PermutationEncoding\3.3:HeuristicLab.Encodings.PermutationEncoding-3.3.dll
 HeuristicLab.Encodings.RealVectorEncoding\3.3:HeuristicLab.Encodings.RealVectorEncoding-3.3.dll
+HeuristicLab.Encodings.SymbolicExpressionTreeEncoding\3.3:HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3.dll
 HeuristicLab.Logging\3.3:HeuristicLab.Logging-3.3.dll
 HeuristicLab.MainForm\3.2:HeuristicLab.MainForm-3.2.dll
 HeuristicLab.MainForm.WindowsForms\3.2:HeuristicLab.MainForm.WindowsForms-3.2.dll
@@ -39,6 +40,7 @@ HeuristicLab.Parameters.Views\3.3:HeuristicLab.Parameters.Views-3.3.dll
 HeuristicLab.Persistence\3.3:HeuristicLab.Persistence-3.3.dll
 HeuristicLab.Persistence.GUI\3.3:HeuristicLab.Persistence.GUI-3.3.dll
 HeuristicLab.PluginAdministrator\3.3:HeuristicLab.PluginAdministrator-3.3.dll
+HeuristicLab.Problems.ArtificialAnt\3.3:HeuristicLab.Problems.ArtificialAnt-3.3.dll
 HeuristicLab.Problems.Knapsack\3.3:HeuristicLab.Problems.Knapsack-3.3.dll
 HeuristicLab.Problems.Knapsack.Views\3.3:HeuristicLab.Problems.Knapsack.Views-3.3.dll
 HeuristicLab.Problems.OneMax\3.3:HeuristicLab.Problems.OneMax-3.3.dll
