@@ -243,6 +243,7 @@ namespace HeuristicLab.Hive.Server.Core {
       if (client == null) {
         response.Success = false;
         response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_RESOURCE_NOT_FOUND;
+        return response;
       }
       
       client.CalendarSyncStatus = state;
