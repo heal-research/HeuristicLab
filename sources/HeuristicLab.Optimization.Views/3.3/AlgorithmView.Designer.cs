@@ -206,19 +206,19 @@ namespace HeuristicLab.Optimization.Views {
       this.startButton.Name = "startButton";
       this.startButton.Size = new System.Drawing.Size(24, 24);
       this.startButton.TabIndex = 5;
-      this.toolTip.SetToolTip(this.startButton, "Start Algorithm");
+      this.toolTip.SetToolTip(this.startButton, "Start/Resume Algorithm");
       this.startButton.UseVisualStyleBackColor = true;
       this.startButton.Click += new System.EventHandler(this.startButton_Click);
       // 
       // stopButton
       // 
       this.stopButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.stopButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Stop;
+      this.stopButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Pause;
       this.stopButton.Location = new System.Drawing.Point(30, 458);
       this.stopButton.Name = "stopButton";
       this.stopButton.Size = new System.Drawing.Size(24, 24);
       this.stopButton.TabIndex = 6;
-      this.toolTip.SetToolTip(this.stopButton, "Stop Algorithm");
+      this.toolTip.SetToolTip(this.stopButton, "Pause Algorithm");
       this.stopButton.UseVisualStyleBackColor = true;
       this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
       // 

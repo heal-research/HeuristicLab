@@ -91,18 +91,6 @@ namespace HeuristicLab.Optimization.Views {
       // 
       this.toolTip.SetToolTip(this.openProblemButton, "Open Problem");
       // 
-      // startButton
-      // 
-      this.toolTip.SetToolTip(this.startButton, "Start Algorithm");
-      // 
-      // stopButton
-      // 
-      this.toolTip.SetToolTip(this.stopButton, "Stop Algorithm");
-      // 
-      // resetButton
-      // 
-      this.toolTip.SetToolTip(this.resetButton, "Reset Algorithm");
-      // 
       // nameTextBox
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);

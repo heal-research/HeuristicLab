@@ -104,17 +104,14 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm.Views {
       // startButton
       // 
       this.startButton.Location = new System.Drawing.Point(0, 552);
-      this.toolTip.SetToolTip(this.startButton, "Start Algorithm");
       // 
       // stopButton
       // 
       this.stopButton.Location = new System.Drawing.Point(30, 552);
-      this.toolTip.SetToolTip(this.stopButton, "Stop Algorithm");
       // 
       // resetButton
       // 
       this.resetButton.Location = new System.Drawing.Point(60, 552);
-      this.toolTip.SetToolTip(this.resetButton, "Reset Algorithm");
       // 
       // executionTimeLabel
       // 

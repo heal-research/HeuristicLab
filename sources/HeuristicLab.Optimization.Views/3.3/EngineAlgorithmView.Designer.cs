@@ -97,17 +97,14 @@ namespace HeuristicLab.Optimization.Views {
       // startButton
       // 
       this.startButton.Location = new System.Drawing.Point(0, 525);
-      this.toolTip.SetToolTip(this.startButton, "Start Algorithm");
       // 
       // stopButton
       // 
       this.stopButton.Location = new System.Drawing.Point(30, 525);
-      this.toolTip.SetToolTip(this.stopButton, "Stop Algorithm");
       // 
       // resetButton
       // 
       this.resetButton.Location = new System.Drawing.Point(60, 525);
-      this.toolTip.SetToolTip(this.resetButton, "Reset Algorithm");
       // 
       // executionTimeLabel
       // 
