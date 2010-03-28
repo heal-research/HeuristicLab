@@ -20,36 +20,37 @@
 #endregion
 
 using HeuristicLab.Core;
+using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Operators {
+namespace HeuristicLab.Optimization.Operators {
   /// <summary>
-  /// An operator which collects the actual values of parameters and adds them to a collection of variables.
+  /// An operator which collects the actual values of parameters and adds them to a collection of results.
   /// </summary>
-  [Item("ResultsCollector", "An operator which collects the actual values of parameters and adds them to a collection of variables.")]
+  [Item("ResultsCollector", "An operator which collects the actual values of parameters and adds them to a collection of results.")]
   [StorableClass]
   public class ResultsCollector : ValuesCollector {
-    public ValueLookupParameter<VariableCollection> ResultsParameter {
-      get { return (ValueLookupParameter<VariableCollection>)Parameters["Results"]; }
+    public ValueLookupParameter<ResultCollection> ResultsParameter {
+      get { return (ValueLookupParameter<ResultCollection>)Parameters["Results"]; }
     }
 
     public ResultsCollector()
       : base() {
-      Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The variable collection where the collected values should be stored."));
+      Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the collected values should be stored."));
     }
 
     public override IOperation Apply() {
-      VariableCollection results = ResultsParameter.ActualValue;
-      IVariable var;
+      ResultCollection results = ResultsParameter.ActualValue;
+      IResult result;
       foreach (IParameter param in CollectedValues) {
         IItem value = param.ActualValue;
         if (value != null) {
-          results.TryGetValue(param.Name, out var);
-          if (var != null)
-            var.Value = value;
+          results.TryGetValue(param.Name, out result);
+          if (result != null)
+            result.Value = value;
           else
-            results.Add(new Variable(param.Name, param.Description, value));
+            results.Add(new Result(param.Name, param.Description, value));
         }
       }
       return base.Apply();

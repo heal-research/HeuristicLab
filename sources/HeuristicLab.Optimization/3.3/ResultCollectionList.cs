@@ -19,33 +19,17 @@
  */
 #endregion
 
-using System;
-using HeuristicLab.Collections;
-using HeuristicLab.Common;
+using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
-  /// <summary>
-  /// Interface to represent an algorithm.
-  /// </summary>
-  public interface IAlgorithm : IParameterizedNamedItem {
-    Type ProblemType { get; }
-    IProblem Problem { get; set; }
-    ResultCollection Results { get; }
-    TimeSpan ExecutionTime { get; }
-    bool Running { get; }
-    bool Finished { get; }
-
-    void Prepare();
-    void Start();
-    void Stop();
-
-    event EventHandler ProblemChanged;
-    event EventHandler ExecutionTimeChanged;
-    event EventHandler RunningChanged;
-    event EventHandler Prepared;
-    event EventHandler Started;
-    event EventHandler Stopped;
-    event EventHandler<EventArgs<Exception>> ExceptionOccurred;
+  [StorableClass]
+  [Item("ResultCollectionList", "Represents list of result collections.")]
+  public sealed class ResultCollectionList : ItemList<ResultCollection> {
+    public ResultCollectionList() : base() { }
+    public ResultCollectionList(int capacity) : base(capacity) { }
+    public ResultCollectionList(IEnumerable<ResultCollection> collection) : base(collection) { }
   }
 }

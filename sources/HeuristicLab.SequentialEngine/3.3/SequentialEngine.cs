@@ -59,8 +59,8 @@ namespace HeuristicLab.SequentialEngine {
         }
         catch (Exception ex) {
           ExecutionStack.Push(operation);
-          Stop();
           OnExceptionOccurred(ex);
+          Stop();
         }
         if (operation.Operator.Breakpoint)
           Stop();

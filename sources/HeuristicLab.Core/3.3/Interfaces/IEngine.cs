@@ -65,6 +65,10 @@ namespace HeuristicLab.Core {
     /// </summary>
     event EventHandler ExecutionTimeChanged;
     /// <summary>
+    /// Occurs when the running flag was changed.
+    /// </summary>
+    event EventHandler RunningChanged;
+    /// <summary>
     /// Occurs when the engine is prepared for a new run.
     /// </summary>
     event EventHandler Prepared;

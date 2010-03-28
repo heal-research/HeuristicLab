@@ -74,6 +74,12 @@ namespace HeuristicLab.Core {
     /// </summary>
     public bool Running {
       get { return running; }
+      private set {
+        if (running != value) {
+          running = value;
+          OnRunningChanged();
+        }
+      }
     }
 
     /// <summary>
@@ -125,8 +131,6 @@ namespace HeuristicLab.Core {
     }
 
     public void Prepare(IOperation initialOperation) {
-      Canceled = false;
-      running = false;
       ExecutionTime = new TimeSpan();
       executionStack.Clear();
       if (initialOperation != null)
@@ -137,7 +141,7 @@ namespace HeuristicLab.Core {
     /// <remarks>Calls <see cref="ThreadPool.QueueUserWorkItem(System.Threading.WaitCallback, object)"/> 
     /// of class <see cref="ThreadPool"/>.</remarks>
     public void Start() {
-      running = true;
+      Running = true;
       Canceled = false;
       ThreadPool.QueueUserWorkItem(new WaitCallback(Run), null);
     }
@@ -145,7 +149,7 @@ namespace HeuristicLab.Core {
     /// <remarks>Calls <see cref="ThreadPool.QueueUserWorkItem(System.Threading.WaitCallback, object)"/> 
     /// of class <see cref="ThreadPool"/>.</remarks>
     public void Step() {
-      running = true;
+      Running = true;
       Canceled = false;
       ThreadPool.QueueUserWorkItem(new WaitCallback(RunStep), null);
     }
@@ -166,7 +170,6 @@ namespace HeuristicLab.Core {
         start = end;
       }
       ExecutionTime += DateTime.Now - start;
-      running = false;
       OnStopped();
     }
     private void RunStep(object state) {
@@ -175,7 +178,6 @@ namespace HeuristicLab.Core {
       if ((!Canceled) && (!Finished))
         ProcessNextOperator();
       ExecutionTime += DateTime.Now - start;
-      running = false;
       OnStopped();
     }
 
@@ -194,6 +196,17 @@ namespace HeuristicLab.Core {
     protected virtual void OnExecutionTimeChanged() {
       if (ExecutionTimeChanged != null)
         ExecutionTimeChanged(this, EventArgs.Empty);
+    }
+    /// <summary>
+    /// Occurs when the running flag changed.
+    /// </summary>
+    public event EventHandler RunningChanged;
+    /// <summary>
+    /// Fires a new <c>RunningChanged</c> event.
+    /// </summary>
+    protected virtual void OnRunningChanged() {
+      if (RunningChanged != null)
+        RunningChanged(this, EventArgs.Empty);
     }
     /// <summary>
     /// Occurs when the execution is prepared for a new run.
@@ -227,6 +240,8 @@ namespace HeuristicLab.Core {
     protected virtual void OnStopped() {
       if (Stopped != null)
         Stopped(this, EventArgs.Empty);
+      Canceled = false;
+      Running = false;
     }
     protected virtual void OnCanceledChanged() { }
     /// <summary>

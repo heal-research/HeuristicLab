@@ -31,54 +31,39 @@ namespace HeuristicLab.Optimization.Views {
   /// <summary>
   /// The base class for visual representations of items.
   /// </summary>
-  [View("Algorithm View")]
-  [Content(typeof(Algorithm), true)]
-  [Content(typeof(IAlgorithm), false)]
-  public partial class AlgorithmView : NamedItemView {
-    private TypeSelectorDialog problemTypeSelectorDialog;
-    private int executionTimeCounter;
+  [View("BatchRun View")]
+  [Content(typeof(BatchRun), true)]
+  public sealed partial class BatchRunView : NamedItemView {
+    private TypeSelectorDialog algorithmTypeSelectorDialog;
 
-    public new IAlgorithm Content {
-      get { return (IAlgorithm)base.Content; }
+    public new BatchRun Content {
+      get { return (BatchRun)base.Content; }
       set { base.Content = value; }
     }
 
     /// <summary>
     /// Initializes a new instance of <see cref="ItemBaseView"/>.
     /// </summary>
-    public AlgorithmView() {
+    public BatchRunView() {
       InitializeComponent();
     }
     /// <summary>
     /// Intializes a new instance of <see cref="ItemBaseView"/> with the given <paramref name="item"/>.
     /// </summary>
     /// <param name="item">The item that should be displayed.</param>
-    public AlgorithmView(IAlgorithm content)
+    public BatchRunView(BatchRun content)
       : this() {
       Content = content;
-    }
-
-    protected override void OnInitialized(EventArgs e) {
-      // Set order of tab pages according to z order.
-      // NOTE: This is required due to a bug in the VS designer.
-      List<Control> tabPages = new List<Control>();
-      for (int i = 0; i < tabControl.Controls.Count; i++) {
-        tabPages.Add(tabControl.Controls[i]);
-      }
-      tabControl.Controls.Clear();
-      foreach (Control control in tabPages)
-        tabControl.Controls.Add(control);
-
-      base.OnInitialized(e);
     }
 
     protected override void DeregisterContentEvents() {
       Content.ExceptionOccurred -= new EventHandler<EventArgs<Exception>>(Content_ExceptionOccurred);
       Content.ExecutionTimeChanged -= new EventHandler(Content_ExecutionTimeChanged);
       Content.Prepared -= new EventHandler(Content_Prepared);
-      Content.ProblemChanged -= new EventHandler(Content_ProblemChanged);
+      Content.AlgorithmChanged -= new EventHandler(Content_AlgorithmChanged);
       Content.Started -= new EventHandler(Content_Started);
       Content.Stopped -= new EventHandler(Content_Stopped);
+      Content.RepetitionsChanged -= new EventHandler(Content_RepetitionsChanged);
       base.DeregisterContentEvents();
     }
     protected override void RegisterContentEvents() {
@@ -86,28 +71,31 @@ namespace HeuristicLab.Optimization.Views {
       Content.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(Content_ExceptionOccurred);
       Content.ExecutionTimeChanged += new EventHandler(Content_ExecutionTimeChanged);
       Content.Prepared += new EventHandler(Content_Prepared);
-      Content.ProblemChanged += new EventHandler(Content_ProblemChanged);
+      Content.AlgorithmChanged += new EventHandler(Content_AlgorithmChanged);
       Content.Started += new EventHandler(Content_Started);
       Content.Stopped += new EventHandler(Content_Stopped);
+      Content.RepetitionsChanged += new EventHandler(Content_RepetitionsChanged);
     }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
       stopButton.Enabled = false;
       if (Content == null) {
-        parameterCollectionView.Content = null;
-        problemViewHost.Content = null;
+        repetitionsNumericUpDown.Value = 1;
+        repetitionsNumericUpDown.Enabled = false;
+        algorithmViewHost.Content = null;
         resultsView.Content = null;
         tabControl.Enabled = false;
         startButton.Enabled = resetButton.Enabled = false;
         executionTimeTextBox.Text = "-";
         executionTimeTextBox.Enabled = false;
       } else {
-        parameterCollectionView.Content = Content.Parameters;
-        saveProblemButton.Enabled = Content.Problem != null;
-        problemViewHost.ViewType = null;
-        problemViewHost.Content = Content.Problem;
-        resultsView.Content = Content.Results.AsReadOnly();
+        repetitionsNumericUpDown.Value = Content.Repetitions;
+        repetitionsNumericUpDown.Enabled = true;
+        saveAlgorithmButton.Enabled = Content.Algorithm != null;
+        algorithmViewHost.ViewType = null;
+        algorithmViewHost.Content = Content.Algorithm;
+        resultsView.Content = Content.Results;
         tabControl.Enabled = true;
         startButton.Enabled = !Content.Finished;
         resetButton.Enabled = true;
@@ -122,121 +110,120 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     #region Content Events
-    protected virtual void Content_Prepared(object sender, EventArgs e) {
+    private void Content_AlgorithmChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_AlgorithmChanged), sender, e);
+      else {
+        algorithmViewHost.ViewType = null;
+        algorithmViewHost.Content = Content.Algorithm;
+        saveAlgorithmButton.Enabled = Content.Algorithm != null;
+      }
+    }
+    private void Content_Prepared(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_Prepared), sender, e);
       else {
-        resultsView.Content = Content.Results.AsReadOnly();
         startButton.Enabled = !Content.Finished;
         UpdateExecutionTimeTextBox();
       }
     }
-    protected virtual void Content_ProblemChanged(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_ProblemChanged), sender, e);
-      else {
-        problemViewHost.ViewType = null;
-        problemViewHost.Content = Content.Problem;
-        saveProblemButton.Enabled = Content.Problem != null;
-      }
-    }
-    protected virtual void Content_Started(object sender, EventArgs e) {
-      executionTimeCounter = 0;
+    private void Content_Started(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_Started), sender, e);
       else {
         SaveEnabled = false;
-        parameterCollectionView.Enabled = false;
-        newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = false;
-        problemViewHost.Enabled = false;
-        resultsView.Enabled = false;
+        repetitionsNumericUpDown.Enabled = false;
+        newAlgorithmButton.Enabled = openAlgorithmButton.Enabled = saveAlgorithmButton.Enabled = false;
         startButton.Enabled = false;
         stopButton.Enabled = true;
         resetButton.Enabled = false;
         UpdateExecutionTimeTextBox();
       }
     }
-    protected virtual void Content_Stopped(object sender, EventArgs e) {
+    private void Content_Stopped(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_Stopped), sender, e);
       else {
         SaveEnabled = true;
-        parameterCollectionView.Enabled = true;
-        newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = true;
-        problemViewHost.Enabled = true;
-        resultsView.Enabled = true;
+        repetitionsNumericUpDown.Enabled = true;
+        newAlgorithmButton.Enabled = openAlgorithmButton.Enabled = saveAlgorithmButton.Enabled = true;
         startButton.Enabled = !Content.Finished;
         stopButton.Enabled = false;
         resetButton.Enabled = true;
         UpdateExecutionTimeTextBox();
       }
     }
-    protected virtual void Content_ExecutionTimeChanged(object sender, EventArgs e) {
-      executionTimeCounter++;
-      if ((executionTimeCounter == 100) || !Content.Running) {
-        executionTimeCounter = 0;
-        UpdateExecutionTimeTextBox();
-      }
+    private void Content_ExecutionTimeChanged(object sender, EventArgs e) {
+      UpdateExecutionTimeTextBox();
     }
-    protected virtual void Content_ExceptionOccurred(object sender, EventArgs<Exception> e) {
+    private void Content_ExceptionOccurred(object sender, EventArgs<Exception> e) {
       if (InvokeRequired)
         Invoke(new EventHandler<EventArgs<Exception>>(Content_ExceptionOccurred), sender, e);
       else
         Auxiliary.ShowErrorMessageBox(e.Value);
     }
-    #endregion
-
-    #region Button events
-    protected virtual void newProblemButton_Click(object sender, EventArgs e) {
-      if (problemTypeSelectorDialog == null) {
-        problemTypeSelectorDialog = new TypeSelectorDialog();
-        problemTypeSelectorDialog.Caption = "Select Problem";
-        problemTypeSelectorDialog.TypeSelector.Configure(Content.ProblemType, false, false);
-      }
-      if (problemTypeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
-        Content.Problem = (IProblem)problemTypeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
+    private void Content_RepetitionsChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_RepetitionsChanged), sender, e);
+      else {
+        repetitionsNumericUpDown.Value = Content.Repetitions;
+        startButton.Enabled = !Content.Finished;
       }
     }
-    protected virtual void openProblemButton_Click(object sender, EventArgs e) {
-      openFileDialog.Title = "Open Problem";
+    #endregion
+
+    #region Control events
+    private void repetitionsNumericUpDown_ValueChanged(object sender, EventArgs e) {
+      Content.Repetitions = (int)repetitionsNumericUpDown.Value;
+    }
+    private void newAlgorithmButton_Click(object sender, EventArgs e) {
+      if (algorithmTypeSelectorDialog == null) {
+        algorithmTypeSelectorDialog = new TypeSelectorDialog();
+        algorithmTypeSelectorDialog.Caption = "Select Algorithm";
+        algorithmTypeSelectorDialog.TypeSelector.Configure(typeof(IAlgorithm), false, false);
+      }
+      if (algorithmTypeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
+        Content.Algorithm = (IAlgorithm)algorithmTypeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
+      }
+    }
+    private void openAlgorithmButton_Click(object sender, EventArgs e) {
+      openFileDialog.Title = "Open Algorithm";
       if (openFileDialog.ShowDialog(this) == DialogResult.OK) {
         this.Cursor = Cursors.AppStarting;
-        newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = false;
-        problemViewHost.Enabled = false;
+        newAlgorithmButton.Enabled = openAlgorithmButton.Enabled = saveAlgorithmButton.Enabled = false;
+        algorithmViewHost.Enabled = false;
 
         var call = new Func<string, object>(XmlParser.Deserialize);
         call.BeginInvoke(openFileDialog.FileName, delegate(IAsyncResult a) {
-          IProblem problem = null;
+          IAlgorithm algorithm = null;
           try {
-            problem = call.EndInvoke(a) as IProblem;
+            algorithm = call.EndInvoke(a) as IAlgorithm;
           } catch (Exception ex) {
             Auxiliary.ShowErrorMessageBox(ex);
           }
           Invoke(new Action(delegate() {
-            if (problem == null)
-              MessageBox.Show(this, "The selected file does not contain a problem.", "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            else if (!Content.ProblemType.IsInstanceOfType(problem))
-              MessageBox.Show(this, "The selected file contains a problem type which is not supported by this algorithm.", "Invalid Problem Type", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            if (algorithm == null)
+              MessageBox.Show(this, "The selected file does not contain an algorithm.", "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error);
             else
-              Content.Problem = problem;
-            problemViewHost.Enabled = true;
-            newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = true;
+              Content.Algorithm = algorithm;
+            algorithmViewHost.Enabled = true;
+            newAlgorithmButton.Enabled = openAlgorithmButton.Enabled = saveAlgorithmButton.Enabled = true;
             this.Cursor = Cursors.Default;
           }));
         }, null);
       }
     }
-    protected virtual void saveProblemButton_Click(object sender, EventArgs e) {
-      saveFileDialog.Title = "Save Problem";
+    private void saveAlgorithmButton_Click(object sender, EventArgs e) {
+      saveFileDialog.Title = "Save Algorithm";
       if (saveFileDialog.ShowDialog(this) == DialogResult.OK) {
         this.Cursor = Cursors.AppStarting;
-        newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = false;
-        problemViewHost.Enabled = false;
+        newAlgorithmButton.Enabled = openAlgorithmButton.Enabled = saveAlgorithmButton.Enabled = false;
+        algorithmViewHost.Enabled = false;
 
-        var call = new Action<IProblem, string, int>(XmlGenerator.Serialize);
+        var call = new Action<IAlgorithm, string, int>(XmlGenerator.Serialize);
         int compression = 9;
         if (saveFileDialog.FilterIndex == 1) compression = 0;
-        call.BeginInvoke(Content.Problem, saveFileDialog.FileName, compression, delegate(IAsyncResult a) {
+        call.BeginInvoke(Content.Algorithm, saveFileDialog.FileName, compression, delegate(IAsyncResult a) {
           try {
             call.EndInvoke(a);
           }
@@ -244,26 +231,26 @@ namespace HeuristicLab.Optimization.Views {
             Auxiliary.ShowErrorMessageBox(ex);
           }
           Invoke(new Action(delegate() {
-            problemViewHost.Enabled = true;
-            newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = true;
+            algorithmViewHost.Enabled = true;
+            newAlgorithmButton.Enabled = openAlgorithmButton.Enabled = saveAlgorithmButton.Enabled = true;
             this.Cursor = Cursors.Default;
           }));
         }, null);
       }
     }
-    protected virtual void startButton_Click(object sender, EventArgs e) {
+    private void startButton_Click(object sender, EventArgs e) {
       Content.Start();
     }
-    protected virtual void stopButton_Click(object sender, EventArgs e) {
+    private void stopButton_Click(object sender, EventArgs e) {
       Content.Stop();
     }
-    protected virtual void resetButton_Click(object sender, EventArgs e) {
+    private void resetButton_Click(object sender, EventArgs e) {
       Content.Prepare();
     }
     #endregion
 
     #region Helpers
-    protected virtual void UpdateExecutionTimeTextBox() {
+    private void UpdateExecutionTimeTextBox() {
       if (InvokeRequired)
         Invoke(new Action(UpdateExecutionTimeTextBox));
       else

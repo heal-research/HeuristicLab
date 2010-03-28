@@ -87,12 +87,9 @@ namespace HeuristicLab.Optimization {
       }
     }
 
-    private ReadOnlyObservableKeyedCollection<string, IVariable> readOnlyResults;
-    public override IObservableKeyedCollection<string, IVariable> Results {
+    public override ResultCollection Results {
       get {
-        if (readOnlyResults == null)
-          readOnlyResults = ((VariableCollection)globalScope.Variables["Results"].Value).AsReadOnly();
-        return readOnlyResults;
+        return (ResultCollection)globalScope.Variables["Results"].Value;
       }
     }
 
@@ -113,35 +110,35 @@ namespace HeuristicLab.Optimization {
     protected EngineAlgorithm()
       : base() {
       globalScope = new Scope("Global Scope");
-      globalScope.Variables.Add(new Variable("Results", new VariableCollection()));
+      globalScope.Variables.Add(new Variable("Results", new ResultCollection()));
       OperatorGraph = new OperatorGraph();
       InitializeEngine();
     }
     protected EngineAlgorithm(string name)
       : base(name) {
       globalScope = new Scope("Global Scope");
-      globalScope.Variables.Add(new Variable("Results", new VariableCollection()));
+      globalScope.Variables.Add(new Variable("Results", new ResultCollection()));
       OperatorGraph = new OperatorGraph();
       InitializeEngine();
     }
     protected EngineAlgorithm(string name, ParameterCollection parameters)
       : base(name, parameters) {
       globalScope = new Scope("Global Scope");
-      globalScope.Variables.Add(new Variable("Results", new VariableCollection()));
+      globalScope.Variables.Add(new Variable("Results", new ResultCollection()));
       OperatorGraph = new OperatorGraph();
       InitializeEngine();
     }
     protected EngineAlgorithm(string name, string description)
       : base(name, description) {
       globalScope = new Scope("Global Scope");
-      globalScope.Variables.Add(new Variable("Results", new VariableCollection()));
+      globalScope.Variables.Add(new Variable("Results", new ResultCollection()));
       OperatorGraph = new OperatorGraph();
       InitializeEngine();
     }
     protected EngineAlgorithm(string name, string description, ParameterCollection parameters)
       : base(name, description, parameters) {
       globalScope = new Scope("Global Scope");
-      globalScope.Variables.Add(new Variable("Results", new VariableCollection()));
+      globalScope.Variables.Add(new Variable("Results", new ResultCollection()));
       OperatorGraph = new OperatorGraph();
       InitializeEngine();
     }
@@ -180,8 +177,7 @@ namespace HeuristicLab.Optimization {
     }
     protected override void OnPrepared() {
       globalScope.Clear();
-      globalScope.Variables.Add(new Variable("Results", new VariableCollection()));
-      readOnlyResults = null;
+      globalScope.Variables.Add(new Variable("Results", new ResultCollection()));
 
       if (engine != null) {
         ExecutionContext context = null;

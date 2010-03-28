@@ -91,6 +91,18 @@
     <Compile Include="AlgorithmView.Designer.cs">
       <DependentUpon>AlgorithmView.cs</DependentUpon>
     </Compile>
+    <Compile Include="BatchRunView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BatchRunView.Designer.cs">
+      <DependentUpon>BatchRunView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ResultCollectionListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ResultCollectionListView.Designer.cs">
+      <DependentUpon>ResultCollectionListView.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserDefinedAlgorithmView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -111,6 +123,18 @@
       <DependentUpon>ProblemView.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResultCollectionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ResultCollectionView.Designer.cs">
+      <DependentUpon>ResultCollectionView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ResultView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ResultView.Designer.cs">
+      <DependentUpon>ResultView.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />

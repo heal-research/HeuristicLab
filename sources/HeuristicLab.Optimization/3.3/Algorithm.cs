@@ -65,13 +65,19 @@ namespace HeuristicLab.Optimization {
       }
     }
 
-    public abstract IObservableKeyedCollection<string, IVariable> Results { get; }
+    public abstract ResultCollection Results { get; }
 
     public abstract TimeSpan ExecutionTime { get; }
 
     private bool running;
     public bool Running {
       get { return running; }
+      protected set {
+        if (running != value) {
+          running = value;
+          OnRunningChanged();
+        }
+      }
     }
 
     public abstract bool Finished { get; }
@@ -97,17 +103,15 @@ namespace HeuristicLab.Optimization {
       Algorithm clone = (Algorithm)base.Clone(cloner);
       clone.Problem = (IProblem)cloner.Clone(problem);
       clone.running = running;
-      clone.Canceled = canceled;
+      clone.canceled = canceled;
       return clone;
     }
 
     public void Prepare() {
-      running = false;
-      Canceled = false;
       OnPrepared();
     }
     public void Start() {
-      running = true;
+      Running = true;
       Canceled = false;
       OnStarted();
     }
@@ -126,6 +130,11 @@ namespace HeuristicLab.Optimization {
       if (ExecutionTimeChanged != null)
         ExecutionTimeChanged(this, EventArgs.Empty);
     }
+    public event EventHandler RunningChanged;
+    protected virtual void OnRunningChanged() {
+      if (RunningChanged != null)
+        RunningChanged(this, EventArgs.Empty);
+    }
     public event EventHandler Prepared;
     protected virtual void OnPrepared() {
       if (Prepared != null)
@@ -140,6 +149,8 @@ namespace HeuristicLab.Optimization {
     protected virtual void OnStopped() {
       if (Stopped != null)
         Stopped(this, EventArgs.Empty);
+      Canceled = false;
+      Running = false;
     }
     protected virtual void OnCanceledChanged() { }
     public event EventHandler<EventArgs<Exception>> ExceptionOccurred;

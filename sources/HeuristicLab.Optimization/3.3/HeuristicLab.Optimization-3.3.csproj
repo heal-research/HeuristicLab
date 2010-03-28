@@ -85,7 +85,10 @@
   <ItemGroup>
     <None Include="HeuristicLabOptimizationPlugin.cs.frame" />
     <Compile Include="Algorithm.cs" />
+    <Compile Include="BatchRun.cs" />
+    <Compile Include="ResultCollectionList.cs" />
     <Compile Include="Interfaces\IMultiObjectiveSolutionsVisualizer.cs" />
+    <Compile Include="Interfaces\IResult.cs" />
     <Compile Include="Interfaces\ISingleObjectiveSolutionsVisualizer.cs" />
     <Compile Include="Interfaces\ISolutionsVisualizer.cs" />
     <Compile Include="Interfaces\IDiscreteDoubleValueModifier.cs" />
@@ -113,11 +116,13 @@
     <Compile Include="Interfaces\IStochasticOperator.cs" />
     <Compile Include="Interfaces\ITabuMoveEvaluator.cs" />
     <Compile Include="Interfaces\ITabuMoveMaker.cs" />
+    <Compile Include="Result.cs" />
     <Compile Include="TabuMoveMaker.cs" />
     <Compile Include="UserDefinedAlgorithm.cs" />
     <Compile Include="EngineAlgorithm.cs" />
     <Compile Include="HeuristicLabOptimizationPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResultCollection.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />

@@ -136,9 +136,6 @@
   <ItemGroup>
     <None Include="app.config" />
     <EmbeddedResource Include="Documents\FirstSteps.rtf" />
-    <EmbeddedResource Include="Documents\GA_TSP.hl" />
-    <EmbeddedResource Include="Documents\LS_OneMax.hl" />
-    <EmbeddedResource Include="Documents\SA_Rastrigin.hl" />
     <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.frame" />
     <None Include="Properties\Settings.settings">
@@ -177,6 +174,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Documents\GA_TSP.hl" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

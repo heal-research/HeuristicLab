@@ -81,6 +81,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ProbabilisticQualityComparator.cs" />
+    <Compile Include="ResultsCollector.cs" />
     <Compile Include="SquareRootDiscreteDoubleValueModifier.cs" />
     <Compile Include="DiscreteDoubleValueModifier.cs" />
     <Compile Include="ExponentialDiscreteDoubleValueModifier.cs" />
