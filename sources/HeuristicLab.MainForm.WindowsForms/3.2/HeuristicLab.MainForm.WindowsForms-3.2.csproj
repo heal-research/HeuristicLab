@@ -85,6 +85,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActionUserInterfaceItem.cs" />
+    <Compile Include="AsynchronousContentView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="AsynchronousContentView.Designer.cs">
+      <DependentUpon>AsynchronousContentView.cs</DependentUpon>
+    </Compile>
     <Compile Include="ContentView.cs">
       <SubType>UserControl</SubType>
     </Compile>
