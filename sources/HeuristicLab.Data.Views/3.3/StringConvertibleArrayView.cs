@@ -30,7 +30,7 @@ using HeuristicLab.MainForm.WindowsForms;
 namespace HeuristicLab.Data.Views {
   [View("StringConvertibleArray View")]
   [Content(typeof(IStringConvertibleArray), true)]
-  public partial class StringConvertibleArrayView : ContentView {
+  public partial class StringConvertibleArrayView : AsynchronousContentView {
     public new IStringConvertibleArray Content {
       get { return (IStringConvertibleArray)base.Content; }
       set { base.Content = value; }

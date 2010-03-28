@@ -28,7 +28,7 @@ using HeuristicLab.MainForm.WindowsForms;
 namespace HeuristicLab.Data.Views {
   [View("StringConvertibleValue View")]
   [Content(typeof(IStringConvertibleValue), true)]
-  public partial class StringConvertibleValueView : ContentView {
+  public partial class StringConvertibleValueView : AsynchronousContentView {
     public new IStringConvertibleValue Content {
       get { return (IStringConvertibleValue)base.Content; }
       set { base.Content = value; }

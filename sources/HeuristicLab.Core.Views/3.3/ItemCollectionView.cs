@@ -30,7 +30,7 @@ namespace HeuristicLab.Core.Views {
   [View("ItemCollection View")]
   [Content(typeof(ItemCollection<>), true)]
   [Content(typeof(IObservableCollection<>), false)]
-  public partial class ItemCollectionView<T> : ContentView where T : class, IItem {
+  public partial class ItemCollectionView<T> : AsynchronousContentView where T : class, IItem {
     public new IObservableCollection<T> Content {
       get { return (IObservableCollection<T>)base.Content; }
       set { base.Content = value; }

@@ -22,6 +22,7 @@
 using System;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
+using System.Threading;
 
 namespace HeuristicLab.Core.Views {
   /// <summary>
@@ -30,7 +31,7 @@ namespace HeuristicLab.Core.Views {
   [View("Item View")]
   [Content(typeof(Item), false)]
   [Content(typeof(IItem), false)]
-  public partial class ItemView : ContentView {
+  public partial class ItemView : AsynchronousContentView {
     public new IItem Content {
       get { return (IItem)base.Content; }
       set { base.Content = value; }
@@ -63,12 +64,16 @@ namespace HeuristicLab.Core.Views {
     /// <param name="method">The delegate to invoke.</param>
     protected new void Invoke(Delegate method) {
       // enforce context switch to improve GUI response time
-      System.Threading.Thread.Sleep(0);
-
+      IAsyncResult res = base.BeginInvoke(method);
+      ThreadPool.RegisterWaitForSingleObject(res.AsyncWaitHandle,
+        new WaitOrTimerCallback((x, b) => { EndInvoke(res); }),
+        null, -1, true);
       // prevent blocking of worker thread in Invoke, if the control is disposed
-      IAsyncResult result = BeginInvoke(method);
-      while ((!result.AsyncWaitHandle.WaitOne(100, false)) && (!IsDisposed)) { }
-      if (!IsDisposed) EndInvoke(result);
+      //IAsyncResult result = BeginInvoke(method);
+      //while ((!result.AsyncWaitHandle.WaitOne(100, false)) && (!IsDisposed)) {
+      //  System.Threading.Thread.Sleep(0);
+      //}
+      //if (!IsDisposed) EndInvoke(result);
     }
     /// <summary>
     /// Asynchron call of GUI updating.
@@ -77,12 +82,17 @@ namespace HeuristicLab.Core.Views {
     /// <param name="args">The invoke arguments.</param>
     protected new void Invoke(Delegate method, params object[] args) {
       // enforce context switch to improve GUI response time
-      System.Threading.Thread.Sleep(0);
+      IAsyncResult res = base.BeginInvoke(method, args);
+      ThreadPool.RegisterWaitForSingleObject(res.AsyncWaitHandle,
+        new WaitOrTimerCallback((x, b) => { EndInvoke(res); }),
+        null, -1, true);
+      //base.Invoke(method, args);
+      //System.Threading.Thread.Sleep(0);
 
-      // prevent blocking of worker thread in Invoke, if the control is disposed
-      IAsyncResult result = BeginInvoke(method, args);
-      while ((!result.AsyncWaitHandle.WaitOne(100, false)) && (!IsDisposed)) { }
-      if (!IsDisposed) EndInvoke(result);
+      //// prevent blocking of worker thread in Invoke, if the control is disposed
+      //IAsyncResult result = BeginInvoke(method, args);
+      //while ((!result.AsyncWaitHandle.WaitOne(100, false)) && (!IsDisposed)) { }
+      //if (!IsDisposed) EndInvoke(result);
     }
   }
 }

@@ -30,7 +30,7 @@ using HeuristicLab.MainForm.WindowsForms;
 namespace HeuristicLab.Data.Views {
   [View("StringConvertibleMatrix View")]
   [Content(typeof(IStringConvertibleMatrix), true)]
-  public partial class StringConvertibleMatrixView : ContentView {
+  public partial class StringConvertibleMatrixView : AsynchronousContentView {
     public new IStringConvertibleMatrix Content {
       get { return (IStringConvertibleMatrix)base.Content; }
       set { base.Content = value; }
