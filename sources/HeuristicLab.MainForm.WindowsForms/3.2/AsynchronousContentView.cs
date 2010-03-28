@@ -20,7 +20,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     /// <summary>
-    /// Asynchron call of GUI updating.
+    /// Asynchronous call of GUI updating.
     /// </summary>
     /// <param name="method">The delegate to invoke.</param>
     protected new void Invoke(Delegate method) {
@@ -30,7 +30,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
         null, -1, true);
     }
     /// <summary>
-    /// Asynchron call of GUI updating.
+    /// Asynchronous call of GUI updating.
     /// </summary>
     /// <param name="method">The delegate to invoke.</param>
     /// <param name="args">The invoke arguments.</param>
