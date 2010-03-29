@@ -19,37 +19,21 @@
  */
 #endregion
 
-using System;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Optimization;
-using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
-  [Item("ExhaustiveThreeOptMoveGenerator", "Generates all possible 3-opt moves from a given permutation.")]
+  [Item("PermutationType", "Represents a certain type of permutation.")]
   [StorableClass]
-  public class ExhaustiveThreeOptMoveGenerator : ThreeOptMoveGenerator, IExhaustiveMoveGenerator {
-    public static ThreeOptMove[] Apply(Permutation permutation) {
-      int length = permutation.Length;
-      ThreeOptMove[] moves = new ThreeOptMove[sampleSize];
-      for (int i = 0; i < sampleSize; i++) {
-        int index1, index2, index3;
-        index1 = random.Next(length - 1);
-        do {
-          index2 = random.Next(index1 + 1, length);
-        } while (index2 - index1 >= length - 2);
-        do {
-          index3 = random.Next(length - index2 + index1 - 1);
-        } while (index3 == index1);
-        
-        moves[i] = new ThreeOptMove(index1, index2, index3);
-      }
-      return moves;
-    }
+  public class PermutationType : ValueTypeValue<PermutationTypes> {
+    public PermutationType() : base() { }
+    public PermutationType(PermutationTypes type) : base(type) { }
 
-    protected override ThreeOptMove[] GenerateMoves(Permutation permutation) {
-      return Apply(permutation);
+    public override IDeepCloneable Clone(Cloner cloner) {
+      PermutationType clone = new PermutationType(value);
+      cloner.RegisterClonedObject(this, clone);
+      return clone;
     }
   }
 }

@@ -88,10 +88,10 @@ namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
       random.Reset();
       random.IntNumbers = new int[] { 1, 3, 6 };
       random.DoubleNumbers = new double[] { 0 };
-      parent = new Permutation(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 });
+      parent = new Permutation(PermutationTypes.RelativeUndirected, new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 });
       Assert.IsTrue(parent.Validate());
 
-      expected = new Permutation(new int[] { 0, 3, 2, 6, 4, 5, 1, 7, 8 });
+      expected = new Permutation(PermutationTypes.RelativeUndirected, new int[] { 0, 3, 2, 6, 4, 5, 1, 7, 8 });
       Assert.IsTrue(expected.Validate());
       Swap3Manipulator.Apply(random, parent);
       Assert.IsTrue(parent.Validate());

@@ -87,10 +87,10 @@ namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
       // The following test is based on an example from Larranaga, P. et al. 1999. Genetic Algorithms for the Travelling Salesman Problem: A Review of Representations and Operators. Artificial Intelligence Review, 13
       random.Reset();
       random.IntNumbers = new int[] { 2, 4, 4 };
-      parent = new Permutation(new int[] { 0, 1, 2, 3, 4, 5, 6, 7 });
+      parent = new Permutation(PermutationTypes.RelativeUndirected, new int[] { 0, 1, 2, 3, 4, 5, 6, 7 });
       Assert.IsTrue(parent.Validate());
       
-      expected = new Permutation(new int[] { 0, 1, 5, 6, 4, 3, 2, 7 });
+      expected = new Permutation(PermutationTypes.RelativeUndirected, new int[] { 0, 1, 5, 6, 4, 3, 2, 7 });
       Assert.IsTrue(expected.Validate());
       TranslocationInversionManipulator.Apply(random, parent);
       Assert.IsTrue(parent.Validate());

@@ -83,7 +83,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
         // it's not necessary to do 'invResult[result[j]] = j' as this will not be needed again
       }
 
-      return new Permutation(result);
+      return new Permutation(parent1.PermutationType, result);
     }
 
     /// <summary>

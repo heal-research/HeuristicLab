@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -19,17 +19,10 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Optimization;
-
 namespace HeuristicLab.Encodings.PermutationEncoding {
-  /// <summary>
-  /// An interface which represents an operator for creating permutations.
-  /// </summary>
-  public interface IPermutationCreator : IPermutationOperator, ISolutionCreator {
-    IValueLookupParameter<IntValue> LengthParameter { get; }
-    ILookupParameter<Permutation> PermutationParameter { get; }
-    IValueParameter<PermutationType> PermutationTypeParameter { get; }
+  public enum PermutationTypes {
+    RelativeDirected,
+    RelativeUndirected,
+    Absolute
   }
 }

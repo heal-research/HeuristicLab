@@ -89,7 +89,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
         while (j < length && indexCopied[j]) j++;
       } while (j < length);
 
-      return new Permutation(result);
+      return new Permutation(parent1.PermutationType, result);
     }
 
     /// <summary>

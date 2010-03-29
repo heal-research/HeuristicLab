@@ -24,28 +24,45 @@ using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
-  [StorableClass]
   [Item("Permutation", "Represents a permutation of integer values.")]
+  [StorableClass]
   public class Permutation : IntArray {
-    public Permutation() : base() { }
-    public Permutation(int length)
+    [Storable]
+    private PermutationTypes permutationType;
+    /// <summary>
+    /// Gets the type of the permutation (see <see cref="PermutationType"/>).
+    /// </summary>
+    public PermutationTypes PermutationType {
+      get { return permutationType; }
+    }
+
+    public Permutation() : base() {
+      permutationType = PermutationTypes.RelativeUndirected;
+    }
+    public Permutation(PermutationTypes type) : base() {
+      permutationType = type;
+    }
+
+    public Permutation(PermutationTypes type, int length)
       : base(length) {
       for (int i = 0; i < length; i++)
         this[i] = i;
+      permutationType = type;
     }
-    public Permutation(int length, IRandom random)
-      : this(length) {
+    public Permutation(PermutationTypes type, int length, IRandom random)
+      : this(type, length) {
       Randomize(random);
     }
-    public Permutation(int[] elements) : base(elements) { }
-    public Permutation(IntArray elements)
-      : this(elements.Length) {
+    public Permutation(PermutationTypes type, int[] elements) : base(elements) {
+      permutationType = type;
+    }
+    public Permutation(PermutationTypes type, IntArray elements) : this(type, elements.Length) {
       for (int i = 0; i < array.Length; i++)
         array[i] = elements[i];
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      Permutation clone = new Permutation(array);
+      Permutation clone = new Permutation(permutationType, array);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }

@@ -88,7 +88,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
           result[i] = parent2[i];
         }
       }
-      return new Permutation(result);
+      return new Permutation(parent1.PermutationType, result);
     }
 
     /// <summary>

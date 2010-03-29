@@ -92,7 +92,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
       bool exceptionFired = false;
       try {
         target.Cross(random, new ItemArray<Permutation>(new Permutation[] { 
-          new Permutation(4), new Permutation(4), new Permutation(4)}));
+          new Permutation(PermutationTypes.RelativeUndirected, 4), new Permutation(PermutationTypes.RelativeUndirected, 4), new Permutation(PermutationTypes.RelativeUndirected, 4)}));
       }
       catch (System.InvalidOperationException) {
         exceptionFired = true;
@@ -111,11 +111,11 @@ namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
       random.Reset();
       random.IntNumbers = new int[] { 0 };
       random.DoubleNumbers = new double[] { 0.5, 0, 0, 0 };
-      parent1 = new Permutation(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 });
+      parent1 = new Permutation(PermutationTypes.RelativeUndirected, new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 });
       Assert.IsTrue(parent1.Validate());
-      parent2 = new Permutation(new int[] { 8, 2, 6, 7, 1, 5, 4, 0, 3 });
+      parent2 = new Permutation(PermutationTypes.RelativeUndirected, new int[] { 8, 2, 6, 7, 1, 5, 4, 0, 3 });
       Assert.IsTrue(parent2.Validate());
-      expected = new Permutation(new int[] { 0, 4, 5, 1, 7, 6, 2, 8, 3 });
+      expected = new Permutation(PermutationTypes.RelativeUndirected, new int[] { 0, 4, 5, 1, 7, 6, 2, 8, 3 });
       Assert.IsTrue(expected.Validate());
       actual = EdgeRecombinationCrossover.Apply(random, parent1, parent2);
       Assert.IsTrue(actual.Validate());
@@ -125,7 +125,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
       random.Reset();
       bool exceptionFired = false;
       try {
-        EdgeRecombinationCrossover.Apply(random, new Permutation(8), new Permutation(6));
+        EdgeRecombinationCrossover.Apply(random, new Permutation(PermutationTypes.RelativeUndirected, 8), new Permutation(PermutationTypes.RelativeUndirected, 6));
       }
       catch (System.ArgumentException) {
         exceptionFired = true;

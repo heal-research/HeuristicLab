@@ -116,7 +116,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
         if (index >= length) index -= length;
       } while (index != breakPoint1);
 
-      return new Permutation(result);
+      return new Permutation(parent1.PermutationType, result);
     }
 
     private static int GetFollower(Permutation parent, int index) {

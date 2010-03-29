@@ -135,7 +135,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
           }
         }
       }
-      return new Permutation(result);
+      return new Permutation(parent1.PermutationType, result);
     }
 
     /// <summary>

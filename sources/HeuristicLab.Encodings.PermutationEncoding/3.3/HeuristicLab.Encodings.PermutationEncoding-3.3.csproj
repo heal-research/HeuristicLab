@@ -107,14 +107,22 @@
     <Compile Include="Manipulators\TranslocationInversionManipulator.cs" />
     <Compile Include="Manipulators\TranslocationManipulator.cs" />
     <Compile Include="Moves\ThreeIndexMove.cs" />
-    <Compile Include="Moves\ThreeOpt\PreventDeleteThreeOptTabuMoveEvaluator.cs" />
-    <Compile Include="Moves\ThreeOpt\PreventReaddThreeOptTabuMoveEvaluator.cs" />
-    <Compile Include="Moves\ThreeOpt\PreventReaddDeleteThreeOptTabuMoveEvaluator.cs" />
-    <Compile Include="Moves\ThreeOpt\StochasticThreeOptSingleMoveGenerator.cs" />
     <Compile Include="Moves\ThreeOpt\Insertion\ExhaustiveInsertionMoveGenerator.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Moves\ThreeOpt\PreventDeleteThreeOptTabuMoveEvaluator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Moves\ThreeOpt\PreventReaddDeleteThreeOptTabuMoveEvaluator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Moves\ThreeOpt\PreventReaddThreeOptTabuMoveEvaluator.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Moves\ThreeOpt\StochasticThreeOptMultiMoveGenerator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Moves\ThreeOpt\StochasticThreeOptSingleMoveGenerator.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Moves\ThreeOpt\ThreeOptMove.cs">
@@ -126,31 +134,53 @@
     <Compile Include="Moves\ThreeOpt\ThreeOptMoveMaker.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Moves\ThreeOpt\ThreeOptTabuMoveAttribute.cs" />
-    <Compile Include="Moves\ThreeOpt\ThreeOptTabuMoveMaker.cs" />
-    <Compile Include="Moves\TwoOpt\PreventDeleteTwoOptTabuMoveEvaluator.cs" />
-    <Compile Include="Moves\TwoOpt\PreventReaddTwoOptTabuMoveEvaluator.cs" />
-    <Compile Include="Moves\TwoOpt\StochasticTwoOptSingleMoveGenerator.cs" />
-    <Compile Include="Moves\TwoOpt\ExhaustiveTwoOptMoveGenerator.cs">
+    <Compile Include="Moves\ThreeOpt\ThreeOptTabuMoveAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Moves\ThreeOpt\ThreeOptTabuMoveMaker.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Moves\TwoIndexMove.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Moves\TwoOpt\StochasticTwoOptMultiMoveGenerator.cs" />
+    <Compile Include="Moves\TwoOpt\ExhaustiveTwoOptMoveGenerator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Moves\TwoOpt\PreventDeleteTwoOptTabuMoveEvaluator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Moves\TwoOpt\PreventReaddDeleteTwoOptTabuMoveEvaluator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Moves\TwoOpt\PreventReaddTwoOptTabuMoveEvaluator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Moves\TwoOpt\StochasticTwoOptMultiMoveGenerator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Moves\TwoOpt\StochasticTwoOptSingleMoveGenerator.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Moves\TwoOpt\TwoOptMove.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Moves\TwoOpt\TwoOptMoveGenerator.cs" />
+    <Compile Include="Moves\TwoOpt\TwoOptMoveGenerator.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Moves\TwoOpt\TwoOptMoveMaker.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Moves\TwoOpt\TwoOptTabuMoveAttribute.cs" />
-    <Compile Include="Moves\TwoOpt\PreventReaddDeleteTwoOptTabuMoveEvaluator.cs" />
-    <Compile Include="Moves\TwoOpt\TwoOptTabuMoveMaker.cs" />
+    <Compile Include="Moves\TwoOpt\TwoOptTabuMoveAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Moves\TwoOpt\TwoOptTabuMoveMaker.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="PermutationManipulator.cs" />
     <Compile Include="PermutationCrossover.cs" />
     <Compile Include="Permutation.cs" />
+    <Compile Include="PermutationType.cs" />
+    <Compile Include="PermutationTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

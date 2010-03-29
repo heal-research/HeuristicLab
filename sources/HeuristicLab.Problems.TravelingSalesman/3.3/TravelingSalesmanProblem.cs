@@ -193,7 +193,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         TSPLIBTourParser tourParser = new TSPLIBTourParser(optimalTourFileName);
         tourParser.Parse();
         if (tourParser.Tour.Length != Coordinates.Rows) throw new InvalidDataException("Length of optimal tour is not equal to number of cities.");
-        BestKnownSolution = new Permutation(tourParser.Tour);
+        BestKnownSolution = new Permutation(PermutationTypes.RelativeUndirected, tourParser.Tour);
       }
     }
     public void ImportFromTSPLIB(string tspFileName, string optimalTourFileName, double bestKnownQuality) {
@@ -325,6 +325,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
     private void ParameterizeSolutionCreator() {
       SolutionCreator.LengthParameter.Value = new IntValue(Coordinates.Rows);
+      SolutionCreator.PermutationTypeParameter.Value = new PermutationType(PermutationTypes.RelativeUndirected);
     }
     private void ParameterizeEvaluator() {
       if (Evaluator is ITSPPathEvaluator)

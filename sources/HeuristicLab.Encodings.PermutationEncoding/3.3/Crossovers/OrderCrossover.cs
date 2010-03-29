@@ -79,7 +79,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       } catch (IndexOutOfRangeException) {
         throw new InvalidOperationException("OrderCrossover: The permutation must consist of numbers in the interval [0;N) with N = length of the permutation.");
       }
-      return new Permutation(result);
+      return new Permutation(parent1.PermutationType, result);
     }
 
     /// <summary>
