@@ -114,10 +114,10 @@
     <Compile Include="Interfaces\ISingleObjectiveProblem.cs" />
     <Compile Include="Interfaces\ISolutionCreator.cs" />
     <Compile Include="Interfaces\IStochasticOperator.cs" />
-    <Compile Include="Interfaces\ITabuMoveEvaluator.cs" />
-    <Compile Include="Interfaces\ITabuMoveMaker.cs" />
+    <Compile Include="Interfaces\ITabuChecker.cs" />
+    <Compile Include="Interfaces\ITabuMaker.cs" />
     <Compile Include="Result.cs" />
-    <Compile Include="TabuMoveMaker.cs" />
+    <Compile Include="TabuMaker.cs" />
     <Compile Include="UserDefinedAlgorithm.cs" />
     <Compile Include="EngineAlgorithm.cs" />
     <Compile Include="HeuristicLabOptimizationPlugin.cs" />

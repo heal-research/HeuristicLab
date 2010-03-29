@@ -22,34 +22,33 @@
 using System;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.BinaryVectorEncoding {
-  [Item("OneBitflipTabuMoveMaker", "Declares a given one bitflip move as tabu, by adding its attributes to the tabu list. It also removes the oldest entry in the tabu list when its size is greater than tenure.")]
+namespace HeuristicLab.Encodings.PermutationEncoding {
+  [Item("StochasticInversionSingleMoveGenerator", "Randomly samples a single from all possible inversion moves (2-opt) from a given permutation.")]
   [StorableClass]
-  public class OneBitflipTabuMoveMaker : TabuMaker, IOneBitflipMoveOperator {
-    public ILookupParameter<BinaryVector> BinaryVectorParameter {
-      get { return (ILookupParameter<BinaryVector>)Parameters["BinaryVector"]; }
-    }
-    public ILookupParameter<OneBitflipMove> OneBitflipMoveParameter {
-      get { return (LookupParameter<OneBitflipMove>)Parameters["OneBitflipMove"]; }
+  public class StochasticInversionSingleMoveGenerator : InversionMoveGenerator, IStochasticOperator, ISingleMoveGenerator {
+    public ILookupParameter<IRandom> RandomParameter {
+      get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
 
-    public OneBitflipTabuMoveMaker()
+    public StochasticInversionSingleMoveGenerator()
       : base() {
-      Parameters.Add(new LookupParameter<BinaryVector>("BinaryVector", "The solution as BinaryVector."));
-      Parameters.Add(new LookupParameter<OneBitflipMove>("OneBitflipMove", "The move that was made."));
+      Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator."));
     }
 
-    protected override IItem GetTabuAttribute() {
-      return OneBitflipMoveParameter.ActualValue;
+    public static InversionMove Apply(Permutation permutation, IRandom random) {
+      int length = permutation.Length;
+      int index1 = random.Next(length - 1);
+      int index2 = random.Next(index1 + 1, length);
+      return new InversionMove(index1, index2);;
     }
 
-    public override bool CanChangeName {
-      get { return false; }
+    protected override InversionMove[] GenerateMoves(Permutation permutation) {
+      IRandom random = RandomParameter.ActualValue;
+      return new InversionMove[] { Apply(permutation, random) };
     }
   }
 }

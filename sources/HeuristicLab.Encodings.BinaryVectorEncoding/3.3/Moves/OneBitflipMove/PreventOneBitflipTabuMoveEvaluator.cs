@@ -30,7 +30,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [Item("PreventOneBitflipTabuMoveEvaluator", "Prevents peforming a one bitflip move again.")]
   [StorableClass]
-  public class PreventOneBitflipTabuMoveEvaluator : SingleSuccessorOperator, IOneBitflipMoveOperator, ITabuMoveEvaluator {
+  public class PreventOneBitflipTabuMoveEvaluator : SingleSuccessorOperator, IOneBitflipMoveOperator, ITabuChecker {
     public ILookupParameter<OneBitflipMove> OneBitflipMoveParameter {
       get { return (LookupParameter<OneBitflipMove>)Parameters["OneBitflipMove"]; }
     }

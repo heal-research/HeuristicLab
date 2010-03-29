@@ -30,7 +30,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("PreventFallBackToSkippedPositions", "Prevents falling back into ranges that have been moved over before.")]
   [StorableClass]
-  public class PreventFallBackToSkippedPositions : SingleSuccessorOperator, IAdditiveRealVectorMoveOperator, ITabuMoveEvaluator {
+  public class PreventFallBackToSkippedPositions : SingleSuccessorOperator, IAdditiveRealVectorMoveOperator, ITabuChecker {
     public ILookupParameter<AdditiveMove> AdditiveMoveParameter {
       get { return (LookupParameter<AdditiveMove>)Parameters["AdditiveMove"]; }
     }

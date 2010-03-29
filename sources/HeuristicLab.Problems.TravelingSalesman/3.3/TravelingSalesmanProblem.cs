@@ -264,16 +264,16 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       ParameterizeVisualizer();
       OnVisualizerChanged();
     }
-    private void MoveGenerator_TwoOptMoveParameter_ActualNameChanged(object sender, EventArgs e) {
-      string name = ((ILookupParameter<TwoOptMove>)sender).ActualName;
-      foreach (ITwoOptPermutationMoveOperator op in Operators.OfType<ITwoOptPermutationMoveOperator>()) {
-        op.TwoOptMoveParameter.ActualName = name;
+    private void MoveGenerator_InversionMoveParameter_ActualNameChanged(object sender, EventArgs e) {
+      string name = ((ILookupParameter<InversionMove>)sender).ActualName;
+      foreach (IPermutationInversionMoveOperator op in Operators.OfType<IPermutationInversionMoveOperator>()) {
+        op.InversionMoveParameter.ActualName = name;
       }
     }
-    private void MoveGenerator_ThreeOptMoveParameter_ActualNameChanged(object sender, EventArgs e) {
-      string name = ((ILookupParameter<ThreeOptMove>)sender).ActualName;
-      foreach (IThreeOptPermutationMoveOperator op in Operators.OfType<IThreeOptPermutationMoveOperator>()) {
-        op.ThreeOptMoveParameter.ActualName = name;
+    private void MoveGenerator_TranslocationMoveParameter_ActualNameChanged(object sender, EventArgs e) {
+      string name = ((ILookupParameter<TranslocationMove>)sender).ActualName;
+      foreach (IPermutationTranslocationMoveOperator op in Operators.OfType<IPermutationTranslocationMoveOperator>()) {
+        op.TranslocationMoveParameter.ActualName = name;
       }
     }
     #endregion
@@ -300,14 +300,14 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       InitializeMoveGenerators();
     }
     private void InitializeMoveGenerators() {
-      foreach (ITwoOptPermutationMoveOperator op in Operators.OfType<ITwoOptPermutationMoveOperator>()) {
+      foreach (IPermutationInversionMoveOperator op in Operators.OfType<IPermutationInversionMoveOperator>()) {
         if (op is IMoveGenerator) {
-          op.TwoOptMoveParameter.ActualNameChanged += new EventHandler(MoveGenerator_TwoOptMoveParameter_ActualNameChanged);
+          op.InversionMoveParameter.ActualNameChanged += new EventHandler(MoveGenerator_InversionMoveParameter_ActualNameChanged);
         }
       }
-      foreach (IThreeOptPermutationMoveOperator op in Operators.OfType<IThreeOptPermutationMoveOperator>()) {
+      foreach (IPermutationTranslocationMoveOperator op in Operators.OfType<IPermutationTranslocationMoveOperator>()) {
         if (op is IMoveGenerator) {
-          op.ThreeOptMoveParameter.ActualNameChanged += new EventHandler(MoveGenerator_ThreeOptMoveParameter_ActualNameChanged);
+          op.TranslocationMoveParameter.ActualNameChanged += new EventHandler(MoveGenerator_TranslocationMoveParameter_ActualNameChanged);
         }
       }
     }
