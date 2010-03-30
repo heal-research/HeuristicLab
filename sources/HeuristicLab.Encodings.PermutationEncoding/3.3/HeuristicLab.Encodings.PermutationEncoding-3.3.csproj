@@ -123,9 +123,10 @@
     <Compile Include="Moves\TwoIndexMove.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Moves\TwoOpt\InversionMoveAbsoluteAttribute.cs" />
     <Compile Include="Moves\TwoOpt\ExhaustiveInversionMoveGenerator.cs" />
     <Compile Include="Moves\TwoOpt\InversionMove.cs" />
-    <Compile Include="Moves\TwoOpt\InversionMoveAttribute.cs" />
+    <Compile Include="Moves\TwoOpt\InversionMoveRelativeAttribute.cs" />
     <Compile Include="Moves\TwoOpt\InversionMoveGenerator.cs" />
     <Compile Include="Moves\TwoOpt\InversionMoveMaker.cs" />
     <Compile Include="Moves\TwoOpt\InversionMoveTabuMaker.cs" />

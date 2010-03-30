@@ -23,40 +23,40 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
-  [Item("InversionMoveAttribute", "Specifies the tabu attributes for an inversion move (2-opt).")]
+  [Item("InversionMoveAbsoluteAttribute", "Specifies the tabu attributes for an inversion move (2-opt) on an absolute position permutation.")]
   [StorableClass]
-  public class InversionMoveAttribute : Item {
+  public class InversionMoveAbsoluteAttribute : Item {
     [Storable]
-    public int Edge1Source { get; private set; }
+    public int Index1 { get; private set; }
     [Storable]
-    public int Edge1Target { get; private set; }
+    public int Number1 { get; private set; }
     [Storable]
-    public int Edge2Source { get; private set; }
+    public int Index2 { get; private set; }
     [Storable]
-    public int Edge2Target { get; private set; }
+    public int Number2 { get; private set; }
 
     [StorableConstructor]
-    private InversionMoveAttribute(bool deserializing)
+    private InversionMoveAbsoluteAttribute(bool deserializing)
       : base() {
     }
 
-    public InversionMoveAttribute()
+    public InversionMoveAbsoluteAttribute()
       : this(-1, -1, -1, -1) { }
 
-    public InversionMoveAttribute(int edge1Source, int edge1Target, int edge2Source, int edge2Target)
+    public InversionMoveAbsoluteAttribute(int index1, int number1, int index2, int number2)
       : base() {
-      Edge1Source = edge1Source;
-      Edge1Target = edge1Target;
-      Edge2Source = edge2Source;
-      Edge2Target = edge2Target;
+      Index1 = index1;
+      Number1 = number1;
+      Index2 = index2;
+      Number2 = number2;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      InversionMoveAttribute clone = (InversionMoveAttribute)base.Clone(cloner);
-      clone.Edge1Source = Edge1Source;
-      clone.Edge1Target = Edge1Target;
-      clone.Edge2Source = Edge2Source;
-      clone.Edge2Target = Edge2Target;
+      InversionMoveAbsoluteAttribute clone = (InversionMoveAbsoluteAttribute)base.Clone(cloner);
+      clone.Index1 = Index1;
+      clone.Number1 = Number1;
+      clone.Index2 = Index2;
+      clone.Number2 = Number2;
       return clone;
     }
   }

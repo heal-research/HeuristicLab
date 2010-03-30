@@ -64,26 +64,62 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       InversionMove move = InversionMoveParameter.ActualValue;
       Permutation permutation = PermutationParameter.ActualValue;
       int length = permutation.Length;
-      int E1S = permutation.GetCircular(move.Index1 - 1);
-      int E1T = permutation[move.Index1];
-      int E2S = permutation[move.Index2];
-      int E2T = permutation.GetCircular(move.Index2 + 1);
-      bool isTabu = (move.Index2 - move.Index1 >= length - 2); // doesn't change the solution
-      if (!isTabu) {
-        foreach (IItem tabuMove in tabuList) {
-          InversionMoveAttribute attribute = (tabuMove as InversionMoveAttribute);
-          if (attribute != null) {
-            // if previously added Edge1Source-Edge2Source is deleted
-            if (attribute.Edge1Source == E1S && attribute.Edge2Source == E1T || attribute.Edge1Source == E1T && attribute.Edge2Source == E1S
-              || attribute.Edge1Source == E2S && attribute.Edge2Source == E2T || attribute.Edge1Source == E2T && attribute.Edge2Source == E2S
-              // if previously added Edge1Target-Edge2Target is deleted
-              || attribute.Edge1Target == E2S && attribute.Edge2Target == E2T || attribute.Edge1Target == E2T && attribute.Edge2Target == E2S
-              || attribute.Edge1Target == E1S && attribute.Edge2Target == E1T || attribute.Edge1Target == E1T && attribute.Edge2Target == E1S) {
-              isTabu = true;
-              break;
+      bool isTabu = false;
+      foreach (IItem tabuMove in tabuList) {
+        switch (permutation.PermutationType) {
+          case PermutationTypes.RelativeUndirected: {
+              int E1S = permutation.GetCircular(move.Index1 - 1);
+              int E1T = permutation[move.Index1];
+              int E2S = permutation[move.Index2];
+              int E2T = permutation.GetCircular(move.Index2 + 1);
+              InversionMoveRelativeAttribute relAttrib = (tabuMove as InversionMoveRelativeAttribute);
+              if (relAttrib != null) {
+                if (relAttrib.Edge1Source == E1S && relAttrib.Edge2Source == E1T || relAttrib.Edge1Source == E1T && relAttrib.Edge2Source == E1S
+                  || relAttrib.Edge1Source == E2S && relAttrib.Edge2Source == E2T || relAttrib.Edge1Source == E2T && relAttrib.Edge2Source == E2S
+                  // if previously added Edge1Target-Edge2Target is deleted
+                  || relAttrib.Edge1Target == E2S && relAttrib.Edge2Target == E2T || relAttrib.Edge1Target == E2T && relAttrib.Edge2Target == E2S
+                  || relAttrib.Edge1Target == E1S && relAttrib.Edge2Target == E1T || relAttrib.Edge1Target == E1T && relAttrib.Edge2Target == E1S) {
+                  isTabu = true;
+                }
+              }
             }
-          }
+            break;
+          case PermutationTypes.RelativeDirected: {
+              int E1S = permutation.GetCircular(move.Index1 - 1);
+              int E1T = permutation[move.Index1];
+              int E2S = permutation[move.Index2];
+              int E2T = permutation.GetCircular(move.Index2 + 1);
+              InversionMoveRelativeAttribute relAttrib = (tabuMove as InversionMoveRelativeAttribute);
+              if (relAttrib != null) {
+                if (relAttrib.Edge1Source == E1S && relAttrib.Edge2Source == E1T
+                  || relAttrib.Edge1Source == E2S && relAttrib.Edge2Source == E2T
+                  // if previously added Edge1Target-Edge2Target is deleted
+                  || relAttrib.Edge1Target == E2S && relAttrib.Edge2Target == E2T
+                  || relAttrib.Edge1Target == E1S && relAttrib.Edge2Target == E1T) {
+                  isTabu = true;
+                }
+              }
+            }
+            break;
+          case PermutationTypes.Absolute: {
+              int i1 = move.Index1;
+              int n1 = permutation[move.Index1];
+              int i2 = move.Index2;
+              int n2 = permutation[move.Index2];
+              InversionMoveAbsoluteAttribute absAttrib = (tabuMove as InversionMoveAbsoluteAttribute);
+              if (absAttrib != null) {
+                if (absAttrib.Number1 == n1 || absAttrib.Number1 == n2
+                  || absAttrib.Number2 == n2 || absAttrib.Number2 == n1)
+                  isTabu = true;
+
+              }
+            }
+            break;
+          default: {
+              throw new InvalidOperationException(Name + ": Unknown permutation type.");
+            }
         }
+        if (isTabu) break;
       }
       MoveTabuParameter.ActualValue = new BoolValue(isTabu);
       return base.Apply();

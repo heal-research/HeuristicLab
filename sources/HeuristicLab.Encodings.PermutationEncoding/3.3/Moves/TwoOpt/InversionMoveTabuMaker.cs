@@ -50,10 +50,13 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     protected override IItem GetTabuAttribute() {
       InversionMove move = InversionMoveParameter.ActualValue;
       Permutation permutation = PermutationParameter.ActualValue;
-      return new InversionMoveAttribute( permutation.GetCircular(move.Index1 - 1),
-        permutation[move.Index1],
-        permutation[move.Index2],
-        permutation.GetCircular(move.Index2 + 1));
+      if (permutation.PermutationType == PermutationTypes.Absolute)
+        return new InversionMoveAbsoluteAttribute(move.Index1, permutation[move.Index1], move.Index2, permutation[move.Index2]);
+      else
+        return new InversionMoveRelativeAttribute(permutation.GetCircular(move.Index1 - 1),
+          permutation[move.Index1],
+          permutation[move.Index2],
+          permutation.GetCircular(move.Index2 + 1));
     }
   }
 }

@@ -33,13 +33,21 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       int totalMoves = (length) * (length - 1) / 2; // - 3;
       InversionMove[] moves = new InversionMove[totalMoves];
       int count = 0;
-      for (int i = 0; i < length - 1; i++)
-        for (int j = i + 1; j < length; j++) {
-          // doesn't make sense to inverse the whole permutation or the whole but one
-          /*if (i == 0 && j >= length - 2) continue;
-          else if (i == 1 && j >= length - 1) continue;*/
-          moves[count++] = new InversionMove(i, j);
+
+      if (permutation.PermutationType == PermutationTypes.RelativeUndirected) {
+        for (int i = 0; i < length - 1; i++) {
+          for (int j = i + 1; j < length; j++) {
+            // doesn't make sense to inverse the whole permutation or the whole but one in case of relative undirected permutations
+            if (j - i >= length - 2) continue;
+            moves[count++] = new InversionMove(i, j);
+          }
         }
+      } else {
+          for (int i = 0; i < length - 1; i++)
+            for (int j = i + 1; j < length; j++) {
+              moves[count++] = new InversionMove(i, j);
+            }
+      }
       return moves;
     }
 

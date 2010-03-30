@@ -43,7 +43,11 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       int length = permutation.Length;
       int index1 = random.Next(length - 1);
       int index2 = random.Next(index1 + 1, length);
-      return new InversionMove(index1, index2);;
+      if (permutation.PermutationType == PermutationTypes.RelativeUndirected) {
+        while (index2 - index1 >= length - 2)
+          index2 = random.Next(index1 + 1, length);
+      }
+      return new InversionMove(index1, index2);
     }
 
     protected override InversionMove[] GenerateMoves(Permutation permutation) {
