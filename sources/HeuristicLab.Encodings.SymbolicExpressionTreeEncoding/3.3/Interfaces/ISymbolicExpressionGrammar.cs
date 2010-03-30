@@ -41,5 +41,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     int MinimalExpressionDepth(Symbol start);
     int MinSubTrees(Symbol start);
     int MaxSubTrees(Symbol start);
+
+    bool IsValidExpression(SymbolicExpressionTree expression);
   }
 }

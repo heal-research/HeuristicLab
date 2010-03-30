@@ -25,14 +25,16 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System;
+using System.Diagnostics;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// <summary>
-  /// A base class for operators that perform a crossover of real-valued vectors.
+  /// A base class for operators that perform a crossover of symbolic expression trees.
   /// </summary>
-  [Item("RealVectorCrossover", "A base class for operators that perform a crossover of real-valued vectors.")]
+  [Item("SymbolicExpressionTreeCrossover", "A base class for operators that perform a crossover of symbolic expression trees.")]
   [StorableClass]
-  public abstract class RealVectorCrossover : SingleSuccessorOperator, IRealVectorCrossover, IStochasticOperator {
+  public abstract class SymbolicExpressionTreeCrossover : SingleSuccessorOperator, ICrossover, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
     }
@@ -40,32 +42,60 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
-    public ILookupParameter<ItemArray<RealVector>> ParentsParameter {
-      get { return (SubScopesLookupParameter<RealVector>)Parameters["Parents"]; }
+    public ILookupParameter<ItemArray<SymbolicExpressionTree>> ParentsParameter {
+      get { return (SubScopesLookupParameter<SymbolicExpressionTree>)Parameters["Parents"]; }
     }
-    public ILookupParameter<RealVector> ChildParameter {
-      get { return (ILookupParameter<RealVector>)Parameters["Child"]; }
+    public ILookupParameter<SymbolicExpressionTree> ChildParameter {
+      get { return (ILookupParameter<SymbolicExpressionTree>)Parameters["Child"]; }
     }
-    public IValueLookupParameter<DoubleMatrix> BoundsParameter {
-      get { return (IValueLookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
+    public IValueLookupParameter<IntValue> MaxTreeSizeParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters["MaxTreeSize"]; }
+    }
+    public IValueLookupParameter<IntValue> MaxTreeHeightParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters["MaxTreeHeight"]; }
+    }
+    public ILookupParameter<ISymbolicExpressionGrammar> SymbolicExpressionGrammarParameter {
+      get { return (ILookupParameter<ISymbolicExpressionGrammar>)Parameters["SymbolicExpressionGrammar"]; }
     }
 
-    protected RealVectorCrossover()
+    protected SymbolicExpressionTreeCrossover()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic crossover operators."));
-      Parameters.Add(new SubScopesLookupParameter<RealVector>("Parents", "The parent vectors which should be crossed."));
-      Parameters.Add(new LookupParameter<RealVector>("Child", "The child vector resulting from the crossover."));
-      Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "The lower and upper bounds of the real vector."));
+      Parameters.Add(new SubScopesLookupParameter<SymbolicExpressionTree>("Parents", "The parent symbolic expression trees which should be crossed."));
+      Parameters.Add(new ValueLookupParameter<IntValue>("MaxTreeSize", "The maximal size (number of nodes) of the symbolic expression tree that should be initialized."));
+      Parameters.Add(new ValueLookupParameter<IntValue>("MaxTreeHeight", "The maximal height of the symbolic expression tree that should be initialized (a tree with one node has height = 0)."));
+      Parameters.Add(new LookupParameter<ISymbolicExpressionGrammar>("SymbolicExpressionGrammar", "The grammar that defines the allowed symbols and syntax of the symbolic expression trees."));
+      Parameters.Add(new LookupParameter<SymbolicExpressionTree>("Child", "The child symbolic expression tree resulting from the crossover."));
     }
 
     public sealed override IOperation Apply() {
-      RealVector result = Cross(RandomParameter.ActualValue, ParentsParameter.ActualValue);
-      DoubleMatrix bounds = BoundsParameter.ActualValue;
-      if (bounds != null) BoundsChecker.Apply(result, bounds);
+      if (ParentsParameter.ActualValue.Length != 2)
+        throw new ArgumentException("Number of parents must be exactly two for symbolic expression tree crossover operators.");
+
+      SymbolicExpressionTree parent0 = ParentsParameter.ActualValue[0];
+      SymbolicExpressionTree parent1 = ParentsParameter.ActualValue[1];
+
+      IRandom random = RandomParameter.ActualValue;
+      ISymbolicExpressionGrammar grammar = SymbolicExpressionGrammarParameter.ActualValue;
+
+      // randomly swap parents to remove a possible bias from selection (e.g. when using gender-specific selection)
+      if (random.NextDouble() < 0.5) {
+        var tmp = parent0;
+        parent0 = parent1;
+        parent1 = tmp;
+      }
+
+      SymbolicExpressionTree result = Cross(random, grammar, parent0, parent1,
+        MaxTreeSizeParameter.ActualValue, MaxTreeHeightParameter.ActualValue);
+      Debug.Assert(result.Size <= MaxTreeSizeParameter.ActualValue.Value);
+      Debug.Assert(result.Height <= MaxTreeHeightParameter.ActualValue.Value);
+      Debug.Assert(grammar.IsValidExpression(result));
       ChildParameter.ActualValue = result;
       return base.Apply();
     }
 
-    protected abstract RealVector Cross(IRandom random, ItemArray<RealVector> parents);
+    protected abstract SymbolicExpressionTree Cross(IRandom random, ISymbolicExpressionGrammar grammar,
+      SymbolicExpressionTree parent0, SymbolicExpressionTree parent1,
+      IntValue maxTreeSize, IntValue maxTreeHeight);
   }
 }

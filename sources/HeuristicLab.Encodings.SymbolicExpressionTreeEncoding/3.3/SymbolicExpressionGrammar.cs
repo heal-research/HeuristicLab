@@ -80,7 +80,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public Symbol StartSymbol {
       get { return startSymbol; }
     }
-   
+
     public IEnumerable<Symbol> AllowedSymbols(Symbol parent, int argumentIndex) {
       return allowedSymbols[parent][argumentIndex];
     }
@@ -102,6 +102,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     public int MaxSubTrees(Symbol start) {
+      throw new NotImplementedException();
+    }
+
+    public bool IsValidExpression(SymbolicExpressionTree expression) {
       throw new NotImplementedException();
     }
 

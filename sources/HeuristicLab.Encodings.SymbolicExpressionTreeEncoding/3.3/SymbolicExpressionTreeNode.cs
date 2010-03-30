@@ -92,5 +92,14 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     protected internal virtual void RemoveSubTree(int index) {
       SubTrees.RemoveAt(index);
     }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      SymbolicExpressionTreeNode clone = new SymbolicExpressionTreeNode(symbol);
+      cloner.RegisterClonedObject(this, clone);
+      foreach (var subtree in SubTrees) {
+        clone.AddSubTree((SymbolicExpressionTreeNode)subtree.Clone(cloner));
+      }
+      return clone;
+    }
   }
 }

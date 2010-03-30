@@ -25,6 +25,7 @@ using System.Text;
 using HeuristicLab.Core;
 using System.Xml;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]

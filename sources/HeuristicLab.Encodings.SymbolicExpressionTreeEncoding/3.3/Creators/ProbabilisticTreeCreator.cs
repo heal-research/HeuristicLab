@@ -50,13 +50,14 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       int tries = 0;
       do {
         try {
-          // determine possible root symbols to create a tree of the target size
-          var possibleRootSymbols = from symbol in grammar.AllowedSymbols(grammar.StartSymbol, 0)
-                                    where treeSize <= grammar.MaximalExpressionLength(symbol)
-                                    where treeSize >= grammar.MinimalExpressionLength(symbol)
-                                    select symbol;
-          Symbol rootSymbol = SelectRandomSymbol(random, possibleRootSymbols);
-          tree.Root = PTC2(random, grammar, rootSymbol, treeSize, maxTreeHeight);
+          tree.Root = PTC2(random, grammar, grammar.StartSymbol, treeSize+1, maxTreeHeight+1);
+          //// determine possible root symbols to create a tree of the target size
+          //var possibleRootSymbols = from symbol in grammar.AllowedSymbols(grammar.StartSymbol, 0)
+          //                          where treeSize <= grammar.MaximalExpressionLength(symbol)
+          //                          where treeSize >= grammar.MinimalExpressionLength(symbol)
+          //                          select symbol;
+          //Symbol rootSymbol = SelectRandomSymbol(random, possibleRootSymbols);
+          //tree.Root = PTC2(random, grammar, rootSymbol, treeSize, maxTreeHeight);
         }
         catch (ArgumentException) {
           // try a different size
@@ -148,25 +149,25 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       // select actualArity randomly with the constraint that the sub-trees in the minimal arity can become large enough
       int minArity = grammar.MinSubTrees(symbol);
       int maxArity = grammar.MaxSubTrees(symbol);
-      if (maxArity >= targetSize) {
+      if (maxArity > targetSize) {
         maxArity = targetSize;
       }
       // the min number of sub-trees has to be set to a value that is large enough so that the largest possible tree is at least tree size
       // if 1..3 trees are possible and the largest possible first sub-tree is smaller larger than the target size then minArity should be at least 2
-      int aggregatedLongestExpressionLength = 1;
+      long aggregatedLongestExpressionLength = 0;
       for (int i = 0; i < maxArity; i++) {
         aggregatedLongestExpressionLength += (from s in grammar.AllowedSymbols(symbol, i)
-                                              select grammar.MaximalExpressionLength(symbol)).Max();
+                                              select grammar.MaximalExpressionLength(s)).Max();
         if (aggregatedLongestExpressionLength < targetSize) minArity = i;
         else break;
       }
 
       // the max number of sub-trees has to be set to a value that is small enough so that the smallest possible tree is at most tree size 
       // if 1..3 trees are possible and the smallest possible first sub-tree is already larger than the target size then maxArity should be at most 0
-      int aggregatedShortestExpressionLength = 1;
+      long aggregatedShortestExpressionLength = 0;
       for (int i = 0; i < maxArity; i++) {
         aggregatedShortestExpressionLength += (from s in grammar.AllowedSymbols(symbol, i)
-                                               select grammar.MinimalExpressionLength(symbol)).Min();
+                                               select grammar.MinimalExpressionLength(s)).Min();
         if (aggregatedShortestExpressionLength > targetSize) {
           maxArity = i;
           break;

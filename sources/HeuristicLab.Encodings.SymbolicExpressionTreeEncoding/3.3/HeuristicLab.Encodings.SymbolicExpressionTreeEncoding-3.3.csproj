@@ -23,6 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -69,6 +70,8 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -79,6 +82,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Crossovers\SubtreeCrossover.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionGrammar.cs" />
     <Compile Include="Creators\ProbabilisticTreeCreator.cs" />
     <Compile Include="HeuristicLabEncodingsSymbolicExpressionTreeEncodingPlugin.cs" />
@@ -87,7 +91,14 @@
     <Compile Include="SymbolicExpressionTree.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Symbol.cs" />
+    <Compile Include="SymbolicExpressionTreeCrossover.cs" />
     <Compile Include="SymbolicExpressionTreeNode.cs" />
+    <Compile Include="Views\SymbolicExpressionTreeView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\SymbolicExpressionTreeView.Designer.cs">
+      <DependentUpon>SymbolicExpressionTreeView.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
@@ -99,6 +110,10 @@
       <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Core.Views\3.3\HeuristicLab.Core.Views-3.3.csproj">
+      <Project>{E226881D-315F-423D-B419-A766FE0D8685}</Project>
+      <Name>HeuristicLab.Core.Views-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
       <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
       <Name>HeuristicLab.Core-3.3</Name>
@@ -106,6 +121,14 @@
     <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
       <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
       <Name>HeuristicLab.Data-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.MainForm.WindowsForms\3.2\HeuristicLab.MainForm.WindowsForms-3.2.csproj">
+      <Project>{AB687BBE-1BFE-476B-906D-44237135431D}</Project>
+      <Name>HeuristicLab.MainForm.WindowsForms-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.MainForm\3.2\HeuristicLab.MainForm-3.2.csproj">
+      <Project>{3BD61258-31DA-4B09-89C0-4F71FEF5F05A}</Project>
+      <Name>HeuristicLab.MainForm-3.2</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
       <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
@@ -133,7 +156,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Crossovers\" />
+    <EmbeddedResource Include="Views\SymbolicExpressionTreeView.resx">
+      <DependentUpon>SymbolicExpressionTreeView.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="Manipulators\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
