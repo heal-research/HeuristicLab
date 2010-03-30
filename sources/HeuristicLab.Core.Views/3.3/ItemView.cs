@@ -57,42 +57,5 @@ namespace HeuristicLab.Core.Views {
         Caption = Content.ItemName;
       }
     }
-
-    /// <summary>
-    /// Asynchron call of GUI updating.
-    /// </summary>
-    /// <param name="method">The delegate to invoke.</param>
-    protected new void Invoke(Delegate method) {
-      // enforce context switch to improve GUI response time
-      IAsyncResult res = base.BeginInvoke(method);
-      ThreadPool.RegisterWaitForSingleObject(res.AsyncWaitHandle,
-        new WaitOrTimerCallback((x, b) => { EndInvoke(res); }),
-        null, -1, true);
-      // prevent blocking of worker thread in Invoke, if the control is disposed
-      //IAsyncResult result = BeginInvoke(method);
-      //while ((!result.AsyncWaitHandle.WaitOne(100, false)) && (!IsDisposed)) {
-      //  System.Threading.Thread.Sleep(0);
-      //}
-      //if (!IsDisposed) EndInvoke(result);
-    }
-    /// <summary>
-    /// Asynchron call of GUI updating.
-    /// </summary>
-    /// <param name="method">The delegate to invoke.</param>
-    /// <param name="args">The invoke arguments.</param>
-    protected new void Invoke(Delegate method, params object[] args) {
-      // enforce context switch to improve GUI response time
-      IAsyncResult res = base.BeginInvoke(method, args);
-      ThreadPool.RegisterWaitForSingleObject(res.AsyncWaitHandle,
-        new WaitOrTimerCallback((x, b) => { EndInvoke(res); }),
-        null, -1, true);
-      //base.Invoke(method, args);
-      //System.Threading.Thread.Sleep(0);
-
-      //// prevent blocking of worker thread in Invoke, if the control is disposed
-      //IAsyncResult result = BeginInvoke(method, args);
-      //while ((!result.AsyncWaitHandle.WaitOne(100, false)) && (!IsDisposed)) { }
-      //if (!IsDisposed) EndInvoke(result);
-    }
   }
 }
