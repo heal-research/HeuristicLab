@@ -23,6 +23,7 @@
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 using HeuristicLab.Core;
 namespace HeuristicLab.Problems.ArtificialAnt {
   public class ArtificialAntExpressionGrammar : Item, ISymbolicExpressionGrammar {
@@ -141,5 +142,25 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     }
 
     #endregion
+
+    #region ISymbolicExpressionGrammar Members
+
+
+    public bool IsValidExpression(SymbolicExpressionTree expression) {
+      if (expression.Root.Symbol != StartSymbol) return false;
+      return IsValidExpression(expression.Root);
+    }
+
+    #endregion
+
+    private bool IsValidExpression(SymbolicExpressionTreeNode root) {
+      if (root.SubTrees.Count < MinSubTrees(root.Symbol)) return false;
+      if (root.SubTrees.Count > MaxSubTrees(root.Symbol)) return false;
+      for (int i = 0; i < root.SubTrees.Count; i++) {
+        if (!AllowedSymbols(root.Symbol, i).Contains(root.SubTrees[i].Symbol)) return false;
+        if (!IsValidExpression(root.SubTrees[i])) return false;
+      }
+      return true;
+    }
   }
 }

@@ -22,8 +22,10 @@
 using System;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Problems.ArtificialAnt {
-  public interface IAntTrailVisualizer : ISolutionsVisualizer {
+  public interface IAntTrailVisualizer : ISolutionsVisualizer, ISingleObjectiveSolutionsVisualizer {
+    ILookupParameter<ItemArray<SymbolicExpressionTree>> SymbolicExpressionTreeParameter { get; }
   }
 }
