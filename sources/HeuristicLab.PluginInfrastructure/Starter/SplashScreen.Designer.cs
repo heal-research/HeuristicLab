@@ -212,11 +212,9 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.Opacity = 0.99;
       this.ShowInTaskbar = false;
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-      this.TopMost = true;
       this.panel.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
       this.ResumeLayout(false);
-
     }
 
     #endregion
