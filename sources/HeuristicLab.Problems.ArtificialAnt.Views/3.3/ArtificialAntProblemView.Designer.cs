@@ -1,4 +1,4 @@
-﻿namespace HeuristicLab.Problems.ArtificialAnt {
+﻿namespace HeuristicLab.Problems.ArtificialAnt.Views {
   partial class ArtificialAntProblemView {
     /// <summary>
     /// Required designer variable.

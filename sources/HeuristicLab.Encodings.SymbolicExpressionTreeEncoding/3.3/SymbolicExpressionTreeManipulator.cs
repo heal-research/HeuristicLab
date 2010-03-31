@@ -32,7 +32,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// </summary>
   [Item("RealVectorManipulator", "A base class for operators that manipulate real-valued vectors.")]
   [StorableClass]
-  public abstract class RealVectorManipulator : SingleSuccessorOperator, IRealVectorManipulator, IStochasticOperator {
+  public abstract class RealVectorManipulator : SingleSuccessorOperator, IRealVectorManipulator, IStochasticOperator, ISymbolicExpressionTreeOperator {
     public override bool CanChangeName {
       get { return false; }
     }

@@ -41,6 +41,43 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }
     }
 
+    #region constant for default world (Santa Fe)
+    private readonly bool[,] santaFeAntTrail = new bool[,] {
+      {false, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false}, 
+      {false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false}, 
+      {false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, true, true, false, false, false, false}, 
+      {false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, true, false, false}, 
+      {false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, true, false, false}, 
+      {false, false, false, true, true, true, true, false, true, true, true, true, true, false, false, false, false, false, false, false, false, true, true, false, false, false, false, false, false, false, false, false}, 
+      {false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false}, 
+      {false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false}, 
+      {false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false}, 
+      {false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, true, false, false}, 
+      {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false}, 
+      {false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false}, 
+      {false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false}, 
+      {false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false}, 
+      {false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, true, false, false, false, false, false, true, true, true, false, false, false}, 
+      {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, true, false, false, false, false, false, false, false, false}, 
+      {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false}, 
+      {false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false}, 
+      {false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, true, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false}, 
+      {false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, true, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false}, 
+      {false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false}, 
+      {false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false}, 
+      {false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false}, 
+      {false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false}, 
+      {false, false, false, true, true, false, false, true, true, true, true, true, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false}, 
+      {false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false}, 
+      {false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false}, 
+      {false, true, false, false, false, false, false, false, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false}, 
+      {false, true, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false}, 
+      {false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false}, 
+      {false, false, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false },
+      {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false }
+    };
+    #endregion
+
     #region Parameter Properties
     public ValueParameter<BoolValue> MaximizationParameter {
       get { return (ValueParameter<BoolValue>)Parameters["Maximization"]; }
@@ -69,6 +106,12 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     public ValueParameter<IntValue> MaxExpressionDepthParameter {
       get { return (ValueParameter<IntValue>)Parameters["MaxExpressionDepth"]; }
     }
+    public ValueParameter<BoolMatrix> WorldParameter {
+      get { return (ValueParameter<BoolMatrix>)Parameters["World"]; }
+    }
+    public ValueParameter<IntValue> MaxTimeStepsParameter {
+      get { return (ValueParameter<IntValue>)Parameters["MaxTimeSteps"]; }
+    }
 
     public OptionalValueParameter<IAntTrailVisualizer> VisualizerParameter {
       get { return (OptionalValueParameter<IAntTrailVisualizer>)Parameters["Visualizer"]; }
@@ -85,6 +128,22 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     #endregion
 
     #region Properties
+    public BoolMatrix World {
+      get { return WorldParameter.Value; }
+      set { WorldParameter.Value = value; }
+    }
+    public IntValue MaxTimeSteps {
+      get { return MaxTimeStepsParameter.Value; }
+      set { MaxTimeStepsParameter.Value = value; }
+    }
+    public IntValue MaxExpressionLength {
+      get { return MaxExpressionLengthParameter.Value; }
+      set { MaxExpressionLengthParameter.Value = value; }
+    }
+    public IntValue MaxExpressionDepth {
+      get { return MaxExpressionDepthParameter.Value; }
+      set { MaxExpressionDepthParameter.Value = value; }
+    }
     public SymbolicExpressionTreeCreator SolutionCreator {
       get { return SolutionCreatorParameter.Value; }
       set { SolutionCreatorParameter.Value = value; }
@@ -115,9 +174,9 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     public DoubleValue BestKnownQuality {
       get { return BestKnownQualityParameter.Value; }
     }
-    private List<IOperator> operators;
+    private List<ISymbolicExpressionTreeOperator> operators;
     public IEnumerable<IOperator> Operators {
-      get { return operators; }
+      get { return operators.Cast<IOperator>(); }
     }
     #endregion
 
@@ -127,7 +186,7 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       Evaluator evaluator = new Evaluator();
       ArtificialAntExpressionGrammar grammar = new ArtificialAntExpressionGrammar();
       BestAntTrailVisualizer visualizer = new BestAntTrailVisualizer();
-
+      BoolMatrix world = new BoolMatrix(santaFeAntTrail);
       Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to true as the Artificial Ant Problem is a maximization problem.", new BoolValue(true)));
       Parameters.Add(new ValueParameter<SymbolicExpressionTreeCreator>("SolutionCreator", "The operator which should be used to create new artificial ant solutions.", creator));
       Parameters.Add(new ValueParameter<Evaluator>("Evaluator", "The operator which should be used to evaluate artificial ant solutions.", evaluator));
@@ -135,6 +194,8 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       Parameters.Add(new ValueParameter<ISymbolicExpressionGrammar>("ArtificialAntExpressionGrammar", "The grammar that should be used for artificial ant expressions.", grammar));
       Parameters.Add(new ValueParameter<IntValue>("MaxExpressionLength", "Maximal length of the expression to control the artificial ant.", new IntValue(100)));
       Parameters.Add(new ValueParameter<IntValue>("MaxExpressionDepth", "Maximal depth of the expression to control the artificial ant.", new IntValue(10)));
+      Parameters.Add(new ValueParameter<BoolMatrix>("World", "The world for the artificial ant with scattered food items.", world));
+      Parameters.Add(new ValueParameter<IntValue>("MaxTimeSteps", "The number of time steps the artificial ant has available to collect all food items.", new IntValue(600)));
       Parameters.Add(new ValueParameter<IAntTrailVisualizer>("Visualizer", "The operator which should be used to visualize artificial ant solutions.", visualizer));
 
       creator.SymbolicExpressionTreeParameter.ActualName = "AntTrailSolution";
@@ -158,41 +219,59 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     #region Events
     public event EventHandler SolutionCreatorChanged;
     private void OnSolutionCreatorChanged() {
-      if (SolutionCreatorChanged != null)
-        SolutionCreatorChanged(this, EventArgs.Empty);
+      var changed = SolutionCreatorChanged;
+      if (changed != null)
+        changed(this, EventArgs.Empty);
     }
     public event EventHandler EvaluatorChanged;
     private void OnEvaluatorChanged() {
-      if (EvaluatorChanged != null)
-        EvaluatorChanged(this, EventArgs.Empty);
+      var changed = EvaluatorChanged;
+      if (changed != null)
+        changed(this, EventArgs.Empty);
     }
     public event EventHandler VisualizerChanged;
     private void OnVisualizerChanged() {
-      if (VisualizerChanged != null)
-        VisualizerChanged(this, EventArgs.Empty);
+      var changed = VisualizerChanged;
+      if (changed != null)
+        changed(this, EventArgs.Empty);
     }
 
     public event EventHandler OperatorsChanged;
     private void OnOperatorsChanged() {
-      if (OperatorsChanged != null)
-        OperatorsChanged(this, EventArgs.Empty);
+      var changed = OperatorsChanged;
+      if (changed != null)
+        changed(this, EventArgs.Empty);
     }
 
     private void SolutionCreatorParameter_ValueChanged(object sender, EventArgs e) {
       SolutionCreator.SymbolicExpressionTreeParameter.ActualNameChanged += new EventHandler(SolutionCreator_SymbolicExpressionTreeParameter_ActualNameChanged);
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
+      ParameterizeVisualizer();
       ParameterizeOperators();
       OnSolutionCreatorChanged();
     }
     private void SolutionCreator_SymbolicExpressionTreeParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
+      ParameterizeVisualizer();
       ParameterizeOperators();
     }
     private void EvaluatorParameter_ValueChanged(object sender, EventArgs e) {
+      Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       ParameterizeEvaluator();
+      ParameterizeVisualizer();
       OnEvaluatorChanged();
     }
+
+    private void VisualizerParameter_ValueChanged(object sender, EventArgs e) {
+      ParameterizeVisualizer();
+      OnVisualizerChanged();
+    }
+
+    private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
+      ParameterizeVisualizer();
+    }
+
     #endregion
 
     #region Helpers
@@ -202,45 +281,55 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
       SolutionCreator.SymbolicExpressionTreeParameter.ActualNameChanged += new EventHandler(SolutionCreator_SymbolicExpressionTreeParameter_ActualNameChanged);
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
+      Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
+      VisualizerParameter.ValueChanged += new EventHandler(VisualizerParameter_ValueChanged);
     }
-    private void ParameterizeSolutionCreator() {
-      SolutionCreator.SymbolicExpressionGrammarParameter.ActualName = ArtificialAntExpressionGrammarParameter.Name;
-    }
-    private void ParameterizeEvaluator() {
-      Evaluator.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
-    }
+
     private void InitializeOperators() {
-      operators = new List<IOperator>();
-      operators.Add(Evaluator);
-      operators.Add(SolutionCreator);
-      operators.Add(new SubtreeCrossover());
+      operators = new List<ISymbolicExpressionTreeOperator>();
+      operators.AddRange(ApplicationManager.Manager.GetInstances<ISymbolicExpressionTreeOperator>());
       ParameterizeOperators();
     }
 
+    private void ParameterizeSolutionCreator() {
+      SolutionCreator.SymbolicExpressionGrammarParameter.ActualName = ArtificialAntExpressionGrammarParameter.Name;
+      SolutionCreator.MaxTreeHeightParameter.ActualName = MaxExpressionDepthParameter.Name;
+      SolutionCreator.MaxTreeSizeParameter.ActualName = MaxExpressionLengthParameter.Name;
+    }
+    private void ParameterizeEvaluator() {
+      Evaluator.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+      Evaluator.MaxTimeStepsParameter.ActualName = MaxTimeStepsParameter.Name;
+      Evaluator.WorldParameter.ActualName = WorldParameter.Name;
+    }
+    private void ParameterizeVisualizer() {
+      if (Visualizer != null) {
+        Visualizer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
+        var antTrailVisualizer = Visualizer as IAntTrailVisualizer;
+        if (antTrailVisualizer != null) {
+          antTrailVisualizer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+          antTrailVisualizer.WorldParameter.ActualName = WorldParameter.Name;
+          antTrailVisualizer.MaxTimeStepsParameter.ActualName = MaxTimeStepsParameter.Name;
+        }
+      }
+    }
+
     private void ParameterizeOperators() {
-      foreach (ProbabilisticTreeCreator op in Operators.OfType<ProbabilisticTreeCreator>()) {
+      foreach (ISymbolicExpressionTreeOperator op in Operators.OfType<ISymbolicExpressionTreeOperator>()) {
         op.MaxTreeHeightParameter.ActualName = MaxExpressionDepthParameter.Name;
         op.MaxTreeSizeParameter.ActualName = MaxExpressionLengthParameter.Name;
         op.SymbolicExpressionGrammarParameter.ActualName = ArtificialAntExpressionGrammarParameter.Name;
       }
       foreach (Evaluator op in Operators.OfType<Evaluator>()) {
         op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+        op.MaxTimeStepsParameter.ActualName = MaxTimeStepsParameter.Name;
+        op.WorldParameter.ActualName = WorldParameter.Name;
       }
       foreach (SymbolicExpressionTreeCrossover op in Operators.OfType<SymbolicExpressionTreeCrossover>()) {
-        op.MaxTreeHeightParameter.ActualName = MaxExpressionDepthParameter.Name;
-        op.MaxTreeSizeParameter.ActualName = MaxExpressionLengthParameter.Name;
-        op.SymbolicExpressionGrammarParameter.ActualName = ArtificialAntExpressionGrammarParameter.Name;
         op.ParentsParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
         op.ChildParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
       }
     }
-    private void ParameterizeVisualizer() {
-      if (Visualizer != null) {
-        Visualizer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
-        if (Visualizer is IAntTrailVisualizer)
-          ((IAntTrailVisualizer)Visualizer).SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
-      }
-    }
+
 
     #endregion
   }

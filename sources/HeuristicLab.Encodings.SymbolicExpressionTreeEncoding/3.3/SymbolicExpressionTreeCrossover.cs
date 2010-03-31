@@ -34,7 +34,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// </summary>
   [Item("SymbolicExpressionTreeCrossover", "A base class for operators that perform a crossover of symbolic expression trees.")]
   [StorableClass]
-  public abstract class SymbolicExpressionTreeCrossover : SingleSuccessorOperator, ICrossover, IStochasticOperator {
+  public abstract class SymbolicExpressionTreeCrossover : SingleSuccessorOperator, ICrossover, IStochasticOperator, ISymbolicExpressionTreeOperator {
     public override bool CanChangeName {
       get { return false; }
     }

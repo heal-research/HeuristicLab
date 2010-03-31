@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{F5C0ECAC-EDBA-4024-872A-1F74AFCB20B4}</ProjectGuid>
+    <ProjectGuid>{30DD3DA2-CA57-49DD-A5BA-50CEF19DB45F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.Problems.ArtificialAnt</RootNamespace>
-    <AssemblyName>HeuristicLab.Problems.ArtificialAnt-3.3</AssemblyName>
+    <RootNamespace>HeuristicLab.Problems.ArtificialAnt.Views</RootNamespace>
+    <AssemblyName>HeuristicLab.Problems.ArtificialAnt.Views-3.3</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
@@ -70,6 +70,7 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -80,38 +81,34 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AntInterpreter.cs" />
-    <Compile Include="BestAntTrailVisualizer.cs" />
-    <Compile Include="HeuristicLabProblemsArtificialAntPlugin.cs" />
-    <Compile Include="IAntTrailVisualizer.cs" />
-    <Compile Include="Evaluator.cs" />
-    <Compile Include="ArtificialAntExpressionGrammar.cs" />
-    <Compile Include="ArtificialAntProblem.cs" />
-    <Compile Include="AntTrail.cs" />
+    <Compile Include="AntTrailView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="AntTrailView.Designer.cs">
+      <DependentUpon>AntTrailView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ArtificialAntProblemView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ArtificialAntProblemView.Designer.cs">
+      <DependentUpon>ArtificialAntProblemView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HeuristicLabProblemsArtificialAntViewsPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Symbols\IfFoodAhead.cs" />
-    <Compile Include="Symbols\Left.cs" />
-    <Compile Include="Symbols\Move.cs" />
-    <Compile Include="Symbols\Prog2.cs" />
-    <Compile Include="Symbols\Prog3.cs" />
-    <Compile Include="Symbols\Right.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
-      <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
-      <Name>HeuristicLab.Collections-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.2\HeuristicLab.Common.Resources-3.2.csproj">
-      <Project>{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}</Project>
-      <Name>HeuristicLab.Common.Resources-3.2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Common\3.2\HeuristicLab.Common-3.2.csproj">
-      <Project>{1FC004FC-59AF-4249-B1B6-FF25873A20E4}</Project>
-      <Name>HeuristicLab.Common-3.2</Name>
+    <EmbeddedResource Include="AntTrailView.resx">
+      <DependentUpon>AntTrailView.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Core.Views\3.3\HeuristicLab.Core.Views-3.3.csproj">
+      <Project>{E226881D-315F-423D-B419-A766FE0D8685}</Project>
+      <Name>HeuristicLab.Core.Views-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
       <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
@@ -125,25 +122,29 @@
       <Project>{125D3006-67F5-48CB-913E-73C0548F17FA}</Project>
       <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
-      <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
-      <Name>HeuristicLab.Operators-3.3</Name>
+    <ProjectReference Include="..\..\HeuristicLab.MainForm.WindowsForms\3.2\HeuristicLab.MainForm.WindowsForms-3.2.csproj">
+      <Project>{AB687BBE-1BFE-476B-906D-44237135431D}</Project>
+      <Name>HeuristicLab.MainForm.WindowsForms-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.MainForm\3.2\HeuristicLab.MainForm-3.2.csproj">
+      <Project>{3BD61258-31DA-4B09-89C0-4F71FEF5F05A}</Project>
+      <Name>HeuristicLab.MainForm-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Optimization.Views\3.3\HeuristicLab.Optimization.Views-3.3.csproj">
+      <Project>{662B4B15-8F4D-4AE5-B3EB-D91C215F5AF2}</Project>
+      <Name>HeuristicLab.Optimization.Views-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
       <Project>{14AB8D24-25BC-400C-A846-4627AA945192}</Project>
       <Name>HeuristicLab.Optimization-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj">
-      <Project>{56F9106A-079F-4C61-92F6-86A84C2D84B7}</Project>
-      <Name>HeuristicLab.Parameters-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
-      <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
-      <Name>HeuristicLab.Persistence-3.3</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.ArtificialAnt\3.3\HeuristicLab.Problems.ArtificialAnt-3.3.csproj">
+      <Project>{F5C0ECAC-EDBA-4024-872A-1F74AFCB20B4}</Project>
+      <Name>HeuristicLab.Problems.ArtificialAnt-3.3</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -161,6 +162,6 @@ set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
 call PreBuildEvent.cmd
-SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabProblemsArtificialAntPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabProblemsArtificialAntPlugin.cs"</PreBuildEvent>
+SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabProblemsArtificialAntViewsPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabProblemsArtificialAntViewsPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

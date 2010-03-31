@@ -31,7 +31,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
   [Item("ProbabilisticTreeCreator", "An operator that creates new symbolic expression trees with uniformly distributed size")]
   public class ProbabilisticTreeCreator : SymbolicExpressionTreeCreator {
-    private const int MAX_TRIES = 100;
     public ProbabilisticTreeCreator()
       : base() {
     }
@@ -47,27 +46,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       // select a target tree size uniformly in the possible range (as determined by explicit limits and limits of the grammar)
       int treeSize = random.Next(allowedMinSize, allowedMaxSize);
       SymbolicExpressionTree tree = new SymbolicExpressionTree();
-      int tries = 0;
       do {
         try {
-          tree.Root = PTC2(random, grammar, grammar.StartSymbol, treeSize+1, maxTreeHeight+1);
-          //// determine possible root symbols to create a tree of the target size
-          //var possibleRootSymbols = from symbol in grammar.AllowedSymbols(grammar.StartSymbol, 0)
-          //                          where treeSize <= grammar.MaximalExpressionLength(symbol)
-          //                          where treeSize >= grammar.MinimalExpressionLength(symbol)
-          //                          select symbol;
-          //Symbol rootSymbol = SelectRandomSymbol(random, possibleRootSymbols);
-          //tree.Root = PTC2(random, grammar, rootSymbol, treeSize, maxTreeHeight);
+          tree.Root = PTC2(random, grammar, grammar.StartSymbol, treeSize + 1, maxTreeHeight + 1);
         }
         catch (ArgumentException) {
           // try a different size
           treeSize = random.Next(allowedMinSize, allowedMaxSize);
-          tries = 0;
-        }
-        if (tries++ >= MAX_TRIES) {
-          // try a different size
-          treeSize = random.Next(allowedMinSize, allowedMaxSize);
-          tries = 0;
         }
       } while (tree.Root == null || tree.Size > maxTreeSize || tree.Height > maxTreeHeight);
       return tree;
@@ -190,36 +175,5 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         tree.AddSubTree(CreateMinimalTree(random, grammar, grammar.AllowedSymbols(selectedSymbol, i)));
       return tree;
     }
-
-    //private bool IsRecursiveExpansionPossible(Symbol symbol) {
-    //  return FindCycle(function, new Stack<IFunction>());
-    //}
-
-    //private Dictionary<IFunction, bool> inCycle = new Dictionary<IFunction, bool>();
-    //private bool FindCycle(IFunction function, Stack<IFunction> functionChain) {
-    //  if (inCycle.ContainsKey(function)) {
-    //    return inCycle[function];
-    //  } else if (IsTerminal(function)) {
-    //    inCycle[function] = false;
-    //    return false;
-    //  } else if (functionChain.Contains(function)) {
-    //    inCycle[function] = true;
-    //    return true;
-    //  } else {
-    //    functionChain.Push(function);
-    //    bool result = false;
-    //    // all slot indexes
-    //    for (int i = 0; i < function.MaxSubTrees; i++) {
-    //      foreach (IFunction subFunction in GetAllowedSubFunctions(function, i)) {
-    //        result |= FindCycle(subFunction, functionChain);
-    //      }
-    //    }
-
-    //    functionChain.Pop();
-    //    inCycle[function] = result;
-    //    return result;
-    //  }
-    //}
-
   }
 }

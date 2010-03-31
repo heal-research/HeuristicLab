@@ -32,7 +32,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// </summary>
   [Item("SymbolicExpressionTreeCreator", "A base class for operators creating symbolic expression trees.")]
   [StorableClass]
-  public abstract class SymbolicExpressionTreeCreator : SingleSuccessorOperator, ISolutionCreator, IStochasticOperator {
+  public abstract class SymbolicExpressionTreeCreator : SingleSuccessorOperator, ISolutionCreator, IStochasticOperator, ISymbolicExpressionTreeOperator {
     private const string RandomParameterName = "Random";
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
     private const string MaxTreeSizeParameterName = "MaxTreeSize";

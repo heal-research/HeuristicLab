@@ -8,7 +8,7 @@ using System.Windows.Forms;
 using HeuristicLab.Optimization.Views;
 using HeuristicLab.MainForm;
 
-namespace HeuristicLab.Problems.ArtificialAnt {
+namespace HeuristicLab.Problems.ArtificialAnt.Views {
   [View("ArtificialAntProblem View")]
   [Content(typeof(ArtificialAntProblem), true)]
   public partial class ArtificialAntProblemView : ProblemView {

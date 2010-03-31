@@ -19,16 +19,22 @@
  */
 #endregion
 
-using System;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Optimization;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System;
+using System.Diagnostics;
 
-namespace HeuristicLab.Problems.ArtificialAnt {
-  public interface IAntTrailVisualizer : ISolutionsVisualizer, ISingleObjectiveSolutionsVisualizer {
-    ILookupParameter<ItemArray<SymbolicExpressionTree>> SymbolicExpressionTreeParameter { get; }
-    ILookupParameter<BoolMatrix> WorldParameter { get; }
-    ILookupParameter<IntValue> MaxTimeStepsParameter { get; }
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
+  /// <summary>
+  /// Interface for operators that can be applied to symbolic expression trees.
+  /// </summary>
+  public interface ISymbolicExpressionTreeOperator : IOperator {
+    IValueLookupParameter<IntValue> MaxTreeSizeParameter { get; }
+    IValueLookupParameter<IntValue> MaxTreeHeightParameter { get; }
+    ILookupParameter<ISymbolicExpressionGrammar> SymbolicExpressionGrammarParameter { get; }
   }
 }

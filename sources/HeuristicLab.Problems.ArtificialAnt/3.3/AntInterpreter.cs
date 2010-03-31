@@ -21,127 +21,126 @@
 
 using System;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Data;
+using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.ArtificialAnt {
-  internal class AntInterpreter {
-    private const int N_FOOD_ITEMS = 89;
-    private const int WORLD_WIDTH = 32;
-    private const int WORLD_HEIGHT = 32;
-    private const int FOOD = 1;
-    private const int EMPTY = 0;
-    private int[] SANTA_FE_TRAIL = new int[] {
-      0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-      0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-      0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 
-      0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 
-      0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 
-      0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 
-      0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-      0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-      0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-      0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-      0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-      0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-      0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    };
-
-    private int[] trail;
-
-    public int ElapsedTime { get; set; }
+  public class AntInterpreter {
     public int MaxTimeSteps { get; set; }
     public int FoodEaten { get; set; }
-    private int currentDirection;
-    private int currentLocation;
-
-    public AntInterpreter() {
-      currentLocation = 0;
-      currentDirection = 0;
-      FoodEaten = 0;
-      trail = new int[WORLD_HEIGHT * WORLD_WIDTH];
-      Array.Copy(SANTA_FE_TRAIL, trail, SANTA_FE_TRAIL.Length);
-    }
-
-    internal void Run(SymbolicExpressionTree tree) {
-      while (FoodEaten < N_FOOD_ITEMS && ElapsedTime < MaxTimeSteps) {
-        Step(tree.Root.SubTrees[0]);
+    private BoolMatrix world;
+    public BoolMatrix World {
+      get { return world; }
+      set {
+        // create a clone of the world because the ant will remove the food items it can find.
+        world = (BoolMatrix)value.Clone();
+        CountFoodItems();
       }
     }
 
-    internal void Step(SymbolicExpressionTreeNode currentNode) {
+    private SymbolicExpressionTree expression;
+    public SymbolicExpressionTree Expression {
+      get { return expression; }
+      set {
+        expression = value;
+      }
+    }
+    public int ElapsedTime { get; set; }
+    private int currentDirection;
+    private int currentAntLocationRow;
+    private int currentAntLocationColumn;
+    private int nFoodItems;
+    private Stack<SymbolicExpressionTreeNode> nodeStack = new Stack<SymbolicExpressionTreeNode>();
+
+    private void CountFoodItems() {
+      nFoodItems = 0;
+      for (int i = 0; i < World.Rows; i++) {
+        for (int j = 0; j < World.Columns; j++) {
+          if (World[i, j]) nFoodItems++;
+        }
+      }
+    }
+
+    public void AntLocation(out int row, out int column) {
+      row = currentAntLocationRow;
+      column = currentAntLocationColumn;
+    }
+
+    public int AntDirection {
+      get { return currentDirection; }
+    }
+
+    public void Run() {
+      while (ElapsedTime < MaxTimeSteps && FoodEaten < nFoodItems) {
+        Step();
+      }
+    }
+
+    public void Step() {
+      // expression evaluated completly => start at root again
+      if (nodeStack.Count == 0)
+        nodeStack.Push(Expression.Root.SubTrees[0]);
+      var currentNode = nodeStack.Pop();
       if (currentNode.Symbol is Left) {
-        if (ElapsedTime >= MaxTimeSteps || FoodEaten >= N_FOOD_ITEMS) return;
         currentDirection = (currentDirection + 3) % 4;
         ElapsedTime++;
       } else if (currentNode.Symbol is Right) {
-        if (ElapsedTime >= MaxTimeSteps || FoodEaten >= N_FOOD_ITEMS) return;
         currentDirection = (currentDirection + 1) % 4;
         ElapsedTime++;
       } else if (currentNode.Symbol is Move) {
-        if (ElapsedTime >= MaxTimeSteps || FoodEaten >= N_FOOD_ITEMS) return;
-        currentLocation = NextField();
-        FoodEaten += trail[currentLocation];
-        trail[currentLocation] = EMPTY;
+        MoveAntForward();
+        if (World[currentAntLocationRow, currentAntLocationColumn])
+          FoodEaten++;
+        World[currentAntLocationRow, currentAntLocationColumn] = false;
         ElapsedTime++;
       } else if (currentNode.Symbol is IfFoodAhead) {
-        if (trail[NextField()] == FOOD) {
-          Step(currentNode.SubTrees[0]);
+        int nextAntLocationRow;
+        int nextAntLocationColumn;
+        NextField(out nextAntLocationRow, out nextAntLocationColumn);
+        if (World[nextAntLocationRow, nextAntLocationColumn]) {
+          nodeStack.Push(currentNode.SubTrees[0]);
         } else {
-          Step(currentNode.SubTrees[1]);
+          nodeStack.Push(currentNode.SubTrees[1]);
         }
       } else if (currentNode.Symbol is Prog2) {
-        Step(currentNode.SubTrees[0]);
-        Step(currentNode.SubTrees[1]);
+        nodeStack.Push(currentNode.SubTrees[1]);
+        nodeStack.Push(currentNode.SubTrees[0]);
         return;
       } else if (currentNode.Symbol is Prog3) {
-        Step(currentNode.SubTrees[0]);
-        Step(currentNode.SubTrees[1]);
-        Step(currentNode.SubTrees[2]);
+        nodeStack.Push(currentNode.SubTrees[2]);
+        nodeStack.Push(currentNode.SubTrees[1]);
+        nodeStack.Push(currentNode.SubTrees[0]);
         return;
-      } else  {
+      } else {
         throw new InvalidOperationException(currentNode.Symbol.ToString());
       }
     }
 
-    private int NextField() {
-      int currentLocationX = currentLocation % WORLD_WIDTH;
-      int currentLocationY = currentLocation / WORLD_HEIGHT;
+    private void MoveAntForward() {
+      NextField(out currentAntLocationRow, out currentAntLocationColumn);
+    }
 
+    private void NextField(out int nextAntLocationRow, out int nextAntLocationColumn) {
       switch (currentDirection) {
         case 0:
-          currentLocationX = (currentLocationX + 1) % WORLD_WIDTH; // EAST
+          nextAntLocationColumn = (currentAntLocationColumn + 1) % World.Columns; // EAST
+          nextAntLocationRow = currentAntLocationRow;
           break;
         case 1:
-          currentLocationY = (currentLocationY + 1) % WORLD_HEIGHT; // SOUTH
+          nextAntLocationRow = (currentAntLocationRow + 1) % World.Rows; // SOUTH
+          nextAntLocationColumn = currentAntLocationColumn;
           break;
         case 2:
-          currentLocationX = (currentLocationX + WORLD_WIDTH - 1) % WORLD_WIDTH; // WEST
+          nextAntLocationColumn = (currentAntLocationColumn + World.Columns - 1) % World.Columns; // WEST
+          nextAntLocationRow = currentAntLocationRow;
           break;
         case 3:
-          currentLocationY = (currentLocationY + WORLD_HEIGHT - 1) % WORLD_HEIGHT; // NORTH
+          nextAntLocationRow = (currentAntLocationRow + World.Rows - 1) % World.Rows; // NORTH
+          nextAntLocationColumn = currentAntLocationColumn;
           break;
         default:
           throw new InvalidOperationException();
       }
-      return currentLocationY * WORLD_WIDTH + currentLocationX;
     }
   }
 }

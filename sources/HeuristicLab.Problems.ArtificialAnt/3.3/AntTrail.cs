@@ -47,24 +47,70 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       }
     }
 
+    private BoolMatrix world;
+    [Storable]
+    public BoolMatrix World {
+      get { return world; }
+      set {
+        if (world != value) {
+          if (world != null) DeregisterWorldEvents();
+          world = value;
+          if (world != null) RegisterWorldEvents();
+          OnWorldChanged();
+        }
+      }
+    }
+    private IntValue maxTimeSteps;
+    [Storable]
+    public IntValue MaxTimeSteps {
+      get { return maxTimeSteps; }
+      set {
+        if (maxTimeSteps != value) {
+          if (maxTimeSteps != value) {
+            if (maxTimeSteps != null) DeregisterMaxTimeStepsEvents();
+            maxTimeSteps = value;
+            if (maxTimeSteps != null) RegisterMaxTimeStepsEvents();
+            OnWorldChanged();
+          }
+        }
+      }
+    }
+
     public AntTrail() : base() { }
-    public AntTrail(SymbolicExpressionTree expression)
+    public AntTrail(BoolMatrix world, SymbolicExpressionTree expression, IntValue maxTimeSteps)
       : this() {
+      World = world;
       SymbolicExpressionTree = expression;
+      MaxTimeSteps = maxTimeSteps;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       AntTrail clone = new AntTrail();
       cloner.RegisterClonedObject(this, clone);
       clone.expression = (SymbolicExpressionTree)cloner.Clone(expression);
+      clone.world = (BoolMatrix)cloner.Clone(world);
+      clone.maxTimeSteps = (IntValue)cloner.Clone(maxTimeSteps);
       return clone;
     }
 
-    //#region Events
+    #region Events
     public event EventHandler SymbolicExpressionTreeChanged;
     private void OnSymbolicExpressionTreeChanged() {
-      if (SymbolicExpressionTreeChanged != null)
-        SymbolicExpressionTreeChanged(this, EventArgs.Empty);
+      var changed = SymbolicExpressionTreeChanged;
+      if (changed != null)
+        changed(this, EventArgs.Empty);
+    }
+    public event EventHandler WorldChanged;
+    private void OnWorldChanged() {
+      var changed = WorldChanged;
+      if (changed != null)
+        changed(this, EventArgs.Empty);
+    }
+    public event EventHandler MaxTimeStepsChanged;
+    private void OnMaxTimeStepsChanged() {
+      var changed = MaxTimeStepsChanged;
+      if (changed != null)
+        changed(this, EventArgs.Empty);
     }
 
     //private void RegisterSymbolicExpressionTreeEvents() {
@@ -76,12 +122,30 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     //  SymbolicExpressionTree.Reset -= new EventHandler(SymbolicExpressionTree_Reset);
     //}
 
-    //private void SymbolicExpressionTree_ItemChanged(object sender, EventArgs<int> e) {
-    //  OnSymbolicExpressionTreeChanged();
-    //}
-    //private void SymbolicExpressionTree_Reset(object sender, EventArgs e) {
-    //  OnSymbolicExpressionTreeChanged();
-    //}
-    //#endregion
+    private void RegisterWorldEvents() {
+      World.ItemChanged += new EventHandler<EventArgs<int, int>>(World_ItemChanged);
+      World.Reset += new EventHandler(World_Reset);
+    }
+    private void DeregisterWorldEvents() {
+      World.ItemChanged -= new EventHandler<EventArgs<int, int>>(World_ItemChanged);
+      World.Reset -= new EventHandler(World_Reset);
+    }
+    private void RegisterMaxTimeStepsEvents() {
+      MaxTimeSteps.ValueChanged += new EventHandler(MaxTimeSteps_ValueChanged);
+    }
+    private void DeregisterMaxTimeStepsEvents() {
+      MaxTimeSteps.ValueChanged -= new EventHandler(MaxTimeSteps_ValueChanged);
+    }
+
+    void MaxTimeSteps_ValueChanged(object sender, EventArgs e) {
+      OnMaxTimeStepsChanged();
+    }
+    private void World_ItemChanged(object sender, EventArgs<int, int> e) {
+      OnWorldChanged();
+    }
+    private void World_Reset(object sender, EventArgs e) {
+      OnWorldChanged();
+    }
+    #endregion
   }
 }

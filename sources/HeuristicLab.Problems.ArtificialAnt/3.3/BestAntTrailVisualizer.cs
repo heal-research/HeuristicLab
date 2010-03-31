@@ -35,12 +35,19 @@ namespace HeuristicLab.Problems.ArtificialAnt {
   [Item("BestAntTrailVisualizer", "An operator for visualizing the best ant trail of an artificial ant problem.")]
   [StorableClass]
   public sealed class BestAntTrailVisualizer : SingleSuccessorOperator, IAntTrailVisualizer {
+    public ILookupParameter<BoolMatrix> WorldParameter {
+      get { return (ILookupParameter<BoolMatrix>)Parameters["World"]; }
+    }
     public ILookupParameter<ItemArray<SymbolicExpressionTree>> SymbolicExpressionTreeParameter {
       get { return (ILookupParameter<ItemArray<SymbolicExpressionTree>>)Parameters["SymbolicExpressionTree"]; }
     }
     public ILookupParameter<ItemArray<DoubleValue>> QualityParameter {
       get { return (ILookupParameter<ItemArray<DoubleValue>>)Parameters["Quality"]; }
     }
+    public ILookupParameter<IntValue> MaxTimeStepsParameter {
+      get { return (ILookupParameter<IntValue>)Parameters["MaxTimeSteps"]; }
+    }
+
     public ILookupParameter<AntTrail> AntTrailParameter {
       get { return (ILookupParameter<AntTrail>)Parameters["AntTrail"]; }
     }
@@ -50,22 +57,27 @@ namespace HeuristicLab.Problems.ArtificialAnt {
 
     public BestAntTrailVisualizer()
       : base() {
-      Parameters.Add(new LookupParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities."));
+      Parameters.Add(new LookupParameter<BoolMatrix>("World", "The world with food items for the artificial ant."));
       Parameters.Add(new SubScopesLookupParameter<SymbolicExpressionTree>("SymbolicExpressionTree", "The artificial ant solutions from which the best solution should be visualized."));
       Parameters.Add(new SubScopesLookupParameter<DoubleValue>("Quality", "The qualities of the artificial ant solutions which should be visualized."));
       Parameters.Add(new LookupParameter<AntTrail>("AntTrail", "The visual representation of the best ant trail."));
+      Parameters.Add(new LookupParameter<IntValue>("MaxTimeSteps", "The maximal time steps that the artificial ant has available to collect all food items."));
     }
 
     public override IOperation Apply() {
       ItemArray<SymbolicExpressionTree> expressions = SymbolicExpressionTreeParameter.ActualValue;
       ItemArray<DoubleValue> qualities = QualityParameter.ActualValue;
+      BoolMatrix world = WorldParameter.ActualValue;
+      IntValue maxTimeSteps = MaxTimeStepsParameter.ActualValue;
 
       int i = qualities.Select((x, index) => new { index, x.Value }).OrderBy(x => -x.Value).First().index;
 
       AntTrail antTrail = AntTrailParameter.ActualValue;
-      if (antTrail == null) AntTrailParameter.ActualValue = new AntTrail(expressions[i]);
+      if (antTrail == null) AntTrailParameter.ActualValue = new AntTrail(world, expressions[i], maxTimeSteps);
       else {
+        antTrail.World = world;
         antTrail.SymbolicExpressionTree = expressions[i];
+        antTrail.MaxTimeSteps = maxTimeSteps;
       }
       return base.Apply();
     }

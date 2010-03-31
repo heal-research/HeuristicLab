@@ -86,6 +86,7 @@
     <Compile Include="Interfaces\ISymbolicExpressionGrammar.cs" />
     <Compile Include="Creators\ProbabilisticTreeCreator.cs" />
     <Compile Include="HeuristicLabEncodingsSymbolicExpressionTreeEncodingPlugin.cs" />
+    <Compile Include="Interfaces\ISymbolicExpressionTreeOperator.cs" />
     <Compile Include="SymbolicExpressionGrammar.cs" />
     <Compile Include="SymbolicExpressionTreeCreator.cs" />
     <Compile Include="SymbolicExpressionTree.cs" />

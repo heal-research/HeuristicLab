@@ -81,13 +81,15 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     #region Events
     public event EventHandler CoordinatesChanged;
     private void OnCoordinatesChanged() {
-      if (CoordinatesChanged != null)
-        CoordinatesChanged(this, EventArgs.Empty);
+      var changed = CoordinatesChanged;
+      if (changed != null)
+        changed(this, EventArgs.Empty);
     }
     public event EventHandler PermutationChanged;
     private void OnPermutationChanged() {
-      if (PermutationChanged != null)
-        PermutationChanged(this, EventArgs.Empty);
+      var changed = PermutationChanged;
+      if (changed != null)
+        changed(this, EventArgs.Empty);
     }
 
     private void RegisterCoordinatesEvents() {

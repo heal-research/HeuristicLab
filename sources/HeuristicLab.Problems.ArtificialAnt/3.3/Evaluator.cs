@@ -39,18 +39,31 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     public ILookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter {
       get { return (ILookupParameter<SymbolicExpressionTree>)Parameters["SymbolicExpressionTree"]; }
     }
+    public ILookupParameter<BoolMatrix> WorldParameter {
+      get { return (ILookupParameter<BoolMatrix>)Parameters["World"]; }
+    }
+    public ILookupParameter<IntValue> MaxTimeStepsParameter {
+      get { return (ILookupParameter<IntValue>)Parameters["MaxTimeSteps"]; }
+    }
+
     public Evaluator()
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of the evaluated artificial ant solution."));
       Parameters.Add(new LookupParameter<SymbolicExpressionTree>("SymbolicExpressionTree", "The artificial ant solution encoded as a symbolic expression tree that should be evaluated"));
+      Parameters.Add(new LookupParameter<BoolMatrix>("World", "The world for the artificial ant with scattered food items."));
+      Parameters.Add(new LookupParameter<IntValue>("MaxTimeSteps", "The maximal number of time steps that the artificial ant should be simulated."));
     }
 
     public sealed override IOperation Apply() {
+      SymbolicExpressionTree expression = SymbolicExpressionTreeParameter.ActualValue;
+      BoolMatrix world = WorldParameter.ActualValue;
+      IntValue maxTimeSteps = MaxTimeStepsParameter.ActualValue;
 
-      SymbolicExpressionTree solution = SymbolicExpressionTreeParameter.ActualValue;
       AntInterpreter interpreter = new AntInterpreter();
-      interpreter.MaxTimeSteps = 600;
-      interpreter.Run(solution);
+      interpreter.MaxTimeSteps = maxTimeSteps.Value;
+      interpreter.World = world;
+      interpreter.Expression = expression;
+      interpreter.Run();
 
       QualityParameter.ActualValue = new DoubleValue(interpreter.FoodEaten);
       return null;
