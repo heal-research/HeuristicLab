@@ -10,20 +10,20 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
-  [View("SymbolicExpressionTree View")]
-  [Content(typeof(SymbolicExpressionTree), true)]
-  public partial class SymbolicExpressionTreeView : AsynchronousContentView {
+  [View("SymbolicExpression View")]
+  [Content(typeof(SymbolicExpressionTree), false)]
+  public partial class SymbolicExpressionView : AsynchronousContentView {
     public new SymbolicExpressionTree Content {
       get { return (SymbolicExpressionTree)base.Content; }
       set { base.Content = value; }
     }
 
-    public SymbolicExpressionTreeView() {
+    public SymbolicExpressionView() {
       InitializeComponent();
-      Caption = "SymbolicExpressionTree View";
+      Caption = "SymbolicExpression View";
     }
 
-    public SymbolicExpressionTreeView(SymbolicExpressionTree content)
+    public SymbolicExpressionView(SymbolicExpressionTree content)
       : this() {
       Content = content;
     }
@@ -32,7 +32,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        Caption = "SymbolicExpressionTree View";
+        Caption = "SymbolicExpression View";
         textBox.Text = string.Empty;
         textBox.Enabled = false;
       } else {

@@ -1,5 +1,5 @@
 ﻿namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
-  partial class SymbolicExpressionTreeView {
+  partial class SymbolicExpressionView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>

@@ -81,14 +81,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HeuristicLabEncodingsSymbolicExpressionTreeEncodingViewsPlugin.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SymbolicExpressionTreeView.cs">
+    <Compile Include="GraphicalSymbolicExpressionTreeView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="SymbolicExpressionTreeView.Designer.cs">
-      <DependentUpon>SymbolicExpressionTreeView.cs</DependentUpon>
+    <Compile Include="GraphicalSymbolicExpressionTreeView.Designer.cs">
+      <DependentUpon>GraphicalSymbolicExpressionTreeView.cs</DependentUpon>
     </Compile>
+    <Compile Include="HeuristicLabEncodingsSymbolicExpressionTreeEncodingViewsPlugin.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="SymbolicExpressionTreeChart.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SymbolicExpressionTreeChart.Designer.cs">
+      <DependentUpon>SymbolicExpressionTreeChart.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SymbolicExpressionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SymbolicExpressionView.Designer.cs">
+      <DependentUpon>SymbolicExpressionView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="VisualSymbolicExpressionTreeNode.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
@@ -116,6 +134,18 @@
     <None Include="HeuristicLab.snk" />
     <None Include="HeuristicLabEncodingsSymbolicExpressionTreeEncodingViewsPlugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.frame" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="GraphicalSymbolicExpressionTreeView.resx">
+      <DependentUpon>GraphicalSymbolicExpressionTreeView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SymbolicExpressionTreeChart.resx">
+      <DependentUpon>SymbolicExpressionTreeChart.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

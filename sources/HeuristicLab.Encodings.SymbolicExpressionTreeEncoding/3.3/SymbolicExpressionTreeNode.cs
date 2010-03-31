@@ -25,6 +25,7 @@ using System.Text;
 using HeuristicLab.Core;
 using System.Xml;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
@@ -48,7 +49,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     //  }
     //}
 
-    internal virtual bool HasLocalParameters {
+    public virtual bool HasLocalParameters {
       get { return false; }
     }
 
@@ -61,13 +62,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       protected set { symbol = value; }
     }
 
-    internal int GetSize() {
+    public int GetSize() {
       int size = 1;
       foreach (SymbolicExpressionTreeNode tree in SubTrees) size += tree.GetSize();
       return size;
     }
 
-    internal int GetHeight() {
+    public int GetHeight() {
       int maxHeight = 0;
       foreach (SymbolicExpressionTreeNode tree in SubTrees) maxHeight = Math.Max(maxHeight, tree.GetHeight());
       return maxHeight + 1;

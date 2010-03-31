@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
@@ -58,6 +59,27 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public SymbolicExpressionTree() : base() { }
 
     public SymbolicExpressionTree(SymbolicExpressionTreeNode root) : base() { }
+
+    public IEnumerable<SymbolicExpressionTreeNode> IterateNodesPrefix() {
+      return IterateNodesPrefix(root);
+    }
+    private IEnumerable<SymbolicExpressionTreeNode> IterateNodesPrefix(SymbolicExpressionTreeNode node) {
+      yield return node;
+      foreach (var subtree in node.SubTrees) {
+        foreach (var n in IterateNodesPrefix(subtree))
+          yield return n;
+      }
+    }
+    public IEnumerable<SymbolicExpressionTreeNode> IterateNodesPostfix() {
+      return IterateNodesPostfix(root);
+    }
+    private IEnumerable<SymbolicExpressionTreeNode> IterateNodesPostfix(SymbolicExpressionTreeNode node) {
+      foreach (var subtree in node.SubTrees) {
+        foreach (var n in IterateNodesPrefix(subtree))
+          yield return n;
+      }
+      yield return node;
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       SymbolicExpressionTree clone = new SymbolicExpressionTree();
