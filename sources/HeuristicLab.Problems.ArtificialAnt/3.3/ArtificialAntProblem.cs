@@ -113,8 +113,8 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       get { return (ValueParameter<IntValue>)Parameters["MaxTimeSteps"]; }
     }
 
-    public OptionalValueParameter<IAntTrailVisualizer> VisualizerParameter {
-      get { return (OptionalValueParameter<IAntTrailVisualizer>)Parameters["Visualizer"]; }
+    public OptionalValueParameter<ISingleObjectiveSolutionsVisualizer> VisualizerParameter {
+      get { return (OptionalValueParameter<ISingleObjectiveSolutionsVisualizer>)Parameters["Visualizer"]; }
     }
     IParameter IProblem.VisualizerParameter {
       get { return VisualizerParameter; }
@@ -164,7 +164,7 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     public ISymbolicExpressionGrammar ArtificialAntExpressionGrammar {
       get { return ArtificialAntExpressionGrammarParameter.Value; }
     }
-    public IAntTrailVisualizer Visualizer {
+    public ISingleObjectiveSolutionsVisualizer Visualizer {
       get { return VisualizerParameter.Value; }
       set { VisualizerParameter.Value = value; }
     }
@@ -196,7 +196,7 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       Parameters.Add(new ValueParameter<IntValue>("MaxExpressionDepth", "Maximal depth of the expression to control the artificial ant.", new IntValue(10)));
       Parameters.Add(new ValueParameter<BoolMatrix>("World", "The world for the artificial ant with scattered food items.", world));
       Parameters.Add(new ValueParameter<IntValue>("MaxTimeSteps", "The number of time steps the artificial ant has available to collect all food items.", new IntValue(600)));
-      Parameters.Add(new ValueParameter<IAntTrailVisualizer>("Visualizer", "The operator which should be used to visualize artificial ant solutions.", visualizer));
+      Parameters.Add(new ValueParameter<ISingleObjectiveSolutionsVisualizer>("Visualizer", "The operator which should be used to visualize artificial ant solutions.", visualizer));
 
       creator.SymbolicExpressionTreeParameter.ActualName = "AntTrailSolution";
       evaluator.QualityParameter.ActualName = "FoodEaten";
@@ -309,6 +309,10 @@ namespace HeuristicLab.Problems.ArtificialAnt {
           antTrailVisualizer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
           antTrailVisualizer.WorldParameter.ActualName = WorldParameter.Name;
           antTrailVisualizer.MaxTimeStepsParameter.ActualName = MaxTimeStepsParameter.Name;
+        }
+        var bestSymExpressionVisualizer = Visualizer as BestSymbolicExpressionTreeVisualizer;
+        if (bestSymExpressionVisualizer != null) {
+          bestSymExpressionVisualizer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
         }
       }
     }

@@ -82,6 +82,7 @@
   <ItemGroup>
     <Compile Include="AntInterpreter.cs" />
     <Compile Include="BestAntTrailVisualizer.cs" />
+    <Compile Include="BestSymbolicExpressionTreeVisualizer.cs" />
     <Compile Include="HeuristicLabProblemsArtificialAntPlugin.cs" />
     <Compile Include="IAntTrailVisualizer.cs" />
     <Compile Include="Evaluator.cs" />
