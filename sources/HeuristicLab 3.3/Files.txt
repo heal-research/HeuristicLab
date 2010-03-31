@@ -24,6 +24,7 @@ HeuristicLab.Encodings.IntegerVectorEncoding\3.3:HeuristicLab.Encodings.IntegerV
 HeuristicLab.Encodings.PermutationEncoding\3.3:HeuristicLab.Encodings.PermutationEncoding-3.3.dll
 HeuristicLab.Encodings.RealVectorEncoding\3.3:HeuristicLab.Encodings.RealVectorEncoding-3.3.dll
 HeuristicLab.Encodings.SymbolicExpressionTreeEncoding\3.3:HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3.dll
+HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views\3.3:HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views-3.3.dll
 HeuristicLab.Logging\3.3:HeuristicLab.Logging-3.3.dll
 HeuristicLab.MainForm\3.2:HeuristicLab.MainForm-3.2.dll
 HeuristicLab.MainForm.WindowsForms\3.2:HeuristicLab.MainForm.WindowsForms-3.2.dll

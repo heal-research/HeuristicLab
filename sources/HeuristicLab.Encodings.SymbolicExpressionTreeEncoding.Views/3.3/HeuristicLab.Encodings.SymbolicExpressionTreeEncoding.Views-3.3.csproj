@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{30DD3DA2-CA57-49DD-A5BA-50CEF19DB45F}</ProjectGuid>
+    <ProjectGuid>{6F42C5F8-16CD-43EE-8208-FD4573A69D85}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.Problems.ArtificialAnt.Views</RootNamespace>
-    <AssemblyName>HeuristicLab.Problems.ArtificialAnt.Views-3.3</AssemblyName>
+    <RootNamespace>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views</RootNamespace>
+    <AssemblyName>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views-3.3</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
@@ -81,37 +81,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AntTrailView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="AntTrailView.Designer.cs">
-      <DependentUpon>AntTrailView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ArtificialAntProblemView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ArtificialAntProblemView.Designer.cs">
-      <DependentUpon>ArtificialAntProblemView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="HeuristicLabProblemsArtificialAntViewsPlugin.cs" />
+    <Compile Include="HeuristicLabEncodingsSymbolicExpressionTreeEncodingViewsPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SymbolicExpressionTreeView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SymbolicExpressionTreeView.Designer.cs">
+      <DependentUpon>SymbolicExpressionTreeView.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="HeuristicLab.snk" />
-    <None Include="Properties\AssemblyInfo.frame" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\HeuristicLab.Core.Views\3.3\HeuristicLab.Core.Views-3.3.csproj">
-      <Project>{E226881D-315F-423D-B419-A766FE0D8685}</Project>
-      <Name>HeuristicLab.Core.Views-3.3</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
       <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
       <Name>HeuristicLab.Core-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
-      <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
-      <Name>HeuristicLab.Data-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding\3.3\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3.csproj">
       <Project>{125D3006-67F5-48CB-913E-73C0548F17FA}</Project>
@@ -125,22 +107,15 @@
       <Project>{3BD61258-31DA-4B09-89C0-4F71FEF5F05A}</Project>
       <Name>HeuristicLab.MainForm-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Optimization.Views\3.3\HeuristicLab.Optimization.Views-3.3.csproj">
-      <Project>{662B4B15-8F4D-4AE5-B3EB-D91C215F5AF2}</Project>
-      <Name>HeuristicLab.Optimization.Views-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
-      <Project>{14AB8D24-25BC-400C-A846-4627AA945192}</Project>
-      <Name>HeuristicLab.Optimization-3.3</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Problems.ArtificialAnt\3.3\HeuristicLab.Problems.ArtificialAnt-3.3.csproj">
-      <Project>{F5C0ECAC-EDBA-4024-872A-1F74AFCB20B4}</Project>
-      <Name>HeuristicLab.Problems.ArtificialAnt-3.3</Name>
-    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="HeuristicLab.snk" />
+    <None Include="HeuristicLabEncodingsSymbolicExpressionTreeEncodingViewsPlugin.cs.frame" />
+    <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -157,6 +132,6 @@ set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
 call PreBuildEvent.cmd
-SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabProblemsArtificialAntViewsPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabProblemsArtificialAntViewsPlugin.cs"</PreBuildEvent>
+SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabEncodingsSymbolicExpressionTreeEncodingViewsPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabEncodingsSymbolicExpressionTreeEncodingViewsPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

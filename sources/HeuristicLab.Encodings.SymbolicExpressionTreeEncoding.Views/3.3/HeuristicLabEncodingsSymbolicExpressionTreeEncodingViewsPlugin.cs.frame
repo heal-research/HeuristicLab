@@ -24,17 +24,13 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  [Plugin("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding", "3.3.0.$WCREV$")]
-  [PluginFile("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Collections", "3.3.0.0")]  
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
+  [Plugin("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views", "3.3.0.$WCREV$")]
+  [PluginFile("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Core", "3.3.0.0")]
-  [PluginDependency("HeuristicLab.Data", "3.3.0.0")]
-  [PluginDependency("HeuristicLab.Operators", "3.3.0.0")]
-  [PluginDependency("HeuristicLab.Optimization", "3.3.0.0")]
-  [PluginDependency("HeuristicLab.Parameters", "3.3.0.0")]
-  [PluginDependency("HeuristicLab.Persistence", "3.3.0.0")]
-  [PluginDependency("HeuristicLab.Random", "3.3.0.0")]
-  public class HeuristicLabEncodingsSymbolicExpressionTreeEncodingPlugin : PluginBase {
+  [PluginDependency("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding", "3.3.0.0")]
+  [PluginDependency("HeuristicLab.MainForm", "3.2.0.0")]
+  [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.2.0.0")]
+  public class HeuristicLabEncodingsSymbolicExpressionTreeEncodingViewsPlugin : PluginBase {
   }
 }

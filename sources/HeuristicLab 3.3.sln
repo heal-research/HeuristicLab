@@ -100,6 +100,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab 3.3", "Heurist
 		{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE} = {23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}
 		{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937} = {BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}
 		{6AE0E1F5-D3FF-43A3-90E1-2435E7493FB5} = {6AE0E1F5-D3FF-43A3-90E1-2435E7493FB5}
+		{6F42C5F8-16CD-43EE-8208-FD4573A69D85} = {6F42C5F8-16CD-43EE-8208-FD4573A69D85}
 		{1FC004FC-59AF-4249-B1B6-FF25873A20E4} = {1FC004FC-59AF-4249-B1B6-FF25873A20E4}
 	EndProjectSection
 EndProject
@@ -231,6 +232,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.ArtificialAnt-3.3", "HeuristicLab.Problems.ArtificialAnt\3.3\HeuristicLab.Problems.ArtificialAnt-3.3.csproj", "{F5C0ECAC-EDBA-4024-872A-1F74AFCB20B4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.ArtificialAnt.Views-3.3", "HeuristicLab.Problems.ArtificialAnt.Views\3.3\HeuristicLab.Problems.ArtificialAnt.Views-3.3.csproj", "{30DD3DA2-CA57-49DD-A5BA-50CEF19DB45F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views-3.3", "HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views\3.3\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views-3.3.csproj", "{6F42C5F8-16CD-43EE-8208-FD4573A69D85}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -1265,10 +1268,9 @@ Global
 		{125D3006-67F5-48CB-913E-73C0548F17FA}.Release|x64.Build.0 = Release|x64
 		{125D3006-67F5-48CB-913E-73C0548F17FA}.Release|x86.ActiveCfg = Release|x86
 		{125D3006-67F5-48CB-913E-73C0548F17FA}.Release|x86.Build.0 = Release|x86
-		{125D3006-67F5-48CB-913E-73C0548F17FA}.Services|Any CPU.ActiveCfg = Release|x86
+		{125D3006-67F5-48CB-913E-73C0548F17FA}.Services|Any CPU.ActiveCfg = Release|Any CPU
 		{125D3006-67F5-48CB-913E-73C0548F17FA}.Services|x64.ActiveCfg = Release|x86
 		{125D3006-67F5-48CB-913E-73C0548F17FA}.Services|x86.ActiveCfg = Release|x86
-		{125D3006-67F5-48CB-913E-73C0548F17FA}.Services|x86.Build.0 = Release|x86
 		{F5C0ECAC-EDBA-4024-872A-1F74AFCB20B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F5C0ECAC-EDBA-4024-872A-1F74AFCB20B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5C0ECAC-EDBA-4024-872A-1F74AFCB20B4}.Debug|x64.ActiveCfg = Debug|x64
@@ -1299,6 +1301,21 @@ Global
 		{30DD3DA2-CA57-49DD-A5BA-50CEF19DB45F}.Services|Any CPU.ActiveCfg = Release|Any CPU
 		{30DD3DA2-CA57-49DD-A5BA-50CEF19DB45F}.Services|x64.ActiveCfg = Release|x64
 		{30DD3DA2-CA57-49DD-A5BA-50CEF19DB45F}.Services|x86.ActiveCfg = Release|x86
+		{6F42C5F8-16CD-43EE-8208-FD4573A69D85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F42C5F8-16CD-43EE-8208-FD4573A69D85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F42C5F8-16CD-43EE-8208-FD4573A69D85}.Debug|x64.ActiveCfg = Debug|x64
+		{6F42C5F8-16CD-43EE-8208-FD4573A69D85}.Debug|x64.Build.0 = Debug|x64
+		{6F42C5F8-16CD-43EE-8208-FD4573A69D85}.Debug|x86.ActiveCfg = Debug|x86
+		{6F42C5F8-16CD-43EE-8208-FD4573A69D85}.Debug|x86.Build.0 = Debug|x86
+		{6F42C5F8-16CD-43EE-8208-FD4573A69D85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F42C5F8-16CD-43EE-8208-FD4573A69D85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F42C5F8-16CD-43EE-8208-FD4573A69D85}.Release|x64.ActiveCfg = Release|x64
+		{6F42C5F8-16CD-43EE-8208-FD4573A69D85}.Release|x64.Build.0 = Release|x64
+		{6F42C5F8-16CD-43EE-8208-FD4573A69D85}.Release|x86.ActiveCfg = Release|x86
+		{6F42C5F8-16CD-43EE-8208-FD4573A69D85}.Release|x86.Build.0 = Release|x86
+		{6F42C5F8-16CD-43EE-8208-FD4573A69D85}.Services|Any CPU.ActiveCfg = Release|Any CPU
+		{6F42C5F8-16CD-43EE-8208-FD4573A69D85}.Services|x64.ActiveCfg = Release|x64
+		{6F42C5F8-16CD-43EE-8208-FD4573A69D85}.Services|x86.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
