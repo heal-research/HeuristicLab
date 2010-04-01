@@ -31,7 +31,8 @@ using HeuristicLab.Data;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
   [Item("SymbolicExpressionTree", "Represents a symbolic expression tree.")]
-  public class SymbolicExpressionTree : Item {
+  public class SymbolicExpressionTree : Item {    
+    [Storable]
     private SymbolicExpressionTreeNode root;
     public SymbolicExpressionTreeNode Root {
       get { return root; }

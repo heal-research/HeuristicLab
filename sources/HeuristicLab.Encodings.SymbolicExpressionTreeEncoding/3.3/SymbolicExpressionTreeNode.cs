@@ -29,25 +29,27 @@ using HeuristicLab.Data;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
-  public class SymbolicExpressionTreeNode : DeepCloneable {
+  public class SymbolicExpressionTreeNode : ICloneable {
+    [Storable]
     private List<SymbolicExpressionTreeNode> subTrees;
+    [Storable]
     private Symbol symbol;
 
-    public SymbolicExpressionTreeNode() {
-    }
+    public SymbolicExpressionTreeNode() { }
 
     public SymbolicExpressionTreeNode(Symbol symbol) {
       subTrees = new List<SymbolicExpressionTreeNode>();
       this.symbol = symbol;
     }
 
-    //protected SymbolicExpressionTreeNode(SymbolicExpressionTreeNode original) {
-    //  this.symbol = original.Symbol;
-    //  this.subTrees = new List<SymbolicExpressionTreeNode>(original.SubTrees.Count);
-    //  foreach (SymbolicExpressionTreeNode originalSubTree in original.SubTrees) {
-    //    this.SubTrees.Add((SymbolicExpressionTreeNode)originalSubTree.Clone());
-    //  }
-    //}
+    // copy constructor
+    protected SymbolicExpressionTreeNode(SymbolicExpressionTreeNode original) {
+      symbol = original.symbol;
+      this.subTrees = new List<SymbolicExpressionTreeNode>();
+      foreach (var subtree in original.SubTrees) {
+        AddSubTree((SymbolicExpressionTreeNode)subtree.Clone());
+      }
+    }
 
     public virtual bool HasLocalParameters {
       get { return false; }
@@ -94,13 +96,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       SubTrees.RemoveAt(index);
     }
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      SymbolicExpressionTreeNode clone = new SymbolicExpressionTreeNode(symbol);
-      cloner.RegisterClonedObject(this, clone);
-      foreach (var subtree in SubTrees) {
-        clone.AddSubTree((SymbolicExpressionTreeNode)subtree.Clone(cloner));
-      }
-      return clone;
+    #region ICloneable Members
+
+    public virtual object Clone() {
+      return new SymbolicExpressionTreeNode(this);
     }
+
+    #endregion
   }
 }
