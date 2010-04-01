@@ -80,20 +80,20 @@ namespace HeuristicLab.PluginInfrastructure.Sandboxing {
       #region permission set of unrestricted appdomain
       // unrestricted appdomain 
       pset = new PermissionSet(PermissionState.Unrestricted);
-      #endregion 
+      #endregion
 
       AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
       //setup.PrivateBinPath = pluginDir;
       setup.ApplicationBase = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
       AppDomain applicationDomain = AppDomain.CreateDomain(name, AppDomain.CurrentDomain.Evidence, setup, pset, CreateStrongName(Assembly.GetExecutingAssembly()));
-      Type applicationManagerType = typeof(ApplicationManager);
-      ApplicationManager applicationManager =
-        (ApplicationManager)applicationDomain.CreateInstanceAndUnwrap(applicationManagerType.Assembly.FullName, applicationManagerType.FullName, true, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null, null, null);
+      Type applicationManagerType = typeof(DefaultApplicationManager);
+      DefaultApplicationManager applicationManager =
+        (DefaultApplicationManager)applicationDomain.CreateInstanceAndUnwrap(applicationManagerType.Assembly.FullName, applicationManagerType.FullName, true, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null, null, null);
       ApplicationDescription[] apps = ApplicationManager.Manager.Applications.Cast<ApplicationDescription>().ToArray();
       PluginDescription[] plugins = ApplicationManager.Manager.Plugins.Cast<PluginDescription>().ToArray();
       applicationManager.PrepareApplicationDomain(apps, plugins);
       //if (files != null && files.Count() > 0)
-        //applicationManager.LoadAssemblies(files);
+      //applicationManager.LoadAssemblies(files);
       return applicationDomain;
     }
 

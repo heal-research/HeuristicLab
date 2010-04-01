@@ -171,6 +171,8 @@
     <Compile Include="Attributes\PluginFileAttribute.cs" />
     <Compile Include="BaseClasses\ApplicationBase.cs" />
     <Compile Include="BaseClasses\PluginBase.cs" />
+    <Compile Include="DefaultApplicationManager.cs" />
+    <Compile Include="LightweightApplicationManager.cs" />
     <Compile Include="Interfaces\IPluginFile.cs" />
     <Compile Include="Interfaces\IApplicationManager.cs" />
     <Compile Include="Interfaces\IApplicationDescription.cs" />
