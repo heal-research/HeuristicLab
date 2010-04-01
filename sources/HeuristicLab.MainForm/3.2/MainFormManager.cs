@@ -87,8 +87,14 @@ namespace HeuristicLab.MainForm {
     public static IEnumerable<Type> GetViewTypes(Type contentType, bool returnOnlyMostSpecificViewTypes) {
       List<Type> viewTypes = new List<Type>(GetViewTypes(contentType));
       if (returnOnlyMostSpecificViewTypes) {
+        Type defaultViewType = null;
+        try {
+          defaultViewType = GetDefaultViewType(contentType);
+        }
+        catch (InvalidOperationException) { }
+
         foreach (Type viewType in viewTypes.ToList()) {
-          if(viewTypes.Any(t => t.IsSubclassOf(viewType)))
+          if((viewType != defaultViewType) && viewTypes.Any(t => t.IsSubclassOf(viewType)))
             viewTypes.Remove(viewType);
         }
       }
