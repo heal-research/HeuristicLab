@@ -25,7 +25,9 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.ArtificialAnt {
+  [StorableClass]
   public class ArtificialAntExpressionGrammar : Item, ISymbolicExpressionGrammar {
 
     private class EmptySymbol : Symbol { }
@@ -35,11 +37,13 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     }
     #region ISymbolicExpressionGrammar Members
 
+    [Storable]
     private EmptySymbol startSymbol = new EmptySymbol();
     public Symbol StartSymbol {
       get { return startSymbol; }
     }
 
+    [Storable]
     private static List<Symbol> allSymbols = new List<Symbol>() {
       new IfFoodAhead(),
       new Prog2(),
@@ -48,6 +52,7 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       new Left(),
       new Right()
     };
+    [Storable]
     private Dictionary<Type, Dictionary<int, IEnumerable<Symbol>>> allowedSymbols = new Dictionary<Type, Dictionary<int, IEnumerable<Symbol>>>() {
       {
         typeof(EmptySymbol),
@@ -85,6 +90,7 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       return allowedSymbols[parent.GetType()][argumentIndex];
     }
 
+    [Storable]
     private Dictionary<Type, int> minLength = new Dictionary<Type, int>() {
       {typeof(EmptySymbol), 1}, 
       {typeof(IfFoodAhead), 3},
@@ -98,6 +104,7 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       return minLength[start.GetType()];
     }
 
+    [Storable]
     private Dictionary<Type, int> maxLength = new Dictionary<Type, int>() {
       {typeof(EmptySymbol), int.MaxValue}, 
       {typeof(IfFoodAhead), int.MaxValue},
@@ -111,6 +118,7 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       return maxLength[start.GetType()];
     }
 
+    [Storable]
     private Dictionary<Type, int> minDepth = new Dictionary<Type, int>() {
       {typeof(EmptySymbol), 1}, 
       {typeof(IfFoodAhead), 1},
@@ -125,6 +133,7 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     }
 
 
+    [Storable]
     private Dictionary<Type, int> subTrees = new Dictionary<Type, int>() {
       {typeof(EmptySymbol), 1}, 
       {typeof(IfFoodAhead), 2},
