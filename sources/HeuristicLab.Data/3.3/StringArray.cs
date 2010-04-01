@@ -20,16 +20,18 @@
 #endregion
 
 using System;
+using System.Linq;
 using System.Collections;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System.Collections.Generic;
 
 namespace HeuristicLab.Data {
   [Item("StringArray", "Represents an array of strings.")]
   [StorableClass]
-  public class StringArray : Item, IEnumerable, IStringConvertibleArray {
+  public class StringArray : Item, IEnumerable<string>, IStringConvertibleArray {
     [Storable]
     protected string[] array;
 
@@ -88,8 +90,12 @@ namespace HeuristicLab.Data {
       return sb.ToString();
     }
 
-    public virtual IEnumerator GetEnumerator() {
-      return array.GetEnumerator();
+    public IEnumerator<string> GetEnumerator() {
+      return (IEnumerator<string>)array.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator() {
+      return ((IEnumerable<string>)this).GetEnumerator();
     }
 
     protected virtual bool Validate(string value, out string errorMessage) {
