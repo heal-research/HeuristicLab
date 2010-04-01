@@ -34,7 +34,6 @@ namespace HeuristicLab.Core.Views {
       if (disposing) {
         if (scopesTreeView.Nodes.Count > 0) {
           RemoveTreeNode(scopesTreeView.Nodes[0]);
-          scopesTreeView.Nodes.Clear();
         }
         if (components != null) components.Dispose();
       }
