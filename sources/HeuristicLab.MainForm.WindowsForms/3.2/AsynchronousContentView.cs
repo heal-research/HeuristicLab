@@ -24,21 +24,32 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// </summary>
     /// <param name="method">The delegate to invoke.</param>
     protected new void Invoke(Delegate method) {
-      IAsyncResult res = base.BeginInvoke(method);
-      ThreadPool.RegisterWaitForSingleObject(res.AsyncWaitHandle,
-        new WaitOrTimerCallback((x, b) => { EndInvoke(res); }),
-        null, -1, true);
+      // prevent blocking of worker thread in Invoke, if the control is disposed
+      IAsyncResult result = BeginInvoke(method);
+      result.AsyncWaitHandle.WaitOne(1000, false);
+      if (result.IsCompleted) EndInvoke(result);
+      else {
+        ThreadPool.RegisterWaitForSingleObject(result.AsyncWaitHandle,
+          new WaitOrTimerCallback((x, b) => { try { EndInvoke(result); } catch (InvalidOperationException) { } }),
+          null, -1, true);
+      }
     }
+
     /// <summary>
     /// Asynchronous call of GUI updating.
     /// </summary>
     /// <param name="method">The delegate to invoke.</param>
     /// <param name="args">The invoke arguments.</param>
     protected new void Invoke(Delegate method, params object[] args) {
-      IAsyncResult res = base.BeginInvoke(method, args);
-      ThreadPool.RegisterWaitForSingleObject(res.AsyncWaitHandle,
-        new WaitOrTimerCallback((x, b) => { EndInvoke(res); }),
-        null, -1, true);
+      // prevent blocking of worker thread in Invoke, if the control is disposed
+      IAsyncResult result = BeginInvoke(method, args);
+      result.AsyncWaitHandle.WaitOne(1000, false);
+      if (result.IsCompleted) EndInvoke(result);
+      else {
+        ThreadPool.RegisterWaitForSingleObject(result.AsyncWaitHandle,
+          new WaitOrTimerCallback((x, b) => { try { EndInvoke(result); } catch (InvalidOperationException) { } }),
+          null, -1, true);
+      }
     }
   }
 }
