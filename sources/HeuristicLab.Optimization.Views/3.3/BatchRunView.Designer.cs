@@ -61,7 +61,7 @@ namespace HeuristicLab.Optimization.Views {
       this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
       this.repetitionsLabel = new System.Windows.Forms.Label();
       this.repetitionsNumericUpDown = new System.Windows.Forms.NumericUpDown();
-      this.resultsView = new HeuristicLab.Optimization.Views.ResultCollectionListView();
+      this.resultsView = new HeuristicLab.Optimization.Views.ResultCollectionView();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.tabControl.SuspendLayout();
       this.algorithmTabPage.SuspendLayout();
@@ -272,7 +272,7 @@ namespace HeuristicLab.Optimization.Views {
       this.resultsView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.resultsView.Caption = "ResultCollectionList";
+      this.resultsView.Caption = "ResultCollection";
       this.resultsView.Content = null;
       this.resultsView.Location = new System.Drawing.Point(6, 6);
       this.resultsView.Name = "resultsView";
@@ -333,7 +333,7 @@ namespace HeuristicLab.Optimization.Views {
     private System.Windows.Forms.TabPage resultsTabPage;
     private System.Windows.Forms.Label repetitionsLabel;
     private System.Windows.Forms.NumericUpDown repetitionsNumericUpDown;
-    private ResultCollectionListView resultsView;
+    private ResultCollectionView resultsView;
 
   }
 }

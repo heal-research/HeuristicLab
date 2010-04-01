@@ -73,8 +73,8 @@ namespace HeuristicLab.Optimization {
     }
 
     [Storable]
-    private ResultCollectionList results;
-    public ResultCollectionList Results {
+    private ResultCollection results;
+    public ResultCollection Results {
       get { return results; }
     }
 
@@ -110,17 +110,17 @@ namespace HeuristicLab.Optimization {
     public BatchRun()
       : base() {
       repetitions = 10;
-      results = new ResultCollectionList();
+      results = new ResultCollection();
       executionTime = TimeSpan.Zero;
     }
     public BatchRun(string name) : base(name) {
       repetitions = 10;
-      results = new ResultCollectionList();
+      results = new ResultCollection();
       executionTime = TimeSpan.Zero;
     }
     public BatchRun(string name, string description) : base(name, description) {
       repetitions = 10;
-      results = new ResultCollectionList();
+      results = new ResultCollection();
       executionTime = TimeSpan.Zero;
     }
 
@@ -128,7 +128,7 @@ namespace HeuristicLab.Optimization {
       BatchRun clone = (BatchRun)base.Clone(cloner);
       clone.Algorithm = (IAlgorithm)cloner.Clone(algorithm);
       clone.repetitions = repetitions;
-      clone.results = (ResultCollectionList)cloner.Clone(results);
+      clone.results = (ResultCollection)cloner.Clone(results);
       clone.executionTime = executionTime;
       clone.running = running;
       clone.canceled = canceled;
@@ -207,7 +207,7 @@ namespace HeuristicLab.Optimization {
     }
 
     private void Algorithm_Prepared(object sender, EventArgs e) {
-      results.Add(Algorithm.Results);
+      results.Add(new Result("Run " + DateTime.Now.ToString(), Algorithm.Results));
     }
     private void Algorithm_RunningChanged(object sender, EventArgs e) {
       if (Algorithm.Running) {
