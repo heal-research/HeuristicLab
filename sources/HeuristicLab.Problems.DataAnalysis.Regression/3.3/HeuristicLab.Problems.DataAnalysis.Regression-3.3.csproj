@@ -84,6 +84,8 @@
     <None Include="HeuristicLab.snk" />
     <None Include="HeuristicLabProblemsDataAnalysisRegressionPlugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.frame" />
+    <Compile Include="Symbolic\ArithmeticExpressionGrammar.cs" />
+    <Compile Include="Symbolic\SimpleArithmeticExpressionEvaluator.cs" />
     <Compile Include="Symbolic\SymbolicRegressionMeanSquaredErrorEvaluator.cs" />
     <Compile Include="Symbolic\SymbolicRegressionEvaluator.cs" />
     <Compile Include="Symbolic\ISymbolicRegressionEvaluator.cs" />
@@ -97,6 +99,10 @@
     <Compile Include="Symbolic\SymbolicRegressionProblemView.Designer.cs">
       <DependentUpon>SymbolicRegressionProblemView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Symbolic\Symbols\Constant.cs" />
+    <Compile Include="Symbolic\Symbols\ConstantTreeNode.cs" />
+    <Compile Include="Symbolic\Symbols\Variable.cs" />
+    <Compile Include="Symbolic\Symbols\VariableTreeNode.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">

@@ -33,7 +33,6 @@ using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Operators;
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Evaluators;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {

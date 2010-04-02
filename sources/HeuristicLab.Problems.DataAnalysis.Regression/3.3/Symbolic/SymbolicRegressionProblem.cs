@@ -32,7 +32,6 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Problems.DataAnalysis.Regression;
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("SymbolicRegressionProblem", "Represents a symbolic regression problem.")]

@@ -27,15 +27,15 @@ using System.Linq;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols;
-namespace HeuristicLab.Problems.ArtificialAnt {
+using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols;
+namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [StorableClass]
-  public class ArtificialAntExpressionGrammar : Item, ISymbolicExpressionGrammar {
+  public class ArithmeticExpressionGrammar : Item, ISymbolicExpressionGrammar {
 
-    public ArtificialAntExpressionGrammar()
+    public ArithmeticExpressionGrammar()
       : base() {
     }
     #region ISymbolicExpressionGrammar Members
-
     [Storable]
     private StartSymbol startSymbol = new StartSymbol();
     public Symbol StartSymbol {
@@ -44,12 +44,12 @@ namespace HeuristicLab.Problems.ArtificialAnt {
 
     [Storable]
     private static List<Symbol> allSymbols = new List<Symbol>() {
-      new IfFoodAhead(),
-      new Prog2(),
-      new Prog3(),
-      new Move(),
-      new Left(),
-      new Right()
+      new Addition(),
+      new Subtraction(),
+      new Multiplication(),
+      new Division(),
+      new Constant(),
+      new HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols.Variable()
     };
     [Storable]
     private Dictionary<Type, Dictionary<int, IEnumerable<Symbol>>> allowedSymbols = new Dictionary<Type, Dictionary<int, IEnumerable<Symbol>>>() {
@@ -60,7 +60,7 @@ namespace HeuristicLab.Problems.ArtificialAnt {
           { 0, allSymbols},
         }
       },      {
-        typeof(IfFoodAhead),
+        typeof(Addition),
         new Dictionary<int, IEnumerable<Symbol>>() 
         {
           { 0, allSymbols},
@@ -68,7 +68,7 @@ namespace HeuristicLab.Problems.ArtificialAnt {
         }
       },
       {
-        typeof(Prog2),
+        typeof(Subtraction),
         new Dictionary<int, IEnumerable<Symbol>>() 
         {
           { 0, allSymbols},
@@ -76,12 +76,19 @@ namespace HeuristicLab.Problems.ArtificialAnt {
         }
       },
       {
-        typeof(Prog3),
+        typeof(Multiplication),
         new Dictionary<int, IEnumerable<Symbol>>() 
         {
           { 0, allSymbols},
-          { 1, allSymbols},
-          { 2, allSymbols}
+          { 1, allSymbols}
+        }
+      },
+      {
+        typeof(Division),
+        new Dictionary<int, IEnumerable<Symbol>>() 
+        {
+          { 0, allSymbols},
+          { 1, allSymbols}
         }
       },
     };
@@ -92,12 +99,12 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     [Storable]
     private Dictionary<Type, int> minLength = new Dictionary<Type, int>() {
       {typeof(StartSymbol), 1}, 
-      {typeof(IfFoodAhead), 3},
-      {typeof(Prog2), 3},
-      {typeof(Prog3), 4},
-      {typeof(Move), 1},
-      {typeof(Left), 1},
-      {typeof(Right), 1}
+      {typeof(Addition), 3},
+      {typeof(Subtraction), 3},
+      {typeof(Multiplication), 4},
+      {typeof(Division), 4},
+      {typeof(Constant), 1},
+      {typeof(HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols.Variable), 1},
     };
     public int MinimalExpressionLength(Symbol start) {
       return minLength[start.GetType()];
@@ -106,12 +113,12 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     [Storable]
     private Dictionary<Type, int> maxLength = new Dictionary<Type, int>() {
       {typeof(StartSymbol), int.MaxValue}, 
-      {typeof(IfFoodAhead), int.MaxValue},
-      {typeof(Prog2), int.MaxValue},
-      {typeof(Prog3), int.MaxValue},
-      {typeof(Move), 1},
-      {typeof(Left), 1},
-      {typeof(Right), 1}
+      {typeof(Addition), int.MaxValue},
+      {typeof(Subtraction), int.MaxValue},
+      {typeof(Multiplication), int.MaxValue},
+      {typeof(Division), int.MaxValue},
+      {typeof(HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols.Variable), 1},
+      {typeof(Constant), 1},
     };
     public int MaximalExpressionLength(Symbol start) {
       return maxLength[start.GetType()];
@@ -120,27 +127,26 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     [Storable]
     private Dictionary<Type, int> minDepth = new Dictionary<Type, int>() {
       {typeof(StartSymbol), 1}, 
-      {typeof(IfFoodAhead), 1},
-      {typeof(Prog2), 1},
-      {typeof(Prog3), 1},
-      {typeof(Move), 0},
-      {typeof(Left), 0},
-      {typeof(Right), 0}
+      {typeof(Addition), 1},
+      {typeof(Subtraction), 1},
+      {typeof(Multiplication), 1},
+      {typeof(Division), 1},
+      {typeof(Constant), 0},
+      {typeof(HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols.Variable), 0}
     };
     public int MinimalExpressionDepth(Symbol start) {
       return minDepth[start.GetType()];
     }
 
-
     [Storable]
     private Dictionary<Type, int> subTrees = new Dictionary<Type, int>() {
       {typeof(StartSymbol), 1}, 
-      {typeof(IfFoodAhead), 2},
-      {typeof(Prog2), 2},
-      {typeof(Prog3), 3},
-      {typeof(Move), 0},
-      {typeof(Left), 0},
-      {typeof(Right), 0}
+      {typeof(Addition), 2},
+      {typeof(Subtraction), 2},
+      {typeof(Multiplication), 2},
+      {typeof(Division), 2},
+      {typeof(HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols.Variable), 0},
+      {typeof(Constant), 0},
     };
     public int MinSubTrees(Symbol start) {
       return subTrees[start.GetType()];
