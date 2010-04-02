@@ -82,6 +82,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SymbolicExpressionTreeTerminalNode.cs" />
     <Compile Include="Crossovers\SubtreeCrossover.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionGrammar.cs" />
     <Compile Include="Creators\ProbabilisticTreeCreator.cs" />
@@ -94,6 +95,13 @@
     <Compile Include="Symbol.cs" />
     <Compile Include="SymbolicExpressionTreeCrossover.cs" />
     <Compile Include="SymbolicExpressionTreeNode.cs" />
+    <Compile Include="Symbols\Addition.cs" />
+    <Compile Include="Symbols\Prog.cs" />
+    <Compile Include="GeneralSymbolicExpressionTreeEvaluator.cs" />
+    <Compile Include="Symbols\StartSymbol.cs" />
+    <Compile Include="Symbols\Division.cs" />
+    <Compile Include="Symbols\Multiplication.cs" />
+    <Compile Include="Symbols\Subtraction.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
