@@ -74,24 +74,14 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
 
-    protected override void Content_Started(object sender, EventArgs e) {
+    protected override void Content_RunningChanged(object sender, EventArgs e) {
       if (InvokeRequired)
-        Invoke(new EventHandler(Content_Started), sender, e);
+        Invoke(new EventHandler(Content_RunningChanged), sender, e);
       else {
-        newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = saveOperatorGraphButton.Enabled = false;
-        operatorGraphViewHost.Enabled = false;
-        globalScopeView.Enabled = false;
-        base.Content_Started(sender, e);
-      }
-    }
-    protected override void Content_Stopped(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_Stopped), sender, e);
-      else {
-        newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = saveOperatorGraphButton.Enabled = true;
-        operatorGraphViewHost.Enabled = true;
-        globalScopeView.Enabled = true;
-        base.Content_Stopped(sender, e);
+        newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = saveOperatorGraphButton.Enabled = !Content.Running;
+        operatorGraphViewHost.Enabled = !Content.Running;
+        globalScopeView.Enabled = !Content.Running;
+        base.Content_RunningChanged(sender, e);
       }
     }
     private void Content_OperatorGraphChanged(object sender, EventArgs e) {

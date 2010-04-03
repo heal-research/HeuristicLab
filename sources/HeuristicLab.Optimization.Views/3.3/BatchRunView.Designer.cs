@@ -170,7 +170,7 @@ namespace HeuristicLab.Optimization.Views {
       this.startButton.Name = "startButton";
       this.startButton.Size = new System.Drawing.Size(24, 24);
       this.startButton.TabIndex = 7;
-      this.toolTip.SetToolTip(this.startButton, "Start/Resume Algorithm");
+      this.toolTip.SetToolTip(this.startButton, "Start/Resume Batch Run");
       this.startButton.UseVisualStyleBackColor = true;
       this.startButton.Click += new System.EventHandler(this.startButton_Click);
       // 
@@ -182,7 +182,7 @@ namespace HeuristicLab.Optimization.Views {
       this.stopButton.Name = "stopButton";
       this.stopButton.Size = new System.Drawing.Size(24, 24);
       this.stopButton.TabIndex = 8;
-      this.toolTip.SetToolTip(this.stopButton, "Pause Algorithm");
+      this.toolTip.SetToolTip(this.stopButton, "Pause Batch Run");
       this.stopButton.UseVisualStyleBackColor = true;
       this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
       // 
@@ -194,7 +194,7 @@ namespace HeuristicLab.Optimization.Views {
       this.resetButton.Name = "resetButton";
       this.resetButton.Size = new System.Drawing.Size(24, 24);
       this.resetButton.TabIndex = 9;
-      this.toolTip.SetToolTip(this.resetButton, "Reset Algorithm");
+      this.toolTip.SetToolTip(this.resetButton, "Reset Batch Run");
       this.resetButton.UseVisualStyleBackColor = true;
       this.resetButton.Click += new System.EventHandler(this.resetButton_Click);
       // 

@@ -77,8 +77,7 @@ namespace HeuristicLab.Optimization.Views {
       Content.ExecutionTimeChanged -= new EventHandler(Content_ExecutionTimeChanged);
       Content.Prepared -= new EventHandler(Content_Prepared);
       Content.ProblemChanged -= new EventHandler(Content_ProblemChanged);
-      Content.Started -= new EventHandler(Content_Started);
-      Content.Stopped -= new EventHandler(Content_Stopped);
+      Content.RunningChanged -= new EventHandler(Content_RunningChanged);
       base.DeregisterContentEvents();
     }
     protected override void RegisterContentEvents() {
@@ -87,8 +86,7 @@ namespace HeuristicLab.Optimization.Views {
       Content.ExecutionTimeChanged += new EventHandler(Content_ExecutionTimeChanged);
       Content.Prepared += new EventHandler(Content_Prepared);
       Content.ProblemChanged += new EventHandler(Content_ProblemChanged);
-      Content.Started += new EventHandler(Content_Started);
-      Content.Stopped += new EventHandler(Content_Stopped);
+      Content.RunningChanged += new EventHandler(Content_RunningChanged);
     }
 
     protected override void OnContentChanged() {
@@ -126,6 +124,7 @@ namespace HeuristicLab.Optimization.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_Prepared), sender, e);
       else {
+        executionTimeCounter = 0;
         resultsView.Content = Content.Results.AsReadOnly();
         startButton.Enabled = !Content.Finished;
         UpdateExecutionTimeTextBox();
@@ -140,34 +139,18 @@ namespace HeuristicLab.Optimization.Views {
         saveProblemButton.Enabled = Content.Problem != null;
       }
     }
-    protected virtual void Content_Started(object sender, EventArgs e) {
-      executionTimeCounter = 0;
+    protected virtual void Content_RunningChanged(object sender, EventArgs e) {
       if (InvokeRequired)
-        Invoke(new EventHandler(Content_Started), sender, e);
+        Invoke(new EventHandler(Content_RunningChanged), sender, e);
       else {
-        SaveEnabled = false;
-        parameterCollectionView.Enabled = false;
-        newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = false;
-        problemViewHost.Enabled = false;
-        resultsView.Enabled = false;
-        startButton.Enabled = false;
-        stopButton.Enabled = true;
-        resetButton.Enabled = false;
-        UpdateExecutionTimeTextBox();
-      }
-    }
-    protected virtual void Content_Stopped(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_Stopped), sender, e);
-      else {
-        SaveEnabled = true;
-        parameterCollectionView.Enabled = true;
-        newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = true;
-        problemViewHost.Enabled = true;
-        resultsView.Enabled = true;
-        startButton.Enabled = !Content.Finished;
-        stopButton.Enabled = false;
-        resetButton.Enabled = true;
+        SaveEnabled = !Content.Running;
+        parameterCollectionView.Enabled = !Content.Running;
+        newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = !Content.Running;
+        problemViewHost.Enabled = !Content.Running;
+        resultsView.Enabled = !Content.Running;
+        startButton.Enabled = !Content.Running && !Content.Finished;
+        stopButton.Enabled = Content.Running;
+        resetButton.Enabled = !Content.Running;
         UpdateExecutionTimeTextBox();
       }
     }

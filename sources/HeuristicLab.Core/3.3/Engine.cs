@@ -141,16 +141,12 @@ namespace HeuristicLab.Core {
     /// <remarks>Calls <see cref="ThreadPool.QueueUserWorkItem(System.Threading.WaitCallback, object)"/> 
     /// of class <see cref="ThreadPool"/>.</remarks>
     public void Start() {
-      Running = true;
-      Canceled = false;
       ThreadPool.QueueUserWorkItem(new WaitCallback(Run), null);
     }
     /// <inheritdoc/>
     /// <remarks>Calls <see cref="ThreadPool.QueueUserWorkItem(System.Threading.WaitCallback, object)"/> 
     /// of class <see cref="ThreadPool"/>.</remarks>
     public void Step() {
-      Running = true;
-      Canceled = false;
       ThreadPool.QueueUserWorkItem(new WaitCallback(RunStep), null);
     }
     /// <inheritdoc/>
@@ -161,6 +157,8 @@ namespace HeuristicLab.Core {
 
     private void Run(object state) {
       OnStarted();
+      Running = true;
+      Canceled = false;
       DateTime start = DateTime.Now;
       DateTime end;
       while ((!Canceled) && (!Finished)) {
@@ -170,14 +168,20 @@ namespace HeuristicLab.Core {
         start = end;
       }
       ExecutionTime += DateTime.Now - start;
+      Canceled = false;
+      Running = false;
       OnStopped();
     }
     private void RunStep(object state) {
       OnStarted();
+      Running = true;
+      Canceled = false;
       DateTime start = DateTime.Now;
       if ((!Canceled) && (!Finished))
         ProcessNextOperator();
       ExecutionTime += DateTime.Now - start;
+      Canceled = false;
+      Running = false;
       OnStopped();
     }
 
@@ -240,8 +244,6 @@ namespace HeuristicLab.Core {
     protected virtual void OnStopped() {
       if (Stopped != null)
         Stopped(this, EventArgs.Empty);
-      Canceled = false;
-      Running = false;
     }
     protected virtual void OnCanceledChanged() { }
     /// <summary>

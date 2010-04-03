@@ -61,9 +61,8 @@ namespace HeuristicLab.Optimization.Views {
       Content.ExecutionTimeChanged -= new EventHandler(Content_ExecutionTimeChanged);
       Content.Prepared -= new EventHandler(Content_Prepared);
       Content.AlgorithmChanged -= new EventHandler(Content_AlgorithmChanged);
-      Content.Started -= new EventHandler(Content_Started);
-      Content.Stopped -= new EventHandler(Content_Stopped);
       Content.RepetitionsChanged -= new EventHandler(Content_RepetitionsChanged);
+      Content.RunningChanged -= new EventHandler(Content_RunningChanged);
       base.DeregisterContentEvents();
     }
     protected override void RegisterContentEvents() {
@@ -72,9 +71,8 @@ namespace HeuristicLab.Optimization.Views {
       Content.ExecutionTimeChanged += new EventHandler(Content_ExecutionTimeChanged);
       Content.Prepared += new EventHandler(Content_Prepared);
       Content.AlgorithmChanged += new EventHandler(Content_AlgorithmChanged);
-      Content.Started += new EventHandler(Content_Started);
-      Content.Stopped += new EventHandler(Content_Stopped);
       Content.RepetitionsChanged += new EventHandler(Content_RepetitionsChanged);
+      Content.RunningChanged += new EventHandler(Content_RunningChanged);
     }
 
     protected override void OnContentChanged() {
@@ -127,29 +125,16 @@ namespace HeuristicLab.Optimization.Views {
         UpdateExecutionTimeTextBox();
       }
     }
-    private void Content_Started(object sender, EventArgs e) {
+    private void Content_RunningChanged(object sender, EventArgs e) {
       if (InvokeRequired)
-        Invoke(new EventHandler(Content_Started), sender, e);
+        Invoke(new EventHandler(Content_RunningChanged), sender, e);
       else {
-        SaveEnabled = false;
-        repetitionsNumericUpDown.Enabled = false;
-        newAlgorithmButton.Enabled = openAlgorithmButton.Enabled = saveAlgorithmButton.Enabled = false;
-        startButton.Enabled = false;
-        stopButton.Enabled = true;
-        resetButton.Enabled = false;
-        UpdateExecutionTimeTextBox();
-      }
-    }
-    private void Content_Stopped(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_Stopped), sender, e);
-      else {
-        SaveEnabled = true;
-        repetitionsNumericUpDown.Enabled = true;
-        newAlgorithmButton.Enabled = openAlgorithmButton.Enabled = saveAlgorithmButton.Enabled = true;
-        startButton.Enabled = !Content.Finished;
-        stopButton.Enabled = false;
-        resetButton.Enabled = true;
+        SaveEnabled = !Content.Running;
+        repetitionsNumericUpDown.Enabled = !Content.Running;
+        newAlgorithmButton.Enabled = openAlgorithmButton.Enabled = saveAlgorithmButton.Enabled = !Content.Running;
+        startButton.Enabled = !Content.Running && !Content.Finished;
+        stopButton.Enabled = Content.Running;
+        resetButton.Enabled = !Content.Running;
         UpdateExecutionTimeTextBox();
       }
     }

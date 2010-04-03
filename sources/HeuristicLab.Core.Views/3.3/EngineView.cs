@@ -59,8 +59,7 @@ namespace HeuristicLab.Core.Views {
     /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void DeregisterContentEvents() {
       Content.Prepared -= new EventHandler(Content_Prepared);
-      Content.Started -= new EventHandler(Content_Started);
-      Content.Stopped -= new EventHandler(Content_Stopped);
+      Content.RunningChanged -= new EventHandler(Content_RunningChanged);
       Content.ExecutionTimeChanged -= new EventHandler(Content_ExecutionTimeChanged);
       Content.ExceptionOccurred -= new EventHandler<EventArgs<Exception>>(Content_ExceptionOccurred);
       base.DeregisterContentEvents();
@@ -73,8 +72,7 @@ namespace HeuristicLab.Core.Views {
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.Prepared += new EventHandler(Content_Prepared);
-      Content.Started += new EventHandler(Content_Started);
-      Content.Stopped += new EventHandler(Content_Stopped);
+      Content.RunningChanged += new EventHandler(Content_RunningChanged);
       Content.ExecutionTimeChanged += new EventHandler(Content_ExecutionTimeChanged);
       Content.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(Content_ExceptionOccurred);
     }
@@ -101,25 +99,18 @@ namespace HeuristicLab.Core.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_Prepared), sender, e);
       else {
+        executionTimeCounter = 0;
         UpdateExecutionTimeTextBox();
         Log("Engine prepared");
       }
     }
-    protected virtual void Content_Started(object sender, EventArgs e) {
-      executionTimeCounter = 0;
+    protected virtual void Content_RunningChanged(object sender, EventArgs e) {
       if (InvokeRequired)
-        Invoke(new EventHandler(Content_Started), sender, e);
+        Invoke(new EventHandler(Content_RunningChanged), sender, e);
       else {
         UpdateExecutionTimeTextBox();
-        Log("Engine started");
-      }
-    }
-    protected virtual void Content_Stopped(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_Stopped), sender, e);
-      else {
-        UpdateExecutionTimeTextBox();
-        if (Content.Finished) Log("Engine finished");
+        if (Content.Running) Log("Engine started");
+        else if (Content.Finished) Log("Engine finished");
         else Log("Engine stopped");
       }
     }

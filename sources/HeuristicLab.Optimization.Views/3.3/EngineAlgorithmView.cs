@@ -97,24 +97,14 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
 
-    protected override void Content_Started(object sender, EventArgs e) {
+    protected override void Content_RunningChanged(object sender, EventArgs e) {
       if (InvokeRequired)
-        Invoke(new EventHandler(Content_Started), sender, e);
+        Invoke(new EventHandler(Content_RunningChanged), sender, e);
       else {
-        createUserDefinedAlgorithmButton.Enabled = false;
-        engineComboBox.Enabled = false;
-        engineViewHost.Enabled = false;
-        base.Content_Started(sender, e);
-      }
-    }
-    protected override void Content_Stopped(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_Stopped), sender, e);
-      else {
-        createUserDefinedAlgorithmButton.Enabled = true;
-        engineComboBox.Enabled = true;
-        engineViewHost.Enabled = true;
-        base.Content_Stopped(sender, e);
+        createUserDefinedAlgorithmButton.Enabled = !Content.Running;
+        engineComboBox.Enabled = !Content.Running;
+        engineViewHost.Enabled = !Content.Running;
+        base.Content_RunningChanged(sender, e);
       }
     }
     protected virtual void Content_EngineChanged(object sender, System.EventArgs e) {

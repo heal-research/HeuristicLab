@@ -141,7 +141,12 @@ namespace HeuristicLab.Optimization {
       OnPrepared();
     }
     public void Start() {
-      if (Algorithm != null) Algorithm.Start();
+      if (Algorithm != null) {
+        OnStarted();
+        Running = true;
+        canceled = false;
+        Algorithm.Start();
+      }
     }
     public void Stop() {
       if (Algorithm != null) {
@@ -185,8 +190,6 @@ namespace HeuristicLab.Optimization {
     private void OnStopped() {
       if (Stopped != null)
         Stopped(this, EventArgs.Empty);
-      canceled = false;
-      Running = false;
     }
     public event EventHandler<HeuristicLab.Common.EventArgs<Exception>> ExceptionOccurred;
     private void OnExceptionOccurred(Exception exception) {
@@ -194,34 +197,44 @@ namespace HeuristicLab.Optimization {
         ExceptionOccurred(this, new HeuristicLab.Common.EventArgs<Exception>(exception));
     }
 
-    private void DeregisterAlgorithmEvents() {
-      algorithm.RunningChanged -= new EventHandler(Algorithm_RunningChanged);
-      algorithm.ExceptionOccurred -= new EventHandler<HeuristicLab.Common.EventArgs<Exception>>(Algorithm_ExceptionOccurred);
-    }
-
     private void RegisterAlgorithmEvents() {
-      algorithm.RunningChanged += new EventHandler(Algorithm_RunningChanged);
       algorithm.ExceptionOccurred += new EventHandler<HeuristicLab.Common.EventArgs<Exception>>(Algorithm_ExceptionOccurred);
+      algorithm.Started += new EventHandler(Algorithm_Started);
+      algorithm.Stopped += new EventHandler(Algorithm_Stopped);
+    }
+    private void DeregisterAlgorithmEvents() {
+      algorithm.ExceptionOccurred -= new EventHandler<HeuristicLab.Common.EventArgs<Exception>>(Algorithm_ExceptionOccurred);
+      algorithm.Started -= new EventHandler(Algorithm_Started);
+      algorithm.Stopped -= new EventHandler(Algorithm_Stopped);
     }
 
-    private void Algorithm_RunningChanged(object sender, EventArgs e) {
-      if (Algorithm.Running) {
-        Running = true;
-        OnStarted();
-      } else {
-        if (!canceled) {
-          ExecutionTime += Algorithm.ExecutionTime;
-          runs.Add(new Run("Run " + Algorithm.ExecutionTime.ToString(), Algorithm));
-          Algorithm.Prepare();
-          if (runs.Count < repetitions) Algorithm.Start();
-          else OnStopped();
-        } else {
-          OnStopped();
-        }
-      }
-    }
     private void Algorithm_ExceptionOccurred(object sender, HeuristicLab.Common.EventArgs<Exception> e) {
       OnExceptionOccurred(e.Value);
+    }
+    private void Algorithm_Started(object sender, EventArgs e) {
+      if (!Running) {
+        OnStarted();
+        Running = true;
+        canceled = false;
+      }
+    }
+    private void Algorithm_Stopped(object sender, EventArgs e) {
+      if (!canceled) {
+        ExecutionTime += Algorithm.ExecutionTime;
+        runs.Add(new Run("Run " + Algorithm.ExecutionTime.ToString(), Algorithm));
+        Algorithm.Prepare();
+
+        if (runs.Count < repetitions)
+          Algorithm.Start();
+        else {
+          Running = false;
+          OnStopped();
+        }
+      } else {
+        canceled = false;
+        Running = false;
+        OnStopped();
+      }
     }
     #endregion
   }

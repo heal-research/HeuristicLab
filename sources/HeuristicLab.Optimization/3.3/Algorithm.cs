@@ -111,9 +111,9 @@ namespace HeuristicLab.Optimization {
       OnPrepared();
     }
     public void Start() {
+      OnStarted();
       Running = true;
       Canceled = false;
-      OnStarted();
     }
     public void Stop() {
       Canceled = true;
@@ -156,10 +156,10 @@ namespace HeuristicLab.Optimization {
     }
     public event EventHandler Stopped;
     protected virtual void OnStopped() {
-      if (Stopped != null)
-        Stopped(this, EventArgs.Empty);
       Canceled = false;
       Running = false;
+      if (Stopped != null)
+        Stopped(this, EventArgs.Empty);
     }
     protected virtual void OnCanceledChanged() { }
     public event EventHandler<EventArgs<Exception>> ExceptionOccurred;
