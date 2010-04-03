@@ -173,7 +173,7 @@ namespace HeuristicLab.Optimization.Views {
     }
     protected virtual void Content_ExecutionTimeChanged(object sender, EventArgs e) {
       executionTimeCounter++;
-      if ((executionTimeCounter == 100) || !Content.Running) {
+      if ((executionTimeCounter >= 100) || !Content.Running) {
         executionTimeCounter = 0;
         UpdateExecutionTimeTextBox();
       }

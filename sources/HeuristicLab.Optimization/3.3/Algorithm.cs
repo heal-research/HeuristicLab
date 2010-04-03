@@ -20,8 +20,8 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
-using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -117,6 +117,15 @@ namespace HeuristicLab.Optimization {
     }
     public void Stop() {
       Canceled = true;
+    }
+
+    public override void CollectParameterValues(IDictionary<string, IItem> values) {
+      base.CollectParameterValues(values);
+      Problem.CollectParameterValues(values);
+    }
+    public virtual void CollectResultValues(IDictionary<string, IItem> values) {
+      foreach (IResult result in Results)
+        values.Add(result.Name, result.Value != null ? (IItem)result.Value.Clone() : null);
     }
 
     #region Events

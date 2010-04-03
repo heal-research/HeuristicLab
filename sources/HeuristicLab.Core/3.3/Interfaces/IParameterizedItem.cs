@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using HeuristicLab.Collections;
 
 namespace HeuristicLab.Core {
@@ -27,5 +28,7 @@ namespace HeuristicLab.Core {
   /// </summary>
   public interface IParameterizedItem : IItem {
     IObservableKeyedCollection<string, IParameter> Parameters { get; }
+
+    void CollectParameterValues(IDictionary<string, IItem> values);
   }
 }

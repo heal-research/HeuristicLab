@@ -97,6 +97,18 @@
     <Compile Include="BatchRunView.Designer.cs">
       <DependentUpon>BatchRunView.cs</DependentUpon>
     </Compile>
+    <Compile Include="RunCollectionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="RunCollectionView.Designer.cs">
+      <DependentUpon>RunCollectionView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RunView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="RunView.Designer.cs">
+      <DependentUpon>RunView.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserDefinedAlgorithmView.cs">
       <SubType>UserControl</SubType>
     </Compile>

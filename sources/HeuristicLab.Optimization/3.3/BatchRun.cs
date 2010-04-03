@@ -21,7 +21,6 @@
 
 using System;
 using System.Drawing;
-using HeuristicLab.Collections;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -73,9 +72,9 @@ namespace HeuristicLab.Optimization {
     }
 
     [Storable]
-    private ResultCollection results;
-    public ResultCollection Results {
-      get { return results; }
+    private RunCollection runs;
+    public RunCollection Runs {
+      get { return runs; }
     }
 
     [Storable]
@@ -102,7 +101,7 @@ namespace HeuristicLab.Optimization {
     }
 
     public bool Finished {
-      get { return ((Algorithm == null) || (Algorithm.Finished && (results.Count >= repetitions))); }
+      get { return ((Algorithm == null) || (Algorithm.Finished && (runs.Count >= repetitions))); }
     }
 
     private bool canceled;
@@ -110,17 +109,17 @@ namespace HeuristicLab.Optimization {
     public BatchRun()
       : base() {
       repetitions = 10;
-      results = new ResultCollection();
+      runs = new RunCollection();
       executionTime = TimeSpan.Zero;
     }
     public BatchRun(string name) : base(name) {
       repetitions = 10;
-      results = new ResultCollection();
+      runs = new RunCollection();
       executionTime = TimeSpan.Zero;
     }
     public BatchRun(string name, string description) : base(name, description) {
       repetitions = 10;
-      results = new ResultCollection();
+      runs = new RunCollection();
       executionTime = TimeSpan.Zero;
     }
 
@@ -128,7 +127,7 @@ namespace HeuristicLab.Optimization {
       BatchRun clone = (BatchRun)base.Clone(cloner);
       clone.Algorithm = (IAlgorithm)cloner.Clone(algorithm);
       clone.repetitions = repetitions;
-      clone.results = (ResultCollection)cloner.Clone(results);
+      clone.runs = (RunCollection)cloner.Clone(runs);
       clone.executionTime = executionTime;
       clone.running = running;
       clone.canceled = canceled;
@@ -136,7 +135,8 @@ namespace HeuristicLab.Optimization {
     }
 
     public void Prepare() {
-      results.Clear();
+      executionTime = TimeSpan.Zero;
+      runs.Clear();
       if (Algorithm != null) Algorithm.Prepare();
       OnPrepared();
     }
@@ -195,31 +195,27 @@ namespace HeuristicLab.Optimization {
     }
 
     private void DeregisterAlgorithmEvents() {
-      algorithm.Prepared -= new EventHandler(Algorithm_Prepared);
       algorithm.RunningChanged -= new EventHandler(Algorithm_RunningChanged);
       algorithm.ExceptionOccurred -= new EventHandler<HeuristicLab.Common.EventArgs<Exception>>(Algorithm_ExceptionOccurred);
     }
 
     private void RegisterAlgorithmEvents() {
-      algorithm.Prepared += new EventHandler(Algorithm_Prepared);
       algorithm.RunningChanged += new EventHandler(Algorithm_RunningChanged);
       algorithm.ExceptionOccurred += new EventHandler<HeuristicLab.Common.EventArgs<Exception>>(Algorithm_ExceptionOccurred);
     }
 
-    private void Algorithm_Prepared(object sender, EventArgs e) {
-      results.Add(new Result("Run " + DateTime.Now.ToString(), Algorithm.Results));
-    }
     private void Algorithm_RunningChanged(object sender, EventArgs e) {
       if (Algorithm.Running) {
         Running = true;
         OnStarted();
       } else {
-        if (!canceled && (results.Count < repetitions)) {
+        if (!canceled) {
           ExecutionTime += Algorithm.ExecutionTime;
+          runs.Add(new Run("Run " + Algorithm.ExecutionTime.ToString(), Algorithm));
           Algorithm.Prepare();
-          Algorithm.Start();
+          if (runs.Count < repetitions) Algorithm.Start();
+          else OnStopped();
         } else {
-          if (Algorithm.Finished) ExecutionTime += Algorithm.ExecutionTime;
           OnStopped();
         }
       }

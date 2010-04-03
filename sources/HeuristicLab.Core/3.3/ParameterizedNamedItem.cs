@@ -19,6 +19,8 @@
  */
 #endregion
 
+using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -80,6 +82,18 @@ namespace HeuristicLab.Core {
       ParameterizedNamedItem clone = (ParameterizedNamedItem)base.Clone(cloner);
       clone.Parameters = (ParameterCollection)cloner.Clone(parameters);
       return clone;
+    }
+
+    public virtual void CollectParameterValues(IDictionary<string, IItem> values) {
+      foreach (IValueParameter param in parameters.OfType<IValueParameter>()) {
+        values.Add(param.Name, param.Value != null ? (IItem)param.Value.Clone() : null);
+        if (param.Value is IParameterizedItem) {
+          Dictionary<string, IItem> children = new Dictionary<string, IItem>();
+          ((IParameterizedItem)param.Value).CollectParameterValues(children);
+          foreach (string key in children.Keys)
+            values.Add(param.Name + "." + key, children[key]);
+        }
+      }
     }
   }
 }

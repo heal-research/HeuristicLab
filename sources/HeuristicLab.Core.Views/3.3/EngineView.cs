@@ -102,7 +102,6 @@ namespace HeuristicLab.Core.Views {
         Invoke(new EventHandler(Content_Prepared), sender, e);
       else {
         UpdateExecutionTimeTextBox();
-        logTextBox.Clear();
         Log("Engine prepared");
       }
     }
@@ -126,7 +125,7 @@ namespace HeuristicLab.Core.Views {
     }
     protected virtual void Content_ExecutionTimeChanged(object sender, EventArgs e) {
       executionTimeCounter++;
-      if ((executionTimeCounter == 100) || !Content.Running) {
+      if ((executionTimeCounter >= 100) || !Content.Running) {
         executionTimeCounter = 0;
         UpdateExecutionTimeTextBox();
       }

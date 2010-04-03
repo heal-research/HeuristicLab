@@ -84,7 +84,7 @@ namespace HeuristicLab.Optimization.Views {
         repetitionsNumericUpDown.Value = 1;
         repetitionsNumericUpDown.Enabled = false;
         algorithmViewHost.Content = null;
-        resultsView.Content = null;
+        runsView.Content = null;
         tabControl.Enabled = false;
         startButton.Enabled = resetButton.Enabled = false;
         executionTimeTextBox.Text = "-";
@@ -95,7 +95,7 @@ namespace HeuristicLab.Optimization.Views {
         saveAlgorithmButton.Enabled = Content.Algorithm != null;
         algorithmViewHost.ViewType = null;
         algorithmViewHost.Content = Content.Algorithm;
-        resultsView.Content = Content.Results;
+        runsView.Content = Content.Runs;
         tabControl.Enabled = true;
         startButton.Enabled = !Content.Finished;
         resetButton.Enabled = true;

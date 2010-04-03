@@ -86,6 +86,8 @@
     <None Include="HeuristicLabOptimizationPlugin.cs.frame" />
     <Compile Include="Algorithm.cs" />
     <Compile Include="BatchRun.cs" />
+    <Compile Include="RunCollection.cs" />
+    <Compile Include="Run.cs" />
     <Compile Include="Interfaces\IMultiObjectiveSolutionsVisualizer.cs" />
     <Compile Include="Interfaces\IResult.cs" />
     <Compile Include="Interfaces\ISingleObjectiveSolutionsVisualizer.cs" />

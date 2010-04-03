@@ -215,12 +215,12 @@ namespace HeuristicLab.Optimization {
     private void RegisterEngineEvents() {
       Engine.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(Engine_ExceptionOccurred);
       Engine.ExecutionTimeChanged += new EventHandler(Engine_ExecutionTimeChanged);
-      Engine.Stopped += new EventHandler(Engine_Stopped);
+      Engine.RunningChanged += new EventHandler(Engine_RunningChanged);
     }
     private void DeregisterEngineEvents() {
       Engine.ExceptionOccurred -= new EventHandler<EventArgs<Exception>>(Engine_ExceptionOccurred);
       Engine.ExecutionTimeChanged -= new EventHandler(Engine_ExecutionTimeChanged);
-      Engine.Stopped -= new EventHandler(Engine_Stopped);
+      Engine.RunningChanged -= new EventHandler(Engine_RunningChanged);
     }
 
     private void Engine_ExceptionOccurred(object sender, EventArgs<Exception> e) {
@@ -229,8 +229,8 @@ namespace HeuristicLab.Optimization {
     private void Engine_ExecutionTimeChanged(object sender, EventArgs e) {
       OnExecutionTimeChanged();
     }
-    private void Engine_Stopped(object sender, EventArgs e) {
-      OnStopped();
+    private void Engine_RunningChanged(object sender, EventArgs e) {
+      if (!Engine.Running) OnStopped();
     }
   }
 }

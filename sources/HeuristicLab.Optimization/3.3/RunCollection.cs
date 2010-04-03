@@ -19,35 +19,23 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
-using HeuristicLab.Common;
+using System.Linq;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
-  /// <summary>
-  /// Interface to represent an algorithm.
-  /// </summary>
-  public interface IAlgorithm : IParameterizedNamedItem {
-    Type ProblemType { get; }
-    IProblem Problem { get; set; }
-    ResultCollection Results { get; }
-    TimeSpan ExecutionTime { get; }
-    bool Running { get; }
-    bool Finished { get; }
+  [StorableClass]
+  [Item("RunCollection", "Represents a collection of runs.")]
+  public sealed class RunCollection : ItemCollection<Run> {
+    public RunCollection() : base() { }
+    public RunCollection(int capacity) : base(capacity) { }
+    public RunCollection(IEnumerable<Run> collection) : base(collection) { }
 
-    void Prepare();
-    void Start();
-    void Stop();
-
-    void CollectResultValues(IDictionary<string, IItem> values);
-
-    event EventHandler ProblemChanged;
-    event EventHandler ExecutionTimeChanged;
-    event EventHandler RunningChanged;
-    event EventHandler Prepared;
-    event EventHandler Started;
-    event EventHandler Stopped;
-    event EventHandler<EventArgs<Exception>> ExceptionOccurred;
+    public override IDeepCloneable Clone(Cloner cloner) {
+      RunCollection clone = new RunCollection(this.Select(x => (Run)cloner.Clone(x)));
+      cloner.RegisterClonedObject(this, clone);
+      return clone;
+    }
   }
 }
