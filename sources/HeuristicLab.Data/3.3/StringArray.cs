@@ -91,11 +91,11 @@ namespace HeuristicLab.Data {
     }
 
     public IEnumerator<string> GetEnumerator() {
-      return (IEnumerator<string>)array.GetEnumerator();
+      return array.Cast<string>().GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator() {
-      return ((IEnumerable<string>)this).GetEnumerator();
+      return array.GetEnumerator();
     }
 
     protected virtual bool Validate(string value, out string errorMessage) {
