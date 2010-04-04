@@ -19,22 +19,11 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using HeuristicLab.Common;
-using HeuristicLab.Core;
-
-namespace HeuristicLab.Optimization {
-  /// <summary>
-  /// Interface to represent an algorithm.
-  /// </summary>
-  public interface IAlgorithm : IParameterizedNamedItem, IExecutable {
-    Type ProblemType { get; }
-    IProblem Problem { get; set; }
-    ResultCollection Results { get; }
-
-    void CollectResultValues(IDictionary<string, IItem> values);
-
-    event EventHandler ProblemChanged;
+namespace HeuristicLab.Core {
+  public enum ExecutionState {
+    Prepared,
+    Started,
+    Paused,
+    Stopped
   }
 }

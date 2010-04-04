@@ -175,8 +175,8 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       return clone;
     }
 
-    protected override void OnPrepared() {
-      base.OnPrepared();
+    public override void Prepare() {
+      base.Prepare();
       if (Engine != null) {
         if (Problem == null || MoveGenerator == null || MoveMaker == null || MoveEvaluator == null
           || TabuMoveEvaluator == null || TabuMoveMaker == null)

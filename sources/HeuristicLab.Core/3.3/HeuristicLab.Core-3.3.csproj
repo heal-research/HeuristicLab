@@ -102,6 +102,9 @@
     <Compile Include="Cloner.cs" />
     <Compile Include="Attributes\CreatableAttribute.cs" />
     <None Include="HeuristicLabCorePlugin.cs.frame" />
+    <Compile Include="Executable.cs" />
+    <Compile Include="ExecutionState.cs" />
+    <Compile Include="Interfaces\IExecutable.cs" />
     <Compile Include="Interfaces\IParameterizedNamedItem.cs" />
     <Compile Include="Interfaces\IParameterizedItem.cs" />
     <Compile Include="Interfaces\IAtomicOperation.cs" />

@@ -54,7 +54,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm.Views {
       // 
       // createUserDefinedAlgorithmButton
       // 
-      this.createUserDefinedAlgorithmButton.Location = new System.Drawing.Point(90, 552);
+      this.createUserDefinedAlgorithmButton.Location = new System.Drawing.Point(150, 552);
       this.toolTip.SetToolTip(this.createUserDefinedAlgorithmButton, "Create User Defined Algorithm from this Algorithm");
       // 
       // engineComboBox
@@ -104,14 +104,17 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm.Views {
       // startButton
       // 
       this.startButton.Location = new System.Drawing.Point(0, 552);
+      this.toolTip.SetToolTip(this.startButton, "Start/Resume Algorithm");
       // 
-      // stopButton
+      // pauseButton
       // 
-      this.stopButton.Location = new System.Drawing.Point(30, 552);
+      this.pauseButton.Location = new System.Drawing.Point(30, 552);
+      this.toolTip.SetToolTip(this.pauseButton, "Pause Algorithm");
       // 
       // resetButton
       // 
-      this.resetButton.Location = new System.Drawing.Point(60, 552);
+      this.resetButton.Location = new System.Drawing.Point(90, 552);
+      this.toolTip.SetToolTip(this.resetButton, "Reset Algorithm");
       // 
       // executionTimeLabel
       // 
@@ -128,6 +131,11 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm.Views {
       // resultsView
       // 
       this.resultsView.Size = new System.Drawing.Size(724, 456);
+      // 
+      // stopButton
+      // 
+      this.stopButton.Location = new System.Drawing.Point(60, 552);
+      this.toolTip.SetToolTip(this.stopButton, "Stop Algorithm");
       // 
       // nameTextBox
       // 

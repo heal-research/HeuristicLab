@@ -97,24 +97,27 @@ namespace HeuristicLab.Optimization.Views {
       // startButton
       // 
       this.startButton.Location = new System.Drawing.Point(0, 525);
+      this.toolTip.SetToolTip(this.startButton, "Start/Resume Algorithm");
       // 
-      // stopButton
+      // pauseButton
       // 
-      this.stopButton.Location = new System.Drawing.Point(30, 525);
+      this.pauseButton.Location = new System.Drawing.Point(30, 525);
+      this.toolTip.SetToolTip(this.pauseButton, "Pause Algorithm");
       // 
       // resetButton
       // 
-      this.resetButton.Location = new System.Drawing.Point(60, 525);
+      this.resetButton.Location = new System.Drawing.Point(90, 525);
+      this.toolTip.SetToolTip(this.resetButton, "Reset Algorithm");
       // 
       // executionTimeLabel
       // 
       this.executionTimeLabel.Location = new System.Drawing.Point(487, 532);
-      this.executionTimeLabel.TabIndex = 9;
+      this.executionTimeLabel.TabIndex = 10;
       // 
       // executionTimeTextBox
       // 
       this.executionTimeTextBox.Location = new System.Drawing.Point(576, 529);
-      this.executionTimeTextBox.TabIndex = 10;
+      this.executionTimeTextBox.TabIndex = 11;
       // 
       // resultsTabPage
       // 
@@ -123,6 +126,11 @@ namespace HeuristicLab.Optimization.Views {
       // resultsView
       // 
       this.resultsView.Size = new System.Drawing.Size(693, 429);
+      // 
+      // stopButton
+      // 
+      this.stopButton.Location = new System.Drawing.Point(60, 525);
+      this.toolTip.SetToolTip(this.stopButton, "Stop Algorithm");
       // 
       // nameTextBox
       // 
@@ -146,10 +154,10 @@ namespace HeuristicLab.Optimization.Views {
       // createUserDefinedAlgorithmButton
       // 
       this.createUserDefinedAlgorithmButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.createUserDefinedAlgorithmButton.Location = new System.Drawing.Point(90, 525);
+      this.createUserDefinedAlgorithmButton.Location = new System.Drawing.Point(150, 525);
       this.createUserDefinedAlgorithmButton.Name = "createUserDefinedAlgorithmButton";
       this.createUserDefinedAlgorithmButton.Size = new System.Drawing.Size(254, 24);
-      this.createUserDefinedAlgorithmButton.TabIndex = 8;
+      this.createUserDefinedAlgorithmButton.TabIndex = 9;
       this.createUserDefinedAlgorithmButton.Text = "&Create User Defined Algorithm";
       this.toolTip.SetToolTip(this.createUserDefinedAlgorithmButton, "Create User Defined Algorithm from this Algorithm");
       this.createUserDefinedAlgorithmButton.UseVisualStyleBackColor = true;
@@ -163,7 +171,7 @@ namespace HeuristicLab.Optimization.Views {
       this.engineComboBox.FormattingEnabled = true;
       this.engineComboBox.Location = new System.Drawing.Point(55, 6);
       this.engineComboBox.Name = "engineComboBox";
-      this.engineComboBox.Size = new System.Drawing.Size(644, 21);
+      this.engineComboBox.Size = new System.Drawing.Size(610, 21);
       this.engineComboBox.TabIndex = 1;
       this.engineComboBox.SelectedIndexChanged += new System.EventHandler(this.engineComboBox_SelectedIndexChanged);
       // 
@@ -188,7 +196,7 @@ namespace HeuristicLab.Optimization.Views {
       this.engineViewHost.Content = null;
       this.engineViewHost.Location = new System.Drawing.Point(6, 33);
       this.engineViewHost.Name = "engineViewHost";
-      this.engineViewHost.Size = new System.Drawing.Size(693, 402);
+      this.engineViewHost.Size = new System.Drawing.Size(659, 335);
       this.engineViewHost.TabIndex = 2;
       this.engineViewHost.ViewType = null;
       // 
@@ -199,11 +207,12 @@ namespace HeuristicLab.Optimization.Views {
       this.Controls.Add(this.createUserDefinedAlgorithmButton);
       this.Name = "EngineAlgorithmView";
       this.Size = new System.Drawing.Size(713, 549);
+      this.Controls.SetChildIndex(this.stopButton, 0);
       this.Controls.SetChildIndex(this.createUserDefinedAlgorithmButton, 0);
       this.Controls.SetChildIndex(this.resetButton, 0);
+      this.Controls.SetChildIndex(this.pauseButton, 0);
       this.Controls.SetChildIndex(this.executionTimeLabel, 0);
       this.Controls.SetChildIndex(this.executionTimeTextBox, 0);
-      this.Controls.SetChildIndex(this.stopButton, 0);
       this.Controls.SetChildIndex(this.startButton, 0);
       this.Controls.SetChildIndex(this.tabControl, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);

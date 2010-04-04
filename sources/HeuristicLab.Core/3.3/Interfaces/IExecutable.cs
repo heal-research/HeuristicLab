@@ -20,21 +20,24 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using HeuristicLab.Common;
-using HeuristicLab.Core;
 
-namespace HeuristicLab.Optimization {
-  /// <summary>
-  /// Interface to represent an algorithm.
-  /// </summary>
-  public interface IAlgorithm : IParameterizedNamedItem, IExecutable {
-    Type ProblemType { get; }
-    IProblem Problem { get; set; }
-    ResultCollection Results { get; }
+namespace HeuristicLab.Core {
+  public interface IExecutable : IItem {
+    ExecutionState ExecutionState { get; }
+    TimeSpan ExecutionTime { get; }
 
-    void CollectResultValues(IDictionary<string, IItem> values);
+    void Prepare();
+    void Start();
+    void Pause();
+    void Stop();
 
-    event EventHandler ProblemChanged;
+    event EventHandler ExecutionStateChanged;
+    event EventHandler ExecutionTimeChanged;
+    event EventHandler Prepared;
+    event EventHandler Started;
+    event EventHandler Paused;
+    event EventHandler Stopped;
+    event EventHandler<EventArgs<Exception>> ExceptionOccurred;
   }
 }

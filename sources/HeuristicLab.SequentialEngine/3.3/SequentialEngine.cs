@@ -55,21 +55,24 @@ namespace HeuristicLab.SequentialEngine {
         try {
           currentOperator = operation.Operator;
           ExecutionStack.Push(operation.Operator.Execute((IExecutionContext)operation));
-          currentOperator = null;
         }
         catch (Exception ex) {
           ExecutionStack.Push(operation);
           OnExceptionOccurred(ex);
-          Stop();
+          Pause();
         }
         if (operation.Operator.Breakpoint)
-          Stop();
+          Pause();
       }
     }
 
-    protected override void OnCanceledChanged() {
-      if (Canceled && (currentOperator != null))
-        currentOperator.Abort();
+    public override void Pause() {
+      base.Pause();
+      if (currentOperator != null) currentOperator.Abort();
+    }
+    public override void Stop() {
+      base.Stop();
+      if (currentOperator != null) currentOperator.Abort();
     }
   }
 }

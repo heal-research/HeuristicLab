@@ -44,7 +44,6 @@ namespace HeuristicLab.Optimization.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserDefinedAlgorithmView));
       this.operatorGraphTabPage = new System.Windows.Forms.TabPage();
       this.saveOperatorGraphButton = new System.Windows.Forms.Button();
       this.openOperatorGraphButton = new System.Windows.Forms.Button();
@@ -65,6 +64,8 @@ namespace HeuristicLab.Optimization.Views {
       // createUserDefinedAlgorithmButton
       // 
       this.createUserDefinedAlgorithmButton.Enabled = false;
+      this.createUserDefinedAlgorithmButton.Location = new System.Drawing.Point(150, 525);
+      this.createUserDefinedAlgorithmButton.TabIndex = 9;
       this.toolTip.SetToolTip(this.createUserDefinedAlgorithmButton, "Create User Defined Algorithm from this Algorithm");
       this.createUserDefinedAlgorithmButton.Visible = false;
       // 
@@ -90,6 +91,32 @@ namespace HeuristicLab.Optimization.Views {
       // openProblemButton
       // 
       this.toolTip.SetToolTip(this.openProblemButton, "Open Problem");
+      // 
+      // startButton
+      // 
+      this.toolTip.SetToolTip(this.startButton, "Start/Resume Algorithm");
+      // 
+      // pauseButton
+      // 
+      this.toolTip.SetToolTip(this.pauseButton, "Pause Algorithm");
+      // 
+      // resetButton
+      // 
+      this.resetButton.Location = new System.Drawing.Point(90, 525);
+      this.toolTip.SetToolTip(this.resetButton, "Reset Algorithm");
+      // 
+      // executionTimeLabel
+      // 
+      this.executionTimeLabel.TabIndex = 10;
+      // 
+      // executionTimeTextBox
+      // 
+      this.executionTimeTextBox.TabIndex = 11;
+      // 
+      // stopButton
+      // 
+      this.stopButton.Location = new System.Drawing.Point(60, 525);
+      this.toolTip.SetToolTip(this.stopButton, "Stop Algorithm");
       // 
       // nameTextBox
       // 

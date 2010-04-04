@@ -31,8 +31,6 @@ namespace HeuristicLab.Core.Views {
   [Content(typeof(Engine), true)]
   [Content(typeof(IEngine), false)]
   public partial class EngineView : ItemView {
-    private int executionTimeCounter;
-
     /// <summary>
     /// Gets or sets the current engine.
     /// </summary>
@@ -58,8 +56,7 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void DeregisterContentEvents() {
-      Content.Prepared -= new EventHandler(Content_Prepared);
-      Content.RunningChanged -= new EventHandler(Content_RunningChanged);
+      Content.ExecutionStateChanged -= new EventHandler(Content_ExecutionStateChanged);
       Content.ExecutionTimeChanged -= new EventHandler(Content_ExecutionTimeChanged);
       Content.ExceptionOccurred -= new EventHandler<EventArgs<Exception>>(Content_ExceptionOccurred);
       base.DeregisterContentEvents();
@@ -71,8 +68,7 @@ namespace HeuristicLab.Core.Views {
     /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.Prepared += new EventHandler(Content_Prepared);
-      Content.RunningChanged += new EventHandler(Content_RunningChanged);
+      Content.ExecutionStateChanged += new EventHandler(Content_ExecutionStateChanged);
       Content.ExecutionTimeChanged += new EventHandler(Content_ExecutionTimeChanged);
       Content.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(Content_ExceptionOccurred);
     }
@@ -86,40 +82,31 @@ namespace HeuristicLab.Core.Views {
       logTextBox.Clear();
       if (Content == null) {
         logTextBox.Enabled = false;
+        executionTimeTextBox.Text = "-";
         executionTimeTextBox.Enabled = false;
       } else {
         logTextBox.Enabled = true;
-        UpdateExecutionTimeTextBox();
+        executionTimeTextBox.Text = Content.ExecutionTime.ToString();
         executionTimeTextBox.Enabled = true;
       }
     }
 
     #region Content Events
-    protected virtual void Content_Prepared(object sender, EventArgs e) {
+    protected virtual void Content_ExecutionStateChanged(object sender, EventArgs e) {
       if (InvokeRequired)
-        Invoke(new EventHandler(Content_Prepared), sender, e);
+        Invoke(new EventHandler(Content_ExecutionStateChanged), sender, e);
       else {
-        executionTimeCounter = 0;
-        UpdateExecutionTimeTextBox();
-        Log("Engine prepared");
-      }
-    }
-    protected virtual void Content_RunningChanged(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_RunningChanged), sender, e);
-      else {
-        UpdateExecutionTimeTextBox();
-        if (Content.Running) Log("Engine started");
-        else if (Content.Finished) Log("Engine finished");
-        else Log("Engine stopped");
+        if (Content.ExecutionState == ExecutionState.Prepared) Log("Engine prepared");
+        else if (Content.ExecutionState == ExecutionState.Started) Log("Engine started");
+        else if (Content.ExecutionState == ExecutionState.Paused) Log("Engine paused");
+        else if (Content.ExecutionState == ExecutionState.Stopped) Log("Engine stopped");
       }
     }
     protected virtual void Content_ExecutionTimeChanged(object sender, EventArgs e) {
-      executionTimeCounter++;
-      if ((executionTimeCounter >= 100) || !Content.Running) {
-        executionTimeCounter = 0;
-        UpdateExecutionTimeTextBox();
-      }
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_ExecutionTimeChanged), sender, e);
+      else
+        executionTimeTextBox.Text = Content.ExecutionTime.ToString();
     }
     protected virtual void Content_ExceptionOccurred(object sender, EventArgs<Exception> e) {
       if (InvokeRequired)
@@ -130,12 +117,6 @@ namespace HeuristicLab.Core.Views {
     #endregion
 
     #region Helpers
-    protected virtual void UpdateExecutionTimeTextBox() {
-      if (InvokeRequired)
-        Invoke(new Action(UpdateExecutionTimeTextBox));
-      else
-        executionTimeTextBox.Text = Content.ExecutionTime.ToString();
-    }
     protected virtual void Log(string message) {
       if (InvokeRequired)
         Invoke(new Action<string>(Log), message);

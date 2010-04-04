@@ -20,19 +20,14 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using HeuristicLab.Common;
-using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Optimization {
-  /// <summary>
-  /// A base class for algorithms.
-  /// </summary>
-  [Item("Algorithm", "A base class for algorithms.")]
+namespace HeuristicLab.Core {
+  [Item("Executable", "A base class for executables.")]
   [StorableClass]
-  public abstract class Algorithm : ParameterizedNamedItem, IAlgorithm {
+  public abstract class Executable : Item, IExecutable {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Event; }
     }
@@ -59,67 +54,15 @@ namespace HeuristicLab.Optimization {
       }
     }
 
-    public virtual Type ProblemType {
-      get { return typeof(IProblem); }
-    }
-
-    private IProblem problem;
-    [Storable]
-    private IProblem ProblemPersistence {
-      get { return problem; }
-      set {
-        if (problem != null) DeregisterProblemEvents();
-        problem = value;
-        if (problem != null) RegisterProblemEvents();
-      }
-    }
-    public IProblem Problem {
-      get { return problem; }
-      set {
-        if (problem != value) {
-          if ((value != null) && !ProblemType.IsInstanceOfType(value)) throw new ArgumentException("Invalid problem type.");
-          if (problem != null) DeregisterProblemEvents();
-          problem = value;
-          if (problem != null) RegisterProblemEvents();
-          OnProblemChanged();
-          Prepare();
-        }
-      }
-    }
-
-    public abstract ResultCollection Results { get; }
-
-    protected Algorithm()
-      : base() {
-      executionState = ExecutionState.Stopped;
-      executionTime = TimeSpan.Zero;
-    }
-    protected Algorithm(string name)
-      : base(name) {
-      executionState = ExecutionState.Stopped;
-      executionTime = TimeSpan.Zero;
-    }
-    protected Algorithm(string name, ParameterCollection parameters)
-      : base(name, parameters) {
-      executionState = ExecutionState.Stopped;
-      executionTime = TimeSpan.Zero;
-    }
-    protected Algorithm(string name, string description)
-      : base(name, description) {
-      executionState = ExecutionState.Stopped;
-      executionTime = TimeSpan.Zero;
-    }
-    protected Algorithm(string name, string description, ParameterCollection parameters)
-      : base(name, description, parameters) {
+    protected Executable() {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      Algorithm clone = (Algorithm)base.Clone(cloner);
+      Executable clone = (Executable)base.Clone(cloner);
       clone.executionState = executionState;
       clone.executionTime = executionTime;
-      clone.Problem = (IProblem)cloner.Clone(problem);
       return clone;
     }
 
@@ -141,16 +84,6 @@ namespace HeuristicLab.Optimization {
         throw new InvalidOperationException(string.Format("Stop not allowed in execution state \"{0}\".", ExecutionState));
     }
 
-    public override void CollectParameterValues(IDictionary<string, IItem> values) {
-      base.CollectParameterValues(values);
-      Problem.CollectParameterValues(values);
-    }
-    public virtual void CollectResultValues(IDictionary<string, IItem> values) {
-      foreach (IResult result in Results)
-        values.Add(result.Name, result.Value != null ? (IItem)result.Value.Clone() : null);
-    }
-
-    #region Events
     public event EventHandler ExecutionStateChanged;
     protected virtual void OnExecutionStateChanged() {
       EventHandler handler = ExecutionStateChanged;
@@ -159,11 +92,6 @@ namespace HeuristicLab.Optimization {
     public event EventHandler ExecutionTimeChanged;
     protected virtual void OnExecutionTimeChanged() {
       EventHandler handler = ExecutionTimeChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-    public event EventHandler ProblemChanged;
-    protected virtual void OnProblemChanged() {
-      EventHandler handler = ProblemChanged;
       if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler Prepared;
@@ -195,24 +123,5 @@ namespace HeuristicLab.Optimization {
       EventHandler<EventArgs<Exception>> handler = ExceptionOccurred;
       if (handler != null) handler(this, new EventArgs<Exception>(exception));
     }
-
-    protected virtual void DeregisterProblemEvents() {
-      problem.SolutionCreatorChanged -= new EventHandler(Problem_SolutionCreatorChanged);
-      problem.EvaluatorChanged -= new EventHandler(Problem_EvaluatorChanged);
-      problem.VisualizerChanged -= new EventHandler(Problem_VisualizerChanged);
-      problem.OperatorsChanged -= new EventHandler(Problem_OperatorsChanged);
-    }
-    protected virtual void RegisterProblemEvents() {
-      problem.SolutionCreatorChanged += new EventHandler(Problem_SolutionCreatorChanged);
-      problem.EvaluatorChanged += new EventHandler(Problem_EvaluatorChanged);
-      problem.VisualizerChanged += new EventHandler(Problem_VisualizerChanged);
-      problem.OperatorsChanged += new EventHandler(Problem_OperatorsChanged);
-    }
-
-    protected virtual void Problem_SolutionCreatorChanged(object sender, EventArgs e) { }
-    protected virtual void Problem_EvaluatorChanged(object sender, EventArgs e) { }
-    protected virtual void Problem_VisualizerChanged(object sender, EventArgs e) { }
-    protected virtual void Problem_OperatorsChanged(object sender, EventArgs e) { }
-    #endregion
   }
 }

@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.Persistence.Default.Xml;
@@ -36,7 +37,6 @@ namespace HeuristicLab.Optimization.Views {
   [Content(typeof(IAlgorithm), false)]
   public partial class AlgorithmView : NamedItemView {
     private TypeSelectorDialog problemTypeSelectorDialog;
-    private int executionTimeCounter;
 
     public new IAlgorithm Content {
       get { return (IAlgorithm)base.Content; }
@@ -74,30 +74,29 @@ namespace HeuristicLab.Optimization.Views {
 
     protected override void DeregisterContentEvents() {
       Content.ExceptionOccurred -= new EventHandler<EventArgs<Exception>>(Content_ExceptionOccurred);
+      Content.ExecutionStateChanged -= new EventHandler(Content_ExecutionStateChanged);
       Content.ExecutionTimeChanged -= new EventHandler(Content_ExecutionTimeChanged);
       Content.Prepared -= new EventHandler(Content_Prepared);
       Content.ProblemChanged -= new EventHandler(Content_ProblemChanged);
-      Content.RunningChanged -= new EventHandler(Content_RunningChanged);
       base.DeregisterContentEvents();
     }
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(Content_ExceptionOccurred);
+      Content.ExecutionStateChanged += new EventHandler(Content_ExecutionStateChanged);
       Content.ExecutionTimeChanged += new EventHandler(Content_ExecutionTimeChanged);
       Content.Prepared += new EventHandler(Content_Prepared);
       Content.ProblemChanged += new EventHandler(Content_ProblemChanged);
-      Content.RunningChanged += new EventHandler(Content_RunningChanged);
     }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      stopButton.Enabled = false;
       if (Content == null) {
         parameterCollectionView.Content = null;
         problemViewHost.Content = null;
         resultsView.Content = null;
         tabControl.Enabled = false;
-        startButton.Enabled = resetButton.Enabled = false;
+        startButton.Enabled = pauseButton.Enabled = stopButton.Enabled = resetButton.Enabled = false;
         executionTimeTextBox.Text = "-";
         executionTimeTextBox.Enabled = false;
       } else {
@@ -107,29 +106,18 @@ namespace HeuristicLab.Optimization.Views {
         problemViewHost.Content = Content.Problem;
         resultsView.Content = Content.Results.AsReadOnly();
         tabControl.Enabled = true;
-        startButton.Enabled = !Content.Finished;
-        resetButton.Enabled = true;
-        UpdateExecutionTimeTextBox();
+        EnableDisableButtons();
+        executionTimeTextBox.Text = Content.ExecutionTime.ToString();
         executionTimeTextBox.Enabled = true;
       }
     }
 
     protected override void OnClosed(FormClosedEventArgs e) {
-      if (Content != null) Content.Stop();
+      if ((Content != null) && (Content.ExecutionState == ExecutionState.Started)) Content.Stop();
       base.OnClosed(e);
     }
 
     #region Content Events
-    protected virtual void Content_Prepared(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_Prepared), sender, e);
-      else {
-        executionTimeCounter = 0;
-        resultsView.Content = Content.Results.AsReadOnly();
-        startButton.Enabled = !Content.Finished;
-        UpdateExecutionTimeTextBox();
-      }
-    }
     protected virtual void Content_ProblemChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ProblemChanged), sender, e);
@@ -139,27 +127,29 @@ namespace HeuristicLab.Optimization.Views {
         saveProblemButton.Enabled = Content.Problem != null;
       }
     }
-    protected virtual void Content_RunningChanged(object sender, EventArgs e) {
+    protected virtual void Content_Prepared(object sender, EventArgs e) {
       if (InvokeRequired)
-        Invoke(new EventHandler(Content_RunningChanged), sender, e);
+        Invoke(new EventHandler(Content_Prepared), sender, e);
+      else
+        resultsView.Content = Content.Results.AsReadOnly();
+    }
+    protected virtual void Content_ExecutionStateChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_ExecutionStateChanged), sender, e);
       else {
-        SaveEnabled = !Content.Running;
-        parameterCollectionView.Enabled = !Content.Running;
-        newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = !Content.Running;
-        problemViewHost.Enabled = !Content.Running;
-        resultsView.Enabled = !Content.Running;
-        startButton.Enabled = !Content.Running && !Content.Finished;
-        stopButton.Enabled = Content.Running;
-        resetButton.Enabled = !Content.Running;
-        UpdateExecutionTimeTextBox();
+        SaveEnabled = Content.ExecutionState != ExecutionState.Started;
+        parameterCollectionView.Enabled = Content.ExecutionState != ExecutionState.Started;
+        newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = Content.ExecutionState != ExecutionState.Started;
+        problemViewHost.Enabled = Content.ExecutionState != ExecutionState.Started;
+        resultsView.Enabled = Content.ExecutionState != ExecutionState.Started;
+        EnableDisableButtons();
       }
     }
     protected virtual void Content_ExecutionTimeChanged(object sender, EventArgs e) {
-      executionTimeCounter++;
-      if ((executionTimeCounter >= 100) || !Content.Running) {
-        executionTimeCounter = 0;
-        UpdateExecutionTimeTextBox();
-      }
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_ExecutionTimeChanged), sender, e);
+      else
+        executionTimeTextBox.Text = Content.ExecutionTime.ToString();
     }
     protected virtual void Content_ExceptionOccurred(object sender, EventArgs<Exception> e) {
       if (InvokeRequired)
@@ -237,6 +227,9 @@ namespace HeuristicLab.Optimization.Views {
     protected virtual void startButton_Click(object sender, EventArgs e) {
       Content.Start();
     }
+    protected virtual void pauseButton_Click(object sender, EventArgs e) {
+      Content.Pause();
+    }
     protected virtual void stopButton_Click(object sender, EventArgs e) {
       Content.Stop();
     }
@@ -246,11 +239,11 @@ namespace HeuristicLab.Optimization.Views {
     #endregion
 
     #region Helpers
-    protected virtual void UpdateExecutionTimeTextBox() {
-      if (InvokeRequired)
-        Invoke(new Action(UpdateExecutionTimeTextBox));
-      else
-        executionTimeTextBox.Text = Content.ExecutionTime.ToString();
+    private void EnableDisableButtons() {
+      startButton.Enabled = (Content.ExecutionState == ExecutionState.Prepared) || (Content.ExecutionState == ExecutionState.Paused);
+      pauseButton.Enabled = Content.ExecutionState == ExecutionState.Started;
+      stopButton.Enabled = (Content.ExecutionState == ExecutionState.Started) || (Content.ExecutionState == ExecutionState.Paused);
+      resetButton.Enabled = Content.ExecutionState != ExecutionState.Started;
     }
     #endregion
   }

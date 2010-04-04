@@ -54,8 +54,8 @@ namespace HeuristicLab.Optimization {
 
     public event EventHandler OperatorGraphChanged;
     protected override void OnOperatorGraphChanged() {
-      if (OperatorGraphChanged != null)
-        OperatorGraphChanged(this, EventArgs.Empty);
+      EventHandler handler = OperatorGraphChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
   }
 }

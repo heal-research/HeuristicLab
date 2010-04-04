@@ -93,20 +93,6 @@ namespace HeuristicLab.Optimization {
       }
     }
 
-    public override TimeSpan ExecutionTime {
-      get {
-        if (engine == null) return TimeSpan.Zero;
-        else return engine.ExecutionTime;
-      }
-    }
-
-    public override bool Finished {
-      get {
-        if (engine == null) return true;
-        else return engine.Finished;
-      }
-    }
-
     protected EngineAlgorithm()
       : base() {
       globalScope = new Scope("Global Scope");
@@ -171,11 +157,8 @@ namespace HeuristicLab.Optimization {
       return algorithm;
     }
 
-    protected override void OnCanceledChanged() {
-      if (Canceled && (engine != null))
-        engine.Stop();
-    }
-    protected override void OnPrepared() {
+    public override void Prepare() {
+      base.Prepare();
       globalScope.Clear();
       globalScope.Variables.Add(new Variable("Results", new ResultCollection()));
 
@@ -194,44 +177,66 @@ namespace HeuristicLab.Optimization {
         }
         engine.Prepare(context);
       }
-      base.OnPrepared();
     }
-    protected override void OnStarted() {
+    public override void Start() {
+      base.Start();
       if (engine != null) engine.Start();
-      base.OnStarted();
+    }
+    public override void Pause() {
+      base.Pause();
+      if (engine != null) engine.Pause();
+    }
+    public override void Stop() {
+      base.Stop();
+      if (engine != null) engine.Stop();
     }
 
-    protected virtual void OnOperatorGraphChanged() { }
-
+    #region Events
     public event EventHandler EngineChanged;
     protected virtual void OnEngineChanged() {
       if (EngineChanged != null)
         EngineChanged(this, EventArgs.Empty);
     }
+    protected virtual void OnOperatorGraphChanged() { }
 
-    private void OperatorGraph_InitialOperatorChanged(object sender, EventArgs e) {
-      Prepare();
-    }
     private void RegisterEngineEvents() {
       Engine.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(Engine_ExceptionOccurred);
       Engine.ExecutionTimeChanged += new EventHandler(Engine_ExecutionTimeChanged);
+      Engine.Paused += new EventHandler(Engine_Paused);
+      Engine.Prepared += new EventHandler(Engine_Prepared);
+      Engine.Started += new EventHandler(Engine_Started);
       Engine.Stopped += new EventHandler(Engine_Stopped);
     }
-
     private void DeregisterEngineEvents() {
       Engine.ExceptionOccurred -= new EventHandler<EventArgs<Exception>>(Engine_ExceptionOccurred);
       Engine.ExecutionTimeChanged -= new EventHandler(Engine_ExecutionTimeChanged);
+      Engine.Paused -= new EventHandler(Engine_Paused);
+      Engine.Prepared -= new EventHandler(Engine_Prepared);
+      Engine.Started -= new EventHandler(Engine_Started);
       Engine.Stopped -= new EventHandler(Engine_Stopped);
     }
-
     private void Engine_ExceptionOccurred(object sender, EventArgs<Exception> e) {
       OnExceptionOccurred(e.Value);
     }
     private void Engine_ExecutionTimeChanged(object sender, EventArgs e) {
-      OnExecutionTimeChanged();
+      ExecutionTime = Engine.ExecutionTime;
+    }
+    private void Engine_Paused(object sender, EventArgs e) {
+      OnPaused();
+    }
+    private void Engine_Prepared(object sender, EventArgs e) {
+      OnPrepared();
+    }
+    private void Engine_Started(object sender, EventArgs e) {
+      OnStarted();
     }
     private void Engine_Stopped(object sender, EventArgs e) {
       OnStopped();
     }
+
+    private void OperatorGraph_InitialOperatorChanged(object sender, EventArgs e) {
+      Prepare();
+    }
+    #endregion
   }
 }
