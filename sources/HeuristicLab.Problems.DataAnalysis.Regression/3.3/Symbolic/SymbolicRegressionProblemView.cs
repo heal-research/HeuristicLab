@@ -11,7 +11,7 @@ using HeuristicLab.MainForm;
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [View("SymbolicRegressionProblem View")]
   [Content(typeof(SymbolicRegressionProblem), true)]
-  public partial class SymbolicRegressionProblemView : ProblemView {
+  public partial class SymbolicRegressionProblemView : RegressionProblemView {
     public new SymbolicRegressionProblem Content {
       get { return (SymbolicRegressionProblem)base.Content; }
       set { base.Content = value; }

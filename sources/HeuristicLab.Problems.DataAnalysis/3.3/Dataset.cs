@@ -39,16 +39,17 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private bool cachedValuesInvalidated = true;
 
     public Dataset()
-      : this(new double[,] { { 0.0 } }) {
+      : this(new string[] { "x" }, new double[,] { { 0.0 } }) {
     }
 
-    public Dataset(double[,] data)
+    public Dataset(IEnumerable<string> variableNames, double[,] data)
       : base() {
       Name = "-";
+      if (variableNames.Count() != data.GetLength(1)) {
+        throw new ArgumentException("Number of variable names doesn't match the number of columns of data");
+      }
       Data = new DoubleMatrix(data);
-      string formatString = new StringBuilder().Append('#', (int)Math.Log10(this.data.Columns) + 1).ToString(); // >= 100 variables => ###
-      this.variableNames = new StringArray((from col in Enumerable.Range(1, this.data.Columns)
-                                            select "Var" + col.ToString(formatString)).ToArray());
+      this.variableNames = new StringArray(variableNames.ToArray());
     }
 
     private StringArray variableNames;

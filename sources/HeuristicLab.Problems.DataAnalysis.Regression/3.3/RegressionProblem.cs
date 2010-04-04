@@ -29,6 +29,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Problems.DataAnalysis;
 using System.Drawing;
+using System.IO;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression {
   [Item("RegressionProblem", "Represents a regression problem.")]
@@ -68,6 +69,44 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression {
       get { return (ValueParameter<IntValue>)Parameters["TestSamplesEnd"]; }
     }
     #endregion
+    #region properties
+    public Dataset Dataset {
+      get { return DatasetParameter.Value; }
+      set { DatasetParameter.Value = value; }
+    }
+    public StringValue TargetVariable {
+      get { return TargetVariableParameter.Value; }
+      set { TargetVariableParameter.Value = value; }
+    }
+    public ItemList<StringValue> InputVariables {
+      get { return InputVariablesParameter.Value; }
+      set { InputVariablesParameter.Value = value; }
+    }
+    public IntValue TrainingSamplesStart {
+      get { return TrainingSamplesStartParameter.Value; }
+      set { TrainingSamplesStartParameter.Value = value; }
+    }
+    public IntValue TrainingSamplesEnd {
+      get { return TrainingSamplesEndParameter.Value; }
+      set { TrainingSamplesEndParameter.Value = value; }
+    }
+    public IntValue ValidationSamplesStart {
+      get { return ValidationSamplesStartParameter.Value; }
+      set { ValidationSamplesStartParameter.Value = value; }
+    }
+    public IntValue ValidationSamplesEnd {
+      get { return ValidationSamplesEndParameter.Value; }
+      set { ValidationSamplesEndParameter.Value = value; }
+    }
+    public IntValue TestSamplesStart {
+      get { return TestSamplesStartParameter.Value; }
+      set { TestSamplesStartParameter.Value = value; }
+    }
+    public IntValue TestSamplesEnd {
+      get { return TestSamplesEndParameter.Value; }
+      set { TestSamplesEndParameter.Value = value; }
+    }
+    #endregion
 
     public RegressionProblem()
       : base() {
@@ -87,20 +126,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression {
     [StorableConstructor]
     private RegressionProblem(bool deserializing) : base() { }
 
-    #region ISingleObjectiveProblem Members
-
-    public IParameter MaximizationParameter {
-      get { throw new NotImplementedException(); }
+    public virtual void ImportFromFile(string fileName) {
+      var csvFileParser = new CsvFileParser();
+      csvFileParser.Parse(fileName);
+      Name = "Regression Problem (imported from " + Path.GetFileName(fileName);
+      Dataset = new Dataset(csvFileParser.VariableNames, csvFileParser.Values);
+      Dataset.Name = Path.GetFileName(fileName);
+      TargetVariable = new StringValue(Dataset.VariableNames.First());
+      InputVariables = new ItemList<StringValue>(Dataset.VariableNames.Skip(1).Select(s => new StringValue(s)));
+      TrainingSamplesStart = new IntValue(0);
+      TrainingSamplesEnd = new IntValue(csvFileParser.Rows);
+      TestSamplesStart = new IntValue(0);
+      TestSamplesEnd = new IntValue(csvFileParser.Rows);
     }
-
-    public IParameter BestKnownQualityParameter {
-      get { throw new NotImplementedException(); }
-    }
-
-    public ISingleObjectiveEvaluator Evaluator {
-      get { throw new NotImplementedException(); }
-    }
-
-    #endregion
   }
 }
