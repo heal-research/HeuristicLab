@@ -97,11 +97,11 @@
     <Compile Include="BatchRunView.Designer.cs">
       <DependentUpon>BatchRunView.cs</DependentUpon>
     </Compile>
-    <Compile Include="BatchRunListView.cs">
+    <Compile Include="OptimizerListView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="BatchRunListView.Designer.cs">
-      <DependentUpon>BatchRunListView.cs</DependentUpon>
+    <Compile Include="OptimizerListView.Designer.cs">
+      <DependentUpon>OptimizerListView.cs</DependentUpon>
     </Compile>
     <Compile Include="ExperimentView.cs">
       <SubType>UserControl</SubType>

@@ -19,20 +19,25 @@
  */
 #endregion
 
+using System.Windows.Forms;
+using HeuristicLab.Collections;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Optimization.Views {
-  [View("BatchRunList View")]
-  [Content(typeof(BatchRunList), true)]
-  public partial class BatchRunListView : ItemListView<BatchRun> {
+  [View("OptimizerList View")]
+  [Content(typeof(OptimizerList), true)]
+  [Content(typeof(IObservableList<IOptimizer>), false)]
+  public partial class OptimizerListView : ItemListView<IOptimizer> {
+    protected TypeSelectorDialog typeSelectorDialog;
+
     /// <summary>
     /// Initializes a new instance of <see cref="VariablesScopeView"/> with caption "Variables Scope View".
     /// </summary>
-    public BatchRunListView() {
+    public OptimizerListView() {
       InitializeComponent();
-      Caption = "BatchRunList";
-      itemsGroupBox.Text = "Batch Runs";
+      Caption = "OptimizerList";
+      itemsGroupBox.Text = "Optimizers";
     }
     /// <summary>
     /// Initializes a new instance of <see cref="VariablesScopeView"/> with 
@@ -40,13 +45,22 @@ namespace HeuristicLab.Optimization.Views {
     /// </summary>
     /// <remarks>Calls <see cref="VariablesScopeView()"/>.</remarks>
     /// <param name="scope">The scope whose variables should be represented visually.</param>
-    public BatchRunListView(BatchRunList content)
+    public OptimizerListView(IObservableList<IOptimizer> content)
       : this() {
       Content = content;
     }
 
-    protected override BatchRun CreateItem() {
-      return new BatchRun();
+    protected override IOptimizer CreateItem() {
+      if (typeSelectorDialog == null) {
+        typeSelectorDialog = new TypeSelectorDialog();
+        typeSelectorDialog.TypeSelector.Caption = "Available Optimizers";
+        typeSelectorDialog.TypeSelector.Configure(typeof(IOptimizer), false, false);
+      }
+
+      if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK)
+        return typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType() as IOptimizer;
+      else
+        return null;
     }
   }
 }

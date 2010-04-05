@@ -21,14 +21,13 @@
 
 using System;
 using System.Collections.Generic;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
   /// Interface to represent an algorithm.
   /// </summary>
-  public interface IAlgorithm : IParameterizedNamedItem, IExecutable {
+  public interface IAlgorithm : IParameterizedNamedItem, IOptimizer {
     Type ProblemType { get; }
     IProblem Problem { get; set; }
     ResultCollection Results { get; }

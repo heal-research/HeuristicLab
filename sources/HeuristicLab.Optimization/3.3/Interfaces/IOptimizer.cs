@@ -19,23 +19,13 @@
  */
 #endregion
 
-using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
-  [StorableClass]
-  [Item("ResultCollection", "Represents a collection of results.")]
-  public class ResultCollection : NamedItemCollection<IResult> {
-    public ResultCollection() : base() { }
-    public ResultCollection(int capacity) : base(capacity) { }
-    public ResultCollection(IEnumerable<IResult> collection) : base(collection) { }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      ResultCollection clone = new ResultCollection(this.Select(x => (IResult)cloner.Clone(x)));
-      cloner.RegisterClonedObject(this, clone);
-      return clone;
-    }
+  /// <summary>
+  /// Interface to represent optimizers such as algorithms, batch runs, or experiments.
+  /// </summary>
+  public interface IOptimizer : IExecutable {
+    void Prepare(bool clearResults);
   }
 }

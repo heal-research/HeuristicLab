@@ -32,7 +32,7 @@ namespace HeuristicLab.Optimization {
   [Item("Batch Run", "A run in which an algorithm is executed a given number of times.")]
   [Creatable("Testing & Analysis")]
   [StorableClass]
-  public sealed class BatchRun : NamedItem, IExecutable {
+  public sealed class BatchRun : NamedItem, IOptimizer {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Event; }
     }
@@ -146,11 +146,11 @@ namespace HeuristicLab.Optimization {
     public void Prepare() {
       Prepare(true);
     }
-    public void Prepare(bool clearRuns) {
+    public void Prepare(bool clearResults) {
       if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused) && (ExecutionState != ExecutionState.Stopped))
         throw new InvalidOperationException(string.Format("Prepare not allowed in execution state \"{0}\".", ExecutionState));
       if (Algorithm != null) {
-        if (clearRuns) {
+        if (clearResults) {
           ExecutionTime = TimeSpan.Zero;
           runs.Clear();
         }

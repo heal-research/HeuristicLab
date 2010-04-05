@@ -19,12 +19,14 @@
  */
 #endregion
 
+using HeuristicLab.Collections;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Optimization.Views {
   [View("RunCollection View")]
   [Content(typeof(RunCollection), true)]
+  [Content(typeof(IObservableCollection<Run>), false)]
   public partial class RunCollectionView : ItemCollectionView<Run> {
     /// <summary>
     /// Initializes a new instance of <see cref="VariablesScopeView"/> with caption "Variables Scope View".
@@ -40,13 +42,13 @@ namespace HeuristicLab.Optimization.Views {
     /// </summary>
     /// <remarks>Calls <see cref="VariablesScopeView()"/>.</remarks>
     /// <param name="scope">The scope whose variables should be represented visually.</param>
-    public RunCollectionView(RunCollection content)
+    public RunCollectionView(IObservableCollection<Run> content)
       : this() {
       Content = content;
     }
 
     protected override Run CreateItem() {
-      return null;
+      return new Run();
     }
   }
 }

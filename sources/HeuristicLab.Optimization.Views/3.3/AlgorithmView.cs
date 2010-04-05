@@ -236,7 +236,14 @@ namespace HeuristicLab.Optimization.Views {
       Content.Stop();
     }
     protected virtual void resetButton_Click(object sender, EventArgs e) {
-      Content.Prepare();
+      if (Content.Results.Count > 0) {
+        if (MessageBox.Show(this, "Clear all results of this run?", "Clear All Results?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) == DialogResult.Yes)
+          Content.Prepare(true);
+        else
+          Content.Prepare(false);
+      } else {
+        Content.Prepare();
+      }
     }
     #endregion
 

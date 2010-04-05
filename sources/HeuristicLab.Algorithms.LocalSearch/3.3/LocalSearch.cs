@@ -153,9 +153,9 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       return clone;
     }
 
-    public override void Prepare() {
+    public override void Prepare(bool clearResults) {
       if (Problem != null && MoveGenerator != null && MoveMaker != null && MoveEvaluator != null)
-        base.Prepare();
+        base.Prepare(clearResults);
     }
 
     #region Events

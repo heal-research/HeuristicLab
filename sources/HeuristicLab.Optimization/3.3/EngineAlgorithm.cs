@@ -21,7 +21,6 @@
 
 using System;
 using System.Linq;
-using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -157,10 +156,15 @@ namespace HeuristicLab.Optimization {
       return algorithm;
     }
 
-    public override void Prepare() {
-      base.Prepare();
+    public override void Prepare(bool clearResults) {
+      base.Prepare(clearResults);
+
+      ResultCollection results = Results;
       globalScope.Clear();
-      globalScope.Variables.Add(new Variable("Results", new ResultCollection()));
+      if (clearResults)
+        globalScope.Variables.Add(new Variable("Results", new ResultCollection()));
+      else
+        globalScope.Variables.Add(new Variable("Results", results));
 
       if (engine != null) {
         ExecutionContext context = null;

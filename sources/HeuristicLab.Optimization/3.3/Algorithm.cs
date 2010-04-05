@@ -123,7 +123,10 @@ namespace HeuristicLab.Optimization {
       return clone;
     }
 
-    public virtual void Prepare() {
+    public void Prepare() {
+      Prepare(true);
+    }
+    public virtual void Prepare(bool clearResults) {
       if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused) && (ExecutionState != ExecutionState.Stopped))
         throw new InvalidOperationException(string.Format("Prepare not allowed in execution state \"{0}\".", ExecutionState));
       ExecutionTime = TimeSpan.Zero;

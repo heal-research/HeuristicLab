@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Optimization.Views {
-  partial class BatchRunListView {
+  partial class OptimizerListView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -32,6 +32,7 @@ namespace HeuristicLab.Optimization.Views {
     /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
     protected override void Dispose(bool disposing) {
       if (disposing) {
+        if (typeSelectorDialog != null) typeSelectorDialog.Dispose();
         if (components != null) components.Dispose();
       }
       base.Dispose(disposing);

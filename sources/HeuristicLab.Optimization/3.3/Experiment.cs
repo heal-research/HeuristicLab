@@ -34,7 +34,7 @@ namespace HeuristicLab.Optimization {
   [Item("Experiment", "An experiment which contains multiple batch runs of algorithms.")]
   [Creatable("Testing & Analysis")]
   [StorableClass]
-  public sealed class Experiment : NamedItem, IExecutable {
+  public sealed class Experiment : NamedItem, IOptimizer {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Event; }
     }
@@ -61,25 +61,19 @@ namespace HeuristicLab.Optimization {
       }
     }
 
-    private BatchRunList batchRuns;
+    private OptimizerList optimizers;
     [Storable]
-    public BatchRunList BatchRuns {
-      get { return batchRuns; }
+    public OptimizerList Optimizers {
+      get { return optimizers; }
       private set {
-        if (batchRuns != value) {
-          if (batchRuns != null) DeregisterBatchRunsEvents();
-          batchRuns = value;
-          if (batchRuns != null) RegisterBatchRunsEvents();
-          foreach (BatchRun batchRun in batchRuns)
-            RegisterBatchRunEvents(batchRun);
+        if (optimizers != value) {
+          if (optimizers != null) DeregisterOptimizersEvents();
+          optimizers = value;
+          if (optimizers != null) RegisterOptimizersEvents();
+          foreach (IOptimizer optimizer in optimizers)
+            RegisterOptimizerEvents(optimizer);
         }
       }
-    }
-
-    [Storable]
-    private RunCollection runs;
-    public RunCollection Runs {
-      get { return runs; }
     }
 
     private bool stopPending;
@@ -88,22 +82,19 @@ namespace HeuristicLab.Optimization {
       : base() {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
-      BatchRuns = new BatchRunList();
-      runs = new RunCollection();
+      Optimizers = new OptimizerList();
       stopPending = false;
     }
     public Experiment(string name) : base(name) {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
-      BatchRuns = new BatchRunList();
-      runs = new RunCollection();
+      Optimizers = new OptimizerList();
       stopPending = false;
     }
     public Experiment(string name, string description) : base(name, description) {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
-      BatchRuns = new BatchRunList();
-      runs = new RunCollection();
+      Optimizers = new OptimizerList();
       stopPending = false;
     }
 
@@ -111,8 +102,7 @@ namespace HeuristicLab.Optimization {
       Experiment clone = (Experiment)base.Clone(cloner);
       clone.executionState = executionState;
       clone.executionTime = executionTime;
-      clone.BatchRuns = (BatchRunList)cloner.Clone(batchRuns);
-      clone.runs = (RunCollection)cloner.Clone(runs);
+      clone.Optimizers = (OptimizerList)cloner.Clone(optimizers);
       clone.stopPending = stopPending;
       return clone;
     }
@@ -120,42 +110,38 @@ namespace HeuristicLab.Optimization {
     public void Prepare() {
       Prepare(true);
     }
-    public void Prepare(bool clearRuns) {
+    public void Prepare(bool clearResults) {
       if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused) && (ExecutionState != ExecutionState.Stopped))
         throw new InvalidOperationException(string.Format("Prepare not allowed in execution state \"{0}\".", ExecutionState));
-      if (BatchRuns.Count > 0) {
-        if (clearRuns) {
-          ExecutionTime = TimeSpan.Zero;
-          runs.Clear();
-        }
-        foreach (BatchRun batchRun in BatchRuns.Where(x => x.ExecutionState != ExecutionState.Started))
-          batchRun.Prepare(clearRuns);
+      if (Optimizers.Count > 0) {
+        foreach (IOptimizer optimizer in Optimizers.Where(x => x.ExecutionState != ExecutionState.Started))
+          optimizer.Prepare(clearResults);
       }
     }
     public void Start() {
       if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused))
         throw new InvalidOperationException(string.Format("Start not allowed in execution state \"{0}\".", ExecutionState));
       stopPending = false;
-      if (BatchRuns.Count > 0) {
-        BatchRun batchRun = BatchRuns.FirstOrDefault(x => (x.ExecutionState == ExecutionState.Prepared) || (x.ExecutionState == ExecutionState.Paused));
-        if (batchRun != null) batchRun.Start();
+      if (Optimizers.Count > 0) {
+        IOptimizer optimizer = Optimizers.FirstOrDefault(x => (x.ExecutionState == ExecutionState.Prepared) || (x.ExecutionState == ExecutionState.Paused));
+        if (optimizer != null) optimizer.Start();
       }
     }
     public void Pause() {
       if (ExecutionState != ExecutionState.Started)
         throw new InvalidOperationException(string.Format("Pause not allowed in execution state \"{0}\".", ExecutionState));
-      if (BatchRuns.Count > 0) {
-        foreach (BatchRun batchRun in BatchRuns.Where(x => x.ExecutionState == ExecutionState.Started))
-          batchRun.Pause();
+      if (Optimizers.Count > 0) {
+        foreach (IOptimizer optimizer in Optimizers.Where(x => x.ExecutionState == ExecutionState.Started))
+          optimizer.Pause();
       }
     }
     public void Stop() {
       if ((ExecutionState != ExecutionState.Started) && (ExecutionState != ExecutionState.Paused))
         throw new InvalidOperationException(string.Format("Stop not allowed in execution state \"{0}\".", ExecutionState));
       stopPending = true;
-      if (BatchRuns.Count > 0) {
-        foreach (BatchRun batchRun in BatchRuns.Where(x => (x.ExecutionState == ExecutionState.Started) || (x.ExecutionState == ExecutionState.Paused)))
-          batchRun.Stop();
+      if (Optimizers.Count > 0) {
+        foreach (IOptimizer optimizer in Optimizers.Where(x => (x.ExecutionState == ExecutionState.Started) || (x.ExecutionState == ExecutionState.Paused)))
+          optimizer.Stop();
       }
     }
 
@@ -200,87 +186,90 @@ namespace HeuristicLab.Optimization {
       if (handler != null) handler(this, new EventArgs<Exception>(exception));
     }
 
-    private void RegisterBatchRunsEvents() {
-      BatchRuns.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<BatchRun>>(BatchRuns_CollectionReset);
-      BatchRuns.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<BatchRun>>(BatchRuns_ItemsAdded);
-      BatchRuns.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<BatchRun>>(BatchRuns_ItemsRemoved);
-      BatchRuns.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<BatchRun>>(BatchRuns_ItemsReplaced);
+    private void RegisterOptimizersEvents() {
+      Optimizers.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<IOptimizer>>(Optimizers_CollectionReset);
+      Optimizers.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<IOptimizer>>(Optimizers_ItemsAdded);
+      Optimizers.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<IOptimizer>>(Optimizers_ItemsRemoved);
+      Optimizers.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<IOptimizer>>(Optimizers_ItemsReplaced);
     }
-    private void DeregisterBatchRunsEvents() {
-      BatchRuns.CollectionReset -= new CollectionItemsChangedEventHandler<IndexedItem<BatchRun>>(BatchRuns_CollectionReset);
-      BatchRuns.ItemsAdded -= new CollectionItemsChangedEventHandler<IndexedItem<BatchRun>>(BatchRuns_ItemsAdded);
-      BatchRuns.ItemsRemoved -= new CollectionItemsChangedEventHandler<IndexedItem<BatchRun>>(BatchRuns_ItemsRemoved);
-      BatchRuns.ItemsReplaced -= new CollectionItemsChangedEventHandler<IndexedItem<BatchRun>>(BatchRuns_ItemsReplaced);
+    private void DeregisterOptimizersEvents() {
+      Optimizers.CollectionReset -= new CollectionItemsChangedEventHandler<IndexedItem<IOptimizer>>(Optimizers_CollectionReset);
+      Optimizers.ItemsAdded -= new CollectionItemsChangedEventHandler<IndexedItem<IOptimizer>>(Optimizers_ItemsAdded);
+      Optimizers.ItemsRemoved -= new CollectionItemsChangedEventHandler<IndexedItem<IOptimizer>>(Optimizers_ItemsRemoved);
+      Optimizers.ItemsReplaced -= new CollectionItemsChangedEventHandler<IndexedItem<IOptimizer>>(Optimizers_ItemsReplaced);
     }
-    private void BatchRuns_CollectionReset(object sender, CollectionItemsChangedEventArgs<IndexedItem<BatchRun>> e) {
-      foreach (IndexedItem<BatchRun> item in e.OldItems) {
-        DeregisterBatchRunEvents(item.Value);
+    private void Optimizers_CollectionReset(object sender, CollectionItemsChangedEventArgs<IndexedItem<IOptimizer>> e) {
+      foreach (IndexedItem<IOptimizer> item in e.OldItems) {
+        DeregisterOptimizerEvents(item.Value);
       }
-      foreach (IndexedItem<BatchRun> item in e.Items) {
-        RegisterBatchRunEvents(item.Value);
-      }
-    }
-    private void BatchRuns_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<BatchRun>> e) {
-      foreach (IndexedItem<BatchRun> item in e.Items) {
-        RegisterBatchRunEvents(item.Value);
+      foreach (IndexedItem<IOptimizer> item in e.Items) {
+        RegisterOptimizerEvents(item.Value);
       }
     }
-    private void BatchRuns_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<BatchRun>> e) {
-      foreach (IndexedItem<BatchRun> item in e.Items) {
-        DeregisterBatchRunEvents(item.Value);
+    private void Optimizers_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<IOptimizer>> e) {
+      foreach (IndexedItem<IOptimizer> item in e.Items) {
+        RegisterOptimizerEvents(item.Value);
       }
     }
-    private void BatchRuns_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<BatchRun>> e) {
-      foreach (IndexedItem<BatchRun> item in e.OldItems) {
-        DeregisterBatchRunEvents(item.Value);
+    private void Optimizers_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<IOptimizer>> e) {
+      foreach (IndexedItem<IOptimizer> item in e.Items) {
+        DeregisterOptimizerEvents(item.Value);
       }
-      foreach (IndexedItem<BatchRun> item in e.Items) {
-        RegisterBatchRunEvents(item.Value);
+    }
+    private void Optimizers_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IOptimizer>> e) {
+      foreach (IndexedItem<IOptimizer> item in e.OldItems) {
+        DeregisterOptimizerEvents(item.Value);
+      }
+      foreach (IndexedItem<IOptimizer> item in e.Items) {
+        RegisterOptimizerEvents(item.Value);
       }
     }
 
-    private void RegisterBatchRunEvents(BatchRun batchRun) {
-      batchRun.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(batchRun_ExceptionOccurred);
-      batchRun.Paused += new EventHandler(batchRun_Paused);
-      batchRun.Prepared += new EventHandler(batchRun_Prepared);
-      batchRun.Started += new EventHandler(batchRun_Started);
-      batchRun.Stopped += new EventHandler(batchRun_Stopped);
+    private void RegisterOptimizerEvents(IOptimizer optimizer) {
+      optimizer.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(optimizer_ExceptionOccurred);
+      optimizer.ExecutionTimeChanged += new EventHandler(optimizer_ExecutionTimeChanged);
+      optimizer.Paused += new EventHandler(optimizer_Paused);
+      optimizer.Prepared += new EventHandler(optimizer_Prepared);
+      optimizer.Started += new EventHandler(optimizer_Started);
+      optimizer.Stopped += new EventHandler(optimizer_Stopped);
     }
-    private void DeregisterBatchRunEvents(BatchRun batchRun) {
-      batchRun.ExceptionOccurred -= new EventHandler<EventArgs<Exception>>(batchRun_ExceptionOccurred);
-      batchRun.Paused -= new EventHandler(batchRun_Paused);
-      batchRun.Prepared -= new EventHandler(batchRun_Prepared);
-      batchRun.Started -= new EventHandler(batchRun_Started);
-      batchRun.Stopped -= new EventHandler(batchRun_Stopped);
+
+    private void DeregisterOptimizerEvents(IOptimizer optimizer) {
+      optimizer.ExceptionOccurred -= new EventHandler<EventArgs<Exception>>(optimizer_ExceptionOccurred);
+      optimizer.ExecutionTimeChanged -= new EventHandler(optimizer_ExecutionTimeChanged);
+      optimizer.Paused -= new EventHandler(optimizer_Paused);
+      optimizer.Prepared -= new EventHandler(optimizer_Prepared);
+      optimizer.Started -= new EventHandler(optimizer_Started);
+      optimizer.Stopped -= new EventHandler(optimizer_Stopped);
     }
-    private void batchRun_ExceptionOccurred(object sender, EventArgs<Exception> e) {
+    private void optimizer_ExceptionOccurred(object sender, EventArgs<Exception> e) {
       OnExceptionOccurred(e.Value);
     }
-    private void batchRun_Paused(object sender, EventArgs e) {
-      if (BatchRuns.All(x => x.ExecutionState != ExecutionState.Started))
+    private void optimizer_ExecutionTimeChanged(object sender, EventArgs e) {
+      ExecutionTime = Optimizers.Aggregate(TimeSpan.Zero, (t, o) => t + o.ExecutionTime);
+    }
+    private void optimizer_Paused(object sender, EventArgs e) {
+      if (Optimizers.All(x => x.ExecutionState != ExecutionState.Started))
         OnPaused();
     }
-    void batchRun_Prepared(object sender, EventArgs e) {
+    private void optimizer_Prepared(object sender, EventArgs e) {
       if (ExecutionState == ExecutionState.Stopped)
         OnPrepared();
     }
-    private void batchRun_Started(object sender, EventArgs e) {
+    private void optimizer_Started(object sender, EventArgs e) {
       if (ExecutionState != ExecutionState.Started)
         OnStarted();
     }
-    private void batchRun_Stopped(object sender, EventArgs e) {
+    private void optimizer_Stopped(object sender, EventArgs e) {
       bool stop = stopPending;
-      BatchRun batchRun = (BatchRun)sender;
-      ExecutionTime += batchRun.ExecutionTime;
-      runs.AddRange(batchRun.Runs);
 
-      if (BatchRuns.All(x => (x.ExecutionState != ExecutionState.Started) && (x.ExecutionState != ExecutionState.Paused))) {
+      if (Optimizers.All(x => (x.ExecutionState != ExecutionState.Started) && (x.ExecutionState != ExecutionState.Paused))) {
         stopPending = false;
         OnStopped();
       }
 
       if (!stop) {
-        BatchRun next = BatchRuns.FirstOrDefault(x => (x.ExecutionState == ExecutionState.Prepared) || (x.ExecutionState == ExecutionState.Paused));
+        IOptimizer next = Optimizers.FirstOrDefault(x => (x.ExecutionState == ExecutionState.Prepared) || (x.ExecutionState == ExecutionState.Paused));
         if (next != null)
           next.Start();
       }

@@ -27,7 +27,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Optimization {
   [StorableClass]
   [Item("RunCollection", "Represents a collection of runs.")]
-  public sealed class RunCollection : ItemCollection<Run> {
+  public class RunCollection : ItemCollection<Run> {
     public RunCollection() : base() { }
     public RunCollection(int capacity) : base(capacity) { }
     public RunCollection(IEnumerable<Run> collection) : base(collection) { }

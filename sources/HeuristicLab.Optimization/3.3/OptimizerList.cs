@@ -25,15 +25,16 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
+  [Item("Optimizer List", "Represents a list of optimizers.")]
+  [Creatable("Testing & Analysis")]
   [StorableClass]
-  [Item("BatchRunList", "Represents a list of batch runs.")]
-  public sealed class BatchRunList : ItemList<BatchRun> {
-    public BatchRunList() : base() { }
-    public BatchRunList(int capacity) : base(capacity) { }
-    public BatchRunList(IEnumerable<BatchRun> collection) : base(collection) { }
+  public class OptimizerList : ItemList<IOptimizer> {
+    public OptimizerList() : base() { }
+    public OptimizerList(int capacity) : base(capacity) { }
+    public OptimizerList(IEnumerable<IOptimizer> collection) : base(collection) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      BatchRunList clone = new BatchRunList(this.Select(x => (BatchRun)cloner.Clone(x)));
+      OptimizerList clone = new OptimizerList(this.Select(x => (IOptimizer)cloner.Clone(x)));
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
