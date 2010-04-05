@@ -23,10 +23,15 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using System;
 using System.Collections.Generic;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Random;
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols {
   [StorableClass]
   public sealed class VariableTreeNode : SymbolicExpressionTreeTerminalNode {
-    
+    public new Variable Symbol {
+      get { return (Variable)base.Symbol; }
+    }
     private double weight;
     [Storable]
     public double Weight {
@@ -48,6 +53,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols {
     }
 
     public VariableTreeNode(Variable variableSymbol) : base(variableSymbol) { }
+
+    public override void ResetLocalParameters(IRandom random) {
+      base.ResetLocalParameters(random);
+      var normalDistributedRNG = new NormalDistributedRandom(random, Symbol.WeightNu.Value, Symbol.WeightSigma.Value);
+      weight = normalDistributedRNG.NextDouble();
+      int variableIndex = random.Next(0, Symbol.VariableNames.Count);
+      variableName = Symbol.VariableNames[variableIndex].Value;
+    }
 
     public override object Clone() {
       return new VariableTreeNode(this);

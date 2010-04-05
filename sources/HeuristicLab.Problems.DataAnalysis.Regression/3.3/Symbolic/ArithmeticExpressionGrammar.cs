@@ -28,13 +28,30 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols;
 using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols;
+using HeuristicLab.Data;
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [StorableClass]
-  public class ArithmeticExpressionGrammar : Item, ISymbolicExpressionGrammar {
+  public class ArithmeticExpressionGrammar : NamedItemCollection<Symbol>, ISymbolicExpressionGrammar {
+
+    private List<string> variableNames = new List<string>();
+    public IEnumerable<string> VariableNames {
+      get { return variableNames; }
+      set {
+        variableNames = new List<string>(value);
+        var variable = (HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols.Variable)allSymbols[5];
+        variable.VariableNames = new ItemList<HeuristicLab.Data.StringValue>(variableNames.Select(x => new StringValue(x)));
+      }
+    }
 
     public ArithmeticExpressionGrammar()
-      : base() {
+      : this(allSymbols) {
     }
+
+    public ArithmeticExpressionGrammar(IEnumerable<Symbol> symbols)
+      : base(symbols) {
+      allSymbols = new List<Symbol>(symbols);
+    }
+
     #region ISymbolicExpressionGrammar Members
     [Storable]
     private StartSymbol startSymbol = new StartSymbol();

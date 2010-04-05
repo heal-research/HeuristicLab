@@ -92,8 +92,10 @@
     <Compile Include="NormalDistributedRandom.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="NormalRandomizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RandomCreator.cs" />
+    <Compile Include="UniformRandomizer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">

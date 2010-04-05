@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,100 +25,62 @@ using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Operators;
+using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Random {
   /// <summary>
   /// Normally distributed random number generator.
   /// </summary>
-  [EmptyStorableClass]
-  public class NormalRandomizer : OperatorBase {
-    private static int MAX_NUMBER_OF_TRIES = 100;
-
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get { return "Initializes the value of variable 'Value' to a random value normally distributed with 'Mu' and 'Sigma'."; }
+  [StorableClass]
+  [Item("NormalRandomizer", "Initializes the value of variable 'Value' to a random value normally distributed with parameters 'Mu' and 'Sigma'")]
+  public class NormalRandomizer : SingleSuccessorOperator {
+    #region parameter properties
+    public ILookupParameter<IRandom> RandomParameter {
+      get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
-
-    /// <summary>
-    /// Gets or sets the value for µ.
-    /// </summary>
-    /// <remarks>Gets or sets the variable with the name <c>Mu</c> through the method 
-    /// <see cref="OperatorBase.GetVariable"/> of class <see cref="OperatorBase"/>.</remarks>
-    public double Mu {
-      get { return ((DoubleData)GetVariable("Mu").Value).Data; }
-      set { ((DoubleData)GetVariable("Mu").Value).Data = value; }
+    public IValueLookupParameter<DoubleValue> MuParameter {
+      get { return (IValueLookupParameter<DoubleValue>)Parameters["Mu"]; }
     }
-    /// <summary>
-    /// Gets or sets the value for sigma.
-    /// </summary>
-    /// <remarks>Gets or sets the variable with the name <c>Sigma</c> through the method 
-    /// <see cref="OperatorBase.GetVariable"/> of class <see cref="OperatorBase"/>.</remarks>
-    public double Sigma {
-      get { return ((DoubleData)GetVariable("Sigma").Value).Data; }
-      set { ((DoubleData)GetVariable("Sigma").Value).Data = value; }
+    public IValueLookupParameter<DoubleValue> SigmaParameter {
+      get { return (IValueLookupParameter<DoubleValue>)Parameters["Sigma"]; }
     }
-
+    public ILookupParameter<DoubleValue> ValueParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters["Value"]; }
+    }
+    #endregion
+    #region Properties
+    public DoubleValue Mu {
+      get { return MuParameter.ActualValue; }
+      set { MuParameter.ActualValue = value; }
+    }
+    public DoubleValue Max {
+      get { return SigmaParameter.ActualValue; }
+      set { SigmaParameter.ActualValue = value; }
+    }
+    #endregion
     /// <summary>
     /// Initializes a new instance of <see cref="NormalRandomizer"/> with four variable infos
     /// (<c>Mu</c>, <c>Sigma</c>, <c>Value</c> and <c>Random</c>).
     /// </summary>
     public NormalRandomizer() {
-      AddVariableInfo(new VariableInfo("Mu", "Parameter mu of the normal distribution", typeof(DoubleData), VariableKind.None));
-      GetVariableInfo("Mu").Local = true;
-      AddVariable(new Variable("Mu", new DoubleData(0.0)));
-
-      AddVariableInfo(new VariableInfo("Sigma", "Parameter sigma of the normal distribution", typeof(DoubleData), VariableKind.None));
-      GetVariableInfo("Sigma").Local = true;
-      AddVariable(new Variable("Sigma", new DoubleData(1.0)));
-
-      AddVariableInfo(new VariableInfo("Value", "The value to manipulate (actual type is one of: IntData, DoubleData, ConstrainedIntData, ConstrainedDoubleData)", typeof(IObjectData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("Random", "The random generator to use", typeof(MersenneTwister), VariableKind.In));
+      Parameters.Add(new LookupParameter<IRandom>("Random", "A random generator that supplies uniformly distributed values."));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("Mu", "Mu parameter of the normal distribution (N(mu,sigma))."));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("Sigma", "Sigma parameter of the normal distribution (N(mu,sigma))."));
+      Parameters.Add(new LookupParameter<DoubleValue>("Value", "The value that should be set to a random value."));
     }
 
     /// <summary>
-    /// Generates a new normally distributed random variable and assigns it to the specified variable
-    /// in the given <paramref name="scope"/>.
+    /// Generates a new normally distributed random variable and assigns it to the specified variable.
     /// </summary>
-    /// <param name="scope">The scope where to assign the new random value to.</param>
-    /// <returns><c>null</c>.</returns>
-    public override IOperation Apply(IScope scope) {
-      IObjectData value = GetVariableValue<IObjectData>("Value", scope, false);
-      MersenneTwister mt = GetVariableValue<MersenneTwister>("Random", scope, true);
-      double mu = GetVariableValue<DoubleData>("Mu", scope, true).Data;
-      double sigma = GetVariableValue<DoubleData>("Sigma", scope, true).Data;
+    public override IOperation Apply() {
+      IRandom random = RandomParameter.ActualValue;
+      double mu = MuParameter.ActualValue.Value;
+      double sigma = SigmaParameter.ActualValue.Value;
 
-      NormalDistributedRandom n = new NormalDistributedRandom(mt, mu, sigma);
-      RandomizeNormal(value, n);
+      NormalDistributedRandom normalRandom = new NormalDistributedRandom(random, mu, sigma);
+      ValueParameter.ActualValue = new DoubleValue(normalRandom.NextDouble());
       return null;
-    }
-
-    private void RandomizeNormal(IObjectData value, NormalDistributedRandom n) {
-      // dispatch manually based on dynamic type
-      if (value is IntData)
-        RandomizeNormal((IntData)value, n);
-      else if (value is DoubleData)
-        RandomizeNormal((DoubleData)value, n);
-      else throw new InvalidOperationException("Can't handle type " + value.GetType().Name);
-    }
-
-    /// <summary>
-    /// Generates a new double random number based on a continuous, normally distributed random number
-    /// generator <paramref name="normal"/>.
-    /// </summary>
-    /// <param name="data">The double object where to assign the new value to.</param>
-    /// <param name="normal">The continuous, normally distributed random variable.</param>
-    public void RandomizeNormal(DoubleData data, NormalDistributedRandom normal) {
-      data.Data = normal.NextDouble();
-    }
-
-    /// <summary>
-    /// Generates a new int random number based on a continuous, normally distributed random number 
-    /// generator <paramref name="normal"/>.
-    /// </summary>
-    /// <param name="data">The int object where to assign the new value to.</param>
-    /// <param name="normal">The continuous, normally distributed random variable.</param>
-    public void RandomizeNormal(IntData data, NormalDistributedRandom normal) {
-      data.Data = (int)Math.Round(normal.NextDouble());
     }
   }
 }

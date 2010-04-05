@@ -75,14 +75,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       foreach (SymbolicExpressionTreeNode tree in SubTrees) maxHeight = Math.Max(maxHeight, tree.GetHeight());
       return maxHeight + 1;
     }
-
-    //public virtual IOperation CreateShakingOperation(IScope scope) {
-    //  return null;
-    //}
-
-    //public virtual IOperation CreateInitOperation(IScope scope) {
-    //  return null;
-    //}
+    
+    public virtual void ResetLocalParameters(IRandom random) { }
+    public virtual void ShakeLocalParameters(IRandom random, double shakingFactor) { }
 
     protected internal virtual void AddSubTree(SymbolicExpressionTreeNode tree) {
       SubTrees.Add(tree);

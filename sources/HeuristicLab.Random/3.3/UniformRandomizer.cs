@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,111 +25,64 @@ using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Operators;
+using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Random {
   /// <summary>
   /// Uniformly distributed random number generator.
   /// </summary>
-  [EmptyStorableClass]
-  public class UniformRandomizer : OperatorBase {
-    private static int MAX_NUMBER_OF_TRIES = 100;
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get { return "Initializes the value of variable 'Value' to a random value uniformly distributed between 'Min' and 'Max' (exclusive)"; }
+  [StorableClass]
+  [Item("UniformRandomizer", "Initializes the value of variable 'Value' to a random value uniformly distributed between 'Min' and 'Max'")]
+  public class UniformRandomizer : SingleSuccessorOperator {
+    #region parameter properties
+    public ILookupParameter<IRandom> RandomParameter {
+      get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
-
-    /// <summary>
-    /// Gets or sets the maximum value of the random number generator (exclusive).
-    /// </summary>
-    /// <remarks>Gets or sets the variable with name <c>Max</c> through the 
-    /// <see cref="OperatorBase.GetVariable"/> method of class <see cref="OperatorBase"/>.</remarks>
-    public double Max {
-      get { return ((DoubleData)GetVariable("Max").Value).Data; }
-      set { ((DoubleData)GetVariable("Max").Value).Data = value; }
+    public IValueLookupParameter<DoubleValue> MinParameter {
+      get { return (IValueLookupParameter<DoubleValue>)Parameters["Min"]; }
     }
-    /// <summary>
-    /// Gets or sets the minimum value of the random number generator.
-    /// </summary>
-    /// <remarks>Gets or sets the variable with name <c>Min</c> through the 
-    /// <see cref="OperatorBase.GetVariable"/> method of class <see cref="OperatorBase"/>.</remarks>
-    public double Min {
-      get { return ((DoubleData)GetVariable("Min").Value).Data; }
-      set { ((DoubleData)GetVariable("Min").Value).Data = value; }
+    public IValueLookupParameter<DoubleValue> MaxParameter {
+      get { return (IValueLookupParameter<DoubleValue>)Parameters["Max"]; }
     }
+    public ILookupParameter<DoubleValue> ValueParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters["Value"]; }
+    }
+    #endregion
+    #region Properties
+    public DoubleValue Min {
+      get { return MinParameter.ActualValue; }
+      set { MinParameter.ActualValue = value; }
+    }
+    public DoubleValue Max {
+      get { return MaxParameter.ActualValue; }
+      set { MaxParameter.ActualValue = value; }
+    }
+    #endregion
 
     /// <summary>
     /// Initializes a new instance of <see cref="UniformRandomizer"/> with four variable infos 
     /// (<c>Value</c>, <c>Random</c>, <c>Max</c> and <c>Min</c>), being a random number generator 
     /// between 0.0 and 1.0.
     /// </summary>
-    public UniformRandomizer() {
-      AddVariableInfo(new VariableInfo("Value", "The value to manipulate (type is one of: IntData, ConstrainedIntData, DoubleData, ConstrainedDoubleData)", typeof(IObjectData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("Random", "The random generator to use", typeof(MersenneTwister), VariableKind.In));
-      AddVariableInfo(new VariableInfo("Min", "Lower bound of the uniform distribution (inclusive)", typeof(DoubleData), VariableKind.None));
-      GetVariableInfo("Min").Local = true;
-      AddVariable(new Variable("Min", new DoubleData(0.0)));
-
-      AddVariableInfo(new VariableInfo("Max", "Upper bound of the uniform distribution (exclusive)", typeof(DoubleData), VariableKind.None));
-      GetVariableInfo("Max").Local = true;
-      AddVariable(new Variable("Max", new DoubleData(1.0)));
+    public UniformRandomizer()
+      : base() {
+      Parameters.Add(new LookupParameter<IRandom>("Random", "A random generator that supplies uniformly distributed values."));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("Min", "The minimal allowed value (inclusive)"));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("Max", "The maximal allowed value (exclusive)"));
+      Parameters.Add(new LookupParameter<DoubleValue>("Value", "The value that should be set to a random value."));
     }
 
     /// <summary>
     /// Generates a new uniformly distributed random variable.
     /// </summary>
-    /// <param name="scope">The scope where to apply the random number generator.</param>
-    /// <returns><c>null</c>.</returns>
-    public override IOperation Apply(IScope scope) {
-      IObjectData value = GetVariableValue<IObjectData>("Value", scope, false);
-      MersenneTwister mt = GetVariableValue<MersenneTwister>("Random", scope, true);
-      double min = GetVariableValue<DoubleData>("Min", scope, true).Data;
-      double max = GetVariableValue<DoubleData>("Max", scope, true).Data;
+    public override IOperation Apply() {
+      IRandom random = RandomParameter.ActualValue;
+      double min = MinParameter.ActualValue.Value;
+      double max = MaxParameter.ActualValue.Value;
 
-      RandomizeUniform(value, mt, min, max);
+      ValueParameter.ActualValue = new DoubleValue(random.NextDouble() * (max - min) + min);
       return null;
     }
-
-    /// <summary>
-    /// Generates a new random number depending on the type of the <paramref name="value"/>.
-    /// </summary>
-    /// <exception cref="ArgumentException">Thrown when an unhandleable type appears.</exception>
-    /// <param name="value">The object whose data should be a new randomly generated number.</param>
-    /// <param name="mt">The MersenneTwister to generate a new random number.</param>
-    /// <param name="min">The left border of the interval in which the next random number has to lie.</param>
-    /// <param name="max">The right border (exclusive) of the interval in which the next random number
-    /// has to lie.</param>
-    private void RandomizeUniform(IObjectData value, MersenneTwister mt, double min, double max) {
-      // Dispatch manually based on dynamic type,
-      // a bit awkward but necessary until we create a better type hierarchy for numeric types (gkronber 15.11.2008).
-      if (value is DoubleData)
-        RandomizeUniform((DoubleData)value, mt, min, max);
-      else if (value is IntData)
-        RandomizeUniform((IntData)value, mt, min, max);
-      else throw new ArgumentException("Can't handle type " + value.GetType().Name);
-    }
-
-      /// <summary>
-      /// Generates a new double random number.
-      /// </summary>
-      /// <param name="data">The double object which the new value is assigned to.</param>
-      /// <param name="mt">The random number generator.</param>
-      /// <param name="min">The left border of the interval in which the next random number has to lie.</param>
-      /// <param name="max">The right border (exclusive) of the interval in which the next random number
-      /// has to lie.</param>
-      public void RandomizeUniform(DoubleData data, MersenneTwister mt, double min, double max) {
-        data.Data = mt.NextDouble() * (max - min) + min;
-      }
-
-      /// <summary>
-      /// Generates a new int random number.
-      /// </summary>
-      /// <param name="data">The int object which the new value is assigned to.</param>
-      /// <param name="mt">The random number generator.</param>
-      /// <param name="min">The left border of the interval in which the next random number has to lie.</param>
-      /// <param name="max">The right border (exclusive) of the interval in which the next random number
-      /// has to lie.</param>
-      public void RandomizeUniform(IntData data, MersenneTwister mt, double min, double max) {
-        data.Data = (int)Math.Floor(mt.NextDouble() * (max - min) + min);
-      }
-    }
+  }
 }

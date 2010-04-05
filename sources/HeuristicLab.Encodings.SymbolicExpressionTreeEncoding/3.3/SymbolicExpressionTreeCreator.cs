@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Linq;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -71,7 +72,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public sealed override IOperation Apply() {
       SymbolicExpressionTreeParameter.ActualValue = Create(RandomParameter.ActualValue, SymbolicExpressionGrammarParameter.ActualValue,
         MaxTreeSizeParameter.ActualValue, MaxTreeHeightParameter.ActualValue);
-      return base.Apply();
+
+      foreach (var node in SymbolicExpressionTreeParameter.ActualValue.IterateNodesPostfix()) {
+        node.ResetLocalParameters(RandomParameter.ActualValue);
+      }
+      return null;
     }
 
     protected abstract SymbolicExpressionTree Create(IRandom random, ISymbolicExpressionGrammar grammar, IntValue maxTreeSize, IntValue maxTreeHeight);

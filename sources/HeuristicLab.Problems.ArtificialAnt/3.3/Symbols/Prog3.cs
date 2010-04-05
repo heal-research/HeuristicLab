@@ -22,10 +22,8 @@
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 namespace HeuristicLab.Problems.ArtificialAnt {
   public sealed class Prog3 : Symbol {
-
     public Prog3()
       : base() {
-      MinSubTrees = 3; MaxSubTrees = 3;
     }
   }
 }

@@ -110,8 +110,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     IEvaluator IProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
     }
-    public ISymbolicExpressionGrammar FunctionTreeGrammar {
-      get { return FunctionTreeGrammarParameter.Value; }
+    public ArithmeticExpressionGrammar FunctionTreeGrammar {
+      get { return (ArithmeticExpressionGrammar)FunctionTreeGrammarParameter.Value; }
     }
     public ISingleObjectiveSolutionsVisualizer Visualizer {
       get { return VisualizerParameter.Value; }
@@ -146,11 +146,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
 
       creator.SymbolicExpressionTreeParameter.ActualName = "SymbolicRegressionModel";
       evaluator.QualityParameter.ActualName = "TrainingMeanSquaredError";
+      InputVariablesParameter.ValueChanged += new EventHandler(InputVariablesParameter_ValueChanged);
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
       ParameterizeVisualizer();
 
       Initialize();
+    }
+
+    void InputVariablesParameter_ValueChanged(object sender, EventArgs e) {
+      FunctionTreeGrammar.VariableNames = InputVariablesParameter.Value.Select(x => x.Value);
     }
 
     [StorableConstructor]

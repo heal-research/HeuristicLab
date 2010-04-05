@@ -20,8 +20,48 @@
 #endregion
 
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Core;
+using HeuristicLab.Operators;
+using HeuristicLab.Random;
+using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Parameters;
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols {
+  [StorableClass]
+  [Item("Variable", "Represents a variable value.")]
   public sealed class Variable : Symbol {
+    #region Parameter Properties
+    public IValueParameter<DoubleValue> WeightNuParameter {
+      get { return (IValueParameter<DoubleValue>)Parameters["WeightNu"]; }
+    }
+    public IValueParameter<DoubleValue> WeightSigmaParameter {
+      get { return (IValueParameter<DoubleValue>)Parameters["WeightSigma"]; }
+    }
+    public IValueParameter<ItemList<StringValue>> VariableNamesParameter {
+      get { return (IValueParameter<ItemList<StringValue>>)Parameters["VariableNames"]; }
+    }
+    #endregion
+    #region Properties
+    public DoubleValue WeightNu {
+      get { return WeightNuParameter.Value; }
+      set { WeightNuParameter.Value = value; }
+    }
+    public DoubleValue WeightSigma {
+      get { return WeightSigmaParameter.Value; }
+      set { WeightSigmaParameter.Value = value; }
+    }
+    public ItemList<StringValue> VariableNames {
+      get { return VariableNamesParameter.Value; }
+      set { VariableNamesParameter.Value = value; }
+    }
+    #endregion
+    public Variable()
+      : base() {
+      Parameters.Add(new ValueParameter<DoubleValue>("WeightNu", "The mean value for the initialization of weight ((N(nu, sigma)).", new DoubleValue(1.0)));
+      Parameters.Add(new ValueParameter<DoubleValue>("WeightSigma", "The sigma value for the initialization of weight (N(nu, sigma))", new DoubleValue(1.0)));
+      Parameters.Add(new ValueParameter<ItemList<StringValue>>("VariableNames", "The list of possible variable names for initialization."));
+    }
+
     public override SymbolicExpressionTreeNode CreateTreeNode() {
       return new VariableTreeNode(this);
     }

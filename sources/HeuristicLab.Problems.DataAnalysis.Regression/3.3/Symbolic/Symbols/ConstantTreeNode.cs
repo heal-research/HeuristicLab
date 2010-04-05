@@ -23,9 +23,15 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using System;
 using System.Collections.Generic;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Random;
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols {
   [StorableClass]
   public sealed class ConstantTreeNode : SymbolicExpressionTreeTerminalNode {
+    public new Constant Symbol {
+      get { return (Constant)base.Symbol; }
+    }
     public override bool HasLocalParameters {
       get {
         return true;
@@ -38,7 +44,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols {
       get { return constantValue; }
       set { constantValue = value; }
     }
-
     // copy constructor
     private ConstantTreeNode(ConstantTreeNode original)
       : base(original) {
@@ -46,6 +51,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols {
     }
 
     public ConstantTreeNode(Constant constantSymbol) : base(constantSymbol) { }
+
+    public override void ResetLocalParameters(IRandom random) {
+      base.ResetLocalParameters(random);
+      var range = Symbol.MaxValue.Value - Symbol.MaxValue.Value;
+      Value = random.NextDouble() * range - Symbol.MinValue.Value;
+    }
 
     public override object Clone() {
       return new ConstantTreeNode(this);

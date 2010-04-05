@@ -52,7 +52,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     public override double Evaluate(SymbolicExpressionTreeNode node) {
       if (node.Symbol is HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols.Variable) {
         var variableTreeNode = node as VariableTreeNode;
-        return dataset[row, 1 /*dataset.VariableIndex(variableTreeNode.VariableName)*/] * 1.0; //variableTreeNode.Weight;
+        return dataset[row, dataset.VariableIndex(variableTreeNode.VariableName)] * variableTreeNode.Weight;
       } else if (node.Symbol is Constant) {
         return ((ConstantTreeNode)node).Value;
       } else {

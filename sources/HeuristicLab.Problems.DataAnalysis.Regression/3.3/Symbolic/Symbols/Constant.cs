@@ -20,8 +20,40 @@
 #endregion
 
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Core;
+using HeuristicLab.Operators;
+using HeuristicLab.Random;
+using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Parameters;
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols {
+  [StorableClass]
+  [Item("Constant", "Represents a constant value.")]
   public sealed class Constant : Symbol {
+    #region Parameter Properties
+    public IValueParameter<DoubleValue> MinValueParameter {
+      get { return (IValueParameter<DoubleValue>)Parameters["MinValue"]; }
+    }
+    public IValueParameter<DoubleValue> MaxValueParameter {
+      get { return (IValueParameter<DoubleValue>)Parameters["MaxValue"]; }
+    }
+    #endregion
+    #region Propeties
+    public DoubleValue MinValue {
+      get { return MinValueParameter.Value; }
+      set { MinValueParameter.Value = value; }
+    }
+    public DoubleValue MaxValue {
+      get { return MaxValueParameter.Value; }
+      set { MaxValueParameter.Value = value; }
+    }
+    #endregion
+    public Constant()
+      : base() {
+      Parameters.Add(new ValueParameter<DoubleValue>("MinValue", "The minimal value of the constant.", new DoubleValue(-20.0)));
+      Parameters.Add(new ValueParameter<DoubleValue>("MaxValue", "The maximal value of the constant.", new DoubleValue(20.0)));
+    }
+
     public override SymbolicExpressionTreeNode CreateTreeNode() {
       return new ConstantTreeNode(this);
     }
