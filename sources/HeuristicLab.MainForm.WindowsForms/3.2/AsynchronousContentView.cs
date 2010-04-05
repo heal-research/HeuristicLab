@@ -27,10 +27,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
       // prevent blocking of worker thread in Invoke, if the control is disposed
       IAsyncResult result = BeginInvoke(method);
       result.AsyncWaitHandle.WaitOne(1000, false);
-      if (result.IsCompleted) EndInvoke(result);
+      if (result.IsCompleted) try { EndInvoke(result); } catch (ObjectDisposedException) { }
       else {
         ThreadPool.RegisterWaitForSingleObject(result.AsyncWaitHandle,
-          new WaitOrTimerCallback((x, b) => { try { EndInvoke(result); } catch (InvalidOperationException) { } }),
+          new WaitOrTimerCallback((x, b) => { try { EndInvoke(result); } catch (ObjectDisposedException) { } }),
           null, -1, true);
       }
     }
@@ -44,10 +44,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
       // prevent blocking of worker thread in Invoke, if the control is disposed
       IAsyncResult result = BeginInvoke(method, args);
       result.AsyncWaitHandle.WaitOne(1000, false);
-      if (result.IsCompleted) EndInvoke(result);
+      if (result.IsCompleted) try { EndInvoke(result); } catch (ObjectDisposedException) { }
       else {
         ThreadPool.RegisterWaitForSingleObject(result.AsyncWaitHandle,
-          new WaitOrTimerCallback((x, b) => { try { EndInvoke(result); } catch (InvalidOperationException) { } }),
+          new WaitOrTimerCallback((x, b) => { try { EndInvoke(result); } catch (ObjectDisposedException) { } }),
           null, -1, true);
       }
     }
