@@ -60,7 +60,17 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
     private Symbol SelectRandomSymbol(IRandom random, IEnumerable<Symbol> symbols) {
       var symbolList = symbols.ToList();
-      return symbolList[random.Next(symbolList.Count)];
+      var ticketsSum = symbolList.Select(x => x.Tickets.Value).Sum();
+      var r = random.NextDouble() * ticketsSum;
+      double aggregatedTickets = 0;
+      for (int i = 0; i < symbolList.Count; i++) {
+        aggregatedTickets += symbolList[i].Tickets.Value;
+        if (aggregatedTickets >= r) {
+          return symbolList[i];
+        }
+      }
+      // this should never happen
+      throw new ArgumentException();
     }
 
 
