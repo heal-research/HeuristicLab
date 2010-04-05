@@ -94,7 +94,7 @@ namespace HeuristicLab.MainForm {
         catch (InvalidOperationException) { }
 
         foreach (Type viewType in viewTypes.ToList()) {
-          if((viewType != defaultViewType) && viewTypes.Any(t => t.IsSubclassOf(viewType)))
+          if ((viewType != defaultViewType) && viewTypes.Any(t => t.IsSubclassOf(viewType)))
             viewTypes.Remove(viewType);
         }
       }
@@ -113,22 +113,34 @@ namespace HeuristicLab.MainForm {
       //check base classes for default view
       Type type = contentType;
       while (type != null) {
+        //check classes
         foreach (Type defaultContentType in defaultViews.Keys) {
           if (type == defaultContentType || type.CheckGenericTypes(defaultContentType))
             return TransformGenericTypeDefinition(defaultViews[defaultContentType], contentType);
         }
+
+        //check interfaces
+        IEnumerable<Type> nonInheritedInterfaces = type.GetInterfaces().Where(i => !i.IsAssignableFrom(type.BaseType));
+        List<Type> defaultViewList = new List<Type>();
+        foreach (Type defaultContentType in defaultViews.Keys) {
+          if (nonInheritedInterfaces.Contains(defaultContentType) || nonInheritedInterfaces.Any(i => i.CheckGenericTypes(defaultContentType)))
+            defaultViewList.Add(defaultViews[defaultContentType]);
+        }
+
+        //return only most spefic view as default view
+        foreach (Type viewType in defaultViewList.ToList()) {
+          if (defaultViewList.Any(t => t.IsSubclassOf(viewType)))
+            defaultViewList.Remove(viewType);
+        }
+
+        if (defaultViewList.Count == 1)
+          return TransformGenericTypeDefinition(defaultViewList[0], contentType);
+        else if (defaultViewList.Count > 1)
+          throw new InvalidOperationException("Could not determine which is the default view for type " + contentType.ToString() + ". Because more than one implemented interfaces have a default view.");
+
         type = type.BaseType;
       }
 
-      //check if exactly one implemented interface has a default view
-      List<Type> temp = (from t in defaultViews.Keys
-                         where t.IsInterface && contentType.IsAssignableTo(t)
-                         select t).ToList();
-      if (temp.Count == 1)
-        return TransformGenericTypeDefinition(defaultViews[temp[0]], contentType);
-      //more than one default view for implemented interfaces are found
-      if (temp.Count > 1)
-        throw new InvalidOperationException("Could not determine which is the default view for type " + contentType.ToString() + ". Because more than one implemented interfaces have a default view.");
       return null;
     }
 
