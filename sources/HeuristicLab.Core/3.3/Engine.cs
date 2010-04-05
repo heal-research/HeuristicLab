@@ -101,11 +101,6 @@ namespace HeuristicLab.Core {
 
     protected abstract void ProcessNextOperator();
 
-    protected override void OnPrepared() {
-      if (executionStack.Count > 0) base.OnPrepared();
-      else base.OnStopped();
-    }
-
     private void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
       DateTime now = DateTime.Now;
       ExecutionTime += now - lastUpdateTime;

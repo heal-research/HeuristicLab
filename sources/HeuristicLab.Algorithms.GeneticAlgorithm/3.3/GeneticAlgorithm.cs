@@ -179,10 +179,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     }
 
     public override void Prepare() {
-      base.Prepare();
-      if (Engine != null) {
-        if (Problem == null) Engine.Prepare(null);
-      }
+      if (Problem != null) base.Prepare();
     }
 
     #region Events

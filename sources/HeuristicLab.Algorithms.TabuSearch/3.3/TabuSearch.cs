@@ -176,12 +176,9 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     }
 
     public override void Prepare() {
-      base.Prepare();
-      if (Engine != null) {
-        if (Problem == null || MoveGenerator == null || MoveMaker == null || MoveEvaluator == null
-          || TabuMoveEvaluator == null || TabuMoveMaker == null)
-          Engine.Prepare(null);
-      }
+      if (Problem != null && MoveGenerator != null && MoveMaker != null && MoveEvaluator != null &&
+          TabuMoveEvaluator != null && TabuMoveMaker != null)
+        base.Prepare();
     }
 
     #region Events

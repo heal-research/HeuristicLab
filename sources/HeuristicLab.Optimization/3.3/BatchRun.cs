@@ -21,6 +21,7 @@
 
 using System;
 using System.Drawing;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -31,9 +32,36 @@ namespace HeuristicLab.Optimization {
   [Item("Batch Run", "A run in which an algorithm is executed a given number of times.")]
   [Creatable("Testing & Analysis")]
   [StorableClass]
-  public sealed class BatchRun : NamedItem {
+  public sealed class BatchRun : NamedItem, IExecutable {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Event; }
+    }
+
+    [Storable]
+    private ExecutionState executionState;
+    public ExecutionState ExecutionState {
+      get { return executionState; }
+      private set {
+        if (executionState != value) {
+          executionState = value;
+          OnExecutionStateChanged();
+        }
+      }
+    }
+
+    [Storable]
+    private TimeSpan executionTime;
+    public TimeSpan ExecutionTime {
+      get {
+        if ((Algorithm != null) && (Algorithm.ExecutionState != ExecutionState.Stopped))
+          return executionTime + Algorithm.ExecutionTime;
+        else
+          return executionTime;
+      }
+      private set {
+        executionTime = value;
+        OnExecutionTimeChanged();
+      }
     }
 
     private IAlgorithm algorithm;
@@ -67,6 +95,8 @@ namespace HeuristicLab.Optimization {
         if (repetitions != value) {
           repetitions = value;
           OnRepetitionsChanged();
+          if ((runs.Count < repetitions) && (Algorithm != null) && (Algorithm.ExecutionState == ExecutionState.Stopped))
+            Prepare(false);
         }
       }
     }
@@ -77,163 +107,165 @@ namespace HeuristicLab.Optimization {
       get { return runs; }
     }
 
-    [Storable]
-    private TimeSpan executionTime;
-    public TimeSpan ExecutionTime {
-      get { return executionTime; }
-      private set {
-        if (executionTime != value) {
-          executionTime = value;
-          OnExecutionTimeChanged();
-        }
-      }
-    }
-
-    private bool running;
-    public bool Running {
-      get { return running; }
-      private set {
-        if (running != value) {
-          running = value;
-          OnRunningChanged();
-        }
-      }
-    }
-
-    public bool Finished {
-      get { return ((Algorithm == null) || (Algorithm.Finished && (runs.Count >= repetitions))); }
-    }
-
-    private bool canceled;
+    private bool stopPending;
 
     public BatchRun()
       : base() {
+      executionState = ExecutionState.Stopped;
+      executionTime = TimeSpan.Zero;
       repetitions = 10;
       runs = new RunCollection();
-      executionTime = TimeSpan.Zero;
+      stopPending = false;
     }
     public BatchRun(string name) : base(name) {
+      executionState = ExecutionState.Stopped;
+      executionTime = TimeSpan.Zero;
       repetitions = 10;
       runs = new RunCollection();
-      executionTime = TimeSpan.Zero;
+      stopPending = false;
     }
     public BatchRun(string name, string description) : base(name, description) {
+      executionState = ExecutionState.Stopped;
+      executionTime = TimeSpan.Zero;
       repetitions = 10;
       runs = new RunCollection();
-      executionTime = TimeSpan.Zero;
+      stopPending = false;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       BatchRun clone = (BatchRun)base.Clone(cloner);
+      clone.executionState = executionState;
+      clone.executionTime = executionTime;
       clone.Algorithm = (IAlgorithm)cloner.Clone(algorithm);
       clone.repetitions = repetitions;
       clone.runs = (RunCollection)cloner.Clone(runs);
-      clone.executionTime = executionTime;
-      clone.running = running;
-      clone.canceled = canceled;
+      clone.stopPending = stopPending;
       return clone;
     }
 
     public void Prepare() {
-      executionTime = TimeSpan.Zero;
-      runs.Clear();
-      if (Algorithm != null) Algorithm.Prepare();
-      OnPrepared();
+      Prepare(true);
+    }
+    public void Prepare(bool clearRuns) {
+      if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused) && (ExecutionState != ExecutionState.Stopped))
+        throw new InvalidOperationException(string.Format("Prepare not allowed in execution state \"{0}\".", ExecutionState));
+      if (Algorithm != null) {
+        if (clearRuns) {
+          ExecutionTime = TimeSpan.Zero;
+          runs.Clear();
+        }
+        Algorithm.Prepare();
+      }
     }
     public void Start() {
-      if (Algorithm != null) {
-        OnStarted();
-        Running = true;
-        canceled = false;
-        Algorithm.Start();
-      }
+      if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused))
+        throw new InvalidOperationException(string.Format("Start not allowed in execution state \"{0}\".", ExecutionState));
+      if (Algorithm != null) Algorithm.Start();
+    }
+    public void Pause() {
+      if (ExecutionState != ExecutionState.Started)
+        throw new InvalidOperationException(string.Format("Pause not allowed in execution state \"{0}\".", ExecutionState));
+      if (Algorithm != null) Algorithm.Pause();
     }
     public void Stop() {
-      if (Algorithm != null) {
-        canceled = true;
-        Algorithm.Stop();
-      }
+      if ((ExecutionState != ExecutionState.Started) && (ExecutionState != ExecutionState.Paused))
+        throw new InvalidOperationException(string.Format("Stop not allowed in execution state \"{0}\".", ExecutionState));
+      stopPending = true;
+      if (Algorithm != null) Algorithm.Stop();
     }
 
     #region Events
-    public event EventHandler AlgorithmChanged;
-    private void OnAlgorithmChanged() {
-      if (AlgorithmChanged != null)
-        AlgorithmChanged(this, EventArgs.Empty);
-    }
-    public event EventHandler RepetitionsChanged;
-    private void OnRepetitionsChanged() {
-      if (RepetitionsChanged != null)
-        RepetitionsChanged(this, EventArgs.Empty);
+    public event EventHandler ExecutionStateChanged;
+    private void OnExecutionStateChanged() {
+      EventHandler handler = ExecutionStateChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler ExecutionTimeChanged;
     private void OnExecutionTimeChanged() {
-      if (ExecutionTimeChanged != null)
-        ExecutionTimeChanged(this, EventArgs.Empty);
+      EventHandler handler = ExecutionTimeChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
-    public event EventHandler RunningChanged;
-    private void OnRunningChanged() {
-      if (RunningChanged != null)
-        RunningChanged(this, EventArgs.Empty);
+    public event EventHandler AlgorithmChanged;
+    private void OnAlgorithmChanged() {
+      EventHandler handler = AlgorithmChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+    public event EventHandler RepetitionsChanged;
+    private void OnRepetitionsChanged() {
+      EventHandler handler = RepetitionsChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler Prepared;
     private void OnPrepared() {
-      if (Prepared != null)
-        Prepared(this, EventArgs.Empty);
+      ExecutionState = ExecutionState.Prepared;
+      EventHandler handler = Prepared;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler Started;
     private void OnStarted() {
-      if (Started != null)
-        Started(this, EventArgs.Empty);
+      ExecutionState = ExecutionState.Started;
+      EventHandler handler = Started;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+    public event EventHandler Paused;
+    private void OnPaused() {
+      ExecutionState = ExecutionState.Paused;
+      EventHandler handler = Paused;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler Stopped;
     private void OnStopped() {
-      if (Stopped != null)
-        Stopped(this, EventArgs.Empty);
+      ExecutionState = ExecutionState.Stopped;
+      EventHandler handler = Stopped;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
-    public event EventHandler<HeuristicLab.Common.EventArgs<Exception>> ExceptionOccurred;
+    public event EventHandler<EventArgs<Exception>> ExceptionOccurred;
     private void OnExceptionOccurred(Exception exception) {
-      if (ExceptionOccurred != null)
-        ExceptionOccurred(this, new HeuristicLab.Common.EventArgs<Exception>(exception));
+      EventHandler<EventArgs<Exception>> handler = ExceptionOccurred;
+      if (handler != null) handler(this, new EventArgs<Exception>(exception));
     }
 
     private void RegisterAlgorithmEvents() {
-      algorithm.ExceptionOccurred += new EventHandler<HeuristicLab.Common.EventArgs<Exception>>(Algorithm_ExceptionOccurred);
+      algorithm.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(Algorithm_ExceptionOccurred);
+      algorithm.ExecutionTimeChanged += new EventHandler(Algorithm_ExecutionTimeChanged);
+      algorithm.Paused += new EventHandler(Algorithm_Paused);
+      algorithm.Prepared += new EventHandler(Algorithm_Prepared);
       algorithm.Started += new EventHandler(Algorithm_Started);
       algorithm.Stopped += new EventHandler(Algorithm_Stopped);
     }
     private void DeregisterAlgorithmEvents() {
-      algorithm.ExceptionOccurred -= new EventHandler<HeuristicLab.Common.EventArgs<Exception>>(Algorithm_ExceptionOccurred);
+      algorithm.ExceptionOccurred -= new EventHandler<EventArgs<Exception>>(Algorithm_ExceptionOccurred);
+      algorithm.ExecutionTimeChanged -= new EventHandler(Algorithm_ExecutionTimeChanged);
+      algorithm.Paused -= new EventHandler(Algorithm_Paused);
+      algorithm.Prepared -= new EventHandler(Algorithm_Prepared);
       algorithm.Started -= new EventHandler(Algorithm_Started);
       algorithm.Stopped -= new EventHandler(Algorithm_Stopped);
     }
 
-    private void Algorithm_ExceptionOccurred(object sender, HeuristicLab.Common.EventArgs<Exception> e) {
+    private void Algorithm_ExceptionOccurred(object sender, EventArgs<Exception> e) {
       OnExceptionOccurred(e.Value);
     }
+    private void Algorithm_ExecutionTimeChanged(object sender, EventArgs e) {
+      OnExecutionTimeChanged();
+    }
+    private void Algorithm_Paused(object sender, EventArgs e) {
+      OnPaused();
+    }
+    private void Algorithm_Prepared(object sender, EventArgs e) {
+      OnPrepared();
+    }
     private void Algorithm_Started(object sender, EventArgs e) {
-      if (!Running) {
-        OnStarted();
-        Running = true;
-        canceled = false;
-      }
+      stopPending = false;
+      OnStarted();
     }
     private void Algorithm_Stopped(object sender, EventArgs e) {
-      if (!canceled) {
-        ExecutionTime += Algorithm.ExecutionTime;
-        runs.Add(new Run("Run " + Algorithm.ExecutionTime.ToString(), Algorithm));
-        Algorithm.Prepare();
+      ExecutionTime += Algorithm.ExecutionTime;
+      runs.Add(new Run("Run " + Algorithm.ExecutionTime.ToString(), Algorithm));
+      OnStopped();
 
-        if (runs.Count < repetitions)
-          Algorithm.Start();
-        else {
-          Running = false;
-          OnStopped();
-        }
-      } else {
-        canceled = false;
-        Running = false;
-        OnStopped();
+      if (!stopPending && (runs.Count < repetitions)) {
+        Algorithm.Prepare();
+        Algorithm.Start();
       }
     }
     #endregion

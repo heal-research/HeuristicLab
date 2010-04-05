@@ -137,6 +137,8 @@ namespace HeuristicLab.Optimization.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ExecutionStateChanged), sender, e);
       else {
+        nameTextBox.Enabled = Content.ExecutionState != ExecutionState.Started;
+        descriptionTextBox.Enabled = Content.ExecutionState != ExecutionState.Started;
         SaveEnabled = Content.ExecutionState != ExecutionState.Started;
         parameterCollectionView.Enabled = Content.ExecutionState != ExecutionState.Started;
         newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = Content.ExecutionState != ExecutionState.Started;

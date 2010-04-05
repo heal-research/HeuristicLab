@@ -79,10 +79,10 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm_33.Tests {
     private Exception ex;
 
     [TestMethod]
-    [DeploymentItem(@"GeneticAlgorithm.hl")]
+    [DeploymentItem(@"GA_TSP.hl")]
     public void GeneticAlgorithmPerformanceTest() {
       ex = null;
-      IAlgorithm ga = (IAlgorithm)XmlParser.Deserialize("GeneticAlgorithm.hl");
+      IAlgorithm ga = (IAlgorithm)XmlParser.Deserialize("GA_TSP.hl");
       ga.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(ga_ExceptionOccurred);
       ga.Stopped += new EventHandler(ga_Stopped);
       ga.Prepare();
