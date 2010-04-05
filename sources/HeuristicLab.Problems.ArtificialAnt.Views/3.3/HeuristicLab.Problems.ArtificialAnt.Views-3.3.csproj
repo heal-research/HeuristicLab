@@ -87,12 +87,6 @@
     <Compile Include="AntTrailView.Designer.cs">
       <DependentUpon>AntTrailView.cs</DependentUpon>
     </Compile>
-    <Compile Include="ArtificialAntProblemView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ArtificialAntProblemView.Designer.cs">
-      <DependentUpon>ArtificialAntProblemView.cs</DependentUpon>
-    </Compile>
     <Compile Include="HeuristicLabProblemsArtificialAntViewsPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

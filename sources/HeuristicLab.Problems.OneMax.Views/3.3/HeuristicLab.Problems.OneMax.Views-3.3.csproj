@@ -86,12 +86,6 @@
     <None Include="HeuristicLabProblemsOneMaxViewsPlugin.cs.frame" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="OneMaxProblemView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OneMaxProblemView.Designer.cs">
-      <DependentUpon>OneMaxProblemView.cs</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="HeuristicLabProblemsOneMaxViewsPlugin.cs" />
   </ItemGroup>

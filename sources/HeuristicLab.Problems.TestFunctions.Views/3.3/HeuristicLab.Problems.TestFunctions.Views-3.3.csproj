@@ -85,12 +85,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HeuristicLabProblemsTestFunctionsViewsPlugin.cs" />
-    <Compile Include="SingleObjectiveTestFunctionProblemView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="SingleObjectiveTestFunctionProblemView.Designer.cs">
-      <DependentUpon>SingleObjectiveTestFunctionProblemView.cs</DependentUpon>
-    </Compile>
     <None Include="HeuristicLab.snk" />
     <None Include="HeuristicLabProblemsTestFunctionsViewsPlugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.frame" />
