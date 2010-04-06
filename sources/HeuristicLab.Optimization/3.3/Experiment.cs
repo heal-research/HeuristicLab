@@ -76,6 +76,12 @@ namespace HeuristicLab.Optimization {
       }
     }
 
+    [Storable]
+    private RunCollection runs;
+    public RunCollection Runs {
+      get { return runs; }
+    }
+
     private bool stopPending;
 
     public Experiment()
@@ -83,18 +89,21 @@ namespace HeuristicLab.Optimization {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
       Optimizers = new OptimizerList();
+      runs = new RunCollection();
       stopPending = false;
     }
     public Experiment(string name) : base(name) {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
       Optimizers = new OptimizerList();
+      runs = new RunCollection();
       stopPending = false;
     }
     public Experiment(string name, string description) : base(name, description) {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
       Optimizers = new OptimizerList();
+      runs = new RunCollection();
       stopPending = false;
     }
 
@@ -103,19 +112,21 @@ namespace HeuristicLab.Optimization {
       clone.executionState = executionState;
       clone.executionTime = executionTime;
       clone.Optimizers = (OptimizerList)cloner.Clone(optimizers);
+      clone.runs = (RunCollection)cloner.Clone(runs);
       clone.stopPending = stopPending;
       return clone;
     }
 
     public void Prepare() {
-      Prepare(true);
+      Prepare(false);
     }
-    public void Prepare(bool clearResults) {
+    public void Prepare(bool clearRuns) {
       if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused) && (ExecutionState != ExecutionState.Stopped))
         throw new InvalidOperationException(string.Format("Prepare not allowed in execution state \"{0}\".", ExecutionState));
       if (Optimizers.Count > 0) {
+        if (clearRuns) runs.Clear();
         foreach (IOptimizer optimizer in Optimizers.Where(x => x.ExecutionState != ExecutionState.Started))
-          optimizer.Prepare(clearResults);
+          optimizer.Prepare(clearRuns);
       }
     }
     public void Start() {
@@ -232,8 +243,10 @@ namespace HeuristicLab.Optimization {
       optimizer.Prepared += new EventHandler(optimizer_Prepared);
       optimizer.Started += new EventHandler(optimizer_Started);
       optimizer.Stopped += new EventHandler(optimizer_Stopped);
+      optimizer.Runs.CollectionReset += new CollectionItemsChangedEventHandler<Run>(optimizer_Runs_CollectionReset);
+      optimizer.Runs.ItemsAdded += new CollectionItemsChangedEventHandler<Run>(optimizer_Runs_ItemsAdded);
+      optimizer.Runs.ItemsRemoved += new CollectionItemsChangedEventHandler<Run>(optimizer_Runs_ItemsRemoved);
     }
-
     private void DeregisterOptimizerEvents(IOptimizer optimizer) {
       optimizer.ExceptionOccurred -= new EventHandler<EventArgs<Exception>>(optimizer_ExceptionOccurred);
       optimizer.ExecutionTimeChanged -= new EventHandler(optimizer_ExecutionTimeChanged);
@@ -241,6 +254,9 @@ namespace HeuristicLab.Optimization {
       optimizer.Prepared -= new EventHandler(optimizer_Prepared);
       optimizer.Started -= new EventHandler(optimizer_Started);
       optimizer.Stopped -= new EventHandler(optimizer_Stopped);
+      optimizer.Runs.CollectionReset -= new CollectionItemsChangedEventHandler<Run>(optimizer_Runs_CollectionReset);
+      optimizer.Runs.ItemsAdded -= new CollectionItemsChangedEventHandler<Run>(optimizer_Runs_ItemsAdded);
+      optimizer.Runs.ItemsRemoved -= new CollectionItemsChangedEventHandler<Run>(optimizer_Runs_ItemsRemoved);
     }
     private void optimizer_ExceptionOccurred(object sender, EventArgs<Exception> e) {
       OnExceptionOccurred(e.Value);
@@ -273,6 +289,16 @@ namespace HeuristicLab.Optimization {
         if (next != null)
           next.Start();
       }
+    }
+    private void optimizer_Runs_CollectionReset(object sender, CollectionItemsChangedEventArgs<Run> e) {
+      Runs.RemoveRange(e.OldItems);
+      Runs.AddRange(e.Items);
+    }
+    private void optimizer_Runs_ItemsAdded(object sender, CollectionItemsChangedEventArgs<Run> e) {
+      Runs.AddRange(e.Items);
+    }
+    private void optimizer_Runs_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<Run> e) {
+      Runs.RemoveRange(e.Items);
     }
     #endregion
   }

@@ -63,11 +63,14 @@ namespace HeuristicLab.Optimization.Views {
       this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
       this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
       this.stopButton = new System.Windows.Forms.Button();
+      this.runsTabPage = new System.Windows.Forms.TabPage();
+      this.runsView = new HeuristicLab.Optimization.Views.RunCollectionView();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.tabControl.SuspendLayout();
       this.parametersTabPage.SuspendLayout();
       this.problemTabPage.SuspendLayout();
       this.resultsTabPage.SuspendLayout();
+      this.runsTabPage.SuspendLayout();
       this.SuspendLayout();
       // 
       // nameTextBox
@@ -88,6 +91,7 @@ namespace HeuristicLab.Optimization.Views {
       this.tabControl.Controls.Add(this.parametersTabPage);
       this.tabControl.Controls.Add(this.problemTabPage);
       this.tabControl.Controls.Add(this.resultsTabPage);
+      this.tabControl.Controls.Add(this.runsTabPage);
       this.tabControl.Location = new System.Drawing.Point(0, 52);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
@@ -281,6 +285,29 @@ namespace HeuristicLab.Optimization.Views {
       this.stopButton.UseVisualStyleBackColor = true;
       this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
       // 
+      // runsTabPage
+      // 
+      this.runsTabPage.Controls.Add(this.runsView);
+      this.runsTabPage.Location = new System.Drawing.Point(4, 22);
+      this.runsTabPage.Name = "runsTabPage";
+      this.runsTabPage.Padding = new System.Windows.Forms.Padding(3);
+      this.runsTabPage.Size = new System.Drawing.Size(671, 374);
+      this.runsTabPage.TabIndex = 3;
+      this.runsTabPage.Text = "Runs";
+      this.runsTabPage.UseVisualStyleBackColor = true;
+      // 
+      // runsView
+      // 
+      this.runsView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.runsView.Caption = "RunCollection";
+      this.runsView.Content = null;
+      this.runsView.Location = new System.Drawing.Point(6, 6);
+      this.runsView.Name = "runsView";
+      this.runsView.Size = new System.Drawing.Size(659, 362);
+      this.runsView.TabIndex = 0;
+      // 
       // AlgorithmView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -310,6 +337,7 @@ namespace HeuristicLab.Optimization.Views {
       this.parametersTabPage.ResumeLayout(false);
       this.problemTabPage.ResumeLayout(false);
       this.resultsTabPage.ResumeLayout(false);
+      this.runsTabPage.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -335,6 +363,8 @@ namespace HeuristicLab.Optimization.Views {
     protected System.Windows.Forms.TabPage resultsTabPage;
     protected HeuristicLab.Optimization.Views.ResultCollectionView resultsView;
     protected System.Windows.Forms.Button stopButton;
+    protected System.Windows.Forms.TabPage runsTabPage;
+    protected RunCollectionView runsView;
 
   }
 }

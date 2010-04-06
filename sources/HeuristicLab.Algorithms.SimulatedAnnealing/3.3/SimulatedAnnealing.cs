@@ -181,9 +181,9 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       return clone;
     }
 
-    public override void Prepare(bool clearResults) {
+    public override void Prepare() {
       if (Problem != null && MoveGenerator != null && MoveMaker != null && MoveEvaluator != null)
-        base.Prepare(clearResults);
+        base.Prepare();
     }
 
     #region Events

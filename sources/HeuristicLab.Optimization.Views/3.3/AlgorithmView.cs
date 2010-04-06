@@ -95,6 +95,7 @@ namespace HeuristicLab.Optimization.Views {
         parameterCollectionView.Content = null;
         problemViewHost.Content = null;
         resultsView.Content = null;
+        runsView.Content = null;
         tabControl.Enabled = false;
         startButton.Enabled = pauseButton.Enabled = stopButton.Enabled = resetButton.Enabled = false;
         executionTimeTextBox.Text = "-";
@@ -105,6 +106,7 @@ namespace HeuristicLab.Optimization.Views {
         problemViewHost.ViewType = null;
         problemViewHost.Content = Content.Problem;
         resultsView.Content = Content.Results.AsReadOnly();
+        runsView.Content = Content.Runs;
         tabControl.Enabled = true;
         EnableDisableButtons();
         executionTimeTextBox.Text = Content.ExecutionTime.ToString();
@@ -143,7 +145,6 @@ namespace HeuristicLab.Optimization.Views {
         parameterCollectionView.Enabled = Content.ExecutionState != ExecutionState.Started;
         newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = Content.ExecutionState != ExecutionState.Started;
         problemViewHost.Enabled = Content.ExecutionState != ExecutionState.Started;
-        resultsView.Enabled = Content.ExecutionState != ExecutionState.Started;
         EnableDisableButtons();
       }
     }
@@ -236,8 +237,8 @@ namespace HeuristicLab.Optimization.Views {
       Content.Stop();
     }
     protected virtual void resetButton_Click(object sender, EventArgs e) {
-      if (Content.Results.Count > 0) {
-        if (MessageBox.Show(this, "Clear all results of this run?", "Clear All Results?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) == DialogResult.Yes)
+      if (Content.Runs.Count > 0) {
+        if (MessageBox.Show(this, "Clear all runs executed so far?", "Clear All Runs?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
           Content.Prepare(true);
         else
           Content.Prepare(false);

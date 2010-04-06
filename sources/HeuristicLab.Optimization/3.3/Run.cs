@@ -58,24 +58,10 @@ namespace HeuristicLab.Optimization {
       parameters = new Dictionary<string, IItem>();
       results = new Dictionary<string, IItem>();
     }
-    public Run(string name, IAlgorithm algorithm)
-      : base(name) {
-      parameters = new Dictionary<string, IItem>();
-      results = new Dictionary<string, IItem>();
-      algorithm.CollectParameterValues(parameters);
-      algorithm.CollectResultValues(results);
-    }
     public Run(string name, string description)
       : base(name, description) {
       parameters = new Dictionary<string, IItem>();
       results = new Dictionary<string, IItem>();
-    }
-    public Run(string name, string description, IAlgorithm algorithm)
-      : base(name, description) {
-      parameters = new Dictionary<string, IItem>();
-      results = new Dictionary<string, IItem>();
-      algorithm.CollectParameterValues(parameters);
-      algorithm.CollectResultValues(results);
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

@@ -75,6 +75,7 @@ namespace HeuristicLab.Optimization.Views {
       this.tabControl.Controls.Add(this.globalScopeTabPage);
       this.tabControl.Controls.SetChildIndex(this.globalScopeTabPage, 0);
       this.tabControl.Controls.SetChildIndex(this.operatorGraphTabPage, 0);
+      this.tabControl.Controls.SetChildIndex(this.runsTabPage, 0);
       this.tabControl.Controls.SetChildIndex(this.resultsTabPage, 0);
       this.tabControl.Controls.SetChildIndex(this.engineTabPage, 0);
       this.tabControl.Controls.SetChildIndex(this.problemTabPage, 0);

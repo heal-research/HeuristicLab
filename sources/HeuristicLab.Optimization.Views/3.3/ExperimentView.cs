@@ -70,12 +70,14 @@ namespace HeuristicLab.Optimization.Views {
       base.OnContentChanged();
       if (Content == null) {
         optimizerListView.Content = null;
+        runsView.Content = null;
         tabControl.Enabled = false;
         startButton.Enabled = pauseButton.Enabled = stopButton.Enabled = resetButton.Enabled = false;
         executionTimeTextBox.Text = "-";
         executionTimeTextBox.Enabled = false;
       } else {
         optimizerListView.Content = Content.Optimizers;
+        runsView.Content = Content.Runs;
         tabControl.Enabled = true;
         EnableDisableButtons();
         executionTimeTextBox.Text = Content.ExecutionTime.ToString();
@@ -124,10 +126,14 @@ namespace HeuristicLab.Optimization.Views {
       Content.Stop();
     }
     private void resetButton_Click(object sender, EventArgs e) {
-      if (MessageBox.Show(this, "Clear all runs executed so far?", "Clear All Runs?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
-        Content.Prepare(true);
-      else
-        Content.Prepare(false);
+      if (Content.Runs.Count > 0) {
+        if (MessageBox.Show(this, "Clear all runs executed so far?", "Clear All Runs?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
+          Content.Prepare(true);
+        else
+          Content.Prepare(false);
+      } else {
+        Content.Prepare();
+      }
     }
     #endregion
 

@@ -156,15 +156,10 @@ namespace HeuristicLab.Optimization {
       return algorithm;
     }
 
-    public override void Prepare(bool clearResults) {
-      base.Prepare(clearResults);
-
-      ResultCollection results = Results;
+    public override void Prepare() {
+      base.Prepare();
       globalScope.Clear();
-      if (clearResults)
-        globalScope.Variables.Add(new Variable("Results", new ResultCollection()));
-      else
-        globalScope.Variables.Add(new Variable("Results", results));
+      globalScope.Variables.Add(new Variable("Results", new ResultCollection()));
 
       if (engine != null) {
         ExecutionContext context = null;

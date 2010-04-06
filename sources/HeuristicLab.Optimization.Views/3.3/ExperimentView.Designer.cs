@@ -46,16 +46,19 @@ namespace HeuristicLab.Optimization.Views {
     private void InitializeComponent() {
       this.tabControl = new System.Windows.Forms.TabControl();
       this.optimizersTabPage = new System.Windows.Forms.TabPage();
+      this.optimizerListView = new HeuristicLab.Optimization.Views.OptimizerListView();
       this.startButton = new System.Windows.Forms.Button();
       this.stopButton = new System.Windows.Forms.Button();
       this.resetButton = new System.Windows.Forms.Button();
       this.executionTimeLabel = new System.Windows.Forms.Label();
       this.executionTimeTextBox = new System.Windows.Forms.TextBox();
       this.pauseButton = new System.Windows.Forms.Button();
-      this.optimizerListView = new HeuristicLab.Optimization.Views.OptimizerListView();
+      this.runsTabPage = new System.Windows.Forms.TabPage();
+      this.runsView = new HeuristicLab.Optimization.Views.RunCollectionView();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.tabControl.SuspendLayout();
       this.optimizersTabPage.SuspendLayout();
+      this.runsTabPage.SuspendLayout();
       this.SuspendLayout();
       // 
       // nameTextBox
@@ -74,6 +77,7 @@ namespace HeuristicLab.Optimization.Views {
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.optimizersTabPage);
+      this.tabControl.Controls.Add(this.runsTabPage);
       this.tabControl.Location = new System.Drawing.Point(0, 52);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
@@ -90,6 +94,18 @@ namespace HeuristicLab.Optimization.Views {
       this.optimizersTabPage.TabIndex = 1;
       this.optimizersTabPage.Text = "Optimizers";
       this.optimizersTabPage.UseVisualStyleBackColor = true;
+      // 
+      // optimizerListView
+      // 
+      this.optimizerListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.optimizerListView.Caption = "OptimizerList";
+      this.optimizerListView.Content = null;
+      this.optimizerListView.Location = new System.Drawing.Point(6, 6);
+      this.optimizerListView.Name = "optimizerListView";
+      this.optimizerListView.Size = new System.Drawing.Size(659, 362);
+      this.optimizerListView.TabIndex = 0;
       // 
       // startButton
       // 
@@ -158,17 +174,28 @@ namespace HeuristicLab.Optimization.Views {
       this.pauseButton.UseVisualStyleBackColor = true;
       this.pauseButton.Click += new System.EventHandler(this.pauseButton_Click);
       // 
-      // optimizerListView
+      // runsTabPage
       // 
-      this.optimizerListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+      this.runsTabPage.Controls.Add(this.runsView);
+      this.runsTabPage.Location = new System.Drawing.Point(4, 22);
+      this.runsTabPage.Name = "runsTabPage";
+      this.runsTabPage.Padding = new System.Windows.Forms.Padding(3);
+      this.runsTabPage.Size = new System.Drawing.Size(671, 374);
+      this.runsTabPage.TabIndex = 2;
+      this.runsTabPage.Text = "Runs";
+      this.runsTabPage.UseVisualStyleBackColor = true;
+      // 
+      // runsView
+      // 
+      this.runsView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.optimizerListView.Caption = "OptimizerList";
-      this.optimizerListView.Content = null;
-      this.optimizerListView.Location = new System.Drawing.Point(6, 6);
-      this.optimizerListView.Name = "optimizerListView";
-      this.optimizerListView.Size = new System.Drawing.Size(659, 362);
-      this.optimizerListView.TabIndex = 0;
+      this.runsView.Caption = "RunCollection";
+      this.runsView.Content = null;
+      this.runsView.Location = new System.Drawing.Point(6, 6);
+      this.runsView.Name = "runsView";
+      this.runsView.Size = new System.Drawing.Size(659, 362);
+      this.runsView.TabIndex = 0;
       // 
       // ExperimentView
       // 
@@ -197,6 +224,7 @@ namespace HeuristicLab.Optimization.Views {
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.tabControl.ResumeLayout(false);
       this.optimizersTabPage.ResumeLayout(false);
+      this.runsTabPage.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -212,6 +240,8 @@ namespace HeuristicLab.Optimization.Views {
     private System.Windows.Forms.TextBox executionTimeTextBox;
     private System.Windows.Forms.Button pauseButton;
     private OptimizerListView optimizerListView;
+    private System.Windows.Forms.TabPage runsTabPage;
+    private RunCollectionView runsView;
 
   }
 }

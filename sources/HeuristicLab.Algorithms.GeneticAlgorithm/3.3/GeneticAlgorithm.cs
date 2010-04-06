@@ -178,8 +178,8 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       return clone;
     }
 
-    public override void Prepare(bool clearResults) {
-      if (Problem != null) base.Prepare(clearResults);
+    public override void Prepare() {
+      if (Problem != null) base.Prepare();
     }
 
     #region Events

@@ -25,7 +25,9 @@ namespace HeuristicLab.Optimization {
   /// <summary>
   /// Interface to represent optimizers such as algorithms, batch runs, or experiments.
   /// </summary>
-  public interface IOptimizer : IExecutable {
-    void Prepare(bool clearResults);
+  public interface IOptimizer : INamedItem, IExecutable {
+    RunCollection Runs { get; }
+
+    void Prepare(bool clearRuns);
   }
 }

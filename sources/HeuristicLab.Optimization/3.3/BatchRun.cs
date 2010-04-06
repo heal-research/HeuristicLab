@@ -24,6 +24,7 @@ using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Collections;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
@@ -82,7 +83,7 @@ namespace HeuristicLab.Optimization {
           algorithm = value;
           if (algorithm != null) RegisterAlgorithmEvents();
           OnAlgorithmChanged();
-          Prepare();
+          Prepare(true);
         }
       }
     }
@@ -96,7 +97,7 @@ namespace HeuristicLab.Optimization {
           repetitions = value;
           OnRepetitionsChanged();
           if ((runs.Count < repetitions) && (Algorithm != null) && (Algorithm.ExecutionState == ExecutionState.Stopped))
-            Prepare(false);
+            Prepare();
         }
       }
     }
@@ -144,17 +145,17 @@ namespace HeuristicLab.Optimization {
     }
 
     public void Prepare() {
-      Prepare(true);
+      Prepare(false);
     }
-    public void Prepare(bool clearResults) {
+    public void Prepare(bool clearRuns) {
       if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused) && (ExecutionState != ExecutionState.Stopped))
         throw new InvalidOperationException(string.Format("Prepare not allowed in execution state \"{0}\".", ExecutionState));
       if (Algorithm != null) {
-        if (clearResults) {
+        if (clearRuns) {
           ExecutionTime = TimeSpan.Zero;
           runs.Clear();
         }
-        Algorithm.Prepare();
+        Algorithm.Prepare(clearRuns);
       }
     }
     public void Start() {
@@ -232,6 +233,9 @@ namespace HeuristicLab.Optimization {
       algorithm.Prepared += new EventHandler(Algorithm_Prepared);
       algorithm.Started += new EventHandler(Algorithm_Started);
       algorithm.Stopped += new EventHandler(Algorithm_Stopped);
+      algorithm.Runs.CollectionReset += new CollectionItemsChangedEventHandler<Run>(Algorithm_Runs_CollectionReset);
+      algorithm.Runs.ItemsAdded += new CollectionItemsChangedEventHandler<Run>(Algorithm_Runs_ItemsAdded);
+      algorithm.Runs.ItemsRemoved += new CollectionItemsChangedEventHandler<Run>(Algorithm_Runs_ItemsRemoved);
     }
     private void DeregisterAlgorithmEvents() {
       algorithm.ExceptionOccurred -= new EventHandler<EventArgs<Exception>>(Algorithm_ExceptionOccurred);
@@ -240,8 +244,10 @@ namespace HeuristicLab.Optimization {
       algorithm.Prepared -= new EventHandler(Algorithm_Prepared);
       algorithm.Started -= new EventHandler(Algorithm_Started);
       algorithm.Stopped -= new EventHandler(Algorithm_Stopped);
+      algorithm.Runs.CollectionReset -= new CollectionItemsChangedEventHandler<Run>(Algorithm_Runs_CollectionReset);
+      algorithm.Runs.ItemsAdded -= new CollectionItemsChangedEventHandler<Run>(Algorithm_Runs_ItemsAdded);
+      algorithm.Runs.ItemsRemoved -= new CollectionItemsChangedEventHandler<Run>(Algorithm_Runs_ItemsRemoved);
     }
-
     private void Algorithm_ExceptionOccurred(object sender, EventArgs<Exception> e) {
       OnExceptionOccurred(e.Value);
     }
@@ -260,13 +266,22 @@ namespace HeuristicLab.Optimization {
     }
     private void Algorithm_Stopped(object sender, EventArgs e) {
       ExecutionTime += Algorithm.ExecutionTime;
-      runs.Add(new Run("Run " + Algorithm.ExecutionTime.ToString(), Algorithm));
       OnStopped();
 
       if (!stopPending && (runs.Count < repetitions)) {
         Algorithm.Prepare();
         Algorithm.Start();
       }
+    }
+    private void Algorithm_Runs_CollectionReset(object sender, CollectionItemsChangedEventArgs<Run> e) {
+      Runs.RemoveRange(e.OldItems);
+      Runs.AddRange(e.Items);
+    }
+    private void Algorithm_Runs_ItemsAdded(object sender, CollectionItemsChangedEventArgs<Run> e) {
+      Runs.AddRange(e.Items);
+    }
+    private void Algorithm_Runs_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<Run> e) {
+      Runs.RemoveRange(e.Items);
     }
     #endregion
   }

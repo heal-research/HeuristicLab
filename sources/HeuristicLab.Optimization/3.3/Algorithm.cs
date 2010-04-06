@@ -89,30 +89,41 @@ namespace HeuristicLab.Optimization {
 
     public abstract ResultCollection Results { get; }
 
+    [Storable]
+    private RunCollection runs;
+    public RunCollection Runs {
+      get { return runs; }
+    }
+
     protected Algorithm()
       : base() {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
+      runs = new RunCollection();
     }
     protected Algorithm(string name)
       : base(name) {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
+      runs = new RunCollection();
     }
     protected Algorithm(string name, ParameterCollection parameters)
       : base(name, parameters) {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
+      runs = new RunCollection();
     }
     protected Algorithm(string name, string description)
       : base(name, description) {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
+      runs = new RunCollection();
     }
     protected Algorithm(string name, string description, ParameterCollection parameters)
       : base(name, description, parameters) {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
+      runs = new RunCollection();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -120,16 +131,19 @@ namespace HeuristicLab.Optimization {
       clone.executionState = executionState;
       clone.executionTime = executionTime;
       clone.Problem = (IProblem)cloner.Clone(problem);
+      clone.runs = (RunCollection)cloner.Clone(runs);
       return clone;
     }
 
-    public void Prepare() {
-      Prepare(true);
-    }
-    public virtual void Prepare(bool clearResults) {
+    public virtual void Prepare() {
       if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused) && (ExecutionState != ExecutionState.Stopped))
         throw new InvalidOperationException(string.Format("Prepare not allowed in execution state \"{0}\".", ExecutionState));
-      ExecutionTime = TimeSpan.Zero;
+    }
+    public void Prepare(bool clearRuns) {
+      if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused) && (ExecutionState != ExecutionState.Stopped))
+        throw new InvalidOperationException(string.Format("Prepare not allowed in execution state \"{0}\".", ExecutionState));
+      if (clearRuns) runs.Clear();
+      Prepare();
     }
     public virtual void Start() {
       if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused))
@@ -171,6 +185,7 @@ namespace HeuristicLab.Optimization {
     }
     public event EventHandler Prepared;
     protected virtual void OnPrepared() {
+      ExecutionTime = TimeSpan.Zero;
       ExecutionState = ExecutionState.Prepared;
       EventHandler handler = Prepared;
       if (handler != null) handler(this, EventArgs.Empty);
@@ -189,6 +204,10 @@ namespace HeuristicLab.Optimization {
     }
     public event EventHandler Stopped;
     protected virtual void OnStopped() {
+      Run run = new Run("Run (" + ExecutionTime.ToString() + ")");
+      CollectParameterValues(run.Parameters);
+      CollectResultValues(run.Results);
+      runs.Add(run);
       ExecutionState = ExecutionState.Stopped;
       EventHandler handler = Stopped;
       if (handler != null) handler(this, EventArgs.Empty);
