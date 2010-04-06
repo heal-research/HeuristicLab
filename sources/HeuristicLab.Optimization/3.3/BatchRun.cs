@@ -258,19 +258,22 @@ namespace HeuristicLab.Optimization {
       OnPaused();
     }
     private void Algorithm_Prepared(object sender, EventArgs e) {
-      OnPrepared();
+      if ((ExecutionState == ExecutionState.Paused) || (ExecutionState == ExecutionState.Stopped))
+        OnPrepared();
     }
     private void Algorithm_Started(object sender, EventArgs e) {
       stopPending = false;
-      OnStarted();
+      if (ExecutionState != ExecutionState.Started)
+        OnStarted();
     }
     private void Algorithm_Stopped(object sender, EventArgs e) {
       ExecutionTime += Algorithm.ExecutionTime;
-      OnStopped();
 
       if (!stopPending && (runs.Count < repetitions)) {
         Algorithm.Prepare();
         Algorithm.Start();
+      } else {
+        OnStopped();
       }
     }
     private void Algorithm_Runs_CollectionReset(object sender, CollectionItemsChangedEventArgs<Run> e) {

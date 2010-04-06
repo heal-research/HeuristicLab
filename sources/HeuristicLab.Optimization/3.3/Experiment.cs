@@ -277,17 +277,13 @@ namespace HeuristicLab.Optimization {
         OnStarted();
     }
     private void optimizer_Stopped(object sender, EventArgs e) {
-      bool stop = stopPending;
-
-      if (Optimizers.All(x => (x.ExecutionState != ExecutionState.Started) && (x.ExecutionState != ExecutionState.Paused))) {
-        stopPending = false;
-        OnStopped();
-      }
-
-      if (!stop) {
-        IOptimizer next = Optimizers.FirstOrDefault(x => (x.ExecutionState == ExecutionState.Prepared) || (x.ExecutionState == ExecutionState.Paused));
-        if (next != null)
-          next.Start();
+      if (!stopPending && Optimizers.Any(x => (x.ExecutionState == ExecutionState.Prepared) || (x.ExecutionState == ExecutionState.Paused))) {
+        Optimizers.First(x => (x.ExecutionState == ExecutionState.Prepared) || (x.ExecutionState == ExecutionState.Paused)).Start();
+      } else {
+        if (Optimizers.All(x => (x.ExecutionState != ExecutionState.Started) && (x.ExecutionState != ExecutionState.Paused))) {
+          stopPending = false;
+          OnStopped();
+        }
       }
     }
     private void optimizer_Runs_CollectionReset(object sender, CollectionItemsChangedEventArgs<Run> e) {
