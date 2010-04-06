@@ -106,10 +106,6 @@ namespace HeuristicLab.MainForm {
     }
 
     public static Type GetDefaultViewType(Type contentType) {
-      //check if viewableType has a default view
-      if (defaultViews.ContainsKey(contentType))
-        return defaultViews[contentType];
-
       //check base classes for default view
       Type type = contentType;
       while (type != null) {
