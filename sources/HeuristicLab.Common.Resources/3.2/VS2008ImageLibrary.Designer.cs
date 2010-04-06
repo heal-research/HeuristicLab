@@ -368,6 +368,13 @@ namespace HeuristicLab.Common.Resources {
             }
         }
         
+        public static System.Drawing.Bitmap Nothing {
+            get {
+                object obj = ResourceManager.GetObject("Nothing", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         public static System.Drawing.Bitmap Object {
             get {
                 object obj = ResourceManager.GetObject("Object", resourceCulture);

@@ -250,6 +250,9 @@
   <data name="NewFolder" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_NewFolder.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Nothing" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Nothing.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Object" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Object.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
