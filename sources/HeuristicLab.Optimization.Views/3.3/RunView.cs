@@ -74,20 +74,31 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void FillListView() {
+      if (!listView.SmallImageList.Images.ContainsKey("Default"))
+        listView.SmallImageList.Images.Add("Default", HeuristicLab.Common.Resources.VS2008ImageLibrary.Class);
+
       listView.Items.Clear();
       if (Content != null) {
         foreach (string key in Content.Parameters.Keys) {
           IItem value = Content.Parameters[key];
+          if ((value != null) && (!listView.SmallImageList.Images.ContainsKey(value.GetType().FullName)))
+            listView.SmallImageList.Images.Add(value.GetType().FullName, value.ItemImage);
+
           ListViewItem item = new ListViewItem(new string[] { key, value != null ? value.ToString() : "-" });
           item.Tag = value;
           item.Group = listView.Groups["parametersGroup"];
+          item.ImageIndex = listView.SmallImageList.Images.IndexOfKey(value != null ? value.GetType().FullName : "Default");
           listView.Items.Add(item);
         }
         foreach (string key in Content.Results.Keys) {
           IItem value = Content.Results[key];
+          if ((value != null) && (!listView.SmallImageList.Images.ContainsKey(value.GetType().FullName)))
+            listView.SmallImageList.Images.Add(value.GetType().FullName, value.ItemImage);
+
           ListViewItem item = new ListViewItem(new string[] { key, value != null ? value.ToString() : "-" });
           item.Tag = value;
           item.Group = listView.Groups["resultsGroup"];
+          item.ImageIndex = listView.SmallImageList.Images.IndexOfKey(value != null ? value.GetType().FullName : "Default");
           listView.Items.Add(item);
         }
         if (listView.Items.Count > 0) {

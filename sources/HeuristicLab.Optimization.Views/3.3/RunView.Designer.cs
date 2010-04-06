@@ -44,15 +44,17 @@ namespace HeuristicLab.Optimization.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
       System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Parameters", System.Windows.Forms.HorizontalAlignment.Left);
       System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Results", System.Windows.Forms.HorizontalAlignment.Left);
       this.parametersResultsGroupBox = new System.Windows.Forms.GroupBox();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
-      this.detailsGroupBox = new System.Windows.Forms.GroupBox();
-      this.viewHost = new HeuristicLab.Core.Views.ViewHost();
       this.listView = new System.Windows.Forms.ListView();
       this.nameColumnHeader = new System.Windows.Forms.ColumnHeader();
       this.valueColumnHeader = new System.Windows.Forms.ColumnHeader();
+      this.detailsGroupBox = new System.Windows.Forms.GroupBox();
+      this.viewHost = new HeuristicLab.Core.Views.ViewHost();
+      this.imageList = new System.Windows.Forms.ImageList(this.components);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.parametersResultsGroupBox.SuspendLayout();
       this.splitContainer.Panel1.SuspendLayout();
@@ -101,6 +103,43 @@ namespace HeuristicLab.Optimization.Views {
       this.splitContainer.SplitterDistance = 177;
       this.splitContainer.TabIndex = 0;
       // 
+      // listView
+      // 
+      this.listView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.listView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.nameColumnHeader,
+            this.valueColumnHeader});
+      this.listView.FullRowSelect = true;
+      listViewGroup1.Header = "Parameters";
+      listViewGroup1.Name = "parametersGroup";
+      listViewGroup2.Header = "Results";
+      listViewGroup2.Name = "resultsGroup";
+      this.listView.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
+            listViewGroup1,
+            listViewGroup2});
+      this.listView.HideSelection = false;
+      this.listView.Location = new System.Drawing.Point(3, 3);
+      this.listView.MultiSelect = false;
+      this.listView.Name = "listView";
+      this.listView.ShowItemToolTips = true;
+      this.listView.Size = new System.Drawing.Size(171, 274);
+      this.listView.SmallImageList = this.imageList;
+      this.listView.Sorting = System.Windows.Forms.SortOrder.Ascending;
+      this.listView.TabIndex = 0;
+      this.listView.UseCompatibleStateImageBehavior = false;
+      this.listView.View = System.Windows.Forms.View.Details;
+      this.listView.SelectedIndexChanged += new System.EventHandler(this.listView_SelectedIndexChanged);
+      // 
+      // nameColumnHeader
+      // 
+      this.nameColumnHeader.Text = "Name";
+      // 
+      // valueColumnHeader
+      // 
+      this.valueColumnHeader.Text = "Value";
+      // 
       // detailsGroupBox
       // 
       this.detailsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -126,41 +165,11 @@ namespace HeuristicLab.Optimization.Views {
       this.viewHost.TabIndex = 0;
       this.viewHost.ViewType = null;
       // 
-      // listView
+      // imageList
       // 
-      this.listView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.listView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.nameColumnHeader,
-            this.valueColumnHeader});
-      this.listView.FullRowSelect = true;
-      listViewGroup1.Header = "Parameters";
-      listViewGroup1.Name = "parametersGroup";
-      listViewGroup2.Header = "Results";
-      listViewGroup2.Name = "resultsGroup";
-      this.listView.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup1,
-            listViewGroup2});
-      this.listView.HideSelection = false;
-      this.listView.Location = new System.Drawing.Point(3, 3);
-      this.listView.MultiSelect = false;
-      this.listView.Name = "listView";
-      this.listView.ShowItemToolTips = true;
-      this.listView.Size = new System.Drawing.Size(171, 274);
-      this.listView.Sorting = System.Windows.Forms.SortOrder.Ascending;
-      this.listView.TabIndex = 0;
-      this.listView.UseCompatibleStateImageBehavior = false;
-      this.listView.View = System.Windows.Forms.View.Details;
-      this.listView.SelectedIndexChanged += new System.EventHandler(this.listView_SelectedIndexChanged);
-      // 
-      // nameColumnHeader
-      // 
-      this.nameColumnHeader.Text = "Name";
-      // 
-      // valueColumnHeader
-      // 
-      this.valueColumnHeader.Text = "Value";
+      this.imageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+      this.imageList.ImageSize = new System.Drawing.Size(16, 16);
+      this.imageList.TransparentColor = System.Drawing.Color.Transparent;
       // 
       // RunView
       // 
@@ -194,6 +203,7 @@ namespace HeuristicLab.Optimization.Views {
     private System.Windows.Forms.ColumnHeader nameColumnHeader;
     private System.Windows.Forms.ColumnHeader valueColumnHeader;
     private HeuristicLab.Core.Views.ViewHost viewHost;
+    private System.Windows.Forms.ImageList imageList;
 
   }
 }

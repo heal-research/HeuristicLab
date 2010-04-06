@@ -19,35 +19,180 @@
  */
 #endregion
 
+using System;
+using System.Windows.Forms;
+using System.ComponentModel;
+
 namespace HeuristicLab.Optimization.Views {
   partial class RunCollectionView {
-    /// <summary> 
+    /// <summary>
     /// Required designer variable.
     /// </summary>
     private System.ComponentModel.IContainer components = null;
 
-    /// <summary> 
+    /// <summary>
     /// Clean up any resources being used.
     /// </summary>
     /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
     protected override void Dispose(bool disposing) {
       if (disposing) {
+        foreach (ListViewItem item in itemsListView.Items)
+          ((Run)item.Tag).ToStringChanged -= new EventHandler(Item_ToStringChanged);
         if (components != null) components.Dispose();
       }
       base.Dispose(disposing);
     }
 
-    #region Component Designer generated code
+    #region Windows Form Designer generated code
 
-    /// <summary> 
-    /// Required method for Designer support - do not modify 
+    /// <summary>
+    /// Required method for Designer support - do not modify
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      components = new System.ComponentModel.Container();
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.components = new System.ComponentModel.Container();
+      this.splitContainer = new System.Windows.Forms.SplitContainer();
+      this.itemsListView = new System.Windows.Forms.ListView();
+      this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
+      this.imageList = new System.Windows.Forms.ImageList(this.components);
+      this.removeButton = new System.Windows.Forms.Button();
+      this.detailsGroupBox = new System.Windows.Forms.GroupBox();
+      this.viewHost = new HeuristicLab.Core.Views.ViewHost();
+      this.itemsGroupBox = new System.Windows.Forms.GroupBox();
+      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this.splitContainer.Panel1.SuspendLayout();
+      this.splitContainer.Panel2.SuspendLayout();
+      this.splitContainer.SuspendLayout();
+      this.detailsGroupBox.SuspendLayout();
+      this.itemsGroupBox.SuspendLayout();
+      this.SuspendLayout();
+      // 
+      // splitContainer
+      // 
+      this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.splitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+      this.splitContainer.Location = new System.Drawing.Point(3, 16);
+      this.splitContainer.Name = "splitContainer";
+      // 
+      // splitContainer.Panel1
+      // 
+      this.splitContainer.Panel1.Controls.Add(this.itemsListView);
+      this.splitContainer.Panel1.Controls.Add(this.removeButton);
+      this.splitContainer.Panel1MinSize = 100;
+      // 
+      // splitContainer.Panel2
+      // 
+      this.splitContainer.Panel2.Controls.Add(this.detailsGroupBox);
+      this.splitContainer.Size = new System.Drawing.Size(526, 364);
+      this.splitContainer.SplitterDistance = 250;
+      this.splitContainer.TabIndex = 0;
+      // 
+      // itemsListView
+      // 
+      this.itemsListView.AllowDrop = true;
+      this.itemsListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.itemsListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1});
+      this.itemsListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+      this.itemsListView.HideSelection = false;
+      this.itemsListView.Location = new System.Drawing.Point(3, 33);
+      this.itemsListView.Name = "itemsListView";
+      this.itemsListView.ShowItemToolTips = true;
+      this.itemsListView.Size = new System.Drawing.Size(244, 327);
+      this.itemsListView.SmallImageList = this.imageList;
+      this.itemsListView.TabIndex = 1;
+      this.itemsListView.UseCompatibleStateImageBehavior = false;
+      this.itemsListView.View = System.Windows.Forms.View.Details;
+      this.itemsListView.SelectedIndexChanged += new System.EventHandler(this.itemsListView_SelectedIndexChanged);
+      this.itemsListView.SizeChanged += new System.EventHandler(this.itemsListView_SizeChanged);
+      this.itemsListView.DoubleClick += new System.EventHandler(this.itemsListView_DoubleClick);
+      this.itemsListView.DragDrop += new System.Windows.Forms.DragEventHandler(this.itemsListView_DragDrop);
+      this.itemsListView.DragEnter += new System.Windows.Forms.DragEventHandler(this.itemsListView_DragEnterOver);
+      this.itemsListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.itemsListView_KeyDown);
+      this.itemsListView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.itemsListView_ItemDrag);
+      this.itemsListView.DragOver += new System.Windows.Forms.DragEventHandler(this.itemsListView_DragEnterOver);
+      // 
+      // imageList
+      // 
+      this.imageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+      this.imageList.ImageSize = new System.Drawing.Size(16, 16);
+      this.imageList.TransparentColor = System.Drawing.Color.Transparent;
+      // 
+      // removeButton
+      // 
+      this.removeButton.Enabled = false;
+      this.removeButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Remove;
+      this.removeButton.Location = new System.Drawing.Point(3, 3);
+      this.removeButton.Name = "removeButton";
+      this.removeButton.Size = new System.Drawing.Size(24, 24);
+      this.removeButton.TabIndex = 0;
+      this.toolTip.SetToolTip(this.removeButton, "Remove");
+      this.removeButton.UseVisualStyleBackColor = true;
+      this.removeButton.Click += new System.EventHandler(this.removeButton_Click);
+      // 
+      // detailsGroupBox
+      // 
+      this.detailsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.detailsGroupBox.Controls.Add(this.viewHost);
+      this.detailsGroupBox.Location = new System.Drawing.Point(3, 27);
+      this.detailsGroupBox.Name = "detailsGroupBox";
+      this.detailsGroupBox.Size = new System.Drawing.Size(266, 335);
+      this.detailsGroupBox.TabIndex = 0;
+      this.detailsGroupBox.TabStop = false;
+      this.detailsGroupBox.Text = "Details";
+      // 
+      // viewHost
+      // 
+      this.viewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.viewHost.Content = null;
+      this.viewHost.Location = new System.Drawing.Point(6, 19);
+      this.viewHost.Name = "viewHost";
+      this.viewHost.Size = new System.Drawing.Size(254, 310);
+      this.viewHost.TabIndex = 0;
+      this.viewHost.ViewType = null;
+      // 
+      // itemsGroupBox
+      // 
+      this.itemsGroupBox.Controls.Add(this.splitContainer);
+      this.itemsGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.itemsGroupBox.Location = new System.Drawing.Point(0, 0);
+      this.itemsGroupBox.Name = "itemsGroupBox";
+      this.itemsGroupBox.Size = new System.Drawing.Size(532, 383);
+      this.itemsGroupBox.TabIndex = 0;
+      this.itemsGroupBox.TabStop = false;
+      this.itemsGroupBox.Text = "Items";
+      // 
+      // RunCollectionView
+      // 
+      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      this.Controls.Add(this.itemsGroupBox);
+      this.Name = "RunCollectionView";
+      this.Size = new System.Drawing.Size(532, 383);
+      this.splitContainer.Panel1.ResumeLayout(false);
+      this.splitContainer.Panel2.ResumeLayout(false);
+      this.splitContainer.ResumeLayout(false);
+      this.detailsGroupBox.ResumeLayout(false);
+      this.itemsGroupBox.ResumeLayout(false);
+      this.ResumeLayout(false);
+
     }
 
     #endregion
+
+    protected System.Windows.Forms.SplitContainer splitContainer;
+    protected System.Windows.Forms.ColumnHeader columnHeader1;
+    protected GroupBox itemsGroupBox;
+    protected ListView itemsListView;
+    protected GroupBox detailsGroupBox;
+    protected Button removeButton;
+    protected ToolTip toolTip;
+    protected ImageList imageList;
+    protected HeuristicLab.Core.Views.ViewHost viewHost;
   }
 }
