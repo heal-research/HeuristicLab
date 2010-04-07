@@ -45,9 +45,21 @@ namespace HeuristicLab.Tools.ConfigMerger {
       XmlNode sourceNode;
       XmlNode destinationNode;
 
-      sourceNode = source.SelectSingleNode("/configuration/system.serviceModel/behaviors");
+      #region Merge 'system.serviceModel/behaviors/*'
       destinationNode = destination.SelectSingleNode("/configuration/system.serviceModel/behaviors");
-      Merge(sourceNode, destinationNode, destination, "/configuration/system.serviceModel");
+      if (destinationNode == null) {
+        destinationNode = destination.CreateElement("behaviors");
+        destination.SelectSingleNode("/configuration/system.serviceModel").AppendChild(destinationNode);
+      }
+
+      sourceNode = source.SelectSingleNode("/configuration/system.serviceModel/behaviors/endpointBehaviors");
+      destinationNode = destination.SelectSingleNode("/configuration/system.serviceModel/behaviors/endpointBehaviors");
+      Merge(sourceNode, destinationNode, destination, "/configuration/system.serviceModel/behaviors");
+
+      sourceNode = source.SelectSingleNode("/configuration/system.serviceModel/behaviors/serviceBehaviors");
+      destinationNode = destination.SelectSingleNode("/configuration/system.serviceModel/behaviors/serviceBehaviors");
+      Merge(sourceNode, destinationNode, destination, "/configuration/system.serviceModel/behaviors");
+      #endregion
 
       sourceNode = source.SelectSingleNode("/configuration/system.serviceModel/services");
       destinationNode = destination.SelectSingleNode("/configuration/system.serviceModel/services");
