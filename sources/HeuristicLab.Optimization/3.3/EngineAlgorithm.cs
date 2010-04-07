@@ -187,6 +187,15 @@ namespace HeuristicLab.Optimization {
         EngineChanged(this, EventArgs.Empty);
     }
     protected virtual void OnOperatorGraphChanged() { }
+    protected override void OnStopped() {
+      if (Problem != null) {
+        foreach (IParameter param in Problem.Parameters)
+          param.ExecutionContext = null;
+      }
+      foreach (IParameter param in Parameters)
+        param.ExecutionContext = null;
+      base.OnStopped();
+    }
 
     private void RegisterEngineEvents() {
       Engine.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(Engine_ExceptionOccurred);

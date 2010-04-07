@@ -182,7 +182,7 @@ namespace HeuristicLab.Optimization {
 
     public override void CollectParameterValues(IDictionary<string, IItem> values) {
       base.CollectParameterValues(values);
-      Problem.CollectParameterValues(values);
+      if (Problem != null) Problem.CollectParameterValues(values);
     }
     public virtual void CollectResultValues(IDictionary<string, IItem> values) {
       foreach (IResult result in Results)
