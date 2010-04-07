@@ -200,9 +200,12 @@ namespace HeuristicLab.SA {
         Auxiliary.ShowErrorMessageBox(e.Value);
     }
     private void Engine_Finished(object sender, EventArgs e) {
-      scopeView.Refresh();
-      executeButton.Enabled = true;
-      abortButton.Enabled = false;
+      if (InvokeRequired) Invoke(new Action<object, EventArgs>(Engine_Finished), this, EventArgs.Empty);
+      else {
+        scopeView.Refresh();
+        executeButton.Enabled = true;
+        abortButton.Enabled = false;
+      }
     }
     #endregion
   }
