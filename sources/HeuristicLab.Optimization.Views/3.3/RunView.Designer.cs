@@ -53,7 +53,7 @@ namespace HeuristicLab.Optimization.Views {
       this.nameColumnHeader = new System.Windows.Forms.ColumnHeader();
       this.valueColumnHeader = new System.Windows.Forms.ColumnHeader();
       this.detailsGroupBox = new System.Windows.Forms.GroupBox();
-      this.viewHost = new HeuristicLab.Core.Views.ViewHost();
+      this.viewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.imageList = new System.Windows.Forms.ImageList(this.components);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.parametersResultsGroupBox.SuspendLayout();
@@ -202,7 +202,7 @@ namespace HeuristicLab.Optimization.Views {
     private System.Windows.Forms.ListView listView;
     private System.Windows.Forms.ColumnHeader nameColumnHeader;
     private System.Windows.Forms.ColumnHeader valueColumnHeader;
-    private HeuristicLab.Core.Views.ViewHost viewHost;
+    private HeuristicLab.MainForm.WindowsForms.ViewHost viewHost;
     private System.Windows.Forms.ImageList imageList;
 
   }

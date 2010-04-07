@@ -29,23 +29,30 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm.WindowsForms {
   internal partial class DocumentForm : Form {
-    private IView myView;
-    public IView View {
-      get { return myView; }
-    }
+    private IView view;
 
     public DocumentForm() {
       InitializeComponent();
     }
     public DocumentForm(IView view)
       : this() {
-      myView = view;
-      if (View != null) {
-        Control control = (Control)View;
+      this.view = view;
+      if (view != null) {
+        Type viewType = view.GetType();
+        Control control = (Control)view;
         control.Dock = DockStyle.Fill;
-        viewPanel.Controls.Add(control);
-        View.CaptionChanged += new EventHandler(View_CaptionChanged);
+        view.CaptionChanged += new EventHandler(View_CaptionChanged);
         UpdateText();
+
+        ContentView contentView = view as ContentView;
+        if (ViewAttribute.GetShowInViewHost(viewType) && contentView != null) {
+          ViewHost viewHost = new ViewHost();
+          viewHost.ViewType = viewType;
+          viewHost.Content = contentView.Content;
+          viewHost.Dock = DockStyle.Fill;
+          viewPanel.Controls.Add(viewHost);
+        } else
+          viewPanel.Controls.Add(control);
       } else {
         Label errorLabel = new Label();
         errorLabel.Name = "errorLabel";
@@ -60,7 +67,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       if (InvokeRequired)
         Invoke(new MethodInvoker(UpdateText));
       else
-        Text = View.Caption;
+        Text = view.Caption;
     }
 
     #region View Events

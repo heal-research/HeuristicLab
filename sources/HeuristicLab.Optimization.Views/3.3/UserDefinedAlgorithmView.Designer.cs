@@ -48,7 +48,7 @@ namespace HeuristicLab.Optimization.Views {
       this.saveOperatorGraphButton = new System.Windows.Forms.Button();
       this.openOperatorGraphButton = new System.Windows.Forms.Button();
       this.newOperatorGraphButton = new System.Windows.Forms.Button();
-      this.operatorGraphViewHost = new HeuristicLab.Core.Views.ViewHost();
+      this.operatorGraphViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.globalScopeTabPage = new System.Windows.Forms.TabPage();
       this.globalScopeView = new HeuristicLab.Core.Views.ScopeView();
       this.engineTabPage.SuspendLayout();
@@ -231,7 +231,7 @@ namespace HeuristicLab.Optimization.Views {
     private System.Windows.Forms.Button saveOperatorGraphButton;
     private System.Windows.Forms.Button openOperatorGraphButton;
     private System.Windows.Forms.Button newOperatorGraphButton;
-    private HeuristicLab.Core.Views.ViewHost operatorGraphViewHost;
+    private HeuristicLab.MainForm.WindowsForms.ViewHost operatorGraphViewHost;
 
   }
 }

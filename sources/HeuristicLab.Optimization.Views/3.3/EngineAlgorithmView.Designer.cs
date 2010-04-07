@@ -48,7 +48,7 @@ namespace HeuristicLab.Optimization.Views {
       this.createUserDefinedAlgorithmButton = new System.Windows.Forms.Button();
       this.engineComboBox = new System.Windows.Forms.ComboBox();
       this.engineTabPage = new System.Windows.Forms.TabPage();
-      this.engineViewHost = new HeuristicLab.Core.Views.ViewHost();
+      this.engineViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.tabControl.SuspendLayout();
       this.parametersTabPage.SuspendLayout();
       this.problemTabPage.SuspendLayout();
@@ -237,7 +237,7 @@ namespace HeuristicLab.Optimization.Views {
     protected System.Windows.Forms.Button createUserDefinedAlgorithmButton;
     protected System.Windows.Forms.ComboBox engineComboBox;
     protected System.Windows.Forms.TabPage engineTabPage;
-    protected HeuristicLab.Core.Views.ViewHost engineViewHost;
+    protected HeuristicLab.MainForm.WindowsForms.ViewHost engineViewHost;
 
   }
 }

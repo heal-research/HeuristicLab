@@ -45,7 +45,7 @@ namespace HeuristicLab.Parameters.Views {
     /// </summary>
     private void InitializeComponent() {
       this.valueGroupBox = new System.Windows.Forms.GroupBox();
-      this.viewHost = new HeuristicLab.Core.Views.ViewHost();
+      this.viewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.valueComboBox = new System.Windows.Forms.ComboBox();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.valueGroupBox.SuspendLayout();
@@ -135,7 +135,7 @@ namespace HeuristicLab.Parameters.Views {
     #endregion
 
     protected System.Windows.Forms.GroupBox valueGroupBox;
-    protected HeuristicLab.Core.Views.ViewHost viewHost;
+    protected HeuristicLab.MainForm.WindowsForms.ViewHost viewHost;
     protected System.Windows.Forms.ComboBox valueComboBox;
   }
 }

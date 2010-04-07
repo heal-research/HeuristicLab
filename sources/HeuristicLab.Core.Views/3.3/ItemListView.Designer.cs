@@ -59,7 +59,7 @@ namespace HeuristicLab.Core.Views {
       this.imageList = new System.Windows.Forms.ImageList(this.components);
       this.addButton = new System.Windows.Forms.Button();
       this.detailsGroupBox = new System.Windows.Forms.GroupBox();
-      this.viewHost = new HeuristicLab.Core.Views.ViewHost();
+      this.viewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.itemsGroupBox = new System.Windows.Forms.GroupBox();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.splitContainer.Panel1.SuspendLayout();
@@ -234,6 +234,6 @@ namespace HeuristicLab.Core.Views {
     protected Button moveDownButton;
     protected ToolTip toolTip;
     protected ImageList imageList;
-    protected ViewHost viewHost;
+    protected HeuristicLab.MainForm.WindowsForms.ViewHost viewHost;
   }
 }

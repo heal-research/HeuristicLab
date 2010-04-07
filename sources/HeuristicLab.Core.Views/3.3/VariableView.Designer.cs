@@ -49,7 +49,7 @@ namespace HeuristicLab.Core.Views {
       this.dataTypeTextBox = new System.Windows.Forms.TextBox();
       this.valueGroupBox = new System.Windows.Forms.GroupBox();
       this.valuePanel = new System.Windows.Forms.Panel();
-      this.viewHost = new HeuristicLab.Core.Views.ViewHost();
+      this.viewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.clearValueButton = new System.Windows.Forms.Button();
       this.setValueButton = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
@@ -177,7 +177,7 @@ namespace HeuristicLab.Core.Views {
     protected System.Windows.Forms.Label dataTypeLabel;
     protected System.Windows.Forms.TextBox dataTypeTextBox;
     protected System.Windows.Forms.GroupBox valueGroupBox;
-    protected ViewHost viewHost;
+    protected HeuristicLab.MainForm.WindowsForms.ViewHost viewHost;
     protected System.Windows.Forms.Button clearValueButton;
     protected System.Windows.Forms.Button setValueButton;
     protected System.Windows.Forms.Panel valuePanel;

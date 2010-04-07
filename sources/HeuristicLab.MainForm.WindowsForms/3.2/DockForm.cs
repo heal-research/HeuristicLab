@@ -36,7 +36,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     public DockForm(IView view) {
       InitializeComponent();
       this.view = view;
-      if (View != null) {
+      if (view != null) {
         if (view is UserControl) {
           switch (((UserControl)view).Dock) {
             case DockStyle.Left:
@@ -52,12 +52,21 @@ namespace HeuristicLab.MainForm.WindowsForms {
               this.ShowHint = DockState.DockBottom;
               break;
           }
-          Control control = (Control)View;
+          Type viewType = view.GetType();
+          Control control = (Control)view;
           control.Dock = DockStyle.Fill;
-          this.Size = control.Size;
-          viewPanel.Controls.Add(control);
-          View.CaptionChanged += new EventHandler(View_CaptionChanged);
+          this.view.CaptionChanged += new EventHandler(View_CaptionChanged);
           UpdateText();
+
+          ContentView contentView = view as ContentView;
+          if (ViewAttribute.GetShowInViewHost(viewType) && contentView != null) {
+            ViewHost viewHost = new ViewHost();
+            viewHost.ViewType = viewType;
+            viewHost.Content = contentView.Content;
+            viewHost.Dock = DockStyle.Fill;
+            viewPanel.Controls.Add(viewHost);
+          } else
+            viewPanel.Controls.Add(control);
         }
       } else {
         Label errorLabel = new Label();
@@ -68,17 +77,16 @@ namespace HeuristicLab.MainForm.WindowsForms {
         viewPanel.Controls.Add(errorLabel);
       }
     }
-
     private IView view;
     public IView View {
-      get { return view; }
+      get { return this.view; }
     }
 
     private void UpdateText() {
       if (InvokeRequired)
         Invoke(new MethodInvoker(UpdateText));
       else
-        this.Text = View.Caption;
+        this.Text = this.View.Caption;
     }
 
     #region View Events

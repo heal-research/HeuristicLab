@@ -23,11 +23,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using HeuristicLab.Common;
 using HeuristicLab.MainForm;
-using HeuristicLab.MainForm.WindowsForms;
 
-namespace HeuristicLab.Core.Views {
+namespace HeuristicLab.MainForm.WindowsForms {
   public sealed partial class ViewHost : UserControl {
     private Type viewType;
     public Type ViewType {
@@ -36,8 +34,7 @@ namespace HeuristicLab.Core.Views {
         if (viewType != value) {
           if (value != null && !ViewCanShowContent(value, content))
             throw new ArgumentException(string.Format("View \"{0}\" cannot display content \"{1}\".",
-                                                      value.GetPrettyName(),
-                                                      content.GetType().GetPrettyName()));
+                                                      value, content.GetType()));
           viewType = value;
           UpdateView();
         }
@@ -109,8 +106,7 @@ namespace HeuristicLab.Core.Views {
 
       if (!ViewCanShowContent(viewType, content))
         throw new InvalidOperationException(string.Format("View \"{0}\" cannot display content \"{1}\".",
-                                                          viewType.GetPrettyName(),
-                                                          Content.GetType().GetPrettyName()));
+                                                          viewType, Content.GetType()));
 
       UpdateActiveMenuItem();
       Control view = (Control)MainFormManager.CreateView(viewType, Content);

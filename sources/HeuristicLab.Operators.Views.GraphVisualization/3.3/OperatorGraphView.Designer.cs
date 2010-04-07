@@ -31,7 +31,7 @@
       this.breakPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
       this.detailsGroupBox = new System.Windows.Forms.GroupBox();
-      this.detailsViewHost = new HeuristicLab.Core.Views.ViewHost();
+      this.detailsViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.selectButton = new System.Windows.Forms.Button();
       this.panButton = new System.Windows.Forms.Button();
       this.connectButton = new System.Windows.Forms.Button();
@@ -253,7 +253,7 @@
     private System.Windows.Forms.ToolStripMenuItem breakPointToolStripMenuItem;
     private System.Windows.Forms.SplitContainer splitContainer;
     private System.Windows.Forms.GroupBox detailsGroupBox;
-    private HeuristicLab.Core.Views.ViewHost detailsViewHost;
+    private HeuristicLab.MainForm.WindowsForms.ViewHost detailsViewHost;
     private System.Windows.Forms.Button selectButton;
     private System.Windows.Forms.Button zoomOutButton;
     private System.Windows.Forms.Button zoomInButton;

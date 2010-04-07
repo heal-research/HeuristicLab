@@ -50,7 +50,7 @@ namespace HeuristicLab.Optimization.Views {
       this.saveAlgorithmButton = new System.Windows.Forms.Button();
       this.openAlgorithmButton = new System.Windows.Forms.Button();
       this.newAlgorithmButton = new System.Windows.Forms.Button();
-      this.algorithmViewHost = new HeuristicLab.Core.Views.ViewHost();
+      this.algorithmViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.runsTabPage = new System.Windows.Forms.TabPage();
       this.runsView = new HeuristicLab.Optimization.Views.RunCollectionView();
       this.startButton = new System.Windows.Forms.Button();
@@ -334,7 +334,7 @@ namespace HeuristicLab.Optimization.Views {
 
     private System.Windows.Forms.TabControl tabControl;
     private System.Windows.Forms.TabPage algorithmTabPage;
-    private HeuristicLab.Core.Views.ViewHost algorithmViewHost;
+    private HeuristicLab.MainForm.WindowsForms.ViewHost algorithmViewHost;
     private System.Windows.Forms.Button newAlgorithmButton;
     private System.Windows.Forms.Button saveAlgorithmButton;
     private System.Windows.Forms.Button openAlgorithmButton;

@@ -45,7 +45,7 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     private void InitializeComponent() {
       this.valuePanel = new System.Windows.Forms.Panel();
-      this.viewHost = new HeuristicLab.Core.Views.ViewHost();
+      this.viewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.valuePanel.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -86,7 +86,7 @@ namespace HeuristicLab.Core.Views {
 
     #endregion
 
-    protected ViewHost viewHost;
+    protected HeuristicLab.MainForm.WindowsForms.ViewHost viewHost;
     protected System.Windows.Forms.Panel valuePanel;
   }
 }

@@ -151,12 +151,22 @@
     <Compile Include="ViewContextMenuStrip.Designer.cs">
       <DependentUpon>ViewContextMenuStrip.cs</DependentUpon>
     </Compile>
+    <Compile Include="ViewHost.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ViewHost.Designer.cs">
+      <DependentUpon>ViewHost.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.2\HeuristicLab.Common.Resources-3.2.csproj">
+      <Project>{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}</Project>
+      <Name>HeuristicLab.Common.Resources-3.2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.WinFormsUI\2.3.1\WinFormsUI-2.3.1\WinFormsUI-2.3.1.csproj">
       <Project>{1849A92E-DCFC-4E05-BB0A-D7B7A3DAFCFB}</Project>
       <Name>WinFormsUI-2.3.1</Name>

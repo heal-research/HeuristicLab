@@ -57,7 +57,7 @@ namespace HeuristicLab.Optimization.Views {
       this.imageList = new System.Windows.Forms.ImageList(this.components);
       this.removeButton = new System.Windows.Forms.Button();
       this.detailsGroupBox = new System.Windows.Forms.GroupBox();
-      this.viewHost = new HeuristicLab.Core.Views.ViewHost();
+      this.viewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.itemsGroupBox = new System.Windows.Forms.GroupBox();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.splitContainer.Panel1.SuspendLayout();
@@ -193,6 +193,6 @@ namespace HeuristicLab.Optimization.Views {
     protected Button removeButton;
     protected ToolTip toolTip;
     protected ImageList imageList;
-    protected HeuristicLab.Core.Views.ViewHost viewHost;
+    protected HeuristicLab.MainForm.WindowsForms.ViewHost viewHost;
   }
 }

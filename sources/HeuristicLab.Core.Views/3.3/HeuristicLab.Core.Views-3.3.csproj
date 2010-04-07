@@ -177,12 +177,6 @@
     <Compile Include="TypeSelector.Designer.cs">
       <DependentUpon>TypeSelector.cs</DependentUpon>
     </Compile>
-    <Compile Include="ViewHost.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ViewHost.Designer.cs">
-      <DependentUpon>ViewHost.cs</DependentUpon>
-    </Compile>
     <Compile Include="OperatorCollectionView.cs">
       <SubType>UserControl</SubType>
     </Compile>

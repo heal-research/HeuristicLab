@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.Core.Views {
+namespace HeuristicLab.MainForm.WindowsForms {
   partial class ViewHost {
     /// <summary> 
     /// Required designer variable.

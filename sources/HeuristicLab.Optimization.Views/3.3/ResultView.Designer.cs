@@ -48,7 +48,7 @@ namespace HeuristicLab.Optimization.Views {
       this.dataTypeTextBox = new System.Windows.Forms.TextBox();
       this.valueGroupBox = new System.Windows.Forms.GroupBox();
       this.valuePanel = new System.Windows.Forms.Panel();
-      this.viewHost = new HeuristicLab.Core.Views.ViewHost();
+      this.viewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.valueGroupBox.SuspendLayout();
       this.valuePanel.SuspendLayout();
@@ -147,7 +147,7 @@ namespace HeuristicLab.Optimization.Views {
     private System.Windows.Forms.Label dataTypeLabel;
     private System.Windows.Forms.TextBox dataTypeTextBox;
     private System.Windows.Forms.GroupBox valueGroupBox;
-    private HeuristicLab.Core.Views.ViewHost viewHost;
+    private HeuristicLab.MainForm.WindowsForms.ViewHost viewHost;
     private System.Windows.Forms.Panel valuePanel;
   }
 }

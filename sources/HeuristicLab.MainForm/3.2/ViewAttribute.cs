@@ -30,12 +30,19 @@ namespace HeuristicLab.MainForm {
   public sealed class ViewAttribute : Attribute {
     public ViewAttribute(string name) {
       this.name = name;
+      this.showInViewHost = false;
     }
 
     private string name;
     public string Name {
       get { return this.name; }
       set { this.name = value; }
+    }
+
+    private bool showInViewHost;
+    public bool ShowInViewHost {
+      get { return this.showInViewHost; }
+      set { this.showInViewHost = value; }
     }
 
     public static bool HasViewAttribute(MemberInfo viewType) {
@@ -48,6 +55,13 @@ namespace HeuristicLab.MainForm {
       if (attributes.Length == 1)
         return attributes[0].Name;
       return viewType.Name;
+    }
+
+    public static bool GetShowInViewHost(MemberInfo viewType) {
+      ViewAttribute[] attributes = (ViewAttribute[])viewType.GetCustomAttributes(typeof(ViewAttribute), false);
+      if (attributes.Length == 1)
+        return attributes[0].showInViewHost;
+      return false;
     }
   }
 }

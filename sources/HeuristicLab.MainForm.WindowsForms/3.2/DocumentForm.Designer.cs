@@ -31,8 +31,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// </summary>
     /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
     protected override void Dispose(bool disposing) {
-      if (View != null)
-        View.CaptionChanged -= new System.EventHandler(View_CaptionChanged);
+      if (view != null)
+        view.CaptionChanged -= new System.EventHandler(View_CaptionChanged);
       if (disposing && (components != null)) {
         components.Dispose();
       }
