@@ -41,6 +41,11 @@ namespace HeuristicLab.Core {
       get { return VS2008ImageLibrary.Class; }
     }
 
+    protected Item() : base() { }
+    [StorableConstructor]
+    protected Item(bool deserializing) : base(deserializing) { }
+
+
     /// <summary>
     /// Gets the string representation of the current instance.
     /// </summary>

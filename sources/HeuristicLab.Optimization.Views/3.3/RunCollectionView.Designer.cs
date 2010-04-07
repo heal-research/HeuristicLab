@@ -37,7 +37,7 @@ namespace HeuristicLab.Optimization.Views {
     protected override void Dispose(bool disposing) {
       if (disposing) {
         foreach (ListViewItem item in itemsListView.Items)
-          ((Run)item.Tag).ToStringChanged -= new EventHandler(Item_ToStringChanged);
+          ((IRun)item.Tag).ToStringChanged -= new EventHandler(Item_ToStringChanged);
         if (components != null) components.Dispose();
       }
       base.Dispose(disposing);

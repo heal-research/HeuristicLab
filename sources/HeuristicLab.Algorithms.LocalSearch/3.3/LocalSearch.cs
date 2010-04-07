@@ -32,7 +32,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Algorithms.LocalSearch {
-  [Item("LocalSearch", "A local search algorithm.")]
+  [Item("Local Search", "A local search algorithm.")]
   [Creatable("Algorithms")]
   [StorableClass]
   public sealed class LocalSearch : EngineAlgorithm {
@@ -110,8 +110,6 @@ namespace HeuristicLab.Algorithms.LocalSearch {
     }
     #endregion
 
-    [StorableConstructor]
-    private LocalSearch(bool deserializing) : base() { }
     public LocalSearch()
       : base() {
       Parameters.Add(new ValueParameter<IntValue>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
@@ -146,6 +144,8 @@ namespace HeuristicLab.Algorithms.LocalSearch {
 
       Initialize();
     }
+    [StorableConstructor]
+    private LocalSearch(bool deserializing) : base(deserializing) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       LocalSearch clone = (LocalSearch)base.Clone(cloner);

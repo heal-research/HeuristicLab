@@ -34,9 +34,13 @@ namespace HeuristicLab.Core {
     public IScope Parent {
       get { return parent; }
       set {
-        if (parent != null) parent.SubScopes.Remove(this);
-        parent = value;
-        if ((parent != null) && !parent.SubScopes.Contains(this)) parent.SubScopes.Add(this);
+        if (parent != value) {
+          IScope oldParent = parent;
+          parent = null;
+          if (oldParent != null) oldParent.SubScopes.Remove(this);
+          parent = value;
+          if ((parent != null) && !parent.SubScopes.Contains(this)) parent.SubScopes.Add(this);
+        }
       }
     }
 
@@ -96,7 +100,11 @@ namespace HeuristicLab.Core {
       clone.Name = Name;
       clone.Description = Description;
       if (variables.Count > 0) clone.variables = (VariableCollection)cloner.Clone(variables);
-      if (subScopes.Count > 0) clone.SubScopes = (ScopeList)cloner.Clone(subScopes);
+      if (subScopes.Count > 0) {
+        clone.SubScopes = (ScopeList)cloner.Clone(subScopes);
+        foreach (IScope child in clone.SubScopes)
+          child.Parent = clone;
+      }
       return clone;
     }
 

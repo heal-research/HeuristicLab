@@ -45,8 +45,8 @@ namespace HeuristicLab.Optimization.Views {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Parameters", System.Windows.Forms.HorizontalAlignment.Left);
-      System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Results", System.Windows.Forms.HorizontalAlignment.Left);
+      System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Results", System.Windows.Forms.HorizontalAlignment.Left);
+      System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Parameters", System.Windows.Forms.HorizontalAlignment.Left);
       this.parametersResultsGroupBox = new System.Windows.Forms.GroupBox();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
       this.listView = new System.Windows.Forms.ListView();
@@ -112,10 +112,10 @@ namespace HeuristicLab.Optimization.Views {
             this.nameColumnHeader,
             this.valueColumnHeader});
       this.listView.FullRowSelect = true;
-      listViewGroup1.Header = "Parameters";
-      listViewGroup1.Name = "parametersGroup";
-      listViewGroup2.Header = "Results";
-      listViewGroup2.Name = "resultsGroup";
+      listViewGroup1.Header = "Results";
+      listViewGroup1.Name = "resultsGroup";
+      listViewGroup2.Header = "Parameters";
+      listViewGroup2.Name = "parametersGroup";
       this.listView.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
             listViewGroup1,
             listViewGroup2});

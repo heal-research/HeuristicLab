@@ -61,19 +61,10 @@ namespace HeuristicLab.Optimization {
       }
     }
 
-    private OptimizerList optimizers;
     [Storable]
+    private OptimizerList optimizers;
     public OptimizerList Optimizers {
       get { return optimizers; }
-      private set {
-        if (optimizers != value) {
-          if (optimizers != null) DeregisterOptimizersEvents();
-          optimizers = value;
-          if (optimizers != null) RegisterOptimizersEvents();
-          foreach (IOptimizer optimizer in optimizers)
-            RegisterOptimizerEvents(optimizer);
-        }
-      }
     }
 
     [Storable]
@@ -86,34 +77,56 @@ namespace HeuristicLab.Optimization {
 
     public Experiment()
       : base() {
+      name = ItemName;
+      description = ItemDescription;
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
-      Optimizers = new OptimizerList();
+      optimizers = new OptimizerList();
       runs = new RunCollection();
       stopPending = false;
+      Initialize();
     }
-    public Experiment(string name) : base(name) {
+    public Experiment(string name)
+      : base(name) {
+      description = ItemDescription;
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
-      Optimizers = new OptimizerList();
+      optimizers = new OptimizerList();
       runs = new RunCollection();
       stopPending = false;
+      Initialize();
     }
-    public Experiment(string name, string description) : base(name, description) {
+    public Experiment(string name, string description)
+      : base(name, description) {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
-      Optimizers = new OptimizerList();
+      optimizers = new OptimizerList();
       runs = new RunCollection();
+      stopPending = false;
+      Initialize();
+    }
+    [StorableConstructor]
+    private Experiment(bool deserializing)
+      : base(deserializing) {
       stopPending = false;
     }
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void Initialize() {
+      RegisterOptimizersEvents();
+      foreach (IOptimizer optimizer in optimizers)
+        RegisterOptimizerEvents(optimizer);
+    }
+
     public override IDeepCloneable Clone(Cloner cloner) {
+      if (ExecutionState == ExecutionState.Started) throw new InvalidOperationException(string.Format("Clone not allowed in execution state \"{0}\".", ExecutionState));
       Experiment clone = (Experiment)base.Clone(cloner);
       clone.executionState = executionState;
       clone.executionTime = executionTime;
-      clone.Optimizers = (OptimizerList)cloner.Clone(optimizers);
+      clone.optimizers = (OptimizerList)cloner.Clone(optimizers);
       clone.runs = (RunCollection)cloner.Clone(runs);
       clone.stopPending = stopPending;
+      clone.Initialize();
       return clone;
     }
 
@@ -243,9 +256,9 @@ namespace HeuristicLab.Optimization {
       optimizer.Prepared += new EventHandler(optimizer_Prepared);
       optimizer.Started += new EventHandler(optimizer_Started);
       optimizer.Stopped += new EventHandler(optimizer_Stopped);
-      optimizer.Runs.CollectionReset += new CollectionItemsChangedEventHandler<Run>(optimizer_Runs_CollectionReset);
-      optimizer.Runs.ItemsAdded += new CollectionItemsChangedEventHandler<Run>(optimizer_Runs_ItemsAdded);
-      optimizer.Runs.ItemsRemoved += new CollectionItemsChangedEventHandler<Run>(optimizer_Runs_ItemsRemoved);
+      optimizer.Runs.CollectionReset += new CollectionItemsChangedEventHandler<IRun>(optimizer_Runs_CollectionReset);
+      optimizer.Runs.ItemsAdded += new CollectionItemsChangedEventHandler<IRun>(optimizer_Runs_ItemsAdded);
+      optimizer.Runs.ItemsRemoved += new CollectionItemsChangedEventHandler<IRun>(optimizer_Runs_ItemsRemoved);
     }
     private void DeregisterOptimizerEvents(IOptimizer optimizer) {
       optimizer.ExceptionOccurred -= new EventHandler<EventArgs<Exception>>(optimizer_ExceptionOccurred);
@@ -254,9 +267,9 @@ namespace HeuristicLab.Optimization {
       optimizer.Prepared -= new EventHandler(optimizer_Prepared);
       optimizer.Started -= new EventHandler(optimizer_Started);
       optimizer.Stopped -= new EventHandler(optimizer_Stopped);
-      optimizer.Runs.CollectionReset -= new CollectionItemsChangedEventHandler<Run>(optimizer_Runs_CollectionReset);
-      optimizer.Runs.ItemsAdded -= new CollectionItemsChangedEventHandler<Run>(optimizer_Runs_ItemsAdded);
-      optimizer.Runs.ItemsRemoved -= new CollectionItemsChangedEventHandler<Run>(optimizer_Runs_ItemsRemoved);
+      optimizer.Runs.CollectionReset -= new CollectionItemsChangedEventHandler<IRun>(optimizer_Runs_CollectionReset);
+      optimizer.Runs.ItemsAdded -= new CollectionItemsChangedEventHandler<IRun>(optimizer_Runs_ItemsAdded);
+      optimizer.Runs.ItemsRemoved -= new CollectionItemsChangedEventHandler<IRun>(optimizer_Runs_ItemsRemoved);
     }
     private void optimizer_ExceptionOccurred(object sender, EventArgs<Exception> e) {
       OnExceptionOccurred(e.Value);
@@ -286,14 +299,14 @@ namespace HeuristicLab.Optimization {
         }
       }
     }
-    private void optimizer_Runs_CollectionReset(object sender, CollectionItemsChangedEventArgs<Run> e) {
+    private void optimizer_Runs_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRun> e) {
       Runs.RemoveRange(e.OldItems);
       Runs.AddRange(e.Items);
     }
-    private void optimizer_Runs_ItemsAdded(object sender, CollectionItemsChangedEventArgs<Run> e) {
+    private void optimizer_Runs_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IRun> e) {
       Runs.AddRange(e.Items);
     }
-    private void optimizer_Runs_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<Run> e) {
+    private void optimizer_Runs_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IRun> e) {
       Runs.RemoveRange(e.Items);
     }
     #endregion

@@ -65,16 +65,8 @@ namespace HeuristicLab.Optimization {
       }
     }
 
-    private IAlgorithm algorithm;
     [Storable]
-    private IAlgorithm AlgorithmPersistence {
-      get { return algorithm; }
-      set {
-        if (algorithm != null) DeregisterAlgorithmEvents();
-        algorithm = value;
-        if (algorithm != null) RegisterAlgorithmEvents();
-      }
-    }
+    private IAlgorithm algorithm;
     public IAlgorithm Algorithm {
       get { return algorithm; }
       set {
@@ -112,35 +104,52 @@ namespace HeuristicLab.Optimization {
 
     public BatchRun()
       : base() {
+      name = ItemName;
+      description = ItemDescription;
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
       repetitions = 10;
       runs = new RunCollection();
       stopPending = false;
     }
-    public BatchRun(string name) : base(name) {
+    public BatchRun(string name)
+      : base(name) {
+      description = ItemDescription;
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
       repetitions = 10;
       runs = new RunCollection();
       stopPending = false;
     }
-    public BatchRun(string name, string description) : base(name, description) {
+    public BatchRun(string name, string description)
+      : base(name, description) {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
       repetitions = 10;
       runs = new RunCollection();
+      stopPending = false;
+    }
+    [StorableConstructor]
+    private BatchRun(bool deserializing)
+      : base(deserializing) {
       stopPending = false;
     }
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void Initialize() {
+      if (algorithm != null) RegisterAlgorithmEvents();
+    }
+
     public override IDeepCloneable Clone(Cloner cloner) {
+      if (ExecutionState == ExecutionState.Started) throw new InvalidOperationException(string.Format("Clone not allowed in execution state \"{0}\".", ExecutionState));
       BatchRun clone = (BatchRun)base.Clone(cloner);
       clone.executionState = executionState;
       clone.executionTime = executionTime;
-      clone.Algorithm = (IAlgorithm)cloner.Clone(algorithm);
+      clone.algorithm = (IAlgorithm)cloner.Clone(algorithm);
       clone.repetitions = repetitions;
       clone.runs = (RunCollection)cloner.Clone(runs);
       clone.stopPending = stopPending;
+      clone.Initialize();
       return clone;
     }
 
@@ -233,9 +242,9 @@ namespace HeuristicLab.Optimization {
       algorithm.Prepared += new EventHandler(Algorithm_Prepared);
       algorithm.Started += new EventHandler(Algorithm_Started);
       algorithm.Stopped += new EventHandler(Algorithm_Stopped);
-      algorithm.Runs.CollectionReset += new CollectionItemsChangedEventHandler<Run>(Algorithm_Runs_CollectionReset);
-      algorithm.Runs.ItemsAdded += new CollectionItemsChangedEventHandler<Run>(Algorithm_Runs_ItemsAdded);
-      algorithm.Runs.ItemsRemoved += new CollectionItemsChangedEventHandler<Run>(Algorithm_Runs_ItemsRemoved);
+      algorithm.Runs.CollectionReset += new CollectionItemsChangedEventHandler<IRun>(Algorithm_Runs_CollectionReset);
+      algorithm.Runs.ItemsAdded += new CollectionItemsChangedEventHandler<IRun>(Algorithm_Runs_ItemsAdded);
+      algorithm.Runs.ItemsRemoved += new CollectionItemsChangedEventHandler<IRun>(Algorithm_Runs_ItemsRemoved);
     }
     private void DeregisterAlgorithmEvents() {
       algorithm.ExceptionOccurred -= new EventHandler<EventArgs<Exception>>(Algorithm_ExceptionOccurred);
@@ -244,9 +253,9 @@ namespace HeuristicLab.Optimization {
       algorithm.Prepared -= new EventHandler(Algorithm_Prepared);
       algorithm.Started -= new EventHandler(Algorithm_Started);
       algorithm.Stopped -= new EventHandler(Algorithm_Stopped);
-      algorithm.Runs.CollectionReset -= new CollectionItemsChangedEventHandler<Run>(Algorithm_Runs_CollectionReset);
-      algorithm.Runs.ItemsAdded -= new CollectionItemsChangedEventHandler<Run>(Algorithm_Runs_ItemsAdded);
-      algorithm.Runs.ItemsRemoved -= new CollectionItemsChangedEventHandler<Run>(Algorithm_Runs_ItemsRemoved);
+      algorithm.Runs.CollectionReset -= new CollectionItemsChangedEventHandler<IRun>(Algorithm_Runs_CollectionReset);
+      algorithm.Runs.ItemsAdded -= new CollectionItemsChangedEventHandler<IRun>(Algorithm_Runs_ItemsAdded);
+      algorithm.Runs.ItemsRemoved -= new CollectionItemsChangedEventHandler<IRun>(Algorithm_Runs_ItemsRemoved);
     }
     private void Algorithm_ExceptionOccurred(object sender, EventArgs<Exception> e) {
       OnExceptionOccurred(e.Value);
@@ -276,14 +285,14 @@ namespace HeuristicLab.Optimization {
         OnStopped();
       }
     }
-    private void Algorithm_Runs_CollectionReset(object sender, CollectionItemsChangedEventArgs<Run> e) {
+    private void Algorithm_Runs_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRun> e) {
       Runs.RemoveRange(e.OldItems);
       Runs.AddRange(e.Items);
     }
-    private void Algorithm_Runs_ItemsAdded(object sender, CollectionItemsChangedEventArgs<Run> e) {
+    private void Algorithm_Runs_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IRun> e) {
       Runs.AddRange(e.Items);
     }
-    private void Algorithm_Runs_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<Run> e) {
+    private void Algorithm_Runs_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IRun> e) {
       Runs.RemoveRange(e.Items);
     }
     #endregion

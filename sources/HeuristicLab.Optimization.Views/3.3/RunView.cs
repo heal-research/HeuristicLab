@@ -30,15 +30,15 @@ namespace HeuristicLab.Optimization.Views {
   /// The visual representation of a <see cref="Variable"/>.
   /// </summary>
   [View("Run View")]
-  [Content(typeof(Run), true)]
+  [Content(typeof(IRun), true)]
   public sealed partial class RunView : NamedItemView {
     /// <summary>
     /// Gets or sets the variable to represent visually.
     /// </summary>
     /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
     /// No own data storage present.</remarks>
-    public new Run Content {
-      get { return (Run)base.Content; }
+    public new IRun Content {
+      get { return (IRun)base.Content; }
       set { base.Content = value; }
     }
 
@@ -54,7 +54,7 @@ namespace HeuristicLab.Optimization.Views {
     /// </summary>
     /// <remarks>Calls <see cref="VariableView()"/>.</remarks>
     /// <param name="variable">The variable to represent visually.</param>
-    public RunView(Run content)
+    public RunView(IRun content)
       : this() {
       Content = content;
     }
@@ -75,7 +75,7 @@ namespace HeuristicLab.Optimization.Views {
 
     private void FillListView() {
       if (!listView.SmallImageList.Images.ContainsKey("Default"))
-        listView.SmallImageList.Images.Add("Default", HeuristicLab.Common.Resources.VS2008ImageLibrary.Class);
+        listView.SmallImageList.Images.Add("Default", HeuristicLab.Common.Resources.VS2008ImageLibrary.Nothing);
 
       listView.Items.Clear();
       if (Content != null) {

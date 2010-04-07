@@ -32,7 +32,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Algorithms.TabuSearch {
-  [Item("TabuSearch", "A tabu search algorithm.")]
+  [Item("Tabu Search", "A tabu search algorithm.")]
   [Creatable("Algorithms")]
   [StorableClass]
   public sealed class TabuSearch : EngineAlgorithm {
@@ -127,8 +127,6 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     }
     #endregion
 
-    [StorableConstructor]
-    private TabuSearch(bool deserializing) : base() { }
     public TabuSearch()
       : base() {
       Parameters.Add(new ValueParameter<IntValue>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
@@ -168,6 +166,8 @@ namespace HeuristicLab.Algorithms.TabuSearch {
 
       Initialize();
     }
+    [StorableConstructor]
+    private TabuSearch(bool deserializing) : base(deserializing) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       TabuSearch clone = (TabuSearch)base.Clone(cloner);

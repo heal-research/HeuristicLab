@@ -20,22 +20,15 @@
 #endregion
 
 using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
-  [StorableClass]
-  [Item("RunCollection", "Represents a collection of runs.")]
-  public class RunCollection : ItemCollection<IRun> {
-    public RunCollection() : base() { }
-    public RunCollection(int capacity) : base(capacity) { }
-    public RunCollection(IEnumerable<IRun> collection) : base(collection) { }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      RunCollection clone = new RunCollection(this.Select(x => (IRun)cloner.Clone(x)));
-      cloner.RegisterClonedObject(this, clone);
-      return clone;
-    }
+  /// <summary>
+  /// Represents the parameters and results of an algorithm run.
+  /// </summary>
+  public interface IRun : INamedItem {
+    IAlgorithm Algorithm { get; }
+    IDictionary<string, IItem> Parameters { get; }
+    IDictionary<string, IItem> Results { get; }
   }
 }

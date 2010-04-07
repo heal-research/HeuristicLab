@@ -31,14 +31,10 @@ namespace HeuristicLab.Core {
   [Item("ParameterizedNamedItem", "A base class for items which have a name and contain parameters.")]
   [StorableClass]
   public abstract class ParameterizedNamedItem : NamedItem, IParameterizedNamedItem {
-    private ParameterCollection parameters;
     [Storable]
+    private ParameterCollection parameters;
     protected ParameterCollection Parameters {
       get { return parameters; }
-      private set {
-        parameters = value;
-        readOnlyParameters = null;
-      }
     }
     private ReadOnlyObservableKeyedCollection<string, IParameter> readOnlyParameters;
     IObservableKeyedCollection<string, IParameter> IParameterizedItem.Parameters {
@@ -52,41 +48,44 @@ namespace HeuristicLab.Core {
       : base() {
       name = ItemName;
       description = ItemDescription;
-      Parameters = new ParameterCollection();
+      parameters = new ParameterCollection();
       readOnlyParameters = null;
     }
     protected ParameterizedNamedItem(string name)
       : base(name) {
       description = ItemDescription;
-      Parameters = new ParameterCollection();
+      parameters = new ParameterCollection();
       readOnlyParameters = null;
     }
     protected ParameterizedNamedItem(string name, ParameterCollection parameters)
       : base(name) {
       description = ItemDescription;
-      Parameters = parameters;
+      this.parameters = parameters;
       readOnlyParameters = null;
     }
     protected ParameterizedNamedItem(string name, string description)
       : base(name, description) {
-      Parameters = new ParameterCollection();
+      parameters = new ParameterCollection();
       readOnlyParameters = null;
     }
     protected ParameterizedNamedItem(string name, string description, ParameterCollection parameters)
       : base(name, description) {
-      Parameters = parameters;
+      this.parameters = parameters;
       readOnlyParameters = null;
     }
+    [StorableConstructor]
+    protected ParameterizedNamedItem(bool deserializing) : base(deserializing) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       ParameterizedNamedItem clone = (ParameterizedNamedItem)base.Clone(cloner);
-      clone.Parameters = (ParameterCollection)cloner.Clone(parameters);
+      clone.parameters = (ParameterCollection)cloner.Clone(parameters);
+      clone.readOnlyParameters = null;
       return clone;
     }
 
     public virtual void CollectParameterValues(IDictionary<string, IItem> values) {
       foreach (IValueParameter param in parameters.OfType<IValueParameter>()) {
-        values.Add(param.Name, param.Value != null ? (IItem)param.Value.Clone() : null);
+        values.Add(param.Name, param.Value);
         if (param.Value is IParameterizedItem) {
           Dictionary<string, IItem> children = new Dictionary<string, IItem>();
           ((IParameterizedItem)param.Value).CollectParameterValues(children);

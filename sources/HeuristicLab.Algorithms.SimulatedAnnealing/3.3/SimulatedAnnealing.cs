@@ -132,8 +132,6 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     }
     #endregion
 
-    [StorableConstructor]
-    private SimulatedAnnealing(bool deserializing) : base() { }
     public SimulatedAnnealing()
       : base() {
       Parameters.Add(new ValueParameter<IntValue>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
@@ -174,6 +172,8 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
 
       Initialize();
     }
+    [StorableConstructor]
+    private SimulatedAnnealing(bool deserializing) : base(deserializing) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       SimulatedAnnealing clone = (SimulatedAnnealing)base.Clone(cloner);

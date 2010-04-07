@@ -48,6 +48,7 @@ namespace HeuristicLab.Core {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
+      if (ExecutionState == ExecutionState.Started) throw new InvalidOperationException(string.Format("Clone not allowed in execution state \"{0}\".", ExecutionState));
       Engine clone = (Engine)base.Clone(cloner);
       IOperation[] contexts = executionStack.ToArray();
       for (int i = contexts.Length - 1; i >= 0; i--)

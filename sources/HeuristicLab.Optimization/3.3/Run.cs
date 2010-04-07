@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -29,14 +30,12 @@ namespace HeuristicLab.Optimization {
   /// </summary>
   [Item("Run", "The parameters and results of an algorithm run.")]
   [StorableClass]
-  public sealed class Run : NamedItem {
-    public override bool CanChangeName {
-      get { return false; }
+  public sealed class Run : NamedItem, IRun {
+    [Storable]
+    private IAlgorithm algorithm;
+    public IAlgorithm Algorithm {
+      get { return algorithm; }
     }
-    public override bool CanChangeDescription {
-      get { return false; }
-    }
-
     [Storable]
     private Dictionary<string, IItem> parameters;
     public IDictionary<string, IItem> Parameters {
@@ -49,24 +48,43 @@ namespace HeuristicLab.Optimization {
     }
 
     public Run()
-      : base("Anonymous") {
+      : base() {
+      name = ItemName;
+      description = ItemDescription;
+      algorithm = null;
       parameters = new Dictionary<string, IItem>();
       results = new Dictionary<string, IItem>();
     }
-    public Run(string name)
+    public Run(IAlgorithm algorithm)
+      : base() {
+      if (algorithm == null) throw new ArgumentNullException();
+      name = algorithm.Name + " Run (" + algorithm.ExecutionTime.ToString() + ")";
+      description = ItemDescription;
+      Initialize((IAlgorithm)algorithm.Clone());
+    }
+    public Run(string name, IAlgorithm algorithm)
       : base(name) {
-      parameters = new Dictionary<string, IItem>();
-      results = new Dictionary<string, IItem>();
+      if (algorithm == null) throw new ArgumentNullException();
+      description = ItemDescription;
+      Initialize((IAlgorithm)algorithm.Clone());
     }
-    public Run(string name, string description)
+    public Run(string name, string description, IAlgorithm algorithm)
       : base(name, description) {
+      if (algorithm == null) throw new ArgumentNullException();
+      Initialize((IAlgorithm)algorithm.Clone());
+    }
+
+    private void Initialize(IAlgorithm algorithm) {
+      this.algorithm = algorithm;
       parameters = new Dictionary<string, IItem>();
       results = new Dictionary<string, IItem>();
+      this.algorithm.CollectParameterValues(parameters);
+      this.algorithm.CollectResultValues(results);
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      Run clone = new Run(Name, Description);
-      cloner.RegisterClonedObject(this, clone);
+      Run clone = (Run)base.Clone(cloner);
+      clone.algorithm = (IAlgorithm)cloner.Clone(algorithm);
       foreach (string key in parameters.Keys)
         clone.parameters.Add(key, (IItem)cloner.Clone(parameters[key]));
       foreach (string key in results.Keys)

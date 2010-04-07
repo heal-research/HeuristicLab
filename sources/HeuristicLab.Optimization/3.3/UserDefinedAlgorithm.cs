@@ -51,6 +51,9 @@ namespace HeuristicLab.Optimization {
     public UserDefinedAlgorithm() : base() { }
     public UserDefinedAlgorithm(string name) : base(name) { }
     public UserDefinedAlgorithm(string name, string description) : base(name, description) { }
+    internal UserDefinedAlgorithm(EngineAlgorithm algorithm, Cloner cloner) : base(algorithm, cloner) { }
+    [StorableConstructor]
+    private UserDefinedAlgorithm(bool deserializing) : base(deserializing) { }
 
     public event EventHandler OperatorGraphChanged;
     protected override void OnOperatorGraphChanged() {

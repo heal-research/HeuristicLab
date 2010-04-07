@@ -90,6 +90,8 @@ namespace HeuristicLab.Core {
       if (description == null) this.description = string.Empty;
       else this.description = description;
     }
+    [StorableConstructor]
+    protected NamedItem(bool deserializing) : base(deserializing) { }
 
     /// <summary>
     /// Clones the current instance (deep clone).

@@ -28,6 +28,10 @@ namespace HeuristicLab.Core {
   /// </summary>
   [StorableClass]
   public abstract class DeepCloneable : IDeepCloneable {
+    protected DeepCloneable() { }
+    [StorableConstructor]
+    protected DeepCloneable(bool deserializing) { }
+
     /// <summary>
     /// Creates a deep clone of this instance.
     /// </summary>

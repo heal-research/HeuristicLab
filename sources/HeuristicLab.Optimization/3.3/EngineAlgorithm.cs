@@ -33,24 +33,16 @@ namespace HeuristicLab.Optimization {
   [Item("EngineAlgorithm", "A base class for algorithms which use an engine for execution.")]
   [StorableClass]
   public abstract class EngineAlgorithm : Algorithm {
-    private OperatorGraph operatorGraph;
     [Storable]
-    private OperatorGraph OperatorGraphPersistence {
-      get { return operatorGraph; }
-      set {
-        if (operatorGraph != null) operatorGraph.InitialOperatorChanged -= new EventHandler(OperatorGraph_InitialOperatorChanged);
-        operatorGraph = value;
-        if (operatorGraph != null) operatorGraph.InitialOperatorChanged += new EventHandler(OperatorGraph_InitialOperatorChanged);
-      }
-    }
+    private OperatorGraph operatorGraph;
     protected OperatorGraph OperatorGraph {
       get { return operatorGraph; }
       set {
         if (value == null) throw new ArgumentNullException();
         if (value != operatorGraph) {
-          if (operatorGraph != null) operatorGraph.InitialOperatorChanged -= new EventHandler(OperatorGraph_InitialOperatorChanged);
+          operatorGraph.InitialOperatorChanged -= new EventHandler(OperatorGraph_InitialOperatorChanged);
           operatorGraph = value;
-          if (operatorGraph != null) operatorGraph.InitialOperatorChanged += new EventHandler(OperatorGraph_InitialOperatorChanged);
+          operatorGraph.InitialOperatorChanged += new EventHandler(OperatorGraph_InitialOperatorChanged);
           OnOperatorGraphChanged();
           Prepare();
         }
@@ -63,16 +55,8 @@ namespace HeuristicLab.Optimization {
       get { return globalScope; }
     }
 
-    private IEngine engine;
     [Storable]
-    private IEngine EnginePersistence {
-      get { return engine; }
-      set {
-        if (engine != null) DeregisterEngineEvents();
-        engine = value;
-        if (engine != null) RegisterEngineEvents();
-      }
-    }
+    private IEngine engine;
     public IEngine Engine {
       get { return engine; }
       set {
@@ -96,64 +80,70 @@ namespace HeuristicLab.Optimization {
       : base() {
       globalScope = new Scope("Global Scope");
       globalScope.Variables.Add(new Variable("Results", new ResultCollection()));
-      OperatorGraph = new OperatorGraph();
-      InitializeEngine();
+      operatorGraph = new OperatorGraph();
+      Initialize();
     }
     protected EngineAlgorithm(string name)
       : base(name) {
       globalScope = new Scope("Global Scope");
       globalScope.Variables.Add(new Variable("Results", new ResultCollection()));
-      OperatorGraph = new OperatorGraph();
-      InitializeEngine();
+      operatorGraph = new OperatorGraph();
+      Initialize();
     }
     protected EngineAlgorithm(string name, ParameterCollection parameters)
       : base(name, parameters) {
       globalScope = new Scope("Global Scope");
       globalScope.Variables.Add(new Variable("Results", new ResultCollection()));
-      OperatorGraph = new OperatorGraph();
-      InitializeEngine();
+      operatorGraph = new OperatorGraph();
+      Initialize();
     }
     protected EngineAlgorithm(string name, string description)
       : base(name, description) {
       globalScope = new Scope("Global Scope");
       globalScope.Variables.Add(new Variable("Results", new ResultCollection()));
-      OperatorGraph = new OperatorGraph();
-      InitializeEngine();
+      operatorGraph = new OperatorGraph();
+      Initialize();
     }
     protected EngineAlgorithm(string name, string description, ParameterCollection parameters)
       : base(name, description, parameters) {
       globalScope = new Scope("Global Scope");
       globalScope.Variables.Add(new Variable("Results", new ResultCollection()));
-      OperatorGraph = new OperatorGraph();
-      InitializeEngine();
+      operatorGraph = new OperatorGraph();
+      Initialize();
     }
+    internal EngineAlgorithm(EngineAlgorithm algorithm, Cloner cloner)
+      : base(algorithm, cloner) {
+      globalScope = (IScope)cloner.Clone(algorithm.globalScope);
+      operatorGraph = (OperatorGraph)cloner.Clone(algorithm.operatorGraph);
+      engine = (IEngine)cloner.Clone(algorithm.engine);
+      Initialize();
+    }
+    [StorableConstructor]
+    protected EngineAlgorithm(bool deserializing) : base(deserializing) { }
 
-    private void InitializeEngine() {
-      if (ApplicationManager.Manager != null) {
+    [StorableHook(HookType.AfterDeserialization)]
+    private void Initialize() {
+      operatorGraph.InitialOperatorChanged += new EventHandler(OperatorGraph_InitialOperatorChanged);
+      if ((engine == null) && (ApplicationManager.Manager != null)) {
         var types = ApplicationManager.Manager.GetTypes(typeof(IEngine));
         Type t = types.FirstOrDefault(x => x.Name.Equals("SequentialEngine"));
         if (t == null) t = types.FirstOrDefault();
-        if (t != null) Engine = (IEngine)Activator.CreateInstance(t);
+        if (t != null) engine = (IEngine)Activator.CreateInstance(t);
       }
+      if (engine != null) RegisterEngineEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       EngineAlgorithm clone = (EngineAlgorithm)base.Clone(cloner);
       clone.globalScope = (IScope)cloner.Clone(globalScope);
-      clone.Engine = (IEngine)cloner.Clone(engine);
-      clone.OperatorGraph = (OperatorGraph)cloner.Clone(operatorGraph);
+      clone.engine = (IEngine)cloner.Clone(engine);
+      clone.operatorGraph = (OperatorGraph)cloner.Clone(operatorGraph);
+      clone.Initialize();
       return clone;
     }
 
     public UserDefinedAlgorithm CreateUserDefinedAlgorithm() {
-      UserDefinedAlgorithm algorithm = new UserDefinedAlgorithm(Name, Description);
-      Cloner cloner = new Cloner();
-      foreach (IParameter param in Parameters)
-        algorithm.Parameters.Add((IParameter)cloner.Clone(param));
-      algorithm.Problem = (IProblem)cloner.Clone(Problem);
-      algorithm.Engine = (IEngine)cloner.Clone(engine);
-      algorithm.OperatorGraph = (OperatorGraph)cloner.Clone(operatorGraph);
-      return algorithm;
+      return new UserDefinedAlgorithm(this, new Cloner());
     }
 
     public override void Prepare() {

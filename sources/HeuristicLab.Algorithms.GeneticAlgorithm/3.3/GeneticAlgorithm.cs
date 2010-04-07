@@ -167,14 +167,14 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       geneticAlgorithmMainLoop.RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
       geneticAlgorithmMainLoop.ResultsParameter.ActualName = "Results";
 
-      Initialze();
+      Initialize();
     }
     [StorableConstructor]
-    private GeneticAlgorithm(bool deserializing) : base() { }
+    private GeneticAlgorithm(bool deserializing) : base(deserializing) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       GeneticAlgorithm clone = (GeneticAlgorithm)base.Clone(cloner);
-      clone.Initialze();
+      clone.Initialize();
       return clone;
     }
 
@@ -248,7 +248,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
 
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
-    private void Initialze() {
+    private void Initialize() {
       InitializeSelectors();
       UpdateSelectors();
       PopulationSizeParameter.ValueChanged += new EventHandler(PopulationSizeParameter_ValueChanged);
