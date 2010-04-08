@@ -41,15 +41,14 @@ namespace HeuristicLab.Core {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Class; }
     }
 
-    [Storable(Name = "RestoreEvents")]
-    private object RestoreEvents {
-      get { return null; }
-      set { RegisterItemEvents(this); }
-    }
-
     public NamedItemCollection() : base() { }
     public NamedItemCollection(int capacity) : base(capacity) { }
     public NamedItemCollection(IEnumerable<T> collection) : base(collection) {
+      Initialize();
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void Initialize() {
       RegisterItemEvents(this);
     }
 
@@ -61,6 +60,7 @@ namespace HeuristicLab.Core {
       cloner.RegisterClonedObject(this, clone);
       foreach (string key in dict.Keys)
         clone.dict.Add(key, (T)cloner.Clone(dict[key]));
+      clone.Initialize();
       return clone;
     }
 
