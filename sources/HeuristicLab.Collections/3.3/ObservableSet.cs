@@ -31,7 +31,7 @@ namespace HeuristicLab.Collections {
   [StorableClass]
   public class ObservableSet<T> : IObservableSet<T> {
     [Storable]
-    private HashSet<T> set;
+    protected HashSet<T> set;
 
     #region Properties
     public IEqualityComparer<T> Comparer {

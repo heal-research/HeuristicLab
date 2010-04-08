@@ -30,7 +30,7 @@ namespace HeuristicLab.Collections {
   [StorableClass]
   public class ObservableList<T> : IObservableList<T> {
     [Storable]
-    private List<T> list;
+    protected List<T> list;
 
     #region Properties
     public int Capacity {

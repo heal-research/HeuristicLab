@@ -31,7 +31,7 @@ namespace HeuristicLab.Collections {
   [StorableClass]
   public class ObservableArray<T> : IObservableArray<T> {
     [Storable]
-    private T[] array;
+    protected T[] array;
 
     #region Properties
     public int Length {

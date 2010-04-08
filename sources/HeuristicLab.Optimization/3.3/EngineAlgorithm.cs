@@ -111,13 +111,6 @@ namespace HeuristicLab.Optimization {
       operatorGraph = new OperatorGraph();
       Initialize();
     }
-    internal EngineAlgorithm(EngineAlgorithm algorithm, Cloner cloner)
-      : base(algorithm, cloner) {
-      globalScope = (IScope)cloner.Clone(algorithm.globalScope);
-      operatorGraph = (OperatorGraph)cloner.Clone(algorithm.operatorGraph);
-      engine = (IEngine)cloner.Clone(algorithm.engine);
-      Initialize();
-    }
     [StorableConstructor]
     protected EngineAlgorithm(bool deserializing) : base(deserializing) { }
 
@@ -141,9 +134,23 @@ namespace HeuristicLab.Optimization {
       clone.Initialize();
       return clone;
     }
+    protected override void Clone(IDeepCloneable clone, Cloner cloner) {
+      base.Clone(clone, cloner);
+      EngineAlgorithm algorithm = clone as EngineAlgorithm;
+      if (algorithm != null) {
+        algorithm.globalScope = (IScope)cloner.Clone(globalScope);
+        algorithm.engine = (IEngine)cloner.Clone(engine);
+        algorithm.operatorGraph = (OperatorGraph)cloner.Clone(operatorGraph);
+        algorithm.Initialize();
+      }
+    }
 
     public UserDefinedAlgorithm CreateUserDefinedAlgorithm() {
-      return new UserDefinedAlgorithm(this, new Cloner());
+      UserDefinedAlgorithm algorithm = new UserDefinedAlgorithm();
+      Cloner cloner = new Cloner();
+      cloner.RegisterClonedObject(this, algorithm);
+      Clone(algorithm, cloner);
+      return algorithm;
     }
 
     public override void Prepare() {

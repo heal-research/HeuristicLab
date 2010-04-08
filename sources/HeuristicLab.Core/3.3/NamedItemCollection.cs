@@ -57,8 +57,10 @@ namespace HeuristicLab.Core {
       return Clone(new Cloner());
     }
     public virtual IDeepCloneable Clone(Cloner cloner) {
-      NamedItemCollection<T> clone = (NamedItemCollection<T>)Activator.CreateInstance(this.GetType(), this.Select(x => (T)cloner.Clone(x)));
+      NamedItemCollection<T> clone = (NamedItemCollection<T>)Activator.CreateInstance(this.GetType());
       cloner.RegisterClonedObject(this, clone);
+      foreach (string key in dict.Keys)
+        clone.dict.Add(key, (T)cloner.Clone(dict[key]));
       return clone;
     }
 

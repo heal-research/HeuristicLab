@@ -125,15 +125,6 @@ namespace HeuristicLab.Optimization {
       runsCounter = 0;
       runs = new RunCollection();
     }
-    internal Algorithm(Algorithm algorithm, Cloner cloner)
-      : base(algorithm.Name, algorithm.Description, (ParameterCollection)cloner.Clone(algorithm.Parameters)) {
-      executionState = algorithm.executionState;
-      executionTime = algorithm.executionTime;
-      problem = (IProblem)cloner.Clone(algorithm.problem);
-      runsCounter = algorithm.runsCounter;
-      runs = (RunCollection)cloner.Clone(algorithm.runs);
-      Initialize();
-    }
     [StorableConstructor]
     protected Algorithm(bool deserializing) : base(deserializing) { }
 
@@ -152,6 +143,21 @@ namespace HeuristicLab.Optimization {
       clone.runs = (RunCollection)cloner.Clone(runs);
       clone.Initialize();
       return clone;
+    }
+    protected virtual void Clone(IDeepCloneable clone, Cloner cloner) {
+      Algorithm algorithm = clone as Algorithm;
+      if (algorithm != null) {
+        algorithm.name = name;
+        algorithm.description = description;
+        foreach (IParameter param in Parameters)
+          algorithm.Parameters.Add((IParameter)cloner.Clone(param));
+        algorithm.executionState = executionState;
+        algorithm.executionTime = executionTime;
+        algorithm.problem = (IProblem)cloner.Clone(problem);
+        algorithm.runsCounter = runsCounter;
+        algorithm.runs = (RunCollection)cloner.Clone(runs);
+        algorithm.Initialize();
+      }
     }
 
     public virtual void Prepare() {

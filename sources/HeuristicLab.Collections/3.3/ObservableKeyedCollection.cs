@@ -31,7 +31,7 @@ namespace HeuristicLab.Collections {
   [StorableClass]
   public abstract class ObservableKeyedCollection<TKey, TItem> : IObservableKeyedCollection<TKey, TItem> {
     [Storable]
-    private Dictionary<TKey, TItem> dict;
+    protected Dictionary<TKey, TItem> dict;
 
     #region Properties
     public int Count {
