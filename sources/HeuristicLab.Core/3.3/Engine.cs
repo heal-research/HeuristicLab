@@ -91,7 +91,7 @@ namespace HeuristicLab.Core {
       lastUpdateTime = DateTime.Now;
       timer.Start();
       while (!pausePending && !stopPending && (executionStack.Count > 0)) {
-        ProcessNextOperator();
+        ProcessNextOperation();
       }
       timer.Stop();
       ExecutionTime += DateTime.Now - lastUpdateTime;
@@ -100,7 +100,7 @@ namespace HeuristicLab.Core {
       else OnStopped();
     }
 
-    protected abstract void ProcessNextOperator();
+    protected abstract void ProcessNextOperation();
 
     private void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
       DateTime now = DateTime.Now;

@@ -40,7 +40,7 @@ namespace HeuristicLab.SequentialEngine {
     /// <remarks>If an error occurs during the execution the operation is aborted and the operation
     /// is pushed on the stack again.<br/>
     /// If the execution was successful <see cref="EngineBase.OnOperationExecuted"/> is called.</remarks>
-    protected override void ProcessNextOperator() {
+    protected override void ProcessNextOperation() {
       currentOperator = null;
       IOperation next = ExecutionStack.Pop();
       OperationCollection coll = next as OperationCollection;
