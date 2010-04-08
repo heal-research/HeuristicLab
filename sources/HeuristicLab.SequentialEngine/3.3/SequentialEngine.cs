@@ -61,8 +61,10 @@ namespace HeuristicLab.SequentialEngine {
           OnExceptionOccurred(ex);
           Pause();
         }
-        if (operation.Operator.Breakpoint)
+        if (operation.Operator.Breakpoint) {
+          Log.LogMessage(string.Format("Breakpoint: {0} ({1})", operation.Operator.Name, operation.Operator.ItemName));
           Pause();
+        }
       }
     }
 

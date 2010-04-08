@@ -19,10 +19,19 @@
  */
 #endregion
 
-namespace HeuristicLab.Core {
-  public interface IEngine : IExecutable {
-    ILog Log { get; }
+using System;
+using System.Collections.Generic;
+using HeuristicLab.Common;
 
-    void Prepare(IOperation initialOperation);
+namespace HeuristicLab.Core {
+  public interface ILog : IItem {
+    IEnumerable<string> Messages { get; }
+
+    void Clear();
+    void LogMessage(string message);
+    void LogException(Exception ex);
+
+    event EventHandler<EventArgs<string>> MessageAdded;
+    event EventHandler Cleared;
   }
 }

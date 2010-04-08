@@ -22,6 +22,7 @@
 using System;
 using System.Text;
 using System.Windows.Forms;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Core.Views {
   /// <summary>
@@ -44,26 +45,10 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     /// <param name="ex">The exception to display.</param>
     public static void ShowErrorMessageBox(Exception ex) {
-      MessageBox.Show(BuildErrorMessage(ex),
+      MessageBox.Show(Log.BuildErrorMessage(ex),
                       "Error - " + ex.GetType().Name,
                       MessageBoxButtons.OK,
                       MessageBoxIcon.Error);
-    }
-    /// <summary>
-    /// Builds an error message out of an exception and formats it accordingly.
-    /// </summary>
-    /// <param name="ex">The exception to format.</param>
-    /// <returns>The formated message.</returns>
-    public static string BuildErrorMessage(Exception ex) {
-      string nl = Environment.NewLine;
-      StringBuilder sb = new StringBuilder();
-      sb.Append("Sorry, but something went wrong!" + nl + ex.Message + nl + ex.StackTrace);
-
-      while (ex.InnerException != null) {
-        ex = ex.InnerException;
-        sb.Append(nl + "-----" + nl + ex.Message + nl + ex.StackTrace);
-      }
-      return sb.ToString();
     }
     #endregion
   }

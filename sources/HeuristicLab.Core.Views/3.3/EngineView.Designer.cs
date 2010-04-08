@@ -46,8 +46,7 @@ namespace HeuristicLab.Core.Views {
     private void InitializeComponent() {
       this.executionTimeTextBox = new System.Windows.Forms.TextBox();
       this.executionTimeLabel = new System.Windows.Forms.Label();
-      this.logTextBox = new System.Windows.Forms.TextBox();
-      this.logLabel = new System.Windows.Forms.Label();
+      this.logView = new HeuristicLab.Core.Views.LogView();
       this.SuspendLayout();
       // 
       // executionTimeTextBox
@@ -69,37 +68,25 @@ namespace HeuristicLab.Core.Views {
       this.executionTimeLabel.TabIndex = 0;
       this.executionTimeLabel.Text = "&Execution Time:";
       // 
-      // logTextBox
+      // logView
       // 
-      this.logTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+      this.logView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.logTextBox.Location = new System.Drawing.Point(0, 39);
-      this.logTextBox.Multiline = true;
-      this.logTextBox.Name = "logTextBox";
-      this.logTextBox.ReadOnly = true;
-      this.logTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-      this.logTextBox.Size = new System.Drawing.Size(430, 315);
-      this.logTextBox.TabIndex = 3;
-      this.logTextBox.WordWrap = false;
-      // 
-      // logLabel
-      // 
-      this.logLabel.AutoSize = true;
-      this.logLabel.Location = new System.Drawing.Point(3, 23);
-      this.logLabel.Name = "logLabel";
-      this.logLabel.Size = new System.Drawing.Size(28, 13);
-      this.logLabel.TabIndex = 2;
-      this.logLabel.Text = "&Log:";
+      this.logView.Caption = "LogView";
+      this.logView.Content = null;
+      this.logView.Location = new System.Drawing.Point(0, 26);
+      this.logView.Name = "logView";
+      this.logView.Size = new System.Drawing.Size(430, 328);
+      this.logView.TabIndex = 2;
       // 
       // EngineView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.logTextBox);
       this.Controls.Add(this.executionTimeTextBox);
-      this.Controls.Add(this.logLabel);
       this.Controls.Add(this.executionTimeLabel);
+      this.Controls.Add(this.logView);
       this.Name = "EngineView";
       this.Size = new System.Drawing.Size(430, 354);
       this.ResumeLayout(false);
@@ -111,8 +98,7 @@ namespace HeuristicLab.Core.Views {
 
     protected System.Windows.Forms.TextBox executionTimeTextBox;
     protected System.Windows.Forms.Label executionTimeLabel;
-    protected System.Windows.Forms.TextBox logTextBox;
-    protected System.Windows.Forms.Label logLabel;
+    protected LogView logView;
 
   }
 }

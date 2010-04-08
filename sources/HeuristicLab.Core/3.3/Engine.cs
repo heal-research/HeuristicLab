@@ -29,6 +29,12 @@ namespace HeuristicLab.Core {
   [StorableClass]
   public abstract class Engine : Executable, IEngine {
     [Storable]
+    protected ILog log;
+    public ILog Log {
+      get { return log; }
+    }
+
+    [Storable]
     private Stack<IOperation> executionStack;
     protected Stack<IOperation> ExecutionStack {
       get { return executionStack; }
@@ -40,7 +46,16 @@ namespace HeuristicLab.Core {
 
     protected Engine()
       : base() {
+      log = new Log();
       executionStack = new Stack<IOperation>();
+      pausePending = stopPending = false;
+      timer = new System.Timers.Timer(100);
+      timer.AutoReset = true;
+      timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
+    }
+    [StorableConstructor]
+    protected Engine(bool deserializing)
+      : base(deserializing) {
       pausePending = stopPending = false;
       timer = new System.Timers.Timer(100);
       timer.AutoReset = true;
@@ -50,6 +65,7 @@ namespace HeuristicLab.Core {
     public override IDeepCloneable Clone(Cloner cloner) {
       if (ExecutionState == ExecutionState.Started) throw new InvalidOperationException(string.Format("Clone not allowed in execution state \"{0}\".", ExecutionState));
       Engine clone = (Engine)base.Clone(cloner);
+      clone.log = (ILog)cloner.Clone(log);
       IOperation[] contexts = executionStack.ToArray();
       for (int i = contexts.Length - 1; i >= 0; i--)
         clone.executionStack.Push((IOperation)cloner.Clone(contexts[i]));
@@ -70,18 +86,42 @@ namespace HeuristicLab.Core {
         executionStack.Push(initialOperation);
       OnPrepared();
     }
+    protected override void OnPrepared() {
+      Log.LogMessage("Engine prepared");
+      base.OnPrepared();
+    }
+
     public override void Start() {
       base.Start();
       ThreadPool.QueueUserWorkItem(new WaitCallback(Run), null);
     }
+    protected override void OnStarted() {
+      Log.LogMessage("Engine started");
+      base.OnStarted();
+    }
+
     public override void Pause() {
       base.Pause();
       pausePending = true;
     }
+    protected override void OnPaused() {
+      Log.LogMessage("Engine paused");
+      base.OnPaused();
+    }
+
     public override void Stop() {
       base.Stop();
       stopPending = true;
       if (ExecutionState == ExecutionState.Paused) OnStopped();
+    }
+    protected override void OnStopped() {
+      Log.LogMessage("Engine stopped");
+      base.OnStopped();
+    }
+
+    protected override void OnExceptionOccurred(Exception exception) {
+      Log.LogException(exception);
+      base.OnExceptionOccurred(exception);
     }
 
     private void Run(object state) {

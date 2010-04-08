@@ -20,32 +20,35 @@
 #endregion
 
 using System;
+using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Core.Views {
   /// <summary>
   /// Base class for editors of engines.
   /// </summary>
-  [View("Engine View")]
-  [Content(typeof(Engine), true)]
-  [Content(typeof(IEngine), false)]
-  public partial class EngineView : ItemView {
+  [View("Log View")]
+  [Content(typeof(Log), true)]
+  [Content(typeof(ILog), false)]
+  public partial class LogView : ItemView {
     /// <summary>
     /// Gets or sets the current engine.
     /// </summary>
     /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="EditorBase"/>.</remarks>
-    public new IEngine Content {
-      get { return (IEngine)base.Content; }
+    public new ILog Content {
+      get { return (ILog)base.Content; }
       set { base.Content = value; }
     }
 
     /// <summary>
     /// Initializes a new instance of <see cref="EngineBaseEditor"/>.
     /// </summary>
-    public EngineView() {
+    public LogView() {
       InitializeComponent();
+      Caption = "LogView";
     }
-    public EngineView(IEngine content)
+    public LogView(ILog content)
       : this() {
       Content = content;
     }
@@ -55,7 +58,8 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void DeregisterContentEvents() {
-      Content.ExecutionTimeChanged -= new EventHandler(Content_ExecutionTimeChanged);
+      Content.Cleared -= new EventHandler(Content_Cleared);
+      Content.MessageAdded -= new EventHandler<EventArgs<string>>(Content_MessageAdded);
       base.DeregisterContentEvents();
     }
 
@@ -65,7 +69,8 @@ namespace HeuristicLab.Core.Views {
     /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.ExecutionTimeChanged += new EventHandler(Content_ExecutionTimeChanged);
+      Content.Cleared += new EventHandler(Content_Cleared);
+      Content.MessageAdded += new EventHandler<EventArgs<string>>(Content_MessageAdded);
     }
 
     /// <summary>
@@ -74,24 +79,32 @@ namespace HeuristicLab.Core.Views {
     /// <remarks>Calls <see cref="EditorBase.UpdateControls"/> of base class <see cref="EditorBase"/>.</remarks>
     protected override void OnContentChanged() {
       base.OnContentChanged();
+      logTextBox.Clear();
       if (Content == null) {
-        logView.Content = null;
-        logView.Enabled = false;
-        executionTimeTextBox.Text = "-";
-        executionTimeTextBox.Enabled = false;
+        logTextBox.Enabled = false;
       } else {
-        logView.Content = Content.Log;
-        logView.Enabled = true;
-        executionTimeTextBox.Text = Content.ExecutionTime.ToString();
-        executionTimeTextBox.Enabled = true;
+        logTextBox.Enabled = true;
+        if (Content.Messages.FirstOrDefault() != null)
+          logTextBox.Text = Content.Messages.Aggregate((x, y) => x + Environment.NewLine + y);
       }
     }
 
-    protected virtual void Content_ExecutionTimeChanged(object sender, EventArgs e) {
+    protected virtual void Content_MessageAdded(object sender, EventArgs<string> e) {
       if (InvokeRequired)
-        Invoke(new EventHandler(Content_ExecutionTimeChanged), sender, e);
+        Invoke(new EventHandler<EventArgs<string>>(Content_MessageAdded), sender, e);
       else
-        executionTimeTextBox.Text = Content.ExecutionTime.ToString();
+        logTextBox.Text = Content.Messages.Aggregate((x, y) => x + Environment.NewLine + y);
+    }
+
+    protected virtual void Content_Cleared(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_Cleared), sender, e);
+      else
+        logTextBox.Clear();
+    }
+
+    protected virtual void clearButton_Click(object sender, EventArgs e) {
+      Content.Clear();
     }
   }
 }

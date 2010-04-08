@@ -191,12 +191,13 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
          MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, options);
     }
     private static string BuildErrorMessage(Exception ex) {
+      string nl = Environment.NewLine;
       StringBuilder sb = new StringBuilder();
-      sb.Append("Sorry, but something went wrong!\n\n" + ex.Message + "\n\n" + ex.StackTrace);
+      sb.Append(ex.Message + nl + ex.StackTrace);
 
       while (ex.InnerException != null) {
         ex = ex.InnerException;
-        sb.Append("\n\n-----\n\n" + ex.Message + "\n\n" + ex.StackTrace);
+        sb.Append(nl + "-----" + nl + ex.Message + nl + ex.StackTrace);
       }
       return sb.ToString();
     }
