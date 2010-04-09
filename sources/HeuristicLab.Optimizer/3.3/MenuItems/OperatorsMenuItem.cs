@@ -47,25 +47,36 @@ namespace HeuristicLab.Optimizer.MenuItems {
       menuItem = ToolStripItem as ToolStripMenuItem;
       if (menuItem != null) {
         menuItem.CheckOnClick = true;
-        menuItem.Checked = true;
+        menuItem.Checked = Properties.Settings.Default.ShowOperatorsSidebar;
       }
     }
 
     private void MainForm_ViewShown(object sender, ViewShownEventArgs e) {
-      if ((e.View is OperatorsSidebar) && (menuItem != null))
+      if ((e.View is OperatorsSidebar) && (menuItem != null)) {
         menuItem.Checked = true;
+        Properties.Settings.Default.ShowOperatorsSidebar = true;
+        Properties.Settings.Default.Save();
+      }
     }
     private void MainForm_ViewHidden(object sender, ViewEventArgs e) {
-      if ((e.View is OperatorsSidebar) && (menuItem != null))
+      if ((e.View is OperatorsSidebar) && (menuItem != null)) {
         menuItem.Checked = false;
+        Properties.Settings.Default.ShowOperatorsSidebar = false;
+        Properties.Settings.Default.Save();
+      }
     }
 
     public override void Execute() {
       var view = MainFormManager.MainForm.Views.OfType<OperatorsSidebar>().FirstOrDefault();
-      if (view.IsShown)
+      if (view == null) {
+        OperatorsSidebar operatorsSidebar = new OperatorsSidebar();
+        operatorsSidebar.Dock = DockStyle.Left;
+        operatorsSidebar.Show();
+      } else if (view.IsShown) {
         view.Hide();
-      else
+      } else {
         view.Show();
+      }
     }
   }
 }

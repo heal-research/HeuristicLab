@@ -46,9 +46,11 @@ namespace HeuristicLab.Optimizer {
       Title = "HeuristicLab Optimizer";
       if (version != null) Title += " " + version.Version;
       ViewClosed += new EventHandler<ViewEventArgs>(FileManager.ViewClosed);
-      OperatorsSidebar operatorsSidebar = new OperatorsSidebar();
-      operatorsSidebar.Dock = DockStyle.Left;
-      operatorsSidebar.Show();
+      if (Properties.Settings.Default.ShowOperatorsSidebar) {
+        OperatorsSidebar operatorsSidebar = new OperatorsSidebar();
+        operatorsSidebar.Dock = DockStyle.Left;
+        operatorsSidebar.Show();
+      }
       if (Properties.Settings.Default.ShowStartPage) {
         StartPage startPage = new StartPage();
         startPage.Show();

@@ -34,5 +34,17 @@ namespace HeuristicLab.Optimizer.Properties {
                 this["ShowStartPage"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowOperatorsSidebar {
+            get {
+                return ((bool)(this["ShowOperatorsSidebar"]));
+            }
+            set {
+                this["ShowOperatorsSidebar"] = value;
+            }
+        }
     }
 }
