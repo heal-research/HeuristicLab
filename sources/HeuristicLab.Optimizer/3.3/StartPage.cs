@@ -33,8 +33,6 @@ using System.Threading;
 namespace HeuristicLab.Optimizer {
   [View("Start Page")]
   public partial class StartPage : HeuristicLab.MainForm.WindowsForms.View {
-    private List<INamedItem> samples;
-
     public StartPage() {
       InitializeComponent();
       Caption = "Start Page";
