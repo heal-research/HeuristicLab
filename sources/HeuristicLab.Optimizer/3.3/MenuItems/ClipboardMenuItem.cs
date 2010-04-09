@@ -27,17 +27,17 @@ using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Optimizer.MenuItems {
-  internal class OperatorsMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, IOptimizerUserInterfaceItemProvider {
+  internal class ClipboardMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, IOptimizerUserInterfaceItemProvider {
     private ToolStripMenuItem menuItem;
 
     public override string Name {
-      get { return "&Operators"; }
+      get { return "&Clipboard"; }
     }
     public override IEnumerable<string> Structure {
       get { return new string[] { "&View" }; }
     }
     public override int Position {
-      get { return 2300; }
+      get { return 2200; }
     }
 
     protected override void OnToolStripItemSet(EventArgs e) {
@@ -47,35 +47,31 @@ namespace HeuristicLab.Optimizer.MenuItems {
       menuItem = ToolStripItem as ToolStripMenuItem;
       if (menuItem != null) {
         menuItem.CheckOnClick = true;
-        menuItem.Checked = Properties.Settings.Default.ShowOperatorsSidebar;
+        menuItem.Checked = Properties.Settings.Default.ShowClipboard;
       }
     }
 
     private void MainForm_ViewShown(object sender, ViewShownEventArgs e) {
-      if ((e.View is OperatorsSidebar) && (menuItem != null)) {
+      if ((e.View is HeuristicLab.Core.Views.Clipboard) && (menuItem != null)) {
         menuItem.Checked = true;
-        Properties.Settings.Default.ShowOperatorsSidebar = true;
+        Properties.Settings.Default.ShowClipboard = true;
         Properties.Settings.Default.Save();
       }
     }
     private void MainForm_ViewHidden(object sender, ViewEventArgs e) {
-      if ((e.View is OperatorsSidebar) && (menuItem != null)) {
+      if ((e.View is HeuristicLab.Core.Views.Clipboard) && (menuItem != null)) {
         menuItem.Checked = false;
-        Properties.Settings.Default.ShowOperatorsSidebar = false;
+        Properties.Settings.Default.ShowClipboard = false;
         Properties.Settings.Default.Save();
       }
     }
 
     public override void Execute() {
-      var view = MainFormManager.MainForm.Views.OfType<OperatorsSidebar>().FirstOrDefault();
-      if (view == null) {
-        OperatorsSidebar operatorsSidebar = new OperatorsSidebar();
-        operatorsSidebar.Dock = DockStyle.Left;
-        operatorsSidebar.Show();
-      } else if (view.IsShown) {
-        view.Hide();
+      IView clipboard = ((OptimizerMainForm)MainFormManager.MainForm).Clipboard;
+      if (clipboard.IsShown) {
+        clipboard.Hide();
       } else {
-        view.Show();
+        clipboard.Show();
       }
     }
   }

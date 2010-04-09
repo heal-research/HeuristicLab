@@ -46,5 +46,17 @@ namespace HeuristicLab.Optimizer.Properties {
                 this["ShowOperatorsSidebar"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowClipboard {
+            get {
+                return ((bool)(this["ShowClipboard"]));
+            }
+            set {
+                this["ShowClipboard"] = value;
+            }
+        }
     }
 }

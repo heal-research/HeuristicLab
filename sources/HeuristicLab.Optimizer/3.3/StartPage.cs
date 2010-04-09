@@ -56,7 +56,6 @@ namespace HeuristicLab.Optimizer {
 
       samplesListView.Enabled = false;
       showStartPageCheckBox.Checked = Properties.Settings.Default.ShowStartPage;
-      Cursor = Cursors.AppStarting;
 
       ThreadPool.QueueUserWorkItem(new WaitCallback(LoadSamples));
     }
@@ -112,7 +111,6 @@ namespace HeuristicLab.Optimizer {
             samplesListView.Columns[i].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
         }
         loadingPanel.Visible = false;
-        Cursor = Cursors.Default;
       }
     }
 

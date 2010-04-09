@@ -29,6 +29,11 @@ using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Optimizer {
   internal partial class OptimizerMainForm : DockingMainForm {
+    private HeuristicLab.Core.Views.Clipboard clipboard;
+    public HeuristicLab.Core.Views.Clipboard Clipboard {
+      get { return clipboard; }
+    }
+
     public OptimizerMainForm()
       : base() {
       InitializeComponent();
@@ -46,6 +51,12 @@ namespace HeuristicLab.Optimizer {
       Title = "HeuristicLab Optimizer";
       if (version != null) Title += " " + version.Version;
       ViewClosed += new EventHandler<ViewEventArgs>(FileManager.ViewClosed);
+
+      clipboard = new HeuristicLab.Core.Views.Clipboard();
+      clipboard.Dock = DockStyle.Left;
+      if (Properties.Settings.Default.ShowClipboard) {
+        clipboard.Show();
+      }
       if (Properties.Settings.Default.ShowOperatorsSidebar) {
         OperatorsSidebar operatorsSidebar = new OperatorsSidebar();
         operatorsSidebar.Dock = DockStyle.Left;
