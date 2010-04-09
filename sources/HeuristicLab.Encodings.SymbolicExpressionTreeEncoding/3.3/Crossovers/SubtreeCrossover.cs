@@ -26,6 +26,7 @@ using HeuristicLab.Data;
 using System.Linq;
 using System;
 using HeuristicLab.Parameters;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
 
@@ -38,8 +39,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [Item("SubtreeCrossover", "An operator which performs subtree swapping crossover.")]
   [StorableClass]
   public class SubtreeCrossover : SymbolicExpressionTreeCrossover {
-    private const int MAX_TRIES = 100;
-
     public IValueLookupParameter<PercentValue> InternalCrossoverPointProbabilityParameter {
       get { return (IValueLookupParameter<PercentValue>)Parameters["InternalCrossoverPointProbability"]; }
     }
@@ -51,64 +50,96 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
     protected override SymbolicExpressionTree Cross(IRandom random, ISymbolicExpressionGrammar grammar,
       SymbolicExpressionTree parent0, SymbolicExpressionTree parent1,
-      IntValue maxTreeSize, IntValue maxTreeHeight) {
-      return Apply(random, grammar, parent0, parent1, InternalCrossoverPointProbabilityParameter.ActualValue.Value, maxTreeSize.Value, maxTreeHeight.Value);
+      IntValue maxTreeSize, IntValue maxTreeHeight, out bool success) {
+      return Cross(random, grammar, parent0, parent1, InternalCrossoverPointProbabilityParameter.ActualValue.Value, maxTreeSize.Value, maxTreeHeight.Value, out success);
     }
 
-    public static SymbolicExpressionTree Apply(IRandom random, ISymbolicExpressionGrammar grammar,
+    public static SymbolicExpressionTree Cross(IRandom random, ISymbolicExpressionGrammar grammar,
       SymbolicExpressionTree parent0, SymbolicExpressionTree parent1,
-      double internalCrossoverPointProbability, int maxTreeSize, int maxTreeHeight) {
-      int tries = 0;
-      while (tries++ < MAX_TRIES) {
-        // select a random crossover point in the first parent 
-        SymbolicExpressionTreeNode crossoverPoint0;
-        int replacedSubtreeIndex;
-        SelectCrossoverPoint(random, parent0, internalCrossoverPointProbability, out crossoverPoint0, out replacedSubtreeIndex);
+      double internalCrossoverPointProbability, int maxTreeSize, int maxTreeHeight, out bool success) {
+      // select a random crossover point in the first parent 
+      SymbolicExpressionTreeNode crossoverPoint0;
+      int replacedSubtreeIndex;
+      SelectCrossoverPoint(random, parent0, internalCrossoverPointProbability, out crossoverPoint0, out replacedSubtreeIndex);
 
-        // calculate the max size and height that the inserted branch can have 
-        int maxInsertedBranchSize = maxTreeSize - (parent0.Size - crossoverPoint0.SubTrees[replacedSubtreeIndex].GetSize());
-        int maxInsertedBranchHeight = maxTreeHeight - GetBranchLevel(parent0.Root, crossoverPoint0);
+      // calculate the max size and height that the inserted branch can have 
+      int maxInsertedBranchSize = maxTreeSize - (parent0.Size - crossoverPoint0.SubTrees[replacedSubtreeIndex].GetSize());
+      int maxInsertedBranchHeight = maxTreeHeight - GetBranchLevel(parent0.Root, crossoverPoint0);
 
-        var allowedBranches = from branch in IterateNodes(parent1.Root)
-                              where branch.GetSize() < maxInsertedBranchSize
-                              where branch.GetHeight() < maxInsertedBranchHeight
-                              where grammar.AllowedSymbols(crossoverPoint0.Symbol, replacedSubtreeIndex).Contains(branch.Symbol)
-                              select branch;
+      var allowedBranches = from branch in IterateNodes(parent1.Root)
+                            where branch.GetSize() < maxInsertedBranchSize
+                            where branch.GetHeight() < maxInsertedBranchHeight
+                            where grammar.GetAllowedSymbols(crossoverPoint0.Symbol, replacedSubtreeIndex).Contains(branch.Symbol)
+                            where IsMatchingPointType(parent0, crossoverPoint0, branch)
+                            select branch;
 
-        if (allowedBranches.Count() > 0) {
-          var selectedBranch = SelectRandomBranch(random, allowedBranches, internalCrossoverPointProbability);
+      if (allowedBranches.Count() > 0) {
+        var selectedBranch = SelectRandomBranch(random, allowedBranches, internalCrossoverPointProbability);
 
-          // manipulate the tree of parent0 in place
-          // replace the branch in tree0 with the selected branch from tree1
-          crossoverPoint0.RemoveSubTree(replacedSubtreeIndex);
-          crossoverPoint0.InsertSubTree(replacedSubtreeIndex, selectedBranch);
-          return parent0;
-        }
+        // manipulate the tree of parent0 in place
+        // replace the branch in tree0 with the selected branch from tree1
+        crossoverPoint0.RemoveSubTree(replacedSubtreeIndex);
+        crossoverPoint0.InsertSubTree(replacedSubtreeIndex, selectedBranch);
+        success = true;
+        return parent0;
       }
 
-      // TODO: we should have a way to track the number of failed crossover attempts
-      // for now just return the first parent unchanged
+      success = false;
       return parent0;
+    }
+
+    private static bool IsMatchingPointType(SymbolicExpressionTree tree, SymbolicExpressionTreeNode parent, SymbolicExpressionTreeNode newBranch) {
+      var functionCalls = (from node in IterateNodes(newBranch)
+                           let invokeNode = node as InvokeFunctionTreeNode
+                           let argNode = node as ArgumentTreeNode
+                           where invokeNode != null || argNode != null
+                           let name = invokeNode != null ? invokeNode.InvokedFunctionName : "ARG" + argNode.ArgumentIndex
+                           let argCount = invokeNode != null ? invokeNode.SubTrees.Count : 0
+                           select new { FunctionName = name, FunctionArgumentCount = argCount }).Distinct();
+      var definingBranch = GetDefiningBranch(tree, parent);
+      if (definingBranch == null) return false;
+      foreach (var functionCall in functionCalls) {
+        if (!definingBranch.DynamicSymbols.Contains(functionCall.FunctionName) ||
+          definingBranch.GetDynamicSymbolArgumentCount(functionCall.FunctionName) != functionCall.FunctionArgumentCount)
+          return false;
+      }
+      return true;
+    }
+
+    private static SymbolicExpressionTreeNode GetDefiningBranch(SymbolicExpressionTree tree, SymbolicExpressionTreeNode parent) {
+      foreach (var treeNode in tree.Root.SubTrees) {
+        if (IterateNodes(treeNode).Contains(parent)) return treeNode;
+      }
+      return null;
     }
 
     private static void SelectCrossoverPoint(IRandom random, SymbolicExpressionTree parent0, double internalNodeProbability, out SymbolicExpressionTreeNode crossoverPoint, out int subtreeIndex) {
       var crossoverPoints = from branch in IterateNodes(parent0.Root)
                             where branch.SubTrees.Count > 0
+                            where !(branch.Symbol is ProgramRootSymbol)
                             from index in Enumerable.Range(0, branch.SubTrees.Count)
                             let p = new { CrossoverPoint = branch, SubtreeIndex = index, IsLeaf = branch.SubTrees[index].SubTrees.Count == 0 }
                             select p;
       var internalCrossoverPoints = (from p in crossoverPoints
                                      where !p.IsLeaf
                                      select p).ToList();
-      // select internal crossover point or leaf
-      if (random.NextDouble() < internalNodeProbability && internalCrossoverPoints.Count > 0) {
+      var leafCrossoverPoints = (from p in crossoverPoints
+                                 where p.IsLeaf
+                                 select p).ToList();
+      if (internalCrossoverPoints.Count == 0) {
+        var selectedCrossoverPoint = leafCrossoverPoints[random.Next(leafCrossoverPoints.Count)];
+        crossoverPoint = selectedCrossoverPoint.CrossoverPoint;
+        subtreeIndex = selectedCrossoverPoint.SubtreeIndex;
+      } else if (leafCrossoverPoints.Count == 0) {
+        var selectedCrossoverPoint = internalCrossoverPoints[random.Next(internalCrossoverPoints.Count)];
+        crossoverPoint = selectedCrossoverPoint.CrossoverPoint;
+        subtreeIndex = selectedCrossoverPoint.SubtreeIndex;
+      } else if (random.NextDouble() < internalNodeProbability && internalCrossoverPoints.Count > 0) {
+        // select internal crossover point or leaf
         var selectedCrossoverPoint = internalCrossoverPoints[random.Next(internalCrossoverPoints.Count)];
         crossoverPoint = selectedCrossoverPoint.CrossoverPoint;
         subtreeIndex = selectedCrossoverPoint.SubtreeIndex;
       } else {
-        var leafCrossoverPoints = (from p in crossoverPoints
-                                   where p.IsLeaf
-                                   select p).ToList();
         var selectedCrossoverPoint = leafCrossoverPoints[random.Next(leafCrossoverPoints.Count)];
         crossoverPoint = selectedCrossoverPoint.CrossoverPoint;
         subtreeIndex = selectedCrossoverPoint.SubtreeIndex;
@@ -124,13 +155,18 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
                                      where g.Key > 0
                                      from branch in g
                                      select branch).ToList();
-      if (random.NextDouble() < internalNodeProbability && allowedInternalBranches.Count > 0) {
+      var allowedLeafBranches = (from g in groupedBranches
+                                 where g.Key == 0
+                                 from leaf in g
+                                 select leaf).ToList();
+      if (allowedInternalBranches.Count == 0) {
+        return allowedLeafBranches[random.Next(allowedLeafBranches.Count)];
+      } else if (allowedLeafBranches.Count == 0) {
+        return allowedInternalBranches[random.Next(allowedInternalBranches.Count)];
+      } else if (random.NextDouble() < internalNodeProbability) {
+        // when leaf and internal nodes are possible then choose either a leaf or internal node with internalNodeProbability
         return allowedInternalBranches[random.Next(allowedInternalBranches.Count)];
       } else {
-        var allowedLeafBranches = (from g in groupedBranches
-                                   where g.Key == 0
-                                   from leaf in g
-                                   select leaf).ToList();
         return allowedLeafBranches[random.Next(allowedLeafBranches.Count)];
       }
     }

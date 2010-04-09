@@ -40,17 +40,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [StorableClass]
   public class SymbolicRegressionMeanSquaredErrorEvaluator : SymbolicRegressionEvaluator {
     protected override double Evaluate(SymbolicExpressionTree solution, Dataset dataset, StringValue targetVariable, IntValue samplesStart, IntValue samplesEnd, DoubleValue numberOfEvaluatedNodes) {
-      double mse = Apply(solution, dataset, targetVariable.Value, samplesStart.Value, samplesEnd.Value);
+      double mse = Calculate(solution, dataset, targetVariable.Value, samplesStart.Value, samplesEnd.Value);
       numberOfEvaluatedNodes.Value += solution.Size * (samplesEnd.Value - samplesStart.Value);
       return mse;
     }
 
-    public static double Apply(SymbolicExpressionTree solution, Dataset dataset, string targetVariable, int start, int end) {
+    public static double Calculate(SymbolicExpressionTree solution, Dataset dataset, string targetVariable, int start, int end) {
       SimpleArithmeticExpressionEvaluator evaluator = new SimpleArithmeticExpressionEvaluator();
+      int targetVariableIndex = dataset.GetVariableIndex(targetVariable);
       var estimatedValues = evaluator.EstimatedValues(solution, dataset, Enumerable.Range(start, end - start));
-      var originalValues = dataset.VariableValues(targetVariable, start, end);
-      var values = new DoubleMatrix(MatrixExtensions<double>.Create(estimatedValues.ToArray(), originalValues));
-      return SimpleMSEEvaluator.Calculate(values);
+      var originalValues = from row in Enumerable.Range(start, end - start) select dataset[row, targetVariableIndex];
+      return SimpleMSEEvaluator.Calculate(originalValues, estimatedValues);
     }
   }
 }

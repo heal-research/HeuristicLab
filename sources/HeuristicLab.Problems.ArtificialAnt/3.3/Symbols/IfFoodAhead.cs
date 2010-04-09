@@ -20,7 +20,11 @@
 #endregion
 
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Core;
 namespace HeuristicLab.Problems.ArtificialAnt {
+  [StorableClass]
+  [Item("IfFoodAhead", "Represents the if-food-ahead symbol in a artificial ant expression.")]
   public sealed class IfFoodAhead : Symbol {
   }
 }

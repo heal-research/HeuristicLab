@@ -54,8 +54,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols {
 
     public override void ResetLocalParameters(IRandom random) {
       base.ResetLocalParameters(random);
-      var range = Symbol.MaxValue.Value - Symbol.MaxValue.Value;
-      Value = random.NextDouble() * range - Symbol.MinValue.Value;
+      var range = Symbol.MaxValue - Symbol.MaxValue;
+      Value = random.NextDouble() * range - Symbol.MinValue;
     }
 
     public override object Clone() {

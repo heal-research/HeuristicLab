@@ -34,10 +34,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [Item("Dataset", "Represents a dataset containing data that should be analyzed.")]
   [StorableClass]
   public sealed class Dataset : NamedItem, IStringConvertibleMatrix {
-    private Dictionary<int, Dictionary<int, double>>[] cachedMeans;
-    private Dictionary<int, Dictionary<int, double>>[] cachedRanges;
-    private bool cachedValuesInvalidated = true;
-
     public Dataset()
       : this(new string[] { "x" }, new double[,] { { 0.0 } }) {
     }
@@ -52,11 +48,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
       this.variableNames = new StringArray(variableNames.ToArray());
     }
 
+    [Storable]
     private StringArray variableNames;
     public IEnumerable<string> VariableNames {
       get { return variableNames; }
     }
 
+    [Storable]
     private DoubleMatrix data;
     private DoubleMatrix Data {
       get { return data; }
@@ -92,10 +90,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     // access to full columns
     public double[] this[string variableName] {
-      get { return VariableValues(VariableIndex(variableName), 0, data.Rows); }
+      get { return GetVariableValues(GetVariableIndex(variableName), 0, data.Rows); }
     }
 
-    public double[] VariableValues(int variableIndex, int start, int end) {
+    public double[] GetVariableValues(int variableIndex, int start, int end) {
       if (start < 0 || !(start <= end))
         throw new ArgumentException("Start must be between 0 and end (" + end + ").");
       if (end > data.Rows || end < start)
@@ -107,16 +105,16 @@ namespace HeuristicLab.Problems.DataAnalysis {
       return values;
     }
 
-    public double[] VariableValues(string variableName, int start, int end) {
-      return VariableValues(VariableIndex(variableName), start, end);
+    public double[] GetVariableValues(string variableName, int start, int end) {
+      return GetVariableValues(GetVariableIndex(variableName), start, end);
     }
 
     #region Variable name methods
-    public string VariableName(int variableIndex) {
+    public string GetVariableName(int variableIndex) {
       return variableNames[variableIndex];
     }
 
-    public int VariableIndex(string variableName) {
+    public int GetVariableIndex(string variableName) {
       for (int i = 0; i < variableNames.Length; i++) {
         if (variableNames[i].Equals(variableName)) return i;
       }
@@ -124,120 +122,94 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public void SetVariableName(int variableIndex, string name) {
+      if (variableNames.Contains(name)) throw new ArgumentException("The data set already contains a variable with name " + name + ".");
       variableNames[variableIndex] = name;
     }
 
     #endregion
 
     #region variable statistics
-    public double Mean(string variableName) {
-      return Mean(VariableIndex(variableName));
+    public double GetMean(string variableName) {
+      return GetMean(GetVariableIndex(variableName));
     }
 
-    public double Mean(string variableName, int start, int end) {
-      return Mean(VariableIndex(variableName), start, end);
+    public double GetMean(string variableName, int start, int end) {
+      return GetMean(GetVariableIndex(variableName), start, end);
     }
 
-    public double Mean(int variableIndex) {
-      return Mean(variableIndex, 0, data.Rows);
+    public double GetMean(int variableIndex) {
+      return GetMean(variableIndex, 0, data.Rows);
     }
 
-    public double Mean(int variableIndex, int start, int end) {
-      if (cachedValuesInvalidated) CreateDictionaries();
-      if (!cachedMeans[variableIndex].ContainsKey(start) || !cachedMeans[variableIndex][start].ContainsKey(end)) {
-        double mean = VariableValues(variableIndex, start, end).Average();
-        if (!cachedMeans[variableIndex].ContainsKey(start)) cachedMeans[variableIndex][start] = new Dictionary<int, double>();
-        cachedMeans[variableIndex][start][end] = mean;
-        return mean;
-      } else {
-        return cachedMeans[variableIndex][start][end];
-      }
+    public double GetMean(int variableIndex, int start, int end) {
+      return GetVariableValues(variableIndex, start, end).Average();
     }
 
-    public double Range(string variableName) {
-      return Range(VariableIndex(variableName));
+    public double GetRange(string variableName) {
+      return GetRange(GetVariableIndex(variableName));
     }
 
-    public double Range(int variableIndex) {
-      return Range(variableIndex, 0, data.Rows);
+    public double GetRange(int variableIndex) {
+      return GetRange(variableIndex, 0, data.Rows);
     }
 
-    public double Range(string variableName, int start, int end) {
-      return Range(VariableIndex(variableName), start, end);
+    public double GetRange(string variableName, int start, int end) {
+      return GetRange(GetVariableIndex(variableName), start, end);
     }
 
-    public double Range(int variableIndex, int start, int end) {
-      if (cachedValuesInvalidated) CreateDictionaries();
-      if (!cachedRanges[variableIndex].ContainsKey(start) || !cachedRanges[variableIndex][start].ContainsKey(end)) {
-        var values = VariableValues(variableIndex, start, end);
-        double range = values.Max() - values.Min();
-        if (!cachedRanges[variableIndex].ContainsKey(start)) cachedRanges[variableIndex][start] = new Dictionary<int, double>();
-        cachedRanges[variableIndex][start][end] = range;
-        return range;
-      } else {
-        return cachedRanges[variableIndex][start][end];
-      }
+    public double GetRange(int variableIndex, int start, int end) {
+      var values = GetVariableValues(variableIndex, start, end);
+      return values.Max() - values.Min();
     }
 
-    public double Max(string variableName) {
-      return Max(VariableIndex(variableName));
+    public double GetMax(string variableName) {
+      return GetMax(GetVariableIndex(variableName));
     }
 
-    public double Max(int variableIndex) {
-      return Max(variableIndex, 0, data.Rows);
+    public double GetMax(int variableIndex) {
+      return GetMax(variableIndex, 0, data.Rows);
     }
 
-    public double Max(string variableName, int start, int end) {
-      return Max(VariableIndex(variableName), start, end);
+    public double GetMax(string variableName, int start, int end) {
+      return GetMax(GetVariableIndex(variableName), start, end);
     }
 
-    public double Max(int variableIndex, int start, int end) {
-      return VariableValues(variableIndex, start, end).Max();
+    public double GetMax(int variableIndex, int start, int end) {
+      return GetVariableValues(variableIndex, start, end).Max();
     }
 
-    public double Min(string variableName) {
-      return Min(VariableIndex(variableName));
+    public double GetMin(string variableName) {
+      return GetMin(GetVariableIndex(variableName));
     }
 
-    public double Min(int variableIndex) {
-      return Min(variableIndex, 0, data.Rows);
+    public double GetMin(int variableIndex) {
+      return GetMin(variableIndex, 0, data.Rows);
     }
 
-    public double Min(string variableName, int start, int end) {
-      return Min(VariableIndex(variableName), start, end);
+    public double GetMin(string variableName, int start, int end) {
+      return GetMin(GetVariableIndex(variableName), start, end);
     }
 
-    public double Min(int variableIndex, int start, int end) {
-      return VariableValues(variableIndex, start, end).Min();
+    public double GetMin(int variableIndex, int start, int end) {
+      return GetVariableValues(variableIndex, start, end).Min();
     }
 
-    public int MissingValues(string variableName) {
-      return MissingValues(VariableIndex(variableName));
+    public int GetMissingValues(string variableName) {
+      return GetMissingValues(GetVariableIndex(variableName));
     }
-    public int MissingValues(int variableIndex) {
-      return MissingValues(variableIndex, 0, data.Rows);
-    }
-
-    public int MissingValues(string variableName, int start, int end) {
-      return MissingValues(VariableIndex(variableName), start, end);
+    public int GetMissingValues(int variableIndex) {
+      return GetMissingValues(variableIndex, 0, data.Rows);
     }
 
-    public int MissingValues(int variableIndex, int start, int end) {
-      return VariableValues(variableIndex, start, end).Count(x => double.IsNaN(x));
+    public int GetMissingValues(string variableName, int start, int end) {
+      return GetMissingValues(GetVariableIndex(variableName), start, end);
+    }
+
+    public int GetMissingValues(int variableIndex, int start, int end) {
+      return GetVariableValues(variableIndex, start, end).Count(x => double.IsNaN(x));
     }
 
     #endregion
-
-    private void CreateDictionaries() {
-      // keep a means and ranges dictionary for each column (possible target variable) of the dataset.
-      cachedMeans = new Dictionary<int, Dictionary<int, double>>[data.Columns];
-      cachedRanges = new Dictionary<int, Dictionary<int, double>>[data.Columns];
-      for (int i = 0; i < data.Columns; i++) {
-        cachedMeans[i] = new Dictionary<int, Dictionary<int, double>>();
-        cachedRanges[i] = new Dictionary<int, Dictionary<int, double>>();
-      }
-      cachedValuesInvalidated = false;
-    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       Dataset clone = (Dataset)base.Clone(cloner);
@@ -249,15 +221,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #region events
     public event EventHandler<EventArgs<int, int>> DataChanged;
     private void OnDataChanged(EventArgs<int, int> e) {
-      cachedValuesInvalidated = true;
-
       var listeners = DataChanged;
       if (listeners != null) listeners(this, e);
     }
     public event EventHandler Reset;
     private void OnReset(EventArgs e) {
-      cachedValuesInvalidated = true;
-
       var listeners = Reset;
       if (listeners != null) listeners(this, e);
     }
@@ -304,7 +272,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
               newValues[row, column] = data[row, column];
             }
           }
-          string formatString = new StringBuilder().Append('#', (int)Math.Log10(value) + 1).ToString(); // >= 100 variables => ###
+          string formatString = new StringBuilder().Append('0', (int)Math.Log10(value) + 1).ToString(); // >= 100 variables => ###
           for (int column = 0; column < value; column++) {
             if (column < data.Columns)
               newVariableNames[column] = variableNames[column];
@@ -333,9 +301,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public bool SetValue(string value, int rowIndex, int columnIndex) {
       if (rowIndex == 0) {
-        // set variable name
-        variableNames[columnIndex] = value;
-        return true;
+        // check if the variable name is already used
+        if (variableNames.Contains(value)) {
+          return false;
+        } else {
+          variableNames[columnIndex] = value;
+          return true;
+        }
       } else {
         double v;
         if (double.TryParse(value, out v)) {

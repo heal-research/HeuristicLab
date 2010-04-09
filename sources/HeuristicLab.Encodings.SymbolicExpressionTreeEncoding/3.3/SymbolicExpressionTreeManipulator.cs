@@ -30,38 +30,39 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// <summary>
   /// A base class for operators that manipulate real-valued vectors.
   /// </summary>
-  [Item("RealVectorManipulator", "A base class for operators that manipulate real-valued vectors.")]
+  [Item("SymbolicExpressionTreeManipulator", "A base class for operators that manipulate symbolic expression trees.")]
   [StorableClass]
-  public abstract class RealVectorManipulator : SingleSuccessorOperator, IRealVectorManipulator, IStochasticOperator, ISymbolicExpressionTreeOperator {
-    public override bool CanChangeName {
-      get { return false; }
-    }
+  public abstract class SymbolicExpressionTreeManipulator : SymbolicExpressionTreeOperator, IManipulator {
+    private const string FailedManipulationEventsParameterName = "FailedManipulationEvents";
 
-    public ILookupParameter<IRandom> RandomParameter {
-      get { return (LookupParameter<IRandom>)Parameters["Random"]; }
+    #region Parameter Properties
+    public IValueParameter<IntValue> FailedManipulationEventsParameter {
+      get { return (IValueParameter<IntValue>)Parameters[FailedManipulationEventsParameterName]; }
     }
-    public ILookupParameter<RealVector> RealVectorParameter {
-      get { return (ILookupParameter<RealVector>)Parameters["RealVector"]; }
-    }
-    public IValueLookupParameter<DoubleMatrix> BoundsParameter {
-      get { return (IValueLookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
-    }
+    #endregion
 
-    protected RealVectorManipulator()
+    #region Properties
+    public IntValue FailedManipulationEvents {
+      get { return FailedManipulationEventsParameter.Value; }
+    }
+    #endregion
+
+    public SymbolicExpressionTreeManipulator()
       : base() {
-      Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
-      Parameters.Add(new LookupParameter<RealVector>("RealVector", "The vector which should be manipulated."));
-      Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "The lower and upper bounds of the real vector."));
+      Parameters.Add(new ValueParameter<IntValue>(FailedManipulationEventsParameterName, "The number of failed manipulation events.", new IntValue()));
     }
 
     public sealed override IOperation Apply() {
-      RealVector vector = RealVectorParameter.ActualValue;
-      Manipulate(RandomParameter.ActualValue, vector);
-      DoubleMatrix bounds = BoundsParameter.ActualValue;
-      if (bounds != null) BoundsChecker.Apply(vector, bounds);
+      SymbolicExpressionTree tree = SymbolicExpressionTreeParameter.ActualValue;
+      bool success;
+      Manipulate(RandomParameter.ActualValue, tree, SymbolicExpressionGrammarParameter.ActualValue,
+        MaxTreeSizeParameter.ActualValue, MaxTreeHeightParameter.ActualValue, out success);
+
+      if (!success) FailedManipulationEvents.Value++;
       return base.Apply();
     }
 
-    protected abstract void Manipulate(IRandom random, RealVector realVector);
+    protected abstract void Manipulate(IRandom random, SymbolicExpressionTree symbolicExpressionTree, ISymbolicExpressionGrammar grammar,
+      IntValue maxTreeSize, IntValue maxTreeHeight, out bool success);
   }
 }

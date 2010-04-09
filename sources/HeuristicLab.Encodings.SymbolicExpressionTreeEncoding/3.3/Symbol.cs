@@ -31,26 +31,23 @@ using HeuristicLab.Parameters;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
   [Item("Symbol", "Represents a symbol in a symbolic function tree.")]
-  public abstract class Symbol : ParameterizedNamedItem {
-    #region Parameter Properties
-    public IValueParameter<DoubleValue> TicketsParameter {
-      get { return (IValueParameter<DoubleValue>)Parameters["Tickets"]; }
-    }
-    #endregion
-
+  public abstract class Symbol : NamedItem {
     #region Properties
-    public DoubleValue Tickets {
-      get { return TicketsParameter.Value; }
+    private double initialFrequency;
+    public double InitialFrequency {
+      get { return initialFrequency; }
       set {
-        if (value.Value < 0.0) throw new ArgumentException("Number of tickets must be positive");
-        TicketsParameter.Value = value;
+        if (value < 0.0) throw new ArgumentException("InitialFrequency must be positive");
+        initialFrequency = value;
       }
     }
     #endregion
 
     protected Symbol()
       : base() {
-      Parameters.Add(new ValueParameter<DoubleValue>("Tickets", new DoubleValue(1.0)));
+      this.name = ItemName;
+      this.description = ItemDescription;
+      initialFrequency = 1.0;
     }
 
     public virtual SymbolicExpressionTreeNode CreateTreeNode() {

@@ -31,7 +31,7 @@ using HeuristicLab.Data;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
   [Item("SymbolicExpressionTree", "Represents a symbolic expression tree.")]
-  public class SymbolicExpressionTree : Item {    
+  public class SymbolicExpressionTree : Item {
     [Storable]
     private SymbolicExpressionTreeNode root;
     public SymbolicExpressionTreeNode Root {
@@ -45,6 +45,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       }
     }
 
+    public SymbolicExpressionTreeNode ResultProducingExpression {
+      get { return root.SubTrees[0].SubTrees[0]; }
+    }
+
+    [Storable]
+    private Dictionary<int, IEnumerable<string>> allowedFunctionsInBranch;
+
     public int Size {
       get {
         return root.GetSize();
@@ -57,9 +64,15 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       }
     }
 
-    public SymbolicExpressionTree() : base() { }
+    public SymbolicExpressionTree()
+      : base() {
+      allowedFunctionsInBranch = new Dictionary<int, IEnumerable<string>>();
+    }
 
-    public SymbolicExpressionTree(SymbolicExpressionTreeNode root) : base() { }
+    public SymbolicExpressionTree(SymbolicExpressionTreeNode root)
+      : base() {
+      allowedFunctionsInBranch = new Dictionary<int, IEnumerable<string>>();
+    }
 
     public IEnumerable<SymbolicExpressionTreeNode> IterateNodesPrefix() {
       return IterateNodesPrefix(root);
@@ -86,6 +99,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       SymbolicExpressionTree clone = new SymbolicExpressionTree();
       cloner.RegisterClonedObject(this, clone);
       clone.root = (SymbolicExpressionTreeNode)this.root.Clone();
+      clone.allowedFunctionsInBranch = new Dictionary<int, IEnumerable<string>>(allowedFunctionsInBranch);
       return clone;
     }
   }

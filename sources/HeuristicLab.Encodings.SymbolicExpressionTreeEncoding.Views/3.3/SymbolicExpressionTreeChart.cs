@@ -29,7 +29,7 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
-  public partial class SymbolicExpressionTreeChart : UserControl {
+  public sealed partial class SymbolicExpressionTreeChart : UserControl {
     private StringFormat stringFormat;
     private Dictionary<SymbolicExpressionTreeNode, VisualSymbolicExpressionTreeNode> visualTreeNodes;
 

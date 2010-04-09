@@ -20,9 +20,11 @@
 #endregion
 
 using System;
+using System.Linq;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Data;
 using System.Collections.Generic;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols;
 
 namespace HeuristicLab.Problems.ArtificialAnt {
   public class AntInterpreter {
@@ -79,7 +81,7 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     public void Step() {
       // expression evaluated completly => start at root again
       if (nodeStack.Count == 0)
-        nodeStack.Push(Expression.Root.SubTrees[0]);
+        nodeStack.Push(Expression.ResultProducingExpression);
       var currentNode = nodeStack.Pop();
       if (currentNode.Symbol is Left) {
         currentDirection = (currentDirection + 3) % 4;
@@ -111,6 +113,19 @@ namespace HeuristicLab.Problems.ArtificialAnt {
         nodeStack.Push(currentNode.SubTrees[1]);
         nodeStack.Push(currentNode.SubTrees[0]);
         return;
+      } else if (currentNode.Symbol is InvokeFunction) {
+        var invokeNode = currentNode as InvokeFunctionTreeNode;
+        var funBranch = (from node in expression.Root.SubTrees
+                         let funNode = node as DefunTreeNode
+                         where funNode != null
+                         where funNode.Name == invokeNode.InvokedFunctionName
+                         select funNode).FirstOrDefault();
+        if (funBranch == null) throw new InvalidOperationException("Can't find definition of function " + invokeNode.InvokedFunctionName);
+        nodeStack.Push(funBranch.SubTrees[0]);
+        foreach (var subTree in invokeNode.SubTrees)
+          nodeStack.Push(subTree);
+      } else if(currentNode.Symbol is Argument) {
+        // do nothing
       } else {
         throw new InvalidOperationException(currentNode.Symbol.ToString());
       }

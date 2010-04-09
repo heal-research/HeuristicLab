@@ -30,28 +30,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols {
   [StorableClass]
   [Item("Constant", "Represents a constant value.")]
   public sealed class Constant : Symbol {
-    #region Parameter Properties
-    public IValueParameter<DoubleValue> MinValueParameter {
-      get { return (IValueParameter<DoubleValue>)Parameters["MinValue"]; }
-    }
-    public IValueParameter<DoubleValue> MaxValueParameter {
-      get { return (IValueParameter<DoubleValue>)Parameters["MaxValue"]; }
-    }
-    #endregion
     #region Propeties
-    public DoubleValue MinValue {
-      get { return MinValueParameter.Value; }
-      set { MinValueParameter.Value = value; }
+    private double minValue;
+    public double MinValue {
+      get { return minValue; }
+      set { minValue = value; }
     }
-    public DoubleValue MaxValue {
-      get { return MaxValueParameter.Value; }
-      set { MaxValueParameter.Value = value; }
+    private double maxValue;
+    public double MaxValue {
+      get { return maxValue; }
+      set { maxValue = value; }
     }
     #endregion
     public Constant()
       : base() {
-      Parameters.Add(new ValueParameter<DoubleValue>("MinValue", "The minimal value of the constant.", new DoubleValue(-20.0)));
-      Parameters.Add(new ValueParameter<DoubleValue>("MaxValue", "The maximal value of the constant.", new DoubleValue(20.0)));
     }
 
     public override SymbolicExpressionTreeNode CreateTreeNode() {

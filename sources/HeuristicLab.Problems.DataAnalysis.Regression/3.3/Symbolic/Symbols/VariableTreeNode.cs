@@ -56,10 +56,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols {
 
     public override void ResetLocalParameters(IRandom random) {
       base.ResetLocalParameters(random);
-      var normalDistributedRNG = new NormalDistributedRandom(random, Symbol.WeightNu.Value, Symbol.WeightSigma.Value);
+      var normalDistributedRNG = new NormalDistributedRandom(random, Symbol.WeightNu, Symbol.WeightSigma);
       weight = normalDistributedRNG.NextDouble();
-      int variableIndex = random.Next(0, Symbol.VariableNames.Count);
-      variableName = Symbol.VariableNames[variableIndex].Value;
+      var variableList = new List<string>(Symbol.VariableNames);
+      int variableIndex = random.Next(0, variableList.Count);
+      variableName = variableList[variableIndex];
     }
 
     public override object Clone() {

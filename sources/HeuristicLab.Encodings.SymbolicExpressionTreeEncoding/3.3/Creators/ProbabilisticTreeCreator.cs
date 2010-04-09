@@ -36,35 +36,37 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     protected override SymbolicExpressionTree Create(IRandom random, ISymbolicExpressionGrammar grammar, IntValue maxTreeSize, IntValue maxTreeHeight) {
-      return Apply(random, grammar, maxTreeSize.Value, maxTreeHeight.Value);
+      return Create(random, grammar, maxTreeSize.Value, maxTreeHeight.Value);
     }
 
-    public SymbolicExpressionTree Apply(IRandom random, ISymbolicExpressionGrammar grammar, int maxTreeSize, int maxTreeHeight) {
+    public static SymbolicExpressionTree Create(IRandom random, ISymbolicExpressionGrammar grammar, int maxTreeSize, int maxTreeHeight) {
       // tree size is limited by the grammar and by the explicit size constraints
-      int allowedMinSize = grammar.MinimalExpressionLength(grammar.StartSymbol);
-      int allowedMaxSize = Math.Min(maxTreeSize, grammar.MaximalExpressionLength(grammar.StartSymbol));
+      int allowedMinSize = grammar.GetMinExpressionLength(grammar.StartSymbol);
+      int allowedMaxSize = Math.Min(maxTreeSize, grammar.GetMaxExpressionLength(grammar.StartSymbol));
       // select a target tree size uniformly in the possible range (as determined by explicit limits and limits of the grammar)
       int treeSize = random.Next(allowedMinSize, allowedMaxSize);
       SymbolicExpressionTree tree = new SymbolicExpressionTree();
       do {
         try {
-          tree.Root = PTC2(random, grammar, grammar.StartSymbol, treeSize + 1, maxTreeHeight + 1);
+          tree.Root = grammar.ProgramRootSymbol.CreateTreeNode();
+          tree.Root.AddSubTree(PTC2(random, grammar, grammar.StartSymbol, treeSize + 1, maxTreeHeight + 1));
         }
         catch (ArgumentException) {
           // try a different size
           treeSize = random.Next(allowedMinSize, allowedMaxSize);
         }
-      } while (tree.Root == null || tree.Size > maxTreeSize || tree.Height > maxTreeHeight);
+      } while (tree.Root.SubTrees.Count == 0 || tree.Size > maxTreeSize || tree.Height > maxTreeHeight);
+      System.Diagnostics.Debug.Assert(grammar.IsValidExpression(tree));
       return tree;
     }
 
-    private Symbol SelectRandomSymbol(IRandom random, IEnumerable<Symbol> symbols) {
+    private static Symbol SelectRandomSymbol(IRandom random, IEnumerable<Symbol> symbols) {
       var symbolList = symbols.ToList();
-      var ticketsSum = symbolList.Select(x => x.Tickets.Value).Sum();
+      var ticketsSum = symbolList.Select(x => x.InitialFrequency).Sum();
       var r = random.NextDouble() * ticketsSum;
       double aggregatedTickets = 0;
       for (int i = 0; i < symbolList.Count; i++) {
-        aggregatedTickets += symbolList[i].Tickets.Value;
+        aggregatedTickets += symbolList[i].InitialFrequency;
         if (aggregatedTickets >= r) {
           return symbolList[i];
         }
@@ -74,38 +76,38 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
 
-    private SymbolicExpressionTreeNode PTC2(IRandom random, ISymbolicExpressionGrammar grammar, Symbol rootSymbol, int size, int maxDepth) {
+    public static SymbolicExpressionTreeNode PTC2(IRandom random, ISymbolicExpressionGrammar grammar, Symbol rootSymbol, int size, int maxDepth) {
       SymbolicExpressionTreeNode root = rootSymbol.CreateTreeNode();
       if (size <= 1 || maxDepth <= 1) return root;
-      List<object[]> list = new List<object[]>();
+      List<object[]> extensionPoints = new List<object[]>();
       int currentSize = 1;
-      int totalListMinSize = grammar.MinimalExpressionLength(rootSymbol) - 1;
+      int totalListMinSize = grammar.GetMinExpressionLength(rootSymbol) - 1;
 
       int actualArity = SampleArity(random, grammar, rootSymbol, size);
       for (int i = 0; i < actualArity; i++) {
         // insert a dummy sub-tree and add the pending extension to the list
         root.AddSubTree(null);
-        list.Add(new object[] { root, i, 2 });
+        extensionPoints.Add(new object[] { root, i, 2 });
       }
 
       // while there are pending extension points and we have not reached the limit of adding new extension points
-      while (list.Count > 0 && totalListMinSize + currentSize < size) {
-        int randomIndex = random.Next(list.Count);
-        object[] nextExtension = list[randomIndex];
-        list.RemoveAt(randomIndex);
+      while (extensionPoints.Count > 0 && totalListMinSize + currentSize < size) {
+        int randomIndex = random.Next(extensionPoints.Count);
+        object[] nextExtension = extensionPoints[randomIndex];
+        extensionPoints.RemoveAt(randomIndex);
         SymbolicExpressionTreeNode parent = (SymbolicExpressionTreeNode)nextExtension[0];
         int argumentIndex = (int)nextExtension[1];
         int extensionDepth = (int)nextExtension[2];
-        if (extensionDepth + grammar.MinimalExpressionDepth(parent.Symbol) >= maxDepth) {
+        if (extensionDepth + grammar.GetMinExpressionDepth(parent.Symbol) >= maxDepth) {
           parent.RemoveSubTree(argumentIndex);
-          SymbolicExpressionTreeNode branch = CreateMinimalTree(random, grammar, grammar.AllowedSymbols(parent.Symbol, argumentIndex));
+          SymbolicExpressionTreeNode branch = CreateMinimalTree(random, grammar, grammar.GetAllowedSymbols(parent.Symbol, argumentIndex));
           parent.InsertSubTree(argumentIndex, branch); // insert a smallest possible tree
           currentSize += branch.GetSize();
           totalListMinSize -= branch.GetSize();
         } else {
-          var allowedSubFunctions = from s in grammar.AllowedSymbols(parent.Symbol, argumentIndex)
-                                    where grammar.MinimalExpressionDepth(parent.Symbol) + extensionDepth - 1 < maxDepth
-                                    where grammar.MaximalExpressionLength(s) > size - totalListMinSize - currentSize ||
+          var allowedSubFunctions = from s in grammar.GetAllowedSymbols(parent.Symbol, argumentIndex)
+                                    where grammar.GetMinExpressionDepth(parent.Symbol) + extensionDepth - 1 < maxDepth
+                                    where grammar.GetMaxExpressionLength(s) > size - totalListMinSize - currentSize ||
                                           totalListMinSize + currentSize >= size * 0.9 // if the necessary size is almost reached then also allow
                                     // terminals or terminal-branches
                                     select s;
@@ -120,30 +122,30 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
           for (int i = 0; i < actualArity; i++) {
             // insert a dummy sub-tree and add the pending extension to the list
             newTree.AddSubTree(null);
-            list.Add(new object[] { newTree, i, extensionDepth + 1 });
+            extensionPoints.Add(new object[] { newTree, i, extensionDepth + 1 });
           }
-          totalListMinSize += grammar.MinimalExpressionLength(selectedSymbol);
+          totalListMinSize += grammar.GetMinExpressionLength(selectedSymbol);
         }
       }
       // fill all pending extension points
-      while (list.Count > 0) {
-        int randomIndex = random.Next(list.Count);
-        object[] nextExtension = list[randomIndex];
-        list.RemoveAt(randomIndex);
+      while (extensionPoints.Count > 0) {
+        int randomIndex = random.Next(extensionPoints.Count);
+        object[] nextExtension = extensionPoints[randomIndex];
+        extensionPoints.RemoveAt(randomIndex);
         SymbolicExpressionTreeNode parent = (SymbolicExpressionTreeNode)nextExtension[0];
         int a = (int)nextExtension[1];
         int d = (int)nextExtension[2];
         parent.RemoveSubTree(a);
         parent.InsertSubTree(a,
-          CreateMinimalTree(random, grammar, grammar.AllowedSymbols(parent.Symbol, a))); // append a tree with minimal possible height
+          CreateMinimalTree(random, grammar, grammar.GetAllowedSymbols(parent.Symbol, a))); // append a tree with minimal possible height
       }
       return root;
     }
 
-    private int SampleArity(IRandom random, ISymbolicExpressionGrammar grammar, Symbol symbol, int targetSize) {
+    private static int SampleArity(IRandom random, ISymbolicExpressionGrammar grammar, Symbol symbol, int targetSize) {
       // select actualArity randomly with the constraint that the sub-trees in the minimal arity can become large enough
-      int minArity = grammar.MinSubTrees(symbol);
-      int maxArity = grammar.MaxSubTrees(symbol);
+      int minArity = grammar.GetMinSubTreeCount(symbol);
+      int maxArity = grammar.GetMaxSubTreeCount(symbol);
       if (maxArity > targetSize) {
         maxArity = targetSize;
       }
@@ -151,8 +153,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       // if 1..3 trees are possible and the largest possible first sub-tree is smaller larger than the target size then minArity should be at least 2
       long aggregatedLongestExpressionLength = 0;
       for (int i = 0; i < maxArity; i++) {
-        aggregatedLongestExpressionLength += (from s in grammar.AllowedSymbols(symbol, i)
-                                              select grammar.MaximalExpressionLength(s)).Max();
+        aggregatedLongestExpressionLength += (from s in grammar.GetAllowedSymbols(symbol, i)
+                                              select grammar.GetMaxExpressionLength(s)).Max();
         if (aggregatedLongestExpressionLength < targetSize) minArity = i;
         else break;
       }
@@ -161,8 +163,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       // if 1..3 trees are possible and the smallest possible first sub-tree is already larger than the target size then maxArity should be at most 0
       long aggregatedShortestExpressionLength = 0;
       for (int i = 0; i < maxArity; i++) {
-        aggregatedShortestExpressionLength += (from s in grammar.AllowedSymbols(symbol, i)
-                                               select grammar.MinimalExpressionLength(s)).Min();
+        aggregatedShortestExpressionLength += (from s in grammar.GetAllowedSymbols(symbol, i)
+                                               select grammar.GetMinExpressionLength(s)).Min();
         if (aggregatedShortestExpressionLength > targetSize) {
           maxArity = i;
           break;
@@ -172,17 +174,17 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       return random.Next(minArity, maxArity + 1);
     }
 
-    private SymbolicExpressionTreeNode CreateMinimalTree(IRandom random, ISymbolicExpressionGrammar grammar, IEnumerable<Symbol> symbols) {
+    private static SymbolicExpressionTreeNode CreateMinimalTree(IRandom random, ISymbolicExpressionGrammar grammar, IEnumerable<Symbol> symbols) {
       // determine possible symbols that will lead to the smallest possible tree
       var possibleSymbols = (from s in symbols
-                             group s by grammar.MinimalExpressionLength(s) into g
+                             group s by grammar.GetMinExpressionLength(s) into g
                              orderby g.Key
                              select g).First();
       var selectedSymbol = SelectRandomSymbol(random, possibleSymbols);
       // build minimal tree by recursive application
       var tree = selectedSymbol.CreateTreeNode();
-      for (int i = 0; i < grammar.MinSubTrees(selectedSymbol); i++)
-        tree.AddSubTree(CreateMinimalTree(random, grammar, grammar.AllowedSymbols(selectedSymbol, i)));
+      for (int i = 0; i < grammar.GetMinSubTreeCount(selectedSymbol); i++)
+        tree.AddSubTree(CreateMinimalTree(random, grammar, grammar.GetAllowedSymbols(selectedSymbol, i)));
       return tree;
     }
   }

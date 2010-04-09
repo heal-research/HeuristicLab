@@ -1,0 +1,82 @@
+﻿<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{8824925E-3E00-4543-8293-7DDACE4737F8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests</RootNamespace>
+    <AssemblyName>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3.Tests</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProbabilisticTreeCreaterTest.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
+      <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
+      <Name>HeuristicLab.Core-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
+      <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
+      <Name>HeuristicLab.Operators-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
+      <Project>{14AB8D24-25BC-400C-A846-4627AA945192}</Project>
+      <Name>HeuristicLab.Optimization-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
+      <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
+      <Name>HeuristicLab.Persistence-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
+      <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
+      <Name>HeuristicLab.PluginInfrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
+      <Project>{F4539FB6-4708-40C9-BE64-0A1390AEA197}</Project>
+      <Name>HeuristicLab.Random-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3.csproj">
+      <Project>{125D3006-67F5-48CB-913E-73C0548F17FA}</Project>
+      <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -38,25 +38,37 @@ namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
       return Calculate(values);
     }
 
-    public static double Calculate(DoubleMatrix values) {
-      double sse = 0;
-      double cnt = 0;
-      for (int i = 0; i < values.Rows; i++) {
-        double estimated = values[i, ESTIMATION_INDEX];
-        double target = values[i, ORIGINAL_INDEX];
-        if (!double.IsNaN(estimated) && !double.IsInfinity(estimated) &&
-            !double.IsNaN(target) && !double.IsInfinity(target)) {
-          double error = estimated - target;
+    public static double Calculate(IEnumerable<double> original, IEnumerable<double> estimated) {
+      double sse = 0.0;
+      int cnt = 0;
+      var originalEnumerator = original.GetEnumerator();
+      var estimatedEnumerator = estimated.GetEnumerator();
+      while (originalEnumerator.MoveNext() & estimatedEnumerator.MoveNext()) {
+        double e = estimatedEnumerator.Current;
+        double o = originalEnumerator.Current;
+        if (!double.IsNaN(e) && !double.IsInfinity(e) &&
+            !double.IsNaN(o) && !double.IsInfinity(o)) {
+          double error = e - o;
           sse += error * error;
           cnt++;
         }
       }
-      if (cnt > 0) {
+      if (estimatedEnumerator.MoveNext() || originalEnumerator.MoveNext()) {
+        throw new ArgumentException("Number of elements in original and estimated enumeration doesn't match.");
+      } else if (cnt == 0) {
+        throw new ArgumentException("Mean squared errors is not defined for input vectors of NaN or Inf");
+      } else {
         double mse = sse / cnt;
         return mse;
-      } else {
-        throw new ArgumentException("Mean squared errors is not defined for input vectors of NaN or Inf");
       }
+    }
+
+    public static double Calculate(DoubleMatrix values) {
+      var original = from row in Enumerable.Range(0, values.Rows)
+                     select values[row, ORIGINAL_INDEX];
+      var estimated = from row in Enumerable.Range(0, values.Rows)
+                      select values[row, ORIGINAL_INDEX];
+      return Calculate(original, estimated);
     }
   }
 }

@@ -27,26 +27,19 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  /// <summary>
-  /// Evaluates FunctionTrees recursively by interpretation of the function symbols in each node.
-  /// Simple unoptimized code, general symbolic expressions only.
-  /// Not thread-safe!
-  /// </summary>
-  [StorableClass]
-  [Item("GeneralSymbolicExpressionTreeEvaluator", "Default evaluator for symbolic expression trees.")]
-  public class GeneralSymbolicExpressionTreeEvaluator : Item {
-    public virtual double Evaluate(SymbolicExpressionTreeNode node) {
-      if (node.Symbol is Addition) {
-        return Evaluate(node.SubTrees[0]) + Evaluate(node.SubTrees[1]);
-      } else if (node.Symbol is Subtraction) {
-        return Evaluate(node.SubTrees[0]) - Evaluate(node.SubTrees[1]);
-      } else if (node.Symbol is Multiplication) {
-        return Evaluate(node.SubTrees[0]) * Evaluate(node.SubTrees[1]);
-      } else if (node.Symbol is Division) {
-        return Evaluate(node.SubTrees[0]) / Evaluate(node.SubTrees[1]);
-      } else {
-        throw new NotSupportedException("Tree contains unknown symbol: " + node.Symbol.Name);
-      }
-    }
+  public enum CodeSymbol : byte { 
+    Add,
+    Sub,
+    Mul,
+    Div,
+    Call,
+    Values,
+    Dynamic
+  };
+  public struct Instruction {
+    public byte nArguments;
+    public CodeSymbol symbol;
+    public short iArg0;
+    public SymbolicExpressionTreeNode dynamicNode;
   }
 }

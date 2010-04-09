@@ -30,11 +30,12 @@ using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
+using HeuristicLab.Core.Views;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
   [View("Graphical SymbolicExpressionTree View")]
   [Content(typeof(SymbolicExpressionTree), true)]
-  public partial class GraphicalSymbolicExpressionTreeView : AsynchronousContentView {
+  public partial class GraphicalSymbolicExpressionTreeView : ItemView {
     public new SymbolicExpressionTree Content {
       get { return (SymbolicExpressionTree)base.Content; }
       set { base.Content = value; }
@@ -58,39 +59,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       } else {
         symbolicExpressionTreeChart.Tree = Content;
       }
-    }
-    
-    //private VisualFunctionTreeModel visualModel;
-    //public VisualFunctionTreeModel VisualModel {
-    //  get { return this.visualModel; }
-    //  private set {
-    //    if (value != this.visualModel) {
-    //      if (this.visualModel != null)
-    //        this.visualModel.Changed -= new EventHandler(model_Changed);
-
-    //      if (value == null) {
-    //        this.Caption = "Formula tree";
-    //        this.functionTreeChart.FunctionTree = null;
-    //      } else {
-    //        value.Changed += new EventHandler(model_Changed);
-    //        this.functionTreeChart.FunctionTree = value.FunctionTree;
-    //        this.Caption = value.ModelName + " formula tree";
-    //      }
-    //      this.visualModel = value;
-    //    }
-    //  }
-    //}
-
-    private void functionTreeChart_FunctionTreeClicked(object sender, MouseEventArgs e) {
-      VisualSymbolicExpressionTreeNode visualFunctionTreeNode = (VisualSymbolicExpressionTreeNode)sender;
-      visualFunctionTreeNode.LineColor = Color.Red;
-      this.symbolicExpressionTreeChart.Repaint();
-    }
-
-    private void functionTreeChart_FunctionTreeDoubleClicked(object sender, MouseEventArgs e) {
-      VisualSymbolicExpressionTreeNode visualFunctionTreeNode = (VisualSymbolicExpressionTreeNode)sender;
-      visualFunctionTreeNode.FillColor = Color.Blue;
-      this.symbolicExpressionTreeChart.Repaint();
     }
   }
 }

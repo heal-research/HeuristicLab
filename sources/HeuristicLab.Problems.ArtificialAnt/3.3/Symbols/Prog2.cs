@@ -21,7 +21,11 @@
 
 
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Core;
 namespace HeuristicLab.Problems.ArtificialAnt {
+  [StorableClass]
+  [Item("Prog2", "Represents the sequence symbol with 2 sub-trees in a artificial ant expression.")]
   public sealed class Prog2 : Symbol {
   }
 }

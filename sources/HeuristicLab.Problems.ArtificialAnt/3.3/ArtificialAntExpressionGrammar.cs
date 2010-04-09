@@ -29,146 +29,57 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols;
 namespace HeuristicLab.Problems.ArtificialAnt {
   [StorableClass]
-  public class ArtificialAntExpressionGrammar : Item, ISymbolicExpressionGrammar {
+  public class ArtificialAntExpressionGrammar : DefaultSymbolicExpressionGrammar {
 
     public ArtificialAntExpressionGrammar()
-      : base() {
-    }
-    #region ISymbolicExpressionGrammar Members
-
-    [Storable]
-    private StartSymbol startSymbol = new StartSymbol();
-    public Symbol StartSymbol {
-      get { return startSymbol; }
+      : base(0, 3, 0, 3) {
+      Initialize();
     }
 
-    [Storable]
-    private static List<Symbol> allSymbols = new List<Symbol>() {
-      new IfFoodAhead(),
-      new Prog2(),
-      new Prog3(),
-      new Move(),
-      new Left(),
-      new Right()
-    };
-    [Storable]
-    private Dictionary<Type, Dictionary<int, IEnumerable<Symbol>>> allowedSymbols = new Dictionary<Type, Dictionary<int, IEnumerable<Symbol>>>() {
-      {
-        typeof(StartSymbol),
-        new Dictionary<int, IEnumerable<Symbol>>() 
-        {
-          { 0, allSymbols},
+    private void Initialize() {
+      var ifFoodAhead = new IfFoodAhead();
+      var prog2 = new Prog2();
+      var prog3 = new Prog3();
+      var move = new Move();
+      var left = new Left();
+      var right = new Right();
+      var defun = new Defun();
+      var invoke = new InvokeFunction();
+      var allSymbols = new List<Symbol>() { ifFoodAhead, prog2, prog3, move, left, right };
+      var nonTerminalSymbols = new List<Symbol>() { ifFoodAhead, prog2, prog3 };
+      SetMinSubTreeCount(ifFoodAhead, 2);
+      SetMaxSubTreeCount(ifFoodAhead, 2);
+      SetMinSubTreeCount(prog2, 2);
+      SetMaxSubTreeCount(prog2, 2);
+      SetMinSubTreeCount(prog3, 3);
+      SetMaxSubTreeCount(prog3, 3);
+      SetMinSubTreeCount(move, 0);
+      SetMaxSubTreeCount(move, 0);
+      SetMinSubTreeCount(left, 0);
+      SetMaxSubTreeCount(left, 0);
+      SetMinSubTreeCount(right, 0);
+      SetMaxSubTreeCount(right, 0);
+      foreach (var sym in allSymbols) {
+        AddAllowedSymbols(StartSymbol, 0, sym);
+        AddAllowedSymbols(defun, 0, sym);
+
+        for (int i = 0; i < GetMaxSubTreeCount(invoke); i++) {
+          AddAllowedSymbols(invoke, i, sym);
         }
-      },      {
-        typeof(IfFoodAhead),
-        new Dictionary<int, IEnumerable<Symbol>>() 
-        {
-          { 0, allSymbols},
-          { 1, allSymbols}
-        }
-      },
-      {
-        typeof(Prog2),
-        new Dictionary<int, IEnumerable<Symbol>>() 
-        {
-          { 0, allSymbols},
-          { 1, allSymbols}
-        }
-      },
-      {
-        typeof(Prog3),
-        new Dictionary<int, IEnumerable<Symbol>>() 
-        {
-          { 0, allSymbols},
-          { 1, allSymbols},
-          { 2, allSymbols}
-        }
-      },
-    };
-    public IEnumerable<Symbol> AllowedSymbols(Symbol parent, int argumentIndex) {
-      return allowedSymbols[parent.GetType()][argumentIndex];
-    }
-
-    [Storable]
-    private Dictionary<Type, int> minLength = new Dictionary<Type, int>() {
-      {typeof(StartSymbol), 1}, 
-      {typeof(IfFoodAhead), 3},
-      {typeof(Prog2), 3},
-      {typeof(Prog3), 4},
-      {typeof(Move), 1},
-      {typeof(Left), 1},
-      {typeof(Right), 1}
-    };
-    public int MinimalExpressionLength(Symbol start) {
-      return minLength[start.GetType()];
-    }
-
-    [Storable]
-    private Dictionary<Type, int> maxLength = new Dictionary<Type, int>() {
-      {typeof(StartSymbol), int.MaxValue}, 
-      {typeof(IfFoodAhead), int.MaxValue},
-      {typeof(Prog2), int.MaxValue},
-      {typeof(Prog3), int.MaxValue},
-      {typeof(Move), 1},
-      {typeof(Left), 1},
-      {typeof(Right), 1}
-    };
-    public int MaximalExpressionLength(Symbol start) {
-      return maxLength[start.GetType()];
-    }
-
-    [Storable]
-    private Dictionary<Type, int> minDepth = new Dictionary<Type, int>() {
-      {typeof(StartSymbol), 1}, 
-      {typeof(IfFoodAhead), 1},
-      {typeof(Prog2), 1},
-      {typeof(Prog3), 1},
-      {typeof(Move), 0},
-      {typeof(Left), 0},
-      {typeof(Right), 0}
-    };
-    public int MinimalExpressionDepth(Symbol start) {
-      return minDepth[start.GetType()];
-    }
-
-
-    [Storable]
-    private Dictionary<Type, int> subTrees = new Dictionary<Type, int>() {
-      {typeof(StartSymbol), 1}, 
-      {typeof(IfFoodAhead), 2},
-      {typeof(Prog2), 2},
-      {typeof(Prog3), 3},
-      {typeof(Move), 0},
-      {typeof(Left), 0},
-      {typeof(Right), 0}
-    };
-    public int MinSubTrees(Symbol start) {
-      return subTrees[start.GetType()];
-    }
-    public int MaxSubTrees(Symbol start) {
-      return subTrees[start.GetType()];
-    }
-
-    #endregion
-
-    #region ISymbolicExpressionGrammar Members
-
-
-    public bool IsValidExpression(SymbolicExpressionTree expression) {
-      if (expression.Root.Symbol != StartSymbol) return false;
-      return IsValidExpression(expression.Root);
-    }
-
-    #endregion
-
-    private bool IsValidExpression(SymbolicExpressionTreeNode root) {
-      if (root.SubTrees.Count < MinSubTrees(root.Symbol)) return false;
-      if (root.SubTrees.Count > MaxSubTrees(root.Symbol)) return false;
-      for (int i = 0; i < root.SubTrees.Count; i++) {
-        if (!AllowedSymbols(root.Symbol, i).Contains(root.SubTrees[i].Symbol)) return false;
-        if (!IsValidExpression(root.SubTrees[i])) return false;
       }
-      return true;
+      foreach (var sym in nonTerminalSymbols) {
+        for (int argIndex = 0; argIndex < GetMaxSubTreeCount(sym); argIndex++) {
+          AddAllowedSymbols(sym, argIndex, invoke);
+        }
+      }
+      foreach (var nonTerminal in nonTerminalSymbols) {
+        foreach (var child in allSymbols) {
+          for (int argIndex = 0; argIndex < GetMaxSubTreeCount(nonTerminal); argIndex++) {
+            AddAllowedSymbols(nonTerminal, argIndex, child);
+          }
+        }
+      }
+
     }
   }
 }

@@ -29,34 +29,66 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols;
 using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
-  /// <summary>
-  /// Evaluates FunctionTrees recursively by interpretation of the function symbols in each node.
-  /// Simple unoptimized code, arithmetic expressions only.
-  /// Not thread-safe!
-  /// </summary>
   [StorableClass]
   [Item("SimpleArithmeticExpressionEvaluator", "Default evaluator for arithmetic symbolic expression trees.")]
-  public class SimpleArithmeticExpressionEvaluator : GeneralSymbolicExpressionTreeEvaluator {
+  public class SimpleArithmeticExpressionEvaluator {
     private Dataset dataset;
     private int row;
+    private Instruction[] code;
+    private int pc;
     public IEnumerable<double> EstimatedValues(SymbolicExpressionTree tree, Dataset dataset, IEnumerable<int> rows) {
       this.dataset = dataset;
+      var compiler = new SymbolicExpressionTreeCompiler();
+      code = compiler.Compile(tree);
       foreach (var row in rows) {
         this.row = row;
-        var estimatedValue = Evaluate(tree.Root.SubTrees[0]);
+        pc = 0;
+        var estimatedValue = Evaluate();
         if (double.IsNaN(estimatedValue) || double.IsInfinity(estimatedValue)) yield return 0.0;
         else yield return estimatedValue;
       }
     }
 
-    public override double Evaluate(SymbolicExpressionTreeNode node) {
-      if (node.Symbol is HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols.Variable) {
-        var variableTreeNode = node as VariableTreeNode;
-        return dataset[row, dataset.VariableIndex(variableTreeNode.VariableName)] * variableTreeNode.Weight;
-      } else if (node.Symbol is Constant) {
-        return ((ConstantTreeNode)node).Value;
-      } else {
-        return base.Evaluate(node);
+    public double Evaluate() {
+      var currentInstr = code[pc++];
+      switch (currentInstr.symbol) {
+        case CodeSymbol.Add: {
+            double s = 0.0;
+            for (int i = 0; i < currentInstr.nArguments; i++) {
+              s += Evaluate();
+            }
+            return s;
+          }
+        case CodeSymbol.Sub: {
+            double s = Evaluate();
+            for (int i = 1; i < currentInstr.nArguments; i++) {
+              s -= Evaluate();
+            }
+            return s;
+          }
+        case CodeSymbol.Mul: {
+            double p = Evaluate();
+            for (int i = 1; i < currentInstr.nArguments; i++) {
+              p *= Evaluate();
+            }
+            return p;
+          }
+        case CodeSymbol.Div: {
+            double p = Evaluate();
+            for (int i = 1; i < currentInstr.nArguments; i++) {
+              p /= Evaluate();
+            }
+            return p;
+          }
+        case CodeSymbol.Dynamic: {
+            if (currentInstr.dynamicNode is VariableTreeNode) {
+              var variableTreeNode = currentInstr.dynamicNode as VariableTreeNode;
+              return dataset[row, dataset.GetVariableIndex(variableTreeNode.VariableName)] * variableTreeNode.Weight;
+            } else if (currentInstr.dynamicNode is ConstantTreeNode) {
+              return ((ConstantTreeNode)currentInstr.dynamicNode).Value;
+            } else throw new NotSupportedException();
+          }
+        default: throw new NotSupportedException();
       }
     }
   }

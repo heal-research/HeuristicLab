@@ -34,38 +34,28 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// </summary>
   [Item("SymbolicExpressionTreeCrossover", "A base class for operators that perform a crossover of symbolic expression trees.")]
   [StorableClass]
-  public abstract class SymbolicExpressionTreeCrossover : SingleSuccessorOperator, ICrossover, IStochasticOperator, ISymbolicExpressionTreeOperator {
-    public override bool CanChangeName {
-      get { return false; }
-    }
-
-    public ILookupParameter<IRandom> RandomParameter {
-      get { return (LookupParameter<IRandom>)Parameters["Random"]; }
-    }
+  public abstract class SymbolicExpressionTreeCrossover : SymbolicExpressionTreeOperator, ICrossover {
+    private const string ParentsParameterName = "Parents";
+    private const string ChildParameterName = "Child";
+    private const string FailedCrossoverEventsParameterName = "FailedCrossoverEvents";
     public ILookupParameter<ItemArray<SymbolicExpressionTree>> ParentsParameter {
-      get { return (SubScopesLookupParameter<SymbolicExpressionTree>)Parameters["Parents"]; }
+      get { return (SubScopesLookupParameter<SymbolicExpressionTree>)Parameters[ParentsParameterName]; }
     }
     public ILookupParameter<SymbolicExpressionTree> ChildParameter {
-      get { return (ILookupParameter<SymbolicExpressionTree>)Parameters["Child"]; }
+      get { return (ILookupParameter<SymbolicExpressionTree>)Parameters[ChildParameterName]; }
     }
-    public IValueLookupParameter<IntValue> MaxTreeSizeParameter {
-      get { return (IValueLookupParameter<IntValue>)Parameters["MaxTreeSize"]; }
-    }
-    public IValueLookupParameter<IntValue> MaxTreeHeightParameter {
-      get { return (IValueLookupParameter<IntValue>)Parameters["MaxTreeHeight"]; }
-    }
-    public ILookupParameter<ISymbolicExpressionGrammar> SymbolicExpressionGrammarParameter {
-      get { return (ILookupParameter<ISymbolicExpressionGrammar>)Parameters["SymbolicExpressionGrammar"]; }
+    public IValueParameter<IntValue> FailedCrossoverEventsParameter {
+      get { return (ValueParameter<IntValue>)Parameters[FailedCrossoverEventsParameterName]; }
     }
 
+    public IntValue FailedCrossoverEvents {
+      get { return FailedCrossoverEventsParameter.Value; }
+    }
     protected SymbolicExpressionTreeCrossover()
       : base() {
-      Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic crossover operators."));
-      Parameters.Add(new SubScopesLookupParameter<SymbolicExpressionTree>("Parents", "The parent symbolic expression trees which should be crossed."));
-      Parameters.Add(new ValueLookupParameter<IntValue>("MaxTreeSize", "The maximal size (number of nodes) of the symbolic expression tree that should be initialized."));
-      Parameters.Add(new ValueLookupParameter<IntValue>("MaxTreeHeight", "The maximal height of the symbolic expression tree that should be initialized (a tree with one node has height = 0)."));
-      Parameters.Add(new LookupParameter<ISymbolicExpressionGrammar>("SymbolicExpressionGrammar", "The grammar that defines the allowed symbols and syntax of the symbolic expression trees."));
-      Parameters.Add(new LookupParameter<SymbolicExpressionTree>("Child", "The child symbolic expression tree resulting from the crossover."));
+      Parameters.Add(new SubScopesLookupParameter<SymbolicExpressionTree>(ParentsParameterName, "The parent symbolic expression trees which should be crossed."));
+      Parameters.Add(new LookupParameter<SymbolicExpressionTree>(ChildParameterName, "The child symbolic expression tree resulting from the crossover."));
+      Parameters.Add(new ValueParameter<IntValue>(FailedCrossoverEventsParameterName, "The number of failed crossover events (child is an exact copy of a parent)", new IntValue()));
     }
 
     public sealed override IOperation Apply() {
@@ -85,17 +75,21 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         parent1 = tmp;
       }
 
+      bool success;
       SymbolicExpressionTree result = Cross(random, grammar, parent0, parent1,
-        MaxTreeSizeParameter.ActualValue, MaxTreeHeightParameter.ActualValue);
+        MaxTreeSizeParameter.ActualValue, MaxTreeHeightParameter.ActualValue, out success);
+      
+      if (!success) FailedCrossoverEvents.Value++;
+
       Debug.Assert(result.Size <= MaxTreeSizeParameter.ActualValue.Value);
       Debug.Assert(result.Height <= MaxTreeHeightParameter.ActualValue.Value);
-      Debug.Assert(grammar.IsValidExpression(result));
+      // Debug.Assert(grammar.IsValidExpression(result));
       ChildParameter.ActualValue = result;
       return base.Apply();
     }
 
     protected abstract SymbolicExpressionTree Cross(IRandom random, ISymbolicExpressionGrammar grammar,
       SymbolicExpressionTree parent0, SymbolicExpressionTree parent1,
-      IntValue maxTreeSize, IntValue maxTreeHeight);
+      IntValue maxTreeSize, IntValue maxTreeHeight, out bool success);
   }
 }

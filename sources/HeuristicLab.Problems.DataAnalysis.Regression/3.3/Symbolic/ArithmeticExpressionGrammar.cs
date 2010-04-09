@@ -31,167 +31,53 @@ using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols;
 using HeuristicLab.Data;
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [StorableClass]
-  public class ArithmeticExpressionGrammar : NamedItemCollection<Symbol>, ISymbolicExpressionGrammar {
-
+  [Item("ArithmeticExpressionGrammar", "Represents a grammar for functional expressions using only arithmetic operations.")]
+  public class ArithmeticExpressionGrammar : DefaultSymbolicExpressionGrammar {
+    [Storable]
     private List<string> variableNames = new List<string>();
     public IEnumerable<string> VariableNames {
       get { return variableNames; }
       set {
         variableNames = new List<string>(value);
-        var variable = (HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols.Variable)allSymbols[5];
-        variable.VariableNames = new ItemList<HeuristicLab.Data.StringValue>(variableNames.Select(x => new StringValue(x)));
+        variableSymbol.VariableNames = variableNames;
       }
     }
+
+    [Storable]
+    private HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols.Variable variableSymbol;
 
     public ArithmeticExpressionGrammar()
-      : this(allSymbols) {
+      : base(0, 0, 0, 0) {
+      Initialize();
     }
 
-    public ArithmeticExpressionGrammar(IEnumerable<Symbol> symbols)
-      : base(symbols) {
-      allSymbols = new List<Symbol>(symbols);
-    }
+    private void Initialize() {
+      var add = new Addition();
+      var sub = new Subtraction();
+      var mul = new Multiplication();
+      var div = new Division();
+      var constant = new Constant();
+      variableSymbol = new HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols.Variable();
 
-    #region ISymbolicExpressionGrammar Members
-    [Storable]
-    private StartSymbol startSymbol = new StartSymbol();
-    public Symbol StartSymbol {
-      get { return startSymbol; }
-    }
+      var allSymbols = new List<Symbol>() { add, sub, mul, div, constant, variableSymbol };
+      var functionSymbols = new List<Symbol>() { add, sub, mul, div };
+      allSymbols.ForEach(s => AddAllowedSymbols(StartSymbol, 0, s));
 
-    [Storable]
-    private static List<Symbol> allSymbols = new List<Symbol>() {
-      new Addition(),
-      new Subtraction(),
-      new Multiplication(),
-      new Division(),
-      new Constant(),
-      new HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols.Variable()
-    };
-    [Storable]
-    private Dictionary<Type, Dictionary<int, IEnumerable<Symbol>>> allowedSymbols = new Dictionary<Type, Dictionary<int, IEnumerable<Symbol>>>() {
-      {
-        typeof(StartSymbol),
-        new Dictionary<int, IEnumerable<Symbol>>() 
-        {
-          { 0, allSymbols},
+
+      SetMinSubTreeCount(constant, 0);
+      SetMaxSubTreeCount(constant, 0);
+      SetMinSubTreeCount(variableSymbol, 0);
+      SetMaxSubTreeCount(variableSymbol, 0);
+      int maxSubTrees = 3;
+      foreach (var functionSymbol in functionSymbols) {
+        SetMinSubTreeCount(functionSymbol, 1);
+        SetMaxSubTreeCount(functionSymbol, maxSubTrees);
+        foreach (var childSymbol in allSymbols) {
+          for (int argumentIndex = 0; argumentIndex < maxSubTrees; argumentIndex++) {
+            AddAllowedSymbols(functionSymbol, argumentIndex, childSymbol);
+          }
         }
-      },      {
-        typeof(Addition),
-        new Dictionary<int, IEnumerable<Symbol>>() 
-        {
-          { 0, allSymbols},
-          { 1, allSymbols}
-        }
-      },
-      {
-        typeof(Subtraction),
-        new Dictionary<int, IEnumerable<Symbol>>() 
-        {
-          { 0, allSymbols},
-          { 1, allSymbols}
-        }
-      },
-      {
-        typeof(Multiplication),
-        new Dictionary<int, IEnumerable<Symbol>>() 
-        {
-          { 0, allSymbols},
-          { 1, allSymbols}
-        }
-      },
-      {
-        typeof(Division),
-        new Dictionary<int, IEnumerable<Symbol>>() 
-        {
-          { 0, allSymbols},
-          { 1, allSymbols}
-        }
-      },
-    };
-    public IEnumerable<Symbol> AllowedSymbols(Symbol parent, int argumentIndex) {
-      return allowedSymbols[parent.GetType()][argumentIndex];
-    }
-
-    [Storable]
-    private Dictionary<Type, int> minLength = new Dictionary<Type, int>() {
-      {typeof(StartSymbol), 1}, 
-      {typeof(Addition), 3},
-      {typeof(Subtraction), 3},
-      {typeof(Multiplication), 4},
-      {typeof(Division), 4},
-      {typeof(Constant), 1},
-      {typeof(HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols.Variable), 1},
-    };
-    public int MinimalExpressionLength(Symbol start) {
-      return minLength[start.GetType()];
-    }
-
-    [Storable]
-    private Dictionary<Type, int> maxLength = new Dictionary<Type, int>() {
-      {typeof(StartSymbol), int.MaxValue}, 
-      {typeof(Addition), int.MaxValue},
-      {typeof(Subtraction), int.MaxValue},
-      {typeof(Multiplication), int.MaxValue},
-      {typeof(Division), int.MaxValue},
-      {typeof(HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols.Variable), 1},
-      {typeof(Constant), 1},
-    };
-    public int MaximalExpressionLength(Symbol start) {
-      return maxLength[start.GetType()];
-    }
-
-    [Storable]
-    private Dictionary<Type, int> minDepth = new Dictionary<Type, int>() {
-      {typeof(StartSymbol), 1}, 
-      {typeof(Addition), 1},
-      {typeof(Subtraction), 1},
-      {typeof(Multiplication), 1},
-      {typeof(Division), 1},
-      {typeof(Constant), 0},
-      {typeof(HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols.Variable), 0}
-    };
-    public int MinimalExpressionDepth(Symbol start) {
-      return minDepth[start.GetType()];
-    }
-
-    [Storable]
-    private Dictionary<Type, int> subTrees = new Dictionary<Type, int>() {
-      {typeof(StartSymbol), 1}, 
-      {typeof(Addition), 2},
-      {typeof(Subtraction), 2},
-      {typeof(Multiplication), 2},
-      {typeof(Division), 2},
-      {typeof(HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols.Variable), 0},
-      {typeof(Constant), 0},
-    };
-    public int MinSubTrees(Symbol start) {
-      return subTrees[start.GetType()];
-    }
-    public int MaxSubTrees(Symbol start) {
-      return subTrees[start.GetType()];
-    }
-
-    #endregion
-
-    #region ISymbolicExpressionGrammar Members
-
-
-    public bool IsValidExpression(SymbolicExpressionTree expression) {
-      if (expression.Root.Symbol != StartSymbol) return false;
-      return IsValidExpression(expression.Root);
-    }
-
-    #endregion
-
-    private bool IsValidExpression(SymbolicExpressionTreeNode root) {
-      if (root.SubTrees.Count < MinSubTrees(root.Symbol)) return false;
-      if (root.SubTrees.Count > MaxSubTrees(root.Symbol)) return false;
-      for (int i = 0; i < root.SubTrees.Count; i++) {
-        if (!AllowedSymbols(root.Symbol, i).Contains(root.SubTrees[i].Symbol)) return false;
-        if (!IsValidExpression(root.SubTrees[i])) return false;
       }
-      return true;
     }
   }
 }

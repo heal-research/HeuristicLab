@@ -20,7 +20,11 @@
 #endregion
 
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Core;
 namespace HeuristicLab.Problems.ArtificialAnt {
+  [StorableClass]
+  [Item("Move", "Represents the move-forward symbol in a artificial ant expression.")]
   public sealed class Move : Symbol {
   }
 }

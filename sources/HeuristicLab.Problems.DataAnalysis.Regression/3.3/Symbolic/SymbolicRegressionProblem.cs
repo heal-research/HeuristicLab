@@ -70,6 +70,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     public ValueParameter<DoubleValue> NumberOfEvaluatedNodesParameter {
       get { return (ValueParameter<DoubleValue>)Parameters["NumberOfEvaluatedNodes"]; }
     }
+    public ValueParameter<IntValue> MaxFunctionDefiningBranchesParameter {
+      get { return (ValueParameter<IntValue>)Parameters["MaxFunctionDefiningBranches"]; }
+    }
+    public ValueParameter<IntValue> MaxFunctionArgumentsParameter {
+      get { return (ValueParameter<IntValue>)Parameters["MaxFunctionArguments"]; }
+    }
     public OptionalValueParameter<ISingleObjectiveSolutionsVisualizer> VisualizerParameter {
       get { return (OptionalValueParameter<ISingleObjectiveSolutionsVisualizer>)Parameters["Visualizer"]; }
     }
@@ -141,12 +147,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       Parameters.Add(new ValueParameter<ISymbolicExpressionGrammar>("FunctionTreeGrammar", "The grammar that should be used for symbolic regression models.", grammar));
       Parameters.Add(new ValueParameter<IntValue>("MaxExpressionLength", "Maximal length of the symbolic expression.", new IntValue(100)));
       Parameters.Add(new ValueParameter<IntValue>("MaxExpressionDepth", "Maximal depth of the symbolic expression.", new IntValue(10)));
+      Parameters.Add(new ValueParameter<IntValue>("MaxFunctionDefiningBranches", "Maximal number of automatically defined functions.", new IntValue(3)));
+      Parameters.Add(new ValueParameter<IntValue>("MaxFunctionArguments", "Maximal number of arguments of automatically defined functions.", new IntValue(3)));
       Parameters.Add(new ValueParameter<DoubleValue>("NumberOfEvaluatedNodes", "The total number of evaluated function tree nodes (for performance measurements.)", new DoubleValue()));
       Parameters.Add(new ValueParameter<ISingleObjectiveSolutionsVisualizer>("Visualizer", "The operator which should be used to visualize artificial ant solutions.", null));
 
       creator.SymbolicExpressionTreeParameter.ActualName = "SymbolicRegressionModel";
       evaluator.QualityParameter.ActualName = "TrainingMeanSquaredError";
-      InputVariablesParameter.ValueChanged += new EventHandler(InputVariablesParameter_ValueChanged);
+      RegressionProblemDataParameter.ValueChanged += new EventHandler(RegressionProblemDataParameter_ValueChanged);
+      RegressionProblemData.InputVariablesChanged += new EventHandler(RegressionProblemData_InputVariablesChanged);
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
       ParameterizeVisualizer();
@@ -154,8 +163,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       Initialize();
     }
 
-    void InputVariablesParameter_ValueChanged(object sender, EventArgs e) {
-      FunctionTreeGrammar.VariableNames = InputVariablesParameter.Value.Select(x => x.Value);
+    void RegressionProblemDataParameter_ValueChanged(object sender, EventArgs e) {
+      RegressionProblemData.InputVariablesChanged += new EventHandler(RegressionProblemData_InputVariablesChanged);
+    }
+
+    void RegressionProblemData_InputVariablesChanged(object sender, EventArgs e) {
+      FunctionTreeGrammar.VariableNames = RegressionProblemData.InputVariables.Select(x => x.Value);
     }
 
     [StorableConstructor]
@@ -249,8 +262,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
     private void ParameterizeEvaluator() {
       Evaluator.FunctionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
-      Evaluator.SamplesStartParameter.ActualName = TrainingSamplesStartParameter.Name;
-      Evaluator.SamplesEndParameter.ActualName = TrainingSamplesEndParameter.Name;
+      Evaluator.RegressionProblemDataParameter.ActualName = RegressionProblemDataParameter.Name;
     }
     private void ParameterizeVisualizer() {
       if (Visualizer != null) {
@@ -276,15 +288,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       }
       foreach (ISymbolicRegressionEvaluator op in Operators.OfType<ISymbolicRegressionEvaluator>()) {
         op.FunctionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
-        op.DatasetParameter.ActualName = DatasetParameter.Name;
+        op.RegressionProblemDataParameter.ActualName = RegressionProblemDataParameter.Name;
         op.NumberOfEvaluatedNodesParameter.ActualName = NumberOfEvaluatedNodesParameter.Name;
-        op.TargetVariableParameter.ActualName = TargetVariableParameter.Name;
-        op.SamplesStartParameter.ActualName = TrainingSamplesStartParameter.Name;
-        op.SamplesEndParameter.ActualName = TrainingSamplesEndParameter.Name;
       }
       foreach (SymbolicExpressionTreeCrossover op in Operators.OfType<SymbolicExpressionTreeCrossover>()) {
         op.ParentsParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
         op.ChildParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+      }
+      foreach (SymbolicExpressionTreeManipulator op in Operators.OfType<SymbolicExpressionTreeManipulator>()) {
+        op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+      }
+      foreach (SymbolicExpressionTreeArchitectureAlteringOperator op in Operators.OfType<SymbolicExpressionTreeArchitectureAlteringOperator>()) {
       }
     }
     #endregion

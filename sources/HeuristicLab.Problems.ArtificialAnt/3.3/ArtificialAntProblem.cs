@@ -106,6 +106,12 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     public ValueParameter<IntValue> MaxExpressionDepthParameter {
       get { return (ValueParameter<IntValue>)Parameters["MaxExpressionDepth"]; }
     }
+    public ValueParameter<IntValue> MaxFunctionDefinitionsParameter {
+      get { return (ValueParameter<IntValue>)Parameters["MaxFunctionDefinitions"]; }
+    }
+    public ValueParameter<IntValue> MaxFunctionArgumentsParameter {
+      get { return (ValueParameter<IntValue>)Parameters["MaxFunctionArguments"]; }
+    }
     public ValueParameter<BoolMatrix> WorldParameter {
       get { return (ValueParameter<BoolMatrix>)Parameters["World"]; }
     }
@@ -194,6 +200,8 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       Parameters.Add(new ValueParameter<ISymbolicExpressionGrammar>("ArtificialAntExpressionGrammar", "The grammar that should be used for artificial ant expressions.", grammar));
       Parameters.Add(new ValueParameter<IntValue>("MaxExpressionLength", "Maximal length of the expression to control the artificial ant.", new IntValue(100)));
       Parameters.Add(new ValueParameter<IntValue>("MaxExpressionDepth", "Maximal depth of the expression to control the artificial ant.", new IntValue(10)));
+      Parameters.Add(new ValueParameter<IntValue>("MaxFunctionDefinitions", "Maximal number of automatically defined functions in the expression to control the artificial ant.", new IntValue(3)));
+      Parameters.Add(new ValueParameter<IntValue>("MaxFunctionArguments", "Maximal number of arguments of automatically defined functions in the expression to control the artificial ant.", new IntValue(3)));
       Parameters.Add(new ValueParameter<BoolMatrix>("World", "The world for the artificial ant with scattered food items.", world));
       Parameters.Add(new ValueParameter<IntValue>("MaxTimeSteps", "The number of time steps the artificial ant has available to collect all food items.", new IntValue(600)));
       Parameters.Add(new ValueParameter<ISingleObjectiveSolutionsVisualizer>("Visualizer", "The operator which should be used to visualize artificial ant solutions.", visualizer));
@@ -331,6 +339,13 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       foreach (SymbolicExpressionTreeCrossover op in Operators.OfType<SymbolicExpressionTreeCrossover>()) {
         op.ParentsParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
         op.ChildParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+      }
+      foreach (SymbolicExpressionTreeManipulator op in Operators.OfType<SymbolicExpressionTreeManipulator>()) {
+        op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+      }
+      foreach (SymbolicExpressionTreeArchitectureAlteringOperator op in Operators.OfType<SymbolicExpressionTreeArchitectureAlteringOperator>()) {
+        op.MaxFunctionDefiningBranchesParameter.ActualName = MaxFunctionDefinitionsParameter.Name;
+        op.MaxFunctionArgumentsParameter.ActualName = MaxFunctionArgumentsParameter.Name;
       }
     }
 

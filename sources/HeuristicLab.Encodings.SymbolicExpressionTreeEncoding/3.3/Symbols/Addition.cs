@@ -19,7 +19,11 @@
  */
 #endregion
 
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Core;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols {
+  [StorableClass]
+  [Item("Addition", "Symbol that represents the + operator.")]
   public sealed class Addition : Symbol {
   }
 }

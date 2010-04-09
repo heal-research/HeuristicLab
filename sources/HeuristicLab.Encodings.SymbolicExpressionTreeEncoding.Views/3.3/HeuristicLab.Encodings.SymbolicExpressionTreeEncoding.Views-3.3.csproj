@@ -88,6 +88,12 @@
       <DependentUpon>GraphicalSymbolicExpressionTreeView.cs</DependentUpon>
     </Compile>
     <Compile Include="HeuristicLabEncodingsSymbolicExpressionTreeEncodingViewsPlugin.cs" />
+    <Compile Include="PropertiesView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PropertiesView.Designer.cs">
+      <DependentUpon>PropertiesView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -109,6 +115,10 @@
     <Compile Include="VisualSymbolicExpressionTreeNode.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Core.Views\3.3\HeuristicLab.Core.Views-3.3.csproj">
+      <Project>{E226881D-315F-423D-B419-A766FE0D8685}</Project>
+      <Name>HeuristicLab.Core.Views-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
       <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
       <Name>HeuristicLab.Core-3.3</Name>
@@ -138,6 +148,9 @@
   <ItemGroup>
     <EmbeddedResource Include="GraphicalSymbolicExpressionTreeView.resx">
       <DependentUpon>GraphicalSymbolicExpressionTreeView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PropertiesView.resx">
+      <DependentUpon>PropertiesView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

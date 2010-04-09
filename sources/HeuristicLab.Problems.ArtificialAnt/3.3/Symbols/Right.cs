@@ -20,7 +20,11 @@
 #endregion
 
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.ArtificialAnt {
+  [StorableClass]
+  [Item("Right", "Represents the turn-right symbol in a artificial ant expression.")]
   public sealed class Right : Symbol {
   }
 }

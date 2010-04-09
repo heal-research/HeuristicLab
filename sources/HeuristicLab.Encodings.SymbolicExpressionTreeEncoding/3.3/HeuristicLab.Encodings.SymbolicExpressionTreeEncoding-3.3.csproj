@@ -82,13 +82,31 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArchitectureAlteringOperators\ArgumentDuplicater.cs" />
+    <Compile Include="ArchitectureAlteringOperators\ArgumentCreater.cs" />
+    <Compile Include="ArchitectureAlteringOperators\ArgumentDeleter.cs" />
+    <Compile Include="ArchitectureAlteringOperators\RandomArchitectureAlteringOperator.cs" />
+    <Compile Include="ArchitectureAlteringOperators\SubroutineDeleter.cs" />
+    <Compile Include="ArchitectureAlteringOperators\SubroutineCreater.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ArchitectureAlteringOperators\SubroutineDuplicater.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DefaultSymbolicExpressionGrammar.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SymbolicExpressionTreeArchitectureAlteringOperator.cs" />
+    <Compile Include="SymbolicExpressionTreeOperator.cs" />
+    <Compile Include="Instruction.cs" />
+    <Compile Include="SymbolicExpressionTreeCompiler.cs" />
+    <Compile Include="SymbolicExpressionTreeManipulator.cs" />
     <Compile Include="SymbolicExpressionTreeTerminalNode.cs" />
     <Compile Include="Crossovers\SubtreeCrossover.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionGrammar.cs" />
     <Compile Include="Creators\ProbabilisticTreeCreator.cs" />
     <Compile Include="HeuristicLabEncodingsSymbolicExpressionTreeEncodingPlugin.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionTreeOperator.cs" />
-    <Compile Include="SymbolicExpressionGrammar.cs" />
     <Compile Include="SymbolicExpressionTreeCreator.cs" />
     <Compile Include="SymbolicExpressionTree.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -96,12 +114,23 @@
     <Compile Include="SymbolicExpressionTreeCrossover.cs" />
     <Compile Include="SymbolicExpressionTreeNode.cs" />
     <Compile Include="Symbols\Addition.cs" />
-    <Compile Include="Symbols\Prog.cs" />
-    <Compile Include="GeneralSymbolicExpressionTreeEvaluator.cs" />
+    <Compile Include="Symbols\Argument.cs" />
+    <Compile Include="Symbols\ArgumentTreeNode.cs" />
     <Compile Include="Symbols\StartSymbol.cs" />
+    <Compile Include="Symbols\InvokeFunction.cs" />
+    <Compile Include="Symbols\InvokeFunctionTreeNode.cs" />
+    <Compile Include="Symbols\DefunTreeNode.cs" />
+    <Compile Include="Symbols\Defun.cs" />
+    <Compile Include="Symbols\ProgramRootSymbol.cs" />
     <Compile Include="Symbols\Division.cs" />
     <Compile Include="Symbols\Multiplication.cs" />
     <Compile Include="Symbols\Subtraction.cs" />
+    <Compile Include="Symbols\Values.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Symbols\ValuesTreeNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
