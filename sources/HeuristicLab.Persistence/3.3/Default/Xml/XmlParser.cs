@@ -17,7 +17,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
   /// </summary>
   public class XmlParser : IEnumerable<ISerializationToken> {
 
-    private readonly XmlReader reader;
+    private readonly XmlTextReader reader;
     private delegate IEnumerator<ISerializationToken> Handler();
     private readonly Dictionary<string, Handler> handlers;
 
@@ -26,12 +26,9 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// </summary>
     /// <param name="input">The input.</param>
     public XmlParser(TextReader input) {
-      XmlReaderSettings settings = new XmlReaderSettings {
-        ConformanceLevel = ConformanceLevel.Document,
-        IgnoreWhitespace = true,
-        IgnoreComments = true
-      };
-      reader = XmlReader.Create(input, settings);
+      reader = new XmlTextReader(input);
+      reader.WhitespaceHandling = WhitespaceHandling.All;
+      reader.Normalization = false;
       handlers = new Dictionary<string, Handler> {
                      {XmlStringConstants.PRIMITIVE, ParsePrimitive},
                      {XmlStringConstants.COMPOSITE, ParseComposite},

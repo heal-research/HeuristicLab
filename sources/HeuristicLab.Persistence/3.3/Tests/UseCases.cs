@@ -1006,6 +1006,19 @@ namespace HeuristicLab.Persistence_33.Tests {
       Assert.AreEqual(0, newAfs.Value4);
     }
 
+    [TestMethod]
+    public void TestLineEndings() {
+      List<string> lineBreaks = new List<string> { "\r\n", "\n", "\r", "\n\r", Environment.NewLine };
+      List<string> lines = new List<string>();
+      foreach (var br in lineBreaks)
+        lines.Add("line1" + br + "line2");
+      XmlGenerator.Serialize(lines, tempFile);
+      List<string> newLines = XmlParser.Deserialize<List<string>>(tempFile);
+      Assert.AreEqual(lines.Count, newLines.Count);
+      for (int i = 0; i < lineBreaks.Count; i++) {
+        Assert.AreEqual(lines[i], newLines[i]);
+      }
+    }
     
 
     [ClassInitialize]
