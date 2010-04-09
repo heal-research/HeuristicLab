@@ -65,8 +65,10 @@ namespace HeuristicLab.Optimizer.MenuItems {
       if (view == null) {
         view = new StartPage();
         view.Show();
+      } else if (view.IsShown) {
+        view.Hide();
       } else {
-        view.Close();
+        view.Show();
       }
     }
   }

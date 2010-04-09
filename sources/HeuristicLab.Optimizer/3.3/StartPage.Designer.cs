@@ -49,11 +49,15 @@ namespace HeuristicLab.Optimizer {
       this.firstStepsRichTextBox = new System.Windows.Forms.RichTextBox();
       this.titleLabel = new System.Windows.Forms.Label();
       this.samplesGroupBox = new System.Windows.Forms.GroupBox();
+      this.loadingPanel = new System.Windows.Forms.Panel();
+      this.loadingProgressBar = new System.Windows.Forms.ProgressBar();
+      this.loadingLabel = new System.Windows.Forms.Label();
       this.samplesListView = new System.Windows.Forms.ListView();
       this.nameColumnHeader = new System.Windows.Forms.ColumnHeader();
       this.descriptionColumnHeader = new System.Windows.Forms.ColumnHeader();
       this.imageList = new System.Windows.Forms.ImageList(this.components);
       this.samplesGroupBox.SuspendLayout();
+      this.loadingPanel.SuspendLayout();
       this.SuspendLayout();
       // 
       // showStartPageCheckBox
@@ -61,7 +65,7 @@ namespace HeuristicLab.Optimizer {
       this.showStartPageCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.showStartPageCheckBox.AutoSize = true;
       this.showStartPageCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-      this.showStartPageCheckBox.Location = new System.Drawing.Point(3, 491);
+      this.showStartPageCheckBox.Location = new System.Drawing.Point(3, 542);
       this.showStartPageCheckBox.Name = "showStartPageCheckBox";
       this.showStartPageCheckBox.Size = new System.Drawing.Size(158, 17);
       this.showStartPageCheckBox.TabIndex = 3;
@@ -80,7 +84,7 @@ namespace HeuristicLab.Optimizer {
       this.firstStepsRichTextBox.Location = new System.Drawing.Point(3, 33);
       this.firstStepsRichTextBox.Name = "firstStepsRichTextBox";
       this.firstStepsRichTextBox.ReadOnly = true;
-      this.firstStepsRichTextBox.Size = new System.Drawing.Size(815, 268);
+      this.firstStepsRichTextBox.Size = new System.Drawing.Size(760, 319);
       this.firstStepsRichTextBox.TabIndex = 1;
       this.firstStepsRichTextBox.Text = "First Steps";
       this.firstStepsRichTextBox.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.firstStepsRichTextBox_LinkClicked);
@@ -92,7 +96,7 @@ namespace HeuristicLab.Optimizer {
       this.titleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.titleLabel.Location = new System.Drawing.Point(3, 0);
       this.titleLabel.Name = "titleLabel";
-      this.titleLabel.Size = new System.Drawing.Size(815, 30);
+      this.titleLabel.Size = new System.Drawing.Size(760, 30);
       this.titleLabel.TabIndex = 0;
       this.titleLabel.Text = "Title";
       this.titleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -101,13 +105,45 @@ namespace HeuristicLab.Optimizer {
       // 
       this.samplesGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.samplesGroupBox.Controls.Add(this.loadingPanel);
       this.samplesGroupBox.Controls.Add(this.samplesListView);
-      this.samplesGroupBox.Location = new System.Drawing.Point(3, 307);
+      this.samplesGroupBox.Location = new System.Drawing.Point(3, 358);
       this.samplesGroupBox.Name = "samplesGroupBox";
-      this.samplesGroupBox.Size = new System.Drawing.Size(815, 178);
+      this.samplesGroupBox.Size = new System.Drawing.Size(760, 178);
       this.samplesGroupBox.TabIndex = 2;
       this.samplesGroupBox.TabStop = false;
       this.samplesGroupBox.Text = "Samples";
+      // 
+      // loadingPanel
+      // 
+      this.loadingPanel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+      this.loadingPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      this.loadingPanel.Controls.Add(this.loadingProgressBar);
+      this.loadingPanel.Controls.Add(this.loadingLabel);
+      this.loadingPanel.Enabled = false;
+      this.loadingPanel.Location = new System.Drawing.Point(205, 74);
+      this.loadingPanel.Name = "loadingPanel";
+      this.loadingPanel.Size = new System.Drawing.Size(350, 62);
+      this.loadingPanel.TabIndex = 1;
+      // 
+      // loadingProgressBar
+      // 
+      this.loadingProgressBar.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.loadingProgressBar.Location = new System.Drawing.Point(101, 19);
+      this.loadingProgressBar.Name = "loadingProgressBar";
+      this.loadingProgressBar.Size = new System.Drawing.Size(229, 23);
+      this.loadingProgressBar.Step = 1;
+      this.loadingProgressBar.TabIndex = 1;
+      // 
+      // loadingLabel
+      // 
+      this.loadingLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.loadingLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.loadingLabel.Location = new System.Drawing.Point(12, 19);
+      this.loadingLabel.Name = "loadingLabel";
+      this.loadingLabel.Size = new System.Drawing.Size(83, 23);
+      this.loadingLabel.TabIndex = 0;
+      this.loadingLabel.Text = "Loading ...";
       // 
       // samplesListView
       // 
@@ -120,7 +156,7 @@ namespace HeuristicLab.Optimizer {
       this.samplesListView.MultiSelect = false;
       this.samplesListView.Name = "samplesListView";
       this.samplesListView.ShowItemToolTips = true;
-      this.samplesListView.Size = new System.Drawing.Size(809, 159);
+      this.samplesListView.Size = new System.Drawing.Size(754, 159);
       this.samplesListView.SmallImageList = this.imageList;
       this.samplesListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
       this.samplesListView.TabIndex = 0;
@@ -153,8 +189,9 @@ namespace HeuristicLab.Optimizer {
       this.Controls.Add(this.titleLabel);
       this.Controls.Add(this.showStartPageCheckBox);
       this.Name = "StartPage";
-      this.Size = new System.Drawing.Size(821, 511);
+      this.Size = new System.Drawing.Size(766, 562);
       this.samplesGroupBox.ResumeLayout(false);
+      this.loadingPanel.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -170,5 +207,8 @@ namespace HeuristicLab.Optimizer {
     private System.Windows.Forms.ColumnHeader nameColumnHeader;
     private System.Windows.Forms.ImageList imageList;
     private System.Windows.Forms.ColumnHeader descriptionColumnHeader;
+    private System.Windows.Forms.Panel loadingPanel;
+    private System.Windows.Forms.ProgressBar loadingProgressBar;
+    private System.Windows.Forms.Label loadingLabel;
   }
 }

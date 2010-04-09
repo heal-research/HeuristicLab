@@ -28,6 +28,7 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.MainForm;
 using HeuristicLab.Persistence.Default.Xml;
+using System.Threading;
 
 namespace HeuristicLab.Optimizer {
   [View("Start Page")]
@@ -53,35 +54,66 @@ namespace HeuristicLab.Optimizer {
       }
       catch (Exception) { }
 
-      samples = new List<INamedItem>();
+      samplesListView.Enabled = false;
+      showStartPageCheckBox.Checked = Properties.Settings.Default.ShowStartPage;
+      Cursor = Cursors.AppStarting;
+
+      ThreadPool.QueueUserWorkItem(new WaitCallback(LoadSamples));
+    }
+
+    protected override void OnClosing(FormClosingEventArgs e) {
+      base.OnClosing(e);
+      if (e.CloseReason == CloseReason.UserClosing) {
+        e.Cancel = true;
+        this.Hide();
+      }
+    }
+
+    private void LoadSamples(object state) {
+      Assembly assembly = Assembly.GetExecutingAssembly();
+      var samples = assembly.GetManifestResourceNames().Where(x => x.EndsWith(".hl"));
       string path = Path.GetTempFileName();
-      foreach (string name in assembly.GetManifestResourceNames()) {
-        if (name.EndsWith(".hl")) {
-          try {
-            using (Stream stream = assembly.GetManifestResourceStream(name)) {
-              WriteStreamToTempFile(stream, path);
-              IItem item = XmlParser.Deserialize<IItem>(path);
-              if (item is INamedItem) samples.Add((INamedItem)item);
-            }
+      int progress = loadingProgressBar.Maximum / samples.Count();
+
+      foreach (string name in samples) {
+        try {
+          using (Stream stream = assembly.GetManifestResourceStream(name)) {
+            WriteStreamToTempFile(stream, path);
+            IItem item = XmlParser.Deserialize<IItem>(path);
+            OnSampleLoaded(item as INamedItem, progress);
           }
-          catch (Exception) { }
+        }
+        catch (Exception) { }
+      }
+      OnAllSamplesLoaded();
+    }
+    private void OnSampleLoaded(INamedItem sample, int progress) {
+      if (sample != null) {
+        if (InvokeRequired)
+          Invoke(new Action<INamedItem, int>(OnSampleLoaded), sample, progress);
+        else {
+          ListViewItem item = new ListViewItem(new string[] { sample.Name, sample.Description });
+          item.ToolTipText = sample.ItemName + " (" + sample.ItemDescription + ")";
+          samplesListView.SmallImageList.Images.Add(sample.ItemImage);
+          item.ImageIndex = samplesListView.SmallImageList.Images.Count - 1;
+          item.Tag = sample;
+          samplesListView.Items.Add(item);
+          loadingProgressBar.Value += progress;
         }
       }
-      foreach (INamedItem sample in samples) {
-        ListViewItem item = new ListViewItem(new string[] { sample.Name, sample.Description });
-        item.ToolTipText = sample.ItemName + " (" + sample.ItemDescription + ")";
-        samplesListView.SmallImageList.Images.Add(sample.ItemImage);
-        item.ImageIndex = samplesListView.SmallImageList.Images.Count - 1;
-        item.Tag = sample;
-        samplesListView.Items.Add(item);
+    }
+    private void OnAllSamplesLoaded() {
+      if (InvokeRequired)
+        Invoke(new Action(OnAllSamplesLoaded));
+      else {
+        samplesListView.Enabled = samplesListView.Items.Count > 0;
+        if (samplesListView.Items.Count > 0) {
+          for (int i = 0; i < samplesListView.Columns.Count; i++)
+            samplesListView.Columns[i].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+        }
+        loadingPanel.Visible = false;
+        Cursor = Cursors.Default;
       }
-      samplesListView.Enabled = samplesListView.Items.Count > 0;
-      if (samplesListView.Items.Count > 0) {
-        for (int i = 0; i < samplesListView.Columns.Count; i++)
-          samplesListView.Columns[i].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-      }
-
-      showStartPageCheckBox.Checked = Properties.Settings.Default.ShowStartPage;
     }
 
     private void firstStepsRichTextBox_LinkClicked(object sender, LinkClickedEventArgs e) {
