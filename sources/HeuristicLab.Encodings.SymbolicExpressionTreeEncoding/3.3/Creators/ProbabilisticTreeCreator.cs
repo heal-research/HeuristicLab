@@ -56,7 +56,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
           treeSize = random.Next(allowedMinSize, allowedMaxSize);
         }
       } while (tree.Root.SubTrees.Count == 0 || tree.Size > maxTreeSize || tree.Height > maxTreeHeight);
-      System.Diagnostics.Debug.Assert(grammar.IsValidExpression(tree));
       return tree;
     }
 

@@ -73,7 +73,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
                             where IsMatchingPointType(parent0, crossoverPoint0, branch)
                             select branch;
 
-      if (allowedBranches.Count() > 0) {
+      if (allowedBranches.Count() == 0) {
+        success = false;
+        return parent0;
+      } else {
         var selectedBranch = SelectRandomBranch(random, allowedBranches, internalCrossoverPointProbability);
 
         // manipulate the tree of parent0 in place
@@ -83,9 +86,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         success = true;
         return parent0;
       }
-
-      success = false;
-      return parent0;
     }
 
     private static bool IsMatchingPointType(SymbolicExpressionTree tree, SymbolicExpressionTreeNode parent, SymbolicExpressionTreeNode newBranch) {

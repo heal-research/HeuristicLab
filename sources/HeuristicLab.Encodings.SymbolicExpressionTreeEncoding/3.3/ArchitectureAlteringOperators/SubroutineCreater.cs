@@ -118,7 +118,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
       }
       // add new function name to original branch
       selectedBody.AddDynamicSymbol(functionName, argumentBranches.Count);
-      Debug.Assert(grammar.IsValidExpression(symbolicExpressionTree));
       return true;
     }
 
