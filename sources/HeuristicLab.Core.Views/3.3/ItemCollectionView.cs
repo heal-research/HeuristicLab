@@ -267,8 +267,8 @@ namespace HeuristicLab.Core.Views {
 
     #region Helpers
     protected virtual void SortItemsListView(SortOrder sortOrder) {
+      itemsListView.Sorting = SortOrder.None;
       itemsListView.Sorting = sortOrder;
-      itemsListView.Sort();
       itemsListView.Sorting = SortOrder.None;
     }
     #endregion

@@ -69,15 +69,15 @@ namespace HeuristicLab.Optimizer {
     private void LoadSamples(object state) {
       Assembly assembly = Assembly.GetExecutingAssembly();
       var samples = assembly.GetManifestResourceNames().Where(x => x.EndsWith(".hl"));
+      int count = samples.Count();
       string path = Path.GetTempFileName();
-      int progress = loadingProgressBar.Maximum / samples.Count();
 
       foreach (string name in samples) {
         try {
           using (Stream stream = assembly.GetManifestResourceStream(name)) {
             WriteStreamToTempFile(stream, path);
-            IItem item = XmlParser.Deserialize<IItem>(path);
-            OnSampleLoaded(item as INamedItem, progress);
+            INamedItem item = XmlParser.Deserialize<INamedItem>(path);
+            OnSampleLoaded(item, loadingProgressBar.Maximum / count);
           }
         }
         catch (Exception) { }
@@ -85,18 +85,16 @@ namespace HeuristicLab.Optimizer {
       OnAllSamplesLoaded();
     }
     private void OnSampleLoaded(INamedItem sample, int progress) {
-      if (sample != null) {
-        if (InvokeRequired)
-          Invoke(new Action<INamedItem, int>(OnSampleLoaded), sample, progress);
-        else {
-          ListViewItem item = new ListViewItem(new string[] { sample.Name, sample.Description });
-          item.ToolTipText = sample.ItemName + " (" + sample.ItemDescription + ")";
-          samplesListView.SmallImageList.Images.Add(sample.ItemImage);
-          item.ImageIndex = samplesListView.SmallImageList.Images.Count - 1;
-          item.Tag = sample;
-          samplesListView.Items.Add(item);
-          loadingProgressBar.Value += progress;
-        }
+      if (InvokeRequired)
+        Invoke(new Action<INamedItem, int>(OnSampleLoaded), sample, progress);
+      else {
+        ListViewItem item = new ListViewItem(new string[] { sample.Name, sample.Description });
+        item.ToolTipText = sample.ItemName + ": " + sample.ItemDescription;
+        samplesListView.SmallImageList.Images.Add(sample.ItemImage);
+        item.ImageIndex = samplesListView.SmallImageList.Images.Count - 1;
+        item.Tag = sample;
+        samplesListView.Items.Add(item);
+        loadingProgressBar.Value += progress;
       }
     }
     private void OnAllSamplesLoaded() {
@@ -119,6 +117,14 @@ namespace HeuristicLab.Optimizer {
     private void samplesListView_DoubleClick(object sender, EventArgs e) {
       if (samplesListView.SelectedItems.Count == 1)
         MainFormManager.CreateDefaultView(((IItem)samplesListView.SelectedItems[0].Tag).Clone()).Show();
+    }
+    private void samplesListView_ItemDrag(object sender, ItemDragEventArgs e) {
+      ListViewItem listViewItem = (ListViewItem)e.Item;
+      IItem item = (IItem)listViewItem.Tag;
+      DataObject data = new DataObject();
+      data.SetData("Type", item.GetType());
+      data.SetData("Value", item);
+      DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy);
     }
 
     private void showStartPageCheckBox_CheckedChanged(object sender, EventArgs e) {

@@ -87,6 +87,7 @@
     <None Include="HeuristicLabOptimizerPlugin.cs.frame" />
     <Compile Include="FileManager.cs" />
     <Compile Include="MenuItems\ClipboardMenuItem.cs" />
+    <Compile Include="MenuItems\CopyToClipboardMenuItem.cs" />
     <Compile Include="MenuItems\StartPageMenuItem.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>

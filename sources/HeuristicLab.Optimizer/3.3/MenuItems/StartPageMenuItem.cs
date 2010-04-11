@@ -37,7 +37,7 @@ namespace HeuristicLab.Optimizer.MenuItems {
       get { return new string[] { "&View" }; }
     }
     public override int Position {
-      get { return 2100; }
+      get { return 3100; }
     }
 
     protected override void OnToolStripItemSet(EventArgs e) {

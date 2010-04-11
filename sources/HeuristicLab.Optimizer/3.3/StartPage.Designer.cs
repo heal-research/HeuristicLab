@@ -163,6 +163,7 @@ namespace HeuristicLab.Optimizer {
       this.samplesListView.UseCompatibleStateImageBehavior = false;
       this.samplesListView.View = System.Windows.Forms.View.Details;
       this.samplesListView.DoubleClick += new System.EventHandler(this.samplesListView_DoubleClick);
+      this.samplesListView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.samplesListView_ItemDrag);
       // 
       // nameColumnHeader
       // 

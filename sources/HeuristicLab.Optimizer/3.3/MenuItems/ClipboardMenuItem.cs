@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
@@ -37,7 +38,7 @@ namespace HeuristicLab.Optimizer.MenuItems {
       get { return new string[] { "&View" }; }
     }
     public override int Position {
-      get { return 2200; }
+      get { return 3200; }
     }
 
     protected override void OnToolStripItemSet(EventArgs e) {
@@ -52,14 +53,14 @@ namespace HeuristicLab.Optimizer.MenuItems {
     }
 
     private void MainForm_ViewShown(object sender, ViewShownEventArgs e) {
-      if ((e.View is HeuristicLab.Core.Views.Clipboard) && (menuItem != null)) {
+      if ((e.View is Clipboard<IItem>) && (menuItem != null)) {
         menuItem.Checked = true;
         Properties.Settings.Default.ShowClipboard = true;
         Properties.Settings.Default.Save();
       }
     }
     private void MainForm_ViewHidden(object sender, ViewEventArgs e) {
-      if ((e.View is HeuristicLab.Core.Views.Clipboard) && (menuItem != null)) {
+      if ((e.View is Clipboard<IItem>) && (menuItem != null)) {
         menuItem.Checked = false;
         Properties.Settings.Default.ShowClipboard = false;
         Properties.Settings.Default.Save();
