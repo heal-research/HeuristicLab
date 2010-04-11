@@ -116,5 +116,23 @@ namespace HeuristicLab.Optimization.Views {
         viewHost.Content = null;
       }
     }
+    private void listView_DoubleClick(object sender, EventArgs e) {
+      if (listView.SelectedItems.Count == 1) {
+        IItem item = (IItem)listView.SelectedItems[0].Tag;
+        IView view = MainFormManager.CreateDefaultView(item);
+        if (view != null) view.Show();
+      }
+    }
+    private void listView_ItemDrag(object sender, ItemDragEventArgs e) {
+      ListViewItem listViewItem = (ListViewItem)e.Item;
+      IItem item = (IItem)listViewItem.Tag;
+      DataObject data = new DataObject();
+      data.SetData("Type", item.GetType());
+      data.SetData("Value", item);
+      DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
+    }
+    private void showAlgorithmButton_Click(object sender, EventArgs e) {
+      MainFormManager.CreateDefaultView(Content.Algorithm).Show();
+    }
   }
 }

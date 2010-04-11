@@ -52,9 +52,10 @@ namespace HeuristicLab.Optimization.Views {
       this.listView = new System.Windows.Forms.ListView();
       this.nameColumnHeader = new System.Windows.Forms.ColumnHeader();
       this.valueColumnHeader = new System.Windows.Forms.ColumnHeader();
+      this.imageList = new System.Windows.Forms.ImageList(this.components);
       this.detailsGroupBox = new System.Windows.Forms.GroupBox();
       this.viewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
-      this.imageList = new System.Windows.Forms.ImageList(this.components);
+      this.showAlgorithmButton = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.parametersResultsGroupBox.SuspendLayout();
       this.splitContainer.Panel1.SuspendLayout();
@@ -81,7 +82,7 @@ namespace HeuristicLab.Optimization.Views {
       this.parametersResultsGroupBox.Controls.Add(this.splitContainer);
       this.parametersResultsGroupBox.Location = new System.Drawing.Point(0, 52);
       this.parametersResultsGroupBox.Name = "parametersResultsGroupBox";
-      this.parametersResultsGroupBox.Size = new System.Drawing.Size(495, 299);
+      this.parametersResultsGroupBox.Size = new System.Drawing.Size(495, 272);
       this.parametersResultsGroupBox.TabIndex = 4;
       this.parametersResultsGroupBox.TabStop = false;
       this.parametersResultsGroupBox.Text = "Parameters && Results";
@@ -99,7 +100,7 @@ namespace HeuristicLab.Optimization.Views {
       // splitContainer.Panel2
       // 
       this.splitContainer.Panel2.Controls.Add(this.detailsGroupBox);
-      this.splitContainer.Size = new System.Drawing.Size(489, 280);
+      this.splitContainer.Size = new System.Drawing.Size(489, 253);
       this.splitContainer.SplitterDistance = 177;
       this.splitContainer.TabIndex = 0;
       // 
@@ -124,13 +125,15 @@ namespace HeuristicLab.Optimization.Views {
       this.listView.MultiSelect = false;
       this.listView.Name = "listView";
       this.listView.ShowItemToolTips = true;
-      this.listView.Size = new System.Drawing.Size(171, 274);
+      this.listView.Size = new System.Drawing.Size(171, 247);
       this.listView.SmallImageList = this.imageList;
       this.listView.Sorting = System.Windows.Forms.SortOrder.Ascending;
       this.listView.TabIndex = 0;
       this.listView.UseCompatibleStateImageBehavior = false;
       this.listView.View = System.Windows.Forms.View.Details;
       this.listView.SelectedIndexChanged += new System.EventHandler(this.listView_SelectedIndexChanged);
+      this.listView.DoubleClick += new System.EventHandler(this.listView_DoubleClick);
+      this.listView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.listView_ItemDrag);
       // 
       // nameColumnHeader
       // 
@@ -140,6 +143,12 @@ namespace HeuristicLab.Optimization.Views {
       // 
       this.valueColumnHeader.Text = "Value";
       // 
+      // imageList
+      // 
+      this.imageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+      this.imageList.ImageSize = new System.Drawing.Size(16, 16);
+      this.imageList.TransparentColor = System.Drawing.Color.Transparent;
+      // 
       // detailsGroupBox
       // 
       this.detailsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -148,7 +157,7 @@ namespace HeuristicLab.Optimization.Views {
       this.detailsGroupBox.Controls.Add(this.viewHost);
       this.detailsGroupBox.Location = new System.Drawing.Point(3, 3);
       this.detailsGroupBox.Name = "detailsGroupBox";
-      this.detailsGroupBox.Size = new System.Drawing.Size(302, 274);
+      this.detailsGroupBox.Size = new System.Drawing.Size(302, 247);
       this.detailsGroupBox.TabIndex = 0;
       this.detailsGroupBox.TabStop = false;
       this.detailsGroupBox.Text = "Details";
@@ -161,23 +170,32 @@ namespace HeuristicLab.Optimization.Views {
       this.viewHost.Content = null;
       this.viewHost.Location = new System.Drawing.Point(6, 19);
       this.viewHost.Name = "viewHost";
-      this.viewHost.Size = new System.Drawing.Size(290, 249);
+      this.viewHost.Size = new System.Drawing.Size(290, 222);
       this.viewHost.TabIndex = 0;
       this.viewHost.ViewType = null;
       // 
-      // imageList
+      // showAlgorithmButton
       // 
-      this.imageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
-      this.imageList.ImageSize = new System.Drawing.Size(16, 16);
-      this.imageList.TransparentColor = System.Drawing.Color.Transparent;
+      this.showAlgorithmButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.showAlgorithmButton.Location = new System.Drawing.Point(0, 330);
+      this.showAlgorithmButton.Name = "showAlgorithmButton";
+      this.showAlgorithmButton.Size = new System.Drawing.Size(495, 23);
+      this.showAlgorithmButton.TabIndex = 5;
+      this.showAlgorithmButton.Text = "&Show Algorithm";
+      this.toolTip.SetToolTip(this.showAlgorithmButton, "Show the algorithm which produced these results");
+      this.showAlgorithmButton.UseVisualStyleBackColor = true;
+      this.showAlgorithmButton.Click += new System.EventHandler(this.showAlgorithmButton_Click);
       // 
       // RunView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.parametersResultsGroupBox);
+      this.Controls.Add(this.showAlgorithmButton);
       this.Name = "RunView";
-      this.Size = new System.Drawing.Size(495, 351);
+      this.Size = new System.Drawing.Size(495, 353);
+      this.Controls.SetChildIndex(this.showAlgorithmButton, 0);
       this.Controls.SetChildIndex(this.parametersResultsGroupBox, 0);
       this.Controls.SetChildIndex(this.descriptionLabel, 0);
       this.Controls.SetChildIndex(this.descriptionTextBox, 0);
@@ -204,6 +222,7 @@ namespace HeuristicLab.Optimization.Views {
     private System.Windows.Forms.ColumnHeader valueColumnHeader;
     private HeuristicLab.MainForm.WindowsForms.ViewHost viewHost;
     private System.Windows.Forms.ImageList imageList;
+    private System.Windows.Forms.Button showAlgorithmButton;
 
   }
 }

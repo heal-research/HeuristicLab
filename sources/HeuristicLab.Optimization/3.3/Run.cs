@@ -76,6 +76,7 @@ namespace HeuristicLab.Optimization {
 
     private void Initialize(IAlgorithm algorithm) {
       this.algorithm = algorithm;
+      this.algorithm.Runs.Clear();
       parameters = new Dictionary<string, IItem>();
       results = new Dictionary<string, IItem>();
       this.algorithm.CollectParameterValues(parameters);
