@@ -82,7 +82,6 @@ namespace HeuristicLab.Core.Views {
       this.listView.UseCompatibleStateImageBehavior = false;
       this.listView.View = System.Windows.Forms.View.Details;
       this.listView.SelectedIndexChanged += new System.EventHandler(this.listView_SelectedIndexChanged);
-      this.listView.SizeChanged += new System.EventHandler(this.listView_SizeChanged);
       this.listView.DoubleClick += new System.EventHandler(this.listView_DoubleClick);
       this.listView.DragDrop += new System.Windows.Forms.DragEventHandler(this.listView_DragDrop);
       this.listView.DragEnter += new System.Windows.Forms.DragEventHandler(this.listView_DragEnterOver);
@@ -177,7 +176,6 @@ namespace HeuristicLab.Core.Views {
       // 
       // saveButton
       // 
-      this.saveButton.Enabled = false;
       this.saveButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Save;
       this.saveButton.Location = new System.Drawing.Point(120, 0);
       this.saveButton.Name = "saveButton";

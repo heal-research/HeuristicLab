@@ -100,7 +100,7 @@ namespace HeuristicLab.Core.Views {
           itemListViewItemTable.Add(item, listViewItem);
           item.ToStringChanged += new EventHandler(Item_ToStringChanged);
           sortAscendingButton.Enabled = sortDescendingButton.Enabled = listView.Items.Count > 1;
-          saveButton.Enabled = listView.Items.Count > 0;
+          AdjustListViewColumnSizes();
         }
       }
     }
@@ -113,7 +113,6 @@ namespace HeuristicLab.Core.Views {
           itemListViewItemTable[item].Remove();
           itemListViewItemTable.Remove(item);
           sortAscendingButton.Enabled = sortDescendingButton.Enabled = listView.Items.Count > 1;
-          saveButton.Enabled = listView.Items.Count > 0;
         }
       }
     }
@@ -204,10 +203,6 @@ namespace HeuristicLab.Core.Views {
     private void listView_SelectedIndexChanged(object sender, EventArgs e) {
       removeButton.Enabled = listView.SelectedItems.Count > 0;
     }
-    private void listView_SizeChanged(object sender, EventArgs e) {
-      if (listView.Columns.Count > 0)
-        listView.Columns[0].Width = Math.Max(0, listView.Width - 25);
-    }
     private void listView_KeyDown(object sender, KeyEventArgs e) {
       if (e.KeyCode == Keys.Delete) {
         if (listView.SelectedItems.Count > 0) {
@@ -293,6 +288,16 @@ namespace HeuristicLab.Core.Views {
         T item = (T)sender;
         itemListViewItemTable[item].Text = item.ToString();
         listView.Sort();
+        AdjustListViewColumnSizes();
+      }
+    }
+    #endregion
+
+    #region Helpers
+    private void AdjustListViewColumnSizes() {
+      if (listView.Items.Count > 0) {
+        for (int i = 0; i < listView.Columns.Count; i++)
+          listView.Columns[i].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
       }
     }
     #endregion

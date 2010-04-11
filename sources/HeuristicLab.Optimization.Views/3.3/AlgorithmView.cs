@@ -162,7 +162,7 @@ namespace HeuristicLab.Optimization.Views {
     }
     #endregion
 
-    #region Button events
+    #region Control Events
     protected virtual void newProblemButton_Click(object sender, EventArgs e) {
       if (problemTypeSelectorDialog == null) {
         problemTypeSelectorDialog = new TypeSelectorDialog();
@@ -244,6 +244,24 @@ namespace HeuristicLab.Optimization.Views {
           Content.Prepare(false);
       } else {
         Content.Prepare();
+      }
+    }
+    protected virtual void problemPanel_DragEnterOver(object sender, DragEventArgs e) {
+      e.Effect = DragDropEffects.None;
+      Type type = e.Data.GetData("Type") as Type;
+      if ((type != null) && (Content.ProblemType.IsAssignableFrom(type))) {
+        if ((e.KeyState & 8) == 8) e.Effect = DragDropEffects.Copy;  // CTRL key
+        else if ((e.KeyState & 4) == 4) e.Effect = DragDropEffects.Move;  // SHIFT key
+        else if ((e.AllowedEffect & DragDropEffects.Link) == DragDropEffects.Link) e.Effect = DragDropEffects.Link;
+        else if ((e.AllowedEffect & DragDropEffects.Copy) == DragDropEffects.Copy) e.Effect = DragDropEffects.Copy;
+        else if ((e.AllowedEffect & DragDropEffects.Move) == DragDropEffects.Move) e.Effect = DragDropEffects.Move;
+      }
+    }
+    protected virtual void problemPanel_DragDrop(object sender, DragEventArgs e) {
+      if (e.Effect != DragDropEffects.None) {
+        IProblem problem = e.Data.GetData("Value") as IProblem;
+        if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) problem = (IProblem)problem.Clone();
+        Content.Problem = problem;
       }
     }
     #endregion
