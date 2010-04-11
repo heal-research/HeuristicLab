@@ -251,7 +251,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
     private void InitializeOperators() {
       operators = new List<IOperator>();
-      if (ApplicationManager.Manager != null) operators.AddRange(ApplicationManager.Manager.GetInstances<IRealVectorOperator>().Cast<IOperator>());
+      operators.AddRange(ApplicationManager.Manager.GetInstances<IRealVectorOperator>().Cast<IOperator>());
       UpdateMoveEvaluators();
       ParameterizeOperators();
       InitializeMoveGenerators();
@@ -264,16 +264,14 @@ namespace HeuristicLab.Problems.TestFunctions {
       }
     }
     private void UpdateMoveEvaluators() {
-      if (ApplicationManager.Manager != null) {
-        foreach (ISingleObjectiveTestFunctionMoveEvaluator op in Operators.OfType<ISingleObjectiveTestFunctionMoveEvaluator>().ToList())
-          operators.Remove(op);
-        foreach (ISingleObjectiveTestFunctionMoveEvaluator op in ApplicationManager.Manager.GetInstances<ISingleObjectiveTestFunctionMoveEvaluator>())
-          if (op.EvaluatorType == Evaluator.GetType()) {
-            operators.Add(op);
-          }
-        ParameterizeOperators();
-        OnOperatorsChanged();
-      }
+      foreach (ISingleObjectiveTestFunctionMoveEvaluator op in Operators.OfType<ISingleObjectiveTestFunctionMoveEvaluator>().ToList())
+        operators.Remove(op);
+      foreach (ISingleObjectiveTestFunctionMoveEvaluator op in ApplicationManager.Manager.GetInstances<ISingleObjectiveTestFunctionMoveEvaluator>())
+        if (op.EvaluatorType == Evaluator.GetType()) {
+          operators.Add(op);
+        }
+      ParameterizeOperators();
+      OnOperatorsChanged();
     }
     private void ParameterizeSolutionCreator() {
       SolutionCreator.LengthParameter.Value = new IntValue(ProblemSize.Value);

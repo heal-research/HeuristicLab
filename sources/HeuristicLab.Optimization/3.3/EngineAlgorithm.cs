@@ -117,7 +117,7 @@ namespace HeuristicLab.Optimization {
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
       operatorGraph.InitialOperatorChanged += new EventHandler(OperatorGraph_InitialOperatorChanged);
-      if ((engine == null) && (ApplicationManager.Manager != null)) {
+      if (engine == null) {
         var types = ApplicationManager.Manager.GetTypes(typeof(IEngine));
         Type t = types.FirstOrDefault(x => x.Name.Equals("SequentialEngine"));
         if (t == null) t = types.FirstOrDefault();

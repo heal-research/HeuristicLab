@@ -297,15 +297,12 @@ namespace HeuristicLab.Problems.Knapsack {
     }
     private void InitializeOperators() {
       operators = new List<IBinaryVectorOperator>();
-      if (ApplicationManager.Manager != null) {
-        foreach (IBinaryVectorOperator op in ApplicationManager.Manager.GetInstances<IBinaryVectorOperator>()) {
-          if (!(op is ISingleObjectiveMoveEvaluator) || (op is IKnapsackMoveEvaluator)) {
-            operators.Add(op);
-          }
+      foreach (IBinaryVectorOperator op in ApplicationManager.Manager.GetInstances<IBinaryVectorOperator>()) {
+        if (!(op is ISingleObjectiveMoveEvaluator) || (op is IKnapsackMoveEvaluator)) {
+          operators.Add(op);
         }
-        ParameterizeOperators();
       }
-
+      ParameterizeOperators();
       InitializeMoveGenerators();
     }
     private void InitializeMoveGenerators() {

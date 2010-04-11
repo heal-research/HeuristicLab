@@ -226,15 +226,12 @@ namespace HeuristicLab.Problems.OneMax {
     }
     private void InitializeOperators() {
       operators = new List<IBinaryVectorOperator>();
-      if (ApplicationManager.Manager != null) {
-        foreach(IBinaryVectorOperator op in ApplicationManager.Manager.GetInstances<IBinaryVectorOperator>()) {
-          if (!(op is ISingleObjectiveMoveEvaluator) || (op is IOneMaxMoveEvaluator)) {
-            operators.Add(op);
-          }
+      foreach(IBinaryVectorOperator op in ApplicationManager.Manager.GetInstances<IBinaryVectorOperator>()) {
+        if (!(op is ISingleObjectiveMoveEvaluator) || (op is IOneMaxMoveEvaluator)) {
+          operators.Add(op);
         }
-        ParameterizeOperators();
       }
-
+      ParameterizeOperators();
       InitializeMoveGenerators();
     }
     private void InitializeMoveGenerators() {

@@ -197,21 +197,19 @@ namespace HeuristicLab.Operators.Programmable {
       var plugins = new Dictionary<string, List<Assembly>>();
       var locationTable = assemblies.ToDictionary(a => a.Location, a => a);
 
-      if (ApplicationManager.Manager != null) {
-        foreach (var plugin in ApplicationManager.Manager.Plugins) {
-          var aList = new List<Assembly>();
-          foreach (var aName in from file in plugin.Files
-                                where file.Type == PluginFileType.Assembly
-                                select file.Name) {
-            Assembly a;
-            locationTable.TryGetValue(aName, out a);
-            if (a != null) {
-              aList.Add(a);
-              locationTable.Remove(aName);
-            }
+      foreach (var plugin in ApplicationManager.Manager.Plugins) {
+        var aList = new List<Assembly>();
+        foreach (var aName in from file in plugin.Files
+                              where file.Type == PluginFileType.Assembly
+                              select file.Name) {
+          Assembly a;
+          locationTable.TryGetValue(aName, out a);
+          if (a != null) {
+            aList.Add(a);
+            locationTable.Remove(aName);
           }
-          plugins[plugin.Name] = aList;
         }
+        plugins[plugin.Name] = aList;
       }
 
       plugins["other"] = locationTable.Values.ToList();

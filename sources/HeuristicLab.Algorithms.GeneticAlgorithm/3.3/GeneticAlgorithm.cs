@@ -282,7 +282,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     }
     private void InitializeSelectors() {
       selectors = new List<ISelector>();
-      if (ApplicationManager.Manager != null) selectors.AddRange(ApplicationManager.Manager.GetInstances<ISelector>().Where(x => !(x is IMultiObjectiveSelector)).OrderBy(x => x.Name));
+      selectors.AddRange(ApplicationManager.Manager.GetInstances<ISelector>().Where(x => !(x is IMultiObjectiveSelector)).OrderBy(x => x.Name));
       ParameterizeSelectors();
     }
     private void ParameterizeSelectors() {
@@ -299,39 +299,33 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       }
     }
     private void UpdateSelectors() {
-      if (ApplicationManager.Manager != null) {
-        ISelector oldSelector = SelectorParameter.Value;
-        SelectorParameter.ValidValues.Clear();
-        foreach (ISelector selector in Selectors.OrderBy(x => x.Name))
-          SelectorParameter.ValidValues.Add(selector);
-        if (oldSelector != null) {
-          ISelector selector = SelectorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldSelector.GetType());
-          if (selector != null) SelectorParameter.Value = selector;
-        }
+      ISelector oldSelector = SelectorParameter.Value;
+      SelectorParameter.ValidValues.Clear();
+      foreach (ISelector selector in Selectors.OrderBy(x => x.Name))
+        SelectorParameter.ValidValues.Add(selector);
+      if (oldSelector != null) {
+        ISelector selector = SelectorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldSelector.GetType());
+        if (selector != null) SelectorParameter.Value = selector;
       }
     }
     private void UpdateCrossovers() {
-      if (ApplicationManager.Manager != null) {
-        ICrossover oldCrossover = CrossoverParameter.Value;
-        CrossoverParameter.ValidValues.Clear();
-        foreach (ICrossover crossover in Problem.Operators.OfType<ICrossover>().OrderBy(x => x.Name))
-          CrossoverParameter.ValidValues.Add(crossover);
-        if (oldCrossover != null) {
-          ICrossover crossover = CrossoverParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldCrossover.GetType());
-          if (crossover != null) CrossoverParameter.Value = crossover;
-        }
+      ICrossover oldCrossover = CrossoverParameter.Value;
+      CrossoverParameter.ValidValues.Clear();
+      foreach (ICrossover crossover in Problem.Operators.OfType<ICrossover>().OrderBy(x => x.Name))
+        CrossoverParameter.ValidValues.Add(crossover);
+      if (oldCrossover != null) {
+        ICrossover crossover = CrossoverParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldCrossover.GetType());
+        if (crossover != null) CrossoverParameter.Value = crossover;
       }
     }
     private void UpdateMutators() {
-      if (ApplicationManager.Manager != null) {
-        IManipulator oldMutator = MutatorParameter.Value;
-        MutatorParameter.ValidValues.Clear();
-        foreach (IManipulator mutator in Problem.Operators.OfType<IManipulator>().OrderBy(x => x.Name))
-          MutatorParameter.ValidValues.Add(mutator);
-        if (oldMutator != null) {
-          IManipulator mutator = MutatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMutator.GetType());
-          if (mutator != null) MutatorParameter.Value = mutator;
-        }
+      IManipulator oldMutator = MutatorParameter.Value;
+      MutatorParameter.ValidValues.Clear();
+      foreach (IManipulator mutator in Problem.Operators.OfType<IManipulator>().OrderBy(x => x.Name))
+        MutatorParameter.ValidValues.Add(mutator);
+      if (oldMutator != null) {
+        IManipulator mutator = MutatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMutator.GetType());
+        if (mutator != null) MutatorParameter.Value = mutator;
       }
     }
     #endregion

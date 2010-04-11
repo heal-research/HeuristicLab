@@ -278,10 +278,8 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     }
     private void InitializeAnnealingOperators() {
       annealingOperators = new List<IDiscreteDoubleValueModifier>();
-      if (ApplicationManager.Manager != null) {
-        annealingOperators.AddRange(ApplicationManager.Manager.GetInstances<IDiscreteDoubleValueModifier>().OrderBy(x => x.Name));
-        ParameterizeAnnealingOperators();
-      }
+      annealingOperators.AddRange(ApplicationManager.Manager.GetInstances<IDiscreteDoubleValueModifier>().OrderBy(x => x.Name));
+      ParameterizeAnnealingOperators();
       AnnealingOperatorParameter.ValidValues.Clear();
       foreach (IDiscreteDoubleValueModifier op in annealingOperators)
         AnnealingOperatorParameter.ValidValues.Add(op);

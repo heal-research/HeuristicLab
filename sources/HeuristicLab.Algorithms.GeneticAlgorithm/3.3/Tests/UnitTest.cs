@@ -22,6 +22,7 @@
 using System;
 using System.Threading;
 using HeuristicLab.Common;
+using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -89,6 +90,23 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm_33.Tests {
       ga.Start();
       trigger.WaitOne();
       TestContext.WriteLine("Runtime: {0}", ga.ExecutionTime.ToString());
+
+      double expectedBestQuality = 12332.0;
+      double expectedAverageQuality = 13123.2;
+      double expectedWorstQuality = 14538.0;
+      double bestQuality = (ga.Results["Current Best Quality"].Value as DoubleValue).Value;
+      double averageQuality = (ga.Results["Current Average Quality"].Value as DoubleValue).Value;
+      double worstQuality = (ga.Results["Current Worst Quality"].Value as DoubleValue).Value;
+
+      TestContext.WriteLine("");
+      TestContext.WriteLine("Current Best Quality: {0} (should be {1})", bestQuality, expectedBestQuality);
+      TestContext.WriteLine("Current Average Quality: {0} (should be {1})", averageQuality, expectedAverageQuality);
+      TestContext.WriteLine("Current Worst Quality: {0} (should be {1})", worstQuality, expectedWorstQuality);
+
+      Assert.AreEqual(bestQuality, expectedBestQuality);
+      Assert.AreEqual(averageQuality, expectedAverageQuality);
+      Assert.AreEqual(worstQuality, expectedWorstQuality);
+
       if (ex != null) throw ex;
     }
 

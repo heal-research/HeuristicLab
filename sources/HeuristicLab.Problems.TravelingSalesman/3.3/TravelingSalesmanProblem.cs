@@ -294,7 +294,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
 
     private void InitializeOperators() {
       operators = new List<IPermutationOperator>();
-      if (ApplicationManager.Manager != null) operators.AddRange(ApplicationManager.Manager.GetInstances<IPermutationOperator>());
+      operators.AddRange(ApplicationManager.Manager.GetInstances<IPermutationOperator>());
       ParameterizeOperators();
       UpdateMoveEvaluators();
       InitializeMoveGenerators();
@@ -312,16 +312,14 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       }
     }
     private void UpdateMoveEvaluators() {
-      if (ApplicationManager.Manager != null) {
-        foreach (ITSPPathMoveEvaluator op in Operators.OfType<ITSPPathMoveEvaluator>().ToList())
-          operators.Remove(op);
-        foreach (ITSPPathMoveEvaluator op in ApplicationManager.Manager.GetInstances<ITSPPathMoveEvaluator>())
-          if (op.EvaluatorType == Evaluator.GetType()) {
-            operators.Add(op);
-          }
-        ParameterizeOperators();
-        OnOperatorsChanged();
-      }
+      foreach (ITSPPathMoveEvaluator op in Operators.OfType<ITSPPathMoveEvaluator>().ToList())
+        operators.Remove(op);
+      foreach (ITSPPathMoveEvaluator op in ApplicationManager.Manager.GetInstances<ITSPPathMoveEvaluator>())
+        if (op.EvaluatorType == Evaluator.GetType()) {
+          operators.Add(op);
+        }
+      ParameterizeOperators();
+      OnOperatorsChanged();
     }
     private void ParameterizeSolutionCreator() {
       SolutionCreator.LengthParameter.Value = new IntValue(Coordinates.Rows);
