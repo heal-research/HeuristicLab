@@ -118,19 +118,22 @@ namespace HeuristicLab.MainForm.WindowsForms {
       set { this.closeReason = value; }
     }
 
-    private void OnClosingHelper(object sender, FormClosingEventArgs e) {
+    internal void OnClosingHelper(object sender, FormClosingEventArgs e) {
+      FormClosingEventArgs eventArgs = new FormClosingEventArgs(this.closeReason, e.Cancel);
       if (this.closeReason != CloseReason.None)
-        this.OnClosing(new FormClosingEventArgs(this.closeReason, e.Cancel));
+        this.OnClosing(eventArgs);
       else
         this.OnClosing(e);
 
+      if (eventArgs.Cancel != e.Cancel)
+        e.Cancel = eventArgs.Cancel;
       this.closeReason = CloseReason.None;
     }
 
     protected virtual void OnClosing(FormClosingEventArgs e) {
     }
 
-    private void OnClosedHelper(object sender, FormClosedEventArgs e) {
+    internal void OnClosedHelper(object sender, FormClosedEventArgs e) {
       if (this.closeReason != CloseReason.None)
         this.OnClosed(new FormClosedEventArgs(this.closeReason));
       else

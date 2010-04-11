@@ -30,6 +30,7 @@ using System.Windows.Forms;
 
 using HeuristicLab.PluginInfrastructure;
 using System.Collections;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace HeuristicLab.MainForm.WindowsForms {
   public partial class MainForm : Form, IMainForm {
@@ -161,6 +162,31 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private void FormActivated(object sender, EventArgs e) {
       this.ActiveView = GetView((Form)sender);
     }
+
+    protected override void OnFormClosing(FormClosingEventArgs e) {
+      foreach (KeyValuePair<IView,Form > pair in this.views) {
+        DockForm dockForm = pair.Value as DockForm;
+        View view = pair.Key as View;
+        if (view != null && dockForm != null && dockForm.DockState != DockState.Document) {
+          view.CloseReason = CloseReason.ApplicationExitCall;
+          view.OnClosingHelper(dockForm, e);
+        }
+      }
+      base.OnFormClosing(e);
+    }
+
+    protected override void OnFormClosed(FormClosedEventArgs e) {
+      foreach (KeyValuePair<IView, Form> pair in this.views.ToList()) {
+        DockForm dockForm = pair.Value as DockForm;
+        View view = pair.Key as View;
+        if (view != null && dockForm != null && dockForm.DockState != DockState.Document) {
+          view.CloseReason = CloseReason.ApplicationExitCall;
+          view.OnClosedHelper(dockForm, e);
+          dockForm.Close();
+        }
+      }
+      base.OnFormClosed(e);
+    }
     #endregion
 
     #region create, get, show, hide, close views
@@ -187,7 +213,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
           this.views[view] = form;
           form.Activated += new EventHandler(FormActivated);
           form.FormClosed += new FormClosedEventHandler(ChildFormClosed);
-          
+
         }
         this.Show(view, firstTimeShown);
         this.OnViewShown(view, firstTimeShown);
