@@ -22,6 +22,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.MainForm;
@@ -84,22 +85,35 @@ namespace HeuristicLab.Data.Views {
       rowsTextBox.Enabled = true;
       columnsTextBox.Text = Content.Columns.ToString();
       columnsTextBox.Enabled = true;
-      dataGridView.Rows.Clear();
-      dataGridView.Columns.Clear();
+      dataGridView.RowCount = 0;
+      dataGridView.ColumnCount = 0;
       if ((Content.Rows > 0) && (Content.Columns > 0)) {
-        for (int i = 0; i < Content.Columns; i++) {
-          dataGridView.ColumnCount++;
-          dataGridView.Columns[dataGridView.ColumnCount - 1].FillWeight = float.Epsilon;  // sum of all fill weights must not be larger than 65535
-        }
         dataGridView.RowCount = Content.Rows;
-        for (int i = 0; i < Content.Rows; i++) {
-          for (int j = 0; j < Content.Columns; j++)
-            dataGridView.Rows[i].Cells[j].Value = Content.GetValue(i, j);
-        }
-        for (int i = 0; i < Content.Columns; i++)
-          dataGridView.Columns[i].Width = dataGridView.Columns[i].GetPreferredWidth(DataGridViewAutoSizeColumnMode.AllCells, true);
+        dataGridView.ColumnCount = Content.Columns;
+        UpdateRowHeaders();
+        UpdateColumnHeaders();
       }
       dataGridView.Enabled = true;
+    }
+
+    private void UpdateColumnHeaders() {
+      for (int i = 0; i < Content.Columns; i++) {
+        if (Content.ColumnNames.Count() != 0)
+          dataGridView.Columns[i].HeaderText = Content.ColumnNames.ElementAt(i);
+        else
+          dataGridView.Columns[i].HeaderText = "Column " + i;
+      }
+      dataGridView.Invalidate();
+    }
+
+    private void UpdateRowHeaders() {
+      for (int i = dataGridView.FirstDisplayedScrollingRowIndex; i < dataGridView.FirstDisplayedScrollingRowIndex + dataGridView.DisplayedRowCount(true); i++) {
+        if (Content.RowNames.Count() != 0)
+          dataGridView.Rows[i].HeaderCell.Value = Content.RowNames.ElementAt(i);
+        else 
+          dataGridView.Rows[i].HeaderCell.Value = i.ToString();
+      }
+      dataGridView.Invalidate();
     }
 
     private void Content_ItemChanged(object sender, EventArgs<int, int> e) {
@@ -177,6 +191,19 @@ namespace HeuristicLab.Data.Views {
     private void dataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e) {
       dataGridView.Rows[e.RowIndex].ErrorText = string.Empty;
     }
+    private void dataGridView_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e) {
+      e.Value = Content.GetValue(e.RowIndex, e.ColumnIndex);
+    }
+
+    private void dataGridView_Scroll(object sender, ScrollEventArgs e) {
+      UpdateRowHeaders();
+    }
+
+    private void dataGridView_Resize(object sender, EventArgs e) {
+      UpdateRowHeaders();
+    }
     #endregion
+
+
   }
 }
