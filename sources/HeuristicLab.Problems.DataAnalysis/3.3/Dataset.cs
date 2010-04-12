@@ -44,40 +44,29 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (variableNames.Count() != data.GetLength(1)) {
         throw new ArgumentException("Number of variable names doesn't match the number of columns of data");
       }
-      Data = new DoubleMatrix(data);
-      this.variableNames = new StringArray(variableNames.ToArray());
+      Data = data;
+      this.variableNames = variableNames.ToArray();
     }
 
     [Storable]
-    private StringArray variableNames;
+    private string[] variableNames;
     public IEnumerable<string> VariableNames {
       get { return variableNames; }
     }
 
     [Storable]
-    private DoubleMatrix data;
-    private DoubleMatrix Data {
+    private double[,] data;
+    private double[,] Data {
       get { return data; }
       set {
         if (data != value) {
           if (value == null) throw new ArgumentNullException();
-          if (data != null) DeregisterDataEvents();
           this.data = value;
-          RegisterDataEvents();
           OnReset(EventArgs.Empty);
         }
       }
     }
 
-    private void RegisterDataEvents() {
-      data.Reset += new EventHandler(data_Reset);
-      data.ItemChanged += new EventHandler<EventArgs<int, int>>(data_ItemChanged);
-    }
-
-    private void DeregisterDataEvents() {
-      data.Reset -= new EventHandler(data_Reset);
-      data.ItemChanged -= new EventHandler<EventArgs<int, int>>(data_ItemChanged);
-    }
     // elementwise access
     public double this[int rowIndex, int columnIndex] {
       get { return data[rowIndex, columnIndex]; }
@@ -90,14 +79,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     // access to full columns
     public double[] this[string variableName] {
-      get { return GetVariableValues(GetVariableIndex(variableName), 0, data.Rows); }
+      get { return GetVariableValues(GetVariableIndex(variableName), 0, Rows); }
     }
 
     public double[] GetVariableValues(int variableIndex, int start, int end) {
       if (start < 0 || !(start <= end))
         throw new ArgumentException("Start must be between 0 and end (" + end + ").");
-      if (end > data.Rows || end < start)
-        throw new ArgumentException("End must be between start (" + start + ") and dataset rows (" + data.Rows + ").");
+      if (end > Rows || end < start)
+        throw new ArgumentException("End must be between start (" + start + ") and dataset rows (" + Rows + ").");
 
       double[] values = new double[end - start];
       for (int i = 0; i < end - start; i++)
@@ -122,7 +111,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public void SetVariableName(int variableIndex, string name) {
+      if (name == null) throw new ArgumentNullException("Cannot set variable name to null for variable at index " + variableIndex + " variableIndex");
       if (variableNames.Contains(name)) throw new ArgumentException("The data set already contains a variable with name " + name + ".");
+      if (variableIndex < 0 || variableIndex >= variableNames.Length) throw new ArgumentException(" Cannot set name of not existent variable at index " + variableIndex + ".");
       variableNames[variableIndex] = name;
     }
 
@@ -138,7 +129,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public double GetMean(int variableIndex) {
-      return GetMean(variableIndex, 0, data.Rows);
+      return GetMean(variableIndex, 0, Rows);
     }
 
     public double GetMean(int variableIndex, int start, int end) {
@@ -150,7 +141,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public double GetRange(int variableIndex) {
-      return GetRange(variableIndex, 0, data.Rows);
+      return GetRange(variableIndex, 0, Rows);
     }
 
     public double GetRange(string variableName, int start, int end) {
@@ -167,7 +158,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public double GetMax(int variableIndex) {
-      return GetMax(variableIndex, 0, data.Rows);
+      return GetMax(variableIndex, 0, Rows);
     }
 
     public double GetMax(string variableName, int start, int end) {
@@ -183,7 +174,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public double GetMin(int variableIndex) {
-      return GetMin(variableIndex, 0, data.Rows);
+      return GetMin(variableIndex, 0, Rows);
     }
 
     public double GetMin(string variableName, int start, int end) {
@@ -198,7 +189,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       return GetMissingValues(GetVariableIndex(variableName));
     }
     public int GetMissingValues(int variableIndex) {
-      return GetMissingValues(variableIndex, 0, data.Rows);
+      return GetMissingValues(variableIndex, 0, Rows);
     }
 
     public int GetMissingValues(string variableName, int start, int end) {
@@ -213,8 +204,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       Dataset clone = (Dataset)base.Clone(cloner);
-      clone.data = (DoubleMatrix)data.Clone(cloner);
-      clone.variableNames = (StringArray)variableNames.Clone(cloner);
+      clone.data = (double[,])data.Clone();
+      clone.variableNames = (string[])variableNames.Clone();
       return clone;
     }
 
@@ -243,44 +234,55 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public int Rows {
       get {
-        return data.Rows + 1;
+        return data.GetLength(0);
       }
       set {
         if (value == 0) throw new ArgumentException("Number of rows must be at least one (for variable names)");
-        if (value - 1 != data.Rows) {
-          var newValues = new double[value - 1, data.Columns];
-          for (int row = 0; row < Math.Min(data.Rows, value - 1); row++) {
-            for (int column = 0; column < data.Columns; column++) {
+        if (value != Rows) {
+          var newValues = new double[value, Columns];
+          for (int row = 0; row < Math.Min(Rows, value); row++) {
+            for (int column = 0; column < Columns; column++) {
               newValues[row, column] = data[row, column];
             }
           }
-          Data = new DoubleMatrix(newValues);
+          Data = newValues;
         }
       }
     }
 
     public int Columns {
       get {
-        return data.Columns;
+        return data.GetLength(1);
       }
       set {
-        if (value != data.Columns) {
-          var newValues = new double[data.Rows, value];
+        if (value != Columns) {
+          var newValues = new double[Rows, value];
           var newVariableNames = new string[value];
-          for (int row = 0; row < data.Rows; row++) {
-            for (int column = 0; column < Math.Min(value, data.Columns); column++) {
+          for (int row = 0; row < Rows; row++) {
+            for (int column = 0; column < Math.Min(value, Columns); column++) {
               newValues[row, column] = data[row, column];
             }
           }
           string formatString = new StringBuilder().Append('0', (int)Math.Log10(value) + 1).ToString(); // >= 100 variables => ###
           for (int column = 0; column < value; column++) {
-            if (column < data.Columns)
+            if (column < Columns)
               newVariableNames[column] = variableNames[column];
             else
               newVariableNames[column] = "Var" + column.ToString(formatString);
           }
-          variableNames = new StringArray(newVariableNames);
-          Data = new DoubleMatrix(newValues);
+          variableNames = newVariableNames;
+          Data = newValues;
+        }
+      }
+    }
+
+    IEnumerable<string> IStringConvertibleMatrix.ColumnNames {
+      get { return this.VariableNames; }
+      set {
+        int i = 0;
+        foreach (string variableName in value) {
+          SetVariableName(i, variableName);
+          i++;
         }
       }
     }
@@ -291,34 +293,18 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public string GetValue(int rowIndex, int columnIndex) {
-      if (rowIndex == 0) {
-        // return variable name
-        return variableNames[columnIndex];
-      } else {
-        return data[rowIndex - 1, columnIndex].ToString();
-      }
+      return data[rowIndex, columnIndex].ToString();
     }
 
     public bool SetValue(string value, int rowIndex, int columnIndex) {
-      if (rowIndex == 0) {
-        // check if the variable name is already used
-        if (variableNames.Contains(value)) {
-          return false;
-        } else {
-          variableNames[columnIndex] = value;
-          return true;
-        }
-      } else {
-        double v;
-        if (double.TryParse(value, out v)) {
-          data[rowIndex - 1, columnIndex] = v;
-          return true;
-        } else return false;
-      }
+      double v;
+      if (double.TryParse(value, out v)) {
+        data[rowIndex, columnIndex] = v;
+        return true;
+      } else return false;
     }
 
     public event EventHandler<EventArgs<int, int>> ItemChanged;
-
     #endregion
   }
 }

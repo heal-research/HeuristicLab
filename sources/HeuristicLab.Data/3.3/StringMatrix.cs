@@ -21,7 +21,9 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -37,6 +39,20 @@ namespace HeuristicLab.Data {
 
     [Storable]
     protected string[,] matrix;
+
+    [Storable]
+    protected List<string> columnNames;
+    public IEnumerable<string> ColumnNames {
+      get { return this.columnNames; }
+      set {
+        if (value == null || value.Count() == 0)
+          columnNames = new List<string>();
+        else if (value.Count() != Columns)
+          throw new ArgumentException("A columnName must be for each column specified.");
+        else
+          columnNames = new List<string>(value);
+      }
+    }
 
     public virtual int Rows {
       get { return matrix.GetLength(0); }
@@ -75,6 +91,7 @@ namespace HeuristicLab.Data {
 
     public StringMatrix() {
       matrix = new string[0, 0];
+      columnNames = new List<string>();
     }
     public StringMatrix(int rows, int columns) {
       matrix = new string[rows, columns];
@@ -82,6 +99,11 @@ namespace HeuristicLab.Data {
         for (int j = 0; j < matrix.GetLength(1); j++)
           matrix[i, j] = string.Empty;
       }
+      columnNames = new List<string>();
+    }
+    protected StringMatrix(int rows, int columns, IEnumerable<string> columnNames)
+      : this(rows, columns) {
+      ColumnNames = columnNames;
     }
     public StringMatrix(string[,] elements) {
       if (elements == null) throw new ArgumentNullException();
@@ -90,6 +112,11 @@ namespace HeuristicLab.Data {
         for (int j = 0; j < matrix.GetLength(1); j++)
           matrix[i, j] = elements[i, j] == null ? string.Empty : elements[i, j];
       }
+      columnNames = new List<string>();
+    }
+    protected StringMatrix(string[,] elements, IEnumerable<string> columnNames)
+      : this(elements) {
+      ColumnNames = columnNames;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -160,6 +187,10 @@ namespace HeuristicLab.Data {
     int IStringConvertibleMatrix.Columns {
       get { return Columns; }
       set { Columns = value; }
+    }
+    IEnumerable<string> IStringConvertibleMatrix.ColumnNames {
+      get { return this.ColumnNames; }
+      set { this.ColumnNames = value; }
     }
     bool IStringConvertibleMatrix.Validate(string value, out string errorMessage) {
       return Validate(value, out errorMessage);

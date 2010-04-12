@@ -21,11 +21,15 @@
 
 using System;
 using HeuristicLab.Common;
+using System.Collections.Generic;
 
 namespace HeuristicLab.Data {
   public interface IStringConvertibleMatrix {
     int Rows { get; set; }
     int Columns { get; set; }
+
+    IEnumerable<string> ColumnNames { get; set; }
+    //bool SortableView { get; }
 
     bool Validate(string value, out string errorMessage);
     string GetValue(int rowIndex, int columnIndex);

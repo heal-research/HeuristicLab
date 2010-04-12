@@ -21,7 +21,9 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -37,6 +39,20 @@ namespace HeuristicLab.Data {
 
     [Storable]
     protected T[,] matrix;
+
+    [Storable]
+    protected List<string> columnNames;
+    public IEnumerable<string> ColumnNames {
+      get { return this.columnNames; }
+      set {
+        if (value == null || value.Count() == 0)
+          columnNames = new List<string>();
+        else if (value.Count() != Columns)
+          throw new ArgumentException("A columnName must be for each column specified.");
+        else
+          columnNames = new List<string>(value);
+      }
+    }
 
     public virtual int Rows {
       get { return matrix.GetLength(0); }
@@ -73,13 +89,24 @@ namespace HeuristicLab.Data {
 
     protected ValueTypeMatrix() {
       matrix = new T[0, 0];
+      columnNames = new List<string>();
     }
     protected ValueTypeMatrix(int rows, int columns) {
       matrix = new T[rows, columns];
+      columnNames = new List<string>();
+    }
+    protected ValueTypeMatrix(int rows, int columns, IEnumerable<string> columnNames)
+      : this(rows, columns) {
+      ColumnNames = columnNames;
     }
     protected ValueTypeMatrix(T[,] elements) {
       if (elements == null) throw new ArgumentNullException();
       matrix = (T[,])elements.Clone();
+      columnNames = new List<string>();
+    }
+    protected ValueTypeMatrix(T[,] elements, IEnumerable<string> columnNames)
+      : this(elements) {
+      ColumnNames = columnNames;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

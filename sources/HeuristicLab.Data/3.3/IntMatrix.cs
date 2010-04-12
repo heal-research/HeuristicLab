@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -71,6 +72,10 @@ namespace HeuristicLab.Data {
     int IStringConvertibleMatrix.Columns {
       get { return Columns; }
       set { Columns = value; }
+    }
+    IEnumerable<string> IStringConvertibleMatrix.ColumnNames {
+      get { return this.ColumnNames; }
+      set { this.ColumnNames = value; }
     }
     bool IStringConvertibleMatrix.Validate(string value, out string errorMessage) {
       return Validate(value, out errorMessage);
