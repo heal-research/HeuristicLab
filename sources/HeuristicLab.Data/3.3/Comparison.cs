@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Drawing;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -27,6 +28,10 @@ namespace HeuristicLab.Data {
   [Item("Comparison", "Represents a comparison.")]
   [StorableClass]
   public class Comparison : ValueTypeValue<ComparisonType>, IComparable {
+    public override Image ItemImage {
+      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Enum; }
+    }
+
     public Comparison() : base() { }
     public Comparison(ComparisonType value) : base(value) { }
 

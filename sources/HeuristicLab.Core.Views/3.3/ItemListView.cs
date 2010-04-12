@@ -118,36 +118,34 @@ namespace HeuristicLab.Core.Views {
       }
     }
     protected virtual ListViewItem CreateListViewItem(T item) {
-      if (!itemsListView.SmallImageList.Images.ContainsKey(item.GetType().FullName))
-        itemsListView.SmallImageList.Images.Add(item.GetType().FullName, item.ItemImage);
-
       ListViewItem listViewItem = new ListViewItem();
       listViewItem.Text = item.ToString();
       listViewItem.ToolTipText = item.ItemName + ": " + item.ItemDescription;
-      listViewItem.ImageIndex = itemsListView.SmallImageList.Images.IndexOfKey(item.GetType().FullName);
       listViewItem.Tag = item;
+      SetListViewItemImage(listViewItem);
       return listViewItem;
     }
     protected virtual void AddListViewItem(ListViewItem listViewItem) {
       itemsListView.Items.Add(listViewItem);
+      ((T)listViewItem.Tag).ItemImageChanged += new EventHandler(Item_ItemImageChanged);
       ((T)listViewItem.Tag).ToStringChanged += new EventHandler(Item_ToStringChanged);
     }
     protected virtual void InsertListViewItem(int index, ListViewItem listViewItem) {
       itemsListView.Items.Insert(index, listViewItem);
+      ((T)listViewItem.Tag).ItemImageChanged += new EventHandler(Item_ItemImageChanged);
       ((T)listViewItem.Tag).ToStringChanged += new EventHandler(Item_ToStringChanged);
     }
     protected virtual void RemoveListViewItem(ListViewItem listViewItem) {
+      ((T)listViewItem.Tag).ItemImageChanged -= new EventHandler(Item_ItemImageChanged);
       ((T)listViewItem.Tag).ToStringChanged -= new EventHandler(Item_ToStringChanged);
       listViewItem.Remove();
     }
     protected virtual void UpdateListViewItem(ListViewItem listViewItem) {
       T item = (T)listViewItem.Tag;
-      if (!itemsListView.SmallImageList.Images.ContainsKey(item.GetType().FullName))
-        itemsListView.SmallImageList.Images.Add(item.GetType().FullName, item.ItemImage);
-
       listViewItem.Text = item.ToString();
       listViewItem.ToolTipText = item.ItemName + ": " + item.ItemDescription;
-      listViewItem.ImageIndex = itemsListView.SmallImageList.Images.IndexOfKey(item.GetType().FullName);
+      if (itemsListView.SmallImageList.Images[listViewItem.ImageIndex] != item.ItemImage)
+        SetListViewItemImage(listViewItem);
     }
 
     protected virtual void itemsListView_SelectedIndexChanged(object sender, EventArgs e) {
@@ -333,6 +331,17 @@ namespace HeuristicLab.Core.Views {
     #endregion
 
     #region Item Events
+    protected virtual void Item_ItemImageChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Item_ItemImageChanged), sender, e);
+      else {
+        T item = (T)sender;
+        foreach (ListViewItem listViewItem in itemsListView.Items) {
+          if (((T)listViewItem.Tag) == item)
+            UpdateListViewItem(listViewItem);
+        }
+      }
+    }
     protected virtual void Item_ToStringChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Item_ToStringChanged), sender, e);
@@ -343,6 +352,17 @@ namespace HeuristicLab.Core.Views {
             UpdateListViewItem(listViewItem);
         }
       }
+    }
+    #endregion
+
+    #region Helpers
+    protected virtual void SetListViewItemImage(ListViewItem listViewItem) {
+      T item = (T)listViewItem.Tag;
+      int i = 0;
+      while ((i < itemsListView.SmallImageList.Images.Count) && (item.ItemImage != itemsListView.SmallImageList.Images[i]))
+        i++;
+      if (i == itemsListView.SmallImageList.Images.Count) itemsListView.SmallImageList.Images.Add(item.ItemImage);
+      listViewItem.ImageIndex = i;
     }
     #endregion
   }

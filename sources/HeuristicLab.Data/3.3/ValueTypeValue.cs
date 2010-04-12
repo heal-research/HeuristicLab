@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Drawing;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -27,6 +28,10 @@ namespace HeuristicLab.Data {
   [Item("ValueTypeValue<T>", "An abstract base class for representing values of value types.")]
   [StorableClass]
   public abstract class ValueTypeValue<T> : Item where T : struct {
+    public override Image ItemImage {
+      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.ValueType; }
+    }
+
     [Storable]
     protected T value;
     public virtual T Value {

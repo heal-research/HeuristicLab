@@ -49,6 +49,8 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm.Views {
       this.parametersTabPage.SuspendLayout();
       this.problemTabPage.SuspendLayout();
       this.resultsTabPage.SuspendLayout();
+      this.runsTabPage.SuspendLayout();
+      this.problemPanel.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
       // 
@@ -137,6 +139,18 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm.Views {
       this.stopButton.Location = new System.Drawing.Point(60, 552);
       this.toolTip.SetToolTip(this.stopButton, "Stop Algorithm");
       // 
+      // runsTabPage
+      // 
+      this.runsTabPage.Size = new System.Drawing.Size(736, 468);
+      // 
+      // runsView
+      // 
+      this.runsView.Size = new System.Drawing.Size(724, 456);
+      // 
+      // problemPanel
+      // 
+      this.problemPanel.Size = new System.Drawing.Size(724, 426);
+      // 
       // nameTextBox
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
@@ -159,6 +173,8 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm.Views {
       this.parametersTabPage.ResumeLayout(false);
       this.problemTabPage.ResumeLayout(false);
       this.resultsTabPage.ResumeLayout(false);
+      this.runsTabPage.ResumeLayout(false);
+      this.problemPanel.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();

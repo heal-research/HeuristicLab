@@ -147,7 +147,7 @@ namespace HeuristicLab.Core.Views {
       // 
       this.setDataTypeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.setDataTypeButton.Enabled = false;
-      this.setDataTypeButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Add;
+      this.setDataTypeButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Edit;
       this.setDataTypeButton.Location = new System.Drawing.Point(506, 420);
       this.setDataTypeButton.Name = "setDataTypeButton";
       this.setDataTypeButton.Size = new System.Drawing.Size(24, 24);

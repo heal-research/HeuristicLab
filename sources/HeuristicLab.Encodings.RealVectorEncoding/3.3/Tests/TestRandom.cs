@@ -111,6 +111,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
       get { throw new NotImplementedException(); }
     }
 
+    public event EventHandler ItemImageChanged;
     public event EventHandler ToStringChanged;
 
     #endregion

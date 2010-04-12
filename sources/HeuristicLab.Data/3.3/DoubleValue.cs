@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Drawing;
 using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -28,6 +29,10 @@ namespace HeuristicLab.Data {
   [Item("DoubleValue", "Represents a double value.")]
   [StorableClass]
   public class DoubleValue : ValueTypeValue<double>, IComparable, IStringConvertibleValue {
+    public override Image ItemImage {
+      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Field; }
+    }
+
     public DoubleValue() : base() { }
     public DoubleValue(double value) : base(value) { }
 

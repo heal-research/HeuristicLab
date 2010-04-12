@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Collections;
 using HeuristicLab.MainForm;
@@ -96,32 +97,32 @@ namespace HeuristicLab.Core.Views {
       }
     }
     protected virtual ListViewItem CreateListViewItem(T item) {
-      if (!itemsListView.SmallImageList.Images.ContainsKey(item.GetType().FullName))
-        itemsListView.SmallImageList.Images.Add(item.GetType().FullName, item.ItemImage);
-
       ListViewItem listViewItem = new ListViewItem();
       listViewItem.Text = item.ToString();
       listViewItem.ToolTipText = item.ItemName + ": " + item.ItemDescription;
-      listViewItem.ImageIndex = itemsListView.SmallImageList.Images.IndexOfKey(item.GetType().FullName);
       listViewItem.Tag = item;
+      SetListViewItemImage(listViewItem);
       return listViewItem;
     }
     protected virtual void AddListViewItem(ListViewItem listViewItem) {
       itemsListView.Items.Add(listViewItem);
+      ((T)listViewItem.Tag).ItemImageChanged += new EventHandler(Item_ItemImageChanged);
       ((T)listViewItem.Tag).ToStringChanged += new EventHandler(Item_ToStringChanged);
       sortAscendingButton.Enabled = itemsListView.Items.Count > 0;
       sortDescendingButton.Enabled = itemsListView.Items.Count > 0;
     }
     protected virtual void RemoveListViewItem(ListViewItem listViewItem) {
+      ((T)listViewItem.Tag).ItemImageChanged -= new EventHandler(Item_ItemImageChanged);
       ((T)listViewItem.Tag).ToStringChanged -= new EventHandler(Item_ToStringChanged);
       listViewItem.Remove();
       sortAscendingButton.Enabled = itemsListView.Items.Count > 0;
       sortDescendingButton.Enabled = itemsListView.Items.Count > 0;
     }
     protected virtual void UpdateListViewItem(ListViewItem listViewItem) {
-      if (!listViewItem.Text.Equals(listViewItem.Tag.ToString())) {
+      if (!listViewItem.Text.Equals(listViewItem.Tag.ToString()))
         listViewItem.Text = listViewItem.Tag.ToString();
-      }
+      if (itemsListView.SmallImageList.Images[listViewItem.ImageIndex] != ((T)listViewItem.Tag).ItemImage)
+        SetListViewItemImage(listViewItem);
     }
     protected virtual IEnumerable<ListViewItem> GetListViewItemsForItem(T item) {
       foreach (ListViewItem listViewItem in itemsListView.Items) {
@@ -254,6 +255,15 @@ namespace HeuristicLab.Core.Views {
     #endregion
 
     #region Item Events
+    protected virtual void Item_ItemImageChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Item_ItemImageChanged), sender, e);
+      else {
+        T item = (T)sender;
+        foreach (ListViewItem listViewItem in GetListViewItemsForItem(item))
+          UpdateListViewItem(listViewItem);
+      }
+    }
     protected virtual void Item_ToStringChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Item_ToStringChanged), sender, e);
@@ -266,6 +276,14 @@ namespace HeuristicLab.Core.Views {
     #endregion
 
     #region Helpers
+    protected virtual void SetListViewItemImage(ListViewItem listViewItem) {
+      T item = (T)listViewItem.Tag;
+      int i = 0;
+      while ((i < itemsListView.SmallImageList.Images.Count) && (item.ItemImage != itemsListView.SmallImageList.Images[i]))
+        i++;
+      if (i == itemsListView.SmallImageList.Images.Count) itemsListView.SmallImageList.Images.Add(item.ItemImage);
+      listViewItem.ImageIndex = i;
+    }
     protected virtual void SortItemsListView(SortOrder sortOrder) {
       itemsListView.Sorting = SortOrder.None;
       itemsListView.Sorting = sortOrder;

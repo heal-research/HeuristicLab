@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Drawing;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -27,6 +28,10 @@ namespace HeuristicLab.Data {
   [Item("StringValue", "Represents a string.")]
   [StorableClass]
   public class StringValue : Item, IComparable, IStringConvertibleValue {
+    public override Image ItemImage {
+      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Field; }
+    }
+
     [Storable]
     protected string value;
     public virtual string Value {

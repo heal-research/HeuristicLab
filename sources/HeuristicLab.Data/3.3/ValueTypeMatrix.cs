@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections;
+using System.Drawing;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -30,6 +31,10 @@ namespace HeuristicLab.Data {
   [Item("ValueTypeMatrix<T>", "An abstract base class for representing matrices of value types.")]
   [StorableClass]
   public abstract class ValueTypeMatrix<T> : Item, IEnumerable where T : struct {
+    public override Image ItemImage {
+      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Class; }
+    }
+
     [Storable]
     protected T[,] matrix;
 

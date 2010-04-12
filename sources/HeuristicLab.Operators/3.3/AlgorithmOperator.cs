@@ -31,7 +31,10 @@ namespace HeuristicLab.Operators {
   [StorableClass]
   public abstract class AlgorithmOperator : SingleSuccessorOperator {
     public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Module; }
+      get {
+        if (Breakpoint) return HeuristicLab.Common.Resources.VS2008ImageLibrary.BreakpointActive;
+        else return HeuristicLab.Common.Resources.VS2008ImageLibrary.Module;
+      }
     }
     [Storable]
     private OperatorGraph operatorGraph;

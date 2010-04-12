@@ -54,10 +54,15 @@ namespace HeuristicLab.Core {
       return ItemName;
     }
 
+    public event EventHandler ItemImageChanged;
+    protected virtual void OnItemImageChanged() {
+      EventHandler handler = ItemImageChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
     public event EventHandler ToStringChanged;
     protected virtual void OnToStringChanged() {
-      if (ToStringChanged != null)
-        ToStringChanged(this, EventArgs.Empty);
+      EventHandler handler = ToStringChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
   }
 }

@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Drawing;
 using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -28,6 +29,10 @@ namespace HeuristicLab.Data {
   [Item("BoolValue", "Represents a boolean value.")]
   [StorableClass]
   public class BoolValue : ValueTypeValue<bool>, IComparable, IStringConvertibleValue {
+    public override Image ItemImage {
+      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Field; }
+    }
+
     public BoolValue() : base() { }
     public BoolValue(bool value) : base(value) { }
 

@@ -31,6 +31,7 @@ namespace HeuristicLab.Core {
     string ItemDescription { get; }
     Image ItemImage { get; }
 
+    event EventHandler ItemImageChanged;
     event EventHandler ToStringChanged;
   }
 }

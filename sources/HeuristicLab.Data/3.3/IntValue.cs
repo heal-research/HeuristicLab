@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Drawing;
 using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -28,6 +29,10 @@ namespace HeuristicLab.Data {
   [Item("IntValue", "Represents an integer value.")]
   [StorableClass]
   public class IntValue : ValueTypeValue<int>, IComparable, IStringConvertibleValue {
+    public override Image ItemImage {
+      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Field; }
+    }
+
     public IntValue() : base() { }
     public IntValue(int value) : base(value) { }
 

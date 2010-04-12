@@ -53,6 +53,8 @@ namespace HeuristicLab.Optimization.Views {
       this.parametersTabPage.SuspendLayout();
       this.problemTabPage.SuspendLayout();
       this.resultsTabPage.SuspendLayout();
+      this.runsTabPage.SuspendLayout();
+      this.problemPanel.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.engineTabPage.SuspendLayout();
       this.SuspendLayout();
@@ -61,6 +63,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       this.tabControl.Controls.Add(this.engineTabPage);
       this.tabControl.Size = new System.Drawing.Size(713, 467);
+      this.tabControl.Controls.SetChildIndex(this.runsTabPage, 0);
       this.tabControl.Controls.SetChildIndex(this.resultsTabPage, 0);
       this.tabControl.Controls.SetChildIndex(this.engineTabPage, 0);
       this.tabControl.Controls.SetChildIndex(this.problemTabPage, 0);
@@ -132,6 +135,18 @@ namespace HeuristicLab.Optimization.Views {
       this.stopButton.Location = new System.Drawing.Point(60, 525);
       this.toolTip.SetToolTip(this.stopButton, "Stop Algorithm");
       // 
+      // runsTabPage
+      // 
+      this.runsTabPage.Size = new System.Drawing.Size(705, 441);
+      // 
+      // runsView
+      // 
+      this.runsView.Size = new System.Drawing.Size(693, 429);
+      // 
+      // problemPanel
+      // 
+      this.problemPanel.Size = new System.Drawing.Size(693, 399);
+      // 
       // nameTextBox
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
@@ -171,7 +186,7 @@ namespace HeuristicLab.Optimization.Views {
       this.engineComboBox.FormattingEnabled = true;
       this.engineComboBox.Location = new System.Drawing.Point(55, 6);
       this.engineComboBox.Name = "engineComboBox";
-      this.engineComboBox.Size = new System.Drawing.Size(610, 21);
+      this.engineComboBox.Size = new System.Drawing.Size(644, 21);
       this.engineComboBox.TabIndex = 1;
       this.engineComboBox.SelectedIndexChanged += new System.EventHandler(this.engineComboBox_SelectedIndexChanged);
       // 
@@ -196,7 +211,7 @@ namespace HeuristicLab.Optimization.Views {
       this.engineViewHost.Content = null;
       this.engineViewHost.Location = new System.Drawing.Point(6, 33);
       this.engineViewHost.Name = "engineViewHost";
-      this.engineViewHost.Size = new System.Drawing.Size(659, 335);
+      this.engineViewHost.Size = new System.Drawing.Size(693, 402);
       this.engineViewHost.TabIndex = 2;
       this.engineViewHost.ViewType = null;
       // 
@@ -223,6 +238,8 @@ namespace HeuristicLab.Optimization.Views {
       this.parametersTabPage.ResumeLayout(false);
       this.problemTabPage.ResumeLayout(false);
       this.resultsTabPage.ResumeLayout(false);
+      this.runsTabPage.ResumeLayout(false);
+      this.problemPanel.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.engineTabPage.ResumeLayout(false);
       this.engineTabPage.PerformLayout();

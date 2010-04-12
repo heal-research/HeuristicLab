@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections;
+using System.Drawing;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -30,6 +31,10 @@ namespace HeuristicLab.Data {
   [Item("StringMatrix", "Represents a matrix of strings.")]
   [StorableClass]
   public class StringMatrix : Item, IEnumerable, IStringConvertibleMatrix {
+    public override Image ItemImage {
+      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Class; }
+    }
+
     [Storable]
     protected string[,] matrix;
 

@@ -56,6 +56,8 @@ namespace HeuristicLab.Optimization.Views {
       this.parametersTabPage.SuspendLayout();
       this.problemTabPage.SuspendLayout();
       this.resultsTabPage.SuspendLayout();
+      this.runsTabPage.SuspendLayout();
+      this.problemPanel.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.operatorGraphTabPage.SuspendLayout();
       this.globalScopeTabPage.SuspendLayout();
@@ -64,8 +66,6 @@ namespace HeuristicLab.Optimization.Views {
       // createUserDefinedAlgorithmButton
       // 
       this.createUserDefinedAlgorithmButton.Enabled = false;
-      this.createUserDefinedAlgorithmButton.Location = new System.Drawing.Point(150, 525);
-      this.createUserDefinedAlgorithmButton.TabIndex = 9;
       this.toolTip.SetToolTip(this.createUserDefinedAlgorithmButton, "Create User Defined Algorithm from this Algorithm");
       this.createUserDefinedAlgorithmButton.Visible = false;
       // 
@@ -103,20 +103,10 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // resetButton
       // 
-      this.resetButton.Location = new System.Drawing.Point(90, 525);
       this.toolTip.SetToolTip(this.resetButton, "Reset Algorithm");
-      // 
-      // executionTimeLabel
-      // 
-      this.executionTimeLabel.TabIndex = 10;
-      // 
-      // executionTimeTextBox
-      // 
-      this.executionTimeTextBox.TabIndex = 11;
       // 
       // stopButton
       // 
-      this.stopButton.Location = new System.Drawing.Point(60, 525);
       this.toolTip.SetToolTip(this.stopButton, "Stop Algorithm");
       // 
       // nameTextBox
@@ -215,6 +205,8 @@ namespace HeuristicLab.Optimization.Views {
       this.parametersTabPage.ResumeLayout(false);
       this.problemTabPage.ResumeLayout(false);
       this.resultsTabPage.ResumeLayout(false);
+      this.runsTabPage.ResumeLayout(false);
+      this.problemPanel.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.operatorGraphTabPage.ResumeLayout(false);
       this.globalScopeTabPage.ResumeLayout(false);

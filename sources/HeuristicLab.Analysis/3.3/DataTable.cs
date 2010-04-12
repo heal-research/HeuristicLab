@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Drawing;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -29,6 +30,10 @@ namespace HeuristicLab.Analysis {
   [Item("DataTable", "A table of data values.")]
   [StorableClass]
   public sealed class DataTable : NamedItem {
+    public override Image ItemImage {
+      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Table; }
+    }
+
     [Storable]
     private NamedItemCollection<DataRow> rows;
     public NamedItemCollection<DataRow> Rows {

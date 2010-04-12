@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -33,6 +34,10 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   [Item("PathTSPTour", "Represents a tour of a Traveling Salesman Problem given in path representation which can be visualized in the GUI.")]
   [StorableClass]
   public sealed class PathTSPTour : Item {
+    public override Image ItemImage {
+      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Image; }
+    }
+
     private DoubleMatrix coordinates;
     [Storable]
     public DoubleMatrix Coordinates {

@@ -104,7 +104,7 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       // openTSPFileButton
       // 
       this.openTSPFileButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.openTSPFileButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Add;
+      this.openTSPFileButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Open;
       this.openTSPFileButton.Location = new System.Drawing.Point(520, 10);
       this.openTSPFileButton.Name = "openTSPFileButton";
       this.openTSPFileButton.Size = new System.Drawing.Size(24, 24);
@@ -135,7 +135,7 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       // openTourFileButton
       // 
       this.openTourFileButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.openTourFileButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Add;
+      this.openTourFileButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Open;
       this.openTourFileButton.Location = new System.Drawing.Point(520, 62);
       this.openTourFileButton.Name = "openTourFileButton";
       this.openTourFileButton.Size = new System.Drawing.Size(24, 24);

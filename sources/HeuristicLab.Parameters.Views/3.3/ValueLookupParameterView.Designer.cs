@@ -140,7 +140,7 @@ namespace HeuristicLab.Parameters.Views {
       // 
       // setValueButton
       // 
-      this.setValueButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Add;
+      this.setValueButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Edit;
       this.setValueButton.Location = new System.Drawing.Point(6, 19);
       this.setValueButton.Name = "setValueButton";
       this.setValueButton.Size = new System.Drawing.Size(24, 24);

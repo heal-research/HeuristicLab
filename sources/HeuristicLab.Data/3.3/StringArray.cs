@@ -22,6 +22,7 @@
 using System;
 using System.Linq;
 using System.Collections;
+using System.Drawing;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -32,6 +33,10 @@ namespace HeuristicLab.Data {
   [Item("StringArray", "Represents an array of strings.")]
   [StorableClass]
   public class StringArray : Item, IEnumerable<string>, IStringConvertibleArray {
+    public override Image ItemImage {
+      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Class; }
+    }
+
     [Storable]
     protected string[] array;
 

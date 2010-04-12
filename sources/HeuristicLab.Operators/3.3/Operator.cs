@@ -32,7 +32,10 @@ namespace HeuristicLab.Operators {
   [StorableClass]
   public abstract class Operator : ParameterizedNamedItem, IOperator {
     public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Method; }
+      get {
+        if (Breakpoint) return HeuristicLab.Common.Resources.VS2008ImageLibrary.BreakpointActive;
+        else return HeuristicLab.Common.Resources.VS2008ImageLibrary.Method;
+      }
     }
     public override bool CanChangeDescription {
       get { return false; }
@@ -75,6 +78,7 @@ namespace HeuristicLab.Operators {
         if (value != breakpoint) {
           breakpoint = value;
           OnBreakpointChanged();
+          OnItemImageChanged();
         }
       }
     }
