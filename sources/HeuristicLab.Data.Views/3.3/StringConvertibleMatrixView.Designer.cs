@@ -51,8 +51,11 @@ namespace HeuristicLab.Data.Views {
       this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
       this.columnsTextBox = new System.Windows.Forms.TextBox();
       this.columnsLabel = new System.Windows.Forms.Label();
+      this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.ShowHideColumns = new System.Windows.Forms.ToolStripMenuItem();
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
+      this.contextMenu.SuspendLayout();
       this.SuspendLayout();
       // 
       // rowsLabel
@@ -126,6 +129,20 @@ namespace HeuristicLab.Data.Views {
       this.columnsLabel.TabIndex = 2;
       this.columnsLabel.Text = "&Columns:";
       // 
+      // contextMenu
+      // 
+      this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ShowHideColumns});
+      this.contextMenu.Name = "contextMenu";
+      this.contextMenu.Size = new System.Drawing.Size(191, 26);
+      // 
+      // ShowHideColumns
+      // 
+      this.ShowHideColumns.Name = "ShowHideColumns";
+      this.ShowHideColumns.Size = new System.Drawing.Size(190, 22);
+      this.ShowHideColumns.Text = "Show / Hide Columns";
+      this.ShowHideColumns.Click += new System.EventHandler(this.ShowHideColumns_Click);
+      // 
       // StringConvertibleMatrixView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -139,6 +156,7 @@ namespace HeuristicLab.Data.Views {
       this.Size = new System.Drawing.Size(424, 404);
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
+      this.contextMenu.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -152,6 +170,8 @@ namespace HeuristicLab.Data.Views {
     private System.Windows.Forms.ErrorProvider errorProvider;
     private System.Windows.Forms.TextBox columnsTextBox;
     private System.Windows.Forms.Label columnsLabel;
+    private System.Windows.Forms.ContextMenuStrip contextMenu;
+    private System.Windows.Forms.ToolStripMenuItem ShowHideColumns;
 
   }
 }

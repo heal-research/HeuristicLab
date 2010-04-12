@@ -91,6 +91,12 @@
     <Compile Include="BoolValueView.Designer.cs">
       <DependentUpon>BoolValueView.cs</DependentUpon>
     </Compile>
+    <Compile Include="ColumnsVisibilityDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ColumnsVisibilityDialog.Designer.cs">
+      <DependentUpon>ColumnsVisibilityDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="ComparisonView.cs">
       <SubType>UserControl</SubType>
     </Compile>
