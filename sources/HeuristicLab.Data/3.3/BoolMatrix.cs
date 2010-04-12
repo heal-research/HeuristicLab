@@ -28,12 +28,18 @@ namespace HeuristicLab.Data {
   [Item("BoolMatrix", "Represents a matrix of boolean values.")]
   [StorableClass]
   public class BoolMatrix : ValueTypeMatrix<bool>, IStringConvertibleMatrix {
-    public BoolMatrix() : base() { }
+        public BoolMatrix() : base() { }
     public BoolMatrix(int rows, int columns) : base(rows, columns) { }
+    public BoolMatrix(int rows, int columns, IEnumerable<string> columnNames) : base(rows, columns, columnNames) { }
+    public BoolMatrix(int rows, int columns, IEnumerable<string> columnNames, IEnumerable<string> rowNames) : base(rows, columns, columnNames, rowNames) { }
     public BoolMatrix(bool[,] elements) : base(elements) { }
+    public BoolMatrix(bool[,] elements, IEnumerable<string> columnNames) : base(elements, columnNames) { }
+    public BoolMatrix(bool[,] elements, IEnumerable<string> columnNames, IEnumerable<string> rowNames) : base(elements, columnNames, rowNames) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       BoolMatrix clone = new BoolMatrix(matrix);
+      clone.ColumnNames = new List<string>(ColumnNames);
+      clone.RowNames = new List<string>(RowNames);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
@@ -76,6 +82,10 @@ namespace HeuristicLab.Data {
     IEnumerable<string> IStringConvertibleMatrix.ColumnNames {
       get { return this.ColumnNames; }
       set { this.ColumnNames = value; }
+    }
+    IEnumerable<string> IStringConvertibleMatrix.RowNames {
+      get { return this.RowNames; }
+      set { this.RowNames = value; }
     }
     bool IStringConvertibleMatrix.Validate(string value, out string errorMessage) {
       return Validate(value, out errorMessage);

@@ -41,16 +41,29 @@ namespace HeuristicLab.Data {
     protected T[,] matrix;
 
     [Storable]
-    protected List<string> columnNames;
+    private List<string> columnNames;
     public IEnumerable<string> ColumnNames {
       get { return this.columnNames; }
       set {
         if (value == null || value.Count() == 0)
           columnNames = new List<string>();
         else if (value.Count() != Columns)
-          throw new ArgumentException("A columnName must be for each column specified.");
+          throw new ArgumentException("A column name must be specified for each column.");
         else
           columnNames = new List<string>(value);
+      }
+    }
+    [Storable]
+    private List<string> rowNames;
+    public IEnumerable<string> RowNames {
+      get { return this.rowNames; }
+      set {
+        if (value == null || value.Count() == 0)
+          rowNames = new List<string>();
+        else if (value.Count() != Rows)
+          throw new ArgumentException("A row name must be specified for each row.");
+        else
+          rowNames = new List<string>(value);
       }
     }
 
@@ -90,28 +103,41 @@ namespace HeuristicLab.Data {
     protected ValueTypeMatrix() {
       matrix = new T[0, 0];
       columnNames = new List<string>();
+      rowNames = new List<string>();
     }
     protected ValueTypeMatrix(int rows, int columns) {
       matrix = new T[rows, columns];
       columnNames = new List<string>();
+      rowNames = new List<string>();
     }
     protected ValueTypeMatrix(int rows, int columns, IEnumerable<string> columnNames)
       : this(rows, columns) {
       ColumnNames = columnNames;
     }
+    protected ValueTypeMatrix(int rows, int columns, IEnumerable<string> columnNames,IEnumerable<string> rowNames)
+      : this(rows, columns, columnNames) {
+      RowNames = rowNames;
+    }
     protected ValueTypeMatrix(T[,] elements) {
       if (elements == null) throw new ArgumentNullException();
       matrix = (T[,])elements.Clone();
       columnNames = new List<string>();
+      rowNames = new List<string>();
     }
     protected ValueTypeMatrix(T[,] elements, IEnumerable<string> columnNames)
       : this(elements) {
       ColumnNames = columnNames;
     }
+    protected ValueTypeMatrix(T[,] elements, IEnumerable<string> columnNames, IEnumerable<string> rowNames)
+      : this(elements,columnNames) {
+      RowNames = rowNames;
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       ValueTypeMatrix<T> clone = (ValueTypeMatrix<T>)base.Clone(cloner);
       clone.matrix = (T[,])matrix.Clone();
+      clone.columnNames = new List<string>(columnNames);
+      clone.rowNames = new List<string>(rowNames);
       return clone;
     }
 

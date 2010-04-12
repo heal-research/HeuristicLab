@@ -41,16 +41,29 @@ namespace HeuristicLab.Data {
     protected string[,] matrix;
 
     [Storable]
-    protected List<string> columnNames;
+    private List<string> columnNames;
     public IEnumerable<string> ColumnNames {
       get { return this.columnNames; }
       set {
         if (value == null || value.Count() == 0)
           columnNames = new List<string>();
         else if (value.Count() != Columns)
-          throw new ArgumentException("A columnName must be for each column specified.");
+          throw new ArgumentException("A column name must be specified for each column .");
         else
           columnNames = new List<string>(value);
+      }
+    }
+    [Storable]
+    private List<string> rowNames;
+    public IEnumerable<string> RowNames {
+      get { return this.rowNames; }
+      set {
+        if (value == null || value.Count() == 0)
+          rowNames = new List<string>();
+        else if (value.Count() != Rows)
+          throw new ArgumentException("A row name must be specified for each row.");
+        else
+          rowNames = new List<string>(value);
       }
     }
 
@@ -92,6 +105,7 @@ namespace HeuristicLab.Data {
     public StringMatrix() {
       matrix = new string[0, 0];
       columnNames = new List<string>();
+      rowNames = new List<string>();
     }
     public StringMatrix(int rows, int columns) {
       matrix = new string[rows, columns];
@@ -100,10 +114,15 @@ namespace HeuristicLab.Data {
           matrix[i, j] = string.Empty;
       }
       columnNames = new List<string>();
+      rowNames = new List<string>();
     }
     protected StringMatrix(int rows, int columns, IEnumerable<string> columnNames)
       : this(rows, columns) {
       ColumnNames = columnNames;
+    }
+    protected StringMatrix(int rows, int columns, IEnumerable<string> columnNames, IEnumerable<string> rowNames)
+      : this(rows, columns,columnNames) {
+      RowNames = rowNames;
     }
     public StringMatrix(string[,] elements) {
       if (elements == null) throw new ArgumentNullException();
@@ -113,16 +132,23 @@ namespace HeuristicLab.Data {
           matrix[i, j] = elements[i, j] == null ? string.Empty : elements[i, j];
       }
       columnNames = new List<string>();
+      rowNames = new List<string>();
     }
     protected StringMatrix(string[,] elements, IEnumerable<string> columnNames)
       : this(elements) {
       ColumnNames = columnNames;
+    }
+    protected StringMatrix(string[,] elements, IEnumerable<string> columnNames,IEnumerable<string> rowNames)
+      : this(elements,columnNames) {
+      RowNames = rowNames;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       StringMatrix clone = new StringMatrix();
       cloner.RegisterClonedObject(this, clone);
       clone.matrix = (string[,])matrix.Clone();
+      clone.columnNames = new List<string>(columnNames);
+      clone.rowNames = new List<string>(rowNames);
       return clone;
     }
 
@@ -191,6 +217,10 @@ namespace HeuristicLab.Data {
     IEnumerable<string> IStringConvertibleMatrix.ColumnNames {
       get { return this.ColumnNames; }
       set { this.ColumnNames = value; }
+    }
+    IEnumerable<string> IStringConvertibleMatrix.RowNames {
+      get { return this.RowNames; }
+      set { this.RowNames = value; }
     }
     bool IStringConvertibleMatrix.Validate(string value, out string errorMessage) {
       return Validate(value, out errorMessage);

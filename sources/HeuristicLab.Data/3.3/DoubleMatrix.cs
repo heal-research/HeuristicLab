@@ -30,10 +30,16 @@ namespace HeuristicLab.Data {
   public class DoubleMatrix : ValueTypeMatrix<double>, IStringConvertibleMatrix {
     public DoubleMatrix() : base() { }
     public DoubleMatrix(int rows, int columns) : base(rows, columns) { }
+    public DoubleMatrix(int rows, int columns, IEnumerable<string> columnNames) : base(rows, columns, columnNames) { }
+    public DoubleMatrix(int rows, int columns, IEnumerable<string> columnNames, IEnumerable<string> rowNames) : base(rows, columns, columnNames, rowNames) { }
     public DoubleMatrix(double[,] elements) : base(elements) { }
+    public DoubleMatrix(double[,] elements, IEnumerable<string> columnNames) : base(elements, columnNames) { }
+    public DoubleMatrix(double[,] elements, IEnumerable<string> columnNames, IEnumerable<string> rowNames) : base(elements, columnNames, rowNames) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       DoubleMatrix clone = new DoubleMatrix(matrix);
+      clone.ColumnNames = new List<string>(ColumnNames);
+      clone.RowNames = new List<string>(RowNames);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
@@ -76,6 +82,10 @@ namespace HeuristicLab.Data {
     IEnumerable<string> IStringConvertibleMatrix.ColumnNames {
       get { return this.ColumnNames; }
       set { this.ColumnNames = value; }
+    }
+    IEnumerable<string> IStringConvertibleMatrix.RowNames {
+      get { return this.RowNames; }
+      set { this.RowNames = value; }
     }
     bool IStringConvertibleMatrix.Validate(string value, out string errorMessage) {
       return Validate(value, out errorMessage);

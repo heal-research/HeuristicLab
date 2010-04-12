@@ -29,6 +29,7 @@ namespace HeuristicLab.Data {
     int Columns { get; set; }
 
     IEnumerable<string> ColumnNames { get; set; }
+    IEnumerable<string> RowNames { get; set; }
     //bool SortableView { get; }
 
     bool Validate(string value, out string errorMessage);
