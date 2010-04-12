@@ -287,6 +287,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
+    IEnumerable<string> IStringConvertibleMatrix.RowNames {
+      get { return new List<string>(); }
+      set { throw new NotImplementedException(); }
+    }
+
     public bool Validate(string value, out string errorMessage) {
       errorMessage = string.Empty;
       return true;
