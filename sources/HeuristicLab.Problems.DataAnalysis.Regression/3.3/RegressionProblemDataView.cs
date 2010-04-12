@@ -69,6 +69,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression {
         //parameterCollectionView.Content = ((IParameterizedNamedItem)Content).Parameters;
         //parameterCollectionView.Enabled = true;
         importButton.Enabled = true;
+        this.datasetView.Content = this.Content.Dataset;
       }
     }
 
