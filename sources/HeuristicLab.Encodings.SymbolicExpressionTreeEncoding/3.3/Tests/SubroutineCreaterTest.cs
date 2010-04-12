@@ -7,6 +7,7 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Random;
 using System.Diagnostics;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlteringOperators;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
   [TestClass]
@@ -37,7 +38,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
       var grammar = new TestGrammar();
       var random = new MersenneTwister();
       for (int i = 0; i < populationSize; i++) {
-        randomTrees.Add(ProbabilisticTreeCreator.Create(random, grammar, 100, 10));
+        var randTree = ProbabilisticTreeCreator.Create(random, grammar, 100, 10);
+        Assert.IsTrue(grammar.IsValidExpression(randTree));
+        randomTrees.Add(randTree);
       }
       var newPopulation = new List<SymbolicExpressionTree>();
       for (int i = 0; i < populationSize; i++) {
@@ -61,7 +64,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
 
     private class TestGrammar : DefaultSymbolicExpressionGrammar {
       public TestGrammar()
-        : base(0, 0, 0, 0) {
+        : base(0, 3, 0, 3) {
         Initialize();
       }
 
@@ -72,10 +75,20 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
         var div = new Division();
         var terminal = new Terminal();
 
-        var allSymbols = new List<Symbol>() { add, sub, mul, div, terminal };
-        var functionSymbols = new List<Symbol>() { add, sub, mul, div };
-        allSymbols.ForEach(s => AddAllowedSymbols(StartSymbol, 0, s));
+        var defun = new Defun();
+        var invoke = new InvokeFunction();
 
+        var allSymbols = new List<Symbol>() { add, sub, mul, div, terminal, invoke };
+        var functionSymbols = new List<Symbol>() { add, sub, mul, div };
+        foreach (var symb in allSymbols) {
+          AddAllowedSymbols(StartSymbol, 0, symb);
+          AddAllowedSymbols(defun, 0, symb);
+        }
+        SetMinSubTreeCount(invoke, 0);
+        SetMaxSubTreeCount(invoke, 3);
+        for (int i = 0; i < 3; i++) {
+          allSymbols.ForEach(s => AddAllowedSymbols(invoke, i, s));
+        }
         SetMinSubTreeCount(terminal, 0);
         SetMaxSubTreeCount(terminal, 0);
         int maxSubTrees = 3;
