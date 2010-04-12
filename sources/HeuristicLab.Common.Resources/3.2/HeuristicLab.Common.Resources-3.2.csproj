@@ -387,6 +387,33 @@
   <ItemGroup>
     <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Nothing.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Table.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_EditInformation.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Annotations&amp;Buttons_Collapse.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Annotations&amp;Buttons_Expand.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Edit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Comment.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Breakpoint_Active.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Breakpoint_Inactive.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Image.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
