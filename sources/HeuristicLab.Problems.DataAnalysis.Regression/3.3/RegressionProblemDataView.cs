@@ -45,11 +45,25 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression {
       Content = content;
     }
 
+    protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
+      if (Content != null)
+        Content.DatasetChanged += new EventHandler(Content_DatasetChanged);
+    }
+
+    protected override void DeregisterContentEvents() {
+      base.DeregisterContentEvents();
+      if(Content != null)
+        Content.DatasetChanged -= new EventHandler(Content_DatasetChanged);
+    }
+
+    private void Content_DatasetChanged(object sender, EventArgs e) {
+      this.datasetView.Content = this.Content.Dataset;
+    }
+
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        parameterCollectionView.Content = null;
-        parameterCollectionView.Enabled = false;
         importButton.Enabled = false;
       } else {
         //parameterCollectionView.Content = ((IParameterizedNamedItem)Content).Parameters;

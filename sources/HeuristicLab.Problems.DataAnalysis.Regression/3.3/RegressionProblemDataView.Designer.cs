@@ -46,12 +46,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression {
     /// </summary>
     private void InitializeComponent() {
       this.importButton = new System.Windows.Forms.Button();
-      this.tabControl = new System.Windows.Forms.TabControl();
-      this.parametersTabPage = new System.Windows.Forms.TabPage();
-      this.parameterCollectionView = new HeuristicLab.Core.Views.ParameterCollectionView();
+      this.datasetView = new HeuristicLab.Data.Views.StringConvertibleMatrixView();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
-      this.tabControl.SuspendLayout();
-      this.parametersTabPage.SuspendLayout();
       this.SuspendLayout();
       // 
       // nameTextBox
@@ -76,58 +72,33 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression {
       this.importButton.UseVisualStyleBackColor = true;
       this.importButton.Click += new System.EventHandler(this.importButton_Click);
       // 
-      // tabControl
+      // datasetView
       // 
-      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+      this.datasetView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.tabControl.Controls.Add(this.parametersTabPage);
-      this.tabControl.Location = new System.Drawing.Point(0, 52);
-      this.tabControl.Name = "tabControl";
-      this.tabControl.SelectedIndex = 0;
-      this.tabControl.Size = new System.Drawing.Size(529, 341);
-      this.tabControl.TabIndex = 4;
+      this.datasetView.Caption = "StringConvertibleMatrix View";
+      this.datasetView.Content = null;
+      this.datasetView.Location = new System.Drawing.Point(0, 52);
+      this.datasetView.Name = "datasetView";
+      this.datasetView.Size = new System.Drawing.Size(526, 341);
+      this.datasetView.TabIndex = 6;
       // 
-      // parametersTabPage
-      // 
-      this.parametersTabPage.Controls.Add(this.parameterCollectionView);
-      this.parametersTabPage.Location = new System.Drawing.Point(4, 22);
-      this.parametersTabPage.Name = "parametersTabPage";
-      this.parametersTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.parametersTabPage.Size = new System.Drawing.Size(521, 315);
-      this.parametersTabPage.TabIndex = 0;
-      this.parametersTabPage.Text = "Parameters";
-      this.parametersTabPage.UseVisualStyleBackColor = true;
-      // 
-      // parameterCollectionView
-      // 
-      this.parameterCollectionView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.parameterCollectionView.Caption = "ParameterCollection";
-      this.parameterCollectionView.Content = null;
-      this.parameterCollectionView.Location = new System.Drawing.Point(6, 6);
-      this.parameterCollectionView.Name = "parameterCollectionView";
-      this.parameterCollectionView.Size = new System.Drawing.Size(509, 303);
-      this.parameterCollectionView.TabIndex = 0;
-      // 
-      // RegressionProblemView
+      // RegressionProblemDataView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.tabControl);
       this.Controls.Add(this.importButton);
-      this.Name = "RegressionProblemView";
+      this.Controls.Add(this.datasetView);
+      this.Name = "RegressionProblemDataView";
       this.Size = new System.Drawing.Size(529, 422);
+      this.Controls.SetChildIndex(this.datasetView, 0);
       this.Controls.SetChildIndex(this.importButton, 0);
-      this.Controls.SetChildIndex(this.tabControl, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
       this.Controls.SetChildIndex(this.descriptionLabel, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
       this.Controls.SetChildIndex(this.descriptionTextBox, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
-      this.tabControl.ResumeLayout(false);
-      this.parametersTabPage.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -136,9 +107,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression {
     #endregion
 
     private System.Windows.Forms.Button importButton;
-    private System.Windows.Forms.TabControl tabControl;
-    private System.Windows.Forms.TabPage parametersTabPage;
-    private HeuristicLab.Core.Views.ParameterCollectionView parameterCollectionView;
+    private HeuristicLab.Data.Views.StringConvertibleMatrixView datasetView;
 
   }
 }

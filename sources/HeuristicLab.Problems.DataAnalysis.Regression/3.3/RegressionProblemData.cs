@@ -40,7 +40,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression {
     [Storable]
     public Dataset Dataset {
       get { return dataset; }
-      set { dataset = value; }
+      set {
+        if (dataset != value) {
+          if (value == null) throw new ArgumentNullException();
+          else {
+            dataset = value;
+            OnDatasetChanged(EventArgs.Empty);
+          }
+        }
+      }
     }
     private StringValue targetVariable;
     [Storable]
@@ -121,6 +129,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression {
     protected virtual void OnInputVariablesChanged(EventArgs e) {
       var listeners = InputVariablesChanged;
       if (listeners != null) listeners(this, e);
+    }
+
+    public event EventHandler DatasetChanged;
+    protected virtual void OnDatasetChanged(EventArgs e) {
+      EventHandler handler = DatasetChanged;
+      if (handler != null) handler(this, e);
     }
     #endregion
 
