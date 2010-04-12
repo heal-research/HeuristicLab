@@ -303,6 +303,10 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       SelectorParameter.ValidValues.Clear();
       foreach (ISelector selector in Selectors.OrderBy(x => x.Name))
         SelectorParameter.ValidValues.Add(selector);
+
+      ISelector proportionalSelector = SelectorParameter.ValidValues.FirstOrDefault(x => x.GetType().Name.Equals("ProportionalSelector"));
+      if (proportionalSelector != null) SelectorParameter.Value = proportionalSelector;
+
       if (oldSelector != null) {
         ISelector selector = SelectorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldSelector.GetType());
         if (selector != null) SelectorParameter.Value = selector;
