@@ -27,11 +27,10 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
-  /// Beale Function<br/>
-  /// Domain:  [-4.5 , 4.5]^2<br/>
-  /// Optimum: 0.0 at (3.0, 0.5)
+  /// The Beale function is defined for 2 dimensions with an optimum of 0 at (3, 0.5).
+  /// It is implemented as described in Moré, J.J., Garbow, B., and Hillstrom, K. 1981. Testing unconstrained optimization software. ACM Transactions on Mathematical Software 7, pp. 136-140, ACM.
   /// </summary>
-  [Item("BealeEvaluator", "Evaluates the Beale function on a given point. The optimum of this function is 0 at (3,0.5).")]
+  [Item("BealeEvaluator", "Evaluates the Beale function on a given point. The optimum of this function is 0 at (3,0.5). It is implemented as described in Moré, J.J., Garbow, B., and Hillstrom, K. 1981. Testing unconstrained optimization software. ACM Transactions on Mathematical Software 7, pp. 136-140, ACM.")]
   [StorableClass]
   public class BealeEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
     /// <summary>
@@ -71,7 +70,11 @@ namespace HeuristicLab.Problems.TestFunctions {
     /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
     /// <returns>The result value of the Beale function at the given point.</returns>
     public static double Apply(RealVector point) {
-      return Math.Pow(1.5 - point[0] * (1 - point[1]), 2) + Math.Pow(2.25 - point[0] * (1 - (point[1] * point[1])), 2) + Math.Pow((2.625 - point[0] * (1 - (point[1] * point[1] * point[1]))), 2);
+      double x1 = point[0], x2 = point[1];
+      double f1 = 1.5 - x1 * (1 - x2);
+      double f2 = 2.25 - x1 * (1 - x2 * x2);
+      double f3 = 2.625 - x1 * (1 - x2 * x2 * x2);
+      return (f1 * f1) + (f2 * f2) + (f3 * f3);
     }
 
     /// <summary>

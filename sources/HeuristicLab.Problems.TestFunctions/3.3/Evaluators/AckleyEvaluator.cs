@@ -27,11 +27,10 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
-  /// Ackley Function<br/>
-  /// Domain:  [-32.768 , 32.768]^n <br/>
-  /// Optimum: 0.0 at (0, 0, ..., 0)
+  /// The Ackley function as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg
+  /// is highly multimodal. It has a single global minimum at the origin with value 0.
   /// </summary
-  [Item("AckleyEvaluator", "Evaluates the Ackley function on a given point. The optimum of this function is 0 at the origin.")]
+  [Item("AckleyEvaluator", "Evaluates the Ackley function on a given point. The optimum of this function is 0 at the origin. It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.")]
   [StorableClass]
   public class AckleyEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
     /// <summary>
@@ -77,15 +76,14 @@ namespace HeuristicLab.Problems.TestFunctions {
       val = 0;
       for (int i = 0; i < point.Length; i++)
         val += point[i] * point[i];
-      val *= 1.0 / point.Length;
-      val = Math.Sqrt(val);
-      val *= -0.2;
+      val /= point.Length;
+      val = -0.2 * Math.Sqrt(val);
       result -= 20 * Math.Exp(val);
 
       val = 0;
       for (int i = 0; i < point.Length; i++)
         val += Math.Cos(2 * Math.PI * point[i]);
-      val *= 1.0 / point.Length;
+      val /= point.Length;
       result -= Math.Exp(val);
       return (result);
     }

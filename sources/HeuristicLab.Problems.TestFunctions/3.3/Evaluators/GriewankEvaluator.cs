@@ -27,13 +27,13 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
-  /// Griewangk Function<br/>
-  /// Domain:  [-600.0 , 600.0]^n<br/>
-  /// Optimum: 0.0 at (0, 0, ..., 0)
+  /// The Griewank function is introduced in Griewank, A.O. 1981. Generalized descent for global optimization. Journal of Optimization Theory and Applications 34, pp. 11-39.
+  /// It is a multimodal fitness function in the range [-600,600]^n.
+  /// Here it is implemented as described (without the modifications) in Locatelli, M. 2003. A note on the Griewank test function. Journal of Global Optimization 25, pp. 169-174, Springer.
   /// </summary>
-  [Item("GriewangkEvaluator", "Evaluates the Griewangk function on a given point. The optimum of this function is 0 at the origin.")]
+  [Item("GriewankEvaluator", "Evaluates the Griewank function on a given point. The optimum of this function is 0 at the origin. It is introduced by Griewank A.O. 1981 and implemented as described (without the modifications) in Locatelli, M. 2003. A note on the Griewank test function. Journal of Global Optimization 25, pp. 169-174, Springer.")]
   [StorableClass]
-  public class GriewangkEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
+  public class GriewankEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
     /// <summary>
     /// Returns false as the Griewangk function is a minimization problem.
     /// </summary>
@@ -53,10 +53,10 @@ namespace HeuristicLab.Problems.TestFunctions {
       get { return new DoubleMatrix(new double[,] { { -600, 600 } }); }
     }
     /// <summary>
-    /// Gets the minimum problem size (2).
+    /// Gets the minimum problem size (1).
     /// </summary>
     public override int MinimumProblemSize {
-      get { return 2; }
+      get { return 1; }
     }
     /// <summary>
     /// Gets the (theoretical) maximum problem size (2^31 - 1).
@@ -64,6 +64,11 @@ namespace HeuristicLab.Problems.TestFunctions {
     public override int MaximumProblemSize {
       get { return int.MaxValue; }
     }
+
+    /// <summary>
+    /// If dimension of the problem is less or equal than 100 the values of Math.Sqrt(i + 1) are precomputed.
+    /// </summary>
+    private double[] sqrts;
 
     /// <summary>
     /// Evaluates the test function for a specific <paramref name="point"/>.
@@ -83,7 +88,29 @@ namespace HeuristicLab.Problems.TestFunctions {
         val *= Math.Cos(point[i] / Math.Sqrt(i + 1));
 
       result = result - val + 1;
-      return (result);
+      return result;
+    }
+
+    /// <summary>
+    /// Evaluates the test function for a specific <paramref name="point"/>. It uses an array of precomputed values for Math.Sqrt(i + 1) with i = 0..N
+    /// </summary>
+    /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
+    /// <param name="sqrts">The precomputed array of square roots.</param>
+    /// <returns>The result value of the Griewangk function at the given point.</returns>
+    private static double Apply(RealVector point, double[] sqrts) {
+      double result = 0;
+      double val = 0;
+
+      for (int i = 0; i < point.Length; i++)
+        result += point[i] * point[i];
+      result = result / 4000;
+
+      val = Math.Cos(point[0]);
+      for (int i = 1; i < point.Length; i++)
+        val *= Math.Cos(point[i] / sqrts[i]);
+
+      result = result - val + 1;
+      return result;
     }
 
     /// <summary>
@@ -93,7 +120,17 @@ namespace HeuristicLab.Problems.TestFunctions {
     /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
     /// <returns>The result value of the Griewangk function at the given point.</returns>
     protected override double EvaluateFunction(RealVector point) {
-      return Apply(point);
+      if (point.Length > 100)
+        return Apply(point);
+      else {
+        if (sqrts == null || sqrts.Length < point.Length) ComputeSqrts(point.Length);
+        return Apply(point, sqrts);
+      }
+    }
+
+    private void ComputeSqrts(int length) {
+      sqrts = new double[length];
+      for (int i = 0; i < length; i++) sqrts[i] = Math.Sqrt(i + 1);
     }
   }
 }

@@ -27,11 +27,9 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
-  /// Matyas Function<br/>
-  /// Domain:  [-10.0 , 10.0]^2<br/>
-  /// Optimum: 0.0 at (0.0, 0.0)
+  /// The Matyas function is implemented as described on http://www-optima.amp.i.kyoto-u.ac.jp/member/student/hedar/Hedar_files/TestGO_files/Page2213.htm, last accessed April 12th, 2010.
   /// </summary>
-  [Item("MatyasEvaluator", "Evaluates the Matyas function on a given point. The optimum of this function is 0 at the origin.")]
+  [Item("MatyasEvaluator", "Evaluates the Matyas function on a given point. The optimum of this function is 0 at the origin. It is implemented as described on http://www-optima.amp.i.kyoto-u.ac.jp/member/student/hedar/Hedar_files/TestGO_files/Page2213.htm, last accessed April 12th, 2010.")]
   [StorableClass]
   public class MatyasEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
     /// <summary>

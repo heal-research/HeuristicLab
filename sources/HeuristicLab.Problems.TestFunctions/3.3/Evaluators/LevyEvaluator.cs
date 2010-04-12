@@ -27,11 +27,9 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
-  /// Levy Function<br/>
-  /// Domain:  [-10.0 , 10.0]^n<br/>
-  /// Optimum: 0.0 at (1.0, 1.0, ..., 1.0)
+  /// The Levy function is implemented as described on http://www-optima.amp.i.kyoto-u.ac.jp/member/student/hedar/Hedar_files/TestGO_files/Page2056.htm, last accessed April 12th, 2010.
   /// </summary>
-  [Item("LevyEvaluator", "Evaluates the Levy function on a given point. The optimum of this function is 0 at (1,1,...,1).")]
+  [Item("LevyEvaluator", "Evaluates the Levy function on a given point. The optimum of this function is 0 at (1,1,...,1). It is implemented as described on http://www-optima.amp.i.kyoto-u.ac.jp/member/student/hedar/Hedar_files/TestGO_files/Page2056.htm, last accessed April 12th, 2010.")]
   [StorableClass]
   public class LevyEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
     /// <summary>
@@ -79,10 +77,11 @@ namespace HeuristicLab.Problems.TestFunctions {
         z[i] = 1 + (point[i] - 1) / 4;
       }
 
-      s = Math.Pow(Math.Sin(Math.PI * z[1]), 2);
+      s = Math.Sin(Math.PI * z[0]);
+      s *= s;
 
       for (int i = 0; i < length - 1; i++) {
-        s += Math.Pow(z[i] - 1, 2) * (1 + 10 * Math.Pow(Math.Sin(Math.PI * z[i] + 1), 2));
+        s += (z[i] - 1) * (z[i] - 1) * (1 + 10 * Math.Pow(Math.Sin(Math.PI * z[i] + 1), 2));
       }
 
       return s + Math.Pow(z[length - 1] - 1, 2) * (1 + Math.Pow(Math.Sin(2 * Math.PI * z[length - 1]), 2));

@@ -27,11 +27,9 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
-  /// Booth Function<br/>
-  /// Domain:  [-10.0 , 10.0]^2<br/>
-  /// Optimum: 0.0 at (1.0, 3.0)
+  /// The Booth function is implemented as described on http://www-optima.amp.i.kyoto-u.ac.jp/member/student/hedar/Hedar_files/TestGO_files/Page816.htm, last accessed April 12th, 2010.
   /// </summary>
-  [Item("BoothEvaluator", "Evaluates the Booth function on a given point. The optimum of this function is 0 at (1,3).")]
+  [Item("BoothEvaluator", "Evaluates the Booth function on a given point. The optimum of this function is 0 at (1,3). It is implemented as described on http://www-optima.amp.i.kyoto-u.ac.jp/member/student/hedar/Hedar_files/TestGO_files/Page816.htm, last accessed April 12th, 2010.")]
   [StorableClass]
   public class BoothEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
     /// <summary>
@@ -71,7 +69,8 @@ namespace HeuristicLab.Problems.TestFunctions {
     /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
     /// <returns>The result value of the Booth function at the given point.</returns>
     public static double Apply(RealVector point) {
-      return Math.Pow(point[0] + 2 * point[1] - 7, 2) + Math.Pow(2 * point[0] + point[1] - 5, 2);
+      return (point[0] + 2 * point[1] - 7) * (point[0] + 2 * point[1] - 7)
+        + (2 * point[0] + point[1] - 5) * (2 * point[0] + point[1] - 5);
     }
 
     /// <summary>

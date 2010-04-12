@@ -24,15 +24,15 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Encodings.RealVectorEncoding;
 
 namespace HeuristicLab.Problems.TestFunctions {
-  [Item("GriewangkAdditiveMoveEvaluator", "Class for evaluating an additive move on the Griewangk function.")]
+  [Item("GriewankAdditiveMoveEvaluator", "Class for evaluating an additive move on the Griewank function.")]
   [StorableClass]
-  public class GriewangkAdditiveMoveEvaluator : AdditiveMoveEvaluator {
+  public class GriewankAdditiveMoveEvaluator : AdditiveMoveEvaluator {
     public override System.Type EvaluatorType {
-      get { return typeof(GriewangkEvaluator); }
+      get { return typeof(GriewankEvaluator); }
     }
     protected override double Evaluate(double quality, RealVector point, AdditiveMove move) {
       RealVectorAdditiveMoveWrapper wrapper = new RealVectorAdditiveMoveWrapper(move, point);
-      return GriewangkEvaluator.Apply(wrapper);
+      return GriewankEvaluator.Apply(wrapper);
     }
   }
 }

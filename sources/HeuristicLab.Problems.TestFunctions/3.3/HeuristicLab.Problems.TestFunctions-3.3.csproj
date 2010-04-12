@@ -86,7 +86,7 @@
     <Compile Include="Evaluators\AckleyEvaluator.cs" />
     <Compile Include="Evaluators\BealeEvaluator.cs" />
     <Compile Include="Evaluators\BoothEvaluator.cs" />
-    <Compile Include="Evaluators\GriewangkEvaluator.cs" />
+    <Compile Include="Evaluators\GriewankEvaluator.cs" />
     <Compile Include="Evaluators\LevyEvaluator.cs" />
     <Compile Include="Evaluators\MatyasEvaluator.cs" />
     <Compile Include="Evaluators\RastriginEvaluator.cs" />
@@ -104,6 +104,7 @@
     <Compile Include="MoveEvaluators\AckleyAdditiveMoveEvaluator.cs" />
     <Compile Include="MoveEvaluators\BealeAdditiveMoveEvaluator.cs" />
     <Compile Include="MoveEvaluators\BoothAdditiveMoveEvaluator.cs" />
+    <Compile Include="MoveEvaluators\GriewankAdditiveMoveEvaluator.cs" />
     <Compile Include="MoveEvaluators\ZakharovAdditiveMoveEvaluator.cs" />
     <Compile Include="MoveEvaluators\SumSquaresAdditiveMoveEvaluator.cs" />
     <Compile Include="MoveEvaluators\SphereAdditiveMoveEvaluator.cs" />
@@ -112,7 +113,6 @@
     <Compile Include="MoveEvaluators\RosenbrockAdditiveMoveEvaluator.cs" />
     <Compile Include="MoveEvaluators\RastriginAdditiveMoveEvaluator.cs" />
     <Compile Include="MoveEvaluators\LevyAdditiveMoveEvaluator.cs" />
-    <Compile Include="MoveEvaluators\GriewangkAdditiveMoveEvaluator.cs" />
     <Compile Include="MoveEvaluators\AdditiveMoveEvaluator.cs" />
     <Compile Include="MoveEvaluators\RealVectorAdditiveMoveWrapper.cs" />
     <Compile Include="SingleObjectiveTestFunctionProblem.cs" />

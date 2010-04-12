@@ -32,7 +32,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
     protected override double Evaluate(double quality, RealVector point, AdditiveMove move) {
       RealVectorAdditiveMoveWrapper wrapper = new RealVectorAdditiveMoveWrapper(move, point);
-      return RastriginEvaluator.Apply(wrapper);
+      return RastriginEvaluator.Apply(wrapper, 10); // FIXME: the parameters have to be wired
     }
   }
 }

@@ -27,11 +27,13 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
-  /// Rosenbrock Function<br/>
-  /// Domain:  [-2.048 , 2.048]^n<br/>
-  /// Optimum: 0.0 at (1, 1, ..., 1)
+  /// The Rosenbrock function features a flat valley in which the global optimum is located.
+  /// It is implemented as generalized Rosenbrock function as for example given in Shang, Y.-W. and Qiu, Y.-H. 2006. A Note on the Extended Rosenbrock Function. Evolutionary Computation 14, pp. 119-126, MIT Press.
   /// </summary>
-  [Item("RosenbrockEvaluator", "Evaluates the Rosenbrock function on a given point. The optimum of this function is 0 at (1,1,...,1).")]
+  [Item("RosenbrockEvaluator", @"The Rosenbrock function features a flat valley in which the global optimum is located.
+For 2 and 3 dimensions the optimum of this function is 0 at (1,1,...,1), for 4 to 30 dimensions there is an additional local minimum.
+It is unknown how many local minima there are for dimensions greater than 30.
+It is implemented as generalized Rosenbrock function as for example given in Shang, Y.-W. and Qiu, Y.-H. 2006. A Note on the Extended Rosenbrock Function. Evolutionary Computation 14, pp. 119-126, MIT Press.")]
   [StorableClass]
   public class RosenbrockEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
     /// <summary>
@@ -73,8 +75,8 @@ namespace HeuristicLab.Problems.TestFunctions {
     public static double Apply(RealVector point) {
       double result = 0;
       for (int i = 0; i < point.Length - 1; i++) {
-        result += 100 * (point[i + 1] - point[i] * point[i]) * (point[i + 1] - point[i] * point[i]);
-        result += (1 - point[i]) * (1 - point[i]);
+        result += 100 * (point[i] * point[i] - point[i + 1]) * (point[i] * point[i] - point[i + 1]);
+        result += (point[i] - 1) * (point[i] - 1);
       }
       return result;
     }

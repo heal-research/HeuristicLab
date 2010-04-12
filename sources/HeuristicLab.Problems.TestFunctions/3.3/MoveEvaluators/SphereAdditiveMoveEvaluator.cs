@@ -32,7 +32,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
     protected override double Evaluate(double quality, RealVector point, AdditiveMove move) {
       RealVectorAdditiveMoveWrapper wrapper = new RealVectorAdditiveMoveWrapper(move, point);
-      return SphereEvaluator.Apply(wrapper);
+      return SphereEvaluator.Apply(wrapper, 1, 2); // FIXME: the parameters have to be wired.
     }
   }
 }

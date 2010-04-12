@@ -24,18 +24,18 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
-  /// Sphere Function<br/>
-  /// Domain:  [-5.12 , 5.12]^n<br/>
-  /// Optimum: 0.0 at (0, 0, ..., 0)
+  /// The sphere function is a unimodal function that has its optimum at the origin.
+  /// It is implemented as described in Beyer, H.-G. and Schwefel, H.-P. 2002. Evolution Strategies - A Comprehensive Introduction Natural Computing, 1, pp. 3-52.
   /// </summary>
-  [Item("SphereEvaluator", "Evaluates the Sphere function on a given point. The optimum of this function is 0 at the origin.")]
+  [Item("SphereEvaluator", "Evaluates the Sphere function y = C * ||X||^Alpha on a given point. The optimum of this function is 0 at the origin. It is implemented as described in Beyer, H.-G. and Schwefel, H.-P. 2002. Evolution Strategies - A Comprehensive Introduction Natural Computing, 1, pp. 3-52.")]
   [StorableClass]
   public class SphereEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
     /// <summary>
-    /// Returns false as the Rosenbrock function is a minimization problem.
+    /// Returns false as the Sphere function is a minimization problem.
     /// </summary>
     public override bool Maximization {
       get { return false; }
@@ -64,17 +64,52 @@ namespace HeuristicLab.Problems.TestFunctions {
     public override int MaximumProblemSize {
       get { return int.MaxValue; }
     }
+    /// <summary>
+    /// The parameter C modifies the steepness of the objective function y = C * ||X||^Alpha. Default is C = 1.
+    /// </summary>
+    public ValueParameter<DoubleValue> CParameter {
+      get { return (ValueParameter<DoubleValue>)Parameters["C"]; }
+    }
+    /// <summary>
+    /// The parameter Alpha modifies the steepness of the objective function y = C * ||X||^Alpha. Default is Alpha = 2.
+    /// </summary>
+    public ValueParameter<DoubleValue> AlphaParameter {
+      get { return (ValueParameter<DoubleValue>)Parameters["Alpha"]; }
+    }
+    /// <summary>
+    /// The parameter C modifies the steepness of the objective function y = C * ||X||^Alpha. Default is C = 1.
+    /// </summary>
+    public DoubleValue C {
+      get { return CParameter.Value; }
+      set { if (value != null) CParameter.Value = value; }
+    }
+    /// <summary>
+    /// The parameter Alpha modifies the steepness of the objective function y = C * ||X||^Alpha. Default is Alpha = 2.
+    /// </summary>
+    public DoubleValue Alpha {
+      get { return AlphaParameter.Value; }
+      set { if (value != null) AlphaParameter.Value = value; }
+    }
 
+    /// <summary>
+    /// Initializes a new instance of the SphereEvaluator with two parameters (<c>C</c> and <c>Alpha</c>).
+    /// </summary>
+    public SphereEvaluator()
+      : base() {
+      Parameters.Add(new ValueParameter<DoubleValue>("C", "The parameter C modifies the steepness of the objective function y = C * ||X||^Alpha. Default is C = 1.", new DoubleValue(1)));
+      Parameters.Add(new ValueParameter<DoubleValue>("Alpha", "The parameter Alpha modifies the steepness of the objective function y = C * ||X||^Alpha. Default is Alpha = 2.", new DoubleValue(2)));
+    }
     /// <summary>
     /// Evaluates the test function for a specific <paramref name="point"/>.
     /// </summary>
     /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
     /// <returns>The result value of the Sphere function at the given point.</returns>
-    public static double Apply(RealVector point) {
+    public static double Apply(RealVector point, double c, double alpha) {
       double result = 0;
       for (int i = 0; i < point.Length; i++)
         result += point[i] * point[i];
-      return result;
+      if (alpha != 2) result = Math.Pow(Math.Sqrt(result), alpha);
+      return c * result;
     }
 
     /// <summary>
@@ -84,7 +119,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
     /// <returns>The result value of the Sphere function at the given point.</returns>
     protected override double EvaluateFunction(RealVector point) {
-      return Apply(point);
+      return Apply(point, C.Value, Alpha.Value);
     }
   }
 }

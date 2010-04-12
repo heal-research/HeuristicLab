@@ -24,14 +24,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
-  /// Rastrigin Function<br/>
-  /// Domain:  [-5.12 , 5.12]^n <br/>
-  /// Optimum: 0.0 at (0, 0, ..., 0)
+  /// The generalized Rastrigin function y = Sum((x_i)^2 + A * (1 - Cos(2pi*x_i))) is a highly multimodal function that has its optimal value 0 at the origin.
+  /// It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.
   /// </summary
-  [Item("RastriginEvaluator", "Evaluates the Rastrigin function on a given point. The optimum of this function is 0 at the origin.")]
+  [Item("RastriginEvaluator", "Evaluates the generalized Rastrigin function y = Sum((x_i)^2 + A * (1 - Cos(2pi*x_i))) on a given point. The optimum of this function is 0 at the origin. It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.")]
   [StorableClass]
   public class RastriginEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
     /// <summary>
@@ -64,17 +64,38 @@ namespace HeuristicLab.Problems.TestFunctions {
     public override int MaximumProblemSize {
       get { return int.MaxValue; }
     }
+    /// <summary>
+    /// The parameter A is a parameter of the objective function y = Sum((x_i)^2 + A * (1 - Cos(2pi*x_i))). Default is A = 10.
+    /// </summary>
+    public ValueParameter<DoubleValue> AParameter {
+      get { return (ValueParameter<DoubleValue>)Parameters["A"]; }
+    }
+    /// <summary>
+    /// The parameter A is a parameter of the objective function y = Sum((x_i)^2 + A * (1 - Cos(2pi*x_i))). Default is A = 10.
+    /// </summary>
+    public DoubleValue A {
+      get { return AParameter.Value; }
+      set { if (value != null) AParameter.Value = value; }
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the RastriginEvaluator with one parameter (<c>A</c>).
+    /// </summary>
+    public RastriginEvaluator()
+      : base() {
+      Parameters.Add(new ValueParameter<DoubleValue>("A", "The parameter A is a parameter of the objective function y = Sum((x_i)^2 + A * (1 - Cos(2pi*x_i))). Default is A = 10.", new DoubleValue(10)));
+    }
 
     /// <summary>
     /// Evaluates the test function for a specific <paramref name="point"/>.
     /// </summary>
     /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
     /// <returns>The result value of the Rastrigin function at the given point.</returns>
-    public static double Apply(RealVector point) {
-      double result = 10 * point.Length;
+    public static double Apply(RealVector point, double a) {
+      double result = a * point.Length;
       for (int i = 0; i < point.Length; i++) {
         result += point[i] * point[i];
-        result -= 10 * Math.Cos(2 * Math.PI * point[i]);
+        result -= a * Math.Cos(2 * Math.PI * point[i]);
       }
       return (result);
     }
@@ -86,7 +107,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
     /// <returns>The result value of the Rastrigin function at the given point.</returns>
     protected override double EvaluateFunction(RealVector point) {
-      return Apply(point);
+      return Apply(point, A.Value);
     }
   }
 }
