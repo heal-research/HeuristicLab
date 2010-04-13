@@ -232,6 +232,23 @@ namespace HeuristicLab.Problems.TestFunctions {
         op.AdditiveMoveParameter.ActualName = name;
       }
     }
+    private void SphereEvaluator_Parameter_ValueChanged(object sender, EventArgs e) {
+      SphereEvaluator eval = (Evaluator as SphereEvaluator);
+      if (eval != null) {
+        foreach (ISphereMoveEvaluator op in Operators.OfType<ISphereMoveEvaluator>()) {
+          op.C = eval.C;
+          op.Alpha = eval.Alpha;
+        }
+      }
+    }
+    private void RastriginEvaluator_Parameter_ValueChanged(object sender, EventArgs e) {
+      RastriginEvaluator eval = (Evaluator as RastriginEvaluator);
+      if (eval != null) {
+        foreach (IRastriginMoveEvaluator op in Operators.OfType<IRastriginMoveEvaluator>()) {
+          op.A = eval.A;
+        }
+      }
+    }
     #endregion
 
     #region Helpers
@@ -269,6 +286,21 @@ namespace HeuristicLab.Problems.TestFunctions {
       foreach (ISingleObjectiveTestFunctionMoveEvaluator op in ApplicationManager.Manager.GetInstances<ISingleObjectiveTestFunctionMoveEvaluator>())
         if (op.EvaluatorType == Evaluator.GetType()) {
           operators.Add(op);
+          #region Synchronize evaluator specific parameters with the parameters of the corresponding move evaluators
+          if (op is ISphereMoveEvaluator) {
+            SphereEvaluator e = (Evaluator as SphereEvaluator);
+            e.AlphaParameter.ValueChanged += new EventHandler(SphereEvaluator_Parameter_ValueChanged);
+            e.CParameter.ValueChanged += new EventHandler(SphereEvaluator_Parameter_ValueChanged);
+            ISphereMoveEvaluator em = (op as ISphereMoveEvaluator);
+            em.C = e.C;
+            em.Alpha = e.Alpha;
+          } else if (op is IRastriginMoveEvaluator) {
+            RastriginEvaluator e = (Evaluator as RastriginEvaluator);
+            e.AParameter.ValueChanged += new EventHandler(RastriginEvaluator_Parameter_ValueChanged);
+            IRastriginMoveEvaluator em = (op as IRastriginMoveEvaluator);
+            em.A = e.A;
+          }
+          #endregion
         }
       ParameterizeOperators();
       OnOperatorsChanged();

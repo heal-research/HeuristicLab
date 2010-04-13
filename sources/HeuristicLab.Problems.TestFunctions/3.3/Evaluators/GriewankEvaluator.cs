@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   [StorableClass]
   public class GriewankEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
     /// <summary>
-    /// Returns false as the Griewangk function is a minimization problem.
+    /// Returns false as the Griewank function is a minimization problem.
     /// </summary>
     public override bool Maximization {
       get { return false; }
@@ -74,7 +74,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     /// Evaluates the test function for a specific <paramref name="point"/>.
     /// </summary>
     /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
-    /// <returns>The result value of the Griewangk function at the given point.</returns>
+    /// <returns>The result value of the Griewank function at the given point.</returns>
     public static double Apply(RealVector point) {
       double result = 0;
       double val = 0;
@@ -96,7 +96,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     /// </summary>
     /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
     /// <param name="sqrts">The precomputed array of square roots.</param>
-    /// <returns>The result value of the Griewangk function at the given point.</returns>
+    /// <returns>The result value of the Griewank function at the given point.</returns>
     private static double Apply(RealVector point, double[] sqrts) {
       double result = 0;
       double val = 0;
@@ -118,7 +118,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     /// </summary>
     /// <remarks>Calls <see cref="Apply"/>.</remarks>
     /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
-    /// <returns>The result value of the Griewangk function at the given point.</returns>
+    /// <returns>The result value of the Griewank function at the given point.</returns>
     protected override double EvaluateFunction(RealVector point) {
       if (point.Length > 100)
         return Apply(point);

@@ -27,15 +27,13 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
-  /// Zakharov Function<br/>
-  /// Domain:  [-5.0 , 10.0]^n<br/>
-  /// Optimum: 0.0 at (0.0, 0.0, ..., 0.0)
+  /// The Zakharov function is implemented as described in Hedar, A. & Fukushima, M. 2004. Heuristic pattern search and its hybridization with simulated annealing for nonlinear global optimization. Optimization Methods and Software 19, pp. 291-308, Taylor & Francis.
   /// </summary>
-  [Item("ZakharovEvaluator", "Evaluates the Zakharov function on a given point. The optimum of this function is 0 at the origin.")]
+  [Item("ZakharovEvaluator", "Evaluates the Zakharov function on a given point. The optimum of this function is 0 at the origin. It is implemented as described in Hedar, A. & Fukushima, M. 2004. Heuristic pattern search and its hybridization with simulated annealing for nonlinear global optimization. Optimization Methods and Software 19, pp. 291-308, Taylor & Francis.")]
   [StorableClass]
   public class ZakharovEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
     /// <summary>
-    /// Returns false as the Ackley function is a minimization problem.
+    /// Returns false as the Zakharov function is a minimization problem.
     /// </summary>
     public override bool Maximization {
       get { return false; }
@@ -76,10 +74,10 @@ namespace HeuristicLab.Problems.TestFunctions {
       double s2 = 0;
 
       for (int i = 0; i < length; i++) {
-        s1 = s1 + point[i] * point[i];
-        s2 = s2 + 0.5 * i * point[i];
+        s1 += point[i] * point[i];
+        s2 += 0.5 * i * point[i];
       }
-      return s1 + s2 * s2 + s2 * s2 * s2 * s2;
+      return s1 + (s2 * s2) + (s2 * s2 * s2 * s2);
     }
 
     /// <summary>

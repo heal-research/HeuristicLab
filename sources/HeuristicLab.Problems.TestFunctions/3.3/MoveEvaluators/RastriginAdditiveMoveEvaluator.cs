@@ -20,19 +20,35 @@
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.TestFunctions {
   [Item("RastriginAdditiveMoveEvaluator", "Class for evaluating an additive move on the Rastrigin function.")]
   [StorableClass]
-  public class RastriginAdditiveMoveEvaluator : AdditiveMoveEvaluator {
+  public class RastriginAdditiveMoveEvaluator : AdditiveMoveEvaluator, IRastriginMoveEvaluator {
     public override System.Type EvaluatorType {
       get { return typeof(RastriginEvaluator); }
     }
+    /// <summary>
+    /// The parameter A is a parameter of the objective function y = Sum((x_i)^2 + A * (1 - Cos(2pi*x_i))). Default is A = 10.
+    /// </summary>
+    public ValueParameter<DoubleValue> AParameter {
+      get { return (ValueParameter<DoubleValue>)Parameters["A"]; }
+    }
+    /// <summary>
+    /// The parameter A is a parameter of the objective function y = Sum((x_i)^2 + A * (1 - Cos(2pi*x_i))). Default is A = 10.
+    /// </summary>
+    public DoubleValue A {
+      get { return AParameter.Value; }
+      set { if (value != null) AParameter.Value = value; }
+    }
+
     protected override double Evaluate(double quality, RealVector point, AdditiveMove move) {
       RealVectorAdditiveMoveWrapper wrapper = new RealVectorAdditiveMoveWrapper(move, point);
-      return RastriginEvaluator.Apply(wrapper, 10); // FIXME: the parameters have to be wired
+      return RastriginEvaluator.Apply(wrapper, A.Value);
     }
   }
 }

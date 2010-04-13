@@ -31,9 +31,9 @@ namespace HeuristicLab.Problems.TestFunctions {
   /// It is implemented as generalized Rosenbrock function as for example given in Shang, Y.-W. and Qiu, Y.-H. 2006. A Note on the Extended Rosenbrock Function. Evolutionary Computation 14, pp. 119-126, MIT Press.
   /// </summary>
   [Item("RosenbrockEvaluator", @"The Rosenbrock function features a flat valley in which the global optimum is located.
-For 2 and 3 dimensions the optimum of this function is 0 at (1,1,...,1), for 4 to 30 dimensions there is an additional local minimum.
+For 2 and 3 dimensions the single minimum of this function is 0 at (1,1,...,1), for 4 to 30 dimensions there is an additional local minimum close to (-1,1,...,1).
 It is unknown how many local minima there are for dimensions greater than 30.
-It is implemented as generalized Rosenbrock function as for example given in Shang, Y.-W. and Qiu, Y.-H. 2006. A Note on the Extended Rosenbrock Function. Evolutionary Computation 14, pp. 119-126, MIT Press.")]
+It is implemented as generalized Rosenbrock function for which the 2 dimensional function is a special case, as for example given in Shang, Y.-W. and Qiu, Y.-H. 2006. A Note on the Extended Rosenbrock Function. Evolutionary Computation 14, pp. 119-126, MIT Press.")]
   [StorableClass]
   public class RosenbrockEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
     /// <summary>

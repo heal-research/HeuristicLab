@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   [StorableClass]
   public class SchwefelEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
     /// <summary>
-    /// Returns false as the Rosenbrock function is a minimization problem.
+    /// Returns false as the Schwefel (sine root) function is a minimization problem.
     /// </summary>
     public override bool Maximization {
       get { return false; }

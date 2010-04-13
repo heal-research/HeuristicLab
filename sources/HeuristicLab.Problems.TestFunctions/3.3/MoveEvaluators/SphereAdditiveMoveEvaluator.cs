@@ -20,19 +20,48 @@
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.TestFunctions {
   [Item("SphereAdditiveMoveEvaluator", "Class for evaluating an additive move on the Sphere function.")]
   [StorableClass]
-  public class SphereAdditiveMoveEvaluator : AdditiveMoveEvaluator {
+  public class SphereAdditiveMoveEvaluator : AdditiveMoveEvaluator, ISphereMoveEvaluator {
+    /// <summary>
+    /// The parameter C modifies the steepness of the objective function y = C * ||X||^Alpha. Default is C = 1.
+    /// </summary>
+    public ValueParameter<DoubleValue> CParameter {
+      get { return (ValueParameter<DoubleValue>)Parameters["C"]; }
+    }
+    /// <summary>
+    /// The parameter Alpha modifies the steepness of the objective function y = C * ||X||^Alpha. Default is Alpha = 2.
+    /// </summary>
+    public ValueParameter<DoubleValue> AlphaParameter {
+      get { return (ValueParameter<DoubleValue>)Parameters["Alpha"]; }
+    }
+    /// <summary>
+    /// The parameter C modifies the steepness of the objective function y = C * ||X||^Alpha. Default is C = 1.
+    /// </summary>
+    public DoubleValue C {
+      get { return CParameter.Value; }
+      set { if (value != null) CParameter.Value = value; }
+    }
+    /// <summary>
+    /// The parameter Alpha modifies the steepness of the objective function y = C * ||X||^Alpha. Default is Alpha = 2.
+    /// </summary>
+    public DoubleValue Alpha {
+      get { return AlphaParameter.Value; }
+      set { if (value != null) AlphaParameter.Value = value; }
+    }
+
     public override System.Type EvaluatorType {
       get { return typeof(SphereEvaluator); }
     }
     protected override double Evaluate(double quality, RealVector point, AdditiveMove move) {
       RealVectorAdditiveMoveWrapper wrapper = new RealVectorAdditiveMoveWrapper(move, point);
-      return SphereEvaluator.Apply(wrapper, 1, 2); // FIXME: the parameters have to be wired.
+      return SphereEvaluator.Apply(wrapper, C.Value, Alpha.Value);
     }
   }
 }

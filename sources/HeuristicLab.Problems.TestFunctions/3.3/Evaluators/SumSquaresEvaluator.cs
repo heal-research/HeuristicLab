@@ -27,15 +27,13 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
-  /// Sum Squares Function<br/>
-  /// Domain:  [-10.0 , 10.0]^n<br/>
-  /// Optimum: 0.0 at (0.0, 0.0, ..., 0.0)
+  /// The Sum Squares function is defined as sum(i * x_i * x_i) for i = 1..n
   /// </summary>
-  [Item("SumSquaresEvaluator", "Evaluates the sum squares function on a given point. The optimum of this function is 0 at the origin.")]
+  [Item("SumSquaresEvaluator", "Evaluates the sum squares function on a given point. The optimum of this function is 0 at the origin. The Sum Squares function is defined as sum(i * x_i * x_i) for i = 1..n.")]
   [StorableClass]
   public class SumSquaresEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
     /// <summary>
-    /// Returns false as the Rosenbrock function is a minimization problem.
+    /// Returns false as the Sum Squares function is a minimization problem.
     /// </summary>
     public override bool Maximization {
       get { return false; }
