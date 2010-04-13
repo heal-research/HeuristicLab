@@ -196,6 +196,12 @@ namespace HeuristicLab.Optimization {
     }
 
     public event EventHandler SortableViewChanged;
+    protected virtual void OnSortableViewChanged() {
+      EventHandler handler = SortableViewChanged;
+      if (handler != null)
+        handler(this, EventArgs.Empty);
+    }
+
     public bool Validate(string value, out string errorMessage) { throw new NotSupportedException(); }
     public bool SetValue(string value, int rowIndex, int columnIndex) { throw new NotSupportedException(); }
     #endregion

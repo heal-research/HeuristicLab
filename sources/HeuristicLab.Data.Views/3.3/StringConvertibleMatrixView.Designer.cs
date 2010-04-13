@@ -91,6 +91,7 @@ namespace HeuristicLab.Data.Views {
       this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
       this.dataGridView.Location = new System.Drawing.Point(0, 52);
       this.dataGridView.Name = "dataGridView";
+      this.dataGridView.RowHeadersWidth = 160;
       this.dataGridView.Size = new System.Drawing.Size(424, 352);
       this.dataGridView.TabIndex = 4;
       this.dataGridView.VirtualMode = true;
@@ -165,12 +166,12 @@ namespace HeuristicLab.Data.Views {
 
     private System.Windows.Forms.Label rowsLabel;
     private System.Windows.Forms.TextBox rowsTextBox;
-    private System.Windows.Forms.DataGridView dataGridView;
     private System.Windows.Forms.ErrorProvider errorProvider;
     private System.Windows.Forms.TextBox columnsTextBox;
     private System.Windows.Forms.Label columnsLabel;
     private System.Windows.Forms.ContextMenuStrip contextMenu;
     private System.Windows.Forms.ToolStripMenuItem ShowHideColumns;
+    protected System.Windows.Forms.DataGridView dataGridView;
 
   }
 }
