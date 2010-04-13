@@ -24,8 +24,11 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Encodings.RealVectorEncoding;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.EvolutionStrategy {
+  [Item("SelfAdaptiveCrossover", "Applies one crossover on the endogeneous strategy parameters and another on the actual solution encoding.")]
+  [StorableClass]
   public class SelfAdaptiveCrossover : SingleSuccessorOperator, ICrossover, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
