@@ -38,6 +38,13 @@ namespace HeuristicLab.Problems.TestFunctions {
   [StorableClass]
   [Creatable("Problems")]
   public sealed class SingleObjectiveTestFunctionProblem : ParameterizedNamedItem, ISingleObjectiveProblem {
+    [Storable]
+    private StrategyVectorCreator strategyVectorCreator;
+    [Storable]
+    private StrategyVectorCrossover strategyVectorCrossover;
+    [Storable]
+    private StrategyVectorManipulator strategyVectorManipulator;
+
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }
     }
@@ -143,6 +150,11 @@ namespace HeuristicLab.Problems.TestFunctions {
       Parameters.Add(new OptionalValueParameter<ISingleObjectiveTestFunctionProblemSolutionsVisualizer>("Visualizer", "The operator which should be used to visualize TSP solutions."));
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this TSP instance.", new DoubleValue(evaluator.BestKnownQuality)));
 
+      strategyVectorCreator = new StrategyVectorCreator();
+      strategyVectorCreator.LengthParameter.ActualName = ProblemSizeParameter.Name;
+      strategyVectorCrossover = new StrategyVectorCrossover();
+      strategyVectorManipulator = new StrategyVectorManipulator();
+
       creator.RealVectorParameter.ActualName = "Point";
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
@@ -183,7 +195,10 @@ namespace HeuristicLab.Problems.TestFunctions {
       ProblemSize_ValueChanged(null, EventArgs.Empty);
     }
     private void ProblemSize_ValueChanged(object sender, EventArgs e) {
+      if (ProblemSize.Value < 1) ProblemSize.Value = 1;
       ParameterizeSolutionCreator();
+      strategyVectorManipulator.GeneralLearningRateParameter.Value = new DoubleValue(1.0 / Math.Sqrt(2 * ProblemSize.Value));
+      strategyVectorManipulator.LearningRateParameter.Value = new DoubleValue(1.0 / Math.Sqrt(2 * Math.Sqrt(ProblemSize.Value)));
     }
     private void SolutionCreatorParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeSolutionCreator();
@@ -249,6 +264,15 @@ namespace HeuristicLab.Problems.TestFunctions {
         }
       }
     }
+    private void strategyVectorCreator_BoundsParameter_ValueChanged(object sender, EventArgs e) {
+      strategyVectorManipulator.BoundsParameter.Value = strategyVectorCreator.BoundsParameter.Value;
+    }
+    private void strategyVectorCreator_StrategyParameterParameter_ActualNameChanged(object sender, EventArgs e) {
+      string name = strategyVectorCreator.StrategyParameterParameter.ActualName;
+      strategyVectorCrossover.ParentsParameter.ActualName = name;
+      strategyVectorCrossover.StrategyParameterParameter.ActualName = name;
+      strategyVectorManipulator.StrategyParameterParameter.ActualName = name;
+    }
     #endregion
 
     #region Helpers
@@ -265,10 +289,15 @@ namespace HeuristicLab.Problems.TestFunctions {
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
       Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       VisualizerParameter.ValueChanged += new EventHandler(VisualizerParameter_ValueChanged);
+      strategyVectorCreator.BoundsParameter.ValueChanged += new EventHandler(strategyVectorCreator_BoundsParameter_ValueChanged);
+      strategyVectorCreator.StrategyParameterParameter.ActualNameChanged += new EventHandler(strategyVectorCreator_StrategyParameterParameter_ActualNameChanged);
     }
     private void InitializeOperators() {
       operators = new List<IOperator>();
       operators.AddRange(ApplicationManager.Manager.GetInstances<IRealVectorOperator>().Cast<IOperator>());
+      operators.Add(strategyVectorCreator);
+      operators.Add(strategyVectorCrossover);
+      operators.Add(strategyVectorManipulator);
       UpdateMoveEvaluators();
       ParameterizeOperators();
       InitializeMoveGenerators();

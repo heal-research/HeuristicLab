@@ -84,6 +84,7 @@
   <ItemGroup>
     <Compile Include="BestAverageWorstQualityCalculator.cs" />
     <Compile Include="PointXYChartView.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="PointXYChartView.Designer.cs">
       <DependentUpon>PointXYChartView.cs</DependentUpon>
@@ -92,11 +93,13 @@
     <Compile Include="Linechart.cs" />
     <Compile Include="HeuristicLabLoggingPlugin.cs" />
     <Compile Include="LinechartView.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="LinechartView.Designer.cs">
       <DependentUpon>LinechartView.cs</DependentUpon>
     </Compile>
     <Compile Include="LogView.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="LogView.Designer.cs">
       <DependentUpon>LogView.cs</DependentUpon>
