@@ -101,7 +101,8 @@ namespace HeuristicLab.Core.Views {
       listViewItem.Text = item.ToString();
       listViewItem.ToolTipText = item.ItemName + ": " + item.ItemDescription;
       listViewItem.Tag = item;
-      SetListViewItemImage(listViewItem);
+      itemsListView.SmallImageList.Images.Add(item.ItemImage);
+      listViewItem.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
       return listViewItem;
     }
     protected virtual void AddListViewItem(ListViewItem listViewItem) {
@@ -118,11 +119,15 @@ namespace HeuristicLab.Core.Views {
       sortAscendingButton.Enabled = itemsListView.Items.Count > 0;
       sortDescendingButton.Enabled = itemsListView.Items.Count > 0;
     }
-    protected virtual void UpdateListViewItem(ListViewItem listViewItem) {
+    protected virtual void UpdateListViewItemImage(ListViewItem listViewItem) {
+      int i = listViewItem.ImageIndex;
+      listViewItem.ImageList.Images[i] = ((T)listViewItem.Tag).ItemImage;
+      listViewItem.ImageIndex = -1;
+      listViewItem.ImageIndex = i;
+    }
+    protected virtual void UpdateListViewItemText(ListViewItem listViewItem) {
       if (!listViewItem.Text.Equals(listViewItem.Tag.ToString()))
         listViewItem.Text = listViewItem.Tag.ToString();
-      if (itemsListView.SmallImageList.Images[listViewItem.ImageIndex] != ((T)listViewItem.Tag).ItemImage)
-        SetListViewItemImage(listViewItem);
     }
     protected virtual IEnumerable<ListViewItem> GetListViewItemsForItem(T item) {
       foreach (ListViewItem listViewItem in itemsListView.Items) {
@@ -261,7 +266,7 @@ namespace HeuristicLab.Core.Views {
       else {
         T item = (T)sender;
         foreach (ListViewItem listViewItem in GetListViewItemsForItem(item))
-          UpdateListViewItem(listViewItem);
+          UpdateListViewItemImage(listViewItem);
       }
     }
     protected virtual void Item_ToStringChanged(object sender, EventArgs e) {
@@ -270,20 +275,12 @@ namespace HeuristicLab.Core.Views {
       else {
         T item = (T)sender;
         foreach (ListViewItem listViewItem in GetListViewItemsForItem(item))
-          UpdateListViewItem(listViewItem);
+          UpdateListViewItemText(listViewItem);
       }
     }
     #endregion
 
     #region Helpers
-    protected virtual void SetListViewItemImage(ListViewItem listViewItem) {
-      T item = (T)listViewItem.Tag;
-      int i = 0;
-      while ((i < itemsListView.SmallImageList.Images.Count) && !item.ItemImage.Equals(itemsListView.SmallImageList.Images[i]))
-        i++;
-      if (i == itemsListView.SmallImageList.Images.Count) itemsListView.SmallImageList.Images.Add(item.ItemImage);
-      listViewItem.ImageIndex = i;
-    }
     protected virtual void SortItemsListView(SortOrder sortOrder) {
       itemsListView.Sorting = SortOrder.None;
       itemsListView.Sorting = sortOrder;

@@ -99,7 +99,7 @@ namespace HeuristicLab.Core.Views {
       else {
         foreach (T item in e.Items) {
           foreach (ListViewItem listViewItem in GetListViewItemsForItem(item))
-            UpdateListViewItem(listViewItem);
+            UpdateListViewItemText(listViewItem);
         }
       }
     }

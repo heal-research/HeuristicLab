@@ -122,7 +122,8 @@ namespace HeuristicLab.Core.Views {
       listViewItem.Text = item.ToString();
       listViewItem.ToolTipText = item.ItemName + ": " + item.ItemDescription;
       listViewItem.Tag = item;
-      SetListViewItemImage(listViewItem);
+      itemsListView.SmallImageList.Images.Add(item.ItemImage);
+      listViewItem.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
       return listViewItem;
     }
     protected virtual void AddListViewItem(ListViewItem listViewItem) {
@@ -140,12 +141,15 @@ namespace HeuristicLab.Core.Views {
       ((T)listViewItem.Tag).ToStringChanged -= new EventHandler(Item_ToStringChanged);
       listViewItem.Remove();
     }
-    protected virtual void UpdateListViewItem(ListViewItem listViewItem) {
-      T item = (T)listViewItem.Tag;
-      listViewItem.Text = item.ToString();
-      listViewItem.ToolTipText = item.ItemName + ": " + item.ItemDescription;
-      if (itemsListView.SmallImageList.Images[listViewItem.ImageIndex] != item.ItemImage)
-        SetListViewItemImage(listViewItem);
+    protected virtual void UpdateListViewItemImage(ListViewItem listViewItem) {
+      int i = listViewItem.ImageIndex;
+      listViewItem.ImageList.Images[i] = ((T)listViewItem.Tag).ItemImage;
+      listViewItem.ImageIndex = -1;
+      listViewItem.ImageIndex = i;
+    }
+    protected virtual void UpdateListViewItemText(ListViewItem listViewItem) {
+      if (!listViewItem.Text.Equals(listViewItem.Tag.ToString()))
+        listViewItem.Text = listViewItem.Tag.ToString();
     }
 
     protected virtual void itemsListView_SelectedIndexChanged(object sender, EventArgs e) {
@@ -310,7 +314,8 @@ namespace HeuristicLab.Core.Views {
         foreach (IndexedItem<T> item in e.Items) {
           ListViewItem listViewItem = itemsListView.Items[item.Index];
           listViewItem.Tag = item.Value;
-          UpdateListViewItem(listViewItem);
+          UpdateListViewItemImage(listViewItem);
+          UpdateListViewItemText(listViewItem);
         }
       }
     }
@@ -338,7 +343,7 @@ namespace HeuristicLab.Core.Views {
         T item = (T)sender;
         foreach (ListViewItem listViewItem in itemsListView.Items) {
           if (((T)listViewItem.Tag) == item)
-            UpdateListViewItem(listViewItem);
+            UpdateListViewItemImage(listViewItem);
         }
       }
     }
@@ -349,20 +354,9 @@ namespace HeuristicLab.Core.Views {
         T item = (T)sender;
         foreach (ListViewItem listViewItem in itemsListView.Items) {
           if (((T)listViewItem.Tag) == item)
-            UpdateListViewItem(listViewItem);
+            UpdateListViewItemText(listViewItem);
         }
       }
-    }
-    #endregion
-
-    #region Helpers
-    protected virtual void SetListViewItemImage(ListViewItem listViewItem) {
-      T item = (T)listViewItem.Tag;
-      int i = 0;
-      while ((i < itemsListView.SmallImageList.Images.Count) && (item.ItemImage != itemsListView.SmallImageList.Images[i]))
-        i++;
-      if (i == itemsListView.SmallImageList.Images.Count) itemsListView.SmallImageList.Images.Add(item.ItemImage);
-      listViewItem.ImageIndex = i;
     }
     #endregion
   }
