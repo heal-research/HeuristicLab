@@ -24,6 +24,6 @@ using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.TestFunctions {
   public interface IRastriginMoveEvaluator : ISingleObjectiveTestFunctionAdditiveMoveEvaluator {
-    public DoubleValue A { get; set; }
+    DoubleValue A { get; set; }
   }
 }

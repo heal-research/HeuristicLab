@@ -24,7 +24,7 @@ using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.TestFunctions {
   public interface ISphereMoveEvaluator : ISingleObjectiveTestFunctionAdditiveMoveEvaluator {
-    public DoubleValue C { get; set; }
-    public DoubleValue Alpha { get; set; }
+    DoubleValue C { get; set; }
+    DoubleValue Alpha { get; set; }
   }
 }

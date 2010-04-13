@@ -97,10 +97,12 @@
     <Compile Include="Evaluators\SumSquaresEvaluator.cs" />
     <Compile Include="Evaluators\ZakharovEvaluator.cs" />
     <Compile Include="HeuristicLabProblemsTestFunctionsPlugin.cs" />
+    <Compile Include="Interfaces\IRastriginMoveEvaluator.cs" />
     <Compile Include="Interfaces\ISingleObjectiveTestFunctionAdditiveMoveEvaluator.cs" />
     <Compile Include="Interfaces\ISingleObjectiveTestFunctionMoveEvaluator.cs" />
     <Compile Include="Interfaces\ISingleObjectiveTestFunctionProblemEvaluator.cs" />
     <Compile Include="Interfaces\ISingleObjectiveTestFunctionProblemSolutionsVisualizer.cs" />
+    <Compile Include="Interfaces\ISphereMoveEvaluator.cs" />
     <Compile Include="MoveEvaluators\AckleyAdditiveMoveEvaluator.cs" />
     <Compile Include="MoveEvaluators\BealeAdditiveMoveEvaluator.cs" />
     <Compile Include="MoveEvaluators\BoothAdditiveMoveEvaluator.cs" />
