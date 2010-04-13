@@ -34,6 +34,19 @@ namespace HeuristicLab.Collections {
     private Dictionary<TKey, TValue> dict;
 
     #region Properties
+    [Storable]
+    private bool readOnlyView;
+    public bool ReadOnlyView {
+      get { return readOnlyView; }
+      set {
+        if (readOnlyView != value) {
+          readOnlyView = value;
+          OnReadOnlyViewChanged();
+          OnPropertyChanged("ReadOnlyView");
+        }
+      }
+    }
+
     public ICollection<TKey> Keys {
       get { return dict.Keys; }
     }
@@ -70,21 +83,27 @@ namespace HeuristicLab.Collections {
     #region Constructors
     public ObservableDictionary() {
       dict = new Dictionary<TKey, TValue>();
+      readOnlyView = ((ICollection<KeyValuePair<TKey, TValue>>)dict).IsReadOnly;
     }
     public ObservableDictionary(int capacity) {
       dict = new Dictionary<TKey, TValue>(capacity);
+      readOnlyView = ((ICollection<KeyValuePair<TKey, TValue>>)dict).IsReadOnly;
     }
     public ObservableDictionary(IEqualityComparer<TKey> comparer) {
       dict = new Dictionary<TKey, TValue>(comparer);
+      readOnlyView = ((ICollection<KeyValuePair<TKey, TValue>>)dict).IsReadOnly;
     }
     public ObservableDictionary(IDictionary<TKey, TValue> dictionary) {
       dict = new Dictionary<TKey, TValue>(dictionary);
+      readOnlyView = ((ICollection<KeyValuePair<TKey, TValue>>)dict).IsReadOnly;
     }
     public ObservableDictionary(int capacity, IEqualityComparer<TKey> comparer) {
       dict = new Dictionary<TKey, TValue>(capacity, comparer);
+      readOnlyView = ((ICollection<KeyValuePair<TKey, TValue>>)dict).IsReadOnly;
     }
     public ObservableDictionary(IDictionary<TKey, TValue> dictionary, IEqualityComparer<TKey> comparer) {
       dict = new Dictionary<TKey, TValue>(dictionary, comparer);
+      readOnlyView = ((ICollection<KeyValuePair<TKey, TValue>>)dict).IsReadOnly;
     }
     #endregion
 
@@ -180,38 +199,45 @@ namespace HeuristicLab.Collections {
 
     #region Events
     [field: NonSerialized]
+    public event EventHandler ReadOnlyViewChanged;
+    protected virtual void OnReadOnlyViewChanged() {
+      EventHandler handler = ReadOnlyViewChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+
+    [field: NonSerialized]
     public event CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>> ItemsAdded;
     protected virtual void OnItemsAdded(IEnumerable<KeyValuePair<TKey, TValue>> items) {
-      if (ItemsAdded != null)
-        ItemsAdded(this, new CollectionItemsChangedEventArgs<KeyValuePair<TKey, TValue>>(items));
+      CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>> handler = ItemsAdded;
+      if (handler != null) handler(this, new CollectionItemsChangedEventArgs<KeyValuePair<TKey, TValue>>(items));
     }
 
     [field: NonSerialized]
     public event CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>> ItemsRemoved;
     protected virtual void OnItemsRemoved(IEnumerable<KeyValuePair<TKey, TValue>> items) {
-      if (ItemsRemoved != null)
-        ItemsRemoved(this, new CollectionItemsChangedEventArgs<KeyValuePair<TKey, TValue>>(items));
+      CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>> handler = ItemsRemoved;
+      if (handler != null) handler(this, new CollectionItemsChangedEventArgs<KeyValuePair<TKey, TValue>>(items));
     }
 
     [field: NonSerialized]
     public event CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>> ItemsReplaced;
     protected virtual void OnItemsReplaced(IEnumerable<KeyValuePair<TKey, TValue>> items, IEnumerable<KeyValuePair<TKey, TValue>> oldItems) {
-      if (ItemsReplaced != null)
-        ItemsReplaced(this, new CollectionItemsChangedEventArgs<KeyValuePair<TKey, TValue>>(items, oldItems));
+      CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>> handler = ItemsReplaced;
+      if (handler != null) handler(this, new CollectionItemsChangedEventArgs<KeyValuePair<TKey, TValue>>(items, oldItems));
     }
 
     [field: NonSerialized]
     public event CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>> CollectionReset;
     protected virtual void OnCollectionReset(IEnumerable<KeyValuePair<TKey, TValue>> items, IEnumerable<KeyValuePair<TKey, TValue>> oldItems) {
-      if (CollectionReset != null)
-        CollectionReset(this, new CollectionItemsChangedEventArgs<KeyValuePair<TKey, TValue>>(items, oldItems));
+      CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>> handler = CollectionReset;
+      if (handler != null) handler(this, new CollectionItemsChangedEventArgs<KeyValuePair<TKey, TValue>>(items, oldItems));
     }
 
     [field: NonSerialized]
     public event PropertyChangedEventHandler PropertyChanged;
     protected virtual void OnPropertyChanged(string propertyName) {
-      if (PropertyChanged != null)
-        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+      PropertyChangedEventHandler handler = PropertyChanged;
+      if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
     }
     #endregion
   }

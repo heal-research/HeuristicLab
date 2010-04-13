@@ -64,6 +64,7 @@ namespace HeuristicLab.Data.Views {
       } else {
         Caption = Content.GetValue() + " (" + Content.GetType().Name + ")";
         valueTextBox.Text = Content.GetValue();
+        valueTextBox.ReadOnly = Content.ReadOnlyView;
         valueTextBox.Enabled = true;
       }
     }

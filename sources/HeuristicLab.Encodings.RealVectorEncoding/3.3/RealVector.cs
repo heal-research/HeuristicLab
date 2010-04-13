@@ -43,6 +43,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public override IDeepCloneable Clone(Cloner cloner) {
       RealVector clone = new RealVector(array);
       cloner.RegisterClonedObject(this, clone);
+      clone.ReadOnlyView = ReadOnlyView;
       return clone;
     }
 

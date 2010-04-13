@@ -21,7 +21,6 @@
 
 using System;
 using System.Drawing;
-using HeuristicLab.Common.Resources;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
@@ -38,13 +37,39 @@ namespace HeuristicLab.Core {
       get { return ItemAttribute.GetDescription(this.GetType()); }
     }
     public virtual Image ItemImage {
-      get { return VS2008ImageLibrary.Class; }
+      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Class; }
     }
 
-    protected Item() : base() { }
+    [Storable]
+    private bool readOnlyView;
+    public bool ReadOnlyView {
+      get { return readOnlyView; }
+      set {
+        if (readOnlyView != value) {
+          readOnlyView = value;
+          OnReadOnlyViewChanged();
+        }
+      }
+    }
+
+    protected Item()
+      : base() {
+      readOnlyView = false;
+    }
     [StorableConstructor]
     protected Item(bool deserializing) : base(deserializing) { }
 
+
+    /// <summary>
+    /// Clones the current instance (deep clone).
+    /// </summary>
+    /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
+    /// <returns>The cloned object as <see cref="Variable"/>.</returns>
+    public override IDeepCloneable Clone(Cloner cloner) {
+      Item clone = (Item)base.Clone(cloner);
+      clone.readOnlyView = readOnlyView;
+      return clone;
+    }
 
     /// <summary>
     /// Gets the string representation of the current instance.
@@ -57,6 +82,11 @@ namespace HeuristicLab.Core {
     public event EventHandler ItemImageChanged;
     protected virtual void OnItemImageChanged() {
       EventHandler handler = ItemImageChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+    public event EventHandler ReadOnlyViewChanged;
+    protected virtual void OnReadOnlyViewChanged() {
+      EventHandler handler = ReadOnlyViewChanged;
       if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler ToStringChanged;

@@ -39,6 +39,7 @@ namespace HeuristicLab.Data {
     public override IDeepCloneable Clone(Cloner cloner) {
       DoubleValue clone = new DoubleValue(value);
       cloner.RegisterClonedObject(this, clone);
+      clone.ReadOnlyView = ReadOnlyView;
       return clone;
     }
 

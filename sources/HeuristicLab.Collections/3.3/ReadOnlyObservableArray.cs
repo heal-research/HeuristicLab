@@ -33,6 +33,11 @@ namespace HeuristicLab.Collections {
     private IObservableArray<T> array;
 
     #region Properties
+    public bool ReadOnlyView {
+      get { return true; }
+      set { throw new NotSupportedException(); }
+    }
+
     public int Length {
       get { return array.Length; }
     }
@@ -116,32 +121,37 @@ namespace HeuristicLab.Collections {
       array.PropertyChanged += new PropertyChangedEventHandler(array_PropertyChanged);
     }
 
+    event EventHandler IObservableArray<T>.ReadOnlyViewChanged {
+      add { }
+      remove { }
+    }
+
     [field: NonSerialized]
     public event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsReplaced;
     protected virtual void OnItemsReplaced(IEnumerable<IndexedItem<T>> items, IEnumerable<IndexedItem<T>> oldItems) {
-      if (ItemsReplaced != null)
-        ItemsReplaced(this, new CollectionItemsChangedEventArgs<IndexedItem<T>>(items, oldItems));
+      CollectionItemsChangedEventHandler<IndexedItem<T>> handler = ItemsReplaced;
+      if (handler != null) handler(this, new CollectionItemsChangedEventArgs<IndexedItem<T>>(items, oldItems));
     }
 
     [field: NonSerialized]
     public event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsMoved;
     protected virtual void OnItemsMoved(IEnumerable<IndexedItem<T>> items, IEnumerable<IndexedItem<T>> oldItems) {
-      if (ItemsMoved != null)
-        ItemsMoved(this, new CollectionItemsChangedEventArgs<IndexedItem<T>>(items, oldItems));
+      CollectionItemsChangedEventHandler<IndexedItem<T>> handler = ItemsMoved;
+      if (handler != null) handler(this, new CollectionItemsChangedEventArgs<IndexedItem<T>>(items, oldItems));
     }
 
     [field: NonSerialized]
     public event CollectionItemsChangedEventHandler<IndexedItem<T>> CollectionReset;
     protected virtual void OnCollectionReset(IEnumerable<IndexedItem<T>> items, IEnumerable<IndexedItem<T>> oldItems) {
-      if (CollectionReset != null)
-        CollectionReset(this, new CollectionItemsChangedEventArgs<IndexedItem<T>>(items, oldItems));
+      CollectionItemsChangedEventHandler<IndexedItem<T>> handler = CollectionReset;
+      if (handler != null) handler(this, new CollectionItemsChangedEventArgs<IndexedItem<T>>(items, oldItems));
     }
 
     [field: NonSerialized]
     public event PropertyChangedEventHandler PropertyChanged;
     protected virtual void OnPropertyChanged(string propertyName) {
-      if (PropertyChanged != null)
-        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+      PropertyChangedEventHandler handler = PropertyChanged;
+      if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
     }
 
     private void array_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {

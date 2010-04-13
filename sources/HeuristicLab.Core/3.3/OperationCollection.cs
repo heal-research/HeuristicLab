@@ -25,7 +25,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
   [StorableClass]
-  public class OperationCollection : DeepCloneable, IList<IOperation>, IOperation {
+  public sealed class OperationCollection : DeepCloneable, IList<IOperation>, IOperation {
     [Storable]
     private IList<IOperation> operations;
 
@@ -50,8 +50,8 @@ namespace HeuristicLab.Core {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      OperationCollection clone = new OperationCollection(this.Select(x => (IOperation)cloner.Clone(x)));
-      cloner.RegisterClonedObject(this, clone);
+      OperationCollection clone = (OperationCollection)base.Clone(cloner);
+      clone.operations = new List<IOperation>(this.Select(x => (IOperation)cloner.Clone(x)));
       clone.parallel = parallel;
       return clone;
     }

@@ -112,6 +112,8 @@ namespace HeuristicLab.Operators {
       canceled = false;
       breakpoint = false;
     }
+    [StorableConstructor]
+    protected Operator(bool deserializing) : base(deserializing) { }
 
     /// <summary>
     /// Clones the current instance (deep clone).

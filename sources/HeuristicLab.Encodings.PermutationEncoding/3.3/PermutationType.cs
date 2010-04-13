@@ -33,6 +33,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     public override IDeepCloneable Clone(Cloner cloner) {
       PermutationType clone = new PermutationType(value);
       cloner.RegisterClonedObject(this, clone);
+      clone.ReadOnlyView = ReadOnlyView;
       return clone;
     }
   }

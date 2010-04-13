@@ -30,26 +30,31 @@ namespace HeuristicLab.Operators {
   [Item("ValuesCollector", "An operator which collects the actual values of parameters.")]
   [StorableClass]
   public abstract class ValuesCollector : SingleSuccessorOperator, IOperator {
-    private ParameterCollection collectedValues;
     [Storable]
+    private ParameterCollection collectedValues;
     public ParameterCollection CollectedValues {
       get { return collectedValues; }
-      private set {
-        collectedValues = value;
-        collectedValues.ItemsAdded += new CollectionItemsChangedEventHandler<IParameter>(collectedValues_ItemsAdded);
-        collectedValues.ItemsRemoved += new CollectionItemsChangedEventHandler<IParameter>(collectedValues_ItemsRemoved);
-        collectedValues.CollectionReset += new CollectionItemsChangedEventHandler<IParameter>(collectedValues_CollectionReset);
-      }
     }
 
     public ValuesCollector()
       : base() {
-      CollectedValues = new ParameterCollection();
+      collectedValues = new ParameterCollection();
+      Initialize();
+    }
+    [StorableConstructor]
+    protected ValuesCollector(bool deserializing) : base(deserializing) { }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void Initialize() {
+      collectedValues.ItemsAdded += new CollectionItemsChangedEventHandler<IParameter>(collectedValues_ItemsAdded);
+      collectedValues.ItemsRemoved += new CollectionItemsChangedEventHandler<IParameter>(collectedValues_ItemsRemoved);
+      collectedValues.CollectionReset += new CollectionItemsChangedEventHandler<IParameter>(collectedValues_CollectionReset);
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       ValuesCollector clone = (ValuesCollector)base.Clone(cloner);
-      clone.CollectedValues = (ParameterCollection)cloner.Clone(collectedValues);
+      clone.collectedValues = (ParameterCollection)cloner.Clone(collectedValues);
+      clone.Initialize();
       return clone;
     }
 

@@ -31,8 +31,8 @@ namespace HeuristicLab.Parameters {
   [Item("OptionalValueParameter<T>", "A parameter whose value is defined in the parameter itself or is null.")]
   [StorableClass]
   public class OptionalValueParameter<T> : Parameter, IValueParameter<T> where T : class, IItem {
-    private T value;
     [Storable]
+    private T value;
     public virtual T Value {
       get { return this.value; }
       set {
@@ -65,19 +65,29 @@ namespace HeuristicLab.Parameters {
     }
     public OptionalValueParameter(string name, T value)
       : base(name, typeof(T)) {
-      Value = value;
+      this.value = value;
+      Initialize();
     }
     public OptionalValueParameter(string name, string description)
       : base(name, description, typeof(T)) {
     }
     public OptionalValueParameter(string name, string description, T value)
       : base(name, description, typeof(T)) {
-      Value = value;
+      this.value = value;
+      Initialize();
+    }
+    [StorableConstructor]
+    protected OptionalValueParameter(bool deserializing) : base(deserializing) { }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void Initialize() {
+      if (value != null) value.ToStringChanged += new EventHandler(Value_ToStringChanged);
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       OptionalValueParameter<T> clone = (OptionalValueParameter<T>)base.Clone(cloner);
-      clone.Value = (T)cloner.Clone(value);
+      clone.value = (T)cloner.Clone(value);
+      clone.Initialize();
       return clone;
     }
 

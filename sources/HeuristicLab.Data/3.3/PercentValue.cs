@@ -33,6 +33,7 @@ namespace HeuristicLab.Data {
     public override IDeepCloneable Clone(Cloner cloner) {
       PercentValue clone = new PercentValue(value);
       cloner.RegisterClonedObject(this, clone);
+      clone.ReadOnlyView = ReadOnlyView;
       return clone;
     }
 

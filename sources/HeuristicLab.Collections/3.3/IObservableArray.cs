@@ -19,11 +19,15 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace HeuristicLab.Collections {
   public interface IObservableArray<T> : IList<T>, INotifyObservableArrayItemsChanged<T>, INotifyPropertyChanged {
+    bool ReadOnlyView { get; set; }
     int Length { get; }
+
+    event EventHandler ReadOnlyViewChanged;
   }
 }

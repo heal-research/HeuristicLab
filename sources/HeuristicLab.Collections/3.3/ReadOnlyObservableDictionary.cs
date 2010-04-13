@@ -33,6 +33,11 @@ namespace HeuristicLab.Collections {
     private IObservableDictionary<TKey, TValue> dict;
 
     #region Properties
+    public bool ReadOnlyView {
+      get { return true; }
+      set { throw new NotSupportedException(); }
+    }
+
     public ICollection<TKey> Keys {
       get { return dict.Keys; }
     }
@@ -122,39 +127,44 @@ namespace HeuristicLab.Collections {
       dict.PropertyChanged += new PropertyChangedEventHandler(dict_PropertyChanged);
     }
 
+    event EventHandler IObservableCollection<KeyValuePair<TKey, TValue>>.ReadOnlyViewChanged {
+      add { }
+      remove { }
+    }
+
     [field: NonSerialized]
     public event CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>> ItemsAdded;
     protected virtual void OnItemsAdded(IEnumerable<KeyValuePair<TKey, TValue>> items) {
-      if (ItemsAdded != null)
-        ItemsAdded(this, new CollectionItemsChangedEventArgs<KeyValuePair<TKey, TValue>>(items));
+      CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>> handler = ItemsAdded;
+      if (handler != null) handler(this, new CollectionItemsChangedEventArgs<KeyValuePair<TKey, TValue>>(items));
     }
 
     [field: NonSerialized]
     public event CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>> ItemsRemoved;
     protected virtual void OnItemsRemoved(IEnumerable<KeyValuePair<TKey, TValue>> items) {
-      if (ItemsRemoved != null)
-        ItemsRemoved(this, new CollectionItemsChangedEventArgs<KeyValuePair<TKey, TValue>>(items));
+      CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>> handler = ItemsRemoved;
+      if (handler != null) handler(this, new CollectionItemsChangedEventArgs<KeyValuePair<TKey, TValue>>(items));
     }
 
     [field: NonSerialized]
     public event CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>> ItemsReplaced;
     protected virtual void OnItemsReplaced(IEnumerable<KeyValuePair<TKey, TValue>> items, IEnumerable<KeyValuePair<TKey, TValue>> oldItems) {
-      if (ItemsReplaced != null)
-        ItemsReplaced(this, new CollectionItemsChangedEventArgs<KeyValuePair<TKey, TValue>>(items, oldItems));
+      CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>> handler = ItemsReplaced;
+      if (handler != null) handler(this, new CollectionItemsChangedEventArgs<KeyValuePair<TKey, TValue>>(items, oldItems));
     }
 
     [field: NonSerialized]
     public event CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>> CollectionReset;
     protected virtual void OnCollectionReset(IEnumerable<KeyValuePair<TKey, TValue>> items, IEnumerable<KeyValuePair<TKey, TValue>> oldItems) {
-      if (CollectionReset != null)
-        CollectionReset(this, new CollectionItemsChangedEventArgs<KeyValuePair<TKey, TValue>>(items, oldItems));
+      CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>> handler = CollectionReset;
+      if (handler != null) handler(this, new CollectionItemsChangedEventArgs<KeyValuePair<TKey, TValue>>(items, oldItems));
     }
 
     [field: NonSerialized]
     public event PropertyChangedEventHandler PropertyChanged;
     protected virtual void OnPropertyChanged(string propertyName) {
-      if (PropertyChanged != null)
-        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+      PropertyChangedEventHandler handler = PropertyChanged;
+      if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
     }
 
     private void dict_ItemsAdded(object sender, CollectionItemsChangedEventArgs<KeyValuePair<TKey, TValue>> e) {

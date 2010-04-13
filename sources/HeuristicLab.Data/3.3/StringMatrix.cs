@@ -146,6 +146,7 @@ namespace HeuristicLab.Data {
     public override IDeepCloneable Clone(Cloner cloner) {
       StringMatrix clone = new StringMatrix();
       cloner.RegisterClonedObject(this, clone);
+      clone.ReadOnlyView = ReadOnlyView;
       clone.matrix = (string[,])matrix.Clone();
       clone.columnNames = new List<string>(columnNames);
       clone.rowNames = new List<string>(rowNames);

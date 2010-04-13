@@ -34,6 +34,7 @@ namespace HeuristicLab.Data {
     public override IDeepCloneable Clone(Cloner cloner) {
       BoolArray clone = new BoolArray(array);
       cloner.RegisterClonedObject(this, clone);
+      clone.ReadOnlyView = ReadOnlyView;
       return clone;
     }
 

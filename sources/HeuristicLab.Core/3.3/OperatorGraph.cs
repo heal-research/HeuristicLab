@@ -36,18 +36,13 @@ namespace HeuristicLab.Core {
   [Creatable("Algorithm Design")]
   [StorableClass]
   public class OperatorGraph : Item {
+    [Storable]
     private OperatorSet operators;
     /// <summary>
     /// Gets all operators of the current instance.
     /// </summary>
-    [Storable]
     public OperatorSet Operators {
       get { return operators; }
-      private set {
-        DeregisterOperatorsEvents();
-        operators = value;
-        RegisterOperatorsEvents();
-      }
     }
 
     [Storable]
@@ -86,9 +81,17 @@ namespace HeuristicLab.Core {
     /// Initializes a new instance of <see cref="OperatorGraph"/>.
     /// </summary>
     public OperatorGraph() {
-      Operators = new OperatorSet();
+      operators = new OperatorSet();
       initialOperator = null;
       visualizationInfo = null;
+      Initialize();
+    }
+    [StorableConstructor]
+    protected OperatorGraph(bool deserializing) : base(deserializing) { }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void Initialize() {
+      RegisterOperatorsEvents();
     }
 
     /// <summary>
@@ -99,11 +102,11 @@ namespace HeuristicLab.Core {
     /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
     /// <returns>The cloned object as <see cref="OperatorGraph"/>.</returns>
     public override IDeepCloneable Clone(Cloner cloner) {
-      OperatorGraph clone = new OperatorGraph();
-      cloner.RegisterClonedObject(this, clone);
-      clone.Operators = (OperatorSet)cloner.Clone(operators);
+      OperatorGraph clone = (OperatorGraph)base.Clone(cloner);
+      clone.operators = (OperatorSet)cloner.Clone(operators);
       clone.initialOperator = (IOperator)cloner.Clone(initialOperator);
       clone.visualizationInfo = cloner.Clone(visualizationInfo);
+      clone.Initialize();
       return clone;
     }
 
@@ -163,20 +166,6 @@ namespace HeuristicLab.Core {
             if (opParam != null) RegisterOperatorParameterEvents(opParam);
           }
         }
-      }
-    }
-    private void DeregisterOperatorsEvents() {
-      if (operators != null) {
-        foreach (IOperator op in operators) {
-          foreach (IParameter param in op.Parameters) {
-            IValueParameter<IOperator> opParam = param as IValueParameter<IOperator>;
-            if (opParam != null) DeregisterOperatorParameterEvents(opParam);
-          }
-          DeregisterOperatorEvents(op);
-        }
-        operators.ItemsAdded -= new CollectionItemsChangedEventHandler<IOperator>(Operators_ItemsAdded);
-        operators.ItemsRemoved -= new CollectionItemsChangedEventHandler<IOperator>(Operators_ItemsRemoved);
-        operators.CollectionReset -= new CollectionItemsChangedEventHandler<IOperator>(Operators_CollectionReset);
       }
     }
     private void RegisterOperatorEvents(IOperator op) {

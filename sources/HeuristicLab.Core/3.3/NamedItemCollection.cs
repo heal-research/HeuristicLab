@@ -48,7 +48,7 @@ namespace HeuristicLab.Core {
     }
 
     [StorableHook(HookType.AfterDeserialization)]
-    private void Initialize() {
+    protected void Initialize() {
       RegisterItemEvents(this);
     }
 
@@ -58,6 +58,7 @@ namespace HeuristicLab.Core {
     public virtual IDeepCloneable Clone(Cloner cloner) {
       NamedItemCollection<T> clone = (NamedItemCollection<T>)Activator.CreateInstance(this.GetType());
       cloner.RegisterClonedObject(this, clone);
+      clone.ReadOnlyView = ReadOnlyView;
       foreach (string key in dict.Keys)
         clone.dict.Add(key, (T)cloner.Clone(dict[key]));
       clone.Initialize();

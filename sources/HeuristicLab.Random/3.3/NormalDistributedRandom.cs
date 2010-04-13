@@ -552,8 +552,10 @@ namespace HeuristicLab.Random {
     /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
     /// <returns>The cloned object as <see cref="NormalDistributedRandom"/>.</returns>
     public override IDeepCloneable Clone(Cloner cloner) {
-      NormalDistributedRandom clone = new NormalDistributedRandom((IRandom)cloner.Clone(uniform), mu, sigma);
-      cloner.RegisterClonedObject(this, clone);
+      NormalDistributedRandom clone = (NormalDistributedRandom)base.Clone(cloner);
+      clone.uniform = (IRandom)cloner.Clone(uniform);
+      clone.mu = mu;
+      clone.sigma = sigma;
       return clone;
     }
   }

@@ -30,10 +30,10 @@ namespace HeuristicLab.Core {
   [Item("Variable", "A variable which has a name and holds an IItem.")]
   [StorableClass]
   public sealed class Variable : NamedItem, IVariable {
+    [Storable]
     private IItem value;
     /// <inheritdoc/>
     /// <remarks>Calls <see cref="OnValueChanged"/> in the setter.</remarks>
-    [Storable]
     public IItem Value {
       get { return value; }
       set {
@@ -71,12 +71,19 @@ namespace HeuristicLab.Core {
     public Variable(string name, IItem value)
       : base(name) {
       this.value = value;
-      if (this.value != null) this.value.ToStringChanged += new EventHandler(Value_ToStringChanged);
+      Initialize();
     }
     public Variable(string name, string description, IItem value)
       : base(name, description) {
       this.value = value;
-      if (this.value != null) this.value.ToStringChanged += new EventHandler(Value_ToStringChanged);
+      Initialize();
+    }
+    [StorableConstructor]
+    private Variable(bool deserializing) : base(deserializing) { }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void Initialize() {
+      if (value != null) value.ToStringChanged += new EventHandler(Value_ToStringChanged);
     }
 
     /// <summary>
@@ -85,8 +92,11 @@ namespace HeuristicLab.Core {
     /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
     /// <returns>The cloned object as <see cref="Variable"/>.</returns>
     public override IDeepCloneable Clone(Cloner cloner) {
-      Variable clone = new Variable(Name, Description, (IItem)cloner.Clone(value));
+      Variable clone = new Variable(Name, Description);
       cloner.RegisterClonedObject(this, clone);
+      clone.ReadOnlyView = ReadOnlyView;
+      clone.value = (IItem)cloner.Clone(value);
+      clone.Initialize();
       return clone;
     }
 

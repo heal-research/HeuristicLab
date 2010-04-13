@@ -33,6 +33,11 @@ namespace HeuristicLab.Collections {
     private IObservableCollection<T> collection;
 
     #region Properties
+    public bool ReadOnlyView {
+      get { return true; }
+      set { throw new NotSupportedException(); }
+    }
+
     public int Count {
       get { return collection.Count; }
     }
@@ -94,32 +99,37 @@ namespace HeuristicLab.Collections {
       collection.PropertyChanged += new PropertyChangedEventHandler(collection_PropertyChanged);
     }
 
+    event EventHandler IObservableCollection<T>.ReadOnlyViewChanged {
+      add { }
+      remove { }
+    }
+
     [field: NonSerialized]
     public event CollectionItemsChangedEventHandler<T> ItemsAdded;
     protected virtual void OnItemsAdded(IEnumerable<T> items) {
-      if (ItemsAdded != null)
-        ItemsAdded(this, new CollectionItemsChangedEventArgs<T>(items));
+      CollectionItemsChangedEventHandler<T> handler = ItemsAdded;
+      if (handler != null) handler(this, new CollectionItemsChangedEventArgs<T>(items));
     }
 
     [field: NonSerialized]
     public event CollectionItemsChangedEventHandler<T> ItemsRemoved;
     protected virtual void OnItemsRemoved(IEnumerable<T> items) {
-      if (ItemsRemoved != null)
-        ItemsRemoved(this, new CollectionItemsChangedEventArgs<T>(items));
+      CollectionItemsChangedEventHandler<T> handler = ItemsRemoved;
+      if (handler != null) handler(this, new CollectionItemsChangedEventArgs<T>(items));
     }
 
     [field: NonSerialized]
     public event CollectionItemsChangedEventHandler<T> CollectionReset;
     protected virtual void OnCollectionReset(IEnumerable<T> items, IEnumerable<T> oldItems) {
-      if (CollectionReset != null)
-        CollectionReset(this, new CollectionItemsChangedEventArgs<T>(items, oldItems));
+      CollectionItemsChangedEventHandler<T> handler = CollectionReset;
+      if (handler != null) handler(this, new CollectionItemsChangedEventArgs<T>(items, oldItems));
     }
 
     [field: NonSerialized]
     public event PropertyChangedEventHandler PropertyChanged;
     protected virtual void OnPropertyChanged(string propertyName) {
-      if (PropertyChanged != null)
-        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+      PropertyChangedEventHandler handler = PropertyChanged;
+      if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
     }
 
     private void collection_ItemsAdded(object sender, CollectionItemsChangedEventArgs<T> e) {

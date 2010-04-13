@@ -44,8 +44,8 @@ namespace HeuristicLab.Optimization {
       get { return dataType; }
     }
 
-    private IItem value;
     [Storable]
+    private IItem value;
     public IItem Value {
       get { return value; }
       set {
@@ -83,19 +83,28 @@ namespace HeuristicLab.Optimization {
       : base(name) {
       this.dataType = value == null ? typeof(IItem) : value.GetType();
       this.value = value;
-      if (this.value != null) this.value.ToStringChanged += new EventHandler(Value_ToStringChanged);
+      Initialize();
     }
     public Result(string name, string description, IItem value)
       : base(name, description) {
       this.dataType = value == null ? typeof(IItem) : value.GetType();
       this.value = value;
-      if (this.value != null) this.value.ToStringChanged += new EventHandler(Value_ToStringChanged);
+      Initialize();
+    }
+    [StorableConstructor]
+    private Result(bool deserializing) : base(deserializing) { }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void Initialize() {
+      if (value != null) value.ToStringChanged += new EventHandler(Value_ToStringChanged);
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      Result clone = new Result(Name, Description, (IItem)cloner.Clone(value));
+      Result clone = new Result(Name, Description, DataType);
       cloner.RegisterClonedObject(this, clone);
-      clone.dataType = dataType;
+      clone.ReadOnlyView = ReadOnlyView;
+      clone.value = (IItem)cloner.Clone(value);
+      clone.Initialize();
       return clone;
     }
 

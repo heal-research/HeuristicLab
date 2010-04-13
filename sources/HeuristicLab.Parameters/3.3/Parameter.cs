@@ -90,6 +90,8 @@ namespace HeuristicLab.Parameters {
       if (dataType == null) throw new ArgumentNullException();
       this.dataType = dataType;
     }
+    [StorableConstructor]
+    protected Parameter(bool deserializing) : base(deserializing) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       Parameter clone = (Parameter)base.Clone(cloner);

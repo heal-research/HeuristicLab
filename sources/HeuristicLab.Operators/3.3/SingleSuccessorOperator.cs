@@ -42,6 +42,8 @@ namespace HeuristicLab.Operators {
       : base() {
       Parameters.Add(new OperatorParameter("Successor", "Operator which is executed next."));
     }
+    [StorableConstructor]
+    protected SingleSuccessorOperator(bool deserializing) : base(deserializing) { }
 
     public override IOperation Apply() {
       if (Successor != null)

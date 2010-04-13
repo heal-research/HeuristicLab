@@ -43,6 +43,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     public override IDeepCloneable Clone(Cloner cloner) {
       BinaryVector clone = new BinaryVector(array);
       cloner.RegisterClonedObject(this, clone);
+      clone.ReadOnlyView = ReadOnlyView;
       return clone;
     }
 

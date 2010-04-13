@@ -31,8 +31,8 @@ namespace HeuristicLab.Parameters {
   [Item("ValueLookupParameter<T>", "A parameter whose value is either defined in the parameter itself or is retrieved from or written to a scope.")]
   [StorableClass]
   public class ValueLookupParameter<T> : LookupParameter<T>, IValueLookupParameter<T> where T : class, IItem {
-    private T value;
     [Storable]
+    private T value;
     public T Value {
       get { return this.value; }
       set {
@@ -65,22 +65,32 @@ namespace HeuristicLab.Parameters {
     }
     public ValueLookupParameter(string name, T value)
       : base(name) {
-      Value = value;
+      this.value = value;
+      Initialize();
     }
     public ValueLookupParameter(string name, string description)
       : base(name, description) {
     }
     public ValueLookupParameter(string name, string description, T value)
       : base(name, description) {
-      Value = value;
+      this.value = value;
+      Initialize();
     }
     public ValueLookupParameter(string name, string description, string actualName)
       : base(name, description, actualName) {
     }
+    [StorableConstructor]
+    protected ValueLookupParameter(bool deserializing) : base(deserializing) { }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void Initialize() {
+      if (value != null) value.ToStringChanged += new EventHandler(Value_ToStringChanged);
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       ValueLookupParameter<T> clone = (ValueLookupParameter<T>)base.Clone(cloner);
-      clone.Value = (T)cloner.Clone(value);
+      clone.value = (T)cloner.Clone(value);
+      clone.Initialize();
       return clone;
     }
 

@@ -23,10 +23,13 @@ using System;
 
 namespace HeuristicLab.Data {
   public interface IStringConvertibleValue {
+    bool ReadOnlyView { get; set; }
+
     bool Validate(string value, out string errorMessage);
     string GetValue();
     bool SetValue(string value);
 
+    event EventHandler ReadOnlyViewChanged;
     event EventHandler ValueChanged;
   }
 }

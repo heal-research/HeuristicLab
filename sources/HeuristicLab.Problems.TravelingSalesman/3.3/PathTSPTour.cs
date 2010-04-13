@@ -38,8 +38,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Image; }
     }
 
-    private DoubleMatrix coordinates;
     [Storable]
+    private DoubleMatrix coordinates;
     public DoubleMatrix Coordinates {
       get { return coordinates; }
       set {
@@ -51,8 +51,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         }
       }
     }
-    private Permutation permutation;
     [Storable]
+    private Permutation permutation;
     public Permutation Permutation {
       get { return permutation; }
       set {
@@ -68,18 +68,31 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     public PathTSPTour() : base() { }
     public PathTSPTour(DoubleMatrix coordinates)
       : base() {
-      Coordinates = coordinates;
+      this.coordinates = coordinates;
+      Initialize();
     }
     public PathTSPTour(DoubleMatrix coordinates, Permutation permutation)
-      : this(coordinates) {
-      Permutation = permutation;
+      : base() {
+      this.coordinates = coordinates;
+      this.permutation = permutation;
+      Initialize();
+    }
+    [StorableConstructor]
+    private PathTSPTour(bool deserializing) : base(deserializing) { }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void Initialize() {
+      if (coordinates != null) RegisterCoordinatesEvents();
+      if (permutation != null) RegisterPermutationEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       PathTSPTour clone = new PathTSPTour();
       cloner.RegisterClonedObject(this, clone);
-      clone.Coordinates = (DoubleMatrix)cloner.Clone(coordinates);
-      clone.Permutation = (Permutation)cloner.Clone(permutation);
+      clone.ReadOnlyView = ReadOnlyView;
+      clone.coordinates = (DoubleMatrix)cloner.Clone(coordinates);
+      clone.permutation = (Permutation)cloner.Clone(permutation);
+      clone.Initialize();
       return clone;
     }
 

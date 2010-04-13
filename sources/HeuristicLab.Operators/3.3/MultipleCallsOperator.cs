@@ -36,25 +36,23 @@ namespace HeuristicLab.Operators {
   public abstract class MultipleCallsOperator : SingleSuccessorOperator {
     private List<IValueParameter<IOperator>> operatorParameters;
 
-    private OperatorList operators;
     [Storable]
+    private OperatorList operators;
     public OperatorList Operators {
       get { return operators; }
-      private set {
-        if (operators != null) DeregisterOperatorsEvents();
-        operators = value;
-        if (operators != null) RegisterOperatorsEvents();
-      }
     }
 
     public MultipleCallsOperator()
       : base() {
-      Operators = new OperatorList();
+      operators = new OperatorList();
       Initialize();
     }
+    [StorableConstructor]
+    protected MultipleCallsOperator(bool deserializing) : base(deserializing) { }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
+      if (operators != null) RegisterOperatorsEvents();
       operatorParameters = new List<IValueParameter<IOperator>>();
       for (int i = 0; i < Operators.Count; i++) {
         IValueParameter<IOperator> opParam = (IValueParameter<IOperator>)Parameters[i.ToString()];
@@ -65,7 +63,7 @@ namespace HeuristicLab.Operators {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       MultipleCallsOperator clone = (MultipleCallsOperator)base.Clone(cloner);
-      clone.Operators = (OperatorList)cloner.Clone(operators);
+      clone.operators = (OperatorList)cloner.Clone(operators);
       clone.Initialize();
       return clone;
     }

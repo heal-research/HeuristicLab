@@ -50,15 +50,10 @@ namespace HeuristicLab.Core {
       get { return variables; }
     }
 
-    private ScopeList subScopes;
     [Storable]
+    private ScopeList subScopes;
     public ScopeList SubScopes {
       get { return subScopes; }
-      private set {
-        DeregisterSubScopesEvents();
-        subScopes = value;
-        RegisterSubScopesEvents();
-      }
     }
 
     /// <summary>
@@ -68,7 +63,8 @@ namespace HeuristicLab.Core {
       : base("Anonymous") {
       parent = null;
       variables = new VariableCollection();
-      SubScopes = new ScopeList();
+      subScopes = new ScopeList();
+      Initialize();
     }
     /// <summary>
     /// Initializes a new instance of <see cref="Scope"/> with the given <paramref name="name"/>.
@@ -78,13 +74,22 @@ namespace HeuristicLab.Core {
       : base(name) {
       parent = null;
       variables = new VariableCollection();
-      SubScopes = new ScopeList();
+      subScopes = new ScopeList();
+      Initialize();
     }
     public Scope(string name, string description)
       : base(name, description) {
       parent = null;
       variables = new VariableCollection();
-      SubScopes = new ScopeList();
+      subScopes = new ScopeList();
+      Initialize();
+    }
+    [StorableConstructor]
+    private Scope(bool deserializing) : base(deserializing) { }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void Initialize() {
+      RegisterSubScopesEvents();
     }
 
     /// <inheritdoc/>
@@ -97,13 +102,15 @@ namespace HeuristicLab.Core {
     public override IDeepCloneable Clone(Cloner cloner) {
       Scope clone = new Scope();
       cloner.RegisterClonedObject(this, clone);
-      clone.Name = Name;
-      clone.Description = Description;
+      clone.ReadOnlyView = ReadOnlyView;
+      clone.name = name;
+      clone.description = description;
       if (variables.Count > 0) clone.variables = (VariableCollection)cloner.Clone(variables);
       if (subScopes.Count > 0) {
-        clone.SubScopes = (ScopeList)cloner.Clone(subScopes);
+        clone.subScopes = (ScopeList)cloner.Clone(subScopes);
         foreach (IScope child in clone.SubScopes)
           child.Parent = clone;
+        clone.Initialize();
       }
       return clone;
     }
@@ -115,14 +122,6 @@ namespace HeuristicLab.Core {
         subScopes.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_ItemsRemoved);
         subScopes.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_ItemsReplaced);
         subScopes.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_CollectionReset);
-      }
-    }
-    private void DeregisterSubScopesEvents() {
-      if (subScopes != null) {
-        subScopes.ItemsAdded -= new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_ItemsAdded);
-        subScopes.ItemsRemoved -= new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_ItemsRemoved);
-        subScopes.ItemsReplaced -= new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_ItemsReplaced);
-        subScopes.CollectionReset -= new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_CollectionReset);
       }
     }
     private void SubScopes_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<IScope>> e) {

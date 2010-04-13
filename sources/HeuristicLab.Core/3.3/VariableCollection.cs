@@ -32,8 +32,12 @@ namespace HeuristicLab.Core {
     public VariableCollection(IEnumerable<IVariable> collection) : base(collection) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      VariableCollection clone = new VariableCollection(this.Select(x => (IVariable)cloner.Clone(x)));
+      VariableCollection clone = new VariableCollection();
       cloner.RegisterClonedObject(this, clone);
+      clone.ReadOnlyView = ReadOnlyView;
+      foreach (string key in dict.Keys)
+        clone.dict.Add(key, (IVariable)cloner.Clone(dict[key]));
+      clone.Initialize();
       return clone;
     }
   }

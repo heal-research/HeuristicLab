@@ -103,6 +103,7 @@ namespace HeuristicLab.Data.Views {
         UpdateRowHeaders();
         UpdateColumnHeaders();
       }
+      dataGridView.ReadOnly = Content.ReadOnlyView;
       dataGridView.Enabled = true;
     }
 

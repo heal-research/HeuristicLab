@@ -38,9 +38,10 @@ namespace HeuristicLab.Data {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       BoolMatrix clone = new BoolMatrix(matrix);
+      cloner.RegisterClonedObject(this, clone);
+      clone.ReadOnlyView = ReadOnlyView;
       clone.ColumnNames = new List<string>(ColumnNames);
       clone.RowNames = new List<string>(RowNames);
-      cloner.RegisterClonedObject(this, clone);
       return clone;
     }
 

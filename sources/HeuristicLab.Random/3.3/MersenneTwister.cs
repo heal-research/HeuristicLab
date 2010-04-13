@@ -83,8 +83,7 @@ namespace HeuristicLab.Random {
     /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
     /// <returns>The cloned object as <see cref="MersenneTwister"/>.</returns>
     public override IDeepCloneable Clone(Cloner cloner) {
-      MersenneTwister clone = new MersenneTwister();
-      cloner.RegisterClonedObject(this, clone);
+      MersenneTwister clone = (MersenneTwister)base.Clone(cloner);
       clone.state = (uint[])state.Clone();
       clone.p = p;
       clone.init = init;

@@ -33,8 +33,8 @@ namespace HeuristicLab.Problems.ArtificialAnt {
   [Item("AntTrail", "Represents a trail of an artificial ant which can be visualized in the GUI.")]
   [StorableClass]
   public sealed class AntTrail : Item {
-    private SymbolicExpressionTree expression;
     [Storable]
+    private SymbolicExpressionTree expression;
     public SymbolicExpressionTree SymbolicExpressionTree {
       get { return expression; }
       set {
@@ -47,8 +47,8 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       }
     }
 
-    private BoolMatrix world;
     [Storable]
+    private BoolMatrix world;
     public BoolMatrix World {
       get { return world; }
       set {
@@ -60,8 +60,8 @@ namespace HeuristicLab.Problems.ArtificialAnt {
         }
       }
     }
-    private IntValue maxTimeSteps;
     [Storable]
+    private IntValue maxTimeSteps;
     public IntValue MaxTimeSteps {
       get { return maxTimeSteps; }
       set {
@@ -79,17 +79,29 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     public AntTrail() : base() { }
     public AntTrail(BoolMatrix world, SymbolicExpressionTree expression, IntValue maxTimeSteps)
       : this() {
-      World = world;
-      SymbolicExpressionTree = expression;
-      MaxTimeSteps = maxTimeSteps;
+      this.world = world;
+      this.expression = expression;
+      this.maxTimeSteps = maxTimeSteps;
+      Initialize();
+    }
+    [StorableConstructor]
+    private AntTrail(bool deserializing) : base(deserializing) { }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void Initialize() {
+      //if (expression != null) RegisterSymbolicExpressionTreeEvents();
+      if (world != null) RegisterWorldEvents();
+      if (maxTimeSteps != null) RegisterMaxTimeStepsEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       AntTrail clone = new AntTrail();
       cloner.RegisterClonedObject(this, clone);
+      clone.ReadOnlyView = ReadOnlyView;
       clone.expression = (SymbolicExpressionTree)cloner.Clone(expression);
       clone.world = (BoolMatrix)cloner.Clone(world);
       clone.maxTimeSteps = (IntValue)cloner.Clone(maxTimeSteps);
+      clone.Initialize();
       return clone;
     }
 

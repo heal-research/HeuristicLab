@@ -279,7 +279,7 @@ namespace HeuristicLab.Core.Views {
     protected virtual void SetListViewItemImage(ListViewItem listViewItem) {
       T item = (T)listViewItem.Tag;
       int i = 0;
-      while ((i < itemsListView.SmallImageList.Images.Count) && (item.ItemImage != itemsListView.SmallImageList.Images[i]))
+      while ((i < itemsListView.SmallImageList.Images.Count) && !item.ItemImage.Equals(itemsListView.SmallImageList.Images[i]))
         i++;
       if (i == itemsListView.SmallImageList.Images.Count) itemsListView.SmallImageList.Images.Add(item.ItemImage);
       listViewItem.ImageIndex = i;

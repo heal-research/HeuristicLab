@@ -417,7 +417,7 @@ namespace HeuristicLab.Operators.Programmable {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       ProgrammableOperator clone = (ProgrammableOperator)base.Clone(cloner);
-      clone.Description = Description;
+      clone.description = description;
       clone.code = Code;
       clone.executeMethod = executeMethod;
       clone.Assemblies = Assemblies.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);

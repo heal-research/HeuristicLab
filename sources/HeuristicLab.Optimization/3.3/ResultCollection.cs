@@ -31,11 +31,5 @@ namespace HeuristicLab.Optimization {
     public ResultCollection() : base() { }
     public ResultCollection(int capacity) : base(capacity) { }
     public ResultCollection(IEnumerable<IResult> collection) : base(collection) { }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      ResultCollection clone = new ResultCollection(this.Select(x => (IResult)cloner.Clone(x)));
-      cloner.RegisterClonedObject(this, clone);
-      return clone;
-    }
   }
 }

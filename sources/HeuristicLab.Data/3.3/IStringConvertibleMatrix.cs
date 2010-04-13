@@ -25,6 +25,7 @@ using System.Collections.Generic;
 
 namespace HeuristicLab.Data {
   public interface IStringConvertibleMatrix {
+    bool ReadOnlyView { get; set; }
     int Rows { get; set; }
     int Columns { get; set; }
 
@@ -36,6 +37,7 @@ namespace HeuristicLab.Data {
     string GetValue(int rowIndex, int columnIndex);
     bool SetValue(string value, int rowIndex, int columnIndex);
 
+    event EventHandler ReadOnlyViewChanged;
     event EventHandler<EventArgs<int, int>> ItemChanged;
     event EventHandler Reset;
   }

@@ -32,19 +32,14 @@ namespace HeuristicLab.Parameters {
   [Item("OptionalConstrainedValueParameter<T>", "A parameter whose value has to be chosen from a set of valid values or is null.")]
   [StorableClass]
   public class OptionalConstrainedValueParameter<T> : Parameter, IValueParameter<T> where T : class, IItem {
-    private ItemSet<T> validValues;
     [Storable]
+    private ItemSet<T> validValues;
     public ItemSet<T> ValidValues {
       get { return validValues; }
-      private set {
-        DeregisterValidValuesEvents();
-        validValues = value;
-        RegisterValidValuesEvents();
-      }
     }
 
-    private T value;
     [Storable]
+    private T value;
     public virtual T Value {
       get { return this.value; }
       set {
@@ -73,39 +68,55 @@ namespace HeuristicLab.Parameters {
 
     public OptionalConstrainedValueParameter()
       : base("Anonymous", typeof(T)) {
-      ValidValues = new ItemSet<T>();
+      this.validValues = new ItemSet<T>();
+      Initialize();
     }
     public OptionalConstrainedValueParameter(string name)
       : base(name, typeof(T)) {
-      ValidValues = new ItemSet<T>();
+      this.validValues = new ItemSet<T>();
+      Initialize();
     }
     public OptionalConstrainedValueParameter(string name, ItemSet<T> validValues)
       : base(name, typeof(T)) {
-      ValidValues = validValues;
+      this.validValues = validValues;
+      Initialize();
     }
     public OptionalConstrainedValueParameter(string name, ItemSet<T> validValues, T value)
       : base(name, typeof(T)) {
-      ValidValues = validValues;
-      Value = value;
+      this.validValues = validValues;
+      this.value = value;
+      Initialize();
     }
     public OptionalConstrainedValueParameter(string name, string description)
       : base(name, description, typeof(T)) {
-      ValidValues = new ItemSet<T>();
+      this.validValues = new ItemSet<T>();
+      Initialize();
     }
     public OptionalConstrainedValueParameter(string name, string description, ItemSet<T> validValues)
       : base(name, description, typeof(T)) {
-      ValidValues = validValues;
+      this.validValues = validValues;
+      Initialize();
     }
     public OptionalConstrainedValueParameter(string name, string description, ItemSet<T> validValues, T value)
       : base(name, description, typeof(T)) {
-      ValidValues = validValues;
-      Value = value;
+      this.validValues = validValues;
+      this.value = value;
+      Initialize();
+    }
+    [StorableConstructor]
+    protected OptionalConstrainedValueParameter(bool deserializing) : base(deserializing) { }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void Initialize() {
+      RegisterValidValuesEvents();
+      if (value != null) value.ToStringChanged += new EventHandler(Value_ToStringChanged);
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       OptionalConstrainedValueParameter<T> clone = (OptionalConstrainedValueParameter<T>)base.Clone(cloner);
-      clone.ValidValues = (ItemSet<T>)cloner.Clone(validValues);
-      clone.Value = (T)cloner.Clone(value);
+      clone.validValues = (ItemSet<T>)cloner.Clone(validValues);
+      clone.value = (T)cloner.Clone(value);
+      clone.Initialize();
       return clone;
     }
 

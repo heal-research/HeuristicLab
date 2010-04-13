@@ -89,6 +89,7 @@ namespace HeuristicLab.Data.Views {
         }
         dataGridView.Columns[0].Width = dataGridView.Columns[0].GetPreferredWidth(DataGridViewAutoSizeColumnMode.AllCells, true);
       }
+      dataGridView.ReadOnly = Content.ReadOnlyView;
       dataGridView.Enabled = true;
     }
 

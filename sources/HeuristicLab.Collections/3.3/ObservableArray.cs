@@ -34,6 +34,19 @@ namespace HeuristicLab.Collections {
     protected T[] array;
 
     #region Properties
+    [Storable]
+    private bool readOnlyView;
+    public bool ReadOnlyView {
+      get { return readOnlyView; }
+      set {
+        if (readOnlyView != value) {
+          readOnlyView = value;
+          OnReadOnlyViewChanged();
+          OnPropertyChanged("ReadOnlyView");
+        }
+      }
+    }
+
     public int Length {
       get { return array.Length; }
     }
@@ -62,15 +75,19 @@ namespace HeuristicLab.Collections {
     #region Constructors
     public ObservableArray() {
       array = new T[0];
+      readOnlyView = array.IsReadOnly;
     }
     public ObservableArray(int length) {
       array = new T[length];
+      readOnlyView = array.IsReadOnly;
     }
     public ObservableArray(T[] array) {
       this.array = (T[])array.Clone();
+      readOnlyView = array.IsReadOnly;
     }
     public ObservableArray(IEnumerable<T> collection) {
       array = collection.ToArray();
+      readOnlyView = array.IsReadOnly;
     }
     #endregion
 
@@ -280,31 +297,38 @@ namespace HeuristicLab.Collections {
 
     #region Events
     [field: NonSerialized]
+    public event EventHandler ReadOnlyViewChanged;
+    protected virtual void OnReadOnlyViewChanged() {
+      EventHandler handler = ReadOnlyViewChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+
+    [field: NonSerialized]
     public event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsReplaced;
     protected virtual void OnItemsReplaced(IEnumerable<IndexedItem<T>> items, IEnumerable<IndexedItem<T>> oldItems) {
-      if (ItemsReplaced != null)
-        ItemsReplaced(this, new CollectionItemsChangedEventArgs<IndexedItem<T>>(items, oldItems));
+      CollectionItemsChangedEventHandler<IndexedItem<T>> handler = ItemsReplaced;
+      if (handler != null) handler(this, new CollectionItemsChangedEventArgs<IndexedItem<T>>(items, oldItems));
     }
 
     [field: NonSerialized]
     public event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsMoved;
     protected virtual void OnItemsMoved(IEnumerable<IndexedItem<T>> items, IEnumerable<IndexedItem<T>> oldItems) {
-      if (ItemsMoved != null)
-        ItemsMoved(this, new CollectionItemsChangedEventArgs<IndexedItem<T>>(items, oldItems));
+      CollectionItemsChangedEventHandler<IndexedItem<T>> handler = ItemsMoved;
+      if (handler != null) handler(this, new CollectionItemsChangedEventArgs<IndexedItem<T>>(items, oldItems));
     }
 
     [field: NonSerialized]
     public event CollectionItemsChangedEventHandler<IndexedItem<T>> CollectionReset;
     protected virtual void OnCollectionReset(IEnumerable<IndexedItem<T>> items, IEnumerable<IndexedItem<T>> oldItems) {
-      if (CollectionReset != null)
-        CollectionReset(this, new CollectionItemsChangedEventArgs<IndexedItem<T>>(items, oldItems));
+      CollectionItemsChangedEventHandler<IndexedItem<T>> handler = CollectionReset;
+      if (handler != null) handler(this, new CollectionItemsChangedEventArgs<IndexedItem<T>>(items, oldItems));
     }
 
     [field: NonSerialized]
     public event PropertyChangedEventHandler PropertyChanged;
     protected virtual void OnPropertyChanged(string propertyName) {
-      if (PropertyChanged != null)
-        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+      PropertyChangedEventHandler handler = PropertyChanged;
+      if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
     }
     #endregion
 

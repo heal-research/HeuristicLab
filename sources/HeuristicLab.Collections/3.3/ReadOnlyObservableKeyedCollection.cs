@@ -33,6 +33,11 @@ namespace HeuristicLab.Collections {
     private IObservableKeyedCollection<TKey, TItem> collection;
 
     #region Properties
+    public bool ReadOnlyView {
+      get { return true; }
+      set { throw new NotSupportedException(); }
+    }
+
     public int Count {
       get { return collection.Count; }
     }
@@ -111,39 +116,44 @@ namespace HeuristicLab.Collections {
       collection.PropertyChanged += new PropertyChangedEventHandler(collection_PropertyChanged);
     }
 
+    event EventHandler IObservableCollection<TItem>.ReadOnlyViewChanged {
+      add { }
+      remove { }
+    }
+
     [field: NonSerialized]
     public event CollectionItemsChangedEventHandler<TItem> ItemsAdded;
     protected virtual void OnItemsAdded(IEnumerable<TItem> items) {
-      if (ItemsAdded != null)
-        ItemsAdded(this, new CollectionItemsChangedEventArgs<TItem>(items));
+      CollectionItemsChangedEventHandler<TItem> handler = ItemsAdded;
+      if (handler != null) handler(this, new CollectionItemsChangedEventArgs<TItem>(items));
     }
 
     [field: NonSerialized]
     public event CollectionItemsChangedEventHandler<TItem> ItemsRemoved;
     protected virtual void OnItemsRemoved(IEnumerable<TItem> items) {
-      if (ItemsRemoved != null)
-        ItemsRemoved(this, new CollectionItemsChangedEventArgs<TItem>(items));
+      CollectionItemsChangedEventHandler<TItem> handler = ItemsRemoved;
+      if (handler != null) handler(this, new CollectionItemsChangedEventArgs<TItem>(items));
     }
 
     [field: NonSerialized]
     public event CollectionItemsChangedEventHandler<TItem> ItemsReplaced;
     protected virtual void OnItemsReplaced(IEnumerable<TItem> items, IEnumerable<TItem> oldItems) {
-      if (ItemsReplaced != null)
-        ItemsReplaced(this, new CollectionItemsChangedEventArgs<TItem>(items, oldItems));
+      CollectionItemsChangedEventHandler<TItem> handler = ItemsReplaced;
+      if (handler != null) handler(this, new CollectionItemsChangedEventArgs<TItem>(items, oldItems));
     }
 
     [field: NonSerialized]
     public event CollectionItemsChangedEventHandler<TItem> CollectionReset;
     protected virtual void OnCollectionReset(IEnumerable<TItem> items, IEnumerable<TItem> oldItems) {
-      if (CollectionReset != null)
-        CollectionReset(this, new CollectionItemsChangedEventArgs<TItem>(items, oldItems));
+      CollectionItemsChangedEventHandler<TItem> handler = CollectionReset;
+      if (handler != null) handler(this, new CollectionItemsChangedEventArgs<TItem>(items, oldItems));
     }
 
     [field: NonSerialized]
     public event PropertyChangedEventHandler PropertyChanged;
     protected virtual void OnPropertyChanged(string propertyName) {
-      if (PropertyChanged != null)
-        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+      PropertyChangedEventHandler handler = PropertyChanged;
+      if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
     }
 
     private void collection_ItemsAdded(object sender, CollectionItemsChangedEventArgs<TItem> e) {
