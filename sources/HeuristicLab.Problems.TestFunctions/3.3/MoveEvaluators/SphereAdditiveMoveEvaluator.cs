@@ -59,6 +59,12 @@ namespace HeuristicLab.Problems.TestFunctions {
     public override System.Type EvaluatorType {
       get { return typeof(SphereEvaluator); }
     }
+
+    public SphereAdditiveMoveEvaluator() {
+      Parameters.Add(new ValueParameter<DoubleValue>("C", "The parameter C modifies the steepness of the objective function y = C * ||X||^Alpha. Default is C = 1.", new DoubleValue(1)));
+      Parameters.Add(new ValueParameter<DoubleValue>("Alpha", "The parameter Alpha modifies the steepness of the objective function y = C * ||X||^Alpha. Default is Alpha = 2.", new DoubleValue(2)));
+    }
+
     protected override double Evaluate(double quality, RealVector point, AdditiveMove move) {
       RealVectorAdditiveMoveWrapper wrapper = new RealVectorAdditiveMoveWrapper(move, point);
       return SphereEvaluator.Apply(wrapper, C.Value, Alpha.Value);
