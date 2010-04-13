@@ -103,8 +103,15 @@ namespace HeuristicLab.Data.Views {
       columnsTextBox.Text = Content.Columns.ToString();
       columnsTextBox.Enabled = true;
       virtualRowIndizes = Enumerable.Range(0, Content.Rows).ToArray();
-      dataGridView.RowCount = Content.Rows;
-      dataGridView.ColumnCount = Content.Columns;
+      //DataGridViews with Rows but no columns are not allowed !
+      if (Content.Rows == 0 && dataGridView.RowCount != Content.Rows)
+        Content.Rows = dataGridView.RowCount;
+      else
+        dataGridView.RowCount = Content.Rows;
+      if (Content.Columns == 0 && dataGridView.ColumnCount != Content.Columns)
+        Content.Columns = dataGridView.ColumnCount;
+      else
+        dataGridView.ColumnCount = Content.Columns;
       UpdateRowHeaders();
       UpdateColumnHeaders();
       dataGridView.Enabled = true;
@@ -152,7 +159,7 @@ namespace HeuristicLab.Data.Views {
       if (InvokeRequired)
         Invoke(new EventHandler<EventArgs<int, int>>(Content_ItemChanged), sender, e);
       else
-        dataGridView.InvalidateCell(e.Value, e.Value2);
+        dataGridView.InvalidateCell(e.Value2, e.Value);
     }
     private void Content_Reset(object sender, EventArgs e) {
       if (InvokeRequired)
@@ -171,9 +178,9 @@ namespace HeuristicLab.Data.Views {
     #region TextBox Events
     private void rowsTextBox_Validating(object sender, CancelEventArgs e) {
       int i = 0;
-      if (!int.TryParse(rowsTextBox.Text, out i) || (i < 0)) {
+      if (!int.TryParse(rowsTextBox.Text, out i) || (i <= 0)) {
         e.Cancel = true;
-        errorProvider.SetError(rowsTextBox, "Invalid Number of Rows (Valid Values: Positive Integers Larger or Equal to 0)");
+        errorProvider.SetError(rowsTextBox, "Invalid Number of Rows (Valid values are positive integers larger than 0)");
         rowsTextBox.SelectAll();
       }
     }
@@ -193,9 +200,9 @@ namespace HeuristicLab.Data.Views {
     }
     private void columnsTextBox_Validating(object sender, CancelEventArgs e) {
       int i = 0;
-      if (!int.TryParse(columnsTextBox.Text, out i) || (i < 0)) {
+      if (!int.TryParse(columnsTextBox.Text, out i) || (i <= 0)) {
         e.Cancel = true;
-        errorProvider.SetError(columnsTextBox, "Invalid Number of Columns (Valid Values: Positive Integers Larger or Equal to 0)");
+        errorProvider.SetError(columnsTextBox, "Invalid Number of Columns (Valid values are positive integers larger than 0)");
         columnsTextBox.SelectAll();
       }
     }
@@ -238,13 +245,12 @@ namespace HeuristicLab.Data.Views {
     }
     private void dataGridView_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e) {
       int rowIndex = virtualRowIndizes[e.RowIndex];
-      e.Value = Content.GetValue(rowIndex, e.ColumnIndex);
+      if (e.RowIndex < Content.Rows && e.ColumnIndex < Content.Columns)
+        e.Value = Content.GetValue(rowIndex, e.ColumnIndex);
     }
-
     private void dataGridView_Scroll(object sender, ScrollEventArgs e) {
       UpdateRowHeaders();
     }
-
     private void dataGridView_Resize(object sender, EventArgs e) {
       UpdateRowHeaders();
     }
