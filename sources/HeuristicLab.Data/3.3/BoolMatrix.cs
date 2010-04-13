@@ -88,6 +88,10 @@ namespace HeuristicLab.Data {
       get { return this.RowNames; }
       set { this.RowNames = value; }
     }
+    bool IStringConvertibleMatrix.SortableView {
+      get { return this.SortableView; }
+      set { this.SortableView = value; }
+    }
     bool IStringConvertibleMatrix.Validate(string value, out string errorMessage) {
       return Validate(value, out errorMessage);
     }

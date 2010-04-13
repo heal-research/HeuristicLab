@@ -66,6 +66,17 @@ namespace HeuristicLab.Data {
           rowNames = new List<string>(value);
       }
     }
+    [Storable]
+    private bool sortableView;
+    public bool SortableView {
+      get { return sortableView; }
+      set {
+        if (value != sortableView) {
+          sortableView = value;
+          OnSortableViewChanged();
+        }
+      }
+    }
 
     public virtual int Rows {
       get { return matrix.GetLength(0); }
@@ -74,6 +85,10 @@ namespace HeuristicLab.Data {
           string[,] newMatrix = new string[value, Columns];
           Array.Copy(matrix, newMatrix, Math.Min(value * Columns, matrix.Length));
           matrix = newMatrix;
+          while (rowNames.Count > value)
+            rowNames.RemoveAt(rowNames.Count - 1);
+          while (rowNames.Count < value)
+            rowNames.Add("Row " + rowNames.Count);
           OnReset();
         }
       }
@@ -86,6 +101,10 @@ namespace HeuristicLab.Data {
           for (int i = 0; i < Rows; i++)
             Array.Copy(matrix, i * Columns, newMatrix, i * value, Math.Min(value, Columns));
           matrix = newMatrix;
+          while (columnNames.Count > value)
+            columnNames.RemoveAt(columnNames.Count - 1);
+          while (columnNames.Count < value)
+            columnNames.Add("Column " + columnNames.Count);
           OnReset();
         }
       }
@@ -106,6 +125,7 @@ namespace HeuristicLab.Data {
       matrix = new string[0, 0];
       columnNames = new List<string>();
       rowNames = new List<string>();
+      sortableView = false;
     }
     public StringMatrix(int rows, int columns) {
       matrix = new string[rows, columns];
@@ -115,6 +135,7 @@ namespace HeuristicLab.Data {
       }
       columnNames = new List<string>();
       rowNames = new List<string>();
+      sortableView = false;
     }
     protected StringMatrix(int rows, int columns, IEnumerable<string> columnNames)
       : this(rows, columns) {
@@ -133,6 +154,7 @@ namespace HeuristicLab.Data {
       }
       columnNames = new List<string>();
       rowNames = new List<string>();
+      sortableView = false;
     }
     protected StringMatrix(string[,] elements, IEnumerable<string> columnNames)
       : this(elements) {
@@ -147,6 +169,7 @@ namespace HeuristicLab.Data {
       StringMatrix clone = new StringMatrix();
       cloner.RegisterClonedObject(this, clone);
       clone.ReadOnlyView = ReadOnlyView;
+      clone.SortableView = SortableView;
       clone.matrix = (string[,])matrix.Clone();
       clone.columnNames = new List<string>(columnNames);
       clone.rowNames = new List<string>(rowNames);
@@ -193,6 +216,24 @@ namespace HeuristicLab.Data {
       }
     }
 
+    public event EventHandler ColumnNamesChanged;
+    protected virtual void OnColumnNamesChanged() {
+      EventHandler handler = ColumnNamesChanged;
+      if (handler != null)
+        handler(this, EventArgs.Empty);
+    }
+    public event EventHandler RowNamesChanged;
+    protected virtual void OnRowNamesChanged() {
+      EventHandler handler = RowNamesChanged;
+      if (handler != null)
+        handler(this, EventArgs.Empty);
+    }
+    public event EventHandler SortableViewChanged;
+    protected virtual void OnSortableViewChanged() {
+      EventHandler handler = SortableViewChanged;
+      if (handler != null)
+        handler(this, EventArgs.Empty);
+    }
     public event EventHandler<EventArgs<int, int>> ItemChanged;
     protected virtual void OnItemChanged(int rowIndex, int columnIndex) {
       if (ItemChanged != null)
@@ -222,6 +263,10 @@ namespace HeuristicLab.Data {
     IEnumerable<string> IStringConvertibleMatrix.RowNames {
       get { return this.RowNames; }
       set { this.RowNames = value; }
+    }
+    bool IStringConvertibleMatrix.SortableView {
+      get { return this.SortableView; }
+      set { this.SortableView = value; }
     }
     bool IStringConvertibleMatrix.Validate(string value, out string errorMessage) {
       return Validate(value, out errorMessage);

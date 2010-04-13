@@ -66,6 +66,17 @@ namespace HeuristicLab.Data {
           rowNames = new List<string>(value);
       }
     }
+    [Storable]
+    private bool sortableView;
+    public bool SortableView {
+      get { return sortableView; }
+      set {
+        if (value != sortableView) {
+          sortableView = value;
+          OnSortableViewChanged();
+        }
+      }
+    }
 
     public virtual int Rows {
       get { return matrix.GetLength(0); }
@@ -74,6 +85,10 @@ namespace HeuristicLab.Data {
           T[,] newArray = new T[value, Columns];
           Array.Copy(matrix, newArray, Math.Min(value * Columns, matrix.Length));
           matrix = newArray;
+          while (rowNames.Count > value)
+            rowNames.RemoveAt(rowNames.Count - 1);
+          while (rowNames.Count < value)
+            rowNames.Add("Row " + rowNames.Count);
           OnReset();
         }
       }
@@ -86,6 +101,10 @@ namespace HeuristicLab.Data {
           for (int i = 0; i < Rows; i++)
             Array.Copy(matrix, i * Columns, newArray, i * value, Math.Min(value, Columns));
           matrix = newArray;
+          while (columnNames.Count > value)
+            columnNames.RemoveAt(columnNames.Count - 1);
+          while (columnNames.Count < value)
+            columnNames.Add("Column " + columnNames.Count);
           OnReset();
         }
       }
@@ -104,11 +123,13 @@ namespace HeuristicLab.Data {
       matrix = new T[0, 0];
       columnNames = new List<string>();
       rowNames = new List<string>();
+      sortableView = false;
     }
     protected ValueTypeMatrix(int rows, int columns) {
       matrix = new T[rows, columns];
       columnNames = new List<string>();
       rowNames = new List<string>();
+      sortableView = false;
     }
     protected ValueTypeMatrix(int rows, int columns, IEnumerable<string> columnNames)
       : this(rows, columns) {
@@ -123,6 +144,7 @@ namespace HeuristicLab.Data {
       matrix = (T[,])elements.Clone();
       columnNames = new List<string>();
       rowNames = new List<string>();
+      sortableView = false;
     }
     protected ValueTypeMatrix(T[,] elements, IEnumerable<string> columnNames)
       : this(elements) {
@@ -135,6 +157,7 @@ namespace HeuristicLab.Data {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       ValueTypeMatrix<T> clone = (ValueTypeMatrix<T>)base.Clone(cloner);
+      clone.SortableView = SortableView;
       clone.matrix = (T[,])matrix.Clone();
       clone.columnNames = new List<string>(columnNames);
       clone.rowNames = new List<string>(rowNames);
@@ -160,6 +183,24 @@ namespace HeuristicLab.Data {
       return matrix.GetEnumerator();
     }
 
+    public event EventHandler ColumnNamesChanged;
+    protected virtual void OnColumnNamesChanged() {
+      EventHandler handler = ColumnNamesChanged;
+      if(handler!=null)
+        handler(this,EventArgs.Empty);
+    }
+    public event EventHandler RowNamesChanged;
+    protected virtual void OnRowNamesChanged() {
+      EventHandler handler = RowNamesChanged;
+      if (handler != null)
+        handler(this, EventArgs.Empty);
+    }
+    public event EventHandler SortableViewChanged;
+    protected virtual void OnSortableViewChanged() {
+      EventHandler handler = SortableViewChanged;
+      if (handler != null)
+        handler(this, EventArgs.Empty);
+    }
     public event EventHandler<EventArgs<int, int>> ItemChanged;
     protected virtual void OnItemChanged(int rowIndex, int columnIndex) {
       if (ItemChanged != null)

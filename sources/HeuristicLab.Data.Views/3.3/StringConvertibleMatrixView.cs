@@ -60,6 +60,8 @@ namespace HeuristicLab.Data.Views {
     protected override void DeregisterContentEvents() {
       Content.ItemChanged -= new EventHandler<EventArgs<int, int>>(Content_ItemChanged);
       Content.Reset -= new EventHandler(Content_Reset);
+      Content.ColumnNamesChanged -= new EventHandler(Content_ColumnNamesChanged);
+      Content.RowNamesChanged -= new EventHandler(Content_RowNamesChanged);
       base.DeregisterContentEvents();
     }
 
@@ -68,7 +70,11 @@ namespace HeuristicLab.Data.Views {
       base.RegisterContentEvents();
       Content.ItemChanged += new EventHandler<EventArgs<int, int>>(Content_ItemChanged);
       Content.Reset += new EventHandler(Content_Reset);
+      Content.ColumnNamesChanged += new EventHandler(Content_ColumnNamesChanged);
+      Content.RowNamesChanged += new EventHandler(Content_RowNamesChanged);
     }
+
+
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
@@ -125,6 +131,14 @@ namespace HeuristicLab.Data.Views {
           dataGridView.Rows[i].HeaderCell.Value = i.ToString();
       }
       dataGridView.Invalidate();
+    }
+
+    private void Content_RowNamesChanged(object sender, EventArgs e) {
+      UpdateColumnHeaders();
+    }
+
+    private void Content_ColumnNamesChanged(object sender, EventArgs e) {
+      UpdateRowHeaders();
     }
 
     private void Content_ItemChanged(object sender, EventArgs<int, int> e) {
@@ -217,35 +231,34 @@ namespace HeuristicLab.Data.Views {
     }
 
     private void dataGridView_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
-      //if (Content != null && Content.SortableView) {
-      if (e.Button == MouseButtons.Left) {
-        bool addToSortedIndizes = (Control.ModifierKeys & Keys.Control) == Keys.Control;
-        SortOrder newSortOrder = SortOrder.Ascending;
-        if (sortedColumnIndizes.Any(x => x.Key == e.ColumnIndex)) {
-          SortOrder oldSortOrder = sortedColumnIndizes.Where(x => x.Key == e.ColumnIndex).First().Value;
-          int enumLength = Enum.GetValues(typeof(SortOrder)).Length;
-          newSortOrder = oldSortOrder = (SortOrder)Enum.Parse(typeof(SortOrder), ((((int)oldSortOrder) + 1) % enumLength).ToString());
+      if (Content != null) {
+        if (e.Button == MouseButtons.Left && Content.SortableView) {
+          bool addToSortedIndizes = (Control.ModifierKeys & Keys.Control) == Keys.Control;
+          SortOrder newSortOrder = SortOrder.Ascending;
+          if (sortedColumnIndizes.Any(x => x.Key == e.ColumnIndex)) {
+            SortOrder oldSortOrder = sortedColumnIndizes.Where(x => x.Key == e.ColumnIndex).First().Value;
+            int enumLength = Enum.GetValues(typeof(SortOrder)).Length;
+            newSortOrder = oldSortOrder = (SortOrder)Enum.Parse(typeof(SortOrder), ((((int)oldSortOrder) + 1) % enumLength).ToString());
+          }
+
+          if (!addToSortedIndizes)
+            sortedColumnIndizes.Clear();
+
+          if (sortedColumnIndizes.Any(x => x.Key == e.ColumnIndex)) {
+            int sortedIndex = sortedColumnIndizes.FindIndex(x => x.Key == e.ColumnIndex);
+            if (newSortOrder != SortOrder.None)
+              sortedColumnIndizes[sortedIndex] = new KeyValuePair<int, SortOrder>(e.ColumnIndex, newSortOrder);
+            else
+              sortedColumnIndizes.RemoveAt(sortedIndex);
+          } else
+            if (newSortOrder != SortOrder.None)
+              sortedColumnIndizes.Add(new KeyValuePair<int, SortOrder>(e.ColumnIndex, newSortOrder));
+          Sort();
+        } else if (e.Button == MouseButtons.Right) {
+          if (Content.ColumnNames.Count() != 0)
+            contextMenu.Show(MousePosition);
         }
-
-        if (!addToSortedIndizes)
-          sortedColumnIndizes.Clear();
-
-        if (sortedColumnIndizes.Any(x => x.Key == e.ColumnIndex)) {
-          int sortedIndex = sortedColumnIndizes.FindIndex(x => x.Key == e.ColumnIndex);
-          if (newSortOrder != SortOrder.None)
-            sortedColumnIndizes[sortedIndex] = new KeyValuePair<int, SortOrder>(e.ColumnIndex, newSortOrder);
-          else
-            sortedColumnIndizes.RemoveAt(sortedIndex);
-        } else
-          if (newSortOrder != SortOrder.None)
-            sortedColumnIndizes.Add(new KeyValuePair<int, SortOrder>(e.ColumnIndex, newSortOrder));
-        Sort();
-      } else if (e.Button == MouseButtons.Right) {
-        if (Content.ColumnNames.Count() != 0)
-          contextMenu.Show(MousePosition);
       }
-
-      //}
     }
 
     private void Sort() {

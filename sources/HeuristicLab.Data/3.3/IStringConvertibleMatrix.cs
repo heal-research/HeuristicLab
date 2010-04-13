@@ -20,24 +20,27 @@
 #endregion
 
 using System;
-using HeuristicLab.Common;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Data {
   public interface IStringConvertibleMatrix {
-    bool ReadOnlyView { get; set; }
     int Rows { get; set; }
     int Columns { get; set; }
-
     IEnumerable<string> ColumnNames { get; set; }
     IEnumerable<string> RowNames { get; set; }
-    //bool SortableView { get; }
+
+    bool ReadOnlyView { get; set; }
+    bool SortableView { get; set; }
 
     bool Validate(string value, out string errorMessage);
     string GetValue(int rowIndex, int columnIndex);
     bool SetValue(string value, int rowIndex, int columnIndex);
 
+    event EventHandler ColumnNamesChanged;
+    event EventHandler RowNamesChanged;
     event EventHandler ReadOnlyViewChanged;
+    event EventHandler SortableViewChanged;
     event EventHandler<EventArgs<int, int>> ItemChanged;
     event EventHandler Reset;
   }
