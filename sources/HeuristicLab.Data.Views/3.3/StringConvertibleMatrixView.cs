@@ -104,11 +104,11 @@ namespace HeuristicLab.Data.Views {
       columnsTextBox.Enabled = true;
       virtualRowIndizes = Enumerable.Range(0, Content.Rows).ToArray();
       //DataGridViews with Rows but no columns are not allowed !
-      if (Content.Rows == 0 && dataGridView.RowCount != Content.Rows)
+      if (Content.Rows == 0 && dataGridView.RowCount != Content.Rows && !Content.ReadOnlyView)
         Content.Rows = dataGridView.RowCount;
       else
         dataGridView.RowCount = Content.Rows;
-      if (Content.Columns == 0 && dataGridView.ColumnCount != Content.Columns)
+      if (Content.Columns == 0 && dataGridView.ColumnCount != Content.Columns && !Content.ReadOnlyView)
         Content.Columns = dataGridView.ColumnCount;
       else
         dataGridView.ColumnCount = Content.Columns;
@@ -244,9 +244,10 @@ namespace HeuristicLab.Data.Views {
       dataGridView.Rows[e.RowIndex].ErrorText = string.Empty;
     }
     private void dataGridView_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e) {
-      int rowIndex = virtualRowIndizes[e.RowIndex];
-      if (e.RowIndex < Content.Rows && e.ColumnIndex < Content.Columns)
+      if (e.RowIndex < Content.Rows && e.ColumnIndex < Content.Columns) {
+        int rowIndex = virtualRowIndizes[e.RowIndex];
         e.Value = Content.GetValue(rowIndex, e.ColumnIndex);
+      }
     }
     private void dataGridView_Scroll(object sender, ScrollEventArgs e) {
       UpdateRowHeaders();
