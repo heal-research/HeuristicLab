@@ -79,7 +79,6 @@ namespace HeuristicLab.Data.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       sortedColumnIndizes.Clear();
-      virtualRowIndizes = new int[0];
       if (Content == null) {
         Caption = "StringConvertibleMatrix View";
         rowsTextBox.Text = "";
@@ -89,6 +88,7 @@ namespace HeuristicLab.Data.Views {
         dataGridView.Rows.Clear();
         dataGridView.Columns.Clear();
         dataGridView.Enabled = false;
+        virtualRowIndizes = new int[0];
       } else {
         Caption = "StringConvertibleMatrix (" + Content.GetType().Name + ")";
         UpdateData();
@@ -100,10 +100,11 @@ namespace HeuristicLab.Data.Views {
       rowsTextBox.Enabled = true;
       columnsTextBox.Text = Content.Columns.ToString();
       columnsTextBox.Enabled = true;
+      virtualRowIndizes = Enumerable.Range(0, Content.Rows).ToArray();
+      dataGridView.EndEdit();
       dataGridView.RowCount = 0;
       dataGridView.ColumnCount = 0;
       if ((Content.Rows > 0) && (Content.Columns > 0)) {
-        virtualRowIndizes = Enumerable.Range(0, Content.Rows - 1).ToArray();
         dataGridView.RowCount = Content.Rows;
         dataGridView.ColumnCount = Content.Columns;
         UpdateRowHeaders();
@@ -216,10 +217,8 @@ namespace HeuristicLab.Data.Views {
       dataGridView.Rows[e.RowIndex].ErrorText = string.Empty;
     }
     private void dataGridView_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e) {
-      if (e.RowIndex < virtualRowIndizes.Length) {
-        int rowIndex = virtualRowIndizes[e.RowIndex];
-        e.Value = Content.GetValue(rowIndex, e.ColumnIndex);
-      }
+      int rowIndex = virtualRowIndizes[e.RowIndex];
+      e.Value = Content.GetValue(rowIndex, e.ColumnIndex);
     }
 
     private void dataGridView_Scroll(object sender, ScrollEventArgs e) {
