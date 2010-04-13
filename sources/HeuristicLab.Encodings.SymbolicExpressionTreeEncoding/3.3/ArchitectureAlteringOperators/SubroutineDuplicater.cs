@@ -64,7 +64,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
       if (functionDefiningBranches.Count() == 0 || functionDefiningBranches.Count() == maxFunctionDefiningBranches)
         // no function defining branches to duplicate or already reached the max number of ADFs
         return false;
-      var selectedBranch = (DefunTreeNode)SelectRandomBranch(random, functionDefiningBranches);
+      var selectedBranch = functionDefiningBranches.SelectRandom(random);
       var clonedBranch = (DefunTreeNode)selectedBranch.Clone();
       clonedBranch.Name = allowedFunctionNames.Except(UsedFunctionNames(symbolicExpressionTree)).First();
       foreach (var node in symbolicExpressionTree.IterateNodesPrefix()) {
@@ -72,7 +72,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
         // find all invokations of the old function 
         if (invokeFunctionNode != null && invokeFunctionNode.InvokedFunctionName == selectedBranch.Name) {
           // add the new function name to the list of known functions in the branches that used the originating function
-          var branch = FindDefiningBranch(symbolicExpressionTree, invokeFunctionNode);
+          var branch = symbolicExpressionTree.GetTopLevelBranchOf(invokeFunctionNode);
           branch.AddDynamicSymbol(clonedBranch.Name, clonedBranch.NumberOfArguments);
           // flip coin wether to replace with newly defined function
           if (random.NextDouble() < 0.5) {
@@ -82,13 +82,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
       }
       Debug.Assert(grammar.IsValidExpression(symbolicExpressionTree));
       return true;
-    }
-
-    private static SymbolicExpressionTreeNode FindDefiningBranch(SymbolicExpressionTree tree, SymbolicExpressionTreeNode node) {
-      foreach (var subtree in tree.Root.SubTrees) {
-        if (ContainsNode(subtree, node)) return subtree;
-      }
-      return null;
     }
 
     private static bool ContainsNode(SymbolicExpressionTreeNode branch, SymbolicExpressionTreeNode node) {
@@ -105,9 +98,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
              select ((DefunTreeNode)node).Name;
     }
 
-    private static SymbolicExpressionTreeNode SelectRandomBranch(IRandom random, IEnumerable<DefunTreeNode> branches) {
-      var list = branches.ToList();
-      return list[random.Next(list.Count)];
-    }
+
   }
 }

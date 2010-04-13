@@ -105,19 +105,5 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
       Debug.Assert(grammar.IsValidExpression(symbolicExpressionTree));
       return true;
     }
-
-    private static IEnumerable<SymbolicExpressionTreeNode> IterateNodesPrefix(SymbolicExpressionTreeNode tree) {
-      yield return tree;
-      foreach (var subTree in tree.SubTrees) {
-        foreach (var node in IterateNodesPrefix(subTree)) {
-          yield return node;
-        }
-      }
-    }
-
-    private static T SelectRandomBranch<T>(IRandom random, IEnumerable<T> branches) {
-      var list = branches.ToList();
-      return list[random.Next(list.Count)];
-    }
   }
 }

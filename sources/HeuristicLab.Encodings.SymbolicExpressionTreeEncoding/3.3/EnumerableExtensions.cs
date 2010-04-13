@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,23 +20,24 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.Text;
+using HeuristicLab.Core;
+using System.Linq;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols {
-  [StorableClass]
-  public sealed class InvokeFunctionTreeNode : SymbolicExpressionTreeNode {
-    public new InvokeFunction Symbol {
-      get { return (InvokeFunction)base.Symbol; }
-    }
+using HeuristicLab.Data;
+using HeuristicLab.Parameters;
 
-    // copy constructor
-    private InvokeFunctionTreeNode(InvokeFunctionTreeNode original)
-      : base(original) {
-    }
-
-    public InvokeFunctionTreeNode(InvokeFunction invokeSymbol) : base(invokeSymbol) { }
-
-    public override object Clone() {
-      return new InvokeFunctionTreeNode(this);
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
+  public static class EnumerableExtensions {
+    public static T SelectRandom<T>(this IEnumerable<T> xs, IRandom random) {
+      var list = xs as IList<T>;
+      if (list != null) {
+        return list[random.Next(list.Count)];
+      } else {
+        list = xs.ToList();
+        return list[random.Next(list.Count)];
+      }
     }
   }
 }

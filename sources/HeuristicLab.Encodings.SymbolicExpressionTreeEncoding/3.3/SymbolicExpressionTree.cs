@@ -49,9 +49,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       get { return root.SubTrees[0].SubTrees[0]; }
     }
 
-    [Storable]
-    private Dictionary<int, IEnumerable<string>> allowedFunctionsInBranch;
-
     public int Size {
       get {
         return root.GetSize();
@@ -66,33 +63,24 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
     public SymbolicExpressionTree()
       : base() {
-      allowedFunctionsInBranch = new Dictionary<int, IEnumerable<string>>();
     }
 
     public SymbolicExpressionTree(SymbolicExpressionTreeNode root)
       : base() {
-      allowedFunctionsInBranch = new Dictionary<int, IEnumerable<string>>();
     }
 
     public IEnumerable<SymbolicExpressionTreeNode> IterateNodesPrefix() {
-      return IterateNodesPrefix(root);
-    }
-    private IEnumerable<SymbolicExpressionTreeNode> IterateNodesPrefix(SymbolicExpressionTreeNode node) {
-      yield return node;
-      foreach (var subtree in node.SubTrees) {
-        foreach (var n in IterateNodesPrefix(subtree))
-          yield return n;
-      }
+      return root.IterateNodesPrefix();
     }
     public IEnumerable<SymbolicExpressionTreeNode> IterateNodesPostfix() {
-      return IterateNodesPostfix(root);
+      return root.IterateNodesPostfix();
     }
-    private IEnumerable<SymbolicExpressionTreeNode> IterateNodesPostfix(SymbolicExpressionTreeNode node) {
-      foreach (var subtree in node.SubTrees) {
-        foreach (var n in IterateNodesPrefix(subtree))
-          yield return n;
+
+    public SymbolicExpressionTreeNode GetTopLevelBranchOf(SymbolicExpressionTreeNode node) {
+      foreach (var branch in root.SubTrees) {
+        if (branch.IterateNodesPrefix().Contains(node)) return branch;
       }
-      yield return node;
+      throw new ArgumentException("Node was not found in tree.");
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -100,8 +88,14 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       cloner.RegisterClonedObject(this, clone);
       clone.ReadOnlyView = ReadOnlyView;
       clone.root = (SymbolicExpressionTreeNode)this.root.Clone();
-      clone.allowedFunctionsInBranch = new Dictionary<int, IEnumerable<string>>(allowedFunctionsInBranch);
       return clone;
+    }
+
+    public bool IsValidExpression() {
+      if (root.Symbol != root.Grammar.StartSymbol) return false;
+      foreach (var subtree in root.SubTrees)
+        if (subtree.Grammar == root.Grammar) return false;
+      return root.IsValidTree();
     }
   }
 }

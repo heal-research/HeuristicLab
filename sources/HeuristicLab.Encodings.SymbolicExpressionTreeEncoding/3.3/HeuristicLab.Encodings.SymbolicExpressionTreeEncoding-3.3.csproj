@@ -82,17 +82,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ArchitectureAlteringOperators\ArgumentDuplicater.cs" />
     <Compile Include="ArchitectureAlteringOperators\ArgumentCreater.cs" />
     <Compile Include="ArchitectureAlteringOperators\ArgumentDeleter.cs" />
-    <Compile Include="ArchitectureAlteringOperators\RandomArchitectureAlteringOperator.cs" />
-    <Compile Include="ArchitectureAlteringOperators\SubroutineDeleter.cs" />
-    <Compile Include="ArchitectureAlteringOperators\SubroutineCreater.cs">
+    <Compile Include="Crossovers\SubtreeCrossover.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ArchitectureAlteringOperators\SubroutineDuplicater.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="GlobalSymbolicExpressionGrammar.cs" />
+    <Compile Include="EnumerableExtensions.cs" />
+    <Compile Include="Symbols\StartSymbolTreeNode.cs" />
     <Compile Include="DefaultSymbolicExpressionGrammar.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -102,7 +99,6 @@
     <Compile Include="SymbolicExpressionTreeCompiler.cs" />
     <Compile Include="SymbolicExpressionTreeManipulator.cs" />
     <Compile Include="SymbolicExpressionTreeTerminalNode.cs" />
-    <Compile Include="Crossovers\SubtreeCrossover.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionGrammar.cs" />
     <Compile Include="Creators\ProbabilisticTreeCreator.cs" />
     <Compile Include="HeuristicLabEncodingsSymbolicExpressionTreeEncodingPlugin.cs" />
@@ -125,12 +121,6 @@
     <Compile Include="Symbols\Division.cs" />
     <Compile Include="Symbols\Multiplication.cs" />
     <Compile Include="Symbols\Subtraction.cs" />
-    <Compile Include="Symbols\Values.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Symbols\ValuesTreeNode.cs">
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />

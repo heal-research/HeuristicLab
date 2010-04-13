@@ -81,7 +81,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
       // sanity check
       if (selectedBody == null) throw new InvalidOperationException();
       // select a random node in the selected branch
-      var allCutPoints = (from parent in IterateNodesPrefix(selectedBody)
+      var allCutPoints = (from parent in selectedBody.IterateNodesPrefix()
                           from subtree in parent.SubTrees
                           select new { Parent = parent, ReplacedBranchIndex = parent.SubTrees.IndexOf(subtree), ReplacedBranch = subtree }).ToList();
       if (allCutPoints.Count == 0)
@@ -159,25 +159,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
       }
       return argumentBranches;
     }
-
-    private static IEnumerable<SymbolicExpressionTreeNode> IterateNodesPrefix(SymbolicExpressionTreeNode tree) {
-      yield return tree;
-      foreach (var subTree in tree.SubTrees) {
-        foreach (var node in IterateNodesPrefix(subTree)) {
-          yield return node;
-        }
-      }
-    }
-
+    
     private static IEnumerable<string> UsedFunctionNames(SymbolicExpressionTree symbolicExpressionTree) {
       return from node in symbolicExpressionTree.IterateNodesPrefix()
              where node.Symbol is Defun
              select ((DefunTreeNode)node).Name;
-    }
-
-    private static SymbolicExpressionTreeNode SelectRandomBranch(IRandom random, IEnumerable<DefunTreeNode> branches) {
-      var list = branches.ToList();
-      return list[random.Next(list.Count)];
     }
   }
 }

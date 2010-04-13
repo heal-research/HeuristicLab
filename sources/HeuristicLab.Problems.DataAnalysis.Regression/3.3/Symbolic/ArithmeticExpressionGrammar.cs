@@ -47,7 +47,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     private HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols.Variable variableSymbol;
 
     public ArithmeticExpressionGrammar()
-      : base(0, 0, 0, 0) {
+      : base() {
       Initialize();
     }
 
@@ -61,22 +61,29 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
 
       var allSymbols = new List<Symbol>() { add, sub, mul, div, constant, variableSymbol };
       var functionSymbols = new List<Symbol>() { add, sub, mul, div };
-      allSymbols.ForEach(s => AddAllowedSymbols(StartSymbol, 0, s));
+      foreach (var symb in allSymbols)
+        AddSymbol(symb);
 
+      foreach (var funSymb in functionSymbols) {
+        SetMinSubtreeCount(funSymb, 1);
+        SetMaxSubtreeCount(funSymb, 3);
+      }
+      SetMinSubtreeCount(constant, 0);
+      SetMaxSubtreeCount(constant, 0);
+      SetMinSubtreeCount(variableSymbol, 0);
+      SetMaxSubtreeCount(variableSymbol, 0);
 
-      SetMinSubTreeCount(constant, 0);
-      SetMaxSubTreeCount(constant, 0);
-      SetMinSubTreeCount(variableSymbol, 0);
-      SetMaxSubTreeCount(variableSymbol, 0);
-      int maxSubTrees = 3;
-      foreach (var functionSymbol in functionSymbols) {
-        SetMinSubTreeCount(functionSymbol, 1);
-        SetMaxSubTreeCount(functionSymbol, maxSubTrees);
-        foreach (var childSymbol in allSymbols) {
-          for (int argumentIndex = 0; argumentIndex < maxSubTrees; argumentIndex++) {
-            AddAllowedSymbols(functionSymbol, argumentIndex, childSymbol);
+      // allow each symbol as child of the start symbol
+      foreach (var symb in allSymbols) {
+        SetAllowedChild(StartSymbol, symb, 0);
+      }
+
+      // allow each symbol as child of every other symbol (except for terminals that have maxSubtreeCount == 0)
+      foreach (var parent in allSymbols) {
+        for (int i = 0; i < GetMaxSubtreeCount(parent); i++)
+          foreach (var child in allSymbols) {
+            SetAllowedChild(parent, child, i);
           }
-        }
       }
     }
   }

@@ -21,6 +21,7 @@
 
 using System;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Core;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols {
   [StorableClass]
   public sealed class DefunTreeNode : SymbolicExpressionTreeNode {
@@ -30,21 +31,26 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols {
       get { return numberOfArguments; }
       set { numberOfArguments = value; }
     }
-    private string name;
+    private string functionName;
     [Storable]
-    public string Name {
-      get { return name; }
-      set { this.name = value; }
+    public string FunctionName {
+      get { return functionName; }
+      set { this.functionName = value; }
+    }
+
+    private new Defun Symbol {
+      get { return (Defun)base.Symbol; }
     }
 
     // copy constructor
     private DefunTreeNode(DefunTreeNode original)
       : base(original) {
-      name = original.Name;
+      functionName = original.functionName;
       numberOfArguments = original.numberOfArguments;
     }
 
     public DefunTreeNode(Defun defunSymbol) : base(defunSymbol) { }
+
 
     public override object Clone() {
       return new DefunTreeNode(this);

@@ -48,13 +48,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       Parameters.Add(new ValueLookupParameter<PercentValue>("InternalCrossoverPointProbability", "The probability to select an internal crossover point (instead of a leaf node).", new PercentValue(0.9)));
     }
 
-    protected override SymbolicExpressionTree Cross(IRandom random, ISymbolicExpressionGrammar grammar,
+    protected override SymbolicExpressionTree Cross(IRandom random,
       SymbolicExpressionTree parent0, SymbolicExpressionTree parent1,
       IntValue maxTreeSize, IntValue maxTreeHeight, out bool success) {
-      return Cross(random, grammar, parent0, parent1, InternalCrossoverPointProbabilityParameter.ActualValue.Value, maxTreeSize.Value, maxTreeHeight.Value, out success);
+      return Cross(random, parent0, parent1, InternalCrossoverPointProbabilityParameter.ActualValue.Value, maxTreeSize.Value, maxTreeHeight.Value, out success);
     }
 
-    public static SymbolicExpressionTree Cross(IRandom random, ISymbolicExpressionGrammar grammar,
+    public static SymbolicExpressionTree Cross(IRandom random,
       SymbolicExpressionTree parent0, SymbolicExpressionTree parent1,
       double internalCrossoverPointProbability, int maxTreeSize, int maxTreeHeight, out bool success) {
       // select a random crossover point in the first parent 
@@ -66,11 +66,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       int maxInsertedBranchSize = maxTreeSize - (parent0.Size - crossoverPoint0.SubTrees[replacedSubtreeIndex].GetSize());
       int maxInsertedBranchHeight = maxTreeHeight - GetBranchLevel(parent0.Root, crossoverPoint0);
 
-      var allowedBranches = from branch in IterateNodes(parent1.Root)
+      var allowedBranches = from branch in parent1.Root.IterateNodesPrefix()
                             where branch.GetSize() < maxInsertedBranchSize
                             where branch.GetHeight() < maxInsertedBranchHeight
-                            where grammar.GetAllowedSymbols(crossoverPoint0.Symbol, replacedSubtreeIndex).Contains(branch.Symbol)
-                            where IsMatchingPointType(parent0, crossoverPoint0, branch)
+                            // where crossoverPoint0.GetAllowedSymbols(replacedSubtreeIndex).Contains(branch.Symbol)
+                            where IsMatchingPointType(crossoverPoint0, replacedSubtreeIndex, branch)
                             select branch;
 
       if (allowedBranches.Count() == 0) {
@@ -88,35 +88,37 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       }
     }
 
-    private static bool IsMatchingPointType(SymbolicExpressionTree tree, SymbolicExpressionTreeNode parent, SymbolicExpressionTreeNode newBranch) {
-      var functionCalls = (from node in IterateNodes(newBranch)
-                           let invokeNode = node as InvokeFunctionTreeNode
-                           let argNode = node as ArgumentTreeNode
-                           where invokeNode != null || argNode != null
-                           let name = invokeNode != null ? invokeNode.InvokedFunctionName : "ARG" + argNode.ArgumentIndex
-                           let argCount = invokeNode != null ? invokeNode.SubTrees.Count : 0
-                           select new { FunctionName = name, FunctionArgumentCount = argCount }).Distinct();
-      var definingBranch = GetDefiningBranch(tree, parent);
-      if (definingBranch == null) return false;
-      foreach (var functionCall in functionCalls) {
-        if (!definingBranch.DynamicSymbols.Contains(functionCall.FunctionName) ||
-          definingBranch.GetDynamicSymbolArgumentCount(functionCall.FunctionName) != functionCall.FunctionArgumentCount)
-          return false;
+    private static bool IsMatchingPointType(SymbolicExpressionTreeNode parent, int replacedSubtreeIndex, SymbolicExpressionTreeNode branch) {
+      // cannot compare dynamic symbols by reference because new instances of Invoke/Argument are created on demand
+      // instead we must check equality by names and number of arguments 
+      var branchSymbols = (from node in branch.IterateNodesPrefix()
+                           select new { FunctionName = node.Symbol.Name, SubtreeCount = node.SubTrees.Count }).Distinct();
+
+      // check syntax constraints of direct parent - child relation
+      var matchingSymbolInParentGrammar = (from sym in parent.GetAllowedSymbols(replacedSubtreeIndex)
+                                           where sym.Name == branch.Symbol.Name
+                                           select sym).SingleOrDefault();
+      if (matchingSymbolInParentGrammar == null ||
+        branch.SubTrees.Count < parent.Grammar.GetMinSubtreeCount(matchingSymbolInParentGrammar) ||
+        branch.SubTrees.Count > parent.Grammar.GetMaxSubtreeCount(matchingSymbolInParentGrammar)) return false;
+
+      // check point type for the whole branch
+      foreach (var branchSymbol in branchSymbols) {
+        matchingSymbolInParentGrammar = (from sym in parent.Grammar.Symbols
+                                         where sym.Name == branchSymbol.FunctionName
+                                         select sym).SingleOrDefault();
+        if (matchingSymbolInParentGrammar == null ||
+          branchSymbol.SubtreeCount < parent.Grammar.GetMinSubtreeCount(matchingSymbolInParentGrammar) ||
+          branchSymbol.SubtreeCount > parent.Grammar.GetMaxSubtreeCount(matchingSymbolInParentGrammar)) return false;
       }
+
       return true;
     }
 
-    private static SymbolicExpressionTreeNode GetDefiningBranch(SymbolicExpressionTree tree, SymbolicExpressionTreeNode parent) {
-      foreach (var treeNode in tree.Root.SubTrees) {
-        if (IterateNodes(treeNode).Contains(parent)) return treeNode;
-      }
-      return null;
-    }
-
     private static void SelectCrossoverPoint(IRandom random, SymbolicExpressionTree parent0, double internalNodeProbability, out SymbolicExpressionTreeNode crossoverPoint, out int subtreeIndex) {
-      var crossoverPoints = from branch in IterateNodes(parent0.Root)
+      var crossoverPoints = from branch in parent0.Root.IterateNodesPrefix()
                             where branch.SubTrees.Count > 0
-                            where !(branch.Symbol is ProgramRootSymbol)
+                            where branch != parent0.Root
                             from index in Enumerable.Range(0, branch.SubTrees.Count)
                             let p = new { CrossoverPoint = branch, SubtreeIndex = index, IsLeaf = branch.SubTrees[index].SubTrees.Count == 0 }
                             select p;
@@ -169,15 +171,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       } else {
         return allowedLeafBranches[random.Next(allowedLeafBranches.Count)];
       }
-    }
-
-    private static IEnumerable<SymbolicExpressionTreeNode> IterateNodes(SymbolicExpressionTreeNode root) {
-      foreach (var subTree in root.SubTrees) {
-        foreach (var branch in IterateNodes(subTree)) {
-          yield return branch;
-        }
-      }
-      yield return root;
     }
 
     private static int GetBranchLevel(SymbolicExpressionTreeNode root, SymbolicExpressionTreeNode point) {

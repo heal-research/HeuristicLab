@@ -33,6 +33,18 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols {
         return false;
       }
     }
+
+    private int argumentIndex;
+    public int ArgumentIndex {
+      get { return argumentIndex; }
+    }
+
+    public Argument(int argumentIndex)
+      : base() {
+      this.argumentIndex = argumentIndex;
+      this.name = "ARG" + argumentIndex;
+    }
+
     public override SymbolicExpressionTreeNode CreateTreeNode() {
       return new ArgumentTreeNode(this);
     }

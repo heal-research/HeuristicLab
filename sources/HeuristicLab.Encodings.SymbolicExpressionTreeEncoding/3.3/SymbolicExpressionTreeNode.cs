@@ -37,10 +37,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     [Storable]
     private Symbol symbol;
 
-    public SymbolicExpressionTreeNode() { }
-
-    public SymbolicExpressionTreeNode(Symbol symbol) {
+    public SymbolicExpressionTreeNode() {
       subTrees = new List<SymbolicExpressionTreeNode>();
+    }
+
+    public SymbolicExpressionTreeNode(Symbol symbol)
+      : this() {
       this.symbol = symbol;
     }
 
@@ -48,10 +50,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     protected SymbolicExpressionTreeNode(SymbolicExpressionTreeNode original) {
       symbol = original.symbol;
       subTrees = new List<SymbolicExpressionTreeNode>();
+      grammar = original.grammar;
       foreach (var subtree in original.SubTrees) {
-        AddSubTree((SymbolicExpressionTreeNode)subtree.Clone());
+        SubTrees.Add((SymbolicExpressionTreeNode)subtree.Clone());
       }
-      dynamicSymbols = new Dictionary<string, int>(original.dynamicSymbols);
     }
 
     public virtual bool HasLocalParameters {
@@ -67,6 +69,16 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       protected set { symbol = value; }
     }
 
+    private ISymbolicExpressionGrammar grammar;
+    public virtual ISymbolicExpressionGrammar Grammar {
+      get { return grammar; }
+      set {
+        grammar = value;
+        foreach (var subtree in subTrees)
+          subtree.Grammar = value;
+      }
+    }
+
     public int GetSize() {
       int size = 1;
       foreach (SymbolicExpressionTreeNode tree in SubTrees) size += tree.GetSize();
@@ -79,48 +91,69 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       return maxHeight + 1;
     }
 
-    [Storable]
-    private Dictionary<string, int> dynamicSymbols = new Dictionary<string, int>();
-    public void AddDynamicSymbol(string symbolName) {
-      Debug.Assert(!dynamicSymbols.ContainsKey(symbolName));
-      dynamicSymbols[symbolName] = 0;
-    }
-
-    public void AddDynamicSymbol(string symbolName, int nArguments) {
-      AddDynamicSymbol(symbolName);
-      SetDynamicSymbolArgumentCount(symbolName, nArguments);
-    }
-
-    public void RemoveDynamicSymbol(string symbolName) {
-      dynamicSymbols.Remove(symbolName);
-    }
-
-    public IEnumerable<string> DynamicSymbols {
-      get { return dynamicSymbols.Keys; }
-    }
-
-    public int GetDynamicSymbolArgumentCount(string symbolName) {
-      return dynamicSymbols[symbolName];
-    }
-    public void SetDynamicSymbolArgumentCount(string symbolName, int nArguments) {
-      Debug.Assert(dynamicSymbols.ContainsKey(symbolName));
-      dynamicSymbols[symbolName] = nArguments;
-    }
-
     public virtual void ResetLocalParameters(IRandom random) { }
     public virtual void ShakeLocalParameters(IRandom random, double shakingFactor) { }
 
-    protected internal virtual void AddSubTree(SymbolicExpressionTreeNode tree) {
+    public virtual void AddSubTree(SymbolicExpressionTreeNode tree) {
       SubTrees.Add(tree);
+      //if (tree != null) 
+      tree.Grammar = Grammar;
     }
 
-    protected internal virtual void InsertSubTree(int index, SymbolicExpressionTreeNode tree) {
+    public virtual void InsertSubTree(int index, SymbolicExpressionTreeNode tree) {
       SubTrees.Insert(index, tree);
+      //if (tree != null) 
+      tree.Grammar = Grammar;
     }
 
-    protected internal virtual void RemoveSubTree(int index) {
+    public virtual void RemoveSubTree(int index) {
+      //if (SubTrees[index] != null)
+      SubTrees[index].Grammar = null;
       SubTrees.RemoveAt(index);
     }
+
+    public IEnumerable<SymbolicExpressionTreeNode> IterateNodesPrefix() {
+      yield return this;
+      foreach (var subtree in subTrees) {
+        foreach (var n in subtree.IterateNodesPrefix())
+          yield return n;
+      }
+    }
+
+    public IEnumerable<SymbolicExpressionTreeNode> IterateNodesPostfix() {
+      foreach (var subtree in subTrees) {
+        foreach (var n in subtree.IterateNodesPrefix())
+          yield return n;
+      }
+      yield return this;
+    }
+    //public int GetMinExpressionLength() {
+    //  return Grammar.GetMinExpressionLength(Symbol);
+    //}
+    //public int GetMaxExpressionLength() {
+    //  return Grammar.GetMaxExpressionLength(Symbol);
+    //}
+    //public int GetMinExpressionDepth() {
+    //  return Grammar.GetMinExpressionDepth(Symbol);
+    //}
+    public IEnumerable<Symbol> GetAllowedSymbols(int argumentIndex) {
+      return Grammar.Symbols.Where(s => Grammar.IsAllowedChild(Symbol, s, argumentIndex));
+    }
+    public int GetMinSubtreeCount() {
+      return Grammar.GetMinSubtreeCount(Symbol);
+    }
+    public int GetMaxSubtreeCount() {
+      return Grammar.GetMaxSubtreeCount(Symbol);
+    }
+    //public int GetMaxExpressionLength(Symbol s) {
+    //  return Grammar.GetMaxExpressionLength(s);
+    //}
+    //public int GetMinExpressionLength(Symbol s) {
+    //  return Grammar.GetMinExpressionLength(s);
+    //}
+    //public int GetMinExpressionDepth(Symbol s) {
+    //  return Grammar.GetMinExpressionDepth(s);
+    //}
 
     #region ICloneable Members
 
@@ -129,5 +162,20 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     #endregion
+
+
+    public bool IsValidTree() {
+      var matchingSymbol = (from symb in Grammar.Symbols
+                            where symb.Name == Symbol.Name
+                            select symb).SingleOrDefault();
+
+      if (SubTrees.Count < Grammar.GetMinSubtreeCount(matchingSymbol)) return false;
+      else if (SubTrees.Count > Grammar.GetMaxSubtreeCount(matchingSymbol)) return false;
+      else for (int i = 0; i < SubTrees.Count; i++) {
+          if (!GetAllowedSymbols(i).Select(x => x.Name).Contains(SubTrees[i].Symbol.Name)) return false;
+          if (!SubTrees[i].IsValidTree()) return false;
+        }
+      return true;
+    }
   }
 }

@@ -32,7 +32,7 @@ namespace HeuristicLab.Problems.ArtificialAnt {
   public class ArtificialAntExpressionGrammar : DefaultSymbolicExpressionGrammar {
 
     public ArtificialAntExpressionGrammar()
-      : base(0, 3, 0, 3) {
+      : base() {
       Initialize();
     }
 
@@ -44,42 +44,34 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       var left = new Left();
       var right = new Right();
       var defun = new Defun();
-      var invoke = new InvokeFunction();
       var allSymbols = new List<Symbol>() { ifFoodAhead, prog2, prog3, move, left, right };
       var nonTerminalSymbols = new List<Symbol>() { ifFoodAhead, prog2, prog3 };
-      SetMinSubTreeCount(ifFoodAhead, 2);
-      SetMaxSubTreeCount(ifFoodAhead, 2);
-      SetMinSubTreeCount(prog2, 2);
-      SetMaxSubTreeCount(prog2, 2);
-      SetMinSubTreeCount(prog3, 3);
-      SetMaxSubTreeCount(prog3, 3);
-      SetMinSubTreeCount(move, 0);
-      SetMaxSubTreeCount(move, 0);
-      SetMinSubTreeCount(left, 0);
-      SetMaxSubTreeCount(left, 0);
-      SetMinSubTreeCount(right, 0);
-      SetMaxSubTreeCount(right, 0);
-      foreach (var sym in allSymbols) {
-        AddAllowedSymbols(StartSymbol, 0, sym);
-        AddAllowedSymbols(defun, 0, sym);
 
-        for (int i = 0; i < GetMaxSubTreeCount(invoke); i++) {
-          AddAllowedSymbols(invoke, i, sym);
-        }
-      }
-      foreach (var sym in nonTerminalSymbols) {
-        for (int argIndex = 0; argIndex < GetMaxSubTreeCount(sym); argIndex++) {
-          AddAllowedSymbols(sym, argIndex, invoke);
-        }
-      }
-      foreach (var nonTerminal in nonTerminalSymbols) {
-        foreach (var child in allSymbols) {
-          for (int argIndex = 0; argIndex < GetMaxSubTreeCount(nonTerminal); argIndex++) {
-            AddAllowedSymbols(nonTerminal, argIndex, child);
+      allSymbols.ForEach(s => AddSymbol(s));
+      SetMinSubtreeCount(ifFoodAhead, 2);
+      SetMaxSubtreeCount(ifFoodAhead, 2);
+      SetMinSubtreeCount(prog2, 2);
+      SetMaxSubtreeCount(prog2, 2);
+      SetMinSubtreeCount(prog3, 3);
+      SetMaxSubtreeCount(prog3, 3);
+      SetMinSubtreeCount(move, 0);
+      SetMaxSubtreeCount(move, 0);
+      SetMinSubtreeCount(left, 0);
+      SetMaxSubtreeCount(left, 0);
+      SetMinSubtreeCount(right, 0);
+      SetMaxSubtreeCount(right, 0);
+
+      // each symbols is allowed as child of the start symbol
+      allSymbols.ForEach(s => SetAllowedChild(StartSymbol, s, 0));
+
+      // each symbol is allowed as child of all other symbols (except for terminals that have MaxSubtreeCount == 0
+      foreach (var parent in allSymbols) {
+        for (int argIndex = 0; argIndex < GetMaxSubtreeCount(parent); argIndex++) {
+          foreach (var child in allSymbols) {
+            SetAllowedChild(parent, child, argIndex);
           }
         }
       }
-
     }
   }
 }

@@ -66,7 +66,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       SymbolicExpressionTree parent1 = ParentsParameter.ActualValue[1];
 
       IRandom random = RandomParameter.ActualValue;
-      ISymbolicExpressionGrammar grammar = SymbolicExpressionGrammarParameter.ActualValue;
 
       // randomly swap parents to remove a possible bias from selection (e.g. when using gender-specific selection)
       if (random.NextDouble() < 0.5) {
@@ -76,7 +75,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       }
 
       bool success;
-      SymbolicExpressionTree result = Cross(random, grammar, parent0, parent1,
+      SymbolicExpressionTree result = Cross(random, parent0, parent1,
         MaxTreeSizeParameter.ActualValue, MaxTreeHeightParameter.ActualValue, out success);
       
       if (!success) FailedCrossoverEvents.Value++;
@@ -88,7 +87,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       return base.Apply();
     }
 
-    protected abstract SymbolicExpressionTree Cross(IRandom random, ISymbolicExpressionGrammar grammar,
+    protected abstract SymbolicExpressionTree Cross(IRandom random, 
       SymbolicExpressionTree parent0, SymbolicExpressionTree parent1,
       IntValue maxTreeSize, IntValue maxTreeHeight, out bool success);
   }

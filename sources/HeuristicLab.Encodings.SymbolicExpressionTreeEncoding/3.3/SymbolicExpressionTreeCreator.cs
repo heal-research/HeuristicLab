@@ -34,13 +34,35 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [Item("SymbolicExpressionTreeCreator", "A base class for operators creating symbolic expression trees.")]
   [StorableClass]
   public abstract class SymbolicExpressionTreeCreator : SymbolicExpressionTreeOperator, ISolutionCreator {
+    private const string MaxFunctionDefinitionsParameterName = "MaxFunctionDefinitions";
+    private const string MaxFunctionArgumentsParameterName = "MaxFunctionArguments";
+    #region Parameter Properties
+    public IValueLookupParameter<IntValue> MaxFunctionDefinitionsParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters[MaxFunctionDefinitionsParameterName]; }
+    }
+    public IValueLookupParameter<IntValue> MaxFunctionArgumentsParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters[MaxFunctionArgumentsParameterName]; }
+    }
+    #endregion
+
+    #region Propeties
+    public IntValue MaxFunctionDefinitions {
+      get { return MaxFunctionDefinitionsParameter.ActualValue; }
+    }
+    public IntValue MaxFunctionArguments {
+      get { return MaxFunctionArgumentsParameter.ActualValue; }
+    }
+
+    #endregion
     protected SymbolicExpressionTreeCreator()
       : base() {
+      Parameters.Add(new ValueLookupParameter<IntValue>(MaxFunctionDefinitionsParameterName, "Maximal number of function definitions in the symbolic expression tree."));
+      Parameters.Add(new ValueLookupParameter<IntValue>(MaxFunctionArgumentsParameterName, "Maximal number of arguments of automatically defined functions in the symbolic expression tree."));
     }
 
     public sealed override IOperation Apply() {
-      SymbolicExpressionTreeParameter.ActualValue = Create(RandomParameter.ActualValue, SymbolicExpressionGrammarParameter.ActualValue,
-        MaxTreeSizeParameter.ActualValue, MaxTreeHeightParameter.ActualValue);
+      SymbolicExpressionTreeParameter.ActualValue = Create(Random, SymbolicExpressionGrammar,
+        MaxTreeSize, MaxTreeHeight, MaxFunctionDefinitions, MaxFunctionArguments);
 
       foreach (var node in SymbolicExpressionTreeParameter.ActualValue.IterateNodesPostfix()) {
         node.ResetLocalParameters(RandomParameter.ActualValue);
@@ -48,6 +70,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       return null;
     }
 
-    protected abstract SymbolicExpressionTree Create(IRandom random, ISymbolicExpressionGrammar grammar, IntValue maxTreeSize, IntValue maxTreeHeight);
+    protected abstract SymbolicExpressionTree Create(
+      IRandom random,
+      ISymbolicExpressionGrammar grammar,
+      IntValue maxTreeSize, IntValue maxTreeHeight,
+      IntValue maxFunctionDefinitions, IntValue maxFunctionArguments
+      );
   }
 }

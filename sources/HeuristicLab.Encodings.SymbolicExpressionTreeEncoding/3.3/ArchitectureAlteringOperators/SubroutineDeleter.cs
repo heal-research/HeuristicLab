@@ -62,7 +62,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
       if (functionDefiningBranches.Count() == 0)
         // no ADF to delete => abort
         return false;
-      var selectedDefunBranch = (DefunTreeNode)SelectRandomBranch(random, functionDefiningBranches);
+      var selectedDefunBranch = functionDefiningBranches.SelectRandom(random);
       // remove the selected defun
       int defunSubtreeIndex = symbolicExpressionTree.Root.SubTrees.IndexOf(selectedDefunBranch);
       symbolicExpressionTree.Root.RemoveSubTree(defunSubtreeIndex);
@@ -102,11 +102,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
       }
       Debug.Assert(grammar.IsValidExpression(symbolicExpressionTree));
       return true;
-    }
-
-    private static SymbolicExpressionTreeNode SelectRandomBranch(IRandom random, IEnumerable<DefunTreeNode> branches) {
-      var list = branches.ToList();
-      return list[random.Next(list.Count)];
     }
   }
 }

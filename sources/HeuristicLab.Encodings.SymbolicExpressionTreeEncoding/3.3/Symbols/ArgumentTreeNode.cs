@@ -24,17 +24,18 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols {
   [StorableClass]
   public sealed class ArgumentTreeNode : SymbolicExpressionTreeNode {
-    private int argumentIndex;
-    [Storable]
-    public int ArgumentIndex {
-      get { return argumentIndex; }
-      set { argumentIndex = value; }
+    public new Argument Symbol {
+      get { return (Argument)base.Symbol; }
+      set {
+        if (value == null) throw new ArgumentNullException();
+        if(!(value is Argument)) throw new ArgumentException();
+        base.Symbol = value; 
+      }
     }
-
+    
     // copy constructor
     private ArgumentTreeNode(ArgumentTreeNode original)
       : base(original) {
-      argumentIndex = original.argumentIndex;
     }
 
     public ArgumentTreeNode(Argument argSymbol) : base(argSymbol) { }

@@ -150,6 +150,14 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       get { return MaxExpressionDepthParameter.Value; }
       set { MaxExpressionDepthParameter.Value = value; }
     }
+    public IntValue MaxFunctionDefinitions {
+      get { return MaxFunctionDefinitionsParameter.Value; }
+      set { MaxFunctionDefinitionsParameter.Value = value; }
+    }
+    public IntValue MaxFunctionArguments {
+      get { return MaxFunctionArgumentsParameter.Value; }
+      set { MaxFunctionArgumentsParameter.Value = value; }
+    }
     public SymbolicExpressionTreeCreator SolutionCreator {
       get { return SolutionCreatorParameter.Value; }
       set { SolutionCreatorParameter.Value = value; }
@@ -167,8 +175,8 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     IEvaluator IProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
     }
-    public ISymbolicExpressionGrammar ArtificialAntExpressionGrammar {
-      get { return ArtificialAntExpressionGrammarParameter.Value; }
+    public GlobalSymbolicExpressionGrammar ArtificialAntExpressionGrammar {
+      get { return (GlobalSymbolicExpressionGrammar)ArtificialAntExpressionGrammarParameter.Value; }
     }
     public ISingleObjectiveSolutionsVisualizer Visualizer {
       get { return VisualizerParameter.Value; }
@@ -190,18 +198,18 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       : base() {
       SymbolicExpressionTreeCreator creator = new ProbabilisticTreeCreator();
       Evaluator evaluator = new Evaluator();
-      ArtificialAntExpressionGrammar grammar = new ArtificialAntExpressionGrammar();
       BestAntTrailVisualizer visualizer = new BestAntTrailVisualizer();
       BoolMatrix world = new BoolMatrix(santaFeAntTrail);
+      ISymbolicExpressionGrammar grammar = new GlobalSymbolicExpressionGrammar(new ArtificialAntExpressionGrammar());
       Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to true as the Artificial Ant Problem is a maximization problem.", new BoolValue(true)));
       Parameters.Add(new ValueParameter<SymbolicExpressionTreeCreator>("SolutionCreator", "The operator which should be used to create new artificial ant solutions.", creator));
       Parameters.Add(new ValueParameter<Evaluator>("Evaluator", "The operator which should be used to evaluate artificial ant solutions.", evaluator));
       Parameters.Add(new ValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this artificial ant instance.", new DoubleValue(89)));
-      Parameters.Add(new ValueParameter<ISymbolicExpressionGrammar>("ArtificialAntExpressionGrammar", "The grammar that should be used for artificial ant expressions.", grammar));
       Parameters.Add(new ValueParameter<IntValue>("MaxExpressionLength", "Maximal length of the expression to control the artificial ant.", new IntValue(100)));
       Parameters.Add(new ValueParameter<IntValue>("MaxExpressionDepth", "Maximal depth of the expression to control the artificial ant.", new IntValue(10)));
       Parameters.Add(new ValueParameter<IntValue>("MaxFunctionDefinitions", "Maximal number of automatically defined functions in the expression to control the artificial ant.", new IntValue(3)));
       Parameters.Add(new ValueParameter<IntValue>("MaxFunctionArguments", "Maximal number of arguments of automatically defined functions in the expression to control the artificial ant.", new IntValue(3)));
+      Parameters.Add(new ValueParameter<ISymbolicExpressionGrammar>("ArtificialAntExpressionGrammar", "The grammar that should be used for artificial ant expressions.", grammar));
       Parameters.Add(new ValueParameter<BoolMatrix>("World", "The world for the artificial ant with scattered food items.", world));
       Parameters.Add(new ValueParameter<IntValue>("MaxTimeSteps", "The number of time steps the artificial ant has available to collect all food items.", new IntValue(600)));
       Parameters.Add(new ValueParameter<ISingleObjectiveSolutionsVisualizer>("Visualizer", "The operator which should be used to visualize artificial ant solutions.", visualizer));
@@ -291,6 +299,18 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
       Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       VisualizerParameter.ValueChanged += new EventHandler(VisualizerParameter_ValueChanged);
+      MaxFunctionArgumentsParameter.ValueChanged += new EventHandler(MaxFunctionArgumentsParameter_ValueChanged);
+      MaxFunctionArguments.ValueChanged += new EventHandler(MaxFunctionArgumentsParameter_ValueChanged);
+      MaxFunctionDefinitionsParameter.ValueChanged += new EventHandler(MaxFunctionDefinitionsParameter_ValueChanged);
+      MaxFunctionDefinitions.ValueChanged += new EventHandler(MaxFunctionDefinitionsParameter_ValueChanged);
+    }
+
+    void MaxFunctionDefinitionsParameter_ValueChanged(object sender, EventArgs e) {
+      ArtificialAntExpressionGrammar.MaxFunctionDefinitions = MaxFunctionDefinitions.Value;
+    }
+
+    void MaxFunctionArgumentsParameter_ValueChanged(object sender, EventArgs e) {
+      ArtificialAntExpressionGrammar.MaxFunctionArguments = MaxFunctionArguments.Value;
     }
 
     private void InitializeOperators() {
@@ -346,6 +366,10 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       foreach (SymbolicExpressionTreeArchitectureAlteringOperator op in Operators.OfType<SymbolicExpressionTreeArchitectureAlteringOperator>()) {
         op.MaxFunctionDefiningBranchesParameter.ActualName = MaxFunctionDefinitionsParameter.Name;
         op.MaxFunctionArgumentsParameter.ActualName = MaxFunctionArgumentsParameter.Name;
+      }
+      foreach (SymbolicExpressionTreeCreator op in Operators.OfType<SymbolicExpressionTreeCreator>()) {
+        op.MaxFunctionArgumentsParameter.ActualName = MaxFunctionArgumentsParameter.Name;
+        op.MaxFunctionDefinitionsParameter.ActualName = MaxFunctionDefinitionsParameter.Name;
       }
     }
 

@@ -33,6 +33,14 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols {
         return false;
       }
     }
+    public string FunctionName { get; set; }
+
+    public InvokeFunction(string functionName)
+      : base() {
+      this.FunctionName = functionName;
+      this.name = "Invoke: " + functionName;
+    }
+
     public override SymbolicExpressionTreeNode CreateTreeNode() {
       return new InvokeFunctionTreeNode(this);
     }

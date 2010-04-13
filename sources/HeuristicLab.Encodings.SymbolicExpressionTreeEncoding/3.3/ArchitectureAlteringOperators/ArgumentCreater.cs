@@ -59,16 +59,20 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
 
       var functionDefiningBranches = symbolicExpressionTree.IterateNodesPrefix().OfType<DefunTreeNode>();
 
-      var allowedArgumentIndexes = Enumerable.Range(0, maxFunctionArguments);
-
       if (functionDefiningBranches.Count() == 0)
         // no function defining branch found => abort
         return false;
+
       // select a random function defining branch
-      var selectedDefunBranch = SelectRandomBranch(random, functionDefiningBranches);
+      var selectedDefunBranch = functionDefiningBranches.SelectRandom(random);
+      var definedArguments = (from symbol in selectedDefunBranch.Grammar.Symbols.OfType<Argument>()
+                              select symbol.ArgumentIndex).Distinct();
+      if (definedArguments.Count() >= maxFunctionArguments)
+        // max number of arguments reached => abort
+        return false;
       // select a random cut point in the function defining branch
       // the branch at the cut point is to be replaced by a new argument node
-      var cutPoints = (from node in IterateNodesPrefix(selectedDefunBranch)
+      var cutPoints = (from node in selectedDefunBranch.IterateNodesPrefix()
                        where node.SubTrees.Count > 0
                        from subtree in node.SubTrees
                        select new { Parent = node, ReplacedChildIndex = node.SubTrees.IndexOf(subtree), ReplacedChild = subtree }).ToList();
@@ -77,35 +81,43 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
         // no cut point found => abort;
         return false;
       var selectedCutPoint = cutPoints[random.Next(cutPoints.Count)];
-      var existingArguments = from node in IterateNodesPrefix(selectedDefunBranch)
-                              let argNode = node as ArgumentTreeNode
-                              where argNode != null
-                              select argNode;
-      var newArgumentIndex = allowedArgumentIndexes.Except(existingArguments.Select(x => x.ArgumentIndex)).First();
+      var allowedArgumentIndexes = Enumerable.Range(0, maxFunctionArguments);
+      var newArgumentIndex = allowedArgumentIndexes.Except(definedArguments).First();
       // replace the branch at the cut point with an argument node
       var newArgNode = MakeArgumentNode(newArgumentIndex);
       var replacedBranch = selectedCutPoint.ReplacedChild;
       selectedCutPoint.Parent.RemoveSubTree(selectedCutPoint.ReplacedChildIndex);
       selectedCutPoint.Parent.InsertSubTree(selectedCutPoint.ReplacedChildIndex, newArgNode);
-      // find all invokations of the selected ADF and attach a cloned version of the originally cut out branch
+      // find all invocations of the selected ADF and attach a cloned version of the replaced branch (with all argument-nodes expanded)
       var invocationNodes = from node in symbolicExpressionTree.IterateNodesPrefix().OfType<InvokeFunctionTreeNode>()
-                            where node.InvokedFunctionName == selectedDefunBranch.Name
+                            where node.Symbol.FunctionName == selectedDefunBranch.FunctionName
                             select node;
-      // append a new argument branch after preprocessing
       foreach (var invocationNode in invocationNodes) {
+        // append a new argument branch after expanding all argument nodes
         var clonedBranch = (SymbolicExpressionTreeNode)replacedBranch.Clone();
         ReplaceArgumentsInBranch(clonedBranch, invocationNode.SubTrees);
         invocationNode.InsertSubTree(newArgumentIndex, clonedBranch);
       }
-      // adapt the known functions informations
+      // increase expected number of arguments of function defining branch
+      // it's possible that the number of actually referenced arguments was reduced (all references were replaced by a single new argument)
+      // but the number of expected arguments is increased anyway
       selectedDefunBranch.NumberOfArguments++;
-      selectedDefunBranch.AddDynamicSymbol("ARG" + newArgumentIndex, 0);
+      selectedDefunBranch.Grammar.AddSymbol(newArgNode.Symbol);
+      selectedDefunBranch.Grammar.SetMinSubtreeCount(newArgNode.Symbol, 0);
+      selectedDefunBranch.Grammar.SetMaxSubtreeCount(newArgNode.Symbol, 0);
+      // allow the argument as child of any other symbol
+      foreach (var symb in selectedDefunBranch.Grammar.Symbols)
+        for (int i = 0; i < selectedDefunBranch.Grammar.GetMaxSubtreeCount(symb); i++) {
+          selectedDefunBranch.Grammar.SetAllowedChild(symb, newArgNode.Symbol, i);
+        }
       foreach (var subtree in symbolicExpressionTree.Root.SubTrees) {
-        if (subtree.DynamicSymbols.Contains(selectedDefunBranch.Name)) {
-          subtree.SetDynamicSymbolArgumentCount(selectedDefunBranch.Name, selectedDefunBranch.NumberOfArguments);
+        // when the changed function is known in the branch then update the number of arguments
+        var matchingSymbol = subtree.Grammar.Symbols.Where(s => s.Name == selectedDefunBranch.FunctionName).SingleOrDefault();
+        if (matchingSymbol != null) {
+          subtree.Grammar.SetMinSubtreeCount(matchingSymbol, selectedDefunBranch.NumberOfArguments);
+          subtree.Grammar.SetMaxSubtreeCount(matchingSymbol, selectedDefunBranch.NumberOfArguments);
         }
       }
-      Debug.Assert(grammar.IsValidExpression(symbolicExpressionTree));
       return true;
     }
 
@@ -116,7 +128,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
         var argNode = subtree as ArgumentTreeNode;
         if (argNode != null) {
           // replace argument nodes by a clone of the original subtree that provided the result for the argument node
-          branch.SubTrees[subtreeIndex] = (SymbolicExpressionTreeNode)argumentTrees[argNode.ArgumentIndex].Clone();
+          branch.SubTrees[subtreeIndex] = (SymbolicExpressionTreeNode)argumentTrees[argNode.Symbol.ArgumentIndex].Clone();
         } else {
           // recursively replace arguments in all branches
           ReplaceArgumentsInBranch(subtree, argumentTrees);
@@ -124,23 +136,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
       }
     }
 
-    private static IEnumerable<SymbolicExpressionTreeNode> IterateNodesPrefix(SymbolicExpressionTreeNode tree) {
-      yield return tree;
-      foreach (var subTree in tree.SubTrees) {
-        foreach (var node in IterateNodesPrefix(subTree)) {
-          yield return node;
-        }
-      }
-    }
-
-    private static T SelectRandomBranch<T>(IRandom random, IEnumerable<T> branches) {
-      var list = branches.ToList();
-      return list[random.Next(list.Count)];
-    }
-
     private static SymbolicExpressionTreeNode MakeArgumentNode(int argIndex) {
-      var node = (ArgumentTreeNode)(new Argument()).CreateTreeNode();
-      node.ArgumentIndex = argIndex;
+      var node = (ArgumentTreeNode)(new Argument(argIndex)).CreateTreeNode();
       return node;
     }
   }

@@ -28,6 +28,7 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols;
 
 namespace HeuristicLab.Problems.ArtificialAnt {
   public class AntInterpreter {
+
     public int MaxTimeSteps { get; set; }
     public int FoodEaten { get; set; }
     private BoolMatrix world;
@@ -47,6 +48,16 @@ namespace HeuristicLab.Problems.ArtificialAnt {
         expression = value;
       }
     }
+
+    private SymbolicExpressionTreeNode FindMatchingFunction(string name) {
+      foreach (var defunBranch in expression.Root.SubTrees.OfType<DefunTreeNode>()) {
+        if (defunBranch.FunctionName == name) return defunBranch;
+      }
+      throw new ArgumentException("Function definition for " + name + " not found.");
+    }
+
+
+
     public int ElapsedTime { get; set; }
     private int currentDirection;
     private int currentAntLocationRow;
@@ -80,8 +91,10 @@ namespace HeuristicLab.Problems.ArtificialAnt {
 
     public void Step() {
       // expression evaluated completly => start at root again
-      if (nodeStack.Count == 0)
+      if (nodeStack.Count == 0) {
         nodeStack.Push(Expression.ResultProducingExpression);
+      }
+
       var currentNode = nodeStack.Pop();
       if (currentNode.Symbol is Left) {
         currentDirection = (currentDirection + 3) % 4;
@@ -115,17 +128,17 @@ namespace HeuristicLab.Problems.ArtificialAnt {
         return;
       } else if (currentNode.Symbol is InvokeFunction) {
         var invokeNode = currentNode as InvokeFunctionTreeNode;
-        var funBranch = (from node in expression.Root.SubTrees
-                         let funNode = node as DefunTreeNode
-                         where funNode != null
-                         where funNode.Name == invokeNode.InvokedFunctionName
-                         select funNode).FirstOrDefault();
-        if (funBranch == null) throw new InvalidOperationException("Can't find definition of function " + invokeNode.InvokedFunctionName);
-        nodeStack.Push(funBranch.SubTrees[0]);
-        foreach (var subTree in invokeNode.SubTrees)
-          nodeStack.Push(subTree);
-      } else if(currentNode.Symbol is Argument) {
-        // do nothing
+        var functionDefinition = (SymbolicExpressionTreeNode)FindMatchingFunction(invokeNode.InvokedFunctionName).Clone();
+        var argumentCutPoints = (from node in functionDefinition.IterateNodesPrefix()
+                                 where node.SubTrees.Count > 0
+                                 from subtree in node.SubTrees
+                                 where subtree is ArgumentTreeNode
+                                 select new { Parent = node, Argument = subtree.Symbol as Argument, ChildIndex = node.SubTrees.IndexOf(subtree) }).ToList();
+        foreach (var cutPoint in argumentCutPoints) {
+          cutPoint.Parent.RemoveSubTree(cutPoint.ChildIndex);
+          cutPoint.Parent.InsertSubTree(cutPoint.ChildIndex, (SymbolicExpressionTreeNode)invokeNode.SubTrees[cutPoint.Argument.ArgumentIndex].Clone());
+        }
+        nodeStack.Push(functionDefinition.SubTrees[0]);
       } else {
         throw new InvalidOperationException(currentNode.Symbol.ToString());
       }

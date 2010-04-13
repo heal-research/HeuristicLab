@@ -38,8 +38,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SubroutineCreaterTest.cs" />
-    <Compile Include="SubtreeCrossoverTest.cs" />
+    <Compile Include="ArgumentCreaterTest.cs" />
+    <Compile Include="ArgumentDeleterTest.cs" />
+    <Compile Include="Grammars.cs" />
+    <Compile Include="SubtreeCrossoverTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Util.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProbabilisticTreeCreaterTest.cs" />
   </ItemGroup>

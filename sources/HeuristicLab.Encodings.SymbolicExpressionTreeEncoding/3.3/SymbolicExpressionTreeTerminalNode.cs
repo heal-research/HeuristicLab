@@ -36,13 +36,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       : base(original) {
     }
 
-    protected internal override void AddSubTree(SymbolicExpressionTreeNode tree) {
+    public override void AddSubTree(SymbolicExpressionTreeNode tree) {
       throw new NotSupportedException();
     }
-    protected internal override void InsertSubTree(int index, SymbolicExpressionTreeNode tree) {
+    public override void InsertSubTree(int index, SymbolicExpressionTreeNode tree) {
       throw new NotSupportedException();
     }
-    protected internal override void RemoveSubTree(int index) {
+    public override void RemoveSubTree(int index) {
       throw new NotSupportedException();
     }
     public override IList<SymbolicExpressionTreeNode> SubTrees {

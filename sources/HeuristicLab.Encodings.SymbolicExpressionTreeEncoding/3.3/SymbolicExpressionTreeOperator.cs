@@ -44,6 +44,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       get { return false; }
     }
 
+    #region Parameter Properties
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters[RandomParameterName]; }
     }
@@ -59,6 +60,25 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public ILookupParameter<ISymbolicExpressionGrammar> SymbolicExpressionGrammarParameter {
       get { return (ILookupParameter<ISymbolicExpressionGrammar>)Parameters[SymbolicExpressionGrammarParameterName]; }
     }
+    #endregion
+
+    #region Properties
+    public IRandom Random {
+      get { return RandomParameter.ActualValue; }
+    }
+    public SymbolicExpressionTree SymbolicExpressionTree {
+      get { return SymbolicExpressionTreeParameter.ActualValue; }
+    }
+    public IntValue MaxTreeSize {
+      get { return MaxTreeSizeParameter.ActualValue; }
+    }
+    public IntValue MaxTreeHeight {
+      get { return MaxTreeHeightParameter.ActualValue; }
+    }
+    public ISymbolicExpressionGrammar SymbolicExpressionGrammar {
+      get { return SymbolicExpressionGrammarParameter.ActualValue; }
+    }
+    #endregion
 
     protected SymbolicExpressionTreeOperator()
       : base() {

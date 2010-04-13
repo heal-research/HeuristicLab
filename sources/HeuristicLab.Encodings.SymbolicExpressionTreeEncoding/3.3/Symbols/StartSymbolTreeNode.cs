@@ -23,20 +23,16 @@ using System;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols {
   [StorableClass]
-  public sealed class InvokeFunctionTreeNode : SymbolicExpressionTreeNode {
-    public new InvokeFunction Symbol {
-      get { return (InvokeFunction)base.Symbol; }
-    }
-
+  public sealed class StartSymbolTreeNode : SymbolicExpressionTreeNode {
     // copy constructor
-    private InvokeFunctionTreeNode(InvokeFunctionTreeNode original)
+    private StartSymbolTreeNode(StartSymbolTreeNode original)
       : base(original) {
     }
 
-    public InvokeFunctionTreeNode(InvokeFunction invokeSymbol) : base(invokeSymbol) { }
+    public StartSymbolTreeNode(StartSymbol startSymbol) : base(startSymbol) { }
 
     public override object Clone() {
-      return new InvokeFunctionTreeNode(this);
+      return new StartSymbolTreeNode(this);
     }
   }
 }

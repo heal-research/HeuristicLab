@@ -30,14 +30,17 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   public interface ISymbolicExpressionGrammar : IItem {
     Symbol StartSymbol { get; }
-    Symbol ProgramRootSymbol { get; }
-    IEnumerable<Symbol> GetAllowedSymbols(Symbol parent, int argumentIndex);
+    void AddSymbol(Symbol symbol);
+    void RemoveSymbol(Symbol symbol);
+    IEnumerable<Symbol> Symbols { get; }
+    void SetAllowedChild(Symbol parent, Symbol child, int argumentIndex);
+    bool IsAllowedChild(Symbol parent, Symbol child, int argumentIndex);
     int GetMinExpressionLength(Symbol start);
     int GetMaxExpressionLength(Symbol start);
     int GetMinExpressionDepth(Symbol start);
-    int GetMinSubTreeCount(Symbol start);
-    int GetMaxSubTreeCount(Symbol start);
-
-    bool IsValidExpression(SymbolicExpressionTree expression);
+    int GetMinSubtreeCount(Symbol symbol);
+    void SetMinSubtreeCount(Symbol symbol, int value);
+    int GetMaxSubtreeCount(Symbol symbol);
+    void SetMaxSubtreeCount(Symbol symbol, int value);
   }
 }

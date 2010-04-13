@@ -33,79 +33,154 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [Item("DefaultSymbolicExpressionGrammar", "Represents a grammar that defines the syntax of symbolic expression trees.")]
   public class DefaultSymbolicExpressionGrammar : Item, ISymbolicExpressionGrammar {
     [Storable]
-    private int minFunctionDefinitions;
-    [Storable]
-    private int maxFunctionDefinitions;
-    [Storable]
-    private int minFunctionArguments;
-    [Storable]
-    private int maxFunctionArguments;
-
-    [Storable]
     private Dictionary<string, int> minSubTreeCount;
     [Storable]
     private Dictionary<string, int> maxSubTreeCount;
     [Storable]
-    private Dictionary<string, List<HashSet<string>>> allowedFunctions;
+    private Dictionary<string, List<HashSet<string>>> allowedChildSymbols;
     [Storable]
     private HashSet<Symbol> allSymbols;
 
-    public DefaultSymbolicExpressionGrammar(int minFunctionDefinitions, int maxFunctionDefinitions, int minFunctionArguments, int maxFunctionArguments)
+    public DefaultSymbolicExpressionGrammar()
       : base() {
-      this.minFunctionDefinitions = minFunctionDefinitions;
-      this.maxFunctionDefinitions = maxFunctionDefinitions;
-      this.minFunctionArguments = minFunctionArguments;
-      this.maxFunctionArguments = maxFunctionArguments;
-      minSubTreeCount = new Dictionary<string, int>();
-      maxSubTreeCount = new Dictionary<string, int>();
-      allowedFunctions = new Dictionary<string, List<HashSet<string>>>();
-      allSymbols = new HashSet<Symbol>();
-      cachedMinExpressionLength = new Dictionary<Symbol, int>();
-      cachedMaxExpressionLength = new Dictionary<Symbol, int>();
-      cachedMinExpressionDepth = new Dictionary<Symbol, int>();
-      Initialize();
+      Reset();
     }
 
     private void Initialize() {
-      programRootSymbol = new ProgramRootSymbol();
-      var defunSymbol = new Defun();
       startSymbol = new StartSymbol();
-      var invokeFunctionSymbol = new InvokeFunction();
+      AddSymbol(startSymbol);
+      SetMinSubtreeCount(startSymbol, 1);
+      SetMaxSubtreeCount(startSymbol, 1);
+    }
 
-      SetMinSubTreeCount(programRootSymbol, minFunctionDefinitions + 1);
-      SetMaxSubTreeCount(programRootSymbol, maxFunctionDefinitions + 1);
-      SetMinSubTreeCount(startSymbol, 1);
-      SetMaxSubTreeCount(startSymbol, 1);
-      SetMinSubTreeCount(defunSymbol, 1);
-      SetMaxSubTreeCount(defunSymbol, 1);
-      SetMinSubTreeCount(invokeFunctionSymbol, minFunctionArguments);
-      SetMaxSubTreeCount(invokeFunctionSymbol, maxFunctionArguments);
-      AddAllowedSymbols(programRootSymbol, 0, startSymbol);
-      for (int argumentIndex = 1; argumentIndex < maxFunctionDefinitions + 1; argumentIndex++) {
-        AddAllowedSymbols(programRootSymbol, argumentIndex, defunSymbol);
+    #region ISymbolicExpressionGrammar Members
+
+    private Symbol startSymbol;
+    public Symbol StartSymbol {
+      get { return startSymbol; }
+      set { startSymbol = value; }
+    }
+
+    protected void Reset() {
+      minSubTreeCount = new Dictionary<string, int>();
+      maxSubTreeCount = new Dictionary<string, int>();
+      allowedChildSymbols = new Dictionary<string, List<HashSet<string>>>();
+      allSymbols = new HashSet<Symbol>();
+      cachedMinExpressionLength = new Dictionary<string, int>();
+      cachedMaxExpressionLength = new Dictionary<string, int>();
+      cachedMinExpressionDepth = new Dictionary<string, int>();
+      Initialize();
+    }
+
+    public void AddSymbol(Symbol symbol) {
+      if (allSymbols.Any(s => s.Name == symbol.Name)) throw new ArgumentException("Symbol " + symbol + " is already defined.");
+      allSymbols.Add(symbol);
+      allowedChildSymbols[symbol.Name] = new List<HashSet<string>>();
+      ClearCaches();
+    }
+
+    public void RemoveSymbol(Symbol symbol) {
+      allSymbols.RemoveWhere(s => s.Name == symbol.Name);
+      minSubTreeCount.Remove(symbol.Name);
+      maxSubTreeCount.Remove(symbol.Name);
+      allowedChildSymbols.Remove(symbol.Name);
+      ClearCaches();
+    }
+
+    public IEnumerable<Symbol> Symbols {
+      get { return allSymbols.AsEnumerable(); }
+    }
+
+    public void SetAllowedChild(Symbol parent, Symbol child, int argumentIndex) {
+      if (!allSymbols.Any(s => s.Name == parent.Name)) throw new ArgumentException("Unknown symbol: " + parent, "parent");
+      if (!allSymbols.Any(s => s.Name == child.Name)) throw new ArgumentException("Unknown symbol: " + child, "child");
+      if (argumentIndex >= GetMaxSubtreeCount(parent)) throw new ArgumentException("Symbol " + parent + " can have only " + GetMaxSubtreeCount(parent) + " subtrees.");
+      allowedChildSymbols[parent.Name][argumentIndex].Add(child.Name);
+      ClearCaches();
+    }
+
+    public bool IsAllowedChild(Symbol parent, Symbol child, int argumentIndex) {
+      if (!allSymbols.Any(s => s.Name == parent.Name)) throw new ArgumentException("Unknown symbol: " + parent, "parent");
+      if (!allSymbols.Any(s => s.Name == child.Name)) throw new ArgumentException("Unknown symbol: " + child, "child");
+      if (argumentIndex >= GetMaxSubtreeCount(parent)) throw new ArgumentException("Symbol " + parent + " can have only " + GetMaxSubtreeCount(parent) + " subtrees.");
+      if (allowedChildSymbols.ContainsKey(parent.Name)) return allowedChildSymbols[parent.Name][argumentIndex].Contains(child.Name);
+      return false;
+    }
+
+    private Dictionary<string, int> cachedMinExpressionLength;
+    public int GetMinExpressionLength(Symbol symbol) {
+      if (!allSymbols.Any(s => s.Name == symbol.Name)) throw new ArgumentException("Unknown symbol: " + symbol);
+      if (!cachedMinExpressionLength.ContainsKey(symbol.Name)) {
+        cachedMinExpressionLength[symbol.Name] = int.MaxValue; // prevent infinite recursion
+        long sumOfMinExpressionLengths = 1 + (from argIndex in Enumerable.Range(0, GetMinSubtreeCount(symbol))
+                                              let minForSlot = (long)(from s in allSymbols
+                                                                      where IsAllowedChild(symbol, s, argIndex)
+                                                                      select GetMinExpressionLength(s)).DefaultIfEmpty(0).Min()
+                                              select minForSlot).DefaultIfEmpty(0).Sum();
+
+        cachedMinExpressionLength[symbol.Name] = (int)Math.Min(sumOfMinExpressionLengths, int.MaxValue);
       }
+      return cachedMinExpressionLength[symbol.Name];
     }
 
-    public void AddAllowedSymbols(Symbol parent, int argumentIndex, Symbol allowedChild) {
-      allSymbols.Add(parent); allSymbols.Add(allowedChild);
-      if (!allowedFunctions.ContainsKey(parent.Name)) {
-        allowedFunctions[parent.Name] = new List<HashSet<string>>();
+    private Dictionary<string, int> cachedMaxExpressionLength;
+    public int GetMaxExpressionLength(Symbol symbol) {
+      if (!allSymbols.Any(s => s.Name == symbol.Name)) throw new ArgumentException("Unknown symbol: " + symbol);
+      if (!cachedMaxExpressionLength.ContainsKey(symbol.Name)) {
+        cachedMaxExpressionLength[symbol.Name] = int.MaxValue; // prevent infinite recursion
+        long sumOfMaxTrees = 1 + (from argIndex in Enumerable.Range(0, GetMaxSubtreeCount(symbol))
+                                  let maxForSlot = (long)(from s in allSymbols
+                                                          where IsAllowedChild(symbol, s, argIndex)
+                                                          select GetMaxExpressionLength(s)).DefaultIfEmpty(0).Max()
+                                  select maxForSlot).DefaultIfEmpty(0).Sum();
+        long limit = int.MaxValue;
+        cachedMaxExpressionLength[symbol.Name] = (int)Math.Min(sumOfMaxTrees, limit);
       }
-      while (allowedFunctions[parent.Name].Count <= argumentIndex)
-        allowedFunctions[parent.Name].Add(new HashSet<string>());
-      allowedFunctions[parent.Name][argumentIndex].Add(allowedChild.Name);
+      return cachedMaxExpressionLength[symbol.Name];
+    }
+
+    private Dictionary<string, int> cachedMinExpressionDepth;
+    public int GetMinExpressionDepth(Symbol symbol) {
+      if (!allSymbols.Any(s => s.Name == symbol.Name)) throw new ArgumentException("Unknown symbol: " + symbol);
+      if (!cachedMinExpressionDepth.ContainsKey(symbol.Name)) {
+        cachedMinExpressionDepth[symbol.Name] = int.MaxValue; // prevent infinite recursion
+        cachedMinExpressionDepth[symbol.Name] = 1 + (from argIndex in Enumerable.Range(0, GetMinSubtreeCount(symbol))
+                                                     let minForSlot = (from s in allSymbols
+                                                                       where IsAllowedChild(symbol, s, argIndex)
+                                                                       select GetMinExpressionDepth(s)).DefaultIfEmpty(0).Min()
+                                                     select minForSlot).DefaultIfEmpty(0).Max();
+      }
+      return cachedMinExpressionDepth[symbol.Name];
+    }
+
+    public void SetMaxSubtreeCount(Symbol symbol, int nSubTrees) {
+      if (!allSymbols.Any(s => s.Name == symbol.Name)) throw new ArgumentException("Unknown symbol: " + symbol);
+      maxSubTreeCount[symbol.Name] = nSubTrees;
+      while (allowedChildSymbols[symbol.Name].Count <= nSubTrees)
+        allowedChildSymbols[symbol.Name].Add(new HashSet<string>());
+      while (allowedChildSymbols[symbol.Name].Count > nSubTrees) {
+        allowedChildSymbols[symbol.Name].RemoveAt(allowedChildSymbols[symbol.Name].Count - 1);
+      }
       ClearCaches();
     }
 
-    public void SetMaxSubTreeCount(Symbol parent, int nSubTrees) {
-      maxSubTreeCount[parent.Name] = nSubTrees;
+    public void SetMinSubtreeCount(Symbol symbol, int nSubTrees) {
+      if (!allSymbols.Any(s => s.Name == symbol.Name)) throw new ArgumentException("Unknown symbol: " + symbol);
+      minSubTreeCount[symbol.Name] = nSubTrees;
       ClearCaches();
     }
 
-    public void SetMinSubTreeCount(Symbol parent, int nSubTrees) {
-      minSubTreeCount[parent.Name] = nSubTrees;
-      ClearCaches();
+    public int GetMinSubtreeCount(Symbol symbol) {
+      if (!allSymbols.Any(s => s.Name == symbol.Name)) throw new ArgumentException("Unknown symbol: " + symbol);
+      return minSubTreeCount[symbol.Name];
     }
+
+    public int GetMaxSubtreeCount(Symbol symbol) {
+      if (!allSymbols.Any(s => s.Name == symbol.Name)) throw new ArgumentException("Unknown symbol: " + symbol);
+      return maxSubTreeCount[symbol.Name];
+    }
+
+    #endregion
 
     private void ClearCaches() {
       cachedMinExpressionLength.Clear();
@@ -113,124 +188,28 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       cachedMinExpressionDepth.Clear();
     }
 
-    private void symbol_ToStringChanged(object sender, EventArgs e) {
-      OnToStringChanged();
+    //private void symbol_ToStringChanged(object sender, EventArgs e) {
+    //  OnToStringChanged();
+    //}
+
+    //private bool IsValidExpression(SymbolicExpressionTreeNode root) {
+    //  if (root.SubTrees.Count < root.GetMinSubtreeCount()) return false;
+    //  else if (root.SubTrees.Count > root.GetMaxSubtreeCount()) return false;
+    //  else for (int i = 0; i < root.SubTrees.Count; i++) {
+    //      if (!root.GetAllowedSymbols(i).Select(x => x.Name).Contains(root.SubTrees[i].Symbol.Name)) return false;
+    //      if (!IsValidExpression(root.SubTrees[i])) return false;
+    //    }
+    //  return true;
+    //}
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      DefaultSymbolicExpressionGrammar clone = (DefaultSymbolicExpressionGrammar)base.Clone(cloner);
+      clone.maxSubTreeCount = new Dictionary<string, int>(maxSubTreeCount);
+      clone.minSubTreeCount = new Dictionary<string, int>(minSubTreeCount);
+      clone.startSymbol = startSymbol;
+      clone.allowedChildSymbols = new Dictionary<string, List<HashSet<string>>>(allowedChildSymbols);
+      clone.allSymbols = new HashSet<Symbol>(allSymbols);
+      return clone;
     }
-
-    #region ISymbolicExpressionGrammar Members
-
-    private Symbol programRootSymbol;
-    public Symbol ProgramRootSymbol {
-      get { return programRootSymbol; }
-    }
-
-    private Symbol startSymbol;
-    public Symbol StartSymbol {
-      get { return startSymbol; }
-    }
-
-    public IEnumerable<Symbol> GetAllowedSymbols(Symbol parent, int argumentIndex) {
-      return from name in allowedFunctions[parent.Name][argumentIndex]
-             from sym in allSymbols
-             where name == sym.Name
-             select sym;
-    }
-
-
-    private Dictionary<Symbol, int> cachedMinExpressionLength;
-    public int GetMinExpressionLength(Symbol start) {
-      if (!cachedMinExpressionLength.ContainsKey(start)) {
-        cachedMinExpressionLength[start] = int.MaxValue; // prevent infinite recursion
-        cachedMinExpressionLength[start] = 1 + (from argIndex in Enumerable.Range(0, GetMinSubTreeCount(start))
-                                                let minForSlot = (from symbol in GetAllowedSymbols(start, argIndex)
-                                                                  select GetMinExpressionLength(symbol)).DefaultIfEmpty(0).Min()
-                                                select minForSlot).DefaultIfEmpty(0).Sum();
-      }
-      return cachedMinExpressionLength[start];
-    }
-
-    private Dictionary<Symbol, int> cachedMaxExpressionLength;
-    public int GetMaxExpressionLength(Symbol start) {
-      if (!cachedMaxExpressionLength.ContainsKey(start)) {
-        cachedMaxExpressionLength[start] = int.MaxValue; // prevent infinite recursion
-        long sumOfMaxTrees = 1 + (from argIndex in Enumerable.Range(0, GetMaxSubTreeCount(start))
-                                  let maxForSlot = (long)(from symbol in GetAllowedSymbols(start, argIndex)
-                                                          select GetMaxExpressionLength(symbol)).DefaultIfEmpty(0).Max()
-                                  select maxForSlot).DefaultIfEmpty(0).Sum();
-        long limit = int.MaxValue;
-        cachedMaxExpressionLength[start] = (int)Math.Min(sumOfMaxTrees, limit);
-      }
-      return cachedMaxExpressionLength[start];
-    }
-
-    private Dictionary<Symbol, int> cachedMinExpressionDepth;
-    public int GetMinExpressionDepth(Symbol start) {
-      if (!cachedMinExpressionDepth.ContainsKey(start)) {
-        cachedMinExpressionDepth[start] = int.MaxValue; // prevent infinite recursion
-        cachedMinExpressionDepth[start] = 1 + (from argIndex in Enumerable.Range(0, GetMinSubTreeCount(start))
-                                               let minForSlot = (from symbol in GetAllowedSymbols(start, argIndex)
-                                                                 select GetMinExpressionDepth(symbol)).DefaultIfEmpty(0).Min()
-                                               select minForSlot).DefaultIfEmpty(0).Max();
-      }
-      return cachedMinExpressionDepth[start];
-    }
-
-    public int GetMinSubTreeCount(Symbol start) {
-      return minSubTreeCount[start.Name];
-    }
-
-    public int GetMaxSubTreeCount(Symbol start) {
-      return maxSubTreeCount[start.Name];
-    }
-
-    public bool IsValidExpression(SymbolicExpressionTree expression) {
-      if (expression.Root.Symbol != ProgramRootSymbol) return false;
-      // check dynamic symbols
-      foreach (var branch in expression.Root.SubTrees) {
-        foreach (var dynamicNode in branch.DynamicSymbols) {
-          if (!dynamicNode.StartsWith("ARG")) {
-            if (FindDefinitionOfDynamicFunction(expression.Root, dynamicNode) == null) return false;
-          }
-        }
-      }
-      return IsValidExpression(expression.Root);
-    }
-
-    #endregion
-    private bool IsValidExpression(SymbolicExpressionTreeNode root) {
-      if (root.SubTrees.Count < GetMinSubTreeCount(root.Symbol)) return false;
-      if (root.SubTrees.Count > GetMaxSubTreeCount(root.Symbol)) return false;
-      if (root.Symbol is Defun || root.Symbol is StartSymbol) {
-        // check references to dynamic symbols
-        if (!CheckDynamicSymbolsInBranch(root, root.SubTrees[0])) return false;
-      }
-      for (int i = 0; i < root.SubTrees.Count; i++) {
-        if (!GetAllowedSymbols(root.Symbol, i).Contains(root.SubTrees[i].Symbol)) return false;
-        if (!IsValidExpression(root.SubTrees[i])) return false;
-      }
-      return true;
-    }
-
-    private SymbolicExpressionTreeNode FindDefinitionOfDynamicFunction(SymbolicExpressionTreeNode root, string dynamicNode) {
-      return (from node in root.SubTrees.OfType<DefunTreeNode>()
-              where node.Name == dynamicNode
-              select node).FirstOrDefault();
-    }
-
-    private bool CheckDynamicSymbolsInBranch(SymbolicExpressionTreeNode root, SymbolicExpressionTreeNode node) {
-      var argNode = node as ArgumentTreeNode;
-      var invokeNode = node as InvokeFunctionTreeNode;
-      if (argNode != null) {
-        if (!root.DynamicSymbols.Contains("ARG" + argNode.ArgumentIndex)) return false;
-      } else if (invokeNode != null) {
-        if (!root.DynamicSymbols.Contains(invokeNode.InvokedFunctionName)) return false;
-        if (root.GetDynamicSymbolArgumentCount(invokeNode.InvokedFunctionName) != invokeNode.SubTrees.Count()) return false;
-      }
-      foreach (var subtree in node.SubTrees) {
-        if (!CheckDynamicSymbolsInBranch(root, subtree)) return false;
-      }
-      return true;
-    }
-
   }
 }

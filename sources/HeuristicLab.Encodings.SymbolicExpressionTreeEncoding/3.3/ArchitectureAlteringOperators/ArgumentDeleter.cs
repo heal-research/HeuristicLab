@@ -60,65 +60,49 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
       if (functionDefiningBranches.Count() == 0)
         // no function defining branch => abort
         return false;
-      var selectedDefunBranch = (DefunTreeNode)SelectRandomBranch(random, functionDefiningBranches);
+      var selectedDefunBranch = functionDefiningBranches.SelectRandom(random);
       if (selectedDefunBranch.NumberOfArguments <= 1)
         // argument deletion by consolidation is not possible => abort
         return false;
-      var cutPoints = (from node in IterateNodesPrefix(selectedDefunBranch)
-                       where node.SubTrees.Count > 0
-                       from argNode in node.SubTrees.OfType<ArgumentTreeNode>()
-                       select new { Parent = node, ReplacedChildIndex = node.SubTrees.IndexOf(argNode), ReplacedChild = argNode }).ToList();
-      if (cutPoints.Count() == 0)
-        // no cut points found => abort
-        return false;
-      var selectedCutPoint = cutPoints[random.Next(cutPoints.Count)];
-      var removedArgument = selectedCutPoint.ReplacedChild.ArgumentIndex;
+      var removedArgument = (from sym in selectedDefunBranch.Grammar.Symbols.OfType<Argument>()
+                             select sym.ArgumentIndex).Distinct().SelectRandom(random);
+      // find invocations of the manipulated funcion and remove the specified argument tree
       var invocationNodes = from node in symbolicExpressionTree.IterateNodesPrefix().OfType<InvokeFunctionTreeNode>()
-                            where node.InvokedFunctionName == selectedDefunBranch.Name
+                            where node.Symbol.FunctionName == selectedDefunBranch.FunctionName
                             select node;
       foreach (var invokeNode in invocationNodes) {
-        invokeNode.RemoveSubTree(selectedCutPoint.ReplacedChild.ArgumentIndex);
+        invokeNode.RemoveSubTree(removedArgument);
       }
 
       DeleteArgumentByConsolidation(random, selectedDefunBranch, removedArgument);
 
-      selectedDefunBranch.RemoveDynamicSymbol("ARG" + removedArgument);
+      // delete the dynamic argument symbol that matches the argument to be removed
+      var matchingSymbol = selectedDefunBranch.Grammar.Symbols.OfType<Argument>().Where(s => s.ArgumentIndex == removedArgument).First();
+      selectedDefunBranch.Grammar.RemoveSymbol(matchingSymbol);
       // reduce arity in known functions of all root branches
       foreach (var subtree in symbolicExpressionTree.Root.SubTrees) {
-        if (subtree.DynamicSymbols.Contains(selectedDefunBranch.Name)) {
-          subtree.SetDynamicSymbolArgumentCount(selectedDefunBranch.Name, selectedDefunBranch.NumberOfArguments - 1);
+        var matchingInvokeSymbol = subtree.Grammar.Symbols.OfType<InvokeFunction>().Where(s => s.FunctionName == selectedDefunBranch.FunctionName).FirstOrDefault();
+        if (matchingInvokeSymbol != null) {
+          subtree.Grammar.SetMinSubtreeCount(matchingInvokeSymbol, selectedDefunBranch.NumberOfArguments - 1);
+          subtree.Grammar.SetMaxSubtreeCount(matchingInvokeSymbol, selectedDefunBranch.NumberOfArguments - 1);
         }
       }
       selectedDefunBranch.NumberOfArguments--;
-      Debug.Assert(grammar.IsValidExpression(symbolicExpressionTree));
       return true;
     }
 
     private static void DeleteArgumentByConsolidation(IRandom random, DefunTreeNode branch, int removedArgumentIndex) {
       // replace references to the deleted argument with random references to existing arguments
-      var possibleArgumentIndexes = (from node in IterateNodesPrefix(branch).OfType<ArgumentTreeNode>()
-                                     where node.ArgumentIndex != removedArgumentIndex
-                                     select node.ArgumentIndex).Distinct().ToList();
-      var argNodes = from node in IterateNodesPrefix(branch).OfType<ArgumentTreeNode>()
-                     where node.ArgumentIndex == removedArgumentIndex
+      var possibleArgumentSymbols = (from sym in branch.Grammar.Symbols.OfType<Argument>()
+                                     where sym.ArgumentIndex != removedArgumentIndex
+                                     select sym).ToList();
+      var argNodes = from node in branch.IterateNodesPrefix().OfType<ArgumentTreeNode>()
+                     where node.Symbol.ArgumentIndex == removedArgumentIndex
                      select node;
       foreach (var argNode in argNodes) {
-        var replacementArgument = possibleArgumentIndexes[random.Next(possibleArgumentIndexes.Count)];
-        argNode.ArgumentIndex = replacementArgument;
+        var replacementSymbol = possibleArgumentSymbols.SelectRandom(random);
+        argNode.Symbol = replacementSymbol;
       }
-    }
-    private static IEnumerable<SymbolicExpressionTreeNode> IterateNodesPrefix(SymbolicExpressionTreeNode tree) {
-      yield return tree;
-      foreach (var subTree in tree.SubTrees) {
-        foreach (var node in IterateNodesPrefix(subTree)) {
-          yield return node;
-        }
-      }
-    }
-
-    private static SymbolicExpressionTreeNode SelectRandomBranch(IRandom random, IEnumerable<DefunTreeNode> branches) {
-      var list = branches.ToList();
-      return list[random.Next(list.Count)];
     }
   }
 }
