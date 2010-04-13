@@ -53,7 +53,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private string[] variableNames;
     public IEnumerable<string> VariableNames {
       get { return variableNames; }
-      protected set {
+      private set {
         if (variableNames != value) {
           variableNames = value.ToArray();
           OnColumnNamesChanged();
