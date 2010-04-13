@@ -91,7 +91,6 @@ namespace HeuristicLab.Data.Views {
       this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
       this.dataGridView.Location = new System.Drawing.Point(0, 52);
       this.dataGridView.Name = "dataGridView";
-      this.dataGridView.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToDisplayedHeaders;
       this.dataGridView.Size = new System.Drawing.Size(424, 352);
       this.dataGridView.TabIndex = 4;
       this.dataGridView.VirtualMode = true;

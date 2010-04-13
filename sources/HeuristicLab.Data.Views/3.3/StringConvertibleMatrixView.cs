@@ -62,9 +62,9 @@ namespace HeuristicLab.Data.Views {
       Content.Reset -= new EventHandler(Content_Reset);
       Content.ColumnNamesChanged -= new EventHandler(Content_ColumnNamesChanged);
       Content.RowNamesChanged -= new EventHandler(Content_RowNamesChanged);
+      Content.ReadOnlyViewChanged -= new EventHandler(Content_ReadOnlyViewChanged);
       base.DeregisterContentEvents();
     }
-
 
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
@@ -72,13 +72,12 @@ namespace HeuristicLab.Data.Views {
       Content.Reset += new EventHandler(Content_Reset);
       Content.ColumnNamesChanged += new EventHandler(Content_ColumnNamesChanged);
       Content.RowNamesChanged += new EventHandler(Content_RowNamesChanged);
+      Content.ReadOnlyViewChanged += new EventHandler(Content_ReadOnlyViewChanged);
     }
-
 
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      sortedColumnIndizes.Clear();
       if (Content == null) {
         Caption = "StringConvertibleMatrix View";
         rowsTextBox.Text = "";
@@ -91,26 +90,23 @@ namespace HeuristicLab.Data.Views {
         virtualRowIndizes = new int[0];
       } else {
         Caption = "StringConvertibleMatrix (" + Content.GetType().Name + ")";
+        UpdateReadOnlyControls();
         UpdateData();
       }
     }
 
     private void UpdateData() {
+      sortedColumnIndizes.Clear();
+      Sort();
       rowsTextBox.Text = Content.Rows.ToString();
       rowsTextBox.Enabled = true;
       columnsTextBox.Text = Content.Columns.ToString();
       columnsTextBox.Enabled = true;
       virtualRowIndizes = Enumerable.Range(0, Content.Rows).ToArray();
-      dataGridView.EndEdit();
-      dataGridView.RowCount = 0;
-      dataGridView.ColumnCount = 0;
-      if ((Content.Rows > 0) && (Content.Columns > 0)) {
-        dataGridView.RowCount = Content.Rows;
-        dataGridView.ColumnCount = Content.Columns;
-        UpdateRowHeaders();
-        UpdateColumnHeaders();
-      }
-      dataGridView.ReadOnly = Content.ReadOnlyView;
+      dataGridView.RowCount = Content.Rows;
+      dataGridView.ColumnCount = Content.Columns;
+      UpdateRowHeaders();
+      UpdateColumnHeaders();
       dataGridView.Enabled = true;
     }
 
@@ -134,26 +130,42 @@ namespace HeuristicLab.Data.Views {
       dataGridView.Invalidate();
     }
 
+    private void UpdateReadOnlyControls() {
+      dataGridView.ReadOnly = Content.ReadOnlyView;
+      rowsTextBox.ReadOnly = Content.ReadOnlyView;
+      columnsTextBox.ReadOnly = Content.ReadOnlyView;
+    }
+
     private void Content_RowNamesChanged(object sender, EventArgs e) {
-      UpdateColumnHeaders();
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_RowNamesChanged), sender, e);
+      else
+        UpdateRowHeaders();
     }
-
     private void Content_ColumnNamesChanged(object sender, EventArgs e) {
-      UpdateRowHeaders();
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_ColumnNamesChanged), sender, e);
+      else
+        UpdateColumnHeaders();
     }
-
     private void Content_ItemChanged(object sender, EventArgs<int, int> e) {
       if (InvokeRequired)
         Invoke(new EventHandler<EventArgs<int, int>>(Content_ItemChanged), sender, e);
-      else {
+      else
         dataGridView.InvalidateCell(e.Value, e.Value2);
-      }
     }
     private void Content_Reset(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_Reset), sender, e);
       else
         UpdateData();
+    }
+
+    private void Content_ReadOnlyViewChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_ReadOnlyViewChanged), sender, e);
+      else
+        UpdateReadOnlyControls();
     }
 
     #region TextBox Events
@@ -166,7 +178,9 @@ namespace HeuristicLab.Data.Views {
       }
     }
     private void rowsTextBox_Validated(object sender, EventArgs e) {
-      Content.Rows = int.Parse(rowsTextBox.Text);
+      int textBoxValue = int.Parse(rowsTextBox.Text);
+      if (textBoxValue != Content.Rows)
+        Content.Rows = textBoxValue;
       errorProvider.SetError(rowsTextBox, string.Empty);
     }
     private void rowsTextBox_KeyDown(object sender, KeyEventArgs e) {
@@ -186,7 +200,9 @@ namespace HeuristicLab.Data.Views {
       }
     }
     private void columnsTextBox_Validated(object sender, EventArgs e) {
-      Content.Columns = int.Parse(columnsTextBox.Text);
+      int textBoxValue = int.Parse(columnsTextBox.Text);
+      if (textBoxValue != Content.Columns)
+        Content.Columns = textBoxValue;
       errorProvider.SetError(columnsTextBox, string.Empty);
     }
     private void columnsTextBox_KeyDown(object sender, KeyEventArgs e) {
@@ -201,17 +217,21 @@ namespace HeuristicLab.Data.Views {
 
     #region DataGridView Events
     private void dataGridView_CellValidating(object sender, DataGridViewCellValidatingEventArgs e) {
-      string errorMessage;
-      if (!Content.Validate(e.FormattedValue.ToString(), out errorMessage)) {
-        e.Cancel = true;
-        dataGridView.Rows[e.RowIndex].ErrorText = errorMessage;
+      if (!dataGridView.ReadOnly) {
+        string errorMessage;
+        if (!Content.Validate(e.FormattedValue.ToString(), out errorMessage)) {
+          e.Cancel = true;
+          dataGridView.Rows[e.RowIndex].ErrorText = errorMessage;
+        }
       }
     }
     private void dataGridView_CellParsing(object sender, DataGridViewCellParsingEventArgs e) {
-      string value = e.Value.ToString();
-      int rowIndex = virtualRowIndizes[e.RowIndex];
-      e.ParsingApplied = Content.SetValue(value, rowIndex, e.ColumnIndex);
-      if (e.ParsingApplied) e.Value = Content.GetValue(rowIndex, e.ColumnIndex);
+      if (!dataGridView.ReadOnly) {
+        string value = e.Value.ToString();
+        int rowIndex = virtualRowIndizes[e.RowIndex];
+        e.ParsingApplied = Content.SetValue(value, rowIndex, e.ColumnIndex);
+        if (e.ParsingApplied) e.Value = Content.GetValue(rowIndex, e.ColumnIndex);
+      }
     }
     private void dataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e) {
       dataGridView.Rows[e.RowIndex].ErrorText = string.Empty;
@@ -261,14 +281,18 @@ namespace HeuristicLab.Data.Views {
     }
 
     private void Sort() {
-      int[] newSortedIndex = Enumerable.Range(0, Content.Rows - 1).ToArray();
+      int[] newSortedIndex = Enumerable.Range(0, Content.Rows).ToArray();
       if (sortedColumnIndizes.Count != 0) {
         rowComparer.sortedIndizes = sortedColumnIndizes;
         rowComparer.matrix = Content;
         Array.Sort(newSortedIndex, rowComparer);
       }
       virtualRowIndizes = newSortedIndex;
+      UpdateSortGlyph();
       dataGridView.Invalidate();
+    }
+
+    private void UpdateSortGlyph() {
       foreach (DataGridViewColumn col in this.dataGridView.Columns)
         col.HeaderCell.SortGlyphDirection = SortOrder.None;
       foreach (KeyValuePair<int, SortOrder> p in sortedColumnIndizes)
