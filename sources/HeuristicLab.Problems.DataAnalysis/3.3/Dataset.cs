@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   public sealed class Dataset : NamedItem, IStringConvertibleMatrix {
     public Dataset()
-      : this(new string[] { "x" }, new double[,] { { 0.0 } }) {
+      : this(new string[0], new double[,] { { } }) {
     }
 
     public Dataset(IEnumerable<string> variableNames, double[,] data)
@@ -46,7 +46,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
       Data = data;
       this.VariableNames = variableNames;
-      this.sortableView = false;
+      this.SortableView = false;
+      this.ReadOnlyView = true;
     }
 
     [Storable]
