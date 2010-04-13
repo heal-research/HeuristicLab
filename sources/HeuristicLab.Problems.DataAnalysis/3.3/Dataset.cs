@@ -45,13 +45,20 @@ namespace HeuristicLab.Problems.DataAnalysis {
         throw new ArgumentException("Number of variable names doesn't match the number of columns of data");
       }
       Data = data;
-      this.variableNames = variableNames.ToArray();
+      this.VariableNames = variableNames;
+      this.sortableView = false;
     }
 
     [Storable]
     private string[] variableNames;
     public IEnumerable<string> VariableNames {
       get { return variableNames; }
+      protected set {
+        if (variableNames != value) {
+          variableNames = value.ToArray();
+          OnColumnNamesChanged();
+        }
+      }
     }
 
     [Storable]
@@ -74,6 +81,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
         if (!value.Equals(data[rowIndex, columnIndex])) {
           data[rowIndex, columnIndex] = value;
           OnDataChanged(new EventArgs<int, int>(rowIndex, columnIndex));
+          OnItemChanged(rowIndex, columnIndex);
         }
       }
     }
@@ -115,6 +123,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (variableNames.Contains(name)) throw new ArgumentException("The data set already contains a variable with name " + name + ".");
       if (variableIndex < 0 || variableIndex >= variableNames.Length) throw new ArgumentException(" Cannot set name of not existent variable at index " + variableIndex + ".");
       variableNames[variableIndex] = name;
+      OnColumnNamesChanged();
     }
 
     #endregion
@@ -220,14 +229,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       var listeners = Reset;
       if (listeners != null) listeners(this, e);
     }
-
-    private void data_ItemChanged(object sender, EventArgs<int, int> e) {
-      OnDataChanged(e);
-    }
-
-    private void data_Reset(object sender, EventArgs e) {
-      OnReset(e);
-    }
     #endregion
 
     #region IStringConvertibleMatrix Members
@@ -270,8 +271,20 @@ namespace HeuristicLab.Problems.DataAnalysis {
             else
               newVariableNames[column] = "Var" + column.ToString(formatString);
           }
-          variableNames = newVariableNames;
+          VariableNames = newVariableNames;
           Data = newValues;
+        }
+      }
+    }
+
+    [Storable]
+    private bool sortableView;
+    public bool SortableView {
+      get { return sortableView; }
+      set {
+        if (value != sortableView) {
+          sortableView = value;
+          OnSortableViewChanged();
         }
       }
     }
@@ -284,6 +297,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
           SetVariableName(i, variableName);
           i++;
         }
+        OnColumnNamesChanged();
       }
     }
 
@@ -293,8 +307,17 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public bool Validate(string value, out string errorMessage) {
+      double val;
+      bool valid = double.TryParse(value, out val);
       errorMessage = string.Empty;
-      return true;
+      if (!valid) {
+        StringBuilder sb = new StringBuilder();
+        sb.Append("Invalid Value (Valid Value Format: \"");
+        sb.Append(FormatPatterns.GetDoubleFormatPattern());
+        sb.Append("\")");
+        errorMessage = sb.ToString();
+      }
+      return valid;
     }
 
     public string GetValue(int rowIndex, int columnIndex) {
@@ -305,11 +328,36 @@ namespace HeuristicLab.Problems.DataAnalysis {
       double v;
       if (double.TryParse(value, out v)) {
         data[rowIndex, columnIndex] = v;
+        OnDataChanged(new EventArgs<int, int>(rowIndex, columnIndex));
+        OnItemChanged(rowIndex, columnIndex);
         return true;
       } else return false;
     }
 
+    public event EventHandler ColumnNamesChanged;
+    private void OnColumnNamesChanged() {
+      EventHandler handler = ColumnNamesChanged;
+      if (handler != null)
+        handler(this, EventArgs.Empty);
+    }
+    public event EventHandler RowNamesChanged;
+    private void OnRowNamesChanged() {
+      EventHandler handler = RowNamesChanged;
+      if (handler != null)
+        handler(this, EventArgs.Empty);
+    }
+    public event EventHandler SortableViewChanged;
+    private void OnSortableViewChanged() {
+      EventHandler handler = SortableViewChanged;
+      if (handler != null)
+        handler(this, EventArgs.Empty);
+    }
     public event EventHandler<EventArgs<int, int>> ItemChanged;
+    private void OnItemChanged(int rowIndex, int columnIndex) {
+      if (ItemChanged != null)
+        ItemChanged(this, new EventArgs<int, int>(rowIndex, columnIndex));
+      OnToStringChanged();
+    }
     #endregion
   }
 }
