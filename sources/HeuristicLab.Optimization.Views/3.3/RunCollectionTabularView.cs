@@ -32,7 +32,7 @@ using HeuristicLab.Data.Views;
 using HeuristicLab.Collections;
 
 namespace HeuristicLab.Optimization.Views {
-  [View("RunCollection tabular View")]
+  [View("RunCollection Tabular View")]
   [Content(typeof(RunCollection), false)]
   public partial class RunCollectionTabularView : StringConvertibleMatrixView {
     public RunCollectionTabularView() {

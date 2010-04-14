@@ -123,7 +123,9 @@ namespace HeuristicLab.Optimization {
     }
 
     #region IStringConvertibleMatrix Members
+    [Storable]
     private List<string> parameterNames;
+    [Storable]
     private List<string> resultNames;
     public int Rows {
       get { return this.Count; }
