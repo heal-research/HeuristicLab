@@ -23,40 +23,36 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
-  [Item("InversionMoveRelativeAttribute", "Specifies the tabu attributes for an inversion move (2-opt) on a relative position permutation.")]
+  [Item("TranslocationMoveAbsoluteAttribute", "Specifies the tabu attributes for a translocation and insertion move (3-opt) on absolute permutation encodings.")]
   [StorableClass]
-  public class InversionMoveRelativeAttribute : PermutationMoveAttribute {
+  public class TranslocationMoveAbsoluteAttribute : PermutationMoveAttribute {
     [Storable]
-    public int Edge1Source { get; private set; }
+    public int[] Number { get; private set; }
     [Storable]
-    public int Edge1Target { get; private set; }
+    public int OldPosition { get; private set; }
     [Storable]
-    public int Edge2Source { get; private set; }
-    [Storable]
-    public int Edge2Target { get; private set; }
+    public int NewPosition { get; private set; }
 
     [StorableConstructor]
-    private InversionMoveRelativeAttribute(bool deserializing)
+    private TranslocationMoveAbsoluteAttribute(bool deserializing)
       : base() {
     }
 
-    public InversionMoveRelativeAttribute()
-      : this(-1, -1, -1, -1, -1) { }
+    public TranslocationMoveAbsoluteAttribute()
+      : this(null, -1, -1, -1) { }
 
-    public InversionMoveRelativeAttribute(int edge1Source, int edge1Target, int edge2Source, int edge2Target, double moveQuality)
+    public TranslocationMoveAbsoluteAttribute(int[] number, int oldPosition, int newPosition, double moveQuality)
       : base(moveQuality) {
-      Edge1Source = edge1Source;
-      Edge1Target = edge1Target;
-      Edge2Source = edge2Source;
-      Edge2Target = edge2Target;
+      Number = number;
+      OldPosition = oldPosition;
+      NewPosition = newPosition;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      InversionMoveRelativeAttribute clone = (InversionMoveRelativeAttribute)base.Clone(cloner);
-      clone.Edge1Source = Edge1Source;
-      clone.Edge1Target = Edge1Target;
-      clone.Edge2Source = Edge2Source;
-      clone.Edge2Target = Edge2Target;
+      TranslocationMoveAbsoluteAttribute clone = (TranslocationMoveAbsoluteAttribute)base.Clone(cloner);
+      clone.Number = Number;
+      clone.OldPosition = OldPosition;
+      clone.NewPosition = NewPosition;
       return clone;
     }
   }

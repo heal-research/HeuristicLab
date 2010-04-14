@@ -30,11 +30,12 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   public class ExhaustiveInversionMoveGenerator : InversionMoveGenerator, IExhaustiveMoveGenerator {
     public static InversionMove[] Apply(Permutation permutation) {
       int length = permutation.Length;
-      int totalMoves = (length) * (length - 1) / 2; // - 3;
-      InversionMove[] moves = new InversionMove[totalMoves];
+      int totalMoves = (length) * (length - 1) / 2;
+      InversionMove[] moves = null;
       int count = 0;
 
       if (permutation.PermutationType == PermutationTypes.RelativeUndirected) {
+        moves = new InversionMove[totalMoves - 3];
         for (int i = 0; i < length - 1; i++) {
           for (int j = i + 1; j < length; j++) {
             // doesn't make sense to inverse the whole permutation or the whole but one in case of relative undirected permutations
@@ -43,10 +44,11 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
           }
         }
       } else {
-          for (int i = 0; i < length - 1; i++)
-            for (int j = i + 1; j < length; j++) {
-              moves[count++] = new InversionMove(i, j);
-            }
+        moves = new InversionMove[totalMoves];
+        for (int i = 0; i < length - 1; i++)
+          for (int j = i + 1; j < length; j++) {
+            moves[count++] = new InversionMove(i, j);
+          }
       }
       return moves;
     }

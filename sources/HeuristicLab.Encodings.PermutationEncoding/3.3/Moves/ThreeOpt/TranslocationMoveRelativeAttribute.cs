@@ -23,9 +23,9 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
-  [Item("TranslocationMoveAttribute", "Specifies the tabu attributes for a translocation and insertion move (3-opt).")]
+  [Item("TranslocationMoveRelativeAttribute", "Specifies the tabu attributes for a translocation and insertion move (3-opt) on relative permutation encodings.")]
   [StorableClass]
-  public class TranslocationMoveAttribute : Item {
+  public class TranslocationMoveRelativeAttribute : PermutationMoveAttribute {
     [Storable]
     public int Edge1Source { get; private set; }
     [Storable]
@@ -40,15 +40,15 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     public int Edge3Target { get; private set; }
 
     [StorableConstructor]
-    private TranslocationMoveAttribute(bool deserializing)
+    private TranslocationMoveRelativeAttribute(bool deserializing)
       : base() {
     }
 
-    public TranslocationMoveAttribute()
-      : this(-1, -1, -1, -1, -1, -1) { }
+    public TranslocationMoveRelativeAttribute()
+      : this(-1, -1, -1, -1, -1, -1, -1) { }
 
-    public TranslocationMoveAttribute(int edge1Source, int edge1Target, int edge2Source, int edge2Target, int edge3Source, int edge3Target)
-      : base() {
+    public TranslocationMoveRelativeAttribute(int edge1Source, int edge1Target, int edge2Source, int edge2Target, int edge3Source, int edge3Target, double moveQuality)
+      : base(moveQuality) {
       Edge1Source = edge1Source;
       Edge1Target = edge1Target;
       Edge2Source = edge2Source;
@@ -58,7 +58,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      TranslocationMoveAttribute clone = (TranslocationMoveAttribute)base.Clone(cloner);
+      TranslocationMoveRelativeAttribute clone = (TranslocationMoveRelativeAttribute)base.Clone(cloner);
       clone.Edge1Source = Edge1Source;
       clone.Edge1Target = Edge1Target;
       clone.Edge2Source = Edge2Source;

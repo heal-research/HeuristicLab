@@ -69,11 +69,11 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     public ValueLookupParameter<IOperator> MoveMakerParameter {
       get { return (ValueLookupParameter<IOperator>)Parameters["MoveMaker"]; }
     }
-    public ValueLookupParameter<IOperator> TabuMoveEvaluatorParameter {
-      get { return (ValueLookupParameter<IOperator>)Parameters["TabuMoveEvaluator"]; }
+    public ValueLookupParameter<IOperator> TabuCheckerParameter {
+      get { return (ValueLookupParameter<IOperator>)Parameters["TabuChecker"]; }
     }
-    public ValueLookupParameter<IOperator> TabuMoveMakerParameter {
-      get { return (ValueLookupParameter<IOperator>)Parameters["TabuMoveMaker"]; }
+    public ValueLookupParameter<IOperator> TabuMakerParameter {
+      get { return (ValueLookupParameter<IOperator>)Parameters["TabuMaker"]; }
     }
     public ValueLookupParameter<IOperator> VisualizerParameter {
       get { return (ValueLookupParameter<IOperator>)Parameters["Visualizer"]; }
@@ -107,8 +107,8 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       Parameters.Add(new ValueLookupParameter<IOperator>("MoveGenerator", "The operator that generates the moves."));
       Parameters.Add(new ValueLookupParameter<IOperator>("MoveMaker", "The operator that performs a move and updates the quality."));
       Parameters.Add(new ValueLookupParameter<IOperator>("MoveEvaluator", "The operator that evaluates a move."));
-      Parameters.Add(new ValueLookupParameter<IOperator>("TabuMoveEvaluator", "The operator that evaluates whether a move is tabu."));
-      Parameters.Add(new ValueLookupParameter<IOperator>("TabuMoveMaker", "The operator that declares a move tabu."));
+      Parameters.Add(new ValueLookupParameter<IOperator>("TabuChecker", "The operator that checks whether a move is tabu."));
+      Parameters.Add(new ValueLookupParameter<IOperator>("TabuMaker", "The operator that declares a move tabu."));
 
       Parameters.Add(new ValueLookupParameter<IOperator>("Visualizer", "The operator used to visualize solutions."));
       Parameters.Add(new LookupParameter<IItem>("Visualization", "The item which represents the visualization of solutions."));
@@ -127,14 +127,14 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       Placeholder moveGenerator = new Placeholder();
       UniformSubScopesProcessor moveEvaluationProcessor = new UniformSubScopesProcessor();
       Placeholder moveEvaluator = new Placeholder();
-      Placeholder tabuMoveEvaluator = new Placeholder();
+      Placeholder tabuChecker = new Placeholder();
       SubScopesSorter moveQualitySorter = new SubScopesSorter();
       BestAverageWorstQualityCalculator bestAverageWorstMoveQualityCalculator = new BestAverageWorstQualityCalculator();
       TabuSelector tabuSelector = new TabuSelector();
       ConditionalBranch emptyNeighborhoodBranch1 = new ConditionalBranch();
       RightReducer rightReducer = new RightReducer();
       UniformSubScopesProcessor moveMakingProcessor = new UniformSubScopesProcessor();
-      Placeholder tabuMoveMaker = new Placeholder();
+      Placeholder tabuMaker = new Placeholder();
       Placeholder moveMaker = new Placeholder();
       DataTableValuesCollector valuesCollector = new DataTableValuesCollector();
       SubScopesRemover subScopesRemover1 = new SubScopesRemover();
@@ -192,8 +192,8 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       moveEvaluator.Name = "MoveEvaluator (placeholder)";
       moveEvaluator.OperatorParameter.ActualName = MoveEvaluatorParameter.Name;
 
-      tabuMoveEvaluator.Name = "TabuMoveEvaluator (placeholder)";
-      tabuMoveEvaluator.OperatorParameter.ActualName = TabuMoveEvaluatorParameter.Name;
+      tabuChecker.Name = "TabuChecker (placeholder)";
+      tabuChecker.OperatorParameter.ActualName = TabuCheckerParameter.Name;
 
       moveQualitySorter.DescendingParameter.ActualName = MaximizationParameter.Name;
       moveQualitySorter.ValueParameter.ActualName = MoveQualityParameter.Name;
@@ -214,8 +214,8 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       emptyNeighborhoodBranch1.Name = "Neighborhood empty?";
       emptyNeighborhoodBranch1.ConditionParameter.ActualName = "EmptyNeighborhood";
 
-      tabuMoveMaker.Name = "TabuMoveMaker (placeholder)";
-      tabuMoveMaker.OperatorParameter.ActualName = TabuMoveMakerParameter.Name;
+      tabuMaker.Name = "TabuMaker (placeholder)";
+      tabuMaker.OperatorParameter.ActualName = TabuMakerParameter.Name;
 
       moveMaker.Name = "MoveMaker (placeholder)";
       moveMaker.OperatorParameter.ActualName = MoveMakerParameter.Name;
@@ -271,8 +271,8 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       moveGenerator.Successor = moveEvaluationProcessor;
       moveEvaluationProcessor.Operator = moveEvaluator;
       moveEvaluationProcessor.Successor = moveQualitySorter;
-      moveEvaluator.Successor = tabuMoveEvaluator;
-      tabuMoveEvaluator.Successor = null;
+      moveEvaluator.Successor = tabuChecker;
+      tabuChecker.Successor = null;
       moveQualitySorter.Successor = bestAverageWorstMoveQualityCalculator;
       bestAverageWorstMoveQualityCalculator.Successor = valuesCollector;
       valuesCollector.Successor = tabuSelector;
@@ -281,9 +281,9 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       emptyNeighborhoodBranch1.TrueBranch = null;
       emptyNeighborhoodBranch1.Successor = null;
       rightReducer.Successor = moveMakingProcessor;
-      moveMakingProcessor.Operator = tabuMoveMaker;
+      moveMakingProcessor.Operator = tabuMaker;
       moveMakingProcessor.Successor = subScopesRemover1;
-      tabuMoveMaker.Successor = moveMaker;
+      tabuMaker.Successor = moveMaker;
       moveMaker.Successor = null;
       subScopesRemover1.Successor = null;
       emptyNeighborhoodBranch2.FalseBranch = iterationsCounter;

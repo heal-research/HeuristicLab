@@ -28,9 +28,9 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
-  [Item("OneBitflipTabuMoveMaker", "Declares a given one bitflip move as tabu, by adding its attributes to the tabu list. It also removes the oldest entry in the tabu list when its size is greater than tenure.")]
+  [Item("OneBitflipMoveTabuMaker", "Declares a given one bitflip move as tabu, by adding its attributes to the tabu list. It also removes the oldest entry in the tabu list when its size is greater than tenure.")]
   [StorableClass]
-  public class OneBitflipTabuMoveMaker : TabuMaker, IOneBitflipMoveOperator {
+  public class OneBitflipMoveTabuMaker : TabuMaker, IOneBitflipMoveOperator {
     public ILookupParameter<BinaryVector> BinaryVectorParameter {
       get { return (ILookupParameter<BinaryVector>)Parameters["BinaryVector"]; }
     }
@@ -38,14 +38,16 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       get { return (LookupParameter<OneBitflipMove>)Parameters["OneBitflipMove"]; }
     }
 
-    public OneBitflipTabuMoveMaker()
+    public OneBitflipMoveTabuMaker()
       : base() {
       Parameters.Add(new LookupParameter<BinaryVector>("BinaryVector", "The solution as BinaryVector."));
       Parameters.Add(new LookupParameter<OneBitflipMove>("OneBitflipMove", "The move that was made."));
     }
 
-    protected override IItem GetTabuAttribute() {
-      return OneBitflipMoveParameter.ActualValue;
+    protected override IItem GetTabuAttribute(bool maximization, double quality, double moveQuality) {
+      double baseQuality = moveQuality;
+      if (maximization && quality > moveQuality || !maximization && quality < moveQuality) baseQuality = quality;
+      return new OneBitflipMoveAttribute(OneBitflipMoveParameter.ActualValue.Index, baseQuality);
     }
 
     public override bool CanChangeName {

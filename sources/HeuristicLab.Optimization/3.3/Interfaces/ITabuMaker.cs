@@ -20,8 +20,12 @@
 #endregion
 
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Optimization {
   public interface ITabuMaker : IOperator {
+    ILookupParameter<DoubleValue> MoveQualityParameter { get; }
+    ILookupParameter<DoubleValue> QualityParameter { get; }
+    IValueLookupParameter<BoolValue> MaximizationParameter { get; }
   }
 }

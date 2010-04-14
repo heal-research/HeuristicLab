@@ -105,8 +105,9 @@
     <Compile Include="Moves\OneBitflipMove\OneBitflipMove.cs" />
     <Compile Include="Moves\OneBitflipMove\OneBitflipMoveGenerator.cs" />
     <Compile Include="Moves\OneBitflipMove\OneBitflipMoveMaker.cs" />
-    <Compile Include="Moves\OneBitflipMove\OneBitflipTabuMoveMaker.cs" />
-    <Compile Include="Moves\OneBitflipMove\PreventOneBitflipTabuMoveEvaluator.cs" />
+    <Compile Include="Moves\OneBitflipMove\OneBitflipMoveTabuChecker.cs" />
+    <Compile Include="Moves\OneBitflipMove\OneBitflipMoveTabuMaker.cs" />
+    <Compile Include="Moves\OneBitflipMove\OneBitflipMoveAttribute.cs" />
     <Compile Include="Moves\OneBitflipMove\StochasticOneBitflipMultiMoveGenerator.cs" />
     <Compile Include="Moves\OneBitflipMove\StochasticOneBitflipSingleMoveGenerator.cs" />
     <Compile Include="Moves\OneIndexMove.cs" />

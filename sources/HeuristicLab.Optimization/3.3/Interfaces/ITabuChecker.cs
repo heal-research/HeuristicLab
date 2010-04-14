@@ -25,5 +25,7 @@ using HeuristicLab.Data;
 namespace HeuristicLab.Optimization {
   public interface ITabuChecker : IOperator {
     ILookupParameter<BoolValue> MoveTabuParameter { get; }
+    ILookupParameter<DoubleValue> MoveQualityParameter { get; }
+    IValueLookupParameter<BoolValue> MaximizationParameter { get; }
   }
 }

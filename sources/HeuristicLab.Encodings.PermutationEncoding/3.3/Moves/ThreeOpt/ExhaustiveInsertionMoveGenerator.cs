@@ -33,13 +33,26 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   public class ExhaustiveInsertionMoveGenerator : TranslocationMoveGenerator, IExhaustiveMoveGenerator {
     public static TranslocationMove[] Apply(Permutation permutation) {
       int length = permutation.Length;
-      TranslocationMove[] moves = new TranslocationMove[length * (length - 1)];
+      TranslocationMove[] moves = null;
       int count = 0;
-      for (int i = 0; i < length; i++) {
-        for (int j = 1; j <= length - 1; j++) {
-          moves[count++] = new TranslocationMove(i, i, (i + j) % length);
+      if (permutation.PermutationType == PermutationTypes.Absolute) {
+        moves = new TranslocationMove[length * (length - 1)];
+        for (int i = 0; i < length; i++) {
+          for (int j = 1; j <= length - 1; j++) {
+            moves[count++] = new TranslocationMove(i, i, (i + j) % length);
+          }
+        }
+      } else {
+        moves = new TranslocationMove[length * (length - 1) - 2];
+        for (int i = 0; i < length; i++) {
+          for (int j = 1; j <= length - 1; j++) {
+            if (i == 0 && j == length - 1
+              || i == length - 1 && j == 1) continue;
+            moves[count++] = new TranslocationMove(i, i, (i + j) % length);
+          }
         }
       }
+      System.Diagnostics.Debug.Assert(count == moves.Length);
       return moves;
     }
 

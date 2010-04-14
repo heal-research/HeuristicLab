@@ -28,9 +28,9 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
-  [Item("PreventFallBackToSkippedPositions", "Prevents falling back into ranges that have been moved over before.")]
+  [Item("AdditiveMoveTabuChecker", "Prevents falling back into ranges that have been moved over before.")]
   [StorableClass]
-  public class PreventFallBackToSkippedPositions : SingleSuccessorOperator, IAdditiveRealVectorMoveOperator, ITabuChecker {
+  public class AdditiveMoveTabuChecker : SingleSuccessorOperator, IAdditiveRealVectorMoveOperator, ITabuChecker {
     public ILookupParameter<AdditiveMove> AdditiveMoveParameter {
       get { return (LookupParameter<AdditiveMove>)Parameters["AdditiveMove"]; }
     }
@@ -43,32 +43,54 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public ILookupParameter<BoolValue> MoveTabuParameter {
       get { return (ILookupParameter<BoolValue>)Parameters["MoveTabu"]; }
     }
-    private ScopeParameter CurrentScopeParameter {
-      get { return (ScopeParameter)Parameters["CurrentScope"]; }
+    public IValueLookupParameter<BoolValue> MaximizationParameter {
+      get { return (IValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
+    }
+    public ILookupParameter<DoubleValue> MoveQualityParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters["MoveQuality"]; }
+    }
+    public ValueParameter<BoolValue> UseAspirationCriterionParameter {
+      get { return (ValueParameter<BoolValue>)Parameters["UseAspirationCriterion"]; }
     }
 
-    public PreventFallBackToSkippedPositions()
+    public BoolValue UseAspirationCriterion {
+      get { return UseAspirationCriterionParameter.Value; }
+      set { UseAspirationCriterionParameter.Value = value; }
+    }
+
+
+    public AdditiveMoveTabuChecker()
       : base() {
       Parameters.Add(new LookupParameter<AdditiveMove>("AdditiveMove", "The move to evaluate."));
       Parameters.Add(new LookupParameter<BoolValue>("MoveTabu", "The variable to store if a move was tabu."));
       Parameters.Add(new LookupParameter<RealVector>("RealVector", "The solution as real vector."));
       Parameters.Add(new LookupParameter<ItemList<IItem>>("TabuList", "The tabu list."));
-      Parameters.Add(new ScopeParameter("CurrentScope", "The current scope."));
+      Parameters.Add(new ValueParameter<BoolValue>("UseAspirationCriterion", "Whether to use the aspiration criterion or not.", new BoolValue(true)));
+      Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, else if it is a minimization problem."));
+      Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The quality of the current move."));
     }
 
     public override IOperation Apply() {
       ItemList<IItem> tabuList = TabuListParameter.ActualValue;
       AdditiveMove move = AdditiveMoveParameter.ActualValue;
       RealVector vector = RealVectorParameter.ActualValue;
+      double moveQuality = MoveQualityParameter.ActualValue.Value;
+      bool maximization = MaximizationParameter.ActualValue.Value;
+      bool useAspiration = UseAspirationCriterion.Value;
       bool isTabu = false;
       foreach (IItem tabuMove in tabuList) {
         AdditiveMoveTabuAttribute attribute = (tabuMove as AdditiveMoveTabuAttribute);
         if (attribute != null && attribute.Dimension == move.Dimension) {
-          double newPos = vector[move.Dimension] + move.MoveDistance;
-          if (Math.Min(attribute.MovedPosition, attribute.OriginalPosition) < newPos
-            && newPos < Math.Max(attribute.MovedPosition, attribute.OriginalPosition)) {
-            isTabu = true;
-            break;
+          if (!useAspiration
+            || maximization && moveQuality <= attribute.MoveQuality
+            || !maximization && moveQuality >= attribute.MoveQuality) {
+
+            double newPos = vector[move.Dimension] + move.MoveDistance;
+            if (Math.Min(attribute.MovedPosition, attribute.OriginalPosition) < newPos
+              && newPos < Math.Max(attribute.MovedPosition, attribute.OriginalPosition)) {
+              isTabu = true;
+              break;
+            }
           }
         }
       }

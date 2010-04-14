@@ -35,11 +35,23 @@ namespace HeuristicLab.Optimization {
     public ValueLookupParameter<IntValue> TabuTenureParameter {
       get { return (ValueLookupParameter<IntValue>)Parameters["TabuTenure"]; }
     }
+    public ILookupParameter<DoubleValue> MoveQualityParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters["MoveQuality"]; }
+    }
+    public ILookupParameter<DoubleValue> QualityParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
+    }
+    public IValueLookupParameter<BoolValue> MaximizationParameter {
+      get { return (IValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
+    }
 
     protected TabuMaker()
       : base() {
       Parameters.Add(new LookupParameter<ItemList<IItem>>("TabuList", "The tabu list where move attributes are stored."));
       Parameters.Add(new ValueLookupParameter<IntValue>("TabuTenure", "The tenure of the tabu list."));
+      Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The quality of the move."));
+      Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of the solution."));
+      Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, else if it is a minimization problem."));
     }
 
     public override IOperation Apply() {
@@ -54,10 +66,10 @@ namespace HeuristicLab.Optimization {
           tabuList.RemoveAt(tabuList.Count - 1);
       }
 
-      tabuList.Add(GetTabuAttribute());
+      tabuList.Add(GetTabuAttribute(MaximizationParameter.ActualValue.Value, QualityParameter.ActualValue.Value, MoveQualityParameter.ActualValue.Value));
       return base.Apply();
     }
 
-    protected abstract IItem GetTabuAttribute();
+    protected abstract IItem GetTabuAttribute(bool maximization, double quality, double moveQuality);
   }
 }

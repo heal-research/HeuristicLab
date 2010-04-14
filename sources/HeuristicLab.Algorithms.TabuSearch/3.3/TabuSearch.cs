@@ -62,11 +62,11 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     private ConstrainedValueParameter<ISingleObjectiveMoveEvaluator> MoveEvaluatorParameter {
       get { return (ConstrainedValueParameter<ISingleObjectiveMoveEvaluator>)Parameters["MoveEvaluator"]; }
     }
-    private ConstrainedValueParameter<ITabuChecker> TabuMoveEvaluatorParameter {
-      get { return (ConstrainedValueParameter<ITabuChecker>)Parameters["TabuMoveEvaluator"]; }
+    private ConstrainedValueParameter<ITabuChecker> TabuCheckerParameter {
+      get { return (ConstrainedValueParameter<ITabuChecker>)Parameters["TabuChecker"]; }
     }
-    private ConstrainedValueParameter<ITabuMaker> TabuMoveMakerParameter {
-      get { return (ConstrainedValueParameter<ITabuMaker>)Parameters["TabuMoveMaker"]; }
+    private ConstrainedValueParameter<ITabuMaker> TabuMakerParameter {
+      get { return (ConstrainedValueParameter<ITabuMaker>)Parameters["TabuMaker"]; }
     }
     private ValueParameter<IntValue> TabuTenureParameter {
       get { return (ValueParameter<IntValue>)Parameters["TabuTenure"]; }
@@ -100,13 +100,13 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       get { return MoveEvaluatorParameter.Value; }
       set { MoveEvaluatorParameter.Value = value; }
     }
-    public ITabuChecker TabuMoveEvaluator {
-      get { return TabuMoveEvaluatorParameter.Value; }
-      set { TabuMoveEvaluatorParameter.Value = value; }
+    public ITabuChecker TabuChecker {
+      get { return TabuCheckerParameter.Value; }
+      set { TabuCheckerParameter.Value = value; }
     }
-    public ITabuMaker TabuMoveMaker {
-      get { return TabuMoveMakerParameter.Value; }
-      set { TabuMoveMakerParameter.Value = value; }
+    public ITabuMaker TabuMaker {
+      get { return TabuMakerParameter.Value; }
+      set { TabuMakerParameter.Value = value; }
     }
     public IntValue TabuTenure {
       get { return TabuTenureParameter.Value; }
@@ -134,11 +134,11 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       Parameters.Add(new ConstrainedValueParameter<IMoveGenerator>("MoveGenerator", "The operator used to generate moves to the neighborhood of the current solution."));
       Parameters.Add(new ConstrainedValueParameter<IMoveMaker>("MoveMaker", "The operator used to perform a move."));
       Parameters.Add(new ConstrainedValueParameter<ISingleObjectiveMoveEvaluator>("MoveEvaluator", "The operator used to evaluate a move."));
-      Parameters.Add(new ConstrainedValueParameter<ITabuChecker>("TabuMoveEvaluator", "The operator to evaluate whether a move is tabu or not."));
-      Parameters.Add(new ConstrainedValueParameter<ITabuMaker>("TabuMoveMaker", "The operator used to insert attributes of a move into the tabu list."));
+      Parameters.Add(new ConstrainedValueParameter<ITabuChecker>("TabuChecker", "The operator to check whether a move is tabu or not."));
+      Parameters.Add(new ConstrainedValueParameter<ITabuMaker>("TabuMaker", "The operator used to insert attributes of a move into the tabu list."));
       Parameters.Add(new ValueParameter<IntValue>("TabuTenure", "The length of the tabu list.", new IntValue(10)));
       Parameters.Add(new ValueParameter<IntValue>("MaximumIterations", "The maximum number of generations which should be processed.", new IntValue(1000)));
-      Parameters.Add(new ValueParameter<IntValue>("SampleSize", "The neighborhood size for stochastic sampling move generators", new IntValue(20)));
+      Parameters.Add(new ValueParameter<IntValue>("SampleSize", "The neighborhood size for stochastic sampling move generators", new IntValue(100)));
 
       RandomCreator randomCreator = new RandomCreator();
       SolutionsCreator solutionsCreator = new SolutionsCreator();
@@ -158,8 +158,8 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       tsMainLoop.MoveGeneratorParameter.ActualName = MoveGeneratorParameter.Name;
       tsMainLoop.MoveMakerParameter.ActualName = MoveMakerParameter.Name;
       tsMainLoop.MoveEvaluatorParameter.ActualName = MoveEvaluatorParameter.Name;
-      tsMainLoop.TabuMoveEvaluatorParameter.ActualName = TabuMoveEvaluatorParameter.Name;
-      tsMainLoop.TabuMoveMakerParameter.ActualName = TabuMoveMakerParameter.Name;
+      tsMainLoop.TabuCheckerParameter.ActualName = TabuCheckerParameter.Name;
+      tsMainLoop.TabuMakerParameter.ActualName = TabuMakerParameter.Name;
       tsMainLoop.MaximumIterationsParameter.ActualName = MaximumIterationsParameter.Name;
       tsMainLoop.RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
       tsMainLoop.ResultsParameter.ActualName = "Results";
@@ -177,7 +177,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
 
     public override void Prepare() {
       if (Problem != null && MoveGenerator != null && MoveMaker != null && MoveEvaluator != null &&
-          TabuMoveEvaluator != null && TabuMoveMaker != null)
+          TabuChecker != null && TabuMaker != null)
         base.Prepare();
     }
 
@@ -190,7 +190,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
         op.MoveQualityParameter.ActualNameChanged += new EventHandler(MoveEvaluator_MoveQualityParameter_ActualNameChanged);
       }
       foreach (ITabuChecker op in Problem.Operators.OfType<ITabuChecker>()) {
-        op.MoveTabuParameter.ActualNameChanged += new EventHandler(TabuMoveEvaluator_MoveTabuParameter_ActualNameChanged);
+        op.MoveTabuParameter.ActualNameChanged += new EventHandler(TabuChecker_MoveTabuParameter_ActualNameChanged);
       }
       ParameterizeSolutionsCreator();
       ParameterizeMainLoop();
@@ -199,6 +199,8 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       ParameterizeMoveGenerators();
       ParameterizeMoveEvaluator();
       ParameterizeMoveMaker();
+      ParameterizeTabuMaker();
+      ParameterizeTabuChecker();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.OnProblemChanged();
     }
@@ -213,6 +215,8 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       ParameterizeMainLoop();
       ParameterizeMoveEvaluator();
       ParameterizeMoveMaker();
+      ParameterizeTabuMaker();
+      ParameterizeTabuChecker();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.Problem_EvaluatorChanged(sender, e);
     }
@@ -231,8 +235,8 @@ namespace HeuristicLab.Algorithms.TabuSearch {
         op.MoveQualityParameter.ActualNameChanged += new EventHandler(MoveEvaluator_MoveQualityParameter_ActualNameChanged);
       }
       foreach (ITabuChecker op in Problem.Operators.OfType<ITabuChecker>()) {
-        op.MoveTabuParameter.ActualNameChanged -= new EventHandler(TabuMoveEvaluator_MoveTabuParameter_ActualNameChanged);
-        op.MoveTabuParameter.ActualNameChanged += new EventHandler(TabuMoveEvaluator_MoveTabuParameter_ActualNameChanged);
+        op.MoveTabuParameter.ActualNameChanged -= new EventHandler(TabuChecker_MoveTabuParameter_ActualNameChanged);
+        op.MoveTabuParameter.ActualNameChanged += new EventHandler(TabuChecker_MoveTabuParameter_ActualNameChanged);
       }
       UpdateMoveGenerator();
       UpdateMoveParameters();
@@ -240,12 +244,16 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       ParameterizeMoveGenerators();
       ParameterizeMoveEvaluator();
       ParameterizeMoveMaker();
+      ParameterizeTabuMaker();
+      ParameterizeTabuChecker();
       base.Problem_OperatorsChanged(sender, e);
     }
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeMainLoop();
       ParameterizeMoveEvaluator();
       ParameterizeMoveMaker();
+      ParameterizeTabuMaker();
+      ParameterizeTabuChecker();
     }
     private void MoveGeneratorParameter_ValueChanged(object sender, EventArgs e) {
       UpdateMoveParameters();
@@ -254,16 +262,20 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       ParameterizeMainLoop();
       ParameterizeMoveEvaluator();
       ParameterizeMoveMaker();
+      ParameterizeTabuMaker();
+      ParameterizeTabuChecker();
     }
     private void MoveEvaluator_MoveQualityParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeMainLoop();
       ParameterizeMoveEvaluator();
       ParameterizeMoveMaker();
+      ParameterizeTabuMaker();
+      ParameterizeTabuChecker();
     }
-    private void TabuMoveEvaluatorParameter_ValueChanged(object sender, EventArgs e) {
+    private void TabuCheckerParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeMainLoop();
     }
-    private void TabuMoveEvaluator_MoveTabuParameter_ActualNameChanged(object sender, EventArgs e) {
+    private void TabuChecker_MoveTabuParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeMainLoop();
     }
     private void Visualizer_VisualizationParameter_ActualNameChanged(object sender, EventArgs e) {
@@ -286,7 +298,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       }
       MoveGeneratorParameter.ValueChanged += new EventHandler(MoveGeneratorParameter_ValueChanged);
       MoveEvaluatorParameter.ValueChanged += new EventHandler(MoveEvaluatorParameter_ValueChanged);
-      TabuMoveEvaluatorParameter.ValueChanged += new EventHandler(TabuMoveEvaluatorParameter_ValueChanged);
+      TabuCheckerParameter.ValueChanged += new EventHandler(TabuCheckerParameter_ValueChanged);
       SampleSizeParameter.NameChanged += new EventHandler(SampleSizeParameter_NameChanged);
     }
     private void UpdateMoveGenerator() {
@@ -306,8 +318,8 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     private void UpdateMoveParameters() {
       IMoveMaker oldMoveMaker = MoveMaker;
       ISingleObjectiveMoveEvaluator oldMoveEvaluator = MoveEvaluator;
-      ITabuChecker oldTabuMoveEvaluator = TabuMoveEvaluator;
-      ITabuMaker oldTabuMoveMaker = TabuMoveMaker;
+      ITabuChecker oldTabuMoveEvaluator = TabuChecker;
+      ITabuMaker oldTabuMoveMaker = TabuMaker;
       ClearMoveParameters();
       if (MoveGenerator != null) {
         List<Type> moveTypes = MoveGenerator.GetType().GetInterfaces().Where(x => typeof(IMoveOperator).IsAssignableFrom(x)).ToList();
@@ -322,9 +334,9 @@ namespace HeuristicLab.Algorithms.TabuSearch {
           foreach (ISingleObjectiveMoveEvaluator moveEvaluator in operators.OfType<ISingleObjectiveMoveEvaluator>())
             MoveEvaluatorParameter.ValidValues.Add(moveEvaluator);
           foreach (ITabuChecker tabuMoveEvaluator in operators.OfType<ITabuChecker>())
-            TabuMoveEvaluatorParameter.ValidValues.Add(tabuMoveEvaluator);
+            TabuCheckerParameter.ValidValues.Add(tabuMoveEvaluator);
           foreach (ITabuMaker tabuMoveMaker in operators.OfType<ITabuMaker>())
-            TabuMoveMakerParameter.ValidValues.Add(tabuMoveMaker);
+            TabuMakerParameter.ValidValues.Add(tabuMoveMaker);
         }
         if (oldMoveMaker != null) {
           IMoveMaker mm = MoveMakerParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMoveMaker.GetType());
@@ -335,20 +347,20 @@ namespace HeuristicLab.Algorithms.TabuSearch {
           if (me != null) MoveEvaluator = me;
         }
         if (oldTabuMoveMaker != null) {
-          ITabuMaker tmm = TabuMoveMakerParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldTabuMoveMaker.GetType());
-          if (tmm != null) TabuMoveMaker = tmm;
+          ITabuMaker tmm = TabuMakerParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldTabuMoveMaker.GetType());
+          if (tmm != null) TabuMaker = tmm;
         }
         if (oldTabuMoveEvaluator != null) {
-          ITabuChecker tme = TabuMoveEvaluatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldTabuMoveEvaluator.GetType());
-          if (tme != null) TabuMoveEvaluator = tme;
+          ITabuChecker tme = TabuCheckerParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldTabuMoveEvaluator.GetType());
+          if (tme != null) TabuChecker = tme;
         }
       }
     }
     private void ClearMoveParameters() {
       MoveMakerParameter.ValidValues.Clear();
       MoveEvaluatorParameter.ValidValues.Clear();
-      TabuMoveEvaluatorParameter.ValidValues.Clear();
-      TabuMoveMakerParameter.ValidValues.Clear();
+      TabuCheckerParameter.ValidValues.Clear();
+      TabuMakerParameter.ValidValues.Clear();
     }
     private void ParameterizeSolutionsCreator() {
       SolutionsCreator.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
@@ -360,8 +372,8 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       MainLoop.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
       if (MoveEvaluator != null)
         MainLoop.MoveQualityParameter.ActualName = MoveEvaluator.MoveQualityParameter.ActualName;
-      if (TabuMoveEvaluator != null)
-        MainLoop.MoveTabuParameter.ActualName = TabuMoveEvaluator.MoveTabuParameter.ActualName;
+      if (TabuChecker != null)
+        MainLoop.MoveTabuParameter.ActualName = TabuChecker.MoveTabuParameter.ActualName;
       MainLoop.VisualizerParameter.ActualName = Problem.VisualizerParameter.Name;
       if (Problem.Visualizer != null)
         MainLoop.VisualizationParameter.ActualName = Problem.Visualizer.VisualizationParameter.ActualName;
@@ -386,6 +398,21 @@ namespace HeuristicLab.Algorithms.TabuSearch {
         op.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
         if (MoveEvaluator != null)
           op.MoveQualityParameter.ActualName = MoveEvaluator.MoveQualityParameter.ActualName;
+      }
+    }
+    private void ParameterizeTabuMaker() {
+      foreach (ITabuMaker op in Problem.Operators.OfType<ITabuMaker>()) {
+        op.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
+        if (MoveEvaluator != null)
+          op.MoveQualityParameter.ActualName = MoveEvaluator.MoveQualityParameter.ActualName;
+      }
+    }
+    private void ParameterizeTabuChecker() {
+      foreach (ITabuChecker op in Problem.Operators.OfType<ITabuChecker>()) {
+        if (MoveEvaluator != null)
+          op.MoveQualityParameter.ActualName = MoveEvaluator.MoveQualityParameter.ActualName;
+        if (TabuChecker != null)
+          op.MoveTabuParameter.ActualName = TabuChecker.MoveTabuParameter.ActualName;
       }
     }
     #endregion

@@ -22,44 +22,25 @@
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.RealVectorEncoding {
-  [Item("AdditiveMoveTabuAttribute", "Tabu attribute for additive moves.")]
+namespace HeuristicLab.Encodings.PermutationEncoding {
+  [Item("PermutationMoveAttribute", "Base class for specifying a move attribute")]
   [StorableClass]
-  public class AdditiveMoveTabuAttribute : Item {
-    [Storable]
-    public int Dimension { get; protected set; }
-    [Storable]
-    public double OriginalPosition { get; protected set; }
-    [Storable]
-    public double MovedPosition { get; protected set; }
+  public class PermutationMoveAttribute : Item {
     [Storable]
     public double MoveQuality { get; protected set; }
 
-    [StorableConstructor]
-    private AdditiveMoveTabuAttribute(bool deserializing)
+    public PermutationMoveAttribute()
       : base() {
-    }
-    public AdditiveMoveTabuAttribute()
-      : base() {
-      Dimension = -1;
-      OriginalPosition = 0;
-      MovedPosition = 0;
       MoveQuality = 0;
     }
 
-    public AdditiveMoveTabuAttribute(int dimension, double originalPosition, double movedPosition, double moveQuality)
+    public PermutationMoveAttribute(double moveQuality)
       : base() {
-      Dimension = dimension;
-      OriginalPosition = originalPosition;
-      MovedPosition = movedPosition;
       MoveQuality = moveQuality;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      AdditiveMoveTabuAttribute clone = (AdditiveMoveTabuAttribute)base.Clone(cloner);
-      clone.Dimension = Dimension;
-      clone.OriginalPosition = OriginalPosition;
-      clone.MovedPosition = MovedPosition;
+      PermutationMoveAttribute clone = (PermutationMoveAttribute)base.Clone(cloner);
       clone.MoveQuality = MoveQuality;
       return clone;
     }

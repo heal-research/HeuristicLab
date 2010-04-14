@@ -362,6 +362,12 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         op.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
         op.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
       }
+      string inversionMove = Operators.OfType<IMoveGenerator>().OfType<IPermutationInversionMoveOperator>().First().InversionMoveParameter.ActualName;
+      foreach (IPermutationInversionMoveOperator op in Operators.OfType<IPermutationInversionMoveOperator>())
+        op.InversionMoveParameter.ActualName = inversionMove;
+      string translocationMove = Operators.OfType<IMoveGenerator>().OfType<IPermutationTranslocationMoveOperator>().First().TranslocationMoveParameter.ActualName;
+      foreach (IPermutationTranslocationMoveOperator op in Operators.OfType<IPermutationTranslocationMoveOperator>())
+        op.TranslocationMoveParameter.ActualName = translocationMove;
     }
 
     private void ClearDistanceMatrix() {

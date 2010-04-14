@@ -42,14 +42,15 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     public static TranslocationMove Apply(Permutation permutation, IRandom random) {
       int length = permutation.Length;
       int index1, index2, index3;
-      index1 = random.Next(length - 1);
       do {
-        index2 = random.Next(index1, length);
-      } while (index2 - index1 >= length - 2);
-      do {
-        index3 = random.Next(length - index2 + index1);
-      } while (index3 == index1);
-      
+        index1 = random.Next(length);
+        do {
+          index2 = random.Next(index1, length);
+        } while (index2 - index1 >= length - 2);
+        do {
+          index3 = random.Next(length - index2 + index1);
+        } while (index3 == index1);
+      } while (permutation.PermutationType != PermutationTypes.Absolute && (index1 == 0 && index3 == length - 1 || index1 == length - 1 && index3 == 0));
       return new TranslocationMove(index1, index2, index3);
     }
 

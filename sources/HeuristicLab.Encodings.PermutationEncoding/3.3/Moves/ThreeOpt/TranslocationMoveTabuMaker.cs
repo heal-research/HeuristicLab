@@ -47,23 +47,35 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The solution as permutation."));
     }
 
-    protected override IItem GetTabuAttribute() {
+    protected override IItem GetTabuAttribute(bool maximization, double quality, double moveQuality) {
       TranslocationMove move = TranslocationMoveParameter.ActualValue;
       Permutation permutation = PermutationParameter.ActualValue;
-      if (move.Index3 > move.Index1)
-        return new TranslocationMoveAttribute(permutation.GetCircular(move.Index1 - 1),
-        permutation[move.Index1],
-        permutation[move.Index2],
-        permutation.GetCircular(move.Index2 + 1),
-        permutation.GetCircular(move.Index3 + move.Index2 - move.Index1),
-        permutation.GetCircular(move.Index3 + move.Index2 - move.Index1 + 1));
-      else
-        return new TranslocationMoveAttribute(permutation.GetCircular(move.Index1 - 1),
-        permutation[move.Index1],
-        permutation[move.Index2],
-        permutation.GetCircular(move.Index2 + 1),
-        permutation.GetCircular(move.Index3 - 1),
-        permutation.GetCircular(move.Index3));
+      double baseQuality = moveQuality;
+      if (maximization && quality > moveQuality || !maximization && quality < moveQuality) baseQuality = quality; // we make an uphill move, the lower bound is the solution quality
+      if (permutation.PermutationType == PermutationTypes.Absolute) {
+        int[] numbers = new int[move.Index2 - move.Index1 + 1];
+        for (int i = 0; i < numbers.Length; i++) {
+          numbers[i] = permutation[i + move.Index1];
+        }
+        return new TranslocationMoveAbsoluteAttribute(numbers, move.Index1, move.Index3, baseQuality); ;
+      } else {
+        if (move.Index3 > move.Index1)
+          return new TranslocationMoveRelativeAttribute(permutation.GetCircular(move.Index1 - 1),
+          permutation[move.Index1],
+          permutation[move.Index2],
+          permutation.GetCircular(move.Index2 + 1),
+          permutation.GetCircular(move.Index3 + move.Index2 - move.Index1),
+          permutation.GetCircular(move.Index3 + move.Index2 - move.Index1 + 1),
+          baseQuality);
+        else
+          return new TranslocationMoveRelativeAttribute(permutation.GetCircular(move.Index1 - 1),
+          permutation[move.Index1],
+          permutation[move.Index2],
+          permutation.GetCircular(move.Index2 + 1),
+          permutation.GetCircular(move.Index3 - 1),
+          permutation.GetCircular(move.Index3),
+          baseQuality);
+      }
     }
   }
 }

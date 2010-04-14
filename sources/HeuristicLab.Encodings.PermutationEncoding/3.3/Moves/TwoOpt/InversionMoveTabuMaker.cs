@@ -28,7 +28,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
-  [Item("InversionMoveTabuMaker", "Declares a given inversion move (2-opt) as tabu, by adding its attributes to the tabu list.")]
+  [Item("InversionMoveTabuMaker", "Declares a given inversion move (2-opt) as tabu, by adding its attributes to the tabu list and also store the solution quality or the move quality (whichever is better).")]
   [StorableClass]
   public class InversionMoveTabuMaker : TabuMaker, IPermutationInversionMoveOperator {
     public override bool CanChangeName {
@@ -47,16 +47,19 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The solution as permutation."));
     }
 
-    protected override IItem GetTabuAttribute() {
+    protected override IItem GetTabuAttribute(bool maximization, double quality, double moveQuality) {
       InversionMove move = InversionMoveParameter.ActualValue;
       Permutation permutation = PermutationParameter.ActualValue;
+      double baseQuality = moveQuality;
+      if (maximization && quality > moveQuality || !maximization && quality < moveQuality) baseQuality = quality; // we make an uphill move, the lower bound is the solution quality
       if (permutation.PermutationType == PermutationTypes.Absolute)
-        return new InversionMoveAbsoluteAttribute(move.Index1, permutation[move.Index1], move.Index2, permutation[move.Index2]);
+        return new InversionMoveAbsoluteAttribute(move.Index1, permutation[move.Index1], move.Index2, permutation[move.Index2], baseQuality);
       else
         return new InversionMoveRelativeAttribute(permutation.GetCircular(move.Index1 - 1),
           permutation[move.Index1],
           permutation[move.Index2],
-          permutation.GetCircular(move.Index2 + 1));
+          permutation.GetCircular(move.Index2 + 1),
+          baseQuality);
     }
   }
 }

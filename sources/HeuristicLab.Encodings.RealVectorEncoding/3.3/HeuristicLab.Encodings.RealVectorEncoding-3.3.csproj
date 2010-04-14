@@ -111,12 +111,12 @@
     <Compile Include="Interfaces\IRealVectorMoveGenerator.cs" />
     <Compile Include="Interfaces\IRealVectorMoveOperator.cs" />
     <Compile Include="Manipulators\NormalAllPositionsManipulator.cs" />
+    <Compile Include="Moves\AdditiveMoveTabuChecker.cs" />
+    <Compile Include="Moves\AdditiveMoveTabuMaker.cs" />
     <Compile Include="StrategyParameters\StrategyVectorCreator.cs" />
     <Compile Include="StrategyParameters\StrategyVectorCrossover.cs" />
     <Compile Include="StrategyParameters\StrategyVectorManipulator.cs" />
     <Compile Include="Moves\AdditiveMoveTabuAttribute.cs" />
-    <Compile Include="Moves\AdditiveTabuMoveEvaluator.cs" />
-    <Compile Include="Moves\AdditiveTabuMoveMaker.cs" />
     <Compile Include="Moves\AdditiveMoveMaker.cs" />
     <Compile Include="Moves\AdditiveMove.cs" />
     <Compile Include="Moves\AdditiveMoveGenerator.cs" />

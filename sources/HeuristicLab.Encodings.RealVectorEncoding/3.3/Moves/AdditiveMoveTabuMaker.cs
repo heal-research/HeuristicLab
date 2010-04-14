@@ -28,9 +28,9 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
-  [Item("AdditiveTabuMoveMaker", "Sets the move tabu.")]
+  [Item("AdditiveMoveTabuMaker", "Sets the move tabu.")]
   [StorableClass]
-  public class AdditiveTabuMoveMaker : TabuMaker, IAdditiveRealVectorMoveOperator {
+  public class AdditiveMoveTabuMaker : TabuMaker, IAdditiveRealVectorMoveOperator {
     public ILookupParameter<AdditiveMove> AdditiveMoveParameter {
       get { return (ILookupParameter<AdditiveMove>)Parameters["AdditiveMove"]; }
     }
@@ -38,16 +38,18 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       get { return (ILookupParameter<RealVector>)Parameters["RealVector"]; }
     }
 
-    public AdditiveTabuMoveMaker()
+    public AdditiveMoveTabuMaker()
       : base() {
       Parameters.Add(new LookupParameter<AdditiveMove>("AdditiveMove", "The move to evaluate."));
       Parameters.Add(new LookupParameter<RealVector>("RealVector", "The solution as permutation."));
     }
 
-    protected override IItem GetTabuAttribute() {
+    protected override IItem GetTabuAttribute(bool maximization, double quality, double moveQuality) {
       AdditiveMove move = AdditiveMoveParameter.ActualValue;
       RealVector vector = RealVectorParameter.ActualValue;
-      return new AdditiveMoveTabuAttribute(move.Dimension, vector[move.Dimension], vector[move.Dimension] + move.MoveDistance);
+      double baseQuality = moveQuality;
+      if (maximization && quality > moveQuality || !maximization && quality < moveQuality) baseQuality = quality;
+      return new AdditiveMoveTabuAttribute(move.Dimension, vector[move.Dimension], vector[move.Dimension] + move.MoveDistance, baseQuality);
     }
     
     public override bool CanChangeName {
