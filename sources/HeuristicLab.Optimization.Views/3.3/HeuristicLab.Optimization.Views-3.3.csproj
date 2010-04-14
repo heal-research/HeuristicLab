@@ -74,6 +74,7 @@
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -82,6 +83,7 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WeifenLuo.WinFormsUI.Docking-2.3.1, Version=2.3.1.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=x86" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLabOptimizationViewsPlugin.cs.frame" />
@@ -108,6 +110,12 @@
     </Compile>
     <Compile Include="ExperimentView.Designer.cs">
       <DependentUpon>ExperimentView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RunCollectionBubbleChartView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="RunCollectionBubbleChartView.Designer.cs">
+      <DependentUpon>RunCollectionBubbleChartView.cs</DependentUpon>
     </Compile>
     <Compile Include="RunCollectionTabularView.cs">
       <SubType>UserControl</SubType>
