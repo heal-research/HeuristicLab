@@ -52,6 +52,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab 3.3", "Heurist
 		{D58A232D-04BA-4186-B73E-0EC86FD31ABE} = {D58A232D-04BA-4186-B73E-0EC86FD31ABE}
 		{6A5F8C2D-B0C3-4B36-BC20-9B1A91EE6DB6} = {6A5F8C2D-B0C3-4B36-BC20-9B1A91EE6DB6}
 		{1849A92E-DCFC-4E05-BB0A-D7B7A3DAFCFB} = {1849A92E-DCFC-4E05-BB0A-D7B7A3DAFCFB}
+		{7CBAA733-47EA-4675-BB5E-827A0D5DC5DD} = {7CBAA733-47EA-4675-BB5E-827A0D5DC5DD}
 		{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1} = {0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}
 		{678E2145-8152-4E19-9646-07D439D00301} = {678E2145-8152-4E19-9646-07D439D00301}
 		{BB994448-2B21-4564-BB2E-38D8FFF8CF18} = {BB994448-2B21-4564-BB2E-38D8FFF8CF18}
@@ -237,6 +238,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.DataAnalysis.Regression-3.3", "HeuristicLab.Problems.DataAnalysis.Regression\3.3\HeuristicLab.Problems.DataAnalysis.Regression-3.3.csproj", "{BDF86B1D-630E-4CE2-8A49-8C90B1BDE4C9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3.Tests", "HeuristicLab.Encodings.SymbolicExpressionTreeEncoding\3.3\Tests\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3.Tests.csproj", "{8824925E-3E00-4543-8293-7DDACE4737F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Algorithms.MultipopulationAlgorithm-3.3", "HeuristicLab.Algorithms.MultipopulationAlgorithm\3.3\HeuristicLab.Algorithms.MultipopulationAlgorithm-3.3.csproj", "{7CBAA733-47EA-4675-BB5E-827A0D5DC5DD}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -1328,6 +1331,20 @@ Global
 		{8824925E-3E00-4543-8293-7DDACE4737F8}.Services|Any CPU.Build.0 = Release|Any CPU
 		{8824925E-3E00-4543-8293-7DDACE4737F8}.Services|x64.ActiveCfg = Release|Any CPU
 		{8824925E-3E00-4543-8293-7DDACE4737F8}.Services|x86.ActiveCfg = Release|Any CPU
+		{7CBAA733-47EA-4675-BB5E-827A0D5DC5DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CBAA733-47EA-4675-BB5E-827A0D5DC5DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CBAA733-47EA-4675-BB5E-827A0D5DC5DD}.Debug|x64.ActiveCfg = Debug|x64
+		{7CBAA733-47EA-4675-BB5E-827A0D5DC5DD}.Debug|x64.Build.0 = Debug|x64
+		{7CBAA733-47EA-4675-BB5E-827A0D5DC5DD}.Debug|x86.ActiveCfg = Debug|x86
+		{7CBAA733-47EA-4675-BB5E-827A0D5DC5DD}.Debug|x86.Build.0 = Debug|x86
+		{7CBAA733-47EA-4675-BB5E-827A0D5DC5DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CBAA733-47EA-4675-BB5E-827A0D5DC5DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CBAA733-47EA-4675-BB5E-827A0D5DC5DD}.Release|x64.ActiveCfg = Release|Any CPU
+		{7CBAA733-47EA-4675-BB5E-827A0D5DC5DD}.Release|x86.ActiveCfg = Release|Any CPU
+		{7CBAA733-47EA-4675-BB5E-827A0D5DC5DD}.Services|Any CPU.ActiveCfg = Release|Any CPU
+		{7CBAA733-47EA-4675-BB5E-827A0D5DC5DD}.Services|Any CPU.Build.0 = Release|Any CPU
+		{7CBAA733-47EA-4675-BB5E-827A0D5DC5DD}.Services|x64.ActiveCfg = Release|Any CPU
+		{7CBAA733-47EA-4675-BB5E-827A0D5DC5DD}.Services|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
