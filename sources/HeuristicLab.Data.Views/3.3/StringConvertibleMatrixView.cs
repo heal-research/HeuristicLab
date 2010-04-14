@@ -112,8 +112,11 @@ namespace HeuristicLab.Data.Views {
         Content.Columns = dataGridView.ColumnCount;
       else
         dataGridView.ColumnCount = Content.Columns;
+
       UpdateRowHeaders();
       UpdateColumnHeaders();
+      dataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.ColumnHeader);
+      dataGridView.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToDisplayedHeaders);
       dataGridView.Enabled = true;
     }
 
@@ -122,7 +125,7 @@ namespace HeuristicLab.Data.Views {
         if (Content.ColumnNames.Count() != 0)
           dataGridView.Columns[i].HeaderText = Content.ColumnNames.ElementAt(i);
         else
-          dataGridView.Columns[i].HeaderText = "Column " + i;
+          dataGridView.Columns[i].HeaderText = "Column " + (i + 1);
       }
       dataGridView.Invalidate();
     }
@@ -132,7 +135,7 @@ namespace HeuristicLab.Data.Views {
         if (Content.RowNames.Count() != 0)
           dataGridView.Rows[i].HeaderCell.Value = Content.RowNames.ElementAt(i);
         else
-          dataGridView.Rows[i].HeaderCell.Value = i.ToString();
+          dataGridView.Rows[i].HeaderCell.Value = "Row " + (i + 1);
       }
       dataGridView.Invalidate();
     }
@@ -290,8 +293,8 @@ namespace HeuristicLab.Data.Views {
     private void Sort() {
       int[] newSortedIndex = Enumerable.Range(0, Content.Rows).ToArray();
       if (sortedColumnIndizes.Count != 0) {
-        rowComparer.sortedIndizes = sortedColumnIndizes;
-        rowComparer.matrix = Content;
+        rowComparer.SortedIndizes = sortedColumnIndizes;
+        rowComparer.Matrix = Content;
         Array.Sort(newSortedIndex, rowComparer);
       }
       virtualRowIndizes = newSortedIndex;
@@ -307,10 +310,19 @@ namespace HeuristicLab.Data.Views {
     }
     #endregion
 
-    private class RowComparer : IComparer<int> {
-      public List<KeyValuePair<int, SortOrder>> sortedIndizes;
-      public IStringConvertibleMatrix matrix;
+    public class RowComparer : IComparer<int> {
       public RowComparer() {
+      }
+
+      private List<KeyValuePair<int, SortOrder>> sortedIndizes;
+      public IEnumerable<KeyValuePair<int, SortOrder>> SortedIndizes {
+        get { return this.sortedIndizes; }
+        set { sortedIndizes = new List<KeyValuePair<int, SortOrder>>(value); }
+      }
+      private IStringConvertibleMatrix matrix;
+      public IStringConvertibleMatrix Matrix {
+        get { return this.matrix; }
+        set { this.matrix = value; }
       }
 
       public int Compare(int x, int y) {
@@ -319,23 +331,28 @@ namespace HeuristicLab.Data.Views {
         DateTime dateTime1, dateTime2;
         string string1, string2;
 
-        foreach (KeyValuePair<int, SortOrder> pair in sortedIndizes) {
-          string1 = matrix.GetValue(x, pair.Key);
-          string2 = matrix.GetValue(y, pair.Key);
-          if (double.TryParse(string1, out double1) && double.TryParse(string2, out double2))
-            result = double1.CompareTo(double2);
-          else if (DateTime.TryParse(string1, out dateTime1) && DateTime.TryParse(string2, out dateTime2))
-            result = dateTime1.CompareTo(dateTime2);
-          else {
-            if (string1 != null)
-              result = string1.CompareTo(string2);
-            else if (string2 != null)
-              result = string2.CompareTo(string1) * -1;
-          }
-          if (pair.Value == SortOrder.Descending)
-            result *= -1;
-          if (result != 0)
-            return result;
+        if (matrix == null)
+          throw new InvalidOperationException("Could not sort IStringConvertibleMatrix if the matrix member is null.");
+        if (sortedIndizes == null)
+          return 0;
+
+        foreach (KeyValuePair<int, SortOrder> pair in sortedIndizes.Where(p => p.Value != SortOrder.None)) {
+            string1 = matrix.GetValue(x, pair.Key);
+            string2 = matrix.GetValue(y, pair.Key);
+            if (double.TryParse(string1, out double1) && double.TryParse(string2, out double2))
+              result = double1.CompareTo(double2);
+            else if (DateTime.TryParse(string1, out dateTime1) && DateTime.TryParse(string2, out dateTime2))
+              result = dateTime1.CompareTo(dateTime2);
+            else {
+              if (string1 != null)
+                result = string1.CompareTo(string2);
+              else if (string2 != null)
+                result = string2.CompareTo(string1) * -1;
+            }
+            if (pair.Value == SortOrder.Descending)
+              result *= -1;
+            if (result != 0)
+              return result;
         }
         return result;
       }

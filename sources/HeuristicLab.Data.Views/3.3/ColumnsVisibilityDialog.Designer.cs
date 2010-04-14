@@ -48,6 +48,7 @@
       this.MaximizeBox = false;
       this.MinimizeBox = false;
       this.Name = "ColumnsVisibilityDialog";
+      this.ShowIcon = false;
       this.ShowInTaskbar = false;
       this.Text = "Show / Hide Columns";
       this.ResumeLayout(false);
