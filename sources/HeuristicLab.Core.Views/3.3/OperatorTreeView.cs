@@ -123,26 +123,23 @@ namespace HeuristicLab.Core.Views {
     }
     private void FillTreeNode(TreeNode node, IOperator op) {
       if (op == null) {
-        if (!graphTreeView.ImageList.Images.ContainsKey("Default"))
-          graphTreeView.ImageList.Images.Add("Default", HeuristicLab.Common.Resources.VS2008ImageLibrary.Method);
-
         node.Text += "-";
         node.ToolTipText = "";
-        node.ImageIndex = graphTreeView.ImageList.Images.IndexOfKey("Default"); ;
+        graphTreeView.ImageList.Images.Add(HeuristicLab.Common.Resources.VS2008ImageLibrary.Nothing);
+        node.ImageIndex = graphTreeView.ImageList.Images.Count - 1;
         node.SelectedImageIndex = node.ImageIndex;
         node.ForeColor = graphTreeView.ForeColor;
       } else {
-        if (!graphTreeView.ImageList.Images.ContainsKey(op.GetType().FullName))
-          graphTreeView.ImageList.Images.Add(op.GetType().FullName, op.ItemImage);
-
         node.Text += op.Name;
         node.ToolTipText = op.ItemName + ": " + op.ItemDescription;
-        node.ImageIndex = graphTreeView.ImageList.Images.IndexOfKey(op.GetType().FullName);
+        graphTreeView.ImageList.Images.Add(op.ItemImage);
+        node.ImageIndex = graphTreeView.ImageList.Images.Count - 1;
         node.SelectedImageIndex = node.ImageIndex;
         SetOperatorTag(node, op);
 
         if (!operatorNodeTable.ContainsKey(op)) {
           operatorNodeTable.Add(op, new List<TreeNode>());
+          op.ItemImageChanged += new EventHandler(op_ItemImageChanged);
           op.NameChanged += new EventHandler(op_NameChanged);
           op.BreakpointChanged += new EventHandler(op_BreakpointChanged);
           parametersOperatorTable.Add(op.Parameters, op);
@@ -167,10 +164,17 @@ namespace HeuristicLab.Core.Views {
       while (node.Nodes.Count > 0)
         RemoveTreeNode(node.Nodes[0]);
 
+      if (node.ImageIndex != -1) {
+        int i = node.ImageIndex;
+        CorrectImageIndexes(graphTreeView.Nodes, i);
+        graphTreeView.ImageList.Images.RemoveAt(i);
+      }
+
       IOperator op = GetOperatorTag(node);
       if (op != null) {
         operatorNodeTable[op].Remove(node);
         if (operatorNodeTable[op].Count == 0) {
+          op.ItemImageChanged -= new EventHandler(op_ItemImageChanged);
           op.NameChanged -= new EventHandler(op_NameChanged);
           op.BreakpointChanged -= new EventHandler(op_BreakpointChanged);
           operatorNodeTable.Remove(op);
@@ -228,6 +232,21 @@ namespace HeuristicLab.Core.Views {
         foreach (TreeNode node in opParamNodeTable[opParam]) {
           node.Text = opParam.Name + ": ";
           FillTreeNode(node, opParam.Value);
+        }
+      }
+    }
+    void op_ItemImageChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(op_ItemImageChanged), sender, e);
+      else {
+        IOperator op = (IOperator)sender;
+        foreach (TreeNode node in operatorNodeTable[op]) {
+          int i = node.ImageIndex;
+          graphTreeView.ImageList.Images[i] = op.ItemImage;
+          node.ImageIndex = -1;
+          node.SelectedImageIndex = -1;
+          node.ImageIndex = i;
+          node.SelectedImageIndex = i;
         }
       }
     }
@@ -431,6 +450,16 @@ namespace HeuristicLab.Core.Views {
         node.Tag = new Tuple<IValueParameter<IOperator>, IOperator>(null, op);
       else
         ((Tuple<IValueParameter<IOperator>, IOperator>)node.Tag).Item2 = op;
+    }
+
+    private void CorrectImageIndexes(TreeNodeCollection nodes, int removedIndex) {
+      foreach (TreeNode node in nodes) {
+        if (node.ImageIndex > removedIndex) {
+          node.ImageIndex--;
+          node.SelectedImageIndex--;
+        }
+        CorrectImageIndexes(node.Nodes, removedIndex);
+      }
     }
     #endregion
   }

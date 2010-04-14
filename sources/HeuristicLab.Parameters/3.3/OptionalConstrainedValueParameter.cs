@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Drawing;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -32,6 +33,13 @@ namespace HeuristicLab.Parameters {
   [Item("OptionalConstrainedValueParameter<T>", "A parameter whose value has to be chosen from a set of valid values or is null.")]
   [StorableClass]
   public class OptionalConstrainedValueParameter<T> : Parameter, IValueParameter<T> where T : class, IItem {
+    public override Image ItemImage {
+      get {
+        if (value != null) return value.ItemImage;
+        else return base.ItemImage;
+      }
+    }
+
     [Storable]
     private ItemSet<T> validValues;
     public ItemSet<T> ValidValues {
@@ -45,9 +53,9 @@ namespace HeuristicLab.Parameters {
       set {
         if (value != this.value) {
           if ((value != null) && !validValues.Contains(value)) throw new ArgumentException("Invalid value.");
-          if (this.value != null) this.value.ToStringChanged -= new EventHandler(Value_ToStringChanged);
+          DeregisterValueEvents();
           this.value = value;
-          if (this.value != null) this.value.ToStringChanged += new EventHandler(Value_ToStringChanged);
+          RegisterValueEvents();
           OnValueChanged();
         }
       }
@@ -109,7 +117,7 @@ namespace HeuristicLab.Parameters {
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
       RegisterValidValuesEvents();
-      if (value != null) value.ToStringChanged += new EventHandler(Value_ToStringChanged);
+      RegisterValueEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -135,33 +143,48 @@ namespace HeuristicLab.Parameters {
     protected virtual void OnValueChanged() {
       if (ValueChanged != null)
         ValueChanged(this, EventArgs.Empty);
+      OnItemImageChanged();
       OnToStringChanged();
     }
 
     private void RegisterValidValuesEvents() {
       if (validValues != null) {
-        validValues.ItemsAdded += new CollectionItemsChangedEventHandler<T>(validValues_ItemsAdded);
+        validValues.ItemsAdded += new CollectionItemsChangedEventHandler<T>(ValidValues_ItemsAdded);
         validValues.ItemsRemoved += new CollectionItemsChangedEventHandler<T>(ValidValues_ItemsRemoved);
         validValues.CollectionReset += new CollectionItemsChangedEventHandler<T>(ValidValues_CollectionReset);
       }
     }
-
     private void DeregisterValidValuesEvents() {
       if (validValues != null) {
-        validValues.ItemsAdded -= new CollectionItemsChangedEventHandler<T>(validValues_ItemsAdded);
+        validValues.ItemsAdded -= new CollectionItemsChangedEventHandler<T>(ValidValues_ItemsAdded);
         validValues.ItemsRemoved -= new CollectionItemsChangedEventHandler<T>(ValidValues_ItemsRemoved);
         validValues.CollectionReset -= new CollectionItemsChangedEventHandler<T>(ValidValues_CollectionReset);
       }
     }
-
-    protected virtual void validValues_ItemsAdded(object sender, CollectionItemsChangedEventArgs<T> e) { }
+    protected virtual void ValidValues_ItemsAdded(object sender, CollectionItemsChangedEventArgs<T> e) { }
     protected virtual void ValidValues_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<T> e) {
       if ((Value != null) && !validValues.Contains(Value)) Value = null;
     }
     protected virtual void ValidValues_CollectionReset(object sender, CollectionItemsChangedEventArgs<T> e) {
       if ((Value != null) && !validValues.Contains(Value)) Value = null;
     }
-    protected virtual void Value_ToStringChanged(object sender, EventArgs e) {
+
+    private void RegisterValueEvents() {
+      if (value != null) {
+        value.ItemImageChanged += new EventHandler(Value_ItemImageChanged);
+        value.ToStringChanged += new EventHandler(Value_ToStringChanged);
+      }
+    }
+    private void DeregisterValueEvents() {
+      if (value != null) {
+        value.ItemImageChanged -= new EventHandler(Value_ItemImageChanged);
+        value.ToStringChanged -= new EventHandler(Value_ToStringChanged);
+      }
+    }
+    private void Value_ItemImageChanged(object sender, EventArgs e) {
+      OnItemImageChanged();
+    }
+    private void Value_ToStringChanged(object sender, EventArgs e) {
       OnToStringChanged();
     }
   }

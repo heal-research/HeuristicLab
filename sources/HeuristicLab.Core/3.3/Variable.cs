@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -30,6 +31,13 @@ namespace HeuristicLab.Core {
   [Item("Variable", "A variable which has a name and holds an IItem.")]
   [StorableClass]
   public sealed class Variable : NamedItem, IVariable {
+    public override Image ItemImage {
+      get {
+        if (value != null) return value.ItemImage;
+        else return base.ItemImage;
+      }
+    }
+
     [Storable]
     private IItem value;
     /// <inheritdoc/>
@@ -38,9 +46,9 @@ namespace HeuristicLab.Core {
       get { return value; }
       set {
         if (this.value != value) {
-          if (this.value != null) this.value.ToStringChanged -= new EventHandler(Value_ToStringChanged);
+          DeregisterValueEvents();
           this.value = value;
-          if (this.value != null) this.value.ToStringChanged += new EventHandler(Value_ToStringChanged);
+          RegisterValueEvents();
           OnValueChanged();
         }
       }
@@ -83,7 +91,7 @@ namespace HeuristicLab.Core {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
-      if (value != null) value.ToStringChanged += new EventHandler(Value_ToStringChanged);
+      RegisterValueEvents();
     }
 
     /// <summary>
@@ -119,9 +127,25 @@ namespace HeuristicLab.Core {
     private void OnValueChanged() {
       if (ValueChanged != null)
         ValueChanged(this, EventArgs.Empty);
+      OnItemImageChanged();
       OnToStringChanged();
     }
 
+    private void RegisterValueEvents() {
+      if (value != null) {
+        value.ItemImageChanged += new EventHandler(Value_ItemImageChanged);
+        value.ToStringChanged += new EventHandler(Value_ToStringChanged);
+      }
+    }
+    private void DeregisterValueEvents() {
+      if (value != null) {
+        value.ItemImageChanged -= new EventHandler(Value_ItemImageChanged);
+        value.ToStringChanged -= new EventHandler(Value_ToStringChanged);
+      }
+    }
+    private void Value_ItemImageChanged(object sender, EventArgs e) {
+      OnItemImageChanged();
+    }
     private void Value_ToStringChanged(object sender, EventArgs e) {
       OnToStringChanged();
     }

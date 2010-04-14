@@ -140,6 +140,9 @@ namespace HeuristicLab.Core.Views {
       ((T)listViewItem.Tag).ItemImageChanged -= new EventHandler(Item_ItemImageChanged);
       ((T)listViewItem.Tag).ToStringChanged -= new EventHandler(Item_ToStringChanged);
       listViewItem.Remove();
+      foreach (ListViewItem other in itemsListView.Items)
+        if (other.ImageIndex > listViewItem.ImageIndex) other.ImageIndex--;
+      itemsListView.SmallImageList.Images.RemoveAt(listViewItem.ImageIndex);
     }
     protected virtual void UpdateListViewItemImage(ListViewItem listViewItem) {
       int i = listViewItem.ImageIndex;

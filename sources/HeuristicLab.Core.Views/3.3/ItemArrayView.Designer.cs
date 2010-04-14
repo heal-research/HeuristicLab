@@ -62,6 +62,8 @@ namespace HeuristicLab.Core.Views {
       this.viewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.itemsGroupBox = new System.Windows.Forms.GroupBox();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this.removeButton = new System.Windows.Forms.Button();
+      this.addButton = new System.Windows.Forms.Button();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
@@ -78,7 +80,9 @@ namespace HeuristicLab.Core.Views {
       // 
       // splitContainer.Panel1
       // 
+      this.splitContainer.Panel1.Controls.Add(this.addButton);
       this.splitContainer.Panel1.Controls.Add(this.moveUpButton);
+      this.splitContainer.Panel1.Controls.Add(this.removeButton);
       this.splitContainer.Panel1.Controls.Add(this.moveDownButton);
       this.splitContainer.Panel1.Controls.Add(this.itemsListView);
       // 
@@ -93,10 +97,10 @@ namespace HeuristicLab.Core.Views {
       // 
       this.moveUpButton.Enabled = false;
       this.moveUpButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.ArrowUp;
-      this.moveUpButton.Location = new System.Drawing.Point(3, 3);
+      this.moveUpButton.Location = new System.Drawing.Point(33, 3);
       this.moveUpButton.Name = "moveUpButton";
       this.moveUpButton.Size = new System.Drawing.Size(24, 24);
-      this.moveUpButton.TabIndex = 0;
+      this.moveUpButton.TabIndex = 1;
       this.toolTip.SetToolTip(this.moveUpButton, "Move Up");
       this.moveUpButton.UseVisualStyleBackColor = true;
       this.moveUpButton.Click += new System.EventHandler(this.moveUpButton_Click);
@@ -105,10 +109,10 @@ namespace HeuristicLab.Core.Views {
       // 
       this.moveDownButton.Enabled = false;
       this.moveDownButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.ArrowDown;
-      this.moveDownButton.Location = new System.Drawing.Point(33, 3);
+      this.moveDownButton.Location = new System.Drawing.Point(63, 3);
       this.moveDownButton.Name = "moveDownButton";
       this.moveDownButton.Size = new System.Drawing.Size(24, 24);
-      this.moveDownButton.TabIndex = 1;
+      this.moveDownButton.TabIndex = 2;
       this.toolTip.SetToolTip(this.moveDownButton, "Move Down");
       this.moveDownButton.UseVisualStyleBackColor = true;
       this.moveDownButton.Click += new System.EventHandler(this.moveDownButton_Click);
@@ -128,7 +132,7 @@ namespace HeuristicLab.Core.Views {
       this.itemsListView.ShowItemToolTips = true;
       this.itemsListView.Size = new System.Drawing.Size(194, 286);
       this.itemsListView.SmallImageList = this.imageList;
-      this.itemsListView.TabIndex = 2;
+      this.itemsListView.TabIndex = 4;
       this.itemsListView.UseCompatibleStateImageBehavior = false;
       this.itemsListView.View = System.Windows.Forms.View.Details;
       this.itemsListView.SelectedIndexChanged += new System.EventHandler(this.itemsListView_SelectedIndexChanged);
@@ -169,6 +173,7 @@ namespace HeuristicLab.Core.Views {
       this.viewHost.Name = "viewHost";
       this.viewHost.Size = new System.Drawing.Size(271, 269);
       this.viewHost.TabIndex = 0;
+      this.viewHost.ViewType = null;
       // 
       // itemsGroupBox
       // 
@@ -180,6 +185,30 @@ namespace HeuristicLab.Core.Views {
       this.itemsGroupBox.TabIndex = 0;
       this.itemsGroupBox.TabStop = false;
       this.itemsGroupBox.Text = "Items";
+      // 
+      // removeButton
+      // 
+      this.removeButton.Enabled = false;
+      this.removeButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Remove;
+      this.removeButton.Location = new System.Drawing.Point(93, 3);
+      this.removeButton.Name = "removeButton";
+      this.removeButton.Size = new System.Drawing.Size(24, 24);
+      this.removeButton.TabIndex = 3;
+      this.toolTip.SetToolTip(this.removeButton, "Clear");
+      this.removeButton.UseVisualStyleBackColor = true;
+      this.removeButton.Click += new System.EventHandler(this.removeButton_Click);
+      // 
+      // addButton
+      // 
+      this.addButton.Enabled = false;
+      this.addButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Add;
+      this.addButton.Location = new System.Drawing.Point(3, 3);
+      this.addButton.Name = "addButton";
+      this.addButton.Size = new System.Drawing.Size(24, 24);
+      this.addButton.TabIndex = 0;
+      this.toolTip.SetToolTip(this.addButton, "Set");
+      this.addButton.UseVisualStyleBackColor = true;
+      this.addButton.Click += new System.EventHandler(this.addButton_Click);
       // 
       // ItemArrayView
       // 
@@ -208,5 +237,7 @@ namespace HeuristicLab.Core.Views {
     protected ToolTip toolTip;
     protected ImageList imageList;
     protected HeuristicLab.MainForm.WindowsForms.ViewHost viewHost;
+    protected Button removeButton;
+    protected Button addButton;
   }
 }

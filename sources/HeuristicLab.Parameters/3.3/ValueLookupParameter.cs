@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -31,15 +32,22 @@ namespace HeuristicLab.Parameters {
   [Item("ValueLookupParameter<T>", "A parameter whose value is either defined in the parameter itself or is retrieved from or written to a scope.")]
   [StorableClass]
   public class ValueLookupParameter<T> : LookupParameter<T>, IValueLookupParameter<T> where T : class, IItem {
+    public override Image ItemImage {
+      get {
+        if (value != null) return value.ItemImage;
+        else return base.ItemImage;
+      }
+    }
+
     [Storable]
     private T value;
     public T Value {
       get { return this.value; }
       set {
         if (value != this.value) {
-          if (this.value != null) this.value.ToStringChanged -= new EventHandler(Value_ToStringChanged);
+          DeregisterValueEvents();
           this.value = value;
-          if (this.value != null) this.value.ToStringChanged += new EventHandler(Value_ToStringChanged);
+          RegisterValueEvents();
           OnValueChanged();
         }
       }
@@ -84,7 +92,7 @@ namespace HeuristicLab.Parameters {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
-      if (value != null) value.ToStringChanged += new EventHandler(Value_ToStringChanged);
+      RegisterValueEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -102,7 +110,24 @@ namespace HeuristicLab.Parameters {
     private void OnValueChanged() {
       if (ValueChanged != null)
         ValueChanged(this, EventArgs.Empty);
+      OnItemImageChanged();
       OnToStringChanged();
+    }
+
+    private void RegisterValueEvents() {
+      if (value != null) {
+        value.ItemImageChanged += new EventHandler(Value_ItemImageChanged);
+        value.ToStringChanged += new EventHandler(Value_ToStringChanged);
+      }
+    }
+    private void DeregisterValueEvents() {
+      if (value != null) {
+        value.ItemImageChanged -= new EventHandler(Value_ItemImageChanged);
+        value.ToStringChanged -= new EventHandler(Value_ToStringChanged);
+      }
+    }
+    private void Value_ItemImageChanged(object sender, EventArgs e) {
+      OnItemImageChanged();
     }
     private void Value_ToStringChanged(object sender, EventArgs e) {
       OnToStringChanged();

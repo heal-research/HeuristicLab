@@ -48,7 +48,7 @@ namespace HeuristicLab.Parameters {
     public ConstrainedValueParameter(string name, string description, ItemSet<T> validValues) : base(name, description, validValues) { }
     public ConstrainedValueParameter(string name, string description, ItemSet<T> validValues, T value) : base(name, description, validValues, value) { }
 
-    protected override void validValues_ItemsAdded(object sender, CollectionItemsChangedEventArgs<T> e) {
+    protected override void ValidValues_ItemsAdded(object sender, CollectionItemsChangedEventArgs<T> e) {
       if (Value == null) Value = ValidValues.First();
     }
     protected override void ValidValues_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<T> e) {

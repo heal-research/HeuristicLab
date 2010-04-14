@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -31,6 +32,13 @@ namespace HeuristicLab.Optimization {
   [Item("Result", "A result which has a name and a data type and holds an IItem.")]
   [StorableClass]
   public sealed class Result : NamedItem, IResult {
+    public override Image ItemImage {
+      get {
+        if (value != null) return value.ItemImage;
+        else return base.ItemImage;
+      }
+    }
+
     public override bool CanChangeName {
       get { return false; }
     }
@@ -56,9 +64,9 @@ namespace HeuristicLab.Optimization {
                             dataType.GetPrettyName())
             );
 
-          if (this.value != null) this.value.ToStringChanged -= new EventHandler(Value_ToStringChanged);
+          DeregisterValueEvents();
           this.value = value;
-          if (this.value != null) this.value.ToStringChanged += new EventHandler(Value_ToStringChanged);
+          RegisterValueEvents();
           OnValueChanged();
         }
       }
@@ -96,7 +104,7 @@ namespace HeuristicLab.Optimization {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
-      if (value != null) value.ToStringChanged += new EventHandler(Value_ToStringChanged);
+      RegisterValueEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -116,9 +124,25 @@ namespace HeuristicLab.Optimization {
     private void OnValueChanged() {
       if (ValueChanged != null)
         ValueChanged(this, EventArgs.Empty);
+      OnItemImageChanged();
       OnToStringChanged();
     }
 
+    private void RegisterValueEvents() {
+      if (value != null) {
+        value.ItemImageChanged += new EventHandler(Value_ItemImageChanged);
+        value.ToStringChanged += new EventHandler(Value_ToStringChanged);
+      }
+    }
+    private void DeregisterValueEvents() {
+      if (value != null) {
+        value.ItemImageChanged -= new EventHandler(Value_ItemImageChanged);
+        value.ToStringChanged -= new EventHandler(Value_ToStringChanged);
+      }
+    }
+    private void Value_ItemImageChanged(object sender, EventArgs e) {
+      OnItemImageChanged();
+    }
     private void Value_ToStringChanged(object sender, EventArgs e) {
       OnToStringChanged();
     }

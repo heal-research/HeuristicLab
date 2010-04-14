@@ -74,38 +74,27 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void FillListView() {
-      if (!listView.SmallImageList.Images.ContainsKey("Default"))
-        listView.SmallImageList.Images.Add("Default", HeuristicLab.Common.Resources.VS2008ImageLibrary.Nothing);
-
       listView.Items.Clear();
+      listView.SmallImageList.Images.Clear();
       if (Content != null) {
-        foreach (string key in Content.Parameters.Keys) {
-          IItem value = Content.Parameters[key];
-          if ((value != null) && (!listView.SmallImageList.Images.ContainsKey(value.GetType().FullName)))
-            listView.SmallImageList.Images.Add(value.GetType().FullName, value.ItemImage);
-
-          ListViewItem item = new ListViewItem(new string[] { key, value != null ? value.ToString() : "-" });
-          item.Tag = value;
-          item.Group = listView.Groups["parametersGroup"];
-          item.ImageIndex = listView.SmallImageList.Images.IndexOfKey(value != null ? value.GetType().FullName : "Default");
-          listView.Items.Add(item);
-        }
-        foreach (string key in Content.Results.Keys) {
-          IItem value = Content.Results[key];
-          if ((value != null) && (!listView.SmallImageList.Images.ContainsKey(value.GetType().FullName)))
-            listView.SmallImageList.Images.Add(value.GetType().FullName, value.ItemImage);
-
-          ListViewItem item = new ListViewItem(new string[] { key, value != null ? value.ToString() : "-" });
-          item.Tag = value;
-          item.Group = listView.Groups["resultsGroup"];
-          item.ImageIndex = listView.SmallImageList.Images.IndexOfKey(value != null ? value.GetType().FullName : "Default");
-          listView.Items.Add(item);
-        }
+        foreach (string key in Content.Parameters.Keys)
+          CreateListViewItem(key, Content.Parameters[key], listView.Groups["parametersGroup"]);
+        foreach (string key in Content.Results.Keys)
+          CreateListViewItem(key, Content.Results[key], listView.Groups["resultsGroup"]);
         if (listView.Items.Count > 0) {
           for (int i = 0; i < listView.Columns.Count; i++)
             listView.Columns[i].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
         }
       }
+    }
+
+    private void CreateListViewItem(string name, IItem value, ListViewGroup group) {
+      ListViewItem item = new ListViewItem(new string[] { name, value != null ? value.ToString() : "-" });
+      item.Tag = value;
+      item.Group = group;
+      listView.SmallImageList.Images.Add(value == null ? HeuristicLab.Common.Resources.VS2008ImageLibrary.Nothing : value.ItemImage);
+      item.ImageIndex = listView.SmallImageList.Images.Count - 1;
+      listView.Items.Add(item);
     }
 
     private void listView_SelectedIndexChanged(object sender, EventArgs e) {
@@ -129,10 +118,10 @@ namespace HeuristicLab.Optimization.Views {
       DataObject data = new DataObject();
       data.SetData("Type", item.GetType());
       data.SetData("Value", item);
-      DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
+      DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy);
     }
     private void showAlgorithmButton_Click(object sender, EventArgs e) {
-      MainFormManager.CreateDefaultView(Content.Algorithm).Show();
+      MainFormManager.CreateDefaultView(Content.Algorithm.Clone()).Show();
     }
   }
 }

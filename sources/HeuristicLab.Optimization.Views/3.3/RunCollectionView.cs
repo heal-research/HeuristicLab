@@ -82,28 +82,36 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     protected virtual ListViewItem CreateListViewItem(IRun item) {
-      if (!itemsListView.SmallImageList.Images.ContainsKey(item.GetType().FullName))
-        itemsListView.SmallImageList.Images.Add(item.GetType().FullName, item.ItemImage);
-
       ListViewItem listViewItem = new ListViewItem();
       listViewItem.Text = item.ToString();
       listViewItem.ToolTipText = item.ItemName + ": " + item.ItemDescription;
-      listViewItem.ImageIndex = itemsListView.SmallImageList.Images.IndexOfKey(item.GetType().FullName);
+      itemsListView.SmallImageList.Images.Add(item.ItemImage);
+      listViewItem.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
       listViewItem.Tag = item;
       return listViewItem;
     }
     protected virtual void AddListViewItem(ListViewItem listViewItem) {
       itemsListView.Items.Add(listViewItem);
+      ((IRun)listViewItem.Tag).ItemImageChanged += new EventHandler(Item_ItemImageChanged);
       ((IRun)listViewItem.Tag).ToStringChanged += new EventHandler(Item_ToStringChanged);
     }
     protected virtual void RemoveListViewItem(ListViewItem listViewItem) {
+      ((IRun)listViewItem.Tag).ItemImageChanged -= new EventHandler(Item_ItemImageChanged);
       ((IRun)listViewItem.Tag).ToStringChanged -= new EventHandler(Item_ToStringChanged);
       listViewItem.Remove();
+      foreach (ListViewItem other in itemsListView.Items)
+        if (other.ImageIndex > listViewItem.ImageIndex) other.ImageIndex--;
+      itemsListView.SmallImageList.Images.RemoveAt(listViewItem.ImageIndex);
     }
-    protected virtual void UpdateListViewItem(ListViewItem listViewItem) {
-      if (!listViewItem.Text.Equals(listViewItem.Tag.ToString())) {
+    protected virtual void UpdateListViewItemImage(ListViewItem listViewItem) {
+      int i = listViewItem.ImageIndex;
+      listViewItem.ImageList.Images[i] = ((IRun)listViewItem.Tag).ItemImage;
+      listViewItem.ImageIndex = -1;
+      listViewItem.ImageIndex = i;
+    }
+    protected virtual void UpdateListViewItemText(ListViewItem listViewItem) {
+      if (!listViewItem.Text.Equals(listViewItem.Tag.ToString()))
         listViewItem.Text = listViewItem.Tag.ToString();
-      }
     }
     protected virtual IEnumerable<ListViewItem> GetListViewItemsForItem(IRun item) {
       foreach (ListViewItem listViewItem in itemsListView.Items) {
@@ -225,13 +233,22 @@ namespace HeuristicLab.Optimization.Views {
     #endregion
 
     #region Item Events
+    protected virtual void Item_ItemImageChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Item_ItemImageChanged), sender, e);
+      else {
+        IRun item = (IRun)sender;
+        foreach (ListViewItem listViewItem in GetListViewItemsForItem(item))
+          UpdateListViewItemImage(listViewItem);
+      }
+    }
     protected virtual void Item_ToStringChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Item_ToStringChanged), sender, e);
       else {
         IRun item = (IRun)sender;
         foreach (ListViewItem listViewItem in GetListViewItemsForItem(item))
-          UpdateListViewItem(listViewItem);
+          UpdateListViewItemText(listViewItem);
       }
     }
     #endregion

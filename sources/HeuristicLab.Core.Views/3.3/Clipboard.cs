@@ -89,28 +89,33 @@ namespace HeuristicLab.Core.Views {
         Invoke(new Action<T>(AddItem), item);
       else {
         if (!itemListViewItemTable.ContainsKey(item)) {
-          if (!listView.SmallImageList.Images.ContainsKey(item.GetType().FullName))
-            listView.SmallImageList.Images.Add(item.GetType().FullName, item.ItemImage);
-
           ListViewItem listViewItem = new ListViewItem(item.ToString());
           listViewItem.ToolTipText = item.ItemName + ": " + item.ItemDescription;
-          listViewItem.ImageIndex = listView.SmallImageList.Images.IndexOfKey(item.GetType().FullName);
+          listView.SmallImageList.Images.Add(item.ItemImage);
+          listViewItem.ImageIndex = listView.SmallImageList.Images.Count - 1;
           listViewItem.Tag = item;
           listView.Items.Add(listViewItem);
           itemListViewItemTable.Add(item, listViewItem);
+          item.ItemImageChanged += new EventHandler(Item_ItemImageChanged);
           item.ToStringChanged += new EventHandler(Item_ToStringChanged);
           sortAscendingButton.Enabled = sortDescendingButton.Enabled = listView.Items.Count > 1;
           AdjustListViewColumnSizes();
         }
       }
     }
+
     private void RemoveItem(T item) {
       if (InvokeRequired)
         Invoke(new Action<T>(RemoveItem), item);
       else {
         if (itemListViewItemTable.ContainsKey(item)) {
+          item.ItemImageChanged -= new EventHandler(Item_ItemImageChanged);
           item.ToStringChanged -= new EventHandler(Item_ToStringChanged);
-          itemListViewItemTable[item].Remove();
+          ListViewItem listViewItem = itemListViewItemTable[item];
+          listViewItem.Remove();
+          foreach (ListViewItem other in listView.Items)
+            if (other.ImageIndex > listViewItem.ImageIndex) other.ImageIndex--;
+          listView.SmallImageList.Images.RemoveAt(listViewItem.ImageIndex);
           itemListViewItemTable.Remove(item);
           sortAscendingButton.Enabled = sortDescendingButton.Enabled = listView.Items.Count > 1;
         }
@@ -281,6 +286,18 @@ namespace HeuristicLab.Core.Views {
     #endregion
 
     #region Item Events
+    private void Item_ItemImageChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Item_ItemImageChanged), sender, e);
+      else {
+        T item = (T)sender;
+        ListViewItem listViewItem = itemListViewItemTable[item];
+        int i = listViewItem.ImageIndex;
+        listViewItem.ImageList.Images[i] = item.ItemImage;
+        listViewItem.ImageIndex = -1;
+        listViewItem.ImageIndex = i;
+      }
+    }
     private void Item_ToStringChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Item_ToStringChanged), sender, e);
