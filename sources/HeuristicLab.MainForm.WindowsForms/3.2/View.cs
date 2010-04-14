@@ -30,19 +30,41 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.initialized = false;
       this.isShown = false;
       this.closeReason = CloseReason.None;
+      this.readOnly = false;
     }
 
-    private string myCaption;
+    public View(bool readOnly)
+      : this() {
+      this.readOnly = readOnly;
+    }
+
+    private string caption;
     public string Caption {
-      get { return myCaption; }
+      get { return caption; }
       set {
         if (InvokeRequired) {
           Action<string> action = delegate(string s) { this.Caption = s; };
           Invoke(action, value);
         } else {
-          if (value != myCaption) {
-            myCaption = value;
+          if (value != caption) {
+            caption = value;
             OnCaptionChanged();
+          }
+        }
+      }
+    }
+
+    private bool readOnly;
+    public virtual bool ReadOnly {
+      get { return this.readOnly; }
+       set {
+        if (InvokeRequired) {
+          Action<bool> action = delegate(bool b) { this.ReadOnly = b; };
+          Invoke(action, value);
+        } else {
+          if (value != readOnly) {
+            readOnly = value;
+            OnReadOnlyChanged();
           }
         }
       }
@@ -94,16 +116,41 @@ namespace HeuristicLab.MainForm.WindowsForms {
 
     public event EventHandler CaptionChanged;
     protected virtual void OnCaptionChanged() {
-      if (CaptionChanged != null)
-        CaptionChanged(this, EventArgs.Empty);
+      if (InvokeRequired)
+        Invoke((MethodInvoker)OnCaptionChanged);
+      else {
+        EventHandler handler = CaptionChanged;
+        if (handler != null)
+          handler(this, EventArgs.Empty);
+      }
     }
-
+    public event EventHandler ReadOnlyChanged;
+    protected virtual void OnReadOnlyChanged() {
+      if (InvokeRequired)
+        Invoke((MethodInvoker)OnReadOnlyChanged);
+      else {
+        EventHandler handler = ReadOnlyChanged;
+        if (handler != null)
+          handler(this, EventArgs.Empty);
+        foreach (Control control in this.Controls) {
+          IView view = control as IView;
+          if (view != null)
+            view.ReadOnly = this.readOnly;
+          ViewHost viewHost = control as ViewHost;
+          if (viewHost != null)
+            viewHost.ReadOnly = this.readOnly;
+        }
+      }
+    }
     public event EventHandler Changed;
     protected virtual void OnChanged() {
       if (InvokeRequired)
         Invoke((MethodInvoker)OnChanged);
-      else if (Changed != null)
-        Changed(this, EventArgs.Empty);
+      else {
+        EventHandler handler = Changed;
+        if (handler != null)
+          handler(this, EventArgs.Empty);
+      }
     }
 
     protected virtual void OnShown(ViewShownEventArgs e) {

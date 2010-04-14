@@ -61,8 +61,16 @@ namespace HeuristicLab.Data.Views {
       } else {
         Caption = Content.ToString() + " (" + Content.GetType().Name + ")";
         valueComboBox.SelectedItem = Content.Value;
-        valueComboBox.Enabled = !Content.ReadOnlyView;
       }
+      SetEnableStateOfControls();
+    }
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnableStateOfControls();
+    }
+    private void SetEnableStateOfControls() {
+      if (Content == null) valueComboBox.Enabled = false;
+      else valueComboBox.Enabled = !ReadOnly;
     }
 
     private void Content_ValueChanged(object sender, EventArgs e) {

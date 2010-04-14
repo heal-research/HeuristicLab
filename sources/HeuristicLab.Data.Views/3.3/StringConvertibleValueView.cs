@@ -60,12 +60,21 @@ namespace HeuristicLab.Data.Views {
       if (Content == null) {
         Caption = "StringConvertibleValue View";
         valueTextBox.Text = string.Empty;
-        valueTextBox.Enabled = false;
       } else {
         Caption = Content.GetValue() + " (" + Content.GetType().Name + ")";
         valueTextBox.Text = Content.GetValue();
-        valueTextBox.ReadOnly = Content.ReadOnlyView;
+      }
+      SetEnableStateOfControls();
+    }
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnableStateOfControls();
+    }
+    private void SetEnableStateOfControls() {
+      if (Content == null) valueTextBox.Enabled = false;
+      else {
         valueTextBox.Enabled = true;
+        valueTextBox.ReadOnly = ReadOnly;
       }
     }
 

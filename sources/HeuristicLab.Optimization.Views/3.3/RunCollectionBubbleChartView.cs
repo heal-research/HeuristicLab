@@ -42,6 +42,7 @@ namespace HeuristicLab.Optimization.Views {
       InitializeComponent();
       Caption = "Run Collection Bubble Chart";
       this.categoricalMapping = new Dictionary<int, Dictionary<object, double>>();
+      base.ReadOnly = true;
     }
 
     public RunCollectionBubbleChartView(RunCollection content)
@@ -52,6 +53,10 @@ namespace HeuristicLab.Optimization.Views {
     public new RunCollection Content {
       get { return (RunCollection)base.Content; }
       set { base.Content = value; }
+    }
+    public override bool ReadOnly {
+      get { return base.ReadOnly; }
+      set { /*not needed because results are always readonly */}
     }
 
     protected override void RegisterContentEvents() {

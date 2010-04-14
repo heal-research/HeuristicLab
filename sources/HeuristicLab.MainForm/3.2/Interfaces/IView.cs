@@ -29,6 +29,8 @@ namespace HeuristicLab.MainForm {
 
     bool IsShown { get; }
     string Caption { get; set; }
+    bool ReadOnly { get; set; }
+    event EventHandler ReadOnlyChanged;
     event EventHandler CaptionChanged;
     event EventHandler Changed;
 

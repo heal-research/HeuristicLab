@@ -68,23 +68,38 @@ namespace HeuristicLab.Core.Views {
       base.OnContentChanged();
       Caption = "Item Collection";
       while (itemsListView.Items.Count > 0) RemoveListViewItem(itemsListView.Items[0]);
-      itemsListView.Enabled = false;
-      detailsGroupBox.Enabled = false;
       viewHost.Content = null;
-      addButton.Enabled = false;
-      sortAscendingButton.Enabled = false;
-      sortDescendingButton.Enabled = false;
-      removeButton.Enabled = false;
-
       if (Content != null) {
         Caption += " (" + Content.GetType().Name + ")";
-        itemsListView.Enabled = true;
-        addButton.Enabled = !Content.IsReadOnly;
         foreach (T item in Content)
           AddListViewItem(CreateListViewItem(item));
+        SortItemsListView(SortOrder.Ascending);
+      }
+      SetEnableStateOfControls();
+    }
+
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnableStateOfControls();
+    }
+    private void SetEnableStateOfControls() {
+      if (Content == null) {
+        itemsListView.Enabled = false;
+        detailsGroupBox.Enabled = false;
         sortAscendingButton.Enabled = itemsListView.Items.Count > 0;
         sortDescendingButton.Enabled = itemsListView.Items.Count > 0;
-        SortItemsListView(SortOrder.Ascending);
+        viewHost.Enabled = false;
+        addButton.Enabled = false;
+        removeButton.Enabled = false;
+      } else {
+        itemsListView.Enabled = true;
+        detailsGroupBox.Enabled = true;
+        sortAscendingButton.Enabled = true;
+        sortDescendingButton.Enabled = true;
+        viewHost.Enabled = true;
+        viewHost.ReadOnly = ReadOnly;
+        addButton.Enabled = !ReadOnly;
+        removeButton.Enabled = !ReadOnly;
       }
     }
 

@@ -147,6 +147,12 @@ namespace HeuristicLab.MainForm {
 
       return (IView)Activator.CreateInstance(t, content);
     }
+    public static IView CreateDefaultView(object content, bool readOnly) {
+      IView view = CreateDefaultView(content);
+      if (view != null)
+        view.ReadOnly = readOnly;
+      return null;
+    }
 
     public static IView CreateView(Type viewType) {
       if (!typeof(IView).IsAssignableFrom(viewType))
@@ -155,6 +161,11 @@ namespace HeuristicLab.MainForm {
         throw new ArgumentException("View can not be created becaues given type " + viewType.ToString() + " is a generic type definition.");
 
       return (IView)Activator.CreateInstance(viewType);
+    }
+    public static IView CreateView(Type viewType, bool readOnly) {
+      IView view = CreateView(viewType);
+      view.ReadOnly = readOnly;
+      return view;
     }
 
     public static IView CreateView(Type viewType, object content) {
@@ -165,6 +176,11 @@ namespace HeuristicLab.MainForm {
         view = TransformGenericTypeDefinition(view, content.GetType());
 
       return (IView)Activator.CreateInstance(view, content);
+    }
+    public static IView CreateView(Type viewType, object content, bool readOnly) {
+      IView view = CreateView(viewType, content);
+      view.ReadOnly = readOnly;
+      return view;
     }
 
     private static Type TransformGenericTypeDefinition(Type viewType, Type contentType) {

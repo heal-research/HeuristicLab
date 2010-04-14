@@ -57,12 +57,20 @@ namespace HeuristicLab.Data.Views {
       if (Content == null) {
         Caption = "BoolValue View";
         valueCheckBox.Checked = false;
-        valueCheckBox.Enabled = false;
       } else {
         Caption = Content.ToString() + " (" + Content.GetType().Name + ")";
         valueCheckBox.Checked = Content.Value;
-        valueCheckBox.Enabled = !Content.ReadOnlyView;
       }
+      SetEnableStateOfControls();
+    }
+
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnableStateOfControls();
+    }
+    private void SetEnableStateOfControls() {
+      if (Content == null) valueCheckBox.Enabled = false;
+      else valueCheckBox.Enabled = !ReadOnly;
     }
 
     private void Content_ValueChanged(object sender, EventArgs e) {

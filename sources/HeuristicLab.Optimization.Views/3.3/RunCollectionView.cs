@@ -44,11 +44,16 @@ namespace HeuristicLab.Optimization.Views {
     public RunCollectionView() {
       InitializeComponent();
       Caption = "Run Collection";
+      base.ReadOnly = true;
     }
 
     public RunCollectionView(IObservableCollection<IRun> content)
       : this() {
       Content = content;
+    }
+    public override bool ReadOnly {
+      get { return base.ReadOnly; }
+      set { /*not needed because results are always readonly */}
     }
 
     protected override void DeregisterContentEvents() {
@@ -68,16 +73,32 @@ namespace HeuristicLab.Optimization.Views {
       base.OnContentChanged();
       Caption = "Run Collection";
       while (itemsListView.Items.Count > 0) RemoveListViewItem(itemsListView.Items[0]);
-      itemsListView.Enabled = false;
-      detailsGroupBox.Enabled = false;
       viewHost.Content = null;
-      removeButton.Enabled = false;
 
       if (Content != null) {
         Caption += " (" + Content.GetType().Name + ")";
-        itemsListView.Enabled = true;
         foreach (IRun item in Content)
           AddListViewItem(CreateListViewItem(item));
+      }
+      SetEnableStateOfControls();
+    }
+
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnableStateOfControls();
+    }
+    private void SetEnableStateOfControls() {
+      if (Content == null) {
+        itemsListView.Enabled = false;
+        detailsGroupBox.Enabled = false;
+        viewHost.Enabled = false;
+        removeButton.Enabled = false;
+      } else {
+        itemsListView.Enabled = true;
+        detailsGroupBox.Enabled = true;
+        removeButton.Enabled = true;
+        viewHost.Enabled = true;
+        viewHost.ReadOnly = ReadOnly;
       }
     }
 

@@ -65,19 +65,30 @@ namespace HeuristicLab.Core.Views {
       if (Content == null) {
         Caption = "NamedItem";
         nameTextBox.Text = "-";
-        nameTextBox.Enabled = false;
         descriptionTextBox.Text = "";
-        descriptionTextBox.Enabled = false;
         toolTip.SetToolTip(descriptionTextBox, string.Empty);
       } else {
         Caption = Content.Name + " (" + Content.GetType().Name + ")";
         nameTextBox.Text = Content.Name;
-        nameTextBox.ReadOnly = !Content.CanChangeName;
-        nameTextBox.Enabled = true;
         descriptionTextBox.Text = Content.Description;
-        descriptionTextBox.ReadOnly = !Content.CanChangeDescription;
-        descriptionTextBox.Enabled = true;
         toolTip.SetToolTip(descriptionTextBox, Content.Description);
+      }
+      SetEnableStateOfControls();
+    }
+
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnableStateOfControls();
+    }
+    private void SetEnableStateOfControls() {
+      if (Content == null) {
+        nameTextBox.Enabled = false;
+        descriptionTextBox.Enabled = false;
+      } else {
+        nameTextBox.Enabled = true;
+        nameTextBox.ReadOnly = ReadOnly || !Content.CanChangeName; ;
+        descriptionTextBox.Enabled = true;
+        descriptionTextBox.ReadOnly = ReadOnly || !Content.CanChangeDescription;
       }
     }
 

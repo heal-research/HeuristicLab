@@ -81,17 +81,32 @@ namespace HeuristicLab.Data.Views {
       if (Content == null) {
         Caption = "StringConvertibleMatrix View";
         rowsTextBox.Text = "";
-        rowsTextBox.Enabled = false;
         columnsTextBox.Text = "";
-        columnsTextBox.Enabled = false;
         dataGridView.Rows.Clear();
         dataGridView.Columns.Clear();
-        dataGridView.Enabled = false;
         virtualRowIndizes = new int[0];
       } else {
         Caption = "StringConvertibleMatrix (" + Content.GetType().Name + ")";
-        UpdateReadOnlyControls();
         UpdateData();
+      }
+      SetEnableStateOfControls();
+    }
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnableStateOfControls();
+    }
+    private void SetEnableStateOfControls() {
+      if (Content == null) {
+        rowsTextBox.Enabled = false;
+        columnsTextBox.Enabled = false;
+        dataGridView.Enabled = false;
+      } else {
+        rowsTextBox.Enabled = true;
+        columnsTextBox.Enabled = true;
+        dataGridView.Enabled = true;
+        rowsTextBox.ReadOnly = ReadOnly;
+        columnsTextBox.ReadOnly = ReadOnly;
+        dataGridView.ReadOnly = ReadOnly;
       }
     }
 
@@ -337,22 +352,22 @@ namespace HeuristicLab.Data.Views {
           return 0;
 
         foreach (KeyValuePair<int, SortOrder> pair in sortedIndizes.Where(p => p.Value != SortOrder.None)) {
-            string1 = matrix.GetValue(x, pair.Key);
-            string2 = matrix.GetValue(y, pair.Key);
-            if (double.TryParse(string1, out double1) && double.TryParse(string2, out double2))
-              result = double1.CompareTo(double2);
-            else if (DateTime.TryParse(string1, out dateTime1) && DateTime.TryParse(string2, out dateTime2))
-              result = dateTime1.CompareTo(dateTime2);
-            else {
-              if (string1 != null)
-                result = string1.CompareTo(string2);
-              else if (string2 != null)
-                result = string2.CompareTo(string1) * -1;
-            }
-            if (pair.Value == SortOrder.Descending)
-              result *= -1;
-            if (result != 0)
-              return result;
+          string1 = matrix.GetValue(x, pair.Key);
+          string2 = matrix.GetValue(y, pair.Key);
+          if (double.TryParse(string1, out double1) && double.TryParse(string2, out double2))
+            result = double1.CompareTo(double2);
+          else if (DateTime.TryParse(string1, out dateTime1) && DateTime.TryParse(string2, out dateTime2))
+            result = dateTime1.CompareTo(dateTime2);
+          else {
+            if (string1 != null)
+              result = string1.CompareTo(string2);
+            else if (string2 != null)
+              result = string2.CompareTo(string1) * -1;
+          }
+          if (pair.Value == SortOrder.Descending)
+            result *= -1;
+          if (result != 0)
+            return result;
         }
         return result;
       }

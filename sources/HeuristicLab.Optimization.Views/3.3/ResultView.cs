@@ -43,12 +43,18 @@ namespace HeuristicLab.Optimization.Views {
       set { base.Content = value; }
     }
 
+    public override bool ReadOnly {
+      get { return base.ReadOnly; }
+      set { /*not needed because results are always readonly */}
+    }
+
     /// <summary>
     /// Initializes a new instance of <see cref="VariableView"/> with caption "Variable".
     /// </summary>
     public ResultView() {
       InitializeComponent();
       Caption = "Result";
+      base.ReadOnly = true;
     }
     /// <summary>
     /// Initializes a new instance of <see cref="VariableView"/> with the given <paramref name="variable"/>.
@@ -83,16 +89,29 @@ namespace HeuristicLab.Optimization.Views {
       if (Content == null) {
         Caption = "Result";
         dataTypeTextBox.Text = "-";
-        dataTypeTextBox.Enabled = false;
-        valueGroupBox.Enabled = false;
         viewHost.Content = null;
       } else {
         Caption = Content.Name + " (" + Content.GetType().Name + ")";
         dataTypeTextBox.Text = Content.DataType.GetPrettyName();
-        dataTypeTextBox.Enabled = true;
-        valueGroupBox.Enabled = true;
         viewHost.ViewType = null;
         viewHost.Content = Content.Value;
+      }
+      SetEnableStateOfControls();
+    }
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnableStateOfControls();
+    }
+    private void SetEnableStateOfControls() {
+      if (Content == null) {
+        dataTypeTextBox.Enabled = false;
+        valueGroupBox.Enabled = false;
+        viewHost.Enabled = false;
+      } else {
+        dataTypeTextBox.Enabled = true;
+        valueGroupBox.Enabled = true;
+        viewHost.Enabled = true;
+        viewHost.ReadOnly = ReadOnly;
       }
     }
 

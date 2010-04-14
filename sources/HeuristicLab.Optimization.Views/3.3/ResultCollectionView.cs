@@ -29,6 +29,10 @@ namespace HeuristicLab.Optimization.Views {
   [Content(typeof(ResultCollection), true)]
   [Content(typeof(IObservableKeyedCollection<string, IResult>), false)]
   public partial class ResultCollectionView : NamedItemCollectionView<IResult> {
+    public override bool ReadOnly {
+      get { return base.ReadOnly; }
+      set { /*not needed because results are always readonly */}
+    }
     /// <summary>
     /// Initializes a new instance of <see cref="VariablesScopeView"/> with caption "Variables Scope View".
     /// </summary>
@@ -36,6 +40,7 @@ namespace HeuristicLab.Optimization.Views {
       InitializeComponent();
       Caption = "ResultCollection";
       itemsGroupBox.Text = "Results";
+      base.ReadOnly = true;
     }
     /// <summary>
     /// Initializes a new instance of <see cref="VariablesScopeView"/> with 

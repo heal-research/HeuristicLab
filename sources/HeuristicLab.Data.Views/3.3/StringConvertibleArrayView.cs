@@ -53,7 +53,6 @@ namespace HeuristicLab.Data.Views {
       base.DeregisterContentEvents();
     }
 
-
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.ItemChanged += new EventHandler<EventArgs<int>>(Content_ItemChanged);
@@ -65,13 +64,27 @@ namespace HeuristicLab.Data.Views {
       if (Content == null) {
         Caption = "StringConvertibleArray View";
         lengthTextBox.Text = "";
-        lengthTextBox.Enabled = false;
         dataGridView.Rows.Clear();
         dataGridView.Columns.Clear();
-        dataGridView.Enabled = false;
       } else {
         Caption = "StringConvertibleArray (" + Content.GetType().Name + ")";
         UpdateData();
+      }
+      SetEnableStateOfControls();
+    }
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnableStateOfControls();
+    }
+    private void SetEnableStateOfControls() {
+      if (Content == null) {
+        lengthTextBox.Enabled = false;
+        dataGridView.Enabled = false;
+      } else {
+        lengthTextBox.Enabled = true;
+        dataGridView.Enabled = true;
+        lengthTextBox.ReadOnly = ReadOnly;
+        dataGridView.ReadOnly = ReadOnly;
       }
     }
 

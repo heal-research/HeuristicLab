@@ -42,12 +42,18 @@ namespace HeuristicLab.Optimization.Views {
       set { base.Content = value; }
     }
 
+    public override bool ReadOnly {
+      get { return base.ReadOnly; }
+      set { /*not needed because results are always readonly */}
+    }
+
     /// <summary>
     /// Initializes a new instance of <see cref="VariableView"/> with caption "Variable".
     /// </summary>
     public RunView() {
       InitializeComponent();
       Caption = "Run";
+      base.ReadOnly = true;
     }
     /// <summary>
     /// Initializes a new instance of <see cref="VariableView"/> with the given <paramref name="variable"/>.
@@ -64,12 +70,24 @@ namespace HeuristicLab.Optimization.Views {
       FillListView();
       viewHost.ViewType = null;
       viewHost.Content = null;
-      if (Content == null) {
+      if (Content == null)
         Caption = "Run";
-        parametersResultsGroupBox.Enabled = false;
-      } else {
+      else
         Caption = Content.Name + " (" + Content.GetType().Name + ")";
+      SetEnableStateOfControls();
+    }
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnableStateOfControls();
+    }
+    private void SetEnableStateOfControls() {
+      if (Content == null) {
+        parametersResultsGroupBox.Enabled = false;
+        viewHost.Enabled = false;
+      } else {
         parametersResultsGroupBox.Enabled = true;
+        viewHost.Enabled = true;
+        viewHost.ReadOnly = ReadOnly;
       }
     }
 

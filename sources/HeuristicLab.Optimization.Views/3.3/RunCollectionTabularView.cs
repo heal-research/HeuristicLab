@@ -39,11 +39,17 @@ namespace HeuristicLab.Optimization.Views {
       InitializeComponent();
       Caption = "Run Collection";
       this.dataGridView.RowHeaderMouseDoubleClick += new DataGridViewCellMouseEventHandler(dataGridView_RowHeaderMouseDoubleClick);
+      base.ReadOnly = true;
     }
 
     public RunCollectionTabularView(RunCollection content)
       : this() {
       Content = content;
+    }
+
+    public override bool ReadOnly {
+      get { return base.ReadOnly; }
+      set { /*not needed because results are always readonly */}
     }
 
     public new RunCollection Content {
