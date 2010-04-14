@@ -25,8 +25,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// <param name="method">The delegate to invoke.</param>
     protected new void Invoke(Delegate method) {
       // prevents blocking of worker thread in Invoke, if the control is disposed
-      if (!IsHandleCreated)
-        return;
       IAsyncResult result = BeginInvoke(method);
       result.AsyncWaitHandle.WaitOne(1000, false);
       if (result.IsCompleted) try { EndInvoke(result); }
@@ -44,8 +42,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// <param name="args">The invoke arguments.</param>
     protected new void Invoke(Delegate method, params object[] args) {
       // prevents blocking of worker thread in Invoke, if the control is disposed
-      if (!IsHandleCreated)
-        return;
       IAsyncResult result = BeginInvoke(method, args);
       result.AsyncWaitHandle.WaitOne(1000, false);
       if (result.IsCompleted) try { EndInvoke(result); } catch (ObjectDisposedException) { }
