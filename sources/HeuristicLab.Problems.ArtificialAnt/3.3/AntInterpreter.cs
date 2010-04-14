@@ -128,7 +128,7 @@ namespace HeuristicLab.Problems.ArtificialAnt {
         return;
       } else if (currentNode.Symbol is InvokeFunction) {
         var invokeNode = currentNode as InvokeFunctionTreeNode;
-        var functionDefinition = (SymbolicExpressionTreeNode)FindMatchingFunction(invokeNode.InvokedFunctionName).Clone();
+        var functionDefinition = (SymbolicExpressionTreeNode)FindMatchingFunction(invokeNode.Symbol.FunctionName).Clone();
         var argumentCutPoints = (from node in functionDefinition.IterateNodesPrefix()
                                  where node.SubTrees.Count > 0
                                  from subtree in node.SubTrees
