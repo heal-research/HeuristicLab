@@ -278,6 +278,12 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       }
     }
 
+    private void OperatorItemImageChanged(object sender, EventArgs e) {
+      IOperator op = (IOperator)sender;
+      IOperatorShapeInfo operatorShapeInfo = this.operatorShapeInfoMapping.GetByFirst(op);
+      operatorShapeInfo.Icon = new Bitmap(op.ItemImage);
+    }
+
     private void OperatorNameChanged(object sender, EventArgs e) {
       IOperator op = (IOperator)sender;
       IOperatorShapeInfo operatorShapeInfo = this.operatorShapeInfoMapping.GetByFirst(op);
@@ -305,6 +311,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       op.Parameters.ItemsReplaced += new CollectionItemsChangedEventHandler<IParameter>(Parameters_ItemsReplaced);
       op.Parameters.CollectionReset += new CollectionItemsChangedEventHandler<IParameter>(Parameters_CollectionReset);
       op.NameChanged += new EventHandler(OperatorNameChanged);
+      op.ItemImageChanged += new EventHandler(OperatorItemImageChanged);
       op.BreakpointChanged += new EventHandler(OperatorBreakpointChanged);
     }
 
@@ -314,6 +321,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       op.Parameters.ItemsReplaced -= new CollectionItemsChangedEventHandler<IParameter>(Parameters_ItemsReplaced);
       op.Parameters.CollectionReset -= new CollectionItemsChangedEventHandler<IParameter>(Parameters_CollectionReset);
       op.NameChanged -= new EventHandler(OperatorNameChanged);
+      op.ItemImageChanged -= new EventHandler(OperatorItemImageChanged);
       op.BreakpointChanged -= new EventHandler(OperatorBreakpointChanged);
     }
     #endregion
