@@ -40,7 +40,14 @@
   <ItemGroup>
     <Compile Include="ArgumentCreaterTest.cs" />
     <Compile Include="ArgumentDeleterTest.cs" />
+    <Compile Include="ArgumentDuplicaterTest.cs" />
+    <Compile Include="AllArchitectureAlteringOperatorsTest.cs" />
+    <Compile Include="SubroutineDeleterTest.cs" />
+    <Compile Include="SubroutineDuplicaterTest.cs" />
     <Compile Include="Grammars.cs" />
+    <Compile Include="SubroutineCreaterTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SubtreeCrossoverTest.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -49,9 +56,17 @@
     <Compile Include="ProbabilisticTreeCreaterTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
+      <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
+      <Name>HeuristicLab.Collections-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
       <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
       <Name>HeuristicLab.Core-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
+      <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
+      <Name>HeuristicLab.Data-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
       <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>

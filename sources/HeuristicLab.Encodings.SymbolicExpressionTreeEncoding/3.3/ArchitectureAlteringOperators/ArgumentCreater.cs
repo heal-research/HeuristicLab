@@ -95,7 +95,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
       foreach (var invocationNode in invocationNodes) {
         // append a new argument branch after expanding all argument nodes
         var clonedBranch = (SymbolicExpressionTreeNode)replacedBranch.Clone();
-        ReplaceArgumentsInBranch(clonedBranch, invocationNode.SubTrees);
+        clonedBranch = ReplaceArgumentsInBranch(clonedBranch, invocationNode.SubTrees);
         invocationNode.InsertSubTree(newArgumentIndex, clonedBranch);
       }
       // increase expected number of arguments of function defining branch
@@ -112,27 +112,33 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
         }
       foreach (var subtree in symbolicExpressionTree.Root.SubTrees) {
         // when the changed function is known in the branch then update the number of arguments
-        var matchingSymbol = subtree.Grammar.Symbols.Where(s => s.Name == selectedDefunBranch.FunctionName).SingleOrDefault();
+        var matchingSymbol = subtree.Grammar.Symbols.OfType<InvokeFunction>().Where(s => s.FunctionName == selectedDefunBranch.FunctionName).SingleOrDefault();
         if (matchingSymbol != null) {
           subtree.Grammar.SetMinSubtreeCount(matchingSymbol, selectedDefunBranch.NumberOfArguments);
           subtree.Grammar.SetMaxSubtreeCount(matchingSymbol, selectedDefunBranch.NumberOfArguments);
+          foreach (var child in subtree.GetAllowedSymbols(0)) {
+            for (int i = 0; i < subtree.Grammar.GetMaxSubtreeCount(matchingSymbol); i++) {
+              subtree.Grammar.SetAllowedChild(matchingSymbol, child, i);
+            }
+          }
         }
       }
       return true;
     }
 
-    private static void ReplaceArgumentsInBranch(SymbolicExpressionTreeNode branch, IList<SymbolicExpressionTreeNode> argumentTrees) {
-      // check if any subtree is an argument node 
-      for (int subtreeIndex = 0; subtreeIndex < branch.SubTrees.Count; subtreeIndex++) {
-        var subtree = branch.SubTrees[subtreeIndex];
-        var argNode = subtree as ArgumentTreeNode;
-        if (argNode != null) {
-          // replace argument nodes by a clone of the original subtree that provided the result for the argument node
-          branch.SubTrees[subtreeIndex] = (SymbolicExpressionTreeNode)argumentTrees[argNode.Symbol.ArgumentIndex].Clone();
-        } else {
-          // recursively replace arguments in all branches
-          ReplaceArgumentsInBranch(subtree, argumentTrees);
+    private static SymbolicExpressionTreeNode ReplaceArgumentsInBranch(SymbolicExpressionTreeNode branch, IList<SymbolicExpressionTreeNode> argumentTrees) {
+      if (branch is ArgumentTreeNode) {
+        var argNode = branch as ArgumentTreeNode;
+        // replace argument nodes by a clone of the original subtree that provided the result for the argument node
+        return (SymbolicExpressionTreeNode)argumentTrees[argNode.Symbol.ArgumentIndex].Clone();
+      } else {
+        // call recursively for all subtree
+        List<SymbolicExpressionTreeNode> subtrees = new List<SymbolicExpressionTreeNode>(branch.SubTrees);
+        while (branch.SubTrees.Count > 0) branch.SubTrees.RemoveAt(0);
+        foreach (var subtree in subtrees) {
+          branch.AddSubTree(ReplaceArgumentsInBranch(subtree, argumentTrees));
         }
+        return branch;
       }
     }
 

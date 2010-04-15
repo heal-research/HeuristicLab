@@ -127,15 +127,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       }
       yield return this;
     }
-    //public int GetMinExpressionLength() {
-    //  return Grammar.GetMinExpressionLength(Symbol);
-    //}
-    //public int GetMaxExpressionLength() {
-    //  return Grammar.GetMaxExpressionLength(Symbol);
-    //}
-    //public int GetMinExpressionDepth() {
-    //  return Grammar.GetMinExpressionDepth(Symbol);
-    //}
     public IEnumerable<Symbol> GetAllowedSymbols(int argumentIndex) {
       return Grammar.Symbols.Where(s => Grammar.IsAllowedChild(Symbol, s, argumentIndex));
     }
@@ -145,15 +136,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public int GetMaxSubtreeCount() {
       return Grammar.GetMaxSubtreeCount(Symbol);
     }
-    //public int GetMaxExpressionLength(Symbol s) {
-    //  return Grammar.GetMaxExpressionLength(s);
-    //}
-    //public int GetMinExpressionLength(Symbol s) {
-    //  return Grammar.GetMinExpressionLength(s);
-    //}
-    //public int GetMinExpressionDepth(Symbol s) {
-    //  return Grammar.GetMinExpressionDepth(s);
-    //}
 
     #region ICloneable Members
 
@@ -164,18 +146,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     #endregion
 
 
-    public bool IsValidTree() {
-      var matchingSymbol = (from symb in Grammar.Symbols
-                            where symb.Name == Symbol.Name
-                            select symb).SingleOrDefault();
 
-      if (SubTrees.Count < Grammar.GetMinSubtreeCount(matchingSymbol)) return false;
-      else if (SubTrees.Count > Grammar.GetMaxSubtreeCount(matchingSymbol)) return false;
-      else for (int i = 0; i < SubTrees.Count; i++) {
-          if (!GetAllowedSymbols(i).Select(x => x.Name).Contains(SubTrees[i].Symbol.Name)) return false;
-          if (!SubTrees[i].IsValidTree()) return false;
-        }
-      return true;
-    }
   }
 }

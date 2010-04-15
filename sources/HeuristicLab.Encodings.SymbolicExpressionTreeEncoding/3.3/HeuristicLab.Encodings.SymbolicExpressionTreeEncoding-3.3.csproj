@@ -84,6 +84,15 @@
   <ItemGroup>
     <Compile Include="ArchitectureAlteringOperators\ArgumentCreater.cs" />
     <Compile Include="ArchitectureAlteringOperators\ArgumentDeleter.cs" />
+    <Compile Include="ArchitectureAlteringOperators\ArgumentDuplicater.cs" />
+    <Compile Include="ArchitectureAlteringOperators\GrammarModifier.cs" />
+    <Compile Include="ArchitectureAlteringOperators\RandomArchitectureAlteringOperator.cs" />
+    <Compile Include="ArchitectureAlteringOperators\SubroutineCreater.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ArchitectureAlteringOperators\SubroutineDeleter.cs" />
+    <Compile Include="ArchitectureAlteringOperators\SubroutineDuplicater.cs" />
+    <Compile Include="SymbolicExpressionTreeTopLevelNode.cs" />
     <Compile Include="Crossovers\SubtreeCrossover.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -31,7 +31,7 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAltering
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
   [TestClass]
-  public class SubroutineCreaterTest {
+  public class ArgumentDuplicaterTest {
     private const int POPULATION_SIZE = 1000;
     private const int MAX_TREE_SIZE = 100;
     private const int MAX_TREE_HEIGHT = 10;
@@ -51,21 +51,21 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
     }
 
     [TestMethod()]
-    public void SubroutineCreaterDistributionsTest() {
+    public void ArgumentDuplicaterDistributionsTest() {
       var trees = new List<SymbolicExpressionTree>();
       var grammar = Grammars.CreateArithmeticAndAdfGrammar();
-      var random = new MersenneTwister(31415);
+      var random = new MersenneTwister();
       int failedEvents = 0;
       for (int i = 0; i < POPULATION_SIZE; i++) {
         var tree = ProbabilisticTreeCreator.Create(random, grammar, MAX_TREE_SIZE, MAX_TREE_HEIGHT, 3, 3);
-        if (!SubroutineCreater.CreateSubroutine(random, tree, grammar, MAX_TREE_SIZE, MAX_TREE_HEIGHT, 3, 3))
+        if (!ArgumentDuplicater.DuplicateArgument(random, tree, grammar, MAX_TREE_SIZE, MAX_TREE_HEIGHT, 3, 3))
           failedEvents++;
         Util.IsValid(tree);
         trees.Add(tree);
       }
-      Assert.Inconclusive("SubroutineCreator: " + Environment.NewLine +
+      Assert.Inconclusive("ArgumentDuplicater: " + Environment.NewLine +
         "Failed events: " + failedEvents / (double)POPULATION_SIZE * 100 + " %" + Environment.NewLine +
-        Util.GetSizeDistributionString(trees, 105, 5) + Environment.NewLine +
+        Util.GetSizeDistributionString(trees, 200, 5) + Environment.NewLine +
         Util.GetFunctionDistributionString(trees) + Environment.NewLine +
         Util.GetNumberOfSubTreesDistributionString(trees) + Environment.NewLine +
         Util.GetTerminalDistributionString(trees) + Environment.NewLine

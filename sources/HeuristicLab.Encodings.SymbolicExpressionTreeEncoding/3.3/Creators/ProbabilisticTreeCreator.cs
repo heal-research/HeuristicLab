@@ -28,6 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using System.Collections.Generic;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols;
 using System.Text;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlteringOperators;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
@@ -50,21 +51,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       int maxTreeSize, int maxTreeHeight,
       int maxFunctionDefinitions, int maxFunctionArguments
       ) {
-      // tree size is limited by the grammar and by the explicit size constraints
-      int allowedMinSize = grammar.GetMinExpressionLength(grammar.StartSymbol);
-      int allowedMaxSize = Math.Min(maxTreeSize, grammar.GetMaxExpressionLength(grammar.StartSymbol));
-      // select a target tree size uniformly in the possible range (as determined by explicit limits and limits of the grammar)
-      int treeSize = random.Next(allowedMinSize, allowedMaxSize);
       SymbolicExpressionTree tree = new SymbolicExpressionTree();
-      do {
-        try {
-          tree.Root = PTC2(random, grammar, grammar.StartSymbol, treeSize + 1, maxTreeHeight + 1, maxFunctionDefinitions, maxFunctionArguments);
-        }
-        catch (ArgumentException) {
-          // try a different size
-          treeSize = random.Next(allowedMinSize, allowedMaxSize);
-        }
-      } while (tree.Root == null || tree.Size > maxTreeSize || tree.Height > maxTreeHeight);
+      tree.Root = PTC2(random, grammar, grammar.StartSymbol, maxTreeSize, maxTreeHeight, maxFunctionDefinitions, maxFunctionArguments);
       return tree;
     }
 
@@ -73,12 +61,39 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       public int ChildIndex { get; set; }
       public int ExtensionPointDepth { get; set; }
     }
+
+    /// <summary>
+    /// Creates a random tree with <paramref name="maxTreeSize"/> and <paramref name="maxDepth"/>.
+    /// </summary>
+    /// <param name="random"></param>
+    /// <param name="grammar"></param>
+    /// <param name="rootSymbol"></param>
+    /// <param name="maxTreeSize"></param>
+    /// <param name="maxDepth"></param>
+    /// <param name="maxFunctionDefinitions"></param>
+    /// <param name="maxFunctionArguments"></param>
+    /// <returns></returns>
     public static SymbolicExpressionTreeNode PTC2(IRandom random, ISymbolicExpressionGrammar grammar, Symbol rootSymbol,
-      int size, int maxDepth, int maxFunctionDefinitions, int maxFunctionArguments) {
-      SymbolicExpressionTreeNode root = rootSymbol.CreateTreeNode();
-      root.Grammar = grammar;
-      if (size <= 1 || maxDepth <= 1) return root;
-      CreateFullTreeFromSeed(random, root, size, maxDepth, maxFunctionDefinitions, maxFunctionArguments);
+      int maxTreeSize, int maxDepth, int maxFunctionDefinitions, int maxFunctionArguments) {
+      // tree size is limited by the grammar and by the explicit size constraints
+      int allowedMinSize = grammar.GetMinExpressionLength(rootSymbol);
+      int allowedMaxSize = Math.Min(maxTreeSize, grammar.GetMaxExpressionLength(rootSymbol));
+      // select a target tree size uniformly in the possible range (as determined by explicit limits and limits of the grammar)
+      int treeSize = random.Next(allowedMinSize, allowedMaxSize + 1);
+      SymbolicExpressionTreeNode root = null;
+      do {
+        try {
+          root = rootSymbol.CreateTreeNode();
+          root.Grammar = grammar;
+          if (treeSize <= 1 || maxDepth <= 1) return root;
+          CreateFullTreeFromSeed(random, root, treeSize, maxDepth, maxFunctionDefinitions, maxFunctionArguments);
+        }
+        catch (ArgumentException) {
+          // try a different size
+          root = null;
+          treeSize = random.Next(allowedMinSize, allowedMaxSize);
+        }
+      } while (root == null || root.GetSize() > maxTreeSize || root.GetHeight() > maxDepth);
       return root;
     }
 
@@ -104,23 +119,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         int extensionDepth = nextExtension.ExtensionPointDepth;
         if (extensionDepth + parent.Grammar.GetMinExpressionDepth(parent.Symbol) >= maxDepth) {
           ReplaceWithMinimalTree(random, root, parent, argumentIndex, maxFunctionDefinitions, maxFunctionArguments);
-          //parent.RemoveSubTree(argumentIndex);
-          //var allowedSymbols = from s in parent.Grammar.Symbols
-          //                     where parent.Grammar.IsAllowedChild(parent.Symbol, s, argumentIndex)
-          //                     select s;
-          //SymbolicExpressionTreeNode branch = CreateMinimalTree(random, parent, allowedSymbols);
-          //parent.InsertSubTree(argumentIndex, branch); // insert a smallest possible tree
-          //currentSize += branch.GetSize();
-          //totalListMinSize -= branch.GetSize();
         } else {
           var allowedSymbols = from s in parent.Grammar.Symbols
                                where parent.Grammar.IsAllowedChild(parent.Symbol, s, argumentIndex)
                                where parent.Grammar.GetMinExpressionDepth(s) + extensionDepth - 1 < maxDepth
                                where parent.Grammar.GetMaxExpressionLength(s) > size - totalListMinSize - currentSize
-                               /*||
-                                     totalListMinSize + currentSize >= size * 0.9 // if the necessary size is almost reached then also allow
-                               // terminals or terminal-branches*/
-                               // where !IsDynamicSymbol(s) || IsDynamicSymbolAllowed(grammar, root, parent, s)
                                select s;
           Symbol selectedSymbol = SelectRandomSymbol(random, allowedSymbols);
           SymbolicExpressionTreeNode newTree = selectedSymbol.CreateTreeNode();
@@ -171,17 +174,27 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         // insert a dummy sub-tree and add the pending extension to the list
         var dummy = new SymbolicExpressionTreeNode();
         tree.AddSubTree(dummy);
-        dummy.Grammar = (ISymbolicExpressionGrammar)dummy.Grammar.Clone(); 
+        dummy.Grammar = (ISymbolicExpressionGrammar)dummy.Grammar.Clone();
         // replace the just inserted dummy by recursive application
         ReplaceWithMinimalTree(random, root, tree, i, maxFunctionDefinitions, maxFunctionArguments);
       }
     }
-   
+
     private static void InitializeNewTreeNode(IRandom random, SymbolicExpressionTreeNode root, SymbolicExpressionTreeNode newTree, int maxFunctionDefinitions, int maxFunctionArguments) {
       // NB it is assumed that defuns are only allowed as children of root and nowhere else
       // also assumes that newTree is already attached to root somewhere
-      if (IsTopLevelBranch(root, newTree))
+      if (IsTopLevelBranch(root, newTree)) {
         newTree.Grammar = (ISymbolicExpressionGrammar)newTree.Grammar.Clone();
+
+        // allow invokes of existing ADFs with higher index
+        int argIndex = root.SubTrees.IndexOf(newTree);
+        for (int i = argIndex + 1; i < root.SubTrees.Count; i++) {
+          var otherDefunNode = root.SubTrees[i] as DefunTreeNode;
+          if (otherDefunNode != null) {
+            GrammarModifier.AddDynamicSymbol(newTree.Grammar, newTree.Symbol, otherDefunNode.FunctionName, otherDefunNode.NumberOfArguments);
+          }
+        }
+      }
       if (newTree.Symbol is Defun) {
         var defunTree = newTree as DefunTreeNode;
         string formatString = new StringBuilder().Append('0', (int)Math.Log10(maxFunctionDefinitions * 10 - 1)).ToString(); // >= 100 functions => ###
@@ -196,64 +209,17 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         defunTree.FunctionName = functionName;
         defunTree.NumberOfArguments = nArgs;
         if (nArgs > 0) {
-          AddDynamicArguments(defunTree.Grammar, nArgs);
+          GrammarModifier.AddDynamicArguments(defunTree.Grammar, defunTree.Symbol, Enumerable.Range(0, nArgs));
         }
+        // in existing branches with smaller index allow invoke of current function
         int argIndex = root.SubTrees.IndexOf(newTree);
-        // allow invokes of ADFs with higher index
-        for (int i = argIndex + 1; i < root.SubTrees.Count; i++) {
-          var otherDefunNode = root.SubTrees[i] as DefunTreeNode;
-          if (otherDefunNode != null) {
-            var allowedParents = from sym in defunTree.Grammar.Symbols
-                                 where defunTree.Grammar.IsAllowedChild(defunTree.Symbol, sym, 0)
-                                 select sym;
-            var allowedChildren = allowedParents;
-            AddDynamicSymbol(defunTree.Grammar, allowedParents, allowedChildren, otherDefunNode.FunctionName, otherDefunNode.NumberOfArguments);
-          }
-        }
-        // make the ADF available as symbol for other branches (with smaller index to prevent recursions)
         for (int i = 0; i < argIndex; i++) {
           // if not dummy node
           if (root.SubTrees[i].Symbol != null) {
-            var topLevelGrammar = root.SubTrees[i].Grammar;
-            var allowedParents = from sym in root.SubTrees[i].Grammar.Symbols
-                                 where root.SubTrees[i].Grammar.IsAllowedChild(root.SubTrees[i].Symbol, sym, 0)
-                                 select sym;
-            var allowedChildren = allowedParents;
-
-            AddDynamicSymbol(topLevelGrammar, allowedParents, allowedChildren, functionName, nArgs);
+            var existingBranch = root.SubTrees[i];
+            GrammarModifier.AddDynamicSymbol(existingBranch.Grammar, existingBranch.Symbol, functionName, nArgs);
           }
         }
-      }
-    }
-
-    private static void AddDynamicSymbol(ISymbolicExpressionGrammar grammar, IEnumerable<Symbol> allowedParents, IEnumerable<Symbol> allowedChildren, string symbolName, int nArgs) {
-      var invokeSym = new InvokeFunction(symbolName);
-      grammar.AddSymbol(invokeSym);
-      grammar.SetMinSubtreeCount(invokeSym, nArgs);
-      grammar.SetMaxSubtreeCount(invokeSym, nArgs);
-      foreach (var parent in allowedParents) {
-        for (int arg = 0; arg < grammar.GetMaxSubtreeCount(parent); arg++) {
-          grammar.SetAllowedChild(parent, invokeSym, arg);
-        }
-      }
-      foreach (var child in allowedChildren) {
-        for (int arg = 0; arg < grammar.GetMaxSubtreeCount(invokeSym); arg++) {
-          grammar.SetAllowedChild(invokeSym, child, arg);
-        }
-      }
-    }
-
-    private static void AddDynamicArguments(ISymbolicExpressionGrammar grammar, int nArgs) {
-      for (int argIndex = 0; argIndex < nArgs; argIndex++) {
-        var argNode = new Argument(argIndex);
-        grammar.AddSymbol(argNode);
-        grammar.SetMinSubtreeCount(argNode, 0);
-        grammar.SetMaxSubtreeCount(argNode, 0);
-        // allow the argument as child of any other symbol
-        foreach (var symb in grammar.Symbols)
-          for (int i = 0; i < grammar.GetMaxSubtreeCount(symb); i++) {
-            grammar.SetAllowedChild(symb, argNode, i);
-          }
       }
     }
 

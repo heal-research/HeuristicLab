@@ -1,4 +1,25 @@
-﻿using System;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,8 +58,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
         randomTrees.Add(ProbabilisticTreeCreator.Create(random, grammar, MAX_TREE_SIZE, MAX_TREE_HEIGHT, 0, 0));
       }
 
-      foreach (var tree in randomTrees)
-        Assert.IsTrue(tree.IsValidExpression());
+      foreach (var tree in randomTrees) {
+        Util.IsValid(tree);
+      }
       Assert.Inconclusive("ProbabilisticTreeCreator: " + Environment.NewLine +
         Util.GetSizeDistributionString(randomTrees, 105, 5) + Environment.NewLine +
         Util.GetFunctionDistributionString(randomTrees) + Environment.NewLine +
@@ -54,10 +76,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
       var grammar = Grammars.CreateArithmeticAndAdfGrammar();
       var random = new MersenneTwister();
       for (int i = 0; i < POPULATION_SIZE; i++) {
-        randomTrees.Add(ProbabilisticTreeCreator.Create(random, grammar, MAX_TREE_SIZE, MAX_TREE_HEIGHT, 3, 3));
+        var tree = ProbabilisticTreeCreator.Create(random, grammar, MAX_TREE_SIZE, MAX_TREE_HEIGHT, 3, 3);
+        Grammars.HasValidAdfGrammars(tree);
+        Util.IsValid(tree);
+        randomTrees.Add(tree);
       }
-      foreach (var tree in randomTrees)
-        Assert.IsTrue(tree.IsValidExpression());
       Assert.Inconclusive("ProbabilisticTreeCreator: " + Environment.NewLine +
         Util.GetSizeDistributionString(randomTrees, 105, 5) + Environment.NewLine +
         Util.GetFunctionDistributionString(randomTrees) + Environment.NewLine +

@@ -1,4 +1,25 @@
-﻿using System;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +31,7 @@ using System.Diagnostics;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
   [TestClass]
   public class SubtreeCrossoverTest {
-    private static ISymbolicExpressionGrammar grammar;
-    private static List<SymbolicExpressionTree> crossoverTrees;
-    private static double msPerCrossoverEvent;
-
+    private const int POPULATION_SIZE = 1000;
     private TestContext testContextInstance;
 
     /// <summary>
@@ -29,24 +47,26 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
       }
     }
 
-    [ClassInitialize()]
-    public static void SubtreeCrossoverTestInitialize(TestContext testContext) {
-      crossoverTrees = new List<SymbolicExpressionTree>();
-      int populationSize = 1000;
+    [TestMethod()]
+    public void SubtreeCrossoverDistributionsTest() {
       int generations = 5;
-      int failedEvents = 0;
-      grammar = Grammars.CreateArithmeticAndAdfGrammar();
+      var trees = new List<SymbolicExpressionTree>();
+      var grammar = Grammars.CreateArithmeticAndAdfGrammar();
       var random = new MersenneTwister();
-      for (int i = 0; i < populationSize; i++) {
-        crossoverTrees.Add(ProbabilisticTreeCreator.Create(random, grammar, 100, 10, 3, 3));
+      int failedEvents = 0;
+      List<SymbolicExpressionTree> crossoverTrees;
+      double msPerCrossoverEvent;
+
+      for (int i = 0; i < POPULATION_SIZE; i++) {
+        trees.Add(ProbabilisticTreeCreator.Create(random, grammar, 100, 10, 3, 3));
       }
       Stopwatch stopwatch = new Stopwatch();
       stopwatch.Start();
       for (int gCount = 0; gCount < generations; gCount++) {
         var newPopulation = new List<SymbolicExpressionTree>();
-        for (int i = 0; i < populationSize; i++) {
-          var par0 = (SymbolicExpressionTree)crossoverTrees[random.Next(populationSize)].Clone();
-          var par1 = (SymbolicExpressionTree)crossoverTrees[random.Next(populationSize)].Clone();
+        for (int i = 0; i < POPULATION_SIZE; i++) {
+          var par0 = (SymbolicExpressionTree)trees.SelectRandom(random).Clone();
+          var par1 = (SymbolicExpressionTree)trees.SelectRandom(random).Clone();
           bool success;
           newPopulation.Add(SubtreeCrossover.Cross(random, par0, par1, 0.9, 100, 10, out success));
           if (!success) failedEvents++;
@@ -54,39 +74,19 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
         crossoverTrees = newPopulation;
       }
       stopwatch.Stop();
-      foreach (var tree in crossoverTrees)
-        Assert.IsTrue(tree.IsValidExpression());
-      msPerCrossoverEvent = stopwatch.ElapsedMilliseconds / (double)populationSize / (double)generations;      
-    }
+      foreach (var tree in trees)
+        Util.IsValid(tree);
 
+      msPerCrossoverEvent = stopwatch.ElapsedMilliseconds / (double)POPULATION_SIZE / (double)generations;
 
-
-    [TestMethod()]
-    public void SubtreeCrossoverSpeed() {
-
-      Assert.Inconclusive(msPerCrossoverEvent + " ms per crossover event (~" +
-        Math.Round(1000.0 / (msPerCrossoverEvent)) + "crossovers / s)");
-    }
-
-    [TestMethod()]
-    public void SubtreeCrossoverSizeDistributions() {
-      Assert.Inconclusive("SubtreeCrossover: " + Util.GetSizeDistributionString(crossoverTrees, 105, 5));
-    }
-
-    [TestMethod()]
-    public void SubtreeCrossoverFunctionDistributionTest() {
-      Assert.Inconclusive("SubtreeCrossover: " + Util.GetFunctionDistributionString(crossoverTrees));
-    }
-
-    [TestMethod()]
-    public void SubtreeCrossoverNumberOfSubTreesDistributionTest() {
-      Assert.Inconclusive("SubtreeCrossover: " + Util.GetNumberOfSubTreesDistributionString(crossoverTrees));
-    }
-
-
-    [TestMethod()]
-    public void SubtreeCrossoverTerminalDistributionTest() {
-      Assert.Inconclusive("SubtreeCrossover: " + Util.GetTerminalDistributionString(crossoverTrees));
+      Assert.Inconclusive("SubtreeCrossover: " + Environment.NewLine +
+        "Failed events: " + failedEvents / (double)POPULATION_SIZE * 100 + " %" + Environment.NewLine +
+        msPerCrossoverEvent + " ms per crossover event (~" + Math.Round(1000.0 / (msPerCrossoverEvent)) + "crossovers / s)" + Environment.NewLine +
+        Util.GetSizeDistributionString(trees, 105, 5) + Environment.NewLine +
+        Util.GetFunctionDistributionString(trees) + Environment.NewLine +
+        Util.GetNumberOfSubTreesDistributionString(trees) + Environment.NewLine +
+        Util.GetTerminalDistributionString(trees) + Environment.NewLine
+        );
     }
   }
 }

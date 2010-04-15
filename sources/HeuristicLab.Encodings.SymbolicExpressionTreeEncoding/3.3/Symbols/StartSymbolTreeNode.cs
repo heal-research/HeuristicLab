@@ -23,7 +23,7 @@ using System;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols {
   [StorableClass]
-  public sealed class StartSymbolTreeNode : SymbolicExpressionTreeNode {
+  public sealed class StartSymbolTreeNode : SymbolicExpressionTreeTopLevelNode {
     // copy constructor
     private StartSymbolTreeNode(StartSymbolTreeNode original)
       : base(original) {

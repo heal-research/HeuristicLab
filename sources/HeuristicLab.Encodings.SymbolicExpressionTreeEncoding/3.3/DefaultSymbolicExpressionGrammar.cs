@@ -80,6 +80,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     public void RemoveSymbol(Symbol symbol) {
+      foreach (var parent in Symbols) {
+        for (int i = 0; i < GetMaxSubtreeCount(parent); i++)
+          if (IsAllowedChild(parent, symbol, i))
+            allowedChildSymbols[parent.Name][i].Remove(symbol.Name);
+      }
       allSymbols.RemoveWhere(s => s.Name == symbol.Name);
       minSubTreeCount.Remove(symbol.Name);
       maxSubTreeCount.Remove(symbol.Name);
@@ -207,7 +212,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       clone.maxSubTreeCount = new Dictionary<string, int>(maxSubTreeCount);
       clone.minSubTreeCount = new Dictionary<string, int>(minSubTreeCount);
       clone.startSymbol = startSymbol;
-      clone.allowedChildSymbols = new Dictionary<string, List<HashSet<string>>>(allowedChildSymbols);
+      clone.allowedChildSymbols = new Dictionary<string, List<HashSet<string>>>();
+      foreach (var entry in allowedChildSymbols) {
+        clone.allowedChildSymbols[entry.Key] = new List<HashSet<string>>();
+        foreach (var set in entry.Value) {
+          clone.allowedChildSymbols[entry.Key].Add(new HashSet<string>(set));
+        }
+      }
       clone.allSymbols = new HashSet<Symbol>(allSymbols);
       return clone;
     }

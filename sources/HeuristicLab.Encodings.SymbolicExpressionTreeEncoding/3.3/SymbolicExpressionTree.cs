@@ -76,26 +76,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       return root.IterateNodesPostfix();
     }
 
-    public SymbolicExpressionTreeNode GetTopLevelBranchOf(SymbolicExpressionTreeNode node) {
-      foreach (var branch in root.SubTrees) {
-        if (branch.IterateNodesPrefix().Contains(node)) return branch;
-      }
-      throw new ArgumentException("Node was not found in tree.");
-    }
-
     public override IDeepCloneable Clone(Cloner cloner) {
       SymbolicExpressionTree clone = new SymbolicExpressionTree();
       cloner.RegisterClonedObject(this, clone);
       clone.ReadOnlyView = ReadOnlyView;
       clone.root = (SymbolicExpressionTreeNode)this.root.Clone();
       return clone;
-    }
-
-    public bool IsValidExpression() {
-      if (root.Symbol != root.Grammar.StartSymbol) return false;
-      foreach (var subtree in root.SubTrees)
-        if (subtree.Grammar == root.Grammar) return false;
-      return root.IsValidTree();
     }
   }
 }

@@ -40,7 +40,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
   [Item("SubroutineDeleter", "Manipulates a symbolic expression by deleting a preexisting function-defining branch.")]
   [StorableClass]
   public sealed class SubroutineDeleter : SymbolicExpressionTreeArchitectureAlteringOperator {
-    private const int MAX_TRIES = 100;
     public override sealed void ModifyArchitecture(
       IRandom random,
       SymbolicExpressionTree symbolicExpressionTree,
@@ -67,41 +66,48 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
       int defunSubtreeIndex = symbolicExpressionTree.Root.SubTrees.IndexOf(selectedDefunBranch);
       symbolicExpressionTree.Root.RemoveSubTree(defunSubtreeIndex);
 
-      // get all cut points that contain an invokation of the deleted defun
-      var invocationCutPoints = from node in symbolicExpressionTree.IterateNodesPrefix()
-                                where node.SubTrees.Count > 0
-                                from argIndex in Enumerable.Range(0, node.SubTrees.Count)
-                                let subtree = node.SubTrees[argIndex] as InvokeFunctionTreeNode
-                                where subtree != null
-                                where subtree.InvokedFunctionName == selectedDefunBranch.Name
-                                select new { Parent = node, ReplacedChildIndex = argIndex, ReplacedChild = subtree };
-      // deletion by random regeneration
-      foreach (var cutPoint in invocationCutPoints) {
-        SymbolicExpressionTreeNode replacementTree = null;
-        int targetSize = random.Next(cutPoint.ReplacedChild.GetSize());
-        int targetHeight = cutPoint.ReplacedChild.GetHeight();
-        int tries = 0;
-        do {
-          try {
-            replacementTree = ProbabilisticTreeCreator.PTC2(random, grammar, cutPoint.Parent.Symbol, targetSize, targetHeight);
-          }
-          catch (ArgumentException) {
-            // try different size
-            targetSize = random.Next(cutPoint.ReplacedChild.GetSize());
-            if (tries++ > MAX_TRIES) throw;
-          }
-        } while (replacementTree == null);
-        cutPoint.Parent.RemoveSubTree(cutPoint.ReplacedChildIndex);
-        cutPoint.Parent.InsertSubTree(cutPoint.ReplacedChildIndex, replacementTree);
-      }
       // remove references to deleted function
       foreach (var subtree in symbolicExpressionTree.Root.SubTrees) {
-        if (subtree.DynamicSymbols.Contains(selectedDefunBranch.Name)) {
-          subtree.RemoveDynamicSymbol(selectedDefunBranch.Name);
+        var matchingInvokeSymbol = (from symb in subtree.Grammar.Symbols.OfType<InvokeFunction>()
+                                    where symb.FunctionName == selectedDefunBranch.FunctionName
+                                    select symb).SingleOrDefault();
+        if (matchingInvokeSymbol != null) {
+          subtree.Grammar.RemoveSymbol(matchingInvokeSymbol);
         }
       }
-      Debug.Assert(grammar.IsValidExpression(symbolicExpressionTree));
+
+      DeletionByRandomRegeneration(random, symbolicExpressionTree, selectedDefunBranch);
       return true;
+    }
+
+    private static void DeletionByRandomRegeneration(IRandom random, SymbolicExpressionTree symbolicExpressionTree, DefunTreeNode selectedDefunBranch) {
+      // find first invocation and replace it with a randomly generated tree
+      // can't find all invocations in one step because once we replaced a top level invocation
+      // the invocations below it are removed already
+      var invocationCutPoint = (from node in symbolicExpressionTree.IterateNodesPrefix()
+                                from subtree in node.SubTrees.OfType<InvokeFunctionTreeNode>()
+                                where subtree.Symbol.FunctionName == selectedDefunBranch.FunctionName
+                                select new { Parent = node, ReplacedChildIndex = node.SubTrees.IndexOf(subtree), ReplacedChild = subtree }).FirstOrDefault();
+      while (invocationCutPoint != null) {
+        // deletion by random regeneration
+        SymbolicExpressionTreeNode replacementTree = null;
+        // TODO: should weight symbols by tickets
+        var selectedSymbol = invocationCutPoint.Parent.GetAllowedSymbols(invocationCutPoint.ReplacedChildIndex).SelectRandom(random);
+
+        int minPossibleSize = invocationCutPoint.Parent.Grammar.GetMinExpressionLength(selectedSymbol);
+        int maxSize = Math.Max(minPossibleSize, invocationCutPoint.ReplacedChild.GetSize());
+        int minPossibleHeight = invocationCutPoint.Parent.Grammar.GetMinExpressionDepth(selectedSymbol);
+        int maxHeight = Math.Max(minPossibleHeight, invocationCutPoint.ReplacedChild.GetHeight());
+
+        replacementTree = ProbabilisticTreeCreator.PTC2(random, invocationCutPoint.Parent.Grammar, selectedSymbol, maxSize, maxHeight, 0, 0);
+        invocationCutPoint.Parent.RemoveSubTree(invocationCutPoint.ReplacedChildIndex);
+        invocationCutPoint.Parent.InsertSubTree(invocationCutPoint.ReplacedChildIndex, replacementTree);
+
+        invocationCutPoint = (from node in symbolicExpressionTree.IterateNodesPrefix()
+                              from subtree in node.SubTrees.OfType<InvokeFunctionTreeNode>()
+                              where subtree.Symbol.FunctionName == selectedDefunBranch.FunctionName
+                              select new { Parent = node, ReplacedChildIndex = node.SubTrees.IndexOf(subtree), ReplacedChild = subtree }).FirstOrDefault();
+      }
     }
   }
 }

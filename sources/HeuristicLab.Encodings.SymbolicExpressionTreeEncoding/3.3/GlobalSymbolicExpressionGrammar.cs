@@ -81,7 +81,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       Initialize();
     }
 
-    private void Reset() {
+    private new void Reset() {
       base.Reset();
       Initialize();
     }

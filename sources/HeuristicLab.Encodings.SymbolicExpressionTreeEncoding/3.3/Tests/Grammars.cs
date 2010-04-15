@@ -1,4 +1,25 @@
-﻿using System;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -73,5 +94,28 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
       g.MinFunctionDefinitions = 0;
       return g;
     }
+
+    public static void HasValidAdfGrammars(SymbolicExpressionTree tree) {
+      Assert.AreEqual(tree.Root.Grammar.Symbols.Count(), 8);
+      Assert.AreEqual(tree.Root.GetAllowedSymbols(0).Count(), 1); // only the start symbol is allowed
+      // we allow 3 ADF branches
+      Assert.AreEqual(tree.Root.GetAllowedSymbols(1).Count(), 1); // only the defun branch is allowed
+      Assert.AreEqual(tree.Root.GetAllowedSymbols(2).Count(), 1); // only the defun symbol is allowed
+      Assert.AreEqual(tree.Root.GetAllowedSymbols(3).Count(), 1); // only the defun symbol is allowed
+      foreach (var subtree in tree.Root.SubTrees) {
+        // check consistency of each sub-tree grammar independently
+        var allowedSymbols = subtree.GetAllowedSymbols(0);
+        int numberOfAllowedSymbols = allowedSymbols.Count();
+        foreach (var parent in allowedSymbols) {
+          for (int argIndex = 0; argIndex < subtree.Grammar.GetMaxSubtreeCount(parent); argIndex++) {
+            var allowedChildren = from child in subtree.Grammar.Symbols
+                                  where subtree.Grammar.IsAllowedChild(parent, child, argIndex)
+                                  select child;
+            Assert.AreEqual(numberOfAllowedSymbols, allowedChildren.Count());
+          }
+        }
+      }
+    }
+
   }
 }

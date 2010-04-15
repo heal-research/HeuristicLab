@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,28 +20,35 @@
 #endregion
 
 using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Text;
+using HeuristicLab.Core;
+using System.Xml;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols {
+using HeuristicLab.Data;
+using System.Diagnostics;
+
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
-  public sealed class InvokeFunctionTreeNode : SymbolicExpressionTreeNode {
-    public new InvokeFunction Symbol {
-      get { return (InvokeFunction)base.Symbol; }
-      set {
-        if (value == null) throw new ArgumentNullException();
-        if (!(value is InvokeFunction)) throw new ArgumentNullException();
-        base.Symbol = value;
-      }
+  public class SymbolicExpressionTreeTopLevelNode : SymbolicExpressionTreeNode {
+
+    public SymbolicExpressionTreeTopLevelNode()
+      : base() {
+    }
+
+    public SymbolicExpressionTreeTopLevelNode(Symbol symbol)
+      : base(symbol) {
     }
 
     // copy constructor
-    private InvokeFunctionTreeNode(InvokeFunctionTreeNode original)
+    protected SymbolicExpressionTreeTopLevelNode(SymbolicExpressionTreeTopLevelNode original)
       : base(original) {
+      Grammar = (ISymbolicExpressionGrammar)original.Grammar.Clone();
     }
 
-    public InvokeFunctionTreeNode(InvokeFunction invokeSymbol) : base(invokeSymbol) { }
-
     public override object Clone() {
-      return new InvokeFunctionTreeNode(this);
+      return new SymbolicExpressionTreeTopLevelNode(this);
     }
   }
 }

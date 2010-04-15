@@ -28,11 +28,13 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Random;
 using System.Diagnostics;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlteringOperators;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
   [TestClass]
-  public class SubroutineCreaterTest {
+  public class AllArchitectureAlteringOperatorsTest {
     private const int POPULATION_SIZE = 1000;
+    private const int N_ITERATIONS = 20;
     private const int MAX_TREE_SIZE = 100;
     private const int MAX_TREE_HEIGHT = 10;
     private TestContext testContextInstance;
@@ -51,21 +53,42 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
     }
 
     [TestMethod()]
-    public void SubroutineCreaterDistributionsTest() {
+    public void AllArchitectureAlteringOperatorsDistributionTest() {
       var trees = new List<SymbolicExpressionTree>();
+      var newTrees = new List<SymbolicExpressionTree>();
       var grammar = Grammars.CreateArithmeticAndAdfGrammar();
       var random = new MersenneTwister(31415);
       int failedEvents = 0;
+      IntValue maxTreeSize = new IntValue(100);
+      IntValue maxTreeHeigth = new IntValue(10);
+      IntValue maxDefuns = new IntValue(3);
+      IntValue maxArgs = new IntValue(3);
       for (int i = 0; i < POPULATION_SIZE; i++) {
         var tree = ProbabilisticTreeCreator.Create(random, grammar, MAX_TREE_SIZE, MAX_TREE_HEIGHT, 3, 3);
-        if (!SubroutineCreater.CreateSubroutine(random, tree, grammar, MAX_TREE_SIZE, MAX_TREE_HEIGHT, 3, 3))
-          failedEvents++;
         Util.IsValid(tree);
         trees.Add(tree);
       }
-      Assert.Inconclusive("SubroutineCreator: " + Environment.NewLine +
-        "Failed events: " + failedEvents / (double)POPULATION_SIZE * 100 + " %" + Environment.NewLine +
-        Util.GetSizeDistributionString(trees, 105, 5) + Environment.NewLine +
+      Stopwatch stopwatch = new Stopwatch();
+      stopwatch.Start();
+      var combinedAAOperator = new RandomArchitectureAlteringOperator();
+      for (int g = 0; g < N_ITERATIONS; g++) {
+        for (int i = 0; i < POPULATION_SIZE; i++) {
+          var selectedTree = (SymbolicExpressionTree)trees.SelectRandom(random).Clone();
+          var op = combinedAAOperator.Operators.SelectRandom(random);
+          bool success;
+          op.ModifyArchitecture(random, selectedTree, grammar, maxTreeSize, maxTreeHeigth, maxDefuns, maxArgs, out success);
+          if (!success) failedEvents++;
+          Util.IsValid(selectedTree);
+          newTrees.Add(selectedTree);
+        }
+        trees = newTrees;
+      }
+      stopwatch.Stop();
+      var msPerOperation = stopwatch.ElapsedMilliseconds / (double)POPULATION_SIZE / (double)N_ITERATIONS;
+      Assert.Inconclusive("AllArchitectureAlteringOperators: " + Environment.NewLine +
+        "Failed events: " + failedEvents / (double)POPULATION_SIZE / N_ITERATIONS * 100 + " %" + Environment.NewLine +
+        "Operations / s: ~" + Math.Round(1000.0 / (msPerOperation)) + "operations / s)" + Environment.NewLine +
+        Util.GetSizeDistributionString(trees, 200, 5) + Environment.NewLine +
         Util.GetFunctionDistributionString(trees) + Environment.NewLine +
         Util.GetNumberOfSubTreesDistributionString(trees) + Environment.NewLine +
         Util.GetTerminalDistributionString(trees) + Environment.NewLine

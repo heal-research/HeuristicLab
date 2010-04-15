@@ -47,10 +47,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
       IntValue maxTreeSize, IntValue maxTreeHeight,
       IntValue maxFunctionDefiningBranches, IntValue maxFunctionArguments,
       out bool success) {
-      success = DuplicateRandomSubroutine(random, symbolicExpressionTree, grammar, maxTreeSize.Value, maxTreeHeight.Value, maxFunctionDefiningBranches.Value, maxFunctionArguments.Value);
+      success = DuplicateSubroutine(random, symbolicExpressionTree, grammar, maxTreeSize.Value, maxTreeHeight.Value, maxFunctionDefiningBranches.Value, maxFunctionArguments.Value);
     }
 
-    public static bool DuplicateRandomSubroutine(
+    public static bool DuplicateSubroutine(
       IRandom random,
       SymbolicExpressionTree symbolicExpressionTree,
       ISymbolicExpressionGrammar grammar,
@@ -65,39 +65,40 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
         // no function defining branches to duplicate or already reached the max number of ADFs
         return false;
       var selectedBranch = functionDefiningBranches.SelectRandom(random);
-      var clonedBranch = (DefunTreeNode)selectedBranch.Clone();
-      clonedBranch.Name = allowedFunctionNames.Except(UsedFunctionNames(symbolicExpressionTree)).First();
-      foreach (var node in symbolicExpressionTree.IterateNodesPrefix()) {
-        var invokeFunctionNode = node as InvokeFunctionTreeNode;
-        // find all invokations of the old function 
-        if (invokeFunctionNode != null && invokeFunctionNode.InvokedFunctionName == selectedBranch.Name) {
-          // add the new function name to the list of known functions in the branches that used the originating function
-          var branch = symbolicExpressionTree.GetTopLevelBranchOf(invokeFunctionNode);
-          branch.AddDynamicSymbol(clonedBranch.Name, clonedBranch.NumberOfArguments);
-          // flip coin wether to replace with newly defined function
-          if (random.NextDouble() < 0.5) {
-            invokeFunctionNode.InvokedFunctionName = clonedBranch.Name;
-          }
+      var duplicatedDefunBranch = (DefunTreeNode)selectedBranch.Clone();
+      string newFunctionName = allowedFunctionNames.Except(UsedFunctionNames(symbolicExpressionTree)).First();
+      duplicatedDefunBranch.FunctionName = newFunctionName;
+      symbolicExpressionTree.Root.SubTrees.Add(duplicatedDefunBranch);
+      duplicatedDefunBranch.Grammar = (ISymbolicExpressionGrammar)selectedBranch.Grammar.Clone();
+      // add an invoke symbol for each branch that is allowed to invoke the original function
+      foreach (var subtree in symbolicExpressionTree.Root.SubTrees) {
+        var matchingInvokeSymbol = (from symb in subtree.Grammar.Symbols.OfType<InvokeFunction>()
+                                    where symb.FunctionName == selectedBranch.FunctionName
+                                    select symb).SingleOrDefault();
+        if (matchingInvokeSymbol != null) {
+          GrammarModifier.AddDynamicSymbol(subtree.Grammar, subtree.Symbol, duplicatedDefunBranch.FunctionName, duplicatedDefunBranch.NumberOfArguments);
         }
       }
-      Debug.Assert(grammar.IsValidExpression(symbolicExpressionTree));
-      return true;
-    }
-
-    private static bool ContainsNode(SymbolicExpressionTreeNode branch, SymbolicExpressionTreeNode node) {
-      if (branch == node) return true;
-      else foreach (var subtree in branch.SubTrees) {
-          if (ContainsNode(subtree, node)) return true;
+      // for all invoke nodes of the original function replace the invoke of the original function with an invoke of the new function randomly
+      var originalFunctionInvocations = from node in symbolicExpressionTree.IterateNodesPrefix().OfType<InvokeFunctionTreeNode>()
+                                        where node.Symbol.FunctionName == selectedBranch.FunctionName
+                                        select node;
+      foreach (var originalFunctionInvokeNode in originalFunctionInvocations) {
+        var newInvokeSymbol = (from symb in originalFunctionInvokeNode.Grammar.Symbols.OfType<InvokeFunction>()
+                               where symb.FunctionName == duplicatedDefunBranch.FunctionName
+                               select symb).Single();
+        // flip coin wether to replace with newly defined function
+        if (random.NextDouble() < 0.5) {
+          originalFunctionInvokeNode.Symbol = newInvokeSymbol;
         }
-      return false;
+      }
+      return true;
     }
 
     private static IEnumerable<string> UsedFunctionNames(SymbolicExpressionTree symbolicExpressionTree) {
       return from node in symbolicExpressionTree.IterateNodesPrefix()
              where node.Symbol is Defun
-             select ((DefunTreeNode)node).Name;
+             select ((DefunTreeNode)node).FunctionName;
     }
-
-
   }
 }

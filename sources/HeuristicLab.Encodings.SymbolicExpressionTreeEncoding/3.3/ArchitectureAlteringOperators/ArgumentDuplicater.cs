@@ -63,46 +63,61 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
         // no function defining branches => abort
         return false;
 
-      var selectedDefunBranch = SelectRandomBranch(random, functionDefiningBranches);
-      var argumentNodes = from node in IterateNodesPrefix(selectedDefunBranch)
-                          where node is ArgumentTreeNode
-                          select (ArgumentTreeNode)node;
-      if (argumentNodes.Count() == 0 || argumentNodes.Count() >= maxFunctionArguments)
+      var selectedDefunBranch = functionDefiningBranches.SelectRandom(random);
+      var argumentSymbols = selectedDefunBranch.Grammar.Symbols.OfType<Argument>();
+      if (argumentSymbols.Count() == 0 || argumentSymbols.Count() >= maxFunctionArguments)
         // when no argument or number of arguments is already at max allowed value => abort
         return false;
-      var distinctArgumentIndexes = (from node in argumentNodes
-                                     select node.ArgumentIndex).Distinct().ToList();
-      var selectedArgumentIndex = distinctArgumentIndexes[random.Next(distinctArgumentIndexes.Count)];
-      var newArgumentIndex = allowedArgumentIndexes.Except(from argNode in argumentNodes select argNode.ArgumentIndex).First();
+      var selectedArgumentSymbol = argumentSymbols.SelectRandom(random);
+      var takenIndexes = argumentSymbols.Select(s => s.ArgumentIndex);
+      var newArgumentIndex = allowedArgumentIndexes.Except(takenIndexes).First();
+
+      var newArgSymbol = new Argument(newArgumentIndex);
+
       // replace existing references to the original argument with references to the new argument randomly in the selectedBranch
+      var argumentNodes = selectedDefunBranch.IterateNodesPrefix().OfType<ArgumentTreeNode>();
       foreach (var argNode in argumentNodes) {
-        if (argNode.ArgumentIndex == selectedArgumentIndex) {
+        if (argNode.Symbol == selectedArgumentSymbol) {
           if (random.NextDouble() < 0.5) {
-            argNode.ArgumentIndex = newArgumentIndex;
+            argNode.Symbol = newArgSymbol;
           }
         }
       }
       // find invocations of the functions and duplicate the matching argument branch
-      var invocationNodes = from node in symbolicExpressionTree.IterateNodesPrefix()
-                            let invokeNode = node as InvokeFunctionTreeNode
-                            where invokeNode != null
-                            where invokeNode.InvokedFunctionName == selectedDefunBranch.Name
-                            select invokeNode;
+      var invocationNodes = from node in symbolicExpressionTree.IterateNodesPrefix().OfType<InvokeFunctionTreeNode>()
+                            where node.Symbol.FunctionName == selectedDefunBranch.FunctionName
+                            select node;
       foreach (var invokeNode in invocationNodes) {
-        var argumentBranch = invokeNode.SubTrees[selectedArgumentIndex];
+        var argumentBranch = invokeNode.SubTrees[selectedArgumentSymbol.ArgumentIndex];
         var clonedArgumentBranch = (SymbolicExpressionTreeNode)argumentBranch.Clone();
         invokeNode.InsertSubTree(newArgumentIndex, clonedArgumentBranch);
       }
-      // register the new argument node and increase the number of arguments of the ADF
-      selectedDefunBranch.AddDynamicSymbol("ARG" + newArgumentIndex);
+      // register the new argument symbol and increase the number of arguments of the ADF
+      selectedDefunBranch.Grammar.AddSymbol(newArgSymbol);
+      selectedDefunBranch.Grammar.SetMinSubtreeCount(newArgSymbol, 0);
+      selectedDefunBranch.Grammar.SetMaxSubtreeCount(newArgSymbol, 0);
+      // allow the argument as child of any other symbol
+      foreach (var symb in selectedDefunBranch.Grammar.Symbols)
+        for (int i = 0; i < selectedDefunBranch.Grammar.GetMaxSubtreeCount(symb); i++) {
+          selectedDefunBranch.Grammar.SetAllowedChild(symb, newArgSymbol, i);
+        }
       selectedDefunBranch.NumberOfArguments++;
+
       // increase the arity of the changed ADF in all branches that can use this ADF
       foreach (var subtree in symbolicExpressionTree.Root.SubTrees) {
-        if (subtree.DynamicSymbols.Contains(selectedDefunBranch.Name)) {
-          subtree.SetDynamicSymbolArgumentCount(selectedDefunBranch.Name, selectedDefunBranch.NumberOfArguments);
+        var matchingInvokeSymbol = (from symb in subtree.Grammar.Symbols.OfType<InvokeFunction>()
+                                    where symb.FunctionName == selectedDefunBranch.FunctionName
+                                    select symb).SingleOrDefault();
+        if (matchingInvokeSymbol != null) {
+          subtree.Grammar.SetMinSubtreeCount(matchingInvokeSymbol, selectedDefunBranch.NumberOfArguments);
+          subtree.Grammar.SetMaxSubtreeCount(matchingInvokeSymbol, selectedDefunBranch.NumberOfArguments);
+          foreach (var child in subtree.GetAllowedSymbols(0)) {
+            for (int i = 0; i < subtree.Grammar.GetMaxSubtreeCount(matchingInvokeSymbol); i++) {
+              subtree.Grammar.SetAllowedChild(matchingInvokeSymbol, child, i);
+            }
+          }
         }
       }
-      Debug.Assert(grammar.IsValidExpression(symbolicExpressionTree));
       return true;
     }
   }

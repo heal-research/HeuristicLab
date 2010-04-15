@@ -64,12 +64,14 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
       if (selectedDefunBranch.NumberOfArguments <= 1)
         // argument deletion by consolidation is not possible => abort
         return false;
+      // the argument to be removed is always the one with the largest index 
+      // (otherwise we would have to decrement the index of the larger argument symbols)
       var removedArgument = (from sym in selectedDefunBranch.Grammar.Symbols.OfType<Argument>()
-                             select sym.ArgumentIndex).Distinct().SelectRandom(random);
+                             select sym.ArgumentIndex).Distinct().OrderBy(x => x).Last();
       // find invocations of the manipulated funcion and remove the specified argument tree
-      var invocationNodes = from node in symbolicExpressionTree.IterateNodesPrefix().OfType<InvokeFunctionTreeNode>()
-                            where node.Symbol.FunctionName == selectedDefunBranch.FunctionName
-                            select node;
+      var invocationNodes = (from node in symbolicExpressionTree.IterateNodesPrefix().OfType<InvokeFunctionTreeNode>()
+                             where node.Symbol.FunctionName == selectedDefunBranch.FunctionName
+                             select node).ToList();
       foreach (var invokeNode in invocationNodes) {
         invokeNode.RemoveSubTree(removedArgument);
       }
@@ -77,17 +79,17 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
       DeleteArgumentByConsolidation(random, selectedDefunBranch, removedArgument);
 
       // delete the dynamic argument symbol that matches the argument to be removed
-      var matchingSymbol = selectedDefunBranch.Grammar.Symbols.OfType<Argument>().Where(s => s.ArgumentIndex == removedArgument).First();
+      var matchingSymbol = selectedDefunBranch.Grammar.Symbols.OfType<Argument>().Where(s => s.ArgumentIndex == removedArgument).Single();
       selectedDefunBranch.Grammar.RemoveSymbol(matchingSymbol);
+      selectedDefunBranch.NumberOfArguments--;
       // reduce arity in known functions of all root branches
       foreach (var subtree in symbolicExpressionTree.Root.SubTrees) {
-        var matchingInvokeSymbol = subtree.Grammar.Symbols.OfType<InvokeFunction>().Where(s => s.FunctionName == selectedDefunBranch.FunctionName).FirstOrDefault();
+        var matchingInvokeSymbol = subtree.Grammar.Symbols.OfType<InvokeFunction>().Where(s => s.FunctionName == selectedDefunBranch.FunctionName).SingleOrDefault();
         if (matchingInvokeSymbol != null) {
-          subtree.Grammar.SetMinSubtreeCount(matchingInvokeSymbol, selectedDefunBranch.NumberOfArguments - 1);
-          subtree.Grammar.SetMaxSubtreeCount(matchingInvokeSymbol, selectedDefunBranch.NumberOfArguments - 1);
+          subtree.Grammar.SetMinSubtreeCount(matchingInvokeSymbol, selectedDefunBranch.NumberOfArguments);
+          subtree.Grammar.SetMaxSubtreeCount(matchingInvokeSymbol, selectedDefunBranch.NumberOfArguments);
         }
       }
-      selectedDefunBranch.NumberOfArguments--;
       return true;
     }
 

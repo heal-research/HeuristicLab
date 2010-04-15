@@ -64,7 +64,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
     }
 
     public override void ModifyArchitecture(IRandom random, SymbolicExpressionTree tree, ISymbolicExpressionGrammar grammar, IntValue maxTreeSize, IntValue maxTreeHeight, IntValue maxFunctionDefiningBranches, IntValue maxFunctionArguments, out bool success) {
-      var selectedOperator = Operators[random.Next(Operators.Count)];
+      var selectedOperator = Operators.SelectRandom(random);
       selectedOperator.ModifyArchitecture(random, tree, grammar, maxTreeSize, maxTreeHeight, maxFunctionDefiningBranches, maxFunctionArguments, out success);
     }
   }

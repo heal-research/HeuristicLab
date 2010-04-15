@@ -24,7 +24,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Core;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols {
   [StorableClass]
-  public sealed class DefunTreeNode : SymbolicExpressionTreeNode {
+  public sealed class DefunTreeNode : SymbolicExpressionTreeTopLevelNode {
     private int numberOfArguments;
     [Storable]
     public int NumberOfArguments {
