@@ -71,7 +71,42 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       this.graphVisualizationInfoView.Content = this.VisualizationInfo;
       if (createdVisualizationInfo)
         this.graphVisualizationInfoView.RelayoutGraph();
+
+      this.SetEnableStateOfControls();
     }
+
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      this.SetEnableStateOfControls();
+    }
+
+    private void SetEnableStateOfControls() {
+      if (Content == null) {
+        selectButton.Enabled = false;
+        panButton.Enabled = false;
+        relayoutButton.Enabled = false;
+        zoomAreaButton.Enabled = false;
+        zoomInButton.Enabled = false;
+        zoomOutButton.Enabled = false;
+        screenshotButton.Enabled = false;
+        detailsViewHost.Enabled = false;
+        graphVisualizationInfoView.ReadOnly = true;
+        connectButton.Enabled = false;
+        
+      } else {
+        selectButton.Enabled = true;
+        panButton.Enabled = true;
+        relayoutButton.Enabled = true;
+        zoomAreaButton.Enabled = true;
+        zoomInButton.Enabled = true;
+        zoomOutButton.Enabled = true;
+        screenshotButton.Enabled = true;
+        detailsViewHost.Enabled = true;
+        detailsViewHost.ReadOnly = ReadOnly;
+        graphVisualizationInfoView.ReadOnly = ReadOnly;
+        connectButton.Enabled = !ReadOnly;
+      }
+    } 
 
     private GraphVisualizationInfo VisualizationInfo {
       get { return Content.VisualizationInfo as GraphVisualizationInfo; }
@@ -159,18 +194,22 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     }
 
     private void initialOperatorToolStripMenuItem_Click(object sender, EventArgs e) {
-      IOperatorShapeInfo shapeInfo = this.shapeContextMenu.Tag as IOperatorShapeInfo;
-      if (this.VisualizationInfo.InitialShape == shapeInfo)
-        this.VisualizationInfo.InitialShape = null;
-      else
-        this.VisualizationInfo.InitialShape = shapeInfo;
+      if (!ReadOnly) {
+        IOperatorShapeInfo shapeInfo = this.shapeContextMenu.Tag as IOperatorShapeInfo;
+        if (this.VisualizationInfo.InitialShape == shapeInfo)
+          this.VisualizationInfo.InitialShape = null;
+        else
+          this.VisualizationInfo.InitialShape = shapeInfo;
+      }
     }
 
     private void breakPointToolStripMenuItem_Click(object sender, EventArgs e) {
-      IOperatorShapeInfo shapeInfo = this.shapeContextMenu.Tag as IOperatorShapeInfo;
-      if (shapeInfo != null) {
-        IOperator op = this.VisualizationInfo.GetOperatorForShapeInfo(shapeInfo);
-        op.Breakpoint = !op.Breakpoint;
+      if (!ReadOnly) {
+        IOperatorShapeInfo shapeInfo = this.shapeContextMenu.Tag as IOperatorShapeInfo;
+        if (shapeInfo != null) {
+          IOperator op = this.VisualizationInfo.GetOperatorForShapeInfo(shapeInfo);
+          op.Breakpoint = !op.Breakpoint;
+        }
       }
     }
     #endregion
@@ -178,6 +217,8 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     #region drag and drop
     private void OperatorGraphView_DragEnter(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
+      if (ReadOnly)
+        return;
       Type type = e.Data.GetData("Type") as Type;
       if ((type != null) && (typeof(IOperator).IsAssignableFrom(type))) {
         e.Effect = DragDropEffects.Copy;

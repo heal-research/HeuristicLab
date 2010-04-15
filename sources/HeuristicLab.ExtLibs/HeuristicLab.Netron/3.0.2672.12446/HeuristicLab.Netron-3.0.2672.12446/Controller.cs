@@ -55,5 +55,25 @@ namespace HeuristicLab.Netron {
         return (ILayout)this.FindActivity("Standard TreeLayout");
       }
     }
+
+    public void RemoveTool(ITool tool) {
+      if (tool == null)
+        return;
+      tool.Controller = null;
+      registeredTools.Remove(tool);
+
+      IMouseListener mouseTool = tool as IMouseListener;
+      if (mouseTool != null)
+        mouseListeners.Remove(mouseTool);
+      IKeyboardListener keyboardTool = tool as IKeyboardListener;
+      if (keyboardTool != null)
+        keyboardListeners.Remove(keyboardTool);
+      IDragDropListener dragdropTool = tool as IDragDropListener;
+      if (dragdropTool != null)
+        dragdropListeners.Remove(dragdropTool);
+
+      tool.OnToolActivate -= new EventHandler<ToolEventArgs>(AddedTool_OnToolActivate);
+      tool.OnToolDeactivate -= new EventHandler<ToolEventArgs>(AddedTool_OnToolDeactivate);
+    }
   }
 }

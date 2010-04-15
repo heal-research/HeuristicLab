@@ -73,6 +73,24 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       this.UpdateContent();
     }
 
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      this.SetEnableStateOfControls();
+    }
+
+    private void SetEnableStateOfControls() {
+      DeleteTool deleteTool = (DeleteTool) this.Controller.Tools.Where( t => t.Name == ControllerBase.DeleteToolName).FirstOrDefault();
+      HeuristicLab.Netron.Controller controller = this.Controller as HeuristicLab.Netron.Controller;
+      if (Content == null && deleteTool != null && controller != null)
+        controller.RemoveTool(deleteTool); 
+      else {
+        if (ReadOnly && deleteTool != null && controller != null)
+          controller.RemoveTool(deleteTool);
+        else if (!ReadOnly && deleteTool == null)
+          this.Controller.AddTool(new DeleteTool(ControllerBase.DeleteToolName));
+      }
+    }
+
     private void UpdateContent() {
       foreach (IOperatorShapeInfo shapeInfo in this.shapeInfoShapeMapping.FirstValues)
         this.RemoveShapeInfo(shapeInfo);
@@ -81,14 +99,17 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       this.shapeInfoConnectionsMapping.Clear();
       this.connectionConnectorsMapping.Clear();
 
-      foreach (IOperatorShapeInfo shapeInfo in this.Content.OperatorShapeInfos)
-        if (!this.shapeInfoShapeMapping.ContainsFirst(shapeInfo))
-          this.AddShapeInfo(shapeInfo);
+      if (Content != null) {
+        foreach (IOperatorShapeInfo shapeInfo in this.Content.OperatorShapeInfos)
+          if (!this.shapeInfoShapeMapping.ContainsFirst(shapeInfo))
+            this.AddShapeInfo(shapeInfo);
 
-      foreach (KeyValuePair<KeyValuePair<IOperatorShapeInfo, string>, IOperatorShapeInfo> connection in this.Content.Connections)
-        this.AddConnection(connection.Key.Key, connection.Key.Value, connection.Value);
+        foreach (KeyValuePair<KeyValuePair<IOperatorShapeInfo, string>, IOperatorShapeInfo> connection in this.Content.Connections)
+          this.AddConnection(connection.Key.Key, connection.Key.Value, connection.Value);
 
-      this.UpdateLayoutRoot();
+        this.UpdateLayoutRoot();
+      }
+      this.SetEnableStateOfControls();
     }
 
     private void UpdateLayoutRoot() {

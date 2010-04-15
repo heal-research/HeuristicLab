@@ -154,12 +154,12 @@ namespace Netron.Diagramming.Core {
     /// the View field
     /// </summary>
     private IView mView;
-    private CollectionBase<IMouseListener> mouseListeners;
-    private CollectionBase<IKeyboardListener> keyboardListeners;
-    private CollectionBase<IDragDropListener> dragdropListeners;
-    private IDiagramControl parentControl;
-    private CollectionBase<ITool> registeredTools;
-    private CollectionBase<IActivity> registeredActivity;
+    protected CollectionBase<IMouseListener> mouseListeners;
+    protected CollectionBase<IKeyboardListener> keyboardListeners;
+    protected CollectionBase<IDragDropListener> dragdropListeners;
+    protected IDiagramControl parentControl;
+    protected CollectionBase<ITool> registeredTools;
+    protected CollectionBase<IActivity> registeredActivity;
 
     #endregion
 
@@ -810,7 +810,7 @@ namespace Netron.Diagramming.Core {
     /// <param name="sender">object</param>
     /// <param name="e">ToolEventArgs</param>
     // ------------------------------------------------------------------
-    void AddedTool_OnToolDeactivate(object sender, ToolEventArgs e) {
+    protected void AddedTool_OnToolDeactivate(object sender, ToolEventArgs e) {
       ITool nextActiveToolInList = null;
       if (this.activeTool == e.Properties) {
         foreach (ITool tool in this.Tools) {
@@ -832,7 +832,7 @@ namespace Netron.Diagramming.Core {
     /// <param name="sender">object</param>
     /// <param name="e">ToolEventArgs</param>
     // ------------------------------------------------------------------
-    void AddedTool_OnToolActivate(object sender, ToolEventArgs e) {
+    protected void AddedTool_OnToolActivate(object sender, ToolEventArgs e) {
       this.RaiseOnToolActivate(e);
     }
 
