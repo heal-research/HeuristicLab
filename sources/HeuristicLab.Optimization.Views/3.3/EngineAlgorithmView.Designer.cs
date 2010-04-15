@@ -44,11 +44,17 @@ namespace HeuristicLab.Optimization.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EngineAlgorithmView));
       this.engineLabel = new System.Windows.Forms.Label();
       this.createUserDefinedAlgorithmButton = new System.Windows.Forms.Button();
       this.engineComboBox = new System.Windows.Forms.ComboBox();
       this.engineTabPage = new System.Windows.Forms.TabPage();
       this.engineViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
+      this.operatorGraphTabPage = new System.Windows.Forms.TabPage();
+      this.saveOperatorGraphButton = new System.Windows.Forms.Button();
+      this.openOperatorGraphButton = new System.Windows.Forms.Button();
+      this.newOperatorGraphButton = new System.Windows.Forms.Button();
+      this.operatorGraphViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.tabControl.SuspendLayout();
       this.parametersTabPage.SuspendLayout();
       this.problemTabPage.SuspendLayout();
@@ -57,15 +63,18 @@ namespace HeuristicLab.Optimization.Views {
       this.problemPanel.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.engineTabPage.SuspendLayout();
+      this.operatorGraphTabPage.SuspendLayout();
       this.SuspendLayout();
       // 
       // tabControl
       // 
+      this.tabControl.Controls.Add(this.operatorGraphTabPage);
       this.tabControl.Controls.Add(this.engineTabPage);
       this.tabControl.Size = new System.Drawing.Size(713, 467);
+      this.tabControl.Controls.SetChildIndex(this.engineTabPage, 0);
+      this.tabControl.Controls.SetChildIndex(this.operatorGraphTabPage, 0);
       this.tabControl.Controls.SetChildIndex(this.runsTabPage, 0);
       this.tabControl.Controls.SetChildIndex(this.resultsTabPage, 0);
-      this.tabControl.Controls.SetChildIndex(this.engineTabPage, 0);
       this.tabControl.Controls.SetChildIndex(this.problemTabPage, 0);
       this.tabControl.Controls.SetChildIndex(this.parametersTabPage, 0);
       // 
@@ -186,7 +195,7 @@ namespace HeuristicLab.Optimization.Views {
       this.engineComboBox.FormattingEnabled = true;
       this.engineComboBox.Location = new System.Drawing.Point(55, 6);
       this.engineComboBox.Name = "engineComboBox";
-      this.engineComboBox.Size = new System.Drawing.Size(644, 21);
+      this.engineComboBox.Size = new System.Drawing.Size(610, 21);
       this.engineComboBox.TabIndex = 1;
       this.engineComboBox.SelectedIndexChanged += new System.EventHandler(this.engineComboBox_SelectedIndexChanged);
       // 
@@ -211,9 +220,69 @@ namespace HeuristicLab.Optimization.Views {
       this.engineViewHost.Content = null;
       this.engineViewHost.Location = new System.Drawing.Point(6, 33);
       this.engineViewHost.Name = "engineViewHost";
-      this.engineViewHost.Size = new System.Drawing.Size(693, 402);
+      this.engineViewHost.ReadOnly = false;
+      this.engineViewHost.Size = new System.Drawing.Size(659, 335);
       this.engineViewHost.TabIndex = 2;
       this.engineViewHost.ViewType = null;
+      // 
+      // operatorGraphTabPage
+      // 
+      this.operatorGraphTabPage.Controls.Add(this.saveOperatorGraphButton);
+      this.operatorGraphTabPage.Controls.Add(this.openOperatorGraphButton);
+      this.operatorGraphTabPage.Controls.Add(this.newOperatorGraphButton);
+      this.operatorGraphTabPage.Controls.Add(this.operatorGraphViewHost);
+      this.operatorGraphTabPage.Location = new System.Drawing.Point(4, 22);
+      this.operatorGraphTabPage.Name = "operatorGraphTabPage";
+      this.operatorGraphTabPage.Size = new System.Drawing.Size(705, 441);
+      this.operatorGraphTabPage.TabIndex = 4;
+      this.operatorGraphTabPage.Text = "Operator Graph";
+      this.operatorGraphTabPage.UseVisualStyleBackColor = true;
+      // 
+      // saveOperatorGraphButton
+      // 
+      this.saveOperatorGraphButton.Enabled = false;
+      this.saveOperatorGraphButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Save;
+      this.saveOperatorGraphButton.Location = new System.Drawing.Point(63, 3);
+      this.saveOperatorGraphButton.Name = "saveOperatorGraphButton";
+      this.saveOperatorGraphButton.Size = new System.Drawing.Size(24, 24);
+      this.saveOperatorGraphButton.TabIndex = 1;
+      this.toolTip.SetToolTip(this.saveOperatorGraphButton, "Save Operator Graph");
+      this.saveOperatorGraphButton.UseVisualStyleBackColor = true;
+      // 
+      // openOperatorGraphButton
+      // 
+      this.openOperatorGraphButton.Enabled = false;
+      this.openOperatorGraphButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Open;
+      this.openOperatorGraphButton.Location = new System.Drawing.Point(33, 3);
+      this.openOperatorGraphButton.Name = "openOperatorGraphButton";
+      this.openOperatorGraphButton.Size = new System.Drawing.Size(24, 24);
+      this.openOperatorGraphButton.TabIndex = 1;
+      this.toolTip.SetToolTip(this.openOperatorGraphButton, "Open Operator Graph");
+      this.openOperatorGraphButton.UseVisualStyleBackColor = true;
+      // 
+      // newOperatorGraphButton
+      // 
+      this.newOperatorGraphButton.Enabled = false;
+      this.newOperatorGraphButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.NewDocument;
+      this.newOperatorGraphButton.Location = new System.Drawing.Point(3, 3);
+      this.newOperatorGraphButton.Name = "newOperatorGraphButton";
+      this.newOperatorGraphButton.Size = new System.Drawing.Size(24, 24);
+      this.newOperatorGraphButton.TabIndex = 1;
+      this.toolTip.SetToolTip(this.newOperatorGraphButton, "New Operator Graph");
+      this.newOperatorGraphButton.UseVisualStyleBackColor = true;
+      // 
+      // operatorGraphViewHost
+      // 
+      this.operatorGraphViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.operatorGraphViewHost.Content = null;
+      this.operatorGraphViewHost.Location = new System.Drawing.Point(3, 33);
+      this.operatorGraphViewHost.Name = "operatorGraphViewHost";
+      this.operatorGraphViewHost.ReadOnly = true;
+      this.operatorGraphViewHost.Size = new System.Drawing.Size(699, 405);
+      this.operatorGraphViewHost.TabIndex = 0;
+      this.operatorGraphViewHost.ViewType = null;
       // 
       // EngineAlgorithmView
       // 
@@ -243,6 +312,7 @@ namespace HeuristicLab.Optimization.Views {
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.engineTabPage.ResumeLayout(false);
       this.engineTabPage.PerformLayout();
+      this.operatorGraphTabPage.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -255,6 +325,11 @@ namespace HeuristicLab.Optimization.Views {
     protected System.Windows.Forms.ComboBox engineComboBox;
     protected System.Windows.Forms.TabPage engineTabPage;
     protected HeuristicLab.MainForm.WindowsForms.ViewHost engineViewHost;
+    protected System.Windows.Forms.TabPage operatorGraphTabPage;
+    protected HeuristicLab.MainForm.WindowsForms.ViewHost operatorGraphViewHost;
+    protected System.Windows.Forms.Button saveOperatorGraphButton;
+    protected System.Windows.Forms.Button openOperatorGraphButton;
+    protected System.Windows.Forms.Button newOperatorGraphButton;
 
   }
 }

@@ -62,6 +62,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
           content = value;
           viewContextMenuStrip.Item = content;
           cachedViews.Clear();
+          this.viewsLabel.Enabled = value != null;
           Initialize();
         }
       }
@@ -72,7 +73,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
       set {
         this.SuspendRepaint();
         base.Enabled = value;
-        this.viewsLabel.Enabled = value;
+        if (Content != null && value)
+          this.viewsLabel.Enabled = value;
         this.ResumeRepaint(true);
       }
     }
@@ -112,9 +114,9 @@ namespace HeuristicLab.MainForm.WindowsForms {
       viewPanel.Controls.Clear();
 
       if (Content != null) {
-        if (viewContextMenuStrip.Items.Count == 0) 
+        if (viewContextMenuStrip.Items.Count == 0)
           messageLabel.Visible = true;
-         else 
+        else
           viewsLabel.Visible = true;
 
         if (!ViewCanShowContent(viewType, Content)) {
@@ -139,7 +141,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
 
       UpdateActiveMenuItem();
       cachedViews.Clear();
-      Control view = (Control)MainFormManager.CreateView(viewType, Content,ReadOnly);
+      Control view = (Control)MainFormManager.CreateView(viewType, Content, ReadOnly);
       cachedViews.Add(viewType, ((IView)view));
       view.Dock = DockStyle.Fill;
       viewPanel.Controls.Add(view);
@@ -167,7 +169,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     private void viewsLabel_DoubleClick(object sender, EventArgs e) {
-      MainFormManager.CreateView(viewType, Content,ReadOnly).Show();
+      MainFormManager.CreateView(viewType, Content, ReadOnly).Show();
     }
 
     private void viewContextMenuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e) {

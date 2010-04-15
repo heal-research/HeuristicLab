@@ -58,12 +58,14 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     protected override void DeregisterContentEvents() {
-      Content.EngineChanged -= new System.EventHandler(Content_EngineChanged);
+      Content.EngineChanged -= new EventHandler(Content_EngineChanged);
+      Content.OperatorGraphChanged -= new EventHandler(Content_OperatorGraphChanged);
       base.DeregisterContentEvents();
     }
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.EngineChanged += new System.EventHandler(Content_EngineChanged);
+      Content.EngineChanged += new EventHandler(Content_EngineChanged);
+      Content.OperatorGraphChanged += new EventHandler(Content_OperatorGraphChanged);
     }
 
     protected override void OnContentChanged() {
@@ -86,6 +88,7 @@ namespace HeuristicLab.Optimization.Views {
       if (Content == null) {
         engineViewHost.Content = null;
         createUserDefinedAlgorithmButton.Enabled = false;
+        operatorGraphViewHost.Content = null;
       } else {
         if (Content.Engine == null)
           engineComboBox.SelectedIndex = -1;
@@ -93,6 +96,8 @@ namespace HeuristicLab.Optimization.Views {
           engineComboBox.SelectedIndex = engineTypes.IndexOf(Content.Engine.GetType());
         engineViewHost.ViewType = null;
         engineViewHost.Content = Content.Engine;
+        operatorGraphViewHost.ViewType = null;
+        operatorGraphViewHost.Content = Content.OperatorGraph;
         createUserDefinedAlgorithmButton.Enabled = true;
       }
     }
@@ -104,6 +109,7 @@ namespace HeuristicLab.Optimization.Views {
         createUserDefinedAlgorithmButton.Enabled = Content.ExecutionState != ExecutionState.Started;
         engineComboBox.Enabled = Content.ExecutionState != ExecutionState.Started;
         engineViewHost.Enabled = Content.ExecutionState != ExecutionState.Started;
+        operatorGraphViewHost.Enabled = Content.ExecutionState != ExecutionState.Started;
         base.Content_ExecutionStateChanged(sender, e);
       }
     }
@@ -117,6 +123,14 @@ namespace HeuristicLab.Optimization.Views {
           engineComboBox.SelectedIndex = engineTypes.IndexOf(Content.Engine.GetType());
         engineViewHost.ViewType = null;
         engineViewHost.Content = Content.Engine;
+      }
+    }
+    private void Content_OperatorGraphChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_OperatorGraphChanged), sender, e);
+      else {
+        operatorGraphViewHost.ViewType = null;
+        operatorGraphViewHost.Content = Content.OperatorGraph;
       }
     }
 

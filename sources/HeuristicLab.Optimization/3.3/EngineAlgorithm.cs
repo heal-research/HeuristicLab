@@ -35,9 +35,9 @@ namespace HeuristicLab.Optimization {
   public abstract class EngineAlgorithm : Algorithm {
     [Storable]
     private OperatorGraph operatorGraph;
-    protected OperatorGraph OperatorGraph {
+    public OperatorGraph OperatorGraph {
       get { return operatorGraph; }
-      set {
+      protected set {
         if (value == null) throw new ArgumentNullException();
         if (value != operatorGraph) {
           operatorGraph.InitialOperatorChanged -= new EventHandler(OperatorGraph_InitialOperatorChanged);
@@ -193,7 +193,11 @@ namespace HeuristicLab.Optimization {
       if (EngineChanged != null)
         EngineChanged(this, EventArgs.Empty);
     }
-    protected virtual void OnOperatorGraphChanged() { }
+    public event EventHandler OperatorGraphChanged;
+    protected virtual void OnOperatorGraphChanged() {
+      EventHandler handler = OperatorGraphChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
     protected override void OnStopped() {
       if (Problem != null) {
         foreach (IParameter param in Problem.Parameters)

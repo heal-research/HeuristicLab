@@ -37,7 +37,7 @@ using HeuristicLab.Collections;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
   [View("OperatorGraph View (Chart)")]
-  [Content(typeof(OperatorGraph), false)]
+  [Content(typeof(OperatorGraph), true)]
   public partial class OperatorGraphView : ContentView {
     public OperatorGraphView() {
       InitializeComponent();
@@ -92,7 +92,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
         detailsViewHost.Enabled = false;
         graphVisualizationInfoView.ReadOnly = true;
         connectButton.Enabled = false;
-        
       } else {
         selectButton.Enabled = true;
         panButton.Enabled = true;

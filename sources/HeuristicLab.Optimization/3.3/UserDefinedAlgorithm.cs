@@ -53,11 +53,5 @@ namespace HeuristicLab.Optimization {
     public UserDefinedAlgorithm(string name, string description) : base(name, description) { }
     [StorableConstructor]
     private UserDefinedAlgorithm(bool deserializing) : base(deserializing) { }
-
-    public event EventHandler OperatorGraphChanged;
-    protected override void OnOperatorGraphChanged() {
-      EventHandler handler = OperatorGraphChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
   }
 }

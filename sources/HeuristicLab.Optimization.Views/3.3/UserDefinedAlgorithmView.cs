@@ -53,25 +53,12 @@ namespace HeuristicLab.Optimization.Views {
       Content = content;
     }
 
-    protected override void DeregisterContentEvents() {
-      Content.OperatorGraphChanged -= new EventHandler(Content_OperatorGraphChanged);
-      base.DeregisterContentEvents();
-    }
-    protected override void RegisterContentEvents() {
-      base.RegisterContentEvents();
-      Content.OperatorGraphChanged += new EventHandler(Content_OperatorGraphChanged);
-    }
-
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      if (Content == null) {
-        operatorGraphViewHost.Content = null;
+      if (Content == null) 
         globalScopeView.Content = null;
-      } else {
-        operatorGraphViewHost.ViewType = null;
-        operatorGraphViewHost.Content = Content.OperatorGraph;
+      else 
         globalScopeView.Content = Content.GlobalScope;
-      }
     }
 
     protected override void Content_ExecutionStateChanged(object sender, EventArgs e) {
@@ -79,17 +66,8 @@ namespace HeuristicLab.Optimization.Views {
         Invoke(new EventHandler(Content_ExecutionStateChanged), sender, e);
       else {
         newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = saveOperatorGraphButton.Enabled = Content.ExecutionState != ExecutionState.Started;
-        operatorGraphViewHost.Enabled = Content.ExecutionState != ExecutionState.Started;
         globalScopeView.Enabled = Content.ExecutionState != ExecutionState.Started;
         base.Content_ExecutionStateChanged(sender, e);
-      }
-    }
-    private void Content_OperatorGraphChanged(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_OperatorGraphChanged), sender, e);
-      else {
-        operatorGraphViewHost.ViewType = null;
-        operatorGraphViewHost.Content = Content.OperatorGraph;
       }
     }
 
