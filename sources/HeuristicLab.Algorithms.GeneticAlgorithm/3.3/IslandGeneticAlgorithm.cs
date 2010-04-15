@@ -40,14 +40,6 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
   [Creatable("Algorithms")]
   [StorableClass]
   public sealed class IslandGeneticAlgorithm : EngineAlgorithm {
-    #region Fields
-    [Storable]
-    private IslandGeneticAlgorithmMainLoop mainLoop;
-    [Storable]
-    private SolutionsCreator solutionsCreator;
-    [Storable]
-    private RandomCreator randomCreator;
-    #endregion
 
     #region Problem Properties
     public override Type ProblemType {
@@ -182,6 +174,15 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     private List<ISelector> emigrantsSelectors;
     private List<ISelector> immigrationSelectors;
     private List<IMigrator> migrators;
+    private RandomCreator RandomCreator {
+      get { return (RandomCreator)OperatorGraph.InitialOperator; }
+    }
+    private SolutionsCreator SolutionsCreator {
+      get { return (SolutionsCreator)((RandomCreator.Successor as SubScopesCreator).Successor as UniformSubScopesProcessor).Operator; }
+    }
+    private IslandGeneticAlgorithmMainLoop MainLoop {
+      get { return (IslandGeneticAlgorithmMainLoop)((RandomCreator.Successor as SubScopesCreator).Successor as UniformSubScopesProcessor).Successor; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -205,11 +206,11 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Parameters.Add(new ValueParameter<IntValue>("Elites", "The numer of elite solutions which are kept in each generation.", new IntValue(1)));
       Parameters.Add(new ValueParameter<BoolValue>("Parallel", "True if the islands should be run in parallel (also requires a parallel engine)", new BoolValue(false)));
 
-      randomCreator = new RandomCreator();
+      RandomCreator randomCreator = new RandomCreator();
       SubScopesCreator populationCreator = new SubScopesCreator();
       UniformSubScopesProcessor ussp1 = new UniformSubScopesProcessor();
-      solutionsCreator = new SolutionsCreator();
-      mainLoop = new IslandGeneticAlgorithmMainLoop();
+      SolutionsCreator solutionsCreator = new SolutionsCreator();
+      IslandGeneticAlgorithmMainLoop mainLoop = new IslandGeneticAlgorithmMainLoop();
       OperatorGraph.InitialOperator = randomCreator;
 
       randomCreator.RandomParameter.ActualName = "Random";
@@ -350,21 +351,21 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       }
     }
     private void ParameterizeSolutionsCreator() {
-      solutionsCreator.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
-      solutionsCreator.SolutionCreatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
+      SolutionsCreator.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
+      SolutionsCreator.SolutionCreatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
     }
     private void ParameterizeMainLoop() {
-      mainLoop.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
-      mainLoop.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
-      mainLoop.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
-      mainLoop.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
-      mainLoop.VisualizerParameter.ActualName = Problem.VisualizerParameter.Name;
+      MainLoop.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
+      MainLoop.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
+      MainLoop.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
+      MainLoop.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
+      MainLoop.VisualizerParameter.ActualName = Problem.VisualizerParameter.Name;
       if (Problem.Visualizer != null)
-        mainLoop.VisualizationParameter.ActualName = Problem.Visualizer.VisualizationParameter.ActualName;
+        MainLoop.VisualizationParameter.ActualName = Problem.Visualizer.VisualizationParameter.ActualName;
     }
     private void ParameterizeStochasticOperator(IOperator op) {
       if (op is IStochasticOperator)
-        ((IStochasticOperator)op).RandomParameter.ActualName = randomCreator.RandomParameter.ActualName;
+        ((IStochasticOperator)op).RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
     }
     private void InitializeSelectors() {
       selectors = new List<ISelector>();
