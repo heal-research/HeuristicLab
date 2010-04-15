@@ -132,14 +132,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
         EventHandler handler = ReadOnlyChanged;
         if (handler != null)
           handler(this, EventArgs.Empty);
-        foreach (Control control in this.Controls) {
-          IView view = control as IView;
-          if (view != null)
-            view.ReadOnly = this.readOnly;
-          ViewHost viewHost = control as ViewHost;
-          if (viewHost != null)
-            viewHost.ReadOnly = this.readOnly;
-        }
       }
     }
     public event EventHandler Changed;
