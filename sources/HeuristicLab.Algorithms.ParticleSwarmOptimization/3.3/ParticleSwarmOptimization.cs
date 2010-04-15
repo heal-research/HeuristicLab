@@ -142,7 +142,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       EncoderParameter.ValidValues.Clear();
       foreach (IRealVectorEncoder encoder in Problem.Operators.OfType<IRealVectorEncoder>().OrderBy(x => x.Name)) {
         EncoderParameter.ValidValues.Add(encoder);
-        //encoder.RealVectorParameter.ActualName
+        encoder.RealVectorParameter.ActualName = "Position"; 
       }
       if (oldEncoder != null) {
         IRealVectorEncoder encoder = EncoderParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldEncoder.GetType());

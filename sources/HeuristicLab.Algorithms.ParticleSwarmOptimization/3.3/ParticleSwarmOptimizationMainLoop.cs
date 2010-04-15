@@ -22,6 +22,9 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     public ValueLookupParameter<IOperator> EncoderParameter {
       get { return (ValueLookupParameter<IOperator>)Parameters["Encoder"]; }
     }
+    public ValueLookupParameter<IOperator> EvaluatorParameter {
+      get { return (ValueLookupParameter<IOperator>)Parameters["Evaluator"]; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -35,6 +38,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       #region Create parameters
       Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The variable collection where results should be stored."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Encoder", "The encoding operator that maps a solution to a position vector."));
+      Parameters.Add(new ValueLookupParameter<IOperator>("Evaluator", "The operator used to evaluate solutions."));
       #endregion
 
       #region Create operators
@@ -42,16 +46,20 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       //variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Generations", new IntValue(0)));
       UniformSubScopesProcessor uniformSubScopesProcessor = new UniformSubScopesProcessor();
       Placeholder encoder = new Placeholder();
+      Placeholder evaluator = new Placeholder();
 
       encoder.Name = "Encoder (placeholder)";
       encoder.OperatorParameter.ActualName = EncoderParameter.Name;
+
+      evaluator.Name = "Evaluator (placeholder)";
+      evaluator.OperatorParameter.ActualName = EvaluatorParameter.Name;
       #endregion
 
       #region Create operator graph
       OperatorGraph.InitialOperator = variableCreator;
       variableCreator.Successor = uniformSubScopesProcessor;
       uniformSubScopesProcessor.Operator = encoder;
-      uniformSubScopesProcessor.Successor = null;
+      uniformSubScopesProcessor.Successor = evaluator;
       #endregion
     }
   }
