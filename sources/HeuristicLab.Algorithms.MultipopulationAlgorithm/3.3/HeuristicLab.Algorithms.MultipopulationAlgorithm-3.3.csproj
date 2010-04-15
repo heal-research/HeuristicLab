@@ -81,7 +81,6 @@
   <ItemGroup>
     <None Include="HeuristicLabAlgorithmsMultipopulationAlgorithmPlugin.cs.frame" />
     <Compile Include="HeuristicLabAlgorithmsMultipopulationAlgorithmPlugin.cs" />
-    <Compile Include="MultipopulationAlgorithm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
