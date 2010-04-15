@@ -80,7 +80,7 @@ namespace HeuristicLab.Core.Views {
     protected override IEnumerable<ListViewItem> GetListViewItemsForItem(T item) {
       return new ListViewItem[] { listViewItemDictionary[item] };
     }
- 
+
     #region ListView Events
     protected override void itemsListView_DragEnterOver(object sender, DragEventArgs e) {
       base.itemsListView_DragEnterOver(sender, e);
@@ -101,6 +101,7 @@ namespace HeuristicLab.Core.Views {
           foreach (ListViewItem listViewItem in GetListViewItemsForItem(item))
             UpdateListViewItemText(listViewItem);
         }
+        AdjustListViewColumnSizes();
       }
     }
     #endregion

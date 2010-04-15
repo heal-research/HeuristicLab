@@ -89,15 +89,23 @@ namespace HeuristicLab.Core.Views {
       base.OnContentChanged();
       if (graphTreeView.Nodes.Count > 0)
         RemoveTreeNode(graphTreeView.Nodes[0]);
-      graphTreeView.Enabled = false;
       Caption = "Operator";
       if (Content != null) {
         Caption = Content.Name + " (" + Content.GetType().Name + ")";
         TreeNode root = new TreeNode();
         FillTreeNode(root, Content);
         graphTreeView.Nodes.Add(root);
-        graphTreeView.Enabled = true;
       }
+      SetEnabledStateOfControls();
+    }
+
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnabledStateOfControls();
+    }
+
+    private void SetEnabledStateOfControls() {
+      graphTreeView.Enabled = Content != null;
     }
 
     public event EventHandler SelectedOperatorChanged;
@@ -333,7 +341,7 @@ namespace HeuristicLab.Core.Views {
       graphTreeView.Refresh();
     }
     private void graphTreeView_KeyDown(object sender, KeyEventArgs e) {
-      if ((e.KeyCode == Keys.Delete) && (graphTreeView.SelectedNode != null)) {
+      if (!ReadOnly && (e.KeyCode == Keys.Delete) && (graphTreeView.SelectedNode != null)) {
         IValueParameter<IOperator> opParam = GetOperatorParameterTag(graphTreeView.SelectedNode);
         if (opParam != null) opParam.Value = null;
       }
@@ -348,7 +356,7 @@ namespace HeuristicLab.Core.Views {
       if (graphTreeView.SelectedNode != null) {
         IOperator op = GetOperatorTag(graphTreeView.SelectedNode);
         if (op != null) {
-          IView view = MainFormManager.CreateDefaultView(op);
+          IView view = MainFormManager.CreateDefaultView(op, ReadOnly);
           if (view != null) {
             viewToolStripMenuItem.Enabled = true;
             viewToolStripMenuItem.Tag = view;
@@ -367,7 +375,7 @@ namespace HeuristicLab.Core.Views {
       DataObject data = new DataObject();
       data.SetData("Type", op.GetType());
       data.SetData("Value", op);
-      if (opParam == null) {
+      if (ReadOnly || (opParam == null)) {
         DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
       } else {
         DragDropEffects action = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move);
@@ -378,7 +386,7 @@ namespace HeuristicLab.Core.Views {
     private void graphTreeView_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
       Type type = e.Data.GetData("Type") as Type;
-      if ((type != null) && (typeof(IOperator).IsAssignableFrom(type))) {
+      if (!ReadOnly && (type != null) && (typeof(IOperator).IsAssignableFrom(type))) {
         TreeNode node = graphTreeView.GetNodeAt(graphTreeView.PointToClient(new Point(e.X, e.Y)));
         if ((node != null) && !node.IsExpanded) node.Expand();
         if ((node != null) && (GetOperatorParameterTag(node) != null)) {

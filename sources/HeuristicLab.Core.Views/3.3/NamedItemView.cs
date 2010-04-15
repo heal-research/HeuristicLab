@@ -73,14 +73,14 @@ namespace HeuristicLab.Core.Views {
         descriptionTextBox.Text = Content.Description;
         toolTip.SetToolTip(descriptionTextBox, Content.Description);
       }
-      SetEnableStateOfControls();
+      SetEnabledStateOfControls();
     }
 
     protected override void OnReadOnlyChanged() {
       base.OnReadOnlyChanged();
-      SetEnableStateOfControls();
+      SetEnabledStateOfControls();
     }
-    private void SetEnableStateOfControls() {
+    private void SetEnabledStateOfControls() {
       if (Content == null) {
         nameTextBox.Enabled = false;
         descriptionTextBox.Enabled = false;
@@ -136,7 +136,7 @@ namespace HeuristicLab.Core.Views {
     }
 
     protected void descriptionTextBox_DoubleClick(object sender, EventArgs e) {
-      using (TextDialog dialog = new TextDialog("Description of " + Content.Name, Content.Description, !Content.CanChangeDescription)) {
+      using (TextDialog dialog = new TextDialog("Description of " + Content.Name, Content.Description, ReadOnly || !Content.CanChangeDescription)) {
         if (dialog.ShowDialog(this) == DialogResult.OK)
           Content.Description = dialog.Content;
       }

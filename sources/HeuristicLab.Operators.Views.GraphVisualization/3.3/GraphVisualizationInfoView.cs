@@ -75,10 +75,10 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
     protected override void OnReadOnlyChanged() {
       base.OnReadOnlyChanged();
-      this.SetEnableStateOfControls();
+      this.SetEnabledStateOfControls();
     }
 
-    private void SetEnableStateOfControls() {
+    private void SetEnabledStateOfControls() {
       DeleteTool deleteTool = (DeleteTool) this.Controller.Tools.Where( t => t.Name == ControllerBase.DeleteToolName).FirstOrDefault();
       HeuristicLab.Netron.Controller controller = this.Controller as HeuristicLab.Netron.Controller;
       if (Content == null && deleteTool != null && controller != null)
@@ -109,7 +109,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
         this.UpdateLayoutRoot();
       }
-      this.SetEnableStateOfControls();
+      this.SetEnabledStateOfControls();
     }
 
     private void UpdateLayoutRoot() {

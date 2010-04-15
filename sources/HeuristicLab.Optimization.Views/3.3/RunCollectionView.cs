@@ -80,14 +80,14 @@ namespace HeuristicLab.Optimization.Views {
         foreach (IRun item in Content)
           AddListViewItem(CreateListViewItem(item));
       }
-      SetEnableStateOfControls();
+      SetEnabledStateOfControls();
     }
 
     protected override void OnReadOnlyChanged() {
       base.OnReadOnlyChanged();
-      SetEnableStateOfControls();
+      SetEnabledStateOfControls();
     }
-    private void SetEnableStateOfControls() {
+    private void SetEnabledStateOfControls() {
       if (Content == null) {
         itemsListView.Enabled = false;
         detailsGroupBox.Enabled = false;

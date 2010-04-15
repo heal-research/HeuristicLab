@@ -78,15 +78,23 @@ namespace HeuristicLab.Core.Views {
         scopesTreeView.Nodes.Clear();
       }
       variableCollectionView.Content = null;
-      variableCollectionView.Enabled = false;
-      if (Content == null) {
-        Caption = "Scope";
-        scopesTreeView.Enabled = false;
-      } else {
+      Caption = "Scope";
+      if (Content != null) {
         Caption = Content.Name + " (" + Content.GetType().Name + ")";
-        scopesTreeView.Enabled = true;
         scopesTreeView.Nodes.Add(CreateTreeNode(Content));
       }
+      SetEnabledStateOfControls();
+    }
+
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnabledStateOfControls();
+    }
+
+    private void SetEnabledStateOfControls() {
+      scopesTreeView.Enabled = Content != null;
+      variableCollectionView.Enabled = Content != null;
+      variableCollectionView.ReadOnly = ReadOnly;
     }
 
     private TreeNode CreateTreeNode(IScope scope) {
@@ -160,9 +168,9 @@ namespace HeuristicLab.Core.Views {
       IScope scope = node.Tag as IScope;
       if (scope != null) {
         DataObject data = new DataObject();
-        data.SetData("Scope", scope);
-        data.SetData("DragSource", scopesTreeView);
-        DoDragDrop(data, DragDropEffects.Copy);
+        data.SetData("Type", scope.GetType());
+        data.SetData("Value", scope);
+        DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
       }
     }
     #endregion

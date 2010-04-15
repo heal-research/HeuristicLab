@@ -84,21 +84,27 @@ namespace HeuristicLab.Core.Views {
       if (Content == null) {
         Caption = "Variable";
         dataTypeTextBox.Text = "-";
-        dataTypeTextBox.Enabled = false;
-        setValueButton.Enabled = false;
-        clearValueButton.Enabled = false;
-        valueGroupBox.Enabled = false;
         viewHost.Content = null;
       } else {
         Caption = Content.Name + " (" + Content.GetType().Name + ")";
         dataTypeTextBox.Text = Content.Value == null ? "-" : Content.Value.GetType().GetPrettyName();
-        dataTypeTextBox.Enabled = Content.Value != null;
-        setValueButton.Enabled = true;
-        clearValueButton.Enabled = Content.Value != null;
-        valueGroupBox.Enabled = true;
         viewHost.ViewType = null;
         viewHost.Content = Content.Value;
       }
+      SetEnabledStateOfControls();
+    }
+
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnabledStateOfControls();
+    }
+
+    private void SetEnabledStateOfControls() {
+      dataTypeTextBox.Enabled = Content != null && Content.Value != null;
+      setValueButton.Enabled = Content != null && !ReadOnly;
+      clearValueButton.Enabled = Content != null && Content.Value != null && !ReadOnly;
+      valueGroupBox.Enabled = Content != null;
+      viewHost.ReadOnly = ReadOnly;
     }
 
     protected virtual void Content_ValueChanged(object sender, EventArgs e) {
@@ -129,7 +135,7 @@ namespace HeuristicLab.Core.Views {
     protected virtual void valuePanel_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
       Type type = e.Data.GetData("Type") as Type;
-      if ((type != null) && (typeof(IItem).IsAssignableFrom(type))) {
+      if (!ReadOnly && (type != null) && (typeof(IItem).IsAssignableFrom(type))) {
         if ((e.KeyState & 8) == 8) e.Effect = DragDropEffects.Copy;  // CTRL key
         else if ((e.KeyState & 4) == 4) e.Effect = DragDropEffects.Move;  // SHIFT key
         else if ((e.AllowedEffect & DragDropEffects.Link) == DragDropEffects.Link) e.Effect = DragDropEffects.Link;

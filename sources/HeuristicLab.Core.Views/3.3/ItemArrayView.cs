@@ -87,17 +87,42 @@ namespace HeuristicLab.Core.Views {
       base.OnContentChanged();
       Caption = "Item Array";
       while (itemsListView.Items.Count > 0) RemoveListViewItem(itemsListView.Items[0]);
-      itemsListView.Enabled = false;
-      detailsGroupBox.Enabled = false;
       viewHost.Content = null;
-      moveUpButton.Enabled = false;
-      moveDownButton.Enabled = false;
-
       if (Content != null) {
         Caption += " (" + Content.GetType().Name + ")";
-        itemsListView.Enabled = true;
         foreach (T item in Content)
           AddListViewItem(CreateListViewItem(item));
+      }
+      SetEnabledStateOfControls();
+    }
+
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnabledStateOfControls();
+    }
+
+    private void SetEnabledStateOfControls() {
+      if (Content == null) {
+        addButton.Enabled = false;
+        moveUpButton.Enabled = false;
+        moveDownButton.Enabled = false;
+        removeButton.Enabled = false;
+        itemsListView.Enabled = false;
+        detailsGroupBox.Enabled = false;
+      } else {
+        addButton.Enabled = itemsListView.SelectedItems.Count > 0 &&
+                            !Content.IsReadOnly && !ReadOnly;
+        moveUpButton.Enabled = itemsListView.SelectedItems.Count == 1 &&
+                               itemsListView.SelectedIndices[0] != 0 &&
+                               !Content.IsReadOnly && !ReadOnly;
+        moveDownButton.Enabled = itemsListView.SelectedItems.Count == 1 &&
+                                 itemsListView.SelectedIndices[0] != itemsListView.Items.Count - 1 &&
+                                 !Content.IsReadOnly && !ReadOnly;
+        removeButton.Enabled = itemsListView.SelectedItems.Count > 0 &&
+                               !Content.IsReadOnly && !ReadOnly;
+        itemsListView.Enabled = true;
+        detailsGroupBox.Enabled = true;
+        viewHost.ReadOnly = ReadOnly;
       }
     }
 
@@ -125,6 +150,7 @@ namespace HeuristicLab.Core.Views {
         ((T)listViewItem.Tag).ItemImageChanged += new EventHandler(Item_ItemImageChanged);
         ((T)listViewItem.Tag).ToStringChanged += new EventHandler(Item_ToStringChanged);
       }
+      AdjustListViewColumnSizes();
     }
     protected virtual void InsertListViewItem(int index, ListViewItem listViewItem) {
       itemsListView.Items.Insert(index, listViewItem);
@@ -132,6 +158,7 @@ namespace HeuristicLab.Core.Views {
         ((T)listViewItem.Tag).ItemImageChanged += new EventHandler(Item_ItemImageChanged);
         ((T)listViewItem.Tag).ToStringChanged += new EventHandler(Item_ToStringChanged);
       }
+      AdjustListViewColumnSizes();
     }
     protected virtual void RemoveListViewItem(ListViewItem listViewItem) {
       if (listViewItem.Tag != null) {
@@ -156,15 +183,16 @@ namespace HeuristicLab.Core.Views {
       listViewItem.ToolTipText = item == null ? string.Empty : item.ItemName + ": " + item.ItemDescription;
     }
 
+    #region ListView Events
     protected virtual void itemsListView_SelectedIndexChanged(object sender, EventArgs e) {
-      addButton.Enabled = itemsListView.SelectedItems.Count > 0 && !Content.IsReadOnly;
+      addButton.Enabled = itemsListView.SelectedItems.Count > 0 && !Content.IsReadOnly && !ReadOnly;
       moveUpButton.Enabled = itemsListView.SelectedItems.Count == 1 &&
                              itemsListView.SelectedIndices[0] != 0 &&
-                             !Content.IsReadOnly;
+                             !Content.IsReadOnly && !ReadOnly;
       moveDownButton.Enabled = itemsListView.SelectedItems.Count == 1 &&
                                itemsListView.SelectedIndices[0] != itemsListView.Items.Count - 1 &&
-                               !Content.IsReadOnly;
-      removeButton.Enabled = itemsListView.SelectedItems.Count > 0 && !Content.IsReadOnly;
+                               !Content.IsReadOnly && !ReadOnly;
+      removeButton.Enabled = itemsListView.SelectedItems.Count > 0 && !Content.IsReadOnly && !ReadOnly;
 
       if (itemsListView.SelectedItems.Count == 1) {
         T item = itemsListView.SelectedItems[0].Tag as T;
@@ -177,15 +205,9 @@ namespace HeuristicLab.Core.Views {
       }
     }
 
-    #region ListView Events
-    protected virtual void itemsListView_SizeChanged(object sender, EventArgs e) {
-      if (itemsListView.Columns.Count > 0)
-        itemsListView.Columns[0].Width = Math.Max(0, itemsListView.Width - 25);
-    }
-
     protected virtual void itemsListView_KeyDown(object sender, KeyEventArgs e) {
       if (e.KeyCode == Keys.Delete) {
-        if ((itemsListView.SelectedItems.Count > 0) && !Content.IsReadOnly) {
+        if ((itemsListView.SelectedItems.Count > 0) && !Content.IsReadOnly && !ReadOnly) {
           foreach (ListViewItem item in itemsListView.SelectedItems)
             Content[item.Index] = null;
         }
@@ -196,7 +218,7 @@ namespace HeuristicLab.Core.Views {
       if (itemsListView.SelectedItems.Count == 1) {
         T item = itemsListView.SelectedItems[0].Tag as T;
         if (item != null) {
-          IView view = MainFormManager.CreateDefaultView(item);
+          IView view = MainFormManager.CreateDefaultView(item, ReadOnly);
           if (view != null) view.Show();
         }
       }
@@ -209,7 +231,7 @@ namespace HeuristicLab.Core.Views {
         DataObject data = new DataObject();
         data.SetData("Type", item.GetType());
         data.SetData("Value", item);
-        if (Content.IsReadOnly) {
+        if (Content.IsReadOnly || ReadOnly) {
           DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
         } else {
           DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move);
@@ -221,7 +243,7 @@ namespace HeuristicLab.Core.Views {
     protected virtual void itemsListView_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
       Type type = e.Data.GetData("Type") as Type;
-      if ((!Content.IsReadOnly) && (type != null) && (typeof(T).IsAssignableFrom(type))) {
+      if (!Content.IsReadOnly && !ReadOnly && (type != null) && (typeof(T).IsAssignableFrom(type))) {
         Point p = itemsListView.PointToClient(new Point(e.X, e.Y));
         ListViewItem listViewItem = itemsListView.GetItemAt(p.X, p.Y);
         if (listViewItem != null) {
@@ -353,6 +375,16 @@ namespace HeuristicLab.Core.Views {
           if (((T)listViewItem.Tag) == item)
             UpdateListViewItemText(listViewItem);
         }
+        AdjustListViewColumnSizes();
+      }
+    }
+    #endregion
+
+    #region Helpers
+    protected virtual void AdjustListViewColumnSizes() {
+      if (itemsListView.Items.Count > 0) {
+        for (int i = 0; i < itemsListView.Columns.Count; i++)
+          itemsListView.Columns[i].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
       }
     }
     #endregion

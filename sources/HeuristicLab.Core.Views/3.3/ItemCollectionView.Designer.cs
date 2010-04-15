@@ -114,7 +114,6 @@ namespace HeuristicLab.Core.Views {
       this.itemsListView.UseCompatibleStateImageBehavior = false;
       this.itemsListView.View = System.Windows.Forms.View.Details;
       this.itemsListView.SelectedIndexChanged += new System.EventHandler(this.itemsListView_SelectedIndexChanged);
-      this.itemsListView.SizeChanged += new System.EventHandler(this.itemsListView_SizeChanged);
       this.itemsListView.DoubleClick += new System.EventHandler(this.itemsListView_DoubleClick);
       this.itemsListView.DragDrop += new System.Windows.Forms.DragEventHandler(this.itemsListView_DragDrop);
       this.itemsListView.DragEnter += new System.Windows.Forms.DragEventHandler(this.itemsListView_DragEnterOver);

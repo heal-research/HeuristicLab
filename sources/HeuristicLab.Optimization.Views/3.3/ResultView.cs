@@ -96,13 +96,13 @@ namespace HeuristicLab.Optimization.Views {
         viewHost.ViewType = null;
         viewHost.Content = Content.Value;
       }
-      SetEnableStateOfControls();
+      SetEnabledStateOfControls();
     }
     protected override void OnReadOnlyChanged() {
       base.OnReadOnlyChanged();
-      SetEnableStateOfControls();
+      SetEnabledStateOfControls();
     }
-    private void SetEnableStateOfControls() {
+    private void SetEnabledStateOfControls() {
       if (Content == null) {
         dataTypeTextBox.Enabled = false;
         valueGroupBox.Enabled = false;

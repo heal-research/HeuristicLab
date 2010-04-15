@@ -64,13 +64,13 @@ namespace HeuristicLab.Data.Views {
         Caption = Content.GetValue() + " (" + Content.GetType().Name + ")";
         valueTextBox.Text = Content.GetValue();
       }
-      SetEnableStateOfControls();
+      SetEnabledStateOfControls();
     }
     protected override void OnReadOnlyChanged() {
       base.OnReadOnlyChanged();
-      SetEnableStateOfControls();
+      SetEnabledStateOfControls();
     }
-    private void SetEnableStateOfControls() {
+    private void SetEnabledStateOfControls() {
       if (Content == null) valueTextBox.Enabled = false;
       else {
         valueTextBox.Enabled = true;

@@ -70,11 +70,16 @@ namespace HeuristicLab.Core.Views {
 
     protected override void OnInitialized(EventArgs e) {
       base.OnInitialized(e);
+      SetEnabledStateOfControls();
       Enabled = false;
       infoLabel.Text = "Loading ...";
       progressBar.Value = 0;
       infoPanel.Visible = true;
       ThreadPool.QueueUserWorkItem(new WaitCallback(LoadItems));
+    }
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnabledStateOfControls();
     }
     protected override void OnClosing(FormClosingEventArgs e) {
       base.OnClosing(e);
@@ -82,6 +87,12 @@ namespace HeuristicLab.Core.Views {
         e.Cancel = true;
         this.Hide();
       }
+    }
+
+    private void SetEnabledStateOfControls() {
+      addButton.Enabled = !ReadOnly;
+      removeButton.Enabled = !ReadOnly && listView.SelectedItems.Count > 0;
+      saveButton.Enabled = !ReadOnly;
     }
 
     public void AddItem(T item) {
@@ -206,11 +217,11 @@ namespace HeuristicLab.Core.Views {
 
     #region ListView Events
     private void listView_SelectedIndexChanged(object sender, EventArgs e) {
-      removeButton.Enabled = listView.SelectedItems.Count > 0;
+      removeButton.Enabled = !ReadOnly && listView.SelectedItems.Count > 0;
     }
     private void listView_KeyDown(object sender, KeyEventArgs e) {
       if (e.KeyCode == Keys.Delete) {
-        if (listView.SelectedItems.Count > 0) {
+        if (!ReadOnly && (listView.SelectedItems.Count > 0)) {
           foreach (ListViewItem item in listView.SelectedItems)
             RemoveItem((T)item.Tag);
         }
@@ -219,7 +230,7 @@ namespace HeuristicLab.Core.Views {
     private void listView_DoubleClick(object sender, EventArgs e) {
       if (listView.SelectedItems.Count == 1) {
         T item = (T)listView.SelectedItems[0].Tag;
-        IView view = MainFormManager.CreateDefaultView(item);
+        IView view = MainFormManager.CreateDefaultView(item, ReadOnly);
         if (view != null) view.Show();
       }
     }
@@ -229,15 +240,19 @@ namespace HeuristicLab.Core.Views {
       DataObject data = new DataObject();
       data.SetData("Type", item.GetType());
       data.SetData("Value", item);
-      DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move);
-      if ((result & DragDropEffects.Move) == DragDropEffects.Move)
-        RemoveItem(item);
+      if (ReadOnly) {
+        DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
+      } else {
+        DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move);
+        if ((result & DragDropEffects.Move) == DragDropEffects.Move)
+          RemoveItem(item);
+      }
     }
     private void listView_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
       Type type = e.Data.GetData("Type") as Type;
       T item = e.Data.GetData("Value") as T;
-      if ((type != null) && (item != null)) {
+      if (!ReadOnly && (type != null) && (item != null)) {
         if ((e.KeyState & 8) == 8) e.Effect = DragDropEffects.Copy;  // CTRL key
         else if (((e.KeyState & 4) == 4) && !itemListViewItemTable.ContainsKey(item)) e.Effect = DragDropEffects.Move;  // SHIFT key
         else if (((e.AllowedEffect & DragDropEffects.Link) == DragDropEffects.Link) && !itemListViewItemTable.ContainsKey(item)) e.Effect = DragDropEffects.Link;

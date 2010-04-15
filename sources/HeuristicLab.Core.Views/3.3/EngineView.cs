@@ -76,13 +76,26 @@ namespace HeuristicLab.Core.Views {
       base.OnContentChanged();
       if (Content == null) {
         logView.Content = null;
-        logView.Enabled = false;
         executionTimeTextBox.Text = "-";
-        executionTimeTextBox.Enabled = false;
       } else {
         logView.Content = Content.Log;
-        logView.Enabled = true;
         executionTimeTextBox.Text = Content.ExecutionTime.ToString();
+      }
+      SetEnabledStateOfControls();
+    }
+
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnabledStateOfControls();
+    }
+
+    private void SetEnabledStateOfControls() {
+      if (Content == null) {
+        logView.Enabled = false;
+        executionTimeTextBox.Enabled = false;
+      } else {
+        logView.ReadOnly = ReadOnly;
+        logView.Enabled = true;
         executionTimeTextBox.Enabled = true;
       }
     }

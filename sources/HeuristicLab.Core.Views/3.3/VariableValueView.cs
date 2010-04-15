@@ -82,13 +82,22 @@ namespace HeuristicLab.Core.Views {
       if (Content == null) {
         Caption = "Variable";
         viewHost.Content = null;
-        valuePanel.Enabled = false;
       } else {
         Caption = Content.Name + " (" + Content.GetType().Name + ")";
-        valuePanel.Enabled = true;
         viewHost.ViewType = null;
         viewHost.Content = Content.Value;
       }
+      SetEnabledStateOfControls();
+    }
+
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnabledStateOfControls();
+    }
+
+    private void SetEnabledStateOfControls() {
+      valuePanel.Enabled = Content != null;
+      viewHost.ReadOnly = ReadOnly;
     }
 
     protected virtual void Content_ValueChanged(object sender, EventArgs e) {
@@ -103,7 +112,7 @@ namespace HeuristicLab.Core.Views {
     protected virtual void valuePanel_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
       Type type = e.Data.GetData("Type") as Type;
-      if ((type != null) && (typeof(IItem).IsAssignableFrom(type))) {
+      if (!ReadOnly && (type != null) && (typeof(IItem).IsAssignableFrom(type))) {
         if ((e.KeyState & 8) == 8) e.Effect = DragDropEffects.Copy;  // CTRL key
         else if ((e.KeyState & 4) == 4) e.Effect = DragDropEffects.Move;  // SHIFT key
         else if ((e.AllowedEffect & DragDropEffects.Link) == DragDropEffects.Link) e.Effect = DragDropEffects.Link;

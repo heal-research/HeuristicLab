@@ -86,19 +86,29 @@ namespace HeuristicLab.Core.Views {
       base.OnContentChanged();
       Caption = "Operator Graph";
       operatorsView.Content = null;
-      operatorsView.Enabled = false;
       operatorTreeView.Content = null;
-      operatorTreeView.Enabled = false;
-
       if (Content != null) {
         Caption = Content.ItemName + " (" + Content.GetType().Name + ")";
         operatorsView.Content = Content.Operators;
-        operatorsView.Enabled = true;
         MarkInitialOperator();
         operatorTreeView.Content = Content.InitialOperator;
-        operatorTreeView.Enabled = true;
       }
+      SetEnabledStateOfControls();
     }
+
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnabledStateOfControls();
+    }
+
+    private void SetEnabledStateOfControls() {
+      operatorsView.Enabled = Content != null;
+      operatorTreeView.Enabled = Content != null;
+      operatorsView.ReadOnly = ReadOnly;
+      operatorTreeView.ReadOnly = ReadOnly;
+      operatorsContextMenuStrip.Enabled = Content != null && !ReadOnly;
+    }
+
 
     protected virtual void MarkInitialOperator() {
       foreach (ListViewItem item in operatorsView.ItemsListView.Items) {

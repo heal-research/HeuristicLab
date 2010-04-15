@@ -70,13 +70,13 @@ namespace HeuristicLab.Data.Views {
         Caption = "StringConvertibleArray (" + Content.GetType().Name + ")";
         UpdateData();
       }
-      SetEnableStateOfControls();
+      SetEnabledStateOfControls();
     }
     protected override void OnReadOnlyChanged() {
       base.OnReadOnlyChanged();
-      SetEnableStateOfControls();
+      SetEnabledStateOfControls();
     }
-    private void SetEnableStateOfControls() {
+    private void SetEnabledStateOfControls() {
       if (Content == null) {
         lengthTextBox.Enabled = false;
         dataGridView.Enabled = false;

@@ -74,13 +74,13 @@ namespace HeuristicLab.Optimization.Views {
         Caption = "Run";
       else
         Caption = Content.Name + " (" + Content.GetType().Name + ")";
-      SetEnableStateOfControls();
+      SetEnabledStateOfControls();
     }
     protected override void OnReadOnlyChanged() {
       base.OnReadOnlyChanged();
-      SetEnableStateOfControls();
+      SetEnabledStateOfControls();
     }
-    private void SetEnableStateOfControls() {
+    private void SetEnabledStateOfControls() {
       if (Content == null) {
         parametersResultsGroupBox.Enabled = false;
         viewHost.Enabled = false;
