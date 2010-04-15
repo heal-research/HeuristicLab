@@ -168,6 +168,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
         operatorShape.Color = this.Color;
         operatorShape.LineColor = this.LineColor;
         operatorShape.LineWidth = this.LineWidth;
+        operatorShape.Icon = this.Icon;
         operatorShape.Collapsed = this.Collapsed;
 
         int i = 0;
