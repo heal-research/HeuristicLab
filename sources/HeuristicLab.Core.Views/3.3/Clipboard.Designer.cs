@@ -19,6 +19,9 @@
  */
 #endregion
 
+using System;
+using System.Windows.Forms;
+
 namespace HeuristicLab.Core.Views {
   partial class Clipboard<T> {
     /// <summary> 
@@ -33,6 +36,10 @@ namespace HeuristicLab.Core.Views {
     protected override void Dispose(bool disposing) {
       if (disposing) {
         if (typeSelectorDialog != null) typeSelectorDialog.Dispose();
+        foreach (ListViewItem item in listView.Items) {
+          ((T)item.Tag).ItemImageChanged -= new EventHandler(Item_ItemImageChanged);
+          ((T)item.Tag).ToStringChanged -= new EventHandler(Item_ToStringChanged);
+        }
         if (components != null) components.Dispose();
       }
       base.Dispose(disposing);

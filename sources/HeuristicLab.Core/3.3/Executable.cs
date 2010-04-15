@@ -29,7 +29,13 @@ namespace HeuristicLab.Core {
   [StorableClass]
   public abstract class Executable : Item, IExecutable {
     public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Event; }
+      get {
+        if (ExecutionState == ExecutionState.Prepared) return HeuristicLab.Common.Resources.VS2008ImageLibrary.Event;
+        else if (ExecutionState == ExecutionState.Started) return HeuristicLab.Common.Resources.VS2008ImageLibrary.Play;
+        else if (ExecutionState == ExecutionState.Paused) return HeuristicLab.Common.Resources.VS2008ImageLibrary.Pause;
+        else if (ExecutionState == ExecutionState.Stopped) return HeuristicLab.Common.Resources.VS2008ImageLibrary.Stop;
+        else return HeuristicLab.Common.Resources.VS2008ImageLibrary.Event;
+      }
     }
 
     [Storable]
@@ -40,6 +46,7 @@ namespace HeuristicLab.Core {
         if (executionState != value) {
           executionState = value;
           OnExecutionStateChanged();
+          OnItemImageChanged();
         }
       }
     }

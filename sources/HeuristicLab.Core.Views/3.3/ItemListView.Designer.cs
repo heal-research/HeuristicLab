@@ -35,8 +35,10 @@ namespace HeuristicLab.Core.Views {
     /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
     protected override void Dispose(bool disposing) {
       if (disposing) {
-        foreach (ListViewItem item in itemsListView.Items)
+        foreach (ListViewItem item in itemsListView.Items) {
+          ((T)item.Tag).ItemImageChanged -= new EventHandler(Item_ItemImageChanged);
           ((T)item.Tag).ToStringChanged -= new EventHandler(Item_ToStringChanged);
+        }
         if (components != null) components.Dispose();
       }
       base.Dispose(disposing);
