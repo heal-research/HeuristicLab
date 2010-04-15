@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,40 +19,38 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.Text;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
+using HeuristicLab.Operators;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Evolutionary {
+namespace HeuristicLab.Optimization.Operators {
   /// <summary>
-  /// Operator class that migrates one sub scope of each child to its left neighbour sub scope, like a ring.
+  /// Operator that migrates the selected sub scopes in each subscope in an unidirectional ring.
   /// </summary>
-  public class UnidirectionalRingMigrator : OperatorBase {
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get { return @"TODO\r\nOperator description still missing ..."; }
-    }
-
+  [Item("UnidirectionalRingMigrator", "Migrates the selected sub scopes in each subscope in an unidirectional ring.")]
+  [StorableClass]
+  public class UnidirectionalRingMigrator : SingleSuccessorOperator, IMigrator {
     /// <summary>
     /// Migrates every first sub scope of each child to its left neighbour (like a ring).
     /// <pre>                                                               
-    ///                    scope                    scope             
-    ///                /     |     \            /     |     \         
-    ///               A      B      C    =>    A      B      C           
-    ///              /|\    /|\    /|\        /|\    /|\    /|\       
-    ///             G H I  J K L  M N O      H I J  K L M  N O G     
+    ///          __ scope __              __ scope __
+    ///         /     |     \            /     |     \
+    ///       Pop1   Pop2   Pop3  =>   Pop1   Pop2   Pop3
+    ///       / \    / \    / \        / \    / \    / \
+    ///      R   S  R   S  R   S      R   S  R   S  R   S
+    ///     /|\  | /|\  | /|\  |     /|\  | /|\  | /|\  |
+    ///     ABC  A DEF  D GHI  G     ABC  G DEF  A GHI  D
     /// </pre>
     /// </summary>
-    /// <param name="scope">The scope whose sub scopes of the children should migrate.</param>
-    /// <returns><c>null</c>.</returns>
-    public override IOperation Apply(IScope scope) {
-      IList<IScope> emigrantsList = new List<IScope>();
+    /// <returns>The next operation.</returns>
+    public override IOperation Apply() {
+      IScope scope = ExecutionContext.Scope;
+      List<IScope> emigrantsList = new List<IScope>();
 
       for (int i = 0; i < scope.SubScopes.Count; i++) {
         IScope emigrants = scope.SubScopes[i].SubScopes[1];
-        scope.SubScopes[i].RemoveSubScope(emigrants);
+        scope.SubScopes[i].SubScopes.Remove(emigrants);
         emigrantsList.Add(emigrants);
       }
 
@@ -61,9 +59,9 @@ namespace HeuristicLab.Evolutionary {
       emigrantsList.RemoveAt(0);
 
       for (int i = 0; i < scope.SubScopes.Count; i++)
-        scope.SubScopes[i].AddSubScope(emigrantsList[i]);
+        scope.SubScopes[i].SubScopes.Add(emigrantsList[i]);
 
-      return null;
+      return base.Apply();
     }
   }
 }

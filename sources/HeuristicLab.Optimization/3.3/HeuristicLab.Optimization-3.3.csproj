@@ -86,6 +86,7 @@
     <None Include="HeuristicLabOptimizationPlugin.cs.frame" />
     <Compile Include="Algorithm.cs" />
     <Compile Include="BatchRun.cs" />
+    <Compile Include="Interfaces\IMigrator.cs" />
     <Compile Include="Interfaces\ISelfAdaptiveManipulator.cs" />
     <Compile Include="Interfaces\IStrategyParameterCrossover.cs" />
     <Compile Include="Interfaces\IStrategyParameterManipulator.cs" />

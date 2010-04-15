@@ -92,6 +92,7 @@
     <Compile Include="QuadraticDiscreteDoubleValueModifier.cs" />
     <Compile Include="QualityComparator.cs" />
     <Compile Include="SolutionsCreator.cs" />
+    <Compile Include="UnidirectionalRingMigrator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />

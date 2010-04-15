@@ -84,6 +84,8 @@
     <Compile Include="GeneticAlgorithm.cs" />
     <Compile Include="GeneticAlgorithmMainLoop.cs" />
     <Compile Include="HeuristicLabAlgorithmsGeneticAlgorithmPlugin.cs" />
+    <Compile Include="IslandGeneticAlgorithm.cs" />
+    <Compile Include="IslandGeneticAlgorithmMainLoop.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
