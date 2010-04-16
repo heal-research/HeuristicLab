@@ -93,15 +93,25 @@ namespace HeuristicLab.Parameters.Views {
       if (Content == null) {
         Caption = "ConstrainedValueParameter";
         viewHost.Content = null;
-        valueGroupBox.Enabled = false;
         FillValueComboBox();
       } else {
         Caption = Content.Name + " (" + Content.GetType().Name + ")";
-        valueGroupBox.Enabled = true;
         FillValueComboBox();
         viewHost.ViewType = null;
         viewHost.Content = Content.Value;
       }
+      SetEnabledStateOfControls();
+    }
+
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnabledStateOfControls();
+    }
+
+    private void SetEnabledStateOfControls() {
+      valueGroupBox.Enabled = Content != null;
+      valueComboBox.Enabled = (valueComboBox.Items.Count > 0) && !ReadOnly;
+      viewHost.ReadOnly = ReadOnly;
     }
 
     private void FillValueComboBox() {
@@ -117,7 +127,7 @@ namespace HeuristicLab.Parameters.Views {
           valueComboBoxItems.Add(item);
           valueComboBox.Items.Add(item.ToString());
         }
-        valueComboBox.Enabled = valueComboBox.Items.Count > 0;
+        valueComboBox.Enabled = (valueComboBox.Items.Count > 0) && !ReadOnly;
         valueComboBox.SelectedIndex = valueComboBoxItems.IndexOf(Content.Value);
       }
       valueComboBox.SelectedIndexChanged += new EventHandler(valueComboBox_SelectedIndexChanged);

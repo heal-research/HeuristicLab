@@ -82,12 +82,21 @@ namespace HeuristicLab.Parameters.Views {
       if (Content == null) {
         Caption = "LookupParameter";
         actualNameTextBox.Text = "-";
-        actualNameTextBox.Enabled = false;
       } else {
         Caption = Content.Name + " (" + Content.GetType().Name + ")";
         actualNameTextBox.Text = Content.ActualName;
-        actualNameTextBox.Enabled = true;
       }
+      SetEnabledStateOfControls();
+    }
+
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnabledStateOfControls();
+    }
+
+    private void SetEnabledStateOfControls() {
+      actualNameTextBox.Enabled = Content != null;
+      actualNameTextBox.ReadOnly = ReadOnly;
     }
 
     protected virtual void Content_ActualNameChanged(object sender, EventArgs e) {

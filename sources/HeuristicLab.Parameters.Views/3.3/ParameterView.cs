@@ -64,12 +64,20 @@ namespace HeuristicLab.Parameters.Views {
       if (Content == null) {
         Caption = "Parameter";
         dataTypeTextBox.Text = "-";
-        dataTypeTextBox.Enabled = false;
       } else {
         Caption = Content.Name + " (" + Content.GetType().Name + ")";
         dataTypeTextBox.Text = Content.DataType.GetPrettyName();
-        dataTypeTextBox.Enabled = true;
       }
+      SetEnabledStateOfControls();
+    }
+
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnabledStateOfControls();
+    }
+
+    private void SetEnabledStateOfControls() {
+      dataTypeTextBox.Enabled = Content != null;
     }
   }
 }

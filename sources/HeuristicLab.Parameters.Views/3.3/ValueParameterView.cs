@@ -85,27 +85,34 @@ namespace HeuristicLab.Parameters.Views {
       base.OnContentChanged();
       if (Content == null) {
         Caption = "ValueParameter";
-        setValueButton.Enabled = false;
         clearValueButton.Visible = true;
-        clearValueButton.Enabled = false;
         viewHost.Content = null;
-        valueGroupBox.Enabled = false;
       } else {
         Caption = Content.Name + " (" + Content.GetType().Name + ")";
-        setValueButton.Enabled = true;
         clearValueButton.Visible = !(Content is ValueParameter<T>);
-        clearValueButton.Enabled = Content.Value != null;
-        valueGroupBox.Enabled = true;
         viewHost.ViewType = null;
         viewHost.Content = Content.Value;
       }
+      SetEnabledStateOfControls();
+    }
+
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnabledStateOfControls();
+    }
+
+    private void SetEnabledStateOfControls() {
+      setValueButton.Enabled = Content != null && !ReadOnly;
+      clearValueButton.Enabled = Content != null && Content.Value != null && !ReadOnly;
+      valueGroupBox.Enabled = Content != null;
+      viewHost.ReadOnly = ReadOnly;
     }
 
     protected virtual void Content_ValueChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ValueChanged), sender, e);
       else {
-        clearValueButton.Enabled = Content.Value != null;
+        clearValueButton.Enabled = Content.Value != null && !ReadOnly;
         viewHost.ViewType = null;
         viewHost.Content = Content.Value;
       }
@@ -126,7 +133,7 @@ namespace HeuristicLab.Parameters.Views {
     protected virtual void valuePanel_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
       Type type = e.Data.GetData("Type") as Type;
-      if ((type != null) && (Content.DataType.IsAssignableFrom(type))) {
+      if (!ReadOnly && (type != null) && (Content.DataType.IsAssignableFrom(type))) {
         if ((e.KeyState & 8) == 8) e.Effect = DragDropEffects.Copy;  // CTRL key
         else if ((e.KeyState & 4) == 4) e.Effect = DragDropEffects.Move;  // SHIFT key
         else if ((e.AllowedEffect & DragDropEffects.Link) == DragDropEffects.Link) e.Effect = DragDropEffects.Link;
