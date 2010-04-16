@@ -23,15 +23,13 @@ using System;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Data {
-  public interface IStringConvertibleArray {
-    bool ReadOnlyView { get; set; }
+  public interface IStringConvertibleArray : IContent {
     int Length { get; set; }
 
     bool Validate(string value, out string errorMessage);
     string GetValue(int index);
     bool SetValue(string value, int index);
 
-    event EventHandler ReadOnlyViewChanged;
     event EventHandler<EventArgs<int>> ItemChanged;
     event EventHandler Reset;
   }

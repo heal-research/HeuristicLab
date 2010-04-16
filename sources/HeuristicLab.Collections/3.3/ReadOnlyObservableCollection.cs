@@ -36,7 +36,7 @@ namespace HeuristicLab.Collections {
     #region Properties
     public bool ReadOnlyView {
       get { return true; }
-      set { throw new NotSupportedException(); }
+      set { }
     }
 
     public int Count {

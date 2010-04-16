@@ -27,6 +27,7 @@ using System.Text;
 namespace HeuristicLab.Common {
   public interface IContent {
     bool ReadOnlyView { get; set; }
+
     event EventHandler ReadOnlyViewChanged;
   }
 }

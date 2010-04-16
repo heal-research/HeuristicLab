@@ -36,10 +36,10 @@ namespace HeuristicLab.Collections {
     #region Properties
     [Storable]
     private bool readOnlyView;
-    public bool ReadOnlyView {
+    public virtual bool ReadOnlyView {
       get { return readOnlyView; }
       set {
-        if (readOnlyView != value) {
+        if ((readOnlyView != value) && !((ICollection<KeyValuePair<TKey, TItem>>)dict).IsReadOnly) {
           readOnlyView = value;
           OnReadOnlyViewChanged();
           OnPropertyChanged("ReadOnlyView");

@@ -24,13 +24,12 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Data {
-  public interface IStringConvertibleMatrix {
+  public interface IStringConvertibleMatrix : IContent {
     int Rows { get; set; }
     int Columns { get; set; }
     IEnumerable<string> ColumnNames { get; set; }
     IEnumerable<string> RowNames { get; set; }
 
-    bool ReadOnlyView { get; set; }
     bool SortableView { get; set; }
 
     bool Validate(string value, out string errorMessage);
@@ -39,7 +38,6 @@ namespace HeuristicLab.Data {
 
     event EventHandler ColumnNamesChanged;
     event EventHandler RowNamesChanged;
-    event EventHandler ReadOnlyViewChanged;
     event EventHandler SortableViewChanged;
     event EventHandler<EventArgs<int, int>> ItemChanged;
     event EventHandler Reset;

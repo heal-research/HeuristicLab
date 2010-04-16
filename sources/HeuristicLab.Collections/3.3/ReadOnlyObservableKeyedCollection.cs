@@ -34,7 +34,7 @@ namespace HeuristicLab.Collections {
     private IObservableKeyedCollection<TKey, TItem> collection;
 
     #region Properties
-    public bool ReadOnlyView {
+    public virtual bool ReadOnlyView {
       get { return true; }
       set { throw new NotSupportedException(); }
     }

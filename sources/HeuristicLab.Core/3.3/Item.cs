@@ -42,7 +42,7 @@ namespace HeuristicLab.Core {
 
     [Storable]
     private bool readOnlyView;
-    public bool ReadOnlyView {
+    public virtual bool ReadOnlyView {
       get { return readOnlyView; }
       set {
         if (readOnlyView != value) {

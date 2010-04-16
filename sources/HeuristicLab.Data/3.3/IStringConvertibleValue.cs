@@ -20,16 +20,14 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Data {
-  public interface IStringConvertibleValue {
-    bool ReadOnlyView { get; set; }
-
+  public interface IStringConvertibleValue : IContent {
     bool Validate(string value, out string errorMessage);
     string GetValue();
     bool SetValue(string value);
 
-    event EventHandler ReadOnlyViewChanged;
     event EventHandler ValueChanged;
   }
 }
