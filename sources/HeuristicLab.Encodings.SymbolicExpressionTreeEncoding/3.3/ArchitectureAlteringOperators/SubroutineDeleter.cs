@@ -67,7 +67,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
       symbolicExpressionTree.Root.RemoveSubTree(defunSubtreeIndex);
 
       // remove references to deleted function
-      foreach (var subtree in symbolicExpressionTree.Root.SubTrees) {
+      foreach (var subtree in symbolicExpressionTree.Root.SubTrees.OfType<SymbolicExpressionTreeTopLevelNode>()) {
         var matchingInvokeSymbol = (from symb in subtree.Grammar.Symbols.OfType<InvokeFunction>()
                                     where symb.FunctionName == selectedDefunBranch.FunctionName
                                     select symb).SingleOrDefault();
@@ -98,10 +98,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
         int maxSize = Math.Max(minPossibleSize, invocationCutPoint.ReplacedChild.GetSize());
         int minPossibleHeight = invocationCutPoint.Parent.Grammar.GetMinExpressionDepth(selectedSymbol);
         int maxHeight = Math.Max(minPossibleHeight, invocationCutPoint.ReplacedChild.GetHeight());
-
-        replacementTree = ProbabilisticTreeCreator.PTC2(random, invocationCutPoint.Parent.Grammar, selectedSymbol, maxSize, maxHeight, 0, 0);
+        replacementTree = selectedSymbol.CreateTreeNode();
         invocationCutPoint.Parent.RemoveSubTree(invocationCutPoint.ReplacedChildIndex);
         invocationCutPoint.Parent.InsertSubTree(invocationCutPoint.ReplacedChildIndex, replacementTree);
+
+        ProbabilisticTreeCreator.PTC2(random, replacementTree, maxSize, maxHeight, 0, 0);
 
         invocationCutPoint = (from node in symbolicExpressionTree.IterateNodesPrefix()
                               from subtree in node.SubTrees.OfType<InvokeFunctionTreeNode>()

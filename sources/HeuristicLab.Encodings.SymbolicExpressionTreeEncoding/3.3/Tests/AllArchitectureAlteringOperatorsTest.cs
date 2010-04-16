@@ -73,13 +73,23 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
       var combinedAAOperator = new RandomArchitectureAlteringOperator();
       for (int g = 0; g < N_ITERATIONS; g++) {
         for (int i = 0; i < POPULATION_SIZE; i++) {
-          var selectedTree = (SymbolicExpressionTree)trees.SelectRandom(random).Clone();
-          var op = combinedAAOperator.Operators.SelectRandom(random);
-          bool success;
-          op.ModifyArchitecture(random, selectedTree, grammar, maxTreeSize, maxTreeHeigth, maxDefuns, maxArgs, out success);
-          if (!success) failedEvents++;
-          Util.IsValid(selectedTree);
-          newTrees.Add(selectedTree);
+          if (random.NextDouble() < 0.5) {
+            // manipulate
+            var selectedTree = (SymbolicExpressionTree)trees.SelectRandom(random).Clone();
+            var op = combinedAAOperator.Operators.SelectRandom(random);
+            bool success;
+            op.ModifyArchitecture(random, selectedTree, grammar, maxTreeSize, maxTreeHeigth, maxDefuns, maxArgs, out success);
+            if (!success) failedEvents++;
+            Util.IsValid(selectedTree);
+            newTrees.Add(selectedTree);
+          } else {
+            // crossover
+            var par0 = (SymbolicExpressionTree)trees.SelectRandom(random).Clone();
+            var par1 = (SymbolicExpressionTree)trees.SelectRandom(random).Clone();
+            bool success;
+            newTrees.Add(SubtreeCrossover.Cross(random, par0, par1, 0.9, 100, 10, out success));
+            if (!success) failedEvents++;
+          }
         }
         trees = newTrees;
       }

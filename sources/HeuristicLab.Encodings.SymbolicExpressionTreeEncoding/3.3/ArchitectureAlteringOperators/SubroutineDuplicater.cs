@@ -71,25 +71,26 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
       symbolicExpressionTree.Root.SubTrees.Add(duplicatedDefunBranch);
       duplicatedDefunBranch.Grammar = (ISymbolicExpressionGrammar)selectedBranch.Grammar.Clone();
       // add an invoke symbol for each branch that is allowed to invoke the original function
-      foreach (var subtree in symbolicExpressionTree.Root.SubTrees) {
+      foreach (var subtree in symbolicExpressionTree.Root.SubTrees.OfType<SymbolicExpressionTreeTopLevelNode>()) {
         var matchingInvokeSymbol = (from symb in subtree.Grammar.Symbols.OfType<InvokeFunction>()
                                     where symb.FunctionName == selectedBranch.FunctionName
                                     select symb).SingleOrDefault();
         if (matchingInvokeSymbol != null) {
           GrammarModifier.AddDynamicSymbol(subtree.Grammar, subtree.Symbol, duplicatedDefunBranch.FunctionName, duplicatedDefunBranch.NumberOfArguments);
         }
-      }
-      // for all invoke nodes of the original function replace the invoke of the original function with an invoke of the new function randomly
-      var originalFunctionInvocations = from node in symbolicExpressionTree.IterateNodesPrefix().OfType<InvokeFunctionTreeNode>()
-                                        where node.Symbol.FunctionName == selectedBranch.FunctionName
-                                        select node;
-      foreach (var originalFunctionInvokeNode in originalFunctionInvocations) {
-        var newInvokeSymbol = (from symb in originalFunctionInvokeNode.Grammar.Symbols.OfType<InvokeFunction>()
-                               where symb.FunctionName == duplicatedDefunBranch.FunctionName
-                               select symb).Single();
-        // flip coin wether to replace with newly defined function
-        if (random.NextDouble() < 0.5) {
-          originalFunctionInvokeNode.Symbol = newInvokeSymbol;
+        // in the current subtree:
+        // for all invoke nodes of the original function replace the invoke of the original function with an invoke of the new function randomly
+        var originalFunctionInvocations = from node in subtree.IterateNodesPrefix().OfType<InvokeFunctionTreeNode>()
+                                          where node.Symbol.FunctionName == selectedBranch.FunctionName
+                                          select node;
+        foreach (var originalFunctionInvokeNode in originalFunctionInvocations) {
+          var newInvokeSymbol = (from symb in subtree.Grammar.Symbols.OfType<InvokeFunction>()
+                                 where symb.FunctionName == duplicatedDefunBranch.FunctionName
+                                 select symb).Single();
+          // flip coin wether to replace with newly defined function
+          if (random.NextDouble() < 0.5) {
+            originalFunctionInvokeNode.Symbol = newInvokeSymbol;
+          }
         }
       }
       return true;

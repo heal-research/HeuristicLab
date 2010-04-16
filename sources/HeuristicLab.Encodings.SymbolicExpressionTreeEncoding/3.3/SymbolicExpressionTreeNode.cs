@@ -36,6 +36,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     private List<SymbolicExpressionTreeNode> subTrees;
     [Storable]
     private Symbol symbol;
+    //[Storable]
+    private SymbolicExpressionTreeNode parent;
 
     public SymbolicExpressionTreeNode() {
       subTrees = new List<SymbolicExpressionTreeNode>();
@@ -50,9 +52,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     protected SymbolicExpressionTreeNode(SymbolicExpressionTreeNode original) {
       symbol = original.symbol;
       subTrees = new List<SymbolicExpressionTreeNode>();
-      grammar = original.grammar;
       foreach (var subtree in original.SubTrees) {
-        SubTrees.Add((SymbolicExpressionTreeNode)subtree.Clone());
+        AddSubTree((SymbolicExpressionTreeNode)subtree.Clone());
       }
     }
 
@@ -69,14 +70,14 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       protected set { symbol = value; }
     }
 
-    private ISymbolicExpressionGrammar grammar;
-    public virtual ISymbolicExpressionGrammar Grammar {
-      get { return grammar; }
-      set {
-        grammar = value;
-        foreach (var subtree in subTrees)
-          subtree.Grammar = value;
-      }
+    internal SymbolicExpressionTreeNode Parent {
+      get { return parent; }
+      set { parent = value; }
+    }
+
+    internal virtual ISymbolicExpressionGrammar Grammar {
+      get { return parent.Grammar; }
+      set { throw new NotSupportedException("Grammar can be set only for SymbolicExpressionTreeTopLevelNodes."); }
     }
 
     public int GetSize() {
@@ -95,21 +96,18 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public virtual void ShakeLocalParameters(IRandom random, double shakingFactor) { }
 
     public virtual void AddSubTree(SymbolicExpressionTreeNode tree) {
-      SubTrees.Add(tree);
-      //if (tree != null) 
-      tree.Grammar = Grammar;
+      subTrees.Add(tree);
+      tree.Parent = this;
     }
 
     public virtual void InsertSubTree(int index, SymbolicExpressionTreeNode tree) {
-      SubTrees.Insert(index, tree);
-      //if (tree != null) 
-      tree.Grammar = Grammar;
+      subTrees.Insert(index, tree);
+      tree.Parent = this;
     }
 
     public virtual void RemoveSubTree(int index) {
-      //if (SubTrees[index] != null)
-      SubTrees[index].Grammar = null;
-      SubTrees.RemoveAt(index);
+      subTrees[index].Parent = null;
+      subTrees.RemoveAt(index);
     }
 
     public IEnumerable<SymbolicExpressionTreeNode> IterateNodesPrefix() {

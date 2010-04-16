@@ -30,5 +30,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols {
         return false;
       }
     }
+
+    public override SymbolicExpressionTreeNode CreateTreeNode() {
+      return new SymbolicExpressionTreeTopLevelNode(this);
+    }
   }
 }

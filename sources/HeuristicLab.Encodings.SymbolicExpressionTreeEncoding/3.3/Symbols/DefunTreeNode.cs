@@ -38,10 +38,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols {
       set { this.functionName = value; }
     }
 
-    private new Defun Symbol {
-      get { return (Defun)base.Symbol; }
-    }
-
     // copy constructor
     private DefunTreeNode(DefunTreeNode original)
       : base(original) {

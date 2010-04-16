@@ -32,7 +32,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols {
     }
 
     public override SymbolicExpressionTreeNode CreateTreeNode() {
-      return new StartSymbolTreeNode(this);
+      return new SymbolicExpressionTreeTopLevelNode(this);
     }
   }
 }

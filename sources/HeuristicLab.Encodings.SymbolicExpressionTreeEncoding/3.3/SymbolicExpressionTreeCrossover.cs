@@ -80,9 +80,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       
       if (!success) FailedCrossoverEvents.Value++;
 
-      Debug.Assert(result.Size <= MaxTreeSizeParameter.ActualValue.Value);
-      Debug.Assert(result.Height <= MaxTreeHeightParameter.ActualValue.Value);
-      // Debug.Assert(grammar.IsValidExpression(result));
       ChildParameter.ActualValue = result;
       return base.Apply();
     }

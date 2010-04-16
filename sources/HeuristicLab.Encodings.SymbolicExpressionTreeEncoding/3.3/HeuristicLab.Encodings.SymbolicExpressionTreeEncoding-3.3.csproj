@@ -98,7 +98,6 @@
     </Compile>
     <Compile Include="GlobalSymbolicExpressionGrammar.cs" />
     <Compile Include="EnumerableExtensions.cs" />
-    <Compile Include="Symbols\StartSymbolTreeNode.cs" />
     <Compile Include="DefaultSymbolicExpressionGrammar.cs">
       <SubType>Code</SubType>
     </Compile>

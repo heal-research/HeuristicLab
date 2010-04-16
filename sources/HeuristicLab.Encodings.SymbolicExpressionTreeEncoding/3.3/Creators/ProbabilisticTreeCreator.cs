@@ -34,6 +34,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
   [Item("ProbabilisticTreeCreator", "An operator that creates new symbolic expression trees with uniformly distributed size")]
   public class ProbabilisticTreeCreator : SymbolicExpressionTreeCreator {
+    private const int MAX_TRIES = 100;
 
     public ProbabilisticTreeCreator()
       : base() {
@@ -52,7 +53,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       int maxFunctionDefinitions, int maxFunctionArguments
       ) {
       SymbolicExpressionTree tree = new SymbolicExpressionTree();
-      tree.Root = PTC2(random, grammar, grammar.StartSymbol, maxTreeSize, maxTreeHeight, maxFunctionDefinitions, maxFunctionArguments);
+      var rootNode = grammar.StartSymbol.CreateTreeNode();
+      rootNode.Grammar = grammar;
+      tree.Root = PTC2(random, rootNode, maxTreeSize, maxTreeHeight, maxFunctionDefinitions, maxFunctionArguments);
       return tree;
     }
 
@@ -62,51 +65,51 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       public int ExtensionPointDepth { get; set; }
     }
 
-    /// <summary>
-    /// Creates a random tree with <paramref name="maxTreeSize"/> and <paramref name="maxDepth"/>.
-    /// </summary>
-    /// <param name="random"></param>
-    /// <param name="grammar"></param>
-    /// <param name="rootSymbol"></param>
-    /// <param name="maxTreeSize"></param>
-    /// <param name="maxDepth"></param>
-    /// <param name="maxFunctionDefinitions"></param>
-    /// <param name="maxFunctionArguments"></param>
-    /// <returns></returns>
-    public static SymbolicExpressionTreeNode PTC2(IRandom random, ISymbolicExpressionGrammar grammar, Symbol rootSymbol,
+    public static SymbolicExpressionTreeNode PTC2(IRandom random, SymbolicExpressionTreeNode seedNode,
       int maxTreeSize, int maxDepth, int maxFunctionDefinitions, int maxFunctionArguments) {
       // tree size is limited by the grammar and by the explicit size constraints
-      int allowedMinSize = grammar.GetMinExpressionLength(rootSymbol);
-      int allowedMaxSize = Math.Min(maxTreeSize, grammar.GetMaxExpressionLength(rootSymbol));
-      // select a target tree size uniformly in the possible range (as determined by explicit limits and limits of the grammar)
-      int treeSize = random.Next(allowedMinSize, allowedMaxSize + 1);
-      SymbolicExpressionTreeNode root = null;
-      do {
-        try {
-          root = rootSymbol.CreateTreeNode();
-          root.Grammar = grammar;
-          if (treeSize <= 1 || maxDepth <= 1) return root;
-          CreateFullTreeFromSeed(random, root, treeSize, maxDepth, maxFunctionDefinitions, maxFunctionArguments);
+      int allowedMinSize = seedNode.Grammar.GetMinExpressionLength(seedNode.Symbol);
+      int allowedMaxSize = Math.Min(maxTreeSize, seedNode.Grammar.GetMaxExpressionLength(seedNode.Symbol));
+      int tries = 0;
+      while (tries++ < MAX_TRIES) {
+        // select a target tree size uniformly in the possible range (as determined by explicit limits and limits of the grammar)
+        int treeSize = random.Next(allowedMinSize, allowedMaxSize + 1);
+        if (treeSize <= 1 || maxDepth <= 1) return seedNode;
+
+        bool success = CreateFullTreeFromSeed(random, seedNode, seedNode.Grammar, treeSize, maxDepth, maxFunctionDefinitions, maxFunctionArguments);
+
+        // if successfull => check constraints and return the tree if everything looks ok        
+        if (success && seedNode.GetSize() <= maxTreeSize && seedNode.GetHeight() <= maxDepth) {
+          return seedNode;
+        } else {
+          // clean seedNode
+          while (seedNode.SubTrees.Count > 0) seedNode.RemoveSubTree(0);
         }
-        catch (ArgumentException) {
-          // try a different size
-          root = null;
-          treeSize = random.Next(allowedMinSize, allowedMaxSize);
-        }
-      } while (root == null || root.GetSize() > maxTreeSize || root.GetHeight() > maxDepth);
-      return root;
+        // try a different size MAX_TRIES times
+      }
+      throw new ArgumentException("Couldn't create a valid tree with the specified constraints.");
     }
 
-    private static void CreateFullTreeFromSeed(IRandom random, SymbolicExpressionTreeNode root, int size, int maxDepth, int maxFunctionDefinitions, int maxFunctionArguments) {
+    private static bool CreateFullTreeFromSeed(IRandom random, SymbolicExpressionTreeNode root, ISymbolicExpressionGrammar globalGrammar,
+      int size, int maxDepth, int maxFunctionDefinitions, int maxFunctionArguments) {
+      try {
+        TryCreateFullTreeFromSeed(random, root, globalGrammar, size, maxDepth, maxFunctionDefinitions, maxFunctionArguments);
+        return true;
+      }
+      catch (ArgumentException) { return false; }
+    }
+
+    private static void TryCreateFullTreeFromSeed(IRandom random, SymbolicExpressionTreeNode root, ISymbolicExpressionGrammar globalGrammar,
+      int size, int maxDepth, int maxFunctionDefinitions, int maxFunctionArguments) {
       List<TreeExtensionPoint> extensionPoints = new List<TreeExtensionPoint>();
       int currentSize = 1;
-      int totalListMinSize = root.Grammar.GetMinExpressionLength(root.Symbol) - 1;
+      int totalListMinSize = globalGrammar.GetMinExpressionLength(root.Symbol) - 1;
       int actualArity = SampleArity(random, root, size);
       for (int i = 0; i < actualArity; i++) {
         // insert a dummy sub-tree and add the pending extension to the list
         var dummy = new SymbolicExpressionTreeNode();
         root.AddSubTree(dummy);
-        dummy.Grammar = (ISymbolicExpressionGrammar)dummy.Grammar.Clone();
+        // dummy.Grammar = (ISymbolicExpressionGrammar)dummy.Grammar.Clone();
         extensionPoints.Add(new TreeExtensionPoint { Parent = root, ChildIndex = i, ExtensionPointDepth = 2 });
       }
       // while there are pending extension points and we have not reached the limit of adding new extension points
@@ -140,8 +143,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
             // insert a dummy sub-tree and add the pending extension to the list
             var dummy = new SymbolicExpressionTreeNode();
             newTree.AddSubTree(dummy);
-            if (IsTopLevelBranch(root, dummy))
-              dummy.Grammar = (ISymbolicExpressionGrammar)dummy.Grammar.Clone();
+            //if (IsTopLevelBranch(root, dummy))
+            //  dummy.Grammar = (ISymbolicExpressionGrammar)dummy.Grammar.Clone();
             extensionPoints.Add(new TreeExtensionPoint { Parent = newTree, ChildIndex = i, ExtensionPointDepth = extensionDepth + 1 });
           }
           totalListMinSize += newTree.Grammar.GetMinExpressionLength(newTree.Symbol);
@@ -174,7 +177,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         // insert a dummy sub-tree and add the pending extension to the list
         var dummy = new SymbolicExpressionTreeNode();
         tree.AddSubTree(dummy);
-        dummy.Grammar = (ISymbolicExpressionGrammar)dummy.Grammar.Clone();
+        // dummy.Grammar = (ISymbolicExpressionGrammar)dummy.Grammar.Clone();
         // replace the just inserted dummy by recursive application
         ReplaceWithMinimalTree(random, root, tree, i, maxFunctionDefinitions, maxFunctionArguments);
       }
@@ -184,7 +187,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       // NB it is assumed that defuns are only allowed as children of root and nowhere else
       // also assumes that newTree is already attached to root somewhere
       if (IsTopLevelBranch(root, newTree)) {
-        newTree.Grammar = (ISymbolicExpressionGrammar)newTree.Grammar.Clone();
+        newTree.Grammar = (ISymbolicExpressionGrammar)root.Grammar.Clone();
 
         // allow invokes of existing ADFs with higher index
         int argIndex = root.SubTrees.IndexOf(newTree);
@@ -224,7 +227,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     private static bool IsTopLevelBranch(SymbolicExpressionTreeNode root, SymbolicExpressionTreeNode branch) {
-      return root.SubTrees.IndexOf(branch) > -1;
+      //return root.SubTrees.IndexOf(branch) > -1;
+      return branch is SymbolicExpressionTreeTopLevelNode;
     }
 
     private static Symbol SelectRandomSymbol(IRandom random, IEnumerable<Symbol> symbols) {

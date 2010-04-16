@@ -26,7 +26,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols {
   public sealed class InvokeFunctionTreeNode : SymbolicExpressionTreeNode {
     public new InvokeFunction Symbol {
       get { return (InvokeFunction)base.Symbol; }
-      set {
+      internal set {
         if (value == null) throw new ArgumentNullException();
         if (!(value is InvokeFunction)) throw new ArgumentNullException();
         base.Symbol = value;

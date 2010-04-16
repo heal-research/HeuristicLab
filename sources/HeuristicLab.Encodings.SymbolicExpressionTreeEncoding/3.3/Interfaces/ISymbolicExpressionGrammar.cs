@@ -33,6 +33,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     void AddSymbol(Symbol symbol);
     void RemoveSymbol(Symbol symbol);
     IEnumerable<Symbol> Symbols { get; }
+    bool ContainsSymbol(Symbol symbol);
     void SetAllowedChild(Symbol parent, Symbol child, int argumentIndex);
     bool IsAllowedChild(Symbol parent, Symbol child, int argumentIndex);
     int GetMinExpressionLength(Symbol start);

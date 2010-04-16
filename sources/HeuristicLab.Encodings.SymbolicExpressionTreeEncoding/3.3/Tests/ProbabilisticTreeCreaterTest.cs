@@ -53,7 +53,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
     public void ProbabilisticTreeCreaterDistributionsTest() {
       var randomTrees = new List<SymbolicExpressionTree>();
       var grammar = Grammars.CreateSimpleArithmeticGrammar();
-      var random = new MersenneTwister();
+      var random = new MersenneTwister(31415);
       for (int i = 0; i < POPULATION_SIZE; i++) {
         randomTrees.Add(ProbabilisticTreeCreator.Create(random, grammar, MAX_TREE_SIZE, MAX_TREE_HEIGHT, 0, 0));
       }
@@ -74,7 +74,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
     public void ProbabilisticTreeCreaterWithAdfDistributionsTest() {
       var randomTrees = new List<SymbolicExpressionTree>();
       var grammar = Grammars.CreateArithmeticAndAdfGrammar();
-      var random = new MersenneTwister();
+      var random = new MersenneTwister(31415);
       for (int i = 0; i < POPULATION_SIZE; i++) {
         var tree = ProbabilisticTreeCreator.Create(random, grammar, MAX_TREE_SIZE, MAX_TREE_HEIGHT, 3, 3);
         Grammars.HasValidAdfGrammars(tree);

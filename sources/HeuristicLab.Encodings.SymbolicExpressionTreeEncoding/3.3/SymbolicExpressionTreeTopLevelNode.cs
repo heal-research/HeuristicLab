@@ -41,10 +41,28 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       : base(symbol) {
     }
 
+    private ISymbolicExpressionGrammar grammar;
+    //internal virtual ISymbolicExpressionGrammar Grammar {
+    //  get { return grammar; }
+    //  set {
+    //    grammar = value;
+    //    //foreach (var subtree in subTrees)
+    //    //  subtree.Grammar = value;
+    //  }
+    //}
+    internal override ISymbolicExpressionGrammar Grammar {
+      get {
+        return grammar;
+      }
+      set {
+        grammar = value;
+      }
+    }
+
     // copy constructor
     protected SymbolicExpressionTreeTopLevelNode(SymbolicExpressionTreeTopLevelNode original)
       : base(original) {
-      Grammar = (ISymbolicExpressionGrammar)original.Grammar.Clone();
+      grammar = (ISymbolicExpressionGrammar)original.Grammar.Clone();
     }
 
     public override object Clone() {
