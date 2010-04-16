@@ -22,9 +22,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using HeuristicLab.Common;
 
-namespace HeuristicLab.Core {
+namespace HeuristicLab.Common {
   /// <summary>
   /// A helper class which is used to create deep clones of object graphs.
   /// </summary>

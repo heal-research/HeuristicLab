@@ -1,5 +1,6 @@
 ﻿using HeuristicLab.Encodings.RealVectorEncoding;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;

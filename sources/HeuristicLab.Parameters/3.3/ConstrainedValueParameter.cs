@@ -22,6 +22,7 @@
 using System;
 using System.Linq;
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 

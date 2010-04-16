@@ -19,13 +19,15 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
   [StorableClass]
-  public sealed class OperationCollection : DeepCloneable, IList<IOperation>, IOperation {
+  public sealed class OperationCollection : IDeepCloneable, IList<IOperation>, IOperation {
     [Storable]
     private IList<IOperation> operations;
 
@@ -49,8 +51,12 @@ namespace HeuristicLab.Core {
       parallel = false;
     }
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      OperationCollection clone = (OperationCollection)base.Clone(cloner);
+    public object Clone() {
+      return Clone(new Cloner());
+    }
+    public IDeepCloneable Clone(Cloner cloner) {
+      OperationCollection clone = (OperationCollection)Activator.CreateInstance(this.GetType());
+      cloner.RegisterClonedObject(this, clone);
       clone.operations = new List<IOperation>(this.Select(x => (IOperation)cloner.Clone(x)));
       clone.parallel = parallel;
       return clone;

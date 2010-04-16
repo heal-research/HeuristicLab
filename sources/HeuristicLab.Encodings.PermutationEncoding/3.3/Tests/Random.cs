@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {

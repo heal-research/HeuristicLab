@@ -20,6 +20,7 @@
 #endregion
 
 using System.Drawing;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 

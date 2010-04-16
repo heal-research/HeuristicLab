@@ -21,7 +21,7 @@
 
 using System;
 
-namespace HeuristicLab.Core {
+namespace HeuristicLab.Common {
   public interface IDeepCloneable : ICloneable {
     /// <summary>
     /// Creates a deep clone of this instance.

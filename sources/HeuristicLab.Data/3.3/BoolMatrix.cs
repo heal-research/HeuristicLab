@@ -21,6 +21,7 @@
 
 using System.Collections.Generic;
 using System.Text;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 

@@ -20,6 +20,7 @@
 #endregion
 
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {

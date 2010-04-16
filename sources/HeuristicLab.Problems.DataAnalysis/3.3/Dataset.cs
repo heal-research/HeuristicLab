@@ -25,6 +25,7 @@ using System.Xml;
 using System.Globalization;
 using System.Text;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Data;

@@ -87,18 +87,16 @@
   <ItemGroup>
     <Compile Include="CancelEventArgs.cs" />
     <None Include="HeuristicLabCommonPlugin.cs.frame" />
+    <Compile Include="Cloner.cs" />
     <Compile Include="IContent.cs" />
+    <Compile Include="IDeepCloneable.cs" />
     <Compile Include="ReferenceEqualityComparer.cs" />
     <Compile Include="TypeExtensions.cs" />
-    <Compile Include="ObservableList.cs" />
     <Compile Include="DoubleExtensions.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="EnumerableEventArgs.cs" />
     <Compile Include="EventArgs.cs" />
     <Compile Include="HeuristicLabCommonPlugin.cs" />
-    <Compile Include="NotificationDictionary.cs" />
-    <Compile Include="ObservableCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

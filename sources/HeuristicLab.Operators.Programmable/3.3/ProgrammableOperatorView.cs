@@ -27,6 +27,7 @@ using System.Data;
 using System.Text;
 using System.Linq;
 using System.Windows.Forms;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using System.CodeDom.Compiler;

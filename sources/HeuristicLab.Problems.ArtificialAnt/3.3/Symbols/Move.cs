@@ -21,6 +21,7 @@
 
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 namespace HeuristicLab.Problems.ArtificialAnt {
   [StorableClass]

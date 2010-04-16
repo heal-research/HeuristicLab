@@ -22,6 +22,7 @@
 using System;
 using System.Text;
 using System.Windows.Forms;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Core.Views {

@@ -19,6 +19,8 @@
  */
 #endregion
 
+using HeuristicLab.Common;
+
 namespace HeuristicLab.Core {
   /// <summary>
   /// Interface which represents an operation.

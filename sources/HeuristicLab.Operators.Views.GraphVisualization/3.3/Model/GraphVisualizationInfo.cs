@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using Netron.Diagramming.Core;
 using System.Drawing;
@@ -31,7 +32,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
   [StorableClass]
-  public sealed class GraphVisualizationInfo : DeepCloneable {
+  public sealed class GraphVisualizationInfo : IDeepCloneable {
     private BidirectionalLookup<IOperator, IOperatorShapeInfo> operatorShapeInfoMapping;
     [Storable]
     private BidirectionalLookup<IOperator, IOperatorShapeInfo> OperatorShapeInfoMappingStore {
@@ -89,7 +90,11 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       this.UpdateInitialShape();
     }
 
-    public override IDeepCloneable Clone(Cloner cloner) {
+    public object Clone() {
+      return Clone(new Cloner());
+    }
+
+    public IDeepCloneable Clone(Cloner cloner) {
       GraphVisualizationInfo clone = new GraphVisualizationInfo();
       cloner.RegisterClonedObject(this, clone);
       clone.operatorGraph = (OperatorGraph)cloner.Clone(this.operatorGraph);

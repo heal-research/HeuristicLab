@@ -99,7 +99,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\ItemAttribute.cs" />
-    <Compile Include="Cloner.cs" />
     <Compile Include="Attributes\CreatableAttribute.cs" />
     <None Include="HeuristicLabCorePlugin.cs.frame" />
     <Compile Include="Log.cs" />
@@ -119,7 +118,6 @@
     <Compile Include="Interfaces\IValueParameter.cs" />
     <Compile Include="Interfaces\ILookupParameter.cs" />
     <Compile Include="ItemArray.cs" />
-    <Compile Include="DeepCloneable.cs" />
     <Compile Include="Engine.cs" />
     <Compile Include="Interfaces\IScope.cs" />
     <Compile Include="Interfaces\IVariable.cs" />
@@ -140,7 +138,6 @@
     <Compile Include="ParameterCollection.cs" />
     <Compile Include="VariableCollection.cs" />
     <Compile Include="ScopeList.cs" />
-    <Compile Include="Interfaces\IDeepCloneable.cs" />
     <Compile Include="NamedItemCollection.cs" />
     <Compile Include="Interfaces\INamedItem.cs" />
     <Compile Include="Interfaces\IItem.cs" />

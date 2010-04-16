@@ -30,6 +30,7 @@ using System.Windows.Forms;
 using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.MainForm;
 using System.Windows.Forms.DataVisualization.Charting;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization.Views {

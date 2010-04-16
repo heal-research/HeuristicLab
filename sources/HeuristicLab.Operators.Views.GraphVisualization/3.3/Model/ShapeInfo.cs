@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using System.Drawing;
 using Netron.Diagramming.Core;
@@ -31,7 +32,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
   [StorableClass]
-  internal abstract class ShapeInfo : DeepCloneable, IShapeInfo {
+  internal abstract class ShapeInfo : IDeepCloneable, IShapeInfo {
     private ShapeInfo() {
     }
 
@@ -76,8 +77,13 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       shape.Location = this.Location;
     }
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      ShapeInfo clone = (ShapeInfo) base.Clone(cloner);
+    public object Clone() {
+      return Clone(new Cloner());
+    }
+
+    public virtual IDeepCloneable Clone(Cloner cloner) {
+      ShapeInfo clone = (ShapeInfo)Activator.CreateInstance(this.GetType());
+      cloner.RegisterClonedObject(this, clone);
       clone.shapeType = this.shapeType;
       clone.location = this.location;
       return clone;

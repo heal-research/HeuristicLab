@@ -20,6 +20,7 @@
 #endregion
 
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   /// <summary>
