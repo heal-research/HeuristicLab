@@ -44,16 +44,11 @@ namespace HeuristicLab.Optimization.Views {
     public RunCollectionView() {
       InitializeComponent();
       Caption = "Run Collection";
-      base.ReadOnly = true;
     }
 
     public RunCollectionView(IObservableCollection<IRun> content)
       : this() {
       Content = content;
-    }
-    public override bool ReadOnly {
-      get { return base.ReadOnly; }
-      set { /*not needed because results are always readonly */}
     }
 
     protected override void DeregisterContentEvents() {
@@ -96,7 +91,7 @@ namespace HeuristicLab.Optimization.Views {
       } else {
         itemsListView.Enabled = true;
         detailsGroupBox.Enabled = true;
-        removeButton.Enabled = true;
+        removeButton.Enabled = !ReadOnly;
         viewHost.Enabled = true;
         viewHost.ReadOnly = ReadOnly;
       }
@@ -169,7 +164,7 @@ namespace HeuristicLab.Optimization.Views {
     protected virtual void itemsListView_DoubleClick(object sender, EventArgs e) {
       if (itemsListView.SelectedItems.Count == 1) {
         IRun item = (IRun)itemsListView.SelectedItems[0].Tag;
-        IView view = MainFormManager.CreateDefaultView(item);
+        IView view = MainFormManager.CreateDefaultView(item,ReadOnly);
         if (view != null) view.Show();
       }
     }
@@ -179,7 +174,7 @@ namespace HeuristicLab.Optimization.Views {
       DataObject data = new DataObject();
       data.SetData("Type", item.GetType());
       data.SetData("Value", item);
-      if (Content.IsReadOnly) {
+      if (Content.IsReadOnly || ReadOnly) {
         DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
       } else {
         DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move);
@@ -189,6 +184,7 @@ namespace HeuristicLab.Optimization.Views {
     }
     protected virtual void itemsListView_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
+      if (ReadOnly) return;
       Type type = e.Data.GetData("Type") as Type;
       if ((!Content.IsReadOnly) && (type != null) && (typeof(IRun).IsAssignableFrom(type))) {
         if ((e.KeyState & 8) == 8) e.Effect = DragDropEffects.Copy;  // CTRL key

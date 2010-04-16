@@ -83,6 +83,15 @@ namespace HeuristicLab.Optimization.Views {
         executionTimeTextBox.Text = Content.ExecutionTime.ToString();
         executionTimeTextBox.Enabled = true;
       }
+      SetEnableStateOfControls();
+    }
+
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnableStateOfControls();
+    }
+    private void SetEnableStateOfControls() {
+      optimizerListView.ReadOnly = ReadOnly;
     }
 
     protected override void OnClosed(FormClosedEventArgs e) {

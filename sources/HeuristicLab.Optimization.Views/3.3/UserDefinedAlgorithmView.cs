@@ -55,20 +55,24 @@ namespace HeuristicLab.Optimization.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      if (Content == null) 
+      if (Content == null)
         globalScopeView.Content = null;
-      else 
+      else
         globalScopeView.Content = Content.GlobalScope;
+      SetEnableStateOfControls();
     }
 
-    protected override void Content_ExecutionStateChanged(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_ExecutionStateChanged), sender, e);
-      else {
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnableStateOfControls();
+    }
+    private void SetEnableStateOfControls() {
+      globalScopeView.ReadOnly = ReadOnly;
+      operatorGraphViewHost.ReadOnly = ReadOnly;
+      if (Content == null) 
+        newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = saveOperatorGraphButton.Enabled = false;
+      else
         newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = saveOperatorGraphButton.Enabled = Content.ExecutionState != ExecutionState.Started;
-        globalScopeView.Enabled = Content.ExecutionState != ExecutionState.Started;
-        base.Content_ExecutionStateChanged(sender, e);
-      }
     }
 
     private void newOperatorGraphButton_Click(object sender, EventArgs e) {

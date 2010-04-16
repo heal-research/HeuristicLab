@@ -112,6 +112,18 @@ namespace HeuristicLab.Optimization.Views {
         executionTimeTextBox.Text = Content.ExecutionTime.ToString();
         executionTimeTextBox.Enabled = true;
       }
+      SetEnableStateOfControls();
+    }
+
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnableStateOfControls();
+    }
+    private void SetEnableStateOfControls() {
+      parameterCollectionView.ReadOnly = ReadOnly;
+      problemViewHost.ReadOnly = ReadOnly;
+      resultsView.ReadOnly = ReadOnly;
+      runsView.ReadOnly = ReadOnly;
     }
 
     protected override void OnClosed(FormClosedEventArgs e) {
@@ -139,12 +151,8 @@ namespace HeuristicLab.Optimization.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ExecutionStateChanged), sender, e);
       else {
-        nameTextBox.Enabled = Content.ExecutionState != ExecutionState.Started;
-        descriptionTextBox.Enabled = Content.ExecutionState != ExecutionState.Started;
+        this.ReadOnly = Content.ExecutionState == ExecutionState.Started;
         SaveEnabled = Content.ExecutionState != ExecutionState.Started;
-        parameterCollectionView.Enabled = Content.ExecutionState != ExecutionState.Started;
-        newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = Content.ExecutionState != ExecutionState.Started;
-        problemViewHost.Enabled = Content.ExecutionState != ExecutionState.Started;
         EnableDisableButtons();
       }
     }

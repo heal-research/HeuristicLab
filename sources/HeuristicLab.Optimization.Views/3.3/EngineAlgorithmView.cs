@@ -100,6 +100,19 @@ namespace HeuristicLab.Optimization.Views {
         operatorGraphViewHost.Content = Content.OperatorGraph;
         createUserDefinedAlgorithmButton.Enabled = true;
       }
+      SetEnableStateOfControls();
+    }
+
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnableStateOfControls();
+    }
+    private void SetEnableStateOfControls() {
+      engineViewHost.ReadOnly = ReadOnly;
+      if (Content == null)
+        engineComboBox.Enabled = false;
+      else
+        engineComboBox.Enabled = Content.ExecutionState != ExecutionState.Started;
     }
 
     protected override void Content_ExecutionStateChanged(object sender, EventArgs e) {
@@ -107,9 +120,6 @@ namespace HeuristicLab.Optimization.Views {
         Invoke(new EventHandler(Content_ExecutionStateChanged), sender, e);
       else {
         createUserDefinedAlgorithmButton.Enabled = Content.ExecutionState != ExecutionState.Started;
-        engineComboBox.Enabled = Content.ExecutionState != ExecutionState.Started;
-        engineViewHost.Enabled = Content.ExecutionState != ExecutionState.Started;
-        operatorGraphViewHost.Enabled = Content.ExecutionState != ExecutionState.Started;
         base.Content_ExecutionStateChanged(sender, e);
       }
     }

@@ -126,7 +126,7 @@ namespace HeuristicLab.Optimization.Views {
     private void listView_DoubleClick(object sender, EventArgs e) {
       if (listView.SelectedItems.Count == 1) {
         IItem item = (IItem)listView.SelectedItems[0].Tag;
-        IView view = MainFormManager.CreateDefaultView(item);
+        IView view = MainFormManager.CreateDefaultView(item,ReadOnly);
         if (view != null) view.Show();
       }
     }
@@ -139,7 +139,7 @@ namespace HeuristicLab.Optimization.Views {
       DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy);
     }
     private void showAlgorithmButton_Click(object sender, EventArgs e) {
-      MainFormManager.CreateDefaultView(Content.Algorithm.Clone()).Show();
+      MainFormManager.CreateDefaultView(Content.Algorithm.Clone(),ReadOnly).Show();
     }
   }
 }

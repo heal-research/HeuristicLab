@@ -96,6 +96,16 @@ namespace HeuristicLab.Optimization.Views {
         executionTimeTextBox.Text = Content.ExecutionTime.ToString();
         executionTimeTextBox.Enabled = true;
       }
+      SetEnableStateOfControls();
+    }
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnableStateOfControls();
+    }
+    private void SetEnableStateOfControls() {
+      repetitionsNumericUpDown.ReadOnly = ReadOnly;
+      algorithmViewHost.ReadOnly = ReadOnly;
+      runsView.ReadOnly = ReadOnly;
     }
 
     protected override void OnClosed(FormClosedEventArgs e) {
@@ -108,10 +118,8 @@ namespace HeuristicLab.Optimization.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ExecutionStateChanged), sender, e);
       else {
-        nameTextBox.Enabled = Content.ExecutionState != ExecutionState.Started;
-        descriptionTextBox.Enabled = Content.ExecutionState != ExecutionState.Started;
+        this.ReadOnly = Content.ExecutionState == ExecutionState.Started;
         SaveEnabled = Content.ExecutionState != ExecutionState.Started;
-        repetitionsNumericUpDown.Enabled = Content.ExecutionState != ExecutionState.Started;
         newAlgorithmButton.Enabled = openAlgorithmButton.Enabled = saveAlgorithmButton.Enabled = Content.ExecutionState != ExecutionState.Started;
         EnableDisableButtons();
       }
@@ -236,6 +244,8 @@ namespace HeuristicLab.Optimization.Views {
     }
     private void algorithmPanel_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
+      if (ReadOnly)
+        return;
       Type type = e.Data.GetData("Type") as Type;
       if ((type != null) && (typeof(IAlgorithm).IsAssignableFrom(type))) {
         if ((e.KeyState & 8) == 8) e.Effect = DragDropEffects.Copy;  // CTRL key
