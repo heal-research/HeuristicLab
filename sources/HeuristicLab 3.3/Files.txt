@@ -5,7 +5,6 @@ HeuristicLab.PluginInfrastructure:ICSharpCode.SharpZipLib.dll
 HeuristicLab.PluginInfrastructure:ICSharpCode.SharpZipLib License.txt
 HeuristicLab.Algorithms.EvolutionStrategy\3.3:HeuristicLab.Algorithms.EvolutionStrategy-3.3.dll
 HeuristicLab.Algorithms.GeneticAlgorithm\3.3:HeuristicLab.Algorithms.GeneticAlgorithm-3.3.dll
-HeuristicLab.Algorithms.GeneticAlgorithm.Views\3.3:HeuristicLab.Algorithms.GeneticAlgorithm.Views-3.3.dll
 HeuristicLab.Algorithms.LocalSearch\3.3:HeuristicLab.Algorithms.LocalSearch-3.3.dll
 HeuristicLab.Algorithms.MultipopulationAlgorithm\3.3:HeuristicLab.Algorithms.MultipopulationAlgorithm-3.3.dll
 HeuristicLab.Algorithms.ParticleSwarmOptimization\3.3:HeuristicLab.Algorithms.ParticleSwarmOptimization-3.3.dll
