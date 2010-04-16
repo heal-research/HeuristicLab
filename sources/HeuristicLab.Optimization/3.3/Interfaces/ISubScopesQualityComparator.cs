@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -19,14 +19,14 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
 
-namespace HeuristicLab.Problems.DataAnalysis.Views {
-  [Plugin("HeuristicLab.Problems.DataAnalysis.Views","3.3.0.3377")]
-  [PluginFile("HeuristicLab.Problems.DataAnalysis.Views-3.3.dll", PluginFileType.Assembly)]
-  public class HeuristicLabProblemsDataAnalysisViewsPlugin : PluginBase {
+namespace HeuristicLab.Optimization {
+  public interface ISubScopesQualityComparator {
+    ILookupParameter<DoubleValue> LeftSideParameter { get; }
+    ILookupParameter<ItemArray<DoubleValue>> RightSideParameter { get; }
+    ILookupParameter<BoolValue> ResultParameter { get; }
+    IValueLookupParameter<BoolValue> MaximizationParameter { get; }
   }
 }

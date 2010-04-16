@@ -79,6 +79,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab 3.3", "Heurist
 		{8FA6898D-E4B0-4E08-A6D6-F9F520E7959F} = {8FA6898D-E4B0-4E08-A6D6-F9F520E7959F}
 		{D767C38D-8014-46B0-9A32-03A3AECCE34A} = {D767C38D-8014-46B0-9A32-03A3AECCE34A}
 		{BF7D9494-A586-457B-8DF9-ED599F9E6A71} = {BF7D9494-A586-457B-8DF9-ED599F9E6A71}
+		{F409DD9E-1E9C-4EB1-AA3A-9F6E987C6E58} = {F409DD9E-1E9C-4EB1-AA3A-9F6E987C6E58}
 		{DE12659F-87C4-48E6-B2E3-4E73DD95A540} = {DE12659F-87C4-48E6-B2E3-4E73DD95A540}
 		{30DD3DA2-CA57-49DD-A5BA-50CEF19DB45F} = {30DD3DA2-CA57-49DD-A5BA-50CEF19DB45F}
 		{F5C0ECAC-EDBA-4024-872A-1F74AFCB20B4} = {F5C0ECAC-EDBA-4024-872A-1F74AFCB20B4}
@@ -243,6 +244,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Algorithms.ParticleSwarmOptimization-3.3", "HeuristicLab.Algorithms.ParticleSwarmOptimization\3.3\HeuristicLab.Algorithms.ParticleSwarmOptimization-3.3.csproj", "{2C429157-9C34-4DD3-9D5F-B444B751E39A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.DataAnalysis.Views-3.3", "HeuristicLab.Problems.DataAnalysis.Views\3.3\HeuristicLab.Problems.DataAnalysis.Views-3.3.csproj", "{799B0B38-E384-4A17-A73C-F211EB854592}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm-3.3", "HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm\3.3\HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm-3.3.csproj", "{F409DD9E-1E9C-4EB1-AA3A-9F6E987C6E58}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -1365,6 +1368,20 @@ Global
 		{799B0B38-E384-4A17-A73C-F211EB854592}.Services|Any CPU.ActiveCfg = Release|Any CPU
 		{799B0B38-E384-4A17-A73C-F211EB854592}.Services|x64.ActiveCfg = Release|x64
 		{799B0B38-E384-4A17-A73C-F211EB854592}.Services|x86.ActiveCfg = Release|x86
+		{F409DD9E-1E9C-4EB1-AA3A-9F6E987C6E58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F409DD9E-1E9C-4EB1-AA3A-9F6E987C6E58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F409DD9E-1E9C-4EB1-AA3A-9F6E987C6E58}.Debug|x64.ActiveCfg = Debug|x64
+		{F409DD9E-1E9C-4EB1-AA3A-9F6E987C6E58}.Debug|x64.Build.0 = Debug|x64
+		{F409DD9E-1E9C-4EB1-AA3A-9F6E987C6E58}.Debug|x86.ActiveCfg = Debug|x86
+		{F409DD9E-1E9C-4EB1-AA3A-9F6E987C6E58}.Debug|x86.Build.0 = Debug|x86
+		{F409DD9E-1E9C-4EB1-AA3A-9F6E987C6E58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F409DD9E-1E9C-4EB1-AA3A-9F6E987C6E58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F409DD9E-1E9C-4EB1-AA3A-9F6E987C6E58}.Release|x64.ActiveCfg = Release|Any CPU
+		{F409DD9E-1E9C-4EB1-AA3A-9F6E987C6E58}.Release|x86.ActiveCfg = Release|Any CPU
+		{F409DD9E-1E9C-4EB1-AA3A-9F6E987C6E58}.Services|Any CPU.ActiveCfg = Release|Any CPU
+		{F409DD9E-1E9C-4EB1-AA3A-9F6E987C6E58}.Services|Any CPU.Build.0 = Release|Any CPU
+		{F409DD9E-1E9C-4EB1-AA3A-9F6E987C6E58}.Services|x64.ActiveCfg = Release|Any CPU
+		{F409DD9E-1E9C-4EB1-AA3A-9F6E987C6E58}.Services|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

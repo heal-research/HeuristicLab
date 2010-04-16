@@ -30,18 +30,18 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Optimization.Operators {
   [Item("QualityComparator", "Compares two qualities and creates a boolean flag that indicates if the left side is better than the right side.")]
   [StorableClass]
-  public class QualityComparator : SingleSuccessorOperator {
-    public LookupParameter<DoubleValue> LeftSideParameter {
-      get { return (LookupParameter<DoubleValue>)Parameters["LeftSide"]; }
+  public class QualityComparator : SingleSuccessorOperator, IQualityComparator {
+    public ILookupParameter<DoubleValue> LeftSideParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters["LeftSide"]; }
     }
-    public ValueLookupParameter<DoubleValue> RightSideParameter {
-      get { return (ValueLookupParameter<DoubleValue>)Parameters["RightSide"]; }
+    public IValueLookupParameter<DoubleValue> RightSideParameter {
+      get { return (IValueLookupParameter<DoubleValue>)Parameters["RightSide"]; }
     }
-    public LookupParameter<BoolValue> ResultParameter {
-      get { return (LookupParameter<BoolValue>)Parameters["Result"]; }
+    public ILookupParameter<BoolValue> ResultParameter {
+      get { return (ILookupParameter<BoolValue>)Parameters["Result"]; }
     }
-    public ValueLookupParameter<BoolValue> MaximizationParameter {
-      get { return (ValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
+    public IValueLookupParameter<BoolValue> MaximizationParameter {
+      get { return (IValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
 
     public QualityComparator()
