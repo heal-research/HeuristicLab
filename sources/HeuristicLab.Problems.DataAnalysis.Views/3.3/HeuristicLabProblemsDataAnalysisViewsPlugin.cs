@@ -25,7 +25,7 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  [Plugin("HeuristicLab.Problems.DataAnalysis.Views","3.3.0.3373")]
+  [Plugin("HeuristicLab.Problems.DataAnalysis.Views","3.3.0.3376")]
   [PluginFile("HeuristicLab.Problems.DataAnalysis.Views-3.3.dll", PluginFileType.Assembly)]
   public class HeuristicLabProblemsDataAnalysisViewsPlugin : PluginBase {
   }
