@@ -30,6 +30,7 @@ using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Random;
 using HeuristicLab.Selection;
 
 namespace HeuristicLab.Algorithms.GeneticAlgorithm {

@@ -24,6 +24,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Collections {
   [Serializable]
@@ -121,7 +122,7 @@ namespace HeuristicLab.Collections {
       array.PropertyChanged += new PropertyChangedEventHandler(array_PropertyChanged);
     }
 
-    event EventHandler IObservableArray<T>.ReadOnlyViewChanged {
+    event EventHandler IContent.ReadOnlyViewChanged {
       add { }
       remove { }
     }

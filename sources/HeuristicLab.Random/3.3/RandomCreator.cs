@@ -21,11 +21,11 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Random;
 
-namespace HeuristicLab.Operators {
+namespace HeuristicLab.Random {
   /// <summary>
   /// An operator which creates a new Mersenne Twister pseudo random number generator.
   /// </summary>

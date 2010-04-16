@@ -21,20 +21,18 @@
 
 using System;
 using System.Drawing;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   /// <summary>
   /// Interface to represent (almost) every HeuristicLab object (an object, an operator,...).
   /// </summary>
-  public interface IItem : IDeepCloneable {
+  public interface IItem : IContent, IDeepCloneable {
     string ItemName { get; }
     string ItemDescription { get; }
     Image ItemImage { get; }
 
-    bool ReadOnlyView { get; set; }
-
     event EventHandler ItemImageChanged;
-    event EventHandler ReadOnlyViewChanged;
     event EventHandler ToStringChanged;
   }
 }

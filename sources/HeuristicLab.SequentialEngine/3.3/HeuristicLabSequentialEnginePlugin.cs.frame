@@ -30,8 +30,9 @@ namespace HeuristicLab.SequentialEngine {
   /// </summary>
   [Plugin("HeuristicLab.SequentialEngine", "3.3.0.$WCREV$")]
   [PluginFile("HeuristicLab.SequentialEngine-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Persistence", "3.3")]
+  [PluginDependency("HeuristicLab.Common", "3.2")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
+  [PluginDependency("HeuristicLab.Persistence", "3.3")]
   public class HeuristicLabSequentialEnginePlugin : PluginBase {
   }
 }

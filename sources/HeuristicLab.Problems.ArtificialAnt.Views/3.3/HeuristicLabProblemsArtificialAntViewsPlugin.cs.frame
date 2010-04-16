@@ -27,6 +27,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Problems.ArtificialAnt.Views {
   [Plugin("HeuristicLab.Problems.ArtificialAnt.Views","3.3.0.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.ArtificialAnt.Views-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Common", "3.2.0.0")]
   [PluginDependency("HeuristicLab.Core", "3.3.0.0")]
   [PluginDependency("HeuristicLab.Core.Views", "3.3.0.0")]
   [PluginDependency("HeuristicLab.Data", "3.3.0.0")]

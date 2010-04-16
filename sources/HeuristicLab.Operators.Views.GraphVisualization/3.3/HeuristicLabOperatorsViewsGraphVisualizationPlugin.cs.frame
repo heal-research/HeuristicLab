@@ -31,6 +31,7 @@ namespace HeuristicLab.Operators {
   [Plugin("HeuristicLab.Operators.Views.GraphVisualization", "3.3.0.$WCREV$")]
   [PluginFile("HeuristicLab.Operators.Views.GraphVisualization-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
+  [PluginDependency("HeuristicLab.Common", "3.2")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Core.Views", "3.3")]
   [PluginDependency("HeuristicLab.MainForm", "3.2")]

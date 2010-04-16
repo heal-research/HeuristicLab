@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Collections {
@@ -127,7 +128,7 @@ namespace HeuristicLab.Collections {
       dict.PropertyChanged += new PropertyChangedEventHandler(dict_PropertyChanged);
     }
 
-    event EventHandler IObservableCollection<KeyValuePair<TKey, TValue>>.ReadOnlyViewChanged {
+    event EventHandler IContent.ReadOnlyViewChanged {
       add { }
       remove { }
     }

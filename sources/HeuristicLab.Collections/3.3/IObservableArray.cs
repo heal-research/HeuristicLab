@@ -22,12 +22,10 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Collections {
-  public interface IObservableArray<T> : IList<T>, INotifyObservableArrayItemsChanged<T>, INotifyPropertyChanged {
-    bool ReadOnlyView { get; set; }
+  public interface IObservableArray<T> : IList<T>, INotifyObservableArrayItemsChanged<T>, INotifyPropertyChanged, IContent {
     int Length { get; }
-
-    event EventHandler ReadOnlyViewChanged;
   }
 }
