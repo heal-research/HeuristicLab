@@ -151,7 +151,7 @@ namespace HeuristicLab.MainForm {
       IView view = CreateDefaultView(content);
       if (view != null)
         view.ReadOnly = readOnly;
-      return null;
+      return view;
     }
 
     public static IView CreateView(Type viewType) {
