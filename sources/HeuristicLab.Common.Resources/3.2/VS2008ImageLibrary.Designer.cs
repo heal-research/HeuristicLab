@@ -263,6 +263,34 @@ namespace HeuristicLab.Common.Resources {
             }
         }
         
+        public static System.Drawing.Bitmap ExecutablePaused {
+            get {
+                object obj = ResourceManager.GetObject("ExecutablePaused", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        public static System.Drawing.Bitmap ExecutablePrepared {
+            get {
+                object obj = ResourceManager.GetObject("ExecutablePrepared", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        public static System.Drawing.Bitmap ExecutableStarted {
+            get {
+                object obj = ResourceManager.GetObject("ExecutableStarted", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        public static System.Drawing.Bitmap ExecutableStopped {
+            get {
+                object obj = ResourceManager.GetObject("ExecutableStopped", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         public static System.Drawing.Bitmap Expand {
             get {
                 object obj = ResourceManager.GetObject("Expand", resourceCulture);
