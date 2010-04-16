@@ -19,7 +19,6 @@
  */
 #endregion
 
-
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using System.Collections.Generic;
 using System;
@@ -27,9 +26,9 @@ using System.Linq;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols;
-using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols;
 using HeuristicLab.Data;
-namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
+using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("ArithmeticExpressionGrammar", "Represents a grammar for functional expressions using only arithmetic operations.")]
   public class ArithmeticExpressionGrammar : DefaultSymbolicExpressionGrammar {
@@ -44,7 +43,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
 
     [Storable]
-    private HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols.Variable variableSymbol;
+    private HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols.Variable variableSymbol;
 
     public ArithmeticExpressionGrammar()
       : base() {
@@ -57,10 +56,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       var mul = new Multiplication();
       var div = new Division();
       var constant = new Constant();
-      variableSymbol = new HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols.Variable();
+      variableSymbol = new HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols.Variable();
 
       var allSymbols = new List<Symbol>() { add, sub, mul, div, constant, variableSymbol };
       var functionSymbols = new List<Symbol>() { add, sub, mul, div };
+
       foreach (var symb in allSymbols)
         AddSymbol(symb);
 

@@ -69,6 +69,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -82,17 +83,31 @@
     <None Include="HeuristicLab.snk" />
     <None Include="HeuristicLabProblemsDataAnalysisPlugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.frame" />
+    <Compile Include="CsvFileParser.cs" />
+    <Compile Include="DataAnalysisProblem.cs" />
+    <Compile Include="DataAnalysisProblemData.cs" />
+    <Compile Include="DataFormatException.cs" />
     <Compile Include="Dataset.cs" />
     <Compile Include="Evaluators\SimpleEvaluator.cs" />
     <Compile Include="Evaluators\SimpleMSEEvaluator.cs" />
     <Compile Include="HeuristicLabProblemsDataAnalysisPlugin.cs" />
     <Compile Include="MatrixExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Symbolic\ArithmeticExpressionGrammar.cs" />
+    <Compile Include="Symbolic\SimpleArithmeticExpressionEvaluator.cs" />
+    <Compile Include="Symbolic\Symbols\Constant.cs" />
+    <Compile Include="Symbolic\Symbols\ConstantTreeNode.cs" />
+    <Compile Include="Symbolic\Symbols\Variable.cs" />
+    <Compile Include="Symbolic\Symbols\VariableTreeNode.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
       <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.2\HeuristicLab.Common.Resources-3.2.csproj">
+      <Project>{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}</Project>
+      <Name>HeuristicLab.Common.Resources-3.2</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Common\3.2\HeuristicLab.Common-3.2.csproj">
       <Project>{1FC004FC-59AF-4249-B1B6-FF25873A20E4}</Project>
@@ -125,6 +140,10 @@
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
+      <Project>{F4539FB6-4708-40C9-BE64-0A1390AEA197}</Project>
+      <Name>HeuristicLab.Random-3.3</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

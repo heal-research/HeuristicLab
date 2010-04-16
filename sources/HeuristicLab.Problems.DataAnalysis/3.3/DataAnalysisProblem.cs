@@ -26,39 +26,38 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Parameters;
 using HeuristicLab.Data;
-using HeuristicLab.Optimization;
 using HeuristicLab.Problems.DataAnalysis;
 using System.Drawing;
 using System.IO;
 
-namespace HeuristicLab.Problems.DataAnalysis.Regression {
-  [Item("RegressionProblem", "Represents a regression problem.")]
+namespace HeuristicLab.Problems.DataAnalysis {
+  [Item("DataAnalysisProblem", "Represents a data analysis problem.")]
   [Creatable("Problems")]
   [StorableClass]
-  public class RegressionProblem : ParameterizedNamedItem {
-    private const string RegressionProblemDataParameterName = "RegressionProblemData";
+  public class DataAnalysisProblem : ParameterizedNamedItem {
+    private const string DataAnalysisProblemDataParameterName = "DataAnalysisProblemData";
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }
     }
 
     #region Parameter Properties
-    public ValueParameter<RegressionProblemData> RegressionProblemDataParameter {
-      get { return (ValueParameter<RegressionProblemData>)Parameters[RegressionProblemDataParameterName]; }
+    public ValueParameter<DataAnalysisProblemData> DataAnalysisProblemDataParameter {
+      get { return (ValueParameter<DataAnalysisProblemData>)Parameters[DataAnalysisProblemDataParameterName]; }
     }
     #endregion
     #region properties
-    public RegressionProblemData RegressionProblemData {
-      get { return RegressionProblemDataParameter.Value; }
-      set { RegressionProblemDataParameter.Value = value; }
+    public DataAnalysisProblemData DataAnalysisProblemData {
+      get { return DataAnalysisProblemDataParameter.Value; }
+      set { DataAnalysisProblemDataParameter.Value = value; }
     }
     #endregion
 
-    public RegressionProblem()
+    public DataAnalysisProblem()
       : base() {
-      Parameters.Add(new ValueParameter<RegressionProblemData>(RegressionProblemDataParameterName, "The data set, target variable and input variables of the regression problem.", new RegressionProblemData()));
+      Parameters.Add(new ValueParameter<DataAnalysisProblemData>(DataAnalysisProblemDataParameterName, "The data set, target variable and input variables of the data analysis problem.", new DataAnalysisProblemData()));
     }
 
     [StorableConstructor]
-    private RegressionProblem(bool deserializing) : base() { }
+    private DataAnalysisProblem(bool deserializing) : base() { }
   }
 }

@@ -19,8 +19,8 @@
  */
 #endregion
 
-namespace HeuristicLab.Problems.DataAnalysis.Regression {
-  partial class RegressionProblemView {
+namespace HeuristicLab.Problems.DataAnalysis {
+  partial class DataAnalysisProblemView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -32,7 +32,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression {
     /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
     protected override void Dispose(bool disposing) {
       if (disposing) {
-        if (openFileDialog != null) openFileDialog.Dispose();
         if (components != null) components.Dispose();
       }
       base.Dispose(disposing);

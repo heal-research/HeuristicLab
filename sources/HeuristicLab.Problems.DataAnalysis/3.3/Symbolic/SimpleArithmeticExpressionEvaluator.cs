@@ -26,9 +26,9 @@ using HeuristicLab.Core;
 using System.Collections.Generic;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols;
-using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Symbols;
+using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
 
-namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("SimpleArithmeticExpressionEvaluator", "Default evaluator for arithmetic symbolic expression trees.")]
   public class SimpleArithmeticExpressionEvaluator {
@@ -81,11 +81,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
             return p;
           }
         case CodeSymbol.Dynamic: {
-            if (currentInstr.dynamicNode is VariableTreeNode) {
-              var variableTreeNode = currentInstr.dynamicNode as VariableTreeNode;
+            var variableTreeNode = currentInstr.dynamicNode as VariableTreeNode;
+            if (variableTreeNode != null) {
               return dataset[row, dataset.GetVariableIndex(variableTreeNode.VariableName)] * variableTreeNode.Weight;
-            } else if (currentInstr.dynamicNode is ConstantTreeNode) {
-              return ((ConstantTreeNode)currentInstr.dynamicNode).Value;
+            }
+            var constTreeNode = currentInstr.dynamicNode as ConstantTreeNode;
+            if (constTreeNode != null) {
+              return constTreeNode.Value;
             } else throw new NotSupportedException();
           }
         default: throw new NotSupportedException();

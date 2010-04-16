@@ -27,7 +27,7 @@ using System.Linq;
 using HeuristicLab.Data;
 using System.Text;
 
-namespace HeuristicLab.Problems.DataAnalysis.Regression {
+namespace HeuristicLab.Problems.DataAnalysis {
   public class CsvFileParser {
     private const string VARIABLENAMES = "VARIABLENAMES";
     private Tokenizer tokenizer;

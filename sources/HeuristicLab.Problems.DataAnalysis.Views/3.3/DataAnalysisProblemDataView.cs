@@ -25,22 +25,22 @@ using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
-namespace HeuristicLab.Problems.DataAnalysis.Regression {
-  [View("Regression Problem Data View")]
-  [Content(typeof(RegressionProblemData), true)]
-  public partial class RegressionProblemDataView : NamedItemView {
+namespace HeuristicLab.Problems.DataAnalysis {
+  [View("Data-Analysis Data View")]
+  [Content(typeof(DataAnalysisProblemData), true)]
+  public partial class DataAnalysisProblemDataView : NamedItemView {
     private OpenFileDialog openFileDialog;
 
-    public new RegressionProblemData Content {
-      get { return (RegressionProblemData)base.Content; }
+    public new DataAnalysisProblemData Content {
+      get { return (DataAnalysisProblemData)base.Content; }
       set { base.Content = value; }
     }
 
-    public RegressionProblemDataView() {
+    public DataAnalysisProblemDataView() {
       InitializeComponent();
     }
 
-    public RegressionProblemDataView(RegressionProblemData content)
+    public DataAnalysisProblemDataView(DataAnalysisProblemData content)
       : this() {
       Content = content;
     }
@@ -66,8 +66,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression {
       if (Content == null) {
         importButton.Enabled = false;
       } else {
-        //parameterCollectionView.Content = ((IParameterizedNamedItem)Content).Parameters;
-        //parameterCollectionView.Enabled = true;
         importButton.Enabled = true;
         this.datasetView.Content = this.Content.Dataset;
       }

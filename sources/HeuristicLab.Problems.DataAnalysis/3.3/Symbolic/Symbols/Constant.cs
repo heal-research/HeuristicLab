@@ -19,24 +19,34 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Drawing;
-using HeuristicLab.Common;
-using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Optimization;
-using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.Core;
+using HeuristicLab.Operators;
+using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Parameters;
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
+  [StorableClass]
+  [Item("Constant", "Represents a constant value.")]
+  public sealed class Constant : Symbol {
+    #region Propeties
+    private double minValue;
+    public double MinValue {
+      get { return minValue; }
+      set { minValue = value; }
+    }
+    private double maxValue;
+    public double MaxValue {
+      get { return maxValue; }
+      set { maxValue = value; }
+    }
+    #endregion
+    public Constant()
+      : base() {
+    }
 
-namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
-  public interface ISymbolicRegressionEvaluator : ISingleObjectiveEvaluator {
-    ILookupParameter<SymbolicExpressionTree> FunctionTreeParameter { get; }
-    ILookupParameter<DataAnalysisProblemData> RegressionProblemDataParameter { get; }
-    ILookupParameter<DoubleValue> NumberOfEvaluatedNodesParameter { get; }
+    public override SymbolicExpressionTreeNode CreateTreeNode() {
+      return new ConstantTreeNode(this);
+    }
   }
 }

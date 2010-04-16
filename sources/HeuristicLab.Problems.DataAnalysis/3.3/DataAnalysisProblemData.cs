@@ -26,15 +26,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Parameters;
 using HeuristicLab.Data;
-using HeuristicLab.Optimization;
 using HeuristicLab.Problems.DataAnalysis;
 using System.Drawing;
 using System.IO;
 
-namespace HeuristicLab.Problems.DataAnalysis.Regression {
-  [Item("RegressionProblemData", "Represents an item containing all data defining a regression problem.")]
+namespace HeuristicLab.Problems.DataAnalysis {
+  [Item("DataAnalysisProblemData", "Represents an item containing all data defining a data analysis problem.")]
   [StorableClass]
-  public class RegressionProblemData : NamedItem {
+  public class DataAnalysisProblemData : NamedItem {
     #region properties
     private Dataset dataset;
     [Storable]
@@ -108,7 +107,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression {
     }
     #endregion
 
-    public RegressionProblemData()
+    public DataAnalysisProblemData()
       : base() {
       dataset = new Dataset();
       targetVariable = new StringValue();
@@ -122,7 +121,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression {
     }
 
     [StorableConstructor]
-    private RegressionProblemData(bool deserializing) : base() { }
+    private DataAnalysisProblemData(bool deserializing) : base() { }
 
     #region events
     public event EventHandler InputVariablesChanged;
@@ -141,7 +140,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression {
     public virtual void ImportFromFile(string fileName) {
       var csvFileParser = new CsvFileParser();
       csvFileParser.Parse(fileName);
-      Name = "Regression Problem (imported from " + Path.GetFileName(fileName) + ")";
+      Name = "Data imported from " + Path.GetFileName(fileName);
       Dataset = new Dataset(csvFileParser.VariableNames, csvFileParser.Values);
       Dataset.Name = Path.GetFileName(fileName);
       TargetVariable = new StringValue(Dataset.VariableNames.First());

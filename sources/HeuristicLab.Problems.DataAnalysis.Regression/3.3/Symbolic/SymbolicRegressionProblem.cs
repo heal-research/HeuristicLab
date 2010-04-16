@@ -32,12 +32,13 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Problems.DataAnalysis.Regression;
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("SymbolicRegressionProblem", "Represents a symbolic regression problem.")]
   [Creatable("Problems")]
   [StorableClass]
-  public sealed class SymbolicRegressionProblem : RegressionProblem, ISingleObjectiveProblem {
+  public sealed class SymbolicRegressionProblem : DataAnalysisProblem, ISingleObjectiveProblem {
 
     #region Parameter Properties
     public ValueParameter<BoolValue> MaximizationParameter {
@@ -154,8 +155,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
 
       creator.SymbolicExpressionTreeParameter.ActualName = "SymbolicRegressionModel";
       evaluator.QualityParameter.ActualName = "TrainingMeanSquaredError";
-      RegressionProblemDataParameter.ValueChanged += new EventHandler(RegressionProblemDataParameter_ValueChanged);
-      RegressionProblemData.InputVariablesChanged += new EventHandler(RegressionProblemData_InputVariablesChanged);
+      DataAnalysisProblemDataParameter.ValueChanged += new EventHandler(DataAnalysisProblemDataParameter_ValueChanged);
+      DataAnalysisProblemData.InputVariablesChanged += new EventHandler(DataAnalysisProblemData_InputVariablesChanged);
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
       ParameterizeVisualizer();
@@ -163,12 +164,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       Initialize();
     }
 
-    void RegressionProblemDataParameter_ValueChanged(object sender, EventArgs e) {
-      RegressionProblemData.InputVariablesChanged += new EventHandler(RegressionProblemData_InputVariablesChanged);
+    void DataAnalysisProblemDataParameter_ValueChanged(object sender, EventArgs e) {
+      DataAnalysisProblemData.InputVariablesChanged += new EventHandler(DataAnalysisProblemData_InputVariablesChanged);
     }
 
-    void RegressionProblemData_InputVariablesChanged(object sender, EventArgs e) {
-      FunctionTreeGrammar.VariableNames = RegressionProblemData.InputVariables.Select(x => x.Value);
+    void DataAnalysisProblemData_InputVariablesChanged(object sender, EventArgs e) {
+      FunctionTreeGrammar.VariableNames = DataAnalysisProblemData.InputVariables.Select(x => x.Value);
     }
 
     [StorableConstructor]
@@ -262,7 +263,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
     private void ParameterizeEvaluator() {
       Evaluator.FunctionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
-      Evaluator.RegressionProblemDataParameter.ActualName = RegressionProblemDataParameter.Name;
+      Evaluator.RegressionProblemDataParameter.ActualName = DataAnalysisProblemDataParameter.Name;
     }
     private void ParameterizeVisualizer() {
       if (Visualizer != null) {
@@ -288,7 +289,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       }
       foreach (ISymbolicRegressionEvaluator op in Operators.OfType<ISymbolicRegressionEvaluator>()) {
         op.FunctionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
-        op.RegressionProblemDataParameter.ActualName = RegressionProblemDataParameter.Name;
+        op.RegressionProblemDataParameter.ActualName = DataAnalysisProblemDataParameter.Name;
         op.NumberOfEvaluatedNodesParameter.ActualName = NumberOfEvaluatedNodesParameter.Name;
       }
       foreach (SymbolicExpressionTreeCrossover op in Operators.OfType<SymbolicExpressionTreeCrossover>()) {

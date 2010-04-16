@@ -70,7 +70,6 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -84,28 +83,20 @@
     <None Include="HeuristicLab.snk" />
     <None Include="HeuristicLabProblemsDataAnalysisRegressionPlugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.frame" />
-    <Compile Include="RegressionProblemDataView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="RegressionProblemDataView.Designer.cs">
-      <DependentUpon>RegressionProblemDataView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="RegressionProblemData.cs" />
-    <Compile Include="CsvFileParser.cs" />
-    <Compile Include="DataFormatException.cs" />
-    <Compile Include="Symbolic\ArithmeticExpressionGrammar.cs" />
-    <Compile Include="Symbolic\SimpleArithmeticExpressionEvaluator.cs" />
-    <Compile Include="Symbolic\SymbolicRegressionMeanSquaredErrorEvaluator.cs" />
-    <Compile Include="Symbolic\SymbolicRegressionEvaluator.cs" />
-    <Compile Include="Symbolic\ISymbolicRegressionEvaluator.cs" />
-    <Compile Include="Symbolic\SymbolicRegressionProblem.cs" />
-    <Compile Include="RegressionProblem.cs" />
     <Compile Include="HeuristicLabProblemsDataAnalysisRegressionPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Symbolic\Symbols\Constant.cs" />
-    <Compile Include="Symbolic\Symbols\ConstantTreeNode.cs" />
-    <Compile Include="Symbolic\Symbols\Variable.cs" />
-    <Compile Include="Symbolic\Symbols\VariableTreeNode.cs" />
+    <Compile Include="Symbolic\ISymbolicRegressionEvaluator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Symbolic\SymbolicRegressionEvaluator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Symbolic\SymbolicRegressionMeanSquaredErrorEvaluator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Symbolic\SymbolicRegressionProblem.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
@@ -120,17 +111,9 @@
       <Project>{1FC004FC-59AF-4249-B1B6-FF25873A20E4}</Project>
       <Name>HeuristicLab.Common-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Core.Views\3.3\HeuristicLab.Core.Views-3.3.csproj">
-      <Project>{E226881D-315F-423D-B419-A766FE0D8685}</Project>
-      <Name>HeuristicLab.Core.Views-3.3</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
       <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
       <Name>HeuristicLab.Core-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Data.Views\3.3\HeuristicLab.Data.Views-3.3.csproj">
-      <Project>{72104A0B-90E7-42F3-9ABE-9BBBADD4B943}</Project>
-      <Name>HeuristicLab.Data.Views-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
       <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
@@ -140,29 +123,13 @@
       <Project>{125D3006-67F5-48CB-913E-73C0548F17FA}</Project>
       <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.MainForm.WindowsForms\3.2\HeuristicLab.MainForm.WindowsForms-3.2.csproj">
-      <Project>{AB687BBE-1BFE-476B-906D-44237135431D}</Project>
-      <Name>HeuristicLab.MainForm.WindowsForms-3.2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.MainForm\3.2\HeuristicLab.MainForm-3.2.csproj">
-      <Project>{3BD61258-31DA-4B09-89C0-4F71FEF5F05A}</Project>
-      <Name>HeuristicLab.MainForm-3.2</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
       <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
       <Name>HeuristicLab.Operators-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Optimization.Views\3.3\HeuristicLab.Optimization.Views-3.3.csproj">
-      <Project>{662B4B15-8F4D-4AE5-B3EB-D91C215F5AF2}</Project>
-      <Name>HeuristicLab.Optimization.Views-3.3</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
       <Project>{14AB8D24-25BC-400C-A846-4627AA945192}</Project>
       <Name>HeuristicLab.Optimization-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Parameters.Views\3.3\HeuristicLab.Parameters.Views-3.3.csproj">
-      <Project>{AE5B1CE5-9862-4D6F-A700-D72CD9AEA295}</Project>
-      <Name>HeuristicLab.Parameters.Views-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj">
       <Project>{56F9106A-079F-4C61-92F6-86A84C2D84B7}</Project>

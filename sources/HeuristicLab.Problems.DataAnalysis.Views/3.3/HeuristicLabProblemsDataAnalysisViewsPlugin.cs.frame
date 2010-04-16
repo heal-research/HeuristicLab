@@ -21,22 +21,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Drawing;
-using HeuristicLab.Common;
-using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Optimization;
-using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System.Text;
 using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Problems.DataAnalysis;
 
-namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
-  public interface ISymbolicRegressionEvaluator : ISingleObjectiveEvaluator {
-    ILookupParameter<SymbolicExpressionTree> FunctionTreeParameter { get; }
-    ILookupParameter<DataAnalysisProblemData> RegressionProblemDataParameter { get; }
-    ILookupParameter<DoubleValue> NumberOfEvaluatedNodesParameter { get; }
+namespace HeuristicLab.Problems.DataAnalysis.Views {
+  [Plugin("HeuristicLab.Problems.DataAnalysis.Views","3.3.0.$WCREV$")]
+  [PluginFile("HeuristicLab.Problems.DataAnalysis.Views-3.3.dll", PluginFileType.Assembly)]
+  public class HeuristicLabProblemsDataAnalysisViewsPlugin : PluginBase {
   }
 }

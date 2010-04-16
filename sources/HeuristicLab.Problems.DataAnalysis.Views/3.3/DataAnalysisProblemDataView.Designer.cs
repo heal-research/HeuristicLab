@@ -19,8 +19,8 @@
  */
 #endregion
 
-namespace HeuristicLab.Problems.DataAnalysis.Regression {
-  partial class RegressionProblemDataView {
+namespace HeuristicLab.Problems.DataAnalysis {
+  partial class DataAnalysisProblemDataView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>

@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace HeuristicLab.Problems.DataAnalysis.Regression {
+namespace HeuristicLab.Problems.DataAnalysis {
   public class DataFormatException : Exception {
     private int line;
     public int Line {
