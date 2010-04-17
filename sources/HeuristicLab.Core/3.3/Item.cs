@@ -30,7 +30,7 @@ namespace HeuristicLab.Core {
   /// </summary>
   [StorableClass]
   [Item("Item", "Base class for all HeuristicLab items.")]
-  public abstract class Item : IDeepCloneable, IItem {
+  public abstract class Item : DeepCloneable, IItem {
     public virtual string ItemName {
       get { return ItemAttribute.GetName(this.GetType()); }
     }
@@ -60,26 +60,13 @@ namespace HeuristicLab.Core {
     [StorableConstructor]
     protected Item(bool deserializing) { }
 
-
-    /// <summary>
-    /// Creates a deep clone of this instance.
-    /// </summary>
-    /// <remarks>
-    /// This method is the entry point for creating a deep clone of a whole object graph.
-    /// </remarks>
-    /// <returns>A clone of this instance.</returns>
-    public object Clone() {
-      return Clone(new Cloner());
-    }
-
     /// <summary>
     /// Clones the current instance (deep clone).
     /// </summary>
     /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
     /// <returns>The cloned object as <see cref="Variable"/>.</returns>
-    public virtual IDeepCloneable Clone(Cloner cloner) {
-      Item clone = (Item)Activator.CreateInstance(this.GetType());
-      cloner.RegisterClonedObject(this, clone);
+    public override IDeepCloneable Clone(Cloner cloner) {
+      Item clone = (Item)base.Clone(cloner);
       clone.readOnlyView = readOnlyView;
       return clone;
     }

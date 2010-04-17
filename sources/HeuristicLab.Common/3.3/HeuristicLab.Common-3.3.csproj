@@ -88,6 +88,7 @@
     <Compile Include="CancelEventArgs.cs" />
     <None Include="HeuristicLabCommonPlugin.cs.frame" />
     <Compile Include="Cloner.cs" />
+    <Compile Include="DeepCloneable.cs" />
     <Compile Include="IContent.cs" />
     <Compile Include="IDeepCloneable.cs" />
     <Compile Include="ReferenceEqualityComparer.cs" />

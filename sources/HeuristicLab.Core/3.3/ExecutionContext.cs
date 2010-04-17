@@ -26,7 +26,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
   [StorableClass]
-  public sealed class ExecutionContext : IDeepCloneable, IExecutionContext, IAtomicOperation {
+  public sealed class ExecutionContext : DeepCloneable, IExecutionContext, IAtomicOperation {
     [Storable]
     private IParameterizedItem parameterizedItem;
 
@@ -62,10 +62,7 @@ namespace HeuristicLab.Core {
       this.scope = scope;
     }
 
-    public object Clone() {
-      return Clone(new Cloner());
-    }
-    public IDeepCloneable Clone(Cloner cloner) {
+    public override IDeepCloneable Clone(Cloner cloner) {
       ExecutionContext clone = new ExecutionContext();
       cloner.RegisterClonedObject(this, clone);
       clone.parent = (IExecutionContext)cloner.Clone(parent);
