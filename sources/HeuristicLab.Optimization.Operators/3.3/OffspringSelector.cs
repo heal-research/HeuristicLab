@@ -37,7 +37,7 @@ namespace HeuristicLab.Optimization.Operators {
       get { return (ValueLookupParameter<IntValue>)Parameters["PopulationSize"]; }
     }
     public ValueLookupParameter<DoubleValue> MaximumSelectionPressureParameter {
-      get { return (ValueLookupParameter<DoubleValue>)Parameters["MaximiumSelectionPressure"]; }
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["MaximumSelectionPressure"]; }
     }
     public ValueLookupParameter<DoubleValue> SuccessRatioParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["SuccessRatio"]; }
@@ -48,8 +48,8 @@ namespace HeuristicLab.Optimization.Operators {
     public LookupParameter<DoubleValue> CurrentSuccessRatioParameter {
       get { return (LookupParameter<DoubleValue>)Parameters["CurrentSuccessRatio"]; }
     }
-    public SubScopesLookupParameter<BoolValue> SuccessfulOffspringParameter {
-      get { return (SubScopesLookupParameter<BoolValue>)Parameters["SuccessfulOffspring"]; }
+    public SelectedSubScopesLookupParameter<BoolValue> SuccessfulOffspringParameter {
+      get { return (SelectedSubScopesLookupParameter<BoolValue>)Parameters["SuccessfulOffspring"]; }
     }
     public LookupParameter<ItemList<IScope>> WinnersParameter {
       get { return (LookupParameter<ItemList<IScope>>)Parameters["Winners"]; }
@@ -73,7 +73,7 @@ namespace HeuristicLab.Optimization.Operators {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("SuccessRatio", "The ratio of successful offspring that has to be produced."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("SelectionPressure", "The amount of selection pressure currently necessary to fulfill the success ratio."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("CurrentSuccessRatio", "The current success ratio indicates how much of the successful offspring have already been generated."));
-      Parameters.Add(new SubScopesLookupParameter<BoolValue>("SuccessfulOffspring", "True if the offspring was successful, otherwise false."));
+      Parameters.Add(new SelectedSubScopesLookupParameter<BoolValue>("SuccessfulOffspring", "True if the offspring was successful, otherwise false."));
       Parameters.Add(new LookupParameter<ItemList<IScope>>("Winners", "Temporary store of the successful offspring."));
       Parameters.Add(new LookupParameter<ItemList<IScope>>("LuckyLosers", "Temporary store of the lucky losers."));
       Parameters.Add(new OperatorParameter("OffspringCreator", "The operator used to create new offspring."));
@@ -144,8 +144,8 @@ namespace HeuristicLab.Optimization.Operators {
         // more children required -> reduce left and start children generation again
         scope.SubScopes.Remove(parents);
         scope.SubScopes.Remove(children);
-        for (int i = 0; i < parents.SubScopes.Count; i++)
-          scope.SubScopes.Add(parents.SubScopes[i]);
+        while(parents.SubScopes.Count > 0)
+          scope.SubScopes.Add(parents.SubScopes[0]);
 
         IOperator moreOffspring = OffspringCreatorParameter.ActualValue as IOperator;
         if (moreOffspring == null) throw new InvalidOperationException(Name + ": More offspring are required, but no operator specified for creating them.");

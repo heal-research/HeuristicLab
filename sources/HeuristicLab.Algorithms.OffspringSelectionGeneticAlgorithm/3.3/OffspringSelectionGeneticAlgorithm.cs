@@ -37,7 +37,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
   /// <summary>
   /// An offspring selection genetic algorithm.
   /// </summary>
-  [Item("Offspring Selection Genetic Algorithm", "An offspring selection genetic algorithm (Affenzeller, M. and Wagner, S. 2005. Offspring Selection: A New Self-Adaptive Selection Scheme for Genetic Algorithms. Adaptive and Natural Computing Algorithms, pp. 218-221, Springer).")]
+  [Item("Offspring Selection Genetic Algorithm", "An offspring selection genetic algorithm (Affenzeller, M. et al. 2009. Genetic Algorithms and Genetic Programming - Modern Concepts and Practical Applications. CRC Press).")]
   [Creatable("Algorithms")]
   [StorableClass]
   public sealed class OffspringSelectionGeneticAlgorithm : EngineAlgorithm {
@@ -79,6 +79,24 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private ValueParameter<IntValue> MaximumGenerationsParameter {
       get { return (ValueParameter<IntValue>)Parameters["MaximumGenerations"]; }
     }
+    private ValueLookupParameter<DoubleValue> SuccessRatioParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["SuccessRatio"]; }
+    }
+    private ValueLookupParameter<DoubleValue> ComparisonFactorLowerBoundParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["ComparisonFactorLowerBound"]; }
+    }
+    private ValueLookupParameter<DoubleValue> ComparisonFactorUpperBoundParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["ComparisonFactorUpperBound"]; }
+    }
+    private ConstrainedValueParameter<IDiscreteDoubleValueModifier> ComparisonFactorModifierParameter {
+      get { return (ConstrainedValueParameter<IDiscreteDoubleValueModifier>)Parameters["ComparisonFactorModifier"]; }
+    }
+    private ValueLookupParameter<DoubleValue> MaximumSelectionPressureParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["MaximumSelectionPressure"]; }
+    }
+    private ValueLookupParameter<BoolValue> OffspringSelectionBeforeMutationParameter {
+      get { return (ValueLookupParameter<BoolValue>)Parameters["OffspringSelectionBeforeMutation"]; }
+    }
     #endregion
 
     #region Properties
@@ -118,6 +136,30 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       get { return MaximumGenerationsParameter.Value; }
       set { MaximumGenerationsParameter.Value = value; }
     }
+    private DoubleValue SuccessRatio {
+      get { return SuccessRatioParameter.Value; }
+      set { SuccessRatioParameter.Value = value; }
+    }
+    private DoubleValue ComparisonFactorLowerBound {
+      get { return ComparisonFactorLowerBoundParameter.Value; }
+      set { ComparisonFactorLowerBoundParameter.Value = value; }
+    }
+    private DoubleValue ComparisonFactorUpperBound {
+      get { return ComparisonFactorUpperBoundParameter.Value; }
+      set { ComparisonFactorUpperBoundParameter.Value = value; }
+    }
+    private IDiscreteDoubleValueModifier ComparisonFactorModifier {
+      get { return ComparisonFactorModifierParameter.Value; }
+      set { ComparisonFactorModifierParameter.Value = value; }
+    }
+    private DoubleValue MaximumSelectionPressure {
+      get { return MaximumSelectionPressureParameter.Value; }
+      set { MaximumSelectionPressureParameter.Value = value; }
+    }
+    private BoolValue OffspringSelectionBeforeMutation {
+      get { return OffspringSelectionBeforeMutationParameter.Value; }
+      set { OffspringSelectionBeforeMutationParameter.Value = value; }
+    }
     private RandomCreator RandomCreator {
       get { return (RandomCreator)OperatorGraph.InitialOperator; }
     }
@@ -131,8 +173,11 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private IEnumerable<ISelector> Selectors {
       get { return selectors; }
     }
+    private List<IDiscreteDoubleValueModifier> comparisonFactorModifiers;
     #endregion
 
+    [StorableConstructor]
+    private OffspringSelectionGeneticAlgorithm(bool deserializing) : base(deserializing) { }
     public OffspringSelectionGeneticAlgorithm()
       : base() {
       Parameters.Add(new ValueParameter<IntValue>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
@@ -144,6 +189,12 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new OptionalConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
       Parameters.Add(new ValueParameter<IntValue>("Elites", "The numer of elite solutions which are kept in each generation.", new IntValue(1)));
       Parameters.Add(new ValueParameter<IntValue>("MaximumGenerations", "The maximum number of generations which should be processed.", new IntValue(1000)));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("SuccessRatio", "The ratio of successful to total children that should be achieved.", new DoubleValue(1)));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("ComparisonFactorLowerBound", "The lower bound of the comparison factor (start).", new DoubleValue(0)));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("ComparisonFactorUpperBound", "The upper bound of the comparison factor (end).", new DoubleValue(1)));
+      Parameters.Add(new ConstrainedValueParameter<IDiscreteDoubleValueModifier>("ComparisonFactorModifier", "The operator used to modify the comparison factor."));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("MaximumSelectionPressure", "The maximum selection pressure that terminates the algorithm.", new DoubleValue(100)));
+      Parameters.Add(new ValueLookupParameter<BoolValue>("OffspringSelectionBeforeMutation", "True if the offspring selection step should be applied before mutation, false if it should be applied after mutation.", new BoolValue(false)));
 
       RandomCreator randomCreator = new RandomCreator();
       SolutionsCreator solutionsCreator = new SolutionsCreator();
@@ -160,6 +211,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       solutionsCreator.NumberOfSolutionsParameter.ActualName = PopulationSizeParameter.Name;
       solutionsCreator.Successor = mainLoop;
 
+      mainLoop.PopulationSizeParameter.ActualName = PopulationSizeParameter.Name;
       mainLoop.SelectorParameter.ActualName = SelectorParameter.Name;
       mainLoop.CrossoverParameter.ActualName = CrossoverParameter.Name;
       mainLoop.ElitesParameter.ActualName = ElitesParameter.Name;
@@ -171,8 +223,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
 
       Initialize();
     }
-    [StorableConstructor]
-    private OffspringSelectionGeneticAlgorithm(bool deserializing) : base(deserializing) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       OffspringSelectionGeneticAlgorithm clone = (OffspringSelectionGeneticAlgorithm)base.Clone(cloner);
@@ -191,7 +241,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       ParameterizeStochasticOperator(Problem.Visualizer);
       foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
       ParameterizeSolutionsCreator();
-      ParameterizeGeneticAlgorithmMainLoop();
+      ParameterizMainLoop();
       ParameterizeSelectors();
       UpdateCrossovers();
       UpdateMutators();
@@ -208,14 +258,14 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     protected override void Problem_EvaluatorChanged(object sender, EventArgs e) {
       ParameterizeStochasticOperator(Problem.Evaluator);
       ParameterizeSolutionsCreator();
-      ParameterizeGeneticAlgorithmMainLoop();
+      ParameterizMainLoop();
       ParameterizeSelectors();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.Problem_EvaluatorChanged(sender, e);
     }
     protected override void Problem_VisualizerChanged(object sender, EventArgs e) {
       ParameterizeStochasticOperator(Problem.Visualizer);
-      ParameterizeGeneticAlgorithmMainLoop();
+      ParameterizMainLoop();
       if (Problem.Visualizer != null) Problem.Visualizer.VisualizationParameter.ActualNameChanged += new EventHandler(Visualizer_VisualizationParameter_ActualNameChanged);
       base.Problem_VisualizerChanged(sender, e);
     }
@@ -234,17 +284,19 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     }
     private void PopulationSizeParameter_ValueChanged(object sender, EventArgs e) {
       PopulationSize.ValueChanged += new EventHandler(PopulationSize_ValueChanged);
+      MainLoop.PopulationSizeParameter.Value = new IntValue(PopulationSize.Value - Elites.Value);
       ParameterizeSelectors();
     }
     private void PopulationSize_ValueChanged(object sender, EventArgs e) {
+      MainLoop.PopulationSizeParameter.Value = new IntValue(PopulationSize.Value - Elites.Value);
       ParameterizeSelectors();
     }
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
-      ParameterizeGeneticAlgorithmMainLoop();
+      ParameterizMainLoop();
       ParameterizeSelectors();
     }
     private void Visualizer_VisualizationParameter_ActualNameChanged(object sender, EventArgs e) {
-      ParameterizeGeneticAlgorithmMainLoop();
+      ParameterizMainLoop();
     }
     #endregion
 
@@ -253,6 +305,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private void Initialize() {
       InitializeSelectors();
       UpdateSelectors();
+      InitializeComparisonFactorModifiers();
+      UpdateComparisonFactorModifiers();
       PopulationSizeParameter.ValueChanged += new EventHandler(PopulationSizeParameter_ValueChanged);
       PopulationSize.ValueChanged += new EventHandler(PopulationSize_ValueChanged);
       ElitesParameter.ValueChanged += new EventHandler(ElitesParameter_ValueChanged);
@@ -269,7 +323,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       SolutionsCreator.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
       SolutionsCreator.SolutionCreatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
     }
-    private void ParameterizeGeneticAlgorithmMainLoop() {
+    private void ParameterizMainLoop() {
       MainLoop.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
       MainLoop.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
       MainLoop.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
@@ -287,6 +341,11 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       selectors.AddRange(ApplicationManager.Manager.GetInstances<ISelector>().Where(x => !(x is IMultiObjectiveSelector)).OrderBy(x => x.Name));
       ParameterizeSelectors();
     }
+    private void InitializeComparisonFactorModifiers() {
+      comparisonFactorModifiers = new List<IDiscreteDoubleValueModifier>();
+      comparisonFactorModifiers.AddRange(ApplicationManager.Manager.GetInstances<IDiscreteDoubleValueModifier>().OrderBy(x => x.Name));
+      ParameterizeComparisonFactorModifiers();
+    }
     private void ParameterizeSelectors() {
       foreach (ISelector selector in Selectors) {
         selector.CopySelected = new BoolValue(true);
@@ -298,6 +357,16 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
           selector.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
           selector.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
         }
+      }
+    }
+    private void ParameterizeComparisonFactorModifiers() {
+      foreach (IDiscreteDoubleValueModifier modifier in comparisonFactorModifiers) {
+        modifier.IndexParameter.ActualName = "Generations"; // FIXME: hmmm, not so good, this variable is defined within the main loop
+        modifier.EndIndexParameter.ActualName = MaximumGenerationsParameter.Name;
+        modifier.EndValueParameter.ActualName = ComparisonFactorUpperBoundParameter.Name;
+        modifier.StartIndexParameter.Value = new IntValue(0);
+        modifier.StartValueParameter.ActualName = ComparisonFactorLowerBoundParameter.Name;
+        modifier.ValueParameter.ActualName = "ComparisonFactor"; // FIXME: hmmm, not so good, this variable is defined within the main loop
       }
     }
     private void UpdateSelectors() {
@@ -313,6 +382,16 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
         ISelector selector = SelectorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldSelector.GetType());
         if (selector != null) SelectorParameter.Value = selector;
       }
+    }
+    private void UpdateComparisonFactorModifiers() {
+      IDiscreteDoubleValueModifier oldModifier = ComparisonFactorModifier;
+      ComparisonFactorModifierParameter.ValidValues.Clear();
+      foreach (IDiscreteDoubleValueModifier modifier in comparisonFactorModifiers)
+        ComparisonFactorModifierParameter.ValidValues.Add(modifier);
+      if (oldModifier != null) {
+        IDiscreteDoubleValueModifier modifier = ComparisonFactorModifierParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldModifier.GetType());
+        if (modifier != null) ComparisonFactorModifierParameter.Value = modifier;
+      } else if (ComparisonFactorModifierParameter.ValidValues.Count > 0) ComparisonFactorModifierParameter.Value = ComparisonFactorModifierParameter.ValidValues.First();
     }
     private void UpdateCrossovers() {
       ICrossover oldCrossover = CrossoverParameter.Value;
