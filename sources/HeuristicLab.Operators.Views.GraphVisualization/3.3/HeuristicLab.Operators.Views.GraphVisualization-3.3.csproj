@@ -85,34 +85,40 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HeuristicLabOperatorsViewsGraphVisualizationPlugin.cs" />
-    <Compile Include="OperatorGraphView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OperatorGraphView.Designer.cs">
-      <DependentUpon>OperatorGraphView.cs</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
     <None Include="HeuristicLabOperatorsViewsGraphVisualizationPlugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.frame" />
-    <Compile Include="GraphVisualizationInfoView.cs">
+    <Compile Include="General\GraphVisualizationInfo.cs" />
+    <Compile Include="General\GraphVisualizationInfoView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GraphVisualizationInfoView.Designer.cs">
+    <Compile Include="General\GraphVisualizationInfoView.Designer.cs">
       <DependentUpon>GraphVisualizationInfoView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Model\IOperatorShapeInfo.cs" />
-    <Compile Include="Model\OperatorShapeInfo.cs" />
-    <Compile Include="Model\GraphVisualizationInfo.cs" />
-    <Compile Include="BidirectionalLookup.cs" />
-    <Compile Include="Model\IShapeInfo.cs" />
-    <Compile Include="Model\OperatorShape.cs" />
-    <Compile Include="Model\ShapeInfo.cs">
+    <Compile Include="General\ConnectionInfo.cs" />
+    <Compile Include="General\IConnectionInfo.cs" />
+    <Compile Include="General\IGraphVisualizationInfo.cs" />
+    <Compile Include="OperatorGraphVisualization\IOperatorShapeInfo.cs" />
+    <Compile Include="OperatorGraphVisualization\OperatorGraphView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OperatorGraphVisualization\OperatorGraphView.Designer.cs">
+      <DependentUpon>OperatorGraphView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OperatorGraphVisualization\OperatorGraphVisualizationInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\ShapeInfoFactory.cs" />
+    <Compile Include="OperatorGraphVisualization\OperatorShapeInfo.cs" />
+    <Compile Include="BidirectionalLookup.cs" />
+    <Compile Include="General\IShapeInfo.cs" />
+    <Compile Include="OperatorGraphVisualization\OperatorShape.cs" />
+    <Compile Include="General\ShapeInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="OperatorGraphVisualization\OperatorShapeInfoFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">

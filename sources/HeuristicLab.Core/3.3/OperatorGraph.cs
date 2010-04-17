@@ -89,9 +89,18 @@ namespace HeuristicLab.Core {
     [StorableConstructor]
     protected OperatorGraph(bool deserializing) : base(deserializing) { }
 
+    //mkommend: IMPROTANT DO NOT REMOVE THIS PRIVATE EVENT
+    //needed to register OperatorGraph events in GraphVisualizationInfo
+    public event EventHandler DeserializationFinished;
+    private void OnOperatorGraphDeserializationFinished() {
+      EventHandler handler = DeserializationFinished;
+      if(handler != null)
+        handler(this,EventArgs.Empty);
+    }
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
       RegisterOperatorsEvents();
+      OnOperatorGraphDeserializationFinished();
     }
 
     /// <summary>
