@@ -117,10 +117,11 @@ namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
       set { throw new NotImplementedException(); }
     }
 
+#pragma warning disable 67
     public event EventHandler ItemImageChanged;
     public event EventHandler ReadOnlyViewChanged;
     public event EventHandler ToStringChanged;
-
+#pragma warning restore 67
     #endregion
 
     #region IDeepCloneable Members

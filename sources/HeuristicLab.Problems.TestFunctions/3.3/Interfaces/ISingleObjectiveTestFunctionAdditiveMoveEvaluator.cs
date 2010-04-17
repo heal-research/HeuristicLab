@@ -27,7 +27,5 @@ using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.TestFunctions {
   public interface ISingleObjectiveTestFunctionAdditiveMoveEvaluator : ISingleObjectiveTestFunctionMoveEvaluator, IAdditiveRealVectorMoveOperator {
-    ILookupParameter<RealVector> RealVectorParameter { get; }
-    ILookupParameter<AdditiveMove> AdditiveMoveParameter { get; }
   }
 }
