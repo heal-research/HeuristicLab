@@ -26,14 +26,13 @@ using System.Windows.Forms;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.MainForm.WindowsForms {
-  public sealed partial class ViewHost : UserControl {
+  public sealed partial class ViewHost : View {
     private Dictionary<Type, IView> cachedViews;
     public ViewHost() {
       InitializeComponent();
-      viewType = null;
-      content = null;
       cachedViews = new Dictionary<Type, IView>();
-      Initialize();
+      viewType = null;
+      Content = null;
     }
     public ViewHost(bool readOnly)
       : this() {
@@ -45,9 +44,9 @@ namespace HeuristicLab.MainForm.WindowsForms {
       get { return this.viewType; }
       set {
         if (viewType != value) {
-          if (value != null && !ViewCanShowContent(value, content))
+          if (value != null && !ViewCanShowContent(value, Content))
             throw new ArgumentException(string.Format("View \"{0}\" cannot display content \"{1}\".",
-                                                      value, content.GetType()));
+                                                      value, Content.GetType()));
           viewType = value;
           UpdateView();
         }
@@ -56,15 +55,17 @@ namespace HeuristicLab.MainForm.WindowsForms {
 
     private object content;
     public object Content {
-      get { return content; }
+      get { return this.content; }
       set {
-        if (value != content) {
-          content = value;
-          viewContextMenuStrip.Item = content;
-          cachedViews.Clear();
+        if (value != this.content) {
+          if (value == null || this.content == null || value.GetType() != this.content.GetType())
+            cachedViews.Clear();
+          viewContextMenuStrip.Item = value;
           this.viewsLabel.Enabled = value != null;
-          Initialize();
+          this.content = value;
+          this.OnContentChanged();
         }
+
       }
     }
 
@@ -73,41 +74,19 @@ namespace HeuristicLab.MainForm.WindowsForms {
       set {
         this.SuspendRepaint();
         base.Enabled = value;
-        if (Content != null && value)
-          this.viewsLabel.Enabled = value;
+        this.viewsLabel.Enabled = value;
         this.ResumeRepaint(true);
       }
     }
-    private bool readOnly;
-    public bool ReadOnly {
-      get { return this.readOnly; }
-      set {
-        if (InvokeRequired) {
-          Action<bool> action = delegate(bool b) { this.ReadOnly = b; };
-          Invoke(action, value);
-        } else {
-          if (value != readOnly) {
-            readOnly = value;
-            OnReadOnlyChanged();
-          }
-        }
-      }
+
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      foreach (IView view in cachedViews.Values)
+        view.ReadOnly = this.ReadOnly;
     }
 
-    public event EventHandler ReadOnlyChanged;
-    private void OnReadOnlyChanged() {
-      if (InvokeRequired)
-        Invoke((MethodInvoker)OnReadOnlyChanged);
-      else {
-        EventHandler handler = ReadOnlyChanged;
-        if (handler != null)
-          handler(this, EventArgs.Empty);
-        foreach (IView view in cachedViews.Values)
-          view.ReadOnly = this.readOnly;
-      }
-    }
-
-    private void Initialize() {
+    private void OnContentChanged() {
+      messageLabel.Visible = false;
       viewsLabel.Visible = false;
       viewPanel.Visible = false;
       if (viewPanel.Controls.Count > 0) viewPanel.Controls[0].Dispose();
@@ -128,23 +107,29 @@ namespace HeuristicLab.MainForm.WindowsForms {
       }
     }
 
+
     private void UpdateView() {
-      if (viewPanel.Controls.Count > 0) viewPanel.Controls[0].Dispose();
       viewPanel.Controls.Clear();
 
-      if (viewType == null || content == null)
+      if (viewType == null || Content == null)
         return;
 
-      if (!ViewCanShowContent(viewType, content))
+      if (!ViewCanShowContent(viewType, Content))
         throw new InvalidOperationException(string.Format("View \"{0}\" cannot display content \"{1}\".",
                                                           viewType, Content.GetType()));
 
       UpdateActiveMenuItem();
-      cachedViews.Clear();
-      Control view = (Control)MainFormManager.CreateView(viewType, Content, ReadOnly);
-      cachedViews.Add(viewType, ((IView)view));
-      view.Dock = DockStyle.Fill;
-      viewPanel.Controls.Add(view);
+      IView view;
+      if (cachedViews.ContainsKey(ViewType))
+        view = cachedViews[ViewType];
+      else {
+        view = MainFormManager.CreateView(viewType, Content, ReadOnly);
+        cachedViews.Add(viewType, ((IView)view));
+      }
+
+      Control control = (Control)view;
+      control.Dock = DockStyle.Fill;
+      viewPanel.Controls.Add(control);
       viewPanel.Visible = true;
     }
 
