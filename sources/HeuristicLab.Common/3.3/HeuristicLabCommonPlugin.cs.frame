@@ -28,8 +28,8 @@ namespace HeuristicLab.Common {
   /// <summary>
   /// Plugin class for HeuristicLab.Common plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Common", "3.2.0.$WCREV$")]
-  [PluginFile("HeuristicLab.Common-3.2.dll", PluginFileType.Assembly)]
+  [Plugin("HeuristicLab.Common", "3.3.0.$WCREV$")]
+  [PluginFile("HeuristicLab.Common-3.3.dll", PluginFileType.Assembly)]
   public class HeuristicLabCommonPlugin : PluginBase {
   }
 }

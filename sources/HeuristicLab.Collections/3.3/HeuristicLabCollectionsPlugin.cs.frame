@@ -27,7 +27,7 @@ namespace HeuristicLab.Collections {
   /// </summary>
   [Plugin("HeuristicLab.Collections", "3.3.0.$WCREV$")]
   [PluginFile("HeuristicLab.Collections-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Common", "3.2")]
+  [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Persistence", "3.3")]
   public class HeuristicLabCollectionsPlugin : PluginBase {
   }
