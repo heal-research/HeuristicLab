@@ -48,7 +48,7 @@ namespace HeuristicLab.Common {
     /// cloned objects.</param>
     /// <returns>A clone of this instance.</returns>
     public virtual IDeepCloneable Clone(Cloner cloner) {
-      DeepCloneable clone = (DeepCloneable)Activator.CreateInstance(this.GetType());
+      DeepCloneable clone = (DeepCloneable)Activator.CreateInstance(this.GetType(),true);
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
