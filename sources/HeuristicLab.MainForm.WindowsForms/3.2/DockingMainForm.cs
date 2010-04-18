@@ -69,7 +69,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       DockForm form;
       IContentView contentView = view as IContentView;
       if (ShowViewsInViewHost && contentView != null && contentView.GetType() != typeof(ViewHost)) {
-        ViewHost viewHost = new ViewHost(contentView.Content);
+        ViewHost viewHost = new ViewHost(contentView);
         form = new DockForm(viewHost);
       } else
         form = new DockForm(view);

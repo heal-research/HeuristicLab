@@ -57,7 +57,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private bool readOnly;
     public virtual bool ReadOnly {
       get { return this.readOnly; }
-       set {
+      set {
         if (InvokeRequired) {
           Action<bool> action = delegate(bool b) { this.ReadOnly = b; };
           Invoke(action, value);
@@ -207,9 +207,15 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     public void SuspendRepaint() {
-      ((Control)this).SuspendRepaint();
+      if (InvokeRequired)
+        Invoke((MethodInvoker)SuspendRepaint);
+      else
+        ((Control)this).SuspendRepaint();
     }
     public void ResumeRepaint(bool refresh) {
+      if (InvokeRequired)
+        Invoke((Action<bool>)ResumeRepaint,refresh);
+      else
       ((Control)this).ResumeRepaint(refresh);
     }
   }

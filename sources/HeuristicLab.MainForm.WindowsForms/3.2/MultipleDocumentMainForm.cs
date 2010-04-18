@@ -75,7 +75,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       Form form;
       IContentView contentView = view as IContentView;
       if (ShowViewsInViewHost && contentView != null && contentView.GetType() != typeof(ViewHost)) {
-        ViewHost viewHost = new ViewHost(contentView.Content);
+        ViewHost viewHost = new ViewHost(contentView);
         form = new DocumentForm(viewHost);
       } else
         form = new DocumentForm(view);

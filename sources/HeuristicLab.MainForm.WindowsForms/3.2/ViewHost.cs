@@ -27,7 +27,7 @@ using HeuristicLab.MainForm;
 
 namespace HeuristicLab.MainForm.WindowsForms {
   [Content(typeof(object))]
-  public sealed partial class ViewHost : ContentView {
+  public sealed partial class ViewHost : AsynchronousContentView {
     private Dictionary<Type, IContentView> cachedViews;
     public ViewHost() {
       InitializeComponent();
@@ -40,6 +40,13 @@ namespace HeuristicLab.MainForm.WindowsForms {
     public ViewHost(object content)
       : this() {
       this.Content = content;
+    }
+
+    public ViewHost(IContentView contentView) :this(){
+      this.viewType = contentView.GetType();
+      this.Content = contentView.Content;
+      this.cachedViews.Add(contentView.GetType(), contentView);
+      this.UpdateView();
     }
 
     private Type viewType;
@@ -87,8 +94,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
       messageLabel.Visible = false;
       viewsLabel.Visible = false;
       viewPanel.Visible = false;
-      if (viewPanel.Controls.Count > 0) viewPanel.Controls[0].Dispose();
-      viewPanel.Controls.Clear();
 
       if (Content != null) {
         if (viewContextMenuStrip.Items.Count == 0)

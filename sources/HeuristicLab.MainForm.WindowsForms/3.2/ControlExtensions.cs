@@ -31,11 +31,18 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private const int WM_SETREDRAW = 11;
 
     public static void SuspendRepaint(this Control control) {
-      SendMessage(control.Handle, WM_SETREDRAW, false, 0);
+      if (control.InvokeRequired)
+        control.Invoke((Action<Control>)((c) => { c.SuspendRepaint(); }));
+      else
+        SendMessage(control.Handle, WM_SETREDRAW, false, 0);
     }
     public static void ResumeRepaint(this Control control, bool refresh) {
-      SendMessage(control.Handle, WM_SETREDRAW, true, 0);
-      if (refresh) control.Refresh();
+      if (control.InvokeRequired)
+        control.Invoke((Action<Control, bool>)((c, b) => { c.ResumeRepaint(b); }));
+      else {
+        SendMessage(control.Handle, WM_SETREDRAW, true, 0);
+        if (refresh) control.Refresh();
+      }
     }
   }
 }
