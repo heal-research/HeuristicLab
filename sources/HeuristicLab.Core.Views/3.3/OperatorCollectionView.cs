@@ -5,7 +5,7 @@ using HeuristicLab.MainForm;
 namespace HeuristicLab.Core.Views {
   [View("OperatorCollection View")]
   [Content(typeof(OperatorCollection), true)]
-  [Content(typeof(IObservableCollection<IOperator>), false)]
+  [Content(typeof(IItemCollection<IOperator>), false)]
   public partial class OperatorCollectionView : ItemCollectionView<IOperator> {
     protected TypeSelectorDialog typeSelectorDialog;
 
@@ -23,7 +23,7 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     /// <remarks>Calls <see cref="VariablesScopeView()"/>.</remarks>
     /// <param name="scope">The scope whose variables should be represented visually.</param>
-    public OperatorCollectionView(IObservableCollection<IOperator> content)
+    public OperatorCollectionView(IItemCollection<IOperator> content)
       : this() {
       Content = content;
     }

@@ -27,7 +27,7 @@ using HeuristicLab.MainForm;
 namespace HeuristicLab.Core.Views {
   [View("ParameterCollection View")]
   [Content(typeof(ParameterCollection), true)]
-  [Content(typeof(IObservableKeyedCollection<string, IParameter>), false)]
+  [Content(typeof(IKeyedItemCollection<string, IParameter>), false)]
   public partial class ParameterCollectionView : NamedItemCollectionView<IParameter> {
     protected CreateParameterDialog createParameterDialog;
     /// <summary>
@@ -44,7 +44,7 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     /// <remarks>Calls <see cref="VariablesScopeView()"/>.</remarks>
     /// <param name="scope">The scope whose variables should be represented visually.</param>
-    public ParameterCollectionView(IObservableKeyedCollection<string, IParameter> content)
+    public ParameterCollectionView(IKeyedItemCollection<string, IParameter> content)
       : this() {
       Content = content;
     }

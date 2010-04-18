@@ -36,7 +36,7 @@ namespace HeuristicLab.Core.Views {
   public sealed partial class OperatorTreeView : ItemView {
     private Dictionary<IValueParameter<IOperator>, List<TreeNode>> opParamNodeTable;
     private Dictionary<IOperator, List<TreeNode>> operatorNodeTable;
-    private Dictionary<IObservableKeyedCollection<string, IParameter>, IOperator> parametersOperatorTable;
+    private Dictionary<IKeyedItemCollection<string, IParameter>, IOperator> parametersOperatorTable;
 
     /// <summary>
     /// Gets or sets the operator graph to represent visually.
@@ -67,7 +67,7 @@ namespace HeuristicLab.Core.Views {
       graphTreeView.Sorted = true;
       opParamNodeTable = new Dictionary<IValueParameter<IOperator>, List<TreeNode>>();
       operatorNodeTable = new Dictionary<IOperator, List<TreeNode>>();
-      parametersOperatorTable = new Dictionary<IObservableKeyedCollection<string, IParameter>, IOperator>();
+      parametersOperatorTable = new Dictionary<IKeyedItemCollection<string, IParameter>, IOperator>();
       Caption = "Operator";
     }
     /// <summary>
@@ -290,7 +290,7 @@ namespace HeuristicLab.Core.Views {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<IParameter>(Parameters_ItemsAdded), sender, e);
       else {
-        IObservableKeyedCollection<string, IParameter> coll = (IObservableKeyedCollection<string, IParameter>)sender;
+        IKeyedItemCollection<string, IParameter> coll = (IKeyedItemCollection<string, IParameter>)sender;
         IOperator op = parametersOperatorTable[coll];
         AddParameterNodes(op, e.Items);
       }
@@ -306,7 +306,7 @@ namespace HeuristicLab.Core.Views {
         Invoke(new CollectionItemsChangedEventHandler<IParameter>(Parameters_ItemsReplaced), sender, e);
       else {
         RemoveParameterNodes(e.Items);
-        IObservableKeyedCollection<string, IParameter> coll = (IObservableKeyedCollection<string, IParameter>)sender;
+        IKeyedItemCollection<string, IParameter> coll = (IKeyedItemCollection<string, IParameter>)sender;
         IOperator op = parametersOperatorTable[coll];
         AddParameterNodes(op, e.Items);
       }
@@ -316,7 +316,7 @@ namespace HeuristicLab.Core.Views {
         Invoke(new CollectionItemsChangedEventHandler<IParameter>(Parameters_CollectionReset), sender, e);
       else {
         RemoveParameterNodes(e.Items);
-        IObservableKeyedCollection<string, IParameter> coll = (IObservableKeyedCollection<string, IParameter>)sender;
+        IKeyedItemCollection<string, IParameter> coll = (IKeyedItemCollection<string, IParameter>)sender;
         IOperator op = parametersOperatorTable[coll];
         AddParameterNodes(op, e.Items);
       }

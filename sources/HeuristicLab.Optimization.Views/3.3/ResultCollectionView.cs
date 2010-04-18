@@ -28,7 +28,7 @@ using HeuristicLab.MainForm;
 namespace HeuristicLab.Optimization.Views {
   [View("ResultCollection View")]
   [Content(typeof(ResultCollection), true)]
-  [Content(typeof(IObservableKeyedCollection<string, IResult>), false)]
+  [Content(typeof(IKeyedItemCollection<string, IResult>), false)]
   public partial class ResultCollectionView : NamedItemCollectionView<IResult> {
     public override bool ReadOnly {
       get { return base.ReadOnly; }
@@ -49,7 +49,7 @@ namespace HeuristicLab.Optimization.Views {
     /// </summary>
     /// <remarks>Calls <see cref="VariablesScopeView()"/>.</remarks>
     /// <param name="scope">The scope whose variables should be represented visually.</param>
-    public ResultCollectionView(IObservableKeyedCollection<string, IResult> content)
+    public ResultCollectionView(IKeyedItemCollection<string, IResult> content)
       : this() {
       Content = content;
     }

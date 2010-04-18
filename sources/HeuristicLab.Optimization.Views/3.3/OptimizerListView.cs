@@ -21,13 +21,14 @@
 
 using System.Windows.Forms;
 using HeuristicLab.Collections;
+using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Optimization.Views {
   [View("OptimizerList View")]
   [Content(typeof(OptimizerList), true)]
-  [Content(typeof(IObservableList<IOptimizer>), false)]
+  [Content(typeof(IItemList<IOptimizer>), false)]
   public partial class OptimizerListView : ItemListView<IOptimizer> {
     protected TypeSelectorDialog typeSelectorDialog;
 
@@ -45,7 +46,7 @@ namespace HeuristicLab.Optimization.Views {
     /// </summary>
     /// <remarks>Calls <see cref="VariablesScopeView()"/>.</remarks>
     /// <param name="scope">The scope whose variables should be represented visually.</param>
-    public OptimizerListView(IObservableList<IOptimizer> content)
+    public OptimizerListView(IItemList<IOptimizer> content)
       : this() {
       Content = content;
     }

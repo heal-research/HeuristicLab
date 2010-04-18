@@ -33,15 +33,15 @@ namespace HeuristicLab.Core.Views {
   /// </summary>
   [View("ItemList View")]
   [Content(typeof(ItemList<>), true)]
-  [Content(typeof(IObservableList<>), false)]
+  [Content(typeof(IItemList<>), false)]
   public partial class ItemListView<T> : AsynchronousContentView where T : class, IItem {
     /// <summary>
     /// Gets or sets the scope whose variables to represent visually.
     /// </summary>
     /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
     /// No won data storage present.</remarks>
-    public new IObservableList<T> Content {
-      get { return (IObservableList<T>)base.Content; }
+    public new IItemList<T> Content {
+      get { return (IItemList<T>)base.Content; }
       set { base.Content = value; }
     }
 
@@ -56,7 +56,7 @@ namespace HeuristicLab.Core.Views {
       InitializeComponent();
       Caption = "Item List";
     }
-    public ItemListView(IObservableList<T> content)
+    public ItemListView(IItemList<T> content)
       : this() {
       Content = content;
     }

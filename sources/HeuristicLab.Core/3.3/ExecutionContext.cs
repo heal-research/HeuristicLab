@@ -36,7 +36,7 @@ namespace HeuristicLab.Core {
       get { return parent; }
     }
 
-    public IObservableKeyedCollection<string, IParameter> Parameters {
+    public IKeyedItemCollection<string, IParameter> Parameters {
       get { return parameterizedItem.Parameters; }
     }
 

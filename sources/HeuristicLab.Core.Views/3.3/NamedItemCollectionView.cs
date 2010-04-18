@@ -28,8 +28,8 @@ namespace HeuristicLab.Core.Views {
   [View("NamedItemCollection View")]
   [Content(typeof(NamedItemCollection<>), true)]
   public partial class NamedItemCollectionView<T> : ItemCollectionView<T> where T : class, INamedItem {
-    public new IObservableKeyedCollection<string, T> Content {
-      get { return (IObservableKeyedCollection<string, T>)base.Content; }
+    public new IKeyedItemCollection<string, T> Content {
+      get { return (IKeyedItemCollection<string, T>)base.Content; }
       set { base.Content = value; }
     }
 
@@ -43,7 +43,7 @@ namespace HeuristicLab.Core.Views {
       InitializeComponent();
       Caption = "Named Item Collection";
     }
-    public NamedItemCollectionView(IObservableKeyedCollection<string, T> content)
+    public NamedItemCollectionView(IKeyedItemCollection<string, T> content)
       : this() {
       Content = content;
     }

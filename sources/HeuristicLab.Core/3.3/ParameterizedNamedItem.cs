@@ -37,8 +37,8 @@ namespace HeuristicLab.Core {
     protected ParameterCollection Parameters {
       get { return parameters; }
     }
-    private ReadOnlyObservableKeyedCollection<string, IParameter> readOnlyParameters;
-    IObservableKeyedCollection<string, IParameter> IParameterizedItem.Parameters {
+    private ReadOnlyKeyedItemCollection<string, IParameter> readOnlyParameters;
+    IKeyedItemCollection<string, IParameter> IParameterizedItem.Parameters {
       get {
         if (readOnlyParameters == null) readOnlyParameters = parameters.AsReadOnly();
         return readOnlyParameters;

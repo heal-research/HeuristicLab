@@ -36,7 +36,7 @@ namespace HeuristicLab.Optimization {
     public new ParameterCollection Parameters {
       get { return base.Parameters; }
     }
-    IObservableKeyedCollection<string, IParameter> IParameterizedItem.Parameters {
+    IKeyedItemCollection<string, IParameter> IParameterizedItem.Parameters {
       get { return Parameters; }
     }
 

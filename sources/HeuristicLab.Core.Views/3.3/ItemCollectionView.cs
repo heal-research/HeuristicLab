@@ -30,10 +30,10 @@ using HeuristicLab.MainForm.WindowsForms;
 namespace HeuristicLab.Core.Views {
   [View("ItemCollection View")]
   [Content(typeof(ItemCollection<>), true)]
-  [Content(typeof(IObservableCollection<>), false)]
+  [Content(typeof(IItemCollection<>), false)]
   public partial class ItemCollectionView<T> : AsynchronousContentView where T : class, IItem {
-    public new IObservableCollection<T> Content {
-      get { return (IObservableCollection<T>)base.Content; }
+    public new IItemCollection<T> Content {
+      get { return (IItemCollection<T>)base.Content; }
       set { base.Content = value; }
     }
 
@@ -45,7 +45,7 @@ namespace HeuristicLab.Core.Views {
       InitializeComponent();
       Caption = "Item Collection";
     }
-    public ItemCollectionView(IObservableCollection<T> content)
+    public ItemCollectionView(IItemCollection<T> content)
       : this() {
       Content = content;
     }

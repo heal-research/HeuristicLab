@@ -28,7 +28,7 @@ namespace HeuristicLab.Core {
   /// </summary>
   public interface IExecutionContext : IDeepCloneable {
     IExecutionContext Parent { get; }
-    IObservableKeyedCollection<string, IParameter> Parameters { get; }
+    IKeyedItemCollection<string, IParameter> Parameters { get; }
     IScope Scope { get; }
 
     IAtomicOperation CreateOperation(IOperator op);

@@ -20,6 +20,7 @@
 #endregion
 
 using HeuristicLab.Collections;
+using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
@@ -30,10 +31,10 @@ using System.Collections.Generic;
 namespace HeuristicLab.Optimization.Views {
   [View("RunCollection View")]
   [Content(typeof(RunCollection), true)]
-  [Content(typeof(IObservableCollection<IRun>), false)]
+  [Content(typeof(IItemCollection<IRun>), false)]
   public partial class RunCollectionView : AsynchronousContentView {
-    public new IObservableCollection<IRun> Content {
-      get { return (IObservableCollection<IRun>)base.Content; }
+    public new IItemCollection<IRun> Content {
+      get { return (IItemCollection<IRun>)base.Content; }
       set { base.Content = value; }
     }
 
@@ -46,7 +47,7 @@ namespace HeuristicLab.Optimization.Views {
       Caption = "Run Collection";
     }
 
-    public RunCollectionView(IObservableCollection<IRun> content)
+    public RunCollectionView(IItemCollection<IRun> content)
       : this() {
       Content = content;
     }

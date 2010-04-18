@@ -27,10 +27,10 @@ using HeuristicLab.MainForm;
 namespace HeuristicLab.Core.Views {
   [View("ItemSet View")]
   [Content(typeof(ItemSet<>), true)]
-  [Content(typeof(IObservableSet<>), false)]
+  [Content(typeof(IItemSet<>), false)]
   public partial class ItemSetView<T> : ItemCollectionView<T> where T : class, IItem {
-    public new IObservableSet<T> Content {
-      get { return (IObservableSet<T>)base.Content; }
+    public new IItemSet<T> Content {
+      get { return (IItemSet<T>)base.Content; }
       set { base.Content = value; }
     }
 
@@ -44,7 +44,7 @@ namespace HeuristicLab.Core.Views {
       InitializeComponent();
       Caption = "Item Set";
     }
-    public ItemSetView(IObservableSet<T> content)
+    public ItemSetView(IItemSet<T> content)
       : this() {
       Content = content;
     }

@@ -27,7 +27,7 @@ namespace HeuristicLab.Core {
   /// An interface which represents an item which contains parameters.
   /// </summary>
   public interface IParameterizedItem : IItem {
-    IObservableKeyedCollection<string, IParameter> Parameters { get; }
+    IKeyedItemCollection<string, IParameter> Parameters { get; }
 
     void CollectParameterValues(IDictionary<string, IItem> values);
   }

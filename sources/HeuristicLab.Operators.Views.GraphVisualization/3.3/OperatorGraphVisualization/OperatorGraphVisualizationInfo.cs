@@ -35,20 +35,20 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
   public sealed class OperatorGraphVisualizationInfo : GraphVisualizationInfo {
     [Storable]
     private BidirectionalLookup<IOperator, IOperatorShapeInfo> operatorShapeInfoMapping;
-    private BidirectionalLookup<IOperator, IObservableKeyedCollection<string, IParameter>> operatorParameterCollectionMapping;
+    private BidirectionalLookup<IOperator, IKeyedItemCollection<string, IParameter>> operatorParameterCollectionMapping;
     private Dictionary<IParameter, IOperator> parameterOperatorMapping;
 
     private OperatorGraphVisualizationInfo()
       : base() {
       this.operatorShapeInfoMapping = new BidirectionalLookup<IOperator, IOperatorShapeInfo>();
-      this.operatorParameterCollectionMapping = new BidirectionalLookup<IOperator, IObservableKeyedCollection<string, IParameter>>();
+      this.operatorParameterCollectionMapping = new BidirectionalLookup<IOperator, IKeyedItemCollection<string, IParameter>>();
       this.parameterOperatorMapping = new Dictionary<IParameter, IOperator>();
     }
 
     [StorableConstructor]
     private OperatorGraphVisualizationInfo(bool deserializing)
       : base() {
-      this.operatorParameterCollectionMapping = new BidirectionalLookup<IOperator, IObservableKeyedCollection<string, IParameter>>();
+      this.operatorParameterCollectionMapping = new BidirectionalLookup<IOperator, IKeyedItemCollection<string, IParameter>>();
       this.parameterOperatorMapping = new Dictionary<IParameter, IOperator>();
     }
 
@@ -366,21 +366,21 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     }
 
     private void Parameters_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IParameter> e) {
-      IObservableKeyedCollection<string, IParameter> parameterCollection = sender as IObservableKeyedCollection<string, IParameter>;
+      IKeyedItemCollection<string, IParameter> parameterCollection = sender as IKeyedItemCollection<string, IParameter>;
       IOperator op = this.operatorParameterCollectionMapping.GetBySecond(parameterCollection);
       foreach (IParameter param in e.Items)
         AddParameter(op, param);
       this.UpdateParameterLabels(op);
     }
     private void Parameters_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IParameter> e) {
-      IObservableKeyedCollection<string, IParameter> parameterCollection = sender as IObservableKeyedCollection<string, IParameter>;
+      IKeyedItemCollection<string, IParameter> parameterCollection = sender as IKeyedItemCollection<string, IParameter>;
       IOperator op = this.operatorParameterCollectionMapping.GetBySecond(parameterCollection);
       foreach (IParameter param in e.Items)
         RemoveParameter(op, param);
       this.UpdateParameterLabels(op);
     }
     private void Parameters_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IParameter> e) {
-      IObservableKeyedCollection<string, IParameter> parameterCollection = sender as IObservableKeyedCollection<string, IParameter>;
+      IKeyedItemCollection<string, IParameter> parameterCollection = sender as IKeyedItemCollection<string, IParameter>;
       IOperator op = this.operatorParameterCollectionMapping.GetBySecond(parameterCollection);
       foreach (IParameter param in e.OldItems)
         RemoveParameter(op, param);
@@ -389,7 +389,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       this.UpdateParameterLabels(op);
     }
     private void Parameters_CollectionReset(object sender, CollectionItemsChangedEventArgs<IParameter> e) {
-      IObservableKeyedCollection<string, IParameter> parameterCollection = sender as IObservableKeyedCollection<string, IParameter>;
+      IKeyedItemCollection<string, IParameter> parameterCollection = sender as IKeyedItemCollection<string, IParameter>;
       IOperator op = this.operatorParameterCollectionMapping.GetBySecond(parameterCollection);
       foreach (IParameter param in e.OldItems)
         RemoveParameter(op, param);
