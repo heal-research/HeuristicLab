@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,41 +20,45 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
   /// <summary>
   /// Mixes the sub scopes of a specified scope according to a specified number of partitions.
   /// </summary>
-  public class SubScopesMixer : OperatorBase {
-    /// <inheritdoc select="summary"/>
-    public override string Description {
-      get { return @"TODO\r\nOperator description still missing ..."; }
+  [Item("SubScopesMixer", "Changes the order of the sub-scopes by repartitioning the sub-scopes such that each new partition contains one scope from each old partition.")]
+  [StorableClass]
+  public class SubScopesMixer : SingleSuccessorOperator {
+    public ValueParameter<IntValue> PartitionsParameter {
+      get { return (ValueParameter<IntValue>)Parameters["Partitions"]; }
     }
+
+    public IntValue Partitions {
+      get { return PartitionsParameter.Value; }
+      set { PartitionsParameter.Value = value; }
+    }
+
     /// <summary>
     /// Initializes a new instance of <see cref="SubScopesMixer"/> with one variable infos 
     /// (<c>Partitions</c>) and the <c>Local</c> flag set to <c>true</c>.
     /// </summary>
     public SubScopesMixer()
       : base() {
-      AddVariableInfo(new VariableInfo("Partitions", "Number of partitions to mix", typeof(IntData), VariableKind.In));
-      GetVariableInfo("Partitions").Local = true;
-      AddVariable(new Variable("Partitions", new IntData(2)));
+      Parameters.Add(new ValueParameter<IntValue>("Partitions", "The number of equal-sized partitions.", new IntValue(2)));
     }
 
     /// <summary>
-    /// Mixes the subscopes of the given <paramref name="scope"/>.
+    /// Mixes the sub-scopes of the scope this operator is applied on.
     /// </summary>
-    /// <remarks>Calls <see cref="IScope.ReorderSubScopes"/>.<br/>
-    /// Mixing of sub scopes is based on the number of partitions.
-    /// <example>12 sub scopes and 3 partitions:<br/>
-    /// Partition 1 contains sub scopes 1-4, partition 2 sub scopes 5-8 and partition 3 sub scopes 9-12. <br/>
-    /// Mixing is realized by selecting at the beginning the first sub scope from partition one, then the 
-    /// first sub scope from partition 2, afterwards first sub scope from partition 3, 
-    /// then the second sub scope from the first partition and so on. <br/>
+    /// <remarks>Mixing of sub-scopes is based on the number of partitions.
+    /// <example>12 sub-scopes and 3 partitions:<br/>
+    /// Partition 1 contains scopes 1-4, partition 2 scopes 5-8 and partition 3 scopes 9-12. <br/>
+    /// Mixing is realized by selecting at the beginning the first scope from partition one, then the 
+    /// first scope from partition 2, afterwards first scope from partition 3, 
+    /// then the second scope from the first partition and so on. <br/>
     /// In the end the new sorting of the sub scopes is 1-5-9-2-6-10-3-7-11-4-8-12. 
     /// </example>
     /// </remarks>
@@ -62,21 +66,26 @@ namespace HeuristicLab.Operators {
     /// the number of partitions without remainder.</exception>
     /// <param name="scope">The scope whose sub scopes should be mixed.</param>
     /// <returns><c>null</c>.</returns>
-    public override IOperation Apply(IScope scope) {
-      int partitions = GetVariableValue<IntData>("Partitions", scope, true).Data;
-      int[] sequence = new int[scope.SubScopes.Count];
-      if ((sequence.Length % partitions) != 0)
-        throw new ArgumentException("The number of subScopes is not divisible by the number of partitions without remainder.");
-      int partitionSize = sequence.Length / partitions;
+    public override IOperation Apply() {
+      int partitions = Partitions.Value;
+      IScope scope = ExecutionContext.Scope;
+      int count = scope.SubScopes.Count;
+      if ((count % partitions) != 0)
+        throw new ArgumentException(Name + ": The number of sub-scopes is not divisible by the number of partitions without remainder.");
+      int partitionSize = count / partitions;
+
+      IScope[] reorderedSubScopes = new IScope[count];
 
       // mix sub-scopes -> alternately take one sub-scope from each partition
       for (int i = 0; i < partitionSize; i++) {
-        for (int j = 0; j < partitions; j++)
-          sequence[i * partitions + j] = j * partitionSize + i;
+        for (int j = 0; j < partitions; j++) {
+          reorderedSubScopes[i * partitions + j] = scope.SubScopes[j * partitionSize + i];
+        }
       }
-      scope.ReorderSubScopes(sequence);
+      scope.SubScopes.Clear();
+      scope.SubScopes.AddRange(reorderedSubScopes);
 
-      return null;
+      return base.Apply();
     }
   }
 }

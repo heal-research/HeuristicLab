@@ -138,9 +138,6 @@
   <ItemGroup>
     <None Include="app.config" />
     <EmbeddedResource Include="Documents\FirstSteps.rtf" />
-    <EmbeddedResource Include="Documents\LS_OneMax.hl" />
-    <EmbeddedResource Include="Documents\SA_Rastrigin.hl" />
-    <EmbeddedResource Include="Documents\TS_TSP.hl" />
     <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.frame" />
     <None Include="Properties\Settings.settings">

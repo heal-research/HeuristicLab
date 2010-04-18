@@ -97,6 +97,7 @@
     <Compile Include="ScopeCleaner.cs" />
     <Compile Include="StochasticBranch.cs" />
     <Compile Include="SubScopesCreator.cs" />
+    <Compile Include="SubScopesMixer.cs" />
     <Compile Include="SubScopesProcessor.cs" />
     <Compile Include="SubScopesRemover.cs" />
     <Compile Include="SubScopesSorter.cs" />
