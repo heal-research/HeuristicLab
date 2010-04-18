@@ -32,13 +32,13 @@ namespace HeuristicLab.MainForm.WindowsForms {
 
     public static void SuspendRepaint(this Control control) {
       if (control.InvokeRequired)
-        control.Invoke((Action<Control>)((c) => { c.SuspendRepaint(); }));
+        control.Invoke(new Action<Control>(c => c.SuspendRepaint()), control);
       else
         SendMessage(control.Handle, WM_SETREDRAW, false, 0);
     }
     public static void ResumeRepaint(this Control control, bool refresh) {
       if (control.InvokeRequired)
-        control.Invoke((Action<Control, bool>)((c, b) => { c.ResumeRepaint(b); }));
+        control.Invoke(new Action<Control, bool>((c, b) => c.ResumeRepaint(b)), control, refresh);
       else {
         SendMessage(control.Handle, WM_SETREDRAW, true, 0);
         if (refresh) control.Refresh();

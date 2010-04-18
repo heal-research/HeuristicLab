@@ -28,7 +28,7 @@ namespace HeuristicLab.Core.Views {
       get { return this.Text; }
       set {
         if (InvokeRequired)
-          Invoke(new Action<string>(x => this.Caption = x));
+          Invoke(new Action<string>(x => this.Caption = x), value);
         else
           this.Text = value;
       }
@@ -37,7 +37,7 @@ namespace HeuristicLab.Core.Views {
       get { return textTextBox.Text; }
       set {
         if (InvokeRequired)
-          Invoke(new Action<string>(x => this.Content = x));
+          Invoke(new Action<string>(x => this.Content = x), value);
         else
           textTextBox.Text = value;
       }
@@ -46,7 +46,7 @@ namespace HeuristicLab.Core.Views {
       get { return textTextBox.ReadOnly; }
       set {
         if (InvokeRequired)
-          Invoke(new Action<bool>(x => this.ReadOnly = x));
+          Invoke(new Action<bool>(x => this.ReadOnly = x), value);
         else {
           textTextBox.ReadOnly = value;
           okButton.Enabled = !value;
