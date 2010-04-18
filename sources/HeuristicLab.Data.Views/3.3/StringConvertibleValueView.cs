@@ -104,6 +104,7 @@ namespace HeuristicLab.Data.Views {
     private void valueTextBox_Validated(object sender, EventArgs e) {
       Content.SetValue(valueTextBox.Text);
       errorProvider.SetError(valueTextBox, string.Empty);
+      valueTextBox.Text = Content.GetValue();
     }
   }
 }

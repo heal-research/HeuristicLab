@@ -39,21 +39,27 @@ namespace HeuristicLab.Data {
     }
 
     public override string ToString() {
-      return (Value * 100).ToString("r") + " %";  // round-trip format
+      return Value.ToString("#0.#################### %");  // percent format
     }
 
     protected override bool Validate(string value, out string errorMessage) {
-      value = value.Replace("%", string.Empty);
+      value = value.Replace("%", " ");
       return base.Validate(value, out errorMessage);
     }
     protected override string GetValue() {
-      return (Value * 100).ToString("r") + " %";  // round-trip format
+      return Value.ToString("#0.#################### %");  // percent format
     }
     protected override bool SetValue(string value) {
-      value = value.Replace("%", string.Empty);
+      bool percent = value.Contains("%");
+      value = value.Replace("%", " ");
       double val;
       if (double.TryParse(value, out val)) {
-        Value = val == 0 ? 0 : val / 100;
+        if (percent) {
+          if (!(val).IsAlmost(Value * 100.0))
+            Value = val == 0 ? 0 : val / 100.0;
+        } else {
+          Value = val;
+        }
         return true;
       } else {
         return false;
