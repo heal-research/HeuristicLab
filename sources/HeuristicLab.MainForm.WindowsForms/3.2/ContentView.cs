@@ -33,7 +33,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private object content;
     public object Content {
       get { return content; }
-      protected set {
+      set {
         if ((value != null) && (!MainFormManager.ViewCanViewObject(this, value)))
           throw new ArgumentException(string.Format("View \"{0}\" cannot view object \"{1}\".", this.GetType().Name, value.GetType().Name));
         if (InvokeRequired) {

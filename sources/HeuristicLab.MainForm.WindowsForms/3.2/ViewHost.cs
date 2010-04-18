@@ -26,17 +26,19 @@ using System.Windows.Forms;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.MainForm.WindowsForms {
-  public sealed partial class ViewHost : View {
-    private Dictionary<Type, IView> cachedViews;
+  [Content(typeof(object))]
+  public sealed partial class ViewHost : ContentView {
+    private Dictionary<Type, IContentView> cachedViews;
     public ViewHost() {
       InitializeComponent();
-      cachedViews = new Dictionary<Type, IView>();
+      cachedViews = new Dictionary<Type, IContentView>();
       viewType = null;
       Content = null;
+      viewContextMenuStrip.IgnoredViewTypes = new List<Type>() { typeof(ViewHost) };
     }
-    public ViewHost(bool readOnly)
+    public ViewHost(object content)
       : this() {
-      this.ReadOnly = readOnly;
+      this.Content = content;
     }
 
     private Type viewType;
@@ -53,19 +55,14 @@ namespace HeuristicLab.MainForm.WindowsForms {
       }
     }
 
-    private object content;
-    public object Content {
-      get { return this.content; }
+    public new object Content {
+      get { return base.Content; }
       set {
-        if (value != this.content) {
-          if (value == null || this.content == null || value.GetType() != this.content.GetType())
-            cachedViews.Clear();
-          viewContextMenuStrip.Item = value;
-          this.viewsLabel.Enabled = value != null;
-          this.content = value;
-          this.OnContentChanged();
-        }
-
+        if (value == null || this.Content == null || value.GetType() != this.Content.GetType())
+          cachedViews.Clear();
+        viewContextMenuStrip.Item = value;
+        this.viewsLabel.Enabled = value != null;
+        base.Content = value;
       }
     }
 
@@ -81,11 +78,11 @@ namespace HeuristicLab.MainForm.WindowsForms {
 
     protected override void OnReadOnlyChanged() {
       base.OnReadOnlyChanged();
-      foreach (IView view in cachedViews.Values)
+      foreach (IContentView view in cachedViews.Values)
         view.ReadOnly = this.ReadOnly;
     }
 
-    private void OnContentChanged() {
+    protected override void OnContentChanged() {
       messageLabel.Visible = false;
       viewsLabel.Visible = false;
       viewPanel.Visible = false;
@@ -99,11 +96,16 @@ namespace HeuristicLab.MainForm.WindowsForms {
           viewsLabel.Visible = true;
 
         if (!ViewCanShowContent(viewType, Content)) {
-          viewType = MainFormManager.GetDefaultViewType(Content.GetType());
+          ViewType = MainFormManager.GetDefaultViewType(Content.GetType());
           if ((viewType == null) && (viewContextMenuStrip.Items.Count > 0))  // create first available view if default view is not available
-            viewType = (Type)viewContextMenuStrip.Items[0].Tag;
+            ViewType = (Type)viewContextMenuStrip.Items[0].Tag;
         }
-        UpdateView();
+        foreach (IContentView view in cachedViews.Values)
+          view.Content = this.Content;
+      } else {
+        if (viewPanel.Controls.Count > 0) viewPanel.Controls[0].Dispose();
+        viewPanel.Controls.Clear();
+        cachedViews.Clear();
       }
     }
 
@@ -119,12 +121,12 @@ namespace HeuristicLab.MainForm.WindowsForms {
                                                           viewType, Content.GetType()));
 
       UpdateActiveMenuItem();
-      IView view;
+      IContentView view;
       if (cachedViews.ContainsKey(ViewType))
         view = cachedViews[ViewType];
       else {
         view = MainFormManager.CreateView(viewType, Content, ReadOnly);
-        cachedViews.Add(viewType, ((IView)view));
+        cachedViews.Add(viewType, view);
       }
 
       Control control = (Control)view;

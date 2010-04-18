@@ -49,7 +49,7 @@ namespace HeuristicLab.MainForm {
 
         MainFormManager.mainform = mainForm;
         IEnumerable<Type> types =
-          from t in ApplicationManager.Manager.GetTypes(typeof(IView))
+          from t in ApplicationManager.Manager.GetTypes(typeof(IContentView))
           where !t.IsAbstract && !t.IsInterface && ContentAttribute.HasContentAttribute(t)
           select t;
 
@@ -101,7 +101,7 @@ namespace HeuristicLab.MainForm {
       return viewTypes;
     }
 
-    public static bool ViewCanViewObject(IView view, object content) {
+    public static bool ViewCanViewObject(IContentView view, object content) {
       return ContentAttribute.CanViewType(view.GetType(), content.GetType());
     }
 
@@ -140,45 +140,45 @@ namespace HeuristicLab.MainForm {
       return null;
     }
 
-    public static IView CreateDefaultView(object content) {
+    public static IContentView CreateDefaultView(object content) {
       Type t = GetDefaultViewType(content.GetType());
       if (t == null)
         return null;
 
-      return (IView)Activator.CreateInstance(t, content);
+      return (IContentView)Activator.CreateInstance(t, content);
     }
-    public static IView CreateDefaultView(object content, bool readOnly) {
-      IView view = CreateDefaultView(content);
+    public static IContentView CreateDefaultView(object content, bool readOnly) {
+      IContentView view = CreateDefaultView(content);
       if (view != null)
         view.ReadOnly = readOnly;
       return view;
     }
 
-    public static IView CreateView(Type viewType) {
-      if (!typeof(IView).IsAssignableFrom(viewType))
+    public static IContentView CreateView(Type viewType) {
+      if (!typeof(IContentView).IsAssignableFrom(viewType))
         throw new ArgumentException("View can not be created becaues given type " + viewType.ToString() + " is not of type IView.");
       if (viewType.IsGenericTypeDefinition)
         throw new ArgumentException("View can not be created becaues given type " + viewType.ToString() + " is a generic type definition.");
 
-      return (IView)Activator.CreateInstance(viewType);
+      return (IContentView)Activator.CreateInstance(viewType);
     }
-    public static IView CreateView(Type viewType, bool readOnly) {
-      IView view = CreateView(viewType);
+    public static IContentView CreateView(Type viewType, bool readOnly) {
+      IContentView view = CreateView(viewType);
       view.ReadOnly = readOnly;
       return view;
     }
 
-    public static IView CreateView(Type viewType, object content) {
-      if (!typeof(IView).IsAssignableFrom(viewType))
+    public static IContentView CreateView(Type viewType, object content) {
+      if (!typeof(IContentView).IsAssignableFrom(viewType))
         throw new ArgumentException("View can not be created becaues given type " + viewType.ToString() + " is not of type IView.");
       Type view = viewType;
       if (view.IsGenericTypeDefinition)
         view = TransformGenericTypeDefinition(view, content.GetType());
 
-      return (IView)Activator.CreateInstance(view, content);
+      return (IContentView)Activator.CreateInstance(view, content);
     }
-    public static IView CreateView(Type viewType, object content, bool readOnly) {
-      IView view = CreateView(viewType, content);
+    public static IContentView CreateView(Type viewType, object content, bool readOnly) {
+      IContentView view = CreateView(viewType, content);
       view.ReadOnly = readOnly;
       return view;
     }
