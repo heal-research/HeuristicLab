@@ -136,7 +136,7 @@ namespace HeuristicLab.Core.Views {
     }
 
     protected void descriptionTextBox_DoubleClick(object sender, EventArgs e) {
-      using (TextDialog dialog = new TextDialog("Description of " + Content.Name, Content.Description, ReadOnly || !Content.CanChangeDescription)) {
+      using (TextDialog dialog = new TextDialog("Description of " + Content.Name, descriptionTextBox.Text, ReadOnly || !Content.CanChangeDescription)) {
         if (dialog.ShowDialog(this) == DialogResult.OK)
           Content.Description = dialog.Content;
       }
