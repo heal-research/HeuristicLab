@@ -19,25 +19,22 @@
  */
 #endregion
 
+using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using HeuristicLab.Common;
+using System.Collections.ObjectModel;
+using System.Text;
+using System.Drawing;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
   [StorableClass]
-  [Item("ScopeList", "Represents a list of scopes.")]
-  public sealed class ScopeList : ItemList<IScope> {
-    public ScopeList() : base() { }
-    public ScopeList(int capacity) : base(capacity) { }
-    public ScopeList(IEnumerable<IScope> collection) : base(collection) { }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      ScopeList clone = new ScopeList();
-      cloner.RegisterClonedObject(this, clone);
-      clone.ReadOnlyView = ReadOnlyView;
-      clone.list = new List<IScope>(this.Select(x => (IScope)cloner.Clone(x)));
-      return clone;
-    }
+  [Creatable("Algorithm Design")]
+  [Item("Operator Collection", "Represents a collection of operators.")]
+  public class OperatorCollection : ItemCollection<IOperator> {
+    public OperatorCollection() : base() { }
+    public OperatorCollection(IEnumerable<IOperator> collection) : base(collection) { }
+    [StorableConstructor]
+    protected OperatorCollection(bool deserializing) : base(deserializing) { }
   }
 }

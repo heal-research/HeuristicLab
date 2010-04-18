@@ -19,27 +19,21 @@
  */
 #endregion
 
+using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using HeuristicLab.Common;
+using System.Collections.ObjectModel;
+using System.Text;
+using System.Drawing;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
   [StorableClass]
-  [Item("VariableCollection", "Represents a collection of variables.")]
-  public sealed class VariableCollection : NamedItemCollection<IVariable> {
-    public VariableCollection() : base() { }
-    public VariableCollection(int capacity) : base(capacity) { }
-    public VariableCollection(IEnumerable<IVariable> collection) : base(collection) { }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      VariableCollection clone = new VariableCollection();
-      cloner.RegisterClonedObject(this, clone);
-      clone.ReadOnlyView = ReadOnlyView;
-      foreach (string key in dict.Keys)
-        clone.dict.Add(key, (IVariable)cloner.Clone(dict[key]));
-      clone.Initialize();
-      return clone;
-    }
+  [Item("OperatorSet", "Represents a set of operators.")]
+  public class OperatorSet : ItemSet<IOperator> {
+    public OperatorSet() : base() { }
+    public OperatorSet(IEnumerable<IOperator> collection) : base(collection) { }
+    [StorableConstructor]
+    protected OperatorSet(bool deserializing) : base(deserializing) { }
   }
 }

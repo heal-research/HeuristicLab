@@ -1,4 +1,4 @@
-﻿#region License Information
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -19,12 +19,8 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+using HeuristicLab.Collections;
 
-namespace HeuristicLab.Collections {
-  public interface IObservableArray<T> : IList<T>, INotifyObservableArrayItemsChanged<T>, INotifyPropertyChanged {
-    int Length { get; }
-  }
+namespace HeuristicLab.Core {
+  public interface IKeyedItemCollection<TKey, TItem> : IObservableKeyedCollection<TKey, TItem>, IItemCollection<TItem>, IItem where TItem : class, IItem { }
 }

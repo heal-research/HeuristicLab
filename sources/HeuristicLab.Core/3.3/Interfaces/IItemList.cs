@@ -19,15 +19,8 @@
  */
 #endregion
 
-using System.Collections.Generic;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Collections;
 
 namespace HeuristicLab.Core {
-  [StorableClass]
-  [Item("ParameterCollection", "Represents a collection of parameters.")]
-  public class ParameterCollection : NamedItemCollection<IParameter> {
-    public ParameterCollection() : base() { }
-    public ParameterCollection(int capacity) : base(capacity) { }
-    public ParameterCollection(IEnumerable<IParameter> collection) : base(collection) { }
-  }
+  public interface IItemList<T> : IObservableList<T>, IItemCollection<T>, IItem where T : class, IItem { }
 }

@@ -50,6 +50,8 @@ namespace HeuristicLab.Core {
       operations = new List<IOperation>(list.Where(e => e != null));
       parallel = false;
     }
+    [StorableConstructor]
+    private OperationCollection(bool deserializing) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       OperationCollection clone = (OperationCollection)Activator.CreateInstance(this.GetType());

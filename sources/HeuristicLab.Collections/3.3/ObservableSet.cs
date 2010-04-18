@@ -24,29 +24,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Collections {
   [Serializable]
-  [StorableClass]
   public class ObservableSet<T> : IObservableSet<T> {
-    [Storable]
     protected HashSet<T> set;
 
     #region Properties
-    [Storable]
-    private bool readOnlyView;
-    public virtual bool ReadOnlyView {
-      get { return readOnlyView; }
-      set {
-        if ((readOnlyView != value) && !((ICollection<T>)set).IsReadOnly) {
-          readOnlyView = value;
-          OnReadOnlyViewChanged();
-          OnPropertyChanged("ReadOnlyView");
-        }
-      }
-    }
-
     public IEqualityComparer<T> Comparer {
       get { return set.Comparer; }
     }
@@ -61,19 +45,15 @@ namespace HeuristicLab.Collections {
     #region Constructors
     public ObservableSet() {
       set = new HashSet<T>();
-      readOnlyView = ((ICollection<T>)set).IsReadOnly;
     }
     public ObservableSet(IEnumerable<T> collection) {
       set = new HashSet<T>(collection);
-      readOnlyView = ((ICollection<T>)set).IsReadOnly;
     }
     public ObservableSet(IEqualityComparer<T> comparer) {
       set = new HashSet<T>(comparer);
-      readOnlyView = ((ICollection<T>)set).IsReadOnly;
     }
     public ObservableSet(IEnumerable<T> collection, IEqualityComparer<T> comparer) {
       set = new HashSet<T>(collection, comparer);
-      readOnlyView = ((ICollection<T>)set).IsReadOnly;
     }
     #endregion
 
@@ -242,13 +222,6 @@ namespace HeuristicLab.Collections {
     #endregion
 
     #region Events
-    [field: NonSerialized]
-    public event EventHandler ReadOnlyViewChanged;
-    protected virtual void OnReadOnlyViewChanged() {
-      EventHandler handler = ReadOnlyViewChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-
     [field: NonSerialized]
     public event CollectionItemsChangedEventHandler<T> ItemsAdded;
     protected virtual void OnItemsAdded(IEnumerable<T> items) {

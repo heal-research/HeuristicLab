@@ -20,18 +20,21 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using HeuristicLab.Collections;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Text;
+using System.Drawing;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Collections;
 
 namespace HeuristicLab.Core {
   [StorableClass]
-  [Item("ItemCollection<T>", "Represents a collection of items.")]
-  public class ItemCollection<T> : ObservableCollection<T>, IItem where T : class, IItem {
+  [Item("ItemSet<T>", "Represents a set of items.")]
+  public class ItemSet<T> : ObservableSet<T>, IItemSet<T> where T : class, IItem {
     public virtual string ItemName {
       get { return ItemAttribute.GetName(this.GetType()); }
     }
@@ -42,20 +45,49 @@ namespace HeuristicLab.Core {
       get { return VS2008ImageLibrary.Class; }
     }
 
-    public ItemCollection() : base() { }
-    public ItemCollection(int capacity) : base(capacity) { }
-    public ItemCollection(IEnumerable<T> collection) : base(collection) { }
+    [Storable]
+    private HashSet<T> Items {
+      get { return set; }
+      set { set = value; }
+    }
+
+    [Storable]
+    private bool readOnlyView;
+    public virtual bool ReadOnlyView {
+      get { return readOnlyView; }
+      set {
+        if ((readOnlyView != value) && !((ICollection<T>)set).IsReadOnly) {
+          readOnlyView = value;
+          OnReadOnlyViewChanged();
+          OnPropertyChanged("ReadOnlyView");
+        }
+      }
+    }
+
+    public ItemSet()
+      : base() {
+      readOnlyView = ((ICollection<T>)set).IsReadOnly;
+    }
+    public ItemSet(IEnumerable<T> collection)
+      : base(collection) {
+      readOnlyView = ((ICollection<T>)set).IsReadOnly;
+    }
+    [StorableConstructor]
+    protected ItemSet(bool deserializing) { }
 
     public object Clone() {
       return Clone(new Cloner());
     }
-
     public virtual IDeepCloneable Clone(Cloner cloner) {
-      ItemCollection<T> clone = (ItemCollection<T>)Activator.CreateInstance(this.GetType());
+      ItemSet<T> clone = (ItemSet<T>)Activator.CreateInstance(this.GetType());
       cloner.RegisterClonedObject(this, clone);
-      clone.ReadOnlyView = ReadOnlyView;
-      clone.list = new List<T>(this.Select(x => (T)cloner.Clone(x)));
+      clone.readOnlyView = readOnlyView;
+      clone.set = new HashSet<T>(this.Select(x => (T)cloner.Clone(x)));
       return clone;
+    }
+
+    public new ReadOnlyItemSet<T> AsReadOnly() {
+      return new ReadOnlyItemSet<T>(this);
     }
 
     public override string ToString() {
@@ -70,6 +102,11 @@ namespace HeuristicLab.Core {
     public event EventHandler ToStringChanged;
     protected virtual void OnToStringChanged() {
       EventHandler handler = ToStringChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+    public event EventHandler ReadOnlyViewChanged;
+    protected virtual void OnReadOnlyViewChanged() {
+      EventHandler handler = ReadOnlyViewChanged;
       if (handler != null) handler(this, EventArgs.Empty);
     }
   }

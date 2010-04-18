@@ -1,4 +1,4 @@
-﻿#region License Information
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -19,12 +19,17 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Collections {
-  public interface IObservableArray<T> : IList<T>, INotifyObservableArrayItemsChanged<T>, INotifyPropertyChanged {
-    int Length { get; }
+namespace HeuristicLab.Core {
+  [StorableClass]
+  [Item("ValueParameterCollection", "Represents a collection of value parameters.")]
+  public class ValueParameterCollection : NamedItemCollection<IValueParameter> {
+    public ValueParameterCollection() : base() { }
+    public ValueParameterCollection(int capacity) : base(capacity) { }
+    public ValueParameterCollection(IEnumerable<IValueParameter> collection) : base(collection) { }
+    [StorableConstructor]
+    protected ValueParameterCollection(bool deserializing) : base(deserializing) { }
   }
 }

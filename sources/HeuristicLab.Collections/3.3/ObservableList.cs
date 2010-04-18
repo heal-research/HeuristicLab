@@ -23,29 +23,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Collections {
   [Serializable]
-  [StorableClass]
   public class ObservableList<T> : IObservableList<T> {
-    [Storable]
     protected List<T> list;
 
     #region Properties
-    [Storable]
-    private bool readOnlyView;
-    public virtual bool ReadOnlyView {
-      get { return readOnlyView; }
-      set {
-        if ((readOnlyView != value) && !((ICollection<T>)list).IsReadOnly) {
-          readOnlyView = value;
-          OnReadOnlyViewChanged();
-          OnPropertyChanged("ReadOnlyView");
-        }
-      }
-    }
-
     public int Capacity {
       get { return list.Capacity; }
       set {
@@ -80,15 +64,12 @@ namespace HeuristicLab.Collections {
     #region Constructors
     public ObservableList() {
       list = new List<T>();
-      readOnlyView = ((ICollection<T>)list).IsReadOnly;
     }
     public ObservableList(int capacity) {
       list = new List<T>(capacity);
-      readOnlyView = ((ICollection<T>)list).IsReadOnly;
     }
     public ObservableList(IEnumerable<T> collection) {
       list = new List<T>(collection);
-      readOnlyView = ((ICollection<T>)list).IsReadOnly;
     }
     #endregion
 
@@ -389,13 +370,6 @@ namespace HeuristicLab.Collections {
     #endregion
 
     #region Events
-    [field: NonSerialized]
-    public event EventHandler ReadOnlyViewChanged;
-    protected virtual void OnReadOnlyViewChanged() {
-      EventHandler handler = ReadOnlyViewChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-
     [field: NonSerialized]
     public event CollectionItemsChangedEventHandler<IndexedItem<T>> ItemsAdded;
     protected virtual void OnItemsAdded(IEnumerable<IndexedItem<T>> items) {

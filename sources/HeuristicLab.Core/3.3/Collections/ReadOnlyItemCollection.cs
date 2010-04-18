@@ -20,21 +20,18 @@
 #endregion
 
 using System;
-using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
 using System.Drawing;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System.Linq;
+using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
-using HeuristicLab.Collections;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
   [StorableClass]
-  [Item("ItemSet<T>", "Represents a set of items.")]
-  public class ItemSet<T> : ObservableSet<T>, IItem where T : class, IItem {
+  [Item("ReadOnlyItemCollection<T>", "Represents a read-only collection of items.")]
+  public class ReadOnlyItemCollection<T> : ReadOnlyObservableCollection<T>, IItemCollection<T> where T : class, IItem {
     public virtual string ItemName {
       get { return ItemAttribute.GetName(this.GetType()); }
     }
@@ -45,18 +42,35 @@ namespace HeuristicLab.Core {
       get { return VS2008ImageLibrary.Class; }
     }
 
-    public ItemSet() : base() { }
-    public ItemSet(IEnumerable<T> collection) : base(collection) { }
+    [Storable]
+    private IObservableCollection<T> Items {
+      get { return collection; }
+      set { collection = value; }
+    }
+
+    public bool ReadOnlyView {
+      get { return true; }
+      set { }
+    }
+
+    public ReadOnlyItemCollection() : base(new ItemCollection<T>()) { }
+    public ReadOnlyItemCollection(IItemCollection<T> collection) : base(collection) { }
+    [StorableConstructor]
+    protected ReadOnlyItemCollection(bool deserializing) { }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void Initialize() {
+      RegisterEvents();
+    }
 
     public object Clone() {
       return Clone(new Cloner());
     }
-
     public virtual IDeepCloneable Clone(Cloner cloner) {
-      ItemSet<T> clone = (ItemSet<T>)Activator.CreateInstance(this.GetType());
+      ReadOnlyItemCollection<T> clone = (ReadOnlyItemCollection<T>)Activator.CreateInstance(this.GetType());
       cloner.RegisterClonedObject(this, clone);
-      clone.ReadOnlyView = ReadOnlyView;
-      clone.set = new HashSet<T>(this.Select(x => (T)cloner.Clone(x)));
+      clone.collection = (IItemCollection<T>)((IItemCollection<T>)collection).Clone(cloner);
+      clone.Initialize();
       return clone;
     }
 
@@ -73,6 +87,10 @@ namespace HeuristicLab.Core {
     protected virtual void OnToStringChanged() {
       EventHandler handler = ToStringChanged;
       if (handler != null) handler(this, EventArgs.Empty);
+    }
+    event EventHandler IContent.ReadOnlyViewChanged {
+      add { }
+      remove { }
     }
   }
 }

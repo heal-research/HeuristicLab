@@ -19,19 +19,17 @@
  */
 #endregion
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
-using System.Drawing;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
   [StorableClass]
-  [Item("OperatorSet", "Represents a set of operators.")]
-  public class OperatorSet : ItemSet<IOperator> {
-    public OperatorSet() : base() { }
-    public OperatorSet(IEnumerable<IOperator> collection) : base(collection) { }
+  [Item("ParameterCollection", "Represents a collection of parameters.")]
+  public class ParameterCollection : NamedItemCollection<IParameter> {
+    public ParameterCollection() : base() { }
+    public ParameterCollection(int capacity) : base(capacity) { }
+    public ParameterCollection(IEnumerable<IParameter> collection) : base(collection) { }
+    [StorableConstructor]
+    protected ParameterCollection(bool deserializing) : base(deserializing) { }
   }
 }

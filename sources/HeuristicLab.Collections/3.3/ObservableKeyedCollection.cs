@@ -24,29 +24,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Collections {
   [Serializable]
-  [StorableClass]
   public abstract class ObservableKeyedCollection<TKey, TItem> : IObservableKeyedCollection<TKey, TItem> {
-    [Storable]
     protected Dictionary<TKey, TItem> dict;
 
     #region Properties
-    [Storable]
-    private bool readOnlyView;
-    public virtual bool ReadOnlyView {
-      get { return readOnlyView; }
-      set {
-        if ((readOnlyView != value) && !((ICollection<KeyValuePair<TKey, TItem>>)dict).IsReadOnly) {
-          readOnlyView = value;
-          OnReadOnlyViewChanged();
-          OnPropertyChanged("ReadOnlyView");
-        }
-      }
-    }
-
     public int Count {
       get { return dict.Count; }
     }
@@ -67,33 +51,27 @@ namespace HeuristicLab.Collections {
     #region Constructors
     protected ObservableKeyedCollection() {
       dict = new Dictionary<TKey, TItem>();
-      readOnlyView = ((ICollection<KeyValuePair<TKey, TItem>>)dict).IsReadOnly;
     }
     protected ObservableKeyedCollection(int capacity) {
       dict = new Dictionary<TKey, TItem>(capacity);
-      readOnlyView = ((ICollection<KeyValuePair<TKey, TItem>>)dict).IsReadOnly;
     }
     protected ObservableKeyedCollection(IEqualityComparer<TKey> comparer) {
       dict = new Dictionary<TKey, TItem>(comparer);
-      readOnlyView = ((ICollection<KeyValuePair<TKey, TItem>>)dict).IsReadOnly;
     }
     protected ObservableKeyedCollection(IEnumerable<TItem> collection) {
       if (collection == null) throw new ArgumentNullException();
       dict = new Dictionary<TKey, TItem>();
       foreach (TItem item in collection)
         dict.Add(GetKeyForItem(item), item);
-      readOnlyView = ((ICollection<KeyValuePair<TKey, TItem>>)dict).IsReadOnly;
     }
     protected ObservableKeyedCollection(int capacity, IEqualityComparer<TKey> comparer) {
       dict = new Dictionary<TKey, TItem>(capacity, comparer);
-      readOnlyView = ((ICollection<KeyValuePair<TKey, TItem>>)dict).IsReadOnly;
     }
     protected ObservableKeyedCollection(IEnumerable<TItem> collection, IEqualityComparer<TKey> comparer) {
       if (collection == null) throw new ArgumentNullException();
       dict = new Dictionary<TKey, TItem>(comparer);
       foreach (TItem item in collection)
         dict.Add(GetKeyForItem(item), item);
-      readOnlyView = ((ICollection<KeyValuePair<TKey, TItem>>)dict).IsReadOnly;
     }
     #endregion
 
@@ -267,13 +245,6 @@ namespace HeuristicLab.Collections {
     #endregion
 
     #region Events
-    [field: NonSerialized]
-    public event EventHandler ReadOnlyViewChanged;
-    protected virtual void OnReadOnlyViewChanged() {
-      EventHandler handler = ReadOnlyViewChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-
     [field: NonSerialized]
     public event CollectionItemsChangedEventHandler<TItem> ItemsAdded;
     protected virtual void OnItemsAdded(IEnumerable<TItem> items) {

@@ -19,20 +19,9 @@
  */
 #endregion
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
-using System.Drawing;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Collections;
 
 namespace HeuristicLab.Core {
-  [StorableClass]
-  [Creatable("Algorithm Design")]
-  [Item("Operator Collection", "Represents a collection of operators.")]
-  public class OperatorCollection : ItemCollection<IOperator> {
-    public OperatorCollection() : base() { }
-    public OperatorCollection(IEnumerable<IOperator> collection) : base(collection) { }
-  }
+  public interface IItemDictionary<TKey, TValue> : IObservableDictionary<TKey, TValue>, IItem where TKey : class, IItem where TValue : class, IItem { }
 }

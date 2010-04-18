@@ -1,4 +1,4 @@
-﻿#region License Information
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -20,11 +20,21 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Collections.ObjectModel;
+using System.Text;
+using System.Drawing;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Collections {
-  public interface IObservableArray<T> : IList<T>, INotifyObservableArrayItemsChanged<T>, INotifyPropertyChanged {
-    int Length { get; }
+namespace HeuristicLab.Core {
+  [StorableClass]
+  [Item("OperatorList", "Represents a list of operators.")]
+  public class OperatorList : ItemList<IOperator> {
+    public OperatorList() : base() { }
+    public OperatorList(int capacity) : base(capacity) { }
+    public OperatorList(IEnumerable<IOperator> collection) : base(collection) { }
+    [StorableConstructor]
+    protected OperatorList(bool deserializing) : base(deserializing) { }
   }
 }

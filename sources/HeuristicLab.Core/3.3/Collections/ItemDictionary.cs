@@ -20,21 +20,18 @@
 #endregion
 
 using System;
-using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
 using System.Drawing;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System.Linq;
+using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
-using HeuristicLab.Collections;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
   [StorableClass]
-  [Item("ItemList<T>", "Represents a list of items.")]
-  public class ItemList<T> : ObservableList<T>, IItem where T : class, IItem {
+  [Item("ItemDictionary<TKey, TValue>", "Represents a dictionary of items.")]
+  public class ItemDictionary<TKey, TValue> : ObservableDictionary<TKey, TValue>, IItemDictionary<TKey, TValue> where TKey : class, IItem where TValue : class, IItem {
     public virtual string ItemName {
       get { return ItemAttribute.GetName(this.GetType()); }
     }
@@ -45,20 +42,54 @@ namespace HeuristicLab.Core {
       get { return VS2008ImageLibrary.Class; }
     }
 
-    public ItemList() : base() { }
-    public ItemList(int capacity) : base(capacity) { }
-    public ItemList(IEnumerable<T> collection) : base(collection) { }
+    [Storable]
+    private Dictionary<TKey, TValue> Items {
+      get { return dict; }
+      set { dict = value; }
+    }
+
+    [Storable]
+    private bool readOnlyView;
+    public virtual bool ReadOnlyView {
+      get { return readOnlyView; }
+      set {
+        if ((readOnlyView != value) && !((ICollection<KeyValuePair<TKey, TValue>>)dict).IsReadOnly) {
+          readOnlyView = value;
+          OnReadOnlyViewChanged();
+          OnPropertyChanged("ReadOnlyView");
+        }
+      }
+    }
+
+    public ItemDictionary()
+      : base() {
+      readOnlyView = ((ICollection<KeyValuePair<TKey, TValue>>)dict).IsReadOnly;
+    }
+    public ItemDictionary(int capacity)
+      : base(capacity) {
+      readOnlyView = ((ICollection<KeyValuePair<TKey, TValue>>)dict).IsReadOnly;
+    }
+    public ItemDictionary(IDictionary<TKey, TValue> dictionary)
+      : base(dictionary) {
+      readOnlyView = ((ICollection<KeyValuePair<TKey, TValue>>)dict).IsReadOnly;
+    }
+    [StorableConstructor]
+    protected ItemDictionary(bool deserializing) { }
 
     public object Clone() {
       return Clone(new Cloner());
     }
-
     public virtual IDeepCloneable Clone(Cloner cloner) {
-      ItemList<T> clone = (ItemList<T>)Activator.CreateInstance(this.GetType());
+      ItemDictionary<TKey, TValue> clone = (ItemDictionary<TKey, TValue>)Activator.CreateInstance(this.GetType());
       cloner.RegisterClonedObject(this, clone);
-      clone.ReadOnlyView = ReadOnlyView;
-      clone.list = new List<T>(this.Select(x => (T)cloner.Clone(x)));
+      clone.readOnlyView = readOnlyView;
+      foreach (TKey key in dict.Keys)
+        clone.dict.Add((TKey)cloner.Clone(key), (TValue)cloner.Clone(dict[key]));
       return clone;
+    }
+
+    public new ReadOnlyItemDictionary<TKey, TValue> AsReadOnly() {
+      return new ReadOnlyItemDictionary<TKey, TValue>(this);
     }
 
     public override string ToString() {
@@ -73,6 +104,11 @@ namespace HeuristicLab.Core {
     public event EventHandler ToStringChanged;
     protected virtual void OnToStringChanged() {
       EventHandler handler = ToStringChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+    public event EventHandler ReadOnlyViewChanged;
+    protected virtual void OnReadOnlyViewChanged() {
+      EventHandler handler = ReadOnlyViewChanged;
       if (handler != null) handler(this, EventArgs.Empty);
     }
   }

@@ -30,54 +30,24 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Core {
   [Item("NamedItemCollection<T>", "Represents a collection of named items.")]
   [StorableClass]
-  public class NamedItemCollection<T> : ObservableKeyedCollection<string, T>, IItem where T : class, INamedItem {
-    public virtual string ItemName {
-      get { return ItemAttribute.GetName(this.GetType()); }
-    }
-    public virtual string ItemDescription {
-      get { return ItemAttribute.GetDescription(this.GetType()); }
-    }
-    public virtual Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Class; }
-    }
-
+  public class NamedItemCollection<T> : KeyedItemCollection<string, T> where T : class, INamedItem {
     public NamedItemCollection() : base() { }
     public NamedItemCollection(int capacity) : base(capacity) { }
     public NamedItemCollection(IEnumerable<T> collection) : base(collection) {
       Initialize();
     }
+    [StorableConstructor]
+    protected NamedItemCollection(bool deserializing) { }
 
     [StorableHook(HookType.AfterDeserialization)]
     protected void Initialize() {
       RegisterItemEvents(this);
     }
 
-    public object Clone() {
-      return Clone(new Cloner());
-    }
-    public virtual IDeepCloneable Clone(Cloner cloner) {
-      NamedItemCollection<T> clone = (NamedItemCollection<T>)Activator.CreateInstance(this.GetType());
-      cloner.RegisterClonedObject(this, clone);
-      clone.ReadOnlyView = ReadOnlyView;
-      foreach (string key in dict.Keys)
-        clone.dict.Add(key, (T)cloner.Clone(dict[key]));
+    public override IDeepCloneable Clone(Cloner cloner) {
+      NamedItemCollection<T> clone = (NamedItemCollection<T>)base.Clone(cloner);
       clone.Initialize();
       return clone;
-    }
-
-    public override string ToString() {
-      return ItemName;
-    }
-
-    public event EventHandler ItemImageChanged;
-    protected virtual void OnItemImageChanged() {
-      EventHandler handler = ItemImageChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-    public event EventHandler ToStringChanged;
-    protected virtual void OnToStringChanged() {
-      EventHandler handler = ToStringChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
     }
 
     protected override string GetKeyForItem(T item) {
