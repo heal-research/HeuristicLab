@@ -90,7 +90,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
       // 
       // viewContextMenuStrip
       // 
-      this.viewContextMenuStrip.IgnoredViewTypes = ((System.Collections.Generic.IEnumerable<System.Type>)(resources.GetObject("viewContextMenuStrip.IgnoredViewTypes")));
       this.viewContextMenuStrip.Item = null;
       this.viewContextMenuStrip.Name = "viewContextMenuStrip";
       this.viewContextMenuStrip.Size = new System.Drawing.Size(61, 4);
