@@ -44,12 +44,13 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.components = new System.ComponentModel.Container(); 
+      this.components = new System.ComponentModel.Container();
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ViewHost));
       this.viewPanel = new System.Windows.Forms.Panel();
       this.messageLabel = new System.Windows.Forms.Label();
       this.viewsLabel = new System.Windows.Forms.Label();
+      this.viewContextMenuStrip = new HeuristicLab.MainForm.WindowsForms.ViewContextMenuStrip();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-      this.viewContextMenuStrip = new HeuristicLab.MainForm.WindowsForms.ViewContextMenuStrip(this.components);
       this.SuspendLayout();
       // 
       // viewPanel
@@ -81,11 +82,15 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.viewsLabel.Name = "viewsLabel";
       this.viewsLabel.Size = new System.Drawing.Size(16, 16);
       this.viewsLabel.TabIndex = 0;
-      this.toolTip.SetToolTip(this.viewsLabel, "Double-click to open a new window of the current view." + System.Environment.NewLine + "Right-click to change current view.");
+      this.toolTip.SetToolTip(this.viewsLabel, "Double-click to open a new window of the current view.\r\nRight-click to change cur" +
+              "rent view.");
+      this.viewsLabel.MouseLeave += new System.EventHandler(this.viewsLabel_MouseLeave);
       this.viewsLabel.DoubleClick += new System.EventHandler(this.viewsLabel_DoubleClick);
+      this.viewsLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.viewsLabel_MouseDown);
       // 
       // viewContextMenuStrip
       // 
+      this.viewContextMenuStrip.IgnoredViewTypes = ((System.Collections.Generic.IEnumerable<System.Type>)(resources.GetObject("viewContextMenuStrip.IgnoredViewTypes")));
       this.viewContextMenuStrip.Item = null;
       this.viewContextMenuStrip.Name = "viewContextMenuStrip";
       this.viewContextMenuStrip.Size = new System.Drawing.Size(61, 4);

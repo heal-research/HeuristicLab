@@ -34,6 +34,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       cachedViews = new Dictionary<Type, IContentView>();
       viewType = null;
       Content = null;
+      startDragAndDrop = false;
       viewContextMenuStrip.IgnoredViewTypes = new List<Type>() { typeof(ViewHost) };
     }
     public ViewHost(object content)
@@ -162,6 +163,22 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private void viewContextMenuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e) {
       Type viewType = (Type)e.ClickedItem.Tag;
       ViewType = viewType;
+    }
+
+    private bool startDragAndDrop;
+    private void viewsLabel_MouseDown(object sender, MouseEventArgs e) {
+      startDragAndDrop = true;
+      viewsLabel.Capture = false;
+    }
+
+    private void viewsLabel_MouseLeave(object sender, EventArgs e) {
+      if ((Control.MouseButtons & MouseButtons.Left) == MouseButtons.Left && startDragAndDrop) {
+        DataObject data = new DataObject();
+        data.SetData("Type", Content.GetType());
+        data.SetData("Value", Content);
+        DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
+      } else
+        startDragAndDrop = false;
     }
   }
 }
