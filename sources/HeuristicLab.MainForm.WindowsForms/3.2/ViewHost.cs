@@ -129,6 +129,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
         view = MainFormManager.CreateView(viewType, Content, ReadOnly);
         cachedViews.Add(viewType, view);
       }
+      this.Caption = view.Caption;
+      this.SaveEnabled = view.SaveEnabled;
 
       Control control = (Control)view;
       control.Dock = DockStyle.Fill;

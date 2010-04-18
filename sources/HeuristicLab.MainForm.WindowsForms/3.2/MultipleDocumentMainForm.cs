@@ -34,10 +34,13 @@ namespace HeuristicLab.MainForm.WindowsForms {
       : base() {
       InitializeComponent();
     }
-
     public MultipleDocumentMainForm(Type userInterfaceType)
       : base(userInterfaceType) {
       InitializeComponent();
+    }
+    public MultipleDocumentMainForm(Type userInterfaceItemType, bool showInViewHost)
+      : this(userInterfaceItemType) {
+      this.ShowInViewHost = showInViewHost;
     }
 
     protected override void AdditionalCreationOfGuiElements() {
@@ -69,7 +72,14 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     protected override Form CreateForm(IView view) {
-      Form form = new DocumentForm(view);
+      Form form;
+      IContentView contentView = view as IContentView;
+      if (ShowInViewHost && contentView != null && contentView.GetType() != typeof(ViewHost)) {
+        ViewHost viewHost = new ViewHost(contentView.Content);
+        form = new DocumentForm(viewHost);
+      } else
+        form = new DocumentForm(view);
+
       form.MdiParent = this;
       return form;
     }

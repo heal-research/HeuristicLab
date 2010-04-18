@@ -50,6 +50,12 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     #region properties
+    private bool showInViewHost;
+    public bool ShowInViewHost {
+      get { return this.showInViewHost; }
+      set { this.showInViewHost = value; }
+    }
+
     public string Title {
       get { return this.Text; }
       set {

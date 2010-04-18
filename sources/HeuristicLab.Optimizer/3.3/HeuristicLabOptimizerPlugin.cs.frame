@@ -39,6 +39,7 @@ namespace HeuristicLab.Optimizer {
   internal class HeuristicLabOptimizerApplication : ApplicationBase {
     public override void Run() {
       OptimizerMainForm mainForm = new OptimizerMainForm(typeof(IOptimizerUserInterfaceItemProvider));
+      mainForm.ShowInViewHost = true;
       Application.Run(mainForm);
     }
   }
