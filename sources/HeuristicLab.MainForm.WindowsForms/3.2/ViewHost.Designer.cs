@@ -83,7 +83,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.viewsLabel.Size = new System.Drawing.Size(16, 16);
       this.viewsLabel.TabIndex = 0;
       this.toolTip.SetToolTip(this.viewsLabel, "Double-click to open a new window of the current view.\r\nRight-click to change cur" +
-              "rent view.");
+              "rent view. \r\n Drag icon to copy or link content in another view.");
       this.viewsLabel.MouseLeave += new System.EventHandler(this.viewsLabel_MouseLeave);
       this.viewsLabel.DoubleClick += new System.EventHandler(this.viewsLabel_DoubleClick);
       this.viewsLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.viewsLabel_MouseDown);

@@ -81,7 +81,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       bool firstTimeShown = mainform.GetForm(this) == null;
 
       this.IsShown = true;
-      mainform.ShowView(this, firstTimeShown);
+      mainform.ShowView(this);
       if (firstTimeShown) {
         Form form = mainform.GetForm(this);
         form.FormClosed += new FormClosedEventHandler(OnClosedHelper);
@@ -145,10 +145,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
       }
     }
 
-    protected virtual void OnShown(ViewShownEventArgs e) {
+    internal protected virtual void OnShown(ViewShownEventArgs e) {
     }
 
-    protected virtual void OnHidden(EventArgs e) {
+    internal protected virtual void OnHidden(EventArgs e) {
     }
 
     private CloseReason closeReason;
@@ -169,7 +169,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.closeReason = CloseReason.None;
     }
 
-    protected virtual void OnClosing(FormClosingEventArgs e) {
+    internal protected virtual void OnClosing(FormClosingEventArgs e) {
     }
 
     internal void OnClosedHelper(object sender, FormClosedEventArgs e) {
@@ -184,7 +184,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.closeReason = CloseReason.None;
     }
 
-    protected virtual void OnClosed(FormClosedEventArgs e) {
+    internal protected virtual void OnClosed(FormClosedEventArgs e) {
     }
 
     private void View_Load(object sender, EventArgs e) {
@@ -214,9 +214,9 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
     public void ResumeRepaint(bool refresh) {
       if (InvokeRequired)
-        Invoke((Action<bool>)ResumeRepaint,refresh);
+        Invoke((Action<bool>)ResumeRepaint, refresh);
       else
-      ((Control)this).ResumeRepaint(refresh);
+        ((Control)this).ResumeRepaint(refresh);
     }
   }
 }

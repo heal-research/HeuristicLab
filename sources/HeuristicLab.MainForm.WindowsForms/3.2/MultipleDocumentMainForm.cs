@@ -50,10 +50,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.menuStrip.Items.Add(window);
     }
 
-    protected override void Show(IView view, bool firstTimeShown) {
-      if (InvokeRequired) Invoke((Action<IView, bool>)Show, view, firstTimeShown);
+    protected override void ShowView(IView view, bool firstTimeShown) {
+      if (InvokeRequired) Invoke((Action<IView, bool>)ShowView, view, firstTimeShown);
       else {
-        base.Show(view, firstTimeShown);
+        base.ShowView(view, firstTimeShown);
         if (firstTimeShown)
           this.GetForm(view).Show();
         else {
@@ -67,7 +67,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
       if (InvokeRequired) Invoke((Action<IView>)Hide, view);
       else {
         base.Hide(view);
-        this.GetForm(view).Hide();
+        Form form = this.GetForm(view);
+        if (form != null) {
+          form.Hide();
+        }
       }
     }
 
@@ -77,8 +80,11 @@ namespace HeuristicLab.MainForm.WindowsForms {
       if (ShowViewsInViewHost && contentView != null && contentView.GetType() != typeof(ViewHost)) {
         ViewHost viewHost = new ViewHost(contentView);
         form = new DocumentForm(viewHost);
-      } else
+        this.AddViewFormCombination(viewHost, form);
+      } else {
         form = new DocumentForm(view);
+        this.AddViewFormCombination(view, form);
+      }
 
       form.MdiParent = this;
       return form;

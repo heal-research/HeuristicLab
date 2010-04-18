@@ -44,10 +44,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.ShowViewsInViewHost = showViewsInViewHost;
     }
 
-    protected override void Show(IView view, bool firstTimeShown) {
-      if (InvokeRequired) Invoke((Action<IView, bool>)Show, view, firstTimeShown);
+    protected override void ShowView(IView view, bool firstTimeShown) {
+      if (InvokeRequired) Invoke((Action<IView, bool>)ShowView, view, firstTimeShown);
       else {
-        base.Show(view, firstTimeShown);
+        base.ShowView(view, firstTimeShown);
         if (firstTimeShown)
           ((DockForm)GetForm(view)).Show(dockPanel);
         else
@@ -58,7 +58,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     protected override void Hide(IView view) {
       if (InvokeRequired) Invoke((Action<IView>)HideView, view);
       else {
-        Form form = base.GetForm(view);
+        Form form = this.GetForm(view);
         if (form != null) {
           ((DockForm)form).Hide();
         }
@@ -71,8 +71,11 @@ namespace HeuristicLab.MainForm.WindowsForms {
       if (ShowViewsInViewHost && contentView != null && contentView.GetType() != typeof(ViewHost)) {
         ViewHost viewHost = new ViewHost(contentView);
         form = new DockForm(viewHost);
-      } else
+        this.AddViewFormCombination(viewHost, form);
+      } else {
         form = new DockForm(view);
+        this.AddViewFormCombination(view, form);
+      }
       return form;
     }
 

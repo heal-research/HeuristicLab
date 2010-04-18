@@ -88,6 +88,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
     public IEnumerable<IView> Views {
       get { return views.Keys; }
     }
+    protected void AddViewFormCombination(IView view, Form form) {
+      this.views.Add(view, form);
+      view.Changed += new EventHandler(ViewChanged);
+    }
 
     private IView activeView;
     public IView ActiveView {
@@ -123,24 +127,30 @@ namespace HeuristicLab.MainForm.WindowsForms {
     public event EventHandler<ViewEventArgs> ViewClosed;
     protected virtual void OnViewClosed(IView view) {
       if (InvokeRequired) Invoke((Action<IView>)OnViewClosed, view);
-      else if (this.ViewClosed != null) {
-        this.ViewClosed(this, new ViewEventArgs(view));
+      else {
+        EventHandler<ViewEventArgs> handler = ViewClosed;
+        if (handler != null)
+          handler(this, new ViewEventArgs(view));
       }
     }
 
     public event EventHandler<ViewShownEventArgs> ViewShown;
     protected virtual void OnViewShown(IView view, bool firstTimeShown) {
       if (InvokeRequired) Invoke((Action<IView, bool>)OnViewShown, view, firstTimeShown);
-      else if (this.ViewShown != null) {
-        this.ViewShown(this, new ViewShownEventArgs(view, firstTimeShown));
+      else {
+        EventHandler<ViewShownEventArgs> handler = ViewShown;
+        if (handler != null)
+          handler(this, new ViewShownEventArgs(view, firstTimeShown));
       }
     }
 
     public event EventHandler<ViewEventArgs> ViewHidden;
     protected virtual void OnViewHidden(IView view) {
       if (InvokeRequired) Invoke((Action<IView>)OnViewHidden, view);
-      else if (this.ViewHidden != null) {
-        this.ViewHidden(this, new ViewEventArgs(view));
+      else {
+        EventHandler<ViewEventArgs> handler = ViewHidden;
+        if (handler != null)
+          handler(this, new ViewEventArgs(view));
       }
     }
 
@@ -148,8 +158,11 @@ namespace HeuristicLab.MainForm.WindowsForms {
     protected void FireMainFormChanged() {
       if (InvokeRequired)
         Invoke((MethodInvoker)FireMainFormChanged);
-      else if (Changed != null)
-        Changed(this, EventArgs.Empty);
+      else {
+        EventHandler handler = Changed;
+        if (handler != null)
+          Changed(this, EventArgs.Empty);
+      }
     }
 
     private void MainFormBase_Load(object sender, EventArgs e) {
@@ -171,7 +184,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     protected override void OnFormClosing(FormClosingEventArgs e) {
-      foreach (KeyValuePair<IView,Form > pair in this.views) {
+      foreach (KeyValuePair<IView, Form> pair in this.views) {
         DockForm dockForm = pair.Value as DockForm;
         View view = pair.Key as View;
         if (view != null && dockForm != null && dockForm.DockState != DockState.Document) {
@@ -202,28 +215,38 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     internal Form GetForm(IView view) {
-      if (views.ContainsKey(view))
-        return views[view];
+      IView internalView = GetView(view);
+      if (internalView != null && views.ContainsKey(internalView))
+        return views[internalView];
       return null;
     }
-
-    internal IView GetView(Form form) {
+    protected IView GetView(Form form) {
       return views.Where(x => x.Value == form).Single().Key;
     }
+    private IView GetView(IView view) {
+      if (view == null || views.ContainsKey(view))
+        return view;
+      IView viewHost =
+        (from ViewHost v in views.Keys.OfType<ViewHost>()
+         where v.Views.Contains(((IContentView)view))
+         select v).SingleOrDefault();
+      return viewHost;
+    }
 
-    internal void ShowView(IView view, bool firstTimeShown) {
-      if (InvokeRequired) Invoke((Action<IView, bool>)ShowView, view, firstTimeShown);
+
+    internal void ShowView(IView view) {
+      if (InvokeRequired) Invoke((Action<IView>)ShowView, view);
       else {
-        if (firstTimeShown) {
-          Form form = CreateForm(view);
-          view.Changed += new EventHandler(ViewChanged);
-          this.views[view] = form;
+        Form form = GetForm(view);
+        bool firstTimeShown = form == null;
+        if (form == null) {
+          form = CreateForm(view);
           form.Activated += new EventHandler(FormActivated);
           form.FormClosed += new FormClosedEventHandler(ChildFormClosed);
-
         }
-        this.Show(view, firstTimeShown);
-        this.OnViewShown(view, firstTimeShown);
+        IView internalView = GetView(form);
+        this.ShowView(internalView, firstTimeShown);
+        this.OnViewShown(internalView, firstTimeShown);
       }
     }
 
@@ -233,17 +256,18 @@ namespace HeuristicLab.MainForm.WindowsForms {
         this.OnActiveViewChanged();
     }
 
-    protected virtual void Show(IView view, bool firstTimeShown) {
+    protected virtual void ShowView(IView view, bool firstTimeShown) {
     }
 
     internal void HideView(IView view) {
       if (InvokeRequired) Invoke((Action<IView>)HideView, view);
       else {
-        if (this.views.ContainsKey(view)) {
-          this.Hide(view);
-          if (this.activeView == view)
+        IView internalView = this.GetView(view);
+        if (internalView != null && this.views.ContainsKey(internalView)) {
+          this.Hide(internalView);
+          if (this.activeView == internalView)
             this.ActiveView = null;
-          this.OnViewHidden(view);
+          this.OnViewHidden(internalView);
         }
       }
     }
@@ -268,9 +292,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
     internal void CloseView(IView view) {
       if (InvokeRequired) Invoke((Action<IView>)CloseView, view);
       else {
-        if (this.views.ContainsKey(view)) {
-          this.views[view].Close();
-          this.OnViewClosed(view);
+        IView internalView = GetView(view);
+        if (internalView != null && this.views.ContainsKey(internalView)) {
+          this.views[internalView].Close();
+          this.OnViewClosed(internalView);
         }
       }
     }
@@ -278,9 +303,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
     internal void CloseView(IView view, CloseReason closeReason) {
       if (InvokeRequired) Invoke((Action<IView>)CloseView, view);
       else {
-        if (this.views.ContainsKey(view)) {
-          ((View)view).CloseReason = closeReason;
-          this.CloseView(view);
+        IView internalView = GetView(view);
+        if (internalView != null && this.views.ContainsKey(internalView)) {
+          ((View)internalView).CloseReason = closeReason;
+          this.CloseView(internalView);
         }
       }
     }
