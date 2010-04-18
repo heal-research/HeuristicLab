@@ -42,6 +42,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.views = new Dictionary<IView, Form>();
       this.userInterfaceItems = new List<IUserInterfaceItem>();
       this.initialized = false;
+      this.showViewsInViewHost = false;
     }
 
     protected MainForm(Type userInterfaceItemType)
@@ -50,10 +51,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     #region properties
-    private bool showInViewHost;
-    public bool ShowInViewHost {
-      get { return this.showInViewHost; }
-      set { this.showInViewHost = value; }
+    private bool showViewsInViewHost;
+    public bool ShowViewsInViewHost {
+      get { return this.showViewsInViewHost; }
+      set { this.showViewsInViewHost = value; }
     }
 
     public string Title {

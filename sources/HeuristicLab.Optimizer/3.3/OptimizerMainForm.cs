@@ -44,9 +44,9 @@ namespace HeuristicLab.Optimizer {
       : base(userInterfaceItemType) {
       InitializeComponent();
     }
-    public OptimizerMainForm(Type userInterfaceItemType, bool showInViewHost)
+    public OptimizerMainForm(Type userInterfaceItemType, bool showViewsInViewHost)
       : this(userInterfaceItemType) {
-      this.ShowInViewHost = showInViewHost;
+      this.ShowViewsInViewHost = showViewsInViewHost;
     }
 
     protected override void OnInitialized(EventArgs e) {

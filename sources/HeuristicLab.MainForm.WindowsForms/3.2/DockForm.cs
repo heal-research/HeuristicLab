@@ -57,16 +57,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
           control.Dock = DockStyle.Fill;
           this.view.CaptionChanged += new EventHandler(View_CaptionChanged);
           UpdateText();
-
-          ContentView contentView = view as ContentView;
-          if (ViewAttribute.GetShowInViewHost(viewType) && contentView != null) {
-            ViewHost viewHost = new ViewHost();
-            viewHost.ViewType = viewType;
-            viewHost.Content = contentView.Content;
-            viewHost.Dock = DockStyle.Fill;
-            viewPanel.Controls.Add(viewHost);
-          } else
-            viewPanel.Controls.Add(control);
+          viewPanel.Controls.Add(control);
         }
       } else {
         Label errorLabel = new Label();
