@@ -229,8 +229,11 @@ namespace HeuristicLab.Core.Views {
       if (itemsListView.SelectedItems.Count == 1) {
         T item = itemsListView.SelectedItems[0].Tag as T;
         if (item != null) {
-          IView view = MainFormManager.CreateDefaultView(item, ReadOnly);
-          if (view != null) view.Show();
+          IView view = MainFormManager.CreateDefaultView(item);
+          if (view != null) {
+            view.ReadOnly = ReadOnly;
+            view.Show();
+          }
         }
       }
     }

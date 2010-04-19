@@ -107,7 +107,7 @@ namespace HeuristicLab.Optimizer {
       }
     }
     private static void Save(IContentView view) {
-      if (view.SaveEnabled) {
+      if (!view.Locked) {
         if ((!files.ContainsKey(view)) || (!File.Exists(files[view].Filename))) {
           SaveAs(view);
         } else {
@@ -126,7 +126,7 @@ namespace HeuristicLab.Optimizer {
       }
     }
     public static void SaveAs(IContentView view) {
-      if (view.SaveEnabled) {
+      if (!view.Locked) {
         if (saveFileDialog == null) {
           saveFileDialog = new SaveFileDialog();
           saveFileDialog.Title = "Save Item";

@@ -25,6 +25,7 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 using System.Diagnostics;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.MainForm {
   public static class MainFormManager {
@@ -74,6 +75,7 @@ namespace HeuristicLab.MainForm {
     }
 
     public static IEnumerable<Type> GetViewTypes(Type contentType) {
+      CheckForContentType(contentType);
       List<Type> viewTypes = (from v in views
                               where ContentAttribute.CanViewType(v, contentType)
                               select v).ToList();
@@ -85,6 +87,7 @@ namespace HeuristicLab.MainForm {
     }
 
     public static IEnumerable<Type> GetViewTypes(Type contentType, bool returnOnlyMostSpecificViewTypes) {
+      CheckForContentType(contentType);
       List<Type> viewTypes = new List<Type>(GetViewTypes(contentType));
       if (returnOnlyMostSpecificViewTypes) {
         Type defaultViewType = null;
@@ -101,11 +104,12 @@ namespace HeuristicLab.MainForm {
       return viewTypes;
     }
 
-    public static bool ViewCanViewObject(IContentView view, object content) {
+    public static bool ViewCanViewObject(IContentView view, IContent content) {
       return ContentAttribute.CanViewType(view.GetType(), content.GetType());
     }
 
     public static Type GetDefaultViewType(Type contentType) {
+      CheckForContentType(contentType);
       //check base classes for default view
       Type type = contentType;
       while (type != null) {
@@ -147,40 +151,32 @@ namespace HeuristicLab.MainForm {
 
       return (IContentView)Activator.CreateInstance(t, content);
     }
-    public static IContentView CreateDefaultView(object content, bool readOnly) {
-      IContentView view = CreateDefaultView(content);
-      if (view != null)
-        view.ReadOnly = readOnly;
-      return view;
-    }
-
     public static IContentView CreateView(Type viewType) {
-      if (!typeof(IContentView).IsAssignableFrom(viewType))
+      if (!typeof(IView).IsAssignableFrom(viewType))
         throw new ArgumentException("View can not be created becaues given type " + viewType.ToString() + " is not of type IView.");
       if (viewType.IsGenericTypeDefinition)
         throw new ArgumentException("View can not be created becaues given type " + viewType.ToString() + " is a generic type definition.");
 
       return (IContentView)Activator.CreateInstance(viewType);
     }
-    public static IContentView CreateView(Type viewType, bool readOnly) {
-      IContentView view = CreateView(viewType);
-      view.ReadOnly = readOnly;
-      return view;
-    }
-
     public static IContentView CreateView(Type viewType, object content) {
-      if (!typeof(IContentView).IsAssignableFrom(viewType))
-        throw new ArgumentException("View can not be created becaues given type " + viewType.ToString() + " is not of type IView.");
+      CheckForContentType(content.GetType());
+      CheckForContentViewType(viewType);
+
       Type view = viewType;
       if (view.IsGenericTypeDefinition)
         view = TransformGenericTypeDefinition(view, content.GetType());
 
       return (IContentView)Activator.CreateInstance(view, content);
     }
-    public static IContentView CreateView(Type viewType, object content, bool readOnly) {
-      IContentView view = CreateView(viewType, content);
-      view.ReadOnly = readOnly;
-      return view;
+
+    private static void CheckForContentType(Type contentType) {
+          if (!typeof(IContent).IsAssignableFrom(contentType))
+        throw new ArgumentException("DefaultViews are only specified for types of IContent and not for " + contentType + ".");
+    }
+    private static void CheckForContentViewType(Type viewType) {
+      if (!typeof(IContentView).IsAssignableFrom(viewType))
+        throw new ArgumentException("View can not be created becaues given type " + viewType.ToString() + " is not of type IContentView.");
     }
 
     private static Type TransformGenericTypeDefinition(Type viewType, Type contentType) {

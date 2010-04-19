@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.MainForm.WindowsForms {
   [Content(typeof(object))]
@@ -37,7 +38,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       viewContextMenuStrip.IgnoredViewTypes = new List<Type>() { typeof(ViewHost) };
       activeView = null;
     }
-    public ViewHost(object content)
+    public ViewHost(IContent content)
       : this() {
       this.Content = content;
     }
@@ -74,7 +75,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
             RegisterActiveViewEvents();
             View view = activeView as View;
             if (view != null)
-              view.OnShown(new ViewShownEventArgs(view,false));
+              view.OnShown(new ViewShownEventArgs(view, false));
           }
           ActiveViewChanged();
           OnViewTypeChanged();
@@ -94,7 +95,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
         }
       }
     }
-    public new object Content {
+    public new IContent Content {
       get { return base.Content; }
       set {
         if (value == null || this.Content == null || value.GetType() != this.Content.GetType())
@@ -115,11 +116,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       }
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      foreach (IContentView view in cachedViews.Values)
-        view.ReadOnly = this.ReadOnly;
-    }
+
 
     protected override void OnContentChanged() {
       messageLabel.Visible = false;
@@ -161,7 +158,9 @@ namespace HeuristicLab.MainForm.WindowsForms {
       if (cachedViews.ContainsKey(ViewType))
         view = cachedViews[ViewType];
       else {
-        view = MainFormManager.CreateView(viewType, Content, ReadOnly);
+        view = MainFormManager.CreateView(viewType, Content);
+        view.ReadOnly = this.ReadOnly;
+        view.Locked = this.Locked;
         cachedViews.Add(viewType, view);
       }
       this.ActiveView = view;
@@ -191,31 +190,38 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private void ActiveViewChanged() {
       if (ActiveView != null) {
         this.Caption = this.ActiveView.Caption;
-        this.SaveEnabled = this.ActiveView.SaveEnabled;
+        this.Locked = this.ActiveView.Locked;
       }
     }
 
     #region forwarding of view events
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      foreach (IContentView view in cachedViews.Values)
+        view.ReadOnly = this.ReadOnly;
+    }
+    protected override void OnLockedChanged() {
+      base.OnLockedChanged();
+      foreach (IContentView view in cachedViews.Values)
+        view.Locked = this.Locked;
+    }
     internal protected override void OnShown(ViewShownEventArgs e) {
       base.OnShown(e);
       View view = this.ActiveView as View;
       if (view != null)
         view.OnShown(e);
     }
-
     internal protected override void OnHidden(EventArgs e) {
       base.OnHidden(e);
       View view = this.ActiveView as View;
       if (view != null)
         view.OnHidden(e);
     }
-
     internal protected override void OnClosing(FormClosingEventArgs e) {
       base.OnClosing(e);
       foreach (View view in this.Views.OfType<View>())
         view.OnClosing(e);
     }
-
     internal protected override void OnClosed(FormClosedEventArgs e) {
       base.OnClosed(e);
       foreach (View view in this.Views.OfType<View>())
@@ -245,7 +251,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     private void viewsLabel_DoubleClick(object sender, EventArgs e) {
-      MainFormManager.CreateView(viewType, Content, ReadOnly).Show();
+      IContentView view = MainFormManager.CreateView(viewType, Content);
+      view.ReadOnly = this.ReadOnly;
+      view.Locked = this.Locked;
+      view.Show();
     }
     private void viewContextMenuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e) {
       Type viewType = (Type)e.ClickedItem.Tag;
@@ -254,8 +263,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
 
     private bool startDragAndDrop;
     private void viewsLabel_MouseDown(object sender, MouseEventArgs e) {
-      startDragAndDrop = true;
-      viewsLabel.Capture = false;
+      if (!Locked) {
+        startDragAndDrop = true;
+        viewsLabel.Capture = false;
+      }
     }
     private void viewsLabel_MouseLeave(object sender, EventArgs e) {
       if ((Control.MouseButtons & MouseButtons.Left) == MouseButtons.Left && startDragAndDrop) {

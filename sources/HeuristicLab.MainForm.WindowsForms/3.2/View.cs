@@ -20,7 +20,10 @@
 #endregion
 
 using System;
+using System.Linq;
 using System.Windows.Forms;
+using System.Reflection;
+using System.ComponentModel;
 
 namespace HeuristicLab.MainForm.WindowsForms {
   public partial class View : UserControl, IView {
@@ -64,6 +67,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
         } else {
           if (value != readOnly) {
             readOnly = value;
+            PropertyInfo prop = typeof(IView).GetProperty("ReadOnly");
+            PropagateStateChanges(this, typeof(IView), prop);
             OnReadOnlyChanged();
           }
         }
@@ -132,6 +137,24 @@ namespace HeuristicLab.MainForm.WindowsForms {
         EventHandler handler = ReadOnlyChanged;
         if (handler != null)
           handler(this, EventArgs.Empty);
+      }
+    }
+    protected void PropagateStateChanges(Control control, Type type, PropertyInfo propertyInfo) {
+      if (!type.GetProperties().Contains(propertyInfo))
+        throw new ArgumentException("The specified type " + type + "implement the property " + propertyInfo.Name + ".");
+      if (!type.IsAssignableFrom(this.GetType()))
+        throw new ArgumentException("The specified type " + type + "must be the same or a base class / interface of this object.");
+      if (!propertyInfo.CanWrite)
+        throw new ArgumentException("The specified property " + propertyInfo.Name + " must have a setter.");
+
+      foreach (Control c in control.Controls) {
+        Type controlType = c.GetType();
+        PropertyInfo controlPropertyInfo = controlType.GetProperty(propertyInfo.Name, propertyInfo.PropertyType);
+        if (type.IsAssignableFrom(controlType) && controlPropertyInfo!= null) {
+          var thisValue = propertyInfo.GetValue(this, null);
+          controlPropertyInfo.SetValue(c, thisValue, null);
+        } else
+          PropagateStateChanges(c, type, propertyInfo);
       }
     }
     public event EventHandler Changed;

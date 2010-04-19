@@ -106,7 +106,7 @@ namespace HeuristicLab.Optimization.Views {
       else {
         nameTextBox.Enabled = Content.ExecutionState != ExecutionState.Started;
         descriptionTextBox.Enabled = Content.ExecutionState != ExecutionState.Started;
-        SaveEnabled = Content.ExecutionState != ExecutionState.Started;
+        Locked = Content.ExecutionState == ExecutionState.Started;
         EnableDisableButtons();
       }
     }

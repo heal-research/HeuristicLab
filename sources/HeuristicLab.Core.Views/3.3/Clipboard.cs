@@ -230,8 +230,11 @@ namespace HeuristicLab.Core.Views {
     private void listView_DoubleClick(object sender, EventArgs e) {
       if (listView.SelectedItems.Count == 1) {
         T item = (T)listView.SelectedItems[0].Tag;
-        IView view = MainFormManager.CreateDefaultView(item, ReadOnly);
-        if (view != null) view.Show();
+        IView view = MainFormManager.CreateDefaultView(item);
+        if (view != null) {
+          view.ReadOnly = this.ReadOnly;
+          view.Show();
+        }
       }
     }
     private void listView_ItemDrag(object sender, ItemDragEventArgs e) {

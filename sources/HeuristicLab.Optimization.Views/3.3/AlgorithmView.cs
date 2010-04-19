@@ -152,7 +152,7 @@ namespace HeuristicLab.Optimization.Views {
         Invoke(new EventHandler(Content_ExecutionStateChanged), sender, e);
       else {
         this.ReadOnly = Content.ExecutionState == ExecutionState.Started;
-        SaveEnabled = Content.ExecutionState != ExecutionState.Started;
+        Locked = Content.ExecutionState == ExecutionState.Started;
         EnableDisableButtons();
       }
     }

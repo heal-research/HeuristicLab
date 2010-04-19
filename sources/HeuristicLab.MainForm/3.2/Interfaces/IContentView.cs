@@ -23,10 +23,12 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.MainForm {
   public interface IContentView : IView {
-    object Content { get; set; }
-    bool SaveEnabled { get; }
+    IContent Content { get; set; }
+    bool Locked { get; set; }
+    event EventHandler LockedChanged;
   }
 }

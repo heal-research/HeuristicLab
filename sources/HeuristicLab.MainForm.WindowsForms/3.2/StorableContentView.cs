@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -21,20 +21,28 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.ComponentModel;
+using System.Drawing;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using HeuristicLab.Common;
 
-namespace HeuristicLab.MainForm {
-  public interface IView {
-    bool IsShown { get; }
-    string Caption { get; set; }
-    bool ReadOnly { get; set; }
-    event EventHandler ReadOnlyChanged;
-    event EventHandler CaptionChanged;
-    event EventHandler Changed;
+namespace HeuristicLab.MainForm.WindowsForms {
+  public partial class StorableContentView : ContentView, IStorableContentView {
+    public StorableContentView()
+      : base() {
+      InitializeComponent();
+    }
+    public StorableContentView(IStorableContent content)
+      : this() {
+      this.Content = content;
+    }
 
-    void Show();
-    void Hide();
-    void Close();
+    public new IStorableContent Content {
+      get { return (IStorableContent)base.Content; }
+      set { base.Content = value; }
+    }
   }
 }

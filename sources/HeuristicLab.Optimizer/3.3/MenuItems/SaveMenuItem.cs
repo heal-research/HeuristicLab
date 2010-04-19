@@ -48,7 +48,7 @@ namespace HeuristicLab.Optimizer.MenuItems {
     }
     protected override void OnActiveViewChanged(object sender, EventArgs e) {
       IContentView activeView = MainFormManager.MainForm.ActiveView as IContentView;
-      ToolStripItem.Enabled = (activeView != null) && (activeView.SaveEnabled);
+      ToolStripItem.Enabled = (activeView != null) && (!activeView.Locked);
     }
 
     public override void Execute() {

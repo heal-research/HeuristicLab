@@ -47,12 +47,12 @@ namespace HeuristicLab.Optimizer.MenuItems {
     }
     protected override void OnActiveViewChanged(object sender, EventArgs e) {
       ItemView activeView = MainFormManager.MainForm.ActiveView as ItemView;
-      ToolStripItem.Enabled = (activeView != null) && (activeView.SaveEnabled);
+      ToolStripItem.Enabled = (activeView != null) && (!activeView.Locked);
     }
 
     public override void Execute() {
       ItemView activeView = MainFormManager.MainForm.ActiveView as ItemView;
-      if ((activeView != null) && (activeView.SaveEnabled)) {
+      if ((activeView != null) && (!activeView.Locked)) {
         Clipboard<IItem> clipboard = ((OptimizerMainForm)MainFormManager.MainForm).Clipboard;
         clipboard.AddItem((IItem)activeView.Content.Clone());
       }

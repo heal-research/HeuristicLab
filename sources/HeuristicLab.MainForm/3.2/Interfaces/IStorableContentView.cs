@@ -23,18 +23,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.MainForm {
-  public interface IView {
-    bool IsShown { get; }
-    string Caption { get; set; }
-    bool ReadOnly { get; set; }
-    event EventHandler ReadOnlyChanged;
-    event EventHandler CaptionChanged;
-    event EventHandler Changed;
-
-    void Show();
-    void Hide();
-    void Close();
+  public interface IStorableContentView : IContentView {
+    new IStorableContent Content { get; set; }
   }
 }

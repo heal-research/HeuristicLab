@@ -27,17 +27,19 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using HeuristicLab.Common;
+using System.Reflection;
 
 namespace HeuristicLab.MainForm.WindowsForms {
   public partial class ContentView : View, IContentView {
-    private object content;
-    public object Content {
+    private IContent content;
+    public IContent Content {
       get { return content; }
       set {
         if ((value != null) && (!MainFormManager.ViewCanViewObject(this, value)))
           throw new ArgumentException(string.Format("View \"{0}\" cannot view object \"{1}\".", this.GetType().Name, value.GetType().Name));
         if (InvokeRequired) {
-          Invoke(new Action<object>(delegate(object o) { this.Content = o; }), value);
+          Invoke(new Action<IContent>(delegate(IContent o) { this.Content = o; }), value);
         } else {
           if (this.content != value) {
             if (this.content != null) this.DeregisterContentEvents();
@@ -48,25 +50,44 @@ namespace HeuristicLab.MainForm.WindowsForms {
         }
       }
     }
-    private bool saveEnabled;
-    public bool SaveEnabled {
-      get { return saveEnabled; }
-      protected set {
-        if (value != saveEnabled) {
-          saveEnabled = value;
-          OnChanged();
-        }
-      }
-    }
 
     public ContentView()
       : base() {
       InitializeComponent();
-      saveEnabled = true;
+      this.locked = false;
     }
-    public ContentView(object content)
+    public ContentView(IContent content)
       : this() {
       this.content = content;
+    }
+
+    private bool locked;
+    public virtual bool Locked {
+      get { return this.locked; }
+      set {
+        if (InvokeRequired) {
+          Action<bool> action = delegate(bool b) { this.Locked = b; };
+          Invoke(action, value);
+        } else {
+          if (value != locked) {
+            locked = value;
+            PropertyInfo prop = typeof(IContentView).GetProperty("Locked");
+            PropagateStateChanges(this, typeof(IContentView), prop);
+            OnLockedChanged();
+            OnChanged();
+          }
+        }
+      }
+    }
+    public event EventHandler LockedChanged;
+    protected virtual void OnLockedChanged() {
+      if (InvokeRequired)
+        Invoke((MethodInvoker)OnLockedChanged);
+      else {
+        EventHandler handler = LockedChanged;
+        if (handler != null)
+          handler(this, EventArgs.Empty);
+      }
     }
 
     /// <summary>
