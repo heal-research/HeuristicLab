@@ -31,9 +31,10 @@ using System.Drawing.Drawing2D;
 namespace HeuristicLab.Operators.Views.GraphVisualization {
   internal static class OperatorShapeInfoFactory {
     public const string PredecessorConnector = "Predecessor";
+    public const string SuccessorConnector = "Successor";
     public static IOperatorShapeInfo CreateOperatorShapeInfo(IOperator op) {
-      IEnumerable<string> operatorParameterNames = op.Parameters.Where(p => p is IValueParameter<IOperator>).Select(p => p.Name);
-      IEnumerable<string> paramaterNameValues = op.Parameters.Where(p => !(p is IValueParameter<IOperator>)).Select(p => p.ToString());
+      IEnumerable<string> operatorParameterNames = op.Parameters.Where(p => p is IValueParameter && typeof(IOperator).IsAssignableFrom(p.DataType)).Select(p => p.Name);
+      IEnumerable<string> paramaterNameValues = op.Parameters.Where(p => !(p is IValueParameter && typeof(IOperator).IsAssignableFrom(p.DataType))).Select(p => p.ToString());
 
       OperatorShapeInfo operatorShapeInfo = new OperatorShapeInfo(operatorParameterNames, paramaterNameValues);
       operatorShapeInfo.AddConnector(PredecessorConnector);

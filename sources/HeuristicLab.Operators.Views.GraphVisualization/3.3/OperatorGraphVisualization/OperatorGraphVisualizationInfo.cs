@@ -80,9 +80,9 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
       foreach (IOperator oper in this.operatorShapeInfoMapping.FirstValues) {
         foreach (IParameter param in oper.Parameters) {
+          IValueParameter opParam = param as IValueParameter;
           this.parameterOperatorMapping.Add(param, oper);
-          IValueParameter<IOperator> opParam = param as IValueParameter<IOperator>;
-          if (opParam != null)
+          if (opParam != null && typeof(IOperator).IsAssignableFrom(param.DataType))
             this.RegisterOperatorParameterEvents(opParam);
           else
             this.RegisterParameterEvents(param);
@@ -124,8 +124,8 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       foreach (IOperator oper in clone.operatorShapeInfoMapping.FirstValues) {
         foreach (IParameter param in oper.Parameters) {
           clone.parameterOperatorMapping.Add(param, oper);
-          IValueParameter<IOperator> opParam = param as IValueParameter<IOperator>;
-          if (opParam != null)
+          IValueParameter opParam = param as IValueParameter;
+          if (opParam != null && typeof(IOperator).IsAssignableFrom(param.DataType)) 
             clone.RegisterOperatorParameterEvents(opParam);
           else
             clone.RegisterParameterEvents(param);
@@ -229,8 +229,17 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     public override void RemoveConnectionInfo(IConnectionInfo connectionInfo) {
       IOperatorShapeInfo shapeInfo = (IOperatorShapeInfo)connectionInfo.From;
       IOperator op = this.operatorShapeInfoMapping.GetBySecond(shapeInfo);
-      IValueParameter<IOperator> param = (IValueParameter<IOperator>)op.Parameters[connectionInfo.ConnectorFrom];
+      IValueParameter param = (IValueParameter)op.Parameters[connectionInfo.ConnectorFrom];
       param.Value = null;
+    }
+
+    public override void AddConnectionInfo(IConnectionInfo connectionInfo) {
+      IOperatorShapeInfo shapeInfo = (IOperatorShapeInfo)connectionInfo.From;
+      IOperator op = this.operatorShapeInfoMapping.GetBySecond(shapeInfo);
+      IValueParameter param = (IValueParameter)op.Parameters.Where(p => p.Name == connectionInfo.ConnectorFrom).Single();
+      IOperatorShapeInfo shapeInfoTo = (IOperatorShapeInfo)connectionInfo.To;
+      IOperator opTo = this.operatorShapeInfoMapping.GetBySecond(shapeInfoTo);
+      param.Value = opTo;
     }
     #endregion
 
@@ -320,16 +329,16 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     #region parameter events
     private void AddParameter(IOperator op, IParameter param) {
       this.parameterOperatorMapping.Add(param, op);
-      IValueParameter<IOperator> opParam = param as IValueParameter<IOperator>;
-      if (opParam != null) {
+      IValueParameter opParam = param as IValueParameter;
+      if (opParam != null && typeof(IOperator).IsAssignableFrom(param.DataType)) {
         this.RegisterOperatorParameterEvents(opParam);
         IOperatorShapeInfo shapeInfoFrom = this.operatorShapeInfoMapping.GetByFirst(op);
         shapeInfoFrom.AddConnector(param.Name);
 
         if (opParam.Value != null) {
-          if (!this.operatorShapeInfoMapping.ContainsFirst(opParam.Value))
-            this.AddOperator(opParam.Value);
-          IOperatorShapeInfo shapeInfoTo = this.operatorShapeInfoMapping.GetByFirst(opParam.Value);
+          if (!this.operatorShapeInfoMapping.ContainsFirst((IOperator)opParam.Value))
+            this.AddOperator((IOperator)opParam.Value);
+          IOperatorShapeInfo shapeInfoTo = this.operatorShapeInfoMapping.GetByFirst((IOperator)opParam.Value);
           this.connectionInfos.Add(new ConnectionInfo(shapeInfoFrom, param.Name, shapeInfoTo, OperatorShapeInfoFactory.PredecessorConnector));
         }
       } else
@@ -337,8 +346,8 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     }
 
     private void RemoveParameter(IOperator op, IParameter param) {
-      IValueParameter<IOperator> opParam = param as IValueParameter<IOperator>;
-      if (opParam != null) {
+      IValueParameter opParam = param as IValueParameter;
+      if (opParam != null && typeof(IOperator).IsAssignableFrom(param.DataType)) {
         this.DeregisterOperatorParameterEvents(opParam);
         IOperatorShapeInfo shapeInfo = this.operatorShapeInfoMapping.GetByFirst(op);
         this.connectionInfos.RemoveWhere(c => c.From == shapeInfo && c.ConnectorFrom == param.Name);
@@ -351,17 +360,17 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     }
 
     private void opParam_ValueChanged(object sender, EventArgs e) {
-      IValueParameter<IOperator> opParam = (IValueParameter<IOperator>)sender;
+      IValueParameter opParam = (IValueParameter)sender;
       IOperator op = this.parameterOperatorMapping[opParam];
       IOperatorShapeInfo shapeInfoFrom = this.operatorShapeInfoMapping.GetByFirst(op);
       KeyValuePair<IOperatorShapeInfo, string> connectionFrom = new KeyValuePair<IOperatorShapeInfo, string>(shapeInfoFrom, opParam.Name);
 
       this.connectionInfos.RemoveWhere(c => c.From == shapeInfoFrom && c.ConnectorFrom == opParam.Name);
       if (opParam.Value != null) {
-        if (!this.operatorShapeInfoMapping.ContainsFirst(opParam.Value))
-          this.AddOperator(opParam.Value);
-        IShapeInfo shapeInfoTo = this.operatorShapeInfoMapping.GetByFirst(opParam.Value);
-        this.AddConnectionInfo(new ConnectionInfo(shapeInfoFrom, opParam.Name, shapeInfoTo, OperatorShapeInfoFactory.PredecessorConnector));
+        if (!this.operatorShapeInfoMapping.ContainsFirst((IOperator)opParam.Value))
+          this.AddOperator((IOperator)opParam.Value);
+        IOperatorShapeInfo shapeInfoTo = this.operatorShapeInfoMapping.GetByFirst((IOperator)opParam.Value);
+        base.AddConnectionInfo(new ConnectionInfo(shapeInfoFrom, opParam.Name, shapeInfoTo, OperatorShapeInfoFactory.PredecessorConnector));
       }
     }
 
@@ -398,10 +407,10 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       this.UpdateParameterLabels(op);
     }
 
-    private void RegisterOperatorParameterEvents(IValueParameter<IOperator> opParam) {
+    private void RegisterOperatorParameterEvents(IValueParameter opParam) {
       opParam.ValueChanged += new EventHandler(opParam_ValueChanged);
     }
-    private void DeregisterOperatorParameterEvents(IValueParameter<IOperator> opParam) {
+    private void DeregisterOperatorParameterEvents(IValueParameter opParam) {
       opParam.ValueChanged -= new EventHandler(opParam_ValueChanged);
     }
     private void RegisterParameterEvents(IParameter param) {
@@ -425,7 +434,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     }
 
     private void UpdateParameterLabels(IOperator op) {
-      IEnumerable<IParameter> parameters = op.Parameters.Where(p => !(p is IValueParameter<IOperator>));
+      IEnumerable<IParameter> parameters = op.Parameters.Where(p => !(p is IValueParameter && typeof(IOperator).IsAssignableFrom(p.DataType)));
       IOperatorShapeInfo operatorShapeInfo = this.operatorShapeInfoMapping.GetByFirst(op);
       if (parameters.Count() > 0)
         operatorShapeInfo.UpdateLabels(parameters.Select(p => p.ToString()));

@@ -159,7 +159,8 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       shape.Icon = this.Icon;
       shape.Collapsed = this.Collapsed;
       foreach (string connectorName in this.connectorNames)
-        shape.AddConnector(connectorName);
+        if (connectorName != OperatorShapeInfoFactory.SuccessorConnector && connectorName != OperatorShapeInfoFactory.PredecessorConnector)
+          shape.AddConnector(connectorName);
 
       shape.UpdateLabels(this.labels);
       return shape;
@@ -190,8 +191,9 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       for (; j < oldConnectorNames.Count; j++)
         operatorShape.RemoveConnector(oldConnectorNames[j]);
 
-      //add new connectors
+      //add new connectors except successor and connector
       for (; i < this.connectorNames.Count; i++)
+        if (this.connectorNames[i] != OperatorShapeInfoFactory.SuccessorConnector && this.connectorNames[i] != OperatorShapeInfoFactory.PredecessorConnector)
         operatorShape.AddConnector(this.connectorNames[i]);
 
       operatorShape.UpdateLabels(this.labels);

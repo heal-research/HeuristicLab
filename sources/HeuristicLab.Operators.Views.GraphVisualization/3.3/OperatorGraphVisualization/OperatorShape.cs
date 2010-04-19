@@ -205,10 +205,10 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       this.expandIconMaterial.OnCollapse += new EventHandler(expandIconMaterial_OnCollapse);
       this.Children.Add(expandIconMaterial);
 
-      this.predecessor = this.CreateConnector("Predecessor", new Point(Rectangle.Left, Center.Y));
+      this.predecessor = this.CreateConnector(OperatorShapeInfoFactory.PredecessorConnector, new Point(Rectangle.Left, Center.Y));
       this.Connectors.Add(predecessor);
 
-      this.successor = this.CreateConnector("Successor", (new Point(Rectangle.Right, Center.Y)));
+      this.successor = this.CreateConnector(OperatorShapeInfoFactory.SuccessorConnector, (new Point(Rectangle.Right, Center.Y)));
       this.Connectors.Add(successor);
     }
 
