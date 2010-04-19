@@ -78,6 +78,7 @@
       this.xTrackBar.Size = new System.Drawing.Size(64, 45);
       this.xTrackBar.TabIndex = 11;
       this.xTrackBar.TickStyle = System.Windows.Forms.TickStyle.None;
+      this.xTrackBar.ValueChanged += new System.EventHandler(this.jitterTrackBar_ValueChanged);
       // 
       // xAxisLabel
       // 
@@ -132,6 +133,7 @@
       this.yTrackBar.Size = new System.Drawing.Size(59, 45);
       this.yTrackBar.TabIndex = 10;
       this.yTrackBar.TickStyle = System.Windows.Forms.TickStyle.None;
+      this.yTrackBar.ValueChanged += new System.EventHandler(this.jitterTrackBar_ValueChanged);
       // 
       // sizeComboBox
       // 
@@ -143,6 +145,7 @@
       this.sizeComboBox.Name = "sizeComboBox";
       this.sizeComboBox.Size = new System.Drawing.Size(121, 21);
       this.sizeComboBox.TabIndex = 14;
+      this.sizeComboBox.SelectedIndexChanged += new System.EventHandler(this.AxisComboBox_SelectedIndexChanged);
       // 
       // sizeLabel
       // 
@@ -175,6 +178,9 @@
       this.chart.Size = new System.Drawing.Size(556, 263);
       this.chart.TabIndex = 16;
       this.chart.Text = "chart1";
+      this.chart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart_MouseMove);
+      this.chart.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chart_MouseDown);
+      this.chart.LostFocus += new System.EventHandler(this.chart_LostFocus);
       // 
       // zoomButton
       // 
@@ -188,6 +194,7 @@
       this.zoomButton.TabStop = true;
       this.zoomButton.Text = "Zoom";
       this.zoomButton.UseVisualStyleBackColor = true;
+      this.zoomButton.CheckedChanged += new System.EventHandler(this.zoomButton_CheckedChanged);
       // 
       // selectButton
       // 
@@ -223,6 +230,7 @@
       this.colorButton.Text = "Color";
       this.colorButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
       this.colorButton.UseVisualStyleBackColor = true;
+      this.colorButton.Click += new System.EventHandler(this.colorButton_Click);
       // 
       // colorDialog
       // 

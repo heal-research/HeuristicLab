@@ -37,12 +37,34 @@ namespace HeuristicLab.Optimization.Views {
   [View("RunCollection BubbleChart")]
   [Content(typeof(RunCollection), false)]
   public partial class RunCollectionBubbleChartView : AsynchronousContentView {
+    private const string constantLabel = "constant";
     private Dictionary<int, Dictionary<object, double>> categoricalMapping;
+    private Dictionary<IRun, double> xJitter;
+    private Dictionary<IRun, double> yJitter;
+    private double xJitterFactor = 0.0;
+    private double yJitterFactor = 0.0;
+    private Random random;
+    private bool isSelecting = false;
 
     public RunCollectionBubbleChartView() {
       InitializeComponent();
       Caption = "Run Collection Bubble Chart";
+
       this.categoricalMapping = new Dictionary<int, Dictionary<object, double>>();
+      this.xJitter = new Dictionary<IRun, double>();
+      this.yJitter = new Dictionary<IRun, double>();
+      this.random = new Random();
+
+      this.chart.Series[0]["BubbleMaxSize"] = "0";
+      this.chart.Series[0]["BubbleMaxScale"] = "Auto";
+      this.chart.Series[0]["BubbleMinScale"] = "Auto";
+      this.chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
+      this.chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = true;
+      this.chart.ChartAreas[0].AxisX.ScaleView.Zoomable = !this.isSelecting;
+      this.chart.ChartAreas[0].AxisY.ScaleView.Zoomable = !this.isSelecting;
+      this.chart.ChartAreas[0].CursorX.Interval = 0;
+      this.chart.ChartAreas[0].CursorY.Interval = 0;
+
       base.ReadOnly = true;
     }
 
@@ -65,15 +87,14 @@ namespace HeuristicLab.Optimization.Views {
       Content.Reset += new EventHandler(Content_Reset);
       Content.ColumnNamesChanged += new EventHandler(Content_ColumnNamesChanged);
     }
-
     protected override void DeregisterContentEvents() {
       base.DeregisterContentEvents();
       Content.Reset -= new EventHandler(Content_Reset);
       Content.ColumnNamesChanged -= new EventHandler(Content_ColumnNamesChanged);
     }
-
     protected override void OnContentChanged() {
       base.OnContentChanged();
+      this.categoricalMapping.Clear();
       this.UpdateComboBoxes();
     }
 
@@ -87,8 +108,11 @@ namespace HeuristicLab.Optimization.Views {
     private void UpdateComboBoxes() {
       this.xAxisComboBox.Items.Clear();
       this.yAxisComboBox.Items.Clear();
+      this.sizeComboBox.Items.Clear();
       this.xAxisComboBox.Items.AddRange(Content.ColumnNames.ToArray());
       this.yAxisComboBox.Items.AddRange(Content.ColumnNames.ToArray());
+      this.sizeComboBox.Items.Add(constantLabel);
+      this.sizeComboBox.Items.AddRange(Content.ColumnNames.ToArray());
     }
 
     private void Content_Reset(object sender, EventArgs e) {
@@ -106,19 +130,23 @@ namespace HeuristicLab.Optimization.Views {
 
       double? xValue;
       double? yValue;
+      double? sizeValue;
       for (int row = 0; row < Content.Count; row++) {
         xValue = GetValue(row, xAxisComboBox.SelectedIndex);
         yValue = GetValue(row, yAxisComboBox.SelectedIndex);
-        if (xValue.HasValue && yValue.HasValue)
-          series.Points.Add(new DataPoint(xValue.Value, yValue.Value));
+        sizeValue = 1.0;
+        if (xValue.HasValue && yValue.HasValue) {
+          if (sizeComboBox.SelectedIndex > 0)
+            sizeValue = GetValue(row, sizeComboBox.SelectedIndex-1);
+          xValue = xValue.Value + xValue.Value * GetXJitter(Content.ElementAt(row)) * xJitterFactor;
+          yValue = yValue.Value + yValue.Value * GetYJitter(Content.ElementAt(row)) * yJitterFactor;
+          DataPoint point = new DataPoint(xValue.Value, new double[] { yValue.Value, sizeValue.Value });
+          point.ToolTip = this.CreateTooltip(row);
+          point.Tag = this.Content.ElementAt(row);
+          series.Points.Add(point);
+        }
       }
     }
-
-    private void AxisComboBox_SelectedIndexChanged(object sender, EventArgs e) {
-      UpdateDataPoints();
-      UpdateAxisLabels();
-    }
-
     private double? GetValue(int row, int column) {
       if (column < 0 || row < 0)
         return null;
@@ -144,15 +172,81 @@ namespace HeuristicLab.Optimization.Views {
       return this.categoricalMapping[dimension][c];
     }
 
+    #region drag and drop
+    private IRun draggedRun;
+    private bool isDragOperationInProgress = false;
+
+    private void chart_MouseDown(object sender, MouseEventArgs e) {
+      HitTestResult h = this.chart.HitTest(e.X, e.Y);
+      if (h.ChartElementType == ChartElementType.DataPoint) {
+        this.draggedRun = (IRun)((DataPoint)h.Object).Tag;
+        this.chart.ChartAreas[0].AxisX.ScaleView.Zoomable = false;
+        this.chart.ChartAreas[0].AxisY.ScaleView.Zoomable = false;
+        this.chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = false;
+        this.chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = false;
+      }
+    }
+
+    private void chart_MouseMove(object sender, MouseEventArgs e) {
+      HitTestResult h = this.chart.HitTest(e.X, e.Y);
+      if (this.draggedRun != null && h.ChartElementType != ChartElementType.DataPoint) {
+        //this.isDragOperationInProgress = true;
+        DataObject data = new DataObject();
+        data.SetData("Type", draggedRun.GetType());
+        data.SetData("Value", draggedRun);
+        if (ReadOnly) {
+          DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
+        } else {
+          DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move);
+          if ((result & DragDropEffects.Move) == DragDropEffects.Move)
+            Content.Remove(draggedRun);
+        }
+        this.draggedRun = null;
+      }
+    }
+    private void chart_LostFocus(object sender, EventArgs e) {
+      if (this.isDragOperationInProgress) {
+        this.chart.ChartAreas[0].AxisX.ScaleView.Zoomable = !isSelecting;
+        this.chart.ChartAreas[0].AxisY.ScaleView.Zoomable = !isSelecting;
+        this.chart.ChartAreas[0].CursorX.SetSelectionPosition(0, 0);
+        this.chart.ChartAreas[0].CursorY.SetSelectionPosition(0, 0);
+        this.chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
+        this.chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = true;
+        this.isDragOperationInProgress = false;
+      }
+    }
+    #endregion
+
+    #region GUI events and updating
+    private double GetXJitter(IRun run) {
+      if (!this.xJitter.ContainsKey(run))
+        this.xJitter[run] = random.NextDouble() * 2.0 - 1.0;
+      return this.xJitter[run];
+    }
+    private double GetYJitter(IRun run) {
+      if (!this.yJitter.ContainsKey(run))
+        this.yJitter[run] = random.NextDouble() * 2.0 - 1.0;
+      return this.yJitter[run];
+    }
+    private void jitterTrackBar_ValueChanged(object sender, EventArgs e) {
+      this.xJitterFactor = xTrackBar.Value / 100.0;
+      this.yJitterFactor = yTrackBar.Value / 100.0;
+      this.UpdateDataPoints();
+    }
+
+    private void AxisComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+      UpdateDataPoints();
+      UpdateAxisLabels();
+    }
     private void UpdateAxisLabels() {
       Axis xAxis = this.chart.ChartAreas[0].AxisX;
       Axis yAxis = this.chart.ChartAreas[0].AxisY;
-      SetAxisLabels(xAxis, xAxisComboBox.SelectedIndex);
-      SetAxisLabels(yAxis, yAxisComboBox.SelectedIndex);
+      SetCustomAxisLabels(xAxis, xAxisComboBox.SelectedIndex);
+      SetCustomAxisLabels(yAxis, yAxisComboBox.SelectedIndex);
     }
-    private void SetAxisLabels(Axis axis, int dimension) {
+    private void SetCustomAxisLabels(Axis axis, int dimension) {
+      axis.CustomLabels.Clear();
       if (categoricalMapping.ContainsKey(dimension)) {
-        axis.CustomLabels.Clear();
         CustomLabel label = null;
         foreach (var pair in categoricalMapping[dimension]) {
           label = axis.CustomLabels.Add(pair.Value - 0.5, pair.Value + 0.5, pair.Key.ToString());
@@ -164,5 +258,41 @@ namespace HeuristicLab.Optimization.Views {
         axis.LabelStyle.TruncatedLabels = true;
       }
     }
+
+    private string CreateTooltip(int runIndex) {
+      StringBuilder builder = new StringBuilder();
+      builder.AppendLine(this.Content.ElementAt(runIndex).Name);
+      int columnIndex = 0;
+      foreach (string columnName in this.Content.ColumnNames) {
+        builder.Append(columnName);
+        builder.Append(": ");
+        builder.AppendLine(this.Content.GetValue(runIndex, columnIndex));
+        columnIndex++;
+      }
+      return builder.ToString();
+    }
+
+    private void zoomButton_CheckedChanged(object sender, EventArgs e) {
+      this.isSelecting = selectButton.Checked;
+      this.colorButton.Enabled = this.isSelecting;
+      this.chart.ChartAreas[0].AxisX.ScaleView.Zoomable = !isSelecting;
+      this.chart.ChartAreas[0].AxisY.ScaleView.Zoomable = !isSelecting;
+    }
+
+    private void colorButton_Click(object sender, EventArgs e) {
+      if (colorDialog.ShowDialog(this) == DialogResult.OK) {
+        this.colorButton.Image = this.GenerateImage(16, 16, this.colorDialog.Color);
+      }
+    }
+    private Image GenerateImage(int width, int height, Color fillColor) {
+      Image colorImage = new Bitmap(width, height);
+      using (Graphics gfx = Graphics.FromImage(colorImage)) {
+        using (SolidBrush brush = new SolidBrush(fillColor)) {
+          gfx.FillRectangle(brush, 0, 0, width, height);
+        }
+      }
+      return colorImage;
+    }
+    #endregion
   }
 }
