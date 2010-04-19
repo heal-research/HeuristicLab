@@ -150,7 +150,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       foreach (Control c in control.Controls) {
         Type controlType = c.GetType();
         PropertyInfo controlPropertyInfo = controlType.GetProperty(propertyInfo.Name, propertyInfo.PropertyType);
-        if (type.IsAssignableFrom(controlType) && controlPropertyInfo!= null) {
+        if (type.IsAssignableFrom(controlType) && controlPropertyInfo != null) {
           var thisValue = propertyInfo.GetValue(this, null);
           controlPropertyInfo.SetValue(c, thisValue, null);
         } else
@@ -182,13 +182,12 @@ namespace HeuristicLab.MainForm.WindowsForms {
 
     internal void OnClosingHelper(object sender, FormClosingEventArgs e) {
       FormClosingEventArgs eventArgs = new FormClosingEventArgs(this.closeReason, e.Cancel);
-      if (this.closeReason != CloseReason.None)
+      if (this.closeReason != CloseReason.None) {
         this.OnClosing(eventArgs);
-      else
+        if (eventArgs.Cancel != e.Cancel)
+          e.Cancel = eventArgs.Cancel;
+      } else
         this.OnClosing(e);
-
-      if (eventArgs.Cancel != e.Cancel)
-        e.Cancel = eventArgs.Cancel;
       this.closeReason = CloseReason.None;
     }
 
