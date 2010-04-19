@@ -36,8 +36,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
   [StorableClass]
   public sealed class OffspringSelectionGeneticAlgorithmMainLoop : AlgorithmOperator {
     #region Parameter properties
-    public ValueParameter<VariableCreator> VariableInitializerParameter {
-      get { return (ValueParameter<VariableCreator>)Parameters["VariableInitializer"]; }
+    public OptionalValueParameter<VariableCreator> VariableInitializerParameter {
+      get { return (OptionalValueParameter<VariableCreator>)Parameters["VariableInitializer"]; }
     }
     public ValueLookupParameter<IRandom> RandomParameter {
       get { return (ValueLookupParameter<IRandom>)Parameters["Random"]; }
@@ -118,7 +118,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
 
     private void Initialize() {
       #region Create parameters
-      Parameters.Add(new ValueParameter<VariableCreator>("VariableInitializer", "Operator to initialize some variables.", new VariableCreator()));
+      Parameters.Add(new OptionalValueParameter<VariableCreator>("VariableInitializer", "Operator to initialize some variables.", new VariableCreator()));
       Parameters.Add(new ValueLookupParameter<IRandom>("Random", "A pseudo random number generator."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, otherwise false."));
       Parameters.Add(new ValueLookupParameter<IntValue>("PopulationSize", "The size of the population."));

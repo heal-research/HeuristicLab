@@ -80,6 +80,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HeuristicLabAlgorithmsOffspringSelectionGeneticAlgorithmPlugin.cs" />
+    <Compile Include="OffspringSelectionIslandGeneticAlgorithm.cs" />
+    <Compile Include="OffspringSelectionIslandGeneticAlgorithmMainLoop.cs" />
     <Compile Include="OffspringSelectionGeneticAlgorithm.cs" />
     <Compile Include="OffspringSelectionGeneticAlgorithmMainLoop.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

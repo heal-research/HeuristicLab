@@ -34,14 +34,14 @@ using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
 using HeuristicLab.Selection;
 
-namespace HeuristicLab.Algorithms.GeneticAlgorithm {
+namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
   /// <summary>
-  /// An island genetic algorithm.
+  /// An offspring selection island genetic algorithm.
   /// </summary>
-  [Item("Island Genetic Algorithm", "An island genetic algorithm.")]
+  [Item("Offspring Selection Island Genetic Algorithm", "An offspring selection island genetic algorithm.")]
   [Creatable("Algorithms")]
   [StorableClass]
-  public sealed class IslandGeneticAlgorithm : EngineAlgorithm {
+  public sealed class OffspringSelectionIslandGeneticAlgorithm : EngineAlgorithm {
 
     #region Problem Properties
     public override Type ProblemType {
@@ -101,6 +101,24 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     }
     private ValueParameter<BoolValue> ParallelParameter {
       get { return (ValueParameter<BoolValue>)Parameters["Parallel"]; }
+    }
+    private ValueLookupParameter<DoubleValue> SuccessRatioParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["SuccessRatio"]; }
+    }
+    private ValueLookupParameter<DoubleValue> ComparisonFactorLowerBoundParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["ComparisonFactorLowerBound"]; }
+    }
+    private ValueLookupParameter<DoubleValue> ComparisonFactorUpperBoundParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["ComparisonFactorUpperBound"]; }
+    }
+    private OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier> ComparisonFactorModifierParameter {
+      get { return (OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier>)Parameters["ComparisonFactorModifier"]; }
+    }
+    private ValueLookupParameter<DoubleValue> MaximumSelectionPressureParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["MaximumSelectionPressure"]; }
+    }
+    private ValueLookupParameter<BoolValue> OffspringSelectionBeforeMutationParameter {
+      get { return (ValueLookupParameter<BoolValue>)Parameters["OffspringSelectionBeforeMutation"]; }
     }
     #endregion
 
@@ -169,10 +187,35 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       get { return ParallelParameter.Value; }
       set { ParallelParameter.Value = value; }
     }
+    private DoubleValue SuccessRatio {
+      get { return SuccessRatioParameter.Value; }
+      set { SuccessRatioParameter.Value = value; }
+    }
+    private DoubleValue ComparisonFactorLowerBound {
+      get { return ComparisonFactorLowerBoundParameter.Value; }
+      set { ComparisonFactorLowerBoundParameter.Value = value; }
+    }
+    private DoubleValue ComparisonFactorUpperBound {
+      get { return ComparisonFactorUpperBoundParameter.Value; }
+      set { ComparisonFactorUpperBoundParameter.Value = value; }
+    }
+    private IDiscreteDoubleValueModifier ComparisonFactorModifier {
+      get { return ComparisonFactorModifierParameter.Value; }
+      set { ComparisonFactorModifierParameter.Value = value; }
+    }
+    private DoubleValue MaximumSelectionPressure {
+      get { return MaximumSelectionPressureParameter.Value; }
+      set { MaximumSelectionPressureParameter.Value = value; }
+    }
+    private BoolValue OffspringSelectionBeforeMutation {
+      get { return OffspringSelectionBeforeMutationParameter.Value; }
+      set { OffspringSelectionBeforeMutationParameter.Value = value; }
+    }
     private List<ISelector> selectors;
     private IEnumerable<ISelector> Selectors {
       get { return selectors; }
     }
+    private List<IDiscreteDoubleValueModifier> comparisonFactorModifiers;
     private List<ISelector> emigrantsSelectors;
     private List<ISelector> immigrationSelectors;
     private List<IMigrator> migrators;
@@ -185,14 +228,14 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     private SolutionsCreator SolutionsCreator {
       get { return (SolutionsCreator)IslandProcessor.Operator; }
     }
-    private IslandGeneticAlgorithmMainLoop MainLoop {
-      get { return (IslandGeneticAlgorithmMainLoop)IslandProcessor.Successor; }
+    private OffspringSelectionIslandGeneticAlgorithmMainLoop MainLoop {
+      get { return (OffspringSelectionIslandGeneticAlgorithmMainLoop)IslandProcessor.Successor; }
     }
     #endregion
 
     [StorableConstructor]
-    private IslandGeneticAlgorithm(bool deserializing) : base(deserializing) { }
-    public IslandGeneticAlgorithm()
+    private OffspringSelectionIslandGeneticAlgorithm(bool deserializing) : base(deserializing) { }
+    public OffspringSelectionIslandGeneticAlgorithm()
       : base() {
       Parameters.Add(new ValueParameter<IntValue>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
       Parameters.Add(new ValueParameter<BoolValue>("SetSeedRandomly", "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
@@ -210,12 +253,18 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Parameters.Add(new OptionalConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
       Parameters.Add(new ValueParameter<IntValue>("Elites", "The numer of elite solutions which are kept in each generation.", new IntValue(1)));
       Parameters.Add(new ValueParameter<BoolValue>("Parallel", "True if the islands should be run in parallel (also requires a parallel engine)", new BoolValue(false)));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("SuccessRatio", "The ratio of successful to total children that should be achieved.", new DoubleValue(1)));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("ComparisonFactorLowerBound", "The lower bound of the comparison factor (start).", new DoubleValue(0)));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("ComparisonFactorUpperBound", "The upper bound of the comparison factor (end).", new DoubleValue(1)));
+      Parameters.Add(new OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier>("ComparisonFactorModifier", "The operator used to modify the comparison factor.", new ItemSet<IDiscreteDoubleValueModifier>(new IDiscreteDoubleValueModifier[] { new LinearDiscreteDoubleValueModifier() }), new LinearDiscreteDoubleValueModifier()));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("MaximumSelectionPressure", "The maximum selection pressure that terminates the algorithm.", new DoubleValue(100)));
+      Parameters.Add(new ValueLookupParameter<BoolValue>("OffspringSelectionBeforeMutation", "True if the offspring selection step should be applied before mutation, false if it should be applied after mutation.", new BoolValue(false)));
 
       RandomCreator randomCreator = new RandomCreator();
       SubScopesCreator populationCreator = new SubScopesCreator();
       UniformSubScopesProcessor ussp1 = new UniformSubScopesProcessor();
       SolutionsCreator solutionsCreator = new SolutionsCreator();
-      IslandGeneticAlgorithmMainLoop mainLoop = new IslandGeneticAlgorithmMainLoop();
+      OffspringSelectionIslandGeneticAlgorithmMainLoop mainLoop = new OffspringSelectionIslandGeneticAlgorithmMainLoop();
       OperatorGraph.InitialOperator = randomCreator;
 
       randomCreator.RandomParameter.ActualName = "Random";
@@ -250,6 +299,12 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       mainLoop.MutationProbabilityParameter.ActualName = MutationProbabilityParameter.Name;
       mainLoop.RandomParameter.ActualName = randomCreator.RandomParameter.ActualName;
       mainLoop.ResultsParameter.ActualName = "Results";
+      mainLoop.SuccessRatioParameter.ActualName = SuccessRatioParameter.Name;
+      mainLoop.ComparisonFactorLowerBoundParameter.ActualName = ComparisonFactorLowerBoundParameter.Name;
+      mainLoop.ComparisonFactorModifierParameter.ActualName = ComparisonFactorModifierParameter.Name;
+      mainLoop.ComparisonFactorUpperBoundParameter.ActualName = ComparisonFactorUpperBoundParameter.Name;
+      mainLoop.MaximumSelectionPressureParameter.ActualName = MaximumSelectionPressureParameter.Name;
+      mainLoop.OffspringSelectionBeforeMutationParameter.ActualName = OffspringSelectionBeforeMutationParameter.Name;
 
       mainLoop.Successor = null;
 
@@ -257,7 +312,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      IslandGeneticAlgorithm clone = (IslandGeneticAlgorithm)base.Clone(cloner);
+      OffspringSelectionIslandGeneticAlgorithm clone = (OffspringSelectionIslandGeneticAlgorithm)base.Clone(cloner);
       clone.Initialize();
       return clone;
     }
@@ -335,6 +390,20 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     private void MigrationRate_ValueChanged(object sender, EventArgs e) {
       ParameterizeSelectors();
     }
+    private void MaximumMigrationsParameter_ValueChanged(object sender, EventArgs e) {
+      MaximumMigrations.ValueChanged += new EventHandler(MaximumMigrations_ValueChanged);
+      ParameterizeComparisonFactorModifiers();
+    }
+    private void MaximumMigrations_ValueChanged(object sender, EventArgs e) {
+      ParameterizeComparisonFactorModifiers();
+    }
+    private void MigrationIntervalParameter_ValueChanged(object sender, EventArgs e) {
+      MigrationInterval.ValueChanged += new EventHandler(MigrationInterval_ValueChanged);
+      ParameterizeComparisonFactorModifiers();
+    }
+    private void MigrationInterval_ValueChanged(object sender, EventArgs e) {
+      ParameterizeComparisonFactorModifiers();
+    }
     #endregion
 
     #region Helpers
@@ -342,6 +411,8 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     private void Initialize() {
       InitializeSelectors();
       UpdateSelectors();
+      InitializeComparisonFactorModifiers();
+      UpdateComparisonFactorModifiers();
       InitializeMigrators();
       UpdateMigrators();
       PopulationSizeParameter.ValueChanged += new EventHandler(PopulationSizeParameter_ValueChanged);
@@ -350,6 +421,10 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       MigrationRate.ValueChanged += new EventHandler(MigrationRate_ValueChanged);
       ElitesParameter.ValueChanged += new EventHandler(ElitesParameter_ValueChanged);
       Elites.ValueChanged += new EventHandler(Elites_ValueChanged);
+      MigrationIntervalParameter.ValueChanged += new EventHandler(MigrationIntervalParameter_ValueChanged);
+      MigrationInterval.ValueChanged += new EventHandler(MigrationInterval_ValueChanged);
+      MaximumMigrationsParameter.ValueChanged += new EventHandler(MaximumMigrationsParameter_ValueChanged);
+      MaximumMigrations.ValueChanged += new EventHandler(MaximumMigrations_ValueChanged);
       if (Problem != null) {
         UpdateCrossovers();
         UpdateMutators();
@@ -382,6 +457,11 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       immigrationSelectors = new List<ISelector>();
       immigrationSelectors.AddRange(ApplicationManager.Manager.GetInstances<ISelector>().Where(x => !(x is IMultiObjectiveSelector)).OrderBy(x => x.Name));
       ParameterizeSelectors();
+    }
+    private void InitializeComparisonFactorModifiers() {
+      comparisonFactorModifiers = new List<IDiscreteDoubleValueModifier>();
+      comparisonFactorModifiers.AddRange(ApplicationManager.Manager.GetInstances<IDiscreteDoubleValueModifier>().OrderBy(x => x.Name));
+      ParameterizeComparisonFactorModifiers();
     }
     private void InitializeMigrators() {
       migrators = new List<IMigrator>();
@@ -419,6 +499,16 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
         }
       }
     }
+    private void ParameterizeComparisonFactorModifiers() {
+      foreach (IDiscreteDoubleValueModifier modifier in comparisonFactorModifiers) {
+        modifier.IndexParameter.ActualName = "Generations";
+        modifier.EndIndexParameter.Value = new IntValue(MigrationInterval.Value * MaximumMigrations.Value);
+        modifier.EndValueParameter.ActualName = ComparisonFactorUpperBoundParameter.Name;
+        modifier.StartIndexParameter.Value = new IntValue(0);
+        modifier.StartValueParameter.ActualName = ComparisonFactorLowerBoundParameter.Name;
+        modifier.ValueParameter.ActualName = "ComparisonFactor";
+      }
+    }
     private void UpdateSelectors() {
       ISelector oldSelector = SelectorParameter.Value;
       SelectorParameter.ValidValues.Clear();
@@ -449,6 +539,18 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       if (oldSelector != null) {
         ISelector selector = ImmigrationSelectorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldSelector.GetType());
         if (selector != null) ImmigrationSelectorParameter.Value = selector;
+      }
+    }
+    private void UpdateComparisonFactorModifiers() {
+      IDiscreteDoubleValueModifier oldModifier = ComparisonFactorModifier;
+
+      ComparisonFactorModifierParameter.ValidValues.Clear();
+      foreach (IDiscreteDoubleValueModifier modifier in comparisonFactorModifiers)
+        ComparisonFactorModifierParameter.ValidValues.Add(modifier);
+
+      if (oldModifier != null) {
+        IDiscreteDoubleValueModifier mod = ComparisonFactorModifierParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldModifier.GetType());
+        if (mod != null) ComparisonFactorModifierParameter.Value = mod;
       }
     }
     private void UpdateMigrators() {
