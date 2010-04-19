@@ -86,11 +86,11 @@
     <Compile Include="Crossovers\CyclicCrossover2.cs" />
     <Compile Include="Crossovers\EdgeRecombinationCrossover.cs" />
     <Compile Include="Crossovers\MaximalPreservativeCrossover.cs" />
+    <Compile Include="Crossovers\MultiPermutationCrossover.cs" />
     <Compile Include="Crossovers\OrderBasedCrossover.cs" />
     <Compile Include="Crossovers\OrderCrossover.cs" />
     <Compile Include="Crossovers\OrderCrossover2.cs" />
     <Compile Include="Crossovers\PartiallyMatchedCrossover.cs" />
-    <Compile Include="Crossovers\PermutationMultiCrossover.cs" />
     <Compile Include="Crossovers\PositionBasedCrossover.cs" />
     <Compile Include="HeuristicLabEncodingsPermutationEncodingPlugin.cs" />
     <Compile Include="Interfaces\IPermutationCreator.cs" />
