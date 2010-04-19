@@ -226,13 +226,16 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private IView GetView(IView view) {
       if (view == null || views.ContainsKey(view))
         return view;
-      IView viewHost =
-        (from ViewHost v in views.Keys.OfType<ViewHost>()
-         where v.Views.Contains(((IContentView)view))
-         select v).SingleOrDefault();
-      return viewHost;
+      IContentView contentView = view as IContentView;
+      if (contentView != null) {
+        IView viewHost =
+          (from ViewHost v in views.Keys.OfType<ViewHost>()
+           where v.Views.Contains(contentView)
+           select v).SingleOrDefault();
+        return viewHost;
+      }
+      return contentView;
     }
-
 
     internal void ShowView(IView view) {
       if (InvokeRequired) Invoke((Action<IView>)ShowView, view);
