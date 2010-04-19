@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System.Drawing;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
@@ -46,6 +47,33 @@ namespace HeuristicLab.Optimization {
     private Dictionary<string, IItem> results;
     public IDictionary<string, IItem> Results {
       get { return results; }
+    }
+
+    private Color color = Color.Black;
+    public Color Color {
+      get { return this.color; }
+      set {
+        if (color != value) {
+          this.color = value;
+          this.OnChanged();
+        }
+      }
+    }
+    private bool visible = true;
+    public bool Visible {
+      get { return this.visible; }
+      set {
+        if (visible != value) {
+          this.visible = value;
+          this.OnChanged();
+        }
+      }
+    }
+    public event EventHandler Changed;
+    private void OnChanged() {
+      EventHandler handler = Changed;
+      if (handler != null)
+        handler(this, EventArgs.Empty);
     }
 
     public Run()

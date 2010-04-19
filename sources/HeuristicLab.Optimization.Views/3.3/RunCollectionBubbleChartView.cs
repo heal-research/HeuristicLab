@@ -54,6 +54,9 @@ namespace HeuristicLab.Optimization.Views {
       this.xJitter = new Dictionary<IRun, double>();
       this.yJitter = new Dictionary<IRun, double>();
       this.random = new Random();
+      this.colorDialog.Color = Color.Black;
+      this.colorButton.Image = this.GenerateImage(16, 16, this.colorDialog.Color);
+      this.isSelecting = false;
 
       this.chart.Series[0]["BubbleMaxSize"] = "0";
       this.chart.Series[0]["BubbleMaxScale"] = "Auto";
@@ -86,18 +89,55 @@ namespace HeuristicLab.Optimization.Views {
       base.RegisterContentEvents();
       Content.Reset += new EventHandler(Content_Reset);
       Content.ColumnNamesChanged += new EventHandler(Content_ColumnNamesChanged);
+      Content.ItemsAdded += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
+      Content.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
+      Content.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
+      foreach (IRun run in Content)
+        run.Changed += new EventHandler(run_Changed);
     }
+
     protected override void DeregisterContentEvents() {
       base.DeregisterContentEvents();
       Content.Reset -= new EventHandler(Content_Reset);
       Content.ColumnNamesChanged -= new EventHandler(Content_ColumnNamesChanged);
+      Content.ItemsAdded -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
+      Content.ItemsRemoved -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
+      Content.CollectionReset -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
+      foreach (IRun run in Content)
+        run.Changed -= new EventHandler(run_Changed);
     }
+
+    private void Content_CollectionReset(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
+      foreach (IRun run in e.OldItems)
+        run.Changed -= new EventHandler(run_Changed);
+      foreach (IRun run in e.Items)
+        run.Changed += new EventHandler(run_Changed);
+    }
+
+    private void Content_ItemsRemoved(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
+      foreach (IRun run in e.OldItems)
+        run.Changed -= new EventHandler(run_Changed);
+    }
+    private void Content_ItemsAdded(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
+      foreach (IRun run in e.Items)
+        run.Changed += new EventHandler(run_Changed);
+    }
+    private void run_Changed(object sender, EventArgs e) {
+      IRun run = (IRun)sender;
+      DataPoint point = this.chart.Series[0].Points.Where(p => p.Tag == run).SingleOrDefault();
+      if (point != null) {
+        point.Color = run.Color;
+        if (!run.Visible)
+          this.chart.Series[0].Points.Remove(point);
+      } else
+        AddDataPoint(run);
+    }
+
     protected override void OnContentChanged() {
       base.OnContentChanged();
       this.categoricalMapping.Clear();
       this.UpdateComboBoxes();
     }
-
     private void Content_ColumnNamesChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ColumnNamesChanged), sender, e);
@@ -127,22 +167,28 @@ namespace HeuristicLab.Optimization.Views {
     private void UpdateDataPoints() {
       Series series = this.chart.Series[0];
       series.Points.Clear();
-
+      foreach (IRun run in this.Content)
+        this.AddDataPoint(run);
+    }
+    private void AddDataPoint(IRun run) {
       double? xValue;
       double? yValue;
       double? sizeValue;
-      for (int row = 0; row < Content.Count; row++) {
-        xValue = GetValue(row, xAxisComboBox.SelectedIndex);
-        yValue = GetValue(row, yAxisComboBox.SelectedIndex);
-        sizeValue = 1.0;
-        if (xValue.HasValue && yValue.HasValue) {
-          if (sizeComboBox.SelectedIndex > 0)
-            sizeValue = GetValue(row, sizeComboBox.SelectedIndex-1);
-          xValue = xValue.Value + xValue.Value * GetXJitter(Content.ElementAt(row)) * xJitterFactor;
-          yValue = yValue.Value + yValue.Value * GetYJitter(Content.ElementAt(row)) * yJitterFactor;
+      Series series = this.chart.Series[0];
+      int row = this.Content.ToList().IndexOf(run);
+      xValue = GetValue(row, xAxisComboBox.SelectedIndex);
+      yValue = GetValue(row, yAxisComboBox.SelectedIndex);
+      sizeValue = 1.0;
+      if (xValue.HasValue && yValue.HasValue) {
+        if (sizeComboBox.SelectedIndex > 0)
+          sizeValue = GetValue(row, sizeComboBox.SelectedIndex - 1);
+        xValue = xValue.Value + xValue.Value * GetXJitter(Content.ElementAt(row)) * xJitterFactor;
+        yValue = yValue.Value + yValue.Value * GetYJitter(Content.ElementAt(row)) * yJitterFactor;
+        if (run.Visible) {
           DataPoint point = new DataPoint(xValue.Value, new double[] { yValue.Value, sizeValue.Value });
           point.ToolTip = this.CreateTooltip(row);
-          point.Tag = this.Content.ElementAt(row);
+          point.Tag = run;
+          point.Color = run.Color;
           series.Points.Add(point);
         }
       }
@@ -179,11 +225,64 @@ namespace HeuristicLab.Optimization.Views {
     private void chart_MouseDown(object sender, MouseEventArgs e) {
       HitTestResult h = this.chart.HitTest(e.X, e.Y);
       if (h.ChartElementType == ChartElementType.DataPoint) {
-        this.draggedRun = (IRun)((DataPoint)h.Object).Tag;
-        this.chart.ChartAreas[0].AxisX.ScaleView.Zoomable = false;
-        this.chart.ChartAreas[0].AxisY.ScaleView.Zoomable = false;
-        this.chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = false;
-        this.chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = false;
+        IRun run =(IRun)((DataPoint)h.Object).Tag;
+        if (e.Clicks >= 2) {
+          IContentView view = MainFormManager.CreateDefaultView(run);
+          view.ReadOnly = this.ReadOnly;
+          view.Locked = this.Locked;
+          view.Show();
+        } else {
+          this.draggedRun = run;
+          this.chart.ChartAreas[0].AxisX.ScaleView.Zoomable = false;
+          this.chart.ChartAreas[0].AxisY.ScaleView.Zoomable = false;
+          this.chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = false;
+          this.chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = false;
+        }
+      }
+    }
+
+    private void chart_MouseUp(object sender, MouseEventArgs e) {
+      if (isDragOperationInProgress) {
+        this.isDragOperationInProgress = false;
+        this.chart.ChartAreas[0].AxisX.ScaleView.Zoomable = !isSelecting;
+        this.chart.ChartAreas[0].AxisY.ScaleView.Zoomable = !isSelecting;
+        this.chart.ChartAreas[0].CursorX.SetSelectionPosition(0, 0);
+        this.chart.ChartAreas[0].CursorY.SetSelectionPosition(0, 0);
+        this.chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
+        this.chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = true;
+        return;
+      }
+      if (!isSelecting) return;
+      System.Windows.Forms.DataVisualization.Charting.Cursor xCursor = chart.ChartAreas[0].CursorX;
+      System.Windows.Forms.DataVisualization.Charting.Cursor yCursor = chart.ChartAreas[0].CursorY;
+
+      double minX = Math.Min(xCursor.SelectionStart, xCursor.SelectionEnd);
+      double maxX = Math.Max(xCursor.SelectionStart, xCursor.SelectionEnd);
+      double minY = Math.Min(yCursor.SelectionStart, yCursor.SelectionEnd);
+      double maxY = Math.Max(yCursor.SelectionStart, yCursor.SelectionEnd);
+
+      //check for click to select model
+      if (minX == maxX && minY == maxY) {
+        HitTestResult hitTest = chart.HitTest(e.X, e.Y);
+        if (hitTest.ChartElementType == ChartElementType.DataPoint) {
+          int pointIndex = hitTest.PointIndex;
+          IRun run = (IRun)this.chart.Series[0].Points[pointIndex].Tag;
+          run.Color = colorDialog.Color;
+        }
+      } else {
+      List<DataPoint> selectedPoints = new List<DataPoint>();
+      foreach (DataPoint p in this.chart.Series[0].Points) {
+        if (p.XValue >= minX && p.XValue < maxX &&
+          p.YValues[0] >= minY && p.YValues[0] < maxY) {
+          selectedPoints.Add(p);
+        }
+      }
+      foreach (DataPoint p in selectedPoints) {
+        IRun run = (IRun)p.Tag;
+        run.Color = colorDialog.Color;
+      }
+      xCursor.SetSelectionPosition(0, 0);
+      yCursor.SetSelectionPosition(0, 0);
       }
     }
 

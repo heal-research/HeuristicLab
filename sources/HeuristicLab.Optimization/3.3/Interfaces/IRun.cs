@@ -22,6 +22,8 @@
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using System.Drawing;
+using System;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
@@ -31,5 +33,9 @@ namespace HeuristicLab.Optimization {
     IAlgorithm Algorithm { get; }
     IDictionary<string, IItem> Parameters { get; }
     IDictionary<string, IItem> Results { get; }
+
+    Color Color {get;set;}
+    bool Visible { get; set; }
+    event EventHandler Changed;
   }
 }
