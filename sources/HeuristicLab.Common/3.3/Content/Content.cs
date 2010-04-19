@@ -26,8 +26,29 @@ using System.Text;
 
 namespace HeuristicLab.Common {
   public class Content : DeepCloneable, IContent {
-    public Content()
-      : base() {
+    public Content() {
+      this.readOnlyView = false;
+    }
+    public Content(bool readOnlyView)
+      : this() {
+      this.ReadOnlyView = readOnlyView;
+    }
+
+    private bool readOnlyView;
+    public virtual bool ReadOnlyView {
+      get { return readOnlyView; }
+      set {
+        if (readOnlyView != value) {
+          readOnlyView = value;
+          OnReadOnlyViewChanged();
+        }
+      }
+    }
+
+    public event EventHandler ReadOnlyViewChanged;
+    protected virtual void OnReadOnlyViewChanged() {
+      EventHandler handler = ReadOnlyViewChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
   }
 }
