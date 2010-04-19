@@ -27,7 +27,6 @@ using System.Text;
 namespace HeuristicLab.Common {
   public interface IStorableContent : IContent {
     string Filename { get; set; }
-    bool SaveEnabled { get; set; }
 
     void Save();
     void Save(string filename);
@@ -35,7 +34,6 @@ namespace HeuristicLab.Common {
     void SaveAsynchronous(string filename);
 
     event EventHandler FilenameChanged;
-    event EventHandler SaveEnabledChanged;
     event EventHandler SaveOperationStarted;
     event EventHandler<EventArgs<Exception>> SaveOperationFinished;
   }

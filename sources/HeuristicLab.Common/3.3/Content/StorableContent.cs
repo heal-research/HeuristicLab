@@ -31,15 +31,9 @@ namespace HeuristicLab.Common {
     public StorableContent()
       : base() {
       this.filename = string.Empty;
-      this.saveEnabled = true;
     }
-    public StorableContent(bool saveEnabled)
-      : this() {
-      this.saveEnabled = saveEnabled;
-      //NOTE: important do not call propagate changes, because derived objects are not constructed
-    }
-    public StorableContent(bool saveEnabled, string filename)
-      : this(saveEnabled) {
+    public StorableContent(string filename)
+      : base() {
       this.Filename = filename;
     }
 
@@ -54,35 +48,17 @@ namespace HeuristicLab.Common {
       }
     }
 
-    private bool saveEnabled;
-    public virtual bool SaveEnabled {
-      get { return this.saveEnabled; }
-      set {
-        if (this.saveEnabled != value) {
-          this.saveEnabled = value;
-          this.PropagateSaveEnabledChanges();
-          this.OnSaveEnabledChanged();
-        }
-      }
-    }
-
-    protected void PropagateSaveEnabledChanges() {
-      Type type = this.GetType();
-      foreach (FieldInfo fieldInfo in type.GetFields(BindingFlags.Default)) {
-        if (typeof(IStorableContent).IsAssignableFrom(fieldInfo.GetType())) {
-          IStorableContent storableContent = (IStorableContent)fieldInfo.GetValue(this);
-          storableContent.SaveEnabled = this.saveEnabled;
-        }
-      }
-    }
-
     protected abstract void Save();
     void IStorableContent.Save() {
-      if (this.SaveEnabled) {
-        this.OnSaveOperationStarted();
+      this.OnSaveOperationStarted();
+      Exception ex = null;
+      try {
         this.Save();
-        this.OnSaveOperationFinished(null);
       }
+      catch (Exception e) {
+        ex = e;
+      }
+      this.OnSaveOperationFinished(ex);
     }
     public void Save(string filename) {
       this.Filename = filename;
@@ -92,10 +68,7 @@ namespace HeuristicLab.Common {
     protected virtual void SaveAsnychronous() {
       ThreadPool.QueueUserWorkItem(
         new WaitCallback(delegate(object arg) {
-        try { this.Save(); }
-        catch (Exception ex) {
-          this.OnSaveOperationFinished(ex);
-        }
+        this.Save();
       })
       );
     }
@@ -114,11 +87,6 @@ namespace HeuristicLab.Common {
       EventHandler handler = FilenameChanged;
       if (handler != null) handler(this, EventArgs.Empty);
     }
-    public event EventHandler SaveEnabledChanged;
-    protected virtual void OnSaveEnabledChanged() {
-      EventHandler handler = SaveEnabledChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
     public event EventHandler SaveOperationStarted;
     protected virtual void OnSaveOperationStarted() {
       EventHandler handler = SaveOperationStarted;
@@ -129,6 +97,5 @@ namespace HeuristicLab.Common {
       EventHandler<EventArgs<Exception>> handler = SaveOperationFinished;
       if (handler != null) handler(this, new EventArgs<Exception>(ex));
     }
-
   }
 }
