@@ -34,6 +34,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     Mul,
     Div,
     Call,
+    Arg,
     Values,
     Dynamic
   };

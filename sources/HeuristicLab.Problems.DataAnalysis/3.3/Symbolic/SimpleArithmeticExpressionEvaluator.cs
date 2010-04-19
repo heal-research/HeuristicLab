@@ -43,12 +43,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       foreach (var row in rows) {
         this.row = row;
         pc = 0;
+        arguments.Clear();
         var estimatedValue = Evaluate();
         if (double.IsNaN(estimatedValue) || double.IsInfinity(estimatedValue)) yield return 0.0;
         else yield return estimatedValue;
       }
     }
 
+    private List<double> arguments = new List<double>();
     public double Evaluate() {
       var currentInstr = code[pc++];
       switch (currentInstr.symbol) {
@@ -79,6 +81,29 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               p /= Evaluate();
             }
             return p;
+          }
+        case CodeSymbol.Call: {
+            // save current arguments
+            var oldArgs = new List<double>(arguments);
+            arguments.Clear();
+            // evaluate sub-trees
+            for (int i = 0; i < currentInstr.nArguments; i++) {
+              arguments.Add(Evaluate());
+            }
+            // save the pc
+            int nextPc = pc;
+            // set pc to start of function  
+            pc = currentInstr.iArg0;
+            // evaluate the function
+            double v = Evaluate();
+            // restore the pc => evaluation will continue at point after my subtrees  
+            pc = nextPc;
+            // restore arguments
+            arguments = oldArgs;
+            return v;
+          }
+        case CodeSymbol.Arg: {
+            return arguments[currentInstr.iArg0];
           }
         case CodeSymbol.Dynamic: {
             var variableTreeNode = currentInstr.dynamicNode as VariableTreeNode;

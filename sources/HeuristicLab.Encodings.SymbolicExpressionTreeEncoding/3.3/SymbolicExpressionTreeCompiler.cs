@@ -36,6 +36,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       {typeof(Multiplication), CodeSymbol.Mul},
       {typeof(Division), CodeSymbol.Div},
       {typeof(InvokeFunction), CodeSymbol.Call},
+      {typeof(Argument), CodeSymbol.Arg},
       //{typeof(Values), CodeSymbol.Values}
     };
     private Dictionary<string, short> entryPoint = new Dictionary<string, short>();
@@ -44,7 +45,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       List<Instruction> code = new List<Instruction>();
       entryPoint.Clear();
       // compile main body
-      code.AddRange(Compile(tree.ResultProducingExpression));
+      code.AddRange(Compile(tree.Root.SubTrees[0]));
       // compile branches
       var functionBranches = from node in tree.IterateNodesPrefix()
                              where node.Symbol is Defun
@@ -66,6 +67,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
           if (instr.symbol == CodeSymbol.Call) {
             var invokeNode = (InvokeFunctionTreeNode)node;
             instr.iArg0 = entryPoint[invokeNode.Symbol.FunctionName];
+          } else if (instr.symbol == CodeSymbol.Arg) {
+            var argNode = (ArgumentTreeNode)node;
+            instr.iArg0 = (short)argNode.Symbol.ArgumentIndex;
           }
         } else {
           instr.symbol = CodeSymbol.Dynamic;

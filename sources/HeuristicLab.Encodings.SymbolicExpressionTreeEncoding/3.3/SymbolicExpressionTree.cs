@@ -46,10 +46,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       }
     }
 
-    public SymbolicExpressionTreeNode ResultProducingExpression {
-      get { return root.SubTrees[0].SubTrees[0]; }
-    }
-
     public int Size {
       get {
         return root.GetSize();
