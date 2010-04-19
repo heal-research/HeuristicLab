@@ -27,16 +27,18 @@ using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Operators {
   /// <summary>
-  /// Branch of operators that have different probabilities to get executed.
+  /// Base class for multi crossover operators.
   /// </summary>
-  [Item("StochasticMultiBranch", "Branch of operators that have different probabilities to get executed.")]
+  [Item("MultiCrossover", "Base class for multi crossover operators.")]
   [StorableClass]
-  public class StochasticMultiBranch : MultiOperator<IOperator> {
+  public class MultiCrossover<T> : MultiOperator<T>, IStochasticOperator where T : class, ICrossover {
     public ValueLookupParameter<DoubleArray> ProbabilitiesParameter {
       get { return (ValueLookupParameter<DoubleArray>)Parameters["Probabilities"]; }
     }
@@ -50,12 +52,12 @@ namespace HeuristicLab.Operators {
     }
 
     [StorableConstructor]
-    public StochasticMultiBranch(bool deserializing) : base() { }
+    protected MultiCrossover(bool deserializing) : base(deserializing) { }
     /// <summary>
     /// Initializes a new instance of <see cref="StochasticMultiBranch"/> with two parameters
     /// (<c>Probabilities</c> and <c>Random</c>).
     /// </summary>
-    public StochasticMultiBranch()
+    public MultiCrossover()
       : base() {
       Parameters.Add(new ValueLookupParameter<DoubleArray>("Probabilities", "The array of relative probabilities for each operator.", new DoubleArray()));
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
@@ -64,16 +66,21 @@ namespace HeuristicLab.Operators {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
-      Operators.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<IOperator>>(Operators_ItemsAdded);
-      Operators.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<IOperator>>(Operators_ItemsRemoved);
-      Operators.ItemsMoved += new CollectionItemsChangedEventHandler<IndexedItem<IOperator>>(Operators_ItemsMoved);
+      Operators.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<T>>(Operators_ItemsAdded);
+      Operators.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<T>>(Operators_ItemsRemoved);
+      Operators.ItemsMoved += new CollectionItemsChangedEventHandler<IndexedItem<T>>(Operators_ItemsMoved);
+      IEnumerable<Type> types = ApplicationManager.Manager.GetTypes(typeof(T), true);
+      foreach (Type type in types) {
+        if (type != this.GetType())
+          Operators.Add((T)Activator.CreateInstance(type));
+      }
     }
 
-    void Operators_ItemsMoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<IOperator>> e) {
+    void Operators_ItemsMoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
       if (Probabilities != null) {
         DoubleArray oldProb = (DoubleArray)Probabilities.Clone();
-        foreach (IndexedItem<IOperator> old in e.OldItems) {
-          foreach (IndexedItem<IOperator> item in e.Items) {
+        foreach (IndexedItem<T> old in e.OldItems) {
+          foreach (IndexedItem<T> item in e.Items) {
             if (old.Value == item.Value && item.Index < Probabilities.Length && old.Index < oldProb.Length)
               Probabilities[item.Index] = oldProb[old.Index];
           }
@@ -81,17 +88,17 @@ namespace HeuristicLab.Operators {
       }
     }
 
-    void Operators_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<IOperator>> e) {
+    void Operators_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
       if (Probabilities != null && Probabilities.Length > Operators.Count) {
-        List<double> probs = new List<double>(Probabilities.Cast<DoubleValue>().Select(x => x.Value));
+        List<double> probs = new List<double>(Probabilities.Cast<double>());
         var sorted = e.Items.OrderByDescending(x => x.Index);
-        foreach (IndexedItem<IOperator> item in sorted)
+        foreach (IndexedItem<T> item in sorted)
           if (probs.Count > item.Index) probs.RemoveAt(item.Index);
         Probabilities = new DoubleArray(probs.ToArray());
       }
     }
 
-    private void Operators_ItemsAdded(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IndexedItem<IOperator>> e) {
+    private void Operators_ItemsAdded(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
       if (Probabilities != null && Probabilities.Length < Operators.Count) {
         DoubleArray probs = new DoubleArray(Operators.Count);
         double avg = 0;
@@ -126,7 +133,7 @@ namespace HeuristicLab.Operators {
       IRandom random = RandomParameter.ActualValue;
       DoubleArray probabilities = ProbabilitiesParameter.ActualValue;
       if(probabilities.Length != Operators.Count) {
-        throw new InvalidOperationException("StochasticMultiBranch: The list of probabilities has to match the number of operators");
+        throw new InvalidOperationException("MultiCrossover: The list of probabilities has to match the number of operators");
       }
       double sum = 0;
       for (int i = 0; i < Operators.Count; i++) {
@@ -144,7 +151,7 @@ namespace HeuristicLab.Operators {
       }
       OperationCollection next = new OperationCollection(base.Apply());
       if (successor != null) {
-        next.Insert(0, ExecutionContext.CreateOperation(successor));
+        next.Insert(0, ExecutionContext.CreateChildOperation(successor));
       }
       return next;
     }

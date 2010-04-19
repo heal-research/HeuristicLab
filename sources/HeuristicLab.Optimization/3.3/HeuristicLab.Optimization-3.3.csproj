@@ -130,7 +130,6 @@
     <Compile Include="Interfaces\ITabuChecker.cs" />
     <Compile Include="Interfaces\ITabuMaker.cs" />
     <Compile Include="Result.cs" />
-    <Compile Include="TabuMaker.cs" />
     <Compile Include="UserDefinedAlgorithm.cs" />
     <Compile Include="EngineAlgorithm.cs" />
     <Compile Include="HeuristicLabOptimizationPlugin.cs" />
@@ -161,10 +160,6 @@
     <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
       <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
       <Name>HeuristicLab.Data-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
-      <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
-      <Name>HeuristicLab.Operators-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj">
       <Project>{56F9106A-079F-4C61-92F6-86A84C2D84B7}</Project>
