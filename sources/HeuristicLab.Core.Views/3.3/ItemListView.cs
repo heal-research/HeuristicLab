@@ -35,6 +35,8 @@ namespace HeuristicLab.Core.Views {
   [Content(typeof(ItemList<>), true)]
   [Content(typeof(IItemList<>), false)]
   public partial class ItemListView<T> : AsynchronousContentView where T : class, IItem {
+    protected TypeSelectorDialog typeSelectorDialog;
+
     /// <summary>
     /// Gets or sets the scope whose variables to represent visually.
     /// </summary>
@@ -130,13 +132,22 @@ namespace HeuristicLab.Core.Views {
     }
 
     protected virtual T CreateItem() {
-      try {
-        return (T)Activator.CreateInstance(typeof(T));
+      if (typeSelectorDialog == null) {
+        typeSelectorDialog = new TypeSelectorDialog();
+        typeSelectorDialog.Caption = "Select Item";
+        typeSelectorDialog.TypeSelector.Caption = "Available Items";
+        typeSelectorDialog.TypeSelector.Configure(typeof(T), false, false);
       }
-      catch (Exception ex) {
-        Auxiliary.ShowErrorMessageBox(ex);
-        return null;
+
+      if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
+        try {
+          return (T)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
+        }
+        catch (Exception ex) {
+          Auxiliary.ShowErrorMessageBox(ex);
+        }
       }
+      return null;
     }
     protected virtual ListViewItem CreateListViewItem(T item) {
       ListViewItem listViewItem = new ListViewItem();

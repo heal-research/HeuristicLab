@@ -278,8 +278,14 @@ namespace HeuristicLab.Core.Views {
         typeSelectorDialog.TypeSelector.Configure(typeof(T), false, false);
       }
 
-      if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK)
-        AddItem((T)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType());
+      if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
+        try {
+          AddItem((T)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType());
+        }
+        catch (Exception ex) {
+          Auxiliary.ShowErrorMessageBox(ex);
+        }
+      }
     }
     private void sortAscendingButton_Click(object sender, EventArgs e) {
       listView.Sorting = SortOrder.None;

@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Operators.Views {
-  partial class MultipleCallsOperatorView {
+  partial class MultiOperatorView<T> {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -46,7 +46,7 @@ namespace HeuristicLab.Operators.Views {
     private void InitializeComponent() {
       this.tabControl = new System.Windows.Forms.TabControl();
       this.operatorsTabPage = new System.Windows.Forms.TabPage();
-      this.operatorListView = new HeuristicLab.Core.Views.OperatorListView();
+      this.operatorListView = new HeuristicLab.Core.Views.ItemListView<T>();
       this.parametersTabPage = new System.Windows.Forms.TabPage();
       this.parameterCollectionView = new HeuristicLab.Core.Views.ParameterCollectionView();
       this.breakpointCheckBox = new System.Windows.Forms.CheckBox();
@@ -146,14 +146,14 @@ namespace HeuristicLab.Operators.Views {
       this.breakpointLabel.TabIndex = 4;
       this.breakpointLabel.Text = "&Breakpoint:";
       // 
-      // MultipleCallsOperatorView
+      // MultiOperatorView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.breakpointCheckBox);
       this.Controls.Add(this.breakpointLabel);
       this.Controls.Add(this.tabControl);
-      this.Name = "MultipleCallsOperatorView";
+      this.Name = "MultiOperatorView";
       this.Size = new System.Drawing.Size(486, 482);
       this.Controls.SetChildIndex(this.tabControl, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
@@ -177,7 +177,7 @@ namespace HeuristicLab.Operators.Views {
     protected System.Windows.Forms.TabPage operatorsTabPage;
     protected System.Windows.Forms.TabPage parametersTabPage;
     protected HeuristicLab.Core.Views.ParameterCollectionView parameterCollectionView;
-    protected HeuristicLab.Core.Views.OperatorListView operatorListView;
+    protected HeuristicLab.Core.Views.ItemListView<T> operatorListView;
     protected System.Windows.Forms.CheckBox breakpointCheckBox;
     protected System.Windows.Forms.Label breakpointLabel;
   }

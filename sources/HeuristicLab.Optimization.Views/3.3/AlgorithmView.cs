@@ -175,10 +175,16 @@ namespace HeuristicLab.Optimization.Views {
       if (problemTypeSelectorDialog == null) {
         problemTypeSelectorDialog = new TypeSelectorDialog();
         problemTypeSelectorDialog.Caption = "Select Problem";
+        problemTypeSelectorDialog.TypeSelector.Caption = "Available Problems";
         problemTypeSelectorDialog.TypeSelector.Configure(Content.ProblemType, false, false);
       }
       if (problemTypeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
-        Content.Problem = (IProblem)problemTypeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
+        try {
+          Content.Problem = (IProblem)problemTypeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
+        }
+        catch (Exception ex) {
+          Auxiliary.ShowErrorMessageBox(ex);
+        }
       }
     }
     protected virtual void openProblemButton_Click(object sender, EventArgs e) {

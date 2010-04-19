@@ -137,8 +137,14 @@ namespace HeuristicLab.Parameters.Views {
         typeSelectorDialog.Caption = "Select Value";
         typeSelectorDialog.TypeSelector.Configure(Content.DataType, false, false);
       }
-      if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK)
-        Content.Value = (T)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
+      if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
+        try {
+          Content.Value = (T)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
+        }
+        catch (Exception ex) {
+          Auxiliary.ShowErrorMessageBox(ex);
+        }
+      }
     }
     protected virtual void clearValueButton_Click(object sender, EventArgs e) {
       Content.Value = null;

@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Windows.Forms;
 using HeuristicLab.Collections;
 using HeuristicLab.Core;
@@ -30,8 +31,6 @@ namespace HeuristicLab.Optimization.Views {
   [Content(typeof(OptimizerList), true)]
   [Content(typeof(IItemList<IOptimizer>), false)]
   public partial class OptimizerListView : ItemListView<IOptimizer> {
-    protected TypeSelectorDialog typeSelectorDialog;
-
     /// <summary>
     /// Initializes a new instance of <see cref="VariablesScopeView"/> with caption "Variables Scope View".
     /// </summary>
@@ -54,14 +53,20 @@ namespace HeuristicLab.Optimization.Views {
     protected override IOptimizer CreateItem() {
       if (typeSelectorDialog == null) {
         typeSelectorDialog = new TypeSelectorDialog();
+        typeSelectorDialog.Caption = "Select Optimizer";
         typeSelectorDialog.TypeSelector.Caption = "Available Optimizers";
         typeSelectorDialog.TypeSelector.Configure(typeof(IOptimizer), false, false);
       }
 
-      if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK)
-        return typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType() as IOptimizer;
-      else
-        return null;
+      if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
+        try {
+          return (IOptimizer)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
+        }
+        catch (Exception ex) {
+          Auxiliary.ShowErrorMessageBox(ex);
+        }
+      }
+      return null;
     }
   }
 }

@@ -57,11 +57,11 @@ namespace HeuristicLab.Core.Views {
 
       if (createParameterDialog.ShowDialog(this) == DialogResult.OK) {
         IValueParameter param = (IValueParameter)createParameterDialog.Parameter;
-        if (Content.ContainsKey(param.Name))
+        if ((param != null) && Content.ContainsKey(param.Name))
           param = (IValueParameter)Activator.CreateInstance(param.GetType(), GetUniqueName(param.Name), param.Description);
         return param;
-      } else
-        return null;
+      }
+      return null;
     }
   }
 }

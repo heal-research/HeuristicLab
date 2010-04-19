@@ -89,7 +89,7 @@ namespace HeuristicLab.Core {
     [StorableConstructor]
     protected OperatorGraph(bool deserializing) : base(deserializing) { }
 
-    //mkommend: IMPROTANT DO NOT REMOVE THIS PRIVATE EVENT
+    //mkommend: IMPORTANT DO NOT REMOVE THIS PRIVATE EVENT
     //needed to register OperatorGraph events in GraphVisualizationInfo
     public event EventHandler DeserializationFinished;
     private void OnOperatorGraphDeserializationFinished() {
@@ -143,23 +143,24 @@ namespace HeuristicLab.Core {
       // remove edges to removed operator
       var opParams = from o in Operators
                      from p in o.Parameters
-                     where p is IValueParameter<IOperator>
-                     where (((IValueParameter<IOperator>)p).Value != null) && (((IValueParameter<IOperator>)p).Value == op)
-                     select (IValueParameter<IOperator>)p;
-      foreach (IValueParameter<IOperator> opParam in opParams)
+                     where p is IValueParameter
+                     where typeof(IOperator).IsAssignableFrom(((IValueParameter)p).DataType)
+                     where (((IValueParameter)p).Value != null) && (((IValueParameter)p).Value == op)
+                     select (IValueParameter)p;
+      foreach (IValueParameter opParam in opParams)
         opParam.Value = null;
     }
     private void AddParameter(IParameter param) {
-      IValueParameter<IOperator> opParam = param as IValueParameter<IOperator>;
-      if (opParam != null) {
-        RegisterOperatorParameterEvents(opParam);
-        if (opParam.Value != null) Operators.Add(opParam.Value);
+      IValueParameter valueParam = param as IValueParameter;
+      if ((valueParam != null) && (typeof(IOperator).IsAssignableFrom(valueParam.DataType))) {
+        RegisterOperatorParameterEvents(valueParam);
+        if (valueParam.Value != null) Operators.Add((IOperator)valueParam.Value);
       }
     }
     private void RemoveParameter(IParameter param) {
-      IValueParameter<IOperator> opParam = param as IValueParameter<IOperator>;
-      if (opParam != null) {
-        DeregisterOperatorParameterEvents(opParam);
+      IValueParameter valueParam = param as IValueParameter;
+      if ((valueParam != null) && (typeof(IOperator).IsAssignableFrom(valueParam.DataType))) {
+        DeregisterOperatorParameterEvents(valueParam);
       }
     }
 
@@ -170,10 +171,12 @@ namespace HeuristicLab.Core {
         operators.CollectionReset += new CollectionItemsChangedEventHandler<IOperator>(Operators_CollectionReset);
         foreach (IOperator op in operators) {
           RegisterOperatorEvents(op);
-          foreach (IParameter param in op.Parameters) {
-            IValueParameter<IOperator> opParam = param as IValueParameter<IOperator>;
-            if (opParam != null) RegisterOperatorParameterEvents(opParam);
-          }
+          var opParams = from p in op.Parameters
+                         where p is IValueParameter
+                         where typeof(IOperator).IsAssignableFrom(((IValueParameter)p).DataType)
+                         select (IValueParameter)p;
+          foreach (IValueParameter opParam in opParams)
+            RegisterOperatorParameterEvents(opParam);
         }
       }
     }
@@ -189,10 +192,10 @@ namespace HeuristicLab.Core {
       op.Parameters.ItemsReplaced -= new CollectionItemsChangedEventHandler<IParameter>(Parameters_ItemsReplaced);
       op.Parameters.CollectionReset -= new CollectionItemsChangedEventHandler<IParameter>(Parameters_CollectionReset);
     }
-    private void RegisterOperatorParameterEvents(IValueParameter<IOperator> opParam) {
+    private void RegisterOperatorParameterEvents(IValueParameter opParam) {
       opParam.ValueChanged += new EventHandler(opParam_ValueChanged);
     }
-    private void DeregisterOperatorParameterEvents(IValueParameter<IOperator> opParam) {
+    private void DeregisterOperatorParameterEvents(IValueParameter opParam) {
       opParam.ValueChanged -= new EventHandler(opParam_ValueChanged);
     }
 
@@ -233,8 +236,8 @@ namespace HeuristicLab.Core {
         AddParameter(param);
     }
     private void opParam_ValueChanged(object sender, EventArgs e) {
-      IValueParameter<IOperator> opParam = (IValueParameter<IOperator>)sender;
-      if (opParam.Value != null) Operators.Add(opParam.Value);
+      IValueParameter opParam = (IValueParameter)sender;
+      if (opParam.Value != null) Operators.Add((IOperator)opParam.Value);
     }
     #endregion
   }

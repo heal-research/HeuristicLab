@@ -165,10 +165,16 @@ namespace HeuristicLab.Optimization.Views {
       if (algorithmTypeSelectorDialog == null) {
         algorithmTypeSelectorDialog = new TypeSelectorDialog();
         algorithmTypeSelectorDialog.Caption = "Select Algorithm";
+        algorithmTypeSelectorDialog.TypeSelector.Caption = "Available Algorithms";
         algorithmTypeSelectorDialog.TypeSelector.Configure(typeof(IAlgorithm), false, false);
       }
       if (algorithmTypeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
-        Content.Algorithm = (IAlgorithm)algorithmTypeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
+        try {
+          Content.Algorithm = (IAlgorithm)algorithmTypeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
+        }
+        catch (Exception ex) {
+          Auxiliary.ShowErrorMessageBox(ex);
+        }
       }
     }
     private void openAlgorithmButton_Click(object sender, EventArgs e) {

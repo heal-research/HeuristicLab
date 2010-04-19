@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Collections;
 using HeuristicLab.MainForm;
@@ -34,7 +35,7 @@ namespace HeuristicLab.Core.Views {
   [View("Operator View (Successors)")]
   [Content(typeof(IOperator), false)]
   public sealed partial class OperatorTreeView : ItemView {
-    private Dictionary<IValueParameter<IOperator>, List<TreeNode>> opParamNodeTable;
+    private Dictionary<IValueParameter, List<TreeNode>> opParamNodeTable;
     private Dictionary<IOperator, List<TreeNode>> operatorNodeTable;
     private Dictionary<IKeyedItemCollection<string, IParameter>, IOperator> parametersOperatorTable;
 
@@ -65,7 +66,7 @@ namespace HeuristicLab.Core.Views {
     public OperatorTreeView() {
       InitializeComponent();
       graphTreeView.Sorted = true;
-      opParamNodeTable = new Dictionary<IValueParameter<IOperator>, List<TreeNode>>();
+      opParamNodeTable = new Dictionary<IValueParameter, List<TreeNode>>();
       operatorNodeTable = new Dictionary<IOperator, List<TreeNode>>();
       parametersOperatorTable = new Dictionary<IKeyedItemCollection<string, IParameter>, IOperator>();
       Caption = "Operator";
@@ -115,7 +116,7 @@ namespace HeuristicLab.Core.Views {
     }
 
     #region TreeNode Management
-    private TreeNode CreateTreeNode(IValueParameter<IOperator> opParam) {
+    private TreeNode CreateTreeNode(IValueParameter opParam) {
       TreeNode node = new TreeNode();
       node.Text = opParam.Name + ": ";
       SetOperatorParameterTag(node, opParam);
@@ -126,7 +127,7 @@ namespace HeuristicLab.Core.Views {
       }
       opParamNodeTable[opParam].Add(node);
 
-      FillTreeNode(node, opParam.Value);
+      FillTreeNode(node, (IOperator)opParam.Value);
       return node;
     }
     private void FillTreeNode(TreeNode node, IOperator op) {
@@ -161,8 +162,8 @@ namespace HeuristicLab.Core.Views {
         if (op.Breakpoint) node.ForeColor = Color.Red;
         else node.ForeColor = graphTreeView.ForeColor;
 
-        foreach (IParameter param in op.Parameters) {
-          if (param is IValueParameter<IOperator>)
+        foreach (IValueParameter param in op.Parameters.OfType<IValueParameter>()) {
+          if (typeof(IOperator).IsAssignableFrom(param.DataType))
             node.Nodes.Add(new TreeNode());
         }
         node.Collapse();
@@ -198,7 +199,7 @@ namespace HeuristicLab.Core.Views {
     private void RemoveTreeNode(TreeNode node) {
       ClearTreeNode(node);
 
-      IValueParameter<IOperator> opParam = GetOperatorParameterTag(node);
+      IValueParameter opParam = GetOperatorParameterTag(node);
       if (opParam != null) {
         opParamNodeTable[opParam].Remove(node);
         if (opParamNodeTable[opParam].Count == 0) {
@@ -210,20 +211,18 @@ namespace HeuristicLab.Core.Views {
       node.Remove();
     }
     private void AddParameterNodes(IOperator op, IEnumerable<IParameter> parameters) {
-      foreach (IParameter param in parameters) {
-        IValueParameter<IOperator> opParam = param as IValueParameter<IOperator>;
-        if (opParam != null) {
+      foreach (IValueParameter param in parameters.OfType<IValueParameter>()) {
+        if (typeof(IOperator).IsAssignableFrom(param.DataType)) {
           foreach (TreeNode node in operatorNodeTable[op])
-            node.Nodes.Add(CreateTreeNode(opParam));
+            node.Nodes.Add(CreateTreeNode(param));
         }
       }
     }
     private void RemoveParameterNodes(IEnumerable<IParameter> parameters) {
-      foreach (IParameter param in parameters) {
-        IValueParameter<IOperator> opParam = param as IValueParameter<IOperator>;
-        if (opParam != null) {
-          while (opParamNodeTable.ContainsKey(opParam))
-            RemoveTreeNode(opParamNodeTable[opParam][0]);
+      foreach (IValueParameter param in parameters.OfType<IValueParameter>()) {
+        if (typeof(IOperator).IsAssignableFrom(param.DataType)) {
+          while (opParamNodeTable.ContainsKey(param))
+            RemoveTreeNode(opParamNodeTable[param][0]);
         }
       }
     }
@@ -234,12 +233,12 @@ namespace HeuristicLab.Core.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(opParam_ValueChanged), sender, e);
       else {
-        IValueParameter<IOperator> opParam = (IValueParameter<IOperator>)sender;
+        IValueParameter opParam = (IValueParameter)sender;
         foreach (TreeNode node in opParamNodeTable[opParam].ToArray())
           ClearTreeNode(node);
         foreach (TreeNode node in opParamNodeTable[opParam]) {
           node.Text = opParam.Name + ": ";
-          FillTreeNode(node, opParam.Value);
+          FillTreeNode(node, (IOperator)opParam.Value);
         }
       }
     }
@@ -264,7 +263,7 @@ namespace HeuristicLab.Core.Views {
       else {
         IOperator op = (IOperator)sender;
         foreach (TreeNode node in operatorNodeTable[op]) {
-          IValueParameter<IOperator> opParam = GetOperatorParameterTag(node);
+          IValueParameter opParam = GetOperatorParameterTag(node);
           if (opParam == null)
             node.Text = op.Name + " (" + op.ItemName + ")";
           else
@@ -329,9 +328,8 @@ namespace HeuristicLab.Core.Views {
       if ((node.Nodes.Count > 0) && (node.Nodes[0].Tag == null)) {
         node.Nodes.Clear();
         IOperator op = GetOperatorTag(node);
-        foreach (IParameter param in op.Parameters) {
-          IValueParameter<IOperator> opParam = param as IValueParameter<IOperator>;
-          if (opParam != null) node.Nodes.Add(CreateTreeNode(opParam));
+        foreach (IValueParameter param in op.Parameters.OfType<IValueParameter>()) {
+          if (typeof(IOperator).IsAssignableFrom(param.DataType)) node.Nodes.Add(CreateTreeNode(param));
         }
       }
     }
@@ -342,7 +340,7 @@ namespace HeuristicLab.Core.Views {
     }
     private void graphTreeView_KeyDown(object sender, KeyEventArgs e) {
       if (!ReadOnly && (e.KeyCode == Keys.Delete) && (graphTreeView.SelectedNode != null)) {
-        IValueParameter<IOperator> opParam = GetOperatorParameterTag(graphTreeView.SelectedNode);
+        IValueParameter opParam = GetOperatorParameterTag(graphTreeView.SelectedNode);
         if (opParam != null) opParam.Value = null;
       }
     }
@@ -370,7 +368,7 @@ namespace HeuristicLab.Core.Views {
     }
     private void graphTreeView_ItemDrag(object sender, ItemDragEventArgs e) {
       TreeNode node = (TreeNode)e.Item;
-      IValueParameter<IOperator> opParam = GetOperatorParameterTag(node);
+      IValueParameter opParam = GetOperatorParameterTag(node);
       IOperator op = GetOperatorTag(node);
       DataObject data = new DataObject();
       data.SetData("Type", op.GetType());
@@ -403,7 +401,7 @@ namespace HeuristicLab.Core.Views {
         IOperator op = e.Data.GetData("Value") as IOperator;
         if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) op = (IOperator)op.Clone();
         TreeNode node = graphTreeView.GetNodeAt(graphTreeView.PointToClient(new Point(e.X, e.Y)));
-        IValueParameter<IOperator> opParam = GetOperatorParameterTag(node);
+        IValueParameter opParam = GetOperatorParameterTag(node);
         opParam.Value = op;
       }
     }
@@ -435,29 +433,29 @@ namespace HeuristicLab.Core.Views {
       }
     }
 
-    private IValueParameter<IOperator> GetOperatorParameterTag(TreeNode node) {
+    private IValueParameter GetOperatorParameterTag(TreeNode node) {
       if (node.Tag != null)
-        return ((Tuple<IValueParameter<IOperator>, IOperator>)node.Tag).Item1;
+        return ((Tuple<IValueParameter, IOperator>)node.Tag).Item1;
       else
         return null;
     }
-    private void SetOperatorParameterTag(TreeNode node, IValueParameter<IOperator> opParam) {
+    private void SetOperatorParameterTag(TreeNode node, IValueParameter opParam) {
       if (node.Tag == null)
-        node.Tag = new Tuple<IValueParameter<IOperator>, IOperator>(opParam, null);
+        node.Tag = new Tuple<IValueParameter, IOperator>(opParam, null);
       else
-        ((Tuple<IValueParameter<IOperator>, IOperator>)node.Tag).Item1 = opParam;
+        ((Tuple<IValueParameter, IOperator>)node.Tag).Item1 = opParam;
     }
     private IOperator GetOperatorTag(TreeNode node) {
       if (node.Tag != null)
-        return ((Tuple<IValueParameter<IOperator>, IOperator>)node.Tag).Item2;
+        return ((Tuple<IValueParameter, IOperator>)node.Tag).Item2;
       else
         return null;
     }
     private void SetOperatorTag(TreeNode node, IOperator op) {
       if (node.Tag == null)
-        node.Tag = new Tuple<IValueParameter<IOperator>, IOperator>(null, op);
+        node.Tag = new Tuple<IValueParameter, IOperator>(null, op);
       else
-        ((Tuple<IValueParameter<IOperator>, IOperator>)node.Tag).Item2 = op;
+        ((Tuple<IValueParameter, IOperator>)node.Tag).Item2 = op;
     }
 
     private void CorrectImageIndexes(TreeNodeCollection nodes, int removedIndex) {

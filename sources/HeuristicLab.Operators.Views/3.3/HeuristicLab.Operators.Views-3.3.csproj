@@ -91,11 +91,11 @@
       <DependentUpon>AlgorithmOperatorView.cs</DependentUpon>
     </Compile>
     <None Include="HeuristicLabOperatorsViewsPlugin.cs.frame" />
-    <Compile Include="MultipleCallsOperatorView.cs">
+    <Compile Include="MultiOperatorView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="MultipleCallsOperatorView.Designer.cs">
-      <DependentUpon>MultipleCallsOperatorView.cs</DependentUpon>
+    <Compile Include="MultiOperatorView.Designer.cs">
+      <DependentUpon>MultiOperatorView.cs</DependentUpon>
     </Compile>
     <Compile Include="OperatorView.cs">
       <SubType>UserControl</SubType>

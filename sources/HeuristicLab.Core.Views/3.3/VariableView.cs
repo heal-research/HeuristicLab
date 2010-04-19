@@ -122,11 +122,16 @@ namespace HeuristicLab.Core.Views {
     protected virtual void setValueButton_Click(object sender, EventArgs e) {
       if (typeSelectorDialog == null) {
         typeSelectorDialog = new TypeSelectorDialog();
-        typeSelectorDialog.Caption = "Select Value Type";
+        typeSelectorDialog.Caption = "Select Value";
         typeSelectorDialog.TypeSelector.Configure(typeof(IItem), false, false);
       }
       if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
-        Content.Value = (IItem)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
+        try {
+          Content.Value = (IItem)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
+        }
+        catch (Exception ex) {
+          Auxiliary.ShowErrorMessageBox(ex);
+        }
       }
     }
     protected virtual void clearValueButton_Click(object sender, EventArgs e) {

@@ -29,25 +29,25 @@ namespace HeuristicLab.Operators.Views {
   /// <summary>
   /// The base class for visual representations of items.
   /// </summary>
-  [View("MultipleCallsOperator View")]
-  [Content(typeof(MultipleCallsOperator), true)]
-  public partial class MultipleCallsOperatorView : NamedItemView {
-    public new MultipleCallsOperator Content {
-      get { return (MultipleCallsOperator)base.Content; }
+  [View("MultiOperator View")]
+  [Content(typeof(MultiOperator<>), true)]
+  public partial class MultiOperatorView<T> : NamedItemView where T : class, IOperator {
+    public new MultiOperator<T> Content {
+      get { return (MultiOperator<T>)base.Content; }
       set { base.Content = value; }
     }
 
     /// <summary>
     /// Initializes a new instance of <see cref="ItemBaseView"/>.
     /// </summary>
-    public MultipleCallsOperatorView() {
+    public MultiOperatorView() {
       InitializeComponent();
     }
     /// <summary>
     /// Intializes a new instance of <see cref="ItemBaseView"/> with the given <paramref name="item"/>.
     /// </summary>
     /// <param name="item">The item that should be displayed.</param>
-    public MultipleCallsOperatorView(MultipleCallsOperator content)
+    public MultiOperatorView(MultiOperator<T> content)
       : this() {
       Content = content;
     }

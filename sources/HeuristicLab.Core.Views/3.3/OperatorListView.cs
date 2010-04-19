@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Windows.Forms;
 using HeuristicLab.Collections;
 using HeuristicLab.MainForm;
@@ -28,8 +29,6 @@ namespace HeuristicLab.Core.Views {
   [Content(typeof(OperatorList), true)]
   [Content(typeof(IItemList<IOperator>), false)]
   public partial class OperatorListView : ItemListView<IOperator> {
-    protected TypeSelectorDialog typeSelectorDialog;
-
     /// <summary>
     /// Initializes a new instance of <see cref="VariablesScopeView"/> with caption "Variables Scope View".
     /// </summary>
@@ -52,14 +51,20 @@ namespace HeuristicLab.Core.Views {
     protected override IOperator CreateItem() {
       if (typeSelectorDialog == null) {
         typeSelectorDialog = new TypeSelectorDialog();
+        typeSelectorDialog.Caption = "Select Operator";
         typeSelectorDialog.TypeSelector.Caption = "Available Operators";
         typeSelectorDialog.TypeSelector.Configure(typeof(IOperator), false, false);
       }
 
-      if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK)
-        return (IOperator)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
-      else
-        return null;
+      if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
+        try {
+          return (IOperator)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
+        }
+        catch (Exception ex) {
+          Auxiliary.ShowErrorMessageBox(ex);
+        }
+      }
+      return null;
     }
   }
 }

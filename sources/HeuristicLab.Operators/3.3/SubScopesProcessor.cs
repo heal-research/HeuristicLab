@@ -31,7 +31,7 @@ namespace HeuristicLab.Operators {
   /// </summary>
   [Item("SubScopesProcessor", "An operator which contains multiple operators of which each is applied on one sub-scope of the current scope. The first operator is applied on the first sub-scope, the second on the second, and so on.")]
   [StorableClass]
-  public sealed class SubScopesProcessor : MultipleCallsOperator {
+  public sealed class SubScopesProcessor : MultiOperator<IOperator> {
     public ValueLookupParameter<BoolValue> ParallelParameter {
       get { return (ValueLookupParameter<BoolValue>)Parameters["Parallel"]; }
     }

@@ -55,10 +55,7 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     protected override IResult CreateItem() {
-      IResult item = new Result();
-      if (Content.ContainsKey(item.Name))
-        item = new Result(GetUniqueName(item.Name), typeof(IItem));
-      return item;
+      return null;
     }
   }
 }
