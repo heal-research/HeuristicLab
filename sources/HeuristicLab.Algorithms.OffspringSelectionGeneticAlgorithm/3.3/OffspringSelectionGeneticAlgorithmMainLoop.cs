@@ -151,13 +151,16 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Placeholder crossover = new Placeholder();
       ConditionalBranch osBeforeMutationBranch = new ConditionalBranch();
       Placeholder evaluator1 = new Placeholder();
+      IntCounter evaluationCounter1 = new IntCounter();
       WeightedParentsQualityComparator qualityComparer1 = new WeightedParentsQualityComparator();
       StochasticBranch mutationBranch1 = new StochasticBranch();
       Placeholder mutator1 = new Placeholder();
       Placeholder evaluator2 = new Placeholder();
+      IntCounter evaluationCounter2 = new IntCounter();
       StochasticBranch mutationBranch2 = new StochasticBranch();
       Placeholder mutator2 = new Placeholder();
       Placeholder evaluator3 = new Placeholder();
+      IntCounter evaluationCounter3 = new IntCounter();
       WeightedParentsQualityComparator qualityComparer2 = new WeightedParentsQualityComparator();
       SubScopesRemover subScopesRemover = new SubScopesRemover();
       ConditionalSelector conditionalSelector = new ConditionalSelector();
@@ -170,6 +173,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Placeholder comparisonFactorModifier = new Placeholder();
       Comparator comparator1 = new Comparator();
       Comparator comparator2 = new Comparator();
+      Assigner evaluatedSolutionsAssigner = new Assigner();
+      ResultsCollector evalSolCollector = new ResultsCollector();
       BestQualityMemorizer bestQualityMemorizer3 = new BestQualityMemorizer();
       BestQualityMemorizer bestQualityMemorizer4 = new BestQualityMemorizer();
       BestAverageWorstQualityCalculator bestAverageWorstQualityCalculator2 = new BestAverageWorstQualityCalculator();
@@ -183,6 +188,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Generations", new IntValue(0)));
       variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("SelectionPressure", new DoubleValue(0)));
       variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("CurrentSuccessRatio", new DoubleValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedSolutions", new IntValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedSolutionsResult", new IntValue(0)));
 
       variableAssigner.LeftSideParameter.ActualName = "ComparisonFactor";
       variableAssigner.RightSideParameter.ActualName = ComparisonFactorLowerBoundParameter.Name;
@@ -221,6 +228,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       visualizer1.OperatorParameter.ActualName = VisualizerParameter.Name;
 
       resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Generations"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutionsResult"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Best Quality", null, "CurrentBestQuality"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Average Quality", null, "CurrentAverageQuality"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Worst Quality", null, "CurrentWorstQuality"));
@@ -249,6 +257,10 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       evaluator1.Name = "Evaluator (placeholder)";
       evaluator1.OperatorParameter.ActualName = EvaluatorParameter.Name;
 
+      evaluationCounter1.Name = "EvaluatedSolutions++";
+      evaluationCounter1.Increment = new IntValue(1);
+      evaluationCounter1.ValueParameter.ActualName = "EvaluatedSolutions";
+
       qualityComparer1.ComparisonFactorParameter.ActualName = "ComparisonFactor";
       qualityComparer1.LeftSideParameter.ActualName = QualityParameter.Name;
       qualityComparer1.MaximizationParameter.ActualName = MaximizationParameter.Name;
@@ -264,6 +276,10 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       evaluator2.Name = "Evaluator (placeholder)";
       evaluator2.OperatorParameter.ActualName = EvaluatorParameter.Name;
 
+      evaluationCounter2.Name = "EvaluatedSolutions++";
+      evaluationCounter2.Increment = new IntValue(1);
+      evaluationCounter2.ValueParameter.ActualName = "EvaluatedSolutions";
+
       mutationBranch2.ProbabilityParameter.ActualName = MutationProbabilityParameter.Name;
       mutationBranch2.RandomParameter.ActualName = RandomParameter.Name;
 
@@ -272,6 +288,10 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
 
       evaluator3.Name = "Evaluator (placeholder)";
       evaluator3.OperatorParameter.ActualName = EvaluatorParameter.Name;
+
+      evaluationCounter3.Name = "EvaluatedSolutions++";
+      evaluationCounter3.Increment = new IntValue(1);
+      evaluationCounter3.ValueParameter.ActualName = "EvaluatedSolutions";
 
       qualityComparer2.ComparisonFactorParameter.ActualName = "ComparisonFactor";
       qualityComparer2.LeftSideParameter.ActualName = QualityParameter.Name;
@@ -312,6 +332,12 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       comparator2.LeftSideParameter.ActualName = "SelectionPressure";
       comparator2.ResultParameter.ActualName = "TerminateSelectionPressure";
       comparator2.RightSideParameter.ActualName = MaximumSelectionPressureParameter.Name;
+
+      evaluatedSolutionsAssigner.LeftSideParameter.ActualName = "EvaluatedSolutionsResult";
+      evaluatedSolutionsAssigner.RightSideParameter.ActualName = "EvaluatedSolutions";
+
+      evalSolCollector.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutionsResult"));
+      evalSolCollector.ResultsParameter.ActualName = ResultsParameter.Name;
 
       bestQualityMemorizer3.BestQualityParameter.ActualName = "BestQuality";
       bestQualityMemorizer3.MaximizationParameter.ActualName = MaximizationParameter.Name;
@@ -376,18 +402,21 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       osBeforeMutationBranch.TrueBranch = evaluator1;
       osBeforeMutationBranch.FalseBranch = mutationBranch2;
       osBeforeMutationBranch.Successor = subScopesRemover;
-      evaluator1.Successor = qualityComparer1;
+      evaluator1.Successor = evaluationCounter1;
+      evaluationCounter1.Successor = qualityComparer1;
       qualityComparer1.Successor = mutationBranch1;
       mutationBranch1.FirstBranch = mutator1;
       mutationBranch1.SecondBranch = null;
       mutationBranch1.Successor = null;
       mutator1.Successor = evaluator2;
-      evaluator2.Successor = null;
+      evaluator2.Successor = evaluationCounter2;
+      evaluationCounter2.Successor = null;
       mutationBranch2.FirstBranch = mutator2;
       mutationBranch2.SecondBranch = null;
       mutationBranch2.Successor = evaluator3;
       mutator2.Successor = null;
-      evaluator3.Successor = qualityComparer2;
+      evaluator3.Successor = evaluationCounter3;
+      evaluationCounter3.Successor = qualityComparer2;
       subScopesRemover.Successor = null;
       offspringSelector.OffspringCreator = selector;
       offspringSelector.Successor = subScopesProcessor2;
@@ -400,7 +429,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       intCounter.Successor = comparisonFactorModifier;
       comparisonFactorModifier.Successor = comparator1;
       comparator1.Successor = comparator2;
-      comparator2.Successor = bestQualityMemorizer3;
+      comparator2.Successor = evaluatedSolutionsAssigner;
+      evaluatedSolutionsAssigner.Successor = evalSolCollector;
+      evalSolCollector.Successor = bestQualityMemorizer3;
       bestQualityMemorizer3.Successor = bestQualityMemorizer4;
       bestQualityMemorizer4.Successor = bestAverageWorstQualityCalculator2;
       bestAverageWorstQualityCalculator2.Successor = dataTableValuesCollector2;

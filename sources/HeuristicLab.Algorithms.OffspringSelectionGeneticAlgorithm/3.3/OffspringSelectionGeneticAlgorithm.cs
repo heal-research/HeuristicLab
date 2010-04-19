@@ -88,8 +88,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private ValueLookupParameter<DoubleValue> ComparisonFactorUpperBoundParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["ComparisonFactorUpperBound"]; }
     }
-    private ConstrainedValueParameter<IDiscreteDoubleValueModifier> ComparisonFactorModifierParameter {
-      get { return (ConstrainedValueParameter<IDiscreteDoubleValueModifier>)Parameters["ComparisonFactorModifier"]; }
+    private OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier> ComparisonFactorModifierParameter {
+      get { return (OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier>)Parameters["ComparisonFactorModifier"]; }
     }
     private ValueLookupParameter<DoubleValue> MaximumSelectionPressureParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["MaximumSelectionPressure"]; }
@@ -192,7 +192,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("SuccessRatio", "The ratio of successful to total children that should be achieved.", new DoubleValue(1)));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("ComparisonFactorLowerBound", "The lower bound of the comparison factor (start).", new DoubleValue(0)));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("ComparisonFactorUpperBound", "The upper bound of the comparison factor (end).", new DoubleValue(1)));
-      Parameters.Add(new ConstrainedValueParameter<IDiscreteDoubleValueModifier>("ComparisonFactorModifier", "The operator used to modify the comparison factor."));
+      Parameters.Add(new OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier>("ComparisonFactorModifier", "The operator used to modify the comparison factor.", new ItemSet<IDiscreteDoubleValueModifier>(new IDiscreteDoubleValueModifier[] { new LinearDiscreteDoubleValueModifier() }), new LinearDiscreteDoubleValueModifier()));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("MaximumSelectionPressure", "The maximum selection pressure that terminates the algorithm.", new DoubleValue(100)));
       Parameters.Add(new ValueLookupParameter<BoolValue>("OffspringSelectionBeforeMutation", "True if the offspring selection step should be applied before mutation, false if it should be applied after mutation.", new BoolValue(false)));
 
@@ -385,14 +385,15 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     }
     private void UpdateComparisonFactorModifiers() {
       IDiscreteDoubleValueModifier oldModifier = ComparisonFactorModifier;
-      if (oldModifier == null) oldModifier = new LinearDiscreteDoubleValueModifier();
 
       ComparisonFactorModifierParameter.ValidValues.Clear();
       foreach (IDiscreteDoubleValueModifier modifier in comparisonFactorModifiers)
         ComparisonFactorModifierParameter.ValidValues.Add(modifier);
-      
-      IDiscreteDoubleValueModifier mod = ComparisonFactorModifierParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldModifier.GetType());
-      if (mod != null) ComparisonFactorModifierParameter.Value = mod;
+
+      if (oldModifier != null) {
+        IDiscreteDoubleValueModifier mod = ComparisonFactorModifierParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldModifier.GetType());
+        if (mod != null) ComparisonFactorModifierParameter.Value = mod;
+      }
     }
     private void UpdateCrossovers() {
       ICrossover oldCrossover = CrossoverParameter.Value;
