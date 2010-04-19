@@ -23,8 +23,69 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace HeuristicLab.Common {
-  public class ContentManager {
+  public abstract class ContentManager {
+    protected ContentManager() {
+    }
+
+    private static ContentManager instance;
+    public static ContentManager Instance {
+      get { return instance; }
+    }
+    public static void CreateInstance<T>() where T : ContentManager {
+      if (instance != null)
+        throw new InvalidOperationException("ContentManager was already created.");
+      instance = Activator.CreateInstance<T>();
+    }
+
+    public static void Save(IStorableContent content) {
+      content.Save();
+    }
+    public static void Save(IStorableContent content, string filename) {
+      content.Save(filename);
+    }
+
+    protected abstract void Load(string filename, bool flag);
+    public static void Load(string filename) {
+      if (instance == null)
+        throw new InvalidOperationException("ContentManager must be created before access is allowed.");
+
+      Exception ex = null;
+      instance.OnLoadOperationStarted();
+      try {
+        instance.Load(filename, false);
+      }
+      catch (Exception e) {
+        ex = e;
+      }
+      instance.OnLoadOperationFinished(ex);
+    }
+
+    public static void LoadAsynchronous(string filename) {
+      if (instance == null)
+        throw new InvalidOperationException("ContentManager must be created before access is allowed.");
+
+      ThreadPool.QueueUserWorkItem(
+        new WaitCallback(delegate(object arg) {
+        Load(filename);
+      })
+      );
+    }
+    
+
+    public event EventHandler LoadOperationStarted;
+    protected virtual void OnLoadOperationStarted() {
+      EventHandler handler = LoadOperationStarted;
+      if (handler != null)
+        handler(this, EventArgs.Empty);
+    }
+    public event EventHandler<EventArgs<Exception>> LoadOperationFinished;
+    protected virtual void OnLoadOperationFinished(Exception e) {
+      EventHandler<EventArgs<Exception>> handler = LoadOperationFinished;
+      if (handler != null)
+        handler(this, new EventArgs<Exception>(e));
+    }
   }
 }
