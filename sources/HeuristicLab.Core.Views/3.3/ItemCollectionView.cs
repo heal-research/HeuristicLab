@@ -189,9 +189,10 @@ namespace HeuristicLab.Core.Views {
     protected virtual void itemsListView_DoubleClick(object sender, EventArgs e) {
       if (itemsListView.SelectedItems.Count == 1) {
         T item = (T)itemsListView.SelectedItems[0].Tag;
-        IView view = MainFormManager.CreateDefaultView(item);
+        IContentView view = MainFormManager.CreateDefaultView(item);
         if (view != null) {
-          view.ReadOnly = this.ReadOnly;
+          view.ReadOnly = ReadOnly;
+          view.Locked = Locked;
           view.Show();
         }
       }

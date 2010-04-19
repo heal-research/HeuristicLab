@@ -354,9 +354,10 @@ namespace HeuristicLab.Core.Views {
       if (graphTreeView.SelectedNode != null) {
         IOperator op = GetOperatorTag(graphTreeView.SelectedNode);
         if (op != null) {
-          IView view = MainFormManager.CreateDefaultView(op);
+          IContentView view = MainFormManager.CreateDefaultView(op);
           if (view != null) {
             view.ReadOnly = this.ReadOnly;
+            view.Locked = this.Locked;
             viewToolStripMenuItem.Enabled = true;
             viewToolStripMenuItem.Tag = view;
           }

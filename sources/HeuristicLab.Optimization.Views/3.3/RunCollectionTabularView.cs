@@ -53,13 +53,19 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     public new RunCollection Content {
-      get { return (RunCollection) base.Content; }
+      get { return (RunCollection)base.Content; }
       set { base.Content = value; }
     }
 
     private void dataGridView_RowHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e) {
-      if (e.RowIndex > 0)
-        MainFormManager.CreateDefaultView(Content.ElementAt(e.RowIndex)).Show();
+      if (e.RowIndex > 0) {
+        IContentView view = MainFormManager.CreateDefaultView(Content.ElementAt(e.RowIndex));
+        if (view != null) {
+          view.ReadOnly = this.ReadOnly;
+          view.Locked = this.Locked;
+          view.Show();
+        }
+      }
     }
   }
 }

@@ -165,9 +165,10 @@ namespace HeuristicLab.Optimization.Views {
     protected virtual void itemsListView_DoubleClick(object sender, EventArgs e) {
       if (itemsListView.SelectedItems.Count == 1) {
         IRun item = (IRun)itemsListView.SelectedItems[0].Tag;
-        IView view = MainFormManager.CreateDefaultView(item);
+        IContentView view = MainFormManager.CreateDefaultView(item);
         if (view != null) {
           view.ReadOnly = ReadOnly;
+          view.Locked = Locked;
           view.Show();
         }
       }

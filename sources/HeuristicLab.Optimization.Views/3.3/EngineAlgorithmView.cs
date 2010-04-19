@@ -157,7 +157,12 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     protected virtual void createUserDefinedAlgorithmButton_Click(object sender, EventArgs e) {
-      MainFormManager.CreateDefaultView(Content.CreateUserDefinedAlgorithm()).Show();
+      IContentView view = MainFormManager.CreateDefaultView(Content.CreateUserDefinedAlgorithm());
+      if (view != null) {
+        view.ReadOnly = this.ReadOnly;
+        view.Locked = this.Locked;
+        view.Show();
+      }
     }
   }
 }
