@@ -35,9 +35,6 @@ namespace HeuristicLab.Selection {
   [Item("GenderSpecificSelection", "Brings two parents together by sampling each with a different selection scheme (Wagner, S. and Affenzeller, M. 2005. SexualGA: Gender-Specific Selection for Genetic Algorithms. Proceedings of the 9th World Multi-Conference on Systemics, Cybernetics and Informatics (WMSCI), pp. 76-81).")]
   [StorableClass]
   public class GenderSpecificSelector : AlgorithmOperator, ISingleObjectiveSelector, IStochasticOperator {
-    private List<ISelector> femaleSelectors;
-    private List<ISelector> maleSelectors;
-
     #region Parameters
     public IValueLookupParameter<BoolValue> MaximizationParameter {
       get { return (IValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
@@ -54,11 +51,11 @@ namespace HeuristicLab.Selection {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
-    public ConstrainedValueParameter<ISelector> FemaleSelectorParameter {
-      get { return (ConstrainedValueParameter<ISelector>)Parameters["FemaleSelector"]; }
+    public ValueParameter<ISelector> FemaleSelectorParameter {
+      get { return (ValueParameter<ISelector>)Parameters["FemaleSelector"]; }
     }
-    public ConstrainedValueParameter<ISelector> MaleSelectorParameter {
-      get { return (ConstrainedValueParameter<ISelector>)Parameters["MaleSelector"]; }
+    public ValueParameter<ISelector> MaleSelectorParameter {
+      get { return (ValueParameter<ISelector>)Parameters["MaleSelector"]; }
     }
     #endregion
 
@@ -95,8 +92,8 @@ namespace HeuristicLab.Selection {
       Parameters.Add(new ValueLookupParameter<IntValue>("NumberOfSelectedSubScopes", "The number of scopes that should be selected."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("CopySelected", "True if the scopes should be copied, false if they should be moved.", new BoolValue(true)));
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
-      Parameters.Add(new ConstrainedValueParameter<ISelector>("FemaleSelector", "The selection operator to select the first parent."));
-      Parameters.Add(new ConstrainedValueParameter<ISelector>("MaleSelector", "The selection operator to select the second parent."));
+      Parameters.Add(new ValueParameter<ISelector>("FemaleSelector", "The selection operator to select the first parent."));
+      Parameters.Add(new ValueParameter<ISelector>("MaleSelector", "The selection operator to select the second parent."));
       #endregion
 
       #region Create operators
@@ -139,54 +136,31 @@ namespace HeuristicLab.Selection {
       return base.Apply();
     }
 
+    #region Events
+    private void SelectorParameter_ValueChanged(object sender, EventArgs e) {
+      IValueParameter<ISelector> selectorParam = (sender as IValueParameter<ISelector>);
+      if (selectorParam != null)
+        ParameterizeSelector(selectorParam.Value);
+    }
+    #endregion
+
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
-      InitializeSelectors();
-      UpdateSelectors();
+      FemaleSelectorParameter.ValueChanged += new EventHandler(SelectorParameter_ValueChanged);
+      MaleSelectorParameter.ValueChanged += new EventHandler(SelectorParameter_ValueChanged);
+      if (FemaleSelector == null) FemaleSelector = new ProportionalSelector();
+      if (MaleSelector == null) MaleSelector = new RandomSelector();
     }
-
-    private void InitializeSelectors() {
-      femaleSelectors = new List<ISelector>();
-      maleSelectors = new List<ISelector>();
-      IEnumerable<Type> types = ApplicationManager.Manager.GetTypes(typeof(ISelector)).OrderBy(x => x.FullName);
-      foreach (Type type in types) {
-        if (type != typeof(IMultiObjectiveSelector) && type != typeof(GenderSpecificSelector)) {
-          femaleSelectors.Add((ISelector)Activator.CreateInstance(type));
-          maleSelectors.Add((ISelector)Activator.CreateInstance(type));
-        }
+    private void ParameterizeSelector(ISelector selector) {
+      selector.CopySelected = new BoolValue(true);
+      IStochasticOperator stoOp = (selector as IStochasticOperator);
+      if (stoOp != null) stoOp.RandomParameter.ActualName = RandomParameter.Name;
+      ISingleObjectiveSelector soSelector = (selector as ISingleObjectiveSelector);
+      if (soSelector != null) {
+        soSelector.MaximizationParameter.ActualName = MaximizationParameter.Name;
+        soSelector.QualityParameter.ActualName = QualityParameter.Name;
       }
-      ParameterizeSelectors(femaleSelectors);
-      ParameterizeSelectors(maleSelectors);
-    }
-    private void ParameterizeSelectors(List<ISelector> selectors) {
-      foreach (ISelector selector in selectors) {
-        selector.CopySelected = new BoolValue(true);
-      }
-      foreach (IStochasticOperator op in selectors.OfType<IStochasticOperator>()) {
-        op.RandomParameter.ActualName = RandomParameter.Name;
-      }
-      foreach (ISingleObjectiveSelector selector in selectors.OfType<ISingleObjectiveSelector>()) {
-        selector.MaximizationParameter.ActualName = MaximizationParameter.Name;
-        selector.QualityParameter.ActualName = QualityParameter.Name;
-      }
-    }
-    private void UpdateSelectors() {
-      ISelector oldFemaleSelector = FemaleSelector;
-      FemaleSelectorParameter.ValidValues.Clear();
-      foreach (ISelector selector in femaleSelectors)
-        FemaleSelectorParameter.ValidValues.Add(selector);
-      if (oldFemaleSelector == null) oldFemaleSelector = new ProportionalSelector();
-      ISelector femaleSelector = FemaleSelectorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldFemaleSelector.GetType());
-      if (femaleSelector != null) FemaleSelectorParameter.Value = femaleSelector;
-
-      ISelector oldMaleSelector = MaleSelector;
-      MaleSelectorParameter.ValidValues.Clear();
-      foreach (ISelector selector in maleSelectors)
-        MaleSelectorParameter.ValidValues.Add(selector);
-      if (oldMaleSelector == null) oldMaleSelector = new RandomSelector();
-      ISelector maleSelector = MaleSelectorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMaleSelector.GetType());
-      if (maleSelector != null) MaleSelectorParameter.Value = maleSelector;
     }
     #endregion
   }

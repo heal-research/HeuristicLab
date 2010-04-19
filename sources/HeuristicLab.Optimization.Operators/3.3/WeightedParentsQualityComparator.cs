@@ -29,9 +29,9 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization.Operators {
-  [Item("ParentsQualityComparator", "Compares the quality against that of its parents (assumes the parents are subscopes to the child scope). This operator works with any number of subscopes > 0.")]
+  [Item("WeightedParentsQualityComparator", "Compares the quality against that of its parents (assumes the parents are subscopes to the child scope). This operator works with any number of subscopes > 0.")]
   [StorableClass]
-  public class ParentsQualityComparator : SingleSuccessorOperator, ISubScopesQualityComparator {
+  public class WeightedParentsQualityComparator : SingleSuccessorOperator, ISubScopesQualityComparator {
     public IValueLookupParameter<BoolValue> MaximizationParameter {
       get { return (IValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
@@ -48,7 +48,7 @@ namespace HeuristicLab.Optimization.Operators {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["ComparisonFactor"]; }
     }
 
-    public ParentsQualityComparator()
+    public WeightedParentsQualityComparator()
       : base() {
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, false otherwise"));
       Parameters.Add(new LookupParameter<DoubleValue>("LeftSide", "The quality of the child."));

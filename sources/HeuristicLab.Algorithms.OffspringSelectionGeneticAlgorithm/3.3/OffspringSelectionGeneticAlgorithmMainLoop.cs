@@ -151,15 +151,16 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Placeholder crossover = new Placeholder();
       ConditionalBranch osBeforeMutationBranch = new ConditionalBranch();
       Placeholder evaluator1 = new Placeholder();
-      ParentsQualityComparator qualityComparer1 = new ParentsQualityComparator();
+      WeightedParentsQualityComparator qualityComparer1 = new WeightedParentsQualityComparator();
       StochasticBranch mutationBranch1 = new StochasticBranch();
       Placeholder mutator1 = new Placeholder();
       Placeholder evaluator2 = new Placeholder();
       StochasticBranch mutationBranch2 = new StochasticBranch();
       Placeholder mutator2 = new Placeholder();
       Placeholder evaluator3 = new Placeholder();
-      ParentsQualityComparator qualityComparer2 = new ParentsQualityComparator();
+      WeightedParentsQualityComparator qualityComparer2 = new WeightedParentsQualityComparator();
       SubScopesRemover subScopesRemover = new SubScopesRemover();
+      ConditionalSelector conditionalSelector = new ConditionalSelector();
       OffspringSelector offspringSelector = new OffspringSelector();
       SubScopesProcessor subScopesProcessor2 = new SubScopesProcessor();
       BestSelector bestSelector = new BestSelector();
@@ -280,12 +281,14 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
 
       subScopesRemover.RemoveAllSubScopes = true;
 
+      conditionalSelector.CopySelected = new BoolValue(false);
+      conditionalSelector.ConditionParameter.ActualName = "SuccessfulOffspring";
+
       offspringSelector.CurrentSuccessRatioParameter.ActualName = "CurrentSuccessRatio";
       offspringSelector.LuckyLosersParameter.ActualName = "OSLuckyLosers";
       offspringSelector.MaximumSelectionPressureParameter.ActualName = MaximumSelectionPressureParameter.Name;
       offspringSelector.PopulationSizeParameter.ActualName = PopulationSizeParameter.Name;
       offspringSelector.SelectionPressureParameter.ActualName = "SelectionPressure";
-      offspringSelector.SuccessfulOffspringParameter.ActualName = "SuccessfulOffspring";
       offspringSelector.SuccessRatioParameter.ActualName = SuccessRatioParameter.Name;
       offspringSelector.WinnersParameter.ActualName = "OSWinners";
 
@@ -368,7 +371,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       subScopesProcessor1.Successor = offspringSelector;
       childrenCreator.Successor = uniformSubScopesProcessor;
       uniformSubScopesProcessor.Operator = crossover;
-      uniformSubScopesProcessor.Successor = null;
+      uniformSubScopesProcessor.Successor = conditionalSelector;
       crossover.Successor = osBeforeMutationBranch;
       osBeforeMutationBranch.TrueBranch = evaluator1;
       osBeforeMutationBranch.FalseBranch = mutationBranch2;

@@ -82,7 +82,9 @@
   <ItemGroup>
     <None Include="HeuristicLabSelectionPlugin.cs.frame" />
     <Compile Include="BestSelector.cs" />
+    <Compile Include="ConditionalSelector.cs" />
     <Compile Include="GenderSpecificSelector.cs" />
+    <Compile Include="OffspringSelector.cs" />
     <Compile Include="RightChildReducer.cs" />
     <Compile Include="SingleObjectiveSelector.cs" />
     <Compile Include="LeftReducer.cs" />

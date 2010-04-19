@@ -361,12 +361,12 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     }
     private void ParameterizeComparisonFactorModifiers() {
       foreach (IDiscreteDoubleValueModifier modifier in comparisonFactorModifiers) {
-        modifier.IndexParameter.ActualName = "Generations"; // FIXME: hmmm, not so good, this variable is defined within the main loop
+        modifier.IndexParameter.ActualName = "Generations";
         modifier.EndIndexParameter.ActualName = MaximumGenerationsParameter.Name;
         modifier.EndValueParameter.ActualName = ComparisonFactorUpperBoundParameter.Name;
         modifier.StartIndexParameter.Value = new IntValue(0);
         modifier.StartValueParameter.ActualName = ComparisonFactorLowerBoundParameter.Name;
-        modifier.ValueParameter.ActualName = "ComparisonFactor"; // FIXME: hmmm, not so good, this variable is defined within the main loop
+        modifier.ValueParameter.ActualName = "ComparisonFactor";
       }
     }
     private void UpdateSelectors() {
@@ -385,13 +385,14 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     }
     private void UpdateComparisonFactorModifiers() {
       IDiscreteDoubleValueModifier oldModifier = ComparisonFactorModifier;
+      if (oldModifier == null) oldModifier = new LinearDiscreteDoubleValueModifier();
+
       ComparisonFactorModifierParameter.ValidValues.Clear();
       foreach (IDiscreteDoubleValueModifier modifier in comparisonFactorModifiers)
         ComparisonFactorModifierParameter.ValidValues.Add(modifier);
-      if (oldModifier != null) {
-        IDiscreteDoubleValueModifier modifier = ComparisonFactorModifierParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldModifier.GetType());
-        if (modifier != null) ComparisonFactorModifierParameter.Value = modifier;
-      } else if (ComparisonFactorModifierParameter.ValidValues.Count > 0) ComparisonFactorModifierParameter.Value = ComparisonFactorModifierParameter.ValidValues.First();
+      
+      IDiscreteDoubleValueModifier mod = ComparisonFactorModifierParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldModifier.GetType());
+      if (mod != null) ComparisonFactorModifierParameter.Value = mod;
     }
     private void UpdateCrossovers() {
       ICrossover oldCrossover = CrossoverParameter.Value;

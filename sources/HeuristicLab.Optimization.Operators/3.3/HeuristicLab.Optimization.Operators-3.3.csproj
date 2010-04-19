@@ -80,8 +80,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="OffspringSelector.cs" />
-    <Compile Include="ParentsQualityComparator.cs" />
     <Compile Include="ProbabilisticQualityComparator.cs" />
     <Compile Include="ResultsCollector.cs" />
     <Compile Include="SquareRootDiscreteDoubleValueModifier.cs" />
@@ -95,6 +93,7 @@
     <Compile Include="QualityComparator.cs" />
     <Compile Include="SolutionsCreator.cs" />
     <Compile Include="UnidirectionalRingMigrator.cs" />
+    <Compile Include="WeightedParentsQualityComparator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
