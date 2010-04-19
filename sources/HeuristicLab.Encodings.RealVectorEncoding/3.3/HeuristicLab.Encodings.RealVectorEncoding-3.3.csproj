@@ -94,6 +94,7 @@
     <Compile Include="Crossovers\DiscreteCrossover.cs" />
     <Compile Include="Crossovers\HeuristicCrossover.cs" />
     <Compile Include="Crossovers\LocalCrossover.cs" />
+    <Compile Include="Crossovers\MultiRealVectorCrossover.cs" />
     <Compile Include="Crossovers\RandomConvexCrossover.cs" />
     <Compile Include="Crossovers\SimulatedBinaryCrossover.cs" />
     <Compile Include="Crossovers\SinglePointCrossover.cs">
@@ -110,6 +111,7 @@
     <Compile Include="Interfaces\IRealVectorBoundsChecker.cs" />
     <Compile Include="Interfaces\IRealVectorMoveGenerator.cs" />
     <Compile Include="Interfaces\IRealVectorMoveOperator.cs" />
+    <Compile Include="Manipulators\MultiRealVectorManipulator.cs" />
     <Compile Include="Manipulators\NormalAllPositionsManipulator.cs" />
     <Compile Include="Moves\AdditiveMoveTabuChecker.cs" />
     <Compile Include="Moves\AdditiveMoveTabuMaker.cs" />

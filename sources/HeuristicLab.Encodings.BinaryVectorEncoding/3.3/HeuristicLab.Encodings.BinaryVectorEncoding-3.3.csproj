@@ -85,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Creators\RandomBinaryVectorCreator.cs" />
+    <Compile Include="Crossovers\MultiBinaryVectorCrossover.cs" />
     <Compile Include="Crossovers\UniformCrossover.cs" />
     <Compile Include="Crossovers\SinglePointCrossover.cs" />
     <Compile Include="Crossovers\NPointCrossover.cs" />

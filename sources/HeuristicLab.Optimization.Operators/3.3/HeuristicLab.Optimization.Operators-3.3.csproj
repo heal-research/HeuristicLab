@@ -92,7 +92,6 @@
     <Compile Include="QuadraticDiscreteDoubleValueModifier.cs" />
     <Compile Include="QualityComparator.cs" />
     <Compile Include="SolutionsCreator.cs" />
-    <Compile Include="MultiCrossover.cs" />
     <Compile Include="TabuMaker.cs" />
     <Compile Include="UnidirectionalRingMigrator.cs" />
     <Compile Include="WeightedParentsQualityComparator.cs" />

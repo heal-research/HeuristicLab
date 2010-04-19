@@ -22,15 +22,16 @@
 using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.PermutationEncoding {
-  [Item("MultiPermutationCrossover", "Randomly selects and applies one of its crossovers every time it is called.")]
+namespace HeuristicLab.Encodings.RealVectorEncoding {
+  [Item("MultiRealVectorCrossover", "Randomly selects and applies one of its crossovers every time it is called.")]
   [StorableClass]
-  public class MultiPermutationCrossover : StochasticMultiOperator<IPermutationCrossover>, IPermutationCrossover {
+  public class MultiRealVectorCrossover : StochasticMultiOperator<IRealVectorCrossover>, IRealVectorCrossover {
     public override bool CanChangeName {
       get { return false; }
     }
@@ -41,22 +42,25 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       get { return true; }
     }
 
-    public ILookupParameter<ItemArray<Permutation>> ParentsParameter {
-      get { return (ILookupParameter<ItemArray<Permutation>>)Parameters["Parents"]; }
+    public ILookupParameter<ItemArray<RealVector>> ParentsParameter {
+      get { return (ILookupParameter<ItemArray<RealVector>>)Parameters["Parents"]; }
     }
-
-    public ILookupParameter<Permutation> ChildParameter {
-      get { return (ILookupParameter<Permutation>)Parameters["Child"]; }
+    public ILookupParameter<RealVector> ChildParameter {
+      get { return (ILookupParameter<RealVector>)Parameters["Child"]; }
+    }
+    public IValueLookupParameter<DoubleMatrix> BoundsParameter {
+      get { return (IValueLookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
     }
 
     [StorableConstructor]
-    private MultiPermutationCrossover(bool deserializing) : base(deserializing) { }
-    public MultiPermutationCrossover()
+    private MultiRealVectorCrossover(bool deserializing) : base(deserializing) { }
+    public MultiRealVectorCrossover()
       : base() {
-      Parameters.Add(new SubScopesLookupParameter<Permutation>("Parents", "The parent permutations which should be crossed."));
-      ParentsParameter.ActualName = "Permutation";
-      Parameters.Add(new LookupParameter<Permutation>("Child", "The child permutation resulting from the crossover."));
-      ChildParameter.ActualName = "Permutation";
+      Parameters.Add(new SubScopesLookupParameter<RealVector>("Parents", "The parent real vector which should be crossed."));
+      ParentsParameter.ActualName = "RealVector";
+      Parameters.Add(new LookupParameter<RealVector>("Child", "The child real vector resulting from the crossover."));
+      ChildParameter.ActualName = "RealVector";
+      Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "The lower and upper bounds for each dimension of the vector."));
 
       Initialize();
       ParameterizeCrossovers();
@@ -64,22 +68,23 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
-      Operators.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<IPermutationCrossover>>(Operators_ItemsAdded);
-      Operators.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<IPermutationCrossover>>(Operators_ItemsReplaced);
+      Operators.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<IRealVectorCrossover>>(Operators_ItemsAdded);
+      Operators.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<IRealVectorCrossover>>(Operators_ItemsReplaced);
     }
 
-    private void Operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IPermutationCrossover>> e) {
+    private void Operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IRealVectorCrossover>> e) {
       ParameterizeCrossovers();
     }
 
-    private void Operators_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<IPermutationCrossover>> e) {
+    private void Operators_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<IRealVectorCrossover>> e) {
       ParameterizeCrossovers();
     }
 
     private void ParameterizeCrossovers() {
-      foreach (IPermutationCrossover crossover in Operators.OfType<IPermutationCrossover>()) {
+      foreach (IRealVectorCrossover crossover in Operators.OfType<IRealVectorCrossover>()) {
         crossover.ChildParameter.ActualName = ChildParameter.Name;
         crossover.ParentsParameter.ActualName = ParentsParameter.Name;
+        crossover.BoundsParameter.ActualName = BoundsParameter.Name;
       }
       foreach (IStochasticOperator crossover in Operators.OfType<IStochasticOperator>()) {
         crossover.RandomParameter.ActualName = RandomParameter.Name;

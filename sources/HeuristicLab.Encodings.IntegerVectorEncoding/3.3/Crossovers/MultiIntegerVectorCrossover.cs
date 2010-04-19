@@ -27,10 +27,10 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.PermutationEncoding {
-  [Item("MultiPermutationCrossover", "Randomly selects and applies one of its crossovers every time it is called.")]
+namespace HeuristicLab.Encodings.IntegerVectorEncoding {
+  [Item("MultiIntegerVectorCrossover", "Randomly selects and applies one of its crossovers every time it is called.")]
   [StorableClass]
-  public class MultiPermutationCrossover : StochasticMultiOperator<IPermutationCrossover>, IPermutationCrossover {
+  public class MultiIntegerVectorCrossover : StochasticMultiOperator<IIntegerVectorCrossover>, IIntegerVectorCrossover {
     public override bool CanChangeName {
       get { return false; }
     }
@@ -41,22 +41,22 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       get { return true; }
     }
 
-    public ILookupParameter<ItemArray<Permutation>> ParentsParameter {
-      get { return (ILookupParameter<ItemArray<Permutation>>)Parameters["Parents"]; }
+    public ILookupParameter<ItemArray<IntegerVector>> ParentsParameter {
+      get { return (ILookupParameter<ItemArray<IntegerVector>>)Parameters["Parents"]; }
     }
 
-    public ILookupParameter<Permutation> ChildParameter {
-      get { return (ILookupParameter<Permutation>)Parameters["Child"]; }
+    public ILookupParameter<IntegerVector> ChildParameter {
+      get { return (ILookupParameter<IntegerVector>)Parameters["Child"]; }
     }
 
     [StorableConstructor]
-    private MultiPermutationCrossover(bool deserializing) : base(deserializing) { }
-    public MultiPermutationCrossover()
+    private MultiIntegerVectorCrossover(bool deserializing) : base(deserializing) { }
+    public MultiIntegerVectorCrossover()
       : base() {
-      Parameters.Add(new SubScopesLookupParameter<Permutation>("Parents", "The parent permutations which should be crossed."));
-      ParentsParameter.ActualName = "Permutation";
-      Parameters.Add(new LookupParameter<Permutation>("Child", "The child permutation resulting from the crossover."));
-      ChildParameter.ActualName = "Permutation";
+      Parameters.Add(new SubScopesLookupParameter<IntegerVector>("Parents", "The parent integer vector which should be crossed."));
+      ParentsParameter.ActualName = "IntegerVector";
+      Parameters.Add(new LookupParameter<IntegerVector>("Child", "The child integer vector resulting from the crossover."));
+      ChildParameter.ActualName = "IntegerVector";
 
       Initialize();
       ParameterizeCrossovers();
@@ -64,20 +64,20 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
-      Operators.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<IPermutationCrossover>>(Operators_ItemsAdded);
-      Operators.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<IPermutationCrossover>>(Operators_ItemsReplaced);
+      Operators.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<IIntegerVectorCrossover>>(Operators_ItemsAdded);
+      Operators.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<IIntegerVectorCrossover>>(Operators_ItemsReplaced);
     }
 
-    private void Operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IPermutationCrossover>> e) {
+    private void Operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IIntegerVectorCrossover>> e) {
       ParameterizeCrossovers();
     }
 
-    private void Operators_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<IPermutationCrossover>> e) {
+    private void Operators_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<IIntegerVectorCrossover>> e) {
       ParameterizeCrossovers();
     }
 
     private void ParameterizeCrossovers() {
-      foreach (IPermutationCrossover crossover in Operators.OfType<IPermutationCrossover>()) {
+      foreach (IIntegerVectorCrossover crossover in Operators.OfType<IIntegerVectorCrossover>()) {
         crossover.ChildParameter.ActualName = ChildParameter.Name;
         crossover.ParentsParameter.ActualName = ParentsParameter.Name;
       }

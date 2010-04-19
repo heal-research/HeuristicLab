@@ -21,24 +21,32 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using HeuristicLab.Collections;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Operators {
   /// <summary>
-  /// Base class for multi crossover operators.
+  /// Base class for stochastic multi operators.
   /// </summary>
-  [Item("MultiCrossover", "Base class for multi crossover operators.")]
+  [Item("StochasticMultiOperator", "Base class for stochastic multi operators.")]
   [StorableClass]
-  public class MultiCrossover<T> : MultiOperator<T>, IStochasticOperator where T : class, ICrossover {
+  public abstract class StochasticMultiOperator<T> : MultiOperator<T> where T : class, IOperator {
+    /// <summary>
+    /// Returns false by default. If this is overriden to return true, there will be an automatic type discovery
+    /// of all instantiable types of T (except the own type) and instances will be added to the Operators list.
+    /// </summary>
+    public virtual bool AutomaticTypeDiscovery { get { return false; } }
+    /// <summary>
+    /// Should return true if the StochasticMultiOperator should create a new child operation with the selected successor
+    /// or if it should create a new operation. If you need to shield the parameters of the successor you should return true here.
+    /// </summary>
+    protected abstract bool CreateChildOperation { get; }
+
     public ValueLookupParameter<DoubleArray> ProbabilitiesParameter {
       get { return (ValueLookupParameter<DoubleArray>)Parameters["Probabilities"]; }
     }
@@ -52,12 +60,12 @@ namespace HeuristicLab.Operators {
     }
 
     [StorableConstructor]
-    protected MultiCrossover(bool deserializing) : base(deserializing) { }
+    protected StochasticMultiOperator(bool deserializing) : base(deserializing) { }
     /// <summary>
     /// Initializes a new instance of <see cref="StochasticMultiBranch"/> with two parameters
     /// (<c>Probabilities</c> and <c>Random</c>).
     /// </summary>
-    public MultiCrossover()
+    public StochasticMultiOperator()
       : base() {
       Parameters.Add(new ValueLookupParameter<DoubleArray>("Probabilities", "The array of relative probabilities for each operator.", new DoubleArray()));
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
@@ -69,10 +77,12 @@ namespace HeuristicLab.Operators {
       Operators.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<T>>(Operators_ItemsAdded);
       Operators.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<T>>(Operators_ItemsRemoved);
       Operators.ItemsMoved += new CollectionItemsChangedEventHandler<IndexedItem<T>>(Operators_ItemsMoved);
-      IEnumerable<Type> types = ApplicationManager.Manager.GetTypes(typeof(T), true);
-      foreach (Type type in types) {
-        if (type != this.GetType())
-          Operators.Add((T)Activator.CreateInstance(type));
+      if (AutomaticTypeDiscovery) {
+        IEnumerable<Type> types = ApplicationManager.Manager.GetTypes(typeof(T), true);
+        foreach (Type type in types.OrderBy(x => x.FullName)) {
+          if (type != this.GetType())
+            Operators.Add((T)Activator.CreateInstance(type));
+        }
       }
     }
 
@@ -151,7 +161,9 @@ namespace HeuristicLab.Operators {
       }
       OperationCollection next = new OperationCollection(base.Apply());
       if (successor != null) {
-        next.Insert(0, ExecutionContext.CreateChildOperation(successor));
+        if (CreateChildOperation)
+          next.Insert(0, ExecutionContext.CreateChildOperation(successor));
+        else next.Insert(0, ExecutionContext.CreateOperation(successor));
       }
       return next;
     }

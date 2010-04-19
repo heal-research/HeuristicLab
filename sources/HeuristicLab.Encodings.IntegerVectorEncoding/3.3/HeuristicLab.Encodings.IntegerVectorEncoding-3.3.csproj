@@ -82,6 +82,7 @@
     <Compile Include="Crossovers\DiscreteCrossover.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Crossovers\MultiIntegerVectorCrossover.cs" />
     <Compile Include="Crossovers\SinglePointCrossover.cs">
       <SubType>Code</SubType>
     </Compile>

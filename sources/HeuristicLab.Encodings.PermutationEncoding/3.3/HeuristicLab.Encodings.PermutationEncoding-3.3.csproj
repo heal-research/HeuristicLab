@@ -102,6 +102,7 @@
     <Compile Include="Interfaces\IPermutationInversionMoveOperator.cs" />
     <Compile Include="Manipulators\InsertionManipulator.cs" />
     <Compile Include="Manipulators\InversionManipulator.cs" />
+    <Compile Include="Manipulators\MultiPermutationManipulator.cs" />
     <Compile Include="Manipulators\ScrambleManipulator.cs" />
     <Compile Include="Manipulators\Swap2Manipulator.cs" />
     <Compile Include="Manipulators\Swap3Manipulator.cs" />
