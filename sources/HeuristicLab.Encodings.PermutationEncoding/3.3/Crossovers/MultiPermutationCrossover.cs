@@ -19,19 +19,17 @@
  */
 #endregion
 
-using System;
 using HeuristicLab.Collections;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.PluginInfrastructure;
-using System.Collections.Generic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding.Crossovers {
-  public class PermutationMultiCrossover : MultiCrossover<IPermutationCrossover>, IPermutationCrossover {
+  [Item("MultiPermutationCrossover", "Randomly selects and applies one of its crossovers every time it is called.")]
+  [StorableClass]
+  public class MultiPermutationCrossover : MultiCrossover<IPermutationCrossover>, IPermutationCrossover {
     public override bool CanChangeName {
       get { return false; }
     }
@@ -44,8 +42,8 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Crossovers {
     }
 
     [StorableConstructor]
-    private PermutationMultiCrossover(bool deserializing) : base(deserializing) { }
-    public PermutationMultiCrossover()
+    private MultiPermutationCrossover(bool deserializing) : base(deserializing) { }
+    public MultiPermutationCrossover()
       : base() {
       Parameters.Add(new SubScopesLookupParameter<Permutation>("Parents", "The parent permutations which should be crossed."));
       ParentsParameter.ActualName = "Permutation";
