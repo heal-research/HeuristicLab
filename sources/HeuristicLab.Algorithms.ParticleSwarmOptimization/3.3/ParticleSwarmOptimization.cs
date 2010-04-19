@@ -47,6 +47,10 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       get { return (ISingleObjectiveProblem)base.Problem; }
       set { base.Problem = value; }
     }
+    public IRealVectorEncoder Encoder {
+      get { return EncoderParameter.Value; }
+      set { EncoderParameter.Value = value; }
+    }
     #endregion 
 
     #region Parameter Properties
@@ -83,11 +87,13 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       Parameters.Add(new ValueParameter<IntValue>("MaxIterations", "Maximal number of iterations.", new IntValue(1000)));
       Parameters.Add(new OptionalConstrainedValueParameter<IRealVectorEncoder>("Encoder", "The operator used to encode solutions as position vector."));
       //Parameters.Add(new ConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
-
       RandomCreator randomCreator = new RandomCreator();
       SolutionsCreator solutionsCreator = new SolutionsCreator();
+      UniformSubScopesProcessor uniformSubScopesProcessor = new UniformSubScopesProcessor();
+      VariableCreator variableCreator = new VariableCreator();
+      variableCreator.CollectedValues.Add(new ValueParameter<RealVector>("Velocity", new RealVector()));
       //solutionsCreator.SolutionCreatorParameter.ActualName = Problem.SolutionCreator.Name;
-      mainLoop = new ParticleSwarmOptimizationMainLoop();
+      //mainLoop = new ParticleSwarmOptimizationMainLoop();
       OperatorGraph.InitialOperator = randomCreator;
 
       randomCreator.RandomParameter.ActualName = "Random";
@@ -98,15 +104,19 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       randomCreator.Successor = solutionsCreator;
 
       solutionsCreator.NumberOfSolutionsParameter.ActualName = SwarmSizeParameter.Name;
-      solutionsCreator.Successor = mainLoop;
+      solutionsCreator.Successor = variableCreator;
+      variableCreator.Successor = uniformSubScopesProcessor;
+      
 
-      mainLoop.EncoderParameter.ActualName = EncoderParameter.Name;
+      //evaluator.Successor = mainLoop;
+      //mainLoop.EncoderParameter.ActualName = EncoderParameter.Name;
 
       Initialize();
     }
 
+    [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
-      
+      EncoderParameter.ValueChanged += new EventHandler(EncoderParameter_ValueChanged);
     }
 
     [StorableConstructor]
@@ -135,6 +145,10 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       //Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.OnProblemChanged();
     }
+
+    private void EncoderParameter_ValueChanged(object sender, EventArgs e) {
+      ((UniformSubScopesProcessor)((SolutionsCreator)((RandomCreator)OperatorGraph.InitialOperator).Successor).Successor).Operator = EncoderParameter.Value;
+    }
     #endregion
 
     #region Helpers
@@ -151,6 +165,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
         if (encoder != null) EncoderParameter.Value = encoder;
       }
     }
+
     #endregion
   }
 }
