@@ -36,6 +36,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
   [StorableClass]
   public sealed class OffspringSelectionGeneticAlgorithmMainLoop : AlgorithmOperator {
     #region Parameter properties
+    public ValueParameter<VariableCreator> VariableInitializerParameter {
+      get { return (ValueParameter<VariableCreator>)Parameters["VariableInitializer"]; }
+    }
     public ValueLookupParameter<IRandom> RandomParameter {
       get { return (ValueLookupParameter<IRandom>)Parameters["Random"]; }
     }
@@ -101,6 +104,11 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     }
     #endregion
 
+    public VariableCreator VariableInitializer {
+      get { return VariableInitializerParameter.Value; }
+      set { VariableInitializerParameter.Value = value; }
+    }
+
     [StorableConstructor]
     private OffspringSelectionGeneticAlgorithmMainLoop(bool deserializing) : base() { }
     public OffspringSelectionGeneticAlgorithmMainLoop()
@@ -110,6 +118,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
 
     private void Initialize() {
       #region Create parameters
+      Parameters.Add(new ValueParameter<VariableCreator>("VariableInitializer", "Operator to initialize some variables.", new VariableCreator()));
       Parameters.Add(new ValueLookupParameter<IRandom>("Random", "A pseudo random number generator."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, otherwise false."));
       Parameters.Add(new ValueLookupParameter<IntValue>("PopulationSize", "The size of the population."));
@@ -134,6 +143,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       #endregion
 
       #region Create operators
+      Placeholder variableInitializer = new Placeholder();
       VariableCreator variableCreator = new VariableCreator();
       Assigner variableAssigner = new Assigner();
       BestQualityMemorizer bestQualityMemorizer1 = new BestQualityMemorizer();
@@ -185,14 +195,19 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       ConditionalBranch conditionalBranch1 = new ConditionalBranch();
       ConditionalBranch conditionalBranch2 = new ConditionalBranch();
 
-      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Generations", new IntValue(0)));
-      variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("SelectionPressure", new DoubleValue(0)));
-      variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("CurrentSuccessRatio", new DoubleValue(0)));
-      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedSolutions", new IntValue(0)));
-      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedSolutionsResult", new IntValue(0)));
+      VariableInitializer.CollectedValues.Add(new ValueParameter<IntValue>("Generations", new IntValue(0)));
+      VariableInitializer.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedSolutions", new IntValue(0)));
+      VariableInitializer.Successor = variableAssigner;
 
       variableAssigner.LeftSideParameter.ActualName = "ComparisonFactor";
       variableAssigner.RightSideParameter.ActualName = ComparisonFactorLowerBoundParameter.Name;
+
+      variableInitializer.Name = "VariableInitializer (placeholder)";
+      variableInitializer.OperatorParameter.ActualName = VariableInitializerParameter.Name;
+
+      variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("SelectionPressure", new DoubleValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("CurrentSuccessRatio", new DoubleValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedSolutionsResult", new IntValue(0)));
 
       bestQualityMemorizer1.BestQualityParameter.ActualName = "BestQuality";
       bestQualityMemorizer1.MaximizationParameter.ActualName = MaximizationParameter.Name;
@@ -228,7 +243,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       visualizer1.OperatorParameter.ActualName = VisualizerParameter.Name;
 
       resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Generations"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutionsResult"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Best Quality", null, "CurrentBestQuality"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Average Quality", null, "CurrentAverageQuality"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Worst Quality", null, "CurrentWorstQuality"));
@@ -236,6 +250,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, BestKnownQualityParameter.Name));
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Absolute Difference of Best Known Quality to Best Quality", null, "AbsoluteDifferenceBestKnownToBest"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Relative Difference of Best Known Quality to Best Quality", null, "RelativeDifferenceBestKnownToBest"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutionsResult"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Curent Comparison Factor", null, "ComparisonFactor"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Selection Pressure", null, "SelectionPressure"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Success Ratio", null, "CurrentSuccessRatio"));
       resultsCollector.CollectedValues.Add(new LookupParameter<IItem>("Solution Visualization", null, VisualizationParameter.Name));
@@ -380,9 +396,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       #endregion
 
       #region Create operator graph
-      OperatorGraph.InitialOperator = variableCreator;
-      variableCreator.Successor = variableAssigner;
-      variableAssigner.Successor = bestQualityMemorizer1;
+      OperatorGraph.InitialOperator = variableInitializer;
+      variableInitializer.Successor = variableCreator;
+      variableCreator.Successor = bestQualityMemorizer1;
       bestQualityMemorizer1.Successor = bestQualityMemorizer2;
       bestQualityMemorizer2.Successor = bestAverageWorstQualityCalculator1;
       bestAverageWorstQualityCalculator1.Successor = dataTableValuesCollector1;
