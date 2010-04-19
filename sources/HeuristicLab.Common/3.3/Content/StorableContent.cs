@@ -23,6 +23,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Reflection;
 
 namespace HeuristicLab.Common {
   public abstract class StorableContent : Content, IStorableContent {
@@ -65,7 +67,13 @@ namespace HeuristicLab.Common {
     }
 
     protected void PropagateSaveEnabledChanges() {
-      //TODO implement propagation of changes
+      Type type = this.GetType();
+      foreach (FieldInfo fieldInfo in type.GetFields(BindingFlags.Default)) {
+        if (typeof(IStorableContent).IsAssignableFrom(fieldInfo.GetType())) {
+          IStorableContent storableContent = (IStorableContent)fieldInfo.GetValue(this);
+          storableContent.SaveEnabled = this.saveEnabled;
+        }
+      }
     }
 
     protected abstract void Save();
@@ -82,7 +90,14 @@ namespace HeuristicLab.Common {
     }
 
     protected virtual void SaveAsnychronous() {
-      //TODO implement async call to save method
+      ThreadPool.QueueUserWorkItem(
+        new WaitCallback(delegate(object arg) {
+        try { this.Save(); }
+        catch (Exception ex) {
+          this.OnSaveOperationFinished(ex);
+        }
+      })
+      );
     }
     void IStorableContent.SaveAsynchronous() {
       this.OnSaveOperationStarted();
