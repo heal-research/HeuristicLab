@@ -30,14 +30,11 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [Item("MultiIntegerVectorCrossover", "Randomly selects and applies one of its crossovers every time it is called.")]
   [StorableClass]
-  public class MultiIntegerVectorCrossover : StochasticMultiOperator<IIntegerVectorCrossover>, IIntegerVectorCrossover {
+  public class MultiIntegerVectorCrossover : StochasticMultiOperator<IIntegerVectorCrossover>, IIntegerVectorCrossover, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
     }
     protected override bool CreateChildOperation {
-      get { return true; }
-    }
-    public override bool AutomaticTypeDiscovery {
       get { return true; }
     }
 
@@ -57,22 +54,15 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       ParentsParameter.ActualName = "IntegerVector";
       Parameters.Add(new LookupParameter<IntegerVector>("Child", "The child integer vector resulting from the crossover."));
       ChildParameter.ActualName = "IntegerVector";
+    }
 
-      Initialize();
+    protected override void Operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IIntegerVectorCrossover>> e) {
+      base.Operators_ItemsReplaced(sender, e);
       ParameterizeCrossovers();
     }
 
-    [StorableHook(HookType.AfterDeserialization)]
-    private void Initialize() {
-      Operators.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<IIntegerVectorCrossover>>(Operators_ItemsAdded);
-      Operators.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<IIntegerVectorCrossover>>(Operators_ItemsReplaced);
-    }
-
-    private void Operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IIntegerVectorCrossover>> e) {
-      ParameterizeCrossovers();
-    }
-
-    private void Operators_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<IIntegerVectorCrossover>> e) {
+    protected override void Operators_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<IIntegerVectorCrossover>> e) {
+      base.Operators_ItemsAdded(sender, e);
       ParameterizeCrossovers();
     }
 

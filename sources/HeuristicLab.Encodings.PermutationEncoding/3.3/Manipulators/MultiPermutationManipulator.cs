@@ -30,14 +30,11 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("MultiPermutationManipulator", "Randomly selects and applies one of its manipulators every time it is called.")]
   [StorableClass]
-  public class MultiPermutationManipulator : StochasticMultiOperator<IPermutationManipulator>, IPermutationManipulator {
+  public class MultiPermutationManipulator : StochasticMultiOperator<IPermutationManipulator>, IPermutationManipulator, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
     }
     protected override bool CreateChildOperation {
-      get { return true; }
-    }
-    public override bool AutomaticTypeDiscovery {
       get { return true; }
     }
 
@@ -50,22 +47,15 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     public MultiPermutationManipulator()
       : base() {
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The permutation that is being manipulating."));
+    }
 
-      Initialize();
+    protected override void Operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IPermutationManipulator>> e) {
+      base.Operators_ItemsReplaced(sender, e);
       ParameterizeManipulators();
     }
 
-    [StorableHook(HookType.AfterDeserialization)]
-    private void Initialize() {
-      Operators.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<IPermutationManipulator>>(Operators_ItemsAdded);
-      Operators.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<IPermutationManipulator>>(Operators_ItemsReplaced);
-    }
-
-    private void Operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IPermutationManipulator>> e) {
-      ParameterizeManipulators();
-    }
-
-    private void Operators_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<IPermutationManipulator>> e) {
+    protected override void Operators_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<IPermutationManipulator>> e) {
+      base.Operators_ItemsAdded(sender, e);
       ParameterizeManipulators();
     }
 

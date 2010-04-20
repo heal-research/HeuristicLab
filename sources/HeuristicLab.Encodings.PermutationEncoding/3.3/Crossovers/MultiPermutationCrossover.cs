@@ -30,14 +30,11 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("MultiPermutationCrossover", "Randomly selects and applies one of its crossovers every time it is called.")]
   [StorableClass]
-  public class MultiPermutationCrossover : StochasticMultiOperator<IPermutationCrossover>, IPermutationCrossover {
+  public class MultiPermutationCrossover : StochasticMultiOperator<IPermutationCrossover>, IPermutationCrossover, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
     }
     protected override bool CreateChildOperation {
-      get { return true; }
-    }
-    public override bool AutomaticTypeDiscovery {
       get { return true; }
     }
 
@@ -57,22 +54,15 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       ParentsParameter.ActualName = "Permutation";
       Parameters.Add(new LookupParameter<Permutation>("Child", "The child permutation resulting from the crossover."));
       ChildParameter.ActualName = "Permutation";
+    }
 
-      Initialize();
+    protected override void Operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IPermutationCrossover>> e) {
+      base.Operators_ItemsReplaced(sender, e);
       ParameterizeCrossovers();
     }
 
-    [StorableHook(HookType.AfterDeserialization)]
-    private void Initialize() {
-      Operators.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<IPermutationCrossover>>(Operators_ItemsAdded);
-      Operators.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<IPermutationCrossover>>(Operators_ItemsReplaced);
-    }
-
-    private void Operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IPermutationCrossover>> e) {
-      ParameterizeCrossovers();
-    }
-
-    private void Operators_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<IPermutationCrossover>> e) {
+    protected override void Operators_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<IPermutationCrossover>> e) {
+      base.Operators_ItemsAdded(sender, e);
       ParameterizeCrossovers();
     }
 

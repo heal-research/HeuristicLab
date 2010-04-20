@@ -30,14 +30,11 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [Item("MultiBinaryVectorCrossover", "Randomly selects and applies one of its crossovers every time it is called.")]
   [StorableClass]
-  public class MultiBinaryVectorCrossover : StochasticMultiOperator<IBinaryVectorCrossover>, IBinaryVectorCrossover {
+  public class MultiBinaryVectorCrossover : StochasticMultiOperator<IBinaryVectorCrossover>, IBinaryVectorCrossover, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
     }
     protected override bool CreateChildOperation {
-      get { return true; }
-    }
-    public override bool AutomaticTypeDiscovery {
       get { return true; }
     }
 
@@ -57,22 +54,15 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       ParentsParameter.ActualName = "BinaryVector";
       Parameters.Add(new LookupParameter<BinaryVector>("Child", "The child binary vector resulting from the crossover."));
       ChildParameter.ActualName = "BinaryVector";
+    }
 
-      Initialize();
+    protected override void Operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IBinaryVectorCrossover>> e) {
+      base.Operators_ItemsReplaced(sender, e);
       ParameterizeCrossovers();
     }
 
-    [StorableHook(HookType.AfterDeserialization)]
-    private void Initialize() {
-      Operators.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<IBinaryVectorCrossover>>(Operators_ItemsAdded);
-      Operators.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<IBinaryVectorCrossover>>(Operators_ItemsReplaced);
-    }
-
-    private void Operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IBinaryVectorCrossover>> e) {
-      ParameterizeCrossovers();
-    }
-
-    private void Operators_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<IBinaryVectorCrossover>> e) {
+    protected override void Operators_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<IBinaryVectorCrossover>> e) {
+      base.Operators_ItemsAdded(sender, e);
       ParameterizeCrossovers();
     }
 

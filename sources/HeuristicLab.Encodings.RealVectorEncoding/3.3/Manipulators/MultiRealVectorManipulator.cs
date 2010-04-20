@@ -31,14 +31,11 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("MultiRealVectorManipulator", "Randomly selects and applies one of its manipulators every time it is called.")]
   [StorableClass]
-  public class MultiRealVectorManipulator : StochasticMultiOperator<IRealVectorManipulator>, IRealVectorManipulator {
+  public class MultiRealVectorManipulator : StochasticMultiOperator<IRealVectorManipulator>, IRealVectorManipulator, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
     }
     protected override bool CreateChildOperation {
-      get { return true; }
-    }
-    public override bool AutomaticTypeDiscovery {
       get { return true; }
     }
 
@@ -55,22 +52,15 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       : base() {
       Parameters.Add(new LookupParameter<RealVector>("RealVector", "The real vector that is being manipulating."));
       Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "The lower and upper bounds for each dimension of the vector."));
+    }
 
-      Initialize();
+    protected override void Operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IRealVectorManipulator>> e) {
+      base.Operators_ItemsReplaced(sender, e);
       ParameterizeManipulators();
     }
 
-    [StorableHook(HookType.AfterDeserialization)]
-    private void Initialize() {
-      Operators.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<IRealVectorManipulator>>(Operators_ItemsAdded);
-      Operators.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<IRealVectorManipulator>>(Operators_ItemsReplaced);
-    }
-
-    private void Operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IRealVectorManipulator>> e) {
-      ParameterizeManipulators();
-    }
-
-    private void Operators_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<IRealVectorManipulator>> e) {
+    protected override void Operators_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<IRealVectorManipulator>> e) {
+      base.Operators_ItemsAdded(sender, e);
       ParameterizeManipulators();
     }
 

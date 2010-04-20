@@ -37,11 +37,6 @@ namespace HeuristicLab.Operators {
   [StorableClass]
   public abstract class StochasticMultiOperator<T> : MultiOperator<T> where T : class, IOperator {
     /// <summary>
-    /// Returns false by default. If this is overriden to return true, there will be an automatic type discovery
-    /// of all instantiable types of T (except the own type) and instances will be added to the Operators list.
-    /// </summary>
-    public virtual bool AutomaticTypeDiscovery { get { return false; } }
-    /// <summary>
     /// Should return true if the StochasticMultiOperator should create a new child operation with the selected successor
     /// or if it should create a new operation. If you need to shield the parameters of the successor you should return true here.
     /// </summary>
@@ -69,36 +64,10 @@ namespace HeuristicLab.Operators {
       : base() {
       Parameters.Add(new ValueLookupParameter<DoubleArray>("Probabilities", "The array of relative probabilities for each operator.", new DoubleArray()));
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
-      Initialize();
     }
 
-    [StorableHook(HookType.AfterDeserialization)]
-    private void Initialize() {
-      Operators.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<T>>(Operators_ItemsAdded);
-      Operators.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<T>>(Operators_ItemsRemoved);
-      Operators.ItemsMoved += new CollectionItemsChangedEventHandler<IndexedItem<T>>(Operators_ItemsMoved);
-      if (AutomaticTypeDiscovery) {
-        IEnumerable<Type> types = ApplicationManager.Manager.GetTypes(typeof(T), true);
-        foreach (Type type in types.OrderBy(x => x.FullName)) {
-          if (type != this.GetType())
-            Operators.Add((T)Activator.CreateInstance(type));
-        }
-      }
-    }
-
-    void Operators_ItemsMoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
-      if (Probabilities != null) {
-        DoubleArray oldProb = (DoubleArray)Probabilities.Clone();
-        foreach (IndexedItem<T> old in e.OldItems) {
-          foreach (IndexedItem<T> item in e.Items) {
-            if (old.Value == item.Value && item.Index < Probabilities.Length && old.Index < oldProb.Length)
-              Probabilities[item.Index] = oldProb[old.Index];
-          }
-        }
-      }
-    }
-
-    void Operators_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
+    protected override void Operators_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
+      base.Operators_ItemsRemoved(sender, e);
       if (Probabilities != null && Probabilities.Length > Operators.Count) {
         List<double> probs = new List<double>(Probabilities.Cast<double>());
         var sorted = e.Items.OrderByDescending(x => x.Index);
@@ -108,14 +77,20 @@ namespace HeuristicLab.Operators {
       }
     }
 
-    private void Operators_ItemsAdded(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
+    protected override void Operators_ItemsAdded(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
+      base.Operators_ItemsAdded(sender, e);
       if (Probabilities != null && Probabilities.Length < Operators.Count) {
         DoubleArray probs = new DoubleArray(Operators.Count);
         double avg = 0;
         if (Probabilities.Length > 0) {
-          for (int i = 0; i < Probabilities.Length; i++)
-            avg += Probabilities[i];
-          avg /= (double)Probabilities.Length;
+          int zeros = 0;
+          for (int i = 0; i < Probabilities.Length; i++) {
+            if (Probabilities[i] == 0) zeros++;
+            else avg += Probabilities[i];
+          }
+          if (Probabilities.Length - zeros > 0)
+            avg /= (double)(Probabilities.Length - zeros);
+          else avg = 1;
         } else avg = 1;
 
         var added = e.Items.OrderBy(x => x.Index).ToList();

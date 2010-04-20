@@ -85,34 +85,34 @@ namespace HeuristicLab.Operators {
 
     #region Events
     private void RegisterOperatorsEvents() {
-      operators.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<T>>(operators_ItemsAdded);
-      operators.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<T>>(operators_ItemsRemoved);
-      operators.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<T>>(operators_ItemsReplaced);
-      operators.ItemsMoved += new CollectionItemsChangedEventHandler<IndexedItem<T>>(operators_ItemsMoved);
-      operators.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<T>>(operators_CollectionReset);
+      operators.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<T>>(Operators_ItemsAdded);
+      operators.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<T>>(Operators_ItemsRemoved);
+      operators.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<T>>(Operators_ItemsReplaced);
+      operators.ItemsMoved += new CollectionItemsChangedEventHandler<IndexedItem<T>>(Operators_ItemsMoved);
+      operators.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<T>>(Operators_CollectionReset);
     }
     private void DeregisterOperatorsEvents() {
-      operators.ItemsAdded -= new CollectionItemsChangedEventHandler<IndexedItem<T>>(operators_ItemsAdded);
-      operators.ItemsRemoved -= new CollectionItemsChangedEventHandler<IndexedItem<T>>(operators_ItemsRemoved);
-      operators.ItemsReplaced -= new CollectionItemsChangedEventHandler<IndexedItem<T>>(operators_ItemsReplaced);
-      operators.ItemsMoved -= new CollectionItemsChangedEventHandler<IndexedItem<T>>(operators_ItemsMoved);
-      operators.CollectionReset -= new CollectionItemsChangedEventHandler<IndexedItem<T>>(operators_CollectionReset);
+      operators.ItemsAdded -= new CollectionItemsChangedEventHandler<IndexedItem<T>>(Operators_ItemsAdded);
+      operators.ItemsRemoved -= new CollectionItemsChangedEventHandler<IndexedItem<T>>(Operators_ItemsRemoved);
+      operators.ItemsReplaced -= new CollectionItemsChangedEventHandler<IndexedItem<T>>(Operators_ItemsReplaced);
+      operators.ItemsMoved -= new CollectionItemsChangedEventHandler<IndexedItem<T>>(Operators_ItemsMoved);
+      operators.CollectionReset -= new CollectionItemsChangedEventHandler<IndexedItem<T>>(Operators_CollectionReset);
     }
-    private void operators_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
+    protected virtual void Operators_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
       UpdateOperatorParameters();
     }
-    private void operators_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
+    protected virtual void Operators_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
       UpdateOperatorParameters();
     }
-    private void operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
+    protected virtual void Operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
       foreach (IndexedItem<T> item in e.Items)
         operatorParameters[item.Index].Value = item.Value;
     }
-    private void operators_ItemsMoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
+    protected virtual void Operators_ItemsMoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
       foreach (IndexedItem<T> item in e.Items)
         operatorParameters[item.Index].Value = item.Value;
     }
-    private void operators_CollectionReset(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
+    protected virtual void Operators_CollectionReset(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
       UpdateOperatorParameters();
     }
     private void opParam_ValueChanged(object sender, EventArgs e) {
