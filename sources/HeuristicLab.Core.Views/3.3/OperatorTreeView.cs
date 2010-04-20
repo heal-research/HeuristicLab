@@ -369,18 +369,20 @@ namespace HeuristicLab.Core.Views {
       }
     }
     private void graphTreeView_ItemDrag(object sender, ItemDragEventArgs e) {
-      TreeNode node = (TreeNode)e.Item;
-      IValueParameter opParam = GetOperatorParameterTag(node);
-      IOperator op = GetOperatorTag(node);
-      DataObject data = new DataObject();
-      data.SetData("Type", op.GetType());
-      data.SetData("Value", op);
-      if (ReadOnly || (opParam == null)) {
-        DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
-      } else {
-        DragDropEffects action = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move);
-        if ((action & DragDropEffects.Move) == DragDropEffects.Move)
-          opParam.Value = null;
+      if (!Locked) {
+        TreeNode node = (TreeNode)e.Item;
+        IValueParameter opParam = GetOperatorParameterTag(node);
+        IOperator op = GetOperatorTag(node);
+        DataObject data = new DataObject();
+        data.SetData("Type", op.GetType());
+        data.SetData("Value", op);
+        if (ReadOnly || (opParam == null)) {
+          DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
+        } else {
+          DragDropEffects action = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move);
+          if ((action & DragDropEffects.Move) == DragDropEffects.Move)
+            opParam.Value = null;
+        }
       }
     }
     private void graphTreeView_DragEnterOver(object sender, DragEventArgs e) {

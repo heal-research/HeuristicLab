@@ -287,20 +287,22 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void chart_MouseMove(object sender, MouseEventArgs e) {
-      HitTestResult h = this.chart.HitTest(e.X, e.Y);
-      if (this.draggedRun != null && h.ChartElementType != ChartElementType.DataPoint) {
-        //this.isDragOperationInProgress = true;
-        DataObject data = new DataObject();
-        data.SetData("Type", draggedRun.GetType());
-        data.SetData("Value", draggedRun);
-        if (ReadOnly) {
-          DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
-        } else {
-          DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move);
-          if ((result & DragDropEffects.Move) == DragDropEffects.Move)
-            Content.Remove(draggedRun);
+      if (!Locked) {
+        HitTestResult h = this.chart.HitTest(e.X, e.Y);
+        if (this.draggedRun != null && h.ChartElementType != ChartElementType.DataPoint) {
+          //this.isDragOperationInProgress = true;
+          DataObject data = new DataObject();
+          data.SetData("Type", draggedRun.GetType());
+          data.SetData("Value", draggedRun);
+          if (ReadOnly) {
+            DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
+          } else {
+            DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move);
+            if ((result & DragDropEffects.Move) == DragDropEffects.Move)
+              Content.Remove(draggedRun);
+          }
+          this.draggedRun = null;
         }
-        this.draggedRun = null;
       }
     }
     private void chart_LostFocus(object sender, EventArgs e) {

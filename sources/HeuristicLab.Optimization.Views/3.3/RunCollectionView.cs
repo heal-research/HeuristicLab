@@ -174,17 +174,19 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
     protected virtual void itemsListView_ItemDrag(object sender, ItemDragEventArgs e) {
-      ListViewItem listViewItem = (ListViewItem)e.Item;
-      IRun item = (IRun)listViewItem.Tag;
-      DataObject data = new DataObject();
-      data.SetData("Type", item.GetType());
-      data.SetData("Value", item);
-      if (Content.IsReadOnly || ReadOnly) {
-        DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
-      } else {
-        DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move);
-        if ((result & DragDropEffects.Move) == DragDropEffects.Move)
-          Content.Remove(item);
+      if (!Locked) {
+        ListViewItem listViewItem = (ListViewItem)e.Item;
+        IRun item = (IRun)listViewItem.Tag;
+        DataObject data = new DataObject();
+        data.SetData("Type", item.GetType());
+        data.SetData("Value", item);
+        if (Content.IsReadOnly || ReadOnly) {
+          DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
+        } else {
+          DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move);
+          if ((result & DragDropEffects.Move) == DragDropEffects.Move)
+            Content.Remove(item);
+        }
       }
     }
     protected virtual void itemsListView_DragEnterOver(object sender, DragEventArgs e) {

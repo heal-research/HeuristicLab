@@ -240,18 +240,20 @@ namespace HeuristicLab.Core.Views {
     }
 
     protected virtual void itemsListView_ItemDrag(object sender, ItemDragEventArgs e) {
-      ListViewItem listViewItem = (ListViewItem)e.Item;
-      T item = listViewItem.Tag as T;
-      if (item != null) {
-        DataObject data = new DataObject();
-        data.SetData("Type", item.GetType());
-        data.SetData("Value", item);
-        if (Content.IsReadOnly || ReadOnly) {
-          DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
-        } else {
-          DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move);
-          if ((result & DragDropEffects.Move) == DragDropEffects.Move)
-            Content[listViewItem.Index] = null;
+      if (!Locked) {
+        ListViewItem listViewItem = (ListViewItem)e.Item;
+        T item = listViewItem.Tag as T;
+        if (item != null) {
+          DataObject data = new DataObject();
+          data.SetData("Type", item.GetType());
+          data.SetData("Value", item);
+          if (Content.IsReadOnly || ReadOnly) {
+            DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
+          } else {
+            DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move);
+            if ((result & DragDropEffects.Move) == DragDropEffects.Move)
+              Content[listViewItem.Index] = null;
+          }
         }
       }
     }

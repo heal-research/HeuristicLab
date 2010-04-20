@@ -164,13 +164,15 @@ namespace HeuristicLab.Core.Views {
       }
     }
     private void scopesTreeView_ItemDrag(object sender, ItemDragEventArgs e) {
-      TreeNode node = (TreeNode)e.Item;
-      IScope scope = node.Tag as IScope;
-      if (scope != null) {
-        DataObject data = new DataObject();
-        data.SetData("Type", scope.GetType());
-        data.SetData("Value", scope);
-        DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
+      if (!Locked) {
+        TreeNode node = (TreeNode)e.Item;
+        IScope scope = node.Tag as IScope;
+        if (scope != null) {
+          DataObject data = new DataObject();
+          data.SetData("Type", scope.GetType());
+          data.SetData("Value", scope);
+          DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
+        }
       }
     }
     #endregion
