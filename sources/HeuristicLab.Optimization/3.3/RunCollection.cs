@@ -89,8 +89,8 @@ namespace HeuristicLab.Optimization {
     private bool AddParameter(string name, IItem value) {
       if (value == null)
         return false;
-      if (!parameterNames.Contains(name) &&
-          viewableDataTypes.Any(x => x.IsAssignableFrom(value.GetType()))) {
+      if (!parameterNames.Contains(name)) {
+        // && viewableDataTypes.Any(x => x.IsAssignableFrom(value.GetType()))) {
         parameterNames.Add(name);
         return true;
       }
@@ -99,8 +99,8 @@ namespace HeuristicLab.Optimization {
     private bool AddResult(string name, IItem value) {
       if (value == null)
         return false;
-      if (!resultNames.Contains(name) &&
-          viewableDataTypes.Any(x => x.IsAssignableFrom(value.GetType()))) {
+      if (!resultNames.Contains(name)) {
+        // && viewableDataTypes.Any(x => x.IsAssignableFrom(value.GetType()))) {
         resultNames.Add(name);
         return true;
       }

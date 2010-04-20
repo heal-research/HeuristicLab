@@ -80,10 +80,6 @@ namespace HeuristicLab.Optimization.Views {
       get { return (RunCollection)base.Content; }
       set { base.Content = value; }
     }
-    public override bool ReadOnly {
-      get { return base.ReadOnly; }
-      set { /*not needed because results are always readonly */}
-    }
 
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
@@ -290,7 +286,7 @@ namespace HeuristicLab.Optimization.Views {
       if (!Locked) {
         HitTestResult h = this.chart.HitTest(e.X, e.Y);
         if (this.draggedRun != null && h.ChartElementType != ChartElementType.DataPoint) {
-          //this.isDragOperationInProgress = true;
+          this.isDragOperationInProgress = true;
           DataObject data = new DataObject();
           data.SetData("Type", draggedRun.GetType());
           data.SetData("Value", draggedRun);
