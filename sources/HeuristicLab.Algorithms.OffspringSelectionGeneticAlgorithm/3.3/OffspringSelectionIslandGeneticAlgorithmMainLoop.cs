@@ -191,11 +191,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Migrations", new IntValue(0)));
       
       islandVariableCreator.CollectedValues.Add(new ValueParameter<ResultCollection>("IslandResults", new ResultCollection()));
-      islandVariableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Generations", new IntValue(0)));
-      islandVariableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedSolutions", new IntValue(0)));
 
-      islandVariableAssigner.LeftSideParameter.ActualName = "ComparisonFactor";
-      islandVariableAssigner.RightSideParameter.ActualName = ComparisonFactorLowerBoundParameter.Name;
+      islandVariableAssigner.LeftSideParameter.ActualName = "MaximumGenerations";
+      islandVariableAssigner.RightSideParameter.ActualName = "MigrationInterval";
 
       bestQualityMemorizer1.BestQualityParameter.ActualName = "BestQuality";
       bestQualityMemorizer1.MaximizationParameter.ActualName = MaximizationParameter.Name;
@@ -241,7 +239,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       resultsCollector.CollectedValues.Add(new SubScopesLookupParameter<ResultCollection>("IslandResults", "Result set for each island"));
       resultsCollector.ResultsParameter.ActualName = ResultsParameter.Name;
 
-      mainLoop.VariableInitializer = null; // we do the variable initialization here
       mainLoop.BestKnownQualityParameter.ActualName = BestKnownQualityParameter.Name;
       mainLoop.MaximizationParameter.ActualName = MaximizationParameter.Name;
       mainLoop.QualityParameter.ActualName = QualityParameter.Name;

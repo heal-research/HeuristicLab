@@ -36,9 +36,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
   [StorableClass]
   public sealed class OffspringSelectionGeneticAlgorithmMainLoop : AlgorithmOperator {
     #region Parameter properties
-    public OptionalValueParameter<VariableCreator> VariableInitializerParameter {
-      get { return (OptionalValueParameter<VariableCreator>)Parameters["VariableInitializer"]; }
-    }
     public ValueLookupParameter<IRandom> RandomParameter {
       get { return (ValueLookupParameter<IRandom>)Parameters["Random"]; }
     }
@@ -104,11 +101,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     }
     #endregion
 
-    public VariableCreator VariableInitializer {
-      get { return VariableInitializerParameter.Value; }
-      set { VariableInitializerParameter.Value = value; }
-    }
-
     [StorableConstructor]
     private OffspringSelectionGeneticAlgorithmMainLoop(bool deserializing) : base() { }
     public OffspringSelectionGeneticAlgorithmMainLoop()
@@ -118,7 +110,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
 
     private void Initialize() {
       #region Create parameters
-      Parameters.Add(new OptionalValueParameter<VariableCreator>("VariableInitializer", "Operator to initialize some variables.", new VariableCreator()));
       Parameters.Add(new ValueLookupParameter<IRandom>("Random", "A pseudo random number generator."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, otherwise false."));
       Parameters.Add(new ValueLookupParameter<IntValue>("PopulationSize", "The size of the population."));
@@ -143,7 +134,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       #endregion
 
       #region Create operators
-      Placeholder variableInitializer = new Placeholder();
+      ConditionalBranch initializationBranch = new ConditionalBranch();
       VariableCreator variableCreator = new VariableCreator();
       Assigner variableAssigner = new Assigner();
       BestQualityMemorizer bestQualityMemorizer1 = new BestQualityMemorizer();
@@ -195,19 +186,17 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       ConditionalBranch conditionalBranch1 = new ConditionalBranch();
       ConditionalBranch conditionalBranch2 = new ConditionalBranch();
 
-      VariableInitializer.CollectedValues.Add(new ValueParameter<IntValue>("Generations", new IntValue(0)));
-      VariableInitializer.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedSolutions", new IntValue(0)));
-      VariableInitializer.Successor = variableAssigner;
+      initializationBranch.ConditionParameter.ActualName = "IsInitialized";
 
-      variableAssigner.LeftSideParameter.ActualName = "ComparisonFactor";
-      variableAssigner.RightSideParameter.ActualName = ComparisonFactorLowerBoundParameter.Name;
-
-      variableInitializer.Name = "VariableInitializer (placeholder)";
-      variableInitializer.OperatorParameter.ActualName = VariableInitializerParameter.Name;
-
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Generations", new IntValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedSolutions", new IntValue(0)));
       variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("SelectionPressure", new DoubleValue(0)));
       variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("CurrentSuccessRatio", new DoubleValue(0)));
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedSolutionsResult", new IntValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<BoolValue>("IsInitialized", new BoolValue(true)));
+
+      variableAssigner.LeftSideParameter.ActualName = "ComparisonFactor";
+      variableAssigner.RightSideParameter.ActualName = ComparisonFactorLowerBoundParameter.Name;
 
       bestQualityMemorizer1.BestQualityParameter.ActualName = "BestQuality";
       bestQualityMemorizer1.MaximizationParameter.ActualName = MaximizationParameter.Name;
@@ -396,9 +385,11 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       #endregion
 
       #region Create operator graph
-      OperatorGraph.InitialOperator = variableInitializer;
-      variableInitializer.Successor = variableCreator;
-      variableCreator.Successor = bestQualityMemorizer1;
+      OperatorGraph.InitialOperator = initializationBranch;
+      initializationBranch.FalseBranch = variableCreator;
+      initializationBranch.Successor = selector;
+      variableCreator.Successor = variableAssigner;
+      variableAssigner.Successor = bestQualityMemorizer1;
       bestQualityMemorizer1.Successor = bestQualityMemorizer2;
       bestQualityMemorizer2.Successor = bestAverageWorstQualityCalculator1;
       bestAverageWorstQualityCalculator1.Successor = dataTableValuesCollector1;
@@ -406,7 +397,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       selPressDataTableValuesCollector1.Successor = qualityDifferenceCalculator1;
       qualityDifferenceCalculator1.Successor = visualizer1;
       visualizer1.Successor = resultsCollector;
-      resultsCollector.Successor = selector;
+      resultsCollector.Successor = null;
       selector.Successor = subScopesProcessor1;
       subScopesProcessor1.Operators.Add(new EmptyOperator());
       subScopesProcessor1.Operators.Add(childrenCreator);
