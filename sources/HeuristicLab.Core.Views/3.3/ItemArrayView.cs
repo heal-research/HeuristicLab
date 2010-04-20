@@ -47,14 +47,6 @@ namespace HeuristicLab.Core.Views {
       set { base.Content = value; }
     }
 
-    public override bool ReadOnly {
-      get {
-        if ((Content != null) && Content.IsReadOnly) return true;
-        else return base.ReadOnly;
-      }
-      set { base.ReadOnly = value; }
-    }
-
     public ListView ItemsListView {
       get { return itemsListView; }
     }
@@ -121,15 +113,15 @@ namespace HeuristicLab.Core.Views {
         detailsGroupBox.Enabled = false;
       } else {
         addButton.Enabled = itemsListView.SelectedItems.Count > 0 &&
-                            !ReadOnly;
+                            !Content.IsReadOnly && !ReadOnly;
         moveUpButton.Enabled = itemsListView.SelectedItems.Count == 1 &&
                                itemsListView.SelectedIndices[0] != 0 &&
-                               !ReadOnly;
+                               !Content.IsReadOnly && !ReadOnly;
         moveDownButton.Enabled = itemsListView.SelectedItems.Count == 1 &&
                                  itemsListView.SelectedIndices[0] != itemsListView.Items.Count - 1 &&
-                                 !ReadOnly;
+                                 !Content.IsReadOnly && !ReadOnly;
         removeButton.Enabled = itemsListView.SelectedItems.Count > 0 &&
-                               !ReadOnly;
+                               !Content.IsReadOnly && !ReadOnly;
         itemsListView.Enabled = true;
         detailsGroupBox.Enabled = true;
         viewHost.ReadOnly = ReadOnly;
@@ -204,14 +196,14 @@ namespace HeuristicLab.Core.Views {
 
     #region ListView Events
     protected virtual void itemsListView_SelectedIndexChanged(object sender, EventArgs e) {
-      addButton.Enabled = itemsListView.SelectedItems.Count > 0 && !ReadOnly;
+      addButton.Enabled = itemsListView.SelectedItems.Count > 0 && !Content.IsReadOnly && !ReadOnly;
       moveUpButton.Enabled = itemsListView.SelectedItems.Count == 1 &&
                              itemsListView.SelectedIndices[0] != 0 &&
-                             !ReadOnly;
+                             !Content.IsReadOnly && !ReadOnly;
       moveDownButton.Enabled = itemsListView.SelectedItems.Count == 1 &&
                                itemsListView.SelectedIndices[0] != itemsListView.Items.Count - 1 &&
-                               !ReadOnly;
-      removeButton.Enabled = itemsListView.SelectedItems.Count > 0 && !ReadOnly;
+                               !Content.IsReadOnly && !ReadOnly;
+      removeButton.Enabled = itemsListView.SelectedItems.Count > 0 && !Content.IsReadOnly && !ReadOnly;
 
       if (itemsListView.SelectedItems.Count == 1) {
         T item = itemsListView.SelectedItems[0].Tag as T;
@@ -226,7 +218,7 @@ namespace HeuristicLab.Core.Views {
 
     protected virtual void itemsListView_KeyDown(object sender, KeyEventArgs e) {
       if (e.KeyCode == Keys.Delete) {
-        if ((itemsListView.SelectedItems.Count > 0) && !ReadOnly) {
+        if ((itemsListView.SelectedItems.Count > 0) && !Content.IsReadOnly && !ReadOnly) {
           foreach (ListViewItem item in itemsListView.SelectedItems)
             Content[item.Index] = null;
         }
@@ -255,7 +247,7 @@ namespace HeuristicLab.Core.Views {
           DataObject data = new DataObject();
           data.SetData("Type", item.GetType());
           data.SetData("Value", item);
-          if (ReadOnly) {
+          if (Content.IsReadOnly || ReadOnly) {
             DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
           } else {
             DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move);
@@ -268,7 +260,7 @@ namespace HeuristicLab.Core.Views {
     protected virtual void itemsListView_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
       Type type = e.Data.GetData("Type") as Type;
-      if (!ReadOnly && (type != null) && (typeof(T).IsAssignableFrom(type))) {
+      if (!Content.IsReadOnly && !ReadOnly && (type != null) && (typeof(T).IsAssignableFrom(type))) {
         Point p = itemsListView.PointToClient(new Point(e.X, e.Y));
         ListViewItem listViewItem = itemsListView.GetItemAt(p.X, p.Y);
         if (listViewItem != null) {
