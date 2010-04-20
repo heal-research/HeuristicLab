@@ -41,6 +41,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     private const string QualityParameterName = "Quality";
     private const string FunctionTreeParameterName = "FunctionTree";
     private const string RegressionProblemDataParameterName = "RegressionProblemData";
+    private const string SamplesStartParameterName = "SamplesStart";
+    private const string SamplesEndParameterName = "SamplesEnd";
     private const string NumberOfEvaluatedNodexParameterName = "NumberOfEvaluatedNodes";
     #region ISymbolicRegressionEvaluator Members
 
@@ -48,7 +50,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       get { return (ILookupParameter<DoubleValue>)Parameters[QualityParameterName]; }
     }
 
-    public ILookupParameter<SymbolicExpressionTree> FunctionTreeParameter {
+    public ILookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter {
       get { return (ILookupParameter<SymbolicExpressionTree>)Parameters[FunctionTreeParameterName]; }
     }
 
@@ -56,34 +58,47 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       get { return (ILookupParameter<DataAnalysisProblemData>)Parameters[RegressionProblemDataParameterName]; }
     }
 
-    //public ILookupParameter<IntValue> SamplesStartParameter {
-    //  get { return (ILookupParameter<IntValue>)Parameters["SamplesStart"]; }
-    //}
+    public IValueLookupParameter<IntValue> SamplesStartParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters[SamplesStartParameterName]; }
+    }
 
-    //public ILookupParameter<IntValue> SamplesEndParameter {
-    //  get { return (ILookupParameter<IntValue>)Parameters["SamplesEnd"]; }
-    //}
+    public IValueLookupParameter<IntValue> SamplesEndParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters[SamplesEndParameterName]; }
+    }
 
     public ILookupParameter<DoubleValue> NumberOfEvaluatedNodesParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters[NumberOfEvaluatedNodexParameterName]; }
     }
-
+    #endregion
+    #region properties
+    public SymbolicExpressionTree SymbolicExpressionTree {
+      get { return SymbolicExpressionTreeParameter.ActualValue; }
+    }
+    public DataAnalysisProblemData RegressionProblemData {
+      get { return RegressionProblemDataParameter.ActualValue; }
+    }
+    public IntValue SamplesStart {
+      get { return SamplesStartParameter.ActualValue; }
+    }
+    public IntValue SamplesEnd {
+      get { return SamplesEndParameter.ActualValue; }
+    }
     #endregion
 
     public SymbolicRegressionEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>(QualityParameterName, "The quality of the evaluated symbolic regression solution."));
       Parameters.Add(new LookupParameter<SymbolicExpressionTree>(FunctionTreeParameterName, "The symbolic regression solution encoded as a symbolic expression tree."));
-      Parameters.Add(new LookupParameter<DataAnalysisProblemData>(RegressionProblemDataParameterName, "The data set on which the symbolic regression solution should be evaluated."));
+      Parameters.Add(new LookupParameter<DataAnalysisProblemData>(RegressionProblemDataParameterName, "The problem data on which the symbolic regression solution should be evaluated."));
+      Parameters.Add(new ValueLookupParameter<IntValue>(SamplesStartParameterName, "The start index of the dataset partition on which the symbolic regression solution should be evaluated."));
+      Parameters.Add(new ValueLookupParameter<IntValue>(SamplesEndParameterName, "The end index of the dataset partition on which the symbolic regression solution should be evaluated."));
       Parameters.Add(new LookupParameter<DoubleValue>(NumberOfEvaluatedNodexParameterName, "The number of evaluated nodes so far (for performance measurements.)"));
     }
 
     public override IOperation Apply() {
-      SymbolicExpressionTree solution = FunctionTreeParameter.ActualValue;
-      DataAnalysisProblemData regressionProblemData = RegressionProblemDataParameter.ActualValue;
       DoubleValue numberOfEvaluatedNodes = NumberOfEvaluatedNodesParameter.ActualValue;
-      
-      QualityParameter.ActualValue = new DoubleValue(Evaluate(solution, regressionProblemData.Dataset, regressionProblemData.TargetVariable, regressionProblemData.TrainingSamplesStart, regressionProblemData.TrainingSamplesEnd, numberOfEvaluatedNodes));
+      QualityParameter.ActualValue = new DoubleValue(Evaluate(SymbolicExpressionTree, RegressionProblemData.Dataset,
+        RegressionProblemData.TargetVariable, SamplesStart, SamplesEnd, numberOfEvaluatedNodes));
       return null;
     }
 

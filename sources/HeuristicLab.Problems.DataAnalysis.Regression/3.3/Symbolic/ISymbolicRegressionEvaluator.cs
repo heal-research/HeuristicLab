@@ -35,8 +35,10 @@ using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   public interface ISymbolicRegressionEvaluator : ISingleObjectiveEvaluator {
-    ILookupParameter<SymbolicExpressionTree> FunctionTreeParameter { get; }
+    ILookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter { get; }
     ILookupParameter<DataAnalysisProblemData> RegressionProblemDataParameter { get; }
+    IValueLookupParameter<IntValue> SamplesStartParameter { get; }
+    IValueLookupParameter<IntValue> SamplesEndParameter { get; }
     ILookupParameter<DoubleValue> NumberOfEvaluatedNodesParameter { get; }
   }
 }

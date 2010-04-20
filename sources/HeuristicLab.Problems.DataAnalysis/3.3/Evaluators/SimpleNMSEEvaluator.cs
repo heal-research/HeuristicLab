@@ -23,31 +23,33 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
-  public abstract class SimpleEvaluator : SingleSuccessorOperator {
-    public const int ORIGINAL_INDEX = 0;
-    public const int ESTIMATION_INDEX = 1;
+  public class SimpleNMSEEvaluator : SimpleEvaluator {
 
-    public ILookupParameter<DoubleMatrix> ValuesParameter {
-      get { return (ILookupParameter<DoubleMatrix>)Parameters["Values"]; }
-    }
-    public SimpleEvaluator()
-      : base() {
-      Parameters.Add(new LookupParameter<DoubleMatrix>("Values", "Table of original and predicted values for which the quality value should be evaluated."));
+    public ILookupParameter<DoubleValue> NormalizedMeanSquaredErrorParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters["NormalizedMeanSquaredError"]; }
     }
 
-    public override IOperation Apply() {
-      DoubleMatrix values = ValuesParameter.ActualValue;
-      Apply(values);
-      return null;
+    public SimpleNMSEEvaluator() {
+      Parameters.Add(new LookupParameter<DoubleValue>("NormalizedMeanSquaredError", "The normalized mean squared error (divided by variance) of estimated values."));
     }
 
-    protected abstract void Apply(DoubleMatrix values);
+    protected override void Apply(DoubleMatrix values) {
+      var original = from i in Enumerable.Range(0, values.Rows)
+                     select values[i, ORIGINAL_INDEX];
+      var estimated = from i in Enumerable.Range(0, values.Rows)
+                      select values[i, ESTIMATION_INDEX];
+
+      NormalizedMeanSquaredErrorParameter.ActualValue = new DoubleValue(Calculate(original, estimated));
+    }
+
+    public static double Calculate(IEnumerable<double> original, IEnumerable<double> estimated) {
+      double mse = SimpleMSEEvaluator.Calculate(original, estimated);
+      return mse / original.Variance();
+    }
   }
 }

@@ -1,4 +1,4 @@
-﻿#region License Information
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -23,57 +23,61 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
-  public class SimpleMSEEvaluator : SimpleEvaluator {
+  /// <summary>
+  /// The Variance Accounted For (VAF) function calculates is computed as
+  /// VAF(y,y') =  1 - var(y-y')/var(y)
+  /// where y' denotes the predicted / modelled values for y and var(x) the variance of a signal x.
+  /// </summary>
+  public class SimpleVarianceAccountedForEvaluator : SimpleEvaluator {
 
-    public ILookupParameter<DoubleValue> MeanSquaredErrorParameter {
-      get { return (ILookupParameter<DoubleValue>)Parameters["MeanSquaredError"]; }
+    public ILookupParameter<DoubleValue> VarianceAccountedForParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters["VarianceAccountedFor"]; }
     }
 
-    public SimpleMSEEvaluator() {
-      Parameters.Add(new LookupParameter<DoubleValue>("MeanSquaredError", "The mean squared error of estimated values."));
+    public SimpleVarianceAccountedForEvaluator() {
+      Parameters.Add(new LookupParameter<DoubleValue>("VarianceAccountedFor", "The variance of the original values accounted for by the estimated values (VAF(y,y') = 1 - var(y-y') / var(y) )."));
     }
 
     protected override void Apply(DoubleMatrix values) {
-      MeanSquaredErrorParameter.ActualValue = new DoubleValue(Calculate(values));
+      var original = from i in Enumerable.Range(0, values.Rows)
+                     select values[i, ORIGINAL_INDEX];
+      var estimated = from i in Enumerable.Range(0, values.Rows)
+                      select values[i, ESTIMATION_INDEX];
+      VarianceAccountedForParameter.ActualValue = new DoubleValue(Calculate(original, estimated));
     }
 
     public static double Calculate(IEnumerable<double> original, IEnumerable<double> estimated) {
-      double sse = 0.0;
-      int cnt = 0;
       var originalEnumerator = original.GetEnumerator();
       var estimatedEnumerator = estimated.GetEnumerator();
+      var errors = new List<double>();
       while (originalEnumerator.MoveNext() & estimatedEnumerator.MoveNext()) {
         double e = estimatedEnumerator.Current;
         double o = originalEnumerator.Current;
         if (!double.IsNaN(e) && !double.IsInfinity(e) &&
-            !double.IsNaN(o) && !double.IsInfinity(o)) {
-          double error = e - o;
-          sse += error * error;
-          cnt++;
+          !double.IsNaN(o) && !double.IsInfinity(o)) {
+          errors.Add(o - e);
         }
       }
       if (estimatedEnumerator.MoveNext() || originalEnumerator.MoveNext()) {
         throw new ArgumentException("Number of elements in original and estimated enumeration doesn't match.");
-      } else if (cnt == 0) {
-        throw new ArgumentException("Mean squared errors is not defined for input vectors of NaN or Inf");
-      } else {
-        double mse = sse / cnt;
-        return mse;
       }
-    }
 
-    public static double Calculate(DoubleMatrix values) {
-      var original = from row in Enumerable.Range(0, values.Rows)
-                     select values[row, ORIGINAL_INDEX];
-      var estimated = from row in Enumerable.Range(0, values.Rows)
-                      select values[row, ORIGINAL_INDEX];
-      return Calculate(original, estimated);
+      double errorsVariance = errors.Variance();
+      double originalsVariance = original.Variance();
+      if (originalsVariance.IsAlmost(0.0))
+        if (errorsVariance.IsAlmost(0.0)) {
+          return 1.0;
+        } else {
+          return double.MaxValue;
+        } else {
+        return 1.0 - errorsVariance / originalsVariance;
+      }
     }
   }
 }

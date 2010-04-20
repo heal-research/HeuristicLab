@@ -97,6 +97,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
       if (problemData != null) RegisterProblemDataEvents();
+      if (problemData != null && model != null) RecalculateEstimatedValues();
     }
 
     private void RecalculateEstimatedValues() {

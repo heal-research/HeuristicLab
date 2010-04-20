@@ -83,8 +83,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     IParameter IProblem.VisualizerParameter {
       get { return VisualizerParameter; }
     }
-    public ValueParameter<DoubleValue> BestKnownQualityParameter {
-      get { return (ValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
+    public OptionalValueParameter<DoubleValue> BestKnownQualityParameter {
+      get { return (OptionalValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
     }
     IParameter ISingleObjectiveProblem.BestKnownQualityParameter {
       get { return BestKnownQualityParameter; }
@@ -146,7 +146,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to false as the error of the regression model should be minimized.", new BoolValue(false)));
       Parameters.Add(new ValueParameter<SymbolicExpressionTreeCreator>("SolutionCreator", "The operator which should be used to create new symbolic regression solutions.", creator));
       Parameters.Add(new ValueParameter<ISymbolicRegressionEvaluator>("Evaluator", "The operator which should be used to evaluate symbolic regression solutions.", evaluator));
-      Parameters.Add(new ValueParameter<DoubleValue>("BestKnownQuality", "The minimal error value that can be reached by symbolic regression models.", new DoubleValue(0)));
+      Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The minimal error value that reached by symbolic regression solutions for the problem."));
       Parameters.Add(new ValueParameter<ISymbolicExpressionGrammar>("FunctionTreeGrammar", "The grammar that should be used for symbolic regression models.", globalGrammar));
       Parameters.Add(new ValueParameter<IntValue>("MaxExpressionLength", "Maximal length of the symbolic expression.", new IntValue(100)));
       Parameters.Add(new ValueParameter<IntValue>("MaxExpressionDepth", "Maximal depth of the symbolic expression.", new IntValue(10)));
@@ -158,7 +158,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       creator.SymbolicExpressionTreeParameter.ActualName = "SymbolicRegressionModel";
       creator.MaxFunctionArgumentsParameter.ActualName = "MaxFunctionArguments";
       creator.MaxFunctionDefinitionsParameter.ActualName = "MaxFunctionDefiningBranches";
-      evaluator.QualityParameter.ActualName = "TrainingMeanSquaredError";
       DataAnalysisProblemDataParameter.ValueChanged += new EventHandler(DataAnalysisProblemDataParameter_ValueChanged);
       DataAnalysisProblemData.ProblemDataChanged += new EventHandler(DataAnalysisProblemData_Changed);
       ParameterizeSolutionCreator();
@@ -168,15 +167,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       Initialize();
     }
 
-    void DataAnalysisProblemDataParameter_ValueChanged(object sender, EventArgs e) {
-      DataAnalysisProblemData.ProblemDataChanged += new EventHandler(DataAnalysisProblemData_Changed);
-    }
-
-    void DataAnalysisProblemData_Changed(object sender, EventArgs e) {
-      foreach (var varSymbol in FunctionTreeGrammar.Symbols.OfType<HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols.Variable>()) {
-        varSymbol.VariableNames = DataAnalysisProblemData.InputVariables.Select(x => x.Value);
-      }
-    }
 
     [StorableConstructor]
     private SymbolicRegressionProblem(bool deserializing) : base() { }
@@ -188,6 +178,31 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
 
     #region Events
+    void DataAnalysisProblemDataParameter_ValueChanged(object sender, EventArgs e) {
+      DataAnalysisProblemData.ProblemDataChanged += new EventHandler(DataAnalysisProblemData_Changed);
+    }
+
+    void DataAnalysisProblemData_Changed(object sender, EventArgs e) {
+      foreach (var varSymbol in FunctionTreeGrammar.Symbols.OfType<HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols.Variable>()) {
+        varSymbol.VariableNames = DataAnalysisProblemData.InputVariables.Select(x => x.Value);
+      }
+      UpdatePartitioningParameters();
+    }
+
+    private void UpdatePartitioningParameters() {
+      int trainingStart = DataAnalysisProblemData.TrainingSamplesStart.Value;
+      int validationEnd = DataAnalysisProblemData.TrainingSamplesEnd.Value;
+      int trainingEnd = trainingStart + (validationEnd - trainingStart) / 2;
+      int validationStart = trainingEnd;
+      var solutionVisualizer = Visualizer as BestValidationSymbolicRegressionSolutionVisualizer;
+      if (solutionVisualizer != null) {
+        solutionVisualizer.ValidationSamplesStartParameter.Value = new IntValue(validationStart);
+        solutionVisualizer.ValidationSamplesEndParameter.Value = new IntValue(validationEnd);
+      }
+      Evaluator.SamplesStartParameter.Value = new IntValue(trainingStart);
+      Evaluator.SamplesEndParameter.Value = new IntValue(trainingEnd);
+    }
+
     public event EventHandler SolutionCreatorChanged;
     private void OnSolutionCreatorChanged() {
       var changed = SolutionCreatorChanged;
@@ -268,8 +283,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       SolutionCreator.MaxTreeSizeParameter.ActualName = MaxExpressionLengthParameter.Name;
     }
     private void ParameterizeEvaluator() {
-      Evaluator.FunctionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+      Evaluator.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
       Evaluator.RegressionProblemDataParameter.ActualName = DataAnalysisProblemDataParameter.Name;
+      Evaluator.QualityParameter.ActualName = "TrainingMeanSquaredError";
+      Evaluator.SamplesStartParameter.Value = new IntValue(DataAnalysisProblemData.TrainingSamplesStart.Value);
+      Evaluator.SamplesEndParameter.Value = new IntValue((DataAnalysisProblemData.TrainingSamplesStart.Value + DataAnalysisProblemData.TrainingSamplesEnd.Value) / 2);
     }
     private void ParameterizeVisualizer() {
       if (Visualizer != null) {
@@ -277,6 +295,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
         if (solutionVisualizer != null) {
           solutionVisualizer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
           solutionVisualizer.DataAnalysisProblemDataParameter.ActualName = DataAnalysisProblemDataParameter.Name;
+          solutionVisualizer.ValidationSamplesStartParameter.Value = new IntValue((DataAnalysisProblemData.TrainingSamplesStart.Value + DataAnalysisProblemData.TrainingSamplesEnd.Value) / 2);
+          solutionVisualizer.ValidationSamplesEndParameter.Value = new IntValue(DataAnalysisProblemData.TrainingSamplesEnd.Value);
         }
       }
     }
@@ -288,7 +308,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
         op.SymbolicExpressionGrammarParameter.ActualName = FunctionTreeGrammarParameter.Name;
       }
       foreach (ISymbolicRegressionEvaluator op in Operators.OfType<ISymbolicRegressionEvaluator>()) {
-        op.FunctionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+        op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
         op.RegressionProblemDataParameter.ActualName = DataAnalysisProblemDataParameter.Name;
         op.NumberOfEvaluatedNodesParameter.ActualName = NumberOfEvaluatedNodesParameter.Name;
       }

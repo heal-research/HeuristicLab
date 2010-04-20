@@ -1,4 +1,4 @@
-﻿#region License Information
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -23,57 +23,61 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
-  public class SimpleMSEEvaluator : SimpleEvaluator {
+  public class SimpleMeanAbsolutePercentageOfRangeErrorEvaluator : SimpleEvaluator {
 
-    public ILookupParameter<DoubleValue> MeanSquaredErrorParameter {
-      get { return (ILookupParameter<DoubleValue>)Parameters["MeanSquaredError"]; }
+    public ILookupParameter<PercentValue> AveragePercentageOfRangeErrorParameter {
+      get { return (ILookupParameter<PercentValue>)Parameters["AveragePercentageOfRangeError"]; }
     }
 
-    public SimpleMSEEvaluator() {
-      Parameters.Add(new LookupParameter<DoubleValue>("MeanSquaredError", "The mean squared error of estimated values."));
+    public SimpleMeanAbsolutePercentageOfRangeErrorEvaluator() {
+      Parameters.Add(new LookupParameter<PercentValue>("AveragePercentageOfRangeError", "The average relative (percentage of range) error of estimated values."));
     }
 
     protected override void Apply(DoubleMatrix values) {
-      MeanSquaredErrorParameter.ActualValue = new DoubleValue(Calculate(values));
+      var original = from i in Enumerable.Range(0, values.Rows)
+                     select values[i, ORIGINAL_INDEX];
+      var estimated = from i in Enumerable.Range(0, values.Rows)
+                      select values[i, ESTIMATION_INDEX];
+      AveragePercentageOfRangeErrorParameter.ActualValue = new PercentValue(Calculate(original, estimated));
     }
 
     public static double Calculate(IEnumerable<double> original, IEnumerable<double> estimated) {
-      double sse = 0.0;
-      int cnt = 0;
+      double errorsSum = 0.0;
+      int n = 0;
+      IList<double> originalList = original as IList<double>;
+      if (originalList == null) originalList = original.ToList();
+
+      double range = originalList.Max() - originalList.Min();
+      if (double.IsInfinity(range)) return double.MaxValue;
+      if (range.IsAlmost(0.0)) return double.MaxValue;
+
+
       var originalEnumerator = original.GetEnumerator();
       var estimatedEnumerator = estimated.GetEnumerator();
       while (originalEnumerator.MoveNext() & estimatedEnumerator.MoveNext()) {
         double e = estimatedEnumerator.Current;
         double o = originalEnumerator.Current;
+
         if (!double.IsNaN(e) && !double.IsInfinity(e) &&
-            !double.IsNaN(o) && !double.IsInfinity(o)) {
-          double error = e - o;
-          sse += error * error;
-          cnt++;
+          !double.IsNaN(o) && !double.IsInfinity(o) && !o.IsAlmost(0.0)) {
+          double percent_error = Math.Abs((e - o) / range);
+          errorsSum += percent_error;
+          n++;
         }
       }
       if (estimatedEnumerator.MoveNext() || originalEnumerator.MoveNext()) {
         throw new ArgumentException("Number of elements in original and estimated enumeration doesn't match.");
-      } else if (cnt == 0) {
-        throw new ArgumentException("Mean squared errors is not defined for input vectors of NaN or Inf");
+      } else if (n == 0) {
+        return double.MaxValue;
       } else {
-        double mse = sse / cnt;
-        return mse;
+        return errorsSum / n;
       }
-    }
-
-    public static double Calculate(DoubleMatrix values) {
-      var original = from row in Enumerable.Range(0, values.Rows)
-                     select values[row, ORIGINAL_INDEX];
-      var estimated = from row in Enumerable.Range(0, values.Rows)
-                      select values[row, ORIGINAL_INDEX];
-      return Calculate(original, estimated);
     }
   }
 }
