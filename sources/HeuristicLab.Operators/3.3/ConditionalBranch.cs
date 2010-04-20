@@ -29,7 +29,7 @@ namespace HeuristicLab.Operators {
   /// <summary>
   /// A branch of two operators whose executions depend on a condition.
   /// </summary>
-  [Item("ConditionalBranch", "A branch of two operators whose executions depend on a boolean condition.")]
+  [Item("ConditionalBranch", "A branch of two operators whose executions depend on a boolean condition. If the boolean condition is not present, the false branch is executed.")]
   [StorableClass]
   public class ConditionalBranch : SingleSuccessorOperator {
     public LookupParameter<BoolValue> ConditionParameter {
@@ -59,7 +59,7 @@ namespace HeuristicLab.Operators {
 
     public override IOperation Apply() {
       OperationCollection next = new OperationCollection(base.Apply());
-      if (ConditionParameter.ActualValue.Value) {
+      if (ConditionParameter.ActualValue != null && ConditionParameter.ActualValue.Value) {
         if (TrueBranch != null) next.Insert(0, ExecutionContext.CreateOperation(TrueBranch));
       } else {
         if (FalseBranch != null) next.Insert(0, ExecutionContext.CreateOperation(FalseBranch));
