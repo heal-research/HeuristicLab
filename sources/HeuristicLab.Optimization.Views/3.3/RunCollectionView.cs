@@ -26,6 +26,7 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 using System.Windows.Forms;
 using System;
+using System.Drawing;
 using System.Collections.Generic;
 
 namespace HeuristicLab.Optimization.Views {
@@ -56,6 +57,7 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsAdded -= new CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
       Content.ItemsRemoved -= new CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset -= new CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
+      DeregisterRunEvents(Content);
       base.DeregisterContentEvents();
     }
     protected override void RegisterContentEvents() {
@@ -63,6 +65,15 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsAdded += new CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
       Content.ItemsRemoved += new CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset += new CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
+      RegisterRunEvents(Content);
+    }
+    protected virtual void RegisterRunEvents(IEnumerable<IRun> runs) {
+      foreach (IRun run in runs)
+        run.Changed += new EventHandler(run_Changed);
+    }
+    protected virtual void DeregisterRunEvents(IEnumerable<IRun> runs) {
+      foreach (IRun run in runs)
+        run.Changed -= new EventHandler(run_Changed);
     }
 
     protected override void OnContentChanged() {
@@ -77,6 +88,19 @@ namespace HeuristicLab.Optimization.Views {
           AddListViewItem(CreateListViewItem(item));
       }
       SetEnabledStateOfControls();
+    }
+
+    private void run_Changed(object sender, EventArgs e) {
+      IRun run = (IRun)sender;
+      foreach (ListViewItem listViewItem in GetListViewItemsForItem(run)) {
+        if (run.Visible) {
+          listViewItem.Font = new Font(listViewItem.Font, FontStyle.Regular);
+          listViewItem.ForeColor = run.Color;
+        } else {
+          listViewItem.Font = new Font(listViewItem.Font, FontStyle.Italic);
+          listViewItem.ForeColor = Color.LightGray;
+        }
+      }
     }
 
     protected override void OnReadOnlyChanged() {
@@ -223,14 +247,17 @@ namespace HeuristicLab.Optimization.Views {
     protected virtual void Content_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IRun> e) {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded), sender, e);
-      else
+      else {
+        RegisterRunEvents(e.Items);
         foreach (IRun item in e.Items)
           AddListViewItem(CreateListViewItem(item));
+      }
     }
     protected virtual void Content_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IRun> e) {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved), sender, e);
       else {
+        DeregisterRunEvents(e.Items);
         foreach (IRun item in e.Items) {
           foreach (ListViewItem listViewItem in GetListViewItemsForItem(item)) {
             RemoveListViewItem(listViewItem);
@@ -243,12 +270,14 @@ namespace HeuristicLab.Optimization.Views {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset), sender, e);
       else {
+        DeregisterRunEvents(e.OldItems);
         foreach (IRun item in e.OldItems) {
           foreach (ListViewItem listViewItem in GetListViewItemsForItem(item)) {
             RemoveListViewItem(listViewItem);
             break;
           }
         }
+        RegisterRunEvents(e.Items);
         foreach (IRun item in e.Items)
           AddListViewItem(CreateListViewItem(item));
       }

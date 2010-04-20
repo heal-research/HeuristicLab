@@ -85,7 +85,7 @@ namespace HeuristicLab.Optimization.Views {
       RegisterRunEvents(e.Items);
     }
     private void Content_ItemsRemoved(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
-      DeregisterRunEvents(e.OldItems);
+      DeregisterRunEvents(e.Items);
     }
     private void Content_ItemsAdded(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
       RegisterRunEvents(e.Items);
