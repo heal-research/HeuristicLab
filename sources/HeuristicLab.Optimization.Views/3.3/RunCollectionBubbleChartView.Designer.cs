@@ -23,8 +23,8 @@
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-      System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+      System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
       this.yJitterLabel = new System.Windows.Forms.Label();
       this.xJitterlabel = new System.Windows.Forms.Label();
       this.xTrackBar = new System.Windows.Forms.TrackBar();
@@ -50,7 +50,6 @@
       // yJitterLabel
       // 
       this.yJitterLabel.AutoSize = true;
-      this.yJitterLabel.BackColor = System.Drawing.SystemColors.Control;
       this.yJitterLabel.Location = new System.Drawing.Point(257, 6);
       this.yJitterLabel.Name = "yJitterLabel";
       this.yJitterLabel.Size = new System.Drawing.Size(29, 13);
@@ -61,7 +60,6 @@
       // 
       this.xJitterlabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.xJitterlabel.AutoSize = true;
-      this.xJitterlabel.BackColor = System.Drawing.SystemColors.Control;
       this.xJitterlabel.Location = new System.Drawing.Point(461, 309);
       this.xJitterlabel.Name = "xJitterlabel";
       this.xJitterlabel.Size = new System.Drawing.Size(29, 13);
@@ -71,7 +69,6 @@
       // xTrackBar
       // 
       this.xTrackBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.xTrackBar.BackColor = System.Drawing.SystemColors.Control;
       this.xTrackBar.Location = new System.Drawing.Point(496, 306);
       this.xTrackBar.Maximum = 100;
       this.xTrackBar.Name = "xTrackBar";
@@ -84,7 +81,6 @@
       // 
       this.xAxisLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.xAxisLabel.AutoSize = true;
-      this.xAxisLabel.BackColor = System.Drawing.SystemColors.Control;
       this.xAxisLabel.Location = new System.Drawing.Point(213, 309);
       this.xAxisLabel.Name = "xAxisLabel";
       this.xAxisLabel.Size = new System.Drawing.Size(15, 13);
@@ -106,7 +102,6 @@
       // yAxisLabel
       // 
       this.yAxisLabel.AutoSize = true;
-      this.yAxisLabel.BackColor = System.Drawing.SystemColors.Control;
       this.yAxisLabel.Location = new System.Drawing.Point(3, 6);
       this.yAxisLabel.Name = "yAxisLabel";
       this.yAxisLabel.Size = new System.Drawing.Size(15, 13);
@@ -126,7 +121,6 @@
       // 
       // yTrackBar
       // 
-      this.yTrackBar.BackColor = System.Drawing.SystemColors.Control;
       this.yTrackBar.Location = new System.Drawing.Point(292, 3);
       this.yTrackBar.Maximum = 100;
       this.yTrackBar.Name = "yTrackBar";
@@ -151,7 +145,6 @@
       // 
       this.sizeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.sizeLabel.AutoSize = true;
-      this.sizeLabel.BackColor = System.Drawing.SystemColors.Control;
       this.sizeLabel.Location = new System.Drawing.Point(371, 6);
       this.sizeLabel.Name = "sizeLabel";
       this.sizeLabel.Size = new System.Drawing.Size(64, 13);
@@ -163,18 +156,18 @@
       this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      chartArea1.Name = "ChartArea1";
-      this.chart.ChartAreas.Add(chartArea1);
+      chartArea2.Name = "ChartArea1";
+      this.chart.ChartAreas.Add(chartArea2);
       this.chart.Location = new System.Drawing.Point(6, 30);
       this.chart.Name = "chart";
-      series1.ChartArea = "ChartArea1";
-      series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Bubble;
-      series1.CustomProperties = "BubbleMaxSize=0";
-      series1.IsVisibleInLegend = false;
-      series1.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
-      series1.Name = "Bubbles";
-      series1.YValuesPerPoint = 2;
-      this.chart.Series.Add(series1);
+      series2.ChartArea = "ChartArea1";
+      series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Bubble;
+      series2.CustomProperties = "BubbleMaxSize=0";
+      series2.IsVisibleInLegend = false;
+      series2.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
+      series2.Name = "Bubbles";
+      series2.YValuesPerPoint = 2;
+      this.chart.Series.Add(series2);
       this.chart.Size = new System.Drawing.Size(556, 263);
       this.chart.TabIndex = 16;
       this.chart.Text = "chart1";
