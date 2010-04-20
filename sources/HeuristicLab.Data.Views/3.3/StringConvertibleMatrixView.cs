@@ -293,17 +293,19 @@ namespace HeuristicLab.Data.Views {
     }
 
     private void Sort() {
-      int[] newSortedIndex = Enumerable.Range(0, Content.Rows).ToArray();
-      if (sortedColumnIndizes.Count != 0) {
-        rowComparer.SortedIndizes = sortedColumnIndizes;
-        rowComparer.Matrix = Content;
-        Array.Sort(newSortedIndex, rowComparer);
-      }
-      virtualRowIndizes = newSortedIndex;
+      virtualRowIndizes = Sort(sortedColumnIndizes);
       UpdateSortGlyph();
       dataGridView.Invalidate();
     }
-
+    protected virtual int[] Sort(IEnumerable<KeyValuePair<int, SortOrder>> sortedColumns) {
+      int[] newSortedIndex = Enumerable.Range(0, Content.Rows).ToArray();
+      if (sortedColumns.Count() != 0) {
+        rowComparer.SortedIndizes = sortedColumns;
+        rowComparer.Matrix = Content;
+        Array.Sort(newSortedIndex, rowComparer);
+      }
+      return newSortedIndex;
+    }
     private void UpdateSortGlyph() {
       foreach (DataGridViewColumn col in this.dataGridView.Columns)
         col.HeaderCell.SortGlyphDirection = SortOrder.None;
@@ -331,6 +333,7 @@ namespace HeuristicLab.Data.Views {
         int result = 0;
         double double1, double2;
         DateTime dateTime1, dateTime2;
+        TimeSpan timeSpan1, timeSpan2;
         string string1, string2;
 
         if (matrix == null)
@@ -345,6 +348,8 @@ namespace HeuristicLab.Data.Views {
             result = double1.CompareTo(double2);
           else if (DateTime.TryParse(string1, out dateTime1) && DateTime.TryParse(string2, out dateTime2))
             result = dateTime1.CompareTo(dateTime2);
+          else if (TimeSpan.TryParse(string1, out timeSpan1) && TimeSpan.TryParse(string2, out timeSpan2))
+            result = timeSpan1.CompareTo(timeSpan2);
           else {
             if (string1 != null)
               result = string1.CompareTo(string2);
