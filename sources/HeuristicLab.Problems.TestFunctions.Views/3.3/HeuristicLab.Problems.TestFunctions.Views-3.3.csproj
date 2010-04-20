@@ -110,13 +110,13 @@
       <Project>{BB6D334A-4BB6-4674-9883-31A6EBB32CAB}</Project>
       <Name>HeuristicLab.Encodings.RealVectorEncoding-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.MainForm.WindowsForms\3.2\HeuristicLab.MainForm.WindowsForms-3.2.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.MainForm.WindowsForms\3.3\HeuristicLab.MainForm.WindowsForms-3.3.csproj">
       <Project>{AB687BBE-1BFE-476B-906D-44237135431D}</Project>
-      <Name>HeuristicLab.MainForm.WindowsForms-3.2</Name>
+      <Name>HeuristicLab.MainForm.WindowsForms-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.MainForm\3.2\HeuristicLab.MainForm-3.2.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.MainForm\3.3\HeuristicLab.MainForm-3.3.csproj">
       <Project>{3BD61258-31DA-4B09-89C0-4F71FEF5F05A}</Project>
-      <Name>HeuristicLab.MainForm-3.2</Name>
+      <Name>HeuristicLab.MainForm-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Optimization.Views\3.3\HeuristicLab.Optimization.Views-3.3.csproj">
       <Project>{662B4B15-8F4D-4AE5-B3EB-D91C215F5AF2}</Project>

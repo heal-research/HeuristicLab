@@ -116,13 +116,13 @@
       <Project>{DBECB8B0-B166-4133-BAF1-ED67C3FD7FCA}</Project>
       <Name>HeuristicLab.Encodings.PermutationEncoding-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.MainForm.WindowsForms\3.2\HeuristicLab.MainForm.WindowsForms-3.2.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.MainForm.WindowsForms\3.3\HeuristicLab.MainForm.WindowsForms-3.3.csproj">
       <Project>{AB687BBE-1BFE-476B-906D-44237135431D}</Project>
-      <Name>HeuristicLab.MainForm.WindowsForms-3.2</Name>
+      <Name>HeuristicLab.MainForm.WindowsForms-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.MainForm\3.2\HeuristicLab.MainForm-3.2.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.MainForm\3.3\HeuristicLab.MainForm-3.3.csproj">
       <Project>{3BD61258-31DA-4B09-89C0-4F71FEF5F05A}</Project>
-      <Name>HeuristicLab.MainForm-3.2</Name>
+      <Name>HeuristicLab.MainForm-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>

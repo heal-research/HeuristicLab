@@ -28,8 +28,8 @@ HeuristicLab.Encodings.PermutationEncoding.Views\3.3:HeuristicLab.Encodings.Perm
 HeuristicLab.Encodings.RealVectorEncoding\3.3:HeuristicLab.Encodings.RealVectorEncoding-3.3.dll
 HeuristicLab.Encodings.SymbolicExpressionTreeEncoding\3.3:HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3.dll
 HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views\3.3:HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views-3.3.dll
-HeuristicLab.MainForm\3.2:HeuristicLab.MainForm-3.2.dll
-HeuristicLab.MainForm.WindowsForms\3.2:HeuristicLab.MainForm.WindowsForms-3.2.dll
+HeuristicLab.MainForm\3.3:HeuristicLab.MainForm-3.3.dll
+HeuristicLab.MainForm.WindowsForms\3.3:HeuristicLab.MainForm.WindowsForms-3.3.dll
 HeuristicLab.Operators\3.3:HeuristicLab.Operators-3.3.dll
 HeuristicLab.Operators.Views\3.3:HeuristicLab.Operators.Views-3.3.dll
 HeuristicLab.Operators.Views.GraphVisualization\3.3:HeuristicLab.Operators.Views.GraphVisualization-3.3.dll

@@ -23,20 +23,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using HeuristicLab.Common;
-using HeuristicLab.Core;
-using System.Drawing;
-using Netron.Diagramming.Core;
-using HeuristicLab.Collections;
 
-namespace HeuristicLab.Operators.Views.GraphVisualization {
-  public interface IShapeInfo : IDeepCloneable{
-    Type ShapeType { get; }
-    Point Location { get; set; }
-
-    IShape CreateShape();
-    void UpdateShape(IShape shape);
-
-    event EventHandler Changed;
+namespace HeuristicLab.MainForm {
+  public interface IPositionableUserInterfaceItem : IUserInterfaceItem {
+    int Position { get; }
+    IEnumerable<string> Structure { get; }
   }
 }

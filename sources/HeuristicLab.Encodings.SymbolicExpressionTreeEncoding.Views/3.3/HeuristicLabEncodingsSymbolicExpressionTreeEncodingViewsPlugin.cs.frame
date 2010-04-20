@@ -30,8 +30,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
   [PluginDependency("HeuristicLab.Common", "3.3.0.0")]
   [PluginDependency("HeuristicLab.Core", "3.3.0.0")]
   [PluginDependency("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding", "3.3.0.0")]
-  [PluginDependency("HeuristicLab.MainForm", "3.2.0.0")]
-  [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.2.0.0")]
+  [PluginDependency("HeuristicLab.MainForm", "3.3.0.0")]
+  [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3.0.0")]
   public class HeuristicLabEncodingsSymbolicExpressionTreeEncodingViewsPlugin : PluginBase {
   }
 }

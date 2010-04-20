@@ -143,13 +143,13 @@
       <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
       <Name>HeuristicLab.Core-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.MainForm.WindowsForms\3.2\HeuristicLab.MainForm.WindowsForms-3.2.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.MainForm.WindowsForms\3.3\HeuristicLab.MainForm.WindowsForms-3.3.csproj">
       <Project>{AB687BBE-1BFE-476B-906D-44237135431D}</Project>
-      <Name>HeuristicLab.MainForm.WindowsForms-3.2</Name>
+      <Name>HeuristicLab.MainForm.WindowsForms-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.MainForm\3.2\HeuristicLab.MainForm-3.2.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.MainForm\3.3\HeuristicLab.MainForm-3.3.csproj">
       <Project>{3BD61258-31DA-4B09-89C0-4F71FEF5F05A}</Project>
-      <Name>HeuristicLab.MainForm-3.2</Name>
+      <Name>HeuristicLab.MainForm-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj">
       <Project>{56F9106A-079F-4C61-92F6-86A84C2D84B7}</Project>

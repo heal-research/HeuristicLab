@@ -27,6 +27,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.MainForm.WindowsForms {
   [Plugin("HeuristicLab.MainForm.WindowsForms", "3.2.0.$WCREV$")]
   [PluginFile("HeuristicLab.MainForm.WindowsForms-3.2.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Common", "3.2")]
   [PluginDependency("HeuristicLab.Common.Resources", "3.2")]
   [PluginDependency("HeuristicLab.MainForm", "3.2")]
   [PluginDependency("HeuristicLab.WinFormsUI", "2.3.1")]

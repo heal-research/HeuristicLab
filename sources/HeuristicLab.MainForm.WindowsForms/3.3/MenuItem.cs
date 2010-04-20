@@ -18,16 +18,16 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
-namespace HeuristicLab.Common {
-  public interface IContent {
-    bool ReadOnlyView { get; set; }
-
-    event EventHandler ReadOnlyViewChanged;
+namespace HeuristicLab.MainForm.WindowsForms {
+  public abstract class MenuItem : ActionUserInterfaceItem,IMenuItem{
+    public virtual Keys ShortCutKeys {
+      get { return Keys.None; }
+    }
   }
 }

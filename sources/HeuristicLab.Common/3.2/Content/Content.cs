@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,20 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Drawing;
 
-namespace HeuristicLab.Operators.Views.GraphVisualization {
-  public interface IOperatorShapeInfo : IShapeInfo{
-    bool Collapsed { get; set; }
-    string Title { get; set; }
-    Color Color { get; set; }
-    Color LineColor { get; set; }
-    float LineWidth { get; set; }
-    Bitmap Icon { get; set; }
-
-    void AddConnector(string connectorName);
-    void RemoveConnector(string connectorName);
-
-    void UpdateLabels(IEnumerable<string> labels);
-  }
+namespace HeuristicLab.Common {
+  public class Content : DeepCloneable, IContent { }
 }
