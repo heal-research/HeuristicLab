@@ -58,6 +58,46 @@ namespace HeuristicLab.Optimization.Views {
       set { base.Content = value; }
     }
 
+    protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
+      Content.ItemsAdded += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
+      Content.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
+      Content.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
+      RegisterRunEvents(Content);
+    }
+    protected virtual void RegisterRunEvents(IEnumerable<IRun> runs) {
+      foreach (IRun run in runs)
+        run.Changed += new EventHandler(run_Changed);
+    }
+    protected override void DeregisterContentEvents() {
+      base.DeregisterContentEvents();
+      Content.ItemsAdded -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
+      Content.ItemsRemoved -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
+      Content.CollectionReset -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
+      DeregisterRunEvents(Content);
+    }
+    protected virtual void DeregisterRunEvents(IEnumerable<IRun> runs) {
+      foreach (IRun run in runs)
+        run.Changed -= new EventHandler(run_Changed);
+    }
+    private void Content_CollectionReset(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
+      DeregisterRunEvents(e.OldItems);
+      RegisterRunEvents(e.Items);
+    }
+    private void Content_ItemsRemoved(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
+      DeregisterRunEvents(e.OldItems);
+    }
+    private void Content_ItemsAdded(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
+      RegisterRunEvents(e.Items);
+    }
+    private void run_Changed(object sender, EventArgs e) {
+      IRun run = (IRun)sender;
+      int rowIndex = Content.ToList().IndexOf(run);
+      rowIndex = virtualRowIndizes[rowIndex];
+      this.dataGridView.Rows[rowIndex].Visible = run.Visible;
+      this.dataGridView.Rows[rowIndex].DefaultCellStyle.ForeColor = run.Color;
+    }
+
     private void dataGridView_RowHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e) {
       if (e.RowIndex > 0) {
         IContentView view = MainFormManager.CreateDefaultView(Content.ElementAt(e.RowIndex));

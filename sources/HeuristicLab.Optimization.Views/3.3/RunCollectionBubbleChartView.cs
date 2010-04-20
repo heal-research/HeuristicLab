@@ -93,10 +93,12 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsAdded += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
       Content.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
-      foreach (IRun run in Content)
+      RegisterRunEvents(Content);
+    }
+    protected virtual void RegisterRunEvents(IEnumerable<IRun> runs) {
+      foreach (IRun run in runs)
         run.Changed += new EventHandler(run_Changed);
     }
-
     protected override void DeregisterContentEvents() {
       base.DeregisterContentEvents();
       Content.Reset -= new EventHandler(Content_Reset);
@@ -104,24 +106,22 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsAdded -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
       Content.ItemsRemoved -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
-      foreach (IRun run in Content)
+      DeregisterRunEvents(Content);
+    }
+    protected virtual void DeregisterRunEvents(IEnumerable<IRun> runs) {
+      foreach (IRun run in runs)
         run.Changed -= new EventHandler(run_Changed);
     }
 
     private void Content_CollectionReset(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
-      foreach (IRun run in e.OldItems)
-        run.Changed -= new EventHandler(run_Changed);
-      foreach (IRun run in e.Items)
-        run.Changed += new EventHandler(run_Changed);
+      DeregisterRunEvents(e.OldItems);
+      RegisterRunEvents(e.Items);
     }
-
     private void Content_ItemsRemoved(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
-      foreach (IRun run in e.OldItems)
-        run.Changed -= new EventHandler(run_Changed);
+      DeregisterRunEvents(e.OldItems);
     }
     private void Content_ItemsAdded(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
-      foreach (IRun run in e.Items)
-        run.Changed += new EventHandler(run_Changed);
+      RegisterRunEvents(e.Items);
     }
     private void run_Changed(object sender, EventArgs e) {
       IRun run = (IRun)sender;

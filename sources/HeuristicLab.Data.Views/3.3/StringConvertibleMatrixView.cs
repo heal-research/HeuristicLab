@@ -33,7 +33,7 @@ namespace HeuristicLab.Data.Views {
   [View("StringConvertibleMatrix View")]
   [Content(typeof(IStringConvertibleMatrix), true)]
   public partial class StringConvertibleMatrixView : AsynchronousContentView {
-    private int[] virtualRowIndizes;
+    protected int[] virtualRowIndizes;
     private List<KeyValuePair<int, SortOrder>> sortedColumnIndizes;
     private RowComparer rowComparer;
 
