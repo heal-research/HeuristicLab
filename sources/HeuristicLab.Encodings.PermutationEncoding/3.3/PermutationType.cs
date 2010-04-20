@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -28,6 +29,10 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("PermutationType", "Represents a certain type of permutation.")]
   [StorableClass]
   public class PermutationType : ValueTypeValue<PermutationTypes> {
+    public override Image ItemImage {
+      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Enum; }
+    }
+
     public PermutationType() : base() { }
     public PermutationType(PermutationTypes type) : base(type) { }
 
