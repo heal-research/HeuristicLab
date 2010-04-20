@@ -54,6 +54,7 @@ namespace HeuristicLab.Optimizer {
       this.Name = "OptimizerMainForm";
       this.Text = "HeuristicLab Optimizer";
       this.Title = "HeuristicLab Optimizer";
+      this.Icon = HeuristicLab.Common.Resources.Resources.HeuristicLabIcon;
       this.ResumeLayout(false);
       this.PerformLayout();
 
