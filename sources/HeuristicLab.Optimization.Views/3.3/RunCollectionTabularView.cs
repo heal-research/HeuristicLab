@@ -30,6 +30,7 @@ using System.Windows.Forms;
 using HeuristicLab.MainForm;
 using HeuristicLab.Data.Views;
 using HeuristicLab.Collections;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization.Views {
   [View("RunCollection Tabular View")]
@@ -65,6 +66,64 @@ namespace HeuristicLab.Optimization.Views {
           view.Locked = this.Locked;
           view.Show();
         }
+      }
+    }
+
+
+    protected override int[] Sort(IEnumerable<KeyValuePair<int, SortOrder>> sortedColumns) {
+      int[] newSortedIndex = Enumerable.Range(0, Content.Count).ToArray();
+      RunCollectionRowComparer rowComparer = new RunCollectionRowComparer();
+      if (sortedColumns.Count() != 0) {
+        rowComparer.SortedIndizes = sortedColumns;
+        rowComparer.Matrix = Content;
+        Array.Sort(newSortedIndex, rowComparer);
+      }
+      return newSortedIndex;
+    }
+
+    public class RunCollectionRowComparer : IComparer<int> {
+      public RunCollectionRowComparer() {
+      }
+
+      private List<KeyValuePair<int, SortOrder>> sortedIndizes;
+      public IEnumerable<KeyValuePair<int, SortOrder>> SortedIndizes {
+        get { return this.sortedIndizes; }
+        set { sortedIndizes = new List<KeyValuePair<int, SortOrder>>(value); }
+      }
+      private RunCollection matrix;
+      public RunCollection Matrix {
+        get { return this.matrix; }
+        set { this.matrix = value; }
+      }
+
+      public int Compare(int x, int y) {
+        int result = 0;
+        IItem value1, value2;
+        IComparable comparable1, comparable2;
+
+        if (matrix == null)
+          throw new InvalidOperationException("Could not sort IStringConvertibleMatrix if the matrix member is null.");
+        if (sortedIndizes == null)
+          return 0;
+
+        foreach (KeyValuePair<int, SortOrder> pair in sortedIndizes.Where(p => p.Value != SortOrder.None)) {
+          value1 = matrix.GetValue(x, pair.Key);
+          value2 = matrix.GetValue(y, pair.Key);
+          comparable1 = value1 as IComparable;
+          comparable2 = value2 as IComparable;
+          if (comparable1 != null)
+            result = comparable1.CompareTo(comparable2);
+          else {
+            string string1 = value1 != null ? value1.ToString() : string.Empty;
+            string string2 = value2 != null ? value2.ToString() : string.Empty;
+            result = string1.CompareTo(string2);
+          }
+          if (pair.Value == SortOrder.Descending)
+            result *= -1;
+          if (result != 0)
+            return result;
+        }
+        return result;
       }
     }
   }

@@ -34,6 +34,10 @@ namespace HeuristicLab.Optimization {
     public RunCollection() : base() { Initialize(); }
     public RunCollection(int capacity) : base(capacity) { Initialize(); }
     public RunCollection(IEnumerable<IRun> collection) : base(collection) { Initialize(); this.OnItemsAdded(collection); }
+    private void Initialize() {
+      parameterNames = new List<string>();
+      resultNames = new List<string>();
+    }
 
     protected static Type[] viewableDataTypes = new Type[]{typeof(BoolValue), typeof(DoubleValue), typeof(IntValue),
       typeof(PercentValue), typeof(StringValue)};
@@ -81,10 +85,7 @@ namespace HeuristicLab.Optimization {
       OnRowNamesChanged();
     }
 
-    private void Initialize() {
-      parameterNames = new List<string>();
-      resultNames = new List<string>();
-    }
+
 
     private bool AddParameter(string name, IItem value) {
       if (value == null)
@@ -121,20 +122,36 @@ namespace HeuristicLab.Optimization {
       return false;
     }
 
+    public IItem GetValue(int rowIndex, int columnIndex) {
+      IRun run = this.list[rowIndex];
+      IItem value = null;
+
+      if (columnIndex < parameterNames.Count) {
+        string parameterName = parameterNames[columnIndex];
+        if (run.Parameters.ContainsKey(parameterName))
+          value = run.Parameters[parameterName];
+      } else if (columnIndex < parameterNames.Count + resultNames.Count) {
+        string resultName = resultNames[columnIndex - parameterNames.Count];
+        if (run.Results.ContainsKey(resultName))
+          value = run.Results[resultName];
+      }
+      return value;
+    }
+
     #region IStringConvertibleMatrix Members
     [Storable]
     private List<string> parameterNames;
     [Storable]
     private List<string> resultNames;
-    public int Rows {
+    int IStringConvertibleMatrix.Rows {
       get { return this.Count; }
-      set { throw new System.NotImplementedException(); }
+      set { throw new NotSupportedException(); }
     }
-    public int Columns {
+    int IStringConvertibleMatrix.Columns {
       get { return parameterNames.Count + resultNames.Count; }
       set { throw new NotSupportedException(); }
     }
-    public IEnumerable<string> ColumnNames {
+    IEnumerable<string> IStringConvertibleMatrix.ColumnNames {
       get {
         List<string> value = new List<string>(parameterNames);
         value.AddRange(resultNames);
@@ -142,36 +159,23 @@ namespace HeuristicLab.Optimization {
       }
       set { throw new NotSupportedException(); }
     }
-    public IEnumerable<string> RowNames {
+    IEnumerable<string> IStringConvertibleMatrix.RowNames {
       get { return list.Select(x => x.Name).ToList(); }
       set { throw new NotSupportedException(); }
     }
-    public bool SortableView {
+    bool IStringConvertibleMatrix.SortableView {
       get { return true; }
       set { throw new NotSupportedException(); }
     }
-    public bool ReadOnly {
-      get { return false; }
+    bool IStringConvertibleMatrix.ReadOnly {
+      get { return true; }
     }
 
-    public string GetValue(int rowIndex, int columnIndex) {
-      IRun run = this.list[rowIndex];
-      string value = string.Empty;
-
-      if (columnIndex < parameterNames.Count) {
-        string parameterName = parameterNames[columnIndex];
-        if (run.Parameters.ContainsKey(parameterName)) {
-          IItem param = run.Parameters[parameterName];
-          if (param != null) value = param.ToString();
-        }
-      } else if (columnIndex < parameterNames.Count + resultNames.Count) {
-        string resultName = resultNames[columnIndex - parameterNames.Count];
-        if (run.Results.ContainsKey(resultName)) {
-          IItem result = run.Results[resultName];
-          if (result != null) value = result.ToString();
-        }
-      }
-      return value;
+    string IStringConvertibleMatrix.GetValue(int rowIndex, int columnIndex) {
+      IItem value = GetValue(rowIndex, columnIndex);
+      if (value == null)
+        return string.Empty;
+      return value.ToString();
     }
 
     public event EventHandler<EventArgs<int, int>> ItemChanged;

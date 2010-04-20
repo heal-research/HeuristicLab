@@ -32,6 +32,7 @@ using HeuristicLab.MainForm;
 using System.Windows.Forms.DataVisualization.Charting;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Optimization.Views {
   [View("RunCollection BubbleChart")]
@@ -79,6 +80,10 @@ namespace HeuristicLab.Optimization.Views {
     public new RunCollection Content {
       get { return (RunCollection)base.Content; }
       set { base.Content = value; }
+    }
+
+    public IStringConvertibleMatrix Matrix {
+      get { return this.Content; }
     }
 
     protected override void RegisterContentEvents() {
@@ -145,10 +150,10 @@ namespace HeuristicLab.Optimization.Views {
       this.xAxisComboBox.Items.Clear();
       this.yAxisComboBox.Items.Clear();
       this.sizeComboBox.Items.Clear();
-      this.xAxisComboBox.Items.AddRange(Content.ColumnNames.ToArray());
-      this.yAxisComboBox.Items.AddRange(Content.ColumnNames.ToArray());
+      this.xAxisComboBox.Items.AddRange(Matrix.ColumnNames.ToArray());
+      this.yAxisComboBox.Items.AddRange(Matrix.ColumnNames.ToArray());
       this.sizeComboBox.Items.Add(constantLabel);
-      this.sizeComboBox.Items.AddRange(Content.ColumnNames.ToArray());
+      this.sizeComboBox.Items.AddRange(Matrix.ColumnNames.ToArray());
     }
 
     private void Content_Reset(object sender, EventArgs e) {
@@ -193,13 +198,18 @@ namespace HeuristicLab.Optimization.Views {
       if (column < 0 || row < 0)
         return null;
 
-      string value = Content.GetValue(row, column);
-      double d;
-      double? ret = null;
-      if (double.TryParse(value, out d))
-        ret = d;
-      else if (value != null)
-        ret = GetCategoricalValue(column, value);
+      IItem value = Content.GetValue(row, column);
+      DoubleValue doubleValue = value as DoubleValue;
+      IntValue intValue = value as IntValue;
+      double ret;
+
+      if (doubleValue != null)
+        ret = doubleValue.Value;
+      else if (intValue != null)
+        ret = intValue.Value;
+      else
+        ret = GetCategoricalValue(column, Matrix.GetValue(row, column));
+
       return ret;
     }
     private double GetCategoricalValue(int dimension, object c) {
@@ -360,10 +370,10 @@ namespace HeuristicLab.Optimization.Views {
       StringBuilder builder = new StringBuilder();
       builder.AppendLine(this.Content.ElementAt(runIndex).Name);
       int columnIndex = 0;
-      foreach (string columnName in this.Content.ColumnNames) {
+      foreach (string columnName in Matrix.ColumnNames) {
         builder.Append(columnName);
         builder.Append(": ");
-        builder.AppendLine(this.Content.GetValue(runIndex, columnIndex));
+        builder.AppendLine(Matrix.GetValue(runIndex, columnIndex));
         columnIndex++;
       }
       return builder.ToString();
