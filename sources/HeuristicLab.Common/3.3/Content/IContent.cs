@@ -25,8 +25,5 @@ using System.Linq;
 using System.Text;
 
 namespace HeuristicLab.Common {
-  public interface IContent :IDeepCloneable{
-    bool ReadOnlyView { get; set; }
-    event EventHandler ReadOnlyViewChanged;
-  }
+  public interface IContent : IDeepCloneable { }
 }

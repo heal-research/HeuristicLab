@@ -77,7 +77,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public override IDeepCloneable Clone(Cloner cloner) {
       DataAnalysisSolution clone = new DataAnalysisSolution();
       cloner.RegisterClonedObject(this, clone);
-      clone.ReadOnlyView = ReadOnlyView;
       clone.predictor = (IPredictor)cloner.Clone(predictor);
       clone.problemData = problemData;
       clone.Initialize();

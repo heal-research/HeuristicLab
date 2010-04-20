@@ -53,7 +53,6 @@ namespace HeuristicLab.Analysis {
     public override IDeepCloneable Clone(Cloner cloner) {
       DataRow clone = new DataRow(Name, Description);
       cloner.RegisterClonedObject(this, clone);
-      clone.ReadOnlyView = ReadOnlyView;
       clone.values.AddRange(values);
       return clone;
     }

@@ -70,7 +70,6 @@ namespace HeuristicLab.Data.Views {
       Content.Reset -= new EventHandler(Content_Reset);
       Content.ColumnNamesChanged -= new EventHandler(Content_ColumnNamesChanged);
       Content.RowNamesChanged -= new EventHandler(Content_RowNamesChanged);
-      Content.ReadOnlyViewChanged -= new EventHandler(Content_ReadOnlyViewChanged);
       base.DeregisterContentEvents();
     }
     protected override void RegisterContentEvents() {
@@ -79,7 +78,6 @@ namespace HeuristicLab.Data.Views {
       Content.Reset += new EventHandler(Content_Reset);
       Content.ColumnNamesChanged += new EventHandler(Content_ColumnNamesChanged);
       Content.RowNamesChanged += new EventHandler(Content_RowNamesChanged);
-      Content.ReadOnlyViewChanged += new EventHandler(Content_ReadOnlyViewChanged);
     }
 
     protected override void OnContentChanged() {
@@ -125,11 +123,11 @@ namespace HeuristicLab.Data.Views {
       columnsTextBox.Enabled = true;
       virtualRowIndizes = Enumerable.Range(0, Content.Rows).ToArray();
       //DataGridViews with Rows but no columns are not allowed !
-      if (Content.Rows == 0 && dataGridView.RowCount != Content.Rows && !Content.ReadOnlyView)
+      if (Content.Rows == 0 && dataGridView.RowCount != Content.Rows && !Content.ReadOnly)
         Content.Rows = dataGridView.RowCount;
       else
         dataGridView.RowCount = Content.Rows;
-      if (Content.Columns == 0 && dataGridView.ColumnCount != Content.Columns && !Content.ReadOnlyView)
+      if (Content.Columns == 0 && dataGridView.ColumnCount != Content.Columns && !Content.ReadOnly)
         Content.Columns = dataGridView.ColumnCount;
       else
         dataGridView.ColumnCount = Content.Columns;
@@ -161,12 +159,6 @@ namespace HeuristicLab.Data.Views {
       dataGridView.Invalidate();
     }
 
-    private void UpdateReadOnlyControls() {
-      dataGridView.ReadOnly = Content.ReadOnlyView;
-      rowsTextBox.ReadOnly = Content.ReadOnlyView;
-      columnsTextBox.ReadOnly = Content.ReadOnlyView;
-    }
-
     private void Content_RowNamesChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_RowNamesChanged), sender, e);
@@ -190,13 +182,6 @@ namespace HeuristicLab.Data.Views {
         Invoke(new EventHandler(Content_Reset), sender, e);
       else
         UpdateData();
-    }
-
-    private void Content_ReadOnlyViewChanged(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_ReadOnlyViewChanged), sender, e);
-      else
-        UpdateReadOnlyControls();
     }
 
     #region TextBox Events

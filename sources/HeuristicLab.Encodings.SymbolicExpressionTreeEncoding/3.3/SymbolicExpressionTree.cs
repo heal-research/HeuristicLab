@@ -76,7 +76,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public override IDeepCloneable Clone(Cloner cloner) {
       SymbolicExpressionTree clone = new SymbolicExpressionTree();
       cloner.RegisterClonedObject(this, clone);
-      clone.ReadOnlyView = ReadOnlyView;
       clone.root = (SymbolicExpressionTreeNode)this.root.Clone();
       return clone;
     }

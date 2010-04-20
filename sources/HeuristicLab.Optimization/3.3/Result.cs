@@ -110,7 +110,6 @@ namespace HeuristicLab.Optimization {
     public override IDeepCloneable Clone(Cloner cloner) {
       Result clone = new Result(Name, Description, DataType);
       cloner.RegisterClonedObject(this, clone);
-      clone.ReadOnlyView = ReadOnlyView;
       clone.value = (IItem)cloner.Clone(value);
       clone.Initialize();
       return clone;

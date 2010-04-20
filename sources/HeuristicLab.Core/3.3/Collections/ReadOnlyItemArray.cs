@@ -48,11 +48,6 @@ namespace HeuristicLab.Core {
       set { array = value; }
     }
 
-    public bool ReadOnlyView {
-      get { return true; }
-      set { }
-    }
-
     public ReadOnlyItemArray() : base(new ItemArray<T>()) { }
     public ReadOnlyItemArray(IItemArray<T> array) : base(array) { }
     [StorableConstructor]
@@ -87,10 +82,6 @@ namespace HeuristicLab.Core {
     protected virtual void OnToStringChanged() {
       EventHandler handler = ToStringChanged;
       if (handler != null) handler(this, EventArgs.Empty);
-    }
-    event EventHandler IContent.ReadOnlyViewChanged {
-      add { }
-      remove { }
     }
   }
 }

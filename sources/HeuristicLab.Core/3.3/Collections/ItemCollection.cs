@@ -48,31 +48,9 @@ namespace HeuristicLab.Core {
       set { list = value; }
     }
 
-    [Storable]
-    private bool readOnlyView;
-    public virtual bool ReadOnlyView {
-      get { return readOnlyView; }
-      set {
-        if ((readOnlyView != value) && !((ICollection<T>)list).IsReadOnly) {
-          readOnlyView = value;
-          OnReadOnlyViewChanged();
-          OnPropertyChanged("ReadOnlyView");
-        }
-      }
-    }
-
-    public ItemCollection()
-      : base() {
-      readOnlyView = ((ICollection<T>)list).IsReadOnly;
-    }
-    public ItemCollection(int capacity)
-      : base(capacity) {
-      readOnlyView = ((ICollection<T>)list).IsReadOnly;
-    }
-    public ItemCollection(IEnumerable<T> collection)
-      : base(collection) {
-      readOnlyView = ((ICollection<T>)list).IsReadOnly;
-    }
+    public ItemCollection() : base() { }
+    public ItemCollection(int capacity) : base(capacity) { }
+    public ItemCollection(IEnumerable<T> collection) : base(collection) { }
     [StorableConstructor]
     protected ItemCollection(bool deserializing) { }
 
@@ -82,7 +60,6 @@ namespace HeuristicLab.Core {
     public virtual IDeepCloneable Clone(Cloner cloner) {
       ItemCollection<T> clone = (ItemCollection<T>)Activator.CreateInstance(this.GetType());
       cloner.RegisterClonedObject(this, clone);
-      clone.readOnlyView = readOnlyView;
       clone.list = new List<T>(this.Select(x => (T)cloner.Clone(x)));
       return clone;
     }
@@ -103,11 +80,6 @@ namespace HeuristicLab.Core {
     public event EventHandler ToStringChanged;
     protected virtual void OnToStringChanged() {
       EventHandler handler = ToStringChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-    public event EventHandler ReadOnlyViewChanged;
-    protected virtual void OnReadOnlyViewChanged() {
-      EventHandler handler = ReadOnlyViewChanged;
       if (handler != null) handler(this, EventArgs.Empty);
     }
   }

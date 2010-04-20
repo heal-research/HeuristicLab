@@ -84,7 +84,6 @@ namespace HeuristicLab.Optimization {
     private void Initialize() {
       parameterNames = new List<string>();
       resultNames = new List<string>();
-      this.ReadOnlyView = true;
     }
 
     private bool AddParameter(string name, IItem value) {

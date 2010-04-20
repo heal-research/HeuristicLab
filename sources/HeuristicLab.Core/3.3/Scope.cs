@@ -103,7 +103,6 @@ namespace HeuristicLab.Core {
     public override IDeepCloneable Clone(Cloner cloner) {
       Scope clone = new Scope();
       cloner.RegisterClonedObject(this, clone);
-      clone.ReadOnlyView = ReadOnlyView;
       clone.name = name;
       clone.description = description;
       if (variables.Count > 0) clone.variables = (VariableCollection)cloner.Clone(variables);

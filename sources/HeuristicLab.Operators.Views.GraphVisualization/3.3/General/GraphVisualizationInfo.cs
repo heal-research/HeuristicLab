@@ -85,24 +85,5 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
         clone.initialShape = (IShapeInfo)this.initialShape.Clone(cloner);
       return clone;
     }
-
-    #region IContent Members
-    [Storable]
-    private bool readOnlyView;
-    public virtual bool ReadOnlyView {
-      get { return readOnlyView; }
-      set {
-        if (readOnlyView != value) {
-          readOnlyView = value;
-          OnReadOnlyViewChanged();
-        }
-      }
-    }
-    public event EventHandler ReadOnlyViewChanged;
-    protected virtual void OnReadOnlyViewChanged() {
-      EventHandler handler = ReadOnlyViewChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-    #endregion
   }
 }

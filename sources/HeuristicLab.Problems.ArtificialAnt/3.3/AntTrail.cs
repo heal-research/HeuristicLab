@@ -97,7 +97,6 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     public override IDeepCloneable Clone(Cloner cloner) {
       AntTrail clone = new AntTrail();
       cloner.RegisterClonedObject(this, clone);
-      clone.ReadOnlyView = ReadOnlyView;
       clone.expression = (SymbolicExpressionTree)cloner.Clone(expression);
       clone.world = (BoolMatrix)cloner.Clone(world);
       clone.maxTimeSteps = (IntValue)cloner.Clone(maxTimeSteps);

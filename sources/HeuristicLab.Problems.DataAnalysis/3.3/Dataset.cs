@@ -47,7 +47,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Data = data;
       this.VariableNames = variableNames;
       this.SortableView = false;
-      this.ReadOnlyView = true;
     }
 
     [Storable]

@@ -48,31 +48,9 @@ namespace HeuristicLab.Core {
       set { dict = value; }
     }
 
-    [Storable]
-    private bool readOnlyView;
-    public virtual bool ReadOnlyView {
-      get { return readOnlyView; }
-      set {
-        if ((readOnlyView != value) && !((ICollection<KeyValuePair<TKey, TValue>>)dict).IsReadOnly) {
-          readOnlyView = value;
-          OnReadOnlyViewChanged();
-          OnPropertyChanged("ReadOnlyView");
-        }
-      }
-    }
-
-    public ItemDictionary()
-      : base() {
-      readOnlyView = ((ICollection<KeyValuePair<TKey, TValue>>)dict).IsReadOnly;
-    }
-    public ItemDictionary(int capacity)
-      : base(capacity) {
-      readOnlyView = ((ICollection<KeyValuePair<TKey, TValue>>)dict).IsReadOnly;
-    }
-    public ItemDictionary(IDictionary<TKey, TValue> dictionary)
-      : base(dictionary) {
-      readOnlyView = ((ICollection<KeyValuePair<TKey, TValue>>)dict).IsReadOnly;
-    }
+    public ItemDictionary() : base() { }
+    public ItemDictionary(int capacity) : base(capacity) { }
+    public ItemDictionary(IDictionary<TKey, TValue> dictionary) : base(dictionary) { }
     [StorableConstructor]
     protected ItemDictionary(bool deserializing) { }
 
@@ -82,7 +60,6 @@ namespace HeuristicLab.Core {
     public virtual IDeepCloneable Clone(Cloner cloner) {
       ItemDictionary<TKey, TValue> clone = (ItemDictionary<TKey, TValue>)Activator.CreateInstance(this.GetType());
       cloner.RegisterClonedObject(this, clone);
-      clone.readOnlyView = readOnlyView;
       foreach (TKey key in dict.Keys)
         clone.dict.Add((TKey)cloner.Clone(key), (TValue)cloner.Clone(dict[key]));
       return clone;
@@ -104,11 +81,6 @@ namespace HeuristicLab.Core {
     public event EventHandler ToStringChanged;
     protected virtual void OnToStringChanged() {
       EventHandler handler = ToStringChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-    public event EventHandler ReadOnlyViewChanged;
-    protected virtual void OnReadOnlyViewChanged() {
-      EventHandler handler = ReadOnlyViewChanged;
       if (handler != null) handler(this, EventArgs.Empty);
     }
   }

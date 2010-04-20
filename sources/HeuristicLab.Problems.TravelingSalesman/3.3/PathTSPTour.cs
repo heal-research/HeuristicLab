@@ -89,7 +89,6 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     public override IDeepCloneable Clone(Cloner cloner) {
       PathTSPTour clone = new PathTSPTour();
       cloner.RegisterClonedObject(this, clone);
-      clone.ReadOnlyView = ReadOnlyView;
       clone.coordinates = (DoubleMatrix)cloner.Clone(coordinates);
       clone.permutation = (Permutation)cloner.Clone(permutation);
       clone.Initialize();

@@ -44,7 +44,6 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     public override IDeepCloneable Clone(Cloner cloner) {
       IntegerVector clone = new IntegerVector(array);
       cloner.RegisterClonedObject(this, clone);
-      clone.ReadOnlyView = ReadOnlyView;
       clone.readOnly = readOnly;
       return clone;
     }
