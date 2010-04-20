@@ -28,9 +28,9 @@ using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
-  [Item("StrategyVectorCrossover", "Crosses the strategy vector by using intermediate recombination (average crossover).")]
+  [Item("StdDevStrategyVectorCrossover", "Crosses the strategy vector by using intermediate recombination (average crossover).")]
   [StorableClass]
-  public class StrategyVectorCrossover : SingleSuccessorOperator, IStochasticOperator, IRealVectorStrategyParameterOperator, IStrategyParameterCrossover {
+  public class StdDevStrategyVectorCrossover : SingleSuccessorOperator, IStochasticOperator, IRealVectorStdDevStrategyParameterCrossover {
     public override bool CanChangeName {
       get { return false; }
     }
@@ -44,7 +44,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       get { return (ILookupParameter<RealVector>)Parameters["StrategyParameter"]; }
     }
 
-    public StrategyVectorCrossover()
+    public StdDevStrategyVectorCrossover()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
       Parameters.Add(new SubScopesLookupParameter<RealVector>("ParentStrategyParameter", "The strategy parameters to cross."));

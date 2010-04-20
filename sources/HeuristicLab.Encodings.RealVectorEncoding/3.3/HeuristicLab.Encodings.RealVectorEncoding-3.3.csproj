@@ -103,10 +103,10 @@
     <Compile Include="Crossovers\UniformAllPositionsArithmeticCrossover.cs" />
     <Compile Include="Crossovers\UniformSomePositionsArithmeticCrossover.cs" />
     <Compile Include="HeuristicLabEncodingsRealVectorEncodingPlugin.cs" />
-    <Compile Include="Interfaces\IRealVectorStrategyParameterManipulator.cs" />
-    <Compile Include="Interfaces\IRealVectorStrategyParameterCrossover.cs" />
-    <Compile Include="Interfaces\IRealVectorStrategyParameterCreator.cs" />
-    <Compile Include="Interfaces\IRealVectorStrategyParameterOperator.cs" />
+    <Compile Include="Interfaces\IRealVectorStdDevStrategyParameterCreator.cs" />
+    <Compile Include="Interfaces\IRealVectorStdDevStrategyParameterCrossover.cs" />
+    <Compile Include="Interfaces\IRealVectorStdDevStrategyParameterManipulator.cs" />
+    <Compile Include="Interfaces\IRealVectorStdDevStrategyParameterOperator.cs" />
     <Compile Include="Interfaces\IAdditiveRealVectorMoveOperator.cs" />
     <Compile Include="Interfaces\IRealVectorBoundsChecker.cs" />
     <Compile Include="Interfaces\IRealVectorMoveGenerator.cs" />
@@ -115,9 +115,6 @@
     <Compile Include="Manipulators\NormalAllPositionsManipulator.cs" />
     <Compile Include="Moves\AdditiveMoveTabuChecker.cs" />
     <Compile Include="Moves\AdditiveMoveTabuMaker.cs" />
-    <Compile Include="StrategyParameters\StrategyVectorCreator.cs" />
-    <Compile Include="StrategyParameters\StrategyVectorCrossover.cs" />
-    <Compile Include="StrategyParameters\StrategyVectorManipulator.cs" />
     <Compile Include="Moves\AdditiveMoveTabuAttribute.cs" />
     <Compile Include="Moves\AdditiveMoveMaker.cs" />
     <Compile Include="Moves\AdditiveMove.cs" />
@@ -133,6 +130,9 @@
     <Compile Include="Manipulators\MichalewiczNonUniformOnePositionManipulator.cs" />
     <Compile Include="Manipulators\PolynomialOnePositionManipulator.cs" />
     <Compile Include="Manipulators\UniformOnePositionManipulator.cs" />
+    <Compile Include="StrategyParameters\StdDevStrategyVectorCreator.cs" />
+    <Compile Include="StrategyParameters\StdDevStrategyVectorCrossover.cs" />
+    <Compile Include="StrategyParameters\StdDevStrategyVectorManipulator.cs" />
     <None Include="HeuristicLab.snk" />
     <None Include="HeuristicLabEncodingsRealVectorEncodingPlugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.frame" />

@@ -39,7 +39,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   public class PolynomialAllPositionManipulator : RealVectorManipulator {
     /// <summary>
     /// The contiguity parameter specifies the shape of the probability density function that controls the mutation. Setting it to 0 is similar to a uniform distribution over the entire manipulation range (specified by <see cref="MaximumManipulationParameter"/>.
-    /// A higher value will shape the density function such that values closer to 0 (little manipulation) are more likely than values closer to 1 or -1 (maximum manipulation).
+    /// A higher value will shape the density function such that values closer to 0 (little manipulation) are more likely than larger values.
     /// </summary>
     public ValueLookupParameter<DoubleValue> ContiguityParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["Contiguity"]; }

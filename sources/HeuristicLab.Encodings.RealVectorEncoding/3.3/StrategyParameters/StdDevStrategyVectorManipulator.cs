@@ -27,12 +27,15 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Data;
 using HeuristicLab.Random;
 using System;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
   /// Mutates the endogenous strategy parameters.
   /// </summary>
-  public class StrategyVectorManipulator : SingleSuccessorOperator, IStochasticOperator, IRealVectorStrategyParameterOperator, IStrategyParameterManipulator {
+  [Item("StdDevStrategyVectorManipulator", "Mutates the endogenous strategy parameters.")]
+  [StorableClass]
+  public class StdDevStrategyVectorManipulator : SingleSuccessorOperator, IStochasticOperator, IRealVectorStdDevStrategyParameterManipulator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
@@ -53,7 +56,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// parameters (<c>Random</c>, <c>StrategyVector</c>, <c>GeneralLearningRate</c> and
     /// <c>LearningRate</c>).
     /// </summary>
-    public StrategyVectorManipulator()
+    public StdDevStrategyVectorManipulator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
       Parameters.Add(new LookupParameter<RealVector>("StrategyParameter", "The strategy parameter to manipulate."));

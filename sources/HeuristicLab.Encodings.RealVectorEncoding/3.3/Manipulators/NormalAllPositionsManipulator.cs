@@ -39,7 +39,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// </remarks>
   [Item("NormalAllPositionsManipulator", "This manipulation operator adds a value sigma_i * N(0,1) to the current value in each position i. The values for sigma_i are taken from the strategy vector, if there are less elements in the strategy vector than positions, then the strategy vector is cycled. It is implemented as described in Beyer, H.-G. and Schwefel, H.-P. 2002. Evolution Strategies - A Comprehensive Introduction Natural Computing, 1, pp. 3-52.")]
   [StorableClass]
-  public class NormalAllPositionsManipulator : RealVectorManipulator, IRealVectorStrategyParameterOperator, ISelfAdaptiveManipulator {
+  public class NormalAllPositionsManipulator : RealVectorManipulator, ISelfAdaptiveManipulator {
+    public Type StrategyParameterType {
+      get { return typeof(IRealVectorStdDevStrategyParameterOperator); }
+    }
     /// <summary>
     /// Parameter for the strategy vector.
     /// </summary>

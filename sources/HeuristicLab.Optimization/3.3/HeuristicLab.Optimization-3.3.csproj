@@ -94,7 +94,6 @@
     <Compile Include="Interfaces\IStrategyParameterManipulator.cs" />
     <Compile Include="Interfaces\IStrategyParameterCreator.cs" />
     <Compile Include="Interfaces\IRun.cs" />
-    <Compile Include="Interfaces\IStrategyParameterOperator.cs" />
     <Compile Include="OptimizerList.cs" />
     <Compile Include="Experiment.cs" />
     <Compile Include="Interfaces\IOptimizer.cs" />

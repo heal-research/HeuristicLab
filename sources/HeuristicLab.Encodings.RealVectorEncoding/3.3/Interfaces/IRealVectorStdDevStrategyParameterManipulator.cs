@@ -25,10 +25,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
-  /// <summary>
-  /// An interface which represents an operator for manipulating vectors of real-valued data.
-  /// </summary>
-  public interface IRealVectorStrategyParameterManipulator : IRealVectorStrategyParameterOperator, IStrategyParameterManipulator {
+  public interface IRealVectorStdDevStrategyParameterManipulator : IRealVectorStdDevStrategyParameterOperator, IStrategyParameterManipulator {
     IValueLookupParameter<DoubleMatrix> BoundsParameter { get; }
   }
 }

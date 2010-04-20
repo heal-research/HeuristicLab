@@ -29,9 +29,9 @@ using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
-  [Item("StrategyVectorCreator", "Creates the endogeneous strategy parameters.")]
+  [Item("StdDevStrategyVectorCreator", "Creates the endogeneous strategy parameters.")]
   [StorableClass]
-  public class StrategyVectorCreator : SingleSuccessorOperator, IStochasticOperator, IRealVectorStrategyParameterCreator {
+  public class StdDevStrategyVectorCreator : SingleSuccessorOperator, IStochasticOperator, IRealVectorStdDevStrategyParameterCreator {
     public override bool CanChangeName {
       get { return false; }
     }
@@ -48,7 +48,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       get { return (IValueLookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
     }
 
-    public StrategyVectorCreator()
+    public StdDevStrategyVectorCreator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
       Parameters.Add(new LookupParameter<RealVector>("StrategyParameter", "The crossed strategy parameter."));

@@ -21,14 +21,9 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
-  /// <summary>
-  /// An interface which represents an operator for crossing vectors of real-valued data.
-  /// </summary>
-  public interface IRealVectorStrategyParameterCrossover : IRealVectorStrategyParameterOperator, IStrategyParameterCrossover {
-    ILookupParameter<ItemArray<RealVector>> ParentsParameter { get; }
+  public interface IRealVectorStdDevStrategyParameterOperator {
   }
 }

@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 
@@ -27,6 +28,7 @@ namespace HeuristicLab.Optimization {
   /// An interface which represents an operator for manipulating solutions, given a strategy parameter.
   /// </summary>
   public interface ISelfAdaptiveManipulator : IOperator {
+    Type StrategyParameterType { get; }
     IParameter StrategyParameterParameter { get; }
   }
 }

@@ -39,11 +39,11 @@ namespace HeuristicLab.Problems.TestFunctions {
   [Creatable("Problems")]
   public sealed class SingleObjectiveTestFunctionProblem : ParameterizedNamedItem, ISingleObjectiveProblem {
     [Storable]
-    private StrategyVectorCreator strategyVectorCreator;
+    private StdDevStrategyVectorCreator strategyVectorCreator;
     [Storable]
-    private StrategyVectorCrossover strategyVectorCrossover;
+    private StdDevStrategyVectorCrossover strategyVectorCrossover;
     [Storable]
-    private StrategyVectorManipulator strategyVectorManipulator;
+    private StdDevStrategyVectorManipulator strategyVectorManipulator;
 
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }
@@ -150,10 +150,12 @@ namespace HeuristicLab.Problems.TestFunctions {
       Parameters.Add(new OptionalValueParameter<ISingleObjectiveTestFunctionProblemSolutionsVisualizer>("Visualizer", "The operator which should be used to visualize TSP solutions."));
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this TSP instance.", new DoubleValue(evaluator.BestKnownQuality)));
 
-      strategyVectorCreator = new StrategyVectorCreator();
+      strategyVectorCreator = new StdDevStrategyVectorCreator();
       strategyVectorCreator.LengthParameter.ActualName = ProblemSizeParameter.Name;
-      strategyVectorCrossover = new StrategyVectorCrossover();
-      strategyVectorManipulator = new StrategyVectorManipulator();
+      strategyVectorCrossover = new StdDevStrategyVectorCrossover();
+      strategyVectorManipulator = new StdDevStrategyVectorManipulator();
+      strategyVectorManipulator.LearningRateParameter.Value = new DoubleValue(0.5);
+      strategyVectorManipulator.GeneralLearningRateParameter.Value = new DoubleValue(0.5);
 
       creator.RealVectorParameter.ActualName = "Point";
       ParameterizeSolutionCreator();

@@ -71,7 +71,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
     /// <returns>The result value of the Ackley function at the given point.</returns>
     public static double Apply(RealVector point) {
-      double result = 20 + Math.E;
+      double result;
       double val;
 
       val = 0;
@@ -79,13 +79,13 @@ namespace HeuristicLab.Problems.TestFunctions {
         val += point[i] * point[i];
       val /= point.Length;
       val = -0.2 * Math.Sqrt(val);
-      result -= 20 * Math.Exp(val);
+      result = 20 - 20 * Math.Exp(val);
 
       val = 0;
       for (int i = 0; i < point.Length; i++)
         val += Math.Cos(2 * Math.PI * point[i]);
       val /= point.Length;
-      result -= Math.Exp(val);
+      result += Math.E - Math.Exp(val);
       return (result);
     }
 

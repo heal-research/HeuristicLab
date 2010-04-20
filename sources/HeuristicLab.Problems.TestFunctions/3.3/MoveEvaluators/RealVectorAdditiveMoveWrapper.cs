@@ -30,6 +30,12 @@ namespace HeuristicLab.Problems.TestFunctions {
     private double moveDistance;
     private RealVector vector;
 
+    public RealVectorAdditiveMoveWrapper() {
+      dimension = -1;
+      moveDistance = 0;
+      this.vector = new RealVector();
+    }
+
     public RealVectorAdditiveMoveWrapper(AdditiveMove move, RealVector vector) {
       dimension = move.Dimension;
       moveDistance = move.MoveDistance;
