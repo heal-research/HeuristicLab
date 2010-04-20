@@ -36,6 +36,7 @@ namespace HeuristicLab.Data {
       TimeSpanValue clone = new TimeSpanValue(value);
       cloner.RegisterClonedObject(this, clone);
       clone.ReadOnlyView = ReadOnlyView;
+      clone.readOnly = readOnly;
       return clone;
     }
 

@@ -32,7 +32,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Data {
   [Item("ValueTypeMatrix<T>", "An abstract base class for representing matrices of value types.")]
   [StorableClass]
-  public abstract class ValueTypeMatrix<T> : Item, IEnumerable where T : struct {
+  public abstract class ValueTypeMatrix<T> : Item, IEnumerable<T> where T : struct {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Class; }
     }
@@ -41,10 +41,11 @@ namespace HeuristicLab.Data {
     protected T[,] matrix;
 
     [Storable]
-    private List<string> columnNames;
-    public IEnumerable<string> ColumnNames {
+    protected List<string> columnNames;
+    public virtual IEnumerable<string> ColumnNames {
       get { return this.columnNames; }
       set {
+        if (ReadOnly) throw new NotSupportedException("ColumnNames cannot be set. ValueTypeMatrix is read-only.");
         if (value == null || value.Count() == 0)
           columnNames = new List<string>();
         else if (value.Count() != Columns)
@@ -54,10 +55,11 @@ namespace HeuristicLab.Data {
       }
     }
     [Storable]
-    private List<string> rowNames;
-    public IEnumerable<string> RowNames {
+    protected List<string> rowNames;
+    public virtual IEnumerable<string> RowNames {
       get { return this.rowNames; }
       set {
+        if (ReadOnly) throw new NotSupportedException("RowNames cannot be set. ValueTypeMatrix is read-only.");
         if (value == null || value.Count() == 0)
           rowNames = new List<string>();
         else if (value.Count() != Rows)
@@ -67,10 +69,11 @@ namespace HeuristicLab.Data {
       }
     }
     [Storable]
-    private bool sortableView;
-    public bool SortableView {
+    protected bool sortableView;
+    public virtual bool SortableView {
       get { return sortableView; }
       set {
+        if (ReadOnly) throw new NotSupportedException("SortableView cannot be set. ValueTypeMatrix is read-only.");
         if (value != sortableView) {
           sortableView = value;
           OnSortableViewChanged();
@@ -81,6 +84,7 @@ namespace HeuristicLab.Data {
     public virtual int Rows {
       get { return matrix.GetLength(0); }
       protected set {
+        if (ReadOnly) throw new NotSupportedException("Rows cannot be set. ValueTypeMatrix is read-only.");
         if (value != Rows) {
           T[,] newArray = new T[value, Columns];
           Array.Copy(matrix, newArray, Math.Min(value * Columns, matrix.Length));
@@ -96,6 +100,7 @@ namespace HeuristicLab.Data {
     public virtual int Columns {
       get { return matrix.GetLength(1); }
       protected set {
+        if (ReadOnly) throw new NotSupportedException("Columns cannot be set. ValueTypeMatrix is read-only.");
         if (value != Columns) {
           T[,] newArray = new T[Rows, value];
           for (int i = 0; i < Rows; i++)
@@ -112,6 +117,7 @@ namespace HeuristicLab.Data {
     public virtual T this[int rowIndex, int columnIndex] {
       get { return matrix[rowIndex, columnIndex]; }
       set {
+        if (ReadOnly) throw new NotSupportedException("Item cannot be set. ValueTypeMatrix is read-only.");
         if (!value.Equals(matrix[rowIndex, columnIndex])) {
           matrix[rowIndex, columnIndex] = value;
           OnItemChanged(rowIndex, columnIndex);
@@ -119,23 +125,31 @@ namespace HeuristicLab.Data {
       }
     }
 
+    [Storable]
+    protected bool readOnly;
+    public virtual bool ReadOnly {
+      get { return readOnly; }
+    }
+
     protected ValueTypeMatrix() {
       matrix = new T[0, 0];
       columnNames = new List<string>();
       rowNames = new List<string>();
       sortableView = false;
+      readOnly = false;
     }
     protected ValueTypeMatrix(int rows, int columns) {
       matrix = new T[rows, columns];
       columnNames = new List<string>();
       rowNames = new List<string>();
       sortableView = false;
+      readOnly = false;
     }
     protected ValueTypeMatrix(int rows, int columns, IEnumerable<string> columnNames)
       : this(rows, columns) {
       ColumnNames = columnNames;
     }
-    protected ValueTypeMatrix(int rows, int columns, IEnumerable<string> columnNames,IEnumerable<string> rowNames)
+    protected ValueTypeMatrix(int rows, int columns, IEnumerable<string> columnNames, IEnumerable<string> rowNames)
       : this(rows, columns, columnNames) {
       RowNames = rowNames;
     }
@@ -145,6 +159,7 @@ namespace HeuristicLab.Data {
       columnNames = new List<string>();
       rowNames = new List<string>();
       sortableView = false;
+      readOnly = false;
     }
     protected ValueTypeMatrix(T[,] elements, IEnumerable<string> columnNames)
       : this(elements) {
@@ -157,11 +172,18 @@ namespace HeuristicLab.Data {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       ValueTypeMatrix<T> clone = (ValueTypeMatrix<T>)base.Clone(cloner);
-      clone.SortableView = SortableView;
       clone.matrix = (T[,])matrix.Clone();
       clone.columnNames = new List<string>(columnNames);
       clone.rowNames = new List<string>(rowNames);
+      clone.sortableView = sortableView;
+      clone.readOnly = readOnly;
       return clone;
+    }
+
+    public virtual ValueTypeMatrix<T> AsReadOnly() {
+      ValueTypeMatrix<T> readOnlyValueTypeMatrix = (ValueTypeMatrix<T>)this.Clone();
+      readOnlyValueTypeMatrix.readOnly = true;
+      return readOnlyValueTypeMatrix;
     }
 
     public override string ToString() {
@@ -179,8 +201,12 @@ namespace HeuristicLab.Data {
       return sb.ToString();
     }
 
-    public virtual IEnumerator GetEnumerator() {
-      return matrix.GetEnumerator();
+    public virtual IEnumerator<T> GetEnumerator() {
+      return matrix.Cast<T>().GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator() {
+      return GetEnumerator();
     }
 
     public event EventHandler ColumnNamesChanged;

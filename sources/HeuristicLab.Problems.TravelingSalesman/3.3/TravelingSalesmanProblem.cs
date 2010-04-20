@@ -167,6 +167,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       TravelingSalesmanProblem clone = (TravelingSalesmanProblem)base.Clone(cloner);
+      clone.DistanceMatrixParameter.Value = DistanceMatrixParameter.Value;
       clone.Initialize();
       return clone;
     }

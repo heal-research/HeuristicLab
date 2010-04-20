@@ -31,6 +31,7 @@ namespace HeuristicLab.Data {
     IEnumerable<string> RowNames { get; set; }
 
     bool SortableView { get; set; }
+    bool ReadOnly { get; }
 
     bool Validate(string value, out string errorMessage);
     string GetValue(int rowIndex, int columnIndex);

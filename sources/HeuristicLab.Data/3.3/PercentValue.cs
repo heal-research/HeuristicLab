@@ -35,6 +35,7 @@ namespace HeuristicLab.Data {
       PercentValue clone = new PercentValue(value);
       cloner.RegisterClonedObject(this, clone);
       clone.ReadOnlyView = ReadOnlyView;
+      clone.readOnly = readOnly;
       return clone;
     }
 

@@ -45,6 +45,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       BinaryVector clone = new BinaryVector(array);
       cloner.RegisterClonedObject(this, clone);
       clone.ReadOnlyView = ReadOnlyView;
+      clone.readOnly = readOnly;
       return clone;
     }
 

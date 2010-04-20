@@ -33,6 +33,14 @@ namespace HeuristicLab.Data.Views {
       set { base.Content = value; }
     }
 
+    public override bool ReadOnly {
+      get {
+        if ((Content != null) && Content.ReadOnly) return true;
+        return base.ReadOnly;
+      }
+      set { base.ReadOnly = value; }
+    }
+
     public BoolValueView() {
       InitializeComponent();
       Caption = "BoolValue View";
@@ -81,7 +89,7 @@ namespace HeuristicLab.Data.Views {
     }
 
     private void valueCheckBox_CheckedChanged(object sender, EventArgs e) {
-      Content.Value = valueCheckBox.Checked;
+      if (!Content.ReadOnly) Content.Value = valueCheckBox.Checked;
     }
   }
 }

@@ -35,6 +35,7 @@ namespace HeuristicLab.Data {
       DateTimeValue clone = new DateTimeValue(value);
       cloner.RegisterClonedObject(this, clone);
       clone.ReadOnlyView = ReadOnlyView;
+      clone.readOnly = readOnly;
       return clone;
     }
 

@@ -34,6 +34,14 @@ namespace HeuristicLab.Data.Views {
       set { base.Content = value; }
     }
 
+    public override bool ReadOnly {
+      get {
+        if ((Content != null) && Content.ReadOnly) return true;
+        return base.ReadOnly;
+      }
+      set { base.ReadOnly = value; }
+    }
+
     public StringConvertibleValueView() {
       InitializeComponent();
       Caption = "StringConvertibleValue View";
@@ -102,7 +110,7 @@ namespace HeuristicLab.Data.Views {
       }
     }
     private void valueTextBox_Validated(object sender, EventArgs e) {
-      Content.SetValue(valueTextBox.Text);
+      if (!Content.ReadOnly) Content.SetValue(valueTextBox.Text);
       errorProvider.SetError(valueTextBox, string.Empty);
       valueTextBox.Text = Content.GetValue();
     }

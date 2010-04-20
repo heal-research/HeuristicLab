@@ -38,11 +38,14 @@ namespace HeuristicLab.Data {
     public DoubleMatrix(double[,] elements, IEnumerable<string> columnNames, IEnumerable<string> rowNames) : base(elements, columnNames, rowNames) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      DoubleMatrix clone = new DoubleMatrix(matrix);
+      DoubleMatrix clone = new DoubleMatrix();
       cloner.RegisterClonedObject(this, clone);
       clone.ReadOnlyView = ReadOnlyView;
-      clone.ColumnNames = new List<string>(ColumnNames);
-      clone.RowNames = new List<string>(RowNames);
+      clone.matrix = (double[,])matrix.Clone();
+      clone.columnNames = new List<string>(columnNames);
+      clone.rowNames = new List<string>(rowNames);
+      clone.sortableView = sortableView;
+      clone.readOnly = readOnly;
       return clone;
     }
 
@@ -80,18 +83,6 @@ namespace HeuristicLab.Data {
     int IStringConvertibleMatrix.Columns {
       get { return Columns; }
       set { Columns = value; }
-    }
-    IEnumerable<string> IStringConvertibleMatrix.ColumnNames {
-      get { return this.ColumnNames; }
-      set { this.ColumnNames = value; }
-    }
-    IEnumerable<string> IStringConvertibleMatrix.RowNames {
-      get { return this.RowNames; }
-      set { this.RowNames = value; }
-    }
-    bool IStringConvertibleMatrix.SortableView {
-      get { return this.SortableView; }
-      set { this.SortableView = value; }
     }
     bool IStringConvertibleMatrix.Validate(string value, out string errorMessage) {
       return Validate(value, out errorMessage);

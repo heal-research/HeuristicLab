@@ -43,6 +43,7 @@ namespace HeuristicLab.Data {
     public virtual int Length {
       get { return array.Length; }
       protected set {
+        if (ReadOnly) throw new NotSupportedException("Length cannot be set. StringArray is read-only.");
         if (value != Length) {
           Array.Resize<string>(ref array, value);
           OnReset();
@@ -52,6 +53,7 @@ namespace HeuristicLab.Data {
     public virtual string this[int index] {
       get { return array[index]; }
       set {
+        if (ReadOnly) throw new NotSupportedException("Item cannot be set. StringArray is read-only.");
         if (value != array[index]) {
           if ((value != null) || (array[index] != string.Empty)) {
             array[index] = value != null ? value : string.Empty;
@@ -61,19 +63,28 @@ namespace HeuristicLab.Data {
       }
     }
 
+    [Storable]
+    protected bool readOnly;
+    public virtual bool ReadOnly {
+      get { return readOnly; }
+    }
+
     public StringArray() {
       array = new string[0];
+      readOnly = false;
     }
     public StringArray(int length) {
       array = new string[length];
       for (int i = 0; i < array.Length; i++)
         array[i] = string.Empty;
+      readOnly = false;
     }
     public StringArray(string[] elements) {
       if (elements == null) throw new ArgumentNullException();
       array = new string[elements.Length];
       for (int i = 0; i < array.Length; i++)
         array[i] = elements[i] == null ? string.Empty : elements[i];
+      readOnly = false;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -81,7 +92,14 @@ namespace HeuristicLab.Data {
       cloner.RegisterClonedObject(this, clone);
       clone.ReadOnlyView = ReadOnlyView;
       clone.array = (string[])array.Clone();
+      clone.readOnly = readOnly;
       return clone;
+    }
+
+    public virtual StringArray AsReadOnly() {
+      StringArray readOnlyStringArray = (StringArray)this.Clone();
+      readOnlyStringArray.readOnly = true;
+      return readOnlyStringArray;
     }
 
     public override string ToString() {
@@ -96,12 +114,12 @@ namespace HeuristicLab.Data {
       return sb.ToString();
     }
 
-    public IEnumerator<string> GetEnumerator() {
+    public virtual IEnumerator<string> GetEnumerator() {
       return array.Cast<string>().GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator() {
-      return array.GetEnumerator();
+      return GetEnumerator();
     }
 
     protected virtual bool Validate(string value, out string errorMessage) {

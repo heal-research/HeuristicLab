@@ -40,6 +40,7 @@ namespace HeuristicLab.Data {
       Comparison clone = new Comparison(value);
       cloner.RegisterClonedObject(this, clone);
       clone.ReadOnlyView = ReadOnlyView;
+      clone.readOnly = readOnly;
       return clone;
     }
 

@@ -24,6 +24,8 @@ using HeuristicLab.Common;
 
 namespace HeuristicLab.Data {
   public interface IStringConvertibleValue : IContent {
+    bool ReadOnly { get; }
+
     bool Validate(string value, out string errorMessage);
     string GetValue();
     bool SetValue(string value);

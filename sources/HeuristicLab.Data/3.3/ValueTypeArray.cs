@@ -21,7 +21,9 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -30,7 +32,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Data {
   [Item("ValueTypeArray<T>", "An abstract base class for representing arrays of value types.")]
   [StorableClass]
-  public abstract class ValueTypeArray<T> : Item, IEnumerable where T : struct {
+  public abstract class ValueTypeArray<T> : Item, IEnumerable<T> where T : struct {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Class; }
     }
@@ -41,6 +43,7 @@ namespace HeuristicLab.Data {
     public virtual int Length {
       get { return array.Length; }
       protected set {
+        if (ReadOnly) throw new NotSupportedException("Length cannot be set. ValueTypeArray is read-only.");
         if (value != Length) {
           Array.Resize<T>(ref array, value);
           OnReset();
@@ -50,6 +53,7 @@ namespace HeuristicLab.Data {
     public virtual T this[int index] {
       get { return array[index]; }
       set {
+        if (ReadOnly) throw new NotSupportedException("Item cannot be set. ValueTypeArray is read-only.");
         if (!value.Equals(array[index])) {
           array[index] = value;
           OnItemChanged(index);
@@ -57,21 +61,37 @@ namespace HeuristicLab.Data {
       }
     }
 
+    [Storable]
+    protected bool readOnly;
+    public virtual bool ReadOnly {
+      get { return readOnly; }
+    }
+
     protected ValueTypeArray() {
       array = new T[0];
+      readOnly = false;
     }
     protected ValueTypeArray(int length) {
       array = new T[length];
+      readOnly = false;
     }
     protected ValueTypeArray(T[] elements) {
       if (elements == null) throw new ArgumentNullException();
       array = (T[])elements.Clone();
+      readOnly = false;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       ValueTypeArray<T> clone = (ValueTypeArray<T>)base.Clone(cloner);
       clone.array = (T[])array.Clone();
+      clone.readOnly = readOnly;
       return clone;
+    }
+
+    public virtual ValueTypeArray<T> AsReadOnly() {
+      ValueTypeArray<T> readOnlyValueTypeArray = (ValueTypeArray<T>)this.Clone();
+      readOnlyValueTypeArray.readOnly = true;
+      return readOnlyValueTypeArray;
     }
 
     public override string ToString() {
@@ -86,8 +106,12 @@ namespace HeuristicLab.Data {
       return sb.ToString();
     }
 
-    public virtual IEnumerator GetEnumerator() {
-      return array.GetEnumerator();
+    public virtual IEnumerator<T> GetEnumerator() {
+      return array.Cast<T>().GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator() {
+      return GetEnumerator();
     }
 
     public event EventHandler<EventArgs<int>> ItemChanged;

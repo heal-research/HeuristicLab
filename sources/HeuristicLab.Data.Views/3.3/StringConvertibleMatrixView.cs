@@ -33,14 +33,22 @@ namespace HeuristicLab.Data.Views {
   [View("StringConvertibleMatrix View")]
   [Content(typeof(IStringConvertibleMatrix), true)]
   public partial class StringConvertibleMatrixView : AsynchronousContentView {
+    private int[] virtualRowIndizes;
+    private List<KeyValuePair<int, SortOrder>> sortedColumnIndizes;
+    private RowComparer rowComparer;
+
     public new IStringConvertibleMatrix Content {
       get { return (IStringConvertibleMatrix)base.Content; }
       set { base.Content = value; }
     }
 
-    private int[] virtualRowIndizes;
-    private List<KeyValuePair<int, SortOrder>> sortedColumnIndizes;
-    RowComparer rowComparer;
+    public override bool ReadOnly {
+      get {
+        if ((Content != null) && Content.ReadOnly) return true;
+        return base.ReadOnly;
+      }
+      set { base.ReadOnly = value; }
+    }
 
     public StringConvertibleMatrixView() {
       InitializeComponent();
@@ -65,7 +73,6 @@ namespace HeuristicLab.Data.Views {
       Content.ReadOnlyViewChanged -= new EventHandler(Content_ReadOnlyViewChanged);
       base.DeregisterContentEvents();
     }
-
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.ItemChanged += new EventHandler<EventArgs<int, int>>(Content_ItemChanged);
@@ -74,7 +81,6 @@ namespace HeuristicLab.Data.Views {
       Content.RowNamesChanged += new EventHandler(Content_RowNamesChanged);
       Content.ReadOnlyViewChanged += new EventHandler(Content_ReadOnlyViewChanged);
     }
-
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
@@ -203,9 +209,7 @@ namespace HeuristicLab.Data.Views {
       }
     }
     private void rowsTextBox_Validated(object sender, EventArgs e) {
-      int textBoxValue = int.Parse(rowsTextBox.Text);
-      if (textBoxValue != Content.Rows)
-        Content.Rows = textBoxValue;
+      if (!Content.ReadOnly) Content.Rows = int.Parse(rowsTextBox.Text);
       errorProvider.SetError(rowsTextBox, string.Empty);
     }
     private void rowsTextBox_KeyDown(object sender, KeyEventArgs e) {
@@ -225,9 +229,7 @@ namespace HeuristicLab.Data.Views {
       }
     }
     private void columnsTextBox_Validated(object sender, EventArgs e) {
-      int textBoxValue = int.Parse(columnsTextBox.Text);
-      if (textBoxValue != Content.Columns)
-        Content.Columns = textBoxValue;
+      if (!Content.ReadOnly) Content.Columns = int.Parse(columnsTextBox.Text);
       errorProvider.SetError(columnsTextBox, string.Empty);
     }
     private void columnsTextBox_KeyDown(object sender, KeyEventArgs e) {

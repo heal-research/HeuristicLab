@@ -45,6 +45,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       RealVector clone = new RealVector(array);
       cloner.RegisterClonedObject(this, clone);
       clone.ReadOnlyView = ReadOnlyView;
+      clone.readOnly = readOnly;
       return clone;
     }
 

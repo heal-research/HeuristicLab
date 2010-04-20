@@ -66,6 +66,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       Permutation clone = new Permutation(permutationType, array);
       cloner.RegisterClonedObject(this, clone);
       clone.ReadOnlyView = ReadOnlyView;
+      clone.readOnly = readOnly;
       return clone;
     }
 

@@ -41,6 +41,7 @@ namespace HeuristicLab.Data {
       IntValue clone = new IntValue(value);
       cloner.RegisterClonedObject(this, clone);
       clone.ReadOnlyView = ReadOnlyView;
+      clone.readOnly = readOnly;
       return clone;
     }
 

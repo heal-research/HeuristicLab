@@ -32,7 +32,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Data {
   [Item("StringMatrix", "Represents a matrix of strings.")]
   [StorableClass]
-  public class StringMatrix : Item, IEnumerable, IStringConvertibleMatrix {
+  public class StringMatrix : Item, IEnumerable<string>, IStringConvertibleMatrix {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Class; }
     }
@@ -41,10 +41,11 @@ namespace HeuristicLab.Data {
     protected string[,] matrix;
 
     [Storable]
-    private List<string> columnNames;
-    public IEnumerable<string> ColumnNames {
+    protected List<string> columnNames;
+    public virtual IEnumerable<string> ColumnNames {
       get { return this.columnNames; }
       set {
+        if (ReadOnly) throw new NotSupportedException("ColumnNames cannot be set. StringMatrix is read-only.");
         if (value == null || value.Count() == 0)
           columnNames = new List<string>();
         else if (value.Count() != Columns)
@@ -54,10 +55,11 @@ namespace HeuristicLab.Data {
       }
     }
     [Storable]
-    private List<string> rowNames;
-    public IEnumerable<string> RowNames {
+    protected List<string> rowNames;
+    public virtual IEnumerable<string> RowNames {
       get { return this.rowNames; }
       set {
+        if (ReadOnly) throw new NotSupportedException("RowNames cannot be set. StringMatrix is read-only.");
         if (value == null || value.Count() == 0)
           rowNames = new List<string>();
         else if (value.Count() != Rows)
@@ -67,10 +69,11 @@ namespace HeuristicLab.Data {
       }
     }
     [Storable]
-    private bool sortableView;
-    public bool SortableView {
+    protected bool sortableView;
+    public virtual bool SortableView {
       get { return sortableView; }
       set {
+        if (ReadOnly) throw new NotSupportedException("SortableView cannot be set. StringMatrix is read-only.");
         if (value != sortableView) {
           sortableView = value;
           OnSortableViewChanged();
@@ -81,6 +84,7 @@ namespace HeuristicLab.Data {
     public virtual int Rows {
       get { return matrix.GetLength(0); }
       protected set {
+        if (ReadOnly) throw new NotSupportedException("Rows cannot be set. StringMatrix is read-only.");
         if (value != Rows) {
           string[,] newMatrix = new string[value, Columns];
           Array.Copy(matrix, newMatrix, Math.Min(value * Columns, matrix.Length));
@@ -96,6 +100,7 @@ namespace HeuristicLab.Data {
     public virtual int Columns {
       get { return matrix.GetLength(1); }
       protected set {
+        if (ReadOnly) throw new NotSupportedException("Columns cannot be set. StringMatrix is read-only.");
         if (value != Columns) {
           string[,] newMatrix = new string[Rows, value];
           for (int i = 0; i < Rows; i++)
@@ -112,6 +117,7 @@ namespace HeuristicLab.Data {
     public virtual string this[int rowIndex, int columnIndex] {
       get { return matrix[rowIndex, columnIndex]; }
       set {
+        if (ReadOnly) throw new NotSupportedException("Item cannot be set. StringMatrix is read-only.");
         if (value != matrix[rowIndex, columnIndex]) {
           if ((value != null) || (matrix[rowIndex, columnIndex] != string.Empty)) {
             matrix[rowIndex, columnIndex] = value != null ? value : string.Empty;
@@ -121,11 +127,18 @@ namespace HeuristicLab.Data {
       }
     }
 
+    [Storable]
+    protected bool readOnly;
+    public virtual bool ReadOnly {
+      get { return readOnly; }
+    }
+
     public StringMatrix() {
       matrix = new string[0, 0];
       columnNames = new List<string>();
       rowNames = new List<string>();
       sortableView = false;
+      readOnly = false;
     }
     public StringMatrix(int rows, int columns) {
       matrix = new string[rows, columns];
@@ -136,6 +149,7 @@ namespace HeuristicLab.Data {
       columnNames = new List<string>();
       rowNames = new List<string>();
       sortableView = false;
+      readOnly = false;
     }
     protected StringMatrix(int rows, int columns, IEnumerable<string> columnNames)
       : this(rows, columns) {
@@ -155,6 +169,7 @@ namespace HeuristicLab.Data {
       columnNames = new List<string>();
       rowNames = new List<string>();
       sortableView = false;
+      readOnly = false;
     }
     protected StringMatrix(string[,] elements, IEnumerable<string> columnNames)
       : this(elements) {
@@ -169,11 +184,18 @@ namespace HeuristicLab.Data {
       StringMatrix clone = new StringMatrix();
       cloner.RegisterClonedObject(this, clone);
       clone.ReadOnlyView = ReadOnlyView;
-      clone.SortableView = SortableView;
       clone.matrix = (string[,])matrix.Clone();
       clone.columnNames = new List<string>(columnNames);
       clone.rowNames = new List<string>(rowNames);
+      clone.sortableView = sortableView;
+      clone.readOnly = readOnly;
       return clone;
+    }
+
+    public virtual StringMatrix AsReadOnly() {
+      StringMatrix readOnlyStringMatrix = (StringMatrix)this.Clone();
+      readOnlyStringMatrix.readOnly = true;
+      return readOnlyStringMatrix;
     }
 
     public override string ToString() {
@@ -191,8 +213,12 @@ namespace HeuristicLab.Data {
       return sb.ToString();
     }
 
-    public virtual IEnumerator GetEnumerator() {
-      return matrix.GetEnumerator();
+    public virtual IEnumerator<string> GetEnumerator() {
+      return matrix.Cast<string>().GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator() {
+      return GetEnumerator();
     }
 
     protected virtual bool Validate(string value, out string errorMessage) {
@@ -255,18 +281,6 @@ namespace HeuristicLab.Data {
     int IStringConvertibleMatrix.Columns {
       get { return Columns; }
       set { Columns = value; }
-    }
-    IEnumerable<string> IStringConvertibleMatrix.ColumnNames {
-      get { return this.ColumnNames; }
-      set { this.ColumnNames = value; }
-    }
-    IEnumerable<string> IStringConvertibleMatrix.RowNames {
-      get { return this.RowNames; }
-      set { this.RowNames = value; }
-    }
-    bool IStringConvertibleMatrix.SortableView {
-      get { return this.SortableView; }
-      set { this.SortableView = value; }
     }
     bool IStringConvertibleMatrix.Validate(string value, out string errorMessage) {
       return Validate(value, out errorMessage);

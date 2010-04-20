@@ -67,7 +67,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
             for (int j = 0; j < dm.Columns; j++)
               dm[i, j] = CalculateDistance(c[i, 0], c[i, 1], c[j, 0], c[j, 1]);
           }
-          DistanceMatrixParameter.ActualValue = dm;
+          DistanceMatrixParameter.ActualValue = (DoubleMatrix)dm.AsReadOnly();
         }
 
         double length = 0;

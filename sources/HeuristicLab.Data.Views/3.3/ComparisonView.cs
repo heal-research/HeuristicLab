@@ -33,6 +33,14 @@ namespace HeuristicLab.Data.Views {
       set { base.Content = value; }
     }
 
+    public override bool ReadOnly {
+      get {
+        if ((Content != null) && Content.ReadOnly) return true;
+        return base.ReadOnly;
+      }
+      set { base.ReadOnly = value; }
+    }
+
     public ComparisonView() {
       InitializeComponent();
       Caption = "Comparison View";
@@ -81,7 +89,7 @@ namespace HeuristicLab.Data.Views {
     }
 
     private void valueComboBox_SelectedIndexChanged(object sender, EventArgs e) {
-      if (Content != null) Content.Value = (ComparisonType)valueComboBox.SelectedItem;
+      if ((Content != null) && !Content.ReadOnly) Content.Value = (ComparisonType)valueComboBox.SelectedItem;
     }
   }
 }

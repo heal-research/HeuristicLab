@@ -29,7 +29,7 @@ namespace HeuristicLab.Data {
   [Item("BoolMatrix", "Represents a matrix of boolean values.")]
   [StorableClass]
   public class BoolMatrix : ValueTypeMatrix<bool>, IStringConvertibleMatrix {
-        public BoolMatrix() : base() { }
+    public BoolMatrix() : base() { }
     public BoolMatrix(int rows, int columns) : base(rows, columns) { }
     public BoolMatrix(int rows, int columns, IEnumerable<string> columnNames) : base(rows, columns, columnNames) { }
     public BoolMatrix(int rows, int columns, IEnumerable<string> columnNames, IEnumerable<string> rowNames) : base(rows, columns, columnNames, rowNames) { }
@@ -38,11 +38,14 @@ namespace HeuristicLab.Data {
     public BoolMatrix(bool[,] elements, IEnumerable<string> columnNames, IEnumerable<string> rowNames) : base(elements, columnNames, rowNames) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      BoolMatrix clone = new BoolMatrix(matrix);
+      BoolMatrix clone = new BoolMatrix();
       cloner.RegisterClonedObject(this, clone);
       clone.ReadOnlyView = ReadOnlyView;
-      clone.ColumnNames = new List<string>(ColumnNames);
-      clone.RowNames = new List<string>(RowNames);
+      clone.matrix = (bool[,])matrix.Clone();
+      clone.columnNames = new List<string>(columnNames);
+      clone.rowNames = new List<string>(rowNames);
+      clone.sortableView = sortableView;
+      clone.readOnly = readOnly;
       return clone;
     }
 
@@ -80,18 +83,6 @@ namespace HeuristicLab.Data {
     int IStringConvertibleMatrix.Columns {
       get { return Columns; }
       set { Columns = value; }
-    }
-    IEnumerable<string> IStringConvertibleMatrix.ColumnNames {
-      get { return this.ColumnNames; }
-      set { this.ColumnNames = value; }
-    }
-    IEnumerable<string> IStringConvertibleMatrix.RowNames {
-      get { return this.RowNames; }
-      set { this.RowNames = value; }
-    }
-    bool IStringConvertibleMatrix.SortableView {
-      get { return this.SortableView; }
-      set { this.SortableView = value; }
     }
     bool IStringConvertibleMatrix.Validate(string value, out string errorMessage) {
       return Validate(value, out errorMessage);

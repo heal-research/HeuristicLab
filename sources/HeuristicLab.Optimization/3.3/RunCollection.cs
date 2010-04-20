@@ -151,6 +151,9 @@ namespace HeuristicLab.Optimization {
       get { return true; }
       set { throw new NotSupportedException(); }
     }
+    public bool ReadOnly {
+      get { return false; }
+    }
 
     public string GetValue(int rowIndex, int columnIndex) {
       IRun run = this.list[rowIndex];

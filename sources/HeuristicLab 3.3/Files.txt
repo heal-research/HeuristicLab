@@ -56,7 +56,6 @@ HeuristicLab.Problems.TravelingSalesman\3.3:HeuristicLab.Problems.TravelingSales
 HeuristicLab.Problems.TravelingSalesman.Views\3.3:HeuristicLab.Problems.TravelingSalesman.Views-3.3.dll
 HeuristicLab.Random\3.3:HeuristicLab.Random-3.3.dll
 HeuristicLab.Selection\3.3:HeuristicLab.Selection-3.3.dll
-HeuristicLab.Selection.OffspringSelection\3.3:HeuristicLab.Selection.OffspringSelection-3.3.dll
 HeuristicLab.SequentialEngine\3.3:HeuristicLab.SequentialEngine-3.3.dll
 HeuristicLab.TestFunctions\3.3:HeuristicLab.TestFunctions-3.3.dll
 HeuristicLab.ThreadParallelEngine\3.3:HeuristicLab.ThreadParallelEngine-3.3.dll

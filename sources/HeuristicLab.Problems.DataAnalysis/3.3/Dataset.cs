@@ -290,6 +290,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
+    public bool ReadOnly {
+      get { return false; }
+    }
+
     IEnumerable<string> IStringConvertibleMatrix.ColumnNames {
       get { return this.VariableNames; }
       set {

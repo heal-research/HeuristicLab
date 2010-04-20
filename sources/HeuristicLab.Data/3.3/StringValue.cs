@@ -38,6 +38,7 @@ namespace HeuristicLab.Data {
     public virtual string Value {
       get { return value; }
       set {
+        if (ReadOnly) throw new NotSupportedException("Value cannot be set. StringValue is read-only.");
         if (value != this.value) {
           if ((value != null) || (this.value != string.Empty)) {
             this.value = value != null ? value : string.Empty;
@@ -47,18 +48,33 @@ namespace HeuristicLab.Data {
       }
     }
 
+    [Storable]
+    protected bool readOnly;
+    public virtual bool ReadOnly {
+      get { return readOnly; }
+    }
+
     public StringValue() {
       this.value = string.Empty;
+      this.readOnly = false;
     }
     public StringValue(string value) {
       this.value = value != null ? value : string.Empty;
+      this.readOnly = false;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       StringValue clone = new StringValue(value);
       cloner.RegisterClonedObject(this, clone);
       clone.ReadOnlyView = ReadOnlyView;
+      clone.readOnly = readOnly;
       return clone;
+    }
+
+    public virtual StringValue AsReadOnly() {
+      StringValue readOnlyStringValue = (StringValue)this.Clone();
+      readOnlyStringValue.readOnly = true;
+      return readOnlyStringValue;
     }
 
     public override string ToString() {

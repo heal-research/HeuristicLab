@@ -26,6 +26,8 @@ namespace HeuristicLab.Data {
   public interface IStringConvertibleArray : IContent {
     int Length { get; set; }
 
+    bool ReadOnly { get; }
+
     bool Validate(string value, out string errorMessage);
     string GetValue(int index);
     bool SetValue(string value, int index);

@@ -36,6 +36,7 @@ namespace HeuristicLab.Data {
       BoolArray clone = new BoolArray(array);
       cloner.RegisterClonedObject(this, clone);
       clone.ReadOnlyView = ReadOnlyView;
+      clone.readOnly = readOnly;
       return clone;
     }
 
