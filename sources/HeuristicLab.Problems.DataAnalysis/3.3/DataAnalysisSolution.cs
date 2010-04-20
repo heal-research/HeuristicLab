@@ -25,6 +25,8 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   /// <summary>
@@ -32,15 +34,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
   /// </summary>
   [Item("DataAnalysisSolution", "Represents a solution for a data analysis problem which can be visualized in the GUI.")]
   [StorableClass]
-  public sealed class DataAnalysisSolution : Item {
+  public class DataAnalysisSolution : Item {
     [Storable]
-    private IPredictor predictor;
-    public IPredictor Predictor {
-      get { return predictor; }
+    private IModel model;
+    public IModel Model {
+      get { return model; }
       set {
-        if (predictor != value) {
-          predictor = value;
-          OnPredictorChanged();
+        if (model != value) {
+          model = value;
+          OnModelChanged();
         }
       }
     }
@@ -51,21 +53,44 @@ namespace HeuristicLab.Problems.DataAnalysis {
       get { return problemData; }
       set {
         if (problemData != value) {
+          if (value == null) throw new ArgumentNullException();
           if (problemData != null) DeregisterProblemDataEvents();
           problemData = value;
-          if (problemData != null) RegisterProblemDataEvents();
+          RegisterProblemDataEvents();
           OnProblemDataChanged();
         }
       }
     }
-    
+
+    private List<double> estimatedValues;
+    public IEnumerable<double> EstimatedValues {
+      get {
+        return estimatedValues;
+      }
+    }
+
+    private List<double> estimatedTrainingValues;
+    public IEnumerable<double> EstimatedTrainingValues {
+      get {
+        return estimatedTrainingValues;
+      }
+    }
+
+    private List<double> estimatedTestValues;
+    public IEnumerable<double> EstimatedTestValues {
+      get {
+        return estimatedTestValues;
+      }
+    }
+
     public DataAnalysisSolution() : base() { }
-    public DataAnalysisSolution(DataAnalysisProblemData problemData, IPredictor predictor)
+    public DataAnalysisSolution(DataAnalysisProblemData problemData, IModel model)
       : this() {
       this.problemData = problemData;
-      this.predictor = predictor;
+      this.model = model;
       Initialize();
     }
+
     [StorableConstructor]
     private DataAnalysisSolution(bool deserializing) : base(deserializing) { }
 
@@ -74,37 +99,58 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (problemData != null) RegisterProblemDataEvents();
     }
 
+    private void RecalculateEstimatedValues() {
+      estimatedValues = GetEstimatedValues(0, problemData.Dataset.Rows).ToList();
+      int nTrainingValues = problemData.TrainingSamplesEnd.Value - problemData.TrainingSamplesStart.Value;
+      estimatedTrainingValues = estimatedValues.Skip(problemData.TrainingSamplesStart.Value).Take(nTrainingValues).ToList();
+      int nTestValues = problemData.TestSamplesEnd.Value - problemData.TestSamplesStart.Value;
+      estimatedTestValues = estimatedValues.Skip(problemData.TestSamplesStart.Value).Take(nTestValues).ToList();
+    }
+
+    private IEnumerable<double> GetEstimatedValues(int start, int end) {
+      double[] xs = new double[ProblemData.InputVariables.Count];
+      for (int row = 0; row < ProblemData.Dataset.Rows; row++) {
+        for (int i = 0; i < xs.Length; i++) {
+          var variableIndex = ProblemData.Dataset.GetVariableIndex(ProblemData.InputVariables[i].Value);
+          xs[i] = ProblemData.Dataset[row, variableIndex];
+        }
+        yield return model.GetValue(xs);
+      }
+    }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       DataAnalysisSolution clone = new DataAnalysisSolution();
       cloner.RegisterClonedObject(this, clone);
-      clone.predictor = (IPredictor)cloner.Clone(predictor);
+      clone.model = (IModel)cloner.Clone(model);
       clone.problemData = problemData;
       clone.Initialize();
       return clone;
     }
 
     #region Events
-    public event EventHandler PredictorChanged;
-    private void OnPredictorChanged() {
-      var changed = PredictorChanged;
+    public event EventHandler ModelChanged;
+    private void OnModelChanged() {
+      RecalculateEstimatedValues();
+      var changed = ModelChanged;
       if (changed != null)
         changed(this, EventArgs.Empty);
     }
     public event EventHandler ProblemDataChanged;
     private void OnProblemDataChanged() {
+      RecalculateEstimatedValues();
       var changed = ProblemDataChanged;
       if (changed != null)
         changed(this, EventArgs.Empty);
     }
 
     private void RegisterProblemDataEvents() {
-      ProblemData.DatasetChanged += new EventHandler(ProblemData_DataSetChanged);
+      ProblemData.ProblemDataChanged += new EventHandler(ProblemData_Changed);
     }
     private void DeregisterProblemDataEvents() {
-      ProblemData.DatasetChanged += new EventHandler(ProblemData_DataSetChanged);
+      ProblemData.ProblemDataChanged += new EventHandler(ProblemData_Changed);
     }
 
-    private void ProblemData_DataSetChanged(object sender, EventArgs e) {
+    private void ProblemData_Changed(object sender, EventArgs e) {
       OnProblemDataChanged();
     }
     #endregion

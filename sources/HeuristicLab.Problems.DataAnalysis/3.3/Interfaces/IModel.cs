@@ -30,7 +30,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public interface IPredictor : IDeepCloneable {
-    double Estimate(double[] xs);
+  public interface IModel : IDeepCloneable {
+    double GetValue(double[] xs);
   }
 }

@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   public sealed class Dataset : NamedItem, IStringConvertibleMatrix {
     public Dataset()
-      : this(new string[0], new double[,] { { } }) {
+      : this(new string[1] { "y" }, new double[,] { { 0.0 } }) {
     }
 
     public Dataset(IEnumerable<string> variableNames, double[,] data)
@@ -44,8 +44,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (variableNames.Count() != data.GetLength(1)) {
         throw new ArgumentException("Number of variable names doesn't match the number of columns of data");
       }
-      Data = data;
-      this.VariableNames = variableNames;
+      this.data = data;
+      this.variableNames = variableNames.ToArray();
       this.SortableView = false;
     }
 

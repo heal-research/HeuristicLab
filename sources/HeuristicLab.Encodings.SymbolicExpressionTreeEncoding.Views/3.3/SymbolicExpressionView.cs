@@ -47,7 +47,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       // internal nodes or leaf nodes?
       if (node.SubTrees.Count > 0) {
         // symbol on same line as '('
-        strBuilder.AppendLine(node.Symbol.Name);
+        strBuilder.AppendLine(node.ToString());
         // each subtree expression on a new line
         // and closing ')' also on new line
         foreach (var subtree in node.SubTrees) {
@@ -56,7 +56,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         strBuilder.Append(' ', indentLength); strBuilder.Append(")");
       } else {
         // symbol in the same line with as '(' and ')'
-        strBuilder.Append(node.Symbol.Name);
+        strBuilder.Append(node.ToString());
         strBuilder.Append(")");
       }
       return strBuilder.ToString();

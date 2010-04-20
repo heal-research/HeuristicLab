@@ -31,12 +31,22 @@ using HeuristicLab.Common;
 using HeuristicLab.MainForm;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.MainForm.WindowsForms;
+using System.Windows.Forms.DataVisualization.Charting;
 
-namespace HeuristicLab.Problems.DataAnalysis {
+namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Line Chart View")]
   [Content(typeof(DataAnalysisSolution))]
-  public partial class LineChartView : ContentView {
-    
+  public partial class LineChartView : AsynchronousContentView {
+    private const string TARGETVARIABLE_SERIES_NAME = "TargetVariable";
+    private const string ESTIMATEDVALUES_SERIES_NAME = "EstimatedValues";
+
+    public new DataAnalysisSolution Content {
+      get { return (DataAnalysisSolution)base.Content; }
+      set {
+        base.Content = value;
+      }
+    }
+
     public LineChartView()
       : base() {
       InitializeComponent();
@@ -48,115 +58,82 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
       this.chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = true;
       this.chart.ChartAreas[0].AxisY.ScaleView.Zoomable = true;
-      this.chart.ChartAreas[0].CursorY.Interval = 0;      
+      this.chart.ChartAreas[0].CursorY.Interval = 0;
     }
 
     public LineChartView(DataAnalysisSolution dataAnalysisSolution)
       : this() {
-      
+      Content = dataAnalysisSolution;
+      DrawTargetVariableValues();
+      DrawEstimatedValues();
     }
 
-    private void model_Changed(object sender, EventArgs e) {
-      if (InvokeRequired) {
-        Action<object, EventArgs> action = new Action<object, EventArgs>(model_Changed);
-        this.Invoke(action, sender, e);
-      } else {
-        IVisualModel model = (IVisualModel)sender;
-        Series s = this.chart.Series.Single(x => x.Tag == model);
-        s.Points.DataBindY(model.PredictedValues.ToArray());
-        s.LegendText = model.ModelName;
-        this.UpdateStripLines();
-      }
+    private void DrawEstimatedValues() {
+      this.chart.Series.Add(ESTIMATEDVALUES_SERIES_NAME);
+      this.chart.Series[ESTIMATEDVALUES_SERIES_NAME].LegendText = Content.ItemName;
+      this.chart.Series[ESTIMATEDVALUES_SERIES_NAME].ChartType = SeriesChartType.FastLine;
+      this.chart.Series[ESTIMATEDVALUES_SERIES_NAME].Points.DataBindY(Content.EstimatedValues.ToArray());
+      this.chart.Series[ESTIMATEDVALUES_SERIES_NAME].Tag = Content;
     }
 
-    protected override void ModelsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
-      base.ModelsCollectionChanged(sender, e);
-      if (InvokeRequired) {
-        Action<object, NotifyCollectionChangedEventArgs> action = new Action<object, NotifyCollectionChangedEventArgs>(ModelsCollectionChanged);
-        this.Invoke(action, sender, e);
-      } else {
-        if (e.Action == NotifyCollectionChangedAction.Remove) {
-          foreach (IVisualModel model in e.OldItems) {
-            if (this.chart.Series.Any(x => x.Tag == model))
-              this.RemoveModel(model);
+    private void DrawTargetVariableValues() {
+      this.chart.Series.Clear();
+      this.chart.Series.Add(TARGETVARIABLE_SERIES_NAME);
+      this.chart.Series[TARGETVARIABLE_SERIES_NAME].LegendText = Content.ProblemData.TargetVariable.Value;
+      this.chart.Series[TARGETVARIABLE_SERIES_NAME].ChartType = SeriesChartType.FastLine;
+      this.chart.Series[TARGETVARIABLE_SERIES_NAME].Points.DataBindY(Content.ProblemData.Dataset[Content.ProblemData.TargetVariable.Value]);
+      this.UpdateStripLines();
+    }
+
+    #region events
+    protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
+      Content.ModelChanged += new EventHandler(Content_ModelChanged);
+      Content.ProblemDataChanged += new EventHandler(Content_ProblemDataChanged);
+    }
+
+    protected override void DeregisterContentEvents() {
+      base.DeregisterContentEvents();
+      Content.ModelChanged -= new EventHandler(Content_ModelChanged);
+      Content.ProblemDataChanged -= new EventHandler(Content_ProblemDataChanged);
+    }
+
+    void Content_ProblemDataChanged(object sender, EventArgs e) {
+      OnContentChanged();
+    }
+
+    void Content_ModelChanged(object sender, EventArgs e) {
+      OnContentChanged();
+    }
+
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      UpdateEstimatedValuesLineChart();
+    }
+
+    private void UpdateEstimatedValuesLineChart() {
+      if (InvokeRequired) Invoke((Action)UpdateEstimatedValuesLineChart);
+      else {
+        if (this.chart.Series.Count > 0) {
+          Series s = this.chart.Series.SingleOrDefault(x => x.Tag == Content);
+          if (s != null) {
+            s.Points.DataBindY(Content.EstimatedValues.ToArray());
+            s.LegendText = Content.ItemName;
+            this.UpdateStripLines();
           }
-          this.UpdateStripLines();
-        } else if (e.Action == NotifyCollectionChangedAction.Reset)
-          this.RemoveAllModels();
-      }
-    }
-
-    private void AddModel(IVisualModel model) {
-      if (this.targetVariableName != model.TargetVariableName) {
-        this.RemoveAllModels();
-        this.chart.Series.Clear();
-        this.chart.Series.Add(TARGETVARIABLE);
-        this.chart.Series[TARGETVARIABLE].LegendText = model.TargetVariableName;
-        this.chart.Series[TARGETVARIABLE].ChartType = SeriesChartType.FastLine;
-        this.chart.Series[TARGETVARIABLE].Points.DataBindY(model.Dataset.GetVariableValues(model.TargetVariableName));
-        this.targetVariableName = model.TargetVariableName;
-        this.Caption = this.targetVariableName + " Model Line Chart";
-      }
-      string seriesName = model.GetHashCode().ToString();
-      this.chart.Series.Add(seriesName);
-      this.chart.Series[seriesName].Tag = model;
-      this.chart.Series[seriesName].LegendText = model.ModelName;
-      this.chart.Series[seriesName].ChartType = SeriesChartType.FastLine;
-      this.chart.Series[seriesName].Points.DataBindY(model.PredictedValues.ToArray());
-      model.Changed += new EventHandler(model_Changed);
-      this.UpdateStripLines();
-    }
-
-    private void RemoveModel(IVisualModel model) {
-      Series s = this.chart.Series.Single(x => x.Tag == model);
-      this.chart.Series.Remove(s);
-      model.Changed -= new EventHandler(model_Changed);
-    }
-
-    private void RemoveAllModels() {
-      var models = (from s in chart.Series
-                    let m = s.Tag as IVisualModel
-                    where m != null
-                    select m).ToArray(); // select and copy currently displayed models
-      foreach (var m in models) {
-        this.RemoveModel(m);
-      }
-      this.UpdateStripLines();
-    }
-
-    private void chart_MouseDown(object sender, MouseEventArgs e) {
-      HitTestResult result = this.chart.HitTest(e.X, e.Y);
-      if (result.ChartElementType == ChartElementType.LegendItem) {
-        if (result.Series.Name != TARGETVARIABLE) {
-          this.RemoveModel(result.Series.Tag as IVisualModel);
-          this.UpdateStripLines();
         }
       }
     }
-
-    private void chart_MouseMove(object sender, MouseEventArgs e) {
-      HitTestResult result = this.chart.HitTest(e.X, e.Y);
-      if (result.ChartElementType == ChartElementType.LegendItem) {
-        if (result.Series.Name != TARGETVARIABLE)
-          this.Cursor = Cursors.Hand;
-      } else
-        this.Cursor = Cursors.Default;
-    }
+    #endregion
 
     private void UpdateStripLines() {
       this.chart.ChartAreas[0].AxisX.StripLines.Clear();
-      IEnumerable<IVisualModel> visualModels = from Series s in this.chart.Series
-                                               where s.Tag is IVisualModel
-                                               select (IVisualModel)s.Tag;
-      if (visualModels.Count() > 0) {
-        IVisualModel model = visualModels.ElementAt(0);
-        if (visualModels.All(x => x.TrainingSamplesStart == model.TrainingSamplesStart && x.TrainingSamplesEnd == model.TrainingSamplesEnd))
-          this.CreateAndAddStripLine("Training", Color.FromArgb(20, Color.Green), model.TrainingSamplesStart, model.TrainingSamplesEnd);
-        if (visualModels.All(x => x.ValidationSamplesStart == model.ValidationSamplesStart && x.ValidationSamplesEnd == model.ValidationSamplesEnd))
-          this.CreateAndAddStripLine("Validation", Color.FromArgb(20, Color.Yellow), model.ValidationSamplesStart, model.ValidationSamplesEnd);
-        if (visualModels.All(x => x.TestSamplesStart == model.TestSamplesStart && x.TestSamplesEnd == model.TestSamplesEnd))
-          this.CreateAndAddStripLine("Test", Color.FromArgb(20, Color.Red), model.TestSamplesStart, model.TestSamplesEnd);
-      }
+      this.CreateAndAddStripLine("Training", Color.FromArgb(20, Color.Green),
+        Content.ProblemData.TrainingSamplesStart.Value,
+        Content.ProblemData.TrainingSamplesEnd.Value);
+      this.CreateAndAddStripLine("Test", Color.FromArgb(20, Color.Red),
+        Content.ProblemData.TestSamplesStart.Value,
+        Content.ProblemData.TestSamplesEnd.Value);
     }
 
     private void CreateAndAddStripLine(string title, Color c, int start, int end) {

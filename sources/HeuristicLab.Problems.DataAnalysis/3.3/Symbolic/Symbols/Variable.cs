@@ -51,7 +51,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
     }
     private List<string> variableNames;
     [Storable]
-    public ICollection<string> VariableNames {
+    public IEnumerable<string> VariableNames {
       get { return variableNames; }
       set {
         if (value == null) throw new ArgumentNullException();

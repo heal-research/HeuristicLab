@@ -31,16 +31,21 @@ using HeuristicLab.Common;
 using System.Collections.Specialized;
 using HeuristicLab.MainForm;
 using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.MainForm.WindowsForms;
 
-namespace HeuristicLab.Problems.DataAnalyis.Views {
+namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Scatter Plot View")]
   [Content(typeof(DataAnalysisSolution))]
-  public partial class ScatterPlotView : ContentView {
+  public partial class ScatterPlotView : AsynchronousContentView {
     private const string DEFAULT_CAPTION = "Scatter Plot";
     private const string ALL_SERIES = "All Samples";
     private const string TRAINING_SERIES = "Training Samples";
-    private const string validationSeries = "Validation Samples";
     private const string TEST_SERIES = "Test Samples";
+
+    public new DataAnalysisSolution Content {
+      get { return (DataAnalysisSolution)base.Content; }
+      set { base.Content = value; }
+    }
 
     public ScatterPlotView()
       : base() {
@@ -54,10 +59,6 @@ namespace HeuristicLab.Problems.DataAnalyis.Views {
       this.chart.Series.Add(TRAINING_SERIES);
       this.chart.Series[TRAINING_SERIES].LegendText = TRAINING_SERIES;
       this.chart.Series[TRAINING_SERIES].ChartType = SeriesChartType.FastPoint;
-
-      this.chart.Series.Add(validationSeries);
-      this.chart.Series[validationSeries].LegendText = validationSeries;
-      this.chart.Series[validationSeries].ChartType = SeriesChartType.FastPoint;
 
       this.chart.Series.Add(TEST_SERIES);
       this.chart.Series[TEST_SERIES].LegendText = TEST_SERIES;
@@ -79,22 +80,41 @@ namespace HeuristicLab.Problems.DataAnalyis.Views {
       this.chart.ChartAreas[0].AxisY.IsStartedFromZero = true;
     }
 
-    public ScatterPlotView(IVisualModel visualModel)
+    public ScatterPlotView(DataAnalysisSolution dataAnalysisSolution)
       : this() {
-      this.VisualModel = visualModel;
+      Content = dataAnalysisSolution;
     }
 
-    private IVisualModel visualModel;
-    public IVisualModel VisualModel {
-      get { return this.visualModel; }
-      private set {
-        if (this.visualModel != null) {
-          this.visualModel.Changed -= new EventHandler(model_Changed);                 
-        }
-        this.visualModel = value;
-        if (this.visualModel != null) {
-          this.Caption = this.visualModel.ModelName + " " + DEFAULT_CAPTION;
-          this.visualModel.Changed += new EventHandler(model_Changed);
+    protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
+      Content.ModelChanged += new EventHandler(Content_ModelChanged);
+      Content.ProblemDataChanged += new EventHandler(Content_ProblemDataChanged);
+    }
+    protected override void DeregisterContentEvents() {
+      base.DeregisterContentEvents();
+      Content.ModelChanged -= new EventHandler(Content_ModelChanged);
+      Content.ProblemDataChanged -= new EventHandler(Content_ProblemDataChanged);
+    }
+
+
+    void Content_ProblemDataChanged(object sender, EventArgs e) {
+      OnContentChanged();
+    }
+
+    void Content_ModelChanged(object sender, EventArgs e) {
+      OnContentChanged();
+    }
+
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      UpdateChart();
+    }
+
+    private void UpdateChart() {
+      if (InvokeRequired) Invoke((Action)UpdateChart);
+      else {
+        if (Content != null) {
+          this.Caption = Content.ItemName + " " + DEFAULT_CAPTION;
           this.UpdateSeries();
           if (!this.chart.Series.Any(s => s.Points.Count > 0))
             this.ToggleSeriesData(this.chart.Series[TRAINING_SERIES]);
@@ -106,25 +126,24 @@ namespace HeuristicLab.Problems.DataAnalyis.Views {
     }
 
     private void UpdateSeries() {
+      string targetVariableName = Content.ProblemData.TargetVariable.Value;
+      Dataset dataset = Content.ProblemData.Dataset;
+      int trainingStart = Content.ProblemData.TrainingSamplesStart.Value;
+      int trainingEnd = Content.ProblemData.TrainingSamplesEnd.Value;
+      int testStart = Content.ProblemData.TestSamplesStart.Value;
+      int testEnd = Content.ProblemData.TestSamplesEnd.Value;
       if (this.chart.Series[ALL_SERIES].Points.Count > 0)
-        this.chart.Series[ALL_SERIES].Points.DataBindXY(this.visualModel.PredictedValues.ToArray(), "",
-          this.visualModel.Dataset.GetVariableValues(this.visualModel.TargetVariableName), "");
+        this.chart.Series[ALL_SERIES].Points.DataBindXY(Content.EstimatedValues.ToArray(), "",
+          dataset[targetVariableName], "");
       if (this.chart.Series[TRAINING_SERIES].Points.Count > 0)
-        this.chart.Series[TRAINING_SERIES].Points.DataBindXY(this.visualModel.PredictedTrainingValues.ToArray(), "",
-          this.visualModel.Dataset.GetVariableValues(this.visualModel.TargetVariableName, this.visualModel.TrainingSamplesStart, this.visualModel.TrainingSamplesEnd), "");
-      if (this.chart.Series[validationSeries].Points.Count > 0)
-        this.chart.Series[validationSeries].Points.DataBindXY(this.visualModel.PredictedValidationValues.ToArray(), "",
-          this.visualModel.Dataset.GetVariableValues(this.visualModel.TargetVariableName, this.visualModel.ValidationSamplesStart, this.visualModel.ValidationSamplesEnd), "");
+        this.chart.Series[TRAINING_SERIES].Points.DataBindXY(Content.EstimatedTrainingValues.ToArray(), "",
+          dataset.GetVariableValues(targetVariableName, trainingStart, trainingEnd), "");
       if (this.chart.Series[TEST_SERIES].Points.Count > 0)
-        this.chart.Series[TEST_SERIES].Points.DataBindXY(this.visualModel.PredictedTestValues.ToArray(), "",
-          this.visualModel.Dataset.GetVariableValues(this.visualModel.TargetVariableName, this.visualModel.TestSamplesStart, this.visualModel.TestSamplesEnd), "");
+        this.chart.Series[TEST_SERIES].Points.DataBindXY(Content.EstimatedTestValues.ToArray(), "",
+          dataset.GetVariableValues(targetVariableName, testStart, testEnd), "");
 
-      double x = this.visualModel.PredictedValues.Max();
-      double y = this.visualModel.Dataset.GetMaximum(this.visualModel.TargetVariableName);
-      double max = x > y ? x : y;
-      x = this.visualModel.PredictedValues.Min();
-      y = this.visualModel.Dataset.GetMinimum(this.visualModel.TargetVariableName);
-      double min = x < y ? x : y;
+      double max = Math.Max(Content.EstimatedValues.Max(), dataset.GetMax(targetVariableName));
+      double min = Math.Min(Content.EstimatedValues.Min(), dataset.GetMin(targetVariableName));
 
       max = Math.Ceiling(max) * 1.2;
       min = Math.Floor(min) * 0.8;
@@ -138,67 +157,39 @@ namespace HeuristicLab.Problems.DataAnalyis.Views {
     private void ClearChart() {
       this.chart.Series[ALL_SERIES].Points.Clear();
       this.chart.Series[TRAINING_SERIES].Points.Clear();
-      this.chart.Series[validationSeries].Points.Clear();
       this.chart.Series[TEST_SERIES].Points.Clear();
     }
-
-
-    private void model_Changed(object sender, EventArgs e) {
-      if (InvokeRequired) {
-        Action<object, EventArgs> action = new Action<object, EventArgs>(model_Changed);
-        this.Invoke(action, sender, e);
-      } else {
-        this.Caption = this.visualModel.ModelName + " " + DEFAULT_CAPTION;
-        this.UpdateSeries();
-      }
-    }
-
-    protected override void OnClosed(FormClosedEventArgs e) {
-      base.OnClosed( e);
-      this.VisualModel = null;
-    }
-
-    protected override void ModelsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
-      if (InvokeRequired) {
-        Action<object, NotifyCollectionChangedEventArgs> action = new Action<object, NotifyCollectionChangedEventArgs>(ModelsCollectionChanged);
-        this.Invoke(action, sender, e);
-      } else {
-        if (e.Action == NotifyCollectionChangedAction.Remove) {
-          if (e.OldItems.Contains(this.visualModel))
-            this.VisualModel = null;
-        }
-        if(e.Action == NotifyCollectionChangedAction.Reset)
-          this.VisualModel = null;
-      }
-    }  
 
     private void ToggleSeriesData(Series series) {
       if (series.Points.Count > 0) {  //checks if series is shown
         if (this.chart.Series.Any(s => s != series && s.Points.Count > 0)) {
-          series.Points.Clear();    
+          series.Points.Clear();
         }
-      } else if (this.visualModel != null) {
+      } else if (Content != null) {
+        string targetVariableName = Content.ProblemData.TargetVariable.Value;
+        Dataset dataset = Content.ProblemData.Dataset;
+        int trainingStart = Content.ProblemData.TrainingSamplesStart.Value;
+        int trainingEnd = Content.ProblemData.TrainingSamplesEnd.Value;
+        int testStart = Content.ProblemData.TestSamplesStart.Value;
+        int testEnd = Content.ProblemData.TestSamplesEnd.Value;
+
         IEnumerable<double> predictedValues = null;
         IEnumerable<double> targetValues = null;
         switch (series.Name) {
           case ALL_SERIES:
-            predictedValues = this.visualModel.PredictedValues;
-            targetValues = this.visualModel.Dataset.GetVariableValues(this.visualModel.TargetVariableName);
+            predictedValues = Content.EstimatedValues;
+            targetValues = dataset[targetVariableName];
             break;
           case TRAINING_SERIES:
-            predictedValues = this.visualModel.PredictedTrainingValues;
-            targetValues = this.visualModel.Dataset.GetVariableValues(this.visualModel.TargetVariableName, this.visualModel.TrainingSamplesStart, this.visualModel.TrainingSamplesEnd);
-            break;
-          case validationSeries:
-            predictedValues = this.visualModel.PredictedValidationValues;
-            targetValues = this.visualModel.Dataset.GetVariableValues(this.visualModel.TargetVariableName, this.visualModel.ValidationSamplesStart, this.visualModel.ValidationSamplesEnd);
+            predictedValues = Content.EstimatedTrainingValues;
+            targetValues = dataset.GetVariableValues(targetVariableName, trainingStart, trainingEnd);
             break;
           case TEST_SERIES:
-            predictedValues = this.visualModel.PredictedTestValues;
-            targetValues = this.visualModel.Dataset.GetVariableValues(this.visualModel.TargetVariableName, this.visualModel.TestSamplesStart, this.visualModel.TestSamplesEnd);
+            predictedValues = Content.EstimatedTestValues;
+            targetValues = dataset.GetVariableValues(targetVariableName, testStart, testEnd);
             break;
         }
-        series.Points.DataBindXY(predictedValues.ToArray(), "", targetValues, "");
+        series.Points.DataBindXY(predictedValues, "", targetValues, "");
         this.chart.Legends[series.Legend].ForeColor = Color.Black;
       }
     }
@@ -226,24 +217,7 @@ namespace HeuristicLab.Problems.DataAnalyis.Views {
     private void chart_CustomizeLegend(object sender, CustomizeLegendEventArgs e) {
       e.LegendItems[0].Cells[1].ForeColor = this.chart.Series[ALL_SERIES].Points.Count == 0 ? Color.Gray : Color.Black;
       e.LegendItems[1].Cells[1].ForeColor = this.chart.Series[TRAINING_SERIES].Points.Count == 0 ? Color.Gray : Color.Black;
-      e.LegendItems[2].Cells[1].ForeColor = this.chart.Series[validationSeries].Points.Count == 0 ? Color.Gray : Color.Black;
-      e.LegendItems[3].Cells[1].ForeColor = this.chart.Series[TEST_SERIES].Points.Count == 0 ? Color.Gray : Color.Black;
-    }
-
-
-    private void ScatterPlotView_DragDrop(object sender, DragEventArgs e) {
-      IVisualModel model = this.ExtractModel(e.Data);
-      if (model != null) {
-        this.VisualModel = model;
-      }
-    }
-
-    private void ScatterPlotView_DragEnter(object sender, DragEventArgs e) {
-      IVisualModel model = this.ExtractModel(e.Data);
-      if (model != null)
-        e.Effect = DragDropEffects.Link;
-      else
-        e.Effect = DragDropEffects.None;
+      e.LegendItems[2].Cells[1].ForeColor = this.chart.Series[TEST_SERIES].Points.Count == 0 ? Color.Gray : Color.Black;
     }
   }
 }

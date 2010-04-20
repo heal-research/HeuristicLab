@@ -64,6 +64,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
     public SymbolicExpressionTree(SymbolicExpressionTreeNode root)
       : base() {
+      this.Root = root;
     }
 
     public IEnumerable<SymbolicExpressionTreeNode> IterateNodesPrefix() {

@@ -52,5 +52,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols {
     public override object Clone() {
       return new DefunTreeNode(this);
     }
+
+    public override string ToString() {
+      return FunctionName;
+    }
   }
 }

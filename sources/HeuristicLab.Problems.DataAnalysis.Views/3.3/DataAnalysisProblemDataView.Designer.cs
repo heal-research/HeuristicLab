@@ -1,25 +1,4 @@
-#region License Information
-/* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
- *
- * This file is part of HeuristicLab.
- *
- * HeuristicLab is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * HeuristicLab is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
- */
-#endregion
-
-namespace HeuristicLab.Problems.DataAnalysis {
+﻿namespace HeuristicLab.Problems.DataAnalysis.Views {
   partial class DataAnalysisProblemDataView {
     /// <summary> 
     /// Required designer variable.
@@ -31,9 +10,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
     /// </summary>
     /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
     protected override void Dispose(bool disposing) {
-      if (disposing) {
-        if (openFileDialog != null) openFileDialog.Dispose();
-        if (components != null) components.Dispose();
+      if (disposing && (components != null)) {
+        components.Dispose();
       }
       base.Dispose(disposing);
     }
@@ -45,8 +23,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.variableCollectionView = new HeuristicLab.Core.Views.VariableCollectionView();
       this.importButton = new System.Windows.Forms.Button();
-      this.datasetView = new HeuristicLab.Data.Views.StringConvertibleMatrixView();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
       // 
@@ -54,46 +32,42 @@ namespace HeuristicLab.Problems.DataAnalysis {
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.nameTextBox, 2);
-      this.nameTextBox.Size = new System.Drawing.Size(457, 20);
       // 
-      // descriptionTextBox
+      // variableCollectionView
       // 
-      this.descriptionTextBox.Size = new System.Drawing.Size(457, 20);
+      this.variableCollectionView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.variableCollectionView.Caption = "VariableCollection";
+      this.variableCollectionView.Content = null;
+      this.variableCollectionView.Location = new System.Drawing.Point(0, 52);
+      this.variableCollectionView.Name = "variableCollectionView";
+      this.variableCollectionView.ReadOnly = false;
+      this.variableCollectionView.Size = new System.Drawing.Size(588, 366);
+      this.variableCollectionView.TabIndex = 0;
       // 
       // importButton
       // 
       this.importButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.importButton.Location = new System.Drawing.Point(0, 399);
+      this.importButton.Location = new System.Drawing.Point(6, 424);
       this.importButton.Name = "importButton";
-      this.importButton.Size = new System.Drawing.Size(529, 23);
-      this.importButton.TabIndex = 5;
-      this.importButton.Text = "&Import from CSV file";
+      this.importButton.Size = new System.Drawing.Size(579, 23);
+      this.importButton.TabIndex = 4;
+      this.importButton.Text = "Import from CSV file";
       this.importButton.UseVisualStyleBackColor = true;
       this.importButton.Click += new System.EventHandler(this.importButton_Click);
       // 
-      // datasetView
-      // 
-      this.datasetView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.datasetView.Caption = "StringConvertibleMatrix View";
-      this.datasetView.Content = null;
-      this.datasetView.Location = new System.Drawing.Point(0, 52);
-      this.datasetView.Name = "datasetView";
-      this.datasetView.Size = new System.Drawing.Size(526, 341);
-      this.datasetView.TabIndex = 6;
-      // 
-      // RegressionProblemDataView
+      // ProblemDataView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.variableCollectionView);
       this.Controls.Add(this.importButton);
-      this.Controls.Add(this.datasetView);
-      this.Name = "RegressionProblemDataView";
-      this.Size = new System.Drawing.Size(529, 422);
-      this.Controls.SetChildIndex(this.datasetView, 0);
+      this.Name = "ProblemDataView";
+      this.Size = new System.Drawing.Size(588, 450);
       this.Controls.SetChildIndex(this.importButton, 0);
+      this.Controls.SetChildIndex(this.variableCollectionView, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
       this.Controls.SetChildIndex(this.descriptionLabel, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
@@ -106,8 +80,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     #endregion
 
+    private HeuristicLab.Core.Views.VariableCollectionView variableCollectionView;
     private System.Windows.Forms.Button importButton;
-    private HeuristicLab.Data.Views.StringConvertibleMatrixView datasetView;
-
   }
 }

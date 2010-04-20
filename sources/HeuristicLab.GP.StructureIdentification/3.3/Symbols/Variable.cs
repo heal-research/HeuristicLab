@@ -24,6 +24,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Random;
 using HeuristicLab.Data;
 using System.Xml;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public class Variable : Terminal {
@@ -148,8 +149,8 @@ The index of the row that is actually read is SampleIndex+SampleOffset).";
     #region persistence
     public override object Clone(System.Collections.Generic.IDictionary<System.Guid, object> clonedObjects) {
       Variable clone = (Variable)base.Clone(clonedObjects);
-      clone.MaxTimeOffset = MaxTimeOffset;
-      clone.MinTimeOffset = MinTimeOffset;
+      clone.maxOffset = MaxTimeOffset;
+      clone.minOffset = MinTimeOffset;
       return clone;
     }
     public override System.Xml.XmlNode GetXmlNode(string name, System.Xml.XmlDocument document, System.Collections.Generic.IDictionary<System.Guid, HeuristicLab.Core.IStorable> persistedObjects) {
@@ -165,10 +166,10 @@ The index of the row that is actually read is SampleIndex+SampleOffset).";
     public override void Populate(System.Xml.XmlNode node, System.Collections.Generic.IDictionary<System.Guid, HeuristicLab.Core.IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
       if (node.Attributes["MinTimeOffset"] != null)
-        MinTimeOffset = XmlConvert.ToInt32(node.Attributes["MinTimeOffset"].Value);
+        minOffset = XmlConvert.ToInt32(node.Attributes["MinTimeOffset"].Value);
       else MinTimeOffset = 0;
       if (node.Attributes["MaxTimeOffset"] != null)
-        MaxTimeOffset = XmlConvert.ToInt32(node.Attributes["MaxTimeOffset"].Value);
+        maxOffset = XmlConvert.ToInt32(node.Attributes["MaxTimeOffset"].Value);
       else MaxTimeOffset = 0;
     }
     #endregion

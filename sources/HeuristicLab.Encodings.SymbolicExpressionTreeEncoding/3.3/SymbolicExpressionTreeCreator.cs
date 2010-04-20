@@ -64,10 +64,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public sealed override IOperation Apply() {
       SymbolicExpressionTreeParameter.ActualValue = Create(Random, SymbolicExpressionGrammar,
         MaxTreeSize, MaxTreeHeight, MaxFunctionDefinitions, MaxFunctionArguments);
-
-      foreach (var node in SymbolicExpressionTreeParameter.ActualValue.IterateNodesPostfix()) {
-        node.ResetLocalParameters(RandomParameter.ActualValue);
-      }
       return null;
     }
 

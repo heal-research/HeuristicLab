@@ -144,7 +144,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
     #endregion
 
-
+    public override string ToString() {
+      return Symbol.Name;
+    }
 
   }
 }

@@ -55,6 +55,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
 
     public VariableTreeNode(Variable variableSymbol) : base(variableSymbol) { }
 
+    public override bool HasLocalParameters {
+      get {
+        return true;
+      }
+    }
+
     public override void ResetLocalParameters(IRandom random) {
       base.ResetLocalParameters(random);
       var normalDistributedRNG = new NormalDistributedRandom(random, Symbol.WeightNu, Symbol.WeightSigma);
@@ -66,6 +72,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
 
     public override object Clone() {
       return new VariableTreeNode(this);
+    }
+
+    public override string ToString() {
+      return weight.ToString("E5") + " * " + variableName;
     }
   }
 }

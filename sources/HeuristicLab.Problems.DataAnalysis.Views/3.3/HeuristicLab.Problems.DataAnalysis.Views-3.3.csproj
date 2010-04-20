@@ -71,6 +71,7 @@
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -83,6 +84,12 @@
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.frame" />
+    <Compile Include="EstimatedValuesView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="EstimatedValuesView.Designer.cs">
+      <DependentUpon>EstimatedValuesView.cs</DependentUpon>
+    </Compile>
     <Compile Include="DataAnalysisProblemDataView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -90,7 +97,31 @@
       <DependentUpon>DataAnalysisProblemDataView.cs</DependentUpon>
     </Compile>
     <Compile Include="HeuristicLabProblemsDataAnalysisViewsPlugin.cs" />
+    <Compile Include="LineChartView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="LineChartView.Designer.cs">
+      <DependentUpon>LineChartView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScatterPlotView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ScatterPlotView.Designer.cs">
+      <DependentUpon>ScatterPlotView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Symbolic\SimplifiedSymbolicExpressionModelView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Symbolic\SimplifiedSymbolicExpressionModelView.designer.cs">
+      <DependentUpon>SimplifiedSymbolicExpressionModelView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Symbolic\SymbolicExpressionModelView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Symbolic\SymbolicExpressionModelView.designer.cs">
+      <DependentUpon>SymbolicExpressionModelView.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
@@ -116,6 +147,10 @@
     <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
       <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
       <Name>HeuristicLab.Data-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views\3.3\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views-3.3.csproj">
+      <Project>{6F42C5F8-16CD-43EE-8208-FD4573A69D85}</Project>
+      <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding\3.3\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3.csproj">
       <Project>{125D3006-67F5-48CB-913E-73C0548F17FA}</Project>
@@ -145,10 +180,34 @@
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.DataAnalysis.Regression\3.3\HeuristicLab.Problems.DataAnalysis.Regression-3.3.csproj">
+      <Project>{BDF86B1D-630E-4CE2-8A49-8C90B1BDE4C9}</Project>
+      <Name>HeuristicLab.Problems.DataAnalysis.Regression-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Problems.DataAnalysis\3.3\HeuristicLab.Problems.DataAnalysis-3.3.csproj">
       <Project>{70DFD984-B1D9-46FE-8EB7-4DE92D71A9FC}</Project>
       <Name>HeuristicLab.Problems.DataAnalysis-3.3</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EstimatedValuesView.resx">
+      <DependentUpon>EstimatedValuesView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataAnalysisProblemDataView.resx">
+      <DependentUpon>DataAnalysisProblemDataView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LineChartView.resx">
+      <DependentUpon>LineChartView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ScatterPlotView.resx">
+      <DependentUpon>ScatterPlotView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Symbolic\SimplifiedSymbolicExpressionModelView.resx">
+      <DependentUpon>SimplifiedSymbolicExpressionModelView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Symbolic\SymbolicExpressionModelView.resx">
+      <DependentUpon>SymbolicExpressionModelView.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

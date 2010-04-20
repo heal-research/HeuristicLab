@@ -33,11 +33,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
     public new Constant Symbol {
       get { return (Constant)base.Symbol; }
     }
-    public override bool HasLocalParameters {
-      get {
-        return true;
-      }
-    }
 
     private double constantValue;
     [Storable]
@@ -53,6 +48,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
 
     public ConstantTreeNode(Constant constantSymbol) : base(constantSymbol) { }
 
+    public override bool HasLocalParameters {
+      get {
+        return true;
+      }
+    }
     public override void ResetLocalParameters(IRandom random) {
       base.ResetLocalParameters(random);
       var range = Symbol.MaxValue - Symbol.MaxValue;
@@ -61,6 +61,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
 
     public override object Clone() {
       return new ConstantTreeNode(this);
+    }
+
+    public override string ToString() {
+      return constantValue.ToString("E5");
     }
   }
 }

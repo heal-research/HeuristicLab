@@ -55,6 +55,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       ) {
       SymbolicExpressionTree tree = new SymbolicExpressionTree();
       var rootNode = grammar.StartSymbol.CreateTreeNode();
+      if (rootNode.HasLocalParameters) rootNode.ResetLocalParameters(random);
       rootNode.Grammar = grammar;
       tree.Root = PTC2(random, rootNode, maxTreeSize, maxTreeHeight, maxFunctionDefinitions, maxFunctionArguments);
       return tree;
@@ -110,7 +111,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         // insert a dummy sub-tree and add the pending extension to the list
         var dummy = new SymbolicExpressionTreeNode();
         root.AddSubTree(dummy);
-        // dummy.Grammar = (ISymbolicExpressionGrammar)dummy.Grammar.Clone();
         extensionPoints.Add(new TreeExtensionPoint { Parent = root, ChildIndex = i, ExtensionPointDepth = 2 });
       }
       // while there are pending extension points and we have not reached the limit of adding new extension points
@@ -131,6 +131,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
                                select s;
           Symbol selectedSymbol = SelectRandomSymbol(random, allowedSymbols);
           SymbolicExpressionTreeNode newTree = selectedSymbol.CreateTreeNode();
+          if (newTree.HasLocalParameters) newTree.ResetLocalParameters(random);
           parent.RemoveSubTree(argumentIndex);
           parent.InsertSubTree(argumentIndex, newTree);
 
@@ -144,8 +145,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
             // insert a dummy sub-tree and add the pending extension to the list
             var dummy = new SymbolicExpressionTreeNode();
             newTree.AddSubTree(dummy);
-            //if (IsTopLevelBranch(root, dummy))
-            //  dummy.Grammar = (ISymbolicExpressionGrammar)dummy.Grammar.Clone();
             extensionPoints.Add(new TreeExtensionPoint { Parent = newTree, ChildIndex = i, ExtensionPointDepth = extensionDepth + 1 });
           }
           totalListMinSize += newTree.Grammar.GetMinExpressionLength(newTree.Symbol);
@@ -171,6 +170,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
                              select g).First();
       var selectedSymbol = SelectRandomSymbol(random, possibleSymbols);
       var tree = selectedSymbol.CreateTreeNode();
+      if (tree.HasLocalParameters) tree.ResetLocalParameters(random);
       parent.RemoveSubTree(argumentIndex);
       parent.InsertSubTree(argumentIndex, tree);
       InitializeNewTreeNode(random, root, tree, maxFunctionDefinitions, maxFunctionArguments);
@@ -178,7 +178,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         // insert a dummy sub-tree and add the pending extension to the list
         var dummy = new SymbolicExpressionTreeNode();
         tree.AddSubTree(dummy);
-        // dummy.Grammar = (ISymbolicExpressionGrammar)dummy.Grammar.Clone();
         // replace the just inserted dummy by recursive application
         ReplaceWithMinimalTree(random, root, tree, i, maxFunctionDefinitions, maxFunctionArguments);
       }
@@ -228,7 +227,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     private static bool IsTopLevelBranch(SymbolicExpressionTreeNode root, SymbolicExpressionTreeNode branch) {
-      //return root.SubTrees.IndexOf(branch) > -1;
       return branch is SymbolicExpressionTreeTopLevelNode;
     }
 

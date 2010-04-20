@@ -85,6 +85,9 @@
     <None Include="Properties\AssemblyInfo.frame" />
     <Compile Include="HeuristicLabProblemsDataAnalysisRegressionPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Symbolic\BestValidationSymbolicRegressionSolutionVisualizer.cs" />
+    <Compile Include="Symbolic\SymbolicRegressionSolution.cs" />
+    <Compile Include="Symbolic\SymbolicRegressionModel.cs" />
     <Compile Include="Symbolic\ISymbolicRegressionEvaluator.cs">
       <SubType>Code</SubType>
     </Compile>

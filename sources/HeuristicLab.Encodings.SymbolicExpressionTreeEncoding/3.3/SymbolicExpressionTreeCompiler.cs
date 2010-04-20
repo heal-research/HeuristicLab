@@ -45,15 +45,27 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       List<Instruction> code = new List<Instruction>();
       entryPoint.Clear();
       // compile main body
-      code.AddRange(Compile(tree.Root.SubTrees[0]));
+      code.AddRange(Compile(tree.Root.SubTrees[0].SubTrees[0]));
       // compile branches
       var functionBranches = from node in tree.IterateNodesPrefix()
                              where node.Symbol is Defun
                              select node;
       foreach (DefunTreeNode branch in functionBranches) {
         entryPoint[branch.FunctionName] = (short)code.Count;
-        code.AddRange(Compile(branch));
+        code.AddRange(Compile(branch.SubTrees[0]));
       }
+      // address of all functions is fixed now
+      // iterate through code again and fill in the jump locations
+      for (int i = 0; i < code.Count; i++) {
+        Instruction instr = code[i];
+        if (instr.symbol == CodeSymbol.Call) {
+          var invokeNode = (InvokeFunctionTreeNode)instr.dynamicNode;
+          instr.iArg0 = entryPoint[invokeNode.Symbol.FunctionName];
+          instr.dynamicNode = null;
+          code[i] = instr;
+        }
+      }
+
       return code.ToArray();
     }
 
@@ -64,12 +76,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         instr.nArguments = (byte)node.SubTrees.Count;
         if (codeSymbol.ContainsKey(node.Symbol.GetType())) {
           instr.symbol = codeSymbol[node.Symbol.GetType()];
-          if (instr.symbol == CodeSymbol.Call) {
-            var invokeNode = (InvokeFunctionTreeNode)node;
-            instr.iArg0 = entryPoint[invokeNode.Symbol.FunctionName];
-          } else if (instr.symbol == CodeSymbol.Arg) {
+          if (instr.symbol == CodeSymbol.Arg) {
             var argNode = (ArgumentTreeNode)node;
             instr.iArg0 = (short)argNode.Symbol.ArgumentIndex;
+          } else if (instr.symbol == CodeSymbol.Call) {
+            instr.dynamicNode = node; // save node for fixup of jump addresses in second iteration
           }
         } else {
           instr.symbol = CodeSymbol.Dynamic;

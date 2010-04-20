@@ -257,7 +257,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       }
 
       //draw name of symbol
-      graphics.DrawString(node.Symbol.Name, textFont, textBrush, new RectangleF(visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height), stringFormat);
+      var text = node.ToString();
+      graphics.DrawString(text, textFont, textBrush, new RectangleF(visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height), stringFormat);
 
       //draw connection line to parent node
       if (!connectionPoint.IsEmpty)
