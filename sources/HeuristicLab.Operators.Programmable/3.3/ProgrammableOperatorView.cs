@@ -59,13 +59,11 @@ namespace HeuristicLab.Operators.Programmable {
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       ProgrammableOperator.CodeChanged += ProgrammableOperator_CodeChanged;
-      ProgrammableOperator.DescriptionChanged += ProgrammableOperator_DescriptionChanged;
       ProgrammableOperator.SignatureChanged += ProgrammableOperator_SignatureChanged;
     }
 
     protected override void DeregisterContentEvents() {
       ProgrammableOperator.CodeChanged -= ProgrammableOperator_CodeChanged;
-      ProgrammableOperator.DescriptionChanged -= ProgrammableOperator_DescriptionChanged;
       ProgrammableOperator.SignatureChanged -= ProgrammableOperator_SignatureChanged;
       base.DeregisterContentEvents();
     }
@@ -74,15 +72,9 @@ namespace HeuristicLab.Operators.Programmable {
       base.OnContentChanged();
       if (ProgrammableOperator == null) {
         codeEditor.Text = "";
-        codeEditor.Enabled = false;
-        descriptionTextBox.Text = "";
-        descriptionTextBox.Enabled = false;
         assembliesTreeView.Nodes.Clear();
         parameterCollectionView.Content = null;
       } else {
-        codeEditor.Enabled = true;
-        descriptionTextBox.Text = ProgrammableOperator.Description;
-        descriptionTextBox.Enabled = true;
         codeEditor.Prefix = GetGeneratedPrefix();
         codeEditor.Suffix = @"
     return null;
@@ -103,6 +95,21 @@ namespace HeuristicLab.Operators.Programmable {
           ProgrammableOperator.CompilationUnitCode.Length > 0;
         parameterCollectionView.Content = ProgrammableOperator.Parameters;
       }
+      SetEnabledStateOfControls();
+    }
+
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnabledStateOfControls();
+    }
+
+    private void SetEnabledStateOfControls() {
+      parameterCollectionView.Enabled = Content != null;
+      parameterCollectionView.ReadOnly = ReadOnly;
+      assembliesTreeView.Enabled = Content != null && !ReadOnly;
+      namespacesTreeView.Enabled = Content != null && !ReadOnly;
+      compileButton.Enabled = Content != null && !ReadOnly;
+      codeEditor.Enabled = Content != null && !ReadOnly;
     }
 
 
@@ -140,9 +147,6 @@ namespace HeuristicLab.Operators.Programmable {
     #region ProgrammableOperator Events
     private void ProgrammableOperator_CodeChanged(object sender, EventArgs e) {
       codeEditor.Text = ProgrammableOperator.Code;
-    }
-    private void ProgrammableOperator_DescriptionChanged(object sender, EventArgs e) {
-      descriptionTextBox.Text = ProgrammableOperator.Description;
     }
     private void ProgrammableOperator_SignatureChanged(object sender, EventArgs args) {
       codeEditor.Prefix = GetGeneratedPrefix();
@@ -278,11 +282,5 @@ namespace HeuristicLab.Operators.Programmable {
     private void showCodeButton_Click(object sender, EventArgs e) {
       new CodeViewer(ProgrammableOperator.CompilationUnitCode).ShowDialog(this);
     }
-
-    private void descriptionTextBox_TextChanged(object sender, EventArgs e) {
-      ProgrammableOperator.SetDescription(descriptionTextBox.Text);
-    }
-
-
   }
 }

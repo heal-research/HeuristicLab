@@ -34,11 +34,20 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       if (Content == null) {
         Caption = "SymbolicExpression View";
         textBox.Text = string.Empty;
-        textBox.Enabled = false;
       } else {
         textBox.Text = SymbolicExpression(Content.Root, 0);
-        textBox.Enabled = true;
       }
+      SetEnabledStateOfControls();
+    }
+
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnabledStateOfControls();
+    }
+
+    private void SetEnabledStateOfControls() {
+      textBox.Enabled = Content != null;
+      textBox.ReadOnly = ReadOnly;
     }
 
     private static string SymbolicExpression(SymbolicExpressionTreeNode node, int indentLength) {

@@ -77,24 +77,15 @@ namespace HeuristicLab.Optimization.Views {
       base.OnContentChanged();
       if (Content == null) {
         repetitionsNumericUpDown.Value = 1;
-        repetitionsNumericUpDown.Enabled = false;
         algorithmViewHost.Content = null;
         runsView.Content = null;
-        tabControl.Enabled = false;
-        startButton.Enabled = pauseButton.Enabled = stopButton.Enabled = resetButton.Enabled = false;
         executionTimeTextBox.Text = "-";
-        executionTimeTextBox.Enabled = false;
       } else {
         repetitionsNumericUpDown.Value = Content.Repetitions;
-        repetitionsNumericUpDown.Enabled = true;
-        saveAlgorithmButton.Enabled = Content.Algorithm != null;
         algorithmViewHost.ViewType = null;
         algorithmViewHost.Content = Content.Algorithm;
         runsView.Content = Content.Runs;
-        tabControl.Enabled = true;
-        EnableDisableButtons();
         executionTimeTextBox.Text = Content.ExecutionTime.ToString();
-        executionTimeTextBox.Enabled = true;
       }
       SetEnableStateOfControls();
     }
@@ -103,9 +94,15 @@ namespace HeuristicLab.Optimization.Views {
       SetEnableStateOfControls();
     }
     private void SetEnableStateOfControls() {
-      repetitionsNumericUpDown.ReadOnly = ReadOnly;
+      repetitionsNumericUpDown.Enabled = Content != null && !ReadOnly;
+      newAlgorithmButton.Enabled = Content != null && !ReadOnly;
+      openAlgorithmButton.Enabled = Content != null && !ReadOnly;
+      algorithmViewHost.Enabled = Content != null;
       algorithmViewHost.ReadOnly = ReadOnly;
+      runsView.Enabled = Content != null;
       runsView.ReadOnly = ReadOnly;
+      executionTimeTextBox.Enabled = Content != null;
+      SetEnabledStateOfExecutableButtons();
     }
 
     protected override void OnClosed(FormClosedEventArgs e) {
@@ -120,8 +117,7 @@ namespace HeuristicLab.Optimization.Views {
       else {
         this.ReadOnly = Content.ExecutionState == ExecutionState.Started;
         Locked = Content.ExecutionState == ExecutionState.Started;
-        newAlgorithmButton.Enabled = openAlgorithmButton.Enabled = saveAlgorithmButton.Enabled = Content.ExecutionState != ExecutionState.Started;
-        EnableDisableButtons();
+        SetEnabledStateOfExecutableButtons();
       }
     }
     private void Content_ExecutionTimeChanged(object sender, EventArgs e) {
@@ -142,7 +138,6 @@ namespace HeuristicLab.Optimization.Views {
       else {
         algorithmViewHost.ViewType = null;
         algorithmViewHost.Content = Content.Algorithm;
-        saveAlgorithmButton.Enabled = Content.Algorithm != null;
       }
     }
     private void Content_RepetitionsChanged(object sender, EventArgs e) {
@@ -181,7 +176,7 @@ namespace HeuristicLab.Optimization.Views {
       openFileDialog.Title = "Open Algorithm";
       if (openFileDialog.ShowDialog(this) == DialogResult.OK) {
         this.Cursor = Cursors.AppStarting;
-        newAlgorithmButton.Enabled = openAlgorithmButton.Enabled = saveAlgorithmButton.Enabled = false;
+        newAlgorithmButton.Enabled = openAlgorithmButton.Enabled = false;
         algorithmViewHost.Enabled = false;
 
         var call = new Func<string, object>(XmlParser.Deserialize);
@@ -198,32 +193,7 @@ namespace HeuristicLab.Optimization.Views {
             else
               Content.Algorithm = algorithm;
             algorithmViewHost.Enabled = true;
-            newAlgorithmButton.Enabled = openAlgorithmButton.Enabled = saveAlgorithmButton.Enabled = true;
-            this.Cursor = Cursors.Default;
-          }));
-        }, null);
-      }
-    }
-    private void saveAlgorithmButton_Click(object sender, EventArgs e) {
-      saveFileDialog.Title = "Save Algorithm";
-      if (saveFileDialog.ShowDialog(this) == DialogResult.OK) {
-        this.Cursor = Cursors.AppStarting;
-        newAlgorithmButton.Enabled = openAlgorithmButton.Enabled = saveAlgorithmButton.Enabled = false;
-        algorithmViewHost.Enabled = false;
-
-        var call = new Action<IAlgorithm, string, int>(XmlGenerator.Serialize);
-        int compression = 9;
-        if (saveFileDialog.FilterIndex == 1) compression = 0;
-        call.BeginInvoke(Content.Algorithm, saveFileDialog.FileName, compression, delegate(IAsyncResult a) {
-          try {
-            call.EndInvoke(a);
-          }
-          catch (Exception ex) {
-            Auxiliary.ShowErrorMessageBox(ex);
-          }
-          Invoke(new Action(delegate() {
-            algorithmViewHost.Enabled = true;
-            newAlgorithmButton.Enabled = openAlgorithmButton.Enabled = saveAlgorithmButton.Enabled = true;
+            newAlgorithmButton.Enabled = openAlgorithmButton.Enabled = true;
             this.Cursor = Cursors.Default;
           }));
         }, null);
@@ -271,11 +241,15 @@ namespace HeuristicLab.Optimization.Views {
     #endregion
 
     #region Helpers
-    private void EnableDisableButtons() {
-      startButton.Enabled = (Content.ExecutionState == ExecutionState.Prepared) || (Content.ExecutionState == ExecutionState.Paused);
-      pauseButton.Enabled = Content.ExecutionState == ExecutionState.Started;
-      stopButton.Enabled = (Content.ExecutionState == ExecutionState.Started) || (Content.ExecutionState == ExecutionState.Paused);
-      resetButton.Enabled = Content.ExecutionState != ExecutionState.Started;
+    private void SetEnabledStateOfExecutableButtons() {
+      if (Content == null) {
+        startButton.Enabled = pauseButton.Enabled = stopButton.Enabled = resetButton.Enabled = false;
+      } else {
+        startButton.Enabled = (Content.ExecutionState == ExecutionState.Prepared) || (Content.ExecutionState == ExecutionState.Paused);
+        pauseButton.Enabled = Content.ExecutionState == ExecutionState.Started;
+        stopButton.Enabled = (Content.ExecutionState == ExecutionState.Started) || (Content.ExecutionState == ExecutionState.Paused);
+        resetButton.Enabled = Content.ExecutionState != ExecutionState.Started;
+      }
     }
     #endregion
   }

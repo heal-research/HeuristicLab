@@ -131,12 +131,6 @@ namespace HeuristicLab.Operators.Programmable {
       namespaces.Remove(ns);
     }
 
-    public void SetDescription(string description) {
-      if (description == null)
-        throw new NullReferenceException("description must not be null");
-      Description = description;
-    }
-
     public IEnumerable<string> GetAllNamespaces(bool selectedAssembliesOnly) {
       var namespaces = new HashSet<string>();
       foreach (var a in Assemblies) {
@@ -222,6 +216,7 @@ namespace HeuristicLab.Operators.Programmable {
       typeof(System.Collections.Generic.List<>).Assembly,
       typeof(System.Text.StringBuilder).Assembly,
       typeof(System.Data.Linq.DataContext).Assembly,
+      typeof(HeuristicLab.Common.IDeepCloneable).Assembly,
       typeof(HeuristicLab.Core.Item).Assembly,
       typeof(HeuristicLab.Data.IntValue).Assembly,
     };
@@ -257,6 +252,7 @@ namespace HeuristicLab.Operators.Programmable {
         "System.Text",
         "System.Linq",
         "System.Data.Linq",
+        "HeuristicLab.Common",
         "HeuristicLab.Core",
         "HeuristicLab.Data",
       };
@@ -418,7 +414,6 @@ namespace HeuristicLab.Operators.Programmable {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       ProgrammableOperator clone = (ProgrammableOperator)base.Clone(cloner);
-      clone.description = description;
       clone.code = Code;
       clone.executeMethod = executeMethod;
       clone.Assemblies = Assemblies.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);

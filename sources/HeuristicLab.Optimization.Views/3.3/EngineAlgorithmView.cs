@@ -87,7 +87,6 @@ namespace HeuristicLab.Optimization.Views {
 
       if (Content == null) {
         engineViewHost.Content = null;
-        createUserDefinedAlgorithmButton.Enabled = false;
         operatorGraphViewHost.Content = null;
       } else {
         if (Content.Engine == null)
@@ -98,7 +97,6 @@ namespace HeuristicLab.Optimization.Views {
         engineViewHost.Content = Content.Engine;
         operatorGraphViewHost.ViewType = null;
         operatorGraphViewHost.Content = Content.OperatorGraph;
-        createUserDefinedAlgorithmButton.Enabled = true;
       }
       SetEnableStateOfControls();
     }
@@ -107,22 +105,20 @@ namespace HeuristicLab.Optimization.Views {
       base.OnReadOnlyChanged();
       SetEnableStateOfControls();
     }
+    protected override void OnLockedChanged() {
+      base.OnLockedChanged();
+      SetEnableStateOfControls();
+    }
     private void SetEnableStateOfControls() {
+      engineViewHost.Enabled = Content != null;
       engineViewHost.ReadOnly = ReadOnly;
-      if (Content == null)
-        engineComboBox.Enabled = false;
-      else
-        engineComboBox.Enabled = Content.ExecutionState != ExecutionState.Started;
+      newOperatorGraphButton.Enabled = false;
+      openOperatorGraphButton.Enabled = false;
+      operatorGraphViewHost.Enabled = Content != null;
+      engineComboBox.Enabled = Content != null && !ReadOnly;
+      createUserDefinedAlgorithmButton.Enabled = Content != null && !Locked;
     }
 
-    protected override void Content_ExecutionStateChanged(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_ExecutionStateChanged), sender, e);
-      else {
-        createUserDefinedAlgorithmButton.Enabled = Content.ExecutionState != ExecutionState.Started;
-        base.Content_ExecutionStateChanged(sender, e);
-      }
-    }
     protected virtual void Content_EngineChanged(object sender, System.EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_EngineChanged), sender, e);

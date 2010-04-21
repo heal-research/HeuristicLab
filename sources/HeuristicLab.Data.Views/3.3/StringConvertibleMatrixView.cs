@@ -100,18 +100,12 @@ namespace HeuristicLab.Data.Views {
       SetEnabledStateOfControls();
     }
     private void SetEnabledStateOfControls() {
-      if (Content == null) {
-        rowsTextBox.Enabled = false;
-        columnsTextBox.Enabled = false;
-        dataGridView.Enabled = false;
-      } else {
-        rowsTextBox.Enabled = true;
-        columnsTextBox.Enabled = true;
-        dataGridView.Enabled = true;
-        rowsTextBox.ReadOnly = ReadOnly;
-        columnsTextBox.ReadOnly = ReadOnly;
-        dataGridView.ReadOnly = ReadOnly;
-      }
+      rowsTextBox.Enabled = Content != null;
+      columnsTextBox.Enabled = Content != null;
+      dataGridView.Enabled = Content != null;
+      rowsTextBox.ReadOnly = ReadOnly;
+      columnsTextBox.ReadOnly = ReadOnly;
+      dataGridView.ReadOnly = ReadOnly;
     }
 
     private void UpdateData() {

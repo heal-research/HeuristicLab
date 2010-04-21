@@ -71,17 +71,11 @@ namespace HeuristicLab.Optimization.Views {
       if (Content == null) {
         optimizerListView.Content = null;
         runsViewHost.Content = null;
-        tabControl.Enabled = false;
-        startButton.Enabled = pauseButton.Enabled = stopButton.Enabled = resetButton.Enabled = false;
         executionTimeTextBox.Text = "-";
-        executionTimeTextBox.Enabled = false;
       } else {
         optimizerListView.Content = Content.Optimizers;
         runsViewHost.Content = Content.Runs;
-        tabControl.Enabled = true;
-        EnableDisableButtons();
         executionTimeTextBox.Text = Content.ExecutionTime.ToString();
-        executionTimeTextBox.Enabled = true;
       }
       SetEnableStateOfControls();
     }
@@ -91,7 +85,12 @@ namespace HeuristicLab.Optimization.Views {
       SetEnableStateOfControls();
     }
     private void SetEnableStateOfControls() {
+      optimizerListView.Enabled = Content != null;
       optimizerListView.ReadOnly = ReadOnly;
+      runsViewHost.Enabled = Content != null;
+      runsViewHost.ReadOnly = ReadOnly;
+      executionTimeTextBox.Enabled = Content != null;
+      SetEnabledStateOfExecutableButtons();
     }
 
     protected override void OnClosed(FormClosedEventArgs e) {
@@ -107,7 +106,7 @@ namespace HeuristicLab.Optimization.Views {
         nameTextBox.Enabled = Content.ExecutionState != ExecutionState.Started;
         descriptionTextBox.Enabled = Content.ExecutionState != ExecutionState.Started;
         Locked = Content.ExecutionState == ExecutionState.Started;
-        EnableDisableButtons();
+        SetEnabledStateOfExecutableButtons();
       }
     }
     private void Content_ExecutionTimeChanged(object sender, EventArgs e) {
@@ -147,11 +146,15 @@ namespace HeuristicLab.Optimization.Views {
     #endregion
 
     #region Helpers
-    private void EnableDisableButtons() {
-      startButton.Enabled = (Content.ExecutionState == ExecutionState.Prepared) || (Content.ExecutionState == ExecutionState.Paused);
-      pauseButton.Enabled = Content.ExecutionState == ExecutionState.Started;
-      stopButton.Enabled = (Content.ExecutionState == ExecutionState.Started) || (Content.ExecutionState == ExecutionState.Paused);
-      resetButton.Enabled = Content.ExecutionState != ExecutionState.Started;
+    private void SetEnabledStateOfExecutableButtons() {
+      if (Content == null) {
+        startButton.Enabled = pauseButton.Enabled = stopButton.Enabled = resetButton.Enabled = false;
+      } else {
+        startButton.Enabled = (Content.ExecutionState == ExecutionState.Prepared) || (Content.ExecutionState == ExecutionState.Paused);
+        pauseButton.Enabled = Content.ExecutionState == ExecutionState.Started;
+        stopButton.Enabled = (Content.ExecutionState == ExecutionState.Started) || (Content.ExecutionState == ExecutionState.Paused);
+        resetButton.Enabled = Content.ExecutionState != ExecutionState.Started;
+      }
     }
     #endregion
   }

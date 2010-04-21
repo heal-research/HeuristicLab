@@ -74,17 +74,27 @@ namespace HeuristicLab.Operators.Views {
       base.OnContentChanged();
       if (Content == null) {
         breakpointCheckBox.Checked = false;
-        breakpointCheckBox.Enabled = false;
         operatorListView.Content = null;
         parameterCollectionView.Content = null;
-        tabControl.Enabled = false;
       } else {
         breakpointCheckBox.Checked = Content.Breakpoint;
-        breakpointCheckBox.Enabled = true;
         operatorListView.Content = Content.Operators;
         parameterCollectionView.Content = ((IOperator)Content).Parameters;
-        tabControl.Enabled = true;
       }
+      SetEnabledStateOfControls();
+    }
+
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnabledStateOfControls();
+    }
+
+    private void SetEnabledStateOfControls() {
+      breakpointCheckBox.Enabled = Content != null && !ReadOnly;
+      operatorListView.Enabled = Content != null;
+      operatorListView.ReadOnly = ReadOnly;
+      parameterCollectionView.Enabled = Content != null;
+      parameterCollectionView.ReadOnly = ReadOnly;
     }
 
     protected void Content_BreakpointChanged(object sender, EventArgs e) {

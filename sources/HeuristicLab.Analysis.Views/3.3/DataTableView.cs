@@ -94,16 +94,23 @@ namespace HeuristicLab.Analysis.Views {
       base.OnContentChanged();
       chart.Titles.Clear();
       chart.Series.Clear();
-      if (Content == null) {
-        Caption = "DataTable";
-        chart.Enabled = false;
-      } else {
+      Caption = "DataTable";
+      if (Content != null) {
         Caption = Content.Name + " (" + Content.GetType().Name + ")";
-        chart.Enabled = true;
         chart.Titles.Add(new Title(Content.Name, Docking.Top));
         foreach (DataRow row in Content.Rows)
           AddDataRow(row);
       }
+      SetEnabledStateOfControls();
+    }
+
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnabledStateOfControls();
+    }
+
+    private void SetEnabledStateOfControls() {
+      chart.Enabled = Content != null;
     }
 
     private void AddDataRow(DataRow row) {

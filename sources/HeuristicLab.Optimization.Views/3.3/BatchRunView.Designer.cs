@@ -49,7 +49,6 @@ namespace HeuristicLab.Optimization.Views {
       this.algorithmTabPage = new System.Windows.Forms.TabPage();
       this.algorithmPanel = new System.Windows.Forms.Panel();
       this.algorithmViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
-      this.saveAlgorithmButton = new System.Windows.Forms.Button();
       this.openAlgorithmButton = new System.Windows.Forms.Button();
       this.newAlgorithmButton = new System.Windows.Forms.Button();
       this.runsTabPage = new System.Windows.Forms.TabPage();
@@ -60,7 +59,6 @@ namespace HeuristicLab.Optimization.Views {
       this.executionTimeLabel = new System.Windows.Forms.Label();
       this.executionTimeTextBox = new System.Windows.Forms.TextBox();
       this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-      this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
       this.repetitionsLabel = new System.Windows.Forms.Label();
       this.repetitionsNumericUpDown = new System.Windows.Forms.NumericUpDown();
       this.pauseButton = new System.Windows.Forms.Button();
@@ -98,7 +96,6 @@ namespace HeuristicLab.Optimization.Views {
       // algorithmTabPage
       // 
       this.algorithmTabPage.Controls.Add(this.algorithmPanel);
-      this.algorithmTabPage.Controls.Add(this.saveAlgorithmButton);
       this.algorithmTabPage.Controls.Add(this.openAlgorithmButton);
       this.algorithmTabPage.Controls.Add(this.newAlgorithmButton);
       this.algorithmTabPage.Location = new System.Drawing.Point(4, 22);
@@ -133,17 +130,6 @@ namespace HeuristicLab.Optimization.Views {
       this.algorithmViewHost.Size = new System.Drawing.Size(659, 306);
       this.algorithmViewHost.TabIndex = 0;
       this.algorithmViewHost.ViewType = null;
-      // 
-      // saveAlgorithmButton
-      // 
-      this.saveAlgorithmButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Save;
-      this.saveAlgorithmButton.Location = new System.Drawing.Point(66, 6);
-      this.saveAlgorithmButton.Name = "saveAlgorithmButton";
-      this.saveAlgorithmButton.Size = new System.Drawing.Size(24, 24);
-      this.saveAlgorithmButton.TabIndex = 2;
-      this.toolTip.SetToolTip(this.saveAlgorithmButton, "Save Problem");
-      this.saveAlgorithmButton.UseVisualStyleBackColor = true;
-      this.saveAlgorithmButton.Click += new System.EventHandler(this.saveAlgorithmButton_Click);
       // 
       // openAlgorithmButton
       // 
@@ -252,14 +238,6 @@ namespace HeuristicLab.Optimization.Views {
       this.openFileDialog.Filter = "HeuristicLab Files|*.hl|All Files|*.*";
       this.openFileDialog.Title = "Open Algorithm";
       // 
-      // saveFileDialog
-      // 
-      this.saveFileDialog.DefaultExt = "hl";
-      this.saveFileDialog.FileName = "Algorithm";
-      this.saveFileDialog.Filter = "Uncompressed HeuristicLab Files|*.hl|HeuristicLab Files|*.hl|All Files|*.*";
-      this.saveFileDialog.FilterIndex = 2;
-      this.saveFileDialog.Title = "Save Algorithm";
-      // 
       // repetitionsLabel
       // 
       this.repetitionsLabel.AutoSize = true;
@@ -352,7 +330,6 @@ namespace HeuristicLab.Optimization.Views {
     private System.Windows.Forms.TabPage algorithmTabPage;
     private HeuristicLab.MainForm.WindowsForms.ViewHost algorithmViewHost;
     private System.Windows.Forms.Button newAlgorithmButton;
-    private System.Windows.Forms.Button saveAlgorithmButton;
     private System.Windows.Forms.Button openAlgorithmButton;
     private System.Windows.Forms.Button startButton;
     private System.Windows.Forms.Button stopButton;
@@ -360,7 +337,6 @@ namespace HeuristicLab.Optimization.Views {
     private System.Windows.Forms.Label executionTimeLabel;
     private System.Windows.Forms.TextBox executionTimeTextBox;
     private System.Windows.Forms.OpenFileDialog openFileDialog;
-    private System.Windows.Forms.SaveFileDialog saveFileDialog;
     private System.Windows.Forms.TabPage runsTabPage;
     private System.Windows.Forms.Label repetitionsLabel;
     private System.Windows.Forms.NumericUpDown repetitionsNumericUpDown;

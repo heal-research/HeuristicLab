@@ -64,8 +64,8 @@ namespace HeuristicLab.Core.Views {
       base.OnContentChanged();
       if (Content == null) {
         Caption = "NamedItem";
-        nameTextBox.Text = "-";
-        descriptionTextBox.Text = "";
+        nameTextBox.Text = string.Empty;
+        descriptionTextBox.Text = string.Empty;
         toolTip.SetToolTip(descriptionTextBox, string.Empty);
       } else {
         Caption = Content.Name + " (" + Content.GetType().Name + ")";

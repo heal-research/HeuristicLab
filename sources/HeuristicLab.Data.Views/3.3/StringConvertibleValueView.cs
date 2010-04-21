@@ -79,11 +79,8 @@ namespace HeuristicLab.Data.Views {
       SetEnabledStateOfControls();
     }
     private void SetEnabledStateOfControls() {
-      if (Content == null) valueTextBox.Enabled = false;
-      else {
-        valueTextBox.Enabled = true;
-        valueTextBox.ReadOnly = ReadOnly;
-      }
+      valueTextBox.Enabled = Content != null;
+      valueTextBox.ReadOnly = ReadOnly;
     }
 
     private void Content_ValueChanged(object sender, EventArgs e) {

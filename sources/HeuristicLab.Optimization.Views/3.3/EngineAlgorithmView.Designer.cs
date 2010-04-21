@@ -51,7 +51,6 @@ namespace HeuristicLab.Optimization.Views {
       this.engineTabPage = new System.Windows.Forms.TabPage();
       this.engineViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.operatorGraphTabPage = new System.Windows.Forms.TabPage();
-      this.saveOperatorGraphButton = new System.Windows.Forms.Button();
       this.openOperatorGraphButton = new System.Windows.Forms.Button();
       this.newOperatorGraphButton = new System.Windows.Forms.Button();
       this.operatorGraphViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
@@ -97,10 +96,6 @@ namespace HeuristicLab.Optimization.Views {
       // newProblemButton
       // 
       this.toolTip.SetToolTip(this.newProblemButton, "New Problem");
-      // 
-      // saveProblemButton
-      // 
-      this.toolTip.SetToolTip(this.saveProblemButton, "Save Problem");
       // 
       // openProblemButton
       // 
@@ -227,7 +222,6 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // operatorGraphTabPage
       // 
-      this.operatorGraphTabPage.Controls.Add(this.saveOperatorGraphButton);
       this.operatorGraphTabPage.Controls.Add(this.openOperatorGraphButton);
       this.operatorGraphTabPage.Controls.Add(this.newOperatorGraphButton);
       this.operatorGraphTabPage.Controls.Add(this.operatorGraphViewHost);
@@ -237,17 +231,6 @@ namespace HeuristicLab.Optimization.Views {
       this.operatorGraphTabPage.TabIndex = 4;
       this.operatorGraphTabPage.Text = "Operator Graph";
       this.operatorGraphTabPage.UseVisualStyleBackColor = true;
-      // 
-      // saveOperatorGraphButton
-      // 
-      this.saveOperatorGraphButton.Enabled = false;
-      this.saveOperatorGraphButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Save;
-      this.saveOperatorGraphButton.Location = new System.Drawing.Point(63, 3);
-      this.saveOperatorGraphButton.Name = "saveOperatorGraphButton";
-      this.saveOperatorGraphButton.Size = new System.Drawing.Size(24, 24);
-      this.saveOperatorGraphButton.TabIndex = 1;
-      this.toolTip.SetToolTip(this.saveOperatorGraphButton, "Save Operator Graph");
-      this.saveOperatorGraphButton.UseVisualStyleBackColor = true;
       // 
       // openOperatorGraphButton
       // 
@@ -327,7 +310,6 @@ namespace HeuristicLab.Optimization.Views {
     protected HeuristicLab.MainForm.WindowsForms.ViewHost engineViewHost;
     protected System.Windows.Forms.TabPage operatorGraphTabPage;
     protected HeuristicLab.MainForm.WindowsForms.ViewHost operatorGraphViewHost;
-    protected System.Windows.Forms.Button saveOperatorGraphButton;
     protected System.Windows.Forms.Button openOperatorGraphButton;
     protected System.Windows.Forms.Button newOperatorGraphButton;
 

@@ -81,15 +81,15 @@ namespace HeuristicLab.Optimization.Views {
       base.OnReadOnlyChanged();
       SetEnabledStateOfControls();
     }
+    protected override void OnLockedChanged() {
+      base.OnLockedChanged();
+      SetEnabledStateOfControls();
+    }
     private void SetEnabledStateOfControls() {
-      if (Content == null) {
-        parametersResultsGroupBox.Enabled = false;
-        viewHost.Enabled = false;
-      } else {
-        parametersResultsGroupBox.Enabled = true;
-        viewHost.Enabled = true;
-        viewHost.ReadOnly = ReadOnly;
-      }
+      listView.Enabled = Content != null;
+      viewHost.Enabled = Content != null;
+      viewHost.ReadOnly = ReadOnly;
+      showAlgorithmButton.Enabled = Content != null && !Locked;
     }
 
     private void FillListView() {
@@ -146,11 +146,13 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
     private void showAlgorithmButton_Click(object sender, EventArgs e) {
-      IContentView view = MainFormManager.CreateDefaultView(Content.Algorithm.Clone());
-      if (view != null) {
-        view.ReadOnly = ReadOnly;
-        view.Locked = Locked;
-        view.Show();
+      if (!Locked) {
+        IContentView view = MainFormManager.CreateDefaultView(Content.Algorithm.Clone());
+        if (view != null) {
+          view.ReadOnly = ReadOnly;
+          view.Locked = Locked;
+          view.Show();
+        }
       }
     }
   }

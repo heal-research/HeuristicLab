@@ -70,17 +70,25 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       base.OnContentChanged();
       if (Content == null) {
         parameterCollectionView.Content = null;
-        parameterCollectionView.Enabled = false;
         pathTSPTourView.Content = null;
-        pathTSPTourView.Enabled = false;
-        importButton.Enabled = false;
       } else {
         parameterCollectionView.Content = ((IParameterizedNamedItem)Content).Parameters;
-        parameterCollectionView.Enabled = true;
         pathTSPTourView.Content = new PathTSPTour(Content.Coordinates, Content.BestKnownSolution);
-        pathTSPTourView.Enabled = true;
-        importButton.Enabled = true;
       }
+      SetEnabledStateOfControls();
+    }
+
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnabledStateOfControls();
+    }
+
+    private void SetEnabledStateOfControls() {
+      parameterCollectionView.Enabled = Content != null;
+      parameterCollectionView.ReadOnly = ReadOnly;
+      pathTSPTourView.Enabled = Content != null;
+      pathTSPTourView.ReadOnly = ReadOnly;
+      importButton.Enabled = Content != null && !ReadOnly;
     }
 
     private void importButton_Click(object sender, System.EventArgs e) {

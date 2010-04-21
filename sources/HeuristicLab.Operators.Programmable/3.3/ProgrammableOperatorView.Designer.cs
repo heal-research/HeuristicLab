@@ -77,7 +77,6 @@ namespace HeuristicLab.Operators.Programmable {
       // descriptionTextBox
       // 
       this.descriptionTextBox.Size = new System.Drawing.Size(913, 20);
-      this.descriptionTextBox.TextChanged += new System.EventHandler(this.descriptionTextBox_TextChanged);
       // 
       // tabPage2
       // 

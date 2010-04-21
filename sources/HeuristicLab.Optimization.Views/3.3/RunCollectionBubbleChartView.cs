@@ -68,8 +68,6 @@ namespace HeuristicLab.Optimization.Views {
       this.chart.ChartAreas[0].AxisY.ScaleView.Zoomable = !this.isSelecting;
       this.chart.ChartAreas[0].CursorX.Interval = 0;
       this.chart.ChartAreas[0].CursorY.Interval = 0;
-
-      base.ReadOnly = true;
     }
 
     public RunCollectionBubbleChartView(RunCollection content)

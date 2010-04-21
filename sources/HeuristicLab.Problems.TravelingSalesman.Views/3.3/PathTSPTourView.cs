@@ -69,11 +69,19 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       base.OnContentChanged();
       if (Content == null) {
         pictureBox.Image = null;
-        pictureBox.Enabled = false;
       } else {
-        pictureBox.Enabled = true;
         GenerateImage();
       }
+      SetEnabledStateOfControls();
+    }
+
+    protected override void OnReadOnlyChanged() {
+      base.OnReadOnlyChanged();
+      SetEnabledStateOfControls();
+    }
+
+    private void SetEnabledStateOfControls() {
+      pictureBox.Enabled = Content != null;
     }
 
     private void GenerateImage() {

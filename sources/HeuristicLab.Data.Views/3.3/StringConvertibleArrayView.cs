@@ -85,15 +85,10 @@ namespace HeuristicLab.Data.Views {
       SetEnabledStateOfControls();
     }
     private void SetEnabledStateOfControls() {
-      if (Content == null) {
-        lengthTextBox.Enabled = false;
-        dataGridView.Enabled = false;
-      } else {
-        lengthTextBox.Enabled = true;
-        dataGridView.Enabled = true;
-        lengthTextBox.ReadOnly = ReadOnly;
-        dataGridView.ReadOnly = ReadOnly;
-      }
+      lengthTextBox.Enabled = Content != null;
+      dataGridView.Enabled = Content != null;
+      lengthTextBox.ReadOnly = ReadOnly;
+      dataGridView.ReadOnly = ReadOnly;
     }
 
     private void UpdateData() {

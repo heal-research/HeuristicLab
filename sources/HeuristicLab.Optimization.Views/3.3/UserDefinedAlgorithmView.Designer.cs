@@ -78,10 +78,6 @@ namespace HeuristicLab.Optimization.Views {
       // 
       this.toolTip.SetToolTip(this.newProblemButton, "New Problem");
       // 
-      // saveProblemButton
-      // 
-      this.toolTip.SetToolTip(this.saveProblemButton, "Save Problem");
-      // 
       // openProblemButton
       // 
       this.toolTip.SetToolTip(this.openProblemButton, "Open Problem");

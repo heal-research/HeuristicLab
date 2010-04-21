@@ -51,7 +51,6 @@ namespace HeuristicLab.Optimization.Views {
       this.problemTabPage = new System.Windows.Forms.TabPage();
       this.problemPanel = new System.Windows.Forms.Panel();
       this.problemViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
-      this.saveProblemButton = new System.Windows.Forms.Button();
       this.openProblemButton = new System.Windows.Forms.Button();
       this.newProblemButton = new System.Windows.Forms.Button();
       this.resultsTabPage = new System.Windows.Forms.TabPage();
@@ -64,7 +63,6 @@ namespace HeuristicLab.Optimization.Views {
       this.executionTimeLabel = new System.Windows.Forms.Label();
       this.executionTimeTextBox = new System.Windows.Forms.TextBox();
       this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-      this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
       this.stopButton = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.tabControl.SuspendLayout();
@@ -126,7 +124,6 @@ namespace HeuristicLab.Optimization.Views {
       // problemTabPage
       // 
       this.problemTabPage.Controls.Add(this.problemPanel);
-      this.problemTabPage.Controls.Add(this.saveProblemButton);
       this.problemTabPage.Controls.Add(this.openProblemButton);
       this.problemTabPage.Controls.Add(this.newProblemButton);
       this.problemTabPage.Location = new System.Drawing.Point(4, 22);
@@ -161,17 +158,6 @@ namespace HeuristicLab.Optimization.Views {
       this.problemViewHost.Size = new System.Drawing.Size(659, 332);
       this.problemViewHost.TabIndex = 0;
       this.problemViewHost.ViewType = null;
-      // 
-      // saveProblemButton
-      // 
-      this.saveProblemButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Save;
-      this.saveProblemButton.Location = new System.Drawing.Point(66, 6);
-      this.saveProblemButton.Name = "saveProblemButton";
-      this.saveProblemButton.Size = new System.Drawing.Size(24, 24);
-      this.saveProblemButton.TabIndex = 2;
-      this.toolTip.SetToolTip(this.saveProblemButton, "Save Problem");
-      this.saveProblemButton.UseVisualStyleBackColor = true;
-      this.saveProblemButton.Click += new System.EventHandler(this.saveProblemButton_Click);
       // 
       // openProblemButton
       // 
@@ -303,14 +289,6 @@ namespace HeuristicLab.Optimization.Views {
       this.openFileDialog.Filter = "HeuristicLab Files|*.hl|All Files|*.*";
       this.openFileDialog.Title = "Open Problem";
       // 
-      // saveFileDialog
-      // 
-      this.saveFileDialog.DefaultExt = "hl";
-      this.saveFileDialog.FileName = "Problem";
-      this.saveFileDialog.Filter = "Uncompressed HeuristicLab Files|*.hl|HeuristicLab Files|*.hl|All Files|*.*";
-      this.saveFileDialog.FilterIndex = 2;
-      this.saveFileDialog.Title = "Save Problem";
-      // 
       // stopButton
       // 
       this.stopButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -367,7 +345,6 @@ namespace HeuristicLab.Optimization.Views {
     protected HeuristicLab.Core.Views.ParameterCollectionView parameterCollectionView;
     protected HeuristicLab.MainForm.WindowsForms.ViewHost problemViewHost;
     protected System.Windows.Forms.Button newProblemButton;
-    protected System.Windows.Forms.Button saveProblemButton;
     protected System.Windows.Forms.Button openProblemButton;
     protected System.Windows.Forms.Button startButton;
     protected System.Windows.Forms.Button pauseButton;
@@ -375,7 +352,6 @@ namespace HeuristicLab.Optimization.Views {
     protected System.Windows.Forms.Label executionTimeLabel;
     protected System.Windows.Forms.TextBox executionTimeTextBox;
     protected System.Windows.Forms.OpenFileDialog openFileDialog;
-    protected System.Windows.Forms.SaveFileDialog saveFileDialog;
     protected System.Windows.Forms.TabPage resultsTabPage;
     protected HeuristicLab.Optimization.Views.ResultCollectionView resultsView;
     protected System.Windows.Forms.Button stopButton;

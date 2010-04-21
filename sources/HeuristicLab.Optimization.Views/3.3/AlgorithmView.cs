@@ -96,21 +96,14 @@ namespace HeuristicLab.Optimization.Views {
         problemViewHost.Content = null;
         resultsView.Content = null;
         runsView.Content = null;
-        tabControl.Enabled = false;
-        startButton.Enabled = pauseButton.Enabled = stopButton.Enabled = resetButton.Enabled = false;
         executionTimeTextBox.Text = "-";
-        executionTimeTextBox.Enabled = false;
       } else {
         parameterCollectionView.Content = Content.Parameters;
-        saveProblemButton.Enabled = Content.Problem != null;
         problemViewHost.ViewType = null;
         problemViewHost.Content = Content.Problem;
         resultsView.Content = Content.Results.AsReadOnly();
         runsView.Content = Content.Runs;
-        tabControl.Enabled = true;
-        EnableDisableButtons();
         executionTimeTextBox.Text = Content.ExecutionTime.ToString();
-        executionTimeTextBox.Enabled = true;
       }
       SetEnableStateOfControls();
     }
@@ -120,10 +113,18 @@ namespace HeuristicLab.Optimization.Views {
       SetEnableStateOfControls();
     }
     private void SetEnableStateOfControls() {
+      parameterCollectionView.Enabled = Content != null;
       parameterCollectionView.ReadOnly = ReadOnly;
+      newProblemButton.Enabled = Content != null && !ReadOnly;
+      openProblemButton.Enabled = Content != null && !ReadOnly;
+      problemViewHost.Enabled = Content != null;
       problemViewHost.ReadOnly = ReadOnly;
+      resultsView.Enabled = Content != null;
       resultsView.ReadOnly = ReadOnly;
+      runsView.Enabled = Content != null;
       runsView.ReadOnly = ReadOnly;
+      executionTimeTextBox.Enabled = Content != null;
+      SetEnabledStateOfExecutableButtons();
     }
 
     protected override void OnClosed(FormClosedEventArgs e) {
@@ -138,7 +139,6 @@ namespace HeuristicLab.Optimization.Views {
       else {
         problemViewHost.ViewType = null;
         problemViewHost.Content = Content.Problem;
-        saveProblemButton.Enabled = Content.Problem != null;
       }
     }
     protected virtual void Content_Prepared(object sender, EventArgs e) {
@@ -151,9 +151,9 @@ namespace HeuristicLab.Optimization.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ExecutionStateChanged), sender, e);
       else {
-        this.ReadOnly = Content.ExecutionState == ExecutionState.Started;
+        ReadOnly = Content.ExecutionState == ExecutionState.Started;
         Locked = Content.ExecutionState == ExecutionState.Started;
-        EnableDisableButtons();
+        SetEnabledStateOfExecutableButtons();
       }
     }
     protected virtual void Content_ExecutionTimeChanged(object sender, EventArgs e) {
@@ -191,7 +191,7 @@ namespace HeuristicLab.Optimization.Views {
       openFileDialog.Title = "Open Problem";
       if (openFileDialog.ShowDialog(this) == DialogResult.OK) {
         this.Cursor = Cursors.AppStarting;
-        newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = false;
+        newProblemButton.Enabled = openProblemButton.Enabled = false;
         problemViewHost.Enabled = false;
 
         var call = new Func<string, object>(XmlParser.Deserialize);
@@ -210,32 +210,7 @@ namespace HeuristicLab.Optimization.Views {
             else
               Content.Problem = problem;
             problemViewHost.Enabled = true;
-            newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = true;
-            this.Cursor = Cursors.Default;
-          }));
-        }, null);
-      }
-    }
-    protected virtual void saveProblemButton_Click(object sender, EventArgs e) {
-      saveFileDialog.Title = "Save Problem";
-      if (saveFileDialog.ShowDialog(this) == DialogResult.OK) {
-        this.Cursor = Cursors.AppStarting;
-        newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = false;
-        problemViewHost.Enabled = false;
-
-        var call = new Action<IProblem, string, int>(XmlGenerator.Serialize);
-        int compression = 9;
-        if (saveFileDialog.FilterIndex == 1) compression = 0;
-        call.BeginInvoke(Content.Problem, saveFileDialog.FileName, compression, delegate(IAsyncResult a) {
-          try {
-            call.EndInvoke(a);
-          }
-          catch (Exception ex) {
-            Auxiliary.ShowErrorMessageBox(ex);
-          }
-          Invoke(new Action(delegate() {
-            problemViewHost.Enabled = true;
-            newProblemButton.Enabled = openProblemButton.Enabled = saveProblemButton.Enabled = true;
+            newProblemButton.Enabled = openProblemButton.Enabled = true;
             this.Cursor = Cursors.Default;
           }));
         }, null);
@@ -281,11 +256,15 @@ namespace HeuristicLab.Optimization.Views {
     #endregion
 
     #region Helpers
-    private void EnableDisableButtons() {
-      startButton.Enabled = (Content.ExecutionState == ExecutionState.Prepared) || (Content.ExecutionState == ExecutionState.Paused);
-      pauseButton.Enabled = Content.ExecutionState == ExecutionState.Started;
-      stopButton.Enabled = (Content.ExecutionState == ExecutionState.Started) || (Content.ExecutionState == ExecutionState.Paused);
-      resetButton.Enabled = Content.ExecutionState != ExecutionState.Started;
+    private void SetEnabledStateOfExecutableButtons() {
+      if (Content == null) {
+        startButton.Enabled = pauseButton.Enabled = stopButton.Enabled = resetButton.Enabled = false;
+      } else {
+        startButton.Enabled = (Content.ExecutionState == ExecutionState.Prepared) || (Content.ExecutionState == ExecutionState.Paused);
+        pauseButton.Enabled = Content.ExecutionState == ExecutionState.Started;
+        stopButton.Enabled = (Content.ExecutionState == ExecutionState.Started) || (Content.ExecutionState == ExecutionState.Paused);
+        resetButton.Enabled = Content.ExecutionState != ExecutionState.Started;
+      }
     }
     #endregion
   }
