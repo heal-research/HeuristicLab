@@ -120,17 +120,15 @@ namespace HeuristicLab.MainForm.WindowsForms {
     protected override void OnContentChanged() {
       messageLabel.Visible = false;
       viewsLabel.Visible = false;
-      viewsLabel.Enabled = false;
       viewPanel.Visible = false;
       viewContextMenuStrip.Item = Content;
       
       if (Content != null) {
-        
         if (viewContextMenuStrip.Items.Count == 0)
           messageLabel.Visible = true;
         else {
           viewsLabel.Visible = true;
-          viewsLabel.Enabled = true;
+          viewPanel.Visible = true;
         }
 
         if (!ViewCanShowContent(viewType, Content)) {
@@ -138,7 +136,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
           if ((viewType == null) && (viewContextMenuStrip.Items.Count > 0))  // create first available view if default view is not available
             ViewType = (Type)viewContextMenuStrip.Items[0].Tag;
         }
-
+        UpdateActiveMenuItem();
         foreach (IContentView view in cachedViews.Values)
           view.Content = this.Content;
       } else {
@@ -168,7 +166,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
         cachedViews.Add(viewType, view);
       }
       this.ActiveView = view;
-
       Control control = (Control)view;
       control.Dock = DockStyle.Fill;
       viewPanel.Controls.Add(control);
