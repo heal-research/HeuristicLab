@@ -38,7 +38,7 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
-  [View("Symbolic Exression Model View")]
+  [View("Symbolic Expression Model View")]
   [Content(typeof(SymbolicRegressionSolution))]
   public partial class SymbolicExpressionModelView : AsynchronousContentView {
     public new SymbolicRegressionSolution Content {

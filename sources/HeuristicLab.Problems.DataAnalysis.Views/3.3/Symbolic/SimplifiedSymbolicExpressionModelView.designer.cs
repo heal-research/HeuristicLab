@@ -62,13 +62,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
       // 
       // viewHost
       // 
+      this.viewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.viewHost.Caption = null;
       this.viewHost.Content = null;
-      this.viewHost.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.viewHost.Location = new System.Drawing.Point(3, 16);
+      this.viewHost.Location = new System.Drawing.Point(6, 19);
       this.viewHost.Name = "viewHost";
       this.viewHost.ReadOnly = false;
-      this.viewHost.Size = new System.Drawing.Size(346, 394);
+      this.viewHost.Size = new System.Drawing.Size(340, 388);
       this.viewHost.TabIndex = 0;
       this.viewHost.ViewType = null;
       // 
