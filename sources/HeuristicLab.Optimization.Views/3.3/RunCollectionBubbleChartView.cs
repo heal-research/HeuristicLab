@@ -62,12 +62,17 @@ namespace HeuristicLab.Optimization.Views {
       this.chart.Series[0]["BubbleMaxSize"] = "0";
       this.chart.Series[0]["BubbleMaxScale"] = "Auto";
       this.chart.Series[0]["BubbleMinScale"] = "Auto";
+      this.chart.Series[0].SmartLabelStyle.Enabled = true;
+      this.chart.Series[0].SmartLabelStyle.IsMarkerOverlappingAllowed = false;
+      this.chart.Series[0].SmartLabelStyle.IsOverlappedHidden = true;
+
       this.chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
       this.chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = true;
       this.chart.ChartAreas[0].AxisX.ScaleView.Zoomable = !this.isSelecting;
       this.chart.ChartAreas[0].AxisY.ScaleView.Zoomable = !this.isSelecting;
       this.chart.ChartAreas[0].CursorX.Interval = 0;
       this.chart.ChartAreas[0].CursorY.Interval = 0;
+
     }
 
     public RunCollectionBubbleChartView(RunCollection content)
@@ -185,7 +190,6 @@ namespace HeuristicLab.Optimization.Views {
         yValue = yValue.Value + yValue.Value * GetYJitter(Content.ElementAt(row)) * yJitterFactor;
         if (run.Visible) {
           DataPoint point = new DataPoint(xValue.Value, new double[] { yValue.Value, sizeValue.Value });
-          point.ToolTip = this.CreateTooltip(row);
           point.Tag = run;
           point.Color = run.Color;
           series.Points.Add(point);
