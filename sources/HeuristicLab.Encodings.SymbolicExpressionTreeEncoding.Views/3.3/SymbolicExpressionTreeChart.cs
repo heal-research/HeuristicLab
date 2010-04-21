@@ -30,15 +30,16 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
   public sealed partial class SymbolicExpressionTreeChart : UserControl {
+    private Image image;
     private StringFormat stringFormat;
     private Dictionary<SymbolicExpressionTreeNode, VisualSymbolicExpressionTreeNode> visualTreeNodes;
 
     public SymbolicExpressionTreeChart() {
       InitializeComponent();
+      this.image = new Bitmap(Width, Height);
       this.stringFormat = new StringFormat();
-      stringFormat.Alignment = StringAlignment.Center;
-      stringFormat.LineAlignment = StringAlignment.Center;
-      pictureBox.Image = new Bitmap(pictureBox.Width, pictureBox.Height);
+      this.stringFormat.Alignment = StringAlignment.Center;
+      this.stringFormat.LineAlignment = StringAlignment.Center;
       this.spacing = 5;
       this.lineColor = Color.Black;
       this.backgroundColor = Color.White;
@@ -100,9 +101,26 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       }
     }
 
+    protected override void OnPaint(PaintEventArgs e) {
+      base.OnPaint(e);
+      e.Graphics.DrawImage(image, 0, 0);
+    }
+    protected override void OnResize(EventArgs e) {
+      base.OnResize(e);
+      if (this.Width == 0 || this.Height == 0)
+        this.image = new Bitmap(1, 1);
+      else
+        this.image = new Bitmap(Width, Height);
+      this.Repaint();
+    }
 
     public void Repaint() {
-      using (Graphics graphics = Graphics.FromImage(pictureBox.Image)) {
+      this.GenerateImage();
+      this.Refresh();
+    }
+
+    private void GenerateImage() {
+      using (Graphics graphics = Graphics.FromImage(image)) {
         graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.High;
         graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
         graphics.Clear(backgroundColor);
@@ -110,8 +128,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
           int height = this.Height / tree.Height;
           DrawFunctionTree(tree, graphics, 0, 0, this.Width, height);
         }
-
-        pictureBox.Refresh();
       }
     }
 
@@ -187,12 +203,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     #endregion
 
     #region methods for painting the symbolic expression tree
-    protected override void OnResize(EventArgs e) {
-      base.OnResize(e);
-      pictureBox.Image = new Bitmap(pictureBox.Width, pictureBox.Height);
-      Repaint();
-    }
-
     private void DrawFunctionTree(SymbolicExpressionTree tree, Graphics graphics, int x, int y, int width, int height) {
       DrawFunctionTree(tree.Root, graphics, x, y, width, height, Point.Empty);
     }
@@ -275,6 +285,5 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       }
     }
     #endregion
-
   }
 }
