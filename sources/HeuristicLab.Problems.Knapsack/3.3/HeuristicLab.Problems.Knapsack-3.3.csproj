@@ -86,9 +86,11 @@
     <Compile Include="Interfaces\IKnapsackSolutionsVisualizer.cs" />
     <Compile Include="Interfaces\IKnapsackMoveEvaluator.cs" />
     <Compile Include="KnapsackProblem.cs" />
+    <Compile Include="KnapsackSolution.cs" />
     <Compile Include="MoveEvaluators\KnapsackMoveEvaluator.cs" />
     <Compile Include="MoveEvaluators\KnapsackOneBitflipMoveEvaluator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Visualizers\BestKnapsackVisualizer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
