@@ -155,9 +155,9 @@ namespace HeuristicLab.DataAnalysis {
       return GetVariableValues(variableName, 0, this.rows);
     }
 
-    public void SetValue(int i, int j, double v) {
-      if (v != samples[columns * i + j]) {
-        samples[columns * i + j] = v;
+    public void SetValue(int row, int column, double newValue) {
+      if (newValue != samples[columns * row + column]) {
+        samples[columns * row + column] = newValue;
         cachedValuesInvalidated = true;
         if (fireChangeEvents) FireChanged();
       }
@@ -439,16 +439,22 @@ namespace HeuristicLab.DataAnalysis {
         for (int i = 0; i < scalingOffset.Length; i++) scalingOffset[i] = 0.0;
       }
 
-      string[] tokens = node.InnerText.Split(';');
-      if (tokens.Length != rows * columns) throw new FormatException();
+      var startPoint = 0;
       samples = new double[rows * columns];
       for (int row = 0; row < rows; row++) {
         for (int column = 0; column < columns; column++) {
-          if (double.TryParse(tokens[row * columns + column], NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out samples[row * columns + column]) == false) {
-            throw new FormatException("Can't parse " + tokens[row * columns + column] + " as double value.");
+          if (startPoint >= node.InnerText.Length) throw new FormatException("Not enough elements parsed.");
+          int endPoint = node.InnerText.IndexOf(';', startPoint);
+          if (endPoint < 0)
+            endPoint = node.InnerText.Length;
+          var curToken = node.InnerText.Substring(startPoint, endPoint - startPoint);
+          startPoint = endPoint + 1;
+          if (double.TryParse(curToken, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out samples[row * columns + column]) == false) {
+            throw new FormatException("Can't parse " + curToken + " as double value.");
           }
         }
       }
+      if (startPoint < node.InnerText.Length) throw new FormatException("More elements available");
     }
 
     public override string ToString() {
