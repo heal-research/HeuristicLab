@@ -92,7 +92,7 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     public void Step() {
       // expression evaluated completly => start at root again
       if (nodeStack.Count == 0) {
-        nodeStack.Push(Expression.Root.SubTrees[0]);
+        nodeStack.Push(Expression.Root.SubTrees[0].SubTrees[0]);
       }
 
       var currentNode = nodeStack.Pop();
