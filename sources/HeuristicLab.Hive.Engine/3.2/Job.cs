@@ -27,6 +27,7 @@ using System.Threading;
 using HeuristicLab.Hive.JobBase;
 using System.Xml;
 using HeuristicLab.Data;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Hive.Engine {
   /// <summary>
@@ -47,18 +48,29 @@ namespace HeuristicLab.Hive.Engine {
 
     private void RegisterEvents() {
       engine.Finished += new EventHandler(engine_Finished);
+      engine.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(engine_ExceptionOccurred);
     }
 
     private void DeregisterEvents() {
       engine.Finished -= new EventHandler(engine_Finished);
+      engine.ExceptionOccurred -= new EventHandler<EventArgs<Exception>>(engine_ExceptionOccurred);
     }
 
     void engine_Finished(object sender, EventArgs e) {
       if (Engine.Canceled) this.progress = 0.0;
       else this.progress = 1.0;
-      if (JobStopped != null)
-        JobStopped(this, new EventArgs());
+      var listeners = JobStopped;
+      if (listeners != null)
+        listeners(this, e);
     }
+
+    void engine_ExceptionOccurred(object sender, EventArgs<Exception> e) {
+      this.progress = 0.0;
+      var listeners = JobFailed;
+      if (listeners != null)
+        listeners(this, e);
+    }
+
 
     #region IJob Members
 
