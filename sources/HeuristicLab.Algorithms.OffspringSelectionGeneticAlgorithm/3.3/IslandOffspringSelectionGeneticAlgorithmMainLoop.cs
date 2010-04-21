@@ -36,11 +36,11 @@ using HeuristicLab.Selection;
 
 namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
   /// <summary>
-  /// An offspring selection island genetic algorithm main loop operator.
+  /// An island offspring selection genetic algorithm main loop operator.
   /// </summary>
-  [Item("OffspringSelectionIslandGeneticAlgorithmMainLoop", "An offspring selection island genetic algorithm main loop operator.")]
+  [Item("IslandOffspringSelectionGeneticAlgorithmMainLoop", "An island offspring selection genetic algorithm main loop operator.")]
   [StorableClass]
-  public sealed class OffspringSelectionIslandGeneticAlgorithmMainLoop : AlgorithmOperator {
+  public sealed class IslandOffspringSelectionGeneticAlgorithmMainLoop : AlgorithmOperator {
     #region Parameter Properties
     public ValueLookupParameter<IRandom> RandomParameter {
       get { return (ValueLookupParameter<IRandom>)Parameters["Random"]; }
@@ -126,8 +126,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     #endregion
 
     [StorableConstructor]
-    private OffspringSelectionIslandGeneticAlgorithmMainLoop(bool deserializing) : base() { }
-    public OffspringSelectionIslandGeneticAlgorithmMainLoop()
+    private IslandOffspringSelectionGeneticAlgorithmMainLoop(bool deserializing) : base() { }
+    public IslandOffspringSelectionGeneticAlgorithmMainLoop()
       : base() {
       #region Create parameters
       Parameters.Add(new ValueLookupParameter<IRandom>("Random", "A pseudo random number generator."));

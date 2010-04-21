@@ -79,9 +79,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SASEGASA.cs" />
+    <Compile Include="SASEGASAMainLoop.cs" />
     <Compile Include="HeuristicLabAlgorithmsOffspringSelectionGeneticAlgorithmPlugin.cs" />
-    <Compile Include="OffspringSelectionIslandGeneticAlgorithm.cs" />
-    <Compile Include="OffspringSelectionIslandGeneticAlgorithmMainLoop.cs" />
+    <Compile Include="IslandOffspringSelectionGeneticAlgorithm.cs" />
+    <Compile Include="IslandOffspringSelectionGeneticAlgorithmMainLoop.cs" />
     <Compile Include="OffspringSelectionGeneticAlgorithm.cs" />
     <Compile Include="OffspringSelectionGeneticAlgorithmMainLoop.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

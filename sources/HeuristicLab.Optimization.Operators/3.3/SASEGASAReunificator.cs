@@ -25,36 +25,46 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Data;
+using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Optimization.Operators {
   /// <summary>
   /// Joins all sub sub scopes of a specified scope, reduces the number of sub 
   /// scopes by 1 and uniformly partitions the sub sub scopes again, maintaining the order.
   /// </summary>
-  /*[Item("SASEGASAReunificator", "This operator merges the villages in a migration phase and redistributes the individuals. It is implemented as described in Affenzeller, M. et al. 2009. Genetic Algorithms and Genetic Programming - Modern Concepts and Practical Applications, CRC Press.")]
+  [Item("SASEGASAReunificator", "This operator merges the villages in a migration phase and redistributes the individuals. It is implemented as described in Affenzeller, M. et al. 2009. Genetic Algorithms and Genetic Programming - Modern Concepts and Practical Applications, CRC Press.")]
   [StorableClass]
   public class SASEGASAReunificator : SingleSuccessorOperator, IMigrator {
 
+    public LookupParameter<IntValue> VillageCountParameter {
+      get { return (LookupParameter<IntValue>)Parameters["VillageCount"]; }
+    }
+
+    public SASEGASAReunificator()
+      : base() {
+      Parameters.Add(new LookupParameter<IntValue>("VillageCount", "The number of villages left after the reunification."));
+    }
     /// <summary>
     /// Joins all sub sub scopes of the given <paramref name="scope"/>, reduces the number of sub 
     /// scopes by 1 and uniformly partitions the sub sub scopes again, maintaining the order.
     /// </summary>
-    /// <exception cref="InvalidOperationException">Thrown when only 0 or 1 sub scope is available.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when there are less than 2 sub-scopes available or when VillageCount does not equal the number of sub-scopes.</exception>
     /// <param name="scope">The current scope whose sub scopes to reduce.</param>
     /// <returns><c>null</c>.</returns>
     public override IOperation Apply() {
       IScope scope = ExecutionContext.Scope;
-      int villageCount = scope.SubScopes.Count;
+      if (VillageCountParameter.ActualValue == null) VillageCountParameter.ActualValue = new IntValue(scope.SubScopes.Count);
+      int villageCount = VillageCountParameter.ActualValue.Value;
       if (villageCount <= 1)
-        throw new InvalidOperationException("SASEGASA reunification requires 2 or more sub-scopes");
+        throw new InvalidOperationException(Name + ": Reunification requires 2 or more sub-scopes");
+      if (villageCount != scope.SubScopes.Count)
+        throw new InvalidOperationException(Name + ": VillageCount does not equal the number of sub-scopes");
 
       // get all villages
-      IList<IScope> population = new List<IScope>();
+      List<IScope> population = new List<IScope>();
       for (int i = 0; i < villageCount; i++) {
-        while (scope.SubScopes[i].SubScopes[0].SubScopes.Count > 0) {
-          population.Add(scope.SubScopes[i].SubScopes[0].SubScopes[0]);
-          scope.SubScopes[i].SubScopes.Remove(scope.SubScopes[i].SubScopes[0].SubScopes[0]);
-        }
+        population.AddRange(scope.SubScopes[i].SubScopes);
         scope.SubScopes[i].SubScopes.Clear();
       }
 
@@ -63,21 +73,17 @@ namespace HeuristicLab.Optimization.Operators {
       villageCount--;
       int populationPerVillage = population.Count / villageCount;
       for (int i = 0; i < villageCount; i++) {
-        scope.SubScopes[i].SubScopes.Add(new Scope());
-        scope.SubScopes[i].SubScopes.Add(new Scope());
-        for (int j = 0; j < populationPerVillage; j++) {
-          scope.SubScopes[i].SubScopes[1].SubScopes.Add(population[0]);
-          population.RemoveAt(0);
-        }
+        scope.SubScopes[i].SubScopes.AddRange(population.GetRange(0, populationPerVillage));
+        population.RemoveRange(0, populationPerVillage);
       }
 
       // add remaining sub-sub-scopes to last sub-scope
-      while (population.Count > 0) {
-        scope.SubScopes[scope.SubScopes.Count - 1].SubScopes[1].SubScopes.Add(population[0]);
-        population.RemoveAt(0);
-      }
+      scope.SubScopes[scope.SubScopes.Count - 1].SubScopes.AddRange(population);
+      population.Clear();
+
+      VillageCountParameter.ActualValue.Value = villageCount;
 
       return base.Apply();
     }
-  }*/
+  }
 }

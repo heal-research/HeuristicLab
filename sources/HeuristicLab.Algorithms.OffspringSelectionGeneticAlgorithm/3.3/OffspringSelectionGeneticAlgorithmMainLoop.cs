@@ -42,9 +42,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     public ValueLookupParameter<BoolValue> MaximizationParameter {
       get { return (ValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
-    public ValueLookupParameter<IntValue> PopulationSizeParameter {
-      get { return (ValueLookupParameter<IntValue>)Parameters["PopulationSize"]; }
-    }
     public SubScopesLookupParameter<DoubleValue> QualityParameter {
       get { return (SubScopesLookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
@@ -112,7 +109,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       #region Create parameters
       Parameters.Add(new ValueLookupParameter<IRandom>("Random", "A pseudo random number generator."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, otherwise false."));
-      Parameters.Add(new ValueLookupParameter<IntValue>("PopulationSize", "The size of the population."));
       Parameters.Add(new SubScopesLookupParameter<DoubleValue>("Quality", "The value which represents the quality of a solution."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("BestKnownQuality", "The best known quality value found so far."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Selector", "The operator used to select solutions for reproduction."));
@@ -188,14 +184,14 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
 
       initializationBranch.ConditionParameter.ActualName = "IsInitialized";
 
-      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Generations", new IntValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Generations", new IntValue(0))); // this variable is referenced in SASEGASAMainLoop, do not change!
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedSolutions", new IntValue(0)));
       variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("SelectionPressure", new DoubleValue(0)));
       variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("CurrentSuccessRatio", new DoubleValue(0)));
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedSolutionsResult", new IntValue(0)));
       variableCreator.CollectedValues.Add(new ValueParameter<BoolValue>("IsInitialized", new BoolValue(true)));
 
-      variableAssigner.LeftSideParameter.ActualName = "ComparisonFactor";
+      variableAssigner.LeftSideParameter.ActualName = "ComparisonFactor"; // this variable is referenced in SASEGASA, OffspringSelectionGeneticAlgorithm, do not change!
       variableAssigner.RightSideParameter.ActualName = ComparisonFactorLowerBoundParameter.Name;
 
       bestQualityMemorizer1.BestQualityParameter.ActualName = "BestQuality";
@@ -312,7 +308,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       offspringSelector.CurrentSuccessRatioParameter.ActualName = "CurrentSuccessRatio";
       offspringSelector.LuckyLosersParameter.ActualName = "OSLuckyLosers";
       offspringSelector.MaximumSelectionPressureParameter.ActualName = MaximumSelectionPressureParameter.Name;
-      offspringSelector.PopulationSizeParameter.ActualName = PopulationSizeParameter.Name;
       offspringSelector.SelectionPressureParameter.ActualName = "SelectionPressure";
       offspringSelector.SuccessRatioParameter.ActualName = SuccessRatioParameter.Name;
       offspringSelector.WinnersParameter.ActualName = "OSWinners";
@@ -381,7 +376,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       conditionalBranch1.ConditionParameter.ActualName = "TerminateSelectionPressure";
 
       conditionalBranch2.Name = "MaximumGenerations reached?";
-      conditionalBranch2.ConditionParameter.ActualName = "TerminateMaximumGenerations";
+      conditionalBranch2.ConditionParameter.ActualName = "TerminateMaximumGenerations"; // this variable is referenced in SASEGASAMainLoop, do not change!
       #endregion
 
       #region Create operator graph

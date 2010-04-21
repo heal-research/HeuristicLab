@@ -33,9 +33,6 @@ namespace HeuristicLab.Selection {
   [StorableClass]
   public class OffspringSelector : SingleSuccessorOperator {
 
-    public ValueLookupParameter<IntValue> PopulationSizeParameter {
-      get { return (ValueLookupParameter<IntValue>)Parameters["PopulationSize"]; }
-    }
     public ValueLookupParameter<DoubleValue> MaximumSelectionPressureParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["MaximumSelectionPressure"]; }
     }
@@ -65,7 +62,6 @@ namespace HeuristicLab.Selection {
 
     public OffspringSelector()
       : base() {
-      Parameters.Add(new ValueLookupParameter<IntValue>("PopulationSize", "The number of offspring to create."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("MaximumSelectionPressure", "The maximum selection pressure which prematurely terminates the offspring selection step."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("SuccessRatio", "The ratio of successful offspring that has to be produced."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("SelectionPressure", "The amount of selection pressure currently necessary to fulfill the success ratio."));
@@ -76,12 +72,12 @@ namespace HeuristicLab.Selection {
     }
 
     public override IOperation Apply() {
-      int populationSize = PopulationSizeParameter.ActualValue.Value;
       double maxSelPress = MaximumSelectionPressureParameter.ActualValue.Value;
       double successRatio = SuccessRatioParameter.ActualValue.Value;
       IScope scope = ExecutionContext.Scope;
       IScope parents = scope.SubScopes[0];
       IScope children = scope.SubScopes[1];
+      int populationSize = parents.SubScopes.Count;
 
       // retrieve actual selection pressure and success ratio
       DoubleValue selectionPressure = SelectionPressureParameter.ActualValue;

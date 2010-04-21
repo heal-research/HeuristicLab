@@ -51,17 +51,40 @@ namespace HeuristicLab.Analysis {
       }
 
       foreach (IParameter param in CollectedValues) {
-        DoubleValue data = param.ActualValue as DoubleValue;
-        if (data == null) data = new DoubleValue(double.NaN);
-
-        DataRow row;
-        table.Rows.TryGetValue(param.Name, out row);
-        if (row == null) {
-          row = new DataRow(param.Name, param.Description);
-          row.Values.Add(data.Value);
-          table.Rows.Add(row);
+        if (param.ActualValue is DoubleValue) {
+          DoubleValue data = param.ActualValue as DoubleValue;
+          DataRow row;
+          table.Rows.TryGetValue(param.Name, out row);
+          if (row == null) {
+            row = new DataRow(param.Name, param.Description);
+            row.Values.Add(data.Value);
+            table.Rows.Add(row);
+          } else {
+            row.Values.Add(data.Value);
+          }
+        } else if (param.ActualValue is ItemArray<DoubleValue>) {
+          ItemArray<DoubleValue> dataArray = param.ActualValue as ItemArray<DoubleValue>;
+          DataRow row;
+          for (int i = 0; i < dataArray.Length; i++) {
+            table.Rows.TryGetValue(param.Name + i.ToString(), out row);
+            if (row == null) {
+              row = new DataRow(param.Name + i.ToString(), param.Description);
+              row.Values.Add(dataArray[i].Value);
+              table.Rows.Add(row);
+            } else {
+              row.Values.Add(dataArray[i].Value);
+            }
+          }
         } else {
-          row.Values.Add(data.Value);
+          DataRow row;
+          table.Rows.TryGetValue(param.Name, out row);
+          if (row == null) {
+            row = new DataRow(param.Name, param.Description);
+            row.Values.Add(double.NaN);
+            table.Rows.Add(row);
+          } else {
+            row.Values.Add(double.NaN);
+          }
         }
       }
       return base.Apply();

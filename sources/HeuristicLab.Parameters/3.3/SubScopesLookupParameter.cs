@@ -34,6 +34,7 @@ namespace HeuristicLab.Parameters {
     public SubScopesLookupParameter() : base() { }
     public SubScopesLookupParameter(string name) : base(name) { }
     public SubScopesLookupParameter(string name, string description) : base(name, description) { }
+    public SubScopesLookupParameter(string name, string description, string actualName) : base(name, description, actualName) { }
 
     protected override IItem GetActualValue() {
       string name = LookupParameter<ItemArray<T>>.TranslateName(Name, ExecutionContext);
