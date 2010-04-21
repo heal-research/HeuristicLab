@@ -45,10 +45,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
     /// </summary>
     private void InitializeComponent() {
       this.modelGroupBox = new System.Windows.Forms.GroupBox();
+      this.viewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
+      this.modelGroupBox.SuspendLayout();
       this.SuspendLayout();
       // 
       // modelGroupBox
       // 
+      this.modelGroupBox.Controls.Add(this.viewHost);
       this.modelGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
       this.modelGroupBox.Location = new System.Drawing.Point(0, 0);
       this.modelGroupBox.Name = "modelGroupBox";
@@ -56,6 +59,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
       this.modelGroupBox.TabIndex = 0;
       this.modelGroupBox.TabStop = false;
       this.modelGroupBox.Text = "Symbolic Expression Model";
+      // 
+      // viewHost
+      // 
+      this.viewHost.Caption = null;
+      this.viewHost.Content = null;
+      this.viewHost.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.viewHost.Location = new System.Drawing.Point(3, 16);
+      this.viewHost.Name = "viewHost";
+      this.viewHost.ReadOnly = false;
+      this.viewHost.Size = new System.Drawing.Size(346, 394);
+      this.viewHost.TabIndex = 0;
+      this.viewHost.ViewType = null;
       // 
       // SymbolicExpressionModelView
       // 
@@ -65,6 +80,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
       this.Controls.Add(this.modelGroupBox);
       this.Name = "SymbolicExpressionModelView";
       this.Size = new System.Drawing.Size(352, 413);
+      this.modelGroupBox.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
@@ -72,6 +88,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
     #endregion
 
     private System.Windows.Forms.GroupBox modelGroupBox;
+    private HeuristicLab.MainForm.WindowsForms.ViewHost viewHost;
 
   }
 }

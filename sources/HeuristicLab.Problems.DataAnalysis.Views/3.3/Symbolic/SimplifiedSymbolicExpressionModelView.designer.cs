@@ -45,10 +45,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
     /// </summary>
     private void InitializeComponent() {
       this.simplifiedModelGroupBox = new System.Windows.Forms.GroupBox();
+      this.viewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
+      this.simplifiedModelGroupBox.SuspendLayout();
       this.SuspendLayout();
       // 
       // simplifiedModelGroupBox
       // 
+      this.simplifiedModelGroupBox.Controls.Add(this.viewHost);
       this.simplifiedModelGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
       this.simplifiedModelGroupBox.Location = new System.Drawing.Point(0, 0);
       this.simplifiedModelGroupBox.Name = "simplifiedModelGroupBox";
@@ -56,6 +59,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
       this.simplifiedModelGroupBox.TabIndex = 0;
       this.simplifiedModelGroupBox.TabStop = false;
       this.simplifiedModelGroupBox.Text = "Simplified Symbolic Expression Model";
+      // 
+      // viewHost
+      // 
+      this.viewHost.Caption = null;
+      this.viewHost.Content = null;
+      this.viewHost.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.viewHost.Location = new System.Drawing.Point(3, 16);
+      this.viewHost.Name = "viewHost";
+      this.viewHost.ReadOnly = false;
+      this.viewHost.Size = new System.Drawing.Size(346, 394);
+      this.viewHost.TabIndex = 0;
+      this.viewHost.ViewType = null;
       // 
       // SimplifiedSymbolicExpressionModelView
       // 
@@ -65,6 +80,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
       this.Controls.Add(this.simplifiedModelGroupBox);
       this.Name = "SimplifiedSymbolicExpressionModelView";
       this.Size = new System.Drawing.Size(352, 413);
+      this.simplifiedModelGroupBox.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
@@ -72,6 +88,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
     #endregion
 
     private System.Windows.Forms.GroupBox simplifiedModelGroupBox;
+    private HeuristicLab.MainForm.WindowsForms.ViewHost viewHost;
 
   }
 }

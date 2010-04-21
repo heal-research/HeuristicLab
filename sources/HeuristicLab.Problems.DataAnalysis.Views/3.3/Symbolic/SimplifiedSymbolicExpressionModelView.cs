@@ -43,21 +43,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
   public partial class SimplifiedSymbolicExpressionModelView : AsynchronousContentView {
     public new SymbolicRegressionSolution Content {
       get { return (SymbolicRegressionSolution)base.Content; }
-      set {
-        base.Content = value;
-      }
+      set {        base.Content = value;       }
     }
 
-    private ViewHost viewHost;
 
     public SimplifiedSymbolicExpressionModelView()
       : base() {
       InitializeComponent();
-
-      // manual initialization of viewhost for the simplified model
-      viewHost = new ViewHost();
-      viewHost.Dock = DockStyle.Fill;
-      simplifiedModelGroupBox.Controls.Add(viewHost);
     }
 
     public SimplifiedSymbolicExpressionModelView(SymbolicRegressionSolution content)
