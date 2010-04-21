@@ -37,7 +37,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab 3.3", "Heurist
 		{125D3006-67F5-48CB-913E-73C0548F17FA} = {125D3006-67F5-48CB-913E-73C0548F17FA}
 		{489CFE09-FDF7-4C89-BAB5-BD09CADD61AD} = {489CFE09-FDF7-4C89-BAB5-BD09CADD61AD}
 		{72104A0B-90E7-42F3-9ABE-9BBBADD4B943} = {72104A0B-90E7-42F3-9ABE-9BBBADD4B943}
-		{C458C60D-33CE-42B8-8B7A-651B698A3C96} = {C458C60D-33CE-42B8-8B7A-651B698A3C96}
 		{25087811-F74C-4128-BC86-8324271DA13E} = {25087811-F74C-4128-BC86-8324271DA13E}
 		{662B4B15-8F4D-4AE5-B3EB-D91C215F5AF2} = {662B4B15-8F4D-4AE5-B3EB-D91C215F5AF2}
 		{BDF86B1D-630E-4CE2-8A49-8C90B1BDE4C9} = {BDF86B1D-630E-4CE2-8A49-8C90B1BDE4C9}
@@ -192,8 +191,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.Knaps
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Algorithms.SimulatedAnnealing-3.3", "HeuristicLab.Algorithms.SimulatedAnnealing\3.3\HeuristicLab.Algorithms.SimulatedAnnealing-3.3.csproj", "{96E5ED5B-187D-4012-9CDA-D85CDAD38342}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.PluginAdministrator-3.3", "HeuristicLab.PluginAdministrator\3.3\HeuristicLab.PluginAdministrator-3.3.csproj", "{C458C60D-33CE-42B8-8B7A-651B698A3C96}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Services.Deployment-3.3", "HeuristicLab.Services.Deployment\3.3\HeuristicLab.Services.Deployment-3.3.csproj", "{30D8C5F1-CD3A-4EC1-907F-430177A03FBE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Services.Deployment.DataAccess-3.3", "HeuristicLab.Services.Deployment.DataAccess\3.3\HeuristicLab.Services.Deployment.DataAccess-3.3.csproj", "{EBEBA863-DD05-4331-BE25-5758B15F7407}"
@@ -249,9 +246,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.MainForm.WindowsForms-3.3", "HeuristicLab.MainForm.WindowsForms\3.3\HeuristicLab.MainForm.WindowsForms-3.3.csproj", "{AB687BBE-1BFE-476B-906D-44237135431D}"
 EndProject
 Global
-	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = HeuristicLab 3.3.vsmdi
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
@@ -971,21 +965,6 @@ Global
 		{96E5ED5B-187D-4012-9CDA-D85CDAD38342}.Services|Any CPU.ActiveCfg = Release|Any CPU
 		{96E5ED5B-187D-4012-9CDA-D85CDAD38342}.Services|x64.ActiveCfg = Release|x64
 		{96E5ED5B-187D-4012-9CDA-D85CDAD38342}.Services|x86.ActiveCfg = Release|x86
-		{C458C60D-33CE-42B8-8B7A-651B698A3C96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C458C60D-33CE-42B8-8B7A-651B698A3C96}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C458C60D-33CE-42B8-8B7A-651B698A3C96}.Debug|x64.ActiveCfg = Debug|x64
-		{C458C60D-33CE-42B8-8B7A-651B698A3C96}.Debug|x64.Build.0 = Debug|x64
-		{C458C60D-33CE-42B8-8B7A-651B698A3C96}.Debug|x86.ActiveCfg = Debug|x86
-		{C458C60D-33CE-42B8-8B7A-651B698A3C96}.Debug|x86.Build.0 = Debug|x86
-		{C458C60D-33CE-42B8-8B7A-651B698A3C96}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C458C60D-33CE-42B8-8B7A-651B698A3C96}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C458C60D-33CE-42B8-8B7A-651B698A3C96}.Release|x64.ActiveCfg = Release|x64
-		{C458C60D-33CE-42B8-8B7A-651B698A3C96}.Release|x64.Build.0 = Release|x64
-		{C458C60D-33CE-42B8-8B7A-651B698A3C96}.Release|x86.ActiveCfg = Release|x86
-		{C458C60D-33CE-42B8-8B7A-651B698A3C96}.Release|x86.Build.0 = Release|x86
-		{C458C60D-33CE-42B8-8B7A-651B698A3C96}.Services|Any CPU.ActiveCfg = Release|Any CPU
-		{C458C60D-33CE-42B8-8B7A-651B698A3C96}.Services|x64.ActiveCfg = Release|x64
-		{C458C60D-33CE-42B8-8B7A-651B698A3C96}.Services|x86.ActiveCfg = Release|x86
 		{30D8C5F1-CD3A-4EC1-907F-430177A03FBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{30D8C5F1-CD3A-4EC1-907F-430177A03FBE}.Debug|x64.ActiveCfg = Debug|x64
 		{30D8C5F1-CD3A-4EC1-907F-430177A03FBE}.Debug|x86.ActiveCfg = Debug|x86

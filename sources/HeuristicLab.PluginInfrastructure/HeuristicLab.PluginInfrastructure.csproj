@@ -145,12 +145,6 @@
     <Compile Include="Advanced\MultiSelectListView.Designer.cs">
       <DependentUpon>MultiSelectListView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Advanced\PluginComparisonView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Advanced\PluginComparisonView.Designer.cs">
-      <DependentUpon>PluginComparisonView.cs</DependentUpon>
-    </Compile>
     <Compile Include="Advanced\PluginListView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -162,12 +156,6 @@
     </Compile>
     <Compile Include="Advanced\PluginView.Designer.cs">
       <DependentUpon>PluginView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Advanced\ProductEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Advanced\ProductEditor.Designer.cs">
-      <DependentUpon>ProductEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Advanced\RemotePluginInstaller.cs">
       <SubType>UserControl</SubType>
@@ -291,17 +279,11 @@
     <EmbeddedResource Include="Advanced\LicenseView.resx">
       <DependentUpon>LicenseView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Advanced\PluginComparisonView.resx">
-      <DependentUpon>PluginComparisonView.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Advanced\PluginListView.resx">
       <DependentUpon>PluginListView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Advanced\PluginView.resx">
       <DependentUpon>PluginView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Advanced\ProductEditor.resx">
-      <DependentUpon>ProductEditor.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Resources\VS2008ImageLibrary_Actions_Delete.png" />
     <None Include="Resources\VS2008ImageLibrary_CommonElements_Actions_Remove.png" />
