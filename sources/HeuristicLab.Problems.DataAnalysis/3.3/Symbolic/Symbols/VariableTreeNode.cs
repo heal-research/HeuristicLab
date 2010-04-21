@@ -75,7 +75,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
     }
 
     public override string ToString() {
-      return weight.ToString("E5") + " * " + variableName;
+      return weight.ToString("E4") + " " + variableName;
     }
   }
 }

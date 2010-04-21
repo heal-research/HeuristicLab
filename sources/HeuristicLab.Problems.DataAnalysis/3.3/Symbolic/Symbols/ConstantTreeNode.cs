@@ -55,7 +55,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
     }
     public override void ResetLocalParameters(IRandom random) {
       base.ResetLocalParameters(random);
-      var range = Symbol.MaxValue - Symbol.MaxValue;
+      var range = Symbol.MaxValue - Symbol.MinValue;
       Value = random.NextDouble() * range - Symbol.MinValue;
     }
 
@@ -64,7 +64,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
     }
 
     public override string ToString() {
-      return constantValue.ToString("E5");
+      return constantValue.ToString("E4");
     }
   }
 }
