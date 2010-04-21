@@ -66,7 +66,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(632, 446);
       this.Controls.Add(this.viewPanel);
-      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+      this.Icon = HeuristicLab.Common.Resources.Resources.HeuristicLabIcon;
       this.Name = "ViewForm";
       this.ShowInTaskbar = false;
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
