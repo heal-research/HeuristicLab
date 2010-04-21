@@ -62,21 +62,14 @@ namespace HeuristicLab.Problems.ArtificialAnt.Views {
       } else {
         GenerateImage();
       }
-      SetEnabledStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-
-    private void SetEnabledStateOfControls() {
-      pictureBox.Enabled = Content != null;
-      playButton.Enabled = Content != null && !ReadOnly;
+    protected override void OnLockedChanged() {
+      this.playButton.Enabled = !Locked;
+      base.OnLockedChanged();
     }
 
     private void GenerateImage() {
-      playButton.Enabled = this.Enabled && !ReadOnly;
       animationTimer.Stop();
       if ((pictureBox.Width > 0) && (pictureBox.Height > 0)) {
         if (Content == null) {
@@ -227,15 +220,10 @@ namespace HeuristicLab.Problems.ArtificialAnt.Views {
           animationTimer.Start();
         } else {
           animationTimer.Stop();
-          playButton.Enabled = this.Enabled && !ReadOnly;
+          playButton.Enabled = true;
         }
       }
     }
     #endregion
-
-    private void AntTrailView_EnabledChanged(object sender, EventArgs e) {
-      if (this.Enabled) playButton.Enabled = !ReadOnly;
-      else playButton.Enabled = false;
-    }
   }
 }

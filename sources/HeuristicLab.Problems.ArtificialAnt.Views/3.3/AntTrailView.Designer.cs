@@ -89,7 +89,6 @@ namespace HeuristicLab.Problems.ArtificialAnt.Views {
       this.Controls.Add(this.pictureBox);
       this.Name = "AntTrailView";
       this.Size = new System.Drawing.Size(392, 310);
-      this.EnabledChanged += new System.EventHandler(this.AntTrailView_EnabledChanged);
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
       this.ResumeLayout(false);
 
