@@ -29,7 +29,7 @@ using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure.Manager;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
-  internal partial class LocalPluginManager : UserControl {
+  internal partial class LocalPluginManagerView : UserControl {
 
     public event ItemCheckedEventHandler ItemChecked;
 
@@ -38,11 +38,8 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private ListViewGroup enabledPluginsGroup;
     private ListViewGroup disabledPluginsGroup;
 
-    public LocalPluginManager() {
+    public LocalPluginManagerView() {
       InitializeComponent();
-
-      imageListForLocalItems.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Resources.Assembly);
-      imageListForLocalItems.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Resources.Remove);
 
       enabledPluginsGroup = localPluginsListView.Groups["activePluginsGroup"];
       disabledPluginsGroup = localPluginsListView.Groups["disabledPluginsGroup"];
@@ -134,7 +131,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       if (localPluginsListView.SelectedItems.Count > 0) {
         var plugin = (PluginDescription)localPluginsListView.SelectedItems[0].Tag;
         PluginView pluginView = new PluginView(plugin);
-        pluginView.ShowInForm();
+        pluginView.Show();
       }
     }
   }

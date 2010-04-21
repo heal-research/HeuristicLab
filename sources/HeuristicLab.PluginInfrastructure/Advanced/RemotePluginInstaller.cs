@@ -28,19 +28,26 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
-  internal partial class RemotePluginInstaller : UserControl {
+  internal partial class RemotePluginInstallerView : UserControl {
     public event ItemCheckedEventHandler ItemChecked;
 
     private ListViewGroup newPluginsGroup;
     private ListViewGroup productsGroup;
     private ListViewGroup allPluginsGroup;
+
     private bool showAllPlugins;
+    public bool ShowAllPlugins {
+      get { return showAllPlugins; }
+      set {
+        if (value != showAllPlugins) {
+          showAllPlugins = value;
+          UpdateControl();
+        }
+      }
+    }
 
-    public RemotePluginInstaller() {
+    public RemotePluginInstallerView() {
       InitializeComponent();
-
-      imageListForRemoteItems.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Resources.Assembly);
-      imageListForRemoteItems.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Resources.Install);
 
       newPluginsGroup = remotePluginsListView.Groups["newPluginsGroup"];
       productsGroup = remotePluginsListView.Groups["productsGroup"];
@@ -131,18 +138,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       item.Tag = plugin;
       return item;
     }
-
-    #region button event handlers
-    private void advancedViewButton_CheckedChanged(object sender, EventArgs e) {
-      if (advancedViewButton.Checked) {
-        showAllPlugins = true;
-      } else {
-        showAllPlugins = false;
-      }
-      UpdateControl();
-    }
-
-    #endregion
 
     #region item checked event handler
     private void remotePluginsListView_ItemChecked(object sender, ItemCheckedEventArgs e) {

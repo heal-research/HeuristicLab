@@ -29,7 +29,7 @@ using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
-  internal partial class LicenseView : InstallationManagerControl {
+  internal partial class LicenseView : Form {
 
     public LicenseView() {
       InitializeComponent();

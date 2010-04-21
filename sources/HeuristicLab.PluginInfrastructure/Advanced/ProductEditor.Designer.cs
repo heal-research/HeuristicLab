@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.PluginAdministrator {
+namespace HeuristicLab.PluginInfrastructure.Advanced {
   partial class ProductEditor {
     /// <summary> 
     /// Required designer variable.
@@ -56,7 +56,7 @@ namespace HeuristicLab.PluginAdministrator {
       this.productImageList = new System.Windows.Forms.ImageList(this.components);
       this.detailsGroupBox = new System.Windows.Forms.GroupBox();
       this.pluginsGroupBox = new System.Windows.Forms.GroupBox();
-      this.pluginListView = new HeuristicLab.PluginAdministrator.PluginListView();
+      this.pluginListView = new HeuristicLab.PluginInfrastructure.Advanced.PluginListView();
       this.versionTextBox = new System.Windows.Forms.TextBox();
       this.nameLabel = new System.Windows.Forms.Label();
       this.nameTextBox = new System.Windows.Forms.TextBox();

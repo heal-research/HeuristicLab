@@ -43,6 +43,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfirmationDialog));
       this.informationTextBox = new System.Windows.Forms.RichTextBox();
       this.messageLabel = new System.Windows.Forms.Label();
       this.okButton = new System.Windows.Forms.Button();
@@ -129,6 +130,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.Controls.Add(this.icon);
       this.Controls.Add(this.messageLabel);
       this.Controls.Add(this.informationTextBox);
+      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.Name = "ConfirmationDialog";
       this.Text = "ConfirmationDialog";
       ((System.ComponentModel.ISupportInitialize)(this.icon)).EndInit();

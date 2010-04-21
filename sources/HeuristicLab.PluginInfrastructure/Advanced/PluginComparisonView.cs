@@ -27,20 +27,17 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using HeuristicLab.MainForm;
-using HeuristicLab.PluginInfrastructure;
-using PluginDeploymentService = HeuristicLab.PluginInfrastructure.Advanced.DeploymentService;
 using HeuristicLab.PluginInfrastructure.Manager;
 using System.ServiceModel;
 using ICSharpCode.SharpZipLib.Zip;
 using System.IO;
 
-namespace HeuristicLab.PluginAdministrator {
-  internal partial class PluginComparisonView : HeuristicLab.MainForm.WindowsForms.View {
+namespace HeuristicLab.PluginInfrastructure.Advanced {
+  internal partial class PluginComparisonView : Form {
 
-    public PluginComparisonView(IPluginDescription localPlugin, IPluginDescription serverPlugin) {
+    public PluginComparisonView(PluginDescription localPlugin, PluginDescription serverPlugin) {
       InitializeComponent();
-      Caption = "Compare plugins";
+      //Caption = "Compare plugins";
 
       var localPluginView = new PluginView(localPlugin);
       localPluginView.Dock = DockStyle.Fill;

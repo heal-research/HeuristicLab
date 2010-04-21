@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.PluginAdministrator {
+namespace HeuristicLab.PluginInfrastructure.Advanced {
   partial class PluginEditor {
     /// <summary> 
     /// Required designer variable.
@@ -46,7 +46,7 @@ namespace HeuristicLab.PluginAdministrator {
     private void InitializeComponent() {
       this.refreshButton = new System.Windows.Forms.Button();
       this.uploadButton = new System.Windows.Forms.Button();
-      this.listView = new HeuristicLab.PluginAdministrator.MultiSelectListView();
+      this.listView = new HeuristicLab.PluginInfrastructure.Advanced.MultiSelectListView();
       this.pluginNameHeader = new System.Windows.Forms.ColumnHeader();
       this.localVersionHeader = new System.Windows.Forms.ColumnHeader();
       this.serverVersionHeader = new System.Windows.Forms.ColumnHeader();

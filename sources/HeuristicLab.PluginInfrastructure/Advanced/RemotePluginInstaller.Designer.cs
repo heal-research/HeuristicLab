@@ -19,7 +19,7 @@
  */
 #endregion
 namespace HeuristicLab.PluginInfrastructure.Advanced {
-  partial class RemotePluginInstaller {
+  partial class RemotePluginInstallerView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -43,27 +43,14 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.components = new System.ComponentModel.Container();
       System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Products", System.Windows.Forms.HorizontalAlignment.Left);
       System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("New Plugins", System.Windows.Forms.HorizontalAlignment.Left);
       System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("All Plugins", System.Windows.Forms.HorizontalAlignment.Left);
-      this.imageListForRemoteItems = new System.Windows.Forms.ImageList(this.components);
       this.remotePluginsListView = new HeuristicLab.PluginInfrastructure.Advanced.MultiSelectListView();
       this.nameHeader = new System.Windows.Forms.ColumnHeader();
       this.versionHeader = new System.Windows.Forms.ColumnHeader();
       this.descriptionHeader = new System.Windows.Forms.ColumnHeader();
-      this.radioButton1 = new System.Windows.Forms.RadioButton();
-      this.advancedViewButton = new System.Windows.Forms.RadioButton();
-      this.simpleViewButton = new System.Windows.Forms.RadioButton();
-      this.viewButtonGroupBox = new System.Windows.Forms.GroupBox();
-      this.viewButtonGroupBox.SuspendLayout();
       this.SuspendLayout();
-      // 
-      // imageListForRemoteItems
-      // 
-      this.imageListForRemoteItems.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
-      this.imageListForRemoteItems.ImageSize = new System.Drawing.Size(13, 13);
-      this.imageListForRemoteItems.TransparentColor = System.Drawing.Color.Transparent;
       // 
       // remotePluginsListView
       // 
@@ -85,10 +72,9 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
             listViewGroup1,
             listViewGroup2,
             listViewGroup3});
-      this.remotePluginsListView.Location = new System.Drawing.Point(0, 50);
+      this.remotePluginsListView.Location = new System.Drawing.Point(0, 0);
       this.remotePluginsListView.Name = "remotePluginsListView";
-      this.remotePluginsListView.Size = new System.Drawing.Size(533, 508);
-      this.remotePluginsListView.StateImageList = this.imageListForRemoteItems;
+      this.remotePluginsListView.Size = new System.Drawing.Size(533, 558);
       this.remotePluginsListView.SuppressItemCheckedEvents = false;
       this.remotePluginsListView.TabIndex = 0;
       this.remotePluginsListView.UseCompatibleStateImageBehavior = false;
@@ -110,81 +96,22 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.descriptionHeader.Text = "Description";
       this.descriptionHeader.Width = 250;
       // 
-      // radioButton1
-      // 
-      this.radioButton1.AutoSize = true;
-      this.radioButton1.Location = new System.Drawing.Point(-15, -15);
-      this.radioButton1.Name = "radioButton1";
-      this.radioButton1.Size = new System.Drawing.Size(85, 17);
-      this.radioButton1.TabIndex = 2;
-      this.radioButton1.TabStop = true;
-      this.radioButton1.Text = "radioButton1";
-      this.radioButton1.UseVisualStyleBackColor = true;
-      // 
-      // advancedViewButton
-      // 
-      this.advancedViewButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)));
-      this.advancedViewButton.Appearance = System.Windows.Forms.Appearance.Button;
-      this.advancedViewButton.AutoSize = true;
-      this.advancedViewButton.Location = new System.Drawing.Point(104, 9);
-      this.advancedViewButton.Name = "advancedViewButton";
-      this.advancedViewButton.Size = new System.Drawing.Size(92, 23);
-      this.advancedViewButton.TabIndex = 3;
-      this.advancedViewButton.Text = "Advanced View";
-      this.advancedViewButton.UseVisualStyleBackColor = true;
-      this.advancedViewButton.CheckedChanged += new System.EventHandler(this.advancedViewButton_CheckedChanged);
-      // 
-      // simpleViewButton
-      // 
-      this.simpleViewButton.Appearance = System.Windows.Forms.Appearance.Button;
-      this.simpleViewButton.Checked = true;
-      this.simpleViewButton.Location = new System.Drawing.Point(6, 9);
-      this.simpleViewButton.Name = "simpleViewButton";
-      this.simpleViewButton.Size = new System.Drawing.Size(92, 23);
-      this.simpleViewButton.TabIndex = 3;
-      this.simpleViewButton.TabStop = true;
-      this.simpleViewButton.Text = "Simple View";
-      this.simpleViewButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-      this.simpleViewButton.UseVisualStyleBackColor = true;
-      this.simpleViewButton.CheckedChanged += new System.EventHandler(this.advancedViewButton_CheckedChanged);
-      // 
-      // viewButtonGroupBox
-      // 
-      this.viewButtonGroupBox.Controls.Add(this.advancedViewButton);
-      this.viewButtonGroupBox.Controls.Add(this.simpleViewButton);
-      this.viewButtonGroupBox.Location = new System.Drawing.Point(3, 8);
-      this.viewButtonGroupBox.Name = "viewButtonGroupBox";
-      this.viewButtonGroupBox.Size = new System.Drawing.Size(204, 36);
-      this.viewButtonGroupBox.TabIndex = 5;
-      this.viewButtonGroupBox.TabStop = false;
-      // 
-      // RemotePluginInstaller
+      // RemotePluginInstallerView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.viewButtonGroupBox);
-      this.Controls.Add(this.radioButton1);
       this.Controls.Add(this.remotePluginsListView);
-      this.Name = "RemotePluginInstaller";
+      this.Name = "RemotePluginInstallerView";
       this.Size = new System.Drawing.Size(533, 558);
-      this.viewButtonGroupBox.ResumeLayout(false);
-      this.viewButtonGroupBox.PerformLayout();
       this.ResumeLayout(false);
-      this.PerformLayout();
 
     }
 
     #endregion
 
-    private System.Windows.Forms.ImageList imageListForRemoteItems;
     private MultiSelectListView remotePluginsListView;
     private System.Windows.Forms.ColumnHeader nameHeader;
     private System.Windows.Forms.ColumnHeader versionHeader;
     private System.Windows.Forms.ColumnHeader descriptionHeader;
-    private System.Windows.Forms.RadioButton radioButton1;
-    private System.Windows.Forms.RadioButton advancedViewButton;
-    private System.Windows.Forms.RadioButton simpleViewButton;
-    private System.Windows.Forms.GroupBox viewButtonGroupBox;
   }
 }

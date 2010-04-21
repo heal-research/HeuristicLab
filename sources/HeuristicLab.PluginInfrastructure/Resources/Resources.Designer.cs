@@ -67,6 +67,13 @@ namespace HeuristicLab.PluginInfrastructure.Resources {
             }
         }
         
+        internal static System.Drawing.Bitmap ArrowUp {
+            get {
+                object obj = ResourceManager.GetObject("ArrowUp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Assembly {
             get {
                 object obj = ResourceManager.GetObject("Assembly", resourceCulture);

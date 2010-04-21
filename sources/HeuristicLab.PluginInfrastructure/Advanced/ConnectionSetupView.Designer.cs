@@ -43,6 +43,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConnectionSetupView));
       this.urlTextBox = new System.Windows.Forms.TextBox();
       this.urlLabel = new System.Windows.Forms.Label();
       this.userLabel = new System.Windows.Forms.Label();
@@ -58,15 +59,15 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // 
       this.urlTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.urlTextBox.Location = new System.Drawing.Point(71, 3);
+      this.urlTextBox.Location = new System.Drawing.Point(80, 15);
       this.urlTextBox.Name = "urlTextBox";
-      this.urlTextBox.Size = new System.Drawing.Size(177, 20);
+      this.urlTextBox.Size = new System.Drawing.Size(219, 20);
       this.urlTextBox.TabIndex = 0;
       // 
       // urlLabel
       // 
       this.urlLabel.AutoSize = true;
-      this.urlLabel.Location = new System.Drawing.Point(3, 6);
+      this.urlLabel.Location = new System.Drawing.Point(12, 18);
       this.urlLabel.Name = "urlLabel";
       this.urlLabel.Size = new System.Drawing.Size(48, 13);
       this.urlLabel.TabIndex = 1;
@@ -75,7 +76,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // userLabel
       // 
       this.userLabel.AutoSize = true;
-      this.userLabel.Location = new System.Drawing.Point(3, 32);
+      this.userLabel.Location = new System.Drawing.Point(12, 44);
       this.userLabel.Name = "userLabel";
       this.userLabel.Size = new System.Drawing.Size(32, 13);
       this.userLabel.TabIndex = 3;
@@ -85,15 +86,15 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // 
       this.userTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.userTextBox.Location = new System.Drawing.Point(71, 29);
+      this.userTextBox.Location = new System.Drawing.Point(80, 41);
       this.userTextBox.Name = "userTextBox";
-      this.userTextBox.Size = new System.Drawing.Size(177, 20);
+      this.userTextBox.Size = new System.Drawing.Size(219, 20);
       this.userTextBox.TabIndex = 2;
       // 
       // passwordLabel
       // 
       this.passwordLabel.AutoSize = true;
-      this.passwordLabel.Location = new System.Drawing.Point(3, 58);
+      this.passwordLabel.Location = new System.Drawing.Point(12, 70);
       this.passwordLabel.Name = "passwordLabel";
       this.passwordLabel.Size = new System.Drawing.Size(56, 13);
       this.passwordLabel.TabIndex = 5;
@@ -103,15 +104,16 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // 
       this.passwordTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.passwordTextBox.Location = new System.Drawing.Point(71, 55);
+      this.passwordTextBox.Location = new System.Drawing.Point(80, 67);
       this.passwordTextBox.Name = "passwordTextBox";
-      this.passwordTextBox.Size = new System.Drawing.Size(177, 20);
+      this.passwordTextBox.Size = new System.Drawing.Size(219, 20);
       this.passwordTextBox.TabIndex = 4;
       this.passwordTextBox.UseSystemPasswordChar = true;
       // 
       // applyButton
       // 
-      this.applyButton.Location = new System.Drawing.Point(6, 104);
+      this.applyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.applyButton.Location = new System.Drawing.Point(143, 127);
       this.applyButton.Name = "applyButton";
       this.applyButton.Size = new System.Drawing.Size(75, 23);
       this.applyButton.TabIndex = 6;
@@ -123,7 +125,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // 
       this.savePasswordCheckbox.AutoSize = true;
       this.savePasswordCheckbox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-      this.savePasswordCheckbox.Location = new System.Drawing.Point(71, 81);
+      this.savePasswordCheckbox.Location = new System.Drawing.Point(80, 93);
       this.savePasswordCheckbox.Name = "savePasswordCheckbox";
       this.savePasswordCheckbox.Size = new System.Drawing.Size(103, 17);
       this.savePasswordCheckbox.TabIndex = 7;
@@ -132,7 +134,8 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // 
       // cancelButton
       // 
-      this.cancelButton.Location = new System.Drawing.Point(87, 104);
+      this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.cancelButton.Location = new System.Drawing.Point(224, 127);
       this.cancelButton.Name = "cancelButton";
       this.cancelButton.Size = new System.Drawing.Size(75, 23);
       this.cancelButton.TabIndex = 8;
@@ -144,6 +147,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.ClientSize = new System.Drawing.Size(311, 162);
       this.Controls.Add(this.cancelButton);
       this.Controls.Add(this.savePasswordCheckbox);
       this.Controls.Add(this.applyButton);
@@ -153,8 +157,15 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.Controls.Add(this.userTextBox);
       this.Controls.Add(this.urlLabel);
       this.Controls.Add(this.urlTextBox);
+      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+      this.MaximizeBox = false;
+      this.MaximumSize = new System.Drawing.Size(327, 198);
+      this.MinimizeBox = false;
+      this.MinimumSize = new System.Drawing.Size(327, 198);
       this.Name = "ConnectionSetupView";
-      this.Size = new System.Drawing.Size(251, 132);
+      this.ShowInTaskbar = false;
+      this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
+      this.Text = "Edit Connection Settings";
       this.ResumeLayout(false);
       this.PerformLayout();
 

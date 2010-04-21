@@ -19,8 +19,8 @@
  */
 #endregion
 
-namespace HeuristicLab.PluginAdministrator {
-  partial class PluginListView {
+namespace HeuristicLab.PluginInfrastructure.Advanced {
+  partial class PluginComparisonView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -44,53 +44,39 @@ namespace HeuristicLab.PluginAdministrator {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.listView = new HeuristicLab.PluginAdministrator.MultiSelectListView();
-      this.nameHeader = new System.Windows.Forms.ColumnHeader();
-      this.versionHeader = new System.Windows.Forms.ColumnHeader();
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PluginComparisonView));
+      this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
       this.SuspendLayout();
       // 
-      // listView
+      // tableLayoutPanel
       // 
-      this.listView.CheckBoxes = true;
-      this.listView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.nameHeader,
-            this.versionHeader});
-      this.listView.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.listView.Location = new System.Drawing.Point(0, 0);
-      this.listView.Name = "listView";
-      this.listView.Size = new System.Drawing.Size(341, 320);
-      this.listView.SuppressItemCheckedEvents = false;
-      this.listView.TabIndex = 1;
-      this.listView.UseCompatibleStateImageBehavior = false;
-      this.listView.View = System.Windows.Forms.View.Details;
-      this.listView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.listView_ItemChecked);
+      this.tableLayoutPanel.ColumnCount = 2;
+      this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+      this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+      this.tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.tableLayoutPanel.Location = new System.Drawing.Point(0, 0);
+      this.tableLayoutPanel.Name = "tableLayoutPanel";
+      this.tableLayoutPanel.RowCount = 1;
+      this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+      this.tableLayoutPanel.Size = new System.Drawing.Size(523, 469);
+      this.tableLayoutPanel.TabIndex = 0;
       // 
-      // nameHeader
-      // 
-      this.nameHeader.Text = "Name";
-      this.nameHeader.Width = 40;
-      // 
-      // versionHeader
-      // 
-      this.versionHeader.Text = "Version";
-      this.versionHeader.Width = 297;
-      // 
-      // PluginListView
+      // PluginComparisonView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.listView);
-      this.Name = "PluginListView";
-      this.Size = new System.Drawing.Size(341, 320);
+      this.ClientSize = new System.Drawing.Size(523, 469);
+      this.Controls.Add(this.tableLayoutPanel);
+      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+      this.Name = "PluginComparisonView";
+      this.Text = "Compare Plugin Details";
       this.ResumeLayout(false);
 
     }
 
     #endregion
 
-    private MultiSelectListView listView;
-    private System.Windows.Forms.ColumnHeader nameHeader;
-    private System.Windows.Forms.ColumnHeader versionHeader;
+    private System.Windows.Forms.TableLayoutPanel tableLayoutPanel;
 
   }
 }

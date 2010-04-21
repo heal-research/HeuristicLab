@@ -43,6 +43,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InstallationManagerForm));
       this.statusStrip = new System.Windows.Forms.StatusStrip();
       this.toolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
       this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -50,18 +51,25 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.installButton = new System.Windows.Forms.Button();
       this.tabControl = new System.Windows.Forms.TabControl();
       this.localPluginsTabPage = new System.Windows.Forms.TabPage();
-      this.localPluginManager = new HeuristicLab.PluginInfrastructure.Advanced.LocalPluginManager();
-      this.remotePluginsTabPage = new System.Windows.Forms.TabPage();
-      this.remotePluginInstaller = new HeuristicLab.PluginInfrastructure.Advanced.RemotePluginInstaller();
+      this.updateButton = new System.Windows.Forms.Button();
+      this.localPluginManagerView = new HeuristicLab.PluginInfrastructure.Advanced.LocalPluginManagerView();
+      this.availablePluginsTabPage = new System.Windows.Forms.TabPage();
+      this.remotePluginInstaller = new HeuristicLab.PluginInfrastructure.Advanced.RemotePluginInstallerView();
+      this.refreshButton = new System.Windows.Forms.Button();
       this.logTabPage = new System.Windows.Forms.TabPage();
       this.logTextBox = new System.Windows.Forms.TextBox();
-      this.refreshButton = new System.Windows.Forms.Button();
-      this.editConnectionButton = new System.Windows.Forms.Button();
+      this.menuStrip = new System.Windows.Forms.MenuStrip();
+      this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.simpleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.advancedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.connectionSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.statusStrip.SuspendLayout();
       this.tabControl.SuspendLayout();
       this.localPluginsTabPage.SuspendLayout();
-      this.remotePluginsTabPage.SuspendLayout();
+      this.availablePluginsTabPage.SuspendLayout();
       this.logTabPage.SuspendLayout();
+      this.menuStrip.SuspendLayout();
       this.SuspendLayout();
       // 
       // statusStrip
@@ -69,9 +77,9 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripProgressBar,
             this.toolStripStatusLabel});
-      this.statusStrip.Location = new System.Drawing.Point(0, 612);
+      this.statusStrip.Location = new System.Drawing.Point(0, 398);
       this.statusStrip.Name = "statusStrip";
-      this.statusStrip.Size = new System.Drawing.Size(606, 22);
+      this.statusStrip.Size = new System.Drawing.Size(615, 22);
       this.statusStrip.TabIndex = 0;
       // 
       // toolStripProgressBar
@@ -91,11 +99,11 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // 
       this.removeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.removeButton.Enabled = false;
-      this.removeButton.Location = new System.Drawing.Point(6, 557);
+      this.removeButton.Location = new System.Drawing.Point(95, 313);
       this.removeButton.Name = "removeButton";
-      this.removeButton.Size = new System.Drawing.Size(109, 23);
+      this.removeButton.Size = new System.Drawing.Size(106, 23);
       this.removeButton.TabIndex = 11;
-      this.removeButton.Text = "Remove Plugins";
+      this.removeButton.Text = "Delete Selected";
       this.removeButton.UseVisualStyleBackColor = true;
       this.removeButton.Click += new System.EventHandler(this.removeButton_Click);
       // 
@@ -103,63 +111,76 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // 
       this.installButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.installButton.Enabled = false;
-      this.installButton.Location = new System.Drawing.Point(6, 557);
+      this.installButton.Location = new System.Drawing.Point(87, 313);
       this.installButton.Name = "installButton";
       this.installButton.Size = new System.Drawing.Size(132, 23);
       this.installButton.TabIndex = 15;
-      this.installButton.Text = "Download and Install";
+      this.installButton.Text = "Install Selected Items";
       this.installButton.UseVisualStyleBackColor = true;
       this.installButton.Click += new System.EventHandler(this.updateButton_Click);
       // 
       // tabControl
       // 
+      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.localPluginsTabPage);
-      this.tabControl.Controls.Add(this.remotePluginsTabPage);
+      this.tabControl.Controls.Add(this.availablePluginsTabPage);
       this.tabControl.Controls.Add(this.logTabPage);
-      this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.tabControl.Location = new System.Drawing.Point(0, 0);
+      this.tabControl.Location = new System.Drawing.Point(12, 27);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
-      this.tabControl.Size = new System.Drawing.Size(606, 612);
+      this.tabControl.Size = new System.Drawing.Size(591, 368);
       this.tabControl.TabIndex = 16;
+      this.tabControl.Selected += new System.Windows.Forms.TabControlEventHandler(this.tabControl_Selected);
       // 
       // localPluginsTabPage
       // 
+      this.localPluginsTabPage.Controls.Add(this.updateButton);
       this.localPluginsTabPage.Controls.Add(this.removeButton);
-      this.localPluginsTabPage.Controls.Add(this.localPluginManager);
+      this.localPluginsTabPage.Controls.Add(this.localPluginManagerView);
       this.localPluginsTabPage.Location = new System.Drawing.Point(4, 22);
       this.localPluginsTabPage.Name = "localPluginsTabPage";
       this.localPluginsTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.localPluginsTabPage.Size = new System.Drawing.Size(598, 586);
+      this.localPluginsTabPage.Size = new System.Drawing.Size(583, 342);
       this.localPluginsTabPage.TabIndex = 0;
       this.localPluginsTabPage.Text = "Installed Plugins";
       this.localPluginsTabPage.UseVisualStyleBackColor = true;
       // 
-      // localPluginManager
+      // updateButton
       // 
-      this.localPluginManager.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+      this.updateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.updateButton.Location = new System.Drawing.Point(6, 313);
+      this.updateButton.Name = "updateButton";
+      this.updateButton.Size = new System.Drawing.Size(83, 23);
+      this.updateButton.TabIndex = 12;
+      this.updateButton.Text = "Update All";
+      this.updateButton.UseVisualStyleBackColor = true;
+      // 
+      // localPluginManagerView
+      // 
+      this.localPluginManagerView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.localPluginManager.Location = new System.Drawing.Point(6, 6);
-      this.localPluginManager.Name = "localPluginManager";
-      this.localPluginManager.Plugins = null;
-      this.localPluginManager.Size = new System.Drawing.Size(584, 545);
-      this.localPluginManager.TabIndex = 0;
-      this.localPluginManager.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.localPluginManager_ItemChecked);
+      this.localPluginManagerView.Location = new System.Drawing.Point(6, 6);
+      this.localPluginManagerView.Name = "localPluginManagerView";
+      this.localPluginManagerView.Plugins = null;
+      this.localPluginManagerView.Size = new System.Drawing.Size(569, 301);
+      this.localPluginManagerView.TabIndex = 0;
+      this.localPluginManagerView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.localPluginManager_ItemChecked);
       // 
-      // remotePluginsTabPage
+      // availablePluginsTabPage
       // 
-      this.remotePluginsTabPage.Controls.Add(this.editConnectionButton);
-      this.remotePluginsTabPage.Controls.Add(this.remotePluginInstaller);
-      this.remotePluginsTabPage.Controls.Add(this.refreshButton);
-      this.remotePluginsTabPage.Controls.Add(this.installButton);
-      this.remotePluginsTabPage.Location = new System.Drawing.Point(4, 22);
-      this.remotePluginsTabPage.Name = "remotePluginsTabPage";
-      this.remotePluginsTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.remotePluginsTabPage.Size = new System.Drawing.Size(598, 586);
-      this.remotePluginsTabPage.TabIndex = 1;
-      this.remotePluginsTabPage.Text = "Remote Plugins";
-      this.remotePluginsTabPage.UseVisualStyleBackColor = true;
+      this.availablePluginsTabPage.Controls.Add(this.remotePluginInstaller);
+      this.availablePluginsTabPage.Controls.Add(this.refreshButton);
+      this.availablePluginsTabPage.Controls.Add(this.installButton);
+      this.availablePluginsTabPage.Location = new System.Drawing.Point(4, 22);
+      this.availablePluginsTabPage.Name = "availablePluginsTabPage";
+      this.availablePluginsTabPage.Padding = new System.Windows.Forms.Padding(3);
+      this.availablePluginsTabPage.Size = new System.Drawing.Size(583, 342);
+      this.availablePluginsTabPage.TabIndex = 1;
+      this.availablePluginsTabPage.Text = "Available Plugins";
+      this.availablePluginsTabPage.UseVisualStyleBackColor = true;
       // 
       // remotePluginInstaller
       // 
@@ -167,38 +188,19 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.remotePluginInstaller.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.remotePluginInstaller.Location = new System.Drawing.Point(6, 35);
+      this.remotePluginInstaller.Location = new System.Drawing.Point(6, 6);
       this.remotePluginInstaller.Name = "remotePluginInstaller";
       this.remotePluginInstaller.NewPlugins = new HeuristicLab.PluginInfrastructure.IPluginDescription[0];
       this.remotePluginInstaller.Products = new HeuristicLab.PluginInfrastructure.Advanced.DeploymentService.ProductDescription[0];
-      this.remotePluginInstaller.Size = new System.Drawing.Size(584, 516);
+      this.remotePluginInstaller.ShowAllPlugins = false;
+      this.remotePluginInstaller.Size = new System.Drawing.Size(571, 304);
       this.remotePluginInstaller.TabIndex = 14;
       this.remotePluginInstaller.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.remotePluginInstaller_ItemChecked);
       // 
-      // logTabPage
-      // 
-      this.logTabPage.Controls.Add(this.logTextBox);
-      this.logTabPage.Location = new System.Drawing.Point(4, 22);
-      this.logTabPage.Name = "logTabPage";
-      this.logTabPage.Size = new System.Drawing.Size(598, 586);
-      this.logTabPage.TabIndex = 2;
-      this.logTabPage.Text = "Log";
-      this.logTabPage.UseVisualStyleBackColor = true;
-      // 
-      // logTextBox
-      // 
-      this.logTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.logTextBox.Location = new System.Drawing.Point(0, 0);
-      this.logTextBox.Multiline = true;
-      this.logTextBox.Name = "logTextBox";
-      this.logTextBox.ReadOnly = true;
-      this.logTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-      this.logTextBox.Size = new System.Drawing.Size(598, 586);
-      this.logTextBox.TabIndex = 0;
-      // 
       // refreshButton
       // 
-      this.refreshButton.Location = new System.Drawing.Point(8, 6);
+      this.refreshButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.refreshButton.Location = new System.Drawing.Point(6, 313);
       this.refreshButton.Name = "refreshButton";
       this.refreshButton.Size = new System.Drawing.Size(75, 23);
       this.refreshButton.TabIndex = 11;
@@ -206,32 +208,104 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.refreshButton.UseVisualStyleBackColor = true;
       this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
       // 
-      // editConnectionButton
+      // logTabPage
       // 
-      this.editConnectionButton.Location = new System.Drawing.Point(89, 6);
-      this.editConnectionButton.Name = "editConnectionButton";
-      this.editConnectionButton.Size = new System.Drawing.Size(108, 23);
-      this.editConnectionButton.TabIndex = 16;
-      this.editConnectionButton.Text = "Edit Connection...";
-      this.editConnectionButton.UseVisualStyleBackColor = true;
-      this.editConnectionButton.Click += new System.EventHandler(this.editConnectionButton_Click);
+      this.logTabPage.Controls.Add(this.logTextBox);
+      this.logTabPage.Location = new System.Drawing.Point(4, 22);
+      this.logTabPage.Name = "logTabPage";
+      this.logTabPage.Size = new System.Drawing.Size(583, 342);
+      this.logTabPage.TabIndex = 2;
+      this.logTabPage.Text = "Log";
+      this.logTabPage.UseVisualStyleBackColor = true;
+      // 
+      // logTextBox
+      // 
+      this.logTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.logTextBox.Location = new System.Drawing.Point(3, 3);
+      this.logTextBox.Multiline = true;
+      this.logTextBox.Name = "logTextBox";
+      this.logTextBox.ReadOnly = true;
+      this.logTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+      this.logTextBox.Size = new System.Drawing.Size(577, 336);
+      this.logTextBox.TabIndex = 0;
+      // 
+      // menuStrip
+      // 
+      this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.viewToolStripMenuItem,
+            this.optionsToolStripMenuItem});
+      this.menuStrip.Location = new System.Drawing.Point(0, 0);
+      this.menuStrip.Name = "menuStrip";
+      this.menuStrip.Size = new System.Drawing.Size(615, 24);
+      this.menuStrip.TabIndex = 17;
+      this.menuStrip.Text = "menuStrip1";
+      // 
+      // viewToolStripMenuItem
+      // 
+      this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.simpleToolStripMenuItem,
+            this.advancedToolStripMenuItem});
+      this.viewToolStripMenuItem.Enabled = false;
+      this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
+      this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+      this.viewToolStripMenuItem.Text = "View";
+      // 
+      // simpleToolStripMenuItem
+      // 
+      this.simpleToolStripMenuItem.Checked = true;
+      this.simpleToolStripMenuItem.CheckOnClick = true;
+      this.simpleToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.simpleToolStripMenuItem.Name = "simpleToolStripMenuItem";
+      this.simpleToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
+      this.simpleToolStripMenuItem.Text = "Show Most Recent Plugins";
+      this.simpleToolStripMenuItem.Click += new System.EventHandler(this.simpleToolStripMenuItem_Click);
+      // 
+      // advancedToolStripMenuItem
+      // 
+      this.advancedToolStripMenuItem.CheckOnClick = true;
+      this.advancedToolStripMenuItem.Name = "advancedToolStripMenuItem";
+      this.advancedToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
+      this.advancedToolStripMenuItem.Text = "Show All Plugins";
+      this.advancedToolStripMenuItem.Click += new System.EventHandler(this.advancedToolStripMenuItem_Click);
+      // 
+      // optionsToolStripMenuItem
+      // 
+      this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.connectionSettingsToolStripMenuItem});
+      this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+      this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+      this.optionsToolStripMenuItem.Text = "Options";
+      // 
+      // connectionSettingsToolStripMenuItem
+      // 
+      this.connectionSettingsToolStripMenuItem.Name = "connectionSettingsToolStripMenuItem";
+      this.connectionSettingsToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+      this.connectionSettingsToolStripMenuItem.Text = "Connection Settings...";
+      this.connectionSettingsToolStripMenuItem.Click += new System.EventHandler(this.connectionSettingsToolStripMenuItem_Click);
       // 
       // InstallationManagerForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(606, 634);
+      this.ClientSize = new System.Drawing.Size(615, 420);
       this.Controls.Add(this.tabControl);
       this.Controls.Add(this.statusStrip);
+      this.Controls.Add(this.menuStrip);
+      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+      this.MainMenuStrip = this.menuStrip;
       this.Name = "InstallationManagerForm";
-      this.Text = "InstallationManager";
+      this.Text = "Plugin Manager";
       this.statusStrip.ResumeLayout(false);
       this.statusStrip.PerformLayout();
       this.tabControl.ResumeLayout(false);
       this.localPluginsTabPage.ResumeLayout(false);
-      this.remotePluginsTabPage.ResumeLayout(false);
+      this.availablePluginsTabPage.ResumeLayout(false);
       this.logTabPage.ResumeLayout(false);
       this.logTabPage.PerformLayout();
+      this.menuStrip.ResumeLayout(false);
+      this.menuStrip.PerformLayout();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -242,16 +316,22 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private System.Windows.Forms.StatusStrip statusStrip;
     private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar;
     private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
-    private LocalPluginManager localPluginManager;
-    private RemotePluginInstaller remotePluginInstaller;
+    private LocalPluginManagerView localPluginManagerView;
+    private RemotePluginInstallerView remotePluginInstaller;
     private System.Windows.Forms.Button removeButton;
     private System.Windows.Forms.Button installButton;
     private System.Windows.Forms.TabControl tabControl;
     private System.Windows.Forms.TabPage localPluginsTabPage;
-    private System.Windows.Forms.TabPage remotePluginsTabPage;
+    private System.Windows.Forms.TabPage availablePluginsTabPage;
     private System.Windows.Forms.TabPage logTabPage;
     private System.Windows.Forms.TextBox logTextBox;
-    private System.Windows.Forms.Button editConnectionButton;
     private System.Windows.Forms.Button refreshButton;
+    private System.Windows.Forms.MenuStrip menuStrip;
+    private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem simpleToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem advancedToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem connectionSettingsToolStripMenuItem;
+    private System.Windows.Forms.Button updateButton;
   }
 }

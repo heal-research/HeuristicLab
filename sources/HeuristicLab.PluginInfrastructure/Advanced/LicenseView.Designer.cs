@@ -43,6 +43,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LicenseView));
       this.richTextBox = new System.Windows.Forms.RichTextBox();
       this.SuspendLayout();
       // 
@@ -53,7 +54,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.richTextBox.Name = "richTextBox";
       this.richTextBox.ReadOnly = true;
       this.richTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-      this.richTextBox.Size = new System.Drawing.Size(426, 481);
+      this.richTextBox.Size = new System.Drawing.Size(410, 445);
       this.richTextBox.TabIndex = 1;
       this.richTextBox.Text = "";
       // 
@@ -61,9 +62,11 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.ClientSize = new System.Drawing.Size(410, 445);
       this.Controls.Add(this.richTextBox);
+      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.Name = "LicenseView";
-      this.Size = new System.Drawing.Size(426, 481);
+      this.Text = "License Agreement";
       this.ResumeLayout(false);
 
     }

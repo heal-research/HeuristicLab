@@ -61,25 +61,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
 
       pluginManager.DiscoverAndCheckPlugins();
 
-      applicationsListView.Items.Clear();
-
-      pluginManagerListViewItem = new ListViewItem("Plugin Manager", 0);
-      pluginManagerListViewItem.Group = applicationsListView.Groups["Plugin Management"];
-      pluginManagerListViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(pluginManagerListViewItem, "-"));
-      pluginManagerListViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(pluginManagerListViewItem, "Install, upgrade or delete plugins"));
-      pluginManagerListViewItem.ToolTipText = "Install, upgrade or delete plugins";
-
-      applicationsListView.Items.Add(pluginManagerListViewItem);
-
-      foreach (ApplicationDescription info in pluginManager.Applications) {
-        ListViewItem item = new ListViewItem(info.Name, 0);
-        item.Tag = info;
-        item.Group = applicationsListView.Groups["Applications"];
-        item.SubItems.Add(new ListViewItem.ListViewSubItem(item, info.Version.ToString()));
-        item.SubItems.Add(new ListViewItem.ListViewSubItem(item, info.Description));
-        item.ToolTipText = info.Description;
-        applicationsListView.Items.Add(item);
-      }
+      UpdateApplicationsList();
     }
 
     /// <summary>
@@ -111,10 +93,10 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
           } else {
             try {
               Cursor = Cursors.AppStarting;
-              InstallationManagerForm form = new InstallationManagerForm();
+              InstallationManagerForm form = new InstallationManagerForm(pluginManager);
               this.Visible = false;
               form.ShowDialog(this);
-              // RefreshApplicationsList();
+              UpdateApplicationsList();
               this.Visible = true;
             }
             finally {
@@ -128,8 +110,29 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       }
     }
 
+    private void UpdateApplicationsList() {
+      applicationsListView.Items.Clear();
+
+      pluginManagerListViewItem = new ListViewItem("Plugin Manager", 0);
+      pluginManagerListViewItem.Group = applicationsListView.Groups["Plugin Management"];
+      pluginManagerListViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(pluginManagerListViewItem, "-"));
+      pluginManagerListViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(pluginManagerListViewItem, "Install, upgrade or delete plugins"));
+      pluginManagerListViewItem.ToolTipText = "Install, upgrade or delete plugins";
+
+      applicationsListView.Items.Add(pluginManagerListViewItem);
+
+      foreach (ApplicationDescription info in pluginManager.Applications) {
+        ListViewItem item = new ListViewItem(info.Name, 0);
+        item.Tag = info;
+        item.Group = applicationsListView.Groups["Applications"];
+        item.SubItems.Add(new ListViewItem.ListViewSubItem(item, info.Version.ToString()));
+        item.SubItems.Add(new ListViewItem.ListViewSubItem(item, info.Description));
+        item.ToolTipText = info.Description;
+        applicationsListView.Items.Add(item);
+      }
+    }
+
     private void StartApplication(ApplicationDescription app) {
-      //new SplashScreen(pluginManager, 2000, );
       splashScreen.Show("Loading " + app.Name);
       Thread t = new Thread(delegate() {
         bool stopped = false;

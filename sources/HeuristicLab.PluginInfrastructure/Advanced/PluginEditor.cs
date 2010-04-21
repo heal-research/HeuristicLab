@@ -27,25 +27,21 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using HeuristicLab.MainForm;
-using HeuristicLab.PluginInfrastructure;
-using PluginDeploymentService = HeuristicLab.PluginInfrastructure.Advanced.DeploymentService;
-using HeuristicLab.PluginInfrastructure.Manager;
 using System.ServiceModel;
 using ICSharpCode.SharpZipLib.Zip;
 using System.IO;
 
-namespace HeuristicLab.PluginAdministrator {
-  internal partial class PluginEditor : HeuristicLab.MainForm.WindowsForms.View {
-    private Dictionary<IPluginDescription, PluginDeploymentService.PluginDescription> localAndServerPlugins;
+namespace HeuristicLab.PluginInfrastructure.Advanced {
+  internal partial class PluginEditor : InstallationManagerControl {
+    private Dictionary<IPluginDescription, DeploymentService.PluginDescription> localAndServerPlugins;
     private BackgroundWorker pluginUploadWorker;
     private BackgroundWorker updateServerPluginsWorker;
 
     public PluginEditor() {
       InitializeComponent();
-      Caption = "Upload Plugins";
+      // Caption = "Upload Plugins";
 
-      localAndServerPlugins = new Dictionary<IPluginDescription, PluginDeploymentService.PluginDescription>();
+      localAndServerPlugins = new Dictionary<IPluginDescription, DeploymentService.PluginDescription>();
 
       #region initialize backgroundworkers
       pluginUploadWorker = new BackgroundWorker();
@@ -67,7 +63,7 @@ namespace HeuristicLab.PluginAdministrator {
           localAndServerPlugins.Add(plugin, null);
         }
         // refresh server plugins (find matching local plugins)
-        var plugins = (PluginDeploymentService.PluginDescription[])e.Result;
+        var plugins = (DeploymentService.PluginDescription[])e.Result;
         foreach (var plugin in plugins) {
           var matchingLocalPlugin = (from localPlugin in localAndServerPlugins.Keys
                                      where localPlugin.Name == plugin.Name
@@ -99,7 +95,7 @@ namespace HeuristicLab.PluginAdministrator {
 
     void updateServerPluginsWorker_DoWork(object sender, DoWorkEventArgs e) {
       try {
-        var client = PluginDeploymentService.UpdateClientFactory.CreateClient();
+        var client = DeploymentService.UpdateClientFactory.CreateClient();
         e.Result = client.GetPlugins();
         e.Cancel = false;
       }
@@ -129,7 +125,7 @@ namespace HeuristicLab.PluginAdministrator {
     void pluginUploadWorker_DoWork(object sender, DoWorkEventArgs e) {
       try {
         var selectedPlugins = (IEnumerable<IPluginDescription>)e.Argument;
-        PluginDeploymentService.AdminClient adminClient = PluginDeploymentService.AdminClientFactory.CreateClient();
+        DeploymentService.AdminClient adminClient = DeploymentService.AdminClientFactory.CreateClient();
 
         foreach (var plugin in IteratePlugins(selectedPlugins)) {
           SetMainFormStatusBar("Uploading", plugin);
@@ -279,10 +275,10 @@ namespace HeuristicLab.PluginAdministrator {
               select i).Single();
     }
 
-    private PluginDeploymentService.PluginDescription MakePluginDescription(IPluginDescription plugin) {
+    private DeploymentService.PluginDescription MakePluginDescription(IPluginDescription plugin) {
       var dependencies = from dep in plugin.Dependencies
                          select MakePluginDescription(dep);
-      return new PluginDeploymentService.PluginDescription(plugin.Name, plugin.Version, dependencies, plugin.ContactName, plugin.ContactEmail, plugin.LicenseText);
+      return new DeploymentService.PluginDescription(plugin.Name, plugin.Version, dependencies, plugin.ContactName, plugin.ContactEmail, plugin.LicenseText);
     }
 
     // start background process to refresh the plugin list (local and server)
@@ -295,7 +291,7 @@ namespace HeuristicLab.PluginAdministrator {
     // is called by all methods that start a background process
     // controls must be enabled manuall again when the backgroundworker finishes
     private void DisableControl() {
-      MainFormManager.GetMainForm<MainForm>().ShowProgressBar();
+      //MainFormManager.GetMainForm<MainForm>().ShowProgressBar();
       foreach (Control ctrl in Controls)
         ctrl.Enabled = false;
     }
@@ -307,19 +303,19 @@ namespace HeuristicLab.PluginAdministrator {
       listView.Items.Clear();
       listView.Enabled = false;
       uploadButton.Enabled = false;
-      MainFormManager.GetMainForm<MainForm>().HideProgressBar();
+      //MainFormManager.GetMainForm<MainForm>().HideProgressBar();
     }
 
     private void UpdateControlsConnectedState() {
       refreshButton.Enabled = true;
       listView.Enabled = true;
       uploadButton.Enabled = false;
-      MainFormManager.GetMainForm<MainForm>().HideProgressBar();
+      //MainFormManager.GetMainForm<MainForm>().HideProgressBar();
     }
     private void SetMainFormStatusBar(string p, IPluginDescription plugin) {
       if (InvokeRequired) Invoke((Action<string, IPluginDescription>)SetMainFormStatusBar, p, plugin);
       else {
-        MainFormManager.GetMainForm<MainForm>().SetStatusBarText(p + " " + plugin.ToString());
+        //MainFormManager.GetMainForm<MainForm>().SetStatusBarText(p + " " + plugin.ToString());
       }
     }
 

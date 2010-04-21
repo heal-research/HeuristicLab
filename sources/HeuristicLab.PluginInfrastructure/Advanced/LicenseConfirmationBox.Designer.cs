@@ -43,6 +43,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LicenseConfirmationBox));
       this.richTextBox = new System.Windows.Forms.RichTextBox();
       this.acceptButton = new System.Windows.Forms.Button();
       this.rejectButton = new System.Windows.Forms.Button();
@@ -169,6 +170,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.Controls.Add(this.label1);
       this.Controls.Add(this.licenseLabel);
       this.Controls.Add(this.richTextBox);
+      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.Name = "LicenseConfirmationBox";
       this.radioButtonGroupBox.ResumeLayout(false);
       this.radioButtonGroupBox.PerformLayout();

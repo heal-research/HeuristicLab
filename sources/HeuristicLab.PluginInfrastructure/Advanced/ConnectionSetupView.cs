@@ -28,8 +28,7 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
-  internal partial class ConnectionSetupView : InstallationManagerControl {
-    private Form form;
+  internal partial class ConnectionSetupView : Form {
     public ConnectionSetupView() {
       InitializeComponent();
 
@@ -55,22 +54,11 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
         HeuristicLab.PluginInfrastructure.Properties.Settings.Default.UpdateLocationPassword = passwordTextBox.Text;
         HeuristicLab.PluginInfrastructure.Properties.Settings.Default.Save();
       }
-      form.Close();
+      Close();
     }
 
     private void cancelButton_Click(object sender, EventArgs e) {
-      form.Close();
-    }
-
-    internal override void ShowInForm() {
-      if (this.form == null) {
-        form = new Form();
-        form.Name = this.Name;
-        form.ClientSize = Size;
-        this.Dock = DockStyle.Fill;
-        form.Controls.Add(this);
-      }
-      form.Show();
+      Close();
     }
   }
 }

@@ -50,10 +50,16 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private BackgroundWorker updateOrInstallPluginsBackgroundWorker;
     private BackgroundWorker removePluginsBackgroundWorker;
     private BackgroundWorker refreshLocalPluginsBackgroundWorker;
+    private PluginManager pluginManager;
     private string pluginDir;
 
-    public InstallationManagerForm() {
+    public InstallationManagerForm(PluginManager pluginManager) {
       InitializeComponent();
+      this.pluginManager = pluginManager;
+      pluginManager.PluginLoaded += pluginManager_PluginLoaded;
+      pluginManager.PluginUnloaded += pluginManager_PluginUnloaded;
+      pluginManager.Initializing += pluginManager_Initializing;
+      pluginManager.Initialized += pluginManager_Initialized;
 
       pluginDir = Application.StartupPath;
 
@@ -87,22 +93,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     }
 
     #region event handlers for refresh local plugin list backgroundworker
-    private IEnumerable<PluginDescription> ReloadLocalPlugins() {
-      PluginManager pluginManager = new PluginManager(Application.StartupPath);
-      pluginManager.PluginLoaded += pluginManager_PluginLoaded;
-      pluginManager.PluginUnloaded += pluginManager_PluginUnloaded;
-      pluginManager.Initializing += pluginManager_Initializing;
-      pluginManager.Initialized += pluginManager_Initialized;
-
-      pluginManager.DiscoverAndCheckPlugins();
-
-      pluginManager.PluginLoaded -= pluginManager_PluginLoaded;
-      pluginManager.PluginUnloaded -= pluginManager_PluginUnloaded;
-      pluginManager.Initializing -= pluginManager_Initializing;
-      pluginManager.Initialized -= pluginManager_Initialized;
-
-      return pluginManager.Plugins;
-    }
     void refreshLocalPluginsBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
       if (!e.Cancelled && e.Error == null) {
         UpdateLocalPluginList((IEnumerable<PluginDescription>)e.Result);
@@ -111,8 +101,8 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     }
 
     void refreshLocalPluginsBackgroundWorker_DoWork(object sender, DoWorkEventArgs e) {
-      var plugins = ReloadLocalPlugins();
-      e.Result = plugins;
+      pluginManager.DiscoverAndCheckPlugins();
+      e.Result = new List<PluginDescription>(pluginManager.Plugins);
     }
     #endregion
 
@@ -247,7 +237,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       var updateOrInstallInfo = new UpdateOrInstallPluginsBackgroundWorkerArgument();
       // if there is a local plugin with same name and same major and minor version then it's an update
       var pluginsToUpdate = from remotePlugin in remotePluginInstaller.CheckedPlugins
-                            let matchingLocalPlugins = from localPlugin in localPluginManager.Plugins
+                            let matchingLocalPlugins = from localPlugin in localPluginManagerView.Plugins
                                                        where localPlugin.Name == remotePlugin.Name
                                                        where localPlugin.Version.Major == remotePlugin.Version.Major
                                                        where localPlugin.Version.Minor == remotePlugin.Version.Minor
@@ -267,7 +257,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       Cursor = Cursors.AppStarting;
       toolStripProgressBar.Visible = true;
       DisableControls();
-      removePluginsBackgroundWorker.RunWorkerAsync(localPluginManager.CheckedPlugins);
+      removePluginsBackgroundWorker.RunWorkerAsync(localPluginManagerView.CheckedPlugins);
     }
 
     #endregion
@@ -308,7 +298,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     #region helper methods
 
     private void UpdateLocalPluginList(IEnumerable<PluginDescription> plugins) {
-      localPluginManager.Plugins = plugins;
+      localPluginManagerView.Plugins = plugins;
     }
 
     private void UpdateRemotePluginList(
@@ -320,7 +310,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
                                     select remote;
 
       var newPlugins = from remote in mostRecentRemotePlugins
-                       let matchingLocal = (from local in localPluginManager.Plugins
+                       let matchingLocal = (from local in localPluginManagerView.Plugins
                                             where local.Name == remote.Name
                                             where local.Version < remote.Version
                                             select local).FirstOrDefault()
@@ -367,7 +357,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     #endregion
 
     private void localPluginManager_ItemChecked(object sender, ItemCheckedEventArgs e) {
-      removeButton.Enabled = localPluginManager.CheckedPlugins.Count() > 0;
+      removeButton.Enabled = localPluginManagerView.CheckedPlugins.Count() > 0;
     }
 
     private void remotePluginInstaller_ItemChecked(object sender, ItemCheckedEventArgs e) {
@@ -375,7 +365,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     }
 
     private void editConnectionButton_Click(object sender, EventArgs e) {
-      (new ConnectionSetupView()).ShowInForm();
     }
 
     protected override void OnClosing(CancelEventArgs e) {
@@ -386,6 +375,22 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       installationManager.PreRemovePlugin -= new EventHandler<PluginInfrastructureCancelEventArgs>(installationManager_PreRemovePlugin);
       installationManager.PreUpdatePlugin -= new EventHandler<PluginInfrastructureCancelEventArgs>(installationManager_PreUpdatePlugin);
       base.OnClosing(e);
+    }
+
+    private void connectionSettingsToolStripMenuItem_Click(object sender, EventArgs e) {
+      new ConnectionSetupView().ShowDialog();
+    }
+
+    private void tabControl_Selected(object sender, TabControlEventArgs e) {
+      viewToolStripMenuItem.Enabled = e.TabPage == availablePluginsTabPage;
+    }
+
+    private void simpleToolStripMenuItem_Click(object sender, EventArgs e) {
+
+    }
+
+    private void advancedToolStripMenuItem_Click(object sender, EventArgs e) {
+
     }
   }
 }

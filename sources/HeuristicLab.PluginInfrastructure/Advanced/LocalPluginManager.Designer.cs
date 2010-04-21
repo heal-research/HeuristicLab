@@ -19,7 +19,7 @@
  */
 #endregion
 namespace HeuristicLab.PluginInfrastructure.Advanced {
-  partial class LocalPluginManager {
+  partial class LocalPluginManagerView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -43,21 +43,13 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.components = new System.ComponentModel.Container();
       System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Active Plugins", System.Windows.Forms.HorizontalAlignment.Left);
       System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Disabled Plugins", System.Windows.Forms.HorizontalAlignment.Left);
-      this.imageListForLocalItems = new System.Windows.Forms.ImageList(this.components);
       this.localPluginsListView = new HeuristicLab.PluginInfrastructure.Advanced.MultiSelectListView();
       this.nameHeader = new System.Windows.Forms.ColumnHeader();
       this.versionHeader = new System.Windows.Forms.ColumnHeader();
       this.descriptionHeader = new System.Windows.Forms.ColumnHeader();
       this.SuspendLayout();
-      // 
-      // imageListForLocalItems
-      // 
-      this.imageListForLocalItems.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
-      this.imageListForLocalItems.ImageSize = new System.Drawing.Size(13, 13);
-      this.imageListForLocalItems.TransparentColor = System.Drawing.Color.Transparent;
       // 
       // localPluginsListView
       // 
@@ -77,7 +69,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.localPluginsListView.Location = new System.Drawing.Point(0, 0);
       this.localPluginsListView.Name = "localPluginsListView";
       this.localPluginsListView.Size = new System.Drawing.Size(570, 547);
-      this.localPluginsListView.StateImageList = this.imageListForLocalItems;
       this.localPluginsListView.SuppressItemCheckedEvents = false;
       this.localPluginsListView.TabIndex = 9;
       this.localPluginsListView.UseCompatibleStateImageBehavior = false;
@@ -100,12 +91,12 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.descriptionHeader.Text = "Description";
       this.descriptionHeader.Width = 316;
       // 
-      // LocalPluginManager
+      // LocalPluginManagerView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.localPluginsListView);
-      this.Name = "LocalPluginManager";
+      this.Name = "LocalPluginManagerView";
       this.Size = new System.Drawing.Size(570, 547);
       this.ResumeLayout(false);
 
@@ -113,7 +104,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
     #endregion
 
-    private System.Windows.Forms.ImageList imageListForLocalItems;
     private MultiSelectListView localPluginsListView;
     private System.Windows.Forms.ColumnHeader nameHeader;
     private System.Windows.Forms.ColumnHeader versionHeader;

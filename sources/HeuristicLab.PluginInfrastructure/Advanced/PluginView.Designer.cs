@@ -86,7 +86,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.nameTextBox.Location = new System.Drawing.Point(74, 3);
       this.nameTextBox.Name = "nameTextBox";
       this.nameTextBox.ReadOnly = true;
-      this.nameTextBox.Size = new System.Drawing.Size(269, 20);
+      this.nameTextBox.Size = new System.Drawing.Size(284, 20);
       this.nameTextBox.TabIndex = 1;
       // 
       // versionTextBox
@@ -96,7 +96,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.versionTextBox.Location = new System.Drawing.Point(74, 29);
       this.versionTextBox.Name = "versionTextBox";
       this.versionTextBox.ReadOnly = true;
-      this.versionTextBox.Size = new System.Drawing.Size(269, 20);
+      this.versionTextBox.Size = new System.Drawing.Size(284, 20);
       this.versionTextBox.TabIndex = 3;
       // 
       // versionLabel
@@ -115,7 +115,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.contactTextBox.Location = new System.Drawing.Point(74, 55);
       this.contactTextBox.Name = "contactTextBox";
       this.contactTextBox.ReadOnly = true;
-      this.contactTextBox.Size = new System.Drawing.Size(269, 20);
+      this.contactTextBox.Size = new System.Drawing.Size(284, 20);
       this.contactTextBox.TabIndex = 5;
       // 
       // contactInfoLabel
@@ -146,7 +146,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.dependenciesGroupBox.Controls.Add(this.dependenciesListView);
       this.dependenciesGroupBox.Location = new System.Drawing.Point(6, 408);
       this.dependenciesGroupBox.Name = "dependenciesGroupBox";
-      this.dependenciesGroupBox.Size = new System.Drawing.Size(340, 172);
+      this.dependenciesGroupBox.Size = new System.Drawing.Size(355, 172);
       this.dependenciesGroupBox.TabIndex = 1;
       this.dependenciesGroupBox.TabStop = false;
       this.dependenciesGroupBox.Text = "Dependencies";
@@ -159,7 +159,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.dependenciesListView.Dock = System.Windows.Forms.DockStyle.Fill;
       this.dependenciesListView.Location = new System.Drawing.Point(3, 16);
       this.dependenciesListView.Name = "dependenciesListView";
-      this.dependenciesListView.Size = new System.Drawing.Size(334, 153);
+      this.dependenciesListView.Size = new System.Drawing.Size(349, 153);
       this.dependenciesListView.SmallImageList = this.imageList;
       this.dependenciesListView.TabIndex = 0;
       this.dependenciesListView.UseCompatibleStateImageBehavior = false;
@@ -190,7 +190,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.filesListView.Dock = System.Windows.Forms.DockStyle.Fill;
       this.filesListView.Location = new System.Drawing.Point(3, 16);
       this.filesListView.Name = "filesListView";
-      this.filesListView.Size = new System.Drawing.Size(331, 140);
+      this.filesListView.Size = new System.Drawing.Size(346, 140);
       this.filesListView.SmallImageList = this.imageList;
       this.filesListView.TabIndex = 0;
       this.filesListView.UseCompatibleStateImageBehavior = false;
@@ -213,7 +213,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.filesGroupBox.Controls.Add(this.filesListView);
       this.filesGroupBox.Location = new System.Drawing.Point(9, 243);
       this.filesGroupBox.Name = "filesGroupBox";
-      this.filesGroupBox.Size = new System.Drawing.Size(337, 159);
+      this.filesGroupBox.Size = new System.Drawing.Size(352, 159);
       this.filesGroupBox.TabIndex = 11;
       this.filesGroupBox.TabStop = false;
       this.filesGroupBox.Text = "Files";
@@ -225,7 +225,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.stateTextBox.Location = new System.Drawing.Point(74, 145);
       this.stateTextBox.Name = "stateTextBox";
       this.stateTextBox.ReadOnly = true;
-      this.stateTextBox.Size = new System.Drawing.Size(269, 20);
+      this.stateTextBox.Size = new System.Drawing.Size(284, 20);
       this.stateTextBox.TabIndex = 13;
       // 
       // stateLabel
@@ -262,7 +262,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.errorTextBox.Location = new System.Drawing.Point(74, 171);
       this.errorTextBox.Name = "errorTextBox";
       this.errorTextBox.ReadOnly = true;
-      this.errorTextBox.Size = new System.Drawing.Size(269, 66);
+      this.errorTextBox.Size = new System.Drawing.Size(284, 66);
       this.errorTextBox.TabIndex = 18;
       this.errorTextBox.Text = "";
       // 
@@ -273,7 +273,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.descriptionTextBox.Location = new System.Drawing.Point(74, 81);
       this.descriptionTextBox.Name = "descriptionTextBox";
       this.descriptionTextBox.ReadOnly = true;
-      this.descriptionTextBox.Size = new System.Drawing.Size(269, 58);
+      this.descriptionTextBox.Size = new System.Drawing.Size(284, 58);
       this.descriptionTextBox.TabIndex = 19;
       this.descriptionTextBox.Text = "";
       // 
@@ -281,6 +281,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.ClientSize = new System.Drawing.Size(345, 576);
       this.Controls.Add(this.descriptionTextBox);
       this.Controls.Add(this.errorTextBox);
       this.Controls.Add(this.errorLabel);
@@ -297,7 +298,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.Controls.Add(this.nameTextBox);
       this.Controls.Add(this.nameLabel);
       this.Name = "PluginView";
-      this.Size = new System.Drawing.Size(346, 612);
       this.dependenciesGroupBox.ResumeLayout(false);
       this.filesGroupBox.ResumeLayout(false);
       this.ResumeLayout(false);

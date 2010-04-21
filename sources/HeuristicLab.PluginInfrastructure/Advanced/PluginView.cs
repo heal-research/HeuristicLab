@@ -31,7 +31,7 @@ using System.IO;
 using HeuristicLab.PluginInfrastructure.Manager;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
-  internal partial class PluginView : InstallationManagerControl {
+  internal partial class PluginView : UserControl {
     private const string IMAGE_KEY_ASSEMBLY = "Assembly";
     private const string IMAGE_KEY_FILE = "File";
     private const string IMAGE_KEY_DOCUMENT = "Document";
@@ -99,14 +99,14 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
     private void licenseButton_Click(object sender, EventArgs e) {
       LicenseView view = new LicenseView(plugin);
-      view.ShowInForm();
+      view.Show();
     }
 
     private void dependenciesListView_ItemActivate(object sender, EventArgs e) {
       if (dependenciesListView.SelectedItems.Count > 0) {
         var dep = (PluginDescription)dependenciesListView.SelectedItems[0].Tag;
         PluginView view = new PluginView(dep);
-        view.ShowInForm();
+        view.Show();
       }
     }
   }

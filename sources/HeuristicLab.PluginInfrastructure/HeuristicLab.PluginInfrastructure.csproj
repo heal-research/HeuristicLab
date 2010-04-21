@@ -99,7 +99,7 @@
       <DependentUpon>ConfirmationDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Advanced\ConnectionSetupView.cs">
-      <SubType>UserControl</SubType>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="Advanced\ConnectionSetupView.Designer.cs">
       <DependentUpon>ConnectionSetupView.cs</DependentUpon>
@@ -128,7 +128,7 @@
       <DependentUpon>LicenseConfirmationBox.cs</DependentUpon>
     </Compile>
     <Compile Include="Advanced\LicenseView.cs">
-      <SubType>UserControl</SubType>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="Advanced\LicenseView.Designer.cs">
       <DependentUpon>LicenseView.cs</DependentUpon>
@@ -139,23 +139,35 @@
     <Compile Include="Advanced\LocalPluginManager.Designer.cs">
       <DependentUpon>LocalPluginManager.cs</DependentUpon>
     </Compile>
-    <Compile Include="Advanced\InstallationManagerControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Advanced\InstallationManagerControl.Designer.cs">
-      <DependentUpon>InstallationManagerControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Advanced\MultiSelectListView.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Advanced\MultiSelectListView.Designer.cs">
       <DependentUpon>MultiSelectListView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Advanced\PluginComparisonView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Advanced\PluginComparisonView.Designer.cs">
+      <DependentUpon>PluginComparisonView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Advanced\PluginListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Advanced\PluginListView.Designer.cs">
+      <DependentUpon>PluginListView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Advanced\PluginView.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Advanced\PluginView.Designer.cs">
       <DependentUpon>PluginView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Advanced\ProductEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Advanced\ProductEditor.Designer.cs">
+      <DependentUpon>ProductEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Advanced\RemotePluginInstaller.cs">
       <SubType>UserControl</SubType>
@@ -279,12 +291,22 @@
     <EmbeddedResource Include="Advanced\LicenseView.resx">
       <DependentUpon>LicenseView.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Advanced\PluginComparisonView.resx">
+      <DependentUpon>PluginComparisonView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Advanced\PluginListView.resx">
+      <DependentUpon>PluginListView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Advanced\PluginView.resx">
       <DependentUpon>PluginView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Advanced\ProductEditor.resx">
+      <DependentUpon>ProductEditor.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Resources\VS2008ImageLibrary_Actions_Delete.png" />
     <None Include="Resources\VS2008ImageLibrary_CommonElements_Actions_Remove.png" />
     <Content Include="Resources\VS2008ImageLibrary_CommonElements_Objects_Arrow_Down.png" />
+    <None Include="Resources\VS2008ImageLibrary_CommonElements_Objects_Arrow_Up.png" />
     <None Include="Resources\VS2008ImageLibrary_Objects_File.png" />
     <None Include="Resources\VS2008ImageLibrary_Objects_Document.png" />
     <None Include="Resources\VS2008ImageLibrary_Objects_Internet.png" />

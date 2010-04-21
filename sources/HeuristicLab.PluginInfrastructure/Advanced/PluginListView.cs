@@ -29,7 +29,7 @@ using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.PluginAdministrator {
+namespace HeuristicLab.PluginInfrastructure.Advanced {
   /// <summary>
   /// Wraps a ListView and adds functionality to automatically check and uncheck dependencies of plugins.
   /// </summary>

@@ -27,28 +27,25 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using HeuristicLab.MainForm;
-using PluginDeploymentService = HeuristicLab.PluginInfrastructure.Advanced.DeploymentService;
 using System.ServiceModel;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.PluginAdministrator {
-  internal partial class ProductEditor : HeuristicLab.MainForm.WindowsForms.View {
+namespace HeuristicLab.PluginInfrastructure.Advanced {
+  internal partial class ProductEditor : UserControl {
     private BackgroundWorker refreshProductsWorker;
     private BackgroundWorker uploadChangedProductsWorker;
-    private List<PluginDeploymentService.ProductDescription> products;
-    private List<PluginDeploymentService.PluginDescription> plugins;
-    private HashSet<PluginDeploymentService.ProductDescription> dirtyProducts;
+    private List<DeploymentService.ProductDescription> products;
+    private List<DeploymentService.PluginDescription> plugins;
+    private HashSet<DeploymentService.ProductDescription> dirtyProducts;
 
     public ProductEditor() {
       InitializeComponent();
-      Caption = "Products";
 
-      productImageList.Images.Add(HeuristicLab.Common.Resources.VS2008ImageLibrary.Assembly);
-      productImageList.Images.Add(HeuristicLab.Common.Resources.VS2008ImageLibrary.ArrowUp);
-      pluginImageList.Images.Add(HeuristicLab.Common.Resources.VS2008ImageLibrary.Assembly);
+      productImageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Resources.Assembly);
+      productImageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Resources.ArrowUp);
+      pluginImageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Resources.Assembly);
 
-      dirtyProducts = new HashSet<PluginDeploymentService.ProductDescription>();
+      dirtyProducts = new HashSet<DeploymentService.ProductDescription>();
       refreshProductsWorker = new BackgroundWorker();
       refreshProductsWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(refreshProductsWorker_RunWorkerCompleted);
       refreshProductsWorker.DoWork += new DoWorkEventHandler(refreshProductsWorker_DoWork);
@@ -60,8 +57,8 @@ namespace HeuristicLab.PluginAdministrator {
 
     #region event handlers for upload products background worker
     private void uploadChangedProductsWorker_DoWork(object sender, DoWorkEventArgs e) {
-      var products = (IEnumerable<PluginDeploymentService.ProductDescription>)e.Argument;
-      var adminClient = PluginDeploymentService.AdminClientFactory.CreateClient();
+      var products = (IEnumerable<DeploymentService.ProductDescription>)e.Argument;
+      var adminClient = DeploymentService.AdminClientFactory.CreateClient();
       try {
         foreach (var product in products) {
           adminClient.DeployProduct(product);
@@ -80,7 +77,7 @@ namespace HeuristicLab.PluginAdministrator {
 
     #region event handlers for refresh products background worker
     private void refreshProductsWorker_DoWork(object sender, DoWorkEventArgs e) {
-      var updateClient = PluginDeploymentService.UpdateClientFactory.CreateClient();
+      var updateClient = DeploymentService.UpdateClientFactory.CreateClient();
       try {
         e.Result = new object[] { updateClient.GetProducts(), updateClient.GetPlugins() };
       }
@@ -91,10 +88,10 @@ namespace HeuristicLab.PluginAdministrator {
 
     private void refreshProductsWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
       if (!e.Cancelled && e.Result != null) {
-        this.products = new List<PluginDeploymentService.ProductDescription>(
-          (PluginDeploymentService.ProductDescription[])((object[])e.Result)[0]);
-        this.plugins = new List<PluginDeploymentService.PluginDescription>(
-          (PluginDeploymentService.PluginDescription[])((object[])e.Result)[1]);
+        this.products = new List<DeploymentService.ProductDescription>(
+          (DeploymentService.ProductDescription[])((object[])e.Result)[0]);
+        this.plugins = new List<DeploymentService.PluginDescription>(
+          (DeploymentService.PluginDescription[])((object[])e.Result)[1]);
 
         UpdateProductsList();
         dirtyProducts.Clear();
@@ -122,7 +119,7 @@ namespace HeuristicLab.PluginAdministrator {
         ClearProductDetails();
         return;
       }
-      PluginDeploymentService.ProductDescription activeProduct = (PluginDeploymentService.ProductDescription)((ListViewItem)productsListView.SelectedItems[0]).Tag;
+      DeploymentService.ProductDescription activeProduct = (DeploymentService.ProductDescription)((ListViewItem)productsListView.SelectedItems[0]).Tag;
       UpdateProductDetails(activeProduct);
     }
 
@@ -132,14 +129,14 @@ namespace HeuristicLab.PluginAdministrator {
       pluginListView.Plugins = new IPluginDescription[0];
     }
 
-    private void UpdateProductDetails(PluginDeploymentService.ProductDescription activeProduct) {
+    private void UpdateProductDetails(DeploymentService.ProductDescription activeProduct) {
       nameTextBox.Text = activeProduct.Name;
       versionTextBox.Text = activeProduct.Version.ToString();
 
       UpdatePluginsListView();
     }
 
-    private ListViewItem CreateListViewItem(PluginDeploymentService.ProductDescription productDescription) {
+    private ListViewItem CreateListViewItem(DeploymentService.ProductDescription productDescription) {
       ListViewItem item = new ListViewItem(new string[] { productDescription.Name, productDescription.Version.ToString() });
       item.Tag = productDescription;
       item.ImageIndex = 0;
@@ -161,7 +158,7 @@ namespace HeuristicLab.PluginAdministrator {
 
     #region button event handlers
     private void newProductButton_Click(object sender, EventArgs e) {
-      var newProduct = new PluginDeploymentService.ProductDescription("New product", new Version("0.0.0.0"));
+      var newProduct = new DeploymentService.ProductDescription("New product", new Version("0.0.0.0"));
       ListViewItem item = CreateListViewItem(newProduct);
       productsListView.Items.Add(item);
       MarkProductDirty(newProduct);
@@ -182,7 +179,7 @@ namespace HeuristicLab.PluginAdministrator {
     #region textbox changed event handlers
     private void nameTextBox_TextChanged(object sender, EventArgs e) {
       ListViewItem activeItem = (ListViewItem)productsListView.SelectedItems[0];
-      PluginDeploymentService.ProductDescription activeProduct = (PluginDeploymentService.ProductDescription)activeItem.Tag;
+      DeploymentService.ProductDescription activeProduct = (DeploymentService.ProductDescription)activeItem.Tag;
       if (string.IsNullOrEmpty(nameTextBox.Name)) {
         errorProvider.SetError(nameTextBox, "Invalid value");
       } else {
@@ -198,7 +195,7 @@ namespace HeuristicLab.PluginAdministrator {
 
     private void versionTextBox_TextChanged(object sender, EventArgs e) {
       ListViewItem activeItem = (ListViewItem)productsListView.SelectedItems[0];
-      PluginDeploymentService.ProductDescription activeProduct = (PluginDeploymentService.ProductDescription)activeItem.Tag;
+      DeploymentService.ProductDescription activeProduct = (DeploymentService.ProductDescription)activeItem.Tag;
       try {
         var newVersion = new Version(versionTextBox.Text);
         if (activeProduct.Version != newVersion) {
@@ -225,15 +222,15 @@ namespace HeuristicLab.PluginAdministrator {
     #region plugin list view
     private void UpdatePluginsListView() {
       ListViewItem activeItem = (ListViewItem)productsListView.SelectedItems[0];
-      PluginDeploymentService.ProductDescription activeProduct = (PluginDeploymentService.ProductDescription)activeItem.Tag;
+      DeploymentService.ProductDescription activeProduct = (DeploymentService.ProductDescription)activeItem.Tag;
       pluginListView.Plugins = plugins.OfType<IPluginDescription>();
       foreach (var plugin in activeProduct.Plugins) pluginListView.CheckPlugin(plugin);
     }
 
     private void pluginListView_ItemChecked(object sender, ItemCheckedEventArgs e) {
       ListViewItem activeItem = (ListViewItem)productsListView.SelectedItems[0];
-      PluginDeploymentService.ProductDescription activeProduct = (PluginDeploymentService.ProductDescription)activeItem.Tag;
-      activeProduct.Plugins = pluginListView.CheckedPlugins.Cast<PluginDeploymentService.PluginDescription>().ToArray();
+      DeploymentService.ProductDescription activeProduct = (DeploymentService.ProductDescription)activeItem.Tag;
+      activeProduct.Plugins = pluginListView.CheckedPlugins.Cast<DeploymentService.PluginDescription>().ToArray();
       MarkProductDirty(activeProduct);
     }
     #endregion
@@ -247,7 +244,7 @@ namespace HeuristicLab.PluginAdministrator {
     }
     private ListViewItem FindItemForProduct(HeuristicLab.PluginInfrastructure.Advanced.DeploymentService.ProductDescription activeProduct) {
       return (from item in productsListView.Items.OfType<ListViewItem>()
-              let product = item.Tag as PluginDeploymentService.ProductDescription
+              let product = item.Tag as DeploymentService.ProductDescription
               where product != null
               where product == activeProduct
               select item).Single();
