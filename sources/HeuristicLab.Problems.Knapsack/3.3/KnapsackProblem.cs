@@ -240,6 +240,9 @@ namespace HeuristicLab.Problems.Knapsack {
     }
     void WeightsValue_Reset(object sender, EventArgs e) {
       ParameterizeSolutionCreator();
+
+      if (WeightsParameter.Value != null && ValuesParameter.Value != null)
+        ((IStringConvertibleArray)ValuesParameter.Value).Length = WeightsParameter.Value.Length;
     }
     void ValuesParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
@@ -249,6 +252,9 @@ namespace HeuristicLab.Problems.Knapsack {
     }
     void ValuesValue_Reset(object sender, EventArgs e) {
       ParameterizeSolutionCreator();
+
+      if (WeightsParameter.Value != null && ValuesParameter.Value != null)
+        ((IStringConvertibleArray)WeightsParameter.Value).Length = ValuesParameter.Value.Length;
     }
     void PenaltyParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
