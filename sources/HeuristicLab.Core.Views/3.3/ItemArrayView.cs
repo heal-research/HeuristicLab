@@ -195,14 +195,14 @@ namespace HeuristicLab.Core.Views {
 
     #region ListView Events
     protected virtual void itemsListView_SelectedIndexChanged(object sender, EventArgs e) {
-      addButton.Enabled = itemsListView.SelectedItems.Count > 0 && !Content.IsReadOnly && !ReadOnly;
+      addButton.Enabled = itemsListView.SelectedItems.Count > 0 && (Content != null) && !Content.IsReadOnly && !ReadOnly;
       moveUpButton.Enabled = itemsListView.SelectedItems.Count == 1 &&
                              itemsListView.SelectedIndices[0] != 0 &&
-                             !Content.IsReadOnly && !ReadOnly;
+                             (Content != null) && !Content.IsReadOnly && !ReadOnly;
       moveDownButton.Enabled = itemsListView.SelectedItems.Count == 1 &&
                                itemsListView.SelectedIndices[0] != itemsListView.Items.Count - 1 &&
-                               !Content.IsReadOnly && !ReadOnly;
-      removeButton.Enabled = itemsListView.SelectedItems.Count > 0 && !Content.IsReadOnly && !ReadOnly;
+                               (Content != null) && !Content.IsReadOnly && !ReadOnly;
+      removeButton.Enabled = itemsListView.SelectedItems.Count > 0 && (Content != null) && !Content.IsReadOnly && !ReadOnly;
 
       if (itemsListView.SelectedItems.Count == 1) {
         T item = itemsListView.SelectedItems[0].Tag as T;

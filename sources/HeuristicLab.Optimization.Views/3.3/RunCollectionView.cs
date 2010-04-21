@@ -162,7 +162,7 @@ namespace HeuristicLab.Optimization.Views {
 
     #region ListView Events
     protected virtual void itemsListView_SelectedIndexChanged(object sender, EventArgs e) {
-      removeButton.Enabled = itemsListView.SelectedItems.Count > 0 && !Content.IsReadOnly && !ReadOnly;
+      removeButton.Enabled = itemsListView.SelectedItems.Count > 0 && (Content != null) && !Content.IsReadOnly && !ReadOnly;
       if (itemsListView.SelectedItems.Count == 1) {
         IRun item = (IRun)itemsListView.SelectedItems[0].Tag;
         detailsGroupBox.Enabled = true;
