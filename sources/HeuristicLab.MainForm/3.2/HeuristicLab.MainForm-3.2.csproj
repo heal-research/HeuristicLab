@@ -84,7 +84,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLabMainFormPlugin.cs.frame" />
-    <Compile Include="Interfaces\IStorableContentView.cs" />
     <Compile Include="ViewAttribute.cs" />
     <Compile Include="Interfaces\IContentView.cs" />
     <Compile Include="Interfaces\IActionUserInterfaceItem.cs" />

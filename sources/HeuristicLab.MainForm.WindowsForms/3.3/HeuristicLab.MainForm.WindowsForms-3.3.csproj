@@ -99,18 +99,6 @@
     </Compile>
     <None Include="HeuristicLabMainFormWindowsFormsPlugin.cs.frame" />
     <Compile Include="ControlExtensions.cs" />
-    <Compile Include="AsynchronousStorableContentView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="AsynchronousStorableContentView.Designer.cs">
-      <DependentUpon>AsynchronousStorableContentView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="StorableContentView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="StorableContentView.Designer.cs">
-      <DependentUpon>StorableContentView.cs</DependentUpon>
-    </Compile>
     <Compile Include="DockForm.cs">
       <SubType>Form</SubType>
     </Compile>
