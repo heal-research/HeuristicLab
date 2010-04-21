@@ -35,18 +35,21 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   public sealed class Dataset : NamedItem, IStringConvertibleMatrix {
     public Dataset()
-      : this(new string[1] { "y" }, new double[,] { { 0.0 } }) {
+      : base() {
+      this.Name = string.Empty;
+      this.data = new double[0, 0];
+      this.variableNames = new string[0];
+      this.SortableView = false;
     }
 
     public Dataset(IEnumerable<string> variableNames, double[,] data)
-      : base() {
+      : this() {
       Name = "-";
       if (variableNames.Count() != data.GetLength(1)) {
         throw new ArgumentException("Number of variable names doesn't match the number of columns of data");
       }
       this.data = data;
       this.variableNames = variableNames.ToArray();
-      this.SortableView = false;
     }
 
     [Storable]
