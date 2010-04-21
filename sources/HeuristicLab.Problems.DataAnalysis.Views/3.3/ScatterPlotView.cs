@@ -35,7 +35,7 @@ using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Scatter Plot View")]
-  [Content(typeof(DataAnalysisSolution))]
+  [Content(typeof(DataAnalysisSolution), true)]
   public partial class ScatterPlotView : AsynchronousContentView {
     private const string DEFAULT_CAPTION = "Scatter Plot";
     private const string ALL_SERIES = "All Samples";

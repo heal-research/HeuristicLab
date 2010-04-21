@@ -189,10 +189,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
 
     void DataAnalysisProblemData_Changed(object sender, EventArgs e) {
+      UpdateGrammar();
+      UpdatePartitioningParameters();
+    }
+
+    private void UpdateGrammar() {
       foreach (var varSymbol in FunctionTreeGrammar.Symbols.OfType<HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols.Variable>()) {
         varSymbol.VariableNames = DataAnalysisProblemData.InputVariables.Select(x => x.Value);
       }
-      UpdatePartitioningParameters();
     }
 
     private void UpdatePartitioningParameters() {
@@ -281,6 +285,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       operators = new List<ISymbolicExpressionTreeOperator>();
       operators.AddRange(ApplicationManager.Manager.GetInstances<ISymbolicExpressionTreeOperator>());
       ParameterizeOperators();
+      UpdateGrammar();
+      UpdatePartitioningParameters();
     }
 
     private void ParameterizeSolutionCreator() {
