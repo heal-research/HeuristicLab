@@ -33,12 +33,14 @@ using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Operators;
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("SymbolicRegressionEvaluator", "Evaluates a symbolic regression solution.")]
   [StorableClass]
   public abstract class SymbolicRegressionEvaluator : SingleSuccessorOperator, ISymbolicRegressionEvaluator {
     private const string QualityParameterName = "Quality";
+    private const string SymbolicExpressionTreeInterpreterParameterName = "SymbolicExpressionTreeInterpreter";
     private const string FunctionTreeParameterName = "FunctionTree";
     private const string RegressionProblemDataParameterName = "RegressionProblemData";
     private const string SamplesStartParameterName = "SamplesStart";
@@ -48,6 +50,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
 
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters[QualityParameterName]; }
+    }
+
+    public ILookupParameter<ISymbolicExpressionTreeInterpreter> SymbolicExpressionTreeInterpreterParameter {
+      get { return (ILookupParameter<ISymbolicExpressionTreeInterpreter>)Parameters[SymbolicExpressionTreeInterpreterParameterName]; }
     }
 
     public ILookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter {
@@ -71,6 +77,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
     #endregion
     #region properties
+    public ISymbolicExpressionTreeInterpreter SymbolicExpressionTreeInterpreter {
+      get { return SymbolicExpressionTreeInterpreterParameter.ActualValue; }
+    }
     public SymbolicExpressionTree SymbolicExpressionTree {
       get { return SymbolicExpressionTreeParameter.ActualValue; }
     }
@@ -88,6 +97,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     public SymbolicRegressionEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>(QualityParameterName, "The quality of the evaluated symbolic regression solution."));
+      Parameters.Add(new LookupParameter<ISymbolicExpressionTreeInterpreter>(SymbolicExpressionTreeInterpreterParameterName, "The interpreter that should be used to calculate the output values of the symbolic expression tree."));
       Parameters.Add(new LookupParameter<SymbolicExpressionTree>(FunctionTreeParameterName, "The symbolic regression solution encoded as a symbolic expression tree."));
       Parameters.Add(new LookupParameter<DataAnalysisProblemData>(RegressionProblemDataParameterName, "The problem data on which the symbolic regression solution should be evaluated."));
       Parameters.Add(new ValueLookupParameter<IntValue>(SamplesStartParameterName, "The start index of the dataset partition on which the symbolic regression solution should be evaluated."));
@@ -97,11 +107,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
 
     public override IOperation Apply() {
       DoubleValue numberOfEvaluatedNodes = NumberOfEvaluatedNodesParameter.ActualValue;
-      QualityParameter.ActualValue = new DoubleValue(Evaluate(SymbolicExpressionTree, RegressionProblemData.Dataset,
+      QualityParameter.ActualValue = new DoubleValue(Evaluate(SymbolicExpressionTreeInterpreter, SymbolicExpressionTree, RegressionProblemData.Dataset,
         RegressionProblemData.TargetVariable, SamplesStart, SamplesEnd, numberOfEvaluatedNodes));
       return null;
     }
 
-    protected abstract double Evaluate(SymbolicExpressionTree solution, Dataset dataset, StringValue targetVariable, IntValue samplesStart, IntValue samplesEnd, DoubleValue numberOfEvaluatedNodes);
+    protected abstract double Evaluate(ISymbolicExpressionTreeInterpreter interpreter,
+      SymbolicExpressionTree solution,
+      Dataset dataset,
+      StringValue targetVariable,
+      IntValue samplesStart, IntValue samplesEnd,
+      DoubleValue numberOfEvaluatedNodes);
   }
 }

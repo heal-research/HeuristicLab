@@ -29,6 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Parameters;
 using System.Collections.Generic;
 using System;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
   [Item("Variable", "Represents a variable value.")]

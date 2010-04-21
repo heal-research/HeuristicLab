@@ -33,6 +33,10 @@ using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Problems.DataAnalysis.Regression;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlteringOperators;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("SymbolicRegressionProblem", "Represents a symbolic regression problem.")]
@@ -143,8 +147,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       var grammar = new ArithmeticExpressionGrammar();
       var globalGrammar = new GlobalSymbolicExpressionGrammar(grammar);
       var visualizer = new BestValidationSymbolicRegressionSolutionVisualizer();
+      var interpreter = new SimpleArithmeticExpressionInterpreter();
       Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to false as the error of the regression model should be minimized.", new BoolValue(false)));
       Parameters.Add(new ValueParameter<SymbolicExpressionTreeCreator>("SolutionCreator", "The operator which should be used to create new symbolic regression solutions.", creator));
+      Parameters.Add(new ValueParameter<ISymbolicExpressionTreeInterpreter>("SymbolicExpressionTreeInterpreter", "The interpreter that should be used to evaluate the symbolic expression tree.", interpreter));
       Parameters.Add(new ValueParameter<ISymbolicRegressionEvaluator>("Evaluator", "The operator which should be used to evaluate symbolic regression solutions.", evaluator));
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The minimal error value that reached by symbolic regression solutions for the problem."));
       Parameters.Add(new ValueParameter<ISymbolicExpressionGrammar>("FunctionTreeGrammar", "The grammar that should be used for symbolic regression models.", globalGrammar));

@@ -34,19 +34,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   /// </summary>
   [Item("DataAnalysisSolution", "Represents a solution for a data analysis problem which can be visualized in the GUI.")]
   [StorableClass]
-  public class DataAnalysisSolution : Item {
-    [Storable]
-    private IModel model;
-    public IModel Model {
-      get { return model; }
-      set {
-        if (model != value) {
-          model = value;
-          OnModelChanged();
-        }
-      }
-    }
-
+  public abstract class DataAnalysisSolution : Item {
     [Storable]
     private DataAnalysisProblemData problemData;
     public DataAnalysisProblemData ProblemData {
@@ -57,37 +45,19 @@ namespace HeuristicLab.Problems.DataAnalysis {
           if (problemData != null) DeregisterProblemDataEvents();
           problemData = value;
           RegisterProblemDataEvents();
-          OnProblemDataChanged();
+          OnProblemDataChanged(EventArgs.Empty);
         }
       }
     }
 
-    private List<double> estimatedValues;
-    public IEnumerable<double> EstimatedValues {
-      get {
-        return estimatedValues;
-      }
-    }
+    public abstract IEnumerable<double> EstimatedValues { get; }
+    public abstract IEnumerable<double> EstimatedTrainingValues { get; }
+    public abstract IEnumerable<double> EstimatedTestValues { get; }
 
-    private List<double> estimatedTrainingValues;
-    public IEnumerable<double> EstimatedTrainingValues {
-      get {
-        return estimatedTrainingValues;
-      }
-    }
-
-    private List<double> estimatedTestValues;
-    public IEnumerable<double> EstimatedTestValues {
-      get {
-        return estimatedTestValues;
-      }
-    }
-
-    public DataAnalysisSolution() : base() { }
-    public DataAnalysisSolution(DataAnalysisProblemData problemData, IModel model)
+    protected DataAnalysisSolution() : base() { }
+    protected DataAnalysisSolution(DataAnalysisProblemData problemData)
       : this() {
       this.problemData = problemData;
-      this.model = model;
       Initialize();
     }
 
@@ -97,62 +67,40 @@ namespace HeuristicLab.Problems.DataAnalysis {
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
       if (problemData != null) RegisterProblemDataEvents();
-      if (problemData != null && model != null) RecalculateEstimatedValues();
-    }
-
-    private void RecalculateEstimatedValues() {
-      estimatedValues = GetEstimatedValues(0, problemData.Dataset.Rows).ToList();
-      int nTrainingValues = problemData.TrainingSamplesEnd.Value - problemData.TrainingSamplesStart.Value;
-      estimatedTrainingValues = estimatedValues.Skip(problemData.TrainingSamplesStart.Value).Take(nTrainingValues).ToList();
-      int nTestValues = problemData.TestSamplesEnd.Value - problemData.TestSamplesStart.Value;
-      estimatedTestValues = estimatedValues.Skip(problemData.TestSamplesStart.Value).Take(nTestValues).ToList();
-    }
-
-    private IEnumerable<double> GetEstimatedValues(int start, int end) {
-      double[] xs = new double[ProblemData.InputVariables.Count];
-      for (int row = 0; row < ProblemData.Dataset.Rows; row++) {
-        for (int i = 0; i < xs.Length; i++) {
-          var variableIndex = ProblemData.Dataset.GetVariableIndex(ProblemData.InputVariables[i].Value);
-          xs[i] = ProblemData.Dataset[row, variableIndex];
-        }
-        yield return model.GetValue(xs);
-      }
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      DataAnalysisSolution clone = new DataAnalysisSolution();
-      cloner.RegisterClonedObject(this, clone);
-      clone.model = (IModel)cloner.Clone(model);
+      DataAnalysisSolution clone = (DataAnalysisSolution)base.Clone(cloner);
+      // don't clone the problem data!
       clone.problemData = problemData;
       clone.Initialize();
       return clone;
     }
 
     #region Events
-    public event EventHandler ModelChanged;
-    private void OnModelChanged() {
-      RecalculateEstimatedValues();
-      var changed = ModelChanged;
-      if (changed != null)
-        changed(this, EventArgs.Empty);
-    }
-    public event EventHandler ProblemDataChanged;
-    private void OnProblemDataChanged() {
-      RecalculateEstimatedValues();
-      var changed = ProblemDataChanged;
-      if (changed != null)
-        changed(this, EventArgs.Empty);
-    }
-
-    private void RegisterProblemDataEvents() {
+    protected virtual void RegisterProblemDataEvents() {
       ProblemData.ProblemDataChanged += new EventHandler(ProblemData_Changed);
     }
-    private void DeregisterProblemDataEvents() {
+    protected virtual void DeregisterProblemDataEvents() {
       ProblemData.ProblemDataChanged += new EventHandler(ProblemData_Changed);
     }
 
     private void ProblemData_Changed(object sender, EventArgs e) {
-      OnProblemDataChanged();
+      OnProblemDataChanged(EventArgs.Empty);
+    }
+
+    public event EventHandler ProblemDataChanged;
+    protected virtual void OnProblemDataChanged(EventArgs e) {
+      var listeners = ProblemDataChanged;
+      if (listeners != null)
+        listeners(this, e);
+    }
+
+    public event EventHandler EstimatedValuesChanged;
+    protected virtual void OnEstimatedValuesChanged(EventArgs e) {
+      var listeners = EstimatedValuesChanged;
+      if (listeners != null)
+        listeners(this, e);
     }
     #endregion
   }

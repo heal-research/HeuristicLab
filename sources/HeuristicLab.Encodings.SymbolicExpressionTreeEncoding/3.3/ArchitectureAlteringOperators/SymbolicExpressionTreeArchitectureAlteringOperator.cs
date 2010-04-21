@@ -28,11 +28,12 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using System.Collections.Generic;
 using System.Text;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators;
 
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlteringOperators {
   /// <summary>
   /// Base class for architecture altering operators for symbolic expression trees.
   /// </summary>

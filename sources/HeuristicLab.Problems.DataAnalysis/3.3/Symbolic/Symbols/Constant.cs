@@ -26,6 +26,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Parameters;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
   [Item("Constant", "Represents a constant value.")]

@@ -28,7 +28,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators {
   /// <summary>
   /// A base class for operators creating symbolic expression trees.
   /// </summary>

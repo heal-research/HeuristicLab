@@ -83,26 +83,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     public ScatterPlotView(DataAnalysisSolution dataAnalysisSolution)
       : this() {
       Content = dataAnalysisSolution;
+      UpdateChart();
     }
 
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.ModelChanged += new EventHandler(Content_ModelChanged);
+      Content.EstimatedValuesChanged += new EventHandler(Content_EstimatedValuesChanged);
       Content.ProblemDataChanged += new EventHandler(Content_ProblemDataChanged);
     }
     protected override void DeregisterContentEvents() {
       base.DeregisterContentEvents();
-      Content.ModelChanged -= new EventHandler(Content_ModelChanged);
+      Content.EstimatedValuesChanged -= new EventHandler(Content_EstimatedValuesChanged);
       Content.ProblemDataChanged -= new EventHandler(Content_ProblemDataChanged);
     }
 
 
     void Content_ProblemDataChanged(object sender, EventArgs e) {
-      OnContentChanged();
+      UpdateChart();
     }
 
-    void Content_ModelChanged(object sender, EventArgs e) {
-      OnContentChanged();
+    void Content_EstimatedValuesChanged(object sender, EventArgs e) {
+      UpdateSeries();
     }
 
     protected override void OnContentChanged() {
@@ -126,32 +127,35 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private void UpdateSeries() {
-      string targetVariableName = Content.ProblemData.TargetVariable.Value;
-      Dataset dataset = Content.ProblemData.Dataset;
-      int trainingStart = Content.ProblemData.TrainingSamplesStart.Value;
-      int trainingEnd = Content.ProblemData.TrainingSamplesEnd.Value;
-      int testStart = Content.ProblemData.TestSamplesStart.Value;
-      int testEnd = Content.ProblemData.TestSamplesEnd.Value;
-      if (this.chart.Series[ALL_SERIES].Points.Count > 0)
-        this.chart.Series[ALL_SERIES].Points.DataBindXY(Content.EstimatedValues.ToArray(), "",
-          dataset[targetVariableName], "");
-      if (this.chart.Series[TRAINING_SERIES].Points.Count > 0)
-        this.chart.Series[TRAINING_SERIES].Points.DataBindXY(Content.EstimatedTrainingValues.ToArray(), "",
-          dataset.GetVariableValues(targetVariableName, trainingStart, trainingEnd), "");
-      if (this.chart.Series[TEST_SERIES].Points.Count > 0)
-        this.chart.Series[TEST_SERIES].Points.DataBindXY(Content.EstimatedTestValues.ToArray(), "",
-          dataset.GetVariableValues(targetVariableName, testStart, testEnd), "");
+      if (InvokeRequired) Invoke((Action)UpdateSeries);
+      else {
+        string targetVariableName = Content.ProblemData.TargetVariable.Value;
+        Dataset dataset = Content.ProblemData.Dataset;
+        int trainingStart = Content.ProblemData.TrainingSamplesStart.Value;
+        int trainingEnd = Content.ProblemData.TrainingSamplesEnd.Value;
+        int testStart = Content.ProblemData.TestSamplesStart.Value;
+        int testEnd = Content.ProblemData.TestSamplesEnd.Value;
+        if (this.chart.Series[ALL_SERIES].Points.Count > 0)
+          this.chart.Series[ALL_SERIES].Points.DataBindXY(Content.EstimatedValues.ToArray(), "",
+            dataset[targetVariableName], "");
+        if (this.chart.Series[TRAINING_SERIES].Points.Count > 0)
+          this.chart.Series[TRAINING_SERIES].Points.DataBindXY(Content.EstimatedTrainingValues.ToArray(), "",
+            dataset.GetVariableValues(targetVariableName, trainingStart, trainingEnd), "");
+        if (this.chart.Series[TEST_SERIES].Points.Count > 0)
+          this.chart.Series[TEST_SERIES].Points.DataBindXY(Content.EstimatedTestValues.ToArray(), "",
+            dataset.GetVariableValues(targetVariableName, testStart, testEnd), "");
 
-      double max = Math.Max(Content.EstimatedValues.Max(), dataset.GetMax(targetVariableName));
-      double min = Math.Min(Content.EstimatedValues.Min(), dataset.GetMin(targetVariableName));
+        double max = Math.Max(Content.EstimatedValues.Max(), dataset.GetMax(targetVariableName));
+        double min = Math.Min(Content.EstimatedValues.Min(), dataset.GetMin(targetVariableName));
 
-      max = Math.Ceiling(max) * 1.2;
-      min = Math.Floor(min) * 0.8;
+        max = Math.Ceiling(max) * 1.2;
+        min = Math.Floor(min) * 0.8;
 
-      this.chart.ChartAreas[0].AxisX.Maximum = max;
-      this.chart.ChartAreas[0].AxisX.Minimum = min;
-      this.chart.ChartAreas[0].AxisY.Maximum = max;
-      this.chart.ChartAreas[0].AxisY.Minimum = min;
+        this.chart.ChartAreas[0].AxisX.Maximum = max;
+        this.chart.ChartAreas[0].AxisX.Minimum = min;
+        this.chart.ChartAreas[0].AxisY.Maximum = max;
+        this.chart.ChartAreas[0].AxisY.Minimum = min;
+      }
     }
 
     private void ClearChart() {

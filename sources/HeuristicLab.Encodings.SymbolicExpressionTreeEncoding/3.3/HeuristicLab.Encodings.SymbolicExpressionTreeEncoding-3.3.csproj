@@ -92,6 +92,12 @@
     </Compile>
     <Compile Include="ArchitectureAlteringOperators\SubroutineDeleter.cs" />
     <Compile Include="ArchitectureAlteringOperators\SubroutineDuplicater.cs" />
+    <Compile Include="ArchitectureAlteringOperators\SymbolicExpressionTreeArchitectureAlteringOperator.cs" />
+    <Compile Include="Compiler\Instruction.cs" />
+    <Compile Include="Compiler\SymbolicExpressionTreeCompiler.cs" />
+    <Compile Include="Creators\SymbolicExpressionTreeCreator.cs" />
+    <Compile Include="Crossovers\SymbolicExpressionTreeCrossover.cs" />
+    <Compile Include="Manipulators\SymbolicExpressionTreeManipulator.cs" />
     <Compile Include="SymbolicExpressionTreeTopLevelNode.cs" />
     <Compile Include="Crossovers\SubtreeCrossover.cs">
       <SubType>Code</SubType>
@@ -101,23 +107,15 @@
     <Compile Include="DefaultSymbolicExpressionGrammar.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SymbolicExpressionTreeArchitectureAlteringOperator.cs" />
     <Compile Include="SymbolicExpressionTreeOperator.cs" />
-    <Compile Include="Instruction.cs" />
-    <Compile Include="SymbolicExpressionTreeCompiler.cs" />
-    <Compile Include="SymbolicExpressionTreeManipulator.cs" />
     <Compile Include="SymbolicExpressionTreeTerminalNode.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionGrammar.cs" />
     <Compile Include="Creators\ProbabilisticTreeCreator.cs" />
     <Compile Include="HeuristicLabEncodingsSymbolicExpressionTreeEncodingPlugin.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionTreeOperator.cs" />
-    <Compile Include="SymbolicExpressionTreeCreator.cs" />
     <Compile Include="SymbolicExpressionTree.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Symbol.cs" />
-    <Compile Include="SymbolicExpressionTreeCrossover.cs" />
     <Compile Include="SymbolicExpressionTreeNode.cs" />
-    <Compile Include="Symbols\Addition.cs" />
     <Compile Include="Symbols\Argument.cs" />
     <Compile Include="Symbols\ArgumentTreeNode.cs" />
     <Compile Include="Symbols\StartSymbol.cs" />
@@ -126,9 +124,7 @@
     <Compile Include="Symbols\DefunTreeNode.cs" />
     <Compile Include="Symbols\Defun.cs" />
     <Compile Include="Symbols\ProgramRootSymbol.cs" />
-    <Compile Include="Symbols\Division.cs" />
-    <Compile Include="Symbols\Multiplication.cs" />
-    <Compile Include="Symbols\Subtraction.cs" />
+    <Compile Include="Symbols\Symbol.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
@@ -176,9 +172,6 @@
       <Project>{F4539FB6-4708-40C9-BE64-0A1390AEA197}</Project>
       <Name>HeuristicLab.Random-3.3</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Manipulators\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

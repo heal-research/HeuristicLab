@@ -29,7 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
   [StorableClass]
   [Item("Symbol", "Represents a symbol in a symbolic function tree.")]
   public abstract class Symbol : NamedItem {

@@ -35,14 +35,63 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("SymbolicRegressionSolution", "Represents a solution for a symbolic regression problem which can be visualized in the GUI.")]
   [StorableClass]
   public sealed class SymbolicRegressionSolution : DataAnalysisSolution {
-    public new SymbolicRegressionModel Model {
-      get { return (SymbolicRegressionModel)base.Model; }
-      set { base.Model = value; }
+    private SymbolicRegressionModel model;
+    public SymbolicRegressionModel Model {
+      get { return model; }
+      set {
+        if (model != value) {
+          if (value == null) throw new ArgumentNullException();
+          model = value;
+          OnModelChanged(EventArgs.Empty);
+        }
+      }
     }
 
     public SymbolicRegressionSolution() : base() { }
     public SymbolicRegressionSolution(DataAnalysisProblemData problemData, SymbolicRegressionModel model)
-      : base(problemData, model) {
+      : base(problemData) {
+      this.model = model;
+      RecalculateEstimatedValues();
+    }
+
+    public event EventHandler ModelChanged;
+    private void OnModelChanged(EventArgs e) {
+      RecalculateEstimatedValues();
+      var listeners = ModelChanged;
+      if (listeners != null)
+        listeners(this, e);
+    }
+
+    protected override void OnProblemDataChanged(EventArgs e) {
+      RecalculateEstimatedValues();
+    }
+
+    private void RecalculateEstimatedValues() {
+      estimatedValues = model.GetEstimatedValues(ProblemData.Dataset, 0, ProblemData.Dataset.Rows).ToList();
+      OnEstimatedValuesChanged(EventArgs.Empty);
+    }
+
+    private List<double> estimatedValues;
+    public override IEnumerable<double> EstimatedValues {
+      get {
+        return estimatedValues.AsEnumerable();
+      }
+    }
+
+    public override IEnumerable<double> EstimatedTrainingValues {
+      get {
+        int start = ProblemData.TrainingSamplesStart.Value;
+        int n = ProblemData.TrainingSamplesEnd.Value - start;
+        return estimatedValues.Skip(start).Take(n).ToList();
+      }
+    }
+
+    public override IEnumerable<double> EstimatedTestValues {
+      get {
+        int start = ProblemData.TestSamplesStart.Value;
+        int n = ProblemData.TestSamplesEnd.Value - start;
+        return estimatedValues.Skip(start).Take(n).ToList();
+      }
     }
   }
 }

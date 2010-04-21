@@ -67,13 +67,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     #region events
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.ModelChanged += new EventHandler(Content_ModelChanged);
+      Content.EstimatedValuesChanged += new EventHandler(Content_EstimatedValuesChanged);
       Content.ProblemDataChanged += new EventHandler(Content_ProblemDataChanged);
     }
 
     protected override void DeregisterContentEvents() {
       base.DeregisterContentEvents();
-      Content.ModelChanged -= new EventHandler(Content_ModelChanged);
+      Content.EstimatedValuesChanged -= new EventHandler(Content_EstimatedValuesChanged);
       Content.ProblemDataChanged -= new EventHandler(Content_ProblemDataChanged);
     }
 
@@ -81,7 +81,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       OnContentChanged();
     }
 
-    void Content_ModelChanged(object sender, EventArgs e) {
+    void Content_EstimatedValuesChanged(object sender, EventArgs e) {
       OnContentChanged();
     }
 

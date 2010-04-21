@@ -27,7 +27,8 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
+using HeuristicLab.Problems.ArtificialAnt.Symbols;
 namespace HeuristicLab.Problems.ArtificialAnt {
   [StorableClass]
   public class ArtificialAntExpressionGrammar : DefaultSymbolicExpressionGrammar {

@@ -29,6 +29,7 @@ using System.Xml;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Data;
 using System.Diagnostics;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
@@ -43,14 +44,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     private ISymbolicExpressionGrammar grammar;
-    //internal virtual ISymbolicExpressionGrammar Grammar {
-    //  get { return grammar; }
-    //  set {
-    //    grammar = value;
-    //    //foreach (var subtree in subTrees)
-    //    //  subtree.Grammar = value;
-    //  }
-    //}
+
     internal override ISymbolicExpressionGrammar Grammar {
       get {
         return grammar;

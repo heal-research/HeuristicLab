@@ -37,39 +37,43 @@ using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [StorableClass]
-  public class SymbolicRegressionModel : DeepCloneable, IModel {
+  [Item("SymbolicRegressionModel", "A symbolic regression model represents an entity that provides estimated values based on input values.")]
+  public class SymbolicRegressionModel : Item {
     [Storable]
     private SymbolicExpressionTree tree;
     public SymbolicExpressionTree SymbolicExpressionTree {
       get { return tree; }
     }
     [Storable]
-    private SimpleArithmeticExpressionEvaluator evaluator;
-    public SimpleArithmeticExpressionEvaluator Evaluator {
-      get { return evaluator; }
+    private ISymbolicExpressionTreeInterpreter interpreter;
+    public ISymbolicExpressionTreeInterpreter Interpreter {
+      get { return interpreter; }
     }
-    private Dataset emptyDataset;
-    private IEnumerable<int> firstRow = new int[] { 0 };
+    [Storable]
+    private List<string> inputVariables;
+    public IEnumerable<string> InputVariables {
+      get { return inputVariables.AsEnumerable(); }
+    }
 
     public SymbolicRegressionModel() : base() { } // for cloning
 
-    public SymbolicRegressionModel(SymbolicExpressionTree tree, IEnumerable<string> inputVariables)
+    public SymbolicRegressionModel(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree tree, IEnumerable<string> inputVariables)
       : base() {
       this.tree = tree;
-      this.evaluator = new SimpleArithmeticExpressionEvaluator();
-      emptyDataset = new Dataset(inputVariables, new double[1, inputVariables.Count()]);
+      this.interpreter = interpreter;
+      this.inputVariables = inputVariables.ToList();
     }
 
-    #region IModel Members
-
-    public double GetValue(double[] xs) {
-      if (xs.Length != emptyDataset.Columns) throw new ArgumentException("Length of input vector doesn't match model");
-      for (int i = 0; i < xs.Length; i++) {
-        emptyDataset[0, i] = xs[i];
-      }
-      return evaluator.EstimatedValues(tree, emptyDataset, firstRow).First();
+    public IEnumerable<double> GetEstimatedValues(Dataset dataset, int start, int end) {
+      return interpreter.GetSymbolicExpressionTreeValues(tree, dataset, Enumerable.Range(start, end - start));
     }
 
-    #endregion
+    public override IDeepCloneable Clone(Cloner cloner) {
+      var clone = (SymbolicRegressionModel)base.Clone(cloner);
+      clone.tree = (SymbolicExpressionTree)tree.Clone(cloner);
+      clone.interpreter = (ISymbolicExpressionTreeInterpreter)interpreter.Clone(cloner);
+      clone.inputVariables = new List<string>(inputVariables);
+      return clone;
+    }
   }
 }

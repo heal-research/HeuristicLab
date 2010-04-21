@@ -23,7 +23,8 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-namespace HeuristicLab.Problems.ArtificialAnt {
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
+namespace HeuristicLab.Problems.ArtificialAnt.Symbols {
   [StorableClass]
   [Item("Move", "Represents the move-forward symbol in a artificial ant expression.")]
   public sealed class Move : Symbol {

@@ -1,4 +1,4 @@
-﻿#region License Information
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -19,29 +19,13 @@
  */
 #endregion
 
-using System;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using System.Collections.Generic;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols;
-
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  public enum CodeSymbol : byte { 
-    Add,
-    Sub,
-    Mul,
-    Div,
-    Call,
-    Arg,
-    Values,
-    Dynamic
-  };
-  public struct Instruction {
-    public byte nArguments;
-    public CodeSymbol symbol;
-    public short iArg0;
-    public SymbolicExpressionTreeNode dynamicNode;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
+  [StorableClass]
+  [Item("Multiplication", "Symbol that represents the * operator.")]
+  public sealed class Multiplication : Symbol {
   }
 }

@@ -29,7 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using System;
 using System.Diagnostics;
 
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers {
   /// <summary>
   /// A base class for operators that perform a crossover of symbolic expression trees.
   /// </summary>

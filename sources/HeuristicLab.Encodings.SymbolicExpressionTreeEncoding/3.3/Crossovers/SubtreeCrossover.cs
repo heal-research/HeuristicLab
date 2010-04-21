@@ -27,10 +27,9 @@ using HeuristicLab.Data;
 using System.Linq;
 using System;
 using HeuristicLab.Parameters;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols;
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 
-
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers {
   /// <summary>
   /// Takes two parent individuals P0 and P1 each. Selects a random node N0 of P0 and a random node N1 of P1.
   /// And replaces the branch with root0 N0 in P0 with N1 from P1 if the tree-size limits are not violated.

@@ -24,8 +24,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 
-namespace HeuristicLab.Problems.DataAnalysis {
-  public static class StatisticExtensions {
+namespace HeuristicLab.Common {
+  public static class EnumerableStatisticExtensions {
     /// <summary>
     /// Calculates the median element of the enumeration.
     /// </summary>

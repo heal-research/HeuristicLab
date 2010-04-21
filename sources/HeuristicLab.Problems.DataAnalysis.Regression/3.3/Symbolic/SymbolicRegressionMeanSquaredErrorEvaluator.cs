@@ -40,16 +40,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("SymbolicRegressionMeanSquaredErrorEvaluator", "Calculates the mean squared error of a symbolic regression solution.")]
   [StorableClass]
   public class SymbolicRegressionMeanSquaredErrorEvaluator : SymbolicRegressionEvaluator {
-    protected override double Evaluate(SymbolicExpressionTree solution, Dataset dataset, StringValue targetVariable, IntValue samplesStart, IntValue samplesEnd, DoubleValue numberOfEvaluatedNodes) {
-      double mse = Calculate(solution, dataset, targetVariable.Value, samplesStart.Value, samplesEnd.Value);
+    protected override double Evaluate(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, Dataset dataset, StringValue targetVariable, IntValue samplesStart, IntValue samplesEnd, DoubleValue numberOfEvaluatedNodes) {
+      double mse = Calculate(interpreter, solution, dataset, targetVariable.Value, samplesStart.Value, samplesEnd.Value);
       numberOfEvaluatedNodes.Value += solution.Size * (samplesEnd.Value - samplesStart.Value);
       return mse;
     }
 
-    public static double Calculate(SymbolicExpressionTree solution, Dataset dataset, string targetVariable, int start, int end) {
-      SimpleArithmeticExpressionEvaluator evaluator = new SimpleArithmeticExpressionEvaluator();
+    public static double Calculate(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, Dataset dataset, string targetVariable, int start, int end) {
       int targetVariableIndex = dataset.GetVariableIndex(targetVariable);
-      var estimatedValues = evaluator.EstimatedValues(solution, dataset, Enumerable.Range(start, end - start));
+      var estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, dataset, Enumerable.Range(start, end - start));
       var originalValues = from row in Enumerable.Range(start, end - start) select dataset[row, targetVariableIndex];
       return SimpleMSEEvaluator.Calculate(originalValues, estimatedValues);
     }

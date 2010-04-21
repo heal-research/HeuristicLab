@@ -56,8 +56,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
       Content = content;
     }
 
+
+    protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
+      Content.ModelChanged += new EventHandler(Content_ModelChanged);
+    }
+
+    protected override void DeregisterContentEvents() {
+      base.DeregisterContentEvents();
+      Content.ModelChanged -= new EventHandler(Content_ModelChanged);
+    }
+
+    void Content_ModelChanged(object sender, EventArgs e) {
+      UpdateTreeChart();
+    }
+
     protected override void OnContentChanged() {
       base.OnContentChanged();
+      UpdateTreeChart();
+    }
+
+    private void UpdateTreeChart() {
       viewHost.Content = Content.Model.SymbolicExpressionTree;
     }
   }

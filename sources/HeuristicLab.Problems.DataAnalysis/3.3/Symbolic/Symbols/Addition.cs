@@ -22,7 +22,8 @@
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols {
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
   [Item("Addition", "Symbol that represents the + operator.")]
   public sealed class Addition : Symbol {

@@ -24,7 +24,8 @@ using System.Linq;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Data;
 using System.Collections.Generic;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
+using HeuristicLab.Problems.ArtificialAnt.Symbols;
 
 namespace HeuristicLab.Problems.ArtificialAnt {
   public class AntInterpreter {

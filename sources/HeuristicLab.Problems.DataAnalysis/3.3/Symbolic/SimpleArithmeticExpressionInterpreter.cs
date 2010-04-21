@@ -25,21 +25,35 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using System.Collections.Generic;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Compiler;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
-  [Item("SimpleArithmeticExpressionEvaluator", "Default evaluator for arithmetic symbolic expression trees.")]
-  public class SimpleArithmeticExpressionEvaluator {
+  [Item("SimpleArithmeticExpressionInterpreter", "Interpreter for arithmetic symbolic expression trees including function calls.")]
+  public class SimpleArithmeticExpressionInterpreter : Item, ISymbolicExpressionTreeInterpreter {
+    private class OpCodes {
+      public const byte Add = 1;
+      public const byte Sub = 2;
+      public const byte Mul = 3;
+      public const byte Div = 4;
+      public const byte Variable = 5;
+      public const byte Constant = 6;
+      public const byte Call = 100;
+      public const byte Arg = 101;
+    }
+
     private Dataset dataset;
     private int row;
     private Instruction[] code;
     private int pc;
-    public IEnumerable<double> EstimatedValues(SymbolicExpressionTree tree, Dataset dataset, IEnumerable<int> rows) {
+
+    public IEnumerable<double> GetSymbolicExpressionTreeValues(SymbolicExpressionTree tree, Dataset dataset, IEnumerable<int> rows) {
       this.dataset = dataset;
       var compiler = new SymbolicExpressionTreeCompiler();
-      code = compiler.Compile(tree);
+      compiler.AddInstructionPostProcessingHook(PostProcessInstruction);
+      code = compiler.Compile(tree, MapSymbolToOpCode);
       foreach (var row in rows) {
         this.row = row;
         pc = 0;
@@ -50,39 +64,59 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
+    private Instruction PostProcessInstruction(Instruction instr) {
+      if (instr.opCode == OpCodes.Variable) {
+        var variableTreeNode = instr.dynamicNode as VariableTreeNode;
+        instr.iArg0 = (ushort)dataset.GetVariableIndex(variableTreeNode.VariableName);
+      }
+      return instr;
+    }
+
+    private byte MapSymbolToOpCode(SymbolicExpressionTreeNode treeNode) {
+      if (treeNode.Symbol is Addition) return OpCodes.Add;
+      if (treeNode.Symbol is Subtraction) return OpCodes.Sub;
+      if (treeNode.Symbol is Multiplication) return OpCodes.Mul;
+      if (treeNode.Symbol is Division) return OpCodes.Div;
+      if (treeNode.Symbol is HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols.Variable) return OpCodes.Variable;
+      if (treeNode.Symbol is Constant) return OpCodes.Constant;
+      if (treeNode.Symbol is InvokeFunction) return OpCodes.Call;
+      if (treeNode.Symbol is Argument) return OpCodes.Arg;
+      throw new NotSupportedException("Symbol: " + treeNode.Symbol);
+    }
+
     private Stack<List<double>> argumentStack = new Stack<List<double>>();
     public double Evaluate() {
       var currentInstr = code[pc++];
-      switch (currentInstr.symbol) {
-        case CodeSymbol.Add: {
+      switch (currentInstr.opCode) {
+        case OpCodes.Add: {
             double s = 0.0;
             for (int i = 0; i < currentInstr.nArguments; i++) {
               s += Evaluate();
             }
             return s;
           }
-        case CodeSymbol.Sub: {
+        case OpCodes.Sub: {
             double s = Evaluate();
             for (int i = 1; i < currentInstr.nArguments; i++) {
               s -= Evaluate();
             }
             return s;
           }
-        case CodeSymbol.Mul: {
+        case OpCodes.Mul: {
             double p = Evaluate();
             for (int i = 1; i < currentInstr.nArguments; i++) {
               p *= Evaluate();
             }
             return p;
           }
-        case CodeSymbol.Div: {
+        case OpCodes.Div: {
             double p = Evaluate();
             for (int i = 1; i < currentInstr.nArguments; i++) {
               p /= Evaluate();
             }
             return p;
           }
-        case CodeSymbol.Call: {
+        case OpCodes.Call: {
             // save current arguments
             List<double> arguments = new List<double>();
             // evaluate sub-trees
@@ -101,18 +135,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             pc = nextPc;
             return v;
           }
-        case CodeSymbol.Arg: {
+        case OpCodes.Arg: {
             return argumentStack.Peek()[currentInstr.iArg0];
           }
-        case CodeSymbol.Dynamic: {
+        case OpCodes.Variable: {
             var variableTreeNode = currentInstr.dynamicNode as VariableTreeNode;
-            if (variableTreeNode != null) {
-              return dataset[row, dataset.GetVariableIndex(variableTreeNode.VariableName)] * variableTreeNode.Weight;
-            }
+            return dataset[row, currentInstr.iArg0] * variableTreeNode.Weight;
+          }
+        case OpCodes.Constant: {
             var constTreeNode = currentInstr.dynamicNode as ConstantTreeNode;
-            if (constTreeNode != null) {
-              return constTreeNode.Value;
-            } else throw new NotSupportedException();
+            return constTreeNode.Value;
           }
         default: throw new NotSupportedException();
       }

@@ -22,9 +22,10 @@
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols {
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
-  [Item("Multiplication", "Symbol that represents the * operator.")]
-  public sealed class Multiplication : Symbol {
+  [Item("Division", "Symbol that represents the / operator.")]
+  public sealed class Division : Symbol {
   }
 }

@@ -28,7 +28,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     public DataAnalysisProblemDataView(DataAnalysisProblemData content)
       : this() {
       Content = content;
-      variableCollectionView.Content = content.Variables.AsReadOnly();
+    }
+
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      variableCollectionView.Content = Content.Variables.AsReadOnly();
     }
 
     private void importButton_Click(object sender, EventArgs e) {

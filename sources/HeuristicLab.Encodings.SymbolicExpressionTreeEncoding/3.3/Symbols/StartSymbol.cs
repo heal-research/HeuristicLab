@@ -22,7 +22,7 @@
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols {
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
   [StorableClass]
   [Item("StartSymbol", "Special symbol that represents the starting node of the result producing branch of a symbolic expression tree.")]
   public sealed class StartSymbol : Symbol {

@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("BestSymbolicExpressionTreeVisualizer", "An operator for visualizing the best symbolic regression solution based on the validation set.")]
   [StorableClass]
   public sealed class BestValidationSymbolicRegressionSolutionVisualizer : SingleSuccessorOperator, ISingleObjectiveSolutionsVisualizer, ISolutionsVisualizer {
-    private const string EvaluatorParameterName = "Evaluator";
+    private const string SymbolicExpressionTreeInterpreterParameterName = "SymbolicExpressionTreeInterpreter";
     private const string SymbolicRegressionModelParameterName = "SymbolicRegressionModel";
     private const string DataAnalysisProblemDataParameterName = "DataAnalysisProblemData";
     private const string BestValidationSolutionParameterName = "BestValidationSolution";
@@ -48,8 +48,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     private const string ResultsParameterName = "Results";
 
     #region parameter properties
-    public ILookupParameter<ISymbolicRegressionEvaluator> EvaluatorParameter {
-      get { return (ILookupParameter<ISymbolicRegressionEvaluator>)Parameters[EvaluatorParameterName]; }
+    public ILookupParameter<ISymbolicExpressionTreeInterpreter> SymbolicExpressionTreeInterpreterParameter {
+      get { return (ILookupParameter<ISymbolicExpressionTreeInterpreter>)Parameters[SymbolicExpressionTreeInterpreterParameterName]; }
     }
     public IValueLookupParameter<IntValue> ValidationSamplesStartParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters[ValidationSamplesStartParameterName]; }
@@ -81,8 +81,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     #endregion
 
     #region properties
-    public ISymbolicRegressionEvaluator Evaluator {
-      get { return EvaluatorParameter.ActualValue; }
+    public ISymbolicExpressionTreeInterpreter SymbolicExpressionTreeInterpreter {
+      get { return SymbolicExpressionTreeInterpreterParameter.ActualValue; }
     }
     public IntValue ValidationSamplesStart {
       get { return ValidationSamplesStartParameter.ActualValue; }
@@ -97,6 +97,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       Parameters.Add(new SubScopesLookupParameter<SymbolicExpressionTree>(SymbolicRegressionModelParameterName, "The symbolic regression solutions from which the best solution should be visualized."));
       Parameters.Add(new SubScopesLookupParameter<DoubleValue>(QualityParameterName, "The quality of the symbolic regression solutions."));
       Parameters.Add(new LookupParameter<DataAnalysisProblemData>(DataAnalysisProblemDataParameterName, "The symbolic regression problme data on which the best solution should be evaluated."));
+      Parameters.Add(new LookupParameter<ISymbolicExpressionTreeInterpreter>(SymbolicExpressionTreeInterpreterParameterName, "The interpreter that should be used to calculate the output values of symbolic expression trees."));
       Parameters.Add(new ValueLookupParameter<IntValue>(ValidationSamplesStartParameterName, "The start index of the validation partition (part of the training partition)."));
       Parameters.Add(new ValueLookupParameter<IntValue>(ValidationSamplesEndParameterName, "The end index of the validation partition (part of the training partition)."));
       Parameters.Add(new LookupParameter<SymbolicRegressionSolution>(BestValidationSolutionParameterName, "The best symbolic expression tree based on the validation data for the symbolic regression problem."));
@@ -112,7 +113,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       var validationValues = problemData.Dataset.GetVariableValues(problemData.TargetVariable.Value, validationSamplesStart, validationSamplesEnd);
 
       var currentBestExpression = (from expression in expressions
-                                   let validationQuality = SymbolicRegressionMeanSquaredErrorEvaluator.Calculate(expression, problemData.Dataset, problemData.TargetVariable.Value, validationSamplesStart, validationSamplesEnd)
+                                   let validationQuality =
+                                     SymbolicRegressionMeanSquaredErrorEvaluator.Calculate(
+                                       SymbolicExpressionTreeInterpreter, expression,
+                                       problemData.Dataset, problemData.TargetVariable.Value,
+                                       validationSamplesStart, validationSamplesEnd)
                                    select new { Expression = expression, ValidationQuality = validationQuality })
                                    .OrderBy(x => x.ValidationQuality)
                                    .First();
@@ -120,13 +125,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       SymbolicRegressionSolution bestOfRunSolution = BestValidationSolutionParameter.ActualValue;
       if (bestOfRunSolution == null) {
         // no best of run solution yet -> make a solution from the currentBestExpression
-        UpdateBestOfRunSolution(problemData, currentBestExpression.Expression);
+        UpdateBestOfRunSolution(problemData, currentBestExpression.Expression, SymbolicExpressionTreeInterpreter);
       } else {
         // compare quality of current best with best of run solution
         var estimatedValidationValues = bestOfRunSolution.EstimatedValues.Skip(validationSamplesStart).Take(validationSamplesEnd - validationSamplesStart);
         var bestOfRunValidationQuality = SimpleMSEEvaluator.Calculate(validationValues, estimatedValidationValues);
         if (bestOfRunValidationQuality > currentBestExpression.ValidationQuality) {
-          UpdateBestOfRunSolution(problemData, currentBestExpression.Expression);
+          UpdateBestOfRunSolution(problemData, currentBestExpression.Expression, SymbolicExpressionTreeInterpreter);
         }
       }
 
@@ -134,9 +139,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       return base.Apply();
     }
 
-    private void UpdateBestOfRunSolution(DataAnalysisProblemData problemData, SymbolicExpressionTree tree) {
-      var newBestSolution = CreateDataAnalysisSolution(problemData, tree);
-      BestValidationSolutionParameter.ActualValue = newBestSolution;
+    private void UpdateBestOfRunSolution(DataAnalysisProblemData problemData, SymbolicExpressionTree tree, ISymbolicExpressionTreeInterpreter interpreter) {
+      var newBestSolution = CreateDataAnalysisSolution(problemData, tree, interpreter);
+      if (BestValidationSolutionParameter.ActualValue == null)
+        BestValidationSolutionParameter.ActualValue = newBestSolution;
+      else
+        // only update model
+        BestValidationSolutionParameter.ActualValue.Model = newBestSolution.Model;
 
       var trainingValues = problemData.Dataset.GetVariableValues(problemData.TargetVariable.Value, problemData.TrainingSamplesStart.Value, problemData.TrainingSamplesEnd.Value);
       var testValues = problemData.Dataset.GetVariableValues(problemData.TargetVariable.Value, problemData.TestSamplesStart.Value, problemData.TestSamplesEnd.Value);
@@ -159,12 +168,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       }
     }
 
-    private SymbolicRegressionModel CreateModel(DataAnalysisProblemData problemData, SymbolicExpressionTree expression) {
-      return new SymbolicRegressionModel(expression, problemData.InputVariables.Select(x => x.Value));
-    }
-
-    private SymbolicRegressionSolution CreateDataAnalysisSolution(DataAnalysisProblemData problemData, SymbolicExpressionTree expression) {
-      return new SymbolicRegressionSolution(problemData, CreateModel(problemData, expression));
+    private SymbolicRegressionSolution CreateDataAnalysisSolution(DataAnalysisProblemData problemData, SymbolicExpressionTree expression, ISymbolicExpressionTreeInterpreter interpreter) {
+      var model = new SymbolicRegressionModel(interpreter, expression, problemData.InputVariables.Select(s => s.Value));
+      return new SymbolicRegressionSolution(problemData, model);
     }
   }
 }

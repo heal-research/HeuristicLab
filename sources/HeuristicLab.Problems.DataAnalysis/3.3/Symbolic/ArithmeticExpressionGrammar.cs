@@ -26,7 +26,7 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Data;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {

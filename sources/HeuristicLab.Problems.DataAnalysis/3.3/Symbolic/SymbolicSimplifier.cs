@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
 using System.Diagnostics;
 
@@ -37,6 +37,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   ///  * c1 / ( c2 * Var) => ( var * ( c2 / c1))
   /// </summary>
   public class SymbolicSimplifier {
+    private Addition addSymbol = new Addition();
+    private Multiplication mulSymbol = new Multiplication();
+    private Division divSymbol = new Division();
+    private Constant constSymbol = new Constant();
+    private Variable varSymbol = new Variable();
+
     public SymbolicExpressionTree Simplify(SymbolicExpressionTree originalTree) {
       var clone = (SymbolicExpressionTreeNode)originalTree.Root.Clone();
       // macro expand (initially no argument trees)
@@ -193,7 +199,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         ((VariableTreeNode)a).Weight /= constB;
         return a;
       } else {
-        var div = (new Division()).CreateTreeNode();
+        var div = divSymbol.CreateTreeNode();
         div.SubTrees.Add(a);
         div.SubTrees.Add(b);
         return div;
@@ -214,7 +220,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return a;
       } else if (IsAddition(a) && IsAddition(b)) {
         // merge additions
-        var add = (new Addition()).CreateTreeNode();
+        var add = addSymbol.CreateTreeNode();
         for (int i = 0; i < a.SubTrees.Count - 1; i++) add.AddSubTree(a.SubTrees[i]);
         for (int i = 0; i < b.SubTrees.Count - 1; i++) add.AddSubTree(b.SubTrees[i]);
         if (IsConstant(a.SubTrees.Last()) && IsConstant(b.SubTrees.Last())) {
@@ -231,7 +237,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (IsAddition(b)) {
         return MakeAddition(b, a);
       } else if (IsAddition(a) && IsConstant(b)) {
-        var add = (new Addition()).CreateTreeNode();
+        var add = addSymbol.CreateTreeNode();
         for (int i = 0; i < a.SubTrees.Count - 1; i++) add.AddSubTree(a.SubTrees[i]);
         if (IsConstant(a.SubTrees.Last()))
           add.AddSubTree(MakeAddition(a.SubTrees.Last(), b));
@@ -241,7 +247,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         }
         return add;
       } else if (IsAddition(a)) {
-        var add = (new Addition()).CreateTreeNode();
+        var add = addSymbol.CreateTreeNode();
         add.AddSubTree(b);
         foreach (var subTree in a.SubTrees) {
           add.AddSubTree(subTree);
@@ -249,7 +255,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         MergeVariables(add);
         return add;
       } else {
-        var add = (new Addition()).CreateTreeNode();
+        var add = addSymbol.CreateTreeNode();
         add.SubTrees.Add(a);
         add.SubTrees.Add(b);
         MergeVariables(add);
@@ -295,23 +301,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         Trace.Assert(b.SubTrees.Count == 2);
         return MakeDivision(MakeMultiplication(b.SubTrees[0], a), b.SubTrees[1]);
       } else if (IsMultiplication(a) && IsMultiplication(b)) {
-        var mul = (new Multiplication()).CreateTreeNode();
+        var mul = mulSymbol.CreateTreeNode();
         for (int i = 0; i < a.SubTrees.Count - 1; i++) mul.AddSubTree(a.SubTrees[i]);
         for (int i = 0; i < b.SubTrees.Count - 1; i++) mul.AddSubTree(b.SubTrees[i]);
         mul.AddSubTree(MakeMultiplication(a.SubTrees.Last(), b.SubTrees.Last()));
         return mul;
       } else if (IsMultiplication(a)) {
-        var mul = (new Multiplication()).CreateTreeNode();
+        var mul = mulSymbol.CreateTreeNode();
         for (int i = 0; i < a.SubTrees.Count - 1; i++) mul.AddSubTree(a.SubTrees[i]);
         mul.AddSubTree(MakeMultiplication(a.SubTrees.Last(), b));
         return mul;
       } else if (IsMultiplication(b)) {
-        var mul = (new Multiplication()).CreateTreeNode();
+        var mul = mulSymbol.CreateTreeNode();
         for (int i = 0; i < b.SubTrees.Count - 1; i++) mul.AddSubTree(b.SubTrees[i]);
         mul.AddSubTree(MakeMultiplication(b.SubTrees.Last(), a));
         return mul;
       } else {
-        var mul = (new Multiplication()).CreateTreeNode();
+        var mul = mulSymbol.CreateTreeNode();
         mul.SubTrees.Add(a);
         mul.SubTrees.Add(b);
         return mul;
@@ -345,13 +351,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     private SymbolicExpressionTreeNode MakeConstant(double value) {
-      ConstantTreeNode constantTreeNode = (ConstantTreeNode)(new Constant().CreateTreeNode());
+      ConstantTreeNode constantTreeNode = (ConstantTreeNode)(constSymbol.CreateTreeNode());
       constantTreeNode.Value = value;
       return (SymbolicExpressionTreeNode)constantTreeNode;
     }
 
     private SymbolicExpressionTreeNode MakeVariable(double weight, string name) {
-      var tree = (VariableTreeNode)(new Variable().CreateTreeNode());
+      var tree = (VariableTreeNode)varSymbol.CreateTreeNode();
       tree.Weight = weight;
       tree.VariableName = name;
       return tree;

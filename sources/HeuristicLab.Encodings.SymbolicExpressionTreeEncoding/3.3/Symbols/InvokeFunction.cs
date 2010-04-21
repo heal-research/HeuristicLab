@@ -22,7 +22,7 @@
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols {
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
   /// <summary>
   /// Symbol for invoking automatically defined functions
   /// </summary>

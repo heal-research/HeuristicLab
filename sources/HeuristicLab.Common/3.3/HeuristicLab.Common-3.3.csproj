@@ -94,6 +94,7 @@
     <Compile Include="Content\StorableContent.cs" />
     <Compile Include="DeepCloneable.cs" />
     <Compile Include="Content\IContent.cs" />
+    <Compile Include="EnumerableStatisticExtensions.cs" />
     <Compile Include="IDeepCloneable.cs" />
     <Compile Include="ReferenceEqualityComparer.cs" />
     <Compile Include="TypeExtensions.cs" />

@@ -21,7 +21,7 @@
 
 using System;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols {
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
   [StorableClass]
   public sealed class InvokeFunctionTreeNode : SymbolicExpressionTreeNode {
     public new InvokeFunction Symbol {

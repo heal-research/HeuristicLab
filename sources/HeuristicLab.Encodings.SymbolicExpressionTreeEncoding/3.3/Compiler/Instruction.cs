@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -19,12 +19,26 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols {
-  [StorableClass]
-  [Item("Division", "Symbol that represents the / operator.")]
-  public sealed class Division : Symbol {
+using System.Collections.Generic;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
+
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Compiler {
+  // total size of this struct should be small to improve cache access while executing the code
+  // should be aligned to 8/16/32 byte
+  // size = 4(8) + 1 + 1 + 2 = 8 (12)
+  public struct Instruction {
+    // the tree node can hold additional data that is necessary for the execution of this instruction
+    public SymbolicExpressionTreeNode dynamicNode;
+    // op code of the function that determines what operation should be executed
+    public byte opCode;
+    // number of arguments of the current instruction
+    public byte nArguments;
+    // an optional short value (addresses for calls, argument index for arguments)
+    public ushort iArg0;
   }
 }

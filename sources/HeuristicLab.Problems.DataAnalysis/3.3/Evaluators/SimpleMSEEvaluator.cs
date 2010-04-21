@@ -72,7 +72,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
       var original = from row in Enumerable.Range(0, values.Rows)
                      select values[row, ORIGINAL_INDEX];
       var estimated = from row in Enumerable.Range(0, values.Rows)
-                      select values[row, ORIGINAL_INDEX];
+                      select values[row, ESTIMATION_INDEX];
       return Calculate(original, estimated);
     }
   }

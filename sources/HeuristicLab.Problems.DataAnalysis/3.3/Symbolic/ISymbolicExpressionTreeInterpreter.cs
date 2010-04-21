@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -19,12 +19,15 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols {
-  [StorableClass]
-  [Item("Subtraction", "Symbol that represents the - operator.")]
-  public sealed class Subtraction : Symbol {
+using System.Collections.Generic;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
+  public interface ISymbolicExpressionTreeInterpreter : IItem {
+    IEnumerable<double> GetSymbolicExpressionTreeValues(SymbolicExpressionTree tree, Dataset dataset, IEnumerable<int> rows);
   }
 }

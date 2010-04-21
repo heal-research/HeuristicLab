@@ -64,11 +64,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     public LineChartView(DataAnalysisSolution dataAnalysisSolution)
       : this() {
       Content = dataAnalysisSolution;
-      DrawTargetVariableValues();
-      DrawEstimatedValues();
+      RedrawChart();
     }
 
-    private void DrawEstimatedValues() {
+    private void RedrawChart() {
+      this.chart.Series.Clear();
+      this.chart.Series.Add(TARGETVARIABLE_SERIES_NAME);
+      this.chart.Series[TARGETVARIABLE_SERIES_NAME].LegendText = Content.ProblemData.TargetVariable.Value;
+      this.chart.Series[TARGETVARIABLE_SERIES_NAME].ChartType = SeriesChartType.FastLine;
+      this.chart.Series[TARGETVARIABLE_SERIES_NAME].Points.DataBindY(Content.ProblemData.Dataset[Content.ProblemData.TargetVariable.Value]);
+      this.UpdateStripLines();
+
       this.chart.Series.Add(ESTIMATEDVALUES_SERIES_NAME);
       this.chart.Series[ESTIMATEDVALUES_SERIES_NAME].LegendText = Content.ItemName;
       this.chart.Series[ESTIMATEDVALUES_SERIES_NAME].ChartType = SeriesChartType.FastLine;
@@ -76,39 +82,30 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.chart.Series[ESTIMATEDVALUES_SERIES_NAME].Tag = Content;
     }
 
-    private void DrawTargetVariableValues() {
-      this.chart.Series.Clear();
-      this.chart.Series.Add(TARGETVARIABLE_SERIES_NAME);
-      this.chart.Series[TARGETVARIABLE_SERIES_NAME].LegendText = Content.ProblemData.TargetVariable.Value;
-      this.chart.Series[TARGETVARIABLE_SERIES_NAME].ChartType = SeriesChartType.FastLine;
-      this.chart.Series[TARGETVARIABLE_SERIES_NAME].Points.DataBindY(Content.ProblemData.Dataset[Content.ProblemData.TargetVariable.Value]);
-      this.UpdateStripLines();
-    }
-
     #region events
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.ModelChanged += new EventHandler(Content_ModelChanged);
+      Content.EstimatedValuesChanged += new EventHandler(Content_EstimatedValuesChanged);
       Content.ProblemDataChanged += new EventHandler(Content_ProblemDataChanged);
     }
 
     protected override void DeregisterContentEvents() {
       base.DeregisterContentEvents();
-      Content.ModelChanged -= new EventHandler(Content_ModelChanged);
+      Content.EstimatedValuesChanged -= new EventHandler(Content_EstimatedValuesChanged);
       Content.ProblemDataChanged -= new EventHandler(Content_ProblemDataChanged);
     }
 
     void Content_ProblemDataChanged(object sender, EventArgs e) {
-      OnContentChanged();
+      RedrawChart();
     }
 
-    void Content_ModelChanged(object sender, EventArgs e) {
-      OnContentChanged();
+    void Content_EstimatedValuesChanged(object sender, EventArgs e) {
+      UpdateEstimatedValuesLineChart();
     }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      UpdateEstimatedValuesLineChart();
+      RedrawChart();
     }
 
     private void UpdateEstimatedValuesLineChart() {

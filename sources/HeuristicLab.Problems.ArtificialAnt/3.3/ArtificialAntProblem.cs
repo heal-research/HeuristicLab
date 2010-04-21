@@ -31,6 +31,10 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlteringOperators;
 
 namespace HeuristicLab.Problems.ArtificialAnt {
   [Item("ArtificialAntProblem", "Represents the Artificial Ant problem.")]

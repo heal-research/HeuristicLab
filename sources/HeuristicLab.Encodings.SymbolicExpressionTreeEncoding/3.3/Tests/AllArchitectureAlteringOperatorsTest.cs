@@ -29,6 +29,8 @@ using HeuristicLab.Random;
 using System.Diagnostics;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlteringOperators;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
   [TestClass]

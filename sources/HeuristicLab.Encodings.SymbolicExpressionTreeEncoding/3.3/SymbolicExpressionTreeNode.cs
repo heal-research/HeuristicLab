@@ -29,6 +29,7 @@ using System.Xml;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Data;
 using System.Diagnostics;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
@@ -37,7 +38,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     private List<SymbolicExpressionTreeNode> subTrees;
     [Storable]
     private Symbol symbol;
-    //[Storable]
+
+    // parent relation is not persisted or cloned (will be set on AddSubtree or RemoveSubtree)
     private SymbolicExpressionTreeNode parent;
 
     public SymbolicExpressionTreeNode() {

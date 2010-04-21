@@ -19,19 +19,19 @@
  */
 #endregion
 
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Random;
-using System;
-using System.Linq;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Collections.Generic;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.GeneralSymbols;
-using System.Text;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlteringOperators;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators {
   [StorableClass]
   [Item("ProbabilisticTreeCreator", "An operator that creates new symbolic expression trees with uniformly distributed size")]
   public class ProbabilisticTreeCreator : SymbolicExpressionTreeCreator {
