@@ -101,8 +101,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
         zoomOutButton.Enabled = true;
         screenshotButton.Enabled = true;
         detailsViewHost.Enabled = true;
-        detailsViewHost.ReadOnly = ReadOnly;
-        graphVisualizationInfoView.ReadOnly = ReadOnly;
         connectButton.Enabled = !ReadOnly;
       }
     } 

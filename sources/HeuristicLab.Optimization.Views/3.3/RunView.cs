@@ -88,7 +88,6 @@ namespace HeuristicLab.Optimization.Views {
     private void SetEnabledStateOfControls() {
       listView.Enabled = Content != null;
       viewHost.Enabled = Content != null;
-      viewHost.ReadOnly = ReadOnly;
       showAlgorithmButton.Enabled = Content != null && !Locked;
     }
 

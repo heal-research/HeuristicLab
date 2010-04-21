@@ -111,7 +111,6 @@ namespace HeuristicLab.Optimization.Views {
     }
     private void SetEnableStateOfControls() {
       engineViewHost.Enabled = Content != null;
-      engineViewHost.ReadOnly = ReadOnly;
       newOperatorGraphButton.Enabled = false;
       openOperatorGraphButton.Enabled = false;
       operatorGraphViewHost.Enabled = Content != null;

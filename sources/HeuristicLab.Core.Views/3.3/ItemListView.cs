@@ -127,7 +127,6 @@ namespace HeuristicLab.Core.Views {
                                !Content.IsReadOnly && !ReadOnly;
         itemsListView.Enabled = true;
         detailsGroupBox.Enabled = true;
-        viewHost.ReadOnly = ReadOnly;
       }
     }
 

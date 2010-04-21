@@ -105,7 +105,6 @@ namespace HeuristicLab.Operators.Programmable {
 
     private void SetEnabledStateOfControls() {
       parameterCollectionView.Enabled = Content != null;
-      parameterCollectionView.ReadOnly = ReadOnly;
       assembliesTreeView.Enabled = Content != null && !ReadOnly;
       namespacesTreeView.Enabled = Content != null && !ReadOnly;
       compileButton.Enabled = Content != null && !ReadOnly;

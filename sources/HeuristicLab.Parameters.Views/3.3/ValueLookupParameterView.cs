@@ -109,7 +109,6 @@ namespace HeuristicLab.Parameters.Views {
       setValueButton.Enabled = Content != null && !ReadOnly;
       clearValueButton.Enabled = Content != null && Content.Value != null && !ReadOnly;
       valueGroupBox.Enabled = Content != null;
-      viewHost.ReadOnly = ReadOnly;
     }
 
     protected virtual void Content_ActualNameChanged(object sender, EventArgs e) {

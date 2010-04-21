@@ -94,7 +94,6 @@ namespace HeuristicLab.Core.Views {
     private void SetEnabledStateOfControls() {
       scopesTreeView.Enabled = Content != null;
       variableCollectionView.Enabled = Content != null;
-      variableCollectionView.ReadOnly = ReadOnly;
     }
 
     private TreeNode CreateTreeNode(IScope scope) {

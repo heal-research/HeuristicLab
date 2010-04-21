@@ -105,7 +105,6 @@ namespace HeuristicLab.Optimization.Views {
     private void SetEnabledStateOfControls() {
       dataTypeTextBox.Enabled = Content != null;
       viewHost.Enabled = Content != null;
-      viewHost.ReadOnly = ReadOnly;
     }
 
     private void Content_ValueChanged(object sender, EventArgs e) {

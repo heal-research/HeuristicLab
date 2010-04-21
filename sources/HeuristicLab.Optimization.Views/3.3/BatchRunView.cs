@@ -98,9 +98,7 @@ namespace HeuristicLab.Optimization.Views {
       newAlgorithmButton.Enabled = Content != null && !ReadOnly;
       openAlgorithmButton.Enabled = Content != null && !ReadOnly;
       algorithmViewHost.Enabled = Content != null;
-      algorithmViewHost.ReadOnly = ReadOnly;
       runsView.Enabled = Content != null;
-      runsView.ReadOnly = ReadOnly;
       executionTimeTextBox.Enabled = Content != null;
       SetEnabledStateOfExecutableButtons();
     }

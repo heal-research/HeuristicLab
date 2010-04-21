@@ -114,15 +114,11 @@ namespace HeuristicLab.Optimization.Views {
     }
     private void SetEnableStateOfControls() {
       parameterCollectionView.Enabled = Content != null;
-      parameterCollectionView.ReadOnly = ReadOnly;
       newProblemButton.Enabled = Content != null && !ReadOnly;
       openProblemButton.Enabled = Content != null && !ReadOnly;
       problemViewHost.Enabled = Content != null;
-      problemViewHost.ReadOnly = ReadOnly;
       resultsView.Enabled = Content != null;
-      resultsView.ReadOnly = ReadOnly;
       runsView.Enabled = Content != null;
-      runsView.ReadOnly = ReadOnly;
       executionTimeTextBox.Enabled = Content != null;
       SetEnabledStateOfExecutableButtons();
     }

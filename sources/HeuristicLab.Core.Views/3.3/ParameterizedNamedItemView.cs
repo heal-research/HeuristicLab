@@ -62,7 +62,6 @@ namespace HeuristicLab.Core.Views {
 
     private void SetEnabledStateOfControls() {
       parameterCollectionView.Enabled = Content != null;
-      parameterCollectionView.ReadOnly = ReadOnly;
     }
   }
 }

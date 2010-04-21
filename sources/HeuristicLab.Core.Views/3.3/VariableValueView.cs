@@ -97,7 +97,6 @@ namespace HeuristicLab.Core.Views {
 
     private void SetEnabledStateOfControls() {
       valuePanel.Enabled = Content != null;
-      viewHost.ReadOnly = ReadOnly;
     }
 
     protected virtual void Content_ValueChanged(object sender, EventArgs e) {

@@ -118,7 +118,6 @@ namespace HeuristicLab.Optimization.Views {
         detailsGroupBox.Enabled = true;
         removeButton.Enabled = itemsListView.SelectedItems.Count > 0 && !Content.IsReadOnly && !ReadOnly;
         viewHost.Enabled = true;
-        viewHost.ReadOnly = ReadOnly;
       }
     }
 

@@ -85,9 +85,7 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
 
     private void SetEnabledStateOfControls() {
       parameterCollectionView.Enabled = Content != null;
-      parameterCollectionView.ReadOnly = ReadOnly;
       pathTSPTourView.Enabled = Content != null;
-      pathTSPTourView.ReadOnly = ReadOnly;
       importButton.Enabled = Content != null && !ReadOnly;
     }
 

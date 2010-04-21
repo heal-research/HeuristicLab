@@ -104,8 +104,6 @@ namespace HeuristicLab.Core.Views {
     private void SetEnabledStateOfControls() {
       operatorsView.Enabled = Content != null;
       operatorTreeView.Enabled = Content != null;
-      operatorsView.ReadOnly = ReadOnly;
-      operatorTreeView.ReadOnly = ReadOnly;
       operatorsContextMenuStrip.Enabled = Content != null && !ReadOnly;
     }
 

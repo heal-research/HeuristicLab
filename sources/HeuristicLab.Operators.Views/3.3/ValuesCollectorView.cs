@@ -92,9 +92,7 @@ namespace HeuristicLab.Operators.Views {
     private void SetEnabledStateOfControls() {
       breakpointCheckBox.Enabled = Content != null && !ReadOnly;
       collectedValuesView.Enabled = Content != null;
-      collectedValuesView.ReadOnly = ReadOnly;
       parameterCollectionView.Enabled = Content != null;
-      parameterCollectionView.ReadOnly = ReadOnly;
     }
 
     protected void Content_BreakpointChanged(object sender, EventArgs e) {

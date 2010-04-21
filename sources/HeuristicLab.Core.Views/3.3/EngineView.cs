@@ -94,7 +94,6 @@ namespace HeuristicLab.Core.Views {
         logView.Enabled = false;
         executionTimeTextBox.Enabled = false;
       } else {
-        logView.ReadOnly = ReadOnly;
         logView.Enabled = true;
         executionTimeTextBox.Enabled = true;
       }

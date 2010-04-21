@@ -112,7 +112,6 @@ namespace HeuristicLab.Parameters.Views {
     private void SetEnabledStateOfControls() {
       valueGroupBox.Enabled = Content != null;
       valueComboBox.Enabled = (valueComboBox.Items.Count > 0) && !ReadOnly;
-      viewHost.ReadOnly = ReadOnly;
     }
 
     private void FillValueComboBox() {

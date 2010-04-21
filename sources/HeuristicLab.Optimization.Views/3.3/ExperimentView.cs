@@ -86,9 +86,7 @@ namespace HeuristicLab.Optimization.Views {
     }
     private void SetEnableStateOfControls() {
       optimizerListView.Enabled = Content != null;
-      optimizerListView.ReadOnly = ReadOnly;
       runsViewHost.Enabled = Content != null;
-      runsViewHost.ReadOnly = ReadOnly;
       executionTimeTextBox.Enabled = Content != null;
       SetEnabledStateOfExecutableButtons();
     }
