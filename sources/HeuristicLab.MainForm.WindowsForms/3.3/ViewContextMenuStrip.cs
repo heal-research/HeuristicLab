@@ -42,19 +42,22 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     private void RefreshMenuItems() {
-      this.Items.Clear();
-      this.menuItems.Clear();
+      if (InvokeRequired) Invoke((Action)RefreshMenuItems);
+      else {
+        this.Items.Clear();
+        this.menuItems.Clear();
 
-      if (this.item != null) {
-        ToolStripMenuItem menuItem;
-        IEnumerable<Type> types = MainFormManager.GetViewTypes(item.GetType(),true);
-        foreach (Type t in types.Except(IgnoredViewTypes)) {
-          menuItem = new ToolStripMenuItem();
-          menuItem.Tag = t;
-          menuItem.Text = ViewAttribute.GetViewName(t);
+        if (this.item != null) {
+          ToolStripMenuItem menuItem;
+          IEnumerable<Type> types = MainFormManager.GetViewTypes(item.GetType(), true);
+          foreach (Type t in types.Except(IgnoredViewTypes)) {
+            menuItem = new ToolStripMenuItem();
+            menuItem.Tag = t;
+            menuItem.Text = ViewAttribute.GetViewName(t);
 
-          this.menuItems.Add(t, menuItem);
-          this.Items.Add(menuItem);
+            this.menuItems.Add(t, menuItem);
+            this.Items.Add(menuItem);
+          }
         }
       }
     }
