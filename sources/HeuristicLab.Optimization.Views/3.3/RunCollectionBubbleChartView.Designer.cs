@@ -174,7 +174,6 @@
       this.chart.MouseUp += new System.Windows.Forms.MouseEventHandler(this.chart_MouseUp);
       this.chart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart_MouseMove);
       this.chart.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chart_MouseDown);
-      this.chart.LostFocus += new System.EventHandler(this.chart_LostFocus);
       // 
       // zoomButton
       // 

@@ -224,12 +224,10 @@ namespace HeuristicLab.Optimization.Views {
 
     #region drag and drop
     private IRun draggedRun;
-    private bool isDragOperationInProgress = false;
-
     private void chart_MouseDown(object sender, MouseEventArgs e) {
       HitTestResult h = this.chart.HitTest(e.X, e.Y);
       if (h.ChartElementType == ChartElementType.DataPoint) {
-        IRun run =(IRun)((DataPoint)h.Object).Tag;
+        IRun run = (IRun)((DataPoint)h.Object).Tag;
         if (e.Clicks >= 2) {
           IContentView view = MainFormManager.CreateDefaultView(run);
           view.ReadOnly = this.ReadOnly;
@@ -237,56 +235,45 @@ namespace HeuristicLab.Optimization.Views {
           view.Show();
         } else {
           this.draggedRun = run;
-          this.chart.ChartAreas[0].AxisX.ScaleView.Zoomable = false;
-          this.chart.ChartAreas[0].AxisY.ScaleView.Zoomable = false;
-          this.chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = false;
-          this.chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = false;
+          this.chart.ChartAreas[0].CursorX.SetSelectionPosition(double.NaN, double.NaN);
+          this.chart.ChartAreas[0].CursorY.SetSelectionPosition(double.NaN, double.NaN);
         }
       }
     }
 
     private void chart_MouseUp(object sender, MouseEventArgs e) {
-      if (isDragOperationInProgress) {
-        this.isDragOperationInProgress = false;
-        this.chart.ChartAreas[0].AxisX.ScaleView.Zoomable = !isSelecting;
-        this.chart.ChartAreas[0].AxisY.ScaleView.Zoomable = !isSelecting;
-        this.chart.ChartAreas[0].CursorX.SetSelectionPosition(0, 0);
-        this.chart.ChartAreas[0].CursorY.SetSelectionPosition(0, 0);
-        this.chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
-        this.chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = true;
-        return;
-      }
-      if (!isSelecting) return;
-      System.Windows.Forms.DataVisualization.Charting.Cursor xCursor = chart.ChartAreas[0].CursorX;
-      System.Windows.Forms.DataVisualization.Charting.Cursor yCursor = chart.ChartAreas[0].CursorY;
+      if (isSelecting) {
+        System.Windows.Forms.DataVisualization.Charting.Cursor xCursor = chart.ChartAreas[0].CursorX;
+        System.Windows.Forms.DataVisualization.Charting.Cursor yCursor = chart.ChartAreas[0].CursorY;
 
-      double minX = Math.Min(xCursor.SelectionStart, xCursor.SelectionEnd);
-      double maxX = Math.Max(xCursor.SelectionStart, xCursor.SelectionEnd);
-      double minY = Math.Min(yCursor.SelectionStart, yCursor.SelectionEnd);
-      double maxY = Math.Max(yCursor.SelectionStart, yCursor.SelectionEnd);
+        double minX = Math.Min(xCursor.SelectionStart, xCursor.SelectionEnd);
+        double maxX = Math.Max(xCursor.SelectionStart, xCursor.SelectionEnd);
+        double minY = Math.Min(yCursor.SelectionStart, yCursor.SelectionEnd);
+        double maxY = Math.Max(yCursor.SelectionStart, yCursor.SelectionEnd);
 
-      //check for click to select model
-      if (minX == maxX && minY == maxY) {
-        HitTestResult hitTest = chart.HitTest(e.X, e.Y);
-        if (hitTest.ChartElementType == ChartElementType.DataPoint) {
-          int pointIndex = hitTest.PointIndex;
-          IRun run = (IRun)this.chart.Series[0].Points[pointIndex].Tag;
-          run.Color = colorDialog.Color;
+        //check for click to select model
+        if (minX == maxX && minY == maxY) {
+          HitTestResult hitTest = chart.HitTest(e.X, e.Y);
+          if (hitTest.ChartElementType == ChartElementType.DataPoint) {
+            int pointIndex = hitTest.PointIndex;
+            IRun run = (IRun)this.chart.Series[0].Points[pointIndex].Tag;
+            run.Color = colorDialog.Color;
+          }
+        } else {
+          List<DataPoint> selectedPoints = new List<DataPoint>();
+          foreach (DataPoint p in this.chart.Series[0].Points) {
+            if (p.XValue >= minX && p.XValue < maxX &&
+              p.YValues[0] >= minY && p.YValues[0] < maxY) {
+              selectedPoints.Add(p);
+            }
+          }
+          foreach (DataPoint p in selectedPoints) {
+            IRun run = (IRun)p.Tag;
+            run.Color = colorDialog.Color;
+          }
         }
-      } else {
-      List<DataPoint> selectedPoints = new List<DataPoint>();
-      foreach (DataPoint p in this.chart.Series[0].Points) {
-        if (p.XValue >= minX && p.XValue < maxX &&
-          p.YValues[0] >= minY && p.YValues[0] < maxY) {
-          selectedPoints.Add(p);
-        }
-      }
-      foreach (DataPoint p in selectedPoints) {
-        IRun run = (IRun)p.Tag;
-        run.Color = colorDialog.Color;
-      }
-      xCursor.SetSelectionPosition(0, 0);
-      yCursor.SetSelectionPosition(0, 0);
+        this.chart.ChartAreas[0].CursorX.SetSelectionPosition(double.NaN, double.NaN);
+        this.chart.ChartAreas[0].CursorY.SetSelectionPosition(double.NaN, double.NaN);
       }
     }
 
@@ -294,30 +281,20 @@ namespace HeuristicLab.Optimization.Views {
       if (!Locked) {
         HitTestResult h = this.chart.HitTest(e.X, e.Y);
         if (this.draggedRun != null && h.ChartElementType != ChartElementType.DataPoint) {
-          this.isDragOperationInProgress = true;
           DataObject data = new DataObject();
           data.SetData("Type", draggedRun.GetType());
           data.SetData("Value", draggedRun);
-          if (ReadOnly) {
+          if (ReadOnly)
             DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
-          } else {
+          else {
             DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move);
             if ((result & DragDropEffects.Move) == DragDropEffects.Move)
               Content.Remove(draggedRun);
           }
+          this.chart.ChartAreas[0].AxisX.ScaleView.Zoomable = !isSelecting;
+          this.chart.ChartAreas[0].AxisY.ScaleView.Zoomable = !isSelecting;
           this.draggedRun = null;
         }
-      }
-    }
-    private void chart_LostFocus(object sender, EventArgs e) {
-      if (this.isDragOperationInProgress) {
-        this.chart.ChartAreas[0].AxisX.ScaleView.Zoomable = !isSelecting;
-        this.chart.ChartAreas[0].AxisY.ScaleView.Zoomable = !isSelecting;
-        this.chart.ChartAreas[0].CursorX.SetSelectionPosition(0, 0);
-        this.chart.ChartAreas[0].CursorY.SetSelectionPosition(0, 0);
-        this.chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
-        this.chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = true;
-        this.isDragOperationInProgress = false;
       }
     }
     #endregion
