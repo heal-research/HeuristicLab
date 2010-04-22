@@ -161,14 +161,8 @@ namespace HeuristicLab.Optimization {
       if (engine != null) {
         ExecutionContext context = null;
         if (operatorGraph.InitialOperator != null) {
-          if (Problem != null) {
-            context = new ExecutionContext(context, Problem, globalScope);
-            foreach (IParameter param in Problem.Parameters)
-              param.ExecutionContext = context;
-          }
+          if (Problem != null) context = new ExecutionContext(context, Problem, globalScope);
           context = new ExecutionContext(context, this, globalScope);
-          foreach (IParameter param in this.Parameters)
-            param.ExecutionContext = context;
           context = new ExecutionContext(context, operatorGraph.InitialOperator, globalScope);
         }
         engine.Prepare(context);
@@ -197,15 +191,6 @@ namespace HeuristicLab.Optimization {
     protected virtual void OnOperatorGraphChanged() {
       EventHandler handler = OperatorGraphChanged;
       if (handler != null) handler(this, EventArgs.Empty);
-    }
-    protected override void OnStopped() {
-      if (Problem != null) {
-        foreach (IParameter param in Problem.Parameters)
-          param.ExecutionContext = null;
-      }
-      foreach (IParameter param in Parameters)
-        param.ExecutionContext = null;
-      base.OnStopped();
     }
 
     private void RegisterEngineEvents() {
