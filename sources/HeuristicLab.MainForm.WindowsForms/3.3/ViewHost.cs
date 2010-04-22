@@ -33,10 +33,11 @@ namespace HeuristicLab.MainForm.WindowsForms {
       InitializeComponent();
       cachedViews = new Dictionary<Type, IContentView>();
       viewType = null;
-      Content = null;
       startDragAndDrop = false;
       viewContextMenuStrip.IgnoredViewTypes = new List<Type>() { typeof(ViewHost) };
       activeView = null;
+      Content = null;
+      OnContentChanged();
     }
     public ViewHost(IContent content)
       : this() {
@@ -130,6 +131,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
           viewsLabel.Visible = true;
           viewPanel.Visible = true;
         }
+
 
         if (!ViewCanShowContent(viewType, Content)) {
           ViewType = MainFormManager.GetDefaultViewType(Content.GetType());
@@ -267,6 +269,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       if (!Locked) {
         startDragAndDrop = true;
         viewsLabel.Capture = false;
+        viewsLabel.Focus();
       }
     }
     private void viewsLabel_MouseLeave(object sender, EventArgs e) {
