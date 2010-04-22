@@ -72,9 +72,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     public ValueParameter<IntValue> MaxExpressionDepthParameter {
       get { return (ValueParameter<IntValue>)Parameters["MaxExpressionDepth"]; }
     }
-    public ValueParameter<DoubleValue> NumberOfEvaluatedNodesParameter {
-      get { return (ValueParameter<DoubleValue>)Parameters["NumberOfEvaluatedNodes"]; }
-    }
     public ValueParameter<IntValue> MaxFunctionDefiningBranchesParameter {
       get { return (ValueParameter<IntValue>)Parameters["MaxFunctionDefiningBranches"]; }
     }
@@ -158,7 +155,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       Parameters.Add(new ValueParameter<IntValue>("MaxExpressionDepth", "Maximal depth of the symbolic expression.", new IntValue(10)));
       Parameters.Add(new ValueParameter<IntValue>("MaxFunctionDefiningBranches", "Maximal number of automatically defined functions.", new IntValue(3)));
       Parameters.Add(new ValueParameter<IntValue>("MaxFunctionArguments", "Maximal number of arguments of automatically defined functions.", new IntValue(3)));
-      Parameters.Add(new ValueParameter<DoubleValue>("NumberOfEvaluatedNodes", "The total number of evaluated function tree nodes (for performance measurements.)", new DoubleValue()));
       Parameters.Add(new ValueParameter<ISingleObjectiveSolutionsVisualizer>("Visualizer", "The operator which should be used to visualize symbolic regression solutions.", visualizer));
 
       creator.SymbolicExpressionTreeParameter.ActualName = "SymbolicRegressionModel";
@@ -322,7 +318,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       foreach (ISymbolicRegressionEvaluator op in Operators.OfType<ISymbolicRegressionEvaluator>()) {
         op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
         op.RegressionProblemDataParameter.ActualName = DataAnalysisProblemDataParameter.Name;
-        op.NumberOfEvaluatedNodesParameter.ActualName = NumberOfEvaluatedNodesParameter.Name;
       }
       foreach (SymbolicExpressionTreeCrossover op in Operators.OfType<SymbolicExpressionTreeCrossover>()) {
         op.ParentsParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;

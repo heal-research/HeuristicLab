@@ -39,6 +39,5 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     ILookupParameter<DataAnalysisProblemData> RegressionProblemDataParameter { get; }
     IValueLookupParameter<IntValue> SamplesStartParameter { get; }
     IValueLookupParameter<IntValue> SamplesEndParameter { get; }
-    ILookupParameter<DoubleValue> NumberOfEvaluatedNodesParameter { get; }
   }
 }

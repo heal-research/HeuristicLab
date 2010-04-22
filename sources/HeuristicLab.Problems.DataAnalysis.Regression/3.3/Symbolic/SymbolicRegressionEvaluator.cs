@@ -45,7 +45,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     private const string RegressionProblemDataParameterName = "RegressionProblemData";
     private const string SamplesStartParameterName = "SamplesStart";
     private const string SamplesEndParameterName = "SamplesEnd";
-    private const string NumberOfEvaluatedNodexParameterName = "NumberOfEvaluatedNodes";
     #region ISymbolicRegressionEvaluator Members
 
     public ILookupParameter<DoubleValue> QualityParameter {
@@ -72,9 +71,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       get { return (IValueLookupParameter<IntValue>)Parameters[SamplesEndParameterName]; }
     }
 
-    public ILookupParameter<DoubleValue> NumberOfEvaluatedNodesParameter {
-      get { return (ILookupParameter<DoubleValue>)Parameters[NumberOfEvaluatedNodexParameterName]; }
-    }
     #endregion
     #region properties
     public ISymbolicExpressionTreeInterpreter SymbolicExpressionTreeInterpreter {
@@ -102,13 +98,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       Parameters.Add(new LookupParameter<DataAnalysisProblemData>(RegressionProblemDataParameterName, "The problem data on which the symbolic regression solution should be evaluated."));
       Parameters.Add(new ValueLookupParameter<IntValue>(SamplesStartParameterName, "The start index of the dataset partition on which the symbolic regression solution should be evaluated."));
       Parameters.Add(new ValueLookupParameter<IntValue>(SamplesEndParameterName, "The end index of the dataset partition on which the symbolic regression solution should be evaluated."));
-      Parameters.Add(new LookupParameter<DoubleValue>(NumberOfEvaluatedNodexParameterName, "The number of evaluated nodes so far (for performance measurements.)"));
     }
 
     public override IOperation Apply() {
-      DoubleValue numberOfEvaluatedNodes = NumberOfEvaluatedNodesParameter.ActualValue;
       QualityParameter.ActualValue = new DoubleValue(Evaluate(SymbolicExpressionTreeInterpreter, SymbolicExpressionTree, RegressionProblemData.Dataset,
-        RegressionProblemData.TargetVariable, SamplesStart, SamplesEnd, numberOfEvaluatedNodes));
+        RegressionProblemData.TargetVariable, SamplesStart, SamplesEnd));
       return null;
     }
 
@@ -116,7 +110,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       SymbolicExpressionTree solution,
       Dataset dataset,
       StringValue targetVariable,
-      IntValue samplesStart, IntValue samplesEnd,
-      DoubleValue numberOfEvaluatedNodes);
+      IntValue samplesStart, IntValue samplesEnd);
   }
 }

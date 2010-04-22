@@ -40,9 +40,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("SymbolicRegressionMeanSquaredErrorEvaluator", "Calculates the mean squared error of a symbolic regression solution.")]
   [StorableClass]
   public class SymbolicRegressionMeanSquaredErrorEvaluator : SymbolicRegressionEvaluator {
-    protected override double Evaluate(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, Dataset dataset, StringValue targetVariable, IntValue samplesStart, IntValue samplesEnd, DoubleValue numberOfEvaluatedNodes) {
+    protected override double Evaluate(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, Dataset dataset, StringValue targetVariable, IntValue samplesStart, IntValue samplesEnd) {
       double mse = Calculate(interpreter, solution, dataset, targetVariable.Value, samplesStart.Value, samplesEnd.Value);
-      numberOfEvaluatedNodes.Value += solution.Size * (samplesEnd.Value - samplesStart.Value);
       return mse;
     }
 

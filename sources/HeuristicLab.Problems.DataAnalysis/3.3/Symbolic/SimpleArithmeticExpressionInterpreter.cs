@@ -32,6 +32,7 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Compiler;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("SimpleArithmeticExpressionInterpreter", "Interpreter for arithmetic symbolic expression trees including function calls.")]
+  // not thread safe!
   public class SimpleArithmeticExpressionInterpreter : Item, ISymbolicExpressionTreeInterpreter {
     private class OpCodes {
       public const byte Add = 1;
@@ -44,6 +45,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       public const byte Arg = 101;
     }
 
+    private const int ARGUMENT_STACK_SIZE = 1024;
     private Dataset dataset;
     private int row;
     private Instruction[] code;
@@ -57,7 +59,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       foreach (var row in rows) {
         this.row = row;
         pc = 0;
-        argumentStack.Clear();
+        argStackPointer = 0;
         var estimatedValue = Evaluate();
         if (double.IsNaN(estimatedValue) || double.IsInfinity(estimatedValue)) yield return 0.0;
         else yield return estimatedValue;
@@ -84,7 +86,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       throw new NotSupportedException("Symbol: " + treeNode.Symbol);
     }
 
-    private Stack<List<double>> argumentStack = new Stack<List<double>>();
+    private double[] argumentStack = new double[ARGUMENT_STACK_SIZE];
+    private int argStackPointer;
+
     public double Evaluate() {
       var currentInstr = code[pc++];
       switch (currentInstr.opCode) {
@@ -117,26 +121,30 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             return p;
           }
         case OpCodes.Call: {
-            // save current arguments
-            List<double> arguments = new List<double>();
             // evaluate sub-trees
+            // push on argStack in reverse order 
             for (int i = 0; i < currentInstr.nArguments; i++) {
-              arguments.Add(Evaluate());
+              argumentStack[argStackPointer + currentInstr.nArguments - i] = Evaluate();
+              argStackPointer++;
             }
-            argumentStack.Push(arguments);
+
             // save the pc
             int nextPc = pc;
             // set pc to start of function  
             pc = currentInstr.iArg0;
             // evaluate the function
             double v = Evaluate();
-            argumentStack.Pop();
+
+            // decrease the argument stack pointer by the number of arguments pushed
+            // to set the argStackPointer back to the original location
+            argStackPointer -= currentInstr.nArguments;
+
             // restore the pc => evaluation will continue at point after my subtrees  
             pc = nextPc;
             return v;
           }
         case OpCodes.Arg: {
-            return argumentStack.Peek()[currentInstr.iArg0];
+            return argumentStack[argStackPointer - currentInstr.iArg0];
           }
         case OpCodes.Variable: {
             var variableTreeNode = currentInstr.dynamicNode as VariableTreeNode;
