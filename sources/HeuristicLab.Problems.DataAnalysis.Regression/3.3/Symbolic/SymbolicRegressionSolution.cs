@@ -35,6 +35,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("SymbolicRegressionSolution", "Represents a solution for a symbolic regression problem which can be visualized in the GUI.")]
   [StorableClass]
   public sealed class SymbolicRegressionSolution : DataAnalysisSolution {
+    [Storable]
     private SymbolicRegressionModel model;
     public SymbolicRegressionModel Model {
       get { return model; }
@@ -51,7 +52,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     public SymbolicRegressionSolution(DataAnalysisProblemData problemData, SymbolicRegressionModel model)
       : base(problemData) {
       this.model = model;
-      RecalculateEstimatedValues();
     }
 
     public event EventHandler ModelChanged;
@@ -74,12 +74,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     private List<double> estimatedValues;
     public override IEnumerable<double> EstimatedValues {
       get {
+        if (estimatedValues == null) RecalculateEstimatedValues();
         return estimatedValues.AsEnumerable();
       }
     }
 
     public override IEnumerable<double> EstimatedTrainingValues {
       get {
+        if (estimatedValues == null) RecalculateEstimatedValues();
         int start = ProblemData.TrainingSamplesStart.Value;
         int n = ProblemData.TrainingSamplesEnd.Value - start;
         return estimatedValues.Skip(start).Take(n).ToList();
@@ -88,10 +90,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
 
     public override IEnumerable<double> EstimatedTestValues {
       get {
+        if (estimatedValues == null) RecalculateEstimatedValues();
         int start = ProblemData.TestSamplesStart.Value;
         int n = ProblemData.TestSamplesEnd.Value - start;
         return estimatedValues.Skip(start).Take(n).ToList();
       }
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      SymbolicRegressionSolution clone = (SymbolicRegressionSolution)base.Clone(cloner);
+      clone.model = (SymbolicRegressionModel)model.Clone(cloner);
+      return clone;
     }
   }
 }

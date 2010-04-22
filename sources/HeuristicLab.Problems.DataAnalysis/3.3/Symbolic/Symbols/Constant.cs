@@ -32,11 +32,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [Item("Constant", "Represents a constant value.")]
   public sealed class Constant : Symbol {
     #region Propeties
+    [Storable]
     private double minValue;
     public double MinValue {
       get { return minValue; }
       set { minValue = value; }
     }
+    [Storable]
     private double maxValue;
     public double MaxValue {
       get { return maxValue; }
@@ -49,6 +51,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
 
     public override SymbolicExpressionTreeNode CreateTreeNode() {
       return new ConstantTreeNode(this);
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      Constant clone = (Constant) base.Clone(cloner);
+      clone.minValue = minValue;
+      clone.maxValue = maxValue;
+      return clone;
     }
   }
 }

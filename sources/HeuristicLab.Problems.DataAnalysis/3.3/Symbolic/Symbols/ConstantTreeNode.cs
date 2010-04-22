@@ -40,6 +40,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
       get { return constantValue; }
       set { constantValue = value; }
     }
+
+    private ConstantTreeNode() : base() { }
+
     // copy constructor
     private ConstantTreeNode(ConstantTreeNode original)
       : base(original) {

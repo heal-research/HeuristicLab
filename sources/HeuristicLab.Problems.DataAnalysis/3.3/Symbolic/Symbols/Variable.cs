@@ -35,14 +35,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [Item("Variable", "Represents a variable value.")]
   public sealed class Variable : Symbol {
     #region Properties
-    private double weightNu;
     [Storable]
+    private double weightNu;
     public double WeightNu {
       get { return weightNu; }
       set { weightNu = value; }
     }
-    private double weightSigma;
     [Storable]
+    private double weightSigma;
     public double WeightSigma {
       get { return weightSigma; }
       set {
@@ -50,8 +50,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
         weightSigma = value;
       }
     }
-    private List<string> variableNames;
     [Storable]
+    private List<string> variableNames;
     public IEnumerable<string> VariableNames {
       get { return variableNames; }
       set {
@@ -70,6 +70,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
 
     public override SymbolicExpressionTreeNode CreateTreeNode() {
       return new VariableTreeNode(this);
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      Variable clone = (Variable)base.Clone(cloner);
+      clone.weightNu = weightNu;
+      clone.weightSigma = weightSigma;
+      clone.variableNames = new List<string>(variableNames);
+      return clone;
     }
   }
 }

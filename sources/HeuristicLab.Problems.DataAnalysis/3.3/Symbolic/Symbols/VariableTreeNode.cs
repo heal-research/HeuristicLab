@@ -33,18 +33,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
     public new Variable Symbol {
       get { return (Variable)base.Symbol; }
     }
-    private double weight;
     [Storable]
+    private double weight;
     public double Weight {
       get { return weight; }
       set { weight = value; }
     }
-    private string variableName;
     [Storable]
+    private string variableName;
     public string VariableName {
       get { return variableName; }
       set { variableName = value; }
     }
+
+
+    private VariableTreeNode() { }
 
     // copy constructor
     private VariableTreeNode(VariableTreeNode original)
