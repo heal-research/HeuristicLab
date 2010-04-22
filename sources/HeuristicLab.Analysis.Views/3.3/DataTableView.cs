@@ -118,12 +118,13 @@ namespace HeuristicLab.Analysis.Views {
       series.ChartType = SeriesChartType.FastLine;
       series.ToolTip = "#VAL";
       for (int i = 0; i < row.Values.Count; i++) {
-        if (double.IsNaN(row.Values[i])) {
+        var value = row.Values[i];
+        if (double.IsNaN(value) || value < (double)decimal.MinValue || value > (double)decimal.MaxValue) {
           DataPoint point = new DataPoint();
           point.IsEmpty = true;
           series.Points.Add(point);
         } else {
-          series.Points.Add(row.Values[i]);
+          series.Points.Add(value);
         }
       }
       chart.Series.Add(series);
@@ -222,12 +223,13 @@ namespace HeuristicLab.Analysis.Views {
       else {
         DataRow row = valuesRowsTable[(IObservableList<double>)sender];
         foreach (IndexedItem<double> item in e.Items) {
-          if (double.IsNaN(item.Value)) {
+          var value = item.Value;
+          if (double.IsNaN(value) || value < (double)decimal.MinValue || value > (double)decimal.MaxValue) {
             DataPoint point = new DataPoint();
             point.IsEmpty = true;
             chart.Series[row.Name].Points.Insert(item.Index, point);
           } else {
-            chart.Series[row.Name].Points.InsertY(item.Index, item.Value);
+            chart.Series[row.Name].Points.InsertY(item.Index, value);
           }
         }
       }
