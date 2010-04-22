@@ -28,11 +28,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
       get { return (Argument)base.Symbol; }
       set {
         if (value == null) throw new ArgumentNullException();
-        if(!(value is Argument)) throw new ArgumentException();
-        base.Symbol = value; 
+        if (!(value is Argument)) throw new ArgumentException();
+        base.Symbol = value;
       }
     }
-    
+
+    private ArgumentTreeNode() : base() { }
+
     // copy constructor
     private ArgumentTreeNode(ArgumentTreeNode original)
       : base(original) {

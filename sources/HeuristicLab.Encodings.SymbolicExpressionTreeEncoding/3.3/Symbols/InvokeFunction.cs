@@ -22,6 +22,7 @@
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using System;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
   /// <summary>
   /// Symbol for invoking automatically defined functions
@@ -34,7 +35,17 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
         return false;
       }
     }
-    public string FunctionName { get; set; }
+    [Storable]
+    private string functionName;
+    public string FunctionName {
+      get { return functionName; }
+      set {
+        if (value == null) throw new ArgumentNullException();
+        functionName = value;
+      }
+    }
+
+    private InvokeFunction() : base() { }
 
     public InvokeFunction(string functionName)
       : base() {
@@ -44,6 +55,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
 
     public override SymbolicExpressionTreeNode CreateTreeNode() {
       return new InvokeFunctionTreeNode(this);
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      InvokeFunction clone = (InvokeFunction)base.Clone(cloner);
+      clone.functionName = functionName;
+      clone.name = "Invoke: " + functionName;
+      return clone;
     }
   }
 }

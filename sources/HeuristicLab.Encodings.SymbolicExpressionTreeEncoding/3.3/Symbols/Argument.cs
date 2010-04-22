@@ -34,11 +34,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
         return false;
       }
     }
-
+    [Storable]
     private int argumentIndex;
     public int ArgumentIndex {
       get { return argumentIndex; }
     }
+
+    private Argument() : base() { }
 
     public Argument(int argumentIndex)
       : base() {
@@ -48,6 +50,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
 
     public override SymbolicExpressionTreeNode CreateTreeNode() {
       return new ArgumentTreeNode(this);
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      Argument clone = (Argument)base.Clone(cloner);
+      clone.argumentIndex = argumentIndex;
+      clone.name = "ARG" + argumentIndex;
+      return clone;
     }
   }
 }

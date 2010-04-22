@@ -33,6 +33,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
       }
     }
 
+    private InvokeFunctionTreeNode() : base() { }
+
     // copy constructor
     private InvokeFunctionTreeNode(InvokeFunctionTreeNode original)
       : base(original) {

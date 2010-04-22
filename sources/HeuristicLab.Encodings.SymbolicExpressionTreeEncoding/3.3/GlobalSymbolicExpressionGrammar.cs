@@ -82,6 +82,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       Initialize();
     }
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserializationHook() {
+      Reset();
+    }
+
     private new void Reset() {
       base.Reset();
       Initialize();

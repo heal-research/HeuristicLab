@@ -34,6 +34,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
   [Item("Symbol", "Represents a symbol in a symbolic function tree.")]
   public abstract class Symbol : NamedItem {
     #region Properties
+    [Storable]
     private double initialFrequency;
     public double InitialFrequency {
       get { return initialFrequency; }
@@ -53,6 +54,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
 
     public virtual SymbolicExpressionTreeNode CreateTreeNode() {
       return new SymbolicExpressionTreeNode(this);
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      Symbol clone = (Symbol) base.Clone(cloner);
+      clone.initialFrequency = initialFrequency;
+      return clone;
     }
   }
 }

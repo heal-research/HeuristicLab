@@ -39,6 +39,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
       set { this.functionName = value; }
     }
 
+    private DefunTreeNode() : base() { }
+
     // copy constructor
     private DefunTreeNode(DefunTreeNode original)
       : base(original) {

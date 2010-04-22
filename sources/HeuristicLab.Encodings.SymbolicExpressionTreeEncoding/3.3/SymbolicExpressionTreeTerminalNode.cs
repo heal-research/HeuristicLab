@@ -30,12 +30,18 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
+  [StorableClass]
   public abstract class SymbolicExpressionTreeTerminalNode : SymbolicExpressionTreeNode {
     private static List<SymbolicExpressionTreeNode> emptyList = new List<SymbolicExpressionTreeNode>();
 
-    protected SymbolicExpressionTreeTerminalNode(Symbol symbol) : base(symbol) { }
-    protected SymbolicExpressionTreeTerminalNode(SymbolicExpressionTreeTerminalNode original)
-      : base(original) {
+    protected SymbolicExpressionTreeTerminalNode() : base() { }
+    // don't call  base constructors to prevent allocation of sub-trees list in base!
+    protected SymbolicExpressionTreeTerminalNode(Symbol symbol) {
+      this.Symbol = symbol;
+    }
+    // don't call  base constructors to prevent allocation of sub-trees list in base!
+    protected SymbolicExpressionTreeTerminalNode(SymbolicExpressionTreeTerminalNode original) {
+      this.Symbol = original.Symbol;
     }
 
     public override void AddSubTree(SymbolicExpressionTreeNode tree) {

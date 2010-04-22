@@ -38,16 +38,22 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     private List<SymbolicExpressionTreeNode> subTrees;
     [Storable]
     private Symbol symbol;
+    public Symbol Symbol {
+      get { return symbol; }
+      protected set { symbol = value; }
+    }
 
     // parent relation is not persisted or cloned (will be set on AddSubtree or RemoveSubtree)
     private SymbolicExpressionTreeNode parent;
-
-    public SymbolicExpressionTreeNode() {
-      subTrees = new List<SymbolicExpressionTreeNode>();
+    internal SymbolicExpressionTreeNode Parent {
+      get { return parent; }
+      set { parent = value; }
     }
 
-    public SymbolicExpressionTreeNode(Symbol symbol)
-      : this() {
+    public SymbolicExpressionTreeNode() { }
+
+    public SymbolicExpressionTreeNode(Symbol symbol) {
+      subTrees = new List<SymbolicExpressionTreeNode>();
       this.symbol = symbol;
     }
 
@@ -66,16 +72,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
     public virtual IList<SymbolicExpressionTreeNode> SubTrees {
       get { return subTrees; }
-    }
-
-    public Symbol Symbol {
-      get { return symbol; }
-      protected set { symbol = value; }
-    }
-
-    internal SymbolicExpressionTreeNode Parent {
-      get { return parent; }
-      set { parent = value; }
     }
 
     internal virtual ISymbolicExpressionGrammar Grammar {
