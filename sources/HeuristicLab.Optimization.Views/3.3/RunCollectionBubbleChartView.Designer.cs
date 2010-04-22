@@ -23,8 +23,9 @@
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-      System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+      this.components = new System.ComponentModel.Container();
+      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+      System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
       this.yJitterLabel = new System.Windows.Forms.Label();
       this.xJitterlabel = new System.Windows.Forms.Label();
       this.xTrackBar = new System.Windows.Forms.TrackBar();
@@ -41,6 +42,7 @@
       this.radioButtonGroup = new System.Windows.Forms.GroupBox();
       this.colorButton = new System.Windows.Forms.Button();
       this.colorDialog = new System.Windows.Forms.ColorDialog();
+      this.tooltip = new System.Windows.Forms.ToolTip(this.components);
       ((System.ComponentModel.ISupportInitialize)(this.xTrackBar)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.yTrackBar)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
@@ -156,18 +158,18 @@
       this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      chartArea2.Name = "ChartArea1";
-      this.chart.ChartAreas.Add(chartArea2);
+      chartArea1.Name = "ChartArea1";
+      this.chart.ChartAreas.Add(chartArea1);
       this.chart.Location = new System.Drawing.Point(6, 30);
       this.chart.Name = "chart";
-      series2.ChartArea = "ChartArea1";
-      series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Bubble;
-      series2.CustomProperties = "BubbleMaxSize=0";
-      series2.IsVisibleInLegend = false;
-      series2.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
-      series2.Name = "Bubbles";
-      series2.YValuesPerPoint = 2;
-      this.chart.Series.Add(series2);
+      series1.ChartArea = "ChartArea1";
+      series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Bubble;
+      series1.CustomProperties = "BubbleMaxSize=0";
+      series1.IsVisibleInLegend = false;
+      series1.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
+      series1.Name = "Bubbles";
+      series1.YValuesPerPoint = 2;
+      this.chart.Series.Add(series1);
       this.chart.Size = new System.Drawing.Size(554, 261);
       this.chart.TabIndex = 16;
       this.chart.Text = "chart1";
@@ -278,5 +280,6 @@
     private System.Windows.Forms.GroupBox radioButtonGroup;
     private System.Windows.Forms.Button colorButton;
     private System.Windows.Forms.ColorDialog colorDialog;
+    private System.Windows.Forms.ToolTip tooltip;
   }
 }

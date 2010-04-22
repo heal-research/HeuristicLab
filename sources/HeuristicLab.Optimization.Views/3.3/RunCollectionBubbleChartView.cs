@@ -282,8 +282,8 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void chart_MouseMove(object sender, MouseEventArgs e) {
+      HitTestResult h = this.chart.HitTest(e.X, e.Y);
       if (!Locked) {
-        HitTestResult h = this.chart.HitTest(e.X, e.Y);
         if (this.draggedRun != null && h.ChartElementType != ChartElementType.DataPoint) {
           DataObject data = new DataObject();
           data.SetData("Type", draggedRun.GetType());
@@ -300,6 +300,18 @@ namespace HeuristicLab.Optimization.Views {
           this.draggedRun = null;
         }
       }
+      string newTooltipText;
+      string oldTooltipText;
+      if (h.ChartElementType == ChartElementType.DataPoint) {
+        IRun run = (IRun)((DataPoint)h.Object).Tag;
+        newTooltipText = run.Name + System.Environment.NewLine;
+        newTooltipText += xAxisComboBox.SelectedItem + " : " + Content.GetValue(run, xAxisComboBox.SelectedIndex).ToString() + Environment.NewLine;
+        newTooltipText += yAxisComboBox.SelectedItem + " : " + Content.GetValue(run, yAxisComboBox.SelectedIndex).ToString() + Environment.NewLine; ;
+      } else
+        newTooltipText = string.Empty;
+      oldTooltipText = this.tooltip.GetToolTip(chart);
+      if (newTooltipText != oldTooltipText)
+        this.tooltip.SetToolTip(chart, newTooltipText);
     }
     #endregion
 
