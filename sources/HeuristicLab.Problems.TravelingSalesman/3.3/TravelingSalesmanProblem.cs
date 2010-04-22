@@ -145,7 +145,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       BestPathTSPTourVisualizer visualizer = new BestPathTSPTourVisualizer();
 
       Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to false as the Traveling Salesman Problem is a minimization problem.", new BoolValue(false)));
-      Parameters.Add(new ValueParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities.", new DoubleMatrix(0, 0)));
+      Parameters.Add(new ValueParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities."));
       Parameters.Add(new OptionalValueParameter<DoubleMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
       Parameters.Add(new ValueParameter<BoolValue>("UseDistanceMatrix", "True if a distance matrix should be calculated and used for evaluation, otherwise false.", new BoolValue(true)));
       Parameters.Add(new ValueParameter<IPermutationCreator>("SolutionCreator", "The operator which should be used to create new TSP solutions.", creator));
@@ -153,6 +153,13 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       Parameters.Add(new OptionalValueParameter<ITSPSolutionsVisualizer>("Visualizer", "The operator which should be used to visualize TSP solutions.", visualizer));
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this TSP instance."));
       Parameters.Add(new OptionalValueParameter<Permutation>("BestKnownSolution", "The best known solution of this TSP instance."));
+
+      Coordinates = new DoubleMatrix(new double[,] {
+        { 100, 100 }, { 100, 200 }, { 100, 300 }, { 100, 400 },
+        { 200, 100 }, { 200, 200 }, { 200, 300 }, { 200, 400 },
+        { 300, 100 }, { 300, 200 }, { 300, 300 }, { 300, 400 },
+        { 400, 100 }, { 400, 200 }, { 400, 300 }, { 400, 400 }
+      });
 
       creator.PermutationParameter.ActualName = "TSPTour";
       evaluator.QualityParameter.ActualName = "TSPTourLength";
