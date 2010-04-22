@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -52,42 +53,30 @@ namespace HeuristicLab.Analysis {
 
       foreach (IParameter param in CollectedValues) {
         if (param.ActualValue is DoubleValue) {
-          DoubleValue data = param.ActualValue as DoubleValue;
-          DataRow row;
-          table.Rows.TryGetValue(param.Name, out row);
-          if (row == null) {
-            row = new DataRow(param.Name, param.Description);
-            row.Values.Add(data.Value);
-            table.Rows.Add(row);
-          } else {
-            row.Values.Add(data.Value);
-          }
-        } else if (param.ActualValue is ItemArray<DoubleValue>) {
-          ItemArray<DoubleValue> dataArray = param.ActualValue as ItemArray<DoubleValue>;
-          DataRow row;
-          for (int i = 0; i < dataArray.Length; i++) {
-            table.Rows.TryGetValue(param.Name + i.ToString(), out row);
-            if (row == null) {
-              row = new DataRow(param.Name + i.ToString(), param.Description);
-              row.Values.Add(dataArray[i].Value);
-              table.Rows.Add(row);
-            } else {
-              row.Values.Add(dataArray[i].Value);
-            }
+          AddValue(table, (param.ActualValue as DoubleValue).Value, param.Name, param.Description);
+        } else if (param.ActualValue is IEnumerable<DoubleValue>) {
+          int counter = 0;
+          foreach (DoubleValue data in (param.ActualValue as IEnumerable<DoubleValue>)) {
+            AddValue(table, data.Value, param.Name + counter.ToString(), param.Description);
+            counter++;
           }
         } else {
-          DataRow row;
-          table.Rows.TryGetValue(param.Name, out row);
-          if (row == null) {
-            row = new DataRow(param.Name, param.Description);
-            row.Values.Add(double.NaN);
-            table.Rows.Add(row);
-          } else {
-            row.Values.Add(double.NaN);
-          }
+          AddValue(table, double.NaN, param.Name, param.Description);
         }
       }
       return base.Apply();
+    }
+
+    private void AddValue(DataTable table, double data, string name, string description) {
+      DataRow row;
+      table.Rows.TryGetValue(name, out row);
+      if (row == null) {
+        row = new DataRow(name, description);
+        row.Values.Add(data);
+        table.Rows.Add(row);
+      } else {
+        row.Values.Add(data);
+      }
     }
   }
 }

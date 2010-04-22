@@ -112,14 +112,12 @@ namespace HeuristicLab.Selection {
       winnersCount += offspring.Count;
       winners.AddRange(offspring);
       offspring = children.SubScopes[0].SubScopes; // the losers
+      losersCount += offspring.Count;
       while (offspring.Count > 0 && ((1 - successRatio) * populationSize > luckyLosers.Count ||
             selectionPressure.Value >= maxSelPress)) {
         luckyLosers.Add(offspring[0]);
-        losersCount++;
         offspring.RemoveAt(0);
       }
-      losersCount += offspring.Count;
-      children.SubScopes.Clear();
 
       // calculate actual selection pressure and success ratio
       selectionPressure.Value += (winnersCount + losersCount) / ((double)populationSize);
@@ -139,6 +137,7 @@ namespace HeuristicLab.Selection {
         return ExecutionContext.CreateOperation(moreOffspring);
       } else {
         // enough children generated
+        children.SubScopes.Clear();
         while (children.SubScopes.Count < populationSize) {
           if (winners.Count > 0) {
             children.SubScopes.Add((IScope)winners[0]);

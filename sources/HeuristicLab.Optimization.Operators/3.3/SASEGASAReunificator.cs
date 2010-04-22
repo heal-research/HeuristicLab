@@ -33,9 +33,9 @@ namespace HeuristicLab.Optimization.Operators {
   /// Joins all sub sub scopes of a specified scope, reduces the number of sub 
   /// scopes by 1 and uniformly partitions the sub sub scopes again, maintaining the order.
   /// </summary>
-  [Item("SASEGASAReunificator", "This operator merges the villages in a migration phase and redistributes the individuals. It is implemented as described in Affenzeller, M. et al. 2009. Genetic Algorithms and Genetic Programming - Modern Concepts and Practical Applications, CRC Press.")]
+  [Item("SASEGASAReunificator", "This operator merges the villages (sub-scopes) and redistributes the individuals. It is implemented as described in Affenzeller, M. et al. 2009. Genetic Algorithms and Genetic Programming - Modern Concepts and Practical Applications, CRC Press.")]
   [StorableClass]
-  public class SASEGASAReunificator : SingleSuccessorOperator, IMigrator {
+  public class SASEGASAReunificator : SingleSuccessorOperator {
 
     public LookupParameter<IntValue> VillageCountParameter {
       get { return (LookupParameter<IntValue>)Parameters["VillageCount"]; }
@@ -77,7 +77,7 @@ namespace HeuristicLab.Optimization.Operators {
         population.RemoveRange(0, populationPerVillage);
       }
 
-      // add remaining sub-sub-scopes to last sub-scope
+      // add remaining individuals to last village
       scope.SubScopes[scope.SubScopes.Count - 1].SubScopes.AddRange(population);
       population.Clear();
 

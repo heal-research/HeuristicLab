@@ -154,14 +154,22 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       DataTableValuesCollector selPressValuesCollector1 = new DataTableValuesCollector();
       QualityDifferenceCalculator qualityDifferenceCalculator1 = new QualityDifferenceCalculator();
       ResultsCollector resultsCollector = new ResultsCollector();
+      Assigner fixedReunificationStepConditionInitializer = new Assigner();
       UniformSubScopesProcessor ussp1 = new UniformSubScopesProcessor();
+      // MAINLOOP
       OffspringSelectionGeneticAlgorithmMainLoop mainLoop = new OffspringSelectionGeneticAlgorithmMainLoop();
-      UniformSubScopesProcessor ussp2 = new UniformSubScopesProcessor();
+      // MAINLOOP
       Comparator sasegasaGenVillageGenComparator = new Comparator();
       ConditionalBranch sasegasaGenerationsUpdateBranch = new ConditionalBranch();
       Assigner sasegasaGenerationsUpdater = new Assigner();
-      ConditionalBranch villageMaximumGenerationsConditionalBranch = new ConditionalBranch();
+      ConditionalBranch villageMaximumGenerationsConditionalBranch1 = new ConditionalBranch();
+      Assigner fixedReunificationStepConditionUpdater = new Assigner();
+      ResultsCollector sasegasaGenerationsCollector = new ResultsCollector();
+      UniformSubScopesProcessor ussp2 = new UniformSubScopesProcessor();
+      ConditionalBranch villageMaximumGenerationsConditionalBranch2 = new ConditionalBranch();
+      Assigner villageMaximumGenerationsToGenerationsAssigner = new Assigner();
       IntCounter villageMaximumGenerationsCounter = new IntCounter();
+      DataTableValuesCollector selPressValuesCollector2 = new DataTableValuesCollector();
       Comparator villageCountComparator = new Comparator();
       ConditionalBranch villageTerminationCondition0 = new ConditionalBranch();
       SASEGASAReunificator reunificator = new SASEGASAReunificator();
@@ -171,7 +179,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       BestQualityMemorizer bestQualityMemorizer3 = new BestQualityMemorizer();
       BestAverageWorstQualityCalculator bestAverageWorstQualityCalculator3 = new BestAverageWorstQualityCalculator();
       DataTableValuesCollector dataTableValuesCollector2 = new DataTableValuesCollector();
-      DataTableValuesCollector selPressValuesCollector2 = new DataTableValuesCollector();
       QualityDifferenceCalculator qualityDifferenceCalculator2 = new QualityDifferenceCalculator();
       ConditionalBranch villagesTerminationCondition = new ConditionalBranch();
       ConditionalBranch maximumGenerationsTerminationCondition = new ConditionalBranch();
@@ -240,6 +247,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       resultsCollector.CollectedValues.Add(new SubScopesLookupParameter<ResultCollection>("VillageResults", "Result set for each village"));
       resultsCollector.ResultsParameter.ActualName = ResultsParameter.Name;
 
+      fixedReunificationStepConditionInitializer.LeftSideParameter.ActualName = "PerformFixedReunification";
+      fixedReunificationStepConditionInitializer.RightSideParameter.Value = new BoolValue(false);
+
       mainLoop.BestKnownQualityParameter.ActualName = BestKnownQualityParameter.Name;
       mainLoop.MaximizationParameter.ActualName = MaximizationParameter.Name;
       mainLoop.QualityParameter.ActualName = QualityParameter.Name;
@@ -272,13 +282,27 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       sasegasaGenerationsUpdater.LeftSideParameter.ActualName = "SASEGASAGenerations";
       sasegasaGenerationsUpdater.RightSideParameter.ActualName = "Generations";
 
-      // check if the village has terminated due to reaching maximum generations (in that case we need to increase maximum generations by the migration interval)
-      villageMaximumGenerationsConditionalBranch.ConditionParameter.ActualName = "TerminateMaximumGenerations";
+      // check if the village has terminated due to reaching maximum generations (in that case we need to increase in each village the maximum generations by the migration interval)
+      villageMaximumGenerationsConditionalBranch1.ConditionParameter.ActualName = "TerminateMaximumGenerations";
 
-      // if the village terminated because of maximum generations (inter-migration period) its maximum generations are updated
+      fixedReunificationStepConditionUpdater.LeftSideParameter.ActualName = "PerformFixedReunification";
+      fixedReunificationStepConditionUpdater.RightSideParameter.Value = new BoolValue(true);
+
+      sasegasaGenerationsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Generations", null, "SASEGASAGenerations"));
+
+      villageMaximumGenerationsConditionalBranch2.ConditionParameter.ActualName = "PerformFixedReunification";
+
+      // if the village terminated because of maximum generations first set the maxgen of a village back to its generation
+      villageMaximumGenerationsToGenerationsAssigner.LeftSideParameter.ActualName = "VillageMaximumGenerations";
+      villageMaximumGenerationsToGenerationsAssigner.RightSideParameter.ActualName = "Generations";
+
+      // if the village terminated because of maximum generations and then increase the maximum generations by the fixed migration interval
       villageMaximumGenerationsCounter.ValueParameter.ActualName = "VillageMaximumGenerations";
       villageMaximumGenerationsCounter.Increment = null;
       villageMaximumGenerationsCounter.IncrementParameter.ActualName = "MigrationInterval";
+
+      selPressValuesCollector2.CollectedValues.Add(new SubScopesLookupParameter<DoubleValue>("Selection Pressure Village", null, "SelectionPressure"));
+      selPressValuesCollector2.DataTableParameter.ActualName = "VillagesSelectionPressures";
 
       // if there's just one island left and we're getting to this point SASEGASA terminates
       villageCountComparator.Name = "VillageCount <= 1 ?";
@@ -320,16 +344,13 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       dataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, BestKnownQualityParameter.Name));
       dataTableValuesCollector2.DataTableParameter.ActualName = "BestQualities";
 
-      selPressValuesCollector2.CollectedValues.Add(new SubScopesLookupParameter<DoubleValue>("Selection Pressure Village", null, "SelectionPressure"));
-      selPressValuesCollector2.DataTableParameter.ActualName = "VillagesSelectionPressures";
-
       qualityDifferenceCalculator2.AbsoluteDifferenceParameter.ActualName = "AbsoluteDifferenceBestKnownToBest";
       qualityDifferenceCalculator2.FirstQualityParameter.ActualName = BestKnownQualityParameter.Name;
       qualityDifferenceCalculator2.RelativeDifferenceParameter.ActualName = "RelativeDifferenceBestKnownToBest";
       qualityDifferenceCalculator2.SecondQualityParameter.ActualName = "BestQuality";
 
       villagesTerminationCondition.ConditionParameter.ActualName = "TerminateVillages";
-      villageMaximumGenerationsConditionalBranch.ConditionParameter.ActualName = "TerminateMaximumGenerations";
+      villageMaximumGenerationsConditionalBranch1.ConditionParameter.ActualName = "TerminateMaximumGenerations";
       #endregion
 
       #region Create operator graph
@@ -347,20 +368,27 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       dataTableValuesCollector1.Successor = selPressValuesCollector1;
       selPressValuesCollector1.Successor = qualityDifferenceCalculator1;
       qualityDifferenceCalculator1.Successor = resultsCollector;
-      resultsCollector.Successor = ussp1;
+      resultsCollector.Successor = fixedReunificationStepConditionInitializer;
+      fixedReunificationStepConditionInitializer.Successor = ussp1;
       ussp1.Operator = mainLoop;
-      ussp1.Successor = ussp2;
+      ussp1.Successor = sasegasaGenerationsCollector;
       mainLoop.Successor = sasegasaGenVillageGenComparator;
       sasegasaGenVillageGenComparator.Successor = sasegasaGenerationsUpdateBranch;
       sasegasaGenerationsUpdateBranch.TrueBranch = sasegasaGenerationsUpdater;
       sasegasaGenerationsUpdateBranch.FalseBranch = null;
-      sasegasaGenerationsUpdateBranch.Successor = null;
-      ussp2.Operator = villageMaximumGenerationsConditionalBranch;
-      ussp2.Successor = villageCountComparator;
-      villageMaximumGenerationsConditionalBranch.TrueBranch = villageMaximumGenerationsCounter;
-      villageMaximumGenerationsConditionalBranch.FalseBranch = null;
-      villageMaximumGenerationsConditionalBranch.Successor = null;
+      sasegasaGenerationsUpdateBranch.Successor = villageMaximumGenerationsConditionalBranch1;
+      villageMaximumGenerationsConditionalBranch1.TrueBranch = fixedReunificationStepConditionUpdater;
+      villageMaximumGenerationsConditionalBranch1.FalseBranch = null;
+      villageMaximumGenerationsConditionalBranch1.Successor = null;
+      sasegasaGenerationsCollector.Successor = ussp2;
+      ussp2.Operator = villageMaximumGenerationsConditionalBranch2;
+      ussp2.Successor = selPressValuesCollector2;
+      villageMaximumGenerationsConditionalBranch2.TrueBranch = villageMaximumGenerationsToGenerationsAssigner;
+      villageMaximumGenerationsConditionalBranch2.FalseBranch = null;
+      villageMaximumGenerationsConditionalBranch2.Successor = null;
+      villageMaximumGenerationsToGenerationsAssigner.Successor = villageMaximumGenerationsCounter;
       villageMaximumGenerationsCounter.Successor = null;
+      selPressValuesCollector2.Successor = villageCountComparator;
       villageCountComparator.Successor = villageTerminationCondition0;
       villageTerminationCondition0.TrueBranch = null;
       villageTerminationCondition0.FalseBranch = reunificator;
@@ -371,13 +399,12 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       maximumGenerationsComparator.Successor = bestQualityMemorizer3;
       bestQualityMemorizer3.Successor = bestAverageWorstQualityCalculator3;
       bestAverageWorstQualityCalculator3.Successor = dataTableValuesCollector2;
-      dataTableValuesCollector2.Successor = selPressValuesCollector2;
-      selPressValuesCollector2.Successor = qualityDifferenceCalculator2;
+      dataTableValuesCollector2.Successor = qualityDifferenceCalculator2;
       qualityDifferenceCalculator2.Successor = villagesTerminationCondition;
       villagesTerminationCondition.FalseBranch = maximumGenerationsTerminationCondition;
       villagesTerminationCondition.TrueBranch = null;
       villagesTerminationCondition.Successor = null;
-      maximumGenerationsTerminationCondition.FalseBranch = ussp1;
+      maximumGenerationsTerminationCondition.FalseBranch = fixedReunificationStepConditionInitializer;
       maximumGenerationsTerminationCondition.TrueBranch = null;
       maximumGenerationsTerminationCondition.Successor = null;
       #endregion
