@@ -103,25 +103,25 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
             }
 
             int border = 20;
-            double xStep = (pictureBox.Width - 2 * border) / (xMax - xMin);
-            double yStep = (pictureBox.Height - 2 * border) / (yMax - yMin);
+            double xStep = xMax != xMin ? (pictureBox.Width - 2 * border) / (xMax - xMin) : 1;
+            double yStep = yMax != yMin ? (pictureBox.Height - 2 * border) / (yMax - yMin) : 1;
 
             Point[] points = new Point[coordinates.Rows];
             for (int i = 0; i < coordinates.Rows; i++)
               points[i] = new Point(border + ((int)((coordinates[i, 0] - xMin) * xStep)),
                                     bitmap.Height - (border + ((int)((coordinates[i, 1] - yMin) * yStep))));
 
-            Graphics graphics = Graphics.FromImage(bitmap);
-            if ((permutation != null) && (permutation.Length == coordinates.Rows) && (permutation.Validate())) {
-              Point[] tour = new Point[permutation.Length];
-              for (int i = 0; i < permutation.Length; i++) {
-                tour[i] = points[permutation[i]];
+            using (Graphics graphics = Graphics.FromImage(bitmap)) {
+              if ((permutation != null) && (permutation.Length == coordinates.Rows) && (permutation.Validate())) {
+                Point[] tour = new Point[permutation.Length];
+                for (int i = 0; i < permutation.Length; i++) {
+                  tour[i] = points[permutation[i]];
+                }
+                graphics.DrawPolygon(Pens.Black, tour);
               }
-              graphics.DrawPolygon(Pens.Black, tour);
+              for (int i = 0; i < points.Length; i++)
+                graphics.FillRectangle(Brushes.Red, points[i].X - 2, points[i].Y - 2, 6, 6);
             }
-            for (int i = 0; i < points.Length; i++)
-              graphics.FillRectangle(Brushes.Red, points[i].X - 2, points[i].Y - 2, 6, 6);
-            graphics.Dispose();
           }
           pictureBox.Image = bitmap;
         }
