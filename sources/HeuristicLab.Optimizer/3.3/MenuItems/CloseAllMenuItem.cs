@@ -34,7 +34,7 @@ namespace HeuristicLab.Optimizer.MenuItems {
       get { return new string[] { "&File" }; }
     }
     public override int Position {
-      get { return 1700; }
+      get { return 1600; }
     }
 
     protected override void OnToolStripItemSet(EventArgs e) {

@@ -128,10 +128,6 @@ namespace HeuristicLab.Optimizer {
         }
       }
     }
-    public static void SaveAll() {
-      foreach (IContentView view in MainFormManager.MainForm.Views.OfType<IContentView>())
-        Save(view);
-    }
     private static void SavingCompleted(IStorableContent content, Exception error) {
       try {
         if (error != null) throw error;

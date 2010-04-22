@@ -103,7 +103,6 @@
     <Compile Include="MenuItems\CloseMenuItem.cs" />
     <Compile Include="MenuItems\CloseAllMenuItem.cs" />
     <Compile Include="MenuItems\OperatorsMenuItem.cs" />
-    <Compile Include="MenuItems\SaveAllMenuItem.cs" />
     <Compile Include="MenuItems\SaveAsMenuItem.cs" />
     <Compile Include="MenuItems\SaveMenuItem.cs" />
     <Compile Include="MenuItems\OpenMenuItem.cs" />
@@ -130,7 +129,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="ToolBarItems\SaveAllToolBarItem.cs" />
     <Compile Include="ToolBarItems\SaveToolBarItem.cs" />
     <Compile Include="ToolBarItems\OpenToolBarItem.cs" />
     <Compile Include="ToolBarItems\NewToolBarItem.cs" />
