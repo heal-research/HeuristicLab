@@ -70,8 +70,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       var clone = (SymbolicRegressionModel)base.Clone(cloner);
-      clone.tree = (SymbolicExpressionTree)tree.Clone(cloner);
-      clone.interpreter = (ISymbolicExpressionTreeInterpreter)interpreter.Clone(cloner);
+      clone.tree = (SymbolicExpressionTree)cloner.Clone(tree);
+      clone.interpreter = (ISymbolicExpressionTreeInterpreter)cloner.Clone(interpreter);
       clone.inputVariables = new List<string>(inputVariables);
       return clone;
     }

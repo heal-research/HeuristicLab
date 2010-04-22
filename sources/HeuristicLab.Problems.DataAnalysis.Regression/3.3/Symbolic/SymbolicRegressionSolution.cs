@@ -99,7 +99,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       SymbolicRegressionSolution clone = (SymbolicRegressionSolution)base.Clone(cloner);
-      clone.model = (SymbolicRegressionModel)model.Clone(cloner);
+      clone.model = (SymbolicRegressionModel)cloner.Clone(model);
       return clone;
     }
   }
