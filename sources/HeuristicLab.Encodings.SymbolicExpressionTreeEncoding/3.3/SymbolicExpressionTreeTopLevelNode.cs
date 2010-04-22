@@ -43,15 +43,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       : base(symbol) {
     }
 
+    [Storable]
     private ISymbolicExpressionGrammar grammar;
-
     internal override ISymbolicExpressionGrammar Grammar {
-      get {
-        return grammar;
-      }
-      set {
-        grammar = value;
-      }
+      get { return grammar; }
+      set { grammar = value; }
     }
 
     // copy constructor

@@ -50,7 +50,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       set { parent = value; }
     }
 
-    public SymbolicExpressionTreeNode() { }
+    public SymbolicExpressionTreeNode() {
+      // don't allocate subtrees list here!
+      // because we don't want to allocate it in terminal nodes
+    }
 
     public SymbolicExpressionTreeNode(Symbol symbol) {
       subTrees = new List<SymbolicExpressionTreeNode>();
@@ -63,6 +66,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       subTrees = new List<SymbolicExpressionTreeNode>();
       foreach (var subtree in original.SubTrees) {
         AddSubTree((SymbolicExpressionTreeNode)subtree.Clone());
+      }
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserializationHook() {
+      foreach (var subtree in SubTrees) {
+        subtree.Parent = this;
       }
     }
 
@@ -111,16 +121,20 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
     public IEnumerable<SymbolicExpressionTreeNode> IterateNodesPrefix() {
       yield return this;
-      foreach (var subtree in subTrees) {
-        foreach (var n in subtree.IterateNodesPrefix())
-          yield return n;
+      if (SubTrees != null) {
+        foreach (var subtree in SubTrees) {
+          foreach (var n in subtree.IterateNodesPrefix())
+            yield return n;
+        }
       }
     }
 
     public IEnumerable<SymbolicExpressionTreeNode> IterateNodesPostfix() {
-      foreach (var subtree in subTrees) {
-        foreach (var n in subtree.IterateNodesPrefix())
-          yield return n;
+      if (SubTrees != null) {
+        foreach (var subtree in SubTrees) {
+          foreach (var n in subtree.IterateNodesPrefix())
+            yield return n;
+        }
       }
       yield return this;
     }
@@ -145,6 +159,5 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public override string ToString() {
       return Symbol.Name;
     }
-
   }
 }
