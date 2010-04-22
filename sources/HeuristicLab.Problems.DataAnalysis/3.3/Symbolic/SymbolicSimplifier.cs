@@ -66,6 +66,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var argSym = node.Symbol as Argument;
         // return the correct argument sub-tree (already macro-expanded)
         return (SymbolicExpressionTreeNode)argumentTrees[argSym.ArgumentIndex].Clone();
+      } else if(node.Symbol is StartSymbol) {
+        return MacroExpand(root, subtrees[0], argumentTrees);
       } else {
         // recursive application
         foreach (var subtree in subtrees) {
