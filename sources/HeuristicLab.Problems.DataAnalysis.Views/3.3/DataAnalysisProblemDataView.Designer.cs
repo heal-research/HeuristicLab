@@ -32,6 +32,11 @@
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.nameTextBox, 2);
+      this.nameTextBox.Size = new System.Drawing.Size(513, 20);
+      // 
+      // descriptionTextBox
+      // 
+      this.descriptionTextBox.Size = new System.Drawing.Size(513, 20);
       // 
       // variableCollectionView
       // 
@@ -58,13 +63,13 @@
       this.importButton.UseVisualStyleBackColor = true;
       this.importButton.Click += new System.EventHandler(this.importButton_Click);
       // 
-      // ProblemDataView
+      // DataAnalysisProblemDataView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.variableCollectionView);
       this.Controls.Add(this.importButton);
-      this.Name = "ProblemDataView";
+      this.Name = "DataAnalysisProblemDataView";
       this.Size = new System.Drawing.Size(588, 450);
       this.Controls.SetChildIndex(this.importButton, 0);
       this.Controls.SetChildIndex(this.variableCollectionView, 0);

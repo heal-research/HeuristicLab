@@ -193,9 +193,6 @@
     <EmbeddedResource Include="EstimatedValuesView.resx">
       <DependentUpon>EstimatedValuesView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DataAnalysisProblemDataView.resx">
-      <DependentUpon>DataAnalysisProblemDataView.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="LineChartView.resx">
       <DependentUpon>LineChartView.cs</DependentUpon>
     </EmbeddedResource>
