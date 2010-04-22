@@ -90,7 +90,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
     protected void AddViewFormCombination(IView view, Form form) {
       this.views.Add(view, form);
-      view.Changed += new EventHandler(ViewChanged);
+      view.Changed += new EventHandler(View_Changed);
     }
 
     private IView activeView;
@@ -155,9 +155,9 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     public event EventHandler Changed;
-    protected void FireMainFormChanged() {
+    protected void OnChanged() {
       if (InvokeRequired)
-        Invoke((MethodInvoker)FireMainFormChanged);
+        Invoke((MethodInvoker)OnChanged);
       else {
         EventHandler handler = Changed;
         if (handler != null)
@@ -253,10 +253,11 @@ namespace HeuristicLab.MainForm.WindowsForms {
       }
     }
 
-    private void ViewChanged(object sender, EventArgs e) {
+    private void View_Changed(object sender, EventArgs e) {
       IView view = (IView)sender;
       if (view == this.ActiveView)
         this.OnActiveViewChanged();
+      this.OnChanged();
     }
 
     protected virtual void ShowView(IView view, bool firstTimeShown) {
@@ -282,7 +283,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       Form form = (Form)sender;
       IView view = GetView(form);
 
-      view.Changed -= new EventHandler(ViewChanged);
+      view.Changed -= new EventHandler(View_Changed);
       form.Activated -= new EventHandler(FormActivated);
       form.FormClosed -= new FormClosedEventHandler(ChildFormClosed);
 
