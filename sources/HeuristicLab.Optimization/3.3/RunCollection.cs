@@ -85,8 +85,6 @@ namespace HeuristicLab.Optimization {
       OnRowNamesChanged();
     }
 
-
-
     private bool AddParameter(string name, IItem value) {
       if (value == null)
         return false;
@@ -124,8 +122,11 @@ namespace HeuristicLab.Optimization {
 
     public IItem GetValue(int rowIndex, int columnIndex) {
       IRun run = this.list[rowIndex];
-      IItem value = null;
+      return GetValue(run, columnIndex);
+    }
 
+    public IItem GetValue(IRun run, int columnIndex) {
+      IItem value = null;
       if (columnIndex < parameterNames.Count) {
         string parameterName = parameterNames[columnIndex];
         if (run.Parameters.ContainsKey(parameterName))
@@ -141,8 +142,14 @@ namespace HeuristicLab.Optimization {
     #region IStringConvertibleMatrix Members
     [Storable]
     private List<string> parameterNames;
+    public IEnumerable<string> ParameterNames {
+      get { return this.parameterNames; }
+    }
     [Storable]
     private List<string> resultNames;
+    public IEnumerable<string> ResultNames {
+      get { return this.resultNames; }
+    }
     int IStringConvertibleMatrix.Rows {
       get { return this.Count; }
       set { throw new NotSupportedException(); }
