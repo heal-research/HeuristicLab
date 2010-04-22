@@ -20,21 +20,11 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace HeuristicLab.Common {
   public interface IStorableContent : IContent {
     string Filename { get; set; }
 
-    void Save();
-    void Save(string filename);
-    void SaveAsynchronous();
-    void SaveAsynchronous(string filename);
-
     event EventHandler FilenameChanged;
-    event EventHandler SaveOperationStarted;
-    event EventHandler<EventArgs<Exception>> SaveOperationFinished;
   }
 }

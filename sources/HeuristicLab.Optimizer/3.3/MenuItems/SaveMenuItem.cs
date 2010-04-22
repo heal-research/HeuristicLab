@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using HeuristicLab.Common;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Optimizer.MenuItems {
@@ -48,7 +49,8 @@ namespace HeuristicLab.Optimizer.MenuItems {
     }
     protected override void OnActiveViewChanged(object sender, EventArgs e) {
       IContentView activeView = MainFormManager.MainForm.ActiveView as IContentView;
-      ToolStripItem.Enabled = (activeView != null) && (!activeView.Locked);
+      ToolStripItem.Enabled = (activeView != null) && (activeView.Content != null) &&
+                              (activeView.Content is IStorableContent) && !activeView.Locked;
     }
 
     public override void Execute() {

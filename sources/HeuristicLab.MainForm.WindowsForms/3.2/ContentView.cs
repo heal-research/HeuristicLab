@@ -46,6 +46,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
             this.content = value;
             if (this.content != null) this.RegisterContentEvents();
             this.OnContentChanged();
+            this.OnChanged();
           }
         }
       }

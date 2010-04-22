@@ -30,7 +30,18 @@ namespace HeuristicLab.Core {
   /// </summary>
   [StorableClass]
   [Item("Item", "Base class for all HeuristicLab items.")]
-  public abstract class Item : DeepCloneable, IItem {
+  public abstract class Item : IItem {
+    private string filename;
+    public string Filename {
+      get { return filename; }
+      set {
+        if (!filename.Equals(value)) {
+          filename = value;
+          OnFilenameChanged();
+        }
+      }
+    }
+
     public virtual string ItemName {
       get { return ItemAttribute.GetName(this.GetType()); }
     }
@@ -41,9 +52,22 @@ namespace HeuristicLab.Core {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Class; }
     }
 
-    protected Item() : base() { }
+    protected Item() {
+      filename = string.Empty;
+    }
     [StorableConstructor]
-    protected Item(bool deserializing) { }
+    protected Item(bool deserializing) {
+      filename = string.Empty;
+    }
+
+    public object Clone() {
+      return Clone(new Cloner());
+    }
+    public virtual IDeepCloneable Clone(Cloner cloner) {
+      Item clone = (Item)Activator.CreateInstance(this.GetType(), true);
+      cloner.RegisterClonedObject(this, clone);
+      return clone;
+    }
 
     /// <summary>
     /// Gets the string representation of the current instance.
@@ -53,6 +77,11 @@ namespace HeuristicLab.Core {
       return ItemName;
     }
 
+    public event EventHandler FilenameChanged;
+    protected virtual void OnFilenameChanged() {
+      EventHandler handler = FilenameChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
     public event EventHandler ItemImageChanged;
     protected virtual void OnItemImageChanged() {
       EventHandler handler = ItemImageChanged;

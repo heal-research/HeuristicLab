@@ -33,7 +33,7 @@ namespace HeuristicLab.Optimization.Views {
   [View("RunCollection View")]
   [Content(typeof(RunCollection), true)]
   [Content(typeof(IItemCollection<IRun>), false)]
-  public partial class RunCollectionView : AsynchronousContentView {
+  public partial class RunCollectionView : ItemView {
     public new IItemCollection<IRun> Content {
       get { return (IItemCollection<IRun>)base.Content; }
       set { base.Content = value; }

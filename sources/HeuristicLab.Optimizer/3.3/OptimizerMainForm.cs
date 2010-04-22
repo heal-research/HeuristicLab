@@ -31,6 +31,10 @@ using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Optimizer {
   internal partial class OptimizerMainForm : DockingMainForm {
+    private string title;
+    private int appStartingCursors;
+    private int waitingCursors;
+
     private Clipboard<IItem> clipboard;
     public Clipboard<IItem> Clipboard {
       get { return clipboard; }
@@ -39,10 +43,14 @@ namespace HeuristicLab.Optimizer {
     public OptimizerMainForm()
       : base() {
       InitializeComponent();
+      appStartingCursors = 0;
+      waitingCursors = 0;
     }
     public OptimizerMainForm(Type userInterfaceItemType)
       : base(userInterfaceItemType) {
       InitializeComponent();
+      appStartingCursors = 0;
+      waitingCursors = 0;
     }
     public OptimizerMainForm(Type userInterfaceItemType, bool showViewsInViewHost)
       : this(userInterfaceItemType) {
@@ -53,9 +61,11 @@ namespace HeuristicLab.Optimizer {
       base.OnInitialized(e);
       AssemblyFileVersionAttribute version = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true).
                                              Cast<AssemblyFileVersionAttribute>().FirstOrDefault();
-      Title = "HeuristicLab Optimizer";
-      if (version != null) Title += " " + version.Version;
-      ViewClosed += new EventHandler<ViewEventArgs>(FileManager.ViewClosed);
+      title = "HeuristicLab Optimizer";
+      if (version != null) title += " " + version.Version;
+      Title = title;
+
+      ContentManager.Initialize(new PersistenceContentManager());
 
       clipboard = new Clipboard<IItem>();
       clipboard.Dock = DockStyle.Left;
@@ -72,5 +82,64 @@ namespace HeuristicLab.Optimizer {
         startPage.Show();
       }
     }
+
+    protected override void OnActiveViewChanged() {
+      base.OnActiveViewChanged();
+      UpdateTitle();
+    }
+
+    public void UpdateTitle() {
+      if (InvokeRequired)
+        Invoke(new Action(UpdateTitle));
+      else {
+        IContentView activeView = ActiveView as IContentView;
+        if ((activeView != null) && (activeView.Content != null) && (activeView.Content is IStorableContent)) {
+          IStorableContent content = (IStorableContent)activeView.Content;
+          Title = title + " [" + (string.IsNullOrEmpty(content.Filename) ? "Unsaved" : content.Filename) + "]";
+        } else {
+          Title = title;
+        }
+      }
+    }
+
+    #region Cursor Handling
+    public void SetAppStartingCursor() {
+      if (InvokeRequired)
+        Invoke(new Action(SetAppStartingCursor));
+      else {
+        appStartingCursors++;
+        SetCursor();
+      }
+    }
+    public void ResetAppStartingCursor() {
+      if (InvokeRequired)
+        Invoke(new Action(ResetAppStartingCursor));
+      else {
+        appStartingCursors--;
+        SetCursor();
+      }
+    }
+    public void SetWaitCursor() {
+      if (InvokeRequired)
+        Invoke(new Action(SetWaitCursor));
+      else {
+        waitingCursors++;
+        SetCursor();
+      }
+    }
+    public void ResetWaitCursor() {
+      if (InvokeRequired)
+        Invoke(new Action(ResetWaitCursor));
+      else {
+        waitingCursors--;
+        SetCursor();
+      }
+    }
+    private void SetCursor() {
+      if (waitingCursors > 0) Cursor = Cursors.WaitCursor;
+      else if (appStartingCursors > 0) Cursor = Cursors.AppStarting;
+      else Cursor = Cursors.Default;
+    }
+    #endregion
   }
 }

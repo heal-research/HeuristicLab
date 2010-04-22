@@ -20,72 +20,63 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
 
 namespace HeuristicLab.Common {
   public abstract class ContentManager {
-    protected ContentManager() {
-    }
-
     private static ContentManager instance;
-    public static ContentManager Instance {
-      get { return instance; }
-    }
-    public static void CreateInstance<T>() where T : ContentManager {
-      if (instance != null)
-        throw new InvalidOperationException("ContentManager was already created.");
-      instance = Activator.CreateInstance<T>();
+
+    public static void Initialize(ContentManager manager) {
+      if (manager == null) throw new ArgumentNullException();
+      if (ContentManager.instance != null) throw new InvalidOperationException("ContentManager has already been initialized.");
+      ContentManager.instance = manager;
     }
 
-    public static void Save(IStorableContent content) {
-      content.Save();
-    }
-    public static void Save(IStorableContent content, string filename) {
-      content.Save(filename);
-    }
+    protected ContentManager() { }
 
-    protected abstract void Load(string filename, bool flag);
-    public static void Load(string filename) {
-      if (instance == null)
-        throw new InvalidOperationException("ContentManager must be created before access is allowed.");
-
-      Exception ex = null;
-      instance.OnLoadOperationStarted();
-      try {
-        instance.Load(filename, false);
-      }
-      catch (Exception e) {
-        ex = e;
-      }
-      instance.OnLoadOperationFinished(ex);
+    public static IStorableContent Load(string filename) {
+      if (instance == null) throw new InvalidOperationException("ContentManager is not initialized.");
+      IStorableContent content = instance.LoadContent(filename);
+      content.Filename = filename;
+      return content;
     }
-
-    public static void LoadAsynchronous(string filename) {
-      if (instance == null)
-        throw new InvalidOperationException("ContentManager must be created before access is allowed.");
-
-      ThreadPool.QueueUserWorkItem(
-        new WaitCallback(delegate(object arg) {
-        Load(filename);
-      })
-      );
+    public static void LoadAsync(string filename, Action<IStorableContent, Exception> loadingCompletedCallback) {
+      if (instance == null) throw new InvalidOperationException("ContentManager is not initialized.");
+      var func = new Func<string, IStorableContent>(instance.LoadContent);
+      func.BeginInvoke(filename, delegate(IAsyncResult result) {
+        Exception error = null;
+        IStorableContent content = null;
+        try {
+          content = func.EndInvoke(result);
+          content.Filename = filename;
+        }
+        catch (Exception ex) {
+          error = ex;
+        }
+        loadingCompletedCallback(content, error);
+      }, null);
     }
-    
+    protected abstract IStorableContent LoadContent(string filename);
 
-    public event EventHandler LoadOperationStarted;
-    protected virtual void OnLoadOperationStarted() {
-      EventHandler handler = LoadOperationStarted;
-      if (handler != null)
-        handler(this, EventArgs.Empty);
+    public static void Save(IStorableContent content, string filename, bool compressed) {
+      if (instance == null) throw new InvalidOperationException("ContentManager is not initialized.");
+      instance.SaveContent(content, filename, compressed);
+      content.Filename = filename;
     }
-    public event EventHandler<EventArgs<Exception>> LoadOperationFinished;
-    protected virtual void OnLoadOperationFinished(Exception e) {
-      EventHandler<EventArgs<Exception>> handler = LoadOperationFinished;
-      if (handler != null)
-        handler(this, new EventArgs<Exception>(e));
+    public static void SaveAsync(IStorableContent content, string filename, bool compressed, Action<IStorableContent, Exception> savingCompletedCallback) {
+      if (instance == null) throw new InvalidOperationException("ContentManager is not initialized.");
+      var action = new Action<IStorableContent, string, bool>(instance.SaveContent);
+      action.BeginInvoke(content, filename, compressed, delegate(IAsyncResult result) {
+        Exception error = null;
+        try {
+          action.EndInvoke(result);
+          content.Filename = filename;
+        }
+        catch (Exception ex) {
+          error = ex;
+        }
+        savingCompletedCallback(content, error);
+      }, null);
     }
+    protected abstract void SaveContent(IStorableContent content, string filename, bool compressed);
   }
 }

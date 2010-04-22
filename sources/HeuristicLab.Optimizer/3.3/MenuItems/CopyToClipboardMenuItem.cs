@@ -38,21 +38,18 @@ namespace HeuristicLab.Optimizer.MenuItems {
     public override int Position {
       get { return 2100; }
     }
-    public override Keys ShortCutKeys {
-      get { return Keys.Control | Keys.C; }
-    }
 
     protected override void OnToolStripItemSet(EventArgs e) {
       ToolStripItem.Enabled = false;
     }
     protected override void OnActiveViewChanged(object sender, EventArgs e) {
       ItemView activeView = MainFormManager.MainForm.ActiveView as ItemView;
-      ToolStripItem.Enabled = (activeView != null) && (!activeView.Locked);
+      ToolStripItem.Enabled = (activeView != null) && (activeView.Content != null) && !activeView.Locked;
     }
 
     public override void Execute() {
       ItemView activeView = MainFormManager.MainForm.ActiveView as ItemView;
-      if ((activeView != null) && (!activeView.Locked)) {
+      if ((activeView != null) && (activeView.Content != null) && !activeView.Locked) {
         Clipboard<IItem> clipboard = ((OptimizerMainForm)MainFormManager.MainForm).Clipboard;
         clipboard.AddItem((IItem)activeView.Content.Clone());
       }

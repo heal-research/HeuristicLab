@@ -32,6 +32,17 @@ namespace HeuristicLab.Core {
   [StorableClass]
   [Item("ReadOnlyItemDictionary<TKey, TValue>", "Represents a read-only dictionary of items.")]
   public class ReadOnlyItemDictionary<TKey, TValue> : ReadOnlyObservableDictionary<TKey, TValue>, IItemDictionary<TKey, TValue> where TKey : class, IItem where TValue : class, IItem {
+    private string filename;
+    public string Filename {
+      get { return filename; }
+      set {
+        if (!filename.Equals(value)) {
+          filename = value;
+          OnFilenameChanged();
+        }
+      }
+    }
+
     public virtual string ItemName {
       get { return ItemAttribute.GetName(this.GetType()); }
     }
@@ -73,6 +84,11 @@ namespace HeuristicLab.Core {
       return ItemName;
     }
 
+    public event EventHandler FilenameChanged;
+    protected virtual void OnFilenameChanged() {
+      EventHandler handler = FilenameChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
     public event EventHandler ItemImageChanged;
     protected virtual void OnItemImageChanged() {
       EventHandler handler = ItemImageChanged;

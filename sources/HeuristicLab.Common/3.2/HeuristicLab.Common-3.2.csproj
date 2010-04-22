@@ -88,7 +88,6 @@
     <Compile Include="CancelEventArgs.cs" />
     <None Include="HeuristicLabCommonPlugin.cs.frame" />
     <Compile Include="Cloner.cs" />
-    <Compile Include="Content\Content.cs" />
     <Compile Include="Content\ContentManager.cs" />
     <Compile Include="Content\IContent.cs" />
     <Compile Include="Content\IStorableContent.cs" />

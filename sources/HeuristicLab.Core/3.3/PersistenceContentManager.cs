@@ -20,10 +20,19 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using HeuristicLab.Common;
+using HeuristicLab.Persistence.Default.Xml;
 
-namespace HeuristicLab.Common {
-  public class Content : DeepCloneable, IContent { }
+namespace HeuristicLab.Core {
+  public class PersistenceContentManager : ContentManager {
+    public PersistenceContentManager() : base() { }
+
+    protected override IStorableContent LoadContent(string filename) {
+      return XmlParser.Deserialize<IStorableContent>(filename);
+    }
+
+    protected override void SaveContent(IStorableContent content, string filename, bool compressed) {
+      XmlGenerator.Serialize(content, filename, compressed ? 9 : 0);
+    }
+  }
 }

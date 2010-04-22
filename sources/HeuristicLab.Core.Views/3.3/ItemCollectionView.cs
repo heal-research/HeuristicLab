@@ -31,7 +31,7 @@ namespace HeuristicLab.Core.Views {
   [View("ItemCollection View")]
   [Content(typeof(ItemCollection<>), true)]
   [Content(typeof(IItemCollection<>), false)]
-  public partial class ItemCollectionView<T> : AsynchronousContentView where T : class, IItem {
+  public partial class ItemCollectionView<T> : ItemView where T : class, IItem {
     protected TypeSelectorDialog typeSelectorDialog;
 
     public new IItemCollection<T> Content {

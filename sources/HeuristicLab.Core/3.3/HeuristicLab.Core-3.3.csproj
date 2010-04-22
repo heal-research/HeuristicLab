@@ -122,6 +122,7 @@
     <Compile Include="Collections\ScopeList.cs" />
     <Compile Include="Collections\ValueParameterCollection.cs" />
     <Compile Include="Collections\VariableCollection.cs" />
+    <Compile Include="PersistenceContentManager.cs" />
     <Compile Include="Interfaces\IKeyedItemCollection.cs" />
     <Compile Include="Interfaces\IItemList.cs" />
     <Compile Include="Interfaces\IItemSet.cs" />
