@@ -140,7 +140,8 @@ namespace HeuristicLab.Optimization.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       this.categoricalMapping.Clear();
-      this.UpdateComboBoxes();
+      UpdateComboBoxes();
+      UpdateDataPoints();
     }
     private void Content_ColumnNamesChanged(object sender, EventArgs e) {
       if (InvokeRequired)
@@ -153,10 +154,12 @@ namespace HeuristicLab.Optimization.Views {
       this.xAxisComboBox.Items.Clear();
       this.yAxisComboBox.Items.Clear();
       this.sizeComboBox.Items.Clear();
-      this.xAxisComboBox.Items.AddRange(Matrix.ColumnNames.ToArray());
-      this.yAxisComboBox.Items.AddRange(Matrix.ColumnNames.ToArray());
-      this.sizeComboBox.Items.Add(constantLabel);
-      this.sizeComboBox.Items.AddRange(Matrix.ColumnNames.ToArray());
+      if (Content != null) {
+        this.xAxisComboBox.Items.AddRange(Matrix.ColumnNames.ToArray());
+        this.yAxisComboBox.Items.AddRange(Matrix.ColumnNames.ToArray());
+        this.sizeComboBox.Items.Add(constantLabel);
+        this.sizeComboBox.Items.AddRange(Matrix.ColumnNames.ToArray());
+      }
     }
 
     private void Content_Reset(object sender, EventArgs e) {
@@ -171,8 +174,10 @@ namespace HeuristicLab.Optimization.Views {
     private void UpdateDataPoints() {
       Series series = this.chart.Series[0];
       series.Points.Clear();
-      foreach (IRun run in this.Content)
-        this.AddDataPoint(run);
+      if (Content != null) {
+        foreach (IRun run in this.Content)
+          this.AddDataPoint(run);
+      }
     }
     private void AddDataPoint(IRun run) {
       double? xValue;
@@ -357,26 +362,12 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
 
-    private string CreateTooltip(int runIndex) {
-      StringBuilder builder = new StringBuilder();
-      builder.AppendLine(this.Content.ElementAt(runIndex).Name);
-      int columnIndex = 0;
-      foreach (string columnName in Matrix.ColumnNames) {
-        builder.Append(columnName);
-        builder.Append(": ");
-        builder.AppendLine(Matrix.GetValue(runIndex, columnIndex));
-        columnIndex++;
-      }
-      return builder.ToString();
-    }
-
     private void zoomButton_CheckedChanged(object sender, EventArgs e) {
       this.isSelecting = selectButton.Checked;
       this.colorButton.Enabled = this.isSelecting;
       this.chart.ChartAreas[0].AxisX.ScaleView.Zoomable = !isSelecting;
       this.chart.ChartAreas[0].AxisY.ScaleView.Zoomable = !isSelecting;
     }
-
     private void colorButton_Click(object sender, EventArgs e) {
       if (colorDialog.ShowDialog(this) == DialogResult.OK) {
         this.colorButton.Image = this.GenerateImage(16, 16, this.colorDialog.Color);

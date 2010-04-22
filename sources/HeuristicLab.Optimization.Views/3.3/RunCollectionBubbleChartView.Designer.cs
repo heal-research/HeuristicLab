@@ -137,7 +137,7 @@
       this.sizeComboBox.BackColor = System.Drawing.SystemColors.ControlLightLight;
       this.sizeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.sizeComboBox.FormattingEnabled = true;
-      this.sizeComboBox.Location = new System.Drawing.Point(441, 3);
+      this.sizeComboBox.Location = new System.Drawing.Point(439, 3);
       this.sizeComboBox.Name = "sizeComboBox";
       this.sizeComboBox.Size = new System.Drawing.Size(121, 21);
       this.sizeComboBox.TabIndex = 14;
