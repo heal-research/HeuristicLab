@@ -102,6 +102,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private ValueLookupParameter<DoubleValue> MaximumSelectionPressureParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["MaximumSelectionPressure"]; }
     }
+    private ValueLookupParameter<DoubleValue> FinalMaximumSelectionPressureParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["FinalMaximumSelectionPressure"]; }
+    }
     private ValueLookupParameter<BoolValue> OffspringSelectionBeforeMutationParameter {
       get { return (ValueLookupParameter<BoolValue>)Parameters["OffspringSelectionBeforeMutation"]; }
     }
@@ -152,27 +155,31 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       get { return ParallelParameter.Value; }
       set { ParallelParameter.Value = value; }
     }
-    private DoubleValue SuccessRatio {
+    public DoubleValue SuccessRatio {
       get { return SuccessRatioParameter.Value; }
       set { SuccessRatioParameter.Value = value; }
     }
-    private DoubleValue ComparisonFactorLowerBound {
+    public DoubleValue ComparisonFactorLowerBound {
       get { return ComparisonFactorLowerBoundParameter.Value; }
       set { ComparisonFactorLowerBoundParameter.Value = value; }
     }
-    private DoubleValue ComparisonFactorUpperBound {
+    public DoubleValue ComparisonFactorUpperBound {
       get { return ComparisonFactorUpperBoundParameter.Value; }
       set { ComparisonFactorUpperBoundParameter.Value = value; }
     }
-    private IDiscreteDoubleValueModifier ComparisonFactorModifier {
+    public IDiscreteDoubleValueModifier ComparisonFactorModifier {
       get { return ComparisonFactorModifierParameter.Value; }
       set { ComparisonFactorModifierParameter.Value = value; }
     }
-    private DoubleValue MaximumSelectionPressure {
+    public DoubleValue MaximumSelectionPressure {
       get { return MaximumSelectionPressureParameter.Value; }
       set { MaximumSelectionPressureParameter.Value = value; }
     }
-    private BoolValue OffspringSelectionBeforeMutation {
+    public DoubleValue FinalMaximumSelectionPressure {
+      get { return FinalMaximumSelectionPressureParameter.Value; }
+      set { FinalMaximumSelectionPressureParameter.Value = value; }
+    }
+    public BoolValue OffspringSelectionBeforeMutation {
       get { return OffspringSelectionBeforeMutationParameter.Value; }
       set { OffspringSelectionBeforeMutationParameter.Value = value; }
     }
@@ -215,6 +222,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("ComparisonFactorUpperBound", "The upper bound of the comparison factor (end).", new DoubleValue(0.7)));
       Parameters.Add(new OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier>("ComparisonFactorModifier", "The operator used to modify the comparison factor.", new ItemSet<IDiscreteDoubleValueModifier>(new IDiscreteDoubleValueModifier[] { new LinearDiscreteDoubleValueModifier() }), new LinearDiscreteDoubleValueModifier()));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("MaximumSelectionPressure", "The maximum selection pressure that terminates the algorithm.", new DoubleValue(100)));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("FinalMaximumSelectionPressure", "The maximum selection pressure used when there is only one village left.", new DoubleValue(100)));
       Parameters.Add(new ValueLookupParameter<BoolValue>("OffspringSelectionBeforeMutation", "True if the offspring selection step should be applied before mutation, false if it should be applied after mutation.", new BoolValue(false)));
 
       RandomCreator randomCreator = new RandomCreator();
@@ -256,6 +264,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       mainLoop.ComparisonFactorModifierParameter.ActualName = ComparisonFactorModifierParameter.Name;
       mainLoop.ComparisonFactorUpperBoundParameter.ActualName = ComparisonFactorUpperBoundParameter.Name;
       mainLoop.MaximumSelectionPressureParameter.ActualName = MaximumSelectionPressureParameter.Name;
+      mainLoop.FinalMaximumSelectionPressureParameter.ActualName = FinalMaximumSelectionPressureParameter.Name;
       mainLoop.MaximumGenerationsParameter.ActualName = MaximumGenerationsParameter.Name;
       mainLoop.OffspringSelectionBeforeMutationParameter.ActualName = OffspringSelectionBeforeMutationParameter.Name;
       mainLoop.Successor = null;

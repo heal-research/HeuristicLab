@@ -102,6 +102,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     public ValueLookupParameter<DoubleValue> MaximumSelectionPressureParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["MaximumSelectionPressure"]; }
     }
+    public ValueLookupParameter<DoubleValue> FinalMaximumSelectionPressureParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["FinalMaximumSelectionPressure"]; }
+    }
     public ValueLookupParameter<IntValue> MaximumGenerationsParameter {
       get { return (ValueLookupParameter<IntValue>)Parameters["MaximumGenerations"]; }
     }
@@ -135,12 +138,14 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("ComparisonFactorUpperBound", "The upper bound of the comparison factor (end)."));
       Parameters.Add(new ValueLookupParameter<IOperator>("ComparisonFactorModifier", "The operator used to modify the comparison factor."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("MaximumSelectionPressure", "The maximum selection pressure that terminates the algorithm."));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("FinalMaximumSelectionPressure", "The maximum selection pressure used when there is only one village left."));
       Parameters.Add(new ValueLookupParameter<IntValue>("MaximumGenerations", "The maximum genreation that terminates the algorithm."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("OffspringSelectionBeforeMutation", "True if the offspring selection step should be applied before mutation, false if it should be applied after mutation."));
       #endregion
 
       #region Create operators
       VariableCreator variableCreator = new VariableCreator();
+      Assigner maxSelPressAssigner = new Assigner();
       Assigner villageCountAssigner = new Assigner();
       Assigner comparisonFactorInitializer = new Assigner();
       UniformSubScopesProcessor ussp0 = new UniformSubScopesProcessor();
@@ -170,17 +175,20 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Assigner villageMaximumGenerationsToGenerationsAssigner = new Assigner();
       IntCounter villageMaximumGenerationsCounter = new IntCounter();
       DataTableValuesCollector selPressValuesCollector2 = new DataTableValuesCollector();
-      Comparator villageCountComparator = new Comparator();
-      ConditionalBranch villageTerminationCondition0 = new ConditionalBranch();
+      Comparator villageCountComparator1 = new Comparator();
+      ConditionalBranch villageTerminationCondition1 = new ConditionalBranch();
       SASEGASAReunificator reunificator = new SASEGASAReunificator();
       IntCounter reunificationCounter = new IntCounter();
       Placeholder comparisonFactorModifier = new Placeholder();
+      Comparator villageCountComparator2 = new Comparator();
+      ConditionalBranch villageTerminationCondition2 = new ConditionalBranch();
+      Assigner finalMaxSelPressAssigner = new Assigner();
       Comparator maximumGenerationsComparator = new Comparator();
       BestQualityMemorizer bestQualityMemorizer3 = new BestQualityMemorizer();
       BestAverageWorstQualityCalculator bestAverageWorstQualityCalculator3 = new BestAverageWorstQualityCalculator();
       DataTableValuesCollector dataTableValuesCollector2 = new DataTableValuesCollector();
       QualityDifferenceCalculator qualityDifferenceCalculator2 = new QualityDifferenceCalculator();
-      ConditionalBranch villagesTerminationCondition = new ConditionalBranch();
+      ConditionalBranch villagesTerminationCondition3 = new ConditionalBranch();
       ConditionalBranch maximumGenerationsTerminationCondition = new ConditionalBranch();
 
       // The generations of SASEGASA progress with the generations of its villages
@@ -188,6 +196,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
 
       villageCountAssigner.LeftSideParameter.ActualName = "VillageCount";
       villageCountAssigner.RightSideParameter.ActualName = NumberOfVillagesParameter.Name;
+
+      maxSelPressAssigner.LeftSideParameter.ActualName = "CurrentMaximumSelectionPressure";
+      maxSelPressAssigner.RightSideParameter.ActualName = MaximumSelectionPressureParameter.Name;
 
       comparisonFactorInitializer.LeftSideParameter.ActualName = "ComparisonFactor";
       comparisonFactorInitializer.RightSideParameter.ActualName = ComparisonFactorLowerBoundParameter.Name;
@@ -268,7 +279,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       mainLoop.ComparisonFactorLowerBoundParameter.ActualName = ComparisonFactorLowerBoundParameter.Name;
       mainLoop.ComparisonFactorModifierParameter.Value = new EmptyOperator(); // comparison factor is modified here
       mainLoop.ComparisonFactorUpperBoundParameter.ActualName = ComparisonFactorUpperBoundParameter.Name;
-      mainLoop.MaximumSelectionPressureParameter.ActualName = MaximumSelectionPressureParameter.Name;
+      mainLoop.MaximumSelectionPressureParameter.ActualName = "CurrentMaximumSelectionPressure";
       mainLoop.OffspringSelectionBeforeMutationParameter.ActualName = OffspringSelectionBeforeMutationParameter.Name;
 
       // SASEGASAGenerations is the maximum of all village generations
@@ -305,14 +316,14 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       selPressValuesCollector2.DataTableParameter.ActualName = "VillagesSelectionPressures";
 
       // if there's just one island left and we're getting to this point SASEGASA terminates
-      villageCountComparator.Name = "VillageCount <= 1 ?";
-      villageCountComparator.LeftSideParameter.ActualName = "VillageCount";
-      villageCountComparator.RightSideParameter.Value = new IntValue(1);
-      villageCountComparator.Comparison.Value = ComparisonType.LessOrEqual;
-      villageCountComparator.ResultParameter.ActualName = "TerminateVillages";
+      villageCountComparator1.Name = "VillageCount <= 1 ?";
+      villageCountComparator1.LeftSideParameter.ActualName = "VillageCount";
+      villageCountComparator1.RightSideParameter.Value = new IntValue(1);
+      villageCountComparator1.Comparison.Value = ComparisonType.LessOrEqual;
+      villageCountComparator1.ResultParameter.ActualName = "TerminateVillages";
 
-      villageTerminationCondition0.Name = "Skip reunification?";
-      villageTerminationCondition0.ConditionParameter.ActualName = "TerminateVillages";
+      villageTerminationCondition1.Name = "Skip reunification?";
+      villageTerminationCondition1.ConditionParameter.ActualName = "TerminateVillages";
 
       reunificator.VillageCountParameter.ActualName = "VillageCount";
 
@@ -320,6 +331,18 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       reunificationCounter.IncrementParameter.Value = new IntValue(1);
 
       comparisonFactorModifier.OperatorParameter.ActualName = ComparisonFactorModifierParameter.Name;
+
+      villageCountComparator2.Name = "VillageCount == 1 ?";
+      villageCountComparator2.LeftSideParameter.ActualName = "VillageCount";
+      villageCountComparator2.RightSideParameter.Value = new IntValue(1);
+      villageCountComparator2.Comparison.Value = ComparisonType.Equal;
+      villageCountComparator2.ResultParameter.ActualName = "ChangeMaxSelPress";
+
+      villageTerminationCondition2.Name = "Change max selection pressure?";
+      villageTerminationCondition2.ConditionParameter.ActualName = "ChangeMaxSelPress";
+
+      finalMaxSelPressAssigner.LeftSideParameter.ActualName = "CurrentMaximumSelectionPressure";
+      finalMaxSelPressAssigner.RightSideParameter.ActualName = FinalMaximumSelectionPressureParameter.Name;
 
       // if SASEGASAGenerations is reaching MaximumGenerations we're also terminating
       maximumGenerationsComparator.LeftSideParameter.ActualName = "SASEGASAGenerations";
@@ -349,14 +372,15 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       qualityDifferenceCalculator2.RelativeDifferenceParameter.ActualName = "RelativeDifferenceBestKnownToBest";
       qualityDifferenceCalculator2.SecondQualityParameter.ActualName = "BestQuality";
 
-      villagesTerminationCondition.ConditionParameter.ActualName = "TerminateVillages";
+      villagesTerminationCondition3.ConditionParameter.ActualName = "TerminateVillages";
       villageMaximumGenerationsConditionalBranch1.ConditionParameter.ActualName = "TerminateMaximumGenerations";
       #endregion
 
       #region Create operator graph
       OperatorGraph.InitialOperator = variableCreator;
       variableCreator.Successor = villageCountAssigner;
-      villageCountAssigner.Successor = comparisonFactorInitializer;
+      villageCountAssigner.Successor = maxSelPressAssigner;
+      maxSelPressAssigner.Successor = comparisonFactorInitializer;
       comparisonFactorInitializer.Successor = ussp0;
       ussp0.Operator = islandVariableCreator;
       ussp0.Successor = bestQualityMemorizer2;
@@ -388,22 +412,27 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       villageMaximumGenerationsConditionalBranch2.Successor = null;
       villageMaximumGenerationsToGenerationsAssigner.Successor = villageMaximumGenerationsCounter;
       villageMaximumGenerationsCounter.Successor = null;
-      selPressValuesCollector2.Successor = villageCountComparator;
-      villageCountComparator.Successor = villageTerminationCondition0;
-      villageTerminationCondition0.TrueBranch = null;
-      villageTerminationCondition0.FalseBranch = reunificator;
-      villageTerminationCondition0.Successor = maximumGenerationsComparator;
+      selPressValuesCollector2.Successor = villageCountComparator1;
+      villageCountComparator1.Successor = villageTerminationCondition1;
+      villageTerminationCondition1.TrueBranch = null;
+      villageTerminationCondition1.FalseBranch = reunificator;
+      villageTerminationCondition1.Successor = maximumGenerationsComparator;
       reunificator.Successor = reunificationCounter;
       reunificationCounter.Successor = comparisonFactorModifier;
-      comparisonFactorModifier.Successor = null;
+      comparisonFactorModifier.Successor = villageCountComparator2;
+      villageCountComparator2.Successor = villageTerminationCondition2;
+      villageTerminationCondition2.TrueBranch = finalMaxSelPressAssigner;
+      villageTerminationCondition2.FalseBranch = null;
+      villageTerminationCondition2.Successor = null;
+      finalMaxSelPressAssigner.Successor = null;
       maximumGenerationsComparator.Successor = bestQualityMemorizer3;
       bestQualityMemorizer3.Successor = bestAverageWorstQualityCalculator3;
       bestAverageWorstQualityCalculator3.Successor = dataTableValuesCollector2;
       dataTableValuesCollector2.Successor = qualityDifferenceCalculator2;
-      qualityDifferenceCalculator2.Successor = villagesTerminationCondition;
-      villagesTerminationCondition.FalseBranch = maximumGenerationsTerminationCondition;
-      villagesTerminationCondition.TrueBranch = null;
-      villagesTerminationCondition.Successor = null;
+      qualityDifferenceCalculator2.Successor = villagesTerminationCondition3;
+      villagesTerminationCondition3.FalseBranch = maximumGenerationsTerminationCondition;
+      villagesTerminationCondition3.TrueBranch = null;
+      villagesTerminationCondition3.Successor = null;
       maximumGenerationsTerminationCondition.FalseBranch = fixedReunificationStepConditionInitializer;
       maximumGenerationsTerminationCondition.TrueBranch = null;
       maximumGenerationsTerminationCondition.Successor = null;
