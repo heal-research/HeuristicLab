@@ -47,10 +47,11 @@ namespace HeuristicLab.Operators {
       IVariable var;
       foreach (IParameter param in CollectedValues) {
         CurrentScope.Variables.TryGetValue(param.Name, out var);
+        IItem value = param.ActualValue;
         if (var != null)
-          var.Value = (IItem)param.ActualValue.Clone();
+          var.Value = value == null ? null : (IItem)value.Clone();
         else
-          CurrentScope.Variables.Add(new Variable(param.Name, param.Description, (IItem)param.ActualValue.Clone()));
+          CurrentScope.Variables.Add(new Variable(param.Name, param.Description, value == null ? null : (IItem)value.Clone()));
       }
       return base.Apply();
     }
