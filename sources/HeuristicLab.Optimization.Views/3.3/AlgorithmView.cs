@@ -186,30 +186,30 @@ namespace HeuristicLab.Optimization.Views {
     protected virtual void openProblemButton_Click(object sender, EventArgs e) {
       openFileDialog.Title = "Open Problem";
       if (openFileDialog.ShowDialog(this) == DialogResult.OK) {
-        this.Cursor = Cursors.AppStarting;
         newProblemButton.Enabled = openProblemButton.Enabled = false;
         problemViewHost.Enabled = false;
 
-        var call = new Func<string, object>(XmlParser.Deserialize);
-        call.BeginInvoke(openFileDialog.FileName, delegate(IAsyncResult a) {
-          IProblem problem = null;
+        ContentManager.LoadAsync(openFileDialog.FileName, delegate(IStorableContent content, Exception error) {
           try {
-            problem = call.EndInvoke(a) as IProblem;
-          } catch (Exception ex) {
-            Auxiliary.ShowErrorMessageBox(ex);
-          }
-          Invoke(new Action(delegate() {
+            if (error != null) throw error;
+            IProblem problem = content as IProblem;
             if (problem == null)
               MessageBox.Show(this, "The selected file does not contain a problem.", "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error);
             else if (!Content.ProblemType.IsInstanceOfType(problem))
               MessageBox.Show(this, "The selected file contains a problem type which is not supported by this algorithm.", "Invalid Problem Type", MessageBoxButtons.OK, MessageBoxIcon.Error);
             else
               Content.Problem = problem;
-            problemViewHost.Enabled = true;
-            newProblemButton.Enabled = openProblemButton.Enabled = true;
-            this.Cursor = Cursors.Default;
-          }));
-        }, null);
+          }
+          catch (Exception ex) {
+            Auxiliary.ShowErrorMessageBox(ex);
+          }
+          finally {
+            Invoke(new Action(delegate() {
+              problemViewHost.Enabled = true;
+              newProblemButton.Enabled = openProblemButton.Enabled = true;
+            }));
+          }
+        });
       }
     }
     protected virtual void startButton_Click(object sender, EventArgs e) {

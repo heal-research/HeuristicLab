@@ -27,7 +27,7 @@ namespace HeuristicLab.Core {
   /// <summary>
   /// Interface to represent (almost) every HeuristicLab object (an object, an operator,...).
   /// </summary>
-  public interface IItem : IStorableContent, IDeepCloneable {
+  public interface IItem : IStorableContent {
     string ItemName { get; }
     string ItemDescription { get; }
     Image ItemImage { get; }

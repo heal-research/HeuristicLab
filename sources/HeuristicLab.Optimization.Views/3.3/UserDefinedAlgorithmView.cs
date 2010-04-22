@@ -79,29 +79,28 @@ namespace HeuristicLab.Optimization.Views {
     private void openOperatorGraphButton_Click(object sender, EventArgs e) {
       openFileDialog.Title = "Open Operator Graph";
       if (openFileDialog.ShowDialog(this) == DialogResult.OK) {
-        this.Cursor = Cursors.AppStarting;
         newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = false;
         operatorGraphViewHost.Enabled = false;
 
-        var call = new Func<string, object>(XmlParser.Deserialize);
-        call.BeginInvoke(openFileDialog.FileName, delegate(IAsyncResult a) {
-          OperatorGraph operatorGraph = null;
+        ContentManager.LoadAsync(openFileDialog.FileName, delegate(IStorableContent content, Exception error) {
           try {
-            operatorGraph = call.EndInvoke(a) as OperatorGraph;
-          }
-          catch (Exception ex) {
-            Auxiliary.ShowErrorMessageBox(ex);
-          }
-          Invoke(new Action(delegate() {
+            if (error != null) throw error;
+            OperatorGraph operatorGraph = content as OperatorGraph;
             if (operatorGraph == null)
               MessageBox.Show(this, "The selected file does not contain an operator graph.", "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error);
             else
               Content.OperatorGraph = operatorGraph;
-            operatorGraphViewHost.Enabled = true;
-            newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = true;
-            this.Cursor = Cursors.Default;
-          }));
-        }, null);
+          }
+          catch (Exception ex) {
+            Auxiliary.ShowErrorMessageBox(ex);
+          }
+          finally {
+            Invoke(new Action(delegate() {
+              operatorGraphViewHost.Enabled = true;
+              newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = true;
+            }));
+          }
+        });
       }
     }
   }

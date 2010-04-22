@@ -22,7 +22,7 @@
 using System;
 
 namespace HeuristicLab.Common {
-  public class StorableContent : IStorableContent {
+  public class StorableContent : DeepCloneable, IStorableContent {
     private string filename;
     public string Filename {
       get { return filename; }

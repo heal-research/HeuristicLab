@@ -94,7 +94,6 @@ namespace HeuristicLab.Optimizer {
           SaveAs(view);
         else {
           ((OptimizerMainForm)MainFormManager.MainForm).SetAppStartingCursor();
-          ((Form)MainFormManager.MainForm).Enabled = false;
           ContentManager.SaveAsync(content, content.Filename, true, SavingCompleted);
         }
       }
@@ -119,7 +118,6 @@ namespace HeuristicLab.Optimizer {
 
         if (saveFileDialog.ShowDialog() == DialogResult.OK) {
           ((OptimizerMainForm)MainFormManager.MainForm).SetAppStartingCursor();
-          ((Form)MainFormManager.MainForm).Enabled = false;
           if (saveFileDialog.FilterIndex == 1) {
             ContentManager.SaveAsync(content, saveFileDialog.FileName, false, SavingCompleted);
           } else {
@@ -133,7 +131,6 @@ namespace HeuristicLab.Optimizer {
         if (error != null) throw error;
         Invoke(delegate() {
           ((OptimizerMainForm)MainFormManager.MainForm).UpdateTitle();
-          ((Form)MainFormManager.MainForm).Enabled = true;
         });
       }
       catch (Exception ex) {

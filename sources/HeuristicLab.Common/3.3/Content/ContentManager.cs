@@ -59,23 +59,34 @@ namespace HeuristicLab.Common {
 
     public static void Save(IStorableContent content, string filename, bool compressed) {
       if (instance == null) throw new InvalidOperationException("ContentManager is not initialized.");
-      instance.SaveContent(content, filename, compressed);
+      instance.SaveContent((IStorableContent)content.Clone(), filename, compressed);
       content.Filename = filename;
     }
     public static void SaveAsync(IStorableContent content, string filename, bool compressed, Action<IStorableContent, Exception> savingCompletedCallback) {
       if (instance == null) throw new InvalidOperationException("ContentManager is not initialized.");
-      var action = new Action<IStorableContent, string, bool>(instance.SaveContent);
-      action.BeginInvoke(content, filename, compressed, delegate(IAsyncResult result) {
-        Exception error = null;
-        try {
-          action.EndInvoke(result);
-          content.Filename = filename;
-        }
-        catch (Exception ex) {
-          error = ex;
-        }
-        savingCompletedCallback(content, error);
-      }, null);
+
+      IStorableContent clone = null;
+      try {
+        clone = (IStorableContent)content.Clone();
+      }
+      catch (Exception ex) {
+        savingCompletedCallback(content, ex);
+      }
+
+      if (clone != null) {
+        var action = new Action<IStorableContent, string, bool>(instance.SaveContent);
+        action.BeginInvoke(clone, filename, compressed, delegate(IAsyncResult result) {
+          Exception error = null;
+          try {
+            action.EndInvoke(result);
+            content.Filename = filename;
+          }
+          catch (Exception ex) {
+            error = ex;
+          }
+          savingCompletedCallback(content, error);
+        }, null);
+      }
     }
     protected abstract void SaveContent(IStorableContent content, string filename, bool compressed);
   }

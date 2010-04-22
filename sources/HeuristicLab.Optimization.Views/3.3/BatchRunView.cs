@@ -173,28 +173,28 @@ namespace HeuristicLab.Optimization.Views {
     private void openAlgorithmButton_Click(object sender, EventArgs e) {
       openFileDialog.Title = "Open Algorithm";
       if (openFileDialog.ShowDialog(this) == DialogResult.OK) {
-        this.Cursor = Cursors.AppStarting;
         newAlgorithmButton.Enabled = openAlgorithmButton.Enabled = false;
         algorithmViewHost.Enabled = false;
 
-        var call = new Func<string, object>(XmlParser.Deserialize);
-        call.BeginInvoke(openFileDialog.FileName, delegate(IAsyncResult a) {
-          IAlgorithm algorithm = null;
+        ContentManager.LoadAsync(openFileDialog.FileName, delegate(IStorableContent content, Exception error) {
           try {
-            algorithm = call.EndInvoke(a) as IAlgorithm;
-          } catch (Exception ex) {
-            Auxiliary.ShowErrorMessageBox(ex);
-          }
-          Invoke(new Action(delegate() {
+            if (error != null) throw error;
+            IAlgorithm algorithm = content as IAlgorithm;
             if (algorithm == null)
               MessageBox.Show(this, "The selected file does not contain an algorithm.", "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error);
             else
               Content.Algorithm = algorithm;
-            algorithmViewHost.Enabled = true;
-            newAlgorithmButton.Enabled = openAlgorithmButton.Enabled = true;
-            this.Cursor = Cursors.Default;
-          }));
-        }, null);
+          }
+          catch (Exception ex) {
+            Auxiliary.ShowErrorMessageBox(ex);
+          }
+          finally {
+            Invoke(new Action(delegate() {
+              algorithmViewHost.Enabled = true;
+              newAlgorithmButton.Enabled = openAlgorithmButton.Enabled = true;
+            }));
+          }
+        });
       }
     }
     private void startButton_Click(object sender, EventArgs e) {
