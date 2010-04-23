@@ -149,7 +149,6 @@ namespace HeuristicLab.Core.Views {
         Invoke(new Action<string>(Filter), searchString);
       else {
         searchString = searchString.ToLower();
-
         typesTreeView.BeginUpdate();
         if (!searchString.Contains(currentSearchString)) {
           // expand search -> restore all tree nodes
@@ -175,6 +174,7 @@ namespace HeuristicLab.Core.Views {
           else
             i++;
         }
+        typesTreeView.EndUpdate();
         currentSearchString = searchString;
 
         // if there is just one type node left, select by default
@@ -192,7 +192,6 @@ namespace HeuristicLab.Core.Views {
           typesTreeView.Enabled = true;
         }
         UpdateDescription();
-        typesTreeView.EndUpdate();
       }
     }
 
