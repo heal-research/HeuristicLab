@@ -57,6 +57,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     IParameter IProblem.SolutionCreatorParameter {
       get { return SolutionCreatorParameter; }
     }
+    public ValueParameter<DoubleValue> LowerEstimationLimitParameter {
+      get { return (ValueParameter<DoubleValue>)Parameters["LowerEstimationLimit"]; }
+    }
+    public ValueParameter<DoubleValue> UpperEstimationLimitParameter {
+      get { return (ValueParameter<DoubleValue>)Parameters["UpperEstimationLimit"]; }
+    }
+    public ValueParameter<ISymbolicExpressionTreeInterpreter> SymbolicExpressionTreeInterpreterParameter {
+      get { return (ValueParameter<ISymbolicExpressionTreeInterpreter>)Parameters["SymbolicExpressionTreeInterpreter"]; }
+    }
     public ValueParameter<ISymbolicRegressionEvaluator> EvaluatorParameter {
       get { return (ValueParameter<ISymbolicRegressionEvaluator>)Parameters["Evaluator"]; }
     }
@@ -108,6 +117,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     ISolutionCreator IProblem.SolutionCreator {
       get { return SolutionCreatorParameter.Value; }
     }
+    public ISymbolicExpressionTreeInterpreter SymbolicExpressionTreeInterpreter {
+      get { return SymbolicExpressionTreeInterpreterParameter.Value; }
+      set { SymbolicExpressionTreeInterpreterParameter.Value = value; }
+    }
+    public DoubleValue LowerEstimationLimit {
+      get { return LowerEstimationLimitParameter.Value; }
+      set { LowerEstimationLimitParameter.Value = value; }
+    }
+    public DoubleValue UpperEstimationLimit {
+      get { return UpperEstimationLimitParameter.Value; }
+      set { UpperEstimationLimitParameter.Value = value; }
+    }
+
     public ISymbolicRegressionEvaluator Evaluator {
       get { return EvaluatorParameter.Value; }
       set { EvaluatorParameter.Value = value; }
@@ -135,6 +157,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     public IEnumerable<IOperator> Operators {
       get { return operators.Cast<IOperator>(); }
     }
+    public DoubleValue PunishmentFactor {
+      get { return new DoubleValue(10.0); }
+    }
     #endregion
 
     public SymbolicRegressionProblem()
@@ -149,6 +174,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       Parameters.Add(new ValueParameter<SymbolicExpressionTreeCreator>("SolutionCreator", "The operator which should be used to create new symbolic regression solutions.", creator));
       Parameters.Add(new ValueParameter<ISymbolicExpressionTreeInterpreter>("SymbolicExpressionTreeInterpreter", "The interpreter that should be used to evaluate the symbolic expression tree.", interpreter));
       Parameters.Add(new ValueParameter<ISymbolicRegressionEvaluator>("Evaluator", "The operator which should be used to evaluate symbolic regression solutions.", evaluator));
+      Parameters.Add(new ValueParameter<DoubleValue>("LowerEstimationLimit", "The lower limit for the estimated value that can be returned by the symbolic regression model.", new DoubleValue(double.NegativeInfinity)));
+      Parameters.Add(new ValueParameter<DoubleValue>("UpperEstimationLimit", "The upper limit for the estimated value that can be returned by the symbolic regression model.", new DoubleValue(double.PositiveInfinity)));
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The minimal error value that reached by symbolic regression solutions for the problem."));
       Parameters.Add(new ValueParameter<ISymbolicExpressionGrammar>("FunctionTreeGrammar", "The grammar that should be used for symbolic regression models.", globalGrammar));
       Parameters.Add(new ValueParameter<IntValue>("MaxExpressionLength", "Maximal length of the symbolic expression.", new IntValue(100)));
@@ -168,7 +195,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
 
       Initialize();
     }
-
 
     [StorableConstructor]
     private SymbolicRegressionProblem(bool deserializing) : base() { }
@@ -207,6 +233,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       }
       Evaluator.SamplesStartParameter.Value = new IntValue(trainingStart);
       Evaluator.SamplesEndParameter.Value = new IntValue(trainingEnd);
+
+      if (trainingEnd - trainingStart > 0 && DataAnalysisProblemData.TargetVariable.Value != string.Empty) {
+        var targetValues = DataAnalysisProblemData.Dataset.GetVariableValues(DataAnalysisProblemData.TargetVariable.Value, trainingStart, trainingEnd);
+        var mean = targetValues.Average();
+        var range = targetValues.Max() - targetValues.Min();
+        UpperEstimationLimit = new DoubleValue(mean + PunishmentFactor.Value * range);
+        LowerEstimationLimit = new DoubleValue(mean - PunishmentFactor.Value * range);
+      }
     }
 
     public event EventHandler SolutionCreatorChanged;

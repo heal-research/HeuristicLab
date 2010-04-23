@@ -40,14 +40,41 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("SymbolicRegressionMeanSquaredErrorEvaluator", "Calculates the mean squared error of a symbolic regression solution.")]
   [StorableClass]
   public class SymbolicRegressionMeanSquaredErrorEvaluator : SymbolicRegressionEvaluator {
+    private const string UpperEstimationLimitParameterName = "UpperEstimationLimit";
+    private const string LowerEstimationLimitParameterName = "LowerEstimationLimit";
+
+    #region parameter properties
+    public IValueLookupParameter<DoubleValue> UpperEstimationLimitParameter {
+      get { return (IValueLookupParameter<DoubleValue>)Parameters[UpperEstimationLimitParameterName]; }
+    }
+    public IValueLookupParameter<DoubleValue> LowerEstimationLimitParameter {
+      get { return (IValueLookupParameter<DoubleValue>)Parameters[LowerEstimationLimitParameterName]; }
+    }
+    #endregion
+    #region properties
+    public DoubleValue UpperEstimationLimit {
+      get { return UpperEstimationLimitParameter.ActualValue; }
+    }
+    public DoubleValue LowerEstimationLimit {
+      get { return LowerEstimationLimitParameter.ActualValue; }
+    }
+    #endregion
+    public SymbolicRegressionMeanSquaredErrorEvaluator()
+      : base() {
+      Parameters.Add(new ValueLookupParameter<DoubleValue>(UpperEstimationLimitParameterName, "The upper limit that should be used as cut off value for the output values of symbolic expression trees."));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>(LowerEstimationLimitParameterName, "The lower limit that should be used as cut off value for the output values of symbolic expression trees."));
+    }
+
     protected override double Evaluate(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, Dataset dataset, StringValue targetVariable, IntValue samplesStart, IntValue samplesEnd) {
-      double mse = Calculate(interpreter, solution, dataset, targetVariable.Value, samplesStart.Value, samplesEnd.Value);
+      double mse = Calculate(interpreter, solution, LowerEstimationLimit.Value, UpperEstimationLimit.Value, dataset, targetVariable.Value, samplesStart.Value, samplesEnd.Value);
       return mse;
     }
 
-    public static double Calculate(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, Dataset dataset, string targetVariable, int start, int end) {
+    public static double Calculate(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, Dataset dataset, string targetVariable, int start, int end) {
       int targetVariableIndex = dataset.GetVariableIndex(targetVariable);
-      var estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, dataset, Enumerable.Range(start, end - start));
+      var estimatedValues = from x in interpreter.GetSymbolicExpressionTreeValues(solution, dataset, Enumerable.Range(start, end - start))
+                            let boundedX = Math.Min(upperEstimationLimit, Math.Max(lowerEstimationLimit, x))
+                            select double.IsNaN(boundedX) ? upperEstimationLimit : boundedX;
       var originalValues = from row in Enumerable.Range(start, end - start) select dataset[row, targetVariableIndex];
       return SimpleMSEEvaluator.Calculate(originalValues, estimatedValues);
     }

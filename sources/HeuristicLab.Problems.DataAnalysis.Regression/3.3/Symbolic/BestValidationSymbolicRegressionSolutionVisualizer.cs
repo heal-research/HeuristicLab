@@ -39,6 +39,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [StorableClass]
   public sealed class BestValidationSymbolicRegressionSolutionVisualizer : SingleSuccessorOperator, ISingleObjectiveSolutionsVisualizer, ISolutionsVisualizer {
     private const string SymbolicExpressionTreeInterpreterParameterName = "SymbolicExpressionTreeInterpreter";
+    private const string UpperEstimationLimitParameterName = "UpperEstimationLimit";
+    private const string LowerEstimationLimitParameterName = "LowerEstimationLimit";
     private const string SymbolicRegressionModelParameterName = "SymbolicRegressionModel";
     private const string DataAnalysisProblemDataParameterName = "DataAnalysisProblemData";
     private const string BestValidationSolutionParameterName = "BestValidationSolution";
@@ -50,6 +52,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     #region parameter properties
     public ILookupParameter<ISymbolicExpressionTreeInterpreter> SymbolicExpressionTreeInterpreterParameter {
       get { return (ILookupParameter<ISymbolicExpressionTreeInterpreter>)Parameters[SymbolicExpressionTreeInterpreterParameterName]; }
+    }
+    public IValueLookupParameter<DoubleValue> UpperEstimationLimitParameter {
+      get { return (IValueLookupParameter<DoubleValue>)Parameters[UpperEstimationLimitParameterName]; }
+    }
+    public IValueLookupParameter<DoubleValue> LowerEstimationLimitParameter {
+      get { return (IValueLookupParameter<DoubleValue>)Parameters[LowerEstimationLimitParameterName]; }
     }
     public IValueLookupParameter<IntValue> ValidationSamplesStartParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters[ValidationSamplesStartParameterName]; }
@@ -84,6 +92,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     public ISymbolicExpressionTreeInterpreter SymbolicExpressionTreeInterpreter {
       get { return SymbolicExpressionTreeInterpreterParameter.ActualValue; }
     }
+    public DoubleValue UpperEstimationLimit {
+      get { return UpperEstimationLimitParameter.ActualValue; }
+    }
+    public DoubleValue LowerEstimationLimit {
+      get { return LowerEstimationLimitParameter.ActualValue; }
+    }
     public IntValue ValidationSamplesStart {
       get { return ValidationSamplesStartParameter.ActualValue; }
     }
@@ -98,6 +112,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       Parameters.Add(new SubScopesLookupParameter<DoubleValue>(QualityParameterName, "The quality of the symbolic regression solutions."));
       Parameters.Add(new LookupParameter<DataAnalysisProblemData>(DataAnalysisProblemDataParameterName, "The symbolic regression problme data on which the best solution should be evaluated."));
       Parameters.Add(new LookupParameter<ISymbolicExpressionTreeInterpreter>(SymbolicExpressionTreeInterpreterParameterName, "The interpreter that should be used to calculate the output values of symbolic expression trees."));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>(UpperEstimationLimitParameterName, "The upper limit that should be used as cut off value for the output values of symbolic expression trees."));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>(LowerEstimationLimitParameterName, "The lower limit that should be used as cut off value for the output values of symbolic expression trees."));
       Parameters.Add(new ValueLookupParameter<IntValue>(ValidationSamplesStartParameterName, "The start index of the validation partition (part of the training partition)."));
       Parameters.Add(new ValueLookupParameter<IntValue>(ValidationSamplesEndParameterName, "The end index of the validation partition (part of the training partition)."));
       Parameters.Add(new LookupParameter<SymbolicRegressionSolution>(BestValidationSolutionParameterName, "The best symbolic expression tree based on the validation data for the symbolic regression problem."));
@@ -111,11 +127,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       int validationSamplesStart = ValidationSamplesStart.Value;
       int validationSamplesEnd = ValidationSamplesEnd.Value;
       var validationValues = problemData.Dataset.GetVariableValues(problemData.TargetVariable.Value, validationSamplesStart, validationSamplesEnd);
-
+      double upperEstimationLimit = UpperEstimationLimit.Value;
+      double lowerEstimationLimit = LowerEstimationLimit.Value;
       var currentBestExpression = (from expression in expressions
                                    let validationQuality =
                                      SymbolicRegressionMeanSquaredErrorEvaluator.Calculate(
                                        SymbolicExpressionTreeInterpreter, expression,
+                                       lowerEstimationLimit, upperEstimationLimit,
                                        problemData.Dataset, problemData.TargetVariable.Value,
                                        validationSamplesStart, validationSamplesEnd)
                                    select new { Expression = expression, ValidationQuality = validationQuality })
@@ -125,13 +143,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       SymbolicRegressionSolution bestOfRunSolution = BestValidationSolutionParameter.ActualValue;
       if (bestOfRunSolution == null) {
         // no best of run solution yet -> make a solution from the currentBestExpression
-        UpdateBestOfRunSolution(problemData, currentBestExpression.Expression, SymbolicExpressionTreeInterpreter);
+        UpdateBestOfRunSolution(problemData, currentBestExpression.Expression, SymbolicExpressionTreeInterpreter, lowerEstimationLimit, upperEstimationLimit);
       } else {
         // compare quality of current best with best of run solution
         var estimatedValidationValues = bestOfRunSolution.EstimatedValues.Skip(validationSamplesStart).Take(validationSamplesEnd - validationSamplesStart);
         var bestOfRunValidationQuality = SimpleMSEEvaluator.Calculate(validationValues, estimatedValidationValues);
         if (bestOfRunValidationQuality > currentBestExpression.ValidationQuality) {
-          UpdateBestOfRunSolution(problemData, currentBestExpression.Expression, SymbolicExpressionTreeInterpreter);
+          UpdateBestOfRunSolution(problemData, currentBestExpression.Expression, SymbolicExpressionTreeInterpreter, lowerEstimationLimit, upperEstimationLimit);
         }
       }
 
@@ -139,8 +157,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       return base.Apply();
     }
 
-    private void UpdateBestOfRunSolution(DataAnalysisProblemData problemData, SymbolicExpressionTree tree, ISymbolicExpressionTreeInterpreter interpreter) {
-      var newBestSolution = CreateDataAnalysisSolution(problemData, tree, interpreter);
+    private void UpdateBestOfRunSolution(DataAnalysisProblemData problemData, SymbolicExpressionTree tree, ISymbolicExpressionTreeInterpreter interpreter,
+      double lowerEstimationLimit, double upperEstimationLimit) {
+      var newBestSolution = CreateDataAnalysisSolution(problemData, tree, interpreter, lowerEstimationLimit, upperEstimationLimit);
       if (BestValidationSolutionParameter.ActualValue == null)
         BestValidationSolutionParameter.ActualValue = newBestSolution;
       else
@@ -168,9 +187,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       }
     }
 
-    private SymbolicRegressionSolution CreateDataAnalysisSolution(DataAnalysisProblemData problemData, SymbolicExpressionTree expression, ISymbolicExpressionTreeInterpreter interpreter) {
+    private SymbolicRegressionSolution CreateDataAnalysisSolution(DataAnalysisProblemData problemData, SymbolicExpressionTree expression, ISymbolicExpressionTreeInterpreter interpreter,
+      double lowerEstimationLimit, double upperEstimationLimit) {
       var model = new SymbolicRegressionModel(interpreter, expression, problemData.InputVariables.Select(s => s.Value));
-      return new SymbolicRegressionSolution(problemData, model);
+      return new SymbolicRegressionSolution(problemData, model, lowerEstimationLimit, upperEstimationLimit);
     }
   }
 }

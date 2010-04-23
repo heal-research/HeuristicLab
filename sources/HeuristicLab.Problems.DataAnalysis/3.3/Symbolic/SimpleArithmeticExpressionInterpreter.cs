@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("SimpleArithmeticExpressionInterpreter", "Interpreter for arithmetic symbolic expression trees including function calls.")]
   // not thread safe!
-  public class SimpleArithmeticExpressionInterpreter : Item, ISymbolicExpressionTreeInterpreter {
+  public class SimpleArithmeticExpressionInterpreter : NamedItem, ISymbolicExpressionTreeInterpreter {
     private class OpCodes {
       public const byte Add = 1;
       public const byte Sub = 2;
@@ -46,10 +46,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private const int ARGUMENT_STACK_SIZE = 1024;
+
     private Dataset dataset;
     private int row;
     private Instruction[] code;
     private int pc;
+
+    public SimpleArithmeticExpressionInterpreter()
+      : base() {
+    }
 
     public IEnumerable<double> GetSymbolicExpressionTreeValues(SymbolicExpressionTree tree, Dataset dataset, IEnumerable<int> rows) {
       this.dataset = dataset;
@@ -60,9 +65,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         this.row = row;
         pc = 0;
         argStackPointer = 0;
-        var estimatedValue = Evaluate();
-        if (double.IsNaN(estimatedValue) || double.IsInfinity(estimatedValue)) yield return 0.0;
-        else yield return estimatedValue;
+        yield return Evaluate();
       }
     }
 

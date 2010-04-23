@@ -49,15 +49,41 @@ namespace HeuristicLab.Problems.DataAnalysis {
         }
       }
     }
+    [Storable]
+    private double lowerEstimationLimit;
+    public double LowerEstimationLimit {
+      get { return lowerEstimationLimit; }
+      set {
+        if (lowerEstimationLimit != value) {
+          lowerEstimationLimit = value;
+          OnEstimatedValuesChanged(EventArgs.Empty);
+        }
+      }
+    }
+
+    [Storable]
+    private double upperEstimationLimit;
+    public double UpperEstimationLimit {
+      get { return upperEstimationLimit; }
+      set {
+        if (upperEstimationLimit != value) {
+          upperEstimationLimit = value;
+          OnEstimatedValuesChanged(EventArgs.Empty);
+        }
+      }
+    }
 
     public abstract IEnumerable<double> EstimatedValues { get; }
     public abstract IEnumerable<double> EstimatedTrainingValues { get; }
     public abstract IEnumerable<double> EstimatedTestValues { get; }
 
     protected DataAnalysisSolution() : base() { }
-    protected DataAnalysisSolution(DataAnalysisProblemData problemData)
+    protected DataAnalysisSolution(DataAnalysisProblemData problemData) : this(problemData, double.NegativeInfinity, double.PositiveInfinity) { }
+    protected DataAnalysisSolution(DataAnalysisProblemData problemData, double lowerEstimationLimit, double upperEstimationLimit)
       : this() {
       this.problemData = problemData;
+      this.lowerEstimationLimit = lowerEstimationLimit;
+      this.upperEstimationLimit = upperEstimationLimit;
       Initialize();
     }
 
@@ -73,6 +99,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       DataAnalysisSolution clone = (DataAnalysisSolution)base.Clone(cloner);
       // don't clone the problem data!
       clone.problemData = problemData;
+      clone.lowerEstimationLimit = lowerEstimationLimit;
+      clone.upperEstimationLimit = upperEstimationLimit;
       clone.Initialize();
       return clone;
     }

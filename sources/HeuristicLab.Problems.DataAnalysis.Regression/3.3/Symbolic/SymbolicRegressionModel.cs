@@ -54,7 +54,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     public IEnumerable<string> InputVariables {
       get { return inputVariables.AsEnumerable(); }
     }
-
     public SymbolicRegressionModel() : base() { } // for cloning
 
     public SymbolicRegressionModel(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree tree, IEnumerable<string> inputVariables)

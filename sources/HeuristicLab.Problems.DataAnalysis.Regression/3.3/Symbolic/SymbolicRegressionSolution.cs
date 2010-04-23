@@ -49,8 +49,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
 
     public SymbolicRegressionSolution() : base() { }
-    public SymbolicRegressionSolution(DataAnalysisProblemData problemData, SymbolicRegressionModel model)
-      : base(problemData) {
+    public SymbolicRegressionSolution(DataAnalysisProblemData problemData, SymbolicRegressionModel model, double lowerEstimationLimit, double upperEstimationLimit)
+      : base(problemData, lowerEstimationLimit, upperEstimationLimit) {
       this.model = model;
     }
 
@@ -67,7 +67,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
 
     private void RecalculateEstimatedValues() {
-      estimatedValues = model.GetEstimatedValues(ProblemData.Dataset, 0, ProblemData.Dataset.Rows).ToList();
+      estimatedValues = (from x in model.GetEstimatedValues(ProblemData.Dataset, 0, ProblemData.Dataset.Rows)
+                         let boundedX = Math.Min(UpperEstimationLimit, Math.Max(LowerEstimationLimit, x))
+                         select double.IsNaN(boundedX) ? UpperEstimationLimit : boundedX).ToList();
       OnEstimatedValuesChanged(EventArgs.Empty);
     }
 
