@@ -105,11 +105,11 @@ namespace HeuristicLab.Optimization {
 
     private void Initialize(IAlgorithm algorithm) {
       this.algorithm = algorithm;
-      this.algorithm.Runs.Clear();
       parameters = new Dictionary<string, IItem>();
       results = new Dictionary<string, IItem>();
       this.algorithm.CollectParameterValues(parameters);
       this.algorithm.CollectResultValues(results);
+      this.algorithm.Prepare(true);
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

@@ -148,8 +148,6 @@ namespace HeuristicLab.Optimization.Views {
       if (!Locked) {
         IContentView view = MainFormManager.CreateDefaultView(Content.Algorithm.Clone());
         if (view != null) {
-          view.ReadOnly = ReadOnly;
-          view.Locked = Locked;
           view.Show();
         }
       }
