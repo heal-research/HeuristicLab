@@ -125,7 +125,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
         foreach (IParameter param in oper.Parameters) {
           clone.parameterOperatorMapping.Add(param, oper);
           IValueParameter opParam = param as IValueParameter;
-          if (opParam != null && typeof(IOperator).IsAssignableFrom(param.DataType)) 
+          if (opParam != null && typeof(IOperator).IsAssignableFrom(param.DataType))
             clone.RegisterOperatorParameterEvents(opParam);
           else
             clone.RegisterParameterEvents(param);
@@ -236,10 +236,11 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     public override void AddConnectionInfo(IConnectionInfo connectionInfo) {
       IOperatorShapeInfo shapeInfo = (IOperatorShapeInfo)connectionInfo.From;
       IOperator op = this.operatorShapeInfoMapping.GetBySecond(shapeInfo);
-      IValueParameter param = (IValueParameter)op.Parameters.Where(p => p.Name == connectionInfo.ConnectorFrom).Single();
       IOperatorShapeInfo shapeInfoTo = (IOperatorShapeInfo)connectionInfo.To;
       IOperator opTo = this.operatorShapeInfoMapping.GetBySecond(shapeInfoTo);
-      param.Value = opTo;
+      IValueParameter param = (IValueParameter)op.Parameters.Where(p => p.Name == connectionInfo.ConnectorFrom).SingleOrDefault();
+      if (param != null)
+        param.Value = opTo;
     }
     #endregion
 

@@ -38,7 +38,7 @@ using HeuristicLab.Collections;
 namespace HeuristicLab.Operators.Views.GraphVisualization {
   [View("OperatorGraph View (Chart)")]
   [Content(typeof(OperatorGraph), true)]
-  public partial class OperatorGraphView : ContentView {
+  public partial class OperatorGraphView : AsynchronousContentView {
     public OperatorGraphView() {
       InitializeComponent();
       Caption = "Operator Graph Visualization";
@@ -80,6 +80,11 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       this.SetEnabledStateOfControls();
     }
 
+    protected override void OnLockedChanged() {
+      base.OnLockedChanged();
+      this.SetEnabledStateOfControls();
+    }
+
     private void SetEnabledStateOfControls() {
       if (Content == null) {
         selectButton.Enabled = false;
@@ -90,7 +95,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
         zoomOutButton.Enabled = false;
         screenshotButton.Enabled = false;
         detailsViewHost.Enabled = false;
-        graphVisualizationInfoView.ReadOnly = true;
         connectButton.Enabled = false;
       } else {
         selectButton.Enabled = true;
@@ -101,9 +105,9 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
         zoomOutButton.Enabled = true;
         screenshotButton.Enabled = true;
         detailsViewHost.Enabled = true;
-        connectButton.Enabled = !ReadOnly;
+        connectButton.Enabled = !ReadOnly && !Locked;
       }
-    } 
+    }
 
     private OperatorGraphVisualizationInfo VisualizationInfo {
       get { return Content.VisualizationInfo as OperatorGraphVisualizationInfo; }
@@ -111,18 +115,19 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     }
 
     private void Controller_SelectionChanged(object sender, EventArgs e) {
-      CollectionBase<IDiagramEntity> selectedObjects = this.graphVisualizationInfoView.Controller.Model.Selection.SelectedItems;
       this.detailsViewHost.ViewType = null;
+      this.detailsViewHost.Content = null;
+
+      CollectionBase<IDiagramEntity> selectedObjects = this.graphVisualizationInfoView.Controller.Model.Selection.SelectedItems;
       if (selectedObjects.Count == 1) {
         IShape shape = selectedObjects[0] as IShape;
         if (shape != null) {
           IOperatorShapeInfo shapeInfo = shape.Tag as IOperatorShapeInfo;
           IOperator op = this.VisualizationInfo.GetOperatorForShapeInfo(shapeInfo);
-          this.detailsViewHost.ViewType = null;
           this.detailsViewHost.Content = op;
-          return;
         }
       }
+
       IConnector connector = this.graphVisualizationInfoView.Controller.Model.Selection.Connector;
       if (connector != null) {
         IShape shape = connector.Parent as IShape;
@@ -138,12 +143,10 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
             IParameter parameter = op.Parameters.Where(p => p.Name == connectorName).First();
             this.detailsViewHost.ViewType = null;
             this.detailsViewHost.Content = parameter;
-            return;
           }
         }
       }
-      this.detailsViewHost.ViewType = null;
-      this.detailsViewHost.Content = null;
+
     }
 
     private void Controller_OnMouseDown(object sender, MouseEventArgs e) {
@@ -183,7 +186,9 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       if (shapeInfo != null) {
         IOperator op = this.VisualizationInfo.GetOperatorForShapeInfo(shapeInfo);
         this.initialToolStripMenuItem.Checked = this.Content.InitialOperator == op;
+        this.initialToolStripMenuItem.Enabled = !ReadOnly && !Locked;
         this.breakPointToolStripMenuItem.Checked = op.Breakpoint;
+        this.breakPointToolStripMenuItem.Enabled = !ReadOnly && !Locked;
       }
     }
 
@@ -317,6 +322,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       saveFileDialog.DefaultExt = "bmp";
       saveFileDialog.Filter = "Bitmap|*.bmp|All Files|*.*";
       saveFileDialog.FilterIndex = 1;
+      saveFileDialog.AddExtension = true;
 
       if (saveFileDialog.ShowDialog() == DialogResult.OK) {
         bitmap.Save(saveFileDialog.FileName);

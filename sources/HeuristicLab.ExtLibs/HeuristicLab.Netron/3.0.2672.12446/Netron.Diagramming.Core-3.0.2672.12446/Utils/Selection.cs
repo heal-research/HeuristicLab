@@ -432,6 +432,7 @@ namespace Netron.Diagramming.Core {
       mSelection.Clear();
       if (Controller.View != null)
         Controller.View.HideTracker();
+      this.RaiseOnNewSelection();
     }
 
 

@@ -24,23 +24,24 @@
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OperatorGraphView));
       this.graphVisualizationInfoView = new HeuristicLab.Operators.Views.GraphVisualization.GraphVisualizationInfoView();
       this.shapeContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.openViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.initialToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.breakPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
+      this.screenshotButton = new System.Windows.Forms.Button();
+      this.zoomOutButton = new System.Windows.Forms.Button();
+      this.zoomInButton = new System.Windows.Forms.Button();
+      this.zoomAreaButton = new System.Windows.Forms.Button();
+      this.relayoutButton = new System.Windows.Forms.Button();
+      this.connectButton = new System.Windows.Forms.Button();
+      this.panButton = new System.Windows.Forms.Button();
+      this.selectButton = new System.Windows.Forms.Button();
       this.detailsGroupBox = new System.Windows.Forms.GroupBox();
       this.detailsViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
-      this.selectButton = new System.Windows.Forms.Button();
-      this.panButton = new System.Windows.Forms.Button();
-      this.connectButton = new System.Windows.Forms.Button();
-      this.relayoutButton = new System.Windows.Forms.Button();
-      this.zoomAreaButton = new System.Windows.Forms.Button();
-      this.zoomInButton = new System.Windows.Forms.Button();
-      this.zoomOutButton = new System.Windows.Forms.Button();
-      this.screenshotButton = new System.Windows.Forms.Button();
-      this.buttonToolTip = new System.Windows.Forms.ToolTip();
+      this.buttonToolTip = new System.Windows.Forms.ToolTip(this.components);
       this.shapeContextMenu.SuspendLayout();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
@@ -57,6 +58,7 @@
       this.graphVisualizationInfoView.Content = null;
       this.graphVisualizationInfoView.Location = new System.Drawing.Point(3, 30);
       this.graphVisualizationInfoView.Name = "graphVisualizationInfoView";
+      this.graphVisualizationInfoView.ReadOnly = false;
       this.graphVisualizationInfoView.Size = new System.Drawing.Size(662, 248);
       this.graphVisualizationInfoView.TabIndex = 0;
       // 
@@ -72,6 +74,7 @@
       // 
       // openViewToolStripMenuItem
       // 
+      this.openViewToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
       this.openViewToolStripMenuItem.Name = "openViewToolStripMenuItem";
       this.openViewToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
       this.openViewToolStripMenuItem.Text = "Open View";
@@ -88,7 +91,7 @@
       // 
       this.breakPointToolStripMenuItem.Name = "breakPointToolStripMenuItem";
       this.breakPointToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
-      this.breakPointToolStripMenuItem.Text = "Break Point";
+      this.breakPointToolStripMenuItem.Text = "Breakpoint";
       this.breakPointToolStripMenuItem.Click += new System.EventHandler(this.breakPointToolStripMenuItem_Click);
       // 
       // splitContainer
@@ -117,10 +120,100 @@
       this.splitContainer.SplitterDistance = 279;
       this.splitContainer.TabIndex = 1;
       // 
+      // screenshotButton
+      // 
+      this.screenshotButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Image;
+      this.screenshotButton.Location = new System.Drawing.Point(243, 3);
+      this.screenshotButton.Name = "screenshotButton";
+      this.screenshotButton.Size = new System.Drawing.Size(24, 24);
+      this.screenshotButton.TabIndex = 8;
+      this.buttonToolTip.SetToolTip(this.screenshotButton, "Screenshot");
+      this.screenshotButton.UseVisualStyleBackColor = true;
+      this.screenshotButton.Click += new System.EventHandler(this.screenshotButton_Click);
+      // 
+      // zoomOutButton
+      // 
+      this.zoomOutButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.ZoomOut;
+      this.zoomOutButton.Location = new System.Drawing.Point(213, 3);
+      this.zoomOutButton.Name = "zoomOutButton";
+      this.zoomOutButton.Size = new System.Drawing.Size(24, 24);
+      this.zoomOutButton.TabIndex = 7;
+      this.buttonToolTip.SetToolTip(this.zoomOutButton, "Zoom Out");
+      this.zoomOutButton.UseVisualStyleBackColor = true;
+      this.zoomOutButton.Click += new System.EventHandler(this.zoomOutButton_Click);
+      // 
+      // zoomInButton
+      // 
+      this.zoomInButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.ZoomIn;
+      this.zoomInButton.Location = new System.Drawing.Point(183, 3);
+      this.zoomInButton.Name = "zoomInButton";
+      this.zoomInButton.Size = new System.Drawing.Size(24, 24);
+      this.zoomInButton.TabIndex = 6;
+      this.buttonToolTip.SetToolTip(this.zoomInButton, "Zoom In");
+      this.zoomInButton.UseVisualStyleBackColor = true;
+      this.zoomInButton.Click += new System.EventHandler(this.zoomInButton_Click);
+      // 
+      // zoomAreaButton
+      // 
+      this.zoomAreaButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.ActualSize;
+      this.zoomAreaButton.Location = new System.Drawing.Point(153, 3);
+      this.zoomAreaButton.Name = "zoomAreaButton";
+      this.zoomAreaButton.Size = new System.Drawing.Size(24, 24);
+      this.zoomAreaButton.TabIndex = 5;
+      this.buttonToolTip.SetToolTip(this.zoomAreaButton, "Zoom Area Tool");
+      this.zoomAreaButton.UseVisualStyleBackColor = true;
+      this.zoomAreaButton.Click += new System.EventHandler(this.zoomAreaButton_Click);
+      // 
+      // relayoutButton
+      // 
+      this.relayoutButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.RefreshDocument;
+      this.relayoutButton.Location = new System.Drawing.Point(123, 3);
+      this.relayoutButton.Name = "relayoutButton";
+      this.relayoutButton.Size = new System.Drawing.Size(24, 24);
+      this.relayoutButton.TabIndex = 4;
+      this.buttonToolTip.SetToolTip(this.relayoutButton, "Relayout Graph");
+      this.relayoutButton.UseVisualStyleBackColor = true;
+      this.relayoutButton.Click += new System.EventHandler(this.relayoutButton_Click);
+      // 
+      // connectButton
+      // 
+      this.connectButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Interface;
+      this.connectButton.Location = new System.Drawing.Point(63, 3);
+      this.connectButton.Name = "connectButton";
+      this.connectButton.Size = new System.Drawing.Size(24, 24);
+      this.connectButton.TabIndex = 3;
+      this.buttonToolTip.SetToolTip(this.connectButton, "Connection Tool");
+      this.connectButton.UseVisualStyleBackColor = true;
+      this.connectButton.Click += new System.EventHandler(this.connectButton_Click);
+      // 
+      // panButton
+      // 
+      this.panButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Breakpoint;
+      this.panButton.Location = new System.Drawing.Point(33, 3);
+      this.panButton.Name = "panButton";
+      this.panButton.Size = new System.Drawing.Size(24, 24);
+      this.panButton.TabIndex = 2;
+      this.buttonToolTip.SetToolTip(this.panButton, "Pan Tool");
+      this.panButton.UseVisualStyleBackColor = true;
+      this.panButton.Click += new System.EventHandler(this.panButton_Click);
+      // 
+      // selectButton
+      // 
+      this.selectButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Pointer;
+      this.selectButton.Location = new System.Drawing.Point(3, 3);
+      this.selectButton.Name = "selectButton";
+      this.selectButton.Size = new System.Drawing.Size(24, 24);
+      this.selectButton.TabIndex = 1;
+      this.buttonToolTip.SetToolTip(this.selectButton, "Select Tool");
+      this.selectButton.UseVisualStyleBackColor = true;
+      this.selectButton.Click += new System.EventHandler(this.selectButton_Click);
+      // 
       // detailsGroupBox
       // 
+      this.detailsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.detailsGroupBox.Controls.Add(this.detailsViewHost);
-      this.detailsGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
       this.detailsGroupBox.Location = new System.Drawing.Point(0, 0);
       this.detailsGroupBox.Name = "detailsGroupBox";
       this.detailsGroupBox.Size = new System.Drawing.Size(665, 161);
@@ -130,101 +223,17 @@
       // 
       // detailsViewHost
       // 
+      this.detailsViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.detailsViewHost.Caption = null;
       this.detailsViewHost.Content = null;
-      this.detailsViewHost.Dock = System.Windows.Forms.DockStyle.Fill;
       this.detailsViewHost.Location = new System.Drawing.Point(3, 16);
       this.detailsViewHost.Name = "detailsViewHost";
+      this.detailsViewHost.ReadOnly = false;
       this.detailsViewHost.Size = new System.Drawing.Size(659, 142);
       this.detailsViewHost.TabIndex = 0;
       this.detailsViewHost.ViewType = null;
-      // 
-      // selectButton
-      // 
-      this.selectButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Pointer;
-      this.selectButton.Location = new System.Drawing.Point(3, 3);
-      this.selectButton.Name = "selectButton";
-      this.selectButton.Size = new System.Drawing.Size(24, 24);
-      this.selectButton.TabIndex = 1;
-      this.selectButton.UseVisualStyleBackColor = true;
-      this.selectButton.Click += new System.EventHandler(selectButton_Click);
-      this.buttonToolTip.SetToolTip(this.selectButton, "Select Tool");
-      // 
-      // panButton
-      // 
-      this.panButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Breakpoint;
-      this.panButton.Location = new System.Drawing.Point(33, 3);
-      this.panButton.Name = "panButton";
-      this.panButton.Size = new System.Drawing.Size(24, 24);
-      this.panButton.TabIndex = 2;
-      this.panButton.UseVisualStyleBackColor = true;
-      this.panButton.Click += new System.EventHandler(panButton_Click);
-      this.buttonToolTip.SetToolTip(this.panButton, "Pan Tool");
-      // 
-      // connectButton
-      // 
-      this.connectButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Interface;
-      this.connectButton.Location = new System.Drawing.Point(63, 3);
-      this.connectButton.Name = "connectButton";
-      this.connectButton.Size = new System.Drawing.Size(24, 24);
-      this.connectButton.TabIndex = 3;
-      this.connectButton.UseVisualStyleBackColor = true;
-      this.connectButton.Click += new System.EventHandler(connectButton_Click);
-      this.buttonToolTip.SetToolTip(this.connectButton, "Connection Tool");
-      // 
-      // relayoutButton
-      // 
-      this.relayoutButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.RefreshDocument;
-      this.relayoutButton.Location = new System.Drawing.Point(123, 3);
-      this.relayoutButton.Name = "relayoutButton";
-      this.relayoutButton.Size = new System.Drawing.Size(24, 24);
-      this.relayoutButton.TabIndex = 4;
-      this.relayoutButton.UseVisualStyleBackColor = true;
-      this.relayoutButton.Click += new System.EventHandler(relayoutButton_Click);
-      this.buttonToolTip.SetToolTip(this.relayoutButton, "Relayout Graph");
-      // 
-      // zoomAreaButton
-      // 
-      this.zoomAreaButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Zoom;
-      this.zoomAreaButton.Location = new System.Drawing.Point(153, 3);
-      this.zoomAreaButton.Name = "zoomAreaButton";
-      this.zoomAreaButton.Size = new System.Drawing.Size(24, 24);
-      this.zoomAreaButton.TabIndex = 5;
-      this.zoomAreaButton.UseVisualStyleBackColor = true;
-      this.zoomAreaButton.Click += new System.EventHandler(zoomAreaButton_Click);
-      this.buttonToolTip.SetToolTip(this.zoomAreaButton, "Zoom Area Tool");
-      // 
-      // zoomInButton
-      // 
-      this.zoomInButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.ZoomIn;
-      this.zoomInButton.Location = new System.Drawing.Point(183, 3);
-      this.zoomInButton.Name = "zoomInButton";
-      this.zoomInButton.Size = new System.Drawing.Size(24, 24);
-      this.zoomInButton.TabIndex = 6;
-      this.zoomInButton.UseVisualStyleBackColor = true;
-      this.zoomInButton.Click += new System.EventHandler(zoomInButton_Click);
-      this.buttonToolTip.SetToolTip(this.zoomInButton, "Zoom In");
-      // 
-      // zoomOutButton
-      // 
-      this.zoomOutButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.ZoomOut;
-      this.zoomOutButton.Location = new System.Drawing.Point(213, 3);
-      this.zoomOutButton.Name = "zoomOutButton";
-      this.zoomOutButton.Size = new System.Drawing.Size(24, 24);
-      this.zoomOutButton.TabIndex = 7;
-      this.zoomOutButton.UseVisualStyleBackColor = true;
-      this.zoomOutButton.Click += new System.EventHandler(zoomOutButton_Click);
-      this.buttonToolTip.SetToolTip(this.zoomOutButton, "Zoom Out");
-      // 
-      // screenshotButton
-      // 
-      this.screenshotButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Copy;
-      this.screenshotButton.Location = new System.Drawing.Point(243, 3);
-      this.screenshotButton.Name = "screenshotButton";
-      this.screenshotButton.Size = new System.Drawing.Size(24, 24);
-      this.screenshotButton.TabIndex = 8;
-      this.screenshotButton.UseVisualStyleBackColor = true;
-      this.screenshotButton.Click += new System.EventHandler(screenshotButton_Click);
-      this.buttonToolTip.SetToolTip(this.screenshotButton, "Screenshot");
       // 
       // OperatorGraphView
       // 

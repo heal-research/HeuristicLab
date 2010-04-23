@@ -41,7 +41,7 @@ using System.Drawing.Drawing2D;
 namespace HeuristicLab.Operators.Views.GraphVisualization {
   [View("GraphVisualizationInfo View")]
   [Content(typeof(IGraphVisualizationInfo), true)]
-  public partial class GraphVisualizationInfoView : ContentView {
+  public partial class GraphVisualizationInfoView : AsynchronousContentView {
     private BidirectionalLookup<IShapeInfo, IShape> shapeInfoShapeMapping;
     private BidirectionalLookup<IConnectionInfo, IConnection> connectionInfoConnectionMapping;
     private LinePenStyle connectionPenStyle;
@@ -77,15 +77,19 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       base.OnReadOnlyChanged();
       this.SetEnabledStateOfControls();
     }
+    protected override void OnLockedChanged() {
+      base.OnLockedChanged();
+      this.SetEnabledStateOfControls();
+    }
     private void SetEnabledStateOfControls() {
       DeleteTool deleteTool = (DeleteTool)this.Controller.Tools.Where(t => t.Name == ControllerBase.DeleteToolName).FirstOrDefault();
       HeuristicLab.Netron.Controller controller = this.Controller as HeuristicLab.Netron.Controller;
       if (Content == null && deleteTool != null && controller != null)
         controller.RemoveTool(deleteTool);
       else {
-        if (ReadOnly && deleteTool != null && controller != null)
+        if ((ReadOnly || Locked) && deleteTool != null && controller != null)
           controller.RemoveTool(deleteTool);
-        else if (!ReadOnly && deleteTool == null)
+        else if ((!ReadOnly && !Locked) && deleteTool == null)
           this.Controller.AddTool(new DeleteTool(ControllerBase.DeleteToolName));
       }
     }
@@ -170,15 +174,16 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       this.graphVisualization.Invalidate();
     }
     private void RemoveShapeInfo(IShapeInfo shapeInfo) {
-        this.DeregisterShapeInfoEvents(shapeInfo);
-        IShape shape = this.shapeInfoShapeMapping.GetByFirst(shapeInfo);
-        this.DeregisterShapeEvents(shape);
-        this.shapeInfoShapeMapping.RemoveByFirst(shapeInfo);
+      this.DeregisterShapeInfoEvents(shapeInfo);
+      IShape shape = this.shapeInfoShapeMapping.GetByFirst(shapeInfo);
+      this.DeregisterShapeEvents(shape);
+      this.shapeInfoShapeMapping.RemoveByFirst(shapeInfo);
 
-        if (this.graphVisualization.Controller.Model.Shapes.Contains(shape)) {
-          this.graphVisualization.Controller.Model.RemoveShape(shape);
-          this.graphVisualization.Invalidate();
-        }
+      if (this.graphVisualization.Controller.Model.Shapes.Contains(shape)) {
+        this.graphVisualization.Controller.Model.RemoveShape(shape);
+        this.graphVisualization.Controller.Model.Selection.Clear();
+        this.graphVisualization.Invalidate();
+      }
     }
 
     private void RegisterShapeInfoEvents(IShapeInfo shapeInfo) {
@@ -239,7 +244,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       IConnection connection = this.connectionInfoConnectionMapping.GetByFirst(connectionInfo);
       this.connectionInfoConnectionMapping.RemoveByFirst(connectionInfo);
       this.RemoveConnection(connection);
-      
+
     }
     private void RemoveConnection(IConnection connection) {
       if (connection.From.AttachedTo != null)
