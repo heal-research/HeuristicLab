@@ -108,6 +108,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private ValueLookupParameter<BoolValue> OffspringSelectionBeforeMutationParameter {
       get { return (ValueLookupParameter<BoolValue>)Parameters["OffspringSelectionBeforeMutation"]; }
     }
+    private ValueLookupParameter<IntValue> SelectedParentsParameter {
+      get { return (ValueLookupParameter<IntValue>)Parameters["SelectedParents"]; }
+    }
     #endregion
 
     #region Properties
@@ -183,6 +186,10 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       get { return OffspringSelectionBeforeMutationParameter.Value; }
       set { OffspringSelectionBeforeMutationParameter.Value = value; }
     }
+    public IntValue SelectedParents {
+      get { return SelectedParentsParameter.Value; }
+      set { SelectedParentsParameter.Value = value; }
+    }
     private List<ISelector> selectors;
     private IEnumerable<ISelector> Selectors {
       get { return selectors; }
@@ -224,6 +231,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("MaximumSelectionPressure", "The maximum selection pressure that terminates the algorithm.", new DoubleValue(100)));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("FinalMaximumSelectionPressure", "The maximum selection pressure used when there is only one village left.", new DoubleValue(100)));
       Parameters.Add(new ValueLookupParameter<BoolValue>("OffspringSelectionBeforeMutation", "True if the offspring selection step should be applied before mutation, false if it should be applied after mutation.", new BoolValue(false)));
+      Parameters.Add(new ValueLookupParameter<IntValue>("SelectedParents", "Should be about 2 * PopulationSize, for large problems use a smaller value to decrease memory footprint.", new IntValue(200)));
 
       RandomCreator randomCreator = new RandomCreator();
       SubScopesCreator populationCreator = new SubScopesCreator();
@@ -416,7 +424,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private void ParameterizeSelectors() {
       foreach (ISelector selector in Selectors) {
         selector.CopySelected = new BoolValue(true);
-        selector.NumberOfSelectedSubScopesParameter.Value = new IntValue(2 * (PopulationSize.Value - Elites.Value));
+        selector.NumberOfSelectedSubScopesParameter.Value = null;
+        selector.NumberOfSelectedSubScopesParameter.ActualName = SelectedParentsParameter.Name;
         ParameterizeStochasticOperator(selector);
       }
       if (Problem != null) {

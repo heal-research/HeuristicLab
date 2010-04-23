@@ -97,6 +97,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private ValueLookupParameter<BoolValue> OffspringSelectionBeforeMutationParameter {
       get { return (ValueLookupParameter<BoolValue>)Parameters["OffspringSelectionBeforeMutation"]; }
     }
+    private ValueLookupParameter<IntValue> SelectedParentsParameter {
+      get { return (ValueLookupParameter<IntValue>)Parameters["SelectedParents"]; }
+    }
     #endregion
 
     #region Properties
@@ -136,29 +139,33 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       get { return MaximumGenerationsParameter.Value; }
       set { MaximumGenerationsParameter.Value = value; }
     }
-    private DoubleValue SuccessRatio {
+    public DoubleValue SuccessRatio {
       get { return SuccessRatioParameter.Value; }
       set { SuccessRatioParameter.Value = value; }
     }
-    private DoubleValue ComparisonFactorLowerBound {
+    public DoubleValue ComparisonFactorLowerBound {
       get { return ComparisonFactorLowerBoundParameter.Value; }
       set { ComparisonFactorLowerBoundParameter.Value = value; }
     }
-    private DoubleValue ComparisonFactorUpperBound {
+    public DoubleValue ComparisonFactorUpperBound {
       get { return ComparisonFactorUpperBoundParameter.Value; }
       set { ComparisonFactorUpperBoundParameter.Value = value; }
     }
-    private IDiscreteDoubleValueModifier ComparisonFactorModifier {
+    public IDiscreteDoubleValueModifier ComparisonFactorModifier {
       get { return ComparisonFactorModifierParameter.Value; }
       set { ComparisonFactorModifierParameter.Value = value; }
     }
-    private DoubleValue MaximumSelectionPressure {
+    public DoubleValue MaximumSelectionPressure {
       get { return MaximumSelectionPressureParameter.Value; }
       set { MaximumSelectionPressureParameter.Value = value; }
     }
-    private BoolValue OffspringSelectionBeforeMutation {
+    public BoolValue OffspringSelectionBeforeMutation {
       get { return OffspringSelectionBeforeMutationParameter.Value; }
       set { OffspringSelectionBeforeMutationParameter.Value = value; }
+    }
+    public IntValue SelectedParents {
+      get { return SelectedParentsParameter.Value; }
+      set { SelectedParentsParameter.Value = value; }
     }
     private RandomCreator RandomCreator {
       get { return (RandomCreator)OperatorGraph.InitialOperator; }
@@ -195,6 +202,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier>("ComparisonFactorModifier", "The operator used to modify the comparison factor.", new ItemSet<IDiscreteDoubleValueModifier>(new IDiscreteDoubleValueModifier[] { new LinearDiscreteDoubleValueModifier() }), new LinearDiscreteDoubleValueModifier()));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("MaximumSelectionPressure", "The maximum selection pressure that terminates the algorithm.", new DoubleValue(100)));
       Parameters.Add(new ValueLookupParameter<BoolValue>("OffspringSelectionBeforeMutation", "True if the offspring selection step should be applied before mutation, false if it should be applied after mutation.", new BoolValue(false)));
+      Parameters.Add(new ValueLookupParameter<IntValue>("SelectedParents", "Should be about 2 * PopulationSize, for large problems use a smaller value to decrease memory footprint.", new IntValue(200)));
 
       RandomCreator randomCreator = new RandomCreator();
       SolutionsCreator solutionsCreator = new SolutionsCreator();
@@ -315,7 +323,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
         if (Problem.Visualizer != null) Problem.Visualizer.VisualizationParameter.ActualNameChanged += new EventHandler(Visualizer_VisualizationParameter_ActualNameChanged);
       }
     }
-
     private void ParameterizeSolutionsCreator() {
       SolutionsCreator.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
       SolutionsCreator.SolutionCreatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
@@ -346,7 +353,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private void ParameterizeSelectors() {
       foreach (ISelector selector in Selectors) {
         selector.CopySelected = new BoolValue(true);
-        selector.NumberOfSelectedSubScopesParameter.Value = new IntValue(2 * (PopulationSizeParameter.Value.Value - ElitesParameter.Value.Value));
+        selector.NumberOfSelectedSubScopesParameter.Value = null;
+        selector.NumberOfSelectedSubScopesParameter.ActualName = SelectedParentsParameter.Name;
         ParameterizeStochasticOperator(selector);
       }
       if (Problem != null) {
