@@ -50,6 +50,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private BackgroundWorker updateOrInstallPluginsBackgroundWorker;
     private BackgroundWorker removePluginsBackgroundWorker;
     private BackgroundWorker refreshLocalPluginsBackgroundWorker;
+    private BackgroundWorker updateAllPluginsBackgroundWorker;
     private PluginManager pluginManager;
     private string pluginDir;
 
@@ -79,6 +80,10 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       refreshLocalPluginsBackgroundWorker = new BackgroundWorker();
       refreshLocalPluginsBackgroundWorker.DoWork += new DoWorkEventHandler(refreshLocalPluginsBackgroundWorker_DoWork);
       refreshLocalPluginsBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(refreshLocalPluginsBackgroundWorker_RunWorkerCompleted);
+
+      updateAllPluginsBackgroundWorker = new BackgroundWorker();
+      updateAllPluginsBackgroundWorker.DoWork += new DoWorkEventHandler(updateAllPluginsBackgroundWorker_DoWork);
+      updateAllPluginsBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(updateAllPluginsBackgroundWorker_RunWorkerCompleted);
       #endregion
 
       installationManager = new InstallationManager(pluginDir);
@@ -89,8 +94,45 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       installationManager.PreRemovePlugin += new EventHandler<PluginInfrastructureCancelEventArgs>(installationManager_PreRemovePlugin);
       installationManager.PreUpdatePlugin += new EventHandler<PluginInfrastructureCancelEventArgs>(installationManager_PreUpdatePlugin);
 
-      RefreshLocalPluginListAsync();
+      // show or hide controls for uploading plugins based on setting
+      if (!HeuristicLab.PluginInfrastructure.Properties.Settings.Default.ShowPluginUploadControls) {
+        tabControl.Controls.Remove(uploadPluginsTabPage);
+        tabControl.Controls.Remove(manageProductsTabPage);
+      }
+
+      UpdateLocalPluginList(pluginManager.Plugins);
+      UpdateControlsConnected();
     }
+
+    #region event handlers for update all plugins backgroundworker
+    void updateAllPluginsBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
+      if (e.Error != null) {
+        MessageBox.Show("There was an error while connecting to the server." + Environment.NewLine +
+           "Please check your connection settings and user credentials.");
+        UpdateControlsDisconnected();
+      } else {
+        RefreshLocalPluginListAsync();
+        UpdateControlsConnected();
+      }
+    }
+
+    void updateAllPluginsBackgroundWorker_DoWork(object sender, DoWorkEventArgs e) {
+      IEnumerable<IPluginDescription> installedPlugins = (IEnumerable<IPluginDescription>)e.Argument;
+      var remotePlugins = installationManager.GetRemotePluginList();
+      // if there is a local plugin with same name and same major and minor version then it's an update
+      var pluginsToUpdate = from remotePlugin in remotePlugins
+                            let matchingLocalPlugins = from installedPlugin in installedPlugins
+                                                       where installedPlugin.Name == remotePlugin.Name
+                                                       where installedPlugin.Version.Major == remotePlugin.Version.Major
+                                                       where installedPlugin.Version.Minor == remotePlugin.Version.Minor
+                                                       where installedPlugin.Version.Build <= remotePlugin.Version.Build ||
+                                                         installedPlugin.Version.Revision < remotePlugin.Version.Revision
+                                                       select installedPlugin
+                            where matchingLocalPlugins.Count() > 0
+                            select remotePlugin;
+      installationManager.Update(pluginsToUpdate);
+    }
+    #endregion
 
     #region event handlers for refresh local plugin list backgroundworker
     void refreshLocalPluginsBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
@@ -108,7 +150,11 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
     #region event handlers for plugin removal background worker
     void removePluginsBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
-      if (!e.Cancelled && e.Error == null) {
+      if (e.Error != null) {
+        MessageBox.Show("There was problem while deleting files." + Environment.NewLine +
+              e.Error.Message);
+        UpdateControlsDisconnected();
+      } else {
         RefreshLocalPluginListAsync();
         UpdateControlsConnected();
       }
@@ -122,12 +168,14 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
     #region event handlers for plugin update background worker
     void updateOrInstallPluginsBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
-      if (!e.Cancelled && e.Error == null) {
+      if (e.Error != null) {
+        MessageBox.Show("There was an error while connecting to the server." + Environment.NewLine +
+          "Please check your connection settings and user credentials.");
+        UpdateControlsDisconnected();
+      } else {
         RefreshLocalPluginListAsync();
         RefreshRemotePluginListAsync();
         UpdateControlsConnected();
-      } else {
-        UpdateControlsDisconnected();
       }
     }
 
@@ -140,12 +188,14 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
     #region event handlers for refresh server plugins background worker
     void refreshServerPluginsBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
-      if (!e.Cancelled && e.Result != null) {
+      if (e.Error != null) {
+        MessageBox.Show("There was an error while connecting to the server." + Environment.NewLine +
+          "Please check your connection settings and user credentials.");
+        UpdateControlsDisconnected();
+      } else {
         RefreshBackgroundWorkerResult refreshResult = (RefreshBackgroundWorkerResult)e.Result;
         UpdateRemotePluginList(refreshResult.RemoteProducts, refreshResult.RemotePlugins);
         UpdateControlsConnected();
-      } else {
-        UpdateControlsDisconnected();
       }
     }
 
@@ -216,21 +266,18 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     }
     #endregion
 
-    private void SetStatusStrip(string msg) {
-      if (InvokeRequired) Invoke((Action<string>)SetStatusStrip, msg);
-      else {
-        toolStripStatusLabel.Text = msg;
-        logTextBox.Text += DateTime.Now + ": " + msg + Environment.NewLine;
-      }
-    }
+
 
     #region button events
 
-    private void refreshButton_Click(object sender, EventArgs e) {
+    private void refreshRemoteButton_Click(object sender, EventArgs e) {
+      Cursor = Cursors.AppStarting;
       RefreshRemotePluginListAsync();
+      toolStripProgressBar.Visible = true;
+      DisableControls();
     }
 
-    private void updateButton_Click(object sender, EventArgs e) {
+    private void updateOrInstallButton_Click(object sender, EventArgs e) {
       Cursor = Cursors.AppStarting;
       toolStripProgressBar.Visible = true;
       DisableControls();
@@ -253,13 +300,38 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       updateOrInstallPluginsBackgroundWorker.RunWorkerAsync(updateOrInstallInfo);
     }
 
-    private void removeButton_Click(object sender, EventArgs e) {
+    private void removeLocalButton_Click(object sender, EventArgs e) {
       Cursor = Cursors.AppStarting;
       toolStripProgressBar.Visible = true;
       DisableControls();
       removePluginsBackgroundWorker.RunWorkerAsync(localPluginManagerView.CheckedPlugins);
     }
 
+    private void updateAllButton_Click(object sender, EventArgs e) {
+      Cursor = Cursors.AppStarting;
+      toolStripProgressBar.Visible = true;
+      updateButton.Enabled = false;
+      var installedPlugins = pluginManager.Plugins.OfType<IPluginDescription>();
+      updateAllPluginsBackgroundWorker.RunWorkerAsync(installedPlugins);
+    }
+
+    private void connectionSettingsToolStripMenuItem_Click(object sender, EventArgs e) {
+      new ConnectionSetupView().ShowDialog();
+    }
+
+    private void tabControl_Selected(object sender, TabControlEventArgs e) {
+      viewToolStripMenuItem.Enabled = e.TabPage == availablePluginsTabPage;
+    }
+
+    private void simpleToolStripMenuItem_Click(object sender, EventArgs e) {
+      remotePluginInstaller.ShowAllPlugins = false;
+      advancedToolStripMenuItem.Checked = false;
+    }
+
+    private void advancedToolStripMenuItem_Click(object sender, EventArgs e) {
+      remotePluginInstaller.ShowAllPlugins = true;
+      simpleToolStripMenuItem.Checked = false;
+    }
     #endregion
 
     #region confirmation dialogs
@@ -296,6 +368,13 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     #endregion
 
     #region helper methods
+    private void SetStatusStrip(string msg) {
+      if (InvokeRequired) Invoke((Action<string>)SetStatusStrip, msg);
+      else {
+        toolStripStatusLabel.Text = msg;
+        logTextBox.Text += DateTime.Now + ": " + msg + Environment.NewLine;
+      }
+    }
 
     private void UpdateLocalPluginList(IEnumerable<PluginDescription> plugins) {
       localPluginManagerView.Plugins = plugins;
@@ -346,6 +425,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
     private void UpdateControlsConnected() {
       refreshButton.Enabled = true;
+      updateButton.Enabled = true;
       toolStripProgressBar.Visible = false;
       Cursor = Cursors.Default;
     }
@@ -364,9 +444,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       installButton.Enabled = remotePluginInstaller.CheckedPlugins.Count() > 0;
     }
 
-    private void editConnectionButton_Click(object sender, EventArgs e) {
-    }
-
     protected override void OnClosing(CancelEventArgs e) {
       installationManager.PluginInstalled -= new EventHandler<PluginInfrastructureEventArgs>(installationManager_PluginInstalled);
       installationManager.PluginRemoved -= new EventHandler<PluginInfrastructureEventArgs>(installationManager_PluginRemoved);
@@ -377,20 +454,8 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       base.OnClosing(e);
     }
 
-    private void connectionSettingsToolStripMenuItem_Click(object sender, EventArgs e) {
-      new ConnectionSetupView().ShowDialog();
-    }
 
-    private void tabControl_Selected(object sender, TabControlEventArgs e) {
-      viewToolStripMenuItem.Enabled = e.TabPage == availablePluginsTabPage;
-    }
 
-    private void simpleToolStripMenuItem_Click(object sender, EventArgs e) {
 
-    }
-
-    private void advancedToolStripMenuItem_Click(object sender, EventArgs e) {
-
-    }
   }
 }

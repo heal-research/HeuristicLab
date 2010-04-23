@@ -104,6 +104,7 @@
     <Compile Include="Advanced\ConnectionSetupView.Designer.cs">
       <DependentUpon>ConnectionSetupView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Advanced\InstallationManagerException.cs" />
     <Compile Include="Advanced\DeploymentService\AdminClientFactory.cs" />
     <Compile Include="Advanced\DeploymentService\DeploymentService.cs" />
     <Compile Include="Advanced\DeploymentService\UpdateClientFactory.cs" />
@@ -287,7 +288,11 @@
     </EmbeddedResource>
     <None Include="Resources\VS2008ImageLibrary_Actions_Delete.png" />
     <None Include="Resources\VS2008ImageLibrary_CommonElements_Actions_Remove.png" />
+    <None Include="Resources\VS2008ImageLibrary_CommonElements_Actions_Remove1.png" />
     <Content Include="Resources\VS2008ImageLibrary_CommonElements_Objects_Arrow_Down.png" />
+    <None Include="Resources\VS2008ImageLibrary_Objects_NetworkConnections.png" />
+    <None Include="Resources\VS2008ImageLibrary_Objects_Install1.png" />
+    <None Include="Resources\VS2008ImageLibrary_Objects_Internet1.png" />
     <None Include="Resources\VS2008ImageLibrary_CommonElements_Objects_Arrow_Up.png" />
     <None Include="Resources\VS2008ImageLibrary_Objects_File.png" />
     <None Include="Resources\VS2008ImageLibrary_Objects_Document.png" />

@@ -57,9 +57,17 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
         client.Close();
         return plugins;
       }
-      catch (FaultException) {
+      catch (TimeoutException e) {
         client.Abort();
-        return new IPluginDescription[] { };
+        throw new InstallationManagerException("Time out while connecting to server.", e);
+      }
+      catch (FaultException e) {
+        client.Abort();
+        throw new InstallationManagerException("Fault in connection to server.", e);
+      }
+      catch (CommunicationException e) {
+        client.Abort();
+        throw new InstallationManagerException("General communication exception in connection to server.", e);
       }
     }
 
@@ -74,9 +82,17 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
         client.Close();
         return products;
       }
-      catch (FaultException) {
+      catch (TimeoutException e) {
         client.Abort();
-        return new DeploymentService.ProductDescription[] { };
+        throw new InstallationManagerException("Time out while connecting to server.", e);
+      }
+      catch (FaultException e) {
+        client.Abort();
+        throw new InstallationManagerException("Fault in connection to server.", e);
+      }
+      catch (CommunicationException e) {
+        client.Abort();
+        throw new InstallationManagerException("General communication exception in connection to server.", e);
       }
     }
 
@@ -97,8 +113,17 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
           }
           client.Close();
         }
-        catch (FaultException) {
+        catch (TimeoutException e) {
           client.Abort();
+          throw new InstallationManagerException("Time out while connecting to server.", e);
+        }
+        catch (FaultException e) {
+          client.Abort();
+          throw new InstallationManagerException("Fault in connection to server.", e);
+        }
+        catch (CommunicationException e) {
+          client.Abort();
+          throw new InstallationManagerException("General communication exception in connection to server.", e);
         }
       }
     }
@@ -120,8 +145,17 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
           }
           client.Close();
         }
-        catch (FaultException) {
+        catch (TimeoutException e) {
           client.Abort();
+          throw new InstallationManagerException("Time out while connecting to server.", e);
+        }
+        catch (FaultException e) {
+          client.Abort();
+          throw new InstallationManagerException("Fault in connection to server.", e);
+        }
+        catch (CommunicationException e) {
+          client.Abort();
+          throw new InstallationManagerException("General communication exception in connection to server.", e);
         }
       }
     }

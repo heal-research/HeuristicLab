@@ -88,5 +88,17 @@ namespace HeuristicLab.PluginInfrastructure.Properties {
                 this["UpdateLocationAdministrationAddress"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowPluginUploadControls {
+            get {
+                return ((bool)(this["ShowPluginUploadControls"]));
+            }
+            set {
+                this["ShowPluginUploadControls"] = value;
+            }
+        }
     }
 }

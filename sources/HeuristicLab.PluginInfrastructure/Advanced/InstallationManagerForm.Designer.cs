@@ -64,6 +64,8 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.advancedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.connectionSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.uploadPluginsTabPage = new System.Windows.Forms.TabPage();
+      this.manageProductsTabPage = new System.Windows.Forms.TabPage();
       this.statusStrip.SuspendLayout();
       this.tabControl.SuspendLayout();
       this.localPluginsTabPage.SuspendLayout();
@@ -99,25 +101,29 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // 
       this.removeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.removeButton.Enabled = false;
-      this.removeButton.Location = new System.Drawing.Point(95, 313);
+      this.removeButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_CommonElements_Actions_Remove;
+      this.removeButton.Location = new System.Drawing.Point(103, 305);
       this.removeButton.Name = "removeButton";
-      this.removeButton.Size = new System.Drawing.Size(106, 23);
+      this.removeButton.Size = new System.Drawing.Size(110, 31);
       this.removeButton.TabIndex = 11;
       this.removeButton.Text = "Delete Selected";
+      this.removeButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
       this.removeButton.UseVisualStyleBackColor = true;
-      this.removeButton.Click += new System.EventHandler(this.removeButton_Click);
+      this.removeButton.Click += new System.EventHandler(this.removeLocalButton_Click);
       // 
       // installButton
       // 
       this.installButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.installButton.Enabled = false;
-      this.installButton.Location = new System.Drawing.Point(87, 313);
+      this.installButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_Objects_Install;
+      this.installButton.Location = new System.Drawing.Point(84, 305);
       this.installButton.Name = "installButton";
-      this.installButton.Size = new System.Drawing.Size(132, 23);
+      this.installButton.Size = new System.Drawing.Size(140, 31);
       this.installButton.TabIndex = 15;
       this.installButton.Text = "Install Selected Items";
+      this.installButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
       this.installButton.UseVisualStyleBackColor = true;
-      this.installButton.Click += new System.EventHandler(this.updateButton_Click);
+      this.installButton.Click += new System.EventHandler(this.updateOrInstallButton_Click);
       // 
       // tabControl
       // 
@@ -126,6 +132,8 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.localPluginsTabPage);
       this.tabControl.Controls.Add(this.availablePluginsTabPage);
+      this.tabControl.Controls.Add(this.uploadPluginsTabPage);
+      this.tabControl.Controls.Add(this.manageProductsTabPage);
       this.tabControl.Controls.Add(this.logTabPage);
       this.tabControl.Location = new System.Drawing.Point(12, 27);
       this.tabControl.Name = "tabControl";
@@ -150,12 +158,16 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // updateButton
       // 
       this.updateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.updateButton.Location = new System.Drawing.Point(6, 313);
+      this.updateButton.Enabled = false;
+      this.updateButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_Objects_Internet;
+      this.updateButton.Location = new System.Drawing.Point(6, 305);
       this.updateButton.Name = "updateButton";
-      this.updateButton.Size = new System.Drawing.Size(83, 23);
+      this.updateButton.Size = new System.Drawing.Size(91, 31);
       this.updateButton.TabIndex = 12;
       this.updateButton.Text = "Update All";
+      this.updateButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
       this.updateButton.UseVisualStyleBackColor = true;
+      this.updateButton.Click += new System.EventHandler(this.updateAllButton_Click);
       // 
       // localPluginManagerView
       // 
@@ -165,7 +177,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.localPluginManagerView.Location = new System.Drawing.Point(6, 6);
       this.localPluginManagerView.Name = "localPluginManagerView";
       this.localPluginManagerView.Plugins = null;
-      this.localPluginManagerView.Size = new System.Drawing.Size(569, 301);
+      this.localPluginManagerView.Size = new System.Drawing.Size(569, 293);
       this.localPluginManagerView.TabIndex = 0;
       this.localPluginManagerView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.localPluginManager_ItemChecked);
       // 
@@ -193,20 +205,22 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.remotePluginInstaller.NewPlugins = new HeuristicLab.PluginInfrastructure.IPluginDescription[0];
       this.remotePluginInstaller.Products = new HeuristicLab.PluginInfrastructure.Advanced.DeploymentService.ProductDescription[0];
       this.remotePluginInstaller.ShowAllPlugins = false;
-      this.remotePluginInstaller.Size = new System.Drawing.Size(571, 304);
+      this.remotePluginInstaller.Size = new System.Drawing.Size(571, 293);
       this.remotePluginInstaller.TabIndex = 14;
       this.remotePluginInstaller.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.remotePluginInstaller_ItemChecked);
       // 
       // refreshButton
       // 
       this.refreshButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.refreshButton.Location = new System.Drawing.Point(6, 313);
+      this.refreshButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_Objects_Internet;
+      this.refreshButton.Location = new System.Drawing.Point(6, 305);
       this.refreshButton.Name = "refreshButton";
-      this.refreshButton.Size = new System.Drawing.Size(75, 23);
+      this.refreshButton.Size = new System.Drawing.Size(72, 31);
       this.refreshButton.TabIndex = 11;
       this.refreshButton.Text = "Refresh";
+      this.refreshButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
       this.refreshButton.UseVisualStyleBackColor = true;
-      this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
+      this.refreshButton.Click += new System.EventHandler(this.refreshRemoteButton_Click);
       // 
       // logTabPage
       // 
@@ -280,10 +294,31 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // 
       // connectionSettingsToolStripMenuItem
       // 
+      this.connectionSettingsToolStripMenuItem.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_Objects_NetworkConnections;
       this.connectionSettingsToolStripMenuItem.Name = "connectionSettingsToolStripMenuItem";
       this.connectionSettingsToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
       this.connectionSettingsToolStripMenuItem.Text = "Connection Settings...";
       this.connectionSettingsToolStripMenuItem.Click += new System.EventHandler(this.connectionSettingsToolStripMenuItem_Click);
+      // 
+      // uploadPluginsTabPage
+      // 
+      this.uploadPluginsTabPage.Location = new System.Drawing.Point(4, 22);
+      this.uploadPluginsTabPage.Name = "uploadPluginsTabPage";
+      this.uploadPluginsTabPage.Padding = new System.Windows.Forms.Padding(3);
+      this.uploadPluginsTabPage.Size = new System.Drawing.Size(583, 342);
+      this.uploadPluginsTabPage.TabIndex = 3;
+      this.uploadPluginsTabPage.Text = "Upload Plugins";
+      this.uploadPluginsTabPage.UseVisualStyleBackColor = true;
+      // 
+      // manageProductsTabPage
+      // 
+      this.manageProductsTabPage.Location = new System.Drawing.Point(4, 22);
+      this.manageProductsTabPage.Name = "manageProductsTabPage";
+      this.manageProductsTabPage.Padding = new System.Windows.Forms.Padding(3);
+      this.manageProductsTabPage.Size = new System.Drawing.Size(583, 342);
+      this.manageProductsTabPage.TabIndex = 4;
+      this.manageProductsTabPage.Text = "Manage Products";
+      this.manageProductsTabPage.UseVisualStyleBackColor = true;
       // 
       // InstallationManagerForm
       // 
@@ -333,5 +368,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem connectionSettingsToolStripMenuItem;
     private System.Windows.Forms.Button updateButton;
+    private System.Windows.Forms.TabPage uploadPluginsTabPage;
+    private System.Windows.Forms.TabPage manageProductsTabPage;
   }
 }
