@@ -34,9 +34,6 @@ namespace HeuristicLab.Optimizer.MenuItems {
     public override int Position {
       get { return 1999; }
     }
-    public override Keys ShortCutKeys {
-      get { return Keys.Control | Keys.X; }
-   }
 
     public override void Execute() {
       MainFormManager.MainForm.Close();
