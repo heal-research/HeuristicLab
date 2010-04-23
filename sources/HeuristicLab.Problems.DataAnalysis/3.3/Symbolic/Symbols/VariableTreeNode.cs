@@ -68,10 +68,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
       base.ResetLocalParameters(random);
       var normalDistributedRNG = new NormalDistributedRandom(random, Symbol.WeightNu, Symbol.WeightSigma);
       weight = normalDistributedRNG.NextDouble();
-      var variableList = new List<string>(Symbol.VariableNames);
-      int variableIndex = random.Next(0, variableList.Count);
-      variableName = variableList[variableIndex];
+      variableName = Symbol.VariableNames.SelectRandom(random);
     }
+
+    public override void ShakeLocalParameters(IRandom random, double shakingFactor) {
+      base.ShakeLocalParameters(random, shakingFactor);
+      var normalDistributedRNG = new NormalDistributedRandom(random, Symbol.WeightManipulatorNu, Symbol.WeightManipulatorSigma);
+      double x = normalDistributedRNG.NextDouble();
+      weight = weight + x * shakingFactor;
+      variableName = Symbol.VariableNames.SelectRandom(random);
+    }
+
 
     public override object Clone() {
       return new VariableTreeNode(this);

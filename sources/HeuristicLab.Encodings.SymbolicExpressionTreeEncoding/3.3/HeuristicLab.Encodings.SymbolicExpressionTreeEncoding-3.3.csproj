@@ -97,6 +97,9 @@
     <Compile Include="Compiler\SymbolicExpressionTreeCompiler.cs" />
     <Compile Include="Creators\SymbolicExpressionTreeCreator.cs" />
     <Compile Include="Crossovers\SymbolicExpressionTreeCrossover.cs" />
+    <Compile Include="Manipulators\ChangeNodeTypeManipulation.cs" />
+    <Compile Include="Manipulators\FullTreeShaker.cs" />
+    <Compile Include="Manipulators\OnePointShaker.cs" />
     <Compile Include="Manipulators\SymbolicExpressionTreeManipulator.cs" />
     <Compile Include="SymbolicExpressionTreeTopLevelNode.cs" />
     <Compile Include="Crossovers\SubtreeCrossover.cs">

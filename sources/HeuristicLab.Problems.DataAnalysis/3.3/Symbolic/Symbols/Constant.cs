@@ -27,6 +27,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Parameters;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
+using System;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
   [Item("Constant", "Represents a constant value.")]
@@ -44,9 +45,28 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
       get { return maxValue; }
       set { maxValue = value; }
     }
+    [Storable]
+    private double manipulatorNu;
+    public double ManipulatorNu {
+      get { return manipulatorNu; }
+      set { manipulatorNu = value; }
+    }
+    [Storable]
+    private double manipulatorSigma;
+    public double ManipulatorSigma {
+      get { return manipulatorSigma; }
+      set {
+        if (value < 0) throw new ArgumentException();
+        manipulatorSigma = value;
+      }
+    }
     #endregion
     public Constant()
       : base() {
+      manipulatorNu = 0.0;
+      manipulatorSigma = 1.0;
+      minValue = -20.0;
+      maxValue = 20.0;
     }
 
     public override SymbolicExpressionTreeNode CreateTreeNode() {
@@ -54,9 +74,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      Constant clone = (Constant) base.Clone(cloner);
+      Constant clone = (Constant)base.Clone(cloner);
       clone.minValue = minValue;
       clone.maxValue = maxValue;
+      clone.manipulatorNu = manipulatorNu;
+      clone.manipulatorSigma = manipulatorSigma;
       return clone;
     }
   }

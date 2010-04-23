@@ -51,6 +51,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
       }
     }
     [Storable]
+    private double weightManipulatorNu;
+    public double WeightManipulatorNu {
+      get { return weightManipulatorNu; }
+      set { weightManipulatorNu = value; }
+    }
+    [Storable]
+    private double weightManipulatorSigma;
+    public double WeightManipulatorSigma {
+      get { return weightManipulatorSigma; }
+      set {
+        if (weightManipulatorSigma < 0.0) throw new ArgumentException("Negative sigma is not allowed.");
+        weightManipulatorSigma = value;
+      }
+    }
+    [Storable]
     private List<string> variableNames;
     public IEnumerable<string> VariableNames {
       get { return variableNames; }
@@ -65,6 +80,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
       : base() {
       weightNu = 1.0;
       weightSigma = 1.0;
+      weightManipulatorNu = 0.0;
+      weightManipulatorSigma = 1.0;
       variableNames = new List<string>();
     }
 
@@ -77,6 +94,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
       clone.weightNu = weightNu;
       clone.weightSigma = weightSigma;
       clone.variableNames = new List<string>(variableNames);
+      clone.weightManipulatorNu = weightManipulatorNu;
+      clone.weightManipulatorSigma = weightManipulatorSigma;
       return clone;
     }
   }

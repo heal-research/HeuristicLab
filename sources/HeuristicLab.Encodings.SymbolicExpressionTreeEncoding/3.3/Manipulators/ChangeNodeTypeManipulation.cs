@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,151 +19,62 @@
  */
 #endregion
 
-using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Core;
+using HeuristicLab.Operators;
 using HeuristicLab.Random;
-using System.Diagnostics;
-using HeuristicLab.GP.Interfaces;
+using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.SymbolicExpressionTree {
-  public class ChangeNodeTypeManipulation : GPManipulatorBase {
-
-    public override string Description {
-      get {
-        return @"This manipulation operator selects a random tree-node and changes the function type.
-If this leads to a constraint-violation (wrong number or type of sub-trees) the sub-trees are repaired
-resulting in a valid tree again.";
-      }
-    }
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators {
+  [StorableClass]
+  [Item("ChangeNodeTypeManipulation", "Selects a random tree node and changes the symbol size.")]
+  public class ChangeNodeTypeManipulation : SymbolicExpressionTreeManipulator {
 
     public ChangeNodeTypeManipulation()
       : base() {
     }
 
-    internal override IOperation Manipulate(MersenneTwister random, IGeneticProgrammingModel gpModel, FunctionLibrary library, int maxTreeSize, int maxTreeHeight, IScope scope) {
-      TreeGardener gardener = new TreeGardener(random, library);
-      IFunctionTree parent = gardener.GetRandomParentNode(gpModel.FunctionTree);
-      IFunctionTree selectedChild;
-      int selectedChildIndex;
-      if (parent == null) {
-        selectedChildIndex = 0;
-        selectedChild = gpModel.FunctionTree;
-      } else {
-        selectedChildIndex = random.Next(parent.SubTrees.Count);
-        selectedChild = parent.SubTrees[selectedChildIndex];
-      }
+    protected override void Manipulate(IRandom random, SymbolicExpressionTree symbolicExpressionTree, ISymbolicExpressionGrammar grammar, IntValue maxTreeSize, IntValue maxTreeHeight, out bool success) {
 
-      if (selectedChild.SubTrees.Count == 0) {
-        IFunctionTree newTerminal = ChangeTerminalType(parent, selectedChild, selectedChildIndex, gardener, random);
-        if (parent == null) {
-          // no parent means the new child is the initial operator
-          gpModel.FunctionTree = newTerminal;
-        } else {
-          parent.RemoveSubTree(selectedChildIndex);
-          parent.InsertSubTree(selectedChildIndex, newTerminal);
-          // updating the variable is not necessary because it stays the same
-        }
-        Debug.Assert(gardener.IsValidTree(gpModel.FunctionTree));
-        // size and height stays the same when changing a terminal so no need to update the variables
-        // schedule an operation to initialize the new terminal
-        return Util.CreateInitializationOperation(TreeGardener.GetAllSubTrees(newTerminal), scope);
-      } else {
-        List<IFunctionTree> uninitializedBranches;
-        IFunctionTree newFunctionTree = ChangeFunctionType(parent, selectedChild, selectedChildIndex, gardener, random, out uninitializedBranches);
-        // in rare cases the function creates a tree that breaks the size limits
-        // calculate the height and size difference and 
-        // check if the size of the new tree is still in the allowed bounds
-        int oldChildSize = selectedChild.GetSize();
-        int oldChildHeight = selectedChild.GetHeight();
-        int newChildSize = newFunctionTree.GetSize();
-        int newChildHeight = newFunctionTree.GetHeight();
-        if ((gpModel.Height - oldChildHeight) + newChildHeight > maxTreeHeight ||
-          (gpModel.Size - oldChildSize) + newChildSize > maxTreeSize) {
-          // if size-constraints are violated don't change anything
-          return null;
-        }
-        if (parent == null) {
-          // no parent means the new function is the initial operator
-          gpModel.FunctionTree = newFunctionTree;
-        } else {
-          // remove the old child
-          parent.RemoveSubTree(selectedChildIndex);
-          // add the new child as sub-tree of parent
-          parent.InsertSubTree(selectedChildIndex, newFunctionTree);
-        }
-        // update size and height
-        gpModel.Size = gpModel.Size - oldChildSize + newChildSize;
-        gpModel.Height = gpModel.FunctionTree.GetHeight(); // must recalculate height because we can't know wether the manipulated branch was the deepest branch
-        // check if whole tree is ok
-        Debug.Assert(gardener.IsValidTree(gpModel.FunctionTree));
-        // return a composite operation that initializes all created sub-trees
-        return Util.CreateInitializationOperation(uninitializedBranches, scope);
-      }
-    }
+      // select any node except the with a parent where the parent is not the root node)
+      var manipulationPoint = (from parent in symbolicExpressionTree.Root.IterateNodesPrefix().Skip(1)
+                               from subtree in parent.SubTrees
+                               select new { Parent = parent, Node = subtree, Index = parent.SubTrees.IndexOf(subtree) }).SelectRandom(random);
+      // find possible symbols for the node (also considering the existing branches below it)
+      var allowedSymbols = from symbol in manipulationPoint.Parent.GetAllowedSymbols(manipulationPoint.Index)
+                           where manipulationPoint.Node.SubTrees.Count <= manipulationPoint.Node.Grammar.GetMaxSubtreeCount(symbol)
+                           where manipulationPoint.Node.SubTrees.Count >= manipulationPoint.Node.Grammar.GetMinSubtreeCount(symbol)
+                           select symbol;
 
-    private IFunctionTree ChangeTerminalType(IFunctionTree parent, IFunctionTree child, int childIndex, TreeGardener gardener, MersenneTwister random) {
-      IList<IFunction> allowedTerminals;
-      if (parent == null) {
-        allowedTerminals = gardener.Terminals;
-      } else {
-        allowedTerminals = new List<IFunction>();
-        var allAllowedChildren = gardener.GetAllowedSubFunctions(parent.Function, childIndex);
-        foreach (IFunction c in allAllowedChildren) {
-          if (TreeGardener.IsTerminal(c)) allowedTerminals.Add(c);
-        }
+      if (allowedSymbols.Count() <= 1) {
+        success = false;
+        return;
       }
-      // selecting from the terminals should always work since the current child was also a terminal
-      // so in the worst case we will just create a new terminal of the same type again.
-      return gardener.CreateRandomTree(allowedTerminals, 1, 1);
-    }
+      var node = manipulationPoint.Node;
+      // keep only symbols that are still possible considering the existing sub-trees
+      var constrainedSymbols = from symbol in allowedSymbols
+                               let disallowedSubtrees =
+                                     from subtree in node.SubTrees
+                                     where !node.Grammar.IsAllowedChild(symbol, subtree.Symbol, node.SubTrees.IndexOf(subtree))
+                                     select subtree
+                               where disallowedSubtrees.Count() == 0
+                               select symbol;
+      if (constrainedSymbols.Count() <= 1) {
+        success = false;
+        return;
+      }
+      var newSymbol = constrainedSymbols.SelectRandom(random);
 
-    private IFunctionTree ChangeFunctionType(IFunctionTree parent, IFunctionTree child, int childIndex, TreeGardener gardener, MersenneTwister random,
-      out List<IFunctionTree> uninitializedBranches) {
-      // since there are subtrees, we have to check which 
-      // and how many of the existing subtrees we can reuse.
-      // first let's choose the function we want to use instead of the old child. For this we have to determine the
-      // pool of allowed functions based on constraints of the parent if there is one.
-      List<IFunction> allowedFunctions = new List<IFunction>(gardener.GetAllowedSubFunctions(parent != null ? parent.Function : null, childIndex));
-      // try to make a tree with the same arity as the old child.
-      int actualArity = child.SubTrees.Count;
-      // create a new tree-node for a randomly selected function
-      IFunction selectedFunction = allowedFunctions[random.Next(allowedFunctions.Count)];
-      // arity of the selected operator
-      int minArity = selectedFunction.MinSubTrees;
-      int maxArity = selectedFunction.MaxSubTrees;
-      // if the old child had too many sub-trees then the new child should keep as many sub-trees as possible
-      if (actualArity > maxArity)
-        actualArity = maxArity;
-      if (actualArity < minArity)
-        actualArity = minArity;
-      // create a list that holds old sub-trees that we can reuse in the new tree
-      List<IFunctionTree> availableSubTrees = new List<IFunctionTree>(child.SubTrees);
-      List<IFunctionTree> freshSubTrees = new List<IFunctionTree>();
-      IFunctionTree newTree = selectedFunction.GetTreeNode();
-      // randomly select the sub-trees that we keep
-      for (int i = 0; i < actualArity; i++) {
-        // fill all sub-tree slots of the new tree
-        // if for a given slot i there are multiple existing sub-trees that can be used in that slot
-        // then use a random existing sub-tree. When there are no existing sub-trees
-        // that fit in the given slot then create a new random tree and use it for the slot
-        ICollection<IFunction> allowedSubFunctions = gardener.GetAllowedSubFunctions(selectedFunction, i);
-        var matchingSubTrees = availableSubTrees.Where(subTree => allowedSubFunctions.Contains(subTree.Function));
-        if (matchingSubTrees.Count() > 0) {
-          IFunctionTree selectedSubTree = matchingSubTrees.ElementAt(random.Next(matchingSubTrees.Count()));
-          // we can just add it as subtree
-          newTree.InsertSubTree(i, selectedSubTree);
-          availableSubTrees.Remove(selectedSubTree); // the branch shouldn't be available for the following slots
-        } else {
-          // no existing matching tree found => create a new tree of minimal size
-          IFunctionTree freshTree = gardener.CreateRandomTree(allowedSubFunctions, 1, 1);
-          freshSubTrees.AddRange(TreeGardener.GetAllSubTrees(freshTree));
-          newTree.InsertSubTree(i, freshTree);
-        }
-      }
-      freshSubTrees.Add(newTree);
-      uninitializedBranches = freshSubTrees;
-      return newTree;
+      // replace the old node with the new node
+      var newNode = newSymbol.CreateTreeNode();
+      if (newNode.HasLocalParameters)
+        newNode.ResetLocalParameters(random);
+      foreach (var subtree in node.SubTrees)
+        newNode.AddSubTree(subtree);
+      manipulationPoint.Parent.RemoveSubTree(manipulationPoint.Index);
+      manipulationPoint.Parent.InsertSubTree(manipulationPoint.Index, newNode);
+      success = true;
     }
   }
 }

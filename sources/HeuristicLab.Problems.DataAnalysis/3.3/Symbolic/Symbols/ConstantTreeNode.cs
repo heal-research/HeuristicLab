@@ -62,6 +62,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
       Value = random.NextDouble() * range - Symbol.MinValue;
     }
 
+    public override void ShakeLocalParameters(IRandom random, double shakingFactor) {
+      base.ShakeLocalParameters(random, shakingFactor);
+      var normalDistributedRNG = new NormalDistributedRandom(random, Symbol.ManipulatorNu, Symbol.ManipulatorSigma);
+      double x = normalDistributedRNG.NextDouble();
+      Value = Value + x * shakingFactor;
+    }
+
     public override object Clone() {
       return new ConstantTreeNode(this);
     }

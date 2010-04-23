@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,51 +24,24 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Random;
 using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.SymbolicExpressionTree {
-  public class FullTreeShaker : DelegatingOperator {
-    public override string Description {
-      get { return "Manipulates all tree nodes for which a manipulator is defined."; }
-    }
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators {
+  [StorableClass]
+  [Item("FullTreeShaker", "Manipulates all nodes that have local parameters.")]
+  public class FullTreeShaker : SymbolicExpressionTreeManipulator {
 
     public FullTreeShaker()
       : base() {
-      AddVariableInfo(new VariableInfo("Random", "A random generator (uniform)", typeof(MersenneTwister), VariableKind.In));
-      AddVariableInfo(new VariableInfo("FunctionLibrary", "Function library that defines function mutations", typeof(FunctionLibrary), VariableKind.In));
-      AddVariableInfo(new VariableInfo("ShakingFactor", "Variable that determines the force of the shaking operation", typeof(DoubleData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("FunctionTree", "The function tree that should be mutated", typeof(IGeneticProgrammingModel), VariableKind.In | VariableKind.Out));
     }
 
-    public override IOperation Apply(IScope scope) {
-      FunctionLibrary library = GetVariableValue<FunctionLibrary>("FunctionLibrary", scope, true);
-      IGeneticProgrammingModel gpModel = GetVariableValue<IGeneticProgrammingModel>("FunctionTree", scope, false);
-      MersenneTwister mt = GetVariableValue<MersenneTwister>("Random", scope, true);
-
-      // save all existing sub-scopes in a backup scope
-      Scope backupScope = new Scope("backup");
-      foreach (Scope subScope in scope.SubScopes) {
-        backupScope.AddSubScope(subScope);
+    protected override void Manipulate(IRandom random, SymbolicExpressionTree symbolicExpressionTree, ISymbolicExpressionGrammar grammar, IntValue maxTreeSize, IntValue maxTreeHeight, out bool success) {
+      foreach (var node in symbolicExpressionTree.IterateNodesPrefix()) {
+        if (node.HasLocalParameters) {
+          node.ShakeLocalParameters(random, 1.0);
+        }
       }
-
-      // create a scope for all shaking operations
-      Scope tempScope = new Scope("Temp. manipulation scope");
-      scope.AddSubScope(tempScope); // scope containing a subscope for each manipulation
-      scope.AddSubScope(backupScope); // scope containing the old subscopes
-
-      // create a composite operation for all shaking operations
-      CompositeOperation next = new CompositeOperation();
-      next.ExecuteInParallel = false;
-
-      // enqueue all shaking operations
-      foreach (IFunctionTree subTree in TreeGardener.GetAllSubTrees(gpModel.FunctionTree).Where(x=>x.HasLocalParameters)) {
-        IOperation shakingOperation = subTree.CreateShakingOperation(tempScope);
-        next.AddOperation(shakingOperation);
-      }
-
-      // schedule a reducer operation to delete all temporary scopes and restore
-      // the subscopes of the backup scope after all manipulations are finished.
-      next.AddOperation(new AtomicOperation(new RightReducer(), scope));
-      return next;
+      success = true;
     }
   }
 }
