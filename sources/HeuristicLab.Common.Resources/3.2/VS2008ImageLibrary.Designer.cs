@@ -60,6 +60,13 @@ namespace HeuristicLab.Common.Resources {
             }
         }
         
+        public static System.Drawing.Bitmap ActualSize {
+            get {
+                object obj = ResourceManager.GetObject("ActualSize", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         public static System.Drawing.Bitmap Add {
             get {
                 object obj = ResourceManager.GetObject("Add", resourceCulture);

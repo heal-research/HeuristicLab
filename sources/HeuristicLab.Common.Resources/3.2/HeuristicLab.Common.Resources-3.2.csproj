@@ -426,6 +426,9 @@
   <ItemGroup>
     <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Executable_Stopped.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_ActualSize.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
