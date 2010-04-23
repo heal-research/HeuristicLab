@@ -20,6 +20,7 @@
 #endregion
 
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
@@ -28,6 +29,7 @@ using System.Windows.Forms;
 using System;
 using System.Drawing;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace HeuristicLab.Optimization.Views {
   [View("RunCollection View")]
@@ -70,11 +72,25 @@ namespace HeuristicLab.Optimization.Views {
     }
     protected virtual void RegisterRunEvents(IEnumerable<IRun> runs) {
       foreach (IRun run in runs)
-        run.Changed += new EventHandler(run_Changed);
+        run.Changed += new EventHandler(Run_Changed);
     }
     protected virtual void DeregisterRunEvents(IEnumerable<IRun> runs) {
       foreach (IRun run in runs)
-        run.Changed -= new EventHandler(run_Changed);
+        run.Changed -= new EventHandler(Run_Changed);
+    }
+
+    protected override void OnInitialized(EventArgs e) {
+      base.OnInitialized(e);
+      var viewTypes = MainFormManager.GetViewTypes(typeof(RunCollection), true);
+      foreach (Type viewType in viewTypes.OrderBy(x => ViewAttribute.GetViewName(x))) {
+        if ((viewType != typeof(ItemCollectionView<IRun>)) && (viewType != typeof(ViewHost))) {
+          ToolStripMenuItem menuItem = new ToolStripMenuItem();
+          menuItem.Text = ViewAttribute.GetViewName(viewType);
+          menuItem.Tag = viewType;
+          menuItem.Click += new EventHandler(menuItem_Click);
+          analyzeRunsToolStripDropDownButton.DropDownItems.Add(menuItem);
+        }
+      }
     }
 
     protected override void OnContentChanged() {
@@ -91,30 +107,19 @@ namespace HeuristicLab.Optimization.Views {
       SetEnabledStateOfControls();
     }
 
-    private void run_Changed(object sender, EventArgs e) {
-      IRun run = (IRun)sender;
-      foreach (ListViewItem listViewItem in GetListViewItemsForItem(run)) {
-        if (run.Visible) {
-          listViewItem.Font = new Font(listViewItem.Font, FontStyle.Regular);
-          listViewItem.ForeColor = run.Color;
-        } else {
-          listViewItem.Font = new Font(listViewItem.Font, FontStyle.Italic);
-          listViewItem.ForeColor = Color.LightGray;
-        }
-      }
-    }
-
     protected override void OnReadOnlyChanged() {
       base.OnReadOnlyChanged();
       SetEnabledStateOfControls();
     }
     private void SetEnabledStateOfControls() {
       if (Content == null) {
+        analyzeRunsToolStripDropDownButton.Enabled = false;
         itemsListView.Enabled = false;
         detailsGroupBox.Enabled = false;
         viewHost.Enabled = false;
         removeButton.Enabled = false;
       } else {
+        analyzeRunsToolStripDropDownButton.Enabled = itemsListView.Items.Count > 0;
         itemsListView.Enabled = true;
         detailsGroupBox.Enabled = true;
         removeButton.Enabled = itemsListView.SelectedItems.Count > 0 && !Content.IsReadOnly && !ReadOnly;
@@ -234,6 +239,15 @@ namespace HeuristicLab.Optimization.Views {
     #endregion
 
     #region Button Events
+    protected virtual void menuItem_Click(object sender, EventArgs e) {
+      ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
+      IContentView view = MainFormManager.CreateView((Type)menuItem.Tag, Content);
+      if (view != null) {
+        view.Locked = Locked;
+        view.ReadOnly = ReadOnly;
+        view.Show();
+      }
+    }
     protected virtual void removeButton_Click(object sender, EventArgs e) {
       if (itemsListView.SelectedItems.Count > 0) {
         foreach (ListViewItem item in itemsListView.SelectedItems)
@@ -251,6 +265,7 @@ namespace HeuristicLab.Optimization.Views {
         RegisterRunEvents(e.Items);
         foreach (IRun item in e.Items)
           AddListViewItem(CreateListViewItem(item));
+        analyzeRunsToolStripDropDownButton.Enabled = itemsListView.Items.Count > 0;
       }
     }
     protected virtual void Content_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IRun> e) {
@@ -264,6 +279,7 @@ namespace HeuristicLab.Optimization.Views {
             break;
           }
         }
+        analyzeRunsToolStripDropDownButton.Enabled = itemsListView.Items.Count > 0;
       }
     }
     protected virtual void Content_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRun> e) {
@@ -280,6 +296,7 @@ namespace HeuristicLab.Optimization.Views {
         RegisterRunEvents(e.Items);
         foreach (IRun item in e.Items)
           AddListViewItem(CreateListViewItem(item));
+        analyzeRunsToolStripDropDownButton.Enabled = itemsListView.Items.Count > 0;
       }
     }
     #endregion
@@ -301,6 +318,18 @@ namespace HeuristicLab.Optimization.Views {
         IRun item = (IRun)sender;
         foreach (ListViewItem listViewItem in GetListViewItemsForItem(item))
           UpdateListViewItemText(listViewItem);
+      }
+    }
+    protected virtual void Run_Changed(object sender, EventArgs e) {
+      IRun run = (IRun)sender;
+      foreach (ListViewItem listViewItem in GetListViewItemsForItem(run)) {
+        if (run.Visible) {
+          listViewItem.Font = new Font(listViewItem.Font, FontStyle.Regular);
+          listViewItem.ForeColor = run.Color;
+        } else {
+          listViewItem.Font = new Font(listViewItem.Font, FontStyle.Italic);
+          listViewItem.ForeColor = Color.LightGray;
+        }
       }
     }
     #endregion

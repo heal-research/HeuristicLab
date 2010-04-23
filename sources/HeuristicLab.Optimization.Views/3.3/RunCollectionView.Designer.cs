@@ -62,11 +62,14 @@ namespace HeuristicLab.Optimization.Views {
       this.viewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.itemsGroupBox = new System.Windows.Forms.GroupBox();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this.toolStrip = new System.Windows.Forms.ToolStrip();
+      this.analyzeRunsToolStripDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
       this.detailsGroupBox.SuspendLayout();
       this.itemsGroupBox.SuspendLayout();
+      this.toolStrip.SuspendLayout();
       this.SuspendLayout();
       // 
       // splitContainer
@@ -78,6 +81,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // splitContainer.Panel1
       // 
+      this.splitContainer.Panel1.Controls.Add(this.toolStrip);
       this.splitContainer.Panel1.Controls.Add(this.itemsListView);
       this.splitContainer.Panel1.Controls.Add(this.removeButton);
       this.splitContainer.Panel1MinSize = 100;
@@ -152,9 +156,11 @@ namespace HeuristicLab.Optimization.Views {
       this.viewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.viewHost.Caption = null;
       this.viewHost.Content = null;
       this.viewHost.Location = new System.Drawing.Point(6, 19);
       this.viewHost.Name = "viewHost";
+      this.viewHost.ReadOnly = false;
       this.viewHost.Size = new System.Drawing.Size(254, 310);
       this.viewHost.TabIndex = 0;
       this.viewHost.ViewType = null;
@@ -170,6 +176,31 @@ namespace HeuristicLab.Optimization.Views {
       this.itemsGroupBox.TabStop = false;
       this.itemsGroupBox.Text = "Items";
       // 
+      // toolStrip
+      // 
+      this.toolStrip.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.toolStrip.AutoSize = false;
+      this.toolStrip.Dock = System.Windows.Forms.DockStyle.None;
+      this.toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+      this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.analyzeRunsToolStripDropDownButton});
+      this.toolStrip.Location = new System.Drawing.Point(30, 3);
+      this.toolStrip.Name = "toolStrip";
+      this.toolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.ManagerRenderMode;
+      this.toolStrip.Size = new System.Drawing.Size(217, 24);
+      this.toolStrip.TabIndex = 1;
+      this.toolStrip.Text = "toolStrip1";
+      // 
+      // analyzeRunsToolStripDropDownButton
+      // 
+      this.analyzeRunsToolStripDropDownButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+      this.analyzeRunsToolStripDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.analyzeRunsToolStripDropDownButton.Name = "analyzeRunsToolStripDropDownButton";
+      this.analyzeRunsToolStripDropDownButton.Size = new System.Drawing.Size(45, 21);
+      this.analyzeRunsToolStripDropDownButton.Text = "&Analyze Runs...";
+      this.analyzeRunsToolStripDropDownButton.ToolTipText = "Show Run Analysis Views";
+      // 
       // RunCollectionView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -181,6 +212,8 @@ namespace HeuristicLab.Optimization.Views {
       this.splitContainer.ResumeLayout(false);
       this.detailsGroupBox.ResumeLayout(false);
       this.itemsGroupBox.ResumeLayout(false);
+      this.toolStrip.ResumeLayout(false);
+      this.toolStrip.PerformLayout();
       this.ResumeLayout(false);
 
     }
@@ -196,5 +229,7 @@ namespace HeuristicLab.Optimization.Views {
     protected ToolTip toolTip;
     protected ImageList imageList;
     protected HeuristicLab.MainForm.WindowsForms.ViewHost viewHost;
+    protected ToolStrip toolStrip;
+    protected ToolStripDropDownButton analyzeRunsToolStripDropDownButton;
   }
 }
