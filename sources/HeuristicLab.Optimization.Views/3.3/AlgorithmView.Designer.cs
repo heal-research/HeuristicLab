@@ -88,8 +88,8 @@ namespace HeuristicLab.Optimization.Views {
       this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.tabControl.Controls.Add(this.parametersTabPage);
       this.tabControl.Controls.Add(this.problemTabPage);
+      this.tabControl.Controls.Add(this.parametersTabPage);
       this.tabControl.Controls.Add(this.resultsTabPage);
       this.tabControl.Controls.Add(this.runsTabPage);
       this.tabControl.Location = new System.Drawing.Point(0, 52);
@@ -105,7 +105,7 @@ namespace HeuristicLab.Optimization.Views {
       this.parametersTabPage.Name = "parametersTabPage";
       this.parametersTabPage.Padding = new System.Windows.Forms.Padding(3);
       this.parametersTabPage.Size = new System.Drawing.Size(671, 374);
-      this.parametersTabPage.TabIndex = 0;
+      this.parametersTabPage.TabIndex = 1;
       this.parametersTabPage.Text = "Parameters";
       this.parametersTabPage.UseVisualStyleBackColor = true;
       // 
@@ -130,7 +130,7 @@ namespace HeuristicLab.Optimization.Views {
       this.problemTabPage.Name = "problemTabPage";
       this.problemTabPage.Padding = new System.Windows.Forms.Padding(3);
       this.problemTabPage.Size = new System.Drawing.Size(671, 374);
-      this.problemTabPage.TabIndex = 1;
+      this.problemTabPage.TabIndex = 0;
       this.problemTabPage.Text = "Problem";
       this.problemTabPage.UseVisualStyleBackColor = true;
       // 

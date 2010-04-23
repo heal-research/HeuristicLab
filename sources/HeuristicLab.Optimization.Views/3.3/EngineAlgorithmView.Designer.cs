@@ -44,7 +44,6 @@ namespace HeuristicLab.Optimization.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EngineAlgorithmView));
       this.engineLabel = new System.Windows.Forms.Label();
       this.createUserDefinedAlgorithmButton = new System.Windows.Forms.Button();
       this.engineComboBox = new System.Windows.Forms.ComboBox();
@@ -74,8 +73,8 @@ namespace HeuristicLab.Optimization.Views {
       this.tabControl.Controls.SetChildIndex(this.operatorGraphTabPage, 0);
       this.tabControl.Controls.SetChildIndex(this.runsTabPage, 0);
       this.tabControl.Controls.SetChildIndex(this.resultsTabPage, 0);
-      this.tabControl.Controls.SetChildIndex(this.problemTabPage, 0);
       this.tabControl.Controls.SetChildIndex(this.parametersTabPage, 0);
+      this.tabControl.Controls.SetChildIndex(this.problemTabPage, 0);
       // 
       // parametersTabPage
       // 
@@ -190,7 +189,7 @@ namespace HeuristicLab.Optimization.Views {
       this.engineComboBox.FormattingEnabled = true;
       this.engineComboBox.Location = new System.Drawing.Point(55, 6);
       this.engineComboBox.Name = "engineComboBox";
-      this.engineComboBox.Size = new System.Drawing.Size(610, 21);
+      this.engineComboBox.Size = new System.Drawing.Size(644, 21);
       this.engineComboBox.TabIndex = 1;
       this.engineComboBox.SelectedIndexChanged += new System.EventHandler(this.engineComboBox_SelectedIndexChanged);
       // 
@@ -203,7 +202,7 @@ namespace HeuristicLab.Optimization.Views {
       this.engineTabPage.Name = "engineTabPage";
       this.engineTabPage.Padding = new System.Windows.Forms.Padding(3);
       this.engineTabPage.Size = new System.Drawing.Size(705, 441);
-      this.engineTabPage.TabIndex = 3;
+      this.engineTabPage.TabIndex = 5;
       this.engineTabPage.Text = "Engine";
       this.engineTabPage.UseVisualStyleBackColor = true;
       // 
@@ -212,11 +211,12 @@ namespace HeuristicLab.Optimization.Views {
       this.engineViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.engineViewHost.Caption = null;
       this.engineViewHost.Content = null;
       this.engineViewHost.Location = new System.Drawing.Point(6, 33);
       this.engineViewHost.Name = "engineViewHost";
       this.engineViewHost.ReadOnly = false;
-      this.engineViewHost.Size = new System.Drawing.Size(659, 335);
+      this.engineViewHost.Size = new System.Drawing.Size(693, 402);
       this.engineViewHost.TabIndex = 2;
       this.engineViewHost.ViewType = null;
       // 
@@ -259,11 +259,12 @@ namespace HeuristicLab.Optimization.Views {
       this.operatorGraphViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.operatorGraphViewHost.Caption = null;
       this.operatorGraphViewHost.Content = null;
       this.operatorGraphViewHost.Location = new System.Drawing.Point(3, 33);
       this.operatorGraphViewHost.Name = "operatorGraphViewHost";
       this.operatorGraphViewHost.ReadOnly = true;
-      this.operatorGraphViewHost.Size = new System.Drawing.Size(699, 405);
+      this.operatorGraphViewHost.Size = new System.Drawing.Size(665, 338);
       this.operatorGraphViewHost.TabIndex = 0;
       this.operatorGraphViewHost.ViewType = null;
       // 

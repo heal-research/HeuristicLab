@@ -69,12 +69,12 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       // 
       // importButton
       // 
-      this.importButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+      this.importButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.importButton.Location = new System.Drawing.Point(0, 399);
+      this.importButton.Location = new System.Drawing.Point(0, 52);
       this.importButton.Name = "importButton";
       this.importButton.Size = new System.Drawing.Size(529, 23);
-      this.importButton.TabIndex = 5;
+      this.importButton.TabIndex = 4;
       this.importButton.Text = "&Import from TSPLIB";
       this.importButton.UseVisualStyleBackColor = true;
       this.importButton.Click += new System.EventHandler(this.importButton_Click);
@@ -86,11 +86,11 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.parametersTabPage);
       this.tabControl.Controls.Add(this.visualizationTabPage);
-      this.tabControl.Location = new System.Drawing.Point(0, 52);
+      this.tabControl.Location = new System.Drawing.Point(0, 81);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
       this.tabControl.Size = new System.Drawing.Size(529, 341);
-      this.tabControl.TabIndex = 4;
+      this.tabControl.TabIndex = 5;
       // 
       // parametersTabPage
       // 
@@ -112,6 +112,7 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       this.parameterCollectionView.Content = null;
       this.parameterCollectionView.Location = new System.Drawing.Point(6, 6);
       this.parameterCollectionView.Name = "parameterCollectionView";
+      this.parameterCollectionView.ReadOnly = false;
       this.parameterCollectionView.Size = new System.Drawing.Size(509, 303);
       this.parameterCollectionView.TabIndex = 0;
       // 
@@ -135,6 +136,7 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       this.pathTSPTourView.Content = null;
       this.pathTSPTourView.Location = new System.Drawing.Point(6, 6);
       this.pathTSPTourView.Name = "pathTSPTourView";
+      this.pathTSPTourView.ReadOnly = false;
       this.pathTSPTourView.Size = new System.Drawing.Size(509, 303);
       this.pathTSPTourView.TabIndex = 0;
       // 

@@ -46,6 +46,7 @@ namespace HeuristicLab.Optimization.Views {
     public RunCollectionView() {
       InitializeComponent();
       Caption = "Run Collection";
+      itemsGroupBox.Text = "Runs";
     }
 
     public RunCollectionView(IItemCollection<IRun> content)
