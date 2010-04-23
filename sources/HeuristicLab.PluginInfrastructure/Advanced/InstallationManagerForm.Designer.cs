@@ -52,10 +52,10 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.tabControl = new System.Windows.Forms.TabControl();
       this.localPluginsTabPage = new System.Windows.Forms.TabPage();
       this.updateButton = new System.Windows.Forms.Button();
-      this.localPluginManagerView = new HeuristicLab.PluginInfrastructure.Advanced.LocalPluginManagerView();
       this.availablePluginsTabPage = new System.Windows.Forms.TabPage();
-      this.remotePluginInstaller = new HeuristicLab.PluginInfrastructure.Advanced.RemotePluginInstallerView();
       this.refreshButton = new System.Windows.Forms.Button();
+      this.uploadPluginsTabPage = new System.Windows.Forms.TabPage();
+      this.manageProductsTabPage = new System.Windows.Forms.TabPage();
       this.logTabPage = new System.Windows.Forms.TabPage();
       this.logTextBox = new System.Windows.Forms.TextBox();
       this.menuStrip = new System.Windows.Forms.MenuStrip();
@@ -64,12 +64,16 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.advancedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.connectionSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.uploadPluginsTabPage = new System.Windows.Forms.TabPage();
-      this.manageProductsTabPage = new System.Windows.Forms.TabPage();
+      this.localPluginManagerView = new HeuristicLab.PluginInfrastructure.Advanced.LocalPluginManagerView();
+      this.remotePluginInstaller = new HeuristicLab.PluginInfrastructure.Advanced.RemotePluginInstallerView();
+      this.pluginEditor = new HeuristicLab.PluginInfrastructure.Advanced.PluginEditor();
+      this.productEditor = new HeuristicLab.PluginInfrastructure.Advanced.ProductEditor();
       this.statusStrip.SuspendLayout();
       this.tabControl.SuspendLayout();
       this.localPluginsTabPage.SuspendLayout();
       this.availablePluginsTabPage.SuspendLayout();
+      this.uploadPluginsTabPage.SuspendLayout();
+      this.manageProductsTabPage.SuspendLayout();
       this.logTabPage.SuspendLayout();
       this.menuStrip.SuspendLayout();
       this.SuspendLayout();
@@ -169,18 +173,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.updateButton.UseVisualStyleBackColor = true;
       this.updateButton.Click += new System.EventHandler(this.updateAllButton_Click);
       // 
-      // localPluginManagerView
-      // 
-      this.localPluginManagerView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.localPluginManagerView.Location = new System.Drawing.Point(6, 6);
-      this.localPluginManagerView.Name = "localPluginManagerView";
-      this.localPluginManagerView.Plugins = null;
-      this.localPluginManagerView.Size = new System.Drawing.Size(569, 293);
-      this.localPluginManagerView.TabIndex = 0;
-      this.localPluginManagerView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.localPluginManager_ItemChecked);
-      // 
       // availablePluginsTabPage
       // 
       this.availablePluginsTabPage.Controls.Add(this.remotePluginInstaller);
@@ -194,21 +186,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.availablePluginsTabPage.Text = "Available Plugins";
       this.availablePluginsTabPage.UseVisualStyleBackColor = true;
       // 
-      // remotePluginInstaller
-      // 
-      this.remotePluginInstaller.AllPlugins = new HeuristicLab.PluginInfrastructure.IPluginDescription[0];
-      this.remotePluginInstaller.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.remotePluginInstaller.Location = new System.Drawing.Point(6, 6);
-      this.remotePluginInstaller.Name = "remotePluginInstaller";
-      this.remotePluginInstaller.NewPlugins = new HeuristicLab.PluginInfrastructure.IPluginDescription[0];
-      this.remotePluginInstaller.Products = new HeuristicLab.PluginInfrastructure.Advanced.DeploymentService.ProductDescription[0];
-      this.remotePluginInstaller.ShowAllPlugins = false;
-      this.remotePluginInstaller.Size = new System.Drawing.Size(571, 293);
-      this.remotePluginInstaller.TabIndex = 14;
-      this.remotePluginInstaller.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.remotePluginInstaller_ItemChecked);
-      // 
       // refreshButton
       // 
       this.refreshButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -221,6 +198,28 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.refreshButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
       this.refreshButton.UseVisualStyleBackColor = true;
       this.refreshButton.Click += new System.EventHandler(this.refreshRemoteButton_Click);
+      // 
+      // uploadPluginsTabPage
+      // 
+      this.uploadPluginsTabPage.Controls.Add(this.pluginEditor);
+      this.uploadPluginsTabPage.Location = new System.Drawing.Point(4, 22);
+      this.uploadPluginsTabPage.Name = "uploadPluginsTabPage";
+      this.uploadPluginsTabPage.Padding = new System.Windows.Forms.Padding(3);
+      this.uploadPluginsTabPage.Size = new System.Drawing.Size(583, 342);
+      this.uploadPluginsTabPage.TabIndex = 3;
+      this.uploadPluginsTabPage.Text = "Upload Plugins";
+      this.uploadPluginsTabPage.UseVisualStyleBackColor = true;
+      // 
+      // manageProductsTabPage
+      // 
+      this.manageProductsTabPage.Controls.Add(this.productEditor);
+      this.manageProductsTabPage.Location = new System.Drawing.Point(4, 22);
+      this.manageProductsTabPage.Name = "manageProductsTabPage";
+      this.manageProductsTabPage.Padding = new System.Windows.Forms.Padding(3);
+      this.manageProductsTabPage.Size = new System.Drawing.Size(583, 342);
+      this.manageProductsTabPage.TabIndex = 4;
+      this.manageProductsTabPage.Text = "Manage Products";
+      this.manageProductsTabPage.UseVisualStyleBackColor = true;
       // 
       // logTabPage
       // 
@@ -300,25 +299,52 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.connectionSettingsToolStripMenuItem.Text = "Connection Settings...";
       this.connectionSettingsToolStripMenuItem.Click += new System.EventHandler(this.connectionSettingsToolStripMenuItem_Click);
       // 
-      // uploadPluginsTabPage
+      // localPluginManagerView
       // 
-      this.uploadPluginsTabPage.Location = new System.Drawing.Point(4, 22);
-      this.uploadPluginsTabPage.Name = "uploadPluginsTabPage";
-      this.uploadPluginsTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.uploadPluginsTabPage.Size = new System.Drawing.Size(583, 342);
-      this.uploadPluginsTabPage.TabIndex = 3;
-      this.uploadPluginsTabPage.Text = "Upload Plugins";
-      this.uploadPluginsTabPage.UseVisualStyleBackColor = true;
+      this.localPluginManagerView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.localPluginManagerView.Location = new System.Drawing.Point(6, 6);
+      this.localPluginManagerView.Name = "localPluginManagerView";
+      this.localPluginManagerView.Plugins = null;
+      this.localPluginManagerView.Size = new System.Drawing.Size(569, 293);
+      this.localPluginManagerView.TabIndex = 0;
+      this.localPluginManagerView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.localPluginManager_ItemChecked);
       // 
-      // manageProductsTabPage
+      // remotePluginInstaller
       // 
-      this.manageProductsTabPage.Location = new System.Drawing.Point(4, 22);
-      this.manageProductsTabPage.Name = "manageProductsTabPage";
-      this.manageProductsTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.manageProductsTabPage.Size = new System.Drawing.Size(583, 342);
-      this.manageProductsTabPage.TabIndex = 4;
-      this.manageProductsTabPage.Text = "Manage Products";
-      this.manageProductsTabPage.UseVisualStyleBackColor = true;
+      this.remotePluginInstaller.AllPlugins = new HeuristicLab.PluginInfrastructure.IPluginDescription[0];
+      this.remotePluginInstaller.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.remotePluginInstaller.Location = new System.Drawing.Point(6, 6);
+      this.remotePluginInstaller.Name = "remotePluginInstaller";
+      this.remotePluginInstaller.NewPlugins = new HeuristicLab.PluginInfrastructure.IPluginDescription[0];
+      this.remotePluginInstaller.Products = new HeuristicLab.PluginInfrastructure.Advanced.DeploymentService.ProductDescription[0];
+      this.remotePluginInstaller.ShowAllPlugins = false;
+      this.remotePluginInstaller.Size = new System.Drawing.Size(571, 293);
+      this.remotePluginInstaller.TabIndex = 14;
+      this.remotePluginInstaller.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.remotePluginInstaller_ItemChecked);
+      // 
+      // pluginEditor
+      // 
+      this.pluginEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.pluginEditor.Location = new System.Drawing.Point(6, 6);
+      this.pluginEditor.Name = "pluginEditor";
+      this.pluginEditor.Size = new System.Drawing.Size(571, 330);
+      this.pluginEditor.TabIndex = 0;
+      // 
+      // productEditor
+      // 
+      this.productEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.productEditor.Location = new System.Drawing.Point(6, 6);
+      this.productEditor.Name = "productEditor";
+      this.productEditor.Size = new System.Drawing.Size(571, 330);
+      this.productEditor.TabIndex = 0;
       // 
       // InstallationManagerForm
       // 
@@ -337,6 +363,8 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.tabControl.ResumeLayout(false);
       this.localPluginsTabPage.ResumeLayout(false);
       this.availablePluginsTabPage.ResumeLayout(false);
+      this.uploadPluginsTabPage.ResumeLayout(false);
+      this.manageProductsTabPage.ResumeLayout(false);
       this.logTabPage.ResumeLayout(false);
       this.logTabPage.PerformLayout();
       this.menuStrip.ResumeLayout(false);
@@ -370,5 +398,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private System.Windows.Forms.Button updateButton;
     private System.Windows.Forms.TabPage uploadPluginsTabPage;
     private System.Windows.Forms.TabPage manageProductsTabPage;
+    private PluginEditor pluginEditor;
+    private ProductEditor productEditor;
   }
 }

@@ -36,14 +36,14 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private const string IMAGE_KEY_FILE = "File";
     private const string IMAGE_KEY_DOCUMENT = "Document";
 
-    private PluginDescription plugin;
+    private IPluginDescription plugin;
 
     public PluginView() {
       InitializeComponent();
       PopulateImageList();
     }
 
-    public PluginView(PluginDescription plugin) {
+    public PluginView(IPluginDescription plugin) {
       InitializeComponent();
       PopulateImageList();
 
@@ -64,8 +64,11 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       versionTextBox.Text = plugin.Version.ToString();
       contactTextBox.Text = CombineStrings(plugin.ContactName, plugin.ContactEmail);
       descriptionTextBox.Text = plugin.Description;
-      stateTextBox.Text = plugin.PluginState.ToString();
-      errorTextBox.Text = plugin.LoadingErrorInformation;
+      var localPlugin = plugin as PluginDescription;
+      if (localPlugin != null) {
+        stateTextBox.Text = localPlugin.PluginState.ToString();
+        errorTextBox.Text = localPlugin.LoadingErrorInformation;
+      }
       foreach (PluginDescription dependency in plugin.Dependencies) {
         var depItem = new ListViewItem(new string[] { dependency.Name, dependency.Version.ToString() });
         depItem.Tag = dependency;

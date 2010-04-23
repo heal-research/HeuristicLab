@@ -30,10 +30,11 @@ using System.Windows.Forms;
 using System.ServiceModel;
 using ICSharpCode.SharpZipLib.Zip;
 using System.IO;
+using HeuristicLab.PluginInfrastructure.Manager;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
-  internal partial class PluginEditor : InstallationManagerControl {
-    private Dictionary<IPluginDescription, DeploymentService.PluginDescription> localAndServerPlugins;
+  internal partial class PluginEditor : UserControl {
+    private Dictionary<IPluginDescription, IPluginDescription> localAndServerPlugins;
     private BackgroundWorker pluginUploadWorker;
     private BackgroundWorker updateServerPluginsWorker;
 
@@ -41,7 +42,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       InitializeComponent();
       // Caption = "Upload Plugins";
 
-      localAndServerPlugins = new Dictionary<IPluginDescription, DeploymentService.PluginDescription>();
+      localAndServerPlugins = new Dictionary<IPluginDescription, IPluginDescription>();
 
       #region initialize backgroundworkers
       pluginUploadWorker = new BackgroundWorker();
@@ -63,7 +64,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
           localAndServerPlugins.Add(plugin, null);
         }
         // refresh server plugins (find matching local plugins)
-        var plugins = (DeploymentService.PluginDescription[])e.Result;
+        var plugins = (IPluginDescription[])e.Result;
         foreach (var plugin in plugins) {
           var matchingLocalPlugin = (from localPlugin in localAndServerPlugins.Keys
                                      where localPlugin.Name == plugin.Name
@@ -167,7 +168,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     #region item list events
     private void listView_ItemActivate(object sender, EventArgs e) {
       foreach (var item in listView.SelectedItems) {
-        var plugin = (IPluginDescription)((ListViewItem)item).Tag;
+        var plugin = (PluginDescription)((ListViewItem)item).Tag;
         var compView = new PluginComparisonView(plugin, localAndServerPlugins[plugin]);
         compView.Show();
       }

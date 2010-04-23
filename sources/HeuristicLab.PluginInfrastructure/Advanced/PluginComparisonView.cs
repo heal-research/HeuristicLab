@@ -35,7 +35,7 @@ using System.IO;
 namespace HeuristicLab.PluginInfrastructure.Advanced {
   internal partial class PluginComparisonView : Form {
 
-    public PluginComparisonView(PluginDescription localPlugin, PluginDescription serverPlugin) {
+    public PluginComparisonView(IPluginDescription localPlugin, IPluginDescription serverPlugin) {
       InitializeComponent();
       //Caption = "Compare plugins";
 
