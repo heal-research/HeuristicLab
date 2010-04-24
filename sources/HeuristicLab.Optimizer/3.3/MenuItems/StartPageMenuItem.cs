@@ -42,7 +42,7 @@ namespace HeuristicLab.Optimizer.MenuItems {
 
     protected override void OnToolStripItemSet(EventArgs e) {
       MainFormManager.MainForm.ViewShown += new EventHandler<ViewShownEventArgs>(MainForm_ViewShown);
-      MainFormManager.MainForm.ViewClosed += new EventHandler<ViewEventArgs>(MainForm_ViewClosed);
+      MainFormManager.MainForm.ViewHidden += new EventHandler<ViewEventArgs>(MainForm_ViewHidden);
 
       menuItem = ToolStripItem as ToolStripMenuItem;
       if (menuItem != null) {
@@ -55,7 +55,7 @@ namespace HeuristicLab.Optimizer.MenuItems {
       if ((e.View is StartPage) && (menuItem != null))
         menuItem.Checked = true;
     }
-    private void MainForm_ViewClosed(object sender, ViewEventArgs e) {
+    private void MainForm_ViewHidden(object sender, ViewEventArgs e) {
       if ((e.View is StartPage) && (menuItem != null))
         menuItem.Checked = false;
     }
