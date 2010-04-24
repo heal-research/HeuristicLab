@@ -93,7 +93,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       Parameters.Add(new SubScopesLookupParameter<DoubleValue>("MoveQuality", "The quality of the move."));
       Parameters.Add(new SubScopesLookupParameter<BoolValue>("MoveTabu", "The tabu status of the move."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("CopySelected", "True if the selected move should be copied.", new BoolValue(false)));
-      Parameters.Add(new LookupParameter<BoolValue>("EmptyNeighborhood", "Will be set to true if the neighborhood didn't contain any non-tabu moves. It is not set to false."));
+      Parameters.Add(new LookupParameter<BoolValue>("EmptyNeighborhood", "Will be set to true if the neighborhood didn't contain any non-tabu moves, otherwise it is set to false."));
     }
 
     /// <summary>
@@ -127,7 +127,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       if (selected[0] == null) {
         EmptyNeighborhoodParameter.ActualValue = new BoolValue(true);
         selected[0] = new Scope("All moves are tabu.");
-      }
+      } else EmptyNeighborhoodParameter.ActualValue = new BoolValue(false);
 
       // remove from last to first so that the stored indices remain the same
       if (!copy) {
