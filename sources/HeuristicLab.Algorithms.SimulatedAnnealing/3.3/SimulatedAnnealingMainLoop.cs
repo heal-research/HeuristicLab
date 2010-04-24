@@ -175,8 +175,9 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       annealingOperator.Name = "Annealing operator (placeholder)";
       annealingOperator.OperatorParameter.ActualName = AnnealingOperatorParameter.Name;
 
-      valuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>(QualityParameter.Name));
-      valuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("BestQuality"));
+      valuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Quality", null, QualityParameter.Name));
+      valuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
+      valuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, BestKnownQualityParameter.Name));
       valuesCollector.DataTableParameter.ActualName = "Qualities";
 
       moveGenerator.Name = "Move generator (placeholder)";
