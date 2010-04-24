@@ -33,9 +33,6 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("TranslocationMoveTabuMaker", "Declares a given translocation or insertion move (3-opt) as tabu, by adding its attributes to the tabu list.")]
   [StorableClass]
   public class TranslocationMoveTabuMaker : TabuMaker, IPermutationTranslocationMoveOperator {
-    public override bool CanChangeName {
-      get { return false; }
-    }
     public ILookupParameter<Permutation> PermutationParameter {
       get { return (ILookupParameter<Permutation>)Parameters["Permutation"]; }
     }

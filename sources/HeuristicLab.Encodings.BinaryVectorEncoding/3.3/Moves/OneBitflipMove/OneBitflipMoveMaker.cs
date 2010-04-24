@@ -32,6 +32,9 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [Item("OneBitflipMoveMaker", "Peforms a one bitflip move on a given BitVector and updates the quality.")]
   [StorableClass]
   public class OneBitflipMoveMaker : SingleSuccessorOperator, IOneBitflipMoveOperator, IMoveMaker {
+    public override bool CanChangeName {
+      get { return false; }
+    }
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
@@ -64,10 +67,6 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       quality.Value = moveQuality.Value;
 
       return base.Apply();
-    }
-
-    public override bool CanChangeName {
-      get { return false; }
     }
   }
 }

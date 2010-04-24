@@ -33,7 +33,12 @@ namespace HeuristicLab.Problems.TestFunctions {
   [Item("AdditiveMoveEvaluator", "Base class for evaluating an additive move.")]
   [StorableClass]
   public abstract class AdditiveMoveEvaluator : SingleSuccessorOperator, ISingleObjectiveTestFunctionAdditiveMoveEvaluator {
+
     public abstract Type EvaluatorType { get; }
+    public override bool CanChangeName {
+      get { return false; }
+    }
+
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
     }

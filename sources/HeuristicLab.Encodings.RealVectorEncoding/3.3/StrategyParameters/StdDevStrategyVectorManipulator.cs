@@ -36,6 +36,9 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("StdDevStrategyVectorManipulator", "Mutates the endogenous strategy parameters.")]
   [StorableClass]
   public class StdDevStrategyVectorManipulator : SingleSuccessorOperator, IStochasticOperator, IRealVectorStdDevStrategyParameterManipulator {
+    public override bool CanChangeName {
+      get { return false; }
+    }
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }

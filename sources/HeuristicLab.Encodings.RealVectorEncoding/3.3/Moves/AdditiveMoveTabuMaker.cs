@@ -53,9 +53,5 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       if (maximization && quality > moveQuality || !maximization && quality < moveQuality) baseQuality = quality;
       return new AdditiveMoveTabuAttribute(move.Dimension, vector[move.Dimension], vector[move.Dimension] + move.MoveDistance, baseQuality);
     }
-    
-    public override bool CanChangeName {
-      get { return false; }
-    }
   }
 }

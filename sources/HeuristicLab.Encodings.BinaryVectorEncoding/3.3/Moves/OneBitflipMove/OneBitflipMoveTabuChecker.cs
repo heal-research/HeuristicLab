@@ -32,6 +32,9 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [Item("OneBitflipMoveTabuChecker", "Prevents peforming a one bitflip move again.")]
   [StorableClass]
   public class OneBitflipMoveTabuChecker : SingleSuccessorOperator, IOneBitflipMoveOperator, ITabuChecker {
+    public override bool CanChangeName {
+      get { return false; }
+    }
     public ILookupParameter<OneBitflipMove> OneBitflipMoveParameter {
       get { return (LookupParameter<OneBitflipMove>)Parameters["OneBitflipMove"]; }
     }
@@ -92,10 +95,6 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       }
       MoveTabuParameter.ActualValue = new BoolValue(isTabu);
       return base.Apply();
-    }
-
-    public override bool CanChangeName {
-      get { return false; }
     }
   }
 }

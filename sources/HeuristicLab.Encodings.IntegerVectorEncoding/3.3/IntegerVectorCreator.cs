@@ -34,6 +34,9 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [Item("IntegerVectorCreator", "A base class for operators creating int-valued vectors.")]
   [StorableClass]
   public abstract class IntegerVectorCreator : SingleSuccessorOperator, IIntegerVectorCreator, IStochasticOperator {
+    public override bool CanChangeName {
+      get { return false; }
+    }
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }

@@ -32,6 +32,9 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("AdditiveMoveMaker", "Peforms an additive move on a given real vector and updates the quality.")]
   [StorableClass]
   public class AdditiveMoveMaker : SingleSuccessorOperator, IAdditiveRealVectorMoveOperator, IMoveMaker {
+    public override bool CanChangeName {
+      get { return false; }
+    }
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
@@ -63,10 +66,6 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       quality.Value = moveQuality.Value;
 
       return base.Apply();
-    }
-
-    public override bool CanChangeName {
-      get { return false; }
     }
   }
 }

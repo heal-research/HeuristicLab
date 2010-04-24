@@ -31,6 +31,9 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [Item("OneBitflipMoveGenerator", "Base class for all one bitflip move generators.")]
   [StorableClass]
   public abstract class OneBitflipMoveGenerator : SingleSuccessorOperator, IOneBitflipMoveOperator, IMoveGenerator {
+    public override bool CanChangeName {
+      get { return false; }
+    }
     public ILookupParameter<BinaryVector> BinaryVectorParameter {
       get { return (ILookupParameter<BinaryVector>)Parameters["BinaryVector"]; }
     }
@@ -61,9 +64,5 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     }
 
     protected abstract OneBitflipMove[] GenerateMoves(BinaryVector binaryVector);
-
-    public override bool CanChangeName {
-      get { return false; }
-    }
   }
 }

@@ -32,6 +32,9 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("AdditiveMoveTabuChecker", "Prevents falling back into ranges that have been moved over before.")]
   [StorableClass]
   public class AdditiveMoveTabuChecker : SingleSuccessorOperator, IAdditiveRealVectorMoveOperator, ITabuChecker {
+    public override bool CanChangeName {
+      get { return false; }
+    }
     public ILookupParameter<AdditiveMove> AdditiveMoveParameter {
       get { return (LookupParameter<AdditiveMove>)Parameters["AdditiveMove"]; }
     }
@@ -97,10 +100,6 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       }
       MoveTabuParameter.ActualValue = new BoolValue(isTabu);
       return base.Apply();
-    }
-
-    public override bool CanChangeName {
-      get { return false; }
     }
   }
 }

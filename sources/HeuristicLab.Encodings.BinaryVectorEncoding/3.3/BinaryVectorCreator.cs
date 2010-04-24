@@ -34,6 +34,9 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [Item("BinaryVectorCreator", "A base class for operators creating bool-valued vectors.")]
   [StorableClass]
   public abstract class BinaryVectorCreator : SingleSuccessorOperator, IBinaryVectorCreator, IStochasticOperator {
+    public override bool CanChangeName {
+      get { return false; }
+    }
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }

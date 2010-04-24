@@ -35,6 +35,12 @@ namespace HeuristicLab.Problems.TestFunctions {
   [StorableClass]
   public abstract class SingleObjectiveTestFunctionProblemEvaluator : SingleSuccessorOperator, ISingleObjectiveTestFunctionProblemEvaluator {
     /// <summary>
+    /// These operators should not change their name through the GUI
+    /// </summary>
+    public override bool CanChangeName {
+      get { return false; }
+    }
+    /// <summary>
     /// Returns whether the actual function constitutes a maximization or minimization problem.
     /// </summary>
     public abstract bool Maximization { get; }

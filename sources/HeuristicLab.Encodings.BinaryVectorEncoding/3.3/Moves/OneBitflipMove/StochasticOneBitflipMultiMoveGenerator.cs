@@ -23,6 +23,7 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -30,7 +31,10 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [Item("StochasticOneBitflipMultiMoveGenerator", "Randomly samples n from all possible one bitflip moves from a given BinaryVector.")]
   [StorableClass]
-  public class StochasticOneBitflipMultiMoveGenerator : StochasticOneBitflipSingleMoveGenerator, IMultiMoveGenerator {
+  public class StochasticOneBitflipMultiMoveGenerator : OneBitflipMoveGenerator, IMultiMoveGenerator {
+    public ILookupParameter<IRandom> RandomParameter {
+      get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
+    }
     public IValueLookupParameter<IntValue> SampleSizeParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters["SampleSize"]; }
     }
@@ -42,13 +46,14 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
 
     public StochasticOneBitflipMultiMoveGenerator()
       : base() {
+      Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator."));
       Parameters.Add(new ValueLookupParameter<IntValue>("SampleSize", "The number of moves to generate."));
     }
 
     public static OneBitflipMove[] Apply(BinaryVector binaryVector, IRandom random, int sampleSize) {
       OneBitflipMove[] moves = new OneBitflipMove[sampleSize];
       for (int i = 0; i < sampleSize; i++) {
-        moves[i] = Apply(binaryVector, random);
+        moves[i] = StochasticOneBitflipSingleMoveGenerator.Apply(binaryVector, random);
       }
       return moves;
     }

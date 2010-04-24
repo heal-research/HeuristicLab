@@ -32,6 +32,9 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("AdditiveMoveGenerator", "Base class for all additive move generators.")]
   [StorableClass]
   public abstract class AdditiveMoveGenerator : SingleSuccessorOperator, IAdditiveRealVectorMoveOperator, IMoveGenerator, IStochasticOperator {
+    public override bool CanChangeName {
+      get { return false; }
+    }
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
@@ -80,9 +83,5 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     protected abstract AdditiveMove[] GenerateMoves(IRandom random, RealVector realVector);
-
-    public override bool CanChangeName {
-      get { return false; }
-    }
   }
 }

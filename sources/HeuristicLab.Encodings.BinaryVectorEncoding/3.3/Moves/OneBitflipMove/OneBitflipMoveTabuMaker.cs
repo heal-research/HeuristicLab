@@ -51,9 +51,5 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       if (maximization && quality > moveQuality || !maximization && quality < moveQuality) baseQuality = quality;
       return new OneBitflipMoveAttribute(OneBitflipMoveParameter.ActualValue.Index, baseQuality);
     }
-
-    public override bool CanChangeName {
-      get { return false; }
-    }
   }
 }

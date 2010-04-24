@@ -30,6 +30,9 @@ namespace HeuristicLab.Optimization.Operators {
   [Item("TabuMaker", "Base class for all operators that set a move tabu.")]
   [StorableClass]
   public abstract class TabuMaker : SingleSuccessorOperator, ITabuMaker {
+    public override bool CanChangeName {
+      get { return false; }
+    }
     public LookupParameter<ItemList<IItem>> TabuListParameter {
       get { return (LookupParameter<ItemList<IItem>>)Parameters["TabuList"]; }
     }

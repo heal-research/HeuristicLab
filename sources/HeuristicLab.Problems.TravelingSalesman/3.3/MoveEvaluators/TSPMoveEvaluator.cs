@@ -35,7 +35,11 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   [Item("TSPMoveEvaluator", "A base class for operators which evaluate TSP moves.")]
   [StorableClass]
   public abstract class TSPMoveEvaluator : SingleSuccessorOperator, ITSPMoveEvaluator, IMoveOperator {
+
     public abstract Type EvaluatorType { get; }
+    public override bool CanChangeName {
+      get { return false; }
+    }
 
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
