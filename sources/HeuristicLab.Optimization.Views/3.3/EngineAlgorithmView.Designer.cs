@@ -264,7 +264,7 @@ namespace HeuristicLab.Optimization.Views {
       this.operatorGraphViewHost.Location = new System.Drawing.Point(3, 33);
       this.operatorGraphViewHost.Name = "operatorGraphViewHost";
       this.operatorGraphViewHost.ReadOnly = true;
-      this.operatorGraphViewHost.Size = new System.Drawing.Size(665, 338);
+      this.operatorGraphViewHost.Size = new System.Drawing.Size(699, 405);
       this.operatorGraphViewHost.TabIndex = 0;
       this.operatorGraphViewHost.ViewType = null;
       // 
