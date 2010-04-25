@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Core;
@@ -66,6 +67,11 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       foreach (IStochasticOperator crossover in Operators.OfType<IStochasticOperator>()) {
         crossover.RandomParameter.ActualName = RandomParameter.Name;
       }
+    }
+
+    public override IOperation Apply() {
+      if (Operators.Count == 0) throw new InvalidOperationException(Name + ": Please add at least one permutation manipulator to choose from.");
+      return base.Apply();
     }
   }
 }

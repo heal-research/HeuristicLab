@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Core;
@@ -74,6 +75,11 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       foreach (IStochasticOperator crossover in Operators.OfType<IStochasticOperator>()) {
         crossover.RandomParameter.ActualName = RandomParameter.Name;
       }
+    }
+
+    public override IOperation Apply() {
+      if (Operators.Count == 0) throw new InvalidOperationException(Name + ": Please add at least one binary vector crossover to choose from.");
+      return base.Apply();
     }
   }
 }

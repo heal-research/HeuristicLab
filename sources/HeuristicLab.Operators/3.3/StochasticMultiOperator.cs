@@ -33,7 +33,7 @@ namespace HeuristicLab.Operators {
   /// <summary>
   /// Base class for stochastic multi operators.
   /// </summary>
-  [Item("StochasticMultiOperator", "Base class for stochastic multi operators.")]
+  [Item("StochasticMultiOperator<T>", "Base class for stochastic multi operators.")]
   [StorableClass]
   public abstract class StochasticMultiOperator<T> : MultiOperator<T> where T : class, IOperator {
     /// <summary>
@@ -57,7 +57,7 @@ namespace HeuristicLab.Operators {
     [StorableConstructor]
     protected StochasticMultiOperator(bool deserializing) : base(deserializing) { }
     /// <summary>
-    /// Initializes a new instance of <see cref="StochasticMultiBranch"/> with two parameters
+    /// Initializes a new instance of <see cref="StochasticMultiOperator"/> with two parameters
     /// (<c>Probabilities</c> and <c>Random</c>).
     /// </summary>
     public StochasticMultiOperator()
@@ -118,7 +118,7 @@ namespace HeuristicLab.Operators {
       IRandom random = RandomParameter.ActualValue;
       DoubleArray probabilities = ProbabilitiesParameter.ActualValue;
       if(probabilities.Length != Operators.Count) {
-        throw new InvalidOperationException("MultiCrossover: The list of probabilities has to match the number of operators");
+        throw new InvalidOperationException(Name + ": The list of probabilities has to match the number of operators");
       }
       double sum = 0;
       for (int i = 0; i < Operators.Count; i++) {
