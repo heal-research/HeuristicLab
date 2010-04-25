@@ -90,7 +90,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
         selectButton.Enabled = false;
         panButton.Enabled = false;
         relayoutButton.Enabled = false;
-        zoomAreaButton.Enabled = false;
+        zoomToFitButton.Enabled = false;
         zoomInButton.Enabled = false;
         zoomOutButton.Enabled = false;
         screenshotButton.Enabled = false;
@@ -100,7 +100,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
         selectButton.Enabled = true;
         panButton.Enabled = true;
         relayoutButton.Enabled = true;
-        zoomAreaButton.Enabled = true;
+        zoomToFitButton.Enabled = true;
         zoomInButton.Enabled = true;
         zoomOutButton.Enabled = true;
         screenshotButton.Enabled = true;
@@ -280,7 +280,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
           button = this.connectButton;
           break;
         case ControllerBase.ZoomAreaToolName:
-          button = this.zoomAreaButton;
+          button = this.zoomToFitButton;
           break;
       }
       return button;

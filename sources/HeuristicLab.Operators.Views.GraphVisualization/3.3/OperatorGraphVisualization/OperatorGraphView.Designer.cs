@@ -34,7 +34,7 @@
       this.screenshotButton = new System.Windows.Forms.Button();
       this.zoomOutButton = new System.Windows.Forms.Button();
       this.zoomInButton = new System.Windows.Forms.Button();
-      this.zoomAreaButton = new System.Windows.Forms.Button();
+      this.zoomToFitButton = new System.Windows.Forms.Button();
       this.relayoutButton = new System.Windows.Forms.Button();
       this.connectButton = new System.Windows.Forms.Button();
       this.panButton = new System.Windows.Forms.Button();
@@ -106,7 +106,7 @@
       this.splitContainer.Panel1.Controls.Add(this.screenshotButton);
       this.splitContainer.Panel1.Controls.Add(this.zoomOutButton);
       this.splitContainer.Panel1.Controls.Add(this.zoomInButton);
-      this.splitContainer.Panel1.Controls.Add(this.zoomAreaButton);
+      this.splitContainer.Panel1.Controls.Add(this.zoomToFitButton);
       this.splitContainer.Panel1.Controls.Add(this.relayoutButton);
       this.splitContainer.Panel1.Controls.Add(this.connectButton);
       this.splitContainer.Panel1.Controls.Add(this.panButton);
@@ -155,14 +155,14 @@
       // 
       // zoomAreaButton
       // 
-      this.zoomAreaButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.ActualSize;
-      this.zoomAreaButton.Location = new System.Drawing.Point(153, 3);
-      this.zoomAreaButton.Name = "zoomAreaButton";
-      this.zoomAreaButton.Size = new System.Drawing.Size(24, 24);
-      this.zoomAreaButton.TabIndex = 5;
-      this.buttonToolTip.SetToolTip(this.zoomAreaButton, "Zoom Area Tool");
-      this.zoomAreaButton.UseVisualStyleBackColor = true;
-      this.zoomAreaButton.Click += new System.EventHandler(this.zoomAreaButton_Click);
+      this.zoomToFitButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.ActualSize;
+      this.zoomToFitButton.Location = new System.Drawing.Point(153, 3);
+      this.zoomToFitButton.Name = "zoomAreaButton";
+      this.zoomToFitButton.Size = new System.Drawing.Size(24, 24);
+      this.zoomToFitButton.TabIndex = 5;
+      this.buttonToolTip.SetToolTip(this.zoomToFitButton, "Zoom to Fit");
+      this.zoomToFitButton.UseVisualStyleBackColor = true;
+      this.zoomToFitButton.Click += new System.EventHandler(this.zoomAreaButton_Click);
       // 
       // relayoutButton
       // 
@@ -266,7 +266,7 @@
     private System.Windows.Forms.Button selectButton;
     private System.Windows.Forms.Button zoomOutButton;
     private System.Windows.Forms.Button zoomInButton;
-    private System.Windows.Forms.Button zoomAreaButton;
+    private System.Windows.Forms.Button zoomToFitButton;
     private System.Windows.Forms.Button relayoutButton;
     private System.Windows.Forms.Button connectButton;
     private System.Windows.Forms.Button panButton;
