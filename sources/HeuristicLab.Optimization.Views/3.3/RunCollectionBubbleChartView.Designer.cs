@@ -62,7 +62,7 @@
       // 
       this.xJitterlabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.xJitterlabel.AutoSize = true;
-      this.xJitterlabel.Location = new System.Drawing.Point(460, 308);
+      this.xJitterlabel.Location = new System.Drawing.Point(569, 308);
       this.xJitterlabel.Name = "xJitterlabel";
       this.xJitterlabel.Size = new System.Drawing.Size(32, 13);
       this.xJitterlabel.TabIndex = 12;
@@ -71,7 +71,7 @@
       // xTrackBar
       // 
       this.xTrackBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.xTrackBar.Location = new System.Drawing.Point(498, 305);
+      this.xTrackBar.Location = new System.Drawing.Point(607, 305);
       this.xTrackBar.Maximum = 100;
       this.xTrackBar.Name = "xTrackBar";
       this.xTrackBar.Size = new System.Drawing.Size(64, 45);
@@ -83,7 +83,7 @@
       // 
       this.xAxisLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.xAxisLabel.AutoSize = true;
-      this.xAxisLabel.Location = new System.Drawing.Point(211, 307);
+      this.xAxisLabel.Location = new System.Drawing.Point(320, 307);
       this.xAxisLabel.Name = "xAxisLabel";
       this.xAxisLabel.Size = new System.Drawing.Size(15, 13);
       this.xAxisLabel.TabIndex = 8;
@@ -95,7 +95,7 @@
       this.xAxisComboBox.BackColor = System.Drawing.SystemColors.ControlLightLight;
       this.xAxisComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.xAxisComboBox.FormattingEnabled = true;
-      this.xAxisComboBox.Location = new System.Drawing.Point(232, 305);
+      this.xAxisComboBox.Location = new System.Drawing.Point(341, 305);
       this.xAxisComboBox.Name = "xAxisComboBox";
       this.xAxisComboBox.Size = new System.Drawing.Size(221, 21);
       this.xAxisComboBox.TabIndex = 7;
@@ -137,9 +137,9 @@
       this.sizeComboBox.BackColor = System.Drawing.SystemColors.ControlLightLight;
       this.sizeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.sizeComboBox.FormattingEnabled = true;
-      this.sizeComboBox.Location = new System.Drawing.Point(439, 3);
+      this.sizeComboBox.Location = new System.Drawing.Point(448, 3);
       this.sizeComboBox.Name = "sizeComboBox";
-      this.sizeComboBox.Size = new System.Drawing.Size(121, 21);
+      this.sizeComboBox.Size = new System.Drawing.Size(221, 21);
       this.sizeComboBox.TabIndex = 14;
       this.sizeComboBox.SelectedIndexChanged += new System.EventHandler(this.AxisComboBox_SelectedIndexChanged);
       // 
@@ -147,11 +147,12 @@
       // 
       this.sizeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.sizeLabel.AutoSize = true;
-      this.sizeLabel.Location = new System.Drawing.Point(369, 6);
+      this.sizeLabel.Location = new System.Drawing.Point(378, 6);
       this.sizeLabel.Name = "sizeLabel";
       this.sizeLabel.Size = new System.Drawing.Size(66, 13);
       this.sizeLabel.TabIndex = 15;
       this.sizeLabel.Text = "Bubble Size:";
+      this.sizeLabel.Click += new System.EventHandler(this.sizeLabel_Click);
       // 
       // chart
       // 
@@ -164,15 +165,15 @@
       this.chart.Name = "chart";
       series1.ChartArea = "ChartArea1";
       series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Bubble;
-      series1.CustomProperties = "BubbleMaxSize=0";
+      series1.CustomProperties = "BubbleMinSize=2, BubbleMaxSize=7";
       series1.IsVisibleInLegend = false;
       series1.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
       series1.Name = "Bubbles";
       series1.YValuesPerPoint = 2;
       this.chart.Series.Add(series1);
-      this.chart.Size = new System.Drawing.Size(554, 261);
+      this.chart.Size = new System.Drawing.Size(663, 261);
       this.chart.TabIndex = 16;
-      this.chart.Text = "chart1";
+      this.chart.Text = "chart";
       this.chart.MouseUp += new System.Windows.Forms.MouseEventHandler(this.chart_MouseUp);
       this.chart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart_MouseMove);
       this.chart.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chart_MouseDown);
@@ -251,7 +252,7 @@
       this.Controls.Add(this.yAxisComboBox);
       this.Controls.Add(this.yTrackBar);
       this.Name = "RunCollectionBubbleChartView";
-      this.Size = new System.Drawing.Size(565, 332);
+      this.Size = new System.Drawing.Size(674, 332);
       ((System.ComponentModel.ISupportInitialize)(this.xTrackBar)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.yTrackBar)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.chart)).EndInit();

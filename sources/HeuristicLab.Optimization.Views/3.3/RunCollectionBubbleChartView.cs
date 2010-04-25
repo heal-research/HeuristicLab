@@ -38,7 +38,9 @@ namespace HeuristicLab.Optimization.Views {
   [View("RunCollection BubbleChart")]
   [Content(typeof(RunCollection), false)]
   public partial class RunCollectionBubbleChartView : AsynchronousContentView {
-    private const string constantLabel = "constant";
+    private enum SizeDimension { Constant = 0 }
+    private enum AxisDimension { Index = 0 }
+
     private Dictionary<int, Dictionary<object, double>> categoricalMapping;
     private Dictionary<IRun, double> xJitter;
     private Dictionary<IRun, double> yJitter;
@@ -58,13 +60,6 @@ namespace HeuristicLab.Optimization.Views {
       this.colorDialog.Color = Color.Black;
       this.colorButton.Image = this.GenerateImage(16, 16, this.colorDialog.Color);
       this.isSelecting = false;
-
-      this.chart.Series[0]["BubbleMaxSize"] = "0";
-      this.chart.Series[0]["BubbleMaxScale"] = "Auto";
-      this.chart.Series[0]["BubbleMinScale"] = "Auto";
-      this.chart.Series[0].SmartLabelStyle.Enabled = true;
-      this.chart.Series[0].SmartLabelStyle.IsMarkerOverlappingAllowed = false;
-      this.chart.Series[0].SmartLabelStyle.IsOverlappedHidden = true;
 
       this.chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
       this.chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = true;
@@ -155,10 +150,15 @@ namespace HeuristicLab.Optimization.Views {
       this.yAxisComboBox.Items.Clear();
       this.sizeComboBox.Items.Clear();
       if (Content != null) {
+        string[] additionalAxisDimension = Enum.GetNames(typeof(AxisDimension));
+        this.xAxisComboBox.Items.AddRange(additionalAxisDimension);
         this.xAxisComboBox.Items.AddRange(Matrix.ColumnNames.ToArray());
+        this.yAxisComboBox.Items.AddRange(additionalAxisDimension);
         this.yAxisComboBox.Items.AddRange(Matrix.ColumnNames.ToArray());
-        this.sizeComboBox.Items.Add(constantLabel);
+        string[] additionalSizeDimension = Enum.GetNames(typeof(SizeDimension));
+        this.sizeComboBox.Items.AddRange(additionalSizeDimension);
         this.sizeComboBox.Items.AddRange(Matrix.ColumnNames.ToArray());
+        this.sizeComboBox.SelectedItem = SizeDimension.Constant.ToString();
       }
     }
 
@@ -185,12 +185,10 @@ namespace HeuristicLab.Optimization.Views {
       double? sizeValue;
       Series series = this.chart.Series[0];
       int row = this.Content.ToList().IndexOf(run);
-      xValue = GetValue(row, xAxisComboBox.SelectedIndex);
-      yValue = GetValue(row, yAxisComboBox.SelectedIndex);
-      sizeValue = 1.0;
+      xValue = GetValue(run, (string)xAxisComboBox.SelectedItem);
+      yValue = GetValue(run, (string)yAxisComboBox.SelectedItem);
       if (xValue.HasValue && yValue.HasValue) {
-        if (sizeComboBox.SelectedIndex > 0)
-          sizeValue = GetValue(row, sizeComboBox.SelectedIndex - 1);
+       sizeValue = GetValue(run, (string)sizeComboBox.SelectedItem);
         xValue = xValue.Value + xValue.Value * GetXJitter(Content.ElementAt(row)) * xJitterFactor;
         yValue = yValue.Value + yValue.Value * GetYJitter(Content.ElementAt(row)) * yJitterFactor;
         if (run.Visible) {
@@ -201,37 +199,74 @@ namespace HeuristicLab.Optimization.Views {
         }
       }
     }
-    private double? GetValue(int row, int column) {
-      if (column < 0 || row < 0)
+    private double? GetValue(IRun run, string columnName) {
+      if (run == null || string.IsNullOrEmpty(columnName))
         return null;
 
-      IItem value = Content.GetValue(row, column);
-      DoubleValue doubleValue = value as DoubleValue;
-      IntValue intValue = value as IntValue;
-      double ret;
+      if (Enum.IsDefined(typeof(AxisDimension), columnName)) {
+        AxisDimension axisDimension = (AxisDimension)Enum.Parse(typeof(AxisDimension), columnName);
+        return GetValue(run, axisDimension);
+      } else if (Enum.IsDefined(typeof(SizeDimension), columnName)) {
+        SizeDimension sizeDimension = (SizeDimension)Enum.Parse(typeof(SizeDimension), columnName);
+        return GetValue(run, sizeDimension);
+      } else {
+        int columnIndex = Matrix.ColumnNames.ToList().IndexOf(columnName);
+        IItem value = Content.GetValue(run, columnIndex);
+        if (value == null)
+          return null;
 
-      if (doubleValue != null)
-        ret = doubleValue.Value;
-      else if (intValue != null)
-        ret = intValue.Value;
-      else
-        ret = GetCategoricalValue(column, Matrix.GetValue(row, column));
+        DoubleValue doubleValue = value as DoubleValue;
+        IntValue intValue = value as IntValue;
+        double ret;
+        if (doubleValue != null)
+          ret = doubleValue.Value;
+        else if (intValue != null)
+          ret = intValue.Value;
+        else
+          ret = GetCategoricalValue(columnIndex, value.ToString());
 
-      return ret;
+        return ret;
+      }
     }
-    private double GetCategoricalValue(int dimension, object c) {
+    private double GetCategoricalValue(int dimension, string value) {
       if (!this.categoricalMapping.ContainsKey(dimension))
         this.categoricalMapping[dimension] = new Dictionary<object, double>();
-      if (!this.categoricalMapping[dimension].ContainsKey(c)) {
+      if (!this.categoricalMapping[dimension].ContainsKey(value)) {
         if (this.categoricalMapping[dimension].Values.Count == 0)
-          this.categoricalMapping[dimension][c] = 1.0;
+          this.categoricalMapping[dimension][value] = 1.0;
         else
-          this.categoricalMapping[dimension][c] = this.categoricalMapping[dimension].Values.Max() + 1.0;
+          this.categoricalMapping[dimension][value] = this.categoricalMapping[dimension].Values.Max() + 1.0;
       }
-      return this.categoricalMapping[dimension][c];
+      return this.categoricalMapping[dimension][value];
+    }
+    private double GetValue(IRun run, AxisDimension axisDimension) {
+      double value = double.NaN;
+      switch (axisDimension) {
+        case AxisDimension.Index: {
+            value = Content.ToList().IndexOf(run);
+            break;
+          }
+        default: {
+            throw new ArgumentException("No handling strategy for " + axisDimension.ToString() + " is defined.");
+          }
+      }
+      return value;
+    }
+    private double GetValue(IRun run, SizeDimension sizeDimension) {
+      double value = double.NaN;
+      switch (sizeDimension) {
+        case SizeDimension.Constant: {
+            value = 2;
+            break;
+          }
+        default: {
+            throw new ArgumentException("No handling strategy for " + sizeDimension.ToString() + " is defined.");
+          }
+      }
+      return value;
     }
 
-    #region drag and drop
+    #region drag and drop and tooltip
     private IRun draggedRun;
     private void chart_MouseDown(object sender, MouseEventArgs e) {
       HitTestResult h = this.chart.HitTest(e.X, e.Y);
@@ -305,18 +340,35 @@ namespace HeuristicLab.Optimization.Views {
           this.draggedRun = null;
         }
       }
-      string newTooltipText;
+      string newTooltipText = string.Empty;
       string oldTooltipText;
       if (h.ChartElementType == ChartElementType.DataPoint) {
         IRun run = (IRun)((DataPoint)h.Object).Tag;
-        newTooltipText = run.Name + System.Environment.NewLine;
-        newTooltipText += xAxisComboBox.SelectedItem + " : " + Content.GetValue(run, xAxisComboBox.SelectedIndex).ToString() + Environment.NewLine;
-        newTooltipText += yAxisComboBox.SelectedItem + " : " + Content.GetValue(run, yAxisComboBox.SelectedIndex).ToString() + Environment.NewLine; ;
-      } else
-        newTooltipText = string.Empty;
+        newTooltipText = BuildTooltip(run);
+      }
+
       oldTooltipText = this.tooltip.GetToolTip(chart);
       if (newTooltipText != oldTooltipText)
         this.tooltip.SetToolTip(chart, newTooltipText);
+    }
+
+    private string BuildTooltip(IRun run) {
+      string tooltip;
+      tooltip = run.Name + System.Environment.NewLine;
+
+      double? xValue = this.GetValue(run, (string)xAxisComboBox.SelectedItem);
+      double? yValue = this.GetValue(run, (string)yAxisComboBox.SelectedItem);
+      double? sizeValue = this.GetValue(run, (string)sizeComboBox.SelectedItem);
+
+      string xString = xValue == null ? string.Empty : xValue.Value.ToString();
+      string yString = yValue == null ? string.Empty : yValue.Value.ToString();
+      string sizeString = sizeValue == null ? string.Empty : sizeValue.Value.ToString();
+
+      tooltip += xAxisComboBox.SelectedItem + " : " + xString + Environment.NewLine;
+      tooltip += yAxisComboBox.SelectedItem + " : " + yString + Environment.NewLine;
+      tooltip += sizeComboBox.SelectedItem + " : " + sizeString + Environment.NewLine;
+
+      return tooltip;
     }
     #endregion
 
@@ -383,5 +435,9 @@ namespace HeuristicLab.Optimization.Views {
       return colorImage;
     }
     #endregion
+
+    private void sizeLabel_Click(object sender, EventArgs e) {
+
+    }
   }
 }
