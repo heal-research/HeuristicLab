@@ -256,11 +256,11 @@ namespace HeuristicLab.Core.Views {
       Type type = e.Data.GetData("Type") as Type;
       T item = e.Data.GetData("Value") as T;
       if (!ReadOnly && (type != null) && (item != null)) {
-        if ((e.KeyState & 8) == 8) e.Effect = DragDropEffects.Copy;  // CTRL key
+        if ((e.KeyState & 8) == 8) e.Effect = DragDropEffects.Link;  // CTRL key
         else if (((e.KeyState & 4) == 4) && !itemListViewItemTable.ContainsKey(item)) e.Effect = DragDropEffects.Move;  // SHIFT key
-        else if (((e.AllowedEffect & DragDropEffects.Link) == DragDropEffects.Link) && !itemListViewItemTable.ContainsKey(item)) e.Effect = DragDropEffects.Link;
         else if ((e.AllowedEffect & DragDropEffects.Copy) == DragDropEffects.Copy) e.Effect = DragDropEffects.Copy;
         else if (((e.AllowedEffect & DragDropEffects.Move) == DragDropEffects.Move) && !itemListViewItemTable.ContainsKey(item)) e.Effect = DragDropEffects.Move;
+        else if (((e.AllowedEffect & DragDropEffects.Link) == DragDropEffects.Link) && !itemListViewItemTable.ContainsKey(item)) e.Effect = DragDropEffects.Link;
       }
     }
     private void listView_DragDrop(object sender, DragEventArgs e) {

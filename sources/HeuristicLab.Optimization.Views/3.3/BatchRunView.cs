@@ -222,11 +222,11 @@ namespace HeuristicLab.Optimization.Views {
         return;
       Type type = e.Data.GetData("Type") as Type;
       if ((type != null) && (typeof(IAlgorithm).IsAssignableFrom(type))) {
-        if ((e.KeyState & 8) == 8) e.Effect = DragDropEffects.Copy;  // CTRL key
+        if ((e.KeyState & 8) == 8) e.Effect = DragDropEffects.Link;  // CTRL key
         else if ((e.KeyState & 4) == 4) e.Effect = DragDropEffects.Move;  // SHIFT key
-        else if ((e.AllowedEffect & DragDropEffects.Link) == DragDropEffects.Link) e.Effect = DragDropEffects.Link;
         else if ((e.AllowedEffect & DragDropEffects.Copy) == DragDropEffects.Copy) e.Effect = DragDropEffects.Copy;
         else if ((e.AllowedEffect & DragDropEffects.Move) == DragDropEffects.Move) e.Effect = DragDropEffects.Move;
+        else if ((e.AllowedEffect & DragDropEffects.Link) == DragDropEffects.Link) e.Effect = DragDropEffects.Link;
       }
     }
     private void algorithmPanel_DragDrop(object sender, DragEventArgs e) {
