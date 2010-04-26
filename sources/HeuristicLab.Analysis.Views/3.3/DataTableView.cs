@@ -116,7 +116,7 @@ namespace HeuristicLab.Analysis.Views {
     private void AddDataRow(DataRow row) {
       Series series = new Series(row.Name);
       series.ChartType = SeriesChartType.FastLine;
-      series.ToolTip = "#VAL";
+      series.ToolTip = row.Name + " #VAL";
       for (int i = 0; i < row.Values.Count; i++) {
         var value = row.Values[i];
         if (IsInvalidValue(value)) {
