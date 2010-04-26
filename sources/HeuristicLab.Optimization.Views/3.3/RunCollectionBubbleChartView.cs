@@ -33,6 +33,7 @@ using System.Windows.Forms.DataVisualization.Charting;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using System.Threading;
 
 namespace HeuristicLab.Optimization.Views {
   [View("RunCollection BubbleChart")]
@@ -177,6 +178,7 @@ namespace HeuristicLab.Optimization.Views {
       if (Content != null) {
         foreach (IRun run in this.Content)
           this.AddDataPoint(run);
+        //Thread.Sleep(100);
       }
     }
     private void AddDataPoint(IRun run) {
@@ -396,15 +398,19 @@ namespace HeuristicLab.Optimization.Views {
     private void UpdateAxisLabels() {
       Axis xAxis = this.chart.ChartAreas[0].AxisX;
       Axis yAxis = this.chart.ChartAreas[0].AxisY;
-      SetCustomAxisLabels(xAxis, xAxisComboBox.SelectedIndex);
-      SetCustomAxisLabels(yAxis, yAxisComboBox.SelectedIndex);
+      int axisDimensionCount = Enum.GetNames(typeof(AxisDimension)).Count();
+      SetCustomAxisLabels(xAxis, xAxisComboBox.SelectedIndex - axisDimensionCount);
+      SetCustomAxisLabels(yAxis, yAxisComboBox.SelectedIndex - axisDimensionCount);
     }
     private void SetCustomAxisLabels(Axis axis, int dimension) {
       axis.CustomLabels.Clear();
       if (categoricalMapping.ContainsKey(dimension)) {
         CustomLabel label = null;
         foreach (var pair in categoricalMapping[dimension]) {
-          label = axis.CustomLabels.Add(pair.Value - 0.5, pair.Value + 0.5, pair.Key.ToString());
+          string labelText = pair.Key.ToString();
+          if(labelText.Length > 25)
+            labelText = labelText.Substring(0,25) + " ... ";
+          label = axis.CustomLabels.Add(pair.Value - 0.5, pair.Value + 0.5, labelText);
           label.GridTicks = GridTickTypes.TickMark;
         }
         axis.IsLabelAutoFit = false;
