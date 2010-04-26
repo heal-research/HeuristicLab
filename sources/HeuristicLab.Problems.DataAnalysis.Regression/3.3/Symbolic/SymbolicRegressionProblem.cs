@@ -39,7 +39,7 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
-  [Item("SymbolicRegressionProblem", "Represents a symbolic regression problem.")]
+  [Item("Symbolic Regression Problem", "Represents a symbolic regression problem.")]
   [Creatable("Problems")]
   [StorableClass]
   public sealed class SymbolicRegressionProblem : DataAnalysisProblem, ISingleObjectiveProblem {

@@ -33,7 +33,7 @@ namespace HeuristicLab.Core.Views {
     protected override void Dispose(bool disposing) {
       if (disposing) {
         if (scopesTreeView.Nodes.Count > 0) {
-          RemoveTreeNode(scopesTreeView.Nodes[0]);
+          ClearTreeNode(scopesTreeView.Nodes[0]);
         }
         if (components != null) components.Dispose();
       }
@@ -70,6 +70,7 @@ namespace HeuristicLab.Core.Views {
       this.scopesTreeView.TabIndex = 0;
       this.scopesTreeView.AfterCollapse += new System.Windows.Forms.TreeViewEventHandler(this.scopesTreeView_AfterCollapse);
       this.scopesTreeView.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.scopesTreeView_BeforeExpand);
+      this.scopesTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.scopesTreeView_AfterSelect);
       this.scopesTreeView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.scopesTreeView_MouseDown);
       this.scopesTreeView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.scopesTreeView_ItemDrag);
       // 
@@ -110,8 +111,10 @@ namespace HeuristicLab.Core.Views {
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.variableCollectionView.Caption = "VariableCollection";
+      this.variableCollectionView.Content = null;
       this.variableCollectionView.Location = new System.Drawing.Point(3, 3);
       this.variableCollectionView.Name = "variableCollectionView";
+      this.variableCollectionView.ReadOnly = false;
       this.variableCollectionView.Size = new System.Drawing.Size(394, 190);
       this.variableCollectionView.TabIndex = 0;
       // 

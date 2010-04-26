@@ -32,7 +32,7 @@ using System.Drawing;
 using System.IO;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [Item("DataAnalysisProblem", "Represents a data analysis problem.")]
+  [Item("Data Analysis Problem", "Represents a data analysis problem.")]
   [Creatable("Problems")]
   [StorableClass]
   public class DataAnalysisProblem : ParameterizedNamedItem {

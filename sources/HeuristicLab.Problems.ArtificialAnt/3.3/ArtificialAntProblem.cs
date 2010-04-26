@@ -37,7 +37,7 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlteringOperators;
 
 namespace HeuristicLab.Problems.ArtificialAnt {
-  [Item("ArtificialAntProblem", "Represents the Artificial Ant problem.")]
+  [Item("Artificial Ant Problem", "Represents the Artificial Ant problem.")]
   [Creatable("Problems")]
   [StorableClass]
   public sealed class ArtificialAntProblem : ParameterizedNamedItem, ISingleObjectiveProblem {

@@ -29,7 +29,7 @@ namespace HeuristicLab.Optimization {
   /// <summary>
   /// An algorithm which can be defined by the user.
   /// </summary>
-  [Item("UserDefinedAlgorithm", "An algorithm which can be defined by the user.")]
+  [Item("User-Defined Algorithm", "An algorithm which can be defined by the user.")]
   [Creatable("Algorithms")]
   [StorableClass]
   public sealed class UserDefinedAlgorithm : EngineAlgorithm, IParameterizedItem {

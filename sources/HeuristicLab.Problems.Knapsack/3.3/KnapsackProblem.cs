@@ -34,7 +34,7 @@ using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.Knapsack.Visualizers;
 
 namespace HeuristicLab.Problems.Knapsack {
-  [Item("KnapsackProblem", "Represents a Knapsack Problem.")]
+  [Item("Knapsack Problem", "Represents a Knapsack Problem.")]
   [Creatable("Problems")]
   [StorableClass]
   public sealed class KnapsackProblem : ParameterizedNamedItem, ISingleObjectiveProblem {

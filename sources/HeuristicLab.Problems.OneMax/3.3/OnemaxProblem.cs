@@ -33,7 +33,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.OneMax {
-  [Item("OneMaxProblem", "Represents a OneMax Problem.")]
+  [Item("OneMax Problem", "Represents a OneMax Problem.")]
   [Creatable("Problems")]
   [StorableClass]
   public sealed class OneMaxProblem : ParameterizedNamedItem, ISingleObjectiveProblem {

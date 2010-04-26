@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Drawing;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -30,6 +31,10 @@ namespace HeuristicLab.Core {
   [Item("Scope", "A scope which contains variables and sub-scopes.")]
   [StorableClass]
   public sealed class Scope : NamedItem, IScope {
+    public override Image ItemImage {
+      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.OrgChart; }
+    }
+
     [Storable]
     private IScope parent;
     public IScope Parent {

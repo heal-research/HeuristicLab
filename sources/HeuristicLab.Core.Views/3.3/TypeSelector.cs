@@ -90,7 +90,6 @@ namespace HeuristicLab.Core.Views {
         imageList.Images.Add(HeuristicLab.Common.Resources.VS2008ImageLibrary.Class);      // default icon
         imageList.Images.Add(HeuristicLab.Common.Resources.VS2008ImageLibrary.Namespace);  // plugins
         imageList.Images.Add(HeuristicLab.Common.Resources.VS2008ImageLibrary.Interface);  // interfaces
-        imageList.Images.Add(HeuristicLab.Common.Resources.VS2008ImageLibrary.OrgChart);   // abstract types
         imageList.Images.Add(HeuristicLab.Common.Resources.VS2008ImageLibrary.Template);   // generic types
 
         var plugins = from p in ApplicationManager.Manager.Plugins
@@ -118,8 +117,7 @@ namespace HeuristicLab.Core.Views {
               typeNode.Text = name != null ? name : type.GetPrettyName();
               typeNode.ImageIndex = 0;
               if (type.IsInterface) typeNode.ImageIndex = 2;
-              else if (type.IsAbstract) typeNode.ImageIndex = 3;
-              else if (type.ContainsGenericParameters) typeNode.ImageIndex = 4;
+              else if (type.ContainsGenericParameters) typeNode.ImageIndex = 3;
               else if (imageList.Images.ContainsKey(type.FullName)) typeNode.ImageIndex = imageList.Images.IndexOfKey(type.FullName);
               else if (typeof(IItem).IsAssignableFrom(type)) {
                 try {
