@@ -101,6 +101,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
         int minPossibleHeight = invocationCutPoint.Parent.Grammar.GetMinExpressionDepth(selectedSymbol);
         int maxHeight = Math.Max(minPossibleHeight, invocationCutPoint.ReplacedChild.GetHeight());
         replacementTree = selectedSymbol.CreateTreeNode();
+        if (replacementTree.HasLocalParameters)
+          replacementTree.ResetLocalParameters(random);
         invocationCutPoint.Parent.RemoveSubTree(invocationCutPoint.ReplacedChildIndex);
         invocationCutPoint.Parent.InsertSubTree(invocationCutPoint.ReplacedChildIndex, replacementTree);
 

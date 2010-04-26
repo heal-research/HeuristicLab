@@ -36,13 +36,17 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators {
     }
 
     protected override void Manipulate(IRandom random, SymbolicExpressionTree symbolicExpressionTree, ISymbolicExpressionGrammar grammar, IntValue maxTreeSize, IntValue maxTreeHeight, out bool success) {
+      var parametricNodes = from node in symbolicExpressionTree.IterateNodesPrefix()
+                            where node.HasLocalParameters
+                            select node;
+      if (parametricNodes.Count() > 0) {
+        SymbolicExpressionTreeNode selectedPoint = parametricNodes.SelectRandom(random);
 
-      SymbolicExpressionTreeNode selectedPoint = (from node in symbolicExpressionTree.IterateNodesPrefix()
-                                                  where node.HasLocalParameters
-                                                  select node).SelectRandom(random);
-
-      selectedPoint.ShakeLocalParameters(random, 1.0);
-      success = true;
+        selectedPoint.ShakeLocalParameters(random, 1.0);
+        success = true;
+      } else {
+        success = false;
+      }
     }
   }
 }
