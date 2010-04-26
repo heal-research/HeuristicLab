@@ -55,7 +55,7 @@ namespace HeuristicLab.Problems.Knapsack {
         KnapsackCapacityParameter.ActualValue,
         PenaltyParameter.ActualValue,
         WeightsParameter.ActualValue,
-        ValuesParameter.ActualValue);
+        ValuesParameter.ActualValue).Quality;
 
       double moveQuality = quality.Value;
       

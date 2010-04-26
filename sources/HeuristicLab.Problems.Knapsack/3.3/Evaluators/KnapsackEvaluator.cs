@@ -38,6 +38,18 @@ namespace HeuristicLab.Problems.Knapsack {
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
+
+    public ILookupParameter<DoubleValue> SumWeightsParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters["SumWeights"]; }
+    }
+
+    public ILookupParameter<DoubleValue> SumValuesParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters["SumValues"]; }
+    }
+
+    public ILookupParameter<DoubleValue> AppliedPenaltyParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters["AppliedPenalty"]; }
+    }
     
     public ILookupParameter<BinaryVector> BinaryVectorParameter {
       get { return (ILookupParameter<BinaryVector>)Parameters["BinaryVector"]; }
@@ -59,6 +71,9 @@ namespace HeuristicLab.Problems.Knapsack {
     public KnapsackEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The evaluated quality of the OneMax solution."));
+      Parameters.Add(new LookupParameter<DoubleValue>("SumWeights", "The evaluated quality of the OneMax solution."));
+      Parameters.Add(new LookupParameter<DoubleValue>("SumValues", "The evaluated quality of the OneMax solution."));
+      Parameters.Add(new LookupParameter<DoubleValue>("AppliedPenalty", "The evaluated quality of the OneMax solution."));
       Parameters.Add(new LookupParameter<BinaryVector>("BinaryVector", "The OneMax solution given in path representation which should be evaluated."));
       Parameters.Add(new LookupParameter<IntValue>("KnapsackCapacity", "Capacity of the Knapsack."));
       Parameters.Add(new LookupParameter<IntArray>("Weights", "The weights of the items."));
@@ -66,14 +81,24 @@ namespace HeuristicLab.Problems.Knapsack {
       Parameters.Add(new LookupParameter<DoubleValue>("Penalty", "The penalty value for each unit of overweight."));
     }
 
-    public static DoubleValue Apply(BinaryVector v, IntValue capacity, DoubleValue penalty, IntArray weights, IntArray values) {
+    public struct KnapsackEvaluation {
+      public DoubleValue Quality;
+      public DoubleValue SumWeights;
+      public DoubleValue SumValues;
+      public DoubleValue AppliedPenalty;
+    }
+
+    public static KnapsackEvaluation Apply(BinaryVector v, IntValue capacity, DoubleValue penalty, IntArray weights, IntArray values) {
       if (weights.Length != values.Length)
-        throw new InvalidOperationException("The weights and values parameters of the Knapsack problem have different sizes"); 
-      
+        throw new InvalidOperationException("The weights and values parameters of the Knapsack problem have different sizes");
+
+      KnapsackEvaluation result = new KnapsackEvaluation();
+
       double quality = 0;
 
       int weight = 0;
       int value = 0;
+      double appliedPenalty = 0;
 
       for (int i = 0; i < v.Length; i++) {
         if (v[i]) {
@@ -83,25 +108,32 @@ namespace HeuristicLab.Problems.Knapsack {
       }
 
       if (weight > capacity.Value) {
-        quality =
-          value - penalty.Value * (weight - capacity.Value);
-      } else {
-        quality = value;
-      }
+        appliedPenalty = penalty.Value * (weight - capacity.Value);
+      } 
 
-      return new DoubleValue(quality);
+      quality =  value - appliedPenalty;
+
+      result.AppliedPenalty = new DoubleValue(appliedPenalty);
+      result.SumWeights = new DoubleValue(weight);
+      result.SumValues = new DoubleValue(value);
+      result.Quality = new DoubleValue(quality);
+
+      return result;
     }
 
     public sealed override IOperation Apply() {
       BinaryVector v = BinaryVectorParameter.ActualValue;
 
-      DoubleValue quality = Apply(BinaryVectorParameter.ActualValue,
+      KnapsackEvaluation evaluation = Apply(BinaryVectorParameter.ActualValue,
         KnapsackCapacityParameter.ActualValue, 
         PenaltyParameter.ActualValue, 
         WeightsParameter.ActualValue, 
         ValuesParameter.ActualValue);
 
-      QualityParameter.ActualValue = quality;
+      QualityParameter.ActualValue = evaluation.Quality;
+      SumWeightsParameter.ActualValue = evaluation.SumWeights;
+      SumValuesParameter.ActualValue = evaluation.SumValues;
+      AppliedPenaltyParameter.ActualValue = evaluation.AppliedPenalty;
 
       return base.Apply();
     }

@@ -142,11 +142,10 @@ namespace HeuristicLab.Problems.Knapsack {
       System.Random rand = new System.Random();
 
       int itemCount = rand.Next(10, 100);
-      int capacity = itemCount * 5;
-
-      KnapsackCapacity = new IntValue(capacity);
       Weights = new IntArray(itemCount);
       Values = new IntArray(itemCount);
+
+      double totalWeight = 0;
 
       for (int i = 0; i < itemCount; i++ ) {
         int value = rand.Next(1, 10);
@@ -154,7 +153,11 @@ namespace HeuristicLab.Problems.Knapsack {
 
         Values[i] = value;
         Weights[i] = weight;
+        totalWeight += weight;
       }
+
+      int capacity = (int)Math.Round(0.7 * totalWeight);
+      KnapsackCapacity = new IntValue(capacity);
     }
 
     public KnapsackProblem()
@@ -174,7 +177,6 @@ namespace HeuristicLab.Problems.Knapsack {
       Parameters.Add(new ValueParameter<IKnapsackSolutionsVisualizer>("Visualizer", "The operator which should be used to visualize Knapsack solutions.", visualizer));
 
       creator.BinaryVectorParameter.ActualName = "KnapsackSolution";
-      evaluator.QualityParameter.ActualName = "NumberOfOnes";
 
       InitializeRandomKnapsackInstance();
       

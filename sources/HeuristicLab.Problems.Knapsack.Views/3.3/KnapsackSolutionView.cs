@@ -153,7 +153,7 @@ namespace HeuristicLab.Problems.Knapsack.Views {
 
               //draw knapsack
               graphics.DrawRectangle(Pens.Black,
-                borderX - 1, borderY - 1, width + 2, knapsackHeight + 2);
+                borderX - 1, pictureBox.Height - borderY - knapsackHeight - 1, width + 2, knapsackHeight + 2);
 
               //draw items sorted by value
               List<int> sortedIndices = new List<int>();
@@ -179,7 +179,7 @@ namespace HeuristicLab.Problems.Knapsack.Views {
                   
                   double weight = Content.Weights[i];
                   double factor = weight / capacity;
-                  int elementHeight = (int)Math.Round(height * factor);
+                  int elementHeight = (int)Math.Floor(knapsackHeight * factor);
 
                   double value = Content.Values[i];
                   //color according to value
