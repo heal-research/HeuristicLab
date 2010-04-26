@@ -110,6 +110,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       get { return MaxExpressionDepthParameter.Value; }
       set { MaxExpressionDepthParameter.Value = value; }
     }
+    public IntValue MaxFunctionDefiningBranches {
+      get { return MaxFunctionDefiningBranchesParameter.Value; }
+      set { MaxFunctionDefiningBranchesParameter.Value = value; }
+    }
+    public IntValue MaxFunctionArguments {
+      get { return MaxFunctionArgumentsParameter.Value; }
+      set { MaxFunctionArgumentsParameter.Value = value; }
+    }
     public SymbolicExpressionTreeCreator SolutionCreator {
       get { return SolutionCreatorParameter.Value; }
       set { SolutionCreatorParameter.Value = value; }
@@ -165,7 +173,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     public SymbolicRegressionProblem()
       : base() {
       SymbolicExpressionTreeCreator creator = new ProbabilisticTreeCreator();
-      var evaluator = new SymbolicRegressionMeanSquaredErrorEvaluator();
+      var evaluator = new SymbolicRegressionScaledMeanSquaredErrorEvaluator();
       var grammar = new ArithmeticExpressionGrammar();
       var globalGrammar = new GlobalSymbolicExpressionGrammar(grammar);
       var visualizer = new BestValidationSymbolicRegressionSolutionVisualizer();
@@ -189,12 +197,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       creator.MaxFunctionDefinitionsParameter.ActualName = "MaxFunctionDefiningBranches";
       DataAnalysisProblemDataParameter.ValueChanged += new EventHandler(DataAnalysisProblemDataParameter_ValueChanged);
       DataAnalysisProblemData.ProblemDataChanged += new EventHandler(DataAnalysisProblemData_Changed);
+      MaxFunctionArgumentsParameter.ValueChanged += new EventHandler(ArchitectureParameter_Changed);
+      MaxFunctionArgumentsParameter.Value.ValueChanged += new EventHandler(ArchitectureParameter_Changed);
+      MaxFunctionDefiningBranchesParameter.ValueChanged += new EventHandler(ArchitectureParameter_Changed);
+      MaxFunctionDefiningBranchesParameter.Value.ValueChanged += new EventHandler(ArchitectureParameter_Changed);
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
       ParameterizeVisualizer();
 
       Initialize();
     }
+
 
     [StorableConstructor]
     private SymbolicRegressionProblem(bool deserializing) : base() { }
@@ -213,6 +226,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     void DataAnalysisProblemData_Changed(object sender, EventArgs e) {
       UpdateGrammar();
       UpdatePartitioningParameters();
+    }
+
+    void ArchitectureParameter_Changed(object sender, EventArgs e) {
+      var globalGrammar = FunctionTreeGrammar as GlobalSymbolicExpressionGrammar;
+      globalGrammar.MaxFunctionArguments = MaxFunctionArguments.Value;
+      globalGrammar.MaxFunctionDefinitions = MaxFunctionDefiningBranches.Value;
     }
 
     private void UpdateGrammar() {

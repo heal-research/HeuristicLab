@@ -33,6 +33,8 @@ using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using System.Collections.Generic;
 using HeuristicLab.Analysis;
 
+using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
+
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   /// <summary>
   /// An operator for visualizing the best symbolic regression solution based on the validation set.
@@ -43,6 +45,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     private const string SymbolicExpressionTreeInterpreterParameterName = "SymbolicExpressionTreeInterpreter";
     private const string UpperEstimationLimitParameterName = "UpperEstimationLimit";
     private const string LowerEstimationLimitParameterName = "LowerEstimationLimit";
+    private const string AlphaParameterName = "Alpha";
+    private const string BetaParameterName = "Beta";
     private const string SymbolicRegressionModelParameterName = "SymbolicRegressionModel";
     private const string DataAnalysisProblemDataParameterName = "DataAnalysisProblemData";
     private const string BestValidationSolutionParameterName = "BestValidationSolution";
@@ -71,6 +75,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
 
     public ILookupParameter<ItemArray<SymbolicExpressionTree>> SymbolicExpressionTreeParameter {
       get { return (ILookupParameter<ItemArray<SymbolicExpressionTree>>)Parameters[SymbolicRegressionModelParameterName]; }
+    }
+    public ILookupParameter<ItemArray<DoubleValue>> AlphaParameter {
+      get { return (ILookupParameter<ItemArray<DoubleValue>>)Parameters[AlphaParameterName]; }
+    }
+    public ILookupParameter<ItemArray<DoubleValue>> BetaParameter {
+      get { return (ILookupParameter<ItemArray<DoubleValue>>)Parameters[BetaParameterName]; }
     }
     public ILookupParameter<DataAnalysisProblemData> DataAnalysisProblemDataParameter {
       get { return (ILookupParameter<DataAnalysisProblemData>)Parameters[DataAnalysisProblemDataParameterName]; }
@@ -123,6 +133,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       Parameters.Add(new SubScopesLookupParameter<DoubleValue>(QualityParameterName, "The quality of the symbolic regression solutions."));
       Parameters.Add(new LookupParameter<DataAnalysisProblemData>(DataAnalysisProblemDataParameterName, "The symbolic regression problme data on which the best solution should be evaluated."));
       Parameters.Add(new LookupParameter<ISymbolicExpressionTreeInterpreter>(SymbolicExpressionTreeInterpreterParameterName, "The interpreter that should be used to calculate the output values of symbolic expression trees."));
+      Parameters.Add(new SubScopesLookupParameter<DoubleValue>(AlphaParameterName, "Alpha parameter for linear scaling of the estimated values."));
+      Parameters.Add(new SubScopesLookupParameter<DoubleValue>(BetaParameterName, "Beta parameter for linear scaling ot the estimated values."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>(UpperEstimationLimitParameterName, "The upper limit that should be used as cut off value for the output values of symbolic expression trees."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>(LowerEstimationLimitParameterName, "The lower limit that should be used as cut off value for the output values of symbolic expression trees."));
       Parameters.Add(new ValueLookupParameter<IntValue>(ValidationSamplesStartParameterName, "The start index of the validation partition (part of the training partition)."));
@@ -134,6 +146,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
 
     public override IOperation Apply() {
       ItemArray<SymbolicExpressionTree> expressions = SymbolicExpressionTreeParameter.ActualValue;
+      ItemArray<DoubleValue> alphas = AlphaParameter.ActualValue;
+      ItemArray<DoubleValue> betas = BetaParameter.ActualValue;
+      var scaledExpressions = from i in Enumerable.Range(0, expressions.Count())
+                              let expr = expressions[i]
+                              let alpha = alphas[i].Value
+                              let beta = betas[i].Value
+                              select new { Expression = expr, Alpha = alpha, Beta = beta };
       DataAnalysisProblemData problemData = DataAnalysisProblemDataParameter.ActualValue;
       #region update variable frequencies
       var inputVariables = problemData.InputVariables.Select(x => x.Value);
@@ -155,13 +174,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       var validationValues = problemData.Dataset.GetVariableValues(problemData.TargetVariable.Value, validationSamplesStart, validationSamplesEnd);
       double upperEstimationLimit = UpperEstimationLimit.Value;
       double lowerEstimationLimit = LowerEstimationLimit.Value;
-      var currentBestExpression = (from expression in expressions
+      var currentBestExpression = (from expression in scaledExpressions
                                    let validationQuality =
-                                     SymbolicRegressionMeanSquaredErrorEvaluator.Calculate(
-                                       SymbolicExpressionTreeInterpreter, expression,
+                                     SymbolicRegressionScaledMeanSquaredErrorEvaluator.CalculateWithScaling(
+                                       SymbolicExpressionTreeInterpreter, expression.Expression,
                                        lowerEstimationLimit, upperEstimationLimit,
                                        problemData.Dataset, problemData.TargetVariable.Value,
-                                       validationSamplesStart, validationSamplesEnd)
+                                       validationSamplesStart, validationSamplesEnd,
+                                       expression.Beta, expression.Alpha)
                                    select new { Expression = expression, ValidationQuality = validationQuality })
                                    .OrderBy(x => x.ValidationQuality)
                                    .First();
@@ -171,13 +191,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       #region update of validation-best solution
       if (bestOfRunSolution == null) {
         // no best of run solution yet -> make a solution from the currentBestExpression
-        UpdateBestOfRunSolution(problemData, currentBestExpression.Expression, SymbolicExpressionTreeInterpreter, lowerEstimationLimit, upperEstimationLimit);
+        UpdateBestOfRunSolution(problemData, currentBestExpression.Expression.Expression, SymbolicExpressionTreeInterpreter, lowerEstimationLimit, upperEstimationLimit, currentBestExpression.Expression.Alpha, currentBestExpression.Expression.Beta);
       } else {
         // compare quality of current best with best of run solution
         var estimatedValidationValues = bestOfRunSolution.EstimatedValues.Skip(validationSamplesStart).Take(validationSamplesEnd - validationSamplesStart);
         var bestOfRunValidationQuality = SimpleMSEEvaluator.Calculate(validationValues, estimatedValidationValues);
         if (bestOfRunValidationQuality > currentBestExpression.ValidationQuality) {
-          UpdateBestOfRunSolution(problemData, currentBestExpression.Expression, SymbolicExpressionTreeInterpreter, lowerEstimationLimit, upperEstimationLimit);
+          UpdateBestOfRunSolution(problemData, currentBestExpression.Expression.Expression, SymbolicExpressionTreeInterpreter, lowerEstimationLimit, upperEstimationLimit, currentBestExpression.Expression.Alpha, currentBestExpression.Expression.Beta);
         }
       }
       #endregion
@@ -185,8 +205,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
 
     private void UpdateBestOfRunSolution(DataAnalysisProblemData problemData, SymbolicExpressionTree tree, ISymbolicExpressionTreeInterpreter interpreter,
-      double lowerEstimationLimit, double upperEstimationLimit) {
-      var newBestSolution = CreateDataAnalysisSolution(problemData, tree, interpreter, lowerEstimationLimit, upperEstimationLimit);
+      double lowerEstimationLimit, double upperEstimationLimit,
+      double alpha, double beta) {
+      var newBestSolution = CreateDataAnalysisSolution(problemData, tree, interpreter, lowerEstimationLimit, upperEstimationLimit, alpha, beta);
       if (BestValidationSolutionParameter.ActualValue == null)
         BestValidationSolutionParameter.ActualValue = newBestSolution;
       else
@@ -214,10 +235,44 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       }
     }
 
-    private SymbolicRegressionSolution CreateDataAnalysisSolution(DataAnalysisProblemData problemData, SymbolicExpressionTree expression, ISymbolicExpressionTreeInterpreter interpreter,
-      double lowerEstimationLimit, double upperEstimationLimit) {
-      var model = new SymbolicRegressionModel(interpreter, expression, problemData.InputVariables.Select(s => s.Value));
+    private SymbolicRegressionSolution CreateDataAnalysisSolution(DataAnalysisProblemData problemData, SymbolicExpressionTree tree, ISymbolicExpressionTreeInterpreter interpreter,
+      double lowerEstimationLimit, double upperEstimationLimit,
+      double alpha, double beta) {
+      var mainBranch = tree.Root.SubTrees[0].SubTrees[0];
+      var scaledMainBranch = MakeSum(MakeProduct(beta, mainBranch), alpha);
+
+      // remove the main branch before cloning to prevent cloning of sub-trees
+      tree.Root.SubTrees[0].RemoveSubTree(0);
+      var scaledTree = (SymbolicExpressionTree)tree.Clone();
+      // insert main branch into the original tree again 
+      tree.Root.SubTrees[0].InsertSubTree(0, mainBranch);
+      // insert the scaled main branch into the cloned tree
+      scaledTree.Root.SubTrees[0].InsertSubTree(0, scaledMainBranch);
+      // create a new solution using the scaled tree
+      var model = new SymbolicRegressionModel(interpreter, scaledTree, problemData.InputVariables.Select(s => s.Value));
       return new SymbolicRegressionSolution(problemData, model, lowerEstimationLimit, upperEstimationLimit);
+    }
+
+    private SymbolicExpressionTreeNode MakeSum(SymbolicExpressionTreeNode treeNode, double alpha) {
+      var node = (new Addition()).CreateTreeNode();
+      var alphaConst = MakeConstant(alpha);
+      node.AddSubTree(treeNode);
+      node.AddSubTree(alphaConst);
+      return node;
+    }
+
+    private SymbolicExpressionTreeNode MakeProduct(double beta, SymbolicExpressionTreeNode treeNode) {
+      var node = (new Multiplication()).CreateTreeNode();
+      var betaConst = MakeConstant(beta);
+      node.AddSubTree(treeNode);
+      node.AddSubTree(betaConst);
+      return node;
+    }
+
+    private SymbolicExpressionTreeNode MakeConstant(double c) {
+      var node = (ConstantTreeNode)(new Constant()).CreateTreeNode();
+      node.Value = c;
+      return node;
     }
   }
 }
