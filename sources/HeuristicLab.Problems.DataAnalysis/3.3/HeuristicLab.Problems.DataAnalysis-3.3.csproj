@@ -111,6 +111,7 @@
     <Compile Include="Symbolic\Symbols\Subtraction.cs" />
     <Compile Include="Symbolic\Symbols\Variable.cs" />
     <Compile Include="Symbolic\Symbols\VariableTreeNode.cs" />
+    <Compile Include="Symbolic\VariableFrequencyAnalyser.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">

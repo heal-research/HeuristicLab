@@ -30,6 +30,8 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Problems.DataAnalysis.Evaluators;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
+using System.Collections.Generic;
+using HeuristicLab.Analysis;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   /// <summary>
@@ -48,6 +50,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     private const string ValidationSamplesEndParameterName = "ValidationSamplesEnd";
     private const string QualityParameterName = "Quality";
     private const string ResultsParameterName = "Results";
+    private const string VariableFrequenciesParameterName = "VariableFrequencies";
 
     #region parameter properties
     public ILookupParameter<ISymbolicExpressionTreeInterpreter> SymbolicExpressionTreeInterpreterParameter {
@@ -86,6 +89,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     public ILookupParameter<ResultCollection> ResultParameter {
       get { return (ILookupParameter<ResultCollection>)Parameters[ResultsParameterName]; }
     }
+    public ILookupParameter<DataTable> VariableFrequenciesParameter {
+      get { return (ILookupParameter<DataTable>)Parameters[VariableFrequenciesParameterName]; }
+    }
+
     #endregion
 
     #region properties
@@ -104,6 +111,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     public IntValue ValidationSamplesEnd {
       get { return ValidationSamplesEndParameter.ActualValue; }
     }
+    public DataTable VariableFrequencies {
+      get { return VariableFrequenciesParameter.ActualValue; }
+      set { VariableFrequenciesParameter.ActualValue = value; }
+    }
     #endregion
 
     public BestValidationSymbolicRegressionSolutionVisualizer()
@@ -117,13 +128,28 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       Parameters.Add(new ValueLookupParameter<IntValue>(ValidationSamplesStartParameterName, "The start index of the validation partition (part of the training partition)."));
       Parameters.Add(new ValueLookupParameter<IntValue>(ValidationSamplesEndParameterName, "The end index of the validation partition (part of the training partition)."));
       Parameters.Add(new LookupParameter<SymbolicRegressionSolution>(BestValidationSolutionParameterName, "The best symbolic expression tree based on the validation data for the symbolic regression problem."));
+      Parameters.Add(new LookupParameter<DataTable>(VariableFrequenciesParameterName, "The relative variable reference frequencies aggregated over the whole population."));
       Parameters.Add(new LookupParameter<ResultCollection>(ResultsParameterName, "The result collection of the algorithm."));
     }
 
     public override IOperation Apply() {
       ItemArray<SymbolicExpressionTree> expressions = SymbolicExpressionTreeParameter.ActualValue;
       DataAnalysisProblemData problemData = DataAnalysisProblemDataParameter.ActualValue;
+      #region update variable frequencies
+      var inputVariables = problemData.InputVariables.Select(x => x.Value);
+      if (VariableFrequencies == null) {
+        VariableFrequencies = new DataTable("Variable Frequencies", "Relative frequency of variable references aggregated over the whole population.");
+        AddResult("VariableFrequencies", VariableFrequencies);
+        // add a data row for each input variable
+        foreach (var inputVariable in inputVariables)
+          VariableFrequencies.Rows.Add(new DataRow(inputVariable));
+      }
+      foreach (var pair in VariableFrequencyAnalyser.CalculateVariableFrequencies(expressions, inputVariables)) {
+        VariableFrequencies.Rows[pair.Key].Values.Add(pair.Value);
+      }
+      #endregion
 
+      #region determination of validation-best solution
       int validationSamplesStart = ValidationSamplesStart.Value;
       int validationSamplesEnd = ValidationSamplesEnd.Value;
       var validationValues = problemData.Dataset.GetVariableValues(problemData.TargetVariable.Value, validationSamplesStart, validationSamplesEnd);
@@ -141,6 +167,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
                                    .First();
 
       SymbolicRegressionSolution bestOfRunSolution = BestValidationSolutionParameter.ActualValue;
+      #endregion
+      #region update of validation-best solution
       if (bestOfRunSolution == null) {
         // no best of run solution yet -> make a solution from the currentBestExpression
         UpdateBestOfRunSolution(problemData, currentBestExpression.Expression, SymbolicExpressionTreeInterpreter, lowerEstimationLimit, upperEstimationLimit);
@@ -152,8 +180,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
           UpdateBestOfRunSolution(problemData, currentBestExpression.Expression, SymbolicExpressionTreeInterpreter, lowerEstimationLimit, upperEstimationLimit);
         }
       }
-
-
+      #endregion
       return base.Apply();
     }
 
