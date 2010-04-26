@@ -32,32 +32,33 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlteringOperators {
   /// <summary>
   /// Base class for architecture altering operators for symbolic expression trees.
   /// </summary>
   [StorableClass]
-  public abstract class SymbolicExpressionTreeArchitectureAlteringOperator : SymbolicExpressionTreeManipulator {
+  public abstract class SymbolicExpressionTreeArchitectureManipulator : SymbolicExpressionTreeManipulator, ISymbolicExpressionTreeArchitectureManipulator {
     private const string MaxFunctionArgumentsParameterName = "MaxFunctionArguments";
     private const string MaxFunctionDefiningBranchesParameterName = "MaxFunctionDefiningBranches";
     public override bool CanChangeName {
       get { return false; }
     }
 
-    public IValueLookupParameter<IntValue> MaxFunctionDefiningBranchesParameter {
+    public IValueLookupParameter<IntValue> MaxFunctionDefinitionsParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters[MaxFunctionDefiningBranchesParameterName]; }
     }
     public IValueLookupParameter<IntValue> MaxFunctionArgumentsParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters[MaxFunctionArgumentsParameterName]; }
     }
     public IntValue MaxFunctionDefiningBranches {
-      get { return MaxFunctionDefiningBranchesParameter.ActualValue; }
+      get { return MaxFunctionDefinitionsParameter.ActualValue; }
     }
     public IntValue MaxFunctionArguments {
       get { return MaxFunctionArgumentsParameter.ActualValue; }
     }
-    public SymbolicExpressionTreeArchitectureAlteringOperator()
+    public SymbolicExpressionTreeArchitectureManipulator()
       : base() {
       Parameters.Add(new ValueLookupParameter<IntValue>(MaxFunctionDefiningBranchesParameterName, "The maximal allowed number of function defining branches."));
       Parameters.Add(new ValueLookupParameter<IntValue>(MaxFunctionArgumentsParameterName, "The maximal allowed number of arguments of a newly created function."));
@@ -73,7 +74,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
       ISymbolicExpressionGrammar grammar,
       IntValue maxTreeSize,
       IntValue maxTreeHeight,
-      IntValue maxFunctionDefiningBranches,
+      IntValue maxFunctionDefinitions,
       IntValue maxFunctionArguments,
       out bool success
       );

@@ -28,6 +28,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using System;
 using System.Diagnostics;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers {
   /// <summary>
@@ -35,7 +36,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers {
   /// </summary>
   [Item("SymbolicExpressionTreeCrossover", "A base class for operators that perform a crossover of symbolic expression trees.")]
   [StorableClass]
-  public abstract class SymbolicExpressionTreeCrossover : SymbolicExpressionTreeOperator, ICrossover {
+  public abstract class SymbolicExpressionTreeCrossover : SymbolicExpressionTreeOperator, ISymbolicExpressionTreeCrossover {
     private const string ParentsParameterName = "Parents";
     private const string ChildParameterName = "Child";
     private const string FailedCrossoverEventsParameterName = "FailedCrossoverEvents";

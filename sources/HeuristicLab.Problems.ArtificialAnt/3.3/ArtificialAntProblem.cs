@@ -35,6 +35,7 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlteringOperators;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
 
 namespace HeuristicLab.Problems.ArtificialAnt {
   [Item("Artificial Ant Problem", "Represents the Artificial Ant problem.")]
@@ -367,8 +368,8 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       foreach (SymbolicExpressionTreeManipulator op in Operators.OfType<SymbolicExpressionTreeManipulator>()) {
         op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
       }
-      foreach (SymbolicExpressionTreeArchitectureAlteringOperator op in Operators.OfType<SymbolicExpressionTreeArchitectureAlteringOperator>()) {
-        op.MaxFunctionDefiningBranchesParameter.ActualName = MaxFunctionDefinitionsParameter.Name;
+      foreach (ISymbolicExpressionTreeArchitectureManipulator op in Operators.OfType<ISymbolicExpressionTreeArchitectureManipulator>()) {
+        op.MaxFunctionDefinitionsParameter.ActualName = MaxFunctionDefinitionsParameter.Name;
         op.MaxFunctionArgumentsParameter.ActualName = MaxFunctionArgumentsParameter.Name;
       }
       foreach (SymbolicExpressionTreeCreator op in Operators.OfType<SymbolicExpressionTreeCreator>()) {

@@ -41,7 +41,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
   /// </summary>
   [Item("SubroutineCreater", "Manipulates a symbolic expression by adding one new function-defining branch containing a proportion of a preexisting branch and by creating a reference to the new branch.")]
   [StorableClass]
-  public sealed class SubroutineCreater : SymbolicExpressionTreeArchitectureAlteringOperator {
+  public sealed class SubroutineCreater : SymbolicExpressionTreeArchitectureManipulator {
     private const double ARGUMENT_CUTOFF_PROBABILITY = 0.05;
 
     public override sealed void ModifyArchitecture(

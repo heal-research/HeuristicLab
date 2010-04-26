@@ -86,7 +86,7 @@
     <Compile Include="ArchitectureAlteringOperators\ArgumentDeleter.cs" />
     <Compile Include="ArchitectureAlteringOperators\ArgumentDuplicater.cs" />
     <Compile Include="ArchitectureAlteringOperators\GrammarModifier.cs" />
-    <Compile Include="ArchitectureAlteringOperators\RandomArchitectureAlteringOperator.cs" />
+    <Compile Include="ArchitectureAlteringOperators\MultiSymbolicExpressionTreeArchitectureManipulator.cs" />
     <Compile Include="ArchitectureAlteringOperators\SubroutineCreater.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -97,8 +97,13 @@
     <Compile Include="Compiler\SymbolicExpressionTreeCompiler.cs" />
     <Compile Include="Creators\SymbolicExpressionTreeCreator.cs" />
     <Compile Include="Crossovers\SymbolicExpressionTreeCrossover.cs" />
+    <Compile Include="Interfaces\ISymbolicExpressionTreeArchitectureManipulator.cs" />
+    <Compile Include="Interfaces\ISymbolicExpressionTreeCreator.cs" />
+    <Compile Include="Interfaces\ISymbolicExpressionTreeCrossover.cs" />
     <Compile Include="Manipulators\ChangeNodeTypeManipulation.cs" />
+    <Compile Include="Interfaces\ISymbolicExpressionTreeManipulator.cs" />
     <Compile Include="Manipulators\FullTreeShaker.cs" />
+    <Compile Include="Manipulators\MultiSymbolicExpressionTreeManipulator.cs" />
     <Compile Include="Manipulators\OnePointShaker.cs" />
     <Compile Include="Manipulators\SymbolicExpressionTreeManipulator.cs" />
     <Compile Include="SymbolicExpressionTreeTopLevelNode.cs" />

@@ -37,6 +37,7 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAltering
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("Symbolic Regression Problem", "Represents a symbolic regression problem.")]
@@ -193,8 +194,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       Parameters.Add(new ValueParameter<ISingleObjectiveSolutionsVisualizer>("Visualizer", "The operator which should be used to visualize symbolic regression solutions.", visualizer));
 
       creator.SymbolicExpressionTreeParameter.ActualName = "SymbolicRegressionModel";
-      creator.MaxFunctionArgumentsParameter.ActualName = "MaxFunctionArguments";
-      creator.MaxFunctionDefinitionsParameter.ActualName = "MaxFunctionDefiningBranches";
+      creator.MaxFunctionArgumentsParameter.ActualName = MaxFunctionArgumentsParameter.Name;
+      creator.MaxFunctionDefinitionsParameter.ActualName = MaxFunctionDefiningBranchesParameter.Name;
       DataAnalysisProblemDataParameter.ValueChanged += new EventHandler(DataAnalysisProblemDataParameter_ValueChanged);
       DataAnalysisProblemData.ProblemDataChanged += new EventHandler(DataAnalysisProblemData_Changed);
       MaxFunctionArgumentsParameter.ValueChanged += new EventHandler(ArchitectureParameter_Changed);
@@ -372,14 +373,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
         op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
         op.RegressionProblemDataParameter.ActualName = DataAnalysisProblemDataParameter.Name;
       }
-      foreach (SymbolicExpressionTreeCrossover op in Operators.OfType<SymbolicExpressionTreeCrossover>()) {
+      foreach (ISymbolicExpressionTreeCrossover op in Operators.OfType<ISymbolicExpressionTreeCrossover>()) {
         op.ParentsParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
         op.ChildParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
       }
-      foreach (SymbolicExpressionTreeManipulator op in Operators.OfType<SymbolicExpressionTreeManipulator>()) {
+      foreach (ISymbolicExpressionTreeManipulator op in Operators.OfType<ISymbolicExpressionTreeManipulator>()) {
         op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
       }
-      foreach (SymbolicExpressionTreeArchitectureAlteringOperator op in Operators.OfType<SymbolicExpressionTreeArchitectureAlteringOperator>()) {
+      foreach (ISymbolicExpressionTreeArchitectureManipulator op in Operators.OfType<ISymbolicExpressionTreeArchitectureManipulator>()) {
+        op.MaxFunctionArgumentsParameter.ActualName = MaxFunctionArgumentsParameter.Name;
+        op.MaxFunctionDefinitionsParameter.ActualName = MaxFunctionDefiningBranchesParameter.Name;
       }
     }
     #endregion

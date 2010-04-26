@@ -40,7 +40,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
   /// </summary>
   [Item("ArgumentCreater", "Manipulates a symbolic expression by creating a new argument within one function-defining branch.")]
   [StorableClass]
-  public sealed class ArgumentCreater : SymbolicExpressionTreeArchitectureAlteringOperator {
+  public sealed class ArgumentCreater : SymbolicExpressionTreeArchitectureManipulator {
     public override sealed void ModifyArchitecture(
       IRandom random,
       SymbolicExpressionTree symbolicExpressionTree,

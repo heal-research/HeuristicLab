@@ -27,6 +27,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// <summary>
@@ -36,7 +37,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
   public abstract class SymbolicExpressionTreeOperator : SingleSuccessorOperator, IStochasticOperator, ISymbolicExpressionTreeOperator {
     private const string RandomParameterName = "Random";
-    private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
     private const string MaxTreeSizeParameterName = "MaxTreeSize";
     private const string MaxTreeHeightParameterName = "MaxTreeHeight";
     private const string SymbolicExpressionGrammarParameterName = "SymbolicExpressionGrammar";
@@ -48,9 +48,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     #region Parameter Properties
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters[RandomParameterName]; }
-    }
-    public ILookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter {
-      get { return (ILookupParameter<SymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }
     }
     public IValueLookupParameter<IntValue> MaxTreeSizeParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters[MaxTreeSizeParameterName]; }
@@ -67,9 +64,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public IRandom Random {
       get { return RandomParameter.ActualValue; }
     }
-    public SymbolicExpressionTree SymbolicExpressionTree {
-      get { return SymbolicExpressionTreeParameter.ActualValue; }
-    }
     public IntValue MaxTreeSize {
       get { return MaxTreeSizeParameter.ActualValue; }
     }
@@ -84,7 +78,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     protected SymbolicExpressionTreeOperator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>(RandomParameterName, "The pseudo random number generator which should be used for symbolic expression tree operators."));
-      Parameters.Add(new LookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression tree on which the operator should be applied."));
       Parameters.Add(new ValueLookupParameter<IntValue>(MaxTreeSizeParameterName, "The maximal size (number of nodes) of the symbolic expression tree."));
       Parameters.Add(new ValueLookupParameter<IntValue>(MaxTreeHeightParameterName, "The maximal height of the symbolic expression tree (a tree with one node has height = 0)."));
       Parameters.Add(new LookupParameter<ISymbolicExpressionGrammar>(SymbolicExpressionGrammarParameterName, "The grammar that defines the allowed symbols and syntax of the symbolic expression trees."));

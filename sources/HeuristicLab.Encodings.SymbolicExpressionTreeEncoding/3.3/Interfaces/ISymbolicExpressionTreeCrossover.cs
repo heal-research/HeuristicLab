@@ -31,11 +31,10 @@ using System.Diagnostics;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces {
   /// <summary>
-  /// Interface for operators that can be applied to symbolic expression trees.
+  /// Interface for crossover operators that can be applied to symbolic expression trees.
   /// </summary>
-  public interface ISymbolicExpressionTreeOperator : IOperator {
-    IValueLookupParameter<IntValue> MaxTreeSizeParameter { get; }
-    IValueLookupParameter<IntValue> MaxTreeHeightParameter { get; }
-    ILookupParameter<ISymbolicExpressionGrammar> SymbolicExpressionGrammarParameter { get; }
+  public interface ISymbolicExpressionTreeCrossover : ISymbolicExpressionTreeOperator, ICrossover {
+    ILookupParameter<ItemArray<SymbolicExpressionTree>> ParentsParameter { get; }
+    ILookupParameter<SymbolicExpressionTree> ChildParameter { get; }
   }
 }

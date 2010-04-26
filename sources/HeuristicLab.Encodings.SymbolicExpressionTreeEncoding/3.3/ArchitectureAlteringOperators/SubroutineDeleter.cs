@@ -41,7 +41,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
   /// </summary>
   [Item("SubroutineDeleter", "Manipulates a symbolic expression by deleting a preexisting function-defining branch.")]
   [StorableClass]
-  public sealed class SubroutineDeleter : SymbolicExpressionTreeArchitectureAlteringOperator {
+  public sealed class SubroutineDeleter : SymbolicExpressionTreeArchitectureManipulator {
     public override sealed void ModifyArchitecture(
       IRandom random,
       SymbolicExpressionTree symbolicExpressionTree,

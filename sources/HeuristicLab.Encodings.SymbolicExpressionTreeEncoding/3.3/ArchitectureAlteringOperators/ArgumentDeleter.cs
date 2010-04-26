@@ -39,7 +39,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlte
   /// </summary>
   [Item("ArgumentDeleter", "Manipulates a symbolic expression by deleting an argument from an existing function defining branch.")]
   [StorableClass]
-  public sealed class ArgumentDeleter : SymbolicExpressionTreeArchitectureAlteringOperator {
+  public sealed class ArgumentDeleter : SymbolicExpressionTreeArchitectureManipulator {
     public override sealed void ModifyArchitecture(
       IRandom random,
       SymbolicExpressionTree symbolicExpressionTree,

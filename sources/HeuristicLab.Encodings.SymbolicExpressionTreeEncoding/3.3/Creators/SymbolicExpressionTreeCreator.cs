@@ -27,6 +27,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators {
   /// <summary>
@@ -34,15 +35,19 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators {
   /// </summary>
   [Item("SymbolicExpressionTreeCreator", "A base class for operators creating symbolic expression trees.")]
   [StorableClass]
-  public abstract class SymbolicExpressionTreeCreator : SymbolicExpressionTreeOperator, ISolutionCreator {
+  public abstract class SymbolicExpressionTreeCreator : SymbolicExpressionTreeOperator, ISymbolicExpressionTreeCreator {
     private const string MaxFunctionDefinitionsParameterName = "MaxFunctionDefinitions";
     private const string MaxFunctionArgumentsParameterName = "MaxFunctionArguments";
+    private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
     #region Parameter Properties
     public IValueLookupParameter<IntValue> MaxFunctionDefinitionsParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters[MaxFunctionDefinitionsParameterName]; }
     }
     public IValueLookupParameter<IntValue> MaxFunctionArgumentsParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters[MaxFunctionArgumentsParameterName]; }
+    }
+    public ILookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter {
+      get { return (ILookupParameter<SymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }
     }
     #endregion
 
@@ -53,16 +58,21 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators {
     public IntValue MaxFunctionArguments {
       get { return MaxFunctionArgumentsParameter.ActualValue; }
     }
+    public SymbolicExpressionTree SymbolicExpressionTree {
+      get { return SymbolicExpressionTreeParameter.ActualValue; }
+      set { SymbolicExpressionTreeParameter.ActualValue = value; }
+    }
 
     #endregion
     protected SymbolicExpressionTreeCreator()
       : base() {
       Parameters.Add(new ValueLookupParameter<IntValue>(MaxFunctionDefinitionsParameterName, "Maximal number of function definitions in the symbolic expression tree."));
       Parameters.Add(new ValueLookupParameter<IntValue>(MaxFunctionArgumentsParameterName, "Maximal number of arguments of automatically defined functions in the symbolic expression tree."));
+      Parameters.Add(new LookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression tree that should be created."));
     }
 
     public sealed override IOperation Apply() {
-      SymbolicExpressionTreeParameter.ActualValue = Create(Random, SymbolicExpressionGrammar,
+      SymbolicExpressionTree = Create(Random, SymbolicExpressionGrammar,
         MaxTreeSize, MaxTreeHeight, MaxFunctionDefinitions, MaxFunctionArguments);
       return null;
     }

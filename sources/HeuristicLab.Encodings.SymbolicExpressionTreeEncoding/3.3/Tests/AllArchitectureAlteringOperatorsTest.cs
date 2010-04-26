@@ -31,6 +31,7 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAltering
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
   [TestClass]
@@ -72,14 +73,14 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
       }
       Stopwatch stopwatch = new Stopwatch();
       stopwatch.Start();
-      var combinedAAOperator = new RandomArchitectureAlteringOperator();
+      var combinedAAOperator = new MultiSymbolicExpressionTreeArchitectureManipulator();
       for (int g = 0; g < N_ITERATIONS; g++) {
         for (int i = 0; i < POPULATION_SIZE; i++) {
           if (random.NextDouble() < 0.5) {
             // manipulate
             var selectedTree = (SymbolicExpressionTree)trees.SelectRandom(random).Clone();
             var op = combinedAAOperator.Operators.SelectRandom(random);
-            bool success;
+            bool success = false;
             op.ModifyArchitecture(random, selectedTree, grammar, maxTreeSize, maxTreeHeigth, maxDefuns, maxArgs, out success);
             if (!success) failedEvents++;
             Util.IsValid(selectedTree);

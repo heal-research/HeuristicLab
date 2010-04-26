@@ -26,16 +26,12 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System;
-using System.Diagnostics;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces {
   /// <summary>
-  /// Interface for operators that can be applied to symbolic expression trees.
+  /// Interface for operators that manipulate symbolic expression trees.
   /// </summary>
-  public interface ISymbolicExpressionTreeOperator : IOperator {
-    IValueLookupParameter<IntValue> MaxTreeSizeParameter { get; }
-    IValueLookupParameter<IntValue> MaxTreeHeightParameter { get; }
-    ILookupParameter<ISymbolicExpressionGrammar> SymbolicExpressionGrammarParameter { get; }
+  public interface ISymbolicExpressionTreeManipulator : ISymbolicExpressionTreeOperator, IManipulator {
+    ILookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter { get; }
   }
 }

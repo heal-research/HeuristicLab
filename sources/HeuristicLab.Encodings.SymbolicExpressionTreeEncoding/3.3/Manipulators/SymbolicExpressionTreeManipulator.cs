@@ -26,6 +26,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators {
   /// <summary>
@@ -33,12 +34,16 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators {
   /// </summary>
   [Item("SymbolicExpressionTreeManipulator", "A base class for operators that manipulate symbolic expression trees.")]
   [StorableClass]
-  public abstract class SymbolicExpressionTreeManipulator : SymbolicExpressionTreeOperator, IManipulator {
+  public abstract class SymbolicExpressionTreeManipulator : SymbolicExpressionTreeOperator, ISymbolicExpressionTreeManipulator {
     private const string FailedManipulationEventsParameterName = "FailedManipulationEvents";
+    private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
 
     #region Parameter Properties
     public IValueParameter<IntValue> FailedManipulationEventsParameter {
       get { return (IValueParameter<IntValue>)Parameters[FailedManipulationEventsParameterName]; }
+    }
+    public ILookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter {
+      get { return (ILookupParameter<SymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }
     }
     #endregion
 
@@ -46,11 +51,15 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators {
     public IntValue FailedManipulationEvents {
       get { return FailedManipulationEventsParameter.Value; }
     }
+    public SymbolicExpressionTree SymbolicExpressionTree {
+      get { return SymbolicExpressionTreeParameter.ActualValue; }
+    }
     #endregion
 
     public SymbolicExpressionTreeManipulator()
       : base() {
       Parameters.Add(new ValueParameter<IntValue>(FailedManipulationEventsParameterName, "The number of failed manipulation events.", new IntValue()));
+      Parameters.Add(new LookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression tree on which the operator should be applied."));
     }
 
     public sealed override IOperation Apply() {
