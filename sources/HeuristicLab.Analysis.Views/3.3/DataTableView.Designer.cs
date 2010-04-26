@@ -75,6 +75,7 @@ namespace HeuristicLab.Analysis.Views {
       chartArea1.CursorY.IsUserSelectionEnabled = true;
       chartArea1.Name = "ChartArea1";
       this.chart.ChartAreas.Add(chartArea1);
+      legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
       legend1.Name = "Legend1";
       this.chart.Legends.Add(legend1);
       this.chart.Location = new System.Drawing.Point(0, 52);
