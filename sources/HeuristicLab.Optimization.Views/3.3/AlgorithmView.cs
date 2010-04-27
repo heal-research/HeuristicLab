@@ -194,14 +194,16 @@ namespace HeuristicLab.Optimization.Views {
             if (error != null) throw error;
             IProblem problem = content as IProblem;
             if (problem == null)
-              MessageBox.Show(this, "The selected file does not contain a problem.", "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error);
+              Invoke(new Action(() => 
+                MessageBox.Show(this, "The selected file does not contain a problem.", "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error)));
             else if (!Content.ProblemType.IsInstanceOfType(problem))
-              MessageBox.Show(this, "The selected file contains a problem type which is not supported by this algorithm.", "Invalid Problem Type", MessageBoxButtons.OK, MessageBoxIcon.Error);
+              Invoke(new Action(() =>
+                MessageBox.Show(this, "The selected file contains a problem type which is not supported by this algorithm.", "Invalid Problem Type", MessageBoxButtons.OK, MessageBoxIcon.Error)));
             else
               Content.Problem = problem;
           }
           catch (Exception ex) {
-            Auxiliary.ShowErrorMessageBox(ex);
+            Invoke(new Action(() => Auxiliary.ShowErrorMessageBox(ex)));
           }
           finally {
             Invoke(new Action(delegate() {
