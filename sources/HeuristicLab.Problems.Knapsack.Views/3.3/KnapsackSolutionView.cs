@@ -152,8 +152,10 @@ namespace HeuristicLab.Problems.Knapsack.Views {
               }
 
               //draw knapsack
-              graphics.DrawRectangle(Pens.Black,
-                borderX - 1, pictureBox.Height - borderY - knapsackHeight - 1, width + 2, knapsackHeight + 2);
+              using (Pen pen = new Pen(Color.Black, 2)) {
+                graphics.DrawRectangle(pen,
+                  borderX - 2, pictureBox.Height - borderY - knapsackHeight - 2, width + 4, knapsackHeight + 4);
+              }
 
               //draw items sorted by value
               List<int> sortedIndices = new List<int>();
