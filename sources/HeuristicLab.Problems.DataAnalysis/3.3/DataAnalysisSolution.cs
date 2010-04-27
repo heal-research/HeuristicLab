@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   /// </summary>
   [Item("DataAnalysisSolution", "Represents a solution for a data analysis problem which can be visualized in the GUI.")]
   [StorableClass]
-  public abstract class DataAnalysisSolution : Item {
+  public abstract class DataAnalysisSolution : NamedItem {
     [Storable]
     private DataAnalysisProblemData problemData;
     public DataAnalysisProblemData ProblemData {

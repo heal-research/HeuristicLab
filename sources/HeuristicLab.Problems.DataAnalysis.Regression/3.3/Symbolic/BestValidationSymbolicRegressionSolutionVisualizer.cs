@@ -214,6 +214,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
         // only update model
         BestValidationSolutionParameter.ActualValue.Model = newBestSolution.Model;
 
+      AddResult("NumberOfInputVariables", new IntValue(CountInputVariables(tree)));
+
       var trainingValues = problemData.Dataset.GetVariableValues(problemData.TargetVariable.Value, problemData.TrainingSamplesStart.Value, problemData.TrainingSamplesEnd.Value);
       var testValues = problemData.Dataset.GetVariableValues(problemData.TargetVariable.Value, problemData.TestSamplesStart.Value, problemData.TestSamplesEnd.Value);
 
@@ -224,6 +226,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       AddResult("MeanSquaredError (Test)", new DoubleValue(SimpleMSEEvaluator.Calculate(testValues, newBestSolution.EstimatedTestValues)));
       AddResult("MeanRelativeError (Test)", new PercentValue(SimpleMeanAbsolutePercentageErrorEvaluator.Calculate(testValues, newBestSolution.EstimatedTestValues)));
       AddResult("RSquared (Test)", new DoubleValue(SimpleRSquaredEvaluator.Calculate(testValues, newBestSolution.EstimatedTestValues)));
+    }
+
+    private int CountInputVariables(SymbolicExpressionTree tree) {
+      return (from node in tree.IterateNodesPrefix().OfType<VariableTreeNode>()
+              select node.VariableName)
+             .Distinct()
+             .Count();
     }
 
     private void AddResult(string resultName, IItem value) {
