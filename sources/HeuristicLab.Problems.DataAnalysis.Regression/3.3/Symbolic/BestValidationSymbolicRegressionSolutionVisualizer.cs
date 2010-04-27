@@ -150,8 +150,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       ItemArray<DoubleValue> betas = BetaParameter.ActualValue;
       var scaledExpressions = from i in Enumerable.Range(0, expressions.Count())
                               let expr = expressions[i]
-                              let alpha = alphas[i].Value
-                              let beta = betas[i].Value
+                              let alpha = alphas[i] == null ? 0.0 : alphas[i].Value
+                              let beta = betas[i] == null ? 1.0 : betas[i].Value
                               select new { Expression = expr, Alpha = alpha, Beta = beta };
       DataAnalysisProblemData problemData = DataAnalysisProblemDataParameter.ActualValue;
       #region update variable frequencies
