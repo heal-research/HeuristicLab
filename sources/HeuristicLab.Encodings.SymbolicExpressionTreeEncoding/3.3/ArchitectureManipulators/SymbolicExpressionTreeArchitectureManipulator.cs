@@ -34,7 +34,7 @@ using System.Text;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
 
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlteringOperators {
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureManipulators {
   /// <summary>
   /// Base class for architecture altering operators for symbolic expression trees.
   /// </summary>

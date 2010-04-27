@@ -34,7 +34,7 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlteringOperators;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureManipulators;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
 
 namespace HeuristicLab.Problems.ArtificialAnt {
@@ -361,11 +361,11 @@ namespace HeuristicLab.Problems.ArtificialAnt {
         op.MaxTimeStepsParameter.ActualName = MaxTimeStepsParameter.Name;
         op.WorldParameter.ActualName = WorldParameter.Name;
       }
-      foreach (SymbolicExpressionTreeCrossover op in Operators.OfType<SymbolicExpressionTreeCrossover>()) {
+      foreach (ISymbolicExpressionTreeCrossover op in Operators.OfType<ISymbolicExpressionTreeCrossover>()) {
         op.ParentsParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
         op.ChildParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
       }
-      foreach (SymbolicExpressionTreeManipulator op in Operators.OfType<SymbolicExpressionTreeManipulator>()) {
+      foreach (ISymbolicExpressionTreeManipulator op in Operators.OfType<ISymbolicExpressionTreeManipulator>()) {
         op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
       }
       foreach (ISymbolicExpressionTreeArchitectureManipulator op in Operators.OfType<ISymbolicExpressionTreeArchitectureManipulator>()) {

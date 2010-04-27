@@ -33,7 +33,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
 
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlteringOperators {
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureManipulators {
   public static class GrammarModifier {
     public static void AddDynamicSymbol(ISymbolicExpressionGrammar grammar, Symbol classRepresentative, string symbolName, int nArgs) {
       var invokeSym = new InvokeFunction(symbolName);

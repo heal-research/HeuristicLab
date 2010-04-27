@@ -82,17 +82,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ArchitectureAlteringOperators\ArgumentCreater.cs" />
-    <Compile Include="ArchitectureAlteringOperators\ArgumentDeleter.cs" />
-    <Compile Include="ArchitectureAlteringOperators\ArgumentDuplicater.cs" />
-    <Compile Include="ArchitectureAlteringOperators\GrammarModifier.cs" />
-    <Compile Include="ArchitectureAlteringOperators\MultiSymbolicExpressionTreeArchitectureManipulator.cs" />
-    <Compile Include="ArchitectureAlteringOperators\SubroutineCreater.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ArchitectureAlteringOperators\SubroutineDeleter.cs" />
-    <Compile Include="ArchitectureAlteringOperators\SubroutineDuplicater.cs" />
-    <Compile Include="ArchitectureAlteringOperators\SymbolicExpressionTreeArchitectureAlteringOperator.cs" />
+    <Compile Include="ArchitectureManipulators\ArgumentCreater.cs" />
+    <Compile Include="ArchitectureManipulators\ArgumentDeleter.cs" />
+    <Compile Include="ArchitectureManipulators\ArgumentDuplicater.cs" />
+    <Compile Include="ArchitectureManipulators\GrammarModifier.cs" />
+    <Compile Include="ArchitectureManipulators\MultiSymbolicExpressionTreeArchitectureManipulator.cs" />
+    <Compile Include="ArchitectureManipulators\SubroutineCreater.cs" />
+    <Compile Include="ArchitectureManipulators\SubroutineDeleter.cs" />
+    <Compile Include="ArchitectureManipulators\SubroutineDuplicater.cs" />
+    <Compile Include="ArchitectureManipulators\SymbolicExpressionTreeArchitectureManipulator.cs" />
     <Compile Include="Compiler\Instruction.cs" />
     <Compile Include="Compiler\SymbolicExpressionTreeCompiler.cs" />
     <Compile Include="Creators\SymbolicExpressionTreeCreator.cs" />

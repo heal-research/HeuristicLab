@@ -33,7 +33,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
 
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlteringOperators {
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureManipulators {
   /// <summary>
   /// Manipulates a symbolic expression by duplicating an existing argument node of a function-defining branch.
   /// As described in Koza, Bennett, Andre, Keane, Genetic Programming III - Darwinian Invention and Problem Solving, 1999, pp. 94

@@ -27,7 +27,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Random;
 using System.Diagnostics;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlteringOperators;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureManipulators;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers;

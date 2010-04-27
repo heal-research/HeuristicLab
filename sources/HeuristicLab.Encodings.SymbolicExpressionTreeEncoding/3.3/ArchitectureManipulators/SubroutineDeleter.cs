@@ -34,7 +34,7 @@ using System.Text;
 using System.Diagnostics;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators;
 
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlteringOperators {
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureManipulators {
   /// <summary>
   /// Manipulates a symbolic expression by deleting a preexisting function-defining branch.
   /// As described in Koza, Bennett, Andre, Keane, Genetic Programming III - Darwinian Invention and Problem Solving, 1999, pp. 108

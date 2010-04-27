@@ -33,7 +33,7 @@ using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Problems.DataAnalysis.Regression;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlteringOperators;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureManipulators;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators;

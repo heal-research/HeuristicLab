@@ -28,7 +28,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Random;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlteringOperators;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureManipulators;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators {

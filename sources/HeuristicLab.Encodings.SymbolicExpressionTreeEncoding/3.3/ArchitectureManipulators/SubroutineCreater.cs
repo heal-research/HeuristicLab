@@ -33,7 +33,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
 
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlteringOperators {
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureManipulators {
   /// <summary>
   /// Manipulates a symbolic expression by adding one new function-defining branch containing
   /// a proportion of a preexisting branch and by creating a reference to the new branch.

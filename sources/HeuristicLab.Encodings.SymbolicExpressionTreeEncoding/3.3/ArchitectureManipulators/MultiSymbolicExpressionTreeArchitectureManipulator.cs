@@ -30,7 +30,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
 
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureAlteringOperators {
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureManipulators {
   [Item("MultiSymbolicExpressionTreeArchitectureManipulator", "Randomly selects and applies one of its architecture manipulators every time it is called.")]
   [StorableClass]
   public class MultiSymbolicExpressionTreeArchitectureManipulator : StochasticMultiOperator<ISymbolicExpressionTreeArchitectureManipulator>, ISymbolicExpressionTreeArchitectureManipulator, IStochasticOperator {
