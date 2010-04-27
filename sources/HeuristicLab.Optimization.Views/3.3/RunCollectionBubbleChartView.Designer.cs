@@ -43,6 +43,7 @@
       this.colorButton = new System.Windows.Forms.Button();
       this.colorDialog = new System.Windows.Forms.ColorDialog();
       this.tooltip = new System.Windows.Forms.ToolTip(this.components);
+      this.noRunsLabel = new System.Windows.Forms.Label();
       ((System.ComponentModel.ISupportInitialize)(this.xTrackBar)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.yTrackBar)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
@@ -62,7 +63,7 @@
       // 
       this.xJitterlabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.xJitterlabel.AutoSize = true;
-      this.xJitterlabel.Location = new System.Drawing.Point(569, 308);
+      this.xJitterlabel.Location = new System.Drawing.Point(539, 295);
       this.xJitterlabel.Name = "xJitterlabel";
       this.xJitterlabel.Size = new System.Drawing.Size(32, 13);
       this.xJitterlabel.TabIndex = 12;
@@ -71,7 +72,7 @@
       // xTrackBar
       // 
       this.xTrackBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.xTrackBar.Location = new System.Drawing.Point(607, 305);
+      this.xTrackBar.Location = new System.Drawing.Point(577, 292);
       this.xTrackBar.Maximum = 100;
       this.xTrackBar.Name = "xTrackBar";
       this.xTrackBar.Size = new System.Drawing.Size(64, 45);
@@ -83,7 +84,7 @@
       // 
       this.xAxisLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.xAxisLabel.AutoSize = true;
-      this.xAxisLabel.Location = new System.Drawing.Point(320, 307);
+      this.xAxisLabel.Location = new System.Drawing.Point(290, 294);
       this.xAxisLabel.Name = "xAxisLabel";
       this.xAxisLabel.Size = new System.Drawing.Size(15, 13);
       this.xAxisLabel.TabIndex = 8;
@@ -95,7 +96,7 @@
       this.xAxisComboBox.BackColor = System.Drawing.SystemColors.ControlLightLight;
       this.xAxisComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.xAxisComboBox.FormattingEnabled = true;
-      this.xAxisComboBox.Location = new System.Drawing.Point(341, 305);
+      this.xAxisComboBox.Location = new System.Drawing.Point(311, 292);
       this.xAxisComboBox.Name = "xAxisComboBox";
       this.xAxisComboBox.Size = new System.Drawing.Size(221, 21);
       this.xAxisComboBox.TabIndex = 7;
@@ -137,7 +138,7 @@
       this.sizeComboBox.BackColor = System.Drawing.SystemColors.ControlLightLight;
       this.sizeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.sizeComboBox.FormattingEnabled = true;
-      this.sizeComboBox.Location = new System.Drawing.Point(448, 3);
+      this.sizeComboBox.Location = new System.Drawing.Point(418, 3);
       this.sizeComboBox.Name = "sizeComboBox";
       this.sizeComboBox.Size = new System.Drawing.Size(221, 21);
       this.sizeComboBox.TabIndex = 14;
@@ -147,12 +148,11 @@
       // 
       this.sizeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.sizeLabel.AutoSize = true;
-      this.sizeLabel.Location = new System.Drawing.Point(378, 6);
+      this.sizeLabel.Location = new System.Drawing.Point(348, 6);
       this.sizeLabel.Name = "sizeLabel";
       this.sizeLabel.Size = new System.Drawing.Size(66, 13);
       this.sizeLabel.TabIndex = 15;
       this.sizeLabel.Text = "Bubble Size:";
-      this.sizeLabel.Click += new System.EventHandler(this.sizeLabel_Click);
       // 
       // chart
       // 
@@ -171,7 +171,7 @@
       series1.Name = "Bubbles";
       series1.YValuesPerPoint = 2;
       this.chart.Series.Add(series1);
-      this.chart.Size = new System.Drawing.Size(663, 261);
+      this.chart.Size = new System.Drawing.Size(633, 248);
       this.chart.TabIndex = 16;
       this.chart.Text = "chart";
       this.chart.MouseUp += new System.Windows.Forms.MouseEventHandler(this.chart_MouseUp);
@@ -208,7 +208,7 @@
       this.radioButtonGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.radioButtonGroup.Controls.Add(this.zoomButton);
       this.radioButtonGroup.Controls.Add(this.selectButton);
-      this.radioButtonGroup.Location = new System.Drawing.Point(3, 297);
+      this.radioButtonGroup.Location = new System.Drawing.Point(3, 284);
       this.radioButtonGroup.Name = "radioButtonGroup";
       this.radioButtonGroup.Size = new System.Drawing.Size(135, 32);
       this.radioButtonGroup.TabIndex = 19;
@@ -219,7 +219,7 @@
       this.colorButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.colorButton.Enabled = false;
       this.colorButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-      this.colorButton.Location = new System.Drawing.Point(144, 305);
+      this.colorButton.Location = new System.Drawing.Point(144, 292);
       this.colorButton.Name = "colorButton";
       this.colorButton.Size = new System.Drawing.Size(64, 21);
       this.colorButton.TabIndex = 20;
@@ -232,12 +232,23 @@
       // 
       this.colorDialog.FullOpen = true;
       // 
+      // noRunsLabel
+      // 
+      this.noRunsLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.noRunsLabel.AutoSize = true;
+      this.noRunsLabel.Location = new System.Drawing.Point(261, 139);
+      this.noRunsLabel.Name = "noRunsLabel";
+      this.noRunsLabel.Size = new System.Drawing.Size(138, 13);
+      this.noRunsLabel.TabIndex = 21;
+      this.noRunsLabel.Text = "No runs could be displayed.";
+      // 
       // RunCollectionBubbleChartView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.SystemColors.Window;
       this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      this.Controls.Add(this.noRunsLabel);
       this.Controls.Add(this.colorButton);
       this.Controls.Add(this.radioButtonGroup);
       this.Controls.Add(this.chart);
@@ -252,7 +263,7 @@
       this.Controls.Add(this.yAxisComboBox);
       this.Controls.Add(this.yTrackBar);
       this.Name = "RunCollectionBubbleChartView";
-      this.Size = new System.Drawing.Size(674, 332);
+      this.Size = new System.Drawing.Size(644, 319);
       ((System.ComponentModel.ISupportInitialize)(this.xTrackBar)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.yTrackBar)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.chart)).EndInit();
@@ -282,5 +293,6 @@
     private System.Windows.Forms.Button colorButton;
     private System.Windows.Forms.ColorDialog colorDialog;
     private System.Windows.Forms.ToolTip tooltip;
+    private System.Windows.Forms.Label noRunsLabel;
   }
 }

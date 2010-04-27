@@ -62,13 +62,15 @@ namespace HeuristicLab.Optimization.Views {
       this.colorButton.Image = this.GenerateImage(16, 16, this.colorDialog.Color);
       this.isSelecting = false;
 
+      
       this.chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
       this.chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = true;
-      this.chart.ChartAreas[0].AxisX.ScaleView.Zoomable = !this.isSelecting;
-      this.chart.ChartAreas[0].AxisY.ScaleView.Zoomable = !this.isSelecting;
       this.chart.ChartAreas[0].CursorX.Interval = 0;
       this.chart.ChartAreas[0].CursorY.Interval = 0;
-
+      this.chart.ChartAreas[0].AxisX.ScaleView.Zoomable = !this.isSelecting;
+      this.chart.ChartAreas[0].AxisX.IntervalAutoMode = IntervalAutoMode.VariableCount;
+      this.chart.ChartAreas[0].AxisY.ScaleView.Zoomable = !this.isSelecting;
+      this.chart.ChartAreas[0].AxisY.IntervalAutoMode = IntervalAutoMode.VariableCount;
     }
 
     public RunCollectionBubbleChartView(RunCollection content)
@@ -178,7 +180,17 @@ namespace HeuristicLab.Optimization.Views {
       if (Content != null) {
         foreach (IRun run in this.Content)
           this.AddDataPoint(run);
-        //Thread.Sleep(100);
+
+        //check to correct max bubble size
+        if (this.chart.Series[0].Points.Select(p => p.YValues[1]).Distinct().Count() == 1)
+          this.chart.Series[0]["BubbleMaxSize"] = "2";
+        else
+          this.chart.Series[0]["BubbleMaxSize"] = "7";
+
+        if (this.chart.Series[0].Points.Count == 0)
+          noRunsLabel.Visible = true;
+        else
+          noRunsLabel.Visible = false;
       }
     }
     private void AddDataPoint(IRun run) {
@@ -189,10 +201,10 @@ namespace HeuristicLab.Optimization.Views {
       int row = this.Content.ToList().IndexOf(run);
       xValue = GetValue(run, (string)xAxisComboBox.SelectedItem);
       yValue = GetValue(run, (string)yAxisComboBox.SelectedItem);
-      if (xValue.HasValue && yValue.HasValue) {
-       sizeValue = GetValue(run, (string)sizeComboBox.SelectedItem);
-        xValue = xValue.Value + xValue.Value * GetXJitter(Content.ElementAt(row)) * xJitterFactor;
-        yValue = yValue.Value + yValue.Value * GetYJitter(Content.ElementAt(row)) * yJitterFactor;
+      sizeValue = GetValue(run, (string)sizeComboBox.SelectedItem);
+      if (xValue.HasValue && yValue.HasValue && sizeValue.HasValue) {
+        xValue = xValue.Value + xValue.Value * GetXJitter(run) * xJitterFactor;
+        yValue = yValue.Value + yValue.Value * GetYJitter(run) * yJitterFactor;
         if (run.Visible) {
           DataPoint point = new DataPoint(xValue.Value, new double[] { yValue.Value, sizeValue.Value });
           point.Tag = run;
@@ -219,10 +231,11 @@ namespace HeuristicLab.Optimization.Views {
 
         DoubleValue doubleValue = value as DoubleValue;
         IntValue intValue = value as IntValue;
-        double ret;
-        if (doubleValue != null)
-          ret = doubleValue.Value;
-        else if (intValue != null)
+        double? ret = null;
+        if (doubleValue != null) {
+          if (!double.IsNaN(doubleValue.Value) && !double.IsInfinity(doubleValue.Value))
+            ret = doubleValue.Value;
+        } else if (intValue != null)
           ret = intValue.Value;
         else
           ret = GetCategoricalValue(columnIndex, value.ToString());
@@ -408,8 +421,8 @@ namespace HeuristicLab.Optimization.Views {
         CustomLabel label = null;
         foreach (var pair in categoricalMapping[dimension]) {
           string labelText = pair.Key.ToString();
-          if(labelText.Length > 25)
-            labelText = labelText.Substring(0,25) + " ... ";
+          if (labelText.Length > 25)
+            labelText = labelText.Substring(0, 25) + " ... ";
           label = axis.CustomLabels.Add(pair.Value - 0.5, pair.Value + 0.5, labelText);
           label.GridTicks = GridTickTypes.TickMark;
         }
@@ -441,9 +454,5 @@ namespace HeuristicLab.Optimization.Views {
       return colorImage;
     }
     #endregion
-
-    private void sizeLabel_Click(object sender, EventArgs e) {
-
-    }
   }
 }
