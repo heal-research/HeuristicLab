@@ -49,10 +49,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     public ISymbolicExpressionTreeInterpreter Interpreter {
       get { return interpreter; }
     }
-    [Storable]
     private List<string> inputVariables;
+    [Storable]
     public IEnumerable<string> InputVariables {
       get { return inputVariables.AsEnumerable(); }
+      set {
+        if (value != null)
+          inputVariables = new List<string>(value);
+      }
     }
     public SymbolicRegressionModel() : base() { } // for cloning
 

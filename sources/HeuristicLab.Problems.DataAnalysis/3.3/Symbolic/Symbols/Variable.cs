@@ -65,8 +65,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
         weightManipulatorSigma = value;
       }
     }
-    [Storable]
     private List<string> variableNames;
+    [Storable]
     public IEnumerable<string> VariableNames {
       get { return variableNames; }
       set {

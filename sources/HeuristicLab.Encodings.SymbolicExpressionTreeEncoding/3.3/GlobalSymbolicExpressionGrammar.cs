@@ -39,7 +39,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       get { return minFunctionDefinitions; }
       set { 
         minFunctionDefinitions = value;
-        Reset();
+        Initialize();
       }
     }
     [Storable]
@@ -48,7 +48,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       get { return maxFunctionDefinitions; }
       set { 
         maxFunctionDefinitions = value;
-        Reset();
+        Initialize();
       }
     }
     [Storable]
@@ -57,7 +57,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       get { return minFunctionArguments; }
       set { 
         minFunctionArguments = value;
-        Reset();
+        Initialize();
       }
     }
     [Storable]
@@ -66,7 +66,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       get { return maxFunctionArguments; }
       set { 
         maxFunctionArguments = value;
-        Reset();
+        Initialize();
       }
     }
     [Storable]
@@ -82,17 +82,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       Initialize();
     }
 
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserializationHook() {
-      Reset();
-    }
-
-    private new void Reset() {
-      base.Reset();
-      Initialize();
-    }
-
     private void Initialize() {
+      base.Clear();
+
       // remove the start symbol of the default grammar
       RemoveSymbol(StartSymbol);
 
@@ -106,36 +98,38 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       SetMinSubtreeCount(defunSymbol, 1);
       SetMaxSubtreeCount(defunSymbol, 1);
 
-      // copy symbols from mainBranchGrammar
-      foreach (var symb in mainBranchGrammar.Symbols) {
-        AddSymbol(symb);
-        SetMinSubtreeCount(symb, mainBranchGrammar.GetMinSubtreeCount(symb));
-        SetMaxSubtreeCount(symb, mainBranchGrammar.GetMaxSubtreeCount(symb));
-      }
+      if (mainBranchGrammar != null) {
+        // copy symbols from mainBranchGrammar
+        foreach (var symb in mainBranchGrammar.Symbols) {
+          AddSymbol(symb);
+          SetMinSubtreeCount(symb, mainBranchGrammar.GetMinSubtreeCount(symb));
+          SetMaxSubtreeCount(symb, mainBranchGrammar.GetMaxSubtreeCount(symb));
+        }
 
-      // the start symbol of the mainBranchGrammar is allowed as the result producing branch
-      SetAllowedChild(StartSymbol, mainBranchGrammar.StartSymbol, 0);
+        // the start symbol of the mainBranchGrammar is allowed as the result producing branch
+        SetAllowedChild(StartSymbol, mainBranchGrammar.StartSymbol, 0);
 
-      // ADF branches maxFunctionDefinitions 
-      for (int argumentIndex = 1; argumentIndex < maxFunctionDefinitions + 1; argumentIndex++) {
-        SetAllowedChild(StartSymbol, defunSymbol, argumentIndex);
-      }
+        // ADF branches maxFunctionDefinitions 
+        for (int argumentIndex = 1; argumentIndex < maxFunctionDefinitions + 1; argumentIndex++) {
+          SetAllowedChild(StartSymbol, defunSymbol, argumentIndex);
+        }
 
-      // copy syntax constraints from mainBranchGrammar
-      foreach (var parent in mainBranchGrammar.Symbols) {
-        for (int i = 0; i < mainBranchGrammar.GetMaxSubtreeCount(parent); i++) {
-          foreach (var child in mainBranchGrammar.Symbols) {
-            if (mainBranchGrammar.IsAllowedChild(parent, child, i)) {
-              SetAllowedChild(parent, child, i);
+        // copy syntax constraints from mainBranchGrammar
+        foreach (var parent in mainBranchGrammar.Symbols) {
+          for (int i = 0; i < mainBranchGrammar.GetMaxSubtreeCount(parent); i++) {
+            foreach (var child in mainBranchGrammar.Symbols) {
+              if (mainBranchGrammar.IsAllowedChild(parent, child, i)) {
+                SetAllowedChild(parent, child, i);
+              }
             }
           }
         }
-      }
 
-      // every symbol of the mainBranchGrammar that is allowed as child of the start symbol is also allowed as direct child of defun
-      foreach (var symb in mainBranchGrammar.Symbols) {
-        if (mainBranchGrammar.IsAllowedChild(mainBranchGrammar.StartSymbol, symb, 0))
-          SetAllowedChild(defunSymbol, symb, 0);
+        // every symbol of the mainBranchGrammar that is allowed as child of the start symbol is also allowed as direct child of defun
+        foreach (var symb in mainBranchGrammar.Symbols) {
+          if (mainBranchGrammar.IsAllowedChild(mainBranchGrammar.StartSymbol, symb, 0))
+            SetAllowedChild(defunSymbol, symb, 0);
+        }
       }
     }
     public override IDeepCloneable Clone(Cloner cloner) {

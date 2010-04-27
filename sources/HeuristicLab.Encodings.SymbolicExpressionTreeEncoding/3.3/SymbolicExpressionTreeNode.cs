@@ -35,7 +35,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
   public class SymbolicExpressionTreeNode : ICloneable {
     [Storable]
-    private List<SymbolicExpressionTreeNode> subTrees;
+    private IList<SymbolicExpressionTreeNode> subTrees;
     [Storable]
     private Symbol symbol;
     public Symbol Symbol {

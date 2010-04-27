@@ -39,21 +39,70 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
   [Item("DefaultSymbolicExpressionGrammar", "Represents a grammar that defines the syntax of symbolic expression trees.")]
   public class DefaultSymbolicExpressionGrammar : Item, ISymbolicExpressionGrammar {
+
+    #region properties for separation between implementation and persistence
     [Storable]
+    private IEnumerable<KeyValuePair<string, int>> MinSubTreeCount {
+      get { return minSubTreeCount.AsEnumerable(); }
+      set { minSubTreeCount = value.ToDictionary(x => x.Key, x => x.Value); }
+    }
+
+    [Storable]
+    private IEnumerable<KeyValuePair<string, int>> MaxSubTreeCount {
+      get { return maxSubTreeCount.AsEnumerable(); }
+      set { maxSubTreeCount = value.ToDictionary(x => x.Key, x => x.Value); }
+    }
+
+    [Storable]
+    private IEnumerable<KeyValuePair<string, IEnumerable<IEnumerable<string>>>> AllowedChildSymbols {
+      get {
+        return (from parentEntry in allowedChildSymbols
+                let setEnumeration = parentEntry.Value.Select(set => set.AsEnumerable()).ToList()
+                select new KeyValuePair<string, IEnumerable<IEnumerable<string>>>(parentEntry.Key, setEnumeration))
+                .ToList();
+      }
+      set {
+        allowedChildSymbols = new Dictionary<string, List<HashSet<string>>>();
+        foreach (var pair in value) {
+          allowedChildSymbols[pair.Key] = new List<HashSet<string>>();
+          foreach (var entry in pair.Value) {
+            var hashSet = new HashSet<string>();
+            foreach (string child in entry) {
+              hashSet.Add(child);
+            }
+            allowedChildSymbols[pair.Key].Add(hashSet);
+          }
+        }
+      }
+    }
+    [Storable]
+    private IEnumerable<KeyValuePair<string, Symbol>> AllSymbols {
+      get { return allSymbols.AsEnumerable(); }
+      set { allSymbols = value.ToDictionary(x => x.Key, x => x.Value); }
+    }
+    #endregion
+
     private Dictionary<string, int> minSubTreeCount;
-    [Storable]
     private Dictionary<string, int> maxSubTreeCount;
-    [Storable]
     private Dictionary<string, List<HashSet<string>>> allowedChildSymbols;
-    [Storable]
     private Dictionary<string, Symbol> allSymbols;
+    [Storable]
+    private Symbol startSymbol;
 
     public DefaultSymbolicExpressionGrammar()
       : base() {
-      Reset();
+      Clear();
     }
 
-    private void Initialize() {
+    public void Clear() {
+      minSubTreeCount = new Dictionary<string, int>();
+      maxSubTreeCount = new Dictionary<string, int>();
+      allowedChildSymbols = new Dictionary<string, List<HashSet<string>>>();
+      allSymbols = new Dictionary<string, Symbol>();
+      cachedMinExpressionLength = new Dictionary<string, int>();
+      cachedMaxExpressionLength = new Dictionary<string, int>();
+      cachedMinExpressionDepth = new Dictionary<string, int>();
+
       startSymbol = new StartSymbol();
       AddSymbol(startSymbol);
       SetMinSubtreeCount(startSymbol, 1);
@@ -62,22 +111,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
     #region ISymbolicExpressionGrammar Members
 
-    private Symbol startSymbol;
     public Symbol StartSymbol {
       get { return startSymbol; }
       set { startSymbol = value; }
     }
 
-    protected void Reset() {
-      minSubTreeCount = new Dictionary<string, int>();
-      maxSubTreeCount = new Dictionary<string, int>();
-      allowedChildSymbols = new Dictionary<string, List<HashSet<string>>>();
-      allSymbols = new Dictionary<string, Symbol>();
-      cachedMinExpressionLength = new Dictionary<string, int>();
-      cachedMaxExpressionLength = new Dictionary<string, int>();
-      cachedMinExpressionDepth = new Dictionary<string, int>();
-      Initialize();
-    }
 
     public void AddSymbol(Symbol symbol) {
       if (ContainsSymbol(symbol)) throw new ArgumentException("Symbol " + symbol + " is already defined.");
