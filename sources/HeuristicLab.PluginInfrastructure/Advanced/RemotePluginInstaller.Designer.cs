@@ -50,6 +50,8 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.nameHeader = new System.Windows.Forms.ColumnHeader();
       this.versionHeader = new System.Windows.Forms.ColumnHeader();
       this.descriptionHeader = new System.Windows.Forms.ColumnHeader();
+      this.refreshButton = new System.Windows.Forms.Button();
+      this.installButton = new System.Windows.Forms.Button();
       this.SuspendLayout();
       // 
       // remotePluginsListView
@@ -74,7 +76,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
             listViewGroup3});
       this.remotePluginsListView.Location = new System.Drawing.Point(0, 0);
       this.remotePluginsListView.Name = "remotePluginsListView";
-      this.remotePluginsListView.Size = new System.Drawing.Size(533, 558);
+      this.remotePluginsListView.Size = new System.Drawing.Size(533, 527);
       this.remotePluginsListView.SuppressItemCheckedEvents = false;
       this.remotePluginsListView.TabIndex = 0;
       this.remotePluginsListView.UseCompatibleStateImageBehavior = false;
@@ -96,10 +98,39 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.descriptionHeader.Text = "Description";
       this.descriptionHeader.Width = 250;
       // 
+      // refreshButton
+      // 
+      this.refreshButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.refreshButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_Objects_Internet;
+      this.refreshButton.Location = new System.Drawing.Point(0, 533);
+      this.refreshButton.Name = "refreshButton";
+      this.refreshButton.Size = new System.Drawing.Size(72, 25);
+      this.refreshButton.TabIndex = 16;
+      this.refreshButton.Text = "Refresh";
+      this.refreshButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.refreshButton.UseVisualStyleBackColor = true;
+      this.refreshButton.Click += new System.EventHandler(this.refreshRemoteButton_Click);
+      // 
+      // installButton
+      // 
+      this.installButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.installButton.Enabled = false;
+      this.installButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_Objects_Install;
+      this.installButton.Location = new System.Drawing.Point(78, 533);
+      this.installButton.Name = "installButton";
+      this.installButton.Size = new System.Drawing.Size(140, 25);
+      this.installButton.TabIndex = 17;
+      this.installButton.Text = "Install Selected Items";
+      this.installButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.installButton.UseVisualStyleBackColor = true;
+      this.installButton.Click += new System.EventHandler(this.installButton_Click);
+      // 
       // RemotePluginInstallerView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.refreshButton);
+      this.Controls.Add(this.installButton);
       this.Controls.Add(this.remotePluginsListView);
       this.Name = "RemotePluginInstallerView";
       this.Size = new System.Drawing.Size(533, 558);
@@ -113,5 +144,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private System.Windows.Forms.ColumnHeader nameHeader;
     private System.Windows.Forms.ColumnHeader versionHeader;
     private System.Windows.Forms.ColumnHeader descriptionHeader;
+    private System.Windows.Forms.Button refreshButton;
+    private System.Windows.Forms.Button installButton;
   }
 }

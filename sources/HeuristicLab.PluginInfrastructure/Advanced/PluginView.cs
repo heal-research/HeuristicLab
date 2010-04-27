@@ -31,7 +31,7 @@ using System.IO;
 using HeuristicLab.PluginInfrastructure.Manager;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
-  internal partial class PluginView : UserControl {
+  internal partial class PluginView : Form {
     private const string IMAGE_KEY_ASSEMBLY = "Assembly";
     private const string IMAGE_KEY_FILE = "File";
     private const string IMAGE_KEY_DOCUMENT = "Document";
@@ -48,7 +48,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       PopulateImageList();
 
       this.plugin = plugin;
-      this.Name = "Plugin Details: " + plugin.ToString();
+      this.Text = "Plugin Details: " + plugin.ToString();
       UpdateControls();
     }
 

@@ -26,10 +26,21 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using HeuristicLab.PluginInfrastructure.Manager;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
-  internal partial class RemotePluginInstallerView : UserControl {
-    public event ItemCheckedEventHandler ItemChecked;
+  internal partial class RemotePluginInstallerView : InstallationManagerControl {
+    private class RefreshBackgroundWorkerResult {
+      public IEnumerable<IPluginDescription> RemotePlugins { get; set; }
+      public IEnumerable<DeploymentService.ProductDescription> RemoteProducts { get; set; }
+    }
+    private class UpdateOrInstallPluginsBackgroundWorkerArgument {
+      public IEnumerable<IPluginDescription> PluginsToUpdate { get; set; }
+      public IEnumerable<IPluginDescription> PluginsToInstall { get; set; }
+    }
+    private const string PluginDiscoveryMessage = "Looking for new plugins...";
+    private BackgroundWorker refreshServerPluginsBackgroundWorker;
+    private BackgroundWorker updateOrInstallPluginsBackgroundWorker;
 
     private ListViewGroup newPluginsGroup;
     private ListViewGroup productsGroup;
@@ -44,14 +55,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
           UpdateControl();
         }
       }
-    }
-
-    public RemotePluginInstallerView() {
-      InitializeComponent();
-
-      newPluginsGroup = remotePluginsListView.Groups["newPluginsGroup"];
-      productsGroup = remotePluginsListView.Groups["productsGroup"];
-      allPluginsGroup = remotePluginsListView.Groups["allPluginsGroup"];
     }
 
     private IEnumerable<DeploymentService.ProductDescription> products;
@@ -96,6 +99,112 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
                 select plugin).ToList();
       }
     }
+
+    private InstallationManager installationManager;
+    public InstallationManager InstallationManager {
+      get { return installationManager; }
+      set { installationManager = value; }
+    }
+    private PluginManager pluginManager;
+    public PluginManager PluginManager {
+      get { return pluginManager; }
+      set { pluginManager = value; }
+    }
+    public RemotePluginInstallerView() {
+      InitializeComponent();
+
+      refreshServerPluginsBackgroundWorker = new BackgroundWorker();
+      refreshServerPluginsBackgroundWorker.DoWork += new DoWorkEventHandler(refreshServerPluginsBackgroundWorker_DoWork);
+      refreshServerPluginsBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(refreshServerPluginsBackgroundWorker_RunWorkerCompleted);
+
+      updateOrInstallPluginsBackgroundWorker = new BackgroundWorker();
+      updateOrInstallPluginsBackgroundWorker.DoWork += new DoWorkEventHandler(updateOrInstallPluginsBackgroundWorker_DoWork);
+      updateOrInstallPluginsBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(updateOrInstallPluginsBackgroundWorker_RunWorkerCompleted);
+
+      newPluginsGroup = remotePluginsListView.Groups["newPluginsGroup"];
+      productsGroup = remotePluginsListView.Groups["productsGroup"];
+      allPluginsGroup = remotePluginsListView.Groups["allPluginsGroup"];
+    }
+
+
+    #region event handlers for refresh server plugins background worker
+    void refreshServerPluginsBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
+      if (e.Error != null) {
+        StatusView.ShowError("Connection Error",
+          "There was an error while connecting to the server." + Environment.NewLine +
+          "Please check your connection settings and user credentials.");
+      } else {
+        RefreshBackgroundWorkerResult refreshResult = (RefreshBackgroundWorkerResult)e.Result;
+        UpdateRemotePluginList(refreshResult.RemoteProducts, refreshResult.RemotePlugins);
+      }
+      StatusView.UnlockUI();
+      StatusView.RemoveMessage(PluginDiscoveryMessage);
+      StatusView.HideProgressIndicator();
+    }
+
+    void refreshServerPluginsBackgroundWorker_DoWork(object sender, DoWorkEventArgs e) {
+      RefreshBackgroundWorkerResult result = new RefreshBackgroundWorkerResult();
+      result.RemotePlugins = installationManager.GetRemotePluginList();
+      result.RemoteProducts = installationManager.GetRemoteProductList();
+      e.Result = result;
+    }
+    #endregion
+    #region event handlers for plugin update background worker
+    void updateOrInstallPluginsBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
+      if (e.Error != null) {
+        StatusView.ShowError("Connection Error",
+          "There was an error while connecting to the server." + Environment.NewLine +
+          "Please check your connection settings and user credentials.");
+      } else {
+        UpdateControl();
+      }
+      StatusView.UnlockUI();
+      StatusView.HideProgressIndicator();
+    }
+
+    void updateOrInstallPluginsBackgroundWorker_DoWork(object sender, DoWorkEventArgs e) {
+      UpdateOrInstallPluginsBackgroundWorkerArgument info = (UpdateOrInstallPluginsBackgroundWorkerArgument)e.Argument;
+      if (info.PluginsToInstall.Count() > 0)
+        installationManager.Install(info.PluginsToInstall);
+      if (info.PluginsToUpdate.Count() > 0)
+        installationManager.Update(info.PluginsToUpdate);
+
+      if (info.PluginsToInstall.Count() > 0 || info.PluginsToUpdate.Count() > 0)
+        pluginManager.DiscoverAndCheckPlugins();
+    }
+    #endregion
+
+
+    #region button events
+    private void refreshRemoteButton_Click(object sender, EventArgs e) {
+      StatusView.LockUI();
+      StatusView.ShowProgressIndicator();
+      StatusView.ShowMessage(PluginDiscoveryMessage);
+      refreshServerPluginsBackgroundWorker.RunWorkerAsync();
+    }
+    private void installButton_Click(object sender, EventArgs e) {
+      StatusView.LockUI();
+      StatusView.ShowProgressIndicator();
+      var updateOrInstallInfo = new UpdateOrInstallPluginsBackgroundWorkerArgument();
+      // if there is a local plugin with same name and same major and minor version then it's an update
+      var pluginsToUpdate = from remotePlugin in CheckedPlugins
+                            let matchingLocalPlugins = from localPlugin in pluginManager.Plugins
+                                                       where localPlugin.Name == remotePlugin.Name
+                                                       where localPlugin.Version.Major == remotePlugin.Version.Major
+                                                       where localPlugin.Version.Minor == remotePlugin.Version.Minor
+                                                       where IsNewerThan(remotePlugin, localPlugin)
+                                                       select localPlugin
+                            where matchingLocalPlugins.Count() > 0
+                            select remotePlugin;
+
+      // otherwise install a new plugin
+      var pluginsToInstall = CheckedPlugins.Except(pluginsToUpdate);
+
+      updateOrInstallInfo.PluginsToInstall = pluginsToInstall;
+      updateOrInstallInfo.PluginsToUpdate = pluginsToUpdate;
+      updateOrInstallPluginsBackgroundWorker.RunWorkerAsync(updateOrInstallInfo);
+    }
+    #endregion
 
     private void UpdateControl() {
       ClearListView();
@@ -158,7 +267,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
               HandleProductUnchecked(product);
         }
       }
-      OnItemChecked(e);
+      installButton.Enabled = remotePluginsListView.CheckedItems.Count > 0;
     }
 
     private void HandleProductUnchecked(HeuristicLab.PluginInfrastructure.Advanced.DeploymentService.ProductDescription product) {
@@ -237,9 +346,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       remotePluginsListView.CheckItems(modifiedItems);
     }
 
-    private void OnItemChecked(ItemCheckedEventArgs e) {
-      if (ItemChecked != null) ItemChecked(this, e);
-    }
     #endregion
 
     #region helper methods
@@ -257,7 +363,34 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
               select item).SingleOrDefault();
     }
 
+    private void UpdateRemotePluginList(
+      IEnumerable<DeploymentService.ProductDescription> remoteProducts,
+      IEnumerable<IPluginDescription> remotePlugins) {
+
+      var mostRecentRemotePlugins = from remote in remotePlugins
+                                    where !remotePlugins.Any(x => x.Name == remote.Name && x.Version > remote.Version) // same name and higher version
+                                    select remote;
+
+      var newPlugins = from remote in mostRecentRemotePlugins
+                       let matchingLocal = (from local in pluginManager.Plugins
+                                            where local.Name == remote.Name
+                                            where local.Version < remote.Version
+                                            select local).FirstOrDefault()
+                       where matchingLocal != null
+                       select remote;
+
+      NewPlugins = newPlugins;
+      Products = remoteProducts;
+      AllPlugins = remotePlugins;
+    }
+    private bool IsNewerThan(IPluginDescription plugin1, IPluginDescription plugin2) {
+      // newer: build version is higher, or if build version is the same revision is higher
+      if (plugin1.Version.Build < plugin2.Version.Build) return false;
+      else if (plugin1.Version.Build > plugin2.Version.Build) return true;
+      else return plugin1.Version.Revision > plugin2.Version.Revision;
+    }
     #endregion
+
 
   }
 }

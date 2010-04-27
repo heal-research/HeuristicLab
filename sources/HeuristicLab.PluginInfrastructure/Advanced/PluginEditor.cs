@@ -38,6 +38,15 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private BackgroundWorker pluginUploadWorker;
     private BackgroundWorker updateServerPluginsWorker;
 
+    private PluginManager pluginManager;
+    public PluginManager PluginManager {
+      get { return pluginManager; }
+      set {
+        // if (value == null) throw new ArgumentNullException();
+        pluginManager = value;
+      }
+    }
+
     public PluginEditor() {
       InitializeComponent();
       // Caption = "Upload Plugins";
@@ -57,10 +66,14 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
     #region refresh plugins from server backgroundworker
     void updateServerPluginsWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
-      if (!e.Cancelled && e.Result != null) {
+      if (e.Error != null) {
+        MessageBox.Show("There was an error while connecting to the server." + Environment.NewLine +
+                   "Please check your connection settings and user credentials.");
+        UpdateControlsDisconnectedState();
+      } else {
         // refresh local plugins
         localAndServerPlugins.Clear();
-        foreach (var plugin in ApplicationManager.Manager.Plugins) {
+        foreach (var plugin in pluginManager.Plugins) {
           localAndServerPlugins.Add(plugin, null);
         }
         // refresh server plugins (find matching local plugins)
@@ -87,34 +100,23 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
         //listView.suppressCheckedEvents = false;
         listView.CheckBoxes = true;
         UpdateControlsConnectedState();
-      } else {
-        UpdateControlsDisconnectedState();
       }
       // make sure cursor is set correctly
       Cursor = Cursors.Default;
     }
 
     void updateServerPluginsWorker_DoWork(object sender, DoWorkEventArgs e) {
-      try {
-        var client = DeploymentService.UpdateClientFactory.CreateClient();
-        e.Result = client.GetPlugins();
-        e.Cancel = false;
-      }
-      catch (EndpointNotFoundException) {
-        e.Result = null;
-        e.Cancel = true;
-      }
-      catch (FaultException) {
-        e.Result = null;
-        e.Cancel = true;
-      }
+      var client = DeploymentService.UpdateClientFactory.CreateClient();
+      e.Result = client.GetPlugins();
     }
     #endregion
 
     #region upload plugins to server backgroundworker
     void pluginUploadWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
       Cursor = Cursors.Default;
-      if (e.Cancelled) {
+      if (e.Error != null) {
+        MessageBox.Show("There was an error while connecting to the server." + Environment.NewLine +
+                   "Please check your connection settings and user credentials.");
         UpdateControlsDisconnectedState();
       } else {
         UpdateControlsConnectedState();
@@ -124,21 +126,12 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     }
 
     void pluginUploadWorker_DoWork(object sender, DoWorkEventArgs e) {
-      try {
-        var selectedPlugins = (IEnumerable<IPluginDescription>)e.Argument;
-        DeploymentService.AdminClient adminClient = DeploymentService.AdminClientFactory.CreateClient();
+      var selectedPlugins = (IEnumerable<IPluginDescription>)e.Argument;
+      DeploymentService.AdminClient adminClient = DeploymentService.AdminClientFactory.CreateClient();
 
-        foreach (var plugin in IteratePlugins(selectedPlugins)) {
-          SetMainFormStatusBar("Uploading", plugin);
-          adminClient.DeployPlugin(MakePluginDescription(plugin), CreateZipPackage(plugin));
-        }
-        e.Cancel = false;
-      }
-      catch (EndpointNotFoundException) {
-        e.Cancel = true;
-      }
-      catch (FaultException) {
-        e.Cancel = true;
+      foreach (var plugin in IteratePlugins(selectedPlugins)) {
+        SetMainFormStatusBar("Uploading", plugin);
+        adminClient.DeployPlugin(MakePluginDescription(plugin), CreateZipPackage(plugin));
       }
     }
 

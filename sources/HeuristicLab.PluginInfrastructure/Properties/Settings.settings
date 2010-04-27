@@ -21,7 +21,7 @@
       <Value Profile="(Default)">http://servdev.heuristiclab.com/Deployment-3.3/Admin.svc</Value>
     </Setting>
     <Setting Name="ShowPluginUploadControls" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
 </SettingsFile>

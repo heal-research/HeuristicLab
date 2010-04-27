@@ -95,9 +95,23 @@ namespace HeuristicLab.PluginInfrastructure.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap VS2008ImageLibrary_CommonElements_Actions_Add {
+            get {
+                object obj = ResourceManager.GetObject("VS2008ImageLibrary_CommonElements_Actions_Add", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap VS2008ImageLibrary_CommonElements_Actions_Remove {
             get {
                 object obj = ResourceManager.GetObject("VS2008ImageLibrary_CommonElements_Actions_Remove", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap VS2008ImageLibrary_CommonElements_Objects_Arrow_Up {
+            get {
+                object obj = ResourceManager.GetObject("VS2008ImageLibrary_CommonElements_Objects_Arrow_Up", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

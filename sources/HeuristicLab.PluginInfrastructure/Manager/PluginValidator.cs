@@ -259,6 +259,8 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
         }
         catch (TypeLoadException) {
         }
+        catch (MissingMemberException) {
+        }
       }
       return pluginDescriptions;
     }

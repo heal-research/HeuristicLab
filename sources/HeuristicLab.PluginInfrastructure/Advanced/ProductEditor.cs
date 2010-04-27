@@ -59,35 +59,33 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private void uploadChangedProductsWorker_DoWork(object sender, DoWorkEventArgs e) {
       var products = (IEnumerable<DeploymentService.ProductDescription>)e.Argument;
       var adminClient = DeploymentService.AdminClientFactory.CreateClient();
-      try {
-        foreach (var product in products) {
-          adminClient.DeployProduct(product);
-        }
-        e.Cancel = false;
-      }
-      catch (FaultException) {
+      foreach (var product in products) {
+        adminClient.DeployProduct(product);
       }
     }
 
     private void uploadChangedProductsWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
-      this.Enabled = true;
-      refreshProductsWorker.RunWorkerAsync();
+      if (e.Error != null) {
+        MessageBox.Show("There was an error while connecting to the server." + Environment.NewLine +
+           "Please check your connection settings and user credentials.");
+      } else {
+        this.Enabled = true;
+        refreshProductsWorker.RunWorkerAsync();
+      }
     }
     #endregion
 
     #region event handlers for refresh products background worker
     private void refreshProductsWorker_DoWork(object sender, DoWorkEventArgs e) {
       var updateClient = DeploymentService.UpdateClientFactory.CreateClient();
-      try {
-        e.Result = new object[] { updateClient.GetProducts(), updateClient.GetPlugins() };
-      }
-      catch (FaultException) {
-        e.Cancel = true;
-      }
+      e.Result = new object[] { updateClient.GetProducts(), updateClient.GetPlugins() };
     }
 
     private void refreshProductsWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
-      if (!e.Cancelled && e.Result != null) {
+      if (e.Error != null) {
+        MessageBox.Show("There was an error while connecting to the server." + Environment.NewLine +
+                   "Please check your connection settings and user credentials.");
+      } else {
         this.products = new List<DeploymentService.ProductDescription>(
           (DeploymentService.ProductDescription[])((object[])e.Result)[0]);
         this.plugins = new List<DeploymentService.PluginDescription>(

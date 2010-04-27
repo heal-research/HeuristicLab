@@ -30,61 +30,21 @@ using System.IO;
 using HeuristicLab.PluginInfrastructure.Manager;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
-  internal partial class InstallationManagerForm : Form {
-    private class UpdateOrInstallPluginsBackgroundWorkerArgument {
-      public IEnumerable<IPluginDescription> PluginsToUpdate { get; set; }
-      public IEnumerable<IPluginDescription> PluginsToInstall { get; set; }
-    }
-
-    private class RemovePluginsBackgroundWorkerArgument {
-      public IEnumerable<IPluginDescription> PluginsToRemove { get; set; }
-    }
-
-    private class RefreshBackgroundWorkerResult {
-      public IEnumerable<IPluginDescription> RemotePlugins { get; set; }
-      public IEnumerable<DeploymentService.ProductDescription> RemoteProducts { get; set; }
-    }
-
+  internal partial class InstallationManagerForm : Form, IStatusView {
     private InstallationManager installationManager;
-    private BackgroundWorker refreshServerPluginsBackgroundWorker;
-    private BackgroundWorker updateOrInstallPluginsBackgroundWorker;
-    private BackgroundWorker removePluginsBackgroundWorker;
-    private BackgroundWorker refreshLocalPluginsBackgroundWorker;
-    private BackgroundWorker updateAllPluginsBackgroundWorker;
     private PluginManager pluginManager;
     private string pluginDir;
 
     public InstallationManagerForm(PluginManager pluginManager) {
       InitializeComponent();
       this.pluginManager = pluginManager;
+
       pluginManager.PluginLoaded += pluginManager_PluginLoaded;
       pluginManager.PluginUnloaded += pluginManager_PluginUnloaded;
       pluginManager.Initializing += pluginManager_Initializing;
       pluginManager.Initialized += pluginManager_Initialized;
 
       pluginDir = Application.StartupPath;
-
-      #region initialize background workers
-      refreshServerPluginsBackgroundWorker = new BackgroundWorker();
-      refreshServerPluginsBackgroundWorker.DoWork += new DoWorkEventHandler(refreshServerPluginsBackgroundWorker_DoWork);
-      refreshServerPluginsBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(refreshServerPluginsBackgroundWorker_RunWorkerCompleted);
-
-      updateOrInstallPluginsBackgroundWorker = new BackgroundWorker();
-      updateOrInstallPluginsBackgroundWorker.DoWork += new DoWorkEventHandler(updateOrInstallPluginsBackgroundWorker_DoWork);
-      updateOrInstallPluginsBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(updateOrInstallPluginsBackgroundWorker_RunWorkerCompleted);
-
-      removePluginsBackgroundWorker = new BackgroundWorker();
-      removePluginsBackgroundWorker.DoWork += new DoWorkEventHandler(removePluginsBackgroundWorker_DoWork);
-      removePluginsBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(removePluginsBackgroundWorker_RunWorkerCompleted);
-
-      refreshLocalPluginsBackgroundWorker = new BackgroundWorker();
-      refreshLocalPluginsBackgroundWorker.DoWork += new DoWorkEventHandler(refreshLocalPluginsBackgroundWorker_DoWork);
-      refreshLocalPluginsBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(refreshLocalPluginsBackgroundWorker_RunWorkerCompleted);
-
-      updateAllPluginsBackgroundWorker = new BackgroundWorker();
-      updateAllPluginsBackgroundWorker.DoWork += new DoWorkEventHandler(updateAllPluginsBackgroundWorker_DoWork);
-      updateAllPluginsBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(updateAllPluginsBackgroundWorker_RunWorkerCompleted);
-      #endregion
 
       installationManager = new InstallationManager(pluginDir);
       installationManager.PluginInstalled += new EventHandler<PluginInfrastructureEventArgs>(installationManager_PluginInstalled);
@@ -98,118 +58,23 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       if (!HeuristicLab.PluginInfrastructure.Properties.Settings.Default.ShowPluginUploadControls) {
         tabControl.Controls.Remove(uploadPluginsTabPage);
         tabControl.Controls.Remove(manageProductsTabPage);
-      }
-
-      UpdateLocalPluginList(pluginManager.Plugins);
-      UpdateControlsConnected();
-    }
-
-    #region event handlers for update all plugins backgroundworker
-    void updateAllPluginsBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
-      if (e.Error != null) {
-        MessageBox.Show("There was an error while connecting to the server." + Environment.NewLine +
-           "Please check your connection settings and user credentials.");
-        UpdateControlsDisconnected();
       } else {
-        RefreshLocalPluginListAsync();
-        UpdateControlsConnected();
+        pluginEditor.PluginManager = pluginManager;
       }
+
+      localPluginsView.StatusView = this;
+      localPluginsView.PluginManager = pluginManager;
+      localPluginsView.InstallationManager = installationManager;
+
+      basicUpdateView.StatusView = this;
+      basicUpdateView.PluginManager = pluginManager;
+      basicUpdateView.InstallationManager = installationManager;
+
+      remotePluginInstaller.StatusView = this;
+      remotePluginInstaller.InstallationManager = installationManager;
+      remotePluginInstaller.PluginManager = pluginManager;
     }
 
-    void updateAllPluginsBackgroundWorker_DoWork(object sender, DoWorkEventArgs e) {
-      IEnumerable<IPluginDescription> installedPlugins = (IEnumerable<IPluginDescription>)e.Argument;
-      var remotePlugins = installationManager.GetRemotePluginList();
-      // if there is a local plugin with same name and same major and minor version then it's an update
-      var pluginsToUpdate = from remotePlugin in remotePlugins
-                            let matchingLocalPlugins = from installedPlugin in installedPlugins
-                                                       where installedPlugin.Name == remotePlugin.Name
-                                                       where installedPlugin.Version.Major == remotePlugin.Version.Major
-                                                       where installedPlugin.Version.Minor == remotePlugin.Version.Minor
-                                                       where installedPlugin.Version.Build <= remotePlugin.Version.Build ||
-                                                         installedPlugin.Version.Revision < remotePlugin.Version.Revision
-                                                       select installedPlugin
-                            where matchingLocalPlugins.Count() > 0
-                            select remotePlugin;
-      installationManager.Update(pluginsToUpdate);
-    }
-    #endregion
-
-    #region event handlers for refresh local plugin list backgroundworker
-    void refreshLocalPluginsBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
-      if (!e.Cancelled && e.Error == null) {
-        UpdateLocalPluginList((IEnumerable<PluginDescription>)e.Result);
-        UpdateControlsConnected();
-      }
-    }
-
-    void refreshLocalPluginsBackgroundWorker_DoWork(object sender, DoWorkEventArgs e) {
-      pluginManager.DiscoverAndCheckPlugins();
-      e.Result = new List<PluginDescription>(pluginManager.Plugins);
-    }
-    #endregion
-
-    #region event handlers for plugin removal background worker
-    void removePluginsBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
-      if (e.Error != null) {
-        MessageBox.Show("There was problem while deleting files." + Environment.NewLine +
-              e.Error.Message);
-        UpdateControlsDisconnected();
-      } else {
-        RefreshLocalPluginListAsync();
-        UpdateControlsConnected();
-      }
-    }
-
-    void removePluginsBackgroundWorker_DoWork(object sender, DoWorkEventArgs e) {
-      IEnumerable<IPluginDescription> pluginsToRemove = (IEnumerable<IPluginDescription>)e.Argument;
-      installationManager.Remove(pluginsToRemove);
-    }
-    #endregion
-
-    #region event handlers for plugin update background worker
-    void updateOrInstallPluginsBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
-      if (e.Error != null) {
-        MessageBox.Show("There was an error while connecting to the server." + Environment.NewLine +
-          "Please check your connection settings and user credentials.");
-        UpdateControlsDisconnected();
-      } else {
-        RefreshLocalPluginListAsync();
-        RefreshRemotePluginListAsync();
-        UpdateControlsConnected();
-      }
-    }
-
-    void updateOrInstallPluginsBackgroundWorker_DoWork(object sender, DoWorkEventArgs e) {
-      UpdateOrInstallPluginsBackgroundWorkerArgument info = (UpdateOrInstallPluginsBackgroundWorkerArgument)e.Argument;
-      installationManager.Install(info.PluginsToInstall);
-      installationManager.Update(info.PluginsToUpdate);
-    }
-    #endregion
-
-    #region event handlers for refresh server plugins background worker
-    void refreshServerPluginsBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
-      if (e.Error != null) {
-        MessageBox.Show("There was an error while connecting to the server." + Environment.NewLine +
-          "Please check your connection settings and user credentials.");
-        UpdateControlsDisconnected();
-      } else {
-        RefreshBackgroundWorkerResult refreshResult = (RefreshBackgroundWorkerResult)e.Result;
-        UpdateRemotePluginList(refreshResult.RemoteProducts, refreshResult.RemotePlugins);
-        UpdateControlsConnected();
-      }
-    }
-
-    void refreshServerPluginsBackgroundWorker_DoWork(object sender, DoWorkEventArgs e) {
-      RefreshBackgroundWorkerResult result = new RefreshBackgroundWorkerResult();
-      result.RemotePlugins = installationManager.GetRemotePluginList();
-      result.RemoteProducts = installationManager.GetRemoteProductList();
-      e.Cancel = false;
-      e.Result = result;
-    }
-
-
-
-    #endregion
 
     #region plugin manager event handlers
     void pluginManager_Initialized(object sender, PluginInfrastructureEventArgs e) {
@@ -266,61 +131,15 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     }
     #endregion
 
-
-
     #region button events
-
-    private void refreshRemoteButton_Click(object sender, EventArgs e) {
-      Cursor = Cursors.AppStarting;
-      RefreshRemotePluginListAsync();
-      toolStripProgressBar.Visible = true;
-      DisableControls();
-    }
-
-    private void updateOrInstallButton_Click(object sender, EventArgs e) {
-      Cursor = Cursors.AppStarting;
-      toolStripProgressBar.Visible = true;
-      DisableControls();
-      var updateOrInstallInfo = new UpdateOrInstallPluginsBackgroundWorkerArgument();
-      // if there is a local plugin with same name and same major and minor version then it's an update
-      var pluginsToUpdate = from remotePlugin in remotePluginInstaller.CheckedPlugins
-                            let matchingLocalPlugins = from localPlugin in localPluginManagerView.Plugins
-                                                       where localPlugin.Name == remotePlugin.Name
-                                                       where localPlugin.Version.Major == remotePlugin.Version.Major
-                                                       where localPlugin.Version.Minor == remotePlugin.Version.Minor
-                                                       select localPlugin
-                            where matchingLocalPlugins.Count() > 0
-                            select remotePlugin;
-
-      // otherwise install a new plugin
-      var pluginsToInstall = remotePluginInstaller.CheckedPlugins.Except(pluginsToUpdate);
-
-      updateOrInstallInfo.PluginsToInstall = pluginsToInstall;
-      updateOrInstallInfo.PluginsToUpdate = pluginsToUpdate;
-      updateOrInstallPluginsBackgroundWorker.RunWorkerAsync(updateOrInstallInfo);
-    }
-
-    private void removeLocalButton_Click(object sender, EventArgs e) {
-      Cursor = Cursors.AppStarting;
-      toolStripProgressBar.Visible = true;
-      DisableControls();
-      removePluginsBackgroundWorker.RunWorkerAsync(localPluginManagerView.CheckedPlugins);
-    }
-
-    private void updateAllButton_Click(object sender, EventArgs e) {
-      Cursor = Cursors.AppStarting;
-      toolStripProgressBar.Visible = true;
-      updateButton.Enabled = false;
-      var installedPlugins = pluginManager.Plugins.OfType<IPluginDescription>();
-      updateAllPluginsBackgroundWorker.RunWorkerAsync(installedPlugins);
-    }
-
     private void connectionSettingsToolStripMenuItem_Click(object sender, EventArgs e) {
       new ConnectionSetupView().ShowDialog();
     }
 
     private void tabControl_Selected(object sender, TabControlEventArgs e) {
-      viewToolStripMenuItem.Enabled = e.TabPage == availablePluginsTabPage;
+      viewToolStripMenuItem.Enabled = e.TabPage == availablePluginsTabPage;      
+      toolStripStatusLabel.Text = string.Empty;
+      toolStripProgressBar.Visible = false;
     }
 
     private void simpleToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -376,73 +195,8 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       }
     }
 
-    private void UpdateLocalPluginList(IEnumerable<PluginDescription> plugins) {
-      localPluginManagerView.Plugins = plugins;
-    }
-
-    private void UpdateRemotePluginList(
-      IEnumerable<DeploymentService.ProductDescription> remoteProducts,
-      IEnumerable<IPluginDescription> remotePlugins) {
-
-      var mostRecentRemotePlugins = from remote in remotePlugins
-                                    where !remotePlugins.Any(x => x.Name == remote.Name && x.Version > remote.Version) // same name and higher version
-                                    select remote;
-
-      var newPlugins = from remote in mostRecentRemotePlugins
-                       let matchingLocal = (from local in localPluginManagerView.Plugins
-                                            where local.Name == remote.Name
-                                            where local.Version < remote.Version
-                                            select local).FirstOrDefault()
-                       where matchingLocal != null
-                       select remote;
-
-      remotePluginInstaller.NewPlugins = newPlugins;
-      remotePluginInstaller.Products = remoteProducts;
-      remotePluginInstaller.AllPlugins = remotePlugins;
-    }
-
-    private void RefreshRemotePluginListAsync() {
-      Cursor = Cursors.AppStarting;
-      toolStripProgressBar.Visible = true;
-      refreshButton.Enabled = false;
-      refreshServerPluginsBackgroundWorker.RunWorkerAsync();
-    }
-
-    private void RefreshLocalPluginListAsync() {
-      Cursor = Cursors.AppStarting;
-      toolStripProgressBar.Visible = true;
-      DisableControls();
-      refreshLocalPluginsBackgroundWorker.RunWorkerAsync();
-    }
-
-    private void UpdateControlsDisconnected() {
-      //localPluginsListView.Enabled = false;
-      //ClearPluginsList(remotePluginsListView);
-      refreshButton.Enabled = true;
-      toolStripProgressBar.Visible = false;
-      Cursor = Cursors.Default;
-    }
-
-    private void UpdateControlsConnected() {
-      refreshButton.Enabled = true;
-      updateButton.Enabled = true;
-      toolStripProgressBar.Visible = false;
-      Cursor = Cursors.Default;
-    }
-
-    private void DisableControls() {
-      refreshButton.Enabled = false;
-      Cursor = Cursors.Default;
-    }
     #endregion
 
-    private void localPluginManager_ItemChecked(object sender, ItemCheckedEventArgs e) {
-      removeButton.Enabled = localPluginManagerView.CheckedPlugins.Count() > 0;
-    }
-
-    private void remotePluginInstaller_ItemChecked(object sender, ItemCheckedEventArgs e) {
-      installButton.Enabled = remotePluginInstaller.CheckedPlugins.Count() > 0;
-    }
 
     protected override void OnClosing(CancelEventArgs e) {
       installationManager.PluginInstalled -= new EventHandler<PluginInfrastructureEventArgs>(installationManager_PluginInstalled);
@@ -454,8 +208,51 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       base.OnClosing(e);
     }
 
+    #region IStatusView Members
 
+    public void ShowProgressIndicator(double percentProgress) {
+      if (percentProgress < 0.0 || percentProgress > 1.0) throw new ArgumentException();
+      toolStripProgressBar.Visible = true;
+      toolStripProgressBar.Style = ProgressBarStyle.Continuous;
+      int range = toolStripProgressBar.Maximum - toolStripProgressBar.Minimum;
+      toolStripProgressBar.Value = (int)(percentProgress * range + toolStripProgressBar.Minimum);
+    }
 
+    public void ShowProgressIndicator() {
+      toolStripProgressBar.Visible = true;
+      toolStripProgressBar.Style = ProgressBarStyle.Marquee;
+    }
 
+    public void HideProgressIndicator() {
+      toolStripProgressBar.Visible = false;
+    }
+
+    public void ShowMessage(string message) {
+      if (toolStripStatusLabel.Text == string.Empty)
+        toolStripStatusLabel.Text = message;
+      else
+        toolStripStatusLabel.Text += "; " + message;
+    }
+
+    public void RemoveMessage(string message) {
+      if (toolStripStatusLabel.Text.IndexOf("; " + message) > 0) {
+        toolStripStatusLabel.Text = toolStripStatusLabel.Text.Replace("; " + message, "");
+      }
+      toolStripStatusLabel.Text = toolStripStatusLabel.Text.Replace(message, "");
+      toolStripStatusLabel.Text = toolStripStatusLabel.Text.TrimStart(' ', ';');
+    }
+    public void LockUI() {
+      Cursor = Cursors.AppStarting;
+      tabControl.Enabled = false;
+    }
+    public void UnlockUI() {
+      tabControl.Enabled = true;
+      Cursor = Cursors.Default;
+    }
+    public void ShowError(string shortMessage, string description) {
+      logTextBox.Text += DateTime.Now + ": " + shortMessage + Environment.NewLine + description + Environment.NewLine;
+      MessageBox.Show(description, shortMessage);
+    }
+    #endregion
   }
 }

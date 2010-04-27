@@ -18,27 +18,27 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
+
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure.Manager;
+using System.IO;
+using System.ComponentModel;
+using System.Reflection;
+using ICSharpCode.SharpZipLib.Zip;
+using System.ServiceModel;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
-  internal partial class LocalPluginManagerView : UserControl {
-
-    public event ItemCheckedEventHandler ItemChecked;
-
-
-    public LocalPluginManagerView() {
-      InitializeComponent();
-
-      
-    }
-    
+  internal interface IStatusView {
+    void ShowProgressIndicator(double percentProgress);
+    void ShowProgressIndicator();
+    void HideProgressIndicator();
+    void ShowMessage(string message);
+    void RemoveMessage(string message);
+    void LockUI();
+    void UnlockUI();
+    void ShowError(string shortMessage, string description);
   }
 }

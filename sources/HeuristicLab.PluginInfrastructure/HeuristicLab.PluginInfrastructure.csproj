@@ -92,6 +92,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Advanced\BasicUpdateView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Advanced\BasicUpdateView.Designer.cs">
+      <DependentUpon>BasicUpdateView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Advanced\ConfirmationDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -104,6 +110,19 @@
     <Compile Include="Advanced\ConnectionSetupView.Designer.cs">
       <DependentUpon>ConnectionSetupView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Advanced\InstallationManagerControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Advanced\InstallationManagerControl.Designer.cs">
+      <DependentUpon>InstallationManagerControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Advanced\LocalPluginsView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Advanced\LocalPluginsView.Designer.cs">
+      <DependentUpon>LocalPluginsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Advanced\IStatusDisplay.cs" />
     <Compile Include="Advanced\InstallationManagerException.cs" />
     <Compile Include="Advanced\DeploymentService\AdminClientFactory.cs" />
     <Compile Include="Advanced\DeploymentService\DeploymentService.cs" />
@@ -134,12 +153,6 @@
     <Compile Include="Advanced\LicenseView.Designer.cs">
       <DependentUpon>LicenseView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Advanced\LocalPluginManager.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Advanced\LocalPluginManager.Designer.cs">
-      <DependentUpon>LocalPluginManager.cs</DependentUpon>
-    </Compile>
     <Compile Include="Advanced\MultiSelectListView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -165,7 +178,7 @@
       <DependentUpon>PluginListView.cs</DependentUpon>
     </Compile>
     <Compile Include="Advanced\PluginView.cs">
-      <SubType>UserControl</SubType>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="Advanced\PluginView.Designer.cs">
       <DependentUpon>PluginView.cs</DependentUpon>
@@ -215,9 +228,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Advanced\InstallationManagerForm.resx">
       <DependentUpon>InstallationManagerForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Advanced\LocalPluginManager.resx">
-      <DependentUpon>LocalPluginManager.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Advanced\RemotePluginInstaller.resx">
       <DependentUpon>RemotePluginInstaller.cs</DependentUpon>
@@ -285,11 +295,17 @@
     <Content Include="Resources\LargeIcons.gif" />
     <Content Include="Resources\List.gif" />
     <Content Include="Resources\Logo_white.gif" />
+    <EmbeddedResource Include="Advanced\BasicUpdateView.resx">
+      <DependentUpon>BasicUpdateView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Advanced\ConfirmationDialog.resx">
       <DependentUpon>ConfirmationDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Advanced\ConnectionSetupView.resx">
       <DependentUpon>ConnectionSetupView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Advanced\LocalPluginsView.resx">
+      <DependentUpon>LocalPluginsView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Advanced\DeploymentService\servdev.cer" />
     <EmbeddedResource Include="Advanced\LicenseConfirmationBox.resx">
@@ -316,7 +332,9 @@
     <None Include="Resources\VS2008ImageLibrary_Actions_Delete.png" />
     <None Include="Resources\VS2008ImageLibrary_CommonElements_Actions_Remove.png" />
     <None Include="Resources\VS2008ImageLibrary_CommonElements_Actions_Remove1.png" />
+    <None Include="Resources\VS2008ImageLibrary_CommonElements_Actions_Add.png" />
     <Content Include="Resources\VS2008ImageLibrary_CommonElements_Objects_Arrow_Down.png" />
+    <None Include="Resources\VS2008ImageLibrary_CommonElements_Objects_Arrow_Up1.png" />
     <None Include="Resources\VS2008ImageLibrary_Objects_NetworkConnections.png" />
     <None Include="Resources\VS2008ImageLibrary_Objects_Install1.png" />
     <None Include="Resources\VS2008ImageLibrary_Objects_Internet1.png" />

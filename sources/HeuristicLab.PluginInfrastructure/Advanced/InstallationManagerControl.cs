@@ -29,17 +29,15 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
   internal partial class InstallationManagerControl : UserControl {
-    public InstallationManagerControl() {
-      InitializeComponent();
+    private IStatusView statusView;
+    public IStatusView StatusView {
+      get { return statusView; }
+      set { statusView = value; }
     }
 
-    internal virtual void ShowInForm() {
-      Form form = new Form();
-      form.ClientSize = this.Size;
-      form.Text = this.Name;
-      this.Dock = DockStyle.Fill;
-      form.Controls.Add(this);
-      form.Show();
+    public InstallationManagerControl()
+      : base() {
+      InitializeComponent();
     }
   }
 }
