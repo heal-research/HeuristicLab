@@ -34,123 +34,103 @@ using System.IO;
 namespace HeuristicLab.Problems.DataAnalysis {
   [Item("DataAnalysisProblemData", "Represents an item containing all data defining a data analysis problem.")]
   [StorableClass]
-  public class DataAnalysisProblemData : NamedItem {
-    [Storable]
-    private VariableCollection variables;
-    public VariableCollection Variables {
-      get { return variables; }
+  public class DataAnalysisProblemData : ParameterizedNamedItem {
+    private bool suppressEvents = false;
+    #region parameter properties
+    public IValueParameter<Dataset> DatasetParameter {
+      get { return (IValueParameter<Dataset>)Parameters["Dataset"]; }
     }
 
-    #region variable properties
-    public IVariable DatasetVariable {
-      get { return variables["Dataset"]; }
+    public IValueParameter<StringValue> TargetVariableParameter {
+      get { return (IValueParameter<StringValue>)Parameters["TargetVariable"]; }
     }
 
-    public IVariable TargetVariableVariable {
-      get { return variables["TargetVariable"]; }
+    public IValueParameter<ItemSet<StringValue>> InputVariablesParameter {
+      get { return (IValueParameter<ItemSet<StringValue>>)Parameters["InputVariables"]; }
     }
 
-    public IVariable InputVariablesVariable {
-      get { return variables["InputVariables"]; }
+    public IValueParameter<IntValue> TrainingSamplesStartParameter {
+      get { return (IValueParameter<IntValue>)Parameters["TrainingSamplesStart"]; }
     }
-
-    public IVariable TrainingSamplesStartVariable {
-      get { return variables["TrainingSamplesStart"]; }
+    public IValueParameter<IntValue> TrainingSamplesEndParameter {
+      get { return (IValueParameter<IntValue>)Parameters["TrainingSamplesEnd"]; }
     }
-    public IVariable TrainingSamplesEndVariable {
-      get { return variables["TrainingSamplesEnd"]; }
+    public IValueParameter<IntValue> TestSamplesStartParameter {
+      get { return (IValueParameter<IntValue>)Parameters["TestSamplesStart"]; }
     }
-
-    public IVariable TestSamplesStartVariable {
-      get { return variables["TestSamplesStart"]; }
-    }
-    public IVariable TestSamplesEndVariable {
-      get { return variables["TestSamplesEnd"]; }
+    public IValueParameter<IntValue> TestSamplesEndParameter {
+      get { return (IValueParameter<IntValue>)Parameters["TestSamplesEnd"]; }
     }
     #endregion
 
     #region properties
     public Dataset Dataset {
-      get { return (Dataset)DatasetVariable.Value; }
+      get { return (Dataset)DatasetParameter.Value; }
       set {
         if (value != Dataset) {
           if (value == null) throw new ArgumentNullException();
           if (Dataset != null) DeregisterDatasetEventHandlers();
-          DatasetVariable.Value = value;
-          RegisterDatasetEventHandlers();
-          OnProblemDataChanged(EventArgs.Empty);
+          DatasetParameter.Value = value;
         }
       }
     }
     public StringValue TargetVariable {
-      get { return (StringValue)TargetVariableVariable.Value; }
+      get { return (StringValue)TargetVariableParameter.Value; }
       set {
-        if (value != TargetVariableVariable) {
+        if (value != TargetVariableParameter.Value) {
           if (value == null) throw new ArgumentNullException();
           if (TargetVariable != null) DeregisterStringValueEventHandlers(TargetVariable);
-          TargetVariableVariable.Value = value;
-          RegisterStringValueEventHandlers(TargetVariable);
-          OnProblemDataChanged(EventArgs.Empty);
+          TargetVariableParameter.Value = value;
         }
       }
     }
-    public ItemList<StringValue> InputVariables {
-      get { return (ItemList<StringValue>)InputVariablesVariable.Value; }
+    public ItemSet<StringValue> InputVariables {
+      get { return (ItemSet<StringValue>)InputVariablesParameter.Value; }
       set {
         if (value != InputVariables) {
           if (value == null) throw new ArgumentNullException();
           if (InputVariables != null) DeregisterInputVariablesEventHandlers();
-          InputVariablesVariable.Value = value;
-          RegisterInputVariablesEventHandlers();
-          OnProblemDataChanged(EventArgs.Empty);
+          InputVariablesParameter.Value = value;
         }
       }
     }
     public IntValue TrainingSamplesStart {
-      get { return (IntValue)TrainingSamplesStartVariable.Value; }
+      get { return (IntValue)TrainingSamplesStartParameter.Value; }
       set {
         if (value != TrainingSamplesStart) {
           if (value == null) throw new ArgumentNullException();
           if (TrainingSamplesStart != null) DeregisterValueTypeEventHandlers(TrainingSamplesStart);
-          TrainingSamplesStartVariable.Value = value;
-          RegisterValueTypeEventHandlers(TrainingSamplesStart);
-          OnProblemDataChanged(EventArgs.Empty);
+          TrainingSamplesStartParameter.Value = value;
         }
       }
     }
     public IntValue TrainingSamplesEnd {
-      get { return (IntValue)TrainingSamplesEndVariable.Value; }
+      get { return (IntValue)TrainingSamplesEndParameter.Value; }
       set {
         if (value != TrainingSamplesEnd) {
           if (value == null) throw new ArgumentNullException();
           if (TrainingSamplesEnd != null) DeregisterValueTypeEventHandlers(TrainingSamplesEnd);
-          TrainingSamplesEndVariable.Value = value;
-          RegisterValueTypeEventHandlers(TrainingSamplesEnd);
-          OnProblemDataChanged(EventArgs.Empty);
+          TrainingSamplesEndParameter.Value = value;
         }
       }
     }
     public IntValue TestSamplesStart {
-      get { return (IntValue)TestSamplesStartVariable.Value; }
+      get { return (IntValue)TestSamplesStartParameter.Value; }
       set {
         if (value != TestSamplesStart) {
           if (value == null) throw new ArgumentNullException();
           if (TestSamplesStart != null) DeregisterValueTypeEventHandlers(TestSamplesStart);
-          TestSamplesStartVariable.Value = value;
-          RegisterValueTypeEventHandlers(TestSamplesStart);
-          OnProblemDataChanged(EventArgs.Empty);
+          TestSamplesStartParameter.Value = value;
         }
       }
     }
     public IntValue TestSamplesEnd {
-      get { return (IntValue)TestSamplesEndVariable.Value; }
+      get { return (IntValue)TestSamplesEndParameter.Value; }
       set {
         if (value != TestSamplesEnd) {
           if (value == null) throw new ArgumentNullException();
           if (TestSamplesEnd != null) DeregisterValueTypeEventHandlers(TestSamplesEnd);
-          TestSamplesEndVariable.Value = value;
-          RegisterValueTypeEventHandlers(TestSamplesEnd);
-          OnProblemDataChanged(EventArgs.Empty);
+          TestSamplesEndParameter.Value = value;
         }
       }
     }
@@ -158,62 +138,90 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public DataAnalysisProblemData()
       : base() {
-      variables = new VariableCollection();
-      variables.Add(new Variable("Dataset", new Dataset()));
-      variables.Add(new Variable("InputVariables", new ItemList<StringValue>()));
-      variables.Add(new Variable("TargetVariable", new StringValue()));
-      variables.Add(new Variable("TrainingSamplesStart", new IntValue()));
-      variables.Add(new Variable("TrainingSamplesEnd", new IntValue()));
-      variables.Add(new Variable("TestSamplesStart", new IntValue()));
-      variables.Add(new Variable("TestSamplesEnd", new IntValue()));
-      RegisterEventHandlers();
+      Parameters.Add(new ValueParameter<Dataset>("Dataset", new Dataset()));
+      Parameters.Add(new ValueParameter<ItemSet<StringValue>>("InputVariables", new ItemSet<StringValue>()));
+      Parameters.Add(new ConstrainedValueParameter<StringValue>("TargetVariable"));
+      Parameters.Add(new ValueParameter<IntValue>("TrainingSamplesStart", new IntValue()));
+      Parameters.Add(new ValueParameter<IntValue>("TrainingSamplesEnd", new IntValue()));
+      Parameters.Add(new ValueParameter<IntValue>("TestSamplesStart", new IntValue()));
+      Parameters.Add(new ValueParameter<IntValue>("TestSamplesEnd", new IntValue()));
+      RegisterParameterEventHandlers();
+      RegisterParameterValueEventHandlers();
     }
+
 
     [StorableConstructor]
     private DataAnalysisProblemData(bool deserializing) : base() { }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserializationHook() {
-      RegisterEventHandlers();
+      RegisterParameterEventHandlers();
+      RegisterParameterValueEventHandlers();
     }
 
     #region events
-    private void RegisterEventHandlers() {
+    public event EventHandler ProblemDataChanged;
+    protected virtual void OnProblemDataChanged(EventArgs e) {
+      if (!suppressEvents) {
+        var listeners = ProblemDataChanged;
+        if (listeners != null) listeners(this, e);
+      }
+    }
+
+    private void RegisterParameterEventHandlers() {
+      DatasetParameter.ValueChanged += new EventHandler(DatasetParameter_ValueChanged);
+      InputVariablesParameter.ValueChanged += new EventHandler(InputVariablesParameter_ValueChanged);
+      TargetVariableParameter.ValueChanged += new EventHandler(TargetVariableParameter_ValueChanged);
+      TrainingSamplesStartParameter.ValueChanged += new EventHandler(TrainingSamplesStartParameter_ValueChanged);
+      TrainingSamplesEndParameter.ValueChanged += new EventHandler(TrainingSamplesEndParameter_ValueChanged);
+      TestSamplesStartParameter.ValueChanged += new EventHandler(TestSamplesStartParameter_ValueChanged);
+      TestSamplesEndParameter.ValueChanged += new EventHandler(TestSamplesEndParameter_ValueChanged);
+    }
+
+    private void RegisterParameterValueEventHandlers() {
       RegisterDatasetEventHandlers();
       RegisterInputVariablesEventHandlers();
-      RegisterStringValueEventHandlers(TargetVariable);
+      if (TargetVariable != null) RegisterStringValueEventHandlers(TargetVariable);
       RegisterValueTypeEventHandlers(TrainingSamplesStart);
       RegisterValueTypeEventHandlers(TrainingSamplesEnd);
       RegisterValueTypeEventHandlers(TestSamplesStart);
       RegisterValueTypeEventHandlers(TestSamplesEnd);
     }
 
-    public event EventHandler ProblemDataChanged;
-    protected virtual void OnProblemDataChanged(EventArgs e) {
-      var listeners = ProblemDataChanged;
-      if (listeners != null) listeners(this, e);
-    }
 
-
-    private void RegisterValueTypeEventHandlers<T>(ValueTypeValue<T> value) where T : struct {
-      value.ValueChanged += new EventHandler(value_ValueChanged);
+    #region parameter value changed event handlers
+    void DatasetParameter_ValueChanged(object sender, EventArgs e) {
+      RegisterDatasetEventHandlers();
+      OnProblemDataChanged(EventArgs.Empty);
     }
-
-    private void DeregisterValueTypeEventHandlers<T>(ValueTypeValue<T> value) where T : struct {
-      value.ValueChanged -= new EventHandler(value_ValueChanged);
+    void InputVariablesParameter_ValueChanged(object sender, EventArgs e) {
+      RegisterInputVariablesEventHandlers();
+      OnProblemDataChanged(EventArgs.Empty);
     }
-
-    void value_ValueChanged(object sender, EventArgs e) {
-      OnProblemDataChanged(e);
+    void TargetVariableParameter_ValueChanged(object sender, EventArgs e) {
+      if (TargetVariable != null) {
+        RegisterStringValueEventHandlers(TargetVariable);
+        OnProblemDataChanged(EventArgs.Empty);
+      } 
     }
-
-    private void RegisterStringValueEventHandlers(StringValue value) {
-      value.ValueChanged += new EventHandler(value_ValueChanged);
+    void TrainingSamplesStartParameter_ValueChanged(object sender, EventArgs e) {
+      RegisterValueTypeEventHandlers(TrainingSamplesStart);
+      OnProblemDataChanged(EventArgs.Empty);
     }
-
-    private void DeregisterStringValueEventHandlers(StringValue value) {
-      value.ValueChanged -= new EventHandler(value_ValueChanged);
+    void TrainingSamplesEndParameter_ValueChanged(object sender, EventArgs e) {
+      RegisterValueTypeEventHandlers(TrainingSamplesEnd);
+      OnProblemDataChanged(EventArgs.Empty);
     }
+    void TestSamplesStartParameter_ValueChanged(object sender, EventArgs e) {
+      RegisterValueTypeEventHandlers(TestSamplesStart);
+      OnProblemDataChanged(EventArgs.Empty);
+    }
+    void TestSamplesEndParameter_ValueChanged(object sender, EventArgs e) {
+      RegisterValueTypeEventHandlers(TestSamplesEnd);
+      OnProblemDataChanged(EventArgs.Empty);
+    }
+    #endregion
+
 
     private void RegisterDatasetEventHandlers() {
       Dataset.DataChanged += new EventHandler<EventArgs<int, int>>(Dataset_DataChanged);
@@ -240,76 +248,94 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     private void RegisterInputVariablesEventHandlers() {
-      InputVariables.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<HeuristicLab.Collections.IndexedItem<StringValue>>(InputVariables_CollectionReset);
-      InputVariables.ItemsAdded += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<HeuristicLab.Collections.IndexedItem<StringValue>>(InputVariables_ItemsAdded);
-      InputVariables.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<HeuristicLab.Collections.IndexedItem<StringValue>>(InputVariables_ItemsRemoved);
-      InputVariables.ItemsReplaced += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<HeuristicLab.Collections.IndexedItem<StringValue>>(InputVariables_ItemsReplaced);
+      InputVariables.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<StringValue>(InputVariables_CollectionReset);
+      InputVariables.ItemsAdded += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<StringValue>(InputVariables_ItemsAdded);
+      InputVariables.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<StringValue>(InputVariables_ItemsRemoved);
       foreach (var item in InputVariables)
-        item.ValueChanged += new EventHandler(InputVariables_Value_ValueChanged);
+        item.ValueChanged += new EventHandler(InputVariable_ValueChanged);
+    }
+
+    void InputVariables_ItemsRemoved(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<StringValue> e) {
+      foreach (var item in e.Items)
+        item.ValueChanged -= new EventHandler(InputVariable_ValueChanged);
+      OnProblemDataChanged(e);
+    }
+
+    void InputVariables_CollectionReset(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<StringValue> e) {
+      foreach (var item in e.OldItems)
+        item.ValueChanged -= new EventHandler(InputVariable_ValueChanged);
+      OnProblemDataChanged(e);
+    }
+
+    void InputVariables_ItemsAdded(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<StringValue> e) {
+      foreach (var item in e.Items)
+        item.ValueChanged += new EventHandler(InputVariable_ValueChanged);
+      OnProblemDataChanged(e);
     }
 
     private void DeregisterInputVariablesEventHandlers() {
-      InputVariables.CollectionReset -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<HeuristicLab.Collections.IndexedItem<StringValue>>(InputVariables_CollectionReset);
-      InputVariables.ItemsAdded -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<HeuristicLab.Collections.IndexedItem<StringValue>>(InputVariables_ItemsAdded);
-      InputVariables.ItemsRemoved -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<HeuristicLab.Collections.IndexedItem<StringValue>>(InputVariables_ItemsRemoved);
-      InputVariables.ItemsReplaced -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<HeuristicLab.Collections.IndexedItem<StringValue>>(InputVariables_ItemsReplaced);
+      InputVariables.CollectionReset -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<StringValue>(InputVariables_CollectionReset);
+      InputVariables.ItemsAdded -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<StringValue>(InputVariables_ItemsAdded);
+      InputVariables.ItemsRemoved -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<StringValue>(InputVariables_ItemsRemoved);
       foreach (var item in InputVariables) {
-        item.ValueChanged -= new EventHandler(InputVariables_Value_ValueChanged);
+        item.ValueChanged -= new EventHandler(InputVariable_ValueChanged);
       }
     }
+  
+    void InputVariable_ValueChanged(object sender, EventArgs e) {
+      OnProblemDataChanged(e);
+    }
+    #region helper
 
-    void InputVariables_ItemsReplaced(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<HeuristicLab.Collections.IndexedItem<StringValue>> e) {
-      foreach (var indexedItem in e.OldItems)
-        indexedItem.Value.ValueChanged -= new EventHandler(InputVariables_Value_ValueChanged);
-      foreach (var indexedItem in e.Items)
-        indexedItem.Value.ValueChanged += new EventHandler(InputVariables_Value_ValueChanged);
+    private void RegisterValueTypeEventHandlers<T>(ValueTypeValue<T> value) where T : struct {
+      value.ValueChanged += new EventHandler(value_ValueChanged);
+    }
+
+    private void DeregisterValueTypeEventHandlers<T>(ValueTypeValue<T> value) where T : struct {
+      value.ValueChanged -= new EventHandler(value_ValueChanged);
+    }
+
+    void value_ValueChanged(object sender, EventArgs e) {
       OnProblemDataChanged(e);
     }
 
-    void InputVariables_ItemsRemoved(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<HeuristicLab.Collections.IndexedItem<StringValue>> e) {
-      foreach (var indexedItem in e.Items)
-        indexedItem.Value.ValueChanged -= new EventHandler(InputVariables_Value_ValueChanged);
-      OnProblemDataChanged(e);
+    private void RegisterStringValueEventHandlers(StringValue value) {
+      value.ValueChanged += new EventHandler(value_ValueChanged);
     }
 
-    void InputVariables_ItemsAdded(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<HeuristicLab.Collections.IndexedItem<StringValue>> e) {
-      foreach (var indexedItem in e.Items)
-        indexedItem.Value.ValueChanged += new EventHandler(InputVariables_Value_ValueChanged);
-      OnProblemDataChanged(e);
+    private void DeregisterStringValueEventHandlers(StringValue value) {
+      value.ValueChanged -= new EventHandler(value_ValueChanged);
     }
 
-    void InputVariables_CollectionReset(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<HeuristicLab.Collections.IndexedItem<StringValue>> e) {
-      foreach (var indexedItem in e.OldItems)
-        indexedItem.Value.ValueChanged -= new EventHandler(InputVariables_Value_ValueChanged);
-
-      OnProblemDataChanged(e);
-    }
-    void InputVariables_Value_ValueChanged(object sender, EventArgs e) {
-      OnProblemDataChanged(e);
-    }
-
+    #endregion
     #endregion
 
     public virtual void ImportFromFile(string fileName) {
       var csvFileParser = new CsvFileParser();
       csvFileParser.Parse(fileName);
+      suppressEvents = true;
       Name = "Data imported from " + Path.GetFileName(fileName);
       Dataset = new Dataset(csvFileParser.VariableNames, csvFileParser.Values);
       Dataset.Name = Path.GetFileName(fileName);
-      TargetVariable = new StringValue(Dataset.VariableNames.First());
-      InputVariables = new ItemList<StringValue>(Dataset.VariableNames.Skip(1).Select(s => new StringValue(s)));
+      var variableNames = Dataset.VariableNames.Select(x => new StringValue(x).AsReadOnly()).ToList();
+      ((ConstrainedValueParameter<StringValue>)TargetVariableParameter).ValidValues.Clear();
+      foreach (var variableName in variableNames)
+        ((ConstrainedValueParameter<StringValue>)TargetVariableParameter).ValidValues.Add(variableName);
+      TargetVariable = variableNames.First();
+      InputVariables = new ItemSet<StringValue>(variableNames.Skip(1));
       int middle = (int)(csvFileParser.Rows * 0.5);
       TrainingSamplesStart = new IntValue(0);
       TrainingSamplesEnd = new IntValue(middle);
       TestSamplesStart = new IntValue(middle);
       TestSamplesEnd = new IntValue(csvFileParser.Rows);
+      suppressEvents = false;
+      OnProblemDataChanged(EventArgs.Empty);
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       DataAnalysisProblemData clone = (DataAnalysisProblemData)base.Clone(cloner);
-      clone.variables = (VariableCollection)variables.Clone(cloner);
-
-      clone.RegisterEventHandlers();
+      clone.RegisterParameterEventHandlers();
+      clone.RegisterParameterValueEventHandlers();
       return clone;
     }
   }

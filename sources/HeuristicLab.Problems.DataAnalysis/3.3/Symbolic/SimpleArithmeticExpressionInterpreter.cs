@@ -52,6 +52,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private Instruction[] code;
     private int pc;
 
+    public override bool CanChangeName {
+      get { return false; }
+    }
+    public override bool CanChangeDescription {
+      get { return false; }
+    }
+
     public SimpleArithmeticExpressionInterpreter()
       : base() {
     }

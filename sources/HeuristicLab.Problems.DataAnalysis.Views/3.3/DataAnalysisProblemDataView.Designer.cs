@@ -23,10 +23,13 @@
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.variableCollectionView = new HeuristicLab.Core.Views.VariableCollectionView();
       this.importButton = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
+      // 
+      // parameterCollectionView
+      // 
+      this.parameterCollectionView.Size = new System.Drawing.Size(585, 366);
       // 
       // nameTextBox
       // 
@@ -37,19 +40,6 @@
       // descriptionTextBox
       // 
       this.descriptionTextBox.Size = new System.Drawing.Size(513, 20);
-      // 
-      // variableCollectionView
-      // 
-      this.variableCollectionView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.variableCollectionView.Caption = "VariableCollection";
-      this.variableCollectionView.Content = null;
-      this.variableCollectionView.Location = new System.Drawing.Point(0, 52);
-      this.variableCollectionView.Name = "variableCollectionView";
-      this.variableCollectionView.ReadOnly = false;
-      this.variableCollectionView.Size = new System.Drawing.Size(588, 366);
-      this.variableCollectionView.TabIndex = 0;
       // 
       // importButton
       // 
@@ -67,12 +57,11 @@
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.variableCollectionView);
       this.Controls.Add(this.importButton);
       this.Name = "DataAnalysisProblemDataView";
       this.Size = new System.Drawing.Size(588, 450);
+      this.Controls.SetChildIndex(this.parameterCollectionView, 0);
       this.Controls.SetChildIndex(this.importButton, 0);
-      this.Controls.SetChildIndex(this.variableCollectionView, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
       this.Controls.SetChildIndex(this.descriptionLabel, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
@@ -85,7 +74,6 @@
 
     #endregion
 
-    private HeuristicLab.Core.Views.VariableCollectionView variableCollectionView;
     private System.Windows.Forms.Button importButton;
   }
 }

@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("Symbolic Regression Problem", "Represents a symbolic regression problem.")]
   [Creatable("Problems")]
   [StorableClass]
-  public sealed class SymbolicRegressionProblem : DataAnalysisProblem, ISingleObjectiveProblem {
+  public class SymbolicRegressionProblem : DataAnalysisProblem, ISingleObjectiveProblem {
 
     #region Parameter Properties
     public ValueParameter<BoolValue> MaximizationParameter {
@@ -169,6 +169,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     public DoubleValue PunishmentFactor {
       get { return new DoubleValue(10.0); }
     }
+    public IntValue TrainingSamplesStart {
+      get { return new IntValue(DataAnalysisProblemData.TrainingSamplesStart.Value); }
+    }
+    public IntValue TrainingSamplesEnd {
+      get {
+        return new IntValue((DataAnalysisProblemData.TrainingSamplesStart.Value +
+          DataAnalysisProblemData.TrainingSamplesEnd.Value) / 2);
+      }
+    }
+    public IntValue ValidationSamplesStart {
+      get { return TrainingSamplesEnd; }
+    }
+    public IntValue ValidationSamplesEnd {
+      get { return new IntValue(DataAnalysisProblemData.TrainingSamplesEnd.Value); }
+    }
     #endregion
 
     public SymbolicRegressionProblem()
@@ -179,7 +194,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       var globalGrammar = new GlobalSymbolicExpressionGrammar(grammar);
       var visualizer = new BestValidationSymbolicRegressionSolutionVisualizer();
       var interpreter = new SimpleArithmeticExpressionInterpreter();
-      Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to false as the error of the regression model should be minimized.", new BoolValue(false)));
+      Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to false as the error of the regression model should be minimized.", (BoolValue)new BoolValue(false).AsReadOnly()));
       Parameters.Add(new ValueParameter<SymbolicExpressionTreeCreator>("SolutionCreator", "The operator which should be used to create new symbolic regression solutions.", creator));
       Parameters.Add(new ValueParameter<ISymbolicExpressionTreeInterpreter>("SymbolicExpressionTreeInterpreter", "The interpreter that should be used to evaluate the symbolic expression tree.", interpreter));
       Parameters.Add(new ValueParameter<ISymbolicRegressionEvaluator>("Evaluator", "The operator which should be used to evaluate symbolic regression solutions.", evaluator));
@@ -189,29 +204,29 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       Parameters.Add(new ValueParameter<ISymbolicExpressionGrammar>("FunctionTreeGrammar", "The grammar that should be used for symbolic regression models.", globalGrammar));
       Parameters.Add(new ValueParameter<IntValue>("MaxExpressionLength", "Maximal length of the symbolic expression.", new IntValue(100)));
       Parameters.Add(new ValueParameter<IntValue>("MaxExpressionDepth", "Maximal depth of the symbolic expression.", new IntValue(10)));
-      Parameters.Add(new ValueParameter<IntValue>("MaxFunctionDefiningBranches", "Maximal number of automatically defined functions.", new IntValue(3)));
-      Parameters.Add(new ValueParameter<IntValue>("MaxFunctionArguments", "Maximal number of arguments of automatically defined functions.", new IntValue(3)));
+      Parameters.Add(new ValueParameter<IntValue>("MaxFunctionDefiningBranches", "Maximal number of automatically defined functions.", (IntValue)new IntValue(0).AsReadOnly()));
+      Parameters.Add(new ValueParameter<IntValue>("MaxFunctionArguments", "Maximal number of arguments of automatically defined functions.", (IntValue)new IntValue(0).AsReadOnly()));
       Parameters.Add(new ValueParameter<ISingleObjectiveSolutionsVisualizer>("Visualizer", "The operator which should be used to visualize symbolic regression solutions.", visualizer));
 
       creator.SymbolicExpressionTreeParameter.ActualName = "SymbolicRegressionModel";
-      creator.MaxFunctionArgumentsParameter.ActualName = MaxFunctionArgumentsParameter.Name;
-      creator.MaxFunctionDefinitionsParameter.ActualName = MaxFunctionDefiningBranchesParameter.Name;
-      DataAnalysisProblemDataParameter.ValueChanged += new EventHandler(DataAnalysisProblemDataParameter_ValueChanged);
-      DataAnalysisProblemData.ProblemDataChanged += new EventHandler(DataAnalysisProblemData_Changed);
-      MaxFunctionArgumentsParameter.ValueChanged += new EventHandler(ArchitectureParameter_Changed);
-      MaxFunctionArgumentsParameter.Value.ValueChanged += new EventHandler(ArchitectureParameter_Changed);
-      MaxFunctionDefiningBranchesParameter.ValueChanged += new EventHandler(ArchitectureParameter_Changed);
-      MaxFunctionDefiningBranchesParameter.Value.ValueChanged += new EventHandler(ArchitectureParameter_Changed);
+      evaluator.QualityParameter.ActualName = "TrainingMeanSquaredError";
+
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
       ParameterizeVisualizer();
 
+      UpdateGrammar();
+      UpdateEstimationLimits();
       Initialize();
     }
 
-
     [StorableConstructor]
     private SymbolicRegressionProblem(bool deserializing) : base() { }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserializationHook() {
+      Initialize();
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       SymbolicRegressionProblem clone = (SymbolicRegressionProblem)base.Clone(cloner);
@@ -219,20 +234,123 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       return clone;
     }
 
-    #region Events
-    void DataAnalysisProblemDataParameter_ValueChanged(object sender, EventArgs e) {
-      DataAnalysisProblemData.ProblemDataChanged += new EventHandler(DataAnalysisProblemData_Changed);
+    private void RegisterParameterValueEvents() {
+      MaxFunctionArgumentsParameter.ValueChanged += new EventHandler(ArchitectureParameter_ValueChanged);
+      MaxFunctionDefiningBranchesParameter.ValueChanged += new EventHandler(ArchitectureParameter_ValueChanged);
+      SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
+      EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
+      VisualizerParameter.ValueChanged += new EventHandler(VisualizerParameter_ValueChanged);
     }
 
-    void DataAnalysisProblemData_Changed(object sender, EventArgs e) {
+    private void RegisterParameterEvents() {
+      MaxFunctionArgumentsParameter.Value.ValueChanged += new EventHandler(ArchitectureParameter_ValueChanged);
+      MaxFunctionDefiningBranchesParameter.Value.ValueChanged += new EventHandler(ArchitectureParameter_ValueChanged);
+      SolutionCreator.SymbolicExpressionTreeParameter.ActualNameChanged += new EventHandler(SolutionCreator_SymbolicExpressionTreeParameter_ActualNameChanged);
+      Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
+    }
+
+    #region event handling
+    protected override void OnDataAnalysisProblemChanged(EventArgs e) {
+      base.OnDataAnalysisProblemChanged(e);
+      // paritions could be changed
+      ParameterizeEvaluator();
+      ParameterizeVisualizer();
+      // input variables could have been changed
       UpdateGrammar();
-      UpdatePartitioningParameters();
+      // estimation limits have to be recalculated
+      UpdateEstimationLimits();
+    }
+    protected virtual void OnArchitectureParameterChanged(EventArgs e) {
+      var globalGrammar = FunctionTreeGrammar as GlobalSymbolicExpressionGrammar;
+      if (globalGrammar != null) {
+        globalGrammar.MaxFunctionArguments = MaxFunctionArguments.Value;
+        globalGrammar.MaxFunctionDefinitions = MaxFunctionDefiningBranches.Value;
+      }
+    }
+    protected virtual void OnGrammarChanged(EventArgs e) { }
+    protected virtual void OnOperatorsChanged(EventArgs e) { RaiseOperatorsChanged(e); }
+    protected virtual void OnSolutionCreatorChanged(EventArgs e) {
+      SolutionCreator.SymbolicExpressionTreeParameter.ActualNameChanged += new EventHandler(SolutionCreator_SymbolicExpressionTreeParameter_ActualNameChanged);
+      ParameterizeSolutionCreator();
+      OnSolutionParameterNameChanged(e);
+      RaiseSolutionCreatorChanged(e);
     }
 
-    void ArchitectureParameter_Changed(object sender, EventArgs e) {
-      var globalGrammar = FunctionTreeGrammar as GlobalSymbolicExpressionGrammar;
-      globalGrammar.MaxFunctionArguments = MaxFunctionArguments.Value;
-      globalGrammar.MaxFunctionDefinitions = MaxFunctionDefiningBranches.Value;
+    protected virtual void OnSolutionParameterNameChanged(EventArgs e) {
+      ParameterizeEvaluator();
+      ParameterizeVisualizer();
+      ParameterizeOperators();
+    }
+
+    protected virtual void OnEvaluatorChanged(EventArgs e) {
+      Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
+      ParameterizeEvaluator();
+      ParameterizeVisualizer();
+      RaiseEvaluatorChanged(e);
+    }
+    protected virtual void OnQualityParameterNameChanged(EventArgs e) {
+      ParameterizeVisualizer();
+    }
+    protected virtual void OnVisualizerChanged(EventArgs e) {
+      ParameterizeVisualizer();
+      RaiseVisualizerChanged(e);
+    }
+    #endregion
+
+    #region event handlers
+    private void SolutionCreatorParameter_ValueChanged(object sender, EventArgs e) {
+      OnSolutionCreatorChanged(e);
+    }
+    private void SolutionCreator_SymbolicExpressionTreeParameter_ActualNameChanged(object sender, EventArgs e) {
+      OnSolutionParameterNameChanged(e);
+    }
+    private void EvaluatorParameter_ValueChanged(object sender, EventArgs e) {
+      OnEvaluatorChanged(e);
+    }
+    private void VisualizerParameter_ValueChanged(object sender, EventArgs e) {
+      OnVisualizerChanged(e);
+    }
+    private void ArchitectureParameter_ValueChanged(object sender, EventArgs e) {
+      OnArchitectureParameterChanged(e);
+    }
+    private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
+      OnQualityParameterNameChanged(e);
+    }
+    #endregion
+
+    #region events
+    public event EventHandler SolutionCreatorChanged;
+    private void RaiseSolutionCreatorChanged(EventArgs e) {
+      var changed = SolutionCreatorChanged;
+      if (changed != null)
+        changed(this, e);
+    }
+    public event EventHandler EvaluatorChanged;
+    private void RaiseEvaluatorChanged(EventArgs e) {
+      var changed = EvaluatorChanged;
+      if (changed != null)
+        changed(this, e);
+    }
+    public event EventHandler VisualizerChanged;
+    private void RaiseVisualizerChanged(EventArgs e) {
+      var changed = VisualizerChanged;
+      if (changed != null)
+        changed(this, e);
+    }
+
+    public event EventHandler OperatorsChanged;
+    private void RaiseOperatorsChanged(EventArgs e) {
+      var changed = OperatorsChanged;
+      if (changed != null)
+        changed(this, e);
+    }
+    #endregion
+
+    #region Helpers
+    private void Initialize() {
+      InitializeOperators();
+      RegisterParameterEvents();
+      RegisterParameterValueEvents();
     }
 
     private void UpdateGrammar() {
@@ -241,21 +359,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       }
     }
 
-    private void UpdatePartitioningParameters() {
-      int trainingStart = DataAnalysisProblemData.TrainingSamplesStart.Value;
-      int validationEnd = DataAnalysisProblemData.TrainingSamplesEnd.Value;
-      int trainingEnd = trainingStart + (validationEnd - trainingStart) / 2;
-      int validationStart = trainingEnd;
-      var solutionVisualizer = Visualizer as BestValidationSymbolicRegressionSolutionVisualizer;
-      if (solutionVisualizer != null) {
-        solutionVisualizer.ValidationSamplesStartParameter.Value = new IntValue(validationStart);
-        solutionVisualizer.ValidationSamplesEndParameter.Value = new IntValue(validationEnd);
-      }
-      Evaluator.SamplesStartParameter.Value = new IntValue(trainingStart);
-      Evaluator.SamplesEndParameter.Value = new IntValue(trainingEnd);
-
-      if (trainingEnd - trainingStart > 0 && DataAnalysisProblemData.TargetVariable.Value != string.Empty) {
-        var targetValues = DataAnalysisProblemData.Dataset.GetVariableValues(DataAnalysisProblemData.TargetVariable.Value, trainingStart, trainingEnd);
+    private void UpdateEstimationLimits() {
+      if (TrainingSamplesStart.Value < TrainingSamplesEnd.Value &&
+        DataAnalysisProblemData.Dataset.VariableNames.Contains(DataAnalysisProblemData.TargetVariable.Value)) {
+        var targetValues = DataAnalysisProblemData.Dataset.GetVariableValues(DataAnalysisProblemData.TargetVariable.Value, TrainingSamplesStart.Value, TrainingSamplesEnd.Value);
         var mean = targetValues.Average();
         var range = targetValues.Max() - targetValues.Min();
         UpperEstimationLimit = new DoubleValue(mean + PunishmentFactor.Value * range);
@@ -263,103 +370,38 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       }
     }
 
-    public event EventHandler SolutionCreatorChanged;
-    private void OnSolutionCreatorChanged() {
-      var changed = SolutionCreatorChanged;
-      if (changed != null)
-        changed(this, EventArgs.Empty);
-    }
-    public event EventHandler EvaluatorChanged;
-    private void OnEvaluatorChanged() {
-      var changed = EvaluatorChanged;
-      if (changed != null)
-        changed(this, EventArgs.Empty);
-    }
-    public event EventHandler VisualizerChanged;
-    private void OnVisualizerChanged() {
-      var changed = VisualizerChanged;
-      if (changed != null)
-        changed(this, EventArgs.Empty);
-    }
-
-    public event EventHandler OperatorsChanged;
-    private void OnOperatorsChanged() {
-      var changed = OperatorsChanged;
-      if (changed != null)
-        changed(this, EventArgs.Empty);
-    }
-
-    private void SolutionCreatorParameter_ValueChanged(object sender, EventArgs e) {
-      SolutionCreator.SymbolicExpressionTreeParameter.ActualNameChanged += new EventHandler(SolutionCreator_SymbolicExpressionTreeParameter_ActualNameChanged);
-      ParameterizeSolutionCreator();
-      ParameterizeEvaluator();
-      ParameterizeVisualizer();
-      ParameterizeOperators();
-      OnSolutionCreatorChanged();
-    }
-    private void SolutionCreator_SymbolicExpressionTreeParameter_ActualNameChanged(object sender, EventArgs e) {
-      ParameterizeEvaluator();
-      ParameterizeVisualizer();
-      ParameterizeOperators();
-    }
-    private void EvaluatorParameter_ValueChanged(object sender, EventArgs e) {
-      Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
-      ParameterizeEvaluator();
-      ParameterizeVisualizer();
-      OnEvaluatorChanged();
-    }
-
-    private void VisualizerParameter_ValueChanged(object sender, EventArgs e) {
-      ParameterizeVisualizer();
-      OnVisualizerChanged();
-    }
-
-    private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
-      ParameterizeVisualizer();
-    }
-
-    #endregion
-
-    #region Helpers
-    [StorableHook(HookType.AfterDeserialization)]
-    private void Initialize() {
-      InitializeOperators();
-      SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
-      SolutionCreator.SymbolicExpressionTreeParameter.ActualNameChanged += new EventHandler(SolutionCreator_SymbolicExpressionTreeParameter_ActualNameChanged);
-      EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
-      Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
-      VisualizerParameter.ValueChanged += new EventHandler(VisualizerParameter_ValueChanged);
-    }
-
     private void InitializeOperators() {
       operators = new List<ISymbolicExpressionTreeOperator>();
       operators.AddRange(ApplicationManager.Manager.GetInstances<ISymbolicExpressionTreeOperator>());
       ParameterizeOperators();
-      UpdateGrammar();
-      UpdatePartitioningParameters();
     }
 
     private void ParameterizeSolutionCreator() {
       SolutionCreator.SymbolicExpressionGrammarParameter.ActualName = FunctionTreeGrammarParameter.Name;
       SolutionCreator.MaxTreeHeightParameter.ActualName = MaxExpressionDepthParameter.Name;
       SolutionCreator.MaxTreeSizeParameter.ActualName = MaxExpressionLengthParameter.Name;
+      SolutionCreator.MaxFunctionArgumentsParameter.ActualName = MaxFunctionArgumentsParameter.Name;
+      SolutionCreator.MaxFunctionDefinitionsParameter.ActualName = MaxFunctionDefiningBranchesParameter.Name;
     }
+
     private void ParameterizeEvaluator() {
       Evaluator.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
       Evaluator.RegressionProblemDataParameter.ActualName = DataAnalysisProblemDataParameter.Name;
-      Evaluator.QualityParameter.ActualName = "TrainingMeanSquaredError";
-      Evaluator.SamplesStartParameter.Value = new IntValue(DataAnalysisProblemData.TrainingSamplesStart.Value);
-      Evaluator.SamplesEndParameter.Value = new IntValue((DataAnalysisProblemData.TrainingSamplesStart.Value + DataAnalysisProblemData.TrainingSamplesEnd.Value) / 2);
+      Evaluator.SamplesStartParameter.Value = TrainingSamplesStart;
+      Evaluator.SamplesEndParameter.Value = TrainingSamplesEnd;
     }
+
     private void ParameterizeVisualizer() {
-      if (Visualizer != null) {
-        var solutionVisualizer = Visualizer as BestValidationSymbolicRegressionSolutionVisualizer;
-        if (solutionVisualizer != null) {
-          solutionVisualizer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
-          solutionVisualizer.DataAnalysisProblemDataParameter.ActualName = DataAnalysisProblemDataParameter.Name;
-          solutionVisualizer.ValidationSamplesStartParameter.Value = new IntValue((DataAnalysisProblemData.TrainingSamplesStart.Value + DataAnalysisProblemData.TrainingSamplesEnd.Value) / 2);
-          solutionVisualizer.ValidationSamplesEndParameter.Value = new IntValue(DataAnalysisProblemData.TrainingSamplesEnd.Value);
-        }
+      var solutionVisualizer = Visualizer as BestValidationSymbolicRegressionSolutionVisualizer;
+      if (solutionVisualizer != null) {
+        solutionVisualizer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+        solutionVisualizer.DataAnalysisProblemDataParameter.ActualName = DataAnalysisProblemDataParameter.Name;
+        solutionVisualizer.UpperEstimationLimitParameter.ActualName = UpperEstimationLimitParameter.Name;
+        solutionVisualizer.LowerEstimationLimitParameter.ActualName = LowerEstimationLimitParameter.Name;
+        solutionVisualizer.QualityParameter.ActualName = Evaluator.QualityParameter.Name;
+        solutionVisualizer.SymbolicExpressionTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameter.Name;
+        solutionVisualizer.ValidationSamplesStartParameter.Value = ValidationSamplesStart;
+        solutionVisualizer.ValidationSamplesEndParameter.Value = ValidationSamplesEnd;
       }
     }
 
@@ -368,10 +410,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
         op.MaxTreeHeightParameter.ActualName = MaxExpressionDepthParameter.Name;
         op.MaxTreeSizeParameter.ActualName = MaxExpressionLengthParameter.Name;
         op.SymbolicExpressionGrammarParameter.ActualName = FunctionTreeGrammarParameter.Name;
-      }
-      foreach (ISymbolicRegressionEvaluator op in Operators.OfType<ISymbolicRegressionEvaluator>()) {
-        op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
-        op.RegressionProblemDataParameter.ActualName = DataAnalysisProblemDataParameter.Name;
       }
       foreach (ISymbolicExpressionTreeCrossover op in Operators.OfType<ISymbolicExpressionTreeCrossover>()) {
         op.ParentsParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;

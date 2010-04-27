@@ -49,16 +49,50 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #region properties
     public DataAnalysisProblemData DataAnalysisProblemData {
       get { return DataAnalysisProblemDataParameter.Value; }
-      set { DataAnalysisProblemDataParameter.Value = value; }
     }
     #endregion
 
     public DataAnalysisProblem()
       : base() {
       Parameters.Add(new ValueParameter<DataAnalysisProblemData>(DataAnalysisProblemDataParameterName, "The data set, target variable and input variables of the data analysis problem.", new DataAnalysisProblemData()));
+      RegisterParameterEvents();
+      RegisterParameterValueEvents();
     }
 
     [StorableConstructor]
     private DataAnalysisProblem(bool deserializing) : base() { }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserializationHook() {
+      RegisterParameterEvents();
+      RegisterParameterValueEvents();
+    }
+
+    #region events
+    protected virtual void OnDataAnalysisProblemChanged(EventArgs e) { }
+
+    private void RegisterParameterEvents() {
+      DataAnalysisProblemDataParameter.ValueChanged += new EventHandler(DataAnalysisProblemDataParameter_ValueChanged);
+    }
+
+    private void RegisterParameterValueEvents() {
+      DataAnalysisProblemData.ProblemDataChanged += new EventHandler(DataAnalysisProblemData_ProblemDataChanged);
+    }
+
+    private void DataAnalysisProblemDataParameter_ValueChanged(object sender, EventArgs e) {
+      OnDataAnalysisProblemChanged(e);
+    }
+
+    private void DataAnalysisProblemData_ProblemDataChanged(object sender, EventArgs e) {
+      OnDataAnalysisProblemChanged(e);
+    }
+    #endregion
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      DataAnalysisProblem clone = (DataAnalysisProblem) base.Clone(cloner);
+      clone.RegisterParameterEvents();
+      clone.RegisterParameterValueEvents();
+      return clone;
+    }
   }
 }
