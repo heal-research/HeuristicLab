@@ -62,7 +62,7 @@ namespace HeuristicLab.Optimization.Views {
       this.colorButton.Image = this.GenerateImage(16, 16, this.colorDialog.Color);
       this.isSelecting = false;
 
-      
+
       this.chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
       this.chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = true;
       this.chart.ChartAreas[0].CursorX.Interval = 0;
@@ -292,11 +292,10 @@ namespace HeuristicLab.Optimization.Views {
           view.ReadOnly = this.ReadOnly;
           view.Locked = this.Locked;
           view.Show();
-        } else {
+        } else
           this.draggedRun = run;
-          this.chart.ChartAreas[0].CursorX.SetSelectionPosition(double.NaN, double.NaN);
-          this.chart.ChartAreas[0].CursorY.SetSelectionPosition(double.NaN, double.NaN);
-        }
+        this.chart.ChartAreas[0].CursorX.SetSelectionPosition(double.NaN, double.NaN);
+        this.chart.ChartAreas[0].CursorY.SetSelectionPosition(double.NaN, double.NaN);
       }
     }
 

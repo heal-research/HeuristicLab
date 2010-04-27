@@ -144,9 +144,9 @@ namespace HeuristicLab.Data.Views {
     }
 
     private void UpdateRowHeaders() {
-      for (int i = dataGridView.FirstDisplayedScrollingRowIndex; i < dataGridView.FirstDisplayedScrollingRowIndex + dataGridView.DisplayedRowCount(true); i++) {
+      for (int i = 0; i < dataGridView.RowCount; i++) {
         if (Content.RowNames.Count() != 0)
-          dataGridView.Rows[i].HeaderCell.Value = Content.RowNames.ElementAt(i);
+          dataGridView.Rows[i].HeaderCell.Value = Content.RowNames.ElementAt(virtualRowIndizes[i]);
         else
           dataGridView.Rows[i].HeaderCell.Value = "Row " + (i + 1);
       }
@@ -289,6 +289,7 @@ namespace HeuristicLab.Data.Views {
     private void Sort() {
       virtualRowIndizes = Sort(sortedColumnIndizes);
       UpdateSortGlyph();
+      UpdateRowHeaders();
       dataGridView.Invalidate();
     }
     protected virtual int[] Sort(IEnumerable<KeyValuePair<int, SortOrder>> sortedColumns) {

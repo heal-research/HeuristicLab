@@ -99,8 +99,9 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void dataGridView_RowHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e) {
-      if (e.RowIndex > 0) {
-        IContentView view = MainFormManager.CreateDefaultView(Content.ElementAt(e.RowIndex));
+      if (e.RowIndex >= 0) {
+        IRun run = Content.ElementAt(virtualRowIndizes[e.RowIndex]);
+        IContentView view = MainFormManager.CreateDefaultView(run);
         if (view != null) {
           view.ReadOnly = this.ReadOnly;
           view.Locked = this.Locked;
