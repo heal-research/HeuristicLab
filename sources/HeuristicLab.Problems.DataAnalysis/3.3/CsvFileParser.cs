@@ -96,7 +96,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     private void TryParse(string fileName) {
       Exception lastEx = null;
-      NumberFormatInfo[] possibleFormats = new NumberFormatInfo[] { NumberFormatInfo.InvariantInfo };
+      NumberFormatInfo[] possibleFormats = new NumberFormatInfo[] { CultureInfo.CurrentCulture.NumberFormat };
       foreach (NumberFormatInfo numberFormat in possibleFormats) {
         using (StreamReader reader = new StreamReader(fileName)) {
           tokenizer = new Tokenizer(reader, numberFormat);
