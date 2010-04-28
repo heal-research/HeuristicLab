@@ -27,7 +27,8 @@ namespace HeuristicLab.Common {
     public string Filename {
       get { return filename; }
       set {
-        if (!filename.Equals(value)) {
+        if (value == null) throw new ArgumentNullException();
+        if ((filename == null) || !filename.Equals(value)) {
           filename = value;
           OnFilenameChanged();
         }
