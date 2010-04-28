@@ -162,7 +162,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       if (cachedViews.ContainsKey(ViewType))
         view = cachedViews[ViewType];
       else {
-        view = MainFormManager.CreateView(viewType, Content);
+        view = MainFormManager.CreateView(viewType);
         view.ReadOnly = this.ReadOnly;
         view.Locked = this.Locked;
         cachedViews.Add(viewType, view);
@@ -172,6 +172,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       control.Dock = DockStyle.Fill;
       viewPanel.Controls.Add(control);
       viewPanel.Visible = true;
+      view.Content = Content;
     }
 
 
