@@ -174,24 +174,15 @@ namespace HeuristicLab.Persistence.Core {
             if (!PrimitiveSerializers.ContainsKey(primitiveSerializer.SerialDataType))
               PrimitiveSerializers.Add(primitiveSerializer.SerialDataType, new List<IPrimitiveSerializer>());
             PrimitiveSerializers[primitiveSerializer.SerialDataType].Add(primitiveSerializer);
-            Logger.Debug(String.Format("discovered primitive serializer {0} ({1} -> {2})",
-              t.VersionInvariantName(),
-              primitiveSerializer.SourceType.AssemblyQualifiedName,
-              primitiveSerializer.SerialDataType.AssemblyQualifiedName));
           }
           if (t.GetInterface(typeof(ICompositeSerializer).FullName) != null &&
               !t.IsAbstract && t.GetConstructor(Type.EmptyTypes) != null && !t.ContainsGenericParameters) {
             CompositeSerializers.Add((ICompositeSerializer)Activator.CreateInstance(t, true));
-            Logger.Debug("discovered composite serializer " + t.AssemblyQualifiedName);
           }
           if (t.GetInterface(typeof(IFormat).FullName) != null &&
              !t.IsAbstract && t.GetConstructor(Type.EmptyTypes) != null && !t.ContainsGenericParameters) {
             IFormat format = (IFormat)Activator.CreateInstance(t, true);
             Formats.Add(format);
-            Logger.Debug(String.Format("discovered format {0} ({2}) with serial data {1}.",
-              format.Name,
-              format.SerialDataType,
-              t.AssemblyQualifiedName));
           }
         }
       } catch (ReflectionTypeLoadException e) {

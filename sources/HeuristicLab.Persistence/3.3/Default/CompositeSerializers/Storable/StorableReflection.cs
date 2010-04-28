@@ -6,6 +6,7 @@ using HeuristicLab.Persistence.Core;
 using System.Reflection;
 using HeuristicLab.Persistence.Auxiliary;
 using System.Text;
+using System.Reflection.Emit;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
 
@@ -17,10 +18,13 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       BindingFlags.NonPublic |
       BindingFlags.DeclaredOnly;
 
-    public static IEnumerable<StorableMemberInfo> GenerateStorableMembers(Type type, bool inherited) {
+    private delegate void HookWrapper<T>(T o);
+    public delegate void Hook(object o);
+
+    public static IEnumerable<StorableMemberInfo> GenerateStorableMembers(Type type) {
       var storableMembers = new List<StorableMemberInfo>();
-      if (inherited && type.BaseType != null)
-        storableMembers.AddRange(GenerateStorableMembers(type.BaseType, true));
+      if (type.BaseType != null)
+        storableMembers.AddRange(GenerateStorableMembers(type.BaseType));
 
       var storableClassAttribute = GetStorableClassAttribute(type);
       if (storableClassAttribute != null) {
@@ -46,7 +50,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       return !recursive || type.BaseType == null || IsEmptyOrStorableType(type.BaseType, true);
     }
 
-    public static IEnumerable<MethodInfo> CollectHooks(HookType hookType, Type type) {
+    public static IEnumerable<Hook> CollectHooks(HookType hookType, Type type) {
       if (type.BaseType != null)
         foreach (var mi in CollectHooks(hookType, type.BaseType))
           yield return mi;
@@ -55,8 +59,13 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
           if (hook != null && hook.HookType == hookType) {
             MethodInfo methodInfo = memberInfo as MethodInfo;
             if (memberInfo.MemberType != MemberTypes.Method || memberInfo == null)
-              throw new ArgumentException("Storable hooks must be methods");
-            yield return methodInfo;
+              throw new ArgumentException("Storable hooks must be methods");        
+            DynamicMethod dm = new DynamicMethod("", null, new[] { typeof(object) }, type);
+            ILGenerator ilgen = dm.GetILGenerator();
+            ilgen.Emit(OpCodes.Ldarg_1);
+            ilgen.Emit(OpCodes.Call, methodInfo);
+            ilgen.Emit(OpCodes.Ret);
+            yield return (Hook)dm.CreateDelegate(typeof(Hook));
           }
         }
       }
