@@ -50,6 +50,8 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       return !recursive || type.BaseType == null || IsEmptyOrStorableType(type.BaseType, true);
     }
 
+    private static object[] emptyArgs = new object[0];
+
     public static IEnumerable<Hook> CollectHooks(HookType hookType, Type type) {
       if (type.BaseType != null)
         foreach (var mi in CollectHooks(hookType, type.BaseType))
@@ -59,13 +61,17 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
           if (hook != null && hook.HookType == hookType) {
             MethodInfo methodInfo = memberInfo as MethodInfo;
             if (memberInfo.MemberType != MemberTypes.Method || memberInfo == null)
-              throw new ArgumentException("Storable hooks must be methods");        
-            DynamicMethod dm = new DynamicMethod("", null, new[] { typeof(object) }, type);
-            ILGenerator ilgen = dm.GetILGenerator();
-            ilgen.Emit(OpCodes.Ldarg_1);
-            ilgen.Emit(OpCodes.Call, methodInfo);
-            ilgen.Emit(OpCodes.Ret);
-            yield return (Hook)dm.CreateDelegate(typeof(Hook));
+              throw new ArgumentException("Storable hooks must be methods");
+            if (System.IntPtr.Size == 4) {
+              DynamicMethod dm = new DynamicMethod("", null, new[] { typeof(object) }, type);
+              ILGenerator ilgen = dm.GetILGenerator();
+              ilgen.Emit(OpCodes.Ldarg_1);
+              ilgen.Emit(OpCodes.Call, methodInfo);
+              ilgen.Emit(OpCodes.Ret);
+              yield return (Hook)dm.CreateDelegate(typeof(Hook));
+            } else {
+              yield return new Hook(o => methodInfo.Invoke(o, emptyArgs));
+            }
           }
         }
       }
