@@ -145,7 +145,7 @@ namespace HeuristicLab.Optimization {
       }
     }
 
-    public UserDefinedAlgorithm CreateUserDefinedAlgorithm() {
+    public virtual IAlgorithm CreateUserDefinedAlgorithm() {
       UserDefinedAlgorithm algorithm = new UserDefinedAlgorithm();
       Cloner cloner = new Cloner();
       cloner.RegisterClonedObject(this, algorithm);
