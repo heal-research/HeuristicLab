@@ -45,8 +45,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       get { return (IValueParameter<StringValue>)Parameters["TargetVariable"]; }
     }
 
-    public IValueParameter<ItemSet<StringValue>> InputVariablesParameter {
-      get { return (IValueParameter<ItemSet<StringValue>>)Parameters["InputVariables"]; }
+    public IValueParameter<CheckedItemCollection<StringValue>> InputVariablesParameter {
+      get { return (IValueParameter<CheckedItemCollection<StringValue>>)Parameters["InputVariables"]; }
     }
 
     public IValueParameter<IntValue> TrainingSamplesStartParameter {
@@ -84,8 +84,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
         }
       }
     }
-    public ItemSet<StringValue> InputVariables {
-      get { return (ItemSet<StringValue>)InputVariablesParameter.Value; }
+    public CheckedItemCollection<StringValue> InputVariables {
+      get { return (CheckedItemCollection<StringValue>)InputVariablesParameter.Value; }
       set {
         if (value != InputVariables) {
           if (value == null) throw new ArgumentNullException();
@@ -139,7 +139,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public DataAnalysisProblemData()
       : base() {
       Parameters.Add(new ValueParameter<Dataset>("Dataset", new Dataset()));
-      Parameters.Add(new ValueParameter<ItemSet<StringValue>>("InputVariables", new ItemSet<StringValue>()));
+      Parameters.Add(new ValueParameter<CheckedItemCollection<StringValue>>("InputVariables", new CheckedItemCollection<StringValue>()));
       Parameters.Add(new ConstrainedValueParameter<StringValue>("TargetVariable"));
       Parameters.Add(new ValueParameter<IntValue>("TrainingSamplesStart", new IntValue()));
       Parameters.Add(new ValueParameter<IntValue>("TrainingSamplesEnd", new IntValue()));
@@ -251,8 +251,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
       InputVariables.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<StringValue>(InputVariables_CollectionReset);
       InputVariables.ItemsAdded += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<StringValue>(InputVariables_ItemsAdded);
       InputVariables.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<StringValue>(InputVariables_ItemsRemoved);
+      InputVariables.ItemsChecked += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<StringValue>(InputVariables_ItemsChecked);
       foreach (var item in InputVariables)
         item.ValueChanged += new EventHandler(InputVariable_ValueChanged);
+    }
+
+    void InputVariables_ItemsChecked(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<StringValue> e) {
+      OnProblemDataChanged(e);
     }
 
     void InputVariables_ItemsRemoved(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<StringValue> e) {
@@ -322,7 +327,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
       foreach (var variableName in variableNames)
         ((ConstrainedValueParameter<StringValue>)TargetVariableParameter).ValidValues.Add(variableName);
       TargetVariable = variableNames.First();
-      InputVariables = new ItemSet<StringValue>(variableNames.Skip(1));
+      InputVariables = new CheckedItemCollection<StringValue>(variableNames);
+      foreach (var variableName in variableNames.Skip(1))
+        InputVariables.SetItemCheckedState(variableName, true);
       int middle = (int)(csvFileParser.Rows * 0.5);
       TrainingSamplesStart = new IntValue(0);
       TrainingSamplesEnd = new IntValue(middle);

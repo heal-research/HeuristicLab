@@ -261,11 +261,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       UpdateEstimationLimits();
     }
     protected virtual void OnArchitectureParameterChanged(EventArgs e) {
-      var globalGrammar = FunctionTreeGrammar as GlobalSymbolicExpressionGrammar;
-      if (globalGrammar != null) {
-        globalGrammar.MaxFunctionArguments = MaxFunctionArguments.Value;
-        globalGrammar.MaxFunctionDefinitions = MaxFunctionDefiningBranches.Value;
-      }
+      UpdateGrammar();
     }
     protected virtual void OnGrammarChanged(EventArgs e) { }
     protected virtual void OnOperatorsChanged(EventArgs e) { RaiseOperatorsChanged(e); }
@@ -355,7 +351,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
 
     private void UpdateGrammar() {
       foreach (var varSymbol in FunctionTreeGrammar.Symbols.OfType<HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols.Variable>()) {
-        varSymbol.VariableNames = DataAnalysisProblemData.InputVariables.Select(x => x.Value);
+        varSymbol.VariableNames = DataAnalysisProblemData.InputVariables.CheckedItems.Select(x => x.Value);
+      }
+      var globalGrammar = FunctionTreeGrammar as GlobalSymbolicExpressionGrammar;
+      if (globalGrammar != null) {
+        globalGrammar.MaxFunctionArguments = MaxFunctionArguments.Value;
+        globalGrammar.MaxFunctionDefinitions = MaxFunctionDefiningBranches.Value;
       }
     }
 
