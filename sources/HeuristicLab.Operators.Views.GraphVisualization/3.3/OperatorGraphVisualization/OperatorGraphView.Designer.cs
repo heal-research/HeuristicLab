@@ -237,14 +237,15 @@
       // 
       // OperatorGraphView
       // 
+      this.DragOver += new System.Windows.Forms.DragEventHandler(this.OperatorGraphView_DragEnterOver);
+      this.DragDrop += new System.Windows.Forms.DragEventHandler(this.OperatorGraphView_DragDrop);
+      this.DragEnter += new System.Windows.Forms.DragEventHandler(this.OperatorGraphView_DragEnterOver);
       this.AllowDrop = true;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.splitContainer);
       this.Name = "OperatorGraphView";
       this.Size = new System.Drawing.Size(665, 444);
-      this.DragDrop += new System.Windows.Forms.DragEventHandler(this.OperatorGraphView_DragDrop);
-      this.DragEnter += new System.Windows.Forms.DragEventHandler(this.OperatorGraphView_DragEnter);
       this.shapeContextMenu.ResumeLayout(false);
       this.splitContainer.Panel1.ResumeLayout(false);
       this.splitContainer.Panel2.ResumeLayout(false);
