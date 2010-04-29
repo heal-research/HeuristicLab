@@ -41,9 +41,8 @@ namespace HeuristicLab.Optimizer {
     public static void New() {
       if (newItemDialog == null) newItemDialog = new NewItemDialog();
       if (newItemDialog.ShowDialog() == DialogResult.OK) {
-        IView view = MainFormManager.CreateDefaultView(newItemDialog.Item);
+        IView view = MainFormManager.MainForm.ShowContent(newItemDialog.Item);
         if (view == null) MessageBox.Show("There is no view for the new item. It cannot be displayed.", "No View Available", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        else view.Show();
       }
     }
 
@@ -68,9 +67,8 @@ namespace HeuristicLab.Optimizer {
       try {
         if (error != null) throw error;
         Invoke(delegate() {
-          IView view = MainFormManager.CreateDefaultView(content);
+          IView view = MainFormManager.MainForm.ShowContent(content);
           if (view == null) MessageBox.Show("There is no view for the loaded item. It cannot be displayed.", "No View Available", MessageBoxButtons.OK, MessageBoxIcon.Error);
-          else view.Show();
         });
       }
       catch (Exception ex) {

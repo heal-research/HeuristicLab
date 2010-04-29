@@ -101,11 +101,10 @@ namespace HeuristicLab.Optimization.Views {
     private void dataGridView_RowHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e) {
       if (e.RowIndex >= 0) {
         IRun run = Content.ElementAt(virtualRowIndizes[e.RowIndex]);
-        IContentView view = MainFormManager.CreateDefaultView(run);
+        IContentView view = MainFormManager.MainForm.ShowContent(run);
         if (view != null) {
           view.ReadOnly = this.ReadOnly;
           view.Locked = this.Locked;
-          view.Show();
         }
       }
     }

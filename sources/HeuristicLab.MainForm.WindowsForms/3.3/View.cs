@@ -36,11 +36,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.readOnly = false;
     }
 
-    public View(bool readOnly)
-      : this() {
-      this.readOnly = readOnly;
-    }
-
     private string caption;
     public string Caption {
       get { return caption; }

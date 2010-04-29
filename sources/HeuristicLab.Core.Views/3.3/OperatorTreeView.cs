@@ -354,12 +354,10 @@ namespace HeuristicLab.Core.Views {
       if (graphTreeView.SelectedNode != null) {
         IOperator op = GetOperatorTag(graphTreeView.SelectedNode);
         if (op != null) {
-          IContentView view = MainFormManager.CreateDefaultView(op);
-          if (view != null) {
-            view.ReadOnly = this.ReadOnly;
-            view.Locked = this.Locked;
+          Type viewType = MainFormManager.GetDefaultViewType(op.GetType());
+          if (viewType != null) {
             viewToolStripMenuItem.Enabled = true;
-            viewToolStripMenuItem.Tag = view;
+            viewToolStripMenuItem.Tag = op;
           }
           breakpointToolStripMenuItem.Enabled = true;
           breakpointToolStripMenuItem.Tag = op;
@@ -413,8 +411,12 @@ namespace HeuristicLab.Core.Views {
 
     #region Context Menu Events
     private void viewToolStripMenuItem_Click(object sender, EventArgs e) {
-      IView view = ((ToolStripMenuItem)sender).Tag as IView;
-      if (view != null) view.Show();
+      IOperator op = ((ToolStripMenuItem)sender).Tag as IOperator;
+      IContentView view = MainFormManager.MainForm.ShowContent(op);
+      if (view != null) {
+        view.ReadOnly = this.ReadOnly;
+        view.Locked = this.Locked;
+      }
     }
     private void breakpointToolStripMenuItem_Click(object sender, EventArgs e) {
       IOperator op = (IOperator)breakpointToolStripMenuItem.Tag;

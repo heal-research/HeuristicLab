@@ -39,9 +39,9 @@ namespace HeuristicLab.MainForm.WindowsForms {
       : base(userInterfaceItemType) {
       InitializeComponent();
     }
-    public SingleDocumentMainForm(Type userInterfaceItemType, bool showViewsInViewHost)
+    public SingleDocumentMainForm(Type userInterfaceItemType, bool showContentInViewHost)
       : this(userInterfaceItemType) {
-      this.ShowViewsInViewHost = showViewsInViewHost;
+      this.ShowContentInViewHost = showContentInViewHost;
     }
 
     protected override void ShowView(IView view, bool firstTimeShown) {
@@ -69,17 +69,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     protected override Form CreateForm(IView view) {
-      Form form;
-      IContentView contentView = view as IContentView;
-      if (ShowViewsInViewHost && contentView != null && contentView.GetType() != typeof(ViewHost)) {
-        ViewHost viewHost = new ViewHost(contentView);
-        form = new DocumentForm(viewHost);
-        this.AddViewFormCombination(viewHost, form);
-      } else {
-        form = new DocumentForm(view);
-        this.AddViewFormCombination(view, form);
-      }
-
+      Form form = new DocumentForm(view);
       form.ShowInTaskbar = true;
       return form;
     }

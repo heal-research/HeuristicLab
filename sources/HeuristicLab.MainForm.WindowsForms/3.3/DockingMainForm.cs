@@ -39,9 +39,9 @@ namespace HeuristicLab.MainForm.WindowsForms {
       : base(userInterfaceItemType) {
       InitializeComponent();
     }
-    public DockingMainForm(Type userInterfaceItemType, bool showViewsInViewHost)
+    public DockingMainForm(Type userInterfaceItemType, bool showContentInViewHost)
       : this(userInterfaceItemType) {
-      this.ShowViewsInViewHost = showViewsInViewHost;
+      this.ShowContentInViewHost = showContentInViewHost;
     }
 
     protected override void ShowView(IView view, bool firstTimeShown) {
@@ -66,17 +66,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     protected override Form CreateForm(IView view) {
-      DockForm form;
-      IContentView contentView = view as IContentView;
-      if (ShowViewsInViewHost && contentView != null && contentView.GetType() != typeof(ViewHost)) {
-        ViewHost viewHost = new ViewHost(contentView);
-        form = new DockForm(viewHost);
-        this.AddViewFormCombination(viewHost, form);
-      } else {
-        form = new DockForm(view);
-        this.AddViewFormCombination(view, form);
-      }
-      return form;
+      return new DockForm(view);
     }
 
     private void dockPanel_ActiveContentChanged(object sender, EventArgs e) {

@@ -117,7 +117,7 @@ namespace HeuristicLab.Optimizer {
 
     private void samplesListView_DoubleClick(object sender, EventArgs e) {
       if (samplesListView.SelectedItems.Count == 1)
-        MainFormManager.CreateDefaultView(((IItem)samplesListView.SelectedItems[0].Tag).Clone()).Show();
+        MainFormManager.MainForm.ShowContent((IContent)((IItem)samplesListView.SelectedItems[0].Tag).Clone());
     }
     private void samplesListView_ItemDrag(object sender, ItemDragEventArgs e) {
       ListViewItem listViewItem = (ListViewItem)e.Item;

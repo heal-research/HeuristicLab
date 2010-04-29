@@ -27,7 +27,7 @@ using HeuristicLab.MainForm;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.MainForm.WindowsForms {
-  [Content(typeof(object))]
+  [Content(typeof(IContent))]
   public sealed partial class ViewHost : AsynchronousContentView {
     public ViewHost() {
       InitializeComponent();
@@ -38,21 +38,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
       activeView = null;
       Content = null;
       OnContentChanged();
-    }
-    public ViewHost(IContent content)
-      : this() {
-      this.Content = content;
-    }
-
-    public ViewHost(IContentView contentView)
-      : this() {
-      this.viewType = contentView.GetType();
-      this.Content = contentView.Content;
-      this.cachedViews.Add(contentView.GetType(), contentView);
-      this.activeView = contentView;
-      this.RegisterActiveViewEvents();
-      this.OnViewTypeChanged();
-      this.ActiveViewChanged();
     }
 
     private Dictionary<Type, IContentView> cachedViews;
@@ -116,8 +101,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
       }
     }
 
-
-
     protected override void OnContentChanged() {
       messageLabel.Visible = false;
       viewsLabel.Visible = false;
@@ -131,7 +114,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
           viewsLabel.Visible = true;
           viewPanel.Visible = true;
         }
-
 
         if (!ViewCanShowContent(viewType, Content)) {
           ViewType = MainFormManager.GetDefaultViewType(Content.GetType());
@@ -147,7 +129,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
         cachedViews.Clear();
       }
     }
-
 
     private void OnViewTypeChanged() {
       viewPanel.Controls.Clear();
@@ -174,8 +155,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
       viewPanel.Visible = true;
       view.Content = Content;
     }
-
-
 
     private void RegisterActiveViewEvents() {
       activeView.Changed += new EventHandler(activeView_Changed);
@@ -255,10 +234,9 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     private void viewsLabel_DoubleClick(object sender, EventArgs e) {
-      IContentView view = MainFormManager.CreateView(viewType, Content);
+      IContentView view = MainFormManager.MainForm.ShowContent(this.Content);
       view.ReadOnly = this.ReadOnly;
       view.Locked = this.Locked;
-      view.Show();
     }
     private void viewContextMenuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e) {
       Type viewType = (Type)e.ClickedItem.Tag;

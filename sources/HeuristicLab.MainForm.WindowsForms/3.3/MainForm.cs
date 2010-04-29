@@ -31,6 +31,7 @@ using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 using System.Collections;
 using WeifenLuo.WinFormsUI.Docking;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.MainForm.WindowsForms {
   public partial class MainForm : Form, IMainForm {
@@ -42,7 +43,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.views = new Dictionary<IView, Form>();
       this.userInterfaceItems = new List<IUserInterfaceItem>();
       this.initialized = false;
-      this.showViewsInViewHost = false;
+      this.showContentInViewHost = false;
     }
 
     protected MainForm(Type userInterfaceItemType)
@@ -51,10 +52,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     #region properties
-    private bool showViewsInViewHost;
-    public bool ShowViewsInViewHost {
-      get { return this.showViewsInViewHost; }
-      set { this.showViewsInViewHost = value; }
+    private bool showContentInViewHost;
+    public bool ShowContentInViewHost {
+      get { return this.showContentInViewHost; }
+      set { this.showContentInViewHost = value; }
     }
 
     public string Title {
@@ -87,10 +88,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private Dictionary<IView, Form> views;
     public IEnumerable<IView> Views {
       get { return views.Keys; }
-    }
-    protected void AddViewFormCombination(IView view, Form form) {
-      this.views.Add(view, form);
-      view.Changed += new EventHandler(View_Changed);
     }
 
     private IView activeView;
@@ -215,26 +212,26 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     internal Form GetForm(IView view) {
-      IView internalView = GetView(view);
-      if (internalView != null && views.ContainsKey(internalView))
-        return views[internalView];
+      if (views.ContainsKey(view))
+        return views[view];
       return null;
     }
     protected IView GetView(Form form) {
       return views.Where(x => x.Value == form).Single().Key;
     }
-    private IView GetView(IView view) {
-      if (view == null || views.ContainsKey(view))
-        return view;
-      IContentView contentView = view as IContentView;
-      if (contentView != null) {
-        IView viewHost =
-          (from ViewHost v in views.Keys.OfType<ViewHost>()
-           where v.Views.Contains(contentView)
-           select v).SingleOrDefault();
-        return viewHost;
+
+    public IContentView ShowContent(IContent content) {
+      IContentView view;
+      if (this.ShowContentInViewHost)
+        view = new ViewHost();
+      else
+        view = MainFormManager.CreateDefaultView(content.GetType());
+
+      if (view != null) {
+        view.Show();
+        view.Content = content;
       }
-      return contentView;
+      return view;
     }
 
     internal void ShowView(IView view) {
@@ -242,14 +239,15 @@ namespace HeuristicLab.MainForm.WindowsForms {
       else {
         Form form = GetForm(view);
         bool firstTimeShown = form == null;
-        if (form == null) {
+        if (firstTimeShown) {
           form = CreateForm(view);
           form.Activated += new EventHandler(FormActivated);
           form.FormClosed += new FormClosedEventHandler(ChildFormClosed);
+          view.Changed += new EventHandler(View_Changed);
+          views[view] = form;
         }
-        IView internalView = GetView(form);
-        this.ShowView(internalView, firstTimeShown);
-        this.OnViewShown(internalView, firstTimeShown);
+        this.ShowView(view, firstTimeShown);
+        this.OnViewShown(view, firstTimeShown);
       }
     }
 
@@ -266,13 +264,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
     internal void HideView(IView view) {
       if (InvokeRequired) Invoke((Action<IView>)HideView, view);
       else {
-        IView internalView = this.GetView(view);
-        if (internalView != null && this.views.ContainsKey(internalView)) {
-          this.Hide(internalView);
-          if (this.activeView == internalView)
-            this.ActiveView = null;
-          this.OnViewHidden(internalView);
-        }
+        this.Hide(view);
+        if (this.activeView == view)
+          this.ActiveView = null;
+        this.OnViewHidden(view);
       }
     }
 
@@ -295,23 +290,17 @@ namespace HeuristicLab.MainForm.WindowsForms {
 
     internal void CloseView(IView view) {
       if (InvokeRequired) Invoke((Action<IView>)CloseView, view);
-      else {
-        IView internalView = GetView(view);
-        if (internalView != null && this.views.ContainsKey(internalView)) {
-          this.views[internalView].Close();
-          this.OnViewClosed(internalView);
-        }
+      else if (views.ContainsKey(view)) {
+        this.views[view].Close();
+        this.OnViewClosed(view);
       }
     }
 
     internal void CloseView(IView view, CloseReason closeReason) {
       if (InvokeRequired) Invoke((Action<IView>)CloseView, view);
-      else {
-        IView internalView = GetView(view);
-        if (internalView != null && this.views.ContainsKey(internalView)) {
-          ((View)internalView).CloseReason = closeReason;
-          this.CloseView(internalView);
-        }
+      else if (views.ContainsKey(view)) {
+        ((View)view).CloseReason = closeReason;
+        this.CloseView(view);
       }
     }
 

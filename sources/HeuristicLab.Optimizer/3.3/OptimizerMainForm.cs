@@ -52,9 +52,9 @@ namespace HeuristicLab.Optimizer {
       appStartingCursors = 0;
       waitingCursors = 0;
     }
-    public OptimizerMainForm(Type userInterfaceItemType, bool showViewsInViewHost)
+    public OptimizerMainForm(Type userInterfaceItemType, bool showContentInViewHost)
       : this(userInterfaceItemType) {
-      this.ShowViewsInViewHost = showViewsInViewHost;
+      this.ShowContentInViewHost = showContentInViewHost;
     }
 
     protected override void OnInitialized(EventArgs e) {

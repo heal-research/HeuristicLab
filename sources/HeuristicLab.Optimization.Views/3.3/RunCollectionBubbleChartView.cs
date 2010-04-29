@@ -288,10 +288,11 @@ namespace HeuristicLab.Optimization.Views {
       if (h.ChartElementType == ChartElementType.DataPoint) {
         IRun run = (IRun)((DataPoint)h.Object).Tag;
         if (e.Clicks >= 2) {
-          IContentView view = MainFormManager.CreateDefaultView(run);
-          view.ReadOnly = this.ReadOnly;
-          view.Locked = this.Locked;
-          view.Show();
+          IContentView view = MainFormManager.MainForm.ShowContent(run);
+          if (view != null) {
+            view.ReadOnly = this.ReadOnly;
+            view.Locked = this.Locked;
+          }
         } else
           this.draggedRun = run;
         this.chart.ChartAreas[0].CursorX.SetSelectionPosition(double.NaN, double.NaN);

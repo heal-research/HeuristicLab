@@ -194,11 +194,10 @@ namespace HeuristicLab.Optimization.Views {
     protected virtual void itemsListView_DoubleClick(object sender, EventArgs e) {
       if (itemsListView.SelectedItems.Count == 1) {
         IRun item = (IRun)itemsListView.SelectedItems[0].Tag;
-        IContentView view = MainFormManager.CreateDefaultView(item);
+        IContentView view = MainFormManager.MainForm.ShowContent(item);
         if (view != null) {
           view.ReadOnly = ReadOnly;
           view.Locked = Locked;
-          view.Show();
         }
       }
     }
@@ -241,11 +240,12 @@ namespace HeuristicLab.Optimization.Views {
     #region Button Events
     protected virtual void menuItem_Click(object sender, EventArgs e) {
       ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
-      IContentView view = MainFormManager.CreateView((Type)menuItem.Tag, Content);
+      IContentView view = MainFormManager.CreateView((Type)menuItem.Tag);
       if (view != null) {
         view.Locked = Locked;
         view.ReadOnly = ReadOnly;
         view.Show();
+        view.Content = Content;
       }
     }
     protected virtual void removeButton_Click(object sender, EventArgs e) {

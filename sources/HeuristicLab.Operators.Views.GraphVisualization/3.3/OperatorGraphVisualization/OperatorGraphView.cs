@@ -156,11 +156,10 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
           IOperatorShapeInfo shapeInfo = shape.Tag as IOperatorShapeInfo;
           if (shapeInfo != null) {
             IOperator op = this.VisualizationInfo.GetOperatorForShapeInfo(shapeInfo);
-            IContentView view = MainFormManager.CreateDefaultView(op);
+            IContentView view = MainFormManager.MainForm.ShowContent(op);
             if (view != null) {
               view.ReadOnly = this.ReadOnly;
               view.Locked = this.Locked;
-              view.Show();
             }
             HandledMouseEventArgs eventArgs = e as HandledMouseEventArgs;
             if (eventArgs != null)
@@ -196,10 +195,11 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       IOperatorShapeInfo shapeInfo = this.shapeContextMenu.Tag as IOperatorShapeInfo;
       if (shapeInfo != null) {
         IOperator op = this.VisualizationInfo.GetOperatorForShapeInfo(shapeInfo);
-        IContentView view = MainFormManager.CreateDefaultView(op);
-        view.ReadOnly = this.ReadOnly;
-        view.Locked = this.Locked;
-        view.Show();
+        IContentView view = MainFormManager.MainForm.ShowContent(op);
+        if (view != null) {
+          view.ReadOnly = this.ReadOnly;
+          view.Locked = this.Locked;
+        }
       }
     }
 

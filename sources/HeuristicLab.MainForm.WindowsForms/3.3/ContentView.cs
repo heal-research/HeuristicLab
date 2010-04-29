@@ -36,7 +36,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     public IContent Content {
       get { return content; }
       set {
-        if ((value != null) && (!MainFormManager.ViewCanViewObject(this, value)))
+        if ((value != null) && (!MainFormManager.ViewCanViewContent(this, value)))
           throw new ArgumentException(string.Format("View \"{0}\" cannot view object \"{1}\".", this.GetType().Name, value.GetType().Name));
         if (InvokeRequired) {
           Invoke(new Action<IContent>(delegate(IContent o) { this.Content = o; }), value);
@@ -56,10 +56,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
       : base() {
       InitializeComponent();
       this.locked = false;
-    }
-    public ContentView(IContent content)
-      : this() {
-      this.content = content;
     }
 
     private bool locked;
