@@ -101,7 +101,7 @@ namespace HeuristicLab.Parameters {
     }
 
     public override string ToString() {
-      return string.Format("{0} ({1})", Name, DataType.GetPrettyName());
+      return string.Format("{0}", Name);
     }
 
     protected abstract IItem GetActualValue();

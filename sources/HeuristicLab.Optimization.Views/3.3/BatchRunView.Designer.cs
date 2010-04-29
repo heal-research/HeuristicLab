@@ -138,7 +138,7 @@ namespace HeuristicLab.Optimization.Views {
       this.openAlgorithmButton.Name = "openAlgorithmButton";
       this.openAlgorithmButton.Size = new System.Drawing.Size(24, 24);
       this.openAlgorithmButton.TabIndex = 1;
-      this.toolTip.SetToolTip(this.openAlgorithmButton, "Open Problem");
+      this.toolTip.SetToolTip(this.openAlgorithmButton, "Open Algorithm");
       this.openAlgorithmButton.UseVisualStyleBackColor = true;
       this.openAlgorithmButton.Click += new System.EventHandler(this.openAlgorithmButton_Click);
       // 
@@ -149,7 +149,7 @@ namespace HeuristicLab.Optimization.Views {
       this.newAlgorithmButton.Name = "newAlgorithmButton";
       this.newAlgorithmButton.Size = new System.Drawing.Size(24, 24);
       this.newAlgorithmButton.TabIndex = 0;
-      this.toolTip.SetToolTip(this.newAlgorithmButton, "New Problem");
+      this.toolTip.SetToolTip(this.newAlgorithmButton, "New Algorithm");
       this.newAlgorithmButton.UseVisualStyleBackColor = true;
       this.newAlgorithmButton.Click += new System.EventHandler(this.newAlgorithmButton_Click);
       // 

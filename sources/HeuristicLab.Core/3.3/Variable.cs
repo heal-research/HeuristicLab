@@ -115,7 +115,7 @@ namespace HeuristicLab.Core {
       if (Value == null)
         return string.Format("{0}: null", Name);
       else
-        return string.Format("{0}: {1} ({2})", Name, Value.ToString(), Value.GetType().GetPrettyName());
+        return string.Format("{0}: {1}", Name, Value.ToString());
     }
 
     /// <inheritdoc/>

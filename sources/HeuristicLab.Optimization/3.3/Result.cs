@@ -116,7 +116,7 @@ namespace HeuristicLab.Optimization {
     }
 
     public override string ToString() {
-      return string.Format("{0}: {1} ({2})", Name, Value == null ? "null" : Value.ToString(), DataType.GetPrettyName());
+      return string.Format("{0}: {1}", Name, Value == null ? "null" : Value.ToString());
     }
 
     public event EventHandler ValueChanged;
