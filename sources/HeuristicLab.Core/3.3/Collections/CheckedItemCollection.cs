@@ -59,7 +59,7 @@ namespace HeuristicLab.Core {
     [StorableConstructor]
     protected CheckedItemCollection(bool deserializing) : base(deserializing) { }
 
-    public bool IsItemChecked(T item) {
+    public bool ItemChecked(T item) {
       return checkedState[item];
     }
 
@@ -75,13 +75,15 @@ namespace HeuristicLab.Core {
       foreach (var oldItem in oldItems)
         checkedState.Remove(oldItem);
       foreach (var item in items)
-        checkedState.Add(item, false);
+        if (!checkedState.ContainsKey(item))
+          checkedState.Add(item, false);
       base.OnCollectionReset(items, oldItems);
     }
 
     protected override void OnItemsAdded(IEnumerable<T> items) {
       foreach (var item in items)
-        checkedState.Add(item, false);
+        if (!checkedState.ContainsKey(item))
+          checkedState.Add(item, false);
       base.OnItemsAdded(items);
     }
 
@@ -93,12 +95,12 @@ namespace HeuristicLab.Core {
     }
 
     protected virtual void OnItemsChecked(IEnumerable<T> items) {
-      RaiseItemsChecked(new CollectionItemsChangedEventArgs<T>(items));
+      RaiseCheckedItemsChanged(new CollectionItemsChangedEventArgs<T>(items));
     }
 
-    public event CollectionItemsChangedEventHandler<T> ItemsChecked;
-    private void RaiseItemsChecked(CollectionItemsChangedEventArgs<T> e) {
-      var handler = ItemsChecked;
+    public event CollectionItemsChangedEventHandler<T> CheckedItemsChanged;
+    private void RaiseCheckedItemsChanged(CollectionItemsChangedEventArgs<T> e) {
+      var handler = CheckedItemsChanged;
       if (handler != null) handler(this, e);
     }
 

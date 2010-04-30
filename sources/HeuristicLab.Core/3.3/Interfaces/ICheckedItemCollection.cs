@@ -23,10 +23,10 @@ using HeuristicLab.Collections;
 using System.Collections.Generic;
 
 namespace HeuristicLab.Core {
-  public interface ICheckedItemCollection<T> : IItemCollection<T>, IItem where T : class, IItem {
-    event CollectionItemsChangedEventHandler<T> ItemsChecked;
+  public interface ICheckedItemCollection<T> : IItemCollection<T> where T : class, IItem {
+    event CollectionItemsChangedEventHandler<T> CheckedItemsChanged;
     IEnumerable<T> CheckedItems { get; }
-    bool IsItemChecked(T item);
+    bool ItemChecked(T item);
     void SetItemCheckedState(T item, bool checkedState);
   }
 }

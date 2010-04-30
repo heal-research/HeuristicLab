@@ -55,7 +55,7 @@ namespace HeuristicLab.Core.Views {
       Content.ItemsAdded -= new CollectionItemsChangedEventHandler<T>(Content_ItemsAdded);
       Content.ItemsRemoved -= new CollectionItemsChangedEventHandler<T>(Content_ItemsRemoved);
       Content.CollectionReset -= new CollectionItemsChangedEventHandler<T>(Content_CollectionReset);
-      Content.ItemsChecked -= new CollectionItemsChangedEventHandler<T>(Content_ItemsChecked);
+      Content.CheckedItemsChanged -= new CollectionItemsChangedEventHandler<T>(Content_ItemsChecked);
       base.DeregisterContentEvents();
     }
     protected override void RegisterContentEvents() {
@@ -63,7 +63,7 @@ namespace HeuristicLab.Core.Views {
       Content.ItemsAdded += new CollectionItemsChangedEventHandler<T>(Content_ItemsAdded);
       Content.ItemsRemoved += new CollectionItemsChangedEventHandler<T>(Content_ItemsRemoved);
       Content.CollectionReset += new CollectionItemsChangedEventHandler<T>(Content_CollectionReset);
-      Content.ItemsChecked += new CollectionItemsChangedEventHandler<T>(Content_ItemsChecked);
+      Content.CheckedItemsChanged += new CollectionItemsChangedEventHandler<T>(Content_ItemsChecked);
     }
 
     protected override void OnContentChanged() {
@@ -298,8 +298,8 @@ namespace HeuristicLab.Core.Views {
       else {
         foreach (T item in e.Items) {
           foreach (ListViewItem listViewItem in GetListViewItemsForItem(item)) {
-            if (listViewItem.Checked != Content.IsItemChecked(item))
-              listViewItem.Checked = Content.IsItemChecked(item);
+            if (listViewItem.Checked != Content.ItemChecked(item))
+              listViewItem.Checked = Content.ItemChecked(item);
           }
         }
       }
