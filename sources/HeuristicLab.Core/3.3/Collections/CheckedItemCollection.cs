@@ -57,7 +57,7 @@ namespace HeuristicLab.Core {
         checkedState.Add(item, false);
     }
     [StorableConstructor]
-    protected CheckedItemCollection(bool deserializing) { }
+    protected CheckedItemCollection(bool deserializing) : base(deserializing) { }
 
     public bool IsItemChecked(T item) {
       return checkedState[item];

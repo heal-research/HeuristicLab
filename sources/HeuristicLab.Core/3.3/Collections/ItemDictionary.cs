@@ -54,17 +54,11 @@ namespace HeuristicLab.Core {
       get { return VS2008ImageLibrary.Class; }
     }
 
-    [Storable]
-    private Dictionary<TKey, TValue> Items {
-      get { return dict; }
-      set { dict = value; }
-    }
-
     public ItemDictionary() : base() { }
     public ItemDictionary(int capacity) : base(capacity) { }
     public ItemDictionary(IDictionary<TKey, TValue> dictionary) : base(dictionary) { }
     [StorableConstructor]
-    protected ItemDictionary(bool deserializing) { }
+    protected ItemDictionary(bool deserializing) : base(deserializing) { }
 
     public object Clone() {
       return Clone(new Cloner());

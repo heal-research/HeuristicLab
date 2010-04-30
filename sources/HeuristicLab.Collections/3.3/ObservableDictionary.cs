@@ -24,10 +24,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Collections {
+  [StorableClass]
   [Serializable]
   public class ObservableDictionary<TKey, TValue> : IObservableDictionary<TKey, TValue> {
+    [Storable]
     protected Dictionary<TKey, TValue> dict;
 
     #region Properties
@@ -83,6 +86,8 @@ namespace HeuristicLab.Collections {
     public ObservableDictionary(IDictionary<TKey, TValue> dictionary, IEqualityComparer<TKey> comparer) {
       dict = new Dictionary<TKey, TValue>(dictionary, comparer);
     }
+    [StorableConstructor]
+    protected ObservableDictionary(bool deserializing) { }
     #endregion
 
     #region Access

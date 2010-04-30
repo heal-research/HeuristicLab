@@ -24,10 +24,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Collections {
+  [StorableClass]
   [Serializable]
   public abstract class ObservableKeyedCollection<TKey, TItem> : IObservableKeyedCollection<TKey, TItem> {
+    [Storable]
     protected Dictionary<TKey, TItem> dict;
 
     #region Properties
@@ -73,6 +76,8 @@ namespace HeuristicLab.Collections {
       foreach (TItem item in collection)
         dict.Add(GetKeyForItem(item), item);
     }
+    [StorableConstructor]
+    protected ObservableKeyedCollection(bool deserializing) { }
     #endregion
 
     protected abstract TKey GetKeyForItem(TItem item);

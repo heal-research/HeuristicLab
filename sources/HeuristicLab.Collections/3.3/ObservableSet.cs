@@ -24,10 +24,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Collections {
+  [StorableClass]
   [Serializable]
   public class ObservableSet<T> : IObservableSet<T> {
+    [Storable]
     protected HashSet<T> set;
 
     #region Properties
@@ -55,6 +58,8 @@ namespace HeuristicLab.Collections {
     public ObservableSet(IEnumerable<T> collection, IEqualityComparer<T> comparer) {
       set = new HashSet<T>(collection, comparer);
     }
+    [StorableConstructor]
+    protected ObservableSet(bool deserializing) { }
     #endregion
 
     #region Access

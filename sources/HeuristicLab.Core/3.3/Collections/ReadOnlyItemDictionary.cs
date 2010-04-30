@@ -54,21 +54,10 @@ namespace HeuristicLab.Core {
       get { return VS2008ImageLibrary.Class; }
     }
 
-    [Storable]
-    private IObservableDictionary<TKey, TValue> Items {
-      get { return dict; }
-      set { dict = value; }
-    }
-
     public ReadOnlyItemDictionary() : base(new ItemDictionary<TKey, TValue>()) { }
     public ReadOnlyItemDictionary(IItemDictionary<TKey, TValue> dictionary) : base(dictionary) { }
     [StorableConstructor]
-    protected ReadOnlyItemDictionary(bool deserializing) { }
-
-    [StorableHook(HookType.AfterDeserialization)]
-    private void Initialize() {
-      RegisterEvents();
-    }
+    protected ReadOnlyItemDictionary(bool deserializing) : base(deserializing) { }
 
     public object Clone() {
       return Clone(new Cloner());
@@ -77,7 +66,7 @@ namespace HeuristicLab.Core {
       ReadOnlyItemDictionary<TKey, TValue> clone = (ReadOnlyItemDictionary<TKey, TValue>)Activator.CreateInstance(this.GetType());
       cloner.RegisterClonedObject(this, clone);
       clone.dict = (IItemDictionary<TKey, TValue>)((IItemDictionary<TKey, TValue>)dict).Clone(cloner);
-      clone.Initialize();
+      clone.RegisterEvents();
       return clone;
     }
 

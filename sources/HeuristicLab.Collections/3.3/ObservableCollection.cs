@@ -23,10 +23,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Collections {
+  [StorableClass]
   [Serializable]
   public class ObservableCollection<T> : IObservableCollection<T> {
+    [Storable]
     protected List<T> list;
 
     #region Properties
@@ -57,6 +60,8 @@ namespace HeuristicLab.Collections {
     public ObservableCollection(IEnumerable<T> collection) {
       list = new List<T>(collection);
     }
+    [StorableConstructor]
+    protected ObservableCollection(bool deserializing) { }
     #endregion
 
     #region Access

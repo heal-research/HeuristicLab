@@ -37,7 +37,7 @@ namespace HeuristicLab.Core {
       Initialize();
     }
     [StorableConstructor]
-    protected NamedItemCollection(bool deserializing) { }
+    protected NamedItemCollection(bool deserializing) : base(deserializing) { }
 
     [StorableHook(HookType.AfterDeserialization)]
     protected void Initialize() {

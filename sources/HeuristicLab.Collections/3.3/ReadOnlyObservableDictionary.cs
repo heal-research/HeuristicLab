@@ -23,10 +23,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Collections {
+  [StorableClass]
   [Serializable]
   public class ReadOnlyObservableDictionary<TKey, TValue> : IObservableDictionary<TKey, TValue> {
+    [Storable]
     protected IObservableDictionary<TKey, TValue> dict;
 
     #region Properties
@@ -59,6 +62,8 @@ namespace HeuristicLab.Collections {
       dict = dictionary;
       RegisterEvents();
     }
+    [StorableConstructor]
+    protected ReadOnlyObservableDictionary(bool deserializing) { }
     #endregion
 
     #region Access
@@ -110,6 +115,7 @@ namespace HeuristicLab.Collections {
     #endregion
 
     #region Events
+    [StorableHook(HookType.AfterDeserialization)]
     protected void RegisterEvents() {
       dict.ItemsAdded += new CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>>(dict_ItemsAdded);
       dict.ItemsRemoved += new CollectionItemsChangedEventHandler<KeyValuePair<TKey, TValue>>(dict_ItemsRemoved);

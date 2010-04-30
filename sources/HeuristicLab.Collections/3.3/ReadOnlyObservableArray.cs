@@ -23,10 +23,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Collections {
+  [StorableClass]
   [Serializable]
   public class ReadOnlyObservableArray<T> : IObservableArray<T> {
+    [Storable]
     protected IObservableArray<T> array;
 
     #region Properties
@@ -56,6 +59,8 @@ namespace HeuristicLab.Collections {
       this.array = array;
       RegisterEvents();
     }
+    [StorableConstructor]
+    protected ReadOnlyObservableArray(bool deserializing) { }
     #endregion
 
     #region Access
@@ -105,6 +110,7 @@ namespace HeuristicLab.Collections {
     #endregion
 
     #region Events
+    [StorableHook(HookType.AfterDeserialization)]
     protected void RegisterEvents() {
       array.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<T>>(array_ItemsReplaced);
       array.ItemsMoved += new CollectionItemsChangedEventHandler<IndexedItem<T>>(array_ItemsMoved);

@@ -53,17 +53,11 @@ namespace HeuristicLab.Core {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Class; }
     }
 
-    [Storable]
-    private Dictionary<TKey, TItem> Items {
-      get { return dict; }
-      set { dict = value; }
-    }
-
     protected KeyedItemCollection() : base() { }
     protected KeyedItemCollection(int capacity) : base(capacity) { }
     protected KeyedItemCollection(IEnumerable<TItem> collection) : base(collection) { }
     [StorableConstructor]
-    protected KeyedItemCollection(bool deserializing) { }
+    protected KeyedItemCollection(bool deserializing) : base(deserializing) { }
 
     public object Clone() {
       return Clone(new Cloner());

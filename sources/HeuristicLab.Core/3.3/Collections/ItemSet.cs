@@ -57,16 +57,10 @@ namespace HeuristicLab.Core {
       get { return VS2008ImageLibrary.Class; }
     }
 
-    [Storable]
-    private HashSet<T> Items {
-      get { return set; }
-      set { set = value; }
-    }
-
     public ItemSet() : base() { }
     public ItemSet(IEnumerable<T> collection) : base(collection) { }
     [StorableConstructor]
-    protected ItemSet(bool deserializing) { }
+    protected ItemSet(bool deserializing) : base(deserializing) { }
 
     public object Clone() {
       return Clone(new Cloner());
