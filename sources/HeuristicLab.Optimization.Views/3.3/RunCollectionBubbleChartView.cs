@@ -73,11 +73,6 @@ namespace HeuristicLab.Optimization.Views {
       this.chart.ChartAreas[0].AxisY.IntervalAutoMode = IntervalAutoMode.VariableCount;
     }
 
-    public RunCollectionBubbleChartView(RunCollection content)
-      : this() {
-      Content = content;
-    }
-
     public new RunCollection Content {
       get { return (RunCollection)base.Content; }
       set { base.Content = value; }

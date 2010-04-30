@@ -48,15 +48,6 @@ namespace HeuristicLab.Optimization.Views {
       InitializeComponent();
     }
 
-    /// <summary>
-    /// Intializes a new instance of <see cref="ItemBaseView"/> with the given <paramref name="item"/>.
-    /// </summary>
-    /// <param name="item">The item that should be displayed.</param>
-    public EngineAlgorithmView(EngineAlgorithm content)
-      : this() {
-      Content = content;
-    }
-
     protected override void DeregisterContentEvents() {
       Content.EngineChanged -= new EventHandler(Content_EngineChanged);
       Content.OperatorGraphChanged -= new EventHandler(Content_OperatorGraphChanged);

@@ -51,11 +51,6 @@ namespace HeuristicLab.Optimization.Views {
       itemsGroupBox.Text = "Runs";
     }
 
-    public RunCollectionView(IItemCollection<IRun> content)
-      : this() {
-      Content = content;
-    }
-
     protected override void DeregisterContentEvents() {
       Content.ItemsAdded -= new CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
       Content.ItemsRemoved -= new CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);

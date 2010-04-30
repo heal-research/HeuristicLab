@@ -49,16 +49,6 @@ namespace HeuristicLab.Core.Views {
       InitializeComponent();
       Caption = "Operator Graph";
     }
-    /// <summary>
-    /// Initializes a new instance of <see cref="OperatorGraphView"/> 
-    /// with the given <paramref name="operatorGraph"/>.
-    /// </summary>
-    /// <remarks>Calls <see cref="OperatorGraphView()"/>.</remarks>
-    /// <param name="operatorGraph">The operator graph to represent visually.</param>
-    public OperatorGraphView(OperatorGraph content)
-      : this() {
-      Content = content;
-    }
 
     /// <summary>
     /// Removes the eventhandlers from the underlying <see cref="IOperatorGraph"/>.

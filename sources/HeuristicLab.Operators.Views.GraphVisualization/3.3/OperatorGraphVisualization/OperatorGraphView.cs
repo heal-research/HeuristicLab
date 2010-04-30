@@ -52,11 +52,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       }
     }
 
-    public OperatorGraphView(OperatorGraph content)
-      : this() {
-      this.Content = content;
-    }
-
     public new OperatorGraph Content {
       get { return (OperatorGraph)base.Content; }
       set { base.Content = value; }

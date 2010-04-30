@@ -60,10 +60,6 @@ namespace HeuristicLab.Data.Views {
       sortedColumnIndizes = new List<KeyValuePair<int, SortOrder>>();
       rowComparer = new RowComparer();
     }
-    public StringConvertibleMatrixView(IStringConvertibleMatrix content)
-      : this() {
-      Content = content;
-    }
 
     protected override void DeregisterContentEvents() {
       Content.ItemChanged -= new EventHandler<EventArgs<int, int>>(Content_ItemChanged);

@@ -41,11 +41,6 @@ namespace HeuristicLab.Problems.ArtificialAnt.Views {
       InitializeComponent();
     }
 
-    public AntTrailView(AntTrail content)
-      : this() {
-      Content = content;
-    }
-
     protected override void DeregisterContentEvents() {
       Content.SymbolicExpressionTreeChanged -= new EventHandler(Content_SymbolicExpressionTreeChanged);
       base.DeregisterContentEvents();

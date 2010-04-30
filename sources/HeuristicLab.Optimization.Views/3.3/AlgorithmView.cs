@@ -49,14 +49,6 @@ namespace HeuristicLab.Optimization.Views {
     public AlgorithmView() {
       InitializeComponent();
     }
-    /// <summary>
-    /// Intializes a new instance of <see cref="ItemBaseView"/> with the given <paramref name="item"/>.
-    /// </summary>
-    /// <param name="item">The item that should be displayed.</param>
-    public AlgorithmView(IAlgorithm content)
-      : this() {
-      Content = content;
-    }
 
     protected override void OnInitialized(EventArgs e) {
       // Set order of tab pages according to z order.

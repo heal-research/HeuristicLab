@@ -51,12 +51,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
       InitializeComponent();
     }
 
-    public SymbolicExpressionModelView(SymbolicRegressionSolution content)
-      : this() {
-      Content = content;
-    }
-
-
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.ModelChanged += new EventHandler(Content_ModelChanged);

@@ -54,11 +54,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       this.connectionPenStyle.EndCap = LineCap.ArrowAnchor;
     }
 
-    public GraphVisualizationInfoView(IGraphVisualizationInfo content)
-      : this() {
-      this.Content = content;
-    }
-
     public IController Controller {
       get { return this.graphVisualization.Controller; }
     }

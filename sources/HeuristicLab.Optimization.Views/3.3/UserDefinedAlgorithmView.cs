@@ -45,14 +45,6 @@ namespace HeuristicLab.Optimization.Views {
     public UserDefinedAlgorithmView() {
       InitializeComponent();
     }
-    /// <summary>
-    /// Intializes a new instance of <see cref="ItemBaseView"/> with the given <paramref name="item"/>.
-    /// </summary>
-    /// <param name="item">The item that should be displayed.</param>
-    public UserDefinedAlgorithmView(UserDefinedAlgorithm content)
-      : this() {
-      Content = content;
-    }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();

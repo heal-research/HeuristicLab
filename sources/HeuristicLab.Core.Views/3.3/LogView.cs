@@ -48,10 +48,6 @@ namespace HeuristicLab.Core.Views {
       InitializeComponent();
       Caption = "LogView";
     }
-    public LogView(ILog content)
-      : this() {
-      Content = content;
-    }
 
     /// <summary>
     /// Removes the event handlers from the underlying <see cref="IEngine"/>.

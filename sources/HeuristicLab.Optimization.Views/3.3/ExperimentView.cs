@@ -44,14 +44,6 @@ namespace HeuristicLab.Optimization.Views {
     public ExperimentView() {
       InitializeComponent();
     }
-    /// <summary>
-    /// Intializes a new instance of <see cref="ItemBaseView"/> with the given <paramref name="item"/>.
-    /// </summary>
-    /// <param name="item">The item that should be displayed.</param>
-    public ExperimentView(Experiment content)
-      : this() {
-      Content = content;
-    }
 
     protected override void DeregisterContentEvents() {
       Content.ExceptionOccurred -= new EventHandler<EventArgs<Exception>>(Content_ExceptionOccurred);

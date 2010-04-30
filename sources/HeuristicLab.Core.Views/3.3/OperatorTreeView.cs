@@ -71,16 +71,6 @@ namespace HeuristicLab.Core.Views {
       parametersOperatorTable = new Dictionary<IKeyedItemCollection<string, IParameter>, IOperator>();
       Caption = "Operator";
     }
-    /// <summary>
-    /// Initializes a new instance of <see cref="OperatorGraphView"/> 
-    /// with the given <paramref name="operatorGraph"/>.
-    /// </summary>
-    /// <remarks>Calls <see cref="OperatorGraphView()"/>.</remarks>
-    /// <param name="operatorGraph">The operator graph to represent visually.</param>
-    public OperatorTreeView(IOperator content)
-      : this() {
-      Content = content;
-    }
 
     /// <summary>
     /// Updates all controls with the latest data of the model.

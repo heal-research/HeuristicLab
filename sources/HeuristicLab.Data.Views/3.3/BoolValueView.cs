@@ -45,16 +45,11 @@ namespace HeuristicLab.Data.Views {
       InitializeComponent();
       Caption = "BoolValue View";
     }
-    public BoolValueView(BoolValue content)
-      : this() {
-      Content = content;
-    }
 
     protected override void DeregisterContentEvents() {
       Content.ValueChanged -= new EventHandler(Content_ValueChanged);
       base.DeregisterContentEvents();
     }
-
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.ValueChanged += new EventHandler(Content_ValueChanged);

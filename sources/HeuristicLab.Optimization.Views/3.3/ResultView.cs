@@ -56,15 +56,6 @@ namespace HeuristicLab.Optimization.Views {
       Caption = "Result";
       base.ReadOnly = true;
     }
-    /// <summary>
-    /// Initializes a new instance of <see cref="VariableView"/> with the given <paramref name="variable"/>.
-    /// </summary>
-    /// <remarks>Calls <see cref="VariableView()"/>.</remarks>
-    /// <param name="variable">The variable to represent visually.</param>
-    public ResultView(IResult content)
-      : this() {
-      Content = content;
-    }
 
     /// <summary>
     /// Removes the eventhandlers from the underlying <see cref="Variable"/>.

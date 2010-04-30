@@ -40,14 +40,6 @@ namespace HeuristicLab.Core.Views {
     public ParameterizedNamedItemView() {
       InitializeComponent();
     }
-    /// <summary>
-    /// Intializes a new instance of <see cref="ItemBaseView"/> with the given <paramref name="item"/>.
-    /// </summary>
-    /// <param name="item">The item that should be displayed.</param>
-    public ParameterizedNamedItemView(IParameterizedNamedItem content)
-      : this() {
-      Content = content;
-    }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();

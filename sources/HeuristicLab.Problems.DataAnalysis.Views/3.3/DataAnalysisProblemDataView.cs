@@ -25,11 +25,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       InitializeComponent();
     }
 
-    public DataAnalysisProblemDataView(DataAnalysisProblemData content)
-      : this() {
-      Content = content;
-    }
-
     private void importButton_Click(object sender, EventArgs e) {
       if (openFileDialog == null) openFileDialog = new OpenFileDialog();
 

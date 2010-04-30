@@ -46,10 +46,6 @@ namespace HeuristicLab.Data.Views {
       Caption = "Comparison View";
       valueComboBox.DataSource = Enum.GetValues(typeof(ComparisonType));
     }
-    public ComparisonView(Comparison content)
-      : this() {
-      Content = content;
-    }
 
     protected override void DeregisterContentEvents() {
       Content.ValueChanged -= new EventHandler(Content_ValueChanged);

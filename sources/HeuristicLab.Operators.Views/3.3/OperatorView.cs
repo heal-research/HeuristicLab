@@ -44,14 +44,6 @@ namespace HeuristicLab.Operators.Views {
     public OperatorView() {
       InitializeComponent();
     }
-    /// <summary>
-    /// Intializes a new instance of <see cref="ItemBaseView"/> with the given <paramref name="item"/>.
-    /// </summary>
-    /// <param name="item">The item that should be displayed.</param>
-    public OperatorView(IOperator content)
-      : this() {
-      Content = content;
-    }
 
     /// <summary>
     /// Removes the eventhandlers from the underlying <see cref="IOperatorGraph"/>.

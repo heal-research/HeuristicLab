@@ -47,10 +47,6 @@ namespace HeuristicLab.Core.Views {
       InitializeComponent();
       Caption = "Item Collection";
     }
-    public ItemCollectionView(IItemCollection<T> content)
-      : this() {
-      Content = content;
-    }
 
     protected override void DeregisterContentEvents() {
       Content.ItemsAdded -= new CollectionItemsChangedEventHandler<T>(Content_ItemsAdded);

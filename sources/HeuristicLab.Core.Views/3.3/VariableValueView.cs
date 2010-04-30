@@ -49,15 +49,6 @@ namespace HeuristicLab.Core.Views {
       InitializeComponent();
       Caption = "Variable";
     }
-    /// <summary>
-    /// Initializes a new instance of <see cref="VariableView"/> with the given <paramref name="variable"/>.
-    /// </summary>
-    /// <remarks>Calls <see cref="VariableView()"/>.</remarks>
-    /// <param name="variable">The variable to represent visually.</param>
-    public VariableValueView(IVariable content)
-      : this() {
-      Content = content;
-    }
 
     /// <summary>
     /// Removes the eventhandlers from the underlying <see cref="Variable"/>.

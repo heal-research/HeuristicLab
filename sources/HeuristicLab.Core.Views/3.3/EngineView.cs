@@ -45,10 +45,6 @@ namespace HeuristicLab.Core.Views {
     public EngineView() {
       InitializeComponent();
     }
-    public EngineView(IEngine content)
-      : this() {
-      Content = content;
-    }
 
     /// <summary>
     /// Removes the event handlers from the underlying <see cref="IEngine"/>.

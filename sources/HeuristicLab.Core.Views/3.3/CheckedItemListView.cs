@@ -58,10 +58,6 @@ namespace HeuristicLab.Core.Views {
       InitializeComponent();
       Caption = "Checked Item List";
     }
-    public CheckedItemListView(ICheckedItemList<T> content)
-      : this() {
-      Content = content;
-    }
 
     /// <summary>
     /// Removes the eventhandlers from the underlying <see cref="ICheckedItemList"/>.

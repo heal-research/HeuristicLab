@@ -37,16 +37,6 @@ namespace HeuristicLab.Core.Views {
       Caption = "Operator List";
       itemsGroupBox.Text = "Operators";
     }
-    /// <summary>
-    /// Initializes a new instance of <see cref="VariablesScopeView"/> with 
-    /// the given <paramref name="scope"/>.
-    /// </summary>
-    /// <remarks>Calls <see cref="VariablesScopeView()"/>.</remarks>
-    /// <param name="scope">The scope whose variables should be represented visually.</param>
-    public OperatorListView(IItemList<IOperator> content)
-      : this() {
-      Content = content;
-    }
 
     protected override IOperator CreateItem() {
       if (typeSelectorDialog == null) {

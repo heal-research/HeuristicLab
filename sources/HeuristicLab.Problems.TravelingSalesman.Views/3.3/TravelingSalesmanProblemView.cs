@@ -46,14 +46,6 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
     public TravelingSalesmanProblemView() {
       InitializeComponent();
     }
-    /// <summary>
-    /// Intializes a new instance of <see cref="ItemBaseView"/> with the given <paramref name="item"/>.
-    /// </summary>
-    /// <param name="item">The item that should be displayed.</param>
-    public TravelingSalesmanProblemView(TravelingSalesmanProblem content)
-      : this() {
-      Content = content;
-    }
 
     protected override void DeregisterContentEvents() {
       Content.CoordinatesParameter.ValueChanged -= new EventHandler(CoordinatesParameter_ValueChanged);

@@ -58,10 +58,6 @@ namespace HeuristicLab.Core.Views {
       InitializeComponent();
       Caption = "Item Array";
     }
-    public ItemArrayView(IItemArray<T> content)
-      : this() {
-      Content = content;
-    }
 
     /// <summary>
     /// Removes the eventhandlers from the underlying <see cref="IScope"/>.

@@ -47,14 +47,6 @@ namespace HeuristicLab.Optimization.Views {
     public BatchRunView() {
       InitializeComponent();
     }
-    /// <summary>
-    /// Intializes a new instance of <see cref="ItemBaseView"/> with the given <paramref name="item"/>.
-    /// </summary>
-    /// <param name="item">The item that should be displayed.</param>
-    public BatchRunView(BatchRun content)
-      : this() {
-      Content = content;
-    }
 
     protected override void DeregisterContentEvents() {
       Content.AlgorithmChanged -= new EventHandler(Content_AlgorithmChanged);

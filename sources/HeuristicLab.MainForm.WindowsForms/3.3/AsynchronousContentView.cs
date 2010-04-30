@@ -15,11 +15,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
       InitializeComponent();
     }
 
-    public AsynchronousContentView(IContent content)
-      : this() {
-      this.Content = content;
-    }
-
     /// <summary>
     /// Asynchronous call of GUI updating.
     /// </summary>

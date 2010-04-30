@@ -48,10 +48,6 @@ namespace HeuristicLab.Data.Views {
       errorProvider.SetIconAlignment(valueTextBox, ErrorIconAlignment.MiddleLeft);
       errorProvider.SetIconPadding(valueTextBox, 2);
     }
-    public StringConvertibleValueView(IStringConvertibleValue content)
-      : this() {
-      Content = content;
-    }
 
     protected override void DeregisterContentEvents() {
       Content.ValueChanged -= new EventHandler(Content_ValueChanged);

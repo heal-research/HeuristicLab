@@ -44,10 +44,6 @@ namespace HeuristicLab.Core.Views {
       InitializeComponent();
       Caption = "Item Set";
     }
-    public ItemSetView(IItemSet<T> content)
-      : this() {
-      Content = content;
-    }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();

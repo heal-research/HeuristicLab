@@ -44,10 +44,6 @@ namespace HeuristicLab.Core.Views {
       errorProvider.SetIconAlignment(nameTextBox, ErrorIconAlignment.MiddleLeft);
       errorProvider.SetIconPadding(nameTextBox, 2);
     }
-    public NamedItemView(INamedItem content)
-      : this() {
-      Content = content;
-    }
 
     protected override void DeregisterContentEvents() {
       Content.NameChanged -= new EventHandler(Content_NameChanged);

@@ -80,12 +80,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.chart.ChartAreas[0].AxisY.IsStartedFromZero = true;
     }
 
-    public ScatterPlotView(DataAnalysisSolution dataAnalysisSolution)
-      : this() {
-      Content = dataAnalysisSolution;
-      UpdateChart();
-    }
-
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.EstimatedValuesChanged += new EventHandler(Content_EstimatedValuesChanged);

@@ -32,6 +32,12 @@ using System.Reflection;
 
 namespace HeuristicLab.MainForm.WindowsForms {
   public partial class ContentView : View, IContentView {
+    public ContentView()
+      : base() {
+      InitializeComponent();
+      this.locked = false;
+    }
+
     private IContent content;
     public IContent Content {
       get { return content; }
@@ -50,12 +56,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
           }
         }
       }
-    }
-
-    public ContentView()
-      : base() {
-      InitializeComponent();
-      this.locked = false;
     }
 
     private bool locked;

@@ -50,10 +50,6 @@ namespace HeuristicLab.Data.Views {
       errorProvider.SetIconAlignment(lengthTextBox, ErrorIconAlignment.MiddleLeft);
       errorProvider.SetIconPadding(lengthTextBox, 2);
     }
-    public StringConvertibleArrayView(IStringConvertibleArray content)
-      : this() {
-      Content = content;
-    }
 
     protected override void DeregisterContentEvents() {
       Content.ItemChanged -= new EventHandler<EventArgs<int>>(Content_ItemChanged);

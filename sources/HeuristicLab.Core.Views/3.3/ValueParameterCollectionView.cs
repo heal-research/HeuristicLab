@@ -38,16 +38,6 @@ namespace HeuristicLab.Core.Views {
       Caption = "ValueParameterCollection";
       itemsGroupBox.Text = "Parameters";
     }
-    /// <summary>
-    /// Initializes a new instance of <see cref="VariablesScopeView"/> with 
-    /// the given <paramref name="scope"/>.
-    /// </summary>
-    /// <remarks>Calls <see cref="VariablesScopeView()"/>.</remarks>
-    /// <param name="scope">The scope whose variables should be represented visually.</param>
-    public ValueParameterCollectionView(IKeyedItemCollection<string, IValueParameter> content)
-      : this() {
-      Content = content;
-    }
 
     protected override IValueParameter CreateItem() {
       if (createParameterDialog == null) {

@@ -55,16 +55,6 @@ namespace HeuristicLab.Core.Views {
       Caption = "Scope";
       scopeNodeTable = new Dictionary<IScope, TreeNode>();
       subScopesScopeTable = new Dictionary<ScopeList, IScope>();
-
-    }
-    /// <summary>
-    /// Initializes a new instance of <see cref="ScopeView"/> with the given <paramref name="scope"/>.
-    /// </summary>
-    /// <remarks>Calls <see cref="ScopeView()"/>.</remarks>
-    /// <param name="scope">The scope to represent visually.</param>
-    public ScopeView(IScope content)
-      : this() {
-      Content = content;
     }
 
     /// <summary>

@@ -43,10 +43,6 @@ namespace HeuristicLab.Core.Views {
       InitializeComponent();
       Caption = "Named Item Collection";
     }
-    public NamedItemCollectionView(IKeyedItemCollection<string, T> content)
-      : this() {
-      Content = content;
-    }
 
     protected override void DeregisterContentEvents() {
       Content.ItemsReplaced -= new CollectionItemsChangedEventHandler<T>(Content_ItemsReplaced);

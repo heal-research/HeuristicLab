@@ -14,15 +14,5 @@ namespace HeuristicLab.Core.Views {
       Caption = "ScopeList";
       itemsGroupBox.Text = "Scopes";
     }
-    /// <summary>
-    /// Initializes a new instance of <see cref="VariablesScopeView"/> with 
-    /// the given <paramref name="scope"/>.
-    /// </summary>
-    /// <remarks>Calls <see cref="VariablesScopeView()"/>.</remarks>
-    /// <param name="scope">The scope whose variables should be represented visually.</param>
-    public ScopeListView(IItemList<IScope> content)
-      : this() {
-      Content = content;
-    }
   }
 }

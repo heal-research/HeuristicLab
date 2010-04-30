@@ -44,11 +44,6 @@ namespace HeuristicLab.Problems.Knapsack.Views {
       InitializeComponent();
     }
 
-    public KnapsackSolutionView(KnapsackSolution content)
-      : this() {
-      Content = content;
-    }
-
     protected override void DeregisterContentEvents() {
       Content.BinaryVectorChanged -= new EventHandler(Content_BinaryVectorChanged);
       Content.CapacityChanged -= new EventHandler(Content_CapacityChanged);

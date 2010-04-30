@@ -45,14 +45,6 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
     public PathTSPTourView() {
       InitializeComponent();
     }
-    /// <summary>
-    /// Intializes a new instance of <see cref="ItemBaseView"/> with the given <paramref name="item"/>.
-    /// </summary>
-    /// <param name="item">The item that should be displayed.</param>
-    public PathTSPTourView(PathTSPTour content)
-      : this() {
-      Content = content;
-    }
 
     protected override void DeregisterContentEvents() {
       Content.CoordinatesChanged -= new EventHandler(Content_CoordinatesChanged);

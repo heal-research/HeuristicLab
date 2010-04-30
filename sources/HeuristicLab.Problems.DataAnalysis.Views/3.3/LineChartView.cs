@@ -61,12 +61,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.chart.ChartAreas[0].CursorY.Interval = 0;
     }
 
-    public LineChartView(DataAnalysisSolution dataAnalysisSolution)
-      : this() {
-      Content = dataAnalysisSolution;
-      RedrawChart();
-    }
-
     private void RedrawChart() {
       this.chart.Series.Clear();
       this.chart.Series.Add(TARGETVARIABLE_SERIES_NAME);

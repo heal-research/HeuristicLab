@@ -59,11 +59,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.Controls.Add(matrixView);
     }
 
-    public EstimatedValuesView(DataAnalysisSolution dataAnalysisSolution)
-      : this() {
-      Content = dataAnalysisSolution;
-    }
-
     #region events
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();

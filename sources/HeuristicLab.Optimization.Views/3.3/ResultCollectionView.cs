@@ -43,16 +43,6 @@ namespace HeuristicLab.Optimization.Views {
       itemsGroupBox.Text = "Results";
       base.ReadOnly = true;
     }
-    /// <summary>
-    /// Initializes a new instance of <see cref="VariablesScopeView"/> with 
-    /// the given <paramref name="scope"/>.
-    /// </summary>
-    /// <remarks>Calls <see cref="VariablesScopeView()"/>.</remarks>
-    /// <param name="scope">The scope whose variables should be represented visually.</param>
-    public ResultCollectionView(IKeyedItemCollection<string, IResult> content)
-      : this() {
-      Content = content;
-    }
 
     protected override IResult CreateItem() {
       return null;

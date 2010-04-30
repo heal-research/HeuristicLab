@@ -23,12 +23,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       Caption = "SymbolicExpression View";
     }
 
-    public SymbolicExpressionView(SymbolicExpressionTree content)
-      : this() {
-      Content = content;
-    }
-
-
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {

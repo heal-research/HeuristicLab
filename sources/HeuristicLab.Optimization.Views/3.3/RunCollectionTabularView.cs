@@ -43,11 +43,6 @@ namespace HeuristicLab.Optimization.Views {
       base.ReadOnly = true;
     }
 
-    public RunCollectionTabularView(RunCollection content)
-      : this() {
-      Content = content;
-    }
-
     public override bool ReadOnly {
       get { return base.ReadOnly; }
       set { /*not needed because results are always readonly */}
