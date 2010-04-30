@@ -54,7 +54,8 @@ namespace HeuristicLab.Core {
       : base(collection) {
       checkedState = new Dictionary<T, bool>();
       foreach (var item in collection)
-        checkedState.Add(item, false);
+        if (!checkedState.ContainsKey(item))
+          checkedState.Add(item, false);
     }
     [StorableConstructor]
     protected CheckedItemCollection(bool deserializing) : base(deserializing) { }
@@ -67,7 +68,7 @@ namespace HeuristicLab.Core {
       if (!this.checkedState.ContainsKey(item)) throw new ArgumentException();
       if (this.checkedState[item] != checkedState) {
         this.checkedState[item] = checkedState;
-        OnItemsChecked(new T[] { item });
+        OnCheckedItemsChanged(new T[] { item });
       }
     }
 
@@ -94,7 +95,7 @@ namespace HeuristicLab.Core {
       base.OnItemsRemoved(items);
     }
 
-    protected virtual void OnItemsChecked(IEnumerable<T> items) {
+    protected virtual void OnCheckedItemsChanged(IEnumerable<T> items) {
       RaiseCheckedItemsChanged(new CollectionItemsChangedEventArgs<T>(items));
     }
 

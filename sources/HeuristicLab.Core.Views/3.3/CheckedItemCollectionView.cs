@@ -29,6 +29,7 @@ using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Core.Views {
   [View("CheckedItemCollection View")]
+  [Content(typeof(ICheckedItemCollection<>), false)]
   [Content(typeof(CheckedItemCollection<>), true)]
   public partial class CheckedItemCollectionView<T> : ItemView where T : class, IItem {
     protected TypeSelectorDialog typeSelectorDialog;
@@ -126,6 +127,7 @@ namespace HeuristicLab.Core.Views {
       listViewItem.Text = item.ToString();
       listViewItem.ToolTipText = item.ItemName + ": " + item.ItemDescription;
       listViewItem.Tag = item;
+      listViewItem.Checked = Content.ItemChecked(item);
       itemsListView.SmallImageList.Images.Add(item.ItemImage);
       listViewItem.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
       return listViewItem;
@@ -167,8 +169,10 @@ namespace HeuristicLab.Core.Views {
 
     #region ListView Events
     private void itemsListView_ItemChecked(object sender, ItemCheckedEventArgs e) {
-      var checkedItem = e.Item;
-      Content.SetItemCheckedState((T)checkedItem.Tag, checkedItem.Checked);
+      var checkedItem = (T)e.Item.Tag;
+      if (Content.ItemChecked(checkedItem) != e.Item.Checked) {
+        Content.SetItemCheckedState(checkedItem, e.Item.Checked);
+      }
     }
 
     protected virtual void itemsListView_SelectedIndexChanged(object sender, EventArgs e) {
