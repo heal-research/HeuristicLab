@@ -181,11 +181,19 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       //remove old connectors and skip correct connectors
       List<string> oldConnectorNames = operatorShape.AdditionalConnectorNames.ToList();
       while (i < this.connectorNames.Count && j < oldConnectorNames.Count) {
-        if (this.connectorNames[i] != oldConnectorNames[j]) {
-          operatorShape.RemoveConnector(oldConnectorNames[j]);
-        } else
+        if (connectorNames[i] == OperatorShapeInfoFactory.SuccessorConnector ||
+          connectorNames[i] == OperatorShapeInfoFactory.PredecessorConnector)
           i++;
-        j++;
+        else if (oldConnectorNames[j] == OperatorShapeInfoFactory.SuccessorConnector ||
+          oldConnectorNames[j] == OperatorShapeInfoFactory.PredecessorConnector)
+          j++;
+        else if (this.connectorNames[i] != oldConnectorNames[j]) {
+          operatorShape.RemoveConnector(oldConnectorNames[j]);
+          j++;
+        } else {
+          i++;
+          j++;
+        }
       }
       //remove remaining old connectors
       for (; j < oldConnectorNames.Count; j++)
@@ -194,7 +202,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       //add new connectors except successor and connector
       for (; i < this.connectorNames.Count; i++)
         if (this.connectorNames[i] != OperatorShapeInfoFactory.SuccessorConnector && this.connectorNames[i] != OperatorShapeInfoFactory.PredecessorConnector)
-        operatorShape.AddConnector(this.connectorNames[i]);
+          operatorShape.AddConnector(this.connectorNames[i]);
 
       operatorShape.UpdateLabels(this.labels);
     }
