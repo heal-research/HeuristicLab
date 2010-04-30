@@ -102,6 +102,7 @@
     <Compile Include="Attributes\CreatableAttribute.cs" />
     <None Include="HeuristicLabCorePlugin.cs.frame" />
     <Compile Include="Collections\CheckedItemCollection.cs" />
+    <Compile Include="Collections\CheckedItemList.cs" />
     <Compile Include="Collections\ReadOnlyItemDictionary.cs" />
     <Compile Include="Collections\ItemDictionary.cs" />
     <Compile Include="Collections\ReadOnlyKeyedItemCollection.cs" />
@@ -123,6 +124,7 @@
     <Compile Include="Collections\ScopeList.cs" />
     <Compile Include="Collections\ValueParameterCollection.cs" />
     <Compile Include="Collections\VariableCollection.cs" />
+    <Compile Include="Interfaces\ICheckedItemList.cs" />
     <Compile Include="Interfaces\ICheckedItemCollection.cs" />
     <Compile Include="PersistenceContentManager.cs" />
     <Compile Include="Interfaces\IKeyedItemCollection.cs" />

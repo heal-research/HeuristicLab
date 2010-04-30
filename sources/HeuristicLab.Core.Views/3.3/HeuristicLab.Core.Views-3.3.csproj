@@ -98,6 +98,12 @@
     <Compile Include="Clipboard.Designer.cs">
       <DependentUpon>Clipboard.cs</DependentUpon>
     </Compile>
+    <Compile Include="CheckedItemListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CheckedItemListView.Designer.cs">
+      <DependentUpon>CheckedItemListView.cs</DependentUpon>
+    </Compile>
     <Compile Include="LogView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -301,6 +307,11 @@
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="CheckedItemListView.resx">
+      <DependentUpon>CheckedItemListView.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
