@@ -251,7 +251,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       InputVariables.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<StringValue>(InputVariables_CollectionReset);
       InputVariables.ItemsAdded += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<StringValue>(InputVariables_ItemsAdded);
       InputVariables.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<StringValue>(InputVariables_ItemsRemoved);
-      InputVariables.ItemsChecked += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<StringValue>(InputVariables_ItemsChecked);
+      InputVariables.CheckedItemsChanged += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<StringValue>(InputVariables_ItemsChecked);
       foreach (var item in InputVariables)
         item.ValueChanged += new EventHandler(InputVariable_ValueChanged);
     }
