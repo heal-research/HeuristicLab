@@ -378,7 +378,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
 
       // default description and version
       pluginVersion = "0.0.0.0";
-      pluginDescription = pluginName;
+      pluginDescription = string.Empty;
       if (pluginMetaDataAttr.ConstructorArguments.Count() == 2) {
         // if two arguments are given the second argument is the version
         pluginVersion = (string)pluginMetaDataAttr.ConstructorArguments[1].Value;

@@ -55,20 +55,23 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.versionColumnHeader = new System.Windows.Forms.ColumnHeader();
       this.descriptionColumnHeader = new System.Windows.Forms.ColumnHeader();
       this.smallImageList = new System.Windows.Forms.ImageList(this.components);
-      this.detailsButton = new System.Windows.Forms.Button();
-      this.listButton = new System.Windows.Forms.Button();
-      this.largeIconsButton = new System.Windows.Forms.Button();
+      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this.showListButton = new System.Windows.Forms.RadioButton();
+      this.showDetailsButton = new System.Windows.Forms.RadioButton();
+      this.groupBox = new System.Windows.Forms.GroupBox();
+      this.groupBox.SuspendLayout();
       this.SuspendLayout();
       // 
       // startButton
       // 
       this.startButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.startButton.Enabled = false;
-      this.startButton.Location = new System.Drawing.Point(579, 511);
+      this.startButton.Location = new System.Drawing.Point(579, 507);
       this.startButton.Name = "startButton";
       this.startButton.Size = new System.Drawing.Size(75, 23);
       this.startButton.TabIndex = 1;
-      this.startButton.Text = "Start";
+      this.startButton.Text = "&Start";
+      this.toolTip.SetToolTip(this.startButton, "Start Selected Application");
       this.startButton.UseVisualStyleBackColor = true;
       this.startButton.Click += new System.EventHandler(this.applicationsListView_ItemActivate);
       // 
@@ -99,12 +102,12 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.applicationsListView.MultiSelect = false;
       this.applicationsListView.Name = "applicationsListView";
       this.applicationsListView.ShowItemToolTips = true;
-      this.applicationsListView.Size = new System.Drawing.Size(642, 493);
+      this.applicationsListView.Size = new System.Drawing.Size(642, 479);
       this.applicationsListView.SmallImageList = this.smallImageList;
       this.applicationsListView.TabIndex = 2;
       this.applicationsListView.UseCompatibleStateImageBehavior = false;
       this.applicationsListView.ItemActivate += new System.EventHandler(this.applicationsListView_ItemActivate);
-      this.applicationsListView.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.applicationsListBox_SelectedIndexChanged);
+      this.applicationsListView.SelectedIndexChanged += new System.EventHandler(this.applicationsListView_SelectedIndexChanged);
       // 
       // nameColumnHeader
       // 
@@ -126,60 +129,57 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.smallImageList.TransparentColor = System.Drawing.Color.Transparent;
       this.smallImageList.Images.SetKeyName(0, "HeuristicLab.ico");
       // 
-      // detailsButton
+      // showListButton
       // 
-      this.detailsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.detailsButton.AutoSize = true;
-      this.detailsButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.Details;
-      this.detailsButton.Location = new System.Drawing.Point(68, 511);
-      this.detailsButton.Name = "detailsButton";
-      this.detailsButton.Size = new System.Drawing.Size(22, 23);
-      this.detailsButton.TabIndex = 5;
-      this.detailsButton.UseVisualStyleBackColor = true;
-      this.detailsButton.Click += new System.EventHandler(this.detailsButton_Click);
+      this.showListButton.Appearance = System.Windows.Forms.Appearance.Button;
+      this.showListButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.show_icons;
+      this.showListButton.Location = new System.Drawing.Point(6, 9);
+      this.showListButton.Name = "showListButton";
+      this.showListButton.Size = new System.Drawing.Size(25, 25);
+      this.showListButton.TabIndex = 3;
+      this.showListButton.TabStop = true;
+      this.toolTip.SetToolTip(this.showListButton, "Show List");
+      this.showListButton.UseVisualStyleBackColor = true;
+      this.showListButton.Click += new System.EventHandler(this.largeIconsButton_Click);
       // 
-      // listButton
+      // showDetailsButton
       // 
-      this.listButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.listButton.AutoSize = true;
-      this.listButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-      this.listButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.List;
-      this.listButton.Location = new System.Drawing.Point(40, 511);
-      this.listButton.Name = "listButton";
-      this.listButton.Size = new System.Drawing.Size(22, 22);
-      this.listButton.TabIndex = 4;
-      this.listButton.UseVisualStyleBackColor = true;
-      this.listButton.Click += new System.EventHandler(this.listButton_Click);
+      this.showDetailsButton.Appearance = System.Windows.Forms.Appearance.Button;
+      this.showDetailsButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.show_details;
+      this.showDetailsButton.Location = new System.Drawing.Point(37, 9);
+      this.showDetailsButton.Name = "showDetailsButton";
+      this.showDetailsButton.Size = new System.Drawing.Size(25, 25);
+      this.showDetailsButton.TabIndex = 4;
+      this.showDetailsButton.TabStop = true;
+      this.toolTip.SetToolTip(this.showDetailsButton, "Show Details");
+      this.showDetailsButton.UseVisualStyleBackColor = true;
+      this.showDetailsButton.Click += new System.EventHandler(this.detailsButton_Click);
       // 
-      // largeIconsButton
+      // groupBox
       // 
-      this.largeIconsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.largeIconsButton.AutoSize = true;
-      this.largeIconsButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-      this.largeIconsButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.LargeIcons;
-      this.largeIconsButton.Location = new System.Drawing.Point(12, 511);
-      this.largeIconsButton.Name = "largeIconsButton";
-      this.largeIconsButton.Size = new System.Drawing.Size(22, 22);
-      this.largeIconsButton.TabIndex = 3;
-      this.largeIconsButton.UseVisualStyleBackColor = true;
-      this.largeIconsButton.Click += new System.EventHandler(this.largeIconsButton_Click);
+      this.groupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.groupBox.Controls.Add(this.showListButton);
+      this.groupBox.Controls.Add(this.showDetailsButton);
+      this.groupBox.Location = new System.Drawing.Point(12, 497);
+      this.groupBox.Name = "groupBox";
+      this.groupBox.Size = new System.Drawing.Size(68, 37);
+      this.groupBox.TabIndex = 5;
+      this.groupBox.TabStop = false;
       // 
       // StarterForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(666, 546);
-      this.Controls.Add(this.detailsButton);
-      this.Controls.Add(this.listButton);
-      this.Controls.Add(this.largeIconsButton);
+      this.Controls.Add(this.groupBox);
       this.Controls.Add(this.applicationsListView);
       this.Controls.Add(this.startButton);
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.Name = "StarterForm";
       this.Text = "HeuristicLab Starter";
       this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+      this.groupBox.ResumeLayout(false);
       this.ResumeLayout(false);
-      this.PerformLayout();
 
     }
 
@@ -191,9 +191,10 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     private System.Windows.Forms.ColumnHeader nameColumnHeader;
     private System.Windows.Forms.ColumnHeader versionColumnHeader;
     private System.Windows.Forms.ColumnHeader descriptionColumnHeader;
-    private System.Windows.Forms.Button largeIconsButton;
-    private System.Windows.Forms.Button listButton;
-    private System.Windows.Forms.Button detailsButton;
     private System.Windows.Forms.ImageList smallImageList;
+    private System.Windows.Forms.ToolTip toolTip;
+    private System.Windows.Forms.RadioButton showListButton;
+    private System.Windows.Forms.RadioButton showDetailsButton;
+    private System.Windows.Forms.GroupBox groupBox;
   }
 }

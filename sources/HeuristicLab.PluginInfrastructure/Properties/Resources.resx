@@ -124,6 +124,9 @@
   <data name="VS2008ImageLibrary_CommonElements_Objects_Arrow_Up" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\VS2008ImageLibrary_CommonElements_Objects_Arrow_Up1.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="show_icons" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\show_icons.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="VS2008ImageLibrary_Objects_NetworkConnections" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\VS2008ImageLibrary_Objects_NetworkConnections.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -150,5 +153,8 @@
   </data>
   <data name="VS2008ImageLibrary_CommonElements_Actions_Add" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\VS2008ImageLibrary_CommonElements_Actions_Add.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="show_details" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\show_details.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

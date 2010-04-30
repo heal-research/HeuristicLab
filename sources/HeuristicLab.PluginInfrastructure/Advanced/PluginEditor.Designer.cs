@@ -44,6 +44,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
       this.uploadButton = new System.Windows.Forms.Button();
       this.refreshButton = new System.Windows.Forms.Button();
       this.listView = new HeuristicLab.PluginInfrastructure.Advanced.MultiSelectListView();
@@ -51,6 +52,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.localVersionHeader = new System.Windows.Forms.ColumnHeader();
       this.serverVersionHeader = new System.Windows.Forms.ColumnHeader();
       this.descriptionHeader = new System.Windows.Forms.ColumnHeader();
+      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.SuspendLayout();
       // 
       // uploadButton
@@ -58,12 +60,13 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.uploadButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.uploadButton.Enabled = false;
       this.uploadButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_CommonElements_Objects_Arrow_Up;
-      this.uploadButton.Location = new System.Drawing.Point(78, 477);
+      this.uploadButton.Location = new System.Drawing.Point(78, 482);
       this.uploadButton.Name = "uploadButton";
-      this.uploadButton.Size = new System.Drawing.Size(114, 31);
+      this.uploadButton.Size = new System.Drawing.Size(114, 26);
       this.uploadButton.TabIndex = 7;
       this.uploadButton.Text = "Upload Selected";
       this.uploadButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.toolTip.SetToolTip(this.uploadButton, "Upload selected plugins to the server");
       this.uploadButton.UseVisualStyleBackColor = true;
       this.uploadButton.Click += new System.EventHandler(this.uploadButton_Click);
       // 
@@ -71,12 +74,13 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // 
       this.refreshButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.refreshButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_Objects_Internet;
-      this.refreshButton.Location = new System.Drawing.Point(0, 477);
+      this.refreshButton.Location = new System.Drawing.Point(0, 482);
       this.refreshButton.Name = "refreshButton";
-      this.refreshButton.Size = new System.Drawing.Size(72, 31);
+      this.refreshButton.Size = new System.Drawing.Size(72, 26);
       this.refreshButton.TabIndex = 6;
       this.refreshButton.Text = "Refresh";
       this.refreshButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.toolTip.SetToolTip(this.refreshButton, "Update list of plugins from the server");
       this.refreshButton.UseVisualStyleBackColor = true;
       this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
       // 
@@ -93,7 +97,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
             this.descriptionHeader});
       this.listView.Location = new System.Drawing.Point(0, 0);
       this.listView.Name = "listView";
-      this.listView.Size = new System.Drawing.Size(539, 471);
+      this.listView.Size = new System.Drawing.Size(539, 476);
       this.listView.SuppressItemCheckedEvents = false;
       this.listView.TabIndex = 8;
       this.listView.UseCompatibleStateImageBehavior = false;
@@ -143,5 +147,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private System.Windows.Forms.ColumnHeader localVersionHeader;
     private System.Windows.Forms.ColumnHeader serverVersionHeader;
     private System.Windows.Forms.ColumnHeader descriptionHeader;
+    private System.Windows.Forms.ToolTip toolTip;
   }
 }

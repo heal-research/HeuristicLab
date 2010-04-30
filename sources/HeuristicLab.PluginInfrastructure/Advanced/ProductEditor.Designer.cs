@@ -49,20 +49,21 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.uploadButton = new System.Windows.Forms.Button();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
       this.productsGroupBox = new System.Windows.Forms.GroupBox();
+      this.newProductButton = new System.Windows.Forms.Button();
       this.productsListView = new System.Windows.Forms.ListView();
       this.productNameHeader = new System.Windows.Forms.ColumnHeader();
       this.productVersionHeader = new System.Windows.Forms.ColumnHeader();
       this.productImageList = new System.Windows.Forms.ImageList(this.components);
       this.detailsGroupBox = new System.Windows.Forms.GroupBox();
       this.pluginsGroupBox = new System.Windows.Forms.GroupBox();
+      this.pluginListView = new HeuristicLab.PluginInfrastructure.Advanced.PluginListView();
       this.versionTextBox = new System.Windows.Forms.TextBox();
       this.nameLabel = new System.Windows.Forms.Label();
       this.nameTextBox = new System.Windows.Forms.TextBox();
       this.versionLabel = new System.Windows.Forms.Label();
       this.pluginImageList = new System.Windows.Forms.ImageList(this.components);
-      this.newProductButton = new System.Windows.Forms.Button();
       this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
-      this.pluginListView = new HeuristicLab.PluginInfrastructure.Advanced.PluginListView();
+      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
@@ -76,12 +77,13 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // 
       this.refreshButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.refreshButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_Objects_Internet;
-      this.refreshButton.Location = new System.Drawing.Point(6, 389);
+      this.refreshButton.Location = new System.Drawing.Point(6, 394);
       this.refreshButton.Name = "refreshButton";
-      this.refreshButton.Size = new System.Drawing.Size(73, 31);
+      this.refreshButton.Size = new System.Drawing.Size(73, 26);
       this.refreshButton.TabIndex = 1;
       this.refreshButton.Text = "Refresh";
       this.refreshButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.toolTip.SetToolTip(this.refreshButton, "Refresh list of plugins and products from server");
       this.refreshButton.UseVisualStyleBackColor = true;
       this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
       // 
@@ -90,12 +92,13 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.uploadButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.uploadButton.Enabled = false;
       this.uploadButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_CommonElements_Objects_Arrow_Up;
-      this.uploadButton.Location = new System.Drawing.Point(85, 389);
+      this.uploadButton.Location = new System.Drawing.Point(85, 394);
       this.uploadButton.Name = "uploadButton";
-      this.uploadButton.Size = new System.Drawing.Size(120, 31);
+      this.uploadButton.Size = new System.Drawing.Size(120, 26);
       this.uploadButton.TabIndex = 2;
       this.uploadButton.Text = "Upload Products";
       this.uploadButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.toolTip.SetToolTip(this.uploadButton, "Upload changed products to server");
       this.uploadButton.UseVisualStyleBackColor = true;
       this.uploadButton.Click += new System.EventHandler(this.saveButton_Click);
       // 
@@ -132,6 +135,20 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.productsGroupBox.TabStop = false;
       this.productsGroupBox.Text = "Products";
       // 
+      // newProductButton
+      // 
+      this.newProductButton.Enabled = false;
+      this.newProductButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_CommonElements_Actions_Add;
+      this.newProductButton.Location = new System.Drawing.Point(6, 19);
+      this.newProductButton.Name = "newProductButton";
+      this.newProductButton.Size = new System.Drawing.Size(104, 26);
+      this.newProductButton.TabIndex = 3;
+      this.newProductButton.Text = "Create Product";
+      this.newProductButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.toolTip.SetToolTip(this.newProductButton, "Create a new product");
+      this.newProductButton.UseVisualStyleBackColor = true;
+      this.newProductButton.Click += new System.EventHandler(this.newProductButton_Click);
+      // 
       // productsListView
       // 
       this.productsListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -142,10 +159,10 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
             this.productVersionHeader});
       this.productsListView.Enabled = false;
       this.productsListView.FullRowSelect = true;
-      this.productsListView.Location = new System.Drawing.Point(6, 56);
+      this.productsListView.Location = new System.Drawing.Point(6, 51);
       this.productsListView.MultiSelect = false;
       this.productsListView.Name = "productsListView";
-      this.productsListView.Size = new System.Drawing.Size(309, 327);
+      this.productsListView.Size = new System.Drawing.Size(309, 337);
       this.productsListView.SmallImageList = this.productImageList;
       this.productsListView.TabIndex = 4;
       this.productsListView.UseCompatibleStateImageBehavior = false;
@@ -198,6 +215,19 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.pluginsGroupBox.TabStop = false;
       this.pluginsGroupBox.Text = "Plugins";
       // 
+      // pluginListView
+      // 
+      this.pluginListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.pluginListView.Enabled = false;
+      this.pluginListView.Location = new System.Drawing.Point(3, 16);
+      this.pluginListView.Name = "pluginListView";
+      this.pluginListView.Plugins = null;
+      this.pluginListView.Size = new System.Drawing.Size(322, 330);
+      this.pluginListView.TabIndex = 7;
+      this.pluginListView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.pluginListView_ItemChecked);
+      // 
       // versionTextBox
       // 
       this.versionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
@@ -246,35 +276,9 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.pluginImageList.ImageSize = new System.Drawing.Size(16, 16);
       this.pluginImageList.TransparentColor = System.Drawing.Color.Transparent;
       // 
-      // newProductButton
-      // 
-      this.newProductButton.Enabled = false;
-      this.newProductButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_CommonElements_Actions_Add;
-      this.newProductButton.Location = new System.Drawing.Point(6, 19);
-      this.newProductButton.Name = "newProductButton";
-      this.newProductButton.Size = new System.Drawing.Size(104, 31);
-      this.newProductButton.TabIndex = 3;
-      this.newProductButton.Text = "Create Product";
-      this.newProductButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.newProductButton.UseVisualStyleBackColor = true;
-      this.newProductButton.Click += new System.EventHandler(this.newProductButton_Click);
-      // 
       // errorProvider
       // 
       this.errorProvider.ContainerControl = this;
-      // 
-      // pluginListView
-      // 
-      this.pluginListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.pluginListView.Enabled = false;
-      this.pluginListView.Location = new System.Drawing.Point(3, 16);
-      this.pluginListView.Name = "pluginListView";
-      this.pluginListView.Plugins = null;
-      this.pluginListView.Size = new System.Drawing.Size(322, 330);
-      this.pluginListView.TabIndex = 7;
-      this.pluginListView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.pluginListView_ItemChecked);
       // 
       // ProductEditor
       // 
@@ -315,6 +319,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private System.Windows.Forms.GroupBox productsGroupBox;
     private System.Windows.Forms.GroupBox detailsGroupBox;
     private System.Windows.Forms.GroupBox pluginsGroupBox;
+    private System.Windows.Forms.ToolTip toolTip;
 
   }
 }

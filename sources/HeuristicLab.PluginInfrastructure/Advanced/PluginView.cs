@@ -32,6 +32,7 @@ using HeuristicLab.PluginInfrastructure.Manager;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
   internal partial class PluginView : Form {
+    private const string IMAGE_KEY_PLUGIN = "Plugin";
     private const string IMAGE_KEY_ASSEMBLY = "Assembly";
     private const string IMAGE_KEY_FILE = "File";
     private const string IMAGE_KEY_DOCUMENT = "Document";
@@ -53,9 +54,10 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     }
 
     private void PopulateImageList() {
-      imageList.Images.Add(IMAGE_KEY_ASSEMBLY, HeuristicLab.PluginInfrastructure.Resources.Resources.Assembly);
-      imageList.Images.Add(IMAGE_KEY_FILE, HeuristicLab.PluginInfrastructure.Resources.Resources.File);
-      imageList.Images.Add(IMAGE_KEY_DOCUMENT, HeuristicLab.PluginInfrastructure.Resources.Resources.Document);
+      pluginsImageList.Images.Add(IMAGE_KEY_PLUGIN, HeuristicLab.PluginInfrastructure.Resources.Resources.Install);
+      filesImageList.Images.Add(IMAGE_KEY_ASSEMBLY, HeuristicLab.PluginInfrastructure.Resources.Resources.Assembly);
+      filesImageList.Images.Add(IMAGE_KEY_FILE, HeuristicLab.PluginInfrastructure.Resources.Resources.File);
+      filesImageList.Images.Add(IMAGE_KEY_DOCUMENT, HeuristicLab.PluginInfrastructure.Resources.Resources.Document);
     }
 
     public void UpdateControls() {
@@ -70,9 +72,9 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
         errorTextBox.Text = localPlugin.LoadingErrorInformation;
       }
       foreach (PluginDescription dependency in plugin.Dependencies) {
-        var depItem = new ListViewItem(new string[] { dependency.Name, dependency.Version.ToString() });
+        var depItem = new ListViewItem(new string[] { dependency.Name, dependency.Version.ToString(), dependency.Description });
         depItem.Tag = dependency;
-        depItem.ImageKey = IMAGE_KEY_ASSEMBLY;
+        depItem.ImageKey = IMAGE_KEY_PLUGIN;
         dependenciesListView.Items.Add(depItem);
       }
       foreach (var file in plugin.Files) {

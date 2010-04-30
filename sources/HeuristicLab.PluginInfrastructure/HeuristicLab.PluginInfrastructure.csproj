@@ -116,13 +116,6 @@
     <Compile Include="Advanced\InstallationManagerControl.Designer.cs">
       <DependentUpon>InstallationManagerControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Advanced\LocalPluginsView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Advanced\LocalPluginsView.Designer.cs">
-      <DependentUpon>LocalPluginsView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Advanced\IStatusDisplay.cs" />
     <Compile Include="Advanced\InstallationManagerException.cs" />
     <Compile Include="Advanced\DeploymentService\AdminClientFactory.cs" />
     <Compile Include="Advanced\DeploymentService\DeploymentService.cs" />
@@ -141,6 +134,7 @@
     <Compile Include="Advanced\DeploymentService\ProductDescription.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Advanced\IStatusDisplay.cs" />
     <Compile Include="Advanced\LicenseConfirmationBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -152,6 +146,12 @@
     </Compile>
     <Compile Include="Advanced\LicenseView.Designer.cs">
       <DependentUpon>LicenseView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Advanced\LocalPluginsView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Advanced\LocalPluginsView.Designer.cs">
+      <DependentUpon>LocalPluginsView.cs</DependentUpon>
     </Compile>
     <Compile Include="Advanced\MultiSelectListView.cs">
       <SubType>Component</SubType>
@@ -304,15 +304,15 @@
     <EmbeddedResource Include="Advanced\ConnectionSetupView.resx">
       <DependentUpon>ConnectionSetupView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Advanced\LocalPluginsView.resx">
-      <DependentUpon>LocalPluginsView.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Advanced\DeploymentService\servdev.cer" />
     <EmbeddedResource Include="Advanced\LicenseConfirmationBox.resx">
       <DependentUpon>LicenseConfirmationBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Advanced\LicenseView.resx">
       <DependentUpon>LicenseView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Advanced\LocalPluginsView.resx">
+      <DependentUpon>LocalPluginsView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Advanced\PluginComparisonView.resx">
       <DependentUpon>PluginComparisonView.cs</DependentUpon>
@@ -332,9 +332,9 @@
     <None Include="Resources\VS2008ImageLibrary_Actions_Delete.png" />
     <None Include="Resources\VS2008ImageLibrary_CommonElements_Actions_Remove.png" />
     <None Include="Resources\VS2008ImageLibrary_CommonElements_Actions_Remove1.png" />
-    <None Include="Resources\VS2008ImageLibrary_CommonElements_Actions_Add.png" />
+    <None Include="Resources\show_icons.png" />
+    <None Include="Resources\show_details.png" />
     <Content Include="Resources\VS2008ImageLibrary_CommonElements_Objects_Arrow_Down.png" />
-    <None Include="Resources\VS2008ImageLibrary_CommonElements_Objects_Arrow_Up1.png" />
     <None Include="Resources\VS2008ImageLibrary_Objects_NetworkConnections.png" />
     <None Include="Resources\VS2008ImageLibrary_Objects_Install1.png" />
     <None Include="Resources\VS2008ImageLibrary_Objects_Internet1.png" />

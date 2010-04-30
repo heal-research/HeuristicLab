@@ -43,6 +43,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LicenseConfirmationBox));
       this.richTextBox = new System.Windows.Forms.RichTextBox();
       this.acceptButton = new System.Windows.Forms.Button();
@@ -53,6 +54,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.rejectRadioButton = new System.Windows.Forms.RadioButton();
       this.acceptRadioButton = new System.Windows.Forms.RadioButton();
       this.panel1 = new System.Windows.Forms.Panel();
+      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.radioButtonGroupBox.SuspendLayout();
       this.panel1.SuspendLayout();
       this.SuspendLayout();
@@ -79,6 +81,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.acceptButton.Size = new System.Drawing.Size(75, 23);
       this.acceptButton.TabIndex = 1;
       this.acceptButton.Text = "Next >";
+      this.toolTip.SetToolTip(this.acceptButton, "Accept license agreement and continue installation");
       this.acceptButton.UseVisualStyleBackColor = true;
       this.acceptButton.Click += new System.EventHandler(this.acceptButton_Click);
       // 
@@ -90,6 +93,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.rejectButton.Size = new System.Drawing.Size(79, 23);
       this.rejectButton.TabIndex = 2;
       this.rejectButton.Text = "Cancel";
+      this.toolTip.SetToolTip(this.rejectButton, "Cancel installation");
       this.rejectButton.UseVisualStyleBackColor = true;
       this.rejectButton.Click += new System.EventHandler(this.rejectButton_Click);
       // 
@@ -191,5 +195,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private System.Windows.Forms.RadioButton rejectRadioButton;
     private System.Windows.Forms.RadioButton acceptRadioButton;
     private System.Windows.Forms.Panel panel1;
+    private System.Windows.Forms.ToolTip toolTip;
   }
 }

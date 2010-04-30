@@ -53,6 +53,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     public StarterForm()
       : base() {
       InitializeComponent();
+      Text = "HeuristicLab " + this.GetType().Assembly.GetName().Version;
 
       string pluginPath = Path.GetFullPath(Application.StartupPath);
       pluginManager = new PluginManager(pluginPath);
@@ -89,15 +90,14 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
         if (selected == pluginManagerListViewItem) {
           if (pluginManager.Plugins.Any(x => x.PluginState == PluginState.Loaded)) {
             MessageBox.Show("Installation Manager cannot be started while another HeuristicLab application is active." + Environment.NewLine +
-              "Please stop all HeuristicLab applications and try again.");
+              "Please stop all active HeuristicLab applications and try again.", "Plugin Manager",
+              MessageBoxButtons.OK, MessageBoxIcon.Information);
           } else {
             try {
               Cursor = Cursors.AppStarting;
               InstallationManagerForm form = new InstallationManagerForm(pluginManager);
-              this.Visible = false;
               form.ShowDialog(this);
               UpdateApplicationsList();
-              this.Visible = true;
             }
             finally {
               Cursor = Cursors.Arrow;
@@ -115,7 +115,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
 
       pluginManagerListViewItem = new ListViewItem("Plugin Manager", 0);
       pluginManagerListViewItem.Group = applicationsListView.Groups["Plugin Management"];
-      pluginManagerListViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(pluginManagerListViewItem, "-"));
+      pluginManagerListViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(pluginManagerListViewItem, GetType().Assembly.GetName().Version.ToString()));
       pluginManagerListViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(pluginManagerListViewItem, "Install, upgrade or delete plugins"));
       pluginManagerListViewItem.ToolTipText = "Install, upgrade or delete plugins";
 
@@ -139,7 +139,6 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
         do {
           try {
             if (!abortRequested) {
-              SetCursor(Cursors.AppStarting);
               pluginManager.Run(app);
             }
             stopped = true;
@@ -149,36 +148,18 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
             ThreadPool.QueueUserWorkItem(delegate(object exception) { ShowErrorMessageBox((Exception)exception); }, ex);
             Thread.Sleep(5000); // sleep 5 seconds before autorestart
           }
-          finally {
-            SetCursor(Cursors.Default);
-          }
         } while (!abortRequested && !stopped && app.AutoRestart);
       });
       t.SetApartmentState(ApartmentState.STA); // needed for the AdvancedOptimizationFrontent
       t.Start();
     }
 
-    private void SetCursor(Cursor cursor) {
-      if (InvokeRequired) Invoke((Action<Cursor>)SetCursor, cursor);
-      else {
-        Cursor = cursor;
-      }
-    }
-
-    private void applicationsListBox_SelectedIndexChanged(object sender, ListViewItemSelectionChangedEventArgs e) {
-      if (e.IsSelected) {
-        startButton.Enabled = true;
-      } else {
-        startButton.Enabled = false;
-      }
+    private void applicationsListView_SelectedIndexChanged(object sender, EventArgs e) {
+      startButton.Enabled = applicationsListView.SelectedItems.Count > 0;
     }
 
     private void largeIconsButton_Click(object sender, EventArgs e) {
       applicationsListView.View = View.LargeIcon;
-    }
-
-    private void listButton_Click(object sender, EventArgs e) {
-      applicationsListView.View = View.List;
     }
 
     private void detailsButton_Click(object sender, EventArgs e) {
@@ -208,5 +189,6 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
       abortRequested = true;
     }
+
   }
 }

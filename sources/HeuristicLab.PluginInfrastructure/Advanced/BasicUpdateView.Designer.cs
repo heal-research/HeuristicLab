@@ -44,7 +44,9 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
       this.updateAndInstallButton = new System.Windows.Forms.Button();
+      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.SuspendLayout();
       // 
       // updateAndInstallButton
@@ -57,6 +59,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.updateAndInstallButton.TabIndex = 0;
       this.updateAndInstallButton.Text = "Find and Install Updates";
       this.updateAndInstallButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+      this.toolTip.SetToolTip(this.updateAndInstallButton, "Find, download and install updates for all installed plugins.");
       this.updateAndInstallButton.UseVisualStyleBackColor = true;
       this.updateAndInstallButton.Click += new System.EventHandler(this.updateAndInstallButton_Click);
       // 
@@ -74,5 +77,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     #endregion
 
     private System.Windows.Forms.Button updateAndInstallButton;
+    private System.Windows.Forms.ToolTip toolTip;
   }
 }

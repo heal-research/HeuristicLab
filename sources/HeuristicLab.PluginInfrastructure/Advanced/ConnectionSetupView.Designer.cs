@@ -43,6 +43,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConnectionSetupView));
       this.urlTextBox = new System.Windows.Forms.TextBox();
       this.urlLabel = new System.Windows.Forms.Label();
@@ -53,16 +54,20 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.applyButton = new System.Windows.Forms.Button();
       this.savePasswordCheckbox = new System.Windows.Forms.CheckBox();
       this.cancelButton = new System.Windows.Forms.Button();
+      this.groupBox1 = new System.Windows.Forms.GroupBox();
+      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this.groupBox1.SuspendLayout();
       this.SuspendLayout();
       // 
       // urlTextBox
       // 
       this.urlTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.urlTextBox.Location = new System.Drawing.Point(80, 15);
+      this.urlTextBox.Location = new System.Drawing.Point(66, 15);
       this.urlTextBox.Name = "urlTextBox";
-      this.urlTextBox.Size = new System.Drawing.Size(219, 20);
+      this.urlTextBox.Size = new System.Drawing.Size(410, 20);
       this.urlTextBox.TabIndex = 0;
+      this.toolTip.SetToolTip(this.urlTextBox, "URL of HeuristicLab Plugin Deployment Service");
       // 
       // urlLabel
       // 
@@ -71,53 +76,56 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.urlLabel.Name = "urlLabel";
       this.urlLabel.Size = new System.Drawing.Size(48, 13);
       this.urlLabel.TabIndex = 1;
-      this.urlLabel.Text = "Address:";
+      this.urlLabel.Text = "&Address:";
       // 
       // userLabel
       // 
       this.userLabel.AutoSize = true;
-      this.userLabel.Location = new System.Drawing.Point(12, 44);
+      this.userLabel.Location = new System.Drawing.Point(6, 22);
       this.userLabel.Name = "userLabel";
-      this.userLabel.Size = new System.Drawing.Size(32, 13);
+      this.userLabel.Size = new System.Drawing.Size(58, 13);
       this.userLabel.TabIndex = 3;
-      this.userLabel.Text = "User:";
+      this.userLabel.Text = "&Username:";
       // 
       // userTextBox
       // 
       this.userTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.userTextBox.Location = new System.Drawing.Point(80, 41);
+      this.userTextBox.Location = new System.Drawing.Point(94, 19);
       this.userTextBox.Name = "userTextBox";
-      this.userTextBox.Size = new System.Drawing.Size(219, 20);
-      this.userTextBox.TabIndex = 2;
+      this.userTextBox.Size = new System.Drawing.Size(155, 20);
+      this.userTextBox.TabIndex = 0;
+      this.toolTip.SetToolTip(this.userTextBox, "Username used to connect to the HeuristicLab plugin deployment service");
       // 
       // passwordLabel
       // 
       this.passwordLabel.AutoSize = true;
-      this.passwordLabel.Location = new System.Drawing.Point(12, 70);
+      this.passwordLabel.Location = new System.Drawing.Point(6, 48);
       this.passwordLabel.Name = "passwordLabel";
       this.passwordLabel.Size = new System.Drawing.Size(56, 13);
       this.passwordLabel.TabIndex = 5;
-      this.passwordLabel.Text = "Password:";
+      this.passwordLabel.Text = "&Password:";
       // 
       // passwordTextBox
       // 
       this.passwordTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.passwordTextBox.Location = new System.Drawing.Point(80, 67);
+      this.passwordTextBox.Location = new System.Drawing.Point(94, 45);
       this.passwordTextBox.Name = "passwordTextBox";
-      this.passwordTextBox.Size = new System.Drawing.Size(219, 20);
-      this.passwordTextBox.TabIndex = 4;
+      this.passwordTextBox.Size = new System.Drawing.Size(155, 20);
+      this.passwordTextBox.TabIndex = 1;
+      this.toolTip.SetToolTip(this.passwordTextBox, "Passwort used to connect to the HeuristicLab plugin deployment service");
       this.passwordTextBox.UseSystemPasswordChar = true;
       // 
       // applyButton
       // 
       this.applyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.applyButton.Location = new System.Drawing.Point(143, 127);
+      this.applyButton.Location = new System.Drawing.Point(320, 148);
       this.applyButton.Name = "applyButton";
       this.applyButton.Size = new System.Drawing.Size(75, 23);
-      this.applyButton.TabIndex = 6;
-      this.applyButton.Text = "Apply";
+      this.applyButton.TabIndex = 2;
+      this.applyButton.Text = "&OK";
+      this.toolTip.SetToolTip(this.applyButton, "Apply and save changes");
       this.applyButton.UseVisualStyleBackColor = true;
       this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
       // 
@@ -125,47 +133,63 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // 
       this.savePasswordCheckbox.AutoSize = true;
       this.savePasswordCheckbox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-      this.savePasswordCheckbox.Location = new System.Drawing.Point(80, 93);
+      this.savePasswordCheckbox.Location = new System.Drawing.Point(6, 71);
       this.savePasswordCheckbox.Name = "savePasswordCheckbox";
       this.savePasswordCheckbox.Size = new System.Drawing.Size(103, 17);
-      this.savePasswordCheckbox.TabIndex = 7;
-      this.savePasswordCheckbox.Text = "Save Password:";
+      this.savePasswordCheckbox.TabIndex = 2;
+      this.savePasswordCheckbox.Text = "&Save Password:";
+      this.toolTip.SetToolTip(this.savePasswordCheckbox, "Check to save the user credentials to disk");
       this.savePasswordCheckbox.UseVisualStyleBackColor = true;
       // 
       // cancelButton
       // 
       this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.cancelButton.Location = new System.Drawing.Point(224, 127);
+      this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+      this.cancelButton.Location = new System.Drawing.Point(401, 148);
       this.cancelButton.Name = "cancelButton";
       this.cancelButton.Size = new System.Drawing.Size(75, 23);
-      this.cancelButton.TabIndex = 8;
-      this.cancelButton.Text = "Cancel";
+      this.cancelButton.TabIndex = 3;
+      this.cancelButton.Text = "&Cancel";
+      this.toolTip.SetToolTip(this.cancelButton, "Cancel and revert changes");
       this.cancelButton.UseVisualStyleBackColor = true;
       this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
       // 
+      // groupBox1
+      // 
+      this.groupBox1.Controls.Add(this.userTextBox);
+      this.groupBox1.Controls.Add(this.userLabel);
+      this.groupBox1.Controls.Add(this.savePasswordCheckbox);
+      this.groupBox1.Controls.Add(this.passwordTextBox);
+      this.groupBox1.Controls.Add(this.passwordLabel);
+      this.groupBox1.Location = new System.Drawing.Point(12, 41);
+      this.groupBox1.Name = "groupBox1";
+      this.groupBox1.Size = new System.Drawing.Size(255, 96);
+      this.groupBox1.TabIndex = 1;
+      this.groupBox1.TabStop = false;
+      this.groupBox1.Text = "User Credentials";
+      // 
       // ConnectionSetupView
       // 
+      this.AcceptButton = this.applyButton;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(311, 162);
+      this.CancelButton = this.cancelButton;
+      this.ClientSize = new System.Drawing.Size(488, 183);
+      this.Controls.Add(this.groupBox1);
       this.Controls.Add(this.cancelButton);
-      this.Controls.Add(this.savePasswordCheckbox);
       this.Controls.Add(this.applyButton);
-      this.Controls.Add(this.passwordLabel);
-      this.Controls.Add(this.passwordTextBox);
-      this.Controls.Add(this.userLabel);
-      this.Controls.Add(this.userTextBox);
       this.Controls.Add(this.urlLabel);
       this.Controls.Add(this.urlTextBox);
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.MaximizeBox = false;
-      this.MaximumSize = new System.Drawing.Size(327, 198);
       this.MinimizeBox = false;
-      this.MinimumSize = new System.Drawing.Size(327, 198);
       this.Name = "ConnectionSetupView";
       this.ShowInTaskbar = false;
       this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
+      this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
       this.Text = "Edit Connection Settings";
+      this.groupBox1.ResumeLayout(false);
+      this.groupBox1.PerformLayout();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -182,5 +206,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private System.Windows.Forms.Button applyButton;
     private System.Windows.Forms.CheckBox savePasswordCheckbox;
     private System.Windows.Forms.Button cancelButton;
+    private System.Windows.Forms.GroupBox groupBox1;
+    private System.Windows.Forms.ToolTip toolTip;
   }
 }

@@ -58,14 +58,14 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.tableLayoutPanel.Name = "tableLayoutPanel";
       this.tableLayoutPanel.RowCount = 1;
       this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-      this.tableLayoutPanel.Size = new System.Drawing.Size(523, 469);
+      this.tableLayoutPanel.Size = new System.Drawing.Size(849, 444);
       this.tableLayoutPanel.TabIndex = 0;
       // 
       // PluginComparisonView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(523, 469);
+      this.ClientSize = new System.Drawing.Size(849, 444);
       this.Controls.Add(this.tableLayoutPanel);
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.Name = "PluginComparisonView";

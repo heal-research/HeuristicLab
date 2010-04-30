@@ -37,6 +37,8 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
     public InstallationManagerForm(PluginManager pluginManager) {
       InitializeComponent();
+      Text = "HeuristicLab Plugin Manager " + GetType().Assembly.GetName().Version.ToString();
+      
       this.pluginManager = pluginManager;
 
       pluginManager.PluginLoaded += pluginManager_PluginLoaded;
@@ -137,7 +139,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     }
 
     private void tabControl_Selected(object sender, TabControlEventArgs e) {
-      viewToolStripMenuItem.Enabled = e.TabPage == availablePluginsTabPage;      
+      viewToolStripMenuItem.Visible = e.TabPage == availablePluginsTabPage;
       toolStripStatusLabel.Text = string.Empty;
       toolStripProgressBar.Visible = false;
     }
@@ -254,5 +256,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       MessageBox.Show(description, shortMessage);
     }
     #endregion
+
   }
 }

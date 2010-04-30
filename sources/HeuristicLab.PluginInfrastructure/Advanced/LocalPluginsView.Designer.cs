@@ -44,6 +44,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
       System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Active Plugins", System.Windows.Forms.HorizontalAlignment.Left);
       System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Disabled Plugins", System.Windows.Forms.HorizontalAlignment.Left);
       this.updateSelectedButton = new System.Windows.Forms.Button();
@@ -52,6 +53,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.nameHeader = new System.Windows.Forms.ColumnHeader();
       this.versionHeader = new System.Windows.Forms.ColumnHeader();
       this.descriptionHeader = new System.Windows.Forms.ColumnHeader();
+      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.SuspendLayout();
       // 
       // updateSelectedButton
@@ -65,6 +67,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.updateSelectedButton.TabIndex = 6;
       this.updateSelectedButton.Text = "Update Selected";
       this.updateSelectedButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.toolTip.SetToolTip(this.updateSelectedButton, "Update all selected plugins");
       this.updateSelectedButton.UseVisualStyleBackColor = true;
       this.updateSelectedButton.Click += new System.EventHandler(this.updateSelectedButton_Click);
       // 
@@ -79,6 +82,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.removeButton.TabIndex = 12;
       this.removeButton.Text = "Delete Selected";
       this.removeButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.toolTip.SetToolTip(this.removeButton, "Delete all selected plugins from disk");
       this.removeButton.UseVisualStyleBackColor = true;
       this.removeButton.Click += new System.EventHandler(this.removeButton_Click);
       // 
@@ -93,15 +97,15 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
             this.versionHeader,
             this.descriptionHeader});
       listViewGroup1.Header = "Active Plugins";
-      listViewGroup1.Name = "listViewGroup2";
+      listViewGroup1.Name = "activePluginsGroup";
       listViewGroup2.Header = "Disabled Plugins";
-      listViewGroup2.Name = "listViewGroup1";
+      listViewGroup2.Name = "disabledPluginsGroup";
       this.localPluginsListView.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
             listViewGroup1,
             listViewGroup2});
-      this.localPluginsListView.Location = new System.Drawing.Point(3, 3);
+      this.localPluginsListView.Location = new System.Drawing.Point(0, 0);
       this.localPluginsListView.Name = "localPluginsListView";
-      this.localPluginsListView.Size = new System.Drawing.Size(536, 474);
+      this.localPluginsListView.Size = new System.Drawing.Size(539, 477);
       this.localPluginsListView.SuppressItemCheckedEvents = false;
       this.localPluginsListView.TabIndex = 13;
       this.localPluginsListView.UseCompatibleStateImageBehavior = false;
@@ -145,6 +149,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private System.Windows.Forms.ColumnHeader nameHeader;
     private System.Windows.Forms.ColumnHeader versionHeader;
     private System.Windows.Forms.ColumnHeader descriptionHeader;
+    private System.Windows.Forms.ToolTip toolTip;
     // private LocalPluginManagerView localPluginManagerView;
   }
 }

@@ -43,6 +43,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfirmationDialog));
       this.informationTextBox = new System.Windows.Forms.RichTextBox();
       this.messageLabel = new System.Windows.Forms.Label();
@@ -50,6 +51,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.cancelButton = new System.Windows.Forms.Button();
       this.icon = new System.Windows.Forms.PictureBox();
       this.panel1 = new System.Windows.Forms.Panel();
+      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       ((System.ComponentModel.ISupportInitialize)(this.icon)).BeginInit();
       this.panel1.SuspendLayout();
       this.SuspendLayout();
@@ -84,18 +86,21 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.okButton.Name = "okButton";
       this.okButton.Size = new System.Drawing.Size(75, 23);
       this.okButton.TabIndex = 2;
-      this.okButton.Text = "Ok";
+      this.okButton.Text = "&OK";
+      this.toolTip.SetToolTip(this.okButton, "Confirm Action");
       this.okButton.UseVisualStyleBackColor = true;
       this.okButton.Click += new System.EventHandler(this.okButton_Click);
       // 
       // cancelButton
       // 
       this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
       this.cancelButton.Location = new System.Drawing.Point(331, 14);
       this.cancelButton.Name = "cancelButton";
       this.cancelButton.Size = new System.Drawing.Size(75, 23);
       this.cancelButton.TabIndex = 3;
-      this.cancelButton.Text = "Cancel";
+      this.cancelButton.Text = "&Cancel";
+      this.toolTip.SetToolTip(this.cancelButton, "Cancel Action");
       this.cancelButton.UseVisualStyleBackColor = true;
       this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
       // 
@@ -122,16 +127,21 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // 
       // ConfirmationDialog
       // 
+      this.AcceptButton = this.okButton;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.SystemColors.HighlightText;
+      this.CancelButton = this.cancelButton;
       this.ClientSize = new System.Drawing.Size(418, 282);
       this.Controls.Add(this.panel1);
       this.Controls.Add(this.icon);
       this.Controls.Add(this.messageLabel);
       this.Controls.Add(this.informationTextBox);
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+      this.MaximizeBox = false;
+      this.MinimizeBox = false;
       this.Name = "ConfirmationDialog";
+      this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
       this.Text = "ConfirmationDialog";
       ((System.ComponentModel.ISupportInitialize)(this.icon)).EndInit();
       this.panel1.ResumeLayout(false);
@@ -148,5 +158,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private System.Windows.Forms.Button cancelButton;
     private System.Windows.Forms.PictureBox icon;
     private System.Windows.Forms.Panel panel1;
+    private System.Windows.Forms.ToolTip toolTip;
   }
 }

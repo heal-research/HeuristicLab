@@ -43,6 +43,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InstallationManagerForm));
       this.statusStrip = new System.Windows.Forms.StatusStrip();
       this.toolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
@@ -66,6 +67,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.advancedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.connectionSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.statusStrip.SuspendLayout();
       this.tabControl.SuspendLayout();
       this.updateAllPluginsTabPage.SuspendLayout();
@@ -127,6 +129,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.updateAllPluginsTabPage.Size = new System.Drawing.Size(590, 366);
       this.updateAllPluginsTabPage.TabIndex = 5;
       this.updateAllPluginsTabPage.Text = "Update Plugins";
+      this.toolTip.SetToolTip(this.updateAllPluginsTabPage, "Update all installed plugins");
       this.updateAllPluginsTabPage.UseVisualStyleBackColor = true;
       // 
       // basicUpdateView
@@ -151,6 +154,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.localPluginsTabPage.Size = new System.Drawing.Size(590, 366);
       this.localPluginsTabPage.TabIndex = 0;
       this.localPluginsTabPage.Text = "Installed Plugins";
+      this.toolTip.SetToolTip(this.localPluginsTabPage, "Delete or update installed plugins");
       this.localPluginsTabPage.UseVisualStyleBackColor = true;
       // 
       // localPluginsView
@@ -175,6 +179,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.availablePluginsTabPage.Size = new System.Drawing.Size(590, 366);
       this.availablePluginsTabPage.TabIndex = 1;
       this.availablePluginsTabPage.Text = "Available Plugins";
+      this.toolTip.SetToolTip(this.availablePluginsTabPage, "Download and install new plugins");
       this.availablePluginsTabPage.UseVisualStyleBackColor = true;
       // 
       // remotePluginInstaller
@@ -183,12 +188,15 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.remotePluginInstaller.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.remotePluginInstaller.InstallationManager = null;
       this.remotePluginInstaller.Location = new System.Drawing.Point(6, 6);
       this.remotePluginInstaller.Name = "remotePluginInstaller";
       this.remotePluginInstaller.NewPlugins = new HeuristicLab.PluginInfrastructure.IPluginDescription[0];
+      this.remotePluginInstaller.PluginManager = null;
       this.remotePluginInstaller.Products = new HeuristicLab.PluginInfrastructure.Advanced.DeploymentService.ProductDescription[0];
       this.remotePluginInstaller.ShowAllPlugins = false;
       this.remotePluginInstaller.Size = new System.Drawing.Size(578, 354);
+      this.remotePluginInstaller.StatusView = null;
       this.remotePluginInstaller.TabIndex = 14;
       // 
       // uploadPluginsTabPage
@@ -200,6 +208,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.uploadPluginsTabPage.Size = new System.Drawing.Size(590, 366);
       this.uploadPluginsTabPage.TabIndex = 3;
       this.uploadPluginsTabPage.Text = "Upload Plugins";
+      this.toolTip.SetToolTip(this.uploadPluginsTabPage, "Upload plugins");
       this.uploadPluginsTabPage.UseVisualStyleBackColor = true;
       // 
       // pluginEditor
@@ -222,6 +231,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.manageProductsTabPage.Size = new System.Drawing.Size(590, 366);
       this.manageProductsTabPage.TabIndex = 4;
       this.manageProductsTabPage.Text = "Manage Products";
+      this.toolTip.SetToolTip(this.manageProductsTabPage, "Create and manage products");
       this.manageProductsTabPage.UseVisualStyleBackColor = true;
       // 
       // productEditor
@@ -242,6 +252,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.logTabPage.Size = new System.Drawing.Size(590, 366);
       this.logTabPage.TabIndex = 2;
       this.logTabPage.Text = "Log";
+      this.toolTip.SetToolTip(this.logTabPage, "Show Log Messages");
       this.logTabPage.UseVisualStyleBackColor = true;
       // 
       // logTextBox
@@ -273,10 +284,10 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.simpleToolStripMenuItem,
             this.advancedToolStripMenuItem});
-      this.viewToolStripMenuItem.Enabled = false;
       this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
       this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
       this.viewToolStripMenuItem.Text = "View";
+      this.viewToolStripMenuItem.Visible = false;
       // 
       // simpleToolStripMenuItem
       // 
@@ -365,5 +376,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private LocalPluginsView localPluginsView;
     private System.Windows.Forms.TabPage updateAllPluginsTabPage;
     private BasicUpdateView basicUpdateView;
+    private System.Windows.Forms.ToolTip toolTip;
   }
 }
