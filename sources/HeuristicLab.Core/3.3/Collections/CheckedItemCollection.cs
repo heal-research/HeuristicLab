@@ -72,6 +72,11 @@ namespace HeuristicLab.Core {
       }
     }
 
+    public void Add(T item, bool checkedState) {
+      Add(item);
+      SetItemCheckedState(item, checkedState);
+    }
+
     protected override void OnCollectionReset(IEnumerable<T> items, IEnumerable<T> oldItems) {
       foreach (var oldItem in oldItems)
         checkedState.Remove(oldItem);

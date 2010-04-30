@@ -84,6 +84,16 @@ namespace HeuristicLab.Core {
       SetItemCheckedState(this[itemIndex], checkedState);
     }
 
+    public void Add(T item, bool checkedState) {
+      Add(item);
+      SetItemCheckedState(item, checkedState);
+    }
+
+    public void Insert(int index, T item, bool checkedState) {
+      Insert(index, item);
+      SetItemCheckedState(item, checkedState);
+    }
+
     protected override void OnCollectionReset(IEnumerable<IndexedItem<T>> items, IEnumerable<IndexedItem<T>> oldItems) {
       foreach (var oldIndexedItem in oldItems) {
         checkedState.Remove(oldIndexedItem.Value);

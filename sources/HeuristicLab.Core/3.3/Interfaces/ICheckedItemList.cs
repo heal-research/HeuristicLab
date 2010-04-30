@@ -28,5 +28,7 @@ namespace HeuristicLab.Core {
     IEnumerable<IndexedItem<T>> CheckedItems { get; }
     bool ItemChecked(T item);
     void SetItemCheckedState(T item, bool checkedState);
+    void Add(T item, bool checkedState);
+    void Insert(int index, T item, bool checkedState);
   }
 }
