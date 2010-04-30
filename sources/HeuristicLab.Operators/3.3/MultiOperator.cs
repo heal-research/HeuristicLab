@@ -38,14 +38,14 @@ namespace HeuristicLab.Operators {
     private List<IValueParameter<T>> operatorParameters;
 
     [Storable]
-    private ItemList<T> operators;
-    public ItemList<T> Operators {
+    private CheckedItemList<T> operators;
+    public CheckedItemList<T> Operators {
       get { return operators; }
     }
 
     public MultiOperator()
       : base() {
-      operators = new ItemList<T>();
+      operators = new CheckedItemList<T>();
       Initialize();
     }
     [StorableConstructor]
@@ -64,7 +64,7 @@ namespace HeuristicLab.Operators {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       MultiOperator<T> clone = (MultiOperator<T>)base.Clone(cloner);
-      clone.operators = (ItemList<T>)cloner.Clone(operators);
+      clone.operators = (CheckedItemList<T>)cloner.Clone(operators);
       clone.Initialize();
       return clone;
     }

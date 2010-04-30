@@ -112,25 +112,28 @@ namespace HeuristicLab.Operators {
     /// specific probability.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown when the list of probabilites does not
-    /// match the number of operators.</exception>
+    /// match the number of operators, the list of selected operators is empty, 
+    /// or all selected operators have zero probabitlity.</exception>
     /// <returns>A new operation with the operator that was selected followed by the current operator's successor.</returns>
     public override IOperation Apply() {
       IRandom random = RandomParameter.ActualValue;
       DoubleArray probabilities = ProbabilitiesParameter.ActualValue;
-      if(probabilities.Length != Operators.Count) {
+      if (probabilities.Length != Operators.Count) {
         throw new InvalidOperationException(Name + ": The list of probabilities has to match the number of operators");
       }
-      double sum = 0;
-      for (int i = 0; i < Operators.Count; i++) {
-        sum += probabilities[i];
+      var checkedOperators = Operators.CheckedItems;
+      if (checkedOperators.Count() == 0) {
+        throw new InvalidOperationException(Name + ": At least one operator must be checked.");
       }
+      double sum = (from indexedItem in checkedOperators select probabilities[indexedItem.Index]).Sum();
+      if (sum == 0) throw new InvalidOperationException(Name + ": All selected operators have zero probability.");
       double r = random.NextDouble() * sum;
       sum = 0;
       IOperator successor = null;
-      for(int i = 0; i < Operators.Count; i++) {
-        sum += probabilities[i];
-        if(sum > r) {
-          successor = Operators[i];
+      foreach (var indexedItem in checkedOperators) {
+        sum += probabilities[indexedItem.Index];
+        if (sum > r) {
+          successor = indexedItem.Value;
           break;
         }
       }

@@ -46,7 +46,7 @@ namespace HeuristicLab.Operators.Views {
     private void InitializeComponent() {
       this.tabControl = new System.Windows.Forms.TabControl();
       this.operatorsTabPage = new System.Windows.Forms.TabPage();
-      this.operatorListView = new HeuristicLab.Core.Views.ItemListView<T>();
+      this.operatorListView = new HeuristicLab.Core.Views.CheckedItemListView<T>();
       this.parametersTabPage = new System.Windows.Forms.TabPage();
       this.parameterCollectionView = new HeuristicLab.Core.Views.ParameterCollectionView();
       this.breakpointCheckBox = new System.Windows.Forms.CheckBox();
@@ -177,7 +177,7 @@ namespace HeuristicLab.Operators.Views {
     protected System.Windows.Forms.TabPage operatorsTabPage;
     protected System.Windows.Forms.TabPage parametersTabPage;
     protected HeuristicLab.Core.Views.ParameterCollectionView parameterCollectionView;
-    protected HeuristicLab.Core.Views.ItemListView<T> operatorListView;
+    protected HeuristicLab.Core.Views.CheckedItemListView<T> operatorListView;
     protected System.Windows.Forms.CheckBox breakpointCheckBox;
     protected System.Windows.Forms.Label breakpointLabel;
   }
