@@ -46,7 +46,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ViewHost));
-      this.viewPanel = new System.Windows.Forms.Panel();
+      this.viewPanel = new ViewHostPanel();
       this.messageLabel = new System.Windows.Forms.Label();
       this.viewsLabel = new System.Windows.Forms.Label();
       this.viewContextMenuStrip = new HeuristicLab.MainForm.WindowsForms.ViewContextMenuStrip();
@@ -110,7 +110,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
 
     #endregion
 
-    private System.Windows.Forms.Panel viewPanel;
+    private ViewHostPanel viewPanel;
     private System.Windows.Forms.Label viewsLabel;
     private System.Windows.Forms.Label messageLabel;
     private System.Windows.Forms.ToolTip toolTip;

@@ -106,7 +106,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       viewsLabel.Visible = false;
       viewPanel.Visible = false;
       viewContextMenuStrip.Item = Content;
-      
+
       if (Content != null) {
         if (viewContextMenuStrip.Items.Count == 0)
           messageLabel.Visible = true;
@@ -176,7 +176,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
         this.Locked = this.ActiveView.Locked;
       }
     }
-
     #region forwarding of view events
     protected override void OnReadOnlyChanged() {
       base.OnReadOnlyChanged();

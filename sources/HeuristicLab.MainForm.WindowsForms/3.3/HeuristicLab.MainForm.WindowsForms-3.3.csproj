@@ -163,6 +163,12 @@
     <Compile Include="ViewHost.Designer.cs">
       <DependentUpon>ViewHost.cs</DependentUpon>
     </Compile>
+    <Compile Include="ViewHostPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ViewHostPanel.Designer.cs">
+      <DependentUpon>ViewHostPanel.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
