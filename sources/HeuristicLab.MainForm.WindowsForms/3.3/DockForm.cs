@@ -52,6 +52,9 @@ namespace HeuristicLab.MainForm.WindowsForms {
               this.ShowHint = DockState.DockBottom;
               break;
           }
+          if (view is Sidebar)
+            this.DockAreas = DockAreas.DockLeft | DockAreas.DockRight;
+
           Type viewType = view.GetType();
           Control control = (Control)view;
           control.Dock = DockStyle.Fill;

@@ -111,6 +111,12 @@
     <Compile Include="DockingMainForm.Designer.cs">
       <DependentUpon>DockingMainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Sidebar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Sidebar.Designer.cs">
+      <DependentUpon>Sidebar.cs</DependentUpon>
+    </Compile>
     <Compile Include="DocumentForm.cs">
       <SubType>Form</SubType>
     </Compile>

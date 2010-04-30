@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Optimizer.MenuItems {
   internal class CloseAllMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, IOptimizerUserInterfaceItemProvider {
@@ -41,11 +42,13 @@ namespace HeuristicLab.Optimizer.MenuItems {
       ToolStripItem.Enabled = false;
     }
     protected override void OnActiveViewChanged(object sender, EventArgs e) {
-      ToolStripItem.Enabled = MainFormManager.MainForm.Views.Any<IView>(v => v.IsShown);
+      ToolStripItem.Enabled = MainFormManager.MainForm.Views.Any<IView>(v => v.IsShown && !(v is Sidebar));
     }
 
     public override void Execute() {
-      MainFormManager.MainForm.CloseAllViews();
+      foreach (IView view in MainFormManager.MainForm.Views)
+        if (!(view is Sidebar))
+          view.Close();
     }
   }
 }

@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -20,19 +20,26 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.Data;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
-using HeuristicLab.MainForm;
 
-namespace HeuristicLab.Core.Views {
-  [View("Operators Sidebar")]
-  public partial class OperatorsSidebar : HeuristicLab.MainForm.WindowsForms.Sidebar {
-    public OperatorsSidebar() {
+namespace HeuristicLab.MainForm.WindowsForms {
+  public partial class Sidebar : View {
+    public Sidebar() {
       InitializeComponent();
     }
 
-    protected override void OnInitialized(EventArgs e) {
-      base.OnInitialized(e);
-      typeSelector.Configure(typeof(IOperator), false, false);
+    internal protected override void OnClosing(FormClosingEventArgs e) {
+      base.OnClosing(e);
+      if (e.CloseReason == CloseReason.UserClosing) {
+        e.Cancel = true;
+        this.Hide();
+      }
     }
   }
 }

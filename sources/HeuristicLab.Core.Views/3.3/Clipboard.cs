@@ -30,7 +30,7 @@ using HeuristicLab.Persistence.Default.Xml;
 
 namespace HeuristicLab.Core.Views {
   [View("Clipboard")]
-  public sealed partial class Clipboard<T> : HeuristicLab.MainForm.WindowsForms.View where T : class, IItem {
+  public sealed partial class Clipboard<T> : HeuristicLab.MainForm.WindowsForms.Sidebar where T : class, IItem {
     private TypeSelectorDialog typeSelectorDialog;
     private Dictionary<T, ListViewItem> itemListViewItemTable;
 
@@ -80,13 +80,6 @@ namespace HeuristicLab.Core.Views {
     protected override void OnReadOnlyChanged() {
       base.OnReadOnlyChanged();
       SetEnabledStateOfControls();
-    }
-    protected override void OnClosing(FormClosingEventArgs e) {
-      base.OnClosing(e);
-      if (e.CloseReason == CloseReason.UserClosing) {
-        e.Cancel = true;
-        this.Hide();
-      }
     }
 
     private void SetEnabledStateOfControls() {
