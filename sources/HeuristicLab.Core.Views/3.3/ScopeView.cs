@@ -185,62 +185,82 @@ namespace HeuristicLab.Core.Views {
         Invoke(new EventHandler(Scope_NameChanged), sender, e);
       else {
         IScope scope = (IScope)sender;
-        scopeNodeTable[scope].Text = scope.Name;
+        TreeNode node = null;
+        scopeNodeTable.TryGetValue(scope, out node);
+        if (node != null) node.Text = scope.Name;
       }
     }
     private void SubScopes_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<IScope>> e) {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_ItemsAdded), sender, e);
       else {
-        IScope parentScope = subScopesScopeTable[(ScopeList)sender];
-        TreeNode parentNode = scopeNodeTable[parentScope];
-        scopesTreeView.BeginUpdate();
-        if (parentNode.IsExpanded) {
-          foreach (IndexedItem<IScope> item in e.Items) {
-            TreeNode node = CreateTreeNode(item.Value);
-            parentNode.Nodes.Insert(item.Index, node);
+        IScope parentScope = null;
+        subScopesScopeTable.TryGetValue((ScopeList)sender, out parentScope);
+        if (parentScope != null) {
+          TreeNode parentNode = null;
+          scopeNodeTable.TryGetValue(parentScope, out parentNode);
+          if (parentNode != null) {
+            scopesTreeView.BeginUpdate();
+            if (parentNode.IsExpanded) {
+              foreach (IndexedItem<IScope> item in e.Items) {
+                TreeNode node = CreateTreeNode(item.Value);
+                parentNode.Nodes.Insert(item.Index, node);
+              }
+            } else if (parentNode.Nodes.Count == 0) {
+              parentNode.Nodes.Add(new TreeNode());
+            }
+            scopesTreeView.EndUpdate();
           }
-        } else if (parentNode.Nodes.Count == 0) {
-          parentNode.Nodes.Add(new TreeNode());
         }
-        scopesTreeView.EndUpdate();
       }
     }
     private void SubScopes_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<IScope>> e) {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_ItemsRemoved), sender, e);
       else {
-        IScope parentScope = subScopesScopeTable[(ScopeList)sender];
-        TreeNode parentNode = scopeNodeTable[parentScope];
-        scopesTreeView.BeginUpdate();
-        if (parentNode.IsExpanded) {
-          foreach (IndexedItem<IScope> item in e.Items) {
-            TreeNode node = scopeNodeTable[item.Value];
-            ClearTreeNode(node);
-            node.Remove();
+        IScope parentScope = null;
+        subScopesScopeTable.TryGetValue((ScopeList)sender, out parentScope);
+        if (parentScope != null) {
+          TreeNode parentNode = null;
+          scopeNodeTable.TryGetValue(parentScope, out parentNode);
+          if (parentNode != null) {
+            scopesTreeView.BeginUpdate();
+            if (parentNode.IsExpanded) {
+              foreach (IndexedItem<IScope> item in e.Items) {
+                TreeNode node = scopeNodeTable[item.Value];
+                ClearTreeNode(node);
+                node.Remove();
+              }
+            } else if (parentScope.SubScopes.Count == 0) {
+              parentNode.Nodes.Clear();
+            }
+            scopesTreeView.EndUpdate();
           }
-        } else if (parentScope.SubScopes.Count == 0) {
-          parentNode.Nodes.Clear();
         }
-        scopesTreeView.EndUpdate();
       }
     }
     private void SubScopes_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IScope>> e) {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_ItemsReplaced), sender, e);
       else {
-        IScope parentScope = subScopesScopeTable[(ScopeList)sender];
-        TreeNode parentNode = scopeNodeTable[parentScope];
-        scopesTreeView.BeginUpdate();
-        if (parentNode.IsExpanded) {
-          foreach (IndexedItem<IScope> item in e.Items) {
-            TreeNode node = parentNode.Nodes[item.Index];
-            ClearTreeNode(node);
-            node.Remove();
-            node = CreateTreeNode(item.Value);
-            parentNode.Nodes.Insert(item.Index, node);
+        IScope parentScope = null;
+        subScopesScopeTable.TryGetValue((ScopeList)sender, out parentScope);
+        if (parentScope != null) {
+          TreeNode parentNode = null;
+          scopeNodeTable.TryGetValue(parentScope, out parentNode);
+          if (parentNode != null) {
+            scopesTreeView.BeginUpdate();
+            if (parentNode.IsExpanded) {
+              foreach (IndexedItem<IScope> item in e.Items) {
+                TreeNode node = parentNode.Nodes[item.Index];
+                ClearTreeNode(node);
+                node.Remove();
+                node = CreateTreeNode(item.Value);
+                parentNode.Nodes.Insert(item.Index, node);
+              }
+              scopesTreeView.EndUpdate();
+            }
           }
-          scopesTreeView.EndUpdate();
         }
       }
     }
@@ -248,38 +268,50 @@ namespace HeuristicLab.Core.Views {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_ItemsMoved), sender, e);
       else {
-        IScope parentScope = subScopesScopeTable[(ScopeList)sender];
-        TreeNode parentNode = scopeNodeTable[parentScope];
-        scopesTreeView.BeginUpdate();
-        if (parentNode.IsExpanded) {
-          parentNode.Nodes.Clear();
-          foreach (IndexedItem<IScope> item in e.Items)
-            parentNode.Nodes.Insert(item.Index, scopeNodeTable[item.Value]);
+        IScope parentScope = null;
+        subScopesScopeTable.TryGetValue((ScopeList)sender, out parentScope);
+        if (parentScope != null) {
+          TreeNode parentNode = null;
+          scopeNodeTable.TryGetValue(parentScope, out parentNode);
+          if (parentNode != null) {
+            scopesTreeView.BeginUpdate();
+            if (parentNode.IsExpanded) {
+              parentNode.Nodes.Clear();
+              foreach (IndexedItem<IScope> item in e.Items)
+                parentNode.Nodes.Insert(item.Index, scopeNodeTable[item.Value]);
+            }
+            scopesTreeView.EndUpdate();
+          }
         }
-        scopesTreeView.EndUpdate();
       }
     }
     private void SubScopes_CollectionReset(object sender, CollectionItemsChangedEventArgs<IndexedItem<IScope>> e) {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_CollectionReset), sender, e);
       else {
-        IScope parentScope = subScopesScopeTable[(ScopeList)sender];
-        TreeNode parentNode = scopeNodeTable[parentScope];
-        scopesTreeView.BeginUpdate();
-        if (parentNode.IsExpanded) {
-          foreach (TreeNode node in parentNode.Nodes)
-            ClearTreeNode(node);
-          parentNode.Nodes.Clear();
-          foreach (IndexedItem<IScope> item in e.Items) {
-            TreeNode node = CreateTreeNode(item.Value);
-            parentNode.Nodes.Insert(item.Index, node);
+        IScope parentScope = null;
+        subScopesScopeTable.TryGetValue((ScopeList)sender, out parentScope);
+        if (parentScope != null) {
+          TreeNode parentNode = null;
+          scopeNodeTable.TryGetValue(parentScope, out parentNode);
+          if (parentNode != null) {
+            scopesTreeView.BeginUpdate();
+            if (parentNode.IsExpanded) {
+              foreach (TreeNode node in parentNode.Nodes)
+                ClearTreeNode(node);
+              parentNode.Nodes.Clear();
+              foreach (IndexedItem<IScope> item in e.Items) {
+                TreeNode node = CreateTreeNode(item.Value);
+                parentNode.Nodes.Insert(item.Index, node);
+              }
+            } else {
+              parentNode.Nodes.Clear();
+              if (parentScope.SubScopes.Count > 0)
+                parentNode.Nodes.Add(new TreeNode());
+            }
+            scopesTreeView.EndUpdate();
           }
-        } else {
-          parentNode.Nodes.Clear();
-          if (parentScope.SubScopes.Count > 0)
-            parentNode.Nodes.Add(new TreeNode());
         }
-        scopesTreeView.EndUpdate();
       }
     }
     #endregion

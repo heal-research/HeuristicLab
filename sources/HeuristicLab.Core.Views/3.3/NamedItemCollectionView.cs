@@ -78,7 +78,10 @@ namespace HeuristicLab.Core.Views {
       ListViewItemDictionary.Remove((T)listViewItem.Tag);
     }
     protected override IEnumerable<ListViewItem> GetListViewItemsForItem(T item) {
-      return new ListViewItem[] { listViewItemDictionary[item] };
+      ListViewItem listViewItem = null;
+      listViewItemDictionary.TryGetValue(item, out listViewItem);
+      if (listViewItem != null) return new ListViewItem[] { listViewItem };
+      else return new ListViewItem[0];
     }
 
     #region ListView Events

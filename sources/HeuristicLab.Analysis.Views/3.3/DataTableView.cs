@@ -221,15 +221,18 @@ namespace HeuristicLab.Analysis.Views {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<IndexedItem<double>>(Values_ItemsAdded), sender, e);
       else {
-        DataRow row = valuesRowsTable[(IObservableList<double>)sender];
-        foreach (IndexedItem<double> item in e.Items) {
-          var value = item.Value;
-          if (IsInvalidValue(item.Value)) {
-            DataPoint point = new DataPoint();
-            point.IsEmpty = true;
-            chart.Series[row.Name].Points.Insert(item.Index, point);
-          } else {
-            chart.Series[row.Name].Points.InsertY(item.Index, value);
+        DataRow row = null;
+        valuesRowsTable.TryGetValue((IObservableList<double>)sender, out row);
+        if (row != null) {
+          foreach (IndexedItem<double> item in e.Items) {
+            var value = item.Value;
+            if (IsInvalidValue(item.Value)) {
+              DataPoint point = new DataPoint();
+              point.IsEmpty = true;
+              chart.Series[row.Name].Points.Insert(item.Index, point);
+            } else {
+              chart.Series[row.Name].Points.InsertY(item.Index, value);
+            }
           }
         }
       }
@@ -238,25 +241,31 @@ namespace HeuristicLab.Analysis.Views {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<IndexedItem<double>>(Values_ItemsRemoved), sender, e);
       else {
-        DataRow row = valuesRowsTable[(IObservableList<double>)sender];
-        List<DataPoint> points = new List<DataPoint>();
-        foreach (IndexedItem<double> item in e.Items)
-          points.Add(chart.Series[row.Name].Points[item.Index]);
-        foreach (DataPoint point in points)
-          chart.Series[row.Name].Points.Remove(point);
+        DataRow row = null;
+        valuesRowsTable.TryGetValue((IObservableList<double>)sender, out row);
+        if (row != null) {
+          List<DataPoint> points = new List<DataPoint>();
+          foreach (IndexedItem<double> item in e.Items)
+            points.Add(chart.Series[row.Name].Points[item.Index]);
+          foreach (DataPoint point in points)
+            chart.Series[row.Name].Points.Remove(point);
+        }
       }
     }
     private void Values_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<double>> e) {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<IndexedItem<double>>(Values_ItemsReplaced), sender, e);
       else {
-        DataRow row = valuesRowsTable[(IObservableList<double>)sender];
-        foreach (IndexedItem<double> item in e.Items) {
-          if (IsInvalidValue(item.Value))
-            chart.Series[row.Name].Points[item.Index].IsEmpty = true;
-          else {
-            chart.Series[row.Name].Points[item.Index].YValues = new double[] { item.Value };
-            chart.Series[row.Name].Points[item.Index].IsEmpty = false;
+        DataRow row = null;
+        valuesRowsTable.TryGetValue((IObservableList<double>)sender, out row);
+        if (row != null) {
+          foreach (IndexedItem<double> item in e.Items) {
+            if (IsInvalidValue(item.Value))
+              chart.Series[row.Name].Points[item.Index].IsEmpty = true;
+            else {
+              chart.Series[row.Name].Points[item.Index].YValues = new double[] { item.Value };
+              chart.Series[row.Name].Points[item.Index].IsEmpty = false;
+            }
           }
         }
       }
@@ -265,13 +274,16 @@ namespace HeuristicLab.Analysis.Views {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<IndexedItem<double>>(Values_ItemsMoved), sender, e);
       else {
-        DataRow row = valuesRowsTable[(IObservableList<double>)sender];
-        foreach (IndexedItem<double> item in e.Items) {
-          if (IsInvalidValue(item.Value))
-            chart.Series[row.Name].Points[item.Index].IsEmpty = true;
-          else {
-            chart.Series[row.Name].Points[item.Index].YValues = new double[] { item.Value };
-            chart.Series[row.Name].Points[item.Index].IsEmpty = false;
+        DataRow row = null;
+        valuesRowsTable.TryGetValue((IObservableList<double>)sender, out row);
+        if (row != null) {
+          foreach (IndexedItem<double> item in e.Items) {
+            if (IsInvalidValue(item.Value))
+              chart.Series[row.Name].Points[item.Index].IsEmpty = true;
+            else {
+              chart.Series[row.Name].Points[item.Index].YValues = new double[] { item.Value };
+              chart.Series[row.Name].Points[item.Index].IsEmpty = false;
+            }
           }
         }
       }
@@ -281,14 +293,17 @@ namespace HeuristicLab.Analysis.Views {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<IndexedItem<double>>(Values_CollectionReset), sender, e);
       else {
-        DataRow row = valuesRowsTable[(IObservableList<double>)sender];
-        chart.Series[row.Name].Points.Clear();
-        foreach (IndexedItem<double> item in e.Items) {
-          if (IsInvalidValue(item.Value))
-            chart.Series[row.Name].Points[item.Index].IsEmpty = true;
-          else {
-            chart.Series[row.Name].Points[item.Index].YValues = new double[] { item.Value };
-            chart.Series[row.Name].Points[item.Index].IsEmpty = false;
+        DataRow row = null;
+        valuesRowsTable.TryGetValue((IObservableList<double>)sender, out row);
+        if (row != null) {
+          chart.Series[row.Name].Points.Clear();
+          foreach (IndexedItem<double> item in e.Items) {
+            if (IsInvalidValue(item.Value))
+              chart.Series[row.Name].Points[item.Index].IsEmpty = true;
+            else {
+              chart.Series[row.Name].Points[item.Index].YValues = new double[] { item.Value };
+              chart.Series[row.Name].Points[item.Index].IsEmpty = false;
+            }
           }
         }
       }
