@@ -29,6 +29,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureManipulators {
   [Item("MultiSymbolicExpressionTreeArchitectureManipulator", "Randomly selects and applies one of its architecture manipulators every time it is called.")]
@@ -87,12 +88,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureMani
       Parameters.Add(new ValueLookupParameter<IntValue>(MaxTreeHeightParameterName, "The maximal height of the symbolic expression tree (a tree with one node has height = 0)."));
       Parameters.Add(new LookupParameter<ISymbolicExpressionGrammar>(SymbolicExpressionGrammarParameterName, "The grammar that defines the allowed symbols and syntax of the symbolic expression trees."));
 
-      Operators.Add(new ArgumentCreater());
-      Operators.Add(new ArgumentDeleter());
-      Operators.Add(new ArgumentDuplicater());
-      Operators.Add(new SubroutineCreater());
-      Operators.Add(new SubroutineDeleter());
-      Operators.Add(new SubroutineDuplicater());
+      foreach (var availableOperatorType in ApplicationManager.Manager.GetTypes(typeof(ISymbolicExpressionTreeArchitectureManipulator))) {
+        if (availableOperatorType != this.GetType())
+          Operators.Add((ISymbolicExpressionTreeArchitectureManipulator)Activator.CreateInstance(availableOperatorType), true);
+      }
     }
 
     protected override void Operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<ISymbolicExpressionTreeArchitectureManipulator>> e) {
@@ -118,11 +117,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureMani
       foreach (IStochasticOperator manipulator in Operators.OfType<IStochasticOperator>()) {
         manipulator.RandomParameter.ActualName = RandomParameter.Name;
       }
-    }
-
-    public override IOperation Apply() {
-      if (Operators.Count == 0) throw new InvalidOperationException(Name + ": Please add at least one symbolic expression tree architecture manipulator to choose from.");
-      return base.Apply();
     }
 
     #region ISymbolicExpressionTreeArchitectureManipulator Members

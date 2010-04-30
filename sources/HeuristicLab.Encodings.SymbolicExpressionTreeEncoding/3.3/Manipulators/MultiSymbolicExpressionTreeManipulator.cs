@@ -29,6 +29,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators {
   [Item("MultiSymbolicExpressionTreeManipulator", "Randomly selects and applies one of its manipulators every time it is called.")]
@@ -74,9 +75,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators {
       Parameters.Add(new ValueLookupParameter<IntValue>(MaxTreeHeightParameterName, "The maximal height of the symbolic expression tree (a tree with one node has height = 0)."));
       Parameters.Add(new LookupParameter<ISymbolicExpressionGrammar>(SymbolicExpressionGrammarParameterName, "The grammar that defines the allowed symbols and syntax of the symbolic expression trees."));
 
-      Operators.Add(new FullTreeShaker());
-      Operators.Add(new OnePointShaker());
-      Operators.Add(new ChangeNodeTypeManipulation());
+      foreach (var availableOperatorType in ApplicationManager.Manager.GetTypes(typeof(ISymbolicExpressionTreeArchitectureManipulator))) {
+        if (availableOperatorType != this.GetType())
+          Operators.Add((ISymbolicExpressionTreeArchitectureManipulator)Activator.CreateInstance(availableOperatorType), true);
+      }
     }
 
     protected override void Operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<ISymbolicExpressionTreeManipulator>> e) {
@@ -100,11 +102,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators {
       foreach (IStochasticOperator manipulator in Operators.OfType<IStochasticOperator>()) {
         manipulator.RandomParameter.ActualName = RandomParameter.Name;
       }
-    }
-
-    public override IOperation Apply() {
-      if (Operators.Count == 0) throw new InvalidOperationException(Name + ": Please add at least one symbolic expression tree manipulator to choose from.");
-      return base.Apply();
     }
   }
 }
