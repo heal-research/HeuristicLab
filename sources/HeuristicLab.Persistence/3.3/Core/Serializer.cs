@@ -222,22 +222,25 @@ namespace HeuristicLab.Persistence.Core {
             typeId,
             compositeSerializer.CreateMetaInfo(value),
             emitTypeInfo);
-        throw CreatePersistenceException(type);
+        throw CreatePersistenceException(type, "Could not determine how to serialize a value.");      
       } catch (Exception x) {
         if (isTestRun) {
           exceptions.Add(x);
           return new List<ISerializationToken>().GetEnumerator();
-        } else {
+        } else if (x is PersistenceException) {
           throw;
+        } else {
+          throw CreatePersistenceException(type, "Uncaught exception during serialization: " + x.Message);
         }
       } finally {
         objectGraphTrace.Pop();
       }
     }
 
-    private PersistenceException CreatePersistenceException(Type type) {
+    private PersistenceException CreatePersistenceException(Type type, string message) {
       StringBuilder sb = new StringBuilder();
-      sb.Append("Could not determine how to serialize a value of type \"")
+      sb.Append(message)
+        .Append("Type was \"")
         .Append(type.VersionInvariantName())
         .AppendLine("\"")
         .Append("object graph location: ")
@@ -247,7 +250,7 @@ namespace HeuristicLab.Persistence.Core {
         sb.Append(ps.SourceType.VersionInvariantName())
           .Append(" ---- (")
           .Append(ps.GetType().VersionInvariantName())
-          .AppendLine(")");          
+          .AppendLine(")");
       sb.AppendLine("Rejected by all composite serializers:");
       foreach (var cs in configuration.CompositeSerializers)
         sb.Append("\"")

@@ -143,14 +143,23 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     #region [StorableClass] helpers
 
     private static StorableClassAttribute GetStorableClassAttribute(Type type) {
-      return (StorableClassAttribute)type
-        .GetCustomAttributes(typeof(StorableClassAttribute), false)
-        .SingleOrDefault();
+      lock (storableClassCache) {
+        if (storableClassCache.ContainsKey(type))
+          return storableClassCache[type];
+        StorableClassAttribute attribute = type
+          .GetCustomAttributes(typeof(StorableClassAttribute), false)
+          .SingleOrDefault() as StorableClassAttribute;
+        storableClassCache.Add(type, attribute);
+        return attribute;
+      }
     }
 
-    private static bool HasStorableClassAttribute(Type type) {
-      return type.GetCustomAttributes(typeof(StorableClassAttribute), false).Length > 0;
+    public static bool HasStorableClassAttribute(Type type) {
+      return GetStorableClassAttribute(type) != null;
     }
+
+    private static Dictionary<Type, StorableClassAttribute> storableClassCache = 
+      new Dictionary<Type, StorableClassAttribute>();
 
     #endregion
 

@@ -38,9 +38,18 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     /// 	<c>true</c> if this instance can serialize the specified type; otherwise, <c>false</c>.
     /// </returns>
     public bool CanSerialize(Type type) {
+      bool markedStorable = StorableReflection.HasStorableClassAttribute(type);
       if (GetConstructor(type) == null)
-        return false;
-      return StorableReflection.IsEmptyOrStorableType(type, true);
+        if (markedStorable)
+          throw new Exception("[Storable] type has no default constructor and no [StorableConstructor]");
+        else
+          return false;
+      if (!StorableReflection.IsEmptyOrStorableType(type, true))
+        if (markedStorable)
+          throw new Exception("[Storable] type has non emtpy, non [Storable] base classes");
+        else
+          return false;
+      return true;
     }
 
     /// <summary>
@@ -52,11 +61,12 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     /// A string justifying why type cannot be serialized.
     /// </returns>
     public string JustifyRejection(Type type) {
+      StringBuilder sb = new StringBuilder();
       if (GetConstructor(type) == null)
-        return "no default constructor and no storable constructor";
+        sb.Append("class has no default constructor and no [StorableConstructor]");
       if (!StorableReflection.IsEmptyOrStorableType(type, true))
-        return "class is not marked with the storable class attribute";
-      return "no reason";
+        sb.Append("class (or one of its bases) is not empty and not marked [Storable]; ");      
+      return sb.ToString();
     }
 
     /// <summary>
@@ -153,7 +163,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       new Dictionary<Type, Constructor>();
 
     private Dictionary<HookDesignator, List<StorableReflection.Hook>> hookCache =
-      new Dictionary<HookDesignator, List<StorableReflection.Hook>>();
+      new Dictionary<HookDesignator, List<StorableReflection.Hook>>();    
 
     #endregion
 
