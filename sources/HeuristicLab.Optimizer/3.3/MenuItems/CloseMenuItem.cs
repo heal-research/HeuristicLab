@@ -38,11 +38,10 @@ namespace HeuristicLab.Optimizer.MenuItems {
     }
 
     protected override void OnToolStripItemSet(EventArgs e) {
-      ToolStripItem.Enabled = false;
+      ToolStripItem.Enabled = !(MainFormManager.MainForm.ActiveView is Sidebar);
     }
     protected override void OnActiveViewChanged(object sender, EventArgs e) {
-      IView view = MainFormManager.MainForm.ActiveView;
-      ToolStripItem.Enabled = !(view is Sidebar);
+      ToolStripItem.Enabled = !(MainFormManager.MainForm.ActiveView is Sidebar);
     }
 
     public override void Execute() {

@@ -39,16 +39,16 @@ namespace HeuristicLab.Optimizer.MenuItems {
     }
 
     protected override void OnToolStripItemSet(EventArgs e) {
-      ToolStripItem.Enabled = false;
+      ToolStripItem.Enabled = MainFormManager.MainForm.Views.Any<IView>(v => v.IsShown && !(v is Sidebar));
     }
     protected override void OnActiveViewChanged(object sender, EventArgs e) {
       ToolStripItem.Enabled = MainFormManager.MainForm.Views.Any<IView>(v => v.IsShown && !(v is Sidebar));
     }
 
     public override void Execute() {
-      foreach (IView view in MainFormManager.MainForm.Views)
-        if (!(view is Sidebar))
-          view.Close();
+      var views = MainFormManager.MainForm.Views.Where(x => !(x is Sidebar)).ToArray();
+      foreach (IView view in views)
+        view.Close();
     }
   }
 }
