@@ -65,8 +65,8 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
             if (System.IntPtr.Size == 4) {
               DynamicMethod dm = new DynamicMethod("", null, new[] { typeof(object) }, type);
               ILGenerator ilgen = dm.GetILGenerator();
-              ilgen.Emit(OpCodes.Ldarg_1);
-              ilgen.Emit(OpCodes.Call, methodInfo);
+              ilgen.Emit(OpCodes.Ldarg_0);
+              ilgen.Emit(OpCodes.Callvirt, methodInfo);
               ilgen.Emit(OpCodes.Ret);
               yield return (Hook)dm.CreateDelegate(typeof(Hook));
             } else {
