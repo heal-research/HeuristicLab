@@ -32,6 +32,7 @@ using HeuristicLab.Hive.Client.Communication.ServerService;
 using HeuristicLab.PluginInfrastructure;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using HeuristicLab.Tracing;
 
 namespace HeuristicLab.Hive.Client.Communication {
   /// <summary>
@@ -44,8 +45,9 @@ namespace HeuristicLab.Hive.Client.Communication {
     /// </summary>
     /// <returns>the Instance of the WcfService class</returns>
     public static WcfService Instance {
-      get {
+      get {        
         if (instance == null) {
+          Logger.Debug("New WcfService Instance created");
           instance = new WcfService();
         }
         return instance;
@@ -75,28 +77,38 @@ namespace HeuristicLab.Hive.Client.Communication {
     /// </summary>
     public void Connect() {
       try {
+        Logger.Debug("Starting the Connection Process");
         if (String.Empty.Equals(ServerIP) || ServerPort == 0) {
-          Logging.Instance.Info(this.ToString(), "No Server IP or Port set!");
+          Logger.Info("No Server IP or Port set!");
           return;
         }
+
+        Logger.Debug("Creating the new connection proxy");
         proxy = new ClientFacadeClient(
           WcfSettings.GetStreamedBinding(),
           new EndpointAddress("net.tcp://" + ServerIP + ":" + ServerPort + "/HiveServer/ClientCommunicator")
         );
+        Logger.Debug("Created the new connection proxy");
 
+        Logger.Debug("Registring new Events");
         proxy.LoginCompleted += new EventHandler<LoginCompletedEventArgs>(proxy_LoginCompleted);
         proxy.SendStreamedJobCompleted += new EventHandler<SendStreamedJobCompletedEventArgs>(proxy_SendStreamedJobCompleted);
         proxy.StoreFinishedJobResultStreamedCompleted += new EventHandler<StoreFinishedJobResultStreamedCompletedEventArgs>(proxy_StoreFinishedJobResultStreamedCompleted);
         proxy.ProcessSnapshotStreamedCompleted += new EventHandler<ProcessSnapshotStreamedCompletedEventArgs>(proxy_ProcessSnapshotStreamedCompleted);
         proxy.ProcessHeartBeatCompleted += new EventHandler<ProcessHeartBeatCompletedEventArgs>(proxy_ProcessHeartBeatCompleted);
+        Logger.Debug("Registered new Events");
+        Logger.Debug("Opening the Connection");
         proxy.Open();
+        Logger.Debug("Opened the Connection");
 
         ConnState = NetworkEnum.WcfConnState.Connected;
         ConnectedSince = DateTime.Now;
-        
-        if (Connected != null)
-          Connected(this, new EventArgs());                               
-        //Todo: This won't be hit. EVER        
+
+        if (Connected != null) {
+          Logger.Debug("Calling the connected Event");
+          Connected(this, new EventArgs());
+          //Todo: This won't be hit. EVER        
+        }
         if (ConnState == NetworkEnum.WcfConnState.Failed)
           ConnectionRestored(this, new EventArgs());        
       }
@@ -112,6 +124,7 @@ namespace HeuristicLab.Hive.Client.Communication {
     /// <param name="serverIP">current Server IP</param>
     /// <param name="serverPort">current Server Port</param>
     public void Connect(String serverIP, int serverPort) {
+      Logger.Debug("Called Connected with " + serverIP + ":" + serverPort);
       String oldIp = this.ServerIP;
       int oldPort = this.ServerPort;
       this.ServerIP = serverIP;
@@ -123,6 +136,7 @@ namespace HeuristicLab.Hive.Client.Communication {
     }
 
     public void SetIPAndPort(String serverIP, int serverPort) {
+      Logger.Debug("Called with " + serverIP + ":" + serverPort);
       this.ServerIP = serverIP;
       this.ServerPort = serverPort;
     }
@@ -140,7 +154,7 @@ namespace HeuristicLab.Hive.Client.Communication {
     /// <param name="e">The Exception</param>
     private void HandleNetworkError(Exception e) {
       ConnState = NetworkEnum.WcfConnState.Failed;
-      Logging.Instance.Error(this.ToString(), "exception: ", e);
+      Logger.Error("Network exception occurred: " + e);
     }
 
     
@@ -151,26 +165,30 @@ namespace HeuristicLab.Hive.Client.Communication {
     #region Login
     public event System.EventHandler<LoginCompletedEventArgs> LoginCompleted;
     public void LoginAsync(ClientDto clientInfo) {
-      if (ConnState == NetworkEnum.WcfConnState.Connected)
+      if (ConnState == NetworkEnum.WcfConnState.Connected) {
+        Logger.Debug("STARTED: Login Async");
         proxy.LoginAsync(clientInfo);
+      }
     }
     private void proxy_LoginCompleted(object sender, LoginCompletedEventArgs e) {
-      if (e.Error == null)
+      if (e.Error == null) {
+        Logger.Debug("ENDED: Login Async");
         LoginCompleted(sender, e);
-      else
+      } else
         HandleNetworkError(e.Error.InnerException);
     }
 
     public void LoginSync(ClientDto clientInfo) {
       try {
         if (ConnState == NetworkEnum.WcfConnState.Connected) {
+          Logger.Debug("STARTED: Login Sync");
           Response res = proxy.Login(clientInfo);
           if (!res.Success) {
-            Logging.Instance.Error(this.ToString(), "Login Failed! " + res.StatusMessage);
-            HandleNetworkError(new Exception(res.StatusMessage));
+            Logger.Error("FAILED: Login Failed! " + res.StatusMessage);
+            throw new Exception(res.StatusMessage);
           } else {
-            ConnState = NetworkEnum.WcfConnState.Loggedin;
-            Logging.Instance.Info(this.ToString(), res.StatusMessage);
+            Logger.Info("ENDED: Login succeeded" + res.StatusMessage);
+            ConnState = NetworkEnum.WcfConnState.Loggedin;            
           }
         }
       }
@@ -187,12 +205,15 @@ namespace HeuristicLab.Hive.Client.Communication {
     #region PullJob
     public event System.EventHandler<SendJobCompletedEventArgs> SendJobCompleted;
     public void SendJobAsync(Guid guid) {
-      if (ConnState == NetworkEnum.WcfConnState.Loggedin)        
+      if (ConnState == NetworkEnum.WcfConnState.Loggedin) {
+        Logger.Debug("STARTED: Fetching of Jobs from Server for Client");
         proxy.SendStreamedJobAsync(guid);
+      }
     }
 
     void proxy_SendStreamedJobCompleted(object sender, SendStreamedJobCompletedEventArgs e) {
       if (e.Error == null) {
+        Logger.Debug("ENDED: Fetching of Jobs from Server for Client");
         Stream stream = null;
         MemoryStream memStream = null;
 
@@ -219,8 +240,9 @@ namespace HeuristicLab.Hive.Client.Communication {
           SendJobCompletedEventArgs completedEventArgs =
             new SendJobCompletedEventArgs(new object[] { response, memStream.GetBuffer() }, e.Error, e.Cancelled, e.UserState);
           SendJobCompleted(sender, completedEventArgs);
-        }
-        finally {
+        } catch (Exception ex) {
+          Logger.Error(ex);
+        } finally {
           if(stream != null)
             stream.Dispose();
 
@@ -240,23 +262,30 @@ namespace HeuristicLab.Hive.Client.Communication {
     public event System.EventHandler<StoreFinishedJobResultCompletedEventArgs> StoreFinishedJobResultCompleted;
     public void StoreFinishedJobResultAsync(Guid clientId, Guid jobId, byte[] result, double percentage, Exception exception, bool finished) {
       if (ConnState == NetworkEnum.WcfConnState.Loggedin) {
+        Logger.Debug("STARTED: Sending back the finished job results");
+        Logger.Debug("Building stream");
         Stream stream =
           GetStreamedJobResult(clientId, jobId, result, percentage, exception);
-
+        Logger.Debug("Builded stream");
+        Logger.Debug("Making the call");
         proxy.StoreFinishedJobResultStreamedAsync(stream, stream);
       }
      }
     private void proxy_StoreFinishedJobResultStreamedCompleted(object sender, StoreFinishedJobResultStreamedCompletedEventArgs e) {
+      Logger.Debug("Finished storing the job");
       Stream stream =
         (Stream)e.UserState;
-      if (stream != null)
+      if (stream != null) {
+        Logger.Debug("Stream not null, disposing it");
         stream.Dispose();
-      
+      }
       if (e.Error == null) {
         StoreFinishedJobResultCompletedEventArgs args =
           new StoreFinishedJobResultCompletedEventArgs(
             new object[] { e.Result }, e.Error, e.Cancelled, e.UserState);
+        Logger.Debug("calling the Finished Job Event");
         StoreFinishedJobResultCompleted(sender, args);
+        Logger.Debug("ENDED: Sending back the finished job results");
       } else
         HandleNetworkError(e.Error);
     }
@@ -299,17 +328,20 @@ namespace HeuristicLab.Hive.Client.Communication {
     public event System.EventHandler<ProcessHeartBeatCompletedEventArgs> SendHeartBeatCompleted;
     public void SendHeartBeatAsync(HeartBeatData hbd) {
       if (ConnState == NetworkEnum.WcfConnState.Loggedin)
+        Logger.Debug("STARTING: sending heartbeat");
         proxy.ProcessHeartBeatAsync(hbd);
     }
 
     private void proxy_ProcessHeartBeatCompleted(object sender, ProcessHeartBeatCompletedEventArgs e) {
-      if (e.Error == null && e.Result.Success == true)
+      if (e.Error == null && e.Result.Success == true) {
         SendHeartBeatCompleted(sender, e);
-      else {
+        Logger.Debug("ENDED: sending heartbeats");
+      } else {
         try {
-          Logging.Instance.Error(this.ToString(), "Error: " + e.Result.StatusMessage);
-        } catch (Exception ex) {
-          Logging.Instance.Error(this.ToString(), "Error: ", ex);          
+          Logger.Error("Error: " + e.Result.StatusMessage);
+        }
+        catch (Exception ex) {
+          Logger.Error("Error: ", ex);
         }
         HandleNetworkError(e.Error);
       }
@@ -350,7 +382,10 @@ namespace HeuristicLab.Hive.Client.Communication {
 
     public Response IsJobStillNeeded(Guid jobId) {
       try {
-        return proxy.IsJobStillNeeded(jobId);
+        Logger.Debug("STARTING: Sync call: IsJobStillNeeded");
+        Response res = proxy.IsJobStillNeeded(jobId);
+        Logger.Debug("ENDED: Sync call: IsJobStillNeeded");
+        return res;
       }
       catch (Exception e) {
         HandleNetworkError(e);
@@ -360,8 +395,7 @@ namespace HeuristicLab.Hive.Client.Communication {
     }
 
     public ResponseResultReceived ProcessSnapshotSync(Guid clientId, Guid jobId, byte[] result, double percentage, Exception exception) {
-      try {
-        Logging.Instance.Info(this.ToString(), "Snapshot for Job " + jobId + " submitted");
+      try {        
         return proxy.ProcessSnapshotStreamed(
           GetStreamedJobResult(clientId, jobId, result, percentage, exception));
       }
@@ -373,11 +407,17 @@ namespace HeuristicLab.Hive.Client.Communication {
 
     public List<CachedHivePluginInfoDto> RequestPlugins(List<HivePluginInfoDto> requestedPlugins) {
       try {
+        Logger.Debug("STARTED: Requesting Plugins for Job");
+        Logger.Debug("STARTED: Getting the stream");
         Stream stream = proxy.SendStreamedPlugins(requestedPlugins.ToArray());
-
+        Logger.Debug("ENDED: Getting the stream");
         BinaryFormatter formatter =
           new BinaryFormatter();
+        Logger.Debug("STARTED: Deserializing the stream");
         ResponsePlugin response = (ResponsePlugin)formatter.Deserialize(stream);
+        Logger.Debug("ENDED: Deserializing the stream");
+        if (stream != null)
+          stream.Dispose();        
         return response.Plugins;        
       }
       catch (Exception e) {
@@ -388,7 +428,9 @@ namespace HeuristicLab.Hive.Client.Communication {
 
     public void Logout(Guid guid) {
       try {
+        Logger.Debug("STARTED: Logout");
         proxy.Logout(guid);
+        Logger.Debug("ENDED: Logout");
       }
       catch (Exception e) {
         HandleNetworkError(e);
@@ -397,7 +439,10 @@ namespace HeuristicLab.Hive.Client.Communication {
 
     public ResponseCalendar GetCalendarSync(Guid clientId) {
       try {
-        return proxy.GetCalendar(clientId);        
+        Logger.Debug("STARTED: Syncing Calendars");
+        ResponseCalendar cal = proxy.GetCalendar(clientId);
+        Logger.Debug("ENDED: Syncing Calendars");
+        return cal;
       }
       catch (Exception e) {
         HandleNetworkError(e);
@@ -407,7 +452,10 @@ namespace HeuristicLab.Hive.Client.Communication {
 
     public Response SetCalendarStatus (Guid clientId, CalendarState state) {
       try {
-        return proxy.SetCalendarStatus(clientId, state);        
+        Logger.Debug("STARTED: Setting Calendar status to: " + state);
+        Response resp = proxy.SetCalendarStatus(clientId, state);
+        Logger.Debug("ENDED: Setting Calendar status to: " + state);
+        return resp;
       } catch (Exception e) {
         HandleNetworkError(e);
         return null;

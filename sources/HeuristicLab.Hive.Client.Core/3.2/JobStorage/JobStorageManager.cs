@@ -10,6 +10,7 @@ using HeuristicLab.Hive.Contracts;
 using System.Xml.Serialization;
 using System.Diagnostics;
 using System.Xml;
+using HeuristicLab.Tracing;
 
 namespace HeuristicLab.Hive.Client.Core.JobStorage {
   public class JobStorageManager {
@@ -27,10 +28,10 @@ namespace HeuristicLab.Hive.Client.Core.JobStorage {
         jobstream = File.Create(path + filename + ".dat");
         jobstream.Write(job, 0, job.Length);
         storedJobsList.Add(info);        
-        Logging.Instance.Info("JobStorageManager", "Job " + info.JobID + " stored on the harddisc");
+        Logger.Info("Job " + info.JobID + " stored on the harddisc");
       }
       catch (Exception e) {
-        Logging.Instance.Error("JobStorageManager", "Exception: ", e);
+        Logger.Error("Exception: ", e);
       }
       finally {
         if(jobstream!=null)
@@ -45,22 +46,22 @@ namespace HeuristicLab.Hive.Client.Core.JobStorage {
       for(int index=storedJobsList.Count; index > 0; index--) {
         if (WcfService.Instance.ConnState == NetworkEnum.WcfConnState.Loggedin && (storedJobsList[index-1].ServerIP == WcfService.Instance.ServerIP && storedJobsList[index-1].ServerPort == WcfService.Instance.ServerPort)) {
           String filename = storedJobsList[index-1].ServerIP + "." + storedJobsList[index-1].ServerPort + "." + storedJobsList[index-1].JobID.ToString();          
-          Logging.Instance.Info("JobStorageManager", "Sending stored job " + storedJobsList[index - 1].JobID + " to the server");
+          Logger.Info("Sending stored job " + storedJobsList[index - 1].JobID + " to the server");
           try {
             byte[] job = File.ReadAllBytes(path + filename + ".dat");
             if (WcfService.Instance.IsJobStillNeeded(storedJobsList[index - 1].JobID).StatusMessage == ApplicationConstants.RESPONSE_COMMUNICATOR_SEND_JOBRESULT) {
               ResponseResultReceived res = WcfService.Instance.SendStoredJobResultsSync(ConfigManager.Instance.GetClientInfo().Id, storedJobsList[index - 1].JobID, job, 1.00, null, true);
               if (!res.Success)
-                Logging.Instance.Error("JobStorageManager", "sending of job failed: " + res.StatusMessage);
+                Logger.Error("sending of job failed: " + res.StatusMessage);
               else
-                Logging.Instance.Info("JobStorageManager", "Sending of job " + storedJobsList[index - 1].JobID + " done");
+                Logger.Info("Sending of job " + storedJobsList[index - 1].JobID + " done");
             }
             ClientStatusInfo.JobsProcessed++;
             storedJobsList.Remove(storedJobsList[index - 1]);
             File.Delete(path + filename + ".dat"); 
           }
           catch (Exception e) {
-            Logging.Instance.Error("JobStorageManager", "Job not on hdd but on list - deleting job from list", e);
+            Logger.Error("Job not on hdd but on list - deleting job from list ", e);
             storedJobsList.Remove(storedJobsList[index - 1]);
             StoreJobList();
           }
@@ -77,7 +78,7 @@ namespace HeuristicLab.Hive.Client.Core.JobStorage {
     }
 
     static JobStorageManager() {
-      Logging.Instance.Info("JobStorageManager", "Restoring Joblist from Harddisk");
+      Logger.Info("Restoring Joblist from Harddisk");
       if (!Directory.Exists(path))
         Directory.CreateDirectory(path);
             
@@ -88,16 +89,16 @@ namespace HeuristicLab.Hive.Client.Core.JobStorage {
           stream = new FileStream(Path.Combine(path, "list.xml"), FileMode.Open);
           XmlTextReader reader = new XmlTextReader(stream);
           storedJobsList = (List<JobStorageInfo>)serializer.Deserialize(reader);
-          Logging.Instance.Info("JobStorageManager", "Loaded " + storedJobsList.Count + " Elements");
+          Logger.Info("Loaded " + storedJobsList.Count + " Elements");
         }
         catch (Exception e) {
-          Logging.Instance.Error("JobStorageManager", "Exception while loading the Stored Job List", e);
+          Logger.Error("Exception while loading the Stored Job List", e);
         } finally {
           if(stream != null) 
             stream.Dispose();
         }
       } else {
-        Logging.Instance.Info("JobStorageManager", "no stored jobs on harddisk, starting new list");
+        Logger.Info("no stored jobs on harddisk, starting new list");
         storedJobsList = new List<JobStorageInfo>();
       }
     }

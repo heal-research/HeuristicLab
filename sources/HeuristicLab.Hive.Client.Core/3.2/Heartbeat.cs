@@ -31,6 +31,7 @@ using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Contracts;
 using HeuristicLab.Hive.Client.Core.ConfigurationManager;
 using HeuristicLab.Hive.Client.Communication.ServerService;
+using HeuristicLab.Tracing;
 //using BO = HeuristicLab.Hive.Contracts.BusinessObjects;
 
 namespace HeuristicLab.Hive.Client.Core {
@@ -91,7 +92,7 @@ namespace HeuristicLab.Hive.Client.Core {
         if (UptimeManager.Instance.IsOnline() && UptimeManager.Instance.CalendarAvailable) {
           //That's quiet simple: Just reconnect and you're good for new jobs
           if (wcfService.ConnState != NetworkEnum.WcfConnState.Loggedin) {
-            Logging.Instance.Info(this.ToString(), "Client goes online according to timetable");
+            Logger.Info("Client goes online according to timetable");
             wcfService.Connect();
           }
         } else {
@@ -102,13 +103,13 @@ namespace HeuristicLab.Hive.Client.Core {
       if (wcfService.ConnState == NetworkEnum.WcfConnState.Failed) {
         wcfService.Connect();
       } else if (wcfService.ConnState == NetworkEnum.WcfConnState.Loggedin) {
-        Logging.Instance.Info(this.ToString(), "Sending Heartbeat: " + heartBeatData);        
+        Logger.Debug("Sending Heartbeat: " + heartBeatData);        
         wcfService.SendHeartBeatAsync(heartBeatData);
       }
     }
 
     void wcfService_ProcessHeartBeatCompleted(object sender, ProcessHeartBeatCompletedEventArgs e) {
-      Logging.Instance.Info(this.ToString(), "Heartbeat received");
+      Logger.Debug("Heartbeat received");
       e.Result.ActionRequest.ForEach(mc => MessageQueue.GetInstance().AddMessage(mc));      
     }
 

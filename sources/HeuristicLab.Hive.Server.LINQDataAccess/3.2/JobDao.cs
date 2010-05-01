@@ -24,6 +24,30 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
               select EntityToDto(job, null)).ToList();
     }
 
+    public IEnumerable<JobDto> FindWithLimitations(State jobState, int offset, int count) {
+
+      IQueryable<JobDto> query = null;
+      if (jobState == State.finished) {
+         query = from job in Context.Jobs
+                 where job.JobState == Enum.GetName(typeof (State), jobState)
+                 orderby job.DateFinished
+                 select EntityToDto(job, null);
+      } else if (jobState == State.calculating || jobState == State.requestSnapshot || jobState == State.requestSnapshotSent) {
+        query = from job in Context.Jobs
+                    where job.JobState == Enum.GetName(typeof(State), jobState)
+                    orderby job.DateCalculated
+                    select EntityToDto(job, null);
+      } else {
+        query = from job in Context.Jobs
+                    where job.JobState == Enum.GetName(typeof(State), jobState)
+                    orderby job.DateCreated
+                    select EntityToDto(job, null);
+      }
+
+      return query.Skip(offset).Take(count).ToList();
+    }
+
+
     public byte[] GetBinaryJobFile(Guid jobId) {
       return (from job in Context.Jobs
               where job.JobId.Equals(jobId)
@@ -33,7 +57,7 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
     public JobDto Insert(JobDto bObj) {
       Job j = DtoToEntity(bObj, null);
       Context.Jobs.InsertOnSubmit(j);
-      Context.SubmitChanges();
+      CommitChanges();
       bObj.Id = j.JobId;
       return bObj;
     }
@@ -44,7 +68,7 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
       foreach (Guid assignRessourceId in job.JobInfo.AssignedResourceIds)
         j.AssignedResources.Add(new AssignedResource { ResourceId = assignRessourceId});
       Context.Jobs.InsertOnSubmit(j);
-      Context.SubmitChanges();
+      CommitChanges();
       job.JobInfo.Id = j.JobId;
       return job;
 
@@ -53,17 +77,13 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
     public void Delete(JobDto bObj) {
       Job job = Context.Jobs.SingleOrDefault(j => j.JobId.Equals(bObj.Id));
       Context.Jobs.DeleteOnSubmit(job);
-      Context.SubmitChanges();
+      CommitChanges();
     }
 
     public void Update(JobDto bObj) {
       Job job = Context.Jobs.SingleOrDefault(j => j.JobId.Equals(bObj.Id));
-      DtoToEntity(bObj, job);
-      try {
-        Context.SubmitChanges();
-      } catch (ChangeConflictException cfe) {
-        
-      }
+      DtoToEntity(bObj, job);    
+      CommitChanges(); 
     }
 
     public IEnumerable<JobDto> FindActiveJobsOfClient(ClientDto client) {
@@ -104,14 +124,14 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
       Job j = Context.Jobs.SingleOrDefault(job => job.JobId.Equals(jobId));
       c.Jobs.Add(j);
       j.Client = c;
-      Context.SubmitChanges();      
+      CommitChanges();      
     }
 
     public void SetJobOffline(JobDto job) {
       Job j = Context.Jobs.SingleOrDefault(jq => jq.JobId.Equals(job.Id));
       j.Client = null;
       j.JobState = Enum.GetName(typeof(State), State.offline); 
-      Context.SubmitChanges();
+      CommitChanges();
     }
 
     public Stream GetSerializedJobStream(Guid jobId) {
@@ -136,6 +156,7 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
 
       target.DateCalculated = source.DateCalculated;
       target.DateCreated = source.DateCreated;
+      target.DateFinished = source.DateFinished;
       target.JobId = source.Id;
 
       target.Percentage = source.Percentage;
@@ -161,13 +182,11 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
       target.CoresNeeded = source.CoresNeeded;
       target.MemoryNeeded = source.MemoryNeeded;
 
-
-
       target.DateCalculated = source.DateCalculated;
       target.DateCreated = source.DateCreated;
+      target.DateFinished = source.DateFinished;
       target.Id = source.JobId;
-      
-          
+       
       target.Percentage = source.Percentage;
       
       target.Priority = source.Priority;

@@ -20,5 +20,7 @@ namespace HeuristicLab.Hive.Server.DataAccess {
 
     IEnumerable<JobDto> FindFittingJobsForClient(State state, int freeCores, int freeMemory, Guid clientGuid);
     Stream GetSerializedJobStream(Guid jobId);
+
+    IEnumerable<JobDto> FindWithLimitations(State jobState, int offset, int count);
   }
 }

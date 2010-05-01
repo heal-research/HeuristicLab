@@ -23,10 +23,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Data;
 
 namespace HeuristicLab.Hive.Contracts {
   public class ApplicationConstants {
 
+    public static System.Data.IsolationLevel ISOLATION_LEVEL = IsolationLevel.ReadCommitted;
+
+    public static System.Transactions.IsolationLevel ISOLATION_LEVEL_SCOPE =
+      System.Transactions.IsolationLevel.ReadCommitted;
     public static int HEARTBEAT_MAX_DIF = 120; // value in seconds
     public static int JOB_TIME_TO_LIVE = 5;
 

@@ -25,8 +25,8 @@ namespace HeuristicLab.Security.Core.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=127.0.0.1;Initial Catalog=HeuristicLab.Security;Persist Security Info" +
-            "=True;User ID=hive;Password=hive;Pooling=true;MultipleActiveResultSets=true")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=127.0.0.1;Initial Catalog=HeuristicLab.Security;Integrated Security=T" +
+            "rue;Pooling=true;MultipleActiveResultSets=true")]
         public string SecurityServerConnectionString {
             get {
                 return ((string)(this["SecurityServerConnectionString"]));

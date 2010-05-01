@@ -8,8 +8,34 @@
     <maximumFileSize value="1000KB" />
     <staticLogFileName value="true" />
     <lockingModel type="log4net.Appender.FileAppender+MinimalLock" />
-    <layout type="log4net.Layout.PatternLayout">
-      <conversionPattern value="%-4timestamp %-5level% =>   %message%newline%exception" />
+    <layout type="HeuristicLab.Tracing.MethodCallPatternLayout, HeuristicLab.Tracing-3.2">
+      <conversionPattern value="%date{yyyy-MM-dd HH:mm:ss.ffff} %-4timestamp %-5level %logger.%RM - %message%newline%exception" />
+    </layout>
+  </appender>
+
+  <appender name="ServerRollingFileAppender" type="log4net.Appender.RollingFileAppender">
+    <file value="Hive.Server.log" />
+    <appendToFile value="true" />
+    <rollingStyle value="Size" />
+    <maxSizeRollBackups value="10" />
+    <maximumFileSize value="1000KB" />
+    <staticLogFileName value="true" />
+    <lockingModel type="log4net.Appender.FileAppender+MinimalLock" />
+    <layout type="HeuristicLab.Tracing.MethodCallPatternLayout, HeuristicLab.Tracing-3.2">
+      <conversionPattern value="%date{yyyy-MM-dd HH:mm:ss.ffff} %-4timestamp %-5level %logger.%RM - %message%newline%exception" />
+    </layout>
+  </appender>
+
+  <appender name="ClientRollingFileAppender" type="log4net.Appender.RollingFileAppender">
+    <file value="Hive.Client.log" />
+    <appendToFile value="true" />
+    <rollingStyle value="Size" />
+    <maxSizeRollBackups value="10" />
+    <maximumFileSize value="1000KB" />
+    <staticLogFileName value="true" />
+    <lockingModel type="log4net.Appender.FileAppender+MinimalLock" />
+    <layout type="HeuristicLab.Tracing.MethodCallPatternLayout, HeuristicLab.Tracing-3.2">
+      <conversionPattern value="%date{yyyy-MM-dd HH:mm:ss.ffff} %-4timestamp %-5level %logger.%RM - %message%newline%exception" />
     </layout>
   </appender>
   
@@ -17,7 +43,7 @@
     <bufferSize value="128" />
     <lossy value="true" />
     <evaluator type="log4net.Core.LevelEvaluator">
-        <threshold value="INFO"/>
+        <threshold value="DEBUG"/>
     </evaluator>
     <appender-ref ref="RollingFileAppender" />
   </appender>
@@ -26,5 +52,15 @@
     <level value="INFO" />
     <appender-ref ref="BufferingForwardingAppender" />
   </root>
+
+  <logger name="HeuristicLab.Hive.Server">
+    <level value="DEBUG" />
+    <appender-ref ref="ServerRollingFileAppender" />    
+  </logger>
+
+  <logger name="HeuristicLab.Hive.Client">
+    <level value="DEBUG" />
+    <appender-ref ref="ClientRollingFileAppender" />  
+  </logger>
   
 </log4net>

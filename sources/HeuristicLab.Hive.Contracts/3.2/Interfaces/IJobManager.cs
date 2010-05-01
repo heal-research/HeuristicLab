@@ -33,9 +33,13 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
   [ServiceContract]
   public interface IJobManager {
     [OperationContract]
+    ResponseList<JobDto> GetAllJobsWithFilter(State jobState, int offset, int count);
+    [OperationContract]
     ResponseList<JobDto> GetAllJobs();
     [OperationContract]
     ResponseObject<JobDto> GetJobById(Guid jobId);
+    [OperationContract]
+    ResponseObject<JobDto> GetJobByIdWithDetails(Guid jobId);
     [OperationContract]
     ResponseObject<JobDto> AddNewJob(SerializedJob job);
     [OperationContract]
@@ -61,6 +65,6 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
     [OperationContract]
     ResponseList<JobDto> GetJobsByProject(Guid projectId);
     [OperationContract]
-    ResponseObject<JobDto> AddJobWithGroupStrings(SerializedJob job, IEnumerable<string> resources);
+    ResponseObject<JobDto> AddJobWithGroupStrings(SerializedJob job, IEnumerable<string> resources);    
   }
 }

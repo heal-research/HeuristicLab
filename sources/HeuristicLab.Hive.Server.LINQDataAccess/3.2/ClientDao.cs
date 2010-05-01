@@ -42,13 +42,13 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
       Client dbclient = Context.Clients.SingleOrDefault(c => c.ResourceId.Equals(client.Id));
       dbclient.UseCalendarFromResourceId = clientGroupId;
       dbclient.CalendarSyncStatus = Enum.GetName(typeof(CalendarState), CalendarState.Fetch);
-      Context.SubmitChanges();
+      CommitChanges();
     }
 
     public ClientDto Insert(ClientDto info) {
       Client c = DtoToEntity(info, null);      
       Context.Clients.InsertOnSubmit(c);
-      Context.SubmitChanges();
+      CommitChanges();
       info.Id = c.ResourceId;
       return info;
     }
@@ -57,18 +57,13 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
     public void Delete(ClientDto info) {
       Resource res = Context.Resources.SingleOrDefault(c => c.ResourceId.Equals(info.Id));            
       Context.Resources.DeleteOnSubmit(res);
-      Context.SubmitChanges();
+      CommitChanges();
     }
 
     public void Update(ClientDto info) {
       Client client = Context.Clients.SingleOrDefault(c => c.ResourceId.Equals(info.Id));
       DtoToEntity(info, client);
-      try {
-        Console.WriteLine("Sending from thread: " + Thread.CurrentThread.ManagedThreadId);
-        Context.SubmitChanges();
-      } catch (System.Data.Linq.ChangeConflictException cce) {
-        Console.WriteLine(cce);        
-      }
+      CommitChanges();      
     }
 
     public override Client DtoToEntity(ClientDto source, Client target) {

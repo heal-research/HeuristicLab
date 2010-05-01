@@ -1773,7 +1773,7 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 		
 		private System.Nullable<double> _Percentage;
 		
-		private System.Data.Linq.Binary _SerializedJob;
+		private System.Data.Linq.Link<System.Data.Linq.Binary> _SerializedJob;
 		
 		private System.Nullable<System.DateTime> _DateCreated;
 		
@@ -1956,20 +1956,20 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess
 			}
 		}
 		
-		[Column(Storage="_SerializedJob", DbType="VarBinary(MAX)", CanBeNull=true, UpdateCheck=UpdateCheck.Never)]
+		[Column(Storage="_SerializedJob", DbType="VarBinary(MAX)", UpdateCheck=UpdateCheck.Never)]
 		public System.Data.Linq.Binary SerializedJob
 		{
 			get
 			{
-				return this._SerializedJob;
+				return this._SerializedJob.Value;
 			}
 			set
 			{
-				if ((this._SerializedJob != value))
+				if ((this._SerializedJob.Value != value))
 				{
 					this.OnSerializedJobChanging(value);
 					this.SendPropertyChanging();
-					this._SerializedJob = value;
+					this._SerializedJob.Value = value;
 					this.SendPropertyChanged("SerializedJob");
 					this.OnSerializedJobChanged();
 				}

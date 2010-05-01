@@ -80,7 +80,7 @@ namespace HeuristicLab.Grid {
           next = atomicOperation.Operator.Execute(atomicOperation.Scope);
         } catch(Exception ex) {
           errorMessage = CreateErrorMessage(ex);
-          HeuristicLab.Tracing.HiveLogger.Error(errorMessage);
+          HeuristicLab.Tracing.Logger.Error(errorMessage);
           // push operation on stack again
           myExecutionStack.Push(atomicOperation);
           Abort();

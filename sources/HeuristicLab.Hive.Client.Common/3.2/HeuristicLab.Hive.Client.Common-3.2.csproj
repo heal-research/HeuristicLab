@@ -81,7 +81,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommonPlugin.cs" />
-    <Compile Include="Logging.cs" />
     <Compile Include="MessageQueue.cs" />
     <Compile Include="NetworkEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -134,9 +134,9 @@ namespace HeuristicLab.Hive.Engine {
         do {
           Thread.Sleep(RESULT_POLLING_INTERVAL_MS);
           lock (locker) {
-            HiveLogger.Debug("HiveEngine: Results-polling - GetLastResult");
+            Logger.Debug("HiveEngine: Results-polling - GetLastResult");
             response = executionEngineFacade.GetLastSerializedResult(jobId, false);
-            HiveLogger.Debug("HiveEngine: Results-polling - Server: " + response.StatusMessage + " success: " + response.Success);
+            Logger.Debug("HiveEngine: Results-polling - Server: " + response.StatusMessage + " success: " + response.Success);
             // loop while 
             // 1. the user doesn't request an abort 
             // 2. there is a problem with server communication (success==false)
@@ -144,9 +144,9 @@ namespace HeuristicLab.Hive.Engine {
             // 4. the result that we get from the server is a snapshot and not the final result
             if (abortRequested) return;
             if (response.Success && response.Obj != null) {
-              HiveLogger.Debug("HiveEngine: Results-polling - Got result!");
+              Logger.Debug("HiveEngine: Results-polling - Got result!");
               restoredJob = (Job)PersistenceManager.RestoreFromGZip(response.Obj.SerializedJobData);
-              HiveLogger.Debug("HiveEngine: Results-polling - IsSnapshotResult: " + (restoredJob.Progress<1.0));
+              Logger.Debug("HiveEngine: Results-polling - IsSnapshotResult: " + (restoredJob.Progress < 1.0));
             }
           }
         } while (restoredJob == null || (restoredJob.Progress < 1.0));
@@ -156,7 +156,7 @@ namespace HeuristicLab.Hive.Engine {
         OnChanged();
         OnFinished();
       });
-      HiveLogger.Debug("HiveEngine: Starting results-polling thread");
+      Logger.Debug("HiveEngine: Starting results-polling thread");
       t.Start();
     }
 
@@ -165,21 +165,21 @@ namespace HeuristicLab.Hive.Engine {
       int retryCount = 0;
       ResponseObject<SerializedJob> response;
       lock (locker) {
-        HiveLogger.Debug("HiveEngine: Abort - RequestSnapshot");
+        Logger.Debug("HiveEngine: Abort - RequestSnapshot");
         Response snapShotResponse = executionEngineFacade.RequestSnapshot(jobId);
         if (snapShotResponse.StatusMessage == ApplicationConstants.RESPONSE_JOB_IS_NOT_BEEING_CALCULATED) {
           // job is finished already
-          HiveLogger.Debug("HiveEngine: Abort - GetLastResult(false)");
+          Logger.Debug("HiveEngine: Abort - GetLastResult(false)");
           response = executionEngineFacade.GetLastSerializedResult(jobId, false);
-          HiveLogger.Debug("HiveEngine: Abort - Server: " + response.StatusMessage + " success: " + response.Success);
+          Logger.Debug("HiveEngine: Abort - Server: " + response.StatusMessage + " success: " + response.Success);
         } else {
           // server sent snapshot request to client
           // poll until snapshot is ready
           do {
             Thread.Sleep(SNAPSHOT_POLLING_INTERVAL_MS);
-            HiveLogger.Debug("HiveEngine: Abort - GetLastResult(true)");
+            Logger.Debug("HiveEngine: Abort - GetLastResult(true)");
             response = executionEngineFacade.GetLastSerializedResult(jobId, true);
-            HiveLogger.Debug("HiveEngine: Abort - Server: " + response.StatusMessage + " success: " + response.Success);
+            Logger.Debug("HiveEngine: Abort - Server: " + response.StatusMessage + " success: " + response.Success);
             retryCount++;
             // loop while
             // 1. problem with communication with server
@@ -193,7 +193,7 @@ namespace HeuristicLab.Hive.Engine {
       }
       SerializedJob jobResult = response.Obj;
       if (jobResult != null) {
-        HiveLogger.Debug("HiveEngine: Results-polling - Got result!");
+        Logger.Debug("HiveEngine: Results-polling - Got result!");
         job = (Job)PersistenceManager.RestoreFromGZip(jobResult.SerializedJobData);
         ControlManager.Manager.ShowControl(job.Engine.CreateView());
       }

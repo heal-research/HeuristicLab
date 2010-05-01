@@ -54,10 +54,6 @@
       this.lvJobDetails = new System.Windows.Forms.ListView();
       this.chContent = new System.Windows.Forms.ColumnHeader();
       this.chDetails = new System.Windows.Forms.ColumnHeader();
-      this.lvSnapshots = new System.Windows.Forms.ListView();
-      this.chClientCalculated = new System.Windows.Forms.ColumnHeader();
-      this.chProgress = new System.Windows.Forms.ColumnHeader();
-      this.chSnapshotTime = new System.Windows.Forms.ColumnHeader();
       this.lblProgress = new System.Windows.Forms.Label();
       this.lblStatus = new System.Windows.Forms.Label();
       this.progressJob = new System.Windows.Forms.ProgressBar();
@@ -84,10 +80,10 @@
       this.contextMenuGroup = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.menuItemAddGroup = new System.Windows.Forms.ToolStripMenuItem();
       this.menuItemDeleteGroup = new System.Windows.Forms.ToolStripMenuItem();
+      this.menuItemOpenCalendar = new System.Windows.Forms.ToolStripMenuItem();
       this.lvClientControl = new System.Windows.Forms.ListView();
       this.tcManagementConsole = new System.Windows.Forms.TabControl();
       this.checkBox1 = new System.Windows.Forms.CheckBox();
-      this.menuItemOpenCalendar = new System.Windows.Forms.ToolStripMenuItem();
       this.menuStrip1.SuspendLayout();
       this.plClientDetails.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pbClientControl)).BeginInit();
@@ -349,7 +345,6 @@
       this.plJobDetails.BackColor = System.Drawing.SystemColors.Window;
       this.plJobDetails.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
       this.plJobDetails.Controls.Add(this.lvJobDetails);
-      this.plJobDetails.Controls.Add(this.lvSnapshots);
       this.plJobDetails.Controls.Add(this.lblProgress);
       this.plJobDetails.Controls.Add(this.lblStatus);
       this.plJobDetails.Controls.Add(this.progressJob);
@@ -371,7 +366,7 @@
       this.lvJobDetails.GridLines = true;
       this.lvJobDetails.Location = new System.Drawing.Point(17, 124);
       this.lvJobDetails.Name = "lvJobDetails";
-      this.lvJobDetails.Size = new System.Drawing.Size(382, 175);
+      this.lvJobDetails.Size = new System.Drawing.Size(382, 243);
       this.lvJobDetails.TabIndex = 17;
       this.lvJobDetails.UseCompatibleStateImageBehavior = false;
       this.lvJobDetails.View = System.Windows.Forms.View.Details;
@@ -385,37 +380,6 @@
       // 
       this.chDetails.Text = "Details";
       this.chDetails.Width = 255;
-      // 
-      // lvSnapshots
-      // 
-      this.lvSnapshots.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.chClientCalculated,
-            this.chProgress,
-            this.chSnapshotTime});
-      this.lvSnapshots.Enabled = false;
-      this.lvSnapshots.FullRowSelect = true;
-      this.lvSnapshots.GridLines = true;
-      this.lvSnapshots.Location = new System.Drawing.Point(17, 310);
-      this.lvSnapshots.Name = "lvSnapshots";
-      this.lvSnapshots.Size = new System.Drawing.Size(382, 69);
-      this.lvSnapshots.TabIndex = 16;
-      this.lvSnapshots.UseCompatibleStateImageBehavior = false;
-      this.lvSnapshots.View = System.Windows.Forms.View.Details;
-      // 
-      // chClientCalculated
-      // 
-      this.chClientCalculated.Text = "Client Calculated";
-      this.chClientCalculated.Width = 112;
-      // 
-      // chProgress
-      // 
-      this.chProgress.Text = "Progress";
-      this.chProgress.Width = 100;
-      // 
-      // chSnapshotTime
-      // 
-      this.chSnapshotTime.Text = "Snapshot request";
-      this.chSnapshotTime.Width = 166;
       // 
       // lblProgress
       // 
@@ -656,7 +620,7 @@
             this.menuItemDeleteGroup,
             this.menuItemOpenCalendar});
       this.contextMenuGroup.Name = "contextMenuJob";
-      this.contextMenuGroup.Size = new System.Drawing.Size(154, 92);
+      this.contextMenuGroup.Size = new System.Drawing.Size(154, 70);
       // 
       // menuItemAddGroup
       // 
@@ -669,6 +633,12 @@
       this.menuItemDeleteGroup.Name = "menuItemDeleteGroup";
       this.menuItemDeleteGroup.Size = new System.Drawing.Size(153, 22);
       this.menuItemDeleteGroup.Text = "Delete Group";
+      // 
+      // menuItemOpenCalendar
+      // 
+      this.menuItemOpenCalendar.Name = "menuItemOpenCalendar";
+      this.menuItemOpenCalendar.Size = new System.Drawing.Size(153, 22);
+      this.menuItemOpenCalendar.Text = "Open Calendar";
       // 
       // lvClientControl
       // 
@@ -704,12 +674,6 @@
       this.checkBox1.TabIndex = 0;
       this.checkBox1.Text = "checkBox1";
       this.checkBox1.UseVisualStyleBackColor = true;
-      // 
-      // menuItemOpenCalendar
-      // 
-      this.menuItemOpenCalendar.Name = "menuItemOpenCalendar";
-      this.menuItemOpenCalendar.Size = new System.Drawing.Size(153, 22);
-      this.menuItemOpenCalendar.Text = "Open Calendar";
       // 
       // HiveServerManagementConsole
       // 
@@ -781,9 +745,6 @@
     private System.IO.FileSystemWatcher fileSystemWatcher1;
     private System.Windows.Forms.Label lblStatus;
     private System.Windows.Forms.Label lblProgress;
-    private System.Windows.Forms.ListView lvSnapshots;
-    private System.Windows.Forms.ColumnHeader chClientCalculated;
-    private System.Windows.Forms.ColumnHeader chProgress;
     private System.Windows.Forms.Label lblStateClient;
     private System.Windows.Forms.Label lblState;
     private System.ComponentModel.BackgroundWorker updaterWoker;
@@ -795,7 +756,6 @@
     private System.Windows.Forms.SplitContainer scJobControl;
     private System.Windows.Forms.ListView lvJobControl;
     private System.Windows.Forms.CheckBox checkBox1;
-    private System.Windows.Forms.ColumnHeader chSnapshotTime;
     private System.Windows.Forms.ContextMenuStrip contextMenuJob;
     private System.Windows.Forms.ToolStripMenuItem menuItemAbortJob;
     private System.Windows.Forms.ToolStripMenuItem menuItemGetSnapshot;

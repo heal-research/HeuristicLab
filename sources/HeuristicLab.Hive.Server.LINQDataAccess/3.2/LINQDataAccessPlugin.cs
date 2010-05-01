@@ -10,6 +10,7 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
   [PluginDependency("HeuristicLab.Core-3.2")]
   [PluginDependency("HeuristicLab.Hive.Contracts-3.2")]
   [PluginDependency("HeuristicLab.Hive.Server.DataAccess-3.2")]
+  [PluginDependency("HeuristicLab.Tracing", "3.2.0")]
   public class LINQDataAccessPlugin: PluginBase {
   }
 }

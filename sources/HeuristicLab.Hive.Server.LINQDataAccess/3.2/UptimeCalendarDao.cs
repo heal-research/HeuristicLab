@@ -59,20 +59,20 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
     public AppointmentDto Insert(AppointmentDto bObj) {
       UptimeCalendar uc = DtoToEntity(bObj, null);
       Context.UptimeCalendars.InsertOnSubmit(uc);
-      Context.SubmitChanges();
+      CommitChanges();
       bObj.Id = uc.UptimeCalendarId;
       return bObj;
     }
 
     public void Delete(AppointmentDto bObj) {
       Context.UptimeCalendars.DeleteOnSubmit(Context.UptimeCalendars.SingleOrDefault(uc => uc.UptimeCalendarId.Equals(bObj.Id)));
-      Context.SubmitChanges();
+      CommitChanges();
     }
 
     public void Update(AppointmentDto bObj) {
       UptimeCalendar cc = Context.UptimeCalendars.SingleOrDefault(c => c.UptimeCalendarId.Equals(bObj.Id));
       DtoToEntity(bObj, cc);
-      Context.SubmitChanges();
+      CommitChanges();
     }
 
     public IEnumerable<AppointmentDto> GetUptimeCalendarForResource(Guid resourceId) {
@@ -94,7 +94,7 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
         Context.UptimeCalendars.InsertOnSubmit(uc);
       }
 
-      Context.SubmitChanges();            
+      CommitChanges();            
     }    
 
     public IEnumerable<AppointmentDto> GetCalendarForClient(ClientDto client) {
@@ -142,7 +142,7 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
         client.CalendarSyncStatus = (forcePush ? Enum.GetName(typeof(CalendarState), CalendarState.ForceFetch) : Enum.GetName(typeof(CalendarState), CalendarState.Fetch));      
       }
       
-      Context.SubmitChanges();
+      CommitChanges();
 
       //Get all Subgroups
       List<ClientGroup> groups = (from cg1 in Context.ClientGroups

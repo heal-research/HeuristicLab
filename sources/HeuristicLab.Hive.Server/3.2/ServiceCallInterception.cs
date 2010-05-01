@@ -6,18 +6,25 @@ using AopAlliance.Intercept;
 using System.Threading;
 using HeuristicLab.Hive.Server.LINQDataAccess;
 using System.Transactions;
+using HeuristicLab.Hive.Contracts;
+using HeuristicLab.Tracing;
 
 namespace HeuristicLab.Hive.Server {
   internal class ServiceCallInterception : IMethodInterceptor {
 
-    private bool useTransactions = false;
+    private const bool UseTransactions = true;
 
     public object Invoke(IMethodInvocation invocation) {
-      Console.WriteLine(DateTime.Now + " - " + Thread.CurrentThread.ManagedThreadId + " - Entering Method " +
-                        invocation.Method.Name);
+      Logger.Info("Entering Method: " + invocation.Method.Name);
 
       if(ContextFactory.Context != null) {
-        Console.WriteLine("Error - Not null context found - why wasn't this disposed?");
+        Logger.Info("Not null context found - why wasn't this disposed?");
+        try {
+          Logger.Info("Trying to dispose");
+          ContextFactory.Context.Dispose();
+        } catch (Exception e) {
+          Logger.Error(e);
+        }
         ContextFactory.Context = null;
       }
 
@@ -25,33 +32,37 @@ namespace HeuristicLab.Hive.Server {
 
       if (invocation.Method.Name.Equals("SendStreamedJob") || invocation.Method.Name.Equals("StoreFinishedJobResultStreamed")) {        
         ContextFactory.Context.Connection.Open();
-        if(useTransactions)
-          ContextFactory.Context.Transaction = ContextFactory.Context.Connection.BeginTransaction();
+        if(UseTransactions) {
+          Logger.Debug("Opening Transaction");
+          ContextFactory.Context.Transaction = ContextFactory.Context.Connection.BeginTransaction(ApplicationConstants.ISOLATION_LEVEL);
+        } else {
+          Logger.Debug("Not using a Transaction");
+        }
         try {
           obj = invocation.Proceed();
-          Console.WriteLine("leaving context open for Streaming");
+          Logger.Info("leaving context open for streaming");
         }
-        catch (Exception e) {          
-          Console.WriteLine(e);
+        catch (Exception e) {
+          Logger.Error("Exception occured during method invocation", e);              
           ContextFactory.Context.Dispose();
           ContextFactory.Context = null;
         }        
       } else {
-        if(useTransactions) {
-          using (TransactionScope scope = new TransactionScope()) {
+        if(UseTransactions) {
+          using (TransactionScope scope = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = ApplicationConstants.ISOLATION_LEVEL_SCOPE })) {
             try {
+              Logger.Debug("Current Transaction Isolation level is: " + Transaction.Current.IsolationLevel);
               obj = invocation.Proceed();
               scope.Complete();
             }
             catch (Exception e) {
-              Console.WriteLine("Exception Occured");
-              Console.WriteLine(e);
+              Logger.Error("Exception occured during method invocation", e);              
             }
             finally {
               ContextFactory.Context.Dispose();
-              Console.WriteLine("setting old context null");
+              Logger.Debug("Disposed Context");
               ContextFactory.Context = null;
-              Console.WriteLine("Disposing old Context");
+              Logger.Debug("Set Context Null");
             }
           }
         } else {
@@ -59,19 +70,17 @@ namespace HeuristicLab.Hive.Server {
             obj = invocation.Proceed();            
           }
           catch (Exception e) {
-            Console.WriteLine("Exception Occured");
-            Console.WriteLine(e);
+            Logger.Error("Exception occured during method invocation", e);                          
           }
           finally {
             ContextFactory.Context.Dispose();
-            Console.WriteLine("setting old context null");
+            Logger.Debug("Disposed Context");
             ContextFactory.Context = null;
-            Console.WriteLine("Disposing old Context");
+            Logger.Debug("Set Context Null");
           }  
         }
       }
-      Console.WriteLine(DateTime.Now + " - " + Thread.CurrentThread.ManagedThreadId + " - Leaving Method " +
-                          invocation.Method.Name);
+      Logger.Info("Leaving Method: " + invocation.Method.Name);
 
       return obj;
     }

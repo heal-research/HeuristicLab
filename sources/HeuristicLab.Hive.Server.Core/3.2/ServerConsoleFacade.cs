@@ -96,9 +96,19 @@ namespace HeuristicLab.Hive.Server.Core {
       return jobManager.GetAllJobs();
     }
 
+    public ResponseList<JobDto> GetAllJobsWithFilter(State jobState, int offset, int count) {
+      secMan.Authorize("AccessJobs", sessionID, Guid.Empty);
+      return jobManager.GetAllJobsWithFilter(jobState, offset, count);
+    }
+
     public ResponseObject<JobDto> GetJobById(Guid jobId) {
       secMan.Authorize("AccessJobs", sessionID, jobId);
       return jobManager.GetJobById(jobId);
+    }
+
+    public ResponseObject<JobDto> GetJobByIdWithDetails(Guid jobId) {
+      secMan.Authorize("AccessJobs", sessionID, jobId);
+      return jobManager.GetJobByIdWithDetails(jobId);
     }
 
     public ResponseObject<JobDto> AddNewJob(SerializedJob job) {

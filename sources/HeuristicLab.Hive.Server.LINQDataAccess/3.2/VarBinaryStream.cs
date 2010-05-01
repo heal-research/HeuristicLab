@@ -6,6 +6,7 @@ using System;
 using System.IO;
 using System.Data.SqlClient;
 using System.Data;
+using HeuristicLab.Tracing;
 
 namespace HeuristicLab.Hive.Server.LINQDataAccess {
   /// <summary>
@@ -252,15 +253,18 @@ where {2} = @key", dataColumn, table, keyColumn);
     }
 
     public void Close() {
+      Logger.Info("Closing Stream");
       if (_transaction != null) {
         _transaction.Commit();
         _transaction = null;
+        Logger.Info("Transaction commited and closed");
       }
 
       if (_connection != null) {
         _connection.Close();
         ContextFactory.Context.Dispose();
         ContextFactory.Context = null;
+        Logger.Info("Connection and Context disposed and set null");
       }
     }
 

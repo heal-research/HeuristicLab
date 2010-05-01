@@ -30,7 +30,7 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
 
       ClientGroup cc = DtoToEntity(bObj, null);
       Context.ClientGroups.InsertOnSubmit(cc);
-      Context.SubmitChanges();
+      CommitChanges();
       bObj.Id = cc.ResourceId;
       return bObj;
     }
@@ -43,20 +43,20 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
       Resource res = Context.Resources.SingleOrDefault(c => c.ResourceId.Equals(bObj.Id));
 
       Context.Resources.DeleteOnSubmit(res);
-      Context.SubmitChanges();
+      CommitChanges();
     }
 
     public void Update(ClientGroupDto bObj) {
       ClientGroup client = Context.ClientGroups.SingleOrDefault(c => c.ResourceId.Equals(bObj.Id));
       DtoToEntity(bObj, client);
-      Context.SubmitChanges();
+      CommitChanges();
     }
 
     public void AddRessourceToClientGroup(Guid resource, Guid clientGroupId) {
       ClientGroup cg = Context.ClientGroups.SingleOrDefault(c => c.ResourceId.Equals(clientGroupId));
       Resource res = Context.Resources.SingleOrDefault(r => r.ResourceId.Equals(resource));
       cg.ClientGroup_Resources.Add(new ClientGroup_Resource { ClientGroup = cg, Resource = res });      
-      Context.SubmitChanges();
+      CommitChanges();
     }
 
     public void RemoveRessourceFromClientGroup(Guid resource, Guid clientGroupId) {
@@ -64,7 +64,7 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
         Context.ClientGroup_Resources.SingleOrDefault(
           cg => cg.ResourceId.Equals(resource) && cg.ClientGroupId.Equals(clientGroupId));
       Context.ClientGroup_Resources.DeleteOnSubmit(cgr);
-      Context.SubmitChanges();
+      CommitChanges();
     }
 
     public IEnumerable<ClientGroupDto> MemberOf(ClientDto client) {

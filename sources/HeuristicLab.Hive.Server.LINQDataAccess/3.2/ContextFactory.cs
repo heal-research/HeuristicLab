@@ -8,10 +8,10 @@ using System.Data.SqlClient;
 namespace HeuristicLab.Hive.Server.LINQDataAccess {
   public class ContextFactory {
     [ThreadStatic]
-    private static HiveDataContext _hiveDataContext;
+    private static HiveDataContext _hiveDataContext = null;
 
     [ThreadStatic]
-    private static SqlTransaction _currentTransaction;
+    private static SqlTransaction _currentTransaction = null;
 
     public static HiveDataContext Context { 
       get {

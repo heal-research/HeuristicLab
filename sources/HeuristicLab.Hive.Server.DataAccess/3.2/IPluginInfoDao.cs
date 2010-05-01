@@ -6,5 +6,6 @@ using HeuristicLab.Hive.Contracts.BusinessObjects;
 namespace HeuristicLab.Hive.Server.DataAccess {
   public interface IPluginInfoDao: IGenericDao<HivePluginInfoDto> {    
     void InsertPluginDependenciesForJob(JobDto jobDto);
+    List<HivePluginInfoDto> GetPluginDependenciesForJob(JobDto jobDto);
   }
 }

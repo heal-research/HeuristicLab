@@ -8,6 +8,7 @@ using System.IO;
 using HeuristicLab.Hive.Client.Common;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Contracts;
+using HeuristicLab.Tracing;
 
 namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
   public class UptimeManager {
@@ -48,7 +49,7 @@ namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
         s.Serialize(w, AppContainer);
       }
       catch (Exception e) {
-        Logging.Instance.Error(this.ToString(), "Persistance of the Calendar failed!", e);
+        Logger.Error("Persistance of the Calendar failed!", e);
       }
       finally {
         if (w != null)
@@ -67,8 +68,8 @@ namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
           CalendarAvailable = true;
         }
         catch (Exception e) {
-          Logging.Instance.Error(this.ToString(), "Deserialization of Calendar failed", e);
-          Logging.Instance.Info(this.ToString(), "Starting with a new one");
+          Logger.Error("Deserialization of Calendar failed", e);
+          Logger.Info("Starting with a new one");
           _appContainer = new AppointmentContainer();
           CalendarAvailable = false;
         }

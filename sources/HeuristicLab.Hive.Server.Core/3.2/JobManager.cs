@@ -34,6 +34,7 @@ using System.IO;
 using HeuristicLab.Tracing;
 using System.Transactions;
 using HeuristicLab.Hive.Server.LINQDataAccess;
+using IsolationLevel=System.Transactions.IsolationLevel;
 
 namespace HeuristicLab.Hive.Server.Core {
   class JobManager: IJobManager, IInternalJobManager {
@@ -56,7 +57,7 @@ namespace HeuristicLab.Hive.Server.Core {
     }
 
     public void ResetJobsDependingOnResults(JobDto job) {
-      HiveLogger.Info(this.ToString() + ": Setting job " + job.Id + " offline");
+      Logger.Info("Setting job " + job.Id + " offline");
       if (job != null) {
         DaoLocator.JobDao.SetJobOffline(job);
       }
@@ -64,8 +65,8 @@ namespace HeuristicLab.Hive.Server.Core {
          
 
     void checkForDeadJobs() {
-      HiveLogger.Info(this.ToString() + " Searching for dead Jobs");
-      using (TransactionScope scope = new TransactionScope()) {
+      Logger.Info("Searching for dead Jobs");
+      using (TransactionScope scope = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = ApplicationConstants.ISOLATION_LEVEL_SCOPE })) {
         List<JobDto> allJobs = new List<JobDto>(DaoLocator.JobDao.FindAll());
         foreach (JobDto curJob in allJobs) {
           if (curJob.State != State.calculating) {
@@ -90,12 +91,6 @@ namespace HeuristicLab.Hive.Server.Core {
     /// </summary>
     /// <returns></returns>
     public ResponseList<JobDto> GetAllJobs() {
-       /*ISession session = factory.GetSessionForCurrentThread();
-
-       try {
-         IJobAdapter jobAdapter =
-             session.GetDataAdapter<JobDto, IJobAdapter>();*/
-
          ResponseList<JobDto> response = new ResponseList<JobDto>();
 
          response.List = new List<JobDto>(DaoLocator.JobDao.FindAll());
@@ -103,12 +98,13 @@ namespace HeuristicLab.Hive.Server.Core {
          response.StatusMessage = ApplicationConstants.RESPONSE_JOB_ALL_JOBS;
 
          return response;
-       /*}
-       finally {
-         if (session != null)
-           session.EndSession();
-       } */
     }
+
+    public ResponseList<JobDto> GetAllJobsWithFilter(State jobState, int offset, int count) {
+      ResponseList<JobDto> response = new ResponseList<JobDto>();
+      response.List = new List<JobDto>(DaoLocator.JobDao.FindWithLimitations(jobState, offset, count));
+      return response;
+    }  
 
     /// <summary>
     /// Gets the streamed job
@@ -125,12 +121,6 @@ namespace HeuristicLab.Hive.Server.Core {
     /// </summary>
     /// <returns></returns>
     public ResponseObject<JobDto> GetJobById(Guid jobId) {
-      /*ISession session = factory.GetSessionForCurrentThread();
-
-      try {              
-        IJobAdapter jobAdapter =
-            session.GetDataAdapter<JobDto, IJobAdapter>();*/
-
         ResponseObject<JobDto> response = new ResponseObject<JobDto>();
 
       response.Obj = DaoLocator.JobDao.FindById(jobId);
@@ -144,11 +134,21 @@ namespace HeuristicLab.Hive.Server.Core {
 
         return response;
       }
-      /*finally {
-        if (session != null)
-          session.EndSession();
-      }
-    }   */
+
+    public ResponseObject<JobDto> GetJobByIdWithDetails(Guid jobId) {
+      ResponseObject<JobDto> job = new ResponseObject<JobDto>();
+      job.Obj = DaoLocator.JobDao.FindById(jobId);
+      if (job.Obj != null) {
+        job.Success = true;
+        job.StatusMessage = ApplicationConstants.RESPONSE_JOB_GET_JOB_BY_ID;
+
+        job.Obj.Client = DaoLocator.ClientDao.GetClientForJob(jobId);
+      } else {
+        job.Success = false;
+        job.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_DOESNT_EXIST;
+      }      
+      return job;
+    }
 
     public ResponseObject<JobDto> AddJobWithGroupStrings(SerializedJob job, IEnumerable<string> resources) {
       IClientGroupDao cgd = DaoLocator.ClientGroupDao;
@@ -166,12 +166,6 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="job"></param>
     /// <returns></returns>
     public ResponseObject<JobDto> AddNewJob(SerializedJob job) {
-      /*ISession session = factory.GetSessionForCurrentThread();
-
-      try {
-        IJobAdapter jobAdapter =
-            session.GetDataAdapter<JobDto, IJobAdapter>();*/
-
         ResponseObject<JobDto> response = new ResponseObject<JobDto>();
 
         if (job != null && job.JobInfo != null) {
@@ -217,12 +211,6 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="jobId"></param>
     /// <returns></returns>
     public Response RemoveJob(Guid jobId) {
-      /*ISession session = factory.GetSessionForCurrentThread();
-
-      try {
-        IJobAdapter jobAdapter =
-            session.GetDataAdapter<JobDto, IJobAdapter>();*/
-
         Response response = new Response();
 
       JobDto job = DaoLocator.JobDao.FindById(jobId);
@@ -237,11 +225,6 @@ namespace HeuristicLab.Hive.Server.Core {
 
         return response;
       }
-      /*finally {
-        if (session != null)
-          session.EndSession();
-      }
-    }   */
 
     public ResponseObject<JobDto> GetLastJobResultOf(Guid jobId) {
       ResponseObject<JobDto> result =
@@ -257,18 +240,6 @@ namespace HeuristicLab.Hive.Server.Core {
 
     public ResponseObject<SerializedJob>
       GetLastSerializedJobResultOf(Guid jobId, bool requested) {
-      /*ISession session = factory.GetSessionForCurrentThread();
-
-      ITransaction tx = null;
-
-      try {
-        IJobAdapter jobAdapter =
-            session.GetDataAdapter<JobDto, IJobAdapter>();
-
-        IJobResultsAdapter jobResultsAdapter =
-          session.GetDataAdapter<JobResult, IJobResultsAdapter>();
-
-        tx = session.BeginTransaction();                          */
 
         ResponseObject<SerializedJob> response =
           new ResponseObject<SerializedJob>();
@@ -385,89 +356,14 @@ namespace HeuristicLab.Hive.Server.Core {
     }   */
 
     public ResponseList<JobResult> GetAllJobResults(Guid jobId) {
-     /* ISession session = factory.GetSessionForCurrentThread();
-      ResponseList<JobResult> response = new ResponseList<JobResult>();
-
-      try {
-        IJobResultsAdapter jobResultAdapter =
-            session.GetDataAdapter<JobResult, IJobResultsAdapter>();
-        IJobAdapter jobAdapter = session.GetDataAdapter<JobDto, IJobAdapter>();
-
-        JobDto job = jobAdapter.GetById(jobId);
-        if (job == null) {
-          response.Success = false;
-          response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_DOESNT_EXIST;
-          return response;
-        }
-        response.List = new List<JobResult>(jobResultAdapter.GetResultsOf(job.Id));
-        response.Success = true;
-        response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_RESULT_SENT;
-
-        return response;
-      }
-      finally {
-        if(session != null)
-          session.EndSession();
-      }  */
       return new ResponseList<JobResult>();
     }
 
     public ResponseList<ProjectDto> GetAllProjects() {
-      /*ISession session = factory.GetSessionForCurrentThread();
-      ResponseList<ProjectDto> response = new ResponseList<ProjectDto>();
-
-      try {
-        IProjectAdapter projectAdapter =
-          session.GetDataAdapter<ProjectDto, IProjectAdapter>();
-
-        List<ProjectDto> allProjects = new List<ProjectDto>(projectAdapter.GetAll());
-        response.List = allProjects;
-        response.Success = true;
-        return response;
-      }
-      finally {
-        if (session != null)
-          session.EndSession();
-      } */
       return null;
     }
 
     private Response createUpdateProject(ProjectDto project) {
-      /*ISession session = factory.GetSessionForCurrentThread();
-      Response response = new Response();
-      ITransaction tx = null;
-
-      try {
-        IProjectAdapter projectAdapter =
-          session.GetDataAdapter<ProjectDto, IProjectAdapter>();
-
-        if (project.Name == null || project.Name == "") {
-          response.Success = false;
-          response.StatusMessage = ApplicationConstants.RESPONSE_JOB_PROJECT_NAME_EMPTY;
-          return response;
-        }
-        tx = session.BeginTransaction();
-        projectAdapter.Update(project);
-
-        tx.Commit();
-        response.Success = true;
-        response.StatusMessage = ApplicationConstants.RESPONSE_JOB_PROJECT_ADDED;
-      } catch (ConstraintException ce) {
-        if (tx != null)
-          tx.Rollback();
-        response.Success = false;
-        response.StatusMessage = ce.Message;
-      }
-      catch (Exception ex) {
-        if (tx != null)
-          tx.Rollback();
-        throw ex;
-      }
-      finally {
-        if (session != null)
-          session.EndSession();
-      }
-      return response;    */
       return null;
     }
 
@@ -480,59 +376,12 @@ namespace HeuristicLab.Hive.Server.Core {
     }
 
     public Response DeleteProject(Guid projectId) {
-      /*ISession session = factory.GetSessionForCurrentThread();
-      Response response = new Response();
-      ITransaction tx = null;
-
-      try {
-        IProjectAdapter projectAdapter =
-          session.GetDataAdapter<ProjectDto, IProjectAdapter>();
-
-        ProjectDto project = projectAdapter.GetById(projectId);
-        if (project == null) {
-          response.Success = false;
-          response.StatusMessage = ApplicationConstants.RESPONSE_JOB_PROJECT_DOESNT_EXIST;
-          return response;
-        }
-        projectAdapter.Delete(project);
-        tx.Commit();
-        response.Success = true;
-        response.StatusMessage = ApplicationConstants.RESPONSE_JOB_PROJECT_DELETED;
-      }
-      catch (Exception e) {
-        if (tx != null)
-          tx.Rollback();
-        response.Success = false;
-        response.StatusMessage = e.Message;
-      }
-      finally {
-        if (session != null)
-          session.EndSession();
-      }     
-      return response; */
       return null;
     }
 
     public ResponseList<JobDto> GetJobsByProject(Guid projectId) {
-      /*ISession session = factory.GetSessionForCurrentThread();
-      ResponseList<JobDto> response = new ResponseList<JobDto>();
-
-      try {
-        IJobAdapter jobAdapter =
-          session.GetDataAdapter<JobDto, IJobAdapter>();
-        List<JobDto> jobsByProject = new List<JobDto>(jobAdapter.GetJobsByProject(projectId));
-        response.List = jobsByProject;
-        response.Success = true;
-      }
-      finally {
-        if (session != null)
-          session.EndSession();
-      } 
-       
-      return response;*/
       return null;      
     }
-
     #endregion
   }
 }

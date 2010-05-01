@@ -25,20 +25,20 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
     public ClientConfigDto Insert(ClientConfigDto bObj) {
       ClientConfig c = DtoToEntity(bObj, null);
       Context.ClientConfigs.InsertOnSubmit(c);
-      Context.SubmitChanges();
+      CommitChanges();
       bObj.Id = c.ClientConfigId;
       return bObj;  
     }
 
     public void Delete(ClientConfigDto bObj) {
       Context.ClientConfigs.DeleteOnSubmit(Context.ClientConfigs.SingleOrDefault(c => c.ClientConfigId.Equals(bObj.Id)));
-      Context.SubmitChanges();
+      CommitChanges();
     }
 
     public void Update(ClientConfigDto bObj) {
       ClientConfig cc = Context.ClientConfigs.SingleOrDefault(c => c.ClientConfigId.Equals(bObj.Id));
       DtoToEntity(bObj, cc);
-      Context.SubmitChanges();
+      CommitChanges();
     }
 
     #endregion

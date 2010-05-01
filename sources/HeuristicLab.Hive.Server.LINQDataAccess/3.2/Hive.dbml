@@ -87,7 +87,7 @@
       <Column Name="JobState" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
       <Column Name="ResourceId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
       <Column Name="Percentage" Type="System.Double" DbType="Float" CanBeNull="true" />
-      <Column Name="SerializedJob" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="SerializedJob" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" IsDelayLoaded="true" />
       <Column Name="DateCreated" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="DateCalculated" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="DateFinished" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />

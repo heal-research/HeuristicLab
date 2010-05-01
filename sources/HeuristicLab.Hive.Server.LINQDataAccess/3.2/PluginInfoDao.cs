@@ -25,7 +25,7 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
     public HivePluginInfoDto Insert(HivePluginInfoDto bObj) {
       PluginInfo pi = DtoToEntity(bObj, null);
       Context.PluginInfos.InsertOnSubmit(pi);
-      Context.SubmitChanges();
+      CommitChanges();
       bObj.Id = pi.PluginId;
       return bObj;
     }
@@ -38,7 +38,7 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
     public void Update(HivePluginInfoDto bObj) {
       PluginInfo pi = Context.PluginInfos.SingleOrDefault(p => p.PluginId.Equals(bObj.Id));
       DtoToEntity(bObj, pi);
-      Context.SubmitChanges();
+      CommitChanges();
     }
 
     public void InsertPluginDependenciesForJob(JobDto jobDto) {
@@ -52,15 +52,22 @@ namespace HeuristicLab.Hive.Server.LINQDataAccess {
                                   Version = info.Version
                                 };
           Context.PluginInfos.InsertOnSubmit(dbpi);
-          Context.SubmitChanges();
+          CommitChanges();
         }
 
         RequiredPlugin rq = new RequiredPlugin();
         rq.JobId = jobDto.Id;
         rq.PluginInfo = dbpi;
         Context.RequiredPlugins.InsertOnSubmit(rq);
-        Context.SubmitChanges();
+        CommitChanges();
       }
+    }
+
+    public List<HivePluginInfoDto> GetPluginDependenciesForJob(JobDto jobDto) {
+      return (from rp in Context.RequiredPlugins
+              where rp.JobId.Equals(jobDto.Id)
+              select EntityToDto(rp.PluginInfo, null)).ToList();
+      
     }
 
     #endregion

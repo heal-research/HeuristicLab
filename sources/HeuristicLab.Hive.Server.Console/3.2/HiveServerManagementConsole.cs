@@ -241,7 +241,8 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         IDictionary<int, JobDto> jobsOldHelp;
         CloneList(jobsOld, out jobsOldHelp);
 
-        GetDelta(jobsOld.List, jobsOldHelp);
+        if(jobsOld != null && jobsOld.List != null && jobsOldHelp != null)
+          GetDelta(jobsOld.List, jobsOldHelp);
 
       }
       catch (FaultException fe) {
@@ -418,91 +419,85 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       plJobDetails.Visible = true;
       lvJobDetails.Items.Clear();
 
-      lvSnapshots.Enabled = true;
+      ResponseObject<JobDto> response = ServiceLocator.GetJobManager().GetJobByIdWithDetails(currentJob.Id);
 
-      if (currentJob.State == State.offline) {
+      if(response.Success == false || response.Obj == null)
+        return;
+
+      JobDto job = response.Obj;
+
+      //lvSnapshots.Enabled = true;
+
+      if (job.State == State.offline) {
         pbJobControl.Image = ilLargeImgJob.Images[2];
-      } else if (currentJob.State == State.calculating) {
+      } else if (job.State == State.calculating) {
         pbJobControl.Image = ilLargeImgJob.Images[1];
-      } else if (currentJob.State == State.finished) {
+      } else if (job.State == State.finished) {
         pbJobControl.Image = ilLargeImgJob.Images[0];
       }
 
-      lblJobName.Text = currentJob.Id.ToString();
-      if (currentJob.Percentage != null) {
+      lblJobName.Text = job.Id.ToString();
+      if (job.Percentage != null) {
         progressJob.Value = (int) (currentJob.Percentage*100);
         lblProgress.Text = (int) (currentJob.Percentage*100) + "% calculated";
       }
 
       ListViewItem lvi = new ListViewItem();
       lvi.Text = "User:";
-      lvi.SubItems.Add(currentJob.UserId.ToString());
+      lvi.SubItems.Add(job.UserId.ToString());
       lvJobDetails.Items.Add(lvi);
 
       lvi = null;
       lvi = new ListViewItem();
       lvi.Text = "created at:";
-      lvi.SubItems.Add(currentJob.DateCreated.ToString());
+      lvi.SubItems.Add(job.DateCreated.ToString());
       lvJobDetails.Items.Add(lvi);
 
-      if (currentJob.ParentJob != null) {
+      if (job.ParentJob != null) {
         lvi = null;
         lvi = new ListViewItem();
         lvi.Text = "Parent job:";
-        lvi.SubItems.Add(currentJob.ParentJob.ToString());
+        lvi.SubItems.Add(job.ParentJob.ToString());
         lvJobDetails.Items.Add(lvi);
       }
 
       lvi = null;
       lvi = new ListViewItem();
       lvi.Text = "Priority:";
-      lvi.SubItems.Add(currentJob.Priority.ToString());
+      lvi.SubItems.Add(job.Priority.ToString());
       lvJobDetails.Items.Add(lvi);
 
-      if (currentJob.Project != null) {
+      if (job.Project != null) {
         lvi = null;
         lvi = new ListViewItem();
         lvi.Text = "Project:";
-        lvi.SubItems.Add(currentJob.Project.Name.ToString());
+        lvi.SubItems.Add(job.Project.Name.ToString());
         lvJobDetails.Items.Add(lvi);
       }
 
-      if (currentJob.Client != null) {
+      if (job.Client != null) {
         lvi = null;
         lvi = new ListViewItem();
         lvi.Text = "Calculation begin:";
-        lvi.SubItems.Add(currentJob.DateCalculated.ToString());
+        lvi.SubItems.Add(job.DateCalculated.ToString());
         lvJobDetails.Items.Add(lvi);
 
 
         lvi = null;
         lvi = new ListViewItem();
         lvi.Text = "Client calculated:";
-        lvi.SubItems.Add(currentJob.Client.Name.ToString());
+        lvi.SubItems.Add(job.Client.Name.ToString());
         lvJobDetails.Items.Add(lvi);
 
-        if (currentJob.State == State.finished) {
-          IJobManager jobManager =
-            ServiceLocator.GetJobManager();
-          ResponseObject<JobResult> jobRes = null;
-          //Todo: jobManager.GetLastJobResultOf(currentJob.Id);
-
-          if (jobRes != null && jobRes.Obj != null) {
-            lvi = null;
+        if (job.State == State.finished) {
+          lvi = null;
             lvi = new ListViewItem();
             lvi.Text = "Calculation ended:";
-            lvi.SubItems.Add(jobRes.Obj.DateFinished.ToString());
+            lvi.SubItems.Add(job.DateFinished.ToString());
             lvJobDetails.Items.Add(lvi);
           }
         }
-      }
-      if (currentJob.State != State.offline) {
-        lvSnapshots.Items.Clear();
-        GetSnapshotList();
-      } else {
-        lvSnapshots.Visible = false;
-      }
-    }
+      } 
 
     /// <summary>
     /// if one client is clicked, the details for the clicked client are shown
@@ -775,12 +770,17 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
     private void CloneList(ResponseList<JobDto> oldList, out IDictionary<int, JobDto> newList) {
       newList = new Dictionary<int, JobDto>();
-      for (int i = 0; i < oldList.List.Count; i++) {
-        newList.Add(i, oldList.List[i]);
+      if (oldList != null && oldList.List != null) {
+        for (int i = 0; i < oldList.List.Count; i++) {
+          newList.Add(i, oldList.List[i]);
+        }
       }
     }
 
     private bool IsEqual(ClientDto ci1, ClientDto ci2) {
+      if (ci1 == null && ci2 == null) {
+        return true;
+      }
       if (ci2 == null) {
         return false;
       }
@@ -846,31 +846,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       foreach (KeyValuePair<int, JobDto> kvp in helpJobs) {
         changes.Add(new Changes { Types = Type.Job, ID = kvp.Value.Id, ChangeType = Change.Delete, Position = kvp.Key });
       }
-    }
-
-    private void GetSnapshotList() {
-
-      lvSnapshots.Items.Clear();
-      IJobManager jobManager = ServiceLocator.GetJobManager();
-
-      ResponseList<JobResult> jobRes = jobManager.GetAllJobResults(currentJob.Id);
-
-      if (jobRes != null && jobRes.List != null) {
-        foreach (JobResult jobresult in jobRes.List) {
-          ListViewItem curSnapshot = new ListViewItem(jobresult.ClientId.ToString());
-          double percentage = jobresult.Percentage * 100;
-          curSnapshot.SubItems.Add(percentage.ToString() + " %");
-          curSnapshot.SubItems.Add(jobresult.Timestamp.ToString());
-          lvSnapshots.Items.Add(curSnapshot);
-        }
-      }
-
-      if ((jobRes.List == null) || (jobRes.List.Count == 0)) {
-        lvSnapshots.Visible = false;
-      } else {
-        lvSnapshots.Visible = true;
-      }
-
     }
 
     #endregion

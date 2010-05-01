@@ -34,6 +34,7 @@ namespace HeuristicLab.Hive.Client.Communication {
   [PluginDependency("HeuristicLab.DataAccess-3.2")]
   [PluginDependency("HeuristicLab.Hive.Client.Common-3.2")]
   [PluginDependency("HeuristicLab.Hive.Contracts-3.2")]
+  [PluginDependency("HeuristicLab.Tracing")]
   public class CommunicationsPlugin : PluginBase {
   }
 }
