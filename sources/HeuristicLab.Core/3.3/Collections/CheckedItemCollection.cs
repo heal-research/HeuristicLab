@@ -55,7 +55,7 @@ namespace HeuristicLab.Core {
       checkedState = new Dictionary<T, bool>();
       foreach (var item in collection)
         if (!checkedState.ContainsKey(item))
-          checkedState.Add(item, false);
+          checkedState.Add(item, true);
     }
     [StorableConstructor]
     protected CheckedItemCollection(bool deserializing) : base(deserializing) { }
@@ -82,14 +82,14 @@ namespace HeuristicLab.Core {
         checkedState.Remove(oldItem);
       foreach (var item in items)
         if (!checkedState.ContainsKey(item))
-          checkedState.Add(item, false);
+          checkedState.Add(item, true);
       base.OnCollectionReset(items, oldItems);
     }
 
     protected override void OnItemsAdded(IEnumerable<T> items) {
       foreach (var item in items)
         if (!checkedState.ContainsKey(item))
-          checkedState.Add(item, false);
+          checkedState.Add(item, true);
       base.OnItemsAdded(items);
     }
 
