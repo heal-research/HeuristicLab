@@ -1,7 +1,0 @@
-ConfigMerger "%SolutionDir%\HeuristicLab.PluginInfrastructure\%Outdir%\HeuristicLab.PluginInfrastructure.dll.config" "HeuristicLab.exe.config"
-;ConfigMerger "%SolutionDir%\HeuristicLab.Hive.Client.Core\3.2\%Outdir%\HeuristicLab.Hive.Client.Core-3.2.dll.config" "HeuristicLab.exe.config"
-;ConfigMerger "%SolutionDir%\HeuristicLab.Hive.Client.Console\3.2\%Outdir%\HeuristicLab.Hive.Client.Console-3.2.dll.config" "HeuristicLab.exe.config"
-;ConfigMerger "%SolutionDir%\HeuristicLab.Hive.Server\3.2\%Outdir%\HeuristicLab.Hive.Server-3.2.dll.config" "HeuristicLab.exe.config"
-;ConfigMerger "%SolutionDir%\HeuristicLab.Hive.Server.Core\3.2\%Outdir%\HeuristicLab.Hive.Server.Core-3.2.dll.config" "HeuristicLab.exe.config"
-ConfigMerger "%SolutionDir%\HeuristicLab.Tracing\3.2\%Outdir%\HeuristicLab.Tracing-3.2.dll.config" "HeuristicLab.exe.config"
-ConfigMerger "%SolutionDir%\HeuristicLab.ExtLibs\HeuristicLab.SQLServerCompact\3.5.1.0\%Outdir%\HeuristicLab.SQLServerCompact-3.5.1.0.dll.config" "HeuristicLab.exe.config"

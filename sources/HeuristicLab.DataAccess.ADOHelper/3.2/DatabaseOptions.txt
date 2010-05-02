@@ -1,5 +1,0 @@
-﻿optimistic locking should be enabled in order
-to avoid deadlocking:
-
-ALTER DATABASE [HeuristicLab.Databasename]
-   SET READ_COMMITTED_SNAPSHOT ON;

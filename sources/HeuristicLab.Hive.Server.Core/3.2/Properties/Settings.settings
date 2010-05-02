@@ -1,9 +1,0 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="HeuristicLab.Hive.Server.Core.Properties" GeneratedClassName="Settings">
-  <Profiles />
-  <Settings>
-    <Setting Name="HiveServerConnectionString" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">Data Source=127.0.0.1;Initial Catalog=HeuristicLab.Hive;Persist Security Info=True;User ID=hive;Password=hive;Pooling=true;MultipleActiveResultSets=true</Value>
-    </Setting>
-  </Settings>
-</SettingsFile>
