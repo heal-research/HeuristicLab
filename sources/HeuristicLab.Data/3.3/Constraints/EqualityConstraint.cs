@@ -27,7 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Common;
 
-namespace HeuristicLab.Data.Constraints {
+namespace HeuristicLab.Data {
   [StorableClass]
   [Item("EqualityConstraint", "A constraint which checks for equality")]
   public class EqualityConstraint : Constraint{
@@ -39,8 +39,11 @@ namespace HeuristicLab.Data.Constraints {
       : base() {
     }
 
-    public EqualityConstraint(IItem constrainedValue)
-      : base(constrainedValue) {
+    public EqualityConstraint(IItem constrainedValue, ComparisonOperation comparisonOperation, object compareValue)
+      : base() {
+      this.ConstrainedValue = constrainedValue;
+      this.ComparisonOperation = comparisonOperation;
+      this.ComparisonValue = ComparisonValue;
     }
 
     public override IEnumerable<ComparisonOperation> AllowedComparisonOperations {

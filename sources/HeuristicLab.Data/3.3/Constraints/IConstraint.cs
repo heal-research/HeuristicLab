@@ -25,7 +25,7 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Core;
 
-namespace HeuristicLab.Data.Constraints {
+namespace HeuristicLab.Data {
   public interface IConstraint: IItem{
     bool Active { get; set; }
     IItem ConstrainedValue { get;}

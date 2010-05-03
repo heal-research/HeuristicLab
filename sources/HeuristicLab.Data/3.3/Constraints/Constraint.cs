@@ -27,7 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Data.Constraints {
+namespace HeuristicLab.Data {
   [StorableClass]
   public abstract class Constraint : Item, IConstraint {
     /// <summary>
@@ -38,9 +38,11 @@ namespace HeuristicLab.Data.Constraints {
       this.Active = true;
     }
 
-    public Constraint(IItem constrainedValue)
+    public Constraint(IItem constrainedValue,ComparisonOperation comparisonOperation, object comparisonValue)
       : this() {
       this.ConstrainedValue = constrainedValue;
+      this.ComparisonOperation = comparisonOperation;
+      this.ComparisonValue = comparisonValue;
     }
 
     [Storable]

@@ -26,7 +26,7 @@ using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Data.Constraints {
+namespace HeuristicLab.Data {
   [StorableClass]
   [Item("ComparisonConstraint", "A constraint which checks for specified compare operation.")]
   public class ComparisonConstraint : Constraint {
@@ -38,8 +38,11 @@ namespace HeuristicLab.Data.Constraints {
       : base() {
     }
 
-    public ComparisonConstraint(IItem constrainedValue)
-      : base(constrainedValue) {
+    public ComparisonConstraint(IItem constrainedValue, ComparisonOperation comparisonOperation, object comparisonValue)
+      : base() {
+      this.ConstrainedValue = constrainedValue;
+      this.ComparisonOperation = comparisonOperation;
+      this.ComparisonValue = comparisonValue;
     }
 
     public override IEnumerable<ComparisonOperation> AllowedComparisonOperations {
