@@ -31,7 +31,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("MultiPermutationManipulator", "Randomly selects and applies one of its manipulators every time it is called.")]
   [StorableClass]
-  public class MultiPermutationManipulator : StochasticMultiOperator<IPermutationManipulator>, IPermutationManipulator, IStochasticOperator {
+  public class MultiPermutationManipulator : StochasticMultiBranch<IPermutationManipulator>, IPermutationManipulator, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
     }

@@ -91,14 +91,15 @@
     <Compile Include="Comparator.cs" />
     <Compile Include="Assigner.cs" />
     <Compile Include="AlgorithmOperator.cs" />
-    <Compile Include="StochasticMultiOperator.cs" />
     <Compile Include="MultiOperator.cs" />
     <Compile Include="Operator.cs" />
     <Compile Include="Placeholder.cs" />
     <Compile Include="IntCounter.cs" />
     <Compile Include="ScopeCleaner.cs" />
     <Compile Include="StochasticBranch.cs" />
-    <Compile Include="StochasticMultiBranch.cs" />
+    <Compile Include="StochasticMultiBranch.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SubScopesCreator.cs" />
     <Compile Include="SubScopesMixer.cs" />
     <Compile Include="SubScopesProcessor.cs" />

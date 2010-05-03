@@ -31,7 +31,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [Item("MultiBinaryVectorCrossover", "Randomly selects and applies one of its crossovers every time it is called.")]
   [StorableClass]
-  public class MultiBinaryVectorCrossover : StochasticMultiOperator<IBinaryVectorCrossover>, IBinaryVectorCrossover, IStochasticOperator {
+  public class MultiBinaryVectorCrossover : StochasticMultiBranch<IBinaryVectorCrossover>, IBinaryVectorCrossover, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
     }

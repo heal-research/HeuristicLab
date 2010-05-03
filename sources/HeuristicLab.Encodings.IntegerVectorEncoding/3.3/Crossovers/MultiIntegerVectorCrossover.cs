@@ -31,7 +31,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [Item("MultiIntegerVectorCrossover", "Randomly selects and applies one of its crossovers every time it is called.")]
   [StorableClass]
-  public class MultiIntegerVectorCrossover : StochasticMultiOperator<IIntegerVectorCrossover>, IIntegerVectorCrossover, IStochasticOperator {
+  public class MultiIntegerVectorCrossover : StochasticMultiBranch<IIntegerVectorCrossover>, IIntegerVectorCrossover, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
     }

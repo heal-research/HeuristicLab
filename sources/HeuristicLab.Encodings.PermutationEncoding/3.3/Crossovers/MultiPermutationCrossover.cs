@@ -31,7 +31,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("MultiPermutationCrossover", "Randomly selects and applies one of its crossovers every time it is called.")]
   [StorableClass]
-  public class MultiPermutationCrossover : StochasticMultiOperator<IPermutationCrossover>, IPermutationCrossover, IStochasticOperator {
+  public class MultiPermutationCrossover : StochasticMultiBranch<IPermutationCrossover>, IPermutationCrossover, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
     }

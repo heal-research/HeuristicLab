@@ -32,7 +32,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("MultiRealVectorManipulator", "Randomly selects and applies one of its manipulators every time it is called.")]
   [StorableClass]
-  public class MultiRealVectorManipulator : StochasticMultiOperator<IRealVectorManipulator>, IRealVectorManipulator, IStochasticOperator {
+  public class MultiRealVectorManipulator : StochasticMultiBranch<IRealVectorManipulator>, IRealVectorManipulator, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
     }

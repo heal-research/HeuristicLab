@@ -34,7 +34,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureManipulators {
   [Item("MultiSymbolicExpressionTreeArchitectureManipulator", "Randomly selects and applies one of its architecture manipulators every time it is called.")]
   [StorableClass]
-  public class MultiSymbolicExpressionTreeArchitectureManipulator : StochasticMultiOperator<ISymbolicExpressionTreeArchitectureManipulator>, ISymbolicExpressionTreeArchitectureManipulator, IStochasticOperator {
+  public class MultiSymbolicExpressionTreeArchitectureManipulator : StochasticMultiBranch<ISymbolicExpressionTreeArchitectureManipulator>, ISymbolicExpressionTreeArchitectureManipulator, IStochasticOperator {
     private const string MaxTreeSizeParameterName = "MaxTreeSize";
     private const string MaxTreeHeightParameterName = "MaxTreeHeight";
     private const string SymbolicExpressionGrammarParameterName = "SymbolicExpressionGrammar";
