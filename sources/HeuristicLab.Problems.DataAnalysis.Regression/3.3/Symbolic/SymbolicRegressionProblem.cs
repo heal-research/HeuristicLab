@@ -351,7 +351,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
 
     private void UpdateGrammar() {
       foreach (var varSymbol in FunctionTreeGrammar.Symbols.OfType<HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols.Variable>()) {
-        varSymbol.VariableNames = DataAnalysisProblemData.InputVariables.CheckedItems.Select(x => x.Value);
+        varSymbol.VariableNames = DataAnalysisProblemData.InputVariables.CheckedItems.Select(x => x.Value.Value);
       }
       var globalGrammar = FunctionTreeGrammar as GlobalSymbolicExpressionGrammar;
       if (globalGrammar != null) {

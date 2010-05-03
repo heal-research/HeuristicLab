@@ -45,8 +45,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       get { return (IValueParameter<StringValue>)Parameters["TargetVariable"]; }
     }
 
-    public IValueParameter<CheckedItemCollection<StringValue>> InputVariablesParameter {
-      get { return (IValueParameter<CheckedItemCollection<StringValue>>)Parameters["InputVariables"]; }
+    public IValueParameter<CheckedItemList<StringValue>> InputVariablesParameter {
+      get { return (IValueParameter<CheckedItemList<StringValue>>)Parameters["InputVariables"]; }
     }
 
     public IValueParameter<IntValue> TrainingSamplesStartParameter {
@@ -84,8 +84,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
         }
       }
     }
-    public CheckedItemCollection<StringValue> InputVariables {
-      get { return (CheckedItemCollection<StringValue>)InputVariablesParameter.Value; }
+    public CheckedItemList<StringValue> InputVariables {
+      get { return (CheckedItemList<StringValue>)InputVariablesParameter.Value; }
       set {
         if (value != InputVariables) {
           if (value == null) throw new ArgumentNullException();
@@ -139,7 +139,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public DataAnalysisProblemData()
       : base() {
       Parameters.Add(new ValueParameter<Dataset>("Dataset", new Dataset()));
-      Parameters.Add(new ValueParameter<CheckedItemCollection<StringValue>>("InputVariables", new CheckedItemCollection<StringValue>()));
+      Parameters.Add(new ValueParameter<CheckedItemList<StringValue>>("InputVariables", new CheckedItemList<StringValue>()));
       Parameters.Add(new ConstrainedValueParameter<StringValue>("TargetVariable"));
       Parameters.Add(new ValueParameter<IntValue>("TrainingSamplesStart", new IntValue()));
       Parameters.Add(new ValueParameter<IntValue>("TrainingSamplesEnd", new IntValue()));
@@ -248,45 +248,46 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     private void RegisterInputVariablesEventHandlers() {
-      InputVariables.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<StringValue>(InputVariables_CollectionReset);
-      InputVariables.ItemsAdded += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<StringValue>(InputVariables_ItemsAdded);
-      InputVariables.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<StringValue>(InputVariables_ItemsRemoved);
-      InputVariables.CheckedItemsChanged += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<StringValue>(InputVariables_ItemsChecked);
+      InputVariables.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<HeuristicLab.Collections.IndexedItem<StringValue>>(InputVariables_CollectionReset); 
+      InputVariables.ItemsAdded += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<HeuristicLab.Collections.IndexedItem<StringValue>>(InputVariables_ItemsAdded);
+      InputVariables.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<HeuristicLab.Collections.IndexedItem<StringValue>>(InputVariables_ItemsRemoved);
+      InputVariables.CheckedItemsChanged += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<HeuristicLab.Collections.IndexedItem<StringValue>>(InputVariables_CheckedItemsChanged);
       foreach (var item in InputVariables)
         item.ValueChanged += new EventHandler(InputVariable_ValueChanged);
     }
 
-    void InputVariables_ItemsChecked(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<StringValue> e) {
-      OnProblemDataChanged(e);
-    }
-
-    void InputVariables_ItemsRemoved(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<StringValue> e) {
-      foreach (var item in e.Items)
-        item.ValueChanged -= new EventHandler(InputVariable_ValueChanged);
-      OnProblemDataChanged(e);
-    }
-
-    void InputVariables_CollectionReset(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<StringValue> e) {
-      foreach (var item in e.OldItems)
-        item.ValueChanged -= new EventHandler(InputVariable_ValueChanged);
-      OnProblemDataChanged(e);
-    }
-
-    void InputVariables_ItemsAdded(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<StringValue> e) {
-      foreach (var item in e.Items)
-        item.ValueChanged += new EventHandler(InputVariable_ValueChanged);
-      OnProblemDataChanged(e);
-    }
-
     private void DeregisterInputVariablesEventHandlers() {
-      InputVariables.CollectionReset -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<StringValue>(InputVariables_CollectionReset);
-      InputVariables.ItemsAdded -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<StringValue>(InputVariables_ItemsAdded);
-      InputVariables.ItemsRemoved -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<StringValue>(InputVariables_ItemsRemoved);
+      InputVariables.CollectionReset -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<HeuristicLab.Collections.IndexedItem<StringValue>>(InputVariables_CollectionReset);
+      InputVariables.ItemsAdded -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<HeuristicLab.Collections.IndexedItem<StringValue>>(InputVariables_ItemsAdded);
+      InputVariables.ItemsRemoved -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<HeuristicLab.Collections.IndexedItem<StringValue>>(InputVariables_ItemsRemoved);
+      InputVariables.CheckedItemsChanged -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<HeuristicLab.Collections.IndexedItem<StringValue>>(InputVariables_CheckedItemsChanged);
       foreach (var item in InputVariables) {
         item.ValueChanged -= new EventHandler(InputVariable_ValueChanged);
       }
     }
   
+    private void InputVariables_CheckedItemsChanged(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<HeuristicLab.Collections.IndexedItem<StringValue>> e) {
+      OnProblemDataChanged(e);
+    }
+
+    private void InputVariables_ItemsRemoved(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<HeuristicLab.Collections.IndexedItem<StringValue>> e) {
+      foreach (var indexedItem in e.Items)
+        indexedItem.Value.ValueChanged -= new EventHandler(InputVariable_ValueChanged);
+      OnProblemDataChanged(e);
+    }
+
+    private void InputVariables_ItemsAdded(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<HeuristicLab.Collections.IndexedItem<StringValue>> e) {
+      foreach (var indexedItem in e.Items)
+        indexedItem.Value.ValueChanged += new EventHandler(InputVariable_ValueChanged);
+      OnProblemDataChanged(e);
+    }
+
+    private void InputVariables_CollectionReset(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<HeuristicLab.Collections.IndexedItem<StringValue>> e) {
+      foreach (var indexedItem in e.OldItems)
+        indexedItem.Value.ValueChanged -= new EventHandler(InputVariable_ValueChanged);
+      OnProblemDataChanged(e);
+    }
+
     void InputVariable_ValueChanged(object sender, EventArgs e) {
       OnProblemDataChanged(e);
     }
@@ -327,7 +328,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       foreach (var variableName in variableNames)
         ((ConstrainedValueParameter<StringValue>)TargetVariableParameter).ValidValues.Add(variableName);
       TargetVariable = variableNames.First();
-      InputVariables = new CheckedItemCollection<StringValue>(variableNames);
+      InputVariables = new CheckedItemList<StringValue>(variableNames);
       foreach (var variableName in variableNames.Skip(1))
         InputVariables.SetItemCheckedState(variableName, true);
       int middle = (int)(csvFileParser.Rows * 0.5);
