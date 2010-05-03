@@ -91,6 +91,12 @@
       <DependentUpon>AlgorithmOperatorView.cs</DependentUpon>
     </Compile>
     <None Include="HeuristicLabOperatorsViewsPlugin.cs.frame" />
+    <Compile Include="CheckedMultiOperatorView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CheckedMultiOperatorView.Designer.cs">
+      <DependentUpon>CheckedMultiOperatorView.cs</DependentUpon>
+    </Compile>
     <Compile Include="MultiOperatorView.cs">
       <SubType>UserControl</SubType>
     </Compile>

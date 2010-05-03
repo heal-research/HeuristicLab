@@ -35,7 +35,7 @@ namespace HeuristicLab.Operators {
   /// </summary>
   [Item("StochasticMultiOperator<T>", "Base class for stochastic multi operators.")]
   [StorableClass]
-  public abstract class StochasticMultiOperator<T> : MultiOperator<T> where T : class, IOperator {
+  public abstract class StochasticMultiOperator<T> : CheckedMultiOperator<T> where T : class, IOperator {
     /// <summary>
     /// Should return true if the StochasticMultiOperator should create a new child operation with the selected successor
     /// or if it should create a new operation. If you need to shield the parameters of the successor you should return true here.
@@ -121,20 +121,20 @@ namespace HeuristicLab.Operators {
       if (probabilities.Length != Operators.Count) {
         throw new InvalidOperationException(Name + ": The list of probabilities has to match the number of operators");
       }
-      var checkedOperators = Operators.CheckedItems;
-      if (checkedOperators.Count() == 0) {
-        throw new InvalidOperationException(Name + ": At least one operator must be checked.");
-      }
-      double sum = (from indexedItem in checkedOperators select probabilities[indexedItem.Index]).Sum();
-      if (sum == 0) throw new InvalidOperationException(Name + ": All selected operators have zero probability.");
-      double r = random.NextDouble() * sum;
-      sum = 0;
       IOperator successor = null;
-      foreach (var indexedItem in checkedOperators) {
-        sum += probabilities[indexedItem.Index];
-        if (sum > r) {
-          successor = indexedItem.Value;
-          break;
+      var checkedOperators = Operators.CheckedItems;
+      if (checkedOperators.Count() > 0) {
+        // select a random operator from the checked operators
+        double sum = (from indexedItem in checkedOperators select probabilities[indexedItem.Index]).Sum();
+        if (sum == 0) throw new InvalidOperationException(Name + ": All selected operators have zero probability.");
+        double r = random.NextDouble() * sum;
+        sum = 0;
+        foreach (var indexedItem in checkedOperators) {
+          sum += probabilities[indexedItem.Index];
+          if (sum > r) {
+            successor = indexedItem.Value;
+            break;
+          }
         }
       }
       OperationCollection next = new OperationCollection(base.Apply());

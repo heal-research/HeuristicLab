@@ -84,6 +84,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CheckedMultiOperator.cs" />
     <Compile Include="CombinedOperator.cs" />
     <None Include="HeuristicLabOperatorsPlugin.cs.frame" />
     <Compile Include="ConditionalBranch.cs" />
