@@ -96,7 +96,9 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
           listView.Items.Add(item);
         }
         foreach (ColumnHeader column in listView.Columns)
-          column.Width = -1;
+          if (listView.Items.Count > 0)
+            column.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+          else column.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
         //listView.suppressCheckedEvents = false;
         listView.CheckBoxes = true;
         UpdateControlsConnectedState();

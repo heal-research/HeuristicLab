@@ -28,6 +28,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using HeuristicLab.PluginInfrastructure.Manager;
+using System.Diagnostics;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
   internal partial class InstallationManagerForm : Form, IStatusView {
@@ -37,7 +38,8 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
     public InstallationManagerForm(PluginManager pluginManager) {
       InitializeComponent();
-      Text = "HeuristicLab Plugin Manager " + GetType().Assembly.GetName().Version.ToString();
+      FileVersionInfo pluginInfrastructureVersion = FileVersionInfo.GetVersionInfo(GetType().Assembly.Location);
+      Text = "HeuristicLab Plugin Manager " + pluginInfrastructureVersion.FileVersion;
       
       this.pluginManager = pluginManager;
 
@@ -136,22 +138,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     #region button events
     private void connectionSettingsToolStripMenuItem_Click(object sender, EventArgs e) {
       new ConnectionSetupView().ShowDialog();
-    }
-
-    private void tabControl_Selected(object sender, TabControlEventArgs e) {
-      viewToolStripMenuItem.Visible = e.TabPage == availablePluginsTabPage;
-      toolStripStatusLabel.Text = string.Empty;
-      toolStripProgressBar.Visible = false;
-    }
-
-    private void simpleToolStripMenuItem_Click(object sender, EventArgs e) {
-      remotePluginInstaller.ShowAllPlugins = false;
-      advancedToolStripMenuItem.Checked = false;
-    }
-
-    private void advancedToolStripMenuItem_Click(object sender, EventArgs e) {
-      remotePluginInstaller.ShowAllPlugins = true;
-      simpleToolStripMenuItem.Checked = false;
     }
     #endregion
 

@@ -73,7 +73,8 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
           listView.Items.Add(CreateListViewItem(plugin));
         }
         foreach (ColumnHeader column in listView.Columns)
-          column.Width = -1;
+          column.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+
         listView.SuppressItemCheckedEvents = false;
       }
     }

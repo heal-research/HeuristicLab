@@ -155,6 +155,11 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       }
       removeButton.Enabled = localPluginsListView.CheckedItems.Count > 0;
       updateSelectedButton.Enabled = localPluginsListView.CheckedItems.Count > 0;
+      foreach (ColumnHeader column in localPluginsListView.Columns) {
+        if (localPluginsListView.Items.Count > 0)
+          column.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+        else column.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
+      }
     }
 
     private void ClearPluginList() {

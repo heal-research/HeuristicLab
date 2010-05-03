@@ -53,7 +53,8 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     public StarterForm()
       : base() {
       InitializeComponent();
-      Text = "HeuristicLab " + this.GetType().Assembly.GetName().Version;
+      FileVersionInfo pluginInfrastructureVersion = FileVersionInfo.GetVersionInfo(GetType().Assembly.Location);
+      Text = "HeuristicLab " + pluginInfrastructureVersion.FileVersion;
 
       string pluginPath = Path.GetFullPath(Application.StartupPath);
       pluginManager = new PluginManager(pluginPath);
@@ -112,10 +113,10 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
 
     private void UpdateApplicationsList() {
       applicationsListView.Items.Clear();
-
+      FileVersionInfo pluginInfrastructureVersion = FileVersionInfo.GetVersionInfo(GetType().Assembly.Location);
       pluginManagerListViewItem = new ListViewItem("Plugin Manager", 0);
       pluginManagerListViewItem.Group = applicationsListView.Groups["Plugin Management"];
-      pluginManagerListViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(pluginManagerListViewItem, GetType().Assembly.GetName().Version.ToString()));
+      pluginManagerListViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(pluginManagerListViewItem, pluginInfrastructureVersion.FileVersion));
       pluginManagerListViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(pluginManagerListViewItem, "Install, upgrade or delete plugins"));
       pluginManagerListViewItem.ToolTipText = "Install, upgrade or delete plugins";
 
@@ -129,6 +130,11 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
         item.SubItems.Add(new ListViewItem.ListViewSubItem(item, info.Description));
         item.ToolTipText = info.Description;
         applicationsListView.Items.Add(item);
+      }
+      foreach (ColumnHeader column in applicationsListView.Columns) {
+        if (applicationsListView.Items.Count > 0)
+          column.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+        else column.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
       }
     }
 
@@ -164,6 +170,11 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
 
     private void detailsButton_Click(object sender, EventArgs e) {
       applicationsListView.View = View.Details;
+      foreach (ColumnHeader column in applicationsListView.Columns) {
+        if (applicationsListView.Items.Count > 0)
+          column.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+        else column.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
+      }
     }
 
     private void ShowErrorMessageBox(Exception ex) {

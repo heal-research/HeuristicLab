@@ -62,9 +62,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.logTabPage = new System.Windows.Forms.TabPage();
       this.logTextBox = new System.Windows.Forms.TextBox();
       this.menuStrip = new System.Windows.Forms.MenuStrip();
-      this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.simpleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.advancedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.connectionSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
@@ -118,7 +115,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.tabControl.SelectedIndex = 0;
       this.tabControl.Size = new System.Drawing.Size(598, 392);
       this.tabControl.TabIndex = 16;
-      this.tabControl.Selected += new System.Windows.Forms.TabControlEventHandler(this.tabControl_Selected);
       // 
       // updateAllPluginsTabPage
       // 
@@ -271,41 +267,12 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // menuStrip
       // 
       this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.viewToolStripMenuItem,
             this.optionsToolStripMenuItem});
       this.menuStrip.Location = new System.Drawing.Point(0, 0);
       this.menuStrip.Name = "menuStrip";
       this.menuStrip.Size = new System.Drawing.Size(622, 24);
       this.menuStrip.TabIndex = 17;
       this.menuStrip.Text = "menuStrip1";
-      // 
-      // viewToolStripMenuItem
-      // 
-      this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.simpleToolStripMenuItem,
-            this.advancedToolStripMenuItem});
-      this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-      this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-      this.viewToolStripMenuItem.Text = "View";
-      this.viewToolStripMenuItem.Visible = false;
-      // 
-      // simpleToolStripMenuItem
-      // 
-      this.simpleToolStripMenuItem.Checked = true;
-      this.simpleToolStripMenuItem.CheckOnClick = true;
-      this.simpleToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-      this.simpleToolStripMenuItem.Name = "simpleToolStripMenuItem";
-      this.simpleToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
-      this.simpleToolStripMenuItem.Text = "Show Most Recent Plugins";
-      this.simpleToolStripMenuItem.Click += new System.EventHandler(this.simpleToolStripMenuItem_Click);
-      // 
-      // advancedToolStripMenuItem
-      // 
-      this.advancedToolStripMenuItem.CheckOnClick = true;
-      this.advancedToolStripMenuItem.Name = "advancedToolStripMenuItem";
-      this.advancedToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
-      this.advancedToolStripMenuItem.Text = "Show All Plugins";
-      this.advancedToolStripMenuItem.Click += new System.EventHandler(this.advancedToolStripMenuItem_Click);
       // 
       // optionsToolStripMenuItem
       // 
@@ -364,9 +331,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private System.Windows.Forms.TabPage logTabPage;
     private System.Windows.Forms.TextBox logTextBox;
     private System.Windows.Forms.MenuStrip menuStrip;
-    private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem simpleToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem advancedToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem connectionSettingsToolStripMenuItem;
     private System.Windows.Forms.TabPage uploadPluginsTabPage;

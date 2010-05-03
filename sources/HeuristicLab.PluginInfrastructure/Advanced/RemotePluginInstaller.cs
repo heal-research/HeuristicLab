@@ -228,6 +228,11 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
           remotePluginsListView.Items.Add(item);
         }
       }
+      foreach (ColumnHeader column in remotePluginsListView.Columns)
+        if (remotePluginsListView.Items.Count > 0)
+          column.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+        else column.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
+
       remotePluginsListView.SuppressItemCheckedEvents = false;
     }
 
