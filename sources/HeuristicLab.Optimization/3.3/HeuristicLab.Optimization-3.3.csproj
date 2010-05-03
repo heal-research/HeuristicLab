@@ -86,7 +86,9 @@
     <None Include="HeuristicLabOptimizationPlugin.cs.frame" />
     <Compile Include="Algorithm.cs" />
     <Compile Include="BatchRun.cs" />
+    <Compile Include="Interfaces\ISingleObjectiveReplacer.cs" />
     <Compile Include="Interfaces\IMigrator.cs" />
+    <Compile Include="Interfaces\IReplacer.cs" />
     <Compile Include="Interfaces\ISubScopesQualityComparator.cs" />
     <Compile Include="Interfaces\IQualityComparator.cs" />
     <Compile Include="Interfaces\ISelfAdaptiveManipulator.cs" />

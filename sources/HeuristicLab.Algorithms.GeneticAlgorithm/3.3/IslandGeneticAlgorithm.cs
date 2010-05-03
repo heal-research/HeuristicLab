@@ -75,8 +75,8 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     private ConstrainedValueParameter<ISelector> EmigrantsSelectorParameter {
       get { return (ConstrainedValueParameter<ISelector>)Parameters["EmigrantsSelector"]; }
     }
-    private ConstrainedValueParameter<ISelector> ImmigrationSelectorParameter {
-      get { return (ConstrainedValueParameter<ISelector>)Parameters["ImmigrationSelector"]; }
+    private ConstrainedValueParameter<IReplacer> ImmigrationReplacerParameter {
+      get { return (ConstrainedValueParameter<IReplacer>)Parameters["ImmigrationReplacer"]; }
     }
     private ValueParameter<IntValue> PopulationSizeParameter {
       get { return (ValueParameter<IntValue>)Parameters["PopulationSize"]; }
@@ -133,9 +133,9 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       get { return EmigrantsSelectorParameter.Value; }
       set { EmigrantsSelectorParameter.Value = value; }
     }
-    public ISelector ImmigrationSelector {
-      get { return ImmigrationSelectorParameter.Value; }
-      set { ImmigrationSelectorParameter.Value = value; }
+    public IReplacer ImmigrationReplacer {
+      get { return ImmigrationReplacerParameter.Value; }
+      set { ImmigrationReplacerParameter.Value = value; }
     }
     public IntValue PopulationSize {
       get { return PopulationSizeParameter.Value; }
@@ -174,7 +174,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       get { return selectors; }
     }
     private List<ISelector> emigrantsSelectors;
-    private List<ISelector> immigrationSelectors;
+    private List<IReplacer> immigrationReplacers;
     private List<IMigrator> migrators;
     private RandomCreator RandomCreator {
       get { return (RandomCreator)OperatorGraph.InitialOperator; }
@@ -201,7 +201,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Parameters.Add(new ValueParameter<PercentValue>("MigrationRate", "The proportion of individuals that should migrate between the islands.", new PercentValue(0.15)));
       Parameters.Add(new ConstrainedValueParameter<IMigrator>("Migrator", "The migration strategy."));
       Parameters.Add(new ConstrainedValueParameter<ISelector>("EmigrantsSelector", "Selects the individuals that will be migrated."));
-      Parameters.Add(new ConstrainedValueParameter<ISelector>("ImmigrationSelector", "Selects the population from the unification of the original population and the immigrants."));
+      Parameters.Add(new ConstrainedValueParameter<IReplacer>("ImmigrationReplacer", "Selects the population from the unification of the original population and the immigrants."));
       Parameters.Add(new ValueParameter<IntValue>("PopulationSize", "The size of the population of solutions.", new IntValue(100)));
       Parameters.Add(new ValueParameter<IntValue>("MaximumMigrations", "The maximum number of migrations that should occur.", new IntValue(100)));
       Parameters.Add(new ConstrainedValueParameter<ISelector>("Selector", "The operator used to select solutions for reproduction."));
@@ -237,7 +237,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       solutionsCreator.Successor = null;
 
       mainLoop.EmigrantsSelectorParameter.ActualName = EmigrantsSelectorParameter.Name;
-      mainLoop.ImmigrationSelectorParameter.ActualName = ImmigrationSelectorParameter.Name;
+      mainLoop.ImmigrationReplacerParameter.ActualName = ImmigrationReplacerParameter.Name;
       mainLoop.MaximumMigrationsParameter.ActualName = MaximumMigrationsParameter.Name;
       mainLoop.MigrationIntervalParameter.ActualName = MigrationIntervalParameter.Name;
       mainLoop.MigrationRateParameter.ActualName = MigrationRateParameter.Name;
@@ -379,8 +379,8 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       selectors.AddRange(ApplicationManager.Manager.GetInstances<ISelector>().Where(x => !(x is IMultiObjectiveSelector)).OrderBy(x => x.Name));
       emigrantsSelectors = new List<ISelector>();
       emigrantsSelectors.AddRange(ApplicationManager.Manager.GetInstances<ISelector>().Where(x => !(x is IMultiObjectiveSelector)).OrderBy(x => x.Name));
-      immigrationSelectors = new List<ISelector>();
-      immigrationSelectors.AddRange(ApplicationManager.Manager.GetInstances<ISelector>().Where(x => !(x is IMultiObjectiveSelector)).OrderBy(x => x.Name));
+      immigrationReplacers = new List<IReplacer>();
+      immigrationReplacers.AddRange(ApplicationManager.Manager.GetInstances<IReplacer>().OrderBy(x => x.Name));
       ParameterizeSelectors();
     }
     private void InitializeMigrators() {
@@ -399,10 +399,8 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
         selector.NumberOfSelectedSubScopesParameter.Value = new IntValue((int)Math.Ceiling(PopulationSize.Value * MigrationRate.Value));
         ParameterizeStochasticOperator(selector);
       }
-      foreach (ISelector selector in immigrationSelectors) {
-        selector.CopySelected = new BoolValue(false);
-        selector.NumberOfSelectedSubScopesParameter.Value = PopulationSize;
-        ParameterizeStochasticOperator(selector);
+      foreach (IReplacer replacer in immigrationReplacers) {
+        ParameterizeStochasticOperator(replacer);
       }
       if (Problem != null) {
         foreach (ISingleObjectiveSelector selector in Selectors.OfType<ISingleObjectiveSelector>()) {
@@ -413,7 +411,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
           selector.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
           selector.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
         }
-        foreach (ISingleObjectiveSelector selector in immigrationSelectors.OfType<ISingleObjectiveSelector>()) {
+        foreach (ISingleObjectiveReplacer selector in immigrationReplacers.OfType<ISingleObjectiveReplacer>()) {
           selector.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
           selector.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
         }
@@ -442,13 +440,13 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
         if (selector != null) EmigrantsSelectorParameter.Value = selector;
       }
 
-      oldSelector = ImmigrationSelectorParameter.Value;
-      ImmigrationSelectorParameter.ValidValues.Clear();
-      foreach (ISelector selector in immigrationSelectors)
-        ImmigrationSelectorParameter.ValidValues.Add(selector);
-      if (oldSelector != null) {
-        ISelector selector = ImmigrationSelectorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldSelector.GetType());
-        if (selector != null) ImmigrationSelectorParameter.Value = selector;
+      IReplacer oldReplacer = ImmigrationReplacerParameter.Value;
+      ImmigrationReplacerParameter.ValidValues.Clear();
+      foreach (IReplacer replacer in immigrationReplacers)
+        ImmigrationReplacerParameter.ValidValues.Add(replacer);
+      if (oldReplacer != null) {
+        IReplacer replacer = ImmigrationReplacerParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldSelector.GetType());
+        if (replacer != null) ImmigrationReplacerParameter.Value = replacer;
       }
     }
     private void UpdateMigrators() {

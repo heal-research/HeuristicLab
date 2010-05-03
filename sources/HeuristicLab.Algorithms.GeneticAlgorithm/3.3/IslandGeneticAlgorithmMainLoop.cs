@@ -69,8 +69,8 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     public ValueLookupParameter<IOperator> EmigrantsSelectorParameter {
       get { return (ValueLookupParameter<IOperator>)Parameters["EmigrantsSelector"]; }
     }
-    public ValueLookupParameter<IOperator> ImmigrationSelectorParameter {
-      get { return (ValueLookupParameter<IOperator>)Parameters["ImmigrationSelector"]; }
+    public ValueLookupParameter<IOperator> ImmigrationReplacerParameter {
+      get { return (ValueLookupParameter<IOperator>)Parameters["ImmigrationReplacer"]; }
     }
     public ValueLookupParameter<IntValue> PopulationSizeParameter {
       get { return (ValueLookupParameter<IntValue>)Parameters["PopulationSize"]; }
@@ -107,12 +107,6 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     }
     #endregion
 
-    /*#region Properties
-    private GeneticAlgorithmMainLoop GeneticAlgorithmMainLoop {
-      get { return (GeneticAlgorithmMainLoop)((UniformSubScopesProcessor)OperatorGraph.InitialOperator).Operator; }
-    }
-    #endregion*/
-
     [StorableConstructor]
     private IslandGeneticAlgorithmMainLoop(bool deserializing) : base() { }
     public IslandGeneticAlgorithmMainLoop()
@@ -127,7 +121,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Parameters.Add(new ValueLookupParameter<PercentValue>("MigrationRate", "The proportion of individuals that should migrate between the islands."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Migrator", "The migration strategy."));
       Parameters.Add(new ValueLookupParameter<IOperator>("EmigrantsSelector", "Selects the individuals that will be migrated."));
-      Parameters.Add(new ValueLookupParameter<IOperator>("ImmigrationSelector", "Selects the population from the unification of the original population and the immigrants."));
+      Parameters.Add(new ValueLookupParameter<IOperator>("ImmigrationReplacer", "Replaces some of the original population with the immigrants."));
       Parameters.Add(new ValueLookupParameter<IntValue>("PopulationSize", "The size of the population of solutions."));
       Parameters.Add(new ValueLookupParameter<IntValue>("MaximumMigrations", "The maximum number of migrations after which the operator should terminate."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Selector", "The operator used to select solutions for reproduction."));
@@ -157,9 +151,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Placeholder emigrantsSelector = new Placeholder();
       Placeholder migrator = new Placeholder();
       UniformSubScopesProcessor ussp2 = new UniformSubScopesProcessor();
-      MergingReducer mergingReducer = new MergingReducer();
-      Placeholder immigrationSelector = new Placeholder();
-      RightReducer rightReducer = new RightReducer();
+      Placeholder immigrationReplacer = new Placeholder();
       IntCounter migrationsCounter = new IntCounter();
       Comparator maxMigrationsComparator = new Comparator();
       BestQualityMemorizer bestQualityMemorizer3 = new BestQualityMemorizer();
@@ -237,8 +229,8 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       migrator.Name = "Migrator (placeholder)";
       migrator.OperatorParameter.ActualName = MigratorParameter.Name;
 
-      immigrationSelector.Name = "Immigration Selector (placeholder)";
-      immigrationSelector.OperatorParameter.ActualName = ImmigrationSelectorParameter.Name;
+      immigrationReplacer.Name = "Immigration Replacer (placeholder)";
+      immigrationReplacer.OperatorParameter.ActualName = ImmigrationReplacerParameter.Name;
 
       migrationsCounter.Name = "Migrations + 1";
       migrationsCounter.IncrementParameter.Value = new IntValue(1);
@@ -292,11 +284,9 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       geneticAlgorithmMainLoop.Successor = emigrantsSelector;
       emigrantsSelector.Successor = null;
       migrator.Successor = ussp2;
-      ussp2.Operator = mergingReducer;
+      ussp2.Operator = immigrationReplacer;
       ussp2.Successor = migrationsCounter;
-      mergingReducer.Successor = immigrationSelector;
-      immigrationSelector.Successor = rightReducer;
-      rightReducer.Successor = null;
+      immigrationReplacer.Successor = null;
       migrationsCounter.Successor = maxMigrationsComparator;
       maxMigrationsComparator.Successor = bestQualityMemorizer3;
       bestQualityMemorizer3.Successor = bestAverageWorstQualityCalculator3;
