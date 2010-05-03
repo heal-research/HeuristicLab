@@ -104,6 +104,12 @@
     <Compile Include="BoolValue.cs" />
     <Compile Include="Comparison.cs" />
     <Compile Include="ComparisonType.cs" />
+    <Compile Include="Constraints\ComparisonOperation.cs" />
+    <Compile Include="Constraints\TypeConstraint.cs" />
+    <Compile Include="Constraints\ComparisonConstraint.cs" />
+    <Compile Include="Constraints\Constraint.cs" />
+    <Compile Include="Constraints\EqualityConstraint.cs" />
+    <Compile Include="Constraints\IConstraint.cs" />
     <Compile Include="PercentValue.cs" />
     <Compile Include="DateTimeValue.cs" />
     <Compile Include="DoubleArray.cs" />
