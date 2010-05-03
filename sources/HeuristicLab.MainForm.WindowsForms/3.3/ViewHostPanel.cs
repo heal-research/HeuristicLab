@@ -37,8 +37,11 @@ namespace HeuristicLab.MainForm.WindowsForms {
     protected override void OnSizeChanged(EventArgs e) {
       //mkommend: solution to resizing issues. taken from http://support.microsoft.com/kb/953934
       if (this.Handle != null)
-        this.BeginInvoke((MethodInvoker)delegate { base.OnSizeChanged(e); });
+        this.BeginInvoke((Action<EventArgs>) OnSizeChangedHelper,e);
+    }
 
+    private void OnSizeChangedHelper(EventArgs e) {
+      base.OnSizeChanged(e);
     }
   }
 }
