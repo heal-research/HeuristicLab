@@ -43,7 +43,7 @@ namespace HeuristicLab.Core.Views {
         typeSelectorDialog = new TypeSelectorDialog();
         typeSelectorDialog.Caption = "Select Operator";
         typeSelectorDialog.TypeSelector.Caption = "Available Operators";
-        typeSelectorDialog.TypeSelector.Configure(typeof(IOperator), false, false);
+        typeSelectorDialog.TypeSelector.Configure(typeof(IOperator), false, true);
       }
 
       if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK) {

@@ -151,7 +151,7 @@ namespace HeuristicLab.Optimization.Views {
         algorithmTypeSelectorDialog = new TypeSelectorDialog();
         algorithmTypeSelectorDialog.Caption = "Select Algorithm";
         algorithmTypeSelectorDialog.TypeSelector.Caption = "Available Algorithms";
-        algorithmTypeSelectorDialog.TypeSelector.Configure(typeof(IAlgorithm), false, false);
+        algorithmTypeSelectorDialog.TypeSelector.Configure(typeof(IAlgorithm), false, true);
       }
       if (algorithmTypeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
         try {

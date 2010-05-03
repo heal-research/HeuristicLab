@@ -51,7 +51,7 @@ namespace HeuristicLab.Core.Views {
       // 
       this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.okButton.Location = new System.Drawing.Point(305, 368);
+      this.okButton.Location = new System.Drawing.Point(440, 538);
       this.okButton.Name = "okButton";
       this.okButton.Size = new System.Drawing.Size(75, 23);
       this.okButton.TabIndex = 1;
@@ -62,7 +62,7 @@ namespace HeuristicLab.Core.Views {
       // 
       this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.cancelButton.Location = new System.Drawing.Point(386, 368);
+      this.cancelButton.Location = new System.Drawing.Point(521, 538);
       this.cancelButton.Name = "cancelButton";
       this.cancelButton.Size = new System.Drawing.Size(75, 23);
       this.cancelButton.TabIndex = 2;
@@ -77,7 +77,7 @@ namespace HeuristicLab.Core.Views {
       this.typeSelector.Caption = "Available Types";
       this.typeSelector.Location = new System.Drawing.Point(12, 12);
       this.typeSelector.Name = "typeSelector";
-      this.typeSelector.Size = new System.Drawing.Size(449, 350);
+      this.typeSelector.Size = new System.Drawing.Size(584, 520);
       this.typeSelector.TabIndex = 3;
       this.typeSelector.SelectedTypeChanged += new System.EventHandler(this.typeSelector_SelectedTypeChanged);
       // 
@@ -87,7 +87,7 @@ namespace HeuristicLab.Core.Views {
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.CancelButton = this.cancelButton;
-      this.ClientSize = new System.Drawing.Size(473, 403);
+      this.ClientSize = new System.Drawing.Size(608, 573);
       this.Controls.Add(this.typeSelector);
       this.Controls.Add(this.cancelButton);
       this.Controls.Add(this.okButton);

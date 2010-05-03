@@ -32,6 +32,7 @@ namespace HeuristicLab.Core.Views {
     /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
     protected override void Dispose(bool disposing) {
       if (disposing) {
+        if (typeSelectorDialog != null) typeSelectorDialog.Dispose();
         if (components != null) components.Dispose();
       }
       base.Dispose(disposing);
@@ -45,18 +46,28 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TypeSelector));
       this.typesTreeView = new System.Windows.Forms.TreeView();
       this.imageList = new System.Windows.Forms.ImageList(this.components);
       this.typesGroupBox = new System.Windows.Forms.GroupBox();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
+      this.typeParametersSplitContainer = new System.Windows.Forms.SplitContainer();
       this.searchLabel = new System.Windows.Forms.Label();
       this.searchTextBox = new System.Windows.Forms.TextBox();
+      this.typeParametersGroupBox = new System.Windows.Forms.GroupBox();
+      this.setTypeParameterButton = new System.Windows.Forms.Button();
+      this.typeParametersListView = new System.Windows.Forms.ListView();
       this.descriptionTextBox = new System.Windows.Forms.TextBox();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
       this.typesGroupBox.SuspendLayout();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
+      this.typeParametersSplitContainer.Panel1.SuspendLayout();
+      this.typeParametersSplitContainer.Panel2.SuspendLayout();
+      this.typeParametersSplitContainer.SuspendLayout();
+      this.typeParametersGroupBox.SuspendLayout();
       this.SuspendLayout();
       // 
       // typesTreeView
@@ -71,7 +82,7 @@ namespace HeuristicLab.Core.Views {
       this.typesTreeView.Name = "typesTreeView";
       this.typesTreeView.SelectedImageIndex = 0;
       this.typesTreeView.ShowNodeToolTips = true;
-      this.typesTreeView.Size = new System.Drawing.Size(291, 166);
+      this.typesTreeView.Size = new System.Drawing.Size(219, 287);
       this.typesTreeView.TabIndex = 0;
       this.typesTreeView.VisibleChanged += new System.EventHandler(this.typesTreeView_VisibleChanged);
       this.typesTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.typesTreeView_AfterSelect);
@@ -89,7 +100,7 @@ namespace HeuristicLab.Core.Views {
       this.typesGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
       this.typesGroupBox.Location = new System.Drawing.Point(0, 0);
       this.typesGroupBox.Name = "typesGroupBox";
-      this.typesGroupBox.Size = new System.Drawing.Size(303, 306);
+      this.typesGroupBox.Size = new System.Drawing.Size(231, 614);
       this.typesGroupBox.TabIndex = 0;
       this.typesGroupBox.TabStop = false;
       this.typesGroupBox.Text = "Available Types";
@@ -103,16 +114,36 @@ namespace HeuristicLab.Core.Views {
       // 
       // splitContainer.Panel1
       // 
-      this.splitContainer.Panel1.Controls.Add(this.searchLabel);
-      this.splitContainer.Panel1.Controls.Add(this.searchTextBox);
-      this.splitContainer.Panel1.Controls.Add(this.typesTreeView);
+      this.splitContainer.Panel1.Controls.Add(this.typeParametersSplitContainer);
       // 
       // splitContainer.Panel2
       // 
       this.splitContainer.Panel2.Controls.Add(this.descriptionTextBox);
-      this.splitContainer.Size = new System.Drawing.Size(297, 287);
-      this.splitContainer.SplitterDistance = 198;
+      this.splitContainer.Size = new System.Drawing.Size(225, 595);
+      this.splitContainer.SplitterDistance = 471;
       this.splitContainer.TabIndex = 2;
+      // 
+      // typeParametersSplitContainer
+      // 
+      this.typeParametersSplitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.typeParametersSplitContainer.Location = new System.Drawing.Point(0, 0);
+      this.typeParametersSplitContainer.Name = "typeParametersSplitContainer";
+      this.typeParametersSplitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
+      // 
+      // typeParametersSplitContainer.Panel1
+      // 
+      this.typeParametersSplitContainer.Panel1.Controls.Add(this.typesTreeView);
+      this.typeParametersSplitContainer.Panel1.Controls.Add(this.searchLabel);
+      this.typeParametersSplitContainer.Panel1.Controls.Add(this.searchTextBox);
+      // 
+      // typeParametersSplitContainer.Panel2
+      // 
+      this.typeParametersSplitContainer.Panel2.Controls.Add(this.typeParametersGroupBox);
+      this.typeParametersSplitContainer.Size = new System.Drawing.Size(225, 472);
+      this.typeParametersSplitContainer.SplitterDistance = 319;
+      this.typeParametersSplitContainer.TabIndex = 0;
       // 
       // searchLabel
       // 
@@ -129,10 +160,57 @@ namespace HeuristicLab.Core.Views {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.searchTextBox.Location = new System.Drawing.Point(29, 3);
       this.searchTextBox.Name = "searchTextBox";
-      this.searchTextBox.Size = new System.Drawing.Size(265, 20);
+      this.searchTextBox.Size = new System.Drawing.Size(193, 20);
       this.searchTextBox.TabIndex = 2;
       this.toolTip.SetToolTip(this.searchTextBox, "Enter string to search for types");
       this.searchTextBox.TextChanged += new System.EventHandler(this.searchTextBox_TextChanged);
+      // 
+      // typeParametersGroupBox
+      // 
+      this.typeParametersGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.typeParametersGroupBox.Controls.Add(this.setTypeParameterButton);
+      this.typeParametersGroupBox.Controls.Add(this.typeParametersListView);
+      this.typeParametersGroupBox.Location = new System.Drawing.Point(3, 3);
+      this.typeParametersGroupBox.Name = "typeParametersGroupBox";
+      this.typeParametersGroupBox.Size = new System.Drawing.Size(219, 143);
+      this.typeParametersGroupBox.TabIndex = 0;
+      this.typeParametersGroupBox.TabStop = false;
+      this.typeParametersGroupBox.Text = "Type Parameters";
+      // 
+      // setTypeParameterButton
+      // 
+      this.setTypeParameterButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.setTypeParameterButton.Enabled = false;
+      this.setTypeParameterButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Edit;
+      this.setTypeParameterButton.Location = new System.Drawing.Point(189, 19);
+      this.setTypeParameterButton.Name = "setTypeParameterButton";
+      this.setTypeParameterButton.Size = new System.Drawing.Size(24, 24);
+      this.setTypeParameterButton.TabIndex = 1;
+      this.toolTip.SetToolTip(this.setTypeParameterButton, "Set Type Parameter");
+      this.setTypeParameterButton.UseVisualStyleBackColor = true;
+      this.setTypeParameterButton.Click += new System.EventHandler(this.setTypeParameterButton_Click);
+      // 
+      // typeParametersListView
+      // 
+      this.typeParametersListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.typeParametersListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1});
+      this.typeParametersListView.FullRowSelect = true;
+      this.typeParametersListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+      this.typeParametersListView.Location = new System.Drawing.Point(6, 19);
+      this.typeParametersListView.MultiSelect = false;
+      this.typeParametersListView.Name = "typeParametersListView";
+      this.typeParametersListView.ShowItemToolTips = true;
+      this.typeParametersListView.Size = new System.Drawing.Size(177, 118);
+      this.typeParametersListView.TabIndex = 0;
+      this.typeParametersListView.UseCompatibleStateImageBehavior = false;
+      this.typeParametersListView.View = System.Windows.Forms.View.Details;
+      this.typeParametersListView.SelectedIndexChanged += new System.EventHandler(this.typeParametersListView_SelectedIndexChanged);
+      this.typeParametersListView.DoubleClick += new System.EventHandler(this.typeParametersListView_DoubleClick);
       // 
       // descriptionTextBox
       // 
@@ -145,7 +223,7 @@ namespace HeuristicLab.Core.Views {
       this.descriptionTextBox.Name = "descriptionTextBox";
       this.descriptionTextBox.ReadOnly = true;
       this.descriptionTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-      this.descriptionTextBox.Size = new System.Drawing.Size(291, 79);
+      this.descriptionTextBox.Size = new System.Drawing.Size(219, 114);
       this.descriptionTextBox.TabIndex = 0;
       // 
       // TypeSelector
@@ -154,13 +232,17 @@ namespace HeuristicLab.Core.Views {
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.typesGroupBox);
       this.Name = "TypeSelector";
-      this.Size = new System.Drawing.Size(303, 306);
+      this.Size = new System.Drawing.Size(231, 614);
       this.typesGroupBox.ResumeLayout(false);
       this.splitContainer.Panel1.ResumeLayout(false);
-      this.splitContainer.Panel1.PerformLayout();
       this.splitContainer.Panel2.ResumeLayout(false);
       this.splitContainer.Panel2.PerformLayout();
       this.splitContainer.ResumeLayout(false);
+      this.typeParametersSplitContainer.Panel1.ResumeLayout(false);
+      this.typeParametersSplitContainer.Panel1.PerformLayout();
+      this.typeParametersSplitContainer.Panel2.ResumeLayout(false);
+      this.typeParametersSplitContainer.ResumeLayout(false);
+      this.typeParametersGroupBox.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
@@ -175,6 +257,11 @@ namespace HeuristicLab.Core.Views {
     protected System.Windows.Forms.Label searchLabel;
     protected System.Windows.Forms.TextBox searchTextBox;
     protected System.Windows.Forms.ToolTip toolTip;
+    protected System.Windows.Forms.SplitContainer typeParametersSplitContainer;
+    protected System.Windows.Forms.GroupBox typeParametersGroupBox;
+    protected System.Windows.Forms.ListView typeParametersListView;
+    protected System.Windows.Forms.Button setTypeParameterButton;
+    protected System.Windows.Forms.ColumnHeader columnHeader1;
 
   }
 }

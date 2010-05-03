@@ -31,6 +31,7 @@ namespace HeuristicLab.Core.Views {
   public partial class TypeSelector : UserControl {
     protected List<TreeNode> treeNodes;
     protected string currentSearchString;
+    protected TypeSelectorDialog typeSelectorDialog;
 
     protected Type baseType;
     public Type BaseType {
@@ -82,6 +83,8 @@ namespace HeuristicLab.Core.Views {
         this.baseType = baseType;
         this.showNotInstantiableTypes = showNotInstantiableTypes;
         this.showGenericTypes = showGenericTypes;
+
+        typeParametersSplitContainer.Panel2Collapsed = !showGenericTypes;
 
         TreeNode selectedNode = typesTreeView.SelectedNode;
         typesTreeView.Nodes.Clear();
@@ -139,6 +142,8 @@ namespace HeuristicLab.Core.Views {
           typesTreeView.Nodes.Add((TreeNode)node.Clone());
         RestoreSelectedNode(selectedNode);
         Filter(searchTextBox.Text);
+
+        UpdateTypeParameters();
       }
     }
 
@@ -200,10 +205,56 @@ namespace HeuristicLab.Core.Views {
         return Activator.CreateInstance(SelectedType, args);
     }
 
-    public event EventHandler SelectedTypeChanged;
-    protected virtual void OnSelectedTypeChanged() {
-      if (SelectedTypeChanged != null)
-        SelectedTypeChanged(this, EventArgs.Empty);
+    protected virtual void UpdateTypeParameters() {
+      typeParametersListView.Items.Clear();
+      if ((SelectedType == null) || !SelectedType.ContainsGenericParameters) {
+        typeParametersGroupBox.Enabled = false;
+        typeParametersSplitContainer.Panel2Collapsed = true;
+      } else {
+        typeParametersGroupBox.Enabled = true;
+        typeParametersSplitContainer.Panel2Collapsed = false;
+        setTypeParameterButton.Enabled = false;
+
+        foreach (Type param in SelectedType.GetGenericArguments()) {
+          if (param.IsGenericParameter) {
+            ListViewItem item = new ListViewItem();
+            item.Text = param.Name;
+
+            item.ToolTipText = "Constraints:";
+            Type[] constraints = param.GetGenericParameterConstraints();
+            if (constraints.Length == 0) {
+              item.ToolTipText += " none";
+            } else {
+              foreach (Type constraint in constraints)
+                item.ToolTipText += " " + constraint.GetPrettyName();
+            }
+
+            item.Tag = param;
+            typeParametersListView.Items.Add(item);
+          }
+        }
+        typeParametersListView.Columns[0].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+      }
+    }
+
+    protected virtual void SetTypeParameter() {
+      if (typeSelectorDialog == null) {
+        typeSelectorDialog = new TypeSelectorDialog();
+        typeSelectorDialog.Caption = "Select Type of Generic Type Parameter";
+      }
+      Type param = typeParametersListView.SelectedItems[0].Tag as Type;
+      Type[] contraints = param.GetGenericParameterConstraints();
+      typeSelectorDialog.TypeSelector.Configure(typeof(IItem), true, true);
+
+      if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
+        Type selected = typeSelectorDialog.TypeSelector.SelectedType;
+        Type[] parameters = SelectedType.GetGenericArguments();
+        parameters[param.GenericParameterPosition] = selected;
+        SelectedType = SelectedType.GetGenericTypeDefinition().MakeGenericType(parameters);
+
+        typeParametersListView.SelectedItems[0].Text = param.Name + ": " + selected.GetPrettyName();
+        typeParametersListView.Columns[0].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+      }
     }
 
     protected virtual void UpdateDescription() {
@@ -228,6 +279,15 @@ namespace HeuristicLab.Core.Views {
       }
     }
 
+    #region Events
+    public event EventHandler SelectedTypeChanged;
+    protected virtual void OnSelectedTypeChanged() {
+      if (SelectedTypeChanged != null)
+        SelectedTypeChanged(this, EventArgs.Empty);
+    }
+    #endregion
+
+    #region Control Events
     protected virtual void searchTextBox_TextChanged(object sender, System.EventArgs e) {
       Filter(searchTextBox.Text);
     }
@@ -235,9 +295,9 @@ namespace HeuristicLab.Core.Views {
     protected virtual void typesTreeView_AfterSelect(object sender, TreeViewEventArgs e) {
       if (typesTreeView.SelectedNode == null) SelectedType = null;
       else SelectedType = typesTreeView.SelectedNode.Tag as Type;
+      UpdateTypeParameters();
       UpdateDescription();
     }
-
     protected virtual void typesTreeView_ItemDrag(object sender, ItemDragEventArgs e) {
       TreeNode node = (TreeNode)e.Item;
       Type type = node.Tag as Type;
@@ -249,10 +309,22 @@ namespace HeuristicLab.Core.Views {
         DoDragDrop(data, DragDropEffects.Copy);
       }
     }
-
     protected virtual void typesTreeView_VisibleChanged(object sender, EventArgs e) {
       if (Visible) SetTreeNodeVisibility();
     }
+
+    protected virtual void typeParametersListView_SelectedIndexChanged(object sender, EventArgs e) {
+      setTypeParameterButton.Enabled = typeParametersListView.SelectedItems.Count == 1;
+    }
+    protected virtual void typeParametersListView_DoubleClick(object sender, EventArgs e) {
+      if (typeParametersListView.SelectedItems.Count == 1)
+        SetTypeParameter();
+    }
+
+    protected virtual void setTypeParameterButton_Click(object sender, EventArgs e) {
+      SetTypeParameter();
+    }
+    #endregion
 
     #region Helpers
     private void RestoreSelectedNode(TreeNode selectedNode) {

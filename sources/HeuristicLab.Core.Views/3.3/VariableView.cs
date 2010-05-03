@@ -113,7 +113,7 @@ namespace HeuristicLab.Core.Views {
       if (typeSelectorDialog == null) {
         typeSelectorDialog = new TypeSelectorDialog();
         typeSelectorDialog.Caption = "Select Value";
-        typeSelectorDialog.TypeSelector.Configure(typeof(IItem), false, false);
+        typeSelectorDialog.TypeSelector.Configure(typeof(IItem), false, true);
       }
       if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
         try {

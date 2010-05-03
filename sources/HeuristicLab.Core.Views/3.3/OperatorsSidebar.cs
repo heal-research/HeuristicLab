@@ -32,7 +32,7 @@ namespace HeuristicLab.Core.Views {
 
     protected override void OnInitialized(EventArgs e) {
       base.OnInitialized(e);
-      typeSelector.Configure(typeof(IOperator), false, false);
+      typeSelector.Configure(typeof(IOperator), false, true);
     }
   }
 }

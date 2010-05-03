@@ -45,7 +45,7 @@ namespace HeuristicLab.Optimization.Views {
         typeSelectorDialog = new TypeSelectorDialog();
         typeSelectorDialog.Caption = "Select Optimizer";
         typeSelectorDialog.TypeSelector.Caption = "Available Optimizers";
-        typeSelectorDialog.TypeSelector.Configure(typeof(IOptimizer), false, false);
+        typeSelectorDialog.TypeSelector.Configure(typeof(IOptimizer), false, true);
       }
 
       if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK) {

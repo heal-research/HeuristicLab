@@ -128,7 +128,7 @@ namespace HeuristicLab.Core.Views {
         typeSelectorDialog = new TypeSelectorDialog();
         typeSelectorDialog.Caption = "Select Item";
         typeSelectorDialog.TypeSelector.Caption = "Available Items";
-        typeSelectorDialog.TypeSelector.Configure(typeof(T), false, false);
+        typeSelectorDialog.TypeSelector.Configure(typeof(T), false, true);
       }
 
       if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK) {

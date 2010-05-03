@@ -125,7 +125,7 @@ namespace HeuristicLab.Parameters.Views {
       if (typeSelectorDialog == null) {
         typeSelectorDialog = new TypeSelectorDialog();
         typeSelectorDialog.Caption = "Select Value";
-        typeSelectorDialog.TypeSelector.Configure(Content.DataType, false, false);
+        typeSelectorDialog.TypeSelector.Configure(Content.DataType, false, true);
       }
       if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
         try {

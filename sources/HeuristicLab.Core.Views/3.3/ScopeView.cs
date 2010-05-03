@@ -82,7 +82,7 @@ namespace HeuristicLab.Core.Views {
 
     private void SetEnabledStateOfControls() {
       scopesTreeView.Enabled = Content != null;
-      variableCollectionView.Enabled = Content != null;
+      variableCollectionView.Enabled = scopesTreeView.SelectedNode != null;
     }
 
     #region TreeNode Management

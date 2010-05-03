@@ -164,7 +164,7 @@ namespace HeuristicLab.Optimization.Views {
         problemTypeSelectorDialog = new TypeSelectorDialog();
         problemTypeSelectorDialog.Caption = "Select Problem";
         problemTypeSelectorDialog.TypeSelector.Caption = "Available Problems";
-        problemTypeSelectorDialog.TypeSelector.Configure(Content.ProblemType, false, false);
+        problemTypeSelectorDialog.TypeSelector.Configure(Content.ProblemType, false, true);
       }
       if (problemTypeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
         try {
