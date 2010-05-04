@@ -31,9 +31,15 @@ using System.ServiceModel;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
-  internal partial class ProductEditor : UserControl {
+  internal partial class ProductEditor : InstallationManagerControl {
+    private const string RefreshMessage = "Downloading product and plugin information...";
+    private const string UploadMessage = "Uploading product and plugin information...";
+    private const string DeleteProductMessage = "Deleting product...";
+
     private BackgroundWorker refreshProductsWorker;
     private BackgroundWorker uploadChangedProductsWorker;
+    private BackgroundWorker deleteProductWorker;
+
     private List<DeploymentService.ProductDescription> products;
     private List<DeploymentService.PluginDescription> plugins;
     private HashSet<DeploymentService.ProductDescription> dirtyProducts;
@@ -53,50 +59,183 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       uploadChangedProductsWorker = new BackgroundWorker();
       uploadChangedProductsWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(uploadChangedProductsWorker_RunWorkerCompleted);
       uploadChangedProductsWorker.DoWork += new DoWorkEventHandler(uploadChangedProductsWorker_DoWork);
+
+      deleteProductWorker = new BackgroundWorker();
+      deleteProductWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(deleteProductWorker_RunWorkerCompleted);
+      deleteProductWorker.DoWork += new DoWorkEventHandler(deleteProductWorker_DoWork);
     }
+
+    #region event handlers for delete product background worker
+    void deleteProductWorker_DoWork(object sender, DoWorkEventArgs e) {
+      var products = (IEnumerable<DeploymentService.ProductDescription>)e.Argument;
+      var adminClient = DeploymentService.AdminClientFactory.CreateClient();
+      // upload
+      try {
+        foreach (var product in products) {
+          adminClient.DeleteProduct(product);
+        }
+        adminClient.Close();
+      }
+      catch (TimeoutException) {
+        adminClient.Abort();
+        throw;
+      }
+      catch (FaultException) {
+        adminClient.Abort();
+        throw;
+      }
+      catch (CommunicationException) {
+        adminClient.Abort();
+        throw;
+      }
+      // refresh      
+      var updateClient = DeploymentService.UpdateClientFactory.CreateClient();
+      try {
+        e.Result = new object[] { updateClient.GetProducts(), updateClient.GetPlugins() };
+        updateClient.Close();
+      }
+      catch (TimeoutException) {
+        updateClient.Abort();
+        throw;
+      }
+      catch (FaultException) {
+        updateClient.Abort();
+        throw;
+      }
+      catch (CommunicationException) {
+        updateClient.Abort();
+        throw;
+      }
+    }
+
+    void deleteProductWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
+      if (e.Error != null) {
+        StatusView.ShowError("Connection Error",
+        "There was an error while connecting to the server." + Environment.NewLine +
+           "Please check your connection settings and user credentials.");
+        DisableControls();
+      } else {
+        this.products = new List<DeploymentService.ProductDescription>(
+  (DeploymentService.ProductDescription[])((object[])e.Result)[0]);
+        this.plugins = new List<DeploymentService.PluginDescription>(
+          (DeploymentService.PluginDescription[])((object[])e.Result)[1]);
+
+        UpdateProductsList();
+        dirtyProducts.Clear();
+        EnableControls();
+      }
+      StatusView.HideProgressIndicator();
+      StatusView.RemoveMessage(DeleteProductMessage);
+      StatusView.UnlockUI();
+    }
+    #endregion
 
     #region event handlers for upload products background worker
     private void uploadChangedProductsWorker_DoWork(object sender, DoWorkEventArgs e) {
       var products = (IEnumerable<DeploymentService.ProductDescription>)e.Argument;
       var adminClient = DeploymentService.AdminClientFactory.CreateClient();
-      foreach (var product in products) {
-        adminClient.DeployProduct(product);
+      // upload
+      try {
+        foreach (var product in products) {
+          adminClient.DeployProduct(product);
+        }
+        adminClient.Close();
+      }
+      catch (TimeoutException) {
+        adminClient.Abort();
+        throw;
+      }
+      catch (FaultException) {
+        adminClient.Abort();
+        throw;
+      }
+      catch (CommunicationException) {
+        adminClient.Abort();
+        throw;
+      }
+      // refresh      
+      var updateClient = DeploymentService.UpdateClientFactory.CreateClient();
+      try {
+        e.Result = new object[] { updateClient.GetProducts(), updateClient.GetPlugins() };
+        updateClient.Close();
+      }
+      catch (TimeoutException) {
+        updateClient.Abort();
+        throw;
+      }
+      catch (FaultException) {
+        updateClient.Abort();
+        throw;
+      }
+      catch (CommunicationException) {
+        updateClient.Abort();
+        throw;
       }
     }
 
     private void uploadChangedProductsWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
       if (e.Error != null) {
-        MessageBox.Show("There was an error while connecting to the server." + Environment.NewLine +
+        StatusView.ShowError("Connection Error",
+        "There was an error while connecting to the server." + Environment.NewLine +
            "Please check your connection settings and user credentials.");
+        DisableControls();
       } else {
-        this.Enabled = true;
-        refreshProductsWorker.RunWorkerAsync();
+        this.products = new List<DeploymentService.ProductDescription>(
+  (DeploymentService.ProductDescription[])((object[])e.Result)[0]);
+        this.plugins = new List<DeploymentService.PluginDescription>(
+          (DeploymentService.PluginDescription[])((object[])e.Result)[1]);
+
+        UpdateProductsList();
+        dirtyProducts.Clear();
+        EnableControls();
       }
+      StatusView.HideProgressIndicator();
+      StatusView.RemoveMessage(UploadMessage);
+      StatusView.UnlockUI();
     }
     #endregion
 
     #region event handlers for refresh products background worker
     private void refreshProductsWorker_DoWork(object sender, DoWorkEventArgs e) {
       var updateClient = DeploymentService.UpdateClientFactory.CreateClient();
-      e.Result = new object[] { updateClient.GetProducts(), updateClient.GetPlugins() };
+      try {
+        e.Result = new object[] { updateClient.GetProducts(), updateClient.GetPlugins() };
+        updateClient.Close();
+      }
+      catch (TimeoutException) {
+        updateClient.Abort();
+        throw;
+      }
+      catch (FaultException) {
+        updateClient.Abort();
+        throw;
+      }
+      catch (CommunicationException) {
+        updateClient.Abort();
+        throw;
+      }
     }
 
     private void refreshProductsWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
       if (e.Error != null) {
-        MessageBox.Show("There was an error while connecting to the server." + Environment.NewLine +
+        StatusView.ShowError("Connection Error",
+          "There was an error while connecting to the server." + Environment.NewLine +
                    "Please check your connection settings and user credentials.");
+        DisableControls();
       } else {
         this.products = new List<DeploymentService.ProductDescription>(
           (DeploymentService.ProductDescription[])((object[])e.Result)[0]);
         this.plugins = new List<DeploymentService.PluginDescription>(
           (DeploymentService.PluginDescription[])((object[])e.Result)[1]);
 
+
         UpdateProductsList();
         dirtyProducts.Clear();
-
-        Cursor = Cursors.Default;
-        SetControlsEnabled(true);
+        EnableControls();
       }
+      StatusView.HideProgressIndicator();
+      StatusView.RemoveMessage(RefreshMessage);
+      StatusView.UnlockUI();
     }
     #endregion
 
@@ -106,53 +245,39 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
         productsListView.Items.Add(CreateListViewItem(prodDesc));
       }
       foreach (ColumnHeader column in productsListView.Columns)
-        column.Width = -1;
+        if (productsListView.Items.Count > 0)
+          column.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+        else column.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
     }
 
     private void productsListBox_SelectedIndexChanged(object sender, EventArgs e) {
       bool productSelected = productsListView.SelectedItems.Count > 0;
       detailsGroupBox.Enabled = productSelected;
-      uploadButton.Enabled = productSelected;
-      if (productsListView.SelectedItems.Count == 0) {
-        ClearProductDetails();
-        return;
+      deleteProductButton.Enabled = productSelected;
+      uploadButton.Enabled = dirtyProducts.Count > 0;
+      if (productSelected) {
+        DeploymentService.ProductDescription activeProduct = (DeploymentService.ProductDescription)((ListViewItem)productsListView.SelectedItems[0]).Tag;
+        nameTextBox.Text = activeProduct.Name;
+        versionTextBox.Text = activeProduct.Version.ToString();
+
+        // populate plugins list view
+        ListViewItem activeItem = (ListViewItem)productsListView.SelectedItems[0];
+        foreach (var plugin in plugins.OfType<IPluginDescription>()) {
+          pluginListView.Items.Add(CreateListViewItem(plugin));
+        }
+
+        pluginListView.CheckItems(from plugin in activeProduct.Plugins
+                                  let item = FindItemForPlugin(plugin)
+                                  where item != null
+                                  select item);
+
+      } else {
+        nameTextBox.Text = string.Empty;
+        versionTextBox.Text = string.Empty;
+        pluginListView.Items.Clear();
       }
-      DeploymentService.ProductDescription activeProduct = (DeploymentService.ProductDescription)((ListViewItem)productsListView.SelectedItems[0]).Tag;
-      UpdateProductDetails(activeProduct);
     }
 
-    private void ClearProductDetails() {
-      nameTextBox.Text = string.Empty;
-      versionTextBox.Text = string.Empty;
-      pluginListView.Plugins = new IPluginDescription[0];
-    }
-
-    private void UpdateProductDetails(DeploymentService.ProductDescription activeProduct) {
-      nameTextBox.Text = activeProduct.Name;
-      versionTextBox.Text = activeProduct.Version.ToString();
-
-      UpdatePluginsListView();
-    }
-
-    private ListViewItem CreateListViewItem(DeploymentService.ProductDescription productDescription) {
-      ListViewItem item = new ListViewItem(new string[] { productDescription.Name, productDescription.Version.ToString() });
-      item.Tag = productDescription;
-      item.ImageIndex = 0;
-      return item;
-    }
-
-    private void SetControlsEnabled(bool enabled) {
-      uploadButton.Enabled = enabled;
-      refreshButton.Enabled = enabled;
-      newProductButton.Enabled = enabled;
-      splitContainer.Enabled = enabled;
-      productsListView.Enabled = enabled;
-      nameLabel.Enabled = enabled;
-      nameTextBox.Enabled = enabled;
-      versionLabel.Enabled = enabled;
-      versionTextBox.Enabled = enabled;
-      pluginListView.Enabled = enabled;
-    }
 
     #region button event handlers
     private void newProductButton_Click(object sender, EventArgs e) {
@@ -163,76 +288,86 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     }
 
     private void saveButton_Click(object sender, EventArgs e) {
-      this.Enabled = false;
+      StatusView.LockUI();
+      StatusView.ShowProgressIndicator();
+      StatusView.ShowMessage(UploadMessage);
       uploadChangedProductsWorker.RunWorkerAsync(dirtyProducts);
     }
     private void refreshButton_Click(object sender, EventArgs e) {
-      SetControlsEnabled(false);
-      Cursor = Cursors.AppStarting;
+      StatusView.LockUI();
+      StatusView.ShowProgressIndicator();
+      StatusView.ShowMessage(RefreshMessage);
       refreshProductsWorker.RunWorkerAsync();
+    }
+    private void deleteProductButton_Click(object sender, EventArgs e) {
+      StatusView.LockUI();
+      StatusView.ShowProgressIndicator();
+      StatusView.ShowMessage(DeleteProductMessage);
+      var selectedProducts = from item in productsListView.SelectedItems.OfType<ListViewItem>()
+                             select (DeploymentService.ProductDescription)item.Tag;
+      deleteProductWorker.RunWorkerAsync(selectedProducts.ToList());
     }
 
     #endregion
 
     #region textbox changed event handlers
     private void nameTextBox_TextChanged(object sender, EventArgs e) {
-      ListViewItem activeItem = (ListViewItem)productsListView.SelectedItems[0];
-      DeploymentService.ProductDescription activeProduct = (DeploymentService.ProductDescription)activeItem.Tag;
-      if (string.IsNullOrEmpty(nameTextBox.Name)) {
-        errorProvider.SetError(nameTextBox, "Invalid value");
-      } else {
-        if (activeProduct.Name != nameTextBox.Text) {
-          activeProduct.Name = nameTextBox.Text;
-          activeItem.SubItems[0].Text = activeProduct.Name;
-          errorProvider.SetError(nameTextBox, string.Empty);
-          MarkProductDirty(activeProduct);
+      if (productsListView.SelectedItems.Count > 0) {
+        ListViewItem activeItem = (ListViewItem)productsListView.SelectedItems[0];
+        DeploymentService.ProductDescription activeProduct = (DeploymentService.ProductDescription)activeItem.Tag;
+        if (string.IsNullOrEmpty(nameTextBox.Name)) {
+          errorProvider.SetError(nameTextBox, "Invalid value");
+        } else {
+          if (activeProduct.Name != nameTextBox.Text) {
+            activeProduct.Name = nameTextBox.Text;
+            activeItem.SubItems[0].Text = activeProduct.Name;
+            errorProvider.SetError(nameTextBox, string.Empty);
+            MarkProductDirty(activeProduct);
+          }
         }
       }
     }
 
 
     private void versionTextBox_TextChanged(object sender, EventArgs e) {
-      ListViewItem activeItem = (ListViewItem)productsListView.SelectedItems[0];
-      DeploymentService.ProductDescription activeProduct = (DeploymentService.ProductDescription)activeItem.Tag;
-      try {
-        var newVersion = new Version(versionTextBox.Text);
-        if (activeProduct.Version != newVersion) {
-          activeProduct.Version = newVersion;
-          activeItem.SubItems[1].Text = versionTextBox.Text;
-          errorProvider.SetError(versionTextBox, string.Empty);
-          MarkProductDirty(activeProduct);
+      if (productsListView.SelectedItems.Count > 0) {
+        ListViewItem activeItem = (ListViewItem)productsListView.SelectedItems[0];
+        DeploymentService.ProductDescription activeProduct = (DeploymentService.ProductDescription)activeItem.Tag;
+        try {
+          var newVersion = new Version(versionTextBox.Text);
+          if (activeProduct.Version != newVersion) {
+            activeProduct.Version = newVersion;
+            activeItem.SubItems[1].Text = versionTextBox.Text;
+            errorProvider.SetError(versionTextBox, string.Empty);
+            MarkProductDirty(activeProduct);
+          }
         }
-      }
-      catch (OverflowException) {
-        errorProvider.SetError(versionTextBox, "Invalid value");
-      }
+        catch (OverflowException) {
+          errorProvider.SetError(versionTextBox, "Invalid value");
+        }
 
-      catch (ArgumentException) {
-        errorProvider.SetError(versionTextBox, "Invalid value");
-      }
-      catch (FormatException) {
-        errorProvider.SetError(versionTextBox, "Invalid value");
+        catch (ArgumentException) {
+          errorProvider.SetError(versionTextBox, "Invalid value");
+        }
+        catch (FormatException) {
+          errorProvider.SetError(versionTextBox, "Invalid value");
+        }
       }
     }
     #endregion
 
 
     #region plugin list view
-    private void UpdatePluginsListView() {
-      ListViewItem activeItem = (ListViewItem)productsListView.SelectedItems[0];
-      DeploymentService.ProductDescription activeProduct = (DeploymentService.ProductDescription)activeItem.Tag;
-      pluginListView.Plugins = plugins.OfType<IPluginDescription>();
-      foreach (var plugin in activeProduct.Plugins) pluginListView.CheckPlugin(plugin);
-    }
-
     private void pluginListView_ItemChecked(object sender, ItemCheckedEventArgs e) {
       ListViewItem activeItem = (ListViewItem)productsListView.SelectedItems[0];
       DeploymentService.ProductDescription activeProduct = (DeploymentService.ProductDescription)activeItem.Tag;
-      activeProduct.Plugins = pluginListView.CheckedPlugins.Cast<DeploymentService.PluginDescription>().ToArray();
+      activeProduct.Plugins = (from item in pluginListView.CheckedItems.OfType<ListViewItem>()
+                               select (DeploymentService.PluginDescription)item.Tag).ToArray();
       MarkProductDirty(activeProduct);
     }
     #endregion
 
+    #region helper
     private void MarkProductDirty(HeuristicLab.PluginInfrastructure.Advanced.DeploymentService.ProductDescription activeProduct) {
       if (!dirtyProducts.Contains(activeProduct)) {
         dirtyProducts.Add(activeProduct);
@@ -240,6 +375,22 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
         item.ImageIndex = 1;
       }
     }
+    private ListViewItem CreateListViewItem(DeploymentService.ProductDescription productDescription) {
+      ListViewItem item = new ListViewItem(new string[] { productDescription.Name, productDescription.Version.ToString() });
+      item.Tag = productDescription;
+      item.ImageIndex = 0;
+      return item;
+    }
+
+    private ListViewItem CreateListViewItem(IPluginDescription plugin) {
+      ListViewItem item = new ListViewItem(new string[] { plugin.Name, plugin.Version.ToString(), 
+          string.Empty, plugin.Description });
+      item.Tag = plugin;
+      item.ImageIndex = 0;
+      item.Checked = false;
+      return item;
+    }
+
     private ListViewItem FindItemForProduct(HeuristicLab.PluginInfrastructure.Advanced.DeploymentService.ProductDescription activeProduct) {
       return (from item in productsListView.Items.OfType<ListViewItem>()
               let product = item.Tag as DeploymentService.ProductDescription
@@ -247,5 +398,30 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
               where product == activeProduct
               select item).Single();
     }
+
+    private ListViewItem FindItemForPlugin(IPluginDescription plugin) {
+      return (from i in pluginListView.Items.Cast<ListViewItem>()
+              let p = i.Tag as IPluginDescription
+              where p != null
+              where p.Name == plugin.Name
+              where p.Version == plugin.Version
+              select i).SingleOrDefault();
+    }
+
+    private void DisableControls() {
+      newProductButton.Enabled = false;
+      productsListView.Enabled = false;
+      detailsGroupBox.Enabled = false;
+      deleteProductButton.Enabled = false;
+      nameTextBox.Text = string.Empty;
+      versionTextBox.Text = string.Empty;
+      pluginListView.Items.Clear();
+    }
+    private void EnableControls() {
+      newProductButton.Enabled = true;
+      productsListView.Enabled = true;
+    }
+    #endregion
+
   }
 }

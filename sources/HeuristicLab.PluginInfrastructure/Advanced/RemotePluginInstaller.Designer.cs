@@ -49,20 +49,20 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.versionHeader = new System.Windows.Forms.ColumnHeader();
       this.descriptionHeader = new System.Windows.Forms.ColumnHeader();
       this.pluginsImageList = new System.Windows.Forms.ImageList(this.components);
-      this.refreshButton = new System.Windows.Forms.Button();
-      this.installPluginsButton = new System.Windows.Forms.Button();
       this.productsListView = new System.Windows.Forms.ListView();
       this.productNameHeader = new System.Windows.Forms.ColumnHeader();
       this.productVersionHeader = new System.Windows.Forms.ColumnHeader();
       this.productLargeImageList = new System.Windows.Forms.ImageList(this.components);
       this.productImageList = new System.Windows.Forms.ImageList(this.components);
       this.productsGroupBox = new System.Windows.Forms.GroupBox();
-      this.showDetailsButton = new System.Windows.Forms.RadioButton();
-      this.showLargeIconsButton = new System.Windows.Forms.RadioButton();
-      this.installProductsButton = new System.Windows.Forms.Button();
       this.pluginsGroupBox = new System.Windows.Forms.GroupBox();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this.showDetailsButton = new System.Windows.Forms.RadioButton();
+      this.showLargeIconsButton = new System.Windows.Forms.RadioButton();
+      this.installProductsButton = new System.Windows.Forms.Button();
+      this.refreshButton = new System.Windows.Forms.Button();
+      this.installPluginsButton = new System.Windows.Forms.Button();
       this.productsGroupBox.SuspendLayout();
       this.pluginsGroupBox.SuspendLayout();
       this.splitContainer.Panel1.SuspendLayout();
@@ -83,7 +83,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.pluginsListView.Location = new System.Drawing.Point(6, 19);
       this.pluginsListView.Name = "pluginsListView";
       this.pluginsListView.ShowGroups = false;
-      this.pluginsListView.Size = new System.Drawing.Size(259, 496);
+      this.pluginsListView.Size = new System.Drawing.Size(266, 502);
       this.pluginsListView.SmallImageList = this.pluginsImageList;
       this.pluginsListView.SuppressItemCheckedEvents = false;
       this.pluginsListView.TabIndex = 0;
@@ -112,34 +112,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.pluginsImageList.ImageSize = new System.Drawing.Size(16, 16);
       this.pluginsImageList.TransparentColor = System.Drawing.Color.Transparent;
       // 
-      // refreshButton
-      // 
-      this.refreshButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_Objects_Internet;
-      this.refreshButton.Location = new System.Drawing.Point(6, 19);
-      this.refreshButton.Name = "refreshButton";
-      this.refreshButton.Size = new System.Drawing.Size(72, 25);
-      this.refreshButton.TabIndex = 16;
-      this.refreshButton.Text = "Refresh";
-      this.refreshButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.toolTip.SetToolTip(this.refreshButton, "Refresh available products from HeuristicLab deployment service");
-      this.refreshButton.UseVisualStyleBackColor = true;
-      this.refreshButton.Click += new System.EventHandler(this.refreshRemoteButton_Click);
-      // 
-      // installPluginsButton
-      // 
-      this.installPluginsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.installPluginsButton.Enabled = false;
-      this.installPluginsButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_Objects_Install;
-      this.installPluginsButton.Location = new System.Drawing.Point(6, 521);
-      this.installPluginsButton.Name = "installPluginsButton";
-      this.installPluginsButton.Size = new System.Drawing.Size(140, 25);
-      this.installPluginsButton.TabIndex = 17;
-      this.installPluginsButton.Text = "Install Selected Plugins";
-      this.installPluginsButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.toolTip.SetToolTip(this.installPluginsButton, "Install only checked plugins");
-      this.installPluginsButton.UseVisualStyleBackColor = true;
-      this.installPluginsButton.Click += new System.EventHandler(this.installPluginsButton_Click);
-      // 
       // productsListView
       // 
       this.productsListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -154,7 +126,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.productsListView.MultiSelect = false;
       this.productsListView.Name = "productsListView";
       this.productsListView.ShowGroups = false;
-      this.productsListView.Size = new System.Drawing.Size(234, 465);
+      this.productsListView.Size = new System.Drawing.Size(240, 471);
       this.productsListView.SmallImageList = this.productImageList;
       this.productsListView.TabIndex = 18;
       this.productsListView.UseCompatibleStateImageBehavior = false;
@@ -191,55 +163,12 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.productsGroupBox.Controls.Add(this.installProductsButton);
       this.productsGroupBox.Controls.Add(this.refreshButton);
       this.productsGroupBox.Controls.Add(this.productsListView);
-      this.productsGroupBox.Location = new System.Drawing.Point(3, 3);
+      this.productsGroupBox.Location = new System.Drawing.Point(0, 0);
       this.productsGroupBox.Name = "productsGroupBox";
-      this.productsGroupBox.Size = new System.Drawing.Size(246, 552);
+      this.productsGroupBox.Size = new System.Drawing.Size(252, 558);
       this.productsGroupBox.TabIndex = 19;
       this.productsGroupBox.TabStop = false;
       this.productsGroupBox.Text = "Products";
-      // 
-      // showDetailsButton
-      // 
-      this.showDetailsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.showDetailsButton.Appearance = System.Windows.Forms.Appearance.Button;
-      this.showDetailsButton.Checked = true;
-      this.showDetailsButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.show_details;
-      this.showDetailsButton.Location = new System.Drawing.Point(215, 19);
-      this.showDetailsButton.Name = "showDetailsButton";
-      this.showDetailsButton.Size = new System.Drawing.Size(25, 25);
-      this.showDetailsButton.TabIndex = 22;
-      this.showDetailsButton.TabStop = true;
-      this.toolTip.SetToolTip(this.showDetailsButton, "Show Details");
-      this.showDetailsButton.UseVisualStyleBackColor = true;
-      this.showDetailsButton.CheckedChanged += new System.EventHandler(this.showDetailsButton_CheckedChanged);
-      // 
-      // showLargeIconsButton
-      // 
-      this.showLargeIconsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.showLargeIconsButton.Appearance = System.Windows.Forms.Appearance.Button;
-      this.showLargeIconsButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.show_icons;
-      this.showLargeIconsButton.Location = new System.Drawing.Point(184, 19);
-      this.showLargeIconsButton.Name = "showLargeIconsButton";
-      this.showLargeIconsButton.Size = new System.Drawing.Size(25, 25);
-      this.showLargeIconsButton.TabIndex = 21;
-      this.toolTip.SetToolTip(this.showLargeIconsButton, "Show Large Icons");
-      this.showLargeIconsButton.UseVisualStyleBackColor = true;
-      this.showLargeIconsButton.CheckedChanged += new System.EventHandler(this.showLargeIconsButton_CheckedChanged);
-      // 
-      // installProductsButton
-      // 
-      this.installProductsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.installProductsButton.Enabled = false;
-      this.installProductsButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_Objects_Install;
-      this.installProductsButton.Location = new System.Drawing.Point(6, 521);
-      this.installProductsButton.Name = "installProductsButton";
-      this.installProductsButton.Size = new System.Drawing.Size(146, 25);
-      this.installProductsButton.TabIndex = 20;
-      this.installProductsButton.Text = "Install Selected Product";
-      this.installProductsButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.toolTip.SetToolTip(this.installProductsButton, "Install all plugins for the selected product");
-      this.installProductsButton.UseVisualStyleBackColor = true;
-      this.installProductsButton.Click += new System.EventHandler(this.installProductsButton_Click);
       // 
       // pluginsGroupBox
       // 
@@ -248,9 +177,9 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.pluginsGroupBox.Controls.Add(this.pluginsListView);
       this.pluginsGroupBox.Controls.Add(this.installPluginsButton);
-      this.pluginsGroupBox.Location = new System.Drawing.Point(3, 3);
+      this.pluginsGroupBox.Location = new System.Drawing.Point(-1, 0);
       this.pluginsGroupBox.Name = "pluginsGroupBox";
-      this.pluginsGroupBox.Size = new System.Drawing.Size(271, 552);
+      this.pluginsGroupBox.Size = new System.Drawing.Size(278, 558);
       this.pluginsGroupBox.TabIndex = 20;
       this.pluginsGroupBox.TabStop = false;
       this.pluginsGroupBox.Text = "Plugins";
@@ -273,6 +202,77 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.splitContainer.Size = new System.Drawing.Size(533, 558);
       this.splitContainer.SplitterDistance = 252;
       this.splitContainer.TabIndex = 21;
+      // 
+      // showDetailsButton
+      // 
+      this.showDetailsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.showDetailsButton.Appearance = System.Windows.Forms.Appearance.Button;
+      this.showDetailsButton.Checked = true;
+      this.showDetailsButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.show_details;
+      this.showDetailsButton.Location = new System.Drawing.Point(221, 19);
+      this.showDetailsButton.Name = "showDetailsButton";
+      this.showDetailsButton.Size = new System.Drawing.Size(25, 25);
+      this.showDetailsButton.TabIndex = 22;
+      this.showDetailsButton.TabStop = true;
+      this.toolTip.SetToolTip(this.showDetailsButton, "Show Details");
+      this.showDetailsButton.UseVisualStyleBackColor = true;
+      this.showDetailsButton.CheckedChanged += new System.EventHandler(this.showDetailsButton_CheckedChanged);
+      // 
+      // showLargeIconsButton
+      // 
+      this.showLargeIconsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.showLargeIconsButton.Appearance = System.Windows.Forms.Appearance.Button;
+      this.showLargeIconsButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.show_icons;
+      this.showLargeIconsButton.Location = new System.Drawing.Point(190, 19);
+      this.showLargeIconsButton.Name = "showLargeIconsButton";
+      this.showLargeIconsButton.Size = new System.Drawing.Size(25, 25);
+      this.showLargeIconsButton.TabIndex = 21;
+      this.toolTip.SetToolTip(this.showLargeIconsButton, "Show Large Icons");
+      this.showLargeIconsButton.UseVisualStyleBackColor = true;
+      this.showLargeIconsButton.CheckedChanged += new System.EventHandler(this.showLargeIconsButton_CheckedChanged);
+      // 
+      // installProductsButton
+      // 
+      this.installProductsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.installProductsButton.Enabled = false;
+      this.installProductsButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_Objects_Install;
+      this.installProductsButton.Location = new System.Drawing.Point(6, 527);
+      this.installProductsButton.Name = "installProductsButton";
+      this.installProductsButton.Size = new System.Drawing.Size(146, 25);
+      this.installProductsButton.TabIndex = 20;
+      this.installProductsButton.Text = "Install Selected Product";
+      this.installProductsButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.toolTip.SetToolTip(this.installProductsButton, "Install all plugins for the selected product");
+      this.installProductsButton.UseVisualStyleBackColor = true;
+      this.installProductsButton.Click += new System.EventHandler(this.installProductsButton_Click);
+      // 
+      // refreshButton
+      // 
+      this.refreshButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_Objects_Internet;
+      this.refreshButton.Location = new System.Drawing.Point(6, 19);
+      this.refreshButton.Name = "refreshButton";
+      this.refreshButton.Size = new System.Drawing.Size(72, 25);
+      this.refreshButton.TabIndex = 16;
+      this.refreshButton.Text = "Refresh";
+      this.refreshButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.toolTip.SetToolTip(this.refreshButton, "Refresh available products from HeuristicLab deployment service");
+      this.refreshButton.UseVisualStyleBackColor = true;
+      this.refreshButton.Click += new System.EventHandler(this.refreshRemoteButton_Click);
+      // 
+      // installPluginsButton
+      // 
+      this.installPluginsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.installPluginsButton.Enabled = false;
+      this.installPluginsButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_Objects_Install;
+      this.installPluginsButton.Location = new System.Drawing.Point(6, 527);
+      this.installPluginsButton.Name = "installPluginsButton";
+      this.installPluginsButton.Size = new System.Drawing.Size(140, 25);
+      this.installPluginsButton.TabIndex = 17;
+      this.installPluginsButton.Text = "Install Selected Plugins";
+      this.installPluginsButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.toolTip.SetToolTip(this.installPluginsButton, "Install only checked plugins");
+      this.installPluginsButton.UseVisualStyleBackColor = true;
+      this.installPluginsButton.Click += new System.EventHandler(this.installPluginsButton_Click);
       // 
       // RemotePluginInstallerView
       // 

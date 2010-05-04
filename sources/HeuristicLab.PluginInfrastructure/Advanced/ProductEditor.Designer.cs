@@ -49,6 +49,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.uploadButton = new System.Windows.Forms.Button();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
       this.productsGroupBox = new System.Windows.Forms.GroupBox();
+      this.deleteProductButton = new System.Windows.Forms.Button();
       this.newProductButton = new System.Windows.Forms.Button();
       this.productsListView = new System.Windows.Forms.ListView();
       this.productNameHeader = new System.Windows.Forms.ColumnHeader();
@@ -56,14 +57,17 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.productImageList = new System.Windows.Forms.ImageList(this.components);
       this.detailsGroupBox = new System.Windows.Forms.GroupBox();
       this.pluginsGroupBox = new System.Windows.Forms.GroupBox();
-      this.pluginListView = new HeuristicLab.PluginInfrastructure.Advanced.PluginListView();
+      this.pluginListView = new HeuristicLab.PluginInfrastructure.Advanced.MultiSelectListView();
+      this.pluginImageList = new System.Windows.Forms.ImageList(this.components);
       this.versionTextBox = new System.Windows.Forms.TextBox();
       this.nameLabel = new System.Windows.Forms.Label();
       this.nameTextBox = new System.Windows.Forms.TextBox();
       this.versionLabel = new System.Windows.Forms.Label();
-      this.pluginImageList = new System.Windows.Forms.ImageList(this.components);
       this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this.pluginNameHeader = new System.Windows.Forms.ColumnHeader();
+      this.pluginVersionHeader = new System.Windows.Forms.ColumnHeader();
+      this.pluginDescriptionHeader = new System.Windows.Forms.ColumnHeader();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
@@ -124,6 +128,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.productsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.productsGroupBox.Controls.Add(this.deleteProductButton);
       this.productsGroupBox.Controls.Add(this.uploadButton);
       this.productsGroupBox.Controls.Add(this.newProductButton);
       this.productsGroupBox.Controls.Add(this.productsListView);
@@ -134,6 +139,20 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.productsGroupBox.TabIndex = 5;
       this.productsGroupBox.TabStop = false;
       this.productsGroupBox.Text = "Products";
+      // 
+      // deleteProductButton
+      // 
+      this.deleteProductButton.Enabled = false;
+      this.deleteProductButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_CommonElements_Actions_Remove;
+      this.deleteProductButton.Location = new System.Drawing.Point(116, 19);
+      this.deleteProductButton.Name = "deleteProductButton";
+      this.deleteProductButton.Size = new System.Drawing.Size(104, 26);
+      this.deleteProductButton.TabIndex = 5;
+      this.deleteProductButton.Text = "Delete Product";
+      this.deleteProductButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.toolTip.SetToolTip(this.deleteProductButton, "Deletes the selected product");
+      this.deleteProductButton.UseVisualStyleBackColor = true;
+      this.deleteProductButton.Click += new System.EventHandler(this.deleteProductButton_Click);
       // 
       // newProductButton
       // 
@@ -159,6 +178,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
             this.productVersionHeader});
       this.productsListView.Enabled = false;
       this.productsListView.FullRowSelect = true;
+      this.productsListView.HideSelection = false;
       this.productsListView.Location = new System.Drawing.Point(6, 51);
       this.productsListView.MultiSelect = false;
       this.productsListView.Name = "productsListView";
@@ -195,6 +215,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.detailsGroupBox.Controls.Add(this.nameLabel);
       this.detailsGroupBox.Controls.Add(this.nameTextBox);
       this.detailsGroupBox.Controls.Add(this.versionLabel);
+      this.detailsGroupBox.Enabled = false;
       this.detailsGroupBox.Location = new System.Drawing.Point(0, 0);
       this.detailsGroupBox.Name = "detailsGroupBox";
       this.detailsGroupBox.Size = new System.Drawing.Size(340, 426);
@@ -220,29 +241,40 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.pluginListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.pluginListView.Enabled = false;
+      this.pluginListView.CheckBoxes = true;
+      this.pluginListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.pluginNameHeader,
+            this.pluginVersionHeader,
+            this.pluginDescriptionHeader});
       this.pluginListView.Location = new System.Drawing.Point(3, 16);
       this.pluginListView.Name = "pluginListView";
-      this.pluginListView.Plugins = null;
       this.pluginListView.Size = new System.Drawing.Size(322, 330);
+      this.pluginListView.SmallImageList = this.pluginImageList;
+      this.pluginListView.SuppressItemCheckedEvents = false;
       this.pluginListView.TabIndex = 7;
+      this.pluginListView.UseCompatibleStateImageBehavior = false;
+      this.pluginListView.View = System.Windows.Forms.View.Details;
       this.pluginListView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.pluginListView_ItemChecked);
+      // 
+      // pluginImageList
+      // 
+      this.pluginImageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+      this.pluginImageList.ImageSize = new System.Drawing.Size(16, 16);
+      this.pluginImageList.TransparentColor = System.Drawing.Color.Transparent;
       // 
       // versionTextBox
       // 
       this.versionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.versionTextBox.Enabled = false;
       this.versionTextBox.Location = new System.Drawing.Point(57, 45);
       this.versionTextBox.Name = "versionTextBox";
-      this.versionTextBox.Size = new System.Drawing.Size(277, 20);
+      this.versionTextBox.Size = new System.Drawing.Size(243, 20);
       this.versionTextBox.TabIndex = 5;
       this.versionTextBox.TextChanged += new System.EventHandler(this.versionTextBox_TextChanged);
       // 
       // nameLabel
       // 
       this.nameLabel.AutoSize = true;
-      this.nameLabel.Enabled = false;
       this.nameLabel.Location = new System.Drawing.Point(13, 22);
       this.nameLabel.Name = "nameLabel";
       this.nameLabel.Size = new System.Drawing.Size(38, 13);
@@ -253,32 +285,36 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // 
       this.nameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.nameTextBox.Enabled = false;
       this.nameTextBox.Location = new System.Drawing.Point(57, 19);
       this.nameTextBox.Name = "nameTextBox";
-      this.nameTextBox.Size = new System.Drawing.Size(277, 20);
+      this.nameTextBox.Size = new System.Drawing.Size(243, 20);
       this.nameTextBox.TabIndex = 3;
       this.nameTextBox.TextChanged += new System.EventHandler(this.nameTextBox_TextChanged);
       // 
       // versionLabel
       // 
       this.versionLabel.AutoSize = true;
-      this.versionLabel.Enabled = false;
       this.versionLabel.Location = new System.Drawing.Point(6, 48);
       this.versionLabel.Name = "versionLabel";
       this.versionLabel.Size = new System.Drawing.Size(45, 13);
       this.versionLabel.TabIndex = 4;
       this.versionLabel.Text = "Version:";
       // 
-      // pluginImageList
-      // 
-      this.pluginImageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
-      this.pluginImageList.ImageSize = new System.Drawing.Size(16, 16);
-      this.pluginImageList.TransparentColor = System.Drawing.Color.Transparent;
-      // 
       // errorProvider
       // 
       this.errorProvider.ContainerControl = this;
+      // 
+      // pluginNameHeader
+      // 
+      this.pluginNameHeader.Text = "Name";
+      // 
+      // pluginVersionHeader
+      // 
+      this.pluginVersionHeader.Text = "Version";
+      // 
+      // pluginDescriptionHeader
+      // 
+      this.pluginDescriptionHeader.Text = "Description";
       // 
       // ProductEditor
       // 
@@ -315,11 +351,15 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private System.Windows.Forms.ColumnHeader productVersionHeader;
     private System.Windows.Forms.ImageList productImageList;
     private System.Windows.Forms.ImageList pluginImageList;
-    private PluginListView pluginListView;
+    private MultiSelectListView pluginListView;
     private System.Windows.Forms.GroupBox productsGroupBox;
     private System.Windows.Forms.GroupBox detailsGroupBox;
     private System.Windows.Forms.GroupBox pluginsGroupBox;
     private System.Windows.Forms.ToolTip toolTip;
+    private System.Windows.Forms.Button deleteProductButton;
+    private System.Windows.Forms.ColumnHeader pluginNameHeader;
+    private System.Windows.Forms.ColumnHeader pluginVersionHeader;
+    private System.Windows.Forms.ColumnHeader pluginDescriptionHeader;
 
   }
 }

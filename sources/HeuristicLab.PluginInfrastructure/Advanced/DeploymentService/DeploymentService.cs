@@ -15,7 +15,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced.DeploymentService
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="PluginDescription", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.Deployment")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="PluginDescription", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.Deployment", IsReference=true)]
     public partial class PluginDescription : object, System.Runtime.Serialization.IExtensibleDataObject
     {
         
@@ -263,6 +263,9 @@ namespace HeuristicLab.PluginInfrastructure.Advanced.DeploymentService
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAdmin/DeployProduct", ReplyAction="http://tempuri.org/IAdmin/DeployProductResponse")]
         void DeployProduct(HeuristicLab.PluginInfrastructure.Advanced.DeploymentService.ProductDescription product);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAdmin/DeleteProduct", ReplyAction="http://tempuri.org/IAdmin/DeleteProductResponse")]
+        void DeleteProduct(HeuristicLab.PluginInfrastructure.Advanced.DeploymentService.ProductDescription product);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAdmin/DeployPlugin", ReplyAction="http://tempuri.org/IAdmin/DeployPluginResponse")]
         void DeployPlugin(HeuristicLab.PluginInfrastructure.Advanced.DeploymentService.PluginDescription plugin, byte[] zipFile);
     }
@@ -304,6 +307,11 @@ namespace HeuristicLab.PluginInfrastructure.Advanced.DeploymentService
         public void DeployProduct(HeuristicLab.PluginInfrastructure.Advanced.DeploymentService.ProductDescription product)
         {
             base.Channel.DeployProduct(product);
+        }
+        
+        public void DeleteProduct(HeuristicLab.PluginInfrastructure.Advanced.DeploymentService.ProductDescription product)
+        {
+            base.Channel.DeleteProduct(product);
         }
         
         public void DeployPlugin(HeuristicLab.PluginInfrastructure.Advanced.DeploymentService.PluginDescription plugin, byte[] zipFile)

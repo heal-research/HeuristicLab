@@ -34,6 +34,9 @@ namespace HeuristicLab.Services.Deployment {
     void DeployProduct(ProductDescription product);
 
     [OperationContract]
+    void DeleteProduct(ProductDescription product);
+
+    [OperationContract]
     void DeployPlugin(PluginDescription plugin, byte[] zipFile);
   }
 }

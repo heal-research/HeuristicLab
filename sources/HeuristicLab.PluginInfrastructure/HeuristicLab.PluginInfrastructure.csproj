@@ -171,12 +171,6 @@
     <Compile Include="Advanced\PluginEditor.Designer.cs">
       <DependentUpon>PluginEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Advanced\PluginListView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Advanced\PluginListView.Designer.cs">
-      <DependentUpon>PluginListView.cs</DependentUpon>
-    </Compile>
     <Compile Include="Advanced\PluginView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -319,9 +313,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Advanced\PluginEditor.resx">
       <DependentUpon>PluginEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Advanced\PluginListView.resx">
-      <DependentUpon>PluginListView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Advanced\PluginView.resx">
       <DependentUpon>PluginView.cs</DependentUpon>

@@ -37,6 +37,11 @@ namespace HeuristicLab.Services.Deployment {
       store.Persist(product);
     }
     [PrincipalPermission(SecurityAction.Demand, Role = "Managers")]
+    public void DeleteProduct(ProductDescription product) {
+      var store = new PluginStore();
+      store.Delete(product);
+    }
+    [PrincipalPermission(SecurityAction.Demand, Role = "Managers")]
     public void DeployPlugin(PluginDescription plugin, byte[] zipFile) {
       var store = new PluginStore();
       store.Persist(plugin, zipFile);

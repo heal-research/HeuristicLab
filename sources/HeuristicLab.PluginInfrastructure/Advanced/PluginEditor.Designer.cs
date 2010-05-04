@@ -52,8 +52,8 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.localVersionHeader = new System.Windows.Forms.ColumnHeader();
       this.serverVersionHeader = new System.Windows.Forms.ColumnHeader();
       this.descriptionHeader = new System.Windows.Forms.ColumnHeader();
-      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.pluginImageList = new System.Windows.Forms.ImageList(this.components);
+      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.SuspendLayout();
       // 
       // uploadButton
@@ -104,7 +104,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.listView.TabIndex = 8;
       this.listView.UseCompatibleStateImageBehavior = false;
       this.listView.View = System.Windows.Forms.View.Details;
-      this.listView.ItemActivate += new System.EventHandler(this.listView_ItemActivate);
       this.listView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.listView_ItemChecked);
       // 
       // pluginNameHeader

@@ -110,10 +110,31 @@ namespace HeuristicLab.Services.Deployment {
         }
       }
     }
+    public void Delete(ProductDescription productDescription) {
+      using (var ctx = new PluginStoreClassesDataContext()) {
+        try {
+          using (var transaction = new TransactionScope()) {
+            var productEntity = GetExistingProduct(ctx, productDescription.Name, productDescription.Version);
+
+            DeleteProductPlugins(ctx, productEntity);
+            ctx.Products.DeleteOnSubmit(productEntity);
+
+            ctx.SubmitChanges();
+            transaction.Complete();
+          }
+        }
+        catch (SqlException ex) {
+          throw new ArgumentException("Something went wrong while trying to delete product", ex);
+        }
+        catch (InvalidOperationException ex) {
+          throw new ArgumentException("Something went wrong while trying to delete product", ex);
+        }
+      }
+    }
 
     #endregion
 
-    #region insert/update product
+    #region insert/update/delete product
     private void InsertOrUpdateProduct(PluginStoreClassesDataContext ctx, ProductDescription product) {
       var productEntity = (from p in ctx.Products
                            where p.Name == product.Name
@@ -125,7 +146,7 @@ namespace HeuristicLab.Services.Deployment {
         ctx.SubmitChanges();
       }
 
-      DeleteOldPlugins(ctx, productEntity);
+      DeleteProductPlugins(ctx, productEntity);
 
       foreach (var plugin in product.Plugins) {
         var existingPlugin = GetExistingPlugin(ctx, plugin.Name, plugin.Version);
@@ -136,7 +157,7 @@ namespace HeuristicLab.Services.Deployment {
       }
     }
 
-    private void DeleteOldPlugins(PluginStoreClassesDataContext ctx, Product productEntity) {
+    private void DeleteProductPlugins(PluginStoreClassesDataContext ctx, Product productEntity) {
       var oldPlugins = (from p in ctx.ProductPlugins
                         where p.ProductId == productEntity.Id
                         select p).ToList();
@@ -247,6 +268,13 @@ namespace HeuristicLab.Services.Deployment {
     #region helper queries
     private Plugin GetExistingPlugin(PluginStoreClassesDataContext ctx, string name, Version version) {
       return (from p in ctx.Plugins
+              where p.Name == name
+              where p.Version == version.ToString()
+              select p).Single();
+    }
+
+    private Product GetExistingProduct(PluginStoreClassesDataContext ctx, string name, Version version) {
+      return (from p in ctx.Products
               where p.Name == name
               where p.Version == version.ToString()
               select p).Single();

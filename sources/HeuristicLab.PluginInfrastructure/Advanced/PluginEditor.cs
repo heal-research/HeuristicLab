@@ -33,10 +33,13 @@ using System.IO;
 using HeuristicLab.PluginInfrastructure.Manager;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
-  internal partial class PluginEditor : UserControl {
+  internal partial class PluginEditor : InstallationManagerControl {
+    private const string UploadMessage = "Uploading plugins...";
+    private const string RefreshMessage = "Downloading plugin information from deployment service...";
+
     private Dictionary<IPluginDescription, IPluginDescription> localAndServerPlugins;
     private BackgroundWorker pluginUploadWorker;
-    private BackgroundWorker updateServerPluginsWorker;
+    private BackgroundWorker refreshPluginsWorker;
 
     private PluginManager pluginManager;
     public PluginManager PluginManager {
@@ -54,85 +57,103 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       pluginUploadWorker.DoWork += new DoWorkEventHandler(pluginUploadWorker_DoWork);
       pluginUploadWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(pluginUploadWorker_RunWorkerCompleted);
 
-      updateServerPluginsWorker = new BackgroundWorker();
-      updateServerPluginsWorker.DoWork += new DoWorkEventHandler(updateServerPluginsWorker_DoWork);
-      updateServerPluginsWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(updateServerPluginsWorker_RunWorkerCompleted);
+      refreshPluginsWorker = new BackgroundWorker();
+      refreshPluginsWorker.DoWork += new DoWorkEventHandler(refreshPluginsWorker_DoWork);
+      refreshPluginsWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(refreshPluginsWorker_RunWorkerCompleted);
       #endregion
     }
 
     #region refresh plugins from server backgroundworker
-    void updateServerPluginsWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
+    void refreshPluginsWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
       if (e.Error != null) {
-        MessageBox.Show("There was an error while connecting to the server." + Environment.NewLine +
+        StatusView.ShowError("Connection Error",
+          "There was an error while connecting to the server." + Environment.NewLine +
                    "Please check your connection settings and user credentials.");
-        UpdateControlsDisconnectedState();
       } else {
-        // refresh local plugins
-        localAndServerPlugins.Clear();
-        foreach (var plugin in pluginManager.Plugins) {
-          localAndServerPlugins.Add(plugin, null);
-        }
-        // refresh server plugins (find matching local plugins)
-        var plugins = (IPluginDescription[])e.Result;
-        foreach (var plugin in plugins) {
-          var matchingLocalPlugin = (from localPlugin in localAndServerPlugins.Keys
-                                     where localPlugin.Name == plugin.Name
-                                     where localPlugin.Version == localPlugin.Version
-                                     select localPlugin).SingleOrDefault();
-          if (matchingLocalPlugin != null) {
-            localAndServerPlugins[matchingLocalPlugin] = plugin;
-          }
-        }
-        // refresh the list view with plugins
-        listView.Items.Clear();
-        listView.CheckBoxes = false;
-        //suppressCheckedEvents = true;
-        foreach (var pair in localAndServerPlugins) {
-          var item = MakeListViewItem(pair.Key);
-          listView.Items.Add(item);
-        }
-        foreach (ColumnHeader column in listView.Columns)
-          if (listView.Items.Count > 0)
-            column.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-          else column.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
-        //listView.suppressCheckedEvents = false;
-        listView.CheckBoxes = true;
-        UpdateControlsConnectedState();
+        UpdatePluginListView((IEnumerable<IPluginDescription>)e.Result);
       }
-      // make sure cursor is set correctly
-      Cursor = Cursors.Default;
+      StatusView.HideProgressIndicator();
+      StatusView.RemoveMessage(RefreshMessage);
+      StatusView.UnlockUI();
     }
 
-    void updateServerPluginsWorker_DoWork(object sender, DoWorkEventArgs e) {
+    void refreshPluginsWorker_DoWork(object sender, DoWorkEventArgs e) {
+      // refresh available plugins
       var client = DeploymentService.UpdateClientFactory.CreateClient();
-      e.Result = client.GetPlugins();
+      try {
+        e.Result = client.GetPlugins();
+        client.Close();
+      }
+      catch (TimeoutException) {
+        client.Abort();
+        throw;
+      }
+      catch (FaultException) {
+        client.Abort();
+        throw;
+      }
+      catch (CommunicationException) {
+        client.Abort();
+        throw;
+      }
     }
     #endregion
 
     #region upload plugins to server backgroundworker
     void pluginUploadWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
-      Cursor = Cursors.Default;
       if (e.Error != null) {
-        MessageBox.Show("There was an error while connecting to the server." + Environment.NewLine +
+        StatusView.ShowError("Connection Error",
+          "There was an error while connecting to the server." + Environment.NewLine +
                    "Please check your connection settings and user credentials.");
-        UpdateControlsDisconnectedState();
       } else {
-        UpdateControlsConnectedState();
-        // start another async call to refresh plugin information from server
-        RefreshPluginsAsync();
+        UpdatePluginListView((IEnumerable<IPluginDescription>)e.Result);
       }
+      StatusView.RemoveMessage(UploadMessage);
+      StatusView.HideProgressIndicator();
+      StatusView.UnlockUI();
     }
 
     void pluginUploadWorker_DoWork(object sender, DoWorkEventArgs e) {
+      // upload plugins
       var selectedPlugins = (IEnumerable<IPluginDescription>)e.Argument;
       DeploymentService.AdminClient adminClient = DeploymentService.AdminClientFactory.CreateClient();
-
-      foreach (var plugin in IteratePlugins(selectedPlugins)) {
-        SetMainFormStatusBar("Uploading", plugin);
-        adminClient.DeployPlugin(MakePluginDescription(plugin), CreateZipPackage(plugin));
+      try {
+        foreach (var plugin in IteratePlugins(selectedPlugins)) {
+          adminClient.DeployPlugin(MakePluginDescription(plugin), CreateZipPackage(plugin));
+        }
+        adminClient.Close();
+      }
+      catch (TimeoutException) {
+        adminClient.Abort();
+        throw;
+      }
+      catch (FaultException) {
+        adminClient.Abort();
+        throw;
+      }
+      catch (CommunicationException) {
+        adminClient.Abort();
+        throw;
+      }
+      // refresh available plugins
+      var client = DeploymentService.UpdateClientFactory.CreateClient();
+      try {
+        e.Result = client.GetPlugins();
+        client.Close();
+      }
+      catch (TimeoutException) {
+        client.Abort();
+        throw;
+      }
+      catch (FaultException) {
+        client.Abort();
+        throw;
+      }
+      catch (CommunicationException) {
+        client.Abort();
+        throw;
       }
     }
-
     #endregion
 
 
@@ -143,29 +164,26 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
                             where item.Tag is IPluginDescription
                             select item.Tag as IPluginDescription;
       if (selectedPlugins.Count() > 0) {
-        Cursor = Cursors.AppStarting;
-        DisableControl();
+        StatusView.LockUI();
+        StatusView.ShowProgressIndicator();
+        StatusView.ShowMessage(UploadMessage);
         pluginUploadWorker.RunWorkerAsync(selectedPlugins.ToList());
       }
     }
 
     private void refreshButton_Click(object sender, EventArgs e) {
-      DisableControl();
-      RefreshPluginsAsync();
+      StatusView.LockUI();
+      StatusView.ShowProgressIndicator();
+      StatusView.ShowMessage(RefreshMessage);
+      refreshPluginsWorker.RunWorkerAsync();
     }
 
     #endregion
 
     #region item list events
-    private void listView_ItemActivate(object sender, EventArgs e) {
-      foreach (var item in listView.SelectedItems) {
-        var plugin = (PluginDescription)((ListViewItem)item).Tag;
-        var compView = new PluginComparisonView(plugin, localAndServerPlugins[plugin]);
-        compView.Show();
-      }
-    }
-
+    private bool ignoreItemCheckedEvents = false;
     private void listView_ItemChecked(object sender, ItemCheckedEventArgs e) {
+      if (ignoreItemCheckedEvents) return;
       List<IPluginDescription> modifiedPlugins = new List<IPluginDescription>();
       if (e.Item.Checked) {
         foreach (ListViewItem item in listView.SelectedItems) {
@@ -199,6 +217,35 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     #endregion
 
     #region helper methods
+    private void UpdatePluginListView(IEnumerable<IPluginDescription> remotePlugins) {
+      // refresh local plugins
+      localAndServerPlugins.Clear();
+      foreach (var plugin in pluginManager.Plugins) {
+        localAndServerPlugins.Add(plugin, null);
+      }
+      foreach (var plugin in remotePlugins) {
+        var matchingLocalPlugin = (from localPlugin in localAndServerPlugins.Keys
+                                   where localPlugin.Name == plugin.Name
+                                   where localPlugin.Version == localPlugin.Version
+                                   select localPlugin).SingleOrDefault();
+        if (matchingLocalPlugin != null) {
+          localAndServerPlugins[matchingLocalPlugin] = plugin;
+        }
+      }
+      // refresh the list view with plugins
+      listView.Items.Clear();
+      ignoreItemCheckedEvents = true;
+      foreach (var pair in localAndServerPlugins) {
+        var item = MakeListViewItem(pair.Key);
+        listView.Items.Add(item);
+      }
+      foreach (ColumnHeader column in listView.Columns)
+        if (listView.Items.Count > 0)
+          column.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+        else column.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
+      ignoreItemCheckedEvents = false;
+    }
+
     private IEnumerable<IPluginDescription> GetAllDependents(IPluginDescription plugin) {
       return from p in localAndServerPlugins.Keys
              let matchingEntries = from dep in GetAllDependencies(p)
@@ -273,45 +320,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
                          select MakePluginDescription(dep);
       return new DeploymentService.PluginDescription(plugin.Name, plugin.Version, dependencies, plugin.ContactName, plugin.ContactEmail, plugin.LicenseText);
     }
-
-    // start background process to refresh the plugin list (local and server)
-    private void RefreshPluginsAsync() {
-      Cursor = Cursors.AppStarting;
-      DisableControl();
-      updateServerPluginsWorker.RunWorkerAsync();
-    }
-
-    // is called by all methods that start a background process
-    // controls must be enabled manuall again when the backgroundworker finishes
-    private void DisableControl() {
-      //MainFormManager.GetMainForm<MainForm>().ShowProgressBar();
-      foreach (Control ctrl in Controls)
-        ctrl.Enabled = false;
-    }
-
-    private void UpdateControlsDisconnectedState() {
-      refreshButton.Enabled = false;
-
-      localAndServerPlugins.Clear();
-      listView.Items.Clear();
-      listView.Enabled = false;
-      uploadButton.Enabled = false;
-      //MainFormManager.GetMainForm<MainForm>().HideProgressBar();
-    }
-
-    private void UpdateControlsConnectedState() {
-      refreshButton.Enabled = true;
-      listView.Enabled = true;
-      uploadButton.Enabled = false;
-      //MainFormManager.GetMainForm<MainForm>().HideProgressBar();
-    }
-    private void SetMainFormStatusBar(string p, IPluginDescription plugin) {
-      if (InvokeRequired) Invoke((Action<string, IPluginDescription>)SetMainFormStatusBar, p, plugin);
-      else {
-        //MainFormManager.GetMainForm<MainForm>().SetStatusBarText(p + " " + plugin.ToString());
-      }
-    }
-
     #endregion
   }
 }
