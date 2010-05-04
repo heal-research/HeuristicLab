@@ -75,14 +75,14 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private ConstrainedValueParameter<ISelector> EmigrantsSelectorParameter {
       get { return (ConstrainedValueParameter<ISelector>)Parameters["EmigrantsSelector"]; }
     }
-    private ConstrainedValueParameter<ISelector> ImmigrationSelectorParameter {
-      get { return (ConstrainedValueParameter<ISelector>)Parameters["ImmigrationSelector"]; }
+    private ConstrainedValueParameter<IReplacer> ImmigrationReplacerParameter {
+      get { return (ConstrainedValueParameter<IReplacer>)Parameters["ImmigrationReplacer"]; }
     }
     private ValueParameter<IntValue> PopulationSizeParameter {
       get { return (ValueParameter<IntValue>)Parameters["PopulationSize"]; }
     }
-    private ValueParameter<IntValue> MaximumMigrationsParameter {
-      get { return (ValueParameter<IntValue>)Parameters["MaximumMigrations"]; }
+    private ValueParameter<IntValue> MaximumGenerationsParameter {
+      get { return (ValueParameter<IntValue>)Parameters["MaximumGenerations"]; }
     }
     private ConstrainedValueParameter<ISelector> SelectorParameter {
       get { return (ConstrainedValueParameter<ISelector>)Parameters["Selector"]; }
@@ -151,17 +151,17 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       get { return EmigrantsSelectorParameter.Value; }
       set { EmigrantsSelectorParameter.Value = value; }
     }
-    public ISelector ImmigrationSelector {
-      get { return ImmigrationSelectorParameter.Value; }
-      set { ImmigrationSelectorParameter.Value = value; }
+    public IReplacer ImmigrationReplacer {
+      get { return ImmigrationReplacerParameter.Value; }
+      set { ImmigrationReplacerParameter.Value = value; }
     }
     public IntValue PopulationSize {
       get { return PopulationSizeParameter.Value; }
       set { PopulationSizeParameter.Value = value; }
     }
-    public IntValue MaximumMigrations {
-      get { return MaximumMigrationsParameter.Value; }
-      set { MaximumMigrationsParameter.Value = value; }
+    public IntValue MaximumGenerations {
+      get { return MaximumGenerationsParameter.Value; }
+      set { MaximumGenerationsParameter.Value = value; }
     }
     public ISelector Selector {
       get { return SelectorParameter.Value; }
@@ -217,7 +217,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     }
     private List<IDiscreteDoubleValueModifier> comparisonFactorModifiers;
     private List<ISelector> emigrantsSelectors;
-    private List<ISelector> immigrationSelectors;
+    private List<IReplacer> immigrationReplacers;
     private List<IMigrator> migrators;
     private RandomCreator RandomCreator {
       get { return (RandomCreator)OperatorGraph.InitialOperator; }
@@ -244,9 +244,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new ValueParameter<PercentValue>("MigrationRate", "The proportion of individuals that should migrate between the islands.", new PercentValue(0.15)));
       Parameters.Add(new ConstrainedValueParameter<IMigrator>("Migrator", "The migration strategy."));
       Parameters.Add(new ConstrainedValueParameter<ISelector>("EmigrantsSelector", "Selects the individuals that will be migrated."));
-      Parameters.Add(new ConstrainedValueParameter<ISelector>("ImmigrationSelector", "Selects the population from the unification of the original population and the immigrants."));
+      Parameters.Add(new ConstrainedValueParameter<IReplacer>("ImmigrationReplacer", "Selects the population from the unification of the original population and the immigrants."));
       Parameters.Add(new ValueParameter<IntValue>("PopulationSize", "The size of the population of solutions of each island.", new IntValue(100)));
-      Parameters.Add(new ValueParameter<IntValue>("MaximumMigrations", "The maximum number of migrations that should occur.", new IntValue(100)));
+      Parameters.Add(new ValueParameter<IntValue>("MaximumGenerations", "The maximum number of generations that should be processed.", new IntValue(100)));
       Parameters.Add(new ConstrainedValueParameter<ISelector>("Selector", "The operator used to select solutions for reproduction."));
       Parameters.Add(new ConstrainedValueParameter<ICrossover>("Crossover", "The operator used to cross solutions."));
       Parameters.Add(new ValueParameter<PercentValue>("MutationProbability", "The probability that the mutation operator is applied on a solution.", new PercentValue(0.05)));
@@ -286,8 +286,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       solutionsCreator.Successor = null;
 
       mainLoop.EmigrantsSelectorParameter.ActualName = EmigrantsSelectorParameter.Name;
-      mainLoop.ImmigrationSelectorParameter.ActualName = ImmigrationSelectorParameter.Name;
-      mainLoop.MaximumMigrationsParameter.ActualName = MaximumMigrationsParameter.Name;
+      mainLoop.ImmigrationReplacerParameter.ActualName = ImmigrationReplacerParameter.Name;
+      mainLoop.MaximumGenerationsParameter.ActualName = MaximumGenerationsParameter.Name;
       mainLoop.MigrationIntervalParameter.ActualName = MigrationIntervalParameter.Name;
       mainLoop.MigrationRateParameter.ActualName = MigrationRateParameter.Name;
       mainLoop.MigratorParameter.ActualName = MigratorParameter.Name;
@@ -300,6 +300,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       mainLoop.RandomParameter.ActualName = randomCreator.RandomParameter.ActualName;
       mainLoop.ResultsParameter.ActualName = "Results";
       mainLoop.SuccessRatioParameter.ActualName = SuccessRatioParameter.Name;
+      mainLoop.ComparisonFactorParameter.ActualName = "ComparisonFactor";
       mainLoop.ComparisonFactorLowerBoundParameter.ActualName = ComparisonFactorLowerBoundParameter.Name;
       mainLoop.ComparisonFactorModifierParameter.ActualName = ComparisonFactorModifierParameter.Name;
       mainLoop.ComparisonFactorUpperBoundParameter.ActualName = ComparisonFactorUpperBoundParameter.Name;
@@ -391,7 +392,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       ParameterizeSelectors();
     }
     private void MaximumMigrationsParameter_ValueChanged(object sender, EventArgs e) {
-      MaximumMigrations.ValueChanged += new EventHandler(MaximumMigrations_ValueChanged);
+      MaximumGenerations.ValueChanged += new EventHandler(MaximumMigrations_ValueChanged);
       ParameterizeComparisonFactorModifiers();
     }
     private void MaximumMigrations_ValueChanged(object sender, EventArgs e) {
@@ -423,8 +424,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Elites.ValueChanged += new EventHandler(Elites_ValueChanged);
       MigrationIntervalParameter.ValueChanged += new EventHandler(MigrationIntervalParameter_ValueChanged);
       MigrationInterval.ValueChanged += new EventHandler(MigrationInterval_ValueChanged);
-      MaximumMigrationsParameter.ValueChanged += new EventHandler(MaximumMigrationsParameter_ValueChanged);
-      MaximumMigrations.ValueChanged += new EventHandler(MaximumMigrations_ValueChanged);
+      MaximumGenerationsParameter.ValueChanged += new EventHandler(MaximumMigrationsParameter_ValueChanged);
+      MaximumGenerations.ValueChanged += new EventHandler(MaximumMigrations_ValueChanged);
       if (Problem != null) {
         UpdateCrossovers();
         UpdateMutators();
@@ -454,8 +455,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       selectors.AddRange(ApplicationManager.Manager.GetInstances<ISelector>().Where(x => !(x is IMultiObjectiveSelector)).OrderBy(x => x.Name));
       emigrantsSelectors = new List<ISelector>();
       emigrantsSelectors.AddRange(ApplicationManager.Manager.GetInstances<ISelector>().Where(x => !(x is IMultiObjectiveSelector)).OrderBy(x => x.Name));
-      immigrationSelectors = new List<ISelector>();
-      immigrationSelectors.AddRange(ApplicationManager.Manager.GetInstances<ISelector>().Where(x => !(x is IMultiObjectiveSelector)).OrderBy(x => x.Name));
+      immigrationReplacers = new List<IReplacer>();
+      immigrationReplacers.AddRange(ApplicationManager.Manager.GetInstances<IReplacer>().OrderBy(x => x.Name));
       ParameterizeSelectors();
     }
     private void InitializeComparisonFactorModifiers() {
@@ -479,9 +480,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
         selector.NumberOfSelectedSubScopesParameter.Value = new IntValue((int)Math.Ceiling(PopulationSize.Value * MigrationRate.Value));
         ParameterizeStochasticOperator(selector);
       }
-      foreach (ISelector selector in immigrationSelectors) {
-        selector.CopySelected = new BoolValue(false);
-        selector.NumberOfSelectedSubScopesParameter.Value = PopulationSize;
+      foreach (IReplacer selector in immigrationReplacers) {
         ParameterizeStochasticOperator(selector);
       }
       if (Problem != null) {
@@ -493,16 +492,16 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
           selector.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
           selector.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
         }
-        foreach (ISingleObjectiveSelector selector in immigrationSelectors.OfType<ISingleObjectiveSelector>()) {
-          selector.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
-          selector.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
+        foreach (ISingleObjectiveReplacer replacer in immigrationReplacers.OfType<ISingleObjectiveReplacer>()) {
+          replacer.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
+          replacer.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
         }
       }
     }
     private void ParameterizeComparisonFactorModifiers() {
       foreach (IDiscreteDoubleValueModifier modifier in comparisonFactorModifiers) {
         modifier.IndexParameter.ActualName = "Generations";
-        modifier.EndIndexParameter.Value = new IntValue(MigrationInterval.Value * MaximumMigrations.Value);
+        modifier.EndIndexParameter.Value = new IntValue(MigrationInterval.Value * MaximumGenerations.Value);
         modifier.EndValueParameter.ActualName = ComparisonFactorUpperBoundParameter.Name;
         modifier.StartIndexParameter.Value = new IntValue(0);
         modifier.StartValueParameter.ActualName = ComparisonFactorLowerBoundParameter.Name;
@@ -532,13 +531,13 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
         if (selector != null) EmigrantsSelectorParameter.Value = selector;
       }
 
-      oldSelector = ImmigrationSelectorParameter.Value;
-      ImmigrationSelectorParameter.ValidValues.Clear();
-      foreach (ISelector selector in immigrationSelectors)
-        ImmigrationSelectorParameter.ValidValues.Add(selector);
+      IReplacer oldReplacer = ImmigrationReplacerParameter.Value;
+      ImmigrationReplacerParameter.ValidValues.Clear();
+      foreach (IReplacer replacer in immigrationReplacers)
+        ImmigrationReplacerParameter.ValidValues.Add(replacer);
       if (oldSelector != null) {
-        ISelector selector = ImmigrationSelectorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldSelector.GetType());
-        if (selector != null) ImmigrationSelectorParameter.Value = selector;
+        IReplacer replacer = ImmigrationReplacerParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldSelector.GetType());
+        if (replacer != null) ImmigrationReplacerParameter.Value = replacer;
       }
     }
     private void UpdateComparisonFactorModifiers() {

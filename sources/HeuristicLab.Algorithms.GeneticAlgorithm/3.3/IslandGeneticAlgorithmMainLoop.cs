@@ -170,7 +170,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       DataTableValuesCollector islandDataTableValuesCollector2 = new DataTableValuesCollector();
       QualityDifferenceCalculator islandQualityDifferenceCalculator2 = new QualityDifferenceCalculator();
       Placeholder islandVisualizer2 = new Placeholder();
-      // END GA mainloop
+      IntCounter generationsCounter = new IntCounter();
       IntCounter generationsSinceLastMigrationCounter = new IntCounter();
       Comparator migrationComparator = new Comparator();
       ConditionalBranch migrationBranch = new ConditionalBranch();
@@ -181,7 +181,6 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Placeholder migrator = new Placeholder();
       UniformSubScopesProcessor uniformSubScopesProcessor4 = new UniformSubScopesProcessor();
       Placeholder immigrationReplacer = new Placeholder();
-      IntCounter generationsCounter = new IntCounter();
       Comparator generationsComparator = new Comparator();
       BestQualityMemorizer bestQualityMemorizer3 = new BestQualityMemorizer();
       BestQualityMemorizer bestQualityMemorizer4 = new BestQualityMemorizer();
@@ -271,7 +270,6 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       resultsCollector.CollectedValues.Add(new SubScopesLookupParameter<ResultCollection>("IslandResults", "Result set for each island"));
       resultsCollector.ResultsParameter.ActualName = ResultsParameter.Name;
 
-      // START GA mainloop
       selector.Name = "Selector (placeholder)";
       selector.OperatorParameter.ActualName = SelectorParameter.Name;
 
@@ -320,19 +318,25 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
 
       islandVisualizer2.Name = "Visualizer";
       islandVisualizer2.OperatorParameter.ActualName = "Visualizer";
-      // END GA mainloop
 
+      generationsCounter.Name = "Generations + 1";
+      generationsCounter.Increment = new IntValue(1);
+      generationsCounter.ValueParameter.ActualName = "Generations";
+
+      generationsSinceLastMigrationCounter.Name = "GenerationsSinceLastMigration + 1";
       generationsSinceLastMigrationCounter.ValueParameter.ActualName = "GenerationsSinceLastMigration";
       generationsSinceLastMigrationCounter.Increment = new IntValue(1);
 
+      migrationComparator.Name = "GenerationsSinceLastMigration = MigrationInterval ?";
       migrationComparator.LeftSideParameter.ActualName = "GenerationsSinceLastMigration";
       migrationComparator.Comparison = new Comparison(ComparisonType.Equal);
       migrationComparator.RightSideParameter.ActualName = MigrationIntervalParameter.Name;
       migrationComparator.ResultParameter.ActualName = "Migrate";
 
+      migrationBranch.Name = "Migrate?";
       migrationBranch.ConditionParameter.ActualName = "Migrate";
 
-      resetGenerationsSinceLastMigrationAssigner.Name = "Reset Counter";
+      resetGenerationsSinceLastMigrationAssigner.Name = "Reset GenerationsSinceLastMigration";
       resetGenerationsSinceLastMigrationAssigner.LeftSideParameter.ActualName = "GenerationsSinceLastMigration";
       resetGenerationsSinceLastMigrationAssigner.RightSideParameter.Value = new IntValue(0);
 
@@ -349,10 +353,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       immigrationReplacer.Name = "Immigration Replacer (placeholder)";
       immigrationReplacer.OperatorParameter.ActualName = ImmigrationReplacerParameter.Name;
 
-      generationsCounter.Name = "Generations + 1";
-      generationsCounter.Increment = new IntValue(1);
-      generationsCounter.ValueParameter.ActualName = "Generations";
-
+      generationsComparator.Name = "Generations >= MaximumGenerations ?";
       generationsComparator.Comparison = new Comparison(ComparisonType.GreaterOrEqual);
       generationsComparator.LeftSideParameter.ActualName = "Generations";
       generationsComparator.ResultParameter.ActualName = "TerminateGenerations";
@@ -384,6 +385,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       qualityDifferenceCalculator2.RelativeDifferenceParameter.ActualName = "RelativeDifferenceBestKnownToBest";
       qualityDifferenceCalculator2.SecondQualityParameter.ActualName = "BestQuality";
 
+      generationsTerminationCondition.Name = "Terminate?";
       generationsTerminationCondition.ConditionParameter.ActualName = "TerminateGenerations";
       #endregion
 
@@ -405,7 +407,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       qualityDifferenceCalculator1.Successor = resultsCollector;
       resultsCollector.Successor = uniformSubScopesProcessor1;
       uniformSubScopesProcessor1.Operator = selector;
-      uniformSubScopesProcessor1.Successor = generationsSinceLastMigrationCounter;
+      uniformSubScopesProcessor1.Successor = generationsCounter;
       selector.Successor = subScopesProcessor1;
       subScopesProcessor1.Operators.Add(new EmptyOperator());
       subScopesProcessor1.Operators.Add(childrenCreator);
@@ -431,11 +433,12 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       islandDataTableValuesCollector2.Successor = islandQualityDifferenceCalculator2;
       islandQualityDifferenceCalculator2.Successor = islandVisualizer2;
       islandVisualizer2.Successor = null;
+      generationsCounter.Successor = generationsSinceLastMigrationCounter;
       generationsSinceLastMigrationCounter.Successor = migrationComparator;
       migrationComparator.Successor = migrationBranch;
       migrationBranch.TrueBranch = resetGenerationsSinceLastMigrationAssigner;
       migrationBranch.FalseBranch = null;
-      migrationBranch.Successor = generationsCounter;
+      migrationBranch.Successor = generationsComparator;
       resetGenerationsSinceLastMigrationAssigner.Successor = migrationsCounter;
       migrationsCounter.Successor = uniformSubScopesProcessor3;
       uniformSubScopesProcessor3.Operator = emigrantsSelector;
@@ -443,7 +446,6 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       migrator.Successor = uniformSubScopesProcessor4;
       uniformSubScopesProcessor4.Operator = immigrationReplacer;
       uniformSubScopesProcessor4.Successor = null;
-      generationsCounter.Successor = generationsComparator;
       generationsComparator.Successor = bestQualityMemorizer3;
       bestQualityMemorizer3.Successor = bestQualityMemorizer4;
       bestQualityMemorizer4.Successor = bestAverageWorstQualityCalculator2;

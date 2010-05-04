@@ -69,14 +69,14 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     public ValueLookupParameter<IOperator> EmigrantsSelectorParameter {
       get { return (ValueLookupParameter<IOperator>)Parameters["EmigrantsSelector"]; }
     }
-    public ValueLookupParameter<IOperator> ImmigrationSelectorParameter {
-      get { return (ValueLookupParameter<IOperator>)Parameters["ImmigrationSelector"]; }
+    public ValueLookupParameter<IOperator> ImmigrationReplacerParameter {
+      get { return (ValueLookupParameter<IOperator>)Parameters["ImmigrationReplacer"]; }
     }
     public ValueLookupParameter<IntValue> PopulationSizeParameter {
       get { return (ValueLookupParameter<IntValue>)Parameters["PopulationSize"]; }
     }
-    public ValueLookupParameter<IntValue> MaximumMigrationsParameter {
-      get { return (ValueLookupParameter<IntValue>)Parameters["MaximumMigrations"]; }
+    public ValueLookupParameter<IntValue> MaximumGenerationsParameter {
+      get { return (ValueLookupParameter<IntValue>)Parameters["MaximumGenerations"]; }
     }
     public ValueLookupParameter<IOperator> SelectorParameter {
       get { return (ValueLookupParameter<IOperator>)Parameters["Selector"]; }
@@ -107,6 +107,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     }
     public ValueLookupParameter<DoubleValue> SuccessRatioParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["SuccessRatio"]; }
+    }
+    public LookupParameter<DoubleValue> ComparisonFactorParameter {
+      get { return (LookupParameter<DoubleValue>)Parameters["ComparisonFactor"]; }
     }
     public ValueLookupParameter<DoubleValue> ComparisonFactorLowerBoundParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["ComparisonFactorLowerBound"]; }
@@ -139,9 +142,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new ValueLookupParameter<PercentValue>("MigrationRate", "The proportion of individuals that should migrate between the islands."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Migrator", "The migration strategy."));
       Parameters.Add(new ValueLookupParameter<IOperator>("EmigrantsSelector", "Selects the individuals that will be migrated."));
-      Parameters.Add(new ValueLookupParameter<IOperator>("ImmigrationSelector", "Selects the population from the unification of the original population and the immigrants."));
+      Parameters.Add(new ValueLookupParameter<IOperator>("ImmigrationReplacer", "Replaces part of the original population with the immigrants."));
       Parameters.Add(new ValueLookupParameter<IntValue>("PopulationSize", "The size of the population of solutions."));
-      Parameters.Add(new ValueLookupParameter<IntValue>("MaximumMigrations", "The maximum number of migrations after which the operator should terminate."));
+      Parameters.Add(new ValueLookupParameter<IntValue>("MaximumGenerations", "The maximum number of generations that should be processed."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Selector", "The operator used to select solutions for reproduction."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Crossover", "The operator used to cross solutions."));
       Parameters.Add(new ValueLookupParameter<PercentValue>("MutationProbability", "The probability that the mutation operator is applied on a solution."));
@@ -152,6 +155,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new ValueLookupParameter<IOperator>("Visualizer", "The operator used to visualize solutions."));
       Parameters.Add(new LookupParameter<IItem>("Visualization", "The item which represents the visualization of solutions."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("SuccessRatio", "The ratio of successful to total children that should be achieved."));
+      Parameters.Add(new LookupParameter<DoubleValue>("ComparisonFactor", "The comparison factor is used to determine whether the offspring should be compared to the better parent, the worse parent or a quality value linearly interpolated between them. It is in the range [0;1]."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("ComparisonFactorLowerBound", "The lower bound of the comparison factor (start)."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("ComparisonFactorUpperBound", "The upper bound of the comparison factor (end)."));
       Parameters.Add(new ValueLookupParameter<IOperator>("ComparisonFactorModifier", "The operator used to modify the comparison factor."));
@@ -161,59 +165,127 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
 
       #region Create operators
       VariableCreator variableCreator = new VariableCreator();
-      UniformSubScopesProcessor ussp0 = new UniformSubScopesProcessor();
+      UniformSubScopesProcessor uniformSubScopesProcessor0 = new UniformSubScopesProcessor();
       VariableCreator islandVariableCreator = new VariableCreator();
-      Assigner islandVariableAssigner = new Assigner();
+      BestQualityMemorizer islandBestQualityMemorizer1 = new BestQualityMemorizer();
+      BestAverageWorstQualityCalculator islandBestAverageWorstQualityCalculator1 = new BestAverageWorstQualityCalculator();
+      DataTableValuesCollector islandDataTableValuesCollector1 = new DataTableValuesCollector();
+      DataTableValuesCollector islandDataTableValuesCollector2 = new DataTableValuesCollector();
+      QualityDifferenceCalculator islandQualityDifferenceCalculator1 = new QualityDifferenceCalculator();
+      Placeholder islandVisualizer1 = new Placeholder();
+      ResultsCollector islandResultsCollector = new ResultsCollector();
       BestQualityMemorizer bestQualityMemorizer1 = new BestQualityMemorizer();
-      BestAverageWorstQualityCalculator bestAverageWorstQualityCalculator1 = new BestAverageWorstQualityCalculator();
       BestQualityMemorizer bestQualityMemorizer2 = new BestQualityMemorizer();
-      BestAverageWorstQualityCalculator bestAverageWorstQualityCalculator2 = new BestAverageWorstQualityCalculator();
+      BestAverageWorstQualityCalculator bestAverageWorstQualityCalculator1 = new BestAverageWorstQualityCalculator();
       DataTableValuesCollector dataTableValuesCollector1 = new DataTableValuesCollector();
+      DataTableValuesCollector dataTableValuesCollector2 = new DataTableValuesCollector();
       QualityDifferenceCalculator qualityDifferenceCalculator1 = new QualityDifferenceCalculator();
       ResultsCollector resultsCollector = new ResultsCollector();
-      UniformSubScopesProcessor ussp1 = new UniformSubScopesProcessor();
-      OffspringSelectionGeneticAlgorithmMainLoop mainLoop = new OffspringSelectionGeneticAlgorithmMainLoop();
+      Placeholder comparisonFactorModifier = new Placeholder();
+      UniformSubScopesProcessor uniformSubScopesProcessor1 = new UniformSubScopesProcessor();
+      ConditionalBranch islandTerminatedBySelectionPressure1 = new ConditionalBranch();
+      OffspringSelectionGeneticAlgorithmMainOperator mainOperator = new OffspringSelectionGeneticAlgorithmMainOperator();
+      BestQualityMemorizer islandBestQualityMemorizer2 = new BestQualityMemorizer();
+      BestAverageWorstQualityCalculator islandBestAverageWorstQualityCalculator2 = new BestAverageWorstQualityCalculator();
+      DataTableValuesCollector islandDataTableValuesCollector3 = new DataTableValuesCollector();
+      DataTableValuesCollector islandDataTableValuesCollector4 = new DataTableValuesCollector();
+      QualityDifferenceCalculator islandQualityDifferenceCalculator2 = new QualityDifferenceCalculator();
+      Placeholder islandVisualizer2 = new Placeholder();
+      IntCounter islandEvaluatedSolutionsCounter = new IntCounter();
+      Comparator islandSelectionPressureComparator = new Comparator();
+      ConditionalBranch islandTerminatedBySelectionPressure2 = new ConditionalBranch();
+      IntCounter terminatedIslandsCounter = new IntCounter();
+      IntCounter generationsCounter = new IntCounter();
+      IntCounter generationsSinceLastMigrationCounter = new IntCounter();
+      Comparator migrationComparator = new Comparator();
+      ConditionalBranch migrationBranch = new ConditionalBranch();
+      Assigner resetTerminatedIslandsAssigner = new Assigner();
+      Assigner resetGenerationsSinceLastMigrationAssigner = new Assigner();
+      IntCounter migrationsCounter = new IntCounter();
+      UniformSubScopesProcessor uniformSubScopesProcessor2 = new UniformSubScopesProcessor();
+      Assigner reviveIslandAssigner = new Assigner();
       Placeholder emigrantsSelector = new Placeholder();
       Placeholder migrator = new Placeholder();
-      UniformSubScopesProcessor ussp2 = new UniformSubScopesProcessor();
-      IntCounter maximumGenerationsCounter = new IntCounter();
-      MergingReducer mergingReducer = new MergingReducer();
-      Placeholder immigrationSelector = new Placeholder();
-      RightReducer rightReducer = new RightReducer();
-      IntCounter migrationsCounter = new IntCounter();
-      Comparator maxMigrationsComparator = new Comparator();
+      UniformSubScopesProcessor uniformSubScopesProcessor3 = new UniformSubScopesProcessor();
+      Placeholder immigrationReplacer = new Placeholder();
+      Comparator generationsComparator = new Comparator();
+      Comparator terminatedIslandsComparator = new Comparator();
       BestQualityMemorizer bestQualityMemorizer3 = new BestQualityMemorizer();
-      BestAverageWorstQualityCalculator bestAverageWorstQualityCalculator3 = new BestAverageWorstQualityCalculator();
-      DataTableValuesCollector dataTableValuesCollector2 = new DataTableValuesCollector();
+      BestQualityMemorizer bestQualityMemorizer4 = new BestQualityMemorizer();
+      BestAverageWorstQualityCalculator bestAverageWorstQualityCalculator2 = new BestAverageWorstQualityCalculator();
+      DataTableValuesCollector dataTableValuesCollector3 = new DataTableValuesCollector();
+      DataTableValuesCollector dataTableValuesCollector4 = new DataTableValuesCollector();
       QualityDifferenceCalculator qualityDifferenceCalculator2 = new QualityDifferenceCalculator();
-      ConditionalBranch migrationTerminationCondition = new ConditionalBranch();
+      ConditionalBranch generationsTerminationCondition = new ConditionalBranch();
+      ConditionalBranch terminatedIslandsCondition = new ConditionalBranch();
 
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Migrations", new IntValue(0)));
-      
-      islandVariableCreator.CollectedValues.Add(new ValueParameter<ResultCollection>("IslandResults", new ResultCollection()));
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Generations", new IntValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("GenerationsSinceLastMigration", new IntValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("TerminatedIslands", new IntValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedSolutions", new IntValue(0)));
 
-      islandVariableAssigner.LeftSideParameter.ActualName = "MaximumGenerations";
-      islandVariableAssigner.RightSideParameter.ActualName = "MigrationInterval";
+      islandVariableCreator.CollectedValues.Add(new ValueParameter<ResultCollection>("IslandResults", new ResultCollection()));
+      islandVariableCreator.CollectedValues.Add(new ValueParameter<IntValue>("IslandEvaluatedSolutions", new IntValue(0)));
+      islandVariableCreator.CollectedValues.Add(new ValueParameter<BoolValue>("TerminateSelectionPressure", new BoolValue(false)));
+      islandVariableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("SelectionPressure", new DoubleValue(0)));
+
+      islandBestQualityMemorizer1.BestQualityParameter.ActualName = "BestQuality";
+      islandBestQualityMemorizer1.MaximizationParameter.ActualName = MaximizationParameter.Name;
+      islandBestQualityMemorizer1.QualityParameter.ActualName = QualityParameter.Name;
+
+      islandBestAverageWorstQualityCalculator1.AverageQualityParameter.ActualName = "CurrentAverageQuality";
+      islandBestAverageWorstQualityCalculator1.BestQualityParameter.ActualName = "CurrentBestQuality";
+      islandBestAverageWorstQualityCalculator1.MaximizationParameter.ActualName = MaximizationParameter.Name;
+      islandBestAverageWorstQualityCalculator1.QualityParameter.ActualName = QualityParameter.Name;
+      islandBestAverageWorstQualityCalculator1.WorstQualityParameter.ActualName = "CurrentWorstQuality";
+      
+      islandDataTableValuesCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Best BestQuality", null, "CurrentBestBestQuality"));
+      islandDataTableValuesCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Average BestQuality", null, "CurrentAverageBestQuality"));
+      islandDataTableValuesCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Worst BestQuality", null, "CurrentWorstBestQuality"));
+      islandDataTableValuesCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
+      islandDataTableValuesCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, BestKnownQualityParameter.Name));
+      islandDataTableValuesCollector1.DataTableParameter.ActualName = "BestQualities";
+
+      islandDataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Selection Pressure", null, "SelectionPressure"));
+      islandDataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Maximum Selection Pressure", null, MaximumSelectionPressureParameter.Name));
+      islandDataTableValuesCollector2.DataTableParameter.ActualName = "SelectionPressures";
+
+      islandQualityDifferenceCalculator1.AbsoluteDifferenceParameter.ActualName = "AbsoluteDifferenceBestKnownToBest";
+      islandQualityDifferenceCalculator1.FirstQualityParameter.ActualName = BestKnownQualityParameter.Name;
+      islandQualityDifferenceCalculator1.RelativeDifferenceParameter.ActualName = "RelativeDifferenceBestKnownToBest";
+      islandQualityDifferenceCalculator1.SecondQualityParameter.ActualName = "BestQuality";
+
+      islandResultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Generations"));
+      islandResultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Best Quality", null, "CurrentBestQuality"));
+      islandResultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Average Quality", null, "CurrentAverageQuality"));
+      islandResultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Worst Quality", null, "CurrentWorstQuality"));
+      islandResultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
+      islandResultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, BestKnownQualityParameter.Name));
+      islandResultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Absolute Difference of Best Known Quality to Best Quality", null, "AbsoluteDifferenceBestKnownToBest"));
+      islandResultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Relative Difference of Best Known Quality to Best Quality", null, "RelativeDifferenceBestKnownToBest"));
+      islandResultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "IslandEvaluatedSolutions"));
+      islandResultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Curent Comparison Factor", null, "ComparisonFactor"));
+      islandResultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Selection Pressure", null, "SelectionPressure"));
+      islandResultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Success Ratio", null, "CurrentSuccessRatio"));
+      islandResultsCollector.CollectedValues.Add(new LookupParameter<IItem>("Solution Visualization", null, VisualizationParameter.Name));
+      islandResultsCollector.CollectedValues.Add(new LookupParameter<DataTable>("Qualities"));
+      islandResultsCollector.CollectedValues.Add(new LookupParameter<DataTable>("SelectionPressures"));
+      islandResultsCollector.ResultsParameter.ActualName = "IslandResults";
 
       bestQualityMemorizer1.BestQualityParameter.ActualName = "BestQuality";
       bestQualityMemorizer1.MaximizationParameter.ActualName = MaximizationParameter.Name;
-      bestQualityMemorizer1.QualityParameter.ActualName = QualityParameter.Name;
+      bestQualityMemorizer1.QualityParameter.ActualName = "BestQuality";
 
-      bestAverageWorstQualityCalculator1.AverageQualityParameter.ActualName = "CurrentAverageQuality";
-      bestAverageWorstQualityCalculator1.BestQualityParameter.ActualName = "CurrentBestQuality";
-      bestAverageWorstQualityCalculator1.MaximizationParameter.ActualName = MaximizationParameter.Name;
-      bestAverageWorstQualityCalculator1.QualityParameter.ActualName = QualityParameter.Name;
-      bestAverageWorstQualityCalculator1.WorstQualityParameter.ActualName = "CurrentWorstQuality";
-
-      bestQualityMemorizer2.BestQualityParameter.ActualName = "BestQuality";
+      bestQualityMemorizer2.BestQualityParameter.ActualName = BestKnownQualityParameter.Name;
       bestQualityMemorizer2.MaximizationParameter.ActualName = MaximizationParameter.Name;
       bestQualityMemorizer2.QualityParameter.ActualName = "BestQuality";
 
-      bestAverageWorstQualityCalculator2.AverageQualityParameter.ActualName = "CurrentAverageBestQuality";
-      bestAverageWorstQualityCalculator2.BestQualityParameter.ActualName = "CurrentBestBestQuality";
-      bestAverageWorstQualityCalculator2.MaximizationParameter.ActualName = MaximizationParameter.Name;
-      bestAverageWorstQualityCalculator2.QualityParameter.ActualName = "CurrentBestQuality";
-      bestAverageWorstQualityCalculator2.WorstQualityParameter.ActualName = "CurrentWorstBestQuality";
+      bestAverageWorstQualityCalculator1.AverageQualityParameter.ActualName = "CurrentAverageBestQuality";
+      bestAverageWorstQualityCalculator1.BestQualityParameter.ActualName = "CurrentBestBestQuality";
+      bestAverageWorstQualityCalculator1.MaximizationParameter.ActualName = MaximizationParameter.Name;
+      bestAverageWorstQualityCalculator1.QualityParameter.ActualName = "CurrentBestQuality";
+      bestAverageWorstQualityCalculator1.WorstQualityParameter.ActualName = "CurrentWorstBestQuality";
 
       dataTableValuesCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Best BestQuality", null, "CurrentBestBestQuality"));
       dataTableValuesCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Average BestQuality", null, "CurrentAverageBestQuality"));
@@ -222,12 +294,18 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       dataTableValuesCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, BestKnownQualityParameter.Name));
       dataTableValuesCollector1.DataTableParameter.ActualName = "BestQualities";
 
+      dataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Maximum Selection Pressure", null, MaximumSelectionPressureParameter.Name));
+      dataTableValuesCollector2.CollectedValues.Add(new SubScopesLookupParameter<DoubleValue>("Selection Pressure Island", null, "SelectionPressure"));
+      dataTableValuesCollector2.DataTableParameter.ActualName = "SelectionPressures";
+
       qualityDifferenceCalculator1.AbsoluteDifferenceParameter.ActualName = "AbsoluteDifferenceBestKnownToBest";
       qualityDifferenceCalculator1.FirstQualityParameter.ActualName = BestKnownQualityParameter.Name;
       qualityDifferenceCalculator1.RelativeDifferenceParameter.ActualName = "RelativeDifferenceBestKnownToBest";
       qualityDifferenceCalculator1.SecondQualityParameter.ActualName = "BestQuality";
 
       resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Migrations"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Generations"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("EvaluatedSolutions"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Best BestQuality", null, "CurrentBestBestQuality"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Average BestQuality", null, "CurrentAverageBestQuality"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Worst BestQuality", null, "CurrentWorstBestQuality"));
@@ -236,33 +314,109 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Absolute Difference of Best Known Quality to Best Quality", null, "AbsoluteDifferenceBestKnownToBest"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Relative Difference of Best Known Quality to Best Quality", null, "RelativeDifferenceBestKnownToBest"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DataTable>("BestQualities"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<DataTable>("SelectionPressures"));
       resultsCollector.CollectedValues.Add(new SubScopesLookupParameter<ResultCollection>("IslandResults", "Result set for each island"));
       resultsCollector.ResultsParameter.ActualName = ResultsParameter.Name;
 
-      mainLoop.BestKnownQualityParameter.ActualName = BestKnownQualityParameter.Name;
-      mainLoop.MaximizationParameter.ActualName = MaximizationParameter.Name;
-      mainLoop.QualityParameter.ActualName = QualityParameter.Name;
-      mainLoop.SelectorParameter.ActualName = SelectorParameter.Name;
-      mainLoop.CrossoverParameter.ActualName = CrossoverParameter.Name;
-      mainLoop.ElitesParameter.ActualName = ElitesParameter.Name;
-      mainLoop.MaximumGenerationsParameter.ActualName = "MaximumGenerations";
-      mainLoop.MutatorParameter.ActualName = MutatorParameter.Name;
-      mainLoop.EvaluatorParameter.ActualName = EvaluatorParameter.Name;
-      mainLoop.MutationProbabilityParameter.ActualName = MutationProbabilityParameter.Name;
-      mainLoop.RandomParameter.ActualName = RandomParameter.Name;
-      mainLoop.ResultsParameter.ActualName = "IslandResults";
-      mainLoop.VisualizerParameter.ActualName = VisualizerParameter.Name;
-      mainLoop.VisualizationParameter.ActualName = VisualizationParameter.Name;
-      mainLoop.SuccessRatioParameter.ActualName = SuccessRatioParameter.Name;
-      mainLoop.ComparisonFactorLowerBoundParameter.ActualName = ComparisonFactorLowerBoundParameter.Name;
-      mainLoop.ComparisonFactorModifierParameter.ActualName = ComparisonFactorModifierParameter.Name;
-      mainLoop.ComparisonFactorUpperBoundParameter.ActualName = ComparisonFactorUpperBoundParameter.Name;
-      mainLoop.MaximumSelectionPressureParameter.ActualName = MaximumSelectionPressureParameter.Name;
-      mainLoop.OffspringSelectionBeforeMutationParameter.ActualName = OffspringSelectionBeforeMutationParameter.Name;
+      comparisonFactorModifier.Name = "ComparisonFactorModifier (Placeholder)";
+      comparisonFactorModifier.OperatorParameter.ActualName = ComparisonFactorModifierParameter.Name;
 
-      maximumGenerationsCounter.ValueParameter.ActualName = "MaximumGenerations";
-      maximumGenerationsCounter.Increment = null;
-      maximumGenerationsCounter.IncrementParameter.ActualName = "MigrationInterval";
+      islandTerminatedBySelectionPressure1.Name = "Island Terminated ?";
+      islandTerminatedBySelectionPressure1.ConditionParameter.ActualName = "TerminateSelectionPressure";
+
+      mainOperator.ComparisonFactorParameter.ActualName = ComparisonFactorParameter.Name;
+      mainOperator.CrossoverParameter.ActualName = CrossoverParameter.Name;
+      mainOperator.CurrentSuccessRatioParameter.ActualName = "CurrentSuccessRatio";
+      mainOperator.ElitesParameter.ActualName = ElitesParameter.Name;
+      mainOperator.EvaluatedSolutionsParameter.ActualName = "IslandEvaluatedSolutions";
+      mainOperator.EvaluatorParameter.ActualName = EvaluatorParameter.Name;
+      mainOperator.MaximizationParameter.ActualName = MaximizationParameter.Name;
+      mainOperator.MaximumSelectionPressureParameter.ActualName = MaximumSelectionPressureParameter.Name;
+      mainOperator.MutationProbabilityParameter.ActualName = MutationProbabilityParameter.Name;
+      mainOperator.MutatorParameter.ActualName = MutatorParameter.Name;
+      mainOperator.OffspringSelectionBeforeMutationParameter.ActualName = OffspringSelectionBeforeMutationParameter.Name;
+      mainOperator.QualityParameter.ActualName = QualityParameter.Name;
+      mainOperator.RandomParameter.ActualName = RandomParameter.Name;
+      mainOperator.SelectionPressureParameter.ActualName = "SelectionPressure";
+      mainOperator.SelectorParameter.ActualName = SelectorParameter.Name;
+      mainOperator.SuccessRatioParameter.ActualName = SuccessRatioParameter.Name;
+
+      islandBestQualityMemorizer2.BestQualityParameter.ActualName = "BestQuality";
+      islandBestQualityMemorizer2.MaximizationParameter.ActualName = MaximizationParameter.Name;
+      islandBestQualityMemorizer2.QualityParameter.ActualName = QualityParameter.Name;
+
+      islandBestAverageWorstQualityCalculator2.AverageQualityParameter.ActualName = "CurrentAverageQuality";
+      islandBestAverageWorstQualityCalculator2.BestQualityParameter.ActualName = "CurrentBestQuality";
+      islandBestAverageWorstQualityCalculator2.MaximizationParameter.ActualName = MaximizationParameter.Name;
+      islandBestAverageWorstQualityCalculator2.QualityParameter.ActualName = QualityParameter.Name;
+      islandBestAverageWorstQualityCalculator2.WorstQualityParameter.ActualName = "CurrentWorstQuality";
+
+      islandDataTableValuesCollector3.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Best BestQuality", null, "CurrentBestBestQuality"));
+      islandDataTableValuesCollector3.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Average BestQuality", null, "CurrentAverageBestQuality"));
+      islandDataTableValuesCollector3.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Worst BestQuality", null, "CurrentWorstBestQuality"));
+      islandDataTableValuesCollector3.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
+      islandDataTableValuesCollector3.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, BestKnownQualityParameter.Name));
+      islandDataTableValuesCollector3.DataTableParameter.ActualName = "BestQualities";
+
+      islandDataTableValuesCollector4.CollectedValues.Add(new LookupParameter<DoubleValue>("Selection Pressure", null, "SelectionPressure"));
+      islandDataTableValuesCollector4.CollectedValues.Add(new LookupParameter<DoubleValue>("Maximum Selection Pressure", null, MaximumSelectionPressureParameter.Name));
+      islandDataTableValuesCollector4.DataTableParameter.ActualName = "SelectionPressures";
+
+      islandQualityDifferenceCalculator2.AbsoluteDifferenceParameter.ActualName = "AbsoluteDifferenceBestKnownToBest";
+      islandQualityDifferenceCalculator2.FirstQualityParameter.ActualName = BestKnownQualityParameter.Name;
+      islandQualityDifferenceCalculator2.RelativeDifferenceParameter.ActualName = "RelativeDifferenceBestKnownToBest";
+      islandQualityDifferenceCalculator2.SecondQualityParameter.ActualName = "BestQuality";
+
+      islandEvaluatedSolutionsCounter.Name = "Update EvaluatedSolutions";
+      islandEvaluatedSolutionsCounter.ValueParameter.ActualName = "EvaluatedSolutions";
+      islandEvaluatedSolutionsCounter.Increment = null;
+      islandEvaluatedSolutionsCounter.IncrementParameter.ActualName = "IslandEvaluatedSolutions";
+
+      islandSelectionPressureComparator.Name = "SelectionPressure >= MaximumSelectionPressure ?";
+      islandSelectionPressureComparator.LeftSideParameter.ActualName = "SelectionPressure";
+      islandSelectionPressureComparator.Comparison = new Comparison(ComparisonType.GreaterOrEqual);
+      islandSelectionPressureComparator.RightSideParameter.ActualName = MaximumSelectionPressureParameter.Name;
+      islandSelectionPressureComparator.ResultParameter.ActualName = "TerminateSelectionPressure";
+
+      islandTerminatedBySelectionPressure2.Name = "Island Terminated ?";
+      islandTerminatedBySelectionPressure2.ConditionParameter.ActualName = "TerminateSelectionPressure";
+
+      terminatedIslandsCounter.Name = "TerminatedIslands + 1";
+      terminatedIslandsCounter.ValueParameter.ActualName = "TerminatedIslands";
+      terminatedIslandsCounter.Increment = new IntValue(1);
+
+      generationsCounter.Name = "Generations + 1";
+      generationsCounter.ValueParameter.ActualName = "Generations";
+      generationsCounter.Increment = new IntValue(1);
+
+      generationsSinceLastMigrationCounter.Name = "GenerationsSinceLastMigration + 1";
+      generationsSinceLastMigrationCounter.ValueParameter.ActualName = "GenerationsSinceLastMigration";
+      generationsSinceLastMigrationCounter.Increment = new IntValue(1);
+
+      migrationComparator.Name = "GenerationsSinceLastMigration = MigrationInterval ?";
+      migrationComparator.LeftSideParameter.ActualName = "GenerationsSinceLastMigration";
+      migrationComparator.Comparison = new Comparison(ComparisonType.Equal);
+      migrationComparator.RightSideParameter.ActualName = MigrationIntervalParameter.Name;
+      migrationComparator.ResultParameter.ActualName = "Migrate";
+
+      migrationBranch.Name = "Migrate?";
+      migrationBranch.ConditionParameter.ActualName = "Migrate";
+
+      resetTerminatedIslandsAssigner.Name = "Reset TerminatedIslands";
+      resetTerminatedIslandsAssigner.LeftSideParameter.ActualName = "TerminatedIslands";
+      resetTerminatedIslandsAssigner.RightSideParameter.Value = new IntValue(0);
+
+      resetGenerationsSinceLastMigrationAssigner.Name = "Reset GenerationsSinceLastMigration";
+      resetGenerationsSinceLastMigrationAssigner.LeftSideParameter.ActualName = "GenerationsSinceLastMigration";
+      resetGenerationsSinceLastMigrationAssigner.RightSideParameter.Value = new IntValue(0);
+
+      migrationsCounter.Name = "Migrations + 1";
+      migrationsCounter.IncrementParameter.Value = new IntValue(1);
+      migrationsCounter.ValueParameter.ActualName = "Migrations";
+
+      reviveIslandAssigner.Name = "Revive Island";
+      reviveIslandAssigner.LeftSideParameter.ActualName = "TerminateSelectionPressure";
+      reviveIslandAssigner.RightSideParameter.Value = new BoolValue(false);
 
       emigrantsSelector.Name = "Emigrants Selector (placeholder)";
       emigrantsSelector.OperatorParameter.ActualName = EmigrantsSelectorParameter.Name;
@@ -270,77 +424,127 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       migrator.Name = "Migrator (placeholder)";
       migrator.OperatorParameter.ActualName = MigratorParameter.Name;
 
-      immigrationSelector.Name = "Immigration Selector (placeholder)";
-      immigrationSelector.OperatorParameter.ActualName = ImmigrationSelectorParameter.Name;
+      immigrationReplacer.Name = "Immigration Replacer (placeholder)";
+      immigrationReplacer.OperatorParameter.ActualName = ImmigrationReplacerParameter.Name;
 
-      migrationsCounter.Name = "Migrations + 1";
-      migrationsCounter.IncrementParameter.Value = new IntValue(1);
-      migrationsCounter.ValueParameter.ActualName = "Migrations";
+      generationsComparator.Name = "Generations >= MaximumGenerations ?";
+      generationsComparator.LeftSideParameter.ActualName = "Generations";
+      generationsComparator.Comparison = new Comparison(ComparisonType.GreaterOrEqual);
+      generationsComparator.RightSideParameter.ActualName = MaximumGenerationsParameter.Name;
+      generationsComparator.ResultParameter.ActualName = "TerminateGenerations";
 
-      maxMigrationsComparator.Name = "Migrations >= MaximumMigration ?";
-      maxMigrationsComparator.LeftSideParameter.ActualName = "Migrations";
-      maxMigrationsComparator.RightSideParameter.ActualName = MaximumMigrationsParameter.Name;
-      maxMigrationsComparator.Comparison.Value = ComparisonType.GreaterOrEqual;
-      maxMigrationsComparator.ResultParameter.ActualName = "MigrationTerminate";
-
+      terminatedIslandsComparator.Name = "All Islands terminated ?";
+      terminatedIslandsComparator.LeftSideParameter.ActualName = "TerminatedIslands";
+      terminatedIslandsComparator.Comparison = new Comparison(ComparisonType.GreaterOrEqual);
+      terminatedIslandsComparator.RightSideParameter.ActualName = NumberOfIslandsParameter.Name;
+      terminatedIslandsComparator.ResultParameter.ActualName = "TerminateTerminatedIslands";
+      
       bestQualityMemorizer3.BestQualityParameter.ActualName = "BestQuality";
       bestQualityMemorizer3.MaximizationParameter.ActualName = MaximizationParameter.Name;
       bestQualityMemorizer3.QualityParameter.ActualName = "BestQuality";
 
-      bestAverageWorstQualityCalculator3.AverageQualityParameter.ActualName = "CurrentAverageBestQuality";
-      bestAverageWorstQualityCalculator3.BestQualityParameter.ActualName = "CurrentBestBestQuality";
-      bestAverageWorstQualityCalculator3.MaximizationParameter.ActualName = MaximizationParameter.Name;
-      bestAverageWorstQualityCalculator3.QualityParameter.ActualName = "CurrentBestQuality";
-      bestAverageWorstQualityCalculator3.WorstQualityParameter.ActualName = "CurrentWorstBestQuality";
+      bestQualityMemorizer4.BestQualityParameter.ActualName = BestKnownQualityParameter.Name;
+      bestQualityMemorizer4.MaximizationParameter.ActualName = MaximizationParameter.Name;
+      bestQualityMemorizer4.QualityParameter.ActualName = "BestQuality";
 
-      dataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Best BestQuality", null, "CurrentBestBestQuality"));
-      dataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Average BestQuality", null, "CurrentAverageBestQuality"));
-      dataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Worst BestQuality", null, "CurrentWorstBestQuality"));
-      dataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
-      dataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, BestKnownQualityParameter.Name));
-      dataTableValuesCollector2.DataTableParameter.ActualName = "BestQualities";
+      bestAverageWorstQualityCalculator2.AverageQualityParameter.ActualName = "CurrentAverageBestQuality";
+      bestAverageWorstQualityCalculator2.BestQualityParameter.ActualName = "CurrentBestBestQuality";
+      bestAverageWorstQualityCalculator2.MaximizationParameter.ActualName = MaximizationParameter.Name;
+      bestAverageWorstQualityCalculator2.QualityParameter.ActualName = "CurrentBestQuality";
+      bestAverageWorstQualityCalculator2.WorstQualityParameter.ActualName = "CurrentWorstBestQuality";
+
+      dataTableValuesCollector3.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Best BestQuality", null, "CurrentBestBestQuality"));
+      dataTableValuesCollector3.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Average BestQuality", null, "CurrentAverageBestQuality"));
+      dataTableValuesCollector3.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Worst BestQuality", null, "CurrentWorstBestQuality"));
+      dataTableValuesCollector3.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
+      dataTableValuesCollector3.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, BestKnownQualityParameter.Name));
+      dataTableValuesCollector3.DataTableParameter.ActualName = "BestQualities";
+
+      dataTableValuesCollector4.CollectedValues.Add(new LookupParameter<DoubleValue>("Maximum Selection Pressure", null, MaximumSelectionPressureParameter.Name));
+      dataTableValuesCollector4.CollectedValues.Add(new SubScopesLookupParameter<DoubleValue>("Selection Pressure Island", null, "SelectionPressure"));
+      dataTableValuesCollector4.DataTableParameter.ActualName = "SelectionPressures";
 
       qualityDifferenceCalculator2.AbsoluteDifferenceParameter.ActualName = "AbsoluteDifferenceBestKnownToBest";
       qualityDifferenceCalculator2.FirstQualityParameter.ActualName = BestKnownQualityParameter.Name;
       qualityDifferenceCalculator2.RelativeDifferenceParameter.ActualName = "RelativeDifferenceBestKnownToBest";
       qualityDifferenceCalculator2.SecondQualityParameter.ActualName = "BestQuality";
 
-      migrationTerminationCondition.ConditionParameter.ActualName = "MigrationTerminate";
+      generationsTerminationCondition.Name = "Terminate (MaxGenerations) ?";
+      generationsTerminationCondition.ConditionParameter.ActualName = "TerminateGenerations";
+
+      terminatedIslandsCondition.Name = "Terminate (TerminatedIslands) ?";
+      terminatedIslandsCondition.ConditionParameter.ActualName = "TerminateTerminatedIslands";
       #endregion
 
       #region Create operator graph
       OperatorGraph.InitialOperator = variableCreator;
-      variableCreator.Successor = ussp0;
-      ussp0.Operator = islandVariableCreator;
-      ussp0.Successor = bestQualityMemorizer2;
-      islandVariableCreator.Successor = islandVariableAssigner;
-      islandVariableAssigner.Successor = bestQualityMemorizer1;
-      bestQualityMemorizer1.Successor = bestAverageWorstQualityCalculator1;
-      bestQualityMemorizer2.Successor = bestAverageWorstQualityCalculator2;
-      bestAverageWorstQualityCalculator2.Successor = dataTableValuesCollector1;
-      dataTableValuesCollector1.Successor = qualityDifferenceCalculator1;
+      variableCreator.Successor = uniformSubScopesProcessor0;
+      uniformSubScopesProcessor0.Operator = islandVariableCreator;
+      uniformSubScopesProcessor0.Successor = bestQualityMemorizer1;
+      islandVariableCreator.Successor = islandBestQualityMemorizer1;
+      islandBestQualityMemorizer1.Successor = islandBestAverageWorstQualityCalculator1;
+      islandBestAverageWorstQualityCalculator1.Successor = islandDataTableValuesCollector1;
+      islandDataTableValuesCollector1.Successor = islandDataTableValuesCollector2;
+      islandDataTableValuesCollector2.Successor = islandQualityDifferenceCalculator1;
+      islandQualityDifferenceCalculator1.Successor = islandVisualizer1;
+      islandVisualizer1.Successor = islandResultsCollector;
+      islandResultsCollector.Successor = null;
+      bestQualityMemorizer1.Successor = bestQualityMemorizer2;
+      bestQualityMemorizer2.Successor = bestAverageWorstQualityCalculator1;
+      bestAverageWorstQualityCalculator1.Successor = dataTableValuesCollector1;
+      dataTableValuesCollector1.Successor = dataTableValuesCollector2;
+      dataTableValuesCollector2.Successor = qualityDifferenceCalculator1;
       qualityDifferenceCalculator1.Successor = resultsCollector;
-      resultsCollector.Successor = ussp1;
-      ussp1.Operator = mainLoop;
-      ussp1.Successor = migrator;
-      mainLoop.Successor = maximumGenerationsCounter;
-      maximumGenerationsCounter.Successor = emigrantsSelector;
+      resultsCollector.Successor = comparisonFactorModifier;
+      comparisonFactorModifier.Successor = uniformSubScopesProcessor1;
+      uniformSubScopesProcessor1.Operator = islandTerminatedBySelectionPressure1;
+      uniformSubScopesProcessor1.Successor = generationsCounter;
+      islandTerminatedBySelectionPressure1.TrueBranch = null;
+      islandTerminatedBySelectionPressure1.FalseBranch = mainOperator;
+      islandTerminatedBySelectionPressure1.Successor = null;
+      mainOperator.Successor = islandBestQualityMemorizer2;
+      islandBestQualityMemorizer2.Successor = islandBestAverageWorstQualityCalculator2;
+      islandBestAverageWorstQualityCalculator2.Successor = islandDataTableValuesCollector3;
+      islandDataTableValuesCollector3.Successor = islandDataTableValuesCollector4;
+      islandDataTableValuesCollector4.Successor = islandQualityDifferenceCalculator2;
+      islandQualityDifferenceCalculator2.Successor = islandVisualizer2;
+      islandVisualizer2.Successor = islandEvaluatedSolutionsCounter;
+      islandEvaluatedSolutionsCounter.Successor = islandSelectionPressureComparator;
+      islandSelectionPressureComparator.Successor = islandTerminatedBySelectionPressure2;
+      islandTerminatedBySelectionPressure2.TrueBranch = terminatedIslandsCounter;
+      islandTerminatedBySelectionPressure2.FalseBranch = null;
+      islandTerminatedBySelectionPressure2.Successor = null;
+      generationsCounter.Successor = generationsSinceLastMigrationCounter;
+      generationsSinceLastMigrationCounter.Successor = migrationComparator;
+      migrationComparator.Successor = migrationBranch;
+      migrationBranch.TrueBranch = resetTerminatedIslandsAssigner;
+      migrationBranch.FalseBranch = null;
+      migrationBranch.Successor = generationsComparator;
+      resetTerminatedIslandsAssigner.Successor = resetGenerationsSinceLastMigrationAssigner;
+      resetGenerationsSinceLastMigrationAssigner.Successor = migrationsCounter;
+      migrationsCounter.Successor = uniformSubScopesProcessor2;
+      uniformSubScopesProcessor2.Operator = reviveIslandAssigner;
+      uniformSubScopesProcessor2.Successor = migrator;
+      reviveIslandAssigner.Successor = emigrantsSelector;
       emigrantsSelector.Successor = null;
-      migrator.Successor = ussp2;
-      ussp2.Operator = mergingReducer;
-      ussp2.Successor = migrationsCounter;
-      mergingReducer.Successor = immigrationSelector;
-      immigrationSelector.Successor = rightReducer;
-      rightReducer.Successor = null;
-      migrationsCounter.Successor = maxMigrationsComparator;
-      maxMigrationsComparator.Successor = bestQualityMemorizer3;
-      bestQualityMemorizer3.Successor = bestAverageWorstQualityCalculator3;
-      bestAverageWorstQualityCalculator3.Successor = dataTableValuesCollector2;
-      dataTableValuesCollector2.Successor = qualityDifferenceCalculator2;
-      qualityDifferenceCalculator2.Successor = migrationTerminationCondition;
-      migrationTerminationCondition.FalseBranch = ussp1;
-      migrationTerminationCondition.TrueBranch = null;
-      migrationTerminationCondition.Successor = null;
+      migrator.Successor = uniformSubScopesProcessor3;
+      uniformSubScopesProcessor3.Operator = immigrationReplacer;
+      uniformSubScopesProcessor3.Successor = null;
+      immigrationReplacer.Successor = null;
+      generationsComparator.Successor = terminatedIslandsComparator;
+      terminatedIslandsComparator.Successor = bestQualityMemorizer3;
+      bestQualityMemorizer3.Successor = bestQualityMemorizer4;
+      bestQualityMemorizer4.Successor = bestAverageWorstQualityCalculator2;
+      bestAverageWorstQualityCalculator2.Successor = dataTableValuesCollector3;
+      dataTableValuesCollector3.Successor = dataTableValuesCollector4;
+      dataTableValuesCollector4.Successor = qualityDifferenceCalculator2;
+      qualityDifferenceCalculator2.Successor = generationsTerminationCondition;
+      generationsTerminationCondition.TrueBranch = null;
+      generationsTerminationCondition.FalseBranch = terminatedIslandsCondition;
+      generationsTerminationCondition.Successor = null;
+      terminatedIslandsCondition.TrueBranch = null;
+      terminatedIslandsCondition.FalseBranch = comparisonFactorModifier;
+      terminatedIslandsCondition.Successor = null;
       #endregion
     }
   }

@@ -79,13 +79,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="OffspringSelectionGeneticAlgorithmMainLoop.cs" />
     <Compile Include="SASEGASA.cs" />
     <Compile Include="SASEGASAMainLoop.cs" />
     <Compile Include="HeuristicLabAlgorithmsOffspringSelectionGeneticAlgorithmPlugin.cs" />
     <Compile Include="IslandOffspringSelectionGeneticAlgorithm.cs" />
     <Compile Include="IslandOffspringSelectionGeneticAlgorithmMainLoop.cs" />
     <Compile Include="OffspringSelectionGeneticAlgorithm.cs" />
-    <Compile Include="OffspringSelectionGeneticAlgorithmMainLoop.cs" />
+    <Compile Include="OffspringSelectionGeneticAlgorithmMainOperator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
