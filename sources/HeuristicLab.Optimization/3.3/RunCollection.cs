@@ -26,6 +26,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Collections;
 
 namespace HeuristicLab.Optimization {
   [StorableClass]
@@ -37,10 +38,22 @@ namespace HeuristicLab.Optimization {
     private void Initialize() {
       parameterNames = new List<string>();
       resultNames = new List<string>();
+      dataTypes = new Dictionary<string, HashSet<Type>>();
+      constraints = new RunCollectionConstraintCollection();
+      constraints.ItemsAdded += new CollectionItemsChangedEventHandler<IRunCollectionConstraint>(Constraints_ItemsAdded);
+      constraints.ItemsRemoved += new CollectionItemsChangedEventHandler<IRunCollectionConstraint>(Constraints_ItemsRemoved);
+      constraints.CollectionReset += new CollectionItemsChangedEventHandler<IRunCollectionConstraint>(Constraints_CollectionReset);
     }
-
-    protected static Type[] viewableDataTypes = new Type[]{typeof(BoolValue), typeof(DoubleValue), typeof(IntValue),
-      typeof(PercentValue), typeof(StringValue)};
+    private Dictionary<string, HashSet<Type>> dataTypes;
+    public IEnumerable<Type> GetDataType(string columnName) {
+      if (!dataTypes.ContainsKey(columnName))
+        return new Type[0];
+      return dataTypes[columnName];
+    }
+    private RunCollectionConstraintCollection constraints;
+    public RunCollectionConstraintCollection Constraints {
+      get { return constraints;}
+    }
 
     protected override void OnCollectionReset(IEnumerable<IRun> items, IEnumerable<IRun> oldItems) {
       parameterNames.Clear();
@@ -89,20 +102,24 @@ namespace HeuristicLab.Optimization {
       if (value == null)
         return false;
       if (!parameterNames.Contains(name)) {
-        // && viewableDataTypes.Any(x => x.IsAssignableFrom(value.GetType()))) {
         parameterNames.Add(name);
+        dataTypes[name] = new HashSet<Type>();
+        dataTypes[name].Add(value.GetType());
         return true;
       }
+      dataTypes[name].Add(value.GetType());
       return false;
     }
     private bool AddResult(string name, IItem value) {
       if (value == null)
         return false;
       if (!resultNames.Contains(name)) {
-        // && viewableDataTypes.Any(x => x.IsAssignableFrom(value.GetType()))) {
         resultNames.Add(name);
+        dataTypes[name] = new HashSet<Type>();
+        dataTypes[name].Add(value.GetType());
         return true;
       }
+      dataTypes[name].Add(value.GetType());
       return false;
     }
     private bool RemoveParameterName(string name) {
@@ -219,6 +236,59 @@ namespace HeuristicLab.Optimization {
 
     public bool Validate(string value, out string errorMessage) { throw new NotSupportedException(); }
     public bool SetValue(string value, int rowIndex, int columnIndex) { throw new NotSupportedException(); }
+    #endregion
+
+    #region filtering
+    private void UpdateFiltering() {
+      list.ForEach(r => r.Visible = true);
+      foreach (IRunCollectionConstraint constraint in this.constraints)
+        constraint.Check();
+    }
+
+    protected virtual void RegisterConstraintEvents(IEnumerable<IRunCollectionConstraint> constraints) {
+      foreach (IRunCollectionConstraint constraint in constraints) {
+        constraint.ActiveChanged += new EventHandler(Constraint_ActiveChanged);
+        constraint.ConstrainedValueChanged += new EventHandler(Constraint_ConstrainedValueChanged);
+        constraint.ConstraintOperationChanged += new EventHandler(Constraint_ConstraintOperationChanged);
+        constraint.ConstraintDataChanged += new EventHandler(Constraint_ConstraintDataChanged);
+      }
+    }
+    protected virtual void DeregisterConstraintEvents(IEnumerable<IRunCollectionConstraint> constraints) {
+      foreach (IRunCollectionConstraint constraint in constraints) {
+        constraint.ActiveChanged -= new EventHandler(Constraint_ActiveChanged);
+        constraint.ConstrainedValueChanged -= new EventHandler(Constraint_ConstrainedValueChanged);
+        constraint.ConstraintOperationChanged -= new EventHandler(Constraint_ConstraintOperationChanged);
+        constraint.ConstraintDataChanged -= new EventHandler(Constraint_ConstraintDataChanged);
+      }
+    }
+
+    protected virtual void Constraints_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRunCollectionConstraint> e) {
+      DeregisterConstraintEvents(e.OldItems);
+      RegisterConstraintEvents(e.Items);
+      this.UpdateFiltering();
+    }
+    protected virtual void Constraints_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IRunCollectionConstraint> e) {
+      RegisterConstraintEvents(e.Items);
+      foreach (IRunCollectionConstraint constraint in e.Items)
+        constraint.ConstrainedValue = this;
+      this.UpdateFiltering();
+    }
+    protected virtual void Constraints_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IRunCollectionConstraint> e) {
+      DeregisterConstraintEvents(e.Items);
+      this.UpdateFiltering();
+    }
+    protected virtual void Constraint_ActiveChanged(object sender, EventArgs e) {
+      this.UpdateFiltering();
+    }
+    protected virtual void Constraint_ConstrainedValueChanged(object sender, EventArgs e) {
+      //mkommend: this method is intentionally left empty, because the constrainedValue is set in the ItemsAdded method
+    }
+    protected virtual void Constraint_ConstraintOperationChanged(object sender, EventArgs e) {
+      this.UpdateFiltering();
+    }
+    protected virtual void Constraint_ConstraintDataChanged(object sender, EventArgs e) {
+      this.UpdateFiltering();
+    }
     #endregion
   }
 }

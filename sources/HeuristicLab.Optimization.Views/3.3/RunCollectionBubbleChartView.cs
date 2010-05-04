@@ -62,7 +62,6 @@ namespace HeuristicLab.Optimization.Views {
       this.colorButton.Image = this.GenerateImage(16, 16, this.colorDialog.Color);
       this.isSelecting = false;
 
-
       this.chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
       this.chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = true;
       this.chart.ChartAreas[0].CursorX.Interval = 0;
@@ -121,6 +120,10 @@ namespace HeuristicLab.Optimization.Views {
     }
     private void run_Changed(object sender, EventArgs e) {
       IRun run = (IRun)sender;
+      UpdateRun(run);
+    }
+
+    private void UpdateRun(IRun run) {
       DataPoint point = this.chart.Series[0].Points.Where(p => p.Tag == run).SingleOrDefault();
       if (point != null) {
         point.Color = run.Color;
@@ -128,6 +131,11 @@ namespace HeuristicLab.Optimization.Views {
           this.chart.Series[0].Points.Remove(point);
       } else
         AddDataPoint(run);
+
+      if (this.chart.Series[0].Points.Count == 0)
+        noRunsLabel.Visible = true;
+      else
+        noRunsLabel.Visible = false;
     }
 
     protected override void OnContentChanged() {
@@ -135,6 +143,8 @@ namespace HeuristicLab.Optimization.Views {
       this.categoricalMapping.Clear();
       UpdateComboBoxes();
       UpdateDataPoints();
+      foreach(IRun run in Content) 
+        UpdateRun(run);
     }
     private void Content_ColumnNamesChanged(object sender, EventArgs e) {
       if (InvokeRequired)

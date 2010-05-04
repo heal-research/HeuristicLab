@@ -41,6 +41,10 @@ namespace HeuristicLab.Optimization.Views {
       set { base.Content = value; }
     }
 
+    public RunCollection RunCollection {
+      get { return Content as RunCollection; }
+    }
+
     public ListView ItemsListView {
       get { return itemsListView; }
     }
@@ -93,11 +97,20 @@ namespace HeuristicLab.Optimization.Views {
       Caption = "Run Collection";
       while (itemsListView.Items.Count > 0) RemoveListViewItem(itemsListView.Items[0]);
       viewHost.Content = null;
+      runCollectionConstraintCollectionView.Content = null;
+      tabControl.TabPages.Remove(constraintPage);
 
       if (Content != null) {
+        if (RunCollection != null) {
+          tabControl.TabPages.Add(constraintPage);
+          runCollectionConstraintCollectionView.Content = RunCollection.Constraints;
+          runCollectionConstraintCollectionView.ReadOnly = itemsListView.Items.Count == 0;
+        }
         Caption += " (" + Content.GetType().Name + ")";
-        foreach (IRun item in Content)
+        foreach (IRun item in Content) {
           AddListViewItem(CreateListViewItem(item));
+          UpdateRun(item);
+        }
       }
       SetEnabledStateOfControls();
     }
@@ -109,12 +122,14 @@ namespace HeuristicLab.Optimization.Views {
     private void SetEnabledStateOfControls() {
       if (Content == null) {
         analyzeRunsToolStripDropDownButton.Enabled = false;
+        runCollectionConstraintCollectionView.ReadOnly = true;
         itemsListView.Enabled = false;
         detailsGroupBox.Enabled = false;
         viewHost.Enabled = false;
         removeButton.Enabled = false;
       } else {
         analyzeRunsToolStripDropDownButton.Enabled = itemsListView.Items.Count > 0;
+        runCollectionConstraintCollectionView.ReadOnly = itemsListView.Items.Count == 0;
         itemsListView.Enabled = true;
         detailsGroupBox.Enabled = true;
         removeButton.Enabled = itemsListView.SelectedItems.Count > 0 && !Content.IsReadOnly && !ReadOnly;
@@ -261,6 +276,7 @@ namespace HeuristicLab.Optimization.Views {
         foreach (IRun item in e.Items)
           AddListViewItem(CreateListViewItem(item));
         analyzeRunsToolStripDropDownButton.Enabled = itemsListView.Items.Count > 0;
+        runCollectionConstraintCollectionView.ReadOnly = itemsListView.Items.Count == 0;
       }
     }
     protected virtual void Content_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IRun> e) {
@@ -275,6 +291,7 @@ namespace HeuristicLab.Optimization.Views {
           }
         }
         analyzeRunsToolStripDropDownButton.Enabled = itemsListView.Items.Count > 0;
+        runCollectionConstraintCollectionView.ReadOnly = itemsListView.Items.Count == 0;
       }
     }
     protected virtual void Content_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRun> e) {
@@ -292,6 +309,7 @@ namespace HeuristicLab.Optimization.Views {
         foreach (IRun item in e.Items)
           AddListViewItem(CreateListViewItem(item));
         analyzeRunsToolStripDropDownButton.Enabled = itemsListView.Items.Count > 0;
+        runCollectionConstraintCollectionView.ReadOnly = itemsListView.Items.Count == 0;
       }
     }
     #endregion
@@ -317,6 +335,10 @@ namespace HeuristicLab.Optimization.Views {
     }
     protected virtual void Run_Changed(object sender, EventArgs e) {
       IRun run = (IRun)sender;
+      UpdateRun(run);
+    }
+
+    protected virtual void UpdateRun(IRun run) {
       foreach (ListViewItem listViewItem in GetListViewItemsForItem(run)) {
         if (run.Visible) {
           listViewItem.Font = new Font(listViewItem.Font, FontStyle.Regular);

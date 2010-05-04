@@ -53,6 +53,14 @@ namespace HeuristicLab.Optimization.Views {
       set { base.Content = value; }
     }
 
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      if (Content != null) {
+        foreach (IRun run in Content)
+          UpdateRun(run);
+      }
+    }
+
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.ItemsAdded += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
@@ -87,6 +95,10 @@ namespace HeuristicLab.Optimization.Views {
     }
     private void run_Changed(object sender, EventArgs e) {
       IRun run = (IRun)sender;
+      UpdateRun(run);
+    }
+
+    private void UpdateRun(IRun run) {
       int rowIndex = Content.ToList().IndexOf(run);
       rowIndex = virtualRowIndizes[rowIndex];
       this.dataGridView.Rows[rowIndex].Visible = run.Visible;
@@ -103,7 +115,6 @@ namespace HeuristicLab.Optimization.Views {
         }
       }
     }
-
 
     protected override int[] Sort(IEnumerable<KeyValuePair<int, SortOrder>> sortedColumns) {
       int[] newSortedIndex = Enumerable.Range(0, Content.Count).ToArray();

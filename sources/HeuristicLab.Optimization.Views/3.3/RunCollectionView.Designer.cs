@@ -53,7 +53,10 @@ namespace HeuristicLab.Optimization.Views {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RunCollectionView));
       this.splitContainer = new System.Windows.Forms.SplitContainer();
+      this.toolStrip = new System.Windows.Forms.ToolStrip();
+      this.analyzeRunsToolStripDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
       this.itemsListView = new System.Windows.Forms.ListView();
       this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
       this.imageList = new System.Windows.Forms.ImageList(this.components);
@@ -62,14 +65,19 @@ namespace HeuristicLab.Optimization.Views {
       this.viewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.itemsGroupBox = new System.Windows.Forms.GroupBox();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-      this.toolStrip = new System.Windows.Forms.ToolStrip();
-      this.analyzeRunsToolStripDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
+      this.tabControl = new System.Windows.Forms.TabControl();
+      this.runPage = new System.Windows.Forms.TabPage();
+      this.constraintPage = new System.Windows.Forms.TabPage();
+      this.runCollectionConstraintCollectionView = new HeuristicLab.Core.Views.RunCollectionConstraintCollectionView();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
+      this.toolStrip.SuspendLayout();
       this.detailsGroupBox.SuspendLayout();
       this.itemsGroupBox.SuspendLayout();
-      this.toolStrip.SuspendLayout();
+      this.tabControl.SuspendLayout();
+      this.runPage.SuspendLayout();
+      this.constraintPage.SuspendLayout();
       this.SuspendLayout();
       // 
       // splitContainer
@@ -89,9 +97,33 @@ namespace HeuristicLab.Optimization.Views {
       // splitContainer.Panel2
       // 
       this.splitContainer.Panel2.Controls.Add(this.detailsGroupBox);
-      this.splitContainer.Size = new System.Drawing.Size(526, 364);
+      this.splitContainer.Size = new System.Drawing.Size(512, 332);
       this.splitContainer.SplitterDistance = 250;
       this.splitContainer.TabIndex = 0;
+      // 
+      // toolStrip
+      // 
+      this.toolStrip.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.toolStrip.AutoSize = false;
+      this.toolStrip.Dock = System.Windows.Forms.DockStyle.None;
+      this.toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+      this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.analyzeRunsToolStripDropDownButton});
+      this.toolStrip.Location = new System.Drawing.Point(30, 3);
+      this.toolStrip.Name = "toolStrip";
+      this.toolStrip.Size = new System.Drawing.Size(217, 24);
+      this.toolStrip.TabIndex = 1;
+      this.toolStrip.Text = "toolStrip1";
+      // 
+      // analyzeRunsToolStripDropDownButton
+      // 
+      this.analyzeRunsToolStripDropDownButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+      this.analyzeRunsToolStripDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.analyzeRunsToolStripDropDownButton.Name = "analyzeRunsToolStripDropDownButton";
+      this.analyzeRunsToolStripDropDownButton.Size = new System.Drawing.Size(99, 21);
+      this.analyzeRunsToolStripDropDownButton.Text = "&Analyze Runs...";
+      this.analyzeRunsToolStripDropDownButton.ToolTipText = "Show Run Analysis Views";
       // 
       // itemsListView
       // 
@@ -106,7 +138,7 @@ namespace HeuristicLab.Optimization.Views {
       this.itemsListView.Location = new System.Drawing.Point(3, 33);
       this.itemsListView.Name = "itemsListView";
       this.itemsListView.ShowItemToolTips = true;
-      this.itemsListView.Size = new System.Drawing.Size(244, 327);
+      this.itemsListView.Size = new System.Drawing.Size(244, 295);
       this.itemsListView.SmallImageList = this.imageList;
       this.itemsListView.TabIndex = 1;
       this.itemsListView.UseCompatibleStateImageBehavior = false;
@@ -146,7 +178,7 @@ namespace HeuristicLab.Optimization.Views {
       this.detailsGroupBox.Controls.Add(this.viewHost);
       this.detailsGroupBox.Location = new System.Drawing.Point(3, 27);
       this.detailsGroupBox.Name = "detailsGroupBox";
-      this.detailsGroupBox.Size = new System.Drawing.Size(266, 335);
+      this.detailsGroupBox.Size = new System.Drawing.Size(252, 303);
       this.detailsGroupBox.TabIndex = 0;
       this.detailsGroupBox.TabStop = false;
       this.detailsGroupBox.Text = "Details";
@@ -161,7 +193,7 @@ namespace HeuristicLab.Optimization.Views {
       this.viewHost.Location = new System.Drawing.Point(6, 19);
       this.viewHost.Name = "viewHost";
       this.viewHost.ReadOnly = false;
-      this.viewHost.Size = new System.Drawing.Size(254, 310);
+      this.viewHost.Size = new System.Drawing.Size(240, 278);
       this.viewHost.TabIndex = 0;
       this.viewHost.ViewType = null;
       // 
@@ -169,51 +201,73 @@ namespace HeuristicLab.Optimization.Views {
       // 
       this.itemsGroupBox.Controls.Add(this.splitContainer);
       this.itemsGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.itemsGroupBox.Location = new System.Drawing.Point(0, 0);
+      this.itemsGroupBox.Location = new System.Drawing.Point(3, 3);
       this.itemsGroupBox.Name = "itemsGroupBox";
-      this.itemsGroupBox.Size = new System.Drawing.Size(532, 383);
+      this.itemsGroupBox.Size = new System.Drawing.Size(518, 351);
       this.itemsGroupBox.TabIndex = 0;
       this.itemsGroupBox.TabStop = false;
       this.itemsGroupBox.Text = "Items";
       // 
-      // toolStrip
+      // tabControl
       // 
-      this.toolStrip.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.toolStrip.AutoSize = false;
-      this.toolStrip.Dock = System.Windows.Forms.DockStyle.None;
-      this.toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-      this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.analyzeRunsToolStripDropDownButton});
-      this.toolStrip.Location = new System.Drawing.Point(30, 3);
-      this.toolStrip.Name = "toolStrip";
-      this.toolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.ManagerRenderMode;
-      this.toolStrip.Size = new System.Drawing.Size(217, 24);
-      this.toolStrip.TabIndex = 1;
-      this.toolStrip.Text = "toolStrip1";
+      this.tabControl.Controls.Add(this.runPage);
+      this.tabControl.Controls.Add(this.constraintPage);
+      this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.tabControl.Location = new System.Drawing.Point(0, 0);
+      this.tabControl.Name = "tabControl";
+      this.tabControl.SelectedIndex = 0;
+      this.tabControl.Size = new System.Drawing.Size(532, 383);
+      this.tabControl.TabIndex = 1;
       // 
-      // analyzeRunsToolStripDropDownButton
+      // runPage
       // 
-      this.analyzeRunsToolStripDropDownButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-      this.analyzeRunsToolStripDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-      this.analyzeRunsToolStripDropDownButton.Name = "analyzeRunsToolStripDropDownButton";
-      this.analyzeRunsToolStripDropDownButton.Size = new System.Drawing.Size(45, 21);
-      this.analyzeRunsToolStripDropDownButton.Text = "&Analyze Runs...";
-      this.analyzeRunsToolStripDropDownButton.ToolTipText = "Show Run Analysis Views";
+      this.runPage.Controls.Add(this.itemsGroupBox);
+      this.runPage.Location = new System.Drawing.Point(4, 22);
+      this.runPage.Name = "runPage";
+      this.runPage.Padding = new System.Windows.Forms.Padding(3);
+      this.runPage.Size = new System.Drawing.Size(524, 357);
+      this.runPage.TabIndex = 0;
+      this.runPage.Text = "Runs";
+      this.runPage.UseVisualStyleBackColor = true;
+      // 
+      // constraintPage
+      // 
+      this.constraintPage.Controls.Add(this.runCollectionConstraintCollectionView);
+      this.constraintPage.Location = new System.Drawing.Point(4, 22);
+      this.constraintPage.Name = "constraintPage";
+      this.constraintPage.Padding = new System.Windows.Forms.Padding(3);
+      this.constraintPage.Size = new System.Drawing.Size(524, 357);
+      this.constraintPage.TabIndex = 1;
+      this.constraintPage.Text = "Filtering";
+      this.constraintPage.UseVisualStyleBackColor = true;
+      // 
+      // runCollectionConstraintCollectionView
+      // 
+      this.runCollectionConstraintCollectionView.Caption = "Filter";
+      this.runCollectionConstraintCollectionView.Content = null;
+      this.runCollectionConstraintCollectionView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.runCollectionConstraintCollectionView.Location = new System.Drawing.Point(3, 3);
+      this.runCollectionConstraintCollectionView.Name = "runCollectionConstraintCollectionView";
+      this.runCollectionConstraintCollectionView.ReadOnly = false;
+      this.runCollectionConstraintCollectionView.Size = new System.Drawing.Size(518, 351);
+      this.runCollectionConstraintCollectionView.TabIndex = 0;
       // 
       // RunCollectionView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.Controls.Add(this.itemsGroupBox);
+      this.Controls.Add(this.tabControl);
       this.Name = "RunCollectionView";
       this.Size = new System.Drawing.Size(532, 383);
       this.splitContainer.Panel1.ResumeLayout(false);
       this.splitContainer.Panel2.ResumeLayout(false);
       this.splitContainer.ResumeLayout(false);
-      this.detailsGroupBox.ResumeLayout(false);
-      this.itemsGroupBox.ResumeLayout(false);
       this.toolStrip.ResumeLayout(false);
       this.toolStrip.PerformLayout();
+      this.detailsGroupBox.ResumeLayout(false);
+      this.itemsGroupBox.ResumeLayout(false);
+      this.tabControl.ResumeLayout(false);
+      this.runPage.ResumeLayout(false);
+      this.constraintPage.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
@@ -231,5 +285,9 @@ namespace HeuristicLab.Optimization.Views {
     protected HeuristicLab.MainForm.WindowsForms.ViewHost viewHost;
     protected ToolStrip toolStrip;
     protected ToolStripDropDownButton analyzeRunsToolStripDropDownButton;
+    private TabControl tabControl;
+    private TabPage runPage;
+    private TabPage constraintPage;
+    private HeuristicLab.Core.Views.RunCollectionConstraintCollectionView runCollectionConstraintCollectionView;
   }
 }

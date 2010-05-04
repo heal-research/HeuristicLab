@@ -99,6 +99,30 @@
     <Compile Include="BatchRunView.Designer.cs">
       <DependentUpon>BatchRunView.cs</DependentUpon>
     </Compile>
+    <Compile Include="RunCollectioComparisonConstraintView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="RunCollectioComparisonConstraintView.Designer.cs">
+      <DependentUpon>RunCollectioComparisonConstraintView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RunCollectionTypeCompatibilityConstraintView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="RunCollectionTypeCompatibilityConstraintView.Designer.cs">
+      <DependentUpon>RunCollectionTypeCompatibilityConstraintView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RunCollectionConstraintCollectionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="RunCollectionConstraintCollectionView.Designer.cs">
+      <DependentUpon>RunCollectionConstraintCollectionView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RunCollectionConstraintView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="RunCollectionConstraintView.Designer.cs">
+      <DependentUpon>RunCollectionConstraintView.cs</DependentUpon>
+    </Compile>
     <Compile Include="OptimizerListView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -116,6 +140,12 @@
     </Compile>
     <Compile Include="RunCollectionBubbleChartView.Designer.cs">
       <DependentUpon>RunCollectionBubbleChartView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RunCollectionEqualityConstraintView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="RunCollectionEqualityConstraintView.Designer.cs">
+      <DependentUpon>RunCollectionEqualityConstraintView.cs</DependentUpon>
     </Compile>
     <Compile Include="RunCollectionTabularView.cs">
       <SubType>UserControl</SubType>
@@ -221,6 +251,11 @@
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="RunCollectioComparisonConstraintView.resx">
+      <DependentUpon>RunCollectioComparisonConstraintView.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
