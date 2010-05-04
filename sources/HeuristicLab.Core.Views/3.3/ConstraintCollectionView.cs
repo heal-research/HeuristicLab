@@ -42,8 +42,8 @@ namespace HeuristicLab.Core.Views {
     protected override IConstraint CreateItem() {
       if (typeSelectorDialog == null) {
         typeSelectorDialog = new TypeSelectorDialog();
-        typeSelectorDialog.Caption = "Select Operator";
-        typeSelectorDialog.TypeSelector.Caption = "Available Operators";
+        typeSelectorDialog.Caption = "Select Constraint";
+        typeSelectorDialog.TypeSelector.Caption = "Available Constraints";
         typeSelectorDialog.TypeSelector.Configure(typeof(IConstraint), false, true);
       }
 
