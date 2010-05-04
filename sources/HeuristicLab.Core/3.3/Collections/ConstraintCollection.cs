@@ -23,18 +23,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Data {
-  public interface IConstraint: IItem{
-    bool Active { get; set; }
-    IItem ConstrainedValue { get;}
-    ComparisonOperation ComparisonOperation { get; set; }
-    IEnumerable<ComparisonOperation> AllowedComparisonOperations { get; }
-    bool Check();
-
-    event EventHandler ActiveChanged;
-    event EventHandler ComparisonValueChanged;
-    event EventHandler ComparisonOperationChanged;
+namespace HeuristicLab.Core {
+  [StorableClass]
+  [Item("ConstraintCollection", "Represents a collection of constraints.")]
+  public class ConstraintCollection : ItemCollection<IConstraint> {
+    public ConstraintCollection() : base() { }
+    public ConstraintCollection(int capacity) : base(capacity) { }
+    public ConstraintCollection(IEnumerable<IConstraint> collection) : base(collection) { }
+    [StorableConstructor]
+    protected ConstraintCollection(bool deserializing) : base(deserializing) { }
   }
 }

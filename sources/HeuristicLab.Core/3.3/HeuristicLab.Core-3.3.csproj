@@ -124,6 +124,13 @@
     <Compile Include="Collections\ScopeList.cs" />
     <Compile Include="Collections\ValueParameterCollection.cs" />
     <Compile Include="Collections\VariableCollection.cs" />
+    <Compile Include="Constraints\ComparisonConstraint.cs" />
+    <Compile Include="Constraints\Constraint.cs" />
+    <Compile Include="Collections\ConstraintCollection.cs" />
+    <Compile Include="Constraints\ConstraintOperation.cs" />
+    <Compile Include="Constraints\EqualityConstraint.cs" />
+    <Compile Include="Constraints\IConstraint.cs" />
+    <Compile Include="Constraints\TypeCompatibilityConstraint.cs" />
     <Compile Include="Interfaces\ICheckedItemList.cs" />
     <Compile Include="Interfaces\ICheckedItemCollection.cs" />
     <Compile Include="PersistenceContentManager.cs" />

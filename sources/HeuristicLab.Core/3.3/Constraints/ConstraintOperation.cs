@@ -21,28 +21,27 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-namespace HeuristicLab.Data {
+namespace HeuristicLab.Core {
   [StorableClass]
-  public sealed class ComparisonOperation {
-    public static readonly ComparisonOperation Equal = new ComparisonOperation(0, "Equal");
-    public static readonly ComparisonOperation NotEqual = new ComparisonOperation(1, "Not equal");
-    public static readonly ComparisonOperation Lesser = new ComparisonOperation(2, "Lesser");
-    public static readonly ComparisonOperation LesserOrEqual = new ComparisonOperation(3, "Lesser or equal");
-    public static readonly ComparisonOperation Greater = new ComparisonOperation(4, "Greater");
-    public static readonly ComparisonOperation GreaterOrEqual = new ComparisonOperation(5, "Greater or equal");
-    public static readonly ComparisonOperation IsTypeOf = new ComparisonOperation(6, "Is type of");
-    public static readonly ComparisonOperation IsNotTypeOf = new ComparisonOperation(7, "Is not type of");
+  public class ConstraintOperation {
+    public static readonly ConstraintOperation Equal = new ConstraintOperation(0, "Equal");
+    public static readonly ConstraintOperation NotEqual = new ConstraintOperation(1, "Not equal");
+    public static readonly ConstraintOperation Lesser = new ConstraintOperation(2, "Lesser");
+    public static readonly ConstraintOperation LesserOrEqual = new ConstraintOperation(3, "Lesser or equal");
+    public static readonly ConstraintOperation Greater = new ConstraintOperation(4, "Greater");
+    public static readonly ConstraintOperation GreaterOrEqual = new ConstraintOperation(5, "Greater or equal");
+    public static readonly ConstraintOperation IsTypeCompatible = new ConstraintOperation(6, "Is type compatible to");
+    public static readonly ConstraintOperation IsTypeNotCompatible = new ConstraintOperation(7, "Is type not compatible to");
 
     [Storable]
     private int value;
     [Storable]
     private string name;
+
     [StorableConstructor]
-    private ComparisonOperation() {
-      value = -1;
-      name = "empty";
+    protected ConstraintOperation( bool deserializing) {
     }
-    private ComparisonOperation(int value, string name) {
+    protected ConstraintOperation(int value, string name) {
       this.value = value;
       this.name = name;
     }
@@ -52,18 +51,18 @@ namespace HeuristicLab.Data {
     }
 
     public override bool Equals(object obj) {
-      if (obj is ComparisonOperation)
-        return this == (ComparisonOperation)obj;
+      if (obj is ConstraintOperation)
+        return this == (ConstraintOperation)obj;
 
       return false;
     }
     public override int GetHashCode() {
       return value;
     }
-    public static bool operator ==(ComparisonOperation co1, ComparisonOperation co2) {
+    public static bool operator ==(ConstraintOperation co1, ConstraintOperation co2) {
       return co1.value == co2.value;
     }
-    public static bool operator !=(ComparisonOperation co1, ComparisonOperation co2) {
+    public static bool operator !=(ConstraintOperation co1, ConstraintOperation co2) {
       return !(co1 == co2);
     }
   }

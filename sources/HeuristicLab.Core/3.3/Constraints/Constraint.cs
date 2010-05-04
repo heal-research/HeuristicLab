@@ -23,26 +23,29 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using HeuristicLab.Core;
 using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Data {
+namespace HeuristicLab.Core {
   [StorableClass]
   public abstract class Constraint : Item, IConstraint {
-    /// <summary>
-    /// Protected default constructor for constructor chaining, cloning and persisting of constraints.
-    /// </summary>
-    [StorableConstructor]
     protected Constraint() {
-      this.Active = true;
+      this.Active = false;
     }
-
-    public Constraint(IItem constrainedValue,ComparisonOperation comparisonOperation, object comparisonValue)
+    [StorableConstructor]
+    protected Constraint(bool deserializing) {
+    }
+    protected Constraint(IItem constrainedValue, ConstraintOperation comparisonOperation, object comparisonValue)
       : this() {
       this.ConstrainedValue = constrainedValue;
-      this.ComparisonOperation = comparisonOperation;
-      this.ComparisonValue = comparisonValue;
+      this.ConstraintOperation = comparisonOperation;
+      this.ConstraintData = comparisonValue;
+    }
+    protected Constraint(IItem constrainedValue, ConstraintOperation comparisonOperation, object comparisonValue, bool active) {
+      this.ConstrainedValue = constrainedValue;
+      this.ConstraintOperation = comparisonOperation;
+      this.ConstraintData = comparisonValue;
+      this.Active = active;
     }
 
     [Storable]
@@ -72,31 +75,31 @@ namespace HeuristicLab.Data {
     }
 
     [Storable]
-    private object comparisonValue;
-    public object ComparisonValue {
-      get { return this.comparisonValue; }
+    private object constraintData;
+    public object ConstraintData {
+      get { return this.constraintData; }
       set {
-        if (this.comparisonValue != value) {
-          this.comparisonValue = value;
-          this.OnComparisonValueChanged();
+        if (this.constraintData != value) {
+          this.constraintData = value;
+          this.OnConstraintDataChanged();
           this.OnToStringChanged();
         }
       }
     }
 
-    public abstract IEnumerable<ComparisonOperation> AllowedComparisonOperations { get; }
+    public abstract IEnumerable<ConstraintOperation> AllowedConstraintOperations { get; }
     [Storable]
-    private ComparisonOperation comparisonOperation;
-    public ComparisonOperation ComparisonOperation {
-      get { return this.comparisonOperation; }
+    private ConstraintOperation constraintOperation;
+    public ConstraintOperation ConstraintOperation {
+      get { return this.constraintOperation; }
       set {
         if (value == null)
           throw new ArgumentNullException("Comparison operation cannot be null.");
-        if (!AllowedComparisonOperations.Contains(value))
+        if (!AllowedConstraintOperations.Contains(value))
           throw new ArgumentException("Comparison operation is not contained in the allowed ComparisonOperations.");
-        if (this.comparisonOperation != value) {
-          this.comparisonOperation = value;
-          this.OnComparisonOperationChanged();
+        if (this.constraintOperation != value) {
+          this.constraintOperation = value;
+          this.OnConstraintOperationChanged();
           this.OnToStringChanged();
         }
       }
@@ -118,6 +121,17 @@ namespace HeuristicLab.Data {
     }
     protected abstract bool Check(object constrainedMember);
 
+    public bool Check(out string errorMessage) {
+      errorMessage = string.Empty;
+      if (!Active)
+        return true;
+
+      IItem constrainedMember = this.GetConstrainedMember();
+      return this.Check(constrainedMember, out errorMessage);
+    }
+
+    protected abstract bool Check(object constrainedMember, out string errorMessage);
+
     #region events
     public event EventHandler ActiveChanged;
     protected virtual void OnActiveChanged() {
@@ -126,16 +140,16 @@ namespace HeuristicLab.Data {
         ActiveChanged(this, EventArgs.Empty);
     }
 
-    public event EventHandler ComparisonValueChanged;
-    protected virtual void OnComparisonValueChanged() {
-      EventHandler handler = ComparisonValueChanged;
+    public event EventHandler ConstraintDataChanged;
+    protected virtual void OnConstraintDataChanged() {
+      EventHandler handler = ConstraintDataChanged;
       if (handler != null)
         ActiveChanged(this, EventArgs.Empty);
     }
 
-    public event EventHandler ComparisonOperationChanged;
-    protected virtual void OnComparisonOperationChanged() {
-      EventHandler handler = ComparisonOperationChanged;
+    public event EventHandler ConstraintOperationChanged;
+    protected virtual void OnConstraintOperationChanged() {
+      EventHandler handler = ConstraintOperationChanged;
       if (handler != null)
         ActiveChanged(this, EventArgs.Empty);
     }
@@ -150,10 +164,10 @@ namespace HeuristicLab.Data {
       else
         return "Could not determine constraint value.";
 
-      s += " " + comparisonOperation.ToString() + " ";
+      s += " " + ConstraintOperation.ToString() + " ";
 
-      if (comparisonValue != null)
-        s += comparisonValue.ToString();
+      if (constraintData != null)
+        s += constraintData.ToString();
       else
         s += "null";
 
@@ -165,12 +179,16 @@ namespace HeuristicLab.Data {
       Constraint clone = (Constraint)base.Clone(cloner);
       clone.constrainedValue = (IItem)cloner.Clone(this.constrainedValue);
 
-      IItem comparisonItem = this.comparisonValue as IItem;
-      if (comparisonItem != null)
-        clone.comparisonValue = (IItem)cloner.Clone(comparisonItem);
+      IItem constraintDataItem = this.constraintData as IItem;
+      ICloneable constraintDataCloneable = this.constraintData as ICloneable;
+      if (constraintDataItem != null)
+        clone.constraintData = cloner.Clone(constraintDataItem);
+      else if (constraintDataCloneable != null)
+        clone.constraintData = constraintDataCloneable.Clone();
       else
-        clone.comparisonValue = comparisonValue;
-      clone.comparisonOperation = this.comparisonOperation;
+        clone.constraintData = constraintData;
+
+      clone.constraintOperation = this.constraintOperation;
 
       return clone;
     }
