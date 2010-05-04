@@ -81,8 +81,8 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     private ValueParameter<IntValue> PopulationSizeParameter {
       get { return (ValueParameter<IntValue>)Parameters["PopulationSize"]; }
     }
-    private ValueParameter<IntValue> MaximumMigrationsParameter {
-      get { return (ValueParameter<IntValue>)Parameters["MaximumMigrations"]; }
+    private ValueParameter<IntValue> MaximumGenerationsParameter {
+      get { return (ValueParameter<IntValue>)Parameters["MaximumGenerations"]; }
     }
     private ConstrainedValueParameter<ISelector> SelectorParameter {
       get { return (ConstrainedValueParameter<ISelector>)Parameters["Selector"]; }
@@ -141,9 +141,9 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       get { return PopulationSizeParameter.Value; }
       set { PopulationSizeParameter.Value = value; }
     }
-    public IntValue MaximumMigrations {
-      get { return MaximumMigrationsParameter.Value; }
-      set { MaximumMigrationsParameter.Value = value; }
+    public IntValue MaximumGenerations {
+      get { return MaximumGenerationsParameter.Value; }
+      set { MaximumGenerationsParameter.Value = value; }
     }
     public ISelector Selector {
       get { return SelectorParameter.Value; }
@@ -203,7 +203,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Parameters.Add(new ConstrainedValueParameter<ISelector>("EmigrantsSelector", "Selects the individuals that will be migrated."));
       Parameters.Add(new ConstrainedValueParameter<IReplacer>("ImmigrationReplacer", "Selects the population from the unification of the original population and the immigrants."));
       Parameters.Add(new ValueParameter<IntValue>("PopulationSize", "The size of the population of solutions.", new IntValue(100)));
-      Parameters.Add(new ValueParameter<IntValue>("MaximumMigrations", "The maximum number of migrations that should occur.", new IntValue(100)));
+      Parameters.Add(new ValueParameter<IntValue>("MaximumGenerations", "The maximum number of generations that should be processed.", new IntValue(1000)));
       Parameters.Add(new ConstrainedValueParameter<ISelector>("Selector", "The operator used to select solutions for reproduction."));
       Parameters.Add(new ConstrainedValueParameter<ICrossover>("Crossover", "The operator used to cross solutions."));
       Parameters.Add(new ValueParameter<PercentValue>("MutationProbability", "The probability that the mutation operator is applied on a solution.", new PercentValue(0.05)));
@@ -238,7 +238,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
 
       mainLoop.EmigrantsSelectorParameter.ActualName = EmigrantsSelectorParameter.Name;
       mainLoop.ImmigrationReplacerParameter.ActualName = ImmigrationReplacerParameter.Name;
-      mainLoop.MaximumMigrationsParameter.ActualName = MaximumMigrationsParameter.Name;
+      mainLoop.MaximumGenerationsParameter.ActualName = MaximumGenerationsParameter.Name;
       mainLoop.MigrationIntervalParameter.ActualName = MigrationIntervalParameter.Name;
       mainLoop.MigrationRateParameter.ActualName = MigrationRateParameter.Name;
       mainLoop.MigratorParameter.ActualName = MigratorParameter.Name;
