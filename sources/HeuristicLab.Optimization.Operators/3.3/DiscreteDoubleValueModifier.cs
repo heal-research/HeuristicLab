@@ -96,6 +96,10 @@ namespace HeuristicLab.Optimization.Operators {
       if (index >= startIndex) {
         int endIndex = EndIndexParameter.ActualValue.Value;
         DoubleValue value = ValueParameter.ActualValue;
+        if (value == null) {
+          value = new DoubleValue();
+          ValueParameter.ActualValue = value;
+        }
         double newValue = value.Value;
         if (index == startIndex) {
           newValue = StartValueParameter.ActualValue.Value;
@@ -105,8 +109,7 @@ namespace HeuristicLab.Optimization.Operators {
           double start = StartValueParameter.ActualValue.Value, end = EndValueParameter.ActualValue.Value;
           newValue = Modify(value.Value, start, end, index, startIndex, endIndex);
         }
-        if (value == null) value = new DoubleValue(newValue);
-        else value.Value = newValue;
+        value.Value = newValue;
       }
       return base.Apply();
     }
