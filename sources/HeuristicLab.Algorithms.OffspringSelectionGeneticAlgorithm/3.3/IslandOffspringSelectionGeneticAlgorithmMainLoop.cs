@@ -192,6 +192,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       QualityDifferenceCalculator islandQualityDifferenceCalculator2 = new QualityDifferenceCalculator();
       Placeholder islandVisualizer2 = new Placeholder();
       IntCounter islandEvaluatedSolutionsCounter = new IntCounter();
+      Assigner islandEvaluatedSolutionsAssigner = new Assigner();
       Comparator islandSelectionPressureComparator = new Comparator();
       ConditionalBranch islandTerminatedBySelectionPressure2 = new ConditionalBranch();
       IntCounter terminatedIslandsCounter = new IntCounter();
@@ -264,7 +265,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       islandResultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, BestKnownQualityParameter.Name));
       islandResultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Absolute Difference of Best Known Quality to Best Quality", null, "AbsoluteDifferenceBestKnownToBest"));
       islandResultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Relative Difference of Best Known Quality to Best Quality", null, "RelativeDifferenceBestKnownToBest"));
-      islandResultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "IslandEvaluatedSolutions"));
       islandResultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Curent Comparison Factor", null, "ComparisonFactor"));
       islandResultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Selection Pressure", null, "SelectionPressure"));
       islandResultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Success Ratio", null, "CurrentSuccessRatio"));
@@ -371,6 +371,10 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       islandEvaluatedSolutionsCounter.ValueParameter.ActualName = "EvaluatedSolutions";
       islandEvaluatedSolutionsCounter.Increment = null;
       islandEvaluatedSolutionsCounter.IncrementParameter.ActualName = "IslandEvaluatedSolutions";
+
+      islandEvaluatedSolutionsAssigner.Name = "Reset EvaluatedSolutions";
+      islandEvaluatedSolutionsAssigner.LeftSideParameter.ActualName = "IslandEvaluatedSolutions";
+      islandEvaluatedSolutionsAssigner.RightSideParameter.Value = new IntValue(0);
 
       islandSelectionPressureComparator.Name = "SelectionPressure >= MaximumSelectionPressure ?";
       islandSelectionPressureComparator.LeftSideParameter.ActualName = "SelectionPressure";
@@ -509,7 +513,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       islandDataTableValuesCollector4.Successor = islandQualityDifferenceCalculator2;
       islandQualityDifferenceCalculator2.Successor = islandVisualizer2;
       islandVisualizer2.Successor = islandEvaluatedSolutionsCounter;
-      islandEvaluatedSolutionsCounter.Successor = islandSelectionPressureComparator;
+      islandEvaluatedSolutionsCounter.Successor = islandEvaluatedSolutionsAssigner;
+      islandEvaluatedSolutionsAssigner.Successor = islandSelectionPressureComparator;
       islandSelectionPressureComparator.Successor = islandTerminatedBySelectionPressure2;
       islandTerminatedBySelectionPressure2.TrueBranch = terminatedIslandsCounter;
       islandTerminatedBySelectionPressure2.FalseBranch = null;

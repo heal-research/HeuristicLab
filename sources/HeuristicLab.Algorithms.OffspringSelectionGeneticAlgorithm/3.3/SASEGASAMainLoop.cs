@@ -90,6 +90,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     public ValueLookupParameter<DoubleValue> SuccessRatioParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["SuccessRatio"]; }
     }
+    public LookupParameter<DoubleValue> ComparisonFactorParameter {
+      get { return (LookupParameter<DoubleValue>)Parameters["ComparisonFactor"]; }
+    }
     public ValueLookupParameter<DoubleValue> ComparisonFactorLowerBoundParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["ComparisonFactorLowerBound"]; }
     }
@@ -134,6 +137,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new ValueLookupParameter<IOperator>("Visualizer", "The operator used to visualize solutions."));
       Parameters.Add(new LookupParameter<IItem>("Visualization", "The item which represents the visualization of solutions."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("SuccessRatio", "The ratio of successful to total children that should be achieved."));
+      Parameters.Add(new LookupParameter<DoubleValue>("ComparisonFactor", "The comparison factor is used to determine whether the offspring should be compared to the better parent, the worse parent or a quality value linearly interpolated between them. It is in the range [0;1]."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("ComparisonFactorLowerBound", "The lower bound of the comparison factor (start)."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("ComparisonFactorUpperBound", "The upper bound of the comparison factor (end)."));
       Parameters.Add(new ValueLookupParameter<IOperator>("ComparisonFactorModifier", "The operator used to modify the comparison factor."));
@@ -148,51 +152,67 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Assigner maxSelPressAssigner = new Assigner();
       Assigner villageCountAssigner = new Assigner();
       Assigner comparisonFactorInitializer = new Assigner();
-      UniformSubScopesProcessor ussp0 = new UniformSubScopesProcessor();
-      VariableCreator islandVariableCreator = new VariableCreator();
-      Assigner islandVariableAssigner = new Assigner();
+      UniformSubScopesProcessor uniformSubScopesProcessor0 = new UniformSubScopesProcessor();
+      VariableCreator villageVariableCreator = new VariableCreator();
+      BestQualityMemorizer villageBestQualityMemorizer1 = new BestQualityMemorizer();
+      BestAverageWorstQualityCalculator villageBestAverageWorstQualityCalculator1 = new BestAverageWorstQualityCalculator();
+      DataTableValuesCollector villageDataTableValuesCollector1 = new DataTableValuesCollector();
+      DataTableValuesCollector villageDataTableValuesCollector2 = new DataTableValuesCollector();
+      QualityDifferenceCalculator villageQualityDifferenceCalculator1 = new QualityDifferenceCalculator();
+      ResultsCollector villageResultsCollector = new ResultsCollector();
       BestQualityMemorizer bestQualityMemorizer1 = new BestQualityMemorizer();
-      BestAverageWorstQualityCalculator bestAverageWorstQualityCalculator1 = new BestAverageWorstQualityCalculator();
       BestQualityMemorizer bestQualityMemorizer2 = new BestQualityMemorizer();
-      BestAverageWorstQualityCalculator bestAverageWorstQualityCalculator2 = new BestAverageWorstQualityCalculator();
+      BestAverageWorstQualityCalculator bestAverageWorstQualityCalculator1 = new BestAverageWorstQualityCalculator();
       DataTableValuesCollector dataTableValuesCollector1 = new DataTableValuesCollector();
-      DataTableValuesCollector selPressValuesCollector1 = new DataTableValuesCollector();
+      DataTableValuesCollector dataTableValuesCollector2 = new DataTableValuesCollector();
       QualityDifferenceCalculator qualityDifferenceCalculator1 = new QualityDifferenceCalculator();
       ResultsCollector resultsCollector = new ResultsCollector();
-      Assigner fixedReunificationStepConditionInitializer = new Assigner();
-      UniformSubScopesProcessor ussp1 = new UniformSubScopesProcessor();
-      // MAINLOOP
-      OffspringSelectionGeneticAlgorithmMainLoop mainLoop = new OffspringSelectionGeneticAlgorithmMainLoop();
-      // MAINLOOP
-      Comparator sasegasaGenVillageGenComparator = new Comparator();
-      ConditionalBranch sasegasaGenerationsUpdateBranch = new ConditionalBranch();
-      Assigner sasegasaGenerationsUpdater = new Assigner();
-      ConditionalBranch villageMaximumGenerationsConditionalBranch1 = new ConditionalBranch();
-      Assigner fixedReunificationStepConditionUpdater = new Assigner();
-      ResultsCollector sasegasaGenerationsCollector = new ResultsCollector();
-      UniformSubScopesProcessor ussp2 = new UniformSubScopesProcessor();
-      ConditionalBranch villageMaximumGenerationsConditionalBranch2 = new ConditionalBranch();
-      Assigner villageMaximumGenerationsToGenerationsAssigner = new Assigner();
-      IntCounter villageMaximumGenerationsCounter = new IntCounter();
-      DataTableValuesCollector selPressValuesCollector2 = new DataTableValuesCollector();
-      Comparator villageCountComparator1 = new Comparator();
-      ConditionalBranch villageTerminationCondition1 = new ConditionalBranch();
+      UniformSubScopesProcessor uniformSubScopesProcessor1 = new UniformSubScopesProcessor();
+      ConditionalBranch villageTerminatedBySelectionPressure1 = new ConditionalBranch();
+      OffspringSelectionGeneticAlgorithmMainOperator mainOperator = new OffspringSelectionGeneticAlgorithmMainOperator();
+      BestQualityMemorizer villageBestQualityMemorizer2 = new BestQualityMemorizer();
+      BestAverageWorstQualityCalculator villageBestAverageWorstQualityCalculator2 = new BestAverageWorstQualityCalculator();
+      DataTableValuesCollector villageDataTableValuesCollector3 = new DataTableValuesCollector();
+      DataTableValuesCollector villageDataTableValuesCollector4 = new DataTableValuesCollector();
+      QualityDifferenceCalculator villageQualityDifferenceCalculator2 = new QualityDifferenceCalculator();
+      IntCounter evaluatedSolutionsCounter = new IntCounter();
+      Assigner villageEvaluatedSolutionsAssigner = new Assigner();
+      Comparator villageSelectionPressureComparator = new Comparator();
+      ConditionalBranch villageTerminatedBySelectionPressure2 = new ConditionalBranch();
+      IntCounter terminatedVillagesCounter = new IntCounter();
+      IntCounter generationsCounter = new IntCounter();
+      IntCounter generationsSinceLastReunificationCounter = new IntCounter();
+      Comparator reunificationComparator1 = new Comparator();
+      ConditionalBranch reunificationConditionalBranch1 = new ConditionalBranch();
+      Comparator reunificationComparator2 = new Comparator();
+      ConditionalBranch reunificationConditionalBranch2 = new ConditionalBranch();
+      Comparator reunificationComparator3 = new Comparator();
+      ConditionalBranch reunificationConditionalBranch3 = new ConditionalBranch();
+      Assigner resetTerminatedVillagesAssigner = new Assigner();
+      Assigner resetGenerationsSinceLastReunificationAssigner = new Assigner();
       SASEGASAReunificator reunificator = new SASEGASAReunificator();
       IntCounter reunificationCounter = new IntCounter();
       Placeholder comparisonFactorModifier = new Placeholder();
-      Comparator villageCountComparator2 = new Comparator();
-      ConditionalBranch villageTerminationCondition2 = new ConditionalBranch();
+      UniformSubScopesProcessor uniformSubScopesProcessor2 = new UniformSubScopesProcessor();
+      Assigner villageReviver = new Assigner();
+      Comparator villageCountComparator = new Comparator();
+      ConditionalBranch villageCountConditionalBranch = new ConditionalBranch();
       Assigner finalMaxSelPressAssigner = new Assigner();
       Comparator maximumGenerationsComparator = new Comparator();
       BestQualityMemorizer bestQualityMemorizer3 = new BestQualityMemorizer();
-      BestAverageWorstQualityCalculator bestAverageWorstQualityCalculator3 = new BestAverageWorstQualityCalculator();
-      DataTableValuesCollector dataTableValuesCollector2 = new DataTableValuesCollector();
+      BestQualityMemorizer bestQualityMemorizer4 = new BestQualityMemorizer();
+      BestAverageWorstQualityCalculator bestAverageWorstQualityCalculator2 = new BestAverageWorstQualityCalculator();
+      DataTableValuesCollector dataTableValuesCollector3 = new DataTableValuesCollector();
+      DataTableValuesCollector dataTableValuesCollector4 = new DataTableValuesCollector();
       QualityDifferenceCalculator qualityDifferenceCalculator2 = new QualityDifferenceCalculator();
-      ConditionalBranch villagesTerminationCondition3 = new ConditionalBranch();
+      ConditionalBranch terminationCondition = new ConditionalBranch();
       ConditionalBranch maximumGenerationsTerminationCondition = new ConditionalBranch();
 
-      // The generations of SASEGASA progress with the generations of its villages
-      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("SASEGASAGenerations", new IntValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Reunifications", new IntValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Generations", new IntValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("GenerationsSinceLastReunification", new IntValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedSolutions", new IntValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("TerminatedVillages", new IntValue(0)));
 
       villageCountAssigner.LeftSideParameter.ActualName = "VillageCount";
       villageCountAssigner.RightSideParameter.ActualName = NumberOfVillagesParameter.Name;
@@ -203,31 +223,63 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       comparisonFactorInitializer.LeftSideParameter.ActualName = "ComparisonFactor";
       comparisonFactorInitializer.RightSideParameter.ActualName = ComparisonFactorLowerBoundParameter.Name;
 
-      islandVariableCreator.CollectedValues.Add(new ValueParameter<ResultCollection>("VillageResults", new ResultCollection()));
-      islandVariableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("SelectionPressure", new DoubleValue(0)));
+      villageVariableCreator.CollectedValues.Add(new ValueParameter<ResultCollection>("VillageResults", new ResultCollection()));
+      villageVariableCreator.CollectedValues.Add(new ValueParameter<IntValue>("VillageEvaluatedSolutions", new IntValue(0)));
+      villageVariableCreator.CollectedValues.Add(new ValueParameter<BoolValue>("TerminateSelectionPressure", new BoolValue(false)));
+      villageVariableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("SelectionPressure", new DoubleValue(0)));
+      villageVariableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("CurrentSuccessRatio", new DoubleValue(0)));
 
-      islandVariableAssigner.LeftSideParameter.ActualName = "VillageMaximumGenerations";
-      islandVariableAssigner.RightSideParameter.ActualName = MigrationIntervalParameter.Name;
+      villageBestQualityMemorizer1.BestQualityParameter.ActualName = "BestQuality";
+      villageBestQualityMemorizer1.MaximizationParameter.ActualName = MaximizationParameter.Name;
+      villageBestQualityMemorizer1.QualityParameter.ActualName = QualityParameter.Name;
+
+      villageBestAverageWorstQualityCalculator1.AverageQualityParameter.ActualName = "CurrentAverageQuality";
+      villageBestAverageWorstQualityCalculator1.BestQualityParameter.ActualName = "CurrentBestQuality";
+      villageBestAverageWorstQualityCalculator1.MaximizationParameter.ActualName = MaximizationParameter.Name;
+      villageBestAverageWorstQualityCalculator1.QualityParameter.ActualName = QualityParameter.Name;
+      villageBestAverageWorstQualityCalculator1.WorstQualityParameter.ActualName = "CurrentWorstQuality";
+
+      villageDataTableValuesCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Best BestQuality", null, "CurrentBestQuality"));
+      villageDataTableValuesCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Average BestQuality", null, "CurrentAverageQuality"));
+      villageDataTableValuesCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Worst BestQuality", null, "CurrentWorstQuality"));
+      villageDataTableValuesCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
+      villageDataTableValuesCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, BestKnownQualityParameter.Name));
+      villageDataTableValuesCollector1.DataTableParameter.ActualName = "Qualities";
+
+      villageDataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Selection Pressure", null, "SelectionPressure"));
+      villageDataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Maximum Selection Pressure", null, "MaximumSelectionPressure"));
+      villageDataTableValuesCollector2.DataTableParameter.ActualName = "SelectionPressures";
+
+      villageQualityDifferenceCalculator1.AbsoluteDifferenceParameter.ActualName = "AbsoluteDifferenceBestKnownToBest";
+      villageQualityDifferenceCalculator1.FirstQualityParameter.ActualName = BestKnownQualityParameter.Name;
+      villageQualityDifferenceCalculator1.RelativeDifferenceParameter.ActualName = "RelativeDifferenceBestKnownToBest";
+      villageQualityDifferenceCalculator1.SecondQualityParameter.ActualName = "BestQuality";
+
+      villageResultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Success Ratio", null, "CurrentSuccessRatio"));
+      villageResultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Best Quality", null, "CurrentBestQuality"));
+      villageResultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Average Quality", null, "CurrentAverageQuality"));
+      villageResultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Worst Quality", null, "CurrentWorstQuality"));
+      villageResultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
+      villageResultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, BestKnownQualityParameter.Name));
+      villageResultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Absolute Difference of Best Known Quality to Best Quality", null, "AbsoluteDifferenceBestKnownToBest"));
+      villageResultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Relative Difference of Best Known Quality to Best Quality", null, "RelativeDifferenceBestKnownToBest"));
+      villageResultsCollector.CollectedValues.Add(new LookupParameter<DataTable>("Qualities"));
+      villageResultsCollector.CollectedValues.Add(new LookupParameter<DataTable>("SelectionPressures"));
+      villageResultsCollector.ResultsParameter.ActualName = "VillageResults";
 
       bestQualityMemorizer1.BestQualityParameter.ActualName = "BestQuality";
       bestQualityMemorizer1.MaximizationParameter.ActualName = MaximizationParameter.Name;
-      bestQualityMemorizer1.QualityParameter.ActualName = QualityParameter.Name;
+      bestQualityMemorizer1.QualityParameter.ActualName = "BestQuality";
 
-      bestAverageWorstQualityCalculator1.AverageQualityParameter.ActualName = "CurrentAverageQuality";
-      bestAverageWorstQualityCalculator1.BestQualityParameter.ActualName = "CurrentBestQuality";
-      bestAverageWorstQualityCalculator1.MaximizationParameter.ActualName = MaximizationParameter.Name;
-      bestAverageWorstQualityCalculator1.QualityParameter.ActualName = QualityParameter.Name;
-      bestAverageWorstQualityCalculator1.WorstQualityParameter.ActualName = "CurrentWorstQuality";
-
-      bestQualityMemorizer2.BestQualityParameter.ActualName = "BestQuality";
+      bestQualityMemorizer2.BestQualityParameter.ActualName = BestKnownQualityParameter.Name;
       bestQualityMemorizer2.MaximizationParameter.ActualName = MaximizationParameter.Name;
       bestQualityMemorizer2.QualityParameter.ActualName = "BestQuality";
 
-      bestAverageWorstQualityCalculator2.AverageQualityParameter.ActualName = "CurrentAverageBestQuality";
-      bestAverageWorstQualityCalculator2.BestQualityParameter.ActualName = "CurrentBestBestQuality";
-      bestAverageWorstQualityCalculator2.MaximizationParameter.ActualName = MaximizationParameter.Name;
-      bestAverageWorstQualityCalculator2.QualityParameter.ActualName = "CurrentBestQuality";
-      bestAverageWorstQualityCalculator2.WorstQualityParameter.ActualName = "CurrentWorstBestQuality";
+      bestAverageWorstQualityCalculator1.AverageQualityParameter.ActualName = "CurrentAverageBestQuality";
+      bestAverageWorstQualityCalculator1.BestQualityParameter.ActualName = "CurrentBestBestQuality";
+      bestAverageWorstQualityCalculator1.MaximizationParameter.ActualName = MaximizationParameter.Name;
+      bestAverageWorstQualityCalculator1.QualityParameter.ActualName = "CurrentBestQuality";
+      bestAverageWorstQualityCalculator1.WorstQualityParameter.ActualName = "CurrentWorstBestQuality";
 
       dataTableValuesCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Best BestQuality", null, "CurrentBestBestQuality"));
       dataTableValuesCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Average BestQuality", null, "CurrentAverageBestQuality"));
@@ -236,16 +288,18 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       dataTableValuesCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, BestKnownQualityParameter.Name));
       dataTableValuesCollector1.DataTableParameter.ActualName = "BestQualities";
 
-      selPressValuesCollector1.CollectedValues.Add(new SubScopesLookupParameter<DoubleValue>("Selection Pressure Village", null, "SelectionPressure"));
-      selPressValuesCollector1.DataTableParameter.ActualName = "VillagesSelectionPressures";
+      dataTableValuesCollector2.CollectedValues.Add(new SubScopesLookupParameter<DoubleValue>("Selection Pressure Village", null, "SelectionPressure"));
+      dataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Maximum Selection Pressure", null, "MaximumSelectionPressure"));
+      dataTableValuesCollector2.DataTableParameter.ActualName = "VillageSelectionPressures";
 
       qualityDifferenceCalculator1.AbsoluteDifferenceParameter.ActualName = "AbsoluteDifferenceBestKnownToBest";
       qualityDifferenceCalculator1.FirstQualityParameter.ActualName = BestKnownQualityParameter.Name;
       qualityDifferenceCalculator1.RelativeDifferenceParameter.ActualName = "RelativeDifferenceBestKnownToBest";
       qualityDifferenceCalculator1.SecondQualityParameter.ActualName = "BestQuality";
 
-      resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Generations", null, "SASEGASAGenerations"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Current Villages", null, "VillageCount"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Generations"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutions"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Active Villages", null, "VillageCount"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Best BestQuality", null, "CurrentBestBestQuality"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Average BestQuality", null, "CurrentAverageBestQuality"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Worst BestQuality", null, "CurrentWorstBestQuality"));
@@ -254,76 +308,121 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Absolute Difference of Best Known Quality to Best Quality", null, "AbsoluteDifferenceBestKnownToBest"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Relative Difference of Best Known Quality to Best Quality", null, "RelativeDifferenceBestKnownToBest"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DataTable>("BestQualities"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DataTable>("VillagesSelectionPressures"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<DataTable>("VillageSelectionPressures"));
       resultsCollector.CollectedValues.Add(new SubScopesLookupParameter<ResultCollection>("VillageResults", "Result set for each village"));
       resultsCollector.ResultsParameter.ActualName = ResultsParameter.Name;
 
-      fixedReunificationStepConditionInitializer.LeftSideParameter.ActualName = "PerformFixedReunification";
-      fixedReunificationStepConditionInitializer.RightSideParameter.Value = new BoolValue(false);
+      villageTerminatedBySelectionPressure1.Name = "Village Terminated ?";
+      villageTerminatedBySelectionPressure1.ConditionParameter.ActualName = "TerminateSelectionPressure";
 
-      mainLoop.BestKnownQualityParameter.ActualName = BestKnownQualityParameter.Name;
-      mainLoop.MaximizationParameter.ActualName = MaximizationParameter.Name;
-      mainLoop.QualityParameter.ActualName = QualityParameter.Name;
-      mainLoop.SelectorParameter.ActualName = SelectorParameter.Name;
-      mainLoop.CrossoverParameter.ActualName = CrossoverParameter.Name;
-      mainLoop.ElitesParameter.ActualName = ElitesParameter.Name;
-      mainLoop.MaximumGenerationsParameter.ActualName = "VillageMaximumGenerations";
-      mainLoop.MutatorParameter.ActualName = MutatorParameter.Name;
-      mainLoop.EvaluatorParameter.ActualName = EvaluatorParameter.Name;
-      mainLoop.MutationProbabilityParameter.ActualName = MutationProbabilityParameter.Name;
-      mainLoop.RandomParameter.ActualName = RandomParameter.Name;
-      mainLoop.ResultsParameter.ActualName = "VillageResults";
-      mainLoop.VisualizerParameter.ActualName = VisualizerParameter.Name;
-      mainLoop.VisualizationParameter.ActualName = VisualizationParameter.Name;
-      mainLoop.SuccessRatioParameter.ActualName = SuccessRatioParameter.Name;
-      mainLoop.ComparisonFactorLowerBoundParameter.ActualName = ComparisonFactorLowerBoundParameter.Name;
-      mainLoop.ComparisonFactorModifierParameter.Value = new EmptyOperator(); // comparison factor is modified here
-      mainLoop.ComparisonFactorUpperBoundParameter.ActualName = ComparisonFactorUpperBoundParameter.Name;
-      mainLoop.MaximumSelectionPressureParameter.ActualName = "CurrentMaximumSelectionPressure";
-      mainLoop.OffspringSelectionBeforeMutationParameter.ActualName = OffspringSelectionBeforeMutationParameter.Name;
+      mainOperator.ComparisonFactorParameter.ActualName = ComparisonFactorParameter.Name;
+      mainOperator.CrossoverParameter.ActualName = CrossoverParameter.Name;
+      mainOperator.CurrentSuccessRatioParameter.ActualName = "CurrentSuccessRatio";
+      mainOperator.ElitesParameter.ActualName = ElitesParameter.Name;
+      mainOperator.EvaluatedSolutionsParameter.ActualName = "VillageEvaluatedSolutions";
+      mainOperator.EvaluatorParameter.ActualName = EvaluatorParameter.Name;
+      mainOperator.MaximizationParameter.ActualName = MaximizationParameter.Name;
+      mainOperator.MaximumSelectionPressureParameter.ActualName = "CurrentMaximumSelectionPressure";
+      mainOperator.MutationProbabilityParameter.ActualName = MutationProbabilityParameter.Name;
+      mainOperator.MutatorParameter.ActualName = MutatorParameter.Name;
+      mainOperator.OffspringSelectionBeforeMutationParameter.ActualName = OffspringSelectionBeforeMutationParameter.Name;
+      mainOperator.QualityParameter.ActualName = QualityParameter.Name;
+      mainOperator.RandomParameter.ActualName = RandomParameter.Name;
+      mainOperator.SelectionPressureParameter.ActualName = "SelectionPressure";
+      mainOperator.SelectorParameter.ActualName = SelectorParameter.Name;
+      mainOperator.SuccessRatioParameter.ActualName = SuccessRatioParameter.Name;
 
-      // SASEGASAGenerations is the maximum of all village generations
-      sasegasaGenVillageGenComparator.LeftSideParameter.ActualName = "SASEGASAGenerations";
-      sasegasaGenVillageGenComparator.RightSideParameter.ActualName = "Generations";
-      sasegasaGenVillageGenComparator.Comparison = new Comparison(ComparisonType.Less);
-      sasegasaGenVillageGenComparator.ResultParameter.ActualName = "UpdateSASEGASAGenerations";
+      villageBestQualityMemorizer2.BestQualityParameter.ActualName = "BestQuality";
+      villageBestQualityMemorizer2.MaximizationParameter.ActualName = MaximizationParameter.Name;
+      villageBestQualityMemorizer2.QualityParameter.ActualName = QualityParameter.Name;
 
-      sasegasaGenerationsUpdateBranch.ConditionParameter.ActualName = "UpdateSASEGASAGenerations";
+      villageBestAverageWorstQualityCalculator2.AverageQualityParameter.ActualName = "CurrentAverageQuality";
+      villageBestAverageWorstQualityCalculator2.BestQualityParameter.ActualName = "CurrentBestQuality";
+      villageBestAverageWorstQualityCalculator2.MaximizationParameter.ActualName = MaximizationParameter.Name;
+      villageBestAverageWorstQualityCalculator2.QualityParameter.ActualName = QualityParameter.Name;
+      villageBestAverageWorstQualityCalculator2.WorstQualityParameter.ActualName = "CurrentWorstQuality";
 
-      sasegasaGenerationsUpdater.LeftSideParameter.ActualName = "SASEGASAGenerations";
-      sasegasaGenerationsUpdater.RightSideParameter.ActualName = "Generations";
+      villageDataTableValuesCollector3.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Best BestQuality", null, "CurrentBestQuality"));
+      villageDataTableValuesCollector3.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Average BestQuality", null, "CurrentAverageQuality"));
+      villageDataTableValuesCollector3.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Worst BestQuality", null, "CurrentWorstQuality"));
+      villageDataTableValuesCollector3.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
+      villageDataTableValuesCollector3.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, BestKnownQualityParameter.Name));
+      villageDataTableValuesCollector3.DataTableParameter.ActualName = "Qualities";
 
-      // check if the village has terminated due to reaching maximum generations (in that case we need to increase in each village the maximum generations by the migration interval)
-      villageMaximumGenerationsConditionalBranch1.ConditionParameter.ActualName = "TerminateMaximumGenerations";
+      villageDataTableValuesCollector4.CollectedValues.Add(new LookupParameter<DoubleValue>("Selection Pressure", null, "SelectionPressure"));
+      villageDataTableValuesCollector4.CollectedValues.Add(new LookupParameter<DoubleValue>("Maximum Selection Pressure", null, "MaximumSelectionPressure"));
+      villageDataTableValuesCollector4.DataTableParameter.ActualName = "SelectionPressures";
 
-      fixedReunificationStepConditionUpdater.LeftSideParameter.ActualName = "PerformFixedReunification";
-      fixedReunificationStepConditionUpdater.RightSideParameter.Value = new BoolValue(true);
+      villageQualityDifferenceCalculator2.AbsoluteDifferenceParameter.ActualName = "AbsoluteDifferenceBestKnownToBest";
+      villageQualityDifferenceCalculator2.FirstQualityParameter.ActualName = BestKnownQualityParameter.Name;
+      villageQualityDifferenceCalculator2.RelativeDifferenceParameter.ActualName = "RelativeDifferenceBestKnownToBest";
+      villageQualityDifferenceCalculator2.SecondQualityParameter.ActualName = "BestQuality";
 
-      sasegasaGenerationsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Generations", null, "SASEGASAGenerations"));
+      evaluatedSolutionsCounter.Name = "Update EvaluatedSolutions";
+      evaluatedSolutionsCounter.ValueParameter.ActualName = "EvaluatedSolutions";
+      evaluatedSolutionsCounter.Increment = null;
+      evaluatedSolutionsCounter.IncrementParameter.ActualName = "VillageEvaluatedSolutions";
 
-      villageMaximumGenerationsConditionalBranch2.ConditionParameter.ActualName = "PerformFixedReunification";
+      villageEvaluatedSolutionsAssigner.Name = "Reset EvaluatedSolutions";
+      villageEvaluatedSolutionsAssigner.LeftSideParameter.ActualName = "VillageEvaluatedSolutions";
+      villageEvaluatedSolutionsAssigner.RightSideParameter.Value = new IntValue(0);
 
-      // if the village terminated because of maximum generations first set the maxgen of a village back to its generation
-      villageMaximumGenerationsToGenerationsAssigner.LeftSideParameter.ActualName = "VillageMaximumGenerations";
-      villageMaximumGenerationsToGenerationsAssigner.RightSideParameter.ActualName = "Generations";
+      villageSelectionPressureComparator.Name = "SelectionPressure >= MaximumSelectionPressure ?";
+      villageSelectionPressureComparator.LeftSideParameter.ActualName = "SelectionPressure";
+      villageSelectionPressureComparator.Comparison = new Comparison(ComparisonType.GreaterOrEqual);
+      villageSelectionPressureComparator.RightSideParameter.ActualName = MaximumSelectionPressureParameter.Name;
+      villageSelectionPressureComparator.ResultParameter.ActualName = "TerminateSelectionPressure";
 
-      // if the village terminated because of maximum generations and then increase the maximum generations by the fixed migration interval
-      villageMaximumGenerationsCounter.ValueParameter.ActualName = "VillageMaximumGenerations";
-      villageMaximumGenerationsCounter.Increment = null;
-      villageMaximumGenerationsCounter.IncrementParameter.ActualName = "MigrationInterval";
+      villageTerminatedBySelectionPressure2.Name = "Village Terminated ?";
+      villageTerminatedBySelectionPressure2.ConditionParameter.ActualName = "TerminateSelectionPressure";
 
-      selPressValuesCollector2.CollectedValues.Add(new SubScopesLookupParameter<DoubleValue>("Selection Pressure Village", null, "SelectionPressure"));
-      selPressValuesCollector2.DataTableParameter.ActualName = "VillagesSelectionPressures";
+      terminatedVillagesCounter.Name = "TerminatedVillages + 1";
+      terminatedVillagesCounter.ValueParameter.ActualName = "TerminatedVillages";
+      terminatedVillagesCounter.Increment = new IntValue(1);
 
-      // if there's just one island left and we're getting to this point SASEGASA terminates
-      villageCountComparator1.Name = "VillageCount <= 1 ?";
-      villageCountComparator1.LeftSideParameter.ActualName = "VillageCount";
-      villageCountComparator1.RightSideParameter.Value = new IntValue(1);
-      villageCountComparator1.Comparison.Value = ComparisonType.LessOrEqual;
-      villageCountComparator1.ResultParameter.ActualName = "TerminateVillages";
+      generationsCounter.Name = "Generations + 1";
+      generationsCounter.ValueParameter.ActualName = "Generations";
+      generationsCounter.Increment = new IntValue(1);
 
-      villageTerminationCondition1.Name = "Skip reunification?";
-      villageTerminationCondition1.ConditionParameter.ActualName = "TerminateVillages";
+      generationsSinceLastReunificationCounter.Name = "GenerationsSinceLastReunification + 1";
+      generationsSinceLastReunificationCounter.ValueParameter.ActualName = "GenerationsSinceLastReunification";
+      generationsSinceLastReunificationCounter.Increment = new IntValue(1);
+
+      reunificationComparator1.Name = "TerminatedVillages = VillageCount ?";
+      reunificationComparator1.LeftSideParameter.ActualName = "TerminatedVillages";
+      reunificationComparator1.Comparison = new Comparison(ComparisonType.Equal);
+      reunificationComparator1.RightSideParameter.ActualName = "VillageCount";
+      reunificationComparator1.ResultParameter.ActualName = "Reunificate";
+
+      reunificationConditionalBranch1.Name = "Reunificate ?";
+      reunificationConditionalBranch1.ConditionParameter.ActualName = "Reunificate";
+
+      reunificationComparator2.Name = "GenerationsSinceLastReunification = MigrationInterval ?";
+      reunificationComparator2.LeftSideParameter.ActualName = "GenerationsSinceLastReunification";
+      reunificationComparator2.Comparison = new Comparison(ComparisonType.Equal);
+      reunificationComparator2.RightSideParameter.ActualName = "MigrationInterval";
+      reunificationComparator2.ResultParameter.ActualName = "Reunificate";
+
+      reunificationConditionalBranch2.Name = "Reunificate ?";
+      reunificationConditionalBranch2.ConditionParameter.ActualName = "Reunificate";
+
+      // if there's just one village left and we're getting to this point SASEGASA terminates
+      reunificationComparator3.Name = "VillageCount <= 1 ?";
+      reunificationComparator3.LeftSideParameter.ActualName = "VillageCount";
+      reunificationComparator3.RightSideParameter.Value = new IntValue(1);
+      reunificationComparator3.Comparison.Value = ComparisonType.LessOrEqual;
+      reunificationComparator3.ResultParameter.ActualName = "TerminateSASEGASA";
+
+      reunificationConditionalBranch3.Name = "Skip reunification?";
+      reunificationConditionalBranch3.ConditionParameter.ActualName = "TerminateSASEGASA";
+
+      resetTerminatedVillagesAssigner.Name = "Reset TerminatedVillages";
+      resetTerminatedVillagesAssigner.LeftSideParameter.ActualName = "TerminatedVillages";
+      resetTerminatedVillagesAssigner.RightSideParameter.Value = new IntValue(0);
+
+      resetGenerationsSinceLastReunificationAssigner.Name = "Reset GenerationsSinceLastReunification";
+      resetGenerationsSinceLastReunificationAssigner.LeftSideParameter.ActualName = "GenerationsSinceLastReunification";
+      resetGenerationsSinceLastReunificationAssigner.RightSideParameter.Value = new IntValue(0);
 
       reunificator.VillageCountParameter.ActualName = "VillageCount";
 
@@ -332,20 +431,24 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
 
       comparisonFactorModifier.OperatorParameter.ActualName = ComparisonFactorModifierParameter.Name;
 
-      villageCountComparator2.Name = "VillageCount == 1 ?";
-      villageCountComparator2.LeftSideParameter.ActualName = "VillageCount";
-      villageCountComparator2.RightSideParameter.Value = new IntValue(1);
-      villageCountComparator2.Comparison.Value = ComparisonType.Equal;
-      villageCountComparator2.ResultParameter.ActualName = "ChangeMaxSelPress";
+      villageReviver.Name = "Village Reviver";
+      villageReviver.LeftSideParameter.ActualName = "TerminateSelectionPressure";
+      villageReviver.RightSideParameter.Value = new BoolValue(false);
 
-      villageTerminationCondition2.Name = "Change max selection pressure?";
-      villageTerminationCondition2.ConditionParameter.ActualName = "ChangeMaxSelPress";
+      villageCountComparator.Name = "VillageCount == 1 ?";
+      villageCountComparator.LeftSideParameter.ActualName = "VillageCount";
+      villageCountComparator.RightSideParameter.Value = new IntValue(1);
+      villageCountComparator.Comparison.Value = ComparisonType.Equal;
+      villageCountComparator.ResultParameter.ActualName = "ChangeMaxSelPress";
+
+      villageCountConditionalBranch.Name = "Change max selection pressure?";
+      villageCountConditionalBranch.ConditionParameter.ActualName = "ChangeMaxSelPress";
 
       finalMaxSelPressAssigner.LeftSideParameter.ActualName = "CurrentMaximumSelectionPressure";
       finalMaxSelPressAssigner.RightSideParameter.ActualName = FinalMaximumSelectionPressureParameter.Name;
 
-      // if SASEGASAGenerations is reaching MaximumGenerations we're also terminating
-      maximumGenerationsComparator.LeftSideParameter.ActualName = "SASEGASAGenerations";
+      // if Generations is reaching MaximumGenerations we're also terminating
+      maximumGenerationsComparator.LeftSideParameter.ActualName = "Generations";
       maximumGenerationsComparator.RightSideParameter.ActualName = MaximumGenerationsParameter.Name;
       maximumGenerationsComparator.Comparison = new Comparison(ComparisonType.GreaterOrEqual);
       maximumGenerationsComparator.ResultParameter.ActualName = "TerminateMaximumGenerations";
@@ -354,87 +457,114 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       bestQualityMemorizer3.MaximizationParameter.ActualName = MaximizationParameter.Name;
       bestQualityMemorizer3.QualityParameter.ActualName = "BestQuality";
 
-      bestAverageWorstQualityCalculator3.AverageQualityParameter.ActualName = "CurrentAverageBestQuality";
-      bestAverageWorstQualityCalculator3.BestQualityParameter.ActualName = "CurrentBestBestQuality";
-      bestAverageWorstQualityCalculator3.MaximizationParameter.ActualName = MaximizationParameter.Name;
-      bestAverageWorstQualityCalculator3.QualityParameter.ActualName = "CurrentBestQuality";
-      bestAverageWorstQualityCalculator3.WorstQualityParameter.ActualName = "CurrentWorstBestQuality";
+      bestQualityMemorizer4.BestQualityParameter.ActualName = "BestQuality";
+      bestQualityMemorizer4.MaximizationParameter.ActualName = MaximizationParameter.Name;
+      bestQualityMemorizer4.QualityParameter.ActualName = "BestQuality";
 
-      dataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Best BestQuality", null, "CurrentBestBestQuality"));
-      dataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Average BestQuality", null, "CurrentAverageBestQuality"));
-      dataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Worst BestQuality", null, "CurrentWorstBestQuality"));
-      dataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
-      dataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, BestKnownQualityParameter.Name));
-      dataTableValuesCollector2.DataTableParameter.ActualName = "BestQualities";
+      bestAverageWorstQualityCalculator2.AverageQualityParameter.ActualName = "CurrentAverageBestQuality";
+      bestAverageWorstQualityCalculator2.BestQualityParameter.ActualName = "CurrentBestBestQuality";
+      bestAverageWorstQualityCalculator2.MaximizationParameter.ActualName = MaximizationParameter.Name;
+      bestAverageWorstQualityCalculator2.QualityParameter.ActualName = "CurrentBestQuality";
+      bestAverageWorstQualityCalculator2.WorstQualityParameter.ActualName = "CurrentWorstBestQuality";
+
+      dataTableValuesCollector3.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Best BestQuality", null, "CurrentBestBestQuality"));
+      dataTableValuesCollector3.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Average BestQuality", null, "CurrentAverageBestQuality"));
+      dataTableValuesCollector3.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Worst BestQuality", null, "CurrentWorstBestQuality"));
+      dataTableValuesCollector3.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
+      dataTableValuesCollector3.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, BestKnownQualityParameter.Name));
+      dataTableValuesCollector3.DataTableParameter.ActualName = "BestQualities";
+
+      dataTableValuesCollector4.CollectedValues.Add(new SubScopesLookupParameter<DoubleValue>("Selection Pressure Village", null, "SelectionPressure"));
+      dataTableValuesCollector4.CollectedValues.Add(new LookupParameter<DoubleValue>("Maximum Selection Pressure", null, "MaximumSelectionPressure"));
+      dataTableValuesCollector4.DataTableParameter.ActualName = "VillageSelectionPressures";
 
       qualityDifferenceCalculator2.AbsoluteDifferenceParameter.ActualName = "AbsoluteDifferenceBestKnownToBest";
       qualityDifferenceCalculator2.FirstQualityParameter.ActualName = BestKnownQualityParameter.Name;
       qualityDifferenceCalculator2.RelativeDifferenceParameter.ActualName = "RelativeDifferenceBestKnownToBest";
       qualityDifferenceCalculator2.SecondQualityParameter.ActualName = "BestQuality";
 
-      villagesTerminationCondition3.ConditionParameter.ActualName = "TerminateVillages";
-      villageMaximumGenerationsConditionalBranch1.ConditionParameter.ActualName = "TerminateMaximumGenerations";
+      terminationCondition.ConditionParameter.ActualName = "TerminateSASEGASA";
+      maximumGenerationsTerminationCondition.ConditionParameter.ActualName = "TerminateMaximumGenerations";
       #endregion
 
       #region Create operator graph
       OperatorGraph.InitialOperator = variableCreator;
-      variableCreator.Successor = villageCountAssigner;
-      villageCountAssigner.Successor = maxSelPressAssigner;
-      maxSelPressAssigner.Successor = comparisonFactorInitializer;
-      comparisonFactorInitializer.Successor = ussp0;
-      ussp0.Operator = islandVariableCreator;
-      ussp0.Successor = bestQualityMemorizer2;
-      islandVariableCreator.Successor = islandVariableAssigner;
-      islandVariableAssigner.Successor = bestQualityMemorizer1;
-      bestQualityMemorizer1.Successor = bestAverageWorstQualityCalculator1;
-      bestQualityMemorizer2.Successor = bestAverageWorstQualityCalculator2;
-      bestAverageWorstQualityCalculator2.Successor = dataTableValuesCollector1;
-      dataTableValuesCollector1.Successor = selPressValuesCollector1;
-      selPressValuesCollector1.Successor = qualityDifferenceCalculator1;
+      variableCreator.Successor = maxSelPressAssigner;
+      maxSelPressAssigner.Successor = villageCountAssigner;
+      villageCountAssigner.Successor = comparisonFactorInitializer;
+      comparisonFactorInitializer.Successor = uniformSubScopesProcessor0;
+      uniformSubScopesProcessor0.Operator = villageVariableCreator;
+      uniformSubScopesProcessor0.Successor = bestQualityMemorizer1;
+      villageVariableCreator.Successor = villageBestQualityMemorizer1;
+      villageBestQualityMemorizer1.Successor = villageBestAverageWorstQualityCalculator1;
+      villageBestAverageWorstQualityCalculator1.Successor = villageDataTableValuesCollector1;
+      villageDataTableValuesCollector1.Successor = villageDataTableValuesCollector2;
+      villageDataTableValuesCollector2.Successor = villageQualityDifferenceCalculator1;
+      villageQualityDifferenceCalculator1.Successor = villageResultsCollector;
+      bestQualityMemorizer1.Successor = bestQualityMemorizer2;
+      bestQualityMemorizer2.Successor = bestAverageWorstQualityCalculator1;
+      bestAverageWorstQualityCalculator1.Successor = dataTableValuesCollector1;
+      dataTableValuesCollector1.Successor = dataTableValuesCollector2;
+      dataTableValuesCollector2.Successor = qualityDifferenceCalculator1;
       qualityDifferenceCalculator1.Successor = resultsCollector;
-      resultsCollector.Successor = fixedReunificationStepConditionInitializer;
-      fixedReunificationStepConditionInitializer.Successor = ussp1;
-      ussp1.Operator = mainLoop;
-      ussp1.Successor = sasegasaGenerationsCollector;
-      mainLoop.Successor = sasegasaGenVillageGenComparator;
-      sasegasaGenVillageGenComparator.Successor = sasegasaGenerationsUpdateBranch;
-      sasegasaGenerationsUpdateBranch.TrueBranch = sasegasaGenerationsUpdater;
-      sasegasaGenerationsUpdateBranch.FalseBranch = null;
-      sasegasaGenerationsUpdateBranch.Successor = villageMaximumGenerationsConditionalBranch1;
-      villageMaximumGenerationsConditionalBranch1.TrueBranch = fixedReunificationStepConditionUpdater;
-      villageMaximumGenerationsConditionalBranch1.FalseBranch = null;
-      villageMaximumGenerationsConditionalBranch1.Successor = null;
-      sasegasaGenerationsCollector.Successor = ussp2;
-      ussp2.Operator = villageMaximumGenerationsConditionalBranch2;
-      ussp2.Successor = selPressValuesCollector2;
-      villageMaximumGenerationsConditionalBranch2.TrueBranch = villageMaximumGenerationsToGenerationsAssigner;
-      villageMaximumGenerationsConditionalBranch2.FalseBranch = null;
-      villageMaximumGenerationsConditionalBranch2.Successor = null;
-      villageMaximumGenerationsToGenerationsAssigner.Successor = villageMaximumGenerationsCounter;
-      villageMaximumGenerationsCounter.Successor = null;
-      selPressValuesCollector2.Successor = villageCountComparator1;
-      villageCountComparator1.Successor = villageTerminationCondition1;
-      villageTerminationCondition1.TrueBranch = null;
-      villageTerminationCondition1.FalseBranch = reunificator;
-      villageTerminationCondition1.Successor = maximumGenerationsComparator;
+      resultsCollector.Successor = uniformSubScopesProcessor1;
+      uniformSubScopesProcessor1.Operator = villageTerminatedBySelectionPressure1;
+      uniformSubScopesProcessor1.Successor = generationsCounter;
+      villageTerminatedBySelectionPressure1.TrueBranch = null;
+      villageTerminatedBySelectionPressure1.FalseBranch = mainOperator;
+      villageTerminatedBySelectionPressure1.Successor = null;
+      mainOperator.Successor = villageBestQualityMemorizer2;
+      villageBestQualityMemorizer2.Successor = villageBestAverageWorstQualityCalculator2;
+      villageBestAverageWorstQualityCalculator2.Successor = villageDataTableValuesCollector3;
+      villageDataTableValuesCollector3.Successor = villageDataTableValuesCollector4;
+      villageDataTableValuesCollector4.Successor = villageQualityDifferenceCalculator2;
+      villageQualityDifferenceCalculator2.Successor = evaluatedSolutionsCounter;
+      evaluatedSolutionsCounter.Successor = villageEvaluatedSolutionsAssigner;
+      villageEvaluatedSolutionsAssigner.Successor = villageSelectionPressureComparator;
+      villageSelectionPressureComparator.Successor = villageTerminatedBySelectionPressure2;
+      villageTerminatedBySelectionPressure2.TrueBranch = terminatedVillagesCounter;
+      villageTerminatedBySelectionPressure2.FalseBranch = null;
+      villageTerminatedBySelectionPressure2.Successor = null;
+      terminatedVillagesCounter.Successor = null;
+      generationsCounter.Successor = generationsSinceLastReunificationCounter;
+      generationsSinceLastReunificationCounter.Successor = reunificationComparator1;
+      reunificationComparator1.Successor = reunificationConditionalBranch1;
+      reunificationConditionalBranch1.TrueBranch = reunificationComparator3;
+      reunificationConditionalBranch1.FalseBranch = reunificationComparator2;
+      reunificationConditionalBranch1.Successor = maximumGenerationsComparator;
+      reunificationComparator2.Successor = reunificationConditionalBranch2;
+      reunificationConditionalBranch2.TrueBranch = reunificationComparator3;
+      reunificationConditionalBranch2.FalseBranch = null;
+      reunificationConditionalBranch2.Successor = null;
+      reunificationComparator3.Successor = reunificationConditionalBranch3;
+      reunificationConditionalBranch3.TrueBranch = null;
+      reunificationConditionalBranch3.FalseBranch = resetTerminatedVillagesAssigner;
+      reunificationConditionalBranch3.Successor = null;
+      resetTerminatedVillagesAssigner.Successor = resetGenerationsSinceLastReunificationAssigner;
+      resetGenerationsSinceLastReunificationAssigner.Successor = reunificator;
       reunificator.Successor = reunificationCounter;
       reunificationCounter.Successor = comparisonFactorModifier;
-      comparisonFactorModifier.Successor = villageCountComparator2;
-      villageCountComparator2.Successor = villageTerminationCondition2;
-      villageTerminationCondition2.TrueBranch = finalMaxSelPressAssigner;
-      villageTerminationCondition2.FalseBranch = null;
-      villageTerminationCondition2.Successor = null;
+      comparisonFactorModifier.Successor = uniformSubScopesProcessor2;
+      uniformSubScopesProcessor2.Operator = villageReviver;
+      uniformSubScopesProcessor2.Successor = villageCountComparator;
+      villageReviver.Successor = null;
+      villageCountComparator.Successor = villageCountConditionalBranch;
+      villageCountConditionalBranch.TrueBranch = finalMaxSelPressAssigner;
+      villageCountConditionalBranch.FalseBranch = null;
+      villageCountConditionalBranch.Successor = null;
       finalMaxSelPressAssigner.Successor = null;
       maximumGenerationsComparator.Successor = bestQualityMemorizer3;
-      bestQualityMemorizer3.Successor = bestAverageWorstQualityCalculator3;
-      bestAverageWorstQualityCalculator3.Successor = dataTableValuesCollector2;
-      dataTableValuesCollector2.Successor = qualityDifferenceCalculator2;
-      qualityDifferenceCalculator2.Successor = villagesTerminationCondition3;
-      villagesTerminationCondition3.FalseBranch = maximumGenerationsTerminationCondition;
-      villagesTerminationCondition3.TrueBranch = null;
-      villagesTerminationCondition3.Successor = null;
-      maximumGenerationsTerminationCondition.FalseBranch = fixedReunificationStepConditionInitializer;
+      bestQualityMemorizer3.Successor = bestQualityMemorizer4;
+      bestQualityMemorizer4.Successor = bestAverageWorstQualityCalculator2;
+      bestAverageWorstQualityCalculator2.Successor = dataTableValuesCollector3;
+      dataTableValuesCollector3.Successor = dataTableValuesCollector4;
+      dataTableValuesCollector4.Successor = qualityDifferenceCalculator2;
+      qualityDifferenceCalculator2.Successor = terminationCondition;
+      terminationCondition.TrueBranch = null;
+      terminationCondition.FalseBranch = maximumGenerationsTerminationCondition;
+      terminationCondition.Successor = null;
       maximumGenerationsTerminationCondition.TrueBranch = null;
+      maximumGenerationsTerminationCondition.FalseBranch = uniformSubScopesProcessor1;
       maximumGenerationsTerminationCondition.Successor = null;
       #endregion
     }
