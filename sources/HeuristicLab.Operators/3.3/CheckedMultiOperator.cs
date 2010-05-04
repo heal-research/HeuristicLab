@@ -30,9 +30,9 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
   /// <summary>
-  /// A base class for operators which apply arbitrary many other operators of a specific type, operators can be checked/unchecked.
+  /// A base class for operators which apply arbitrary many other operators of a specific type that can be checked or unchecked.
   /// </summary>
-  [Item("CheckedMultiOperator<T>", "A base class for operators which apply arbitrary many other operators of a specific type.")]
+  [Item("CheckedMultiOperator<T>", "A base class for operators which apply arbitrary many other operators of a specific type that can be checked or unchecked.")]
   [StorableClass]
   public abstract class CheckedMultiOperator<T> : MultiOperator<T> where T : class, IOperator {
     /// <summary>

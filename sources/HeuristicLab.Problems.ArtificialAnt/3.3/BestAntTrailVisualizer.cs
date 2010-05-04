@@ -52,9 +52,6 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     public ILookupParameter<AntTrail> AntTrailParameter {
       get { return (ILookupParameter<AntTrail>)Parameters["AntTrail"]; }
     }
-    ILookupParameter ISolutionsVisualizer.VisualizationParameter {
-      get { return AntTrailParameter; }
-    }
 
     public BestAntTrailVisualizer()
       : base() {

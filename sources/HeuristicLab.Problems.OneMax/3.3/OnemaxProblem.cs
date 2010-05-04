@@ -63,12 +63,6 @@ namespace HeuristicLab.Problems.OneMax {
     IParameter IProblem.EvaluatorParameter {
       get { return EvaluatorParameter; }
     }
-    public OptionalValueParameter<IOneMaxSolutionsVisualizer> VisualizerParameter {
-      get { return (OptionalValueParameter<IOneMaxSolutionsVisualizer>)Parameters["Visualizer"]; }
-    }
-    IParameter IProblem.VisualizerParameter {
-      get { return VisualizerParameter; }
-    }  
     public ValueParameter<DoubleValue> BestKnownQualityParameter {
       get { return (ValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
     }
@@ -99,13 +93,6 @@ namespace HeuristicLab.Problems.OneMax {
     IEvaluator IProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
     }
-    public IOneMaxSolutionsVisualizer Visualizer {
-      get { return VisualizerParameter.Value; }
-      set { VisualizerParameter.Value = value; }
-    }
-    ISolutionsVisualizer IProblem.Visualizer {
-      get { return VisualizerParameter.Value; }
-    } 
     public DoubleValue BestKnownQuality {
       get { return BestKnownQualityParameter.Value; }
     }
@@ -125,7 +112,6 @@ namespace HeuristicLab.Problems.OneMax {
       Parameters.Add(new ValueParameter<IBinaryVectorCreator>("SolutionCreator", "The operator which should be used to create new OneMax solutions.", creator));
       Parameters.Add(new ValueParameter<IOneMaxEvaluator>("Evaluator", "The operator which should be used to evaluate OneMax solutions.", evaluator));
       Parameters.Add(new ValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this OneMax instance.", new DoubleValue(5)));
-      Parameters.Add(new ValueParameter<IOneMaxSolutionsVisualizer>("Visualizer", "The operator which should be used to visualize OneMax solutions.", null));
 
       creator.BinaryVectorParameter.ActualName = "OneMaxSolution";
       evaluator.QualityParameter.ActualName = "NumberOfOnes";
@@ -154,11 +140,6 @@ namespace HeuristicLab.Problems.OneMax {
     private void OnEvaluatorChanged() {
       if (EvaluatorChanged != null)
         EvaluatorChanged(this, EventArgs.Empty);
-    }
-    public event EventHandler VisualizerChanged;
-    private void OnVisualizerChanged() {
-      if (VisualizerChanged != null)
-        VisualizerChanged(this, EventArgs.Empty);
     }
 
     public event EventHandler OperatorsChanged;
@@ -193,9 +174,6 @@ namespace HeuristicLab.Problems.OneMax {
     void BestKnownQualityParameter_ValueChanged(object sender, EventArgs e) {
       BestKnownQualityParameter.Value.Value = Length.Value;
     }
-    void VisualizerParameter_ValueChanged(object sender, EventArgs e) {
-      OnVisualizerChanged();
-    }
     void OneBitflipMoveParameter_ActualNameChanged(object sender, EventArgs e) {
       string name = ((ILookupParameter<OneBitflipMove>)sender).ActualName;
       foreach (IOneBitflipMoveOperator op in Operators.OfType<IOneBitflipMoveOperator>()) {
@@ -215,7 +193,6 @@ namespace HeuristicLab.Problems.OneMax {
       LengthParameter.Value.ValueChanged += new EventHandler(Length_ValueChanged);
       BestKnownQualityParameter.Value.Value = Length.Value;
       BestKnownQualityParameter.ValueChanged += new EventHandler(BestKnownQualityParameter_ValueChanged);
-      VisualizerParameter.ValueChanged += new EventHandler(VisualizerParameter_ValueChanged);
     }
     private void ParameterizeSolutionCreator() {
       SolutionCreator.LengthParameter.ActualName = LengthParameter.Name;

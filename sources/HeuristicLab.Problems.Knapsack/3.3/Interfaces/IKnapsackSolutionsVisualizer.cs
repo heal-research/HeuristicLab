@@ -28,7 +28,7 @@ namespace HeuristicLab.Problems.Knapsack {
   /// <summary>
   /// An interface which represents an operator for visualizing solutions of Knapsack Problems.
   /// </summary>
-  public interface IKnapsackSolutionsVisualizer : ISingleObjectiveSolutionsVisualizer {
+  public interface IKnapsackSolutionsVisualizer : IAnalyzer {
     ILookupParameter<ItemArray<BinaryVector>> BinaryVectorParameter { get; }
     ILookupParameter<IntValue> KnapsackCapacityParameter { get; }
     ILookupParameter<IntArray> WeightsParameter { get; }

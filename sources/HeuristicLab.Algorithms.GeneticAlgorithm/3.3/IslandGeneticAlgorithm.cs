@@ -270,7 +270,6 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     protected override void OnProblemChanged() {
       ParameterizeStochasticOperator(Problem.SolutionCreator);
       ParameterizeStochasticOperator(Problem.Evaluator);
-      ParameterizeStochasticOperator(Problem.Visualizer);
       foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
       ParameterizeSolutionsCreator();
       ParameterizeMainLoop();
@@ -278,7 +277,6 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       UpdateCrossovers();
       UpdateMutators();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
-      if (Problem.Visualizer != null) Problem.Visualizer.VisualizationParameter.ActualNameChanged += new EventHandler(Visualizer_VisualizationParameter_ActualNameChanged);
       base.OnProblemChanged();
     }
 
@@ -294,12 +292,6 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       ParameterizeSelectors();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.Problem_EvaluatorChanged(sender, e);
-    }
-    protected override void Problem_VisualizerChanged(object sender, EventArgs e) {
-      ParameterizeStochasticOperator(Problem.Visualizer);
-      ParameterizeMainLoop();
-      if (Problem.Visualizer != null) Problem.Visualizer.VisualizationParameter.ActualNameChanged += new EventHandler(Visualizer_VisualizationParameter_ActualNameChanged);
-      base.Problem_VisualizerChanged(sender, e);
     }
     protected override void Problem_OperatorsChanged(object sender, EventArgs e) {
       foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
@@ -324,9 +316,6 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeMainLoop();
       ParameterizeSelectors();
-    }
-    private void Visualizer_VisualizationParameter_ActualNameChanged(object sender, EventArgs e) {
-      ParameterizeMainLoop();
     }
     private void MigrationRateParameter_ValueChanged(object sender, EventArgs e) {
       MigrationRate.ValueChanged += new EventHandler(MigrationRate_ValueChanged);
@@ -354,7 +343,6 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
         UpdateCrossovers();
         UpdateMutators();
         Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
-        if (Problem.Visualizer != null) Problem.Visualizer.VisualizationParameter.ActualNameChanged += new EventHandler(Visualizer_VisualizationParameter_ActualNameChanged);
       }
     }
     private void ParameterizeSolutionsCreator() {
@@ -366,9 +354,6 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       MainLoop.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
       MainLoop.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
       MainLoop.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
-      MainLoop.VisualizerParameter.ActualName = Problem.VisualizerParameter.Name;
-      if (Problem.Visualizer != null)
-        MainLoop.VisualizationParameter.ActualName = Problem.Visualizer.VisualizationParameter.ActualName;
     }
     private void ParameterizeStochasticOperator(IOperator op) {
       if (op is IStochasticOperator)

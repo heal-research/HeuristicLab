@@ -83,6 +83,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Analyzers\BestTSPSolutionAnalyzer.cs" />
     <Compile Include="Evaluators\TSPEuclideanPathEvaluator.cs" />
     <Compile Include="Evaluators\TSPGeoPathEvaluator.cs" />
     <Compile Include="HeuristicLabProblemsTravelingSalesmanPlugin.cs" />
@@ -96,11 +97,7 @@
     <Compile Include="MoveEvaluators\TwoOpt\TSPInversionMoveRoundedEuclideanPathEvaluator.cs" />
     <Compile Include="TravelingSalesmanProblem.cs" />
     <Compile Include="TSPLIBTourParser.cs" />
-    <Compile Include="Interfaces\ICoordinatesTSPSolutionsVisualizer.cs" />
-    <Compile Include="Interfaces\IPathCoordinatesTSPSolutionsVisualizer.cs" />
-    <Compile Include="Interfaces\ITSPSolutionsVisualizer.cs" />
     <Compile Include="PathTSPTour.cs" />
-    <Compile Include="Visualizers\BestPathTSPTourVisualizer.cs" />
     <Compile Include="Evaluators\TSPCoordinatesPathEvaluator.cs" />
     <Compile Include="Evaluators\TSPEvaluator.cs" />
     <Compile Include="Evaluators\TSPRoundedEuclideanPathEvaluator.cs" />

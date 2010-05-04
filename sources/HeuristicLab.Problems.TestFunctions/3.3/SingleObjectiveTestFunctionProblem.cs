@@ -74,12 +74,6 @@ namespace HeuristicLab.Problems.TestFunctions {
     IParameter IProblem.EvaluatorParameter {
       get { return EvaluatorParameter; }
     }
-    public OptionalValueParameter<ISingleObjectiveTestFunctionProblemSolutionsVisualizer> VisualizerParameter {
-      get { return (OptionalValueParameter<ISingleObjectiveTestFunctionProblemSolutionsVisualizer>)Parameters["Visualizer"]; }
-    }
-    IParameter IProblem.VisualizerParameter {
-      get { return VisualizerParameter; }
-    }
     public OptionalValueParameter<DoubleValue> BestKnownQualityParameter {
       get { return (OptionalValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
     }
@@ -118,13 +112,6 @@ namespace HeuristicLab.Problems.TestFunctions {
     IEvaluator IProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
     }
-    public ISingleObjectiveTestFunctionProblemSolutionsVisualizer Visualizer {
-      get { return VisualizerParameter.Value; }
-      set { VisualizerParameter.Value = value; }
-    }
-    ISolutionsVisualizer IProblem.Visualizer {
-      get { return VisualizerParameter.Value; }
-    }
     public DoubleValue BestKnownQuality {
       get { return BestKnownQualityParameter.Value; }
       set { BestKnownQualityParameter.Value = value; }
@@ -147,7 +134,6 @@ namespace HeuristicLab.Problems.TestFunctions {
       Parameters.Add(new ValueParameter<IntValue>("ProblemSize", "The dimension of the problem.", new IntValue(2)));
       Parameters.Add(new ValueParameter<IRealVectorCreator>("SolutionCreator", "The operator which should be used to create new TSP solutions.", creator));
       Parameters.Add(new ValueParameter<ISingleObjectiveTestFunctionProblemEvaluator>("Evaluator", "The operator which should be used to evaluate TSP solutions.", evaluator));
-      Parameters.Add(new OptionalValueParameter<ISingleObjectiveTestFunctionProblemSolutionsVisualizer>("Visualizer", "The operator which should be used to visualize TSP solutions."));
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this TSP instance.", new DoubleValue(evaluator.BestKnownQuality)));
 
       strategyVectorCreator = new StdDevStrategyVectorCreator();
@@ -181,11 +167,6 @@ namespace HeuristicLab.Problems.TestFunctions {
     private void OnEvaluatorChanged() {
       if (EvaluatorChanged != null)
         EvaluatorChanged(this, EventArgs.Empty);
-    }
-    public event EventHandler VisualizerChanged;
-    private void OnVisualizerChanged() {
-      if (VisualizerChanged != null)
-        VisualizerChanged(this, EventArgs.Empty);
     }
     public event EventHandler OperatorsChanged;
     private void OnOperatorsChanged() {
@@ -225,9 +206,6 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeOperators();
-    }
-    private void VisualizerParameter_ValueChanged(object sender, EventArgs e) {
-      ParameterizeVisualizer();
     }
     private void BoundsParameter_ValueChanged(object sender, EventArgs e) {
       Bounds.ToStringChanged += new EventHandler(Bounds_ToStringChanged);
@@ -290,7 +268,6 @@ namespace HeuristicLab.Problems.TestFunctions {
       SolutionCreator.RealVectorParameter.ActualNameChanged += new EventHandler(SolutionCreator_RealVectorParameter_ActualNameChanged);
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
       Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
-      VisualizerParameter.ValueChanged += new EventHandler(VisualizerParameter_ValueChanged);
       strategyVectorCreator.BoundsParameter.ValueChanged += new EventHandler(strategyVectorCreator_BoundsParameter_ValueChanged);
       strategyVectorCreator.StrategyParameterParameter.ActualNameChanged += new EventHandler(strategyVectorCreator_StrategyParameterParameter_ActualNameChanged);
     }
@@ -343,10 +320,10 @@ namespace HeuristicLab.Problems.TestFunctions {
       Evaluator.PointParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
     }
     private void ParameterizeVisualizer() {
-      if (Visualizer != null) {
-        Visualizer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
-        Visualizer.PointParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
-      }
+      //if (Visualizer != null) {
+      //  Visualizer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
+      //  Visualizer.PointParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
+      //}
     }
     private void ParameterizeOperators() {
       foreach (IRealVectorCrossover op in Operators.OfType<IRealVectorCrossover>()) {

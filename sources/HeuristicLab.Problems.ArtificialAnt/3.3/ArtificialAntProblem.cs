@@ -124,12 +124,6 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       get { return (ValueParameter<IntValue>)Parameters["MaxTimeSteps"]; }
     }
 
-    public OptionalValueParameter<ISingleObjectiveSolutionsVisualizer> VisualizerParameter {
-      get { return (OptionalValueParameter<ISingleObjectiveSolutionsVisualizer>)Parameters["Visualizer"]; }
-    }
-    IParameter IProblem.VisualizerParameter {
-      get { return VisualizerParameter; }
-    }
     public ValueParameter<DoubleValue> BestKnownQualityParameter {
       get { return (ValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
     }
@@ -183,13 +177,6 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     public GlobalSymbolicExpressionGrammar ArtificialAntExpressionGrammar {
       get { return (GlobalSymbolicExpressionGrammar)ArtificialAntExpressionGrammarParameter.Value; }
     }
-    public ISingleObjectiveSolutionsVisualizer Visualizer {
-      get { return VisualizerParameter.Value; }
-      set { VisualizerParameter.Value = value; }
-    }
-    ISolutionsVisualizer IProblem.Visualizer {
-      get { return VisualizerParameter.Value; }
-    }
     public DoubleValue BestKnownQuality {
       get { return BestKnownQualityParameter.Value; }
     }
@@ -203,7 +190,6 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       : base() {
       SymbolicExpressionTreeCreator creator = new ProbabilisticTreeCreator();
       Evaluator evaluator = new Evaluator();
-      BestAntTrailVisualizer visualizer = new BestAntTrailVisualizer();
       BoolMatrix world = new BoolMatrix(santaFeAntTrail);
       ISymbolicExpressionGrammar grammar = new GlobalSymbolicExpressionGrammar(new ArtificialAntExpressionGrammar());
       Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to true as the Artificial Ant Problem is a maximization problem.", new BoolValue(true)));
@@ -217,7 +203,6 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       Parameters.Add(new ValueParameter<ISymbolicExpressionGrammar>("ArtificialAntExpressionGrammar", "The grammar that should be used for artificial ant expressions.", grammar));
       Parameters.Add(new ValueParameter<BoolMatrix>("World", "The world for the artificial ant with scattered food items.", world));
       Parameters.Add(new ValueParameter<IntValue>("MaxTimeSteps", "The number of time steps the artificial ant has available to collect all food items.", new IntValue(600)));
-      Parameters.Add(new ValueParameter<ISingleObjectiveSolutionsVisualizer>("Visualizer", "The operator which should be used to visualize artificial ant solutions.", visualizer));
 
       creator.SymbolicExpressionTreeParameter.ActualName = "AntTrailSolution";
       evaluator.QualityParameter.ActualName = "FoodEaten";
@@ -250,12 +235,6 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       if (changed != null)
         changed(this, EventArgs.Empty);
     }
-    public event EventHandler VisualizerChanged;
-    private void OnVisualizerChanged() {
-      var changed = VisualizerChanged;
-      if (changed != null)
-        changed(this, EventArgs.Empty);
-    }
 
     public event EventHandler OperatorsChanged;
     private void OnOperatorsChanged() {
@@ -284,11 +263,6 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       OnEvaluatorChanged();
     }
 
-    private void VisualizerParameter_ValueChanged(object sender, EventArgs e) {
-      ParameterizeVisualizer();
-      OnVisualizerChanged();
-    }
-
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeVisualizer();
     }
@@ -303,7 +277,6 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       SolutionCreator.SymbolicExpressionTreeParameter.ActualNameChanged += new EventHandler(SolutionCreator_SymbolicExpressionTreeParameter_ActualNameChanged);
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
       Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
-      VisualizerParameter.ValueChanged += new EventHandler(VisualizerParameter_ValueChanged);
       MaxFunctionArgumentsParameter.ValueChanged += new EventHandler(MaxFunctionArgumentsParameter_ValueChanged);
       MaxFunctionArguments.ValueChanged += new EventHandler(MaxFunctionArgumentsParameter_ValueChanged);
       MaxFunctionDefinitionsParameter.ValueChanged += new EventHandler(MaxFunctionDefinitionsParameter_ValueChanged);
@@ -335,19 +308,19 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       Evaluator.WorldParameter.ActualName = WorldParameter.Name;
     }
     private void ParameterizeVisualizer() {
-      if (Visualizer != null) {
-        Visualizer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
-        var antTrailVisualizer = Visualizer as IAntTrailVisualizer;
-        if (antTrailVisualizer != null) {
-          antTrailVisualizer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
-          antTrailVisualizer.WorldParameter.ActualName = WorldParameter.Name;
-          antTrailVisualizer.MaxTimeStepsParameter.ActualName = MaxTimeStepsParameter.Name;
-        }
-        var bestSymExpressionVisualizer = Visualizer as BestSymbolicExpressionTreeVisualizer;
-        if (bestSymExpressionVisualizer != null) {
-          bestSymExpressionVisualizer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
-        }
-      }
+      //if (Visualizer != null) {
+      //  Visualizer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
+      //  var antTrailVisualizer = Visualizer as IAntTrailVisualizer;
+      //  if (antTrailVisualizer != null) {
+      //    antTrailVisualizer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+      //    antTrailVisualizer.WorldParameter.ActualName = WorldParameter.Name;
+      //    antTrailVisualizer.MaxTimeStepsParameter.ActualName = MaxTimeStepsParameter.Name;
+      //  }
+      //  var bestSymExpressionVisualizer = Visualizer as BestSymbolicExpressionTreeVisualizer;
+      //  if (bestSymExpressionVisualizer != null) {
+      //    bestSymExpressionVisualizer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+      //  }
+      //}
     }
 
     private void ParameterizeOperators() {

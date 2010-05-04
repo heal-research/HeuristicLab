@@ -222,12 +222,6 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.Problem_EvaluatorChanged(sender, e);
     }
-    protected override void Problem_VisualizerChanged(object sender, EventArgs e) {
-      ParameterizeStochasticOperator(Problem.Visualizer);
-      ParameterizeMainLoop();
-      if (Problem.Visualizer != null) Problem.Visualizer.VisualizationParameter.ActualNameChanged += new EventHandler(Visualizer_VisualizationParameter_ActualNameChanged);
-      base.Problem_VisualizerChanged(sender, e);
-    }
     protected override void Problem_OperatorsChanged(object sender, EventArgs e) {
       foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
       // This may seem pointless, but some operators already have the eventhandler registered, others don't
@@ -280,9 +274,6 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     private void TabuChecker_MoveTabuParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeMainLoop();
     }
-    private void Visualizer_VisualizationParameter_ActualNameChanged(object sender, EventArgs e) {
-      ParameterizeMainLoop();
-    }
     private void SampleSizeParameter_NameChanged(object sender, EventArgs e) {
       ParameterizeMoveGenerators();
     }
@@ -296,7 +287,6 @@ namespace HeuristicLab.Algorithms.TabuSearch {
         foreach (ISingleObjectiveMoveEvaluator op in Problem.Operators.OfType<ISingleObjectiveMoveEvaluator>()) {
           op.MoveQualityParameter.ActualNameChanged += new EventHandler(MoveEvaluator_MoveQualityParameter_ActualNameChanged);
         }
-        if (Problem.Visualizer != null) Problem.Visualizer.VisualizationParameter.ActualNameChanged += new EventHandler(Visualizer_VisualizationParameter_ActualNameChanged);
       }
       MoveGeneratorParameter.ValueChanged += new EventHandler(MoveGeneratorParameter_ValueChanged);
       MoveEvaluatorParameter.ValueChanged += new EventHandler(MoveEvaluatorParameter_ValueChanged);
@@ -376,9 +366,6 @@ namespace HeuristicLab.Algorithms.TabuSearch {
         MainLoop.MoveQualityParameter.ActualName = MoveEvaluator.MoveQualityParameter.ActualName;
       if (TabuChecker != null)
         MainLoop.MoveTabuParameter.ActualName = TabuChecker.MoveTabuParameter.ActualName;
-      MainLoop.VisualizerParameter.ActualName = Problem.VisualizerParameter.Name;
-      if (Problem.Visualizer != null)
-        MainLoop.VisualizationParameter.ActualName = Problem.Visualizer.VisualizationParameter.ActualName;
     }
     private void ParameterizeStochasticOperator(IOperator op) {
       if (op is IStochasticOperator)

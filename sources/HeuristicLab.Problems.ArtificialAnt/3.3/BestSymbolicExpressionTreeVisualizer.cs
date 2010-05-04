@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.ArtificialAnt {
   /// </summary>
   [Item("BestSymbolicExpressionTreeVisualizer", "An operator for visualizing the best symbolic expression tree of an artificial ant problem.")]
   [StorableClass]
-  public sealed class BestSymbolicExpressionTreeVisualizer : SingleSuccessorOperator, ISingleObjectiveSolutionsVisualizer, ISolutionsVisualizer {
+  public sealed class BestSymbolicExpressionTreeVisualizer : SingleSuccessorOperator, IAnalyzer {
     public ILookupParameter<ItemArray<SymbolicExpressionTree>> SymbolicExpressionTreeParameter {
       get { return (ILookupParameter<ItemArray<SymbolicExpressionTree>>)Parameters["SymbolicExpressionTree"]; }
     }
@@ -44,9 +44,6 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     }
     public ILookupParameter<SymbolicExpressionTree> BestSymbolicExpressionTreeParameter {
       get { return (ILookupParameter<SymbolicExpressionTree>)Parameters["BestSymbolicExpressionTree"]; }
-    }
-    ILookupParameter ISolutionsVisualizer.VisualizationParameter {
-      get { return BestSymbolicExpressionTreeParameter; }
     }
 
     public BestSymbolicExpressionTreeVisualizer()

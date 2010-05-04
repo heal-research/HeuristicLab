@@ -28,7 +28,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
   /// An interface which represents an operator for visualizing solutions of single objective test functions.
   /// </summary>
-  public interface ISingleObjectiveTestFunctionProblemSolutionsVisualizer : ISingleObjectiveSolutionsVisualizer {
+  public interface ISingleObjectiveTestFunctionProblemSolutionsVisualizer : IAnalyzer {
     ILookupParameter<RealVector> PointParameter { get; }
   }
 }

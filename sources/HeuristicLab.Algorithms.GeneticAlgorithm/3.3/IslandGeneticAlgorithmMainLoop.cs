@@ -99,11 +99,8 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     public ValueLookupParameter<ResultCollection> ResultsParameter {
       get { return (ValueLookupParameter<ResultCollection>)Parameters["Results"]; }
     }
-    public ValueLookupParameter<IOperator> VisualizerParameter {
-      get { return (ValueLookupParameter<IOperator>)Parameters["Visualizer"]; }
-    }
-    public LookupParameter<IItem> VisualizationParameter {
-      get { return (LookupParameter<IItem>)Parameters["Visualization"]; }
+    public ValueLookupParameter<IOperator> AnalyzerParameter {
+      get { return (ValueLookupParameter<IOperator>)Parameters["Analyzer"]; }
     }
     #endregion
 
@@ -131,8 +128,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Parameters.Add(new ValueLookupParameter<IOperator>("Evaluator", "The operator used to evaluate solutions."));
       Parameters.Add(new ValueLookupParameter<IntValue>("Elites", "The numer of elite solutions which are kept in each generation."));
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The results collection to store the results."));
-      Parameters.Add(new ValueLookupParameter<IOperator>("Visualizer", "The operator used to visualize solutions."));
-      Parameters.Add(new LookupParameter<IItem>("Visualization", "The item which represents the visualization of solutions."));
+      Parameters.Add(new ValueLookupParameter<IOperator>("Analyzer", "The operator used to analyze each island."));
       #endregion
 
       #region Create operators
@@ -143,7 +139,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       BestAverageWorstQualityCalculator islandBestAverageWorstQualityCalculator1 = new BestAverageWorstQualityCalculator();
       DataTableValuesCollector islandDataTableValuesCollector1 = new DataTableValuesCollector();
       QualityDifferenceCalculator islandQualityDifferenceCalculator1 = new QualityDifferenceCalculator();
-      Placeholder islandVisualizer1 = new Placeholder();
+      Placeholder islandAnalyzer1 = new Placeholder();
       ResultsCollector islandResultsCollector = new ResultsCollector();
       BestQualityMemorizer bestQualityMemorizer1 = new BestQualityMemorizer();
       BestQualityMemorizer bestQualityMemorizer2 = new BestQualityMemorizer();
@@ -169,7 +165,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       BestAverageWorstQualityCalculator islandBestAverageWorstQualityCalculator2 = new BestAverageWorstQualityCalculator();
       DataTableValuesCollector islandDataTableValuesCollector2 = new DataTableValuesCollector();
       QualityDifferenceCalculator islandQualityDifferenceCalculator2 = new QualityDifferenceCalculator();
-      Placeholder islandVisualizer2 = new Placeholder();
+      Placeholder islandAnalyzer2 = new Placeholder();
       IntCounter generationsCounter = new IntCounter();
       IntCounter generationsSinceLastMigrationCounter = new IntCounter();
       Comparator migrationComparator = new Comparator();
@@ -217,8 +213,8 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       islandQualityDifferenceCalculator1.RelativeDifferenceParameter.ActualName = "RelativeDifferenceBestKnownToBest";
       islandQualityDifferenceCalculator1.SecondQualityParameter.ActualName = "BestQuality";
 
-      islandVisualizer1.Name = "Visualizer";
-      islandVisualizer1.OperatorParameter.ActualName = "Visualizer";
+      islandAnalyzer1.Name = "Analyzer";
+      islandAnalyzer1.OperatorParameter.ActualName = "Analyzer";
 
       islandResultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Generations"));
       islandResultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Best Quality", null, "CurrentBestQuality"));
@@ -228,7 +224,6 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       islandResultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, "BestKnownQuality"));
       islandResultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Absolute Difference of Best Known Quality to Best Quality", null, "AbsoluteDifferenceBestKnownToBest"));
       islandResultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Relative Difference of Best Known Quality to Best Quality", null, "RelativeDifferenceBestKnownToBest"));
-      islandResultsCollector.CollectedValues.Add(new LookupParameter<IItem>("Solution Visualization", null, "Visualization"));
       islandResultsCollector.CollectedValues.Add(new LookupParameter<DataTable>("Qualities"));
       islandResultsCollector.ResultsParameter.ActualName = "IslandResults";
 
@@ -316,8 +311,8 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       islandQualityDifferenceCalculator2.RelativeDifferenceParameter.ActualName = "RelativeDifferenceBestKnownToBest";
       islandQualityDifferenceCalculator2.SecondQualityParameter.ActualName = "BestQuality";
 
-      islandVisualizer2.Name = "Visualizer";
-      islandVisualizer2.OperatorParameter.ActualName = "Visualizer";
+      islandAnalyzer2.Name = "Analyzer";
+      islandAnalyzer2.OperatorParameter.ActualName = "Analyzer";
 
       generationsCounter.Name = "Generations + 1";
       generationsCounter.Increment = new IntValue(1);
@@ -398,8 +393,8 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       islandBestQualityMemorizer1.Successor = islandBestAverageWorstQualityCalculator1;
       islandBestAverageWorstQualityCalculator1.Successor = islandDataTableValuesCollector1;
       islandDataTableValuesCollector1.Successor = islandQualityDifferenceCalculator1;
-      islandQualityDifferenceCalculator1.Successor = islandVisualizer1;
-      islandVisualizer1.Successor = islandResultsCollector;
+      islandQualityDifferenceCalculator1.Successor = islandAnalyzer1;
+      islandAnalyzer1.Successor = islandResultsCollector;
       bestQualityMemorizer1.Successor = bestQualityMemorizer2;
       bestQualityMemorizer2.Successor = bestAverageWorstQualityCalculator1;
       bestAverageWorstQualityCalculator1.Successor = dataTableValuesCollector1;
@@ -431,8 +426,8 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       islandBestQualityMemorizer2.Successor = islandBestAverageWorstQualityCalculator2;
       islandBestAverageWorstQualityCalculator2.Successor = islandDataTableValuesCollector2;
       islandDataTableValuesCollector2.Successor = islandQualityDifferenceCalculator2;
-      islandQualityDifferenceCalculator2.Successor = islandVisualizer2;
-      islandVisualizer2.Successor = null;
+      islandQualityDifferenceCalculator2.Successor = islandAnalyzer2;
+      islandAnalyzer2.Successor = null;
       generationsCounter.Successor = generationsSinceLastMigrationCounter;
       generationsSinceLastMigrationCounter.Successor = migrationComparator;
       migrationComparator.Successor = migrationBranch;

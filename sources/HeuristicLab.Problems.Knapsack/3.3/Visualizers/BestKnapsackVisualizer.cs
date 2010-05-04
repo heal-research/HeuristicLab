@@ -58,10 +58,6 @@ namespace HeuristicLab.Problems.Knapsack.Visualizers {
       get { return (ILookupParameter<KnapsackSolution>)Parameters["KnapsackSolutionVisualization"]; }
     }
 
-    ILookupParameter ISolutionsVisualizer.VisualizationParameter {
-      get { return KnapsackSolutionParameter; }
-    }
-
     public BestKnapsackVisualizer()
       : base() {
       Parameters.Add(new SubScopesLookupParameter<BinaryVector>("BinaryVector", "The knapsack solutions from which the best solution should be visualized."));

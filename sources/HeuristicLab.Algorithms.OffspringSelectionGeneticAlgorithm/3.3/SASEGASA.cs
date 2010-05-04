@@ -294,7 +294,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     protected override void OnProblemChanged() {
       ParameterizeStochasticOperator(Problem.SolutionCreator);
       ParameterizeStochasticOperator(Problem.Evaluator);
-      ParameterizeStochasticOperator(Problem.Visualizer);
       foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
       ParameterizeSolutionsCreator();
       ParameterizeMainLoop();
@@ -302,7 +301,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       UpdateCrossovers();
       UpdateMutators();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
-      if (Problem.Visualizer != null) Problem.Visualizer.VisualizationParameter.ActualNameChanged += new EventHandler(Visualizer_VisualizationParameter_ActualNameChanged);
       base.OnProblemChanged();
     }
 
@@ -318,12 +316,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       ParameterizeSelectors();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.Problem_EvaluatorChanged(sender, e);
-    }
-    protected override void Problem_VisualizerChanged(object sender, EventArgs e) {
-      ParameterizeStochasticOperator(Problem.Visualizer);
-      ParameterizeMainLoop();
-      if (Problem.Visualizer != null) Problem.Visualizer.VisualizationParameter.ActualNameChanged += new EventHandler(Visualizer_VisualizationParameter_ActualNameChanged);
-      base.Problem_VisualizerChanged(sender, e);
     }
     protected override void Problem_OperatorsChanged(object sender, EventArgs e) {
       foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
@@ -348,9 +340,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeMainLoop();
       ParameterizeSelectors();
-    }
-    private void Visualizer_VisualizationParameter_ActualNameChanged(object sender, EventArgs e) {
-      ParameterizeMainLoop();
     }
     private void MaximumGenerationsParameter_ValueChanged(object sender, EventArgs e) {
       MaximumGenerations.ValueChanged += new EventHandler(MaximumGenerations_ValueChanged);
@@ -390,7 +379,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
         UpdateCrossovers();
         UpdateMutators();
         Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
-        if (Problem.Visualizer != null) Problem.Visualizer.VisualizationParameter.ActualNameChanged += new EventHandler(Visualizer_VisualizationParameter_ActualNameChanged);
       }
     }
     private void ParameterizeSolutionsCreator() {
@@ -402,10 +390,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       MainLoop.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
       MainLoop.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
       MainLoop.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
-      MainLoop.VisualizerParameter.ActualName = Problem.VisualizerParameter.Name;
       MainLoop.MigrationIntervalParameter.Value = new IntValue(MaximumGenerations.Value / NumberOfVillages.Value);
-      if (Problem.Visualizer != null)
-        MainLoop.VisualizationParameter.ActualName = Problem.Visualizer.VisualizationParameter.ActualName;
     }
     private void ParameterizeStochasticOperator(IOperator op) {
       if (op is IStochasticOperator)

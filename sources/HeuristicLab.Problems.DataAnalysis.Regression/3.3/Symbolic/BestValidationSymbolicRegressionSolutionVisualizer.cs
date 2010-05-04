@@ -41,7 +41,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   /// </summary>
   [Item("BestSymbolicExpressionTreeVisualizer", "An operator for visualizing the best symbolic regression solution based on the validation set.")]
   [StorableClass]
-  public sealed class BestValidationSymbolicRegressionSolutionVisualizer : SingleSuccessorOperator, ISingleObjectiveSolutionsVisualizer, ISolutionsVisualizer {
+  public sealed class BestValidationSymbolicRegressionSolutionVisualizer : SingleSuccessorOperator, IAnalyzer {
     private const string SymbolicExpressionTreeInterpreterParameterName = "SymbolicExpressionTreeInterpreter";
     private const string UpperEstimationLimitParameterName = "UpperEstimationLimit";
     private const string LowerEstimationLimitParameterName = "LowerEstimationLimit";
@@ -87,9 +87,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
     public ILookupParameter<SymbolicRegressionSolution> BestValidationSolutionParameter {
       get { return (ILookupParameter<SymbolicRegressionSolution>)Parameters[BestValidationSolutionParameterName]; }
-    }
-    ILookupParameter ISolutionsVisualizer.VisualizationParameter {
-      get { return BestValidationSolutionParameter; }
     }
 
     public ILookupParameter<ItemArray<DoubleValue>> QualityParameter {

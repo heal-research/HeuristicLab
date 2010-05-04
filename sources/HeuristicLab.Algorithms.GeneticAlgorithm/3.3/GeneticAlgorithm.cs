@@ -32,6 +32,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
+using HeuristicLab.Analysis;
 
 namespace HeuristicLab.Algorithms.GeneticAlgorithm {
   /// <summary>
@@ -76,6 +77,9 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     private ValueParameter<IntValue> ElitesParameter {
       get { return (ValueParameter<IntValue>)Parameters["Elites"]; }
     }
+    private ValueParameter<MultiAnalyzer> AnalyzerParameter {
+      get { return (ValueParameter<MultiAnalyzer>)Parameters["Analyzer"]; }
+    }
     private ValueParameter<IntValue> MaximumGenerationsParameter {
       get { return (ValueParameter<IntValue>)Parameters["MaximumGenerations"]; }
     }
@@ -114,6 +118,10 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       get { return ElitesParameter.Value; }
       set { ElitesParameter.Value = value; }
     }
+    public MultiAnalyzer Analyzer {
+      get { return AnalyzerParameter.Value; }
+      set { AnalyzerParameter.Value = value; }
+    }
     public IntValue MaximumGenerations {
       get { return MaximumGenerationsParameter.Value; }
       set { MaximumGenerationsParameter.Value = value; }
@@ -131,6 +139,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     private IEnumerable<ISelector> Selectors {
       get { return selectors; }
     }
+    private BestAverageWorstQualityAnalyzer qualityAnalyzer;
     #endregion
 
     public GeneticAlgorithm()
@@ -143,6 +152,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Parameters.Add(new ValueParameter<PercentValue>("MutationProbability", "The probability that the mutation operator is applied on a solution.", new PercentValue(0.05)));
       Parameters.Add(new OptionalConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
       Parameters.Add(new ValueParameter<IntValue>("Elites", "The numer of elite solutions which are kept in each generation.", new IntValue(1)));
+      Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze each generation.", new MultiAnalyzer()));
       Parameters.Add(new ValueParameter<IntValue>("MaximumGenerations", "The maximum number of generations which should be processed.", new IntValue(1000)));
 
       RandomCreator randomCreator = new RandomCreator();
@@ -167,6 +177,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       geneticAlgorithmMainLoop.MutatorParameter.ActualName = MutatorParameter.Name;
       geneticAlgorithmMainLoop.MutationProbabilityParameter.ActualName = MutationProbabilityParameter.Name;
       geneticAlgorithmMainLoop.RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
+      geneticAlgorithmMainLoop.AnalyzerParameter.ActualName = AnalyzerParameter.Name;
       geneticAlgorithmMainLoop.ResultsParameter.ActualName = "Results";
 
       Initialize();
@@ -188,15 +199,15 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     protected override void OnProblemChanged() {
       ParameterizeStochasticOperator(Problem.SolutionCreator);
       ParameterizeStochasticOperator(Problem.Evaluator);
-      ParameterizeStochasticOperator(Problem.Visualizer);
       foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
       ParameterizeSolutionsCreator();
       ParameterizeGeneticAlgorithmMainLoop();
       ParameterizeSelectors();
+      ParameterizeAnalyzers();
       UpdateCrossovers();
       UpdateMutators();
+      UpdateAnalyzers();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
-      if (Problem.Visualizer != null) Problem.Visualizer.VisualizationParameter.ActualNameChanged += new EventHandler(Visualizer_VisualizationParameter_ActualNameChanged);
       base.OnProblemChanged();
     }
 
@@ -210,19 +221,15 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       ParameterizeSolutionsCreator();
       ParameterizeGeneticAlgorithmMainLoop();
       ParameterizeSelectors();
+      ParameterizeAnalyzers();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.Problem_EvaluatorChanged(sender, e);
-    }
-    protected override void Problem_VisualizerChanged(object sender, EventArgs e) {
-      ParameterizeStochasticOperator(Problem.Visualizer);
-      ParameterizeGeneticAlgorithmMainLoop();
-      if (Problem.Visualizer != null) Problem.Visualizer.VisualizationParameter.ActualNameChanged += new EventHandler(Visualizer_VisualizationParameter_ActualNameChanged);
-      base.Problem_VisualizerChanged(sender, e);
     }
     protected override void Problem_OperatorsChanged(object sender, EventArgs e) {
       foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
       UpdateCrossovers();
       UpdateMutators();
+      UpdateAnalyzers();
       base.Problem_OperatorsChanged(sender, e);
     }
     private void ElitesParameter_ValueChanged(object sender, EventArgs e) {
@@ -242,9 +249,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeGeneticAlgorithmMainLoop();
       ParameterizeSelectors();
-    }
-    private void Visualizer_VisualizationParameter_ActualNameChanged(object sender, EventArgs e) {
-      ParameterizeGeneticAlgorithmMainLoop();
+      ParameterizeAnalyzers();
     }
     #endregion
 
@@ -252,7 +257,9 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
       InitializeSelectors();
+      InitializeAnalyzers();
       UpdateSelectors();
+      UpdateAnalyzers();
       PopulationSizeParameter.ValueChanged += new EventHandler(PopulationSizeParameter_ValueChanged);
       PopulationSize.ValueChanged += new EventHandler(PopulationSize_ValueChanged);
       ElitesParameter.ValueChanged += new EventHandler(ElitesParameter_ValueChanged);
@@ -261,7 +268,6 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
         UpdateCrossovers();
         UpdateMutators();
         Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
-        if (Problem.Visualizer != null) Problem.Visualizer.VisualizationParameter.ActualNameChanged += new EventHandler(Visualizer_VisualizationParameter_ActualNameChanged);
       }
     }
 
@@ -270,13 +276,9 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       SolutionsCreator.SolutionCreatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
     }
     private void ParameterizeGeneticAlgorithmMainLoop() {
-      GeneticAlgorithmMainLoop.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
       GeneticAlgorithmMainLoop.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
       GeneticAlgorithmMainLoop.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
       GeneticAlgorithmMainLoop.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
-      GeneticAlgorithmMainLoop.VisualizerParameter.ActualName = Problem.VisualizerParameter.Name;
-      if (Problem.Visualizer != null)
-        GeneticAlgorithmMainLoop.VisualizationParameter.ActualName = Problem.Visualizer.VisualizationParameter.ActualName;
     }
     private void ParameterizeStochasticOperator(IOperator op) {
       if (op is IStochasticOperator)
@@ -286,6 +288,10 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       selectors = new List<ISelector>();
       selectors.AddRange(ApplicationManager.Manager.GetInstances<ISelector>().Where(x => !(x is IMultiObjectiveSelector)).OrderBy(x => x.Name));
       ParameterizeSelectors();
+    }
+    private void InitializeAnalyzers() {
+      qualityAnalyzer = new BestAverageWorstQualityAnalyzer();
+      ParameterizeAnalyzers();
     }
     private void ParameterizeSelectors() {
       foreach (ISelector selector in Selectors) {
@@ -298,6 +304,14 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
           selector.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
           selector.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
         }
+      }
+    }
+    private void ParameterizeAnalyzers() {
+      qualityAnalyzer.ResultsParameter.ActualName = "Results";
+      if (Problem != null) {
+        qualityAnalyzer.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
+        qualityAnalyzer.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
+        qualityAnalyzer.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
       }
     }
     private void UpdateSelectors() {
@@ -332,6 +346,14 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       if (oldMutator != null) {
         IManipulator mutator = MutatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMutator.GetType());
         if (mutator != null) MutatorParameter.Value = mutator;
+      }
+    }
+    private void UpdateAnalyzers() {
+      Analyzer.Operators.Clear();
+      Analyzer.Operators.Add(qualityAnalyzer);
+      if (Problem != null) {
+        foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name))
+          Analyzer.Operators.Add(analyzer);
       }
     }
     #endregion

@@ -65,7 +65,7 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
         pathTSPTourView.Content = null;
       } else {
         parameterCollectionView.Content = ((IParameterizedNamedItem)Content).Parameters;
-        pathTSPTourView.Content = new PathTSPTour(Content.Coordinates, Content.BestKnownSolution);
+        pathTSPTourView.Content = new PathTSPTour(Content.Coordinates, Content.BestKnownSolution, Content.BestKnownQuality);
       }
       SetEnabledStateOfControls();
     }

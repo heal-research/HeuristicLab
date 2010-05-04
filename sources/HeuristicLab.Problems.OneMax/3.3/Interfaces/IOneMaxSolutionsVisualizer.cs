@@ -25,5 +25,5 @@ namespace HeuristicLab.Problems.OneMax {
   /// <summary>
   /// An interface which represents an operator for visualizing solutions of OneMax Problems.
   /// </summary>
-  public interface IOneMaxSolutionsVisualizer : ISingleObjectiveSolutionsVisualizer { }
+  public interface IOneMaxSolutionsVisualizer : IAnalyzer { }
 }

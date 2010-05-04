@@ -19,14 +19,11 @@
  */
 #endregion
 
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
-  /// An interface which represents an operator for visualizing solutions.
+  /// An interface which represents an analysis operator.
   /// </summary>
-  public interface ISolutionsVisualizer : IOperator {
-    ILookupParameter VisualizationParameter { get; }
-  }
+  public interface IAnalyzer : IOperator { }
 }

@@ -27,7 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.ArtificialAnt {
-  public interface IAntTrailVisualizer : ISolutionsVisualizer, ISingleObjectiveSolutionsVisualizer {
+  public interface IAntTrailVisualizer : IAnalyzer {
     ILookupParameter<ItemArray<SymbolicExpressionTree>> SymbolicExpressionTreeParameter { get; }
     ILookupParameter<BoolMatrix> WorldParameter { get; }
     ILookupParameter<IntValue> MaxTimeStepsParameter { get; }

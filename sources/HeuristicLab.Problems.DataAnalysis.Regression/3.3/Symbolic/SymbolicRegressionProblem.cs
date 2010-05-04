@@ -88,12 +88,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     public ValueParameter<IntValue> MaxFunctionArgumentsParameter {
       get { return (ValueParameter<IntValue>)Parameters["MaxFunctionArguments"]; }
     }
-    public OptionalValueParameter<ISingleObjectiveSolutionsVisualizer> VisualizerParameter {
-      get { return (OptionalValueParameter<ISingleObjectiveSolutionsVisualizer>)Parameters["Visualizer"]; }
-    }
-    IParameter IProblem.VisualizerParameter {
-      get { return VisualizerParameter; }
-    }
     public OptionalValueParameter<DoubleValue> BestKnownQualityParameter {
       get { return (OptionalValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
     }
@@ -152,13 +146,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     public ISymbolicExpressionGrammar FunctionTreeGrammar {
       get { return (ISymbolicExpressionGrammar)FunctionTreeGrammarParameter.Value; }
     }
-    public ISingleObjectiveSolutionsVisualizer Visualizer {
-      get { return VisualizerParameter.Value; }
-      set { VisualizerParameter.Value = value; }
-    }
-    ISolutionsVisualizer IProblem.Visualizer {
-      get { return VisualizerParameter.Value; }
-    }
     public DoubleValue BestKnownQuality {
       get { return BestKnownQualityParameter.Value; }
     }
@@ -206,7 +193,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       Parameters.Add(new ValueParameter<IntValue>("MaxExpressionDepth", "Maximal depth of the symbolic expression.", new IntValue(10)));
       Parameters.Add(new ValueParameter<IntValue>("MaxFunctionDefiningBranches", "Maximal number of automatically defined functions.", (IntValue)new IntValue(0).AsReadOnly()));
       Parameters.Add(new ValueParameter<IntValue>("MaxFunctionArguments", "Maximal number of arguments of automatically defined functions.", (IntValue)new IntValue(0).AsReadOnly()));
-      Parameters.Add(new ValueParameter<ISingleObjectiveSolutionsVisualizer>("Visualizer", "The operator which should be used to visualize symbolic regression solutions.", visualizer));
 
       creator.SymbolicExpressionTreeParameter.ActualName = "SymbolicRegressionModel";
       evaluator.QualityParameter.ActualName = "TrainingMeanSquaredError";
@@ -239,7 +225,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       MaxFunctionDefiningBranchesParameter.ValueChanged += new EventHandler(ArchitectureParameter_ValueChanged);
       SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
-      VisualizerParameter.ValueChanged += new EventHandler(VisualizerParameter_ValueChanged);
     }
 
     private void RegisterParameterEvents() {
@@ -287,10 +272,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     protected virtual void OnQualityParameterNameChanged(EventArgs e) {
       ParameterizeVisualizer();
     }
-    protected virtual void OnVisualizerChanged(EventArgs e) {
-      ParameterizeVisualizer();
-      RaiseVisualizerChanged(e);
-    }
     #endregion
 
     #region event handlers
@@ -302,9 +283,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
     private void EvaluatorParameter_ValueChanged(object sender, EventArgs e) {
       OnEvaluatorChanged(e);
-    }
-    private void VisualizerParameter_ValueChanged(object sender, EventArgs e) {
-      OnVisualizerChanged(e);
     }
     private void ArchitectureParameter_ValueChanged(object sender, EventArgs e) {
       OnArchitectureParameterChanged(e);
@@ -324,12 +302,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     public event EventHandler EvaluatorChanged;
     private void RaiseEvaluatorChanged(EventArgs e) {
       var changed = EvaluatorChanged;
-      if (changed != null)
-        changed(this, e);
-    }
-    public event EventHandler VisualizerChanged;
-    private void RaiseVisualizerChanged(EventArgs e) {
-      var changed = VisualizerChanged;
       if (changed != null)
         changed(this, e);
     }
@@ -393,17 +365,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
 
     private void ParameterizeVisualizer() {
-      var solutionVisualizer = Visualizer as BestValidationSymbolicRegressionSolutionVisualizer;
-      if (solutionVisualizer != null) {
-        solutionVisualizer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
-        solutionVisualizer.DataAnalysisProblemDataParameter.ActualName = DataAnalysisProblemDataParameter.Name;
-        solutionVisualizer.UpperEstimationLimitParameter.ActualName = UpperEstimationLimitParameter.Name;
-        solutionVisualizer.LowerEstimationLimitParameter.ActualName = LowerEstimationLimitParameter.Name;
-        solutionVisualizer.QualityParameter.ActualName = Evaluator.QualityParameter.Name;
-        solutionVisualizer.SymbolicExpressionTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameter.Name;
-        solutionVisualizer.ValidationSamplesStartParameter.Value = ValidationSamplesStart;
-        solutionVisualizer.ValidationSamplesEndParameter.Value = ValidationSamplesEnd;
-      }
+      //var solutionVisualizer = Visualizer as BestValidationSymbolicRegressionSolutionVisualizer;
+      //if (solutionVisualizer != null) {
+      //  solutionVisualizer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+      //  solutionVisualizer.DataAnalysisProblemDataParameter.ActualName = DataAnalysisProblemDataParameter.Name;
+      //  solutionVisualizer.UpperEstimationLimitParameter.ActualName = UpperEstimationLimitParameter.Name;
+      //  solutionVisualizer.LowerEstimationLimitParameter.ActualName = LowerEstimationLimitParameter.Name;
+      //  solutionVisualizer.QualityParameter.ActualName = Evaluator.QualityParameter.Name;
+      //  solutionVisualizer.SymbolicExpressionTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameter.Name;
+      //  solutionVisualizer.ValidationSamplesStartParameter.Value = ValidationSamplesStart;
+      //  solutionVisualizer.ValidationSamplesEndParameter.Value = ValidationSamplesEnd;
+      //}
     }
 
     private void ParameterizeOperators() {

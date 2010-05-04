@@ -191,12 +191,6 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.Problem_EvaluatorChanged(sender, e);
     }
-    protected override void Problem_VisualizerChanged(object sender, EventArgs e) {
-      ParameterizeStochasticOperator(Problem.Visualizer);
-      ParameterizeMainLoop();
-      if (Problem.Visualizer != null) Problem.Visualizer.VisualizationParameter.ActualNameChanged += new EventHandler(Visualizer_VisualizationParameter_ActualNameChanged);
-      base.Problem_VisualizerChanged(sender, e);
-    }
     protected override void Problem_OperatorsChanged(object sender, EventArgs e) {
       foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
       // This may seem pointless, but some operators already have the eventhandler registered, others don't
@@ -229,9 +223,6 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       ParameterizeMainLoop();
       ParameterizeMoveEvaluators();
       ParameterizeMoveMakers();
-    }
-    private void Visualizer_VisualizationParameter_ActualNameChanged(object sender, EventArgs e) {
-      ParameterizeMainLoop();
     }
     #endregion
 
@@ -303,9 +294,6 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       MainLoop.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
       if (MoveEvaluator != null)
         MainLoop.MoveQualityParameter.ActualName = MoveEvaluator.MoveQualityParameter.ActualName;
-      MainLoop.VisualizerParameter.ActualName = Problem.VisualizerParameter.Name;
-      if (Problem.Visualizer != null)
-        MainLoop.VisualizationParameter.ActualName = Problem.Visualizer.VisualizationParameter.ActualName;
     }
     private void ParameterizeStochasticOperator(IOperator op) {
       if (op is IStochasticOperator)

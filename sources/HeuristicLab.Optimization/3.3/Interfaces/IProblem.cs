@@ -33,13 +33,10 @@ namespace HeuristicLab.Optimization {
     ISolutionCreator SolutionCreator { get; }
     IParameter EvaluatorParameter { get; }
     IEvaluator Evaluator { get; }
-    IParameter VisualizerParameter { get; }
-    ISolutionsVisualizer Visualizer { get; }
     IEnumerable<IOperator> Operators { get; }
 
     event EventHandler SolutionCreatorChanged;
     event EventHandler EvaluatorChanged;
-    event EventHandler VisualizerChanged;
     event EventHandler OperatorsChanged;
   }
 }

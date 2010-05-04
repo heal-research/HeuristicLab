@@ -64,6 +64,19 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         }
       }
     }
+    [Storable]
+    private DoubleValue quality;
+    public DoubleValue Quality {
+      get { return quality; }
+      set {
+        if (quality != value) {
+          if (quality != null) DeregisterQualityEvents();
+          quality = value;
+          if (quality != null) RegisterQualityEvents();
+          OnQualityChanged();
+        }
+      }
+    }
 
     public PathTSPTour() : base() { }
     public PathTSPTour(DoubleMatrix coordinates)
@@ -77,6 +90,13 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       this.permutation = permutation;
       Initialize();
     }
+    public PathTSPTour(DoubleMatrix coordinates, Permutation permutation, DoubleValue quality)
+      : base() {
+      this.coordinates = coordinates;
+      this.permutation = permutation;
+      this.quality = quality;
+      Initialize();
+    }
     [StorableConstructor]
     private PathTSPTour(bool deserializing) : base(deserializing) { }
 
@@ -84,6 +104,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     private void Initialize() {
       if (coordinates != null) RegisterCoordinatesEvents();
       if (permutation != null) RegisterPermutationEvents();
+      if (quality != null) RegisterQualityEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -91,6 +112,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       cloner.RegisterClonedObject(this, clone);
       clone.coordinates = (DoubleMatrix)cloner.Clone(coordinates);
       clone.permutation = (Permutation)cloner.Clone(permutation);
+      clone.quality = (DoubleValue)cloner.Clone(quality);
       clone.Initialize();
       return clone;
     }
@@ -105,6 +127,12 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     public event EventHandler PermutationChanged;
     private void OnPermutationChanged() {
       var changed = PermutationChanged;
+      if (changed != null)
+        changed(this, EventArgs.Empty);
+    }
+    public event EventHandler QualityChanged;
+    private void OnQualityChanged() {
+      var changed = QualityChanged;
       if (changed != null)
         changed(this, EventArgs.Empty);
     }
@@ -125,6 +153,12 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       Permutation.ItemChanged -= new EventHandler<EventArgs<int>>(Permutation_ItemChanged);
       Permutation.Reset -= new EventHandler(Permutation_Reset);
     }
+    private void RegisterQualityEvents() {
+      Quality.ValueChanged += new EventHandler(Quality_ValueChanged);
+    }
+    private void DeregisterQualityEvents() {
+      Quality.ValueChanged -= new EventHandler(Quality_ValueChanged);
+    }
 
     private void Coordinates_ItemChanged(object sender, EventArgs<int, int> e) {
       OnCoordinatesChanged();
@@ -137,6 +171,9 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
     private void Permutation_Reset(object sender, EventArgs e) {
       OnPermutationChanged();
+    }
+    private void Quality_ValueChanged(object sender, EventArgs e) {
+      OnQualityChanged();
     }
     #endregion
   }
