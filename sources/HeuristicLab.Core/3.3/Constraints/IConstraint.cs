@@ -25,9 +25,9 @@ using System.Linq;
 using System.Text;
 
 namespace HeuristicLab.Core {
-  public interface IConstraint: IItem{
+  public interface IConstraint : IItem {
     bool Active { get; set; }
-    IItem ConstrainedValue { get;}
+    IItem ConstrainedValue { get; set; }
     ConstraintOperation ConstraintOperation { get; set; }
     IEnumerable<ConstraintOperation> AllowedConstraintOperations { get; }
     object ConstraintData { get; set; }
@@ -35,6 +35,7 @@ namespace HeuristicLab.Core {
     bool Check(out string errorMessage);
 
     event EventHandler ActiveChanged;
+    event EventHandler ConstrainedValueChanged;
     event EventHandler ConstraintDataChanged;
     event EventHandler ConstraintOperationChanged;
   }

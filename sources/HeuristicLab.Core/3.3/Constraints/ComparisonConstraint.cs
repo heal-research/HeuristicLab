@@ -43,7 +43,7 @@ namespace HeuristicLab.Core {
     }
 
     public override IEnumerable<ConstraintOperation> AllowedConstraintOperations {
-      get { return new ConstraintOperation[6] { ConstraintOperation.Equal, ConstraintOperation.NotEqual, ConstraintOperation.Lesser, ConstraintOperation.LesserOrEqual, ConstraintOperation.Greater, ConstraintOperation.GreaterOrEqual }; }
+      get { return new ConstraintOperation[6] { ConstraintOperation.Lesser, ConstraintOperation.LesserOrEqual, ConstraintOperation.Equal, ConstraintOperation.GreaterOrEqual, ConstraintOperation.Greater, ConstraintOperation.NotEqual }; }
     }
 
     protected override bool Check(object constrainedMember) {

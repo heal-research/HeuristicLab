@@ -31,6 +31,8 @@ namespace HeuristicLab.Core {
   public abstract class Constraint : Item, IConstraint {
     protected Constraint() {
       this.Active = false;
+      if (AllowedConstraintOperations != null && AllowedConstraintOperations.Count() != 0)
+        this.ConstraintOperation = AllowedConstraintOperations.ElementAt(0);
     }
     [StorableConstructor]
     protected Constraint(bool deserializing) {
@@ -64,11 +66,12 @@ namespace HeuristicLab.Core {
     private IItem constrainedValue;
     public IItem ConstrainedValue {
       get { return this.constrainedValue; }
-      protected set {
+      set {
         if (value == null)
           throw new ArgumentNullException("Constraint value cannot be null.");
         if (this.constrainedValue != value) {
           this.constrainedValue = value;
+          this.OnConstrainedValueChanged();
           this.OnToStringChanged();
         }
       }
@@ -137,34 +140,40 @@ namespace HeuristicLab.Core {
     protected virtual void OnActiveChanged() {
       EventHandler handler = ActiveChanged;
       if (handler != null)
-        ActiveChanged(this, EventArgs.Empty);
+        handler(this, EventArgs.Empty);
+    }
+
+    public event EventHandler ConstrainedValueChanged;
+    protected virtual void OnConstrainedValueChanged() {
+      EventHandler handler = ConstrainedValueChanged;
+      if (handler != null)
+        handler(this, EventArgs.Empty);
     }
 
     public event EventHandler ConstraintDataChanged;
     protected virtual void OnConstraintDataChanged() {
       EventHandler handler = ConstraintDataChanged;
       if (handler != null)
-        ActiveChanged(this, EventArgs.Empty);
+        handler(this, EventArgs.Empty);
     }
 
     public event EventHandler ConstraintOperationChanged;
     protected virtual void OnConstraintOperationChanged() {
       EventHandler handler = ConstraintOperationChanged;
       if (handler != null)
-        ActiveChanged(this, EventArgs.Empty);
+        handler(this, EventArgs.Empty);
     }
     #endregion
 
     #region overriden item methods
     public override string ToString() {
-      IItem constrainedValue = GetConstrainedMember();
+      IItem constrainedMember = GetConstrainedMember();
       string s = string.Empty;
-      if (constrainedValue != null)
-        s += constrainedValue.ToString();
-      else
-        return "Could not determine constraint value.";
+      if (constrainedMember != null)
+        s += constrainedMember.ToString() + " ";
 
-      s += " " + ConstraintOperation.ToString() + " ";
+      if (constraintOperation != null)
+        s += ConstraintOperation.ToString() + " ";
 
       if (constraintData != null)
         s += constraintData.ToString();
@@ -177,7 +186,7 @@ namespace HeuristicLab.Core {
 
     public override IDeepCloneable Clone(HeuristicLab.Common.Cloner cloner) {
       Constraint clone = (Constraint)base.Clone(cloner);
-      clone.constrainedValue = (IItem)cloner.Clone(this.constrainedValue);
+      clone.constrainedValue = null;  //mkommend: intentional set to null and must be reset in the clone
 
       IItem constraintDataItem = this.constraintData as IItem;
       ICloneable constraintDataCloneable = this.constraintData as ICloneable;

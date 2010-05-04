@@ -104,12 +104,6 @@
     <Compile Include="CheckedItemListView.Designer.cs">
       <DependentUpon>CheckedItemListView.cs</DependentUpon>
     </Compile>
-    <Compile Include="ConstraintCollectionView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ConstraintCollectionView.Designer.cs">
-      <DependentUpon>ConstraintCollectionView.cs</DependentUpon>
-    </Compile>
     <Compile Include="LogView.cs">
       <SubType>UserControl</SubType>
     </Compile>
