@@ -35,16 +35,16 @@ namespace HeuristicLab.Core {
     [StorableConstructor]
     protected Constraint(bool deserializing) {
     }
-    protected Constraint(IItem constrainedValue, ConstraintOperation comparisonOperation, object comparisonValue)
+    protected Constraint(IItem constrainedValue, ConstraintOperation constraintOperation, object constraintData)
       : this() {
       this.ConstrainedValue = constrainedValue;
-      this.ConstraintOperation = comparisonOperation;
-      this.ConstraintData = comparisonValue;
+      this.ConstraintOperation = constraintOperation;
+      this.ConstraintData = constraintData;
     }
-    protected Constraint(IItem constrainedValue, ConstraintOperation comparisonOperation, object comparisonValue, bool active) {
+    protected Constraint(IItem constrainedValue, ConstraintOperation constraintOperation, object constraintData, bool active) {
       this.ConstrainedValue = constrainedValue;
-      this.ConstraintOperation = comparisonOperation;
-      this.ConstraintData = comparisonValue;
+      this.ConstraintOperation = constraintOperation;
+      this.ConstraintData = constraintData;
       this.Active = active;
     }
 

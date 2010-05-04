@@ -35,11 +35,11 @@ namespace HeuristicLab.Core {
     protected TypeCompatibilityConstraint(bool deserializing)
       : base() {
     }
-    public TypeCompatibilityConstraint(IItem constrainedValue, ConstraintOperation comparisonOperation, Type comparisonValue)
-      : base(constrainedValue, comparisonOperation, comparisonValue) {
+    public TypeCompatibilityConstraint(IItem constrainedValue, ConstraintOperation constraintOperation, Type constraintData)
+      : base(constrainedValue, constraintOperation, constraintData) {
     }
-    public TypeCompatibilityConstraint(IItem constrainedValue, ConstraintOperation comparisonOperation, object comparisonValue, bool active)
-      : base(constrainedValue, comparisonOperation, comparisonOperation, active) {
+    public TypeCompatibilityConstraint(IItem constrainedValue, ConstraintOperation constraintOperation, Type constraintData, bool active)
+      : base(constrainedValue, constraintOperation, constraintData, active) {
     }
 
     public new Type ConstraintData {

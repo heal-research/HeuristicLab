@@ -36,11 +36,11 @@ namespace HeuristicLab.Core {
     [StorableConstructor]
     protected EqualityConstraint(bool deserializing) {
     }
-    public EqualityConstraint(IItem constrainedValue, ConstraintOperation comparisonOperation, object comparisonValue)
-      : base(constrainedValue, comparisonOperation, comparisonValue) {
+    public EqualityConstraint(IItem constrainedValue, ConstraintOperation constraintOperation, object constraintData)
+      : base(constrainedValue, constraintOperation, constraintData) {
     }
-    public EqualityConstraint(IItem constrainedValue, ConstraintOperation comparisonOperation, object comparisonValue, bool active)
-      : base(constrainedValue, comparisonOperation, comparisonOperation, active) {
+    public EqualityConstraint(IItem constrainedValue, ConstraintOperation constraintOperation, object constraintData, bool active)
+      : base(constrainedValue, constraintOperation, constraintData, active) {
     }
 
     public override IEnumerable<ConstraintOperation> AllowedConstraintOperations {
