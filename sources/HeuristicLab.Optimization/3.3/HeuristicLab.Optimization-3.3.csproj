@@ -86,11 +86,11 @@
     <None Include="HeuristicLabOptimizationPlugin.cs.frame" />
     <Compile Include="Algorithm.cs" />
     <Compile Include="BatchRun.cs" />
+    <Compile Include="RunCollectionConstraints\RunCollectionComparisonConstraint.cs" />
+    <Compile Include="RunCollectionConstraints\RunCollectionConstraintCollection.cs" />
+    <Compile Include="RunCollectionConstraints\RunCollectionTypeCompatiblityConstraint.cs" />
+    <Compile Include="RunCollectionConstraints\RunCollectionEqualityConstraint.cs" />
     <Compile Include="Interfaces\IAnalyzer.cs" />
-    <Compile Include="RunCollectionComparisonConstraint.cs" />
-    <Compile Include="RunCollectionConstraintCollection.cs" />
-    <Compile Include="RunCollectionTypeCompatiblityConstraint.cs" />
-    <Compile Include="RunCollectionEqualityConstraint.cs" />
     <Compile Include="Interfaces\ISingleObjectiveReplacer.cs" />
     <Compile Include="Interfaces\IMigrator.cs" />
     <Compile Include="Interfaces\IReplacer.cs" />
