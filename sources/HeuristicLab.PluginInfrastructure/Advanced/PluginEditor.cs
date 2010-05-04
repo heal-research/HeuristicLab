@@ -41,16 +41,12 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private PluginManager pluginManager;
     public PluginManager PluginManager {
       get { return pluginManager; }
-      set {
-        // if (value == null) throw new ArgumentNullException();
-        pluginManager = value;
-      }
+      set { pluginManager = value; }
     }
 
     public PluginEditor() {
       InitializeComponent();
-      // Caption = "Upload Plugins";
-
+      pluginImageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Resources.plugin_16);
       localAndServerPlugins = new Dictionary<IPluginDescription, IPluginDescription>();
 
       #region initialize backgroundworkers
@@ -261,6 +257,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
           string.Empty, plugin.Description });
       }
       item.Tag = plugin;
+      item.ImageIndex = 0;
       item.Checked = false;
       return item;
     }

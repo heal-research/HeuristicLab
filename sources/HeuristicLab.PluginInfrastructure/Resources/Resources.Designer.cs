@@ -109,10 +109,31 @@ namespace HeuristicLab.PluginInfrastructure.Resources {
             }
         }
         
+        internal static System.Drawing.Bitmap plugin {
+            get {
+                object obj = ResourceManager.GetObject("plugin", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap plugin_16 {
+            get {
+                object obj = ResourceManager.GetObject("plugin_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Remove {
             get {
                 object obj = ResourceManager.GetObject("Remove", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Icon Setup_Install {
+            get {
+                object obj = ResourceManager.GetObject("Setup_Install", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
     }

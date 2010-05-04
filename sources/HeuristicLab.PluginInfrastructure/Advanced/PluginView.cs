@@ -54,7 +54,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     }
 
     private void PopulateImageList() {
-      pluginsImageList.Images.Add(IMAGE_KEY_PLUGIN, HeuristicLab.PluginInfrastructure.Resources.Resources.Install);
+      pluginsImageList.Images.Add(IMAGE_KEY_PLUGIN, HeuristicLab.PluginInfrastructure.Resources.Resources.plugin_16);
       filesImageList.Images.Add(IMAGE_KEY_ASSEMBLY, HeuristicLab.PluginInfrastructure.Resources.Resources.Assembly);
       filesImageList.Images.Add(IMAGE_KEY_FILE, HeuristicLab.PluginInfrastructure.Resources.Resources.File);
       filesImageList.Images.Add(IMAGE_KEY_DOCUMENT, HeuristicLab.PluginInfrastructure.Resources.Resources.Document);

@@ -54,6 +54,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.versionHeader = new System.Windows.Forms.ColumnHeader();
       this.descriptionHeader = new System.Windows.Forms.ColumnHeader();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this.pluginImageList = new System.Windows.Forms.ImageList(this.components);
       this.SuspendLayout();
       // 
       // updateSelectedButton
@@ -106,6 +107,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.localPluginsListView.Location = new System.Drawing.Point(0, 0);
       this.localPluginsListView.Name = "localPluginsListView";
       this.localPluginsListView.Size = new System.Drawing.Size(539, 477);
+      this.localPluginsListView.SmallImageList = this.pluginImageList;
       this.localPluginsListView.SuppressItemCheckedEvents = false;
       this.localPluginsListView.TabIndex = 13;
       this.localPluginsListView.UseCompatibleStateImageBehavior = false;
@@ -127,6 +129,12 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // 
       this.descriptionHeader.Text = "Description";
       this.descriptionHeader.Width = 245;
+      // 
+      // pluginImageList
+      // 
+      this.pluginImageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+      this.pluginImageList.ImageSize = new System.Drawing.Size(16, 16);
+      this.pluginImageList.TransparentColor = System.Drawing.Color.Transparent;
       // 
       // LocalPluginsView
       // 
@@ -150,6 +158,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private System.Windows.Forms.ColumnHeader versionHeader;
     private System.Windows.Forms.ColumnHeader descriptionHeader;
     private System.Windows.Forms.ToolTip toolTip;
+    private System.Windows.Forms.ImageList pluginImageList;
     // private LocalPluginManagerView localPluginManagerView;
   }
 }

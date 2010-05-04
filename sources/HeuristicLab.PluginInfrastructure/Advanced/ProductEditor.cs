@@ -41,9 +41,9 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     public ProductEditor() {
       InitializeComponent();
 
-      productImageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Resources.Assembly);
+      productImageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Resources.Setup_Install);
       productImageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Resources.ArrowUp);
-      pluginImageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Resources.Assembly);
+      pluginImageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Resources.plugin_16);
 
       dirtyProducts = new HashSet<DeploymentService.ProductDescription>();
       refreshProductsWorker = new BackgroundWorker();

@@ -334,6 +334,9 @@
     <None Include="Resources\VS2008ImageLibrary_CommonElements_Actions_Remove1.png" />
     <None Include="Resources\show_icons.png" />
     <None Include="Resources\show_details.png" />
+    <None Include="Resources\plugin.png" />
+    <None Include="Resources\plugin_16.png" />
+    <None Include="Resources\Setup_Install.ico" />
     <Content Include="Resources\VS2008ImageLibrary_CommonElements_Objects_Arrow_Down.png" />
     <None Include="Resources\VS2008ImageLibrary_Objects_NetworkConnections.png" />
     <None Include="Resources\VS2008ImageLibrary_Objects_Install1.png" />

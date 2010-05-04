@@ -180,17 +180,13 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // 
       // remotePluginInstaller
       // 
-      this.remotePluginInstaller.AllPlugins = new HeuristicLab.PluginInfrastructure.IPluginDescription[0];
       this.remotePluginInstaller.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.remotePluginInstaller.InstallationManager = null;
       this.remotePluginInstaller.Location = new System.Drawing.Point(6, 6);
       this.remotePluginInstaller.Name = "remotePluginInstaller";
-      this.remotePluginInstaller.NewPlugins = new HeuristicLab.PluginInfrastructure.IPluginDescription[0];
       this.remotePluginInstaller.PluginManager = null;
-      this.remotePluginInstaller.Products = new HeuristicLab.PluginInfrastructure.Advanced.DeploymentService.ProductDescription[0];
-      this.remotePluginInstaller.ShowAllPlugins = false;
       this.remotePluginInstaller.Size = new System.Drawing.Size(578, 354);
       this.remotePluginInstaller.StatusView = null;
       this.remotePluginInstaller.TabIndex = 14;

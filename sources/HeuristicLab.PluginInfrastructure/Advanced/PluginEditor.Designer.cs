@@ -53,6 +53,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.serverVersionHeader = new System.Windows.Forms.ColumnHeader();
       this.descriptionHeader = new System.Windows.Forms.ColumnHeader();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this.pluginImageList = new System.Windows.Forms.ImageList(this.components);
       this.SuspendLayout();
       // 
       // uploadButton
@@ -98,6 +99,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.listView.Location = new System.Drawing.Point(0, 0);
       this.listView.Name = "listView";
       this.listView.Size = new System.Drawing.Size(539, 476);
+      this.listView.SmallImageList = this.pluginImageList;
       this.listView.SuppressItemCheckedEvents = false;
       this.listView.TabIndex = 8;
       this.listView.UseCompatibleStateImageBehavior = false;
@@ -125,6 +127,12 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.descriptionHeader.Text = "Description";
       this.descriptionHeader.Width = 335;
       // 
+      // pluginImageList
+      // 
+      this.pluginImageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+      this.pluginImageList.ImageSize = new System.Drawing.Size(16, 16);
+      this.pluginImageList.TransparentColor = System.Drawing.Color.Transparent;
+      // 
       // PluginEditor
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -148,5 +156,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private System.Windows.Forms.ColumnHeader serverVersionHeader;
     private System.Windows.Forms.ColumnHeader descriptionHeader;
     private System.Windows.Forms.ToolTip toolTip;
+    private System.Windows.Forms.ImageList pluginImageList;
   }
 }

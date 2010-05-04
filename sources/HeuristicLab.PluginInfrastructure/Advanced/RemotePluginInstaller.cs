@@ -42,57 +42,12 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private BackgroundWorker refreshServerPluginsBackgroundWorker;
     private BackgroundWorker updateOrInstallPluginsBackgroundWorker;
 
-    private ListViewGroup newPluginsGroup;
-    private ListViewGroup productsGroup;
-    private ListViewGroup allPluginsGroup;
-
-    private bool showAllPlugins;
-    public bool ShowAllPlugins {
-      get { return showAllPlugins; }
-      set {
-        if (value != showAllPlugins) {
-          showAllPlugins = value;
-          UpdateControl();
-        }
-      }
-    }
-
     private IEnumerable<DeploymentService.ProductDescription> products;
-    public IEnumerable<DeploymentService.ProductDescription> Products {
-      get { return products ?? Enumerable.Empty<DeploymentService.ProductDescription>(); }
-      set {
-        if (value != this.products) {
-          this.products = value;
-          UpdateControl();
-        }
-      }
-    }
-
     private IEnumerable<IPluginDescription> plugins;
-    public IEnumerable<IPluginDescription> AllPlugins {
-      get { return plugins ?? Enumerable.Empty<IPluginDescription>(); }
-      set {
-        if (value != this.plugins) {
-          this.plugins = value;
-          UpdateControl();
-        }
-      }
-    }
 
-    private IEnumerable<IPluginDescription> newPlugins;
-    public IEnumerable<IPluginDescription> NewPlugins {
-      get { return newPlugins ?? Enumerable.Empty<IPluginDescription>(); }
-      set {
-        if (value != this.newPlugins) {
-          this.newPlugins = value;
-          UpdateControl();
-        }
-      }
-    }
-
-    public IEnumerable<IPluginDescription> CheckedPlugins {
+    private IEnumerable<IPluginDescription> CheckedPlugins {
       get {
-        return (from item in remotePluginsListView.Items.OfType<ListViewItem>()
+        return (from item in pluginsListView.Items.OfType<ListViewItem>()
                 where item.Checked
                 let plugin = item.Tag as IPluginDescription
                 where plugin != null
@@ -112,7 +67,9 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     }
     public RemotePluginInstallerView() {
       InitializeComponent();
-
+      productImageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Resources.Setup_Install);
+      productLargeImageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Resources.Setup_Install);
+      pluginsImageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Resources.plugin_16);
       refreshServerPluginsBackgroundWorker = new BackgroundWorker();
       refreshServerPluginsBackgroundWorker.DoWork += new DoWorkEventHandler(refreshServerPluginsBackgroundWorker_DoWork);
       refreshServerPluginsBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(refreshServerPluginsBackgroundWorker_RunWorkerCompleted);
@@ -120,10 +77,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       updateOrInstallPluginsBackgroundWorker = new BackgroundWorker();
       updateOrInstallPluginsBackgroundWorker.DoWork += new DoWorkEventHandler(updateOrInstallPluginsBackgroundWorker_DoWork);
       updateOrInstallPluginsBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(updateOrInstallPluginsBackgroundWorker_RunWorkerCompleted);
-
-      newPluginsGroup = remotePluginsListView.Groups["newPluginsGroup"];
-      productsGroup = remotePluginsListView.Groups["productsGroup"];
-      allPluginsGroup = remotePluginsListView.Groups["allPluginsGroup"];
     }
 
 
@@ -135,7 +88,9 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
           "Please check your connection settings and user credentials.");
       } else {
         RefreshBackgroundWorkerResult refreshResult = (RefreshBackgroundWorkerResult)e.Result;
-        UpdateRemotePluginList(refreshResult.RemoteProducts, refreshResult.RemotePlugins);
+        products = refreshResult.RemoteProducts;
+        plugins = refreshResult.RemotePlugins;
+        UpdateControl();
       }
       StatusView.UnlockUI();
       StatusView.RemoveMessage(PluginDiscoveryMessage);
@@ -182,7 +137,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       StatusView.ShowMessage(PluginDiscoveryMessage);
       refreshServerPluginsBackgroundWorker.RunWorkerAsync();
     }
-    private void installButton_Click(object sender, EventArgs e) {
+    private void installPluginsButton_Click(object sender, EventArgs e) {
       StatusView.LockUI();
       StatusView.ShowProgressIndicator();
       var updateOrInstallInfo = new UpdateOrInstallPluginsBackgroundWorkerArgument();
@@ -204,58 +159,117 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       updateOrInstallInfo.PluginsToUpdate = pluginsToUpdate;
       updateOrInstallPluginsBackgroundWorker.RunWorkerAsync(updateOrInstallInfo);
     }
+    private void installProductsButton_Click(object sender, EventArgs e) {
+      StatusView.LockUI();
+      StatusView.ShowProgressIndicator();
+      var updateOrInstallInfo = new UpdateOrInstallPluginsBackgroundWorkerArgument();
+      var selectedProduct = (DeploymentService.ProductDescription)productsListView.SelectedItems[0].Tag;
+      // if there is a local plugin with same name and same major and minor version then it's an update
+      var pluginsToUpdate = from plugin in selectedProduct.Plugins
+                            let matchingLocalPlugins = from localPlugin in pluginManager.Plugins
+                                                       where localPlugin.Name == plugin.Name
+                                                       where localPlugin.Version.Major == plugin.Version.Major
+                                                       where localPlugin.Version.Minor == plugin.Version.Minor
+                                                       where IsNewerThan(plugin, localPlugin)
+                                                       select localPlugin
+                            where matchingLocalPlugins.Count() > 0
+                            select plugin;
+
+      // otherwise install a new plugin
+      var pluginsToInstall = selectedProduct.Plugins.Except(pluginsToUpdate);
+
+      updateOrInstallInfo.PluginsToInstall = (IEnumerable<IPluginDescription>)pluginsToInstall.ToList();
+      updateOrInstallInfo.PluginsToUpdate = (IEnumerable<IPluginDescription>)pluginsToUpdate.ToList();
+      updateOrInstallPluginsBackgroundWorker.RunWorkerAsync(updateOrInstallInfo);
+    }
+
+    private void showLargeIconsButton_CheckedChanged(object sender, EventArgs e) {
+      productsListView.View = View.LargeIcon;
+    }
+
+    private void showDetailsButton_CheckedChanged(object sender, EventArgs e) {
+      productsListView.View = View.Details;
+    }
+
     #endregion
 
     private void UpdateControl() {
-      ClearListView();
-      remotePluginsListView.SuppressItemCheckedEvents = true;
-      foreach (var newPlugin in NewPlugins) {
-        var item = CreateListViewItem(newPlugin);
-        item.Group = newPluginsGroup;
-        remotePluginsListView.Items.Add(item);
-      }
+      // clear products view
+      List<ListViewItem> productItemsToDelete = new List<ListViewItem>(productsListView.Items.OfType<ListViewItem>());
+      productItemsToDelete.ForEach(item => productsListView.Items.Remove(item));
 
-      foreach (var product in Products) {
+      // populate products list view
+      foreach (var product in products) {
         var item = CreateListViewItem(product);
-        item.Group = productsGroup;
-        remotePluginsListView.Items.Add(item);
+        productsListView.Items.Add(item);
       }
-
-      if (showAllPlugins) {
-        foreach (var plugin in AllPlugins) {
-          var item = CreateListViewItem(plugin);
-          item.Group = allPluginsGroup;
-          remotePluginsListView.Items.Add(item);
-        }
-      }
-      foreach (ColumnHeader column in remotePluginsListView.Columns)
-        if (remotePluginsListView.Items.Count > 0)
+      var allPluginsListViewItem = new ListViewItem();
+      allPluginsListViewItem.Text = "All Plugins";
+      allPluginsListViewItem.ImageIndex = 0;
+      productsListView.Items.Add(allPluginsListViewItem);
+      foreach (ColumnHeader column in productsListView.Columns)
+        if (productsListView.Items.Count > 0)
           column.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
         else column.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
-
-      remotePluginsListView.SuppressItemCheckedEvents = false;
     }
 
-    private void ClearListView() {
-      List<ListViewItem> itemsToDelete = new List<ListViewItem>(remotePluginsListView.Items.OfType<ListViewItem>());
-      itemsToDelete.ForEach(item => remotePluginsListView.Items.Remove(item));
+    private void UpdatePluginsList() {
+      // clear plugins list view
+      List<ListViewItem> pluginItemsToDelete = new List<ListViewItem>(pluginsListView.Items.OfType<ListViewItem>());
+      pluginItemsToDelete.ForEach(item => pluginsListView.Items.Remove(item));
+
+      // populate plugins list
+      if (productsListView.SelectedItems.Count > 0) {
+        pluginsListView.SuppressItemCheckedEvents = true;
+
+        var selectedItem = productsListView.SelectedItems[0];
+        if (selectedItem.Text == "All Plugins") {
+          foreach (var plugin in plugins) {
+            var item = CreateListViewItem(plugin);
+            pluginsListView.Items.Add(item);
+          }
+        } else {
+          var selectedProduct = (DeploymentService.ProductDescription)productsListView.SelectedItems[0].Tag;
+          foreach (var plugin in selectedProduct.Plugins) {
+            var item = CreateListViewItem(plugin);
+            pluginsListView.Items.Add(item);
+          }
+        }
+
+        foreach (ColumnHeader column in pluginsListView.Columns)
+          if (pluginsListView.Items.Count > 0)
+            column.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+          else column.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
+
+        pluginsListView.SuppressItemCheckedEvents = false;
+      }
     }
 
     private ListViewItem CreateListViewItem(DeploymentService.ProductDescription product) {
-      ListViewItem item = new ListViewItem(new string[] { product.Name, product.Version.ToString(), string.Empty });
+      ListViewItem item = new ListViewItem(new string[] { product.Name, product.Version.ToString() });
       item.Tag = product;
+      item.ImageIndex = 0;
       return item;
     }
 
     private ListViewItem CreateListViewItem(IPluginDescription plugin) {
       ListViewItem item = new ListViewItem(new string[] { plugin.Name, plugin.Version.ToString(), plugin.Description });
       item.Tag = plugin;
+      item.ImageIndex = 0;
       return item;
     }
 
+    #region products list view events
+    private void productsListView_SelectedIndexChanged(object sender, EventArgs e) {
+      UpdatePluginsList();
+      installProductsButton.Enabled = (productsListView.SelectedItems.Count > 0 &&
+        productsListView.SelectedItems[0].Text != "All Plugins");
+    }
+    #endregion
+
     #region item checked event handler
     private void remotePluginsListView_ItemChecked(object sender, ItemCheckedEventArgs e) {
-      foreach (ListViewItem item in remotePluginsListView.SelectedItems) {
+      foreach (ListViewItem item in pluginsListView.SelectedItems) {
         // dispatch by check state and type of item (product/plugin)
         IPluginDescription plugin = item.Tag as IPluginDescription;
         if (plugin != null)
@@ -272,7 +286,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
               HandleProductUnchecked(product);
         }
       }
-      installButton.Enabled = remotePluginsListView.CheckedItems.Count > 0;
+      installPluginsButton.Enabled = pluginsListView.CheckedItems.Count > 0;
     }
 
     private void HandleProductUnchecked(HeuristicLab.PluginInfrastructure.Advanced.DeploymentService.ProductDescription product) {
@@ -286,7 +300,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
             modifiedItems.Add(item);
         }
       }
-      remotePluginsListView.UncheckItems(modifiedItems);
+      pluginsListView.UncheckItems(modifiedItems);
     }
 
     private void HandleProductChecked(HeuristicLab.PluginInfrastructure.Advanced.DeploymentService.ProductDescription product) {
@@ -302,7 +316,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
           }
         }
       }
-      remotePluginsListView.CheckItems(modifiedItems);
+      pluginsListView.CheckItems(modifiedItems);
     }
 
     private void HandlePluginUnchecked(IPluginDescription plugin) {
@@ -332,7 +346,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
             modifiedItems.Add(item);
         }
       }
-      remotePluginsListView.UncheckItems(modifiedItems);
+      pluginsListView.UncheckItems(modifiedItems);
     }
 
     private void HandlePluginChecked(IPluginDescription plugin) {
@@ -348,46 +362,26 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
           }
         }
       }
-      remotePluginsListView.CheckItems(modifiedItems);
+      pluginsListView.CheckItems(modifiedItems);
     }
 
     #endregion
 
     #region helper methods
     private IEnumerable<ListViewItem> FindItemsForPlugin(IPluginDescription plugin) {
-      return (from item in remotePluginsListView.Items.OfType<ListViewItem>()
+      return (from item in pluginsListView.Items.OfType<ListViewItem>()
               let otherPlugin = item.Tag as IPluginDescription
               where otherPlugin != null && otherPlugin.Name == plugin.Name && otherPlugin.Version == plugin.Version
               select item);
     }
 
     private ListViewItem FindItemForProduct(DeploymentService.ProductDescription product) {
-      return (from item in remotePluginsListView.Items.OfType<ListViewItem>()
+      return (from item in pluginsListView.Items.OfType<ListViewItem>()
               let otherProduct = item.Tag as DeploymentService.ProductDescription
               where otherProduct != null && otherProduct.Name == product.Name && otherProduct.Version == product.Version
               select item).SingleOrDefault();
     }
 
-    private void UpdateRemotePluginList(
-      IEnumerable<DeploymentService.ProductDescription> remoteProducts,
-      IEnumerable<IPluginDescription> remotePlugins) {
-
-      var mostRecentRemotePlugins = from remote in remotePlugins
-                                    where !remotePlugins.Any(x => x.Name == remote.Name && x.Version > remote.Version) // same name and higher version
-                                    select remote;
-
-      var newPlugins = from remote in mostRecentRemotePlugins
-                       let matchingLocal = (from local in pluginManager.Plugins
-                                            where local.Name == remote.Name
-                                            where local.Version < remote.Version
-                                            select local).FirstOrDefault()
-                       where matchingLocal != null
-                       select remote;
-
-      NewPlugins = newPlugins;
-      Products = remoteProducts;
-      AllPlugins = remotePlugins;
-    }
     private bool IsNewerThan(IPluginDescription plugin1, IPluginDescription plugin2) {
       // newer: build version is higher, or if build version is the same revision is higher
       if (plugin1.Version.Build < plugin2.Version.Build) return false;
@@ -395,7 +389,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       else return plugin1.Version.Revision > plugin2.Version.Revision;
     }
     #endregion
-
 
   }
 }
