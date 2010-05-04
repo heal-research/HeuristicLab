@@ -39,7 +39,7 @@ namespace HeuristicLab.Core {
     private string name;
 
     [StorableConstructor]
-    protected ConstraintOperation( bool deserializing) {
+    protected ConstraintOperation(bool deserializing) {
     }
     protected ConstraintOperation(int value, string name) {
       this.value = value;
@@ -60,6 +60,12 @@ namespace HeuristicLab.Core {
       return value;
     }
     public static bool operator ==(ConstraintOperation co1, ConstraintOperation co2) {
+      if(object.ReferenceEquals(co1,co2))
+        return true;
+      
+      if((object)co1 == null || (object) co2 == null)
+        return false;
+
       return co1.value == co2.value;
     }
     public static bool operator !=(ConstraintOperation co1, ConstraintOperation co2) {
