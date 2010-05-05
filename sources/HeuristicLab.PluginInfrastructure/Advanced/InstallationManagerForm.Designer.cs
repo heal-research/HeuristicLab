@@ -115,6 +115,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.tabControl.SelectedIndex = 0;
       this.tabControl.Size = new System.Drawing.Size(598, 392);
       this.tabControl.TabIndex = 16;
+      this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
       // 
       // updateAllPluginsTabPage
       // 
@@ -212,6 +213,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.pluginEditor.Name = "pluginEditor";
       this.pluginEditor.PluginManager = null;
       this.pluginEditor.Size = new System.Drawing.Size(578, 354);
+      this.pluginEditor.StatusView = null;
       this.pluginEditor.TabIndex = 0;
       // 
       // manageProductsTabPage
@@ -234,6 +236,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.productEditor.Location = new System.Drawing.Point(6, 6);
       this.productEditor.Name = "productEditor";
       this.productEditor.Size = new System.Drawing.Size(578, 354);
+      this.productEditor.StatusView = null;
       this.productEditor.TabIndex = 0;
       // 
       // logTabPage

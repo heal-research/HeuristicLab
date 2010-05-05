@@ -207,10 +207,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       allPluginsListViewItem.Text = "All Plugins";
       allPluginsListViewItem.ImageIndex = 0;
       productsListView.Items.Add(allPluginsListViewItem);
-      foreach (ColumnHeader column in productsListView.Columns)
-        if (productsListView.Items.Count > 0)
-          column.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-        else column.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
+      Util.ResizeColumns(productsListView.Columns.OfType<ColumnHeader>());
     }
 
     private void UpdatePluginsList() {
@@ -236,11 +233,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
           }
         }
 
-        foreach (ColumnHeader column in pluginsListView.Columns)
-          if (pluginsListView.Items.Count > 0)
-            column.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-          else column.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
-
+        Util.ResizeColumns(pluginsListView.Columns.OfType<ColumnHeader>());
         pluginsListView.SuppressItemCheckedEvents = false;
       }
     }

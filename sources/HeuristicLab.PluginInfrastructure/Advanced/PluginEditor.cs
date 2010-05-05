@@ -239,10 +239,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
         var item = MakeListViewItem(pair.Key);
         listView.Items.Add(item);
       }
-      foreach (ColumnHeader column in listView.Columns)
-        if (listView.Items.Count > 0)
-          column.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-        else column.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
+      Util.ResizeColumns(listView.Columns.OfType<ColumnHeader>());
       ignoreItemCheckedEvents = false;
     }
 
@@ -299,6 +296,8 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       if (localAndServerPlugins[plugin] != null) {
         item = new ListViewItem(new string[] { plugin.Name, plugin.Version.ToString(), 
           localAndServerPlugins[plugin].Version.ToString(), localAndServerPlugins[plugin].Description });
+        if (plugin.Version <= localAndServerPlugins[plugin].Version)
+          item.ForeColor = Color.Gray;
       } else {
         item = new ListViewItem(new string[] { plugin.Name, plugin.Version.ToString(), 
           string.Empty, plugin.Description });

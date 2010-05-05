@@ -113,17 +113,18 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
         StatusView.ShowError("Connection Error",
         "There was an error while connecting to the server." + Environment.NewLine +
            "Please check your connection settings and user credentials.");
-        DisableControls();
+        this.products.Clear();
+        this.plugins.Clear();
       } else {
         this.products = new List<DeploymentService.ProductDescription>(
   (DeploymentService.ProductDescription[])((object[])e.Result)[0]);
         this.plugins = new List<DeploymentService.PluginDescription>(
           (DeploymentService.PluginDescription[])((object[])e.Result)[1]);
 
-        UpdateProductsList();
-        dirtyProducts.Clear();
         EnableControls();
       }
+      UpdateProductsList();
+      dirtyProducts.Clear();
       StatusView.HideProgressIndicator();
       StatusView.RemoveMessage(DeleteProductMessage);
       StatusView.UnlockUI();
@@ -178,17 +179,18 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
         StatusView.ShowError("Connection Error",
         "There was an error while connecting to the server." + Environment.NewLine +
            "Please check your connection settings and user credentials.");
-        DisableControls();
+        this.products.Clear();
+        this.plugins.Clear();
       } else {
         this.products = new List<DeploymentService.ProductDescription>(
   (DeploymentService.ProductDescription[])((object[])e.Result)[0]);
         this.plugins = new List<DeploymentService.PluginDescription>(
           (DeploymentService.PluginDescription[])((object[])e.Result)[1]);
 
-        UpdateProductsList();
-        dirtyProducts.Clear();
-        EnableControls();
       }
+      UpdateProductsList();
+      dirtyProducts.Clear();
+      EnableControls();
       StatusView.HideProgressIndicator();
       StatusView.RemoveMessage(UploadMessage);
       StatusView.UnlockUI();
@@ -221,18 +223,18 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
         StatusView.ShowError("Connection Error",
           "There was an error while connecting to the server." + Environment.NewLine +
                    "Please check your connection settings and user credentials.");
-        DisableControls();
+        this.products.Clear();
+        this.plugins.Clear();
+
       } else {
         this.products = new List<DeploymentService.ProductDescription>(
           (DeploymentService.ProductDescription[])((object[])e.Result)[0]);
         this.plugins = new List<DeploymentService.PluginDescription>(
           (DeploymentService.PluginDescription[])((object[])e.Result)[1]);
-
-
-        UpdateProductsList();
-        dirtyProducts.Clear();
-        EnableControls();
       }
+      UpdateProductsList();
+      dirtyProducts.Clear();
+      EnableControls();
       StatusView.HideProgressIndicator();
       StatusView.RemoveMessage(RefreshMessage);
       StatusView.UnlockUI();
@@ -240,21 +242,18 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     #endregion
 
     private void UpdateProductsList() {
+      productsListView.SelectedItems.Clear();
       productsListView.Items.Clear();
       foreach (var prodDesc in products) {
         productsListView.Items.Add(CreateListViewItem(prodDesc));
       }
-      foreach (ColumnHeader column in productsListView.Columns)
-        if (productsListView.Items.Count > 0)
-          column.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-        else column.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
+      Util.ResizeColumns(productsListView.Columns.OfType<ColumnHeader>());
     }
 
     private void productsListBox_SelectedIndexChanged(object sender, EventArgs e) {
       bool productSelected = productsListView.SelectedItems.Count > 0;
       detailsGroupBox.Enabled = productSelected;
-      deleteProductButton.Enabled = productSelected;
-      uploadButton.Enabled = dirtyProducts.Count > 0;
+      UpdateProductButtons();
       if (productSelected) {
         DeploymentService.ProductDescription activeProduct = (DeploymentService.ProductDescription)((ListViewItem)productsListView.SelectedItems[0]).Tag;
         nameTextBox.Text = activeProduct.Name;
@@ -262,19 +261,29 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
         // populate plugins list view
         ListViewItem activeItem = (ListViewItem)productsListView.SelectedItems[0];
+        pluginListView.SuppressItemCheckedEvents = true;
         foreach (var plugin in plugins.OfType<IPluginDescription>()) {
           pluginListView.Items.Add(CreateListViewItem(plugin));
         }
-
-        pluginListView.CheckItems(from plugin in activeProduct.Plugins
-                                  let item = FindItemForPlugin(plugin)
-                                  where item != null
-                                  select item);
-
+        pluginListView.SuppressItemCheckedEvents = false;
+        foreach (var plugin in activeProduct.Plugins) {
+          pluginListView.CheckItems(FindItemsForPlugin(plugin));
+        }
       } else {
         nameTextBox.Text = string.Empty;
         versionTextBox.Text = string.Empty;
         pluginListView.Items.Clear();
+      }
+      Util.ResizeColumns(pluginListView.Columns.OfType<ColumnHeader>());
+    }
+
+    private void UpdateProductButtons() {
+      uploadButton.Enabled = dirtyProducts.Count > 0;
+      if (productsListView.SelectedItems.Count > 0) {
+        var selectedProduct = (DeploymentService.ProductDescription)productsListView.SelectedItems[0].Tag;
+        deleteProductButton.Enabled = !dirtyProducts.Contains(selectedProduct);
+      } else {
+        deleteProductButton.Enabled = false;
       }
     }
 
@@ -282,8 +291,8 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     #region button event handlers
     private void newProductButton_Click(object sender, EventArgs e) {
       var newProduct = new DeploymentService.ProductDescription("New product", new Version("0.0.0.0"));
-      ListViewItem item = CreateListViewItem(newProduct);
-      productsListView.Items.Add(item);
+      products.Add(newProduct);
+      UpdateProductsList();
       MarkProductDirty(newProduct);
     }
 
@@ -358,21 +367,81 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
 
     #region plugin list view
-    private void pluginListView_ItemChecked(object sender, ItemCheckedEventArgs e) {
+    private void OnItemChecked(ItemCheckedEventArgs e) {
       ListViewItem activeItem = (ListViewItem)productsListView.SelectedItems[0];
       DeploymentService.ProductDescription activeProduct = (DeploymentService.ProductDescription)activeItem.Tag;
       activeProduct.Plugins = (from item in pluginListView.CheckedItems.OfType<ListViewItem>()
                                select (DeploymentService.PluginDescription)item.Tag).ToArray();
       MarkProductDirty(activeProduct);
     }
+
+    private void listView_ItemChecked(object sender, ItemCheckedEventArgs e) {
+      List<IPluginDescription> modifiedPlugins = new List<IPluginDescription>();
+      if (e.Item.Checked) {
+        foreach (ListViewItem item in pluginListView.SelectedItems) {
+          var plugin = (IPluginDescription)item.Tag;
+          // also check all dependencies
+          if (!modifiedPlugins.Contains(plugin))
+            modifiedPlugins.Add(plugin);
+          foreach (var dep in GetAllDependencies(plugin)) {
+            if (!modifiedPlugins.Contains(dep))
+              modifiedPlugins.Add(dep);
+          }
+        }
+        pluginListView.CheckItems(modifiedPlugins.Select(x => FindItemsForPlugin(x).Single()));
+        OnItemChecked(e);
+      } else {
+        foreach (ListViewItem item in pluginListView.SelectedItems) {
+          var plugin = (IPluginDescription)item.Tag;
+          // also uncheck all dependent plugins
+          if (!modifiedPlugins.Contains(plugin))
+            modifiedPlugins.Add(plugin);
+          foreach (var dep in GetAllDependents(plugin)) {
+            if (!modifiedPlugins.Contains(dep))
+              modifiedPlugins.Add(dep);
+          }
+
+        }
+        pluginListView.UncheckItems(modifiedPlugins.Select(x => FindItemsForPlugin(x).Single()));
+        OnItemChecked(e);
+      }
+    }
+
+
     #endregion
 
     #region helper
+    private IEnumerable<IPluginDescription> GetAllDependents(IPluginDescription plugin) {
+      return from p in plugins
+             let matchingEntries = from dep in GetAllDependencies(p)
+                                   where dep.Name == plugin.Name
+                                   where dep.Version == plugin.Version
+                                   select dep
+             where matchingEntries.Any()
+             select p as IPluginDescription;
+    }
+
+    private IEnumerable<IPluginDescription> GetAllDependencies(IPluginDescription plugin) {
+      HashSet<IPluginDescription> yieldedPlugins = new HashSet<IPluginDescription>();
+      foreach (var dep in plugin.Dependencies) {
+        foreach (var recDep in GetAllDependencies(dep)) {
+          if (!yieldedPlugins.Contains(recDep)) {
+            yieldedPlugins.Add(recDep);
+            yield return recDep;
+          }
+        }
+        if (!yieldedPlugins.Contains(dep)) {
+          yieldedPlugins.Add(dep);
+          yield return dep;
+        }
+      }
+    }
     private void MarkProductDirty(HeuristicLab.PluginInfrastructure.Advanced.DeploymentService.ProductDescription activeProduct) {
       if (!dirtyProducts.Contains(activeProduct)) {
         dirtyProducts.Add(activeProduct);
         var item = FindItemForProduct(activeProduct);
         item.ImageIndex = 1;
+        UpdateProductButtons();
       }
     }
     private ListViewItem CreateListViewItem(DeploymentService.ProductDescription productDescription) {
@@ -398,25 +467,14 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
               where product == activeProduct
               select item).Single();
     }
-
-    private ListViewItem FindItemForPlugin(IPluginDescription plugin) {
-      return (from i in pluginListView.Items.Cast<ListViewItem>()
-              let p = i.Tag as IPluginDescription
-              where p != null
-              where p.Name == plugin.Name
-              where p.Version == plugin.Version
-              select i).SingleOrDefault();
+    private IEnumerable<ListViewItem> FindItemsForPlugin(IPluginDescription plugin) {
+      return from item in pluginListView.Items.OfType<ListViewItem>()
+             let p = item.Tag as IPluginDescription
+             where p.Name == plugin.Name
+             where p.Version == plugin.Version
+             select item;
     }
 
-    private void DisableControls() {
-      newProductButton.Enabled = false;
-      productsListView.Enabled = false;
-      detailsGroupBox.Enabled = false;
-      deleteProductButton.Enabled = false;
-      nameTextBox.Text = string.Empty;
-      versionTextBox.Text = string.Empty;
-      pluginListView.Items.Clear();
-    }
     private void EnableControls() {
       newProductButton.Enabled = true;
       productsListView.Enabled = true;

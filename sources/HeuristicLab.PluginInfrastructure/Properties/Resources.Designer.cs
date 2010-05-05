@@ -95,6 +95,34 @@ namespace HeuristicLab.PluginInfrastructure.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap PublishToWebHS {
+            get {
+                object obj = ResourceManager.GetObject("PublishToWebHS", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Repeat {
+            get {
+                object obj = ResourceManager.GetObject("Repeat", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap RepeatHS {
+            get {
+                object obj = ResourceManager.GetObject("RepeatHS", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap RepeatHS1 {
+            get {
+                object obj = ResourceManager.GetObject("RepeatHS1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap show_details {
             get {
                 object obj = ResourceManager.GetObject("show_details", resourceCulture);

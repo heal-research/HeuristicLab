@@ -110,6 +110,7 @@
     <Compile Include="Advanced\ConnectionSetupView.Designer.cs">
       <DependentUpon>ConnectionSetupView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Advanced\Util.cs" />
     <Compile Include="Advanced\InstallationManagerControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -328,6 +329,10 @@
     <None Include="Resources\plugin.png" />
     <None Include="Resources\plugin_16.png" />
     <None Include="Resources\Setup_Install.ico" />
+    <None Include="Resources\RepeatHS.bmp" />
+    <None Include="Resources\Repeat.bmp" />
+    <None Include="Resources\RepeatHS.png" />
+    <None Include="Resources\PublishToWebHS.png" />
     <Content Include="Resources\VS2008ImageLibrary_CommonElements_Objects_Arrow_Down.png" />
     <None Include="Resources\VS2008ImageLibrary_Objects_NetworkConnections.png" />
     <None Include="Resources\VS2008ImageLibrary_Objects_Install1.png" />

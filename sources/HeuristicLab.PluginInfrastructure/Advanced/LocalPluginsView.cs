@@ -100,8 +100,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
         StatusView.ShowError("Connection Error",
           "There was an error while connecting to the server." + Environment.NewLine +
            "Please check your connection settings and user credentials.");
-      } else if (e.Cancelled) {
-        StatusView.ShowMessage(NoUpdatesAvailableMessage);
       }
       StatusView.RemoveMessage(CheckingPluginsMessage);
       StatusView.HideProgressIndicator();
@@ -123,11 +121,8 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
                             select remotePlugin;
       if (pluginsToUpdate.Count() > 0) {
         installationManager.Update(pluginsToUpdate);
-        pluginManager.DiscoverAndCheckPlugins();
-        e.Cancel = false;
-      } else {
-        e.Cancel = true;
       }
+      pluginManager.DiscoverAndCheckPlugins();
     }
 
     private bool IsNewerThan(IPluginDescription plugin1, IPluginDescription plugin2) {
@@ -155,11 +150,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       }
       removeButton.Enabled = localPluginsListView.CheckedItems.Count > 0;
       updateSelectedButton.Enabled = localPluginsListView.CheckedItems.Count > 0;
-      foreach (ColumnHeader column in localPluginsListView.Columns) {
-        if (localPluginsListView.Items.Count > 0)
-          column.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-        else column.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
-      }
+      Util.ResizeColumns(localPluginsListView.Columns.OfType<ColumnHeader>());
     }
 
     private void ClearPluginList() {
@@ -237,6 +228,13 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
         .OfType<IPluginDescription>()
         .ToList();
       removePluginsBackgroundWorker.RunWorkerAsync(checkedPlugins);
+    }
+
+    private void refreshButton_Click(object sender, EventArgs e) {
+      StatusView.LockUI();
+      StatusView.ShowProgressIndicator();
+      // refresh = update empty list of plugins (plugins are reloaded)
+      updatePluginsBackgroundWorker.RunWorkerAsync(new IPluginDescription[0]);
     }
   }
 }

@@ -56,6 +56,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.dependenciesListView = new System.Windows.Forms.ListView();
       this.pluginNameHeader = new System.Windows.Forms.ColumnHeader();
       this.pluginVersionHeader = new System.Windows.Forms.ColumnHeader();
+      this.pluginDescriptionHeader = new System.Windows.Forms.ColumnHeader();
       this.pluginsImageList = new System.Windows.Forms.ImageList(this.components);
       this.filesListView = new System.Windows.Forms.ListView();
       this.fileNameHeader = new System.Windows.Forms.ColumnHeader();
@@ -68,7 +69,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.descriptionLabel = new System.Windows.Forms.Label();
       this.descriptionTextBox = new System.Windows.Forms.TextBox();
       this.errorTextBox = new System.Windows.Forms.TextBox();
-      this.pluginDescriptionHeader = new System.Windows.Forms.ColumnHeader();
       this.dependenciesGroupBox.SuspendLayout();
       this.filesGroupBox.SuspendLayout();
       this.SuspendLayout();
@@ -165,6 +165,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.dependenciesListView.Name = "dependenciesListView";
       this.dependenciesListView.Size = new System.Drawing.Size(657, 210);
       this.dependenciesListView.SmallImageList = this.pluginsImageList;
+      this.dependenciesListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
       this.dependenciesListView.TabIndex = 0;
       this.dependenciesListView.UseCompatibleStateImageBehavior = false;
       this.dependenciesListView.View = System.Windows.Forms.View.Details;
@@ -179,6 +180,11 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // 
       this.pluginVersionHeader.Text = "Version";
       this.pluginVersionHeader.Width = 120;
+      // 
+      // pluginDescriptionHeader
+      // 
+      this.pluginDescriptionHeader.Text = "Description";
+      this.pluginDescriptionHeader.Width = 325;
       // 
       // pluginsImageList
       // 
@@ -270,6 +276,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.descriptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.descriptionTextBox.Location = new System.Drawing.Point(78, 90);
+      this.descriptionTextBox.Multiline = true;
       this.descriptionTextBox.Name = "descriptionTextBox";
       this.descriptionTextBox.ReadOnly = true;
       this.descriptionTextBox.Size = new System.Drawing.Size(594, 20);
@@ -280,15 +287,11 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.errorTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.errorTextBox.Location = new System.Drawing.Point(78, 142);
+      this.errorTextBox.Multiline = true;
       this.errorTextBox.Name = "errorTextBox";
       this.errorTextBox.ReadOnly = true;
       this.errorTextBox.Size = new System.Drawing.Size(594, 20);
       this.errorTextBox.TabIndex = 21;
-      // 
-      // pluginDescriptionHeader
-      // 
-      this.pluginDescriptionHeader.Text = "Description";
-      this.pluginDescriptionHeader.Width = 325;
       // 
       // PluginView
       // 

@@ -60,7 +60,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // 
       this.uploadButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.uploadButton.Enabled = false;
-      this.uploadButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_CommonElements_Objects_Arrow_Up;
+      this.uploadButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.PublishToWebHS;
       this.uploadButton.Location = new System.Drawing.Point(78, 482);
       this.uploadButton.Name = "uploadButton";
       this.uploadButton.Size = new System.Drawing.Size(114, 26);
@@ -100,6 +100,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.listView.Name = "listView";
       this.listView.Size = new System.Drawing.Size(539, 476);
       this.listView.SmallImageList = this.pluginImageList;
+      this.listView.Sorting = System.Windows.Forms.SortOrder.Ascending;
       this.listView.SuppressItemCheckedEvents = false;
       this.listView.TabIndex = 8;
       this.listView.UseCompatibleStateImageBehavior = false;

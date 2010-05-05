@@ -144,6 +144,9 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private void connectionSettingsToolStripMenuItem_Click(object sender, EventArgs e) {
       new ConnectionSetupView().ShowDialog();
     }
+    private void tabControl_SelectedIndexChanged(object sender, EventArgs e) {
+      toolStripStatusLabel.Text = string.Empty;
+    }
     #endregion
 
     #region confirmation dialogs

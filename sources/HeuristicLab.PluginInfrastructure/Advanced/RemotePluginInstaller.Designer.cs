@@ -55,14 +55,14 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.productLargeImageList = new System.Windows.Forms.ImageList(this.components);
       this.productImageList = new System.Windows.Forms.ImageList(this.components);
       this.productsGroupBox = new System.Windows.Forms.GroupBox();
-      this.pluginsGroupBox = new System.Windows.Forms.GroupBox();
-      this.splitContainer = new System.Windows.Forms.SplitContainer();
-      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.showDetailsButton = new System.Windows.Forms.RadioButton();
       this.showLargeIconsButton = new System.Windows.Forms.RadioButton();
       this.installProductsButton = new System.Windows.Forms.Button();
       this.refreshButton = new System.Windows.Forms.Button();
+      this.pluginsGroupBox = new System.Windows.Forms.GroupBox();
       this.installPluginsButton = new System.Windows.Forms.Button();
+      this.splitContainer = new System.Windows.Forms.SplitContainer();
+      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.productsGroupBox.SuspendLayout();
       this.pluginsGroupBox.SuspendLayout();
       this.splitContainer.Panel1.SuspendLayout();
@@ -85,6 +85,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.pluginsListView.ShowGroups = false;
       this.pluginsListView.Size = new System.Drawing.Size(266, 502);
       this.pluginsListView.SmallImageList = this.pluginsImageList;
+      this.pluginsListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
       this.pluginsListView.SuppressItemCheckedEvents = false;
       this.pluginsListView.TabIndex = 0;
       this.pluginsListView.UseCompatibleStateImageBehavior = false;
@@ -128,6 +129,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.productsListView.ShowGroups = false;
       this.productsListView.Size = new System.Drawing.Size(240, 471);
       this.productsListView.SmallImageList = this.productImageList;
+      this.productsListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
       this.productsListView.TabIndex = 18;
       this.productsListView.UseCompatibleStateImageBehavior = false;
       this.productsListView.View = System.Windows.Forms.View.Details;
@@ -169,39 +171,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.productsGroupBox.TabIndex = 19;
       this.productsGroupBox.TabStop = false;
       this.productsGroupBox.Text = "Products";
-      // 
-      // pluginsGroupBox
-      // 
-      this.pluginsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.pluginsGroupBox.Controls.Add(this.pluginsListView);
-      this.pluginsGroupBox.Controls.Add(this.installPluginsButton);
-      this.pluginsGroupBox.Location = new System.Drawing.Point(-1, 0);
-      this.pluginsGroupBox.Name = "pluginsGroupBox";
-      this.pluginsGroupBox.Size = new System.Drawing.Size(278, 558);
-      this.pluginsGroupBox.TabIndex = 20;
-      this.pluginsGroupBox.TabStop = false;
-      this.pluginsGroupBox.Text = "Plugins";
-      // 
-      // splitContainer
-      // 
-      this.splitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.splitContainer.Location = new System.Drawing.Point(0, 0);
-      this.splitContainer.Name = "splitContainer";
-      // 
-      // splitContainer.Panel1
-      // 
-      this.splitContainer.Panel1.Controls.Add(this.productsGroupBox);
-      // 
-      // splitContainer.Panel2
-      // 
-      this.splitContainer.Panel2.Controls.Add(this.pluginsGroupBox);
-      this.splitContainer.Size = new System.Drawing.Size(533, 558);
-      this.splitContainer.SplitterDistance = 252;
-      this.splitContainer.TabIndex = 21;
       // 
       // showDetailsButton
       // 
@@ -259,6 +228,20 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.refreshButton.UseVisualStyleBackColor = true;
       this.refreshButton.Click += new System.EventHandler(this.refreshRemoteButton_Click);
       // 
+      // pluginsGroupBox
+      // 
+      this.pluginsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.pluginsGroupBox.Controls.Add(this.pluginsListView);
+      this.pluginsGroupBox.Controls.Add(this.installPluginsButton);
+      this.pluginsGroupBox.Location = new System.Drawing.Point(-1, 0);
+      this.pluginsGroupBox.Name = "pluginsGroupBox";
+      this.pluginsGroupBox.Size = new System.Drawing.Size(278, 558);
+      this.pluginsGroupBox.TabIndex = 20;
+      this.pluginsGroupBox.TabStop = false;
+      this.pluginsGroupBox.Text = "Plugins";
+      // 
       // installPluginsButton
       // 
       this.installPluginsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -273,6 +256,25 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.toolTip.SetToolTip(this.installPluginsButton, "Install only checked plugins");
       this.installPluginsButton.UseVisualStyleBackColor = true;
       this.installPluginsButton.Click += new System.EventHandler(this.installPluginsButton_Click);
+      // 
+      // splitContainer
+      // 
+      this.splitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.splitContainer.Location = new System.Drawing.Point(0, 0);
+      this.splitContainer.Name = "splitContainer";
+      // 
+      // splitContainer.Panel1
+      // 
+      this.splitContainer.Panel1.Controls.Add(this.productsGroupBox);
+      // 
+      // splitContainer.Panel2
+      // 
+      this.splitContainer.Panel2.Controls.Add(this.pluginsGroupBox);
+      this.splitContainer.Size = new System.Drawing.Size(533, 558);
+      this.splitContainer.SplitterDistance = 252;
+      this.splitContainer.TabIndex = 21;
       // 
       // RemotePluginInstallerView
       // 

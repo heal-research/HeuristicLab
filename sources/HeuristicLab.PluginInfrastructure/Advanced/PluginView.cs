@@ -88,17 +88,9 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
         } else fileItem.ImageKey = IMAGE_KEY_FILE;
         filesListView.Items.Add(fileItem);
       }
-      foreach (ColumnHeader column in dependenciesListView.Columns) {
-        if (dependenciesListView.Items.Count > 0)
-          column.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-        else column.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
-      }
-      foreach (ColumnHeader column in filesListView.Columns) {
-        if (filesListView.Items.Count > 0)
-          column.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-        else
-          column.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
-      }
+      Util.ResizeColumns(dependenciesListView.Columns.OfType<ColumnHeader>());
+      Util.ResizeColumns(filesListView.Columns.OfType<ColumnHeader>());
+
       licenseButton.Enabled = !string.IsNullOrEmpty(plugin.LicenseText);
     }
 

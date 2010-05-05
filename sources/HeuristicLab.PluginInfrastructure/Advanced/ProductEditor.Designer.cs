@@ -58,6 +58,9 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.detailsGroupBox = new System.Windows.Forms.GroupBox();
       this.pluginsGroupBox = new System.Windows.Forms.GroupBox();
       this.pluginListView = new HeuristicLab.PluginInfrastructure.Advanced.MultiSelectListView();
+      this.pluginNameHeader = new System.Windows.Forms.ColumnHeader();
+      this.pluginVersionHeader = new System.Windows.Forms.ColumnHeader();
+      this.pluginDescriptionHeader = new System.Windows.Forms.ColumnHeader();
       this.pluginImageList = new System.Windows.Forms.ImageList(this.components);
       this.versionTextBox = new System.Windows.Forms.TextBox();
       this.nameLabel = new System.Windows.Forms.Label();
@@ -65,9 +68,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.versionLabel = new System.Windows.Forms.Label();
       this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-      this.pluginNameHeader = new System.Windows.Forms.ColumnHeader();
-      this.pluginVersionHeader = new System.Windows.Forms.ColumnHeader();
-      this.pluginDescriptionHeader = new System.Windows.Forms.ColumnHeader();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
@@ -95,7 +95,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // 
       this.uploadButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.uploadButton.Enabled = false;
-      this.uploadButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_CommonElements_Objects_Arrow_Up;
+      this.uploadButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.PublishToWebHS;
       this.uploadButton.Location = new System.Drawing.Point(85, 394);
       this.uploadButton.Name = "uploadButton";
       this.uploadButton.Size = new System.Drawing.Size(120, 26);
@@ -184,6 +184,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.productsListView.Name = "productsListView";
       this.productsListView.Size = new System.Drawing.Size(309, 337);
       this.productsListView.SmallImageList = this.productImageList;
+      this.productsListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
       this.productsListView.TabIndex = 4;
       this.productsListView.UseCompatibleStateImageBehavior = false;
       this.productsListView.View = System.Windows.Forms.View.Details;
@@ -250,11 +251,24 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.pluginListView.Name = "pluginListView";
       this.pluginListView.Size = new System.Drawing.Size(322, 330);
       this.pluginListView.SmallImageList = this.pluginImageList;
+      this.pluginListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
       this.pluginListView.SuppressItemCheckedEvents = false;
       this.pluginListView.TabIndex = 7;
       this.pluginListView.UseCompatibleStateImageBehavior = false;
       this.pluginListView.View = System.Windows.Forms.View.Details;
-      this.pluginListView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.pluginListView_ItemChecked);
+      this.pluginListView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.listView_ItemChecked);
+      // 
+      // pluginNameHeader
+      // 
+      this.pluginNameHeader.Text = "Name";
+      // 
+      // pluginVersionHeader
+      // 
+      this.pluginVersionHeader.Text = "Version";
+      // 
+      // pluginDescriptionHeader
+      // 
+      this.pluginDescriptionHeader.Text = "Description";
       // 
       // pluginImageList
       // 
@@ -303,18 +317,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // errorProvider
       // 
       this.errorProvider.ContainerControl = this;
-      // 
-      // pluginNameHeader
-      // 
-      this.pluginNameHeader.Text = "Name";
-      // 
-      // pluginVersionHeader
-      // 
-      this.pluginVersionHeader.Text = "Version";
-      // 
-      // pluginDescriptionHeader
-      // 
-      this.pluginDescriptionHeader.Text = "Description";
       // 
       // ProductEditor
       // 
