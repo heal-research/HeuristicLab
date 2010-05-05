@@ -37,21 +37,27 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   /// </summary>
   [Item("MultiPopulationBestTSPSolutionAnalyzer", "An operator for analyzing the best solution of Traveling Salesman Problems given in path representation using city coordinates.")]
   [StorableClass]
-  public sealed class MultiPopulationBestTSPSolutionAnalyzer : SingleSuccessorOperator, IMultiPopulationAnalyzer {
-    public LookupParameter<DoubleMatrix> CoordinatesParameter {
-      get { return (LookupParameter<DoubleMatrix>)Parameters["Coordinates"]; }
+  public sealed class MultiPopulationBestTSPSolutionAnalyzer : SingleSuccessorOperator, IBestTSPSolutionAnalyzer, IMultiPopulationAnalyzer {
+    public ILookupParameter<DoubleMatrix> CoordinatesParameter {
+      get { return (ILookupParameter<DoubleMatrix>)Parameters["Coordinates"]; }
     }
-    public SubScopesSubScopesLookupParameter<Permutation> PermutationParameter {
-      get { return (SubScopesSubScopesLookupParameter<Permutation>)Parameters["Permutation"]; }
+    public ILookupParameter<ItemArray<ItemArray<Permutation>>> PermutationParameter {
+      get { return (ILookupParameter<ItemArray<ItemArray<Permutation>>>)Parameters["Permutation"]; }
     }
-    public SubScopesSubScopesLookupParameter<DoubleValue> QualityParameter {
-      get { return (SubScopesSubScopesLookupParameter<DoubleValue>)Parameters["Quality"]; }
+    ILookupParameter IBestTSPSolutionAnalyzer.PermutationParameter {
+      get { return PermutationParameter; }
     }
-    public LookupParameter<PathTSPTour> BestSolutionParameter {
-      get { return (LookupParameter<PathTSPTour>)Parameters["BestSolution"]; }
+    public ILookupParameter<ItemArray<ItemArray<DoubleValue>>> QualityParameter {
+      get { return (ILookupParameter<ItemArray<ItemArray<DoubleValue>>>)Parameters["Quality"]; }
     }
-    public ValueLookupParameter<ResultCollection> ResultsParameter {
-      get { return (ValueLookupParameter<ResultCollection>)Parameters["Results"]; }
+    ILookupParameter IBestTSPSolutionAnalyzer.QualityParameter {
+      get { return QualityParameter; }
+    }
+    public ILookupParameter<PathTSPTour> BestSolutionParameter {
+      get { return (ILookupParameter<PathTSPTour>)Parameters["BestSolution"]; }
+    }
+    public IValueLookupParameter<ResultCollection> ResultsParameter {
+      get { return (IValueLookupParameter<ResultCollection>)Parameters["Results"]; }
     }
 
     public MultiPopulationBestTSPSolutionAnalyzer()
