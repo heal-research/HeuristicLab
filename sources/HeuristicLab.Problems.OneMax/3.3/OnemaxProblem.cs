@@ -31,6 +31,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Problems.OneMax.Analyzers;
 
 namespace HeuristicLab.Problems.OneMax {
   [Item("OneMax Problem", "Represents a OneMax Problem.")]
@@ -96,9 +97,12 @@ namespace HeuristicLab.Problems.OneMax {
     public DoubleValue BestKnownQuality {
       get { return BestKnownQualityParameter.Value; }
     }
-    private List<IBinaryVectorOperator> operators;
+    private List<IOperator> operators;
     public IEnumerable<IOperator> Operators {
       get { return operators.Cast<IOperator>(); }
+    }
+    private IEnumerable<IBestOneMaxSolutionAnalyzer> BestOneMaxSolutionAnalyzers {
+      get { return operators.OfType<IBestOneMaxSolutionAnalyzer>(); }
     }
     #endregion
 
@@ -149,18 +153,21 @@ namespace HeuristicLab.Problems.OneMax {
     }
 
     private void SolutionCreatorParameter_ValueChanged(object sender, EventArgs e) {
-      SolutionCreator.BinaryVectorParameter.ActualNameChanged += new EventHandler(SolutionCreator_PermutationParameter_ActualNameChanged);
+      SolutionCreator.BinaryVectorParameter.ActualNameChanged += new EventHandler(SolutionCreator_BinaryVectorParameter_ActualNameChanged);
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
+      ParameterizeAnalyzers();
       ParameterizeOperators();
       OnSolutionCreatorChanged();
     }
-    private void SolutionCreator_PermutationParameter_ActualNameChanged(object sender, EventArgs e) {
+    private void SolutionCreator_BinaryVectorParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
+      ParameterizeAnalyzers();
       ParameterizeOperators();
     }
     private void EvaluatorParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
+      ParameterizeAnalyzers();
       OnEvaluatorChanged();
     }
     void LengthParameter_ValueChanged(object sender, EventArgs e) {
@@ -187,7 +194,7 @@ namespace HeuristicLab.Problems.OneMax {
     private void Initialize() {
       InitializeOperators();
       SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
-      SolutionCreator.BinaryVectorParameter.ActualNameChanged += new EventHandler(SolutionCreator_PermutationParameter_ActualNameChanged);
+      SolutionCreator.BinaryVectorParameter.ActualNameChanged += new EventHandler(SolutionCreator_BinaryVectorParameter_ActualNameChanged);
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
       LengthParameter.ValueChanged += new EventHandler(LengthParameter_ValueChanged);
       LengthParameter.Value.ValueChanged += new EventHandler(Length_ValueChanged);
@@ -201,8 +208,18 @@ namespace HeuristicLab.Problems.OneMax {
       if (Evaluator is OneMaxEvaluator)
         ((OneMaxEvaluator)Evaluator).BinaryVectorParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
     }
+    private void ParameterizeAnalyzers() {
+      foreach (IBestOneMaxSolutionAnalyzer analyzer in BestOneMaxSolutionAnalyzers) {
+        analyzer.BinaryVectorParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
+        analyzer.ResultsParameter.ActualName = "Results";
+      }
+    }
     private void InitializeOperators() {
-      operators = new List<IBinaryVectorOperator>();
+      operators = new List<IOperator>();
+      operators.Add(new BestOneMaxSolutionAnalyzer());
+      operators.Add(new PopulationBestOneMaxSolutionAnalyzer());
+      operators.Add(new MultiPopulationBestOneMaxSolutionAnalyzer());
+      ParameterizeAnalyzers();
       foreach(IBinaryVectorOperator op in ApplicationManager.Manager.GetInstances<IBinaryVectorOperator>()) {
         if (!(op is ISingleObjectiveMoveEvaluator) || (op is IOneMaxMoveEvaluator)) {
           operators.Add(op);

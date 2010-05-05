@@ -85,8 +85,13 @@
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Analyzers\BestOneMaxSolutionAnalyzer.cs" />
+    <Compile Include="Analyzers\MultiPopulationBestOneMaxSolutionAnalyzer.cs" />
+    <Compile Include="Analyzers\PopulationBestOneMaxSolutionAnalyzer.cs" />
+    <Compile Include="Interfaces\IBestOneMaxSolutionAnalyzer.cs" />
     <Compile Include="Interfaces\IOneMaxSolutionsVisualizer.cs" />
     <Compile Include="Interfaces\IOneMaxMoveEvaluator.cs" />
+    <Compile Include="OneMaxSolution.cs" />
     <Compile Include="MoveEvaluators\OneMaxMoveEvaluator.cs" />
     <Compile Include="MoveEvaluators\OneMaxOneBitflipMoveEvaluator.cs" />
     <Compile Include="OneMaxProblem.cs" />
