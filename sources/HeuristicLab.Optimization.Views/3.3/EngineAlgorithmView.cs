@@ -105,6 +105,7 @@ namespace HeuristicLab.Optimization.Views {
       newOperatorGraphButton.Enabled = false;
       openOperatorGraphButton.Enabled = false;
       operatorGraphViewHost.Enabled = Content != null;
+      operatorGraphViewHost.ReadOnly = true;
       engineComboBox.Enabled = Content != null && !ReadOnly;
       createUserDefinedAlgorithmButton.Enabled = Content != null && !Locked;
     }
