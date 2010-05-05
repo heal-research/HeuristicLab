@@ -85,6 +85,7 @@
     <Compile Include="TabuListCreator.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TabuNeighborhoodAnalyzer.cs" />
     <Compile Include="TabuSelector.cs">
       <SubType>Code</SubType>
     </Compile>

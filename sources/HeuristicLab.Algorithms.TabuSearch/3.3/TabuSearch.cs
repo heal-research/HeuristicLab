@@ -32,6 +32,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
+using HeuristicLab.Analysis;
 
 namespace HeuristicLab.Algorithms.TabuSearch {
   [Item("Tabu Search", "A tabu search algorithm.")]
@@ -79,6 +80,12 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     private ValueParameter<IntValue> SampleSizeParameter {
       get { return (ValueParameter<IntValue>)Parameters["SampleSize"]; }
     }
+    private ValueParameter<MultiAnalyzer<IPopulationAnalyzer>> MoveAnalyzerParameter {
+      get { return (ValueParameter<MultiAnalyzer<IPopulationAnalyzer>>)Parameters["MoveAnalyzer"]; }
+    }
+    private ValueParameter<MultiAnalyzer<ISolutionAnalyzer>> AnalyzerParameter {
+      get { return (ValueParameter<MultiAnalyzer<ISolutionAnalyzer>>)Parameters["Analyzer"]; }
+    }
     #endregion
 
     #region Properties
@@ -118,6 +125,14 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       get { return MaximumIterationsParameter.Value; }
       set { MaximumIterationsParameter.Value = value; }
     }
+    public MultiAnalyzer<IPopulationAnalyzer> MoveAnalyzer {
+      get { return MoveAnalyzerParameter.Value; }
+      set { MoveAnalyzerParameter.Value = value; }
+    }
+    public MultiAnalyzer<ISolutionAnalyzer> Analyzer {
+      get { return AnalyzerParameter.Value; }
+      set { AnalyzerParameter.Value = value; }
+    }
     private RandomCreator RandomCreator {
       get { return (RandomCreator)OperatorGraph.InitialOperator; }
     }
@@ -127,6 +142,8 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     private TabuSearchMainLoop MainLoop {
       get { return (TabuSearchMainLoop)SolutionsCreator.Successor; }
     }
+    private PopulationBestAverageWorstQualityAnalyzer moveQualityAnalyzer;
+    private TabuNeighborhoodAnalyzer tabuNeighborhoodAnalyzer;
     #endregion
 
     public TabuSearch()
@@ -141,7 +158,9 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       Parameters.Add(new ValueParameter<IntValue>("TabuTenure", "The length of the tabu list.", new IntValue(10)));
       Parameters.Add(new ValueParameter<IntValue>("MaximumIterations", "The maximum number of generations which should be processed.", new IntValue(1000)));
       Parameters.Add(new ValueParameter<IntValue>("SampleSize", "The neighborhood size for stochastic sampling move generators", new IntValue(100)));
-
+      Parameters.Add(new ValueParameter<MultiAnalyzer<IPopulationAnalyzer>>("MoveAnalyzer", "The operator used to analyze the moves.", new MultiAnalyzer<IPopulationAnalyzer>()));
+      Parameters.Add(new ValueParameter<MultiAnalyzer<ISolutionAnalyzer>>("Analyzer", "The operator used to analyze the solution.", new MultiAnalyzer<ISolutionAnalyzer>()));
+      
       RandomCreator randomCreator = new RandomCreator();
       SolutionsCreator solutionsCreator = new SolutionsCreator();
       TabuSearchMainLoop tsMainLoop = new TabuSearchMainLoop();
@@ -165,6 +184,8 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       tsMainLoop.MaximumIterationsParameter.ActualName = MaximumIterationsParameter.Name;
       tsMainLoop.RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
       tsMainLoop.ResultsParameter.ActualName = "Results";
+      tsMainLoop.MoveAnalyzerParameter.ActualName = MoveAnalyzerParameter.Name;
+      tsMainLoop.AnalyzerParameter.ActualName = AnalyzerParameter.Name;
 
       Initialize();
     }
@@ -198,11 +219,13 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       ParameterizeMainLoop();
       UpdateMoveGenerator();
       UpdateMoveParameters();
+      UpdateAnalyzers();
       ParameterizeMoveGenerators();
       ParameterizeMoveEvaluator();
       ParameterizeMoveMaker();
       ParameterizeTabuMaker();
       ParameterizeTabuChecker();
+      ParameterizeAnalyzers();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.OnProblemChanged();
     }
@@ -219,6 +242,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       ParameterizeMoveMaker();
       ParameterizeTabuMaker();
       ParameterizeTabuChecker();
+      ParameterizeAnalyzers();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.Problem_EvaluatorChanged(sender, e);
     }
@@ -236,12 +260,14 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       }
       UpdateMoveGenerator();
       UpdateMoveParameters();
+      UpdateAnalyzers();
       ParameterizeMainLoop();
       ParameterizeMoveGenerators();
       ParameterizeMoveEvaluator();
       ParameterizeMoveMaker();
       ParameterizeTabuMaker();
       ParameterizeTabuChecker();
+      ParameterizeAnalyzers();
       base.Problem_OperatorsChanged(sender, e);
     }
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
@@ -260,6 +286,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       ParameterizeMoveMaker();
       ParameterizeTabuMaker();
       ParameterizeTabuChecker();
+      ParameterizeAnalyzers();
     }
     private void MoveEvaluator_MoveQualityParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeMainLoop();
@@ -267,12 +294,15 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       ParameterizeMoveMaker();
       ParameterizeTabuMaker();
       ParameterizeTabuChecker();
+      ParameterizeAnalyzers();
     }
     private void TabuCheckerParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeMainLoop();
+      ParameterizeAnalyzers();
     }
     private void TabuChecker_MoveTabuParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeMainLoop();
+      ParameterizeAnalyzers();
     }
     private void SampleSizeParameter_NameChanged(object sender, EventArgs e) {
       ParameterizeMoveGenerators();
@@ -282,6 +312,8 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
+      InitializeAnalyzers();
+      UpdateAnalyzers();
       if (Problem != null) {
         Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
         foreach (ISingleObjectiveMoveEvaluator op in Problem.Operators.OfType<ISingleObjectiveMoveEvaluator>()) {
@@ -292,6 +324,11 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       MoveEvaluatorParameter.ValueChanged += new EventHandler(MoveEvaluatorParameter_ValueChanged);
       TabuCheckerParameter.ValueChanged += new EventHandler(TabuCheckerParameter_ValueChanged);
       SampleSizeParameter.NameChanged += new EventHandler(SampleSizeParameter_NameChanged);
+    }
+    private void InitializeAnalyzers() {
+      moveQualityAnalyzer = new PopulationBestAverageWorstQualityAnalyzer();
+      tabuNeighborhoodAnalyzer = new TabuNeighborhoodAnalyzer();
+      ParameterizeAnalyzers();
     }
     private void UpdateMoveGenerator() {
       IMoveGenerator oldMoveGenerator = MoveGenerator;
@@ -348,6 +385,16 @@ namespace HeuristicLab.Algorithms.TabuSearch {
         }
       }
     }
+    private void UpdateAnalyzers() {
+      Analyzer.Operators.Clear();
+      MoveAnalyzer.Operators.Clear();
+      MoveAnalyzer.Operators.Add(moveQualityAnalyzer);
+      MoveAnalyzer.Operators.Add(tabuNeighborhoodAnalyzer);
+      if (Problem != null) {
+        foreach (ISolutionAnalyzer analyzer in Problem.Operators.OfType<ISolutionAnalyzer>().OrderBy(x => x.Name))
+          Analyzer.Operators.Add(analyzer);
+      }
+    }
     private void ClearMoveParameters() {
       MoveMakerParameter.ValidValues.Clear();
       MoveEvaluatorParameter.ValidValues.Clear();
@@ -402,6 +449,19 @@ namespace HeuristicLab.Algorithms.TabuSearch {
           op.MoveQualityParameter.ActualName = MoveEvaluator.MoveQualityParameter.ActualName;
         if (TabuChecker != null)
           op.MoveTabuParameter.ActualName = TabuChecker.MoveTabuParameter.ActualName;
+      }
+    }
+    private void ParameterizeAnalyzers() {
+      moveQualityAnalyzer.ResultsParameter.ActualName = "Results";
+      tabuNeighborhoodAnalyzer.ResultsParameter.ActualName = "Results";
+      tabuNeighborhoodAnalyzer.PercentTabuParameter.ActualName = "PercentTabu";
+      if (Problem != null) {
+        moveQualityAnalyzer.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
+        if (MoveEvaluator != null)
+          moveQualityAnalyzer.QualityParameter.ActualName = MoveEvaluator.MoveQualityParameter.ActualName;
+        moveQualityAnalyzer.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
+        if (TabuChecker != null)
+          tabuNeighborhoodAnalyzer.IsTabuParameter.ActualName = TabuChecker.MoveTabuParameter.ActualName;
       }
     }
     #endregion

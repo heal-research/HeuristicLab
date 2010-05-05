@@ -103,50 +103,63 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       Parameters.Add(new ValueLookupParameter<IOperator>("MoveMaker", "The operator that performs a move and updates the quality."));
       Parameters.Add(new ValueLookupParameter<IOperator>("MoveEvaluator", "The operator that evaluates a move."));
 
-      Parameters.Add(new ValueLookupParameter<IOperator>("MoveAnalyzer", "The operator used to analyze the moves in each iteration."));
-      Parameters.Add(new ValueLookupParameter<IOperator>("Analyzer", "The operator used to analyze each iteration."));
+      Parameters.Add(new ValueLookupParameter<IOperator>("MoveAnalyzer", "The operator used to analyze the moves."));
+      Parameters.Add(new ValueLookupParameter<IOperator>("Analyzer", "The operator used to analyze the solution."));
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope which represents a population of solutions on which the TS should be applied."));
       #endregion
 
       #region Create operators
       VariableCreator variableCreator = new VariableCreator();
-      ResultsCollector resultsCollector1 = new ResultsCollector();
-      UniformSubScopesProcessor uniformSubScopesProcessor0 = new UniformSubScopesProcessor();
+      SubScopesProcessor subScopesProcessor0 = new SubScopesProcessor();
+      Assigner bestQualityInitializer = new Assigner();
       Placeholder analyzer1 = new Placeholder();
-      UniformSubScopesProcessor mainProcessor = new UniformSubScopesProcessor();
+      ResultsCollector resultsCollector1 = new ResultsCollector();
+      SubScopesProcessor mainProcessor = new SubScopesProcessor();
       Placeholder moveGenerator = new Placeholder();
       UniformSubScopesProcessor moveEvaluationProcessor = new UniformSubScopesProcessor();
       Placeholder moveEvaluator = new Placeholder();
+      IntCounter evaluatedMovesCounter = new IntCounter();
       Placeholder moveAnalyzer = new Placeholder();
       BestSelector bestSelector = new BestSelector();
       RightReducer rightReducer = new RightReducer();
-      UniformSubScopesProcessor moveMakingProcessor = new UniformSubScopesProcessor();
+      SubScopesProcessor moveMakingProcessor = new SubScopesProcessor();
       QualityComparator qualityComparator = new QualityComparator();
       ConditionalBranch improvesQualityBranch = new ConditionalBranch();
       Placeholder moveMaker = new Placeholder();
+      Assigner bestQualityUpdater = new Assigner();
       SubScopesRemover subScopesRemover = new SubScopesRemover();
       IntCounter iterationsCounter = new IntCounter();
       Comparator iterationsComparator = new Comparator();
-      ResultsCollector resultsCollector2 = new ResultsCollector();
-      UniformSubScopesProcessor uniformSubScopesProcessor1 = new UniformSubScopesProcessor();
+      SubScopesProcessor subScopesProcessor1 = new SubScopesProcessor();
       Placeholder analyzer2 = new Placeholder();
+      ResultsCollector resultsCollector2 = new ResultsCollector();
       ConditionalBranch iterationsTermination = new ConditionalBranch();
 
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Iterations", new IntValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("BestQuality", new DoubleValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedMoves", new IntValue(0)));
 
-      resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Iterations"));
-      resultsCollector1.ResultsParameter.ActualName = ResultsParameter.Name;
+      bestQualityInitializer.Name = "Initialize BestQuality";
+      bestQualityInitializer.LeftSideParameter.ActualName = "BestQuality";
+      bestQualityInitializer.RightSideParameter.ActualName = QualityParameter.Name;
 
       analyzer1.Name = "Analyzer (placeholder)";
       analyzer1.OperatorParameter.ActualName = AnalyzerParameter.Name;
 
-      mainProcessor.Name = "Solution processor (UniformSubScopesProcessor)";
+      resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Iterations"));
+      resultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
+      resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Moves", null, "EvaluatedMoves"));
+      resultsCollector1.ResultsParameter.ActualName = ResultsParameter.Name;
 
       moveGenerator.Name = "MoveGenerator (placeholder)";
       moveGenerator.OperatorParameter.ActualName = MoveGeneratorParameter.Name;
 
       moveEvaluator.Name = "MoveEvaluator (placeholder)";
       moveEvaluator.OperatorParameter.ActualName = MoveEvaluatorParameter.Name;
+
+      evaluatedMovesCounter.Name = "EvaluatedMoves + 1";
+      evaluatedMovesCounter.ValueParameter.ActualName = "EvaluatedMoves";
+      evaluatedMovesCounter.Increment = new IntValue(1);
 
       moveAnalyzer.Name = "MoveAnalyzer (placeholder)";
       moveAnalyzer.OperatorParameter.ActualName = MoveAnalyzerParameter.Name;
@@ -156,8 +169,6 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       bestSelector.NumberOfSelectedSubScopesParameter.Value = new IntValue(1);
       bestSelector.QualityParameter.ActualName = MoveQualityParameter.Name;
 
-      moveMakingProcessor.Name = "MoveMaking processor (UniformSubScopesProcessor)";
-
       qualityComparator.LeftSideParameter.ActualName = MoveQualityParameter.Name;
       qualityComparator.RightSideParameter.ActualName = QualityParameter.Name;
       qualityComparator.ResultParameter.ActualName = "IsBetter";
@@ -166,6 +177,10 @@ namespace HeuristicLab.Algorithms.LocalSearch {
 
       moveMaker.Name = "MoveMaker (placeholder)";
       moveMaker.OperatorParameter.ActualName = MoveMakerParameter.Name;
+
+      bestQualityUpdater.Name = "Update BestQuality";
+      bestQualityUpdater.LeftSideParameter.ActualName = "BestQuality";
+      bestQualityUpdater.RightSideParameter.ActualName = QualityParameter.Name;
 
       subScopesRemover.RemoveAllSubScopes = true;
 
@@ -179,11 +194,13 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       iterationsComparator.RightSideParameter.ActualName = MaximumIterationsParameter.Name;
       iterationsComparator.ResultParameter.ActualName = "Terminate";
 
-      resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Iterations"));
-      resultsCollector2.ResultsParameter.ActualName = ResultsParameter.Name;
-
       analyzer2.Name = "Analyzer (placeholder)";
       analyzer2.OperatorParameter.ActualName = AnalyzerParameter.Name;
+
+      resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Iterations"));
+      resultsCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
+      resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Moves", null, "EvaluatedMoves"));
+      resultsCollector2.ResultsParameter.ActualName = ResultsParameter.Name;
 
       iterationsTermination.Name = "Iterations Termination Condition";
       iterationsTermination.ConditionParameter.ActualName = "Terminate";
@@ -191,33 +208,37 @@ namespace HeuristicLab.Algorithms.LocalSearch {
 
       #region Create operator graph
       OperatorGraph.InitialOperator = variableCreator;
-      variableCreator.Successor = resultsCollector1;
-      resultsCollector1.Successor = uniformSubScopesProcessor0;
-      uniformSubScopesProcessor0.Operator = analyzer1;
-      uniformSubScopesProcessor0.Successor = mainProcessor;
+      variableCreator.Successor = subScopesProcessor0;
+      subScopesProcessor0.Operators.Add(bestQualityInitializer);
+      subScopesProcessor0.Successor = resultsCollector1;
+      bestQualityInitializer.Successor = analyzer1;
       analyzer1.Successor = null;
-      mainProcessor.Operator = moveGenerator;
+      resultsCollector1.Successor = mainProcessor;
+      mainProcessor.Operators.Add(moveGenerator);
       mainProcessor.Successor = iterationsCounter;
       moveGenerator.Successor = moveEvaluationProcessor;
       moveEvaluationProcessor.Operator = moveEvaluator;
       moveEvaluationProcessor.Successor = moveAnalyzer;
+      moveEvaluator.Successor = evaluatedMovesCounter;
+      evaluatedMovesCounter.Successor = null;
       moveAnalyzer.Successor = bestSelector;
       bestSelector.Successor = rightReducer;
       rightReducer.Successor = moveMakingProcessor;
-      moveMakingProcessor.Operator = qualityComparator;
+      moveMakingProcessor.Operators.Add(qualityComparator);
       moveMakingProcessor.Successor = subScopesRemover;
       subScopesRemover.Successor = null;
       qualityComparator.Successor = improvesQualityBranch;
       improvesQualityBranch.TrueBranch = moveMaker;
       improvesQualityBranch.FalseBranch = null;
       improvesQualityBranch.Successor = null;
-      moveMaker.Successor = null;
+      moveMaker.Successor = bestQualityUpdater;
+      bestQualityUpdater.Successor = null;
       iterationsCounter.Successor = iterationsComparator;
-      iterationsComparator.Successor = resultsCollector2;
-      resultsCollector2.Successor = uniformSubScopesProcessor1;
-      uniformSubScopesProcessor1.Operator = analyzer2;
-      uniformSubScopesProcessor1.Successor = iterationsTermination;
+      iterationsComparator.Successor = subScopesProcessor1;
+      subScopesProcessor1.Operators.Add(analyzer2);
+      subScopesProcessor1.Successor = resultsCollector2;
       analyzer2.Successor = null;
+      resultsCollector2.Successor = iterationsTermination;
       iterationsTermination.TrueBranch = null;
       iterationsTermination.FalseBranch = mainProcessor;
       #endregion

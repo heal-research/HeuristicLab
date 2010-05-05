@@ -76,11 +76,11 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     public ValueLookupParameter<IOperator> TabuMakerParameter {
       get { return (ValueLookupParameter<IOperator>)Parameters["TabuMaker"]; }
     }
-    public ValueLookupParameter<IOperator> VisualizerParameter {
-      get { return (ValueLookupParameter<IOperator>)Parameters["Visualizer"]; }
+    public ValueLookupParameter<IOperator> MoveAnalyzerParameter {
+      get { return (ValueLookupParameter<IOperator>)Parameters["MoveAnalyzer"]; }
     }
-    public LookupParameter<IItem> VisualizationParameter {
-      get { return (LookupParameter<IItem>)Parameters["Visualization"]; }
+    public ValueLookupParameter<IOperator> AnalyzerParameter {
+      get { return (ValueLookupParameter<IOperator>)Parameters["Analyzer"]; }
     }
     public ValueLookupParameter<VariableCollection> ResultsParameter {
       get { return (ValueLookupParameter<VariableCollection>)Parameters["Results"]; }
@@ -111,26 +111,25 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       Parameters.Add(new ValueLookupParameter<IOperator>("TabuChecker", "The operator that checks whether a move is tabu."));
       Parameters.Add(new ValueLookupParameter<IOperator>("TabuMaker", "The operator that declares a move tabu."));
 
-      Parameters.Add(new ValueLookupParameter<IOperator>("Visualizer", "The operator used to visualize solutions."));
-      Parameters.Add(new LookupParameter<IItem>("Visualization", "The item which represents the visualization of solutions."));
+      Parameters.Add(new ValueLookupParameter<IOperator>("MoveAnalyzer", "The operator used to analyze the moves."));
+      Parameters.Add(new ValueLookupParameter<IOperator>("Analyzer", "The operator used to analyze the solution."));
       Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The variable collection where results should be stored."));
       #endregion
 
       #region Create operators
-      TabuListCreator tabuListCreator = new TabuListCreator();
       VariableCreator variableCreator = new VariableCreator();
-      BestQualityMemorizer bestQualityMemorizer1 = new BestQualityMemorizer();
-      BestQualityMemorizer bestQualityMemorizer2 = new BestQualityMemorizer();
-      QualityDifferenceCalculator qualityDifferenceCalculator1 = new QualityDifferenceCalculator();
-      Placeholder visualizer1 = new Placeholder();
-      ResultsCollector resultsCollector = new ResultsCollector();
+      SubScopesProcessor subScopesProcessor0 = new SubScopesProcessor();
+      Assigner bestQualityInitializer = new Assigner();
+      Placeholder analyzer1 = new Placeholder();
+      ResultsCollector resultsCollector1 = new ResultsCollector();
       SubScopesProcessor solutionProcessor = new SubScopesProcessor();
       Placeholder moveGenerator = new Placeholder();
       UniformSubScopesProcessor moveEvaluationProcessor = new UniformSubScopesProcessor();
       Placeholder moveEvaluator = new Placeholder();
+      IntCounter evaluatedMovesCounter = new IntCounter();
       Placeholder tabuChecker = new Placeholder();
+      Placeholder moveAnalyzer = new Placeholder();
       SubScopesSorter moveQualitySorter = new SubScopesSorter();
-      BestAverageWorstQualityCalculator bestAverageWorstMoveQualityCalculator = new BestAverageWorstQualityCalculator();
       TabuSelector tabuSelector = new TabuSelector();
       ConditionalBranch emptyNeighborhoodBranch1 = new ConditionalBranch();
       RightReducer rightReducer = new RightReducer();
@@ -139,49 +138,31 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       Placeholder moveMaker = new Placeholder();
       SubScopesRemover subScopesRemover = new SubScopesRemover();
       ConditionalBranch emptyNeighborhoodBranch2 = new ConditionalBranch();
+      BestQualityMemorizer bestQualityUpdater = new BestQualityMemorizer();
       IntCounter iterationsCounter = new IntCounter();
       Comparator iterationsComparator = new Comparator();
-      BestQualityMemorizer bestQualityMemorizer3 = new BestQualityMemorizer();
-      BestQualityMemorizer bestQualityMemorizer4 = new BestQualityMemorizer();
-      QualityDifferenceCalculator qualityDifferenceCalculator2 = new QualityDifferenceCalculator();
-      Placeholder visualizer2 = new Placeholder();
-      DataTableValuesCollector valuesCollector = new DataTableValuesCollector();
+      SubScopesProcessor subScopesProcessor1 = new SubScopesProcessor();
+      Placeholder analyzer2 = new Placeholder();
+      ResultsCollector resultsCollector2 = new ResultsCollector();
       ConditionalBranch iterationsTermination = new ConditionalBranch();
 
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Iterations", new IntValue(0)));
-      variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("Best Move Quality", new DoubleValue(0)));
-      variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("Average Move Quality", new DoubleValue(0)));
-      variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("Worst Move Quality", new DoubleValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedMoves", new IntValue(0)));
       variableCreator.CollectedValues.Add(new ValueParameter<BoolValue>("EmptyNeighborhood", new BoolValue(false)));
-      variableCreator.CollectedValues.Add(new ValueParameter<DataTable>("MoveQualities", new DataTable("Move Qualities", "Progress of the tabu search showing the best, average, and worst move found in each iteration.")));
+      variableCreator.CollectedValues.Add(new ValueParameter<ItemList<IItem>>("TabuList", new ItemList<IItem>()));
+      variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("BestQuality", new DoubleValue(0)));
 
-      bestQualityMemorizer1.BestQualityParameter.ActualName = "BestQuality";
-      bestQualityMemorizer1.MaximizationParameter.ActualName = MaximizationParameter.Name;
-      bestQualityMemorizer1.QualityParameter.ActualName = QualityParameter.Name;
+      bestQualityInitializer.Name = "Initialize BestQuality";
+      bestQualityInitializer.LeftSideParameter.ActualName = "BestQuality";
+      bestQualityInitializer.RightSideParameter.ActualName = QualityParameter.Name;
 
-      bestQualityMemorizer2.BestQualityParameter.ActualName = BestKnownQualityParameter.Name;
-      bestQualityMemorizer2.MaximizationParameter.ActualName = MaximizationParameter.Name;
-      bestQualityMemorizer2.QualityParameter.ActualName = QualityParameter.Name;
-
-      qualityDifferenceCalculator1.AbsoluteDifferenceParameter.ActualName = "AbsoluteDifferenceBestKnownToBest";
-      qualityDifferenceCalculator1.FirstQualityParameter.ActualName = BestKnownQualityParameter.Name;
-      qualityDifferenceCalculator1.RelativeDifferenceParameter.ActualName = "RelativeDifferenceBestKnownToBest";
-      qualityDifferenceCalculator1.SecondQualityParameter.ActualName = "BestQuality";
-
-      visualizer1.Name = "Visualizer (placeholder)";
-      visualizer1.OperatorParameter.ActualName = VisualizerParameter.Name;
+      analyzer1.Name = "Analyzer (placeholder)";
+      analyzer1.OperatorParameter.ActualName = AnalyzerParameter.Name;
       
-      resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Iterations"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Move Quality"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Average Move Quality"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Worst Move Quality"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DataTable>("MoveQualities"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, BestKnownQualityParameter.Name));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Absolute Difference of Best Known Quality to Best Quality", null, "AbsoluteDifferenceBestKnownToBest"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Relative Difference of Best Known Quality to Best Quality", null, "RelativeDifferenceBestKnownToBest"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<IItem>("Solution Visualization", null, VisualizationParameter.Name));
-      resultsCollector.ResultsParameter.ActualName = "Results";
+      resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Iterations"));
+      resultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
+      resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Moves", null, "EvaluatedMoves"));
+      resultsCollector1.ResultsParameter.ActualName = ResultsParameter.Name;
 
       moveGenerator.Name = "MoveGenerator (placeholder)";
       moveGenerator.OperatorParameter.ActualName = MoveGeneratorParameter.Name;
@@ -189,17 +170,18 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       moveEvaluator.Name = "MoveEvaluator (placeholder)";
       moveEvaluator.OperatorParameter.ActualName = MoveEvaluatorParameter.Name;
 
+      evaluatedMovesCounter.Name = "EvaluatedMoves + 1";
+      evaluatedMovesCounter.ValueParameter.ActualName = "EvaluatedMoves";
+      evaluatedMovesCounter.Increment = new IntValue(1);
+
       tabuChecker.Name = "TabuChecker (placeholder)";
       tabuChecker.OperatorParameter.ActualName = TabuCheckerParameter.Name;
 
+      moveAnalyzer.Name = "MoveAnalyzer (placeholder)";
+      moveAnalyzer.OperatorParameter.ActualName = MoveAnalyzerParameter.Name;
+
       moveQualitySorter.DescendingParameter.ActualName = MaximizationParameter.Name;
       moveQualitySorter.ValueParameter.ActualName = MoveQualityParameter.Name;
-
-      bestAverageWorstMoveQualityCalculator.AverageQualityParameter.ActualName = "Average Move Quality";
-      bestAverageWorstMoveQualityCalculator.BestQualityParameter.ActualName = "Best Move Quality";
-      bestAverageWorstMoveQualityCalculator.MaximizationParameter.ActualName = "Maximization";
-      bestAverageWorstMoveQualityCalculator.QualityParameter.ActualName = MoveQualityParameter.Name;
-      bestAverageWorstMoveQualityCalculator.WorstQualityParameter.ActualName = "Worst Move Quality";
 
       tabuSelector.AspirationParameter.Value = new BoolValue(true);
       tabuSelector.BestQualityParameter.ActualName = "BestQuality";
@@ -222,6 +204,11 @@ namespace HeuristicLab.Algorithms.TabuSearch {
 
       subScopesRemover.RemoveAllSubScopes = true;
 
+      bestQualityUpdater.Name = "Update BestQuality";
+      bestQualityUpdater.MaximizationParameter.ActualName = MaximizationParameter.Name;
+      bestQualityUpdater.QualityParameter.ActualName = QualityParameter.Name;
+      bestQualityUpdater.BestQualityParameter.ActualName = "BestQuality";
+
       iterationsCounter.Name = "Iterations Counter";
       iterationsCounter.Increment = new IntValue(1);
       iterationsCounter.ValueParameter.ActualName = "Iterations";
@@ -232,28 +219,13 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       iterationsComparator.RightSideParameter.ActualName = MaximumIterationsParameter.Name;
       iterationsComparator.ResultParameter.ActualName = "Terminate";
 
-      bestQualityMemorizer3.BestQualityParameter.ActualName = "BestQuality";
-      bestQualityMemorizer3.MaximizationParameter.ActualName = MaximizationParameter.Name;
-      bestQualityMemorizer3.QualityParameter.ActualName = QualityParameter.Name;
-
-      bestQualityMemorizer4.BestQualityParameter.ActualName = BestKnownQualityParameter.Name;
-      bestQualityMemorizer4.MaximizationParameter.ActualName = MaximizationParameter.Name;
-      bestQualityMemorizer4.QualityParameter.ActualName = QualityParameter.Name;
-
-      qualityDifferenceCalculator2.AbsoluteDifferenceParameter.ActualName = "AbsoluteDifferenceBestKnownToBest";
-      qualityDifferenceCalculator2.FirstQualityParameter.ActualName = BestKnownQualityParameter.Name;
-      qualityDifferenceCalculator2.RelativeDifferenceParameter.ActualName = "RelativeDifferenceBestKnownToBest";
-      qualityDifferenceCalculator2.SecondQualityParameter.ActualName = "BestQuality";
-
-      visualizer2.Name = "Visualizer (placeholder)";
-      visualizer2.OperatorParameter.ActualName = VisualizerParameter.Name;
+      analyzer2.Name = "Analyzer (placeholder)";
+      analyzer2.OperatorParameter.ActualName = AnalyzerParameter.Name;
       
-      valuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Move Quality"));
-      valuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Average Move Quality"));
-      valuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Worst Move Quality"));
-      valuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
-      valuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, BestKnownQualityParameter.Name));
-      valuesCollector.DataTableParameter.ActualName = "MoveQualities";
+      resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Iterations"));
+      resultsCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
+      resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Moves", null, "EvaluatedMoves"));
+      resultsCollector2.ResultsParameter.ActualName = ResultsParameter.Name;
 
       emptyNeighborhoodBranch2.Name = "Neighborhood empty?";
       emptyNeighborhoodBranch2.ConditionParameter.ActualName = "EmptyNeighborhood";
@@ -263,23 +235,21 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       #endregion
 
       #region Create operator graph
-      OperatorGraph.InitialOperator = tabuListCreator;
-      tabuListCreator.Successor = variableCreator;
-      variableCreator.Successor = bestQualityMemorizer1;
-      bestQualityMemorizer1.Successor = bestQualityMemorizer2;
-      bestQualityMemorizer2.Successor = qualityDifferenceCalculator1;
-      qualityDifferenceCalculator1.Successor = visualizer1;
-      visualizer1.Successor = resultsCollector;
-      resultsCollector.Successor = solutionProcessor;
+      OperatorGraph.InitialOperator = variableCreator;
+      variableCreator.Successor = subScopesProcessor0;
+      subScopesProcessor0.Operators.Add(bestQualityInitializer);
+      subScopesProcessor0.Successor = resultsCollector1;
+      resultsCollector1.Successor = solutionProcessor;
       solutionProcessor.Operators.Add(moveGenerator);
       solutionProcessor.Successor = iterationsCounter;
       moveGenerator.Successor = moveEvaluationProcessor;
       moveEvaluationProcessor.Operator = moveEvaluator;
-      moveEvaluationProcessor.Successor = moveQualitySorter;
-      moveEvaluator.Successor = tabuChecker;
+      moveEvaluationProcessor.Successor = moveAnalyzer;
+      moveEvaluator.Successor = evaluatedMovesCounter;
+      evaluatedMovesCounter.Successor = tabuChecker;
       tabuChecker.Successor = null;
-      moveQualitySorter.Successor = bestAverageWorstMoveQualityCalculator;
-      bestAverageWorstMoveQualityCalculator.Successor = tabuSelector;
+      moveAnalyzer.Successor = moveQualitySorter;
+      moveQualitySorter.Successor = tabuSelector;
       tabuSelector.Successor = emptyNeighborhoodBranch1;
       emptyNeighborhoodBranch1.FalseBranch = rightReducer;
       emptyNeighborhoodBranch1.TrueBranch = null;
@@ -291,12 +261,10 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       moveMaker.Successor = null;
       subScopesRemover.Successor = null;
       iterationsCounter.Successor = iterationsComparator;
-      iterationsComparator.Successor = bestQualityMemorizer3;
-      bestQualityMemorizer3.Successor = bestQualityMemorizer4;
-      bestQualityMemorizer4.Successor = qualityDifferenceCalculator2;
-      qualityDifferenceCalculator2.Successor = visualizer2;
-      visualizer2.Successor = valuesCollector;
-      valuesCollector.Successor = emptyNeighborhoodBranch2;
+      iterationsComparator.Successor = subScopesProcessor1;
+      subScopesProcessor1.Operators.Add(analyzer2);
+      subScopesProcessor1.Successor = resultsCollector2;
+      resultsCollector2.Successor = emptyNeighborhoodBranch2;
       emptyNeighborhoodBranch2.TrueBranch = null;
       emptyNeighborhoodBranch2.FalseBranch = iterationsTermination;
       emptyNeighborhoodBranch2.Successor = null;

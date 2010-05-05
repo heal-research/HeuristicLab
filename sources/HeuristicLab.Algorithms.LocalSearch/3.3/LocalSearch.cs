@@ -139,8 +139,8 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       Parameters.Add(new ConstrainedValueParameter<ISingleObjectiveMoveEvaluator>("MoveEvaluator", "The operator used to evaluate a move."));
       Parameters.Add(new ValueParameter<IntValue>("MaximumIterations", "The maximum number of generations which should be processed.", new IntValue(1000)));
       Parameters.Add(new ValueParameter<IntValue>("SampleSize", "Number of moves that MultiMoveGenerators should create. This is ignored for Exhaustive- and SingleMoveGenerators.", new IntValue(100)));
-      Parameters.Add(new ValueParameter<MultiAnalyzer<IPopulationAnalyzer>>("MoveAnalyzer", "The operator used to analyze the moves in each iteration.", new MultiAnalyzer<IPopulationAnalyzer>()));
-      Parameters.Add(new ValueParameter<MultiAnalyzer<ISolutionAnalyzer>>("Analyzer", "The operator used to analyze each iteration.", new MultiAnalyzer<ISolutionAnalyzer>()));
+      Parameters.Add(new ValueParameter<MultiAnalyzer<IPopulationAnalyzer>>("MoveAnalyzer", "The operator used to analyze the moves.", new MultiAnalyzer<IPopulationAnalyzer>()));
+      Parameters.Add(new ValueParameter<MultiAnalyzer<ISolutionAnalyzer>>("Analyzer", "The operator used to analyze the solution.", new MultiAnalyzer<ISolutionAnalyzer>()));
       
       RandomCreator randomCreator = new RandomCreator();
       SolutionsCreator solutionsCreator = new SolutionsCreator();
@@ -228,6 +228,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       ParameterizeMainLoop();
       ParameterizeMoveEvaluators();
       ParameterizeMoveMakers();
+      ParameterizeAnalyzers();
       base.Problem_OperatorsChanged(sender, e);
     }
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
