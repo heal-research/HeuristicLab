@@ -137,6 +137,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
       if (!ViewCanShowContent(viewType, Content))
         throw new InvalidOperationException(string.Format("View \"{0}\" cannot display content \"{1}\".",
                                                           viewType, Content.GetType()));
+      if (viewPanel.Height <= 10 || viewPanel.Width <= 10)
+        return;
 
       UpdateActiveMenuItem();
       IContentView view;
