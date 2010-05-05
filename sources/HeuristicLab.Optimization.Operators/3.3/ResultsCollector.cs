@@ -49,9 +49,9 @@ namespace HeuristicLab.Optimization.Operators {
         if (value != null) {
           results.TryGetValue(param.Name, out result);
           if (result != null)
-            result.Value = value;
+            result.Value = (IItem)value.Clone();
           else
-            results.Add(new Result(param.Name, param.Description, value));
+            results.Add(new Result(param.Name, param.Description, (IItem)value.Clone()));
         }
       }
       return base.Apply();

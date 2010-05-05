@@ -57,7 +57,7 @@ namespace HeuristicLab.Analysis {
         } else if (param.ActualValue is IEnumerable<DoubleValue>) {
           int counter = 0;
           foreach (DoubleValue data in (param.ActualValue as IEnumerable<DoubleValue>)) {
-            AddValue(table, data.Value, param.Name + counter.ToString(), param.Description);
+            AddValue(table, data.Value, param.Name + " " + counter.ToString(), param.Description);
             counter++;
           }
         } else {
