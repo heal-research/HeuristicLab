@@ -37,6 +37,7 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureManipulators;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
 using HeuristicLab.Problems.ArtificialAnt.Analyzers;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers;
 
 namespace HeuristicLab.Problems.ArtificialAnt {
   [Item("Artificial Ant Problem", "Represents the Artificial Ant problem.")]
@@ -298,6 +299,7 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       operators = new List<IOperator>();
       operators.AddRange(ApplicationManager.Manager.GetInstances<ISymbolicExpressionTreeOperator>().OfType<IOperator>());
       operators.Add(new PopulationBestAntTrailAnalyzer());
+      operators.Add(new PopulationMinAvgMaxTreeSizeAnalyzer());
       ParameterizeAnalyzers();
       ParameterizeOperators();
     }
@@ -318,6 +320,9 @@ namespace HeuristicLab.Problems.ArtificialAnt {
         analyzer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
         analyzer.WorldParameter.ActualName = WorldParameter.Name;
         analyzer.MaxTimeStepsParameter.ActualName = MaxTimeStepsParameter.Name;
+      }
+      foreach (ISymbolicExpressionTreePopulationAnalyzer analyzer in Operators.OfType<ISymbolicExpressionTreePopulationAnalyzer>()) {
+        analyzer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
       }
     }
 

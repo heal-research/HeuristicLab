@@ -82,6 +82,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Analyzers\PopulationMinAvgMaxTreeSizeAnalyzer.cs" />
+    <Compile Include="Analyzers\SymbolicExpressionTreeSizeAnalyzer.cs" />
+    <Compile Include="Analyzers\SymbolicExpressionTreeSizeCalculator.cs" />
     <Compile Include="ArchitectureManipulators\ArgumentCreater.cs" />
     <Compile Include="ArchitectureManipulators\ArgumentDeleter.cs" />
     <Compile Include="ArchitectureManipulators\ArgumentDuplicater.cs" />
@@ -95,9 +98,12 @@
     <Compile Include="Compiler\SymbolicExpressionTreeCompiler.cs" />
     <Compile Include="Creators\SymbolicExpressionTreeCreator.cs" />
     <Compile Include="Crossovers\SymbolicExpressionTreeCrossover.cs" />
+    <Compile Include="Interfaces\ISymbolicExpressionTreeAnalyzer.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionTreeArchitectureManipulator.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionTreeCreator.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionTreeCrossover.cs" />
+    <Compile Include="Interfaces\ISymbolicExpressionTreeMultiPopulationAnalyzer.cs" />
+    <Compile Include="Interfaces\ISymbolicExpressionTreePopulationAnalyzer.cs" />
     <Compile Include="Manipulators\ChangeNodeTypeManipulation.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionTreeManipulator.cs" />
     <Compile Include="Manipulators\FullTreeShaker.cs" />
@@ -138,6 +144,10 @@
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
+      <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
+      <Name>HeuristicLab.Analysis-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
       <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>

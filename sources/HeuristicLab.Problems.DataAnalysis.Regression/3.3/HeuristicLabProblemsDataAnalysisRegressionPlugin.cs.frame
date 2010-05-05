@@ -27,6 +27,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Problems.DataAnalysis.Regression {
   [Plugin("HeuristicLab.Problems.DataAnalysis.Regression","3.3.0.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.DataAnalysis.Regression-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Analysis", "3.3.0.0")]
   [PluginDependency("HeuristicLab.Collections", "3.3.0.0")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Common.Resources", "3.2.0.0")]
@@ -37,6 +38,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression {
   [PluginDependency("HeuristicLab.Optimization", "3.3.0.0")]
   [PluginDependency("HeuristicLab.Parameters", "3.3.0.0")]
   [PluginDependency("HeuristicLab.Persistence", "3.3.0.0")]
+  [PluginDependency("HeuristicLab.Problems.DataAnalysis", "3.3.0.0")]
+  [PluginDependency("HeuristicLab.Random", "3.3.0.0")]  
   public class HeuristicLabProblemsDataAnalysisRegressionPlugin : PluginBase {
   }
 }

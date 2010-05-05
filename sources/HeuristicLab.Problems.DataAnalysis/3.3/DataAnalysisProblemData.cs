@@ -202,7 +202,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (TargetVariable != null) {
         RegisterStringValueEventHandlers(TargetVariable);
         OnProblemDataChanged(EventArgs.Empty);
-      } 
+      }
     }
     void TrainingSamplesStartParameter_ValueChanged(object sender, EventArgs e) {
       RegisterValueTypeEventHandlers(TrainingSamplesStart);
@@ -248,7 +248,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     private void RegisterInputVariablesEventHandlers() {
-      InputVariables.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<HeuristicLab.Collections.IndexedItem<StringValue>>(InputVariables_CollectionReset); 
+      InputVariables.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<HeuristicLab.Collections.IndexedItem<StringValue>>(InputVariables_CollectionReset);
       InputVariables.ItemsAdded += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<HeuristicLab.Collections.IndexedItem<StringValue>>(InputVariables_ItemsAdded);
       InputVariables.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<HeuristicLab.Collections.IndexedItem<StringValue>>(InputVariables_ItemsRemoved);
       InputVariables.CheckedItemsChanged += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<HeuristicLab.Collections.IndexedItem<StringValue>>(InputVariables_CheckedItemsChanged);
@@ -265,7 +265,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
         item.ValueChanged -= new EventHandler(InputVariable_ValueChanged);
       }
     }
-  
+
     private void InputVariables_CheckedItemsChanged(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<HeuristicLab.Collections.IndexedItem<StringValue>> e) {
       OnProblemDataChanged(e);
     }
@@ -329,8 +329,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
         ((ConstrainedValueParameter<StringValue>)TargetVariableParameter).ValidValues.Add(variableName);
       TargetVariable = variableNames.First();
       InputVariables = new CheckedItemList<StringValue>(variableNames).AsReadOnly();
-      foreach (var variableName in variableNames.Skip(1))
-        InputVariables.SetItemCheckedState(variableName, true);
+      InputVariables.SetItemCheckedState(variableNames.First(), false);
       int middle = (int)(csvFileParser.Rows * 0.5);
       TrainingSamplesStart = new IntValue(0);
       TrainingSamplesEnd = new IntValue(middle);

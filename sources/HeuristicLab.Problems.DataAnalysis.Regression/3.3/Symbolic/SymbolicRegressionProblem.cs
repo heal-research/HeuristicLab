@@ -38,6 +38,8 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
+using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("Symbolic Regression Problem", "Represents a symbolic regression problem.")]
@@ -149,9 +151,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     public DoubleValue BestKnownQuality {
       get { return BestKnownQualityParameter.Value; }
     }
-    private List<ISymbolicExpressionTreeOperator> operators;
+    private List<IOperator> operators;
     public IEnumerable<IOperator> Operators {
-      get { return operators.Cast<IOperator>(); }
+      get { return operators; }
+    }
+    public IEnumerable<ISymbolicRegressionSolutionPopulationAnalyzer> Analyzers {
+      get { return operators.OfType<ISymbolicRegressionSolutionPopulationAnalyzer>(); }
     }
     public DoubleValue PunishmentFactor {
       get { return new DoubleValue(10.0); }
@@ -179,7 +184,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       var evaluator = new SymbolicRegressionScaledMeanSquaredErrorEvaluator();
       var grammar = new ArithmeticExpressionGrammar();
       var globalGrammar = new GlobalSymbolicExpressionGrammar(grammar);
-      var visualizer = new BestValidationSymbolicRegressionSolutionVisualizer();
       var interpreter = new SimpleArithmeticExpressionInterpreter();
       Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to false as the error of the regression model should be minimized.", (BoolValue)new BoolValue(false).AsReadOnly()));
       Parameters.Add(new ValueParameter<SymbolicExpressionTreeCreator>("SolutionCreator", "The operator which should be used to create new symbolic regression solutions.", creator));
@@ -199,7 +203,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
 
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
-      ParameterizeVisualizer();
 
       UpdateGrammar();
       UpdateEstimationLimits();
@@ -239,7 +242,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       base.OnDataAnalysisProblemChanged(e);
       // paritions could be changed
       ParameterizeEvaluator();
-      ParameterizeVisualizer();
+      ParameterizeAnalyzers();
       // input variables could have been changed
       UpdateGrammar();
       // estimation limits have to be recalculated
@@ -259,18 +262,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
 
     protected virtual void OnSolutionParameterNameChanged(EventArgs e) {
       ParameterizeEvaluator();
-      ParameterizeVisualizer();
+      ParameterizeAnalyzers();
       ParameterizeOperators();
     }
 
     protected virtual void OnEvaluatorChanged(EventArgs e) {
       Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       ParameterizeEvaluator();
-      ParameterizeVisualizer();
+      ParameterizeAnalyzers();
       RaiseEvaluatorChanged(e);
     }
     protected virtual void OnQualityParameterNameChanged(EventArgs e) {
-      ParameterizeVisualizer();
+      ParameterizeAnalyzers();
     }
     #endregion
 
@@ -344,9 +347,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
 
     private void InitializeOperators() {
-      operators = new List<ISymbolicExpressionTreeOperator>();
-      operators.AddRange(ApplicationManager.Manager.GetInstances<ISymbolicExpressionTreeOperator>());
+      operators = new List<IOperator>();
+      operators.AddRange(ApplicationManager.Manager.GetInstances<ISymbolicExpressionTreeOperator>().OfType<IOperator>());
+      operators.Add(new PopulationValidationBestScaledSymbolicRegressionSolutionAnalyzer());
+      operators.Add(new PopulationMinAvgMaxTreeSizeAnalyzer());
+      operators.Add(new PopulationSymbolicRegressionVariableFrequencyAnalyzer());
       ParameterizeOperators();
+      ParameterizeAnalyzers();
     }
 
     private void ParameterizeSolutionCreator() {
@@ -364,18 +371,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       Evaluator.SamplesEndParameter.Value = TrainingSamplesEnd;
     }
 
-    private void ParameterizeVisualizer() {
-      //var solutionVisualizer = Visualizer as BestValidationSymbolicRegressionSolutionVisualizer;
-      //if (solutionVisualizer != null) {
-      //  solutionVisualizer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
-      //  solutionVisualizer.DataAnalysisProblemDataParameter.ActualName = DataAnalysisProblemDataParameter.Name;
-      //  solutionVisualizer.UpperEstimationLimitParameter.ActualName = UpperEstimationLimitParameter.Name;
-      //  solutionVisualizer.LowerEstimationLimitParameter.ActualName = LowerEstimationLimitParameter.Name;
-      //  solutionVisualizer.QualityParameter.ActualName = Evaluator.QualityParameter.Name;
-      //  solutionVisualizer.SymbolicExpressionTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameter.Name;
-      //  solutionVisualizer.ValidationSamplesStartParameter.Value = ValidationSamplesStart;
-      //  solutionVisualizer.ValidationSamplesEndParameter.Value = ValidationSamplesEnd;
-      //}
+    private void ParameterizeAnalyzers() {
+      foreach (var analyzer in Analyzers) {
+        analyzer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+        var bestValidationSolutionAnalyzer = analyzer as PopulationValidationBestScaledSymbolicRegressionSolutionAnalyzer;
+        if (bestValidationSolutionAnalyzer != null) {
+          bestValidationSolutionAnalyzer.ProblemDataParameter.ActualName = DataAnalysisProblemDataParameter.Name;
+          bestValidationSolutionAnalyzer.UpperEstimationLimitParameter.ActualName = UpperEstimationLimitParameter.Name;
+          bestValidationSolutionAnalyzer.LowerEstimationLimitParameter.ActualName = LowerEstimationLimitParameter.Name;
+          bestValidationSolutionAnalyzer.SymbolicExpressionTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameter.Name;
+          bestValidationSolutionAnalyzer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+          bestValidationSolutionAnalyzer.SamplesStartParameter.Value = ValidationSamplesStart;
+          bestValidationSolutionAnalyzer.SamplesEndParameter.Value = ValidationSamplesEnd;
+        }
+        var varFreqAnalyzer = analyzer as PopulationSymbolicRegressionVariableFrequencyAnalyzer;
+        if (varFreqAnalyzer != null) {
+          varFreqAnalyzer.ProblemDataParameter.ActualName = DataAnalysisProblemDataParameter.Name;
+        }
+      }
+      foreach (ISymbolicExpressionTreePopulationAnalyzer analyzer in Operators.OfType<ISymbolicExpressionTreePopulationAnalyzer>()) {
+        analyzer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+      }
     }
 
     private void ParameterizeOperators() {

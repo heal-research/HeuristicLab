@@ -85,7 +85,11 @@
     <None Include="Properties\AssemblyInfo.frame" />
     <Compile Include="HeuristicLabProblemsDataAnalysisRegressionPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Symbolic\BestValidationSymbolicRegressionSolutionVisualizer.cs" />
+    <Compile Include="Symbolic\Analyzers\PopulationSymbolicRegressionVariableFrequencyAnalyzer.cs" />
+    <Compile Include="Symbolic\Analyzers\PopulationValidationBestScaledSymbolicRegressionSolutionAnalyzer.cs" />
+    <Compile Include="Symbolic\Analyzers\SymbolicRegressionSolutionLinearScaler.cs" />
+    <Compile Include="Symbolic\Analyzers\ISymbolicRegressionSolutionPopulationAnalyzer.cs" />
+    <Compile Include="Symbolic\Analyzers\PopulationBestSymbolicRegressionSolutionAnalyzer.cs" />
     <Compile Include="Symbolic\SymbolicRegressionScaledMeanSquaredErrorEvaluator.cs" />
     <Compile Include="Symbolic\SymbolicRegressionSolution.cs" />
     <Compile Include="Symbolic\SymbolicRegressionModel.cs" />
