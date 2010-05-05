@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -111,6 +112,12 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private ValueLookupParameter<IntValue> SelectedParentsParameter {
       get { return (ValueLookupParameter<IntValue>)Parameters["SelectedParents"]; }
     }
+    private ValueParameter<MultiAnalyzer<IMultiPopulationAnalyzer>> AnalyzerParameter {
+      get { return (ValueParameter<MultiAnalyzer<IMultiPopulationAnalyzer>>)Parameters["Analyzer"]; }
+    }
+    private ValueParameter<MultiAnalyzer<IPopulationAnalyzer>> VillageAnalyzerParameter {
+      get { return (ValueParameter<MultiAnalyzer<IPopulationAnalyzer>>)Parameters["VillageAnalyzer"]; }
+    }
     #endregion
 
     #region Properties
@@ -190,6 +197,14 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       get { return SelectedParentsParameter.Value; }
       set { SelectedParentsParameter.Value = value; }
     }
+    public MultiAnalyzer<IMultiPopulationAnalyzer> Analyzer {
+      get { return AnalyzerParameter.Value; }
+      set { AnalyzerParameter.Value = value; }
+    }
+    public MultiAnalyzer<IPopulationAnalyzer> VillageAnalyzer {
+      get { return VillageAnalyzerParameter.Value; }
+      set { VillageAnalyzerParameter.Value = value; }
+    }
     private List<ISelector> selectors;
     private IEnumerable<ISelector> Selectors {
       get { return selectors; }
@@ -207,6 +222,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private SASEGASAMainLoop MainLoop {
       get { return (SASEGASAMainLoop)VillageProcessor.Successor; }
     }
+    private PopulationBestAverageWorstQualityAnalyzer villageQualityAnalyzer;
+    //private MultipopulationBestAverageWorstQualityAnalyzer qualityAnalyzer;
     #endregion
 
     [StorableConstructor]
@@ -232,7 +249,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("FinalMaximumSelectionPressure", "The maximum selection pressure used when there is only one village left.", new DoubleValue(100)));
       Parameters.Add(new ValueLookupParameter<BoolValue>("OffspringSelectionBeforeMutation", "True if the offspring selection step should be applied before mutation, false if it should be applied after mutation.", new BoolValue(false)));
       Parameters.Add(new ValueLookupParameter<IntValue>("SelectedParents", "Should be about 2 * PopulationSize, for large problems use a smaller value to decrease memory footprint.", new IntValue(200)));
-
+      Parameters.Add(new ValueParameter<MultiAnalyzer<IMultiPopulationAnalyzer>>("Analyzer", "The operator used to analyze the villages.", new MultiAnalyzer<IMultiPopulationAnalyzer>()));
+      Parameters.Add(new ValueParameter<MultiAnalyzer<IPopulationAnalyzer>>("VillageAnalyzer", "The operator used to analyze each village.", new MultiAnalyzer<IPopulationAnalyzer>()));
+      
       RandomCreator randomCreator = new RandomCreator();
       SubScopesCreator populationCreator = new SubScopesCreator();
       UniformSubScopesProcessor ussp1 = new UniformSubScopesProcessor();
@@ -298,8 +317,10 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       ParameterizeSolutionsCreator();
       ParameterizeMainLoop();
       ParameterizeSelectors();
+      ParameterizeAnalyzers();
       UpdateCrossovers();
       UpdateMutators();
+      UpdateAnalyzers();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.OnProblemChanged();
     }
@@ -314,6 +335,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       ParameterizeSolutionsCreator();
       ParameterizeMainLoop();
       ParameterizeSelectors();
+      ParameterizeAnalyzers();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.Problem_EvaluatorChanged(sender, e);
     }
@@ -321,6 +343,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
       UpdateCrossovers();
       UpdateMutators();
+      UpdateAnalyzers();
       base.Problem_OperatorsChanged(sender, e);
     }
     private void ElitesParameter_ValueChanged(object sender, EventArgs e) {
@@ -340,6 +363,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeMainLoop();
       ParameterizeSelectors();
+      ParameterizeAnalyzers();
     }
     private void MaximumGenerationsParameter_ValueChanged(object sender, EventArgs e) {
       MaximumGenerations.ValueChanged += new EventHandler(MaximumGenerations_ValueChanged);
@@ -364,7 +388,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
       InitializeSelectors();
+      InitializeAnalyzers();
       UpdateSelectors();
+      UpdateAnalyzers();
       InitializeComparisonFactorModifiers();
       UpdateComparisonFactorModifiers();
       NumberOfVillagesParameter.ValueChanged += new EventHandler(NumberOfVillagesParameter_ValueChanged);
@@ -401,6 +427,11 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       selectors.AddRange(ApplicationManager.Manager.GetInstances<ISelector>().Where(x => !(x is IMultiObjectiveSelector)).OrderBy(x => x.Name));
       ParameterizeSelectors();
     }
+    private void InitializeAnalyzers() {
+      villageQualityAnalyzer = new PopulationBestAverageWorstQualityAnalyzer();
+      //qualityAnalyzer = new MultipopulationBestAverageWorstQualityAnalyzer();
+      ParameterizeAnalyzers();
+    }
     private void InitializeComparisonFactorModifiers() {
       comparisonFactorModifiers = new List<IDiscreteDoubleValueModifier>();
       comparisonFactorModifiers.AddRange(ApplicationManager.Manager.GetInstances<IDiscreteDoubleValueModifier>().OrderBy(x => x.Name));
@@ -418,6 +449,15 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
           selector.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
           selector.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
         }
+      }
+    }
+    private void ParameterizeAnalyzers() {
+      villageQualityAnalyzer.ResultsParameter.ActualName = "Results";
+      //qualityAnalyzer.ResultsParameter.ActualName = "Results";
+      if (Problem != null) {
+        villageQualityAnalyzer.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
+        villageQualityAnalyzer.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
+        villageQualityAnalyzer.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
       }
     }
     private void ParameterizeComparisonFactorModifiers() {
@@ -474,6 +514,19 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       if (oldMutator != null) {
         IManipulator mutator = MutatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMutator.GetType());
         if (mutator != null) MutatorParameter.Value = mutator;
+      }
+    }
+    private void UpdateAnalyzers() {
+      VillageAnalyzer.Operators.Clear();
+      Analyzer.Operators.Clear();
+      VillageAnalyzer.Operators.Add(villageQualityAnalyzer);
+      //Analyzer.Operators.Add(qualityAnalyzer);
+      if (Problem != null) {
+        foreach (IPopulationAnalyzer analyzer in Problem.Operators.OfType<IPopulationAnalyzer>().OrderBy(x => x.Name)) {
+          VillageAnalyzer.Operators.Add(analyzer);
+        }
+        foreach (IMultiPopulationAnalyzer analyzer in Problem.Operators.OfType<IMultiPopulationAnalyzer>().OrderBy(x => x.Name))
+          Analyzer.Operators.Add(analyzer);
       }
     }
     #endregion
