@@ -71,11 +71,11 @@ namespace HeuristicLab.Algorithms.LocalSearch {
     private ValueParameter<IntValue> SampleSizeParameter {
       get { return (ValueParameter<IntValue>)Parameters["SampleSize"]; }
     }
-    private ValueParameter<MultiAnalyzer> MoveAnalyzerParameter {
-      get { return (ValueParameter<MultiAnalyzer>)Parameters["MoveAnalyzer"]; }
+    private ValueParameter<MultiAnalyzer<IPopulationAnalyzer>> MoveAnalyzerParameter {
+      get { return (ValueParameter<MultiAnalyzer<IPopulationAnalyzer>>)Parameters["MoveAnalyzer"]; }
     }
-    private ValueParameter<MultiAnalyzer> AnalyzerParameter {
-      get { return (ValueParameter<MultiAnalyzer>)Parameters["Analyzer"]; }
+    private ValueParameter<MultiAnalyzer<ISolutionAnalyzer>> AnalyzerParameter {
+      get { return (ValueParameter<MultiAnalyzer<ISolutionAnalyzer>>)Parameters["Analyzer"]; }
     }
     #endregion
 
@@ -108,11 +108,11 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       get { return SampleSizeParameter.Value; }
       set { SampleSizeParameter.Value = value; }
     }
-    public MultiAnalyzer MoveAnalyzer {
+    public MultiAnalyzer<IPopulationAnalyzer> MoveAnalyzer {
       get { return MoveAnalyzerParameter.Value; }
       set { MoveAnalyzerParameter.Value = value; }
     }
-    public MultiAnalyzer Analyzer {
+    public MultiAnalyzer<ISolutionAnalyzer> Analyzer {
       get { return AnalyzerParameter.Value; }
       set { AnalyzerParameter.Value = value; }
     }
@@ -125,7 +125,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
     private LocalSearchMainLoop MainLoop {
       get { return (LocalSearchMainLoop)SolutionsCreator.Successor; }
     }
-    private BestAverageWorstQualityAnalyzer moveQualityAnalyzer;
+    private PopulationBestAverageWorstQualityAnalyzer moveQualityAnalyzer;
     #endregion
 
     [StorableConstructor]
@@ -139,8 +139,8 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       Parameters.Add(new ConstrainedValueParameter<ISingleObjectiveMoveEvaluator>("MoveEvaluator", "The operator used to evaluate a move."));
       Parameters.Add(new ValueParameter<IntValue>("MaximumIterations", "The maximum number of generations which should be processed.", new IntValue(1000)));
       Parameters.Add(new ValueParameter<IntValue>("SampleSize", "Number of moves that MultiMoveGenerators should create. This is ignored for Exhaustive- and SingleMoveGenerators.", new IntValue(100)));
-      Parameters.Add(new ValueParameter<MultiAnalyzer>("MoveAnalyzer", "The operator used to analyze the moves in each iteration.", new MultiAnalyzer()));
-      Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze each iteration.", new MultiAnalyzer()));
+      Parameters.Add(new ValueParameter<MultiAnalyzer<IPopulationAnalyzer>>("MoveAnalyzer", "The operator used to analyze the moves in each iteration.", new MultiAnalyzer<IPopulationAnalyzer>()));
+      Parameters.Add(new ValueParameter<MultiAnalyzer<ISolutionAnalyzer>>("Analyzer", "The operator used to analyze each iteration.", new MultiAnalyzer<ISolutionAnalyzer>()));
       
       RandomCreator randomCreator = new RandomCreator();
       SolutionsCreator solutionsCreator = new SolutionsCreator();
@@ -267,7 +267,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       MoveEvaluatorParameter.ValueChanged += new EventHandler(MoveEvaluatorParameter_ValueChanged);
     }
     private void InitializeAnalyzers() {
-      moveQualityAnalyzer = new BestAverageWorstQualityAnalyzer();
+      moveQualityAnalyzer = new PopulationBestAverageWorstQualityAnalyzer();
       ParameterizeAnalyzers();
     }
     private void UpdateMoveGenerator() {
@@ -316,10 +316,10 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       Analyzer.Operators.Clear();
       MoveAnalyzer.Operators.Clear();
       MoveAnalyzer.Operators.Add(moveQualityAnalyzer);
-      /*if (Problem != null) {
+      if (Problem != null) {
         foreach (ISolutionAnalyzer analyzer in Problem.Operators.OfType<ISolutionAnalyzer>().OrderBy(x => x.Name))
           Analyzer.Operators.Add(analyzer);
-      }*/
+      }
     }
     private void ClearMoveParameters() {
       MoveMakerParameter.ValidValues.Clear();

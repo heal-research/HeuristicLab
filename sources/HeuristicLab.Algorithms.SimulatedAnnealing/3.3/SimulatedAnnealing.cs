@@ -80,8 +80,8 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     private ValueParameter<DoubleValue> EndTemperatureParameter {
       get { return (ValueParameter<DoubleValue>)Parameters["EndTemperature"]; }
     }
-    private ValueParameter<MultiAnalyzer> AnalyzerParameter {
-      get { return (ValueParameter<MultiAnalyzer>)Parameters["Analyzer"]; }
+    private ValueParameter<MultiAnalyzer<ISolutionAnalyzer>> AnalyzerParameter {
+      get { return (ValueParameter<MultiAnalyzer<ISolutionAnalyzer>>)Parameters["Analyzer"]; }
     }
     #endregion
 
@@ -122,7 +122,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       get { return EndTemperatureParameter.Value; }
       set { EndTemperatureParameter.Value = value; }
     }
-    public MultiAnalyzer Analyzer {
+    public MultiAnalyzer<ISolutionAnalyzer> Analyzer {
       get { return AnalyzerParameter.Value; }
       set { AnalyzerParameter.Value = value; }
     }
@@ -140,7 +140,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     private IEnumerable<IDiscreteDoubleValueModifier> AnnealingOperators {
       get { return annealingOperators; }
     }
-    private BestAverageWorstQualityAnalyzer qualityAnalyzer;
+    private SolutionQualityAnalyzer qualityAnalyzer;
     #endregion
 
     [StorableConstructor]
@@ -157,7 +157,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       Parameters.Add(new ValueParameter<IntValue>("InnerIterations", "The amount of inner iterations (number of moves before temperature is adjusted again).", new IntValue(10)));
       Parameters.Add(new ValueParameter<DoubleValue>("StartTemperature", "The initial temperature.", new DoubleValue(100)));
       Parameters.Add(new ValueParameter<DoubleValue>("EndTemperature", "The final temperature which should be reached when iterations reaches maximum iterations.", new DoubleValue(1e-6)));
-      Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze each generation.", new MultiAnalyzer()));
+      Parameters.Add(new ValueParameter<MultiAnalyzer<ISolutionAnalyzer>>("Analyzer", "The operator used to analyze each generation.", new MultiAnalyzer<ISolutionAnalyzer>()));
       
       RandomCreator randomCreator = new RandomCreator();
       SolutionsCreator solutionsCreator = new SolutionsCreator();
@@ -296,7 +296,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
         AnnealingOperatorParameter.ValidValues.Add(op);
     }
     private void InitializeAnalyzers() {
-      qualityAnalyzer = new BestAverageWorstQualityAnalyzer();
+      qualityAnalyzer = new SolutionQualityAnalyzer();
       ParameterizeAnalyzers();
     }
     private void UpdateMoveGenerator() {
@@ -400,7 +400,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       Analyzer.Operators.Clear();
       Analyzer.Operators.Add(qualityAnalyzer);
       if (Problem != null) {
-        foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name))
+        foreach (ISolutionAnalyzer analyzer in Problem.Operators.OfType<ISolutionAnalyzer>().OrderBy(x => x.Name))
           Analyzer.Operators.Add(analyzer);
       }
     }

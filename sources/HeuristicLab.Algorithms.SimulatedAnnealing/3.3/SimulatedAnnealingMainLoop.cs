@@ -115,6 +115,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       #region Create operators
       VariableCreator variableCreator = new VariableCreator();
       ResultsCollector resultsCollector1 = new ResultsCollector();
+      SubScopesProcessor subScopesProcessor0 = new SubScopesProcessor();
       Placeholder analyzer1 = new Placeholder();
       SubScopesProcessor sssp = new SubScopesProcessor();
       ResultsCollector resultsCollector = new ResultsCollector();
@@ -130,6 +131,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       IntCounter iterationsCounter = new IntCounter();
       Comparator iterationsComparator = new Comparator();
       ResultsCollector resultsCollector2 = new ResultsCollector();
+      SubScopesProcessor subScopesProcessor1 = new SubScopesProcessor();
       Placeholder analyzer2 = new Placeholder();
       ConditionalBranch iterationsTermination = new ConditionalBranch();
       
@@ -188,8 +190,9 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       #region Create operator graph
       OperatorGraph.InitialOperator = variableCreator;
       variableCreator.Successor = resultsCollector1;
-      resultsCollector1.Successor = analyzer1;
-      analyzer1.Successor = sssp;
+      resultsCollector1.Successor = subScopesProcessor0;
+      subScopesProcessor0.Operators.Add(analyzer1);
+      subScopesProcessor0.Successor = sssp;
       sssp.Operators.Add(resultsCollector);
       resultsCollector.Successor = null;
       sssp.Successor = annealingOperator;
@@ -204,8 +207,9 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       improvesQualityBranch.TrueBranch = moveMaker;
       iterationsCounter.Successor = iterationsComparator;
       iterationsComparator.Successor = resultsCollector2;
-      resultsCollector2.Successor = analyzer2;
-      analyzer2.Successor = iterationsTermination;
+      resultsCollector2.Successor = subScopesProcessor1;
+      subScopesProcessor1.Operators.Add(analyzer2);
+      subScopesProcessor1.Successor = iterationsTermination;
       iterationsTermination.TrueBranch = null;
       iterationsTermination.FalseBranch = annealingOperator;
       #endregion
