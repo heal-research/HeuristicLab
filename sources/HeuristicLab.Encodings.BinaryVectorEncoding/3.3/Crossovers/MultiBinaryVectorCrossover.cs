@@ -51,7 +51,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     private MultiBinaryVectorCrossover(bool deserializing) : base(deserializing) { }
     public MultiBinaryVectorCrossover()
       : base() {
-      Parameters.Add(new SubScopesLookupParameter<BinaryVector>("Parents", "The parent binary vector which should be crossed."));
+      Parameters.Add(new ScopeTreeLookupParameter<BinaryVector>("Parents", "The parent binary vector which should be crossed."));
       ParentsParameter.ActualName = "BinaryVector";
       Parameters.Add(new LookupParameter<BinaryVector>("Child", "The child binary vector resulting from the crossover."));
       ChildParameter.ActualName = "BinaryVector";

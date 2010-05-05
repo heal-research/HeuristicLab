@@ -47,7 +47,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public StdDevStrategyVectorCrossover()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
-      Parameters.Add(new SubScopesLookupParameter<RealVector>("ParentStrategyParameter", "The strategy parameters to cross."));
+      Parameters.Add(new ScopeTreeLookupParameter<RealVector>("ParentStrategyParameter", "The strategy parameters to cross."));
       Parameters.Add(new LookupParameter<RealVector>("StrategyParameter", "The crossed strategy parameter."));
       ParentsParameter.ActualName = "StrategyParameter";
     }

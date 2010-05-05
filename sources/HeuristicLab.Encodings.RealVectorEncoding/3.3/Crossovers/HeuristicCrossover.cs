@@ -46,8 +46,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// <summary>
     /// The quality of the parents.
     /// </summary>
-    public SubScopesLookupParameter<DoubleValue> QualityParameter {
-      get { return (SubScopesLookupParameter<DoubleValue>)Parameters["Quality"]; }
+    public ScopeTreeLookupParameter<DoubleValue> QualityParameter {
+      get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
 
     /// <summary>
@@ -57,7 +57,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public HeuristicCrossover()
       : base() {
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "Whether the problem is a maximization problem or not."));
-      Parameters.Add(new SubScopesLookupParameter<DoubleValue>("Quality", "The quality values of the parents."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The quality values of the parents."));
     }
 
     /// <summary>

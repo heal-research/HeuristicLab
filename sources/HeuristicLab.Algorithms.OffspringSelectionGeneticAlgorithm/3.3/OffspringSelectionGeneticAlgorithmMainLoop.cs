@@ -42,8 +42,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     public ValueLookupParameter<BoolValue> MaximizationParameter {
       get { return (ValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
-    public SubScopesLookupParameter<DoubleValue> QualityParameter {
-      get { return (SubScopesLookupParameter<DoubleValue>)Parameters["Quality"]; }
+    public ScopeTreeLookupParameter<DoubleValue> QualityParameter {
+      get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
     public ValueLookupParameter<IOperator> SelectorParameter {
       get { return (ValueLookupParameter<IOperator>)Parameters["Selector"]; }
@@ -103,7 +103,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       #region Create parameters
       Parameters.Add(new ValueLookupParameter<IRandom>("Random", "A pseudo random number generator."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, otherwise false."));
-      Parameters.Add(new SubScopesLookupParameter<DoubleValue>("Quality", "The value which represents the quality of a solution."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The value which represents the quality of a solution."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("BestKnownQuality", "The best known quality value found so far."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Selector", "The operator used to select solutions for reproduction."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Crossover", "The operator used to cross solutions."));

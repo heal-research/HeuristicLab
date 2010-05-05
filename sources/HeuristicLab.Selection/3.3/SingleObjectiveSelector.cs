@@ -55,7 +55,7 @@ namespace HeuristicLab.Selection {
       Parameters.Add(new ValueParameter<BoolValue>("CopySelected", "True if the selected sub-scopes should be copied, otherwise false.", new BoolValue(true)));
       Parameters.Add(new ValueLookupParameter<IntValue>("NumberOfSelectedSubScopes", "The number of sub-scopes which should be selected."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the current problem is a maximization problem, otherwise false."));
-      Parameters.Add(new SubScopesLookupParameter<DoubleValue>("Quality", "The quality value contained in each sub-scope which is used for selection."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The quality value contained in each sub-scope which is used for selection."));
     }
   }
 }

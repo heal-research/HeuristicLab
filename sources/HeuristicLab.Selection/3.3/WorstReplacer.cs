@@ -49,7 +49,7 @@ namespace HeuristicLab.Selection {
     private WorstReplacer(bool deserializing) : base(deserializing) { }
     public WorstReplacer()
       : base() {
-      Parameters.Add(new SubScopesLookupParameter<DoubleValue>("Quality", "The quality of a solution."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The quality of a solution."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, otherwise false."));
 
       WorstSelector worstSelector = new WorstSelector();

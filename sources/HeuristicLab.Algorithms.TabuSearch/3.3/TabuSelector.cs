@@ -90,8 +90,8 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       Parameters.Add(new LookupParameter<DoubleValue>("BestQuality", "The best found quality so far."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("Aspiration", "Whether the default aspiration criterion should be used or not. The default aspiration criterion accepts a tabu move if it results in a better solution than the best solution found so far.", new BoolValue(true)));
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "Whether the problem is a maximization or minimization problem (used to decide whether a solution is better"));
-      Parameters.Add(new SubScopesLookupParameter<DoubleValue>("MoveQuality", "The quality of the move."));
-      Parameters.Add(new SubScopesLookupParameter<BoolValue>("MoveTabu", "The tabu status of the move."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("MoveQuality", "The quality of the move."));
+      Parameters.Add(new ScopeTreeLookupParameter<BoolValue>("MoveTabu", "The tabu status of the move."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("CopySelected", "True if the selected move should be copied.", new BoolValue(false)));
       Parameters.Add(new LookupParameter<BoolValue>("EmptyNeighborhood", "Will be set to true if the neighborhood didn't contain any non-tabu moves, otherwise it is set to false."));
     }

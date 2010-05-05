@@ -41,7 +41,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers {
     private const string ChildParameterName = "Child";
     private const string FailedCrossoverEventsParameterName = "FailedCrossoverEvents";
     public ILookupParameter<ItemArray<SymbolicExpressionTree>> ParentsParameter {
-      get { return (SubScopesLookupParameter<SymbolicExpressionTree>)Parameters[ParentsParameterName]; }
+      get { return (ScopeTreeLookupParameter<SymbolicExpressionTree>)Parameters[ParentsParameterName]; }
     }
     public ILookupParameter<SymbolicExpressionTree> ChildParameter {
       get { return (ILookupParameter<SymbolicExpressionTree>)Parameters[ChildParameterName]; }
@@ -55,7 +55,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers {
     }
     protected SymbolicExpressionTreeCrossover()
       : base() {
-      Parameters.Add(new SubScopesLookupParameter<SymbolicExpressionTree>(ParentsParameterName, "The parent symbolic expression trees which should be crossed."));
+      Parameters.Add(new ScopeTreeLookupParameter<SymbolicExpressionTree>(ParentsParameterName, "The parent symbolic expression trees which should be crossed."));
       Parameters.Add(new LookupParameter<SymbolicExpressionTree>(ChildParameterName, "The child symbolic expression tree resulting from the crossover."));
       Parameters.Add(new ValueParameter<IntValue>(FailedCrossoverEventsParameterName, "The number of failed crossover events (child is an exact copy of a parent)", new IntValue()));
     }

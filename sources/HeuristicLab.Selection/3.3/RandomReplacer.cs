@@ -52,7 +52,7 @@ namespace HeuristicLab.Selection {
     private RandomReplacer(bool deserializing) : base(deserializing) { }
     public RandomReplacer()
       : base() {
-      Parameters.Add(new SubScopesLookupParameter<DoubleValue>("Quality", "The quality of a solution."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The quality of a solution."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, otherwise false."));
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator to use."));
 

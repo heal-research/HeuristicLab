@@ -63,8 +63,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     public MultiPopulationBestTSPSolutionAnalyzer()
       : base() {
       Parameters.Add(new LookupParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities."));
-      Parameters.Add(new SubScopesSubScopesLookupParameter<Permutation>("Permutation", "The TSP solutions given in path representation from which the best solution should be analyzed."));
-      Parameters.Add(new SubScopesSubScopesLookupParameter<DoubleValue>("Quality", "The qualities of the TSP solutions which should be analyzed."));
+      Parameters.Add(new ScopeTreeLookupParameter<Permutation>("Permutation", "The TSP solutions given in path representation from which the best solution should be analyzed."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The qualities of the TSP solutions which should be analyzed."));
       Parameters.Add(new LookupParameter<PathTSPTour>("BestSolution", "The best TSP solution."));
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the best TSP solution should be stored."));
     }

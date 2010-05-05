@@ -60,9 +60,9 @@ namespace HeuristicLab.Problems.OneMax.Analyzers {
 
     public PopulationBestOneMaxSolutionAnalyzer()
       : base() {
-      Parameters.Add(new SubScopesLookupParameter<BinaryVector>("BinaryVector", "The Onemax solutions from which the best solution should be visualized."));
+      Parameters.Add(new ScopeTreeLookupParameter<BinaryVector>("BinaryVector", "The Onemax solutions from which the best solution should be visualized."));
 
-      Parameters.Add(new SubScopesLookupParameter<DoubleValue>("Quality", "The qualities of the Onemax solutions which should be visualized."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The qualities of the Onemax solutions which should be visualized."));
       Parameters.Add(new LookupParameter<OneMaxSolution>("BestSolution", "The best Onemax solution."));
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the Onemax solution should be stored."));
     }

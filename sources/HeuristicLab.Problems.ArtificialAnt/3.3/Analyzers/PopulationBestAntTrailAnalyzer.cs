@@ -58,8 +58,8 @@ namespace HeuristicLab.Problems.ArtificialAnt.Analyzers {
     public PopulationBestAntTrailAnalyzer()
       : base() {
       Parameters.Add(new LookupParameter<BoolMatrix>("World", "The world with food items for the artificial ant."));
-      Parameters.Add(new SubScopesLookupParameter<SymbolicExpressionTree>("SymbolicExpressionTree", "The artificial ant solutions from which the best solution should be visualized."));
-      Parameters.Add(new SubScopesLookupParameter<DoubleValue>("Quality", "The qualities of the artificial ant solutions which should be visualized."));
+      Parameters.Add(new ScopeTreeLookupParameter<SymbolicExpressionTree>("SymbolicExpressionTree", "The artificial ant solutions from which the best solution should be visualized."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The qualities of the artificial ant solutions which should be visualized."));
       Parameters.Add(new LookupParameter<AntTrail>("BestSolution", "The visual representation of the best ant trail."));
       Parameters.Add(new LookupParameter<IntValue>("MaxTimeSteps", "The maximal time steps that the artificial ant has available to collect all food items."));
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the best artificial ant solution should be stored."));

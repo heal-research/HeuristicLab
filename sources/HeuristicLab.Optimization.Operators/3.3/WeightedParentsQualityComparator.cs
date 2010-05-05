@@ -52,7 +52,7 @@ namespace HeuristicLab.Optimization.Operators {
       : base() {
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, false otherwise"));
       Parameters.Add(new LookupParameter<DoubleValue>("LeftSide", "The quality of the child."));
-      Parameters.Add(new SubScopesLookupParameter<DoubleValue>("RightSide", "The qualities of the parents."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("RightSide", "The qualities of the parents."));
       Parameters.Add(new LookupParameter<BoolValue>("Result", "The result of the comparison: True means Quality is better, False means it is worse than parents."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("ComparisonFactor", "Determines if the quality should be compared to the better parent (1.0), to the worse (0.0) or to any linearly interpolated value between them."));
     }

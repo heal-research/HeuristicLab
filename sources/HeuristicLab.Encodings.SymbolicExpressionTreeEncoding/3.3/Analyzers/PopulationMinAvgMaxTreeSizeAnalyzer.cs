@@ -61,8 +61,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers {
     #endregion
     public PopulationMinAvgMaxTreeSizeAnalyzer()
       : base() {
-      Parameters.Add(new SubScopesLookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression tree whose size should be calculated."));
-      Parameters.Add(new SubScopesLookupParameter<DoubleValue>(SymbolicExpressionTreeSizeParameterName, "The tree size of the symbolic expression tree."));
+      Parameters.Add(new ScopeTreeLookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression tree whose size should be calculated."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>(SymbolicExpressionTreeSizeParameterName, "The tree size of the symbolic expression tree."));
       Parameters.Add(new ValueLookupParameter<DataTable>(SymbolicExpressionTreeSizesParameterName, "The data table to store the tree sizes."));
       Parameters.Add(new ValueLookupParameter<VariableCollection>(ResultsParameterName, "The results collection where the analysis values should be stored."));
 

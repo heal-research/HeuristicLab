@@ -63,7 +63,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
     public VariableFrequencyAnalyser()
       : base() {
-      Parameters.Add(new SubScopesLookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression trees that should be analyzed."));
+      Parameters.Add(new ScopeTreeLookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression trees that should be analyzed."));
       Parameters.Add(new LookupParameter<DataAnalysisProblemData>(DataAnalysisProblemDataParameterName, "The problem data on which the for which the symbolic expression tree is a solution."));
       Parameters.Add(new LookupParameter<DoubleMatrix>(VariableFrequenciesParameterName, "The relative variable reference frequencies aggregated over the whole population."));
     }

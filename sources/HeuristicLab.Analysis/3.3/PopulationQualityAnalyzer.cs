@@ -38,8 +38,8 @@ namespace HeuristicLab.Analysis {
     public ValueLookupParameter<BoolValue> MaximizationParameter {
       get { return (ValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
-    public SubScopesLookupParameter<DoubleValue> QualityParameter {
-      get { return (SubScopesLookupParameter<DoubleValue>)Parameters["Quality"]; }
+    public ScopeTreeLookupParameter<DoubleValue> QualityParameter {
+      get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
     public ValueLookupParameter<DoubleValue> BestKnownQualityParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
@@ -71,7 +71,7 @@ namespace HeuristicLab.Analysis {
     private void Initialize() {
       #region Create parameters
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, otherwise false."));
-      Parameters.Add(new SubScopesLookupParameter<DoubleValue>("Quality", "The value which represents the quality of a solution."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The value which represents the quality of a solution."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("BestKnownQuality", "The best known quality value found so far."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("BestQuality", "The best quality value found in the current run."));
       Parameters.Add(new ValueLookupParameter<DataTable>("Qualities", "The data table to store the best, best known and all other quality values."));
@@ -95,7 +95,7 @@ namespace HeuristicLab.Analysis {
       bestQualityMemorizer2.MaximizationParameter.ActualName = "Maximization";
       bestQualityMemorizer2.QualityParameter.ActualName = "Quality";
 
-      dataTableValuesCollector.CollectedValues.Add(new SubScopesLookupParameter<DoubleValue>("Quality", null, "Quality"));
+      dataTableValuesCollector.CollectedValues.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", null, "Quality"));
       dataTableValuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
       dataTableValuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, "BestKnownQuality"));
       dataTableValuesCollector.DataTableParameter.ActualName = "Qualities";
@@ -105,7 +105,7 @@ namespace HeuristicLab.Analysis {
       qualityDifferenceCalculator.RelativeDifferenceParameter.ActualName = "RelativeDifferenceBestKnownToBest";
       qualityDifferenceCalculator.SecondQualityParameter.ActualName = "BestQuality";
 
-      resultsCollector.CollectedValues.Add(new SubScopesLookupParameter<DoubleValue>("Quality", null, "Quality"));
+      resultsCollector.CollectedValues.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", null, "Quality"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, "BestKnownQuality"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Absolute Difference of Best Known Quality to Best Quality", null, "AbsoluteDifferenceBestKnownToBest"));

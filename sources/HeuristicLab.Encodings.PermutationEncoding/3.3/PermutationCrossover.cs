@@ -41,7 +41,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
     public ILookupParameter<ItemArray<Permutation>> ParentsParameter {
-      get { return (SubScopesLookupParameter<Permutation>)Parameters["Parents"]; }
+      get { return (ScopeTreeLookupParameter<Permutation>)Parameters["Parents"]; }
     }
     public ILookupParameter<Permutation> ChildParameter {
       get { return (ILookupParameter<Permutation>)Parameters["Child"]; }
@@ -50,7 +50,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     protected PermutationCrossover()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic crossover operators."));
-      Parameters.Add(new SubScopesLookupParameter<Permutation>("Parents", "The parent permutations which should be crossed."));
+      Parameters.Add(new ScopeTreeLookupParameter<Permutation>("Parents", "The parent permutations which should be crossed."));
       ParentsParameter.ActualName = "Permutation";
       Parameters.Add(new LookupParameter<Permutation>("Child", "The child permutation resulting from the crossover."));
       ChildParameter.ActualName = "Permutation";

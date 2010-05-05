@@ -42,7 +42,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
     public ILookupParameter<ItemArray<RealVector>> ParentsParameter {
-      get { return (SubScopesLookupParameter<RealVector>)Parameters["Parents"]; }
+      get { return (ScopeTreeLookupParameter<RealVector>)Parameters["Parents"]; }
     }
     public ILookupParameter<RealVector> ChildParameter {
       get { return (ILookupParameter<RealVector>)Parameters["Child"]; }
@@ -54,7 +54,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     protected RealVectorCrossover()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic crossover operators."));
-      Parameters.Add(new SubScopesLookupParameter<RealVector>("Parents", "The parent vectors which should be crossed."));
+      Parameters.Add(new ScopeTreeLookupParameter<RealVector>("Parents", "The parent vectors which should be crossed."));
       Parameters.Add(new LookupParameter<RealVector>("Child", "The child vector resulting from the crossover."));
       Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "The lower and upper bounds of the real vector."));
     }

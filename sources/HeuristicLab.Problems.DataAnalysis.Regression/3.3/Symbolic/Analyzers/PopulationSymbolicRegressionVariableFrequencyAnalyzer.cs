@@ -67,7 +67,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
 
     public PopulationSymbolicRegressionVariableFrequencyAnalyzer()
       : base() {
-      Parameters.Add(new SubScopesLookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression trees to analyze."));
+      Parameters.Add(new ScopeTreeLookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression trees to analyze."));
       Parameters.Add(new LookupParameter<DataAnalysisProblemData>(ProblemDataParameterName, "The problem data containing the input varaibles for the symbolic regression problem."));
       Parameters.Add(new ValueLookupParameter<DataTable>(VariableFrequenciesParameterName, "The data table to store the variable frequencies."));
       Parameters.Add(new LookupParameter<ResultCollection>(ResultsParameterName, "The result collection where the best symbolic regression solution should be stored."));

@@ -35,8 +35,8 @@ namespace HeuristicLab.Operators {
     private bool descending;
     private string actualName;
 
-    public SubScopesLookupParameter<DoubleValue> ValueParameter {
-      get { return (SubScopesLookupParameter<DoubleValue>)Parameters["Value"]; }
+    public ScopeTreeLookupParameter<DoubleValue> ValueParameter {
+      get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Value"]; }
     }
     public ValueLookupParameter<BoolValue> DescendingParameter {
       get { return (ValueLookupParameter<BoolValue>)Parameters["Descending"]; }
@@ -50,7 +50,7 @@ namespace HeuristicLab.Operators {
 
     public SubScopesSorter()
       : base() {
-      Parameters.Add(new SubScopesLookupParameter<DoubleValue>("Value", "The values contained in each sub-scope acording which the sub-scopes of the current scope are sorted."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Value", "The values contained in each sub-scope acording which the sub-scopes of the current scope are sorted."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("Descending", "True if the sub-scopes should be sorted in descending order, otherwise false."));
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope whose sub-scopes are sorted."));
     }

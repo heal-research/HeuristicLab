@@ -48,7 +48,7 @@ namespace HeuristicLab.Analysis {
 
     public MinAverageMaxValueCalculator()
       : base() {
-      Parameters.Add(new SubScopesLookupParameter<DoubleValue>("Value", "The value contained in each sub-scope for which the minimum, average and maximum should be calculated."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Value", "The value contained in each sub-scope for which the minimum, average and maximum should be calculated."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("MinValue", "The minimum of the value."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("AverageValue", "The average of the value."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("MaxValue", "The maximum of the value."));

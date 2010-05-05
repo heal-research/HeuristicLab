@@ -88,7 +88,7 @@ namespace HeuristicLab.Selection {
       : base() {
       #region Create parameters
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem."));
-      Parameters.Add(new SubScopesLookupParameter<DoubleValue>("Quality", "The quality of the solutions."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The quality of the solutions."));
       Parameters.Add(new ValueLookupParameter<IntValue>("NumberOfSelectedSubScopes", "The number of scopes that should be selected."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("CopySelected", "True if the scopes should be copied, false if they should be moved.", new BoolValue(true)));
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));

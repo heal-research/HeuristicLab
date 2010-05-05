@@ -54,8 +54,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     public ValueLookupParameter<BoolValue> MaximizationParameter {
       get { return (ValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
-    public SubScopesLookupParameter<DoubleValue> QualityParameter {
-      get { return (SubScopesLookupParameter<DoubleValue>)Parameters["Quality"]; }
+    public ScopeTreeLookupParameter<DoubleValue> QualityParameter {
+      get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
     public ValueLookupParameter<DoubleValue> BestKnownQualityParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
@@ -123,7 +123,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       #region Create parameters
       Parameters.Add(new ValueLookupParameter<IRandom>("Random", "A pseudo random number generator."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, otherwise false."));
-      Parameters.Add(new SubScopesLookupParameter<DoubleValue>("Quality", "The value which represents the quality of a solution."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The value which represents the quality of a solution."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("BestKnownQuality", "The best known quality value found so far."));
       Parameters.Add(new ValueLookupParameter<IntValue>("NumberOfVillages", "The initial number of villages."));
       Parameters.Add(new ValueLookupParameter<IntValue>("MigrationInterval", "The fixed period after which migration occurs."));
@@ -233,7 +233,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
 
       resultsCollector2.Name = "Reference Village Results";
       resultsCollector2.CopyValue = new BoolValue(false);
-      resultsCollector2.CollectedValues.Add(new SubScopesLookupParameter<ResultCollection>("VillageResults", "Result set for each village", "Results"));
+      resultsCollector2.CollectedValues.Add(new ScopeTreeLookupParameter<ResultCollection>("VillageResults", "Result set for each village", "Results"));
       resultsCollector2.ResultsParameter.ActualName = ResultsParameter.Name;
 
       villageTerminatedBySelectionPressure1.Name = "Village Terminated ?";

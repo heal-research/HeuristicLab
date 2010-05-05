@@ -89,7 +89,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
 
     public PopulationValidationBestScaledSymbolicRegressionSolutionAnalyzer()
       : base() {
-      Parameters.Add(new SubScopesLookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression trees to analyze."));
+      Parameters.Add(new ScopeTreeLookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression trees to analyze."));
       Parameters.Add(new LookupParameter<ISymbolicExpressionTreeInterpreter>(SymbolicExpressionTreeInterpreterParameterName, "The interpreter that should be used for the analysis of symbolic expression trees."));
       Parameters.Add(new LookupParameter<DataAnalysisProblemData>(ProblemDataParameterName, "The problem data for which the symbolic expression tree is a solution."));
       Parameters.Add(new ValueLookupParameter<IntValue>(SamplesStartParameterName, "The first index of the validation partition of the data set."));

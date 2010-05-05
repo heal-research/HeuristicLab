@@ -54,7 +54,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     private MultiRealVectorCrossover(bool deserializing) : base(deserializing) { }
     public MultiRealVectorCrossover()
       : base() {
-      Parameters.Add(new SubScopesLookupParameter<RealVector>("Parents", "The parent real vector which should be crossed."));
+      Parameters.Add(new ScopeTreeLookupParameter<RealVector>("Parents", "The parent real vector which should be crossed."));
       ParentsParameter.ActualName = "RealVector";
       Parameters.Add(new LookupParameter<RealVector>("Child", "The child real vector resulting from the crossover."));
       ChildParameter.ActualName = "RealVector";

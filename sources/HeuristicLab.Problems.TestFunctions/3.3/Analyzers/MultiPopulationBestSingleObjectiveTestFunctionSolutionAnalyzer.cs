@@ -60,9 +60,9 @@ namespace HeuristicLab.Problems.TestFunctions.Analyzers {
 
     public MultiPopulationBestSingleObjectiveTestFunctionSolutionAnalyzer()
       : base() {
-      Parameters.Add(new SubScopesLookupParameter<ItemArray<RealVector>>("RealVector", "The SingleObjectiveTestFunction solutions from which the best solution should be visualized."));
+      Parameters.Add(new ScopeTreeLookupParameter<ItemArray<RealVector>>("RealVector", "The SingleObjectiveTestFunction solutions from which the best solution should be visualized."));
 
-      Parameters.Add(new SubScopesLookupParameter<ItemArray<DoubleValue>>("Quality", "The qualities of the SingleObjectiveTestFunction solutions which should be visualized."));
+      Parameters.Add(new ScopeTreeLookupParameter<ItemArray<DoubleValue>>("Quality", "The qualities of the SingleObjectiveTestFunction solutions which should be visualized."));
       Parameters.Add(new LookupParameter<SingleObjectiveTestFunctionSolution>("BestSolution", "The best SingleObjectiveTestFunction solution."));
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the SingleObjectiveTestFunction solution should be stored."));
     }

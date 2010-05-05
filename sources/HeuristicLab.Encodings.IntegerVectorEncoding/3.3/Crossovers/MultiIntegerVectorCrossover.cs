@@ -51,7 +51,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     private MultiIntegerVectorCrossover(bool deserializing) : base(deserializing) { }
     public MultiIntegerVectorCrossover()
       : base() {
-      Parameters.Add(new SubScopesLookupParameter<IntegerVector>("Parents", "The parent integer vector which should be crossed."));
+      Parameters.Add(new ScopeTreeLookupParameter<IntegerVector>("Parents", "The parent integer vector which should be crossed."));
       ParentsParameter.ActualName = "IntegerVector";
       Parameters.Add(new LookupParameter<IntegerVector>("Child", "The child integer vector resulting from the crossover."));
       ChildParameter.ActualName = "IntegerVector";

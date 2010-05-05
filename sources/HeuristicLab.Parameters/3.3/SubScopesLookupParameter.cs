@@ -20,31 +20,69 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Parameters {
   /// <summary>
-  /// A generic parameter representing instances of type T which are collected from or written to the sub-scopes of the current scope.
+  /// A generic parameter representing instances of type T which are collected from or written to scope tree.
   /// </summary>
-  [Item("SubScopesLookupParameter<T>", "A generic parameter representing instances of type T which are collected from or written to the sub-scopes of the current scope.")]
+  [Item("ScopeTreeLookupParameter<T>", "A generic parameter representing instances of type T which are collected from or written to scope tree.")]
   [StorableClass]
-  public class SubScopesLookupParameter<T> : LookupParameter<ItemArray<T>> where T : class, IItem {
-    public SubScopesLookupParameter() : base() { }
-    public SubScopesLookupParameter(string name) : base(name) { }
-    public SubScopesLookupParameter(string name, string description) : base(name, description) { }
-    public SubScopesLookupParameter(string name, string description, string actualName) : base(name, description, actualName) { }
+  public class ScopeTreeLookupParameter<T> : LookupParameter<ItemArray<T>> where T : class, IItem {
+    [Storable]
+    private int depth;
+    public int Depth {
+      get { return depth; }
+      set {
+        if (value < 0) throw new ArgumentException("Depth must be larger than or equal to 0.");
+        if (depth != value) {
+          depth = value;
+          OnDepthChanged();
+        }
+      }
+    }
+
+    public ScopeTreeLookupParameter()
+      : base() {
+      depth = 1;
+    }
+    public ScopeTreeLookupParameter(string name)
+      : base(name) {
+      depth = 1;
+    }
+    public ScopeTreeLookupParameter(string name, string description)
+      : base(name, description) {
+      depth = 1;
+    }
+    public ScopeTreeLookupParameter(string name, string description, string actualName)
+      : base(name, description, actualName) {
+      depth = 1;
+    }
+    [StorableConstructor]
+    protected ScopeTreeLookupParameter(bool deserializing) : base(deserializing) { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      ScopeTreeLookupParameter<T> clone = (ScopeTreeLookupParameter<T>)base.Clone(cloner);
+      clone.depth = depth;
+      return clone;
+    }
 
     protected override IItem GetActualValue() {
       string name = LookupParameter<ItemArray<T>>.TranslateName(Name, ExecutionContext);
-      IScope scope = ExecutionContext.Scope;
-      ItemArray<T> values = new ItemArray<T>(scope.SubScopes.Count);
+
+      IEnumerable<IScope> scopes = new IScope[] { ExecutionContext.Scope };
+      for (int i = 0; i < depth; i++)
+        scopes = scopes.Select(x => (IEnumerable<IScope>)x.SubScopes).Aggregate((a, b) => a.Concat(b));
+
+      List<T> values = new List<T>();
       IVariable var;
       T value;
-
-      for (int i = 0; i < values.Length; i++) {
-        scope.SubScopes[i].Variables.TryGetValue(name, out var);
+      foreach (IScope scope in scopes) {
+        scope.Variables.TryGetValue(name, out var);
         if (var != null) {
           value = var.Value as T;
           if ((var.Value != null) && (value == null))
@@ -53,10 +91,10 @@ namespace HeuristicLab.Parameters {
                             name,
                             typeof(T).GetPrettyName())
             );
-          values[i] = value;
+          values.Add(value);
         }
       }
-      return values;
+      return new ItemArray<T>(values);
     }
     protected override void SetActualValue(IItem value) {
       ItemArray<T> values = value as ItemArray<T>;
@@ -67,14 +105,27 @@ namespace HeuristicLab.Parameters {
         );
 
       string name = LookupParameter<ItemArray<T>>.TranslateName(Name, ExecutionContext);
-      IScope scope = ExecutionContext.Scope;
-      IVariable var;
 
-      for (int i = 0; i < values.Length; i++) {
-        scope.SubScopes[i].Variables.TryGetValue(name, out var);
-        if (var != null) var.Value = values[i];
-        else scope.SubScopes[i].Variables.Add(new Variable(name, values[i]));
+      IEnumerable<IScope> scopes = new IScope[] { ExecutionContext.Scope };
+      for (int i = 0; i < depth; i++)
+        scopes = scopes.Select(x => (IEnumerable<IScope>)x.SubScopes).Aggregate((a, b) => a.Concat(b));
+
+      if (scopes.Count() != values.Length) throw new InvalidOperationException("Number of values is not equal to number of scopes.");
+
+      int j = 0;
+      IVariable var;
+      foreach (IScope scope in scopes) {
+        scope.Variables.TryGetValue(name, out var);
+        if (var != null) var.Value = values[j];
+        else scope.Variables.Add(new Variable(name, values[j]));
+        j++;
       }
+    }
+
+    public event EventHandler DepthChanged;
+    protected virtual void OnDepthChanged() {
+      EventHandler handler = DepthChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
   }
 }

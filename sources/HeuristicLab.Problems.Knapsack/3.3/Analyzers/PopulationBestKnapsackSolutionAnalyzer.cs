@@ -69,12 +69,12 @@ namespace HeuristicLab.Problems.Knapsack.Analyzers {
 
     public PopulationBestKnapsackSolutionAnalyzer()
       : base() {
-      Parameters.Add(new SubScopesLookupParameter<BinaryVector>("BinaryVector", "The knapsack solutions from which the best solution should be visualized."));
+      Parameters.Add(new ScopeTreeLookupParameter<BinaryVector>("BinaryVector", "The knapsack solutions from which the best solution should be visualized."));
       Parameters.Add(new LookupParameter<IntValue>("KnapsackCapacity", "Capacity of the Knapsack."));
       Parameters.Add(new LookupParameter<IntArray>("Weights", "The weights of the items."));
       Parameters.Add(new LookupParameter<IntArray>("Values", "The values of the items."));
       
-      Parameters.Add(new SubScopesLookupParameter<DoubleValue>("Quality", "The qualities of the knapsack solutions which should be visualized."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The qualities of the knapsack solutions which should be visualized."));
       Parameters.Add(new LookupParameter<KnapsackSolution>("BestSolution", "The best knapsack solution."));
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the knapsack solution should be stored."));
     }

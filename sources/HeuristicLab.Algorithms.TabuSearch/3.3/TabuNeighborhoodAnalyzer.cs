@@ -28,8 +28,8 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.Algorithms.TabuSearch {
   public class TabuNeighborhoodAnalyzer : SingleSuccessorOperator, IAnalyzer {
-    public SubScopesLookupParameter<BoolValue> IsTabuParameter {
-      get { return (SubScopesLookupParameter<BoolValue>)Parameters["IsTabu"]; }
+    public ScopeTreeLookupParameter<BoolValue> IsTabuParameter {
+      get { return (ScopeTreeLookupParameter<BoolValue>)Parameters["IsTabu"]; }
     }
     public LookupParameter<PercentValue> PercentTabuParameter {
       get { return (LookupParameter<PercentValue>)Parameters["PercentTabu"]; }
@@ -40,7 +40,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
 
     public TabuNeighborhoodAnalyzer()
       : base() {
-      Parameters.Add(new SubScopesLookupParameter<BoolValue>("IsTabu", "A value that determines if a move is tabu or not."));
+      Parameters.Add(new ScopeTreeLookupParameter<BoolValue>("IsTabu", "A value that determines if a move is tabu or not."));
       Parameters.Add(new LookupParameter<PercentValue>("PercentTabu", "Indicates how much of the neighborhood is tabu."));
       Parameters.Add(new LookupParameter<ResultCollection>("Results", "The result collection where the value should be stored."));
     }

@@ -35,8 +35,8 @@ namespace HeuristicLab.Analysis {
   [StorableClass]
   public sealed class PopulationMinAverageMaxValueAnalyzer : AlgorithmOperator, IAnalyzer {
     #region Parameter properties
-    public SubScopesLookupParameter<DoubleValue> ValueParameter {
-      get { return (SubScopesLookupParameter<DoubleValue>)Parameters["Value"]; }
+    public ScopeTreeLookupParameter<DoubleValue> ValueParameter {
+      get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Value"]; }
     }
     public ValueLookupParameter<DoubleValue> MinValueParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["MinValue"]; }
@@ -64,7 +64,7 @@ namespace HeuristicLab.Analysis {
 
     private void Initialize() {
       #region Create parameters
-      Parameters.Add(new SubScopesLookupParameter<DoubleValue>("Value", "The value contained in each solution which should be analyzed."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Value", "The value contained in each solution which should be analyzed."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("MinValue", "The minimum of the value."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("AverageValue", "The average of the value."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("MaxValue", "The maximum of the value."));

@@ -31,8 +31,8 @@ namespace HeuristicLab.Selection {
   [Item("ConditionalSelector", "Selects sub-scopes where a certain boolean variable is true.")]
   [StorableClass]
   public class ConditionalSelector : Selector {
-    public SubScopesLookupParameter<BoolValue> ConditionParameter {
-      get { return (SubScopesLookupParameter<BoolValue>)Parameters["Condition"]; }
+    public ScopeTreeLookupParameter<BoolValue> ConditionParameter {
+      get { return (ScopeTreeLookupParameter<BoolValue>)Parameters["Condition"]; }
     }
     public ValueParameter<BoolValue> CopySelectedParameter {
       get { return (ValueParameter<BoolValue>)Parameters["CopySelected"]; }
@@ -45,7 +45,7 @@ namespace HeuristicLab.Selection {
 
     public ConditionalSelector()
       : base() {
-      Parameters.Add(new SubScopesLookupParameter<BoolValue>("Condition", "The boolean variable based on which the scopes are selected into a true scope-branch and a false scope-branch."));
+      Parameters.Add(new ScopeTreeLookupParameter<BoolValue>("Condition", "The boolean variable based on which the scopes are selected into a true scope-branch and a false scope-branch."));
       Parameters.Add(new ValueParameter<BoolValue>("CopySelected", "The parameter that decides whether the selected scopes should be copied or moved.", new BoolValue(true)));
     }
 

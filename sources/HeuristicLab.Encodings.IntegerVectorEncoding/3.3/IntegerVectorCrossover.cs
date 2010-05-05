@@ -41,7 +41,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
     public ILookupParameter<ItemArray<IntegerVector>> ParentsParameter {
-      get { return (SubScopesLookupParameter<IntegerVector>)Parameters["Parents"]; }
+      get { return (ScopeTreeLookupParameter<IntegerVector>)Parameters["Parents"]; }
     }
     public ILookupParameter<IntegerVector> ChildParameter {
       get { return (ILookupParameter<IntegerVector>)Parameters["Child"]; }
@@ -50,7 +50,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     protected IntegerVectorCrossover()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic crossover operators."));
-      Parameters.Add(new SubScopesLookupParameter<IntegerVector>("Parents", "The parent vectors which should be crossed."));
+      Parameters.Add(new ScopeTreeLookupParameter<IntegerVector>("Parents", "The parent vectors which should be crossed."));
       Parameters.Add(new LookupParameter<IntegerVector>("Child", "The child vector resulting from the crossover."));
     }
 

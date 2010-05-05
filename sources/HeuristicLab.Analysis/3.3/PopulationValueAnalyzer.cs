@@ -35,8 +35,8 @@ namespace HeuristicLab.Analysis {
   [StorableClass]
   public sealed class PopulationValueAnalyzer : AlgorithmOperator, IAnalyzer {
     #region Parameter properties
-    public SubScopesLookupParameter<DoubleValue> ValueParameter {
-      get { return (SubScopesLookupParameter<DoubleValue>)Parameters["Value"]; }
+    public ScopeTreeLookupParameter<DoubleValue> ValueParameter {
+      get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Value"]; }
     }
     public ValueLookupParameter<DataTable> ValuesParameter {
       get { return (ValueLookupParameter<DataTable>)Parameters["Values"]; }
@@ -55,7 +55,7 @@ namespace HeuristicLab.Analysis {
 
     private void Initialize() {
       #region Create parameters
-      Parameters.Add(new SubScopesLookupParameter<DoubleValue>("Value", "The value contained in each solution which should be analyzed."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Value", "The value contained in each solution which should be analyzed."));
       Parameters.Add(new ValueLookupParameter<DataTable>("Values", "The data table to store the values."));
       Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The results collection where the analysis values should be stored."));
       #endregion
@@ -64,10 +64,10 @@ namespace HeuristicLab.Analysis {
       DataTableValuesCollector dataTableValuesCollector = new DataTableValuesCollector();
       ResultsCollector resultsCollector = new ResultsCollector();
 
-      dataTableValuesCollector.CollectedValues.Add(new SubScopesLookupParameter<DoubleValue>("Value", null, "Value"));
+      dataTableValuesCollector.CollectedValues.Add(new ScopeTreeLookupParameter<DoubleValue>("Value", null, "Value"));
       dataTableValuesCollector.DataTableParameter.ActualName = "Values";
 
-      resultsCollector.CollectedValues.Add(new SubScopesLookupParameter<DoubleValue>("Value", null, "Value"));
+      resultsCollector.CollectedValues.Add(new ScopeTreeLookupParameter<DoubleValue>("Value", null, "Value"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DataTable>("Values"));
       resultsCollector.ResultsParameter.ActualName = "Results";
       #endregion

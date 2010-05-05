@@ -48,8 +48,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     public ValueLookupParameter<BoolValue> MaximizationParameter {
       get { return (ValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
-    public SubScopesLookupParameter<DoubleValue> QualityParameter {
-      get { return (SubScopesLookupParameter<DoubleValue>)Parameters["Quality"]; }
+    public ScopeTreeLookupParameter<DoubleValue> QualityParameter {
+      get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
     public ValueLookupParameter<DoubleValue> BestKnownQualityParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
@@ -141,7 +141,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       #region Create parameters
       Parameters.Add(new ValueLookupParameter<IRandom>("Random", "A pseudo random number generator."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, otherwise false."));
-      Parameters.Add(new SubScopesLookupParameter<DoubleValue>("Quality", "The value which represents the quality of a solution."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The value which represents the quality of a solution."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("BestKnownQuality", "The best known quality value found so far."));
       Parameters.Add(new ValueLookupParameter<IntValue>("NumberOfIslands", "The number of islands."));
       Parameters.Add(new ValueLookupParameter<IntValue>("MigrationInterval", "The number of generations that should pass between migration phases."));
@@ -235,12 +235,12 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Migrations"));
       resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Generations"));
       resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutions"));
-      resultsCollector1.CollectedValues.Add(new SubScopesLookupParameter<ResultCollection>("IslandResults", "Result set for each island", "Results"));
+      resultsCollector1.CollectedValues.Add(new ScopeTreeLookupParameter<ResultCollection>("IslandResults", "Result set for each island", "Results"));
       resultsCollector1.ResultsParameter.ActualName = ResultsParameter.Name;
 
       resultsCollector2.Name = "Reference Island Results";
       resultsCollector2.CopyValue = new BoolValue(false);
-      resultsCollector2.CollectedValues.Add(new SubScopesLookupParameter<ResultCollection>("IslandResults", "Result set for each island", "Results"));
+      resultsCollector2.CollectedValues.Add(new ScopeTreeLookupParameter<ResultCollection>("IslandResults", "Result set for each island", "Results"));
       resultsCollector2.ResultsParameter.ActualName = ResultsParameter.Name;
 
       comparisonFactorModifier.Name = "ComparisonFactorModifier (Placeholder)";

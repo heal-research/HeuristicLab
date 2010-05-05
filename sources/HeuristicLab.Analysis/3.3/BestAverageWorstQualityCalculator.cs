@@ -52,7 +52,7 @@ namespace HeuristicLab.Analysis {
     public BestAverageWorstQualityCalculator()
       : base() {
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the current problem is a maximization problem, otherwise false."));
-      Parameters.Add(new SubScopesLookupParameter<DoubleValue>("Quality", "The value contained in each sub-scope which represents the solution quality."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The value contained in each sub-scope which represents the solution quality."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("BestQuality", "The quality value of the best solution."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("AverageQuality", "The average quality of all solutions."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("WorstQuality", "The quality value of the worst solution."));

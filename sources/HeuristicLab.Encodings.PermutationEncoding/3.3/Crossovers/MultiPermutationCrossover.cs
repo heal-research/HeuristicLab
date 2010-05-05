@@ -51,7 +51,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     private MultiPermutationCrossover(bool deserializing) : base(deserializing) { }
     public MultiPermutationCrossover()
       : base() {
-      Parameters.Add(new SubScopesLookupParameter<Permutation>("Parents", "The parent permutations which should be crossed."));
+      Parameters.Add(new ScopeTreeLookupParameter<Permutation>("Parents", "The parent permutations which should be crossed."));
       ParentsParameter.ActualName = "Permutation";
       Parameters.Add(new LookupParameter<Permutation>("Child", "The child permutation resulting from the crossover."));
       ChildParameter.ActualName = "Permutation";
