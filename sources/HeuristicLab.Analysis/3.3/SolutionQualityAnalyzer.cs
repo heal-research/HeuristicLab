@@ -29,32 +29,23 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
-  /// An operator which analyzes the best, average and worst solution quality in the current population.
+  /// An operator which analyzes the quality of the current solution.
   /// </summary>
-  [Item("PopulationBestAverageWorstQualityAnalyzer", "An operator which analyzes the best, average and worst solution quality in the current population.")]
+  [Item("SolutionQualityAnalyzer", "An operator which analyzes the quality of the current solution.")]
   [StorableClass]
-  public sealed class PopulationBestAverageWorstQualityAnalyzer : AlgorithmOperator, IPopulationAnalyzer {
+  public sealed class SolutionQualityAnalyzer : AlgorithmOperator, ISolutionAnalyzer {
     #region Parameter properties
     public ValueLookupParameter<BoolValue> MaximizationParameter {
       get { return (ValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
-    public SubScopesLookupParameter<DoubleValue> QualityParameter {
-      get { return (SubScopesLookupParameter<DoubleValue>)Parameters["Quality"]; }
+    public LookupParameter<DoubleValue> QualityParameter {
+      get { return (LookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
     public ValueLookupParameter<DoubleValue> BestKnownQualityParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
     }
     public ValueLookupParameter<DoubleValue> BestQualityParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["BestQuality"]; }
-    }
-    public ValueLookupParameter<DoubleValue> CurrentBestQualityParameter {
-      get { return (ValueLookupParameter<DoubleValue>)Parameters["CurrentBestQuality"]; }
-    }
-    public ValueLookupParameter<DoubleValue> CurrentAverageQualityParameter {
-      get { return (ValueLookupParameter<DoubleValue>)Parameters["CurrentAverageQuality"]; }
-    }
-    public ValueLookupParameter<DoubleValue> CurrentWorstQualityParameter {
-      get { return (ValueLookupParameter<DoubleValue>)Parameters["CurrentWorstQuality"]; }
     }
     public ValueLookupParameter<DataTable> QualitiesParameter {
       get { return (ValueLookupParameter<DataTable>)Parameters["Qualities"]; }
@@ -71,8 +62,8 @@ namespace HeuristicLab.Analysis {
     #endregion
 
     [StorableConstructor]
-    private PopulationBestAverageWorstQualityAnalyzer(bool deserializing) : base() { }
-    public PopulationBestAverageWorstQualityAnalyzer()
+    private SolutionQualityAnalyzer(bool deserializing) : base() { }
+    public SolutionQualityAnalyzer()
       : base() {
       Initialize();
     }
@@ -80,13 +71,10 @@ namespace HeuristicLab.Analysis {
     private void Initialize() {
       #region Create parameters
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, otherwise false."));
-      Parameters.Add(new SubScopesLookupParameter<DoubleValue>("Quality", "The value which represents the quality of a solution."));
+      Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The value which represents the quality of the solution."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("BestKnownQuality", "The best known quality value found so far."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("BestQuality", "The best quality value found in the current run."));
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("CurrentBestQuality", "The best quality value found in the current population."));
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("CurrentAverageQuality", "The average quality value of all solutions in the current population."));
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("CurrentWorstQuality", "The worst quality value found in the current population."));
-      Parameters.Add(new ValueLookupParameter<DataTable>("Qualities", "The data table to store the current best, current average, current worst, best and best known quality value."));
+      Parameters.Add(new ValueLookupParameter<DataTable>("Qualities", "The data table to store the current, best and best known quality value."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("AbsoluteDifferenceBestKnownToBest", "The absolute difference of the best known quality value to the best quality value."));
       Parameters.Add(new ValueLookupParameter<PercentValue>("RelativeDifferenceBestKnownToBest", "The relative difference of the best known quality value to the best quality value."));
       Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The results collection where the analysis values should be stored."));
@@ -95,7 +83,6 @@ namespace HeuristicLab.Analysis {
       #region Create operators
       BestQualityMemorizer bestQualityMemorizer1 = new BestQualityMemorizer();
       BestQualityMemorizer bestQualityMemorizer2 = new BestQualityMemorizer();
-      BestAverageWorstQualityCalculator bestAverageWorstQualityCalculator = new BestAverageWorstQualityCalculator();
       DataTableValuesCollector dataTableValuesCollector = new DataTableValuesCollector();
       QualityDifferenceCalculator qualityDifferenceCalculator = new QualityDifferenceCalculator();
       ResultsCollector resultsCollector = new ResultsCollector();
@@ -108,15 +95,7 @@ namespace HeuristicLab.Analysis {
       bestQualityMemorizer2.MaximizationParameter.ActualName = "Maximization";
       bestQualityMemorizer2.QualityParameter.ActualName = "Quality";
 
-      bestAverageWorstQualityCalculator.AverageQualityParameter.ActualName = "CurrentAverageQuality";
-      bestAverageWorstQualityCalculator.BestQualityParameter.ActualName = "CurrentBestQuality";
-      bestAverageWorstQualityCalculator.MaximizationParameter.ActualName = "Maximization";
-      bestAverageWorstQualityCalculator.QualityParameter.ActualName = "Quality";
-      bestAverageWorstQualityCalculator.WorstQualityParameter.ActualName = "CurrentWorstQuality";
-
-      dataTableValuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Best Quality", null, "CurrentBestQuality"));
-      dataTableValuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Average Quality", null, "CurrentAverageQuality"));
-      dataTableValuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Worst Quality", null, "CurrentWorstQuality"));
+      dataTableValuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Quality", null, "Quality"));
       dataTableValuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
       dataTableValuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, "BestKnownQuality"));
       dataTableValuesCollector.DataTableParameter.ActualName = "Qualities";
@@ -126,9 +105,7 @@ namespace HeuristicLab.Analysis {
       qualityDifferenceCalculator.RelativeDifferenceParameter.ActualName = "RelativeDifferenceBestKnownToBest";
       qualityDifferenceCalculator.SecondQualityParameter.ActualName = "BestQuality";
 
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Best Quality", null, "CurrentBestQuality"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Average Quality", null, "CurrentAverageQuality"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Worst Quality", null, "CurrentWorstQuality"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Quality", null, "Quality"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, "BestKnownQuality"));
       resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Absolute Difference of Best Known Quality to Best Quality", null, "AbsoluteDifferenceBestKnownToBest"));
@@ -140,8 +117,7 @@ namespace HeuristicLab.Analysis {
       #region Create operator graph
       OperatorGraph.InitialOperator = bestQualityMemorizer1;
       bestQualityMemorizer1.Successor = bestQualityMemorizer2;
-      bestQualityMemorizer2.Successor = bestAverageWorstQualityCalculator;
-      bestAverageWorstQualityCalculator.Successor = dataTableValuesCollector;
+      bestQualityMemorizer2.Successor = dataTableValuesCollector;
       dataTableValuesCollector.Successor = qualityDifferenceCalculator;
       qualityDifferenceCalculator.Successor = resultsCollector;
       resultsCollector.Successor = null;

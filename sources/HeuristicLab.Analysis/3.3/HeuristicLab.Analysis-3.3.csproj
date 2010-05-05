@@ -86,6 +86,12 @@
     <None Include="HeuristicLabAnalysisPlugin.cs.frame" />
     <Compile Include="BestAverageWorstQualityCalculator.cs" />
     <Compile Include="BestQualityMemorizer.cs" />
+    <Compile Include="PopulationQualityAnalyzer.cs" />
+    <Compile Include="PopulationValueAnalyzer.cs" />
+    <Compile Include="MinAverageMaxValueCalculator.cs" />
+    <Compile Include="PopulationMinAverageMaxValueAnalyzer.cs" />
+    <Compile Include="SolutionValueAnalyzer.cs" />
+    <Compile Include="SolutionQualityAnalyzer.cs" />
     <Compile Include="MultiAnalyzer.cs" />
     <Compile Include="PopulationBestAverageWorstQualityAnalyzer.cs" />
     <Compile Include="QualityDifferenceCalculator.cs" />
