@@ -47,6 +47,35 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
       realVectorView.ReadOnly = true;
     }
 
+    protected override void DeregisterContentEvents() {
+      Content.RealVectorChanged -= new EventHandler(Content_RealVectorChanged);
+      Content.QualityChanged -= new EventHandler(Content_QualityChanged);
+      base.DeregisterContentEvents();
+    }
+    protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
+      Content.RealVectorChanged += new EventHandler(Content_RealVectorChanged);
+      Content.QualityChanged += new EventHandler(Content_QualityChanged);
+    }
+
+    void Content_QualityChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_QualityChanged), sender, e);
+      else {
+        qualityView.ViewType = null;
+        qualityView.Content = Content.Quality;
+      }
+    }
+
+    void Content_RealVectorChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_QualityChanged), sender, e);
+      else {
+        realVectorView.ViewType = null;
+        realVectorView.Content = Content.RealVector;
+      }
+    }
+
     protected override void OnContentChanged() {
       base.OnContentChanged();
 

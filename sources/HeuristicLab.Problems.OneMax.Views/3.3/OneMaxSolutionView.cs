@@ -47,6 +47,35 @@ namespace HeuristicLab.Problems.OneMax.Views {
       binaryVectorView.ReadOnly = true;
     }
 
+    protected override void DeregisterContentEvents() {
+      Content.BinaryVectorChanged -= new EventHandler(Content_BinaryVectorChanged);
+      Content.QualityChanged -= new EventHandler(Content_QualityChanged);
+      base.DeregisterContentEvents();
+    }
+    protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
+      Content.BinaryVectorChanged += new EventHandler(Content_BinaryVectorChanged);
+      Content.QualityChanged += new EventHandler(Content_QualityChanged);
+    }
+
+    void Content_QualityChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_QualityChanged), sender, e);
+      else {
+        qualityView.ViewType = null;
+        qualityView.Content = Content.Quality;
+      }
+    }
+
+    void Content_BinaryVectorChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_QualityChanged), sender, e);
+      else {
+        binaryVectorView.ViewType = null;
+        binaryVectorView.Content = Content.BinaryVector;
+      }
+    }
+
     protected override void OnContentChanged() {
       base.OnContentChanged();
 

@@ -49,6 +49,7 @@ namespace HeuristicLab.Problems.Knapsack.Views {
       Content.CapacityChanged -= new EventHandler(Content_CapacityChanged);
       Content.WeightsChanged -= new EventHandler(Content_WeightsChanged);
       Content.ValuesChanged -= new EventHandler(Content_ValuesChanged);
+      Content.QualityChanged -= new EventHandler(Content_QualityChanged);
       base.DeregisterContentEvents();
     }
 
@@ -58,11 +59,19 @@ namespace HeuristicLab.Problems.Knapsack.Views {
       Content.CapacityChanged += new EventHandler(Content_CapacityChanged);
       Content.WeightsChanged += new EventHandler(Content_WeightsChanged);
       Content.ValuesChanged += new EventHandler(Content_ValuesChanged);
+      Content.QualityChanged += new EventHandler(Content_QualityChanged);
     }
 
     void Content_BinaryVectorChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_BinaryVectorChanged), sender, e);
+      else
+        GenerateImage();
+    }
+
+    void Content_QualityChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_QualityChanged), sender, e);
       else
         GenerateImage();
     }
