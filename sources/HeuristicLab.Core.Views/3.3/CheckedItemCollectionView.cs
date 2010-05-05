@@ -32,7 +32,7 @@ using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Core.Views {
   [View("CheckedItemCollection View")]
-  [Content(typeof(ICheckedItemCollection<>), false)]
+  [Content(typeof(ICheckedItemCollection<>), true)]
   [Content(typeof(CheckedItemCollection<>), true)]
   public partial class CheckedItemCollectionView<T> : ItemCollectionView<T> where T : class, IItem {
     public new ICheckedItemCollection<T> Content {

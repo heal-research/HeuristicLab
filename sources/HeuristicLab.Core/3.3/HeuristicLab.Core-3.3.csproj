@@ -103,6 +103,10 @@
     <None Include="HeuristicLabCorePlugin.cs.frame" />
     <Compile Include="Collections\CheckedItemCollection.cs" />
     <Compile Include="Collections\CheckedItemList.cs" />
+    <Compile Include="Collections\ReadOnlyCheckedItemCollection.cs" />
+    <Compile Include="Collections\ReadOnlyCheckedItemList.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Collections\ReadOnlyItemDictionary.cs" />
     <Compile Include="Collections\ItemDictionary.cs" />
     <Compile Include="Collections\ReadOnlyKeyedItemCollection.cs" />

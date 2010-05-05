@@ -36,7 +36,7 @@ namespace HeuristicLab.Core.Views {
   /// </summary>
   [View("CheckedItemList View")]
   [Content(typeof(CheckedItemList<>), true)]
-  [Content(typeof(ICheckedItemList<>), false)]
+  [Content(typeof(ICheckedItemList<>), true)]
   public partial class CheckedItemListView<T> : ItemListView<T> where T : class, IItem {
     public new ICheckedItemList<T> Content {
       get { return (ICheckedItemList<T>)base.Content; }

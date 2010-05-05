@@ -112,6 +112,14 @@ namespace HeuristicLab.Core {
     }
 
     /// <summary>
+    /// Creates a ReadOnlyCheckedItemCollection containing the same elements.
+    /// </summary>
+    /// <returns>A new ReadOnlyCheckedItemCollection containing the same elements.</returns>
+    public new ReadOnlyCheckedItemCollection<T> AsReadOnly() {
+      return new ReadOnlyCheckedItemCollection<T>(this);
+    }
+
+    /// <summary>
     /// Raised when the collection of items is reset.
     /// </summary>
     /// <param name="items">Empty</param>

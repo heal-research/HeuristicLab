@@ -45,8 +45,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       get { return (IValueParameter<StringValue>)Parameters["TargetVariable"]; }
     }
 
-    public IValueParameter<CheckedItemList<StringValue>> InputVariablesParameter {
-      get { return (IValueParameter<CheckedItemList<StringValue>>)Parameters["InputVariables"]; }
+    public IValueParameter<ICheckedItemList<StringValue>> InputVariablesParameter {
+      get { return (IValueParameter<ICheckedItemList<StringValue>>)Parameters["InputVariables"]; }
     }
 
     public IValueParameter<IntValue> TrainingSamplesStartParameter {
@@ -84,8 +84,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
         }
       }
     }
-    public CheckedItemList<StringValue> InputVariables {
-      get { return (CheckedItemList<StringValue>)InputVariablesParameter.Value; }
+    public ICheckedItemList<StringValue> InputVariables {
+      get { return (ICheckedItemList<StringValue>)InputVariablesParameter.Value; }
       set {
         if (value != InputVariables) {
           if (value == null) throw new ArgumentNullException();
@@ -139,7 +139,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public DataAnalysisProblemData()
       : base() {
       Parameters.Add(new ValueParameter<Dataset>("Dataset", new Dataset()));
-      Parameters.Add(new ValueParameter<CheckedItemList<StringValue>>("InputVariables", new CheckedItemList<StringValue>()));
+      Parameters.Add(new ValueParameter<ICheckedItemList<StringValue>>("InputVariables", new CheckedItemList<StringValue>()));
       Parameters.Add(new ConstrainedValueParameter<StringValue>("TargetVariable"));
       Parameters.Add(new ValueParameter<IntValue>("TrainingSamplesStart", new IntValue()));
       Parameters.Add(new ValueParameter<IntValue>("TrainingSamplesEnd", new IntValue()));
@@ -328,7 +328,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       foreach (var variableName in variableNames)
         ((ConstrainedValueParameter<StringValue>)TargetVariableParameter).ValidValues.Add(variableName);
       TargetVariable = variableNames.First();
-      InputVariables = new CheckedItemList<StringValue>(variableNames);
+      InputVariables = new CheckedItemList<StringValue>(variableNames).AsReadOnly();
       foreach (var variableName in variableNames.Skip(1))
         InputVariables.SetItemCheckedState(variableName, true);
       int middle = (int)(csvFileParser.Rows * 0.5);
