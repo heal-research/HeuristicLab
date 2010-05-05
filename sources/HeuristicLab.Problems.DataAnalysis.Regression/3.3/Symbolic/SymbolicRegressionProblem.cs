@@ -352,6 +352,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       operators.Add(new PopulationValidationBestScaledSymbolicRegressionSolutionAnalyzer());
       operators.Add(new PopulationMinAvgMaxTreeSizeAnalyzer());
       operators.Add(new PopulationSymbolicRegressionVariableFrequencyAnalyzer());
+      operators.Add(new PopulationSymbolicRegressionModelQualityAnalyzer());
       ParameterizeOperators();
       ParameterizeAnalyzers();
     }
@@ -387,6 +388,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
         var varFreqAnalyzer = analyzer as PopulationSymbolicRegressionVariableFrequencyAnalyzer;
         if (varFreqAnalyzer != null) {
           varFreqAnalyzer.ProblemDataParameter.ActualName = DataAnalysisProblemDataParameter.Name;
+        }
+        var modelQualityAnalyzer = analyzer as PopulationSymbolicRegressionModelQualityAnalyzer;
+        if (modelQualityAnalyzer != null) {
+          modelQualityAnalyzer.ProblemDataParameter.ActualName = DataAnalysisProblemDataParameter.Name;
+          modelQualityAnalyzer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+          modelQualityAnalyzer.UpperEstimationLimitParameter.ActualName = UpperEstimationLimitParameter.Name;
+          modelQualityAnalyzer.LowerEstimationLimitParameter.ActualName = LowerEstimationLimitParameter.Name;
+          modelQualityAnalyzer.SymbolicExpressionTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameter.Name;
+          modelQualityAnalyzer.SamplesStartParameter.Value = TrainingSamplesStart;
+          modelQualityAnalyzer.SamplesEndParameter.Value = ValidationSamplesEnd;
         }
       }
       foreach (ISymbolicExpressionTreePopulationAnalyzer analyzer in Operators.OfType<ISymbolicExpressionTreePopulationAnalyzer>()) {
