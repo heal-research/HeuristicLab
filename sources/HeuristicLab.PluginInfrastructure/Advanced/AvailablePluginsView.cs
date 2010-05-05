@@ -29,7 +29,7 @@ using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure.Manager;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
-  internal partial class RemotePluginInstallerView : InstallationManagerControl {
+  internal partial class AvailablePluginsView : InstallationManagerControl {
     private class RefreshBackgroundWorkerResult {
       public IEnumerable<IPluginDescription> RemotePlugins { get; set; }
       public IEnumerable<DeploymentService.ProductDescription> RemoteProducts { get; set; }
@@ -65,7 +65,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       get { return pluginManager; }
       set { pluginManager = value; }
     }
-    public RemotePluginInstallerView() {
+    public AvailablePluginsView() {
       InitializeComponent();
       productImageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Resources.Setup_Install);
       productLargeImageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Resources.Setup_Install);
@@ -211,9 +211,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     }
 
     private void UpdatePluginsList() {
-      // clear plugins list view
-      List<ListViewItem> pluginItemsToDelete = new List<ListViewItem>(pluginsListView.Items.OfType<ListViewItem>());
-      pluginItemsToDelete.ForEach(item => pluginsListView.Items.Remove(item));
+      pluginsListView.Items.Clear();
 
       // populate plugins list
       if (productsListView.SelectedItems.Count > 0) {
@@ -263,62 +261,20 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     #region item checked event handler
     private void remotePluginsListView_ItemChecked(object sender, ItemCheckedEventArgs e) {
       foreach (ListViewItem item in pluginsListView.SelectedItems) {
-        // dispatch by check state and type of item (product/plugin)
-        IPluginDescription plugin = item.Tag as IPluginDescription;
-        if (plugin != null)
-          if (e.Item.Checked)
-            HandlePluginChecked(plugin);
-          else
-            HandlePluginUnchecked(plugin);
-        else {
-          DeploymentService.ProductDescription product = item.Tag as DeploymentService.ProductDescription;
-          if (product != null)
-            if (e.Item.Checked)
-              HandleProductChecked(product);
-            else
-              HandleProductUnchecked(product);
-        }
+        IPluginDescription plugin = (IPluginDescription)item.Tag;
+        if (e.Item.Checked)
+          HandlePluginChecked(plugin);
+        else
+          HandlePluginUnchecked(plugin);
       }
       installPluginsButton.Enabled = pluginsListView.CheckedItems.Count > 0;
-    }
-
-    private void HandleProductUnchecked(HeuristicLab.PluginInfrastructure.Advanced.DeploymentService.ProductDescription product) {
-      // also uncheck the plugins of the product
-      List<ListViewItem> modifiedItems = new List<ListViewItem>();
-      modifiedItems.Add(FindItemForProduct(product));
-      foreach (var plugin in product.Plugins) {
-        // there can be multiple entries for a single plugin in different groups
-        foreach (var item in FindItemsForPlugin(plugin)) {
-          if (item != null && item.Checked)
-            modifiedItems.Add(item);
-        }
-      }
-      pluginsListView.UncheckItems(modifiedItems);
-    }
-
-    private void HandleProductChecked(HeuristicLab.PluginInfrastructure.Advanced.DeploymentService.ProductDescription product) {
-      // also check all plugins of the product
-      List<ListViewItem> modifiedItems = new List<ListViewItem>();
-      modifiedItems.Add(FindItemForProduct(product));
-      foreach (var plugin in product.Plugins) {
-        // there can be multiple entries for a single plugin in different groups
-        foreach (var item in FindItemsForPlugin(plugin)) {
-          if (item != null && !item.Checked) {
-            if (!modifiedItems.Contains(item))
-              modifiedItems.Add(item);
-          }
-        }
-      }
-      pluginsListView.CheckItems(modifiedItems);
     }
 
     private void HandlePluginUnchecked(IPluginDescription plugin) {
       // also uncheck all dependent plugins
       List<ListViewItem> modifiedItems = new List<ListViewItem>();
       modifiedItems.AddRange(FindItemsForPlugin(plugin));
-      var dependentPlugins = from otherPlugin in plugins
-                             where otherPlugin.Dependencies.Any(dep => dep.Name == plugin.Name && dep.Version == plugin.Version)
-                             select otherPlugin;
+      var dependentPlugins = Util.GetAllDependents(plugin, plugins);
       foreach (var dependentPlugin in dependentPlugins) {
         // there can be multiple entries for a single plugin in different groups
         foreach (var item in FindItemsForPlugin(dependentPlugin)) {
@@ -328,17 +284,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
           }
         }
       }
-      // also uncheck all products containing this plugin
-      var dependentProducts = from product in products
-                              where product.Plugins.Any(p => p.Name == plugin.Name && p.Version == plugin.Version)
-                              select product;
-      foreach (var dependentProduct in dependentProducts) {
-        var item = FindItemForProduct(dependentProduct);
-        if (item != null && item.Checked) {
-          if (!modifiedItems.Contains(item))
-            modifiedItems.Add(item);
-        }
-      }
       pluginsListView.UncheckItems(modifiedItems);
     }
 
@@ -346,7 +291,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // also check all dependencies
       List<ListViewItem> modifiedItems = new List<ListViewItem>();
       modifiedItems.AddRange(FindItemsForPlugin(plugin));
-      foreach (var dep in plugin.Dependencies) {
+      foreach (var dep in Util.GetAllDependencies(plugin)) {
         // there can be multiple entries for a single plugin in different groups
         foreach (ListViewItem item in FindItemsForPlugin(dep)) {
           if (item != null && !item.Checked) {
@@ -366,13 +311,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
               let otherPlugin = item.Tag as IPluginDescription
               where otherPlugin != null && otherPlugin.Name == plugin.Name && otherPlugin.Version == plugin.Version
               select item);
-    }
-
-    private ListViewItem FindItemForProduct(DeploymentService.ProductDescription product) {
-      return (from item in pluginsListView.Items.OfType<ListViewItem>()
-              let otherProduct = item.Tag as DeploymentService.ProductDescription
-              where otherProduct != null && otherProduct.Name == product.Name && otherProduct.Version == product.Version
-              select item).SingleOrDefault();
     }
 
     private bool IsNewerThan(IPluginDescription plugin1, IPluginDescription plugin2) {

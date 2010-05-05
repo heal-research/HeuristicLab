@@ -66,6 +66,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.Controls.Add(this.richTextBox);
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.Name = "LicenseView";
+      this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
       this.Text = "License Agreement";
       this.ResumeLayout(false);
 

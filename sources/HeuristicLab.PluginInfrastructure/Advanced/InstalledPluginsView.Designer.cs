@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
-  partial class LocalPluginsView {
+  partial class InstalledPluginsView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>

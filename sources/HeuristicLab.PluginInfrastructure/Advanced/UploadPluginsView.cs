@@ -33,7 +33,7 @@ using System.IO;
 using HeuristicLab.PluginInfrastructure.Manager;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
-  internal partial class PluginEditor : InstallationManagerControl {
+  internal partial class UploadPluginsView : InstallationManagerControl {
     private const string UploadMessage = "Uploading plugins...";
     private const string RefreshMessage = "Downloading plugin information from deployment service...";
 
@@ -47,7 +47,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       set { pluginManager = value; }
     }
 
-    public PluginEditor() {
+    public UploadPluginsView() {
       InitializeComponent();
       pluginImageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Resources.plugin_16);
       localAndServerPlugins = new Dictionary<IPluginDescription, IPluginDescription>();
@@ -191,7 +191,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
           // also check all dependencies
           if (!modifiedPlugins.Contains(plugin))
             modifiedPlugins.Add(plugin);
-          foreach (var dep in GetAllDependencies(plugin)) {
+          foreach (var dep in Util.GetAllDependencies(plugin)) {
             if (!modifiedPlugins.Contains(dep))
               modifiedPlugins.Add(dep);
           }
@@ -203,7 +203,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
           // also uncheck all dependent plugins
           if (!modifiedPlugins.Contains(plugin))
             modifiedPlugins.Add(plugin);
-          foreach (var dep in GetAllDependents(plugin)) {
+          foreach (var dep in Util.GetAllDependents(plugin, localAndServerPlugins.Keys)) {
             if (!modifiedPlugins.Contains(dep))
               modifiedPlugins.Add(dep);
           }
@@ -241,25 +241,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       }
       Util.ResizeColumns(listView.Columns.OfType<ColumnHeader>());
       ignoreItemCheckedEvents = false;
-    }
-
-    private IEnumerable<IPluginDescription> GetAllDependents(IPluginDescription plugin) {
-      return from p in localAndServerPlugins.Keys
-             let matchingEntries = from dep in GetAllDependencies(p)
-                                   where dep.Name == plugin.Name
-                                   where dep.Version == plugin.Version
-                                   select dep
-             where matchingEntries.Any()
-             select p;
-    }
-
-    private IEnumerable<IPluginDescription> GetAllDependencies(IPluginDescription plugin) {
-      foreach (var dep in plugin.Dependencies) {
-        foreach (var recDep in GetAllDependencies(dep)) {
-          yield return recDep;
-        }
-        yield return dep;
-      }
     }
 
     private IEnumerable<IPluginDescription> IteratePlugins(IEnumerable<IPluginDescription> plugins) {

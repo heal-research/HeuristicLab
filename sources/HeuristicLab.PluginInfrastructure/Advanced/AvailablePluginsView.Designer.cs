@@ -19,7 +19,7 @@
  */
 #endregion
 namespace HeuristicLab.PluginInfrastructure.Advanced {
-  partial class RemotePluginInstallerView {
+  partial class AvailablePluginsView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>

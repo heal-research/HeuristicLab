@@ -65,11 +65,15 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       nameTextBox.Text = plugin.Name;
       versionTextBox.Text = plugin.Version.ToString();
       contactTextBox.Text = CombineStrings(plugin.ContactName, plugin.ContactEmail);
+      toolTip.SetToolTip(contactTextBox, contactTextBox.Text);
       descriptionTextBox.Text = plugin.Description;
+      toolTip.SetToolTip(descriptionTextBox, plugin.Description);
       var localPlugin = plugin as PluginDescription;
       if (localPlugin != null) {
         stateTextBox.Text = localPlugin.PluginState.ToString();
         errorTextBox.Text = localPlugin.LoadingErrorInformation;
+        toolTip.SetToolTip(stateTextBox, stateTextBox.Text + Environment.NewLine + errorTextBox.Text);
+        toolTip.SetToolTip(errorTextBox, errorTextBox.Text);
       }
       foreach (PluginDescription dependency in plugin.Dependencies) {
         var depItem = new ListViewItem(new string[] { dependency.Name, dependency.Version.ToString(), dependency.Description });
@@ -91,7 +95,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       Util.ResizeColumns(dependenciesListView.Columns.OfType<ColumnHeader>());
       Util.ResizeColumns(filesListView.Columns.OfType<ColumnHeader>());
 
-      licenseButton.Enabled = !string.IsNullOrEmpty(plugin.LicenseText);
+      showLicenseButton.Enabled = !string.IsNullOrEmpty(plugin.LicenseText);
     }
 
     private string CombineStrings(string a, string b) {
@@ -105,17 +109,17 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       else return a + ", " + b;
     }
 
-    private void licenseButton_Click(object sender, EventArgs e) {
-      LicenseView view = new LicenseView(plugin);
-      view.Show();
-    }
-
     private void dependenciesListView_ItemActivate(object sender, EventArgs e) {
       if (dependenciesListView.SelectedItems.Count > 0) {
         var dep = (PluginDescription)dependenciesListView.SelectedItems[0].Tag;
         PluginView view = new PluginView(dep);
         view.Show();
       }
+    }
+
+    private void showLicenseButton_Click(object sender, EventArgs e) {
+      LicenseView view = new LicenseView(plugin);
+      view.Show();
     }
   }
 }

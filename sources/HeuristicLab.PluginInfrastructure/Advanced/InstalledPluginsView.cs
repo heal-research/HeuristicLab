@@ -33,7 +33,7 @@ using System.IO;
 using HeuristicLab.PluginInfrastructure.Manager;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
-  internal partial class LocalPluginsView : InstallationManagerControl {
+  internal partial class InstalledPluginsView : InstallationManagerControl {
     private const string CheckingPluginsMessage = "Checking for updated plugins...";
     private const string NoUpdatesAvailableMessage = "No updates available.";
     private BackgroundWorker removePluginsBackgroundWorker;
@@ -57,7 +57,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       set { installationManager = value; }
     }
 
-    public LocalPluginsView()
+    public InstalledPluginsView()
       : base() {
       InitializeComponent();
       enabledPluginsGroup = localPluginsListView.Groups["activePluginsGroup"];
@@ -170,16 +170,24 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       if (e.Item.Checked) {
         List<ListViewItem> modifiedItems = new List<ListViewItem>();
         foreach (ListViewItem item in localPluginsListView.SelectedItems) {
-          var plugin = (IPluginDescription)item.Tag;
           modifiedItems.Add(item);
-          // also uncheck all dependent plugins
-          foreach (ListViewItem dependentItem in localPluginsListView.Items) {
-            var dependent = (IPluginDescription)dependentItem.Tag;
-            if (!dependentItem.Checked && (from dep in dependent.Dependencies
-                                           where dep.Name == plugin.Name
-                                           where dep.Version == plugin.Version
-                                           select dep).Any()) {
-              modifiedItems.Add(dependentItem);
+          int oldItemsCount = 0;
+          while (oldItemsCount < modifiedItems.Count) {
+            oldItemsCount = modifiedItems.Count;
+            var oldModifiedItems = new List<ListViewItem>(modifiedItems);
+            foreach (var modifiedItem in oldModifiedItems) {
+              var plugin = (IPluginDescription)modifiedItem.Tag;
+              // also check all dependent plugins
+              foreach (ListViewItem dependentItem in localPluginsListView.Items) {
+                var dependent = (IPluginDescription)dependentItem.Tag;
+                if (!modifiedItems.Contains(dependentItem) &&
+                  !dependentItem.Checked && (from dep in dependent.Dependencies
+                                             where dep.Name == plugin.Name
+                                             where dep.Version == plugin.Version
+                                             select dep).Any()) {
+                  modifiedItems.Add(dependentItem);
+                }
+              }
             }
           }
         }

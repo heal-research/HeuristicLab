@@ -51,7 +51,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.versionLabel = new System.Windows.Forms.Label();
       this.contactTextBox = new System.Windows.Forms.TextBox();
       this.contactInfoLabel = new System.Windows.Forms.Label();
-      this.licenseButton = new System.Windows.Forms.Button();
       this.dependenciesGroupBox = new System.Windows.Forms.GroupBox();
       this.dependenciesListView = new System.Windows.Forms.ListView();
       this.pluginNameHeader = new System.Windows.Forms.ColumnHeader();
@@ -69,6 +68,8 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.descriptionLabel = new System.Windows.Forms.Label();
       this.descriptionTextBox = new System.Windows.Forms.TextBox();
       this.errorTextBox = new System.Windows.Forms.TextBox();
+      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this.showLicenseButton = new System.Windows.Forms.Button();
       this.dependenciesGroupBox.SuspendLayout();
       this.filesGroupBox.SuspendLayout();
       this.SuspendLayout();
@@ -130,17 +131,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.contactInfoLabel.TabIndex = 4;
       this.contactInfoLabel.Text = "Contact:";
       // 
-      // licenseButton
-      // 
-      this.licenseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.licenseButton.Location = new System.Drawing.Point(3, 575);
-      this.licenseButton.Name = "licenseButton";
-      this.licenseButton.Size = new System.Drawing.Size(103, 23);
-      this.licenseButton.TabIndex = 10;
-      this.licenseButton.Text = "Show license";
-      this.licenseButton.UseVisualStyleBackColor = true;
-      this.licenseButton.Click += new System.EventHandler(this.licenseButton_Click);
-      // 
       // dependenciesGroupBox
       // 
       this.dependenciesGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -149,7 +139,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.dependenciesGroupBox.Controls.Add(this.dependenciesListView);
       this.dependenciesGroupBox.Location = new System.Drawing.Point(12, 324);
       this.dependenciesGroupBox.Name = "dependenciesGroupBox";
-      this.dependenciesGroupBox.Size = new System.Drawing.Size(663, 229);
+      this.dependenciesGroupBox.Size = new System.Drawing.Size(663, 198);
       this.dependenciesGroupBox.TabIndex = 1;
       this.dependenciesGroupBox.TabStop = false;
       this.dependenciesGroupBox.Text = "Dependencies";
@@ -163,7 +153,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.dependenciesListView.Dock = System.Windows.Forms.DockStyle.Fill;
       this.dependenciesListView.Location = new System.Drawing.Point(3, 16);
       this.dependenciesListView.Name = "dependenciesListView";
-      this.dependenciesListView.Size = new System.Drawing.Size(657, 210);
+      this.dependenciesListView.Size = new System.Drawing.Size(657, 179);
       this.dependenciesListView.SmallImageList = this.pluginsImageList;
       this.dependenciesListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
       this.dependenciesListView.TabIndex = 0;
@@ -293,11 +283,24 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.errorTextBox.Size = new System.Drawing.Size(594, 20);
       this.errorTextBox.TabIndex = 21;
       // 
+      // showLicenseButton
+      // 
+      this.showLicenseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.showLicenseButton.Location = new System.Drawing.Point(12, 528);
+      this.showLicenseButton.Name = "showLicenseButton";
+      this.showLicenseButton.Size = new System.Drawing.Size(87, 23);
+      this.showLicenseButton.TabIndex = 22;
+      this.showLicenseButton.Text = "Show License";
+      this.toolTip.SetToolTip(this.showLicenseButton, "Show Plugin License");
+      this.showLicenseButton.UseVisualStyleBackColor = true;
+      this.showLicenseButton.Click += new System.EventHandler(this.showLicenseButton_Click);
+      // 
       // PluginView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(687, 565);
+      this.Controls.Add(this.showLicenseButton);
       this.Controls.Add(this.errorTextBox);
       this.Controls.Add(this.descriptionTextBox);
       this.Controls.Add(this.errorLabel);
@@ -306,7 +309,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.Controls.Add(this.stateLabel);
       this.Controls.Add(this.dependenciesGroupBox);
       this.Controls.Add(this.filesGroupBox);
-      this.Controls.Add(this.licenseButton);
       this.Controls.Add(this.contactTextBox);
       this.Controls.Add(this.contactInfoLabel);
       this.Controls.Add(this.versionTextBox);
@@ -330,7 +332,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     protected System.Windows.Forms.Label versionLabel;
     protected System.Windows.Forms.TextBox contactTextBox;
     protected System.Windows.Forms.Label contactInfoLabel;
-    protected System.Windows.Forms.Button licenseButton;
     protected System.Windows.Forms.GroupBox dependenciesGroupBox;
     private System.Windows.Forms.ColumnHeader pluginNameHeader;
     private System.Windows.Forms.ColumnHeader pluginVersionHeader;
@@ -348,6 +349,8 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     protected System.Windows.Forms.TextBox errorTextBox;
     private System.Windows.Forms.ImageList filesImageList;
     private System.Windows.Forms.ColumnHeader pluginDescriptionHeader;
+    private System.Windows.Forms.ToolTip toolTip;
+    private System.Windows.Forms.Button showLicenseButton;
 
   }
 }

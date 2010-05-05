@@ -171,7 +171,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private bool ConfirmInstallAction(IEnumerable<IPluginDescription> plugins) {
       foreach (var plugin in plugins) {
         if (!string.IsNullOrEmpty(plugin.LicenseText)) {
-          var licenseConfirmationBox = new LicenseConfirmationBox(plugin);
+          var licenseConfirmationBox = new LicenseConfirmationDialog(plugin);
           if (licenseConfirmationBox.ShowDialog() != DialogResult.OK)
             return false;
         }

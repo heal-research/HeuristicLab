@@ -31,7 +31,7 @@ using System.ServiceModel;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
-  internal partial class ProductEditor : InstallationManagerControl {
+  internal partial class EditProductsView : InstallationManagerControl {
     private const string RefreshMessage = "Downloading product and plugin information...";
     private const string UploadMessage = "Uploading product and plugin information...";
     private const string DeleteProductMessage = "Deleting product...";
@@ -44,7 +44,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private List<DeploymentService.PluginDescription> plugins;
     private HashSet<DeploymentService.ProductDescription> dirtyProducts;
 
-    public ProductEditor() {
+    public EditProductsView() {
       InitializeComponent();
 
       productImageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Resources.Setup_Install);
@@ -383,7 +383,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
           // also check all dependencies
           if (!modifiedPlugins.Contains(plugin))
             modifiedPlugins.Add(plugin);
-          foreach (var dep in GetAllDependencies(plugin)) {
+          foreach (var dep in Util.GetAllDependencies(plugin)) {
             if (!modifiedPlugins.Contains(dep))
               modifiedPlugins.Add(dep);
           }
@@ -396,7 +396,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
           // also uncheck all dependent plugins
           if (!modifiedPlugins.Contains(plugin))
             modifiedPlugins.Add(plugin);
-          foreach (var dep in GetAllDependents(plugin)) {
+          foreach (var dep in Util.GetAllDependents(plugin, plugins.Cast<IPluginDescription>())) {
             if (!modifiedPlugins.Contains(dep))
               modifiedPlugins.Add(dep);
           }
@@ -411,31 +411,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     #endregion
 
     #region helper
-    private IEnumerable<IPluginDescription> GetAllDependents(IPluginDescription plugin) {
-      return from p in plugins
-             let matchingEntries = from dep in GetAllDependencies(p)
-                                   where dep.Name == plugin.Name
-                                   where dep.Version == plugin.Version
-                                   select dep
-             where matchingEntries.Any()
-             select p as IPluginDescription;
-    }
-
-    private IEnumerable<IPluginDescription> GetAllDependencies(IPluginDescription plugin) {
-      HashSet<IPluginDescription> yieldedPlugins = new HashSet<IPluginDescription>();
-      foreach (var dep in plugin.Dependencies) {
-        foreach (var recDep in GetAllDependencies(dep)) {
-          if (!yieldedPlugins.Contains(recDep)) {
-            yieldedPlugins.Add(recDep);
-            yield return recDep;
-          }
-        }
-        if (!yieldedPlugins.Contains(dep)) {
-          yieldedPlugins.Add(dep);
-          yield return dep;
-        }
-      }
-    }
     private void MarkProductDirty(HeuristicLab.PluginInfrastructure.Advanced.DeploymentService.ProductDescription activeProduct) {
       if (!dirtyProducts.Contains(activeProduct)) {
         dirtyProducts.Add(activeProduct);

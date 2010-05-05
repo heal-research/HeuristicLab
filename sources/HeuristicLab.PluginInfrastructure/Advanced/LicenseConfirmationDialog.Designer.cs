@@ -19,7 +19,7 @@
  */
 #endregion
 namespace HeuristicLab.PluginInfrastructure.Advanced {
-  partial class LicenseConfirmationBox {
+  partial class LicenseConfirmationDialog {
     /// <summary>
     /// Required designer variable.
     /// </summary>
@@ -44,7 +44,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LicenseConfirmationBox));
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LicenseConfirmationDialog));
       this.richTextBox = new System.Windows.Forms.RichTextBox();
       this.acceptButton = new System.Windows.Forms.Button();
       this.rejectButton = new System.Windows.Forms.Button();
@@ -88,6 +88,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // rejectButton
       // 
       this.rejectButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.rejectButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
       this.rejectButton.Location = new System.Drawing.Point(428, 53);
       this.rejectButton.Name = "rejectButton";
       this.rejectButton.Size = new System.Drawing.Size(79, 23);
@@ -164,18 +165,23 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.panel1.Size = new System.Drawing.Size(520, 88);
       this.panel1.TabIndex = 6;
       // 
-      // LicenseConfirmationBox
+      // LicenseConfirmationDialog
       // 
+      this.AcceptButton = this.acceptButton;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.SystemColors.HighlightText;
+      this.CancelButton = this.rejectButton;
       this.ClientSize = new System.Drawing.Size(518, 429);
       this.Controls.Add(this.panel1);
       this.Controls.Add(this.label1);
       this.Controls.Add(this.licenseLabel);
       this.Controls.Add(this.richTextBox);
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-      this.Name = "LicenseConfirmationBox";
+      this.MaximizeBox = false;
+      this.MinimizeBox = false;
+      this.Name = "LicenseConfirmationDialog";
+      this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
       this.radioButtonGroupBox.ResumeLayout(false);
       this.radioButtonGroupBox.PerformLayout();
       this.panel1.ResumeLayout(false);

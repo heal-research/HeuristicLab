@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
-  partial class ProductEditor {
+  partial class EditProductsView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>

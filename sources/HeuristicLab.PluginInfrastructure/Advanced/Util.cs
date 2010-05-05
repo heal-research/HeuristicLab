@@ -45,5 +45,32 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       foreach (var columnHeader in columnHeaders)
         ResizeColumn(columnHeader);
     }
+
+    internal static IEnumerable<IPluginDescription> GetAllDependents(IPluginDescription plugin, IEnumerable<IPluginDescription> availablePlugins) {
+      return from p in availablePlugins
+             let matchingEntries = from dep in GetAllDependencies(p)
+                                   where dep.Name == plugin.Name
+                                   where dep.Version == plugin.Version
+                                   select dep
+             where matchingEntries.Any()
+             select p as IPluginDescription;
+    }
+
+    internal static IEnumerable<IPluginDescription> GetAllDependencies(IPluginDescription plugin) {
+      HashSet<IPluginDescription> yieldedPlugins = new HashSet<IPluginDescription>();
+      foreach (var dep in plugin.Dependencies) {
+        foreach (var recDep in GetAllDependencies(dep)) {
+          if (!yieldedPlugins.Contains(recDep)) {
+            yieldedPlugins.Add(recDep);
+            yield return recDep;
+          }
+        }
+        if (!yieldedPlugins.Contains(dep)) {
+          yieldedPlugins.Add(dep);
+          yield return dep;
+        }
+      }
+    }
+
   }
 }
