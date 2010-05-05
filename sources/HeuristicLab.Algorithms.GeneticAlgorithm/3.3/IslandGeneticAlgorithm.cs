@@ -33,6 +33,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
 using HeuristicLab.Selection;
+using HeuristicLab.Analysis;
 
 namespace HeuristicLab.Algorithms.GeneticAlgorithm {
   /// <summary>
@@ -102,6 +103,12 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     private ValueParameter<BoolValue> ParallelParameter {
       get { return (ValueParameter<BoolValue>)Parameters["Parallel"]; }
     }
+    private ValueParameter<MultiAnalyzer<IMultiPopulationAnalyzer>> AnalyzerParameter {
+      get { return (ValueParameter<MultiAnalyzer<IMultiPopulationAnalyzer>>)Parameters["Analyzer"]; }
+    }
+    private ValueParameter<MultiAnalyzer<IPopulationAnalyzer>> IslandAnalyzerParameter {
+      get { return (ValueParameter<MultiAnalyzer<IPopulationAnalyzer>>)Parameters["IslandAnalyzer"]; }
+    }
     #endregion
 
     #region Properties
@@ -169,6 +176,14 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       get { return ParallelParameter.Value; }
       set { ParallelParameter.Value = value; }
     }
+    public MultiAnalyzer<IMultiPopulationAnalyzer> Analyzer {
+      get { return AnalyzerParameter.Value; }
+      set { AnalyzerParameter.Value = value; }
+    }
+    public MultiAnalyzer<IPopulationAnalyzer> IslandAnalyzer {
+      get { return IslandAnalyzerParameter.Value; }
+      set { IslandAnalyzerParameter.Value = value; }
+    }
     private List<ISelector> selectors;
     private IEnumerable<ISelector> Selectors {
       get { return selectors; }
@@ -188,6 +203,8 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     private IslandGeneticAlgorithmMainLoop MainLoop {
       get { return (IslandGeneticAlgorithmMainLoop)IslandProcessor.Successor; }
     }
+    private PopulationBestAverageWorstQualityAnalyzer islandQualityAnalyzer;
+    //private MultipopulationBestAverageWorstQualityAnalyzer qualityAnalyzer;
     #endregion
 
     [StorableConstructor]
@@ -210,7 +227,9 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Parameters.Add(new OptionalConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
       Parameters.Add(new ValueParameter<IntValue>("Elites", "The numer of elite solutions which are kept in each generation.", new IntValue(1)));
       Parameters.Add(new ValueParameter<BoolValue>("Parallel", "True if the islands should be run in parallel (also requires a parallel engine)", new BoolValue(false)));
-
+      Parameters.Add(new ValueParameter<MultiAnalyzer<IMultiPopulationAnalyzer>>("Analyzer", "The operator used to analyze the islands.", new MultiAnalyzer<IMultiPopulationAnalyzer>()));
+      Parameters.Add(new ValueParameter<MultiAnalyzer<IPopulationAnalyzer>>("IslandAnalyzer", "The operator used to analyze each island.", new MultiAnalyzer<IPopulationAnalyzer>()));
+      
       RandomCreator randomCreator = new RandomCreator();
       SubScopesCreator populationCreator = new SubScopesCreator();
       UniformSubScopesProcessor ussp1 = new UniformSubScopesProcessor();
@@ -250,6 +269,8 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       mainLoop.MutationProbabilityParameter.ActualName = MutationProbabilityParameter.Name;
       mainLoop.RandomParameter.ActualName = randomCreator.RandomParameter.ActualName;
       mainLoop.ResultsParameter.ActualName = "Results";
+      mainLoop.AnalyzerParameter.ActualName = AnalyzerParameter.Name;
+      mainLoop.IslandAnalyzerParameter.ActualName = IslandAnalyzerParameter.Name;
 
       mainLoop.Successor = null;
 
@@ -274,8 +295,10 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       ParameterizeSolutionsCreator();
       ParameterizeMainLoop();
       ParameterizeSelectors();
+      ParameterizeAnalyzers();
       UpdateCrossovers();
       UpdateMutators();
+      UpdateAnalyzers();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.OnProblemChanged();
     }
@@ -290,6 +313,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       ParameterizeSolutionsCreator();
       ParameterizeMainLoop();
       ParameterizeSelectors();
+      ParameterizeAnalyzers();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.Problem_EvaluatorChanged(sender, e);
     }
@@ -297,6 +321,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
       UpdateCrossovers();
       UpdateMutators();
+      UpdateAnalyzers();
       base.Problem_OperatorsChanged(sender, e);
     }
     private void ElitesParameter_ValueChanged(object sender, EventArgs e) {
@@ -316,6 +341,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeMainLoop();
       ParameterizeSelectors();
+      ParameterizeAnalyzers();
     }
     private void MigrationRateParameter_ValueChanged(object sender, EventArgs e) {
       MigrationRate.ValueChanged += new EventHandler(MigrationRate_ValueChanged);
@@ -330,7 +356,9 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
       InitializeSelectors();
+      InitializeAnalyzers();
       UpdateSelectors();
+      UpdateAnalyzers();
       InitializeMigrators();
       UpdateMigrators();
       PopulationSizeParameter.ValueChanged += new EventHandler(PopulationSizeParameter_ValueChanged);
@@ -368,6 +396,11 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       immigrationReplacers.AddRange(ApplicationManager.Manager.GetInstances<IReplacer>().OrderBy(x => x.Name));
       ParameterizeSelectors();
     }
+    private void InitializeAnalyzers() {
+      islandQualityAnalyzer = new PopulationBestAverageWorstQualityAnalyzer();
+      //qualityAnalyzer = new MultipopulationBestAverageWorstQualityAnalyzer();
+      ParameterizeAnalyzers();
+    }
     private void InitializeMigrators() {
       migrators = new List<IMigrator>();
       migrators.AddRange(ApplicationManager.Manager.GetInstances<IMigrator>().OrderBy(x => x.Name));
@@ -400,6 +433,15 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
           selector.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
           selector.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
         }
+      }
+    }
+    private void ParameterizeAnalyzers() {
+      islandQualityAnalyzer.ResultsParameter.ActualName = "Results";
+      //qualityAnalyzer.ResultsParameter.ActualName = "Results";
+      if (Problem != null) {
+        islandQualityAnalyzer.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
+        islandQualityAnalyzer.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
+        islandQualityAnalyzer.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
       }
     }
     private void UpdateSelectors() {
@@ -462,6 +504,19 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       if (oldMutator != null) {
         IManipulator mutator = MutatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMutator.GetType());
         if (mutator != null) MutatorParameter.Value = mutator;
+      }
+    }
+    private void UpdateAnalyzers() {
+      IslandAnalyzer.Operators.Clear();
+      Analyzer.Operators.Clear();
+      IslandAnalyzer.Operators.Add(islandQualityAnalyzer);
+      //Analyzer.Operators.Add(qualityAnalyzer);
+      if (Problem != null) {
+        foreach (IPopulationAnalyzer analyzer in Problem.Operators.OfType<IPopulationAnalyzer>().OrderBy(x => x.Name)) {
+          IslandAnalyzer.Operators.Add(analyzer);
+        }
+        foreach (IMultiPopulationAnalyzer analyzer in Problem.Operators.OfType<IMultiPopulationAnalyzer>().OrderBy(x => x.Name))
+          Analyzer.Operators.Add(analyzer);
       }
     }
     #endregion
