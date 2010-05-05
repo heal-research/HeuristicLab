@@ -67,11 +67,11 @@ namespace HeuristicLab.Algorithms.LocalSearch {
     public ValueLookupParameter<IOperator> MoveMakerParameter {
       get { return (ValueLookupParameter<IOperator>)Parameters["MoveMaker"]; }
     }
-    public ValueLookupParameter<IOperator> VisualizerParameter {
-      get { return (ValueLookupParameter<IOperator>)Parameters["Visualizer"]; }
+    public ValueLookupParameter<IOperator> MoveAnalyzerParameter {
+      get { return (ValueLookupParameter<IOperator>)Parameters["MoveAnalyzer"]; }
     }
-    public LookupParameter<IItem> VisualizationParameter {
-      get { return (LookupParameter<IItem>)Parameters["Visualization"]; }
+    public ValueLookupParameter<IOperator> AnalyzerParameter {
+      get { return (ValueLookupParameter<IOperator>)Parameters["Analyzer"]; }
     }
 
     private ScopeParameter CurrentScopeParameter {
@@ -103,23 +103,21 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       Parameters.Add(new ValueLookupParameter<IOperator>("MoveMaker", "The operator that performs a move and updates the quality."));
       Parameters.Add(new ValueLookupParameter<IOperator>("MoveEvaluator", "The operator that evaluates a move."));
 
-      Parameters.Add(new ValueLookupParameter<IOperator>("Visualizer", "The operator used to visualize solutions."));
-      Parameters.Add(new LookupParameter<IItem>("Visualization", "The item which represents the visualization of solutions."));
+      Parameters.Add(new ValueLookupParameter<IOperator>("MoveAnalyzer", "The operator used to analyze the moves in each iteration."));
+      Parameters.Add(new ValueLookupParameter<IOperator>("Analyzer", "The operator used to analyze each iteration."));
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope which represents a population of solutions on which the TS should be applied."));
       #endregion
 
       #region Create operators
       VariableCreator variableCreator = new VariableCreator();
-      BestQualityMemorizer bestQualityMemorizer1 = new BestQualityMemorizer();
-      BestQualityMemorizer bestQualityMemorizer2 = new BestQualityMemorizer();
-      DataTableValuesCollector dataTableValuesCollector1 = new DataTableValuesCollector();
-      QualityDifferenceCalculator qualityDifferenceCalculator1 = new QualityDifferenceCalculator();
-      Placeholder visualizer1 = new Placeholder();
-      ResultsCollector resultsCollector = new ResultsCollector();
+      ResultsCollector resultsCollector1 = new ResultsCollector();
+      UniformSubScopesProcessor uniformSubScopesProcessor0 = new UniformSubScopesProcessor();
+      Placeholder analyzer1 = new Placeholder();
       UniformSubScopesProcessor mainProcessor = new UniformSubScopesProcessor();
       Placeholder moveGenerator = new Placeholder();
       UniformSubScopesProcessor moveEvaluationProcessor = new UniformSubScopesProcessor();
       Placeholder moveEvaluator = new Placeholder();
+      Placeholder moveAnalyzer = new Placeholder();
       BestSelector bestSelector = new BestSelector();
       RightReducer rightReducer = new RightReducer();
       UniformSubScopesProcessor moveMakingProcessor = new UniformSubScopesProcessor();
@@ -129,43 +127,18 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       SubScopesRemover subScopesRemover = new SubScopesRemover();
       IntCounter iterationsCounter = new IntCounter();
       Comparator iterationsComparator = new Comparator();
-      BestQualityMemorizer bestQualityMemorizer3 = new BestQualityMemorizer();
-      BestQualityMemorizer bestQualityMemorizer4 = new BestQualityMemorizer();
-      DataTableValuesCollector dataTableValuesCollector2 = new DataTableValuesCollector();
-      QualityDifferenceCalculator qualityDifferenceCalculator2 = new QualityDifferenceCalculator();
-      Placeholder visualizer2 = new Placeholder();
+      ResultsCollector resultsCollector2 = new ResultsCollector();
+      UniformSubScopesProcessor uniformSubScopesProcessor1 = new UniformSubScopesProcessor();
+      Placeholder analyzer2 = new Placeholder();
       ConditionalBranch iterationsTermination = new ConditionalBranch();
 
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Iterations", new IntValue(0)));
 
-      bestQualityMemorizer1.BestQualityParameter.ActualName = BestKnownQualityParameter.Name;
-      bestQualityMemorizer1.MaximizationParameter.ActualName = MaximizationParameter.Name;
-      bestQualityMemorizer1.QualityParameter.ActualName = QualityParameter.Name;
+      resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Iterations"));
+      resultsCollector1.ResultsParameter.ActualName = ResultsParameter.Name;
 
-      bestQualityMemorizer2.BestQualityParameter.ActualName = "BestQuality";
-      bestQualityMemorizer2.MaximizationParameter.ActualName = MaximizationParameter.Name;
-      bestQualityMemorizer2.QualityParameter.ActualName = QualityParameter.Name;
-
-      dataTableValuesCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("BestQuality"));
-      dataTableValuesCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, BestKnownQualityParameter.Name));
-      dataTableValuesCollector1.DataTableParameter.ActualName = "Qualities";
-
-      qualityDifferenceCalculator1.AbsoluteDifferenceParameter.ActualName = "AbsoluteDifferenceBestKnownToBest";
-      qualityDifferenceCalculator1.FirstQualityParameter.ActualName = BestKnownQualityParameter.Name;
-      qualityDifferenceCalculator1.RelativeDifferenceParameter.ActualName = "RelativeDifferenceBestKnownToBest";
-      qualityDifferenceCalculator1.SecondQualityParameter.ActualName = "BestQuality";
-
-      visualizer1.Name = "Visualizer (placeholder)";
-      visualizer1.OperatorParameter.ActualName = VisualizerParameter.Name;
-
-      resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Iterations"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, BestKnownQualityParameter.Name));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Absolute Difference of Best Known Quality to Best Quality", null, "AbsoluteDifferenceBestKnownToBest"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Relative Difference of Best Known Quality to Best Quality", null, "RelativeDifferenceBestKnownToBest"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<IItem>("Solution Visualization", null, VisualizationParameter.Name));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DataTable>("Qualities"));
-      resultsCollector.ResultsParameter.ActualName = ResultsParameter.Name;
+      analyzer1.Name = "Analyzer (placeholder)";
+      analyzer1.OperatorParameter.ActualName = AnalyzerParameter.Name;
 
       mainProcessor.Name = "Solution processor (UniformSubScopesProcessor)";
 
@@ -174,6 +147,9 @@ namespace HeuristicLab.Algorithms.LocalSearch {
 
       moveEvaluator.Name = "MoveEvaluator (placeholder)";
       moveEvaluator.OperatorParameter.ActualName = MoveEvaluatorParameter.Name;
+
+      moveAnalyzer.Name = "MoveAnalyzer (placeholder)";
+      moveAnalyzer.OperatorParameter.ActualName = MoveAnalyzerParameter.Name;
 
       bestSelector.CopySelected = new BoolValue(false);
       bestSelector.MaximizationParameter.ActualName = MaximizationParameter.Name;
@@ -203,25 +179,11 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       iterationsComparator.RightSideParameter.ActualName = MaximumIterationsParameter.Name;
       iterationsComparator.ResultParameter.ActualName = "Terminate";
 
-      bestQualityMemorizer3.BestQualityParameter.ActualName = BestKnownQualityParameter.Name;
-      bestQualityMemorizer3.MaximizationParameter.ActualName = MaximizationParameter.Name;
-      bestQualityMemorizer3.QualityParameter.ActualName = QualityParameter.Name;
+      resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Iterations"));
+      resultsCollector2.ResultsParameter.ActualName = ResultsParameter.Name;
 
-      bestQualityMemorizer4.BestQualityParameter.ActualName = "BestQuality";
-      bestQualityMemorizer4.MaximizationParameter.ActualName = MaximizationParameter.Name;
-      bestQualityMemorizer4.QualityParameter.ActualName = QualityParameter.Name;
-
-      dataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("BestQuality"));
-      dataTableValuesCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, BestKnownQualityParameter.Name));
-      dataTableValuesCollector2.DataTableParameter.ActualName = "Qualities";
-
-      qualityDifferenceCalculator2.AbsoluteDifferenceParameter.ActualName = "AbsoluteDifferenceBestKnownToBest";
-      qualityDifferenceCalculator2.FirstQualityParameter.ActualName = BestKnownQualityParameter.Name;
-      qualityDifferenceCalculator2.RelativeDifferenceParameter.ActualName = "RelativeDifferenceBestKnownToBest";
-      qualityDifferenceCalculator2.SecondQualityParameter.ActualName = "BestQuality";
-
-      visualizer2.Name = "Visualizer (placeholder)";
-      visualizer2.OperatorParameter.ActualName = VisualizerParameter.Name;
+      analyzer2.Name = "Analyzer (placeholder)";
+      analyzer2.OperatorParameter.ActualName = AnalyzerParameter.Name;
 
       iterationsTermination.Name = "Iterations Termination Condition";
       iterationsTermination.ConditionParameter.ActualName = "Terminate";
@@ -229,18 +191,17 @@ namespace HeuristicLab.Algorithms.LocalSearch {
 
       #region Create operator graph
       OperatorGraph.InitialOperator = variableCreator;
-      variableCreator.Successor = bestQualityMemorizer1;
-      bestQualityMemorizer1.Successor = bestQualityMemorizer2;
-      bestQualityMemorizer2.Successor = dataTableValuesCollector1;
-      dataTableValuesCollector1.Successor = qualityDifferenceCalculator1;
-      qualityDifferenceCalculator1.Successor = visualizer1;
-      visualizer1.Successor = resultsCollector;
-      resultsCollector.Successor = mainProcessor;
+      variableCreator.Successor = resultsCollector1;
+      resultsCollector1.Successor = uniformSubScopesProcessor0;
+      uniformSubScopesProcessor0.Operator = analyzer1;
+      uniformSubScopesProcessor0.Successor = mainProcessor;
+      analyzer1.Successor = null;
       mainProcessor.Operator = moveGenerator;
       mainProcessor.Successor = iterationsCounter;
       moveGenerator.Successor = moveEvaluationProcessor;
       moveEvaluationProcessor.Operator = moveEvaluator;
-      moveEvaluationProcessor.Successor = bestSelector;
+      moveEvaluationProcessor.Successor = moveAnalyzer;
+      moveAnalyzer.Successor = bestSelector;
       bestSelector.Successor = rightReducer;
       rightReducer.Successor = moveMakingProcessor;
       moveMakingProcessor.Operator = qualityComparator;
@@ -252,12 +213,11 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       improvesQualityBranch.Successor = null;
       moveMaker.Successor = null;
       iterationsCounter.Successor = iterationsComparator;
-      iterationsComparator.Successor = bestQualityMemorizer3;
-      bestQualityMemorizer3.Successor = bestQualityMemorizer4;
-      bestQualityMemorizer4.Successor = dataTableValuesCollector2;
-      dataTableValuesCollector2.Successor = qualityDifferenceCalculator2;
-      qualityDifferenceCalculator2.Successor = visualizer2;
-      visualizer2.Successor = iterationsTermination;
+      iterationsComparator.Successor = resultsCollector2;
+      resultsCollector2.Successor = uniformSubScopesProcessor1;
+      uniformSubScopesProcessor1.Operator = analyzer2;
+      uniformSubScopesProcessor1.Successor = iterationsTermination;
+      analyzer2.Successor = null;
       iterationsTermination.TrueBranch = null;
       iterationsTermination.FalseBranch = mainProcessor;
       #endregion

@@ -32,6 +32,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
+using HeuristicLab.Analysis;
 
 namespace HeuristicLab.Algorithms.LocalSearch {
   [Item("Local Search", "A local search algorithm.")]
@@ -70,6 +71,12 @@ namespace HeuristicLab.Algorithms.LocalSearch {
     private ValueParameter<IntValue> SampleSizeParameter {
       get { return (ValueParameter<IntValue>)Parameters["SampleSize"]; }
     }
+    private ValueParameter<MultiAnalyzer> MoveAnalyzerParameter {
+      get { return (ValueParameter<MultiAnalyzer>)Parameters["MoveAnalyzer"]; }
+    }
+    private ValueParameter<MultiAnalyzer> AnalyzerParameter {
+      get { return (ValueParameter<MultiAnalyzer>)Parameters["Analyzer"]; }
+    }
     #endregion
 
     #region Properties
@@ -101,6 +108,14 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       get { return SampleSizeParameter.Value; }
       set { SampleSizeParameter.Value = value; }
     }
+    public MultiAnalyzer MoveAnalyzer {
+      get { return MoveAnalyzerParameter.Value; }
+      set { MoveAnalyzerParameter.Value = value; }
+    }
+    public MultiAnalyzer Analyzer {
+      get { return AnalyzerParameter.Value; }
+      set { AnalyzerParameter.Value = value; }
+    }
     private RandomCreator RandomCreator {
       get { return (RandomCreator)OperatorGraph.InitialOperator; }
     }
@@ -110,8 +125,11 @@ namespace HeuristicLab.Algorithms.LocalSearch {
     private LocalSearchMainLoop MainLoop {
       get { return (LocalSearchMainLoop)SolutionsCreator.Successor; }
     }
+    private BestAverageWorstQualityAnalyzer moveQualityAnalyzer;
     #endregion
 
+    [StorableConstructor]
+    private LocalSearch(bool deserializing) : base(deserializing) { }
     public LocalSearch()
       : base() {
       Parameters.Add(new ValueParameter<IntValue>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
@@ -121,7 +139,9 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       Parameters.Add(new ConstrainedValueParameter<ISingleObjectiveMoveEvaluator>("MoveEvaluator", "The operator used to evaluate a move."));
       Parameters.Add(new ValueParameter<IntValue>("MaximumIterations", "The maximum number of generations which should be processed.", new IntValue(1000)));
       Parameters.Add(new ValueParameter<IntValue>("SampleSize", "Number of moves that MultiMoveGenerators should create. This is ignored for Exhaustive- and SingleMoveGenerators.", new IntValue(100)));
-
+      Parameters.Add(new ValueParameter<MultiAnalyzer>("MoveAnalyzer", "The operator used to analyze the moves in each iteration.", new MultiAnalyzer()));
+      Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze each iteration.", new MultiAnalyzer()));
+      
       RandomCreator randomCreator = new RandomCreator();
       SolutionsCreator solutionsCreator = new SolutionsCreator();
       LocalSearchMainLoop lsMainLoop = new LocalSearchMainLoop();
@@ -143,11 +163,11 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       lsMainLoop.MaximumIterationsParameter.ActualName = MaximumIterationsParameter.Name;
       lsMainLoop.RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
       lsMainLoop.ResultsParameter.ActualName = "Results";
+      lsMainLoop.MoveAnalyzerParameter.ActualName = MoveAnalyzerParameter.Name;
+      lsMainLoop.AnalyzerParameter.ActualName = AnalyzerParameter.Name;
 
       Initialize();
     }
-    [StorableConstructor]
-    private LocalSearch(bool deserializing) : base(deserializing) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       LocalSearch clone = (LocalSearch)base.Clone(cloner);
@@ -172,8 +192,10 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       ParameterizeMainLoop();
       ParameterizeMoveEvaluators();
       ParameterizeMoveMakers();
+      ParameterizeAnalyzers();
       UpdateMoveGenerator();
       UpdateMoveParameters();
+      UpdateAnalyzers();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.OnProblemChanged();
     }
@@ -188,6 +210,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       ParameterizeMainLoop();
       ParameterizeMoveEvaluators();
       ParameterizeMoveMakers();
+      ParameterizeAnalyzers();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.Problem_EvaluatorChanged(sender, e);
     }
@@ -201,6 +224,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       }
       UpdateMoveGenerator();
       UpdateMoveParameters();
+      UpdateAnalyzers();
       ParameterizeMainLoop();
       ParameterizeMoveEvaluators();
       ParameterizeMoveMakers();
@@ -218,17 +242,21 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       ParameterizeMainLoop();
       ParameterizeMoveEvaluators();
       ParameterizeMoveMakers();
+      ParameterizeAnalyzers();
     }
     private void MoveEvaluator_MoveQualityParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeMainLoop();
       ParameterizeMoveEvaluators();
       ParameterizeMoveMakers();
+      ParameterizeAnalyzers();
     }
     #endregion
 
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
+      InitializeAnalyzers();
+      UpdateAnalyzers();
       if (Problem != null) {
         Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
         foreach (ISingleObjectiveMoveEvaluator op in Problem.Operators.OfType<ISingleObjectiveMoveEvaluator>()) {
@@ -237,6 +265,10 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       }
       MoveGeneratorParameter.ValueChanged += new EventHandler(MoveGeneratorParameter_ValueChanged);
       MoveEvaluatorParameter.ValueChanged += new EventHandler(MoveEvaluatorParameter_ValueChanged);
+    }
+    private void InitializeAnalyzers() {
+      moveQualityAnalyzer = new BestAverageWorstQualityAnalyzer();
+      ParameterizeAnalyzers();
     }
     private void UpdateMoveGenerator() {
       IMoveGenerator oldMoveGenerator = MoveGenerator;
@@ -280,6 +312,15 @@ namespace HeuristicLab.Algorithms.LocalSearch {
         }
       }
     }
+    private void UpdateAnalyzers() {
+      Analyzer.Operators.Clear();
+      MoveAnalyzer.Operators.Clear();
+      MoveAnalyzer.Operators.Add(moveQualityAnalyzer);
+      /*if (Problem != null) {
+        foreach (ISolutionAnalyzer analyzer in Problem.Operators.OfType<ISolutionAnalyzer>().OrderBy(x => x.Name))
+          Analyzer.Operators.Add(analyzer);
+      }*/
+    }
     private void ClearMoveParameters() {
       MoveMakerParameter.ValidValues.Clear();
       MoveEvaluatorParameter.ValidValues.Clear();
@@ -309,6 +350,15 @@ namespace HeuristicLab.Algorithms.LocalSearch {
         op.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
         if (MoveEvaluator != null)
           op.MoveQualityParameter.ActualName = MoveEvaluator.MoveQualityParameter.ActualName;
+      }
+    }
+    private void ParameterizeAnalyzers() {
+      moveQualityAnalyzer.ResultsParameter.ActualName = "Results";
+      if (Problem != null) {
+        moveQualityAnalyzer.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
+        if (MoveEvaluator != null)
+          moveQualityAnalyzer.QualityParameter.ActualName = MoveEvaluator.MoveQualityParameter.ActualName;
+        moveQualityAnalyzer.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
       }
     }
     #endregion
