@@ -76,11 +76,8 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     public ValueLookupParameter<IOperator> AnnealingOperatorParameter {
       get { return (ValueLookupParameter<IOperator>)Parameters["AnnealingOperator"]; }
     }
-    public ValueLookupParameter<IOperator> VisualizerParameter {
-      get { return (ValueLookupParameter<IOperator>)Parameters["Visualizer"]; }
-    }
-    public LookupParameter<IItem> VisualizationParameter {
-      get { return (LookupParameter<IItem>)Parameters["Visualization"]; }
+    public ValueLookupParameter<IOperator> AnalyzerParameter {
+      get { return (ValueLookupParameter<IOperator>)Parameters["Analyzer"]; }
     }
     public ValueLookupParameter<VariableCollection> ResultsParameter {
       get { return (ValueLookupParameter<VariableCollection>)Parameters["Results"]; }
@@ -111,22 +108,18 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       Parameters.Add(new ValueLookupParameter<IOperator>("MoveMaker", "The operator that performs a move and updates the quality."));
       Parameters.Add(new ValueLookupParameter<IOperator>("AnnealingOperator", "The operator that modifies the temperature."));
 
-      Parameters.Add(new ValueLookupParameter<IOperator>("Visualizer", "The operator used to visualize solutions."));
-      Parameters.Add(new LookupParameter<IItem>("Visualization", "The item which represents the visualization of solutions."));
+      Parameters.Add(new ValueLookupParameter<IOperator>("Analyzer", "The operator used to analyze each generation."));
       Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The variable collection where results should be stored."));
       #endregion
 
       #region Create operators
       VariableCreator variableCreator = new VariableCreator();
-      BestQualityMemorizer bestQualityMemorizer1 = new BestQualityMemorizer();
-      BestQualityMemorizer bestQualityMemorizer2 = new BestQualityMemorizer();
-      QualityDifferenceCalculator qualityDifferenceCalculator1 = new QualityDifferenceCalculator();
-      Placeholder visualizer1 = new Placeholder();
+      ResultsCollector resultsCollector1 = new ResultsCollector();
+      Placeholder analyzer1 = new Placeholder();
       SubScopesProcessor sssp = new SubScopesProcessor();
       ResultsCollector resultsCollector = new ResultsCollector();
       Placeholder annealingOperator = new Placeholder();
       UniformSubScopesProcessor mainProcessor = new UniformSubScopesProcessor();
-      DataTableValuesCollector valuesCollector = new DataTableValuesCollector();
       Placeholder moveGenerator = new Placeholder();
       UniformSubScopesProcessor moveEvaluationProcessor = new UniformSubScopesProcessor();
       Placeholder moveEvaluator = new Placeholder();
@@ -136,49 +129,22 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       SubScopesRemover subScopesRemover = new SubScopesRemover();
       IntCounter iterationsCounter = new IntCounter();
       Comparator iterationsComparator = new Comparator();
-      BestQualityMemorizer bestQualityMemorizer3 = new BestQualityMemorizer();
-      BestQualityMemorizer bestQualityMemorizer4 = new BestQualityMemorizer();
-      QualityDifferenceCalculator qualityDifferenceCalculator2 = new QualityDifferenceCalculator();
-      Placeholder visualizer2 = new Placeholder();
+      ResultsCollector resultsCollector2 = new ResultsCollector();
+      Placeholder analyzer2 = new Placeholder();
       ConditionalBranch iterationsTermination = new ConditionalBranch();
       
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Iterations", new IntValue(0)));
-      variableCreator.CollectedValues.Add(new ValueParameter<DataTable>("Qualities", new DataTable("Qualities")));
       variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("Temperature", new DoubleValue(double.MaxValue)));
 
-      bestQualityMemorizer1.BestQualityParameter.ActualName = "BestQuality";
-      bestQualityMemorizer1.MaximizationParameter.ActualName = MaximizationParameter.Name;
-      bestQualityMemorizer1.QualityParameter.ActualName = QualityParameter.Name;
+      resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Iterations"));
+      resultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Temperature"));
+      resultsCollector1.ResultsParameter.ActualName = ResultsParameter.Name;
 
-      bestQualityMemorizer2.BestQualityParameter.ActualName = BestKnownQualityParameter.Name;
-      bestQualityMemorizer2.MaximizationParameter.ActualName = MaximizationParameter.Name;
-      bestQualityMemorizer2.QualityParameter.ActualName = QualityParameter.Name;
+      analyzer1.Name = "Analyzer (placeholder)";
+      analyzer1.OperatorParameter.ActualName = AnalyzerParameter.Name;
 
-      qualityDifferenceCalculator1.AbsoluteDifferenceParameter.ActualName = "AbsoluteDifferenceBestKnownToBest";
-      qualityDifferenceCalculator1.FirstQualityParameter.ActualName = BestKnownQualityParameter.Name;
-      qualityDifferenceCalculator1.RelativeDifferenceParameter.ActualName = "RelativeDifferenceBestKnownToBest";
-      qualityDifferenceCalculator1.SecondQualityParameter.ActualName = "BestQuality";
-
-      visualizer1.Name = "Visualizer (placeholder)";
-      visualizer1.OperatorParameter.ActualName = VisualizerParameter.Name;
-
-      resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Iterations"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>(QualityParameter.Name));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality") { ActualName = "BestQuality" });
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, BestKnownQualityParameter.Name));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DataTable>("Qualities"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Temperature"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Absolute Difference of Best Known Quality to Best Quality", null, "AbsoluteDifferenceBestKnownToBest"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Relative Difference of Best Known Quality to Best Quality", null, "RelativeDifferenceBestKnownToBest"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<IItem>("Solution Visualization", null, VisualizationParameter.Name));
-      
       annealingOperator.Name = "Annealing operator (placeholder)";
       annealingOperator.OperatorParameter.ActualName = AnnealingOperatorParameter.Name;
-
-      valuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Quality", null, QualityParameter.Name));
-      valuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
-      valuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Known Quality", null, BestKnownQualityParameter.Name));
-      valuesCollector.DataTableParameter.ActualName = "Qualities";
 
       moveGenerator.Name = "Move generator (placeholder)";
       moveGenerator.OperatorParameter.ActualName = MoveGeneratorParameter.Name;
@@ -208,21 +174,12 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       iterationsComparator.ResultParameter.ActualName = "Terminate";
       iterationsComparator.Comparison.Value = ComparisonType.GreaterOrEqual;
 
-      bestQualityMemorizer3.BestQualityParameter.ActualName = "BestQuality";
-      bestQualityMemorizer3.MaximizationParameter.ActualName = MaximizationParameter.Name;
-      bestQualityMemorizer3.QualityParameter.ActualName = QualityParameter.Name;
+      resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Iterations"));
+      resultsCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Temperature"));
+      resultsCollector2.ResultsParameter.ActualName = ResultsParameter.Name;
 
-      bestQualityMemorizer4.BestQualityParameter.ActualName = BestKnownQualityParameter.Name;
-      bestQualityMemorizer4.MaximizationParameter.ActualName = MaximizationParameter.Name;
-      bestQualityMemorizer4.QualityParameter.ActualName = QualityParameter.Name;
-
-      qualityDifferenceCalculator2.AbsoluteDifferenceParameter.ActualName = "AbsoluteDifferenceBestKnownToBest";
-      qualityDifferenceCalculator2.FirstQualityParameter.ActualName = BestKnownQualityParameter.Name;
-      qualityDifferenceCalculator2.RelativeDifferenceParameter.ActualName = "RelativeDifferenceBestKnownToBest";
-      qualityDifferenceCalculator2.SecondQualityParameter.ActualName = "BestQuality";
-
-      visualizer2.Name = "Visualizer (placeholder)";
-      visualizer2.OperatorParameter.ActualName = VisualizerParameter.Name;
+      analyzer2.Name = "Analyzer (placeholder)";
+      analyzer2.OperatorParameter.ActualName = AnalyzerParameter.Name;
 
       iterationsTermination.Name = "Iterations termination condition";
       iterationsTermination.ConditionParameter.ActualName = "Terminate";
@@ -230,18 +187,15 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
 
       #region Create operator graph
       OperatorGraph.InitialOperator = variableCreator;
-      variableCreator.Successor = bestQualityMemorizer1;
-      bestQualityMemorizer1.Successor = bestQualityMemorizer2;
-      bestQualityMemorizer2.Successor = qualityDifferenceCalculator1;
-      qualityDifferenceCalculator1.Successor = visualizer1;
-      visualizer1.Successor = sssp;
+      variableCreator.Successor = resultsCollector1;
+      resultsCollector1.Successor = analyzer1;
+      analyzer1.Successor = sssp;
       sssp.Operators.Add(resultsCollector);
       resultsCollector.Successor = null;
       sssp.Successor = annealingOperator;
       annealingOperator.Successor = mainProcessor;
-      mainProcessor.Operator = valuesCollector;
+      mainProcessor.Operator = moveGenerator;
       mainProcessor.Successor = iterationsCounter;
-      valuesCollector.Successor = moveGenerator;
       moveGenerator.Successor = moveEvaluationProcessor;
       moveEvaluationProcessor.Operator = moveEvaluator;
       moveEvaluationProcessor.Successor = subScopesRemover;
@@ -249,11 +203,9 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       qualityComparator.Successor = improvesQualityBranch;
       improvesQualityBranch.TrueBranch = moveMaker;
       iterationsCounter.Successor = iterationsComparator;
-      iterationsComparator.Successor = bestQualityMemorizer3;
-      bestQualityMemorizer3.Successor = bestQualityMemorizer4;
-      bestQualityMemorizer4.Successor = qualityDifferenceCalculator2;
-      qualityDifferenceCalculator2.Successor = visualizer2;
-      visualizer2.Successor = iterationsTermination;
+      iterationsComparator.Successor = resultsCollector2;
+      resultsCollector2.Successor = analyzer2;
+      analyzer2.Successor = iterationsTermination;
       iterationsTermination.TrueBranch = null;
       iterationsTermination.FalseBranch = annealingOperator;
       #endregion

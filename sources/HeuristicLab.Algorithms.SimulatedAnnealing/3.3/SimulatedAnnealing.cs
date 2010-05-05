@@ -32,6 +32,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
+using HeuristicLab.Analysis;
 
 namespace HeuristicLab.Algorithms.SimulatedAnnealing {
   [Item("Simulated Annealing", "A simulated annealing algorithm.")]
@@ -79,6 +80,9 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     private ValueParameter<DoubleValue> EndTemperatureParameter {
       get { return (ValueParameter<DoubleValue>)Parameters["EndTemperature"]; }
     }
+    private ValueParameter<MultiAnalyzer> AnalyzerParameter {
+      get { return (ValueParameter<MultiAnalyzer>)Parameters["Analyzer"]; }
+    }
     #endregion
 
     #region Properties
@@ -118,6 +122,10 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       get { return EndTemperatureParameter.Value; }
       set { EndTemperatureParameter.Value = value; }
     }
+    public MultiAnalyzer Analyzer {
+      get { return AnalyzerParameter.Value; }
+      set { AnalyzerParameter.Value = value; }
+    }
     private RandomCreator RandomCreator {
       get { return (RandomCreator)OperatorGraph.InitialOperator; }
     }
@@ -132,8 +140,11 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     private IEnumerable<IDiscreteDoubleValueModifier> AnnealingOperators {
       get { return annealingOperators; }
     }
+    private BestAverageWorstQualityAnalyzer qualityAnalyzer;
     #endregion
 
+    [StorableConstructor]
+    private SimulatedAnnealing(bool deserializing) : base(deserializing) { }
     public SimulatedAnnealing()
       : base() {
       Parameters.Add(new ValueParameter<IntValue>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
@@ -146,7 +157,8 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       Parameters.Add(new ValueParameter<IntValue>("InnerIterations", "The amount of inner iterations (number of moves before temperature is adjusted again).", new IntValue(10)));
       Parameters.Add(new ValueParameter<DoubleValue>("StartTemperature", "The initial temperature.", new DoubleValue(100)));
       Parameters.Add(new ValueParameter<DoubleValue>("EndTemperature", "The final temperature which should be reached when iterations reaches maximum iterations.", new DoubleValue(1e-6)));
-
+      Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze each generation.", new MultiAnalyzer()));
+      
       RandomCreator randomCreator = new RandomCreator();
       SolutionsCreator solutionsCreator = new SolutionsCreator();
       SimulatedAnnealingMainLoop mainLoop = new SimulatedAnnealingMainLoop();
@@ -171,11 +183,10 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       mainLoop.EndTemperatureParameter.ActualName = EndTemperatureParameter.Name;
       mainLoop.RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
       mainLoop.ResultsParameter.ActualName = "Results";
+      mainLoop.AnalyzerParameter.ActualName = AnalyzerParameter.Name;
 
       Initialize();
     }
-    [StorableConstructor]
-    private SimulatedAnnealing(bool deserializing) : base(deserializing) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       SimulatedAnnealing clone = (SimulatedAnnealing)base.Clone(cloner);
@@ -203,6 +214,8 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       ParameterizeMoveEvaluators();
       ParameterizeMoveMakers();
       ParameterizeMoveGenerators();
+      ParameterizeAnalyzers();
+      UpdateAnalyzers();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.OnProblemChanged();
     }
@@ -217,6 +230,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       ParameterizeMainLoop();
       ParameterizeMoveEvaluators();
       ParameterizeMoveMakers();
+      ParameterizeAnalyzers();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.Problem_EvaluatorChanged(sender, e);
     }
@@ -230,6 +244,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       }
       UpdateMoveGenerator();
       UpdateMoveParameters();
+      UpdateAnalyzers();
       ParameterizeMainLoop();
       ParameterizeMoveEvaluators();
       ParameterizeMoveMakers();
@@ -240,6 +255,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       ParameterizeMainLoop();
       ParameterizeMoveEvaluators();
       ParameterizeMoveMakers();
+      ParameterizeAnalyzers();
     }
     private void MoveGeneratorParameter_ValueChanged(object sender, EventArgs e) {
       UpdateMoveParameters();
@@ -259,6 +275,8 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
+      InitializeAnalyzers();
+      UpdateAnalyzers();
       if (Problem != null) {
         Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
         foreach (ISingleObjectiveMoveEvaluator op in Problem.Operators.OfType<ISingleObjectiveMoveEvaluator>()) {
@@ -277,6 +295,10 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       foreach (IDiscreteDoubleValueModifier op in annealingOperators)
         AnnealingOperatorParameter.ValidValues.Add(op);
     }
+    private void InitializeAnalyzers() {
+      qualityAnalyzer = new BestAverageWorstQualityAnalyzer();
+      ParameterizeAnalyzers();
+    }
     private void UpdateMoveGenerator() {
       IMultiMoveGenerator oldMoveGenerator = MoveGenerator;
       MoveGeneratorParameter.ValidValues.Clear();
@@ -290,6 +312,14 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       }
       if (MoveGenerator == null) {
         ClearMoveParameters();
+      }
+    }
+    private void ParameterizeAnalyzers() {
+      qualityAnalyzer.ResultsParameter.ActualName = "Results";
+      if (Problem != null) {
+        qualityAnalyzer.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
+        qualityAnalyzer.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
+        qualityAnalyzer.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
       }
     }
     private void UpdateMoveParameters() {
@@ -364,6 +394,14 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     private void ParameterizeMoveGenerators() {
       foreach (IMultiMoveGenerator op in Problem.Operators.OfType<IMultiMoveGenerator>()) {
         op.SampleSizeParameter.ActualName = InnerIterationsParameter.Name;
+      }
+    }
+    private void UpdateAnalyzers() {
+      Analyzer.Operators.Clear();
+      Analyzer.Operators.Add(qualityAnalyzer);
+      if (Problem != null) {
+        foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name))
+          Analyzer.Operators.Add(analyzer);
       }
     }
     #endregion
