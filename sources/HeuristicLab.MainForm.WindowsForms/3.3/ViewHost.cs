@@ -40,6 +40,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       OnContentChanged();
     }
 
+    private bool viewShown;
     private Dictionary<Type, IContentView> cachedViews;
     public IEnumerable<IContentView> Views {
       get { return cachedViews.Values; }
@@ -137,9 +138,12 @@ namespace HeuristicLab.MainForm.WindowsForms {
       if (!ViewCanShowContent(viewType, Content))
         throw new InvalidOperationException(string.Format("View \"{0}\" cannot display content \"{1}\".",
                                                           viewType, Content.GetType()));
-      if (viewPanel.Height <= 10 || viewPanel.Width <= 10)
+      if (viewPanel.Height <= 10 || viewPanel.Width <= 10) {
+        viewShown = false;
         return;
+      }
 
+      viewShown = true;
       UpdateActiveMenuItem();
       IContentView view;
       if (cachedViews.ContainsKey(ViewType))
@@ -156,6 +160,11 @@ namespace HeuristicLab.MainForm.WindowsForms {
       viewPanel.Controls.Add(control);
       viewPanel.Visible = true;
       view.Content = Content;
+    }
+
+    private void viewPanel_Resize(object sender, EventArgs e) {
+      if (!viewShown)
+        this.OnViewTypeChanged();
     }
 
     private void RegisterActiveViewEvents() {

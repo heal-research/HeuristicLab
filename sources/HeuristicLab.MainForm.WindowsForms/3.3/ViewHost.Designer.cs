@@ -46,7 +46,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ViewHost));
-      this.viewPanel = new ViewHostPanel();
+      this.viewPanel = new HeuristicLab.MainForm.WindowsForms.ViewHostPanel();
       this.messageLabel = new System.Windows.Forms.Label();
       this.viewsLabel = new System.Windows.Forms.Label();
       this.viewContextMenuStrip = new HeuristicLab.MainForm.WindowsForms.ViewContextMenuStrip();
@@ -62,6 +62,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.viewPanel.Name = "viewPanel";
       this.viewPanel.Size = new System.Drawing.Size(205, 184);
       this.viewPanel.TabIndex = 1;
+      this.viewPanel.Resize += new System.EventHandler(this.viewPanel_Resize);
       // 
       // messageLabel
       // 
@@ -77,7 +78,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       // 
       this.viewsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.viewsLabel.ContextMenuStrip = this.viewContextMenuStrip;
-      this.viewsLabel.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Windows;
+      this.viewsLabel.Image = ((System.Drawing.Image)(resources.GetObject("viewsLabel.Image")));
       this.viewsLabel.Location = new System.Drawing.Point(211, 0);
       this.viewsLabel.Name = "viewsLabel";
       this.viewsLabel.Size = new System.Drawing.Size(16, 16);
@@ -90,6 +91,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       // 
       // viewContextMenuStrip
       // 
+      this.viewContextMenuStrip.IgnoredViewTypes = ((System.Collections.Generic.IEnumerable<System.Type>)(resources.GetObject("viewContextMenuStrip.IgnoredViewTypes")));
       this.viewContextMenuStrip.Item = null;
       this.viewContextMenuStrip.Name = "viewContextMenuStrip";
       this.viewContextMenuStrip.Size = new System.Drawing.Size(61, 4);
