@@ -32,6 +32,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Problems.TestFunctions.Analyzers;
 
 namespace HeuristicLab.Problems.TestFunctions {
   [Item("Single Objective Test Function", "Test function with real valued inputs and a single objective.")]
@@ -120,6 +121,9 @@ namespace HeuristicLab.Problems.TestFunctions {
     public IEnumerable<IOperator> Operators {
       get { return operators; }
     }
+    private IEnumerable<IBestSingleObjectiveTestFunctionSolutionAnalyzer> BestSingleObjectiveTestFunctionSolutionAnalyzers {
+      get { return operators.OfType<IBestSingleObjectiveTestFunctionSolutionAnalyzer>(); }
+    }
     #endregion
 
     [StorableConstructor]
@@ -146,7 +150,6 @@ namespace HeuristicLab.Problems.TestFunctions {
       creator.RealVectorParameter.ActualName = "Point";
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
-      ParameterizeVisualizer();
 
       Initialize();
     }
@@ -185,16 +188,18 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
     private void SolutionCreatorParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeSolutionCreator();
+      ParameterizeAnalyzers();
       SolutionCreator_RealVectorParameter_ActualNameChanged(null, EventArgs.Empty);
     }
     private void SolutionCreator_RealVectorParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
       ParameterizeOperators();
-      ParameterizeVisualizer();
+      ParameterizeAnalyzers();
     }
     private void EvaluatorParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
       UpdateMoveEvaluators();
+      ParameterizeAnalyzers();
       Maximization.Value = Evaluator.Maximization;
       BoundsParameter.Value = Evaluator.Bounds;
       if (ProblemSize.Value < Evaluator.MinimumProblemSize)
@@ -271,8 +276,18 @@ namespace HeuristicLab.Problems.TestFunctions {
       strategyVectorCreator.BoundsParameter.ValueChanged += new EventHandler(strategyVectorCreator_BoundsParameter_ValueChanged);
       strategyVectorCreator.StrategyParameterParameter.ActualNameChanged += new EventHandler(strategyVectorCreator_StrategyParameterParameter_ActualNameChanged);
     }
+    private void ParameterizeAnalyzers() {
+      foreach (IBestSingleObjectiveTestFunctionSolutionAnalyzer analyzer in BestSingleObjectiveTestFunctionSolutionAnalyzers) {
+        analyzer.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
+        analyzer.ResultsParameter.ActualName = "Results";
+      }
+    }
     private void InitializeOperators() {
       operators = new List<IOperator>();
+      operators.Add(new BestSingleObjectiveTestFunctionSolutionAnalyzer());
+      operators.Add(new PopulationBestSingleObjectiveTestFunctionSolutionAnalyzer());
+      operators.Add(new MultiPopulationBestSingleObjectiveTestFunctionSolutionAnalyzer());
+      ParameterizeAnalyzers();
       operators.AddRange(ApplicationManager.Manager.GetInstances<IRealVectorOperator>().Cast<IOperator>());
       operators.Add(strategyVectorCreator);
       operators.Add(strategyVectorCrossover);
@@ -318,12 +333,6 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
     private void ParameterizeEvaluator() {
       Evaluator.PointParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
-    }
-    private void ParameterizeVisualizer() {
-      //if (Visualizer != null) {
-      //  Visualizer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
-      //  Visualizer.PointParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
-      //}
     }
     private void ParameterizeOperators() {
       foreach (IRealVectorCrossover op in Operators.OfType<IRealVectorCrossover>()) {
