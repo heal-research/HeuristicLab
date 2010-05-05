@@ -31,9 +31,9 @@ namespace HeuristicLab.Analysis {
   /// <summary>
   /// An operator which analyzes the best, average and worst solution quality in the current population.
   /// </summary>
-  [Item("BestAverageWorstQualityAnalyzer", "An operator which analyzes the best, average and worst solution quality in the current population.")]
+  [Item("PopulationBestAverageWorstQualityAnalyzer", "An operator which analyzes the best, average and worst solution quality in the current population.")]
   [StorableClass]
-  public sealed class BestAverageWorstQualityAnalyzer : AlgorithmOperator, IAnalyzer {
+  public sealed class PopulationBestAverageWorstQualityAnalyzer : AlgorithmOperator, IPopulationAnalyzer {
     #region Parameter properties
     public ValueLookupParameter<BoolValue> MaximizationParameter {
       get { return (ValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
@@ -68,8 +68,8 @@ namespace HeuristicLab.Analysis {
     #endregion
 
     [StorableConstructor]
-    private BestAverageWorstQualityAnalyzer(bool deserializing) : base() { }
-    public BestAverageWorstQualityAnalyzer()
+    private PopulationBestAverageWorstQualityAnalyzer(bool deserializing) : base() { }
+    public PopulationBestAverageWorstQualityAnalyzer()
       : base() {
       Initialize();
     }

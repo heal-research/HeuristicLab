@@ -84,10 +84,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLabAnalysisPlugin.cs.frame" />
-    <Compile Include="BestAverageWorstQualityAnalyzer.cs" />
     <Compile Include="BestAverageWorstQualityCalculator.cs" />
     <Compile Include="BestQualityMemorizer.cs" />
     <Compile Include="MultiAnalyzer.cs" />
+    <Compile Include="PopulationBestAverageWorstQualityAnalyzer.cs" />
     <Compile Include="QualityDifferenceCalculator.cs" />
     <Compile Include="DataRow.cs" />
     <Compile Include="HeuristicLabAnalysisPlugin.cs" />
