@@ -27,11 +27,35 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace HeuristicLab.MainForm.WindowsForms {
   public partial class Sidebar : View {
     public Sidebar() {
       InitializeComponent();
+    }
+
+    private bool collapsed;
+    public bool Collapsed {
+      get { return this.collapsed; }
+      set {
+        if (this.collapsed != value) {
+          this.collapsed = value;
+
+          DockForm form = MainFormManager.GetMainForm<MainForm>().GetForm(this) as DockForm;
+          if (form != null) {
+            if (form.DockState == DockState.DockLeft || form.DockState == DockState.DockLeftAutoHide)
+              form.DockState = collapsed ? DockState.DockLeftAutoHide : DockState.DockLeft;
+            else if (form.DockState == DockState.DockRight || form.DockState == DockState.DockRightAutoHide)
+              form.DockState = collapsed ? DockState.DockRightAutoHide : DockState.DockRight;
+          }
+
+          this.OnCollapsedChanged();
+        }
+      }
+    }
+
+    protected virtual void OnCollapsedChanged() {
     }
 
     internal protected override void OnClosing(FormClosingEventArgs e) {

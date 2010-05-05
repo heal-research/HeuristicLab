@@ -52,8 +52,14 @@ namespace HeuristicLab.MainForm.WindowsForms {
               this.ShowHint = DockState.DockBottom;
               break;
           }
-          if (view is Sidebar)
+          Sidebar sidebar = view as Sidebar;
+          if (sidebar != null) {
+            if (sidebar.Collapsed)
+              this.ShowHint = DockState.DockLeftAutoHide;
+            else
+              this.ShowHint = DockState.DockLeft;
             this.DockAreas = DockAreas.DockLeft | DockAreas.DockRight;
+          }
 
           Type viewType = view.GetType();
           Control control = (Control)view;
@@ -81,6 +87,17 @@ namespace HeuristicLab.MainForm.WindowsForms {
         Invoke(new MethodInvoker(UpdateText));
       else
         this.Text = this.View.Caption;
+    }
+
+    protected override void OnDockStateChanged(EventArgs e) {
+      base.OnDockStateChanged(e);
+      Sidebar sidebar = view as Sidebar;
+      if (sidebar != null) {
+        if (this.DockState == DockState.DockLeftAutoHide || this.DockState == DockState.DockRightAutoHide)
+          sidebar.Collapsed = true;
+        else
+          sidebar.Collapsed = false;
+      }
     }
 
     #region View Events
