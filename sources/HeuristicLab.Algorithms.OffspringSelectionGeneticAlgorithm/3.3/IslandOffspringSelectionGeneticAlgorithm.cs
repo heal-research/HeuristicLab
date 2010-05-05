@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -32,7 +33,6 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
-using HeuristicLab.Selection;
 
 namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
   /// <summary>
@@ -119,6 +119,12 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     }
     private ValueLookupParameter<BoolValue> OffspringSelectionBeforeMutationParameter {
       get { return (ValueLookupParameter<BoolValue>)Parameters["OffspringSelectionBeforeMutation"]; }
+    }
+    private ValueParameter<MultiAnalyzer<IMultiPopulationAnalyzer>> AnalyzerParameter {
+      get { return (ValueParameter<MultiAnalyzer<IMultiPopulationAnalyzer>>)Parameters["Analyzer"]; }
+    }
+    private ValueParameter<MultiAnalyzer<IPopulationAnalyzer>> IslandAnalyzerParameter {
+      get { return (ValueParameter<MultiAnalyzer<IPopulationAnalyzer>>)Parameters["IslandAnalyzer"]; }
     }
     #endregion
 
@@ -211,6 +217,14 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       get { return OffspringSelectionBeforeMutationParameter.Value; }
       set { OffspringSelectionBeforeMutationParameter.Value = value; }
     }
+    public MultiAnalyzer<IMultiPopulationAnalyzer> Analyzer {
+      get { return AnalyzerParameter.Value; }
+      set { AnalyzerParameter.Value = value; }
+    }
+    public MultiAnalyzer<IPopulationAnalyzer> IslandAnalyzer {
+      get { return IslandAnalyzerParameter.Value; }
+      set { IslandAnalyzerParameter.Value = value; }
+    }
     private List<ISelector> selectors;
     private IEnumerable<ISelector> Selectors {
       get { return selectors; }
@@ -231,6 +245,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private IslandOffspringSelectionGeneticAlgorithmMainLoop MainLoop {
       get { return (IslandOffspringSelectionGeneticAlgorithmMainLoop)IslandProcessor.Successor; }
     }
+    private PopulationBestAverageWorstQualityAnalyzer islandQualityAnalyzer;
+    //private MultipopulationBestAverageWorstQualityAnalyzer qualityAnalyzer;
     #endregion
 
     [StorableConstructor]
@@ -259,7 +275,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier>("ComparisonFactorModifier", "The operator used to modify the comparison factor.", new ItemSet<IDiscreteDoubleValueModifier>(new IDiscreteDoubleValueModifier[] { new LinearDiscreteDoubleValueModifier() }), new LinearDiscreteDoubleValueModifier()));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("MaximumSelectionPressure", "The maximum selection pressure that terminates the algorithm.", new DoubleValue(100)));
       Parameters.Add(new ValueLookupParameter<BoolValue>("OffspringSelectionBeforeMutation", "True if the offspring selection step should be applied before mutation, false if it should be applied after mutation.", new BoolValue(false)));
-
+      Parameters.Add(new ValueParameter<MultiAnalyzer<IMultiPopulationAnalyzer>>("Analyzer", "The operator used to analyze the islands.", new MultiAnalyzer<IMultiPopulationAnalyzer>()));
+      Parameters.Add(new ValueParameter<MultiAnalyzer<IPopulationAnalyzer>>("IslandAnalyzer", "The operator used to analyze each island.", new MultiAnalyzer<IPopulationAnalyzer>()));
+      
       RandomCreator randomCreator = new RandomCreator();
       SubScopesCreator populationCreator = new SubScopesCreator();
       UniformSubScopesProcessor ussp1 = new UniformSubScopesProcessor();
@@ -330,8 +348,10 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       ParameterizeSolutionsCreator();
       ParameterizeMainLoop();
       ParameterizeSelectors();
+      ParameterizeAnalyzers();
       UpdateCrossovers();
       UpdateMutators();
+      UpdateAnalyzers();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.OnProblemChanged();
     }
@@ -346,6 +366,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       ParameterizeSolutionsCreator();
       ParameterizeMainLoop();
       ParameterizeSelectors();
+      ParameterizeAnalyzers();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.Problem_EvaluatorChanged(sender, e);
     }
@@ -353,6 +374,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
       UpdateCrossovers();
       UpdateMutators();
+      UpdateAnalyzers();
       base.Problem_OperatorsChanged(sender, e);
     }
     private void ElitesParameter_ValueChanged(object sender, EventArgs e) {
@@ -372,6 +394,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeMainLoop();
       ParameterizeSelectors();
+      ParameterizeAnalyzers();
     }
     private void MigrationRateParameter_ValueChanged(object sender, EventArgs e) {
       MigrationRate.ValueChanged += new EventHandler(MigrationRate_ValueChanged);
@@ -400,7 +423,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
       InitializeSelectors();
+      InitializeAnalyzers();
       UpdateSelectors();
+      UpdateAnalyzers();
       InitializeComparisonFactorModifiers();
       UpdateComparisonFactorModifiers();
       InitializeMigrators();
@@ -444,6 +469,11 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       immigrationReplacers.AddRange(ApplicationManager.Manager.GetInstances<IReplacer>().OrderBy(x => x.Name));
       ParameterizeSelectors();
     }
+    private void InitializeAnalyzers() {
+      islandQualityAnalyzer = new PopulationBestAverageWorstQualityAnalyzer();
+      //qualityAnalyzer = new MultipopulationBestAverageWorstQualityAnalyzer();
+      ParameterizeAnalyzers();
+    }
     private void InitializeComparisonFactorModifiers() {
       comparisonFactorModifiers = new List<IDiscreteDoubleValueModifier>();
       comparisonFactorModifiers.AddRange(ApplicationManager.Manager.GetInstances<IDiscreteDoubleValueModifier>().OrderBy(x => x.Name));
@@ -481,6 +511,15 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
           replacer.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
           replacer.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
         }
+      }
+    }
+    private void ParameterizeAnalyzers() {
+      islandQualityAnalyzer.ResultsParameter.ActualName = "Results";
+      //qualityAnalyzer.ResultsParameter.ActualName = "Results";
+      if (Problem != null) {
+        islandQualityAnalyzer.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
+        islandQualityAnalyzer.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
+        islandQualityAnalyzer.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
       }
     }
     private void ParameterizeComparisonFactorModifiers() {
@@ -565,6 +604,19 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       if (oldMutator != null) {
         IManipulator mutator = MutatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMutator.GetType());
         if (mutator != null) MutatorParameter.Value = mutator;
+      }
+    }
+    private void UpdateAnalyzers() {
+      IslandAnalyzer.Operators.Clear();
+      Analyzer.Operators.Clear();
+      IslandAnalyzer.Operators.Add(islandQualityAnalyzer);
+      //Analyzer.Operators.Add(qualityAnalyzer);
+      if (Problem != null) {
+        foreach (IPopulationAnalyzer analyzer in Problem.Operators.OfType<IPopulationAnalyzer>().OrderBy(x => x.Name)) {
+          IslandAnalyzer.Operators.Add(analyzer);
+        }
+        foreach (IMultiPopulationAnalyzer analyzer in Problem.Operators.OfType<IMultiPopulationAnalyzer>().OrderBy(x => x.Name))
+          Analyzer.Operators.Add(analyzer);
       }
     }
     #endregion
