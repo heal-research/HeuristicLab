@@ -33,11 +33,13 @@
       // 
       this.txtConstraintData.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.errorProvider.SetIconAlignment(this.txtConstraintData, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
+      this.errorProvider.SetIconPadding(this.txtConstraintData, 2);
       this.txtConstraintData.Location = new System.Drawing.Point(127, 56);
       this.txtConstraintData.Name = "txtConstraintData";
       this.txtConstraintData.Size = new System.Drawing.Size(246, 20);
       this.txtConstraintData.TabIndex = 9;
-      this.txtConstraintData.TextChanged += new System.EventHandler(this.txtConstraintData_TextChanged);
+      this.txtConstraintData.Validated += new System.EventHandler(this.txtConstraintData_Validated);
       this.txtConstraintData.Validating += new System.ComponentModel.CancelEventHandler(this.txtConstraintData_Validating);
       // 
       // errorProvider

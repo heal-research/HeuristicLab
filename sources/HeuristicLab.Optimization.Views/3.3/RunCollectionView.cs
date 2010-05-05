@@ -334,8 +334,12 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
     protected virtual void Run_Changed(object sender, EventArgs e) {
-      IRun run = (IRun)sender;
-      UpdateRun(run);
+      if (InvokeRequired)
+        this.Invoke(new EventHandler(Run_Changed), sender, e);
+      else {
+        IRun run = (IRun)sender;
+        UpdateRun(run);
+      }
     }
 
     protected virtual void UpdateRun(IRun run) {

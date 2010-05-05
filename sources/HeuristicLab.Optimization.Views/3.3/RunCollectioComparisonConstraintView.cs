@@ -35,7 +35,7 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     protected override void DeregisterContentEvents() {
-      base.RegisterContentEvents();
+      base.DeregisterContentEvents();
       Content.ConstraintDataChanged -= new EventHandler(Content_ConstraintDataChanged);
     }
 
@@ -51,8 +51,13 @@ namespace HeuristicLab.Optimization.Views {
               this.cmbConstraintColumn.Items.Add(columnName);
           }
         }
-        if (Content.ConstraintColumn >= 0)
+        if (Content.ConstraintColumn >= 0) {
           this.cmbConstraintColumn.SelectedItem = (matrix.ColumnNames.ElementAt(Content.ConstraintColumn));
+          if (Content.ConstraintData != null)
+            txtConstraintData.Text = Content.ConstraintData.GetValue();
+          else
+            this.Content_ConstraintColumnChanged(cmbConstraintColumn, EventArgs.Empty);
+        }
       }
     }
 
@@ -73,12 +78,14 @@ namespace HeuristicLab.Optimization.Views {
         txtConstraintData.Text = string.Empty;
     }
 
-    private void txtConstraintData_TextChanged(object sender, EventArgs e) {
-      Content.ConstraintData.SetValue(txtConstraintData.Text);
+    private void txtConstraintData_Validated(object sender, EventArgs e) {
+      IStringConvertibleValue value = (IStringConvertibleValue)Activator.CreateInstance(Content.ConstrainedValue.GetDataType(cmbConstraintColumn.SelectedItem.ToString()).First());
+      value.SetValue(txtConstraintData.Text);
+      Content.ConstraintData = value;
     }
 
     private void txtConstraintData_Validating(object sender, CancelEventArgs e) {
-      string errorMessage;
+      string errorMessage = string.Empty;
       if (!Content.ConstraintData.Validate(txtConstraintData.Text, out errorMessage)) {
         errorProvider.SetError(txtConstraintData, errorMessage);
         e.Cancel = true;

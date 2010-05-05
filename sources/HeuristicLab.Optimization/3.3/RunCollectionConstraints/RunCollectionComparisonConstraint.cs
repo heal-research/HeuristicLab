@@ -69,6 +69,7 @@ namespace HeuristicLab.Optimization {
         if (constraintColumn != value) {
           constraintColumn = value;
           this.OnConstraintColumnChanged();
+          this.OnToStringChanged();
         }
       }
     }

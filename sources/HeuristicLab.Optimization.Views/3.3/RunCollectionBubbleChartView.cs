@@ -119,8 +119,12 @@ namespace HeuristicLab.Optimization.Views {
       RegisterRunEvents(e.Items);
     }
     private void run_Changed(object sender, EventArgs e) {
-      IRun run = (IRun)sender;
-      UpdateRun(run);
+      if (InvokeRequired)
+        this.Invoke(new EventHandler(run_Changed), sender, e);
+      else {
+        IRun run = (IRun)sender;
+        UpdateRun(run);
+      }
     }
 
     private void UpdateRun(IRun run) {
@@ -143,7 +147,7 @@ namespace HeuristicLab.Optimization.Views {
       this.categoricalMapping.Clear();
       UpdateComboBoxes();
       UpdateDataPoints();
-      foreach(IRun run in Content) 
+      foreach (IRun run in Content)
         UpdateRun(run);
     }
     private void Content_ColumnNamesChanged(object sender, EventArgs e) {

@@ -94,8 +94,12 @@ namespace HeuristicLab.Optimization.Views {
       RegisterRunEvents(e.Items);
     }
     private void run_Changed(object sender, EventArgs e) {
-      IRun run = (IRun)sender;
-      UpdateRun(run);
+      if (InvokeRequired)
+        this.Invoke(new EventHandler(run_Changed), sender, e);
+      else {
+        IRun run = (IRun)sender;
+        UpdateRun(run);
+      }
     }
 
     private void UpdateRun(IRun run) {
@@ -103,6 +107,7 @@ namespace HeuristicLab.Optimization.Views {
       rowIndex = virtualRowIndizes[rowIndex];
       this.dataGridView.Rows[rowIndex].Visible = run.Visible;
       this.dataGridView.Rows[rowIndex].DefaultCellStyle.ForeColor = run.Color;
+      this.rowsTextBox.Text = this.Content.Count(r => r.Visible).ToString();
     }
 
     private void dataGridView_RowHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e) {

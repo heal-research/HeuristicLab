@@ -83,6 +83,7 @@ namespace HeuristicLab.Optimization {
       if (columnNamesChanged)
         OnColumnNamesChanged();
       OnRowNamesChanged();
+      this.UpdateFiltering(false);
     }
     protected override void OnItemsRemoved(IEnumerable<IRun> items) {
       bool columnNamesChanged = false;
@@ -159,12 +160,11 @@ namespace HeuristicLab.Optimization {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       RunCollection clone = (RunCollection)base.Clone(cloner);
-      clone.resultNames = this.resultNames;
-      clone.parameterNames = this.parameterNames;
+      clone.resultNames = new List<string>(this.resultNames);
+      clone.parameterNames = new List<string>(this.parameterNames);
       clone.dataTypes = new Dictionary<string, HashSet<Type>>();
       foreach (string s in this.dataTypes.Keys)
         clone.dataTypes[s] = new HashSet<Type>(this.dataTypes[s]);
-
       return clone;
     }
 
@@ -251,8 +251,9 @@ namespace HeuristicLab.Optimization {
     #endregion
 
     #region filtering
-    private void UpdateFiltering() {
-      list.ForEach(r => r.Visible = true);
+    private void UpdateFiltering(bool reset) {
+      if (reset)
+        list.ForEach(r => r.Visible = true);
       foreach (IRunCollectionConstraint constraint in this.constraints)
         constraint.Check();
     }
@@ -277,29 +278,34 @@ namespace HeuristicLab.Optimization {
     protected virtual void Constraints_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRunCollectionConstraint> e) {
       DeregisterConstraintEvents(e.OldItems);
       RegisterConstraintEvents(e.Items);
-      this.UpdateFiltering();
+      this.UpdateFiltering(true);
     }
     protected virtual void Constraints_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IRunCollectionConstraint> e) {
       RegisterConstraintEvents(e.Items);
       foreach (IRunCollectionConstraint constraint in e.Items)
         constraint.ConstrainedValue = this;
-      this.UpdateFiltering();
+      this.UpdateFiltering(false);
     }
     protected virtual void Constraints_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IRunCollectionConstraint> e) {
       DeregisterConstraintEvents(e.Items);
-      this.UpdateFiltering();
+      this.UpdateFiltering(true);
     }
     protected virtual void Constraint_ActiveChanged(object sender, EventArgs e) {
-      this.UpdateFiltering();
+      IRunCollectionConstraint constraint = (IRunCollectionConstraint)sender;
+      this.UpdateFiltering(!constraint.Active);
     }
     protected virtual void Constraint_ConstrainedValueChanged(object sender, EventArgs e) {
       //mkommend: this method is intentionally left empty, because the constrainedValue is set in the ItemsAdded method
     }
     protected virtual void Constraint_ConstraintOperationChanged(object sender, EventArgs e) {
-      this.UpdateFiltering();
+      IRunCollectionConstraint constraint = (IRunCollectionConstraint)sender;
+      if (constraint.Active)
+        this.UpdateFiltering(true);
     }
     protected virtual void Constraint_ConstraintDataChanged(object sender, EventArgs e) {
-      this.UpdateFiltering();
+      IRunCollectionConstraint constraint = (IRunCollectionConstraint)sender;
+      if (constraint.Active)
+        this.UpdateFiltering(true);
     }
     #endregion
   }

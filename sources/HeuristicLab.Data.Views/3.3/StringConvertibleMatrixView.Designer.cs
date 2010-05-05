@@ -164,13 +164,13 @@ namespace HeuristicLab.Data.Views {
 
     #endregion
 
-    private System.Windows.Forms.Label rowsLabel;
-    private System.Windows.Forms.TextBox rowsTextBox;
-    private System.Windows.Forms.ErrorProvider errorProvider;
-    private System.Windows.Forms.TextBox columnsTextBox;
-    private System.Windows.Forms.Label columnsLabel;
-    private System.Windows.Forms.ContextMenuStrip contextMenu;
-    private System.Windows.Forms.ToolStripMenuItem ShowHideColumns;
+    protected System.Windows.Forms.Label rowsLabel;
+    protected System.Windows.Forms.TextBox rowsTextBox;
+    protected System.Windows.Forms.ErrorProvider errorProvider;
+    protected System.Windows.Forms.TextBox columnsTextBox;
+    protected System.Windows.Forms.Label columnsLabel;
+    protected System.Windows.Forms.ContextMenuStrip contextMenu;
+    protected System.Windows.Forms.ToolStripMenuItem ShowHideColumns;
     protected System.Windows.Forms.DataGridView dataGridView;
 
   }
