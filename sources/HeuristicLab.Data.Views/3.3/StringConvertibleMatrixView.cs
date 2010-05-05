@@ -106,7 +106,6 @@ namespace HeuristicLab.Data.Views {
 
     private void UpdateData() {
       sortedColumnIndizes.Clear();
-      Sort();
       rowsTextBox.Text = Content.Rows.ToString();
       rowsTextBox.Enabled = true;
       columnsTextBox.Text = Content.Columns.ToString();
@@ -122,6 +121,7 @@ namespace HeuristicLab.Data.Views {
       else
         dataGridView.ColumnCount = Content.Columns;
 
+      Sort();
       UpdateRowHeaders();
       UpdateColumnHeaders();
       dataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.ColumnHeader);
@@ -251,6 +251,46 @@ namespace HeuristicLab.Data.Views {
       UpdateRowHeaders();
     }
 
+    private void dataGridView_KeyDown(object sender, KeyEventArgs e) {
+      if (!ReadOnly && e.Control && e.KeyCode == Keys.V) { //shortcut for values paste
+        string[,] values = SplitClipboardString(Clipboard.GetText());
+
+        int rowIndex = 0;
+        int columnIndex = 0;
+        if (dataGridView.CurrentCell != null) {
+          rowIndex = dataGridView.CurrentCell.RowIndex;
+          columnIndex = dataGridView.CurrentCell.ColumnIndex;
+        }
+
+        for (int row = 0; row < values.GetLength(1); row++) {
+          if (row + rowIndex >= Content.Rows)
+            Content.Rows = Content.Rows + 1;
+          for (int col = 0; col < values.GetLength(0); col++) {
+            if (col + columnIndex >= Content.Columns)
+              Content.Columns = Content.Columns + 1;
+            Content.SetValue(values[col, row], row + rowIndex, col + columnIndex);
+          }
+        }
+
+        ClearSorting();
+      }
+    }
+
+    private string[,] SplitClipboardString(string clipboardText) {
+      clipboardText = clipboardText.Remove(clipboardText.Length - Environment.NewLine.Length);  //remove last newline constant
+      string[,] values = null;
+      string[] lines = clipboardText.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+      string[] cells;
+      for (int i = 0; i < lines.Length; i++) {
+        cells = lines[i].Split('\t');
+        if (values == null)
+          values = new string[cells.Length, lines.Length];
+        for (int j = 0; j < cells.Length; j++)
+          values[j, i] = string.IsNullOrEmpty(cells[j]) ? string.Empty : cells[j];
+      }
+      return values;
+    }
+
     private void dataGridView_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
       if (Content != null) {
         if (e.Button == MouseButtons.Left && Content.SortableView) {
@@ -280,6 +320,12 @@ namespace HeuristicLab.Data.Views {
             contextMenu.Show(MousePosition);
         }
       }
+    }
+
+    protected void ClearSorting() {
+      virtualRowIndizes = Enumerable.Range(0, Content.Rows).ToArray();
+      sortedColumnIndizes.Clear();
+      UpdateSortGlyph();
     }
 
     private void Sort() {
