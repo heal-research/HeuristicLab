@@ -44,6 +44,7 @@ namespace HeuristicLab.Optimization {
       constraints.ItemsRemoved += new CollectionItemsChangedEventHandler<IRunCollectionConstraint>(Constraints_ItemsRemoved);
       constraints.CollectionReset += new CollectionItemsChangedEventHandler<IRunCollectionConstraint>(Constraints_CollectionReset);
     }
+    [Storable]
     private Dictionary<string, HashSet<Type>> dataTypes;
     public IEnumerable<Type> GetDataType(string columnName) {
       if (!dataTypes.ContainsKey(columnName))
@@ -52,7 +53,7 @@ namespace HeuristicLab.Optimization {
     }
     private RunCollectionConstraintCollection constraints;
     public RunCollectionConstraintCollection Constraints {
-      get { return constraints;}
+      get { return constraints; }
     }
 
     protected override void OnCollectionReset(IEnumerable<IRun> items, IEnumerable<IRun> oldItems) {
@@ -154,6 +155,17 @@ namespace HeuristicLab.Optimization {
           value = run.Results[resultName];
       }
       return value;
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      RunCollection clone = (RunCollection)base.Clone(cloner);
+      clone.resultNames = this.resultNames;
+      clone.parameterNames = this.parameterNames;
+      clone.dataTypes = new Dictionary<string, HashSet<Type>>();
+      foreach (string s in this.dataTypes.Keys)
+        clone.dataTypes[s] = new HashSet<Type>(this.dataTypes[s]);
+
+      return clone;
     }
 
     #region IStringConvertibleMatrix Members
