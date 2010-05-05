@@ -31,7 +31,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Problems.Knapsack.Visualizers;
+using HeuristicLab.Problems.Knapsack.Analyzers;
 
 namespace HeuristicLab.Problems.Knapsack {
   [Item("Knapsack Problem", "Represents a Knapsack Problem.")]
@@ -119,9 +119,12 @@ namespace HeuristicLab.Problems.Knapsack {
       get { return BestKnownQualityParameter.Value; }
       set { BestKnownQualityParameter.Value = value; }
     }
-    private List<IBinaryVectorOperator> operators;
+    private List<IOperator> operators;
     public IEnumerable<IOperator> Operators {
       get { return operators.Cast<IOperator>(); }
+    }
+    private IEnumerable<IBestKnapsackSolutionAnalyzer> BestKnapsackSolutionAnalyzers {
+      get { return operators.OfType<IBestKnapsackSolutionAnalyzer>(); }
     }
     #endregion
 
@@ -167,7 +170,6 @@ namespace HeuristicLab.Problems.Knapsack {
       
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
-      ParameterizeVisualizer();
 
       Initialize();
     }
@@ -200,30 +202,30 @@ namespace HeuristicLab.Problems.Knapsack {
     }
 
     private void SolutionCreatorParameter_ValueChanged(object sender, EventArgs e) {
-      SolutionCreator.BinaryVectorParameter.ActualNameChanged += new EventHandler(SolutionCreator_PermutationParameter_ActualNameChanged);
+      SolutionCreator.BinaryVectorParameter.ActualNameChanged += new EventHandler(SolutionCreator_BinaryVectorParameter_ActualNameChanged);
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
-      ParameterizeVisualizer();
+      ParameterizeAnalyzers();
       ParameterizeOperators();
       OnSolutionCreatorChanged();
     }
-    private void SolutionCreator_PermutationParameter_ActualNameChanged(object sender, EventArgs e) {
+    private void SolutionCreator_BinaryVectorParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
-      ParameterizeVisualizer();
+      ParameterizeAnalyzers();
       ParameterizeOperators();
     }
     private void EvaluatorParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
-      ParameterizeVisualizer();
+      ParameterizeAnalyzers();
       OnEvaluatorChanged();
     }
     void KnapsackCapacityParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
-      ParameterizeVisualizer();
+      ParameterizeAnalyzers();
     }
     void WeightsParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
-      ParameterizeVisualizer();
+      ParameterizeAnalyzers();
       ParameterizeSolutionCreator();
 
       WeightsParameter.Value.Reset += new EventHandler(WeightsValue_Reset);
@@ -236,7 +238,7 @@ namespace HeuristicLab.Problems.Knapsack {
     }
     void ValuesParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
-      ParameterizeVisualizer();
+      ParameterizeAnalyzers();
       ParameterizeSolutionCreator();
 
       ValuesParameter.Value.Reset += new EventHandler(ValuesValue_Reset);
@@ -263,7 +265,7 @@ namespace HeuristicLab.Problems.Knapsack {
     private void Initialize() {
       InitializeOperators();
       SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
-      SolutionCreator.BinaryVectorParameter.ActualNameChanged += new EventHandler(SolutionCreator_PermutationParameter_ActualNameChanged);
+      SolutionCreator.BinaryVectorParameter.ActualNameChanged += new EventHandler(SolutionCreator_BinaryVectorParameter_ActualNameChanged);
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
       KnapsackCapacityParameter.ValueChanged += new EventHandler(KnapsackCapacityParameter_ValueChanged);
       WeightsParameter.ValueChanged += new EventHandler(WeightsParameter_ValueChanged);
@@ -288,18 +290,21 @@ namespace HeuristicLab.Problems.Knapsack {
         knapsackEvaluator.PenaltyParameter.ActualName = PenaltyParameter.Name;
       }
     }
-    private void ParameterizeVisualizer() {
-      //if (Visualizer is IKnapsackSolutionsVisualizer) {
-      //  IKnapsackSolutionsVisualizer visualizer =
-      //    (IKnapsackSolutionsVisualizer)Visualizer;
-      //  visualizer.BinaryVectorParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
-      //  visualizer.KnapsackCapacityParameter.ActualName = KnapsackCapacityParameter.Name;
-      //  visualizer.WeightsParameter.ActualName = WeightsParameter.Name;
-      //  visualizer.ValuesParameter.ActualName = ValuesParameter.Name;
-      //}
+    private void ParameterizeAnalyzers() {
+      foreach (IBestKnapsackSolutionAnalyzer analyzer in BestKnapsackSolutionAnalyzers) {
+        analyzer.BinaryVectorParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
+        analyzer.KnapsackCapacityParameter.ActualName = KnapsackCapacityParameter.Name;
+        analyzer.WeightsParameter.ActualName = WeightsParameter.Name;
+        analyzer.ValuesParameter.ActualName = ValuesParameter.Name;
+        analyzer.ResultsParameter.ActualName = "Results";
+      }
     }
     private void InitializeOperators() {
-      operators = new List<IBinaryVectorOperator>();
+      operators = new List<IOperator>();
+      operators.Add(new BestKnapsackSolutionAnalyzer());
+      operators.Add(new PopulationBestKnapsackSolutionAnalyzer());
+      operators.Add(new MultiPopulationBestKnapsackSolutionAnalyzer());
+      ParameterizeAnalyzers();
       foreach (IBinaryVectorOperator op in ApplicationManager.Manager.GetInstances<IBinaryVectorOperator>()) {
         if (!(op is ISingleObjectiveMoveEvaluator) || (op is IKnapsackMoveEvaluator)) {
           operators.Add(op);

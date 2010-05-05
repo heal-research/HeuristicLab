@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -19,19 +19,22 @@
  */
 #endregion
 
-using HeuristicLab.Optimization;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Data;
+using HeuristicLab.Optimization;
+using HeuristicLab.Problems.Knapsack;
 
 namespace HeuristicLab.Problems.Knapsack {
   /// <summary>
-  /// An interface which represents an operator for visualizing solutions of Knapsack Problems.
+  /// An interface which represents operators for analyzing the best solution of Knapsack Problems given in bit vector representation.
   /// </summary>
-  public interface IKnapsackSolutionsVisualizer : IAnalyzer {
-    ILookupParameter<ItemArray<BinaryVector>> BinaryVectorParameter { get; }
+  public interface IBestKnapsackSolutionAnalyzer : IAnalyzer {
+    ILookupParameter BinaryVectorParameter { get; }
     ILookupParameter<IntValue> KnapsackCapacityParameter { get; }
     ILookupParameter<IntArray> WeightsParameter { get; }
     ILookupParameter<IntArray> ValuesParameter { get; }
+    ILookupParameter QualityParameter { get; }
+    ILookupParameter<KnapsackSolution> BestSolutionParameter { get; }
+    IValueLookupParameter<ResultCollection> ResultsParameter { get; }
   }
 }

@@ -97,13 +97,28 @@ namespace HeuristicLab.Problems.Knapsack {
       }
     }
 
+    [Storable]
+    private DoubleValue quality;
+    public DoubleValue Quality {
+      get { return quality; }
+      set {
+        if (quality != value) {
+          if (quality != null) DeregisterQualityEvents();
+          quality = value;
+          if (quality != null) RegisterQualityEvents();
+          OnQualityChanged();
+        }
+      }
+    }
+
     public KnapsackSolution() : base() { }
-    public KnapsackSolution(BinaryVector binaryVector, IntValue capacity, IntArray weights, IntArray values)
+    public KnapsackSolution(BinaryVector binaryVector, DoubleValue quality, IntValue capacity, IntArray weights, IntArray values)
       : base() {
       this.binaryVector = binaryVector;
       this.capacity = capacity;
       this.weights = weights;
       this.values = values;
+      this.quality = quality;
       Initialize();
     }
     [StorableConstructor]
@@ -112,6 +127,7 @@ namespace HeuristicLab.Problems.Knapsack {
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
       if (binaryVector != null) RegisterBinaryVectorEvents();
+      if (quality != null) RegisterQualityEvents();
       if (capacity != null) RegisterCapacityEvents();
       if (weights != null) RegisterWeightsEvents();
       if (values != null) RegisterValuesEvents();
@@ -121,6 +137,7 @@ namespace HeuristicLab.Problems.Knapsack {
       KnapsackSolution clone = new KnapsackSolution();
       cloner.RegisterClonedObject(this, clone);
       clone.binaryVector = (BinaryVector)cloner.Clone(binaryVector);
+      clone.quality = (DoubleValue)cloner.Clone(quality);
       clone.capacity = (IntValue)cloner.Clone(capacity);
       clone.weights = (IntArray)cloner.Clone(weights);
       clone.values = (IntArray)cloner.Clone(values);
@@ -153,6 +170,13 @@ namespace HeuristicLab.Problems.Knapsack {
     public event EventHandler ValuesChanged;
     private void OnValuesChanged() {
       var changed = ValuesChanged;
+      if (changed != null)
+        changed(this, EventArgs.Empty);
+    }
+
+    public event EventHandler QualityChanged;
+    private void OnQualityChanged() {
+      var changed = QualityChanged;
       if (changed != null)
         changed(this, EventArgs.Empty);
     }
@@ -195,6 +219,13 @@ namespace HeuristicLab.Problems.Knapsack {
       Values.Reset -= new EventHandler(Values_Reset);
     }
 
+    private void RegisterQualityEvents() {
+      Quality.ValueChanged += new EventHandler(Quality_ValueChanged);
+    }
+    private void DeregisterQualityEvents() {
+      Quality.ValueChanged -= new EventHandler(Quality_ValueChanged);
+    }
+
     private void BinaryVector_ItemChanged(object sender, EventArgs<int> e) {
       OnBinaryVectorChanged();
     }
@@ -215,6 +246,9 @@ namespace HeuristicLab.Problems.Knapsack {
     }
     private void Values_Reset(object sender, EventArgs e) {
       OnValuesChanged();
+    }
+    private void Quality_ValueChanged(object sender, EventArgs e) {
+      OnQualityChanged();
     }
     #endregion
   }
