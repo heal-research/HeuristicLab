@@ -29,13 +29,13 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
-namespace HeuristicLab.Problems.ArtificialAnt {
+namespace HeuristicLab.Problems.ArtificialAnt.Analyzers {
   /// <summary>
   /// An operator for visualizing the best ant trail of an artificial ant problem.
   /// </summary>
-  [Item("BestAntTrailVisualizer", "An operator for visualizing the best ant trail of an artificial ant problem.")]
+  [Item("PopulationBestAntTrailAnalyzer", "An operator for visualizing the best ant trail of an artificial ant problem.")]
   [StorableClass]
-  public sealed class BestAntTrailVisualizer : SingleSuccessorOperator, IAntTrailVisualizer {
+  public sealed class PopulationBestAntTrailAnalyzer : SingleSuccessorOperator, IAntTrailPopulationAnalyzer {
     public ILookupParameter<BoolMatrix> WorldParameter {
       get { return (ILookupParameter<BoolMatrix>)Parameters["World"]; }
     }
@@ -48,18 +48,21 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     public ILookupParameter<IntValue> MaxTimeStepsParameter {
       get { return (ILookupParameter<IntValue>)Parameters["MaxTimeSteps"]; }
     }
-
-    public ILookupParameter<AntTrail> AntTrailParameter {
-      get { return (ILookupParameter<AntTrail>)Parameters["AntTrail"]; }
+    public ILookupParameter<AntTrail> BestSolutionParameter {
+      get { return (ILookupParameter<AntTrail>)Parameters["BestSolution"]; }
+    }
+    public ValueLookupParameter<ResultCollection> ResultsParameter {
+      get { return (ValueLookupParameter<ResultCollection>)Parameters["Results"]; }
     }
 
-    public BestAntTrailVisualizer()
+    public PopulationBestAntTrailAnalyzer()
       : base() {
       Parameters.Add(new LookupParameter<BoolMatrix>("World", "The world with food items for the artificial ant."));
       Parameters.Add(new SubScopesLookupParameter<SymbolicExpressionTree>("SymbolicExpressionTree", "The artificial ant solutions from which the best solution should be visualized."));
       Parameters.Add(new SubScopesLookupParameter<DoubleValue>("Quality", "The qualities of the artificial ant solutions which should be visualized."));
-      Parameters.Add(new LookupParameter<AntTrail>("AntTrail", "The visual representation of the best ant trail."));
+      Parameters.Add(new LookupParameter<AntTrail>("BestSolution", "The visual representation of the best ant trail."));
       Parameters.Add(new LookupParameter<IntValue>("MaxTimeSteps", "The maximal time steps that the artificial ant has available to collect all food items."));
+      Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the best artificial ant solution should be stored."));
     }
 
     public override IOperation Apply() {
@@ -67,15 +70,20 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       ItemArray<DoubleValue> qualities = QualityParameter.ActualValue;
       BoolMatrix world = WorldParameter.ActualValue;
       IntValue maxTimeSteps = MaxTimeStepsParameter.ActualValue;
+      ResultCollection results = ResultsParameter.ActualValue;
 
       int i = qualities.Select((x, index) => new { index, x.Value }).OrderBy(x => -x.Value).First().index;
 
-      AntTrail antTrail = AntTrailParameter.ActualValue;
-      if (antTrail == null) AntTrailParameter.ActualValue = new AntTrail(world, expressions[i], maxTimeSteps);
-      else {
+      AntTrail antTrail = BestSolutionParameter.ActualValue;
+      if (antTrail == null) {
+        var bestAntTrail = new AntTrail(world, expressions[i], maxTimeSteps);
+        BestSolutionParameter.ActualValue = bestAntTrail;
+        results.Add(new Result("Best Artificial Ant Solution", bestAntTrail));
+      } else {
         antTrail.World = world;
         antTrail.SymbolicExpressionTree = expressions[i];
         antTrail.MaxTimeSteps = maxTimeSteps;
+        results["Best Artificial Ant Solution"].Value = antTrail;
       }
       return base.Apply();
     }

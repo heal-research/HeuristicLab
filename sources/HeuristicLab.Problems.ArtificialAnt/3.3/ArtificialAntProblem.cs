@@ -36,6 +36,7 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureManipulators;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
+using HeuristicLab.Problems.ArtificialAnt.Analyzers;
 
 namespace HeuristicLab.Problems.ArtificialAnt {
   [Item("Artificial Ant Problem", "Represents the Artificial Ant problem.")]
@@ -180,9 +181,13 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     public DoubleValue BestKnownQuality {
       get { return BestKnownQualityParameter.Value; }
     }
-    private List<ISymbolicExpressionTreeOperator> operators;
+    private List<IOperator> operators;
     public IEnumerable<IOperator> Operators {
-      get { return operators.Cast<IOperator>(); }
+      get { return operators; }
+    }
+
+    public IEnumerable<IAntTrailPopulationAnalyzer> AntTrailAnalyzers {
+      get { return operators.OfType<IAntTrailPopulationAnalyzer>(); }
     }
     #endregion
 
@@ -208,8 +213,6 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       evaluator.QualityParameter.ActualName = "FoodEaten";
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
-      ParameterizeVisualizer();
-
       Initialize();
     }
 
@@ -247,24 +250,24 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       SolutionCreator.SymbolicExpressionTreeParameter.ActualNameChanged += new EventHandler(SolutionCreator_SymbolicExpressionTreeParameter_ActualNameChanged);
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
-      ParameterizeVisualizer();
+      ParameterizeAnalyzers();
       ParameterizeOperators();
       OnSolutionCreatorChanged();
     }
     private void SolutionCreator_SymbolicExpressionTreeParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
-      ParameterizeVisualizer();
+      ParameterizeAnalyzers();
       ParameterizeOperators();
     }
     private void EvaluatorParameter_ValueChanged(object sender, EventArgs e) {
       Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       ParameterizeEvaluator();
-      ParameterizeVisualizer();
+      ParameterizeAnalyzers();
       OnEvaluatorChanged();
     }
 
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
-      ParameterizeVisualizer();
+      ParameterizeAnalyzers();
     }
 
     #endregion
@@ -292,8 +295,10 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     }
 
     private void InitializeOperators() {
-      operators = new List<ISymbolicExpressionTreeOperator>();
-      operators.AddRange(ApplicationManager.Manager.GetInstances<ISymbolicExpressionTreeOperator>());
+      operators = new List<IOperator>();
+      operators.AddRange(ApplicationManager.Manager.GetInstances<ISymbolicExpressionTreeOperator>().OfType<IOperator>());
+      operators.Add(new PopulationBestAntTrailAnalyzer());
+      ParameterizeAnalyzers();
       ParameterizeOperators();
     }
 
@@ -307,20 +312,13 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       Evaluator.MaxTimeStepsParameter.ActualName = MaxTimeStepsParameter.Name;
       Evaluator.WorldParameter.ActualName = WorldParameter.Name;
     }
-    private void ParameterizeVisualizer() {
-      //if (Visualizer != null) {
-      //  Visualizer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
-      //  var antTrailVisualizer = Visualizer as IAntTrailVisualizer;
-      //  if (antTrailVisualizer != null) {
-      //    antTrailVisualizer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
-      //    antTrailVisualizer.WorldParameter.ActualName = WorldParameter.Name;
-      //    antTrailVisualizer.MaxTimeStepsParameter.ActualName = MaxTimeStepsParameter.Name;
-      //  }
-      //  var bestSymExpressionVisualizer = Visualizer as BestSymbolicExpressionTreeVisualizer;
-      //  if (bestSymExpressionVisualizer != null) {
-      //    bestSymExpressionVisualizer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
-      //  }
-      //}
+    private void ParameterizeAnalyzers() {
+      foreach (IAntTrailPopulationAnalyzer analyzer in AntTrailAnalyzers) {
+        analyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
+        analyzer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+        analyzer.WorldParameter.ActualName = WorldParameter.Name;
+        analyzer.MaxTimeStepsParameter.ActualName = MaxTimeStepsParameter.Name;
+      }
     }
 
     private void ParameterizeOperators() {

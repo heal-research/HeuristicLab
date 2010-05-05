@@ -26,8 +26,9 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 
-namespace HeuristicLab.Problems.ArtificialAnt {
-  public interface IAntTrailVisualizer : IAnalyzer {
+namespace HeuristicLab.Problems.ArtificialAnt.Analyzers {
+  public interface IAntTrailPopulationAnalyzer : IPopulationAnalyzer {
+    ILookupParameter<ItemArray<DoubleValue>> QualityParameter { get; }
     ILookupParameter<ItemArray<SymbolicExpressionTree>> SymbolicExpressionTreeParameter { get; }
     ILookupParameter<BoolMatrix> WorldParameter { get; }
     ILookupParameter<IntValue> MaxTimeStepsParameter { get; }

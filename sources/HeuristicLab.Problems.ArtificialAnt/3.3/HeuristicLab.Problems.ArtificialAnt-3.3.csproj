@@ -80,11 +80,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Analyzers\IAntTrailPopulationAnalyzer.cs" />
+    <Compile Include="Analyzers\PopulationBestAntTrailAnalyzer.cs" />
     <Compile Include="AntInterpreter.cs" />
-    <Compile Include="BestAntTrailVisualizer.cs" />
-    <Compile Include="BestSymbolicExpressionTreeVisualizer.cs" />
     <Compile Include="HeuristicLabProblemsArtificialAntPlugin.cs" />
-    <Compile Include="IAntTrailVisualizer.cs" />
     <Compile Include="Evaluator.cs" />
     <Compile Include="ArtificialAntExpressionGrammar.cs" />
     <Compile Include="ArtificialAntProblem.cs" />
