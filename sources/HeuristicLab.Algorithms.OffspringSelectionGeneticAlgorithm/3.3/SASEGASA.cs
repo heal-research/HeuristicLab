@@ -112,11 +112,11 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private ValueLookupParameter<IntValue> SelectedParentsParameter {
       get { return (ValueLookupParameter<IntValue>)Parameters["SelectedParents"]; }
     }
-    private ValueParameter<MultiAnalyzer<IMultiPopulationAnalyzer>> AnalyzerParameter {
-      get { return (ValueParameter<MultiAnalyzer<IMultiPopulationAnalyzer>>)Parameters["Analyzer"]; }
+    private ValueParameter<MultiAnalyzer> AnalyzerParameter {
+      get { return (ValueParameter<MultiAnalyzer>)Parameters["Analyzer"]; }
     }
-    private ValueParameter<MultiAnalyzer<IPopulationAnalyzer>> VillageAnalyzerParameter {
-      get { return (ValueParameter<MultiAnalyzer<IPopulationAnalyzer>>)Parameters["VillageAnalyzer"]; }
+    private ValueParameter<MultiAnalyzer> VillageAnalyzerParameter {
+      get { return (ValueParameter<MultiAnalyzer>)Parameters["VillageAnalyzer"]; }
     }
     #endregion
 
@@ -197,11 +197,11 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       get { return SelectedParentsParameter.Value; }
       set { SelectedParentsParameter.Value = value; }
     }
-    public MultiAnalyzer<IMultiPopulationAnalyzer> Analyzer {
+    public MultiAnalyzer Analyzer {
       get { return AnalyzerParameter.Value; }
       set { AnalyzerParameter.Value = value; }
     }
-    public MultiAnalyzer<IPopulationAnalyzer> VillageAnalyzer {
+    public MultiAnalyzer VillageAnalyzer {
       get { return VillageAnalyzerParameter.Value; }
       set { VillageAnalyzerParameter.Value = value; }
     }
@@ -249,8 +249,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("FinalMaximumSelectionPressure", "The maximum selection pressure used when there is only one village left.", new DoubleValue(100)));
       Parameters.Add(new ValueLookupParameter<BoolValue>("OffspringSelectionBeforeMutation", "True if the offspring selection step should be applied before mutation, false if it should be applied after mutation.", new BoolValue(false)));
       Parameters.Add(new ValueLookupParameter<IntValue>("SelectedParents", "Should be about 2 * PopulationSize, for large problems use a smaller value to decrease memory footprint.", new IntValue(200)));
-      Parameters.Add(new ValueParameter<MultiAnalyzer<IMultiPopulationAnalyzer>>("Analyzer", "The operator used to analyze the villages.", new MultiAnalyzer<IMultiPopulationAnalyzer>()));
-      Parameters.Add(new ValueParameter<MultiAnalyzer<IPopulationAnalyzer>>("VillageAnalyzer", "The operator used to analyze each village.", new MultiAnalyzer<IPopulationAnalyzer>()));
+      Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze the villages.", new MultiAnalyzer()));
+      Parameters.Add(new ValueParameter<MultiAnalyzer>("VillageAnalyzer", "The operator used to analyze each village.", new MultiAnalyzer()));
       
       RandomCreator randomCreator = new RandomCreator();
       SubScopesCreator populationCreator = new SubScopesCreator();
@@ -522,10 +522,10 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       VillageAnalyzer.Operators.Add(villageQualityAnalyzer);
       //Analyzer.Operators.Add(qualityAnalyzer);
       if (Problem != null) {
-        foreach (IPopulationAnalyzer analyzer in Problem.Operators.OfType<IPopulationAnalyzer>().OrderBy(x => x.Name)) {
+        foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name)) {
           VillageAnalyzer.Operators.Add(analyzer);
         }
-        foreach (IMultiPopulationAnalyzer analyzer in Problem.Operators.OfType<IMultiPopulationAnalyzer>().OrderBy(x => x.Name))
+        foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name))
           Analyzer.Operators.Add(analyzer);
       }
     }

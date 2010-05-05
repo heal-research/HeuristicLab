@@ -33,7 +33,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces {
   /// <summary>
   /// Interface for analyzers that can be applied to multiple populations of symbolic expression trees.
   /// </summary>
-  public interface ISymbolicExpressionTreeMultiPopulationAnalyzer : IMultiPopulationAnalyzer {
+  public interface ISymbolicExpressionTreeMultiPopulationAnalyzer : IAnalyzer {
     ILookupParameter<ItemArray<ItemArray<SymbolicExpressionTree>>> SymbolicExpressionTreeParameter { get; }
   }
 }

@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   /// </summary>
   [Item("PopulationBestTSPSolutionAnalyzer", "An operator for analyzing the best solution of Traveling Salesman Problems given in path representation using city coordinates.")]
   [StorableClass]
-  public sealed class PopulationBestTSPSolutionAnalyzer : SingleSuccessorOperator, IBestTSPSolutionAnalyzer, IPopulationAnalyzer {
+  public sealed class PopulationBestTSPSolutionAnalyzer : SingleSuccessorOperator, IBestTSPSolutionAnalyzer, IAnalyzer {
     public ILookupParameter<DoubleMatrix> CoordinatesParameter {
       get { return (ILookupParameter<DoubleMatrix>)Parameters["Coordinates"]; }
     }

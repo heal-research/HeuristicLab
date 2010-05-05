@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.OneMax.Analyzers {
   /// </summary>
   [Item("BestOneMaxSolutionAnalyzer", "An operator for analyzing the best solution for a OneMax problem.")]
   [StorableClass]
-  class BestOneMaxSolutionAnalyzer : SingleSuccessorOperator, IBestOneMaxSolutionAnalyzer, ISolutionAnalyzer {
+  class BestOneMaxSolutionAnalyzer : SingleSuccessorOperator, IBestOneMaxSolutionAnalyzer, IAnalyzer {
 
     public ILookupParameter<BinaryVector> BinaryVectorParameter {
       get { return (ILookupParameter<BinaryVector>)Parameters["BinaryVector"]; }

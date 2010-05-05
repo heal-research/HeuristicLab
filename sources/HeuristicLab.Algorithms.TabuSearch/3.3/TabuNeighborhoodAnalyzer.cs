@@ -27,7 +27,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Algorithms.TabuSearch {
-  public class TabuNeighborhoodAnalyzer : SingleSuccessorOperator, IPopulationAnalyzer {
+  public class TabuNeighborhoodAnalyzer : SingleSuccessorOperator, IAnalyzer {
     public SubScopesLookupParameter<BoolValue> IsTabuParameter {
       get { return (SubScopesLookupParameter<BoolValue>)Parameters["IsTabu"]; }
     }

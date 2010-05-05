@@ -45,7 +45,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ViewHost));
       this.viewPanel = new HeuristicLab.MainForm.WindowsForms.ViewHostPanel();
       this.messageLabel = new System.Windows.Forms.Label();
       this.viewsLabel = new System.Windows.Forms.Label();

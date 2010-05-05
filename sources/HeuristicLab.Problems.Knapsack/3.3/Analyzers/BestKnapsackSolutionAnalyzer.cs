@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.Knapsack.Analyzers {
   /// </summary>
   [Item("BestKnapsackSolutionAnalyzer", "An operator for analyzing the best solution for a knapsack problem.")]
   [StorableClass]
-  class BestKnapsackSolutionAnalyzer : SingleSuccessorOperator, IBestKnapsackSolutionAnalyzer, ISolutionAnalyzer {
+  class BestKnapsackSolutionAnalyzer : SingleSuccessorOperator, IBestKnapsackSolutionAnalyzer, IAnalyzer {
 
     public ILookupParameter<BinaryVector> BinaryVectorParameter {
       get { return (ILookupParameter<BinaryVector>)Parameters["BinaryVector"]; }

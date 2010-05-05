@@ -363,8 +363,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
 
       resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Generations"));
       resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutions"));
-      resultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("ComparisonFactor", null, "ComparisonFactor"));
-      resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Terminated Villages", null, "TerminatedVillages"));
+      resultsCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("ComparisonFactor", null, "ComparisonFactor"));
+      resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Terminated Villages", null, "TerminatedVillages"));
       resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Total Active Villages", null, "VillageCount"));
       resultsCollector2.ResultsParameter.ActualName = ResultsParameter.Name;
 

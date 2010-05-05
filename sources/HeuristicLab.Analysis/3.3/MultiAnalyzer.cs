@@ -31,9 +31,9 @@ namespace HeuristicLab.Analysis {
   /// <summary>
   /// An analyzer which applies arbitrary many other analyzers.
   /// </summary>
-  [Item("MultiAnalyzer<T>", "An analyzer which applies arbitrary many other analyzers.")]
+  [Item("MultiAnalyzer", "An analyzer which applies arbitrary many other analyzers.")]
   [StorableClass]
-  public class MultiAnalyzer<T> : CheckedMultiOperator<T>, IAnalyzer where T : class, IAnalyzer {
+  public class MultiAnalyzer : CheckedMultiOperator<IAnalyzer>, IAnalyzer {
     public override bool CanChangeName {
       get { return false; }
     }
@@ -68,7 +68,7 @@ namespace HeuristicLab.Analysis {
       if (counter.Value == interval.Value) {
         counter.Value = 0;
         OperationCollection next = new OperationCollection();
-        foreach (IndexedItem<T> item in Operators.CheckedItems)
+        foreach (IndexedItem<IAnalyzer> item in Operators.CheckedItems)
           next.Add(ExecutionContext.CreateOperation(item.Value));
         next.Add(base.Apply());
         return next;

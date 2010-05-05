@@ -103,11 +103,11 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     private ValueParameter<BoolValue> ParallelParameter {
       get { return (ValueParameter<BoolValue>)Parameters["Parallel"]; }
     }
-    private ValueParameter<MultiAnalyzer<IMultiPopulationAnalyzer>> AnalyzerParameter {
-      get { return (ValueParameter<MultiAnalyzer<IMultiPopulationAnalyzer>>)Parameters["Analyzer"]; }
+    private ValueParameter<MultiAnalyzer> AnalyzerParameter {
+      get { return (ValueParameter<MultiAnalyzer>)Parameters["Analyzer"]; }
     }
-    private ValueParameter<MultiAnalyzer<IPopulationAnalyzer>> IslandAnalyzerParameter {
-      get { return (ValueParameter<MultiAnalyzer<IPopulationAnalyzer>>)Parameters["IslandAnalyzer"]; }
+    private ValueParameter<MultiAnalyzer> IslandAnalyzerParameter {
+      get { return (ValueParameter<MultiAnalyzer>)Parameters["IslandAnalyzer"]; }
     }
     #endregion
 
@@ -176,11 +176,11 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       get { return ParallelParameter.Value; }
       set { ParallelParameter.Value = value; }
     }
-    public MultiAnalyzer<IMultiPopulationAnalyzer> Analyzer {
+    public MultiAnalyzer Analyzer {
       get { return AnalyzerParameter.Value; }
       set { AnalyzerParameter.Value = value; }
     }
-    public MultiAnalyzer<IPopulationAnalyzer> IslandAnalyzer {
+    public MultiAnalyzer IslandAnalyzer {
       get { return IslandAnalyzerParameter.Value; }
       set { IslandAnalyzerParameter.Value = value; }
     }
@@ -227,8 +227,8 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Parameters.Add(new OptionalConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
       Parameters.Add(new ValueParameter<IntValue>("Elites", "The numer of elite solutions which are kept in each generation.", new IntValue(1)));
       Parameters.Add(new ValueParameter<BoolValue>("Parallel", "True if the islands should be run in parallel (also requires a parallel engine)", new BoolValue(false)));
-      Parameters.Add(new ValueParameter<MultiAnalyzer<IMultiPopulationAnalyzer>>("Analyzer", "The operator used to analyze the islands.", new MultiAnalyzer<IMultiPopulationAnalyzer>()));
-      Parameters.Add(new ValueParameter<MultiAnalyzer<IPopulationAnalyzer>>("IslandAnalyzer", "The operator used to analyze each island.", new MultiAnalyzer<IPopulationAnalyzer>()));
+      Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze the islands.", new MultiAnalyzer()));
+      Parameters.Add(new ValueParameter<MultiAnalyzer>("IslandAnalyzer", "The operator used to analyze each island.", new MultiAnalyzer()));
       
       RandomCreator randomCreator = new RandomCreator();
       SubScopesCreator populationCreator = new SubScopesCreator();
@@ -512,10 +512,10 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       IslandAnalyzer.Operators.Add(islandQualityAnalyzer);
       //Analyzer.Operators.Add(qualityAnalyzer);
       if (Problem != null) {
-        foreach (IPopulationAnalyzer analyzer in Problem.Operators.OfType<IPopulationAnalyzer>().OrderBy(x => x.Name)) {
+        foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name)) {
           IslandAnalyzer.Operators.Add(analyzer);
         }
-        foreach (IMultiPopulationAnalyzer analyzer in Problem.Operators.OfType<IMultiPopulationAnalyzer>().OrderBy(x => x.Name))
+        foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name))
           Analyzer.Operators.Add(analyzer);
       }
     }

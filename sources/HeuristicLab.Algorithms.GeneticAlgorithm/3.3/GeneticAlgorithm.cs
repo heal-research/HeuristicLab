@@ -77,8 +77,8 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     private ValueParameter<IntValue> ElitesParameter {
       get { return (ValueParameter<IntValue>)Parameters["Elites"]; }
     }
-    private ValueParameter<MultiAnalyzer<IPopulationAnalyzer>> AnalyzerParameter {
-      get { return (ValueParameter<MultiAnalyzer<IPopulationAnalyzer>>)Parameters["Analyzer"]; }
+    private ValueParameter<MultiAnalyzer> AnalyzerParameter {
+      get { return (ValueParameter<MultiAnalyzer>)Parameters["Analyzer"]; }
     }
     private ValueParameter<IntValue> MaximumGenerationsParameter {
       get { return (ValueParameter<IntValue>)Parameters["MaximumGenerations"]; }
@@ -118,7 +118,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       get { return ElitesParameter.Value; }
       set { ElitesParameter.Value = value; }
     }
-    public MultiAnalyzer<IPopulationAnalyzer> Analyzer {
+    public MultiAnalyzer Analyzer {
       get { return AnalyzerParameter.Value; }
       set { AnalyzerParameter.Value = value; }
     }
@@ -152,7 +152,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Parameters.Add(new ValueParameter<PercentValue>("MutationProbability", "The probability that the mutation operator is applied on a solution.", new PercentValue(0.05)));
       Parameters.Add(new OptionalConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
       Parameters.Add(new ValueParameter<IntValue>("Elites", "The numer of elite solutions which are kept in each generation.", new IntValue(1)));
-      Parameters.Add(new ValueParameter<MultiAnalyzer<IPopulationAnalyzer>>("Analyzer", "The operator used to analyze each generation.", new MultiAnalyzer<IPopulationAnalyzer>()));
+      Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze each generation.", new MultiAnalyzer()));
       Parameters.Add(new ValueParameter<IntValue>("MaximumGenerations", "The maximum number of generations which should be processed.", new IntValue(1000)));
 
       RandomCreator randomCreator = new RandomCreator();
@@ -352,7 +352,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Analyzer.Operators.Clear();
       Analyzer.Operators.Add(qualityAnalyzer);
       if (Problem != null) {
-        foreach (IPopulationAnalyzer analyzer in Problem.Operators.OfType<IPopulationAnalyzer>().OrderBy(x => x.Name))
+        foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name))
           Analyzer.Operators.Add(analyzer);
       }
     }

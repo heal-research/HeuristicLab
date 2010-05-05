@@ -36,7 +36,7 @@ using HeuristicLab.Analysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
-  public interface ISymbolicRegressionSolutionPopulationAnalyzer : IPopulationAnalyzer {
+  public interface ISymbolicRegressionSolutionPopulationAnalyzer : IAnalyzer {
     ILookupParameter<ItemArray<SymbolicExpressionTree>> SymbolicExpressionTreeParameter { get; }
     ILookupParameter<ResultCollection> ResultsParameter { get; }
   }

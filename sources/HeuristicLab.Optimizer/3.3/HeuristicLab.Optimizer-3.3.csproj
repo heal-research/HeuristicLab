@@ -178,24 +178,18 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Documents\GA_TSP.hl" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Documents\ES_Griewank.hl" />
     <None Include="Documents\Images\New.png" />
     <None Include="Documents\Images\Open.png" />
     <None Include="Documents\Images\Pause.png" />
     <None Include="Documents\Images\Play.png" />
     <None Include="Documents\Images\Restart.png" />
     <None Include="Documents\Images\Stop.png" />
-    <EmbeddedResource Include="Documents\IslandGA_TSP.hl" />
-    <EmbeddedResource Include="Documents\LS_OneMax.hl" />
-    <EmbeddedResource Include="Documents\SA_Rastrigin.hl" />
-    <EmbeddedResource Include="Documents\TS_TSP.hl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

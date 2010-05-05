@@ -33,7 +33,7 @@ namespace HeuristicLab.Analysis {
   /// </summary>
   [Item("SolutionValueAnalyzer", "An operator which analyzes a value of the current solution.")]
   [StorableClass]
-  public sealed class SolutionValueAnalyzer : AlgorithmOperator, ISolutionAnalyzer {
+  public sealed class SolutionValueAnalyzer : AlgorithmOperator, IAnalyzer {
     #region Parameter properties
     public LookupParameter<DoubleValue> ValueParameter {
       get { return (LookupParameter<DoubleValue>)Parameters["Value"]; }

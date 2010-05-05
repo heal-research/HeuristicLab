@@ -33,7 +33,7 @@ namespace HeuristicLab.Analysis {
   /// </summary>
   [Item("PopulationMinAverageMaxValueAnalyzer", "An operator which analyzes the minimum, average and maximum of a value in the current population.")]
   [StorableClass]
-  public sealed class PopulationMinAverageMaxValueAnalyzer : AlgorithmOperator, IPopulationAnalyzer {
+  public sealed class PopulationMinAverageMaxValueAnalyzer : AlgorithmOperator, IAnalyzer {
     #region Parameter properties
     public SubScopesLookupParameter<DoubleValue> ValueParameter {
       get { return (SubScopesLookupParameter<DoubleValue>)Parameters["Value"]; }

@@ -86,9 +86,6 @@
     <None Include="HeuristicLabOptimizationPlugin.cs.frame" />
     <Compile Include="Algorithm.cs" />
     <Compile Include="BatchRun.cs" />
-    <Compile Include="Interfaces\IMultiPopulationAnalyzer.cs" />
-    <Compile Include="Interfaces\IPopulationAnalyzer.cs" />
-    <Compile Include="Interfaces\ISolutionAnalyzer.cs" />
     <Compile Include="RunCollectionConstraints\RunCollectionComparisonConstraint.cs" />
     <Compile Include="RunCollectionConstraints\RunCollectionConstraintCollection.cs" />
     <Compile Include="RunCollectionConstraints\RunCollectionTypeCompatiblityConstraint.cs" />

@@ -120,11 +120,11 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private ValueLookupParameter<BoolValue> OffspringSelectionBeforeMutationParameter {
       get { return (ValueLookupParameter<BoolValue>)Parameters["OffspringSelectionBeforeMutation"]; }
     }
-    private ValueParameter<MultiAnalyzer<IMultiPopulationAnalyzer>> AnalyzerParameter {
-      get { return (ValueParameter<MultiAnalyzer<IMultiPopulationAnalyzer>>)Parameters["Analyzer"]; }
+    private ValueParameter<MultiAnalyzer> AnalyzerParameter {
+      get { return (ValueParameter<MultiAnalyzer>)Parameters["Analyzer"]; }
     }
-    private ValueParameter<MultiAnalyzer<IPopulationAnalyzer>> IslandAnalyzerParameter {
-      get { return (ValueParameter<MultiAnalyzer<IPopulationAnalyzer>>)Parameters["IslandAnalyzer"]; }
+    private ValueParameter<MultiAnalyzer> IslandAnalyzerParameter {
+      get { return (ValueParameter<MultiAnalyzer>)Parameters["IslandAnalyzer"]; }
     }
     #endregion
 
@@ -217,11 +217,11 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       get { return OffspringSelectionBeforeMutationParameter.Value; }
       set { OffspringSelectionBeforeMutationParameter.Value = value; }
     }
-    public MultiAnalyzer<IMultiPopulationAnalyzer> Analyzer {
+    public MultiAnalyzer Analyzer {
       get { return AnalyzerParameter.Value; }
       set { AnalyzerParameter.Value = value; }
     }
-    public MultiAnalyzer<IPopulationAnalyzer> IslandAnalyzer {
+    public MultiAnalyzer IslandAnalyzer {
       get { return IslandAnalyzerParameter.Value; }
       set { IslandAnalyzerParameter.Value = value; }
     }
@@ -275,8 +275,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier>("ComparisonFactorModifier", "The operator used to modify the comparison factor.", new ItemSet<IDiscreteDoubleValueModifier>(new IDiscreteDoubleValueModifier[] { new LinearDiscreteDoubleValueModifier() }), new LinearDiscreteDoubleValueModifier()));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("MaximumSelectionPressure", "The maximum selection pressure that terminates the algorithm.", new DoubleValue(100)));
       Parameters.Add(new ValueLookupParameter<BoolValue>("OffspringSelectionBeforeMutation", "True if the offspring selection step should be applied before mutation, false if it should be applied after mutation.", new BoolValue(false)));
-      Parameters.Add(new ValueParameter<MultiAnalyzer<IMultiPopulationAnalyzer>>("Analyzer", "The operator used to analyze the islands.", new MultiAnalyzer<IMultiPopulationAnalyzer>()));
-      Parameters.Add(new ValueParameter<MultiAnalyzer<IPopulationAnalyzer>>("IslandAnalyzer", "The operator used to analyze each island.", new MultiAnalyzer<IPopulationAnalyzer>()));
+      Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze the islands.", new MultiAnalyzer()));
+      Parameters.Add(new ValueParameter<MultiAnalyzer>("IslandAnalyzer", "The operator used to analyze each island.", new MultiAnalyzer()));
       
       RandomCreator randomCreator = new RandomCreator();
       SubScopesCreator populationCreator = new SubScopesCreator();
@@ -612,10 +612,10 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       IslandAnalyzer.Operators.Add(islandQualityAnalyzer);
       //Analyzer.Operators.Add(qualityAnalyzer);
       if (Problem != null) {
-        foreach (IPopulationAnalyzer analyzer in Problem.Operators.OfType<IPopulationAnalyzer>().OrderBy(x => x.Name)) {
+        foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name)) {
           IslandAnalyzer.Operators.Add(analyzer);
         }
-        foreach (IMultiPopulationAnalyzer analyzer in Problem.Operators.OfType<IMultiPopulationAnalyzer>().OrderBy(x => x.Name))
+        foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name))
           Analyzer.Operators.Add(analyzer);
       }
     }

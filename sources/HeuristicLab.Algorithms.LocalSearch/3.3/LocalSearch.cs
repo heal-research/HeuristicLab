@@ -71,11 +71,11 @@ namespace HeuristicLab.Algorithms.LocalSearch {
     private ValueParameter<IntValue> SampleSizeParameter {
       get { return (ValueParameter<IntValue>)Parameters["SampleSize"]; }
     }
-    private ValueParameter<MultiAnalyzer<IPopulationAnalyzer>> MoveAnalyzerParameter {
-      get { return (ValueParameter<MultiAnalyzer<IPopulationAnalyzer>>)Parameters["MoveAnalyzer"]; }
+    private ValueParameter<MultiAnalyzer> MoveAnalyzerParameter {
+      get { return (ValueParameter<MultiAnalyzer>)Parameters["MoveAnalyzer"]; }
     }
-    private ValueParameter<MultiAnalyzer<ISolutionAnalyzer>> AnalyzerParameter {
-      get { return (ValueParameter<MultiAnalyzer<ISolutionAnalyzer>>)Parameters["Analyzer"]; }
+    private ValueParameter<MultiAnalyzer> AnalyzerParameter {
+      get { return (ValueParameter<MultiAnalyzer>)Parameters["Analyzer"]; }
     }
     #endregion
 
@@ -108,11 +108,11 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       get { return SampleSizeParameter.Value; }
       set { SampleSizeParameter.Value = value; }
     }
-    public MultiAnalyzer<IPopulationAnalyzer> MoveAnalyzer {
+    public MultiAnalyzer MoveAnalyzer {
       get { return MoveAnalyzerParameter.Value; }
       set { MoveAnalyzerParameter.Value = value; }
     }
-    public MultiAnalyzer<ISolutionAnalyzer> Analyzer {
+    public MultiAnalyzer Analyzer {
       get { return AnalyzerParameter.Value; }
       set { AnalyzerParameter.Value = value; }
     }
@@ -139,8 +139,8 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       Parameters.Add(new ConstrainedValueParameter<ISingleObjectiveMoveEvaluator>("MoveEvaluator", "The operator used to evaluate a move."));
       Parameters.Add(new ValueParameter<IntValue>("MaximumIterations", "The maximum number of generations which should be processed.", new IntValue(1000)));
       Parameters.Add(new ValueParameter<IntValue>("SampleSize", "Number of moves that MultiMoveGenerators should create. This is ignored for Exhaustive- and SingleMoveGenerators.", new IntValue(100)));
-      Parameters.Add(new ValueParameter<MultiAnalyzer<IPopulationAnalyzer>>("MoveAnalyzer", "The operator used to analyze the moves.", new MultiAnalyzer<IPopulationAnalyzer>()));
-      Parameters.Add(new ValueParameter<MultiAnalyzer<ISolutionAnalyzer>>("Analyzer", "The operator used to analyze the solution.", new MultiAnalyzer<ISolutionAnalyzer>()));
+      Parameters.Add(new ValueParameter<MultiAnalyzer>("MoveAnalyzer", "The operator used to analyze the moves.", new MultiAnalyzer()));
+      Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze the solution.", new MultiAnalyzer()));
       
       RandomCreator randomCreator = new RandomCreator();
       SolutionsCreator solutionsCreator = new SolutionsCreator();
@@ -318,7 +318,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       MoveAnalyzer.Operators.Clear();
       MoveAnalyzer.Operators.Add(moveQualityAnalyzer);
       if (Problem != null) {
-        foreach (ISolutionAnalyzer analyzer in Problem.Operators.OfType<ISolutionAnalyzer>().OrderBy(x => x.Name))
+        foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name))
           Analyzer.Operators.Add(analyzer);
       }
     }

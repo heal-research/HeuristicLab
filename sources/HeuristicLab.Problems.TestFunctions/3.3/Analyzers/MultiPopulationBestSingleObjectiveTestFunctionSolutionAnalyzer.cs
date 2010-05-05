@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.TestFunctions.Analyzers {
   /// </summary>
   [Item("MultiPopulationBestSingleObjectiveTestFunctionSolutionAnalyzer", "An operator for analyzing the best solution for a SingleObjectiveTestFunction problem.")]
   [StorableClass]
-  class MultiPopulationBestSingleObjectiveTestFunctionSolutionAnalyzer : SingleSuccessorOperator, IBestSingleObjectiveTestFunctionSolutionAnalyzer, IMultiPopulationAnalyzer {
+  class MultiPopulationBestSingleObjectiveTestFunctionSolutionAnalyzer : SingleSuccessorOperator, IBestSingleObjectiveTestFunctionSolutionAnalyzer, IAnalyzer {
 
     public ILookupParameter<ItemArray<ItemArray<RealVector>>> RealVectorParameter {
       get { return (ILookupParameter<ItemArray<ItemArray<RealVector>>>)Parameters["RealVector"]; }
