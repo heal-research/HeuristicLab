@@ -67,9 +67,7 @@ namespace HeuristicLab.Optimization.Views {
       this.chart.ChartAreas[0].CursorX.Interval = 0;
       this.chart.ChartAreas[0].CursorY.Interval = 0;
       this.chart.ChartAreas[0].AxisX.ScaleView.Zoomable = !this.isSelecting;
-      this.chart.ChartAreas[0].AxisX.IntervalAutoMode = IntervalAutoMode.VariableCount;
       this.chart.ChartAreas[0].AxisY.ScaleView.Zoomable = !this.isSelecting;
-      this.chart.ChartAreas[0].AxisY.IntervalAutoMode = IntervalAutoMode.VariableCount;
     }
 
     public new RunCollection Content {
@@ -340,8 +338,8 @@ namespace HeuristicLab.Optimization.Views {
             run.Color = colorDialog.Color;
           }
         }
-        this.chart.ChartAreas[0].CursorX.SetSelectionPosition(double.NaN, double.NaN);
-        this.chart.ChartAreas[0].CursorY.SetSelectionPosition(double.NaN, double.NaN);
+        this.chart.ChartAreas[0].CursorX.SelectionStart = this.chart.ChartAreas[0].CursorX.SelectionEnd;
+        this.chart.ChartAreas[0].CursorY.SelectionStart = this.chart.ChartAreas[0].CursorY.SelectionEnd;
       }
     }
 

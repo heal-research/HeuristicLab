@@ -25,6 +25,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
+using System.Drawing;
 
 namespace HeuristicLab.Optimization.Views {
   /// <summary>
@@ -57,6 +58,21 @@ namespace HeuristicLab.Optimization.Views {
       base.ReadOnly = true;
     }
 
+    protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
+      Content.Changed += new EventHandler(Content_Changed);
+    }
+    protected override void DeregisterContentEvents() {
+      base.DeregisterContentEvents();
+      Content.Changed -= new EventHandler(Content_Changed);
+    }
+    private void Content_Changed(object sender, EventArgs e) {
+      if (InvokeRequired)
+        this.Invoke(new EventHandler(Content_Changed), sender, e);
+      else
+        UpdateColorPictureBox();
+    }
+
     protected override void OnContentChanged() {
       base.OnContentChanged();
       FillListView();
@@ -64,8 +80,10 @@ namespace HeuristicLab.Optimization.Views {
       viewHost.Content = null;
       if (Content == null)
         Caption = "Run";
-      else
+      else {
         Caption = Content.Name + " (" + Content.GetType().Name + ")";
+        UpdateColorPictureBox();
+      }
       SetEnabledStateOfControls();
     }
     protected override void OnReadOnlyChanged() {
@@ -79,7 +97,27 @@ namespace HeuristicLab.Optimization.Views {
     private void SetEnabledStateOfControls() {
       listView.Enabled = Content != null;
       viewHost.Enabled = Content != null;
+      changeColorButton.Enabled = Content != null;
       showAlgorithmButton.Enabled = Content != null && !Locked;
+    }
+
+    private void changeColorButton_Click(object sender, EventArgs e) {
+      if (colorDialog.ShowDialog(this) == DialogResult.OK) {
+        this.Content.Color = this.colorDialog.Color;
+      }
+    }
+    private void UpdateColorPictureBox() {
+      this.colorDialog.Color = this.Content.Color;
+      this.colorPictureBox.Image = this.GenerateImage(colorPictureBox.Width, colorPictureBox.Height, this.Content.Color);
+    }
+    private Image GenerateImage(int width, int height, Color fillColor) {
+      Image colorImage = new Bitmap(width, height);
+      using (Graphics gfx = Graphics.FromImage(colorImage)) {
+        using (SolidBrush brush = new SolidBrush(fillColor)) {
+          gfx.FillRectangle(brush, 0, 0, width, height);
+        }
+      }
+      return colorImage;
     }
 
     private void FillListView() {
