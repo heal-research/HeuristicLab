@@ -26,10 +26,10 @@ namespace HeuristicLab.Core {
   public class ConstraintOperation {
     public static readonly ConstraintOperation Equal = new ConstraintOperation(0, "Equal");
     public static readonly ConstraintOperation NotEqual = new ConstraintOperation(1, "Not equal");
-    public static readonly ConstraintOperation Lesser = new ConstraintOperation(2, "Lesser");
-    public static readonly ConstraintOperation LesserOrEqual = new ConstraintOperation(3, "Lesser or equal");
-    public static readonly ConstraintOperation Greater = new ConstraintOperation(4, "Greater");
-    public static readonly ConstraintOperation GreaterOrEqual = new ConstraintOperation(5, "Greater or equal");
+    public static readonly ConstraintOperation Less = new ConstraintOperation(2, "Less than");
+    public static readonly ConstraintOperation LessOrEqual = new ConstraintOperation(3, "Less than or equal");
+    public static readonly ConstraintOperation Greater = new ConstraintOperation(4, "Greater than");
+    public static readonly ConstraintOperation GreaterOrEqual = new ConstraintOperation(5, "Greater than or equal");
     public static readonly ConstraintOperation IsTypeCompatible = new ConstraintOperation(6, "Is type compatible to");
     public static readonly ConstraintOperation IsTypeNotCompatible = new ConstraintOperation(7, "Is type not compatible to");
 

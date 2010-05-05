@@ -43,7 +43,7 @@ namespace HeuristicLab.Core {
     }
 
     public override IEnumerable<ConstraintOperation> AllowedConstraintOperations {
-      get { return new ConstraintOperation[6] { ConstraintOperation.Lesser, ConstraintOperation.LesserOrEqual, ConstraintOperation.Equal, ConstraintOperation.GreaterOrEqual, ConstraintOperation.Greater, ConstraintOperation.NotEqual }; }
+      get { return new ConstraintOperation[6] { ConstraintOperation.Less, ConstraintOperation.LessOrEqual, ConstraintOperation.Equal, ConstraintOperation.GreaterOrEqual, ConstraintOperation.Greater, ConstraintOperation.NotEqual }; }
     }
 
     protected override bool Check(object constrainedMember) {
@@ -56,9 +56,9 @@ namespace HeuristicLab.Core {
 
       int compareResult = comparableMember.CompareTo(this.ConstraintData);
       bool result = false;
-      if (this.ConstraintOperation == ConstraintOperation.Lesser)
+      if (this.ConstraintOperation == ConstraintOperation.Less)
         result = compareResult < 0;
-      else if (this.ConstraintOperation == ConstraintOperation.LesserOrEqual)
+      else if (this.ConstraintOperation == ConstraintOperation.LessOrEqual)
         result = compareResult <= 0;
       else if (this.ConstraintOperation == ConstraintOperation.Equal)
         result = compareResult == 0;
