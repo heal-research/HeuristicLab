@@ -26,7 +26,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Parameters {
   /// <summary>
-  /// A generic parameter representing instances of type T which are collected from the sub-scopes of the current scope.
+  /// A generic parameter representing instances of type T which are collected from or written to the sub-scopes of the current scope.
   /// </summary>
   [Item("SubScopesLookupParameter<T>", "A generic parameter representing instances of type T which are collected from or written to the sub-scopes of the current scope.")]
   [StorableClass]

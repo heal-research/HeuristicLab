@@ -83,6 +83,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Analyzers\MultiPopulationBestTSPSolutionAnalyzer.cs" />
+    <Compile Include="Analyzers\PopulationBestTSPSolutionAnalyzer.cs" />
     <Compile Include="Analyzers\BestTSPSolutionAnalyzer.cs" />
     <Compile Include="Evaluators\TSPEuclideanPathEvaluator.cs" />
     <Compile Include="Evaluators\TSPGeoPathEvaluator.cs" />

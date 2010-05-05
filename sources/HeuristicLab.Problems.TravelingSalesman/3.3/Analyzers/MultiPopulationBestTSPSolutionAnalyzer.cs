@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -28,22 +29,23 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
   /// An operator for analyzing the best solution of Traveling Salesman Problems given in path representation using city coordinates.
   /// </summary>
-  [Item("BestTSPSolutionAnalyzer", "An operator for analyzing the best solution of Traveling Salesman Problems given in path representation using city coordinates.")]
+  [Item("MultiPopulationBestTSPSolutionAnalyzer", "An operator for analyzing the best solution of Traveling Salesman Problems given in path representation using city coordinates.")]
   [StorableClass]
-  public sealed class BestTSPSolutionAnalyzer : SingleSuccessorOperator, ISolutionAnalyzer {
+  public sealed class MultiPopulationBestTSPSolutionAnalyzer : SingleSuccessorOperator, IMultiPopulationAnalyzer {
     public LookupParameter<DoubleMatrix> CoordinatesParameter {
       get { return (LookupParameter<DoubleMatrix>)Parameters["Coordinates"]; }
     }
-    public LookupParameter<Permutation> PermutationParameter {
-      get { return (LookupParameter<Permutation>)Parameters["Permutation"]; }
+    public SubScopesSubScopesLookupParameter<Permutation> PermutationParameter {
+      get { return (SubScopesSubScopesLookupParameter<Permutation>)Parameters["Permutation"]; }
     }
-    public LookupParameter<DoubleValue> QualityParameter {
-      get { return (LookupParameter<DoubleValue>)Parameters["Quality"]; }
+    public SubScopesSubScopesLookupParameter<DoubleValue> QualityParameter {
+      get { return (SubScopesSubScopesLookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
     public LookupParameter<PathTSPTour> BestSolutionParameter {
       get { return (LookupParameter<PathTSPTour>)Parameters["BestSolution"]; }
@@ -52,31 +54,43 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       get { return (ValueLookupParameter<ResultCollection>)Parameters["Results"]; }
     }
 
-    public BestTSPSolutionAnalyzer()
+    public MultiPopulationBestTSPSolutionAnalyzer()
       : base() {
       Parameters.Add(new LookupParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities."));
-      Parameters.Add(new LookupParameter<Permutation>("Permutation", "The TSP solution given in path representation which should be analyzed."));
-      Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of the TSP solution which should be analyzed."));
+      Parameters.Add(new SubScopesSubScopesLookupParameter<Permutation>("Permutation", "The TSP solutions given in path representation from which the best solution should be analyzed."));
+      Parameters.Add(new SubScopesSubScopesLookupParameter<DoubleValue>("Quality", "The qualities of the TSP solutions which should be analyzed."));
       Parameters.Add(new LookupParameter<PathTSPTour>("BestSolution", "The best TSP solution."));
-      Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the TSP solution should be stored."));
+      Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the best TSP solution should be stored."));
     }
 
     public override IOperation Apply() {
       DoubleMatrix coordinates = CoordinatesParameter.ActualValue;
-      Permutation permutation = PermutationParameter.ActualValue;
-      DoubleValue quality = QualityParameter.ActualValue;
+      ItemArray<ItemArray<Permutation>> permutations = PermutationParameter.ActualValue;
+      ItemArray<ItemArray<DoubleValue>> qualities = QualityParameter.ActualValue;
       ResultCollection results = ResultsParameter.ActualValue;
+
+      DoubleValue bestQuality = new DoubleValue(double.MaxValue);
+      Permutation bestPermutation = null;
+
+      for (int i = 0; i < qualities.Length; i++) {
+        for (int j = 0; j < qualities[i].Length; j++) {
+          if (qualities[i][j].Value < bestQuality.Value) {
+            bestQuality = qualities[i][j];
+            bestPermutation = permutations[i][j];
+          }
+        }
+      }
 
       PathTSPTour tour = BestSolutionParameter.ActualValue;
       if (tour == null) {
-        tour = new PathTSPTour(coordinates, permutation, quality);
+        tour = new PathTSPTour(coordinates, bestPermutation, bestQuality);
         BestSolutionParameter.ActualValue = tour;
         results.Add(new Result("Best TSP Solution", tour));
       } else {
-        if (tour.Quality.Value > quality.Value) {
+        if (tour.Quality.Value > bestQuality.Value) {
           tour.Coordinates = coordinates;
-          tour.Permutation = permutation;
-          tour.Quality = quality;
+          tour.Permutation = bestPermutation;
+          tour.Quality = bestQuality;
           results["Best TSP Solution"].Value = tour;
         }
       }
