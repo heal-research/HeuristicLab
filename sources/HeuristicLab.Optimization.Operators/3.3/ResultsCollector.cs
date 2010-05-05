@@ -21,6 +21,7 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -35,13 +36,23 @@ namespace HeuristicLab.Optimization.Operators {
     public ValueLookupParameter<ResultCollection> ResultsParameter {
       get { return (ValueLookupParameter<ResultCollection>)Parameters["Results"]; }
     }
+    public ValueParameter<BoolValue> CopyValueParameter {
+      get { return (ValueParameter<BoolValue>)Parameters["CopyValue"]; }
+    }
+
+    public BoolValue CopyValue {
+      get { return CopyValueParameter.Value; }
+      set { CopyValueParameter.Value = value; }
+    }
 
     public ResultsCollector()
       : base() {
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the collected values should be stored."));
+      Parameters.Add(new ValueParameter<BoolValue>("CopyValue", "True if the collected result value should be copied, otherwise false.", new BoolValue(true)));
     }
 
     public override IOperation Apply() {
+      bool copy = CopyValueParameter.Value.Value;
       ResultCollection results = ResultsParameter.ActualValue;
       IResult result;
       foreach (IParameter param in CollectedValues) {
@@ -49,9 +60,9 @@ namespace HeuristicLab.Optimization.Operators {
         if (value != null) {
           results.TryGetValue(param.Name, out result);
           if (result != null)
-            result.Value = (IItem)value.Clone();
+            result.Value = copy ? (IItem)value.Clone() : value;
           else
-            results.Add(new Result(param.Name, param.Description, (IItem)value.Clone()));
+            results.Add(new Result(param.Name, param.Description, copy ? (IItem)value.Clone() : value));
         }
       }
       return base.Apply();
