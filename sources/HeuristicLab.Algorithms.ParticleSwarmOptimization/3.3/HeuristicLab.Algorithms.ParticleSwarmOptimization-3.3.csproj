@@ -80,12 +80,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HeuristicLabAlgorithmsParticleSwarmOptimizationPlugin.cs" />
-    <Compile Include="IRealVectorEncoder.cs" />
     <Compile Include="ParticleSwarmOptimization.cs" />
     <Compile Include="ParticleSwarmOptimizationMainLoop.cs" />
     <Compile Include="PermutationToRealVectorEncoder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RealVectorToRealVectorEncoder.cs" />
+    <Compile Include="ParticleUpdater.cs" />
+    <Compile Include="SwarmUpdater.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
@@ -93,6 +93,10 @@
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
+      <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
+      <Name>HeuristicLab.Analysis-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
       <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>

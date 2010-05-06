@@ -33,6 +33,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
+using HeuristicLab.Analysis;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
   [Item("Particle Swarm Optimization", "A particle swarm optimization algorithm.")]
@@ -50,6 +51,10 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     public IRealVectorEncoder Encoder {
       get { return EncoderParameter.Value; }
       set { EncoderParameter.Value = value; }
+    }
+    public MultiAnalyzer Analyzer {
+      get { return AnalyzerParameter.Value; }
+      set { AnalyzerParameter.Value = value; }
     }
     #endregion 
 
@@ -69,6 +74,9 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     private OptionalConstrainedValueParameter<IRealVectorEncoder> EncoderParameter {
       get { return (OptionalConstrainedValueParameter<IRealVectorEncoder>)Parameters["Encoder"]; }
     }
+    private ValueParameter<MultiAnalyzer> AnalyzerParameter {
+      get { return (ValueParameter<MultiAnalyzer>)Parameters["Analyzer"]; }
+    }
     #endregion
 
     #region Properties
@@ -77,6 +85,13 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     private ParticleSwarmOptimizationMainLoop MainLoop {
       get { return mainLoop; }
     }
+    [StorableAttribute]
+    private Assigner bestLocalQualityInitalizer; // Check this !
+    private Assigner BestLocalQualityInitalizer {
+      get { return bestLocalQualityInitalizer; }
+    }
+
+    private BestAverageWorstQualityAnalyzer qualityAnalyzer;
     #endregion
 
     public ParticleSwarmOptimization()
@@ -85,38 +100,97 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       Parameters.Add(new ValueParameter<BoolValue>("SetSeedRandomly", "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
       Parameters.Add(new ValueParameter<IntValue>("SwarmSize", "Size of the particle swarm.", new IntValue(1)));
       Parameters.Add(new ValueParameter<IntValue>("MaxIterations", "Maximal number of iterations.", new IntValue(1000)));
-      Parameters.Add(new OptionalConstrainedValueParameter<IRealVectorEncoder>("Encoder", "The operator used to encode solutions as position vector."));
-      //Parameters.Add(new ConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
+      Parameters.Add(new ConstrainedValueParameter<IRealVectorEncoder>("Encoder", "The operator used to encode solutions as position vector."));
+      Parameters.Add(new ValueParameter<IntValue>("PositionLength", "Length of the position encoding.", new IntValue(0)));
+      Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze each generation.", new MultiAnalyzer()));
       RandomCreator randomCreator = new RandomCreator();
       SolutionsCreator solutionsCreator = new SolutionsCreator();
       UniformSubScopesProcessor uniformSubScopesProcessor = new UniformSubScopesProcessor();
+      UniformSubScopesProcessor uniformSubScopesProcessor2 = new UniformSubScopesProcessor();
       VariableCreator variableCreator = new VariableCreator();
-      variableCreator.CollectedValues.Add(new ValueParameter<RealVector>("Velocity", new RealVector()));
-      //solutionsCreator.SolutionCreatorParameter.ActualName = Problem.SolutionCreator.Name;
-      //mainLoop = new ParticleSwarmOptimizationMainLoop();
-      OperatorGraph.InitialOperator = randomCreator;
+      VariableCreator localVariableCreator = new VariableCreator();
+      Placeholder encoder = new Placeholder();
+      UniformRandomRealVectorCreator velocityVectorCreator = new UniformRandomRealVectorCreator();
+      bestLocalQualityInitalizer = new Assigner();
+      Assigner bestLocalPositionInitalizer = new Assigner();
+      Assigner bestGlobalPositionInitalizer = new Assigner();
+      mainLoop = new ParticleSwarmOptimizationMainLoop();
+      BestAverageWorstQualityCalculator bawCalculator = new BestAverageWorstQualityCalculator();
+      Comparator comparator = new Comparator();
+      ConditionalBranch branch = new ConditionalBranch();
+
+      variableCreator.CollectedValues.Add(new ValueParameter<RealVector>("CurrentBestPosition", new RealVector()));
+      variableCreator.CollectedValues.Add(new ValueParameter<DoubleMatrix>("ZeroBounds", new DoubleMatrix(new double[,] { { 0, 0 } })));
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Length", new IntValue(2)));
+
+      localVariableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("BestQuality", new DoubleValue(0)));
+      localVariableCreator.CollectedValues.Add(new ValueParameter<RealVector>("BestPosition", new RealVector()));
 
       randomCreator.RandomParameter.ActualName = "Random";
       randomCreator.SeedParameter.ActualName = SeedParameter.Name;
       randomCreator.SeedParameter.Value = null;
       randomCreator.SetSeedRandomlyParameter.ActualName = SetSeedRandomlyParameter.Name;
       randomCreator.SetSeedRandomlyParameter.Value = null;
-      randomCreator.Successor = solutionsCreator;
-
+      
       solutionsCreator.NumberOfSolutionsParameter.ActualName = SwarmSizeParameter.Name;
+      
+      encoder.OperatorParameter.ActualName = "Encoder";
+      
+      velocityVectorCreator.BoundsParameter.ActualName = "ZeroBounds";
+      velocityVectorCreator.RealVectorParameter.ActualName = "Velocity";
+
+      bestLocalQualityInitalizer.LeftSideParameter.ActualName = "BestQuality"; // cloned value
+      bestLocalQualityInitalizer.RightSideParameter.ActualName = "Quality"; // FIXME!!! Should be mapped
+
+      bestLocalPositionInitalizer.LeftSideParameter.ActualName = "BestPosition";
+      bestLocalPositionInitalizer.RightSideParameter.ActualName = "Position"; // FixMe
+
+      bestGlobalPositionInitalizer.LeftSideParameter.ActualName = "CurrentBestPosition";
+      bestGlobalPositionInitalizer.RightSideParameter.ActualName = "BestPosition";
+
+      bawCalculator.AverageQualityParameter.ActualName = "CurrentAverageBestQuality";
+      bawCalculator.BestQualityParameter.ActualName = "CurrentBestBestQuality";
+      bawCalculator.MaximizationParameter.ActualName = "Maximization"; // FIXME
+      bawCalculator.QualityParameter.ActualName = "Quality";
+      bawCalculator.WorstQualityParameter.ActualName = "CurrentWorstBestQuality";
+
+      comparator.Comparison = new Comparison(ComparisonType.Equal);
+      comparator.LeftSideParameter.ActualName = "Quality";
+      comparator.ResultParameter.ActualName = "NewGlobalBest";
+      comparator.RightSideParameter.ActualName = "CurrentBestBestQuality";
+
+      branch.ConditionParameter.ActualName = "NewGlobalBest";
+      branch.TrueBranch = bestGlobalPositionInitalizer; // copy position vector
+
+      mainLoop.MaximumGenerationsParameter.ActualName = MaxIterationsParameter.Name;
+      mainLoop.ResultsParameter.ActualName = "Results";
+      mainLoop.AnalyzerParameter.ActualName = AnalyzerParameter.Name;
+
+      OperatorGraph.InitialOperator = randomCreator;
+      randomCreator.Successor = solutionsCreator;
       solutionsCreator.Successor = variableCreator;
       variableCreator.Successor = uniformSubScopesProcessor;
-      
-
-      //evaluator.Successor = mainLoop;
-      //mainLoop.EncoderParameter.ActualName = EncoderParameter.Name;
-
+      uniformSubScopesProcessor.Operator = encoder;
+      encoder.Successor = velocityVectorCreator;
+      velocityVectorCreator.Successor = localVariableCreator;
+      localVariableCreator.Successor = bestLocalQualityInitalizer;
+      bestLocalQualityInitalizer.Successor = bestLocalPositionInitalizer;
+      uniformSubScopesProcessor.Successor = bawCalculator; // mainLoop;
+      bawCalculator.Successor = uniformSubScopesProcessor2;
+      uniformSubScopesProcessor2.Operator = comparator;
+      comparator.Successor = branch;
+      uniformSubScopesProcessor2.Successor = mainLoop;
       Initialize();
     }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
+      InitializeAnalyzers();
+      UpdateAnalyzers();
       EncoderParameter.ValueChanged += new EventHandler(EncoderParameter_ValueChanged);
+      if (Problem != null) {
+        bestLocalQualityInitalizer.RightSideParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
+      }
     }
 
     [StorableConstructor]
@@ -134,35 +208,67 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
 
     #region Events
     protected override void OnProblemChanged() {
-      //ParameterizeStochasticOperator(Problem.SolutionCreator);
-      //ParameterizeStochasticOperator(Problem.Evaluator);
-      //ParameterizeStochasticOperator(Problem.Visualizer);
-      //foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
-      //ParameterizeSolutionsCreator();
-      //ParameterizeMainLoop();
       UpdateEncoders();
-      //UpdateMutators();
-      //Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
+      UpdateAnalyzers();
+      bestLocalQualityInitalizer.RightSideParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
+      Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
+      MainLoop.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
       base.OnProblemChanged();
     }
 
     private void EncoderParameter_ValueChanged(object sender, EventArgs e) {
-      ((UniformSubScopesProcessor)((SolutionsCreator)((RandomCreator)OperatorGraph.InitialOperator).Successor).Successor).Operator = EncoderParameter.Value;
+      //IRealVectorEncoder old = (IRealVectorEncoder)((UniformSubScopesProcessor)((VariableCreator)((SolutionsCreator)((RandomCreator)OperatorGraph.InitialOperator).Successor).Successor).Successor).Operator;
+      //((UniformSubScopesProcessor)((VariableCreator)((SolutionsCreator)((RandomCreator)OperatorGraph.InitialOperator).Successor).Successor).Successor).Operator = EncoderParameter.Value;
+      //((SingleSuccessorOperator)EncoderParameter.Value).Successor = ((SingleSuccessorOperator)old).Successor;
     }
     #endregion
 
     #region Helpers
+    private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
+      // 
+      //
+    }
+
+    private void ParameterizeMainLoop() {
+      //GeneticAlgorithmMainLoop.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
+    }
 
     private void UpdateEncoders() {
       IRealVectorEncoder oldEncoder = EncoderParameter.Value;
       EncoderParameter.ValidValues.Clear();
-      foreach (IRealVectorEncoder encoder in Problem.Operators.OfType<IRealVectorEncoder>().OrderBy(x => x.Name)) {
-        EncoderParameter.ValidValues.Add(encoder);
-        encoder.RealVectorParameter.ActualName = "Position"; 
+      List<IRealVectorEncoder> encoders = Problem.Operators.OfType<IRealVectorEncoder>().OrderBy(x => x.Name).ToList<IRealVectorEncoder>();
+      if (encoders.Count > 0) {  // ToDo: Add wiring; else: use Position Vector directly --> name matching
+        foreach (IRealVectorEncoder encoder in Problem.Operators.OfType<IRealVectorEncoder>().OrderBy(x => x.Name)) {
+          EncoderParameter.ValidValues.Add(encoder);
+          ((ILookupParameter)encoder.RealVectorParameter).ActualName = "Position";
+        }
+        if (oldEncoder != null) {
+          IRealVectorEncoder encoder = EncoderParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldEncoder.GetType());
+          if (encoder != null) EncoderParameter.Value = encoder;
+        }
       }
-      if (oldEncoder != null) {
-        IRealVectorEncoder encoder = EncoderParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldEncoder.GetType());
-        if (encoder != null) EncoderParameter.Value = encoder;
+    }
+
+    private void InitializeAnalyzers() {
+      qualityAnalyzer = new BestAverageWorstQualityAnalyzer();
+      ParameterizeAnalyzers();
+    }
+
+    private void ParameterizeAnalyzers() {
+      qualityAnalyzer.ResultsParameter.ActualName = "Results";
+      if (Problem != null) {
+        qualityAnalyzer.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
+        qualityAnalyzer.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
+        qualityAnalyzer.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
+      }
+    }
+
+    private void UpdateAnalyzers() {
+      Analyzer.Operators.Clear();
+      Analyzer.Operators.Add(qualityAnalyzer);
+      if (Problem != null) {
+        foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name))
+          Analyzer.Operators.Add(analyzer);
       }
     }
 

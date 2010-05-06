@@ -102,6 +102,7 @@
     <Compile Include="HeuristicLabProblemsTestFunctionsPlugin.cs" />
     <Compile Include="Interfaces\IBestSingleObjectiveTestFunctionSolutionAnalyzer.cs" />
     <Compile Include="Interfaces\IRastriginMoveEvaluator.cs" />
+    <Compile Include="Interfaces\IRealVectorPSOEncoder.cs" />
     <Compile Include="Interfaces\ISingleObjectiveTestFunctionAdditiveMoveEvaluator.cs" />
     <Compile Include="Interfaces\ISingleObjectiveTestFunctionMoveEvaluator.cs" />
     <Compile Include="Interfaces\ISingleObjectiveTestFunctionProblemEvaluator.cs" />
@@ -121,6 +122,7 @@
     <Compile Include="MoveEvaluators\LevyAdditiveMoveEvaluator.cs" />
     <Compile Include="MoveEvaluators\AdditiveMoveEvaluator.cs" />
     <Compile Include="MoveEvaluators\RealVectorAdditiveMoveWrapper.cs" />
+    <Compile Include="RealVectorToRealVectorEncoder.cs" />
     <Compile Include="SingleObjectiveTestFunctionSolution.cs" />
     <Compile Include="SingleObjectiveTestFunctionProblem.cs" />
     <None Include="HeuristicLab.snk" />

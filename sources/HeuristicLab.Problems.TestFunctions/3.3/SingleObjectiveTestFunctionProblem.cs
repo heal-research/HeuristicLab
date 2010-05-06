@@ -32,6 +32,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Operators;
 using HeuristicLab.Problems.TestFunctions.Analyzers;
 
 namespace HeuristicLab.Problems.TestFunctions {
@@ -351,6 +352,9 @@ namespace HeuristicLab.Problems.TestFunctions {
       foreach (ISingleObjectiveTestFunctionAdditiveMoveEvaluator op in Operators.OfType<ISingleObjectiveTestFunctionAdditiveMoveEvaluator>()) {
         op.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
         op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
+      }
+      foreach (IRealVectorPSOEncoder op in Operators.OfType<IRealVectorPSOEncoder>()) {
+        ((ILookupParameter)op.OriginalRealVectorParameter).ActualName = SolutionCreator.RealVectorParameter.ActualName; 
       }
     }
     #endregion
