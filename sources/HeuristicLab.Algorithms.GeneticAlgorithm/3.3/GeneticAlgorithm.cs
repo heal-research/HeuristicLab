@@ -135,10 +135,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     private GeneticAlgorithmMainLoop GeneticAlgorithmMainLoop {
       get { return (GeneticAlgorithmMainLoop)SolutionsCreator.Successor; }
     }
-    private List<ISelector> selectors;
-    private IEnumerable<ISelector> Selectors {
-      get { return selectors; }
-    }
+    [Storable]
     private BestAverageWorstQualityAnalyzer qualityAnalyzer;
     #endregion
 
@@ -180,6 +177,16 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       geneticAlgorithmMainLoop.AnalyzerParameter.ActualName = AnalyzerParameter.Name;
       geneticAlgorithmMainLoop.ResultsParameter.ActualName = "Results";
 
+      foreach (ISelector selector in ApplicationManager.Manager.GetInstances<ISelector>().Where(x => !(x is IMultiObjectiveSelector)).OrderBy(x => x.Name))
+        SelectorParameter.ValidValues.Add(selector);
+      ISelector proportionalSelector = SelectorParameter.ValidValues.FirstOrDefault(x => x.GetType().Name.Equals("ProportionalSelector"));
+      if (proportionalSelector != null) SelectorParameter.Value = proportionalSelector;
+      ParameterizeSelectors();
+
+      qualityAnalyzer = new BestAverageWorstQualityAnalyzer();
+      ParameterizeAnalyzers();
+      UpdateAnalyzers();
+
       Initialize();
     }
     [StorableConstructor]
@@ -187,6 +194,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       GeneticAlgorithm clone = (GeneticAlgorithm)base.Clone(cloner);
+      clone.qualityAnalyzer = (BestAverageWorstQualityAnalyzer)cloner.Clone(qualityAnalyzer);
       clone.Initialize();
       return clone;
     }
@@ -256,17 +264,11 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
-      InitializeSelectors();
-      InitializeAnalyzers();
-      UpdateSelectors();
-      UpdateAnalyzers();
       PopulationSizeParameter.ValueChanged += new EventHandler(PopulationSizeParameter_ValueChanged);
       PopulationSize.ValueChanged += new EventHandler(PopulationSize_ValueChanged);
       ElitesParameter.ValueChanged += new EventHandler(ElitesParameter_ValueChanged);
       Elites.ValueChanged += new EventHandler(Elites_ValueChanged);
       if (Problem != null) {
-        UpdateCrossovers();
-        UpdateMutators();
         Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       }
     }
@@ -284,23 +286,14 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       if (op is IStochasticOperator)
         ((IStochasticOperator)op).RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
     }
-    private void InitializeSelectors() {
-      selectors = new List<ISelector>();
-      selectors.AddRange(ApplicationManager.Manager.GetInstances<ISelector>().Where(x => !(x is IMultiObjectiveSelector)).OrderBy(x => x.Name));
-      ParameterizeSelectors();
-    }
-    private void InitializeAnalyzers() {
-      qualityAnalyzer = new BestAverageWorstQualityAnalyzer();
-      ParameterizeAnalyzers();
-    }
     private void ParameterizeSelectors() {
-      foreach (ISelector selector in Selectors) {
+      foreach (ISelector selector in SelectorParameter.ValidValues) {
         selector.CopySelected = new BoolValue(true);
         selector.NumberOfSelectedSubScopesParameter.Value = new IntValue(2 * (PopulationSizeParameter.Value.Value - ElitesParameter.Value.Value));
         ParameterizeStochasticOperator(selector);
       }
       if (Problem != null) {
-        foreach (ISingleObjectiveSelector selector in Selectors.OfType<ISingleObjectiveSelector>()) {
+        foreach (ISingleObjectiveSelector selector in SelectorParameter.ValidValues.OfType<ISingleObjectiveSelector>()) {
           selector.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
           selector.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
         }
@@ -313,20 +306,6 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
         qualityAnalyzer.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
         qualityAnalyzer.QualityParameter.Depth = 1;
         qualityAnalyzer.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
-      }
-    }
-    private void UpdateSelectors() {
-      ISelector oldSelector = SelectorParameter.Value;
-      SelectorParameter.ValidValues.Clear();
-      foreach (ISelector selector in Selectors.OrderBy(x => x.Name))
-        SelectorParameter.ValidValues.Add(selector);
-
-      ISelector proportionalSelector = SelectorParameter.ValidValues.FirstOrDefault(x => x.GetType().Name.Equals("ProportionalSelector"));
-      if (proportionalSelector != null) SelectorParameter.Value = proportionalSelector;
-
-      if (oldSelector != null) {
-        ISelector selector = SelectorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldSelector.GetType());
-        if (selector != null) SelectorParameter.Value = selector;
       }
     }
     private void UpdateCrossovers() {
