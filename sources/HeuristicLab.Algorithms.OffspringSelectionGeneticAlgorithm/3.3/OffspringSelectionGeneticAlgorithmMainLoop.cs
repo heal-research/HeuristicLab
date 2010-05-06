@@ -127,12 +127,13 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Placeholder comparisonFactorModifier = new Placeholder();
       Placeholder analyzer1 = new Placeholder();
       ResultsCollector resultsCollector1 = new ResultsCollector();
+      ResultsCollector resultsCollector2 = new ResultsCollector();
       OffspringSelectionGeneticAlgorithmMainOperator mainOperator = new OffspringSelectionGeneticAlgorithmMainOperator();
       IntCounter generationsCounter = new IntCounter();
       Comparator maxGenerationsComparator = new Comparator();
       Comparator maxSelectionPressureComparator = new Comparator();
       Placeholder analyzer2 = new Placeholder();
-      ResultsCollector resultsCollector2 = new ResultsCollector();
+      ResultsCollector resultsCollector3 = new ResultsCollector();
       ConditionalBranch conditionalBranch1 = new ConditionalBranch();
       ConditionalBranch conditionalBranch2 = new ConditionalBranch();
 
@@ -147,12 +148,17 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       analyzer1.Name = "Analyzer (placeholder)";
       analyzer1.OperatorParameter.ActualName = AnalyzerParameter.Name;
 
+      resultsCollector1.CopyValue = new BoolValue(false);
       resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Generations"));
       resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutions"));
       resultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Curent Comparison Factor", null, "ComparisonFactor"));
       resultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Selection Pressure", null, "SelectionPressure"));
       resultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Success Ratio", null, "CurrentSuccessRatio"));
       resultsCollector1.ResultsParameter.ActualName = ResultsParameter.Name;
+
+      resultsCollector2.CopyValue = new BoolValue(true);
+      resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutions"));
+      resultsCollector2.ResultsParameter.ActualName = ResultsParameter.Name;
 
       mainOperator.ComparisonFactorParameter.ActualName = "ComparisonFactor";
       mainOperator.CrossoverParameter.ActualName = CrossoverParameter.Name;
@@ -187,12 +193,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       analyzer2.Name = "Analyzer (placeholder)";
       analyzer2.OperatorParameter.ActualName = AnalyzerParameter.Name;
 
-      resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Generations"));
-      resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutions"));
-      resultsCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Curent Comparison Factor", null, "ComparisonFactor"));
-      resultsCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Selection Pressure", null, "SelectionPressure"));
-      resultsCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Success Ratio", null, "CurrentSuccessRatio"));
-      resultsCollector2.ResultsParameter.ActualName = ResultsParameter.Name;
+      resultsCollector3.CopyValue = new BoolValue(true);
+      resultsCollector3.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutions"));
+      resultsCollector3.ResultsParameter.ActualName = ResultsParameter.Name;
 
       conditionalBranch1.Name = "MaximumSelectionPressure reached?";
       conditionalBranch1.ConditionParameter.ActualName = "TerminateSelectionPressure";
@@ -206,13 +209,14 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       variableCreator.Successor = comparisonFactorModifier;
       comparisonFactorModifier.Successor = analyzer1;
       analyzer1.Successor = resultsCollector1;
-      resultsCollector1.Successor = mainOperator;
+      resultsCollector1.Successor = resultsCollector2;
+      resultsCollector2.Successor = mainOperator;
       mainOperator.Successor = generationsCounter;
       generationsCounter.Successor = maxGenerationsComparator;
       maxGenerationsComparator.Successor = maxSelectionPressureComparator;
       maxSelectionPressureComparator.Successor = analyzer2;
-      analyzer2.Successor = resultsCollector2;
-      resultsCollector2.Successor = conditionalBranch1;
+      analyzer2.Successor = resultsCollector3;
+      resultsCollector3.Successor = conditionalBranch1;
       conditionalBranch1.FalseBranch = conditionalBranch2;
       conditionalBranch1.TrueBranch = null;
       conditionalBranch1.Successor = null;
