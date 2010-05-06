@@ -94,6 +94,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     private BestQualityMemorizer validationQualityMemorizer;
     [Storable]
     private BestSymbolicRegressionSolutionAnalyzer bestSolutionAnalyzer;
+    [Storable]
+    private SymbolicRegressionSolutionLinearScaler linearScaler;
+    [Storable]
+    private SymbolicRegressionMeanSquaredErrorCalculator validationMseCalculator;
 
     public ValidationBestScaledSymbolicRegressionSolutionAnalyzer()
       : base() {
@@ -109,9 +113,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       Parameters.Add(new LookupParameter<ResultCollection>(ResultsParameterName, "The result collection where the best symbolic regression solution should be stored."));
 
       #region operator initialization
-      UniformSubScopesProcessor subScopesProc = new UniformSubScopesProcessor();
-      SymbolicRegressionSolutionLinearScaler linearScaler = new SymbolicRegressionSolutionLinearScaler();
-      SymbolicRegressionMeanSquaredErrorEvaluator validationMseEvaluator = new SymbolicRegressionMeanSquaredErrorEvaluator();
+      linearScaler = new SymbolicRegressionSolutionLinearScaler();
+      validationMseCalculator = new SymbolicRegressionMeanSquaredErrorCalculator();
       bestSolutionAnalyzer = new BestSymbolicRegressionSolutionAnalyzer();
       validationQualityMemorizer = new BestQualityMemorizer();
       BestAverageWorstQualityCalculator bestAvgWorstValidationQualityCalculator = new BestAverageWorstQualityCalculator();
@@ -121,18 +124,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
 
       #region parameter wiring
       linearScaler.AlphaParameter.ActualName = AlphaParameterName;
+      linearScaler.AlphaParameter.Depth = SymbolicExpressionTreeParameter.Depth;
       linearScaler.BetaParameter.ActualName = BetaParameterName;
+      linearScaler.BetaParameter.Depth = SymbolicExpressionTreeParameter.Depth;
       linearScaler.SymbolicExpressionTreeParameter.ActualName = SymbolicExpressionTreeParameter.Name;
+      linearScaler.SymbolicExpressionTreeParameter.Depth = SymbolicExpressionTreeParameter.Depth;
       linearScaler.ScaledSymbolicExpressionTreeParameter.ActualName = ScaledSymbolicExpressionTreeParameterName;
+      linearScaler.ScaledSymbolicExpressionTreeParameter.Depth = SymbolicExpressionTreeParameter.Depth;
 
-      validationMseEvaluator.LowerEstimationLimitParameter.ActualName = LowerEstimationLimitParameter.Name;
-      validationMseEvaluator.UpperEstimationLimitParameter.ActualName = UpperEstimationLimitParameter.Name;
-      validationMseEvaluator.SymbolicExpressionTreeParameter.ActualName = ScaledSymbolicExpressionTreeParameterName;
-      validationMseEvaluator.SymbolicExpressionTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameter.Name;
-      validationMseEvaluator.QualityParameter.ActualName = QualityParameterName;
-      validationMseEvaluator.RegressionProblemDataParameter.ActualName = ProblemDataParameter.Name;
-      validationMseEvaluator.SamplesStartParameter.ActualName = SamplesStartParameter.Name;
-      validationMseEvaluator.SamplesEndParameter.ActualName = SamplesEndParameter.Name;
+      validationMseCalculator.LowerEstimationLimitParameter.ActualName = LowerEstimationLimitParameter.Name;
+      validationMseCalculator.UpperEstimationLimitParameter.ActualName = UpperEstimationLimitParameter.Name;
+      validationMseCalculator.SymbolicExpressionTreeParameter.ActualName = ScaledSymbolicExpressionTreeParameterName;
+      validationMseCalculator.SymbolicExpressionTreeParameter.Depth = SymbolicExpressionTreeParameter.Depth;
+      validationMseCalculator.SymbolicExpressionTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameter.Name;
+      validationMseCalculator.QualityParameter.ActualName = QualityParameterName;
+      validationMseCalculator.ProblemDataParameter.ActualName = ProblemDataParameter.Name;
+      validationMseCalculator.SamplesStartParameter.ActualName = SamplesStartParameter.Name;
+      validationMseCalculator.SamplesEndParameter.ActualName = SamplesEndParameter.Name;
 
       bestSolutionAnalyzer.BestSolutionParameter.ActualName = BestSolutionParameter.Name;
       bestSolutionAnalyzer.BestSolutionQualityParameter.ActualName = BestSolutionQualityParameter.Name;
@@ -166,11 +174,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       #endregion
 
       #region operator graph
-      OperatorGraph.InitialOperator = subScopesProc;
-      subScopesProc.Operator = linearScaler;
-      linearScaler.Successor = validationMseEvaluator;
-      validationMseEvaluator.Successor = null;
-      subScopesProc.Successor = bestSolutionAnalyzer;
+      OperatorGraph.InitialOperator = linearScaler;
+      linearScaler.Successor = validationMseCalculator;
+      validationMseCalculator.Successor = bestSolutionAnalyzer;
       bestSolutionAnalyzer.Successor = bestAvgWorstValidationQualityCalculator;
       bestAvgWorstValidationQualityCalculator.Successor = validationQualityMemorizer;
       validationQualityMemorizer.Successor = validationValuesCollector;
@@ -196,8 +202,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     }
 
     private void SymbolicExpressionTreeParameter_DepthChanged(object sender, EventArgs e) {
+      validationMseCalculator.SymbolicExpressionTreeParameter.Depth = SymbolicExpressionTreeParameter.Depth;
       validationQualityMemorizer.QualityParameter.Depth = SymbolicExpressionTreeParameter.Depth;
       bestSolutionAnalyzer.SymbolicExpressionTreeParameter.Depth = SymbolicExpressionTreeParameter.Depth;
+      bestSolutionAnalyzer.QualityParameter.Depth = SymbolicExpressionTreeParameter.Depth;
+      linearScaler.AlphaParameter.Depth = SymbolicExpressionTreeParameter.Depth;
+      linearScaler.BetaParameter.Depth = SymbolicExpressionTreeParameter.Depth;
+      linearScaler.SymbolicExpressionTreeParameter.Depth = SymbolicExpressionTreeParameter.Depth;
+      linearScaler.ScaledSymbolicExpressionTreeParameter.Depth = SymbolicExpressionTreeParameter.Depth;
     }
   }
 }

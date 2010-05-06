@@ -131,6 +131,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     #endregion
 
     [Storable]
+    private SymbolicRegressionModelQualityCalculator trainingQualityCalculator;
+    [Storable]
+    private SymbolicRegressionModelQualityCalculator testQualityCalculator;
+    [Storable]
     private MinAverageMaxValueAnalyzer minAvgMaxTrainingMseAnalyzer;
     [Storable]
     private MinAverageMaxValueAnalyzer minAvgMaxTestMseAnalyzer;
@@ -160,10 +164,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       Parameters.Add(new LookupParameter<ResultCollection>(ResultsParameterName, "The result collection where the best symbolic regression solution should be stored."));
 
       #region operator initialization
-      // should be extended to calculate MSE, rel. Error and R² on the training (validation) and test set
-      UniformSubScopesProcessor subScopesProcessor = new UniformSubScopesProcessor();
-      SymbolicRegressionModelQualityCalculator trainingQualityCalculator = new SymbolicRegressionModelQualityCalculator();
-      SymbolicRegressionModelQualityCalculator testQualityCalculator = new SymbolicRegressionModelQualityCalculator();
+      trainingQualityCalculator = new SymbolicRegressionModelQualityCalculator();
+      testQualityCalculator = new SymbolicRegressionModelQualityCalculator();
       minAvgMaxTrainingMseAnalyzer = new MinAverageMaxValueAnalyzer();
       minAvgMaxTestMseAnalyzer = new MinAverageMaxValueAnalyzer();
 
@@ -181,6 +183,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       trainingQualityCalculator.SamplesEndParameter.ActualName = TrainingSamplesEndParameter.Name;
       trainingQualityCalculator.SymbolicExpressionTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameter.Name;
       trainingQualityCalculator.SymbolicExpressionTreeParameter.ActualName = SymbolicExpressionTreeParameter.Name;
+      trainingQualityCalculator.SymbolicExpressionTreeParameter.Depth = SymbolicExpressionTreeParameter.Depth;
       trainingQualityCalculator.UpperEstimationLimitParameter.ActualName = UpperEstimationLimitParameter.Name;
       trainingQualityCalculator.AverageRelativeErrorQualityParameter.ActualName = TrainingAverageRelativeErrorQualityParameterName;
       trainingQualityCalculator.MeanSquaredErrorQualityParameter.ActualName = TrainingMeanSquaredErrorQualityParameterName;
@@ -192,6 +195,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       testQualityCalculator.SamplesEndParameter.ActualName = TestSamplesEndParameter.Name;
       testQualityCalculator.SymbolicExpressionTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameter.Name;
       testQualityCalculator.SymbolicExpressionTreeParameter.ActualName = SymbolicExpressionTreeParameter.Name;
+      testQualityCalculator.SymbolicExpressionTreeParameter.Depth = SymbolicExpressionTreeParameter.Depth;
       testQualityCalculator.UpperEstimationLimitParameter.ActualName = UpperEstimationLimitParameter.Name;
       testQualityCalculator.AverageRelativeErrorQualityParameter.ActualName = TestAverageRelativeErrorQualityParameterName;
       testQualityCalculator.MeanSquaredErrorQualityParameter.ActualName = TestMeanSquaredErrorQualityParameterName;
@@ -250,11 +254,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       #endregion
 
       #region operator graph
-      OperatorGraph.InitialOperator = subScopesProcessor;
-      subScopesProcessor.Operator = trainingQualityCalculator;
+      OperatorGraph.InitialOperator = trainingQualityCalculator;
       trainingQualityCalculator.Successor = testQualityCalculator;
-      testQualityCalculator.Successor = null;
-      subScopesProcessor.Successor = minAvgMaxTrainingMseAnalyzer;
+      testQualityCalculator.Successor = minAvgMaxTrainingMseAnalyzer;
       minAvgMaxTrainingMseAnalyzer.Successor = minAvgMaxTestMseAnalyzer;
       minAvgMaxTestMseAnalyzer.Successor = minAvgMaxTrainingRSquaredAnalyzer;
       minAvgMaxTrainingRSquaredAnalyzer.Successor = minAvgMaxTestRSquaredAnalyzer;
@@ -281,6 +283,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     }
 
     private void SymbolicExpressionTreeParameter_DepthChanged(object sender, EventArgs e) {
+      trainingQualityCalculator.SymbolicExpressionTreeParameter.Depth = SymbolicExpressionTreeParameter.Depth;
+      testQualityCalculator.SymbolicExpressionTreeParameter.Depth = SymbolicExpressionTreeParameter.Depth;
       minAvgMaxTrainingMseAnalyzer.ValueParameter.Depth = SymbolicExpressionTreeParameter.Depth;
       minAvgMaxTrainingRelErrorAnalyzer.ValueParameter.Depth = SymbolicExpressionTreeParameter.Depth;
       minAvgMaxTrainingRSquaredAnalyzer.ValueParameter.Depth = SymbolicExpressionTreeParameter.Depth;

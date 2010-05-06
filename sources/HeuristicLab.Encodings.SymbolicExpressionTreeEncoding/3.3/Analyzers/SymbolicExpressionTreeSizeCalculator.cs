@@ -41,32 +41,34 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers {
     private const string SymbolicExpressionTreeSizeParameterName = "SymbolicExpressionTreeSize";
 
     #region parameter properties
-    public ILookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter {
-      get { return (ILookupParameter<SymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }
+    public ScopeTreeLookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter {
+      get { return (ScopeTreeLookupParameter<SymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }
     }
-    public ILookupParameter<DoubleValue> SymbolicExpressionTreeSizeParameter {
-      get { return (ILookupParameter<DoubleValue>)Parameters[SymbolicExpressionTreeSizeParameterName]; }
+    public ScopeTreeLookupParameter<DoubleValue> SymbolicExpressionTreeSizeParameter {
+      get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters[SymbolicExpressionTreeSizeParameterName]; }
     }
     #endregion
 
     #region properties
-    public SymbolicExpressionTree SymbolicExpressionTree {
-      get { return SymbolicExpressionTreeParameter.ActualValue;}
+    public ItemArray<SymbolicExpressionTree> SymbolicExpressionTree {
+      get { return SymbolicExpressionTreeParameter.ActualValue; }
     }
-    public DoubleValue SymbolicExpressionTreeSize {
-      get { return SymbolicExpressionTreeSizeParameter.ActualValue;}
-      set { SymbolicExpressionTreeSizeParameter.ActualValue = value;}
+    public ItemArray<DoubleValue> SymbolicExpressionTreeSize {
+      get { return SymbolicExpressionTreeSizeParameter.ActualValue; }
+      set { SymbolicExpressionTreeSizeParameter.ActualValue = value; }
     }
     #endregion
 
     public SymbolicExpressionTreeSizeCalculator()
       : base() {
-      Parameters.Add(new LookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression tree whose size should be calculated."));
-      Parameters.Add(new LookupParameter<DoubleValue>(SymbolicExpressionTreeSizeParameterName, "The tree size of the symbolic expression tree."));
+      Parameters.Add(new ScopeTreeLookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression tree whose size should be calculated."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>(SymbolicExpressionTreeSizeParameterName, "The tree size of the symbolic expression tree."));
     }
 
     public override IOperation Apply() {
-      SymbolicExpressionTreeSize = new DoubleValue(SymbolicExpressionTree.Size);
+      ItemArray<SymbolicExpressionTree> trees = SymbolicExpressionTree;
+      SymbolicExpressionTreeSize = new ItemArray<DoubleValue>(from tree in trees
+                                                              select new DoubleValue(tree.Size));
       return base.Apply();
     }
   }
