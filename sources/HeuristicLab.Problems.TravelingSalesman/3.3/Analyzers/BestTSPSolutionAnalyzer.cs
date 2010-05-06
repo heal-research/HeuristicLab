@@ -33,9 +33,9 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
   /// An operator for analyzing the best solution of Traveling Salesman Problems given in path representation using city coordinates.
   /// </summary>
-  [Item("PopulationBestTSPSolutionAnalyzer", "An operator for analyzing the best solution of Traveling Salesman Problems given in path representation using city coordinates.")]
+  [Item("BestTSPSolutionAnalyzer", "An operator for analyzing the best solution of Traveling Salesman Problems given in path representation using city coordinates.")]
   [StorableClass]
-  public sealed class PopulationBestTSPSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer {
+  public sealed class BestTSPSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer {
     public LookupParameter<DoubleMatrix> CoordinatesParameter {
       get { return (LookupParameter<DoubleMatrix>)Parameters["Coordinates"]; }
     }
@@ -52,7 +52,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       get { return (ValueLookupParameter<ResultCollection>)Parameters["Results"]; }
     }
 
-    public PopulationBestTSPSolutionAnalyzer()
+    public BestTSPSolutionAnalyzer()
       : base() {
       Parameters.Add(new LookupParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities."));
       Parameters.Add(new ScopeTreeLookupParameter<Permutation>("Permutation", "The TSP solutions given in path representation from which the best solution should be analyzed."));

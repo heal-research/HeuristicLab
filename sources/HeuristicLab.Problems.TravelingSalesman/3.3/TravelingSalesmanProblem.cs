@@ -123,8 +123,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     public IEnumerable<IOperator> Operators {
       get { return operators; }
     }
-    private PopulationBestTSPSolutionAnalyzer BestTSPSolutionAnalyzer {
-      get { return operators.OfType<PopulationBestTSPSolutionAnalyzer>().FirstOrDefault(); }
+    private BestTSPSolutionAnalyzer BestTSPSolutionAnalyzer {
+      get { return operators.OfType<BestTSPSolutionAnalyzer>().FirstOrDefault(); }
     }
     #endregion
 
@@ -279,7 +279,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
 
     private void InitializeOperators() {
       operators = new List<IOperator>();
-      operators.Add(new PopulationBestTSPSolutionAnalyzer());
+      operators.Add(new BestTSPSolutionAnalyzer());
       ParameterizeAnalyzer();
       operators.AddRange(ApplicationManager.Manager.GetInstances<IPermutationOperator>().Cast<IOperator>());
       ParameterizeOperators();

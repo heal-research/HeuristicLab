@@ -354,6 +354,8 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Analyzer.Operators.Add(qualityAnalyzer);
       if (Problem != null) {
         foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name)) {
+          foreach (IScopeTreeLookupParameter param in analyzer.Parameters.OfType<IScopeTreeLookupParameter>())
+            param.Depth = 1;
           Analyzer.Operators.Add(analyzer);
         }
       }

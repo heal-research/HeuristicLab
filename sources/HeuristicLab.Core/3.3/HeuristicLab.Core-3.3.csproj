@@ -135,6 +135,7 @@
     <Compile Include="Constraints\EqualityConstraint.cs" />
     <Compile Include="Constraints\IConstraint.cs" />
     <Compile Include="Constraints\TypeCompatibilityConstraint.cs" />
+    <Compile Include="Interfaces\IScopeTreeLookupParameter.cs" />
     <Compile Include="Interfaces\ICheckedItemList.cs" />
     <Compile Include="Interfaces\ICheckedItemCollection.cs" />
     <Compile Include="PersistenceContentManager.cs" />
