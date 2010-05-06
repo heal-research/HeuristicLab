@@ -36,17 +36,17 @@ using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Analysis;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
-  [Item("PopulationSymbolicRegressionVariableFrequencyAnalyzer", "An operator for analyzing the variable frequencies in a population of symbolic regression solutions given in symbolic expression tree encoding.")]
+  [Item("SymbolicRegressionVariableFrequencyAnalyzer", "An operator for analyzing the variable frequencies of symbolic regression solutions given in symbolic expression tree encoding.")]
   [StorableClass]
-  public sealed class PopulationSymbolicRegressionVariableFrequencyAnalyzer : SingleSuccessorOperator, ISymbolicRegressionSolutionPopulationAnalyzer {
+  public sealed class SymbolicRegressionVariableFrequencyAnalyzer : SingleSuccessorOperator, ISymbolicRegressionAnalyzer {
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
     private const string ProblemDataParameterName = "ProblemData";
     private const string VariableFrequenciesParameterName = "VariableFrequencies";
     private const string ResultsParameterName = "Results";
 
     #region parameter properties
-    public ILookupParameter<ItemArray<SymbolicExpressionTree>> SymbolicExpressionTreeParameter {
-      get { return (ILookupParameter<ItemArray<SymbolicExpressionTree>>)Parameters[SymbolicExpressionTreeParameterName]; }
+    public ScopeTreeLookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter {
+      get { return (ScopeTreeLookupParameter<SymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }
     }
     public ILookupParameter<DataTable> VariableFrequenciesParameter {
       get { return (ILookupParameter<DataTable>)Parameters[VariableFrequenciesParameterName]; }
@@ -65,7 +65,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     }
     #endregion
 
-    public PopulationSymbolicRegressionVariableFrequencyAnalyzer()
+    public SymbolicRegressionVariableFrequencyAnalyzer()
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression trees to analyze."));
       Parameters.Add(new LookupParameter<DataAnalysisProblemData>(ProblemDataParameterName, "The problem data containing the input varaibles for the symbolic regression problem."));

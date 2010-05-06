@@ -82,8 +82,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Analyzers\PopulationMinAvgMaxTreeSizeAnalyzer.cs" />
-    <Compile Include="Analyzers\SymbolicExpressionTreeSizeAnalyzer.cs" />
+    <Compile Include="Analyzers\MinAvgMaxSymbolicExpressionTreeSizeAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicExpressionTreeSizeCalculator.cs" />
     <Compile Include="ArchitectureManipulators\ArgumentCreater.cs" />
     <Compile Include="ArchitectureManipulators\ArgumentDeleter.cs" />
@@ -102,8 +101,6 @@
     <Compile Include="Interfaces\ISymbolicExpressionTreeArchitectureManipulator.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionTreeCreator.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionTreeCrossover.cs" />
-    <Compile Include="Interfaces\ISymbolicExpressionTreeMultiPopulationAnalyzer.cs" />
-    <Compile Include="Interfaces\ISymbolicExpressionTreePopulationAnalyzer.cs" />
     <Compile Include="Manipulators\ChangeNodeTypeManipulation.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionTreeManipulator.cs" />
     <Compile Include="Manipulators\FullTreeShaker.cs" />

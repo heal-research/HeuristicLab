@@ -56,14 +56,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     private const string LowerEstimationLimitParameterName = "LowerEstimationLimit";
 
     #region parameter properties
-    public ILookupParameter<ISymbolicExpressionTreeInterpreter> SymbolicExpressionTreeInterpreterParameter {
-      get { return (ILookupParameter<ISymbolicExpressionTreeInterpreter>)Parameters[SymbolicExpressionTreeInterpreterParameterName]; }
+    public IValueLookupParameter<ISymbolicExpressionTreeInterpreter> SymbolicExpressionTreeInterpreterParameter {
+      get { return (IValueLookupParameter<ISymbolicExpressionTreeInterpreter>)Parameters[SymbolicExpressionTreeInterpreterParameterName]; }
     }
-    public ILookupParameter<ItemArray<SymbolicExpressionTree>> SymbolicExpressionTreeParameter {
-      get { return (ILookupParameter<ItemArray<SymbolicExpressionTree>>)Parameters[SymbolicExpressionTreeParameterName]; }
+    public ILookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter {
+      get { return (ILookupParameter<SymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }
     }
-    public ILookupParameter<DataAnalysisProblemData> ProblemDataParameter {
-      get { return (ILookupParameter<DataAnalysisProblemData>)Parameters[ProblemDataParameterName]; }
+    public IValueLookupParameter<DataAnalysisProblemData> ProblemDataParameter {
+      get { return (IValueLookupParameter<DataAnalysisProblemData>)Parameters[ProblemDataParameterName]; }
     }
     public IValueLookupParameter<IntValue> SamplesStartParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters[SamplesStartParameterName]; }
@@ -77,22 +77,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     public IValueLookupParameter<DoubleValue> LowerEstimationLimitParameter {
       get { return (IValueLookupParameter<DoubleValue>)Parameters[LowerEstimationLimitParameterName]; }
     }
-    public IValueLookupParameter<DoubleValue> RSquaredQualityParameter {
-      get { return (IValueLookupParameter<DoubleValue>)Parameters[RSQuaredQualityParameterName]; }
+    public ILookupParameter<DoubleValue> RSquaredQualityParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters[RSQuaredQualityParameterName]; }
     }
-    public IValueLookupParameter<DoubleValue> AverageRelativeErrorQualityParameter {
-      get { return (IValueLookupParameter<DoubleValue>)Parameters[RelativeErrorQualityParameterName]; }
+    public ILookupParameter<DoubleValue> AverageRelativeErrorQualityParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters[RelativeErrorQualityParameterName]; }
     }
-    public IValueLookupParameter<DoubleValue> MeanSquaredErrorQualityParameter {
-      get { return (IValueLookupParameter<DoubleValue>)Parameters[MeanSquaredErrorQualityParameterName]; }
+    public ILookupParameter<DoubleValue> MeanSquaredErrorQualityParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters[MeanSquaredErrorQualityParameterName]; }
     }
     #endregion
 
     public SymbolicRegressionModelQualityCalculator()
       : base() {
-      Parameters.Add(new LookupParameter<ISymbolicExpressionTreeInterpreter>(SymbolicExpressionTreeInterpreterParameterName, "The interpreter that should be used to calculate the output values of the symbolic expression tree."));
-      Parameters.Add(new ScopeTreeLookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression trees to analyze."));
-      Parameters.Add(new LookupParameter<DataAnalysisProblemData>(ProblemDataParameterName, "The problem data containing the input varaibles for the symbolic regression problem."));
+      Parameters.Add(new ValueLookupParameter<ISymbolicExpressionTreeInterpreter>(SymbolicExpressionTreeInterpreterParameterName, "The interpreter that should be used to calculate the output values of the symbolic expression tree."));
+      Parameters.Add(new LookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression tree to analyze."));
+      Parameters.Add(new ValueLookupParameter<DataAnalysisProblemData>(ProblemDataParameterName, "The problem data containing the input varaibles for the symbolic regression problem."));
       Parameters.Add(new ValueLookupParameter<IntValue>(SamplesStartParameterName, "The first index of the data set partition on which the model quality values should be calculated."));
       Parameters.Add(new ValueLookupParameter<IntValue>(SamplesEndParameterName, "The first index of the data set partition on which the model quality values should be calculated."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>(UpperEstimationLimitParameterName, "The upper limit that should be used as cut off value for the output values of symbolic expression trees."));
@@ -106,6 +106,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       SimpleRSquaredEvaluator simpleR2Evalator = new SimpleRSquaredEvaluator();
       SimpleMeanAbsolutePercentageErrorEvaluator simpleRelErrorEvaluator = new SimpleMeanAbsolutePercentageErrorEvaluator();
       SimpleMSEEvaluator simpleMseEvaluator = new SimpleMSEEvaluator();
+      Assigner clearValues = new Assigner();
       #endregion
 
       #region parameter wiring
@@ -126,6 +127,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       
       simpleRelErrorEvaluator.ValuesParameter.ActualName = ValuesParameterName;
       simpleRelErrorEvaluator.AverageRelativeErrorParameter.ActualName = AverageRelativeErrorQualityParameter.Name;
+
+      clearValues.LeftSideParameter.ActualName = ValuesParameterName;
+      clearValues.RightSideParameter.Value = new DoubleMatrix();
       #endregion
 
       #region operator graph
@@ -133,7 +137,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       simpleEvaluator.Successor = simpleR2Evalator;
       simpleR2Evalator.Successor = simpleRelErrorEvaluator;
       simpleRelErrorEvaluator.Successor = simpleMseEvaluator;
-      simpleMseEvaluator.Successor = null;
+      simpleMseEvaluator.Successor = clearValues;
+      clearValues.Successor = null;
       #endregion
 
     }

@@ -25,11 +25,12 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.ArtificialAnt.Analyzers {
-  public interface IAntTrailPopulationAnalyzer : IAnalyzer {
-    ILookupParameter<ItemArray<DoubleValue>> QualityParameter { get; }
-    ILookupParameter<ItemArray<SymbolicExpressionTree>> SymbolicExpressionTreeParameter { get; }
+  public interface IAntTrailAnalyzer : IAnalyzer {
+    ScopeTreeLookupParameter<DoubleValue> QualityParameter { get; }
+    ScopeTreeLookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter { get; }
     ILookupParameter<BoolMatrix> WorldParameter { get; }
     ILookupParameter<IntValue> MaxTimeStepsParameter { get; }
   }

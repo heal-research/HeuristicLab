@@ -31,19 +31,19 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.ArtificialAnt.Analyzers {
   /// <summary>
-  /// An operator for visualizing the best ant trail of an artificial ant problem.
+  /// An operator for analyzing the best ant trail of an artificial ant problem.
   /// </summary>
-  [Item("PopulationBestAntTrailAnalyzer", "An operator for visualizing the best ant trail of an artificial ant problem.")]
+  [Item("BestAntTrailAnalyzer", "An operator for analyzing the best ant trail of an artificial ant problem.")]
   [StorableClass]
-  public sealed class PopulationBestAntTrailAnalyzer : SingleSuccessorOperator, IAntTrailPopulationAnalyzer {
+  public sealed class BestAntTrailAnalyzer : SingleSuccessorOperator, IAntTrailAnalyzer {
     public ILookupParameter<BoolMatrix> WorldParameter {
       get { return (ILookupParameter<BoolMatrix>)Parameters["World"]; }
     }
-    public ILookupParameter<ItemArray<SymbolicExpressionTree>> SymbolicExpressionTreeParameter {
-      get { return (ILookupParameter<ItemArray<SymbolicExpressionTree>>)Parameters["SymbolicExpressionTree"]; }
+    public ScopeTreeLookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter {
+      get { return (ScopeTreeLookupParameter<SymbolicExpressionTree>)Parameters["SymbolicExpressionTree"]; }
     }
-    public ILookupParameter<ItemArray<DoubleValue>> QualityParameter {
-      get { return (ILookupParameter<ItemArray<DoubleValue>>)Parameters["Quality"]; }
+    public ScopeTreeLookupParameter<DoubleValue> QualityParameter {
+      get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
     public ILookupParameter<IntValue> MaxTimeStepsParameter {
       get { return (ILookupParameter<IntValue>)Parameters["MaxTimeSteps"]; }
@@ -55,7 +55,7 @@ namespace HeuristicLab.Problems.ArtificialAnt.Analyzers {
       get { return (ValueLookupParameter<ResultCollection>)Parameters["Results"]; }
     }
 
-    public PopulationBestAntTrailAnalyzer()
+    public BestAntTrailAnalyzer()
       : base() {
       Parameters.Add(new LookupParameter<BoolMatrix>("World", "The world with food items for the artificial ant."));
       Parameters.Add(new ScopeTreeLookupParameter<SymbolicExpressionTree>("SymbolicExpressionTree", "The artificial ant solutions from which the best solution should be visualized."));

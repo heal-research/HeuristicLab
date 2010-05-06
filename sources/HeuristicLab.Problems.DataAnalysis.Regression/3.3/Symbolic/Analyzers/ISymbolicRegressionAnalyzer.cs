@@ -1,4 +1,4 @@
-﻿#region License Information
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -26,14 +27,17 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System;
-using System.Diagnostics;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Problems.DataAnalysis.Evaluators;
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
+using System.Collections.Generic;
+using HeuristicLab.Analysis;
 
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces {
-  /// <summary>
-  /// Interface for analyzers that can be applied to populations of symbolic expression trees.
-  /// </summary>
-  public interface ISymbolicExpressionTreePopulationAnalyzer : IAnalyzer {
-    ILookupParameter<ItemArray<SymbolicExpressionTree>> SymbolicExpressionTreeParameter { get; }
+using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
+
+namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
+  public interface ISymbolicRegressionAnalyzer : IAnalyzer {
+    ScopeTreeLookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter { get; }
+    ILookupParameter<ResultCollection> ResultsParameter { get; }
   }
 }

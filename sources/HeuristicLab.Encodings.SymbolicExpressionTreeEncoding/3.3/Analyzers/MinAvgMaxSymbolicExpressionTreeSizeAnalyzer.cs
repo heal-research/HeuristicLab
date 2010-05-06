@@ -29,28 +29,28 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using System.Collections.Generic;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
 using HeuristicLab.Analysis;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
+using System;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers {
   /// <summary>
-  /// An operator that tracks the tree size of a symbolic expression tree.
+  /// An operator that tracks the min avgerage and max tree size.
   /// </summary>
-  [Item("SymbolicExpressionTreeSizeAnalyzer", "An operator that tracks the tree size of symbolic expression trees.")]
+  [Item("MinAvgMaxSymbolicExpressionTreeSizeAnalyzer", "An operator that tracks the min avgerage and max tree size.")]
   [StorableClass]
-  public sealed class SymbolicExpressionTreeSizeAnalyzer : AlgorithmOperator, ISymbolicExpressionTreeAnalyzer {
+  public sealed class MinAvgMaxSymbolicExpressionTreeSizeAnalyzer : AlgorithmOperator, ISymbolicExpressionTreeAnalyzer {
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
     private const string SymbolicExpressionTreeSizeParameterName = "SymbolicExpressionTreeSize";
     private const string SymbolicExpressionTreeSizesParameterName = "SymbolicExpressionTreeSizes";
     private const string ResultsParameterName = "Results";
 
-
     #region parameter properties
-    public ILookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter {
-      get { return (ILookupParameter<SymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }
+    public ScopeTreeLookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter {
+      get { return (ScopeTreeLookupParameter<SymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }
     }
-    public ILookupParameter<DoubleValue> SymbolicExpressionTreeSizeParameter {
-      get { return (ILookupParameter<DoubleValue>)Parameters[SymbolicExpressionTreeSizeParameterName]; }
+    public ScopeTreeLookupParameter<DoubleValue> SymbolicExpressionTreeSizeParameter {
+      get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters[SymbolicExpressionTreeSizeParameterName]; }
     }
     public ValueLookupParameter<DataTable> SymbolicExpressionTreeSizesParameter {
       get { return (ValueLookupParameter<DataTable>)Parameters[SymbolicExpressionTreeSizesParameterName]; }
@@ -58,29 +58,55 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers {
     public ValueLookupParameter<VariableCollection> ResultsParameter {
       get { return (ValueLookupParameter<VariableCollection>)Parameters[ResultsParameterName]; }
     }
+    
+    [Storable]
+    private MinAverageMaxValueAnalyzer valueAnalyzer;
 
     #endregion
-
-    public SymbolicExpressionTreeSizeAnalyzer()
+    public MinAvgMaxSymbolicExpressionTreeSizeAnalyzer()
       : base() {
-      Parameters.Add(new LookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression tree whose size should be calculated."));
-      Parameters.Add(new LookupParameter<DoubleValue>(SymbolicExpressionTreeSizeParameterName, "The tree size of the symbolic expression tree."));
+      Parameters.Add(new ScopeTreeLookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression tree whose size should be calculated."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>(SymbolicExpressionTreeSizeParameterName, "The tree size of the symbolic expression tree."));
       Parameters.Add(new ValueLookupParameter<DataTable>(SymbolicExpressionTreeSizesParameterName, "The data table to store the tree sizes."));
       Parameters.Add(new ValueLookupParameter<VariableCollection>(ResultsParameterName, "The results collection where the analysis values should be stored."));
 
-
+      UniformSubScopesProcessor subScopesProcessor = new UniformSubScopesProcessor();
       SymbolicExpressionTreeSizeCalculator sizeCalculator = new SymbolicExpressionTreeSizeCalculator();
-      ValueAnalyzer valueAnalyzer = new ValueAnalyzer();
+      valueAnalyzer = new MinAverageMaxValueAnalyzer();
       sizeCalculator.SymbolicExpressionTreeParameter.ActualName = SymbolicExpressionTreeParameter.Name;
       sizeCalculator.SymbolicExpressionTreeSizeParameter.ActualName = SymbolicExpressionTreeSizeParameter.Name;
       valueAnalyzer.ValueParameter.ActualName = sizeCalculator.SymbolicExpressionTreeSizeParameter.Name;
-      valueAnalyzer.ValueParameter.Depth = 0;
+      valueAnalyzer.ValueParameter.Depth = SymbolicExpressionTreeSizeParameter.Depth;
       valueAnalyzer.ValuesParameter.ActualName = SymbolicExpressionTreeSizesParameter.Name;
       valueAnalyzer.ResultsParameter.ActualName = ResultsParameter.Name;
+      valueAnalyzer.AverageValueParameter.ActualName = "Avg. Tree Size";
+      valueAnalyzer.MaxValueParameter.ActualName = "Max Tree Size";
+      valueAnalyzer.MinValueParameter.ActualName = "Min Tree Size";
 
-      OperatorGraph.InitialOperator = sizeCalculator;
-      sizeCalculator.Successor = valueAnalyzer;
+      OperatorGraph.InitialOperator = subScopesProcessor;
+      subScopesProcessor.Operator = sizeCalculator;
+      subScopesProcessor.Successor = valueAnalyzer;
       valueAnalyzer.Successor = null;
+
+      Initialize();
+    }
+
+    [StorableConstructor]
+    private MinAvgMaxSymbolicExpressionTreeSizeAnalyzer(bool deserializing) : base() { }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void Initialize() {
+      SymbolicExpressionTreeParameter.DepthChanged += new EventHandler(SymbolicExpressionTreeParameter_DepthChanged);
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      MinAvgMaxSymbolicExpressionTreeSizeAnalyzer clone = (MinAvgMaxSymbolicExpressionTreeSizeAnalyzer)base.Clone(cloner);
+      clone.Initialize();
+      return clone;
+    }
+
+    private void SymbolicExpressionTreeParameter_DepthChanged(object sender, EventArgs e) {
+      valueAnalyzer.ValueParameter.Depth = SymbolicExpressionTreeParameter.Depth;
     }
   }
 }

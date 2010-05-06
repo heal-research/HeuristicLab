@@ -187,8 +187,8 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       get { return operators; }
     }
 
-    public IEnumerable<IAntTrailPopulationAnalyzer> AntTrailAnalyzers {
-      get { return operators.OfType<IAntTrailPopulationAnalyzer>(); }
+    public IEnumerable<IAntTrailAnalyzer> AntTrailAnalyzers {
+      get { return operators.OfType<IAntTrailAnalyzer>(); }
     }
     #endregion
 
@@ -298,8 +298,8 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     private void InitializeOperators() {
       operators = new List<IOperator>();
       operators.AddRange(ApplicationManager.Manager.GetInstances<ISymbolicExpressionTreeOperator>().OfType<IOperator>());
-      operators.Add(new PopulationBestAntTrailAnalyzer());
-      operators.Add(new PopulationMinAvgMaxTreeSizeAnalyzer());
+      operators.Add(new BestAntTrailAnalyzer());
+      operators.Add(new MinAvgMaxSymbolicExpressionTreeSizeAnalyzer());
       ParameterizeAnalyzers();
       ParameterizeOperators();
     }
@@ -315,13 +315,13 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       Evaluator.WorldParameter.ActualName = WorldParameter.Name;
     }
     private void ParameterizeAnalyzers() {
-      foreach (IAntTrailPopulationAnalyzer analyzer in AntTrailAnalyzers) {
+      foreach (IAntTrailAnalyzer analyzer in AntTrailAnalyzers) {
         analyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
         analyzer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
         analyzer.WorldParameter.ActualName = WorldParameter.Name;
         analyzer.MaxTimeStepsParameter.ActualName = MaxTimeStepsParameter.Name;
       }
-      foreach (ISymbolicExpressionTreePopulationAnalyzer analyzer in Operators.OfType<ISymbolicExpressionTreePopulationAnalyzer>()) {
+      foreach (ISymbolicExpressionTreeAnalyzer analyzer in Operators.OfType<ISymbolicExpressionTreeAnalyzer>()) {
         analyzer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
       }
     }

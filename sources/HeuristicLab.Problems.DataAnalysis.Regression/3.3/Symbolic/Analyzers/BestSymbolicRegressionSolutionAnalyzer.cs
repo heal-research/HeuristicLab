@@ -35,9 +35,9 @@ using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
-  [Item("PopulationBestSymbolicRegressionSolutionAnalyzer", "An operator for analyzing the best solution of symbolic regression problems given in symbolic expression tree encoding.")]
+  [Item("BestSymbolicRegressionSolutionAnalyzer", "An operator for analyzing the best solution of symbolic regression problems given in symbolic expression tree encoding.")]
   [StorableClass]
-  public sealed class PopulationBestSymbolicRegressionSolutionAnalyzer : SingleSuccessorOperator, ISymbolicRegressionSolutionPopulationAnalyzer {
+  public sealed class BestSymbolicRegressionSolutionAnalyzer : SingleSuccessorOperator, ISymbolicRegressionAnalyzer {
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
     private const string SymbolicExpressionTreeInterpreterParameterName = "SymbolicExpressionTreeInterpreter";
     private const string ProblemDataParameterName = "ProblemData";
@@ -48,23 +48,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     private const string BestSolutionQualityParameterName = "BestSolutionQuality";
     private const string ResultsParameterName = "Results";
 
-    public ILookupParameter<ItemArray<SymbolicExpressionTree>> SymbolicExpressionTreeParameter {
-      get { return (ILookupParameter<ItemArray<SymbolicExpressionTree>>)Parameters[SymbolicExpressionTreeParameterName]; }
+    private const string BestSolutionResultName = "Best Solution (on validiation set)";
+    private const string BestSolutionInputvariableCountResultName = "Variables Used by Best Solution";
+
+    public ScopeTreeLookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter {
+      get { return (ScopeTreeLookupParameter<SymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }
     }
-    public ILookupParameter<ISymbolicExpressionTreeInterpreter> SymbolicExpressionTreeInterpreterParameter {
-      get { return (ILookupParameter<ISymbolicExpressionTreeInterpreter>)Parameters[SymbolicExpressionTreeInterpreterParameterName]; }
+    public IValueLookupParameter<ISymbolicExpressionTreeInterpreter> SymbolicExpressionTreeInterpreterParameter {
+      get { return (IValueLookupParameter<ISymbolicExpressionTreeInterpreter>)Parameters[SymbolicExpressionTreeInterpreterParameterName]; }
     }
-    public ILookupParameter<DataAnalysisProblemData> ProblemDataParameter {
-      get { return (ILookupParameter<DataAnalysisProblemData>)Parameters[ProblemDataParameterName]; }
+    public IValueLookupParameter<DataAnalysisProblemData> ProblemDataParameter {
+      get { return (IValueLookupParameter<DataAnalysisProblemData>)Parameters[ProblemDataParameterName]; }
     }
-    public ILookupParameter<ItemArray<DoubleValue>> QualityParameter {
-      get { return (ILookupParameter<ItemArray<DoubleValue>>)Parameters[QualityParameterName]; }
+    public ScopeTreeLookupParameter<DoubleValue> QualityParameter {
+      get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters[QualityParameterName]; }
     }
-    public ILookupParameter<DoubleValue> UpperEstimationLimitParameter {
-      get { return (ILookupParameter<DoubleValue>)Parameters[UpperEstimationLimitParameterName]; }
+    public IValueLookupParameter<DoubleValue> UpperEstimationLimitParameter {
+      get { return (IValueLookupParameter<DoubleValue>)Parameters[UpperEstimationLimitParameterName]; }
     }
-    public ILookupParameter<DoubleValue> LowerEstimationLimitParameter {
-      get { return (ILookupParameter<DoubleValue>)Parameters[LowerEstimationLimitParameterName]; }
+    public IValueLookupParameter<DoubleValue> LowerEstimationLimitParameter {
+      get { return (IValueLookupParameter<DoubleValue>)Parameters[LowerEstimationLimitParameterName]; }
     }
     public ILookupParameter<SymbolicRegressionSolution> BestSolutionParameter {
       get { return (ILookupParameter<SymbolicRegressionSolution>)Parameters[BestSolutionParameterName]; }
@@ -76,13 +79,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       get { return (ILookupParameter<ResultCollection>)Parameters[ResultsParameterName]; }
     }
 
-    public PopulationBestSymbolicRegressionSolutionAnalyzer()
+    public BestSymbolicRegressionSolutionAnalyzer()
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression trees to analyze."));
-      Parameters.Add(new LookupParameter<ISymbolicExpressionTreeInterpreter>(SymbolicExpressionTreeInterpreterParameterName, "The interpreter that should be used for the analysis of symbolic expression trees."));
-      Parameters.Add(new LookupParameter<DataAnalysisProblemData>(ProblemDataParameterName, "The problem data for which the symbolic expression tree is a solution."));
-      Parameters.Add(new LookupParameter<DoubleValue>(UpperEstimationLimitParameterName, "The upper estimation limit that was set for the evaluation of the symbolic expression trees."));
-      Parameters.Add(new LookupParameter<DoubleValue>(LowerEstimationLimitParameterName, "The lower estimation limit that was set for the evaluation of the symbolic expression trees."));
+      Parameters.Add(new ValueLookupParameter<ISymbolicExpressionTreeInterpreter>(SymbolicExpressionTreeInterpreterParameterName, "The interpreter that should be used for the analysis of symbolic expression trees."));
+      Parameters.Add(new ValueLookupParameter<DataAnalysisProblemData>(ProblemDataParameterName, "The problem data for which the symbolic expression tree is a solution."));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>(UpperEstimationLimitParameterName, "The upper estimation limit that was set for the evaluation of the symbolic expression trees."));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>(LowerEstimationLimitParameterName, "The lower estimation limit that was set for the evaluation of the symbolic expression trees."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>(QualityParameterName, "The qualities of the symbolic regression trees which should be analyzed."));
       Parameters.Add(new LookupParameter<SymbolicRegressionSolution>(BestSolutionParameterName, "The best symbolic regression solution."));
       Parameters.Add(new LookupParameter<DoubleValue>(BestSolutionQualityParameterName, "The quality of the best symbolic regression solution."));
@@ -102,18 +105,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
 
       SymbolicRegressionSolution solution = BestSolutionParameter.ActualValue;
       if (solution == null) {
-        var model = new SymbolicRegressionModel(interpreter, expressions[i], GetInputVariables(expressions[i]));
+        var model = new SymbolicRegressionModel((ISymbolicExpressionTreeInterpreter)interpreter.Clone(), expressions[i], GetInputVariables(expressions[i]));
         solution = new SymbolicRegressionSolution(problemData, model, lowerEstimationLimit.Value, upperEstimationLimit.Value);
         BestSolutionParameter.ActualValue = solution;
         BestSolutionQualityParameter.ActualValue = qualities[i];
-        results.Add(new Result("Best Symbolic Regression Solution", solution));
+        results.Add(new Result(BestSolutionResultName, solution));
+        results.Add(new Result(BestSolutionInputvariableCountResultName, new IntValue(model.InputVariables.Count())));
       } else {
         if (BestSolutionQualityParameter.ActualValue.Value > qualities[i].Value) {
-          var model = new SymbolicRegressionModel(interpreter, expressions[i], GetInputVariables(expressions[i]));
+          var model = new SymbolicRegressionModel((ISymbolicExpressionTreeInterpreter)interpreter.Clone(), expressions[i], GetInputVariables(expressions[i]));
           solution = new SymbolicRegressionSolution(problemData, model, lowerEstimationLimit.Value, upperEstimationLimit.Value);
           BestSolutionParameter.ActualValue = solution;
           BestSolutionQualityParameter.ActualValue = qualities[i];
-          results["Best Symbolic Regression Solution"].Value = solution;
+          results[BestSolutionResultName].Value = solution;
+          results[BestSolutionInputvariableCountResultName].Value = new IntValue(model.InputVariables.Count());
         }
       }
 
