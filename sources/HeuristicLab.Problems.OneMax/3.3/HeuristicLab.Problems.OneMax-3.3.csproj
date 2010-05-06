@@ -86,9 +86,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Analyzers\BestOneMaxSolutionAnalyzer.cs" />
-    <Compile Include="Analyzers\MultiPopulationBestOneMaxSolutionAnalyzer.cs" />
-    <Compile Include="Analyzers\PopulationBestOneMaxSolutionAnalyzer.cs" />
-    <Compile Include="Interfaces\IBestOneMaxSolutionAnalyzer.cs" />
     <Compile Include="Interfaces\IOneMaxSolutionsVisualizer.cs" />
     <Compile Include="Interfaces\IOneMaxMoveEvaluator.cs" />
     <Compile Include="OneMaxSolution.cs" />

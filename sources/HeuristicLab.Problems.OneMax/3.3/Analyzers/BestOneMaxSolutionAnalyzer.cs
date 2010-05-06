@@ -37,49 +37,45 @@ namespace HeuristicLab.Problems.OneMax.Analyzers {
   /// </summary>
   [Item("BestOneMaxSolutionAnalyzer", "An operator for analyzing the best solution for a OneMax problem.")]
   [StorableClass]
-  class BestOneMaxSolutionAnalyzer : SingleSuccessorOperator, IBestOneMaxSolutionAnalyzer, IAnalyzer {
+  class BestOneMaxSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer {
 
-    public ILookupParameter<BinaryVector> BinaryVectorParameter {
-      get { return (ILookupParameter<BinaryVector>)Parameters["BinaryVector"]; }
+    public ScopeTreeLookupParameter<BinaryVector> BinaryVectorParameter {
+      get { return (ScopeTreeLookupParameter<BinaryVector>)Parameters["BinaryVector"]; }
     }
-    ILookupParameter IBestOneMaxSolutionAnalyzer.BinaryVectorParameter {
-      get { return BinaryVectorParameter; }
+    public ScopeTreeLookupParameter<DoubleValue> QualityParameter {
+      get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
-    public ILookupParameter<DoubleValue> QualityParameter {
-      get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
+    public LookupParameter<OneMaxSolution> BestSolutionParameter {
+      get { return (LookupParameter<OneMaxSolution>)Parameters["BestSolution"]; }
     }
-    ILookupParameter IBestOneMaxSolutionAnalyzer.QualityParameter {
-      get { return QualityParameter; }
-    }
-    public ILookupParameter<OneMaxSolution> BestSolutionParameter {
-      get { return (ILookupParameter<OneMaxSolution>)Parameters["BestSolution"]; }
-    }
-    public IValueLookupParameter<ResultCollection> ResultsParameter {
-      get { return (IValueLookupParameter<ResultCollection>)Parameters["Results"]; }
+    public ValueLookupParameter<ResultCollection> ResultsParameter {
+      get { return (ValueLookupParameter<ResultCollection>)Parameters["Results"]; }
     }
 
     public BestOneMaxSolutionAnalyzer()
       : base() {
-      Parameters.Add(new LookupParameter<BinaryVector>("BinaryVector", "The Onemax solutions from which the best solution should be visualized."));
+      Parameters.Add(new ScopeTreeLookupParameter<BinaryVector>("BinaryVector", "The Onemax solutions from which the best solution should be visualized."));
 
-      Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The qualities of the Onemax solutions which should be visualized."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The qualities of the Onemax solutions which should be visualized."));
       Parameters.Add(new LookupParameter<OneMaxSolution>("BestSolution", "The best Onemax solution."));
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the Onemax solution should be stored."));
     }
 
     public override IOperation Apply() {
-      BinaryVector binaryVector = BinaryVectorParameter.ActualValue;
-      DoubleValue quality = QualityParameter.ActualValue;
+      ItemArray<BinaryVector> binaryVectors = BinaryVectorParameter.ActualValue;
+      ItemArray<DoubleValue> qualities = QualityParameter.ActualValue;
       ResultCollection results = ResultsParameter.ActualValue;
+
+      int i = qualities.Select((x, index) => new { index, x.Value }).OrderBy(x => x.Value).First().index;
 
       OneMaxSolution solution = BestSolutionParameter.ActualValue;
       if (solution == null) {
-        solution = new OneMaxSolution(binaryVector, QualityParameter.ActualValue);
+        solution = new OneMaxSolution(binaryVectors[i], QualityParameter.ActualValue[i]);
         BestSolutionParameter.ActualValue = solution;
         results.Add(new Result("Best OneMax Solution", solution));
       }  else {
-        solution.BinaryVector = binaryVector;
-        solution.Quality = QualityParameter.ActualValue;
+        solution.BinaryVector = binaryVectors[i];
+        solution.Quality = QualityParameter.ActualValue[i];
 
         results["Best OneMax Solution"].Value = solution;
       }

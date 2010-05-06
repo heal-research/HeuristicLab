@@ -123,8 +123,8 @@ namespace HeuristicLab.Problems.Knapsack {
     public IEnumerable<IOperator> Operators {
       get { return operators.Cast<IOperator>(); }
     }
-    private IEnumerable<IBestKnapsackSolutionAnalyzer> BestKnapsackSolutionAnalyzers {
-      get { return operators.OfType<IBestKnapsackSolutionAnalyzer>(); }
+    private BestKnapsackSolutionAnalyzer BestKnapsackSolutionAnalyzer {
+      get { return operators.OfType<BestKnapsackSolutionAnalyzer>().FirstOrDefault(); }
     }
     #endregion
 
@@ -205,27 +205,27 @@ namespace HeuristicLab.Problems.Knapsack {
       SolutionCreator.BinaryVectorParameter.ActualNameChanged += new EventHandler(SolutionCreator_BinaryVectorParameter_ActualNameChanged);
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
-      ParameterizeAnalyzers();
+      ParameterizeAnalyzer();
       ParameterizeOperators();
       OnSolutionCreatorChanged();
     }
     private void SolutionCreator_BinaryVectorParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
-      ParameterizeAnalyzers();
+      ParameterizeAnalyzer();
       ParameterizeOperators();
     }
     private void EvaluatorParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
-      ParameterizeAnalyzers();
+      ParameterizeAnalyzer();
       OnEvaluatorChanged();
     }
     void KnapsackCapacityParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
-      ParameterizeAnalyzers();
+      ParameterizeAnalyzer();
     }
     void WeightsParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
-      ParameterizeAnalyzers();
+      ParameterizeAnalyzer();
       ParameterizeSolutionCreator();
 
       WeightsParameter.Value.Reset += new EventHandler(WeightsValue_Reset);
@@ -238,7 +238,7 @@ namespace HeuristicLab.Problems.Knapsack {
     }
     void ValuesParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
-      ParameterizeAnalyzers();
+      ParameterizeAnalyzer();
       ParameterizeSolutionCreator();
 
       ValuesParameter.Value.Reset += new EventHandler(ValuesValue_Reset);
@@ -290,21 +290,17 @@ namespace HeuristicLab.Problems.Knapsack {
         knapsackEvaluator.PenaltyParameter.ActualName = PenaltyParameter.Name;
       }
     }
-    private void ParameterizeAnalyzers() {
-      foreach (IBestKnapsackSolutionAnalyzer analyzer in BestKnapsackSolutionAnalyzers) {
-        analyzer.BinaryVectorParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
-        analyzer.KnapsackCapacityParameter.ActualName = KnapsackCapacityParameter.Name;
-        analyzer.WeightsParameter.ActualName = WeightsParameter.Name;
-        analyzer.ValuesParameter.ActualName = ValuesParameter.Name;
-        analyzer.ResultsParameter.ActualName = "Results";
-      }
+    private void ParameterizeAnalyzer() {
+      BestKnapsackSolutionAnalyzer.BinaryVectorParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
+      BestKnapsackSolutionAnalyzer.KnapsackCapacityParameter.ActualName = KnapsackCapacityParameter.Name;
+      BestKnapsackSolutionAnalyzer.WeightsParameter.ActualName = WeightsParameter.Name;
+      BestKnapsackSolutionAnalyzer.ValuesParameter.ActualName = ValuesParameter.Name;
+      BestKnapsackSolutionAnalyzer.ResultsParameter.ActualName = "Results";
     }
     private void InitializeOperators() {
       operators = new List<IOperator>();
       operators.Add(new BestKnapsackSolutionAnalyzer());
-      operators.Add(new PopulationBestKnapsackSolutionAnalyzer());
-      operators.Add(new MultiPopulationBestKnapsackSolutionAnalyzer());
-      ParameterizeAnalyzers();
+      ParameterizeAnalyzer();
       foreach (IBinaryVectorOperator op in ApplicationManager.Manager.GetInstances<IBinaryVectorOperator>()) {
         if (!(op is ISingleObjectiveMoveEvaluator) || (op is IKnapsackMoveEvaluator)) {
           operators.Add(op);

@@ -80,11 +80,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Analyzers\MultiPopulationBestKnapsackSolutionAnalyzer.cs" />
-    <Compile Include="Analyzers\PopulationBestKnapsackSolutionAnalyzer.cs" />
     <Compile Include="Evaluators\KnapsackEvaluator.cs" />
     <Compile Include="HeuristicLabProblemsKnapsackPlugin.cs" />
-    <Compile Include="Interfaces\IBestKnapsackSolutionAnalyzer.cs" />
     <Compile Include="Interfaces\IKnapsackEvaluator.cs" />
     <Compile Include="Interfaces\IKnapsackMoveEvaluator.cs" />
     <Compile Include="KnapsackProblem.cs" />

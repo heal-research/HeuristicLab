@@ -74,9 +74,8 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
 
     private void Content_BestRealVectorChanged(object sender, EventArgs e) {
       if (InvokeRequired)
-        Invoke(new EventHandler(Content_QualityChanged), sender, e);
+        Invoke(new EventHandler(Content_BestRealVectorChanged), sender, e);
       else {
-        realVectorView.ViewType = null;
         realVectorView.Content = Content.BestRealVector;
         pictureBox.Visible = Content.BestRealVector.Length == 2;
         GenerateImage();
@@ -87,7 +86,6 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_QualityChanged), sender, e);
       else {
-        qualityView.ViewType = null;
         qualityView.Content = Content.BestQuality;
         pictureBox.Visible = Content.BestRealVector.Length == 2;
         GenerateImage();
@@ -109,10 +107,7 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
         qualityView.Content = null;
         realVectorView.Content = null;
       } else {
-        qualityView.ViewType = null;
         qualityView.Content = Content.BestQuality;
-
-        realVectorView.ViewType = null;
         realVectorView.Content = Content.BestRealVector;
 
         pictureBox.Visible = Content.BestRealVector.Length == 2;

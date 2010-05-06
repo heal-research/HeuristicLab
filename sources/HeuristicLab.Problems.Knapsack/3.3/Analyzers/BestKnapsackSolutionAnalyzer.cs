@@ -37,62 +37,58 @@ namespace HeuristicLab.Problems.Knapsack.Analyzers {
   /// </summary>
   [Item("BestKnapsackSolutionAnalyzer", "An operator for analyzing the best solution for a knapsack problem.")]
   [StorableClass]
-  class BestKnapsackSolutionAnalyzer : SingleSuccessorOperator, IBestKnapsackSolutionAnalyzer, IAnalyzer {
+  class BestKnapsackSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer {
 
-    public ILookupParameter<BinaryVector> BinaryVectorParameter {
-      get { return (ILookupParameter<BinaryVector>)Parameters["BinaryVector"]; }
+    public ScopeTreeLookupParameter<BinaryVector> BinaryVectorParameter {
+      get { return (ScopeTreeLookupParameter<BinaryVector>)Parameters["BinaryVector"]; }
     }
-    ILookupParameter IBestKnapsackSolutionAnalyzer.BinaryVectorParameter {
-      get { return BinaryVectorParameter; }
+    public LookupParameter<IntValue> KnapsackCapacityParameter {
+      get { return (LookupParameter<IntValue>)Parameters["KnapsackCapacity"]; }
     }
-    public ILookupParameter<IntValue> KnapsackCapacityParameter {
-      get { return (ILookupParameter<IntValue>)Parameters["KnapsackCapacity"]; }
+    public LookupParameter<IntArray> WeightsParameter {
+      get { return (LookupParameter<IntArray>)Parameters["Weights"]; }
     }
-    public ILookupParameter<IntArray> WeightsParameter {
-      get { return (ILookupParameter<IntArray>)Parameters["Weights"]; }
+    public LookupParameter<IntArray> ValuesParameter {
+      get { return (LookupParameter<IntArray>)Parameters["Values"]; }
     }
-    public ILookupParameter<IntArray> ValuesParameter {
-      get { return (ILookupParameter<IntArray>)Parameters["Values"]; }
+    public ScopeTreeLookupParameter<DoubleValue> QualityParameter {
+      get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
-    public ILookupParameter<DoubleValue> QualityParameter {
-      get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
+    public LookupParameter<KnapsackSolution> BestSolutionParameter {
+      get { return (LookupParameter<KnapsackSolution>)Parameters["BestSolution"]; }
     }
-    ILookupParameter IBestKnapsackSolutionAnalyzer.QualityParameter {
-      get { return QualityParameter; }
-    }
-    public ILookupParameter<KnapsackSolution> BestSolutionParameter {
-      get { return (ILookupParameter<KnapsackSolution>)Parameters["BestSolution"]; }
-    }
-    public IValueLookupParameter<ResultCollection> ResultsParameter {
-      get { return (IValueLookupParameter<ResultCollection>)Parameters["Results"]; }
+    public ValueLookupParameter<ResultCollection> ResultsParameter {
+      get { return (ValueLookupParameter<ResultCollection>)Parameters["Results"]; }
     }
 
     public BestKnapsackSolutionAnalyzer()
       : base() {
-      Parameters.Add(new LookupParameter<BinaryVector>("BinaryVector", "The knapsack solutions from which the best solution should be visualized."));
+      Parameters.Add(new ScopeTreeLookupParameter<BinaryVector>("BinaryVector", "The knapsack solutions from which the best solution should be visualized."));
       Parameters.Add(new LookupParameter<IntValue>("KnapsackCapacity", "Capacity of the Knapsack."));
       Parameters.Add(new LookupParameter<IntArray>("Weights", "The weights of the items."));
       Parameters.Add(new LookupParameter<IntArray>("Values", "The values of the items."));
 
-      Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The qualities of the knapsack solutions which should be visualized."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The qualities of the knapsack solutions which should be visualized."));
       Parameters.Add(new LookupParameter<KnapsackSolution>("BestSolution", "The best knapsack solution."));
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the knapsack solution should be stored."));
     }
 
     public override IOperation Apply() {
-      BinaryVector binaryVector = BinaryVectorParameter.ActualValue;
-      DoubleValue quality = QualityParameter.ActualValue;
+      ItemArray<BinaryVector> binaryVectors = BinaryVectorParameter.ActualValue;
+      ItemArray<DoubleValue> qualities = QualityParameter.ActualValue;
       ResultCollection results = ResultsParameter.ActualValue;
+
+      int i = qualities.Select((x, index) => new { index, x.Value }).OrderBy(x => x.Value).First().index;
 
       KnapsackSolution solution = BestSolutionParameter.ActualValue;
       if (solution == null) {
-        solution = new KnapsackSolution(binaryVector, QualityParameter.ActualValue,
+        solution = new KnapsackSolution(binaryVectors[i], qualities[i],
           KnapsackCapacityParameter.ActualValue, WeightsParameter.ActualValue, ValuesParameter.ActualValue);
         BestSolutionParameter.ActualValue = solution;
         results.Add(new Result("Best Knapsack Solution", solution));
       }  else {
-        solution.BinaryVector = binaryVector;
-        solution.Quality = QualityParameter.ActualValue;
+        solution.BinaryVector = binaryVectors[i];
+        solution.Quality = qualities[i];
         solution.Capacity = KnapsackCapacityParameter.ActualValue;
         solution.Weights = WeightsParameter.ActualValue;
         solution.Values = ValuesParameter.ActualValue;

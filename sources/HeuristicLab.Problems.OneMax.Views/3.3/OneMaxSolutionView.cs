@@ -62,16 +62,14 @@ namespace HeuristicLab.Problems.OneMax.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_QualityChanged), sender, e);
       else {
-        qualityView.ViewType = null;
         qualityView.Content = Content.Quality;
       }
     }
 
     void Content_BinaryVectorChanged(object sender, EventArgs e) {
       if (InvokeRequired)
-        Invoke(new EventHandler(Content_QualityChanged), sender, e);
+        Invoke(new EventHandler(Content_BinaryVectorChanged), sender, e);
       else {
-        binaryVectorView.ViewType = null;
         binaryVectorView.Content = Content.BinaryVector;
       }
     }
@@ -83,10 +81,7 @@ namespace HeuristicLab.Problems.OneMax.Views {
         qualityView.Content = null;
         binaryVectorView.Content = null;
       } else {
-        qualityView.ViewType = null;
         qualityView.Content = Content.Quality;
-
-        binaryVectorView.ViewType = null;
         binaryVectorView.Content = Content.BinaryVector;
       }
 

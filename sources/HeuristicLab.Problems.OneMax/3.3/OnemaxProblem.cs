@@ -101,8 +101,8 @@ namespace HeuristicLab.Problems.OneMax {
     public IEnumerable<IOperator> Operators {
       get { return operators.Cast<IOperator>(); }
     }
-    private IEnumerable<IBestOneMaxSolutionAnalyzer> BestOneMaxSolutionAnalyzers {
-      get { return operators.OfType<IBestOneMaxSolutionAnalyzer>(); }
+    private BestOneMaxSolutionAnalyzer BestOneMaxSolutionAnalyzer {
+      get { return operators.OfType<BestOneMaxSolutionAnalyzer>().FirstOrDefault(); }
     }
     #endregion
 
@@ -156,18 +156,18 @@ namespace HeuristicLab.Problems.OneMax {
       SolutionCreator.BinaryVectorParameter.ActualNameChanged += new EventHandler(SolutionCreator_BinaryVectorParameter_ActualNameChanged);
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
-      ParameterizeAnalyzers();
+      ParameterizeAnalyzer();
       ParameterizeOperators();
       OnSolutionCreatorChanged();
     }
     private void SolutionCreator_BinaryVectorParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
-      ParameterizeAnalyzers();
+      ParameterizeAnalyzer();
       ParameterizeOperators();
     }
     private void EvaluatorParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
-      ParameterizeAnalyzers();
+      ParameterizeAnalyzer();
       OnEvaluatorChanged();
     }
     void LengthParameter_ValueChanged(object sender, EventArgs e) {
@@ -208,18 +208,14 @@ namespace HeuristicLab.Problems.OneMax {
       if (Evaluator is OneMaxEvaluator)
         ((OneMaxEvaluator)Evaluator).BinaryVectorParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
     }
-    private void ParameterizeAnalyzers() {
-      foreach (IBestOneMaxSolutionAnalyzer analyzer in BestOneMaxSolutionAnalyzers) {
-        analyzer.BinaryVectorParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
-        analyzer.ResultsParameter.ActualName = "Results";
-      }
+    private void ParameterizeAnalyzer() {
+      BestOneMaxSolutionAnalyzer.BinaryVectorParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
+      BestOneMaxSolutionAnalyzer.ResultsParameter.ActualName = "Results";
     }
     private void InitializeOperators() {
       operators = new List<IOperator>();
       operators.Add(new BestOneMaxSolutionAnalyzer());
-      operators.Add(new PopulationBestOneMaxSolutionAnalyzer());
-      operators.Add(new MultiPopulationBestOneMaxSolutionAnalyzer());
-      ParameterizeAnalyzers();
+      ParameterizeAnalyzer();
       foreach(IBinaryVectorOperator op in ApplicationManager.Manager.GetInstances<IBinaryVectorOperator>()) {
         if (!(op is ISingleObjectiveMoveEvaluator) || (op is IOneMaxMoveEvaluator)) {
           operators.Add(op);
