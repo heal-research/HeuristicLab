@@ -28,6 +28,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("MultiRealVectorManipulator", "Randomly selects and applies one of its manipulators every time it is called.")]
@@ -53,6 +54,11 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       : base() {
       Parameters.Add(new LookupParameter<RealVector>("RealVector", "The real vector that is being manipulating."));
       Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "The lower and upper bounds for each dimension of the vector."));
+
+      foreach (Type type in ApplicationManager.Manager.GetTypes(typeof(IRealVectorManipulator))) {
+        if (!typeof(MultiOperator<IRealVectorManipulator>).IsAssignableFrom(type))
+          Operators.Add((IRealVectorManipulator)Activator.CreateInstance(type), true);
+      }
     }
 
     protected override void Operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IRealVectorManipulator>> e) {

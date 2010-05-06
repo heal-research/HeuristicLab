@@ -74,6 +74,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators {
       Parameters.Add(new ValueLookupParameter<IntValue>(MaxTreeSizeParameterName, "The maximal size (number of nodes) of the symbolic expression tree."));
       Parameters.Add(new ValueLookupParameter<IntValue>(MaxTreeHeightParameterName, "The maximal height of the symbolic expression tree (a tree with one node has height = 0)."));
       Parameters.Add(new LookupParameter<ISymbolicExpressionGrammar>(SymbolicExpressionGrammarParameterName, "The grammar that defines the allowed symbols and syntax of the symbolic expression trees."));
+
+      foreach (Type type in ApplicationManager.Manager.GetTypes(typeof(ISymbolicExpressionTreeManipulator))) {
+        if (!typeof(MultiOperator<ISymbolicExpressionTreeManipulator>).IsAssignableFrom(type) && !typeof(ISymbolicExpressionTreeArchitectureManipulator).IsAssignableFrom(type))
+          Operators.Add((ISymbolicExpressionTreeManipulator)Activator.CreateInstance(type), true);
+      }
     }
 
     protected override void Operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<ISymbolicExpressionTreeManipulator>> e) {

@@ -27,6 +27,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [Item("MultiBinaryVectorCrossover", "Randomly selects and applies one of its crossovers every time it is called.")]
@@ -55,6 +56,11 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       ParentsParameter.ActualName = "BinaryVector";
       Parameters.Add(new LookupParameter<BinaryVector>("Child", "The child binary vector resulting from the crossover."));
       ChildParameter.ActualName = "BinaryVector";
+
+      foreach (Type type in ApplicationManager.Manager.GetTypes(typeof(IBinaryVectorCrossover))) {
+        if (!typeof(MultiOperator<IBinaryVectorCrossover>).IsAssignableFrom(type))
+          Operators.Add((IBinaryVectorCrossover)Activator.CreateInstance(type), true);
+      }
     }
 
     protected override void Operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IBinaryVectorCrossover>> e) {

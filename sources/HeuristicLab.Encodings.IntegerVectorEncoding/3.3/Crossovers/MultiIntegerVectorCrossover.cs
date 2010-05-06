@@ -27,6 +27,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [Item("MultiIntegerVectorCrossover", "Randomly selects and applies one of its crossovers every time it is called.")]
@@ -55,6 +56,11 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       ParentsParameter.ActualName = "IntegerVector";
       Parameters.Add(new LookupParameter<IntegerVector>("Child", "The child integer vector resulting from the crossover."));
       ChildParameter.ActualName = "IntegerVector";
+
+      foreach (Type type in ApplicationManager.Manager.GetTypes(typeof(IIntegerVectorCrossover))) {
+        if (!typeof(MultiOperator<IIntegerVectorCrossover>).IsAssignableFrom(type))
+          Operators.Add((IIntegerVectorCrossover)Activator.CreateInstance(type), true);
+      }
     }
 
     protected override void Operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IIntegerVectorCrossover>> e) {

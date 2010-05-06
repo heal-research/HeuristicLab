@@ -28,6 +28,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("MultiRealVectorCrossover", "Randomly selects and applies one of its crossovers every time it is called.")]
@@ -59,6 +60,11 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Parameters.Add(new LookupParameter<RealVector>("Child", "The child real vector resulting from the crossover."));
       ChildParameter.ActualName = "RealVector";
       Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "The lower and upper bounds for each dimension of the vector."));
+
+      foreach (Type type in ApplicationManager.Manager.GetTypes(typeof(IRealVectorCrossover))) {
+        if (!typeof(MultiOperator<IRealVectorCrossover>).IsAssignableFrom(type))
+          Operators.Add((IRealVectorCrossover)Activator.CreateInstance(type), true);
+      }
     }
 
     protected override void Operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IRealVectorCrossover>> e) {

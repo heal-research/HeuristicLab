@@ -27,6 +27,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("MultiPermutationCrossover", "Randomly selects and applies one of its crossovers every time it is called.")]
@@ -55,6 +56,11 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       ParentsParameter.ActualName = "Permutation";
       Parameters.Add(new LookupParameter<Permutation>("Child", "The child permutation resulting from the crossover."));
       ChildParameter.ActualName = "Permutation";
+
+      foreach (Type type in ApplicationManager.Manager.GetTypes(typeof(IPermutationCrossover))) {
+        if (!typeof(MultiOperator<IPermutationCrossover>).IsAssignableFrom(type))
+          Operators.Add((IPermutationCrossover)Activator.CreateInstance(type), true);
+      }
     }
 
     protected override void Operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IPermutationCrossover>> e) {
