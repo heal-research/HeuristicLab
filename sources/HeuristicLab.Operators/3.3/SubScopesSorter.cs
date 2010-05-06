@@ -57,7 +57,7 @@ namespace HeuristicLab.Operators {
 
     public override IOperation Apply() {
       descending = DescendingParameter.ActualValue.Value;
-      actualName = LookupParameter<ItemArray<DoubleValue>>.TranslateName(ValueParameter.Name, ExecutionContext);
+      actualName = ValueParameter.TranslatedName;
       CurrentScope.SubScopes.Sort(SortScopes);
       return base.Apply();
     }

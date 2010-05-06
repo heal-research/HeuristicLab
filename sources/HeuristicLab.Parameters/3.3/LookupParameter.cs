@@ -43,6 +43,13 @@ namespace HeuristicLab.Parameters {
         }
       }
     }
+    public string TranslatedName {
+      get {
+        string translatedName;
+        GetValueParameterAndTranslateName(out translatedName);
+        return translatedName;
+      }
+    }
     public new T ActualValue {
       get {
         if (cachedActualValue == null) cachedActualValue = GetActualValue();
@@ -166,29 +173,6 @@ namespace HeuristicLab.Parameters {
       if (ActualNameChanged != null)
         ActualNameChanged(this, EventArgs.Empty);
       OnToStringChanged();
-    }
-
-    public static string TranslateName(string name, IExecutionContext context) {
-      string currentName = name;
-      IExecutionContext currentContext = context;
-      IParameter param;
-      ILookupParameter lookupParam;
-
-      while (currentContext != null) {
-        currentContext.Parameters.TryGetValue(currentName, out param);
-        if (param != null) {
-          lookupParam = param as ILookupParameter;
-          if (lookupParam == null)
-            throw new InvalidOperationException(
-              string.Format("Parameter look-up chain broken. Parameter \"{0}\" is not an \"{1}\".",
-                            currentName,
-                            typeof(ILookupParameter).GetPrettyName())
-            );
-          currentName = lookupParam.ActualName;
-        }
-        currentContext = currentContext.Parent;
-      }
-      return currentName;
     }
   }
 }

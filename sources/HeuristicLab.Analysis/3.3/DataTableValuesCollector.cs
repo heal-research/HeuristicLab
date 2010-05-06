@@ -52,16 +52,19 @@ namespace HeuristicLab.Analysis {
       }
 
       foreach (IParameter param in CollectedValues) {
+        ILookupParameter lookupParam = param as ILookupParameter;
+        string name = lookupParam != null ? lookupParam.TranslatedName : param.Name;
+
         if (param.ActualValue is DoubleValue) {
-          AddValue(table, (param.ActualValue as DoubleValue).Value, param.Name, param.Description);
+          AddValue(table, (param.ActualValue as DoubleValue).Value, name, param.Description);
         } else if (param.ActualValue is IEnumerable<DoubleValue>) {
           int counter = 0;
           foreach (DoubleValue data in (param.ActualValue as IEnumerable<DoubleValue>)) {
-            AddValue(table, data.Value, param.Name + " " + counter.ToString(), param.Description);
+            AddValue(table, data.Value, name + " " + counter.ToString(), param.Description);
             counter++;
           }
         } else {
-          AddValue(table, double.NaN, param.Name, param.Description);
+          AddValue(table, double.NaN, name, param.Description);
         }
       }
       return base.Apply();

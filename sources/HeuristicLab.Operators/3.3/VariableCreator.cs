@@ -46,12 +46,15 @@ namespace HeuristicLab.Operators {
     public override IOperation Apply() {
       IVariable var;
       foreach (IParameter param in CollectedValues) {
-        CurrentScope.Variables.TryGetValue(param.Name, out var);
+        ILookupParameter lookupParam = param as ILookupParameter;
+        string name = lookupParam != null ? lookupParam.TranslatedName : param.Name;
+
+        CurrentScope.Variables.TryGetValue(name, out var);
         IItem value = param.ActualValue;
         if (var != null)
           var.Value = value == null ? null : (IItem)value.Clone();
         else
-          CurrentScope.Variables.Add(new Variable(param.Name, param.Description, value == null ? null : (IItem)value.Clone()));
+          CurrentScope.Variables.Add(new Variable(name, param.Description, value == null ? null : (IItem)value.Clone()));
       }
       return base.Apply();
     }

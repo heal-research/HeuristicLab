@@ -58,11 +58,14 @@ namespace HeuristicLab.Optimization.Operators {
       foreach (IParameter param in CollectedValues) {
         IItem value = param.ActualValue;
         if (value != null) {
-          results.TryGetValue(param.Name, out result);
+          ILookupParameter lookupParam = param as ILookupParameter;
+          string name = lookupParam != null ? lookupParam.TranslatedName : param.Name;
+
+          results.TryGetValue(name, out result);
           if (result != null)
             result.Value = copy ? (IItem)value.Clone() : value;
           else
-            results.Add(new Result(param.Name, param.Description, copy ? (IItem)value.Clone() : value));
+            results.Add(new Result(name, param.Description, copy ? (IItem)value.Clone() : value));
         }
       }
       return base.Apply();

@@ -72,12 +72,11 @@ namespace HeuristicLab.Parameters {
     }
 
     protected override IItem GetActualValue() {
-      string name = LookupParameter<ItemArray<T>>.TranslateName(Name, ExecutionContext);
-
       IEnumerable<IScope> scopes = new IScope[] { ExecutionContext.Scope };
       for (int i = 0; i < depth; i++)
         scopes = scopes.Select(x => (IEnumerable<IScope>)x.SubScopes).Aggregate((a, b) => a.Concat(b));
 
+      string name = TranslatedName;
       List<T> values = new List<T>();
       IVariable var;
       T value;
@@ -104,14 +103,13 @@ namespace HeuristicLab.Parameters {
                         typeof(ItemArray<T>).GetPrettyName())
         );
 
-      string name = LookupParameter<ItemArray<T>>.TranslateName(Name, ExecutionContext);
-
       IEnumerable<IScope> scopes = new IScope[] { ExecutionContext.Scope };
       for (int i = 0; i < depth; i++)
         scopes = scopes.Select(x => (IEnumerable<IScope>)x.SubScopes).Aggregate((a, b) => a.Concat(b));
 
       if (scopes.Count() != values.Length) throw new InvalidOperationException("Number of values is not equal to number of scopes.");
 
+      string name = TranslatedName;
       int j = 0;
       IVariable var;
       foreach (IScope scope in scopes) {
