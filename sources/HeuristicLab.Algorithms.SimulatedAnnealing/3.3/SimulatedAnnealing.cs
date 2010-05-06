@@ -401,8 +401,11 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       Analyzer.Operators.Clear();
       Analyzer.Operators.Add(qualityAnalyzer);
       if (Problem != null) {
-        foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name))
+        foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name)) {
+          foreach (IScopeTreeLookupParameter param in analyzer.Parameters.OfType<IScopeTreeLookupParameter>())
+            param.Depth = 0;
           Analyzer.Operators.Add(analyzer);
+        }
       }
     }
     #endregion

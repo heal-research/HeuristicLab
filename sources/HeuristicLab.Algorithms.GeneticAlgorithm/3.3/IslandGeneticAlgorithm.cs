@@ -204,7 +204,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       get { return (IslandGeneticAlgorithmMainLoop)IslandProcessor.Successor; }
     }
     private BestAverageWorstQualityAnalyzer islandQualityAnalyzer;
-    //private MultipopulationBestAverageWorstQualityAnalyzer qualityAnalyzer;
+    private BestAverageWorstQualityAnalyzer qualityAnalyzer;
     #endregion
 
     [StorableConstructor]
@@ -398,7 +398,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     }
     private void InitializeAnalyzers() {
       islandQualityAnalyzer = new BestAverageWorstQualityAnalyzer();
-      //qualityAnalyzer = new MultipopulationBestAverageWorstQualityAnalyzer();
+      qualityAnalyzer = new BestAverageWorstQualityAnalyzer();
       ParameterizeAnalyzers();
     }
     private void InitializeMigrators() {
@@ -437,11 +437,18 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     }
     private void ParameterizeAnalyzers() {
       islandQualityAnalyzer.ResultsParameter.ActualName = "Results";
-      //qualityAnalyzer.ResultsParameter.ActualName = "Results";
+      foreach (IScopeTreeLookupParameter param in ((IAnalyzer)islandQualityAnalyzer).Parameters.OfType<IScopeTreeLookupParameter>())
+          param.Depth = 1;
+      qualityAnalyzer.ResultsParameter.ActualName = "Results";
+      foreach (IScopeTreeLookupParameter param in ((IAnalyzer)qualityAnalyzer).Parameters.OfType<IScopeTreeLookupParameter>())
+        param.Depth = 2;
       if (Problem != null) {
         islandQualityAnalyzer.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
         islandQualityAnalyzer.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
         islandQualityAnalyzer.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
+        qualityAnalyzer.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
+        qualityAnalyzer.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
+        qualityAnalyzer.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
       }
     }
     private void UpdateSelectors() {
@@ -510,13 +517,18 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       IslandAnalyzer.Operators.Clear();
       Analyzer.Operators.Clear();
       IslandAnalyzer.Operators.Add(islandQualityAnalyzer);
-      //Analyzer.Operators.Add(qualityAnalyzer);
+      Analyzer.Operators.Add(qualityAnalyzer);
       if (Problem != null) {
-        foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name)) {
+        /*foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name)) {
+          foreach (IScopeTreeLookupParameter param in analyzer.Parameters.OfType<IScopeTreeLookupParameter>())
+            param.Depth = 1;
           IslandAnalyzer.Operators.Add(analyzer);
-        }
-        foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name))
+        }*/
+        foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name)) {
+          foreach (IScopeTreeLookupParameter param in analyzer.Parameters.OfType<IScopeTreeLookupParameter>())
+            param.Depth = 2;
           Analyzer.Operators.Add(analyzer);
+        }
       }
     }
     #endregion
