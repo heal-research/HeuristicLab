@@ -45,7 +45,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
     public override IOperation Apply() {
       DoubleMatrix values = ValuesParameter.ActualValue;
       Apply(values);
-      return null;
+      return base.Apply();
     }
 
     protected abstract void Apply(DoubleMatrix values);

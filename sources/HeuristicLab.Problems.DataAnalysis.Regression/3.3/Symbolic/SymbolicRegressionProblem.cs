@@ -176,6 +176,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     public IntValue ValidationSamplesEnd {
       get { return new IntValue(DataAnalysisProblemData.TrainingSamplesEnd.Value); }
     }
+    public IntValue TestSamplesStart {
+      get { return DataAnalysisProblemData.TestSamplesStart; }
+    }
+    public IntValue TestSamplesEnd {
+      get { return DataAnalysisProblemData.TestSamplesEnd; }
+    }
     #endregion
 
     public SymbolicRegressionProblem()
@@ -396,8 +402,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
           modelQualityAnalyzer.UpperEstimationLimitParameter.ActualName = UpperEstimationLimitParameter.Name;
           modelQualityAnalyzer.LowerEstimationLimitParameter.ActualName = LowerEstimationLimitParameter.Name;
           modelQualityAnalyzer.SymbolicExpressionTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameter.Name;
-          modelQualityAnalyzer.SamplesStartParameter.Value = TrainingSamplesStart;
-          modelQualityAnalyzer.SamplesEndParameter.Value = ValidationSamplesEnd;
+          modelQualityAnalyzer.TrainingSamplesStartParameter.Value = TrainingSamplesStart;
+          modelQualityAnalyzer.TrainingSamplesEndParameter.Value = ValidationSamplesEnd;
+          modelQualityAnalyzer.TestSamplesStartParameter.Value = TestSamplesStart;
+          modelQualityAnalyzer.TestSamplesEndParameter.Value = TestSamplesEnd;
         }
       }
       foreach (ISymbolicExpressionTreePopulationAnalyzer analyzer in Operators.OfType<ISymbolicExpressionTreePopulationAnalyzer>()) {
