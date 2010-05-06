@@ -117,6 +117,12 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
       SetEnabledStateOfControls();
     }
 
+    protected override void OnPaint(PaintEventArgs e) {
+      GenerateImage();
+      
+      base.OnPaint(e);
+    }
+
     private void SetEnabledStateOfControls() {
       qualityView.Enabled = Content != null;
       realVectorView.Enabled = Content != null;
