@@ -285,8 +285,6 @@ namespace HeuristicLab.Problems.TestFunctions {
     private void InitializeOperators() {
       operators = new List<IOperator>();
       operators.Add(new BestSingleObjectiveTestFunctionSolutionAnalyzer());
-      operators.Add(new PopulationBestSingleObjectiveTestFunctionSolutionAnalyzer());
-      operators.Add(new MultiPopulationBestSingleObjectiveTestFunctionSolutionAnalyzer());
       ParameterizeAnalyzers();
       operators.AddRange(ApplicationManager.Manager.GetInstances<IRealVectorOperator>().Cast<IOperator>());
       operators.Add(strategyVectorCreator);

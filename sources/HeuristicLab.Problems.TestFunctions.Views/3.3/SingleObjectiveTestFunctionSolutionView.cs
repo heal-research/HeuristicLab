@@ -30,9 +30,9 @@ using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.TestFunctions.Views {
   /// <summary>
-  /// A view for a OneMax solution.
+  /// A view for a SingleObjectiveTestFunctions solution.
   /// </summary>
-  [View("OneMax View")]
+  [View("Single Objective Test Functions View")]
   [Content(typeof(SingleObjectiveTestFunctionSolution), true)]
   public partial class SingleObjectiveTestFunctionSolutionView : HeuristicLab.Core.Views.ItemView {
     public new SingleObjectiveTestFunctionSolution Content {
@@ -63,7 +63,7 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
         Invoke(new EventHandler(Content_QualityChanged), sender, e);
       else {
         qualityView.ViewType = null;
-        qualityView.Content = Content.Quality;
+        qualityView.Content = Content.BestQuality;
       }
     }
 
@@ -72,7 +72,8 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
         Invoke(new EventHandler(Content_QualityChanged), sender, e);
       else {
         realVectorView.ViewType = null;
-        realVectorView.Content = Content.RealVector;
+        realVectorView.Content = Content.BestRealVector;
+        pictureBox.Visible = Content.BestRealVector.Length == 2;
       }
     }
 
@@ -84,10 +85,12 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
         realVectorView.Content = null;
       } else {
         qualityView.ViewType = null;
-        qualityView.Content = Content.Quality;
+        qualityView.Content = Content.BestQuality;
 
         realVectorView.ViewType = null;
-        realVectorView.Content = Content.RealVector;
+        realVectorView.Content = Content.BestRealVector;
+
+        pictureBox.Visible = Content.BestRealVector.Length == 2;
       }
 
       SetEnabledStateOfControls();

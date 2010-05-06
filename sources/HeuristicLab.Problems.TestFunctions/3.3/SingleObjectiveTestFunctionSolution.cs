@@ -20,15 +20,13 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using System.Drawing;
+using HeuristicLab.Collections;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Common;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
@@ -42,38 +40,85 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     [Storable]
-    private RealVector realVector;
-    public RealVector RealVector {
-      get { return realVector; }
+    private RealVector bestKnownRealVector;
+    public RealVector BestKnownRealVector {
+      get { return bestKnownRealVector; }
       set {
-        if (realVector != value) {
-          if (realVector != null) DeregisterRealVectorEvents();
-          realVector = value;
-          if (realVector != null) RegisterRealVectorEvents();
+        if (bestKnownRealVector != value) {
+          if (bestKnownRealVector != null) DeregisterBestKnownRealVectorEvents();
+          bestKnownRealVector = value;
+          if (bestKnownRealVector != null) RegisterBestKnownRealVectorEvents();
+          OnBestKnownRealVectorChanged();
+        }
+      }
+    }
+
+    [Storable]
+    private RealVector bestRealVector;
+    public RealVector BestRealVector {
+      get { return bestRealVector; }
+      set {
+        if (bestRealVector != value) {
+          if (bestRealVector != null) DeregisterRealVectorEvents();
+          bestRealVector = value;
+          if (bestRealVector != null) RegisterRealVectorEvents();
           OnRealVectorChanged();
         }
       }
     }
 
     [Storable]
-    private DoubleValue quality;
-    public DoubleValue Quality {
-      get { return quality; }
+    private DoubleValue bestQuality;
+    public DoubleValue BestQuality {
+      get { return bestQuality; }
       set {
-        if (quality != value) {
-          if (quality != null) DeregisterQualityEvents();
-          quality = value;
-          if (quality != null) RegisterQualityEvents();
+        if (bestQuality != value) {
+          if (bestQuality != null) DeregisterQualityEvents();
+          bestQuality = value;
+          if (bestQuality != null) RegisterQualityEvents();
           OnQualityChanged();
         }
       }
     }
 
+    [Storable]
+    private ItemArray<RealVector> population;
+    public ItemArray<RealVector> Population {
+      get { return population; }
+      set {
+        if (population != value) {
+          if (population != null) DeregisterPopulationEvents();
+          population = value;
+          if (population != null) RegisterPopulationEvents();
+          OnPopulationChanged();
+        }
+      }
+    }
+
+    [Storable]
+    private ISingleObjectiveTestFunctionProblemEvaluator evaluator;
+    public ISingleObjectiveTestFunctionProblemEvaluator Evaluator {
+      get { return evaluator; }
+      set {
+        if (evaluator != value) {
+          evaluator = value;
+          OnEvaluatorChanged();
+        }
+      }
+    }
+
+    private Image fitnessLandscape;
+    public Image FitnessLandscape {
+      get { return fitnessLandscape; }
+      set { fitnessLandscape = value; }
+    }
+
     public SingleObjectiveTestFunctionSolution() : base() { }
-    public SingleObjectiveTestFunctionSolution(RealVector realVector, DoubleValue quality)
+    public SingleObjectiveTestFunctionSolution(RealVector realVector, DoubleValue quality, ISingleObjectiveTestFunctionProblemEvaluator evaluator)
       : base() {
-      this.realVector = realVector;
-      this.quality = quality;
+      this.bestRealVector = realVector;
+      this.bestQuality = quality;
+      this.evaluator = evaluator;
       Initialize();
     }
     [StorableConstructor]
@@ -81,20 +126,33 @@ namespace HeuristicLab.Problems.TestFunctions {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
-      if (realVector != null) RegisterRealVectorEvents();
-      if (quality != null) RegisterQualityEvents();
+      if (bestKnownRealVector != null) RegisterBestKnownRealVectorEvents();
+      if (bestRealVector != null) RegisterRealVectorEvents();
+      if (bestQuality != null) RegisterQualityEvents();
+      if (population != null) RegisterPopulationEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       SingleObjectiveTestFunctionSolution clone = new SingleObjectiveTestFunctionSolution();
       cloner.RegisterClonedObject(this, clone);
-      clone.realVector = (RealVector)cloner.Clone(realVector);
-      clone.quality = (DoubleValue)cloner.Clone(quality);
+      clone.bestKnownRealVector = (RealVector)cloner.Clone(bestKnownRealVector);
+      clone.bestRealVector = (RealVector)cloner.Clone(bestRealVector);
+      clone.bestQuality = (DoubleValue)cloner.Clone(bestQuality);
+      clone.population = (ItemArray<RealVector>)cloner.Clone(population);
+      clone.evaluator = (ISingleObjectiveTestFunctionProblemEvaluator)cloner.Clone(evaluator);
+      clone.fitnessLandscape = null;
       clone.Initialize();
       return clone;
     }
 
     #region Events
+    public event EventHandler BestKnownRealVectorChanged;
+    private void OnBestKnownRealVectorChanged() {
+      var changed = BestKnownRealVectorChanged;
+      if (changed != null)
+        changed(this, EventArgs.Empty);
+    }
+
     public event EventHandler RealVectorChanged;
     private void OnRealVectorChanged() {
       var changed = RealVectorChanged;
@@ -109,22 +167,59 @@ namespace HeuristicLab.Problems.TestFunctions {
         changed(this, EventArgs.Empty);
     }
 
-    private void RegisterRealVectorEvents() {
-      RealVector.ItemChanged += new EventHandler<EventArgs<int>>(RealVector_ItemChanged);
-      RealVector.Reset += new EventHandler(RealVector_Reset);
+    public event EventHandler PopulationChanged;
+    private void OnPopulationChanged() {
+      var changed = PopulationChanged;
+      if (changed != null)
+        changed(this, EventArgs.Empty);
     }
 
+    public event EventHandler EvaluatorChanged;
+    private void OnEvaluatorChanged() {
+      var changed = EvaluatorChanged;
+      if (changed != null)
+        changed(this, EventArgs.Empty);
+    }
+
+    private void RegisterBestKnownRealVectorEvents() {
+      BestKnownRealVector.ItemChanged += new EventHandler<EventArgs<int>>(BestKnownRealVector_ItemChanged);
+      BestKnownRealVector.Reset += new EventHandler(BestKnownRealVector_Reset);
+    }
+    private void DeregisterBestKnownRealVectorEvents() {
+      BestKnownRealVector.ItemChanged -= new EventHandler<EventArgs<int>>(BestKnownRealVector_ItemChanged);
+      BestKnownRealVector.Reset -= new EventHandler(BestKnownRealVector_Reset);
+    }
+    private void RegisterRealVectorEvents() {
+      BestRealVector.ItemChanged += new EventHandler<EventArgs<int>>(RealVector_ItemChanged);
+      BestRealVector.Reset += new EventHandler(RealVector_Reset);
+    }
     private void DeregisterRealVectorEvents() {
-      RealVector.ItemChanged -= new EventHandler<EventArgs<int>>(RealVector_ItemChanged);
-      RealVector.Reset -= new EventHandler(RealVector_Reset);
+      BestRealVector.ItemChanged -= new EventHandler<EventArgs<int>>(RealVector_ItemChanged);
+      BestRealVector.Reset -= new EventHandler(RealVector_Reset);
     }
     private void RegisterQualityEvents() {
-      Quality.ValueChanged += new EventHandler(Quality_ValueChanged);
+      BestQuality.ValueChanged += new EventHandler(Quality_ValueChanged);
     }
     private void DeregisterQualityEvents() {
-      Quality.ValueChanged -= new EventHandler(Quality_ValueChanged);
+      BestQuality.ValueChanged -= new EventHandler(Quality_ValueChanged);
+    }
+    private void RegisterPopulationEvents() {
+      Population.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<RealVector>>(Population_CollectionReset);
+      Population.ItemsMoved += new CollectionItemsChangedEventHandler<IndexedItem<RealVector>>(Population_ItemsMoved);
+      Population.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<RealVector>>(Population_ItemsReplaced);
+    }
+    private void DeregisterPopulationEvents() {
+      Population.CollectionReset -= new CollectionItemsChangedEventHandler<IndexedItem<RealVector>>(Population_CollectionReset);
+      Population.ItemsMoved -= new CollectionItemsChangedEventHandler<IndexedItem<RealVector>>(Population_ItemsMoved);
+      Population.ItemsReplaced -= new CollectionItemsChangedEventHandler<IndexedItem<RealVector>>(Population_ItemsReplaced);
     }
 
+    private void BestKnownRealVector_ItemChanged(object sender, EventArgs<int> e) {
+      OnBestKnownRealVectorChanged();
+    }
+    private void BestKnownRealVector_Reset(object sender, EventArgs e) {
+      OnBestKnownRealVectorChanged();
+    }
     private void RealVector_ItemChanged(object sender, EventArgs<int> e) {
       OnRealVectorChanged();
     }
@@ -133,6 +228,15 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
     private void Quality_ValueChanged(object sender, EventArgs e) {
       OnQualityChanged();
+    }
+    private void Population_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<RealVector>> e) {
+      OnPopulationChanged();
+    }
+    private void Population_ItemsMoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<RealVector>> e) {
+      OnPopulationChanged();
+    }
+    private void Population_CollectionReset(object sender, CollectionItemsChangedEventArgs<IndexedItem<RealVector>> e) {
+      OnPopulationChanged();
     }
     #endregion
   }
