@@ -122,6 +122,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       Assigner bestQualityInitializer = new Assigner();
       Placeholder analyzer1 = new Placeholder();
       ResultsCollector resultsCollector1 = new ResultsCollector();
+      ResultsCollector resultsCollector2 = new ResultsCollector();
       SubScopesProcessor solutionProcessor = new SubScopesProcessor();
       Placeholder moveGenerator = new Placeholder();
       UniformSubScopesProcessor moveEvaluationProcessor = new UniformSubScopesProcessor();
@@ -143,7 +144,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       Comparator iterationsComparator = new Comparator();
       SubScopesProcessor subScopesProcessor1 = new SubScopesProcessor();
       Placeholder analyzer2 = new Placeholder();
-      ResultsCollector resultsCollector2 = new ResultsCollector();
+      ResultsCollector resultsCollector3 = new ResultsCollector();
       ConditionalBranch iterationsTermination = new ConditionalBranch();
 
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Iterations", new IntValue(0)));
@@ -158,11 +159,15 @@ namespace HeuristicLab.Algorithms.TabuSearch {
 
       analyzer1.Name = "Analyzer (placeholder)";
       analyzer1.OperatorParameter.ActualName = AnalyzerParameter.Name;
-      
+
+      resultsCollector1.CopyValue = new BoolValue(false);
       resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Iterations"));
       resultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
-      resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Moves", null, "EvaluatedMoves"));
       resultsCollector1.ResultsParameter.ActualName = ResultsParameter.Name;
+
+      resultsCollector2.CopyValue = new BoolValue(true);
+      resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Moves", null, "EvaluatedMoves"));
+      resultsCollector2.ResultsParameter.ActualName = ResultsParameter.Name;
 
       moveGenerator.Name = "MoveGenerator (placeholder)";
       moveGenerator.OperatorParameter.ActualName = MoveGeneratorParameter.Name;
@@ -221,11 +226,10 @@ namespace HeuristicLab.Algorithms.TabuSearch {
 
       analyzer2.Name = "Analyzer (placeholder)";
       analyzer2.OperatorParameter.ActualName = AnalyzerParameter.Name;
-      
-      resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Iterations"));
-      resultsCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
-      resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Moves", null, "EvaluatedMoves"));
-      resultsCollector2.ResultsParameter.ActualName = ResultsParameter.Name;
+
+      resultsCollector3.CopyValue = new BoolValue(true);
+      resultsCollector3.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Moves", null, "EvaluatedMoves"));
+      resultsCollector3.ResultsParameter.ActualName = ResultsParameter.Name;
 
       emptyNeighborhoodBranch2.Name = "Neighborhood empty?";
       emptyNeighborhoodBranch2.ConditionParameter.ActualName = "EmptyNeighborhood";
@@ -239,7 +243,8 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       variableCreator.Successor = subScopesProcessor0;
       subScopesProcessor0.Operators.Add(bestQualityInitializer);
       subScopesProcessor0.Successor = resultsCollector1;
-      resultsCollector1.Successor = solutionProcessor;
+      resultsCollector1.Successor = resultsCollector2;
+      resultsCollector2.Successor = solutionProcessor;
       solutionProcessor.Operators.Add(moveGenerator);
       solutionProcessor.Successor = iterationsCounter;
       moveGenerator.Successor = moveEvaluationProcessor;
@@ -263,8 +268,8 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       iterationsCounter.Successor = iterationsComparator;
       iterationsComparator.Successor = subScopesProcessor1;
       subScopesProcessor1.Operators.Add(analyzer2);
-      subScopesProcessor1.Successor = resultsCollector2;
-      resultsCollector2.Successor = emptyNeighborhoodBranch2;
+      subScopesProcessor1.Successor = resultsCollector3;
+      resultsCollector3.Successor = emptyNeighborhoodBranch2;
       emptyNeighborhoodBranch2.TrueBranch = null;
       emptyNeighborhoodBranch2.FalseBranch = iterationsTermination;
       emptyNeighborhoodBranch2.Successor = null;
