@@ -41,7 +41,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// The current generation.
     /// </summary>
     public LookupParameter<IntValue> GenerationParameter {
-      get { return (LookupParameter<IntValue>)Parameters["Generation"]; }
+      get { return (LookupParameter<IntValue>)Parameters["Generations"]; }
     }
     /// <summary>
     /// The maximum generation.
@@ -63,9 +63,9 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// </summary>
     public MichalewiczNonUniformAllPositionsManipulator()
       : base() {
-      Parameters.Add(new LookupParameter<IntValue>("Generation", "Current generation of the algorithm"));
+      Parameters.Add(new LookupParameter<IntValue>("Generations", "Current generation of the algorithm"));
       Parameters.Add(new LookupParameter<IntValue>("MaximumGenerations", "Maximum number of generations"));
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("GenerationDependency", "Specifies the degree of dependency on the number of generations", new DoubleValue(5)));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("GenerationDependency", "Specifies the degree of dependency on the number of generations. A value of 0 means no dependency and the higher the value the stronger the progress towards maximum generations will be taken into account by sampling closer around the current position. Value must be >= 0.", new DoubleValue(5)));
     }
 
     /// <summary>
@@ -78,10 +78,11 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// <param name="bounds">The lower and upper bound (1st and 2nd column) of the positions in the vector. If there are less rows than dimensions, the rows are cycled.</param>
     /// <param name="currentGeneration">The current generation of the algorithm.</param>
     /// <param name="maximumGenerations">Maximum number of generations.</param>
-    /// <param name="generationsDependency">Specifies the degree of dependency on the number of generations.</param>
+    /// <param name="generationsDependency">Specifies the degree of dependency on the number of generations. A value of 0 means no dependency and the higher the value the stronger the progress towards maximum generations will be taken into account by sampling closer around the current position. Value must be >= 0.</param>
     /// <returns>The manipulated real vector.</returns>
     public static void Apply(IRandom random, RealVector vector, DoubleMatrix bounds, IntValue currentGeneration, IntValue maximumGenerations, DoubleValue generationsDependency) {
       if (currentGeneration.Value > maximumGenerations.Value) throw new ArgumentException("MichalewiczNonUniformAllPositionManipulator: CurrentGeneration must be smaller or equal than MaximumGeneration", "currentGeneration");
+      if (generationsDependency.Value < 0) throw new ArgumentException("MichalewiczNonUniformOnePositionManipulator: GenerationsDependency must be >= 0.");
       int length = vector.Length;
 
       double prob = Math.Pow(1 - currentGeneration.Value / maximumGenerations.Value, generationsDependency.Value);
