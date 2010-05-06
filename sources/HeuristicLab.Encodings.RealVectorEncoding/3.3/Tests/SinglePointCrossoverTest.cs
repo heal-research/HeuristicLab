@@ -94,6 +94,17 @@ namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);
+      // The following test checks if there is an exception when the vector has just one dimension
+      random.Reset();
+      parents = new ItemArray<RealVector>(new RealVector[] { new RealVector(1) });
+      exceptionFired = false;
+      try {
+        RealVector actual;
+        actual = target.Cross(random, parents);
+      } catch (System.ArgumentException) {
+        exceptionFired = true;
+      }
+      Assert.IsTrue(exceptionFired);
     }
 
     /// <summary>
@@ -124,6 +135,15 @@ namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);
+      // The following test is not based on published examples
+      random.Reset();
+      random.IntNumbers = new int[] { 5 }; // should not have an effect
+      parent1 = new RealVector(new double[] { 0.2, 0.4 });
+      parent2 = new RealVector(new double[] { 0.6, 0.1 });
+      expected = new RealVector(new double[] { 0.2, 0.1 });
+      actual = SinglePointCrossover.Apply(random, parent1, parent2);
+      Assert.IsTrue(Auxiliary.RealVectorIsAlmostEqualByPosition(actual, expected));
+      // The following test is not based on published examples
     }
 
     /// <summary>

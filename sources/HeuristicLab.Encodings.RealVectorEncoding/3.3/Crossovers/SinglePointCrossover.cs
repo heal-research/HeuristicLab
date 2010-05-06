@@ -48,9 +48,12 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// <returns>The newly created real vector, resulting from the single point crossover.</returns>
     public static RealVector Apply(IRandom random, RealVector parent1, RealVector parent2) {
       if (parent1.Length != parent2.Length) throw new ArgumentException("SinglePointCrossover: Parents are of unequal length");
+      if (parent1.Length < 2) throw new ArgumentException("SinglePointCrossover: Cannot be applied to vectors with just one dimension.");
       int length = parent1.Length;
       RealVector result = new RealVector(length);
-      int breakPoint = random.Next(1, length - 1);
+      int breakPoint;
+      if (length == 2) breakPoint = 1;
+      else breakPoint = random.Next(1, length - 1);
 
       for (int i = 0; i < breakPoint; i++)
         result[i] = parent1[i];
