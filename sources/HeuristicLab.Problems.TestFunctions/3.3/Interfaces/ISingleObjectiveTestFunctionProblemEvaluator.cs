@@ -37,5 +37,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     int MaximumProblemSize { get; }
 
     ILookupParameter<RealVector> PointParameter { get; }
+
+    double Evaluate2D(double x, double y);
   }
 }

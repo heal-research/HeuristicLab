@@ -83,6 +83,10 @@ namespace HeuristicLab.Problems.TestFunctions {
       return base.Apply();
     }
 
+    public virtual double Evaluate2D(double x, double y) {
+      return EvaluateFunction(new RealVector(new double[] { x, y }));
+    }
+
     /// <summary>
     /// Evaluates the test function for a specific <paramref name="point"/>.
     /// </summary>

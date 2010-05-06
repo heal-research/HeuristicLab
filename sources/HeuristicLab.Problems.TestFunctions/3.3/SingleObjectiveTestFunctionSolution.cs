@@ -59,10 +59,10 @@ namespace HeuristicLab.Problems.TestFunctions {
       get { return bestRealVector; }
       set {
         if (bestRealVector != value) {
-          if (bestRealVector != null) DeregisterRealVectorEvents();
+          if (bestRealVector != null) DeregisterBestRealVectorEvents();
           bestRealVector = value;
-          if (bestRealVector != null) RegisterRealVectorEvents();
-          OnRealVectorChanged();
+          if (bestRealVector != null) RegisterBestRealVectorEvents();
+          OnBestRealVectorChanged();
         }
       }
     }
@@ -107,12 +107,6 @@ namespace HeuristicLab.Problems.TestFunctions {
       }
     }
 
-    private Image fitnessLandscape;
-    public Image FitnessLandscape {
-      get { return fitnessLandscape; }
-      set { fitnessLandscape = value; }
-    }
-
     public SingleObjectiveTestFunctionSolution() : base() { }
     public SingleObjectiveTestFunctionSolution(RealVector realVector, DoubleValue quality, ISingleObjectiveTestFunctionProblemEvaluator evaluator)
       : base() {
@@ -127,7 +121,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
       if (bestKnownRealVector != null) RegisterBestKnownRealVectorEvents();
-      if (bestRealVector != null) RegisterRealVectorEvents();
+      if (bestRealVector != null) RegisterBestRealVectorEvents();
       if (bestQuality != null) RegisterQualityEvents();
       if (population != null) RegisterPopulationEvents();
     }
@@ -140,7 +134,6 @@ namespace HeuristicLab.Problems.TestFunctions {
       clone.bestQuality = (DoubleValue)cloner.Clone(bestQuality);
       clone.population = (ItemArray<RealVector>)cloner.Clone(population);
       clone.evaluator = (ISingleObjectiveTestFunctionProblemEvaluator)cloner.Clone(evaluator);
-      clone.fitnessLandscape = null;
       clone.Initialize();
       return clone;
     }
@@ -153,9 +146,9 @@ namespace HeuristicLab.Problems.TestFunctions {
         changed(this, EventArgs.Empty);
     }
 
-    public event EventHandler RealVectorChanged;
-    private void OnRealVectorChanged() {
-      var changed = RealVectorChanged;
+    public event EventHandler BestRealVectorChanged;
+    private void OnBestRealVectorChanged() {
+      var changed = BestRealVectorChanged;
       if (changed != null)
         changed(this, EventArgs.Empty);
     }
@@ -189,13 +182,13 @@ namespace HeuristicLab.Problems.TestFunctions {
       BestKnownRealVector.ItemChanged -= new EventHandler<EventArgs<int>>(BestKnownRealVector_ItemChanged);
       BestKnownRealVector.Reset -= new EventHandler(BestKnownRealVector_Reset);
     }
-    private void RegisterRealVectorEvents() {
-      BestRealVector.ItemChanged += new EventHandler<EventArgs<int>>(RealVector_ItemChanged);
-      BestRealVector.Reset += new EventHandler(RealVector_Reset);
+    private void RegisterBestRealVectorEvents() {
+      BestRealVector.ItemChanged += new EventHandler<EventArgs<int>>(BestRealVector_ItemChanged);
+      BestRealVector.Reset += new EventHandler(BestRealVector_Reset);
     }
-    private void DeregisterRealVectorEvents() {
-      BestRealVector.ItemChanged -= new EventHandler<EventArgs<int>>(RealVector_ItemChanged);
-      BestRealVector.Reset -= new EventHandler(RealVector_Reset);
+    private void DeregisterBestRealVectorEvents() {
+      BestRealVector.ItemChanged -= new EventHandler<EventArgs<int>>(BestRealVector_ItemChanged);
+      BestRealVector.Reset -= new EventHandler(BestRealVector_Reset);
     }
     private void RegisterQualityEvents() {
       BestQuality.ValueChanged += new EventHandler(Quality_ValueChanged);
@@ -220,11 +213,11 @@ namespace HeuristicLab.Problems.TestFunctions {
     private void BestKnownRealVector_Reset(object sender, EventArgs e) {
       OnBestKnownRealVectorChanged();
     }
-    private void RealVector_ItemChanged(object sender, EventArgs<int> e) {
-      OnRealVectorChanged();
+    private void BestRealVector_ItemChanged(object sender, EventArgs<int> e) {
+      OnBestRealVectorChanged();
     }
-    private void RealVector_Reset(object sender, EventArgs e) {
-      OnRealVectorChanged();
+    private void BestRealVector_Reset(object sender, EventArgs e) {
+      OnBestRealVectorChanged();
     }
     private void Quality_ValueChanged(object sender, EventArgs e) {
       OnQualityChanged();
