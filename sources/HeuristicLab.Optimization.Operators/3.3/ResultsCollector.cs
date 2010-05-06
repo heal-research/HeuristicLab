@@ -48,7 +48,7 @@ namespace HeuristicLab.Optimization.Operators {
     public ResultsCollector()
       : base() {
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the collected values should be stored."));
-      Parameters.Add(new ValueParameter<BoolValue>("CopyValue", "True if the collected result value should be copied, otherwise false.", new BoolValue(true)));
+      Parameters.Add(new ValueParameter<BoolValue>("CopyValue", "True if the collected result value should be copied, otherwise false.", new BoolValue(false)));
     }
 
     public override IOperation Apply() {

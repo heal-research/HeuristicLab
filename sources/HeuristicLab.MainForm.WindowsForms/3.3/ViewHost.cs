@@ -103,15 +103,15 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     protected override void OnContentChanged() {
-      messageLabel.Visible = false;
-      viewsLabel.Visible = false;
-      viewPanel.Visible = false;
       viewContextMenuStrip.Item = Content;
 
       if (Content != null) {
-        if (viewContextMenuStrip.Items.Count == 0)
+        if (viewContextMenuStrip.Items.Count == 0) {
           messageLabel.Visible = true;
-        else {
+          viewsLabel.Visible = false;
+          viewPanel.Visible = false;
+        } else {
+          messageLabel.Visible = false;
           viewsLabel.Visible = true;
           viewPanel.Visible = true;
         }
@@ -125,6 +125,9 @@ namespace HeuristicLab.MainForm.WindowsForms {
         foreach (IContentView view in cachedViews.Values)
           view.Content = this.Content;
       } else {
+        messageLabel.Visible = false;
+        viewsLabel.Visible = false;
+        viewPanel.Visible = false;
         if (viewPanel.Controls.Count > 0) viewPanel.Controls[0].Dispose();
         viewPanel.Controls.Clear();
         cachedViews.Clear();

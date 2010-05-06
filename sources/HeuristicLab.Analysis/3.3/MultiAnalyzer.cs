@@ -61,9 +61,12 @@ namespace HeuristicLab.Analysis {
     public override IOperation Apply() {
       IntValue interval = UpdateIntervalParameter.ActualValue;
       if (interval == null) interval = new IntValue(1);
+
       IntValue counter = UpdateCounterParameter.ActualValue;
-      if (counter == null) counter = new IntValue(interval.Value);
-      else counter.Value++;
+      if (counter == null) {
+        counter = new IntValue(interval.Value);
+        UpdateCounterParameter.ActualValue = counter;
+      } else counter.Value++;
 
       if (counter.Value == interval.Value) {
         counter.Value = 0;

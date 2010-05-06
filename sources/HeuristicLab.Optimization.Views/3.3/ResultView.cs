@@ -102,7 +102,6 @@ namespace HeuristicLab.Optimization.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ValueChanged), sender, e);
       else {
-        viewHost.ViewType = null;
         viewHost.Content = Content.Value;
       }
     }
