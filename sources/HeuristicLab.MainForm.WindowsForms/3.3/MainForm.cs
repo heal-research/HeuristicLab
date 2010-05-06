@@ -221,11 +221,23 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     public IContentView ShowContent(IContent content) {
+      Type viewType = MainFormManager.GetDefaultViewType(content.GetType());
+      if (viewType != null)
+        return ShowContent(content, viewType);
+      return null;
+    }
+
+    internal IContentView ShowContent(IContent content, Type viewType) {
+      if (viewType == null)
+        throw new ArgumentNullException("Could not create view of type null");
+
       IContentView view;
-      if (this.ShowContentInViewHost)
-        view = new ViewHost();
-      else
-        view = MainFormManager.CreateDefaultView(content.GetType());
+      if (this.ShowContentInViewHost) {
+        ViewHost viewHost = new ViewHost();
+        viewHost.ViewType = viewType;
+        view = viewHost;
+      } else
+        view = MainFormManager.CreateView(viewType);
 
       if (view != null) {
         view.Show();

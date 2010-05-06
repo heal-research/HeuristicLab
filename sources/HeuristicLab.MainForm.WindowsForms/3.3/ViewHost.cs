@@ -247,9 +247,11 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     private void viewsLabel_DoubleClick(object sender, EventArgs e) {
-      IContentView view = MainFormManager.MainForm.ShowContent(this.Content);
-      view.ReadOnly = this.ReadOnly;
-      view.Locked = this.Locked;
+      IContentView view = MainFormManager.GetMainForm<MainForm>().ShowContent(this.Content,this.ViewType);
+      if (view != null) {
+        view.ReadOnly = this.ReadOnly;
+        view.Locked = this.Locked;
+      }
     }
     private void viewContextMenuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e) {
       Type viewType = (Type)e.ClickedItem.Tag;
