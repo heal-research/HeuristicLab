@@ -103,7 +103,12 @@ namespace HeuristicLab.Parameters {
     }
 
     public override string ToString() {
-      return string.Format("{0}: {1}", Name, Value != null ? Value.ToString() : ActualName);
+      if (Value != null)
+        return Name + ": " + Value.ToString();
+      else if (Name.Equals(ActualName))
+        return Name;
+      else
+        return Name + ": " + ActualName;
     }
 
     public event EventHandler ValueChanged;

@@ -185,12 +185,14 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Documents\GP_SymbReg.hl" />
     <None Include="Documents\Images\New.png" />
     <None Include="Documents\Images\Open.png" />
     <None Include="Documents\Images\Pause.png" />
     <None Include="Documents\Images\Play.png" />
     <None Include="Documents\Images\Restart.png" />
     <None Include="Documents\Images\Stop.png" />
+    <EmbeddedResource Include="Documents\SGP_SantaFe.hl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

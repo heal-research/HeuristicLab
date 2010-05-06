@@ -46,7 +46,7 @@ namespace HeuristicLab.Parameters {
     }
 
     public override string ToString() {
-      return string.Format("{0}", Name);
+      return Name;
     }
 
     protected override IItem GetActualValue() {

@@ -87,7 +87,10 @@ namespace HeuristicLab.Parameters {
     }
 
     public override string ToString() {
-      return string.Format("{0}: {1}", Name, ActualName);
+      if (Name.Equals(ActualName))
+        return Name;
+      else
+        return Name + ": " + ActualName;
     }
 
     private IValueParameter GetValueParameterAndTranslateName(out string actualName) {
