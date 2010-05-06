@@ -140,7 +140,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     private IEnumerable<IDiscreteDoubleValueModifier> AnnealingOperators {
       get { return annealingOperators; }
     }
-    private SolutionQualityAnalyzer qualityAnalyzer;
+    private QualityAnalyzer qualityAnalyzer;
     #endregion
 
     [StorableConstructor]
@@ -296,7 +296,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
         AnnealingOperatorParameter.ValidValues.Add(op);
     }
     private void InitializeAnalyzers() {
-      qualityAnalyzer = new SolutionQualityAnalyzer();
+      qualityAnalyzer = new QualityAnalyzer();
       ParameterizeAnalyzers();
     }
     private void UpdateMoveGenerator() {
@@ -319,6 +319,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       if (Problem != null) {
         qualityAnalyzer.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
         qualityAnalyzer.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
+        qualityAnalyzer.QualityParameter.Depth = 0;
         qualityAnalyzer.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
       }
     }

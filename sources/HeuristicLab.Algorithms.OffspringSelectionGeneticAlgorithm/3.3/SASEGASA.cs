@@ -222,7 +222,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private SASEGASAMainLoop MainLoop {
       get { return (SASEGASAMainLoop)VillageProcessor.Successor; }
     }
-    private PopulationBestAverageWorstQualityAnalyzer villageQualityAnalyzer;
+    private BestAverageWorstQualityAnalyzer villageQualityAnalyzer;
     //private MultipopulationBestAverageWorstQualityAnalyzer qualityAnalyzer;
     #endregion
 
@@ -428,7 +428,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       ParameterizeSelectors();
     }
     private void InitializeAnalyzers() {
-      villageQualityAnalyzer = new PopulationBestAverageWorstQualityAnalyzer();
+      villageQualityAnalyzer = new BestAverageWorstQualityAnalyzer();
       //qualityAnalyzer = new MultipopulationBestAverageWorstQualityAnalyzer();
       ParameterizeAnalyzers();
     }

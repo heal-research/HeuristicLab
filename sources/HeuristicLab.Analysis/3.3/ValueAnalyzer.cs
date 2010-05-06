@@ -19,6 +19,8 @@
  */
 #endregion
 
+using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -29,11 +31,11 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
-  /// An operator which analyzes a value in the current population.
+  /// An operator which analyzes a value in the scope tree.
   /// </summary>
-  [Item("PopulationValueAnalyzer", "An operator which analyzes a value in the current population.")]
+  [Item("ValueAnalyzer", "An operator which analyzes a value in the scope tree.")]
   [StorableClass]
-  public sealed class PopulationValueAnalyzer : AlgorithmOperator, IAnalyzer {
+  public sealed class ValueAnalyzer : AlgorithmOperator, IAnalyzer {
     #region Parameter properties
     public ScopeTreeLookupParameter<DoubleValue> ValueParameter {
       get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Value"]; }
@@ -46,16 +48,19 @@ namespace HeuristicLab.Analysis {
     }
     #endregion
 
-    [StorableConstructor]
-    private PopulationValueAnalyzer(bool deserializing) : base() { }
-    public PopulationValueAnalyzer()
-      : base() {
-      Initialize();
+    #region Properties
+    private DataTableValuesCollector DataTableValuesCollector {
+      get { return (DataTableValuesCollector)OperatorGraph.InitialOperator; }
     }
+    private ResultsCollector ResultsCollector {
+      get { return (ResultsCollector)DataTableValuesCollector.Successor; }
+    }
+    #endregion
 
-    private void Initialize() {
+    public ValueAnalyzer()
+      : base() {
       #region Create parameters
-      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Value", "The value contained in each solution which should be analyzed."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Value", "The value contained in the scope tree which should be analyzed."));
       Parameters.Add(new ValueLookupParameter<DataTable>("Values", "The data table to store the values."));
       Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The results collection where the analysis values should be stored."));
       #endregion
@@ -64,12 +69,14 @@ namespace HeuristicLab.Analysis {
       DataTableValuesCollector dataTableValuesCollector = new DataTableValuesCollector();
       ResultsCollector resultsCollector = new ResultsCollector();
 
-      dataTableValuesCollector.CollectedValues.Add(new ScopeTreeLookupParameter<DoubleValue>("Value", null, "Value"));
-      dataTableValuesCollector.DataTableParameter.ActualName = "Values";
+      dataTableValuesCollector.CollectedValues.Add(new ScopeTreeLookupParameter<DoubleValue>("Value", null, ValueParameter.Name));
+      ((ScopeTreeLookupParameter<DoubleValue>)dataTableValuesCollector.CollectedValues["Value"]).Depth = ValueParameter.Depth;
+      dataTableValuesCollector.DataTableParameter.ActualName = ValuesParameter.Name;
 
-      resultsCollector.CollectedValues.Add(new ScopeTreeLookupParameter<DoubleValue>("Value", null, "Value"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DataTable>("Values"));
-      resultsCollector.ResultsParameter.ActualName = "Results";
+      resultsCollector.CollectedValues.Add(new ScopeTreeLookupParameter<DoubleValue>("Value", null, ValueParameter.Name));
+      ((ScopeTreeLookupParameter<DoubleValue>)resultsCollector.CollectedValues["Value"]).Depth = ValueParameter.Depth;
+      resultsCollector.CollectedValues.Add(new LookupParameter<DataTable>(ValuesParameter.Name));
+      resultsCollector.ResultsParameter.ActualName = ResultsParameter.Name;
       #endregion
 
       #region Create operator graph
@@ -77,6 +84,26 @@ namespace HeuristicLab.Analysis {
       dataTableValuesCollector.Successor = resultsCollector;
       resultsCollector.Successor = null;
       #endregion
+
+      Initialize();
+    }
+    [StorableConstructor]
+    private ValueAnalyzer(bool deserializing) : base() { }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void Initialize() {
+      ValueParameter.DepthChanged += new EventHandler(ValueParameter_DepthChanged);
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      ValueAnalyzer clone = (ValueAnalyzer)base.Clone(cloner);
+      clone.Initialize();
+      return clone;
+    }
+
+    private void ValueParameter_DepthChanged(object sender, System.EventArgs e) {
+      ((ScopeTreeLookupParameter<DoubleValue>)DataTableValuesCollector.CollectedValues["Value"]).Depth = ValueParameter.Depth;
+      ((ScopeTreeLookupParameter<DoubleValue>)ResultsCollector.CollectedValues["Value"]).Depth = ValueParameter.Depth;
     }
   }
 }

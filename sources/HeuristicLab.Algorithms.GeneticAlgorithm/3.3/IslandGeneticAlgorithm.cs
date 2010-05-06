@@ -203,7 +203,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     private IslandGeneticAlgorithmMainLoop MainLoop {
       get { return (IslandGeneticAlgorithmMainLoop)IslandProcessor.Successor; }
     }
-    private PopulationBestAverageWorstQualityAnalyzer islandQualityAnalyzer;
+    private BestAverageWorstQualityAnalyzer islandQualityAnalyzer;
     //private MultipopulationBestAverageWorstQualityAnalyzer qualityAnalyzer;
     #endregion
 
@@ -397,7 +397,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       ParameterizeSelectors();
     }
     private void InitializeAnalyzers() {
-      islandQualityAnalyzer = new PopulationBestAverageWorstQualityAnalyzer();
+      islandQualityAnalyzer = new BestAverageWorstQualityAnalyzer();
       //qualityAnalyzer = new MultipopulationBestAverageWorstQualityAnalyzer();
       ParameterizeAnalyzers();
     }

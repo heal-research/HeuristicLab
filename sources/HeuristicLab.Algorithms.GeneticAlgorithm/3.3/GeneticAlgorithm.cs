@@ -139,7 +139,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     private IEnumerable<ISelector> Selectors {
       get { return selectors; }
     }
-    private PopulationBestAverageWorstQualityAnalyzer qualityAnalyzer;
+    private BestAverageWorstQualityAnalyzer qualityAnalyzer;
     #endregion
 
     public GeneticAlgorithm()
@@ -290,7 +290,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       ParameterizeSelectors();
     }
     private void InitializeAnalyzers() {
-      qualityAnalyzer = new PopulationBestAverageWorstQualityAnalyzer();
+      qualityAnalyzer = new BestAverageWorstQualityAnalyzer();
       ParameterizeAnalyzers();
     }
     private void ParameterizeSelectors() {
@@ -311,6 +311,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       if (Problem != null) {
         qualityAnalyzer.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
         qualityAnalyzer.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
+        qualityAnalyzer.QualityParameter.Depth = 1;
         qualityAnalyzer.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
       }
     }
@@ -352,8 +353,9 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Analyzer.Operators.Clear();
       Analyzer.Operators.Add(qualityAnalyzer);
       if (Problem != null) {
-        foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name))
+        foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name)) {
           Analyzer.Operators.Add(analyzer);
+        }
       }
     }
     #endregion

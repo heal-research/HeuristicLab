@@ -28,31 +28,31 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
-  /// An operator which calculates the best, average and worst solution quality of the current population.
+  /// An operator which calculates the best, average and worst quality of solutions in the scope tree.
   /// </summary>
-  [Item("BestAverageWorstQualityCalculator", "An operator which calculates the best, average and worst solution quality of the current population.")]
+  [Item("BestAverageWorstQualityCalculator", "An operator which calculates the best, average and worst quality of solutions in the scope tree.")]
   [StorableClass]
   public sealed class BestAverageWorstQualityCalculator : SingleSuccessorOperator {
-    public IValueLookupParameter<BoolValue> MaximizationParameter {
-      get { return (IValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
+    public ValueLookupParameter<BoolValue> MaximizationParameter {
+      get { return (ValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
-    public ILookupParameter<ItemArray<DoubleValue>> QualityParameter {
-      get { return (ILookupParameter<ItemArray<DoubleValue>>)Parameters["Quality"]; }
+    public ScopeTreeLookupParameter<DoubleValue> QualityParameter {
+      get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
-    public IValueLookupParameter<DoubleValue> BestQualityParameter {
-      get { return (IValueLookupParameter<DoubleValue>)Parameters["BestQuality"]; }
+    public ValueLookupParameter<DoubleValue> BestQualityParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["BestQuality"]; }
     }
-    public IValueLookupParameter<DoubleValue> AverageQualityParameter {
-      get { return (IValueLookupParameter<DoubleValue>)Parameters["AverageQuality"]; }
+    public ValueLookupParameter<DoubleValue> AverageQualityParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["AverageQuality"]; }
     }
-    public IValueLookupParameter<DoubleValue> WorstQualityParameter {
-      get { return (IValueLookupParameter<DoubleValue>)Parameters["WorstQuality"]; }
+    public ValueLookupParameter<DoubleValue> WorstQualityParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["WorstQuality"]; }
     }
 
     public BestAverageWorstQualityCalculator()
       : base() {
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the current problem is a maximization problem, otherwise false."));
-      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The value contained in each sub-scope which represents the solution quality."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The value contained in the scope tree which represents the solution quality."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("BestQuality", "The quality value of the best solution."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("AverageQuality", "The average quality of all solutions."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("WorstQuality", "The quality value of the worst solution."));

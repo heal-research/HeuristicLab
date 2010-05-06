@@ -101,7 +101,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       UniformSubScopesProcessor subScopesProcessor = new UniformSubScopesProcessor();
       SimpleSymbolicRegressionEvaluator simpleEvaluator = new SimpleSymbolicRegressionEvaluator();
       SimpleRSquaredEvaluator simpleR2Evalator = new SimpleRSquaredEvaluator();
-      PopulationMinAverageMaxValueAnalyzer minAvgMaxAnalyzer = new PopulationMinAverageMaxValueAnalyzer();
+      MinAverageMaxValueAnalyzer minAvgMaxAnalyzer = new MinAverageMaxValueAnalyzer();
       #endregion
 
       #region parameter wiring

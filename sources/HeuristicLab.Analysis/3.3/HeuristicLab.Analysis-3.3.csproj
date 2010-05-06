@@ -84,22 +84,20 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLabAnalysisPlugin.cs.frame" />
+    <Compile Include="BestAverageWorstQualityAnalyzer.cs" />
     <Compile Include="BestAverageWorstQualityCalculator.cs" />
     <Compile Include="BestQualityMemorizer.cs" />
-    <Compile Include="PopulationQualityAnalyzer.cs" />
-    <Compile Include="PopulationValueAnalyzer.cs" />
+    <Compile Include="QualityAnalyzer.cs" />
+    <Compile Include="MinAverageMaxValueAnalyzer.cs" />
     <Compile Include="MinAverageMaxValueCalculator.cs" />
-    <Compile Include="PopulationMinAverageMaxValueAnalyzer.cs" />
-    <Compile Include="SolutionValueAnalyzer.cs" />
-    <Compile Include="SolutionQualityAnalyzer.cs" />
     <Compile Include="MultiAnalyzer.cs" />
-    <Compile Include="PopulationBestAverageWorstQualityAnalyzer.cs" />
     <Compile Include="QualityDifferenceCalculator.cs" />
     <Compile Include="DataRow.cs" />
     <Compile Include="HeuristicLabAnalysisPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DataTable.cs" />
     <Compile Include="DataTableValuesCollector.cs" />
+    <Compile Include="ValueAnalyzer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />

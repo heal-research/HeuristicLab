@@ -123,8 +123,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     public IEnumerable<IOperator> Operators {
       get { return operators; }
     }
-    private IEnumerable<IBestTSPSolutionAnalyzer> BestTSPSolutionAnalyzers {
-      get { return operators.OfType<IBestTSPSolutionAnalyzer>(); }
+    private PopulationBestTSPSolutionAnalyzer BestTSPSolutionAnalyzer {
+      get { return operators.OfType<PopulationBestTSPSolutionAnalyzer>().FirstOrDefault(); }
     }
     #endregion
 
@@ -230,25 +230,25 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       SolutionCreator.PermutationParameter.ActualNameChanged += new EventHandler(SolutionCreator_PermutationParameter_ActualNameChanged);
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
-      ParameterizeAnalyzers();
+      ParameterizeAnalyzer();
       ParameterizeOperators();
       OnSolutionCreatorChanged();
     }
     private void SolutionCreator_PermutationParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
-      ParameterizeAnalyzers();
+      ParameterizeAnalyzer();
       ParameterizeOperators();
     }
     private void EvaluatorParameter_ValueChanged(object sender, EventArgs e) {
       Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       ParameterizeEvaluator();
       UpdateMoveEvaluators();
-      ParameterizeAnalyzers();
+      ParameterizeAnalyzer();
       ClearDistanceMatrix();
       OnEvaluatorChanged();
     }
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
-      ParameterizeAnalyzers();
+      ParameterizeAnalyzer();
     }
     private void MoveGenerator_InversionMoveParameter_ActualNameChanged(object sender, EventArgs e) {
       string name = ((ILookupParameter<InversionMove>)sender).ActualName;
@@ -279,10 +279,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
 
     private void InitializeOperators() {
       operators = new List<IOperator>();
-      operators.Add(new BestTSPSolutionAnalyzer());
       operators.Add(new PopulationBestTSPSolutionAnalyzer());
-      operators.Add(new MultiPopulationBestTSPSolutionAnalyzer());
-      ParameterizeAnalyzers();
+      ParameterizeAnalyzer();
       operators.AddRange(ApplicationManager.Manager.GetInstances<IPermutationOperator>().Cast<IOperator>());
       ParameterizeOperators();
       UpdateMoveEvaluators();
@@ -324,13 +322,11 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         evaluator.UseDistanceMatrixParameter.ActualName = UseDistanceMatrixParameter.Name;
       }
     }
-    private void ParameterizeAnalyzers() {
-      foreach (IBestTSPSolutionAnalyzer analyzer in BestTSPSolutionAnalyzers) {
-        analyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
-        analyzer.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
-        analyzer.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
-        analyzer.ResultsParameter.ActualName = "Results";
-      }
+    private void ParameterizeAnalyzer() {
+      BestTSPSolutionAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
+      BestTSPSolutionAnalyzer.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
+      BestTSPSolutionAnalyzer.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+      BestTSPSolutionAnalyzer.ResultsParameter.ActualName = "Results";
     }
     private void ParameterizeOperators() {
       foreach (IPermutationCrossover op in Operators.OfType<IPermutationCrossover>()) {

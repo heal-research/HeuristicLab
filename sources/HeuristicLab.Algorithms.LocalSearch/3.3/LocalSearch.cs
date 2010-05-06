@@ -125,7 +125,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
     private LocalSearchMainLoop MainLoop {
       get { return (LocalSearchMainLoop)SolutionsCreator.Successor; }
     }
-    private PopulationBestAverageWorstQualityAnalyzer moveQualityAnalyzer;
+    private BestAverageWorstQualityAnalyzer moveQualityAnalyzer;
     #endregion
 
     [StorableConstructor]
@@ -268,7 +268,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       MoveEvaluatorParameter.ValueChanged += new EventHandler(MoveEvaluatorParameter_ValueChanged);
     }
     private void InitializeAnalyzers() {
-      moveQualityAnalyzer = new PopulationBestAverageWorstQualityAnalyzer();
+      moveQualityAnalyzer = new BestAverageWorstQualityAnalyzer();
       ParameterizeAnalyzers();
     }
     private void UpdateMoveGenerator() {

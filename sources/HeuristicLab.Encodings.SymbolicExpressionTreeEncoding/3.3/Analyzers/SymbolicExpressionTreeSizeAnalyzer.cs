@@ -70,10 +70,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers {
 
 
       SymbolicExpressionTreeSizeCalculator sizeCalculator = new SymbolicExpressionTreeSizeCalculator();
-      SolutionValueAnalyzer valueAnalyzer = new SolutionValueAnalyzer();
+      ValueAnalyzer valueAnalyzer = new ValueAnalyzer();
       sizeCalculator.SymbolicExpressionTreeParameter.ActualName = SymbolicExpressionTreeParameter.Name;
       sizeCalculator.SymbolicExpressionTreeSizeParameter.ActualName = SymbolicExpressionTreeSizeParameter.Name;
       valueAnalyzer.ValueParameter.ActualName = sizeCalculator.SymbolicExpressionTreeSizeParameter.Name;
+      valueAnalyzer.ValueParameter.Depth = 0;
       valueAnalyzer.ValuesParameter.ActualName = SymbolicExpressionTreeSizesParameter.Name;
       valueAnalyzer.ResultsParameter.ActualName = ResultsParameter.Name;
 

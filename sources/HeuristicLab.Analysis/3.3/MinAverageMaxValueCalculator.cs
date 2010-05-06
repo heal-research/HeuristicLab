@@ -28,32 +28,31 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
-  /// An operator which calculates the minimum, average and maximum of a value in the current population.
+  /// An operator which calculates the minimum, average and maximum of a value in the scope tree.
   /// </summary>
-  [Item("MinAverageMaxValueCalculator", "An operator which calculates the minimum, average and maximum of a value in the current population.")]
+  [Item("MinAverageMaxValueCalculator", "An operator which calculates the minimum, average and maximum of a value in the scope tree.")]
   [StorableClass]
   public sealed class MinAverageMaxValueCalculator : SingleSuccessorOperator {
-    public ILookupParameter<ItemArray<DoubleValue>> ValueParameter {
-      get { return (ILookupParameter<ItemArray<DoubleValue>>)Parameters["Value"]; }
+    public ScopeTreeLookupParameter<DoubleValue> ValueParameter {
+      get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Value"]; }
     }
-    public IValueLookupParameter<DoubleValue> MinValueParameter {
-      get { return (IValueLookupParameter<DoubleValue>)Parameters["MinValue"]; }
+    public ValueLookupParameter<DoubleValue> MinValueParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["MinValue"]; }
     }
-    public IValueLookupParameter<DoubleValue> AverageValueParameter {
-      get { return (IValueLookupParameter<DoubleValue>)Parameters["AverageValue"]; }
+    public ValueLookupParameter<DoubleValue> AverageValueParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["AverageValue"]; }
     }
-    public IValueLookupParameter<DoubleValue> MaxValueParameter {
-      get { return (IValueLookupParameter<DoubleValue>)Parameters["MaxValue"]; }
+    public ValueLookupParameter<DoubleValue> MaxValueParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["MaxValue"]; }
     }
 
     public MinAverageMaxValueCalculator()
       : base() {
-      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Value", "The value contained in each sub-scope for which the minimum, average and maximum should be calculated."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Value", "The value contained in the scope tree for which the minimum, average and maximum should be calculated."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("MinValue", "The minimum of the value."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("AverageValue", "The average of the value."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("MaxValue", "The maximum of the value."));
     }
-
 
     public override IOperation Apply() {
       ItemArray<DoubleValue> values = ValueParameter.ActualValue;

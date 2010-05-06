@@ -142,7 +142,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     private TabuSearchMainLoop MainLoop {
       get { return (TabuSearchMainLoop)SolutionsCreator.Successor; }
     }
-    private PopulationBestAverageWorstQualityAnalyzer moveQualityAnalyzer;
+    private BestAverageWorstQualityAnalyzer moveQualityAnalyzer;
     private TabuNeighborhoodAnalyzer tabuNeighborhoodAnalyzer;
     #endregion
 
@@ -326,7 +326,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       SampleSizeParameter.NameChanged += new EventHandler(SampleSizeParameter_NameChanged);
     }
     private void InitializeAnalyzers() {
-      moveQualityAnalyzer = new PopulationBestAverageWorstQualityAnalyzer();
+      moveQualityAnalyzer = new BestAverageWorstQualityAnalyzer();
       tabuNeighborhoodAnalyzer = new TabuNeighborhoodAnalyzer();
       ParameterizeAnalyzers();
     }

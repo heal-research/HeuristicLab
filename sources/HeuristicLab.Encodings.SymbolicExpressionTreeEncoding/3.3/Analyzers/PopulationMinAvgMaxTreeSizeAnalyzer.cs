@@ -68,7 +68,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers {
 
       UniformSubScopesProcessor subScopesProcessor = new UniformSubScopesProcessor();
       SymbolicExpressionTreeSizeCalculator sizeCalculator = new SymbolicExpressionTreeSizeCalculator();
-      PopulationMinAverageMaxValueAnalyzer valuesAnalyzer = new PopulationMinAverageMaxValueAnalyzer();
+      MinAverageMaxValueAnalyzer valuesAnalyzer = new MinAverageMaxValueAnalyzer();
       sizeCalculator.SymbolicExpressionTreeParameter.ActualName = SymbolicExpressionTreeParameter.Name;
       sizeCalculator.SymbolicExpressionTreeSizeParameter.ActualName = SymbolicExpressionTreeSizeParameter.Name;
       valuesAnalyzer.ValueParameter.ActualName = sizeCalculator.SymbolicExpressionTreeSizeParameter.Name;
