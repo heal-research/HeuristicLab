@@ -232,15 +232,14 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       analyzer1.Name = "Analyzer (placeholder)";
       analyzer1.OperatorParameter.ActualName = AnalyzerParameter.Name;
 
+      resultsCollector1.CopyValue = new BoolValue(false);
       resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Migrations"));
       resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Generations"));
-      resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutions"));
       resultsCollector1.CollectedValues.Add(new ScopeTreeLookupParameter<ResultCollection>("IslandResults", "Result set for each island", "Results"));
       resultsCollector1.ResultsParameter.ActualName = ResultsParameter.Name;
 
-      resultsCollector2.Name = "Reference Island Results";
-      resultsCollector2.CopyValue = new BoolValue(false);
-      resultsCollector2.CollectedValues.Add(new ScopeTreeLookupParameter<ResultCollection>("IslandResults", "Result set for each island", "Results"));
+      resultsCollector2.CopyValue = new BoolValue(true);
+      resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutions"));
       resultsCollector2.ResultsParameter.ActualName = ResultsParameter.Name;
 
       comparisonFactorModifier.Name = "ComparisonFactorModifier (Placeholder)";
@@ -352,8 +351,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       analyzer2.Name = "Analyzer (placeholder)";
       analyzer2.OperatorParameter.ActualName = AnalyzerParameter.Name;
 
-      resultsCollector3.CollectedValues.Add(new LookupParameter<IntValue>("Migrations"));
-      resultsCollector3.CollectedValues.Add(new LookupParameter<IntValue>("Generations"));
+      resultsCollector3.CopyValue = new BoolValue(true);
       resultsCollector3.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutions"));
       resultsCollector3.ResultsParameter.ActualName = ResultsParameter.Name;
 

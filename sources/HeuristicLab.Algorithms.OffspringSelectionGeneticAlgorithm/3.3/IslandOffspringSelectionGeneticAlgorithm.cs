@@ -246,7 +246,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       get { return (IslandOffspringSelectionGeneticAlgorithmMainLoop)IslandProcessor.Successor; }
     }
     private BestAverageWorstQualityAnalyzer islandQualityAnalyzer;
-    //private MultipopulationBestAverageWorstQualityAnalyzer qualityAnalyzer;
+    private BestAverageWorstQualityAnalyzer qualityAnalyzer;
+    private ValueAnalyzer islandSelectionPressureAnalyzer;
+    private ValueAnalyzer selectionPressureAnalyzer;
     #endregion
 
     [StorableConstructor]
@@ -471,7 +473,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     }
     private void InitializeAnalyzers() {
       islandQualityAnalyzer = new BestAverageWorstQualityAnalyzer();
-      //qualityAnalyzer = new MultipopulationBestAverageWorstQualityAnalyzer();
+      qualityAnalyzer = new BestAverageWorstQualityAnalyzer();
+      islandSelectionPressureAnalyzer = new ValueAnalyzer();
+      selectionPressureAnalyzer = new ValueAnalyzer();
       ParameterizeAnalyzers();
     }
     private void InitializeComparisonFactorModifiers() {
@@ -515,11 +519,30 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     }
     private void ParameterizeAnalyzers() {
       islandQualityAnalyzer.ResultsParameter.ActualName = "Results";
-      //qualityAnalyzer.ResultsParameter.ActualName = "Results";
+      islandQualityAnalyzer.QualityParameter.Depth = 1;
+      qualityAnalyzer.ResultsParameter.ActualName = "Results";
+      qualityAnalyzer.QualityParameter.Depth = 2;
+
+      islandSelectionPressureAnalyzer.ResultsParameter.ActualName = "Results";
+      islandSelectionPressureAnalyzer.Name = "SelectionPressure Analyzer";
+      islandSelectionPressureAnalyzer.ValueParameter.Depth = 0;
+      islandSelectionPressureAnalyzer.ValueParameter.ActualName = "SelectionPressure";
+      islandSelectionPressureAnalyzer.ValuesParameter.ActualName = "Selection Pressure History";
+
+      selectionPressureAnalyzer.ResultsParameter.ActualName = "Results";
+      selectionPressureAnalyzer.Name = "SelectionPressure Analyzer";
+      selectionPressureAnalyzer.ValueParameter.Depth = 1;
+      selectionPressureAnalyzer.ValueParameter.ActualName = "SelectionPressure";
+      selectionPressureAnalyzer.ValuesParameter.ActualName = "Selection Pressure History";
+
       if (Problem != null) {
         islandQualityAnalyzer.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
         islandQualityAnalyzer.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
         islandQualityAnalyzer.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
+
+        qualityAnalyzer.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
+        qualityAnalyzer.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
+        qualityAnalyzer.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
       }
     }
     private void ParameterizeComparisonFactorModifiers() {
@@ -610,13 +633,15 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       IslandAnalyzer.Operators.Clear();
       Analyzer.Operators.Clear();
       IslandAnalyzer.Operators.Add(islandQualityAnalyzer);
-      //Analyzer.Operators.Add(qualityAnalyzer);
+      IslandAnalyzer.Operators.Add(islandSelectionPressureAnalyzer);
+      Analyzer.Operators.Add(qualityAnalyzer);
+      Analyzer.Operators.Add(selectionPressureAnalyzer);
       if (Problem != null) {
         foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name)) {
-          IslandAnalyzer.Operators.Add(analyzer);
-        }
-        foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name))
+          foreach (IScopeTreeLookupParameter param in analyzer.Parameters.OfType<IScopeTreeLookupParameter>())
+            param.Depth = 2;
           Analyzer.Operators.Add(analyzer);
+        }
       }
     }
     #endregion

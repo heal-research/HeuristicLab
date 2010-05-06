@@ -224,16 +224,16 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       analyzer1.Name = "Analyzer (placeholder)";
       analyzer1.OperatorParameter.ActualName = AnalyzerParameter.Name;
 
+      resultsCollector1.CopyValue = new BoolValue(false);
       resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Generations"));
-      resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutions"));
       resultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("ComparisonFactor", null, "ComparisonFactor"));
       resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Terminated Villages", null, "TerminatedVillages"));
       resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Total Active Villages", null, "VillageCount"));
+      resultsCollector1.CollectedValues.Add(new ScopeTreeLookupParameter<ResultCollection>("VillageResults", "Result set for each village", "Results"));
       resultsCollector1.ResultsParameter.ActualName = ResultsParameter.Name;
 
-      resultsCollector2.Name = "Reference Village Results";
-      resultsCollector2.CopyValue = new BoolValue(false);
-      resultsCollector2.CollectedValues.Add(new ScopeTreeLookupParameter<ResultCollection>("VillageResults", "Result set for each village", "Results"));
+      resultsCollector2.CopyValue = new BoolValue(true);
+      resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutions"));
       resultsCollector2.ResultsParameter.ActualName = ResultsParameter.Name;
 
       villageTerminatedBySelectionPressure1.Name = "Village Terminated ?";
@@ -361,12 +361,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       analyzer2.Name = "Analyzer (placeholder)";
       analyzer2.OperatorParameter.ActualName = AnalyzerParameter.Name;
 
-      resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Generations"));
-      resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutions"));
-      resultsCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("ComparisonFactor", null, "ComparisonFactor"));
-      resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Terminated Villages", null, "TerminatedVillages"));
-      resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Total Active Villages", null, "VillageCount"));
-      resultsCollector2.ResultsParameter.ActualName = ResultsParameter.Name;
+      resultsCollector3.CopyValue = new BoolValue(true);
+      resultsCollector3.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutions"));
+      resultsCollector3.ResultsParameter.ActualName = ResultsParameter.Name;
 
       terminationCondition.ConditionParameter.ActualName = "TerminateSASEGASA";
       maximumGenerationsTerminationCondition.ConditionParameter.ActualName = "TerminateMaximumGenerations";

@@ -223,7 +223,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       get { return (SASEGASAMainLoop)VillageProcessor.Successor; }
     }
     private BestAverageWorstQualityAnalyzer villageQualityAnalyzer;
-    //private MultipopulationBestAverageWorstQualityAnalyzer qualityAnalyzer;
+    private BestAverageWorstQualityAnalyzer qualityAnalyzer;
+    private ValueAnalyzer villageSelectionPressureAnalyzer;
+    private ValueAnalyzer selectionPressureAnalyzer;
     #endregion
 
     [StorableConstructor]
@@ -429,7 +431,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     }
     private void InitializeAnalyzers() {
       villageQualityAnalyzer = new BestAverageWorstQualityAnalyzer();
-      //qualityAnalyzer = new MultipopulationBestAverageWorstQualityAnalyzer();
+      qualityAnalyzer = new BestAverageWorstQualityAnalyzer();
+      villageSelectionPressureAnalyzer = new ValueAnalyzer();
+      selectionPressureAnalyzer = new ValueAnalyzer();
       ParameterizeAnalyzers();
     }
     private void InitializeComparisonFactorModifiers() {
@@ -453,11 +457,30 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     }
     private void ParameterizeAnalyzers() {
       villageQualityAnalyzer.ResultsParameter.ActualName = "Results";
-      //qualityAnalyzer.ResultsParameter.ActualName = "Results";
+      villageQualityAnalyzer.QualityParameter.Depth = 1;
+      qualityAnalyzer.ResultsParameter.ActualName = "Results";
+      qualityAnalyzer.QualityParameter.Depth = 2;
+
+      villageSelectionPressureAnalyzer.ResultsParameter.ActualName = "Results";
+      villageSelectionPressureAnalyzer.Name = "SelectionPressure Analyzer";
+      villageSelectionPressureAnalyzer.ValueParameter.Depth = 0;
+      villageSelectionPressureAnalyzer.ValueParameter.ActualName = "SelectionPressure";
+      villageSelectionPressureAnalyzer.ValuesParameter.ActualName = "Selection Pressure History";
+
+      selectionPressureAnalyzer.ResultsParameter.ActualName = "Results";
+      selectionPressureAnalyzer.Name = "SelectionPressure Analyzer";
+      selectionPressureAnalyzer.ValueParameter.Depth = 1;
+      selectionPressureAnalyzer.ValueParameter.ActualName = "SelectionPressure";
+      selectionPressureAnalyzer.ValuesParameter.ActualName = "Selection Pressure History";
+
       if (Problem != null) {
         villageQualityAnalyzer.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
         villageQualityAnalyzer.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
         villageQualityAnalyzer.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
+
+        qualityAnalyzer.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
+        qualityAnalyzer.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
+        qualityAnalyzer.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
       }
     }
     private void ParameterizeComparisonFactorModifiers() {
@@ -520,13 +543,15 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       VillageAnalyzer.Operators.Clear();
       Analyzer.Operators.Clear();
       VillageAnalyzer.Operators.Add(villageQualityAnalyzer);
-      //Analyzer.Operators.Add(qualityAnalyzer);
+      VillageAnalyzer.Operators.Add(villageSelectionPressureAnalyzer);
+      Analyzer.Operators.Add(qualityAnalyzer);
+      Analyzer.Operators.Add(selectionPressureAnalyzer);
       if (Problem != null) {
         foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name)) {
-          VillageAnalyzer.Operators.Add(analyzer);
-        }
-        foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name))
+          foreach (IScopeTreeLookupParameter param in analyzer.Parameters.OfType<IScopeTreeLookupParameter>())
+            param.Depth = 2;
           Analyzer.Operators.Add(analyzer);
+        }
       }
     }
     #endregion

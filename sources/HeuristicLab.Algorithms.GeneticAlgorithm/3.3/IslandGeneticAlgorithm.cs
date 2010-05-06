@@ -437,11 +437,10 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     }
     private void ParameterizeAnalyzers() {
       islandQualityAnalyzer.ResultsParameter.ActualName = "Results";
-      foreach (IScopeTreeLookupParameter param in ((IAnalyzer)islandQualityAnalyzer).Parameters.OfType<IScopeTreeLookupParameter>())
-          param.Depth = 1;
+      islandQualityAnalyzer.QualityParameter.Depth = 1;
       qualityAnalyzer.ResultsParameter.ActualName = "Results";
-      foreach (IScopeTreeLookupParameter param in ((IAnalyzer)qualityAnalyzer).Parameters.OfType<IScopeTreeLookupParameter>())
-        param.Depth = 2;
+      qualityAnalyzer.QualityParameter.Depth = 2;
+
       if (Problem != null) {
         islandQualityAnalyzer.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
         islandQualityAnalyzer.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;

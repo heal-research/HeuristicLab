@@ -150,7 +150,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
 
       resultsCollector1.CopyValue = new BoolValue(false);
       resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Generations"));
-      resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutions"));
       resultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Curent Comparison Factor", null, "ComparisonFactor"));
       resultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Selection Pressure", null, "SelectionPressure"));
       resultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Success Ratio", null, "CurrentSuccessRatio"));
