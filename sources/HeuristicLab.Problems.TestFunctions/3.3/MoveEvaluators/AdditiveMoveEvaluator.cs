@@ -54,8 +54,8 @@ namespace HeuristicLab.Problems.TestFunctions {
 
     protected AdditiveMoveEvaluator()
       : base() {
-      Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of a TSP solution."));
-      Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The evaluated quality of a move on a TSP solution."));
+      Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of a test function solution."));
+      Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The evaluated quality of a move on a test function solution."));
       Parameters.Add(new LookupParameter<RealVector>("Point", "The point to evaluate the move on."));
       Parameters.Add(new LookupParameter<AdditiveMove>("AdditiveMove", "The move to evaluate."));
     }

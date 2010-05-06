@@ -137,9 +137,9 @@ namespace HeuristicLab.Problems.TestFunctions {
       Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to false as most test functions are minimization problems.", new BoolValue(evaluator.Maximization)));
       Parameters.Add(new ValueParameter<DoubleMatrix>("Bounds", "The lower and upper bounds in each dimension.", evaluator.Bounds));
       Parameters.Add(new ValueParameter<IntValue>("ProblemSize", "The dimension of the problem.", new IntValue(2)));
-      Parameters.Add(new ValueParameter<IRealVectorCreator>("SolutionCreator", "The operator which should be used to create new TSP solutions.", creator));
-      Parameters.Add(new ValueParameter<ISingleObjectiveTestFunctionProblemEvaluator>("Evaluator", "The operator which should be used to evaluate TSP solutions.", evaluator));
-      Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this TSP instance.", new DoubleValue(evaluator.BestKnownQuality)));
+      Parameters.Add(new ValueParameter<IRealVectorCreator>("SolutionCreator", "The operator which should be used to create new test function solutions.", creator));
+      Parameters.Add(new ValueParameter<ISingleObjectiveTestFunctionProblemEvaluator>("Evaluator", "The operator which should be used to evaluate test function solutions.", evaluator));
+      Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this test function.", new DoubleValue(evaluator.BestKnownQuality)));
 
       strategyVectorCreator = new StdDevStrategyVectorCreator();
       strategyVectorCreator.LengthParameter.ActualName = ProblemSizeParameter.Name;
