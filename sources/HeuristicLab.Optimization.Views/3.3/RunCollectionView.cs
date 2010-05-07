@@ -97,12 +97,11 @@ namespace HeuristicLab.Optimization.Views {
       Caption = "Run Collection";
       while (itemsListView.Items.Count > 0) RemoveListViewItem(itemsListView.Items[0]);
       viewHost.Content = null;
-      runCollectionConstraintCollectionView.Content = null;
-      tabControl.TabPages.Remove(constraintPage);
 
       if (Content != null) {
         if (RunCollection != null) {
-          tabControl.TabPages.Add(constraintPage);
+          if (!tabControl.TabPages.Contains(constraintPage))
+            tabControl.TabPages.Add(constraintPage);
           runCollectionConstraintCollectionView.Content = RunCollection.Constraints;
           runCollectionConstraintCollectionView.ReadOnly = itemsListView.Items.Count == 0;
         }
@@ -111,6 +110,10 @@ namespace HeuristicLab.Optimization.Views {
           AddListViewItem(CreateListViewItem(item));
           UpdateRun(item);
         }
+      } else {
+        runCollectionConstraintCollectionView.Content = null;
+        if (tabControl.TabPages.Contains(constraintPage))
+          tabControl.TabPages.Remove(constraintPage);
       }
       SetEnabledStateOfControls();
     }
@@ -182,7 +185,6 @@ namespace HeuristicLab.Optimization.Views {
       if (itemsListView.SelectedItems.Count == 1) {
         IRun item = (IRun)itemsListView.SelectedItems[0].Tag;
         detailsGroupBox.Enabled = true;
-        viewHost.ViewType = null;
         viewHost.Content = item;
       } else {
         viewHost.Content = null;

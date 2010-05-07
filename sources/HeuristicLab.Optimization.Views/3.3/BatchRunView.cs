@@ -74,7 +74,6 @@ namespace HeuristicLab.Optimization.Views {
         executionTimeTextBox.Text = "-";
       } else {
         repetitionsNumericUpDown.Value = Content.Repetitions;
-        algorithmViewHost.ViewType = null;
         algorithmViewHost.Content = Content.Algorithm;
         runsView.Content = Content.Runs;
         executionTimeTextBox.Text = Content.ExecutionTime.ToString();
@@ -126,7 +125,6 @@ namespace HeuristicLab.Optimization.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_AlgorithmChanged), sender, e);
       else {
-        algorithmViewHost.ViewType = null;
         algorithmViewHost.Content = Content.Algorithm;
       }
     }

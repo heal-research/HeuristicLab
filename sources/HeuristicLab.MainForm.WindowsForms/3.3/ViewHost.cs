@@ -82,15 +82,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
         }
       }
     }
-    public new IContent Content {
-      get { return base.Content; }
-      set {
-        if (value == null || this.Content == null || value.GetType() != this.Content.GetType())
-          cachedViews.Clear();
-
-        base.Content = value;
-      }
-    }
 
     public new bool Enabled {
       get { return base.Enabled; }
@@ -117,6 +108,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
         }
 
         if (!ViewCanShowContent(viewType, Content)) {
+          cachedViews.Clear();
           ViewType = MainFormManager.GetDefaultViewType(Content.GetType());
           if ((viewType == null) && (viewContextMenuStrip.Items.Count > 0))  // create first available view if default view is not available
             ViewType = (Type)viewContextMenuStrip.Items[0].Tag;
@@ -128,9 +120,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
         messageLabel.Visible = false;
         viewsLabel.Visible = false;
         viewPanel.Visible = false;
-        if (viewPanel.Controls.Count > 0) viewPanel.Controls[0].Dispose();
-        viewPanel.Controls.Clear();
-        cachedViews.Clear();
       }
     }
 
