@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Common.Resources</RootNamespace>
-    <AssemblyName>HeuristicLab.Common.Resources-3.2</AssemblyName>
+    <AssemblyName>HeuristicLab.Common.Resources-3.3</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>

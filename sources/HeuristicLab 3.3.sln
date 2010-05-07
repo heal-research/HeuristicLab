@@ -102,9 +102,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab 3.3", "Heurist
 		{6F42C5F8-16CD-43EE-8208-FD4573A69D85} = {6F42C5F8-16CD-43EE-8208-FD4573A69D85}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Tracing-3.2", "HeuristicLab.Tracing\3.2\HeuristicLab.Tracing-3.2.csproj", "{EE2034D9-6E27-48A1-B855-42D45F69A4FC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Tracing-3.2", "HeuristicLab.Tracing\3.3\HeuristicLab.Tracing-3.3.csproj", "{EE2034D9-6E27-48A1-B855-42D45F69A4FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Common.Resources-3.2", "HeuristicLab.Common.Resources\3.2\HeuristicLab.Common.Resources-3.2.csproj", "{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Common.Resources-3.3", "HeuristicLab.Common.Resources\3.3\HeuristicLab.Common.Resources-3.3.csproj", "{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Optimizer-3.3", "HeuristicLab.Optimizer\3.3\HeuristicLab.Optimizer-3.3.csproj", "{C664305E-497C-4533-A140-967DEDB05C19}"
 EndProject
