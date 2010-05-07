@@ -47,12 +47,14 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
     }
 
     protected override void DeregisterContentEvents() {
+      Content.QualityChanged -= new EventHandler(Content_QualityChanged);
       Content.CoordinatesChanged -= new EventHandler(Content_CoordinatesChanged);
       Content.PermutationChanged -= new EventHandler(Content_PermutationChanged);
       base.DeregisterContentEvents();
     }
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
+      Content.QualityChanged += new EventHandler(Content_QualityChanged);
       Content.CoordinatesChanged += new EventHandler(Content_CoordinatesChanged);
       Content.PermutationChanged += new EventHandler(Content_PermutationChanged);
     }
@@ -60,9 +62,13 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
+        qualityViewHost.Content = null;
         pictureBox.Image = null;
+        tourViewHost.Content = null;
       } else {
+        qualityViewHost.Content = Content.Quality;
         GenerateImage();
+        tourViewHost.Content = Content.Permutation;
       }
       SetEnabledStateOfControls();
     }
@@ -73,7 +79,9 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
     }
 
     private void SetEnabledStateOfControls() {
+      qualityGroupBox.Enabled = Content != null;
       pictureBox.Enabled = Content != null;
+      tourGroupBox.Enabled = Content != null;
     }
 
     private void GenerateImage() {
@@ -120,6 +128,12 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       }
     }
 
+    private void Content_QualityChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_QualityChanged), sender, e);
+      else
+        qualityViewHost.Content = Content.Quality;
+    }
     private void Content_CoordinatesChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_CoordinatesChanged), sender, e);
@@ -129,8 +143,10 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
     private void Content_PermutationChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_PermutationChanged), sender, e);
-      else
+      else {
         GenerateImage();
+        tourViewHost.Content = Content.Permutation;
+      }
     }
 
     private void pictureBox_SizeChanged(object sender, EventArgs e) {
