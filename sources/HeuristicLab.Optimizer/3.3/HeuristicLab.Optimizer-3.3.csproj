@@ -186,12 +186,17 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Documents\GP_SymbReg.hl" />
+    <EmbeddedResource Include="Documents\ES_Griewank.hl" />
     <None Include="Documents\Images\New.png" />
     <None Include="Documents\Images\Open.png" />
     <None Include="Documents\Images\Pause.png" />
     <None Include="Documents\Images\Play.png" />
     <None Include="Documents\Images\Restart.png" />
     <None Include="Documents\Images\Stop.png" />
+    <EmbeddedResource Include="Documents\IslandGA_TSP.hl" />
+    <EmbeddedResource Include="Documents\LS_OneMax.hl" />
+    <EmbeddedResource Include="Documents\SA_Rastrigin.hl" />
+    <EmbeddedResource Include="Documents\TS_TSP.hl" />
     <EmbeddedResource Include="Documents\SGP_SantaFe.hl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
