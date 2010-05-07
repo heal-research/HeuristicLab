@@ -258,7 +258,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new ValueParameter<PercentValue>("MigrationRate", "The proportion of individuals that should migrate between the islands.", new PercentValue(0.15)));
       Parameters.Add(new ConstrainedValueParameter<IMigrator>("Migrator", "The migration strategy."));
       Parameters.Add(new ConstrainedValueParameter<ISelector>("EmigrantsSelector", "Selects the individuals that will be migrated."));
-      Parameters.Add(new ConstrainedValueParameter<IReplacer>("ImmigrationReplacer", "Selects the population from the unification of the original population and the immigrants."));
+      Parameters.Add(new ConstrainedValueParameter<IReplacer>("ImmigrationReplacer", "Replaces part of the original population with the immigrants."));
       Parameters.Add(new ValueParameter<IntValue>("PopulationSize", "The size of the population of solutions of each island.", new IntValue(100)));
       Parameters.Add(new ValueParameter<IntValue>("MaximumGenerations", "The maximum number of generations that should be processed.", new IntValue(100)));
       Parameters.Add(new ConstrainedValueParameter<ISelector>("Selector", "The operator used to select solutions for reproduction."));
@@ -317,9 +317,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       mainLoop.ResultsParameter.ActualName = "Results";
       mainLoop.SuccessRatioParameter.ActualName = SuccessRatioParameter.Name;
       mainLoop.ComparisonFactorParameter.ActualName = "ComparisonFactor";
-      mainLoop.ComparisonFactorLowerBoundParameter.ActualName = ComparisonFactorLowerBoundParameter.Name;
       mainLoop.ComparisonFactorModifierParameter.ActualName = ComparisonFactorModifierParameter.Name;
-      mainLoop.ComparisonFactorUpperBoundParameter.ActualName = ComparisonFactorUpperBoundParameter.Name;
       mainLoop.MaximumSelectionPressureParameter.ActualName = MaximumSelectionPressureParameter.Name;
       mainLoop.OffspringSelectionBeforeMutationParameter.ActualName = OffspringSelectionBeforeMutationParameter.Name;
       mainLoop.Successor = null;

@@ -111,12 +111,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     public LookupParameter<DoubleValue> ComparisonFactorParameter {
       get { return (LookupParameter<DoubleValue>)Parameters["ComparisonFactor"]; }
     }
-    public ValueLookupParameter<DoubleValue> ComparisonFactorLowerBoundParameter {
-      get { return (ValueLookupParameter<DoubleValue>)Parameters["ComparisonFactorLowerBound"]; }
-    }
-    public ValueLookupParameter<DoubleValue> ComparisonFactorUpperBoundParameter {
-      get { return (ValueLookupParameter<DoubleValue>)Parameters["ComparisonFactorUpperBound"]; }
-    }
     public ValueLookupParameter<IOperator> ComparisonFactorModifierParameter {
       get { return (ValueLookupParameter<IOperator>)Parameters["ComparisonFactorModifier"]; }
     }
@@ -162,8 +156,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new LookupParameter<IItem>("Visualization", "The item which represents the visualization of solutions."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("SuccessRatio", "The ratio of successful to total children that should be achieved."));
       Parameters.Add(new LookupParameter<DoubleValue>("ComparisonFactor", "The comparison factor is used to determine whether the offspring should be compared to the better parent, the worse parent or a quality value linearly interpolated between them. It is in the range [0;1]."));
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("ComparisonFactorLowerBound", "The lower bound of the comparison factor (start)."));
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("ComparisonFactorUpperBound", "The upper bound of the comparison factor (end)."));
       Parameters.Add(new ValueLookupParameter<IOperator>("ComparisonFactorModifier", "The operator used to modify the comparison factor."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("MaximumSelectionPressure", "The maximum selection pressure that terminates the algorithm."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("OffspringSelectionBeforeMutation", "True if the offspring selection step should be applied before mutation, false if it should be applied after mutation."));
@@ -177,10 +169,10 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       VariableCreator islandVariableCreator = new VariableCreator();
       Placeholder islandAnalyzer1 = new Placeholder();
       ResultsCollector islandResultsCollector1 = new ResultsCollector();
+      Placeholder comparisonFactorModifier1 = new Placeholder();
       Placeholder analyzer1 = new Placeholder();
       ResultsCollector resultsCollector1 = new ResultsCollector();
       ResultsCollector resultsCollector2 = new ResultsCollector();
-      Placeholder comparisonFactorModifier = new Placeholder();
       UniformSubScopesProcessor uniformSubScopesProcessor1 = new UniformSubScopesProcessor();
       ConditionalBranch islandTerminatedBySelectionPressure1 = new ConditionalBranch();
       OffspringSelectionGeneticAlgorithmMainOperator mainOperator = new OffspringSelectionGeneticAlgorithmMainOperator();
@@ -206,6 +198,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Placeholder immigrationReplacer = new Placeholder();
       Comparator generationsComparator = new Comparator();
       Comparator terminatedIslandsComparator = new Comparator();
+      Placeholder comparisonFactorModifier2 = new Placeholder();
       Placeholder analyzer2 = new Placeholder();
       ResultsCollector resultsCollector3 = new ResultsCollector();
       ConditionalBranch generationsTerminationCondition = new ConditionalBranch();
@@ -229,21 +222,22 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       islandResultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Success Ratio", null, "CurrentSuccessRatio"));
       islandResultsCollector1.ResultsParameter.ActualName = "Results";
 
+      comparisonFactorModifier1.Name = "Initialize Comparison Factor (Placeholder)";
+      comparisonFactorModifier1.OperatorParameter.ActualName = ComparisonFactorModifierParameter.Name;
+
       analyzer1.Name = "Analyzer (placeholder)";
       analyzer1.OperatorParameter.ActualName = AnalyzerParameter.Name;
 
       resultsCollector1.CopyValue = new BoolValue(false);
       resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Migrations"));
       resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Generations"));
+      resultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Comparison Factor", null, "ComparisonFactor"));
       resultsCollector1.CollectedValues.Add(new ScopeTreeLookupParameter<ResultCollection>("IslandResults", "Result set for each island", "Results"));
       resultsCollector1.ResultsParameter.ActualName = ResultsParameter.Name;
 
       resultsCollector2.CopyValue = new BoolValue(true);
       resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutions"));
       resultsCollector2.ResultsParameter.ActualName = ResultsParameter.Name;
-
-      comparisonFactorModifier.Name = "ComparisonFactorModifier (Placeholder)";
-      comparisonFactorModifier.OperatorParameter.ActualName = ComparisonFactorModifierParameter.Name;
 
       islandTerminatedBySelectionPressure1.Name = "Island Terminated ?";
       islandTerminatedBySelectionPressure1.ConditionParameter.ActualName = "TerminateSelectionPressure";
@@ -348,6 +342,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       terminatedIslandsComparator.RightSideParameter.ActualName = NumberOfIslandsParameter.Name;
       terminatedIslandsComparator.ResultParameter.ActualName = "TerminateTerminatedIslands";
 
+      comparisonFactorModifier2.Name = "Update Comparison Factor (Placeholder)";
+      comparisonFactorModifier2.OperatorParameter.ActualName = ComparisonFactorModifierParameter.Name;
+
       analyzer2.Name = "Analyzer (placeholder)";
       analyzer2.OperatorParameter.ActualName = AnalyzerParameter.Name;
 
@@ -366,14 +363,14 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       OperatorGraph.InitialOperator = variableCreator;
       variableCreator.Successor = uniformSubScopesProcessor0;
       uniformSubScopesProcessor0.Operator = islandVariableCreator;
-      uniformSubScopesProcessor0.Successor = analyzer1;
+      uniformSubScopesProcessor0.Successor = comparisonFactorModifier1;
       islandVariableCreator.Successor = islandAnalyzer1;
       islandAnalyzer1.Successor = islandResultsCollector1;
       islandResultsCollector1.Successor = null;
+      comparisonFactorModifier1.Successor = analyzer1;
       analyzer1.Successor = resultsCollector1;
       resultsCollector1.Successor = resultsCollector2;
-      resultsCollector2.Successor = comparisonFactorModifier;
-      comparisonFactorModifier.Successor = uniformSubScopesProcessor1;
+      resultsCollector2.Successor = uniformSubScopesProcessor1;
       uniformSubScopesProcessor1.Operator = islandTerminatedBySelectionPressure1;
       uniformSubScopesProcessor1.Successor = generationsCounter;
       islandTerminatedBySelectionPressure1.TrueBranch = null;
@@ -406,14 +403,15 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       uniformSubScopesProcessor3.Successor = null;
       immigrationReplacer.Successor = null;
       generationsComparator.Successor = terminatedIslandsComparator;
-      terminatedIslandsComparator.Successor = analyzer2;
+      terminatedIslandsComparator.Successor = comparisonFactorModifier2;
+      comparisonFactorModifier2.Successor = analyzer2;
       analyzer2.Successor = resultsCollector3;
       resultsCollector3.Successor = generationsTerminationCondition;
       generationsTerminationCondition.TrueBranch = null;
       generationsTerminationCondition.FalseBranch = terminatedIslandsCondition;
       generationsTerminationCondition.Successor = null;
       terminatedIslandsCondition.TrueBranch = null;
-      terminatedIslandsCondition.FalseBranch = comparisonFactorModifier;
+      terminatedIslandsCondition.FalseBranch = uniformSubScopesProcessor1;
       terminatedIslandsCondition.Successor = null;
       #endregion
     }

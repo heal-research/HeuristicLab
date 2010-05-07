@@ -75,12 +75,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     public ValueLookupParameter<DoubleValue> SuccessRatioParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["SuccessRatio"]; }
     }
-    public ValueLookupParameter<DoubleValue> ComparisonFactorLowerBoundParameter {
-      get { return (ValueLookupParameter<DoubleValue>)Parameters["ComparisonFactorLowerBound"]; }
-    }
-    public ValueLookupParameter<DoubleValue> ComparisonFactorUpperBoundParameter {
-      get { return (ValueLookupParameter<DoubleValue>)Parameters["ComparisonFactorUpperBound"]; }
-    }
     public ValueLookupParameter<IOperator> ComparisonFactorModifierParameter {
       get { return (ValueLookupParameter<IOperator>)Parameters["ComparisonFactorModifier"]; }
     }
@@ -115,8 +109,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The variable collection where results should be stored."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Analyzer", "The operator used to analyze each generation."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("SuccessRatio", "The ratio of successful to total children that should be achieved."));
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("ComparisonFactorLowerBound", "The lower bound of the comparison factor (start)."));
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("ComparisonFactorUpperBound", "The upper bound of the comparison factor (end)."));
       Parameters.Add(new ValueLookupParameter<IOperator>("ComparisonFactorModifier", "The operator used to modify the comparison factor."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("MaximumSelectionPressure", "The maximum selection pressure that terminates the algorithm."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("OffspringSelectionBeforeMutation", "True if the offspring selection step should be applied before mutation, false if it should be applied after mutation."));
@@ -124,7 +116,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
 
       #region Create operators
       VariableCreator variableCreator = new VariableCreator();
-      Placeholder comparisonFactorModifier = new Placeholder();
+      Placeholder comparisonFactorModifier1 = new Placeholder();
       Placeholder analyzer1 = new Placeholder();
       ResultsCollector resultsCollector1 = new ResultsCollector();
       ResultsCollector resultsCollector2 = new ResultsCollector();
@@ -132,6 +124,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       IntCounter generationsCounter = new IntCounter();
       Comparator maxGenerationsComparator = new Comparator();
       Comparator maxSelectionPressureComparator = new Comparator();
+      Placeholder comparisonFactorModifier2 = new Placeholder();
       Placeholder analyzer2 = new Placeholder();
       ResultsCollector resultsCollector3 = new ResultsCollector();
       ConditionalBranch conditionalBranch1 = new ConditionalBranch();
@@ -141,9 +134,10 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedSolutions", new IntValue(0)));
       variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("SelectionPressure", new DoubleValue(0)));
       variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("CurrentSuccessRatio", new DoubleValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("ComparisonFactor", new DoubleValue(0)));
 
-      comparisonFactorModifier.Name = "Modify ComparisonFactor (placeholder)";
-      comparisonFactorModifier.OperatorParameter.ActualName = ComparisonFactorModifierParameter.Name;
+      comparisonFactorModifier1.Name = "Initialize ComparisonFactor (placeholder)";
+      comparisonFactorModifier1.OperatorParameter.ActualName = ComparisonFactorModifierParameter.Name;
 
       analyzer1.Name = "Analyzer (placeholder)";
       analyzer1.OperatorParameter.ActualName = AnalyzerParameter.Name;
@@ -189,6 +183,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       maxSelectionPressureComparator.ResultParameter.ActualName = "TerminateSelectionPressure";
       maxSelectionPressureComparator.RightSideParameter.ActualName = MaximumSelectionPressureParameter.Name;
 
+      comparisonFactorModifier2.Name = "Update ComparisonFactor (placeholder)";
+      comparisonFactorModifier2.OperatorParameter.ActualName = ComparisonFactorModifierParameter.Name;
+
       analyzer2.Name = "Analyzer (placeholder)";
       analyzer2.OperatorParameter.ActualName = AnalyzerParameter.Name;
 
@@ -205,15 +202,16 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
 
       #region Create operator graph
       OperatorGraph.InitialOperator = variableCreator;
-      variableCreator.Successor = comparisonFactorModifier;
-      comparisonFactorModifier.Successor = analyzer1;
+      variableCreator.Successor = comparisonFactorModifier1;
+      comparisonFactorModifier1.Successor = analyzer1;
       analyzer1.Successor = resultsCollector1;
       resultsCollector1.Successor = resultsCollector2;
       resultsCollector2.Successor = mainOperator;
       mainOperator.Successor = generationsCounter;
       generationsCounter.Successor = maxGenerationsComparator;
       maxGenerationsComparator.Successor = maxSelectionPressureComparator;
-      maxSelectionPressureComparator.Successor = analyzer2;
+      maxSelectionPressureComparator.Successor = comparisonFactorModifier2;
+      comparisonFactorModifier2.Successor = analyzer2;
       analyzer2.Successor = resultsCollector3;
       resultsCollector3.Successor = conditionalBranch1;
       conditionalBranch1.FalseBranch = conditionalBranch2;
