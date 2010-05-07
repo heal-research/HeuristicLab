@@ -59,7 +59,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       string pluginPath = Path.GetFullPath(Application.StartupPath);
       pluginManager = new PluginManager(pluginPath);
       splashScreen = new SplashScreen(pluginManager, 1000);
-      splashScreen.Show("Loading HeuristicLab...");
+      splashScreen.Show(this,"Loading HeuristicLab...");
 
       pluginManager.DiscoverAndCheckPlugins();
 

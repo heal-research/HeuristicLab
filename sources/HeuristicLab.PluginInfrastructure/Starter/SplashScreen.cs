@@ -105,6 +105,17 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       }
     }
 
+    public void Show(IWin32Window owner, string initialText) {
+      if (InvokeRequired) Invoke((Action<string>)Show, initialText);
+      else {
+        Opacity = 1;
+        infoLabel.Text = initialText;
+        fadeOutForced = false;
+        ResetFadeTimer();
+        Show(owner);
+      }
+    }
+
     private void ResetFadeTimer() {
       // wait initialInterval again for the first tick
       fadeTimer.Stop();
