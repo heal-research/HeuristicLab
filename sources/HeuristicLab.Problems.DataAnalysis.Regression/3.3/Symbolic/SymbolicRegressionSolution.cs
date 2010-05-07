@@ -27,6 +27,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using System.Collections.Generic;
 using System.Linq;
+using System.Drawing;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   /// <summary>
@@ -35,6 +36,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("SymbolicRegressionSolution", "Represents a solution for a symbolic regression problem which can be visualized in the GUI.")]
   [StorableClass]
   public sealed class SymbolicRegressionSolution : DataAnalysisSolution {
+    public override Image ItemImage {
+      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Function; }
+    }
     [Storable]
     private SymbolicRegressionModel model;
     public SymbolicRegressionModel Model {

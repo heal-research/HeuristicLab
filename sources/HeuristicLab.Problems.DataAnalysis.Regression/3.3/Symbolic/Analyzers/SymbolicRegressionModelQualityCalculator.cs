@@ -56,8 +56,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     private const string LowerEstimationLimitParameterName = "LowerEstimationLimit";
 
     #region parameter properties
-    public ScopeTreeLookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter {
-      get { return (ScopeTreeLookupParameter<SymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }
+    public ILookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter {
+      get { return (ILookupParameter<SymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }
     }
     public IValueLookupParameter<ISymbolicExpressionTreeInterpreter> SymbolicExpressionTreeInterpreterParameter {
       get { return (IValueLookupParameter<ISymbolicExpressionTreeInterpreter>)Parameters[SymbolicExpressionTreeInterpreterParameterName]; }
@@ -90,8 +90,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
 
     public SymbolicRegressionModelQualityCalculator()
       : base() {
+      Parameters.Add(new LookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression tree to analyze."));
       Parameters.Add(new ValueLookupParameter<ISymbolicExpressionTreeInterpreter>(SymbolicExpressionTreeInterpreterParameterName, "The interpreter that should be used to calculate the output values of the symbolic expression tree."));
-      Parameters.Add(new ScopeTreeLookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression tree to analyze."));
       Parameters.Add(new ValueLookupParameter<DataAnalysisProblemData>(ProblemDataParameterName, "The problem data containing the input varaibles for the symbolic regression problem."));
       Parameters.Add(new ValueLookupParameter<IntValue>(SamplesStartParameterName, "The first index of the data set partition on which the model quality values should be calculated."));
       Parameters.Add(new ValueLookupParameter<IntValue>(SamplesEndParameterName, "The first index of the data set partition on which the model quality values should be calculated."));
@@ -101,6 +101,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       Parameters.Add(new ValueLookupParameter<DoubleValue>(MeanSquaredErrorQualityParameterName, "The mean squared error value of the output of the model."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>(RSQuaredQualityParameterName, "The R² correlation coefficient of the output of the model and the original target values."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>(RelativeErrorQualityParameterName, "The average relative percentage error of the output of the model."));
+      
       #region operator initialization
       SimpleSymbolicRegressionEvaluator simpleEvaluator = new SimpleSymbolicRegressionEvaluator();
       SimpleRSquaredEvaluator simpleR2Evalator = new SimpleRSquaredEvaluator();
@@ -141,28 +142,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       clearValues.Successor = null;
       #endregion
 
-    }
-
-    // need to create custom operations for each solution scope (this has to be adapted on basis of the depth value of SymbolicExpressionTreeParameter)
-    public override IOperation Apply() {
-      var scopes = GetScopesOnLevel(ExecutionContext.Scope, SymbolicExpressionTreeParameter.Depth);
-      OperationCollection operations = new OperationCollection();
-      foreach (IScope treeScopes in scopes) {
-        operations.Add(ExecutionContext.CreateChildOperation(OperatorGraph.InitialOperator, treeScopes));
-      }
-      if (Successor != null) operations.Add(ExecutionContext.CreateOperation(Successor));
-      return operations;
-    }
-
-    private IEnumerable<IScope> GetScopesOnLevel(IScope scope, int d) {
-      if (d == 0) yield return scope;
-      else {
-        foreach (IScope subScope in scope.SubScopes) {
-          foreach (IScope scopesOfSubScope in GetScopesOnLevel(subScope, d - 1)) {
-            yield return scopesOfSubScope;
-          }
-        }
-      }
     }
   }
 }

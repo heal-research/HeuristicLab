@@ -55,21 +55,43 @@ namespace HeuristicLab.Analysis {
     public ValueLookupParameter<VariableCollection> ResultsParameter {
       get { return (ValueLookupParameter<VariableCollection>)Parameters["Results"]; }
     }
+    public ValueParameter<BoolValue> CollectMinValueInResultsParameter {
+      get { return (ValueParameter<BoolValue>)Parameters["CollectMinValueInResults"]; }
+    }
+    public ValueParameter<BoolValue> CollectMaxValueInResultsParameter {
+      get { return (ValueParameter<BoolValue>)Parameters["CollectMaxValueInResults"]; }
+    }
+    public ValueParameter<BoolValue> CollectAverageValueInResultsParameter {
+      get { return (ValueParameter<BoolValue>)Parameters["CollectAverageValueInResults"]; }
+    }
     #endregion
 
     #region Properties
     private MinAverageMaxValueCalculator MinAverageMaxValueCalculator {
       get { return (MinAverageMaxValueCalculator)OperatorGraph.InitialOperator; }
     }
+    private BoolValue CollectMinValueInResults {
+      get { return CollectMinValueInResultsParameter.Value; }
+    }
+    private BoolValue CollectMaxValueInResults {
+      get { return CollectMaxValueInResultsParameter.Value; }
+    }
+    private BoolValue CollectAverageValueInResults {
+      get { return CollectAverageValueInResultsParameter.Value; }
+    }
     #endregion
-
+    [Storable]
+    private ResultsCollector resultsCollector;
     public MinAverageMaxValueAnalyzer()
       : base() {
       #region Create parameters
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Value", "The value contained in the scope tree which should be analyzed."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("MinValue", "The minimum of the value."));
+      Parameters.Add(new ValueParameter<BoolValue>("CollectMinValueInResults", "Determines if the minimum of the value should also be stored in the results.", new BoolValue(true)));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("AverageValue", "The average of the value."));
+      Parameters.Add(new ValueParameter<BoolValue>("CollectAverageValueInResults", "Determines if the average of the value should also be stored in the results.", new BoolValue(true)));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("MaxValue", "The maximum of the value."));
+      Parameters.Add(new ValueParameter<BoolValue>("CollectMaxValueInResults", "Determines if the maximum of the value should also be stored in the results.", new BoolValue(true)));
       Parameters.Add(new ValueLookupParameter<DataTable>("Values", "The data table to store the minimum, average and maximum of the value."));
       Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The results collection where the analysis values should be stored."));
       #endregion
@@ -77,7 +99,7 @@ namespace HeuristicLab.Analysis {
       #region Create operators
       MinAverageMaxValueCalculator minAverageMaxValueCalculator = new MinAverageMaxValueCalculator();
       DataTableValuesCollector dataTableValuesCollector = new DataTableValuesCollector();
-      ResultsCollector resultsCollector = new ResultsCollector();
+      resultsCollector = new ResultsCollector();
 
       minAverageMaxValueCalculator.AverageValueParameter.ActualName = AverageValueParameter.Name;
       minAverageMaxValueCalculator.MaxValueParameter.ActualName = MaxValueParameter.Name;
@@ -90,9 +112,12 @@ namespace HeuristicLab.Analysis {
       dataTableValuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("MaxValue", null, MaxValueParameter.Name));
       dataTableValuesCollector.DataTableParameter.ActualName = ValuesParameter.Name;
 
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("MinValue", null, MinValueParameter.Name));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("AverageValue", null, AverageValueParameter.Name));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("MaxValue", null, MaxValueParameter.Name));
+      if (CollectMinValueInResults.Value)
+        resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("MinValue", null, MinValueParameter.Name));
+      if (CollectAverageValueInResults.Value)
+        resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("AverageValue", null, AverageValueParameter.Name));
+      if (CollectMaxValueInResults.Value)
+        resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("MaxValue", null, MaxValueParameter.Name));
       resultsCollector.CollectedValues.Add(new LookupParameter<DataTable>(ValuesParameter.Name));
       resultsCollector.ResultsParameter.ActualName = ResultsParameter.Name;
       #endregion
@@ -112,6 +137,42 @@ namespace HeuristicLab.Analysis {
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
       ValueParameter.DepthChanged += new EventHandler(ValueParameter_DepthChanged);
+      CollectMinValueInResultsParameter.ValueChanged += new EventHandler(CollectMinValueInResultsParameter_ValueChanged);
+      CollectMinValueInResultsParameter.Value.ValueChanged += new EventHandler(CollectMinValueInResultsParameter_ValueChanged);
+      CollectMaxValueInResultsParameter.ValueChanged += new EventHandler(CollectMaxValueInResultsParameter_ValueChanged);
+      CollectMaxValueInResultsParameter.Value.ValueChanged += new EventHandler(CollectMaxValueInResultsParameter_ValueChanged);
+      CollectAverageValueInResultsParameter.ValueChanged += new EventHandler(CollectAverageValueInResultsParameter_ValueChanged);
+      CollectAverageValueInResultsParameter.Value.ValueChanged += new EventHandler(CollectAverageValueInResultsParameter_ValueChanged);
+    }
+
+    private void CollectAverageValueInResultsParameter_ValueChanged(object sender, EventArgs e) {
+      if (CollectAverageValueInResults.Value)
+        resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("AverageValue", null, AverageValueParameter.Name));
+      else {
+        IParameter avgValueParameter;
+        resultsCollector.CollectedValues.TryGetValue("AverageValue", out avgValueParameter);
+        resultsCollector.CollectedValues.Remove(avgValueParameter);
+      }
+    }
+
+    private void CollectMaxValueInResultsParameter_ValueChanged(object sender, EventArgs e) {
+      if (CollectMaxValueInResults.Value)
+        resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("MaxValue", null, MaxValueParameter.Name));
+      else {
+        IParameter maxValueParameter;
+        resultsCollector.CollectedValues.TryGetValue("MaxValue", out maxValueParameter);
+        resultsCollector.CollectedValues.Remove(maxValueParameter);
+      }
+    }
+
+    private void CollectMinValueInResultsParameter_ValueChanged(object sender, EventArgs e) {
+      if (CollectMinValueInResults.Value)
+        resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("MinValue", null, MinValueParameter.Name));
+      else {
+        IParameter minValueParameter;
+        resultsCollector.CollectedValues.TryGetValue("MinValue", out minValueParameter);
+        resultsCollector.CollectedValues.Remove(minValueParameter);
+      }
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

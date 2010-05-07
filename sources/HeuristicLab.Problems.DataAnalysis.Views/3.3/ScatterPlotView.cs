@@ -121,8 +121,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private void UpdateCursorInterval() {
-      var estimatedValues = this.chart.Series[ALL_SERIES].Points.Select(x => x.YValues[0]).DefaultIfEmpty(1.0);
-      var targetValues = this.chart.Series[ALL_SERIES].Points.Select(x => x.YValues[1]).DefaultIfEmpty(1.0);
+      var estimatedValues = this.chart.Series[ALL_SERIES].Points.Select(x => x.XValue).DefaultIfEmpty(1.0);
+      var targetValues = this.chart.Series[ALL_SERIES].Points.Select(x => x.YValues[0]).DefaultIfEmpty(1.0);
       double estimatedValuesRange = estimatedValues.Max() - estimatedValues.Min();
       double targetValuesRange = targetValues.Max() - targetValues.Min();
       double interestingValuesRange = Math.Min(Math.Max(targetValuesRange, 1.0), Math.Max(estimatedValuesRange, 1.0));
@@ -169,7 +169,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private void ClearChart() {
       this.chart.Series[ALL_SERIES].Points.Clear();
       this.chart.Series[TRAINING_SERIES].Points.Clear();
-      this.chart.Series[TEST_SERIES].Points.Clear();      
+      this.chart.Series[TEST_SERIES].Points.Clear();
     }
 
     private void ToggleSeriesData(Series series) {

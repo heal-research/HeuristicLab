@@ -46,46 +46,42 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     private const string AlphaParameterName = "Alpha";
     private const string BetaParameterName = "Beta";
 
-    public ScopeTreeLookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter {
-      get { return (ScopeTreeLookupParameter<SymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }
+    public ILookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter {
+      get { return (ILookupParameter<SymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }
     }
-    public ScopeTreeLookupParameter<SymbolicExpressionTree> ScaledSymbolicExpressionTreeParameter {
-      get { return (ScopeTreeLookupParameter<SymbolicExpressionTree>)Parameters[ScaledSymbolicExpressionTreeParameterName]; }
+    public ILookupParameter<SymbolicExpressionTree> ScaledSymbolicExpressionTreeParameter {
+      get { return (ILookupParameter<SymbolicExpressionTree>)Parameters[ScaledSymbolicExpressionTreeParameterName]; }
     }
-    public ScopeTreeLookupParameter<DoubleValue> AlphaParameter {
-      get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters[AlphaParameterName]; }
+    public ILookupParameter<DoubleValue> AlphaParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters[AlphaParameterName]; }
     }
-    public ScopeTreeLookupParameter<DoubleValue> BetaParameter {
-      get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters[BetaParameterName]; }
+    public ILookupParameter<DoubleValue> BetaParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters[BetaParameterName]; }
     }
 
     public SymbolicRegressionSolutionLinearScaler()
       : base() {
-      Parameters.Add(new ScopeTreeLookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression trees to transform."));
-      Parameters.Add(new ScopeTreeLookupParameter<SymbolicExpressionTree>(ScaledSymbolicExpressionTreeParameterName, "The resulting symbolic expression trees after transformation."));
-      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>(AlphaParameterName, "Alpha parameter for linear transformation."));
-      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>(BetaParameterName, "Beta parameter for linear transformation."));
+      Parameters.Add(new LookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression trees to transform."));
+      Parameters.Add(new LookupParameter<SymbolicExpressionTree>(ScaledSymbolicExpressionTreeParameterName, "The resulting symbolic expression trees after transformation."));
+      Parameters.Add(new LookupParameter<DoubleValue>(AlphaParameterName, "Alpha parameter for linear transformation."));
+      Parameters.Add(new LookupParameter<DoubleValue>(BetaParameterName, "Beta parameter for linear transformation."));
     }
 
     public override IOperation Apply() {
-      ItemArray<SymbolicExpressionTree> trees = SymbolicExpressionTreeParameter.ActualValue;
-      ItemArray<DoubleValue> alphas = AlphaParameter.ActualValue;
-      ItemArray<DoubleValue> betas = BetaParameter.ActualValue;
-      ItemArray<SymbolicExpressionTree> scaledTrees = new ItemArray<SymbolicExpressionTree>(trees.Length);
-      for (int i = 0; i < trees.Length; i++) {
-        var mainBranch = trees[i].Root.SubTrees[0].SubTrees[0];
-        var scaledMainBranch = MakeSum(MakeProduct(betas[i].Value, mainBranch), alphas[i].Value);
+      SymbolicExpressionTree tree = SymbolicExpressionTreeParameter.ActualValue;
+      DoubleValue alpha = AlphaParameter.ActualValue;
+      DoubleValue beta = BetaParameter.ActualValue;
+      var mainBranch = tree.Root.SubTrees[0].SubTrees[0];
+      var scaledMainBranch = MakeSum(MakeProduct(beta.Value, mainBranch), alpha.Value);
 
-        // remove the main branch before cloning to prevent cloning of sub-trees
-        trees[i].Root.SubTrees[0].RemoveSubTree(0);
-        var scaledTree = (SymbolicExpressionTree)trees[i].Clone();
-        // insert main branch into the original tree again 
-        trees[i].Root.SubTrees[0].InsertSubTree(0, mainBranch);
-        // insert the scaled main branch into the cloned tree
-        scaledTree.Root.SubTrees[0].InsertSubTree(0, scaledMainBranch);
-        scaledTrees[i] = scaledTree;
-      }
-      ScaledSymbolicExpressionTreeParameter.ActualValue = scaledTrees;
+      // remove the main branch before cloning to prevent cloning of sub-trees
+      tree.Root.SubTrees[0].RemoveSubTree(0);
+      var scaledTree = (SymbolicExpressionTree)tree.Clone();
+      // insert main branch into the original tree again 
+      tree.Root.SubTrees[0].InsertSubTree(0, mainBranch);
+      // insert the scaled main branch into the cloned tree
+      scaledTree.Root.SubTrees[0].InsertSubTree(0, scaledMainBranch);
+      ScaledSymbolicExpressionTreeParameter.ActualValue = scaledTree;
       return base.Apply();
     }
 

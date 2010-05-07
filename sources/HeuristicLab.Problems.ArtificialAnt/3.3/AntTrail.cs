@@ -25,6 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using System.Drawing;
 
 namespace HeuristicLab.Problems.ArtificialAnt {
   /// <summary>
@@ -33,6 +34,9 @@ namespace HeuristicLab.Problems.ArtificialAnt {
   [Item("AntTrail", "Represents a trail of an artificial ant which can be visualized in the GUI.")]
   [StorableClass]
   public sealed class AntTrail : Item {
+    public override Image ItemImage {
+      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Image; }
+    }
     [Storable]
     private SymbolicExpressionTree expression;
     public SymbolicExpressionTree SymbolicExpressionTree {

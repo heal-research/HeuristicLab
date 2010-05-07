@@ -32,6 +32,7 @@ using System.Collections.Generic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
 using System;
+using HeuristicLab.Optimization.Operators;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers {
   /// <summary>
@@ -42,7 +43,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers {
   public sealed class MinAvgMaxSymbolicExpressionTreeSizeAnalyzer : AlgorithmOperator, ISymbolicExpressionTreeAnalyzer {
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
     private const string SymbolicExpressionTreeSizeParameterName = "SymbolicExpressionTreeSize";
-    private const string SymbolicExpressionTreeSizesParameterName = "SymbolicExpressionTreeSizes";
+    private const string SymbolicExpressionTreeSizesParameterName = "Symbolic expression tree size";
+    private const string MinTreeSizeParameterName = "Min tree size";
+    private const string AverageTreeSizeParameterName = "Average tree size";
+    private const string MaxTreeSizeParameterName = "Max tree size";
     private const string ResultsParameterName = "Results";
 
     #region parameter properties
@@ -58,11 +62,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers {
     public ValueLookupParameter<VariableCollection> ResultsParameter {
       get { return (ValueLookupParameter<VariableCollection>)Parameters[ResultsParameterName]; }
     }
-    
+
     [Storable]
     private MinAverageMaxValueAnalyzer valueAnalyzer;
     [Storable]
-    private SymbolicExpressionTreeSizeCalculator sizeCalculator;
+    private UniformSubScopesProcessor subScopesProcessor;
 
     #endregion
     public MinAvgMaxSymbolicExpressionTreeSizeAnalyzer()
@@ -72,22 +76,27 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers {
       Parameters.Add(new ValueLookupParameter<DataTable>(SymbolicExpressionTreeSizesParameterName, "The data table to store the tree sizes."));
       Parameters.Add(new ValueLookupParameter<VariableCollection>(ResultsParameterName, "The results collection where the analysis values should be stored."));
 
-      sizeCalculator = new SymbolicExpressionTreeSizeCalculator();
+      subScopesProcessor = new UniformSubScopesProcessor();
+      SymbolicExpressionTreeSizeCalculator sizeCalculator = new SymbolicExpressionTreeSizeCalculator();
       valueAnalyzer = new MinAverageMaxValueAnalyzer();
+
+      subScopesProcessor.Depth.Value = SymbolicExpressionTreeParameter.Depth;
       sizeCalculator.SymbolicExpressionTreeParameter.ActualName = SymbolicExpressionTreeParameter.Name;
-      sizeCalculator.SymbolicExpressionTreeParameter.Depth = SymbolicExpressionTreeParameter.Depth;
       sizeCalculator.SymbolicExpressionTreeSizeParameter.ActualName = SymbolicExpressionTreeSizeParameter.Name;
-      sizeCalculator.SymbolicExpressionTreeSizeParameter.Depth = SymbolicExpressionTreeSizeParameter.Depth;
       valueAnalyzer.ValueParameter.ActualName = sizeCalculator.SymbolicExpressionTreeSizeParameter.Name;
       valueAnalyzer.ValueParameter.Depth = SymbolicExpressionTreeSizeParameter.Depth;
+      valueAnalyzer.AverageValueParameter.ActualName = AverageTreeSizeParameterName;
+      valueAnalyzer.CollectAverageValueInResultsParameter.Value = new BoolValue(false);
+      valueAnalyzer.MaxValueParameter.ActualName = MaxTreeSizeParameterName;
+      valueAnalyzer.CollectMaxValueInResultsParameter.Value = new BoolValue(false);
+      valueAnalyzer.MinValueParameter.ActualName = MinTreeSizeParameterName;
+      valueAnalyzer.CollectMinValueInResultsParameter.Value = new BoolValue(false);
       valueAnalyzer.ValuesParameter.ActualName = SymbolicExpressionTreeSizesParameter.Name;
-      valueAnalyzer.ResultsParameter.ActualName = ResultsParameter.Name;
-      valueAnalyzer.AverageValueParameter.ActualName = "Avg. Tree Size";
-      valueAnalyzer.MaxValueParameter.ActualName = "Max Tree Size";
-      valueAnalyzer.MinValueParameter.ActualName = "Min Tree Size";
 
-      OperatorGraph.InitialOperator = sizeCalculator;
-      sizeCalculator.Successor = valueAnalyzer;
+      OperatorGraph.InitialOperator = subScopesProcessor;
+      subScopesProcessor.Operator = sizeCalculator;
+      sizeCalculator.Successor = null;
+      subScopesProcessor.Successor = valueAnalyzer;
       valueAnalyzer.Successor = null;
 
       Initialize();
@@ -118,8 +127,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers {
 
     private void OnDepthParameterChanged() {
       valueAnalyzer.ValueParameter.Depth = SymbolicExpressionTreeParameter.Depth;
-      sizeCalculator.SymbolicExpressionTreeParameter.Depth = SymbolicExpressionTreeParameter.Depth;
-      sizeCalculator.SymbolicExpressionTreeSizeParameter.Depth = SymbolicExpressionTreeSizeParameter.Depth;
+      subScopesProcessor.Depth.Value = SymbolicExpressionTreeParameter.Depth;
     }
   }
 }

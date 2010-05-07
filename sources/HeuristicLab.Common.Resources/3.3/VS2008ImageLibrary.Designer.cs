@@ -508,6 +508,13 @@ namespace HeuristicLab.Common.Resources {
             }
         }
         
+        public static System.Drawing.Icon Performance {
+            get {
+                object obj = ResourceManager.GetObject("Performance", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
         public static System.Drawing.Bitmap Play {
             get {
                 object obj = ResourceManager.GetObject("Play", resourceCulture);

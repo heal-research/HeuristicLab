@@ -117,9 +117,11 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // upload plugins
       var selectedPlugins = (IEnumerable<IPluginDescription>)e.Argument;
       DeploymentService.AdminClient adminClient = DeploymentService.AdminClientFactory.CreateClient();
+      Dictionary<IPluginDescription, DeploymentService.PluginDescription> cachedPluginDescriptions =
+        new Dictionary<IPluginDescription, DeploymentService.PluginDescription>();
       try {
         foreach (var plugin in IteratePlugins(selectedPlugins)) {
-          adminClient.DeployPlugin(MakePluginDescription(plugin), CreateZipPackage(plugin));
+          adminClient.DeployPlugin(MakePluginDescription(plugin, cachedPluginDescriptions), CreateZipPackage(plugin));
         }
         adminClient.Close();
       }
@@ -226,7 +228,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       foreach (var plugin in remotePlugins) {
         var matchingLocalPlugin = (from localPlugin in localAndServerPlugins.Keys
                                    where localPlugin.Name == plugin.Name
-                                   where localPlugin.Version == localPlugin.Version
+                                   where localPlugin.Version == plugin.Version
                                    select localPlugin).SingleOrDefault();
         if (matchingLocalPlugin != null) {
           localAndServerPlugins[matchingLocalPlugin] = plugin;
@@ -295,10 +297,15 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
               select i).Single();
     }
 
-    private DeploymentService.PluginDescription MakePluginDescription(IPluginDescription plugin) {
-      var dependencies = from dep in plugin.Dependencies
-                         select MakePluginDescription(dep);
-      return new DeploymentService.PluginDescription(plugin.Name, plugin.Version, dependencies, plugin.ContactName, plugin.ContactEmail, plugin.LicenseText);
+    private DeploymentService.PluginDescription MakePluginDescription(IPluginDescription plugin, Dictionary<IPluginDescription, DeploymentService.PluginDescription> cachedPluginDescriptions) {
+      if (!cachedPluginDescriptions.ContainsKey(plugin)) {
+        var dependencies = (from dep in plugin.Dependencies
+                            select MakePluginDescription(dep, cachedPluginDescriptions))
+                           .ToList();
+        cachedPluginDescriptions.Add(plugin,
+          new DeploymentService.PluginDescription(plugin.Name, plugin.Version, dependencies, plugin.ContactName, plugin.ContactEmail, plugin.LicenseText));
+      }
+      return cachedPluginDescriptions[plugin];
     }
     #endregion
   }

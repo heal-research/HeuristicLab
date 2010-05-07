@@ -55,8 +55,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     private const string LowerEstimationLimitParameterName = "LowerEstimationLimit";
     private const string AlphaParameterName = "Alpha";
     private const string BetaParameterName = "Beta";
-    private const string BestSolutionParameterName = "ValidationBestSolution";
-    private const string BestSolutionQualityParameterName = "ValidationBestSolutionQuality";
+    private const string BestSolutionParameterName = "Best solution (validation)";
+    private const string BestSolutionQualityParameterName = "Best solution quality (validation)";
+    private const string CurrentBestValidationQualityParameterName = "Current best validation quality";
     private const string ResultsParameterName = "Results";
 
     public ScopeTreeLookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter {
@@ -91,13 +92,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     }
 
     [Storable]
-    private BestQualityMemorizer validationQualityMemorizer;
-    [Storable]
     private BestSymbolicRegressionSolutionAnalyzer bestSolutionAnalyzer;
     [Storable]
-    private SymbolicRegressionSolutionLinearScaler linearScaler;
+    private UniformSubScopesProcessor subScopesProcessor;
     [Storable]
-    private SymbolicRegressionMeanSquaredErrorCalculator validationMseCalculator;
+    private BestAverageWorstQualityCalculator bestAvgWorstValidationQualityCalculator;
 
     public ValidationBestScaledSymbolicRegressionSolutionAnalyzer()
       : base() {
@@ -113,34 +112,31 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       Parameters.Add(new LookupParameter<ResultCollection>(ResultsParameterName, "The result collection where the best symbolic regression solution should be stored."));
 
       #region operator initialization
-      linearScaler = new SymbolicRegressionSolutionLinearScaler();
-      validationMseCalculator = new SymbolicRegressionMeanSquaredErrorCalculator();
+      subScopesProcessor = new UniformSubScopesProcessor();
+      SymbolicRegressionSolutionLinearScaler linearScaler = new SymbolicRegressionSolutionLinearScaler();
+      SymbolicRegressionMeanSquaredErrorEvaluator validationMseEvaluator = new SymbolicRegressionMeanSquaredErrorEvaluator();
       bestSolutionAnalyzer = new BestSymbolicRegressionSolutionAnalyzer();
-      validationQualityMemorizer = new BestQualityMemorizer();
-      BestAverageWorstQualityCalculator bestAvgWorstValidationQualityCalculator = new BestAverageWorstQualityCalculator();
+       bestAvgWorstValidationQualityCalculator = new BestAverageWorstQualityCalculator();
       DataTableValuesCollector validationValuesCollector = new DataTableValuesCollector();
       ResultsCollector resultsCollector = new ResultsCollector();
       #endregion
 
       #region parameter wiring
-      linearScaler.AlphaParameter.ActualName = AlphaParameterName;
-      linearScaler.AlphaParameter.Depth = SymbolicExpressionTreeParameter.Depth;
-      linearScaler.BetaParameter.ActualName = BetaParameterName;
-      linearScaler.BetaParameter.Depth = SymbolicExpressionTreeParameter.Depth;
-      linearScaler.SymbolicExpressionTreeParameter.ActualName = SymbolicExpressionTreeParameter.Name;
-      linearScaler.SymbolicExpressionTreeParameter.Depth = SymbolicExpressionTreeParameter.Depth;
-      linearScaler.ScaledSymbolicExpressionTreeParameter.ActualName = ScaledSymbolicExpressionTreeParameterName;
-      linearScaler.ScaledSymbolicExpressionTreeParameter.Depth = SymbolicExpressionTreeParameter.Depth;
+      subScopesProcessor.Depth.Value = SymbolicExpressionTreeParameter.Depth;
 
-      validationMseCalculator.LowerEstimationLimitParameter.ActualName = LowerEstimationLimitParameter.Name;
-      validationMseCalculator.UpperEstimationLimitParameter.ActualName = UpperEstimationLimitParameter.Name;
-      validationMseCalculator.SymbolicExpressionTreeParameter.ActualName = ScaledSymbolicExpressionTreeParameterName;
-      validationMseCalculator.SymbolicExpressionTreeParameter.Depth = SymbolicExpressionTreeParameter.Depth;
-      validationMseCalculator.SymbolicExpressionTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameter.Name;
-      validationMseCalculator.QualityParameter.ActualName = QualityParameterName;
-      validationMseCalculator.ProblemDataParameter.ActualName = ProblemDataParameter.Name;
-      validationMseCalculator.SamplesStartParameter.ActualName = SamplesStartParameter.Name;
-      validationMseCalculator.SamplesEndParameter.ActualName = SamplesEndParameter.Name;
+      linearScaler.AlphaParameter.ActualName = AlphaParameterName;
+      linearScaler.BetaParameter.ActualName = BetaParameterName;
+      linearScaler.SymbolicExpressionTreeParameter.ActualName = SymbolicExpressionTreeParameter.Name;
+      linearScaler.ScaledSymbolicExpressionTreeParameter.ActualName = ScaledSymbolicExpressionTreeParameterName;
+
+      validationMseEvaluator.LowerEstimationLimitParameter.ActualName = LowerEstimationLimitParameter.Name;
+      validationMseEvaluator.UpperEstimationLimitParameter.ActualName = UpperEstimationLimitParameter.Name;
+      validationMseEvaluator.SymbolicExpressionTreeParameter.ActualName = ScaledSymbolicExpressionTreeParameterName;
+      validationMseEvaluator.SymbolicExpressionTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameter.Name;
+      validationMseEvaluator.QualityParameter.ActualName = QualityParameterName;
+      validationMseEvaluator.RegressionProblemDataParameter.ActualName = ProblemDataParameter.Name;
+      validationMseEvaluator.SamplesStartParameter.ActualName = SamplesStartParameter.Name;
+      validationMseEvaluator.SamplesEndParameter.ActualName = SamplesEndParameter.Name;
 
       bestSolutionAnalyzer.BestSolutionParameter.ActualName = BestSolutionParameter.Name;
       bestSolutionAnalyzer.BestSolutionQualityParameter.ActualName = BestSolutionQualityParameter.Name;
@@ -153,33 +149,31 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       bestSolutionAnalyzer.SymbolicExpressionTreeParameter.Depth = SymbolicExpressionTreeParameter.Depth;
       bestSolutionAnalyzer.UpperEstimationLimitParameter.ActualName = UpperEstimationLimitParameter.Name;
 
-      bestAvgWorstValidationQualityCalculator.AverageQualityParameter.ActualName = "Current Average Validation Quality";
-      bestAvgWorstValidationQualityCalculator.BestQualityParameter.ActualName = "Current Best Validation Quality";
+      bestAvgWorstValidationQualityCalculator.AverageQualityParameter.ActualName = "Current average validation quality";
+      bestAvgWorstValidationQualityCalculator.BestQualityParameter.ActualName = CurrentBestValidationQualityParameterName;
       bestAvgWorstValidationQualityCalculator.MaximizationParameter.Value = new BoolValue(false);
       bestAvgWorstValidationQualityCalculator.QualityParameter.ActualName = QualityParameterName;
-      bestAvgWorstValidationQualityCalculator.WorstQualityParameter.ActualName = "Current Worst Validation Quality";
+      bestAvgWorstValidationQualityCalculator.QualityParameter.Depth = SymbolicExpressionTreeParameter.Depth;
+      bestAvgWorstValidationQualityCalculator.WorstQualityParameter.ActualName = "Current worst validation quality";
 
-      validationQualityMemorizer.BestQualityParameter.ActualName = "Best Validation Quality";
-      validationQualityMemorizer.QualityParameter.ActualName = QualityParameterName;
-      validationQualityMemorizer.QualityParameter.Depth = SymbolicExpressionTreeParameter.Depth;
+      validationValuesCollector.DataTableParameter.ActualName = "Validation quality";
+      validationValuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>(CurrentBestValidationQualityParameterName, null, CurrentBestValidationQualityParameterName));
+      validationValuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>(BestSolutionQualityParameter.Name, null, BestSolutionQualityParameter.Name));
 
-      validationValuesCollector.DataTableParameter.ActualName = "Validation Qualities";
-      validationValuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Best Validation Quality", null, "Current Best Validation Quality"));
-      validationValuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Validation Quality", null, "Best Validation Quality"));
-
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Best Validation Quality", null, "Current Best Validation Quality"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Validation Quality", null, "Best Validation Quality"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DataTable>("Validation Qualities"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>(CurrentBestValidationQualityParameterName, null, CurrentBestValidationQualityParameterName));
+      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>(BestSolutionQualityParameter.Name, null, BestSolutionQualityParameter.Name));
+      resultsCollector.CollectedValues.Add(new LookupParameter<DataTable>("Validation quality"));
       resultsCollector.ResultsParameter.ActualName = ResultsParameter.Name;
       #endregion
 
       #region operator graph
-      OperatorGraph.InitialOperator = linearScaler;
-      linearScaler.Successor = validationMseCalculator;
-      validationMseCalculator.Successor = bestSolutionAnalyzer;
+      OperatorGraph.InitialOperator = subScopesProcessor;
+      subScopesProcessor.Operator = linearScaler;
+      linearScaler.Successor = validationMseEvaluator;
+      validationMseEvaluator.Successor = null;
+      subScopesProcessor.Successor = bestSolutionAnalyzer;
       bestSolutionAnalyzer.Successor = bestAvgWorstValidationQualityCalculator;
-      bestAvgWorstValidationQualityCalculator.Successor = validationQualityMemorizer;
-      validationQualityMemorizer.Successor = validationValuesCollector;
+      bestAvgWorstValidationQualityCalculator.Successor = validationValuesCollector;
       validationValuesCollector.Successor = resultsCollector;
       resultsCollector.Successor = null;
       #endregion
@@ -202,14 +196,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     }
 
     private void SymbolicExpressionTreeParameter_DepthChanged(object sender, EventArgs e) {
-      validationMseCalculator.SymbolicExpressionTreeParameter.Depth = SymbolicExpressionTreeParameter.Depth;
-      validationQualityMemorizer.QualityParameter.Depth = SymbolicExpressionTreeParameter.Depth;
+      subScopesProcessor.Depth.Value = SymbolicExpressionTreeParameter.Depth;
       bestSolutionAnalyzer.SymbolicExpressionTreeParameter.Depth = SymbolicExpressionTreeParameter.Depth;
       bestSolutionAnalyzer.QualityParameter.Depth = SymbolicExpressionTreeParameter.Depth;
-      linearScaler.AlphaParameter.Depth = SymbolicExpressionTreeParameter.Depth;
-      linearScaler.BetaParameter.Depth = SymbolicExpressionTreeParameter.Depth;
-      linearScaler.SymbolicExpressionTreeParameter.Depth = SymbolicExpressionTreeParameter.Depth;
-      linearScaler.ScaledSymbolicExpressionTreeParameter.Depth = SymbolicExpressionTreeParameter.Depth;
+      bestAvgWorstValidationQualityCalculator.QualityParameter.Depth = SymbolicExpressionTreeParameter.Depth;
     }
   }
 }

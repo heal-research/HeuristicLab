@@ -19,44 +19,67 @@
  */
 #endregion
 
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System.Collections.Generic;
+using System;
 
 namespace HeuristicLab.Operators {
   /// <summary>
-  /// An operator which contains multiple operators of which each is applied on one sub-scope of the current scope. The first operator is applied on the first sub-scope, the second on the second, and so on.
+  /// An operator which contains multiple operators of which each is applied on one sub-scope at the given depth of the current scope. The first operator is applied on the first sub-scope, the second on the second, and so on.
   /// </summary>
-  [Item("SubScopesProcessor", "An operator which contains multiple operators of which each is applied on one sub-scope of the current scope. The first operator is applied on the first sub-scope, the second on the second, and so on.")]
+  [Item("SubScopesProcessor", "An operator which contains multiple operators of which each is applied on one sub-scope at the given depth of the current scope. The first operator is applied on the first sub-scope, the second on the second, and so on.")]
   [StorableClass]
   public sealed class SubScopesProcessor : MultiOperator<IOperator> {
     public ValueLookupParameter<BoolValue> ParallelParameter {
       get { return (ValueLookupParameter<BoolValue>)Parameters["Parallel"]; }
+    }
+    public ValueParameter<IntValue> DepthParameter {
+      get { return (ValueParameter<IntValue>)Parameters["Depth"]; }
     }
 
     public BoolValue Parallel {
       get { return ParallelParameter.Value; }
       set { ParallelParameter.Value = value; }
     }
+    public IntValue Depth {
+      get { return DepthParameter.Value; }
+      set { DepthParameter.Value = value; }
+    }
 
     public SubScopesProcessor()
       : base() {
       Parameters.Add(new ValueLookupParameter<BoolValue>("Parallel", "True if the operators should be applied in parallel on the sub-scopes, otherwise false.", new BoolValue(false)));
+      Parameters.Add(new ValueParameter<IntValue>("Depth", "The number of steps to descend in the scope tree before applying operator.", new IntValue(1)));
     }
 
     public override IOperation Apply() {
-      BoolValue parallel = ParallelParameter.ActualValue;
+      List<IScope> scopes = GetScopesOnLevel(ExecutionContext.Scope, Depth.Value).ToList();
       OperationCollection next = new OperationCollection(base.Apply());
-      if (Operators.Count > 0) {
-        OperationCollection inner = new OperationCollection();
-        inner.Parallel = parallel == null ? false : parallel.Value;
-        for (int i = 0; (i < ExecutionContext.Scope.SubScopes.Count) && (i < Operators.Count); i++)
-          if (Operators[i] != null) inner.Add(ExecutionContext.CreateOperation(Operators[i], ExecutionContext.Scope.SubScopes[i]));
-        next.Insert(0, inner);
+      if (scopes.Count != Operators.Count)
+        throw new ArgumentException("The number of operators doesn't match the number of sub-scopes at depth " + Depth.Value);
+      OperationCollection inner = new OperationCollection();
+      inner.Parallel = Parallel == null ? false : Parallel.Value;
+      for (int i = 0; i < scopes.Count(); i++) {
+        inner.Add(ExecutionContext.CreateOperation(Operators[i], scopes[i]));
       }
+      next.Insert(0, inner);
       return next;
+    }
+
+    private IEnumerable<IScope> GetScopesOnLevel(IScope scope, int d) {
+      if (d == 0) yield return scope;
+      else {
+        foreach (IScope subScope in scope.SubScopes) {
+          foreach (IScope scopesOfSubScope in GetScopesOnLevel(subScope, d - 1)) {
+            yield return scopesOfSubScope;
+          }
+        }
+      }
     }
   }
 }

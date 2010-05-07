@@ -33,6 +33,7 @@ using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using System.Collections.Generic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
 using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.Problems.DataAnalysis.Evaluators;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
   [Item("BestSymbolicRegressionSolutionAnalyzer", "An operator for analyzing the best solution of symbolic regression problems given in symbolic expression tree encoding.")]
@@ -47,9 +48,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     private const string BestSolutionParameterName = "BestSolution";
     private const string BestSolutionQualityParameterName = "BestSolutionQuality";
     private const string ResultsParameterName = "Results";
-
-    private const string BestSolutionResultName = "Best Solution (on validiation set)";
-    private const string BestSolutionInputvariableCountResultName = "Variables Used by Best Solution";
+    private const string BestSolutionResultName = "Best solution (on validiation set)";
+    private const string BestSolutionInputvariableCountResultName = "Variables used by best solution";
+    private const string BestSolutionTrainingRSquared = "Best solution R² (training)";
+    private const string BestSolutionTestRSquared = "Best solution R² (test)";
+    private const string BestSolutionTrainingMse = "Best solution mean squared error (training)";
+    private const string BestSolutionTestMse = "Best solution mean squared error (test)";
+    private const string BestSolutionTrainingRelativeError = "Best solution average relative error (training)";
+    private const string BestSolutionTestRelativeError = "Best solution average relative error (test)";
 
     public ScopeTreeLookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter {
       get { return (ScopeTreeLookupParameter<SymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }
@@ -111,6 +117,28 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
         BestSolutionQualityParameter.ActualValue = qualities[i];
         results.Add(new Result(BestSolutionResultName, solution));
         results.Add(new Result(BestSolutionInputvariableCountResultName, new IntValue(model.InputVariables.Count())));
+        #region calculate R2,MSE,Rel Error
+        double[] trainingValues = problemData.Dataset.GetVariableValues(
+          problemData.TargetVariable.Value,
+          problemData.TrainingSamplesStart.Value,
+          problemData.TrainingSamplesEnd.Value);
+        double[] testValues = problemData.Dataset.GetVariableValues(
+          problemData.TargetVariable.Value,
+          problemData.TestSamplesStart.Value,
+          problemData.TestSamplesEnd.Value);
+        double trainingR2 = SimpleRSquaredEvaluator.Calculate(trainingValues, solution.EstimatedTrainingValues);
+        double testR2 = SimpleRSquaredEvaluator.Calculate(testValues, solution.EstimatedTestValues);
+        double trainingMse = SimpleMSEEvaluator.Calculate(trainingValues, solution.EstimatedTrainingValues);
+        double testMse = SimpleMSEEvaluator.Calculate(testValues, solution.EstimatedTestValues);
+        double trainingRelError = SimpleMeanAbsolutePercentageErrorEvaluator.Calculate(trainingValues, solution.EstimatedTrainingValues);
+        double testRelError = SimpleMeanAbsolutePercentageErrorEvaluator.Calculate(testValues, solution.EstimatedTestValues);
+        results.Add(new Result(BestSolutionTrainingRSquared, new DoubleValue(trainingR2)));
+        results.Add(new Result(BestSolutionTestRSquared, new DoubleValue(testR2)));
+        results.Add(new Result(BestSolutionTrainingMse, new DoubleValue(trainingMse)));
+        results.Add(new Result(BestSolutionTestMse, new DoubleValue(testMse)));
+        results.Add(new Result(BestSolutionTrainingRelativeError, new DoubleValue(trainingRelError)));
+        results.Add(new Result(BestSolutionTestRelativeError, new DoubleValue(testRelError)));
+        #endregion
       } else {
         if (BestSolutionQualityParameter.ActualValue.Value > qualities[i].Value) {
           var model = new SymbolicRegressionModel((ISymbolicExpressionTreeInterpreter)interpreter.Clone(), expressions[i], GetInputVariables(expressions[i]));
@@ -119,6 +147,28 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
           BestSolutionQualityParameter.ActualValue = qualities[i];
           results[BestSolutionResultName].Value = solution;
           results[BestSolutionInputvariableCountResultName].Value = new IntValue(model.InputVariables.Count());
+          #region update R2,MSE, Rel Error
+          double[] trainingValues = problemData.Dataset.GetVariableValues(
+            problemData.TargetVariable.Value,
+            problemData.TrainingSamplesStart.Value,
+            problemData.TrainingSamplesEnd.Value);
+          double[] testValues = problemData.Dataset.GetVariableValues(
+            problemData.TargetVariable.Value,
+            problemData.TestSamplesStart.Value,
+            problemData.TestSamplesEnd.Value);
+          double trainingR2 = SimpleRSquaredEvaluator.Calculate(trainingValues, solution.EstimatedTrainingValues);
+          double testR2 = SimpleRSquaredEvaluator.Calculate(testValues, solution.EstimatedTestValues);
+          double trainingMse = SimpleMSEEvaluator.Calculate(trainingValues, solution.EstimatedTrainingValues);
+          double testMse = SimpleMSEEvaluator.Calculate(testValues, solution.EstimatedTestValues);
+          double trainingRelError = SimpleMeanAbsolutePercentageErrorEvaluator.Calculate(trainingValues, solution.EstimatedTrainingValues);
+          double testRelError = SimpleMeanAbsolutePercentageErrorEvaluator.Calculate(testValues, solution.EstimatedTestValues);
+          results[BestSolutionTrainingRSquared].Value = new DoubleValue(trainingR2);
+          results[BestSolutionTestRSquared].Value = new DoubleValue(testR2);
+          results[BestSolutionTrainingMse].Value = new DoubleValue(trainingMse);
+          results[BestSolutionTestMse].Value = new DoubleValue(testMse);
+          results[BestSolutionTrainingRelativeError].Value = new DoubleValue(trainingRelError);
+          results[BestSolutionTestRelativeError].Value = new DoubleValue(testRelError);
+          #endregion
         }
       }
 

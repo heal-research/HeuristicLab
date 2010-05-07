@@ -28,11 +28,15 @@ using HeuristicLab.Core;
 using System.Xml;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Data;
+using System.Drawing;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
   [Item("SymbolicExpressionTree", "Represents a symbolic expression tree.")]
   public class SymbolicExpressionTree : Item {
+    public override Image ItemImage {
+      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Function; }
+    }
     [Storable]
     private SymbolicExpressionTreeNode root;
     public SymbolicExpressionTreeNode Root {

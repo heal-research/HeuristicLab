@@ -32,7 +32,7 @@ namespace HeuristicLab.Analysis {
   [StorableClass]
   public sealed class DataTable : NamedItem {
     public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Table; }
+      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Performance.ToBitmap(); }
     }
 
     [Storable]

@@ -77,7 +77,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public abstract IEnumerable<double> EstimatedTrainingValues { get; }
     public abstract IEnumerable<double> EstimatedTestValues { get; }
 
-    protected DataAnalysisSolution() : base() { }
+    protected DataAnalysisSolution() : base() {
+      Name = ItemName;
+      Description = ItemDescription;
+    }
     protected DataAnalysisSolution(DataAnalysisProblemData problemData) : this(problemData, double.NegativeInfinity, double.PositiveInfinity) { }
     protected DataAnalysisSolution(DataAnalysisProblemData problemData, double lowerEstimationLimit, double upperEstimationLimit)
       : this() {

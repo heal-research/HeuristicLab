@@ -50,45 +50,45 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     private const string ProblemDataParameterName = "ProblemData";
     private const string ResultsParameterName = "Results";
 
-    private const string TrainingMeanSquaredErrorQualityParameterName = "TrainingMeanSquaredError";
-    private const string MinTrainingMeanSquaredErrorQualityParameterName = "MinTrainingMeanSquaredError";
-    private const string MaxTrainingMeanSquaredErrorQualityParameterName = "MaxTrainingMeanSquaredError";
-    private const string AverageTrainingMeanSquaredErrorQualityParameterName = "AverageTrainingMeanSquaredError";
-    private const string BestTrainingMeanSquaredErrorQualityParameterName = "BestTrainingMeanSquaredError";
+    private const string TrainingMeanSquaredErrorQualityParameterName = "Mean squared error (training)";
+    private const string MinTrainingMeanSquaredErrorQualityParameterName = "Min mean squared error (training)";
+    private const string MaxTrainingMeanSquaredErrorQualityParameterName = "Max mean squared error (training)";
+    private const string AverageTrainingMeanSquaredErrorQualityParameterName = "Average mean squared error (training)";
+    private const string BestTrainingMeanSquaredErrorQualityParameterName = "Best mean squared error (training)";
 
-    private const string TrainingAverageRelativeErrorQualityParameterName = "TrainingAverageRelativeError";
-    private const string MinTrainingAverageRelativeErrorQualityParameterName = "MinTrainingAverageRelativeError";
-    private const string MaxTrainingAverageRelativeErrorQualityParameterName = "MaxTrainingAverageRelativeError";
-    private const string AverageTrainingAverageRelativeErrorQualityParameterName = "AverageTrainingAverageRelativeError";
-    private const string BestTrainingAverageRelativeErrorQualityParameterName = "BestTrainingAverageRelativeError";
+    private const string TrainingAverageRelativeErrorQualityParameterName = "Average relative error (training)";
+    private const string MinTrainingAverageRelativeErrorQualityParameterName = "Min average relative error (training)";
+    private const string MaxTrainingAverageRelativeErrorQualityParameterName = "Max average relative error (training)";
+    private const string AverageTrainingAverageRelativeErrorQualityParameterName = "Average average relative error (training)";
+    private const string BestTrainingAverageRelativeErrorQualityParameterName = "Best average relative error (training)";
 
-    private const string TrainingRSquaredQualityParameterName = "TrainingRSquared";
-    private const string MinTrainingRSquaredQualityParameterName = "MinTrainingRSquared";
-    private const string MaxTrainingRSquaredQualityParameterName = "MaxTrainingRSquared";
-    private const string AverageTrainingRSquaredQualityParameterName = "AverageTrainingRSquared";
-    private const string BestTrainingRSquaredQualityParameterName = "BestTrainingRSquared";
+    private const string TrainingRSquaredQualityParameterName = "R² (training)";
+    private const string MinTrainingRSquaredQualityParameterName = "Min R² (training)";
+    private const string MaxTrainingRSquaredQualityParameterName = "Max R² (training)";
+    private const string AverageTrainingRSquaredQualityParameterName = "Average R² (training)";
+    private const string BestTrainingRSquaredQualityParameterName = "Best R² (training)";
 
-    private const string TestMeanSquaredErrorQualityParameterName = "TestMeanSquaredError";
-    private const string MinTestMeanSquaredErrorQualityParameterName = "MinTestMeanSquaredError";
-    private const string MaxTestMeanSquaredErrorQualityParameterName = "MaxTestMeanSquaredError";
-    private const string AverageTestMeanSquaredErrorQualityParameterName = "AverageTestMeanSquaredError";
-    private const string BestTestMeanSquaredErrorQualityParameterName = "BestTestMeanSquaredError";
+    private const string TestMeanSquaredErrorQualityParameterName = "Mean squared error (test)";
+    private const string MinTestMeanSquaredErrorQualityParameterName = "Min mean squared error (test)";
+    private const string MaxTestMeanSquaredErrorQualityParameterName = "Max mean squared error (test)";
+    private const string AverageTestMeanSquaredErrorQualityParameterName = "Average mean squared error (test)";
+    private const string BestTestMeanSquaredErrorQualityParameterName = "Best mean squared error (test)";
 
-    private const string TestAverageRelativeErrorQualityParameterName = "TestAverageRelativeError";
-    private const string MinTestAverageRelativeErrorQualityParameterName = "MinTestAverageRelativeError";
-    private const string MaxTestAverageRelativeErrorQualityParameterName = "MaxTestAverageRelativeError";
-    private const string AverageTestAverageRelativeErrorQualityParameterName = "AverageTestAverageRelativeError";
-    private const string BestTestAverageRelativeErrorQualityParameterName = "BestTestAverageRelativeError";
+    private const string TestAverageRelativeErrorQualityParameterName = "Average relative error (test)";
+    private const string MinTestAverageRelativeErrorQualityParameterName = "Min average relative error (test)";
+    private const string MaxTestAverageRelativeErrorQualityParameterName = "Max average relative error (test)";
+    private const string AverageTestAverageRelativeErrorQualityParameterName = "Average average relative error (test)";
+    private const string BestTestAverageRelativeErrorQualityParameterName = "Best average relative error (test)";
 
-    private const string TestRSquaredQualityParameterName = "TestRSquared";
-    private const string MinTestRSquaredQualityParameterName = "MinTestRSquared";
-    private const string MaxTestRSquaredQualityParameterName = "MaxTestRSquared";
-    private const string AverageTestRSquaredQualityParameterName = "AverageTestRSquared";
-    private const string BestTestRSquaredQualityParameterName = "BestTestRSquared";
+    private const string TestRSquaredQualityParameterName = "R² (test)";
+    private const string MinTestRSquaredQualityParameterName = "Min R² (test)";
+    private const string MaxTestRSquaredQualityParameterName = "Max R² (test)";
+    private const string AverageTestRSquaredQualityParameterName = "Average R² (test)";
+    private const string BestTestRSquaredQualityParameterName = "Best R² (test)";
 
-    private const string RSquaredValuesParameterName = "R-squared Values";
-    private const string MeanSquaredErrorValuesParameterName = "Mean Squared Error Values";
-    private const string RelativeErrorValuesParameterName = "Average Relative Error Values";
+    private const string RSquaredValuesParameterName = "R²";
+    private const string MeanSquaredErrorValuesParameterName = "Mean squared error";
+    private const string RelativeErrorValuesParameterName = "Average relative error";
 
     private const string TrainingSamplesStartParameterName = "TrainingSamplesStart";
     private const string TrainingSamplesEndParameterName = "TrainingSamplesEnd";
@@ -131,9 +131,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     #endregion
 
     [Storable]
-    private SymbolicRegressionModelQualityCalculator trainingQualityCalculator;
-    [Storable]
-    private SymbolicRegressionModelQualityCalculator testQualityCalculator;
+    private UniformSubScopesProcessor subScopesProcessor;
     [Storable]
     private MinAverageMaxValueAnalyzer minAvgMaxTrainingMseAnalyzer;
     [Storable]
@@ -164,8 +162,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       Parameters.Add(new LookupParameter<ResultCollection>(ResultsParameterName, "The result collection where the best symbolic regression solution should be stored."));
 
       #region operator initialization
-      trainingQualityCalculator = new SymbolicRegressionModelQualityCalculator();
-      testQualityCalculator = new SymbolicRegressionModelQualityCalculator();
+      subScopesProcessor = new UniformSubScopesProcessor();
+      SymbolicRegressionModelQualityCalculator trainingQualityCalculator = new SymbolicRegressionModelQualityCalculator();
+      SymbolicRegressionModelQualityCalculator testQualityCalculator = new SymbolicRegressionModelQualityCalculator();
       minAvgMaxTrainingMseAnalyzer = new MinAverageMaxValueAnalyzer();
       minAvgMaxTestMseAnalyzer = new MinAverageMaxValueAnalyzer();
 
@@ -177,13 +176,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       #endregion
 
       #region parameter wiring
+      subScopesProcessor.Depth.Value = SymbolicExpressionTreeParameter.Depth;
       trainingQualityCalculator.LowerEstimationLimitParameter.ActualName = LowerEstimationLimitParameter.Name;
       trainingQualityCalculator.ProblemDataParameter.ActualName = ProblemDataParameter.Name;
       trainingQualityCalculator.SamplesStartParameter.ActualName = TrainingSamplesStartParameter.Name;
       trainingQualityCalculator.SamplesEndParameter.ActualName = TrainingSamplesEndParameter.Name;
       trainingQualityCalculator.SymbolicExpressionTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameter.Name;
       trainingQualityCalculator.SymbolicExpressionTreeParameter.ActualName = SymbolicExpressionTreeParameter.Name;
-      trainingQualityCalculator.SymbolicExpressionTreeParameter.Depth = SymbolicExpressionTreeParameter.Depth;
       trainingQualityCalculator.UpperEstimationLimitParameter.ActualName = UpperEstimationLimitParameter.Name;
       trainingQualityCalculator.AverageRelativeErrorQualityParameter.ActualName = TrainingAverageRelativeErrorQualityParameterName;
       trainingQualityCalculator.MeanSquaredErrorQualityParameter.ActualName = TrainingMeanSquaredErrorQualityParameterName;
@@ -195,7 +194,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       testQualityCalculator.SamplesEndParameter.ActualName = TestSamplesEndParameter.Name;
       testQualityCalculator.SymbolicExpressionTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameter.Name;
       testQualityCalculator.SymbolicExpressionTreeParameter.ActualName = SymbolicExpressionTreeParameter.Name;
-      testQualityCalculator.SymbolicExpressionTreeParameter.Depth = SymbolicExpressionTreeParameter.Depth;
       testQualityCalculator.UpperEstimationLimitParameter.ActualName = UpperEstimationLimitParameter.Name;
       testQualityCalculator.AverageRelativeErrorQualityParameter.ActualName = TestAverageRelativeErrorQualityParameterName;
       testQualityCalculator.MeanSquaredErrorQualityParameter.ActualName = TestMeanSquaredErrorQualityParameterName;
@@ -208,6 +206,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       minAvgMaxTrainingMseAnalyzer.MinValueParameter.ActualName = MinTrainingMeanSquaredErrorQualityParameterName;
       minAvgMaxTrainingMseAnalyzer.ValuesParameter.ActualName = MeanSquaredErrorValuesParameterName;
       minAvgMaxTrainingMseAnalyzer.ResultsParameter.ActualName = ResultsParameter.Name;
+      minAvgMaxTrainingMseAnalyzer.CollectMinValueInResultsParameter.Value = new BoolValue(false);
+      minAvgMaxTrainingMseAnalyzer.CollectAverageValueInResultsParameter.Value = new BoolValue(false);
+      minAvgMaxTrainingMseAnalyzer.CollectMaxValueInResultsParameter.Value = new BoolValue(false);
 
       minAvgMaxTestMseAnalyzer.ValueParameter.ActualName = TestMeanSquaredErrorQualityParameterName;
       minAvgMaxTestMseAnalyzer.ValueParameter.Depth = SymbolicExpressionTreeParameter.Depth;
@@ -216,6 +217,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       minAvgMaxTestMseAnalyzer.MinValueParameter.ActualName = MinTestMeanSquaredErrorQualityParameterName;
       minAvgMaxTestMseAnalyzer.ValuesParameter.ActualName = MeanSquaredErrorValuesParameterName;
       minAvgMaxTestMseAnalyzer.ResultsParameter.ActualName = ResultsParameter.Name;
+      minAvgMaxTestMseAnalyzer.CollectMinValueInResultsParameter.Value = new BoolValue(false);
+      minAvgMaxTestMseAnalyzer.CollectAverageValueInResultsParameter.Value = new BoolValue(false);
+      minAvgMaxTestMseAnalyzer.CollectMaxValueInResultsParameter.Value = new BoolValue(false);
+
       #endregion
       #region training/test R²
       minAvgMaxTrainingRSquaredAnalyzer.ValueParameter.ActualName = TrainingRSquaredQualityParameterName;
@@ -225,6 +230,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       minAvgMaxTrainingRSquaredAnalyzer.MinValueParameter.ActualName = MinTrainingRSquaredQualityParameterName;
       minAvgMaxTrainingRSquaredAnalyzer.ValuesParameter.ActualName = RSquaredValuesParameterName;
       minAvgMaxTrainingRSquaredAnalyzer.ResultsParameter.ActualName = ResultsParameter.Name;
+      minAvgMaxTrainingRSquaredAnalyzer.CollectMinValueInResultsParameter.Value = new BoolValue(false);
+      minAvgMaxTrainingRSquaredAnalyzer.CollectAverageValueInResultsParameter.Value = new BoolValue(false);
+      minAvgMaxTrainingRSquaredAnalyzer.CollectMaxValueInResultsParameter.Value = new BoolValue(false);
+
 
       minAvgMaxTestRSquaredAnalyzer.ValueParameter.ActualName = TestRSquaredQualityParameterName;
       minAvgMaxTestRSquaredAnalyzer.ValueParameter.Depth = SymbolicExpressionTreeParameter.Depth;
@@ -233,6 +242,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       minAvgMaxTestRSquaredAnalyzer.MinValueParameter.ActualName = MinTestRSquaredQualityParameterName;
       minAvgMaxTestRSquaredAnalyzer.ValuesParameter.ActualName = RSquaredValuesParameterName;
       minAvgMaxTestRSquaredAnalyzer.ResultsParameter.ActualName = ResultsParameter.Name;
+      minAvgMaxTestRSquaredAnalyzer.CollectMinValueInResultsParameter.Value = new BoolValue(false);
+      minAvgMaxTestRSquaredAnalyzer.CollectAverageValueInResultsParameter.Value = new BoolValue(false);
+      minAvgMaxTestRSquaredAnalyzer.CollectMaxValueInResultsParameter.Value = new BoolValue(false);
+
       #endregion
       #region training/test avg. rel. error
       minAvgMaxTrainingRelErrorAnalyzer.ValueParameter.ActualName = TrainingAverageRelativeErrorQualityParameterName;
@@ -242,6 +255,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       minAvgMaxTrainingRelErrorAnalyzer.MinValueParameter.ActualName = MinTrainingAverageRelativeErrorQualityParameterName;
       minAvgMaxTrainingRelErrorAnalyzer.ValuesParameter.ActualName = RelativeErrorValuesParameterName;
       minAvgMaxTrainingRelErrorAnalyzer.ResultsParameter.ActualName = ResultsParameter.Name;
+      minAvgMaxTrainingRelErrorAnalyzer.CollectMinValueInResultsParameter.Value = new BoolValue(false);
+      minAvgMaxTrainingRelErrorAnalyzer.CollectAverageValueInResultsParameter.Value = new BoolValue(false);
+      minAvgMaxTrainingRelErrorAnalyzer.CollectMaxValueInResultsParameter.Value = new BoolValue(false);
 
       minAvgMaxTestRelErrorAnalyzer.ValueParameter.ActualName = TestAverageRelativeErrorQualityParameterName;
       minAvgMaxTestRelErrorAnalyzer.ValueParameter.Depth = SymbolicExpressionTreeParameter.Depth;
@@ -250,13 +266,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       minAvgMaxTestRelErrorAnalyzer.MinValueParameter.ActualName = MinTestAverageRelativeErrorQualityParameterName;
       minAvgMaxTestRelErrorAnalyzer.ValuesParameter.ActualName = RelativeErrorValuesParameterName;
       minAvgMaxTestRelErrorAnalyzer.ResultsParameter.ActualName = ResultsParameter.Name;
+      minAvgMaxTestRelErrorAnalyzer.CollectMinValueInResultsParameter.Value = new BoolValue(false);
+      minAvgMaxTestRelErrorAnalyzer.CollectAverageValueInResultsParameter.Value = new BoolValue(false);
+      minAvgMaxTestRelErrorAnalyzer.CollectMaxValueInResultsParameter.Value = new BoolValue(false);
       #endregion
       #endregion
 
       #region operator graph
-      OperatorGraph.InitialOperator = trainingQualityCalculator;
+      OperatorGraph.InitialOperator = subScopesProcessor;
+      subScopesProcessor.Operator = trainingQualityCalculator;
       trainingQualityCalculator.Successor = testQualityCalculator;
-      testQualityCalculator.Successor = minAvgMaxTrainingMseAnalyzer;
+      testQualityCalculator.Successor = null;
+      subScopesProcessor.Successor = minAvgMaxTrainingMseAnalyzer;
       minAvgMaxTrainingMseAnalyzer.Successor = minAvgMaxTestMseAnalyzer;
       minAvgMaxTestMseAnalyzer.Successor = minAvgMaxTrainingRSquaredAnalyzer;
       minAvgMaxTrainingRSquaredAnalyzer.Successor = minAvgMaxTestRSquaredAnalyzer;
@@ -283,8 +304,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     }
 
     private void SymbolicExpressionTreeParameter_DepthChanged(object sender, EventArgs e) {
-      trainingQualityCalculator.SymbolicExpressionTreeParameter.Depth = SymbolicExpressionTreeParameter.Depth;
-      testQualityCalculator.SymbolicExpressionTreeParameter.Depth = SymbolicExpressionTreeParameter.Depth;
+      subScopesProcessor.Depth.Value = SymbolicExpressionTreeParameter.Depth;
       minAvgMaxTrainingMseAnalyzer.ValueParameter.Depth = SymbolicExpressionTreeParameter.Depth;
       minAvgMaxTrainingRelErrorAnalyzer.ValueParameter.Depth = SymbolicExpressionTreeParameter.Depth;
       minAvgMaxTrainingRSquaredAnalyzer.ValueParameter.Depth = SymbolicExpressionTreeParameter.Depth;
