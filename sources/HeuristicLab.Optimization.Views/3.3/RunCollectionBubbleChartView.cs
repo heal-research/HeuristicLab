@@ -156,6 +156,9 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void UpdateComboBoxes() {
+      string selectedXAxis = (string)this.xAxisComboBox.SelectedItem;
+      string selectedYAxis = (string)this.yAxisComboBox.SelectedItem;
+      string selectedSizeAxis = (string)this.sizeComboBox.SelectedItem;
       this.xAxisComboBox.Items.Clear();
       this.yAxisComboBox.Items.Clear();
       this.sizeComboBox.Items.Clear();
@@ -169,6 +172,22 @@ namespace HeuristicLab.Optimization.Views {
         this.sizeComboBox.Items.AddRange(additionalSizeDimension);
         this.sizeComboBox.Items.AddRange(Matrix.ColumnNames.ToArray());
         this.sizeComboBox.SelectedItem = SizeDimension.Constant.ToString();
+
+        bool changed = false;
+        if (selectedXAxis != null && xAxisComboBox.Items.Contains(selectedXAxis)) {
+          xAxisComboBox.SelectedItem = selectedXAxis;
+          changed = true;
+        }
+        if (selectedYAxis != null && yAxisComboBox.Items.Contains(selectedYAxis)) {
+          yAxisComboBox.SelectedItem = selectedYAxis;
+          changed = true;
+        }
+        if (selectedSizeAxis != null && sizeComboBox.Items.Contains(selectedSizeAxis)) {
+          sizeComboBox.SelectedItem = selectedSizeAxis;
+          changed = true;
+        }
+        if (changed)
+          UpdateDataPoints();
       }
     }
 
@@ -210,8 +229,12 @@ namespace HeuristicLab.Optimization.Views {
       yValue = GetValue(run, (string)yAxisComboBox.SelectedItem);
       sizeValue = GetValue(run, (string)sizeComboBox.SelectedItem);
       if (xValue.HasValue && yValue.HasValue && sizeValue.HasValue) {
-        xValue = xValue.Value + xValue.Value * GetXJitter(run) * xJitterFactor;
-        yValue = yValue.Value + yValue.Value * GetYJitter(run) * yJitterFactor;
+        xValue = xValue.Value;
+        if (!xJitterFactor.IsAlmost(0.0))
+          xValue += 0.1 * GetXJitter(run) * xJitterFactor * (this.chart.ChartAreas[0].AxisX.Maximum - this.chart.ChartAreas[0].AxisX.Minimum);
+        yValue = yValue.Value;
+        if (!yJitterFactor.IsAlmost(0.0))
+          yValue += 0.1 * GetYJitter(run) * yJitterFactor * (this.chart.ChartAreas[0].AxisY.Maximum - this.chart.ChartAreas[0].AxisY.Minimum);
         if (run.Visible) {
           DataPoint point = new DataPoint(xValue.Value, new double[] { yValue.Value, sizeValue.Value });
           point.Tag = run;
