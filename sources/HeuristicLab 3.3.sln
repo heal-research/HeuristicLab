@@ -102,7 +102,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab 3.3", "Heurist
 		{6F42C5F8-16CD-43EE-8208-FD4573A69D85} = {6F42C5F8-16CD-43EE-8208-FD4573A69D85}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Tracing-3.2", "HeuristicLab.Tracing\3.3\HeuristicLab.Tracing-3.3.csproj", "{EE2034D9-6E27-48A1-B855-42D45F69A4FC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Tracing-3.3", "HeuristicLab.Tracing\3.3\HeuristicLab.Tracing-3.3.csproj", "{EE2034D9-6E27-48A1-B855-42D45F69A4FC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Common.Resources-3.3", "HeuristicLab.Common.Resources\3.3\HeuristicLab.Common.Resources-3.3.csproj", "{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}"
 EndProject
@@ -147,7 +147,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Operators.View
 		{BB994448-2B21-4564-BB2E-38D8FFF8CF18} = {BB994448-2B21-4564-BB2E-38D8FFF8CF18}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.CodeEditor-3.2", "HeuristicLab.CodeEditor\3.2\HeuristicLab.CodeEditor-3.2.csproj", "{489CFE09-FDF7-4C89-BAB5-BD09CADD61AD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.CodeEditor-3.3", "HeuristicLab.CodeEditor\3.3\HeuristicLab.CodeEditor-3.3.csproj", "{489CFE09-FDF7-4C89-BAB5-BD09CADD61AD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HeuristicLab.SharpDevelop", "HeuristicLab.SharpDevelop", "{F94E41E4-F25F-4302-8486-0BEF121CF5C8}"
 EndProject

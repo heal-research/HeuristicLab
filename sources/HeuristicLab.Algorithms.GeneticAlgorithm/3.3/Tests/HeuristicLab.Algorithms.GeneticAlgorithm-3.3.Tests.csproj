@@ -147,7 +147,7 @@
     </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.Tracing\3.3\HeuristicLab.Tracing-3.3.csproj">
       <Project>{EE2034D9-6E27-48A1-B855-42D45F69A4FC}</Project>
-      <Name>HeuristicLab.Tracing-3.2</Name>
+      <Name>HeuristicLab.Tracing-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.Algorithms.GeneticAlgorithm-3.3.csproj">
       <Project>{A51DA44F-CB35-4F6F-99F5-2A2E904AB93B}</Project>
