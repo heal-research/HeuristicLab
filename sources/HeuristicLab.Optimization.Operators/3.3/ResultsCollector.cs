@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -60,6 +61,13 @@ namespace HeuristicLab.Optimization.Operators {
         if (value != null) {
           ILookupParameter lookupParam = param as ILookupParameter;
           string name = lookupParam != null ? lookupParam.TranslatedName : param.Name;
+
+          IScopeTreeLookupParameter scopeTreeLookupParam = param as IScopeTreeLookupParameter;
+          if ((scopeTreeLookupParam != null) && (scopeTreeLookupParam.Depth == 0)) {
+            IEnumerator enumerator = ((IEnumerable)value).GetEnumerator();
+            if (enumerator.MoveNext())
+              value = (IItem)enumerator.Current;
+          }
 
           results.TryGetValue(name, out result);
           if (result != null)

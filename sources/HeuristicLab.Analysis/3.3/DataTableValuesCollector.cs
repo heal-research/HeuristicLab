@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -58,10 +59,16 @@ namespace HeuristicLab.Analysis {
         if (param.ActualValue is DoubleValue) {
           AddValue(table, (param.ActualValue as DoubleValue).Value, name, param.Description);
         } else if (param.ActualValue is IEnumerable<DoubleValue>) {
-          int counter = 0;
-          foreach (DoubleValue data in (param.ActualValue as IEnumerable<DoubleValue>)) {
-            AddValue(table, data.Value, name + " " + counter.ToString(), param.Description);
-            counter++;
+          IEnumerable<DoubleValue> values = (IEnumerable<DoubleValue>)param.ActualValue;
+          if (values.Count() <= 1) {
+            foreach (DoubleValue data in values)
+              AddValue(table, data != null ? data.Value : double.NaN, name, param.Description);
+          } else {
+            int counter = 1;
+            foreach (DoubleValue data in values) {
+              AddValue(table, data != null ? data.Value : double.NaN, name + " " + counter.ToString(), param.Description);
+              counter++;
+            }
           }
         } else {
           AddValue(table, double.NaN, name, param.Description);
