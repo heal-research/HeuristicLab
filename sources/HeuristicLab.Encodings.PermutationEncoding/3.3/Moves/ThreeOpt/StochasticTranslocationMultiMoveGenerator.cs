@@ -53,7 +53,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       int length = permutation.Length;
       TranslocationMove[] moves = new TranslocationMove[sampleSize];
       for (int i = 0; i < sampleSize; i++) {
-        moves[i] = StochasticThreeOptSingleMoveGenerator.Apply(permutation, random);
+        moves[i] = StochasticTranslocationSingleMoveGenerator.Apply(permutation, random);
       }
       return moves;
     }

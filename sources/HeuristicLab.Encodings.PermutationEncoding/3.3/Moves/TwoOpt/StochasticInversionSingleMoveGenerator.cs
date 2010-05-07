@@ -42,11 +42,14 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
 
     public static InversionMove Apply(Permutation permutation, IRandom random) {
       int length = permutation.Length;
+      if (length == 1) throw new ArgumentException("StochasticInversionSingleMoveGenerator: There cannot be an inversion move given a permutation of length 1.", "permutation");
       int index1 = random.Next(length - 1);
       int index2 = random.Next(index1 + 1, length);
       if (permutation.PermutationType == PermutationTypes.RelativeUndirected) {
-        while (index2 - index1 >= length - 2)
-          index2 = random.Next(index1 + 1, length);
+        if (length > 3) {
+          while (index2 - index1 >= length - 2)
+            index2 = random.Next(index1 + 1, length);
+        }
       }
       return new InversionMove(index1, index2);
     }

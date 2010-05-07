@@ -30,18 +30,20 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("StochasticTranslocationSingleMoveGenerator", "Randomly samples one from all possible translocation and insertion moves (3-opt) from a given permutation.")]
   [StorableClass]
-  public class StochasticThreeOptSingleMoveGenerator : TranslocationMoveGenerator, IStochasticOperator, ISingleMoveGenerator {
+  public class StochasticTranslocationSingleMoveGenerator : TranslocationMoveGenerator, IStochasticOperator, ISingleMoveGenerator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
 
-    public StochasticThreeOptSingleMoveGenerator()
+    public StochasticTranslocationSingleMoveGenerator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator."));
     }
 
     public static TranslocationMove Apply(Permutation permutation, IRandom random) {
       int length = permutation.Length;
+      if (length == 1) throw new ArgumentException("StochasticThreeOptSingleMoveGenerator: There cannot be an insertion move given a permutation of length 1.", "permutation");
+      if (permutation.PermutationType != PermutationTypes.Absolute && length == 2) return new TranslocationMove(0, 0, 1);
       int index1, index2, index3;
       do {
         index1 = random.Next(length);

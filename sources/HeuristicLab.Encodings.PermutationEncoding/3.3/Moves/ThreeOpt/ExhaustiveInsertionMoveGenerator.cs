@@ -34,6 +34,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   public class ExhaustiveInsertionMoveGenerator : TranslocationMoveGenerator, IExhaustiveMoveGenerator {
     public static TranslocationMove[] Apply(Permutation permutation) {
       int length = permutation.Length;
+      if (length == 1) throw new ArgumentException("ExhaustiveInsertionMoveGenerator: There cannot be an insertion move given a permutation of length 1.", "permutation");
       TranslocationMove[] moves = null;
       int count = 0;
       if (permutation.PermutationType == PermutationTypes.Absolute) {
@@ -44,13 +45,18 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
           }
         }
       } else {
-        moves = new TranslocationMove[length * (length - 1) - 2];
-        for (int i = 0; i < length; i++) {
-          for (int j = 1; j <= length - 1; j++) {
-            if (i == 0 && j == length - 1
-              || i == length - 1 && j == 1) continue;
-            moves[count++] = new TranslocationMove(i, i, (i + j) % length);
+        if (length > 2) {
+          moves = new TranslocationMove[length * (length - 1) - 2];
+          for (int i = 0; i < length; i++) {
+            for (int j = 1; j <= length - 1; j++) {
+              if (i == 0 && j == length - 1
+                || i == length - 1 && j == 1) continue;
+              moves[count++] = new TranslocationMove(i, i, (i + j) % length);
+            }
           }
+        } else { // doesn't make sense, but just create a dummy move to not crash the algorithms
+          moves = new TranslocationMove[1];
+          moves[0] = new TranslocationMove(0, 0, 1);
         }
       }
       System.Diagnostics.Debug.Assert(count == moves.Length);
