@@ -64,8 +64,8 @@ namespace HeuristicLab.Optimization.Views {
 
       this.chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
       this.chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = true;
-      this.chart.ChartAreas[0].CursorX.Interval = 0;
-      this.chart.ChartAreas[0].CursorY.Interval = 0;
+      this.chart.ChartAreas[0].CursorX.Interval = 1;
+      this.chart.ChartAreas[0].CursorY.Interval = 1;
       this.chart.ChartAreas[0].AxisX.ScaleView.Zoomable = !this.isSelecting;
       this.chart.ChartAreas[0].AxisY.ScaleView.Zoomable = !this.isSelecting;
     }
@@ -133,6 +133,8 @@ namespace HeuristicLab.Optimization.Views {
           this.chart.Series[0].Points.Remove(point);
       } else
         AddDataPoint(run);
+        UpdateCursorInterval();
+
 
       if (this.chart.Series[0].Points.Count == 0)
         noRunsLabel.Visible = true;
@@ -145,8 +147,6 @@ namespace HeuristicLab.Optimization.Views {
       this.categoricalMapping.Clear();
       UpdateComboBoxes();
       UpdateDataPoints();
-      foreach (IRun run in Content)
-        UpdateRun(run);
     }
     private void Content_ColumnNamesChanged(object sender, EventArgs e) {
       if (InvokeRequired)
@@ -217,6 +217,7 @@ namespace HeuristicLab.Optimization.Views {
           noRunsLabel.Visible = true;
         else
           noRunsLabel.Visible = false;
+        UpdateCursorInterval();
       }
     }
     private void AddDataPoint(IRun run) {
@@ -309,6 +310,30 @@ namespace HeuristicLab.Optimization.Views {
           }
       }
       return value;
+    }
+    private void UpdateCursorInterval() {
+      Series series = chart.Series[0];
+      double[] xValues = (from point in series.Points
+                          where !point.IsEmpty
+                          select point.XValue)
+                    .DefaultIfEmpty(1.0)
+                    .ToArray();
+      double[] yValues = (from point in series.Points
+                          where !point.IsEmpty
+                          select point.YValues[0])
+                    .DefaultIfEmpty(1.0)
+                    .ToArray();
+
+      double xRange = xValues.Max() - xValues.Min();
+      double yRange = yValues.Max() - yValues.Min();
+      if(xRange.IsAlmost(0.0)) xRange = 1.0;
+      if(yRange.IsAlmost(0.0)) yRange = 1.0;
+      double xDigits = (int)Math.Log10(xRange) - 3;
+      double yDigits = (int)Math.Log10(yRange) - 3;
+      double xZoomInterval = Math.Pow(10, xDigits);
+      double yZoomInterval = Math.Pow(10, yDigits);
+      this.chart.ChartAreas[0].CursorX.Interval = xZoomInterval;
+      this.chart.ChartAreas[0].CursorY.Interval = yZoomInterval;
     }
 
     #region drag and drop and tooltip

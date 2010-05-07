@@ -71,8 +71,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.chart.ChartAreas[0].AxisX.Title = "Estimated Values";
       this.chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
       this.chart.ChartAreas[0].AxisX.ScaleView.Zoomable = true;
-      this.chart.ChartAreas[0].CursorX.Interval = 0;
-      this.chart.ChartAreas[0].CursorY.Interval = 0;
+      this.chart.ChartAreas[0].CursorX.Interval = 1;
+      this.chart.ChartAreas[0].CursorY.Interval = 1;
 
       this.chart.ChartAreas[0].AxisY.Title = "Target Values";
       this.chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = true;
@@ -120,6 +120,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       }
     }
 
+    private void UpdateCursorInterval() {
+      var estimatedValues = this.chart.Series[ALL_SERIES].Points.Select(x => x.YValues[0]).DefaultIfEmpty(1.0);
+      var targetValues = this.chart.Series[ALL_SERIES].Points.Select(x => x.YValues[1]).DefaultIfEmpty(1.0);
+      double estimatedValuesRange = estimatedValues.Max() - estimatedValues.Min();
+      double targetValuesRange = targetValues.Max() - targetValues.Min();
+      double interestingValuesRange = Math.Min(Math.Max(targetValuesRange, 1.0), Math.Max(estimatedValuesRange, 1.0));
+      double digits = (int)Math.Log10(interestingValuesRange) - 3;
+      double zoomInterval = Math.Max(Math.Pow(10, digits), 10E-5);
+      this.chart.ChartAreas[0].CursorX.Interval = zoomInterval;
+      this.chart.ChartAreas[0].CursorY.Interval = zoomInterval;
+    }
+
+
     private void UpdateSeries() {
       if (InvokeRequired) Invoke((Action)UpdateSeries);
       else {
@@ -149,13 +162,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         this.chart.ChartAreas[0].AxisX.Minimum = min;
         this.chart.ChartAreas[0].AxisY.Maximum = max;
         this.chart.ChartAreas[0].AxisY.Minimum = min;
+        UpdateCursorInterval();
       }
     }
 
     private void ClearChart() {
       this.chart.Series[ALL_SERIES].Points.Clear();
       this.chart.Series[TRAINING_SERIES].Points.Clear();
-      this.chart.Series[TEST_SERIES].Points.Clear();
+      this.chart.Series[TEST_SERIES].Points.Clear();      
     }
 
     private void ToggleSeriesData(Series series) {
@@ -189,6 +203,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         }
         series.Points.DataBindXY(predictedValues, "", targetValues, "");
         this.chart.Legends[series.Legend].ForeColor = Color.Black;
+        UpdateCursorInterval();
       }
     }
 

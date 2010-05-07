@@ -54,7 +54,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       //configure axis
       this.chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
       this.chart.ChartAreas[0].AxisX.ScaleView.Zoomable = true;
-      this.chart.ChartAreas[0].CursorX.Interval = 0;
+      this.chart.ChartAreas[0].CursorX.Interval = 1;
 
       this.chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = true;
       this.chart.ChartAreas[0].AxisY.ScaleView.Zoomable = true;
@@ -74,6 +74,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.chart.Series[ESTIMATEDVALUES_SERIES_NAME].ChartType = SeriesChartType.FastLine;
       this.chart.Series[ESTIMATEDVALUES_SERIES_NAME].Points.DataBindY(Content.EstimatedValues.ToArray());
       this.chart.Series[ESTIMATEDVALUES_SERIES_NAME].Tag = Content;
+      UpdateCursorInterval();
+    }
+
+    private void UpdateCursorInterval() {
+      var estimatedValues = this.chart.Series[ESTIMATEDVALUES_SERIES_NAME].Points.Select(x => x.YValues[0]).DefaultIfEmpty(1.0);
+      var targetValues = this.chart.Series[TARGETVARIABLE_SERIES_NAME].Points.Select(x => x.YValues[0]).DefaultIfEmpty(1.0);
+      double estimatedValuesRange = estimatedValues.Max() - estimatedValues.Min();
+      double targetValuesRange = targetValues.Max() - targetValues.Min();
+      double interestingValuesRange = Math.Min(Math.Max(targetValuesRange, 1.0), Math.Max(estimatedValuesRange, 1.0));
+      double digits = (int)Math.Log10(interestingValuesRange) - 3;
+      double yZoomInterval = Math.Max(Math.Pow(10, digits), 10E-5);
+      this.chart.ChartAreas[0].CursorY.Interval = yZoomInterval;
     }
 
     #region events
@@ -111,6 +123,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
             s.Points.DataBindY(Content.EstimatedValues.ToArray());
             s.LegendText = Content.ItemName;
             this.UpdateStripLines();
+            UpdateCursorInterval();
           }
         }
       }
