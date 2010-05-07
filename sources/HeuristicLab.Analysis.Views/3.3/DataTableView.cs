@@ -20,11 +20,14 @@
 #endregion
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Windows.Forms.DataVisualization.Charting;
 using HeuristicLab.Collections;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
+using System.Windows.Forms;
+using System.Drawing;
 
 namespace HeuristicLab.Analysis.Views {
   /// <summary>
@@ -33,7 +36,8 @@ namespace HeuristicLab.Analysis.Views {
   [View("DataTable View")]
   [Content(typeof(DataTable), true)]
   public sealed partial class DataTableView : NamedItemView {
-    Dictionary<IObservableList<double>, DataRow> valuesRowsTable;
+    private List<Series> invisibleSeries;
+    private Dictionary<IObservableList<double>, DataRow> valuesRowsTable;
     /// <summary>
     /// Gets or sets the variable to represent visually.
     /// </summary>
@@ -51,6 +55,7 @@ namespace HeuristicLab.Analysis.Views {
       InitializeComponent();
       Caption = "DataTable";
       valuesRowsTable = new Dictionary<IObservableList<double>, DataRow>();
+      invisibleSeries = new List<Series>();
     }
 
     /// <summary>
@@ -83,6 +88,7 @@ namespace HeuristicLab.Analysis.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
+      invisibleSeries.Clear();
       chart.Titles.Clear();
       chart.Series.Clear();
       Caption = "DataTable";
@@ -108,21 +114,34 @@ namespace HeuristicLab.Analysis.Views {
       Series series = new Series(row.Name);
       series.ChartType = SeriesChartType.FastLine;
       series.ToolTip = row.Name + " #VAL";
-      for (int i = 0; i < row.Values.Count; i++) {
-        var value = row.Values[i];
-        if (IsInvalidValue(value)) {
-          DataPoint point = new DataPoint();
-          point.IsEmpty = true;
-          series.Points.Add(point);
-        } else {
-          series.Points.Add(value);
-        }
-      }
+      FillSeriesWithRowValues(series, row);
       chart.Series.Add(series);
+      UpdateYCursorInterval();
     }
+
+    private void UpdateYCursorInterval() {
+      double interestingValuesRange = (from series in chart.Series
+                                       where series.Enabled
+                                       let values = (from point in series.Points
+                                                     where !point.IsEmpty
+                                                     select point.YValues[0])
+                                                     .DefaultIfEmpty(1.0)
+                                       let range = values.Max() - values.Min()
+                                       where range > 0.0
+                                       select range)
+                                       .DefaultIfEmpty(1.0)
+                                       .Min();
+
+      double digits = (int)Math.Log10(interestingValuesRange) - 3;
+      double yZoomInterval = Math.Pow(10, digits);
+      this.chart.ChartAreas[0].CursorY.Interval = yZoomInterval;
+    }
+
     private void RemoveDataRow(DataRow row) {
       Series series = chart.Series[row.Name];
       chart.Series.Remove(series);
+      if (invisibleSeries.Contains(series))
+        invisibleSeries.Remove(series);
     }
 
     #region Content Events
@@ -215,15 +234,19 @@ namespace HeuristicLab.Analysis.Views {
         DataRow row = null;
         valuesRowsTable.TryGetValue((IObservableList<double>)sender, out row);
         if (row != null) {
-          foreach (IndexedItem<double> item in e.Items) {
-            var value = item.Value;
-            if (IsInvalidValue(item.Value)) {
-              DataPoint point = new DataPoint();
-              point.IsEmpty = true;
-              chart.Series[row.Name].Points.Insert(item.Index, point);
-            } else {
-              chart.Series[row.Name].Points.InsertY(item.Index, value);
+          Series rowSeries = chart.Series[row.Name];
+          if (!invisibleSeries.Contains(rowSeries)) {
+            foreach (IndexedItem<double> item in e.Items) {
+              var value = item.Value;
+              if (IsInvalidValue(item.Value)) {
+                DataPoint point = new DataPoint();
+                point.IsEmpty = true;
+                rowSeries.Points.Insert(item.Index, point);
+              } else {
+                rowSeries.Points.InsertY(item.Index, value);
+              }
             }
+            UpdateYCursorInterval();
           }
         }
       }
@@ -235,11 +258,15 @@ namespace HeuristicLab.Analysis.Views {
         DataRow row = null;
         valuesRowsTable.TryGetValue((IObservableList<double>)sender, out row);
         if (row != null) {
-          List<DataPoint> points = new List<DataPoint>();
-          foreach (IndexedItem<double> item in e.Items)
-            points.Add(chart.Series[row.Name].Points[item.Index]);
-          foreach (DataPoint point in points)
-            chart.Series[row.Name].Points.Remove(point);
+          Series rowSeries = chart.Series[row.Name];
+          if (!invisibleSeries.Contains(rowSeries)) {
+            List<DataPoint> points = new List<DataPoint>();
+            foreach (IndexedItem<double> item in e.Items)
+              points.Add(rowSeries.Points[item.Index]);
+            foreach (DataPoint point in points)
+              rowSeries.Points.Remove(point);
+            UpdateYCursorInterval();
+          }
         }
       }
     }
@@ -250,13 +277,17 @@ namespace HeuristicLab.Analysis.Views {
         DataRow row = null;
         valuesRowsTable.TryGetValue((IObservableList<double>)sender, out row);
         if (row != null) {
-          foreach (IndexedItem<double> item in e.Items) {
-            if (IsInvalidValue(item.Value))
-              chart.Series[row.Name].Points[item.Index].IsEmpty = true;
-            else {
-              chart.Series[row.Name].Points[item.Index].YValues = new double[] { item.Value };
-              chart.Series[row.Name].Points[item.Index].IsEmpty = false;
+          Series rowSeries = chart.Series[row.Name];
+          if (!invisibleSeries.Contains(rowSeries)) {
+            foreach (IndexedItem<double> item in e.Items) {
+              if (IsInvalidValue(item.Value))
+                rowSeries.Points[item.Index].IsEmpty = true;
+              else {
+                rowSeries.Points[item.Index].YValues = new double[] { item.Value };
+                rowSeries.Points[item.Index].IsEmpty = false;
+              }
             }
+            UpdateYCursorInterval();
           }
         }
       }
@@ -268,13 +299,17 @@ namespace HeuristicLab.Analysis.Views {
         DataRow row = null;
         valuesRowsTable.TryGetValue((IObservableList<double>)sender, out row);
         if (row != null) {
-          foreach (IndexedItem<double> item in e.Items) {
-            if (IsInvalidValue(item.Value))
-              chart.Series[row.Name].Points[item.Index].IsEmpty = true;
-            else {
-              chart.Series[row.Name].Points[item.Index].YValues = new double[] { item.Value };
-              chart.Series[row.Name].Points[item.Index].IsEmpty = false;
+          Series rowSeries = chart.Series[row.Name];
+          if (!invisibleSeries.Contains(rowSeries)) {
+            foreach (IndexedItem<double> item in e.Items) {
+              if (IsInvalidValue(item.Value))
+                rowSeries.Points[item.Index].IsEmpty = true;
+              else {
+                rowSeries.Points[item.Index].YValues = new double[] { item.Value };
+                rowSeries.Points[item.Index].IsEmpty = false;
+              }
             }
+            UpdateYCursorInterval();
           }
         }
       }
@@ -287,18 +322,81 @@ namespace HeuristicLab.Analysis.Views {
         DataRow row = null;
         valuesRowsTable.TryGetValue((IObservableList<double>)sender, out row);
         if (row != null) {
-          chart.Series[row.Name].Points.Clear();
-          foreach (IndexedItem<double> item in e.Items) {
-            if (IsInvalidValue(item.Value))
-              chart.Series[row.Name].Points[item.Index].IsEmpty = true;
-            else {
-              chart.Series[row.Name].Points[item.Index].YValues = new double[] { item.Value };
-              chart.Series[row.Name].Points[item.Index].IsEmpty = false;
+          Series rowSeries = chart.Series[row.Name];
+          if (!invisibleSeries.Contains(rowSeries)) {
+            rowSeries.Points.Clear();
+            foreach (IndexedItem<double> item in e.Items) {
+              if (IsInvalidValue(item.Value))
+                rowSeries.Points[item.Index].IsEmpty = true;
+              else {
+                rowSeries.Points[item.Index].YValues = new double[] { item.Value };
+                rowSeries.Points[item.Index].IsEmpty = false;
+              }
             }
+          }
+          UpdateYCursorInterval();
+        }
+      }
+    }
+    #endregion
+    #region chart events
+    private void chart_MouseDown(object sender, MouseEventArgs e) {
+      HitTestResult result = chart.HitTest(e.X, e.Y);
+      if (result.ChartElementType == ChartElementType.LegendItem) {
+        ToggleSeriesVisible(result.Series);
+      }
+    }
+
+    private void ToggleSeriesVisible(Series series) {
+      if (!invisibleSeries.Contains(series)) {
+        series.Points.Clear();
+        invisibleSeries.Add(series);
+      } else {
+        invisibleSeries.Remove(series);
+        if (Content != null) {
+
+          var row = (from r in Content.Rows
+                     where r.Name == series.Name
+                     select r).Single();
+          FillSeriesWithRowValues(series, row);
+          this.chart.Legends[series.Legend].ForeColor = Color.Black;
+          UpdateYCursorInterval();
+        }
+      }
+    }
+
+    private void FillSeriesWithRowValues(Series series, DataRow row) {
+      for (int i = 0; i < row.Values.Count; i++) {
+        var value = row.Values[i];
+        if (IsInvalidValue(value)) {
+          DataPoint point = new DataPoint();
+          point.IsEmpty = true;
+          series.Points.Add(point);
+        } else {
+          series.Points.Add(value);
+        }
+      }
+    }
+
+    private void chart_MouseMove(object sender, MouseEventArgs e) {
+      HitTestResult result = chart.HitTest(e.X, e.Y);
+      if (result.ChartElementType == ChartElementType.LegendItem)
+        this.Cursor = Cursors.Hand;
+      else
+        this.Cursor = Cursors.Default;
+    }
+    private void chart_CustomizeLegend(object sender, CustomizeLegendEventArgs e) {
+      foreach (LegendItem legendItem in e.LegendItems) {
+        var series = chart.Series[legendItem.SeriesName];
+        if (series != null) {
+          bool seriesIsInvisible = invisibleSeries.Contains(series);
+          foreach (LegendCell cell in legendItem.Cells) {
+            cell.ForeColor = seriesIsInvisible ? Color.Gray : Color.Black;
           }
         }
       }
     }
+
     #endregion
 
     private bool IsInvalidValue(double x) {

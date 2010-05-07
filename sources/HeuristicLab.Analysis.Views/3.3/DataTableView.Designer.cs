@@ -87,6 +87,9 @@ namespace HeuristicLab.Analysis.Views {
       this.chart.Size = new System.Drawing.Size(359, 222);
       this.chart.TabIndex = 4;
       this.chart.Text = "chart1";
+      this.chart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart_MouseMove);
+      this.chart.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chart_MouseDown);
+      this.chart.CustomizeLegend += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CustomizeLegendEventArgs>(this.chart_CustomizeLegend);
       // 
       // DataTableView
       // 
