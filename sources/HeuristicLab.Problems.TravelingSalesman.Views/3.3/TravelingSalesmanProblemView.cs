@@ -49,12 +49,14 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
 
     protected override void DeregisterContentEvents() {
       Content.CoordinatesParameter.ValueChanged -= new EventHandler(CoordinatesParameter_ValueChanged);
+      Content.BestKnownQualityParameter.ValueChanged -= new EventHandler(BestKnownQualityParameter_ValueChanged);
       Content.BestKnownSolutionParameter.ValueChanged -= new EventHandler(BestKnownSolutionParameter_ValueChanged);
       base.DeregisterContentEvents();
     }
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.CoordinatesParameter.ValueChanged += new EventHandler(CoordinatesParameter_ValueChanged);
+      Content.BestKnownQualityParameter.ValueChanged += new EventHandler(BestKnownQualityParameter_ValueChanged);
       Content.BestKnownSolutionParameter.ValueChanged += new EventHandler(BestKnownSolutionParameter_ValueChanged);
     }
 
@@ -99,6 +101,9 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
 
     private void CoordinatesParameter_ValueChanged(object sender, EventArgs e) {
       pathTSPTourView.Content.Coordinates = Content.Coordinates;
+    }
+    private void BestKnownQualityParameter_ValueChanged(object sender, EventArgs e) {
+      pathTSPTourView.Content.Quality = Content.BestKnownQuality;
     }
     private void BestKnownSolutionParameter_ValueChanged(object sender, EventArgs e) {
       pathTSPTourView.Content.Permutation = Content.BestKnownSolution;
