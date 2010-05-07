@@ -136,8 +136,10 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       ConditionalSelector conditionalSelector = new ConditionalSelector();
       OffspringSelector offspringSelector = new OffspringSelector();
       SubScopesProcessor subScopesProcessor2 = new SubScopesProcessor();
-      BestSelector bestSelector = new BestSelector();
+      BestSelector bestSelector1 = new BestSelector();
+      BestSelector bestSelector2 = new BestSelector();
       RightReducer rightReducer = new RightReducer();
+      LeftReducer leftReducer = new LeftReducer();
       MergingReducer mergingReducer = new MergingReducer();
       
       selector.Name = "Selector (placeholder)";
@@ -208,10 +210,15 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       offspringSelector.SuccessRatioParameter.ActualName = SuccessRatioParameter.Name;
       offspringSelector.WinnersParameter.ActualName = "OSWinners";
 
-      bestSelector.CopySelected = new BoolValue(false);
-      bestSelector.MaximizationParameter.ActualName = MaximizationParameter.Name;
-      bestSelector.NumberOfSelectedSubScopesParameter.ActualName = ElitesParameter.Name;
-      bestSelector.QualityParameter.ActualName = QualityParameter.Name;
+      bestSelector1.CopySelected = new BoolValue(false);
+      bestSelector1.MaximizationParameter.ActualName = MaximizationParameter.Name;
+      bestSelector1.NumberOfSelectedSubScopesParameter.ActualName = ElitesParameter.Name;
+      bestSelector1.QualityParameter.ActualName = QualityParameter.Name;
+
+      bestSelector2.CopySelected = new BoolValue(false);
+      bestSelector2.MaximizationParameter.ActualName = MaximizationParameter.Name;
+      bestSelector2.NumberOfSelectedSubScopesParameter.ActualName = ElitesParameter.Name;
+      bestSelector2.QualityParameter.ActualName = QualityParameter.Name;
       #endregion
 
       #region Create operator graph
@@ -245,11 +252,13 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       subScopesRemover.Successor = null;
       offspringSelector.OffspringCreator = selector;
       offspringSelector.Successor = subScopesProcessor2;
-      subScopesProcessor2.Operators.Add(bestSelector);
-      subScopesProcessor2.Operators.Add(new EmptyOperator());
+      subScopesProcessor2.Operators.Add(bestSelector1);
+      subScopesProcessor2.Operators.Add(bestSelector2);
       subScopesProcessor2.Successor = mergingReducer;
-      bestSelector.Successor = rightReducer;
+      bestSelector1.Successor = rightReducer;
       rightReducer.Successor = null;
+      bestSelector2.Successor = leftReducer;
+      leftReducer.Successor = null;
       mergingReducer.Successor = null;
       #endregion
     }
