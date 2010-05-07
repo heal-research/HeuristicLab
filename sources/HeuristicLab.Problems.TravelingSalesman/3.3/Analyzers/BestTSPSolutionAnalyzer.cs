@@ -71,14 +71,14 @@ namespace HeuristicLab.Problems.TravelingSalesman {
 
       PathTSPTour tour = BestSolutionParameter.ActualValue;
       if (tour == null) {
-        tour = new PathTSPTour(coordinates, permutations[i], qualities[i]);
+        tour = new PathTSPTour(coordinates, (Permutation)permutations[i].Clone(), new DoubleValue(qualities[i].Value));
         BestSolutionParameter.ActualValue = tour;
         results.Add(new Result("Best TSP Solution", tour));
       } else {
         if (tour.Quality.Value > qualities[i].Value) {
           tour.Coordinates = coordinates;
-          tour.Permutation = permutations[i];
-          tour.Quality = qualities[i];
+          tour.Permutation = (Permutation)permutations[i].Clone();
+          tour.Quality.Value = qualities[i].Value;
           results["Best TSP Solution"].Value = tour;
         }
       }
