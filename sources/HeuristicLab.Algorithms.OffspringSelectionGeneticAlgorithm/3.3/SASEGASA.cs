@@ -85,9 +85,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private ValueParameter<IntValue> ElitesParameter {
       get { return (ValueParameter<IntValue>)Parameters["Elites"]; }
     }
-    private ValueParameter<BoolValue> ParallelParameter {
-      get { return (ValueParameter<BoolValue>)Parameters["Parallel"]; }
-    }
     private ValueLookupParameter<DoubleValue> SuccessRatioParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["SuccessRatio"]; }
     }
@@ -160,10 +157,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     public IntValue Elites {
       get { return ElitesParameter.Value; }
       set { ElitesParameter.Value = value; }
-    }
-    public BoolValue Parallel {
-      get { return ParallelParameter.Value; }
-      set { ParallelParameter.Value = value; }
     }
     public DoubleValue SuccessRatio {
       get { return SuccessRatioParameter.Value; }
@@ -241,7 +234,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new ValueParameter<PercentValue>("MutationProbability", "The probability that the mutation operator is applied on a solution.", new PercentValue(0.05)));
       Parameters.Add(new OptionalConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
       Parameters.Add(new ValueParameter<IntValue>("Elites", "The numer of elite solutions which are kept in each generation.", new IntValue(1)));
-      Parameters.Add(new ValueParameter<BoolValue>("Parallel", "True if the villages should be run in parallel (also requires a parallel engine)", new BoolValue(false)));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("SuccessRatio", "The ratio of successful to total children that should be achieved.", new DoubleValue(1)));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("ComparisonFactorLowerBound", "The lower bound of the comparison factor (start).", new DoubleValue(0.3)));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("ComparisonFactorUpperBound", "The upper bound of the comparison factor (end).", new DoubleValue(0.7)));
@@ -270,8 +262,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       populationCreator.NumberOfSubScopesParameter.ActualName = NumberOfVillagesParameter.Name;
       populationCreator.Successor = ussp1;
 
-      ussp1.Parallel = null;
-      ussp1.ParallelParameter.ActualName = ParallelParameter.Name;
       ussp1.Operator = solutionsCreator;
       ussp1.Successor = mainLoop;
 

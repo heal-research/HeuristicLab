@@ -100,9 +100,6 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     private ValueParameter<IntValue> ElitesParameter {
       get { return (ValueParameter<IntValue>)Parameters["Elites"]; }
     }
-    private ValueParameter<BoolValue> ParallelParameter {
-      get { return (ValueParameter<BoolValue>)Parameters["Parallel"]; }
-    }
     private ValueParameter<MultiAnalyzer> AnalyzerParameter {
       get { return (ValueParameter<MultiAnalyzer>)Parameters["Analyzer"]; }
     }
@@ -172,10 +169,6 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       get { return ElitesParameter.Value; }
       set { ElitesParameter.Value = value; }
     }
-    public BoolValue Parallel {
-      get { return ParallelParameter.Value; }
-      set { ParallelParameter.Value = value; }
-    }
     public MultiAnalyzer Analyzer {
       get { return AnalyzerParameter.Value; }
       set { AnalyzerParameter.Value = value; }
@@ -221,7 +214,6 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Parameters.Add(new ValueParameter<PercentValue>("MutationProbability", "The probability that the mutation operator is applied on a solution.", new PercentValue(0.05)));
       Parameters.Add(new OptionalConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
       Parameters.Add(new ValueParameter<IntValue>("Elites", "The numer of elite solutions which are kept in each generation.", new IntValue(1)));
-      Parameters.Add(new ValueParameter<BoolValue>("Parallel", "True if the islands should be run in parallel (also requires a parallel engine)", new BoolValue(false)));
       Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze the islands.", new MultiAnalyzer()));
       Parameters.Add(new ValueParameter<MultiAnalyzer>("IslandAnalyzer", "The operator used to analyze each island.", new MultiAnalyzer()));
       
@@ -242,8 +234,6 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       populationCreator.NumberOfSubScopesParameter.ActualName = NumberOfIslandsParameter.Name;
       populationCreator.Successor = ussp1;
 
-      ussp1.Parallel = null;
-      ussp1.ParallelParameter.ActualName = ParallelParameter.Name;
       ussp1.Operator = solutionsCreator;
       ussp1.Successor = mainLoop;
 
