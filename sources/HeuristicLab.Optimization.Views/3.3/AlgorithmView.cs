@@ -229,7 +229,7 @@ namespace HeuristicLab.Optimization.Views {
       e.Effect = DragDropEffects.None;
       Type type = e.Data.GetData("Type") as Type;
       if ((type != null) && (Content.ProblemType.IsAssignableFrom(type))) {
-        if ((e.KeyState & 8) == 8) e.Effect = DragDropEffects.Link;  // CTRL key
+        if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Link;  // ALT key
         else if ((e.KeyState & 4) == 4) e.Effect = DragDropEffects.Move;  // SHIFT key
         else if ((e.AllowedEffect & DragDropEffects.Copy) == DragDropEffects.Copy) e.Effect = DragDropEffects.Copy;
         else if ((e.AllowedEffect & DragDropEffects.Move) == DragDropEffects.Move) e.Effect = DragDropEffects.Move;

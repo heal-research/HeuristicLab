@@ -31,8 +31,8 @@
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.textualTabPage = new System.Windows.Forms.TabPage();
       this.graphicalTabPage = new System.Windows.Forms.TabPage();
-      this.label1 = new System.Windows.Forms.Label();
       this.pictureBox = new System.Windows.Forms.PictureBox();
+      this.label1 = new System.Windows.Forms.Label();
       this.splitContainer1.Panel1.SuspendLayout();
       this.splitContainer1.Panel2.SuspendLayout();
       this.splitContainer1.SuspendLayout();
@@ -46,14 +46,16 @@
       // 
       // qualityView
       // 
+      this.qualityView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.qualityView.Caption = null;
       this.qualityView.Content = null;
-      this.qualityView.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.qualityView.Location = new System.Drawing.Point(3, 16);
+      this.qualityView.Location = new System.Drawing.Point(6, 19);
       this.qualityView.Name = "qualityView";
       this.qualityView.ReadOnly = false;
-      this.qualityView.Size = new System.Drawing.Size(485, 31);
-      this.qualityView.TabIndex = 1;
+      this.qualityView.Size = new System.Drawing.Size(479, 32);
+      this.qualityView.TabIndex = 0;
       this.qualityView.ViewType = null;
       // 
       // splitContainer1
@@ -61,7 +63,7 @@
       this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
       this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
       this.splitContainer1.IsSplitterFixed = true;
-      this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+      this.splitContainer1.Location = new System.Drawing.Point(3, 3);
       this.splitContainer1.Name = "splitContainer1";
       this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
       // 
@@ -75,40 +77,47 @@
       this.splitContainer1.Panel2.Controls.Add(this.groupBox4);
       this.splitContainer1.Panel2MinSize = 30;
       this.splitContainer1.Size = new System.Drawing.Size(491, 304);
-      this.splitContainer1.TabIndex = 7;
+      this.splitContainer1.SplitterDistance = 60;
+      this.splitContainer1.TabIndex = 0;
       // 
       // groupBox3
       // 
+      this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.groupBox3.Controls.Add(this.qualityView);
-      this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
       this.groupBox3.Location = new System.Drawing.Point(0, 0);
       this.groupBox3.Name = "groupBox3";
-      this.groupBox3.Size = new System.Drawing.Size(491, 50);
-      this.groupBox3.TabIndex = 6;
+      this.groupBox3.Size = new System.Drawing.Size(491, 57);
+      this.groupBox3.TabIndex = 0;
       this.groupBox3.TabStop = false;
       this.groupBox3.Text = "Quality";
       // 
       // groupBox4
       // 
+      this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.groupBox4.Controls.Add(this.realVectorView);
-      this.groupBox4.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.groupBox4.Location = new System.Drawing.Point(0, 0);
+      this.groupBox4.Location = new System.Drawing.Point(0, 3);
       this.groupBox4.Name = "groupBox4";
-      this.groupBox4.Size = new System.Drawing.Size(491, 250);
-      this.groupBox4.TabIndex = 6;
+      this.groupBox4.Size = new System.Drawing.Size(491, 237);
+      this.groupBox4.TabIndex = 0;
       this.groupBox4.TabStop = false;
       this.groupBox4.Text = "Real vector";
       // 
       // realVectorView
       // 
+      this.realVectorView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.realVectorView.Caption = null;
       this.realVectorView.Content = null;
-      this.realVectorView.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.realVectorView.Location = new System.Drawing.Point(3, 16);
+      this.realVectorView.Location = new System.Drawing.Point(6, 19);
       this.realVectorView.Name = "realVectorView";
       this.realVectorView.ReadOnly = false;
-      this.realVectorView.Size = new System.Drawing.Size(485, 231);
-      this.realVectorView.TabIndex = 1;
+      this.realVectorView.Size = new System.Drawing.Size(479, 212);
+      this.realVectorView.TabIndex = 0;
       this.realVectorView.ViewType = null;
       // 
       // tabControl1
@@ -120,7 +129,7 @@
       this.tabControl1.Name = "tabControl1";
       this.tabControl1.SelectedIndex = 0;
       this.tabControl1.Size = new System.Drawing.Size(505, 336);
-      this.tabControl1.TabIndex = 2;
+      this.tabControl1.TabIndex = 0;
       // 
       // textualTabPage
       // 
@@ -145,6 +154,19 @@
       this.graphicalTabPage.Text = "Graphical";
       this.graphicalTabPage.UseVisualStyleBackColor = true;
       // 
+      // pictureBox
+      // 
+      this.pictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.pictureBox.BackColor = System.Drawing.Color.White;
+      this.pictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      this.pictureBox.Location = new System.Drawing.Point(6, 6);
+      this.pictureBox.Name = "pictureBox";
+      this.pictureBox.Size = new System.Drawing.Size(485, 298);
+      this.pictureBox.TabIndex = 1;
+      this.pictureBox.TabStop = false;
+      // 
       // label1
       // 
       this.label1.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -154,16 +176,6 @@
       this.label1.Size = new System.Drawing.Size(253, 13);
       this.label1.TabIndex = 0;
       this.label1.Text = "The graphical view is only available for 2 dimensions";
-      // 
-      // pictureBox
-      // 
-      this.pictureBox.BackColor = System.Drawing.Color.White;
-      this.pictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.pictureBox.Location = new System.Drawing.Point(0, 0);
-      this.pictureBox.Name = "pictureBox";
-      this.pictureBox.Size = new System.Drawing.Size(491, 304);
-      this.pictureBox.TabIndex = 1;
-      this.pictureBox.TabStop = false;
       // 
       // SingleObjectiveTestFunctionSolutionView
       // 
@@ -189,9 +201,9 @@
 
     private System.Windows.Forms.SplitContainer splitContainer1;
     private System.Windows.Forms.GroupBox groupBox4;
-    protected HeuristicLab.MainForm.WindowsForms.ViewHost qualityView;
+    private HeuristicLab.MainForm.WindowsForms.ViewHost qualityView;
     private System.Windows.Forms.GroupBox groupBox3;
-    protected HeuristicLab.MainForm.WindowsForms.ViewHost realVectorView;
+    private HeuristicLab.MainForm.WindowsForms.ViewHost realVectorView;
     private System.Windows.Forms.TabControl tabControl1;
     private System.Windows.Forms.TabPage textualTabPage;
     private System.Windows.Forms.TabPage graphicalTabPage;

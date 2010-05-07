@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
@@ -198,6 +199,7 @@ namespace HeuristicLab.Optimization {
       if (Problem != null) Problem.CollectParameterValues(values);
     }
     public virtual void CollectResultValues(IDictionary<string, IItem> values) {
+      values.Add("Execution Time", new TimeSpanValue(ExecutionTime));
       foreach (IResult result in Results)
         values.Add(result.Name, result.Value);
     }
@@ -241,7 +243,7 @@ namespace HeuristicLab.Optimization {
     protected virtual void OnStopped() {
       ExecutionState = ExecutionState.Stopped;
       runsCounter++;
-      runs.Add(new Run(string.Format("{0} Run {1} ({2})", Name, runsCounter, ExecutionTime), this));
+      runs.Add(new Run(string.Format("{0} Run {1}", Name, runsCounter), this));
       EventHandler handler = Stopped;
       if (handler != null) handler(this, EventArgs.Empty);
     }

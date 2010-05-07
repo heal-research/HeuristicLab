@@ -258,7 +258,7 @@ namespace HeuristicLab.Core.Views {
         Point p = itemsListView.PointToClient(new Point(e.X, e.Y));
         ListViewItem listViewItem = itemsListView.GetItemAt(p.X, p.Y);
         if (listViewItem != null) {
-          if ((e.KeyState & 8) == 8) e.Effect = DragDropEffects.Link;  // CTRL key
+          if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Link;  // ALT key
           else if ((e.KeyState & 4) == 4) e.Effect = DragDropEffects.Move;  // SHIFT key
           else if ((e.AllowedEffect & DragDropEffects.Copy) == DragDropEffects.Copy) e.Effect = DragDropEffects.Copy;
           else if ((e.AllowedEffect & DragDropEffects.Move) == DragDropEffects.Move) e.Effect = DragDropEffects.Move;
