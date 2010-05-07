@@ -125,6 +125,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
     private LocalSearchMainLoop MainLoop {
       get { return (LocalSearchMainLoop)SolutionsCreator.Successor; }
     }
+    [Storable]
     private BestAverageWorstQualityAnalyzer moveQualityAnalyzer;
     #endregion
 
@@ -166,11 +167,16 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       lsMainLoop.MoveAnalyzerParameter.ActualName = MoveAnalyzerParameter.Name;
       lsMainLoop.AnalyzerParameter.ActualName = AnalyzerParameter.Name;
 
+      moveQualityAnalyzer = new BestAverageWorstQualityAnalyzer();
+      ParameterizeAnalyzers();
+      UpdateAnalyzers();
+
       Initialize();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       LocalSearch clone = (LocalSearch)base.Clone(cloner);
+      clone.moveQualityAnalyzer = (BestAverageWorstQualityAnalyzer)cloner.Clone(moveQualityAnalyzer);
       clone.Initialize();
       return clone;
     }
@@ -256,8 +262,6 @@ namespace HeuristicLab.Algorithms.LocalSearch {
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
-      InitializeAnalyzers();
-      UpdateAnalyzers();
       if (Problem != null) {
         Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
         foreach (ISingleObjectiveMoveEvaluator op in Problem.Operators.OfType<ISingleObjectiveMoveEvaluator>()) {
@@ -266,10 +270,6 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       }
       MoveGeneratorParameter.ValueChanged += new EventHandler(MoveGeneratorParameter_ValueChanged);
       MoveEvaluatorParameter.ValueChanged += new EventHandler(MoveEvaluatorParameter_ValueChanged);
-    }
-    private void InitializeAnalyzers() {
-      moveQualityAnalyzer = new BestAverageWorstQualityAnalyzer();
-      ParameterizeAnalyzers();
     }
     private void UpdateMoveGenerator() {
       IMoveGenerator oldMoveGenerator = MoveGenerator;

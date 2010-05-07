@@ -205,11 +205,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       get { return VillageAnalyzerParameter.Value; }
       set { VillageAnalyzerParameter.Value = value; }
     }
-    private List<ISelector> selectors;
-    private IEnumerable<ISelector> Selectors {
-      get { return selectors; }
-    }
-    private List<IDiscreteDoubleValueModifier> comparisonFactorModifiers;
     private RandomCreator RandomCreator {
       get { return (RandomCreator)OperatorGraph.InitialOperator; }
     }
@@ -222,9 +217,13 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private SASEGASAMainLoop MainLoop {
       get { return (SASEGASAMainLoop)VillageProcessor.Successor; }
     }
+    [Storable]
     private BestAverageWorstQualityAnalyzer villageQualityAnalyzer;
+    [Storable]
     private BestAverageWorstQualityAnalyzer qualityAnalyzer;
+    [Storable]
     private ValueAnalyzer villageSelectionPressureAnalyzer;
+    [Storable]
     private ValueAnalyzer selectionPressureAnalyzer;
     #endregion
 
@@ -279,7 +278,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       solutionsCreator.NumberOfSolutionsParameter.ActualName = PopulationSizeParameter.Name;
       solutionsCreator.Successor = null;
 
-
       mainLoop.NumberOfVillagesParameter.ActualName = NumberOfVillagesParameter.Name;
       mainLoop.SelectorParameter.ActualName = SelectorParameter.Name;
       mainLoop.CrossoverParameter.ActualName = CrossoverParameter.Name;
@@ -298,11 +296,35 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       mainLoop.OffspringSelectionBeforeMutationParameter.ActualName = OffspringSelectionBeforeMutationParameter.Name;
       mainLoop.Successor = null;
 
+      foreach (ISelector selector in ApplicationManager.Manager.GetInstances<ISelector>().Where(x => !(x is IMultiObjectiveSelector)).OrderBy(x => x.Name))
+        SelectorParameter.ValidValues.Add(selector);
+      ISelector proportionalSelector = SelectorParameter.ValidValues.FirstOrDefault(x => x.GetType().Name.Equals("ProportionalSelector"));
+      if (proportionalSelector != null) SelectorParameter.Value = proportionalSelector;
+
+      ParameterizeSelectors();
+
+      foreach (IDiscreteDoubleValueModifier modifier in ApplicationManager.Manager.GetInstances<IDiscreteDoubleValueModifier>().OrderBy(x => x.Name))
+        ComparisonFactorModifierParameter.ValidValues.Add(modifier);
+      IDiscreteDoubleValueModifier linearModifier = ComparisonFactorModifierParameter.ValidValues.FirstOrDefault(x => x.GetType().Name.Equals("LinearDiscreteDoubleValueModifier"));
+      if (linearModifier != null) ComparisonFactorModifierParameter.Value = linearModifier;
+      ParameterizeComparisonFactorModifiers();
+
+      qualityAnalyzer = new BestAverageWorstQualityAnalyzer();
+      villageQualityAnalyzer = new BestAverageWorstQualityAnalyzer();
+      selectionPressureAnalyzer = new ValueAnalyzer();
+      villageSelectionPressureAnalyzer = new ValueAnalyzer();
+      ParameterizeAnalyzers();
+      UpdateAnalyzers();
+
       Initialize();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       SASEGASA clone = (SASEGASA)base.Clone(cloner);
+      clone.qualityAnalyzer = (BestAverageWorstQualityAnalyzer)cloner.Clone(qualityAnalyzer);
+      clone.villageQualityAnalyzer = (BestAverageWorstQualityAnalyzer)cloner.Clone(villageQualityAnalyzer);
+      clone.selectionPressureAnalyzer = (ValueAnalyzer)cloner.Clone(selectionPressureAnalyzer);
+      clone.villageSelectionPressureAnalyzer = (ValueAnalyzer)cloner.Clone(villageSelectionPressureAnalyzer);
       clone.Initialize();
       return clone;
     }
@@ -389,12 +411,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
-      InitializeSelectors();
-      InitializeAnalyzers();
-      UpdateSelectors();
-      UpdateAnalyzers();
-      InitializeComparisonFactorModifiers();
-      UpdateComparisonFactorModifiers();
       NumberOfVillagesParameter.ValueChanged += new EventHandler(NumberOfVillagesParameter_ValueChanged);
       NumberOfVillages.ValueChanged += new EventHandler(NumberOfVillages_ValueChanged);
       PopulationSizeParameter.ValueChanged += new EventHandler(PopulationSizeParameter_ValueChanged);
@@ -404,8 +420,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       MaximumGenerationsParameter.ValueChanged += new EventHandler(MaximumGenerationsParameter_ValueChanged);
       MaximumGenerations.ValueChanged += new EventHandler(MaximumGenerations_ValueChanged);
       if (Problem != null) {
-        UpdateCrossovers();
-        UpdateMutators();
         Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       }
     }
@@ -424,32 +438,15 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       if (op is IStochasticOperator)
         ((IStochasticOperator)op).RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
     }
-    private void InitializeSelectors() {
-      selectors = new List<ISelector>();
-      selectors.AddRange(ApplicationManager.Manager.GetInstances<ISelector>().Where(x => !(x is IMultiObjectiveSelector)).OrderBy(x => x.Name));
-      ParameterizeSelectors();
-    }
-    private void InitializeAnalyzers() {
-      villageQualityAnalyzer = new BestAverageWorstQualityAnalyzer();
-      qualityAnalyzer = new BestAverageWorstQualityAnalyzer();
-      villageSelectionPressureAnalyzer = new ValueAnalyzer();
-      selectionPressureAnalyzer = new ValueAnalyzer();
-      ParameterizeAnalyzers();
-    }
-    private void InitializeComparisonFactorModifiers() {
-      comparisonFactorModifiers = new List<IDiscreteDoubleValueModifier>();
-      comparisonFactorModifiers.AddRange(ApplicationManager.Manager.GetInstances<IDiscreteDoubleValueModifier>().OrderBy(x => x.Name));
-      ParameterizeComparisonFactorModifiers();
-    }
     private void ParameterizeSelectors() {
-      foreach (ISelector selector in Selectors) {
+      foreach (ISelector selector in SelectorParameter.ValidValues) {
         selector.CopySelected = new BoolValue(true);
         selector.NumberOfSelectedSubScopesParameter.Value = null;
         selector.NumberOfSelectedSubScopesParameter.ActualName = SelectedParentsParameter.Name;
         ParameterizeStochasticOperator(selector);
       }
       if (Problem != null) {
-        foreach (ISingleObjectiveSelector selector in Selectors.OfType<ISingleObjectiveSelector>()) {
+        foreach (ISingleObjectiveSelector selector in SelectorParameter.ValidValues.OfType<ISingleObjectiveSelector>()) {
           selector.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
           selector.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
         }
@@ -484,39 +481,13 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       }
     }
     private void ParameterizeComparisonFactorModifiers() {
-      foreach (IDiscreteDoubleValueModifier modifier in comparisonFactorModifiers) {
+      foreach (IDiscreteDoubleValueModifier modifier in ComparisonFactorModifierParameter.ValidValues) {
         modifier.IndexParameter.ActualName = "Reunifications";
         modifier.StartIndexParameter.Value = new IntValue(0);
         modifier.StartValueParameter.ActualName = ComparisonFactorLowerBoundParameter.Name;
         modifier.EndIndexParameter.Value = new IntValue(NumberOfVillages.Value - 1);
         modifier.EndValueParameter.ActualName = ComparisonFactorUpperBoundParameter.Name;
         modifier.ValueParameter.ActualName = "ComparisonFactor";
-      }
-    }
-    private void UpdateSelectors() {
-      ISelector oldSelector = SelectorParameter.Value;
-      SelectorParameter.ValidValues.Clear();
-      foreach (ISelector selector in Selectors.OrderBy(x => x.Name))
-        SelectorParameter.ValidValues.Add(selector);
-
-      ISelector proportionalSelector = SelectorParameter.ValidValues.FirstOrDefault(x => x.GetType().Name.Equals("ProportionalSelector"));
-      if (proportionalSelector != null) SelectorParameter.Value = proportionalSelector;
-
-      if (oldSelector != null) {
-        ISelector selector = SelectorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldSelector.GetType());
-        if (selector != null) SelectorParameter.Value = selector;
-      }
-    }
-    private void UpdateComparisonFactorModifiers() {
-      IDiscreteDoubleValueModifier oldModifier = ComparisonFactorModifier;
-
-      ComparisonFactorModifierParameter.ValidValues.Clear();
-      foreach (IDiscreteDoubleValueModifier modifier in comparisonFactorModifiers)
-        ComparisonFactorModifierParameter.ValidValues.Add(modifier);
-
-      if (oldModifier != null) {
-        IDiscreteDoubleValueModifier mod = ComparisonFactorModifierParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldModifier.GetType());
-        if (mod != null) ComparisonFactorModifierParameter.Value = mod;
       }
     }
     private void UpdateCrossovers() {

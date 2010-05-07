@@ -184,13 +184,6 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       get { return IslandAnalyzerParameter.Value; }
       set { IslandAnalyzerParameter.Value = value; }
     }
-    private List<ISelector> selectors;
-    private IEnumerable<ISelector> Selectors {
-      get { return selectors; }
-    }
-    private List<ISelector> emigrantsSelectors;
-    private List<IReplacer> immigrationReplacers;
-    private List<IMigrator> migrators;
     private RandomCreator RandomCreator {
       get { return (RandomCreator)OperatorGraph.InitialOperator; }
     }
@@ -203,7 +196,9 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     private IslandGeneticAlgorithmMainLoop MainLoop {
       get { return (IslandGeneticAlgorithmMainLoop)IslandProcessor.Successor; }
     }
+    [Storable]
     private BestAverageWorstQualityAnalyzer islandQualityAnalyzer;
+    [Storable]
     private BestAverageWorstQualityAnalyzer qualityAnalyzer;
     #endregion
 
@@ -271,14 +266,36 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       mainLoop.ResultsParameter.ActualName = "Results";
       mainLoop.AnalyzerParameter.ActualName = AnalyzerParameter.Name;
       mainLoop.IslandAnalyzerParameter.ActualName = IslandAnalyzerParameter.Name;
-
       mainLoop.Successor = null;
+
+      foreach (ISelector selector in ApplicationManager.Manager.GetInstances<ISelector>().Where(x => !(x is IMultiObjectiveSelector)).OrderBy(x => x.Name))
+        SelectorParameter.ValidValues.Add(selector);
+      ISelector proportionalSelector = SelectorParameter.ValidValues.FirstOrDefault(x => x.GetType().Name.Equals("ProportionalSelector"));
+      if (proportionalSelector != null) SelectorParameter.Value = proportionalSelector;
+
+      foreach (ISelector selector in ApplicationManager.Manager.GetInstances<ISelector>().Where(x => !(x is IMultiObjectiveSelector)).OrderBy(x => x.Name))
+        EmigrantsSelectorParameter.ValidValues.Add(selector);
+
+      foreach (IReplacer replacer in ApplicationManager.Manager.GetInstances<IReplacer>().OrderBy(x => x.Name))
+        ImmigrationReplacerParameter.ValidValues.Add(replacer);
+
+      ParameterizeSelectors();
+
+      foreach (IMigrator migrator in ApplicationManager.Manager.GetInstances<IMigrator>().OrderBy(x => x.Name))
+        MigratorParameter.ValidValues.Add(migrator);
+
+      qualityAnalyzer = new BestAverageWorstQualityAnalyzer();
+      islandQualityAnalyzer = new BestAverageWorstQualityAnalyzer();
+      ParameterizeAnalyzers();
+      UpdateAnalyzers();
 
       Initialize();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       IslandGeneticAlgorithm clone = (IslandGeneticAlgorithm)base.Clone(cloner);
+      clone.islandQualityAnalyzer = (BestAverageWorstQualityAnalyzer)cloner.Clone(islandQualityAnalyzer);
+      clone.qualityAnalyzer = (BestAverageWorstQualityAnalyzer)cloner.Clone(qualityAnalyzer);
       clone.Initialize();
       return clone;
     }
@@ -355,12 +372,6 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
-      InitializeSelectors();
-      InitializeAnalyzers();
-      UpdateSelectors();
-      UpdateAnalyzers();
-      InitializeMigrators();
-      UpdateMigrators();
       PopulationSizeParameter.ValueChanged += new EventHandler(PopulationSizeParameter_ValueChanged);
       PopulationSize.ValueChanged += new EventHandler(PopulationSize_ValueChanged);
       MigrationRateParameter.ValueChanged += new EventHandler(MigrationRateParameter_ValueChanged);
@@ -368,8 +379,6 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       ElitesParameter.ValueChanged += new EventHandler(ElitesParameter_ValueChanged);
       Elites.ValueChanged += new EventHandler(Elites_ValueChanged);
       if (Problem != null) {
-        UpdateCrossovers();
-        UpdateMutators();
         Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       }
     }
@@ -387,49 +396,30 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       if (op is IStochasticOperator)
         ((IStochasticOperator)op).RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
     }
-    private void InitializeSelectors() {
-      selectors = new List<ISelector>();
-      selectors.AddRange(ApplicationManager.Manager.GetInstances<ISelector>().Where(x => !(x is IMultiObjectiveSelector)).OrderBy(x => x.Name));
-      emigrantsSelectors = new List<ISelector>();
-      emigrantsSelectors.AddRange(ApplicationManager.Manager.GetInstances<ISelector>().Where(x => !(x is IMultiObjectiveSelector)).OrderBy(x => x.Name));
-      immigrationReplacers = new List<IReplacer>();
-      immigrationReplacers.AddRange(ApplicationManager.Manager.GetInstances<IReplacer>().OrderBy(x => x.Name));
-      ParameterizeSelectors();
-    }
-    private void InitializeAnalyzers() {
-      islandQualityAnalyzer = new BestAverageWorstQualityAnalyzer();
-      qualityAnalyzer = new BestAverageWorstQualityAnalyzer();
-      ParameterizeAnalyzers();
-    }
-    private void InitializeMigrators() {
-      migrators = new List<IMigrator>();
-      migrators.AddRange(ApplicationManager.Manager.GetInstances<IMigrator>().OrderBy(x => x.Name));
-      UpdateMigrators();
-    }
     private void ParameterizeSelectors() {
-      foreach (ISelector selector in Selectors) {
+      foreach (ISelector selector in SelectorParameter.ValidValues) {
         selector.CopySelected = new BoolValue(true);
         selector.NumberOfSelectedSubScopesParameter.Value = new IntValue(2 * (PopulationSize.Value - Elites.Value));
         ParameterizeStochasticOperator(selector);
       }
-      foreach (ISelector selector in emigrantsSelectors) {
+      foreach (ISelector selector in EmigrantsSelectorParameter.ValidValues) {
         selector.CopySelected = new BoolValue(true);
         selector.NumberOfSelectedSubScopesParameter.Value = new IntValue((int)Math.Ceiling(PopulationSize.Value * MigrationRate.Value));
         ParameterizeStochasticOperator(selector);
       }
-      foreach (IReplacer replacer in immigrationReplacers) {
+      foreach (IReplacer replacer in ImmigrationReplacerParameter.ValidValues) {
         ParameterizeStochasticOperator(replacer);
       }
       if (Problem != null) {
-        foreach (ISingleObjectiveSelector selector in Selectors.OfType<ISingleObjectiveSelector>()) {
+        foreach (ISingleObjectiveSelector selector in SelectorParameter.ValidValues.OfType<ISingleObjectiveSelector>()) {
           selector.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
           selector.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
         }
-        foreach (ISingleObjectiveSelector selector in emigrantsSelectors.OfType<ISingleObjectiveSelector>()) {
+        foreach (ISingleObjectiveSelector selector in EmigrantsSelectorParameter.ValidValues.OfType<ISingleObjectiveSelector>()) {
           selector.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
           selector.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
         }
-        foreach (ISingleObjectiveReplacer selector in immigrationReplacers.OfType<ISingleObjectiveReplacer>()) {
+        foreach (ISingleObjectiveReplacer selector in ImmigrationReplacerParameter.ValidValues.OfType<ISingleObjectiveReplacer>()) {
           selector.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
           selector.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
         }
@@ -449,48 +439,6 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
         qualityAnalyzer.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
         qualityAnalyzer.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
       }
-    }
-    private void UpdateSelectors() {
-      ISelector oldSelector = SelectorParameter.Value;
-      SelectorParameter.ValidValues.Clear();
-      foreach (ISelector selector in Selectors.OrderBy(x => x.Name))
-        SelectorParameter.ValidValues.Add(selector);
-
-      ISelector proportionalSelector = SelectorParameter.ValidValues.FirstOrDefault(x => x.GetType().Name.Equals("ProportionalSelector"));
-      if (proportionalSelector != null) SelectorParameter.Value = proportionalSelector;
-
-      if (oldSelector != null) {
-        ISelector selector = SelectorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldSelector.GetType());
-        if (selector != null) SelectorParameter.Value = selector;
-      }
-
-      oldSelector = EmigrantsSelector;
-      EmigrantsSelectorParameter.ValidValues.Clear();
-      foreach (ISelector selector in emigrantsSelectors)
-        EmigrantsSelectorParameter.ValidValues.Add(selector);
-      if (oldSelector != null) {
-        ISelector selector = EmigrantsSelectorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldSelector.GetType());
-        if (selector != null) EmigrantsSelectorParameter.Value = selector;
-      }
-
-      IReplacer oldReplacer = ImmigrationReplacerParameter.Value;
-      ImmigrationReplacerParameter.ValidValues.Clear();
-      foreach (IReplacer replacer in immigrationReplacers)
-        ImmigrationReplacerParameter.ValidValues.Add(replacer);
-      if (oldReplacer != null) {
-        IReplacer replacer = ImmigrationReplacerParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldSelector.GetType());
-        if (replacer != null) ImmigrationReplacerParameter.Value = replacer;
-      }
-    }
-    private void UpdateMigrators() {
-      IMigrator oldMigrator = Migrator;
-      MigratorParameter.ValidValues.Clear();
-      foreach (IMigrator migrator in migrators)
-        MigratorParameter.ValidValues.Add(migrator);
-      if (oldMigrator != null) {
-        IMigrator migrator = MigratorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMigrator.GetType());
-        if (migrator != null) MigratorParameter.Value = migrator;
-      } else if (MigratorParameter.ValidValues.Count > 0) MigratorParameter.Value = MigratorParameter.ValidValues.First();
     }
     private void UpdateCrossovers() {
       ICrossover oldCrossover = CrossoverParameter.Value;
@@ -518,11 +466,6 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       IslandAnalyzer.Operators.Add(islandQualityAnalyzer);
       Analyzer.Operators.Add(qualityAnalyzer);
       if (Problem != null) {
-        /*foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name)) {
-          foreach (IScopeTreeLookupParameter param in analyzer.Parameters.OfType<IScopeTreeLookupParameter>())
-            param.Depth = 1;
-          IslandAnalyzer.Operators.Add(analyzer);
-        }*/
         foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name)) {
           foreach (IScopeTreeLookupParameter param in analyzer.Parameters.OfType<IScopeTreeLookupParameter>())
             param.Depth = 2;

@@ -135,11 +135,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     private SimulatedAnnealingMainLoop MainLoop {
       get { return (SimulatedAnnealingMainLoop)SolutionsCreator.Successor; }
     }
-
-    private List<IDiscreteDoubleValueModifier> annealingOperators;
-    private IEnumerable<IDiscreteDoubleValueModifier> AnnealingOperators {
-      get { return annealingOperators; }
-    }
+    [Storable]
     private QualityAnalyzer qualityAnalyzer;
     #endregion
 
@@ -185,11 +181,20 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       mainLoop.ResultsParameter.ActualName = "Results";
       mainLoop.AnalyzerParameter.ActualName = AnalyzerParameter.Name;
 
+      foreach (IDiscreteDoubleValueModifier op in ApplicationManager.Manager.GetInstances<IDiscreteDoubleValueModifier>().OrderBy(x => x.Name))
+        AnnealingOperatorParameter.ValidValues.Add(op);
+      ParameterizeAnnealingOperators();
+
+      qualityAnalyzer = new QualityAnalyzer();
+      ParameterizeAnalyzers();
+      UpdateAnalyzers();
+
       Initialize();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       SimulatedAnnealing clone = (SimulatedAnnealing)base.Clone(cloner);
+      clone.qualityAnalyzer = (QualityAnalyzer)cloner.Clone(qualityAnalyzer);
       clone.Initialize();
       return clone;
     }
@@ -275,8 +280,6 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
-      InitializeAnalyzers();
-      UpdateAnalyzers();
       if (Problem != null) {
         Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
         foreach (ISingleObjectiveMoveEvaluator op in Problem.Operators.OfType<ISingleObjectiveMoveEvaluator>()) {
@@ -285,19 +288,6 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       }
       MoveGeneratorParameter.ValueChanged += new EventHandler(MoveGeneratorParameter_ValueChanged);
       MoveEvaluatorParameter.ValueChanged += new EventHandler(MoveEvaluatorParameter_ValueChanged);
-      InitializeAnnealingOperators();
-    }
-    private void InitializeAnnealingOperators() {
-      annealingOperators = new List<IDiscreteDoubleValueModifier>();
-      annealingOperators.AddRange(ApplicationManager.Manager.GetInstances<IDiscreteDoubleValueModifier>().OrderBy(x => x.Name));
-      ParameterizeAnnealingOperators();
-      AnnealingOperatorParameter.ValidValues.Clear();
-      foreach (IDiscreteDoubleValueModifier op in annealingOperators)
-        AnnealingOperatorParameter.ValidValues.Add(op);
-    }
-    private void InitializeAnalyzers() {
-      qualityAnalyzer = new QualityAnalyzer();
-      ParameterizeAnalyzers();
     }
     private void UpdateMoveGenerator() {
       IMultiMoveGenerator oldMoveGenerator = MoveGenerator;
@@ -382,7 +372,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       }
     }
     private void ParameterizeAnnealingOperators() {
-      foreach (IDiscreteDoubleValueModifier op in annealingOperators) {
+      foreach (IDiscreteDoubleValueModifier op in AnnealingOperatorParameter.ValidValues) {
         op.IndexParameter.ActualName = "Iterations";
         op.StartIndexParameter.Value = new IntValue(0);
         op.EndIndexParameter.ActualName = MaximumIterationsParameter.Name;

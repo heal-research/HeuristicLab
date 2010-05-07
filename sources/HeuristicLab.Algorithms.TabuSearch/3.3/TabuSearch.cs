@@ -142,7 +142,9 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     private TabuSearchMainLoop MainLoop {
       get { return (TabuSearchMainLoop)SolutionsCreator.Successor; }
     }
+    [Storable]
     private BestAverageWorstQualityAnalyzer moveQualityAnalyzer;
+    [Storable]
     private TabuNeighborhoodAnalyzer tabuNeighborhoodAnalyzer;
     #endregion
 
@@ -187,6 +189,11 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       tsMainLoop.MoveAnalyzerParameter.ActualName = MoveAnalyzerParameter.Name;
       tsMainLoop.AnalyzerParameter.ActualName = AnalyzerParameter.Name;
 
+      moveQualityAnalyzer = new BestAverageWorstQualityAnalyzer();
+      tabuNeighborhoodAnalyzer = new TabuNeighborhoodAnalyzer();
+      ParameterizeAnalyzers();
+      UpdateAnalyzers();
+
       Initialize();
     }
     [StorableConstructor]
@@ -194,6 +201,8 @@ namespace HeuristicLab.Algorithms.TabuSearch {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       TabuSearch clone = (TabuSearch)base.Clone(cloner);
+      clone.moveQualityAnalyzer = (BestAverageWorstQualityAnalyzer)cloner.Clone(moveQualityAnalyzer);
+      clone.tabuNeighborhoodAnalyzer = (TabuNeighborhoodAnalyzer)cloner.Clone(tabuNeighborhoodAnalyzer);
       clone.Initialize();
       return clone;
     }
@@ -312,8 +321,6 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
-      InitializeAnalyzers();
-      UpdateAnalyzers();
       if (Problem != null) {
         Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
         foreach (ISingleObjectiveMoveEvaluator op in Problem.Operators.OfType<ISingleObjectiveMoveEvaluator>()) {
@@ -324,11 +331,6 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       MoveEvaluatorParameter.ValueChanged += new EventHandler(MoveEvaluatorParameter_ValueChanged);
       TabuCheckerParameter.ValueChanged += new EventHandler(TabuCheckerParameter_ValueChanged);
       SampleSizeParameter.NameChanged += new EventHandler(SampleSizeParameter_NameChanged);
-    }
-    private void InitializeAnalyzers() {
-      moveQualityAnalyzer = new BestAverageWorstQualityAnalyzer();
-      tabuNeighborhoodAnalyzer = new TabuNeighborhoodAnalyzer();
-      ParameterizeAnalyzers();
     }
     private void UpdateMoveGenerator() {
       IMoveGenerator oldMoveGenerator = MoveGenerator;
