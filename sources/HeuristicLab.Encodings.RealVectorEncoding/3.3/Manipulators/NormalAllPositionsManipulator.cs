@@ -74,8 +74,14 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// <returns>The manipulated real vector.</returns>
     public static void Apply(IRandom random, RealVector vector, RealVector strategyParameters) {
       NormalDistributedRandom N = new NormalDistributedRandom(random, 0.0, 1.0);
-      for (int i = 0; i < vector.Length; i++) {
-        vector[i] = vector[i] + (N.NextDouble() * strategyParameters[i % strategyParameters.Length]);
+      if (strategyParameters != null && strategyParameters.Length > 0) {
+        for (int i = 0; i < vector.Length; i++) {
+          vector[i] = vector[i] + (N.NextDouble() * strategyParameters[i % strategyParameters.Length]);
+        }
+      } else {
+        for (int i = 0; i < vector.Length; i++) {
+          vector[i] = vector[i] + N.NextDouble();
+        }
       }
     }
 
@@ -85,7 +91,6 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// <param name="random">The random number generator.</param>
     /// <param name="realVector">The vector of real values that is manipulated.</param>
     protected override void Manipulate(IRandom random, RealVector realVector) {
-      if (StrategyParameterParameter.ActualValue == null) throw new InvalidOperationException("NormalAllPositionsManipulator: The strategy parameter could not be found and does not have an associated value.");
       Apply(random, realVector, StrategyParameterParameter.ActualValue);
     }
   }
