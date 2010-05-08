@@ -108,6 +108,10 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding_33.Tests {
       get { throw new NotImplementedException(); }
     }
 
+    public Version ItemVersion {
+      get { throw new NotImplementedException(); }
+    }
+
     public System.Drawing.Image ItemImage {
       get { throw new NotImplementedException(); }
     }

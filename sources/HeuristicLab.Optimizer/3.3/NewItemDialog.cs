@@ -48,7 +48,7 @@ namespace HeuristicLab.Optimizer {
       if (!initialized) {
         var categories = from t in ApplicationManager.Manager.GetTypes(typeof(IItem))
                          where CreatableAttribute.IsCreatable(t)
-                         orderby CreatableAttribute.GetCategory(t), ItemAttribute.GetName(t) ascending
+                         orderby CreatableAttribute.GetCategory(t), ItemAttribute.GetName(t), ItemAttribute.GetVersion(t) ascending
                          group t by CreatableAttribute.GetCategory(t) into c
                          select c;
 
@@ -59,7 +59,7 @@ namespace HeuristicLab.Optimizer {
           foreach (var creatable in category) {
             IItem i = (IItem)Activator.CreateInstance(creatable);
             items.Add(i);
-            ListViewItem item = new ListViewItem(new string[] { i.ItemName, i.ItemDescription}, group);
+            ListViewItem item = new ListViewItem(new string[] { i.ItemName, i.ItemVersion.ToString(), i.ItemDescription}, group);
             itemsListView.SmallImageList.Images.Add(i.ItemImage);
             item.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
             item.Tag = i;

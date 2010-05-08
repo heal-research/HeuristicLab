@@ -51,6 +51,7 @@ namespace HeuristicLab.Optimizer {
       this.nameColumnHeader = new System.Windows.Forms.ColumnHeader();
       this.descriptioncolumnHeader = new System.Windows.Forms.ColumnHeader();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this.versionColumnHeader = new System.Windows.Forms.ColumnHeader();
       this.SuspendLayout();
       // 
       // okButton
@@ -84,6 +85,7 @@ namespace HeuristicLab.Optimizer {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.itemsListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.nameColumnHeader,
+            this.versionColumnHeader,
             this.descriptioncolumnHeader});
       this.itemsListView.FullRowSelect = true;
       this.itemsListView.HideSelection = false;
@@ -99,13 +101,20 @@ namespace HeuristicLab.Optimizer {
       // 
       // nameColumnHeader
       // 
+      this.nameColumnHeader.DisplayIndex = 0;
       this.nameColumnHeader.Text = "Name";
       this.nameColumnHeader.Width = 91;
       // 
       // descriptioncolumnHeader
       // 
+      this.descriptioncolumnHeader.DisplayIndex = 2;
       this.descriptioncolumnHeader.Text = "Description";
       this.descriptioncolumnHeader.Width = 190;
+      // 
+      // versionColumnHeader
+      // 
+      this.versionColumnHeader.DisplayIndex = 1;
+      this.versionColumnHeader.Text = "Version";
       // 
       // NewItemDialog
       // 
@@ -139,5 +148,6 @@ namespace HeuristicLab.Optimizer {
     private System.Windows.Forms.ToolTip toolTip;
     private System.Windows.Forms.ColumnHeader nameColumnHeader;
     private System.Windows.Forms.ColumnHeader descriptioncolumnHeader;
+    private System.Windows.Forms.ColumnHeader versionColumnHeader;
   }
 }

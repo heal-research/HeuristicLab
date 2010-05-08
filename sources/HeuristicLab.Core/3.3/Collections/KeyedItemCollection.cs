@@ -49,6 +49,9 @@ namespace HeuristicLab.Core {
     public virtual string ItemDescription {
       get { return ItemAttribute.GetDescription(this.GetType()); }
     }
+    public Version ItemVersion {
+      get { return ItemAttribute.GetVersion(this.GetType()); }
+    }
     public virtual Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Class; }
     }

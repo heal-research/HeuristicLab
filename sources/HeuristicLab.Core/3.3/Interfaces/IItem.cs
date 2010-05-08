@@ -30,6 +30,7 @@ namespace HeuristicLab.Core {
   public interface IItem : IStorableContent {
     string ItemName { get; }
     string ItemDescription { get; }
+    Version ItemVersion { get; }
     Image ItemImage { get; }
 
     event EventHandler ItemImageChanged;

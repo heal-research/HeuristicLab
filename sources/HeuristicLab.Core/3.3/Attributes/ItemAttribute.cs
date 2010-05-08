@@ -20,6 +20,8 @@
 #endregion
 
 using System;
+using System.Linq;
+using System.Reflection;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
@@ -54,6 +56,16 @@ namespace HeuristicLab.Core {
       object[] attribs = type.GetCustomAttributes(typeof(ItemAttribute), false);
       if (attribs.Length > 0) return ((ItemAttribute)attribs[0]).Description;
       else return string.Empty;
+    }
+    public static Version GetVersion(Type type) {
+      Assembly assembly = Assembly.GetAssembly(type);
+      AssemblyFileVersionAttribute version = assembly.GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true).
+                                             Cast<AssemblyFileVersionAttribute>().FirstOrDefault();
+      if (version != null) {
+        return new Version(version.Version);
+      } else {
+        return assembly.GetName().Version;
+      }
     }
   }
 }
