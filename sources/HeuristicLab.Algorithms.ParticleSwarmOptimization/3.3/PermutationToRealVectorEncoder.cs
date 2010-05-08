@@ -27,10 +27,20 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       get { return (ILookupParameter<IntValue>)Parameters["Length"]; }
     }
 
+    public IValueLookupParameter<DoubleMatrix> BoundsParameter {
+      get { return (IValueLookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
+    }
+
+    public DoubleMatrix Bounds {
+      get { return (DoubleMatrix)BoundsParameter.ActualValue; }
+      set { BoundsParameter.ActualValue = value; }
+    }
+
     public PermutationToRealVectorEncoder() : base() {
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The permutation to encode."));
       Parameters.Add(new LookupParameter<RealVector>("RealVector", "The resulting real vector."));
       Parameters.Add(new LookupParameter<IntValue>("Length", "Vector length."));
+      Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "The lower and upper bounds in each dimension."));
     }
 
     public override IOperation Apply() {

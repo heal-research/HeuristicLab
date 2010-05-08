@@ -26,8 +26,8 @@ using System;
 
 namespace HeuristicLab.Optimization {
   public interface IRealVectorEncoder : IOperator {
-    //Type DecoderType { get; }
     IParameter RealVectorParameter { get; }
     ILookupParameter<IntValue> LengthParameter { get; }
+    IValueLookupParameter<DoubleMatrix> BoundsParameter { get; }
   }
 }

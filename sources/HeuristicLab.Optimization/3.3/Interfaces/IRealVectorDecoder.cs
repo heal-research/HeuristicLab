@@ -9,5 +9,6 @@ namespace HeuristicLab.Optimization.Interfaces {
   public interface IRealVectorDecoder {
     IParameter RealVectorParameter { get; }
     ILookupParameter<IntValue> LengthParameter { get; }
+    IValueParameter<DoubleMatrix> BoundsParameter { get; }
   }
 }

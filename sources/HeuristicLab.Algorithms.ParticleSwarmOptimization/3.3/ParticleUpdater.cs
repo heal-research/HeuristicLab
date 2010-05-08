@@ -31,6 +31,10 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     public ILookupParameter<RealVector> BestGlobalParameter {
       get { return (ILookupParameter<RealVector>)Parameters["BestGlobal"]; }
     }
+
+    public ILookupParameter<DoubleMatrix> BoundsParameter {
+      get { return (ILookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
+    }
     #endregion
 
     public ParticleUpdater()
@@ -40,6 +44,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       Parameters.Add(new LookupParameter<RealVector>("CurrentPosition", "Current position"));
       Parameters.Add(new LookupParameter<RealVector>("BestLocal", "Best local position"));
       Parameters.Add(new LookupParameter<RealVector>("BestGlobal", "Best global position"));
+      Parameters.Add(new LookupParameter<DoubleMatrix>("Bounds", "The lower and upper bounds for each dimension of the position vector."));
     }
 
     public override IOperation Apply() {
@@ -52,6 +57,11 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       VelocityParameter.ActualValue = velocity;
       for (int i = 0; i < CurrentPositionParameter.ActualValue.Length; i++) {
         CurrentPositionParameter.ActualValue[i] = CurrentPositionParameter.ActualValue[i] + VelocityParameter.ActualValue[i];
+        if (CurrentPositionParameter.ActualValue[i] < BoundsParameter.ActualValue[0,0]) {
+          CurrentPositionParameter.ActualValue[i] = BoundsParameter.ActualValue[0, 0]; 
+        } else if (CurrentPositionParameter.ActualValue[i] > BoundsParameter.ActualValue[0,1]) {
+          CurrentPositionParameter.ActualValue[i] = BoundsParameter.ActualValue[0, 1]; 
+        }
       }
       return base.Apply();
     }

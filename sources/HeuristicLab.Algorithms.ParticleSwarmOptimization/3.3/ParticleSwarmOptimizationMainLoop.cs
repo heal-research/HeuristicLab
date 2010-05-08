@@ -11,6 +11,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Analysis;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Encodings.RealVectorEncoding;
+using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
   /// <summary>
@@ -23,8 +24,8 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     public ValueLookupParameter<VariableCollection> ResultsParameter {
       get { return (ValueLookupParameter<VariableCollection>)Parameters["Results"]; }
     }
-    public ValueLookupParameter<IOperator> EncoderParameter {
-      get { return (ValueLookupParameter<IOperator>)Parameters["Encoder"]; }
+    public ValueLookupParameter<IRealVectorEncoder> EncoderParameter {
+      get { return (ValueLookupParameter<IRealVectorEncoder>)Parameters["Encoder"]; }
     }
     public ValueLookupParameter<IOperator> DecoderParameter {
       get { return (ValueLookupParameter<IOperator>)Parameters["Decoder"]; }
@@ -46,6 +47,9 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     }
     #endregion
 
+    [Storable]
+    private ParticleUpdater velocityUpdater; 
+
     [StorableConstructor]
     private ParticleSwarmOptimizationMainLoop(bool deserializing) : base() { }
     public ParticleSwarmOptimizationMainLoop()
@@ -56,7 +60,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     private void Initialize() {
       #region Create parameters
       Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The variable collection where results should be stored."));
-      Parameters.Add(new ValueLookupParameter<IOperator>("Encoder", "The encoding operator that maps a solution to a position vector."));
+      Parameters.Add(new ValueLookupParameter<IRealVectorEncoder>("Encoder", "The encoding operator that maps a solution to a position vector."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Decoder", "The decoding operator that maps a position vector to a solution."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, otherwise false."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The value which represents the quality of a solution."));
@@ -65,12 +69,14 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       Parameters.Add(new ValueLookupParameter<IOperator>("Analyzer", "The operator used to analyze each generation."));
       #endregion
 
+      EncoderParameter.ActualNameChanged += new EventHandler(EncoderParameter_ActualNameChanged);
+
       #region Create operators
       VariableCreator variableCreator = new VariableCreator();
       ResultsCollector resultsCollector1 = new ResultsCollector();
       IntCounter intCounter = new IntCounter();
       ConditionalBranch conditionalBranch = new ConditionalBranch();
-      ParticleUpdater velocityUpdater = new ParticleUpdater(); 
+      velocityUpdater = new ParticleUpdater(); 
       UniformSubScopesProcessor uniformSubScopesProcessor = new UniformSubScopesProcessor();
       UniformSubScopesProcessor uniformSubScopesProcessor2 = new UniformSubScopesProcessor();
       Placeholder encPlaceholder = new Placeholder();
@@ -83,7 +89,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       analyzer1.Name = "Analyzer (placeholder)";
       analyzer1.OperatorParameter.ActualName = AnalyzerParameter.Name;
 
-      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Generations", new IntValue(1))); // Initial generation already built
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Generations", new IntValue(0))); // Initial generation already built
 
       resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Generations"));
       resultsCollector1.ResultsParameter.ActualName = "Results";
@@ -102,6 +108,8 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       velocityUpdater.BestLocalParameter.ActualName = "BestPosition";
       velocityUpdater.CurrentPositionParameter.ActualName = "Position";
       velocityUpdater.VelocityParameter.ActualName = "Velocity";
+      //
+      // ToDo: Add correctly 
 
       encPlaceholder.OperatorParameter.ActualName = EncoderParameter.ActualName;
       decPlaceholder.OperatorParameter.ActualName = DecoderParameter.ActualName; 
@@ -115,7 +123,6 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       swarmUpdater.BestLocalParameter.ActualName = "BestPosition";
       swarmUpdater.LocalBestQualityParameter.ActualName = "BestQuality";
       swarmUpdater.GlobalBestQualityParameter.ActualName = "CurrentBestBestQuality";
-
       #endregion
 
       #region Create operator graph
@@ -124,15 +131,19 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       comparator.Successor = conditionalBranch;
       conditionalBranch.FalseBranch = uniformSubScopesProcessor;
       uniformSubScopesProcessor.Operator = velocityUpdater;
+      uniformSubScopesProcessor.Successor = intCounter;
       velocityUpdater.Successor = decPlaceholder;
-      uniformSubScopesProcessor.Successor = uniformSubScopesProcessor2;
-      uniformSubScopesProcessor2.Operator = evaluator;
+      decPlaceholder.Successor = evaluator;
       evaluator.Successor = swarmUpdater;
-      swarmUpdater.Successor = intCounter;
+      swarmUpdater.Successor = null;
       intCounter.Successor = resultsCollector1;
-      resultsCollector1.Successor = comparator; //analyzer1; 
-      //analyzer1.Successor = comparator;
+      resultsCollector1.Successor = analyzer1; 
+      analyzer1.Successor = comparator;
       #endregion
+    }
+
+    private void EncoderParameter_ActualNameChanged(object sender, EventArgs e) {
+      velocityUpdater.BoundsParameter.ActualName = EncoderParameter.ActualValue.BoundsParameter.ActualName;
     }
   }
 }

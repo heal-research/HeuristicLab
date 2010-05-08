@@ -220,12 +220,14 @@ namespace HeuristicLab.Problems.TestFunctions {
     private void Bounds_ToStringChanged(object sender, EventArgs e) {
       if (Bounds.Columns != 2 || Bounds.Rows < 1)
         Bounds = new DoubleMatrix(1, 2);
+      ParameterizeOperators(); 
     }
     private void Bounds_ItemChanged(object sender, EventArgs<int, int> e) {
       if (e.Value2 == 0 && Bounds[e.Value, 1] <= Bounds[e.Value, 0])
         Bounds[e.Value, 1] = Bounds[e.Value, 0] + 0.1;
       if (e.Value2 == 1 && Bounds[e.Value, 0] >= Bounds[e.Value, 1])
         Bounds[e.Value, 0] = Bounds[e.Value, 1] - 0.1;
+      ParameterizeOperators(); 
     }
     private void MoveGenerator_AdditiveMoveParameter_ActualNameChanged(object sender, EventArgs e) {
       string name = ((ILookupParameter<AdditiveMove>)sender).ActualName;
@@ -354,7 +356,9 @@ namespace HeuristicLab.Problems.TestFunctions {
         op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
       }
       foreach (IRealVectorPSOEncoder op in Operators.OfType<IRealVectorPSOEncoder>()) {
-        ((ILookupParameter)op.OriginalRealVectorParameter).ActualName = SolutionCreator.RealVectorParameter.ActualName; 
+        ((ILookupParameter)op.OriginalRealVectorParameter).ActualName = SolutionCreator.RealVectorParameter.ActualName;
+        op.BoundsParameter.Value = (DoubleMatrix)BoundsParameter.Value.Clone();
+        op.BoundsParameter.ActualName = "ParticleBounds"; 
       }
     }
     #endregion

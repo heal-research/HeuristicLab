@@ -80,17 +80,17 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     #endregion
 
     #region Properties
-    [StorableAttribute]
+    [Storable]
     private ParticleSwarmOptimizationMainLoop mainLoop; // Check this !
     private ParticleSwarmOptimizationMainLoop MainLoop {
       get { return mainLoop; }
     }
-    [StorableAttribute]
+    [Storable]
     private Assigner bestLocalQualityInitalizer; // Check this !
     private Assigner BestLocalQualityInitalizer {
       get { return bestLocalQualityInitalizer; }
     }
-
+    [Storable]
     private BestAverageWorstQualityAnalyzer qualityAnalyzer;
     #endregion
 
@@ -101,7 +101,6 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       Parameters.Add(new ValueParameter<IntValue>("SwarmSize", "Size of the particle swarm.", new IntValue(1)));
       Parameters.Add(new ValueParameter<IntValue>("MaxIterations", "Maximal number of iterations.", new IntValue(1000)));
       Parameters.Add(new ConstrainedValueParameter<IRealVectorEncoder>("Encoder", "The operator used to encode solutions as position vector."));
-      Parameters.Add(new ValueParameter<IntValue>("PositionLength", "Length of the position encoding.", new IntValue(0)));
       Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze each generation.", new MultiAnalyzer()));
       RandomCreator randomCreator = new RandomCreator();
       SolutionsCreator solutionsCreator = new SolutionsCreator();
@@ -180,13 +179,13 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       uniformSubScopesProcessor2.Operator = comparator;
       comparator.Successor = branch;
       uniformSubScopesProcessor2.Successor = mainLoop;
+      InitializeAnalyzers();
+      UpdateAnalyzers();
       Initialize();
     }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
-      InitializeAnalyzers();
-      UpdateAnalyzers();
       EncoderParameter.ValueChanged += new EventHandler(EncoderParameter_ValueChanged);
       if (Problem != null) {
         bestLocalQualityInitalizer.RightSideParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
@@ -210,6 +209,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     protected override void OnProblemChanged() {
       UpdateEncoders();
       UpdateAnalyzers();
+      ParameterizeAnalyzers(); 
       bestLocalQualityInitalizer.RightSideParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       MainLoop.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
@@ -217,7 +217,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     }
 
     private void EncoderParameter_ValueChanged(object sender, EventArgs e) {
-      //IRealVectorEncoder old = (IRealVectorEncoder)((UniformSubScopesProcessor)((VariableCreator)((SolutionsCreator)((RandomCreator)OperatorGraph.InitialOperator).Successor).Successor).Successor).Operator;
+      //MainLoop.EncoderParameter.ActualValue = (IRealVectorEncoder) EncoderParameter.ActualValue;
       //((UniformSubScopesProcessor)((VariableCreator)((SolutionsCreator)((RandomCreator)OperatorGraph.InitialOperator).Successor).Successor).Successor).Operator = EncoderParameter.Value;
       //((SingleSuccessorOperator)EncoderParameter.Value).Successor = ((SingleSuccessorOperator)old).Successor;
     }
@@ -227,10 +227,6 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
       // 
       //
-    }
-
-    private void ParameterizeMainLoop() {
-      //GeneticAlgorithmMainLoop.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
     }
 
     private void UpdateEncoders() {
