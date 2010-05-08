@@ -31,6 +31,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       if (openFileDialog.ShowDialog(this) == DialogResult.OK) {
         try {
           Content.ImportFromFile(openFileDialog.FileName);
+          importButton.Enabled = false;
         }
         catch (Exception ex) {
           Auxiliary.ShowErrorMessageBox(ex);

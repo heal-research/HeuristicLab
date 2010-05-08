@@ -36,6 +36,36 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   public class DataAnalysisProblemData : ParameterizedNamedItem {
     private bool suppressEvents = false;
+    #region default data
+    // y = x^4 + x^3 + x^2 + x
+    private readonly double[,] kozaF1 = new double[,] {
+{2.017885919,	-1.449165046},
+{1.30060506,	-1.344523885},
+{1.147134798,	-1.317989331},
+{0.877182504,	-1.266142284},
+{0.852562452,	-1.261020794},
+{0.431095788,	-1.158793317},
+{0.112586002,	-1.050908405},
+{0.04594507,	-1.021989402},
+{0.042572879,	-1.020438113},
+{-0.074027291,	-0.959859562},
+{-0.109178553,	-0.938094706},
+{-0.259721109,	-0.803635355},
+{-0.272991057,	-0.387519561},
+{-0.161978191,	-0.193611001},
+{-0.102489983,	-0.114215349},
+{-0.01469968,	-0.014918985},
+{-0.008863365,	-0.008942626},
+{0.026751057,	0.026054094},
+{0.166922436,	0.14309643},
+{0.176953808,	0.1504144},
+{0.190233418,	0.159916534},
+{0.199800708,	0.166635331},
+{0.261502822,	0.207600348},
+{0.30182879,	0.232370249},
+{0.83763905,	0.468046718}
+    };
+    #endregion
     #region parameter properties
     public IValueParameter<Dataset> DatasetParameter {
       get { return (IValueParameter<Dataset>)Parameters["Dataset"]; }
@@ -138,13 +168,19 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public DataAnalysisProblemData()
       : base() {
-      Parameters.Add(new ValueParameter<Dataset>("Dataset", new Dataset()));
-      Parameters.Add(new ValueParameter<ICheckedItemList<StringValue>>("InputVariables", new CheckedItemList<StringValue>()));
-      Parameters.Add(new ConstrainedValueParameter<StringValue>("TargetVariable"));
-      Parameters.Add(new ValueParameter<IntValue>("TrainingSamplesStart", new IntValue()));
-      Parameters.Add(new ValueParameter<IntValue>("TrainingSamplesEnd", new IntValue()));
-      Parameters.Add(new ValueParameter<IntValue>("TestSamplesStart", new IntValue()));
-      Parameters.Add(new ValueParameter<IntValue>("TestSamplesEnd", new IntValue()));
+      var inputVariables = new CheckedItemList<StringValue>();
+      StringValue inputVariable = new StringValue("x");
+      inputVariables.Add(inputVariable);
+      StringValue targetVariable = new StringValue("y");
+      var validTargetVariables = new ItemSet<StringValue>();
+      validTargetVariables.Add(targetVariable);
+      Parameters.Add(new ValueParameter<Dataset>("Dataset", new Dataset(new string[] { "y", "x" }, kozaF1)));
+      Parameters.Add(new ValueParameter<ICheckedItemList<StringValue>>("InputVariables", inputVariables.AsReadOnly()));
+      Parameters.Add(new ConstrainedValueParameter<StringValue>("TargetVariable", validTargetVariables, targetVariable));
+      Parameters.Add(new ValueParameter<IntValue>("TrainingSamplesStart", new IntValue(0)));
+      Parameters.Add(new ValueParameter<IntValue>("TrainingSamplesEnd", new IntValue(15)));
+      Parameters.Add(new ValueParameter<IntValue>("TestSamplesStart", new IntValue(15)));
+      Parameters.Add(new ValueParameter<IntValue>("TestSamplesEnd", new IntValue(25)));
       RegisterParameterEventHandlers();
       RegisterParameterValueEventHandlers();
     }
