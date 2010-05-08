@@ -146,18 +146,19 @@ namespace HeuristicLab.Optimization {
     }
 
     public IItem GetValue(IRun run, int columnIndex) {
+      string name = ((IStringConvertibleMatrix)this).ColumnNames.ElementAt(columnIndex);
+      return GetValue(run, name);
+    }
+
+    public IItem GetValue(IRun run, string columnName) {
       IItem value = null;
-      if (columnIndex < parameterNames.Count) {
-        string parameterName = parameterNames[columnIndex];
-        if (run.Parameters.ContainsKey(parameterName))
-          value = run.Parameters[parameterName];
-      } else if (columnIndex < parameterNames.Count + resultNames.Count) {
-        string resultName = resultNames[columnIndex - parameterNames.Count];
-        if (run.Results.ContainsKey(resultName))
-          value = run.Results[resultName];
-      }
+       if (run.Parameters.ContainsKey(columnName))
+         value = run.Parameters[columnName];
+       else if (run.Results.ContainsKey(columnName))
+         value = run.Results[columnName];
       return value;
     }
+
 
     public override IDeepCloneable Clone(Cloner cloner) {
       RunCollection clone = (RunCollection)base.Clone(cloner);
@@ -192,6 +193,7 @@ namespace HeuristicLab.Optimization {
       get {
         List<string> value = new List<string>(parameterNames);
         value.AddRange(resultNames);
+        value.Sort();
         return value;
       }
       set { throw new NotSupportedException(); }

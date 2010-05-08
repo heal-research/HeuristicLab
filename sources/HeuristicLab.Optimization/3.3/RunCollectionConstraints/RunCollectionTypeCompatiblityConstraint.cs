@@ -50,11 +50,11 @@ namespace HeuristicLab.Optimization {
       set { base.ConstrainedValue = value; }
     }
     [Storable]
-    private int constraintColumn;
-    public int ConstraintColumn {
+    private string constraintColumn;
+    public string ConstraintColumn {
       get { return constraintColumn; }
       set {
-        if (value < 0 || value >= ((IStringConvertibleMatrix)ConstrainedValue).ColumnNames.Count())
+        if (!((IStringConvertibleMatrix)ConstrainedValue).ColumnNames.Contains(value))
           throw new ArgumentException("Could not set ConstraintData to not existing column index.");
         if (constraintColumn != value) {
           constraintColumn = value;
@@ -69,6 +69,13 @@ namespace HeuristicLab.Optimization {
       EventHandler handler = ConstraintColumnChanged;
       if (handler != null)
         handler(this, EventArgs.Empty);
+    }
+
+    protected override void OnConstrainedValueChanged() {
+      base.OnConstrainedValueChanged();
+      IStringConvertibleMatrix matrix = (IStringConvertibleMatrix)ConstrainedValue;
+      if (constraintColumn == null && ConstrainedValue != null && matrix.Columns != 0)
+        constraintColumn = matrix.ColumnNames.ElementAt(0);
     }
 
     protected override bool Check(object constrainedMember) {
@@ -100,7 +107,7 @@ namespace HeuristicLab.Optimization {
       string s = string.Empty;
       IStringConvertibleMatrix matrix = ConstrainedValue;
       if (matrix != null && matrix.ColumnNames.Count() != 0)
-        s += matrix.ColumnNames.ElementAt(constraintColumn) + " ";
+        s += constraintColumn + " ";
       else
         return "TypeCompabitilityConstraint";
 
