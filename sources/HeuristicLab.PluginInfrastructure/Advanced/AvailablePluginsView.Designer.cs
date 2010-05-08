@@ -177,7 +177,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.showDetailsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.showDetailsButton.Appearance = System.Windows.Forms.Appearance.Button;
       this.showDetailsButton.Checked = true;
-      this.showDetailsButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.show_details;
+      this.showDetailsButton.Image = global::HeuristicLab.PluginInfrastructure.Resources.ShowDetails;
       this.showDetailsButton.Location = new System.Drawing.Point(221, 19);
       this.showDetailsButton.Name = "showDetailsButton";
       this.showDetailsButton.Size = new System.Drawing.Size(25, 25);
@@ -191,7 +191,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // 
       this.showLargeIconsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.showLargeIconsButton.Appearance = System.Windows.Forms.Appearance.Button;
-      this.showLargeIconsButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.show_icons;
+      this.showLargeIconsButton.Image = global::HeuristicLab.PluginInfrastructure.Resources.ShowIcons;
       this.showLargeIconsButton.Location = new System.Drawing.Point(190, 19);
       this.showLargeIconsButton.Name = "showLargeIconsButton";
       this.showLargeIconsButton.Size = new System.Drawing.Size(25, 25);
@@ -204,7 +204,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // 
       this.installProductsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.installProductsButton.Enabled = false;
-      this.installProductsButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_Objects_Install;
+      this.installProductsButton.Image = global::HeuristicLab.PluginInfrastructure.Resources.Install;
       this.installProductsButton.Location = new System.Drawing.Point(6, 527);
       this.installProductsButton.Name = "installProductsButton";
       this.installProductsButton.Size = new System.Drawing.Size(146, 25);
@@ -217,7 +217,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // 
       // refreshButton
       // 
-      this.refreshButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_Objects_Internet;
+      this.refreshButton.Image = global::HeuristicLab.PluginInfrastructure.Resources.Internet;
       this.refreshButton.Location = new System.Drawing.Point(6, 19);
       this.refreshButton.Name = "refreshButton";
       this.refreshButton.Size = new System.Drawing.Size(72, 25);
@@ -246,7 +246,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // 
       this.installPluginsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.installPluginsButton.Enabled = false;
-      this.installPluginsButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_Objects_Install;
+      this.installPluginsButton.Image = global::HeuristicLab.PluginInfrastructure.Resources.Install;
       this.installPluginsButton.Location = new System.Drawing.Point(6, 527);
       this.installPluginsButton.Name = "installPluginsButton";
       this.installPluginsButton.Size = new System.Drawing.Size(140, 25);

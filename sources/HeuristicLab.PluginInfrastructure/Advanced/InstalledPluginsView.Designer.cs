@@ -111,7 +111,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // refreshButton
       // 
       this.refreshButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.refreshButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.RepeatHS1;
+      this.refreshButton.Image = global::HeuristicLab.PluginInfrastructure.Resources.Repeat;
       this.refreshButton.Location = new System.Drawing.Point(0, 483);
       this.refreshButton.Name = "refreshButton";
       this.refreshButton.Size = new System.Drawing.Size(96, 25);
@@ -126,7 +126,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // 
       this.removeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.removeButton.Enabled = false;
-      this.removeButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_CommonElements_Actions_Remove;
+      this.removeButton.Image = global::HeuristicLab.PluginInfrastructure.Resources.Remove;
       this.removeButton.Location = new System.Drawing.Point(222, 483);
       this.removeButton.Name = "removeButton";
       this.removeButton.Size = new System.Drawing.Size(110, 25);
@@ -141,7 +141,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // 
       this.updateSelectedButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.updateSelectedButton.Enabled = false;
-      this.updateSelectedButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_Objects_Internet;
+      this.updateSelectedButton.Image = global::HeuristicLab.PluginInfrastructure.Resources.Internet;
       this.updateSelectedButton.Location = new System.Drawing.Point(102, 483);
       this.updateSelectedButton.Name = "updateSelectedButton";
       this.updateSelectedButton.Size = new System.Drawing.Size(114, 25);

@@ -60,7 +60,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // 
       this.uploadButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.uploadButton.Enabled = false;
-      this.uploadButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.PublishToWebHS;
+      this.uploadButton.Image = global::HeuristicLab.PluginInfrastructure.Resources.PublishToWeb;
       this.uploadButton.Location = new System.Drawing.Point(78, 482);
       this.uploadButton.Name = "uploadButton";
       this.uploadButton.Size = new System.Drawing.Size(114, 26);
@@ -74,7 +74,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // refreshButton
       // 
       this.refreshButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.refreshButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_Objects_Internet;
+      this.refreshButton.Image = global::HeuristicLab.PluginInfrastructure.Resources.Internet;
       this.refreshButton.Location = new System.Drawing.Point(0, 482);
       this.refreshButton.Name = "refreshButton";
       this.refreshButton.Size = new System.Drawing.Size(72, 26);

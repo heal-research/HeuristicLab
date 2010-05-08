@@ -52,7 +52,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // updateAndInstallButton
       // 
       this.updateAndInstallButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.updateAndInstallButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_Objects_Internet;
+      this.updateAndInstallButton.Image = HeuristicLab.PluginInfrastructure.Resources.Internet;
       this.updateAndInstallButton.Location = new System.Drawing.Point(3, 2);
       this.updateAndInstallButton.Name = "updateAndInstallButton";
       this.updateAndInstallButton.Size = new System.Drawing.Size(155, 50);

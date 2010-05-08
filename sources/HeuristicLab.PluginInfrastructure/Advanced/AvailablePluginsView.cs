@@ -67,9 +67,9 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     }
     public AvailablePluginsView() {
       InitializeComponent();
-      productImageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Resources.Setup_Install);
-      productLargeImageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Resources.Setup_Install);
-      pluginsImageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Resources.plugin_16);
+      productImageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Setup_Install);
+      productLargeImageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Setup_Install);
+      pluginsImageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Plugin);
       refreshServerPluginsBackgroundWorker = new BackgroundWorker();
       refreshServerPluginsBackgroundWorker.DoWork += new DoWorkEventHandler(refreshServerPluginsBackgroundWorker_DoWork);
       refreshServerPluginsBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(refreshServerPluginsBackgroundWorker_RunWorkerCompleted);

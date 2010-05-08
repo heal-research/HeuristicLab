@@ -62,7 +62,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       InitializeComponent();
       enabledPluginsGroup = localPluginsListView.Groups["activePluginsGroup"];
       disabledPluginsGroup = localPluginsListView.Groups["disabledPluginsGroup"];
-      pluginImageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Resources.plugin_16);
+      pluginImageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Plugin);
       removePluginsBackgroundWorker = new BackgroundWorker();
       removePluginsBackgroundWorker.DoWork += new DoWorkEventHandler(removePluginsBackgroundWorker_DoWork);
       removePluginsBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(removePluginsBackgroundWorker_RunWorkerCompleted);

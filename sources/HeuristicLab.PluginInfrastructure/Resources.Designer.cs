@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace HeuristicLab.PluginInfrastructure.Resources {
+namespace HeuristicLab.PluginInfrastructure {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace HeuristicLab.PluginInfrastructure.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("HeuristicLab.PluginInfrastructure.Resources.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("HeuristicLab.PluginInfrastructure.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -60,9 +60,9 @@ namespace HeuristicLab.PluginInfrastructure.Resources {
             }
         }
         
-        internal static System.Drawing.Bitmap ArrowDown {
+        internal static System.Drawing.Bitmap Add {
             get {
-                object obj = ResourceManager.GetObject("ArrowDown", resourceCulture);
+                object obj = ResourceManager.GetObject("Add", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -109,16 +109,30 @@ namespace HeuristicLab.PluginInfrastructure.Resources {
             }
         }
         
-        internal static System.Drawing.Bitmap plugin {
+        internal static System.Drawing.Bitmap Logo_white {
             get {
-                object obj = ResourceManager.GetObject("plugin", resourceCulture);
+                object obj = ResourceManager.GetObject("Logo_white", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap plugin_16 {
+        internal static System.Drawing.Bitmap NetworkConnections {
             get {
-                object obj = ResourceManager.GetObject("plugin_16", resourceCulture);
+                object obj = ResourceManager.GetObject("NetworkConnections", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Plugin {
+            get {
+                object obj = ResourceManager.GetObject("Plugin", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap PublishToWeb {
+            get {
+                object obj = ResourceManager.GetObject("PublishToWeb", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -130,10 +144,31 @@ namespace HeuristicLab.PluginInfrastructure.Resources {
             }
         }
         
+        internal static System.Drawing.Bitmap Repeat {
+            get {
+                object obj = ResourceManager.GetObject("Repeat", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Icon Setup_Install {
             get {
                 object obj = ResourceManager.GetObject("Setup_Install", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap ShowDetails {
+            get {
+                object obj = ResourceManager.GetObject("ShowDetails", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap ShowIcons {
+            get {
+                object obj = ResourceManager.GetObject("ShowIcons", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

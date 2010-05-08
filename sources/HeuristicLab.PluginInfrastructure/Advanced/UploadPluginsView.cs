@@ -49,7 +49,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
     public UploadPluginsView() {
       InitializeComponent();
-      pluginImageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Resources.plugin_16);
+      pluginImageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Plugin);
       localAndServerPlugins = new Dictionary<IPluginDescription, IPluginDescription>();
 
       #region initialize backgroundworkers

@@ -132,7 +132,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.showLargeIconsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.showLargeIconsButton.Appearance = System.Windows.Forms.Appearance.Button;
       this.showLargeIconsButton.Checked = true;
-      this.showLargeIconsButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.show_icons;
+      this.showLargeIconsButton.Image = global::HeuristicLab.PluginInfrastructure.Resources.ShowIcons;
       this.showLargeIconsButton.Location = new System.Drawing.Point(12, 511);
       this.showLargeIconsButton.Name = "showLargeIconsButton";
       this.showLargeIconsButton.Size = new System.Drawing.Size(23, 23);
@@ -145,7 +145,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       // 
       this.showDetailsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.showDetailsButton.Appearance = System.Windows.Forms.Appearance.Button;
-      this.showDetailsButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.show_details;
+      this.showDetailsButton.Image = global::HeuristicLab.PluginInfrastructure.Resources.ShowDetails;
       this.showDetailsButton.Location = new System.Drawing.Point(41, 511);
       this.showDetailsButton.Name = "showDetailsButton";
       this.showDetailsButton.Size = new System.Drawing.Size(23, 23);

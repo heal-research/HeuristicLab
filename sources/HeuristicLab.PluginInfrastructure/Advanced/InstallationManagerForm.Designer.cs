@@ -283,7 +283,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // 
       // connectionSettingsToolStripMenuItem
       // 
-      this.connectionSettingsToolStripMenuItem.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_Objects_NetworkConnections;
+      this.connectionSettingsToolStripMenuItem.Image = global::HeuristicLab.PluginInfrastructure.Resources.NetworkConnections;
       this.connectionSettingsToolStripMenuItem.Name = "connectionSettingsToolStripMenuItem";
       this.connectionSettingsToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
       this.connectionSettingsToolStripMenuItem.Text = "Connection Settings...";

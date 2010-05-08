@@ -218,26 +218,12 @@
     <EmbeddedResource Include="Advanced\InstallationManagerForm.resx">
       <DependentUpon>InstallationManagerForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="Starter\SplashScreen.resx">
       <DependentUpon>SplashScreen.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Starter\StarterForm.resx">
       <DependentUpon>StarterForm.cs</DependentUpon>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <None Include="app.config" />
     <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.frame" />
@@ -250,11 +236,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Resources\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
+    <Compile Include="Resources.Designer.cs" />
     <Compile Include="Sandboxing\SandboxManager.cs" />
     <Compile Include="Starter\SplashScreen.cs">
       <SubType>Form</SubType>
@@ -276,11 +258,12 @@
     <Content Include="ICSharpCode.SharpZipLib.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Details.gif" />
     <Content Include="Resources\HeuristicLab.ico" />
-    <Content Include="Resources\LargeIcons.gif" />
-    <Content Include="Resources\List.gif" />
     <Content Include="Resources\Logo_white.gif" />
+    <Content Include="Resources\VS2008ImageLibrary_Actions_PublishToWebHS.png" />
+    <Content Include="Resources\VS2008ImageLibrary_Actions_RepeatHS.png" />
+    <Content Include="Resources\VS2008ImageLibrary_CommonElements_Actions_Add.png" />
+    <Content Include="Resources\VS2008ImageLibrary_Objects_Plugin.png" />
     <EmbeddedResource Include="Advanced\AvailablePluginsView.resx">
       <DependentUpon>AvailablePluginsView.cs</DependentUpon>
     </EmbeddedResource>
@@ -312,22 +295,17 @@
     <EmbeddedResource Include="Advanced\UploadPluginsView.resx">
       <DependentUpon>UploadPluginsView.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <None Include="Resources\VS2008ImageLibrary_Actions_Delete.png" />
     <None Include="Resources\VS2008ImageLibrary_CommonElements_Actions_Remove.png" />
-    <None Include="Resources\VS2008ImageLibrary_CommonElements_Actions_Remove1.png" />
     <None Include="Resources\show_icons.png" />
     <None Include="Resources\show_details.png" />
-    <None Include="Resources\plugin.png" />
-    <None Include="Resources\plugin_16.png" />
     <None Include="Resources\Setup_Install.ico" />
-    <None Include="Resources\RepeatHS.bmp" />
-    <None Include="Resources\Repeat.bmp" />
-    <None Include="Resources\RepeatHS.png" />
-    <None Include="Resources\PublishToWebHS.png" />
-    <Content Include="Resources\VS2008ImageLibrary_CommonElements_Objects_Arrow_Down.png" />
     <None Include="Resources\VS2008ImageLibrary_Objects_NetworkConnections.png" />
-    <None Include="Resources\VS2008ImageLibrary_Objects_Install1.png" />
-    <None Include="Resources\VS2008ImageLibrary_Objects_Internet1.png" />
     <None Include="Resources\VS2008ImageLibrary_CommonElements_Objects_Arrow_Up.png" />
     <None Include="Resources\VS2008ImageLibrary_Objects_File.png" />
     <None Include="Resources\VS2008ImageLibrary_Objects_Document.png" />

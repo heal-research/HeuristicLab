@@ -80,7 +80,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // refreshButton
       // 
       this.refreshButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.refreshButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_Objects_Internet;
+      this.refreshButton.Image = global::HeuristicLab.PluginInfrastructure.Resources.Internet;
       this.refreshButton.Location = new System.Drawing.Point(6, 394);
       this.refreshButton.Name = "refreshButton";
       this.refreshButton.Size = new System.Drawing.Size(73, 26);
@@ -95,7 +95,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // 
       this.uploadButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.uploadButton.Enabled = false;
-      this.uploadButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.PublishToWebHS;
+      this.uploadButton.Image = global::HeuristicLab.PluginInfrastructure.Resources.PublishToWeb;
       this.uploadButton.Location = new System.Drawing.Point(85, 394);
       this.uploadButton.Name = "uploadButton";
       this.uploadButton.Size = new System.Drawing.Size(120, 26);
@@ -143,7 +143,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // deleteProductButton
       // 
       this.deleteProductButton.Enabled = false;
-      this.deleteProductButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_CommonElements_Actions_Remove;
+      this.deleteProductButton.Image = global::HeuristicLab.PluginInfrastructure.Resources.Remove;
       this.deleteProductButton.Location = new System.Drawing.Point(116, 19);
       this.deleteProductButton.Name = "deleteProductButton";
       this.deleteProductButton.Size = new System.Drawing.Size(104, 26);
@@ -157,7 +157,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // newProductButton
       // 
       this.newProductButton.Enabled = false;
-      this.newProductButton.Image = global::HeuristicLab.PluginInfrastructure.Properties.Resources.VS2008ImageLibrary_CommonElements_Actions_Add;
+      this.newProductButton.Image = global::HeuristicLab.PluginInfrastructure.Resources.Add;
       this.newProductButton.Location = new System.Drawing.Point(6, 19);
       this.newProductButton.Name = "newProductButton";
       this.newProductButton.Size = new System.Drawing.Size(104, 26);
