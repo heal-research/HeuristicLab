@@ -45,8 +45,8 @@ namespace HeuristicLab.Optimization.Views {
       this.cmbConstraintColumn.Items.Clear();
       if (Content.ConstrainedValue != null) {
         this.cmbConstraintColumn.Items.AddRange(((IStringConvertibleMatrix)Content.ConstrainedValue).ColumnNames.ToArray());
-        if (Content.ConstraintColumn >= 0)
-          this.cmbConstraintColumn.SelectedItem = ((IStringConvertibleMatrix)Content.ConstrainedValue).ColumnNames.ElementAt(Content.ConstraintColumn);
+        if (!string.IsNullOrEmpty(Content.ConstraintColumn))
+          this.cmbConstraintColumn.SelectedItem = Content.ConstraintColumn;
       }
     }
 
@@ -86,14 +86,13 @@ namespace HeuristicLab.Optimization.Views {
 
     protected virtual void Content_ConstraintColumnChanged(object sender, EventArgs e) {
       if (Content.ConstrainedValue != null) {
-        string columnName = ((IStringConvertibleMatrix)Content.ConstrainedValue).ColumnNames.ElementAt(Content.ConstraintColumn);
-        if (cmbConstraintColumn.SelectedItem.ToString() != columnName)
-          cmbConstraintColumn.SelectedItem = columnName;
+        if (cmbConstraintColumn.SelectedItem.ToString() != Content.ConstraintColumn)
+          cmbConstraintColumn.SelectedItem = Content.ConstraintColumn;
       }
     }
     private void cmbConstraintColumn_SelectedIndexChanged(object sender, EventArgs e) {
       if (Content.ConstrainedValue != null) {
-        Content.ConstraintColumn = ((IStringConvertibleMatrix)Content.ConstrainedValue).ColumnNames.ToList().IndexOf(cmbConstraintColumn.SelectedItem.ToString());
+        Content.ConstraintColumn = (string) cmbConstraintColumn.SelectedItem;
       }
     }
 

@@ -51,8 +51,8 @@ namespace HeuristicLab.Optimization.Views {
               this.cmbConstraintColumn.Items.Add(columnName);
           }
         }
-        if (Content.ConstraintColumn >= 0) {
-          this.cmbConstraintColumn.SelectedItem = (matrix.ColumnNames.ElementAt(Content.ConstraintColumn));
+         if (!string.IsNullOrEmpty(Content.ConstraintColumn)) {
+          this.cmbConstraintColumn.SelectedItem = Content.ConstraintColumn;
           if (Content.ConstraintData != null)
             txtConstraintData.Text = Content.ConstraintData.GetValue();
           else

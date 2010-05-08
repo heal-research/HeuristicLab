@@ -99,11 +99,11 @@
     <Compile Include="BatchRunView.Designer.cs">
       <DependentUpon>BatchRunView.cs</DependentUpon>
     </Compile>
-    <Compile Include="RunCollectioComparisonConstraintView.cs">
+    <Compile Include="RunCollectionComparisonConstraintView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="RunCollectioComparisonConstraintView.Designer.cs">
-      <DependentUpon>RunCollectioComparisonConstraintView.cs</DependentUpon>
+    <Compile Include="RunCollectionComparisonConstraintView.Designer.cs">
+      <DependentUpon>RunCollectionComparisonConstraintView.cs</DependentUpon>
     </Compile>
     <Compile Include="RunCollectionTypeCompatibilityConstraintView.cs">
       <SubType>UserControl</SubType>
