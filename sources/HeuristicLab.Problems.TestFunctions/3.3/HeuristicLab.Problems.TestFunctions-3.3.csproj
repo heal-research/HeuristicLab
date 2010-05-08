@@ -123,7 +123,6 @@
     <Compile Include="MoveEvaluators\LevyAdditiveMoveEvaluator.cs" />
     <Compile Include="MoveEvaluators\AdditiveMoveEvaluator.cs" />
     <Compile Include="MoveEvaluators\RealVectorAdditiveMoveWrapper.cs" />
-    <Compile Include="RealVectorToRealVectorDecoder.cs" />
     <Compile Include="RealVectorToRealVectorEncoder.cs" />
     <Compile Include="SingleObjectiveTestFunctionSolution.cs" />
     <Compile Include="SingleObjectiveTestFunctionProblem.cs" />
