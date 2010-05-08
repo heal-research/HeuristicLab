@@ -181,14 +181,18 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
     #region forwarding of view events
     protected override void OnReadOnlyChanged() {
+      this.SuspendRepaint();
       base.OnReadOnlyChanged();
       foreach (IContentView view in cachedViews.Values)
         view.ReadOnly = this.ReadOnly;
+      this.ResumeRepaint(true);
     }
     protected override void OnLockedChanged() {
+      this.SuspendRepaint();
       base.OnLockedChanged();
       foreach (IContentView view in cachedViews.Values)
         view.Locked = this.Locked;
+      this.ResumeRepaint(true);
     }
     internal protected override void OnShown(ViewShownEventArgs e) {
       base.OnShown(e);
