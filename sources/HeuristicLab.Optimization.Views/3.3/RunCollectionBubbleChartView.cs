@@ -42,6 +42,10 @@ namespace HeuristicLab.Optimization.Views {
     private enum SizeDimension { Constant = 0 }
     private enum AxisDimension { Index = 0 }
 
+    private string xAxisValue;
+    private string yAxisValue;
+    private string sizeAxisValue;
+
     private Dictionary<int, Dictionary<object, double>> categoricalMapping;
     private Dictionary<IRun, double> xJitter;
     private Dictionary<IRun, double> yJitter;
@@ -226,9 +230,18 @@ namespace HeuristicLab.Optimization.Views {
       double? sizeValue;
       Series series = this.chart.Series[0];
       int row = this.Content.ToList().IndexOf(run);
-      xValue = GetValue(run, (string)xAxisComboBox.SelectedItem);
-      yValue = GetValue(run, (string)yAxisComboBox.SelectedItem);
-      sizeValue = GetValue(run, (string)sizeComboBox.SelectedItem);
+
+      if (!xAxisComboBox.DroppedDown)
+        this.xAxisValue = (string)xAxisComboBox.SelectedItem;
+      if (!yAxisComboBox.DroppedDown)
+        this.yAxisValue = (string)yAxisComboBox.SelectedItem;
+      if (!sizeComboBox.DroppedDown)
+        this.sizeAxisValue = (string)sizeComboBox.SelectedItem;
+
+      xValue = GetValue(run, this.xAxisValue);
+      yValue = GetValue(run, this.yAxisValue);
+      sizeValue = GetValue(run, this.sizeAxisValue);
+
       if (xValue.HasValue && yValue.HasValue && sizeValue.HasValue) {
         xValue = xValue.Value;
         if (!xJitterFactor.IsAlmost(0.0))
