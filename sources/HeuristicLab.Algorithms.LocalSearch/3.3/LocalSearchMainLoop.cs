@@ -248,5 +248,11 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       iterationsTermination.FalseBranch = mainProcessor;
       #endregion
     }
+
+    public override IOperation Apply() {
+      if (MoveGeneratorParameter.ActualValue == null || MoveEvaluatorParameter.ActualValue == null || MoveMakerParameter.ActualValue == null)
+        return null;
+      return base.Apply();
+    }
   }
 }

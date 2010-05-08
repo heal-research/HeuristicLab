@@ -327,5 +327,11 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       generationsTerminationCondition.Successor = null;
       #endregion
     }
+
+    public override IOperation Apply() {
+      if (CrossoverParameter.ActualValue == null)
+        return null;
+      return base.Apply();
+    }
   }
 }

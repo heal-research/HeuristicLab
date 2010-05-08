@@ -435,5 +435,11 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       maximumGenerationsTerminationCondition.Successor = null;
       #endregion
     }
+
+    public override IOperation Apply() {
+      if (CrossoverParameter.ActualValue == null)
+        return null;
+      return base.Apply();
+    }
   }
 }

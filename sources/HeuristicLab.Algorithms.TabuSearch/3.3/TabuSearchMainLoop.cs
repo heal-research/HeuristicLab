@@ -277,5 +277,12 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       iterationsTermination.FalseBranch = solutionProcessor;
       #endregion
     }
+
+    public override IOperation Apply() {
+      if (MoveGeneratorParameter.ActualValue == null || MoveEvaluatorParameter.ActualValue == null || MoveMakerParameter.ActualValue == null
+        || TabuCheckerParameter.ActualValue == null || TabuMakerParameter.ActualValue == null)
+        return null;
+      return base.Apply();
+    }
   }
 }

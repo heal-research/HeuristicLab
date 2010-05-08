@@ -214,5 +214,11 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       iterationsTermination.FalseBranch = annealingOperator;
       #endregion
     }
+
+    public override IOperation Apply() {
+      if (MoveGeneratorParameter.ActualValue == null || MoveEvaluatorParameter.ActualValue == null || MoveMakerParameter.ActualValue == null)
+        return null;
+      return base.Apply();
+    }
   }
 }
