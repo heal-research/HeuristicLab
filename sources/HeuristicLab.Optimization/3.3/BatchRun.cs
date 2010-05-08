@@ -21,10 +21,11 @@
 
 using System;
 using System.Drawing;
+using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Collections;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
@@ -82,7 +83,7 @@ namespace HeuristicLab.Optimization {
           algorithm = value;
           if (algorithm != null) RegisterAlgorithmEvents();
           OnAlgorithmChanged();
-          Prepare(true);
+          Prepare();
         }
       }
     }
@@ -95,16 +96,26 @@ namespace HeuristicLab.Optimization {
         if (repetitions != value) {
           repetitions = value;
           OnRepetitionsChanged();
-          if ((runs.Count < repetitions) && (Algorithm != null) && (Algorithm.ExecutionState == ExecutionState.Stopped))
+          if ((Algorithm != null) && (Algorithm.ExecutionState == ExecutionState.Stopped))
             Prepare();
         }
       }
     }
+    [Storable]
+    private int repetitionsCounter;
 
     [Storable]
     private RunCollection runs;
     public RunCollection Runs {
       get { return runs; }
+      private set {
+        if (value == null) throw new ArgumentNullException();
+        if (runs != value) {
+          if (runs != null) DeregisterRunsEvents();
+          runs = value;
+          if (runs != null) RegisterRunsEvents();
+        }
+      }
     }
 
     private bool stopPending;
@@ -116,7 +127,8 @@ namespace HeuristicLab.Optimization {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
       repetitions = 10;
-      runs = new RunCollection();
+      repetitionsCounter = 0;
+      Runs = new RunCollection();
       stopPending = false;
     }
     public BatchRun(string name)
@@ -125,7 +137,8 @@ namespace HeuristicLab.Optimization {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
       repetitions = 10;
-      runs = new RunCollection();
+      repetitionsCounter = 0;
+      Runs = new RunCollection();
       stopPending = false;
     }
     public BatchRun(string name, string description)
@@ -133,7 +146,8 @@ namespace HeuristicLab.Optimization {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
       repetitions = 10;
-      runs = new RunCollection();
+      repetitionsCounter = 0;
+      Runs = new RunCollection();
       stopPending = false;
     }
     [StorableConstructor]
@@ -145,6 +159,7 @@ namespace HeuristicLab.Optimization {
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
       if (algorithm != null) RegisterAlgorithmEvents();
+      if (runs != null) RegisterRunsEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -154,6 +169,7 @@ namespace HeuristicLab.Optimization {
       clone.executionTime = executionTime;
       clone.algorithm = (IAlgorithm)cloner.Clone(algorithm);
       clone.repetitions = repetitions;
+      clone.repetitionsCounter = repetitionsCounter;
       clone.runs = (RunCollection)cloner.Clone(runs);
       clone.stopPending = stopPending;
       clone.Initialize();
@@ -167,10 +183,8 @@ namespace HeuristicLab.Optimization {
       if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused) && (ExecutionState != ExecutionState.Stopped))
         throw new InvalidOperationException(string.Format("Prepare not allowed in execution state \"{0}\".", ExecutionState));
       if (Algorithm != null) {
-        if (clearRuns) {
-          ExecutionTime = TimeSpan.Zero;
-          runs.Clear();
-        }
+        repetitionsCounter = 0;
+        if (clearRuns) runs.Clear();
         Algorithm.Prepare(clearRuns);
       }
     }
@@ -182,13 +196,16 @@ namespace HeuristicLab.Optimization {
     public void Pause() {
       if (ExecutionState != ExecutionState.Started)
         throw new InvalidOperationException(string.Format("Pause not allowed in execution state \"{0}\".", ExecutionState));
-      if (Algorithm != null) Algorithm.Pause();
+      if ((Algorithm != null) && (Algorithm.ExecutionState == ExecutionState.Started))
+        Algorithm.Pause();
     }
     public void Stop() {
       if ((ExecutionState != ExecutionState.Started) && (ExecutionState != ExecutionState.Paused))
         throw new InvalidOperationException(string.Format("Stop not allowed in execution state \"{0}\".", ExecutionState));
       stopPending = true;
-      if (Algorithm != null) Algorithm.Stop();
+      if ((Algorithm != null) &&
+          ((Algorithm.ExecutionState == ExecutionState.Started) || (Algorithm.ExecutionState == ExecutionState.Paused)))
+        Algorithm.Stop();
     }
 
     #region Events
@@ -284,8 +301,9 @@ namespace HeuristicLab.Optimization {
     }
     private void Algorithm_Stopped(object sender, EventArgs e) {
       ExecutionTime += Algorithm.ExecutionTime;
+      repetitionsCounter++;
 
-      if (!stopPending && (runs.Count < repetitions)) {
+      if (!stopPending && (repetitionsCounter < repetitions)) {
         Algorithm.Prepare();
         Algorithm.Start();
       } else {
@@ -301,6 +319,39 @@ namespace HeuristicLab.Optimization {
     }
     private void Algorithm_Runs_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IRun> e) {
       Runs.RemoveRange(e.Items);
+    }
+
+    private void RegisterRunsEvents() {
+      runs.CollectionReset += new CollectionItemsChangedEventHandler<IRun>(Runs_CollectionReset);
+      runs.ItemsRemoved += new CollectionItemsChangedEventHandler<IRun>(Runs_ItemsRemoved);
+    }
+    private void DeregisterRunsEvents() {
+      runs.CollectionReset -= new CollectionItemsChangedEventHandler<IRun>(Runs_CollectionReset);
+      runs.ItemsRemoved -= new CollectionItemsChangedEventHandler<IRun>(Runs_ItemsRemoved);
+    }
+    private void Runs_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRun> e) {
+      foreach (IRun run in e.OldItems) {
+        IItem item;
+        run.Results.TryGetValue("Execution Time", out item);
+        TimeSpanValue executionTime = item as TimeSpanValue;
+        if (executionTime != null) ExecutionTime -= executionTime.Value;
+      }
+      if (Algorithm != null) Algorithm.Runs.RemoveRange(e.OldItems);
+      foreach (IRun run in e.Items) {
+        IItem item;
+        run.Results.TryGetValue("Execution Time", out item);
+        TimeSpanValue executionTime = item as TimeSpanValue;
+        if (executionTime != null) ExecutionTime += executionTime.Value;
+      }
+    }
+    private void Runs_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IRun> e) {
+      foreach (IRun run in e.Items) {
+        IItem item;
+        run.Results.TryGetValue("Execution Time", out item);
+        TimeSpanValue executionTime = item as TimeSpanValue;
+        if (executionTime != null) ExecutionTime -= executionTime.Value;
+      }
+      if (Algorithm != null) Algorithm.Runs.RemoveRange(e.Items);
     }
     #endregion
   }

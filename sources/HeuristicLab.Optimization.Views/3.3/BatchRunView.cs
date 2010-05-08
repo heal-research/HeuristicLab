@@ -197,14 +197,7 @@ namespace HeuristicLab.Optimization.Views {
       Content.Stop();
     }
     private void resetButton_Click(object sender, EventArgs e) {
-      if (Content.Runs.Count > 0) {
-        if (MessageBox.Show(this, "Clear all runs executed so far?", "Clear All Runs?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
-          Content.Prepare(true);
-        else
-          Content.Prepare(false);
-      } else {
-        Content.Prepare();
-      }
+      Content.Prepare(false);
     }
     private void algorithmPanel_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;

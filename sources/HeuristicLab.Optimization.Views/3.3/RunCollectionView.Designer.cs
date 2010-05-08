@@ -53,7 +53,6 @@ namespace HeuristicLab.Optimization.Views {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RunCollectionView));
       this.splitContainer = new System.Windows.Forms.SplitContainer();
       this.toolStrip = new System.Windows.Forms.ToolStrip();
       this.analyzeRunsToolStripDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
@@ -69,6 +68,7 @@ namespace HeuristicLab.Optimization.Views {
       this.runPage = new System.Windows.Forms.TabPage();
       this.constraintPage = new System.Windows.Forms.TabPage();
       this.runCollectionConstraintCollectionView = new HeuristicLab.Core.Views.RunCollectionConstraintCollectionView();
+      this.clearButton = new System.Windows.Forms.Button();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
@@ -89,6 +89,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // splitContainer.Panel1
       // 
+      this.splitContainer.Panel1.Controls.Add(this.clearButton);
       this.splitContainer.Panel1.Controls.Add(this.toolStrip);
       this.splitContainer.Panel1.Controls.Add(this.itemsListView);
       this.splitContainer.Panel1.Controls.Add(this.removeButton);
@@ -112,7 +113,7 @@ namespace HeuristicLab.Optimization.Views {
             this.analyzeRunsToolStripDropDownButton});
       this.toolStrip.Location = new System.Drawing.Point(30, 3);
       this.toolStrip.Name = "toolStrip";
-      this.toolStrip.Size = new System.Drawing.Size(217, 24);
+      this.toolStrip.Size = new System.Drawing.Size(166, 24);
       this.toolStrip.TabIndex = 1;
       this.toolStrip.Text = "toolStrip1";
       // 
@@ -140,7 +141,7 @@ namespace HeuristicLab.Optimization.Views {
       this.itemsListView.ShowItemToolTips = true;
       this.itemsListView.Size = new System.Drawing.Size(244, 295);
       this.itemsListView.SmallImageList = this.imageList;
-      this.itemsListView.TabIndex = 1;
+      this.itemsListView.TabIndex = 3;
       this.itemsListView.UseCompatibleStateImageBehavior = false;
       this.itemsListView.View = System.Windows.Forms.View.Details;
       this.itemsListView.SelectedIndexChanged += new System.EventHandler(this.itemsListView_SelectedIndexChanged);
@@ -217,7 +218,7 @@ namespace HeuristicLab.Optimization.Views {
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
       this.tabControl.Size = new System.Drawing.Size(532, 383);
-      this.tabControl.TabIndex = 1;
+      this.tabControl.TabIndex = 0;
       // 
       // runPage
       // 
@@ -252,6 +253,19 @@ namespace HeuristicLab.Optimization.Views {
       this.runCollectionConstraintCollectionView.Size = new System.Drawing.Size(518, 351);
       this.runCollectionConstraintCollectionView.TabIndex = 0;
       // 
+      // clearButton
+      // 
+      this.clearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.clearButton.Enabled = false;
+      this.clearButton.Location = new System.Drawing.Point(199, 3);
+      this.clearButton.Name = "clearButton";
+      this.clearButton.Size = new System.Drawing.Size(48, 24);
+      this.clearButton.TabIndex = 2;
+      this.clearButton.Text = "&Clear";
+      this.toolTip.SetToolTip(this.clearButton, "Remove All Runs");
+      this.clearButton.UseVisualStyleBackColor = true;
+      this.clearButton.Click += new System.EventHandler(this.clearButton_Click);
+      // 
       // RunCollectionView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -285,9 +299,10 @@ namespace HeuristicLab.Optimization.Views {
     protected HeuristicLab.MainForm.WindowsForms.ViewHost viewHost;
     protected ToolStrip toolStrip;
     protected ToolStripDropDownButton analyzeRunsToolStripDropDownButton;
-    private TabControl tabControl;
-    private TabPage runPage;
-    private TabPage constraintPage;
-    private HeuristicLab.Core.Views.RunCollectionConstraintCollectionView runCollectionConstraintCollectionView;
+    protected TabControl tabControl;
+    protected TabPage runPage;
+    protected TabPage constraintPage;
+    protected HeuristicLab.Core.Views.RunCollectionConstraintCollectionView runCollectionConstraintCollectionView;
+    protected Button clearButton;
   }
 }

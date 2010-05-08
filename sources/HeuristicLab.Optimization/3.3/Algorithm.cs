@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -96,6 +97,14 @@ namespace HeuristicLab.Optimization {
     private RunCollection runs;
     public RunCollection Runs {
       get { return runs; }
+      protected set {
+        if (value == null) throw new ArgumentNullException();
+        if (runs != value) {
+          if (runs != null) DeregisterRunsEvents();
+          runs = value;
+          if (runs != null) RegisterRunsEvents();
+        }
+      }
     }
 
     protected Algorithm()
@@ -103,35 +112,35 @@ namespace HeuristicLab.Optimization {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
       runsCounter = 0;
-      runs = new RunCollection();
+      Runs = new RunCollection();
     }
     protected Algorithm(string name)
       : base(name) {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
       runsCounter = 0;
-      runs = new RunCollection();
+      Runs = new RunCollection();
     }
     protected Algorithm(string name, ParameterCollection parameters)
       : base(name, parameters) {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
       runsCounter = 0;
-      runs = new RunCollection();
+      Runs = new RunCollection();
     }
     protected Algorithm(string name, string description)
       : base(name, description) {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
       runsCounter = 0;
-      runs = new RunCollection();
+      Runs = new RunCollection();
     }
     protected Algorithm(string name, string description, ParameterCollection parameters)
       : base(name, description, parameters) {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
       runsCounter = 0;
-      runs = new RunCollection();
+      Runs = new RunCollection();
     }
     [StorableConstructor]
     protected Algorithm(bool deserializing) : base(deserializing) { }
@@ -139,6 +148,7 @@ namespace HeuristicLab.Optimization {
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
       if (problem != null) RegisterProblemEvents();
+      if (runs != null) RegisterRunsEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -175,10 +185,7 @@ namespace HeuristicLab.Optimization {
     public void Prepare(bool clearRuns) {
       if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused) && (ExecutionState != ExecutionState.Stopped))
         throw new InvalidOperationException(string.Format("Prepare not allowed in execution state \"{0}\".", ExecutionState));
-      if (clearRuns) {
-        runsCounter = 0;
-        runs.Clear();
-      }
+      if (clearRuns) runs.Clear();
       Prepare();
     }
     public virtual void Start() {
@@ -263,10 +270,19 @@ namespace HeuristicLab.Optimization {
       problem.EvaluatorChanged += new EventHandler(Problem_EvaluatorChanged);
       problem.OperatorsChanged += new EventHandler(Problem_OperatorsChanged);
     }
-
     protected virtual void Problem_SolutionCreatorChanged(object sender, EventArgs e) { }
     protected virtual void Problem_EvaluatorChanged(object sender, EventArgs e) { }
     protected virtual void Problem_OperatorsChanged(object sender, EventArgs e) { }
+
+    protected virtual void DeregisterRunsEvents() {
+      runs.CollectionReset -= new CollectionItemsChangedEventHandler<IRun>(Runs_CollectionReset);
+    }
+    protected virtual void RegisterRunsEvents() {
+      runs.CollectionReset += new CollectionItemsChangedEventHandler<IRun>(Runs_CollectionReset);
+    }
+    protected virtual void Runs_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRun> e) {
+      runsCounter = runs.Count;
+    }
     #endregion
   }
 }

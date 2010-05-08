@@ -130,12 +130,14 @@ namespace HeuristicLab.Optimization.Views {
         detailsGroupBox.Enabled = false;
         viewHost.Enabled = false;
         removeButton.Enabled = false;
+        clearButton.Enabled = false;
       } else {
         analyzeRunsToolStripDropDownButton.Enabled = itemsListView.Items.Count > 0;
         runCollectionConstraintCollectionView.ReadOnly = itemsListView.Items.Count == 0;
         itemsListView.Enabled = true;
         detailsGroupBox.Enabled = true;
         removeButton.Enabled = itemsListView.SelectedItems.Count > 0 && !Content.IsReadOnly && !ReadOnly;
+        clearButton.Enabled = itemsListView.Items.Count > 0 && !Content.IsReadOnly && !ReadOnly;
         viewHost.Enabled = true;
       }
     }
@@ -267,6 +269,9 @@ namespace HeuristicLab.Optimization.Views {
         itemsListView.SelectedItems.Clear();
       }
     }
+    protected virtual void clearButton_Click(object sender, EventArgs e) {
+      Content.Clear();
+    }
     #endregion
 
     #region Content Events
@@ -278,6 +283,7 @@ namespace HeuristicLab.Optimization.Views {
         foreach (IRun item in e.Items)
           AddListViewItem(CreateListViewItem(item));
         analyzeRunsToolStripDropDownButton.Enabled = itemsListView.Items.Count > 0;
+        clearButton.Enabled = itemsListView.Items.Count > 0 && !Content.IsReadOnly && !ReadOnly;
         runCollectionConstraintCollectionView.ReadOnly = itemsListView.Items.Count == 0;
       }
     }
@@ -293,6 +299,7 @@ namespace HeuristicLab.Optimization.Views {
           }
         }
         analyzeRunsToolStripDropDownButton.Enabled = itemsListView.Items.Count > 0;
+        clearButton.Enabled = itemsListView.Items.Count > 0 && !Content.IsReadOnly && !ReadOnly;
         runCollectionConstraintCollectionView.ReadOnly = itemsListView.Items.Count == 0;
       }
     }
@@ -311,6 +318,7 @@ namespace HeuristicLab.Optimization.Views {
         foreach (IRun item in e.Items)
           AddListViewItem(CreateListViewItem(item));
         analyzeRunsToolStripDropDownButton.Enabled = itemsListView.Items.Count > 0;
+        clearButton.Enabled = itemsListView.Items.Count > 0 && !Content.IsReadOnly && !ReadOnly;
         runCollectionConstraintCollectionView.ReadOnly = itemsListView.Items.Count == 0;
       }
     }
@@ -356,6 +364,7 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
     #endregion
+
   }
 }
 

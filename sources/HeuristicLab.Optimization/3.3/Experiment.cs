@@ -78,6 +78,14 @@ namespace HeuristicLab.Optimization {
     private RunCollection runs;
     public RunCollection Runs {
       get { return runs; }
+      private set {
+        if (value == null) throw new ArgumentNullException();
+        if (runs != value) {
+          if (runs != null) DeregisterRunsEvents();
+          runs = value;
+          if (runs != null) RegisterRunsEvents();
+        }
+      }
     }
 
     private bool stopPending;
@@ -89,7 +97,7 @@ namespace HeuristicLab.Optimization {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
       optimizers = new OptimizerList();
-      runs = new RunCollection();
+      Runs = new RunCollection();
       stopPending = false;
       Initialize();
     }
@@ -99,7 +107,7 @@ namespace HeuristicLab.Optimization {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
       optimizers = new OptimizerList();
-      runs = new RunCollection();
+      Runs = new RunCollection();
       stopPending = false;
       Initialize();
     }
@@ -108,7 +116,7 @@ namespace HeuristicLab.Optimization {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
       optimizers = new OptimizerList();
-      runs = new RunCollection();
+      Runs = new RunCollection();
       stopPending = false;
       Initialize();
     }
@@ -123,6 +131,7 @@ namespace HeuristicLab.Optimization {
       RegisterOptimizersEvents();
       foreach (IOptimizer optimizer in optimizers)
         RegisterOptimizerEvents(optimizer);
+      if (runs != null) RegisterRunsEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -235,11 +244,13 @@ namespace HeuristicLab.Optimization {
       }
       foreach (IndexedItem<IOptimizer> item in e.Items) {
         RegisterOptimizerEvents(item.Value);
+        item.Value.Prepare();
       }
     }
     private void Optimizers_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<IOptimizer>> e) {
       foreach (IndexedItem<IOptimizer> item in e.Items) {
         RegisterOptimizerEvents(item.Value);
+        item.Value.Prepare();
       }
     }
     private void Optimizers_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<IOptimizer>> e) {
@@ -253,6 +264,7 @@ namespace HeuristicLab.Optimization {
       }
       foreach (IndexedItem<IOptimizer> item in e.Items) {
         RegisterOptimizerEvents(item.Value);
+        item.Value.Prepare();
       }
     }
 
@@ -315,6 +327,23 @@ namespace HeuristicLab.Optimization {
     }
     private void optimizer_Runs_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IRun> e) {
       Runs.RemoveRange(e.Items);
+    }
+
+    private void RegisterRunsEvents() {
+      runs.CollectionReset += new CollectionItemsChangedEventHandler<IRun>(Runs_CollectionReset);
+      runs.ItemsRemoved += new CollectionItemsChangedEventHandler<IRun>(Runs_ItemsRemoved);
+    }
+    private void DeregisterRunsEvents() {
+      runs.CollectionReset -= new CollectionItemsChangedEventHandler<IRun>(Runs_CollectionReset);
+      runs.ItemsRemoved -= new CollectionItemsChangedEventHandler<IRun>(Runs_ItemsRemoved);
+    }
+    private void Runs_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRun> e) {
+      foreach (IOptimizer optimizer in Optimizers)
+        optimizer.Runs.RemoveRange(e.OldItems);
+    }
+    private void Runs_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IRun> e) {
+      foreach (IOptimizer optimizer in Optimizers)
+        optimizer.Runs.RemoveRange(e.Items);
     }
     #endregion
   }

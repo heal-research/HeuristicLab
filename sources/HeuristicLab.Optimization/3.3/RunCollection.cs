@@ -29,8 +29,9 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Collections;
 
 namespace HeuristicLab.Optimization {
+  [Item("Run Collection", "Represents a collection of runs.")]
+  [Creatable("Testing & Analysis")]
   [StorableClass]
-  [Item("RunCollection", "Represents a collection of runs.")]
   public class RunCollection : ItemCollection<IRun>, IStringConvertibleMatrix {
     public RunCollection() : base() { Initialize(); }
     public RunCollection(int capacity) : base(capacity) { Initialize(); }
