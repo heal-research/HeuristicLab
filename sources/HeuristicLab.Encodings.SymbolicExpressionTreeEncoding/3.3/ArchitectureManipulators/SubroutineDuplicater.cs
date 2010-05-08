@@ -58,13 +58,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureMani
       int maxTreeSize, int maxTreeHeight,
       int maxFunctionDefiningBranches, int maxFunctionArguments) {
       var functionDefiningBranches = symbolicExpressionTree.IterateNodesPrefix().OfType<DefunTreeNode>();
+      if (functionDefiningBranches.Count() == 0 || functionDefiningBranches.Count() == maxFunctionDefiningBranches)
+        // no function defining branches to duplicate or already reached the max number of ADFs
+        return false;
 
       string formatString = new StringBuilder().Append('0', (int)Math.Log10(maxFunctionDefiningBranches) + 1).ToString(); // >= 100 functions => ###
       var allowedFunctionNames = from index in Enumerable.Range(0, maxFunctionDefiningBranches)
                                  select "ADF" + index.ToString(formatString);
-      if (functionDefiningBranches.Count() == 0 || functionDefiningBranches.Count() == maxFunctionDefiningBranches)
-        // no function defining branches to duplicate or already reached the max number of ADFs
-        return false;
       var selectedBranch = functionDefiningBranches.SelectRandom(random);
       var duplicatedDefunBranch = (DefunTreeNode)selectedBranch.Clone();
       string newFunctionName = allowedFunctionNames.Except(UsedFunctionNames(symbolicExpressionTree)).First();
