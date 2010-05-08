@@ -176,6 +176,8 @@ namespace HeuristicLab.Data.Views {
 
     #region TextBox Events
     private void rowsTextBox_Validating(object sender, CancelEventArgs e) {
+      if (ReadOnly || Locked)
+        return;
       int i = 0;
       if (!int.TryParse(rowsTextBox.Text, out i) || (i <= 0)) {
         e.Cancel = true;
@@ -196,6 +198,8 @@ namespace HeuristicLab.Data.Views {
       }
     }
     private void columnsTextBox_Validating(object sender, CancelEventArgs e) {
+      if (ReadOnly || Locked)
+        return;
       int i = 0;
       if (!int.TryParse(columnsTextBox.Text, out i) || (i <= 0)) {
         e.Cancel = true;
