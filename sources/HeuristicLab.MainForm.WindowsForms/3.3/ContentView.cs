@@ -48,11 +48,13 @@ namespace HeuristicLab.MainForm.WindowsForms {
           Invoke(new Action<IContent>(delegate(IContent o) { this.Content = o; }), value);
         } else {
           if (this.content != value) {
+            this.SuspendRepaint();
             if (this.content != null) this.DeregisterContentEvents();
             this.content = value;
             if (this.content != null) this.RegisterContentEvents();
             this.OnContentChanged();
             this.OnChanged();
+            this.ResumeRepaint(true);
           }
         }
       }
@@ -67,11 +69,13 @@ namespace HeuristicLab.MainForm.WindowsForms {
           Invoke(action, value);
         } else {
           if (value != locked) {
+            this.SuspendRepaint();
             locked = value;
             PropertyInfo prop = typeof(IContentView).GetProperty("Locked");
             PropagateStateChanges(this, typeof(IContentView), prop);
             OnLockedChanged();
             OnChanged();
+            this.ResumeRepaint(true);
           }
         }
       }

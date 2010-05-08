@@ -61,10 +61,12 @@ namespace HeuristicLab.MainForm.WindowsForms {
           Invoke(action, value);
         } else {
           if (value != readOnly) {
+            this.SuspendRepaint();
             readOnly = value;
             PropertyInfo prop = typeof(IView).GetProperty("ReadOnly");
             PropagateStateChanges(this, typeof(IView), prop);
             OnReadOnlyChanged();
+            this.ResumeRepaint(true);
           }
         }
       }
