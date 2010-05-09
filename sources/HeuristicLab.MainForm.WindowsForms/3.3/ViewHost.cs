@@ -107,9 +107,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
           viewPanel.Visible = true;
         }
 
-        if (!ViewCanShowContent(viewType, Content)) {
+        Type defaultViewType = MainFormManager.GetDefaultViewType(Content.GetType());
+        if (!ViewCanShowContent(viewType, Content) || defaultViewType != this.ViewType) {
           cachedViews.Clear();
-          ViewType = MainFormManager.GetDefaultViewType(Content.GetType());
+          ViewType = defaultViewType;
           if ((viewType == null) && (viewContextMenuStrip.Items.Count > 0))  // create first available view if default view is not available
             ViewType = (Type)viewContextMenuStrip.Items[0].Tag;
         }
