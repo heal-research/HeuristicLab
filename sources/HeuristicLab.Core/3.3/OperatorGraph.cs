@@ -141,12 +141,12 @@ namespace HeuristicLab.Core {
       DeregisterOperatorEvents(op);
 
       // remove edges to removed operator
-      var opParams = from o in Operators
-                     from p in o.Parameters
-                     where p is IValueParameter
-                     where typeof(IOperator).IsAssignableFrom(((IValueParameter)p).DataType)
-                     where (((IValueParameter)p).Value != null) && (((IValueParameter)p).Value == op)
-                     select (IValueParameter)p;
+      IValueParameter[] opParams = (from o in Operators
+                                    from p in o.Parameters
+                                    where p is IValueParameter
+                                    where typeof(IOperator).IsAssignableFrom(((IValueParameter)p).DataType)
+                                    where (((IValueParameter)p).Value != null) && (((IValueParameter)p).Value == op)
+                                    select (IValueParameter)p).ToArray();
       foreach (IValueParameter opParam in opParams)
         opParam.Value = null;
     }

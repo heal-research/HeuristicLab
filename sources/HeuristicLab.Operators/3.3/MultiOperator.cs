@@ -85,7 +85,7 @@ namespace HeuristicLab.Operators {
       }
       operatorParameters.Clear();
       for (int i = 0; i < Operators.Count; i++) {
-        IValueParameter<T> opParam = new ValueParameter<T>(i.ToString(), string.Empty, Operators[i]);
+        IValueParameter<T> opParam = new OptionalValueParameter<T>(i.ToString(), string.Empty, Operators[i]);
         opParam.ValueChanged += new EventHandler(opParam_ValueChanged);
         Parameters.Add(opParam);
         operatorParameters.Add(opParam);
@@ -126,7 +126,10 @@ namespace HeuristicLab.Operators {
     }
     private void opParam_ValueChanged(object sender, EventArgs e) {
       IValueParameter<T> opParam = (IValueParameter<T>)sender;
-      operators[operatorParameters.IndexOf(opParam)] = opParam.Value;
+      if (opParam.Value == null)
+        operators.RemoveAt(operatorParameters.IndexOf(opParam));
+      else
+        operators[operatorParameters.IndexOf(opParam)] = opParam.Value;
     }
     #endregion
   }

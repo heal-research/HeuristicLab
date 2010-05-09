@@ -224,11 +224,13 @@ namespace HeuristicLab.Core.Views {
         Invoke(new EventHandler(opParam_ValueChanged), sender, e);
       else {
         IValueParameter opParam = (IValueParameter)sender;
-        foreach (TreeNode node in opParamNodeTable[opParam].ToArray())
-          ClearTreeNode(node);
-        foreach (TreeNode node in opParamNodeTable[opParam]) {
-          node.Text = opParam.Name + ": ";
-          FillTreeNode(node, (IOperator)opParam.Value);
+        if (opParamNodeTable.ContainsKey(opParam)) {
+          foreach (TreeNode node in opParamNodeTable[opParam].ToArray())
+            ClearTreeNode(node);
+          foreach (TreeNode node in opParamNodeTable[opParam]) {
+            node.Text = opParam.Name + ": ";
+            FillTreeNode(node, (IOperator)opParam.Value);
+          }
         }
       }
     }

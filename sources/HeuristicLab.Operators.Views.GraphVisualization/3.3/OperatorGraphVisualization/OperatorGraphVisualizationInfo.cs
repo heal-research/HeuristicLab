@@ -362,16 +362,18 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
     private void opParam_ValueChanged(object sender, EventArgs e) {
       IValueParameter opParam = (IValueParameter)sender;
-      IOperator op = this.parameterOperatorMapping[opParam];
-      IOperatorShapeInfo shapeInfoFrom = this.operatorShapeInfoMapping.GetByFirst(op);
-      KeyValuePair<IOperatorShapeInfo, string> connectionFrom = new KeyValuePair<IOperatorShapeInfo, string>(shapeInfoFrom, opParam.Name);
+      if (this.parameterOperatorMapping.ContainsKey(opParam)) {
+        IOperator op = this.parameterOperatorMapping[opParam];
+        IOperatorShapeInfo shapeInfoFrom = this.operatorShapeInfoMapping.GetByFirst(op);
+        KeyValuePair<IOperatorShapeInfo, string> connectionFrom = new KeyValuePair<IOperatorShapeInfo, string>(shapeInfoFrom, opParam.Name);
 
-      this.connectionInfos.RemoveWhere(c => c.From == shapeInfoFrom && c.ConnectorFrom == opParam.Name);
-      if (opParam.Value != null) {
-        if (!this.operatorShapeInfoMapping.ContainsFirst((IOperator)opParam.Value))
-          this.AddOperator((IOperator)opParam.Value);
-        IOperatorShapeInfo shapeInfoTo = this.operatorShapeInfoMapping.GetByFirst((IOperator)opParam.Value);
-        base.AddConnectionInfo(new ConnectionInfo(shapeInfoFrom, opParam.Name, shapeInfoTo, OperatorShapeInfoFactory.PredecessorConnector));
+        this.connectionInfos.RemoveWhere(c => c.From == shapeInfoFrom && c.ConnectorFrom == opParam.Name);
+        if (opParam.Value != null) {
+          if (!this.operatorShapeInfoMapping.ContainsFirst((IOperator)opParam.Value))
+            this.AddOperator((IOperator)opParam.Value);
+          IOperatorShapeInfo shapeInfoTo = this.operatorShapeInfoMapping.GetByFirst((IOperator)opParam.Value);
+          base.AddConnectionInfo(new ConnectionInfo(shapeInfoFrom, opParam.Name, shapeInfoTo, OperatorShapeInfoFactory.PredecessorConnector));
+        }
       }
     }
 
