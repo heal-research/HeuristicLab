@@ -317,8 +317,8 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       Bitmap bitmap = ImageExporter.FromBundle(new Bundle(this.graphVisualizationInfoView.Controller.Model.Paintables), this.graphVisualizationInfoView.Controller.View.Graphics);
       SaveFileDialog saveFileDialog = new SaveFileDialog();
       saveFileDialog.Title = "Save Screenshot";
-      saveFileDialog.DefaultExt = "bmp";
-      saveFileDialog.Filter = "Bitmap|*.bmp|All Files|*.*";
+      saveFileDialog.DefaultExt = "png";
+      saveFileDialog.Filter = "Portable Network Graphics|*.png|All Files|*.*";
       saveFileDialog.FilterIndex = 1;
       saveFileDialog.AddExtension = true;
 
