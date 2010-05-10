@@ -71,7 +71,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       var localPlugin = plugin as PluginDescription;
       if (localPlugin != null) {
         stateTextBox.Text = localPlugin.PluginState.ToString();
-        errorTextBox.Text = localPlugin.LoadingErrorInformation;
+        errorTextBox.Text = localPlugin.LoadingErrorInformation.Replace(Environment.NewLine, " ");
         toolTip.SetToolTip(stateTextBox, stateTextBox.Text + Environment.NewLine + errorTextBox.Text);
         toolTip.SetToolTip(errorTextBox, errorTextBox.Text);
       }

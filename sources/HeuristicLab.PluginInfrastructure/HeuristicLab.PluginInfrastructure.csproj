@@ -267,9 +267,6 @@
     <Content Include="Resources\VS2008ImageLibrary_CommonElements_Actions_Add.png" />
     <Content Include="Resources\VS2008ImageLibrary_Objects_Plugin.png" />
     <EmbeddedResource Include="Advanced\DeploymentService\servdev.cer" />
-    <EmbeddedResource Include="Advanced\PluginView.resx">
-      <DependentUpon>PluginView.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
