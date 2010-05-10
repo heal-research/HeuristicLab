@@ -67,10 +67,11 @@ namespace HeuristicLab.Core.Views {
     }
 
     #region ListView Events
-    protected virtual void itemsListView_ItemChecked(object sender, ItemCheckedEventArgs e) {
-      var checkedItem = (T)e.Item.Tag;
-      if (Content.ItemChecked(checkedItem) != e.Item.Checked) {
-        Content.SetItemCheckedState(checkedItem, e.Item.Checked);
+    protected virtual void itemsListView_ItemCheck(object sender, ItemCheckEventArgs e) {
+      var checkedItem = (T)itemsListView.Items[e.Index].Tag;
+      bool check = e.NewValue == CheckState.Checked;
+      if (Content.ItemChecked(checkedItem) != check) {
+        Content.SetItemCheckedState(checkedItem, check);
       }
     }
     #endregion
