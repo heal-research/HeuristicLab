@@ -33,67 +33,18 @@ namespace HeuristicLab.PluginInfrastructure {
   /// </summary>
   public static class Main {
     /// <summary>
-    /// Main entry point of the plugin infrastructure. Either loads a starter form or a console dialog.
+    /// Main entry point of the plugin infrastructure. Loads the starter form.
     /// </summary>
     /// <param name="args">Command line arguments</param>
     public static void Run(string[] args) {
-      if (args.Length == 0) {  // normal mode
-        try {
-          Application.EnableVisualStyles();
-          Application.SetCompatibleTextRenderingDefault(false);
-          Application.Run(new StarterForm());
-        }
-        catch (Exception ex) {
-          ShowErrorMessageBox(ex);
-        }
-
-      } else {
-        var cmd = args[0].ToUpperInvariant();
-        string pluginDir = Path.GetFullPath(Application.StartupPath);
-        switch (cmd) {
-          case "START": {
-              if (args.Length != 2) {
-                PrintUsage();
-              } else {
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new StarterForm(args[1]));
-              }
-              break;
-            }
-          case "SHOW": {
-              InstallationManagerConsole managerConsole = new InstallationManagerConsole(pluginDir);
-              managerConsole.Show(args.Skip(1));
-              break;
-            }
-          case "INSTALL": {
-              InstallationManagerConsole managerConsole = new InstallationManagerConsole(pluginDir);
-              managerConsole.Install(args.Skip(1));
-              break;
-            }
-          case "UPDATE": {
-              InstallationManagerConsole managerConsole = new InstallationManagerConsole(pluginDir);
-              managerConsole.Update(args.Skip(1));
-              break;
-            }
-          case "REMOVE": {
-              InstallationManagerConsole managerConsole = new InstallationManagerConsole(pluginDir);
-              managerConsole.Remove(args.Skip(1));
-              break;
-            }
-          default: PrintUsage(); break;
-        }
+      try {
+        Application.EnableVisualStyles();
+        Application.SetCompatibleTextRenderingDefault(false);
+        Application.Run(new StarterForm());
       }
-    }
-
-    private static void PrintUsage() {
-      Console.WriteLine("Usage: HeuristicLab.exe <command> <args>");
-      Console.WriteLine("Commands:");
-      Console.WriteLine("\tstart <application name>");
-      Console.WriteLine("\tshow <plugin name(s)>");
-      Console.WriteLine("\tupdate <plugin name(s)>");
-      Console.WriteLine("\tremove <plugin name(s)>");
-      Console.WriteLine("\tinstall <plugin name(s)>");
+      catch (Exception ex) {
+        ShowErrorMessageBox(ex);
+      }
     }
 
     private static void ShowErrorMessageBox(Exception ex) {

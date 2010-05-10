@@ -157,7 +157,6 @@ set Outdir=$(Outdir)
 set Platform=$(PlatformName)
 set Configuration=$(ConfigurationName)
 
-call CreateConsoleApplication.cmd
 call MergeConfigs.cmd
 call CopyAssemblies.cmd
 if exist "%25ProjectDir%25CustomPostBuild.cmd" call CustomPostBuild.cmd</PostBuildEvent>
