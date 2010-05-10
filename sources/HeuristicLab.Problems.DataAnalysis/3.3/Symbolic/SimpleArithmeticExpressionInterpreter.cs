@@ -80,7 +80,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (instr.opCode == OpCodes.Variable) {
         var variableTreeNode = instr.dynamicNode as VariableTreeNode;
         instr.iArg0 = (ushort)dataset.GetVariableIndex(variableTreeNode.VariableName);
-      }
+      } 
       return instr;
     }
 
@@ -137,8 +137,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             // push on argStack in reverse order 
             for (int i = 0; i < currentInstr.nArguments; i++) {
               argumentStack[argStackPointer + currentInstr.nArguments - i] = Evaluate();
-              argStackPointer++;
             }
+            argStackPointer += currentInstr.nArguments;
 
             // save the pc
             int nextPc = pc;

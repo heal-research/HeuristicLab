@@ -67,7 +67,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Compiler {
         if (node.SubTrees.Count > 255) throw new ArgumentException("Number of subtrees is too big (>255)");
         instr.nArguments = (byte)node.SubTrees.Count;
         instr.opCode = opCodeMapper(node);
-        if (branch.Symbol is Argument) {
+        if (node.Symbol is Argument) {
           var argNode = (ArgumentTreeNode)node;
           instr.iArg0 = (ushort)argNode.Symbol.ArgumentIndex;
         }
