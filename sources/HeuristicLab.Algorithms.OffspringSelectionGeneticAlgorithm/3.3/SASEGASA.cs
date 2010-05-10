@@ -331,6 +331,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       ParameterizeMainLoop();
       ParameterizeSelectors();
       ParameterizeAnalyzers();
+      ParameterizeIterationBasedOperators();
       UpdateCrossovers();
       UpdateMutators();
       UpdateAnalyzers();
@@ -354,6 +355,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     }
     protected override void Problem_OperatorsChanged(object sender, EventArgs e) {
       foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
+      ParameterizeIterationBasedOperators();
       UpdateCrossovers();
       UpdateMutators();
       UpdateAnalyzers();
@@ -477,6 +479,14 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
         modifier.EndIndexParameter.Value = new IntValue(NumberOfVillages.Value - 1);
         modifier.EndValueParameter.ActualName = ComparisonFactorUpperBoundParameter.Name;
         modifier.ValueParameter.ActualName = "ComparisonFactor";
+      }
+    }
+    private void ParameterizeIterationBasedOperators() {
+      if (Problem != null) {
+        foreach (IIterationBasedOperator op in Problem.Operators.OfType<IIterationBasedOperator>()) {
+          op.IterationsParameter.ActualName = "Generations";
+          op.MaximumIterationsParameter.ActualName = MaximumGenerationsParameter.Name;
+        }
       }
     }
     private void UpdateCrossovers() {

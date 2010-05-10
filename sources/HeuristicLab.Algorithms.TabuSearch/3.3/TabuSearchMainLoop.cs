@@ -147,7 +147,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       ResultsCollector resultsCollector3 = new ResultsCollector();
       ConditionalBranch iterationsTermination = new ConditionalBranch();
 
-      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Iterations", new IntValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Iterations", new IntValue(0))); // Class TabuSearch expects this to be called Iterations
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedMoves", new IntValue(0)));
       variableCreator.CollectedValues.Add(new ValueParameter<BoolValue>("EmptyNeighborhood", new BoolValue(false)));
       variableCreator.CollectedValues.Add(new ValueParameter<ItemList<IItem>>("TabuList", new ItemList<IItem>()));

@@ -86,6 +86,7 @@
     <None Include="HeuristicLabOptimizationPlugin.cs.frame" />
     <Compile Include="Algorithm.cs" />
     <Compile Include="BatchRun.cs" />
+    <Compile Include="Interfaces\IIterationBasedOperator.cs" />
     <Compile Include="Interfaces\IRealVectorDecoder.cs" />
     <Compile Include="Interfaces\IRealVectorEncoder.cs" />
     <Compile Include="RunCollectionConstraints\RunCollectionComparisonConstraint.cs" />

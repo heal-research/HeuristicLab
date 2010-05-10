@@ -190,7 +190,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       ConditionalBranch maximumGenerationsTerminationCondition = new ConditionalBranch();
 
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Reunifications", new IntValue(0)));
-      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Generations", new IntValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Generations", new IntValue(0))); // Class SASEGASA expects this to be called Generations
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("GenerationsSinceLastReunification", new IntValue(0)));
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedSolutions", new IntValue(0)));
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("TerminatedVillages", new IntValue(0)));

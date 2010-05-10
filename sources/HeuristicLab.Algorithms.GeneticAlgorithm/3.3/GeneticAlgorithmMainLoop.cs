@@ -129,7 +129,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Placeholder analyzer2 = new Placeholder();
       ConditionalBranch conditionalBranch = new ConditionalBranch();
 
-      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Generations", new IntValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Generations", new IntValue(0))); // Class GeneticAlgorithm expects this to be called Generations
 
       resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Generations"));
       resultsCollector1.ResultsParameter.ActualName = "Results";

@@ -303,6 +303,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       ParameterizeMainLoop();
       ParameterizeSelectors();
       ParameterizeAnalyzers();
+      ParameterizeIterationBasedOperators();
       UpdateCrossovers();
       UpdateMutators();
       UpdateAnalyzers();
@@ -326,6 +327,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     }
     protected override void Problem_OperatorsChanged(object sender, EventArgs e) {
       foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
+      ParameterizeIterationBasedOperators();
       UpdateCrossovers();
       UpdateMutators();
       UpdateAnalyzers();
@@ -428,6 +430,14 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
         qualityAnalyzer.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
         qualityAnalyzer.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
         qualityAnalyzer.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
+      }
+    }
+    private void ParameterizeIterationBasedOperators() {
+      if (Problem != null) {
+        foreach (IIterationBasedOperator op in Problem.Operators.OfType<IIterationBasedOperator>()) {
+          op.IterationsParameter.ActualName = "Generations";
+          op.MaximumIterationsParameter.ActualName = "MaximumGenerations";
+        }
       }
     }
     private void UpdateCrossovers() {

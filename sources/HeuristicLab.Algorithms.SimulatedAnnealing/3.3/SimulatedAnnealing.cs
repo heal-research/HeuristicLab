@@ -216,11 +216,12 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       ParameterizeMainLoop();
       UpdateMoveGenerator();
       UpdateMoveParameters();
+      UpdateAnalyzers();
       ParameterizeMoveEvaluators();
       ParameterizeMoveMakers();
       ParameterizeMoveGenerators();
       ParameterizeAnalyzers();
-      UpdateAnalyzers();
+      ParameterizeIterationBasedOperators();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.OnProblemChanged();
     }
@@ -254,6 +255,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       ParameterizeMoveEvaluators();
       ParameterizeMoveMakers();
       ParameterizeMoveGenerators();
+      ParameterizeIterationBasedOperators();
       base.Problem_OperatorsChanged(sender, e);
     }
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
@@ -385,6 +387,14 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     private void ParameterizeMoveGenerators() {
       foreach (IMultiMoveGenerator op in Problem.Operators.OfType<IMultiMoveGenerator>()) {
         op.SampleSizeParameter.ActualName = InnerIterationsParameter.Name;
+      }
+    }
+    private void ParameterizeIterationBasedOperators() {
+      if (Problem != null) {
+        foreach (IIterationBasedOperator op in Problem.Operators.OfType<IIterationBasedOperator>()) {
+          op.IterationsParameter.ActualName = "Iterations";
+          op.MaximumIterationsParameter.ActualName = MaximumIterationsParameter.Name;
+        }
       }
     }
     private void UpdateAnalyzers() {

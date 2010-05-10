@@ -23,6 +23,7 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -36,56 +37,55 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// </remarks>
   [Item("MichalewiczNonUniformAllPositionsManipulator", "It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.")]
   [StorableClass]
-  public class MichalewiczNonUniformAllPositionsManipulator : RealVectorManipulator {
+  public class MichalewiczNonUniformAllPositionsManipulator : RealVectorManipulator, IIterationBasedOperator {
     /// <summary>
-    /// The current generation.
+    /// The current iteration.
     /// </summary>
-    public LookupParameter<IntValue> GenerationParameter {
-      get { return (LookupParameter<IntValue>)Parameters["Generations"]; }
+    public ILookupParameter<IntValue> IterationsParameter {
+      get { return (ILookupParameter<IntValue>)Parameters["Iterations"]; }
     }
     /// <summary>
-    /// The maximum generation.
+    /// The maximum iteration.
     /// </summary>
-    public LookupParameter<IntValue> MaximumGenerationsParameter {
-      get { return (LookupParameter<IntValue>)Parameters["MaximumGenerations"]; }
+    public IValueLookupParameter<IntValue> MaximumIterationsParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters["MaximumIterations"]; }
     }
     /// <summary>
-    /// The parameter describing how much the mutation should depend on the progress towards the maximum generation.
+    /// The parameter describing how much the mutation should depend on the progress towards the maximum iteration.
     /// </summary>
-    public ValueLookupParameter<DoubleValue> GenerationDependencyParameter {
-      get { return (ValueLookupParameter<DoubleValue>)Parameters["GenerationDependency"]; }
+    public ValueLookupParameter<DoubleValue> IterationDependencyParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["IterationDependency"]; }
     }
 
     /// <summary>
-    /// Initializes a new instance of <see cref="MichalewiczNonUniformAllPositionsManipulator"/> with
-    /// four parameters (<c>Bounds</c>, <c>CurrentGeneration</c>, 
-    /// <c>MaximumGenerations</c> and <c>GenerationDependency</c>).
+    /// Initializes a new instance of <see cref="MichalewiczNonUniformAllPositionsManipulator"/> with three 
+    /// parameters (<c>Iterations</c>, <c>MaximumIterations</c> and <c>IterationDependency</c>).
     /// </summary>
     public MichalewiczNonUniformAllPositionsManipulator()
       : base() {
-      Parameters.Add(new LookupParameter<IntValue>("Generations", "Current generation of the algorithm"));
-      Parameters.Add(new LookupParameter<IntValue>("MaximumGenerations", "Maximum number of generations"));
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("GenerationDependency", "Specifies the degree of dependency on the number of generations. A value of 0 means no dependency and the higher the value the stronger the progress towards maximum generations will be taken into account by sampling closer around the current position. Value must be >= 0.", new DoubleValue(5)));
+      Parameters.Add(new LookupParameter<IntValue>("Iterations", "Current iteration of the algorithm"));
+      Parameters.Add(new ValueLookupParameter<IntValue>("MaximumIterations", "Maximum number of iterations"));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("IterationDependency", "Specifies the degree of dependency on the number of iterations. A value of 0 means no dependency and the higher the value the stronger the progress towards maximum iterations will be taken into account by sampling closer around the current position. Value must be >= 0.", new DoubleValue(5)));
     }
 
     /// <summary>
-    /// Performs a non uniformly distributed all position manipulation on the given 
-    /// real <paramref name="vector"/>. The probability of stronger mutations reduces the more <see cref="currentGeneration"/> approaches <see cref="maximumGenerations"/>.
+    /// Performs a non uniformly distributed all positions manipulation on the given 
+    /// real <paramref name="vector"/>. The probability of stronger mutations reduces the more <see cref="currentIteration"/> approaches <see cref="maximumIterations"/>.
     /// </summary>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="currentGeneration"/> is greater than <paramref name="maximumGenerations"/>.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="currentIteration"/> is greater than <paramref name="maximumIterations"/>.</exception>
     /// <param name="random">The random number generator.</param>
     /// <param name="vector">The real vector to manipulate.</param>
     /// <param name="bounds">The lower and upper bound (1st and 2nd column) of the positions in the vector. If there are less rows than dimensions, the rows are cycled.</param>
-    /// <param name="currentGeneration">The current generation of the algorithm.</param>
-    /// <param name="maximumGenerations">Maximum number of generations.</param>
-    /// <param name="generationsDependency">Specifies the degree of dependency on the number of generations. A value of 0 means no dependency and the higher the value the stronger the progress towards maximum generations will be taken into account by sampling closer around the current position. Value must be >= 0.</param>
+    /// <param name="currentIteration">The current iteration of the algorithm.</param>
+    /// <param name="maximumIterations">Maximum number of iterations.</param>
+    /// <param name="iterationDependency">Specifies the degree of dependency on the number of iterations. A value of 0 means no dependency and the higher the value the stronger the progress towards maximum iterations will be taken into account by sampling closer around the current position. Value must be >= 0.</param>
     /// <returns>The manipulated real vector.</returns>
-    public static void Apply(IRandom random, RealVector vector, DoubleMatrix bounds, IntValue currentGeneration, IntValue maximumGenerations, DoubleValue generationsDependency) {
-      if (currentGeneration.Value > maximumGenerations.Value) throw new ArgumentException("MichalewiczNonUniformAllPositionManipulator: CurrentGeneration must be smaller or equal than MaximumGeneration", "currentGeneration");
-      if (generationsDependency.Value < 0) throw new ArgumentException("MichalewiczNonUniformOnePositionManipulator: GenerationsDependency must be >= 0.");
+    public static void Apply(IRandom random, RealVector vector, DoubleMatrix bounds, IntValue currentIteration, IntValue maximumIterations, DoubleValue iterationDependency) {
+      if (currentIteration.Value > maximumIterations.Value) throw new ArgumentException("MichalewiczNonUniformAllPositionsManipulator: CurrentIteration must be smaller or equal than MaximumIterations", "currentIteration");
+      if (iterationDependency.Value < 0) throw new ArgumentException("MichalewiczNonUniformAllPositionsManipulator: iterationDependency must be >= 0.", "iterationDependency");
       int length = vector.Length;
 
-      double prob = Math.Pow(1 - currentGeneration.Value / maximumGenerations.Value, generationsDependency.Value);
+      double prob = Math.Pow(1 - currentIteration.Value / maximumIterations.Value, iterationDependency.Value);
 
       for (int i = 0; i < length; i++) {
         double min = bounds[i % bounds.Rows, 0];
@@ -105,10 +105,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// <param name="realVector">The real vector that should be manipulated.</param>
     protected override void Manipulate(IRandom random, RealVector realVector) {
       if (BoundsParameter.ActualValue == null) throw new InvalidOperationException("MichalewiczNonUniformAllPositionManipulator: Parameter " + BoundsParameter.ActualName + " could not be found.");
-      if (GenerationParameter.ActualValue == null) throw new InvalidOperationException("MichalewiczNonUniformAllPositionManipulator: Parameter " + GenerationParameter.ActualName + " could not be found.");
-      if (MaximumGenerationsParameter.ActualValue == null) throw new InvalidOperationException("MichalewiczNonUniformAllPositionManipulator: Parameter " + MaximumGenerationsParameter.ActualName + " could not be found.");
-      if (GenerationDependencyParameter.ActualValue == null) throw new InvalidOperationException("MichalewiczNonUniformAllPositionManipulator: Parameter " + GenerationDependencyParameter.ActualName + " could not be found.");
-      Apply(random, realVector, BoundsParameter.ActualValue, GenerationParameter.ActualValue, MaximumGenerationsParameter.ActualValue, GenerationDependencyParameter.ActualValue);
+      if (IterationsParameter.ActualValue == null) throw new InvalidOperationException("MichalewiczNonUniformAllPositionManipulator: Parameter " + IterationsParameter.ActualName + " could not be found.");
+      if (MaximumIterationsParameter.ActualValue == null) throw new InvalidOperationException("MichalewiczNonUniformAllPositionManipulator: Parameter " + MaximumIterationsParameter.ActualName + " could not be found.");
+      if (IterationDependencyParameter.ActualValue == null) throw new InvalidOperationException("MichalewiczNonUniformAllPositionManipulator: Parameter " + IterationDependencyParameter.ActualName + " could not be found.");
+      Apply(random, realVector, BoundsParameter.ActualValue, IterationsParameter.ActualValue, MaximumIterationsParameter.ActualValue, IterationDependencyParameter.ActualValue);
     }
   }
 }

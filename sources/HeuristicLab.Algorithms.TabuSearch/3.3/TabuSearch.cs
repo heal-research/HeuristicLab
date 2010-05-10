@@ -235,6 +235,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       ParameterizeTabuMaker();
       ParameterizeTabuChecker();
       ParameterizeAnalyzers();
+      ParameterizeIterationBasedOperators();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.OnProblemChanged();
     }
@@ -277,6 +278,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       ParameterizeTabuMaker();
       ParameterizeTabuChecker();
       ParameterizeAnalyzers();
+      ParameterizeIterationBasedOperators();
       base.Problem_OperatorsChanged(sender, e);
     }
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
@@ -467,6 +469,14 @@ namespace HeuristicLab.Algorithms.TabuSearch {
         moveQualityAnalyzer.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
         if (TabuChecker != null)
           tabuNeighborhoodAnalyzer.IsTabuParameter.ActualName = TabuChecker.MoveTabuParameter.ActualName;
+      }
+    }
+    private void ParameterizeIterationBasedOperators() {
+      if (Problem != null) {
+        foreach (IIterationBasedOperator op in Problem.Operators.OfType<IIterationBasedOperator>()) {
+          op.IterationsParameter.ActualName = "Iterations";
+          op.MaximumIterationsParameter.ActualName = MaximumIterationsParameter.Name;
+        }
       }
     }
     #endregion

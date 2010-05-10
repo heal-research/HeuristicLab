@@ -134,8 +134,8 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       SubScopesProcessor subScopesProcessor1 = new SubScopesProcessor();
       Placeholder analyzer2 = new Placeholder();
       ConditionalBranch iterationsTermination = new ConditionalBranch();
-      
-      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Iterations", new IntValue(0)));
+
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Iterations", new IntValue(0))); // Class SimulatedAnnealing expects this to be called Iterations
       variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("Temperature", new DoubleValue(double.MaxValue)));
 
       resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Iterations"));

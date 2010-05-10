@@ -196,12 +196,13 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       }
       ParameterizeSolutionsCreator();
       ParameterizeMainLoop();
-      ParameterizeMoveEvaluators();
-      ParameterizeMoveMakers();
-      ParameterizeAnalyzers();
       UpdateMoveGenerator();
       UpdateMoveParameters();
       UpdateAnalyzers();
+      ParameterizeMoveEvaluators();
+      ParameterizeMoveMakers();
+      ParameterizeAnalyzers();
+      ParameterizeIterationBasedOperators();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.OnProblemChanged();
     }
@@ -235,6 +236,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       ParameterizeMoveEvaluators();
       ParameterizeMoveMakers();
       ParameterizeAnalyzers();
+      ParameterizeIterationBasedOperators();
       base.Problem_OperatorsChanged(sender, e);
     }
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
@@ -363,6 +365,14 @@ namespace HeuristicLab.Algorithms.LocalSearch {
         if (MoveEvaluator != null)
           moveQualityAnalyzer.QualityParameter.ActualName = MoveEvaluator.MoveQualityParameter.ActualName;
         moveQualityAnalyzer.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
+      }
+    }
+    private void ParameterizeIterationBasedOperators() {
+      if (Problem != null) {
+        foreach (IIterationBasedOperator op in Problem.Operators.OfType<IIterationBasedOperator>()) {
+          op.IterationsParameter.ActualName = "Iterations";
+          op.MaximumIterationsParameter.ActualName = MaximumIterationsParameter.Name;
+        }
       }
     }
     #endregion
