@@ -113,7 +113,7 @@ namespace HeuristicLab.Selection {
 
       // implement the ActualValue fetch here - otherwise the parent scope would also be included, given that there may be 1000 or more parents, this is quite unnecessary
       string tname = SuccessfulOffspringParameter.TranslatedName;
-      double tmpSelPress = selectionPressure.Value, tmpSelPressInc = 1.0 / populationSize;
+      double tmpSelPress = selectionPressure.Value, tmpSelPressInc = 1.0 / offspringSize;
       for (int i = 0; i < offspringSize; i++) {
         // fetch value
         IVariable tmpVar;
@@ -135,7 +135,7 @@ namespace HeuristicLab.Selection {
       successfulOffspring.Value += successfulOffspringAdded;
 
       // calculate actual selection pressure and success ratio
-      selectionPressure.Value += offspringSize / (double)populationSize;
+      selectionPressure.Value = tmpSelPress;
       currentSuccessRatio.Value = successfulOffspring.Value / ((double)populationSize);
 
       // check if enough children have been generated
@@ -155,8 +155,8 @@ namespace HeuristicLab.Selection {
         offspring.SubScopes.Clear();
         offspring.SubScopes.AddRange(population);
 
-        scope.Variables.Remove(OffspringPopulationParameter.ActualName);
-        scope.Variables.Remove(OffspringPopulationWinnersParameter.ActualName);
+        scope.Variables.Remove(OffspringPopulationParameter.TranslatedName);
+        scope.Variables.Remove(OffspringPopulationWinnersParameter.TranslatedName);
         return base.Apply();
       }
     }

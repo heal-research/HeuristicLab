@@ -226,14 +226,21 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       solutionsCreator.NumberOfSolutionsParameter.ActualName = PopulationSizeParameter.Name;
       solutionsCreator.Successor = mainLoop;
 
-      mainLoop.SelectorParameter.ActualName = SelectorParameter.Name;
+      mainLoop.AnalyzerParameter.ActualName = AnalyzerParameter.Name;
+      mainLoop.ComparisonFactorModifierParameter.ActualName = ComparisonFactorModifierParameter.Name;
+      mainLoop.ComparisonFactorParameter.ActualName = "ComparisonFactor";
+      mainLoop.ComparisonFactorStartParameter.ActualName = ComparisonFactorLowerBoundParameter.Name;
       mainLoop.CrossoverParameter.ActualName = CrossoverParameter.Name;
       mainLoop.ElitesParameter.ActualName = ElitesParameter.Name;
       mainLoop.MaximumGenerationsParameter.ActualName = MaximumGenerationsParameter.Name;
-      mainLoop.MutatorParameter.ActualName = MutatorParameter.Name;
+      mainLoop.MaximumSelectionPressureParameter.ActualName = MaximumSelectionPressureParameter.Name;
       mainLoop.MutationProbabilityParameter.ActualName = MutationProbabilityParameter.Name;
+      mainLoop.MutatorParameter.ActualName = MutatorParameter.Name;
+      mainLoop.OffspringSelectionBeforeMutationParameter.ActualName = OffspringSelectionBeforeMutationParameter.Name;
       mainLoop.RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
       mainLoop.ResultsParameter.ActualName = "Results";
+      mainLoop.SelectorParameter.ActualName = SelectorParameter.Name;
+      mainLoop.SuccessRatioParameter.ActualName = SuccessRatioParameter.Name;
 
       foreach (ISelector selector in ApplicationManager.Manager.GetInstances<ISelector>().Where(x => !(x is IMultiObjectiveSelector)).OrderBy(x => x.Name))
         SelectorParameter.ValidValues.Add(selector);

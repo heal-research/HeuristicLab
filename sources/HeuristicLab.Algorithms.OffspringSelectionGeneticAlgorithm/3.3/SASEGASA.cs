@@ -277,9 +277,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       mainLoop.RandomParameter.ActualName = randomCreator.RandomParameter.ActualName;
       mainLoop.ResultsParameter.ActualName = "Results";
       mainLoop.SuccessRatioParameter.ActualName = SuccessRatioParameter.Name;
-      mainLoop.ComparisonFactorLowerBoundParameter.ActualName = ComparisonFactorLowerBoundParameter.Name;
+      mainLoop.ComparisonFactorStartParameter.ActualName = ComparisonFactorLowerBoundParameter.Name;
       mainLoop.ComparisonFactorModifierParameter.ActualName = ComparisonFactorModifierParameter.Name;
-      mainLoop.ComparisonFactorUpperBoundParameter.ActualName = ComparisonFactorUpperBoundParameter.Name;
       mainLoop.MaximumSelectionPressureParameter.ActualName = MaximumSelectionPressureParameter.Name;
       mainLoop.FinalMaximumSelectionPressureParameter.ActualName = FinalMaximumSelectionPressureParameter.Name;
       mainLoop.MaximumGenerationsParameter.ActualName = MaximumGenerationsParameter.Name;

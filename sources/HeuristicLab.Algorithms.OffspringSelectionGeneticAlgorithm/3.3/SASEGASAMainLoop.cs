@@ -93,11 +93,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     public LookupParameter<DoubleValue> ComparisonFactorParameter {
       get { return (LookupParameter<DoubleValue>)Parameters["ComparisonFactor"]; }
     }
-    public ValueLookupParameter<DoubleValue> ComparisonFactorLowerBoundParameter {
-      get { return (ValueLookupParameter<DoubleValue>)Parameters["ComparisonFactorLowerBound"]; }
-    }
-    public ValueLookupParameter<DoubleValue> ComparisonFactorUpperBoundParameter {
-      get { return (ValueLookupParameter<DoubleValue>)Parameters["ComparisonFactorUpperBound"]; }
+    public ValueLookupParameter<DoubleValue> ComparisonFactorStartParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["ComparisonFactorStart"]; }
     }
     public ValueLookupParameter<IOperator> ComparisonFactorModifierParameter {
       get { return (ValueLookupParameter<IOperator>)Parameters["ComparisonFactorModifier"]; }
@@ -138,8 +135,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new ValueLookupParameter<IOperator>("VillageAnalyzer", "The operator used to analyze each village."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("SuccessRatio", "The ratio of successful to total children that should be achieved."));
       Parameters.Add(new LookupParameter<DoubleValue>("ComparisonFactor", "The comparison factor is used to determine whether the offspring should be compared to the better parent, the worse parent or a quality value linearly interpolated between them. It is in the range [0;1]."));
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("ComparisonFactorLowerBound", "The lower bound of the comparison factor (start)."));
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("ComparisonFactorUpperBound", "The upper bound of the comparison factor (end)."));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("ComparisonFactorStart", "The lower bound of the comparison factor (start)."));
       Parameters.Add(new ValueLookupParameter<IOperator>("ComparisonFactorModifier", "The operator used to modify the comparison factor."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("MaximumSelectionPressure", "The maximum selection pressure that terminates the algorithm."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("FinalMaximumSelectionPressure", "The maximum selection pressure used when there is only one village left."));
@@ -205,8 +201,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       maxSelPressAssigner.LeftSideParameter.ActualName = "CurrentMaximumSelectionPressure";
       maxSelPressAssigner.RightSideParameter.ActualName = MaximumSelectionPressureParameter.Name;
 
-      comparisonFactorInitializer.LeftSideParameter.ActualName = "ComparisonFactor";
-      comparisonFactorInitializer.RightSideParameter.ActualName = ComparisonFactorLowerBoundParameter.Name;
+      comparisonFactorInitializer.LeftSideParameter.ActualName = ComparisonFactorParameter.Name;
+      comparisonFactorInitializer.RightSideParameter.ActualName = ComparisonFactorStartParameter.Name;
 
       villageVariableCreator.CollectedValues.Add(new ValueParameter<ResultCollection>("Results", new ResultCollection()));
       villageVariableCreator.CollectedValues.Add(new ValueParameter<IntValue>("VillageEvaluatedSolutions", new IntValue(0)));
@@ -226,7 +222,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
 
       resultsCollector1.CopyValue = new BoolValue(false);
       resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Generations"));
-      resultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("ComparisonFactor", null, "ComparisonFactor"));
+      resultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("ComparisonFactor", null, ComparisonFactorParameter.Name));
       resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Terminated Villages", null, "TerminatedVillages"));
       resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Total Active Villages", null, "VillageCount"));
       resultsCollector1.CollectedValues.Add(new ScopeTreeLookupParameter<ResultCollection>("VillageResults", "Result set for each village", "Results"));
@@ -334,6 +330,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       reunificationCounter.ValueParameter.ActualName = "Reunifications"; // this variable is referenced in SASEGASA, do not change!
       reunificationCounter.IncrementParameter.Value = new IntValue(1);
 
+      comparisonFactorModifier.Name = "Update comparison factor (placeholder)";
       comparisonFactorModifier.OperatorParameter.ActualName = ComparisonFactorModifierParameter.Name;
 
       villageReviver.Name = "Village Reviver";
