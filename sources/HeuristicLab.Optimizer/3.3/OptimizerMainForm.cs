@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
@@ -80,6 +81,14 @@ namespace HeuristicLab.Optimizer {
       if (Properties.Settings.Default.ShowStartPage) {
         StartPage startPage = new StartPage();
         startPage.Show();
+      }
+    }
+
+    protected override void OnClosing(CancelEventArgs e) {
+      base.OnClosing(e);
+      if (MainFormManager.MainForm.Views.OfType<IContentView>().FirstOrDefault() != null) {
+        if (MessageBox.Show(this, "Some views are still opened. If their content has not been saved, it will be lost after closing. Do you really want to close HeuristicLab Optimizer?", "Close Optimizer", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) == DialogResult.No)
+          e.Cancel = true;
       }
     }
 
