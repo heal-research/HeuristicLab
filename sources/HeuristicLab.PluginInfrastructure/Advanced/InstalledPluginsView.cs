@@ -207,7 +207,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       if (localPluginsListView.SelectedItems.Count > 0) {
         var plugin = (PluginDescription)localPluginsListView.SelectedItems[0].Tag;
         PluginView pluginView = new PluginView(plugin);
-        pluginView.Show();
+        pluginView.Show(this);
       }
     }
 

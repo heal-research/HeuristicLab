@@ -31,12 +31,12 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.PluginInfrastructure.Advanced {
   internal partial class LicenseView : Form {
 
-    public LicenseView() {
+    public LicenseView() : base() {
       InitializeComponent();
       Name = "License";
     }
 
-    public LicenseView(IPluginDescription plugin) {
+    public LicenseView(IPluginDescription plugin) : base() {
       InitializeComponent();
       Name = "License of: " + plugin;
       richTextBox.Text = plugin.LicenseText;

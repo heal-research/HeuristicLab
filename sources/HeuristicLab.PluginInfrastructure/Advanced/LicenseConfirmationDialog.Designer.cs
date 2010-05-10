@@ -44,7 +44,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LicenseConfirmationDialog));
       this.richTextBox = new System.Windows.Forms.RichTextBox();
       this.acceptButton = new System.Windows.Forms.Button();
       this.rejectButton = new System.Windows.Forms.Button();

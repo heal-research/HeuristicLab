@@ -44,7 +44,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PluginView));
       this.nameLabel = new System.Windows.Forms.Label();
       this.nameTextBox = new System.Windows.Forms.TextBox();
       this.versionTextBox = new System.Windows.Forms.TextBox();
@@ -315,8 +314,9 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.Controls.Add(this.versionLabel);
       this.Controls.Add(this.nameTextBox);
       this.Controls.Add(this.nameLabel);
-      this.Icon = HeuristicLab.PluginInfrastructure.Resources.HeuristicLab;
+      this.Icon = global::HeuristicLab.PluginInfrastructure.Resources.HeuristicLab;
       this.Name = "PluginView";
+      this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
       this.dependenciesGroupBox.ResumeLayout(false);
       this.filesGroupBox.ResumeLayout(false);
       this.ResumeLayout(false);

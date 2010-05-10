@@ -39,12 +39,12 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
     private IPluginDescription plugin;
 
-    public PluginView() {
+    public PluginView() : base() {
       InitializeComponent();
       PopulateImageList();
     }
 
-    public PluginView(IPluginDescription plugin) {
+    public PluginView(IPluginDescription plugin) : base() {
       InitializeComponent();
       PopulateImageList();
 
@@ -113,13 +113,13 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       if (dependenciesListView.SelectedItems.Count > 0) {
         var dep = (PluginDescription)dependenciesListView.SelectedItems[0].Tag;
         PluginView view = new PluginView(dep);
-        view.Show();
+        view.Show(this);
       }
     }
 
     private void showLicenseButton_Click(object sender, EventArgs e) {
       LicenseView view = new LicenseView(plugin);
-      view.Show();
+      view.Show(this);
     }
   }
 }

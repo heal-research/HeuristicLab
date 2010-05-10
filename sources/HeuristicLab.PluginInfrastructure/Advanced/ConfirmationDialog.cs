@@ -29,7 +29,7 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
   internal partial class ConfirmationDialog : Form {
-    public ConfirmationDialog() {
+    public ConfirmationDialog() : base() {
       InitializeComponent();
       icon.Image = System.Drawing.SystemIcons.Exclamation.ToBitmap();
       DialogResult = DialogResult.Cancel;

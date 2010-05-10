@@ -36,7 +36,6 @@ using System;
 [assembly: AssemblyCopyright("(c) 2002-2010 HEAL")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: System.Resources.NeutralResourcesLanguage("en")]
 [assembly: CLSCompliant(true)]
 
 // Setting ComVisible to false makes the types in this assembly not visible 

@@ -36,7 +36,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private PluginManager pluginManager;
     private string pluginDir;
 
-    public InstallationManagerForm(PluginManager pluginManager) {
+    public InstallationManagerForm(PluginManager pluginManager) : base() {
       InitializeComponent();
       FileVersionInfo pluginInfrastructureVersion = FileVersionInfo.GetVersionInfo(GetType().Assembly.Location);
       Text = "HeuristicLab Plugin Manager " + pluginInfrastructureVersion.FileVersion;
@@ -142,7 +142,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
     #region button events
     private void connectionSettingsToolStripMenuItem_Click(object sender, EventArgs e) {
-      new ConnectionSetupView().ShowDialog();
+      new ConnectionSetupView().ShowDialog(this);
     }
     private void tabControl_SelectedIndexChanged(object sender, EventArgs e) {
       toolStripStatusLabel.Text = string.Empty;
@@ -157,7 +157,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
           strBuilder.AppendLine(Path.GetFileName(file.Name));
         }
       }
-      return (new ConfirmationDialog("Confirm Delete", "Do you want to delete following files?", strBuilder.ToString())).ShowDialog() == DialogResult.OK;
+      return (new ConfirmationDialog("Confirm Delete", "Do you want to delete following files?", strBuilder.ToString())).ShowDialog(this) == DialogResult.OK;
     }
 
     private bool ConfirmUpdateAction(IEnumerable<IPluginDescription> plugins) {
@@ -165,14 +165,14 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       foreach (var plugin in plugins) {
         strBuilder.AppendLine(plugin.ToString());
       }
-      return (new ConfirmationDialog("Confirm Update", "Do you want to update following plugins?", strBuilder.ToString())).ShowDialog() == DialogResult.OK;
+      return (new ConfirmationDialog("Confirm Update", "Do you want to update following plugins?", strBuilder.ToString())).ShowDialog(this) == DialogResult.OK;
     }
 
     private bool ConfirmInstallAction(IEnumerable<IPluginDescription> plugins) {
       foreach (var plugin in plugins) {
         if (!string.IsNullOrEmpty(plugin.LicenseText)) {
           var licenseConfirmationBox = new LicenseConfirmationDialog(plugin);
-          if (licenseConfirmationBox.ShowDialog() != DialogResult.OK)
+          if (licenseConfirmationBox.ShowDialog(this) != DialogResult.OK)
             return false;
         }
       }

@@ -45,6 +45,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.initialInterval = initialInterval;
       this.manager = manager;
 
+      closeButton.Image = HeuristicLab.PluginInfrastructure.Resources.Delete;
       manager.ApplicationStarted += new EventHandler<PluginInfrastructureEventArgs>(manager_ApplicationStarted);
       manager.ApplicationStarting += new EventHandler<PluginInfrastructureEventArgs>(manager_ApplicationStarting);
       manager.Initializing += new EventHandler<PluginInfrastructureEventArgs>(manager_Initializing);

@@ -47,11 +47,8 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.components = new System.ComponentModel.Container();
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SplashScreen));
       this.panel = new System.Windows.Forms.Panel();
       this.closeButton = new System.Windows.Forms.Button();
-      this.imageList = new System.Windows.Forms.ImageList(this.components);
       this.companyLabel = new System.Windows.Forms.Label();
       this.userNameLabel = new System.Windows.Forms.Label();
       this.licensedToLabel = new System.Windows.Forms.Label();
@@ -93,17 +90,12 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.closeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.closeButton.ForeColor = System.Drawing.Color.White;
       this.closeButton.ImageIndex = 0;
-      this.closeButton.ImageList = this.imageList;
       this.closeButton.Location = new System.Drawing.Point(604, 3);
       this.closeButton.Name = "closeButton";
       this.closeButton.Size = new System.Drawing.Size(16, 16);
       this.closeButton.TabIndex = 7;
       this.closeButton.UseVisualStyleBackColor = true;
       this.closeButton.Click += new System.EventHandler(this.closeButton_Click);
-      // 
-      // imageList
-      // 
-      this.imageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Remove);
       // 
       // companyLabel
       // 
@@ -213,6 +205,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.panel.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
       this.ResumeLayout(false);
+
     }
 
     #endregion
@@ -226,7 +219,6 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     private System.Windows.Forms.Label versionLabel;
     private System.Windows.Forms.Label copyrightLabel;
     private System.Windows.Forms.Label infoLabel;
-    private System.Windows.Forms.ImageList imageList;
     private System.Windows.Forms.Button closeButton;
   }
 }

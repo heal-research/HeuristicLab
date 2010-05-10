@@ -81,12 +81,10 @@ namespace HeuristicLab.PluginInfrastructure {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string Bla {
+        internal static System.Drawing.Bitmap Delete {
             get {
-                return ResourceManager.GetString("Bla", resourceCulture);
+                object obj = ResourceManager.GetObject("Delete", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

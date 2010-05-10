@@ -29,11 +29,11 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
   internal partial class LicenseConfirmationDialog : Form {
-    public LicenseConfirmationDialog() {
+    public LicenseConfirmationDialog() : base() {
       InitializeComponent();
     }
 
-    public LicenseConfirmationDialog(IPluginDescription plugin) {
+    public LicenseConfirmationDialog(IPluginDescription plugin) : base() {
       InitializeComponent();
       richTextBox.Text = plugin.LicenseText;
       this.Text = plugin.ToString();

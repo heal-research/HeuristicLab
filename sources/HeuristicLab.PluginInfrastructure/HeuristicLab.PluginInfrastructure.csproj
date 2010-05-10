@@ -215,15 +215,6 @@
     <Compile Include="PluginState.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Advanced\InstallationManagerForm.resx">
-      <DependentUpon>InstallationManagerForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Starter\SplashScreen.resx">
-      <DependentUpon>SplashScreen.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Starter\StarterForm.resx">
-      <DependentUpon>StarterForm.cs</DependentUpon>
-    </EmbeddedResource>
     <None Include="app.config" />
     <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.frame" />
@@ -270,48 +261,19 @@
     </Content>
     <Content Include="Resources\HeuristicLab.ico" />
     <Content Include="Resources\Logo_white.gif" />
+    <None Include="Resources\VS2008ImageLibrary_Actions_Delete.png" />
     <Content Include="Resources\VS2008ImageLibrary_Actions_PublishToWebHS.png" />
     <Content Include="Resources\VS2008ImageLibrary_Actions_RepeatHS.png" />
     <Content Include="Resources\VS2008ImageLibrary_CommonElements_Actions_Add.png" />
     <Content Include="Resources\VS2008ImageLibrary_Objects_Plugin.png" />
-    <EmbeddedResource Include="Advanced\AvailablePluginsView.resx">
-      <DependentUpon>AvailablePluginsView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Advanced\BasicUpdateView.resx">
-      <DependentUpon>BasicUpdateView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Advanced\ConfirmationDialog.resx">
-      <DependentUpon>ConfirmationDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Advanced\ConnectionSetupView.resx">
-      <DependentUpon>ConnectionSetupView.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Advanced\DeploymentService\servdev.cer" />
-    <EmbeddedResource Include="Advanced\EditProductsView.resx">
-      <DependentUpon>EditProductsView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Advanced\InstalledPluginsView.resx">
-      <DependentUpon>InstalledPluginsView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Advanced\LicenseConfirmationDialog.resx">
-      <DependentUpon>LicenseConfirmationDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Advanced\LicenseView.resx">
-      <DependentUpon>LicenseView.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Advanced\PluginView.resx">
       <DependentUpon>PluginView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Advanced\UploadPluginsView.resx">
-      <DependentUpon>UploadPluginsView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Starter\AboutDialog.resx">
-      <DependentUpon>AboutDialog.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Resources\VS2008ImageLibrary_CommonElements_Actions_Remove.png" />
     <None Include="Resources\show_icons.png" />

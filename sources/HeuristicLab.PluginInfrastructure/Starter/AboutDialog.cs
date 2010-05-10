@@ -102,7 +102,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     private void pluginListView_ItemActivate(object sender, EventArgs e) {
       if(pluginListView.SelectedItems.Count > 0) {
         PluginView view = new PluginView((IPluginDescription)pluginListView.SelectedItems[0].Tag);
-        view.Show();
+        view.Show(this);
       }
     }
 
