@@ -58,13 +58,14 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.showLargeIconsButton = new System.Windows.Forms.RadioButton();
       this.showDetailsButton = new System.Windows.Forms.RadioButton();
+      this.aboutButton = new System.Windows.Forms.Button();
       this.SuspendLayout();
       // 
       // startButton
       // 
       this.startButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.startButton.Enabled = false;
-      this.startButton.Location = new System.Drawing.Point(579, 511);
+      this.startButton.Location = new System.Drawing.Point(498, 511);
       this.startButton.Name = "startButton";
       this.startButton.Size = new System.Drawing.Size(75, 23);
       this.startButton.TabIndex = 1;
@@ -72,12 +73,6 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.toolTip.SetToolTip(this.startButton, "Start Selected Application");
       this.startButton.UseVisualStyleBackColor = true;
       this.startButton.Click += new System.EventHandler(this.applicationsListView_ItemActivate);
-      // 
-      // largeImageList
-      // 
-      this.largeImageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("largeImageList.ImageStream")));
-      this.largeImageList.TransparentColor = System.Drawing.Color.Transparent;
-      this.largeImageList.Images.SetKeyName(0, "HeuristicLab.ico");
       // 
       // applicationsListView
       // 
@@ -121,12 +116,6 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.descriptionColumnHeader.Text = "Description";
       this.descriptionColumnHeader.Width = 453;
       // 
-      // smallImageList
-      // 
-      this.smallImageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("smallImageList.ImageStream")));
-      this.smallImageList.TransparentColor = System.Drawing.Color.Transparent;
-      this.smallImageList.Images.SetKeyName(0, "HeuristicLab.ico");
-      // 
       // showLargeIconsButton
       // 
       this.showLargeIconsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -155,11 +144,23 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.showDetailsButton.UseVisualStyleBackColor = false;
       this.showDetailsButton.Click += new System.EventHandler(this.detailsButton_Click);
       // 
+      // aboutButton
+      // 
+      this.aboutButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.aboutButton.Location = new System.Drawing.Point(579, 511);
+      this.aboutButton.Name = "aboutButton";
+      this.aboutButton.Size = new System.Drawing.Size(75, 23);
+      this.aboutButton.TabIndex = 4;
+      this.aboutButton.Text = "&About...";
+      this.aboutButton.UseVisualStyleBackColor = true;
+      this.aboutButton.Click += new System.EventHandler(this.aboutButton_Click);
+      // 
       // StarterForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(666, 546);
+      this.Controls.Add(this.aboutButton);
       this.Controls.Add(this.showDetailsButton);
       this.Controls.Add(this.showLargeIconsButton);
       this.Controls.Add(this.applicationsListView);
@@ -184,5 +185,6 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     private System.Windows.Forms.ToolTip toolTip;
     private System.Windows.Forms.RadioButton showLargeIconsButton;
     private System.Windows.Forms.RadioButton showDetailsButton;
+    private System.Windows.Forms.Button aboutButton;
   }
 }

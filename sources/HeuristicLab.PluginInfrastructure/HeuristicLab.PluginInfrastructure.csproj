@@ -238,6 +238,12 @@
     </Compile>
     <Compile Include="Resources.Designer.cs" />
     <Compile Include="Sandboxing\SandboxManager.cs" />
+    <Compile Include="Starter\AboutDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Starter\AboutDialog.Designer.cs">
+      <DependentUpon>AboutDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Starter\SplashScreen.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -300,7 +306,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources1.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="Resources\VS2008ImageLibrary_Actions_Delete.png" />
+    <EmbeddedResource Include="Starter\AboutDialog.resx">
+      <DependentUpon>AboutDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Resources\VS2008ImageLibrary_CommonElements_Actions_Remove.png" />
     <None Include="Resources\show_icons.png" />
     <None Include="Resources\show_details.png" />

@@ -1,0 +1,79 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using System.Reflection;
+using System.Diagnostics;
+using HeuristicLab.PluginInfrastructure.Advanced;
+
+namespace HeuristicLab.PluginInfrastructure.Starter {
+  /// <summary>
+  /// Shows product, version and copyright information for HeuristicLab and all plugins.
+  /// </summary>
+  public partial class AboutDialog : Form {
+    /// <summary>
+    /// Creates a new about dialog with all plugins loaded in the current application.
+    /// </summary>
+    public AboutDialog() {
+      InitializeComponent();
+      var curAssembly = this.GetType().Assembly;
+      productTextBox.Text = GetProduct(curAssembly);
+      versionTextBox.Text = GetVersion(curAssembly);
+      copyrightTextBox.Text = GetCopyright(curAssembly);
+      imageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Plugin);
+      pictureBox.Image = HeuristicLab.PluginInfrastructure.Resources.Logo_white;
+      UpdatePluginList(ApplicationManager.Manager.Plugins);
+      ActiveControl = okButton;
+    }
+
+    /// <summary>
+    /// Creates a new about dialog listing all plugins in the <paramref name="plugins"/> enumerable.
+    /// </summary>
+    /// <param name="plugins">Enumerable of plugins that should be listed.</param>
+    public AboutDialog(IEnumerable<IPluginDescription> plugins) : this() {
+      UpdatePluginList(plugins);
+    }
+
+    private void UpdatePluginList(IEnumerable<IPluginDescription> plugins) {
+      pluginListView.Items.Clear();
+      foreach (var plugin in plugins) {
+        ListViewItem pluginItem = CreateListViewItem(plugin);
+        pluginListView.Items.Add(pluginItem);
+      }
+      Util.ResizeColumns(pluginListView.Columns.OfType<ColumnHeader>());
+    }
+
+    private ListViewItem CreateListViewItem(IPluginDescription plugin) {
+      ListViewItem item = new ListViewItem(new string[] { plugin.Name, plugin.Version.ToString(), plugin.Description });
+      item.ImageIndex = 0;
+      return item;
+    }
+
+    private string GetCopyright(Assembly asm) {
+      AssemblyCopyrightAttribute attribute = GetAttribute<AssemblyCopyrightAttribute>(asm);
+      return attribute.Copyright;
+    }
+
+    private string GetVersion(Assembly asm) {
+      FileVersionInfo pluginInfrastructureVersion = FileVersionInfo.GetVersionInfo(GetType().Assembly.Location);
+      return pluginInfrastructureVersion.FileVersion;
+    }
+
+    private string GetProduct(Assembly asm) {
+      AssemblyProductAttribute attribute = GetAttribute<AssemblyProductAttribute>(asm);
+      return attribute.Product;
+    }
+
+    private T GetAttribute<T>(Assembly asm) {
+      return (T)asm.GetCustomAttributes(typeof(T), false).Single();
+    }
+
+    private void okButton_Click(object sender, EventArgs e) {
+      Close();
+    }
+  }
+}

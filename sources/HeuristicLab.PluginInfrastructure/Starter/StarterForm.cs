@@ -59,10 +59,9 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       string pluginPath = Path.GetFullPath(Application.StartupPath);
       pluginManager = new PluginManager(pluginPath);
       splashScreen = new SplashScreen(pluginManager, 1000);
-      splashScreen.Show(this,"Loading HeuristicLab...");
+      splashScreen.Show(this, "Loading HeuristicLab...");
 
       pluginManager.DiscoverAndCheckPlugins();
-
       UpdateApplicationsList();
     }
 
@@ -201,5 +200,10 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       abortRequested = true;
     }
 
+    private void aboutButton_Click(object sender, EventArgs e) {
+      List<IPluginDescription> plugins = new List<IPluginDescription>(pluginManager.Plugins.OfType<IPluginDescription>());
+      var dialog = new AboutDialog(plugins);
+      dialog.ShowDialog();
+    }
   }
 }
