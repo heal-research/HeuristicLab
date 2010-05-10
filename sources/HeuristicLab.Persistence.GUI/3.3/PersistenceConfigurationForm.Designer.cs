@@ -89,6 +89,7 @@
       this.ClientSize = new System.Drawing.Size(582, 609);
       this.Controls.Add(this.buttonPanel);
       this.Controls.Add(this.configurationTabs);
+      this.Icon = HeuristicLab.Common.Resources.HeuristicLab.Icon;
       this.Name = "PersistenceConfigurationForm";
       this.Text = "PersistenceConfigurationForm";
       this.buttonPanel.ResumeLayout(false);

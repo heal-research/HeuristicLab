@@ -61,7 +61,7 @@
       this.ClientSize = new System.Drawing.Size(596, 331);
       this.Controls.Add(this.textEditorControl1);
       this.Controls.Add(this.button1);
-      this.Icon = HeuristicLab.Common.Resources.Resources.HeuristicLabIcon;
+      this.Icon = HeuristicLab.Common.Resources.HeuristicLab.Icon;
       this.Name = "CodeViewer";
       this.Text = "GeneratedCode";
       this.ResumeLayout(false);

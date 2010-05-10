@@ -80,7 +80,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.Controls.Add(this.statusStrip);
       this.Controls.Add(this.toolStrip);
       this.Controls.Add(this.menuStrip);
-      this.Icon = HeuristicLab.Common.Resources.Resources.HeuristicLabIcon;
+      this.Icon = HeuristicLab.Common.Resources.HeuristicLab.Icon;
       this.MainMenuStrip = this.menuStrip;
       this.Name = "MainFormBase";
       this.Load += new System.EventHandler(this.MainFormBase_Load);

@@ -46,8 +46,8 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StarterForm));
-      System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Applications", System.Windows.Forms.HorizontalAlignment.Left);
-      System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Plugin Management", System.Windows.Forms.HorizontalAlignment.Left);
+      System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Applications", System.Windows.Forms.HorizontalAlignment.Left);
+      System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Plugin Management", System.Windows.Forms.HorizontalAlignment.Left);
       this.startButton = new System.Windows.Forms.Button();
       this.largeImageList = new System.Windows.Forms.ImageList(this.components);
       this.applicationsListView = new System.Windows.Forms.ListView();
@@ -88,13 +88,13 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
             this.nameColumnHeader,
             this.versionColumnHeader,
             this.descriptionColumnHeader});
-      listViewGroup3.Header = "Applications";
-      listViewGroup3.Name = "Applications";
-      listViewGroup4.Header = "Plugin Management";
-      listViewGroup4.Name = "Plugin Management";
+      listViewGroup1.Header = "Applications";
+      listViewGroup1.Name = "Applications";
+      listViewGroup2.Header = "Plugin Management";
+      listViewGroup2.Name = "Plugin Management";
       this.applicationsListView.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup3,
-            listViewGroup4});
+            listViewGroup1,
+            listViewGroup2});
       this.applicationsListView.LargeImageList = this.largeImageList;
       this.applicationsListView.Location = new System.Drawing.Point(12, 12);
       this.applicationsListView.MultiSelect = false;
@@ -137,6 +137,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.showLargeIconsButton.Name = "showLargeIconsButton";
       this.showLargeIconsButton.Size = new System.Drawing.Size(23, 23);
       this.showLargeIconsButton.TabIndex = 2;
+      this.showLargeIconsButton.TabStop = true;
       this.toolTip.SetToolTip(this.showLargeIconsButton, "Show Large Icons");
       this.showLargeIconsButton.UseVisualStyleBackColor = false;
       this.showLargeIconsButton.Click += new System.EventHandler(this.largeIconsButton_Click);
