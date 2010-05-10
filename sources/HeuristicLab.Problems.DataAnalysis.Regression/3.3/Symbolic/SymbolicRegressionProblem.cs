@@ -321,6 +321,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       if (changed != null)
         changed(this, e);
     }
+    public event EventHandler Reset;
+    private void RaiseReset(EventArgs e) {
+      var changed = Reset;
+      if (changed != null)
+        changed(this, e);
+    }
     #endregion
 
     #region Helpers

@@ -164,19 +164,25 @@ namespace HeuristicLab.Problems.TestFunctions {
     #region Events
     public event EventHandler SolutionCreatorChanged;
     private void OnSolutionCreatorChanged() {
-      if (SolutionCreatorChanged != null)
-        SolutionCreatorChanged(this, EventArgs.Empty);
+      EventHandler handler = SolutionCreatorChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler EvaluatorChanged;
     private void OnEvaluatorChanged() {
-      if (EvaluatorChanged != null)
-        EvaluatorChanged(this, EventArgs.Empty);
+      EventHandler handler = EvaluatorChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler OperatorsChanged;
     private void OnOperatorsChanged() {
-      if (OperatorsChanged != null)
-        OperatorsChanged(this, EventArgs.Empty);
+      EventHandler handler = OperatorsChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
+    public event EventHandler Reset;
+    private void OnReset() {
+      EventHandler handler = Reset;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+
     private void ProblemSizeParameter_ValueChanged(object sender, EventArgs e) {
       ProblemSize.ValueChanged += new EventHandler(ProblemSize_ValueChanged);
       ProblemSize_ValueChanged(null, EventArgs.Empty);

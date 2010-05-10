@@ -229,22 +229,23 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     #region Events
     public event EventHandler SolutionCreatorChanged;
     private void OnSolutionCreatorChanged() {
-      var changed = SolutionCreatorChanged;
-      if (changed != null)
-        changed(this, EventArgs.Empty);
+      EventHandler handler = SolutionCreatorChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler EvaluatorChanged;
     private void OnEvaluatorChanged() {
-      var changed = EvaluatorChanged;
-      if (changed != null)
-        changed(this, EventArgs.Empty);
+      EventHandler handler = EvaluatorChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
-
     public event EventHandler OperatorsChanged;
     private void OnOperatorsChanged() {
-      var changed = OperatorsChanged;
-      if (changed != null)
-        changed(this, EventArgs.Empty);
+      EventHandler handler = OperatorsChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+    public event EventHandler Reset;
+    private void OnReset() {
+      EventHandler handler = Reset;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
 
     private void SolutionCreatorParameter_ValueChanged(object sender, EventArgs e) {

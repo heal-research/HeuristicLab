@@ -264,15 +264,20 @@ namespace HeuristicLab.Optimization {
       problem.SolutionCreatorChanged -= new EventHandler(Problem_SolutionCreatorChanged);
       problem.EvaluatorChanged -= new EventHandler(Problem_EvaluatorChanged);
       problem.OperatorsChanged -= new EventHandler(Problem_OperatorsChanged);
+      problem.Reset -= new EventHandler(Problem_Reset);
     }
     protected virtual void RegisterProblemEvents() {
       problem.SolutionCreatorChanged += new EventHandler(Problem_SolutionCreatorChanged);
       problem.EvaluatorChanged += new EventHandler(Problem_EvaluatorChanged);
       problem.OperatorsChanged += new EventHandler(Problem_OperatorsChanged);
+      problem.Reset += new EventHandler(Problem_Reset);
     }
     protected virtual void Problem_SolutionCreatorChanged(object sender, EventArgs e) { }
     protected virtual void Problem_EvaluatorChanged(object sender, EventArgs e) { }
     protected virtual void Problem_OperatorsChanged(object sender, EventArgs e) { }
+    protected virtual void Problem_Reset(object sender, EventArgs e) {
+      Prepare();
+    }
 
     protected virtual void DeregisterRunsEvents() {
       runs.CollectionReset -= new CollectionItemsChangedEventHandler<IRun>(Runs_CollectionReset);

@@ -190,6 +190,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         if (tourParser.Tour.Length != Coordinates.Rows) throw new InvalidDataException("Length of optimal tour is not equal to number of cities.");
         BestKnownSolution = new Permutation(PermutationTypes.RelativeUndirected, tourParser.Tour);
       }
+      OnReset();
     }
     public void ImportFromTSPLIB(string tspFileName, string optimalTourFileName, double bestKnownQuality) {
       ImportFromTSPLIB(tspFileName, optimalTourFileName);
@@ -199,18 +200,23 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     #region Events
     public event EventHandler SolutionCreatorChanged;
     private void OnSolutionCreatorChanged() {
-      if (SolutionCreatorChanged != null)
-        SolutionCreatorChanged(this, EventArgs.Empty);
+      EventHandler handler = SolutionCreatorChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler EvaluatorChanged;
     private void OnEvaluatorChanged() {
-      if (EvaluatorChanged != null)
-        EvaluatorChanged(this, EventArgs.Empty);
+      EventHandler handler = EvaluatorChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler OperatorsChanged;
     private void OnOperatorsChanged() {
-      if (OperatorsChanged != null)
-        OperatorsChanged(this, EventArgs.Empty);
+      EventHandler handler = OperatorsChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+    public event EventHandler Reset;
+    private void OnReset() {
+      EventHandler handler = Reset;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
 
     private void CoordinatesParameter_ValueChanged(object sender, EventArgs e) {

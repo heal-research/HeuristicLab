@@ -38,5 +38,6 @@ namespace HeuristicLab.Optimization {
     event EventHandler SolutionCreatorChanged;
     event EventHandler EvaluatorChanged;
     event EventHandler OperatorsChanged;
+    event EventHandler Reset;
   }
 }
