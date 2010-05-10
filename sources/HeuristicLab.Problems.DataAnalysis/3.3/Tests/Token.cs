@@ -61,6 +61,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
         t.DoubleValue = double.Parse(strToken, CultureInfo.InvariantCulture.NumberFormat);
       } else {
         t.Symbol = TokenSymbol.SYMB;
+        t.StringValue = t.StringValue.ToUpper();
       }
       return t;
     }

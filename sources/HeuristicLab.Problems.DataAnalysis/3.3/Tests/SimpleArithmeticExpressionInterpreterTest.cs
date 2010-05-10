@@ -88,7 +88,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
     [TestMethod()]
     public void SimpleArithmeticExpressionInterpreterEvaluateTest() {
 
-      Dataset ds = new Dataset(new string[] { "y", "a", "b" }, new double[,] {
+      Dataset ds = new Dataset(new string[] { "Y", "A", "B" }, new double[,] {
         { 1.0, 1.0, 1.0 },
         { 2.0, 2.0, 2.0 },
         { 3.0, 1.0, 2.0 }
@@ -132,7 +132,40 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
       Evaluate(interpreter, ds, "(/ (variable 3.0 b ) 2.0)", 2, 3.0);
       Evaluate(interpreter, ds, "(/ 8.0 2.0 2.0)", 0, 2.0);
 
-      // TODO ADF      
+      // ADF      
+      Evaluate(interpreter, ds, @"(PROG 
+                                    (MAIN 
+                                      (CALL ADF0)) 
+                                    (defun ADF0 1.0))", 1, 1.0);
+      Evaluate(interpreter, ds, @"(PROG 
+                                    (MAIN 
+                                      (* (CALL ADF0) (CALL ADF0)))
+                                    (defun ADF0 2.0))", 1, 4.0);
+      Evaluate(interpreter, ds, @"(PROG 
+                                    (MAIN 
+                                      (CALL ADF0 2.0 3.0))
+                                    (defun ADF0 
+                                      (+ (ARG 0) (ARG 1))))", 1, 5.0);
+      Evaluate(interpreter, ds, @"(PROG 
+                                    (MAIN (CALL ADF1 2.0 3.0))
+                                    (defun ADF0 
+                                      (- (ARG 1) (ARG 0)))
+                                    (defun ADF1
+                                      (+ (CALL ADF0 (ARG 1) (ARG 0))
+                                         (CALL ADF0 (ARG 0) (ARG 1)))))", 1, 0.0);
+      Evaluate(interpreter, ds, @"(PROG 
+                                    (MAIN (CALL ADF1 (variable 2.0 a) 3.0))
+                                    (defun ADF0 
+                                      (- (ARG 1) (ARG 0)))
+                                    (defun ADF1                                                                              
+                                      (CALL ADF0 (ARG 1) (ARG 0))))", 1, 1.0);
+      Evaluate(interpreter, ds, @"(PROG 
+                                    (MAIN (CALL ADF1 (variable 2.0 a) 3.0))
+                                    (defun ADF0 
+                                      (- (ARG 1) (ARG 0)))
+                                    (defun ADF1                                                                              
+                                      (+ (CALL ADF0 (ARG 1) (ARG 0))
+                                         (CALL ADF0 (ARG 0) (ARG 1)))))", 1, 0.0);
     }
 
     private void Evaluate(SimpleArithmeticExpressionInterpreter interpreter, Dataset ds, string expr, int index, double expected) {

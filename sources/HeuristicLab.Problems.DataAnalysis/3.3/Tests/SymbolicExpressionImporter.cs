@@ -31,17 +31,24 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.DataAnalysis.Tests {
   internal class SymbolicExpressionImporter {
-    private const string VARSTART = "var";
+    private const string VARSTART = "VAR";
+    private const string DEFUNSTART = "DEFUN";
+    private const string ARGSTART = "ARG";
+    private const string INVOKESTART = "CALL";
     private Dictionary<string, Symbol> knownSymbols = new Dictionary<string, Symbol>() 
       {
         {"+", new Addition()},
         {"/", new Division()},
         {"*", new Multiplication()},
         {"-", new Subtraction()},
-
+        {"PROG", new ProgramRootSymbol()},
+        {"MAIN", new StartSymbol()}
       };
+
     Constant constant = new Constant();
     Variable variable = new Variable();
+    Defun defun = new Defun();
+
     ProgramRootSymbol programRootSymbol = new ProgramRootSymbol();
     StartSymbol startSymbol = new StartSymbol();
 
@@ -53,8 +60,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
       SymbolicExpressionTreeNode root = programRootSymbol.CreateTreeNode();
       SymbolicExpressionTreeNode start = startSymbol.CreateTreeNode();
       SymbolicExpressionTreeNode mainBranch = ParseSexp(new Queue<Token>(GetTokenStream(str)));
-      root.AddSubTree(start);
-      start.AddSubTree(mainBranch);
+      if (mainBranch.Symbol is ProgramRootSymbol) {
+        // when a root symbol was parsed => use main branch as root
+        root = mainBranch;
+      } else {
+        // only a main branch was given => insert the main branch into the default tree template
+        root.AddSubTree(start);
+        start.AddSubTree(mainBranch);
+      }
       return new SymbolicExpressionTree(root);
     }
 
@@ -72,6 +85,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
         Expect(Token.LPAR, tokens);
         if (tokens.Peek().StringValue.StartsWith(VARSTART)) {
           tree = ParseVariable(tokens);
+        } else if (tokens.Peek().StringValue.StartsWith(DEFUNSTART)) {
+          tree = ParseDefun(tokens);
+          while (!tokens.Peek().Equals(Token.RPAR)) {
+            tree.AddSubTree(ParseSexp(tokens));
+          }
+        } else if (tokens.Peek().StringValue.StartsWith(ARGSTART)) {
+          tree = ParseArgument(tokens);
+        } else if (tokens.Peek().StringValue.StartsWith(INVOKESTART)) {
+          tree = ParseInvoke(tokens);
+          while (!tokens.Peek().Equals(Token.RPAR)) {
+            tree.AddSubTree(ParseSexp(tokens));
+          }
         } else {
           Token curToken = tokens.Dequeue();
           tree = CreateTree(curToken);
@@ -88,9 +113,33 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
       } else throw new FormatException("Expected function or constant symbol");
     }
 
+    private SymbolicExpressionTreeNode ParseInvoke(Queue<Token> tokens) {
+      Token invokeTok = tokens.Dequeue();
+      Debug.Assert(invokeTok.StringValue == "CALL");
+      InvokeFunction invokeSym = new InvokeFunction(tokens.Dequeue().StringValue);
+      SymbolicExpressionTreeNode invokeNode = invokeSym.CreateTreeNode();
+      return invokeNode;
+    }
+
+    private SymbolicExpressionTreeNode ParseArgument(Queue<Token> tokens) {
+      Token argTok = tokens.Dequeue();
+      Debug.Assert(argTok.StringValue == "ARG");
+      Argument argument = new Argument((int)tokens.Dequeue().DoubleValue);
+      SymbolicExpressionTreeNode argNode = argument.CreateTreeNode();
+      return argNode;
+    }
+
+    private SymbolicExpressionTreeNode ParseDefun(Queue<Token> tokens) {
+      Token defTok = tokens.Dequeue();
+      Debug.Assert(defTok.StringValue == "DEFUN");
+      DefunTreeNode t = (DefunTreeNode)defun.CreateTreeNode();
+      t.FunctionName = tokens.Dequeue().StringValue;
+      return t;
+    }
+
     private SymbolicExpressionTreeNode ParseVariable(Queue<Token> tokens) {
       Token varTok = tokens.Dequeue();
-      Debug.Assert(varTok.StringValue == "variable");
+      Debug.Assert(varTok.StringValue == "VARIABLE");
       VariableTreeNode t = (VariableTreeNode)variable.CreateTreeNode();
       t.Weight = tokens.Dequeue().DoubleValue;
       t.VariableName = tokens.Dequeue().StringValue;
