@@ -17,6 +17,7 @@
     <StartupObject>HeuristicLab.Program</StartupObject>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
     <ApplicationIcon>HeuristicLab.ico</ApplicationIcon>
+    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
