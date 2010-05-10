@@ -83,6 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
+    <None Include="HeuristicLabProblemsDataAnalysisViewsPlugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.frame" />
     <Compile Include="EstimatedValuesView.cs">
       <SubType>UserControl</SubType>
