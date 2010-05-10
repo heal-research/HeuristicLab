@@ -45,9 +45,9 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StarterForm));
       System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Applications", System.Windows.Forms.HorizontalAlignment.Left);
       System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Plugin Management", System.Windows.Forms.HorizontalAlignment.Left);
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StarterForm));
       this.startButton = new System.Windows.Forms.Button();
       this.largeImageList = new System.Windows.Forms.ImageList(this.components);
       this.applicationsListView = new System.Windows.Forms.ListView();
@@ -73,6 +73,12 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.toolTip.SetToolTip(this.startButton, "Start Selected Application");
       this.startButton.UseVisualStyleBackColor = true;
       this.startButton.Click += new System.EventHandler(this.applicationsListView_ItemActivate);
+      // 
+      // largeImageList
+      // 
+      this.largeImageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+      this.largeImageList.ImageSize = new System.Drawing.Size(32, 32);
+      this.largeImageList.TransparentColor = System.Drawing.Color.Transparent;
       // 
       // applicationsListView
       // 
@@ -115,6 +121,12 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       // 
       this.descriptionColumnHeader.Text = "Description";
       this.descriptionColumnHeader.Width = 453;
+      // 
+      // smallImageList
+      // 
+      this.smallImageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+      this.smallImageList.ImageSize = new System.Drawing.Size(16, 16);
+      this.smallImageList.TransparentColor = System.Drawing.Color.Transparent;
       // 
       // showLargeIconsButton
       // 
