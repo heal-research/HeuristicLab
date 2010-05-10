@@ -157,6 +157,9 @@ namespace HeuristicLab.Problems.TestFunctions {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       SingleObjectiveTestFunctionProblem clone = (SingleObjectiveTestFunctionProblem)base.Clone(cloner);
+      clone.strategyVectorCreator = (StdDevStrategyVectorCreator)cloner.Clone(strategyVectorCreator);
+      clone.strategyVectorCrossover = (StdDevStrategyVectorCrossover)cloner.Clone(strategyVectorCrossover);
+      clone.strategyVectorManipulator = (StdDevStrategyVectorManipulator)cloner.Clone(strategyVectorManipulator);
       clone.Initialize();
       return clone;
     }
